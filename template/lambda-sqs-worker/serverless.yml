@@ -1,0 +1,156 @@
+service: <%- serviceName %>
+
+custom:
+  description: <%- description %>
+  env: ${self:custom.envs.${env:ENVIRONMENT}}
+  envs:
+    dev:
+      isProduction: 'false'
+    prod:
+      isProduction: 'true'
+
+provider:
+  logRetentionInDays: 30
+  name: aws
+  region: ap-southeast-2
+  runtime: nodejs12.x
+  stackName: ${self:service}
+  stage: ${env:ENVIRONMENT}
+  variableSyntax: "\\${((?!AWS)[ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)]+?)}"
+  # deploymentBucket:
+  #   name: 'TODO: deploymentBucketName'
+  iamRoleStatements:
+    - Action:
+        - kms:Decrypt
+        - kms:GenerateDataKey*
+      Effect: Allow
+      Resource: !GetAtt EncryptionKey.Arn
+    - Action: sns:Publish
+      Effect: Allow
+      Resource: !Ref DestinationTopic
+    - Action: sqs:SendMessage*
+      Effect: Allow
+      Resource: !GetAtt DeadLetterQueue.Arn
+  stackTags:
+    # TODO: add data classification tags
+    # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers
+    # seek:data:consumers: internal
+    # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdatatypes
+    # seek:data:types:restricted: job-ads
+    seek:env:label: ${env:ENVIRONMENT}
+    seek:env:production: ${self:custom.env.isProduction}
+    seek:owner:team: '<%- teamName %>'
+    seek:source:sha: ${env:BUILDKITE_COMMIT, 'na'}
+    seek:source:url: 'https://github.com/SEEK-Jobs/<%- repoName %>'
+
+package:
+  exclude:
+    - ./**
+    - '!node_modules/**'
+  include:
+    - lib/**
+
+functions:
+  Proxy:
+    name: ${self:service}
+    handler: lib/app.handler
+    description: ${self:custom.description}
+    memorySize: 128
+    reservedConcurrency: 20
+    timeout: 30
+    environment:
+      DESTINATION_SNS_TOPIC_ARN: !Ref DestinationTopic
+      ENVIRONMENT: ${env:ENVIRONMENT}
+      REGION: ${self:provider.region}
+      SERVICE: ${self:service}
+      VERSION: ${env:VERSION}
+    events:
+      - sqs:
+          arn: !GetAtt MessageQueue.Arn
+          batchSize: 1
+
+resources:
+  # This becomes the Lambda application's description
+  Description: ${self:custom.description}
+
+  Resources:
+    DeadLetterQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        MessageRetentionPeriod: 1209600
+        KmsDataKeyReusePeriodSeconds: 300
+        KmsMasterKeyId: !Ref EncryptionKey
+        QueueName: ${self:service}-dead-letters
+
+    MessageQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        MessageRetentionPeriod: 1209600
+        KmsDataKeyReusePeriodSeconds: 300
+        KmsMasterKeyId: !Ref EncryptionKey
+        QueueName: ${self:service}-messages
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt DeadLetterQueue.Arn
+          maxReceiveCount: 3
+        VisibilityTimeout: 180
+
+    # MessageQueuePolicy:
+    #   Type: AWS::SQS::QueuePolicy
+    #   Properties:
+    #     PolicyDocument:
+    #       Version: '2012-10-17'
+    #       Statement:
+    #         - Action: sqs:SendMessage
+    #           Condition:
+    #             ArnEquals:
+    #               aws:SourceArn: 'TODO: sourceSnsTopicArn'
+    #           Effect: 'Allow'
+    #           Principal:
+    #             AWS: '*'
+    #           Resource: '*'
+    #     Queues:
+    #       - !Ref MessageQueue
+
+    # TopicSubscription:
+    #   Type: AWS::SNS::Subscription
+    #   Properties:
+    #     Endpoint: !GetAtt MessageQueue.Arn
+    #     Protocol: sqs
+    #     RawMessageDelivery: true
+    #     Region: !Ref AWS::Region
+    #     TopicArn: 'TODO: sourceSnsTopicArn'
+
+    DestinationTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        KmsMasterKeyId: alias/aws/sns
+        TopicName: ${self:service}
+
+    EncryptionKey:
+      Type: AWS::KMS::Key
+      Properties:
+        Description: ${self:service}
+        EnableKeyRotation: true
+        KeyPolicy:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: Admin access
+              Effect: Allow
+              Action: kms:*
+              Principal:
+                AWS: !Ref AWS::AccountId
+              Resource: '*'
+            - Sid: SNS compatibility
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+                - kms:GenerateDataKey*
+              Principal:
+                Service: sns.amazonaws.com
+              Resource: '*'
+
+    EncryptionKeyAlias:
+      Type: AWS::KMS::Alias
+      Properties:
+        AliasName: alias/seek/${self:service}
+        TargetKeyId: !Ref EncryptionKey

@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      args:
+        - NPM_READ_TOKEN
+      context: .
+      target: build
+    init: true
+    volumes:
+      - /workdir/node_modules

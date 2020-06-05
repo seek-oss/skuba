@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mergeWithIgnoreFile difference 1`] = `
+"node_modules
+
+.DS_Store
+"
+`;
+
+exports[`mergeWithIgnoreFile empty 1`] = `
+"
+"
+`;
+
+exports[`mergeWithIgnoreFile empty base 1`] = `
+"node_modules
+"
+`;
+
+exports[`mergeWithIgnoreFile empty provided 1`] = `
+"node_modules
+"
+`;
+
+exports[`mergeWithIgnoreFile identical 1`] = `
+"node_modules
+"
+`;
+
+exports[`mergeWithIgnoreFile mix 1`] = `
+".DS_Store
+
+yarn-error.log
+
+node_modules
+"
+`;
+
+exports[`mergeWithIgnoreFile whitespace 1`] = `
+"node_modules
+
+.DS_Store
+"
+`;

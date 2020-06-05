@@ -1,0 +1,7 @@
+env:
+  ENVIRONMENT: dev
+
+isProduction: false
+
+maxInstanceCount: 1
+minInstanceCount: 1

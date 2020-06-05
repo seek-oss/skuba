@@ -1,0 +1,7 @@
+env:
+  ENVIRONMENT: prod
+
+isProduction: true
+
+maxInstanceCount: 10
+minInstanceCount: 3

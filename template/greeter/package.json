@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@seek/skuba-dive": "^1.0.2"
+  },
+  "devDependencies": {
+    "@seek/skuba": "*",
+    "@types/node": "^14.0.1"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "skuba build",
+    "format": "skuba format",
+    "lint": "skuba lint",
+    "start": "ENVIRONMENT=local skuba start",
+    "test": "skuba test"
+  }
+}

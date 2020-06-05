@@ -1,0 +1,168 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`diffFiles works from scratch 1`] = `
+Object {
+  ".dockerignore": Object {
+    "data": ".idea/
+.serverless/
+.vscode/
+coverage/
+dist/
+lib/
+node_modules/
+node_modules_bak/
+tmp/
+
+.DS_Store
+.npmrc
+npm-debug.log
+yarn-error.log
+",
+    "operation": "[32mA[39m",
+  },
+  ".eslintignore": Object {
+    "data": ".idea/
+.serverless/
+.vscode/
+coverage/
+dist/
+lib/
+node_modules/
+node_modules_bak/
+tmp/
+
+.DS_Store
+.npmrc
+npm-debug.log
+yarn-error.log
+",
+    "operation": "[32mA[39m",
+  },
+  ".eslintrc.js": Object {
+    "data": "module.exports = {
+  extends: [require.resolve('@seek/skuba/config/eslint')],
+};
+",
+    "operation": "[32mA[39m",
+  },
+  ".github/renovate.json5": Object {
+    "data": "{
+  extends: ['github>seek-oss/rynovate'],
+}
+",
+    "operation": "[32mA[39m",
+  },
+  ".gitignore": Object {
+    "data": ".idea/
+.serverless/
+.vscode/
+coverage/
+dist/
+lib/
+node_modules/
+node_modules_bak/
+tmp/
+
+.DS_Store
+.npmrc
+*.tsbuildinfo
+npm-debug.log
+package-lock.json
+yarn-error.log
+",
+    "operation": "[32mA[39m",
+  },
+  ".prettierignore": Object {
+    "data": ".idea/
+.serverless/
+.vscode/
+coverage/
+dist/
+lib/
+node_modules/
+node_modules_bak/
+tmp/
+
+.DS_Store
+.npmrc
+npm-debug.log
+yarn-error.log
+
+# Gantry resource files support non-standard template syntax
+gantry*.yaml
+gantry*.yml
+",
+    "operation": "[32mA[39m",
+  },
+  ".prettierrc.js": Object {
+    "data": "module.exports = require('@seek/skuba/config/prettier');
+",
+    "operation": "[32mA[39m",
+  },
+  "jest.config.js": Object {
+    "data": "module.exports = {
+  ...require('@seek/skuba/config/jest'),
+
+  coveragePathIgnorePatterns: ['src/testing'],
+  setupFiles: ['<rootDir>/jest.setup.ts'],
+};
+",
+    "operation": "[32mA[39m",
+  },
+  "jest.setup.ts": Object {
+    "data": "process.env.ENVIRONMENT = 'test';
+",
+    "operation": "[32mA[39m",
+  },
+  "package.json": Object {
+    "data": "{
+  \\"dependencies\\": {
+    \\"@seek/skuba-dive\\": \\"0.0.1\\"
+  },
+  \\"devDependencies\\": {
+    \\"@seek/skuba\\": \\"0.0.0-semantically-released\\"
+  },
+  \\"license\\": \\"UNLICENSED\\",
+  \\"private\\": true,
+  \\"scripts\\": {
+    \\"build\\": \\"skuba build\\",
+    \\"format\\": \\"skuba format\\",
+    \\"lint\\": \\"skuba lint\\",
+    \\"start\\": \\"ENVIRONMENT=local skuba start\\",
+    \\"test\\": \\"skuba test\\"
+  },
+  \\"skuba\\": {
+    \\"entryPoint\\": \\"src/app.ts\\",
+    \\"template\\": null,
+    \\"version\\": \\"0.0.0-semantically-released\\"
+  }
+}
+",
+    "operation": "[32mA[39m",
+  },
+  "tsconfig.build.json": Object {
+    "data": "{
+  \\"exclude\\": [\\"**/__mocks__/**/*\\", \\"**/*.test.ts\\", \\"src/testing/**/*\\"],
+  \\"extends\\": \\"./tsconfig.json\\",
+  \\"include\\": [\\"src/**/*\\"]
+}
+",
+    "operation": "[32mA[39m",
+  },
+  "tsconfig.json": Object {
+    "data": "{
+  \\"compilerOptions\\": {
+    \\"baseUrl\\": \\".\\",
+    \\"outDir\\": \\"lib\\",
+    \\"paths\\": {
+      \\"src\\": [\\"src\\"]
+    }
+  },
+  \\"exclude\\": [\\"lib/**/*\\"],
+  \\"extends\\": \\"@seek/skuba/config/tsconfig.json\\"
+}
+",
+    "operation": "[32mA[39m",
+  },
+}
+`;
