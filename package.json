@@ -7,28 +7,30 @@
   "engines": {
     "node": ">=12"
   },
-  "version": "0.0.0-semantically-released",
+  "version": "3.4.0",
   "main": "lib/commonjs",
   "module": "lib/es2015",
   "typings": "lib/index.d.ts",
   "files": [
-    "config",
-    "lib",
+    "config/**/*",
+    "lib/**/*.d.ts",
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "lib/template/**/*",
     "jest-preset.js"
   ],
   "sideEffects": false,
   "license": "MIT",
   "scripts": {
-    "skuba": "ts-node src/skuba",
-    "build": "concurrently yarn:build:*",
+    "build": "concurrently yarn:build:* && scripts/postbuild.sh",
     "build:commonjs": "tsc --module CommonJS --outDir lib/commonjs --project tsconfig.build.json",
     "build:declaration": "tsc --allowJS false --declaration --emitDeclarationOnly --project tsconfig.build.json",
     "build:es2015": "tsc --module ES2015 --outDir lib/es2015 --project tsconfig.build.json",
     "format": "yarn skuba format",
     "lint": "yarn skuba lint",
-    "postbuild": "scripts/postbuild.sh",
-    "prerelease": "yarn build",
-    "release": "semantic-release --success false",
+    "release": "yarn build && changeset publish",
+    "stage": "changeset version && yarn format",
+    "skuba": "ts-node src/skuba",
     "test": "jest",
     "test:template": ".buildkite/test-template.sh"
   },
@@ -37,12 +39,12 @@
     "url": "https://github.com/seek-oss/skuba.git"
   },
   "devDependencies": {
+    "@changesets/cli": "2.8.0",
     "@types/concurrently": "5.2.1",
     "@types/ejs": "3.0.4",
     "@types/fs-extra": "9.0.1",
     "@types/lodash": "4.14.154",
     "@types/npm-which": "3.0.0",
-    "semantic-release": "17.0.8",
     "type-fest": "0.15.0"
   },
   "dependencies": {

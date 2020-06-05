@@ -27,8 +27,12 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile --ignore-optional --non-interactive
-      # - name: Publish to npm
-      #   run: yarn release
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}
+
+      - name: Publish to npm
+        uses: changesets/action@master
+        with:
+          publish: yarn release
+          version: yarn stage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}
