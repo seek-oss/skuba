@@ -3,8 +3,8 @@
     "@seek/skuba-dive": "^1.0.2"
   },
   "devDependencies": {
-    "@seek/skuba": "*",
-    "@types/node": "^14.0.1"
+    "@types/node": "^14.0.1",
+    "skuba": "*"
   },
   "engines": {
     "node": ">=12"

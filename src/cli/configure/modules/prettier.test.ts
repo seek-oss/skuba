@@ -12,9 +12,7 @@ describe('prettierModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.prettierrc.js']).toContain(
-      '@seek/skuba/config/prettier',
-    );
+    expect(outputFiles['.prettierrc.js']).toContain('skuba/config/prettier');
   });
 
   it('deletes rogue configs', async () => {
@@ -37,9 +35,7 @@ describe('prettierModule', () => {
     );
 
     expect(outputFiles['.prettierrc']).toBeUndefined();
-    expect(outputFiles['.prettierrc.js']).toContain(
-      '@seek/skuba/config/prettier',
-    );
+    expect(outputFiles['.prettierrc.js']).toContain('skuba/config/prettier');
     expect(outputFiles['.prettierrc.toml']).toBeUndefined();
     expect(outputFiles['package.json']).toContain('secret-service');
     expect(outputFiles['package.json']).not.toContain('prettier');
@@ -48,7 +44,7 @@ describe('prettierModule', () => {
   it('overwrites config', async () => {
     const inputFiles = {
       '.prettierrc.js':
-        "module.exports = { ...require('@seek/skuba/configure/prettier'), singleQuote: false }",
+        "module.exports = { ...require('skuba/configure/prettier'), singleQuote: false }",
     };
 
     const outputFiles = await executeModule(
@@ -57,9 +53,7 @@ describe('prettierModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.prettierrc.js']).toContain(
-      '@seek/skuba/config/prettier',
-    );
+    expect(outputFiles['.prettierrc.js']).toContain('skuba/config/prettier');
     expect(outputFiles['.prettierrc.js']).not.toContain('singleQuote');
   });
 });

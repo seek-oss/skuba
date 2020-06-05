@@ -1,1 +1,1 @@
-module.exports = require('@seek/skuba/config/prettier');
+module.exports = require('skuba/config/prettier');

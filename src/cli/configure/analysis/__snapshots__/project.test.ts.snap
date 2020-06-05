@@ -40,7 +40,7 @@ yarn-error.log
   },
   ".eslintrc.js": Object {
     "data": "module.exports = {
-  extends: [require.resolve('@seek/skuba/config/eslint')],
+  extends: [require.resolve('skuba/config/eslint')],
 };
 ",
     "operation": "[32mA[39m",
@@ -95,13 +95,13 @@ gantry*.yml
     "operation": "[32mA[39m",
   },
   ".prettierrc.js": Object {
-    "data": "module.exports = require('@seek/skuba/config/prettier');
+    "data": "module.exports = require('skuba/config/prettier');
 ",
     "operation": "[32mA[39m",
   },
   "jest.config.js": Object {
     "data": "module.exports = {
-  ...require('@seek/skuba/config/jest'),
+  ...require('skuba/config/jest'),
 
   coveragePathIgnorePatterns: ['src/testing'],
   setupFiles: ['<rootDir>/jest.setup.ts'],
@@ -120,7 +120,7 @@ gantry*.yml
     \\"@seek/skuba-dive\\": \\"0.0.1\\"
   },
   \\"devDependencies\\": {
-    \\"@seek/skuba\\": \\"0.0.0-semantically-released\\"
+    \\"skuba\\": \\"0.0.0-semantically-released\\"
   },
   \\"license\\": \\"UNLICENSED\\",
   \\"private\\": true,
@@ -159,7 +159,7 @@ gantry*.yml
     }
   },
   \\"exclude\\": [\\"lib/**/*\\"],
-  \\"extends\\": \\"@seek/skuba/config/tsconfig.json\\"
+  \\"extends\\": \\"skuba/config/tsconfig.json\\"
 }
 ",
     "operation": "[32mA[39m",

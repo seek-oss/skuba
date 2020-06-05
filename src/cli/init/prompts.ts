@@ -32,7 +32,7 @@ export const SHOULD_CONTINUE_PROMPT = new Select({
 export const GIT_PATH_PROMPT = new Input({
   message: 'Git path',
   name: 'gitPath',
-  initial: 'seek-jobs/skuba',
+  initial: 'seek-oss/skuba',
   validate: (value) => /[^/]+\/[^/]+/.test(value) || 'Path is not valid',
 });
 

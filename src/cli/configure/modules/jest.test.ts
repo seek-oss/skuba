@@ -12,7 +12,7 @@ describe('jestModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['jest.config.js']).toContain('@seek/skuba/config/jest');
+    expect(outputFiles['jest.config.js']).toContain('skuba/config/jest');
     expect(outputFiles['jest.setup.ts']).toBeDefined();
   });
 
@@ -30,7 +30,7 @@ describe('jestModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['jest.config.js']).toContain('@seek/skuba/config/jest');
+    expect(outputFiles['jest.config.js']).toContain('skuba/config/jest');
     expect(outputFiles['jest.setup.ts']).toBeDefined();
     expect(outputFiles['package.json']).toContain('secret-service');
     expect(outputFiles['package.json']).not.toContain('jest');
@@ -48,7 +48,7 @@ describe('jestModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['jest.config.js']).toContain('@seek/skuba/config/jest');
+    expect(outputFiles['jest.config.js']).toContain('skuba/config/jest');
     expect(outputFiles['jest.config.js']).not.toContain('skydive');
     expect(outputFiles['jest.setup.ts']).toBe(inputFiles['jest.setup.ts']);
   });
@@ -56,7 +56,7 @@ describe('jestModule', () => {
   it('preserves extended config', async () => {
     const inputFiles = {
       'jest.config.js':
-        "module.exports = { ...require('@seek/skuba/config/jest'), globalSetup: '<rootDir>/jest.setup.int.ts' }",
+        "module.exports = { ...require('skuba/config/jest'), globalSetup: '<rootDir>/jest.setup.int.ts' }",
       'jest.setup.ts': "process.env.ENVIRONMENT = 'myMachine'",
     };
 
@@ -72,7 +72,7 @@ describe('jestModule', () => {
 
   it('skips setup file after first run', async () => {
     const inputFiles = {
-      'jest.config.js': "module.exports = require('@seek/skuba/config/jest')",
+      'jest.config.js': "module.exports = require('skuba/config/jest')",
       'jest.setup.ts': undefined,
     };
 

@@ -21,7 +21,7 @@ export const eslintModule = async (): Promise<Module> => {
 
     // allow customised ESLint configs that extend skuba
     '.eslintrc.js': (inputFile) =>
-      inputFile?.includes('@seek/skuba/config/eslint') ? inputFile : configFile,
+      inputFile?.includes('skuba/config/eslint') ? inputFile : configFile,
 
     '.eslintignore': mergeWithIgnoreFile(ignoreFile),
 

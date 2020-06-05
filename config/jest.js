@@ -10,7 +10,7 @@ module.exports = {
     '^src$': '<rootDir>/src',
     '^src/(.+)$': '<rootDir>/src/$1',
   },
-  preset: '@seek/skuba',
+  preset: 'skuba',
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules/', '<rootDir>/lib/'],
 };

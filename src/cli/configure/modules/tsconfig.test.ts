@@ -16,7 +16,7 @@ describe('tsconfigModule', () => {
 
     expect(outputFiles['tsconfig.build.json']).toContain('./tsconfig.json');
     expect(outputFiles['tsconfig.json']).toContain(
-      '@seek/skuba/config/tsconfig.json',
+      'skuba/config/tsconfig.json',
     );
   });
 
@@ -52,7 +52,7 @@ describe('tsconfigModule', () => {
     expect(outputData.compilerOptions!.target).toBe('ES2020');
     expect(outputData.exclude).toContain('lib/**/*');
     expect(outputData.exclude).toContain('.idea');
-    expect(outputData.extends).toBe('@seek/skuba/config/tsconfig.json');
+    expect(outputData.extends).toBe('skuba/config/tsconfig.json');
     expect(outputData.include).toBeUndefined();
   });
 
@@ -79,7 +79,7 @@ describe('tsconfigModule', () => {
   it('retains include option after initial setup', async () => {
     const inputFiles = {
       'tsconfig.json':
-        '{"extends": "@seek/skuba/config/tsconfig.json", "include": ["src"]}',
+        '{"extends": "skuba/config/tsconfig.json", "include": ["src"]}',
     };
 
     const outputFiles = await executeModule(
@@ -91,7 +91,7 @@ describe('tsconfigModule', () => {
     const outputData = parseObject<TsConfigJson>(outputFiles['tsconfig.json']);
 
     assertDefined(outputData);
-    expect(outputData.extends).toBe('@seek/skuba/config/tsconfig.json');
+    expect(outputData.extends).toBe('skuba/config/tsconfig.json');
     expect(outputData.include).toStrictEqual(['src']);
   });
 });

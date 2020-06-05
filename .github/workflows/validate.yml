@@ -1,0 +1,30 @@
+name: Validate
+
+on: push
+
+jobs:
+  validate:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      SKU_TELEMETRY: false
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@master
+        with:
+          lfs: true
+
+      - name: Set up Node.js 12.x
+        uses: actions/setup-node@master
+        with:
+          node-version: 12.x
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --ignore-optional --non-interactive
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Test
+        run: yarn test

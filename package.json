@@ -1,6 +1,6 @@
 {
-  "name": "@seek/skuba",
-  "description": "sku for backend applications",
+  "name": "skuba",
+  "description": "Toolkit for backend TypeScript development",
   "bin": {
     "skuba": "lib/commonjs/skuba.js"
   },
@@ -17,33 +17,32 @@
     "jest-preset.js"
   ],
   "sideEffects": false,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "skuba": "ts-node src/skuba",
     "build": "concurrently yarn:build:*",
     "build:commonjs": "tsc --module CommonJS --outDir lib/commonjs --project tsconfig.build.json",
     "build:declaration": "tsc --allowJS false --declaration --emitDeclarationOnly --project tsconfig.build.json",
     "build:es2015": "tsc --module ES2015 --outDir lib/es2015 --project tsconfig.build.json",
-    "commit": "smt commit",
     "format": "yarn skuba format",
     "lint": "yarn skuba lint",
     "postbuild": "scripts/postbuild.sh",
     "prerelease": "yarn build",
-    "release": "smt release",
+    "release": "semantic-release --success false",
     "test": "jest",
     "test:template": ".buildkite/test-template.sh"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SEEK-Jobs/skuba.git"
+    "url": "https://github.com/seek-oss/skuba.git"
   },
   "devDependencies": {
-    "@seek/seek-module-toolkit": "3.0.17",
     "@types/concurrently": "5.2.1",
     "@types/ejs": "3.0.4",
     "@types/fs-extra": "9.0.1",
     "@types/lodash": "4.14.154",
     "@types/npm-which": "3.0.0",
+    "semantic-release": "17.0.8",
     "type-fest": "0.15.0"
   },
   "dependencies": {
