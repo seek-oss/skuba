@@ -1,0 +1,14 @@
+.idea/
+.serverless/
+.vscode/
+coverage/
+dist/
+lib/
+node_modules/
+node_modules_bak/
+tmp/
+
+.DS_Store
+.npmrc
+npm-debug.log
+yarn-error.log

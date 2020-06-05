@@ -1,0 +1,81 @@
+env:
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  VERSION: ${BUILDKITE_COMMIT:0:7}.${BUILDKITE_BUILD_NUMBER}
+
+configs:
+  - &aws-sm
+    seek-oss/aws-sm#v2.0.0:
+      env:
+        NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
+
+  - &docker-ecr-cache
+    seek-oss/docker-ecr-cache#v1.5.0:
+      build-args:
+        - NPM_READ_TOKEN
+      cache-on:
+        - package.json
+        - yarn.lock
+      target: dev-deps
+
+  - &deploy
+    concurrency: 1
+    plugins:
+      - *aws-sm
+      - *docker-ecr-cache
+      - docker-compose#v3.3.0:
+          dependencies: false
+          run: app
+
+  - &dev
+    agents:
+      queue: <%- devBuildkiteQueueName %>
+    env:
+      ENVIRONMENT: dev
+
+  - &prod
+    agents:
+      queue: <%- prodBuildkiteQueueName %>
+    env:
+      ENVIRONMENT: prod
+
+steps:
+  - <<: *dev
+    label: ♨️ Warm Dev
+    command: ':'
+    plugins:
+      - *aws-sm
+      - *docker-ecr-cache
+
+  - <<: *prod
+    label: 🧪 Test & Lint
+    commands:
+      - echo '+++ yarn test'
+      - yarn test
+      - echo '+++ yarn lint'
+      - yarn lint
+    plugins:
+      - *aws-sm
+      - *docker-ecr-cache
+      - ecr#v2.1.0:
+          login: true
+      - docker-compose#v3.3.0:
+          run: app
+
+  - wait
+  - block: 🙋🏻‍♀️ Deploy Dev
+    branches: '!master'
+
+  - <<: *dev
+    <<: *deploy
+    command: yarn deploy
+    concurrency_group: <%- repoName %>/deploy/dev
+    label: 🤞 Deploy Dev
+
+  - wait
+
+  - <<: *prod
+    <<: *deploy
+    branches: master
+    command: yarn deploy
+    concurrency_group: <%- repoName %>/deploy/prod
+    label: 🚀 Deploy Prod

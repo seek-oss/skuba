@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "incremental": true,
+    "outDir": "lib",
+    "paths": {
+      "enquirer": ["enquirer"]
+    },
+    "removeComments": false
+  },
+  "exclude": ["lib/**/*", "template/**/*"],
+  "extends": "@seek/seek-module-toolkit/config/tsconfig.json"
+}

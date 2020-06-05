@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "lib",
+    "paths": {
+      "src": ["src"]
+    },
+    "target": "ES2019"
+  },
+  "exclude": ["lib/**/*"],
+  "extends": "@seek/skuba/config/tsconfig.json"
+}

@@ -1,0 +1,17 @@
+prodAccountId: '<%- prodAwsAccountId %>'
+
+image: '{{values "prodAccountId"}}.dkr.ecr.ap-southeast-2.amazonaws.com/{{values "service"}}:{{.BuildID}}'
+region: ap-southeast-2
+service: '<%- serviceName %>'
+
+tags:
+  # TODO: add data classification tags
+  # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers
+  # seek:data:consumers: internal
+  # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdatatypes
+  # seek:data:types:restricted: job-ads
+  seek:env:label: '{{values "env.ENVIRONMENT"}}'
+  seek:env:production: '{{values "isProduction"}}'
+  seek:owner:team: '<%- teamName %>'
+  seek:source:sha: '{{.CommitSHA}}'
+  seek:source:url: 'https://github.com/SEEK-Jobs/<%- repoName %>'

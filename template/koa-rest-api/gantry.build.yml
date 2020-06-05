@@ -1,0 +1,8 @@
+kind: ContainerImage
+
+schemaVersion: v0.0
+
+image: '{{values "image"}}'
+
+buildArgs:
+  NPM_READ_TOKEN: '{{.Env.NPM_READ_TOKEN}}'

@@ -1,0 +1,70 @@
+configs:
+  - &aws-sm
+    seek-oss/aws-sm#v2.0.0:
+      env:
+        NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
+
+  - &dev
+    agents:
+      queue: <%- devBuildkiteQueueName %>
+
+  - &prod
+    agents:
+      queue: <%- prodBuildkiteQueueName %>
+
+steps:
+  - <<: *prod
+    label: 🧪 Test & Lint
+    commands:
+      - echo '+++ yarn test'
+      - yarn test
+      - echo '+++ yarn lint'
+      - yarn lint
+    plugins:
+      - *aws-sm
+      - ecr#v2.1.0:
+          login: true
+      - docker-compose#v3.3.0:
+          run: app
+
+  - <<: *prod
+    label: 📦 Build & Package
+    plugins:
+      - *aws-sm
+      - seek-jobs/gantry#v1.2.1:
+          command: build
+          file: gantry.build.yml
+          values: .gantry/common.yml
+
+  - wait
+  - block: 🙋🏻‍♀️ Deploy Dev
+    branches: '!master'
+
+  - <<: *dev
+    label: 🤞 Deploy Dev
+    concurrency: 1
+    concurrency_group: <%- repoName %>/deploy/dev
+    plugins:
+      - seek-jobs/gantry#v1.2.1:
+          command: apply
+          environment: <%- devGantryEnvironmentName %>
+          file: gantry.apply.yml
+          values:
+            - .gantry/common.yml
+            - .gantry/dev.yml
+
+  - wait
+
+  - <<: *prod
+    label: 🚀 Deploy Prod
+    branches: master
+    concurrency: 1
+    concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
+    plugins:
+      - seek-jobs/gantry#v1.2.1:
+          command: apply
+          environment: <%- prodGantryEnvironmentName %>
+          file: gantry.apply.yml
+          values:
+            - .gantry/common.yml
+            - .gantry/prod.yml
