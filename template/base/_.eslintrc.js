@@ -1,3 +1,3 @@
 module.exports = {
-  extends: [require.resolve('@seek/skuba/config/eslint')],
+  extends: [require.resolve('skuba/config/eslint')],
 };

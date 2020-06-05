@@ -2,11 +2,11 @@ import { prependImport, stripImports } from './javascript';
 
 describe('prependImport', () => {
   it('handles an empty file', () =>
-    expect(prependImport('@seek/skuba')).toBe("import '@seek/skuba';\n"));
+    expect(prependImport('skuba')).toBe("import 'skuba';\n"));
 
   it('handles a non-empty file', () =>
-    expect(prependImport('@seek/skuba', "console.log('hello world');\n")).toBe(
-      "import '@seek/skuba';\n\nconsole.log('hello world');\n",
+    expect(prependImport('skuba', "console.log('hello world');\n")).toBe(
+      "import 'skuba';\n\nconsole.log('hello world');\n",
     ));
 });
 

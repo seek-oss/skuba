@@ -35,9 +35,7 @@ export const tsconfigModule = async (): Promise<Module> => {
       // for optimal ESLinting, base config should compile all files and leave
       // exclusions to .eslintignore and tsconfig.build.json
       if (
-        !initialFiles['tsconfig.json']?.includes(
-          '@seek/skuba/config/tsconfig.json',
-        )
+        !initialFiles['tsconfig.json']?.includes('skuba/config/tsconfig.json')
       ) {
         delete outputData.include;
       }

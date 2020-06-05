@@ -16,7 +16,7 @@ describe('packageModule', () => {
     const outputData = parsePackage(outputFiles['package.json']);
 
     assertDefined(outputData);
-    expect(outputData.devDependencies).toHaveProperty('@seek/skuba');
+    expect(outputData.devDependencies).toHaveProperty('skuba');
     expect(outputData.license).toBe('UNLICENSED');
     expect(outputData.private).toBe(true);
     expect(outputData.scripts).toHaveProperty('build');
@@ -49,7 +49,7 @@ describe('packageModule', () => {
 
     assertDefined(outputData);
     expect(outputData.$name).toBe('secret-service');
-    expect(outputData.devDependencies).toHaveProperty('@seek/skuba');
+    expect(outputData.devDependencies).toHaveProperty('skuba');
     expect(outputData.devDependencies).toHaveProperty('pino-pretty', '0.0.1');
     expect(outputData.private).toBeUndefined();
     expect(outputData.scripts).toStrictEqual({});
@@ -104,7 +104,7 @@ describe('packageModule', () => {
     const outputData = parsePackage(outputFiles['package.json']);
 
     assertDefined(outputData);
-    expect(outputData.devDependencies).toHaveProperty('@seek/skuba');
+    expect(outputData.devDependencies).toHaveProperty('skuba');
     expect(outputData.devDependencies).not.toHaveProperty('eslint');
     expect(outputData.devDependencies).toHaveProperty('pino-pretty', '0.0.1');
     expect(outputData.devDependencies).not.toHaveProperty('typescript');

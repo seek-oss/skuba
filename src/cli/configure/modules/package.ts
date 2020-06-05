@@ -31,7 +31,7 @@ export const packageModule = async ({
 
   const initialData = {
     devDependencies: {
-      '@seek/skuba': version,
+      skuba: version,
     },
     license: 'UNLICENSED',
     private: true,
@@ -51,7 +51,7 @@ export const packageModule = async ({
 
   const recurringData = {
     devDependencies: {
-      '@seek/skuba': version,
+      skuba: version,
     },
     skuba: {
       entryPoint,

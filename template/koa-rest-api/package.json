@@ -14,7 +14,6 @@
     "yup": "^0.28.5"
   },
   "devDependencies": {
-    "@seek/skuba": "*",
     "@types/chance": "^1.1.0",
     "@types/koa": "^2.11.3",
     "@types/koa-bodyparser": "^4.3.0",
@@ -26,6 +25,7 @@
     "@types/yup": "^0.28.3",
     "chance": "^1.1.5",
     "pino-pretty": "^4.0.0",
+    "skuba": "*",
     "supertest": "^4.0.2"
   },
   "engines": {

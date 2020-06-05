@@ -7,34 +7,25 @@
 ╰───╰─┴─╰───╯───╯── ╰
 ```
 
-[![Buildkite pipeline](https://badge.buildkite.com/11b8f283e8cae736b28de8bd83a1853abbaade112b9745b5d0.svg?branch=master)](https://buildkite.com/seek/skuba)
+![GitHub Release](https://github.com/seek-oss/skuba/workflows/Release/badge.svg?branch=master)
+![GitHub Validate](https://github.com/seek-oss/skuba/workflows/Validate/badge.svg?branch=master)
 [![Node.js version](https://img.shields.io/badge/node-%3E%3D%2012-brightgreen)](https://nodejs.org/en/)
-[![npm package](https://img.shields.io/badge/npm-%40seek%2Fskuba-cc3534.svg)](https://www.npmjs.com/package/@seek/skuba)
-[![Slack channel](https://img.shields.io/badge/slack-%23indirect--apply-3f0f3f.svg)](https://slack.com/app_redirect?team=T02P37LGR&channel=indirect-apply)
-[![GitHub repos](https://img.shields.io/badge/users-@SEEK--Jobs-0d3880.svg)](https://github.com/search?q=filename%3Apackage.json+org%3ASEEK-Jobs+-repo%3ASEEK-Jobs%2Fskuba+%22%40seek%2Fskuba%22&type=Code)
-[![Upkeep](https://img.shields.io/badge/users-Upkeep-61d3b1.svg)](https://upkeep.ssod.skinfra.xyz/package#?name=@seek/skuba)
+[![npm package](https://img.shields.io/npm/v/skuba)](https://www.npmjs.com/package/skuba)
 
 Toolkit for backend application development on SEEK's gravel and paved roads:
 
 - Write in TypeScript
 - Enforce coding standards with ESLint and Prettier
-- Log with Pino
 - Test with Jest
 - Deploy with [Gantry] / [Serverless]
 
 Related reading:
 
-[seek-module-toolkit]: https://github.com/SEEK-Jobs/seek-module-toolkit
 [sku]: https://github.com/seek-oss/sku
 [tech-strategy]: https://tech-strategy.ssod.skinfra.xyz
 
-- [seek-module-toolkit] for developing npm packages
 - [sku] for developing frontend applications
 - [tech-strategy]
-
-> This project is currently incubating in the Indirect Apply team.
->
-> Reach out at [#indirect-apply](https://slack.com/app_redirect?team=T02P37LGR&channel=indirect-apply) if you have any thoughts or questions 🙂
 
 ## Table of contents
 
@@ -55,13 +46,13 @@ Related reading:
 To create a new project:
 
 ```shell
-npx @seek/skuba init
+npx skuba init
 ```
 
 To bootstrap an existing project:
 
 ```shell
-npx @seek/skuba configure
+npx skuba configure
 ```
 
 ## CLI reference
@@ -281,7 +272,7 @@ module.exports = {
 ```typescript
 // jest.setup.int.ts
 
-import { Net } from '@seek/skuba';
+import { Net } from 'skuba';
 
 module.exports = () =>
   Net.waitFor({
@@ -293,7 +284,7 @@ module.exports = () =>
 
 ## Runtime API reference
 
-<https://github.com/SEEK-Jobs/skuba-dive#api-reference>
+<https://github.com/seek-oss/skuba-dive#api-reference>
 
 `skuba-dive` is an optional runtime component for `skuba`.
 
@@ -333,7 +324,7 @@ You can continue to base codebases on your own starters and stencils.
 
 #### One library to rule them all
 
-`skuba` distributes a minimal runtime component through the `@seek/skuba-dive` package.
+`skuba` distributes a minimal runtime component through the `skuba-dive` package.
 It has no aspirations of becoming a monolithic Node.js runtime library.
 
 SEEK's developer community maintains an assortment of targeted packages.
@@ -349,7 +340,6 @@ Here are some highlights:
 | [@seek/node-authentication]         | Validate SEEK JWTs                                     |
 | [@seek/node-datadog-custom-metrics] | Write Datadog metrics in [Gantry] and Lambda           |
 | [@seek/node-s2sauth-issuer]         | Call an [s2sauth]-protected service                    |
-| [@seek/seek-badwords]               | Broaden your vocabulary                                |
 | [@seek/typegen]                     | Generate TypeScript types from a JSON schema           |
 | [@seek/zactive-directory]           | Authenticate and authorise [SSOd] users                |
 
@@ -360,7 +350,6 @@ Here are some highlights:
 [@seek/node-authentication]: https://github.com/SEEK-Jobs/node-authentication
 [@seek/node-datadog-custom-metrics]: https://github.com/SEEK-Jobs/node-datadog-custom-metrics
 [@seek/node-s2sauth-issuer]: https://github.com/SEEK-Jobs/node-s2sauth-issuer
-[@seek/seek-badwords]: https://github.com/SEEK-Jobs/seek-badwords
 [@seek/typegen]: https://github.com/SEEK-Jobs/typegen
 [@seek/zactive-directory]: https://github.com/SEEK-Jobs/zactive-directory
 [gantry]: https://github.com/SEEK-Jobs/gantry
@@ -371,8 +360,8 @@ Here are some highlights:
 
 ### Prerequisites
 
-- Node.js 12
-- npm read token for `@seek` packages
+- Node.js 12+
+- Yarn 1.x
 
 ```shell
 yarn install

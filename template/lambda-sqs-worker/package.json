@@ -7,7 +7,6 @@
     "runtypes-filter": "^0.2.1"
   },
   "devDependencies": {
-    "@seek/skuba": "*",
     "@types/aws-lambda": "^8.10.51",
     "@types/chance": "^1.1.0",
     "@types/node": "^14.0.1",
@@ -16,7 +15,8 @@
     "chance": "^1.1.5",
     "hot-shots": "^7.4.2",
     "pino-pretty": "^4.0.0",
-    "serverless": "^1.71.1"
+    "serverless": "^1.71.1",
+    "skuba": "*"
   },
   "engines": {
     "node": ">=12"

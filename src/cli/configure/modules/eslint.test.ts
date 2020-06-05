@@ -12,7 +12,7 @@ describe('eslintModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.eslintrc.js']).toContain('@seek/skuba/config/eslint');
+    expect(outputFiles['.eslintrc.js']).toContain('skuba/config/eslint');
   });
 
   it('deletes rogue configs', async () => {
@@ -35,7 +35,7 @@ describe('eslintModule', () => {
     );
 
     expect(outputFiles['.eslintrc']).toBeUndefined();
-    expect(outputFiles['.eslintrc.js']).toContain('@seek/skuba/config/eslint');
+    expect(outputFiles['.eslintrc.js']).toContain('skuba/config/eslint');
     expect(outputFiles['.eslintrc.yml']).toBeUndefined();
     expect(outputFiles['package.json']).toContain('secret-service');
     expect(outputFiles['package.json']).not.toContain('eslintConfig');
@@ -52,14 +52,14 @@ describe('eslintModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.eslintrc.js']).toContain('@seek/skuba/config/eslint');
+    expect(outputFiles['.eslintrc.js']).toContain('skuba/config/eslint');
     expect(outputFiles['.eslintrc.js']).not.toContain('skydive');
   });
 
   it('preserves extended config', async () => {
     const inputFiles = {
       '.eslintrc.js':
-        "module.exports = { extends: ['@seek/skuba/config/eslint'], rules: [] }",
+        "module.exports = { extends: ['skuba/config/eslint'], rules: [] }",
     };
 
     const outputFiles = await executeModule(

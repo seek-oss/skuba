@@ -14,7 +14,7 @@ export const jestModule = async (): Promise<Module> => {
 
     'jest.config.js': (inputFile, files) => {
       // allow customised Jest configs that extend skuba
-      if (inputFile?.includes('@seek/skuba/config/jest')) {
+      if (inputFile?.includes('skuba/config/jest')) {
         return inputFile;
       }
 

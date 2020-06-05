@@ -54,7 +54,7 @@ const init = async () => {
       '--exact',
       '--ignore-optional',
       '--silent',
-      '@seek/skuba',
+      'skuba',
     ),
   ]);
 

@@ -1,1 +1,1 @@
-module.exports = require('@seek/seek-module-toolkit/config/prettier');
+module.exports = require('./config/prettier');
