@@ -25,6 +25,11 @@ module.exports = {
         pathGroups: [
           {
             group: 'external',
+            pattern: 'src',
+            position: 'after',
+          },
+          {
+            group: 'external',
             pattern: 'src/**',
             position: 'after',
           },
