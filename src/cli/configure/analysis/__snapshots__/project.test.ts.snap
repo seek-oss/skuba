@@ -18,7 +18,7 @@ tmp/
 npm-debug.log
 yarn-error.log
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   ".eslintignore": Object {
     "data": ".idea/
@@ -36,21 +36,21 @@ tmp/
 npm-debug.log
 yarn-error.log
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   ".eslintrc.js": Object {
     "data": "module.exports = {
   extends: [require.resolve('skuba/config/eslint')],
 };
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   ".github/renovate.json5": Object {
     "data": "{
   extends: ['github>seek-oss/rynovate'],
 }
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   ".gitignore": Object {
     "data": ".idea/
@@ -70,7 +70,7 @@ npm-debug.log
 package-lock.json
 yarn-error.log
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   ".prettierignore": Object {
     "data": ".idea/
@@ -92,12 +92,12 @@ yarn-error.log
 gantry*.yaml
 gantry*.yml
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   ".prettierrc.js": Object {
     "data": "module.exports = require('skuba/config/prettier');
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   "jest.config.js": Object {
     "data": "module.exports = {
@@ -107,12 +107,12 @@ gantry*.yml
   setupFiles: ['<rootDir>/jest.setup.ts'],
 };
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   "jest.setup.ts": Object {
     "data": "process.env.ENVIRONMENT = 'test';
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   "package.json": Object {
     "data": "{
@@ -138,7 +138,7 @@ gantry*.yml
   }
 }
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   "tsconfig.build.json": Object {
     "data": "{
@@ -147,7 +147,7 @@ gantry*.yml
   \\"include\\": [\\"src/**/*\\"]
 }
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
   "tsconfig.json": Object {
     "data": "{
@@ -162,7 +162,7 @@ gantry*.yml
   \\"extends\\": \\"skuba/config/tsconfig.json\\"
 }
 ",
-    "operation": "[32mA[39m",
+    "operation": "A",
   },
 }
 `;
