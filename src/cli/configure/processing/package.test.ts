@@ -78,6 +78,31 @@ describe('withPackage', () => {
       "
     `));
 
+  it('preserves legitimate fields', () =>
+    expect(
+      withPackage((data) => {
+        data.$name = 'unit-test';
+
+        return data;
+      })(
+        JSON.stringify({
+          description: 'My Package',
+          name: 'my-package',
+          readme: 'https://github.com/my-org/my-package#readme',
+          version: '0.1.0',
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "{
+        \\"$name\\": \\"unit-test\\",
+        \\"description\\": \\"My Package\\",
+        \\"name\\": \\"my-package\\",
+        \\"readme\\": \\"https://github.com/my-org/my-package#readme\\",
+        \\"version\\": \\"0.1.0\\"
+      }
+      "
+    `));
+
   it('handles bad JSON gracefully', () =>
     expect(
       withPackage((data) => {

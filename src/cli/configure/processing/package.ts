@@ -8,10 +8,20 @@ export const formatPackage = (data: PackageJson) => {
   normalizeData(data);
 
   // normalize-package-data fields that aren't useful for applications
+
   delete data._id;
-  delete data.name;
-  delete data.readme;
-  delete data.version;
+
+  if (data.name === '') {
+    delete data.name;
+  }
+
+  if (data.readme === 'ERROR: No README data found!') {
+    delete data.readme;
+  }
+
+  if (data.version === '') {
+    delete data.version;
+  }
 
   return formatObject(data);
 };
