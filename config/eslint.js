@@ -3,17 +3,36 @@ module.exports = {
     'seek',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
   ],
+  ignorePatterns: ['**/.eslintrc.js'],
+  overrides: [
+    {
+      files: ['**/jest.config.js'],
+      rules: {
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        'import/no-unresolved': 'off',
+      },
+    },
+    {
+      files: ['**/*.test.ts'],
+      rules: {
+        // Allow `any` in tests
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+
+        // Allow e.g. expect(logger.child).toBeCalledWith
+        '@typescript-eslint/unbound-method': 'off',
+      },
+    },
+  ],
   parserOptions: {
     project: './tsconfig.json',
   },
   rules: {
-    '@typescript-eslint/camelcase': [
-      'error',
-      {
-        properties: 'never',
-      },
-    ],
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-floating-promises': 'error',
+
     'import/no-duplicates': 'error',
     'import/order': [
       'error',
@@ -32,6 +51,7 @@ module.exports = {
         pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
+
     'jest/expect-expect': 'off',
     'jest/no-deprecated-functions': 'error',
     'jest/prefer-spy-on': 'error',
@@ -42,6 +62,8 @@ module.exports = {
     'jest/prefer-to-have-length': 'error',
     'jest/prefer-todo': 'error',
     'jest/valid-title': 'error',
+
+    'no-use-before-define': 'off',
     'sort-imports': [
       'error',
       {

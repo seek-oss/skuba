@@ -1,5 +1,7 @@
 import { mergeWith } from 'lodash';
 
+const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
+
 export const getFirstDefined = <T>(
   record: Record<string, T | undefined>,
   keys: string[],
@@ -16,7 +18,7 @@ export const getFirstDefined = <T>(
 
 export const merge = <A, B>(obj: A, src: B) =>
   mergeWith(obj, src, (objValue: unknown, srcValue: unknown) => {
-    if (Array.isArray(objValue) && Array.isArray(srcValue)) {
+    if (isArray(objValue) && isArray(srcValue)) {
       return [...new Set(objValue.concat(srcValue))].sort();
     }
 

@@ -1,8 +1,9 @@
 import { readBaseTemplateFile } from '../../../utils/template';
+import { isObjectWithProp } from '../../../utils/validation';
 import { formatObject, parseObject } from '../processing/json';
 import { loadFiles } from '../processing/loadFiles';
 import { merge } from '../processing/record';
-import { Module, TsConfigJson } from '../types';
+import { Module } from '../types';
 
 export const tsconfigModule = async (): Promise<Module> => {
   const [buildFile, baseFile] = await Promise.all([
@@ -10,10 +11,15 @@ export const tsconfigModule = async (): Promise<Module> => {
     readBaseTemplateFile('tsconfig.json'),
   ]);
 
-  const baseData = parseObject<TsConfigJson>(baseFile);
+  const baseData = parseObject(baseFile);
 
   // existing project may target earlier Node.js versions than skuba
-  delete baseData?.compilerOptions?.target;
+  if (
+    isObjectWithProp(baseData, 'compilerOptions') &&
+    isObjectWithProp(baseData.compilerOptions, 'target')
+  ) {
+    delete baseData.compilerOptions.target;
+  }
 
   return {
     ...loadFiles('Dockerfile'),
@@ -21,9 +27,17 @@ export const tsconfigModule = async (): Promise<Module> => {
     'tsconfig.build.json': (inputFile) => inputFile ?? buildFile,
 
     'tsconfig.json': (inputFile, files, initialFiles) => {
-      const inputData = parseObject<TsConfigJson>(inputFile);
+      const inputData = parseObject(inputFile);
 
-      const outDir = inputData?.compilerOptions?.outDir?.replace(/\/$/, '');
+      let outDir: string | undefined;
+
+      if (
+        isObjectWithProp(inputData, 'compilerOptions') &&
+        isObjectWithProp(inputData.compilerOptions, 'outDir') &&
+        typeof inputData.compilerOptions.outDir === 'string'
+      ) {
+        outDir = inputData.compilerOptions.outDir.replace(/\/$/, '');
+      }
 
       // optimistically rewire Dockerfile for new output directory
       if (typeof outDir !== 'undefined' && outDir !== 'lib') {

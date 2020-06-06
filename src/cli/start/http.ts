@@ -29,7 +29,7 @@ const start = () => {
   const appPath = path.join(process.cwd(), entryPoint);
 
   /* eslint-disable-next-line @typescript-eslint/no-var-requires */
-  const config: unknown = require(appPath);
+  const config = require(appPath) as unknown;
 
   if (!isConfig(config)) {
     console.error(chalk.red(`Invalid export from ${chalk.bold(appPath)}`));

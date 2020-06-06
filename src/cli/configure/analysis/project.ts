@@ -3,6 +3,7 @@ import path from 'path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 
+import { isErrorWithCode } from '../../../utils/error';
 import { loadModules } from '../modules';
 import { FileDiff, Files, Module, Options } from '../types';
 
@@ -12,7 +13,7 @@ export const createDestinationFileReader = (root: string) => async (
   try {
     return await fs.readFile(path.join(root, filename), 'utf8');
   } catch (err) {
-    if (err?.code === 'ENOENT') {
+    if (isErrorWithCode(err, 'ENOENT')) {
       return;
     }
 

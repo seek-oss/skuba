@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@koa/router": "^8.0.8",
-    "@seek/koala": "^3.0.3",
+    "@seek/koala": "^4.0.0",
     "@seek/node-datadog-custom-metrics": "^2.2.3",
     "@seek/skuba-dive": "^1.0.2",
     "hot-shots": "^7.4.2",

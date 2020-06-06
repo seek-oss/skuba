@@ -6,6 +6,8 @@ import execa from 'execa';
 import npmRunPath from 'npm-run-path';
 import npmWhich from 'npm-which';
 
+import { isErrorWithCode } from './error';
+
 interface ExecConcurrentlyCommand {
   command: string;
   name: string;
@@ -61,13 +63,13 @@ export const ensureCommands = async (...names: string[]) => {
       try {
         return await which(name);
       } catch (err) {
-        if (err?.code !== 'ENOENT') {
-          throw err;
+        if (isErrorWithCode(err, 'ENOENT')) {
+          success = false;
+
+          return console.error(chalk.bold(name), 'needs to be installed.');
         }
 
-        success = false;
-
-        return console.error(chalk.bold(name), 'needs to be installed.');
+        throw err;
       }
     }),
   );

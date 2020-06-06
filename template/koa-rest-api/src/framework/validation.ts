@@ -1,10 +1,20 @@
 import { Context } from 'koa';
 import * as yup from 'yup';
 
+export const isObject = (
+  value: unknown,
+): value is Record<PropertyKey, unknown> =>
+  typeof value === 'object' && value !== null;
+
+export const isObjectWithProp = <P extends PropertyKey>(
+  value: unknown,
+  prop: P,
+): value is Record<P, unknown> => isObject(value) && value.hasOwnProperty(prop);
+
 const formatValidationError = (root: string, err: yup.ValidationError) => {
   const errors = err.inner.map(({ params, path, type }) => ({
     path: [root, err.path, path].filter(Boolean).join('.'),
-    type: (params && (params as any).type) || type,
+    type: (isObject(params) && params.type) || (type as unknown),
   }));
 
   return JSON.stringify({ errors }, null, 2);
@@ -37,4 +47,4 @@ export const validateRequestBody = async <T>(
   ctx: Context,
   schema: yup.Schema<T>,
 ): Promise<T> =>
-  validate({ ctx, input: ctx.request.body, root: 'body', schema });
+  validate({ ctx, input: ctx.request.body as unknown, root: 'body', schema });

@@ -1,6 +1,8 @@
 import prettier from 'prettier';
 
-export const formatObject = (data: object) => {
+import { isObject } from '../../../utils/validation';
+
+export const formatObject = (data: Record<PropertyKey, unknown>) => {
   const sortedData = Object.fromEntries(
     Object.entries(data).sort(([keyA], [keyB]) =>
       String(keyA).localeCompare(String(keyB)),
@@ -12,15 +14,17 @@ export const formatObject = (data: object) => {
   return prettier.format(output, { parser: 'json' });
 };
 
-export const parseObject = <T>(input: string | undefined): T | undefined => {
+export const parseObject = (
+  input: string | undefined,
+): Record<PropertyKey, unknown> | undefined => {
   if (typeof input === 'undefined') {
     return;
   }
 
   try {
-    const data = JSON.parse(input);
+    const data = JSON.parse(input) as unknown;
 
-    if (typeof data === 'object' && data !== null) {
+    if (isObject(data)) {
       return data;
     }
   } catch {}

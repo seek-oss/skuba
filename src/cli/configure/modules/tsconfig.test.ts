@@ -45,7 +45,9 @@ describe('tsconfigModule', () => {
       inputFiles['tsconfig.build.json'],
     );
 
-    const outputData = parseObject<TsConfigJson>(outputFiles['tsconfig.json']);
+    const outputData = parseObject(
+      outputFiles['tsconfig.json'],
+    ) as TsConfigJson;
 
     assertDefined(outputData);
     expect(outputData.compilerOptions!.outDir).toBe('lib');
@@ -70,7 +72,9 @@ describe('tsconfigModule', () => {
 
     expect(outputFiles.Dockerfile).toBe('COPY --from=build /workdir/lib ./lib');
 
-    const outputData = parseObject<TsConfigJson>(outputFiles['tsconfig.json']);
+    const outputData = parseObject(
+      outputFiles['tsconfig.json'],
+    ) as TsConfigJson;
 
     assertDefined(outputData);
     expect(outputData.compilerOptions!.outDir).toBe('lib');
@@ -88,7 +92,9 @@ describe('tsconfigModule', () => {
       defaultOpts,
     );
 
-    const outputData = parseObject<TsConfigJson>(outputFiles['tsconfig.json']);
+    const outputData = parseObject(
+      outputFiles['tsconfig.json'],
+    ) as TsConfigJson;
 
     assertDefined(outputData);
     expect(outputData.extends).toBe('skuba/config/tsconfig.json');
