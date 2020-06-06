@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { Form, FormChoice } from 'enquirer';
 import fs from 'fs-extra';
 
+import { isErrorWithCode } from '../../utils/error';
 import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
@@ -74,8 +75,8 @@ const createDirectory = async (dir: string) => {
   try {
     await fs.mkdir(dir);
   } catch (err) {
-    if (err?.code === 'EEXIST') {
-      console.error(`The directory '${err.path}' already exists.`);
+    if (isErrorWithCode(err, 'EEXIST')) {
+      console.error(`The directory '${dir}' already exists.`);
       process.exit(1);
     }
 
@@ -114,11 +115,11 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
 
   try {
     /* eslint-disable-next-line @typescript-eslint/no-var-requires */
-    const templateConfig = require(templateConfigPath);
+    const templateConfig = require(templateConfigPath) as unknown;
 
     return TemplateConfig.check(templateConfig);
   } catch (err) {
-    if (err?.code === 'MODULE_NOT_FOUND') {
+    if (isErrorWithCode(err, 'MODULE_NOT_FOUND')) {
       return {
         entryPoint: undefined,
         fields: [],
@@ -215,7 +216,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   let value: unknown;
 
   try {
-    value = JSON.parse(text);
+    value = JSON.parse(text) as unknown;
   } catch {
     console.error('Invalid JSON from stdin.');
     process.exit(1);
@@ -225,7 +226,11 @@ const configureFromPipe = async (): Promise<InitConfig> => {
 
   if (!result.success) {
     console.error('Invalid data from stdin:');
-    console.error(`{${result.key}}: ${result.message}`);
+    console.error(
+      typeof result.key === 'undefined'
+        ? result.message
+        : `${result.key}: ${result.message}`,
+    );
     process.exit(1);
   }
 

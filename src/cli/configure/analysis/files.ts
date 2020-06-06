@@ -2,6 +2,8 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
+import { isErrorWithCode } from '../../../utils/error';
+
 export const tsFileExists = async (filePath: string) => {
   const ext = path.extname(filePath);
 
@@ -14,7 +16,7 @@ export const tsFileExists = async (filePath: string) => {
 
     return stats.isFile();
   } catch (err) {
-    if (err?.code === 'ENOENT') {
+    if (isErrorWithCode(err, 'ENOENT')) {
       return false;
     }
 

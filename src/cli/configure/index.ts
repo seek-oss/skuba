@@ -7,6 +7,7 @@ import fs from 'fs-extra';
 import { ensureCommands, exec } from '../../utils/exec';
 import { showLogo } from '../../utils/logo';
 import { ensureTemplateConfigDeletion } from '../../utils/template';
+import { isObjectWithProp } from '../../utils/validation';
 import { copyTemplate } from '../init/copyTemplates';
 import { getTemplateConfig, runForm } from '../init/getConfig';
 
@@ -50,8 +51,20 @@ export const configure = async () => {
 
   const templateConfig = getTemplateConfig(destinationRoot);
 
+  const manifestConfig =
+    isObjectWithProp(manifest.packageJson, 'skuba') &&
+    isObjectWithProp(manifest.packageJson.skuba, 'template') &&
+    typeof manifest.packageJson.skuba.template === 'string' &&
+    isObjectWithProp(manifest.packageJson.skuba, 'entryPoint') &&
+    typeof manifest.packageJson.skuba.entryPoint === 'string'
+      ? {
+          entryPoint: manifest.packageJson.skuba.entryPoint,
+          template: manifest.packageJson.skuba.template,
+        }
+      : undefined;
+
   if (templateConfig.fields.length > 0) {
-    const templateName: string = manifest.packageJson.skuba.template;
+    const templateName = manifestConfig?.template ?? 'template';
 
     const templateData = await runForm({
       choices: templateConfig.fields,
@@ -70,8 +83,8 @@ export const configure = async () => {
     console.log(chalk.green('Finished templating.'));
   }
 
-  const entryPoint: string =
-    manifest.packageJson.skuba?.entryPoint ??
+  const entryPoint =
+    manifestConfig?.entryPoint ??
     templateConfig.entryPoint ??
     (await entryPointPrompt.run());
 

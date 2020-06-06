@@ -29,7 +29,7 @@ export const formatPackage = (data: PackageJson) => {
 export const parsePackage = (
   input: string | undefined,
 ): PackageJson | undefined => {
-  const data = parseObject<PackageJson>(input);
+  const data = parseObject(input);
 
   if (typeof data === 'undefined') {
     return;

@@ -3,6 +3,8 @@ import path from 'path';
 import ejs from 'ejs';
 import fs from 'fs-extra';
 
+import { isErrorWithCode } from '../../utils/error';
+
 import { IGNORED_TEMPLATE_FILENAMES } from './prompts';
 
 export const copyTemplateFile = async (
@@ -35,7 +37,7 @@ export const copyTemplate = async (
         try {
           await copyTemplateFile(sourcePath, destinationPath, data);
         } catch (err) {
-          if (err?.code === 'EISDIR') {
+          if (isErrorWithCode(err, 'EISDIR')) {
             await fs.ensureDir(destinationPath);
             return copyTemplate(sourcePath, destinationPath, data);
           }
