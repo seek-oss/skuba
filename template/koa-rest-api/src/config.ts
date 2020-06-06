@@ -1,4 +1,4 @@
-import { Env } from '@seek/skuba-dive';
+import { Env } from 'skuba-dive';
 
 interface Config {
   environment: Environment;
