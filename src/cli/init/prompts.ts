@@ -46,24 +46,3 @@ export const TEMPLATE_PROMPT = new Select({
   message: 'Select a template:',
   name: 'templateName',
 });
-
-export const IGNORED_TEMPLATE_FILENAMES = new Set([
-  '.yarn',
-  'node_modules',
-  'yarn.lock',
-  '.git',
-  '.DS_Store',
-  '.npmrc',
-  '*.tsbuildinfo',
-  'npm-debug.log',
-  'package-lock.json',
-  'yarn-error.log',
-  '.idea',
-  '.serverless',
-  '.vscode',
-  'coverage',
-  'dist',
-  'lib',
-  'node_modules_bak',
-  'tmp',
-]);

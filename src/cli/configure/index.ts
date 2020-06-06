@@ -4,11 +4,14 @@ import chalk from 'chalk';
 import { Confirm, Input } from 'enquirer';
 import fs from 'fs-extra';
 
+import { copyFiles, createInclusionFilter } from '../../utils/copy';
 import { ensureCommands, exec } from '../../utils/exec';
 import { showLogo } from '../../utils/logo';
-import { ensureTemplateConfigDeletion } from '../../utils/template';
+import {
+  BASE_TEMPLATE_DIR,
+  ensureTemplateConfigDeletion,
+} from '../../utils/template';
 import { isObjectWithProp } from '../../utils/validation';
-import { copyTemplate } from '../init/copyTemplates';
 import { getTemplateConfig, runForm } from '../init/getConfig';
 
 import { tsFileExists } from './analysis/files';
@@ -76,7 +79,17 @@ export const configure = async () => {
     const packageJsonFilepath = path.join(destinationRoot, 'package.json');
     await fs.writeFile(packageJsonFilepath, updatedPackageJson);
 
-    await copyTemplate(destinationRoot, destinationRoot, templateData);
+    const include = await createInclusionFilter([
+      path.join(destinationRoot, '.gitignore'),
+      path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
+    ]);
+
+    await copyFiles({
+      sourceRoot: destinationRoot,
+      destinationRoot,
+      include,
+      templateData,
+    });
 
     await ensureTemplateConfigDeletion(destinationRoot);
 
