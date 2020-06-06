@@ -2,7 +2,6 @@ import path from 'path';
 
 import getPort from 'get-port';
 
-import { handleCliError } from '../../utils/error';
 import { exec } from '../../utils/exec';
 import { getEntryPointFromManifest } from '../../utils/manifest';
 
@@ -14,7 +13,7 @@ const getEntryPoint = () => {
     : getEntryPointFromManifest();
 };
 
-const start = async () => {
+export const start = async () => {
   const [entryPoint, port] = await Promise.all([getEntryPoint(), getPort()]);
 
   return exec(
@@ -25,5 +24,3 @@ const start = async () => {
     String(port),
   );
 };
-
-start().catch(handleCliError);

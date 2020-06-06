@@ -1,7 +1,7 @@
 import { run } from 'jest';
 
-import { handleCliError } from '../utils/error';
+export const test = () => {
+  const argv = process.argv.slice(2);
 
-const argv = process.argv.slice(2);
-
-run(argv).catch(handleCliError);
+  return run(argv);
+};

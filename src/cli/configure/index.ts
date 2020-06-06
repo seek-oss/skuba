@@ -4,7 +4,6 @@ import chalk from 'chalk';
 import { Confirm, Input } from 'enquirer';
 import fs from 'fs-extra';
 
-import { handleCliError } from '../../utils/error';
 import { ensureCommands, exec } from '../../utils/exec';
 import { showLogo } from '../../utils/logo';
 import { ensureTemplateConfigDeletion } from '../../utils/template';
@@ -22,7 +21,7 @@ const CONFIRMATION_PROMPT = new Confirm({
   name: 'confirmation',
 });
 
-const configure = async () => {
+export const configure = async () => {
   await showLogo();
 
   const [manifest] = await Promise.all([
@@ -124,5 +123,3 @@ const configure = async () => {
   console.log();
   console.log(`Try running ${chalk.bold('skuba format')}.`);
 };
-
-configure().catch(handleCliError);

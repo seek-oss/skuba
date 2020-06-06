@@ -14,7 +14,10 @@ const skuba = async () => {
   const { command } = parseArgs(process.argv);
 
   if (COMMAND_SET.has(command)) {
-    return require(path.join(COMMAND_DIR, command));
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    const { [command]: run } = require(path.join(COMMAND_DIR, command));
+
+    return run();
   }
 
   console.error(chalk.red(`Unknown command: '${command}'`));

@@ -1,7 +1,6 @@
-import { handleCliError } from '../utils/error';
 import { execConcurrently } from '../utils/exec';
 
-const lint = () =>
+export const lint = () =>
   execConcurrently([
     {
       command: 'eslint --ext=js,ts .',
@@ -16,5 +15,3 @@ const lint = () =>
       name: 'tsc     ',
     },
   ]);
-
-lint().catch(handleCliError);

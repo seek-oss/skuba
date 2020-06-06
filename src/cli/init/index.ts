@@ -1,4 +1,3 @@
-import { handleCliError } from '../../utils/error';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { showLogo } from '../../utils/logo';
 import {
@@ -10,7 +9,7 @@ import { copyTemplate } from './copyTemplates';
 import { getConfig } from './getConfig';
 import { writePackageJson } from './writePackageJson';
 
-const init = async () => {
+export const init = async () => {
   const skubaVersion = await showLogo();
 
   await ensureCommands('git', 'yarn');
@@ -60,5 +59,3 @@ const init = async () => {
 
   console.log(`Created '${destinationDir}'!`);
 };
-
-init().catch(handleCliError);

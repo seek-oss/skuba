@@ -1,11 +1,10 @@
-import { handleCliError } from '../utils/error';
 import { exec } from '../utils/exec';
 
 const DEFAULT_ARGS = ['--project', 'tsconfig.build.json'] as const;
 
 const PROJECT_OPTS = new Set(['-p', '-project', '--project']);
 
-const build = async () => {
+export const build = async () => {
   const args = process.argv.slice(2);
 
   const defaultArgs = args
@@ -16,5 +15,3 @@ const build = async () => {
 
   return exec('tsc', ...defaultArgs, ...args);
 };
-
-build().catch(handleCliError);
