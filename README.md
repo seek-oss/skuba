@@ -89,6 +89,14 @@ By convention, this points to a `tsconfig.build.json` that excludes tests from y
 
 Run [`skuba configure`] if you don't have this file.
 
+### `skuba build-package`
+
+Compile the project for compatibility with CommonJS and ES2015 modules.
+
+This is useful for building npm packages, and serves as a replacement for [`smt build`].
+
+[`smt build`]: docs/migrating-from-seek-module-toolkit#building
+
 ### `skuba configure`
 
 Bootstrap an existing project.

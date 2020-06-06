@@ -7,12 +7,14 @@ export const COMMAND_ALIASES: Record<string, Command> = {
   '--help': 'help',
   '-v': 'version',
   '--version': 'version',
+  'build-package': 'buildPackage',
 };
 
 export const COMMAND_DIR = path.join(__dirname, '..', 'cli');
 
 export const COMMAND_LIST = [
   'build',
+  'buildPackage',
   'configure',
   'format',
   'help',
