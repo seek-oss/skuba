@@ -12,9 +12,6 @@ interface Config {
 
   requestListener?: http.RequestListener;
 
-  logger?: {
-    debug: (msg: string) => void;
-  };
   port?: number;
 }
 
@@ -55,11 +52,6 @@ const start = () => {
     process.exit(1);
   }
 
-  const writeDebugLog = (message: string) =>
-    typeof config.logger === 'undefined'
-      ? console.debug(message)
-      : config.logger.debug(message);
-
   const server = http.createServer(requestListener);
 
   return new Promise((resolve, reject) =>
@@ -70,7 +62,7 @@ const start = () => {
       .on('listening', () => {
         const address = server.address() as AddressInfo;
 
-        writeDebugLog(`listening on port ${address.port}`);
+        console.debug(`listening on port ${address.port}`);
       }),
   );
 };

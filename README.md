@@ -210,11 +210,6 @@ interface Export {
   callback?: () => http.RequestListener;
   requestListener?: http.RequestListener;
 
-  // optional; falls back to console.debug
-  logger?: {
-    debug: (message: string) => void;
-  };
-
   // optional; falls back to an available port
   port?: number;
 }
