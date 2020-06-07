@@ -10,9 +10,7 @@ export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
   const gitIgnores = await Promise.all(
     gitIgnorePaths.map(async (gitIgnorePath) => {
       try {
-        const gitIgnore = await fs.readFile(gitIgnorePath, 'utf8');
-
-        return gitIgnore;
+        return await fs.readFile(gitIgnorePath, 'utf8');
       } catch (err) {
         if (isErrorWithCode(err, 'ENOENT')) {
           return;
