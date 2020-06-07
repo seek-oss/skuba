@@ -37,9 +37,6 @@ export const copyFile = async (
 ) => {
   const replacedData = await ejs.renderFile(sourcePath, opts.templateData);
 
-  // TODO: remove
-  console.log(destinationPath);
-
   await fs.writeFile(destinationPath, replacedData);
 };
 
