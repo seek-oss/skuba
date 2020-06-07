@@ -1,12 +1,12 @@
 .idea/
 .serverless/
 .vscode/
-coverage/
-dist/
-lib/
-node_modules/
-node_modules_bak/
-tmp/
+node_modules*/
+
+/coverage*/
+/dist*/
+/lib*/
+/tmp*/
 
 .DS_Store
 .npmrc

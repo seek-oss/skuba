@@ -1,17 +1,12 @@
 .idea/
 .serverless/
 .vscode/
-coverage/
-dist/
-lib/
-node_modules/
-node_modules_bak/
-tmp/
+node_modules*/
 
-.DS_Store
-.npmrc
-npm-debug.log
-yarn-error.log
+/coverage*/
+/dist*/
+/lib*/
+/tmp*/
 
 # Gantry resource files support non-standard template syntax
 gantry*.yaml
