@@ -1,3 +1,6 @@
+import path from 'path';
+
+import { copyFiles, createInclusionFilter } from '../../utils/copy';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { showLogo } from '../../utils/logo';
 import {
@@ -5,7 +8,6 @@ import {
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
 
-import { copyTemplate } from './copyTemplates';
 import { getConfig } from './getConfig';
 import { writePackageJson } from './writePackageJson';
 
@@ -24,10 +26,25 @@ export const init = async () => {
 
   console.log();
 
-  await copyTemplate(destinationDir, destinationDir, templateData);
+  const include = await createInclusionFilter([
+    path.join(destinationDir, '.gitignore'),
+    path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
+  ]);
+
+  await copyFiles({
+    sourceRoot: destinationDir,
+    destinationRoot: destinationDir,
+    include,
+    templateData,
+  });
 
   // prefer skuba /template/base files
-  await copyTemplate(BASE_TEMPLATE_DIR, destinationDir, templateData);
+  await copyFiles({
+    sourceRoot: BASE_TEMPLATE_DIR,
+    destinationRoot: destinationDir,
+    include,
+    templateData,
+  });
 
   await Promise.all([
     templateComplete
