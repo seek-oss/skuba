@@ -3,6 +3,11 @@ import { assertDefined, defaultOpts, executeModule } from '../testing/module';
 
 import { skubaDiveModule } from './skubaDive';
 
+jest.mock('latest-version', () => ({
+  __esModule: true,
+  default: () => Promise.resolve('0.0.1'),
+}));
+
 describe('skubaDiveModule', () => {
   it('works from scratch', async () => {
     const inputFiles = {};
