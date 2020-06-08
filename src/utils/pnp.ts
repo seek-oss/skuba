@@ -1,6 +1,7 @@
-import chalk from 'chalk';
 import { createRequire } from 'module';
 import path from 'path';
+
+import chalk from 'chalk';
 
 import { isObject, isObjectWithStringProp } from './validation';
 
