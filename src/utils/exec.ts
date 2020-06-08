@@ -35,9 +35,7 @@ type ExecOptions = execa.Options & {
   streamStdio?: true;
 };
 
-const envWithPath = {
-  PATH: npmRunPath({ cwd: __dirname }),
-};
+const NPM_RUN_PATH = npmRunPath({ cwd: __dirname });
 
 const withPnpShim = (
   isEnabled: boolean | undefined,
@@ -94,7 +92,7 @@ export const execConcurrently = (commands: ExecConcurrentlyCommand[]) =>
       const obj: CommandObj = {
         ...rest,
         command: [resolved.command, ...resolved.args].join(' '),
-        env: envWithPath,
+        env: pnp ? undefined : { PATH: NPM_RUN_PATH },
       };
 
       return obj;
