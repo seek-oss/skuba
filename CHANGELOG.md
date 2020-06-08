@@ -1,5 +1,11 @@
 # skuba
 
+## 3.5.0-beta.2
+
+### Patch Changes
+
+- Learn to splice
+
 ## 3.5.0-beta.1
 
 ### Patch Changes

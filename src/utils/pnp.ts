@@ -56,7 +56,7 @@ const runBinary = (packageName: string, binName: string) => {
 };
 
 // Hide shim argument from binary.
-const [binName] = process.argv.splice(2);
+const [binName] = process.argv.splice(2, 1);
 
 const packageName = BINARY_REMAPS[binName] || binName;
 
