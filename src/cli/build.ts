@@ -1,4 +1,4 @@
-import { exec } from '../utils/exec';
+import { createExec } from '../utils/exec';
 
 const DEFAULT_ARGS = ['--project', 'tsconfig.build.json'] as const;
 
@@ -12,6 +12,8 @@ export const build = async () => {
     .some((arg) => PROJECT_OPTS.has(arg))
     ? []
     : DEFAULT_ARGS;
+
+  const exec = createExec({ pnp: true });
 
   return exec('tsc', ...defaultArgs, ...args);
 };

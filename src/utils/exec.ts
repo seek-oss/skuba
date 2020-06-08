@@ -1,7 +1,7 @@
 import util from 'util';
 
 import chalk from 'chalk';
-import concurrently from 'concurrently';
+import concurrently, { CommandObj } from 'concurrently';
 import execa from 'execa';
 import npmRunPath from 'npm-run-path';
 import npmWhich from 'npm-which';
@@ -11,16 +11,55 @@ import { isErrorWithCode } from './error';
 interface ExecConcurrentlyCommand {
   command: string;
   name: string;
+
+  /**
+   * Whether to try to resolve the npm binary through a shim if skuba detects
+   * that it is running in a Yarn Plug'n'Play environment.
+   *
+   * npm binaries can't be located through conventional `node_modules/.bin`
+   * means with PnP.
+   */
+  pnp?: boolean;
 }
 
-type ExecOptions = execa.Options & { streamStdio?: true };
+type ExecOptions = execa.Options & {
+  /**
+   * Whether to try to resolve the command through a shim if skuba detects that
+   * it is running in a Yarn Plug'n'Play environment.
+   *
+   * Enable this for npm "binaries"; they can't be located through conventional
+   * `node_modules/.bin` means when PnP is enabled.
+   */
+  pnp?: boolean;
+
+  streamStdio?: true;
+};
 
 const envWithPath = {
   PATH: npmRunPath({ cwd: __dirname }),
 };
 
+const withPnpShim = (
+  isEnabled: boolean | undefined,
+  command: string,
+  args: string[],
+) => {
+  if (!isEnabled || !process.versions.hasOwnProperty('pnp')) {
+    return { command, args };
+  }
+
+  const shimPath = require.resolve('./pnp');
+
+  return {
+    command: 'node',
+    args: [shimPath, command, ...args],
+  };
+};
+
 const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
-  const subprocess = execa(command, args, {
+  const resolved = withPnpShim(opts?.pnp, command, args);
+
+  const subprocess = execa(resolved.command, resolved.args, {
     localDir: __dirname,
     preferLocal: true,
     stdio: 'inherit',
@@ -49,10 +88,17 @@ export const exec = async (command: string, ...args: string[]) =>
 
 export const execConcurrently = (commands: ExecConcurrentlyCommand[]) =>
   concurrently(
-    commands.map((command) => ({
-      ...command,
-      env: envWithPath,
-    })),
+    commands.map(({ command, pnp, ...rest }) => {
+      const resolved = withPnpShim(pnp, command, []);
+
+      const obj: CommandObj = {
+        ...rest,
+        command: [resolved.command, ...resolved.args].join(' '),
+        env: envWithPath,
+      };
+
+      return obj;
+    }),
   );
 
 export const ensureCommands = async (...names: string[]) => {

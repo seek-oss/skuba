@@ -1,8 +1,10 @@
 import chalk from 'chalk';
 
-import { exec } from '../utils/exec';
+import { createExec } from '../utils/exec';
 
 export const format = async () => {
+  const exec = createExec({ pnp: true });
+
   await exec('eslint', '--ext=js,ts', '--fix', '.');
   console.log(chalk.green('✔ ESLint'));
 

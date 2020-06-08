@@ -2,7 +2,7 @@ import path from 'path';
 
 import getPort from 'get-port';
 
-import { exec } from '../../utils/exec';
+import { createExec } from '../../utils/exec';
 import { getEntryPointFromManifest } from '../../utils/manifest';
 
 const getEntryPoint = () => {
@@ -15,6 +15,8 @@ const getEntryPoint = () => {
 
 export const start = async () => {
   const [entryPoint, port] = await Promise.all([getEntryPoint(), getPort()]);
+
+  const exec = createExec({ pnp: true });
 
   return exec(
     'ts-node-dev',
