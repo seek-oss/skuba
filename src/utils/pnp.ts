@@ -5,7 +5,7 @@ import path from 'path';
 import { isObject, isObjectWithStringProp } from './validation';
 
 const BINARY_REMAPS: Record<string, string> = {
-  typescript: 'tsc',
+  tsc: 'typescript',
 };
 
 const localRequire = createRequire(__filename);
@@ -23,6 +23,7 @@ const fail = (message: string) => {
 
 const getPartialBinPath = (
   packageName: string,
+  binName: string,
   packageJson: unknown,
 ): string => {
   if (!isObject(packageJson)) {
@@ -33,8 +34,6 @@ const getPartialBinPath = (
     return packageJson.bin;
   }
 
-  const binName = BINARY_REMAPS[packageName] ?? packageName;
-
   if (isObjectWithStringProp(packageJson.bin, binName)) {
     return packageJson.bin[binName];
   }
@@ -44,18 +43,20 @@ const getPartialBinPath = (
   );
 };
 
-const runBinary = (packageName: string) => {
+const runBinary = (packageName: string, binName: string) => {
   const requireRelative = createRequireRelative(packageName);
 
   // Derive the binary path from package.json#/bin.
   const packageJson = requireRelative('package.json');
-  const partialBinPath = getPartialBinPath(packageName, packageJson);
+  const partialBinPath = getPartialBinPath(packageName, binName, packageJson);
 
   // Require the binary.
   return requireRelative(partialBinPath);
 };
 
 // Hide shim argument from binary.
-const [packageName] = process.argv.splice(2);
+const [binName] = process.argv.splice(2);
 
-runBinary(packageName);
+const packageName = BINARY_REMAPS[binName] || binName;
+
+runBinary(packageName, binName);
