@@ -1,5 +1,11 @@
 # skuba
 
+## 3.5.0-beta.1
+
+### Patch Changes
+
+- ff26fb7: Fix assortment of PnP issues
+
 ## 3.5.0-beta.0
 
 ### Minor Changes
