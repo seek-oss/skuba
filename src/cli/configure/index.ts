@@ -142,7 +142,7 @@ export const configure = async () => {
     ),
   );
 
-  await exec('yarn', 'install', '--ignore-optional', '--silent');
+  await exec('yarn', 'install', '--silent');
 
   console.log();
   console.log(chalk.green('Project configured!'));
