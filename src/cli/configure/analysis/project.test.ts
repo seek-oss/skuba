@@ -1,16 +1,19 @@
 import { getSkubaVersion } from '../../../utils/version';
-import * as packageAnalysis from '../analysis/package';
 import { defaultOpts } from '../testing/module';
 
 import * as project from './project';
 import { diffFiles } from './project';
+
+jest.mock('latest-version', () => ({
+  __esModule: true,
+  default: () => Promise.resolve('0.0.1'),
+}));
 
 describe('diffFiles', () => {
   it('works from scratch', async () => {
     jest
       .spyOn(project, 'createDestinationFileReader')
       .mockReturnValue(() => Promise.resolve(undefined));
-    jest.spyOn(packageAnalysis, 'getPackageVersion').mockResolvedValue('0.0.1');
 
     const [outputFiles, version] = await Promise.all([
       diffFiles(defaultOpts),
