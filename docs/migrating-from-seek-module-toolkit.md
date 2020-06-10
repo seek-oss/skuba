@@ -46,11 +46,15 @@ smt format:check → skuba lint
 smt lint → skuba lint
 ```
 
-`seek-module-toolkit` retained support for a deprecated TSLint configuration.
+`seek-module-toolkit` retained support for [TSLint] configurations.
+[TSLint is deprecated and will go out of support by December 2020.](https://github.com/palantir/tslint/issues/4534)
 
-`skuba` now requires ESLint and has a more modern set of linting rules.
+`skuba` enforces [ESLint] and bundles a more modern set of linting rules.
 We've included some general tips below;
 if you’re stucking on something, feel free to reach out in `#typescriptification`.
+
+[eslint]: https://eslint.org/
+[tslint]: https://palantir.github.io/tslint/
 
 ### Avoid `any` and `object`
 
