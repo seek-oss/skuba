@@ -63,7 +63,7 @@ export const init = async () => {
 
   await Promise.all([
     exec('git', 'init'),
-    exec('yarn', 'add', '--dev', '--exact', 'skuba'),
+    exec('yarn', 'add', '--dev', '--exact', '--silent', 'skuba'),
   ]);
 
   console.log(`Created '${destinationDir}'!`);
