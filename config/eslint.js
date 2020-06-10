@@ -6,9 +6,10 @@ module.exports = {
   ignorePatterns: ['**/.eslintrc.js'],
   overrides: [
     {
-      files: ['**/jest.config.js'],
+      files: ['**/jest.*config*.js'],
       rules: {
         '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
         'import/no-unresolved': 'off',
       },
     },
