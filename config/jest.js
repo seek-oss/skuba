@@ -1,9 +1,11 @@
 module.exports = {
   collectCoverageFrom: [
     '**/*.ts',
-    '!**/node_modules/**',
-    '!<rootDir>/coverage/**',
-    '!<rootDir>/lib/**',
+    '!**/node_modules*/**',
+    '!<rootDir>/coverage*/**',
+    '!<rootDir>/dist*/**',
+    '!<rootDir>/lib*/**',
+    '!<rootDir>/tmp*/**',
   ],
   coverageDirectory: 'coverage',
   moduleNameMapper: {
@@ -12,5 +14,8 @@ module.exports = {
   },
   preset: 'skuba',
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/lib/'],
+  testPathIgnorePatterns: [
+    '/node_modules.*/',
+    '<rootDir>/(coverage|dist|lib|tmp).*/',
+  ],
 };

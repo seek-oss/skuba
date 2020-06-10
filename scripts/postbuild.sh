@@ -2,6 +2,4 @@
 
 set -e
 
-cp -r template lib
-
-chmod +x 'lib/commonjs/skuba.js'
+chmod +x 'lib-commonjs/skuba.js'

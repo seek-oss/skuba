@@ -82,7 +82,9 @@ By convention, this points to a `tsconfig.build.json` that excludes tests from y
 ```jsonc
 // tsconfig.json
 {
-  "compilerOptions": {},
+  "compilerOptions": {
+    "outDir": "lib"
+  },
   "exclude": ["lib/**/*"]
 }
 ```

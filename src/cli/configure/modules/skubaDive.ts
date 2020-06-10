@@ -1,6 +1,7 @@
 import path from 'path';
 
-import { getPackageVersion } from '../analysis/package';
+import latestVersion from 'latest-version';
+
 import { prependImport, stripImports } from '../processing/javascript';
 import { loadFiles } from '../processing/loadFiles';
 import { createDependencyFilter, withPackage } from '../processing/package';
@@ -21,7 +22,7 @@ export const skubaDiveModule = async ({
 }: {
   entryPoint: string;
 }): Promise<Module> => {
-  const skubaDiveVersion = await getPackageVersion('skuba-dive');
+  const skubaDiveVersion = await latestVersion('skuba-dive');
 
   const skubaDiveData = {
     dependencies: {
