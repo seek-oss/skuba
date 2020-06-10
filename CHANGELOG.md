@@ -1,5 +1,11 @@
 # skuba
 
+## 3.5.1
+
+### Patch Changes
+
+- 5e62e37: **format, lint:** Relax on Jest config files
+
 ## 3.5.0
 
 ### Minor Changes
