@@ -1,6 +1,6 @@
-import { RequestLogging } from '@seek/koala';
 import { Context } from 'koa';
 import pino from 'pino';
+import { RequestLogging } from 'seek-koala';
 
 import { config } from 'src/config';
 

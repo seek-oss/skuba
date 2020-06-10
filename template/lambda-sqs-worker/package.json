@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@seek/node-datadog-custom-metrics": "^2.2.3",
+    "seek-datadog-custom-metrics": "^2.2.4",
     "skuba-dive": "^1.0.2",
     "pino": "^6.2.1",
     "runtypes": "^4.2.0",

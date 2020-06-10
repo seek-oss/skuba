@@ -1,4 +1,4 @@
-import { createCloudWatchClient } from '@seek/node-datadog-custom-metrics';
+import { createCloudWatchClient } from 'seek-datadog-custom-metrics';
 
 import { config } from 'src/config';
 
