@@ -1,5 +1,6 @@
+import { Assert } from '../../..';
 import { parseObject } from '../processing/json';
-import { assertDefined, defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module';
 import { TsConfigJson } from '../types';
 
 import { tsconfigModule } from './tsconfig';
@@ -49,7 +50,7 @@ describe('tsconfigModule', () => {
       outputFiles['tsconfig.json'],
     ) as TsConfigJson;
 
-    assertDefined(outputData);
+    Assert.notNullish(outputData);
     expect(outputData.compilerOptions!.outDir).toBe('lib');
     expect(outputData.compilerOptions!.target).toBe('ES2020');
     expect(outputData.exclude).toContain('lib/**/*');
@@ -76,7 +77,7 @@ describe('tsconfigModule', () => {
       outputFiles['tsconfig.json'],
     ) as TsConfigJson;
 
-    assertDefined(outputData);
+    Assert.notNullish(outputData);
     expect(outputData.compilerOptions!.outDir).toBe('lib');
   });
 
@@ -96,7 +97,7 @@ describe('tsconfigModule', () => {
       outputFiles['tsconfig.json'],
     ) as TsConfigJson;
 
-    assertDefined(outputData);
+    Assert.notNullish(outputData);
     expect(outputData.extends).toBe('skuba/config/tsconfig.json');
     expect(outputData.include).toStrictEqual(['src']);
   });

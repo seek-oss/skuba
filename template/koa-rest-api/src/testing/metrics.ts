@@ -1,8 +1,6 @@
-import * as metrics from 'src/framework/metrics';
+import { Assert } from 'skuba';
 
-function assertDefined<T>(value: T | undefined): asserts value is T {
-  expect(value).toBeDefined();
-}
+import * as metrics from 'src/framework/metrics';
 
 export const metricsClient = {
   clear: () => (metrics.metricsClient.mockBuffer = []),
@@ -14,15 +12,15 @@ export const metricsClient = {
   },
 
   tags: (index: number = 0) => {
-    assertDefined(metrics.metricsClient.mockBuffer);
+    Assert.notNullish(metrics.metricsClient.mockBuffer);
 
     const line = metrics.metricsClient.mockBuffer[index];
 
-    assertDefined(line);
+    Assert.notNullish(line);
 
     const [, tagString] = line.split('#', 2);
 
-    assertDefined(tagString);
+    Assert.notNullish(tagString);
 
     return tagString.split(',');
   },

@@ -1,5 +1,6 @@
+import { Assert } from '../../..';
 import { parsePackage } from '../processing/package';
-import { assertDefined, defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module';
 
 import { packageModule } from './package';
 
@@ -15,7 +16,7 @@ describe('packageModule', () => {
 
     const outputData = parsePackage(outputFiles['package.json']);
 
-    assertDefined(outputData);
+    Assert.notNullish(outputData);
     expect(outputData.devDependencies).toHaveProperty('skuba');
     expect(outputData.license).toBe('UNLICENSED');
     expect(outputData.private).toBe(true);
@@ -47,7 +48,7 @@ describe('packageModule', () => {
 
     const outputData = parsePackage(outputFiles['package.json']);
 
-    assertDefined(outputData);
+    Assert.notNullish(outputData);
     expect(outputData.$name).toBe('secret-service');
     expect(outputData.devDependencies).toHaveProperty('skuba');
     expect(outputData.devDependencies).toHaveProperty('pino-pretty', '0.0.1');
@@ -78,7 +79,7 @@ describe('packageModule', () => {
 
     const outputData = parsePackage(outputFiles['package.json']);
 
-    assertDefined(outputData);
+    Assert.notNullish(outputData);
     expect(outputData.license).toBe('UNLICENSED');
     expect(outputData.private).toBe(true);
     expect(outputData.scripts).toHaveProperty('build');
@@ -103,7 +104,7 @@ describe('packageModule', () => {
 
     const outputData = parsePackage(outputFiles['package.json']);
 
-    assertDefined(outputData);
+    Assert.notNullish(outputData);
     expect(outputData.devDependencies).toHaveProperty('skuba');
     expect(outputData.devDependencies).not.toHaveProperty('eslint');
     expect(outputData.devDependencies).toHaveProperty('pino-pretty', '0.0.1');

@@ -256,6 +256,23 @@ Echoes the installed version of `skuba`.
 
 Its Node.js API can be used in build and test code.
 
+### `Assert.notNullish`
+
+Check that a value is neither `null` nor `undefined`.
+This is a [TypeScript assertion function].
+
+```typescript
+it('should think of a good test case name', () => {
+  const result = numberOrNull();
+  // result is number | null
+
+  Assert.notNullish(result);
+  // result is number
+});
+```
+
+[typescript assertion function]: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
+
 ### `Net.waitFor`
 
 Wait for a resource to start listening on a socket address.

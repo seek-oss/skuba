@@ -1,5 +1,6 @@
+import { Assert } from '../../..';
 import { parsePackage } from '../processing/package';
-import { assertDefined, defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module';
 
 import { skubaDiveModule } from './skubaDive';
 
@@ -22,7 +23,7 @@ describe('skubaDiveModule', () => {
 
     const outputData = parsePackage(outputFiles['package.json']);
 
-    assertDefined(outputData);
+    Assert.notNullish(outputData);
     expect(outputData.dependencies).toHaveProperty('skuba-dive');
   });
 
@@ -79,7 +80,7 @@ describe('skubaDiveModule', () => {
 
     const outputData = parsePackage(outputFiles['package.json']);
 
-    assertDefined(outputData);
+    Assert.notNullish(outputData);
     expect(outputData.dependencies).toHaveProperty('skuba-dive');
     expect(outputData.dependencies).not.toHaveProperty('module-alias');
     expect(outputData.dependencies).toHaveProperty('something-else', '0.0.1');

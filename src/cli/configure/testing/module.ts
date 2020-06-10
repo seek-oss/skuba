@@ -1,9 +1,5 @@
 import { Files, Module, Options } from '../types';
 
-export function assertDefined<T>(value?: T): asserts value is T {
-  expect(value).toBeDefined();
-}
-
 export const defaultOpts: Options = {
   destinationRoot: '/tmp',
   entryPoint: 'src/app.ts',
