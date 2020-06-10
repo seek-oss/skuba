@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      SKU_TELEMETRY: false
     steps:
       - name: Check out repo
         uses: actions/checkout@master
@@ -23,10 +22,67 @@ jobs:
           node-version: 12.x
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --ignore-optional --non-interactive
+        run: yarn install --frozen-lockfile
 
       - name: Lint
         run: yarn lint
 
       - name: Test
         run: yarn test
+
+  greeter:
+    name: greeter
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@master
+        with:
+          lfs: true
+
+      - name: Set up Node.js 12.x
+        uses: actions/setup-node@master
+        with:
+          node-version: 12.x
+
+      - name: Test template
+        run: yarn test:template greeter
+
+  koa-rest-api:
+    name: koa-rest-api
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@master
+        with:
+          lfs: true
+
+      - name: Set up Node.js 12.x
+        uses: actions/setup-node@master
+        with:
+          node-version: 12.x
+
+      - name: Test template
+        run: yarn test:template koa-rest-api
+
+  lambda-sqs-worker:
+    name: lambda-sqs-worker
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@master
+        with:
+          lfs: true
+
+      - name: Set up Node.js 12.x
+        uses: actions/setup-node@master
+        with:
+          node-version: 12.x
+
+      - name: Test template
+        run: yarn test:template lambda-sqs-worker

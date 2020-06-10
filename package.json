@@ -29,7 +29,7 @@
     "stage": "changeset version && yarn format",
     "skuba": "ts-node src/skuba",
     "test": "jest",
-    "test:template": ".buildkite/test-template.sh"
+    "test:template": "scripts/test-template.sh"
   },
   "repository": {
     "type": "git",

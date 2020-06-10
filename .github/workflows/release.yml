@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      SKU_TELEMETRY: false
     steps:
       - name: Check out repo
         uses: actions/checkout@master
@@ -26,7 +25,7 @@ jobs:
           node-version: 12.x
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --ignore-optional --non-interactive
+        run: yarn install --frozen-lockfile
 
       - name: Publish to npm
         uses: changesets/action@master
