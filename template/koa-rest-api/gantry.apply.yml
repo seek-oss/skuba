@@ -9,6 +9,7 @@ image: '{{values "image"}}'
 region: '{{values "region"}}'
 
 env:
+  ENVIRONMENT: '{{.Environment}}'
   REGION: '{{values "region"}}'
   SERVICE: '{{values "service"}}'
   {{range $key, $value := .Values.env}}

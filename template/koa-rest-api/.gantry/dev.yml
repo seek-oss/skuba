@@ -1,5 +1,5 @@
 env:
-  ENVIRONMENT: dev
+  SOME_ENVIRONMENT_VARIABLE: dev-value
 
 isProduction: false
 
