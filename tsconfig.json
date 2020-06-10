@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
     "incremental": true,
     "moduleResolution": "node",
     "removeComments": false
