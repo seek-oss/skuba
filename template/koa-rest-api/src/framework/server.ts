@@ -1,10 +1,10 @@
+import Koa, { Context, DefaultState, Middleware } from 'koa';
+import compose from 'koa-compose';
 import {
   MetricsMiddleware,
   RequestLogging,
   VersionMiddleware,
-} from '@seek/koala';
-import Koa, { Context, DefaultState, Middleware } from 'koa';
-import compose from 'koa-compose';
+} from 'seek-koala';
 
 import { config } from 'src/config';
 import { rootLogger } from 'src/framework/logging';

@@ -336,28 +336,28 @@ SEEK's developer community maintains an assortment of targeted packages.
 
 Here are some highlights:
 
-| Package                             | Description                                            |
-| :---------------------------------- | :----------------------------------------------------- |
-| [@seek/db-client]                   | Connect to databases with credential (rotation) smarts |
-| [@seek/graphql-utils]               | Add observability to GraphQL servers                   |
-| [@seek/koala]                       | Add SEEK-standard observability to Koa servers         |
-| [@seek/logger-js]                   | Write application logs in a standardised format        |
-| [@seek/node-authentication]         | Validate SEEK JWTs                                     |
-| [@seek/node-datadog-custom-metrics] | Write Datadog metrics in [Gantry] and Lambda           |
-| [@seek/node-s2sauth-issuer]         | Call an [s2sauth]-protected service                    |
-| [@seek/typegen]                     | Generate TypeScript types from a JSON schema           |
-| [@seek/zactive-directory]           | Authenticate and authorise [SSOd] users                |
+| Package                        | Description                                            |
+| :----------------------------- | :----------------------------------------------------- |
+| [seek-datadog-custom-metrics]  | Write Datadog metrics in [Gantry] and Lambda           |
+| [seek-koala]                   | Add SEEK-standard observability to Koa servers         |
+| 🔒 [@seek/db-client]           | Connect to databases with credential (rotation) smarts |
+| 🔒 [@seek/graphql-utils]       | Add observability to GraphQL servers                   |
+| 🔒 [@seek/logger-js]           | Write application logs in a standardised format        |
+| 🔒 [@seek/node-authentication] | Validate SEEK JWTs                                     |
+| 🔒 [@seek/node-s2sauth-issuer] | Call an [s2sauth]-protected service                    |
+| 🔒 [@seek/typegen]             | Generate TypeScript types from a JSON schema           |
+| 🔒 [@seek/zactive-directory]   | Authenticate and authorise [SSOd] users                |
 
 [@seek/db-client]: https://github.com/SEEK-Jobs/db-client
 [@seek/graphql-utils]: https://github.com/SEEK-Jobs/graphql-utils
-[@seek/koala]: https://github.com/SEEK-Jobs/koala
 [@seek/logger-js]: https://github.com/SEEK-Jobs/logger-js
 [@seek/node-authentication]: https://github.com/SEEK-Jobs/node-authentication
-[@seek/node-datadog-custom-metrics]: https://github.com/SEEK-Jobs/node-datadog-custom-metrics
 [@seek/node-s2sauth-issuer]: https://github.com/SEEK-Jobs/node-s2sauth-issuer
 [@seek/typegen]: https://github.com/SEEK-Jobs/typegen
 [@seek/zactive-directory]: https://github.com/SEEK-Jobs/zactive-directory
 [gantry]: https://github.com/SEEK-Jobs/gantry
+[seek-datadog-custom-metrics]: https://github.com/seek-oss/datadog-custom-metrics
+[seek-koala]: https://github.com/seek-oss/koala
 [s2sauth]: https://github.com/SEEK-Jobs/s2sauth
 [ssod]: https://github.com/SEEK-Jobs/seek-ssod-ingress
 

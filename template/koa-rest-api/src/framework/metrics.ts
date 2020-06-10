@@ -1,4 +1,4 @@
-import { createStatsDClient } from '@seek/node-datadog-custom-metrics';
+import { createStatsDClient } from 'seek-datadog-custom-metrics';
 
 import { config } from 'src/config';
 
