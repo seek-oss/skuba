@@ -9,7 +9,7 @@ import { COMMAND_DIR, COMMAND_SET } from './utils/command';
 import { handleCliError } from './utils/error';
 import { showHelp } from './utils/help';
 import { showLogo } from './utils/logo';
-import { isObjectWithProp } from './utils/validation';
+import { hasProp } from './utils/validation';
 
 const skuba = async () => {
   const { command } = parseArgs(process.argv);
@@ -18,7 +18,7 @@ const skuba = async () => {
     /* eslint-disable @typescript-eslint/no-var-requires */
     const commandModule = require(path.join(COMMAND_DIR, command)) as unknown;
 
-    if (!isObjectWithProp(commandModule, command)) {
+    if (!hasProp(commandModule, command)) {
       console.error(
         chalk.red(
           `Couldn’t run ${chalk.bold(

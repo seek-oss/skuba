@@ -1,5 +1,5 @@
 import { readBaseTemplateFile } from '../../../utils/template';
-import { isObjectWithProp } from '../../../utils/validation';
+import { hasProp, hasStringProp } from '../../../utils/validation';
 import { formatObject, parseObject } from '../processing/json';
 import { loadFiles } from '../processing/loadFiles';
 import { merge } from '../processing/record';
@@ -15,8 +15,8 @@ export const tsconfigModule = async (): Promise<Module> => {
 
   // existing project may target earlier Node.js versions than skuba
   if (
-    isObjectWithProp(baseData, 'compilerOptions') &&
-    isObjectWithProp(baseData.compilerOptions, 'target')
+    hasProp(baseData, 'compilerOptions') &&
+    hasProp(baseData.compilerOptions, 'target')
   ) {
     delete baseData.compilerOptions.target;
   }
@@ -32,9 +32,8 @@ export const tsconfigModule = async (): Promise<Module> => {
       let outDir: string | undefined;
 
       if (
-        isObjectWithProp(inputData, 'compilerOptions') &&
-        isObjectWithProp(inputData.compilerOptions, 'outDir') &&
-        typeof inputData.compilerOptions.outDir === 'string'
+        hasProp(inputData, 'compilerOptions') &&
+        hasStringProp(inputData.compilerOptions, 'outDir')
       ) {
         outDir = inputData.compilerOptions.outDir.replace(/\/$/, '');
       }

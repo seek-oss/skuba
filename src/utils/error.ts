@@ -1,9 +1,9 @@
 import { ExecaError } from 'execa';
 
-import { isObjectWithProp } from './validation';
+import { hasNumberProp, hasProp } from './validation';
 
 const isExecaError = (err: unknown): err is ExecaError =>
-  isObjectWithProp(err, 'exitCode') && typeof err.exitCode === 'number';
+  hasNumberProp(err, 'exitCode');
 
 export const handleCliError = (err: unknown) => {
   if (isExecaError(err)) {
@@ -17,10 +17,5 @@ export const handleCliError = (err: unknown) => {
 export const isErrorWithCode = <T>(
   err: unknown,
   code: T,
-): err is Record<PropertyKey, unknown> & { code: T } => {
-  if (!isObjectWithProp(err, 'code')) {
-    return false;
-  }
-
-  return err.code === code;
-};
+): err is Record<PropertyKey, unknown> & { code: T } =>
+  hasProp(err, 'code') && err.code === code;
