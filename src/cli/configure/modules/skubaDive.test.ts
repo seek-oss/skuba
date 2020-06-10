@@ -23,7 +23,7 @@ describe('skubaDiveModule', () => {
     const outputData = parsePackage(outputFiles['package.json']);
 
     assertDefined(outputData);
-    expect(outputData.dependencies).toHaveProperty('@seek/skuba-dive');
+    expect(outputData.dependencies).toHaveProperty('skuba-dive');
   });
 
   it('registers entry point directly under src', async () => {
@@ -38,7 +38,7 @@ describe('skubaDiveModule', () => {
     );
 
     expect(outputFiles['src/app.ts']).toBe(
-      "import '@seek/skuba-dive/register';\n\nconsole.log();\n",
+      "import 'skuba-dive/register';\n\nconsole.log();\n",
     );
   });
 
@@ -54,7 +54,7 @@ describe('skubaDiveModule', () => {
     });
 
     expect(outputFiles['src/register.ts']).toBe(
-      "import '@seek/skuba-dive/register';\n\nconsole.log();\n",
+      "import 'skuba-dive/register';\n\nconsole.log();\n",
     );
     expect(outputFiles['src/nested/index.ts']).toBe(
       "import '../register';\n\nconsole.error();\n",
@@ -80,7 +80,7 @@ describe('skubaDiveModule', () => {
     const outputData = parsePackage(outputFiles['package.json']);
 
     assertDefined(outputData);
-    expect(outputData.dependencies).toHaveProperty('@seek/skuba-dive');
+    expect(outputData.dependencies).toHaveProperty('skuba-dive');
     expect(outputData.dependencies).not.toHaveProperty('module-alias');
     expect(outputData.dependencies).toHaveProperty('something-else', '0.0.1');
   });

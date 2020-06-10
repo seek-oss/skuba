@@ -22,11 +22,11 @@ export const skubaDiveModule = async ({
 }: {
   entryPoint: string;
 }): Promise<Module> => {
-  const skubaDiveVersion = await latestVersion('@seek/skuba-dive');
+  const skubaDiveVersion = await latestVersion('skuba-dive');
 
   const skubaDiveData = {
     dependencies: {
-      '@seek/skuba-dive': skubaDiveVersion,
+      'skuba-dive': skubaDiveVersion,
     },
   };
 
@@ -38,8 +38,8 @@ export const skubaDiveModule = async ({
 
       if (
         typeof inputFile === 'undefined' ||
-        inputFile.includes('@seek/skuba-dive/register') ||
-        registerFile?.includes('@seek/skuba-dive/register')
+        inputFile.includes('skuba-dive/register') ||
+        registerFile?.includes('skuba-dive/register')
       ) {
         return inputFile;
       }
@@ -51,14 +51,14 @@ export const skubaDiveModule = async ({
         'src',
       );
 
-      // import @seek/skuba-dive directly from the entry point
+      // import skuba-dive directly from the entry point
       if (relativeToSrc === '') {
-        return prependImport('@seek/skuba-dive/register', outputFile);
+        return prependImport('skuba-dive/register', outputFile);
       }
 
-      // import @seek/skuba-dive via src/register.ts
+      // import skuba-dive via src/register.ts
       files[DEFAULT_FILENAME] = prependImport(
-        '@seek/skuba-dive/register',
+        'skuba-dive/register',
         registerFile,
       );
 

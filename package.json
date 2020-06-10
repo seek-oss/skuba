@@ -73,11 +73,11 @@
     "typescript": "3.9.3"
   },
   "peerDependencies": {
-    "@seek/skuba-dive": "1",
-    "@types/jest": ">= 25 < 27"
+    "@types/jest": ">= 25 < 27",
+    "skuba-dive": "1"
   },
   "peerDependenciesMeta": {
-    "@seek/skuba-dive": {
+    "skuba-dive": {
       "optional": true
     },
     "@types/jest": {

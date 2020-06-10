@@ -107,7 +107,7 @@ gantry*.yml
   "package.json": Object {
     "data": "{
   \\"dependencies\\": {
-    \\"@seek/skuba-dive\\": \\"0.0.1\\"
+    \\"skuba-dive\\": \\"0.0.1\\"
   },
   \\"devDependencies\\": {
     \\"skuba\\": \\"0.0.0-semantically-released\\"
