@@ -11,7 +11,7 @@ import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
-import { isObjectWithProp } from '../../utils/validation';
+import { hasStringProp } from '../../utils/validation';
 import { getTemplateConfig, runForm } from '../init/getConfig';
 
 import { tsFileExists } from './analysis/files';
@@ -55,11 +55,8 @@ export const configure = async () => {
   const templateConfig = getTemplateConfig(destinationRoot);
 
   const manifestConfig =
-    isObjectWithProp(manifest.packageJson, 'skuba') &&
-    isObjectWithProp(manifest.packageJson.skuba, 'template') &&
-    typeof manifest.packageJson.skuba.template === 'string' &&
-    isObjectWithProp(manifest.packageJson.skuba, 'entryPoint') &&
-    typeof manifest.packageJson.skuba.entryPoint === 'string'
+    hasStringProp(manifest.packageJson.skuba, 'template') &&
+    hasStringProp(manifest.packageJson.skuba, 'entryPoint')
       ? {
           entryPoint: manifest.packageJson.skuba.entryPoint,
           template: manifest.packageJson.skuba.template,

@@ -6,11 +6,6 @@ export const isObject = (
 ): value is Record<PropertyKey, unknown> =>
   typeof value === 'object' && value !== null;
 
-export const isObjectWithProp = <P extends PropertyKey>(
-  value: unknown,
-  prop: P,
-): value is Record<P, unknown> => isObject(value) && value.hasOwnProperty(prop);
-
 const formatValidationError = (root: string, err: yup.ValidationError) => {
   const errors = err.inner.map(({ params, path, type }) => ({
     path: [root, err.path, path].filter(Boolean).join('.'),
