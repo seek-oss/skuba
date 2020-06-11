@@ -1,0 +1,4 @@
+steps:
+  - command: aws s3 cp s3://seek-npm-package-buildkite-pipeline/pipeline-latest.sh - | bash | buildkite-agent pipeline upload
+    agents:
+      queue: artefacts:npm

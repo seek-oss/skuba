@@ -152,6 +152,11 @@ This initialises a new directory and Git repository.
   a message queue is employed between the source topic and the Lambda function,
   and unprocessed events are sent to a dead-letter queue for manual triage.
 
+- `private-npm-package`
+
+  Set up a new private npm module published using a semantic release pipeline.
+  At the moment this only supports the `@seek` private npm org.
+
 - `github →` (experimental)
 
   BYO starter repo!
@@ -174,7 +179,8 @@ skuba init << EOF
   "destinationDir": "tmp-greeter",
   "templateComplete": true,
   "templateData": {
-    "gitHubTeamName": "@seek-jobs/my-team",
+    "teamName": "my-team",
+    "orgName": "my-org",
     "prodBuildkiteQueueName": "my-team-prod:cicd",
     "repoName": "tmp-greeter"
   },
