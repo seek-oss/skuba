@@ -1,21 +1,21 @@
 {
   "dependencies": {
     "seek-datadog-custom-metrics": "^2.2.4",
-    "skuba-dive": "^1.0.2",
-    "pino": "^6.2.1",
+    "skuba-dive": "^1.1.0",
+    "pino": "^6.3.2",
     "runtypes": "^4.2.0",
     "runtypes-filter": "^0.2.1"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.51",
+    "@types/aws-lambda": "^8.10.55",
     "@types/chance": "^1.1.0",
-    "@types/node": "^14.0.1",
+    "@types/node": "^14.0.13",
     "@types/pino": "^6.0.1",
-    "aws-sdk": "^2.679.0",
-    "chance": "^1.1.5",
-    "hot-shots": "^7.4.2",
+    "aws-sdk": "^2.694.0",
+    "chance": "^1.1.6",
+    "hot-shots": "^7.5.0",
     "pino-pretty": "^4.0.0",
-    "serverless": "^1.71.1",
+    "serverless": "^1.72.0",
     "skuba": "*"
   },
   "engines": {
