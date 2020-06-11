@@ -152,6 +152,10 @@ This initialises a new directory and Git repository.
   a message queue is employed between the source topic and the Lambda function,
   and unprocessed events are sent to a dead-letter queue for manual triage.
 
+- `private-npm-package`
+
+  Setup new npm modules on SEEK-jobs using semantic release pipeline.
+
 - `github →` (experimental)
 
   BYO starter repo!
