@@ -1,5 +1,26 @@
 # skuba
 
+## 3.6.0
+
+### Minor Changes
+
+- 79bbd5b: **template/private-npm-package:** Add new template
+
+  The `private-npm-package` template replaces `smt init`.
+
+  This change also defaults TypeScript's `moduleResolution` to `node`.
+  This shouldn't break any existing consumers as it is the default resolution strategy for CommonJS.
+
+### Patch Changes
+
+- 6db893a: **template/koa-rest-api:** Remove unused function
+- 41b5ba8: **init:** Redesign first prompt
+- 4ced018: **cli:** Tweak prompt spacing and wording
+- a908cb9: **template/koa-rest-api:** Pass through Gantry environment as ENVIRONMENT
+- 7b0debb: **deps:** Bump bundled and template dependencies
+
+  This includes TypeScript 3.9.5.
+
 ## 3.5.1
 
 ### Patch Changes
