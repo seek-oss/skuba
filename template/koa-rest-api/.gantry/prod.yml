@@ -1,5 +1,5 @@
 env:
-  ENVIRONMENT: prod
+  SOME_ENVIRONMENT_VARIABLE: prod-value
 
 isProduction: true
 

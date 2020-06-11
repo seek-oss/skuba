@@ -14,7 +14,12 @@ interface Config {
 
 type Environment = typeof environments[number];
 
-const environments = ['local', 'test', 'dev', 'prod'] as const;
+const environments = [
+  'local',
+  'test',
+  '<%- devGantryEnvironmentName %>',
+  '<%- prodGantryEnvironmentName %>',
+] as const;
 
 const environment = Env.oneOf(environments)('ENVIRONMENT');
 
@@ -36,13 +41,13 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
     version: 'test',
   }),
 
-  dev: () => ({
-    ...configs.prod(),
+  '<%- devGantryEnvironmentName %>': () => ({
+    ...configs['<%- prodGantryEnvironmentName %>'](),
 
     logLevel: 'debug',
   }),
 
-  prod: () => ({
+  '<%- prodGantryEnvironmentName %>': () => ({
     logLevel: 'info',
     name: Env.string('SERVICE'),
     region: Env.string('REGION'),
