@@ -2,6 +2,7 @@ import path from 'path';
 
 import { copyFiles, createInclusionFilter } from '../../utils/copy';
 import { createExec, ensureCommands } from '../../utils/exec';
+import { log } from '../../utils/logging';
 import { showLogo } from '../../utils/logo';
 import {
   BASE_TEMPLATE_DIR,
@@ -23,8 +24,6 @@ export const init = async () => {
     templateData,
     templateName,
   } = await getConfig();
-
-  console.log();
 
   const include = await createInclusionFilter([
     path.join(destinationDir, '.gitignore'),
@@ -61,10 +60,12 @@ export const init = async () => {
 
   const exec = createExec({ cwd: destinationDir });
 
+  log.newline();
   await Promise.all([
     exec('git', 'init'),
     exec('yarn', 'add', '--dev', '--exact', '--silent', 'skuba'),
   ]);
 
-  console.log(`Created '${destinationDir}'!`);
+  log.newline();
+  log.ok(log.bold(destinationDir), 'has been initialised!');
 };

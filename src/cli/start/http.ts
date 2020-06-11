@@ -2,9 +2,8 @@ import http from 'http';
 import { AddressInfo } from 'net';
 import path from 'path';
 
-import chalk from 'chalk';
-
 import { handleCliError } from '../../utils/error';
+import { log } from '../../utils/logging';
 
 interface Config {
   // Koa compatibility
@@ -20,7 +19,7 @@ const isConfig = (data: unknown): data is Config =>
 
 const start = () => {
   if (process.argv.length < 4) {
-    console.error(chalk.red('Missing arguments: <entry-point> <port>'));
+    log.err('Missing arguments:', log.bold('entry-point'), log.bold('port'));
     process.exit(1);
   }
 
@@ -32,7 +31,7 @@ const start = () => {
   const config = require(appPath) as unknown;
 
   if (!isConfig(config)) {
-    console.error(chalk.red(`Invalid export from ${chalk.bold(appPath)}`));
+    log.err('Invalid export from', log.bold(appPath));
     process.exit(1);
   }
 
@@ -48,7 +47,12 @@ const start = () => {
   const requestListener = config.requestListener ?? config.callback?.();
 
   if (typeof requestListener === 'undefined') {
-    console.error("You must export one of 'callback', 'requestListener'");
+    log.err(
+      'You must export',
+      log.bold('callback'),
+      'or',
+      log.bold('requestListener'),
+    );
     process.exit(1);
   }
 
@@ -62,7 +66,7 @@ const start = () => {
       .on('listening', () => {
         const address = server.address() as AddressInfo;
 
-        console.debug(`listening on port ${address.port}`);
+        log.ok('listening on port', log.bold(address.port));
       }),
   );
 };

@@ -2,12 +2,11 @@
 
 import path from 'path';
 
-import chalk from 'chalk';
-
 import { parseArgs } from './utils/args';
 import { COMMAND_DIR, COMMAND_SET } from './utils/command';
 import { handleCliError } from './utils/error';
 import { showHelp } from './utils/help';
+import { log } from './utils/logging';
 import { showLogo } from './utils/logo';
 import { hasProp } from './utils/validation';
 
@@ -19,13 +18,7 @@ const skuba = async () => {
     const commandModule = require(path.join(COMMAND_DIR, command)) as unknown;
 
     if (!hasProp(commandModule, command)) {
-      console.error(
-        chalk.red(
-          `Couldn’t run ${chalk.bold(
-            `skuba ${command}`,
-          )}! Please file an issue.`,
-        ),
-      );
+      log.err(log.bold(command), "couldn't run! Please submit an issue.");
       process.exit(1);
     }
 
@@ -34,7 +27,7 @@ const skuba = async () => {
     return run();
   }
 
-  console.error(chalk.red(`Unknown command: '${command}'`));
+  log.err(log.bold(command), 'is not recognised as a command.');
   await showLogo();
   showHelp();
 

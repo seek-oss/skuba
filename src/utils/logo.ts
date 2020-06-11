@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 
+import { log } from './logging';
 import { getSkubaVersion } from './version';
 
 const LOGO = chalk.blueBright(`
@@ -12,9 +13,9 @@ const LOGO = chalk.blueBright(`
 export const showLogo = async () => {
   const skubaVersion = await getSkubaVersion();
 
-  console.log(LOGO);
-  console.log(chalk.grey(skubaVersion));
-  console.log();
+  log.plain(LOGO);
+  log.subtle(skubaVersion);
+  log.newline();
 
   return skubaVersion;
 };
