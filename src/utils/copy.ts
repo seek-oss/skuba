@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 import ignore from 'ignore';
 
 import { isErrorWithCode } from './error';
+import { log } from './logging';
 
 export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
   const gitIgnores = await Promise.all(
@@ -75,8 +76,10 @@ export const copyFiles = async (
           return copyFiles(opts, sourcePath, destinationPath);
         }
 
-        console.error(
-          `Failed to render '${sourcePath}' with:`,
+        log.err(
+          'Failed to render',
+          log.bold(sourcePath),
+          'with:',
           opts.templateData,
         );
 

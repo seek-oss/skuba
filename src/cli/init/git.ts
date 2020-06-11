@@ -1,9 +1,9 @@
 import path from 'path';
 
-import chalk from 'chalk';
 import fs from 'fs-extra';
 
 import { createExec } from '../../utils/exec';
+import { log } from '../../utils/logging';
 
 export const downloadGitHubTemplate = async (
   gitHubPath: string,
@@ -11,8 +11,8 @@ export const downloadGitHubTemplate = async (
 ) => {
   const exec = createExec({ cwd: destinationDir });
 
-  console.log();
-  console.log(`Downloading ${chalk.bold(gitHubPath)} from GitHub...`);
+  log.newline();
+  log.plain('Downloading', log.bold(gitHubPath), 'from GitHub...');
 
   await exec(
     'git',
@@ -25,10 +25,10 @@ export const downloadGitHubTemplate = async (
 
   await fs.remove(path.join(destinationDir, '.git'));
 
-  console.log();
-  console.log(
-    chalk.yellowBright(
-      `You may need to run ${chalk.bold('skuba configure')} once this is done.`,
-    ),
+  log.newline();
+  log.warn(
+    'You may need to run',
+    log.bold('skuba configure'),
+    'once this is done.',
   );
 };

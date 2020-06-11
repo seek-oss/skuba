@@ -1,12 +1,12 @@
 import util from 'util';
 
-import chalk from 'chalk';
 import concurrently from 'concurrently';
 import execa from 'execa';
 import npmRunPath from 'npm-run-path';
 import npmWhich from 'npm-which';
 
 import { isErrorWithCode } from './error';
+import { log } from './logging';
 
 interface ExecConcurrentlyCommand {
   command: string;
@@ -66,7 +66,7 @@ export const ensureCommands = async (...names: string[]) => {
         if (isErrorWithCode(err, 'ENOENT')) {
           success = false;
 
-          return console.error(chalk.bold(name), 'needs to be installed.');
+          return log.err(log.bold(name), 'needs to be installed.');
         }
 
         throw err;

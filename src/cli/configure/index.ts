@@ -1,8 +1,7 @@
 import path from 'path';
 
-import chalk from 'chalk';
-
 import { ensureCommands } from '../../utils/exec';
+import { log } from '../../utils/logging';
 import { showLogo } from '../../utils/logo';
 
 import { auditWorkingTree } from './analysis/git';
@@ -22,8 +21,7 @@ export const configure = async () => {
 
   const destinationRoot = path.dirname(manifest.path);
 
-  console.log(`Detected project root: ${chalk.bold(destinationRoot)}`);
-  console.log();
+  log.plain('Detected project root:', log.bold(destinationRoot));
 
   await auditWorkingTree();
 
@@ -38,9 +36,8 @@ export const configure = async () => {
     templateConfig,
   });
 
-  console.log();
-  console.log('Analysing project...');
-  console.log();
+  log.newline();
+  log.plain('Analysing project...');
 
   const files = await diffFiles({
     destinationRoot,

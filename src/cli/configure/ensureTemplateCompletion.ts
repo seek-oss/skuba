@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 import { NormalizedReadResult } from 'read-pkg-up';
 
 import { copyFiles, createInclusionFilter } from '../../utils/copy';
+import { log } from '../../utils/logging';
 import {
   BASE_TEMPLATE_DIR,
   TemplateConfig,
@@ -34,6 +35,7 @@ export const ensureTemplateCompletion = async ({
     ? manifest.packageJson.skuba.template
     : 'template';
 
+  log.newline();
   const templateData = await runForm({
     choices: templateConfig.fields,
     message: chalk.bold(`Complete ${chalk.cyan(templateName)}:`),
@@ -58,7 +60,8 @@ export const ensureTemplateCompletion = async ({
 
   await ensureTemplateConfigDeletion(destinationRoot);
 
-  console.log(chalk.green('Finished templating.'));
+  log.newline();
+  log.ok('Templating complete!');
 
   return templateConfig;
 };

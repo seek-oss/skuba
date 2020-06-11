@@ -1,5 +1,6 @@
 import { ExecaError } from 'execa';
 
+import { log } from './logging';
 import { hasNumberProp, hasProp } from './validation';
 
 const isExecaError = (err: unknown): err is ExecaError =>
@@ -10,7 +11,7 @@ export const handleCliError = (err: unknown) => {
     process.exit(err.exitCode);
   }
 
-  console.error(err);
+  log.err(err);
   process.exit(1);
 };
 
