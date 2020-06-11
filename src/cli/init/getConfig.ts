@@ -5,6 +5,7 @@ import { Form, FormChoice } from 'enquirer';
 import fs from 'fs-extra';
 
 import { isErrorWithCode } from '../../utils/error';
+import { log } from '../../utils/logging';
 import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
@@ -61,11 +62,12 @@ export const runForm = <T = Record<string, string>>(props: {
 const confirmShouldContinue = async (choices: Readonly<FormChoice[]>) => {
   const fieldsList = choices.map((choice) => choice.message);
 
-  console.log();
-  console.log('This template uses the following information:');
-  fieldsList.forEach((message) => console.log(chalk.gray(`- ${message}`)));
-  console.log();
+  log.newline();
+  log.plain('This template uses the following information:');
+  log.newline();
+  fieldsList.forEach((message) => log.subtle(`- ${message}`));
 
+  log.newline();
   const result = await SHOULD_CONTINUE_PROMPT.run();
 
   return result === 'yes';
@@ -76,7 +78,7 @@ const createDirectory = async (dir: string) => {
     await fs.mkdir(dir);
   } catch (err) {
     if (isErrorWithCode(err, 'EEXIST')) {
-      console.error(`The directory '${dir}' already exists.`);
+      log.err(`The directory '${dir}' already exists.`);
       process.exit(1);
     }
 
@@ -137,13 +139,13 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     name: 'baseAnswers',
   });
 
-  Object.values(baseAnswers).forEach((value) => console.log(chalk.cyan(value)));
-  console.log();
+  Object.values(baseAnswers).forEach((value) => log.plain(chalk.cyan(value)));
 
   const destinationDir = baseAnswers.repoName;
 
   await createDirectory(destinationDir);
 
+  log.newline();
   const templateName = await getTemplateName();
 
   await cloneTemplate(templateName, destinationDir);
@@ -164,9 +166,8 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 
   const shouldContinue = await confirmShouldContinue(fields);
 
-  console.log();
-
   if (shouldContinue) {
+    log.newline();
     const customAnswers = await runForm({
       choices: fields,
       message: chalk.bold(`Complete ${chalk.cyan(templateName)}:`),
@@ -182,11 +183,8 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     };
   }
 
-  console.log(
-    chalk.yellowBright(
-      `Resume this later with ${chalk.bold('skuba configure')}.`,
-    ),
-  );
+  log.newline();
+  log.warn(`Resume this later with ${chalk.bold('skuba configure')}.`);
 
   const customAnswers = generatePlaceholders(fields);
 
@@ -209,7 +207,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   text = text.trim();
 
   if (text === '') {
-    console.error('No data from stdin.');
+    log.err('No data from stdin.');
     process.exit(1);
   }
 
@@ -218,15 +216,15 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   try {
     value = JSON.parse(text) as unknown;
   } catch {
-    console.error('Invalid JSON from stdin.');
+    log.err('Invalid JSON from stdin.');
     process.exit(1);
   }
 
   const result = InitConfig.validate(value);
 
   if (!result.success) {
-    console.error('Invalid data from stdin:');
-    console.error(
+    log.err('Invalid data from stdin:');
+    log.err(
       typeof result.key === 'undefined'
         ? result.message
         : `${result.key}: ${result.message}`,
@@ -267,8 +265,9 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   const missing = required.filter((name) => !provided.has(name));
 
   if (missing.length > 0) {
-    console.error('This template uses the following information:');
-    missing.forEach((name) => console.error(`- ${name}`));
+    log.err('This template uses the following information:');
+    log.newline();
+    missing.forEach((name) => log.err(`- ${name}`));
     process.exit(1);
   }
 

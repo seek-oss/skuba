@@ -1,11 +1,10 @@
-import chalk from 'chalk';
-
 import { exec } from '../utils/exec';
+import { log } from '../utils/logging';
 
 export const format = async () => {
   await exec('eslint', '--ext=js,ts', '--fix', '.');
-  console.log(chalk.green('✔ ESLint'));
+  log.ok('✔ ESLint');
 
   await exec('prettier', '--write', '.');
-  console.log(chalk.green('✔ Prettier'));
+  log.ok('✔ Prettier');
 };

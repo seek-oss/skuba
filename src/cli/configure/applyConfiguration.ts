@@ -1,10 +1,10 @@
 import path from 'path';
 
-import chalk from 'chalk';
 import { Confirm } from 'enquirer';
 import fs from 'fs-extra';
 
 import { exec } from '../../utils/exec';
+import { log } from '../../utils/logging';
 
 import { FileDiff } from './types';
 
@@ -18,18 +18,17 @@ interface Props {
 }
 
 export const applyConfiguration = async ({ files }: Props) => {
+  log.newline();
+
   if (Object.keys(files).length === 0) {
-    return console.log(chalk.green('Project already configured.'));
+    return log.ok('Project already configured.');
   }
 
   Object.entries(files)
     .sort(([filenameA], [filenameB]) => filenameA.localeCompare(filenameB))
-    .forEach(([filename, { operation }]) =>
-      console.log(`${operation} ${filename}`),
-    );
+    .forEach(([filename, { operation }]) => log.plain(operation, filename));
 
-  console.log();
-
+  log.newline();
   const shouldContinue = await CONFIRMATION_PROMPT.run();
 
   if (!shouldContinue) {
@@ -52,8 +51,7 @@ export const applyConfiguration = async ({ files }: Props) => {
 
   await exec('yarn', 'install', '--silent');
 
-  console.log();
-  console.log(chalk.green('Project configured!'));
-  console.log();
-  console.log(`Try running ${chalk.bold('skuba format')}.`);
+  log.newline();
+  log.ok('Project configured!');
+  log.ok(`Try running ${log.bold('skuba format')}.`);
 };

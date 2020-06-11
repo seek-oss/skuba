@@ -1,9 +1,8 @@
-import chalk from 'chalk';
-
 import { COMMAND_LIST } from './command';
+import { log } from './logging';
 
 export const showHelp = () => {
-  console.info(chalk.bold('Available commands:'));
+  log.plain(log.bold('Available commands:'));
 
-  COMMAND_LIST.forEach((item) => console.log(item));
+  COMMAND_LIST.forEach((item) => log.plain(item));
 };

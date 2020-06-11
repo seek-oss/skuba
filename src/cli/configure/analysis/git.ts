@@ -1,6 +1,5 @@
-import chalk from 'chalk';
-
 import { createExec } from '../../../utils/exec';
+import { log } from '../../../utils/logging';
 
 export const auditWorkingTree = async () => {
   const exec = createExec({ stdio: 'pipe' });
@@ -21,9 +20,7 @@ export const auditWorkingTree = async () => {
       .map(([key]) => key)
       .join('/');
 
-    console.error(
-      chalk.yellow(`You have ${fileTypes} files that may be overwritten.`),
-    );
-    console.log();
+    log.newline();
+    log.warn('You have', fileTypes, 'files that may be overwritten.');
   }
 };

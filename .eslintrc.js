@@ -7,7 +7,6 @@ module.exports = {
     ...config.rules,
 
     // internal to skuba
-    'no-console': 'off',
     'no-process-exit': 'off',
   },
 };
