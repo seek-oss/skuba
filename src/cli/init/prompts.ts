@@ -41,6 +41,7 @@ export const TEMPLATE_PROMPT = new Select({
     'greeter',
     'koa-rest-api',
     'lambda-sqs-worker',
+    'private-npm-package',
     'github →',
   ] as const,
   message: 'Select a template:',

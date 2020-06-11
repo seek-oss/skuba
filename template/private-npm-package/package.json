@@ -1,0 +1,26 @@
+{
+  "name": "<%- fullModuleName %>",
+  "description": "<%- description %>",
+  "version": "0.0.0-semantically-released",
+  "main": "lib-commonjs",
+  "module": "lib-es2015",
+  "typings": "lib-types",
+  "files": [
+    "lib"
+  ],
+  "sideEffects": false,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "skuba build",
+    "commit": "skuba commit",
+    "format": "skuba format",
+    "format:check": "skuba format check",
+    "lint": "skuba lint",
+    "prerelease": "skuba build",
+    "release": "skuba release",
+    "test": "echo \"No tests for now\""
+  },
+  "repository": {
+    "type": "git"
+  }
+}

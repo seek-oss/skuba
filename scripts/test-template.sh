@@ -22,6 +22,8 @@ yarn skuba init << EOF
     "devBuildkiteQueueName": "my-account-dev:cicd",
     "devGantryEnvironmentName": "dev",
     "gitHubTeamName": "@my-org/my-team",
+    "moduleName":"module",
+    "fullModuleName": "my-first-module",
     "prodAwsAccountId": "000000000000",
     "prodBuildkiteQueueName": "my-account-prod:cicd",
     "prodGantryEnvironmentName": "prod",
