@@ -14,8 +14,7 @@ import {
 
 import { downloadGitHubTemplate } from './git';
 import {
-  BASE_CHOICES,
-  BaseFields,
+  BASE_PROMPT,
   GIT_PATH_PROMPT,
   SHOULD_CONTINUE_PROMPT,
   TEMPLATE_PROMPT,
@@ -133,13 +132,14 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
 };
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
-  const baseAnswers = await runForm<BaseFields>({
-    choices: BASE_CHOICES,
-    message: 'For starters:',
-    name: 'baseAnswers',
-  });
-
-  Object.values(baseAnswers).forEach((value) => log.plain(chalk.cyan(value)));
+  const { values: baseAnswers } = await BASE_PROMPT.run();
+  log.plain(
+    chalk.cyan(baseAnswers.repoName),
+    'by',
+    chalk.cyan(baseAnswers.teamName),
+    'in',
+    chalk.cyan(baseAnswers.orgName),
+  );
 
   const destinationDir = baseAnswers.repoName;
 

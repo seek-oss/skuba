@@ -60,13 +60,18 @@ declare module 'enquirer' {
     constructor(opts: {
       name: string;
       message: string;
-      fields: Array<{
+      fields: ReadonlyArray<{
         name: string;
         message?: string;
+        initial?: string;
+        validate?: (
+          values: Record<string, string>,
+        ) => boolean | string | Promise<boolean | string>;
       }>;
+      required?: boolean;
       template: string;
     });
 
-    run(): Promise<T>;
+    run(): Promise<{ result: string; values: T }>;
   }
 }
