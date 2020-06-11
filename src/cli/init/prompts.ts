@@ -1,14 +1,17 @@
-import { Input, Select } from 'enquirer';
+import { Input, Select, Snippet } from 'enquirer';
 import fs from 'fs-extra';
 
-export type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
+type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
 
-export const BASE_CHOICES = [
+const BASE_CHOICES = [
   {
     name: 'repoName',
-    message: 'Repository',
-    initial: 'prefix-my-project',
-    validate: async (value: string) => {
+    message: 'repo',
+    validate: async (value: unknown) => {
+      if (typeof value !== 'string') {
+        return 'required';
+      }
+
       const exists = await fs.pathExists(value);
 
       return !exists || `'${value}' is an existing directory`;
@@ -16,15 +19,25 @@ export const BASE_CHOICES = [
   },
   {
     name: 'orgName',
-    message: 'Github org name',
-    initial: 'my-org',
+    message: 'org',
+    initial: 'SEEK-Jobs',
   },
   {
     name: 'teamName',
-    message: 'GitHub team',
-    initial: 'my-team',
+    message: 'team',
   },
 ] as const;
+
+export const BASE_PROMPT = new Snippet<BaseFields>({
+  fields: BASE_CHOICES,
+  message: 'For starters:',
+  name: 'baseAnswers',
+  required: true,
+  template: [
+    'https://github.com/${orgName}/${repoName}',
+    'https://github.com/orgs/${orgName}/teams/${teamName}',
+  ].join('\n'),
+});
 
 export const SHOULD_CONTINUE_PROMPT = new Select({
   choices: ['yes', 'no'] as const,
