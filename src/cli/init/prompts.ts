@@ -15,11 +15,14 @@ export const BASE_CHOICES = [
     },
   },
   {
-    name: 'gitHubTeamName',
+    name: 'orgName',
+    message: 'Github org name',
+    initial: 'my-org',
+  },
+  {
+    name: 'teamName',
     message: 'GitHub team',
-    initial: '@seek-jobs/my-team',
-    validate: (value: string) =>
-      /^@.+\/.+$/.test(value) || 'GitHub team is not valid',
+    initial: 'my-team',
   },
 ] as const;
 

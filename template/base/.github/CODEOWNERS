@@ -1,4 +1,4 @@
-* <%- gitHubTeamName %>
+* @<%- orgName %>/<%- teamName %>
 
 # Configured by Renovate
 package.json

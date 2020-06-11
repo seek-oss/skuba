@@ -10,8 +10,9 @@ export const InitConfig = t.Record({
   templateComplete: t.Boolean,
   templateData: t
     .Record({
-      gitHubTeamName: t.String,
+      teamName: t.String,
       repoName: t.String,
+      orgName: t.String,
     })
     .And(t.Dictionary(t.String, 'string')),
   templateName: t.String,

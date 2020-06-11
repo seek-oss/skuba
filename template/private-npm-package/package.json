@@ -1,26 +1,27 @@
 {
-  "name": "<%- fullModuleName %>",
+  "name": "<%- moduleName %>",
   "description": "<%- description %>",
   "version": "0.0.0-semantically-released",
-  "main": "lib-commonjs",
-  "module": "lib-es2015",
-  "typings": "lib-types",
+  "main": "./lib-commonjs",
+  "module": "./lib-es2015",
+  "typings": "./lib-types",
   "files": [
-    "lib"
+    "lib*/**/*.d.ts",
+    "lib*/**/*.js",
+    "lib*/**/*.js.map"
   ],
   "sideEffects": false,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "skuba build",
+    "build": "skuba build-package",
     "commit": "skuba commit",
     "format": "skuba format",
-    "format:check": "skuba format check",
     "lint": "skuba lint",
-    "prerelease": "skuba build",
-    "release": "skuba release",
-    "test": "echo \"No tests for now\""
+    "release": "yarn build && skuba release",
+    "test": "skuba test"
   },
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "git+https://github.com/<%- orgName %>/<%- repoName %>.git"
   }
 }

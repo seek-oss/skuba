@@ -66,6 +66,7 @@
     "prettier": "2.0.5",
     "read-pkg-up": "^7.0.1",
     "runtypes": "^4.2.0",
+    "semantic-release": "17.0.8",
     "ts-jest": "^26.0.0",
     "ts-node": "^8.10.1",
     "ts-node-dev": "^1.0.0-pre.44",

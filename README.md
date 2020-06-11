@@ -154,7 +154,8 @@ This initialises a new directory and Git repository.
 
 - `private-npm-package`
 
-  Setup new npm modules on SEEK-jobs using semantic release pipeline.
+  Setup new private npm modules published using a semantic release pipeline.
+  At the moment this only supports the `@seek` private npm org.
 
 - `github →` (experimental)
 
@@ -178,7 +179,8 @@ skuba init << EOF
   "destinationDir": "tmp-greeter",
   "templateComplete": true,
   "templateData": {
-    "gitHubTeamName": "@seek-jobs/my-team",
+    "teamName": "my-team",
+    "orgName": "my-org",
     "prodBuildkiteQueueName": "my-team-prod:cicd",
     "repoName": "tmp-greeter"
   },
