@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-**configure, init:** Tweak prompt spacing and wording
+**cli:** Tweak prompt spacing and wording
