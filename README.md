@@ -154,7 +154,7 @@ This initialises a new directory and Git repository.
 
 - `private-npm-package`
 
-  Setup new private npm modules published using a semantic release pipeline.
+  Set up a new private npm module published using a semantic release pipeline.
   At the moment this only supports the `@seek` private npm org.
 
 - `github →` (experimental)

@@ -14,7 +14,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "skuba build-package",
-    "commit": "skuba commit",
     "format": "skuba format",
     "lint": "skuba lint",
     "release": "yarn build && skuba release",
