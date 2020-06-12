@@ -1,9 +1,7 @@
 import { Context } from 'koa';
 import * as yup from 'yup';
 
-export const isObject = (
-  value: unknown,
-): value is Record<PropertyKey, unknown> =>
+const isObject = (value: unknown): value is Record<PropertyKey, unknown> =>
   typeof value === 'object' && value !== null;
 
 const formatValidationError = (root: string, err: yup.ValidationError) => {
