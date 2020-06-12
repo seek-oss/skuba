@@ -6,6 +6,7 @@
 
 - [Building](#building)
 - [Formatting and linting](#formatting-and-linting)
+- [Committing and releasing](#committing-and-releasing)
 
 ## Building
 
@@ -89,3 +90,45 @@ Consider the following alternatives:
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
   const takeAnyBody = ctx.request.body;
   ```
+
+## Committing and releasing
+
+```shell
+smt commit →
+smt release → skuba release
+```
+
+`skuba` has not reimplemented a pre-commit hook,
+but it still uses [semantic-release] under the hood and expects [Conventional Commits]:
+
+- No release
+
+  ```text
+  chore(scope): Update documentation
+  ```
+
+- Patch release 0.0.X
+
+  ```text
+  fix(scope): Squash a bug
+  ```
+
+- Minor release 0.X.0
+
+  ```text
+  feat(scope): Add a feature
+  ```
+
+- Major release X.0.0
+
+  ```text
+  fix(scope): Close security holes
+
+  BREAKING CHANGE: We deleted all our code.
+  ```
+
+  Note that the `fix` type could be anything;
+  the `BREAKING CHANGE:` prefix in the commit body is what determines the release as major.
+
+[conventional commits]: https://www.conventionalcommits.org/en/v1.0.0-beta.2/
+[semantic-release]: https://github.com/semantic-release/semantic-release/
