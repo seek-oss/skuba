@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import { exec } from '../../utils/exec';
 import { log } from '../../utils/logging';
 
-import { FileDiff } from './types';
+import { diffFiles } from './analysis/project';
 
 const CONFIRMATION_PROMPT = new Confirm({
   message: 'Apply changes?',
@@ -14,10 +14,13 @@ const CONFIRMATION_PROMPT = new Confirm({
 });
 
 interface Props {
-  files: FileDiff;
+  destinationRoot: string;
+  entryPoint: string;
 }
 
-export const applyConfiguration = async ({ files }: Props) => {
+export const applyConfiguration = async (props: Props) => {
+  const files = await diffFiles(props);
+
   log.newline();
 
   if (Object.keys(files).length === 0) {

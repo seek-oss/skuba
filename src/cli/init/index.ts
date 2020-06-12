@@ -1,6 +1,10 @@
 import path from 'path';
 
-import { copyFiles, createInclusionFilter } from '../../utils/copy';
+import {
+  copyFiles,
+  createEjsRenderer,
+  createInclusionFilter,
+} from '../../utils/copy';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogo } from '../../utils/logo';
@@ -30,11 +34,13 @@ export const init = async () => {
     path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
   ]);
 
+  const processors = [createEjsRenderer(templateData)];
+
   await copyFiles({
     sourceRoot: destinationDir,
     destinationRoot: destinationDir,
     include,
-    templateData,
+    processors,
   });
 
   // prefer skuba /template/base files
@@ -42,7 +48,7 @@ export const init = async () => {
     sourceRoot: BASE_TEMPLATE_DIR,
     destinationRoot: destinationDir,
     include,
-    templateData,
+    processors,
   });
 
   await Promise.all([

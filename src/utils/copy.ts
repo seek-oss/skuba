@@ -29,14 +29,17 @@ export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
   return ignore().add('.git').add(managers).createFilter();
 };
 
-export const copyFile = async (
-  opts: CopyFilesOptions,
+const copyFile = async (
   sourcePath: string,
   destinationPath: string,
+  processors: Array<(contents: string) => string>,
 ) => {
-  const replacedData = await ejs.renderFile(sourcePath, opts.templateData);
+  const contents = processors.reduce(
+    (newContents, process) => process(newContents),
+    await fs.readFile(sourcePath, 'utf8'),
+  );
 
-  await fs.writeFile(destinationPath, replacedData);
+  await fs.writeFile(destinationPath, contents);
 };
 
 interface CopyFilesOptions {
@@ -44,8 +47,23 @@ interface CopyFilesOptions {
   destinationRoot: string;
 
   include: (pathname: string) => boolean;
-  templateData: Record<string, unknown>;
+  processors: Array<(contents: string) => string>;
 }
+
+export const createEjsRenderer = (templateData: Record<string, unknown>) => (
+  contents: string,
+) => ejs.render(contents, templateData);
+
+export const createStringReplacer = (
+  replacements: Array<{
+    input: RegExp;
+    output: string;
+  }>,
+) => (contents: string) =>
+  replacements.reduce(
+    (newContents, { input, output }) => newContents.replace(input, output),
+    contents,
+  );
 
 export const copyFiles = async (
   opts: CopyFilesOptions,
@@ -69,19 +87,14 @@ export const copyFiles = async (
       const destinationPath = toDestinationPath(filename);
 
       try {
-        await copyFile(opts, sourcePath, destinationPath);
+        await copyFile(sourcePath, destinationPath, opts.processors);
       } catch (err) {
         if (isErrorWithCode(err, 'EISDIR')) {
           await fs.ensureDir(destinationPath);
           return copyFiles(opts, sourcePath, destinationPath);
         }
 
-        log.err(
-          'Failed to render',
-          log.bold(sourcePath),
-          'with:',
-          opts.templateData,
-        );
+        log.err('Failed to render', log.bold(sourcePath));
 
         throw err;
       }
