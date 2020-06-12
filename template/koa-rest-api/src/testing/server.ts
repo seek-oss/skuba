@@ -15,12 +15,12 @@ export const agentFromApp = <State, Context>(app: Koa<State, Context>) => {
 
   const getAgent = () => agent;
 
-  const setup = (done: () => void) => {
-    server = app.listen(undefined, done);
+  const setup = async () => {
+    await new Promise((resolve) => (server = app.listen(undefined, resolve)));
     agent = request.agent(server);
   };
 
-  const teardown = (done: () => void) => server.close(done);
+  const teardown = () => new Promise((resolve) => server.close(resolve));
 
   return Object.assign(getAgent, { setup, teardown });
 };

@@ -9,7 +9,7 @@
     "koa-compose": "^4.1.0",
     "pino": "^6.3.2",
     "seek-datadog-custom-metrics": "^2.2.4",
-    "seek-koala": "^4.0.1",
+    "seek-koala": "^4.2.0",
     "uuid": "^8.1.0",
     "yup": "^0.29.1"
   },
