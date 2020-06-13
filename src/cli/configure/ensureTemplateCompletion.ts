@@ -4,10 +4,9 @@ import chalk from 'chalk';
 import fs from 'fs-extra';
 import { NormalizedReadResult } from 'read-pkg-up';
 
-import { copyFiles, createInclusionFilter } from '../../utils/copy';
+import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { log } from '../../utils/logging';
 import {
-  BASE_TEMPLATE_DIR,
   TemplateConfig,
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
@@ -18,11 +17,13 @@ import { formatObject } from './processing/json';
 
 interface Props {
   destinationRoot: string;
+  include: (pathname: string) => boolean;
   manifest: NormalizedReadResult;
 }
 
 export const ensureTemplateCompletion = async ({
   destinationRoot,
+  include,
   manifest,
 }: Props): Promise<TemplateConfig> => {
   const templateConfig = getTemplateConfig(destinationRoot);
@@ -46,16 +47,11 @@ export const ensureTemplateCompletion = async ({
   const packageJsonFilepath = path.join(destinationRoot, 'package.json');
   await fs.writeFile(packageJsonFilepath, updatedPackageJson);
 
-  const include = await createInclusionFilter([
-    path.join(destinationRoot, '.gitignore'),
-    path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
-  ]);
-
   await copyFiles({
     sourceRoot: destinationRoot,
     destinationRoot,
     include,
-    templateData,
+    processors: [createEjsRenderer(templateData)],
   });
 
   await ensureTemplateConfigDeletion(destinationRoot);

@@ -1,12 +1,13 @@
 import path from 'path';
 
+import { createInclusionFilter } from '../../utils/copy';
 import { ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogo } from '../../utils/logo';
+import { BASE_TEMPLATE_DIR } from '../../utils/template';
 
 import { auditWorkingTree } from './analysis/git';
 import { getDestinationManifest } from './analysis/package';
-import { diffFiles } from './analysis/project';
 import { applyConfiguration } from './applyConfiguration';
 import { ensureTemplateCompletion } from './ensureTemplateCompletion';
 import { getEntryPoint } from './getEntryPoint';
@@ -23,10 +24,18 @@ export const configure = async () => {
 
   log.plain('Detected project root:', log.bold(destinationRoot));
 
-  await auditWorkingTree();
+  const [include] = await Promise.all([
+    createInclusionFilter([
+      path.join(destinationRoot, '.gitignore'),
+      path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
+    ]),
+
+    auditWorkingTree(),
+  ]);
 
   const templateConfig = await ensureTemplateCompletion({
     destinationRoot,
+    include,
     manifest,
   });
 
@@ -39,10 +48,8 @@ export const configure = async () => {
   log.newline();
   log.plain('Analysing project...');
 
-  const files = await diffFiles({
+  return applyConfiguration({
     destinationRoot,
     entryPoint,
   });
-
-  return applyConfiguration({ files });
 };
