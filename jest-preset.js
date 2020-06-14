@@ -1,4 +1,4 @@
-const { defaults: preset } = require('ts-jest/presets');
+const { defaults: tsJestDefaults } = require('ts-jest/presets');
 
 const TS_JEST_NAME = 'ts-jest';
 
@@ -10,13 +10,36 @@ const TS_JEST_NAME = 'ts-jest';
  */
 const TS_JEST_PATH = require.resolve(TS_JEST_NAME);
 
-module.exports = {
-  ...preset,
+// Rewrite `ts-jest` transformations using our resolved `TS_JEST_PATH`.
+const tsJestTransform = Object.fromEntries(
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
+  Object.entries(tsJestDefaults.transform).map(([key, value]) => [
+    key,
+    value === TS_JEST_NAME ? TS_JEST_PATH : value,
+  ]),
+);
 
-  transform: Object.fromEntries(
-    Object.entries(preset.transform).map(([key, value]) => [
-      key,
-      value === TS_JEST_NAME ? TS_JEST_PATH : value,
-    ]),
-  ),
+module.exports = {
+  ...tsJestDefaults,
+
+  transform: tsJestTransform,
+
+  collectCoverageFrom: [
+    '**/*.ts',
+    '!**/node_modules*/**',
+    '!<rootDir>/coverage*/**',
+    '!<rootDir>/dist*/**',
+    '!<rootDir>/lib*/**',
+    '!<rootDir>/tmp*/**',
+  ],
+  coverageDirectory: 'coverage',
+  moduleNameMapper: {
+    '^src$': '<rootDir>/src',
+    '^src/(.+)$': '<rootDir>/src/$1',
+  },
+  testEnvironment: 'node',
+  testPathIgnorePatterns: [
+    '/node_modules.*/',
+    '<rootDir>/(coverage|dist|lib|tmp).*/',
+  ],
 };

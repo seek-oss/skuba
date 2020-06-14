@@ -1,19 +1,12 @@
+const skubaConfig = require('./config/jest');
+
 module.exports = {
-  collectCoverageFrom: [
-    '**/*.ts',
-    '!**/node_modules/**',
-    '!<rootDir>/coverage*/**',
-    '!<rootDir>/dist*/**',
-    '!<rootDir>/lib*/**',
-    '!<rootDir>/tmp*/**',
-  ],
-  coverageDirectory: 'coverage',
-  preset: 'ts-jest',
+  preset: './jest-preset.js',
+
   setupFiles: ['<rootDir>/jest.setup.ts'],
-  testEnvironment: 'node',
+
   testPathIgnorePatterns: [
-    '/node_modules.*/',
-    '<rootDir>/(coverage|dist|lib|tmp).*/',
+    ...skubaConfig.testPathIgnorePatterns,
 
     '<rootDir>/template/',
     '/test\\.ts',
