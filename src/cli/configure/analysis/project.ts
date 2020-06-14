@@ -1,11 +1,12 @@
 import path from 'path';
 
-import chalk from 'chalk';
 import fs from 'fs-extra';
 
 import { isErrorWithCode } from '../../../utils/error';
 import { loadModules } from '../modules';
 import { FileDiff, Files, Module, Options } from '../types';
+
+import { determineOperation } from './diff';
 
 export const createDestinationFileReader = (root: string) => async (
   filename: string,
@@ -19,14 +20,6 @@ export const createDestinationFileReader = (root: string) => async (
 
     throw err;
   }
-};
-
-const determineOperation = (oldFile?: string, newFile?: string): string => {
-  if (typeof oldFile === 'undefined') {
-    return chalk.green('A');
-  }
-
-  return typeof newFile === 'undefined' ? chalk.red('D') : chalk.yellow('M');
 };
 
 const loadModuleFiles = async (modules: Module[], destinationRoot: string) => {

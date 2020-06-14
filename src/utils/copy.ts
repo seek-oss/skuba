@@ -7,6 +7,8 @@ import ignore from 'ignore';
 import { isErrorWithCode } from './error';
 import { log } from './logging';
 
+export type TextProcessor = (contents: string) => string;
+
 export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
   const gitIgnores = await Promise.all(
     gitIgnorePaths.map(async (gitIgnorePath) => {
@@ -32,7 +34,7 @@ export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
 const copyFile = async (
   sourcePath: string,
   destinationPath: string,
-  processors: Array<(contents: string) => string>,
+  processors: Array<TextProcessor>,
 ) => {
   const oldContents = await fs.readFile(sourcePath, 'utf8');
 
@@ -53,19 +55,19 @@ interface CopyFilesOptions {
   destinationRoot: string;
 
   include: (pathname: string) => boolean;
-  processors: Array<(contents: string) => string>;
+  processors: Array<TextProcessor>;
 }
 
-export const createEjsRenderer = (templateData: Record<string, unknown>) => (
-  contents: string,
-) => ejs.render(contents, templateData);
+export const createEjsRenderer = (
+  templateData: Record<string, unknown>,
+): TextProcessor => (contents) => ejs.render(contents, templateData);
 
 export const createStringReplacer = (
   replacements: Array<{
     input: RegExp;
     output: string;
   }>,
-) => (contents: string) =>
+): TextProcessor => (contents) =>
   replacements.reduce(
     (newContents, { input, output }) => newContents.replace(input, output),
     contents,
