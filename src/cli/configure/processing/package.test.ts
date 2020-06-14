@@ -103,6 +103,36 @@ describe('withPackage', () => {
       "
     `));
 
+  it('sorts dependencies', () =>
+    expect(
+      withPackage((data) => data)(
+        JSON.stringify({
+          devDependencies: {
+            c: '3',
+            e: '5',
+            d: '4',
+          },
+          dependencies: {
+            b: '2',
+            a: '1',
+          },
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "{
+        \\"dependencies\\": {
+          \\"a\\": \\"1\\",
+          \\"b\\": \\"2\\"
+        },
+        \\"devDependencies\\": {
+          \\"c\\": \\"3\\",
+          \\"d\\": \\"4\\",
+          \\"e\\": \\"5\\"
+        }
+      }
+      "
+    `));
+
   it('handles bad JSON gracefully', () =>
     expect(
       withPackage((data) => {
