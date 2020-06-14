@@ -9,6 +9,7 @@ import { showLogo } from '../../utils/logo';
 import { BASE_TEMPLATE_DIR } from '../../utils/template';
 
 import { analyseConfiguration } from './analyseConfiguration';
+import { analyseDependencies } from './analyseDependencies';
 import { auditWorkingTree } from './analysis/git';
 import { getDestinationManifest } from './analysis/package';
 import { ensureTemplateCompletion } from './ensureTemplateCompletion';
@@ -59,6 +60,20 @@ export const configure = async () => {
     templateConfig,
   });
 
+  const fixDependencies = await analyseDependencies({
+    destinationRoot,
+    include,
+    manifest,
+  });
+
+  if (fixDependencies) {
+    log.newline();
+
+    if (await shouldApply('fixDependencies')) {
+      await fixDependencies();
+    }
+  }
+
   const fixConfiguration = await analyseConfiguration({
     destinationRoot,
     entryPoint,
@@ -72,7 +87,7 @@ export const configure = async () => {
     }
   }
 
-  if (fixConfiguration) {
+  if (fixConfiguration || fixDependencies) {
     await exec('yarn', 'install', '--silent');
 
     log.newline();
