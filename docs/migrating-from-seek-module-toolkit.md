@@ -1,12 +1,26 @@
 # Migrating from `seek-module-toolkit`
 
-> Coming soon™️
-
 ## Table of contents
 
+- [TL;DR](#tldr)
 - [Building](#building)
 - [Formatting and linting](#formatting-and-linting)
 - [Committing and releasing](#committing-and-releasing)
+
+## TL;DR
+
+```shell
+# Migrate to skuba via interactive prompt.
+yarn add --dev --exact skuba && yarn skuba configure
+
+# Expect to manually fix some linting violations.
+# See the Formatting and linting section.
+yarn format
+
+# Ensure your files are being bundled as expected.
+# See the Building section.
+yarn build && npm pack
+```
 
 ## Building
 
@@ -52,7 +66,7 @@ smt lint → skuba lint
 
 `skuba` enforces [ESLint] and bundles a more modern set of linting rules.
 We've included some general tips below;
-if you’re stucking on something, feel free to reach out in `#typescriptification`.
+if you're stuck on something, feel free to reach out in `#typescriptification`.
 
 [eslint]: https://eslint.org/
 [tslint]: https://palantir.github.io/tslint/
