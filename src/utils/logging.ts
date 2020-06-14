@@ -4,6 +4,7 @@ import chalk from 'chalk';
 
 export const log = {
   bold: chalk.bold,
+  formatSubtle: chalk.grey,
 
   subtle: (...message: unknown[]) => console.log(chalk.grey(...message)),
   err: (...message: unknown[]) => console.error(chalk.red(...message)),

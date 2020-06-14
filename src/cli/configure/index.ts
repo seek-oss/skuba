@@ -1,16 +1,30 @@
 import path from 'path';
 
+import { Select } from 'enquirer';
+
 import { createInclusionFilter } from '../../utils/copy';
-import { ensureCommands } from '../../utils/exec';
+import { ensureCommands, exec } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogo } from '../../utils/logo';
 import { BASE_TEMPLATE_DIR } from '../../utils/template';
 
+import { analyseConfiguration } from './analyseConfiguration';
 import { auditWorkingTree } from './analysis/git';
 import { getDestinationManifest } from './analysis/package';
-import { applyConfiguration } from './applyConfiguration';
 import { ensureTemplateCompletion } from './ensureTemplateCompletion';
 import { getEntryPoint } from './getEntryPoint';
+
+const shouldApply = async (name: string) => {
+  const prompt = new Select({
+    choices: ['yes', 'no'] as const,
+    message: 'Apply changes?',
+    name,
+  });
+
+  const result = await prompt.run();
+
+  return result === 'yes';
+};
 
 export const configure = async () => {
   await showLogo();
@@ -45,11 +59,23 @@ export const configure = async () => {
     templateConfig,
   });
 
-  log.newline();
-  log.plain('Analysing project...');
-
-  return applyConfiguration({
+  const fixConfiguration = await analyseConfiguration({
     destinationRoot,
     entryPoint,
   });
+
+  if (fixConfiguration) {
+    log.newline();
+
+    if (await shouldApply('fixConfiguration')) {
+      await fixConfiguration();
+    }
+  }
+
+  if (fixConfiguration) {
+    await exec('yarn', 'install', '--silent');
+
+    log.newline();
+    log.ok(`Try running ${log.bold('skuba format')}.`);
+  }
 };
