@@ -1,9 +1,23 @@
 import { Input, Select, Snippet } from 'enquirer';
 import fs from 'fs-extra';
 
+import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
+
 type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
 
 const BASE_CHOICES = [
+  {
+    name: 'orgName',
+    message: 'org',
+    initial: 'SEEK-Jobs',
+    validate: (value: unknown) => {
+      if (typeof value !== 'string') {
+        return 'required';
+      }
+
+      return isGitHubOrg(value) || 'fails GitHub validation';
+    },
+  },
   {
     name: 'repoName',
     message: 'repo',
@@ -12,19 +26,25 @@ const BASE_CHOICES = [
         return 'required';
       }
 
+      if (!isGitHubRepo(value)) {
+        return 'fails GitHub validation';
+      }
+
       const exists = await fs.pathExists(value);
 
       return !exists || `'${value}' is an existing directory`;
     },
   },
   {
-    name: 'orgName',
-    message: 'org',
-    initial: 'SEEK-Jobs',
-  },
-  {
     name: 'teamName',
     message: 'team',
+    validate: (value: unknown) => {
+      if (typeof value !== 'string') {
+        return 'required';
+      }
+
+      return isGitHubTeam(value) || 'fails GitHub validation';
+    },
   },
 ] as const;
 
