@@ -5,18 +5,12 @@ const OLD_NAME = '@seek/skuba-dive';
 const NEW_NAME = 'skuba-dive';
 
 export const skubaDive = ({ dependencies, devDependencies }: DependencySet) => {
-  if (!dependencies[OLD_NAME] && !devDependencies[OLD_NAME]) {
-    return [];
-  }
-
   // lazily upgrade to latest version of the new package
   if (dependencies[OLD_NAME]) {
     dependencies[NEW_NAME] = '*';
-    delete dependencies[OLD_NAME];
   }
   if (devDependencies[OLD_NAME]) {
     devDependencies[NEW_NAME] = '*';
-    delete devDependencies[OLD_NAME];
   }
 
   // ensure dependency
@@ -25,6 +19,13 @@ export const skubaDive = ({ dependencies, devDependencies }: DependencySet) => {
       dependencies[NEW_NAME] || devDependencies[NEW_NAME];
     delete devDependencies[NEW_NAME];
   }
+
+  if (!dependencies[OLD_NAME] && !devDependencies[OLD_NAME]) {
+    return [];
+  }
+
+  delete dependencies[OLD_NAME];
+  delete devDependencies[OLD_NAME];
 
   return [
     replacePackageReferences({
