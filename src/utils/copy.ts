@@ -34,12 +34,18 @@ const copyFile = async (
   destinationPath: string,
   processors: Array<(contents: string) => string>,
 ) => {
-  const contents = processors.reduce(
-    (newContents, process) => process(newContents),
-    await fs.readFile(sourcePath, 'utf8'),
+  const oldContents = await fs.readFile(sourcePath, 'utf8');
+
+  const newContents = processors.reduce(
+    (contents, process) => process(contents),
+    oldContents,
   );
 
-  await fs.writeFile(destinationPath, contents);
+  if (oldContents === newContents && sourcePath === destinationPath) {
+    return;
+  }
+
+  await fs.writeFile(destinationPath, newContents);
 };
 
 interface CopyFilesOptions {
