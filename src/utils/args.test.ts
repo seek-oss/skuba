@@ -10,7 +10,7 @@ describe('parseArgs', () => {
     ];
 
     expect(parseArgs(argv)).toStrictEqual({
-      command: 'start',
+      commandName: 'start',
       args: ['--xyz'],
     });
   });
@@ -23,7 +23,7 @@ describe('parseArgs', () => {
     ];
 
     expect(parseArgs(argv)).toStrictEqual({
-      command: 'start',
+      commandName: 'start',
       args: [],
     });
   });
@@ -37,7 +37,7 @@ describe('parseArgs', () => {
     ];
 
     expect(parseArgs(argv)).toStrictEqual({
-      command: 'start',
+      commandName: 'start',
       args: ['--xyz'],
     });
   });
@@ -50,7 +50,7 @@ describe('parseArgs', () => {
     ];
 
     expect(parseArgs(argv)).toStrictEqual({
-      command: 'start',
+      commandName: 'start',
       args: [],
     });
   });

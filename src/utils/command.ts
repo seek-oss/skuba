@@ -7,14 +7,13 @@ export const COMMAND_ALIASES: Record<string, Command> = {
   '--help': 'help',
   '-v': 'version',
   '--version': 'version',
-  'build-package': 'buildPackage',
 };
 
 export const COMMAND_DIR = path.join(__dirname, '..', 'cli');
 
 export const COMMAND_LIST = [
   'build',
-  'buildPackage',
+  'build-package',
   'configure',
   'format',
   'help',
@@ -27,3 +26,13 @@ export const COMMAND_LIST = [
 ] as const;
 
 export const COMMAND_SET = new Set<string>(COMMAND_LIST);
+
+export const commandToModule = (command: Command): string =>
+  command
+    .split('-')
+    .map((segment, index) =>
+      index === 0
+        ? segment
+        : `${segment[0].toLocaleUpperCase()}${segment.slice(1)}`,
+    )
+    .join('');
