@@ -1,5 +1,15 @@
 export { PackageJson, TsConfigJson } from 'type-fest';
 
+export interface DependencySet {
+  dependencies: Record<string, string>;
+  devDependencies: Record<string, string>;
+}
+
+export type DependencyDiff = Record<
+  string,
+  { operation: string; version: string }
+>;
+
 type FileProcessor = (
   file: string | undefined,
   files: Files,
