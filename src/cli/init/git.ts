@@ -2,8 +2,61 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { createExec } from '../../utils/exec';
+import { Exec, createExec } from '../../utils/exec';
 import { log } from '../../utils/logging';
+
+interface GitHubProject {
+  orgName: string;
+  repoName: string;
+}
+
+export const initialiseRepo = async (
+  exec: Exec,
+  { orgName, repoName }: GitHubProject,
+) => {
+  await exec('git', 'init');
+
+  await exec(
+    'git',
+    '-c',
+    'user.email=<>',
+    '-c',
+    'user.name=skuba',
+    'commit',
+    '--allow-empty',
+    '--author',
+    'skuba <>',
+    '--message',
+    'Initial commit',
+    '--quiet',
+  );
+
+  await exec(
+    'git',
+    'remote',
+    'add',
+    'origin',
+    `git@github.com:${orgName}/${repoName}.git`,
+  );
+};
+
+export const commitChanges = async (exec: Exec, message: string) => {
+  await exec('git', 'add', '--all');
+
+  await exec(
+    'git',
+    '-c',
+    'user.email=<>',
+    '-c',
+    'user.name=skuba',
+    'commit',
+    '--author',
+    'skuba <>',
+    '--message',
+    message,
+    '--quiet',
+  );
+};
 
 export const downloadGitHubTemplate = async (
   gitHubPath: string,
