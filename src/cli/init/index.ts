@@ -14,6 +14,7 @@ import {
 } from '../../utils/template';
 
 import { getConfig } from './getConfig';
+import { commitChanges, initialiseRepo } from './git';
 import { writePackageJson } from './writePackageJson';
 
 export const init = async () => {
@@ -67,11 +68,14 @@ export const init = async () => {
   const exec = createExec({ cwd: destinationDir });
 
   log.newline();
-  await Promise.all([
-    exec('git', 'init'),
-    exec('yarn', 'add', '--dev', '--exact', '--silent', 'skuba'),
-  ]);
+  await initialiseRepo(exec, templateData);
+  await exec('yarn', 'add', '--dev', '--exact', '--silent', 'skuba');
+  await commitChanges(exec, `Clone ${templateName}`);
 
   log.newline();
-  log.ok(log.bold(destinationDir), 'has been initialised!');
+  log.ok('✔ All done! Try running:');
+
+  log.newline();
+  log.ok(log.bold('cd', destinationDir));
+  log.ok(log.bold('git push --set-upstream origin master'));
 };

@@ -1,12 +1,17 @@
 import util from 'util';
 
 import concurrently from 'concurrently';
-import execa from 'execa';
+import execa, { ExecaChildProcess } from 'execa';
 import npmRunPath from 'npm-run-path';
 import npmWhich from 'npm-which';
 
 import { isErrorWithCode } from './error';
 import { log } from './logging';
+
+export type Exec = (
+  command: string,
+  ...args: string[]
+) => ExecaChildProcess<string>;
 
 interface ExecConcurrentlyCommand {
   command: string;
@@ -39,13 +44,10 @@ const whichCallback = npmWhich(__dirname);
 
 const which = util.promisify<string, string>(whichCallback);
 
-export const createExec = (opts: ExecOptions) => (
-  command: string,
-  ...args: string[]
-) => runCommand(command, args, opts);
+export const createExec = (opts: ExecOptions): Exec => (command, ...args) =>
+  runCommand(command, args, opts);
 
-export const exec = async (command: string, ...args: string[]) =>
-  runCommand(command, args);
+export const exec: Exec = (command, ...args) => runCommand(command, args);
 
 export const execConcurrently = (commands: ExecConcurrentlyCommand[]) =>
   concurrently(
