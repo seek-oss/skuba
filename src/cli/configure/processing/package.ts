@@ -4,8 +4,21 @@ import { PackageJson } from '../types';
 
 import { formatObject, parseObject } from './json';
 
+const sortRecord = <T>(record: Record<string, T>): Record<string, T> =>
+  Object.fromEntries(
+    Object.entries(record).sort(([keyA], [keyB]) => keyA.localeCompare(keyB)),
+  );
+
 export const formatPackage = (data: PackageJson) => {
   normalizeData(data);
+
+  if (data.dependencies) {
+    data.dependencies = sortRecord(data.dependencies);
+  }
+
+  if (data.devDependencies) {
+    data.devDependencies = sortRecord(data.devDependencies);
+  }
 
   // normalize-package-data fields that aren't useful for applications
 
