@@ -66,7 +66,7 @@ smt lint → skuba lint
 
 `skuba` enforces [ESLint] and bundles a more modern set of linting rules.
 We've included some general tips below;
-if you're stucking on something, feel free to reach out in `#typescriptification`.
+if you're stuck on something, feel free to reach out in `#typescriptification`.
 
 [eslint]: https://eslint.org/
 [tslint]: https://palantir.github.io/tslint/
