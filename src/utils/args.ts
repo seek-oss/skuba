@@ -22,10 +22,10 @@ export const parseArgs = (args = process.argv) => {
 
   const rawCommand = (args[skubaIdx + 1] ?? 'help').toLocaleLowerCase();
 
-  const command = COMMAND_ALIASES[rawCommand] ?? rawCommand;
+  const commandName = COMMAND_ALIASES[rawCommand] ?? rawCommand;
 
   const payload = {
-    command,
+    commandName,
     args: args.slice(skubaIdx + 2),
   };
 
