@@ -8,7 +8,7 @@
     "koa-cluster": "^1.1.0",
     "koa-compose": "^4.1.0",
     "pino": "^6.3.2",
-    "seek-datadog-custom-metrics": "^2.2.4",
+    "seek-datadog-custom-metrics": "^3.0.0",
     "seek-koala": "^4.2.1",
     "uuid": "^8.1.0",
     "yup": "^0.29.1"
