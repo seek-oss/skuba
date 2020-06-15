@@ -5,7 +5,7 @@ import { config } from 'src/config';
 
 export { Logger } from 'pino';
 
-const rootLogger = pino({
+export const rootLogger = pino({
   base: {
     environment: config.environment,
     region: config.region,
