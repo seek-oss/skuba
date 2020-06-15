@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "seek-datadog-custom-metrics": "^2.2.4",
+    "seek-datadog-custom-metrics": "^3.0.0",
     "skuba-dive": "^1.1.0",
     "pino": "^6.3.2",
     "runtypes": "^4.2.0",
@@ -13,7 +13,6 @@
     "@types/pino": "^6.0.1",
     "aws-sdk": "^2.694.0",
     "chance": "^1.1.6",
-    "hot-shots": "^7.5.0",
     "pino-pretty": "^4.0.0",
     "serverless": "^1.72.0",
     "skuba": "*"
