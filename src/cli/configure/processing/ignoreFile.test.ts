@@ -1,17 +1,30 @@
 import { mergeWithIgnoreFile } from './ignoreFile';
 
 describe('mergeWithIgnoreFile', () => {
+  const baseTemplate =
+    '# managed by skuba\nnode_modules\n# end managed by skuba';
+  const updatedBaseTemplate =
+    '# managed by skuba\nnode_modules\n.DS_Store\n# end managed by skuba';
+
   const cases = [
-    ['difference', 'node_modules', '.DS_Store'],
-    ['empty', '', ''],
-    ['empty base', '', 'node_modules'],
-    ['empty provided', 'node_modules', ''],
-    ['identical', 'node_modules', 'node_modules'],
-    ['mix', '.DS_Store\n\nyarn-error.log', '\n\n.DS_Store\n\nnode_modules'],
+    ['empty provided', baseTemplate, ''],
+
+    ['provided with no managed section', baseTemplate, '.DS_Store'],
     [
-      'whitespace',
-      '\n   \n  node_modules  \n\n \n  ',
-      '\n  \n   .DS_Store\n\n  ',
+      'provided with outdated managed section',
+      updatedBaseTemplate,
+      baseTemplate,
+    ],
+    ['identical', baseTemplate, baseTemplate],
+    [
+      'provided with managed section and additional lines',
+      baseTemplate,
+      `.idea\n.vscode\n\n${baseTemplate}\n\n.DS_Store\nnode_modules`,
+    ],
+    [
+      'provided with outdated managed section and additional lines',
+      updatedBaseTemplate,
+      `.idea\n.vscode\n\n${baseTemplate}\n\n.DS_Store\nnode_modules`,
     ],
   ] as const;
 

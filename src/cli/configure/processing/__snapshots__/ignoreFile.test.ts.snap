@@ -1,44 +1,60 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`mergeWithIgnoreFile difference 1`] = `
-"node_modules
-
-.DS_Store
-"
-`;
-
-exports[`mergeWithIgnoreFile empty 1`] = `
-"
-"
-`;
-
-exports[`mergeWithIgnoreFile empty base 1`] = `
-"node_modules
-"
-`;
-
 exports[`mergeWithIgnoreFile empty provided 1`] = `
-"node_modules
+"# managed by skuba
+node_modules
+# end managed by skuba
 "
 `;
 
 exports[`mergeWithIgnoreFile identical 1`] = `
-"node_modules
-"
-`;
-
-exports[`mergeWithIgnoreFile mix 1`] = `
-".DS_Store
-
-yarn-error.log
-
+"# managed by skuba
 node_modules
+# end managed by skuba
 "
 `;
 
-exports[`mergeWithIgnoreFile whitespace 1`] = `
-"node_modules
+exports[`mergeWithIgnoreFile provided with managed section and additional lines 1`] = `
+"# managed by skuba
+node_modules
+# end managed by skuba
+
+.idea
+.vscode
+
+
 
 .DS_Store
+node_modules"
+`;
+
+exports[`mergeWithIgnoreFile provided with no managed section 1`] = `
+"# managed by skuba
+node_modules
+# end managed by skuba
+
+.DS_Store"
+`;
+
+exports[`mergeWithIgnoreFile provided with outdated managed section 1`] = `
+"# managed by skuba
+node_modules
+.DS_Store
+# end managed by skuba
 "
+`;
+
+exports[`mergeWithIgnoreFile provided with outdated managed section and additional lines 1`] = `
+"# managed by skuba
+node_modules
+.DS_Store
+# end managed by skuba
+
+.idea
+.vscode
+
+
+
+.DS_Store
+node_modules"
 `;
