@@ -2,7 +2,7 @@ export const mergeWithIgnoreFile = (templateFile: string) => (
   inputFile?: string,
 ) => {
   if (typeof inputFile === 'undefined') {
-    return `${templateFile}`;
+    return templateFile;
   }
 
   if (inputFile.includes('# managed by skuba')) {
