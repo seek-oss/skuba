@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Change `configure` to update skuba managed sections in ignore files
+**configure:** Reserve skuba-managed sections in ignore files
