@@ -20,6 +20,6 @@ export const createHandler = <Event, Output = unknown>(
 
       logger.error({ err }, 'request');
 
-      throw err;
+      throw new Error('invoke error');
     }
   };

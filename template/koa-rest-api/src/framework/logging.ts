@@ -20,9 +20,12 @@ export const rootLogger = pino({
   redact: {
     censor: '🤿 REDACTED 🚩',
     paths: [
+      'err.config.headers.Authorization',
       'err.config.headers.authorization',
       'err.request.headers.authorization',
+      'err.request.config.headers.Authorization',
       'err.request.config.headers.authorization',
+      'err.response.config.headers.Authorization',
       'err.response.config.headers.authorization',
       'err.response.headers.authorization',
       'err.response.request.headers.authorization',
