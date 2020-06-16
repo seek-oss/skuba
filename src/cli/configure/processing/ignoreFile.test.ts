@@ -9,22 +9,22 @@ describe('mergeWithIgnoreFile', () => {
   const cases = [
     ['empty provided', baseTemplate, ''],
 
-    ['provided with no managed section', baseTemplate, '.DS_Store'],
+    ['provided with no managed section', baseTemplate, '.DS_Store\n'],
     [
       'provided with outdated managed section',
       updatedBaseTemplate,
-      baseTemplate,
+      `${baseTemplate}\n`,
     ],
     ['identical', baseTemplate, baseTemplate],
     [
       'provided with managed section and additional lines',
       baseTemplate,
-      `.idea\n.vscode\n\n${baseTemplate}\n\n.DS_Store\nnode_modules`,
+      `.idea\n.vscode\n\n${baseTemplate}\n\n.DS_Store\nnode_modules\n`,
     ],
     [
       'provided with outdated managed section and additional lines',
       updatedBaseTemplate,
-      `.idea\n.vscode\n\n${baseTemplate}\n\n.DS_Store\nnode_modules`,
+      `.idea\n.vscode\n\n${baseTemplate}\n\n.DS_Store\nnode_modules\n`,
     ],
   ] as const;
 

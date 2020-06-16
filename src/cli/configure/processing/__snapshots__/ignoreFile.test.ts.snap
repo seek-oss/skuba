@@ -4,30 +4,26 @@ exports[`mergeWithIgnoreFile empty provided 1`] = `
 "# managed by skuba
 node_modules
 # end managed by skuba
-
 "
 `;
 
 exports[`mergeWithIgnoreFile identical 1`] = `
 "# managed by skuba
 node_modules
-# end managed by skuba
-
-"
+# end managed by skuba"
 `;
 
 exports[`mergeWithIgnoreFile provided with managed section and additional lines 1`] = `
-"# managed by skuba
+".idea
+.vscode
+
+# managed by skuba
 node_modules
 # end managed by skuba
 
-.idea
-.vscode
-
-
-
 .DS_Store
-node_modules"
+node_modules
+"
 `;
 
 exports[`mergeWithIgnoreFile provided with no managed section 1`] = `
@@ -35,7 +31,8 @@ exports[`mergeWithIgnoreFile provided with no managed section 1`] = `
 node_modules
 # end managed by skuba
 
-.DS_Store"
+.DS_Store
+"
 `;
 
 exports[`mergeWithIgnoreFile provided with outdated managed section 1`] = `
@@ -43,21 +40,19 @@ exports[`mergeWithIgnoreFile provided with outdated managed section 1`] = `
 node_modules
 .DS_Store
 # end managed by skuba
-
 "
 `;
 
 exports[`mergeWithIgnoreFile provided with outdated managed section and additional lines 1`] = `
-"# managed by skuba
+".idea
+.vscode
+
+# managed by skuba
 node_modules
 .DS_Store
 # end managed by skuba
 
-.idea
-.vscode
-
-
-
 .DS_Store
-node_modules"
+node_modules
+"
 `;
