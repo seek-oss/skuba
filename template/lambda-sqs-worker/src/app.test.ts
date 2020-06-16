@@ -63,45 +63,53 @@ describe('handler', () => {
   it('throws on invalid input', () => {
     const event = createSqsEvent(['}']);
 
-    return expect(app.handler(event, ctx)).rejects.toThrow('');
+    return expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
   });
 
-  it('bubbles up scoring service error', () => {
+  it('bubbles up scoring service error', async () => {
     const err = Error(chance.sentence());
 
     scoringService.request.mockRejectedValue(err);
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    return expect(app.handler(event, ctx)).rejects.toThrow(err);
+    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+
+    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
   });
 
-  it('bubbles up SNS error', () => {
+  it('bubbles up SNS error', async () => {
     const err = Error(chance.sentence());
 
     sns.publish.mockPromise(Promise.reject(err));
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    return expect(app.handler(event, ctx)).rejects.toThrow(err);
+    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+
+    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
   });
 
-  it('throws on zero records', () => {
+  it('throws on zero records', async () => {
+    const err = new Error('received 0 records');
+
     const event = createSqsEvent([]);
 
-    return expect(app.handler(event, ctx)).rejects.toThrow(
-      'received 0 records',
-    );
+    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+
+    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
   });
 
-  it('throws on multiple records', () => {
+  it('throws on multiple records', async () => {
+    const err = new Error('received 2 records');
+
     const event = createSqsEvent([
       JSON.stringify(jobPublished),
       JSON.stringify(jobPublished),
     ]);
 
-    return expect(app.handler(event, ctx)).rejects.toThrow(
-      'received 2 records',
-    );
+    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+
+    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
   });
 });
