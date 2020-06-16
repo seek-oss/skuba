@@ -38,7 +38,7 @@ describe('createHandler', () => {
 
     const handler = createHandler(() => Promise.reject(err));
 
-    await expect(handler(input, ctx)).rejects.toThrow(err);
+    await expect(handler(input, ctx)).rejects.toThrow('invoke error');
 
     expect(contextLogger.error.mock.calls).toEqual([[{ err }, 'request']]);
 
@@ -52,7 +52,7 @@ describe('createHandler', () => {
       throw err;
     });
 
-    await expect(handler(input, ctx)).rejects.toThrow(err);
+    await expect(handler(input, ctx)).rejects.toThrow('invoke error');
 
     expect(contextLogger.error.mock.calls).toEqual([[{ err }, 'request']]);
 
