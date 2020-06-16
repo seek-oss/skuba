@@ -1,3 +1,4 @@
+# managed by skuba
 .idea/
 .serverless/
 .vscode/
@@ -11,3 +12,4 @@ node_modules*/
 # Gantry resource files support non-standard template syntax
 gantry*.yaml
 gantry*.yml
+# end managed by skuba
