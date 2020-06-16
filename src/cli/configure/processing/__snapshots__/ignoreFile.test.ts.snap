@@ -4,6 +4,7 @@ exports[`mergeWithIgnoreFile empty provided 1`] = `
 "# managed by skuba
 node_modules
 # end managed by skuba
+
 "
 `;
 
@@ -11,6 +12,7 @@ exports[`mergeWithIgnoreFile identical 1`] = `
 "# managed by skuba
 node_modules
 # end managed by skuba
+
 "
 `;
 
@@ -41,6 +43,7 @@ exports[`mergeWithIgnoreFile provided with outdated managed section 1`] = `
 node_modules
 .DS_Store
 # end managed by skuba
+
 "
 `;
 

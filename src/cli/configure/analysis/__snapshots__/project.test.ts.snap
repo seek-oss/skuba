@@ -19,6 +19,7 @@ node_modules*/
 npm-debug.log
 yarn-error.log
 # end managed by skuba
+
 ",
     "operation": "A",
   },
@@ -33,7 +34,7 @@ node_modules*/
 /dist*/
 /lib*/
 /tmp*/
-# end managed by skuba 
+# end managed by skuba
 
 ",
     "operation": "A",
@@ -71,7 +72,6 @@ npm-debug.log
 package-lock.json
 yarn-error.log
 # end managed by skuba
-
 
 ",
     "operation": "A",
