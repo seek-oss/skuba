@@ -5,10 +5,9 @@ export const mergeWithIgnoreFile = (templateFile: string) => (
     return `${templateFile}\n`;
   }
 
-  const replacedSkubaSection = inputFile.replace(
-    /# managed by skuba[\s\S]*# end managed by skuba/,
-    '',
-  );
+  const replacedSkubaSection = inputFile
+    .replace(/# managed by skuba[\s\S]*# end managed by skuba/, '')
+    .trim();
 
-  return `${templateFile}\n\n${replacedSkubaSection}`;
+  return `${templateFile.trim()}\n\n${replacedSkubaSection}`;
 };
