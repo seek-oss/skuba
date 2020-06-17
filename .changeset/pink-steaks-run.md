@@ -1,0 +1,5 @@
+---
+'skuba': patch
+---
+
+Fix logging

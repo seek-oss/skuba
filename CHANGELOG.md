@@ -1,5 +1,11 @@
 # skuba
 
+## 3.7.0-beta.3
+
+### Patch Changes
+
+- Fix logging
+
 ## 3.7.0-beta.2
 
 ### Minor Changes
