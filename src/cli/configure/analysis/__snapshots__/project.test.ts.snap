@@ -3,7 +3,8 @@
 exports[`diffFiles works from scratch 1`] = `
 Object {
   ".dockerignore": Object {
-    "data": ".idea/
+    "data": "# managed by skuba
+.idea/
 .serverless/
 .vscode/
 node_modules*/
@@ -17,11 +18,13 @@ node_modules*/
 .npmrc
 npm-debug.log
 yarn-error.log
+# end managed by skuba
 ",
     "operation": "A",
   },
   ".eslintignore": Object {
-    "data": ".idea/
+    "data": "# managed by skuba
+.idea/
 .serverless/
 .vscode/
 node_modules*/
@@ -30,6 +33,7 @@ node_modules*/
 /dist*/
 /lib*/
 /tmp*/
+# end managed by skuba
 ",
     "operation": "A",
   },
@@ -48,7 +52,8 @@ node_modules*/
     "operation": "A",
   },
   ".gitignore": Object {
-    "data": ".idea/
+    "data": "# managed by skuba
+.idea/
 .serverless/
 .vscode/
 node_modules*/
@@ -64,11 +69,13 @@ node_modules*/
 npm-debug.log
 package-lock.json
 yarn-error.log
+# end managed by skuba
 ",
     "operation": "A",
   },
   ".prettierignore": Object {
-    "data": ".idea/
+    "data": "# managed by skuba
+.idea/
 .serverless/
 .vscode/
 node_modules*/
@@ -81,6 +88,7 @@ node_modules*/
 # Gantry resource files support non-standard template syntax
 gantry*.yaml
 gantry*.yml
+# end managed by skuba
 ",
     "operation": "A",
   },
