@@ -4,11 +4,7 @@
   "devDependencies": {
     "skuba": "*"
   },
-  "files": [
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map"
-  ],
+  "files": ["lib*/**/*.d.ts", "lib*/**/*.js", "lib*/**/*.js.map"],
   "license": "UNLICENSED",
   "main": "./lib-commonjs",
   "module": "./lib-es2015",
