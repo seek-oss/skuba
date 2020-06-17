@@ -1,5 +1,11 @@
 # skuba
 
+## 3.7.0-beta.1
+
+### Patch Changes
+
+- 937ead0: **template/private-npm-package:** Fix ReferenceError on init
+
 ## 3.7.0-beta.0
 
 ### Minor Changes
