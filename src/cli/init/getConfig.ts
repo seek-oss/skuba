@@ -93,6 +93,12 @@ const cloneTemplate = async (templateName: string, destinationDir: string) => {
 
   const templateDir = path.join(TEMPLATE_DIR, templateName);
   await fs.copy(templateDir, destinationDir);
+
+  log.err('cloneTemplate', templateName, templateDir, destinationDir);
+
+  const templateFiles = await fs.readdir(templateDir);
+
+  log.err('cloneTemplate', templateFiles);
 };
 
 const getTemplateName = async () => {
@@ -114,12 +120,16 @@ const generatePlaceholders = (choices: FormChoice[]) =>
 export const getTemplateConfig = (dir: string): TemplateConfig => {
   const templateConfigPath = path.join(dir, TEMPLATE_CONFIG_FILENAME);
 
+  log.err('getTemplateConfig', templateConfigPath);
+
   try {
     /* eslint-disable-next-line @typescript-eslint/no-var-requires */
     const templateConfig = require(templateConfigPath) as unknown;
 
     return TemplateConfig.check(templateConfig);
   } catch (err) {
+    log.err('getTemplateConfig', err);
+
     if (isErrorWithCode(err, 'MODULE_NOT_FOUND')) {
       return {
         entryPoint: undefined,
