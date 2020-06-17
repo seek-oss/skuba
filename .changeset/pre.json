@@ -1,0 +1,21 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "3.6.0"
+  },
+  "changesets": [
+    "chilly-islands-hang",
+    "chilly-planes-mix",
+    "chilly-wombats-notice",
+    "cold-ghosts-poke",
+    "dry-ladybugs-admire",
+    "dull-oranges-sparkle",
+    "long-cows-sit",
+    "pretty-dragons-know",
+    "sixty-otters-prove",
+    "soft-cars-compete",
+    "stale-jeans-peel",
+    "wet-kings-pay"
+  ]
+}
