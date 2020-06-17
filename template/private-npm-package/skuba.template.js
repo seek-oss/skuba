@@ -10,8 +10,7 @@ module.exports = {
       message: 'Module name',
       initial: '@seek/my-first-module',
       validate: (value) =>
-        /^@seek\/.+$/.test(value) ||
-        `module must start with an ${chalk.bold('@seek/')} scope`,
+        /^@seek\/.+$/.test(value) || `must start with an @seek/ scope`,
     },
     {
       name: 'description',
