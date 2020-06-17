@@ -1,5 +1,47 @@
 # skuba
 
+## 3.7.0-beta.0
+
+### Minor Changes
+
+- 5c138fb: **configure:** Replace relocated dependencies
+
+  `skuba configure` now replaces the following dependencies and updates their import paths via naive find-and-replace:
+
+  - `@seek/koala → seek-koala`
+  - `@seek/node-datadog-custom-metrics → seek-datadog-custom-metrics`
+  - `@seek/skuba → skuba`
+  - `@seek/skuba-dive → skuba-dive`
+
+- b85b4b3: **init:** Configure initial Git commits and default remote
+
+### Patch Changes
+
+- 5ec72d5: **configure, init:** Avoid unnecessary file writes during templating
+- 5753b38: **template/lambda-sqs-worker:** Drop `hot-shots` dependency
+- 0c1e129: **configure, init:** Sort dependencies
+- 93cdf6c: **template:** Redact `Authorization` headers in logs
+- f36b136: **help:** Show `build-package` correctly
+- bac749a: **init:** Validate initial GitHub fields
+- 72c2e2c: **configure:** Reserve skuba-managed sections in ignore files
+- b23bd23: **jest:** skuba is now usable as a preset
+
+  ```javascript
+  // jest.config.js
+
+  const { testPathIgnorePatterns } = require('skuba/config/jest');
+
+  module.exports = {
+    // This can be used in place of ...require('skuba/config/jest')
+    preset: 'skuba',
+
+    // This is still necessary as Jest doesn't deep-merge presets
+    testPathIgnorePatterns: [...testPathIgnorePatterns, '/test\\.ts'],
+  };
+  ```
+
+- 2169513: **template/koa-rest-api:** Use Koala's error handler
+
 ## 3.6.0
 
 ### Minor Changes
