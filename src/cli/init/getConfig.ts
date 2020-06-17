@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { Form, FormChoice } from 'enquirer';
 import fs from 'fs-extra';
 
+import { copyFiles } from '../../utils/copy';
 import { isErrorWithCode } from '../../utils/error';
 import { log } from '../../utils/logging';
 import {
@@ -92,13 +93,14 @@ const cloneTemplate = async (templateName: string, destinationDir: string) => {
   }
 
   const templateDir = path.join(TEMPLATE_DIR, templateName);
-  await fs.copy(templateDir, destinationDir);
 
-  log.err('cloneTemplate', templateName, templateDir, destinationDir);
-
-  const templateFiles = await fs.readdir(templateDir);
-
-  log.err('cloneTemplate', templateFiles);
+  await copyFiles({
+    // assume built-in templates have no extraneous files
+    include: () => true,
+    sourceRoot: templateDir,
+    destinationRoot: destinationDir,
+    processors: [],
+  });
 };
 
 const getTemplateName = async () => {
