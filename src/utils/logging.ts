@@ -3,8 +3,8 @@
 import chalk from 'chalk';
 
 export const log = {
-  bold: chalk.bold,
-  formatSubtle: chalk.grey,
+  bold: (...message: unknown[]) => chalk.bold(...message),
+  formatSubtle: (...message: unknown[]) => chalk.grey(...message),
 
   subtle: (...message: unknown[]) => console.log(chalk.grey(...message)),
   err: (...message: unknown[]) => console.error(chalk.red(...message)),
