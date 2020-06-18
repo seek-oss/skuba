@@ -6,6 +6,7 @@ import { NormalizedReadResult } from 'read-pkg-up';
 
 import { TextProcessor, copyFiles } from '../../utils/copy';
 import { log } from '../../utils/logging';
+import { getSkubaVersion } from '../../utils/version';
 
 import { diffDependencies } from './analysis/package';
 import * as dependencyMutators from './dependencies';
@@ -37,7 +38,9 @@ const pinUnspecifiedVersions = async (
     Object.entries(dependencies)
       .filter(([, version]) => version === '*')
       .map(async ([name]) => {
-        const version = await latestVersion(name);
+        const version = await (name === 'skuba'
+          ? getSkubaVersion()
+          : latestVersion(name));
 
         return [name, version] as const;
       }),
