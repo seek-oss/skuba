@@ -121,9 +121,6 @@ module.exports = {
   \\"dependencies\\": {
     \\"skuba-dive\\": \\"0.0.1\\"
   },
-  \\"devDependencies\\": {
-    \\"skuba\\": \\"0.0.0-semantically-released\\"
-  },
   \\"license\\": \\"UNLICENSED\\",
   \\"private\\": true,
   \\"scripts\\": {
