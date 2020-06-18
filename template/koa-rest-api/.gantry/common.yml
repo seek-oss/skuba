@@ -4,6 +4,10 @@ image: '{{values "prodAccountId"}}.dkr.ecr.ap-southeast-2.amazonaws.com/{{values
 region: ap-southeast-2
 service: '<%- serviceName %>'
 
+# TODO: enable Datadog agent
+# https://gantry.ssod.skinfra.xyz/docs/v1/resources/service.html#datadogSecretId
+# datadogSecretId: arn:aws:secretsmanager:ap-southeast-2:<aws-account-id>:secret:<secret-name>
+
 tags:
   # TODO: add data classification tags
   # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers
