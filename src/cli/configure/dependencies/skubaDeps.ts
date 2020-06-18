@@ -1,7 +1,11 @@
 import { DependencySet } from '../types';
 
-const BUNDLED_DEPENDENCIES = [
+const DEV_DEPENDENCIES = [
+  // replaced
   '@seek/seek-module-toolkit',
+  'nodemon',
+
+  // bundled
   '@types/jest',
   'concurrently',
   'eslint',
@@ -16,7 +20,7 @@ const BUNDLED_DEPENDENCIES = [
 ] as const;
 
 export const skubaDeps = ({ devDependencies }: DependencySet) => {
-  BUNDLED_DEPENDENCIES.forEach((dep) => {
+  DEV_DEPENDENCIES.forEach((dep) => {
     delete devDependencies[dep];
   });
 
