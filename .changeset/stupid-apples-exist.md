@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-**template/package:** Enforce TSDoc linting
+**format, lint:** Enforce TSDoc syntax
