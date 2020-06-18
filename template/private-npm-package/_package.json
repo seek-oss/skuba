@@ -6,8 +6,8 @@
   },
   "files": ["lib*/**/*.d.ts", "lib*/**/*.js", "lib*/**/*.js.map"],
   "license": "UNLICENSED",
-  "main": "./lib-commonjs",
-  "module": "./lib-es2015",
+  "main": "./lib-commonjs/index.js",
+  "module": "./lib-es2015/index.js",
   "name": "<%- moduleName %>",
   "repository": {
     "type": "git",
@@ -21,6 +21,6 @@
     "test": "skuba test"
   },
   "sideEffects": false,
-  "typings": "./lib-types",
+  "types": "./lib-types/index.d.ts",
   "version": "0.0.0-semantically-released"
 }
