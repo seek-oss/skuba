@@ -11,11 +11,6 @@ module.exports = {
       initial: 'my-project',
     },
     {
-      name: 'teamName',
-      message: 'Team slug',
-      initial: 'my-team',
-    },
-    {
       name: 'devBuildkiteQueueName',
       message: 'Dev Buildkite queue',
       initial: 'my-team-aws-account-dev:cicd',
