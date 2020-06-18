@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+'skuba': minor
 ---
 
 **jest:** skuba is now usable as a preset

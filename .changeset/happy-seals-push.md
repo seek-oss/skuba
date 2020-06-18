@@ -2,5 +2,4 @@
 'skuba': patch
 ---
 
-Ignore the .gantry folder when copying into the Docker container.
-This should decrease build times.
+**configure, init:** `.dockerignore` the `.gantry` folder. This should decrease build times.
