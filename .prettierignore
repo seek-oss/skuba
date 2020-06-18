@@ -1,3 +1,4 @@
+# managed by skuba
 .idea/
 .serverless/
 .vscode/
@@ -8,11 +9,7 @@ node_modules*/
 /lib*/
 /tmp*/
 
-.DS_Store
-.npmrc
-npm-debug.log
-yarn-error.log
-
 # Gantry resource files support non-standard template syntax
 gantry*.yaml
 gantry*.yml
+# end managed by skuba
