@@ -206,30 +206,4 @@ describe('packageModule', () => {
       version: '0.0.0-semantically-released',
     });
   });
-
-  it('drops bundled dev dependencies', async () => {
-    const inputFiles = {
-      'package.json': JSON.stringify({
-        devDependencies: {
-          eslint: '0.0.1',
-          'pino-pretty': '0.0.1',
-          typescript: '0.0.1',
-        },
-      }),
-    };
-
-    const outputFiles = await executeModule(
-      packageModule,
-      inputFiles,
-      defaultOpts,
-    );
-
-    const outputData = parsePackage(outputFiles['package.json']);
-
-    assertDefined(outputData);
-    expect(outputData.devDependencies).toHaveProperty('skuba');
-    expect(outputData.devDependencies).not.toHaveProperty('eslint');
-    expect(outputData.devDependencies).toHaveProperty('pino-pretty', '0.0.1');
-    expect(outputData.devDependencies).not.toHaveProperty('typescript');
-  });
 });
