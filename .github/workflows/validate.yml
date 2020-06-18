@@ -41,6 +41,7 @@ jobs:
           - greeter
           - koa-rest-api
           - lambda-sqs-worker
+          - oss-npm-package
           - private-npm-package
     steps:
       - name: Check out repo
