@@ -50,11 +50,11 @@ yarn skuba --version
 echo "--- skuba build ${template}"
 yarn build
 
-echo "--- skuba format ${template}"
-yarn format
-
 echo "--- skuba lint ${template}"
 yarn lint
+
+echo "--- skuba format ${template}"
+yarn format
 
 echo "--- skuba test ${template}"
 yarn test
