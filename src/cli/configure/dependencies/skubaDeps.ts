@@ -4,6 +4,8 @@ const DEV_DEPENDENCIES = [
   // replaced
   '@seek/seek-module-toolkit',
   'nodemon',
+  'tslint',
+  'tslint-config-seek',
 
   // bundled
   '@types/jest',
