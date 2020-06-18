@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { Input } from 'enquirer';
 import { NormalizedReadResult } from 'read-pkg-up';
 
+import { log } from '../../utils/logging';
 import { ProjectType } from '../../utils/manifest';
 import { TemplateConfig } from '../../utils/template';
 import { hasStringProp } from '../../utils/validation';
@@ -30,6 +31,7 @@ export const getEntryPoint = ({
     return templateConfig.entryPoint;
   }
 
+  log.newline();
   const entryPointPrompt = new Input({
     initial: type === 'package' ? 'src/index.ts' : 'src/app.ts',
     message: 'Entry point:',

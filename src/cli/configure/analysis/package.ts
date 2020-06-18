@@ -1,7 +1,7 @@
 import readPkgUp from 'read-pkg-up';
 
 import { log } from '../../../utils/logging';
-import { DependencyDiff } from '../types';
+import { DependencyDiff, DependencySet } from '../types';
 
 import { determineOperation } from './diff';
 
@@ -70,4 +70,33 @@ export const diffDependencies = (
     ...deletionsAndModifications,
     ...additions,
   };
+};
+
+export const generateNotices = ({
+  dependencies,
+  devDependencies,
+}: DependencySet) => {
+  if (
+    '@seek/seek-module-toolkit' in dependencies ||
+    '@seek/seek-module-toolkit' in devDependencies
+  ) {
+    return () => {
+      log.newline();
+      log.plain(`👋 Hello, ${log.bold('seek-module-toolkitter')}!`);
+      log.newline();
+      log.warn(
+        "We're going to tweak your output directories,",
+        'so double check your bundle once this is done.',
+      );
+      log.newline();
+      log.warn(
+        'Read more:',
+        log.bold(
+          'https://github.com/seek-oss/skuba/blob/master/docs/migrating-from-seek-module-toolkit.md#building',
+        ),
+      );
+    };
+  }
+
+  return () => {};
 };

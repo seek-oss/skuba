@@ -21,8 +21,9 @@ const DEV_DEPENDENCIES = [
   'typescript',
 ] as const;
 
-export const skubaDeps = ({ devDependencies }: DependencySet) => {
+export const skubaDeps = ({ dependencies, devDependencies }: DependencySet) => {
   DEV_DEPENDENCIES.forEach((dep) => {
+    delete dependencies[dep];
     delete devDependencies[dep];
   });
 

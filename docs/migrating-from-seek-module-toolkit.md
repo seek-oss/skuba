@@ -51,6 +51,11 @@ You should remove workarounds such as:
 
 - Varying the referenced path of non-JS assets based on whether the code is source or compiled (i.e. using `__filename`).
 
+Double check that your package is being bundled as you'd expect:
+
+1. Preview your bundle by running `yarn build`, then `npm pack`
+1. Review the `files`, `main`, `module` and `types` fields in your `package.json`
+
 ## Formatting and linting
 
 ```shell
