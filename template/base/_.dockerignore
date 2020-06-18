@@ -1,4 +1,5 @@
 # managed by skuba
+.gantry/
 .git/
 .idea/
 .serverless/
