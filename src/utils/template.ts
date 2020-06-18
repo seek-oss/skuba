@@ -5,6 +5,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import * as t from 'runtypes';
 
+import { ProjectType } from './manifest';
+
 export type TemplateConfig = t.Static<typeof TemplateConfig>;
 
 export const TemplateConfig = t.Record({
@@ -17,6 +19,7 @@ export const TemplateConfig = t.Record({
       validate: t.Function.Or(t.Undefined),
     }),
   ),
+  type: ProjectType.Or(t.Undefined),
 });
 
 export const TEMPLATE_CONFIG_FILENAME = 'skuba.template.js';

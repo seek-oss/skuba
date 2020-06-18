@@ -1,4 +1,16 @@
+/* eslint-disable new-cap */
+
 import readPkgUp, { NormalizedPackageJson } from 'read-pkg-up';
+import * as t from 'runtypes';
+
+export type ProjectType = t.Static<typeof ProjectType>;
+
+export const ProjectType = t.Union(
+  t.Literal('application'),
+  t.Literal('package'),
+);
+
+export const PROJECT_TYPES = ['application', 'package'] as const;
 
 interface PackageJson extends NormalizedPackageJson {
   skuba?: {

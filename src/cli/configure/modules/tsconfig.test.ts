@@ -1,5 +1,10 @@
 import { parseObject } from '../processing/json';
-import { assertDefined, defaultOpts, executeModule } from '../testing/module';
+import {
+  assertDefined,
+  defaultOpts,
+  defaultPackageOpts,
+  executeModule,
+} from '../testing/module';
 import { TsConfigJson } from '../types';
 
 import { tsconfigModule } from './tsconfig';
@@ -18,6 +23,37 @@ describe('tsconfigModule', () => {
     expect(outputFiles['tsconfig.json']).toContain(
       'skuba/config/tsconfig.json',
     );
+
+    const outputData = parseObject(
+      outputFiles['tsconfig.json'],
+    ) as TsConfigJson;
+
+    assertDefined(outputData);
+    expect(outputData.compilerOptions!.baseUrl).toBe('.');
+    expect(outputData.compilerOptions!.paths).toEqual({ src: ['src'] });
+  });
+
+  it('disables module aliasing for packages', async () => {
+    const inputFiles = {};
+
+    const outputFiles = await executeModule(
+      tsconfigModule,
+      inputFiles,
+      defaultPackageOpts,
+    );
+
+    expect(outputFiles['tsconfig.build.json']).toContain('./tsconfig.json');
+    expect(outputFiles['tsconfig.json']).toContain(
+      'skuba/config/tsconfig.json',
+    );
+
+    const outputData = parseObject(
+      outputFiles['tsconfig.json'],
+    ) as TsConfigJson;
+
+    assertDefined(outputData);
+    expect(outputData.compilerOptions!.baseUrl).toBeUndefined();
+    expect(outputData.compilerOptions!.paths).toBeUndefined();
   });
 
   it('augments existing config', async () => {

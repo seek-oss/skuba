@@ -136,6 +136,7 @@ module.exports = {
   \\"skuba\\": {
     \\"entryPoint\\": \\"src/app.ts\\",
     \\"template\\": null,
+    \\"type\\": \\"application\\",
     \\"version\\": \\"0.0.0-semantically-released\\"
   }
 }

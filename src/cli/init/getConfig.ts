@@ -20,7 +20,7 @@ import {
   SHOULD_CONTINUE_PROMPT,
   TEMPLATE_PROMPT,
 } from './prompts';
-import { InitConfig } from './types';
+import { InitConfig, InitConfigInput } from './types';
 
 export const runForm = <T = Record<string, string>>(props: {
   choices: Readonly<FormChoice[]>;
@@ -132,6 +132,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
       return {
         entryPoint: undefined,
         fields: [],
+        type: undefined,
       };
     }
 
@@ -158,7 +159,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 
   await cloneTemplate(templateName, destinationDir);
 
-  const { entryPoint, fields } = getTemplateConfig(
+  const { entryPoint, fields, type } = getTemplateConfig(
     path.join(process.cwd(), destinationDir),
   );
 
@@ -169,6 +170,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
       templateComplete: true,
       templateData: baseAnswers,
       templateName,
+      type,
     };
   }
 
@@ -188,6 +190,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
       templateComplete: true,
       templateData: { ...baseAnswers, ...customAnswers },
       templateName,
+      type,
     };
   }
 
@@ -202,6 +205,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     templateComplete: false,
     templateData: { ...baseAnswers, ...customAnswers },
     templateName,
+    type,
   };
 };
 
@@ -228,7 +232,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     process.exit(1);
   }
 
-  const result = InitConfig.validate(value);
+  const result = InitConfigInput.validate(value);
 
   if (!result.success) {
     log.err('Invalid data from stdin:');
@@ -251,7 +255,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
 
   await cloneTemplate(templateName, destinationDir);
 
-  const { entryPoint, fields } = getTemplateConfig(
+  const { entryPoint, fields, type } = getTemplateConfig(
     path.join(process.cwd(), destinationDir),
   );
 
@@ -263,6 +267,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
         ...templateData,
         ...generatePlaceholders(fields),
       },
+      type,
     };
   }
 
@@ -282,6 +287,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   return {
     ...result.value,
     entryPoint,
+    type,
   };
 };
 

@@ -2,7 +2,7 @@ import { readBaseTemplateFile } from '../../../utils/template';
 import { loadFiles } from '../processing/loadFiles';
 import { withPackage } from '../processing/package';
 import { getFirstDefined } from '../processing/record';
-import { Module } from '../types';
+import { Module, Options } from '../types';
 
 const OTHER_CONFIG_FILENAMES = [
   '.github/renovate.json',
@@ -12,7 +12,7 @@ const OTHER_CONFIG_FILENAMES = [
   'renovate.json5',
 ];
 
-export const renovateModule = async (): Promise<Module> => {
+export const renovateModule = async ({ type }: Options): Promise<Module> => {
   const configFile = await readBaseTemplateFile('.github/renovate.json5');
 
   return {
@@ -42,7 +42,7 @@ export const renovateModule = async (): Promise<Module> => {
      */
     'package.json': withPackage(({ private: _, renovate, ...data }) => ({
       ...data,
-      private: true,
+      private: type !== 'package',
     })),
   };
 };

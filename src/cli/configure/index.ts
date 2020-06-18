@@ -14,6 +14,7 @@ import { auditWorkingTree } from './analysis/git';
 import { getDestinationManifest } from './analysis/package';
 import { ensureTemplateCompletion } from './ensureTemplateCompletion';
 import { getEntryPoint } from './getEntryPoint';
+import { getProjectType } from './getProjectType';
 
 const shouldApply = async (name: string) => {
   const prompt = new Select({
@@ -54,10 +55,16 @@ export const configure = async () => {
     manifest,
   });
 
+  const type = await getProjectType({
+    manifest,
+    templateConfig,
+  });
+
   const entryPoint = await getEntryPoint({
     destinationRoot,
     manifest,
     templateConfig,
+    type,
   });
 
   const fixDependencies = await analyseDependencies({
@@ -77,6 +84,7 @@ export const configure = async () => {
   const fixConfiguration = await analyseConfiguration({
     destinationRoot,
     entryPoint,
+    type,
   });
 
   if (fixConfiguration) {

@@ -51,6 +51,7 @@ declare module 'enquirer' {
       name: string;
       message: string;
       choices: ReadonlyArray<T>;
+      initial?: T;
     });
 
     run(): Promise<T>;

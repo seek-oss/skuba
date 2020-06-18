@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { Input } from 'enquirer';
 import { NormalizedReadResult } from 'read-pkg-up';
 
+import { ProjectType } from '../../utils/manifest';
 import { TemplateConfig } from '../../utils/template';
 import { hasStringProp } from '../../utils/validation';
 
@@ -13,11 +14,13 @@ interface Props {
   destinationRoot: string;
   manifest: NormalizedReadResult;
   templateConfig: TemplateConfig;
+  type: ProjectType;
 }
 export const getEntryPoint = ({
   destinationRoot,
   manifest,
   templateConfig,
+  type,
 }: Props) => {
   if (hasStringProp(manifest.packageJson.skuba, 'entryPoint')) {
     return manifest.packageJson.skuba.entryPoint;
@@ -28,7 +31,7 @@ export const getEntryPoint = ({
   }
 
   const entryPointPrompt = new Input({
-    initial: 'src/app.ts',
+    initial: type === 'package' ? 'src/index.ts' : 'src/app.ts',
     message: 'Entry point:',
     name: 'entryPoint',
     result: (value) => (value.endsWith('.ts') ? value : `${value}.ts`),

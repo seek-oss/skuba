@@ -33,4 +33,5 @@ module.exports = {
       validate: (value) => /^.+:.+$/.test(value),
     },
   ],
+  type: 'application',
 };
