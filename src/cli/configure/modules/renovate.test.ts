@@ -1,4 +1,8 @@
-import { defaultOpts, executeModule } from '../testing/module';
+import {
+  defaultOpts,
+  defaultPackageOpts,
+  executeModule,
+} from '../testing/module';
 
 import { renovateModule } from './renovate';
 
@@ -16,6 +20,25 @@ describe('renovateModule', () => {
       'seek-oss/rynovate',
     );
     expect(outputFiles['package.json']).toContain('"private": true');
+  });
+
+  it('makes packages publishable', async () => {
+    const inputFiles = {
+      'package.json': JSON.stringify({
+        private: true,
+      }),
+    };
+
+    const outputFiles = await executeModule(
+      renovateModule,
+      inputFiles,
+      defaultPackageOpts,
+    );
+
+    expect(outputFiles['.github/renovate.json5']).toContain(
+      'seek-oss/rynovate',
+    );
+    expect(outputFiles['package.json']).toContain('"private": false');
   });
 
   it('deletes rogue configs', async () => {

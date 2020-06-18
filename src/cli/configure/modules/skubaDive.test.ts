@@ -1,5 +1,10 @@
 import { parsePackage } from '../processing/package';
-import { assertDefined, defaultOpts, executeModule } from '../testing/module';
+import {
+  assertDefined,
+  defaultOpts,
+  defaultPackageOpts,
+  executeModule,
+} from '../testing/module';
 
 import { skubaDiveModule } from './skubaDive';
 
@@ -24,6 +29,30 @@ describe('skubaDiveModule', () => {
 
     assertDefined(outputData);
     expect(outputData.dependencies).toHaveProperty('skuba-dive');
+  });
+
+  it('disables itself on packages', async () => {
+    const inputFiles = {
+      'package.json': JSON.stringify({
+        dependencies: {},
+      }),
+      'src/app.ts': 'console.log();\n',
+      'src/index.ts': 'console.log();\n',
+    };
+
+    const outputFiles = await executeModule(
+      skubaDiveModule,
+      inputFiles,
+      defaultPackageOpts,
+    );
+
+    expect(outputFiles['src/app.ts']).toBe(inputFiles['src/app.ts']);
+    expect(outputFiles['src/index.ts']).toBe(inputFiles['src/index.ts']);
+
+    const outputData = parsePackage(outputFiles['package.json']);
+
+    assertDefined(outputData);
+    expect(outputData.dependencies).not.toHaveProperty('skuba-dive');
   });
 
   it('registers entry point directly under src', async () => {

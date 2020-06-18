@@ -1,5 +1,7 @@
 export { PackageJson, TsConfigJson } from 'type-fest';
 
+import { ProjectType } from '../../utils/manifest';
+
 export interface DependencySet {
   dependencies: Record<string, string>;
   devDependencies: Record<string, string>;
@@ -28,4 +30,5 @@ export type Module = Record<string, FileProcessor>;
 export interface Options {
   destinationRoot: string;
   entryPoint: string;
+  type: ProjectType;
 }

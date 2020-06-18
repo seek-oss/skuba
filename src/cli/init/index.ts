@@ -28,6 +28,7 @@ export const init = async () => {
     templateComplete,
     templateData,
     templateName,
+    type,
   } = await getConfig();
 
   const include = await createInclusionFilter([
@@ -61,6 +62,7 @@ export const init = async () => {
       cwd: destinationDir,
       entryPoint,
       template: templateName,
+      type,
       version: skubaVersion,
     }),
   ]);

@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 
+import { ProjectType } from '../../utils/manifest';
 import { getDestinationManifest } from '../configure/analysis/package';
 import { formatPackage } from '../configure/processing/package';
 
@@ -7,6 +8,7 @@ interface WritePackageJsonProps {
   cwd: string;
   entryPoint?: string;
   template: string;
+  type?: ProjectType;
   version: string;
 }
 
@@ -17,6 +19,7 @@ export const writePackageJson = async ({
   cwd,
   entryPoint,
   template,
+  type,
   version,
 }: WritePackageJsonProps) => {
   const manifest = await getDestinationManifest({ cwd });
@@ -24,6 +27,7 @@ export const writePackageJson = async ({
   manifest.packageJson.skuba = {
     entryPoint: entryPoint ?? null,
     template,
+    type,
     version,
   };
 

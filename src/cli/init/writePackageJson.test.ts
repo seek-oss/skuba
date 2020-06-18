@@ -28,6 +28,7 @@ describe('writePackageJson', () => {
         cwd: '/',
         entryPoint: 'src/app.ts',
         template: 'hello-world',
+        type: 'package',
         version: '0.0.1',
       }),
     ).resolves.toBeUndefined();
@@ -40,6 +41,7 @@ describe('writePackageJson', () => {
         \\"skuba\\": {
           \\"entryPoint\\": \\"src/app.ts\\",
           \\"template\\": \\"hello-world\\",
+          \\"type\\": \\"package\\",
           \\"version\\": \\"0.0.1\\"
         }
       }

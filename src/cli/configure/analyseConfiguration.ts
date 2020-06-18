@@ -3,12 +3,14 @@ import path from 'path';
 import fs from 'fs-extra';
 
 import { log } from '../../utils/logging';
+import { ProjectType } from '../../utils/manifest';
 
 import { diffFiles } from './analysis/project';
 
 interface Props {
   destinationRoot: string;
   entryPoint: string;
+  type: ProjectType;
 }
 
 export const analyseConfiguration = async (

@@ -7,6 +7,13 @@ export function assertDefined<T>(value?: T): asserts value is T {
 export const defaultOpts: Options = {
   destinationRoot: '/tmp',
   entryPoint: 'src/app.ts',
+  type: 'application',
+};
+
+export const defaultPackageOpts: Options = {
+  destinationRoot: '/tmp',
+  entryPoint: 'src/index.ts',
+  type: 'package',
 };
 
 export const executeModule = async (

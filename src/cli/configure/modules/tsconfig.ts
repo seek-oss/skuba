@@ -1,11 +1,11 @@
 import { readBaseTemplateFile } from '../../../utils/template';
-import { hasProp, hasStringProp } from '../../../utils/validation';
+import { hasProp, hasStringProp, isObject } from '../../../utils/validation';
 import { formatObject, parseObject } from '../processing/json';
 import { loadFiles } from '../processing/loadFiles';
 import { merge } from '../processing/record';
-import { Module } from '../types';
+import { Module, Options } from '../types';
 
-export const tsconfigModule = async (): Promise<Module> => {
+export const tsconfigModule = async ({ type }: Options): Promise<Module> => {
   const [buildFile, baseFile] = await Promise.all([
     readBaseTemplateFile('tsconfig.build.json'),
     readBaseTemplateFile('tsconfig.json'),
@@ -19,6 +19,16 @@ export const tsconfigModule = async (): Promise<Module> => {
     hasProp(baseData.compilerOptions, 'target')
   ) {
     delete baseData.compilerOptions.target;
+  }
+
+  // packages should not use module aliases
+  if (
+    type === 'package' &&
+    hasProp(baseData, 'compilerOptions') &&
+    isObject(baseData.compilerOptions)
+  ) {
+    delete baseData.compilerOptions.baseUrl;
+    delete baseData.compilerOptions.paths;
   }
 
   return {

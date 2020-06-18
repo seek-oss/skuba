@@ -6,7 +6,7 @@ import { prependImport, stripImports } from '../processing/javascript';
 import { loadFiles } from '../processing/loadFiles';
 import { createDependencyFilter, withPackage } from '../processing/package';
 import { merge } from '../processing/record';
-import { Module } from '../types';
+import { Module, Options } from '../types';
 
 const BUNDLED_DEPENDENCIES = ['module-alias', 'source-map-support'] as const;
 
@@ -19,9 +19,13 @@ const filterDependencies = createDependencyFilter(
 
 export const skubaDiveModule = async ({
   entryPoint,
-}: {
-  entryPoint: string;
-}): Promise<Module> => {
+  type,
+}: Options): Promise<Module> => {
+  // skuba-dive is a runtime component; it's not appropriate for packages
+  if (type === 'package') {
+    return {};
+  }
+
   const skubaDiveVersion = await latestVersion('skuba-dive');
 
   const skubaDiveData = {

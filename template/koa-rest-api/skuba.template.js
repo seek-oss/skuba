@@ -44,4 +44,5 @@ module.exports = {
       validate: (value) => /^\d{12}$/.test(value),
     },
   ],
+  type: 'application',
 };

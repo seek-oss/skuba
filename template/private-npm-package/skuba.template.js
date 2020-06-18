@@ -18,4 +18,5 @@ module.exports = {
       initial: 'This is my first module',
     },
   ],
+  type: 'package',
 };
