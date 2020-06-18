@@ -16,9 +16,6 @@ export const packageModule = async ({
   const version = await getSkubaVersion();
 
   const initialData = {
-    devDependencies: {
-      skuba: version,
-    },
     private: type !== 'package',
 
     scripts: {

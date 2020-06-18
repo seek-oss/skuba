@@ -21,9 +21,6 @@ describe('packageModule', () => {
     const outputData = parsePackage(outputFiles['package.json']);
 
     expect(outputData).toMatchObject({
-      devDependencies: {
-        skuba: expect.any(String),
-      },
       license: 'UNLICENSED',
       private: true,
       scripts: {
@@ -54,9 +51,6 @@ describe('packageModule', () => {
     const outputData = parsePackage(outputFiles['package.json']);
 
     expect(outputData).toMatchObject({
-      devDependencies: {
-        skuba: expect.any(String),
-      },
       files: ['lib*/**/*.d.ts', 'lib*/**/*.js', 'lib*/**/*.js.map'],
       license: 'UNLICENSED',
       main: './lib-commonjs/index.js',
@@ -104,7 +98,6 @@ describe('packageModule', () => {
 
     assertDefined(outputData);
     expect(outputData.$name).toBe('secret-service');
-    expect(outputData.devDependencies).toHaveProperty('skuba');
     expect(outputData.devDependencies).toHaveProperty('pino-pretty', '0.0.1');
     expect(outputData.private).toBeUndefined();
     expect(outputData.scripts).toStrictEqual({});
@@ -176,7 +169,6 @@ describe('packageModule', () => {
     expect(outputData).toMatchObject({
       devDependencies: {
         'pino-pretty': '0.0.1',
-        skuba: expect.any(String),
       },
       files: [
         'lib*/**/*.d.ts',

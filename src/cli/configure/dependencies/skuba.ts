@@ -5,20 +5,9 @@ const OLD_NAME = '@seek/skuba';
 const NEW_NAME = 'skuba';
 
 export const skuba = ({ dependencies, devDependencies }: DependencySet) => {
-  // lazily upgrade to latest version of the new package
-  if (dependencies[OLD_NAME]) {
-    dependencies[NEW_NAME] = '*';
-  }
-  if (devDependencies[OLD_NAME]) {
-    devDependencies[NEW_NAME] = '*';
-  }
-
-  // ensure dev dependency
-  if (dependencies[NEW_NAME]) {
-    devDependencies[NEW_NAME] =
-      devDependencies[NEW_NAME] || dependencies[NEW_NAME];
-    delete dependencies[NEW_NAME];
-  }
+  // force latest dev dependency
+  devDependencies[NEW_NAME] = '*';
+  delete dependencies[NEW_NAME];
 
   if (!dependencies[OLD_NAME] && !devDependencies[OLD_NAME]) {
     return [];
