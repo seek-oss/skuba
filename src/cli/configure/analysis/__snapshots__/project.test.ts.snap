@@ -4,6 +4,7 @@ exports[`diffFiles works from scratch 1`] = `
 Object {
   ".dockerignore": Object {
     "data": "# managed by skuba
+.git/
 .idea/
 .serverless/
 .vscode/
