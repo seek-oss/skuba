@@ -1,33 +1,13 @@
 import { getSkubaVersion } from '../../../utils/version';
-import { createDependencyFilter, withPackage } from '../processing/package';
+import { withPackage } from '../processing/package';
 import { merge } from '../processing/record';
 import { Module, Options } from '../types';
-
-const BUNDLED_DEPENDENCIES = [
-  '@seek/seek-module-toolkit',
-  '@types/jest',
-  'concurrently',
-  'eslint',
-  'eslint-config-seek',
-  'jest',
-  'prettier',
-  'ts-jest',
-  'ts-node',
-  'ts-node-dev',
-  'tsconfig-seek',
-  'typescript',
-] as const;
 
 const DEFAULT_PACKAGE_FILES = [
   'lib*/**/*.d.ts',
   'lib*/**/*.js',
   'lib*/**/*.js.map',
 ];
-
-const filterDevDependencies = createDependencyFilter(
-  BUNDLED_DEPENDENCIES,
-  'devDependencies',
-);
 
 export const packageModule = async ({
   entryPoint,
@@ -123,7 +103,7 @@ export const packageModule = async ({
         delete outputData.typings;
       }
 
-      return filterDevDependencies(outputData);
+      return outputData;
     }),
   };
 };
