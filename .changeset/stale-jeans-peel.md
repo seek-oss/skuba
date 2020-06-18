@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-**init:** Configure initial Git commits and default remote
+**init:** Commit initial template files and configure default remote

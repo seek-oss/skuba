@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-**template/koa-rest-api:** Pass lint on init
+**template/koa-rest-api:** Ensure lint passes on init

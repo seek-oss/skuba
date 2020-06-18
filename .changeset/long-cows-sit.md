@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-**init:** Validate initial GitHub fields
+**init:** Extend validation on initial GitHub fields
