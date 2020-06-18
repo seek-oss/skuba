@@ -7,8 +7,9 @@ If you haven't configured Renovate on your repository,
 reach out in `#github`.
 
 We've introduced some new linting rules via ESLint 7 + `typescript-eslint` 3.
-If you're stuck on something and the tips in the [`seek-module-toolkit` guide](./migrating-from-seek-module-toolkit.md#formatting-and-linting) aren't helping,
-reach out in `#typescriptification`.
+See our [ESLint guide] for some tips, and reach out in `#typescriptification` if you get stuck on anything.
+
+[eslint guide]: ./eslint.md
 
 ## 2. Switch out packages
 
