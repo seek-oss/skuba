@@ -53,6 +53,7 @@
     "eslint": "^7.2.0",
     "eslint-config-seek": "^7.0.1",
     "eslint-plugin-jest": "^23.13.2",
+    "eslint-plugin-tsdoc": "^0.2.5",
     "execa": "^4.0.2",
     "fs-extra": "^9.0.1",
     "get-port": "^5.1.1",
