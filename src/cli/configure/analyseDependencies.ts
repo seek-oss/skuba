@@ -6,6 +6,7 @@ import { NormalizedReadResult } from 'read-pkg-up';
 
 import { TextProcessor, copyFiles } from '../../utils/copy';
 import { log } from '../../utils/logging';
+import { ProjectType } from '../../utils/manifest';
 import { getSkubaVersion } from '../../utils/version';
 
 import { diffDependencies } from './analysis/package';
@@ -55,12 +56,14 @@ interface Props {
   destinationRoot: string;
   include: (pathname: string) => boolean;
   manifest: NormalizedReadResult;
+  type: ProjectType;
 }
 
 export const analyseDependencies = async ({
   destinationRoot,
   include,
   manifest: { packageJson },
+  type,
 }: Props): Promise<undefined | (() => Promise<void>)> => {
   const input = {
     dependencies: packageJson.dependencies ?? {},
@@ -70,6 +73,7 @@ export const analyseDependencies = async ({
   const output = {
     dependencies: { ...input.dependencies },
     devDependencies: { ...input.devDependencies },
+    type,
   };
 
   const processors = Object.values(dependencyMutators).reduce<TextProcessor[]>(
