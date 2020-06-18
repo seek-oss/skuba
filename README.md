@@ -152,10 +152,17 @@ This initialises a new directory and Git repository.
   a message queue is employed between the source topic and the Lambda function,
   and unprocessed events are sent to a dead-letter queue for manual triage.
 
+- `oss-npm-package`
+
+  A public npm package published via [semantic-release] pipeline.
+
+  This is intended for [seek-oss] projects.
+
 - `private-npm-package`
 
-  Set up a new private npm module published using a semantic release pipeline.
-  At the moment this only supports the `@seek` private npm org.
+  A private npm package published via [semantic-release] pipeline.
+
+  This is intended for [SEEK-Jobs] projects under the `@seek` npm org.
 
 - `github →` (experimental)
 
@@ -167,6 +174,9 @@ This initialises a new directory and Git repository.
 [aws lambda]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#lambda
 [koa]: https://koajs.com/
 [resource api]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#resource-api
+[seek-jobs]: https://github.com/SEEK-Jobs
+[seek-oss]: https://github.com/seek-oss
+[semantic-release]: https://github.com/semantic-release/semantic-release/
 [serverless]: https://serverless.com/
 [worker]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#worker
 

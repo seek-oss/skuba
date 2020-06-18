@@ -1,0 +1,26 @@
+{
+  "dependencies": {},
+  "description": "<%- description %>",
+  "devDependencies": {
+    "skuba": "*"
+  },
+  "files": ["lib*/**/*.d.ts", "lib*/**/*.js", "lib*/**/*.js.map"],
+  "license": "MIT",
+  "main": "./lib-commonjs/index.js",
+  "module": "./lib-es2015/index.js",
+  "name": "<%- moduleName %>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/<%- orgName %>/<%- repoName %>.git"
+  },
+  "scripts": {
+    "build": "skuba build-package",
+    "format": "skuba format",
+    "lint": "skuba lint",
+    "release": "yarn build && skuba release",
+    "test": "skuba test"
+  },
+  "sideEffects": false,
+  "types": "./lib-types/index.d.ts",
+  "version": "0.0.0-semantically-released"
+}
