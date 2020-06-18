@@ -9,18 +9,24 @@ import { ProjectType } from './manifest';
 
 export type TemplateConfig = t.Static<typeof TemplateConfig>;
 
-export const TemplateConfig = t.Record({
-  entryPoint: t.String.Or(t.Undefined),
-  fields: t.Array(
-    t.Record({
-      name: t.String,
-      message: t.String,
-      initial: t.String,
-      validate: t.Function.Or(t.Undefined),
+export const TemplateConfig = t
+  .Record({
+    entryPoint: t.String.Or(t.Undefined),
+    fields: t.Array(
+      t.Record({
+        name: t.String,
+        message: t.String,
+        initial: t.String,
+        validate: t.Function.Or(t.Undefined),
+      }),
+    ),
+    type: ProjectType.Or(t.Undefined),
+  })
+  .And(
+    t.Partial({
+      noSkip: t.Boolean.Or(t.Undefined),
     }),
-  ),
-  type: ProjectType.Or(t.Undefined),
-});
+  );
 
 export const TEMPLATE_CONFIG_FILENAME = 'skuba.template.js';
 

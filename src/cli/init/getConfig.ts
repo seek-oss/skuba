@@ -159,7 +159,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 
   await cloneTemplate(templateName, destinationDir);
 
-  const { entryPoint, fields, type } = getTemplateConfig(
+  const { entryPoint, fields, noSkip, type } = getTemplateConfig(
     path.join(process.cwd(), destinationDir),
   );
 
@@ -174,7 +174,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     };
   }
 
-  const shouldContinue = await confirmShouldContinue(fields);
+  const shouldContinue = noSkip ? true : await confirmShouldContinue(fields);
 
   if (shouldContinue) {
     log.newline();
@@ -255,11 +255,16 @@ const configureFromPipe = async (): Promise<InitConfig> => {
 
   await cloneTemplate(templateName, destinationDir);
 
-  const { entryPoint, fields, type } = getTemplateConfig(
+  const { entryPoint, fields, noSkip, type } = getTemplateConfig(
     path.join(process.cwd(), destinationDir),
   );
 
   if (!templateComplete) {
+    if (noSkip) {
+      log.err('Templating for', log.bold(templateName), 'cannot be skipped.');
+      process.exit(1);
+    }
+
     return {
       ...result.value,
       entryPoint,

@@ -18,5 +18,7 @@ module.exports = {
       initial: 'This is my first module',
     },
   ],
+  // `moduleName` is required for a valid `package.json`
+  noSkip: true,
   type: 'package',
 };
