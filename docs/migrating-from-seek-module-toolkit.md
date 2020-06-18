@@ -61,49 +61,15 @@ smt format:check → skuba lint
 smt lint → skuba lint
 ```
 
-`seek-module-toolkit` retained support for [TSLint] configurations.
+`seek-module-toolkit <= 4` retained support for [TSLint] configurations.
 [TSLint is deprecated and will go out of support by December 2020.](https://github.com/palantir/tslint/issues/4534)
 
 `skuba` enforces [ESLint] and bundles a more modern set of linting rules.
-We've included some general tips below;
-if you're stuck on something, feel free to reach out in `#typescriptification`.
+See our [ESLint guide] for some tips, and reach out in `#typescriptification` if you get stuck on anything.
 
 [eslint]: https://eslint.org/
+[eslint guide]: ./eslint.md
 [tslint]: https://palantir.github.io/tslint/
-
-### Avoid `any` and `object`
-
-Our ESLint configuration introduces stricter rules around unsafe type usage.
-
-Consider the following alternatives:
-
-- Use `unknown` for a value whose type is truly unknown. This is a type-safe alternative to `any` that the TypeScript ecosystem is moving towards.
-
-  ```diff
-  - const data = JSON.parse(str);
-  + const data = JSON.parse(str) as unknown;
-  ```
-
-- Prove the value has a specific type using a [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards) or runtime validation library.
-
-  ```diff
-  - const safeData = inputData as any;
-  + const safeData = RuntimeValidator.check(inputData);
-  ```
-
-- Use `Record<PropertyKey, unknown>` to indicate an object with unknown properties.
-
-  ```diff
-  - const isObject = (data: unknown): data is object => { ... };
-  + const isObject = (data: unknown): data is Record<PropertyKey, unknown> => { ... };
-  ```
-
-- Disable the specific ESLint rule for the problematic line.
-
-  ```typescript
-  /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
-  const takeAnyBody = ctx.request.body;
-  ```
 
 ## Committing and releasing
 
