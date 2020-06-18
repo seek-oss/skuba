@@ -67,6 +67,7 @@ node_modules*/
 
 .DS_Store
 .npmrc
+*.tgz
 *.tsbuildinfo
 npm-debug.log
 package-lock.json
