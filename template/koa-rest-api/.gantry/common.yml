@@ -4,6 +4,9 @@ image: '{{values "prodAccountId"}}.dkr.ecr.ap-southeast-2.amazonaws.com/{{values
 region: ap-southeast-2
 service: '<%- serviceName %>'
 
+# TODO: add data classification tags
+# datadogSecretId: arn:aws:secretsmanager:ap-southeast-2:?:secret:?
+
 tags:
   # TODO: add data classification tags
   # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers
