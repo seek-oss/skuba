@@ -23,6 +23,7 @@ export const rootLogger = pino({
     paths: [
       'err.config.headers.Authorization',
       'err.config.headers.authorization',
+      'err.config.sockets',
       'err.request.headers.authorization',
       'err.request.config.headers.Authorization',
       'err.request.config.headers.authorization',
