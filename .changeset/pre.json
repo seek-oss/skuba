@@ -1,0 +1,36 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "3.6.0"
+  },
+  "changesets": [
+    "brown-chairs-occur",
+    "chilly-islands-hang",
+    "chilly-planes-mix",
+    "chilly-wombats-notice",
+    "cold-ghosts-poke",
+    "curly-walls-clean",
+    "dry-ladybugs-admire",
+    "dull-oranges-sparkle",
+    "fair-teachers-sleep",
+    "famous-carpets-matter",
+    "five-glasses-do",
+    "happy-seals-push",
+    "lazy-rings-double",
+    "long-cows-sit",
+    "loud-horses-occur",
+    "pretty-dragons-know",
+    "rich-lemons-crash",
+    "sixty-otters-prove",
+    "small-penguins-change",
+    "soft-cars-compete",
+    "stale-jeans-peel",
+    "stupid-apples-exist",
+    "swift-dryers-watch",
+    "tame-mangos-lie",
+    "thin-tigers-hunt",
+    "warm-radios-help",
+    "wet-kings-pay"
+  ]
+}

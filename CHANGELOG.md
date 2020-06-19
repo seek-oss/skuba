@@ -1,5 +1,80 @@
 # skuba
 
+## 3.7.0-beta.5
+
+### Minor Changes
+
+- 7a967cd: **configure:** Support migration from `seek-module-toolkit`
+
+  `seek-module-toolkit` users can now install `skuba` and run `skuba configure` to migrate their configuration.
+
+  Care should be taken around the [change in build directories](https://github.com/seek-oss/skuba/blob/master/docs/migrating-from-seek-module-toolkit.md#building).
+
+- 76d40a9: **eslint:** skuba is now usable as a shareable config
+
+  ```javascript
+  // .eslintrc.js
+
+  module.exports = {
+    // This can be used in place of require.resolve('skuba/config/eslint')
+    extends: ['skuba'],
+  };
+  ```
+
+- b23bd23: **jest:** skuba is now usable as a preset
+
+  ```javascript
+  // jest.config.js
+
+  const { testPathIgnorePatterns } = require('skuba/config/jest');
+
+  module.exports = {
+    // This can be used in place of ...require('skuba/config/jest')
+    preset: 'skuba',
+
+    // This is still necessary as Jest doesn't deep-merge presets
+    testPathIgnorePatterns: [...testPathIgnorePatterns, '/test\\.ts'],
+  };
+  ```
+
+- 5c138fb: **configure:** Replace relocated dependencies
+
+  `skuba configure` now replaces the following dependencies and updates their import paths via naive find-and-replace:
+
+  - `@seek/koala → seek-koala`
+  - `@seek/node-datadog-custom-metrics → seek-datadog-custom-metrics`
+  - `@seek/skuba → skuba`
+  - `@seek/skuba-dive → skuba-dive`
+
+- b85b4b3: **init:** Commit initial template files and configure default remote
+- cbce20b: **format, lint:** Enforce TSDoc syntax
+- f39abdc: **template/oss-npm-package:** Add new template
+
+  This is intended for [seek-oss](https://github.com/seek-oss) projects.
+
+### Patch Changes
+
+- 0cbe50e: **configure:** List skuba upgrade upfront
+- 5ec72d5: **configure, init:** Avoid unnecessary file writes during templating
+- 5753b38: **template/lambda-sqs-worker:** Drop `hot-shots` dependency
+- 0c1e129: **configure, init:** Sort dependencies
+- 93cdf6c: **template:** Redact `Authorization` headers in logs
+- 1b9b9c4: **template/package:** Make prompt unskippable
+- 676030a: **template/private-npm-package:** Fix ReferenceError on init
+- f36b136: **help:** Show `build-package` correctly
+- 9edfd74: **configure:** List filtered devDependencies upfront
+- 8f862f5: **configure, init:** `.dockerignore` the `.gantry` folder. This should decrease build times.
+- 14e7b92: **template/koa-rest-api:** Ensure lint passes on init
+- bac749a: **init:** Extend validation on initial GitHub fields
+- cbce20b: **template/package:** Drop module aliasing from `tsconfig.json`
+- 72c2e2c: **configure:** Reserve skuba-managed sections in ignore files
+- 77744b7: **configure, init:** `.gitignore` archives created by `npm pack`
+- bea10c7: **template/private-npm-package:** Include a half-decent README
+- eac8ae5: **configure, init:** `.dockerignore` the `.git` folder. This should decrease build times.
+- 63d9f01: **configure:** Add notice for smt migrations
+- 56cc9ef: **template:** Drop duplicate team name prompt
+- 2169513: **template/koa-rest-api:** Use Koala's error handler
+
 ## 3.6.0
 
 ### Minor Changes
