@@ -51,6 +51,29 @@ You should remove workarounds such as:
 
 - Varying the referenced path of non-JS assets based on whether the code is source or compiled (i.e. using `__filename`).
 
+After running `skuba configure`,
+double check that the `package.json` fields look sensible.
+Expect something like this:
+
+```jsonc
+{
+  "files": ["lib*/**/*.d.ts", "lib*/**/*.js", "lib*/**/*.js.map"],
+  "main": "./lib-commonjs/index.js",
+  "main": "./lib-es2015/index.js",
+  "types": "./lib-types/index.d.ts"
+}
+```
+
+You may test out the packaging changes by either:
+
+- Pushing your changes to a `beta` Git branch, which releases a beta version on npm.
+
+  In a consuming repo, you can then `yarn install` the beta version to give it a whirl.
+
+- Locally packaging with `yarn build`, then `npm pack`.
+
+  In a consuming repo, you can then `yarn add ../path/to/package.tgz` the local version to give it a whirl.
+
 ## Formatting and linting
 
 ```shell

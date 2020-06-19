@@ -1,6 +1,7 @@
 import { Select } from 'enquirer';
 import { NormalizedReadResult } from 'read-pkg-up';
 
+import { log } from '../../utils/logging';
 import { PROJECT_TYPES, ProjectType } from '../../utils/manifest';
 import { TemplateConfig } from '../../utils/template';
 import { hasProp } from '../../utils/validation';
@@ -31,6 +32,7 @@ export const getProjectType = async ({
       ? 'package'
       : 'application';
 
+  log.newline();
   const projectTypePrompt = new Select({
     choices: PROJECT_TYPES,
     message: 'Project type:',
