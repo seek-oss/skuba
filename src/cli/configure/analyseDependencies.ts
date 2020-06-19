@@ -8,7 +8,7 @@ import { TextProcessor, copyFiles } from '../../utils/copy';
 import { log } from '../../utils/logging';
 import { getSkubaVersion } from '../../utils/version';
 
-import { diffDependencies } from './analysis/package';
+import { diffDependencies, generateNotices } from './analysis/package';
 import * as dependencyMutators from './dependencies';
 import { formatPackage } from './processing/package';
 import { DependencyDiff } from './types';
@@ -72,6 +72,8 @@ export const analyseDependencies = async ({
     devDependencies: { ...input.devDependencies },
   };
 
+  const printNotices = generateNotices(input);
+
   const processors = Object.values(dependencyMutators).reduce<TextProcessor[]>(
     (acc, mutate) => {
       const newProcessors = mutate(output);
@@ -107,6 +109,8 @@ export const analyseDependencies = async ({
 
   log.newline();
   const hasDevDependencyDiff = logDiff(devDependencyDiff);
+
+  printNotices();
 
   const packageJsonFilepath = path.join(destinationRoot, 'package.json');
 
