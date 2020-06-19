@@ -108,7 +108,7 @@ Here are some branches that **semantic-release** supports by default:
 For more information, see the **semantic-release** docs on [triggering a release].
 
 [distribution tags]: https://docs.npmjs.com/adding-dist-tags-to-packages
-[oss npm package guidance]: https://github.com/SEEK-Jobs/seek-oss-ci/blob/master/NPM_PACKAGES.md#requesting-access
+[oss npm package guidance]: https://github.com/SEEK-Jobs/seek-oss-ci/blob/master/NPM_PACKAGES.md#access-to-publish-to-npm
 [release workflow]: .github/workflows/release.yml
 [seek-oss]: https://github.com/seek-oss
 [seek's open source rfc]: https://rfc.skinfra.xyz/RFC016-Open-Source.html
