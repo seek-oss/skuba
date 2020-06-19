@@ -30,6 +30,7 @@ module.exports = {
   parserOptions: {
     project: './tsconfig.json',
   },
+  plugins: ['eslint-plugin-tsdoc'],
   rules: {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-floating-promises': 'error',
@@ -68,6 +69,8 @@ module.exports = {
     'jest/prefer-to-have-length': 'error',
     'jest/prefer-todo': 'error',
     'jest/valid-title': 'error',
+
+    'tsdoc/syntax': 'error',
 
     'no-use-before-define': 'off',
     'sort-imports': [

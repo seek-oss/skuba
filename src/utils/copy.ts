@@ -34,7 +34,7 @@ export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
 const copyFile = async (
   sourcePath: string,
   destinationPath: string,
-  processors: Array<TextProcessor>,
+  { overwrite = true, processors }: CopyFilesOptions,
 ) => {
   const oldContents = await fs.readFile(sourcePath, 'utf8');
 
@@ -47,7 +47,17 @@ const copyFile = async (
     return;
   }
 
-  await fs.writeFile(destinationPath, newContents);
+  try {
+    await fs.writeFile(destinationPath, newContents, {
+      flag: overwrite ? 'w' : 'wx',
+    });
+  } catch (err) {
+    if (isErrorWithCode(err, 'EEXIST')) {
+      return;
+    }
+
+    throw err;
+  }
 };
 
 interface CopyFilesOptions {
@@ -55,6 +65,7 @@ interface CopyFilesOptions {
   destinationRoot: string;
 
   include: (pathname: string) => boolean;
+  overwrite?: boolean;
   processors: Array<TextProcessor>;
 }
 
@@ -95,7 +106,7 @@ export const copyFiles = async (
       const destinationPath = toDestinationPath(filename);
 
       try {
-        await copyFile(sourcePath, destinationPath, opts.processors);
+        await copyFile(sourcePath, destinationPath, opts);
       } catch (err) {
         if (isErrorWithCode(err, 'EISDIR')) {
           await fs.ensureDir(destinationPath);

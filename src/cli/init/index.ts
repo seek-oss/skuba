@@ -39,15 +39,16 @@ export const init = async () => {
   const processors = [createEjsRenderer(templateData)];
 
   await copyFiles({
-    sourceRoot: destinationDir,
+    sourceRoot: BASE_TEMPLATE_DIR,
     destinationRoot: destinationDir,
     include,
+    // prefer template-specific files
+    overwrite: false,
     processors,
   });
 
-  // prefer skuba /template/base files
   await copyFiles({
-    sourceRoot: BASE_TEMPLATE_DIR,
+    sourceRoot: destinationDir,
     destinationRoot: destinationDir,
     include,
     processors,
