@@ -41,7 +41,7 @@ node_modules*/
   },
   ".eslintrc.js": Object {
     "data": "module.exports = {
-  extends: [require.resolve('skuba/config/eslint')],
+  extends: ['skuba'],
 };
 ",
     "operation": "A",

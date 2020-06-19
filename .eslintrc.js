@@ -1,12 +1,7 @@
-const config = require('./config/eslint');
-
 module.exports = {
-  ...config,
-
+  extends: ['skuba'],
   rules: {
-    ...config.rules,
-
-    // internal to skuba
+    // internal to skuba itself
     'no-process-exit': 'off',
   },
 };
