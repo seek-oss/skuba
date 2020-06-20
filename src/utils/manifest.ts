@@ -3,6 +3,8 @@
 import readPkgUp, { NormalizedPackageJson } from 'read-pkg-up';
 import * as t from 'runtypes';
 
+import { hasProp, hasStringProp } from './validation';
+
 export type ProjectType = t.Static<typeof ProjectType>;
 
 export const ProjectType = t.Union(
@@ -11,14 +13,6 @@ export const ProjectType = t.Union(
 );
 
 export const PROJECT_TYPES = ['application', 'package'] as const;
-
-interface PackageJson extends NormalizedPackageJson {
-  skuba?: {
-    entryPoint?: string | null;
-    template?: string | null;
-    version?: string;
-  };
-}
 
 const DEFAULT_ENTRY_POINT = 'src/app.ts';
 
@@ -41,11 +35,18 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
 export const getEntryPointFromManifest = async () => {
   const result = await readPkgUp();
 
-  if (typeof result?.packageJson === 'undefined') {
-    return DEFAULT_ENTRY_POINT;
-  }
+  return typeof result !== 'undefined' &&
+    hasStringProp(result.packageJson.skuba, 'entryPoint')
+    ? result.packageJson.skuba.entryPoint
+    : DEFAULT_ENTRY_POINT;
+};
+
+export const isBabelFromManifest = async () => {
+  const result = await readPkgUp();
 
   return (
-    (result.packageJson as PackageJson).skuba?.entryPoint ?? DEFAULT_ENTRY_POINT
+    typeof result !== 'undefined' &&
+    hasProp(result.packageJson.skuba, 'babel') &&
+    Boolean(result.packageJson.skuba.babel)
   );
 };
