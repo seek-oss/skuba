@@ -1,22 +1,22 @@
-export const mergeWithIgnoreFile = (templateFile: string) => (
-  inputFile?: string,
-) => {
-  if (typeof inputFile === 'undefined') {
-    return templateFile;
-  }
+export const mergeWithIgnoreFile = (rawTemplateFile: string) => {
+  const templateFile = rawTemplateFile.trim();
 
-  const replacedFile = inputFile.replace(
-    /# managed by skuba[\s\S]*# end managed by skuba/,
-    templateFile,
-  );
+  return (inputFile?: string) => {
+    if (typeof inputFile === 'undefined') {
+      return `${templateFile}\n`;
+    }
 
-  if (replacedFile.includes(templateFile)) {
-    return replacedFile;
-  }
+    const replacedFile = inputFile.replace(
+      /# managed by skuba[\s\S]*# end managed by skuba/,
+      templateFile,
+    );
 
-  const outputFile = [templateFile.trim(), inputFile.trim()]
-    .join('\n\n')
-    .trim();
+    if (replacedFile.includes(templateFile)) {
+      return replacedFile;
+    }
 
-  return `${outputFile}\n`;
+    const outputFile = [templateFile, inputFile.trim()].join('\n\n').trim();
+
+    return `${outputFile}\n`;
+  };
 };
