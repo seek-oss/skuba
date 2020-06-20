@@ -1,4 +1,4 @@
-export { PackageJson, TsConfigJson } from 'type-fest';
+export type { PackageJson, TsConfigJson } from 'type-fest';
 
 import { ProjectType } from '../../utils/manifest';
 

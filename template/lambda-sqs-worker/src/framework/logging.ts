@@ -3,7 +3,7 @@ import pino from 'pino';
 
 import { config } from 'src/config';
 
-export { Logger } from 'pino';
+export type { Logger } from 'pino';
 
 export const rootLogger = pino({
   base: {
