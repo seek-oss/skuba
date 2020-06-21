@@ -11,7 +11,9 @@
 > ["Using the TypeScript compiler is still the preferred way to build TypeScript."](https://devblogs.microsoft.com/typescript/typescript-and-babel-7/)
 
 The official TypeScript compiler ([tsc]) is the sensible default for building TypeScript projects.
-It's a simple tool that _just works_ and has type checking built-in.
+It's a simple tool that _just works_ and has type checking built-in,
+but [doesn't expose a plugin system].
+(See [ttypescript] for an unofficial implementation).
 
 [Babel] is a JavaScript compiler that is particularly useful in the frontend space.
 It lets you write modern or even experimental JavaScript,
@@ -40,9 +42,9 @@ That said, Babel presents a few potential benefits for `skuba`:
 
   `skuba`'s existing `tsc`-based build supports a single `src` alias via [skuba-dive]'s [register hook],
   which means we impose an unfortunate runtime dependency.
-
   The way that this hook must be imported is a bit magic and makes it difficult to execute arbitrary TypeScript source files,
-  as the hook must run before any aliased imports.
+  as the hook must be loaded before any aliased imports.
+
   (This is a big part of why `skuba` has the concept of an explicit entry point for a project.)
 
 - `ts-jest` can be dropped in favour of Jest's built-in Babel support,
@@ -107,9 +109,11 @@ That said, Babel presents a few potential benefits for `skuba`:
 - Build command is hardcoded to input directory `src` and output directory `lib`
 
 [babel]: https://babeljs.io/
+[doesn't expose a plugin system]: https://github.com/Microsoft/TypeScript/issues/14419
 [doesn't support all typescript language features]: https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats
 [register hook]: https://github.com/seek-oss/skuba-dive#register
 [skuba-dive]: https://github.com/seek-oss/skuba-dive
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html
+[ttypescript]: https://github.com/cevek/ttypescript
 [type-only imports and exports]: https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/#type-only-imports-exports
 [typecheck.macro]: https://github.com/vedantroy/typecheck.macro
