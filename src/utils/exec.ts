@@ -49,13 +49,20 @@ export const createExec = (opts: ExecOptions): Exec => (command, ...args) =>
 
 export const exec: Exec = (command, ...args) => runCommand(command, args);
 
-export const execConcurrently = (commands: ExecConcurrentlyCommand[]) =>
-  concurrently(
-    commands.map((command) => ({
-      ...command,
+export const execConcurrently = (commands: ExecConcurrentlyCommand[]) => {
+  const maxNameLength = commands.reduce(
+    (length, command) => Math.max(length, command.name.length),
+    0,
+  );
+
+  return concurrently(
+    commands.map(({ command, name }) => ({
+      command,
       env: envWithPath,
+      name: name.padEnd(maxNameLength),
     })),
   );
+};
 
 export const ensureCommands = async (...names: string[]) => {
   let success = true;

@@ -4,7 +4,7 @@ export const lint = () =>
   execConcurrently([
     {
       command: 'eslint --ext=js,ts .',
-      name: 'ESLint  ',
+      name: 'ESLint',
     },
     {
       command: 'prettier --check .',
@@ -12,6 +12,6 @@ export const lint = () =>
     },
     {
       command: 'tsc --incremental false --noEmit',
-      name: 'tsc     ',
+      name: 'tsc',
     },
   ]);
