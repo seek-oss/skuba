@@ -11,7 +11,7 @@
 > ["Using the TypeScript compiler is still the preferred way to build TypeScript."](https://devblogs.microsoft.com/typescript/typescript-and-babel-7/)
 
 The official TypeScript compiler ([tsc]) is the sensible default for building TypeScript projects.
-It's a simple tool that "just works" and has type checking built-in.
+It's a simple tool that _just works_ and has type checking built-in.
 
 [Babel] is a JavaScript compiler that is particularly useful in the frontend space.
 It lets you write modern or even experimental JavaScript,
@@ -57,7 +57,7 @@ That said, Babel presents a few potential benefits for `skuba`:
 > **Caution:** this is an experimental feature.
 > It may be significantly changed or even removed without a major version bump.
 
-1. `.babelrc.js`
+1. `babel.config.js`
 
    ```js
    module.exports = {
@@ -104,7 +104,7 @@ That said, Babel presents a few potential benefits for `skuba`:
 
 - Module alias support is hardcoded to `src`
 
-- Builds are limited to input directory `src` and output directory `lib`
+- Build command is hardcoded to input directory `src` and output directory `lib`
 
 [babel]: https://babeljs.io/
 [doesn't support all typescript language features]: https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats
