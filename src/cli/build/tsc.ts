@@ -1,10 +1,10 @@
-import { exec } from '../utils/exec';
+import { exec } from '../../utils/exec';
 
 const DEFAULT_ARGS = ['--project', 'tsconfig.build.json'] as const;
 
 const PROJECT_OPTS = new Set(['-p', '-project', '--project']);
 
-export const build = async () => {
+export const tsc = async () => {
   const args = process.argv.slice(2);
 
   const defaultArgs = args
