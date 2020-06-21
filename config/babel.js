@@ -1,8 +1,9 @@
 module.exports = () => {
   return {
     plugins: [
+      'babel-plugin-macros',
       [
-        'module-resolver',
+        'babel-plugin-module-resolver',
         {
           alias: {
             src: './src',
