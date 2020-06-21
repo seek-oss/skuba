@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "baseUrl": "src",
-    "incremental": true,
-    "moduleResolution": "node",
+    // TODO: set in /config/tsconfig.json
+    "isolatedModules": true,
     "removeComments": false
   },
   "exclude": ["lib*/**/*", "template/**/*"],
