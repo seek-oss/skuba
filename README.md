@@ -244,11 +244,10 @@ interface Export {
 Koa should work with minimal fuss:
 
 ```typescript
-// use this in tests and such
 export const app = new Koa();
 
-// module.exports and port for koa-cluster and skuba start
-module.exports = Object.assign(app, { port });
+// module.exports and port are required for koa-cluster
+module.exports = Object.assign(app, { app, port });
 ```
 
 ### `skuba test`

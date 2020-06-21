@@ -6,4 +6,4 @@ import { createApp } from 'src/framework/server';
 
 export const app = createApp(router.allowedMethods(), router.routes());
 
-module.exports = Object.assign(app, { port: config.port });
+module.exports = Object.assign(app, { app, port: config.port });
