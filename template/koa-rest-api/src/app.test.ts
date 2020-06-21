@@ -1,6 +1,6 @@
 import { agentFromApp } from 'src/testing/server';
 
-import app from './app';
+import { app } from './app';
 
 const agent = agentFromApp(app);
 
