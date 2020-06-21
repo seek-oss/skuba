@@ -10,7 +10,8 @@ node_modules
 exports[`mergeWithIgnoreFile identical 1`] = `
 "# managed by skuba
 node_modules
-# end managed by skuba"
+# end managed by skuba
+"
 `;
 
 exports[`mergeWithIgnoreFile provided with managed section and additional lines 1`] = `
