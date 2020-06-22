@@ -1,4 +1,5 @@
 import { getSkubaVersion } from '../../../utils/version';
+import { deleteFiles } from '../processing/deleteFiles';
 import { withPackage } from '../processing/package';
 import { merge } from '../processing/record';
 import { Module, Options } from '../types';
@@ -45,6 +46,8 @@ export const packageModule = async ({
   };
 
   return {
+    ...deleteFiles('.npmignore'),
+
     'package.json': withPackage((inputData) => {
       const outputData = merge(
         inputData,

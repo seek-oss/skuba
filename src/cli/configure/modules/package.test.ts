@@ -108,6 +108,7 @@ describe('packageModule', () => {
 
   it('overhauls divergent config', async () => {
     const inputFiles = {
+      '.npmignore': '**/*\n',
       'package.json': JSON.stringify({
         $name: 'secret-service',
         devDependencies: {
@@ -123,6 +124,8 @@ describe('packageModule', () => {
       inputFiles,
       defaultOpts,
     );
+
+    expect(outputFiles['.npmignore']).toBeUndefined();
 
     const outputData = parsePackage(outputFiles['package.json']);
 
