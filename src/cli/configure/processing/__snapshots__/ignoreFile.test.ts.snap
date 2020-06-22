@@ -2,14 +2,14 @@
 
 exports[`mergeWithIgnoreFile empty provided 1`] = `
 "# managed by skuba
-node_modules
+node_modules*/
 # end managed by skuba
 "
 `;
 
 exports[`mergeWithIgnoreFile identical 1`] = `
 "# managed by skuba
-node_modules
+node_modules*/
 # end managed by skuba
 "
 `;
@@ -19,7 +19,7 @@ exports[`mergeWithIgnoreFile provided with managed section and additional lines 
 .vscode
 
 # managed by skuba
-node_modules
+node_modules*/
 # end managed by skuba
 
 .DS_Store
@@ -27,9 +27,29 @@ node_modules
 "
 `;
 
+exports[`mergeWithIgnoreFile provided with managed section and fully superseded config 1`] = `
+"# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithIgnoreFile provided with managed section and partially superseded config 1`] = `
+"# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+
+system32
+
+*.zip
+"
+`;
+
 exports[`mergeWithIgnoreFile provided with no managed section 1`] = `
 "# managed by skuba
-node_modules
+node_modules*/
 # end managed by skuba
 
 .DS_Store
@@ -38,7 +58,7 @@ node_modules
 
 exports[`mergeWithIgnoreFile provided with outdated managed section 1`] = `
 "# managed by skuba
-node_modules
+node_modules*/
 .DS_Store
 # end managed by skuba
 "
@@ -49,7 +69,7 @@ exports[`mergeWithIgnoreFile provided with outdated managed section and addition
 .vscode
 
 # managed by skuba
-node_modules
+node_modules*/
 .DS_Store
 # end managed by skuba
 
