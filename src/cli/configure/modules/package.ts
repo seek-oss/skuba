@@ -52,6 +52,13 @@ export const packageModule = async ({
       );
 
       outputData.license = outputData.license ?? 'UNLICENSED';
+      outputData.scripts = outputData.scripts ?? {};
+
+      delete outputData.scripts.commit;
+      delete outputData.scripts['format:check'];
+      delete outputData.scripts['test:build'];
+      delete outputData.scripts['test:jest'];
+      delete outputData.typings;
 
       if (type === 'package') {
         outputData.files = (
@@ -62,8 +69,6 @@ export const packageModule = async ({
 
         outputData.version =
           outputData.version ?? '0.0.0-semantically-released';
-
-        outputData.scripts = outputData.scripts ?? {};
 
         // User-defined pre- and post-scripts are confusing and dropped by e.g.
         // Yarn 2.
@@ -93,11 +98,8 @@ export const packageModule = async ({
           outputData.types = './lib/index.d.ts';
         }
 
-        delete outputData.scripts.commit;
-        delete outputData.scripts['format:check'];
         delete outputData.scripts.prepublish;
         delete outputData.scripts.prerelease;
-        delete outputData.typings;
       }
 
       return outputData;

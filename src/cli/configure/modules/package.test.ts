@@ -114,7 +114,10 @@ describe('packageModule', () => {
           'pino-pretty': '0.0.1',
         },
         license: 'MIT',
-        scripts: {},
+        scripts: {
+          'test:jest': 'jest --coverage',
+          'test:build': 'tsc --noEmit --incremental false',
+        },
       }),
     };
 
@@ -130,6 +133,8 @@ describe('packageModule', () => {
     expect(outputData.license).toBe('MIT');
     expect(outputData.private).toBe(true);
     expect(outputData.scripts).toHaveProperty('build');
+    expect(outputData.scripts).not.toHaveProperty('test:build');
+    expect(outputData.scripts).not.toHaveProperty('test:jest');
   });
 
   it('overhauls seek-module-toolkit configuration', async () => {
