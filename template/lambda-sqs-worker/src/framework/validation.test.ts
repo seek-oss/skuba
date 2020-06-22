@@ -22,7 +22,9 @@ describe('validateJson', () => {
 
     expect(() =>
       validateJson(input, IdDescription),
-    ).toThrowErrorMatchingInlineSnapshot(`"Expected string, but was null"`);
+    ).toThrowErrorMatchingInlineSnapshot(
+      `"Expected string, but was null in id"`,
+    );
   });
 
   it('blocks missing prop', () => {
@@ -31,7 +33,7 @@ describe('validateJson', () => {
     expect(() =>
       validateJson(input, IdDescription),
     ).toThrowErrorMatchingInlineSnapshot(
-      `"Expected string, but was undefined"`,
+      `"Expected string, but was undefined in id"`,
     );
   });
 
