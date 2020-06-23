@@ -28,7 +28,7 @@
     "release": "yarn build && changeset publish",
     "stage": "changeset version && yarn format",
     "skuba": "ts-node src/skuba",
-    "test": "jest",
+    "test": "yarn skuba test",
     "test:template": "scripts/test-template.sh"
   },
   "repository": {
