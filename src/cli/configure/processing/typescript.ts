@@ -42,21 +42,21 @@ const createModuleExportsTransformer = (
     rootNode,
     (node) => {
       if (
-        !ts.isExpressionStatement(node) ||
-        !ts.isBinaryExpression(node.expression) ||
-        !ts.isPropertyAccessExpression(node.expression.left) ||
-        !ts.isIdentifier(node.expression.left.expression) ||
-        node.expression.left.expression.escapedText !== 'module' ||
-        node.expression.left.name.text !== 'exports' ||
-        node.expression.operatorToken.kind !== ts.SyntaxKind.EqualsToken ||
-        !ts.isObjectLiteralExpression(node.expression.right)
+        ts.isExpressionStatement(node) &&
+        ts.isBinaryExpression(node.expression) &&
+        ts.isPropertyAccessExpression(node.expression.left) &&
+        ts.isIdentifier(node.expression.left.expression) &&
+        node.expression.left.expression.escapedText === 'module' &&
+        node.expression.left.name.text === 'exports' &&
+        node.expression.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+        ts.isObjectLiteralExpression(node.expression.right)
       ) {
-        return node;
+        const props = transformProps(node.expression.right.properties);
+
+        return createModuleExportsExpression(props);
       }
 
-      const props = transformProps(node.expression.right.properties);
-
-      return createModuleExportsExpression(props);
+      return node;
     },
     context,
   );
