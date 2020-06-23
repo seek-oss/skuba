@@ -72,7 +72,14 @@ export const init = async () => {
 
   log.newline();
   await initialiseRepo(exec, templateData);
-  await exec('yarn', 'add', '--dev', '--exact', '--silent', 'skuba');
+  await exec(
+    'yarn',
+    'add',
+    '--dev',
+    '--exact',
+    '--silent',
+    `skuba@${skubaVersion}`,
+  );
   await commitChanges(exec, `Clone ${templateName}`);
 
   log.newline();
