@@ -53,6 +53,32 @@ describe('jestModule', () => {
     expect(outputFiles['jest.setup.ts']).toBe(inputFiles['jest.setup.ts']);
   });
 
+  it('migrates Jest options', async () => {
+    const inputFiles = {
+      'jest.config.js': `module.exports = {
+        collectCoverage: true,
+        coverageThreshold: {},
+        globalSetup: "./globalSetup.js",
+      };`,
+      'jest.setup.ts': "process.env.ENVIRONMENT = 'myMachine'",
+    };
+
+    const outputFiles = await executeModule(
+      jestModule,
+      inputFiles,
+      defaultOpts,
+    );
+
+    expect(outputFiles['jest.config.js']).toContain('skuba');
+    expect(outputFiles['jest.config.js']).toContain('coverageThreshold');
+    expect(outputFiles['jest.config.js']).toContain(
+      "globalSetup: './globalSetup.js',",
+    );
+    expect(outputFiles['jest.config.js']).not.toContain('collectCoverage');
+    expect(outputFiles['jest.config.js']).not.toContain('skydive');
+    expect(outputFiles['jest.setup.ts']).toBe(inputFiles['jest.setup.ts']);
+  });
+
   it('preserves config extending module import', async () => {
     const inputFiles = {
       'jest.config.js':
