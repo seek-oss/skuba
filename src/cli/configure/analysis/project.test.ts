@@ -4,11 +4,6 @@ import { defaultOpts } from '../testing/module';
 import * as project from './project';
 import { diffFiles } from './project';
 
-jest.mock('latest-version', () => ({
-  __esModule: true,
-  default: () => Promise.resolve('0.0.1'),
-}));
-
 describe('diffFiles', () => {
   it('works from scratch', async () => {
     jest

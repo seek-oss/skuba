@@ -71,6 +71,7 @@ export const configure = async () => {
     destinationRoot,
     include,
     manifest,
+    type,
   });
 
   if (fixDependencies) {
@@ -95,9 +96,11 @@ export const configure = async () => {
     }
   }
 
-  if (fixConfiguration || fixDependencies) {
+  if (fixDependencies) {
     await exec('yarn', 'install', '--silent');
+  }
 
+  if (fixConfiguration || fixDependencies) {
     log.newline();
     log.ok(`Try running ${log.bold('skuba format')}.`);
   }

@@ -1,46 +1,32 @@
 import path from 'path';
 
-import latestVersion from 'latest-version';
-
+import { SKUBA_DIVE_HOOKS } from '../dependencies/skubaDive';
 import { prependImport, stripImports } from '../processing/javascript';
 import { loadFiles } from '../processing/loadFiles';
-import { createDependencyFilter, withPackage } from '../processing/package';
-import { merge } from '../processing/record';
+import { parsePackage } from '../processing/package';
 import { Module, Options } from '../types';
-
-const BUNDLED_DEPENDENCIES = ['module-alias', 'source-map-support'] as const;
 
 const DEFAULT_FILENAME = 'src/register.ts';
 
-const filterDependencies = createDependencyFilter(
-  BUNDLED_DEPENDENCIES,
-  'dependencies',
-);
-
-export const skubaDiveModule = async ({
+export const skubaDiveModule = ({
   entryPoint,
   type,
 }: Options): Promise<Module> => {
   // skuba-dive is a runtime component; it's not appropriate for packages
   if (type === 'package') {
-    return {};
+    return Promise.resolve({});
   }
 
-  const skubaDiveVersion = await latestVersion('skuba-dive');
-
-  const skubaDiveData = {
-    dependencies: {
-      'skuba-dive': skubaDiveVersion,
-    },
-  };
-
-  return {
-    ...loadFiles(DEFAULT_FILENAME),
+  return Promise.resolve({
+    ...loadFiles(DEFAULT_FILENAME, 'package.json'),
 
     [entryPoint]: (inputFile, files) => {
+      const packageJson = parsePackage(files['package.json']);
+
       const registerFile = files[DEFAULT_FILENAME];
 
       if (
+        !packageJson?.dependencies?.['skuba-dive'] ||
         typeof inputFile === 'undefined' ||
         inputFile.includes('skuba-dive/register') ||
         registerFile?.includes('skuba-dive/register')
@@ -48,7 +34,7 @@ export const skubaDiveModule = async ({
         return inputFile;
       }
 
-      const outputFile = stripImports(BUNDLED_DEPENDENCIES, inputFile);
+      const outputFile = stripImports(SKUBA_DIVE_HOOKS, inputFile);
 
       const relativeToSrc = path.posix.relative(
         path.join(entryPoint, '..'),
@@ -68,11 +54,5 @@ export const skubaDiveModule = async ({
 
       return prependImport(`${relativeToSrc}/register`, outputFile);
     },
-
-    'package.json': withPackage((inputData) => {
-      const outputData = merge(inputData, skubaDiveData);
-
-      return filterDependencies(outputData);
-    }),
-  };
+  });
 };

@@ -119,9 +119,6 @@ module.exports = {
   },
   "package.json": Object {
     "data": "{
-  \\"dependencies\\": {
-    \\"skuba-dive\\": \\"0.0.1\\"
-  },
   \\"license\\": \\"UNLICENSED\\",
   \\"private\\": true,
   \\"scripts\\": {

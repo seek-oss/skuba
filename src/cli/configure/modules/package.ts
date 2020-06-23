@@ -35,9 +35,6 @@ export const packageModule = async ({
   };
 
   const recurringData = {
-    devDependencies: {
-      skuba: version,
-    },
     skuba: {
       entryPoint,
       type,

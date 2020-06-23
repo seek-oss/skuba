@@ -5,6 +5,7 @@ import { ProjectType } from '../../utils/manifest';
 export interface DependencySet {
   dependencies: Record<string, string>;
   devDependencies: Record<string, string>;
+  type: ProjectType;
 }
 
 export type DependencyDiff = Record<
