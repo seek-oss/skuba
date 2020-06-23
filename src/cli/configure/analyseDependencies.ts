@@ -68,6 +68,7 @@ export const analyseDependencies = async ({
   const input = {
     dependencies: packageJson.dependencies ?? {},
     devDependencies: packageJson.devDependencies ?? {},
+    type,
   };
 
   const output = {
