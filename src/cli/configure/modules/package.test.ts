@@ -109,6 +109,9 @@ describe('packageModule', () => {
   it('overhauls divergent config', async () => {
     const inputFiles = {
       '.npmignore': '**/*\n',
+      'jest.config.js': `module.exports = {
+        collectCoverage: true,
+      };`,
       'package.json': JSON.stringify({
         $name: 'secret-service',
         devDependencies: {
@@ -136,6 +139,7 @@ describe('packageModule', () => {
     expect(outputData.license).toBe('MIT');
     expect(outputData.private).toBe(true);
     expect(outputData.scripts).toHaveProperty('build');
+    expect(outputData.scripts).toHaveProperty('test', 'skuba test --coverage');
     expect(outputData.scripts).not.toHaveProperty('test:build');
     expect(outputData.scripts).not.toHaveProperty('test:jest');
   });
