@@ -10,12 +10,22 @@
 ## TL;DR
 
 ```shell
-# Migrate to skuba via interactive prompt.
-yarn add --dev --exact skuba && yarn skuba configure
+# Ensure you're using seek-module-toolkit v4.
+# Renovate should automatically open a PR for this upgrade.
+# If you haven't configured Renovate on your repository, reach out in `#github`.
+yarn smt version
+# smt version 4.0.0
+
+# Upgrade ESLint and Prettier configs first via interactive prompt.
+# You can skip to `yarn smt migrate` if you're feeling adventurous.
+yarn smt configure
 
 # Expect to manually fix some linting violations.
 # See the Formatting and linting section.
 yarn format
+
+# Migrate to skuba via interactive prompt.
+yarn smt migrate
 
 # Ensure your files are being bundled as expected.
 # See the Building section.
