@@ -88,7 +88,7 @@ describe('tsconfigModule', () => {
     assertDefined(outputData);
     expect(outputData.compilerOptions!.outDir).toBe('lib');
     expect(outputData.compilerOptions!.target).toBe('ES2020');
-    expect(outputData.exclude).toContain('lib/**/*');
+    expect(outputData.exclude).toContain('lib*/**/*');
     expect(outputData.exclude).toContain('.idea');
     expect(outputData.extends).toBe('skuba/config/tsconfig.json');
     expect(outputData.include).toBeUndefined();
