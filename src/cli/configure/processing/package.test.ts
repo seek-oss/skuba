@@ -138,7 +138,10 @@ describe('withPackage', () => {
           \\"d\\": \\"4\\",
           \\"e\\": \\"5\\"
         },
-        \\"files\\": [\\"b\\", \\"a\\"],
+        \\"files\\": [
+          \\"b\\",
+          \\"a\\"
+        ],
         \\"scripts\\": {
           \\"prebuild\\": \\"rm -rf system32\\",
           \\"build\\": \\"npm install freebsd\\"
