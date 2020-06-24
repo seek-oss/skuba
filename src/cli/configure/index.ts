@@ -3,7 +3,7 @@ import path from 'path';
 import { Select } from 'enquirer';
 
 import { createInclusionFilter } from '../../utils/copy';
-import { ensureCommands, exec } from '../../utils/exec';
+import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogo } from '../../utils/logo';
 import { BASE_TEMPLATE_DIR } from '../../utils/template';
@@ -97,6 +97,12 @@ export const configure = async () => {
   }
 
   if (fixDependencies) {
+    const exec = createExec({
+      stdio: 'pipe',
+      streamStdio: 'yarn',
+    });
+
+    log.plain('Installing dependencies...');
     await exec('yarn', 'install', '--silent');
   }
 

@@ -68,10 +68,16 @@ export const init = async () => {
     }),
   ]);
 
-  const exec = createExec({ cwd: destinationDir });
+  const exec = createExec({
+    cwd: destinationDir,
+    stdio: 'pipe',
+    streamStdio: 'yarn',
+  });
 
   log.newline();
   await initialiseRepo(exec, templateData);
+
+  log.plain('Installing dependencies...');
   await exec(
     'yarn',
     'add',
@@ -80,6 +86,7 @@ export const init = async () => {
     '--silent',
     `skuba@${skubaVersion}`,
   );
+
   await commitChanges(exec, `Clone ${templateName}`);
 
   log.newline();
