@@ -35,7 +35,7 @@ export const formatPackage = (data: PackageJson) => {
     delete data.version;
   }
 
-  return formatObject(data);
+  return formatObject(data, 'package.json');
 };
 
 export const parsePackage = (
