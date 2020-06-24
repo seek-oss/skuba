@@ -81,7 +81,7 @@ export const downloadGitHubTemplate = async (
   log.newline();
   log.warn(
     'You may need to run',
-    log.bold('skuba configure'),
+    log.bold('yarn skuba configure'),
     'once this is done.',
   );
 };
