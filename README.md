@@ -46,13 +46,13 @@ Related reading:
 To create a new project:
 
 ```shell
-npx skuba@3.7.0-beta.6 init
+npx skuba init
 ```
 
 To bootstrap an existing project:
 
 ```shell
-npx skuba@3.7.0-beta.6 configure
+npx skuba configure
 ```
 
 ## CLI reference
