@@ -1,5 +1,6 @@
 import normalizeData from 'normalize-package-data';
 
+import { isObject } from '../../../utils/validation';
 import { PackageJson } from '../types';
 
 import { formatObject, parseObject } from './json';
@@ -12,12 +13,10 @@ const sortRecord = <T>(record: Record<string, T>): Record<string, T> =>
 export const formatPackage = (data: PackageJson) => {
   normalizeData(data);
 
-  if (data.dependencies) {
-    data.dependencies = sortRecord(data.dependencies);
-  }
-
-  if (data.devDependencies) {
-    data.devDependencies = sortRecord(data.devDependencies);
+  for (const [key, value] of Object.entries(data)) {
+    if (isObject(value) && !Array.isArray(value)) {
+      data[key] = sortRecord(value);
+    }
   }
 
   // normalize-package-data fields that aren't useful for applications

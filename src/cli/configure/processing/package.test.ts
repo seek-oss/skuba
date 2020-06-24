@@ -103,7 +103,7 @@ describe('withPackage', () => {
       "
     `));
 
-  it('sorts dependencies', () =>
+  it('sorts fields', () =>
     expect(
       withPackage((data) => data)(
         JSON.stringify({
@@ -115,6 +115,11 @@ describe('withPackage', () => {
           dependencies: {
             b: '2',
             a: '1',
+          },
+          files: ['b', 'a'],
+          skuba: {
+            version: '1.0.0',
+            type: 'application',
           },
         }),
       ),
@@ -128,6 +133,11 @@ describe('withPackage', () => {
           \\"c\\": \\"3\\",
           \\"d\\": \\"4\\",
           \\"e\\": \\"5\\"
+        },
+        \\"files\\": [\\"b\\", \\"a\\"],
+        \\"skuba\\": {
+          \\"type\\": \\"application\\",
+          \\"version\\": \\"1.0.0\\"
         }
       }
       "
