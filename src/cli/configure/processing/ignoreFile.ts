@@ -19,14 +19,21 @@ export const generateSimpleVariants = (patterns: string[]) => {
 
   for (const pattern of patterns) {
     const deAsterisked = pattern.replace(ASTERISKS, '');
+    const stripped = deAsterisked
+      .replace(LEADING_SLASH, '')
+      .replace(TRAILING_SLASH, '');
 
     set.add(pattern);
     set.add(deAsterisked);
     set.add(deAsterisked.replace(LEADING_SLASH, ''));
     set.add(deAsterisked.replace(TRAILING_SLASH, ''));
-    set.add(
-      deAsterisked.replace(LEADING_SLASH, '').replace(TRAILING_SLASH, ''),
-    );
+    set.add(stripped);
+
+    if (stripped !== '') {
+      set.add(`/${stripped}`);
+      set.add(`${stripped}/`);
+      set.add(`/${stripped}/`);
+    }
   }
 
   set.delete('');

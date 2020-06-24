@@ -7,6 +7,6 @@
     },
     "target": "ES2019"
   },
-  "exclude": ["lib/**/*"],
+  "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"
 }

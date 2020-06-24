@@ -92,7 +92,10 @@ export const copyFiles = async (
   const filenames = await fs.readdir(currentSourceDir);
 
   const toDestinationPath = (filename: string) =>
-    path.join(currentDestinationDir, filename.replace(/^_/, ''));
+    path.join(
+      currentDestinationDir,
+      filename.replace(/^_\./, '.').replace(/^_package\.json/, 'package.json'),
+    );
 
   const filteredFilenames = filenames.filter((filename) =>
     opts.include(
