@@ -88,8 +88,10 @@ describe('renovateModule', () => {
 
   it('preserves extended config', async () => {
     const inputFiles = {
-      '.github/renovate.json5':
-        '{"extends": ["github>seek-oss/rynovate:non-critical"], "ignorePaths": []}',
+      '.github/renovate.json5': `{
+    "extends": ["github>seek-oss/rynovate:non-critical"],
+    "ignorePaths": []
+}`,
     };
 
     const outputFiles = await executeModule(
@@ -98,9 +100,11 @@ describe('renovateModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.github/renovate.json5']).toBe(
-      inputFiles['.github/renovate.json5'],
-    );
+    expect(outputFiles['.github/renovate.json5']).toBe(`{
+  extends: ['github>seek-oss/rynovate:non-critical'],
+  ignorePaths: [],
+}
+`);
   });
 
   it('migrates extended config', async () => {
@@ -115,7 +119,7 @@ describe('renovateModule', () => {
     );
 
     expect(outputFiles['.github/renovate.json5']).toBe(
-      inputFiles['renovate.json'],
+      "{ extends: ['seek'] }\n",
     );
 
     expect(outputFiles['renovate.json']).toBeUndefined();

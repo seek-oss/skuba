@@ -1,3 +1,5 @@
+import prettier from 'prettier';
+
 import { readBaseTemplateFile } from '../../../utils/template';
 import { deleteFiles } from '../processing/deleteFiles';
 import { withPackage } from '../processing/package';
@@ -26,7 +28,14 @@ export const renovateModule = async ({ type }: Options): Promise<Module> => {
       ]);
 
       // allow customised Renovate configs that extend a SEEK configuration
-      return inputFile?.includes('seek') ? inputFile : configFile;
+      return inputFile?.includes('seek')
+        ? prettier.format(inputFile, {
+            parser: 'json5',
+            singleQuote: true,
+            tabWidth: 2,
+            trailingComma: 'all',
+          })
+        : configFile;
     },
 
     /**
