@@ -14,7 +14,7 @@ export const formatPackage = (data: PackageJson) => {
   normalizeData(data);
 
   for (const [key, value] of Object.entries(data)) {
-    if (isObject(value) && !Array.isArray(value)) {
+    if (key !== 'scripts' && isObject(value) && !Array.isArray(value)) {
       data[key] = sortRecord(value);
     }
   }
