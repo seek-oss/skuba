@@ -1,5 +1,12 @@
 # skuba
 
+## 3.7.1
+
+### Patch Changes
+
+- a25d7a1: **configure:** Format Renovate config
+- 92729fd: **configure, init:** Format `package.json` consistently
+
 ## 3.7.0
 
 ### Minor Changes
