@@ -16,6 +16,27 @@ describe('formatObject', () => {
       }
       "
     `));
+
+  it('handles ordinary JSON array formatting', () =>
+    expect(formatObject({ files: ['1', '2', '3'] })).toMatchInlineSnapshot(`
+      "{
+        \\"files\\": [\\"1\\", \\"2\\", \\"3\\"]
+      }
+      "
+    `));
+
+  it('handles special-cased package.json array formatting', () =>
+    expect(formatObject({ files: ['1', '2', '3'] }, 'package.json'))
+      .toMatchInlineSnapshot(`
+      "{
+        \\"files\\": [
+          \\"1\\",
+          \\"2\\",
+          \\"3\\"
+        ]
+      }
+      "
+    `));
 });
 
 describe('parseObject', () => {
