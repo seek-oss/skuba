@@ -3,9 +3,13 @@ import { generateSimpleVariants, mergeWithIgnoreFile } from './ignoreFile';
 describe('generateSimpleVariants', () => {
   it.each([
     ['variant path', ['/lib*/'], ['/lib*/', '/lib/', '/lib', 'lib/', 'lib']],
-    ['non-variant path', ['lib'], ['lib']],
-    ['duplicate patterns', ['lib', 'lib'], ['lib']],
-    ['file extension', ['*.tgz'], ['*.tgz', '.tgz']],
+    ['non-variant path', ['lib'], ['/lib', '/lib/', 'lib', 'lib/']],
+    ['duplicate patterns', ['lib', 'lib'], ['/lib', '/lib/', 'lib', 'lib/']],
+    [
+      'file extension',
+      ['*.tgz'],
+      ['*.tgz', '.tgz', '.tgz/', '/.tgz', '/.tgz/'],
+    ],
     ['potential empty string', ['/'], ['/']],
     ['empty string', [''], []],
   ])('handles %s', (_, pattern, expected) =>
@@ -31,7 +35,7 @@ describe('mergeWithIgnoreFile', () => {
     [
       'provided with managed section and fully superseded config',
       updatedBaseTemplate,
-      '\r\n\nnode_modules\r\nnode_modules_bak',
+      '\r\n\nnode_modules\r\nnode_modules_bak\n/node_modules',
     ],
     [
       'provided with outdated managed section',
