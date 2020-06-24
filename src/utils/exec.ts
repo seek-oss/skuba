@@ -1,3 +1,4 @@
+import stream from 'stream';
 import util from 'util';
 
 import concurrently from 'concurrently';
@@ -7,6 +8,23 @@ import npmWhich from 'npm-which';
 
 import { isErrorWithCode } from './error';
 import { log } from './logging';
+
+class YarnWarningFilter extends stream.Transform {
+  _transform(
+    chunk: any,
+    _encoding: BufferEncoding,
+    callback: stream.TransformCallback,
+  ) {
+    const str = Buffer.from(chunk).toString();
+
+    // Filter out annoying deprecation warnings that users can do little about
+    if (!str.startsWith('warning skuba >')) {
+      this.push(chunk);
+    }
+
+    callback();
+  }
+}
 
 export type Exec = (
   command: string,
@@ -18,7 +36,7 @@ interface ExecConcurrentlyCommand {
   name: string;
 }
 
-type ExecOptions = execa.Options & { streamStdio?: true };
+type ExecOptions = execa.Options & { streamStdio?: true | 'yarn' };
 
 const envWithPath = {
   PATH: npmRunPath({ cwd: __dirname }),
@@ -32,9 +50,20 @@ const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
     ...opts,
   });
 
-  if (opts?.streamStdio === true) {
-    subprocess.stderr?.pipe(process.stderr);
-    subprocess.stdout?.pipe(process.stdout);
+  switch (opts?.streamStdio) {
+    case 'yarn':
+      const filter = new YarnWarningFilter();
+
+      subprocess.stderr?.pipe(filter).pipe(process.stderr);
+      subprocess.stdout?.pipe(process.stdout);
+
+      break;
+
+    case true:
+      subprocess.stderr?.pipe(process.stderr);
+      subprocess.stdout?.pipe(process.stdout);
+
+      break;
   }
 
   return subprocess;
