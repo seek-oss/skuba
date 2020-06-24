@@ -102,6 +102,6 @@ export const configure = async () => {
 
   if (fixConfiguration || fixDependencies) {
     log.newline();
-    log.ok(`Try running ${log.bold('skuba format')}.`);
+    log.ok(`Try running ${log.bold('yarn format')}.`);
   }
 };
