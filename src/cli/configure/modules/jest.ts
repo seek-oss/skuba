@@ -11,6 +11,7 @@ import { Module } from '../types';
 
 // Jest options to preserve during migration
 const filterProps = createPropFilter([
+  'collectCoverageFrom',
   'coverageThreshold',
   'globalSetup',
   'globalTeardown',
