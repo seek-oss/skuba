@@ -1,6 +1,6 @@
 # Migrating from `@seek/skuba`
 
-## 1. Upgrade to `@seek/skuba@3.7.0`
+## 1. Upgrade to `@seek/skuba@3.7.1` or newer
 
 Renovate should automatically open a PR for this upgrade.
 If you haven't configured Renovate on your repository,
