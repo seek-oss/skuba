@@ -1,10 +1,16 @@
 # Migrating from `@seek/skuba`
 
-## 1. Upgrade to `@seek/skuba@3.7.1` or newer
+## 1. Upgrade to `@seek/skuba@3.7` or newer
 
 Renovate should automatically open a PR for this upgrade.
 If you haven't configured Renovate on your repository,
 reach out in `#github`.
+
+To upgrade manually, run:
+
+```shell
+yarn upgrade @seek/skuba --latest
+```
 
 We've introduced some new linting rules via ESLint 7 + `typescript-eslint` 3.
 See our [ESLint guide] for some tips, and reach out in `#typescriptification` if you get stuck on anything.
