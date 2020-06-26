@@ -100,6 +100,8 @@ const cloneTemplate = async (templateName: string, destinationDir: string) => {
     sourceRoot: templateDir,
     destinationRoot: destinationDir,
     processors: [],
+    // built-in templates have files like _package.json
+    stripUnderscorePrefix: true,
   });
 };
 
