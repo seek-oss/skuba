@@ -1,8 +1,7 @@
-const { testPathIgnorePatterns } = require('skuba/config/jest');
+const { Jest } = require('skuba');
 
-module.exports = {
+module.exports = Jest.extend({
   coveragePathIgnorePatterns: ['src/testing'],
-  preset: 'skuba',
   setupFiles: ['<rootDir>/jest.setup.ts'],
-  testPathIgnorePatterns: [...testPathIgnorePatterns, '/test\\.ts'],
-};
+  testPathIgnorePatterns: ['/test\\.ts'],
+});

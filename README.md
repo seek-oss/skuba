@@ -272,6 +272,26 @@ Echoes the installed version of `skuba`.
 
 Its Node.js API can be used in build and test code.
 
+### `Jest.extend`
+
+Extend the `skuba` preset with custom options.
+
+This concatenates array options like `testPathIgnorePatterns`.
+
+```js
+// jest.config.js
+
+const { Jest } = require('skuba');
+
+module.exports = Jest.extend({
+  coveragePathIgnorePatterns: ['src/testing'],
+  setupFiles: ['<rootDir>/jest.setup.ts'],
+
+  // this is concatenated to the end of the built-in skuba patterns
+  testPathIgnorePatterns: ['/test\\.ts'],
+});
+```
+
 ### `Net.waitFor`
 
 Wait for a resource to start listening on a socket address.
