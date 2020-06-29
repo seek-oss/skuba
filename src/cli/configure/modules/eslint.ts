@@ -2,6 +2,7 @@ import { readBaseTemplateFile } from '../../../utils/template';
 import { deleteFiles } from '../processing/deleteFiles';
 import { mergeWithIgnoreFile } from '../processing/ignoreFile';
 import { withPackage } from '../processing/package';
+import { formatPrettier } from '../processing/prettier';
 import { Module } from '../types';
 
 export const eslintModule = async (): Promise<Module> => {
@@ -20,8 +21,18 @@ export const eslintModule = async (): Promise<Module> => {
     ),
 
     // allow customised ESLint configs that extend skuba
-    '.eslintrc.js': (inputFile) =>
-      inputFile?.includes('skuba') ? inputFile : configFile,
+    '.eslintrc.js': (inputFile) => {
+      if (inputFile?.includes('skuba')) {
+        const processedFile = inputFile.replace(
+          /require.resolve\(['"](@seek\/)?skuba\/config\/eslint['"]\)/,
+          "'skuba'",
+        );
+
+        return formatPrettier(processedFile, { parser: 'typescript' });
+      }
+
+      return configFile;
+    },
 
     '.eslintignore': mergeWithIgnoreFile(ignoreFile),
 
