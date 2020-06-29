@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-**test:** Add `Jest.extends` helper function
+**test:** Add `Jest.extend` helper function
