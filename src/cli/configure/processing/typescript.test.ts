@@ -25,6 +25,39 @@ const JEST_CONFIG = `module.exports = {
 `;
 
 describe('transformModuleExports', () => {
+  it('detects an object literal', () => {
+    const input = "module.exports = { key: 'value' };\n";
+
+    const result = transformModuleExports(input, () => ts.createNodeArray());
+
+    expect(result).toBe('module.exports = {};\n');
+  });
+
+  it('detects a single-arg call expression', () => {
+    const input = "module.exports = Jest.mergePreset({ key: 'value' });\n";
+
+    const result = transformModuleExports(input, () => ts.createNodeArray());
+
+    expect(result).toBe('module.exports = Jest.mergePreset({});\n');
+  });
+
+  it('ignores a multi-arg call expression', () => {
+    const input =
+      "module.exports = Jest.mergePreset({ key: 'value' }, null, 2);\n";
+
+    const result = transformModuleExports(input, () => ts.createNodeArray());
+
+    expect(result).toBe(input);
+  });
+
+  it('ignores a function', () => {
+    const input = 'module.exports = () => undefined;\n';
+
+    const result = transformModuleExports(input, () => ts.createNodeArray());
+
+    expect(result).toBe(input);
+  });
+
   it('works with a no-op transformer', () => {
     const result = transformModuleExports(JEST_CONFIG, (props) => props);
 
