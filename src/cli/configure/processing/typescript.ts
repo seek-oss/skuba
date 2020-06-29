@@ -1,5 +1,6 @@
-import prettier from 'prettier';
 import ts from 'typescript';
+
+import { formatPrettier } from './prettier';
 
 type Props = ts.NodeArray<ts.ObjectLiteralElementLike>;
 
@@ -119,10 +120,5 @@ export const transformModuleExports = (
     .createPrinter()
     .printNode(ts.EmitHint.SourceFile, transformedFile, sourceFile);
 
-  return prettier.format(text, {
-    parser: 'typescript',
-    singleQuote: true,
-    tabWidth: 2,
-    trailingComma: 'all',
-  });
+  return formatPrettier(text, { parser: 'typescript' });
 };
