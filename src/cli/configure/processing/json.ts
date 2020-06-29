@@ -1,6 +1,6 @@
-import prettier from 'prettier';
-
 import { isObject } from '../../../utils/validation';
+
+import { formatPrettier } from './prettier';
 
 export const formatObject = (
   data: Record<PropertyKey, unknown>,
@@ -14,7 +14,7 @@ export const formatObject = (
 
   const output = JSON.stringify(sortedData, null, 2);
 
-  return prettier.format(
+  return formatPrettier(
     output,
     typeof filepath === 'undefined' ? { parser: 'json' } : { filepath },
   );

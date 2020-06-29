@@ -1,8 +1,7 @@
-import prettier from 'prettier';
-
 import { readBaseTemplateFile } from '../../../utils/template';
 import { deleteFiles } from '../processing/deleteFiles';
 import { withPackage } from '../processing/package';
+import { formatPrettier } from '../processing/prettier';
 import { getFirstDefined } from '../processing/record';
 import { Module, Options } from '../types';
 
@@ -29,12 +28,7 @@ export const renovateModule = async ({ type }: Options): Promise<Module> => {
 
       // allow customised Renovate configs that extend a SEEK configuration
       return inputFile?.includes('seek')
-        ? prettier.format(inputFile, {
-            parser: 'json5',
-            singleQuote: true,
-            tabWidth: 2,
-            trailingComma: 'all',
-          })
+        ? formatPrettier(inputFile, { parser: 'json5' })
         : configFile;
     },
 
