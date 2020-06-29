@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Include tsx files in ESLint linting
+**format, lint:** Include tsx files in ESLint linting
