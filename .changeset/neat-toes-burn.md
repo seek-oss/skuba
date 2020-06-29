@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-**test:** Add `Jest.preset` helper function
+**test:** Add `Jest.mergePreset` helper function
