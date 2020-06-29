@@ -19,9 +19,23 @@ type Props = Pick<
 >;
 
 /**
- * Extend the **skuba** preset with custom options.
+ * The Jest preset for **skuba**. Also accessible via:
  *
- * This concatenates array options like `testPathIgnorePatterns`.
+ * ```javascript
+ * module.exports = {
+ *   preset: 'skuba',
+ * };
+ * ```
+ *
+ * You can extend the preset by passing in additional options.
  */
-export const extend = (props?: Props): Config.InitialOptions =>
-  mergeRaw(jestPreset, props);
+export const preset = Object.assign(
+  jestPreset,
+
+  /**
+   * Extend the **skuba** Jest preset with additional options.
+   *
+   * This concatenates array options like `testPathIgnorePatterns`.
+   */
+  (props: Props): Config.InitialOptions => mergeRaw(jestPreset, props),
+);

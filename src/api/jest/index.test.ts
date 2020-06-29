@@ -1,8 +1,8 @@
-import { extend } from '.';
+import { preset } from '.';
 
-describe('extend', () => {
-  it('handles no props', () => {
-    const config = extend();
+describe('preset', () => {
+  it('handles static usage', () => {
+    const config = preset;
 
     expect(config).toHaveProperty('testEnvironment', 'node');
     expect(config.collectCoverageFrom).not.toContain('abc');
@@ -10,7 +10,7 @@ describe('extend', () => {
   });
 
   it('adds non-colliding props', () => {
-    const config = extend({ setupFiles: ['abc'] });
+    const config = preset({ setupFiles: ['abc'] });
 
     expect(config).toHaveProperty('testEnvironment', 'node');
     expect(config.collectCoverageFrom).not.toContain('abc');
@@ -18,7 +18,7 @@ describe('extend', () => {
   });
 
   it('merges colliding props', () => {
-    const config = extend({ collectCoverageFrom: ['abc'] });
+    const config = preset({ collectCoverageFrom: ['abc'] });
 
     expect(config).toHaveProperty('testEnvironment', 'node');
     expect(config.collectCoverageFrom).toContain('abc');

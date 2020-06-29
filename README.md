@@ -272,9 +272,25 @@ Echoes the installed version of `skuba`.
 
 Its Node.js API can be used in build and test code.
 
-### `Jest.extend`
+### `Jest.preset`
 
-Extend the `skuba` preset with custom options.
+The Jest preset for `skuba`.
+
+```js
+// jest.config.js
+
+const { Jest } = require('skuba');
+
+module.exports = Jest.preset;
+
+// this also works
+
+module.exports = {
+  preset: 'skuba',
+};
+```
+
+You can extend the preset by passing in additional options.
 
 This concatenates array options like `testPathIgnorePatterns`.
 
@@ -283,11 +299,11 @@ This concatenates array options like `testPathIgnorePatterns`.
 
 const { Jest } = require('skuba');
 
-module.exports = Jest.extend({
+module.exports = Jest.preset({
   coveragePathIgnorePatterns: ['src/testing'],
   setupFiles: ['<rootDir>/jest.setup.ts'],
 
-  // this is concatenated to the end of the built-in skuba patterns
+  // this is concatenated to the end of the built-in patterns
   testPathIgnorePatterns: ['/test\\.ts'],
 });
 ```
