@@ -1,5 +1,17 @@
 # skuba
 
+## 3.7.2
+
+### Patch Changes
+
+- b479be2: **configure:** Avoid stripping of `_` filename prefixes
+- 6bc00bd: **configure:** Remove duplicate `lib` exclusions from `tsconfig.json`
+- 9146b4a: **test:** Add `Jest.mergePreset` helper function
+- 192d7ba: **format, lint:** Include tsx files in ESLint linting
+- f6098e7: **deps:** eslint ^7.3.1 + eslint-config-skuba 1.0.1
+- f1f4a5c: **test:** Collect coverage from TSX files
+- b0b694d: **configure:** Use simple ESLint extends syntax
+
 ## 3.7.1
 
 ### Patch Changes
