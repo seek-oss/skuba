@@ -33,6 +33,8 @@ then run the following commands on each one:
 1. `skuba configure`
 1. `yarn format`
 
+Note: You may need to add Yarn to your PATH for the commands to run.
+
 `skuba` will switch out the following dependencies and rewrite their import paths:
 
 - `@seek/koala → seek-koala`
