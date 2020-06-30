@@ -33,7 +33,7 @@ then run the following commands on each one:
 1. `skuba configure`
 1. `yarn format`
 
-Note: You may need to add Yarn to your PATH for the commands to run. See [path setup] in Yarn docs.
+Note: You may need to add `yarn global bin` to your PATH for the commands to run. See the Yarn docs under [Path Setup].
 
 [path setup]: https://classic.yarnpkg.com/en/docs/install/#mac-stable
 
