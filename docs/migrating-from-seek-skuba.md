@@ -33,7 +33,9 @@ then run the following commands on each one:
 1. `skuba configure`
 1. `yarn format`
 
-Note: You may need to add Yarn to your PATH for the commands to run.
+Note: You may need to add Yarn to your PATH for the commands to run. See [path setup] in Yarn docs.
+
+[path setup]: https://classic.yarnpkg.com/en/docs/install/#mac-stable
 
 `skuba` will switch out the following dependencies and rewrite their import paths:
 
