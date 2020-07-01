@@ -1,5 +1,11 @@
 # skuba
 
+## 3.7.3
+
+### Patch Changes
+
+- 24e2b99: **test:** Fix `passWithNoTests` warning
+
 ## 3.7.2
 
 ### Patch Changes
