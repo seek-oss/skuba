@@ -40,7 +40,6 @@ module.exports = {
     '^src$': '<rootDir>/src',
     '^src/(.+)$': '<rootDir>/src/$1',
   },
-  passWithNoTests: true,
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/node_modules.*/',
