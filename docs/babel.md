@@ -36,16 +36,16 @@ There are a few downsides to building TypeScript projects with Babel:
 
 - It [doesn't support all TypeScript language features].
 
-That said, Babel presents a few potential benefits for `skuba`:
+That said, Babel presents a few potential benefits for **skuba**:
 
 - Module aliases can be easily configured and resolved at compile time.
 
-  `skuba`'s existing `tsc`-based build supports a single `src` alias via [skuba-dive]'s [register hook],
+  **skuba**'s existing `tsc`-based build supports a single `src` alias via [skuba-dive]'s [register hook],
   which means we impose an unfortunate runtime dependency.
   The way that this hook must be imported is a bit magic and makes it difficult to execute arbitrary TypeScript source files,
   as the hook must be loaded before any aliased imports.
 
-  (This is a big part of why `skuba` has the concept of an explicit entry point for a project.)
+  (This is a big part of why **skuba** has the concept of an explicit entry point for a project.)
 
 - `ts-jest` can be dropped in favour of Jest's built-in Babel support,
   along with duplicated module alias configuration.
@@ -87,7 +87,7 @@ That said, Babel presents a few potential benefits for `skuba`:
    }
    ```
 
-   (`skuba` is likely to default this option to true in a future release.)
+   (**skuba** is likely to default this option to true in a future release.)
 
 1. ...and that's it!
 
