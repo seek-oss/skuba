@@ -67,6 +67,7 @@ interface CopyFilesOptions {
   include: (pathname: string) => boolean;
   overwrite?: boolean;
   processors: Array<TextProcessor>;
+  stripUnderscorePrefix?: boolean;
 }
 
 export const createEjsRenderer = (
@@ -94,7 +95,11 @@ export const copyFiles = async (
   const toDestinationPath = (filename: string) =>
     path.join(
       currentDestinationDir,
-      filename.replace(/^_\./, '.').replace(/^_package\.json/, 'package.json'),
+      opts.stripUnderscorePrefix
+        ? filename
+            .replace(/^_\./, '.')
+            .replace(/^_package\.json/, 'package.json')
+        : filename,
     );
 
   const filteredFilenames = filenames.filter((filename) =>

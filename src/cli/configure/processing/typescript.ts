@@ -1,5 +1,6 @@
-import prettier from 'prettier';
 import ts from 'typescript';
+
+import { formatPrettier } from './prettier';
 
 type Props = ts.NodeArray<ts.ObjectLiteralElementLike>;
 
@@ -12,7 +13,10 @@ type Transformer<T> = (props: T) => T;
  * module.exports = {};
  * ```
  */
-const createModuleExportsExpression = (props: Props): ts.ExpressionStatement =>
+const createModuleExportsExpression = (
+  props: Props,
+  callExpression?: ts.Expression,
+): ts.ExpressionStatement =>
   ts.createExpressionStatement(
     ts.createBinary(
       ts.createPropertyAccess(
@@ -20,7 +24,11 @@ const createModuleExportsExpression = (props: Props): ts.ExpressionStatement =>
         ts.createIdentifier('exports'),
       ),
       ts.createToken(ts.SyntaxKind.EqualsToken),
-      ts.createObjectLiteral(props, true),
+      typeof callExpression === 'undefined'
+        ? ts.createObjectLiteral(props, true)
+        : ts.createCall(callExpression, undefined, [
+            ts.createObjectLiteral(props, true),
+          ]),
     ),
   );
 
@@ -31,6 +39,17 @@ const getPropName = (prop: ts.ObjectLiteralElementLike) =>
 
 /**
  * Create a transformer to mutate `module.exports` props in a source file.
+ *
+ * ```javascript
+ * module.exports = {};
+ * ```
+ *
+ * If `module.exports` is a call expression with a single argument, it will try
+ * to transform the props of that argument.
+ *
+ * ```javascript
+ * module.exports = fn({});
+ * ```
  *
  * There's no recursion needed here as we expect the `module.exports` statement
  * to be a top-level node and therefore an immediate child of the source file.
@@ -48,12 +67,29 @@ const createModuleExportsTransformer = (
         ts.isIdentifier(node.expression.left.expression) &&
         node.expression.left.expression.escapedText === 'module' &&
         node.expression.left.name.text === 'exports' &&
-        node.expression.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
-        ts.isObjectLiteralExpression(node.expression.right)
+        node.expression.operatorToken.kind === ts.SyntaxKind.EqualsToken
       ) {
-        const props = transformProps(node.expression.right.properties);
+        if (ts.isObjectLiteralExpression(node.expression.right)) {
+          const props = transformProps(node.expression.right.properties);
 
-        return createModuleExportsExpression(props);
+          return createModuleExportsExpression(props);
+        }
+
+        if (
+          ts.isCallExpression(node.expression.right) &&
+          node.expression.right.arguments.length === 1
+        ) {
+          const [firstArgument] = node.expression.right.arguments;
+
+          if (ts.isObjectLiteralExpression(firstArgument)) {
+            const props = transformProps(firstArgument.properties);
+
+            return createModuleExportsExpression(
+              props,
+              node.expression.right.expression,
+            );
+          }
+        }
       }
 
       return node;
@@ -119,10 +155,5 @@ export const transformModuleExports = (
     .createPrinter()
     .printNode(ts.EmitHint.SourceFile, transformedFile, sourceFile);
 
-  return prettier.format(text, {
-    parser: 'typescript',
-    singleQuote: true,
-    tabWidth: 2,
-    trailingComma: 'all',
-  });
+  return formatPrettier(text, { parser: 'typescript' });
 };

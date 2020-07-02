@@ -12,7 +12,7 @@
 [![Node.js version](https://img.shields.io/badge/node-%3E%3D%2012-brightgreen)](https://nodejs.org/en/)
 [![npm package](https://img.shields.io/npm/v/skuba)](https://www.npmjs.com/package/skuba)
 
-Toolkit for backend application development on SEEK's gravel and paved roads:
+Toolkit for backend application and package development on SEEK's gravel and paved roads:
 
 - Write in TypeScript
 - Enforce coding standards with ESLint and Prettier
@@ -21,11 +21,11 @@ Toolkit for backend application development on SEEK's gravel and paved roads:
 
 Related reading:
 
-[sku]: https://github.com/seek-oss/sku
-[tech-strategy]: https://tech-strategy.ssod.skinfra.xyz
+- [SEEK's Technology Strategy]
+- SEEK's frontend development toolkit, [sku]
 
-- [sku] for developing frontend applications
-- [tech-strategy]
+[seek's technology strategy]: https://tech-strategy.ssod.skinfra.xyz
+[sku]: https://github.com/seek-oss/sku
 
 ## Table of contents
 
@@ -38,7 +38,7 @@ Related reading:
 
 ## Getting started
 
-`skuba` provides you with:
+**skuba** provides you with:
 
 - Commands for developing your project
 - Templates to base your backend application on
@@ -57,7 +57,7 @@ npx skuba configure
 
 ## CLI reference
 
-`skuba` commands are typically found in the `scripts` section of `package.json`.
+**skuba** commands are typically found in the `scripts` section of `package.json`.
 
 They replace direct calls to underlying tooling like `eslint` and `tsc`.
 
@@ -103,7 +103,7 @@ This is useful for building npm packages, and serves as a replacement for [`smt 
 
 Bootstrap an existing project.
 
-This provides a step-by-step prompt for replacing your config with `skuba`'s.
+This provides a step-by-step prompt for replacing your config with **skuba**'s.
 
 You should have a clean working tree before running this command,
 so it's easy to `git reset` in case you want to restore your original config.
@@ -123,7 +123,7 @@ skuba -h
 skuba --help
 ```
 
-Echoes the available `skuba` commands.
+Echoes the available **skuba** commands.
 
 ### `skuba init`
 
@@ -131,7 +131,7 @@ Create a new project.
 
 This initialises a new directory and Git repository.
 
-`skuba` supports the following template options:
+**skuba** supports the following template options:
 
 - `greeter`
 
@@ -168,7 +168,7 @@ This initialises a new directory and Git repository.
 
   BYO starter repo!
 
-  `skuba` will shallow-clone your repo and apply some of its base configuration.
+  **skuba** will shallow-clone your repo and apply some of its base configuration.
   You may need to run `skuba configure` after initialisation to fix up inconsistencies.
 
 [aws lambda]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#lambda
@@ -264,13 +264,33 @@ skuba -v
 skuba --version
 ```
 
-Echoes the installed version of `skuba`.
+Echoes the installed version of **skuba**.
 
 ## Development API reference
 
-`skuba` should be a `devDependency` that is excluded from your production bundle.
+**skuba** should be a `devDependency` that is excluded from your production bundle.
 
 Its Node.js API can be used in build and test code.
+
+### `Jest.mergePreset`
+
+Merge additional Jest options into the **skuba** preset.
+
+This concatenates array options like `testPathIgnorePatterns`.
+
+```js
+// jest.config.js
+
+const { Jest } = require('skuba');
+
+module.exports = Jest.mergePreset({
+  coveragePathIgnorePatterns: ['src/testing'],
+  setupFiles: ['<rootDir>/jest.setup.ts'],
+
+  // this is concatenated to the end of the built-in patterns
+  testPathIgnorePatterns: ['/test\\.ts'],
+});
+```
 
 ### `Net.waitFor`
 
@@ -307,9 +327,9 @@ module.exports = () =>
 
 <https://github.com/seek-oss/skuba-dive#api-reference>
 
-`skuba-dive` is an optional runtime component for `skuba`.
+**skuba-dive** is an optional runtime component for **skuba**.
 
-`skuba-dive` should be a `dependency` that is included in your production bundle.
+**skuba-dive** should be a `dependency` that is included in your production bundle.
 
 ## Design
 
@@ -319,11 +339,11 @@ module.exports = () =>
 
 #### Standardise tooling
 
-`skuba` tracks technology recommendations from SEEK's [tech-strategy].
+**skuba** tracks technology recommendations from [SEEK's Technology Strategy].
 
 #### Reduce maintenance overhead
 
-`skuba` bundles developer tooling into one `package.json#/devDependency`.
+**skuba** bundles developer tooling into one `package.json#/devDependency`.
 
 This tooling is managed and upgraded for you.
 Upgrades are consolidated into one Renovate PR.
@@ -334,18 +354,18 @@ Upgrades are consolidated into one Renovate PR.
 
 TypeScript is proposed as the default language of SEEK.
 
-`skuba` prescribes TypeScript-focused tooling.
+**skuba** prescribes TypeScript-focused tooling.
 
 #### One stencil to rule them all
 
-`skuba` may advocate for certain approaches and technologies through its templates,
+**skuba** may advocate for certain approaches and technologies through its templates,
 but this shouldn't be taken as the only way you can write code.
 
 You can continue to base codebases on your own starters and stencils.
 
 #### One library to rule them all
 
-`skuba` distributes a minimal runtime component through the `skuba-dive` package.
+**skuba** distributes a minimal runtime component through the **skuba-dive** package.
 It has no aspirations of becoming a monolithic Node.js runtime library.
 
 SEEK's developer community maintains an assortment of targeted packages.

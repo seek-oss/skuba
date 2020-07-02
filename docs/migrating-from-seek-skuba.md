@@ -1,15 +1,22 @@
 # Migrating from `@seek/skuba`
 
-## 1. Upgrade to `@seek/skuba@3.7.0`
+## 1. Upgrade to `@seek/skuba@3.7` or newer
 
 Renovate should automatically open a PR for this upgrade.
 If you haven't configured Renovate on your repository,
 reach out in `#github`.
 
+To upgrade manually, run:
+
+```shell
+yarn upgrade @seek/skuba --latest
+```
+
 We've introduced some new linting rules via ESLint 7 + `typescript-eslint` 3.
-See our [ESLint guide] for some tips, and reach out in `#typescriptification` if you get stuck on anything.
+See our [ESLint guide] for some tips, and reach out in [#typescriptification] if you get stuck on anything.
 
 [eslint guide]: ./eslint.md
+[#typescriptification]: https://seekchat.slack.com/channels/typescriptification
 
 ## 2. Switch out packages
 
@@ -27,7 +34,11 @@ then run the following commands on each one:
 1. `skuba configure`
 1. `yarn format`
 
-`skuba` will switch out the following dependencies and rewrite their import paths:
+Note: You may need to add `yarn global bin` to your PATH for the commands to run. See the Yarn docs under [Path Setup].
+
+[path setup]: https://classic.yarnpkg.com/en/docs/install/#mac-stable
+
+**skuba** will switch out the following dependencies and rewrite their import paths:
 
 - `@seek/koala → seek-koala`
 - `@seek/node-datadog-custom-metrics → seek-datadog-custom-metrics`

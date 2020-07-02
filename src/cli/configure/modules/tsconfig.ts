@@ -55,6 +55,17 @@ export const tsconfigModule = async ({ type }: Options): Promise<Module> => {
 
       const outputData = merge(inputData ?? {}, baseData);
 
+      // Remove `lib/**/*` and `lib`, which duplicate `lib*/**/*`
+      if (Array.isArray(outputData.exclude)) {
+        const { exclude } = outputData;
+
+        const hasLibStar = exclude.includes('lib*/**/*');
+
+        outputData.exclude = exclude.filter(
+          (pattern) => !(hasLibStar && ['lib', 'lib/**/*'].includes(pattern)),
+        );
+      }
+
       // for optimal ESLinting, base config should compile all files and leave
       // exclusions to .eslintignore and tsconfig.build.json
       if (

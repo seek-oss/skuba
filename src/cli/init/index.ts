@@ -45,6 +45,8 @@ export const init = async () => {
     // prefer template-specific files
     overwrite: false,
     processors,
+    // base template has files like _.eslintrc.js
+    stripUnderscorePrefix: true,
   });
 
   await copyFiles({
