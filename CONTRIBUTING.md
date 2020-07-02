@@ -18,6 +18,7 @@ so don't commit or post anything that isn't ready for the entire world to see.
   - [Prerequisites](#prerequisites)
   - [Git workflow](#git-workflow)
   - [Testing](#testing)
+  - [Running locally](#running-locally)
 - [Releases](#releases)
   - [Creating a changeset](#creating-a-changeset)
   - [Publishing a release](#publishing-a-release)
@@ -131,7 +132,9 @@ yarn test:template greeter
 rm -fr ../tmp-greeter
 ```
 
-If you want to test out any changes to the **skuba** CLI on itself,
+### Running locally
+
+If you want to try out the **skuba** CLI on itself,
 a `yarn skuba` script is configured:
 
 ```shell
@@ -145,7 +148,7 @@ yarn skuba version
 yarn skuba build
 ```
 
-If you want to test out any changes to the **skuba** CLI on another local repo,
+If you want to try out the **skuba** CLI on another local repo,
 you can use [npm link] to register your local copy as a global shell command:
 
 ```shell

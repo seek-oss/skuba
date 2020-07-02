@@ -34,7 +34,7 @@ Related reading:
 - [Development API reference](#development-api-reference)
 - [Runtime API reference](#runtime-api-reference)
 - [Design](#design)
-- [Development](#development)
+- [Contributing](https://github.com/seek-oss/skuba/tree/master/CONTRIBUTING.md)
 
 ## Getting started
 
@@ -396,40 +396,3 @@ Here are some highlights:
 [seek-koala]: https://github.com/seek-oss/koala
 [s2sauth]: https://github.com/SEEK-Jobs/s2sauth
 [ssod]: https://github.com/SEEK-Jobs/seek-ssod-ingress
-
-## Development
-
-### Prerequisites
-
-- Node.js 12+
-- Yarn 1.x
-
-```shell
-yarn install
-```
-
-### Lint
-
-```shell
-# fix
-yarn format
-
-# check
-yarn lint
-```
-
-### Test
-
-```shell
-# skuba itself
-yarn test
-
-# skuba templates
-yarn test:template
-```
-
-### Build
-
-```shell
-yarn build
-```
