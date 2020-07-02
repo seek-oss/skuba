@@ -145,7 +145,7 @@ yarn skuba version
 yarn skuba build
 ```
 
-If you want to test out any changes to **skuba** CLI on another local repo,
+If you want to test out any changes to the **skuba** CLI on another local repo,
 you can use [npm link] to register your local copy as a global shell command:
 
 ```shell
