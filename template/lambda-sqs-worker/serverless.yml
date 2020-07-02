@@ -59,6 +59,7 @@ functions:
     reservedConcurrency: 20
     timeout: 30
     environment:
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
       DESTINATION_SNS_TOPIC_ARN: !Ref DestinationTopic
       ENVIRONMENT: ${env:ENVIRONMENT}
       REGION: ${self:provider.region}
