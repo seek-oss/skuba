@@ -13,9 +13,10 @@ yarn upgrade @seek/skuba --latest
 ```
 
 We've introduced some new linting rules via ESLint 7 + `typescript-eslint` 3.
-See our [ESLint guide] for some tips, and reach out in `#typescriptification` if you get stuck on anything.
+See our [ESLint guide] for some tips, and reach out in [#typescriptification] if you get stuck on anything.
 
 [eslint guide]: ./eslint.md
+[#typescriptification]: https://seekchat.slack.com/channels/typescriptification
 
 ## 2. Switch out packages
 
@@ -37,7 +38,7 @@ Note: You may need to add `yarn global bin` to your PATH for the commands to run
 
 [path setup]: https://classic.yarnpkg.com/en/docs/install/#mac-stable
 
-`skuba` will switch out the following dependencies and rewrite their import paths:
+**skuba** will switch out the following dependencies and rewrite their import paths:
 
 - `@seek/koala → seek-koala`
 - `@seek/node-datadog-custom-metrics → seek-datadog-custom-metrics`

@@ -47,7 +47,7 @@ smt build → skuba build-package
 This presents issues when referencing non-JS assets,
 as the compiled code is nested one level deeper than the source code.
 
-`skuba` compiles your code to:
+**skuba** compiles your code to:
 
 - `/lib-commonjs`: CommonJS module-compatible code
 - `/lib-es2015`: ES2015 module-compatible code
@@ -97,9 +97,10 @@ smt lint → skuba lint
 `seek-module-toolkit <= 4` retained support for [TSLint] configurations.
 [TSLint is deprecated and will go out of support by December 2020.](https://github.com/palantir/tslint/issues/4534)
 
-`skuba` enforces [ESLint] and bundles a more modern set of linting rules.
-See our [ESLint guide] for some tips, and reach out in `#typescriptification` if you get stuck on anything.
+**skuba** enforces [ESLint] and bundles a more modern set of linting rules.
+See our [ESLint guide] for some tips, and reach out in [#typescriptification] if you get stuck on anything.
 
+[#typescriptification]: https://seekchat.slack.com/channels/typescriptification
 [eslint]: https://eslint.org/
 [eslint guide]: ./eslint.md
 [tslint]: https://palantir.github.io/tslint/
@@ -111,7 +112,7 @@ smt commit →
 smt release → skuba release
 ```
 
-`skuba` has not reimplemented a pre-commit hook,
+**skuba** has not reimplemented a pre-commit hook,
 but it still uses [semantic-release] under the hood and expects [Conventional Commits]:
 
 - No release
