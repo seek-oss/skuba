@@ -3,7 +3,6 @@ import { Agent } from 'https';
 import { SNS } from 'aws-sdk';
 
 const agent = new Agent({
-  keepAlive: true,
   rejectUnauthorized: true,
 });
 
