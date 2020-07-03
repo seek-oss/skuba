@@ -16,7 +16,7 @@
       extends: ['github>seek-oss/rynovate'],
     },
     {
-      paths: ['yarn/**'],
+      paths: ['template/**'],
 
       branchPrefix: 'renovate-template/',
       commitMessageAction: '',
@@ -31,7 +31,7 @@
     },
     {
       managers: ['buildkite', 'gomod', 'npm', 'nvm'],
-      paths: ['yarn/**'],
+      paths: ['template/**'],
 
       commitMessageExtra: '{{newValue}}',
       commitMessageTopic: '{{depName}}',
@@ -39,7 +39,7 @@
     {
       excludePackagePatterns: ['^seek-jobs/', '^seek-oss/'],
       managers: ['buildkite'],
-      paths: ['yarn/**'],
+      paths: ['template/**'],
 
       commitMessageExtra: '',
       groupName: 'buildkite plugins',
