@@ -174,7 +174,7 @@ npm unlink
 We use [Changesets] to manage package releases.
 You'll see a 🦋 bot gliding around pull requests.
 
-You should write a changeset for your change if makes a visible change to the public **skuba** interface,
+You should write a changeset if you are changing the public **skuba** interface,
 which includes:
 
 - [API](/src/api) for Node.js build and test code
@@ -220,7 +220,7 @@ Feel free to manually edit this file to include more details about your change.
 
 ### Publishing a release
 
-Once a pull request with a changeset has been merged,
+When a pull request with a changeset is merged,
 our CI workflow will create a new `Version Packages` PR.
 The changesets are used to infer the next semantic version and to update the [changelog].
 
@@ -263,12 +263,12 @@ git push --set-upstream origin beta
 [#typescriptification]: https://seekchat.slack.com/channels/typescriptification
 [changelog]: https://github.com/seek-oss/skuba/blob/master/CHANGELOG.md
 [changesets]: https://github.com/atlassian/changesets
-[create a pull request]: https://github.com/seek-oss/wingman/compare
+[create a pull request]: https://github.com/seek-oss/skuba/compare
 [dist-tag]: https://docs.npmjs.com/cli/dist-tag
 [fork the repo]: https://github.com/seek-oss/skuba/fork
 [npm link]: https://docs.npmjs.com/cli/link
 [npm package]: https://www.npmjs.com/package/skuba
 [release notes]: https://github.com/seek-oss/skuba/releases
 [semantic versioning]: https://semver.org/
-[submit an issue]: https://github.com/seek-oss/wingman/issues/new/choose
+[submit an issue]: https://github.com/seek-oss/skuba/issues/new/choose
 [windows subsystem for linux]: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
