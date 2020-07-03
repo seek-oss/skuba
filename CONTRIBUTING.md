@@ -196,9 +196,9 @@ yarn changeset
 
 The Changesets CLI is interactive and follows [semantic versioning]:
 
-- Major `1.X.X`: backwards-incompatible modification
-- Minor `X.1.X`: new, backwards-compatible functionality
-- Patch `X.X.1`: fixes or tweaks to existing functionality
+- Patch release `0.0.X`: fixes or tweaks to existing functionality
+- Minor release `0.X.0`: new, backwards-compatible functionality
+- Major release `X.0.0`: backwards-incompatible modification
 
 Prefix your changeset title with a `**scope:**`.
 This makes it easy to eyeball which part of **skuba** a change relates to.
