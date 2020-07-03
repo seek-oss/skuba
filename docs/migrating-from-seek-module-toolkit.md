@@ -121,19 +121,19 @@ but it still uses [semantic-release] under the hood and expects [Conventional Co
   chore(scope): Update documentation
   ```
 
-- Patch release 0.0.X
+- Patch release 0.0.X: fixes or tweaks to existing functionality
 
   ```text
   fix(scope): Squash a bug
   ```
 
-- Minor release 0.X.0
+- Minor release 0.X.0: new, backwards-compatible functionality
 
   ```text
   feat(scope): Add a feature
   ```
 
-- Major release X.0.0
+- Major release X.0.0: backwards-incompatible modification
 
   ```text
   fix(scope): Close security holes
