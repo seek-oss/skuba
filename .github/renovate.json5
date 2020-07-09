@@ -20,7 +20,7 @@
 
       branchPrefix: 'renovate-template/',
       commitMessageAction: '',
-      commitMessagePrefix: 'fix(template):',
+      commitMessagePrefix: 'template:',
       ignoreNpmrcFile: true,
       lazyGrouping: false,
       postUpdateOptions: ['yarnDedupeHighest'],
