@@ -1,5 +1,14 @@
 # skuba
 
+## 3.7.4
+
+### Patch Changes
+
+- c0b8f1c: template/lambda-sqs-worker: Use connection reuse environment variable
+- 7752ba4: **template:** Redact `err.config.agent` path from logs
+- d3de8a6: **deps:** typescript 3.9.6
+- d3de8a6: **deps:** eslint-config-skuba 1.0.3
+
 ## 3.7.3
 
 ### Patch Changes
