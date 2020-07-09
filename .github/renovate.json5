@@ -36,15 +36,5 @@
       commitMessageExtra: '{{newValue}}',
       commitMessageTopic: '{{depName}}',
     },
-    {
-      excludePackagePatterns: ['^seek-jobs/', '^seek-oss/'],
-      managers: ['buildkite'],
-      paths: ['template/**'],
-
-      commitMessageExtra: '',
-      groupName: 'buildkite plugins',
-      managerBranchPrefix: '',
-      recreateClosed: true,
-    },
   ],
 }
