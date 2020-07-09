@@ -19,7 +19,6 @@ const tsJestTransform = Object.fromEntries(
   ]),
 );
 
-/* eslint-disable-next-line tsdoc/syntax */
 /** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
   ...tsJestDefaults,
