@@ -56,7 +56,7 @@ steps:
     plugins:
       - *aws-sm
       - *docker-ecr-cache
-      - ecr#v2.1.0:
+      - ecr#v2.1.1:
           login: true
       - docker-compose#v3.3.0:
           run: app
