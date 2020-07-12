@@ -36,13 +36,13 @@
     "url": "https://github.com/seek-oss/skuba.git"
   },
   "devDependencies": {
-    "@changesets/cli": "2.8.0",
+    "@changesets/cli": "2.9.2",
     "@types/concurrently": "5.2.1",
     "@types/ejs": "3.0.4",
     "@types/fs-extra": "9.0.1",
     "@types/lodash": "4.14.157",
     "@types/npm-which": "3.0.0",
-    "type-fest": "0.15.1"
+    "type-fest": "0.16.0"
   },
   "dependencies": {
     "@babel/cli": "^7.10.3",
