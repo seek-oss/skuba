@@ -6,7 +6,12 @@
 
 - [Design](#design)
 - [Development](#development)
+  - [Test](#test)
+  - [Lint](#lint)
+  - [Deploy](#deploy)
 - [Support](#support)
+  - [Dev](#dev)
+  - [Prod](#prod)
 
 ## Design
 
