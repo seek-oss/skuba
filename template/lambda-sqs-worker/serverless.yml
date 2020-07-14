@@ -64,7 +64,7 @@ functions:
       ENVIRONMENT: ${env:ENVIRONMENT}
       REGION: ${self:provider.region}
       SERVICE: ${self:service}
-      VERSION: ${env:VERSION}
+      VERSION: ${env:VERSION, 'local'}
     events:
       - sqs:
           arn: !GetAtt MessageQueue.Arn
