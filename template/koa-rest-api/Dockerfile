@@ -24,11 +24,25 @@ RUN \
   NPM_READ_TOKEN="${NPM_READ_TOKEN}" yarn install --frozen-lockfile --ignore-optional --non-interactive && \
   rm .npmrc
 
-FROM node:12-alpine AS build
+###
+
+FROM node:12-alpine AS deps
+
+WORKDIR /workdir
+
+COPY --from=unsafe-deps /workdir .
+
+###
+
+FROM node:12-alpine AS dev-deps
 
 WORKDIR /workdir
 
 COPY --from=unsafe-dev-deps /workdir .
+
+###
+
+FROM dev-deps AS build
 
 COPY . .
 
@@ -42,7 +56,7 @@ WORKDIR /workdir
 
 COPY --from=build /workdir/lib lib
 
-COPY --from=unsafe-deps /workdir/node_modules node_modules
+COPY --from=deps /workdir/node_modules node_modules
 
 ENV NODE_ENV production
 
