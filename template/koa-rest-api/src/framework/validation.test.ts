@@ -39,6 +39,22 @@ describe('validate', () => {
       .expect(200, idDescription);
   });
 
+  it('does not coerce props', () => {
+    const idDescription = mockIdDescription();
+
+    return agent()
+      .post('/')
+      .send({ ...idDescription, id: 123 })
+      .expect(422, {
+        errors: [
+          {
+            path: 'body.id',
+            type: 'string',
+          },
+        ],
+      });
+  });
+
   it('blocks mistyped prop', () => {
     const idDescription = mockIdDescription();
 
