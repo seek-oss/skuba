@@ -3,7 +3,7 @@
     "seek-datadog-custom-metrics": "^3.0.0",
     "skuba-dive": "^1.1.0",
     "pino": "^6.3.2",
-    "runtypes": "^4.3.0",
+    "runtypes": "^5.0.1",
     "runtypes-filter": "^0.2.1"
   },
   "devDependencies": {
