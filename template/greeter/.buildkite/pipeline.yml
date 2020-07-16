@@ -20,5 +20,5 @@ steps:
       - *aws-sm
       - ecr#v2.1.1:
           login: true
-      - docker-compose#v3.4.0:
+      - docker-compose#v3.5.0:
           run: app
