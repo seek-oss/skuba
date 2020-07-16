@@ -1,5 +1,5 @@
 # Docker image history includes ARG values, so never target this stage directly
-FROM node:12-alpine AS unsafe-dev-deps
+FROM node:14-alpine AS unsafe-dev-deps
 
 WORKDIR /workdir
 
@@ -14,7 +14,7 @@ RUN \
 
 ###
 
-FROM node:12-alpine AS build
+FROM node:14-alpine AS build
 
 WORKDIR /workdir
 
