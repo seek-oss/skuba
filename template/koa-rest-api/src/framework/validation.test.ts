@@ -1,19 +1,18 @@
 import { agentFromMiddleware } from 'src/testing/server';
 import {
   chance,
-  idDescriptionSchema,
+  filterIdDescription,
   mockIdDescription,
 } from 'src/testing/types';
 
 import { jsonBodyParser } from './middleware';
 import { validate } from './validation';
 
-const agent = agentFromMiddleware(jsonBodyParser, async (ctx) => {
-  const result = await validate({
+const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
+  const result = validate({
     ctx,
     input: ctx.request.body,
-    root: 'body',
-    schema: idDescriptionSchema,
+    filter: filterIdDescription,
   });
 
   ctx.body = result;
@@ -45,30 +44,12 @@ describe('validate', () => {
     return agent()
       .post('/')
       .send({ ...idDescription, id: null })
-      .expect(422, {
-        errors: [
-          {
-            path: 'body.id',
-            type: 'string',
-          },
-        ],
-      });
+      .expect(422, 'Expected string, but was null in id');
   });
 
   it('blocks missing props', () =>
     agent()
       .post('/')
       .send({})
-      .expect(422, {
-        errors: [
-          {
-            path: 'body.id',
-            type: 'required',
-          },
-          {
-            path: 'body.description',
-            type: 'required',
-          },
-        ],
-      }));
+      .expect(422, 'Expected string, but was undefined in id'));
 });

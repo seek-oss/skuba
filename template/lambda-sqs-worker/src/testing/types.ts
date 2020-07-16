@@ -1,19 +1,19 @@
 /* eslint-disable new-cap */
 
 import { Chance } from 'chance';
-import { Record, Static, String } from 'runtypes';
-import { validate } from 'runtypes-filter';
+import * as t from 'runtypes';
+import checkFilter from 'runtypes-filter';
 
 import { JobPublishedEvent } from 'src/types/pipelineEvents';
 
-export type IdDescription = Static<typeof IdDescription>;
+export type IdDescription = t.Static<typeof IdDescription>;
 
-export const IdDescription = Record({
-  id: String,
-  description: String,
+const IdDescription = t.Record({
+  id: t.String,
+  description: t.String,
 });
 
-validate(IdDescription);
+export const filterIdDescription = checkFilter(IdDescription);
 
 export const chance = new Chance();
 
