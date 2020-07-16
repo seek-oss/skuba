@@ -1,5 +1,22 @@
 # skuba
 
+## 3.7.5
+
+### Patch Changes
+
+- 5df28e9: **template/lambda-sqs-worker:** Default VERSION to local
+- 693236b: **template/koa-rest-api:** Add intermediate Dockerfile stages
+- ea706cf: **template:** ecr v2.1.1
+- 8a4fdfe: **template/koa-rest-api:** Switch to Runtypes
+
+  Yup has overly permissive input coercion (see #151) and weaker type guarantees.
+
+  We already use Runtypes in the Lambda template; other options could be explored in future.
+
+- 8a4fdfe: **template/lambda-sqs-worker:** Use better Runtypes syntax
+- ea706cf: **template:** docker-compose v3.4.0
+- 5df28e9: **template:** Add basic deployment documentation
+
 ## 3.7.4
 
 ### Patch Changes
