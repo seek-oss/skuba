@@ -27,6 +27,7 @@ export const validate = async <T>({
   try {
     return await schema.validate(input, {
       abortEarly: false,
+      strict: true,
       stripUnknown: true,
     });
   } catch (err) {
