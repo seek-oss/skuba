@@ -1,21 +1,22 @@
 /* eslint-disable new-cap */
 
-import { Number, Record, Static, String } from 'runtypes';
-import { validate } from 'runtypes-filter';
+import * as t from 'runtypes';
+import checkFilter from 'runtypes-filter';
 
-export type JobScorerInput = Static<typeof JobScorerInput>;
+export type JobScorerInput = t.Static<typeof JobScorerInput>;
 
-export const JobScorerInput = Record({
-  id: String,
-  details: String,
+const JobScorerInput = t.Record({
+  id: t.String,
+  details: t.String,
 });
 
-export type JobScorerOutput = Static<typeof JobScorerOutput>;
+export const filterJobScorerInput = checkFilter(JobScorerInput);
 
-export const JobScorerOutput = Record({
-  id: String,
-  score: Number,
+export type JobScorerOutput = t.Static<typeof JobScorerOutput>;
+
+const JobScorerOutput = t.Record({
+  id: t.String,
+  score: t.Number,
 });
 
-validate(JobScorerInput);
-validate(JobScorerOutput);
+export const filterJobScorerOutput = checkFilter(JobScorerOutput);

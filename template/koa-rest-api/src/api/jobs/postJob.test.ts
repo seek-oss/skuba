@@ -28,13 +28,6 @@ describe('postJobHandler', () => {
     return agent()
       .post('/')
       .send(jobInput)
-      .expect(422, {
-        errors: [
-          {
-            path: 'body.hirer.id',
-            type: 'required',
-          },
-        ],
-      });
+      .expect(422, 'Expected { id: string; }, but was undefined in hirer');
   });
 });

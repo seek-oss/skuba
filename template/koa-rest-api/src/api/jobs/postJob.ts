@@ -4,10 +4,10 @@ import { contextLogger } from 'src/framework/logging';
 import { metricsClient } from 'src/framework/metrics';
 import { validateRequestBody } from 'src/framework/validation';
 import * as storage from 'src/storage/jobs';
-import { jobInputSchema } from 'src/types/jobs';
+import { filterJobInput } from 'src/types/jobs';
 
 export const postJobHandler: Middleware = async (ctx) => {
-  const jobInput = await validateRequestBody(ctx, jobInputSchema);
+  const jobInput = validateRequestBody(ctx, filterJobInput);
 
   const job = await storage.createJob(jobInput);
 

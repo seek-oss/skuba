@@ -7,7 +7,7 @@ import { metricsClient } from 'src/framework/metrics';
 import { validateJson } from 'src/framework/validation';
 import { scoreJobPublishedEvent } from 'src/services/jobScorer';
 import { sendPipelineEvent } from 'src/services/pipelineEventSender';
-import { JobPublishedEvent } from 'src/types/pipelineEvents';
+import { filterJobPublishedEvent } from 'src/types/pipelineEvents';
 
 export const handler = createHandler<SQSEvent>(async (event, { logger }) => {
   const count = event.Records.length;
@@ -22,7 +22,11 @@ export const handler = createHandler<SQSEvent>(async (event, { logger }) => {
 
   const record = event.Records[0];
 
-  const publishedJob = validateJson(record.body, JobPublishedEvent);
+  // TODO: this throws an error, which will cause the Lambda function to retry
+  // the event and eventually send it to your dead-letter queue. If you don't
+  // trust your source to provide consistently well-formed input, consider
+  // catching and handling this error in code.
+  const publishedJob = validateJson(record.body, filterJobPublishedEvent);
 
   const scoredJob = await scoreJobPublishedEvent(publishedJob);
 

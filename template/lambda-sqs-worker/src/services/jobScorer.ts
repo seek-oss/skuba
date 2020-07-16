@@ -2,7 +2,11 @@ import {
   jobPublishedEventToScorerInput,
   jobScorerOutputToScoredEvent,
 } from 'src/mapping/jobScorer';
-import { JobScorerInput, JobScorerOutput } from 'src/types/jobScorer';
+import {
+  JobScorerInput,
+  JobScorerOutput,
+  filterJobScorerOutput,
+} from 'src/types/jobScorer';
 import { JobPublishedEvent, JobScoredEvent } from 'src/types/pipelineEvents';
 
 /* istanbul ignore next: simulation of an external service */
@@ -30,7 +34,7 @@ const scoreJob = async ({
 }: JobScorerInput): Promise<JobScorerOutput> => {
   const score = await scoringService.request(details);
 
-  return JobScorerOutput.check({
+  return filterJobScorerOutput({
     id,
     score,
   });
