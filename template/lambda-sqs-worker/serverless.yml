@@ -59,12 +59,15 @@ functions:
     reservedConcurrency: 20
     timeout: 30
     environment:
+      # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-      DESTINATION_SNS_TOPIC_ARN: !Ref DestinationTopic
+
       ENVIRONMENT: ${env:ENVIRONMENT}
       REGION: ${self:provider.region}
       SERVICE: ${self:service}
       VERSION: ${env:VERSION, 'local'}
+
+      DESTINATION_SNS_TOPIC_ARN: !Ref DestinationTopic
     events:
       - sqs:
           arn: !GetAtt MessageQueue.Arn
