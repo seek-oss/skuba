@@ -4,7 +4,7 @@
     "skuba-dive": "^1.1.0",
     "pino": "^6.3.2",
     "runtypes": "^5.0.1",
-    "runtypes-filter": "^0.2.1"
+    "runtypes-filter": "^0.3.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.56",
