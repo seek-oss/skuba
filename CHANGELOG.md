@@ -1,5 +1,18 @@
 # skuba
 
+## 3.7.6
+
+### Patch Changes
+
+- b77cd84: **template:** runtypes-filter ^0.3.0
+- 6ea01ae: **template/koa-rest-api:** Keep AWS SDK connections alive
+- 4595add: **deps:** runtypes ^5.0.0
+- 6bd4e6f: **template:** seek-jobs/gantry v1.2.3
+- ee95847: **deps:** typescript 3.9.7
+- d6986fb: **template:** docker-compose v3.5.0
+- 99fa456: **template:** runtypes ^5.0.0
+- 190a8fa: **deps:** eslint-config-skuba 1.0.4
+
 ## 3.7.5
 
 ### Patch Changes
