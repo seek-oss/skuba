@@ -6,6 +6,9 @@ template="${1}"
 
 directory="tmp-${template}"
 
+echo '--- cleanup'
+rm -rf "${directory}" "../${directory}"
+
 echo '--- yarn install'
 yarn install --frozen-lockfile --ignore-optional --non-interactive
 
