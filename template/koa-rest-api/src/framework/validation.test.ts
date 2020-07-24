@@ -8,7 +8,7 @@ import {
 import { jsonBodyParser } from './middleware';
 import { validate } from './validation';
 
-const agent agentFromMiddleware(jsonBodyParser, (ctx) => {
+const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
   const result = validate({
     ctx,
     input: ctx.request.body,

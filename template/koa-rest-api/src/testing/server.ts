@@ -1,5 +1,3 @@
-import { Server } from 'http';
-
 import Router from '@koa/router';
 import Koa, { Middleware } from 'koa';
 import request from 'supertest';
@@ -10,8 +8,7 @@ import { createApp } from 'src/framework/server';
  * Create a new SuperTest agent from a Koa application.
  */
 export const agentFromApp = <State, Context>(app: Koa<State, Context>) => {
-  const agent: request.SuperTest<request.Test> = request.agent(app.callback());
-  return () => agent;
+  return request.agent(app.callback());
 };
 
 /**
