@@ -9,6 +9,6 @@ describe('getJobsHandler', () => {
   it('provides no results on first load', () => {
     const jobInput = mockJobInput();
 
-    return agent().get('/').send(jobInput).expect(200, []);
+    return agent.get('/').send(jobInput).expect(200, []);
   });
 });

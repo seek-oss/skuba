@@ -10,18 +10,18 @@ describe('app', () => {
     expect(app).toHaveProperty('port');
   });
 
-  it('has a happy health check', () => agent().get('/health').expect(200, ''));
+  it('has a happy health check', () => agent.get('/health').expect(200, ''));
 
   it('has a reachable smoke test', () =>
-    agent()
+    agent
       .get('/smoke')
       .expect(({ status }) => status !== 404));
 
   it('has a reachable nested route', () =>
-    agent()
+    agent
       .get('/jobs')
       .expect(({ status }) => status !== 404));
 
   it('has OPTIONS for a nested route', () =>
-    agent().options('/jobs').expect(200).expect('allow', /HEAD/));
+    agent.options('/jobs').expect(200).expect('allow', /HEAD/));
 });

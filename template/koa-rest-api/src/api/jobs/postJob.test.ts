@@ -9,7 +9,7 @@ describe('postJobHandler', () => {
   it('200s and allocates an ID on valid input', () => {
     const jobInput = mockJobInput();
 
-    return agent()
+    return agent
       .post('/')
       .send(jobInput)
       .expect(200)
@@ -21,7 +21,7 @@ describe('postJobHandler', () => {
   it('422s on invalid input', () => {
     const jobInput = {};
 
-    return agent()
+    return agent
       .post('/')
       .send(jobInput)
       .expect(422, 'Expected { id: string; }, but was undefined in hirer');
