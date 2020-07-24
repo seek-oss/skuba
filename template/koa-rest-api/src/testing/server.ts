@@ -7,9 +7,8 @@ import { createApp } from 'src/framework/server';
 /**
  * Create a new SuperTest agent from a Koa application.
  */
-export const agentFromApp = <State, Context>(app: Koa<State, Context>) => {
-  return request.agent(app.callback());
-};
+export const agentFromApp = <State, Context>(app: Koa<State, Context>) =>
+  request.agent(app.callback());
 
 /**
  * Create a new SuperTest agent from a set of Koa middleware.
