@@ -5,10 +5,6 @@ import { jobRouter } from '.';
 
 const agent = agentFromRouter(jobRouter);
 
-beforeAll(agent.setup);
-
-afterAll(agent.teardown);
-
 describe('postJobHandler', () => {
   it('200s and allocates an ID on valid input', () => {
     const jobInput = mockJobInput();

@@ -18,10 +18,6 @@ const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
   ctx.body = result;
 });
 
-beforeAll(agent.setup);
-
-afterAll(agent.teardown);
-
 describe('validate', () => {
   it('permits valid input', () => {
     const idDescription = mockIdDescription();

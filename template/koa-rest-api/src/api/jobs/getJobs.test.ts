@@ -5,10 +5,6 @@ import { jobRouter } from '.';
 
 const agent = agentFromRouter(jobRouter);
 
-beforeAll(agent.setup);
-
-afterAll(agent.teardown);
-
 describe('getJobsHandler', () => {
   it('provides no results on first load', () => {
     const jobInput = mockJobInput();

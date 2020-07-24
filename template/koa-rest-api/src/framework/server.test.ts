@@ -14,10 +14,6 @@ const router = new Router()
 
 const agent = agentFromRouter(router);
 
-beforeAll(agent.setup);
-
-afterAll(agent.teardown);
-
 describe('createApp', () => {
   beforeAll(rootLogger.spy);
 
