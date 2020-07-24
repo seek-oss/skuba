@@ -4,10 +4,6 @@ import app from './app';
 
 const agent = agentFromApp(app);
 
-beforeAll(agent.setup);
-
-afterAll(agent.teardown);
-
 describe('app', () => {
   it('exports props for skuba start', () => {
     expect(app).toHaveProperty('callback');
