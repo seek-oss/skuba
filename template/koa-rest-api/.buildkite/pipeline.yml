@@ -43,7 +43,7 @@ steps:
   - <<: *dev
     label: 🤞 Deploy Dev
     concurrency: 1
-    concurrency_group: <%- repoName %>/deploy/dev
+    concurrency_group: <%- teamName %>/deploy/gantry/<%- devGantryEnvironmentName %>
     plugins:
       - seek-jobs/gantry#v1.2.3:
           command: apply
