@@ -1,4 +1,4 @@
-import { mergeWith } from 'lodash';
+import mergeWith from 'lodash.mergewith';
 
 const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
 
