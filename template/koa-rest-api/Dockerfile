@@ -9,7 +9,7 @@ ARG NPM_READ_TOKEN
 
 RUN \
   echo '//registry.npmjs.org/:_authToken=${NPM_READ_TOKEN}' > .npmrc && \
-  NPM_READ_TOKEN="${NPM_READ_TOKEN}" yarn install --frozen-lockfile --ignore-optional --non-interactive --production && \
+  yarn install --frozen-lockfile --ignore-optional --non-interactive --production && \
   rm .npmrc
 
 ###
@@ -21,7 +21,7 @@ ARG NPM_READ_TOKEN
 
 RUN \
   echo '//registry.npmjs.org/:_authToken=${NPM_READ_TOKEN}' > .npmrc && \
-  NPM_READ_TOKEN="${NPM_READ_TOKEN}" yarn install --frozen-lockfile --ignore-optional --non-interactive && \
+  yarn install --frozen-lockfile --ignore-optional --non-interactive && \
   rm .npmrc
 
 ###
