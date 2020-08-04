@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Remove explicitly set env NPM_READ_TOKEN
+**template:** Remove explicitly set NPM_READ_TOKEN from Dockerfile commands
