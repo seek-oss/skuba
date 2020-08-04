@@ -1,8 +1,19 @@
 name: Validate
 
 on:
-  - pull_request
-  - push
+  pull_request:
+
+  push:
+    branches-ignore:
+      - master
+
+  workflow_run:
+    branches:
+      - master
+    types:
+      - completed
+    workflows:
+      - Release
 
 jobs:
   core:
