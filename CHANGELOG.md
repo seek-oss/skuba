@@ -1,5 +1,15 @@
 # skuba
 
+## 3.7.7
+
+### Patch Changes
+
+- 1736ff8: **template/koa-rest-api:** Use per-Gantry environment concurrency group in dev
+- 57498b4: **template:** seek-jobs/gantry v1.2.4
+- aaae12a: **template/koa-rest-api:** Simplify supertest-koa bootstrap
+- 9648312: **template:** Remove explicitly set NPM_READ_TOKEN from Dockerfile commands
+- 0390727: **deps:** Limit direct lodash usage to `lodash.mergewith`
+
 ## 3.7.6
 
 ### Patch Changes
