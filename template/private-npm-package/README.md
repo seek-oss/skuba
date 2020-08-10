@@ -16,7 +16,7 @@ run `skuba init` and select the `oss-npm-package` template.
 
 ### `log`
 
-Writes "<%- moduleName %>" to stdout.
+Writes the module name to stdout.
 Thrilling stuff.
 
 ```typescript
