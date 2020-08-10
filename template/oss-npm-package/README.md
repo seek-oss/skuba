@@ -18,7 +18,7 @@ Please read [SEEK's Open Source RFC] before proceeding.
 
 ### `log`
 
-Writes "<%- moduleName %>" to stdout.
+Writes the module name to stdout.
 Thrilling stuff.
 
 ```typescript

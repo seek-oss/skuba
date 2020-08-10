@@ -1,5 +1,5 @@
 /**
- * Writes "<%- moduleName %>" to stdout.
+ * Writes the module name to stdout.
  * Thrilling stuff.
  */
 export const log = () =>
