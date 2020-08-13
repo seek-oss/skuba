@@ -36,7 +36,7 @@
     "url": "https://github.com/seek-oss/skuba.git"
   },
   "devDependencies": {
-    "@changesets/cli": "2.9.2",
+    "@changesets/cli": "2.10.0",
     "@types/concurrently": "5.2.1",
     "@types/ejs": "3.0.4",
     "@types/fs-extra": "9.0.1",
