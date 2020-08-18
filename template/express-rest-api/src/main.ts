@@ -1,13 +1,13 @@
 import { Application, Request, Response } from 'express';
-import express = require('express');
+import express from 'express';
 
 const app: Application = express();
 
-app.get('/', function (_req: Request, res: Response) {
+app.get('/', (_req: Request, res: Response) => {
   res.send('Hello World!');
 });
 
-app.get('/health', function (_req: Request, res: Response) {
+app.get('/health', (_req: Request, res: Response) => {
   res.send('');
 });
 
