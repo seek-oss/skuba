@@ -4,6 +4,7 @@ import app from './main';
 const agent = request.agent(app);
 
 describe('app', () => {
-  it('has a happy health check', () =>
-    agent.get('/').expect(200, 'Hello World!'));
+  it('Hello World!', () => agent.get('/').expect(200, 'Hello World!'));
+
+  it('has a happy health check', () => agent.get('/health').expect(200, ''));
 });

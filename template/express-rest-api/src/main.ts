@@ -7,6 +7,10 @@ app.get('/', function (_req: Request, res: Response) {
   res.send('Hello World!');
 });
 
+app.get('/health', function (_req: Request, res: Response) {
+  res.send('');
+});
+
 app.listen(3000, function () {
   console.log('App is listening on port 3000!');
 });
