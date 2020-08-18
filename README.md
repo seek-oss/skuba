@@ -143,6 +143,10 @@ This initialises a new directory and Git repository.
 
   A REST [resource API] built on the [Koa] web framework and deployed with [Gantry].
 
+  - `express-rest-api`
+
+  A Plain Express framework and deployed with [Gantry].
+
 - `lambda-sqs-worker`
 
   An asynchronous [worker] built on [AWS Lambda] and deployed with [Serverless].
@@ -179,6 +183,7 @@ This initialises a new directory and Git repository.
 [semantic-release]: https://github.com/semantic-release/semantic-release/
 [serverless]: https://serverless.com/
 [worker]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#worker
+[expressjs]: https://expressjs.com/
 
 This script is interactive by default.
 For unattended execution, pipe in JSON:

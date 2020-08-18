@@ -76,6 +76,7 @@ export const TEMPLATE_PROMPT = new Select({
   choices: [
     'greeter',
     'koa-rest-api',
+    'express-rest-api',
     'lambda-sqs-worker',
     'oss-npm-package',
     'private-npm-package',
