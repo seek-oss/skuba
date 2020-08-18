@@ -133,6 +133,10 @@ This initialises a new directory and Git repository.
 
 **skuba** supports the following template options:
 
+- `express-rest-api`
+
+  A REST [resource API] built on the [Express] web framework and deployed with [Gantry].
+
 - `greeter`
 
   A minimal _hello world_ project.
@@ -142,10 +146,6 @@ This initialises a new directory and Git repository.
 - `koa-rest-api`
 
   A REST [resource API] built on the [Koa] web framework and deployed with [Gantry].
-
-  - `express-rest-api`
-
-  A Plain Express framework and deployed with [Gantry].
 
 - `lambda-sqs-worker`
 
