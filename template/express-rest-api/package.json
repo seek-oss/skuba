@@ -6,7 +6,9 @@
   "devDependencies": {
     "@types/express": "^4.17.7",
     "@types/node": "^14.0.27",
+    "@types/supertest": "^2.0.10",
     "skuba": "^3.7.7",
+    "supertest": "^4.0.2",
     "typescript": "^3.9.7"
   },
   "engines": {
@@ -18,7 +20,7 @@
     "build": "skuba build",
     "format": "skuba format",
     "lint": "skuba lint",
-    "start": "ENVIRONMENT=local skuba start",
+    "start": "skuba start",
     "test": "skuba test"
   },
   "skuba": {
