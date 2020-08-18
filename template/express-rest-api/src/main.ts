@@ -1,5 +1,5 @@
+import { Application, Request, Response } from 'express';
 import express = require('express');
-import { Request, Response, Application } from 'express';
 
 const app: Application = express();
 
@@ -11,8 +11,8 @@ app.get('/health', function (_req: Request, res: Response) {
   res.send('');
 });
 
-app.listen(3000, function () {
-  console.log('App is listening on port 3000!');
-});
+if (process.env.ENVIRONMENT !== 'test') {
+  app.listen(3000);
+}
 
 export default app;

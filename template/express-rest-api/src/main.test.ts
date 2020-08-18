@@ -1,4 +1,5 @@
 import request from 'supertest';
+
 import app from './main';
 
 const agent = request.agent(app);
