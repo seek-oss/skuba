@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "express": "^4.17.1",
+    "skuba-dive": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.7",
+    "@types/node": "^14.0.27",
+    "skuba": "^3.7.7",
+    "typescript": "^3.9.7"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "skuba build",
+    "format": "skuba format",
+    "lint": "skuba lint",
+    "start": "ENVIRONMENT=local skuba start",
+    "test": "skuba test"
+  },
+  "skuba": {
+    "entryPoint": "src/main.ts",
+    "template": "koa-rest-api",
+    "type": "application",
+    "version": "3.7.7"
+  }
+}
