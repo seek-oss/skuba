@@ -24,7 +24,7 @@
   },
   "skuba": {
     "entryPoint": "src/main.ts",
-    "template": "koa-rest-api",
+    "template": "express-rest-api",
     "type": "application",
     "version": "3.7.7"
   }

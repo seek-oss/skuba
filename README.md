@@ -183,7 +183,7 @@ This initialises a new directory and Git repository.
 [semantic-release]: https://github.com/semantic-release/semantic-release/
 [serverless]: https://serverless.com/
 [worker]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#worker
-[expressjs]: https://expressjs.com/
+[express]: https://expressjs.com/
 
 This script is interactive by default.
 For unattended execution, pipe in JSON:
