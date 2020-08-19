@@ -31,8 +31,7 @@ pagerDutyEndpoint: '{{values "pagerDutyEndpoint"}}'
 authentication:
   ignoreRoutes:
     - /health
-    - /smoke
-    - /jobs{/**}
+    - /
 
 autoScaling:
   cpuThreshold: 50
@@ -43,7 +42,7 @@ deployment:
   # Ignore alarms otherwise we can't deploy to a failed environment (SEEK-Jobs/gantry#488)
   ignoreAlarms: true
   smokeTest:
-    path: /smoke
+    path: /health
     useExternalDns: true
 
 tags:

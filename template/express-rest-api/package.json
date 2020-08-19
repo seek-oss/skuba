@@ -21,11 +21,5 @@
     "lint": "skuba lint",
     "start": "skuba start",
     "test": "skuba test"
-  },
-  "skuba": {
-    "entryPoint": "src/main.ts",
-    "template": "express-rest-api",
-    "type": "application",
-    "version": "3.7.7"
   }
 }

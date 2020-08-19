@@ -49,12 +49,12 @@ jobs:
     strategy:
       matrix:
         template:
+          - express-rest-api
           - greeter
           - koa-rest-api
           - lambda-sqs-worker
           - oss-npm-package
           - private-npm-package
-          - express-rest-api
     steps:
       - name: Check out repo
         uses: actions/checkout@master

@@ -64,4 +64,4 @@ ARG PORT=3000
 ENV PORT ${PORT}
 EXPOSE ${PORT}
 
-CMD node lib/main
+CMD node lib/app

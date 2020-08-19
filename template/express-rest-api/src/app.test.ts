@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import app from './main';
+import app from './app';
 
 const agent = request.agent(app);
 
