@@ -133,6 +133,10 @@ This initialises a new directory and Git repository.
 
 **skuba** supports the following template options:
 
+- `express-rest-api`
+
+  A REST [resource API] built on the [Express] web framework and deployed with [Gantry].
+
 - `greeter`
 
   A minimal _hello world_ project.
@@ -179,6 +183,7 @@ This initialises a new directory and Git repository.
 [semantic-release]: https://github.com/semantic-release/semantic-release/
 [serverless]: https://serverless.com/
 [worker]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#worker
+[express]: https://expressjs.com/
 
 This script is interactive by default.
 For unattended execution, pipe in JSON:

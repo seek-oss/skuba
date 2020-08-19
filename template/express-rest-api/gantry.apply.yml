@@ -1,0 +1,51 @@
+kind: Service
+
+schemaVersion: v0.0
+
+name: '{{values "service"}}'
+
+image: '{{values "image"}}'
+
+region: '{{values "region"}}'
+
+env:
+  # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+
+  ENVIRONMENT: '{{.Environment}}'
+  REGION: '{{values "region"}}'
+  SERVICE: '{{values "service"}}'
+
+  {{range $key, $value := .Values.env}}
+  {{$key}}: {{$value}}
+  {{end}}
+
+{{if .Values.datadogSecretId}}
+datadogSecretId: '{{values "datadogSecretId"}}'
+{{end}}
+
+{{if .Values.pagerDutyEndpoint}}
+pagerDutyEndpoint: '{{values "pagerDutyEndpoint"}}'
+{{end}}
+
+authentication:
+  ignoreRoutes:
+    - /health
+    - /
+
+autoScaling:
+  cpuThreshold: 50
+  maxCount: {{values "maxInstanceCount"}}
+  minCount: {{values "minInstanceCount"}}
+
+deployment:
+  # Ignore alarms otherwise we can't deploy to a failed environment (SEEK-Jobs/gantry#488)
+  ignoreAlarms: true
+  smokeTest:
+    path: /health
+    useExternalDns: true
+
+tags:
+  {{range $key, $value := .Values.tags}}
+  {{$key}}: '{{$value}}'
+  {{end}}

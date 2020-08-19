@@ -74,6 +74,7 @@ export const GIT_PATH_PROMPT = new Input({
 
 export const TEMPLATE_PROMPT = new Select({
   choices: [
+    'express-rest-api',
     'greeter',
     'koa-rest-api',
     'lambda-sqs-worker',

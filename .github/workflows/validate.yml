@@ -49,6 +49,7 @@ jobs:
     strategy:
       matrix:
         template:
+          - express-rest-api
           - greeter
           - koa-rest-api
           - lambda-sqs-worker
