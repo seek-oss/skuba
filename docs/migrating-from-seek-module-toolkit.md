@@ -14,7 +14,7 @@
 # Renovate should automatically open a PR for this upgrade.
 # If you haven't configured Renovate on your repository, reach out in `#github`.
 yarn smt version
-# smt version 4.0.0
+# smt version 4.0.1
 
 # Upgrade ESLint and Prettier configs first via interactive prompt.
 # You can skip to `yarn smt migrate` if you're feeling adventurous.
@@ -38,7 +38,7 @@ yarn build && npm pack
 smt build → skuba build-package
 ```
 
-`seek-module-toolkit` compiles your code to:
+**seek-module-toolkit** compiles your code to:
 
 - `/lib/commonjs`: CommonJS module-compatible code
 - `/lib/es2015`: ES2015 module-compatible code
@@ -94,7 +94,7 @@ smt format:check → skuba lint
 smt lint → skuba lint
 ```
 
-`seek-module-toolkit <= 4` retained support for [TSLint] configurations.
+**seek-module-toolkit** <= 4 retained support for [TSLint] configurations.
 [TSLint is deprecated and will go out of support by December 2020.](https://github.com/palantir/tslint/issues/4534)
 
 **skuba** enforces [ESLint] and bundles a more modern set of linting rules.
@@ -112,7 +112,21 @@ smt commit →
 smt release → skuba release
 ```
 
-**skuba** has not reimplemented a pre-commit hook,
+**seek-module-toolkit** installs a `commit-msg` Git hook that may cause issues on your local machine after migration.
+We try to clean this up as part of `smt migrate`,
+but if you get the following error on `git commit`:
+
+```text
+Error: Cannot find module '@seek/seek-module-toolkit/lib/commit-msg'
+```
+
+You can manually fix it up with:
+
+```text
+rm .git/hooks/commit-msg
+```
+
+**skuba** has not implemented any Git hooks of its own,
 but it still uses [semantic-release] under the hood and expects [Conventional Commits]:
 
 - No release
