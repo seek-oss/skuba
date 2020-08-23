@@ -31,5 +31,6 @@ export type Module = Record<string, FileProcessor>;
 export interface Options {
   destinationRoot: string;
   entryPoint: string;
+  firstRun: boolean;
   type: ProjectType;
 }
