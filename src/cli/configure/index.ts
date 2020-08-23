@@ -1,6 +1,7 @@
 import path from 'path';
 
 import { Select } from 'enquirer';
+import { hasProp } from 'utils/validation';
 
 import { createInclusionFilter } from '../../utils/copy';
 import { createExec, ensureCommands } from '../../utils/exec';
@@ -82,9 +83,12 @@ export const configure = async () => {
     }
   }
 
+  const firstRun = hasProp(manifest.packageJson, 'skuba');
+
   const fixConfiguration = await analyseConfiguration({
     destinationRoot,
     entryPoint,
+    firstRun,
     type,
   });
 

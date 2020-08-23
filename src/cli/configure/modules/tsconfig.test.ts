@@ -33,7 +33,7 @@ describe('tsconfigModule', () => {
     expect(outputData.compilerOptions!.paths).toEqual({ src: ['src'] });
   });
 
-  it('disables module aliasing for packages', async () => {
+  it('disables module aliasing and retains comments for packages', async () => {
     const inputFiles = {};
 
     const outputFiles = await executeModule(
@@ -54,6 +54,26 @@ describe('tsconfigModule', () => {
     assertDefined(outputData);
     expect(outputData.compilerOptions!.baseUrl).toBeUndefined();
     expect(outputData.compilerOptions!.paths).toBeUndefined();
+    expect(outputData.compilerOptions!.removeComments).toBe(false);
+  });
+
+  it('respects explicit comment removal for packages', async () => {
+    const inputFiles = {
+      'tsconfig.json': '{"compilerOptions": {"removeComments": true}}',
+    };
+
+    const outputFiles = await executeModule(
+      tsconfigModule,
+      inputFiles,
+      defaultPackageOpts,
+    );
+
+    const outputData = parseObject(
+      outputFiles['tsconfig.json'],
+    ) as TsConfigJson;
+
+    assertDefined(outputData);
+    expect(outputData.compilerOptions!.removeComments).toBe(true);
   });
 
   it('augments existing config', async () => {

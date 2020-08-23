@@ -5,7 +5,10 @@ import { loadFiles } from '../processing/loadFiles';
 import { merge } from '../processing/record';
 import { Module, Options } from '../types';
 
-export const tsconfigModule = async ({ type }: Options): Promise<Module> => {
+export const tsconfigModule = async ({
+  firstRun,
+  type,
+}: Options): Promise<Module> => {
   const [buildFile, baseFile] = await Promise.all([
     readBaseTemplateFile('tsconfig.build.json'),
     readBaseTemplateFile('tsconfig.json'),
@@ -72,6 +75,16 @@ export const tsconfigModule = async ({ type }: Options): Promise<Module> => {
         !initialFiles['tsconfig.json']?.includes('skuba/config/tsconfig.json')
       ) {
         delete outputData.include;
+      }
+
+      // Retain comments for package documentation
+      if (
+        firstRun &&
+        type === 'package' &&
+        isObject(outputData.compilerOptions) &&
+        !outputData.compilerOptions.removeComments
+      ) {
+        outputData.compilerOptions.removeComments = false;
       }
 
       return formatObject(outputData);
