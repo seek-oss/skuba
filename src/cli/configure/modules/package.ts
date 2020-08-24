@@ -9,6 +9,7 @@ const DEFAULT_PACKAGE_FILES = [
   'lib*/**/*.d.ts',
   'lib*/**/*.js',
   'lib*/**/*.js.map',
+  'lib*/**/*.json',
 ];
 
 export const packageModule = async ({

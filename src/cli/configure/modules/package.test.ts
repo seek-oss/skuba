@@ -51,7 +51,12 @@ describe('packageModule', () => {
     const outputData = parsePackage(outputFiles['package.json']);
 
     expect(outputData).toMatchObject({
-      files: ['lib*/**/*.d.ts', 'lib*/**/*.js', 'lib*/**/*.js.map'],
+      files: [
+        'lib*/**/*.d.ts',
+        'lib*/**/*.js',
+        'lib*/**/*.js.map',
+        'lib*/**/*.json',
+      ],
       license: 'UNLICENSED',
       main: './lib-commonjs/index.js',
       module: './lib-es2015/index.js',
@@ -186,6 +191,7 @@ describe('packageModule', () => {
         'lib*/**/*.d.ts',
         'lib*/**/*.js',
         'lib*/**/*.js.map',
+        'lib*/**/*.json',
         'something-else',
       ],
       license: 'UNLICENSED',
