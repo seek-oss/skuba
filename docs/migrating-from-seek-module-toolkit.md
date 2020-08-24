@@ -67,7 +67,12 @@ Expect something like this:
 
 ```jsonc
 {
-  "files": ["lib*/**/*.d.ts", "lib*/**/*.js", "lib*/**/*.js.map"],
+  "files": [
+    "lib*/**/*.d.ts",
+    "lib*/**/*.js",
+    "lib*/**/*.js.map",
+    "lib*/**/*.json"
+  ],
   "main": "./lib-commonjs/index.js",
   "main": "./lib-es2015/index.js",
   "types": "./lib-types/index.d.ts"
