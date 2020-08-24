@@ -4,7 +4,12 @@
   "devDependencies": {
     "skuba": "*"
   },
-  "files": ["lib*/**/*.d.ts", "lib*/**/*.js", "lib*/**/*.js.map"],
+  "files": [
+    "lib*/**/*.d.ts",
+    "lib*/**/*.js",
+    "lib*/**/*.js.map",
+    "lib*/**/*.json"
+  ],
   "license": "MIT",
   "main": "./lib-commonjs/index.js",
   "module": "./lib-es2015/index.js",
