@@ -1,5 +1,19 @@
 # skuba
 
+## 3.8.0
+
+### Minor Changes
+
+- 1f8de87: **template/express-rest-api:** Add new template
+
+### Patch Changes
+
+- d79fdb1: **deps:** ts-node ^9.0.0
+- 97e0e92: **configure, template/\*-npm-package:** Pack JSON files
+- 3ae5457: **configure:** Retain package comments on first run
+- 3cd34ef: **template:** seek-jobs/gantry v1.2.5
+- cd83fea: **template/\*-npm-package:** Avoid TSDoc linting errors on init
+
 ## 3.7.7
 
 ### Patch Changes
