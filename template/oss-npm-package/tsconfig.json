@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "lib",
+    "removeComments": false,
     "target": "ES2019"
   },
   "exclude": ["lib*/**/*"],
