@@ -1,5 +1,22 @@
 # skuba
 
+## 3.9.0
+
+### Minor Changes
+
+- f9bbd95: **deps:** TypeScript 4.0
+
+  This includes compatible versions of ESLint, Jest and Prettier.
+
+- f9bbd95: **lint:** Allow incremental typechecking
+
+### Patch Changes
+
+- 2f55d43: **configure:** Fix bad import
+- b8fbbac: **template:** Use unknown catch clause variables
+- 6b21991: **template/\*-npm-package:** Retain comments out of the box
+- 57b9d78: **template/lambda-sqs-worker:** Qualify `awsRequestId` log field
+
 ## 3.8.0
 
 ### Minor Changes
