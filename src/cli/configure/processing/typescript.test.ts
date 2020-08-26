@@ -59,7 +59,7 @@ describe('transformModuleExports', () => {
   });
 
   it('works with a no-op transformer', () => {
-    const result = transformModuleExports(JEST_CONFIG, (props) => props);
+    const result = transformModuleExports(JEST_CONFIG, (_, props) => props);
 
     expect(result).toBe(JEST_CONFIG);
   });

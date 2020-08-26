@@ -45,7 +45,7 @@ export const jestModule = async (): Promise<Module> => {
         return configFile;
       }
 
-      const filteredProps = filterProps(props);
+      const filteredProps = filterProps(null, props);
 
       const appendProps = createPropAppender(filteredProps);
 
