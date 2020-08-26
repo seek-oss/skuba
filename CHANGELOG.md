@@ -4,9 +4,19 @@
 
 ### Minor Changes
 
-- f9bbd95: **deps:** TypeScript 4.0
+- f9bbd95: **deps:** [TypeScript 4.0](https://devblogs.microsoft.com/typescript/announcing-typescript-4-0/)
 
-  This includes compatible versions of ESLint, Jest and Prettier.
+  This includes compatible versions of ESLint, Jest and Prettier. You may need to reformat your code with `yarn skuba format`.
+
+  TypeScript 4.0 is largely backward compatible, but you may see errors if you [`delete` a required property](https://devblogs.microsoft.com/typescript/announcing-typescript-4-0/#operands-for-delete-must-be-optional):
+
+  ```typescript
+  const fn = (arg: { prop: string }) => {
+    delete arg.prop;
+    //     ~~~~~~
+    // error! The operand of a 'delete' operator must be optional.
+  };
+  ```
 
 - f9bbd95: **lint:** Allow incremental typechecking
 
