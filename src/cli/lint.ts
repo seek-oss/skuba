@@ -11,7 +11,7 @@ export const lint = () =>
       name: 'Prettier',
     },
     {
-      command: 'tsc --incremental false --noEmit',
+      command: 'tsc --noEmit',
       name: 'tsc',
     },
   ]);
