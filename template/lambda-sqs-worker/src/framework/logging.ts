@@ -39,5 +39,5 @@ export const rootLogger = pino({
 });
 
 /* istanbul ignore next: pino interface */
-export const contextLogger = (ctx: Context) =>
-  rootLogger.child({ requestId: ctx.awsRequestId });
+export const contextLogger = ({ awsRequestId }: Context) =>
+  rootLogger.child({ awsRequestId });
