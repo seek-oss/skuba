@@ -34,7 +34,7 @@ export const jestModule = async (): Promise<Module> => {
         return inputFile;
       }
 
-      files['jest.setup.ts'] = files['jest.setup.ts'] ?? setupFile;
+      files['jest.setup.ts'] ??= setupFile;
 
       const props =
         typeof inputFile === 'undefined'
