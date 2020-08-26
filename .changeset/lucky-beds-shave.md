@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-**lint:** Clean up error output
+**build-package, lint:** Clean up error output
