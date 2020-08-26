@@ -65,8 +65,8 @@ export const packageModule = async ({
           'skuba' in inputData ? recurringData : initialData,
         );
 
-        outputData.license = outputData.license ?? 'UNLICENSED';
-        outputData.scripts = outputData.scripts ?? {};
+        outputData.license ??= 'UNLICENSED';
+        outputData.scripts ??= {};
 
         delete outputData.scripts.commit;
         delete outputData.scripts['format:check'];
@@ -81,8 +81,7 @@ export const packageModule = async ({
             filePattern === 'lib' ? DEFAULT_PACKAGE_FILES : [filePattern],
           );
 
-          outputData.version =
-            outputData.version ?? '0.0.0-semantically-released';
+          outputData.version ??= '0.0.0-semantically-released';
 
           // User-defined pre- and post-scripts are confusing and dropped by e.g.
           // Yarn 2.

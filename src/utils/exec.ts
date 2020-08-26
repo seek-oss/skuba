@@ -100,7 +100,7 @@ export const ensureCommands = async (...names: string[]) => {
     names.map(async (name) => {
       try {
         return await which(name);
-      } catch (err) {
+      } catch (err: unknown) {
         if (isErrorWithCode(err, 'ENOENT')) {
           success = false;
 

@@ -15,7 +15,7 @@ export const tsFileExists = async (filePath: string) => {
     const stats = await fs.lstat(ext === '' ? `${filePath}.ts` : filePath);
 
     return stats.isFile();
-  } catch (err) {
+  } catch (err: unknown) {
     if (isErrorWithCode(err, 'ENOENT')) {
       return false;
     }

@@ -14,7 +14,7 @@ export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
     gitIgnorePaths.map(async (gitIgnorePath) => {
       try {
         return await fs.readFile(gitIgnorePath, 'utf8');
-      } catch (err) {
+      } catch (err: unknown) {
         if (isErrorWithCode(err, 'ENOENT')) {
           return;
         }
@@ -51,7 +51,7 @@ const copyFile = async (
     await fs.writeFile(destinationPath, newContents, {
       flag: overwrite ? 'w' : 'wx',
     });
-  } catch (err) {
+  } catch (err: unknown) {
     if (isErrorWithCode(err, 'EEXIST')) {
       return;
     }
@@ -115,7 +115,7 @@ export const copyFiles = async (
 
       try {
         await copyFile(sourcePath, destinationPath, opts);
-      } catch (err) {
+      } catch (err: unknown) {
         if (isErrorWithCode(err, 'EISDIR')) {
           await fs.ensureDir(destinationPath);
           return copyFiles(opts, sourcePath, destinationPath);

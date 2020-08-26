@@ -13,7 +13,7 @@ export const createDestinationFileReader = (root: string) => async (
 ): Promise<string | undefined> => {
   try {
     return await fs.readFile(path.join(root, filename), 'utf8');
-  } catch (err) {
+  } catch (err: unknown) {
     if (isErrorWithCode(err, 'ENOENT')) {
       return;
     }
