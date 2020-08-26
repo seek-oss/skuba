@@ -4,7 +4,7 @@ import { formatPrettier } from './prettier';
 
 type Props = ts.NodeArray<ts.ObjectLiteralElementLike>;
 
-type Transformer<T> = (props: T) => T;
+type Transformer<T> = (context: ts.TransformationContext | null, props: T) => T;
 
 /**
  * Create the following expression:
@@ -14,20 +14,21 @@ type Transformer<T> = (props: T) => T;
  * ```
  */
 const createModuleExportsExpression = (
+  factory: ts.NodeFactory,
   props: Props,
   callExpression?: ts.Expression,
 ): ts.ExpressionStatement =>
-  ts.createExpressionStatement(
-    ts.createBinary(
-      ts.createPropertyAccess(
-        ts.createIdentifier('module'),
-        ts.createIdentifier('exports'),
+  factory.createExpressionStatement(
+    factory.createBinaryExpression(
+      factory.createPropertyAccessExpression(
+        factory.createIdentifier('module'),
+        factory.createIdentifier('exports'),
       ),
-      ts.createToken(ts.SyntaxKind.EqualsToken),
+      factory.createToken(ts.SyntaxKind.EqualsToken),
       typeof callExpression === 'undefined'
-        ? ts.createObjectLiteral(props, true)
-        : ts.createCall(callExpression, undefined, [
-            ts.createObjectLiteral(props, true),
+        ? factory.createObjectLiteralExpression(props, true)
+        : factory.createCallExpression(callExpression, undefined, [
+            factory.createObjectLiteralExpression(props, true),
           ]),
     ),
   );
@@ -70,9 +71,12 @@ const createModuleExportsTransformer = (
         node.expression.operatorToken.kind === ts.SyntaxKind.EqualsToken
       ) {
         if (ts.isObjectLiteralExpression(node.expression.right)) {
-          const props = transformProps(node.expression.right.properties);
+          const props = transformProps(
+            context,
+            node.expression.right.properties,
+          );
 
-          return createModuleExportsExpression(props);
+          return createModuleExportsExpression(context.factory, props);
         }
 
         if (
@@ -82,9 +86,10 @@ const createModuleExportsTransformer = (
           const [firstArgument] = node.expression.right.arguments;
 
           if (ts.isObjectLiteralExpression(firstArgument)) {
-            const props = transformProps(firstArgument.properties);
+            const props = transformProps(context, firstArgument.properties);
 
             return createModuleExportsExpression(
+              context.factory,
               props,
               node.expression.right.expression,
             );
@@ -101,23 +106,28 @@ const createModuleExportsTransformer = (
  * Create a transformer to filter out unspecified props from an object literal.
  */
 export const createPropFilter = (names: string[]): Transformer<Props> => (
+  context,
   props,
 ) => {
   const nameSet = new Set<unknown>(names);
 
-  return ts.createNodeArray(
+  const factory = context?.factory ?? ts.factory;
+
+  return factory.createNodeArray(
     props.filter((prop) => nameSet.has(getPropName(prop))),
   );
 };
 
 export const createPropAppender = (
   appendingProps: Props,
-): Transformer<Props> => (props) => {
+): Transformer<Props> => (context, props) => {
   const nameSet = new Set<unknown>(
     props.map(getPropName).filter((prop) => typeof prop === 'string'),
   );
 
-  return ts.createNodeArray([
+  const factory = context?.factory ?? ts.factory;
+
+  return factory.createNodeArray([
     ...props,
     ...appendingProps.filter((prop) => !nameSet.has(getPropName(prop))),
   ]);
@@ -131,7 +141,7 @@ export const createPropAppender = (
 export const readModuleExports = (inputFile: string): Props | undefined => {
   let result: Props | undefined;
 
-  transformModuleExports(inputFile, (props) => (result = props));
+  transformModuleExports(inputFile, (_, props) => (result = props));
 
   return result;
 };
