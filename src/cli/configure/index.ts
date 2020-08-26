@@ -1,13 +1,13 @@
 import path from 'path';
 
 import { Select } from 'enquirer';
-import { hasProp } from 'utils/validation';
 
 import { createInclusionFilter } from '../../utils/copy';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogo } from '../../utils/logo';
 import { BASE_TEMPLATE_DIR } from '../../utils/template';
+import { hasProp } from '../../utils/validation';
 
 import { analyseConfiguration } from './analyseConfiguration';
 import { analyseDependencies } from './analyseDependencies';
