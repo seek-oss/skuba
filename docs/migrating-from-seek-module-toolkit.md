@@ -74,7 +74,7 @@ Expect something like this:
     "lib*/**/*.json"
   ],
   "main": "./lib-commonjs/index.js",
-  "main": "./lib-es2015/index.js",
+  "module": "./lib-es2015/index.js",
   "types": "./lib-types/index.d.ts"
 }
 ```
