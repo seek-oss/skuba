@@ -70,6 +70,11 @@ export const packageModule = async ({
 
         delete outputData.scripts.commit;
         delete outputData.scripts['format:check'];
+        delete outputData.scripts['lint:build'];
+        delete outputData.scripts['lint:compile'];
+        delete outputData.scripts['lint:eslint'];
+        delete outputData.scripts['lint:prettier'];
+        delete outputData.scripts['lint:tslint'];
         delete outputData.scripts['test:build'];
         delete outputData.scripts['test:jest'];
         delete outputData.typings;
