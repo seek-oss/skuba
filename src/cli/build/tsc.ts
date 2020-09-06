@@ -2,7 +2,16 @@ import { exec } from '../../utils/exec';
 
 const DEFAULT_ARGS = ['--project', 'tsconfig.build.json'] as const;
 
-const PROJECT_OPTS = new Set(['-p', '-project', '--project']);
+const PROJECT_OPTS = new Set([
+  // Build flag is incompatible with project flag
+  '-b',
+  '-build',
+  '--build',
+
+  '-p',
+  '-project',
+  '--project',
+]);
 
 export const tsc = async () => {
   const args = process.argv.slice(2);
