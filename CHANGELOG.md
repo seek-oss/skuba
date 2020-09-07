@@ -1,5 +1,27 @@
 # skuba
 
+## 3.9.1
+
+### Patch Changes
+
+- b4f3681: **start:** Allow execution despite typechecking errors
+- 2a1f9e6: **template/lambda-sqs-worker:** Include `aws-sdk` in bundle
+- 399e32c: **build:** Support `tsc --build` flag
+- 2051cc4: **configure:** Remove direct `eslint-config-skuba` and `semantic-release` dependencies
+- 40ea2bd: **build-package, lint:** Colour code subprocess output
+- 40ea2bd: **build-package, lint:** Clean up error output
+- 13c5f8d: **configure:** Clean up select `lint:xxx` scripts in `package.json`
+- 68465e3: **test:** Resolve `@typescript-eslint/typescript-estree` warnings with TypeScript 4.0:
+
+  ```text
+  WARNING: You are currently running a version of TypeScript which is not officially supported by @typescript-eslint/typescript-estree.
+  ```
+
+- a32f018: **configure:** Use TypeScript 4.0 node factory API
+- 68465e3: **lint:** [eslint-plugin-jest ^24.0.0](https://github.com/jest-community/eslint-plugin-jest/releases/v24.0.0)
+
+  This enables a few additional linting rules by default.
+
 ## 3.9.0
 
 ### Minor Changes
