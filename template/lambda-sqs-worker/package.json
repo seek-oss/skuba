@@ -14,7 +14,7 @@
     "@types/pino": "^6.3.0",
     "chance": "^1.1.6",
     "pino-pretty": "^4.0.0",
-    "serverless": "^1.73.1",
+    "serverless": "^2.0.0",
     "skuba": "*"
   },
   "engines": {
