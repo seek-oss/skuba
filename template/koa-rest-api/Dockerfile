@@ -64,4 +64,4 @@ ARG PORT=8001
 ENV PORT ${PORT}
 EXPOSE ${PORT}
 
-CMD npx --no-install koa-cluster lib/app
+CMD node lib/listen
