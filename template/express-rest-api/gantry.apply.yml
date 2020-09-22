@@ -33,6 +33,9 @@ authentication:
     - /health
     - /
 
+cpu: 256
+memory: 512
+
 autoScaling:
   cpuThreshold: 50
   maxCount: {{values "maxInstanceCount"}}
