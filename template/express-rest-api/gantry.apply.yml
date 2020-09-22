@@ -38,6 +38,9 @@ autoScaling:
   maxCount: {{values "maxInstanceCount"}}
   minCount: {{values "minInstanceCount"}}
 
+cpu: 256
+memory: 512
+
 deployment:
   # Ignore alarms otherwise we can't deploy to a failed environment (SEEK-Jobs/gantry#488)
   ignoreAlarms: true
