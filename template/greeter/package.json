@@ -1,10 +1,10 @@
 {
   "dependencies": {
-    "skuba-dive": "^1.1.0"
+    "skuba-dive": "^1.1.1"
   },
   "devDependencies": {
-    "@types/node": "^14.0.13",
-    "skuba": "*"
+    "@types/node": "^14.11.2",
+    "skuba": "3.9.1"
   },
   "engines": {
     "node": ">=12"
