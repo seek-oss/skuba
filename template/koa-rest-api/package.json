@@ -32,6 +32,9 @@
   },
   "license": "UNLICENSED",
   "private": true,
+  "resolutions": {
+    "**/sonic-boom": "~1.1.0"
+  },
   "scripts": {
     "build": "skuba build",
     "format": "skuba format",
