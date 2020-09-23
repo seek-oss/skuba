@@ -1,5 +1,29 @@
 # skuba
 
+## 3.9.2
+
+### Patch Changes
+
+- 319fbe0: **deps:** prettier 2.1.2
+- 353661f: **template:** docker-compose v3.6.0
+- 3689322: **template/lambda-sqs-worker:** serverless ^2.0.0
+- 6f55875: **deps:** eslint-config-skuba 1.0.8
+
+  This patch should reduce `@typescript-eslint` noise across JS files.
+
+- 6d04736: **template/\*-rest-api:** seek-jobs/gantry v1.2.6
+- dc1e305: **deps:** typescript 4.0.3
+- b520b3f: **template/koa-rest-api:** Remove `koa-cluster`
+
+  While Fargate environments with <= 1 vCPU appear to expose multiple threads,
+  clustering does not improve performance and only serves to increase idle memory usage.
+
+  You may add `koa-cluster` yourself if you have a CPU-bound workload running on multiple vCPUs.
+  Even in such cases, it may be better to run multiple tasks with one vCPU each rather than one task with multiple vCPUs.
+
+- 2657cda: **template:** Bump dep ranges
+- 6f55875: **deps:** Bump minor ranges
+
 ## 3.9.1
 
 ### Patch Changes
