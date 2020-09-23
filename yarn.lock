@@ -56,7 +56,7 @@
     semver "^5.4.1"
     source-map "^0.5.0"
 
-"@babel/generator@^7.11.0", "@babel/generator@^7.11.4", "@babel/generator@^7.11.5", "@babel/generator@^7.11.6":
+"@babel/generator@^7.11.5", "@babel/generator@^7.11.6":
   version "7.11.6"
   resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.11.6.tgz#b868900f81b163b4d464ea24545c61cbac4dc620"
   integrity sha512-DWtQ1PV3r+cLbySoHrwn9RWEgKMBLLma4OBQloPRyDYvc5msJM9kvTLo1YnlJd1P/ZuKbdli3ijr5q3FvAF3uA==
@@ -286,7 +286,7 @@
     resolve "^1.13.1"
     v8flags "^3.1.1"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.10.4", "@babel/parser@^7.11.0", "@babel/parser@^7.11.4", "@babel/parser@^7.11.5", "@babel/parser@^7.7.0":
+"@babel/parser@^7.1.0", "@babel/parser@^7.10.4", "@babel/parser@^7.11.5", "@babel/parser@^7.7.0":
   version "7.11.5"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.11.5.tgz#c7ff6303df71080ec7a4f5b8c003c58f1cf51037"
   integrity sha512-X9rD8qqm695vgmeaQ4fvz/o3+Wk4ZzQvSHkDBgpYKxpD4qTAUm88ZKtHkVqIOsYFFbIQ6wQYhC6q7pjqVK0E0Q==
@@ -891,7 +891,7 @@
     "@babel/parser" "^7.10.4"
     "@babel/types" "^7.10.4"
 
-"@babel/traverse@^7.1.0", "@babel/traverse@^7.10.4", "@babel/traverse@^7.11.0", "@babel/traverse@^7.11.5", "@babel/traverse@^7.7.0":
+"@babel/traverse@^7.1.0", "@babel/traverse@^7.10.4", "@babel/traverse@^7.11.5", "@babel/traverse@^7.7.0":
   version "7.11.5"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.11.5.tgz#be777b93b518eb6d76ee2e1ea1d143daa11e61c3"
   integrity sha512-EjiPXt+r7LiCZXEfRpSJd+jUMnBd4/9OUv7Nx3+0u9+eimMwJmG0Q98lw4/289JCoxSE8OolDMNZaaF/JZ69WQ==
@@ -3700,10 +3700,10 @@ eslint-config-seek@^7.0.5:
     eslint-plugin-react-hooks "^4.0.4"
     find-root "^1.1.0"
 
-eslint-config-skuba@1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.0.7.tgz#1a5ac45669e4806f3dbfabcf3a61770e96666c22"
-  integrity sha512-2LB+yNZt+Nt4xCFqXFEd2Cb9E4Wg4yVwKgoudSNsZfV9y3DjDLgg8AQhJEwD07hQ9SEKnoT1SHRmUPwuZmwLTw==
+eslint-config-skuba@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.0.8.tgz#5ed368124fd3915f90394c8dc0d3b59bb0e504a2"
+  integrity sha512-slFqIg0pReyGOieOgoLqpu9JPcHKjJp0yWNb+eu9+0jl6M25OmhuLqgrRYhGFcYuZp10q6ytNc+dn3k752dlIQ==
   dependencies:
     "@types/eslint" "^7.2.2"
     eslint-config-seek "^7.0.5"
