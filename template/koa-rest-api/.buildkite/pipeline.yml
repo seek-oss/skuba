@@ -31,7 +31,7 @@ steps:
     label: 📦 Build & Package
     plugins:
       - *aws-sm
-      - seek-jobs/gantry#v1.2.5:
+      - seek-jobs/gantry#v1.2.6:
           command: build
           file: gantry.build.yml
           values: .gantry/common.yml
@@ -45,7 +45,7 @@ steps:
     concurrency: 1
     concurrency_group: <%- teamName %>/deploy/gantry/<%- devGantryEnvironmentName %>
     plugins:
-      - seek-jobs/gantry#v1.2.5:
+      - seek-jobs/gantry#v1.2.6:
           command: apply
           environment: <%- devGantryEnvironmentName %>
           file: gantry.apply.yml
@@ -61,7 +61,7 @@ steps:
     concurrency: 1
     concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
     plugins:
-      - seek-jobs/gantry#v1.2.5:
+      - seek-jobs/gantry#v1.2.6:
           command: apply
           environment: <%- prodGantryEnvironmentName %>
           file: gantry.apply.yml
