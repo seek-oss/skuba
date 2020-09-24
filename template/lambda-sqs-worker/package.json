@@ -15,7 +15,7 @@
     "chance": "^1.1.7",
     "pino-pretty": "^4.2.1",
     "serverless": "^2.1.1",
-    "skuba": "3.9.2"
+    "skuba": "*"
   },
   "engines": {
     "node": ">=12"
