@@ -14,11 +14,15 @@ RUN \
 
 ###
 
-FROM node:12-alpine AS build
+FROM node:12-alpine AS dev-deps
 
 WORKDIR /workdir
 
 COPY --from=unsafe-dev-deps /workdir .
+
+###
+
+FROM dev-deps AS build
 
 COPY . .
 
