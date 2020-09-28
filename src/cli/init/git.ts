@@ -16,7 +16,7 @@ export const initialiseRepo = async (
 ) => {
   await exec('git', 'init');
 
-  await exec(
+  const result = await exec(
     'git',
     '-c',
     'user.email=<>',
@@ -28,8 +28,13 @@ export const initialiseRepo = async (
     'skuba <>',
     '--message',
     'Initial commit',
-    '--quiet',
   );
+
+  // For compatibility, otherwise we could use Git 2.28's init.defaultBranch
+  if (result.stdout.includes('master')) {
+    await exec('git', 'checkout', '-b', 'main');
+    await exec('git', 'branch', '-D', 'master');
+  }
 
   await exec(
     'git',
