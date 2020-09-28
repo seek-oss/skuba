@@ -6,7 +6,7 @@ services:
       args:
         - NPM_READ_TOKEN
       context: .
-      target: build
+      target: dev-deps
     environment:
       - BUILDKITE_COMMIT
       - ENVIRONMENT

@@ -6,7 +6,7 @@ services:
       args:
         - NPM_READ_TOKEN
       context: .
-      target: build
+      target: dev-deps
     init: true
     volumes:
       - /workdir/node_modules

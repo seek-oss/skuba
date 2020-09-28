@@ -24,7 +24,7 @@
   "private": true,
   "scripts": {
     "build": "skuba build",
-    "deploy": "serverless deploy --force --verbose",
+    "deploy": "yarn build && serverless deploy --force --verbose",
     "format": "skuba format",
     "lint": "skuba lint",
     "test": "skuba test"
