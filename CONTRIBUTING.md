@@ -66,11 +66,11 @@ yarn install
 
 We use [GitHub flow](https://guides.github.com/introduction/flow/).
 
-Create a new branch off of the latest commit on master:
+Create a new branch off of the latest commit on main:
 
 ```shell
 git fetch origin
-git switch --create your-branch-name origin/master
+git switch --create your-branch-name origin/main
 ```
 
 Develop, [test](#testing) and commit your changes on this branch.
@@ -96,7 +96,7 @@ git push --set-upstream fork your-branch-name
 ```
 
 A maintainer will get to your pull request and review the changes.
-If all is well, they will merge your pull request into master.
+If all is well, they will merge your pull request into main.
 
 ### Testing
 
@@ -234,10 +234,10 @@ We currently have limited support for prereleases on the `beta` [dist-tag].
 This can only be performed by a maintainer.
 
 ```shell
-# revert beta branch to match master
+# revert beta branch to match main
 git fetch origin
 git switch beta
-git reset --hard origin/master
+git reset --hard origin/main
 
 # stage a beta release
 yarn changeset pre enter beta
@@ -261,7 +261,7 @@ git push --set-upstream origin beta
 ```
 
 [#typescriptification]: https://seekchat.slack.com/channels/typescriptification
-[changelog]: https://github.com/seek-oss/skuba/blob/master/CHANGELOG.md
+[changelog]: https://github.com/seek-oss/skuba/blob/main/CHANGELOG.md
 [changesets]: https://github.com/atlassian/changesets
 [create a pull request]: https://github.com/seek-oss/skuba/compare
 [dist-tag]: https://docs.npmjs.com/cli/dist-tag

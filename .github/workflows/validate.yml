@@ -5,11 +5,11 @@ on:
 
   push:
     branches-ignore:
-      - master
+      - main
 
   workflow_run:
     branches:
-      - master
+      - main
     types:
       - completed
     workflows:

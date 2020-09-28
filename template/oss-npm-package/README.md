@@ -76,7 +76,7 @@ on:
     branches:
       # add others as necessary
       - beta
-      - master
+      - main
       # - alpha
 ```
 
@@ -86,7 +86,7 @@ To set up this repo for publishing, follow the instructions in our [OSS npm pack
 
 ### Releasing latest
 
-Commits to the `master` branch will be released with the `latest` tag,
+Commits to the `main` branch will be released with the `latest` tag,
 which is the default used when running `npm install` or `yarn install`.
 
 ### Releasing other dist-tags
@@ -99,7 +99,7 @@ Here are some branches that **semantic-release** supports by default:
 
 | Git branch | npm dist-tag |
 | :--------- | :----------- |
-| master     | latest       |
+| main       | latest       |
 | alpha      | alpha        |
 | beta       | beta         |
 | next       | next         |

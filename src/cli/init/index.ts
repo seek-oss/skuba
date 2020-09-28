@@ -96,5 +96,5 @@ export const init = async () => {
 
   log.newline();
   log.ok(log.bold('cd', destinationDir));
-  log.ok(log.bold('git push --set-upstream origin master'));
+  log.ok(log.bold('git push --set-upstream origin main'));
 };
