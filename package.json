@@ -42,6 +42,7 @@
     "@types/fs-extra": "9.0.1",
     "@types/lodash.mergewith": "4.6.6",
     "@types/npm-which": "3.0.0",
+    "@types/semantic-release": "17.1.0",
     "type-fest": "0.16.0"
   },
   "dependencies": {
