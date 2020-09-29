@@ -22,7 +22,7 @@ configs:
     plugins:
       - *aws-sm
       - *docker-ecr-cache
-      - docker-compose#v3.6.0:
+      - docker-compose#v3.7.0:
           dependencies: false
           run: app
 
@@ -58,7 +58,7 @@ steps:
       - *docker-ecr-cache
       - ecr#v2.1.1:
           login: true
-      - docker-compose#v3.6.0:
+      - docker-compose#v3.7.0:
           run: app
 
   - wait
