@@ -121,7 +121,6 @@ resources:
     #     Endpoint: !GetAtt MessageQueue.Arn
     #     Protocol: sqs
     #     RawMessageDelivery: true
-    #     Region: !Ref AWS::Region
     #     TopicArn: 'TODO: sourceSnsTopicArn'
 
     DestinationTopic:
