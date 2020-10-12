@@ -11,6 +11,7 @@ interface Config {
 
   requestListener?: http.RequestListener;
 
+  default?: unknown;
   port?: number;
 }
 
@@ -28,11 +29,18 @@ const start = () => {
   const appPath = path.join(process.cwd(), entryPoint);
 
   /* eslint-disable-next-line @typescript-eslint/no-var-requires */
-  const config = require(appPath) as unknown;
+  const appModule = require(appPath) as unknown;
 
-  if (!isConfig(config)) {
+  if (!isConfig(appModule)) {
     log.err('Invalid export from', log.bold(appPath));
     process.exit(1);
+  }
+
+  let config = appModule;
+
+  // prefer `export default` over `export =`
+  if (isConfig(config.default)) {
+    config = config.default;
   }
 
   // assume an executable script with no exports

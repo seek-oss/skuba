@@ -251,8 +251,8 @@ Koa should work with minimal fuss:
 ```typescript
 const app = new Koa();
 
-// port and export syntax are also required for koa-cluster
-export = Object.assign(app, { port });
+// you can also use `export =` syntax as required by koa-cluster
+export default Object.assign(app, { port });
 ```
 
 ### `skuba test`
