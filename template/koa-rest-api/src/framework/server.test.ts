@@ -14,10 +14,6 @@ const router = new Router()
 
 const agent = agentFromRouter(router);
 
-beforeAll(agent.setup);
-
-afterAll(agent.teardown);
-
 describe('createApp', () => {
   beforeAll(rootLogger.spy);
 
@@ -27,7 +23,7 @@ describe('createApp', () => {
   it('handles root route', async () => {
     middleware.mockImplementation((ctx) => (ctx.body = ''));
 
-    await agent()
+    await agent
       .get('/')
       .expect(200, '')
       .expect('server', /.+/)
@@ -55,7 +51,7 @@ describe('createApp', () => {
   it('handles nested route', async () => {
     middleware.mockImplementation((ctx) => (ctx.body = ''));
 
-    await agent()
+    await agent
       .put('/nested/123')
       .expect(200, '')
       .expect('server', /.+/)
@@ -82,7 +78,7 @@ describe('createApp', () => {
   it('handles unknown route', async () => {
     middleware.mockImplementation((ctx) => (ctx.body = ''));
 
-    await agent()
+    await agent
       .get('/unknown')
       .expect(404, 'Not Found')
       .expect('server', /.+/)
@@ -111,7 +107,7 @@ describe('createApp', () => {
 
     middleware.mockImplementation((ctx) => ctx.throw(400, message));
 
-    await agent()
+    await agent
       .get('/')
       .expect(400, message)
       .expect('server', /.+/)
@@ -140,7 +136,7 @@ describe('createApp', () => {
 
     middleware.mockImplementation((ctx) => ctx.throw(500, message));
 
-    await agent()
+    await agent
       .get('/')
       .expect(500, '')
       .expect('server', /.+/)
@@ -171,7 +167,7 @@ describe('createApp', () => {
       throw err;
     });
 
-    await agent()
+    await agent
       .get('/')
       .expect(500, '')
       .expect('server', /.+/)
@@ -201,7 +197,7 @@ describe('createApp', () => {
       throw null;
     });
 
-    await agent()
+    await agent
       .get('/')
       .expect(500, '')
       .expect('server', /.+/)
@@ -233,7 +229,7 @@ describe('createApp', () => {
       throw err;
     });
 
-    await agent()
+    await agent
       .get('/')
       .expect(500, '')
       .expect('server', /.+/)

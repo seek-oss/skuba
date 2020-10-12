@@ -16,7 +16,7 @@ run `skuba init` and select the `oss-npm-package` template.
 
 ### `log`
 
-Writes "<%- moduleName %>" to stdout.
+Writes the module name to stdout.
 Thrilling stuff.
 
 ```typescript
@@ -66,9 +66,9 @@ npm pack
 
 This package is published to the npm registry under the private `@seek` npm org with [Gutenberg], SEEK's central npm publishing pipeline.
 
-It depends on this repo being hosted on [SEEK-Jobs] with access to the npm Buildkite queue and CI GitHub user.
+It depends on this repo being hosted on [SEEK-Jobs] with appropriate access.
 
-See the Gutenberg [installing on your repository] instructions to configure this access.
+To set up this repo for publishing, follow the instructions in Gutenberg's [installing on your repository] guidance.
 
 ### Releasing latest
 

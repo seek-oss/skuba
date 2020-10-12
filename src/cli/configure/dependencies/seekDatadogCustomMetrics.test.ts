@@ -9,6 +9,7 @@ describe('seekDatadogCustomMetrics', () => {
       devDependencies: {
         'seek-datadog-custom-metrics': '1.0.0',
       },
+      type: 'application' as const,
     };
 
     const result = seekDatadogCustomMetrics(input);
@@ -21,6 +22,7 @@ describe('seekDatadogCustomMetrics', () => {
       devDependencies: {
         'seek-datadog-custom-metrics': '1.0.0',
       },
+      type: 'application',
     });
   });
 
@@ -32,6 +34,7 @@ describe('seekDatadogCustomMetrics', () => {
       devDependencies: {
         '@seek/node-datadog-custom-metrics': '1.0.0',
       },
+      type: 'application' as const,
     };
 
     const result = seekDatadogCustomMetrics(input);
@@ -44,6 +47,7 @@ describe('seekDatadogCustomMetrics', () => {
       devDependencies: {
         'seek-datadog-custom-metrics': '*',
       },
+      type: 'application',
     });
   });
 });

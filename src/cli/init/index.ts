@@ -45,6 +45,8 @@ export const init = async () => {
     // prefer template-specific files
     overwrite: false,
     processors,
+    // base template has files like _.eslintrc.js
+    stripUnderscorePrefix: true,
   });
 
   await copyFiles({
@@ -68,11 +70,25 @@ export const init = async () => {
     }),
   ]);
 
-  const exec = createExec({ cwd: destinationDir });
+  const exec = createExec({
+    cwd: destinationDir,
+    stdio: 'pipe',
+    streamStdio: 'yarn',
+  });
 
   log.newline();
   await initialiseRepo(exec, templateData);
-  await exec('yarn', 'add', '--dev', '--exact', '--silent', 'skuba');
+
+  log.plain('Installing dependencies...');
+  await exec(
+    'yarn',
+    'add',
+    '--dev',
+    '--exact',
+    '--silent',
+    `skuba@${skubaVersion}`,
+  );
+
   await commitChanges(exec, `Clone ${templateName}`);
 
   log.newline();

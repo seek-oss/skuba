@@ -10,6 +10,7 @@ import { diffFiles } from './analysis/project';
 interface Props {
   destinationRoot: string;
   entryPoint: string;
+  firstRun: boolean;
   type: ProjectType;
 }
 

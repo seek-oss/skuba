@@ -14,7 +14,7 @@ export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
     gitIgnorePaths.map(async (gitIgnorePath) => {
       try {
         return await fs.readFile(gitIgnorePath, 'utf8');
-      } catch (err) {
+      } catch (err: unknown) {
         if (isErrorWithCode(err, 'ENOENT')) {
           return;
         }
@@ -51,7 +51,7 @@ const copyFile = async (
     await fs.writeFile(destinationPath, newContents, {
       flag: overwrite ? 'w' : 'wx',
     });
-  } catch (err) {
+  } catch (err: unknown) {
     if (isErrorWithCode(err, 'EEXIST')) {
       return;
     }
@@ -67,6 +67,7 @@ interface CopyFilesOptions {
   include: (pathname: string) => boolean;
   overwrite?: boolean;
   processors: Array<TextProcessor>;
+  stripUnderscorePrefix?: boolean;
 }
 
 export const createEjsRenderer = (
@@ -92,7 +93,14 @@ export const copyFiles = async (
   const filenames = await fs.readdir(currentSourceDir);
 
   const toDestinationPath = (filename: string) =>
-    path.join(currentDestinationDir, filename.replace(/^_/, ''));
+    path.join(
+      currentDestinationDir,
+      opts.stripUnderscorePrefix
+        ? filename
+            .replace(/^_\./, '.')
+            .replace(/^_package\.json/, 'package.json')
+        : filename,
+    );
 
   const filteredFilenames = filenames.filter((filename) =>
     opts.include(
@@ -107,7 +115,7 @@ export const copyFiles = async (
 
       try {
         await copyFile(sourcePath, destinationPath, opts);
-      } catch (err) {
+      } catch (err: unknown) {
         if (isErrorWithCode(err, 'EISDIR')) {
           await fs.ensureDir(destinationPath);
           return copyFiles(opts, sourcePath, destinationPath);

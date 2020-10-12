@@ -1,7 +1,23 @@
 import { readBaseTemplateFile } from '../../../utils/template';
 import { loadFiles } from '../processing/loadFiles';
 import { withPackage } from '../processing/package';
+import {
+  createPropAppender,
+  createPropFilter,
+  readModuleExports,
+  transformModuleExports,
+} from '../processing/typescript';
 import { Module } from '../types';
+
+// Jest options to preserve during migration
+const filterProps = createPropFilter([
+  'collectCoverageFrom',
+  'coverageThreshold',
+  'globalSetup',
+  'globalTeardown',
+  'setupFiles',
+  'setupFilesAfterEnv',
+]);
 
 export const jestModule = async (): Promise<Module> => {
   const [configFile, setupFile] = await Promise.all([
@@ -18,9 +34,22 @@ export const jestModule = async (): Promise<Module> => {
         return inputFile;
       }
 
-      files['jest.setup.ts'] = files['jest.setup.ts'] ?? setupFile;
+      files['jest.setup.ts'] ??= setupFile;
 
-      return configFile;
+      const props =
+        typeof inputFile === 'undefined'
+          ? undefined
+          : readModuleExports(inputFile);
+
+      if (typeof props === 'undefined') {
+        return configFile;
+      }
+
+      const filteredProps = filterProps(null, props);
+
+      const appendProps = createPropAppender(filteredProps);
+
+      return transformModuleExports(configFile, appendProps);
     },
 
     'package.json': withPackage(({ jest, ...data }) => data),

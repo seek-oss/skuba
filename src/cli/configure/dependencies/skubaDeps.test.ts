@@ -11,6 +11,7 @@ describe('skubaDeps', () => {
         'pino-pretty': '0.0.1',
         typescript: '0.0.1',
       },
+      type: 'application' as const,
     };
 
     const result = skubaDeps(input);
@@ -23,6 +24,7 @@ describe('skubaDeps', () => {
       devDependencies: {
         'pino-pretty': '0.0.1',
       },
+      type: 'application',
     });
   });
 });

@@ -7,12 +7,14 @@ export function assertDefined<T>(value?: T): asserts value is T {
 export const defaultOpts: Options = {
   destinationRoot: '/tmp',
   entryPoint: 'src/app.ts',
+  firstRun: true,
   type: 'application',
 };
 
 export const defaultPackageOpts: Options = {
   destinationRoot: '/tmp',
   entryPoint: 'src/index.ts',
+  firstRun: true,
   type: 'package',
 };
 

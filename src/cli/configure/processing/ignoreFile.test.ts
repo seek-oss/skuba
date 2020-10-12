@@ -1,15 +1,42 @@
-import { mergeWithIgnoreFile } from './ignoreFile';
+import { generateSimpleVariants, mergeWithIgnoreFile } from './ignoreFile';
+
+describe('generateSimpleVariants', () => {
+  it.each([
+    ['variant path', ['/lib*/'], ['/lib*/', '/lib/', '/lib', 'lib/', 'lib']],
+    ['non-variant path', ['lib'], ['/lib', '/lib/', 'lib', 'lib/']],
+    ['duplicate patterns', ['lib', 'lib'], ['/lib', '/lib/', 'lib', 'lib/']],
+    [
+      'file extension',
+      ['*.tgz'],
+      ['*.tgz', '.tgz', '.tgz/', '/.tgz', '/.tgz/'],
+    ],
+    ['potential empty string', ['/'], ['/']],
+    ['empty string', [''], []],
+  ])('handles %s', (_, pattern, expected) =>
+    expect(generateSimpleVariants(pattern)).toEqual(new Set(expected)),
+  );
+});
 
 describe('mergeWithIgnoreFile', () => {
   const baseTemplate =
-    '# managed by skuba\nnode_modules\n# end managed by skuba\n';
+    '# managed by skuba\nnode_modules*/\n# end managed by skuba\n';
   const updatedBaseTemplate =
-    '# managed by skuba\nnode_modules\n.DS_Store\n# end managed by skuba\n';
+    '# managed by skuba\nnode_modules*/\n.DS_Store\n# end managed by skuba\n';
 
   const cases = [
     ['empty provided', baseTemplate, ''],
 
     ['provided with no managed section', baseTemplate, '.DS_Store\n'],
+    [
+      'provided with managed section and partially superseded config',
+      updatedBaseTemplate,
+      'system32\n\n.DS_Store\nnode_modules/\n\n*.zip\n',
+    ],
+    [
+      'provided with managed section and fully superseded config',
+      updatedBaseTemplate,
+      '\r\n\nnode_modules\r\nnode_modules_bak\n/node_modules',
+    ],
     [
       'provided with outdated managed section',
       updatedBaseTemplate,

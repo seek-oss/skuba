@@ -33,7 +33,7 @@ describe('tsconfigModule', () => {
     expect(outputData.compilerOptions!.paths).toEqual({ src: ['src'] });
   });
 
-  it('disables module aliasing for packages', async () => {
+  it('disables module aliasing and retains comments for packages', async () => {
     const inputFiles = {};
 
     const outputFiles = await executeModule(
@@ -54,6 +54,26 @@ describe('tsconfigModule', () => {
     assertDefined(outputData);
     expect(outputData.compilerOptions!.baseUrl).toBeUndefined();
     expect(outputData.compilerOptions!.paths).toBeUndefined();
+    expect(outputData.compilerOptions!.removeComments).toBe(false);
+  });
+
+  it('respects explicit comment removal for packages', async () => {
+    const inputFiles = {
+      'tsconfig.json': '{"compilerOptions": {"removeComments": true}}',
+    };
+
+    const outputFiles = await executeModule(
+      tsconfigModule,
+      inputFiles,
+      defaultPackageOpts,
+    );
+
+    const outputData = parseObject(
+      outputFiles['tsconfig.json'],
+    ) as TsConfigJson;
+
+    assertDefined(outputData);
+    expect(outputData.compilerOptions!.removeComments).toBe(true);
   });
 
   it('augments existing config', async () => {
@@ -88,7 +108,7 @@ describe('tsconfigModule', () => {
     assertDefined(outputData);
     expect(outputData.compilerOptions!.outDir).toBe('lib');
     expect(outputData.compilerOptions!.target).toBe('ES2020');
-    expect(outputData.exclude).toContain('lib/**/*');
+    expect(outputData.exclude).toContain('lib*/**/*');
     expect(outputData.exclude).toContain('.idea');
     expect(outputData.extends).toBe('skuba/config/tsconfig.json');
     expect(outputData.include).toBeUndefined();
@@ -114,6 +134,27 @@ describe('tsconfigModule', () => {
 
     assertDefined(outputData);
     expect(outputData.compilerOptions!.outDir).toBe('lib');
+  });
+
+  it('removes duplicate lib patterns from  exclude option', async () => {
+    const inputFiles = {
+      'tsconfig.json':
+        '{"extends": "skuba/config/tsconfig.json", "exclude": ["lib", "lib/**/*"]}',
+    };
+
+    const outputFiles = await executeModule(
+      tsconfigModule,
+      inputFiles,
+      defaultOpts,
+    );
+
+    const outputData = parseObject(
+      outputFiles['tsconfig.json'],
+    ) as TsConfigJson;
+
+    assertDefined(outputData);
+    expect(outputData.extends).toBe('skuba/config/tsconfig.json');
+    expect(outputData.exclude).toStrictEqual(['lib*/**/*']);
   });
 
   it('retains include option after initial setup', async () => {

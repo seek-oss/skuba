@@ -101,14 +101,13 @@ gantry*.yml
     "operation": "A",
   },
   "jest.config.js": Object {
-    "data": "const { testPathIgnorePatterns } = require('skuba/config/jest');
+    "data": "const { Jest } = require('skuba');
 
-module.exports = {
+module.exports = Jest.mergePreset({
   coveragePathIgnorePatterns: ['src/testing'],
-  preset: 'skuba',
   setupFiles: ['<rootDir>/jest.setup.ts'],
-  testPathIgnorePatterns: [...testPathIgnorePatterns, '/test\\\\\\\\.ts'],
-};
+  testPathIgnorePatterns: ['/test\\\\\\\\.ts'],
+});
 ",
     "operation": "A",
   },
@@ -119,9 +118,6 @@ module.exports = {
   },
   "package.json": Object {
     "data": "{
-  \\"dependencies\\": {
-    \\"skuba-dive\\": \\"0.0.1\\"
-  },
   \\"license\\": \\"UNLICENSED\\",
   \\"private\\": true,
   \\"scripts\\": {
@@ -159,7 +155,7 @@ module.exports = {
       \\"src\\": [\\"src\\"]
     }
   },
-  \\"exclude\\": [\\"lib/**/*\\"],
+  \\"exclude\\": [\\"lib*/**/*\\"],
   \\"extends\\": \\"skuba/config/tsconfig.json\\"
 }
 ",

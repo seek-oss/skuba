@@ -1,4 +1,7 @@
-import * as yup from 'yup';
+/* eslint-disable new-cap */
+
+import * as t from 'runtypes';
+import checkFilter from 'runtypes-filter';
 
 export interface Job {
   id: string;
@@ -8,14 +11,12 @@ export interface Job {
   };
 }
 
-export type JobInput = yup.InferType<typeof jobInputSchema>;
+export type JobInput = t.Static<typeof JobInput>;
 
-export const jobInputSchema = yup
-  .object({
-    hirer: yup
-      .object({
-        id: yup.string().required(),
-      })
-      .required(),
-  })
-  .required();
+const JobInput = t.Record({
+  hirer: t.Record({
+    id: t.String,
+  }),
+});
+
+export const filterJobInput = checkFilter(JobInput);

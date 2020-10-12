@@ -9,16 +9,20 @@ ARG NPM_READ_TOKEN
 
 RUN \
   echo '//registry.npmjs.org/:_authToken=${NPM_READ_TOKEN}' > .npmrc && \
-  NPM_READ_TOKEN="${NPM_READ_TOKEN}" yarn install --frozen-lockfile --ignore-optional --non-interactive && \
+  yarn install --frozen-lockfile --ignore-optional --non-interactive && \
   rm .npmrc
 
 ###
 
-FROM node:12-alpine AS build
+FROM node:12-alpine AS dev-deps
 
 WORKDIR /workdir
 
 COPY --from=unsafe-dev-deps /workdir .
+
+###
+
+FROM dev-deps AS build
 
 COPY . .
 

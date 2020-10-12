@@ -9,6 +9,7 @@ describe('seekKoala', () => {
       devDependencies: {
         'seek-koala': '1.0.0',
       },
+      type: 'application' as const,
     };
 
     const result = seekKoala(input);
@@ -21,6 +22,7 @@ describe('seekKoala', () => {
       devDependencies: {
         'seek-koala': '1.0.0',
       },
+      type: 'application',
     });
   });
 
@@ -32,6 +34,7 @@ describe('seekKoala', () => {
       devDependencies: {
         '@seek/koala': '1.0.0',
       },
+      type: 'application' as const,
     };
 
     const result = seekKoala(input);
@@ -44,6 +47,7 @@ describe('seekKoala', () => {
       devDependencies: {
         'seek-koala': '*',
       },
+      type: 'application',
     });
   });
 });

@@ -42,6 +42,7 @@ export const start = async () => {
   return exec(
     'ts-node-dev',
     '--respawn',
+    '--transpile-only',
     path.join(__dirname, 'http'),
     entryPoint,
     String(port),

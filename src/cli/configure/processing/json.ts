@@ -1,8 +1,11 @@
-import prettier from 'prettier';
-
 import { isObject } from '../../../utils/validation';
 
-export const formatObject = (data: Record<PropertyKey, unknown>) => {
+import { formatPrettier } from './prettier';
+
+export const formatObject = (
+  data: Record<PropertyKey, unknown>,
+  filepath?: string,
+) => {
   const sortedData = Object.fromEntries(
     Object.entries(data).sort(([keyA], [keyB]) =>
       String(keyA).localeCompare(String(keyB)),
@@ -11,7 +14,10 @@ export const formatObject = (data: Record<PropertyKey, unknown>) => {
 
   const output = JSON.stringify(sortedData, null, 2);
 
-  return prettier.format(output, { parser: 'json' });
+  return formatPrettier(
+    output,
+    typeof filepath === 'undefined' ? { parser: 'json' } : { filepath },
+  );
 };
 
 export const parseObject = (

@@ -5,7 +5,10 @@ import { loadFiles } from '../processing/loadFiles';
 import { merge } from '../processing/record';
 import { Module, Options } from '../types';
 
-export const tsconfigModule = async ({ type }: Options): Promise<Module> => {
+export const tsconfigModule = async ({
+  firstRun,
+  type,
+}: Options): Promise<Module> => {
   const [buildFile, baseFile] = await Promise.all([
     readBaseTemplateFile('tsconfig.build.json'),
     readBaseTemplateFile('tsconfig.json'),
@@ -55,12 +58,33 @@ export const tsconfigModule = async ({ type }: Options): Promise<Module> => {
 
       const outputData = merge(inputData ?? {}, baseData);
 
+      // Remove `lib/**/*` and `lib`, which duplicate `lib*/**/*`
+      if (Array.isArray(outputData.exclude)) {
+        const { exclude } = outputData;
+
+        const hasLibStar = exclude.includes('lib*/**/*');
+
+        outputData.exclude = exclude.filter(
+          (pattern) => !(hasLibStar && ['lib', 'lib/**/*'].includes(pattern)),
+        );
+      }
+
       // for optimal ESLinting, base config should compile all files and leave
       // exclusions to .eslintignore and tsconfig.build.json
       if (
         !initialFiles['tsconfig.json']?.includes('skuba/config/tsconfig.json')
       ) {
         delete outputData.include;
+      }
+
+      // Retain comments for package documentation
+      if (
+        firstRun &&
+        type === 'package' &&
+        isObject(outputData.compilerOptions) &&
+        !outputData.compilerOptions.removeComments
+      ) {
+        outputData.compilerOptions.removeComments = false;
       }
 
       return formatObject(outputData);

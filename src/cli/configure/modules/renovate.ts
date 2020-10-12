@@ -1,6 +1,7 @@
 import { readBaseTemplateFile } from '../../../utils/template';
-import { loadFiles } from '../processing/loadFiles';
+import { deleteFiles } from '../processing/deleteFiles';
 import { withPackage } from '../processing/package';
+import { formatPrettier } from '../processing/prettier';
 import { getFirstDefined } from '../processing/record';
 import { Module, Options } from '../types';
 
@@ -16,26 +17,23 @@ export const renovateModule = async ({ type }: Options): Promise<Module> => {
   const configFile = await readBaseTemplateFile('.github/renovate.json5');
 
   return {
-    ...loadFiles(...OTHER_CONFIG_FILENAMES),
+    ...deleteFiles(...OTHER_CONFIG_FILENAMES),
 
-    '.github/renovate.json5': (_, files) => {
+    '.github/renovate.json5': (_inputFile, _files, initialFiles) => {
       // allow migration from other Renovate config files
-      const inputFile = getFirstDefined(files, [
+      const inputFile = getFirstDefined(initialFiles, [
         '.github/renovate.json5',
         ...OTHER_CONFIG_FILENAMES,
       ]);
 
-      // delete other Renovate config files
-      OTHER_CONFIG_FILENAMES.forEach(
-        (filename) => (files[filename] = undefined),
-      );
-
       // allow customised Renovate configs that extend a SEEK configuration
-      return inputFile?.includes('seek') ? inputFile : configFile;
+      return inputFile?.includes('seek')
+        ? formatPrettier(inputFile, { parser: 'json5' })
+        : configFile;
     },
 
     /**
-     * Ensure Renovate detects an application and not a library.
+     * Ensure Renovate correctly detects the project as an application/library.
      *
      * @see {@link https://docs.renovatebot.com/configuration-options/#rangestrategy }
      * @see {@link https://github.com/renovatebot/renovate/blob/8c361082842bb157d85ca39ecf4f6075730e74bb/lib/manager/npm/extract/type.ts#L3 }

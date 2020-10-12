@@ -76,7 +76,7 @@ const confirmShouldContinue = async (choices: Readonly<FormChoice[]>) => {
 const createDirectory = async (dir: string) => {
   try {
     await fs.mkdir(dir);
-  } catch (err) {
+  } catch (err: unknown) {
     if (isErrorWithCode(err, 'EEXIST')) {
       log.err(`The directory '${dir}' already exists.`);
       process.exit(1);
@@ -100,6 +100,8 @@ const cloneTemplate = async (templateName: string, destinationDir: string) => {
     sourceRoot: templateDir,
     destinationRoot: destinationDir,
     processors: [],
+    // built-in templates have files like _package.json
+    stripUnderscorePrefix: true,
   });
 };
 
@@ -127,7 +129,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
     const templateConfig = require(templateConfigPath) as unknown;
 
     return TemplateConfig.check(templateConfig);
-  } catch (err) {
+  } catch (err: unknown) {
     if (isErrorWithCode(err, 'MODULE_NOT_FOUND')) {
       return {
         entryPoint: undefined,
@@ -195,7 +197,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   }
 
   log.newline();
-  log.warn(`Resume this later with ${chalk.bold('skuba configure')}.`);
+  log.warn(`Resume this later with ${chalk.bold('yarn skuba configure')}.`);
 
   const customAnswers = generatePlaceholders(fields);
 

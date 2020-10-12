@@ -19,6 +19,7 @@ const tsJestTransform = Object.fromEntries(
   ]),
 );
 
+/** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
   ...tsJestDefaults,
 
@@ -26,6 +27,7 @@ module.exports = {
 
   collectCoverageFrom: [
     '**/*.ts',
+    '**/*.tsx',
     '!**/node_modules*/**',
     '!<rootDir>/coverage*/**',
     '!<rootDir>/dist*/**',

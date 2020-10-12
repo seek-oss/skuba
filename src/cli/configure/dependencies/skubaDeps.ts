@@ -3,6 +3,7 @@ import { DependencySet } from '../types';
 const DEV_DEPENDENCIES = [
   // replaced
   '@seek/seek-module-toolkit',
+  'eslint-config-seek',
   'nodemon',
   'tslint',
   'tslint-config-seek',
@@ -11,9 +12,10 @@ const DEV_DEPENDENCIES = [
   '@types/jest',
   'concurrently',
   'eslint',
-  'eslint-config-seek',
+  'eslint-config-skuba',
   'jest',
   'prettier',
+  'semantic-release',
   'ts-jest',
   'ts-node',
   'ts-node-dev',

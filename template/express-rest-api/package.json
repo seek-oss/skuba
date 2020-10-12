@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "express": "^4.17.1",
+    "skuba-dive": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.8",
+    "@types/node": "^14.11.2",
+    "@types/supertest": "^2.0.10",
+    "skuba": "*",
+    "supertest": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "skuba build",
+    "format": "skuba format",
+    "lint": "skuba lint",
+    "start": "skuba start",
+    "test": "skuba test"
+  }
+}

@@ -1,8 +1,19 @@
 name: Validate
 
 on:
-  - pull_request
-  - push
+  pull_request:
+
+  push:
+    branches-ignore:
+      - master
+
+  workflow_run:
+    branches:
+      - master
+    types:
+      - completed
+    workflows:
+      - Release
 
 jobs:
   core:
@@ -38,6 +49,7 @@ jobs:
     strategy:
       matrix:
         template:
+          - express-rest-api
           - greeter
           - koa-rest-api
           - lambda-sqs-worker

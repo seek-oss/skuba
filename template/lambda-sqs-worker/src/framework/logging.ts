@@ -21,6 +21,7 @@ export const rootLogger = pino({
   redact: {
     censor: '🤿 REDACTED 🚩',
     paths: [
+      'err.config.agent',
       'err.config.headers.Authorization',
       'err.config.headers.authorization',
       'err.config.sockets',
@@ -38,5 +39,5 @@ export const rootLogger = pino({
 });
 
 /* istanbul ignore next: pino interface */
-export const contextLogger = (ctx: Context) =>
-  rootLogger.child({ requestId: ctx.awsRequestId });
+export const contextLogger = ({ awsRequestId }: Context) =>
+  rootLogger.child({ awsRequestId });

@@ -40,7 +40,7 @@ describe('skuba', () => {
       true,
     ],
   ])('%s', (_, input, expectReplacement = false) => {
-    const result = skuba(input);
+    const result = skuba({ ...input, type: 'application' });
 
     expect(result).toHaveLength(expectReplacement ? 1 : 0);
     expect(input).toEqual({

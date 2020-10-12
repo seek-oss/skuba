@@ -1,0 +1,40 @@
+{
+  extends: [
+    ':prHourlyLimit2',
+    ':prNotPending',
+    ':rebaseStalePrs',
+    ':timezone(Australia/Melbourne)',
+    ':updateNotScheduled',
+    'preview:buildkite',
+    'preview:dockerCompose',
+    'docker:disableMajor',
+  ],
+  packageRules: [
+    {
+      paths: ['.buildkite/**', '*'],
+
+      extends: ['github>seek-oss/rynovate'],
+    },
+    {
+      paths: ['template/**'],
+
+      branchPrefix: 'renovate-template/',
+      commitMessageAction: '',
+      commitMessagePrefix: 'template:',
+      ignoreNpmrcFile: true,
+      lazyGrouping: false,
+      postUpdateOptions: ['yarnDedupeHighest'],
+      prConcurrentLimit: 3,
+      prNotPendingHours: 1,
+      rangeStrategy: 'replace',
+      schedule: 'before 7am on every weekday',
+    },
+    {
+      managers: ['buildkite', 'gomod', 'npm', 'nvm'],
+      paths: ['template/**'],
+
+      commitMessageExtra: '{{newValue}}',
+      commitMessageTopic: '{{depName}}',
+    },
+  ],
+}

@@ -3,10 +3,11 @@ import path from 'path';
 import { Select } from 'enquirer';
 
 import { createInclusionFilter } from '../../utils/copy';
-import { ensureCommands, exec } from '../../utils/exec';
+import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogo } from '../../utils/logo';
 import { BASE_TEMPLATE_DIR } from '../../utils/template';
+import { hasProp } from '../../utils/validation';
 
 import { analyseConfiguration } from './analyseConfiguration';
 import { analyseDependencies } from './analyseDependencies';
@@ -71,6 +72,7 @@ export const configure = async () => {
     destinationRoot,
     include,
     manifest,
+    type,
   });
 
   if (fixDependencies) {
@@ -81,9 +83,12 @@ export const configure = async () => {
     }
   }
 
+  const firstRun = hasProp(manifest.packageJson, 'skuba');
+
   const fixConfiguration = await analyseConfiguration({
     destinationRoot,
     entryPoint,
+    firstRun,
     type,
   });
 
@@ -95,10 +100,18 @@ export const configure = async () => {
     }
   }
 
-  if (fixConfiguration || fixDependencies) {
-    await exec('yarn', 'install', '--silent');
+  if (fixDependencies) {
+    const exec = createExec({
+      stdio: 'pipe',
+      streamStdio: 'yarn',
+    });
 
+    log.plain('Installing dependencies...');
+    await exec('yarn', 'install', '--silent');
+  }
+
+  if (fixConfiguration || fixDependencies) {
     log.newline();
-    log.ok(`Try running ${log.bold('skuba format')}.`);
+    log.ok(`Try running ${log.bold('yarn format')}.`);
   }
 };

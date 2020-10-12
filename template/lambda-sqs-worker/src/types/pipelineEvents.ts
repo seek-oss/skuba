@@ -1,27 +1,28 @@
 /* eslint-disable new-cap */
 
-import { Literal, Number, Record, Static, String } from 'runtypes';
-import { validate } from 'runtypes-filter';
+import * as t from 'runtypes';
+import checkFilter from 'runtypes-filter';
 
-export type JobPublishedEvent = Static<typeof JobPublishedEvent>;
+export type JobPublishedEvent = t.Static<typeof JobPublishedEvent>;
 
-export const JobPublishedEvent = Record({
-  data: Record({
-    details: String,
+const JobPublishedEvent = t.Record({
+  data: t.Record({
+    details: t.String,
   }),
-  entityId: String,
-  eventType: Literal('JobPublished'),
+  entityId: t.String,
+  eventType: t.Literal('JobPublished'),
 });
 
-export type JobScoredEvent = Static<typeof JobScoredEvent>;
+export const filterJobPublishedEvent = checkFilter(JobPublishedEvent);
 
-export const JobScoredEvent = Record({
-  data: Record({
-    score: Number,
+export type JobScoredEvent = t.Static<typeof JobScoredEvent>;
+
+const JobScoredEvent = t.Record({
+  data: t.Record({
+    score: t.Number,
   }),
-  entityId: String,
-  eventType: Literal('JobScored'),
+  entityId: t.String,
+  eventType: t.Literal('JobScored'),
 });
 
-validate(JobPublishedEvent);
-validate(JobScoredEvent);
+export const filterJobScoredEvent = checkFilter(JobScoredEvent);
