@@ -20,6 +20,7 @@
     "format": "skuba format",
     "lint": "skuba lint",
     "start": "skuba start",
+    "start:debug": "ENVIRONMENT=local skuba start --inspect-brk",
     "test": "skuba test"
   }
 }
