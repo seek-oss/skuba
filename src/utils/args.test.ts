@@ -1,4 +1,4 @@
-import { parseArgs } from './args';
+import { parseArgs, unsafeMapYargs } from './args';
 
 describe('parseArgs', () => {
   it('parses a macOS command with args', () => {
@@ -54,4 +54,20 @@ describe('parseArgs', () => {
       args: [],
     });
   });
+});
+
+describe('unsafeMapYargs', () => {
+  it('maps an assortment of yargs', () =>
+    expect(
+      unsafeMapYargs({
+        a: 1,
+        b: '2',
+        c: true,
+        d: [3, '4'],
+        e: [],
+        f: false,
+        g: undefined,
+        h: null,
+      }),
+    ).toEqual(['--a=1', '--b=2', '--c', '--d=3']));
 });

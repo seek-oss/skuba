@@ -223,6 +223,14 @@ The entry point is chosen from:
 1. Manifest configuration: `package.json#/skuba/entryPoint`
 1. Default: `src/app.ts`
 
+The `--inspect` and `--inspect-brk` [Node.js options] are supported for debugging sessions.
+For example, in Visual Studio Code:
+
+1. Run `skuba start --inspect-brk`
+1. Run the built-in `Node.js: Attach` launch configuration
+
+[node.js options]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options
+
 #### Start an executable script
 
 Your entry point can be a simple module that runs on load:
