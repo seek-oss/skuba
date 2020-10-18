@@ -12,6 +12,7 @@
     "@types/chance": "^1.1.0",
     "@types/node": "^14.11.2",
     "chance": "^1.1.7",
+    "pino-pretty": "^4.3.0",
     "serverless": "^2.1.1",
     "skuba": "*"
   },
