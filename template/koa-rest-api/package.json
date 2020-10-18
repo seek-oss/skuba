@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@koa/router": "^9.4.0",
-    "@seek/logger-js": "^4.4.1",
+    "@seek/logger": "^4.4.4",
     "skuba-dive": "^1.1.1",
     "hot-shots": "^8.0.0",
     "koa": "^2.13.0",

@@ -383,7 +383,7 @@ Here are some highlights:
 | [seek-koala]                   | Add SEEK-standard observability to Koa servers         |
 | 🔒 [@seek/db-client]           | Connect to databases with credential (rotation) smarts |
 | 🔒 [@seek/graphql-utils]       | Add observability to GraphQL servers                   |
-| 🔒 [@seek/logger-js]           | Write application logs in a standardised format        |
+| 🔒 [@seek/logger]              | Write application logs in a standardised format        |
 | 🔒 [@seek/node-authentication] | Validate SEEK JWTs                                     |
 | 🔒 [@seek/node-s2sauth-issuer] | Call an [s2sauth]-protected service                    |
 | 🔒 [@seek/typegen]             | Generate TypeScript types from a JSON schema           |
@@ -391,7 +391,7 @@ Here are some highlights:
 
 [@seek/db-client]: https://github.com/SEEK-Jobs/db-client
 [@seek/graphql-utils]: https://github.com/SEEK-Jobs/graphql-utils
-[@seek/logger-js]: https://github.com/SEEK-Jobs/logger-js
+[@seek/logger]: https://github.com/seek-oss/logger
 [@seek/node-authentication]: https://github.com/SEEK-Jobs/node-authentication
 [@seek/node-s2sauth-issuer]: https://github.com/SEEK-Jobs/node-s2sauth-issuer
 [@seek/typegen]: https://github.com/SEEK-Jobs/typegen

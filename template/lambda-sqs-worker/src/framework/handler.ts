@@ -1,4 +1,4 @@
-import { pino } from '@seek/logger-js';
+import { pino } from '@seek/logger';
 import { Context } from 'aws-lambda';
 
 import { contextLogger } from 'src/framework/logging';

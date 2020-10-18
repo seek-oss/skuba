@@ -1,4 +1,4 @@
-import createLogger from '@seek/logger-js';
+import createLogger from '@seek/logger';
 import { Context } from 'koa';
 import { RequestLogging } from 'seek-koala';
 

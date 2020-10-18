@@ -1,4 +1,4 @@
-import createLogger from '@seek/logger-js';
+import createLogger from '@seek/logger';
 import { Context } from 'aws-lambda';
 
 import { config } from 'src/config';
@@ -17,6 +17,6 @@ export const rootLogger = createLogger({
   prettyPrint: config.environment === 'local',
 });
 
-/* istanbul ignore next: logger-js interface */
+/* istanbul ignore next: @seek/logger interface */
 export const contextLogger = ({ awsRequestId }: Context) =>
   rootLogger.child({ awsRequestId });
