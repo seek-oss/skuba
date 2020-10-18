@@ -33,3 +33,20 @@ export const parseArgs = (args = process.argv) => {
 
   return payload;
 };
+
+/**
+ * Map yargs-parsed arguments to be passed into another command.
+ *
+ * This isn't escaped.
+ */
+export const unsafeMapYargs = (args: Record<string, unknown>): string[] =>
+  Object.entries(args).flatMap(([name, value]) => {
+    const option = `--${name}`;
+    const actualValue = Array.isArray(value) ? (value[0] as unknown) : value;
+
+    if (typeof actualValue === 'number' || typeof actualValue === 'string') {
+      return [`${option}=${actualValue}`];
+    }
+
+    return actualValue ? [option] : [];
+  });
