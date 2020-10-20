@@ -1,6 +1,10 @@
-export type { PackageJson, TsConfigJson } from 'type-fest';
+import type { PackageJson as TypeFestPackageJson } from 'type-fest';
 
 import { ProjectType } from '../../utils/manifest';
+
+export type { TsConfigJson } from 'type-fest';
+
+export type PackageJson = TypeFestPackageJson & Record<string, unknown>;
 
 export interface DependencySet {
   dependencies: Record<string, string>;
