@@ -1,5 +1,39 @@
 # skuba
 
+## 3.10.0
+
+### Minor Changes
+
+- ea1de97: **start:** Support default exports
+
+  `skuba start` now works with a Koa application exported with `export default`. This syntax is preferred over `export =` for compatibility with tooling such as Babel.
+
+- 4cc1a15: **start:** Support [Node.js debugging options](https://nodejs.org/en/docs/guides/debugging-getting-started/)
+
+  [`skuba start`](https://github.com/seek-oss/skuba#skuba-start) now accepts `--inspect` and `--inspect-brk` options. This allows you to attach a debugger to the process.
+
+- 4e63643: **init:** Redesign base prompt
+
+  The base prompt no longer mandates a team name and supports copy+paste.
+
+### Patch Changes
+
+- 4bfeb6b: **template/lambda-sqs-worker:** Remove region from subscription example snippet
+- d246d85: **template:** supertest ^5.0.0
+- f0bf058: **template/koa-rest-api:** hot-shots ^8.0.0
+- 7b747a5: **deps:** Bump caret ranges
+- 644efa5: **template:** Recommend `@seek/logger`
+
+  This provides logging structure, trimming and redaction over plain Pino.
+
+- 8e7af71: **template:** docker-compose v3.7.0
+- 5243bfc: **template:** Unset initial skuba version
+- 15de9c9: **template/greeter:** Align Dockerfile stages
+- ea1de97: **template/koa-rest-api:** Avoid `export =` syntax
+- 9a67a61: **deps:** normalize-package-data ^3.0.0
+- 0c643f6: **template:** Skip pre-build in Docker Compose service
+- 4cc1a15: **template:** Add `start:debug` scripts
+
 ## 3.9.2
 
 ### Patch Changes
