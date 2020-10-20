@@ -24,15 +24,13 @@ yarn skuba init << EOF
     "description": "description",
     "devBuildkiteQueueName": "my-account-dev:cicd",
     "devGantryEnvironmentName": "dev",
-    "teamName": "my-team",
     "moduleName": "first-module",
-    "orgName": "my-org",
+    "ownerName": "my-org/my-team",
     "prodAwsAccountId": "000000000000",
     "prodBuildkiteQueueName": "my-account-prod:cicd",
     "prodGantryEnvironmentName": "prod",
     "repoName": "${directory}",
-    "serviceName": "serviceName",
-    "teamName": "my-team"
+    "serviceName": "serviceName"
   },
   "templateName": "${template}"
 }

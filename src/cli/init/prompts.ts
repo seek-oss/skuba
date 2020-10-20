@@ -1,26 +1,37 @@
-import { Input, Select, Snippet } from 'enquirer';
+import { Input, Select } from 'enquirer';
 import fs from 'fs-extra';
 
 import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
 
-type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
+export type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
 
 const BASE_CHOICES = [
   {
-    name: 'orgName',
-    message: 'org',
-    initial: 'SEEK-Jobs',
+    name: 'ownerName',
+    message: 'Owner',
+    initial: 'SEEK-Jobs/my-team',
     validate: (value: unknown) => {
       if (typeof value !== 'string') {
         return 'required';
       }
 
-      return isGitHubOrg(value) || 'fails GitHub validation';
+      const [org, team] = value.split('/');
+
+      if (!isGitHubOrg(org)) {
+        return 'fails GitHub validation';
+      }
+
+      return (
+        typeof team === 'undefined' ||
+        isGitHubTeam(team) ||
+        'fails GitHub validation'
+      );
     },
   },
   {
     name: 'repoName',
-    message: 'repo',
+    message: 'Repo',
+    initial: 'my-repo',
     validate: async (value: unknown) => {
       if (typeof value !== 'string') {
         return 'required';
@@ -35,29 +46,13 @@ const BASE_CHOICES = [
       return !exists || `'${value}' is an existing directory`;
     },
   },
-  {
-    name: 'teamName',
-    message: 'team',
-    validate: (value: unknown) => {
-      if (typeof value !== 'string') {
-        return 'required';
-      }
-
-      return isGitHubTeam(value) || 'fails GitHub validation';
-    },
-  },
 ] as const;
 
-export const BASE_PROMPT = new Snippet<BaseFields>({
-  fields: BASE_CHOICES,
-  message: 'For starters:',
+export const BASE_PROMPT_PROPS = {
+  choices: BASE_CHOICES,
+  message: 'For starters, some GitHub details:',
   name: 'baseAnswers',
-  required: true,
-  template: [
-    'https://github.com/${orgName}/${repoName}',
-    'https://github.com/orgs/${orgName}/teams/${teamName}',
-  ].join('\n'),
-});
+};
 
 export const SHOULD_CONTINUE_PROMPT = new Select({
   choices: ['yes', 'no'] as const,

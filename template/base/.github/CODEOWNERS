@@ -1,4 +1,4 @@
-* @<%- orgName %>/<%- teamName %>
+* @<%- ownerName %>
 
 # Configured by Renovate
 package.json

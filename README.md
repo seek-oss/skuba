@@ -194,8 +194,7 @@ skuba init << EOF
   "destinationDir": "tmp-greeter",
   "templateComplete": true,
   "templateData": {
-    "teamName": "my-team",
-    "orgName": "my-org",
+    "ownerName": "my-org/my-team",
     "prodBuildkiteQueueName": "my-team-prod:cicd",
     "repoName": "tmp-greeter"
   },
