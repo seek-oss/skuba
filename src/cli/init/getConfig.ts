@@ -15,7 +15,8 @@ import {
 
 import { downloadGitHubTemplate } from './git';
 import {
-  BASE_PROMPT,
+  BASE_PROMPT_PROPS,
+  BaseFields,
   GIT_PATH_PROMPT,
   SHOULD_CONTINUE_PROMPT,
   TEMPLATE_PROMPT,
@@ -142,17 +143,25 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
   }
 };
 
-export const configureFromPrompt = async (): Promise<InitConfig> => {
-  const { values: baseAnswers } = await BASE_PROMPT.run();
-  log.plain(
-    chalk.cyan(baseAnswers.repoName),
-    'by',
-    chalk.cyan(baseAnswers.teamName),
-    'in',
-    chalk.cyan(baseAnswers.orgName),
-  );
+const baseToTemplateData = ({ ownerName, repoName }: BaseFields) => {
+  const [orgName, teamName] = ownerName.split('/');
 
-  const destinationDir = baseAnswers.repoName;
+  return {
+    orgName,
+    ownerName,
+    repoName,
+    // Use standalone username in `teamName` contexts
+    teamName: teamName ?? orgName,
+  };
+};
+
+export const configureFromPrompt = async (): Promise<InitConfig> => {
+  const { ownerName, repoName } = await runForm(BASE_PROMPT_PROPS);
+  log.plain(chalk.cyan(repoName), 'by', chalk.cyan(ownerName));
+
+  const templateData = baseToTemplateData({ ownerName, repoName });
+
+  const destinationDir = repoName;
 
   await createDirectory(destinationDir);
 
@@ -170,7 +179,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
       destinationDir,
       entryPoint,
       templateComplete: true,
-      templateData: baseAnswers,
+      templateData,
       templateName,
       type,
     };
@@ -190,7 +199,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
       destinationDir,
       entryPoint,
       templateComplete: true,
-      templateData: { ...baseAnswers, ...customAnswers },
+      templateData: { ...templateData, ...customAnswers },
       templateName,
       type,
     };
@@ -205,7 +214,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     destinationDir,
     entryPoint,
     templateComplete: false,
-    templateData: { ...baseAnswers, ...customAnswers },
+    templateData: { ...templateData, ...customAnswers },
     templateName,
     type,
   };
@@ -246,12 +255,12 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     process.exit(1);
   }
 
-  const {
-    destinationDir,
-    templateComplete,
-    templateData,
-    templateName,
-  } = result.value;
+  const { destinationDir, templateComplete, templateName } = result.value;
+
+  const templateData = {
+    ...baseToTemplateData(result.value.templateData),
+    ...result.value.templateData,
+  };
 
   await createDirectory(destinationDir);
 
@@ -294,6 +303,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   return {
     ...result.value,
     entryPoint,
+    templateData,
     type,
   };
 };

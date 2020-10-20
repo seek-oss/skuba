@@ -17,7 +17,7 @@ declare module 'enquirer' {
     constructor(opts: {
       name: string;
       message: string;
-      choices: FormChoice[];
+      choices: ReadonlyArray<FormChoice>;
       result?: (values: Record<string, string>) => Record<string, string>;
       validate?: (
         values: Record<string, string>,
@@ -55,24 +55,5 @@ declare module 'enquirer' {
     });
 
     run(): Promise<T>;
-  }
-
-  export class Snippet<T> {
-    constructor(opts: {
-      name: string;
-      message: string;
-      fields: ReadonlyArray<{
-        name: string;
-        message?: string;
-        initial?: string;
-        validate?: (
-          values: Record<string, string>,
-        ) => boolean | string | Promise<boolean | string>;
-      }>;
-      required?: boolean;
-      template: string;
-    });
-
-    run(): Promise<{ result: string; values: T }>;
   }
 }
