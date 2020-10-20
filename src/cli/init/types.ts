@@ -9,9 +9,8 @@ const INIT_CONFIG_INPUT_FIELDS = {
   templateComplete: t.Boolean,
   templateData: t
     .Record({
-      teamName: t.String,
+      ownerName: t.String,
       repoName: t.String,
-      orgName: t.String,
     })
     .And(t.Dictionary(t.String, 'string')),
   templateName: t.String,
@@ -23,8 +22,19 @@ export const InitConfigInput = t.Record(INIT_CONFIG_INPUT_FIELDS);
 
 export type InitConfig = t.Static<typeof InitConfig>;
 
-export const InitConfig = t.Record({
+const InitConfig = t.Record({
   ...INIT_CONFIG_INPUT_FIELDS,
+
+  templateData: t
+    .Record({
+      ownerName: t.String,
+      repoName: t.String,
+
+      // Derived from ownerName
+      orgName: t.String,
+      teamName: t.String,
+    })
+    .And(t.Dictionary(t.String, 'string')),
 
   entryPoint: t.String.Or(t.Undefined),
   type: ProjectType.Or(t.Undefined),
