@@ -24,7 +24,7 @@
     "chance": "^1.1.7",
     "pino-pretty": "^4.3.0",
     "skuba": "*",
-    "supertest": "^5.0.0"
+    "supertest": "^6.0.0"
   },
   "engines": {
     "node": ">=12"
