@@ -1,5 +1,15 @@
 # skuba
 
+## 3.10.1
+
+### Patch Changes
+
+- 9c0bbac: **deps:** Pin ts-node-dev 1.0.0-pre.63
+
+  This fixes errors on `npm install` on macOS and Linux. Yarn 1.x was unaffected by this issue.
+
+- ab2047f: **template:** seek-jobs/gantry v1.2.8
+
 ## 3.10.0
 
 ### Minor Changes
