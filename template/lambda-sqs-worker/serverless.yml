@@ -17,6 +17,7 @@ provider:
   stackName: ${self:service}
   stage: ${env:ENVIRONMENT}
   variableSyntax: "\\${((?!AWS)[ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)]+?)}"
+  versionFunctions: false
   # deploymentBucket:
   #   name: 'TODO: deploymentBucketName'
   iamRoleStatements:
