@@ -13,4 +13,5 @@ services:
       - VERSION
     init: true
     volumes:
+      - ./:/workdir
       - /workdir/node_modules

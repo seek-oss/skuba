@@ -9,4 +9,5 @@ services:
       target: dev-deps
     init: true
     volumes:
+      - ./:/workdir
       - /workdir/node_modules
