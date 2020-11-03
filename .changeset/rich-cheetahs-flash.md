@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-**template:** seek-jobs/gantry v1.2.8
+**template:** seek-jobs/gantry v1.2.9
