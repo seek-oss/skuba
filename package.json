@@ -76,7 +76,7 @@
     "semantic-release": "^17.2.1",
     "ts-jest": "^26.4.1",
     "ts-node": "^9.0.0",
-    "ts-node-dev": "1.0.0-pre.63",
+    "ts-node-dev": "1.0.0",
     "tsconfig-seek": "1.0.2",
     "typescript": "4.0.5",
     "yargs-parser": "^20.2.3"
