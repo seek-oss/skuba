@@ -42,7 +42,7 @@
     "@types/fs-extra": "9.0.4",
     "@types/lodash.mergewith": "4.6.6",
     "@types/npm-which": "3.0.0",
-    "type-fest": "0.18.0"
+    "type-fest": "0.18.1"
   },
   "dependencies": {
     "@babel/cli": "^7.12.1",
