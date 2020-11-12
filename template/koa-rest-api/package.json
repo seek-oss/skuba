@@ -8,7 +8,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-compose": "^4.2.0",
     "runtypes": "^5.0.1",
-    "runtypes-filter": "^0.3.0",
+    "runtypes-filter": "^0.4.0",
     "seek-datadog-custom-metrics": "^3.0.1",
     "seek-koala": "^4.6.0",
     "uuid": "^8.3.1"
