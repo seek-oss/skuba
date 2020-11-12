@@ -39,7 +39,7 @@
     "@changesets/cli": "2.11.2",
     "@types/concurrently": "5.2.1",
     "@types/ejs": "3.0.5",
-    "@types/fs-extra": "9.0.3",
+    "@types/fs-extra": "9.0.4",
     "@types/lodash.mergewith": "4.6.6",
     "@types/npm-which": "3.0.0",
     "type-fest": "0.18.0"
