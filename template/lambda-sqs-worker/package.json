@@ -2,7 +2,7 @@
   "dependencies": {
     "@seek/logger": "^4.4.4",
     "aws-sdk": "^2.775.0",
-    "seek-datadog-custom-metrics": "^3.0.1",
+    "seek-datadog-custom-metrics": "^4.0.0",
     "skuba-dive": "^1.1.1",
     "runtypes": "^5.0.1",
     "runtypes-filter": "^0.4.0"
