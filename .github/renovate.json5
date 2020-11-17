@@ -14,6 +14,7 @@
       paths: ['.buildkite/**', '*'],
 
       extends: ['github>seek-oss/rynovate'],
+      recreateClosed: false,
     },
     {
       paths: ['template/**'],
