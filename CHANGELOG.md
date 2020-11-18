@@ -1,5 +1,25 @@
 # skuba
 
+## 3.10.2
+
+### Patch Changes
+
+- 0b862d8: **deps:** typescript 4.0.5
+- 0944235: **template:** Add `.me` files
+- 2a2edf2: **deps:** semantic-release ^17.2.3
+- 2b39134: **template/lambda-sqs-worker:** Remove redundant `ecr` plugin
+- 6d07e61: **template:** seek-jobs/gantry v1.2.9
+- 5e4183f: **template/koa-rest-api:** seek-koala ^5.0.0
+- 45fc156: **template:** supertest ^6.0.0
+- 08be91c: **template:** runtypes-filter ^0.4.0
+- 6d07e61: **template:** @koa/router ^10.0.0
+- ff2e956: **template:** Mount working directory in Docker Compose
+- c71bcb7: **template/lambda-sqs-worker:** Default to unversioned Lambdas
+
+  Our baseline template does not do canary deployments, and this makes it less likely to hit code storage limits down the road.
+
+- d3d6187: **template:** seek-datadog-custom-metrics ^4.0.0
+
 ## 3.10.1
 
 ### Patch Changes
