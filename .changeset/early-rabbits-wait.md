@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+'skuba': patch
 ---
 
 **template:** Add `.me` files
