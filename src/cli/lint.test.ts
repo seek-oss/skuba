@@ -47,27 +47,32 @@ describe('TypeScript', () => {
     });
   });
 
-  describe.skip('4.1', () => {
-    // test('Template Literal Types', () => {
-    //   type Color = 'red' | 'blue';
-    //   type Quantity = 'one' | 'two';
-    //   type SeussFish = `${Quantity | Color} fish`;
-    //   const seussFish: SeussFish = 'red blue fish';
-    //   expect(seussFish).toBeDefined();
-    // });
-    // test('Key Remapping in Mapped Types', () => {
-    //   type RemoveKindField<T> = {
-    //     [K in keyof T as Exclude<K, "kind">]: T[K];
-    //   };
-    //   interface Circle {
-    //     kind: 'circle';
-    //     radius: number;
-    //   }
-    //   type KindlessCircle = RemoveKindField<Circle>;
-    //   const kindlessCircle: KindlessCircle = {
-    //     radius: 0,
-    //   };
-    //   expect(kindlessCircle).toBeDefined();
-    // });
+  describe('4.1', () => {
+    test('Template Literal Types', () => {
+      type Color = 'red' | 'blue';
+      type Quantity = 'one' | 'two';
+      type SeussFish = `${Quantity | Color} fish`;
+
+      const seussFish: SeussFish = 'red blue fish';
+
+      expect(seussFish).toBeDefined();
+    });
+
+    test('Key Remapping in Mapped Types', () => {
+      type RemoveKindField<T> = {
+        [K in keyof T as Exclude<K, "kind">]: T[K];
+      };
+      interface Circle {
+        kind: 'circle';
+        radius: number;
+      }
+      type KindlessCircle = RemoveKindField<Circle>;
+
+      const kindlessCircle: KindlessCircle = {
+        radius: 0,
+      };
+
+      expect(kindlessCircle).toBeDefined();
+    });
   });
 });
