@@ -7,7 +7,7 @@ export const validate = <T>({
 }: {
   ctx: Context;
   input: unknown;
-  filter: (input: unknown) => T;
+  filter: (data: unknown) => T;
 }) => {
   try {
     return filter(input);
