@@ -37,9 +37,7 @@ const version = VersionMiddleware.create({
   version: config.version,
 });
 
-export const createApp = <State, Context>(
-  ...middleware: Middleware<State, Context>[]
-) =>
+export const createApp = <S, C>(...middleware: Middleware<S, C>[]) =>
   new Koa()
     .use(requestLogging)
     .use(metrics)

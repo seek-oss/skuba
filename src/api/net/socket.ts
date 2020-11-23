@@ -35,7 +35,7 @@ export const pollSocket = async (host: string, port: number, timeout: number) =>
       clearTimeout(intervalId);
       clearTimeout(timeoutId);
 
-      resolve();
+      resolve(undefined);
     };
 
     const intervalId = setInterval(() => {
