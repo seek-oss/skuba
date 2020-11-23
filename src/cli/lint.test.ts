@@ -53,7 +53,7 @@ describe('TypeScript', () => {
       type Quantity = 'one' | 'two';
       type SeussFish = `${Quantity | Color} fish`;
 
-      const seussFish: SeussFish = 'red blue fish';
+      const seussFish: SeussFish = 'red fish';
 
       expect(seussFish).toBeDefined();
     });
