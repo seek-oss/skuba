@@ -225,7 +225,6 @@ describe('createApp', () => {
     const err = chance.sentence();
 
     middleware.mockImplementation(() => {
-      /* eslint-disable-next-line no-throw-literal */
       throw err;
     });
 

@@ -12,7 +12,6 @@ const TS_JEST_PATH = require.resolve(TS_JEST_NAME);
 
 // Rewrite `ts-jest` transformations using our resolved `TS_JEST_PATH`.
 const tsJestTransform = Object.fromEntries(
-  /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
   Object.entries(tsJestDefaults.transform).map(([key, value]) => [
     key,
     value === TS_JEST_NAME ? TS_JEST_PATH : value,
