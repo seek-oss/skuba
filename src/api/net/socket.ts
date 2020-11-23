@@ -24,7 +24,7 @@ const trySocket = async (host: string, port: number) =>
   });
 
 export const pollSocket = async (host: string, port: number, timeout: number) =>
-  new Promise((resolve, reject) => {
+  new Promise<void>((resolve, reject) => {
     const callPort = async () => {
       const success = await trySocket(host, port);
 
@@ -35,7 +35,7 @@ export const pollSocket = async (host: string, port: number, timeout: number) =>
       clearTimeout(intervalId);
       clearTimeout(timeoutId);
 
-      resolve(undefined);
+      resolve();
     };
 
     const intervalId = setInterval(() => {
