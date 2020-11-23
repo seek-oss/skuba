@@ -3,8 +3,6 @@
  * and new syntax features.
  */
 
-/* eslint-disable jest/no-commented-out-tests, jest/no-disabled-tests */
-
 import './lint';
 
 describe('TypeScript', () => {
@@ -60,7 +58,7 @@ describe('TypeScript', () => {
 
     test('Key Remapping in Mapped Types', () => {
       type RemoveKindField<T> = {
-        [K in keyof T as Exclude<K, "kind">]: T[K];
+        [K in keyof T as Exclude<K, 'kind'>]: T[K];
       };
       interface Circle {
         kind: 'circle';
