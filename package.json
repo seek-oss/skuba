@@ -51,7 +51,7 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
     "@types/jest": "^26.0.15",
-    "babel-plugin-macros": "^2.8.0",
+    "babel-plugin-macros": "^3.0.0",
     "babel-plugin-module-resolver": "^4.0.0",
     "chalk": "^4.1.0",
     "concurrently": "^5.3.0",
