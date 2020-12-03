@@ -58,7 +58,7 @@
     "ejs": "^3.1.5",
     "enquirer": "^2.3.6",
     "eslint": "^7.14.0",
-    "eslint-config-skuba": "1.0.9",
+    "eslint-config-skuba": "1.0.10",
     "execa": "^4.0.3",
     "fs-extra": "^9.0.1",
     "get-port": "^5.1.1",
