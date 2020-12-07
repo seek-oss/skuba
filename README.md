@@ -262,6 +262,14 @@ const app = new Koa();
 export default Object.assign(app, { port });
 ```
 
+As does Express:
+
+```typescript
+const app = express();
+
+export default Object.assign(app, { port });
+```
+
 ### `skuba test`
 
 Run tests with Jest.

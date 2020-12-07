@@ -5,7 +5,14 @@ import path from 'path';
 import { handleCliError } from '../../utils/error';
 import { log } from '../../utils/logging';
 
-interface Config {
+type Config = FunctionConfig | ObjectConfig;
+
+// Express compatibility
+interface FunctionConfig extends http.RequestListener {
+  port?: number;
+}
+
+interface ObjectConfig {
   // Koa compatibility
   callback?: () => http.RequestListener;
 
@@ -16,7 +23,7 @@ interface Config {
 }
 
 const isConfig = (data: unknown): data is Config =>
-  typeof data === 'object' && data !== null;
+  (typeof data === 'object' && data !== null) || typeof data === 'function';
 
 const start = () => {
   if (process.argv.length < 4) {
@@ -39,7 +46,7 @@ const start = () => {
   let config = appModule;
 
   // prefer `export default` over `export =`
-  if (isConfig(config.default)) {
+  if (typeof config === 'object' && isConfig(config.default)) {
     config = config.default;
   }
 
@@ -52,7 +59,10 @@ const start = () => {
 
   const port = config.port ?? availablePort;
 
-  const requestListener = config.requestListener ?? config.callback?.();
+  const requestListener =
+    typeof config === 'function'
+      ? config
+      : config.requestListener ?? config.callback?.();
 
   if (typeof requestListener === 'undefined') {
     log.err(
