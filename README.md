@@ -267,7 +267,7 @@ As does Express:
 ```typescript
 const app = express();
 
-export default app;
+export default Object.assign(app, { port });
 ```
 
 ### `skuba test`
