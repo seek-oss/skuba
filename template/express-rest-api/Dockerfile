@@ -60,8 +60,8 @@ COPY --from=deps /workdir/node_modules node_modules
 
 ENV NODE_ENV production
 
-ARG PORT=3000
+ARG PORT=8001
 ENV PORT ${PORT}
 EXPOSE ${PORT}
 
-CMD node lib/app
+CMD node lib/listen

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@seek/logger": "^4.4.5",
     "express": "^4.17.1",
     "skuba-dive": "^1.1.1"
   },
@@ -7,6 +8,7 @@
     "@types/express": "^4.17.8",
     "@types/node": "^14.14.0",
     "@types/supertest": "^2.0.10",
+    "pino-pretty": "^4.3.0",
     "skuba": "*",
     "supertest": "^6.0.0"
   },
@@ -19,7 +21,7 @@
     "build": "skuba build",
     "format": "skuba format",
     "lint": "skuba lint",
-    "start": "skuba start",
+    "start": "ENVIRONMENT=local skuba start",
     "start:debug": "ENVIRONMENT=local skuba start --inspect-brk",
     "test": "skuba test"
   }
