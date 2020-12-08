@@ -23,6 +23,7 @@
     "lint": "skuba lint",
     "start": "ENVIRONMENT=local skuba start",
     "start:debug": "ENVIRONMENT=local skuba start --inspect-brk",
-    "test": "skuba test"
+    "test": "skuba test --coverage",
+    "test:watch": "skuba test --watch"
   }
 }

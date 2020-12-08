@@ -26,6 +26,7 @@
     "deploy": "yarn build && serverless deploy --force --verbose",
     "format": "skuba format",
     "lint": "skuba lint",
-    "test": "skuba test"
+    "test": "skuba test --coverage",
+    "test:watch": "skuba test --watch"
   }
 }
