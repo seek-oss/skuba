@@ -23,7 +23,8 @@
     "format": "skuba format",
     "lint": "skuba lint",
     "release": "yarn build && skuba release",
-    "test": "skuba test"
+    "test": "skuba test --coverage",
+    "test:watch": "skuba test --watch"
   },
   "sideEffects": false,
   "types": "./lib-types/index.d.ts",
