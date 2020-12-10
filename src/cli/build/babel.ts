@@ -11,5 +11,6 @@ export const babel = () =>
     '--out-dir',
     'lib',
     '--source-maps',
+    'true',
     'src',
   );
