@@ -1517,13 +1517,13 @@
     url-join "^4.0.0"
 
 "@semantic-release/npm@^7.0.0":
-  version "7.0.8"
-  resolved "https://registry.yarnpkg.com/@semantic-release/npm/-/npm-7.0.8.tgz#228b6327d9e9e9d0adc7bf37b8be3d6fc9744e3e"
-  integrity sha512-8c1TLwKB/xT5E1FNs5l4GFtaNTznHesJk7tw3pGSlVxRqDXa1EZI+DfziZlO58Wk3PpS2ecu661kvBdz9aMgYQ==
+  version "7.0.9"
+  resolved "https://registry.yarnpkg.com/@semantic-release/npm/-/npm-7.0.9.tgz#a49d80d0f96a52cd70f9ce4e78fac5be70f24844"
+  integrity sha512-VsmmQF3/n7mDbm6AGL0yPD3QNTGsHdinBtkyyerN1eLgvhdGJ/vEeAvmDMARiuf5Ev9cFeCheF0wLyUZNlAkeA==
   dependencies:
     "@semantic-release/error" "^2.2.0"
     aggregate-error "^3.0.0"
-    execa "^4.0.0"
+    execa "^5.0.0"
     fs-extra "^9.0.0"
     lodash "^4.17.15"
     nerf-dart "^1.0.0"
@@ -10064,9 +10064,9 @@ y18n@^3.2.1:
   integrity sha1-bRX7qITAhnnA136I53WegR4H+kE=
 
 y18n@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/y18n/-/y18n-4.0.0.tgz#95ef94f85ecc81d007c264e190a120f0a3c8566b"
-  integrity sha512-r9S/ZyXu/Xu9q1tYlpsLIsa3EeLXXk0VwlxqTcFRfg9EhMW+17kbt9G0NrgCmhGb5vT2hyhJZLfDGx+7+5Uj/w==
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/y18n/-/y18n-4.0.1.tgz#8db2b83c31c5d75099bb890b23f3094891e247d4"
+  integrity sha512-wNcy4NvjMYL8gogWWYAO7ZFWFfHcbdbE57tZO8e4cbpj8tfUcwrwqSl3ad8HxpYWCdXcJUCeKKZS62Av1affwQ==
 
 yallist@^2.1.2:
   version "2.1.2"
