@@ -1,5 +1,50 @@
 # skuba
 
+## 3.11.0
+
+### Minor Changes
+
+- 8158e01: **deps:** TypeScript 4.1
+
+  This includes formatting and linting support for new syntax features.
+
+  See the [release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-4-1) for more information.
+
+- da45f2d: **lint:** Check for unused `eslint-disable` directives
+
+  `skuba lint` will now report on unnecessary `eslint-disable` directives that should be removed:
+
+  ```diff
+  - /* eslint-disable-next-line new-cap */
+  const camelCase = 'no problems here';
+  ```
+
+### Patch Changes
+
+- a6984b1: **template:** Check coverage on default `test` script
+- 8d53d81: **deps:** babel-plugin-macros ^3.0.0
+- 7c9683b: **deps:** ts-node-dev 1.1.1
+
+  If you see the following error on `npm install`:
+
+  ```bash
+  npm ERR! enoent ENOENT: no such file or directory, chmod '.../node_modules/ts-node-dev/lib\bin.js'
+  ```
+
+  Try updating npm:
+
+  ```bash
+  npm -g install npm
+  ```
+
+- a6984b1: **template:** Include `test:watch` script
+- f04b01b: **build:** Fix `--out-dir requires filenames` error on experimental Babel builds
+- 02b2372: **deps:** eslint-config-skuba 1.0.10
+- 21a68fb: **deps:** prettier 2.2.1
+- 04aa18a: **start:** Support default export of Express listener
+- 04aa18a: **template/express-rest-api:** Fix server listener and port
+- dd63af8: **template:** Lock `.nvmrc`s to Node.js 12
+
 ## 3.10.2
 
 ### Patch Changes
