@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
     "baseUrl": "src",
+    "declaration": true,
     // TODO: set in /config/tsconfig.json
     "isolatedModules": true,
+    "outDir": "lib",
     "removeComments": false
   },
   "exclude": ["lib*/**/*", "template/**/*"],
