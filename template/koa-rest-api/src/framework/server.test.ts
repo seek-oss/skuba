@@ -31,13 +31,7 @@ describe('createApp', () => {
 
     expect(rootLogger.error).not.toBeCalled();
 
-    expect(rootLogger.info).toBeCalledTimes(1);
-
-    expect(rootLogger.info).nthCalledWith(
-      1,
-      expect.objectContaining({ status: 200 }),
-      'request',
-    );
+    expect(rootLogger.info).not.toBeCalled();
 
     metricsClient.expectTagSubset(['env:test', 'version:test']);
     metricsClient.expectTagSubset([
@@ -59,13 +53,7 @@ describe('createApp', () => {
 
     expect(rootLogger.error).not.toBeCalled();
 
-    expect(rootLogger.info).toBeCalledTimes(1);
-
-    expect(rootLogger.info).nthCalledWith(
-      1,
-      expect.objectContaining({ status: 200 }),
-      'request',
-    );
+    expect(rootLogger.info).not.toBeCalled();
 
     metricsClient.expectTagSubset([
       'http_method:put',
@@ -86,12 +74,10 @@ describe('createApp', () => {
 
     expect(rootLogger.error).not.toBeCalled();
 
-    expect(rootLogger.info).toBeCalledTimes(1);
-
     expect(rootLogger.info).nthCalledWith(
       1,
       expect.objectContaining({ status: 404 }),
-      'request',
+      'Client error',
     );
 
     metricsClient.expectTagSubset([
@@ -115,12 +101,10 @@ describe('createApp', () => {
 
     expect(rootLogger.error).not.toBeCalled();
 
-    expect(rootLogger.info).toBeCalledTimes(1);
-
     expect(rootLogger.info).nthCalledWith(
       1,
       expect.objectContaining({ err: expect.any(Error), status: 400 }),
-      'request',
+      'Client error',
     );
 
     metricsClient.expectTagSubset([
@@ -142,12 +126,10 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(rootLogger.error).toBeCalledTimes(1);
-
     expect(rootLogger.error).nthCalledWith(
       1,
       expect.objectContaining({ err: expect.any(Error), status: 500 }),
-      'request',
+      'Server error',
     );
 
     expect(rootLogger.info).not.toBeCalled();
@@ -173,12 +155,10 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(rootLogger.error).toBeCalledTimes(1);
-
     expect(rootLogger.error).nthCalledWith(
       1,
       expect.objectContaining({ err, status: 500 }),
-      'request',
+      'Server error',
     );
 
     expect(rootLogger.info).not.toBeCalled();
@@ -203,12 +183,10 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(rootLogger.error).toBeCalledTimes(1);
-
     expect(rootLogger.error).nthCalledWith(
       1,
       expect.objectContaining({ err: null, status: 500 }),
-      'request',
+      'Server error',
     );
 
     expect(rootLogger.info).not.toBeCalled();
@@ -234,12 +212,10 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(rootLogger.error).toBeCalledTimes(1);
-
     expect(rootLogger.error).nthCalledWith(
       1,
       expect.objectContaining({ err, status: 500 }),
-      'request',
+      'Server error',
     );
 
     expect(rootLogger.info).not.toBeCalled();
