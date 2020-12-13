@@ -155,7 +155,7 @@ you can use [npm link] to register your local copy as a global shell command:
 # do this once upfront
 npm link
 
-# npm link points to the compiled JavaScript in ./lib-commonjs/index.js, so
+# npm link points to the compiled JavaScript in ./lib/index.js, so
 # you'll need to rebuild skuba on every code change
 yarn build
 

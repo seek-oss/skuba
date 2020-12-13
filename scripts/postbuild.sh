@@ -2,4 +2,4 @@
 
 set -e
 
-chmod +x 'lib-commonjs/skuba.js'
+chmod +x 'lib/skuba.js'

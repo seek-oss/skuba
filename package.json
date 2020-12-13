@@ -2,15 +2,14 @@
   "name": "skuba",
   "description": "Toolkit for backend TypeScript development",
   "bin": {
-    "skuba": "lib-commonjs/skuba.js"
+    "skuba": "lib/skuba.js"
   },
   "engines": {
     "node": ">=12"
   },
   "version": "3.11.0",
-  "main": "lib-commonjs",
-  "module": "lib-es2015",
-  "typings": "lib-types/index.d.ts",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "files": [
     "config/**/*",
     "lib*/**/*.d.ts",
@@ -22,7 +21,7 @@
   "sideEffects": false,
   "license": "MIT",
   "scripts": {
-    "build": "yarn skuba build-package && scripts/postbuild.sh",
+    "build": "yarn skuba build && scripts/postbuild.sh",
     "format": "yarn skuba format",
     "lint": "yarn skuba lint",
     "release": "yarn build && changeset publish",
@@ -39,7 +38,7 @@
     "@changesets/cli": "2.12.0",
     "@types/concurrently": "5.2.1",
     "@types/ejs": "3.0.5",
-    "@types/fs-extra": "9.0.4",
+    "@types/fs-extra": "9.0.5",
     "@types/lodash.mergewith": "4.6.6",
     "@types/npm-which": "3.0.0",
     "type-fest": "0.20.2"
