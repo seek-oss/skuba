@@ -74,11 +74,7 @@ describe('createApp', () => {
 
     expect(rootLogger.error).not.toBeCalled();
 
-    expect(rootLogger.info).nthCalledWith(
-      1,
-      expect.objectContaining({ status: 404 }),
-      'Client error',
-    );
+    expect(rootLogger.info).not.toBeCalled();
 
     metricsClient.expectTagSubset([
       'http_method:get',
