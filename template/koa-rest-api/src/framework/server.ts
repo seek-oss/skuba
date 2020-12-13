@@ -20,15 +20,14 @@ const metrics = MetricsMiddleware.create(
 
 const requestLogging = RequestLogging.createMiddleware<DefaultState, Context>(
   (ctx, fields, err) => {
-    /* istanbul ignore next: error handler should catch `err` first */
-    const data = {
-      ...fields,
-      err: err ?? ErrorMiddleware.thrown(ctx),
-    };
+    if (typeof err === 'undefined') {
+      // Depend on sidecar logging for happy path requests
+      return;
+    }
 
     return ctx.status < 500
-      ? rootLogger.info(data, 'request')
-      : rootLogger.error(data, 'request');
+      ? rootLogger.info(fields, 'Client error')
+      : rootLogger.error(fields, 'Server error');
   },
 );
 
