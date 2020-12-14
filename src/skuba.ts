@@ -17,7 +17,7 @@ import { COMMAND_DIR, COMMAND_SET, commandToModule } from './utils/command';
 import { handleCliError } from './utils/error';
 import { showHelp } from './utils/help';
 import { log } from './utils/logging';
-import { showLogo } from './utils/logo';
+import { showLogoAndVersionInfo } from './utils/logo';
 import { hasProp } from './utils/validation';
 
 const skuba = async () => {
@@ -43,7 +43,7 @@ const skuba = async () => {
   }
 
   log.err(log.bold(commandName), 'is not recognised as a command.');
-  await showLogo();
+  await showLogoAndVersionInfo();
   showHelp();
 
   process.exit(1);

@@ -55,6 +55,15 @@ To bootstrap an existing project:
 npx skuba configure
 ```
 
+**skuba** supports a global installation to speed up local development:
+
+```shell
+yarn global add skuba
+
+# Look, no `npx`!
+skuba version
+```
+
 ## CLI reference
 
 **skuba** commands are typically found in the `scripts` section of `package.json`.

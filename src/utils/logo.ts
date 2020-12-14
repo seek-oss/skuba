@@ -1,7 +1,8 @@
 import chalk from 'chalk';
+import isInstalledGlobally from 'is-installed-globally';
 
 import { log } from './logging';
-import { getSkubaVersion } from './version';
+import { getSkubaVersionInfo } from './version';
 
 const LOGO = chalk.blueBright(`
     ╭─╮ ${chalk.magentaBright('    ')}╭─╮
@@ -10,12 +11,32 @@ const LOGO = chalk.blueBright(`
 ╰───╰─┴─${chalk.magentaBright('╰───╯')}───╯── ╰
 `);
 
-export const showLogo = async () => {
-  const skubaVersion = await getSkubaVersion();
+export const showLogoAndVersionInfo = async () => {
+  const versionInfo = await getSkubaVersionInfo();
 
   log.plain(LOGO);
-  log.subtle(skubaVersion);
+  log.subtle(
+    log.bold(versionInfo.local),
+    '|',
+    'latest',
+    log.bold(versionInfo.latest ?? 'offline ✈'),
+  );
   log.newline();
 
-  return skubaVersion;
+  if (versionInfo.isStale) {
+    log.warn('Your skuba installation is out of date.');
+    log.warn('Consider upgrading:');
+    log.newline();
+    log.warn(
+      log.bold(
+        'yarn',
+        ...(isInstalledGlobally ? ['global'] : []),
+        'upgrade',
+        `skuba@${versionInfo.latest}`,
+      ),
+    );
+    log.newline();
+  }
+
+  return versionInfo;
 };
