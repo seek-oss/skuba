@@ -7,7 +7,7 @@ import {
 } from '../../utils/copy';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
-import { showLogo } from '../../utils/logo';
+import { showLogoAndVersionInfo } from '../../utils/logo';
 import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
@@ -18,7 +18,7 @@ import { commitChanges, initialiseRepo } from './git';
 import { writePackageJson } from './writePackageJson';
 
 export const init = async () => {
-  const skubaVersion = await showLogo();
+  const skubaVersionInfo = await showLogoAndVersionInfo();
 
   await ensureCommands('git', 'yarn');
 
@@ -66,7 +66,7 @@ export const init = async () => {
       entryPoint,
       template: templateName,
       type,
-      version: skubaVersion,
+      version: skubaVersionInfo.local,
     }),
   ]);
 
@@ -86,7 +86,7 @@ export const init = async () => {
     '--dev',
     '--exact',
     '--silent',
-    `skuba@${skubaVersion}`,
+    `skuba@${skubaVersionInfo.local}`,
   );
 
   await commitChanges(exec, `Clone ${templateName}`);

@@ -1,8 +1,8 @@
 import { showHelp } from '../utils/help';
-import { showLogo } from '../utils/logo';
+import { showLogoAndVersionInfo } from '../utils/logo';
 
 export const help = async () => {
-  await showLogo();
+  await showLogoAndVersionInfo();
 
   showHelp();
 };

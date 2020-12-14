@@ -5,7 +5,7 @@ import { Select } from 'enquirer';
 import { createInclusionFilter } from '../../utils/copy';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
-import { showLogo } from '../../utils/logo';
+import { showLogoAndVersionInfo } from '../../utils/logo';
 import { BASE_TEMPLATE_DIR } from '../../utils/template';
 import { hasProp } from '../../utils/validation';
 
@@ -30,7 +30,7 @@ const shouldApply = async (name: string) => {
 };
 
 export const configure = async () => {
-  await showLogo();
+  await showLogoAndVersionInfo();
 
   const [manifest] = await Promise.all([
     getDestinationManifest(),
