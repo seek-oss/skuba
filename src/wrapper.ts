@@ -1,9 +1,18 @@
+/**
+ * Wrapper around an entry point provided to `skuba node` or `skuba start`.
+ *
+ * Beyond simply loading the entry point, it supports the following features:
+ *
+ * - If you `export =` or `export default` an Express or Koa application,
+ *   it will spin up a local HTTP server.
+ */
+
 import http from 'http';
 import { AddressInfo } from 'net';
 import path from 'path';
 
-import { handleCliError } from '../../utils/error';
-import { log } from '../../utils/logging';
+import { handleCliError } from './utils/error';
+import { log } from './utils/logging';
 
 type Config = FunctionConfig | ObjectConfig;
 
@@ -25,7 +34,7 @@ interface ObjectConfig {
 const isConfig = (data: unknown): data is Config =>
   (typeof data === 'object' && data !== null) || typeof data === 'function';
 
-const start = () => {
+const main = () => {
   if (process.argv.length < 4) {
     log.err('Missing arguments:', log.bold('entry-point'), log.bold('port'));
     process.exit(1);
@@ -65,13 +74,7 @@ const start = () => {
       : config.requestListener ?? config.callback?.();
 
   if (typeof requestListener === 'undefined') {
-    log.err(
-      'You must export',
-      log.bold('callback'),
-      'or',
-      log.bold('requestListener'),
-    );
-    process.exit(1);
+    return Promise.resolve();
   }
 
   const server = http.createServer(requestListener);
@@ -89,4 +92,4 @@ const start = () => {
   );
 };
 
-start().catch(handleCliError);
+main().catch(handleCliError);

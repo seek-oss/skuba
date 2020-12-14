@@ -19,6 +19,7 @@ export const COMMAND_LIST = [
   'help',
   'init',
   'lint',
+  'node',
   'release',
   'start',
   'test',

@@ -3,12 +3,12 @@ import path from 'path';
 import getPort from 'get-port';
 import parse from 'yargs-parser';
 
-import { unsafeMapYargs } from '../../utils/args';
-import { exec } from '../../utils/exec';
+import { unsafeMapYargs } from '../utils/args';
+import { createExec } from '../utils/exec';
 import {
   getEntryPointFromManifest,
   isBabelFromManifest,
-} from '../../utils/manifest';
+} from '../utils/manifest';
 
 const parseArgs = async () => {
   const {
@@ -39,8 +39,12 @@ export const start = async () => {
     isBabelFromManifest(),
   ]);
 
+  const execProcess = createExec({
+    env: isBabel ? undefined : { __SKUBA_REGISTER_MODULE_ALIASES: '1' },
+  });
+
   if (isBabel) {
-    return exec(
+    return execProcess(
       'nodemon',
       '--ext',
       ['.js', '.json', '.ts'].join(','),
@@ -50,18 +54,22 @@ export const start = async () => {
       'babel-node',
       '--extensions',
       ['.js', '.json', '.ts'].join(','),
-      path.join(__dirname, 'http.js'),
+      '--require',
+      path.join('skuba', 'lib', 'register'),
+      path.join(__dirname, '..', 'wrapper.js'),
       args.entryPoint,
       String(port),
     );
   }
 
-  return exec(
+  return execProcess(
     'ts-node-dev',
     ...args.inspect,
+    '--require',
+    path.join('skuba', 'lib', 'register'),
     '--respawn',
     '--transpile-only',
-    path.join(__dirname, 'http'),
+    path.join(__dirname, '..', 'wrapper'),
     args.entryPoint,
     String(port),
   );

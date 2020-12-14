@@ -1,5 +1,15 @@
 #!/usr/bin/env node
 
+/**
+ * Entry point for the CLI.
+ *
+ * This is where you end up when you run:
+ *
+ * ```bash
+ * [yarn] skuba help
+ * ```
+ */
+
 import path from 'path';
 
 import { parseArgs } from './utils/args';

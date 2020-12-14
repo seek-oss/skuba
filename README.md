@@ -212,6 +212,48 @@ Check for code quality issues.
 
 This script should be run in CI to verify that [`skuba format`] was applied and triaged locally.
 
+### `skuba node`
+
+Run a TypeScript source file, or open a REPL if none is provided:
+
+- `skuba node src/some-cli-script.ts`
+- `skuba node`
+
+This automatically registers a `src` module alias for ease of local development.
+If you use this alias in your production code,
+your production entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`].
+For example, your `src/app.ts` may look like:
+
+```typescript
+// This must be imported directly within the `src` directory
+import 'skuba-dive/register';
+
+// You can use the `src` module alias after registration
+import { rootLogger } 'src/framework/logging';
+```
+
+> **Note:** if you're using the [experimental Babel toolchain],
+> you'll be limited to the fairly primitive `babel-node` REPL.
+> While it can import TypeScript modules,
+> it does not support interactive TypeScript nor modern JavaScript syntax:
+>
+> ```typescript
+> import { someExport } from 'src/someModule';
+> // Thrown: [...] Modules aren't supported in the REPL
+>
+> const { someExport } = require('src/someModule');
+> // Thrown: [...] Only `var` variables are supported in the REPL
+>
+> var { someExport } = require('src/someModule');
+> // undefined
+>
+> var v: undefined;
+> // Thrown: [...] Unexpected token
+> ```
+
+[`skuba-dive/register`]: https://github.com/seek-oss/skuba-dive#register
+[experimental babel toolchain]: ./docs/babel.md
+
 ### `skuba start`
 
 Start a live-reloading server for local development.
@@ -227,6 +269,19 @@ For example, in Visual Studio Code:
 
 1. Run `skuba start --inspect-brk`
 1. Run the built-in `Node.js: Attach` launch configuration
+
+This automatically registers a `src` module alias for ease of local development.
+If you use this alias in your production code,
+your production entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`].
+For example, your `src/app.ts` may look like:
+
+```typescript
+// This must be imported directly within the `src` directory
+import 'skuba-dive/register';
+
+// You can use the `src` module alias after registration
+import { rootLogger } 'src/framework/logging';
+```
 
 [node.js options]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options
 
