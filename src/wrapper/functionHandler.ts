@@ -28,7 +28,7 @@ export const runFunctionHandler = ({
   const fn = entryPoint[functionName];
 
   if (!isFunction(fn)) {
-    log.subtle(log.bold(functionName), 'is', typeof fn, 'not a function');
+    log.subtle(log.bold(functionName), 'is not a function');
     return;
   }
 
