@@ -232,10 +232,7 @@ import 'skuba-dive/register';
 import { rootLogger } 'src/framework/logging';
 ```
 
-[`skuba-dive/register`]: https://github.com/seek-oss/skuba-dive#register
-[experimental babel toolchain]: ./docs/babel.md
-
-> **Note:** if you're using the [experimental Babel toolchain].
+> **Note:** if you're using the [experimental Babel toolchain],
 > you'll be limited to the fairly primitive `babel-node` REPL.
 > While it can import TypeScript modules,
 > it does not support interactive TypeScript nor modern JavaScript syntax:
@@ -253,6 +250,9 @@ import { rootLogger } 'src/framework/logging';
 > var v: undefined;
 > // Thrown: [...] Unexpected token
 > ```
+
+[`skuba-dive/register`]: https://github.com/seek-oss/skuba-dive#register
+[experimental babel toolchain]: ./docs/babel.md
 
 ### `skuba start`
 
