@@ -10,38 +10,19 @@
  *   it will spin up a local HTTP server based on the request listener.
  */
 
-import path from 'path';
-
 import { handleCliError } from '../utils/error';
 import { log } from '../utils/logging';
 
-import { runFunctionHandler } from './functionHandler';
-import { runRequestListener } from './requestListener';
+import { main } from './main';
 
-const main = async () => {
-  const args = process.argv.slice(2);
+const args = process.argv.slice(2);
 
-  if (args.length < 2) {
-    log.err('Missing arguments:', log.bold('entry-point'), log.bold('port'));
-    process.exit(1);
-  }
+if (args.length < 2) {
+  throw new Error(
+    `Missing arguments: ${log.bold('entry-point')} ${log.bold('port')}`,
+  );
+}
 
-  const [rawEntryPoint, rawPort] = args;
+const [rawEntryPoint, rawPort] = args;
 
-  const availablePort = Number(rawPort) || undefined;
-
-  // Support exported function targeting, e.g. `src/module.ts#callMeMaybe`
-  const [modulePath, functionName] = path
-    .join(process.cwd(), rawEntryPoint)
-    .split('#', 2);
-
-  // Load entry point as module
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const entryPoint = require(modulePath) as unknown;
-
-  return functionName
-    ? runFunctionHandler({ availablePort, entryPoint, functionName })
-    : runRequestListener({ availablePort, entryPoint });
-};
-
-main().catch(handleCliError);
+main(rawEntryPoint, rawPort).catch(handleCliError);

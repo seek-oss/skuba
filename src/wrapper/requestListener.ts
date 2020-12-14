@@ -16,7 +16,7 @@ interface ObjectConfig {
   requestListener?: http.RequestListener;
 
   default?: unknown;
-  port?: number;
+  port?: unknown;
 }
 
 const isConfig = (data: unknown): data is FunctionConfig | ObjectConfig =>
@@ -32,7 +32,10 @@ interface Args {
  *
  * This supports Express and Koa applications out of the box.
  */
-export const runRequestListener = ({ availablePort, entryPoint }: Args) => {
+export const runRequestListener = async ({
+  availablePort,
+  entryPoint,
+}: Args): Promise<void> => {
   if (!isConfig(entryPoint)) {
     // Assume an executable script with weird exports
     return;
@@ -55,12 +58,12 @@ export const runRequestListener = ({ availablePort, entryPoint }: Args) => {
       ? config
       : config.requestListener ?? config.callback?.();
 
-  if (typeof requestListener === 'undefined') {
+  if (typeof requestListener !== 'function') {
     // Assume an executable script with non-request listener exports
     return;
   }
 
-  const port = config.port ?? availablePort;
+  const port = typeof config.port === 'number' ? config.port : availablePort;
 
   return serveRequestListener(requestListener, port);
 };

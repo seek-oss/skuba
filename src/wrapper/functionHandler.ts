@@ -15,11 +15,11 @@ interface Args {
 /**
  * Create an HTTP server that calls into an exported function.
  */
-export const runFunctionHandler = ({
+export const runFunctionHandler = async ({
   availablePort,
   entryPoint,
   functionName,
-}: Args) => {
+}: Args): Promise<void> => {
   if (!isObject(entryPoint)) {
     log.subtle(log.bold(functionName), 'is not exported');
     return;
