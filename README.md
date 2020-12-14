@@ -302,6 +302,28 @@ Your entry point can be a simple module that runs on load:
 console.log('Hello world!');
 ```
 
+#### Start a Lambda function handler
+
+Your entry point can target an exported function:
+
+```bash
+skuba start --port 12345 src/app.ts#handler
+```
+
+```typescript
+export const handler = async (event: unknown, ctx: unknown) => {
+  // ...
+
+  return;
+};
+```
+
+This starts up a local HTTP server that you can POST arguments to:
+
+```bash
+curl --data '["event", {"awsRequestId": "123"}]' --include localhost:12345
+```
+
 #### Start an HTTP server
 
 Your entry point should export:

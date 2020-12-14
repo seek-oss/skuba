@@ -23,13 +23,17 @@ const parseArgs = () => {
   return {
     entryPoint,
     inspect,
+    port: Number(yargs.port) || undefined,
   };
 };
 
 export const node = async () => {
   const args = parseArgs();
 
-  const [port, isBabel] = await Promise.all([getPort(), isBabelFromManifest()]);
+  const [availablePort, isBabel] = await Promise.all([
+    getPort(),
+    isBabelFromManifest(),
+  ]);
 
   const exec = createExec({
     env: isBabel ? undefined : { __SKUBA_REGISTER_MODULE_ALIASES: '1' },
@@ -42,13 +46,13 @@ export const node = async () => {
       '--extensions',
       ['.js', '.json', '.ts'].join(','),
       '--require',
-      path.join('skuba', 'lib', 'register'),
+      path.posix.join('skuba', 'lib', 'register'),
       ...(args.entryPoint === null
         ? []
         : [
             path.join(__dirname, '..', 'wrapper.js'),
             args.entryPoint,
-            String(port),
+            String(args.port ?? availablePort),
           ]),
     );
   }
@@ -57,10 +61,14 @@ export const node = async () => {
     'ts-node',
     ...args.inspect,
     '--require',
-    path.join('skuba', 'lib', 'register'),
+    path.posix.join('skuba', 'lib', 'register'),
     '--transpile-only',
     ...(args.entryPoint === null
       ? []
-      : [path.join(__dirname, '..', 'wrapper'), args.entryPoint, String(port)]),
+      : [
+          path.join(__dirname, '..', 'wrapper'),
+          args.entryPoint,
+          String(args.port ?? availablePort),
+        ]),
   );
 };

@@ -3,7 +3,7 @@
  */
 
 module.exports = {
-  entryPoint: 'src/app.ts',
+  entryPoint: 'src/app.ts#handler',
   fields: [
     {
       name: 'serviceName',

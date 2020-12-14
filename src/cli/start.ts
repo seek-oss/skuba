@@ -29,11 +29,12 @@ const parseArgs = async () => {
   return {
     entryPoint,
     inspect,
+    port: Number(yargs.port) || undefined,
   };
 };
 
 export const start = async () => {
-  const [args, port, isBabel] = await Promise.all([
+  const [args, availablePort, isBabel] = await Promise.all([
     parseArgs(),
     getPort(),
     isBabelFromManifest(),
@@ -55,10 +56,10 @@ export const start = async () => {
       '--extensions',
       ['.js', '.json', '.ts'].join(','),
       '--require',
-      path.join('skuba', 'lib', 'register'),
+      path.posix.join('skuba', 'lib', 'register'),
       path.join(__dirname, '..', 'wrapper.js'),
       args.entryPoint,
-      String(port),
+      String(args.port ?? availablePort),
     );
   }
 
@@ -66,11 +67,11 @@ export const start = async () => {
     'ts-node-dev',
     ...args.inspect,
     '--require',
-    path.join('skuba', 'lib', 'register'),
+    path.posix.join('skuba', 'lib', 'register'),
     '--respawn',
     '--transpile-only',
     path.join(__dirname, '..', 'wrapper'),
     args.entryPoint,
-    String(port),
+    String(args.port ?? availablePort),
   );
 };

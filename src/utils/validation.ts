@@ -1,3 +1,8 @@
+export const isFunction = (
+  data: unknown,
+): data is (...args: unknown[]) => unknown | Promise<unknown> =>
+  typeof data === 'function';
+
 export const isObject = (
   value: unknown,
 ): value is Record<PropertyKey, unknown> =>
