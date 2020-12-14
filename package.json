@@ -76,6 +76,7 @@
     "read-pkg-up": "^7.0.1",
     "runtypes": "^5.0.1",
     "semantic-release": "^17.2.3",
+    "serialize-error": "^7.0.1",
     "source-map-support": "^0.5.19",
     "ts-jest": "^26.4.1",
     "ts-node": "^9.0.0",
