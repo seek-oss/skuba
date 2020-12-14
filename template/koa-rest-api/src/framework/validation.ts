@@ -1,4 +1,4 @@
-import { Context } from 'koa';
+import { Context } from 'src/types/koa';
 
 export const validate = <T>({
   ctx,

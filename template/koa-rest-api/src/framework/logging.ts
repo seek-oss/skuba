@@ -1,8 +1,8 @@
 import createLogger from '@seek/logger';
-import { Context } from 'koa';
 import { RequestLogging } from 'seek-koala';
 
 import { config } from 'src/config';
+import { Context } from 'src/types/koa';
 
 export const rootLogger = createLogger({
   base: {

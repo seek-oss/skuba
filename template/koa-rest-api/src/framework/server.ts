@@ -1,4 +1,4 @@
-import Koa, { Context, DefaultState, Middleware } from 'koa';
+import Koa from 'koa';
 import compose from 'koa-compose';
 import {
   ErrorMiddleware,
@@ -18,25 +18,25 @@ const metrics = MetricsMiddleware.create(
   }),
 );
 
-const requestLogging = RequestLogging.createMiddleware<DefaultState, Context>(
-  (ctx, fields, err) => {
-    if (typeof err === 'undefined') {
-      // Depend on sidecar logging for happy path requests
-      return;
-    }
+const requestLogging = RequestLogging.createMiddleware((ctx, fields, err) => {
+  if (typeof err === 'undefined') {
+    // Depend on sidecar logging for happy path requests
+    return;
+  }
 
-    return ctx.status < 500
-      ? rootLogger.info(fields, 'Client error')
-      : rootLogger.error(fields, 'Server error');
-  },
-);
+  return ctx.status < 500
+    ? rootLogger.info(fields, 'Client error')
+    : rootLogger.error(fields, 'Server error');
+});
 
 const version = VersionMiddleware.create({
   name: config.name,
   version: config.version,
 });
 
-export const createApp = <S, C>(...middleware: Middleware<S, C>[]) =>
+export const createApp = <State, Context>(
+  ...middleware: Koa.Middleware<State, Context>[]
+) =>
   new Koa()
     .use(requestLogging)
     .use(metrics)
