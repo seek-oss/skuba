@@ -3,6 +3,12 @@ export const isFunction = (
 ): data is (...args: unknown[]) => unknown | Promise<unknown> =>
   typeof data === 'function';
 
+export const isIpPort = (value: unknown): value is number =>
+  typeof value === 'number' &&
+  Number.isSafeInteger(value) &&
+  value >= 0 &&
+  value <= 65535;
+
 export const isObject = (
   value: unknown,
 ): value is Record<PropertyKey, unknown> =>

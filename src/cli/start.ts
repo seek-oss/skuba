@@ -9,6 +9,7 @@ import {
   getEntryPointFromManifest,
   isBabelFromManifest,
 } from '../utils/manifest';
+import { isIpPort } from '../utils/validation';
 
 const parseArgs = async () => {
   const {
@@ -59,7 +60,7 @@ export const start = async () => {
       path.posix.join('skuba', 'lib', 'register'),
       path.join(__dirname, '..', 'wrapper.js'),
       args.entryPoint,
-      String(args.port ?? availablePort),
+      String(isIpPort(args.port) ? args.port : availablePort),
     );
   }
 
@@ -72,6 +73,6 @@ export const start = async () => {
     '--transpile-only',
     path.join(__dirname, '..', 'wrapper'),
     args.entryPoint,
-    String(args.port ?? availablePort),
+    String(isIpPort(args.port) ? args.port : availablePort),
   );
 };

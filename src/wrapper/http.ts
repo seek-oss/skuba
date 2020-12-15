@@ -15,10 +15,12 @@ export const createRequestListenerFromFunction = (
   fn: (...args: unknown[]) => unknown | Promise<unknown>,
 ): http.RequestListener => async (req, res) => {
   const writeJsonResponse = (statusCode: number, jsonResponse: unknown) =>
-    new Promise<void>((resolve) =>
+    new Promise<void>((resolve, reject) =>
       res
         .writeHead(statusCode, { 'Content-Type': 'application/json' })
-        .end(JSON.stringify(jsonResponse, null, 2), 'utf8', resolve),
+        .write(JSON.stringify(jsonResponse, null, 2), 'utf8', (err) =>
+          err ? reject(err) : res.end(resolve),
+        ),
     );
 
   try {
