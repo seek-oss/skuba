@@ -6,6 +6,7 @@ import parse from 'yargs-parser';
 import { unsafeMapYargs } from '../utils/args';
 import { createExec } from '../utils/exec';
 import { isBabelFromManifest } from '../utils/manifest';
+import { isIpPort } from '../utils/validation';
 
 const parseArgs = () => {
   const {
@@ -52,7 +53,7 @@ export const node = async () => {
         : [
             path.join(__dirname, '..', 'wrapper.js'),
             args.entryPoint,
-            String(args.port ?? availablePort),
+            String(isIpPort(args.port) ? args.port : availablePort),
           ]),
     );
   }
@@ -68,7 +69,7 @@ export const node = async () => {
       : [
           path.join(__dirname, '..', 'wrapper'),
           args.entryPoint,
-          String(args.port ?? availablePort),
+          String(isIpPort(args.port) ? args.port : availablePort),
         ]),
   );
 };

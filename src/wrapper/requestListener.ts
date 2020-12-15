@@ -1,6 +1,6 @@
 import http from 'http';
 
-import { isFunction, isObject } from '../utils/validation';
+import { isFunction, isIpPort, isObject } from '../utils/validation';
 
 import { serveRequestListener } from './http';
 
@@ -63,7 +63,7 @@ export const runRequestListener = async ({
     return;
   }
 
-  const port = typeof config.port === 'number' ? config.port : availablePort;
+  const port = isIpPort(config.port) ? config.port : availablePort;
 
   return serveRequestListener(requestListener, port);
 };
