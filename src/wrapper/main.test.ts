@@ -65,7 +65,9 @@ test('expressRequestListener', async () => {
   // With `.ts`
   await initWrapper('expressRequestListener.ts');
 
-  expect(serveRequestListener).toBeCalledTimes(1);
+  expect(serveRequestListener.mock.calls).toEqual([
+    [expect.any(Function), 12345],
+  ]);
 
   return Promise.all([
     agent
@@ -81,7 +83,9 @@ test('koaRequestListener', async () => {
   // Without `.ts`
   await initWrapper('koaRequestListener');
 
-  expect(serveRequestListener).toBeCalledTimes(1);
+  expect(serveRequestListener.mock.calls).toEqual([
+    [expect.any(Function), 8080],
+  ]);
 
   return Promise.all([
     agent
