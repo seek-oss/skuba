@@ -41,7 +41,7 @@ describe('createInclusionFilter', () => {
       '.eslintignore',
       '.prettierrc.js',
       'Dockerfile',
-      'jest.config.js',
+      'jest.config.ts',
       'README.md',
       'src/app.ts',
     ])('includes %s', (filename) => expect(include(filename)).toBe(true));

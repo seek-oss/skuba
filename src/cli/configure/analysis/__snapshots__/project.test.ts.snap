@@ -100,10 +100,10 @@ gantry*.yml
 ",
     "operation": "A",
   },
-  "jest.config.js": Object {
-    "data": "const { Jest } = require('skuba');
+  "jest.config.ts": Object {
+    "data": "import { Jest } from 'skuba';
 
-module.exports = Jest.mergePreset({
+export default Jest.mergePreset({
   coveragePathIgnorePatterns: ['src/testing'],
   setupFiles: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/test\\\\\\\\.ts'],
@@ -125,7 +125,8 @@ module.exports = Jest.mergePreset({
     \\"format\\": \\"skuba format\\",
     \\"lint\\": \\"skuba lint\\",
     \\"start\\": \\"ENVIRONMENT=local skuba start\\",
-    \\"test\\": \\"skuba test\\"
+    \\"test\\": \\"skuba test --coverage\\",
+    \\"test:watch\\": \\"skuba test --watch\\"
   },
   \\"skuba\\": {
     \\"entryPoint\\": \\"src/app.ts\\",

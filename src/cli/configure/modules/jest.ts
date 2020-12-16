@@ -1,11 +1,12 @@
 import { readBaseTemplateFile } from '../../../utils/template';
+import { deleteFiles } from '../processing/deleteFiles';
 import { loadFiles } from '../processing/loadFiles';
 import { withPackage } from '../processing/package';
 import {
   createPropAppender,
   createPropFilter,
   readModuleExports,
-  transformModuleExports,
+  transformModuleImportsAndExports,
 } from '../processing/typescript';
 import { Module } from '../types';
 
@@ -21,20 +22,30 @@ const filterProps = createPropFilter([
 
 export const jestModule = async (): Promise<Module> => {
   const [configFile, setupFile] = await Promise.all([
-    readBaseTemplateFile('jest.config.js'),
+    readBaseTemplateFile('jest.config.ts'),
     readBaseTemplateFile('jest.setup.ts'),
   ]);
 
   return {
-    ...loadFiles('jest.setup.ts'),
+    ...deleteFiles('jest.config.js'),
+    ...loadFiles('jest.setup.js'),
 
-    'jest.config.js': (inputFile, files) => {
-      // allow customised Jest configs that extend skuba
-      if (inputFile?.includes('skuba')) {
-        return inputFile;
+    'jest.config.ts': (tsFile, currentFiles, initialFiles) => {
+      // Allow customised TS Jest config that extends skuba
+      if (tsFile?.includes('skuba')) {
+        return tsFile;
       }
 
-      files['jest.setup.ts'] ??= setupFile;
+      const jsFile = initialFiles['jest.config.js'];
+
+      // Migrate a JS config that extends skuba, retaining all existing props
+      if (jsFile?.includes('skuba')) {
+        return transformModuleImportsAndExports(jsFile, (_, p) => p);
+      }
+
+      currentFiles['jest.setup.ts'] ??= setupFile;
+
+      const inputFile = tsFile ?? jsFile;
 
       const props =
         typeof inputFile === 'undefined'
@@ -49,7 +60,8 @@ export const jestModule = async (): Promise<Module> => {
 
       const appendProps = createPropAppender(filteredProps);
 
-      return transformModuleExports(configFile, appendProps);
+      // Append a subset of custom props to our base `jest.config.ts`
+      return transformModuleImportsAndExports(configFile, appendProps);
     },
 
     'package.json': withPackage(({ jest, ...data }) => data),

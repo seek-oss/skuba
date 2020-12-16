@@ -385,11 +385,11 @@ Merge additional Jest options into the **skuba** preset.
 This concatenates array options like `testPathIgnorePatterns`.
 
 ```js
-// jest.config.js
+// jest.config.ts
 
-const { Jest } = require('skuba');
+import { Jest } from 'skuba';
 
-module.exports = Jest.mergePreset({
+export default Jest.mergePreset({
   coveragePathIgnorePatterns: ['src/testing'],
   setupFiles: ['<rootDir>/jest.setup.ts'],
 
