@@ -6,10 +6,10 @@ import {
   createPropAppender,
   createPropFilter,
   readModuleExports,
-  transformModuleExports,
+  transformModuleImportsAndExports,
 } from './typescript';
 
-const JEST_CONFIG = `module.exports = {
+const JEST_CONFIG = `export default {
   collectCoverage: true,
   coverageThreshold: {
     global: {
@@ -24,64 +24,174 @@ const JEST_CONFIG = `module.exports = {
 };
 `;
 
-describe('transformModuleExports', () => {
-  it('detects an object literal', () => {
-    const input = "module.exports = { key: 'value' };\n";
+describe('transformModuleImportsAndExports', () => {
+  const factory = ts.factory;
 
-    const result = transformModuleExports(input, () => ts.createNodeArray());
+  it('converts imports', () => {
+    expect(
+      transformModuleImportsAndExports("const abc = require('abc');\n", () =>
+        factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "import abc from 'abc';
+      "
+    `);
 
-    expect(result).toBe('module.exports = {};\n');
+    expect(
+      transformModuleImportsAndExports("const { a } = require('abc');\n", () =>
+        factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "import { a } from 'abc';
+      "
+    `);
+
+    expect(
+      transformModuleImportsAndExports(
+        "const { a, b, c } = require('abc');\n",
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "import { a, b, c } from 'abc';
+      "
+    `);
+
+    expect(
+      transformModuleImportsAndExports("import abc from 'abc';\n", () =>
+        factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "import abc from 'abc';
+      "
+    `);
   });
 
-  it('detects a single-arg call expression', () => {
-    const input = "module.exports = Jest.mergePreset({ key: 'value' });\n";
+  it('detects an object literal export', () => {
+    expect(
+      transformModuleImportsAndExports(
+        "module.exports = { key: 'value' };\n",
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "export default {};
+      "
+    `);
 
-    const result = transformModuleExports(input, () => ts.createNodeArray());
-
-    expect(result).toBe('module.exports = Jest.mergePreset({});\n');
+    expect(
+      transformModuleImportsAndExports(
+        "export default { key: 'value' };\n",
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "export default {};
+      "
+    `);
   });
 
-  it('ignores a multi-arg call expression', () => {
-    const input =
-      "module.exports = Jest.mergePreset({ key: 'value' }, null, 2);\n";
+  it('detects a single-arg call expression export', () => {
+    expect(
+      transformModuleImportsAndExports(
+        "export default Jest.mergePreset({ key: 'value' });\n",
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "export default Jest.mergePreset({});
+      "
+    `);
 
-    const result = transformModuleExports(input, () => ts.createNodeArray());
-
-    expect(result).toBe(input);
+    expect(
+      transformModuleImportsAndExports(
+        "module.exports = Jest.mergePreset({ key: 'value' });\n",
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "export default Jest.mergePreset({});
+      "
+    `);
   });
 
-  it('ignores a function', () => {
-    const input = 'module.exports = () => undefined;\n';
+  it('does not transform props of a multi-arg call expression export', () => {
+    expect(
+      transformModuleImportsAndExports(
+        "export default Jest.mergePreset({ key: 'value' }, null, 2);\n",
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "export default Jest.mergePreset({ key: 'value' }, null, 2);
+      "
+    `);
 
-    const result = transformModuleExports(input, () => ts.createNodeArray());
-
-    expect(result).toBe(input);
+    expect(
+      transformModuleImportsAndExports(
+        "module.exports = Jest.mergePreset({ key: 'value' }, null, 2);\n",
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "export default Jest.mergePreset({ key: 'value' }, null, 2);
+      "
+    `);
   });
+
+  it('does not transform props of a function export', () => {
+    expect(
+      transformModuleImportsAndExports(
+        'export default () => undefined;\n',
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "export default () => undefined;
+      "
+    `);
+
+    expect(
+      transformModuleImportsAndExports(
+        'module.exports = () => undefined;\n',
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "export default () => undefined;
+      "
+    `);
+  });
+
+  it('ignores a named export', () =>
+    expect(
+      transformModuleImportsAndExports(
+        'export const fn = () => undefined;\n',
+        () => factory.createNodeArray(),
+      ),
+    ).toMatchInlineSnapshot(`
+      "export const fn = () => undefined;
+      "
+    `));
 
   it('works with a no-op transformer', () => {
-    const result = transformModuleExports(JEST_CONFIG, (_, props) => props);
+    const result = transformModuleImportsAndExports(
+      JEST_CONFIG,
+      (_, props) => props,
+    );
 
     expect(result).toBe(JEST_CONFIG);
   });
 
   it('works with a prop appender', () => {
     const append = createPropAppender(
-      ts.createNodeArray([
-        ts.createPropertyAssignment(
-          ts.createIdentifier('globalSetup'),
-          ts.createStringLiteral('I should not take precedence'),
+      factory.createNodeArray([
+        factory.createPropertyAssignment(
+          factory.createIdentifier('globalSetup'),
+          factory.createStringLiteral('I should not take precedence'),
         ),
-        ts.createPropertyAssignment(
-          ts.createIdentifier('a'),
-          ts.createStringLiteral('b'),
+        factory.createPropertyAssignment(
+          factory.createIdentifier('a'),
+          factory.createStringLiteral('b'),
         ),
       ]),
     );
 
-    const result = transformModuleExports(JEST_CONFIG, append);
+    const result = transformModuleImportsAndExports(JEST_CONFIG, append);
 
     expect(result).toMatchInlineSnapshot(`
-      "module.exports = {
+      "export default {
         collectCoverage: true,
         coverageThreshold: {
           global: {
@@ -106,10 +216,10 @@ describe('transformModuleExports', () => {
       'globalSetup',
     ]);
 
-    const result = transformModuleExports(JEST_CONFIG, filter);
+    const result = transformModuleImportsAndExports(JEST_CONFIG, filter);
 
     expect(result).toMatchInlineSnapshot(`
-      "module.exports = {
+      "export default {
         coverageThreshold: {
           global: {
             branches: 80,

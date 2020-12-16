@@ -28,7 +28,8 @@ describe('packageModule', () => {
         format: 'skuba format',
         lint: 'skuba lint',
         start: 'ENVIRONMENT=local skuba start',
-        test: 'skuba test',
+        test: 'skuba test --coverage',
+        'test:watch': 'skuba test --watch',
       },
       skuba: {
         entryPoint: 'src/app.ts',
@@ -66,7 +67,8 @@ describe('packageModule', () => {
         format: 'skuba format',
         lint: 'skuba lint',
         release: 'skuba release',
-        test: 'skuba test',
+        test: 'skuba test --coverage',
+        'test:watch': 'skuba test --watch',
       },
       skuba: {
         entryPoint: 'src/index.ts',
@@ -114,9 +116,6 @@ describe('packageModule', () => {
   it('overhauls divergent config', async () => {
     const inputFiles = {
       '.npmignore': '**/*\n',
-      'jest.config.js': `module.exports = {
-        collectCoverage: true,
-      };`,
       'package.json': JSON.stringify({
         $name: 'secret-service',
         devDependencies: {
@@ -124,7 +123,7 @@ describe('packageModule', () => {
         },
         license: 'MIT',
         scripts: {
-          'test:jest': 'jest --coverage',
+          'test:jest': 'jest',
           'test:build': 'tsc --noEmit --incremental false',
         },
       }),
@@ -204,7 +203,8 @@ describe('packageModule', () => {
         lint: 'skuba lint',
         release: 'yarn build && skuba release',
         start: 'my-custom-script',
-        test: 'skuba test',
+        test: 'skuba test --coverage',
+        'test:watch': 'skuba test --watch',
       },
       skuba: {
         entryPoint: 'src/index.ts',

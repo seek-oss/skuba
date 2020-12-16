@@ -1,6 +1,5 @@
 import { getSkubaVersion } from '../../../utils/version';
 import { deleteFiles } from '../processing/deleteFiles';
-import { loadFiles } from '../processing/loadFiles';
 import { withPackage } from '../processing/package';
 import { merge } from '../processing/record';
 import { Module, Options } from '../types';
@@ -26,7 +25,8 @@ export const packageModule = async ({
       format: 'skuba format',
       lint: 'skuba lint',
       ...(type === 'package' ? {} : { start: 'ENVIRONMENT=local skuba start' }),
-      test: 'skuba test',
+      test: 'skuba test --coverage',
+      'test:watch': 'skuba test --watch',
     },
     skuba: {
       entryPoint,
@@ -46,20 +46,9 @@ export const packageModule = async ({
 
   return {
     ...deleteFiles('.npmignore'),
-    ...loadFiles('jest.config.js'),
 
-    'package.json': (inputFile, _, initialFiles) => {
-      const jestConfig = initialFiles['jest.config.js'];
-
-      if (
-        typeof jestConfig === 'string' &&
-        /collectCoverage: true/.test(jestConfig)
-      ) {
-        // naughty mutation
-        initialData.scripts.test = 'skuba test --coverage';
-      }
-
-      return withPackage((inputData) => {
+    'package.json': (inputFile) =>
+      withPackage((inputData) => {
         const outputData = merge(
           inputData,
           'skuba' in inputData ? recurringData : initialData,
@@ -121,7 +110,6 @@ export const packageModule = async ({
         }
 
         return outputData;
-      })(inputFile);
-    },
+      })(inputFile),
   };
 };
