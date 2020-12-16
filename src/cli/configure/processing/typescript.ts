@@ -6,6 +6,23 @@ type Props = ts.NodeArray<ts.ObjectLiteralElementLike>;
 
 type Transformer<T> = (context: ts.TransformationContext | null, props: T) => T;
 
+const BLANK_LINE_PLACEHOLDER = ' __BLANK_LINE_PLACEHOLDER__';
+const BLANK_LINE_REGEXP = new RegExp(`//${BLANK_LINE_PLACEHOLDER}`, 'g');
+
+/**
+ * Append a placeholder comment to the start of a node.
+ *
+ * Blank lines can be annotated and preserved through the TypeScript printer
+ * when this is paired with a dodgy `String.prototype.replace` post-processor.
+ */
+const withLeadingBlankLinePlaceholder = <T extends ts.Node>(node: T) =>
+  ts.addSyntheticLeadingComment(
+    node,
+    ts.SyntaxKind.SingleLineCommentTrivia,
+    BLANK_LINE_PLACEHOLDER,
+    true,
+  );
+
 /**
  * Create the following expression:
  *
@@ -71,34 +88,46 @@ const expressionAsDefaultExport = (
   context: ts.TransformationContext,
   transformProps: Transformer<Props>,
   expression: ts.Expression,
-): ts.ExportAssignment | null => {
-  if (ts.isObjectLiteralExpression(expression)) {
-    const props = transformProps(context, expression.properties);
+): ts.ExportAssignment | null =>
+  withLeadingBlankLinePlaceholder(
+    (() => {
+      // {}
+      if (ts.isObjectLiteralExpression(expression)) {
+        const props = transformProps(context, expression.properties);
 
-    return createExportDefaultObjectLiteralExpression(context.factory, props);
-  }
+        return createExportDefaultObjectLiteralExpression(
+          context.factory,
+          props,
+        );
+      }
 
-  if (ts.isCallExpression(expression) && expression.arguments.length === 1) {
-    const [firstArgument] = expression.arguments;
+      // fn({})
+      if (
+        ts.isCallExpression(expression) &&
+        expression.arguments.length === 1
+      ) {
+        const [firstArgument] = expression.arguments;
 
-    if (ts.isObjectLiteralExpression(firstArgument)) {
-      const props = transformProps(context, firstArgument.properties);
+        if (ts.isObjectLiteralExpression(firstArgument)) {
+          const props = transformProps(context, firstArgument.properties);
 
-      return createExportDefaultObjectLiteralExpression(
-        context.factory,
-        props,
-        expression.expression,
+          return createExportDefaultObjectLiteralExpression(
+            context.factory,
+            props,
+            expression.expression,
+          );
+        }
+      }
+
+      // Anything else
+      return context.factory.createExportAssignment(
+        undefined,
+        undefined,
+        undefined,
+        expression,
       );
-    }
-  }
-
-  return context.factory.createExportAssignment(
-    undefined,
-    undefined,
-    undefined,
-    expression,
+    })(),
   );
-};
 
 /**
  * Mutate `const x = require('')` into `import x from ''`:
@@ -288,7 +317,8 @@ export const transformModuleImportsAndExports = (
 
   const text = ts
     .createPrinter()
-    .printNode(ts.EmitHint.SourceFile, transformedFile, sourceFile);
+    .printNode(ts.EmitHint.SourceFile, transformedFile, sourceFile)
+    .replace(BLANK_LINE_REGEXP, '');
 
   return formatPrettier(text, { parser: 'typescript' });
 };

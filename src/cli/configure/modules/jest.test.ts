@@ -102,6 +102,7 @@ describe('jestModule', () => {
     expect(outputFiles).not.toContain('jest.config.js');
     expect(outputFiles['jest.config.ts']).toMatchInlineSnapshot(`
       "import { Jest } from 'skuba';
+
       export default Jest.mergePreset({
         collectCoverage: true,
         coverageThreshold: {},
