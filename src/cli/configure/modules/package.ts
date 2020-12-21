@@ -57,6 +57,11 @@ export const packageModule = async ({
         outputData.license ??= 'UNLICENSED';
         outputData.scripts ??= {};
 
+        // Workspaces can only be enabled in private projects
+        if (outputData.workspaces && !outputData.private) {
+          outputData.private = true;
+        }
+
         delete outputData.scripts.commit;
         delete outputData.scripts['format:check'];
         delete outputData.scripts['lint:build'];
