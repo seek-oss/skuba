@@ -106,12 +106,29 @@ export const configure = async () => {
       streamStdio: 'yarn',
     });
 
-    log.plain('Installing dependencies...');
-    await exec('yarn', 'install', '--silent');
+    log.newline();
+    try {
+      await exec('yarn', 'install');
+    } catch {
+      log.newline();
+      log.warn(log.bold('✗ Failed to install dependencies. Resume with:'));
+
+      log.newline();
+      log.plain(log.bold('yarn install'));
+      log.plain(log.bold('yarn format'));
+
+      log.newline();
+      process.exit(1);
+    }
   }
 
   if (fixConfiguration || fixDependencies) {
     log.newline();
-    log.ok(`Try running ${log.bold('yarn format')}.`);
+    log.ok(log.bold('✔ All done! Try running:'));
+
+    log.newline();
+    log.plain(log.bold('yarn format'));
   }
+
+  log.newline();
 };

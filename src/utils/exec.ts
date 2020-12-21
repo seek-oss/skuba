@@ -10,6 +10,33 @@ import npmWhich from 'npm-which';
 import { ConcurrentlyErrors, isErrorWithCode } from './error';
 import { log } from './logging';
 
+class YarnSpamFilter extends stream.Transform {
+  silenced = false;
+
+  _transform(
+    chunk: any,
+    _encoding: BufferEncoding,
+    callback: stream.TransformCallback,
+  ) {
+    const str = Buffer.from(chunk).toString();
+
+    // Yarn spews the entire installed dependency tree after this message
+    if (str.startsWith('info Direct dependencies')) {
+      this.silenced = true;
+    }
+
+    if (
+      !this.silenced &&
+      // This isn't very useful given the command generates a lockfile
+      !str.startsWith('info No lockfile found')
+    ) {
+      this.push(chunk);
+    }
+
+    callback();
+  }
+}
+
 class YarnWarningFilter extends stream.Transform {
   _transform(
     chunk: any,
@@ -54,10 +81,11 @@ const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
 
   switch (opts?.streamStdio) {
     case 'yarn':
-      const filter = new YarnWarningFilter();
+      const stderrFilter = new YarnWarningFilter();
+      const stdoutFilter = new YarnSpamFilter();
 
-      subprocess.stderr?.pipe(filter).pipe(process.stderr);
-      subprocess.stdout?.pipe(process.stdout);
+      subprocess.stderr?.pipe(stderrFilter).pipe(process.stderr);
+      subprocess.stdout?.pipe(stdoutFilter).pipe(process.stdout);
 
       break;
 
