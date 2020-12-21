@@ -216,4 +216,25 @@ describe('packageModule', () => {
       version: '0.0.0-semantically-released',
     });
   });
+
+  it('privatises a workspaced manifest', async () => {
+    const inputFiles = {
+      'package.json': JSON.stringify({
+        devDependencies: {},
+        scripts: {},
+        skuba: {},
+        workspaces: {},
+      }),
+    };
+
+    const outputFiles = await executeModule(
+      packageModule,
+      inputFiles,
+      defaultOpts,
+    );
+
+    const outputData = parsePackage(outputFiles['package.json']);
+
+    expect(outputData).toHaveProperty('private', true);
+  });
 });
