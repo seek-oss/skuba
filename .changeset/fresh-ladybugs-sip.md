@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
-Use explicit deregistrationDelay in Gantry
+**template:** Use explicit `deregistrationDelay` in Gantry
