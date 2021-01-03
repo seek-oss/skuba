@@ -49,6 +49,8 @@ deployment:
     path: /smoke
     useExternalDns: true
 
+deregistrationDelay: 10
+
 tags:
   {{range $key, $value := .Values.tags}}
   {{$key}}: '{{$value}}'
