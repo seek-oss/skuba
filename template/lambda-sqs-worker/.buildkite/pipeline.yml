@@ -25,6 +25,11 @@ configs:
       - docker-compose#v3.7.0:
           dependencies: false
           run: app
+    retry:
+      manual:
+        # Only use this if you need to roll back a deployment ASAP.
+        # Always follow up with a proper revert or fix in Git history.
+        permit_on_passed: true
 
   - &dev
     agents:
