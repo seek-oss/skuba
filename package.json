@@ -47,7 +47,7 @@
     "@types/npm-which": "3.0.0",
     "@types/supertest": "2.0.10",
     "express": "4.17.1",
-    "koa": "2.13.0",
+    "koa": "2.13.1",
     "supertest": "6.0.1",
     "type-fest": "0.20.2"
   },
