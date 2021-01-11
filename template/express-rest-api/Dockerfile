@@ -50,7 +50,7 @@ RUN yarn build
 
 ###
 
-FROM node:12-alpine AS runtime
+FROM gcr.io/distroless/nodejs:12 AS runtime
 
 WORKDIR /workdir
 
@@ -64,4 +64,4 @@ ARG PORT=8001
 ENV PORT ${PORT}
 EXPOSE ${PORT}
 
-CMD node lib/listen
+CMD ["lib/listen.js"]
