@@ -1,10 +1,13 @@
+import { internalLint } from './lint';
+
+describe('internalLint', () => {
+  it('passes on skuba itself', () =>
+    expect(internalLint()).resolves.toBeUndefined());
+});
+
 /**
- * This test file only exists to ensure compatibility between our lint command
- * and new syntax features.
+ * Ensure compatibility between our lint command and new syntax features.
  */
-
-import './lint';
-
 describe('TypeScript', () => {
   describe('4.0', () => {
     test('Variadic Tuple Types', () => {
