@@ -44,13 +44,6 @@ configs:
       ENVIRONMENT: prod
 
 steps:
-  - <<: *dev
-    label: ♨️ Warm Dev
-    command: ':'
-    plugins:
-      - *aws-sm
-      - *docker-ecr-cache
-
   - <<: *prod
     label: 🧪 Test & Lint
     commands:
@@ -64,7 +57,6 @@ steps:
       - docker-compose#v3.7.0:
           run: app
 
-  - wait
   - block: 🙋🏻‍♀️ Deploy Dev
     branches: '!master'
 
