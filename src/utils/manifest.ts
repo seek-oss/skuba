@@ -32,8 +32,10 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
   return (skubaManifest = result.packageJson);
 };
 
+export const getConsumerManifest = () => readPkgUp();
+
 export const getEntryPointFromManifest = async () => {
-  const result = await readPkgUp();
+  const result = await getConsumerManifest();
 
   return typeof result !== 'undefined' &&
     hasStringProp(result.packageJson.skuba, 'entryPoint')
@@ -42,7 +44,7 @@ export const getEntryPointFromManifest = async () => {
 };
 
 export const isBabelFromManifest = async () => {
-  const result = await readPkgUp();
+  const result = await getConsumerManifest();
 
   return (
     typeof result !== 'undefined' &&
