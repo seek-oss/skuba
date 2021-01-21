@@ -45,7 +45,7 @@ export const packageModule = async ({
   };
 
   return {
-    ...deleteFiles('.npmignore'),
+    ...deleteFiles('.npmignore', 'package-lock.json'),
 
     'package.json': (inputFile) =>
       withPackage((inputData) => {

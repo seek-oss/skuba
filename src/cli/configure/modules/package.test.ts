@@ -127,6 +127,7 @@ describe('packageModule', () => {
           'test:build': 'tsc --noEmit --incremental false',
         },
       }),
+      'package-lock.json': '{}\n',
     };
 
     const outputFiles = await executeModule(
@@ -136,6 +137,7 @@ describe('packageModule', () => {
     );
 
     expect(outputFiles['.npmignore']).toBeUndefined();
+    expect(outputFiles['package-lock.json']).toBeUndefined();
 
     const outputData = parsePackage(outputFiles['package.json']);
 
