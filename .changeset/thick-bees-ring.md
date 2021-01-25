@@ -2,6 +2,6 @@
 'skuba': patch
 ---
 
-Set `NODE_ENV` to `test` in Jest
+**test:** Set `NODE_ENV=test`
 
-This is something that Jest itself does in its `bin/jest`
+This is something that Jest itself does in its `bin/jest`.
