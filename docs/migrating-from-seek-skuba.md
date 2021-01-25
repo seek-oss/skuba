@@ -16,7 +16,7 @@ We've introduced some new linting rules via ESLint 7 + `typescript-eslint` 3.
 See our [ESLint guide] for some tips, and reach out in [#typescriptification] if you get stuck on anything.
 
 [eslint guide]: ./eslint.md
-[#typescriptification]: https://seekchat.slack.com/channels/typescriptification
+[#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
 
 ## 2. Switch out packages
 

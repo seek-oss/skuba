@@ -105,7 +105,7 @@ smt lint → skuba lint
 **skuba** enforces [ESLint] and bundles a more modern set of linting rules.
 See our [ESLint guide] for some tips, and reach out in [#typescriptification] if you get stuck on anything.
 
-[#typescriptification]: https://seekchat.slack.com/channels/typescriptification
+[#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
 [eslint]: https://eslint.org/
 [eslint guide]: ./eslint.md
 [tslint]: https://palantir.github.io/tslint/
