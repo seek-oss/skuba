@@ -260,7 +260,7 @@ git commit --message 'Publish v4.0.0-beta.2'
 git push --set-upstream origin beta
 ```
 
-[#typescriptification]: https://seekchat.slack.com/channels/typescriptification
+[#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
 [changelog]: https://github.com/seek-oss/skuba/blob/master/CHANGELOG.md
 [changesets]: https://github.com/atlassian/changesets
 [create a pull request]: https://github.com/seek-oss/skuba/compare
