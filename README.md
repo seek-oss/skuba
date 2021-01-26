@@ -187,7 +187,7 @@ This initialises a new directory and Git repository.
 [aws lambda]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#lambda
 [koa]: https://koajs.com/
 [resource api]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#resource-api
-[seek-jobs]: https://github.com/SEEK-Jobs
+[seek-jobs]: https://github.com/orgs/seek-jobs/sso
 [seek-oss]: https://github.com/seek-oss
 [semantic-release]: https://github.com/semantic-release/semantic-release/
 [serverless]: https://serverless.com/

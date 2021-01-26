@@ -6,11 +6,27 @@ This package is intended to be private on [SEEK-Jobs] under the `@seek` npm org.
 To create a public package,
 run `skuba init` and select the `oss-npm-package` template.
 
+Next steps:
+
+1. [ ] Create a new repository in the [SEEK-Jobs] GitHub organisation.
+2. [ ] Follow [Gutenberg] instructions for [installing on your repository].
+3. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
+       see the [Codex] documentation for more information.
+4. [ ] Push local commits to the upstream GitHub branch.
+5. [ ] Delete this checklist 😌.
+
 ## Table of contents
 
 - [API](#api)
+  - [`log`](#log)
 - [Development](#development)
+  - [Prerequisites](#prerequisites)
+  - [Test](#test)
+  - [Lint](#lint)
+  - [Package](#package)
 - [Release](#release)
+  - [Releasing latest](#releasing-latest)
+  - [Releasing other dist-tags](#releasing-other-dist-tags)
 
 ## API
 
@@ -45,20 +61,20 @@ yarn test
 ### Lint
 
 ```shell
-# fix
+# Fix issues
 yarn format
 
-# check
+# Check for issues
 yarn lint
 ```
 
 ### Package
 
 ```shell
-# compile source
+# Compile source
 yarn build
 
-# review bundle
+# Review bundle
 npm pack
 ```
 
@@ -67,8 +83,6 @@ npm pack
 This package is published to the npm registry under the private `@seek` npm org with [Gutenberg], SEEK's central npm publishing pipeline.
 
 It depends on this repo being hosted on [SEEK-Jobs] with appropriate access.
-
-To set up this repo for publishing, follow the instructions in Gutenberg's [installing on your repository] guidance.
 
 ### Releasing latest
 
@@ -93,9 +107,10 @@ Here are some branches that **semantic-release** supports by default:
 
 For more information, see the **semantic-release** docs on [triggering a release].
 
+[codex]: https://codex.ssod.skinfra.xyz/docs
 [distribution tags]: https://docs.npmjs.com/adding-dist-tags-to-packages
 [gutenberg]: https://github.com/SEEK-Jobs/gutenberg
 [installing on your repository]: https://github.com/SEEK-Jobs/gutenberg#installing-on-your-repository
-[seek-jobs]: https://github.com/SEEK-Jobs
+[seek-jobs]: https://github.com/orgs/seek-jobs/sso
 [semantic-release]: https://github.com/semantic-release/semantic-release
 [triggering a release]: https://github.com/semantic-release/semantic-release/#triggering-a-release
