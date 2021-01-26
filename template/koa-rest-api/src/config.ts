@@ -29,7 +29,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
     region: 'ap-southeast-2',
     version: 'local',
 
-    port: Env.nonNegativeInteger('PORT', { default: undefined }),
+    port: Env.nonNegativeInteger('PORT', { default: Number('<%- port %>') }),
   }),
 
   test: () => ({
