@@ -7,6 +7,7 @@ import fs from 'fs-extra';
 import { copyFiles } from '../../utils/copy';
 import { isErrorWithCode } from '../../utils/error';
 import { log } from '../../utils/logging';
+import { getRandomPort } from '../../utils/port';
 import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
@@ -143,12 +144,15 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
   }
 };
 
-const baseToTemplateData = ({ ownerName, repoName }: BaseFields) => {
+const baseToTemplateData = async ({ ownerName, repoName }: BaseFields) => {
   const [orgName, teamName] = ownerName.split('/');
+
+  const port = String(await getRandomPort());
 
   return {
     orgName,
     ownerName,
+    port,
     repoName,
     // Use standalone username in `teamName` contexts
     teamName: teamName ?? orgName,
@@ -159,7 +163,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   const { ownerName, repoName } = await runForm(BASE_PROMPT_PROPS);
   log.plain(chalk.cyan(repoName), 'by', chalk.cyan(ownerName));
 
-  const templateData = baseToTemplateData({ ownerName, repoName });
+  const templateData = await baseToTemplateData({ ownerName, repoName });
 
   const destinationDir = repoName;
 
@@ -258,7 +262,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   const { destinationDir, templateComplete, templateName } = result.value;
 
   const templateData = {
-    ...baseToTemplateData(result.value.templateData),
+    ...(await baseToTemplateData(result.value.templateData)),
     ...result.value.templateData,
   };
 
