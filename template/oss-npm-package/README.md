@@ -6,13 +6,27 @@ This package is intended to be public on [seek-oss].
 To create an internal package,
 run `skuba init` and select the `private-npm-package` template.
 
-Please read [SEEK's Open Source RFC] before proceeding.
+Next steps:
+
+1. [ ] Read [SEEK's Open Source RFC].
+2. [ ] Create a new repository in the [seek-oss] GitHub organisation.
+3. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
+       see the [Codex] documentation for more information.
+4. [ ] Push local commits to the upstream GitHub branch.
+5. [ ] Delete this checklist 😌.
 
 ## Table of contents
 
 - [API](#api)
+  - [`log`](#log)
 - [Development](#development)
+  - [Prerequisites](#prerequisites)
+  - [Test](#test)
+  - [Lint](#lint)
+  - [Package](#package)
 - [Release](#release)
+  - [Releasing latest](#releasing-latest)
+  - [Releasing other dist-tags](#releasing-other-dist-tags)
 
 ## API
 
@@ -47,20 +61,20 @@ yarn test
 ### Lint
 
 ```shell
-# fix
+# Fix issues
 yarn format
 
-# check
+# Check for issues
 yarn lint
 ```
 
 ### Package
 
 ```shell
-# compile source
+# Compile source
 yarn build
 
-# review bundle
+# Review bundle
 npm pack
 ```
 
@@ -107,6 +121,7 @@ Here are some branches that **semantic-release** supports by default:
 
 For more information, see the **semantic-release** docs on [triggering a release].
 
+[codex]: https://codex.ssod.skinfra.xyz/docs
 [distribution tags]: https://docs.npmjs.com/adding-dist-tags-to-packages
 [oss npm package guidance]: https://github.com/SEEK-Jobs/seek-oss-ci/blob/master/NPM_PACKAGES.md#access-to-publish-to-npm
 [release workflow]: .github/workflows/release.yml
