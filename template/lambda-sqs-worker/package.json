@@ -14,6 +14,8 @@
     "chance": "^1.1.7",
     "pino-pretty": "^4.3.0",
     "serverless": "^2.8.0",
+    "serverless-plugin-canary-deployments": "^0.4.8",
+    "serverless-prune-plugin": "^1.4.3",
     "skuba": "*"
   },
   "engines": {
@@ -26,7 +28,9 @@
     "deploy": "yarn build && serverless deploy --force --verbose",
     "format": "skuba format",
     "lint": "skuba lint",
+    "smoke": "serverless invoke --data '{}' --function Worker",
     "start": "ENVIRONMENT=local skuba start",
+    "start:debug": "ENVIRONMENT=local skuba start --inspect-brk",
     "test": "skuba test --coverage",
     "test:watch": "skuba test --watch"
   }

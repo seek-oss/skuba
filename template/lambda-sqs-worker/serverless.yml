@@ -10,6 +10,13 @@ custom:
     prod:
       deploymentBucket: 'TODO: deploymentBucketName'
       isProduction: 'true'
+  prune:
+    automatic: true
+    number: 3
+
+plugins:
+  - serverless-plugin-canary-deployments
+  - serverless-prune-plugin
 
 provider:
   logRetentionInDays: 30
@@ -19,17 +26,27 @@ provider:
   stackName: ${self:service}
   stage: ${env:ENVIRONMENT}
   variableSyntax: "\\${((?!AWS)[ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)]+?)}"
-  versionFunctions: false
+  versionFunctions: true
   deploymentBucket:
     # Use a shared account-level bucket for Lambda bundles and other artefacts.
     # This is easier to manage in terms of access, deployment, and tagging.
     name: ${self:custom.env.deploymentBucket}
   iamRoleStatements:
+    - Action: codedeploy:PutLifecycleEventHookExecutionStatus
+      Effect: Allow
+      Resource: !Join
+        - ''
+        - - !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup
+          - ':*/'
+          - !Ref WorkerLambdaFunctionDeploymentGroup
     - Action:
         - kms:Decrypt
         - kms:GenerateDataKey*
       Effect: Allow
       Resource: !GetAtt EncryptionKey.Arn
+    - Action: lambda:InvokeFunction
+      Effect: Allow
+      Resource: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:functions.Worker.name}
     - Action: sns:Publish
       Effect: Allow
       Resource: !Ref DestinationTopic
@@ -56,13 +73,17 @@ package:
     - lib/**
 
 functions:
-  Proxy:
+  Worker:
     name: ${self:service}
     handler: lib/app.handler
     description: ${self:custom.description}
     memorySize: 128
     reservedConcurrency: 20
     timeout: 30
+    deploymentSettings:
+      type: AllAtOnce
+      alias: Live
+      preTrafficHook: WorkerPreHook
     environment:
       # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
@@ -77,6 +98,16 @@ functions:
       - sqs:
           arn: !GetAtt MessageQueue.Arn
           batchSize: 1
+  WorkerPreHook:
+    name: ${self:functions.Worker.name}-pre-hook
+    handler: lib/hooks.pre
+    # This is generous because a timeout will hang the deployment
+    timeout: 300
+    environment:
+      # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+      FUNCTION_NAME_TO_INVOKE: ${self:functions.Worker.name}
 
 resources:
   # This becomes the Lambda application's description
