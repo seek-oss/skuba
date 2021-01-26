@@ -1,5 +1,117 @@
 # skuba
 
+## 3.12.0
+
+### Minor Changes
+
+- 641accc: **node:** Add command
+
+  `skuba node` lets you run a TypeScript source file, or open a REPL if none is provided:
+
+  - `skuba node src/some-cli-script.ts`
+  - `skuba node`
+
+  This automatically registers a `src` module alias for ease of local development. For example, you can run a prospective `src/someLocalCliScript.ts` without having to register a module alias resolver:
+
+  ```typescript
+  // This `src` module alias just works under `skuba node` and `skuba start`
+  import { rootLogger } from 'src/framework/logging';
+  ```
+
+  ```bash
+  yarn skuba node src/someLocalCliScript
+  ```
+
+  If you use this alias in your production code, your production entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`](https://github.com/seek-oss/skuba-dive#register). For example, your `src/app.ts` may look like:
+
+  ```typescript
+  // This must be imported directly within the `src` directory
+  import 'skuba-dive/register';
+
+  // You can use the `src` module alias after registration
+  import { rootLogger } 'src/framework/logging';
+  ```
+
+- 334f38b: **node, start:** Support function entry points
+
+  You can now specify an entry point that targets an exported function:
+
+  ```bash
+  skuba start --port 12345 src/app.ts#handler
+  ```
+
+  This starts up a local HTTP server that you can POST arguments to:
+
+  ```bash
+  curl --data '["event", {"awsRequestId": "123"}]' --include localhost:12345
+  ```
+
+  You may find this useful to run Lambda function handlers locally.
+
+- e1dab09: **configure, help, init:** Check for newer skuba versions
+
+  skuba will now print an upgrade command if there is a newer version available. You can now use a global installation without worrying that you're setting up new repos using outdated templates.
+
+### Patch Changes
+
+- 30bc4e7: **template/lambda-sqs-worker:** Simplify Buildkite pipeline
+- 65f3e14: **deps:** typescript 4.1.3
+- ceb394f: **template/koa-rest-api:** Type context
+- 8c87be4: **lint:** Detect incomplete templating
+- 5ad44ae: **template:** Use `jest.config.ts`
+- 0774f98: **template/lambda-sqs-worker:** Add smoke test
+
+  This brings back versioned functions along with `serverless-prune-plugin` to control Lambda storage consumption. By default we configure `serverless-plugin-canary-deployments` for an instantaneous switch once the smoke test has passed, but this can be customised as necessary.
+
+- 5ad44ae: **configure:** Add `test:watch` script
+- 5ad44ae: **configure:** Migrate `jest.config.js` to `jest.config.ts`
+- 2d2bf99: **template:** Enable retry of successful deployment steps
+
+  This should be used with caution, but may be necessary if you need to rapidly roll back a broken deployment.
+
+- 2d0dc1a: **template/\*-rest-api:** Supply custom autoscaling policy
+- b7cbee2: **init:** Pick random server port
+- 334f38b: **template/lambda-sqs-worker:** Add `start` script
+- e7254c1: **template/\*-rest-api:** Explicitly register `listen.ts`
+- 141c802: **deps:** Bump caret ranges
+
+  Resolves [SNYK-JS-SEMVERREGEX-1047770](https://app.snyk.io/vuln/SNYK-JS-SEMVERREGEX-1047770).
+
+- 9002d51: **template/koa-rest-api:** Limit request logging to errors
+- 641accc: **start:** Improve support for non-HTTP server entry points
+
+  You can now run arbitrary TypeScript files without them exiting on a `You must export callback or requestListener` error.
+
+- 6074e53: **configure, init:** Improve error messaging in offline scenarios
+- e7254c1: **template/\*-rest-api:** Clarify health checks and smoke tests
+- d5afa4d: **template/lambda-sqs-worker:** Require deployment bucket
+- 7e9a062: **pkg:** Remove ESM from skuba's bundle
+
+  This simplifies our bundle; Node.js and skuba's CLI have always defaulted to CommonJS anyway.
+
+- 641accc: **start:** Support `src` module alias
+- 334f38b: **node, start:** Support `--port` option
+- 8745cb0: **configure:** Remove `package-lock.json`
+- 739ce3a: **test:** Set `NODE_ENV=test`
+
+  This is something that Jest itself does in its `bin/jest`.
+
+- 359a9be: **template:** Bump caret ranges
+- 641accc: **start:** Support source maps
+- d7aca2a: **template/lambda-sqs-worker:** Lock Serverless `lambdaHashingVersion`
+
+  This gets rid of the following warning when deploying:
+
+  ```text
+  Deprecation warning: Starting with next major version, default value of provider.lambdaHashingVersion will be equal to "20201221"
+  More Info: https://www.serverless.com/framework/docs/deprecations/#LAMBDA_HASHING_VERSION_V2
+  ```
+
+- 359a9be: **deps:** Bump minor and patch versions
+- c3dab88: **configure:** Ensure workspaced `package.json` is private
+- ece7dd4: **template/\*-rest-api:** Use Distroless runtime images
+- 88705b4: **template:** Uplift READMEs
+
 ## 3.11.0
 
 ### Minor Changes
