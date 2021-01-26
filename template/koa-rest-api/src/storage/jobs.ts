@@ -19,3 +19,10 @@ export const readJobs = (): Promise<Job[]> => {
 
   return Promise.resolve(jobs);
 };
+
+/**
+ * Tests that we have access to read from and write to our storage.
+ */
+export const smokeTestJobStorage = async (): Promise<void> => {
+  await Promise.resolve();
+};

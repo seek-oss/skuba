@@ -32,7 +32,6 @@ authentication:
   ignoreRoutes:
     - /health
     - /smoke
-    - /jobs{/**}
 
 autoScaling:
   maxCount: {{values "maxInstanceCount"}}

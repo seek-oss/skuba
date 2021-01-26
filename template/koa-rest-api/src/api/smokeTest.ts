@@ -1,3 +1,11 @@
+import { smokeTestJobStorage } from 'src/storage/jobs';
 import { Middleware } from 'src/types/koa';
 
-export const smokeTestHandler: Middleware = (ctx) => (ctx.body = '');
+/**
+ * Tests connectivity to ensure appropriate access and network configuration.
+ */
+export const smokeTestHandler: Middleware = async (ctx) => {
+  await Promise.all([smokeTestJobStorage]);
+
+  ctx.body = '';
+};

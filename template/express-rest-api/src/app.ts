@@ -1,22 +1,15 @@
-import 'skuba-dive/register';
+import './register';
 
-import express, { Application, Request, Response } from 'express';
+import express from 'express';
 
 import { config } from './config';
-import { rootLogger } from './framework/logging';
+import { healthCheckHandler } from './api/healthCheck';
+import { smokeTestHandler } from './api/smokeTest';
 
-const app: Application = express();
+const app = express()
+  .get('/health', healthCheckHandler)
+  .get('/smoke', smokeTestHandler);
 
-app.get('/', (_req: Request, res: Response) => {
-  rootLogger.debug('greeting...');
+Object.assign(app, { port: config.port });
 
-  res.send('Hello World!');
-});
-
-app.get('/health', (_req: Request, res: Response) => {
-  res.send('');
-});
-
-export default Object.assign(app, {
-  port: config.port,
-});
+export default app;
