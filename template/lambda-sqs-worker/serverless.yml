@@ -17,6 +17,7 @@ plugins:
   - serverless-prune-plugin
 
 provider:
+  lambdaHashingVersion: 20201221
   logRetentionInDays: 30
   name: aws
   region: ap-southeast-2
