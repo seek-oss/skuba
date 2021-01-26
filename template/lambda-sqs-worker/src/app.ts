@@ -5,11 +5,24 @@ import { SQSEvent } from 'aws-lambda';
 import { createHandler } from 'src/framework/handler';
 import { metricsClient } from 'src/framework/metrics';
 import { validateJson } from 'src/framework/validation';
-import { scoreJobPublishedEvent } from 'src/services/jobScorer';
+import { scoreJobPublishedEvent, scoringService } from 'src/services/jobScorer';
 import { sendPipelineEvent } from 'src/services/pipelineEventSender';
 import { filterJobPublishedEvent } from 'src/types/pipelineEvents';
 
+/**
+ * Tests connectivity to ensure appropriate access and network configuration.
+ */
+const smokeTest = async () => {
+  await Promise.all([scoringService.smokeTest(), sendPipelineEvent({}, true)]);
+};
+
 export const handler = createHandler<SQSEvent>(async (event, { logger }) => {
+  // Treat an empty object as our smoke test event.
+  if (!Object.keys(event).length) {
+    logger.info('received smoke test request');
+    return smokeTest();
+  }
+
   const count = event.Records.length;
 
   if (count !== 1) {

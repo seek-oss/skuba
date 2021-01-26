@@ -12,19 +12,24 @@ import { JobPublishedEvent, JobScoredEvent } from 'src/types/pipelineEvents';
 /* istanbul ignore next: simulation of an external service */
 export const scoringService = {
   request: (details: string): Promise<unknown> => {
-    // networking woes
+    // Networking woes
     if (Math.random() < 0.05) {
       const err = Error('could not reach scoring service');
 
       return Promise.reject(err);
     }
 
-    // unexpected behaviour on certain inputs
+    // Unexpected behaviour on certain inputs
     if (details.length % 100 === 0) {
       return Promise.resolve(null);
     }
 
     return Promise.resolve(Math.random());
+  },
+
+  smokeTest: async (): Promise<void> => {
+    // A connectivity test
+    await Promise.resolve();
   },
 };
 
