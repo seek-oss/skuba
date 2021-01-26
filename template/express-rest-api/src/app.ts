@@ -10,6 +10,6 @@ const app = express()
   .get('/health', healthCheckHandler)
   .get('/smoke', smokeTestHandler);
 
-Object.assign(app, { port: config.port });
-
-export default app;
+export default Object.assign(app, {
+  port: config.port,
+});
