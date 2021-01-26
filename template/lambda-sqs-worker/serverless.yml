@@ -5,8 +5,10 @@ custom:
   env: ${self:custom.envs.${env:ENVIRONMENT}}
   envs:
     dev:
+      deploymentBucket: 'TODO: deploymentBucketName'
       isProduction: 'false'
     prod:
+      deploymentBucket: 'TODO: deploymentBucketName'
       isProduction: 'true'
   prune:
     automatic: true
@@ -26,8 +28,10 @@ provider:
   stage: ${env:ENVIRONMENT}
   variableSyntax: "\\${((?!AWS)[ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)]+?)}"
   versionFunctions: true
-  # deploymentBucket:
-  #   name: 'TODO: deploymentBucketName'
+  deploymentBucket:
+    # Use a shared account-level bucket for Lambda bundles and other artefacts.
+    # This is easier to manage in terms of access, deployment, and tagging.
+    name: ${self:custom.env.deploymentBucket}
   iamRoleStatements:
     - Action: codedeploy:PutLifecycleEventHookExecutionStatus
       Effect: Allow
