@@ -1,9 +1,11 @@
-import 'skuba-dive/register';
+import './register';
 
-import { router } from 'src/api';
-import { config } from 'src/config';
-import { createApp } from 'src/framework/server';
+import { router } from './api';
+import { config } from './config';
+import { createApp } from './framework/server';
 
 const app = createApp(router.allowedMethods(), router.routes());
 
-export default Object.assign(app, { port: config.port });
+export default Object.assign(app, {
+  port: config.port,
+});

@@ -1,4 +1,4 @@
-import { Middleware } from 'src/types/koa';
+import { Handler } from 'express';
 
 /**
  * Signifies that the API is available to serve requests.
@@ -6,8 +6,6 @@ import { Middleware } from 'src/types/koa';
  * The deployment environment calls this endpoint to see if the container is
  * unhealthy and needs to be recycled.
  */
-export const healthCheckHandler: Middleware = (ctx) => {
-  ctx.state.skipRequestLogging = true;
-
-  ctx.body = '';
+export const healthCheckHandler: Handler = (_req, res) => {
+  res.send('');
 };
