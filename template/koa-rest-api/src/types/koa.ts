@@ -1,9 +1,8 @@
-import Koa from 'koa';
+import type Koa from 'koa';
+import type { RequestLogging } from 'seek-koala';
 
 export type Context = Koa.ParameterizedContext<State>;
 
 export type Middleware = Koa.Middleware<State>;
 
-export interface State {
-  skipRequestLogging?: boolean;
-}
+export type State = RequestLogging.State;
