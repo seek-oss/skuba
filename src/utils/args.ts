@@ -74,7 +74,7 @@ export const parseRunArgs = (argv: string[]): RunArgs => {
   return state;
 };
 
-const isDigits = (arg: string) => /^\d+$/.test(arg);
+const isDigits = (arg: unknown) => typeof arg === 'string' && /^\d+$/.test(arg);
 
 const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
   const [arg1, arg2] = args;
@@ -90,22 +90,20 @@ const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
 
   // Node.js inspector options that are optionally followed by a numeric port.
   if (['--inspect', '--inspect-brk'].includes(arg1)) {
-    // Always pushed as these may be specified as plain flags.
-    state.node.push(arg1);
-
-    if (!arg2) {
-      return [];
-    }
-
     if (isDigits(arg2)) {
-      state.node.push(arg2);
+      state.node.push(`${arg1}=${arg2}`);
       return args.slice(2);
     }
 
-    // Some other string that doesn't relate to the Node.js inspector option.
-    // This is presumably the entry point script to run.
-    state.entryPoint = arg2;
-    state.script.push(...args.slice(2));
+    state.node.push(arg1);
+
+    if (arg2) {
+      // Some other string that doesn't relate to the Node.js inspector option.
+      // This is presumably the entry point script to run.
+      state.entryPoint = arg2;
+      state.script.push(...args.slice(2));
+    }
+
     return [];
   }
 
@@ -115,11 +113,6 @@ const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
   }
 
   if (arg1 === '--port') {
-    if (!arg2) {
-      // Invalid port argument; eat it.
-      return args.slice(1);
-    }
-
     if (isDigits(arg2)) {
       state.port = Number(arg2);
       return args.slice(2);
