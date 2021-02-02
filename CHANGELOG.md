@@ -1,5 +1,33 @@
 # skuba
 
+## 3.12.1
+
+### Patch Changes
+
+- 8fce1be: **node, start:** Propagate `process.argv`
+
+  Passing command-line arguments into a script now works as expected:
+
+  ```bash
+  yarn skuba node src/script.ts arg1 arg2 arg3
+  ```
+
+- 8fce1be: **node:** Support Node.js inspector options when running a script
+
+  Passing an [inspector option](https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options) for script debugging now works as expected:
+
+  ```bash
+  yarn skuba node --inspect-brk src/script.ts
+  ```
+
+- 45ca22d: **build-package, lint:** Run serially on Buildkite
+
+  These commands now run their underlying processes serially when the `BUILDKITE` environment variable is set. This reduces the chance of resource exhaustion on smaller instance sizes but slows down builds.
+
+- 56fe586: **template/koa-rest-api:** Tidy custom Koa types
+- a3e1821: **test:** Exclude Jest `config.ts` files from coverage
+- 56fe586: **template:** seek-jobs/gantry v1.2.11
+
 ## 3.12.0
 
 ### Minor Changes
