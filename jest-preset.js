@@ -32,6 +32,7 @@ module.exports = {
     '!<rootDir>/dist*/**',
     '!<rootDir>/lib*/**',
     '!<rootDir>/tmp*/**',
+    '!<rootDir>/jest.*.ts',
   ],
   coverageDirectory: 'coverage',
   moduleNameMapper: {
