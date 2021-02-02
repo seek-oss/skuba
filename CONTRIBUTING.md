@@ -215,7 +215,7 @@ This makes it easy to eyeball which part of **skuba** a change relates to.
 
 The Changesets CLI will generate a Markdown file under [.changeset](/.changeset),
 which you should include in your pull request.
-It doesn't need to part of the same commit as the rest of your changes.
+It doesn't need to be part of the same commit as the rest of your changes.
 Feel free to manually edit this file to include more details about your change.
 
 ### Publishing a release
