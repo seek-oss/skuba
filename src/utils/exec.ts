@@ -122,6 +122,10 @@ export const execConcurrently = async (commands: ExecConcurrentlyCommand[]) => {
         name: name.padEnd(maxNameLength),
         prefixColor,
       })),
+      {
+        // Run serially on Buildkite, where we often use puny agents.
+        maxProcesses: process.env.BUILDKITE ? 1 : 0,
+      },
     );
   } catch (err: unknown) {
     const result = ConcurrentlyErrors.validate(err);

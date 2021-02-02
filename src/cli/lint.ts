@@ -14,14 +14,14 @@ const externalLint = () =>
       prefixColor: 'magenta',
     },
     {
-      command: 'prettier --check .',
-      name: 'Prettier',
-      prefixColor: 'cyan',
-    },
-    {
       command: 'tsc --noEmit',
       name: 'tsc',
       prefixColor: 'blue',
+    },
+    {
+      command: 'prettier --check .',
+      name: 'Prettier',
+      prefixColor: 'cyan',
     },
   ]);
 
