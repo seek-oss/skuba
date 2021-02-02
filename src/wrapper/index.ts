@@ -15,14 +15,17 @@ import { log } from '../utils/logging';
 
 import { main } from './main';
 
-const args = process.argv.slice(2);
+const ENTRY_POINT_VAR = '__SKUBA_ENTRY_POINT';
+const PORT_VAR = '__SKUBA_PORT';
 
-if (args.length < 2) {
-  throw new Error(
-    `Missing arguments: ${log.bold('entry-point')} ${log.bold('port')}`,
-  );
+const rawEntryPoint = process.env[ENTRY_POINT_VAR];
+if (!rawEntryPoint) {
+  throw new Error(`Missing environment variable: ${log.bold(ENTRY_POINT_VAR)}`);
 }
 
-const [rawEntryPoint, rawPort] = args;
+const rawPort = process.env[PORT_VAR];
+if (!rawPort) {
+  throw new Error(`Missing environment variable: ${log.bold(PORT_VAR)}`);
+}
 
 main(rawEntryPoint, rawPort).catch(handleCliError);

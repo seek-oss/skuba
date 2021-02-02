@@ -1,6 +1,6 @@
-import { parseArgs, unsafeMapYargs } from './args';
+import { parseProcessArgs, parseRunArgs } from './args';
 
-describe('parseArgs', () => {
+describe('parseProcessArgs', () => {
   it('parses a macOS command with args', () => {
     const argv = [
       '/usr/local/bin/node',
@@ -9,7 +9,7 @@ describe('parseArgs', () => {
       '--xyz',
     ];
 
-    expect(parseArgs(argv)).toStrictEqual({
+    expect(parseProcessArgs(argv)).toStrictEqual({
       commandName: 'start',
       args: ['--xyz'],
     });
@@ -22,7 +22,7 @@ describe('parseArgs', () => {
       'start',
     ];
 
-    expect(parseArgs(argv)).toStrictEqual({
+    expect(parseProcessArgs(argv)).toStrictEqual({
       commandName: 'start',
       args: [],
     });
@@ -36,7 +36,7 @@ describe('parseArgs', () => {
       '--xyz',
     ];
 
-    expect(parseArgs(argv)).toStrictEqual({
+    expect(parseProcessArgs(argv)).toStrictEqual({
       commandName: 'start',
       args: ['--xyz'],
     });
@@ -49,25 +49,49 @@ describe('parseArgs', () => {
       'start',
     ];
 
-    expect(parseArgs(argv)).toStrictEqual({
+    expect(parseProcessArgs(argv)).toStrictEqual({
       commandName: 'start',
       args: [],
     });
   });
 });
 
-describe('unsafeMapYargs', () => {
-  it('maps an assortment of yargs', () =>
-    expect(
-      unsafeMapYargs({
-        a: 1,
-        b: '2',
-        c: true,
-        d: [3, '4'],
-        e: [],
-        f: false,
-        g: undefined,
-        h: null,
-      }),
-    ).toEqual(['--a=1', '--b=2', '--c', '--d=3']));
+describe('parseRunArgs', () => {
+  interface TestCase {
+    input: string;
+
+    entryPoint: string | undefined;
+    port: number | undefined;
+    node: string[];
+    script: string[];
+  }
+
+  test.each`
+    input                                                | entryPoint     | port         | node                      | script
+    ${''}                                                | ${undefined}   | ${undefined} | ${[]}                     | ${[]}
+    ${'--inspect'}                                       | ${undefined}   | ${undefined} | ${['--inspect']}          | ${[]}
+    ${'--inspect=1234'}                                  | ${undefined}   | ${undefined} | ${['--inspect=1234']}     | ${[]}
+    ${'--inspect 1234'}                                  | ${undefined}   | ${undefined} | ${['--inspect=1234']}     | ${[]}
+    ${'--inspect 1234 listen.ts'}                        | ${'listen.ts'} | ${undefined} | ${['--inspect=1234']}     | ${[]}
+    ${'--inspect 1234 listen.ts --inspect 1234'}         | ${'listen.ts'} | ${undefined} | ${['--inspect=1234']}     | ${['--inspect', '1234']}
+    ${'--inspect listen.ts'}                             | ${'listen.ts'} | ${undefined} | ${['--inspect']}          | ${[]}
+    ${'--inspect-brk'}                                   | ${undefined}   | ${undefined} | ${['--inspect-brk']}      | ${[]}
+    ${'--inspect-brk=1234'}                              | ${undefined}   | ${undefined} | ${['--inspect-brk=1234']} | ${[]}
+    ${'--inspect-brk 1234'}                              | ${undefined}   | ${undefined} | ${['--inspect-brk=1234']} | ${[]}
+    ${'--inspect-brk 1234 listen.ts'}                    | ${'listen.ts'} | ${undefined} | ${['--inspect-brk=1234']} | ${[]}
+    ${'--inspect-brk 1234 listen.ts --inspect-brk 1234'} | ${'listen.ts'} | ${undefined} | ${['--inspect-brk=1234']} | ${['--inspect-brk', '1234']}
+    ${'--inspect-brk listen.ts'}                         | ${'listen.ts'} | ${undefined} | ${['--inspect-brk']}      | ${[]}
+    ${'--port'}                                          | ${undefined}   | ${undefined} | ${[]}                     | ${[]}
+    ${'--port=1234'}                                     | ${undefined}   | ${1234}      | ${[]}                     | ${[]}
+    ${'--port 1234'}                                     | ${undefined}   | ${1234}      | ${[]}                     | ${[]}
+    ${'--port 1234 listen.ts'}                           | ${'listen.ts'} | ${1234}      | ${[]}                     | ${[]}
+    ${'--port 1234 listen.ts --port 5678'}               | ${'listen.ts'} | ${1234}      | ${[]}                     | ${['--port', '5678']}
+    ${'--port listen.ts'}                                | ${'listen.ts'} | ${undefined} | ${[]}                     | ${[]}
+    ${'listen.ts'}                                       | ${'listen.ts'} | ${undefined} | ${[]}                     | ${[]}
+    ${'listen.ts --inspect'}                             | ${'listen.ts'} | ${undefined} | ${[]}                     | ${['--inspect']}
+    ${'listen.ts --inspect-brk'}                         | ${'listen.ts'} | ${undefined} | ${[]}                     | ${['--inspect-brk']}
+    ${'listen.ts --port 1234'}                           | ${'listen.ts'} | ${undefined} | ${[]}                     | ${['--port', '1234']}
+  `('$input', ({ input, ...expected }: TestCase) =>
+    expect(parseRunArgs(input.split(' '))).toEqual(expected),
+  );
 });
