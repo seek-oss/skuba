@@ -15,7 +15,7 @@ import { COMMAND_ALIASES } from './command';
  * ['/bin/node', 'node_modules/.bin/skuba', 'test', '--foo', '--bar']
  * ```
  */
-export const parseArgs = (args = process.argv) => {
+export const parseProcessArgs = (args = process.argv) => {
   const skubaIdx = args.findIndex((chunk) => /skuba(\.[jt]s)?$/.test(chunk));
 
   assert(skubaIdx >= 0, 'Cannot parse args for `skuba`');
@@ -34,19 +34,102 @@ export const parseArgs = (args = process.argv) => {
   return payload;
 };
 
-/**
- * Map yargs-parsed arguments to be passed into another command.
- *
- * This isn't escaped.
- */
-export const unsafeMapYargs = (args: Record<string, unknown>): string[] =>
-  Object.entries(args).flatMap(([name, value]) => {
-    const option = `--${name}`;
-    const actualValue = Array.isArray(value) ? (value[0] as unknown) : value;
+interface RunArgs {
+  /** The path to the entry point script. */
+  entryPoint?: string;
 
-    if (typeof actualValue === 'number' || typeof actualValue === 'string') {
-      return [`${option}=${actualValue}`];
+  /** The port to start an HTTP server on. */
+  port?: number;
+
+  /** Arguments passed through to the Node.js executable. */
+  node: string[];
+
+  /** Arguments passed through to the entry point script. */
+  script: string[];
+}
+
+/**
+ * Make a best effort to parse "run" args.
+ *
+ * These are arguments that would be passed to `skuba node` or `skuba start`.
+ * Parsing is handrolled because we support some weird and wonderful behaviour:
+ *
+ * - The `--port` option may be intended for skuba itself
+ * - The `--inspect` options may be intended for the Node.js inspector
+ * - The entry point may be omitted in favour of `package.json` inference
+ * - Other args may be intended for propagation to the entry point
+ */
+export const parseRunArgs = (argv: string[]): RunArgs => {
+  const state: RunArgs = {
+    node: [],
+    script: [],
+  };
+
+  let args = argv.filter((element) => element.length);
+
+  while (args.length) {
+    args = parseRunArgsIteration(state, args);
+  }
+
+  return state;
+};
+
+const isDigits = (arg: string) => /^\d+$/.test(arg);
+
+const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
+  const [arg1, arg2] = args;
+
+  if (!arg1) {
+    return [];
+  }
+
+  if (/^--inspect(-brk)?=\d+$/.test(arg1)) {
+    state.node.push(arg1);
+    return args.slice(1);
+  }
+
+  // Node.js inspector options that are optionally followed by a numeric port.
+  if (['--inspect', '--inspect-brk'].includes(arg1)) {
+    // Always pushed as these may be specified as plain flags.
+    state.node.push(arg1);
+
+    if (!arg2) {
+      return [];
     }
 
-    return actualValue ? [option] : [];
-  });
+    if (isDigits(arg2)) {
+      state.node.push(arg2);
+      return args.slice(2);
+    }
+
+    // Some other string that doesn't relate to the Node.js inspector option.
+    // This is presumably the entry point script to run.
+    state.entryPoint = arg2;
+    state.script.push(...args.slice(2));
+    return [];
+  }
+
+  if (/^--port=\d+$/.test(arg1)) {
+    state.port = Number(arg1.slice(7));
+    return args.slice(1);
+  }
+
+  if (arg1 === '--port') {
+    if (!arg2) {
+      // Invalid port argument; eat it.
+      return args.slice(1);
+    }
+
+    if (isDigits(arg2)) {
+      state.port = Number(arg2);
+      return args.slice(2);
+    }
+
+    // Invalid port argument; eat it.
+    return args.slice(1);
+  }
+
+  state.entryPoint = arg1;
+  state.script.push(...args.slice(1));
+  return [];
+};

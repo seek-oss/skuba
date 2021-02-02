@@ -1,35 +1,14 @@
 import path from 'path';
 
 import getPort from 'get-port';
-import parse from 'yargs-parser';
 
-import { unsafeMapYargs } from '../utils/args';
+import { parseRunArgs } from '../utils/args';
 import { createExec } from '../utils/exec';
 import { isBabelFromManifest } from '../utils/manifest';
 import { isIpPort } from '../utils/validation';
 
-const parseArgs = () => {
-  const {
-    _: [entryPointArg],
-    ...yargs
-  } = parse(process.argv.slice(2));
-
-  const entryPoint = typeof entryPointArg === 'string' ? entryPointArg : null;
-
-  const inspect = unsafeMapYargs({
-    inspect: yargs.inspect as unknown,
-    'inspect-brk': yargs['inspect-brk'] as unknown,
-  });
-
-  return {
-    entryPoint,
-    inspect,
-    port: Number(yargs.port) || undefined,
-  };
-};
-
 export const node = async () => {
-  const args = parseArgs();
+  const args = parseRunArgs(process.argv.slice(2));
 
   const [availablePort, isBabel] = await Promise.all([
     getPort(),
@@ -37,39 +16,49 @@ export const node = async () => {
   ]);
 
   const exec = createExec({
-    env: isBabel ? undefined : { __SKUBA_REGISTER_MODULE_ALIASES: '1' },
+    env: {
+      __SKUBA_ENTRY_POINT: args.entryPoint,
+      __SKUBA_PORT: String(isIpPort(args.port) ? args.port : availablePort),
+      __SKUBA_REGISTER_MODULE_ALIASES: isBabel ? '1' : undefined,
+    },
   });
 
   if (isBabel) {
     return exec(
       'babel-node',
-      ...args.inspect,
+      ...args.node,
       '--extensions',
       ['.js', '.json', '.ts'].join(','),
       '--require',
       path.posix.join('skuba', 'lib', 'register'),
-      ...(args.entryPoint === null
-        ? []
-        : [
-            path.join(__dirname, '..', 'wrapper.js'),
-            args.entryPoint,
-            String(isIpPort(args.port) ? args.port : availablePort),
-          ]),
+      ...(args.entryPoint ? [path.join(__dirname, '..', 'wrapper.js')] : []),
+      ...args.script,
     );
   }
 
+  if (args.entryPoint) {
+    // Run a script with plain `node` to support inspector options.
+    // https://github.com/TypeStrong/ts-node#programmatic
+    return exec(
+      'node',
+      ...args.node,
+      '--require',
+      path.posix.join('skuba', 'lib', 'register'),
+      '--require',
+      path.posix.join('ts-node', 'register', 'transpile-only'),
+      ...[path.join(__dirname, '..', 'wrapper')],
+      ...args.script,
+    );
+  }
+
+  // REPL with `ts-node` to support import statements.
   return exec(
     'ts-node',
-    ...args.inspect,
+    ...args.node,
     '--require',
     path.posix.join('skuba', 'lib', 'register'),
     '--transpile-only',
-    ...(args.entryPoint === null
-      ? []
-      : [
-          path.join(__dirname, '..', 'wrapper'),
-          args.entryPoint,
-          String(isIpPort(args.port) ? args.port : availablePort),
-        ]),
+    ...(args.entryPoint ? [path.join(__dirname, '..', 'wrapper')] : []),
+    ...args.script,
   );
 };
