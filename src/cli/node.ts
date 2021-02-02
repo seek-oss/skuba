@@ -46,7 +46,7 @@ export const node = async () => {
       path.posix.join('skuba', 'lib', 'register'),
       '--require',
       path.posix.join('ts-node', 'register', 'transpile-only'),
-      ...[path.join(__dirname, '..', 'wrapper')],
+      path.join(__dirname, '..', 'wrapper'),
       ...args.script,
     );
   }
@@ -58,7 +58,6 @@ export const node = async () => {
     '--require',
     path.posix.join('skuba', 'lib', 'register'),
     '--transpile-only',
-    ...(args.entryPoint ? [path.join(__dirname, '..', 'wrapper')] : []),
     ...args.script,
   );
 };
