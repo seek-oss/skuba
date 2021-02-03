@@ -1,5 +1,11 @@
 # skuba
 
+## 3.12.2
+
+### Patch Changes
+
+- 0b2c1e0: **node:** Fix `src` module alias registration
+
 ## 3.12.1
 
 ### Patch Changes
