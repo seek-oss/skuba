@@ -19,7 +19,7 @@ export const node = async () => {
     env: {
       __SKUBA_ENTRY_POINT: args.entryPoint,
       __SKUBA_PORT: String(isIpPort(args.port) ? args.port : availablePort),
-      __SKUBA_REGISTER_MODULE_ALIASES: isBabel ? '1' : undefined,
+      __SKUBA_REGISTER_MODULE_ALIASES: isBabel ? undefined : '1',
     },
   });
 
