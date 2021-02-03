@@ -30,7 +30,7 @@ steps:
       - yarn lint
     plugins:
       - *aws-sm
-      - ecr#v2.2.0:
+      - ecr#v2.3.0:
           login: true
       - docker-compose#v3.7.0:
           run: app
