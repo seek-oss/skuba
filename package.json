@@ -5,7 +5,7 @@
     "skuba": "lib/skuba.js"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=12"
   },
   "version": "3.12.2",
   "main": "lib/index.js",
