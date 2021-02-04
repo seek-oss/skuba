@@ -1,5 +1,5 @@
 # Docker image history includes ARG values, so never target this stage directly
-FROM node:12-alpine AS unsafe-deps
+FROM node:14-alpine AS unsafe-deps
 
 WORKDIR /workdir
 
@@ -26,7 +26,7 @@ RUN \
 
 ###
 
-FROM node:12-alpine AS deps
+FROM node:14-alpine AS deps
 
 WORKDIR /workdir
 
@@ -34,7 +34,7 @@ COPY --from=unsafe-deps /workdir .
 
 ###
 
-FROM node:12-alpine AS dev-deps
+FROM node:14-alpine AS dev-deps
 
 WORKDIR /workdir
 
@@ -50,7 +50,7 @@ RUN yarn build
 
 ###
 
-FROM gcr.io/distroless/nodejs:12 AS runtime
+FROM gcr.io/distroless/nodejs:14 AS runtime
 
 WORKDIR /workdir
 
