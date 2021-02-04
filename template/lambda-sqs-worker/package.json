@@ -19,7 +19,7 @@
     "skuba": "*"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "license": "UNLICENSED",
   "private": true,

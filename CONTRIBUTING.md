@@ -53,7 +53,7 @@ If you're on Windows, we recommend the [Windows Subsystem for Linux].
 
 First, some JavaScript tooling:
 
-- Node.js 12+
+- Node.js 14+
 - Yarn 1.x
 
 Next, install npm dependencies:

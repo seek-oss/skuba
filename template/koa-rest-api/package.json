@@ -27,7 +27,7 @@
     "supertest": "^6.0.1"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "license": "UNLICENSED",
   "private": true,
