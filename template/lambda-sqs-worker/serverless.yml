@@ -26,7 +26,6 @@ provider:
   runtime: nodejs14.x
   stackName: ${self:service}
   stage: ${env:ENVIRONMENT}
-  variableSyntax: "\\${((?!AWS)[ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)]+?)}"
   versionFunctions: true
   deploymentBucket:
     # Use a shared account-level bucket for Lambda bundles and other artefacts.
@@ -35,11 +34,7 @@ provider:
   iamRoleStatements:
     - Action: codedeploy:PutLifecycleEventHookExecutionStatus
       Effect: Allow
-      Resource: !Join
-        - ''
-        - - !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup
-          - ':*/'
-          - !Ref WorkerLambdaFunctionDeploymentGroup
+      Resource: !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:*/${WorkerLambdaFunctionDeploymentGroup}
     - Action:
         - kms:Decrypt
         - kms:GenerateDataKey*
