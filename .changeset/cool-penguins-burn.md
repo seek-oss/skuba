@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
 **template/lambda-sqs-worker:** serverless-plugin-canary-deployments ^0.5.0
