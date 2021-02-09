@@ -32,9 +32,6 @@ provider:
     # This is easier to manage in terms of access, deployment, and tagging.
     name: ${self:custom.env.deploymentBucket}
   iamRoleStatements:
-    - Action: codedeploy:PutLifecycleEventHookExecutionStatus
-      Effect: Allow
-      Resource: !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:*/${WorkerLambdaFunctionDeploymentGroup}
     - Action:
         - kms:Decrypt
         - kms:GenerateDataKey*
