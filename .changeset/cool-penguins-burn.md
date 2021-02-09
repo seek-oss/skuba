@@ -10,3 +10,4 @@ The plugin now patches in CodeDeploy permissions to your `iamRoleStatements`, so
 - - Action: codedeploy:PutLifecycleEventHookExecutionStatus
 -   Effect: Allow
 -   Resource: !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:*/${WorkerLambdaFunctionDeploymentGroup}
+```
