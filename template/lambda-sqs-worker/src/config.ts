@@ -44,7 +44,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   prod: () => ({
     logLevel: 'info',
     name: Env.string('SERVICE'),
-    region: Env.string('REGION'),
+    region: Env.string('AWS_REGION'),
     version: Env.string('VERSION'),
 
     destinationSnsTopicArn: Env.string('DESTINATION_SNS_TOPIC_ARN'),

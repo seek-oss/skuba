@@ -82,7 +82,6 @@ functions:
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
       ENVIRONMENT: ${env:ENVIRONMENT}
-      REGION: ${self:provider.region}
       SERVICE: ${self:service}
       VERSION: ${env:VERSION, 'local'}
 
