@@ -31,21 +31,23 @@ provider:
     # Use a shared account-level bucket for Lambda bundles and other artefacts.
     # This is easier to manage in terms of access, deployment, and tagging.
     name: ${self:custom.env.deploymentBucket}
-  iamRoleStatements:
-    - Action:
-        - kms:Decrypt
-        - kms:GenerateDataKey*
-      Effect: Allow
-      Resource: !GetAtt EncryptionKey.Arn
-    - Action: lambda:InvokeFunction
-      Effect: Allow
-      Resource: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:functions.Worker.name}
-    - Action: sns:Publish
-      Effect: Allow
-      Resource: !Ref DestinationTopic
-    - Action: sqs:SendMessage*
-      Effect: Allow
-      Resource: !GetAtt DeadLetterQueue.Arn
+  iam:
+    role:
+      statements:
+        - Action:
+            - kms:Decrypt
+            - kms:GenerateDataKey*
+          Effect: Allow
+          Resource: !GetAtt EncryptionKey.Arn
+        - Action: lambda:InvokeFunction
+          Effect: Allow
+          Resource: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:functions.Worker.name}
+        - Action: sns:Publish
+          Effect: Allow
+          Resource: !Ref DestinationTopic
+        - Action: sqs:SendMessage*
+          Effect: Allow
+          Resource: !GetAtt DeadLetterQueue.Arn
   stackTags:
     # TODO: add data classification tags
     # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers
