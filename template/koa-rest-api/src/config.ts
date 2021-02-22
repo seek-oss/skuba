@@ -5,7 +5,6 @@ interface Config {
 
   logLevel: string;
   name: string;
-  region: string;
   version: string;
 
   metricsServer?: string;
@@ -26,7 +25,6 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   local: () => ({
     logLevel: 'debug',
     name: '<%- serviceName %>',
-    region: 'ap-southeast-2',
     version: 'local',
 
     port: Env.nonNegativeInteger('PORT', { default: Number('<%- port %>') }),
@@ -48,7 +46,6 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   [prod]: () => ({
     logLevel: 'info',
     name: Env.string('SERVICE'),
-    region: Env.string('REGION'),
     version: Env.string('VERSION'),
 
     metricsServer: 'localhost',
