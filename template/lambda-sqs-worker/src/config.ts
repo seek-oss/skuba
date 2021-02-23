@@ -5,7 +5,6 @@ interface Config {
 
   logLevel: string;
   name: string;
-  region: string;
   version: string;
 
   destinationSnsTopicArn: string;
@@ -22,7 +21,6 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   local: () => ({
     logLevel: 'debug',
     name: '<%- serviceName %>',
-    region: 'ap-southeast-2',
     version: 'local',
 
     destinationSnsTopicArn: 'arn:aws:sns:us-east-2:123456789012:destination',
@@ -44,7 +42,6 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   prod: () => ({
     logLevel: 'info',
     name: Env.string('SERVICE'),
-    region: Env.string('AWS_REGION'),
     version: Env.string('VERSION'),
 
     destinationSnsTopicArn: Env.string('DESTINATION_SNS_TOPIC_ARN'),

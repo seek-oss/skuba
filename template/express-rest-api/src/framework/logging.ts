@@ -5,7 +5,6 @@ import { config } from 'src/config';
 export const rootLogger = createLogger({
   base: {
     environment: config.environment,
-    region: config.region,
     version: config.version,
   },
 
