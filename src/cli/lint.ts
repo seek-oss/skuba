@@ -3,23 +3,30 @@ import path from 'path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 
+import { hasDebugFlag } from '../utils/args';
 import { execConcurrently } from '../utils/exec';
 import { getConsumerManifest } from '../utils/manifest';
 
-const externalLint = () =>
+interface Options {
+  debug: boolean;
+}
+
+const externalLint = ({ debug }: Options) =>
   execConcurrently([
     {
-      command: 'eslint --ext=js,ts,tsx --report-unused-disable-directives .',
+      command: `eslint${
+        debug ? ' --debug' : ''
+      } --ext=js,ts,tsx --report-unused-disable-directives .`,
       name: 'ESLint',
       prefixColor: 'magenta',
     },
     {
-      command: 'tsc --noEmit',
+      command: `tsc${debug ? ' --extendedDiagnostics' : ''} --noEmit`,
       name: 'tsc',
       prefixColor: 'blue',
     },
     {
-      command: 'prettier --check .',
+      command: `prettier --check${debug ? ' --loglevel debug' : ''} .`,
       name: 'Prettier',
       prefixColor: 'cyan',
     },
@@ -51,7 +58,11 @@ export const internalLint = async () => {
 };
 
 export const lint = async () => {
-  await externalLint();
+  const opts: Options = {
+    debug: hasDebugFlag(),
+  };
+
+  await externalLint(opts);
 
   await internalLint();
 };

@@ -2,6 +2,9 @@ import assert from 'assert';
 
 import { COMMAND_ALIASES } from './command';
 
+export const hasDebugFlag = (args = process.argv) =>
+  args.some((arg) => arg.toLocaleLowerCase() === '--debug');
+
 /**
  * Parse process arguments.
  *
