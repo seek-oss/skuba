@@ -123,6 +123,10 @@ Apply automatic fixes to code quality and flag issues that require manual interv
 
 This script should be run locally before pushing code to a remote branch.
 
+| Option    | Description                 |
+| :-------- | :-------------------------- |
+| `--debug` | Enable debug console output |
+
 ### `skuba help`
 
 ```shell
@@ -220,6 +224,10 @@ see [`skuba configure`].
 Check for code quality issues.
 
 This script should be run in CI to verify that [`skuba format`] was applied and triaged locally.
+
+| Option    | Description                 |
+| :-------- | :-------------------------- |
+| `--debug` | Enable debug console output |
 
 ### `skuba node`
 

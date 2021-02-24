@@ -1,4 +1,19 @@
-import { parseProcessArgs, parseRunArgs } from './args';
+import { hasDebugFlag, parseProcessArgs, parseRunArgs } from './args';
+
+describe('hasDebugFlag', () => {
+  test.each`
+    description                    | args                                | expected
+    ${'no args'}                   | ${[]}                               | ${false}
+    ${'unrelated args'}            | ${['something', 'else']}            | ${false}
+    ${'single dash'}               | ${['-debug']}                       | ${false}
+    ${'matching lowercase arg'}    | ${['--debug']}                      | ${true}
+    ${'matching uppercase arg'}    | ${['--DEBUG']}                      | ${true}
+    ${'matching spongebob arg'}    | ${['--dEBuG']}                      | ${true}
+    ${'matching arg among others'} | ${['something', '--debug', 'else']} | ${true}
+  `('$description => $expected', ({ args, expected }) =>
+    expect(hasDebugFlag(args)).toBe(expected),
+  );
+});
 
 describe('parseProcessArgs', () => {
   it('parses a macOS command with args', () => {

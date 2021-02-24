@@ -1,4 +1,88 @@
-import { internalLint } from './lint';
+import concurrently from 'concurrently';
+
+import { internalLint, lint } from './lint';
+
+jest.mock('concurrently');
+
+const concurrentlyCalls = () =>
+  ((concurrently as unknown) as jest.Mock<typeof concurrently>).mock.calls
+    .flat(2)
+    .map(({ env, maxProcesses, ...rest }) => ({
+      ...(typeof env !== 'undefined' && { env: 'REDACTED' }),
+      ...(typeof maxProcesses !== 'undefined' && { maxProcesses: 'REDACTED' }),
+      ...rest,
+    }));
+
+describe('lint', () => {
+  afterEach(jest.clearAllMocks);
+
+  const oldProcessArgv = process.argv;
+  afterAll(() => (process.argv = oldProcessArgv));
+
+  it('handles no flags', async () => {
+    process.argv = [];
+
+    await expect(lint()).resolves.toBeUndefined();
+
+    expect(concurrentlyCalls()).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "command": "eslint --ext=js,ts,tsx --report-unused-disable-directives .",
+          "env": "REDACTED",
+          "name": "ESLint  ",
+          "prefixColor": "magenta",
+        },
+        Object {
+          "command": "tsc --noEmit",
+          "env": "REDACTED",
+          "name": "tsc     ",
+          "prefixColor": "blue",
+        },
+        Object {
+          "command": "prettier --check .",
+          "env": "REDACTED",
+          "name": "Prettier",
+          "prefixColor": "cyan",
+        },
+        Object {
+          "maxProcesses": "REDACTED",
+        },
+      ]
+    `);
+  });
+
+  it('handles debug flag', async () => {
+    process.argv = ['something', '--DeBuG', 'else'];
+
+    await expect(lint()).resolves.toBeUndefined();
+
+    expect(concurrentlyCalls()).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "command": "eslint --debug --ext=js,ts,tsx --report-unused-disable-directives .",
+          "env": "REDACTED",
+          "name": "ESLint  ",
+          "prefixColor": "magenta",
+        },
+        Object {
+          "command": "tsc --extendedDiagnostics --noEmit",
+          "env": "REDACTED",
+          "name": "tsc     ",
+          "prefixColor": "blue",
+        },
+        Object {
+          "command": "prettier --check --loglevel debug .",
+          "env": "REDACTED",
+          "name": "Prettier",
+          "prefixColor": "cyan",
+        },
+        Object {
+          "maxProcesses": "REDACTED",
+        },
+      ]
+    `);
+  });
+});
 
 describe('internalLint', () => {
   it('passes on skuba itself', () =>
