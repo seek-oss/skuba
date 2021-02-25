@@ -1648,10 +1648,10 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/concurrently@5.2.1":
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/@types/concurrently/-/concurrently-5.2.1.tgz#de20f99f4db3e8ea5176c82033b79d1f343f307f"
-  integrity sha512-0hN1M4D2TRvJCxT8SnYhVAATontVZ5ASxw98bhYOwvkRdpkSm3fNebMjMZ75CNv1kv7WVDJtkHIWW4YrEWfvhQ==
+"@types/concurrently@6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@types/concurrently/-/concurrently-6.0.0.tgz#275c259c4c8e0e1478ddd155a2e301ae795b8f5c"
+  integrity sha512-3ziKPHMme3DECNs69EbiTHzWaANtqxxtZv5xyyi1PImko/AqCrl++nHvnWC2mF0hhMmhaI/votShCyS3gixdIw==
   dependencies:
     "@types/node" "*"
 
