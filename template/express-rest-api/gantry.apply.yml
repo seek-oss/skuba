@@ -6,8 +6,6 @@ name: '{{values "service"}}'
 
 image: '{{values "image"}}'
 
-region: ap-southeast-2
-
 env:
   # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
   AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
