@@ -488,12 +488,11 @@ Here are some highlights:
 
 | Package                        | Description                                            |
 | :----------------------------- | :----------------------------------------------------- |
+| [@seek/logger]                 | Write application logs in a standardised format        |
 | [seek-datadog-custom-metrics]  | Write Datadog metrics in [Gantry] and Lambda           |
 | [seek-koala]                   | Add SEEK-standard observability to Koa servers         |
 | 🔒 [@seek/db-client]           | Connect to databases with credential (rotation) smarts |
 | 🔒 [@seek/graphql-utils]       | Add observability to GraphQL servers                   |
-| 🔒 [@seek/logger]              | Write application logs in a standardised format        |
-| 🔒 [@seek/node-authentication] | Validate SEEK JWTs                                     |
 | 🔒 [@seek/node-s2sauth-issuer] | Call an [s2sauth]-protected service                    |
 | 🔒 [@seek/typegen]             | Generate TypeScript types from a JSON schema           |
 | 🔒 [@seek/zactive-directory]   | Authenticate and authorise [SSOd] users                |
