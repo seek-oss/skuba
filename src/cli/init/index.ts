@@ -89,27 +89,44 @@ export const init = async () => {
 
   await commitChanges(exec, `Clone ${templateName}`);
 
+  const logGitHubRepoCreation = () => {
+    log.plain(
+      'Next, create an empty',
+      log.bold(`${templateData.orgName}/${templateData.repoName}`),
+      'repository:',
+    );
+    log.ok('https://github.com/new');
+  };
+
   if (!depsInstalled) {
     log.newline();
-    log.warn(log.bold('✗ Failed to install dependencies. Resume with:'));
+    log.warn(log.bold('✗ Failed to install dependencies.'));
 
     log.newline();
-    log.plain(log.bold('cd', destinationDir));
-    log.plain(log.bold('yarn add --dev', skubaSlug));
-    log.plain(log.bold('git add --all'));
-    log.plain(log.bold('git commit --message', `'Pin ${skubaSlug}'`));
-    log.plain(log.bold('git push --set-upstream origin master'));
+    logGitHubRepoCreation();
+
+    log.newline();
+    log.plain('Then, resume initialisation:');
+    log.ok('cd', destinationDir);
+    log.ok('yarn add --dev', skubaSlug);
+    log.ok('git add --all');
+    log.ok('git commit --message', `'Pin ${skubaSlug}'`);
+    log.ok('git push --set-upstream origin master');
 
     log.newline();
     process.exit(1);
   }
 
   log.newline();
-  log.ok(log.bold('✔ All done! Try running:'));
+  log.ok(log.bold('✔ Project initialised!'));
 
   log.newline();
-  log.plain(log.bold('cd', destinationDir));
-  log.plain(log.bold('git push --set-upstream origin master'));
+  logGitHubRepoCreation();
+
+  log.newline();
+  log.plain('Then, push your local changes:');
+  log.ok('cd', destinationDir);
+  log.ok('git push --set-upstream origin master');
 
   log.newline();
 };
