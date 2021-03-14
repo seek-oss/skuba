@@ -26,27 +26,33 @@ export const createDestinationFileReader = (root: string) => async (
 const loadModuleFiles = async (modules: Module[], destinationRoot: string) => {
   const readDestinationFile = createDestinationFileReader(destinationRoot);
 
-  const filepaths = await crawlDirectory(destinationRoot);
+  const allFilepaths = await crawlDirectory(destinationRoot);
+
+  const patterns = [...new Set(modules.flatMap((m) => Object.keys(m)))];
+
+  const patternToFilepaths = buildPatternToFilepathMap(patterns, allFilepaths);
+
+  const matchedFilepaths = [
+    ...new Set(Object.values(patternToFilepaths).flat()),
+  ];
 
   const fileEntries = await Promise.all(
-    filepaths.map(
+    matchedFilepaths.map(
       async (filepath) =>
         [filepath, await readDestinationFile(filepath)] as const,
     ),
   );
 
-  const patterns = [...new Set(modules.flatMap((m) => Object.keys(m)))];
-
   return {
     inputFiles: Object.fromEntries(fileEntries),
-    patternToFilepaths: buildPatternToFilepathMap(patterns, filepaths),
+    patternToFilepaths,
   };
 };
 
 const processTextFiles = (
   modules: Module[],
   inputFiles: Readonly<Files>,
-  patternToFilepaths: Map<string, string[]>,
+  patternToFilepaths: Record<string, string[]>,
 ) => {
   const outputFiles = { ...inputFiles };
 
@@ -54,7 +60,7 @@ const processTextFiles = (
     Object.entries(module).flatMap(([pattern, processText]) => {
       // Include the raw pattern along with any matched filepaths.
       // Some modules create a new file at the specified pattern.
-      const filepaths = [pattern, ...(patternToFilepaths.get(pattern) ?? [])];
+      const filepaths = [pattern, ...(patternToFilepaths[pattern] ?? [])];
 
       return [...new Set(filepaths)].map(
         (filepath) => [filepath, processText] as const,

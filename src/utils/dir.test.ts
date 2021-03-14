@@ -15,17 +15,17 @@ describe('buildPatternToFilepathMap', () => {
         ['file.txt', 'a/file.txt', 'a/b/file.txt', 'file.unrelated'],
       ),
     ).toMatchInlineSnapshot(`
-      Map {
-        "file.txt" => Array [
-          "file.txt",
-        ],
-        "*/file.txt" => Array [
-          "a/file.txt",
-        ],
-        "**/file.txt" => Array [
+      Object {
+        "**/file.txt": Array [
           "file.txt",
           "a/file.txt",
           "a/b/file.txt",
+        ],
+        "*/file.txt": Array [
+          "a/file.txt",
+        ],
+        "file.txt": Array [
+          "file.txt",
         ],
       }
     `));
@@ -37,23 +37,23 @@ describe('buildPatternToFilepathMap', () => {
         ['a.md', 'a.ts', 'b.md', 'bs.md', 'b.s.md', 'b.ts', 'b.unrelated'],
       ),
     ).toMatchInlineSnapshot(`
-      Map {
-        "a.*" => Array [
+      Object {
+        "*.md": Array [
+          "a.md",
+          "b.md",
+          "bs.md",
+          "b.s.md",
+        ],
+        "*.txt": Array [],
+        "a.*": Array [
           "a.md",
           "a.ts",
         ],
-        "b*.md" => Array [
+        "b*.md": Array [
           "b.md",
           "bs.md",
           "b.s.md",
         ],
-        "*.md" => Array [
-          "a.md",
-          "b.md",
-          "bs.md",
-          "b.s.md",
-        ],
-        "*.txt" => Array [],
       }
     `));
 });

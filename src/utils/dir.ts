@@ -14,7 +14,7 @@ export const buildPatternToFilepathMap = (
   patterns: string[],
   allFilepaths: string[],
 ) =>
-  new Map(
+  Object.fromEntries(
     patterns.map((pattern) => {
       const isMatch = picomatch(pattern);
 

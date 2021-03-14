@@ -12,7 +12,7 @@ describe('serverlessModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles).toStrictEqual({});
+    expect(outputFiles).toEqual({});
   });
 
   it('rewires a variety of patterns', async () => {
@@ -74,7 +74,7 @@ describe('serverlessModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles).toStrictEqual({
+    expect(outputFiles).toEqual({
       'serverless.yml': EXPECTED_SERVERLESS_YAML,
     });
   });
@@ -113,7 +113,7 @@ describe('serverlessModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles).toStrictEqual({
+    expect(outputFiles).toEqual({
       'serverless.yml': EXPECTED_SERVERLESS_YAML,
       'serverless.service.yml': EXPECTED_SERVERLESS_YAML,
       'service/serverless.yml': EXPECTED_SERVERLESS_YAML,

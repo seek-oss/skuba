@@ -1,3 +1,4 @@
+import * as dir from '../../../utils/dir';
 import { getSkubaVersion } from '../../../utils/version';
 import { defaultOpts } from '../testing/module';
 
@@ -9,6 +10,8 @@ describe('diffFiles', () => {
     jest
       .spyOn(project, 'createDestinationFileReader')
       .mockReturnValue(() => Promise.resolve(undefined));
+
+    jest.spyOn(dir, 'crawlDirectory').mockResolvedValue([]);
 
     const [outputFiles, version] = await Promise.all([
       diffFiles(defaultOpts),
