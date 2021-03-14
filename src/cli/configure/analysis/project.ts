@@ -2,6 +2,7 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
+import { buildPatternToFilepathMap, crawlDirectory } from '../../../utils/dir';
 import { isErrorWithCode } from '../../../utils/error';
 import { loadModules } from '../modules';
 import { FileDiff, Files, Module, Options } from '../types';
@@ -25,30 +26,51 @@ export const createDestinationFileReader = (root: string) => async (
 const loadModuleFiles = async (modules: Module[], destinationRoot: string) => {
   const readDestinationFile = createDestinationFileReader(destinationRoot);
 
-  const allFilenames = modules.flatMap((module) => Object.keys(module));
+  const allFilepaths = await crawlDirectory(destinationRoot);
 
-  const uniqueFilenames = [...new Set(allFilenames)];
+  const patterns = [...new Set(modules.flatMap((m) => Object.keys(m)))];
+
+  const patternToFilepaths = buildPatternToFilepathMap(patterns, allFilepaths);
+
+  const matchedFilepaths = [
+    ...new Set(Object.values(patternToFilepaths).flat()),
+  ];
 
   const fileEntries = await Promise.all(
-    uniqueFilenames.map(
-      async (filename) =>
-        [filename, await readDestinationFile(filename)] as const,
+    matchedFilepaths.map(
+      async (filepath) =>
+        [filepath, await readDestinationFile(filepath)] as const,
     ),
   );
 
-  return Object.fromEntries(fileEntries);
+  return {
+    inputFiles: Object.fromEntries(fileEntries),
+    patternToFilepaths,
+  };
 };
 
-const processTextFiles = (modules: Module[], inputFiles: Readonly<Files>) => {
+const processTextFiles = (
+  modules: Module[],
+  inputFiles: Readonly<Files>,
+  patternToFilepaths: Record<string, string[]>,
+) => {
   const outputFiles = { ...inputFiles };
 
   const textProcessorEntries = modules.flatMap((module) =>
-    Object.entries(module),
+    Object.entries(module).flatMap(([pattern, processText]) => {
+      // Include the raw pattern along with any matched filepaths.
+      // Some modules create a new file at the specified pattern.
+      const filepaths = [pattern, ...(patternToFilepaths[pattern] ?? [])];
+
+      return [...new Set(filepaths)].map(
+        (filepath) => [filepath, processText] as const,
+      );
+    }),
   );
 
-  for (const [filename, processText] of textProcessorEntries) {
-    outputFiles[filename] = processText(
-      outputFiles[filename],
+  for (const [filepath, processText] of textProcessorEntries) {
+    outputFiles[filepath] = processText(
+      outputFiles[filepath],
       outputFiles,
       inputFiles,
     );
@@ -60,18 +82,18 @@ const processTextFiles = (modules: Module[], inputFiles: Readonly<Files>) => {
 export const diffFiles = async (opts: Options): Promise<FileDiff> => {
   const modules = await loadModules(opts);
 
-  const inputFiles = Object.freeze(
+  const { inputFiles, patternToFilepaths } = Object.freeze(
     await loadModuleFiles(modules, opts.destinationRoot),
   );
 
-  const outputFiles = processTextFiles(modules, inputFiles);
+  const outputFiles = processTextFiles(modules, inputFiles, patternToFilepaths);
 
   const diffEntries = Object.entries(outputFiles)
-    .filter(([filename, data]) => inputFiles[filename] !== data)
-    .map(([filename, data]) => {
-      const operation = determineOperation(inputFiles[filename], data);
+    .filter(([filepath, data]) => inputFiles[filepath] !== data)
+    .map(([filepath, data]) => {
+      const operation = determineOperation(inputFiles[filepath], data);
 
-      return [filename, { data, operation }] as const;
+      return [filepath, { data, operation }] as const;
     });
 
   return Object.fromEntries(diffEntries);

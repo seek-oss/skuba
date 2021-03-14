@@ -1,7 +1,75 @@
 import path from 'path';
 
-import { createInclusionFilter } from './dir';
+import {
+  buildPatternToFilepathMap,
+  crawlDirectory,
+  createInclusionFilter,
+} from './dir';
 import { BASE_TEMPLATE_DIR } from './template';
+
+describe('buildPatternToFilepathMap', () => {
+  it('deals with different levels of nesting', () =>
+    expect(
+      buildPatternToFilepathMap(
+        ['file.txt', '*/file.txt', '**/file.txt'],
+        ['file.txt', 'a/file.txt', 'a/b/file.txt', 'file.unrelated'],
+      ),
+    ).toMatchInlineSnapshot(`
+      Object {
+        "**/file.txt": Array [
+          "file.txt",
+          "a/file.txt",
+          "a/b/file.txt",
+        ],
+        "*/file.txt": Array [
+          "a/file.txt",
+        ],
+        "file.txt": Array [
+          "file.txt",
+        ],
+      }
+    `));
+
+  it('deals with different filenames and extensions', () =>
+    expect(
+      buildPatternToFilepathMap(
+        ['a.*', 'b*.md', '*.md', '*.txt'],
+        ['a.md', 'a.ts', 'b.md', 'bs.md', 'b.s.md', 'b.ts', 'b.unrelated'],
+      ),
+    ).toMatchInlineSnapshot(`
+      Object {
+        "*.md": Array [
+          "a.md",
+          "b.md",
+          "bs.md",
+          "b.s.md",
+        ],
+        "*.txt": Array [],
+        "a.*": Array [
+          "a.md",
+          "a.ts",
+        ],
+        "b*.md": Array [
+          "b.md",
+          "bs.md",
+          "b.s.md",
+        ],
+      }
+    `));
+});
+
+describe('crawlDirectory', () => {
+  it('works on skuba itself', async () => {
+    const filepaths = await crawlDirectory(path.join(__dirname, '..', '..'));
+
+    expect(filepaths).toContain('.github/CODEOWNERS');
+    expect(filepaths).toContain('src/index.ts');
+    expect(filepaths).toContain('LICENSE');
+    expect(filepaths).not.toContain('.git/HEAD');
+    expect(filepaths).not.toContain('lib/index.js');
+    expect(filepaths).not.toContain('node_modules/.bin/tsc');
+  });
+});
 
 describe('createInclusionFilter', () => {
   it('gracefully handles non-existent .gitignore', () => {
