@@ -14,7 +14,8 @@ Next steps:
        see the [Codex] documentation for more information.
 4. [ ] Push local commits to the upstream GitHub branch.
 5. [ ] Configure [GitHub repository settings].
-6. [ ] Keep dependencies updated via [SEEK-Jobs/renovate].
+6. [ ] Keep dependencies up to date with [Renovate];
+       request installation in [SEEK-Jobs/renovate].
 7. [ ] Delete this checklist 😌.
 
 ## Table of contents
@@ -114,6 +115,7 @@ For more information, see the **semantic-release** docs on [triggering a release
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [gutenberg]: https://github.com/SEEK-Jobs/gutenberg
 [installing on your repository]: https://github.com/SEEK-Jobs/gutenberg#installing-on-your-repository
+[renovate]: https://github.com/apps/renovate
 [seek-jobs]: https://github.com/orgs/seek-jobs/sso
 [seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
 [semantic-release]: https://github.com/semantic-release/semantic-release

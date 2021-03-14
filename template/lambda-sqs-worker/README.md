@@ -18,7 +18,8 @@ Next steps:
 5. [ ] Add deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
 6. [ ] Push local commits to the upstream GitHub branch.
 7. [ ] Configure [GitHub repository settings].
-8. [ ] Keep dependencies updated via [SEEK-Jobs/renovate].
+8. [ ] Keep dependencies up to date with [Renovate];
+       request installation in [SEEK-Jobs/renovate].
 9. [ ] Delete this checklist 😌.
 
 ## Table of contents
@@ -143,6 +144,7 @@ TODO: add support links for the prod environment.
 [codex]: https://codex.ssod.skinfra.xyz/docs
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [lambda]: https://docs.aws.amazon.com/lambda
+[renovate]: https://github.com/apps/renovate
 [seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
 [serverless]: https://www.serverless.com/
 [technology strategy]: https://tech-strategy.ssod.skinfra.xyz
