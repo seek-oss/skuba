@@ -8,16 +8,13 @@ import { Module, Options } from '../types';
 
 const DEFAULT_FILENAME = 'src/register.ts';
 
-export const skubaDiveModule = ({
-  entryPoint,
-  type,
-}: Options): Promise<Module> => {
+export const skubaDiveModule = ({ entryPoint, type }: Options): Module => {
   // skuba-dive is a runtime component; it's not appropriate for packages
   if (type === 'package') {
-    return Promise.resolve({});
+    return {};
   }
 
-  return Promise.resolve({
+  return {
     ...loadFiles(DEFAULT_FILENAME, 'package.json'),
 
     [entryPoint]: (inputFile, files) => {
@@ -54,5 +51,5 @@ export const skubaDiveModule = ({
 
       return prependImport(`${relativeToSrc}/register`, outputFile);
     },
-  });
+  };
 };

@@ -19,7 +19,7 @@ export const defaultPackageOpts: Options = {
 };
 
 export const executeModule = async (
-  createModule: (opts: Options) => Promise<Module>,
+  createModule: (opts: Options) => Module | Promise<Module>,
   inputFiles: Readonly<Files>,
   opts: Options,
 ): Promise<Files> => {
