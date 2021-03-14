@@ -29,12 +29,16 @@ export const executeModule = async (
 
   const outputFiles = { ...inputFiles };
 
-  const filepaths = Object.keys(outputFiles);
+  const allFilepaths = Object.keys(outputFiles);
 
   for (const [pattern, processText] of Object.entries(mod)) {
     const isMatch = picomatch(pattern);
 
-    for (const filepath of filepaths.filter((p) => isMatch(p))) {
+    // Include the raw pattern along with any matched filepaths.
+    // Some modules create a new file at the specified pattern.
+    const filepaths = [pattern, ...allFilepaths.filter((p) => isMatch(p))];
+
+    for (const filepath of [...new Set(filepaths)]) {
       outputFiles[filepath] = processText(
         outputFiles[filepath],
         outputFiles,

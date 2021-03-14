@@ -51,11 +51,15 @@ const processTextFiles = (
   const outputFiles = { ...inputFiles };
 
   const textProcessorEntries = modules.flatMap((module) =>
-    Object.entries(module).flatMap(([pattern, processText]) =>
-      (patternToFilepaths.get(pattern) ?? []).map(
+    Object.entries(module).flatMap(([pattern, processText]) => {
+      // Include the raw pattern along with any matched filepaths.
+      // Some modules create a new file at the specified pattern.
+      const filepaths = [pattern, ...(patternToFilepaths.get(pattern) ?? [])];
+
+      return [...new Set(filepaths)].map(
         (filepath) => [filepath, processText] as const,
-      ),
-    ),
+      );
+    }),
   );
 
   for (const [filepath, processText] of textProcessorEntries) {
