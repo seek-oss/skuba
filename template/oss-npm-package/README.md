@@ -14,7 +14,7 @@ Next steps:
        see the [Codex] documentation for more information.
 4. [ ] Push local commits to the upstream GitHub branch.
 5. [ ] Configure [GitHub repository settings].
-6. [ ] Keep dependencies updated via [Renovate].
+6. [ ] Keep dependencies updated via [seek-oss/renovate].
 7. [ ] Delete this checklist 😌.
 
 ## Table of contents
@@ -130,6 +130,6 @@ For more information, see the **semantic-release** docs on [triggering a release
 [seek-oss]: https://github.com/seek-oss
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [seek's open source rfc]: https://rfc.skinfra.xyz/RFC016-Open-Source.html
-[renovate]: https://github.com/apps/renovate
+[seek-oss/renovate]: https://github.com/organizations/seek-oss/settings/installations/84568
 [semantic-release]: https://github.com/semantic-release/semantic-release
 [triggering a release]: https://github.com/semantic-release/semantic-release/#triggering-a-release
