@@ -7,6 +7,7 @@ import { nodemonModule } from './nodemon';
 import { packageModule } from './package';
 import { prettierModule } from './prettier';
 import { renovateModule } from './renovate';
+import { serverlessModule } from './serverless';
 import { skubaDiveModule } from './skubaDive';
 import { tsconfigModule } from './tsconfig';
 import { tslintModule } from './tslint';
@@ -21,6 +22,7 @@ export const loadModules = (opts: Options): Promise<Module[]> =>
       packageModule,
       prettierModule,
       renovateModule,
+      serverlessModule,
       skubaDiveModule,
       tsconfigModule,
       tslintModule,

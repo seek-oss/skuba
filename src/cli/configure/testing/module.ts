@@ -1,3 +1,5 @@
+import picomatch from 'picomatch';
+
 import { Files, Module, Options } from '../types';
 
 export function assertDefined<T>(value?: T): asserts value is T {
@@ -27,12 +29,18 @@ export const executeModule = async (
 
   const outputFiles = { ...inputFiles };
 
-  for (const [filename, processText] of Object.entries(mod)) {
-    outputFiles[filename] = processText(
-      outputFiles[filename],
-      outputFiles,
-      inputFiles,
-    );
+  const filepaths = Object.keys(outputFiles);
+
+  for (const [pattern, processText] of Object.entries(mod)) {
+    const isMatch = picomatch(pattern);
+
+    for (const filepath of filepaths.filter((p) => isMatch(p))) {
+      outputFiles[filepath] = processText(
+        outputFiles[filepath],
+        outputFiles,
+        inputFiles,
+      );
+    }
   }
 
   return outputFiles;
