@@ -18,7 +18,9 @@ Next steps:
 5. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
        see the [Gantry] documentation for more information.
 6. [ ] Push local commits to the upstream GitHub branch.
-7. [ ] Delete this checklist 😌.
+7. [ ] Configure [GitHub repository settings].
+8. [ ] Keep dependencies updated via [SEEK-Jobs/renovate].
+9. [ ] Delete this checklist 😌.
 
 ## Table of contents
 
@@ -115,4 +117,6 @@ TODO: add support links for the prod environment.
 [codex]: https://codex.ssod.skinfra.xyz/docs
 [express]: https://expressjs.com
 [gantry]: https://gantry.ssod.skinfra.xyz
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
+[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
 [technology strategy]: https://tech-strategy.ssod.skinfra.xyz

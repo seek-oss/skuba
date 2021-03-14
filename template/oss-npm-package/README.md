@@ -13,7 +13,9 @@ Next steps:
 3. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
        see the [Codex] documentation for more information.
 4. [ ] Push local commits to the upstream GitHub branch.
-5. [ ] Delete this checklist 😌.
+5. [ ] Configure [GitHub repository settings].
+6. [ ] Keep dependencies updated via [Renovate].
+7. [ ] Delete this checklist 😌.
 
 ## Table of contents
 
@@ -126,6 +128,8 @@ For more information, see the **semantic-release** docs on [triggering a release
 [oss npm package guidance]: https://github.com/SEEK-Jobs/seek-oss-ci/blob/master/NPM_PACKAGES.md#access-to-publish-to-npm
 [release workflow]: .github/workflows/release.yml
 [seek-oss]: https://github.com/seek-oss
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [seek's open source rfc]: https://rfc.skinfra.xyz/RFC016-Open-Source.html
+[renovate]: https://github.com/apps/renovate
 [semantic-release]: https://github.com/semantic-release/semantic-release
 [triggering a release]: https://github.com/semantic-release/semantic-release/#triggering-a-release

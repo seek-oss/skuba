@@ -17,7 +17,9 @@ Next steps:
        see the [Codex] documentation for more information.
 5. [ ] Add deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
 6. [ ] Push local commits to the upstream GitHub branch.
-7. [ ] Delete this checklist 😌.
+7. [ ] Configure [GitHub repository settings].
+8. [ ] Keep dependencies updated via [SEEK-Jobs/renovate].
+9. [ ] Delete this checklist 😌.
 
 ## Table of contents
 
@@ -139,6 +141,8 @@ TODO: add support links for the prod environment.
 [builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
 [codedeploy]: https://docs.aws.amazon.com/codedeploy
 [codex]: https://codex.ssod.skinfra.xyz/docs
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [lambda]: https://docs.aws.amazon.com/lambda
+[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
 [serverless]: https://www.serverless.com/
 [technology strategy]: https://tech-strategy.ssod.skinfra.xyz

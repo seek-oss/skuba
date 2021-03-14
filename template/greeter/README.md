@@ -16,7 +16,9 @@ Next steps:
 4. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
        see the [Codex] documentation for more information.
 5. [ ] Push local commits to the upstream GitHub branch.
-6. [ ] Delete this checklist 😌.
+6. [ ] Configure [GitHub repository settings].
+7. [ ] Keep dependencies updated via [SEEK-Jobs/renovate].
+8. [ ] Delete this checklist 😌.
 
 ## Table of contents
 
@@ -105,4 +107,6 @@ TODO: add support links for the prod environment.
 
 [builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
 [codex]: https://codex.ssod.skinfra.xyz/docs
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
+[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
 [technology strategy]: https://tech-strategy.ssod.skinfra.xyz
