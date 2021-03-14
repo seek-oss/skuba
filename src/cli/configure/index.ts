@@ -2,7 +2,7 @@ import path from 'path';
 
 import { Select } from 'enquirer';
 
-import { createInclusionFilter } from '../../utils/copy';
+import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';

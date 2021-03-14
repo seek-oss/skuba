@@ -2,34 +2,11 @@ import path from 'path';
 
 import ejs from 'ejs';
 import fs from 'fs-extra';
-import ignore from 'ignore';
 
 import { isErrorWithCode } from './error';
 import { log } from './logging';
 
 export type TextProcessor = (contents: string) => string;
-
-export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
-  const gitIgnores = await Promise.all(
-    gitIgnorePaths.map(async (gitIgnorePath) => {
-      try {
-        return await fs.readFile(gitIgnorePath, 'utf8');
-      } catch (err: unknown) {
-        if (isErrorWithCode(err, 'ENOENT')) {
-          return;
-        }
-
-        throw err;
-      }
-    }),
-  );
-
-  const managers = gitIgnores
-    .filter((value): value is string => typeof value === 'string')
-    .map((value) => ignore().add(value));
-
-  return ignore().add('.git').add(managers).createFilter();
-};
 
 const copyFile = async (
   sourcePath: string,

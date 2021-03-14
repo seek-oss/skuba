@@ -1,10 +1,7 @@
 import path from 'path';
 
-import {
-  copyFiles,
-  createEjsRenderer,
-  createInclusionFilter,
-} from '../../utils/copy';
+import { copyFiles, createEjsRenderer } from '../../utils/copy';
+import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';
