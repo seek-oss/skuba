@@ -16,6 +16,7 @@ type Props = Pick<
   | 'setupFiles'
   | 'setupFilesAfterEnv'
   | 'testPathIgnorePatterns'
+  | 'testTimeout'
 >;
 
 /**
