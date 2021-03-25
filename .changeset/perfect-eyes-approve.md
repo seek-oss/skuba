@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
 Expose testTimeout in jest preset options
