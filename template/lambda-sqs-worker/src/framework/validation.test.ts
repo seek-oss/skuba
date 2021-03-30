@@ -41,7 +41,7 @@ describe('validateJson', () => {
     expect(() =>
       validateJson(input, filterIdDescription),
     ).toThrowErrorMatchingInlineSnapshot(
-      `"Expected string, but was undefined in id"`,
+      `"Expected \\"id\\" property to be present, but was missing in id"`,
     );
   });
 
