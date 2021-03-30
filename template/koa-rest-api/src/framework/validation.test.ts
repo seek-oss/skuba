@@ -47,5 +47,8 @@ describe('validate', () => {
     agent
       .post('/')
       .send({})
-      .expect(422, 'Expected string, but was undefined in id'));
+      .expect(
+        422,
+        'Expected "id" property to be present, but was missing in id',
+      ));
 });
