@@ -9,22 +9,30 @@ import { ProjectType } from './manifest';
 
 export type TemplateConfig = t.Static<typeof TemplateConfig>;
 
+/**
+ * TODO: migrate from `t.Partial` to `.optional()` once Runtypes 6 is released.
+ */
 export const TemplateConfig = t
   .Record({
-    entryPoint: t.String.Or(t.Undefined),
     fields: t.Array(
-      t.Record({
-        name: t.String,
-        message: t.String,
-        initial: t.String,
-        validate: t.Function.Or(t.Undefined),
-      }),
+      t
+        .Record({
+          name: t.String,
+          message: t.String,
+          initial: t.String,
+        })
+        .And(
+          t.Partial({
+            validate: t.Function,
+          }),
+        ),
     ),
-    type: ProjectType.Or(t.Undefined),
   })
   .And(
     t.Partial({
-      noSkip: t.Boolean.Or(t.Undefined),
+      entryPoint: t.String,
+      noSkip: t.Boolean,
+      type: ProjectType,
     }),
   );
 
