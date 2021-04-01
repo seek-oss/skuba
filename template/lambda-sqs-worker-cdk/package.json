@@ -1,0 +1,42 @@
+{
+  "bin": {
+    "infra": "infra/index.js"
+  },
+  "dependencies": {
+    "source-map-support": "^0.5.16"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "^1.95.1",
+    "@aws-cdk/aws-iam": "^1.95.1",
+    "@aws-cdk/aws-kms": "^1.95.1",
+    "@aws-cdk/aws-lambda": "^1.95.1",
+    "@aws-cdk/aws-lambda-event-sources": "^1.95.1",
+    "@aws-cdk/aws-sns": "^1.95.1",
+    "@aws-cdk/aws-sns-subscriptions": "^1.95.1",
+    "@aws-cdk/aws-sqs": "^1.95.1",
+    "@aws-cdk/core": "^1.95.1",
+    "@types/aws-lambda": "^8.10.73",
+    "@types/jest": "^24.0.22",
+    "@types/node": "10.17.5",
+    "aws-cdk": "^1.18.0",
+    "esbuild": "^0.11.2",
+    "runtypes": "^5.2.0",
+    "skuba": "*"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist && node build.js",
+    "format": "skuba format",
+    "lint": "skuba lint",
+    "test": "skuba test --maxWorkers=1",
+    "deploy:dev": "bash -c \"yarn build && cdk deploy appStack --require-approval never --context stage=dev\"",
+    "deploy:prod": "bash -c \"yarn build && cdk deploy appStack --require-approval never --context stage=prod\""
+  },
+  "skuba": {
+    "entryPoint": "src/app.ts#handler",
+    "template": null,
+    "type": "application",
+    "version": "3.12.2"
+  }
+}
