@@ -154,7 +154,8 @@ export default Jest.mergePreset({
     \\"outDir\\": \\"lib\\",
     \\"paths\\": {
       \\"src\\": [\\"src\\"]
-    }
+    },
+    \\"resolveJsonModule\\": true
   },
   \\"exclude\\": [\\"lib*/**/*\\"],
   \\"extends\\": \\"skuba/config/tsconfig.json\\"
