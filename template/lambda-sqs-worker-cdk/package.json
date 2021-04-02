@@ -2,9 +2,7 @@
   "bin": {
     "infra": "infra/index.js"
   },
-  "dependencies": {
-    "source-map-support": "^0.5.16"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@aws-cdk/assert": "^1.95.1",
     "@aws-cdk/aws-iam": "^1.95.1",
