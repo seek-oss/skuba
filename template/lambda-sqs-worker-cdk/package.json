@@ -13,6 +13,7 @@
     "@aws-cdk/aws-sns-subscriptions": "^1.95.1",
     "@aws-cdk/aws-sqs": "^1.95.1",
     "@aws-cdk/core": "^1.95.1",
+    "@seek/logger": "^4.4.7",
     "@types/aws-lambda": "^8.10.73",
     "@types/jest": "^24.0.22",
     "@types/node": "10.17.5",
