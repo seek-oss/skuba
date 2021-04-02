@@ -1,7 +1,4 @@
 {
-  "bin": {
-    "infra": "infra/index.js"
-  },
   "dependencies": {},
   "devDependencies": {
     "@aws-cdk/assert": "^1.95.1",
