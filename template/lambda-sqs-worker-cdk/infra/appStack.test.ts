@@ -20,10 +20,8 @@ const contexts = [
 it.each(contexts)('returns expected cloud formation stack', (context) => {
   const app = new App({ context });
 
-  // WHEN
   const stack = new AppStack(app, 'appStack');
 
-  // THEN
   const json = JSON.stringify(SynthUtils.toCloudFormation(stack))
     .replace(/AssetParameters[a-zA-Z0-9]+/gm, 'AssetParameters...')
     .replace(/"Artifact hash for asset .+"/gm, '"Artifact hash for asset..."');
