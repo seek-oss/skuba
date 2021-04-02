@@ -3,8 +3,8 @@
 import { ExecaError } from 'execa';
 import * as t from 'runtypes';
 
-import { log } from './logging';
-import { hasNumberProp, hasProp } from './validation';
+import { log } from './logging.js';
+import { hasNumberProp, hasProp } from './validation.js';
 
 export type ConcurrentlyErrors = t.Static<typeof ConcurrentlyErrors>;
 

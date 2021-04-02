@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import isInstalledGlobally from 'is-installed-globally';
 
-import { log } from './logging';
-import { getSkubaVersionInfo } from './version';
+import { log } from './logging.js';
+import { getSkubaVersionInfo } from './version.js';
 
 const LOGO = chalk.blueBright(`
     ╭─╮ ${chalk.magentaBright('    ')}╭─╮

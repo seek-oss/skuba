@@ -1,4 +1,4 @@
-import { hasDebugFlag, parseProcessArgs, parseRunArgs } from './args';
+import { hasDebugFlag, parseProcessArgs, parseRunArgs } from './args.js';
 
 describe('hasDebugFlag', () => {
   test.each`

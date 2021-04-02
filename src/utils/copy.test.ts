@@ -1,4 +1,4 @@
-import { createEjsRenderer, createStringReplacer } from './copy';
+import { createEjsRenderer, createStringReplacer } from './copy.js';
 
 describe('createEjsRenderer', () => {
   it('renders typical skuba placeholders', () => {

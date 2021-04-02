@@ -1,4 +1,4 @@
-import { commandToModule } from './command';
+import { commandToModule } from './command.js';
 
 describe('commandToModule', () => {
   it('handles one-word command', () =>
