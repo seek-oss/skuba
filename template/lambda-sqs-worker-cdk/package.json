@@ -25,7 +25,7 @@
     "format": "skuba format",
     "lint": "skuba lint",
     "test": "skuba test",
-    "deploy:dev": "bash -c \"yarn build && cdk deploy appStack --require-approval never --context stage=dev\"",
-    "deploy:prod": "bash -c \"yarn build && cdk deploy appStack --require-approval never --context stage=prod\""
+    "deploy:dev": "yarn build && cdk deploy appStack --require-approval never --context stage=dev",
+    "deploy:prod": "yarn build && cdk deploy appStack --require-approval never --context stage=prod"
   }
 }
