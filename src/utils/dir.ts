@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
 
-import { isErrorWithCode } from './error';
+import { isErrorWithCode } from './error.js';
 
 /**
  * Build a map that associates each glob pattern with its matching filepaths.

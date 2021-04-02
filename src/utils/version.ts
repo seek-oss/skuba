@@ -1,6 +1,6 @@
 import latestVersion from 'latest-version';
 
-import { getSkubaManifest } from './manifest';
+import { getSkubaManifest } from './manifest.js';
 
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
