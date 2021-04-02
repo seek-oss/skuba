@@ -12,7 +12,6 @@
     "@aws-cdk/core": "^1.95.1",
     "@seek/logger": "^4.4.7",
     "@types/aws-lambda": "^8.10.73",
-    "@types/jest": "^24.0.22",
     "@types/node": "10.17.5",
     "aws-cdk": "^1.18.0",
     "esbuild": "^0.11.2",
