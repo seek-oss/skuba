@@ -4,16 +4,16 @@ import chalk from 'chalk';
 import fs from 'fs-extra';
 import { NormalizedReadResult } from 'read-pkg-up';
 
-import { copyFiles, createEjsRenderer } from '../../utils/copy';
-import { log } from '../../utils/logging';
+import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
+import { log } from '../../utils/logging.js';
 import {
   TemplateConfig,
   ensureTemplateConfigDeletion,
-} from '../../utils/template';
-import { hasStringProp } from '../../utils/validation';
-import { getTemplateConfig, runForm } from '../init/getConfig';
+} from '../../utils/template.js';
+import { hasStringProp } from '../../utils/validation.js';
+import { getTemplateConfig, runForm } from '../init/getConfig.js';
 
-import { formatObject } from './processing/json';
+import { formatObject } from './processing/json.js';
 
 interface Props {
   destinationRoot: string;

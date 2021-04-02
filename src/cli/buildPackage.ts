@@ -1,4 +1,4 @@
-import { execConcurrently } from '../utils/exec';
+import { execConcurrently } from '../utils/exec.js';
 
 export const buildPackage = () =>
   execConcurrently([

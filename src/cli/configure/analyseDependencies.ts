@@ -4,15 +4,15 @@ import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 import { NormalizedReadResult } from 'read-pkg-up';
 
-import { TextProcessor, copyFiles } from '../../utils/copy';
-import { log } from '../../utils/logging';
-import { ProjectType } from '../../utils/manifest';
-import { getSkubaVersion } from '../../utils/version';
+import { TextProcessor, copyFiles } from '../../utils/copy.js';
+import { log } from '../../utils/logging.js';
+import { ProjectType } from '../../utils/manifest.js';
+import { getSkubaVersion } from '../../utils/version.js';
 
-import { diffDependencies, generateNotices } from './analysis/package';
-import * as dependencyMutators from './dependencies';
-import { formatPackage } from './processing/package';
-import { DependencyDiff } from './types';
+import { diffDependencies, generateNotices } from './analysis/package.js';
+import * as dependencyMutators from './dependencies/index.js';
+import { formatPackage } from './processing/package.js';
+import { DependencyDiff } from './types.js';
 
 const logDiff = (diff: DependencyDiff): boolean => {
   const entries = Object.entries(diff);

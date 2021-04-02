@@ -1,9 +1,9 @@
 import normalizeData from 'normalize-package-data';
 
-import { isObject } from '../../../utils/validation';
-import { PackageJson } from '../types';
+import { isObject } from '../../../utils/validation.js';
+import { PackageJson } from '../types.js';
 
-import { formatObject, parseObject } from './json';
+import { formatObject, parseObject } from './json.js';
 
 const sortRecord = <T>(record: Record<string, T>): Record<string, T> =>
   Object.fromEntries(

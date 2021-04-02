@@ -1,6 +1,6 @@
-import { defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module.js';
 
-import { nodemonModule } from './nodemon';
+import { nodemonModule } from './nodemon.js';
 
 describe('nodemonModule', () => {
   it('works from scratch', async () => {

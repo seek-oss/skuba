@@ -1,8 +1,8 @@
-import { getSkubaVersion } from '../../../utils/version';
-import { deleteFiles } from '../processing/deleteFiles';
-import { withPackage } from '../processing/package';
-import { merge } from '../processing/record';
-import { Module, Options } from '../types';
+import { getSkubaVersion } from '../../../utils/version.js';
+import { deleteFiles } from '../processing/deleteFiles.js';
+import { withPackage } from '../processing/package.js';
+import { merge } from '../processing/record.js';
+import { Module, Options } from '../types.js';
 
 const DEFAULT_PACKAGE_FILES = [
   'lib*/**/*.d.ts',

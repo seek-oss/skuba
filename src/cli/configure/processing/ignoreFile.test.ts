@@ -1,4 +1,4 @@
-import { generateSimpleVariants, mergeWithIgnoreFile } from './ignoreFile';
+import { generateSimpleVariants, mergeWithIgnoreFile } from './ignoreFile.js';
 
 describe('generateSimpleVariants', () => {
   it.each([

@@ -1,9 +1,9 @@
-import { readBaseTemplateFile } from '../../../utils/template';
-import { hasProp, hasStringProp, isObject } from '../../../utils/validation';
-import { formatObject, parseObject } from '../processing/json';
-import { loadFiles } from '../processing/loadFiles';
-import { merge } from '../processing/record';
-import { Module, Options } from '../types';
+import { readBaseTemplateFile } from '../../../utils/template.js';
+import { hasProp, hasStringProp, isObject } from '../../../utils/validation.js';
+import { formatObject, parseObject } from '../processing/json.js';
+import { loadFiles } from '../processing/loadFiles.js';
+import { merge } from '../processing/record.js';
+import { Module, Options } from '../types.js';
 
 export const tsconfigModule = async ({
   firstRun,

@@ -1,4 +1,4 @@
-import { createDependencyFilter, withPackage } from './package';
+import { createDependencyFilter, withPackage } from './package.js';
 
 describe('createDependencyFilter', () => {
   it('can filter dependencies', () =>

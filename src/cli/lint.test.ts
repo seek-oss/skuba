@@ -1,6 +1,6 @@
 import concurrently from 'concurrently';
 
-import { internalLint, lint } from './lint';
+import { internalLint, lint } from './lint.js';
 
 jest.mock('concurrently');
 

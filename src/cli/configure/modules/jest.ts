@@ -1,14 +1,14 @@
-import { readBaseTemplateFile } from '../../../utils/template';
-import { deleteFiles } from '../processing/deleteFiles';
-import { loadFiles } from '../processing/loadFiles';
-import { withPackage } from '../processing/package';
+import { readBaseTemplateFile } from '../../../utils/template.js';
+import { deleteFiles } from '../processing/deleteFiles.js';
+import { loadFiles } from '../processing/loadFiles.js';
+import { withPackage } from '../processing/package.js';
 import {
   createPropAppender,
   createPropFilter,
   readModuleExports,
   transformModuleImportsAndExports,
-} from '../processing/typescript';
-import { Module } from '../types';
+} from '../processing/typescript.js';
+import { Module } from '../types.js';
 
 // Jest options to preserve during migration
 const filterProps = createPropFilter([

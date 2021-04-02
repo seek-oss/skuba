@@ -1,18 +1,18 @@
 import path from 'path';
 
-import { copyFiles, createEjsRenderer } from '../../utils/copy';
-import { createInclusionFilter } from '../../utils/dir';
-import { createExec, ensureCommands } from '../../utils/exec';
-import { log } from '../../utils/logging';
-import { showLogoAndVersionInfo } from '../../utils/logo';
+import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
+import { createInclusionFilter } from '../../utils/dir.js';
+import { createExec, ensureCommands } from '../../utils/exec.js';
+import { log } from '../../utils/logging.js';
+import { showLogoAndVersionInfo } from '../../utils/logo.js';
 import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
-} from '../../utils/template';
+} from '../../utils/template.js';
 
-import { getConfig } from './getConfig';
-import { commitChanges, initialiseRepo } from './git';
-import { writePackageJson } from './writePackageJson';
+import { getConfig } from './getConfig.js';
+import { commitChanges, initialiseRepo } from './git.js';
+import { writePackageJson } from './writePackageJson.js';
 
 export const init = async () => {
   const skubaVersionInfo = await showLogoAndVersionInfo();

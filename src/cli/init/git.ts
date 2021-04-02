@@ -2,8 +2,8 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { Exec, createExec } from '../../utils/exec';
-import { log } from '../../utils/logging';
+import { Exec, createExec } from '../../utils/exec.js';
+import { log } from '../../utils/logging.js';
 
 interface GitHubProject {
   orgName: string;

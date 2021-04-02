@@ -1,6 +1,6 @@
-import { hasDebugFlag } from '../utils/args';
-import { exec } from '../utils/exec';
-import { log } from '../utils/logging';
+import { hasDebugFlag } from '../utils/args.js';
+import { exec } from '../utils/exec.js';
+import { log } from '../utils/logging.js';
 
 export const format = async () => {
   const debug = hasDebugFlag();

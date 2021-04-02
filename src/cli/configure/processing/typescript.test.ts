@@ -1,13 +1,13 @@
 import ts from 'typescript';
 
-import { assertDefined } from '../testing/module';
+import { assertDefined } from '../testing/module.js';
 
 import {
   createPropAppender,
   createPropFilter,
   readModuleExports,
   transformModuleImportsAndExports,
-} from './typescript';
+} from './typescript.js';
 
 const JEST_CONFIG = `export default {
   collectCoverage: true,
