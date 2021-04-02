@@ -1,5 +1,5 @@
-import { replacePackageReferences } from '../processing/module';
-import { DependencySet } from '../types';
+import { replacePackageReferences } from '../processing/module.js';
+import { DependencySet } from '../types.js';
 
 const OLD_NAME = '@seek/skuba-dive';
 const NEW_NAME = 'skuba-dive';

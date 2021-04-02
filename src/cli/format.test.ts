@@ -1,8 +1,8 @@
 import execa from 'execa';
 
-import { hasStringProp } from '../utils/validation';
+import { hasStringProp } from '../utils/validation.js';
 
-import { format } from './format';
+import { format } from './format.js';
 
 jest.mock('execa');
 

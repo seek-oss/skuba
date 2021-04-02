@@ -4,12 +4,12 @@ import chalk from 'chalk';
 import { Input } from 'enquirer';
 import { NormalizedReadResult } from 'read-pkg-up';
 
-import { log } from '../../utils/logging';
-import { ProjectType } from '../../utils/manifest';
-import { TemplateConfig } from '../../utils/template';
-import { hasStringProp } from '../../utils/validation';
+import { log } from '../../utils/logging.js';
+import { ProjectType } from '../../utils/manifest.js';
+import { TemplateConfig } from '../../utils/template.js';
+import { hasStringProp } from '../../utils/validation.js';
 
-import { tsFileExists } from './analysis/files';
+import { tsFileExists } from './analysis/files.js';
 
 interface Props {
   destinationRoot: string;

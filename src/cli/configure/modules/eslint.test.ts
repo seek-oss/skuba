@@ -1,6 +1,6 @@
-import { defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module.js';
 
-import { eslintModule } from './eslint';
+import { eslintModule } from './eslint.js';
 
 describe('eslintModule', () => {
   it('works from scratch', async () => {

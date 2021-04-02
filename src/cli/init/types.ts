@@ -2,7 +2,7 @@
 
 import * as t from 'runtypes';
 
-import { ProjectType } from '../../utils/manifest';
+import { ProjectType } from '../../utils/manifest.js';
 
 const INIT_CONFIG_INPUT_FIELDS = {
   destinationDir: t.String,

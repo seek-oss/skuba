@@ -1,10 +1,10 @@
 import { Select } from 'enquirer';
 import { NormalizedReadResult } from 'read-pkg-up';
 
-import { log } from '../../utils/logging';
-import { PROJECT_TYPES, ProjectType } from '../../utils/manifest';
-import { TemplateConfig } from '../../utils/template';
-import { hasProp } from '../../utils/validation';
+import { log } from '../../utils/logging.js';
+import { PROJECT_TYPES, ProjectType } from '../../utils/manifest.js';
+import { TemplateConfig } from '../../utils/template.js';
+import { hasProp } from '../../utils/validation.js';
 
 interface Props {
   manifest: NormalizedReadResult;

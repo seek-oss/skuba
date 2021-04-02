@@ -1,8 +1,8 @@
-import { readBaseTemplateFile } from '../../../utils/template';
-import { deleteFiles } from '../processing/deleteFiles';
-import { mergeWithIgnoreFile } from '../processing/ignoreFile';
-import { withPackage } from '../processing/package';
-import { Module } from '../types';
+import { readBaseTemplateFile } from '../../../utils/template.js';
+import { deleteFiles } from '../processing/deleteFiles.js';
+import { mergeWithIgnoreFile } from '../processing/ignoreFile.js';
+import { withPackage } from '../processing/package.js';
+import { Module } from '../types.js';
 
 export const prettierModule = async (): Promise<Module> => {
   const [configFile, ignoreFile] = await Promise.all([

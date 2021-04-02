@@ -1,4 +1,4 @@
-import { Module } from '../types';
+import { Module } from '../types.js';
 
 /**
  * Load files into cache to perform side effects in another module.

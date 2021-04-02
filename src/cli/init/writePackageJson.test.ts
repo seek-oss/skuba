@@ -2,9 +2,9 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import * as packageAnalysis from '../configure/analysis/package';
+import * as packageAnalysis from '../configure/analysis/package.js';
 
-import { writePackageJson } from './writePackageJson';
+import { writePackageJson } from './writePackageJson.js';
 
 describe('writePackageJson', () => {
   jest

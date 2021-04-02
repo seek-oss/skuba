@@ -1,5 +1,5 @@
-export { seekDatadogCustomMetrics } from './seekDatadogCustomMetrics';
-export { seekKoala } from './seekKoala';
-export { skuba } from './skuba';
-export { skubaDeps } from './skubaDeps';
-export { skubaDive } from './skubaDive';
+export { seekDatadogCustomMetrics } from './seekDatadogCustomMetrics.js';
+export { seekKoala } from './seekKoala.js';
+export { skuba } from './skuba.js';
+export { skubaDeps } from './skubaDeps.js';
+export { skubaDive } from './skubaDive.js';

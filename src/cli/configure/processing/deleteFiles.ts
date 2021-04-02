@@ -1,4 +1,4 @@
-import { Module } from '../types';
+import { Module } from '../types.js';
 
 /**
  * Load files into cache and schedule them for deletion.

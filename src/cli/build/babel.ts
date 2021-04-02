@@ -1,4 +1,4 @@
-import { exec } from '../../utils/exec';
+import { exec } from '../../utils/exec.js';
 
 // TODO: we have a couple of options here:
 // 1. Parse tsconfig.build.json to determine babel dirs

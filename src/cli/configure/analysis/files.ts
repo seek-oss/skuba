@@ -2,7 +2,7 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { isErrorWithCode } from '../../../utils/error';
+import { isErrorWithCode } from '../../../utils/error.js';
 
 export const tsFileExists = async (filePath: string) => {
   const ext = path.extname(filePath);

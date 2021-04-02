@@ -4,25 +4,25 @@ import chalk from 'chalk';
 import { Form, FormChoice } from 'enquirer';
 import fs from 'fs-extra';
 
-import { copyFiles } from '../../utils/copy';
-import { isErrorWithCode } from '../../utils/error';
-import { log } from '../../utils/logging';
-import { getRandomPort } from '../../utils/port';
+import { copyFiles } from '../../utils/copy.js';
+import { isErrorWithCode } from '../../utils/error.js';
+import { log } from '../../utils/logging.js';
+import { getRandomPort } from '../../utils/port.js';
 import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
   TemplateConfig,
-} from '../../utils/template';
+} from '../../utils/template.js';
 
-import { downloadGitHubTemplate } from './git';
+import { downloadGitHubTemplate } from './git.js';
 import {
   BASE_PROMPT_PROPS,
   BaseFields,
   GIT_PATH_PROMPT,
   SHOULD_CONTINUE_PROMPT,
   TEMPLATE_PROMPT,
-} from './prompts';
-import { InitConfig, InitConfigInput } from './types';
+} from './prompts.js';
+import { InitConfig, InitConfigInput } from './types.js';
 
 export const runForm = <T = Record<string, string>>(props: {
   choices: Readonly<FormChoice[]>;

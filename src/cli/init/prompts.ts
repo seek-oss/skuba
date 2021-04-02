@@ -1,7 +1,7 @@
 import { Input, Select } from 'enquirer';
 import fs from 'fs-extra';
 
-import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
+import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation.js';
 
 export type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
 

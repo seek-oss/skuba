@@ -1,13 +1,13 @@
-import { parseObject } from '../processing/json';
+import { parseObject } from '../processing/json.js';
 import {
   assertDefined,
   defaultOpts,
   defaultPackageOpts,
   executeModule,
-} from '../testing/module';
-import { TsConfigJson } from '../types';
+} from '../testing/module.js';
+import { TsConfigJson } from '../types.js';
 
-import { tsconfigModule } from './tsconfig';
+import { tsconfigModule } from './tsconfig.js';
 
 describe('tsconfigModule', () => {
   it('works from scratch', async () => {

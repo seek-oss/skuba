@@ -1,4 +1,4 @@
-import { exec } from '../../utils/exec';
+import { exec } from '../../utils/exec.js';
 
 const DEFAULT_ARGS = ['--project', 'tsconfig.build.json'] as const;
 

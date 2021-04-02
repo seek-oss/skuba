@@ -1,4 +1,4 @@
-import { seekDatadogCustomMetrics } from './seekDatadogCustomMetrics';
+import { seekDatadogCustomMetrics } from './seekDatadogCustomMetrics.js';
 
 describe('seekDatadogCustomMetrics', () => {
   it('passes through up-to-date dependencies', () => {

@@ -3,9 +3,9 @@ import path from 'path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 
-import { hasDebugFlag } from '../utils/args';
-import { execConcurrently } from '../utils/exec';
-import { getConsumerManifest } from '../utils/manifest';
+import { hasDebugFlag } from '../utils/args.js';
+import { execConcurrently } from '../utils/exec.js';
+import { getConsumerManifest } from '../utils/manifest.js';
 
 interface Options {
   debug: boolean;

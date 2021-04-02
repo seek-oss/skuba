@@ -1,5 +1,5 @@
-import { createExec } from '../../../utils/exec';
-import { log } from '../../../utils/logging';
+import { createExec } from '../../../utils/exec.js';
+import { log } from '../../../utils/logging.js';
 
 export const auditWorkingTree = async () => {
   const exec = createExec({ stdio: 'pipe' });

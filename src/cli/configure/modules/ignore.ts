@@ -1,6 +1,6 @@
-import { readBaseTemplateFile } from '../../../utils/template';
-import { mergeWithIgnoreFile } from '../processing/ignoreFile';
-import { Module } from '../types';
+import { readBaseTemplateFile } from '../../../utils/template.js';
+import { mergeWithIgnoreFile } from '../processing/ignoreFile.js';
+import { Module } from '../types.js';
 
 export const ignoreModule = async (): Promise<Module> => {
   const [dockerFile, gitFile] = await Promise.all([

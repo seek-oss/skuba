@@ -1,6 +1,6 @@
 import ts from 'typescript';
 
-import { formatPrettier } from './prettier';
+import { formatPrettier } from './prettier.js';
 
 type Props = ts.NodeArray<ts.ObjectLiteralElementLike>;
 

@@ -1,4 +1,4 @@
-import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
+import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation.js';
 
 describe('isGitHubOrg', () => {
   test.each([
