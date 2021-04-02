@@ -27,7 +27,7 @@
     "build": "rm -rf dist && node build.js",
     "format": "skuba format",
     "lint": "skuba lint",
-    "test": "skuba test --maxWorkers=1",
+    "test": "skuba test",
     "deploy:dev": "bash -c \"yarn build && cdk deploy appStack --require-approval never --context stage=dev\"",
     "deploy:prod": "bash -c \"yarn build && cdk deploy appStack --require-approval never --context stage=prod\""
   },
