@@ -4,6 +4,7 @@
     "declaration": true,
     // TODO: set in /config/tsconfig.json
     "isolatedModules": true,
+    "module":"ES2020",
     "outDir": "lib",
     "removeComments": false
   },

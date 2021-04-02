@@ -9,6 +9,7 @@
   },
   "version": "3.12.2",
   "main": "lib/index.js",
+  "type": "module",
   "typings": "lib/index.d.ts",
   "files": [
     "config/**/*",
