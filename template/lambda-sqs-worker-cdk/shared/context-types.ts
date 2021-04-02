@@ -1,36 +1,50 @@
 /* eslint-disable new-cap */
-import { Literal, Number, Record, Static, String, Union } from 'runtypes';
+import * as t from 'runtypes';
 
-export const stageContext = Union(Literal('dev'), Literal('prod'));
-export type StageContext = Static<typeof stageContext>;
+export const stageContext = t.Union(t.Literal('dev'), t.Literal('prod'));
+export type StageContext = t.Static<typeof stageContext>;
 
-export const envContext = Record({
-  workerLambda: Record({
-    name: String,
-    environment: Record({
-      SOMETHING: String,
-    }).asReadonly(),
-  }).asReadonly(),
-  queue: Record({
-    name: String,
-    deadLetterQueue: Record({
-      name: String,
-      maxReceiveCount: Number,
-    }).asReadonly(),
-  }).asReadonly(),
-  topic: Record({
-    name: String,
-  }).asReadonly(),
-  kmsKey: Record({
-    description: String,
-    alias: String,
-  }),
-}).asReadonly();
+export const envContext = t
+  .Record({
+    workerLambda: t
+      .Record({
+        name: t.String,
+        environment: t
+          .Record({
+            SOMETHING: t.String,
+          })
+          .asReadonly(),
+      })
+      .asReadonly(),
+    queue: t
+      .Record({
+        name: t.String,
+        deadLetterQueue: t
+          .Record({
+            name: t.String,
+            maxReceiveCount: t.Number,
+          })
+          .asReadonly(),
+      })
+      .asReadonly(),
+    topic: t
+      .Record({
+        name: t.String,
+      })
+      .asReadonly(),
+    kmsKey: t.Record({
+      description: t.String,
+      alias: t.String,
+    }),
+  })
+  .asReadonly();
 
-export type EnvContext = Static<typeof envContext>;
+export type EnvContext = t.Static<typeof envContext>;
 
-export const globalContext = Record({
-  appName: String,
-}).asReadonly();
+export const globalContext = t
+  .Record({
+    appName: t.String,
+  })
+  .asReadonly();
 
-export type GlobalContext = Static<typeof globalContext>;
+export type GlobalContext = t.Static<typeof globalContext>;
