@@ -17,7 +17,6 @@ plugins: &plugins #alias for shared plugins
     environment:
       - NPM_TOKEN
   seek-oss/docker-ecr-cache#v1.9.0:
-    dockerfile: builder.dockerfile
     build-args:
       - NPM_TOKEN
     cache-on:
