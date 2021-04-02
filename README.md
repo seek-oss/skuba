@@ -205,8 +205,7 @@ This initialises a new directory and Git repository.
 [serverless]: https://serverless.com/
 [worker]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#worker
 [express]: https://expressjs.com/
-
-[AWS CDK]: [Serverless](https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#cdk)
+[aws cdk]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#cdk
 
 This script is interactive by default.
 For unattended execution, pipe in JSON:
