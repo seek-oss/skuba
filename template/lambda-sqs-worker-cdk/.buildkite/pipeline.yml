@@ -21,6 +21,7 @@ plugins: &plugins #alias for shared plugins
     build-args:
       - NPM_TOKEN
     cache-on:
+      - package.json
       - yarn.lock
 
 steps:
