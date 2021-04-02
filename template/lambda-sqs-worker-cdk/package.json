@@ -27,11 +27,5 @@
     "test": "skuba test",
     "deploy:dev": "bash -c \"yarn build && cdk deploy appStack --require-approval never --context stage=dev\"",
     "deploy:prod": "bash -c \"yarn build && cdk deploy appStack --require-approval never --context stage=prod\""
-  },
-  "skuba": {
-    "entryPoint": "src/app.ts#handler",
-    "template": null,
-    "type": "application",
-    "version": "3.12.2"
   }
 }
