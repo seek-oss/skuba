@@ -10,5 +10,5 @@
  * ```
  */
 
-export * as Jest from './api/jest';
-export * as Net from './api/net';
+export * as Jest from './api/jest/index.js';
+export * as Net from './api/net/index.js';

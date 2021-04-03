@@ -3,7 +3,7 @@ import { AddressInfo } from 'net';
 
 import { serializeError } from 'serialize-error';
 
-import { log } from '../utils/logging';
+import { log } from '../utils/logging.js';
 
 /**
  * Create an HTTP request listener based on the supplied function.

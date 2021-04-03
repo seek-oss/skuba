@@ -1,10 +1,10 @@
-import { log } from '../utils/logging';
-import { isFunction, isObject } from '../utils/validation';
+import { log } from '../utils/logging.js';
+import { isFunction, isObject } from '../utils/validation.js';
 
 import {
   createRequestListenerFromFunction,
   serveRequestListener,
-} from './http';
+} from './http.js';
 
 interface Args {
   availablePort?: number;

@@ -1,4 +1,4 @@
-import { createExec } from '../../utils/exec';
+import { createExec } from '../../utils/exec.js';
 
 const portStringToNumber = (portString: string) => {
   const port = Number(portString);

@@ -13,4 +13,4 @@ Object.assign(app, {
   port: 12345,
 });
 
-export = app;
+export default app;

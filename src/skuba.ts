@@ -12,32 +12,29 @@
 
 import path from 'path';
 
-import { parseProcessArgs } from './utils/args';
-import { COMMAND_DIR, COMMAND_SET, commandToModule } from './utils/command';
-import { handleCliError } from './utils/error';
-import { showHelp } from './utils/help';
-import { log } from './utils/logging';
-import { showLogoAndVersionInfo } from './utils/logo';
-import { hasProp } from './utils/validation';
+import { parseProcessArgs } from './utils/args.js';
+import { COMMAND_DIR, COMMAND_SET, commandToModule } from './utils/command.js';
+import { handleCliError } from './utils/error.js';
+import { showHelp } from './utils/help.js';
+import { log } from './utils/logging.js';
+import { showLogoAndVersionInfo } from './utils/logo.js';
 
 const skuba = async () => {
   const { commandName } = parseProcessArgs(process.argv);
 
   if (COMMAND_SET.has(commandName)) {
     const moduleName = commandToModule(commandName);
+    const modulePath = path.join(COMMAND_DIR, `${moduleName}.js`);
 
-    /* eslint-disable @typescript-eslint/no-var-requires */
-    const commandModule = require(path.join(
-      COMMAND_DIR,
-      moduleName,
-    )) as unknown;
+    const commandModule = await import(modulePath);
 
-    if (!hasProp(commandModule, moduleName)) {
+    let run: () => Promise<unknown>;
+    try {
+      run = commandModule[moduleName];
+    } catch (err) {
       log.err(log.bold(commandName), "couldn't run! Please submit an issue.");
       process.exit(1);
     }
-
-    const run = commandModule[moduleName] as () => Promise<unknown>;
 
     return run();
   }

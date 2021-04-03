@@ -1,7 +1,7 @@
 import { Config } from '@jest/types';
 
-import jestPreset from '../../../jest-preset';
-import { mergeRaw } from '../../cli/configure/processing/record';
+import jestPreset from '../../../jest-preset.js';
+import { mergeRaw } from '../../cli/configure/processing/record.js';
 
 type Props = Pick<
   Config.InitialOptions,

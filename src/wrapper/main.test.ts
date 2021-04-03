@@ -2,8 +2,8 @@ import path from 'path';
 
 import request from 'supertest';
 
-import * as http from './http';
-import { main } from './main';
+import * as http from './http.js';
+import { main } from './main.js';
 
 const initWrapper = (entryPoint: string) =>
   main(path.join('src', 'wrapper', 'testing', entryPoint), '8080');

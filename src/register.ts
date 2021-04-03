@@ -25,7 +25,7 @@ import path from 'path';
 import { addAlias } from 'module-alias';
 import readPkgUp from 'read-pkg-up';
 
-import { log } from './utils/logging';
+import { log } from './utils/logging.js';
 
 const registerModuleAliases = () => {
   if (!process.env.__SKUBA_REGISTER_MODULE_ALIASES) {
