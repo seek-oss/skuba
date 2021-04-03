@@ -5,8 +5,7 @@
     "paths": {
       "src": ["src"]
     },
-    "target": "es2020",
-    "resolveJsonModule": true
+    "target": "es2020"
   },
   "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"

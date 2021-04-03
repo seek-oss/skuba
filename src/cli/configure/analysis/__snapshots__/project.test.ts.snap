@@ -55,9 +55,11 @@ node_modules*/
   },
   ".gitignore": Object {
     "data": "# managed by skuba
+.cdk.staging/
 .idea/
 .serverless/
 .vscode/
+cdk.out/
 node_modules*/
 
 /coverage*/
@@ -73,10 +75,6 @@ npm-debug.log
 package-lock.json
 yarn-error.log
 # end managed by skuba
-
-# CDK asset staging directory
-.cdk.staging
-cdk.out
 ",
     "operation": "A",
   },
@@ -158,8 +156,7 @@ export default Jest.mergePreset({
     \\"outDir\\": \\"lib\\",
     \\"paths\\": {
       \\"src\\": [\\"src\\"]
-    },
-    \\"resolveJsonModule\\": true
+    }
   },
   \\"exclude\\": [\\"lib*/**/*\\"],
   \\"extends\\": \\"skuba/config/tsconfig.json\\"
