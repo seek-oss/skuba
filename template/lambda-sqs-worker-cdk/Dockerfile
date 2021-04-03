@@ -7,7 +7,5 @@ RUN yarn install --frozen-lockfile --non-interactive
 RUN rm -f .npmrc
 
 FROM node:14-alpine3.11
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash git
 WORKDIR /app
 COPY --from=builder /app .
