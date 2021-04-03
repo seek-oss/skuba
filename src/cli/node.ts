@@ -2,10 +2,13 @@ import path from 'path';
 
 import getPort from 'get-port';
 
-import { parseRunArgs } from '../utils/args';
-import { createExec } from '../utils/exec';
-import { isBabelFromManifest } from '../utils/manifest';
-import { isIpPort } from '../utils/validation';
+import { parseRunArgs } from '../utils/args.js';
+import { dirname } from '../utils/esm.js';
+import { createExec } from '../utils/exec.js';
+import { isBabelFromManifest } from '../utils/manifest.js';
+import { isIpPort } from '../utils/validation.js';
+
+const __dirname = dirname(import.meta)
 
 export const node = async () => {
   const args = parseRunArgs(process.argv.slice(2));
@@ -31,7 +34,9 @@ export const node = async () => {
       ['.js', '.json', '.ts'].join(','),
       '--require',
       path.posix.join('skuba', 'lib', 'register'),
-      ...(args.entryPoint ? [path.join(__dirname, '..', 'wrapper.js')] : []),
+      ...(args.entryPoint
+        ? [path.join(__dirname, '..', 'wrapper.js')]
+        : []),
       ...args.script,
     );
   }

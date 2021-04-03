@@ -5,7 +5,10 @@ import path from 'path';
 import fs from 'fs-extra';
 import * as t from 'runtypes';
 
-import { ProjectType } from './manifest';
+import { dirname } from './esm.js'
+import { ProjectType } from './manifest.js';
+
+const __dirname = dirname(import.meta);
 
 export type TemplateConfig = t.Static<typeof TemplateConfig>;
 

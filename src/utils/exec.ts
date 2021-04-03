@@ -7,8 +7,11 @@ import execa, { ExecaChildProcess } from 'execa';
 import npmRunPath from 'npm-run-path';
 import npmWhich from 'npm-which';
 
-import { ConcurrentlyErrors, isErrorWithCode } from './error';
-import { log } from './logging';
+import { ConcurrentlyErrors, isErrorWithCode } from './error.js';
+import { dirname } from './esm.js'
+import { log } from './logging.js';
+
+const __dirname = dirname(import.meta);
 
 class YarnSpamFilter extends stream.Transform {
   silenced = false;

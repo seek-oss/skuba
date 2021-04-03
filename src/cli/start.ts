@@ -2,13 +2,16 @@ import path from 'path';
 
 import getPort from 'get-port';
 
-import { parseRunArgs } from '../utils/args';
-import { createExec } from '../utils/exec';
+import { parseRunArgs } from '../utils/args.js';
+import { createExec } from '../utils/exec.js';
 import {
   getEntryPointFromManifest,
   isBabelFromManifest,
-} from '../utils/manifest';
-import { isIpPort } from '../utils/validation';
+} from '../utils/manifest.js';
+import { isIpPort } from '../utils/validation.js';
+import { dirname } from '../utils/esm.js';
+
+const __dirname = dirname(import.meta);
 
 export const start = async () => {
   const [args, availablePort, isBabel] = await Promise.all([

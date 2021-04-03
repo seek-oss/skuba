@@ -4,8 +4,11 @@ import {
   buildPatternToFilepathMap,
   crawlDirectory,
   createInclusionFilter,
-} from './dir';
-import { BASE_TEMPLATE_DIR } from './template';
+} from './dir.js';
+import { dirname } from './esm.js'
+import { BASE_TEMPLATE_DIR } from './template.js';
+
+const __dirname = dirname(import.meta);
 
 describe('buildPatternToFilepathMap', () => {
   it('deals with different levels of nesting', () =>

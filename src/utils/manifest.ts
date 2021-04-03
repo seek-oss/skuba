@@ -3,7 +3,10 @@
 import readPkgUp, { NormalizedPackageJson } from 'read-pkg-up';
 import * as t from 'runtypes';
 
-import { hasProp, hasStringProp } from './validation';
+import { dirname } from './esm.js'
+import { hasProp, hasStringProp } from './validation.js';
+
+const __dirname = dirname(import.meta);
 
 export type ProjectType = t.Static<typeof ProjectType>;
 

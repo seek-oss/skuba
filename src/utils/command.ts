@@ -1,5 +1,9 @@
 import path from 'path';
 
+import { dirname } from './esm.js';
+
+const __dirname = dirname(import.meta);
+
 export type Command = typeof COMMAND_LIST[number];
 
 export const COMMAND_ALIASES: Record<string, Command> = {
