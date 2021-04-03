@@ -27,7 +27,7 @@
     "lint": "yarn skuba lint",
     "release": "yarn build && changeset publish",
     "stage": "changeset version && yarn format",
-    "skuba": "ts-node src/skuba",
+    "skuba": "node --loader ts-node/esm src/skuba.ts",
     "test": "yarn skuba test",
     "test:watch": "yarn skuba test --watch",
     "test:template": "scripts/test-template.sh"
