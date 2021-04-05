@@ -47,7 +47,7 @@ export class AppStack extends Stack {
     });
 
     const worker = new Function(this, 'worker', {
-      code: new AssetCode('./dist'),
+      code: new AssetCode('./lib'),
       runtime: Runtime.NODEJS_14_X,
       handler: 'app.handler',
       functionName: context.workerLambda.name,

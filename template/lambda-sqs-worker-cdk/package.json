@@ -1,5 +1,8 @@
 {
-  "dependencies": {},
+  "dependencies": {
+    "@seek/logger": "^4.4.7",
+    "runtypes": "^6.0.0"
+  },
   "devDependencies": {
     "@aws-cdk/assert": "^1.95.1",
     "@aws-cdk/aws-iam": "^1.95.1",
@@ -10,22 +13,20 @@
     "@aws-cdk/aws-sns-subscriptions": "^1.95.1",
     "@aws-cdk/aws-sqs": "^1.95.1",
     "@aws-cdk/core": "^1.95.1",
-    "@seek/logger": "^4.4.7",
     "@types/aws-lambda": "^8.10.73",
     "@types/node": "^14.14.37",
     "aws-cdk": "^1.18.0",
-    "esbuild": "^0.11.2",
-    "runtypes": "^5.2.0",
     "skuba": "*"
   },
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "build": "rm -rf dist && node build.js",
+    "build": "skuba build",
     "format": "skuba format",
     "lint": "skuba lint",
     "test": "skuba test",
-    "deploy:dev": "yarn build && cdk deploy appStack --require-approval never --context stage=dev",
-    "deploy:prod": "yarn build && cdk deploy appStack --require-approval never --context stage=prod"
+    "package": "yarn build && yarn --prod --modules-folder ./lib/node_modules",
+    "deploy:dev": "yarn package && cdk deploy appStack --require-approval never --context stage=dev",
+    "deploy:prod": "yarn package && cdk deploy appStack --require-approval never --context stage=prod"
   }
 }
