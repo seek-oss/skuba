@@ -4,7 +4,7 @@
     "aws-sdk": "^2.831.0",
     "seek-datadog-custom-metrics": "^4.0.0",
     "skuba-dive": "^1.1.2",
-    "runtypes": "^5.0.1",
+    "runtypes": "^6.0.0",
     "runtypes-filter": "^0.5.0"
   },
   "devDependencies": {
