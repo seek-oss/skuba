@@ -251,11 +251,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
 
   if (!result.success) {
     log.err('Invalid data from stdin:');
-    log.err(
-      typeof result.key === 'undefined'
-        ? result.message
-        : `${result.key}: ${result.message}`,
-    );
+    log.err(result.message);
     process.exit(1);
   }
 
