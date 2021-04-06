@@ -9,32 +9,19 @@ import { ProjectType } from './manifest';
 
 export type TemplateConfig = t.Static<typeof TemplateConfig>;
 
-/**
- * TODO: migrate from `t.Partial` to `.optional()` once Runtypes 6 is released.
- */
-export const TemplateConfig = t
-  .Record({
-    fields: t.Array(
-      t
-        .Record({
-          name: t.String,
-          message: t.String,
-          initial: t.String,
-        })
-        .And(
-          t.Partial({
-            validate: t.Function,
-          }),
-        ),
-    ),
-  })
-  .And(
-    t.Partial({
-      entryPoint: t.String,
-      noSkip: t.Boolean,
-      type: ProjectType,
+export const TemplateConfig = t.Record({
+  fields: t.Array(
+    t.Record({
+      name: t.String,
+      message: t.String,
+      initial: t.String,
+      validate: t.Function.optional(),
     }),
-  );
+  ),
+  entryPoint: t.String.optional(),
+  noSkip: t.Boolean.optional(),
+  type: ProjectType.optional(),
+});
 
 export const TEMPLATE_CONFIG_FILENAME = 'skuba.template.js';
 
