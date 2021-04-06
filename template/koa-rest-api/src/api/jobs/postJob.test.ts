@@ -24,9 +24,11 @@ describe('postJobHandler', () => {
     return agent
       .post('/')
       .send(jobInput)
-      .expect(
-        422,
-        'Expected "hirer" property to be present, but was missing in hirer',
+      .expect(422)
+      .expect(({ text }) =>
+        expect(text).toMatchInlineSnapshot(
+          `"Expected { hirer: { id: string; }; }, but was incompatible"`,
+        ),
       );
   });
 });

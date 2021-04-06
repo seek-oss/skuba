@@ -40,15 +40,22 @@ describe('validate', () => {
     return agent
       .post('/')
       .send({ ...idDescription, id: null })
-      .expect(422, 'Expected string, but was null in id');
+      .expect(422)
+      .expect(({ text }) =>
+        expect(text).toMatchInlineSnapshot(
+          `"Expected { id: string; description: string; }, but was incompatible"`,
+        ),
+      );
   });
 
   it('blocks missing props', () =>
     agent
       .post('/')
       .send({})
-      .expect(
-        422,
-        'Expected "id" property to be present, but was missing in id',
+      .expect(422)
+      .expect(({ text }) =>
+        expect(text).toMatchInlineSnapshot(
+          `"Expected { id: string; description: string; }, but was incompatible"`,
+        ),
       ));
 });
