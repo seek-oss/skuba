@@ -12,8 +12,8 @@ plugins: &plugins #alias for shared plugins
       NPM_TOKEN: 'arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token'
   docker#v3.8.0:
     volumes:
-      - /app/node_modules
-    workdir: '/app'
+      - /workdir/node_modules
+      - /workdir/lib
     environment:
       - NPM_TOKEN
   seek-oss/docker-ecr-cache#v1.9.0:

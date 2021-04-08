@@ -25,8 +25,8 @@
     "format": "skuba format",
     "lint": "skuba lint",
     "test": "skuba test",
-    "package": "yarn build && yarn --prod --modules-folder ./lib/node_modules",
-    "deploy:dev": "yarn package && cdk deploy appStack --require-approval never --context stage=dev",
-    "deploy:prod": "yarn package && cdk deploy appStack --require-approval never --context stage=prod"
+    "package": "yarn --prod --modules-folder ./lib/node_modules",
+    "deploy:dev": "cdk deploy appStack --require-approval never --context stage=dev",
+    "deploy:prod": "cdk deploy appStack --require-approval never --context stage=prod"
   }
 }

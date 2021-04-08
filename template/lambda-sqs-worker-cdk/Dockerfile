@@ -1,11 +1,30 @@
-FROM node:14-alpine3.11 as builder
-ARG NPM_TOKEN
-WORKDIR /app
-COPY ./ /app
-RUN echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
-RUN yarn install --frozen-lockfile --non-interactive
-RUN rm -f .npmrc
+# Docker image history includes ARG values, so never target this stage directly
+FROM node:14-alpine AS unsafe-dev-deps
 
-FROM node:14-alpine3.11
-WORKDIR /app
-COPY --from=builder /app .
+WORKDIR /workdir
+
+COPY package.json yarn.lock ./
+
+ARG NPM_READ_TOKEN
+
+RUN \
+  echo '//registry.npmjs.org/:_authToken=${NPM_READ_TOKEN}' > .npmrc && \
+  yarn install --frozen-lockfile --ignore-optional --non-interactive && \
+  yarn package && \
+  rm .npmrc
+
+###
+
+FROM node:14-alpine AS dev-deps
+
+WORKDIR /workdir
+
+COPY --from=unsafe-dev-deps /workdir .
+
+###
+
+FROM dev-deps AS build
+
+COPY . .
+
+RUN yarn build
