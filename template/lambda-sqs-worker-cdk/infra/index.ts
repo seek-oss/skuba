@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /* eslint-disable no-new */
 import { App } from '@aws-cdk/core';
 
