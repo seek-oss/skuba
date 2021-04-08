@@ -6,5 +6,5 @@ const logger = createLogger({
 });
 
 export const handler: SQSHandler = (_: SQSEvent) => {
-  logger.info({ message: 'Hello World!' });
+  logger.info('Hello World!');
 };
