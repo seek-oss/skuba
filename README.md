@@ -173,7 +173,9 @@ This initialises a new directory and Git repository.
 
   An asynchronous [worker] built on [AWS Lambda] and deployed with [AWS CDK].
 
+  ```text
   SNS -> SQS (with a dead-letter queue) -> Lambda
+  ```
 
   Comes with configuration validation and infrastructure snapshot testing.
 
