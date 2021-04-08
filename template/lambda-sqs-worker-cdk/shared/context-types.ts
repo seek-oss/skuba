@@ -8,7 +8,7 @@ export const envContext = t
   .Record({
     workerLambda: t
       .Record({
-        name: t.String,
+        reservedConcurrency: t.Number,
         environment: t
           .Record({
             SOMETHING: t.String,
@@ -16,26 +16,6 @@ export const envContext = t
           .asReadonly(),
       })
       .asReadonly(),
-    queue: t
-      .Record({
-        name: t.String,
-        deadLetterQueue: t
-          .Record({
-            name: t.String,
-            maxReceiveCount: t.Number,
-          })
-          .asReadonly(),
-      })
-      .asReadonly(),
-    topic: t
-      .Record({
-        name: t.String,
-      })
-      .asReadonly(),
-    kmsKey: t.Record({
-      description: t.String,
-      alias: t.String,
-    }),
   })
   .asReadonly();
 

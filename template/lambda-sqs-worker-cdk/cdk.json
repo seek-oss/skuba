@@ -7,46 +7,18 @@
     },
     "dev": {
       "workerLambda": {
-        "name": "<%- serviceName %>",
+        "reservedConcurrency": 1,
         "environment": {
           "SOMETHING": "dev"
         }
-      },
-      "queue": {
-        "name": "<%- serviceName %>",
-        "deadLetterQueue": {
-          "name": "<%- serviceName %>-dlq",
-          "maxReceiveCount": 3
-        }
-      },
-      "topic": {
-        "name": "<%- serviceName %>"
-      },
-      "kmsKey": {
-        "description": "<%- serviceName %>",
-        "alias": "seek/self/<%- serviceName %>"
       }
     },
     "prod": {
       "workerLambda": {
-        "name": "<%- serviceName %>",
+        "reservedConcurrency": 2,
         "environment": {
           "SOMETHING": "prod"
         }
-      },
-      "queue": {
-        "name": "<%- serviceName %>",
-        "deadLetterQueue": {
-          "name": "<%- serviceName %>-dlq",
-          "maxReceiveCount": 3
-        }
-      },
-      "topic": {
-        "name": "<%- serviceName %>"
-      },
-      "kmsKey": {
-        "description": "<%- serviceName %>",
-        "alias": "seek/self/<%- serviceName %>"
       }
     }
   }

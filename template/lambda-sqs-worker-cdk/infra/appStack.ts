@@ -19,28 +19,28 @@ export class AppStack extends Stack {
     const accountPrincipal = new AccountPrincipal(this.account);
 
     const kmsKey = new Key(this, 'kms-key', {
-      description: context.kmsKey.description,
+      description: '<%- serviceName %>',
       enableKeyRotation: true,
       admins: [accountPrincipal],
-      alias: context.kmsKey.alias,
+      alias: 'seek/self/<%- serviceName %>',
     });
 
     kmsKey.grantEncrypt(accountPrincipal);
 
     const topic = new Topic(this, 'topic', {
-      topicName: context.topic.name,
+      topicName: '<%- serviceName %>',
       masterKey: kmsKey,
     });
 
     const deadLetterQueue = new Queue(this, 'worker-queue-dlq', {
-      queueName: context.queue.deadLetterQueue.name,
+      queueName: '<%- serviceName %>-dlq',
       encryptionMasterKey: kmsKey,
     });
 
     const queue = new Queue(this, 'worker-queue', {
-      queueName: context.queue.name,
+      queueName: '<%- serviceName %>',
       deadLetterQueue: {
-        maxReceiveCount: context.queue.deadLetterQueue.maxReceiveCount,
+        maxReceiveCount: 3,
         queue: deadLetterQueue,
       },
       encryptionMasterKey: kmsKey,
@@ -50,7 +50,7 @@ export class AppStack extends Stack {
       code: new AssetCode('./lib'),
       runtime: Runtime.NODEJS_14_X,
       handler: 'app.handler',
-      functionName: context.workerLambda.name,
+      functionName: '<%- serviceName %>',
       environmentEncryption: kmsKey,
       environment: {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
