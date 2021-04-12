@@ -31,7 +31,7 @@ describe('validateJson', () => {
     expect(() =>
       validateJson(input, filterIdDescription),
     ).toThrowErrorMatchingInlineSnapshot(
-      `"Expected string, but was null in id"`,
+      `"Expected { id: string; description: string; }, but was incompatible"`,
     );
   });
 
@@ -41,7 +41,7 @@ describe('validateJson', () => {
     expect(() =>
       validateJson(input, filterIdDescription),
     ).toThrowErrorMatchingInlineSnapshot(
-      `"Expected \\"id\\" property to be present, but was missing in id"`,
+      `"Expected { id: string; description: string; }, but was incompatible"`,
     );
   });
 
