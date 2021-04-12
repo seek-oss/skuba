@@ -73,6 +73,7 @@ export const TEMPLATE_PROMPT = new Select({
     'greeter',
     'koa-rest-api',
     'lambda-sqs-worker',
+    'lambda-sqs-worker-cdk',
     'oss-npm-package',
     'private-npm-package',
     'github →',
