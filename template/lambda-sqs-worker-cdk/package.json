@@ -1,0 +1,32 @@
+{
+  "dependencies": {
+    "@seek/logger": "^4.4.7",
+    "runtypes": "^6.0.0"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "^1.95.1",
+    "@aws-cdk/aws-iam": "^1.95.1",
+    "@aws-cdk/aws-kms": "^1.95.1",
+    "@aws-cdk/aws-lambda": "^1.95.1",
+    "@aws-cdk/aws-lambda-event-sources": "^1.95.1",
+    "@aws-cdk/aws-sns": "^1.95.1",
+    "@aws-cdk/aws-sns-subscriptions": "^1.95.1",
+    "@aws-cdk/aws-sqs": "^1.95.1",
+    "@aws-cdk/core": "^1.95.1",
+    "@types/aws-lambda": "^8.10.73",
+    "@types/node": "^14.14.37",
+    "aws-cdk": "^1.18.0",
+    "skuba": "*"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "skuba build",
+    "format": "skuba format",
+    "lint": "skuba lint",
+    "test": "skuba test",
+    "package": "yarn --prod --modules-folder ./lib/node_modules",
+    "deploy:dev": "cdk deploy appStack --require-approval never --context stage=dev",
+    "deploy:prod": "cdk deploy appStack --require-approval never --context stage=prod"
+  }
+}

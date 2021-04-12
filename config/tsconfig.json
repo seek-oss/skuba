@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   },
   "extends": "tsconfig-seek"
 }

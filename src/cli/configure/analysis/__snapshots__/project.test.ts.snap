@@ -55,9 +55,11 @@ node_modules*/
   },
   ".gitignore": Object {
     "data": "# managed by skuba
+.cdk.staging/
 .idea/
 .serverless/
 .vscode/
+cdk.out/
 node_modules*/
 
 /coverage*/

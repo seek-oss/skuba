@@ -169,6 +169,16 @@ This initialises a new directory and Git repository.
   a message queue is employed between the source topic and the Lambda function,
   and unprocessed events are sent to a dead-letter queue for manual triage.
 
+- `lambda-sqs-worker-cdk`
+
+  An asynchronous [worker] built on [AWS Lambda] and deployed with [AWS CDK].
+
+  ```text
+  SNS -> SQS (with a dead-letter queue) -> Lambda
+  ```
+
+  Comes with configuration validation and infrastructure snapshot testing.
+
 - `oss-npm-package`
 
   A public npm package published via [semantic-release] pipeline.
@@ -197,6 +207,7 @@ This initialises a new directory and Git repository.
 [serverless]: https://serverless.com/
 [worker]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#worker
 [express]: https://expressjs.com/
+[aws cdk]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#cdk
 
 This script is interactive by default.
 For unattended execution, pipe in JSON:
