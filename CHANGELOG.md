@@ -1,5 +1,68 @@
 # skuba
 
+## 3.13.0
+
+### Minor Changes
+
+- 13b3bce: **template/lambda-sqs-worker-cdk:** Add new template
+- 78c9a48: **format, lint:** Support `--debug` flag
+- e7cd7ed: **all**: Upgrade templates to Node 14
+
+  Node.js 14 is [now supported on AWS Lambda](https://aws.amazon.com/about-aws/whats-new/2021/02/aws-lambda-now-supports-node-js-14/). This lets us upgrade the Node.js requirement for skuba's templates.
+
+  This should only impact newly created projects. You can use the template changes in this PR as an example of how to upgrade an existing project. A future version of skuba may include a fixup command to automatically upgrade your project to the most recent LTS release.
+
+### Patch Changes
+
+- 7b9c728: **template/lambda-sqs-worker:** Use new `serverless.yml#/provider/iam` grouping
+
+  The `provider.iamRoleStatements` property [will be removed in Serverless v3](https://github.com/serverless/serverless/blob/v2.25.1/docs/deprecations.md#grouping-iam-settings-under-provideriam).
+
+- 612c04c: **template/lambda-sqs-worker:** serverless-plugin-canary-deployments ^0.5.0
+
+  The plugin now patches in CodeDeploy permissions to your `iamRoleStatements`, so you can clean your `serverless.yml`:
+
+  ```diff
+  - - Action: codedeploy:PutLifecycleEventHookExecutionStatus
+  -   Effect: Allow
+  -   Resource: !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:*/${WorkerLambdaFunctionDeploymentGroup}
+  ```
+
+- 44e53be: **template:** runtypes-filter ^0.6.0
+- ae29b0c: **template/koa-rest-api:** Fix ineffectual smoke test
+- fc4096c: **template:** Drop region parameterisation
+- c3bd37d: **deps:** semantic-release ^17.3.8
+
+  Resolves [SNYK-JS-MARKED-1070800](https://app.snyk.io/vuln/SNYK-JS-MARKED-1070800).
+
+- a343814: **template/\*-rest-api:** Fail Gantry build if ECR scanning reports vulnerabilities
+- ab0b8d2: **template:** runtypes ^6.0.0
+- 1a78efa: **template/koa-rest-api:** Remove awkward request body from GET test
+- fdda527: **deps:** ejs ^3.1.6
+
+  Resolves [SNYK-JS-EJS-1049328](https://app.snyk.io/vuln/SNYK-JS-EJS-1049328).
+
+- 0124032: **init:** Mention GitHub repo creation
+
+  skuba doesn't have access to GitHub credentials to create a repository on your behalf. The CLI now makes it clearer that you should create an empty GitHub repository.
+
+- b762058: **template/lambda-sqs-worker:** Remove custom Serverless variable syntax
+
+  `serverless@2.3.0` bundled native support for CloudFormation pseudo parameters. This even works with arbitrary logical IDs like `!Sub ${WorkerLambdaFunctionDeploymentGroup}`.
+
+- bd22fe0: **deps:** runtypes ^6.0.0
+- 4cb3c48: **deps:** ts-node-dev 1.1.6
+- adfe1e9: **Jest:** Expose `testTimeout` in `Jest.mergePreset` options
+- 6797255: **template/lambda-sqs-worker:** Use new `serverless.yml#/package/patterns` property
+
+  The `package.exclude` and `package.include` properties [will be removed in Serverless v3](https://github.com/serverless/serverless/blob/v2.32.0/docs/deprecations.md#new-way-to-define-packaging-patterns).
+
+- e55907e: **deps:** concurrently ^6.0.0
+- cc6a5c9: **deps:** typescript 4.1.5
+- 8f17be6: **configure:** Rewrite `dist => lib` in `serverless.yml`s
+- a80fed6: **template/\*-rest-api:** Move Gantry region config to plugin options
+- 8926a5c: **template:** Add GitHub repository settings and Renovate to init checklist
+
 ## 3.12.2
 
 ### Patch Changes
