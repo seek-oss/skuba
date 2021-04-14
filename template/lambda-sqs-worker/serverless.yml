@@ -61,11 +61,10 @@ provider:
     seek:source:url: 'https://github.com/SEEK-Jobs/<%- repoName %>'
 
 package:
-  exclude:
-    - ./**
-    - '!node_modules/**'
-  include:
+  patterns:
+    - '!**'
     - lib/**
+    - node_modules/**
 
 functions:
   Worker:
