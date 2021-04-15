@@ -1845,10 +1845,10 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
-"@types/fs-extra@9.0.10":
-  version "9.0.10"
-  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-9.0.10.tgz#8023a72e3d06cf54929ea47ec7634e47f33f4046"
-  integrity sha512-O9T2LLkRDiTlalOBdjEkcnT0MRdT2+wglCl7pJUJ3mkWkR8hX4K+5bg2raQNJcLv4V8zGuTXe7Ud3wSqkTyuyQ==
+"@types/fs-extra@9.0.11":
+  version "9.0.11"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-9.0.11.tgz#8cc99e103499eab9f347dbc6ca4e99fb8d2c2b87"
+  integrity sha512-mZsifGG4QeQ7hlkhO56u7zt/ycBgGxSVsFI/6lGTU34VtwkiqrrSDgw0+ygs8kFGWcXnFQWMrzF2h7TtDFNixA==
   dependencies:
     "@types/node" "*"
 
@@ -1986,10 +1986,10 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
-"@types/picomatch@2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@types/picomatch/-/picomatch-2.2.1.tgz#f9e5a5e6ad03996832975ab7eadfa35791ca2a8f"
-  integrity sha512-26/tQcDmJXYHiaWAAIjnTVL5nwrT+IVaqFZIbBImAuKk/r/j1r/1hmZ7uaOzG6IknqP3QHcNNQ6QO8Vp28lUoA==
+"@types/picomatch@2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/picomatch/-/picomatch-2.2.2.tgz#e0022f77aa64475ff20326e9ff9728aaae191503"
+  integrity sha512-XygLVvHxaFK0w9sDf7Mk1wrugM0ig44Y5Fb2NmQcvznPkEfENprS6GhXVoO3AGicbhkRrmu9J7Lu7FFKqkCS8g==
 
 "@types/prettier@^2.0.0":
   version "2.2.2"
