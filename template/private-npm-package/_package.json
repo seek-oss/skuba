@@ -21,10 +21,16 @@
   "scripts": {
     "build": "skuba build-package",
     "format": "skuba format",
+    "commit": "cz",
     "lint": "skuba lint",
     "release": "yarn build && skuba release",
     "test": "skuba test --coverage",
     "test:watch": "skuba test --watch"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "sideEffects": false,
   "types": "./lib-types/index.d.ts",
