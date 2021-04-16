@@ -135,3 +135,7 @@ For more information, see the **semantic-release** docs on [triggering a release
 [renovate]: https://github.com/apps/renovate
 [semantic-release]: https://github.com/semantic-release/semantic-release
 [triggering a release]: https://github.com/semantic-release/semantic-release/#triggering-a-release
+
+In order to facilitate the alignment with semantic release commit naming convention you can use `yarn commit` command. The script will take you through a range of questions, in the end of which you will have a correct commit name and description for semantic release to pick it up.
+
+However, if you are using _squash and merge_ commits you will need to ensure the convention is preserved upon merging the pull request on Github by ensuring title and description are still populated with necesary details and follow the convention.
