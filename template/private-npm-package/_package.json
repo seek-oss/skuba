@@ -20,8 +20,8 @@
   },
   "scripts": {
     "build": "skuba build-package",
-    "format": "skuba format",
     "commit": "cz",
+    "format": "skuba format",
     "lint": "skuba lint",
     "release": "yarn build && skuba release",
     "test": "skuba test --coverage",
