@@ -28,6 +28,7 @@ Next steps:
   - [Lint](#lint)
   - [Package](#package)
 - [Release](#release)
+  - [Commit messages](#commit-messages)
   - [Releasing latest](#releasing-latest)
   - [Releasing other dist-tags](#releasing-other-dist-tags)
 
@@ -86,6 +87,12 @@ npm pack
 This package is published to the npm registry under the private `@seek` npm org with [Gutenberg], SEEK's central npm publishing pipeline.
 
 It depends on this repo being hosted on [SEEK-Jobs] with appropriate access.
+
+### Commit messages
+
+This package is published with **[semantic-release]**, which requires a particular commit format to manage semantic versioning.
+You can run the interactive `yarn commit` command in place of `git commit` to generate a compliant commit title and message.
+If you use the `Squash and merge` option on pull requests, take extra care to format the squashed commit in the GitHub UI before merging.
 
 ### Releasing latest
 

@@ -2,6 +2,7 @@
   "dependencies": {},
   "description": "<%- description %>",
   "devDependencies": {
+    "commitizen": "^4.2.3",
     "skuba": "*"
   },
   "files": [
@@ -20,11 +21,17 @@
   },
   "scripts": {
     "build": "skuba build-package",
+    "commit": "cz",
     "format": "skuba format",
     "lint": "skuba lint",
     "release": "yarn build && skuba release",
     "test": "skuba test --coverage",
     "test:watch": "skuba test --watch"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "sideEffects": false,
   "types": "./lib-types/index.d.ts",
