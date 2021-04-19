@@ -2,8 +2,8 @@
   "dependencies": {},
   "description": "<%- description %>",
   "devDependencies": {
-    "skuba": "*",
-    "commitizen": "^4.2.3"
+    "commitizen": "^4.2.3",
+    "skuba": "*"
   },
   "files": [
     "lib*/**/*.d.ts",
