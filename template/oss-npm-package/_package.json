@@ -2,8 +2,8 @@
   "dependencies": {},
   "description": "<%- description %>",
   "devDependencies": {
-    "skuba": "*",
-    "commitizen": "^4.2.3"
+    "commitizen": "^4.2.3",
+    "skuba": "*"
   },
   "files": [
     "lib*/**/*.d.ts",
@@ -21,8 +21,8 @@
   },
   "scripts": {
     "build": "skuba build-package",
-    "format": "skuba format",
     "commit": "cz",
+    "format": "skuba format",
     "lint": "skuba lint",
     "release": "yarn build && skuba release",
     "test": "skuba test --coverage",
