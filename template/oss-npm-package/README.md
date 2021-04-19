@@ -104,9 +104,9 @@ To set up this repo for publishing, follow the instructions in our [OSS npm pack
 
 ### Commit messages
 
-In order to facilitate the alignment with semantic release commit naming convention you can use `yarn commit` command. The script will take you through a range of questions, in the end of which you will have a correct commit name and description for semantic release to pick it up.
-
-However, if you are using _squash and merge_ commits you will need to ensure the convention is preserved upon merging the pull request on Github by ensuring title and description are still populated with necesary details and follow the convention.
+This package is published with **[semantic-release]**, which requires a particular commit format to manage semantic versioning.
+You can run the interactive `yarn commit` command in place of `git commit` to generate a compliant commit title and message.
+If you use the `Squash and merge` option on pull requests, take extra care to format the squashed commit in the GitHub UI before merging.
 
 ### Releasing latest
 
