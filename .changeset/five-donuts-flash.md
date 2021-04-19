@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Add commit script to package templates
+**template/\*-npm-package:** Add `yarn commit` script
