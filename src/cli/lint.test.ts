@@ -160,4 +160,50 @@ describe('TypeScript', () => {
       expect(kindlessCircle).toBeDefined();
     });
   });
+
+  describe('4.2', () => {
+    test('Leading Rest Elements in Tuple Types', () => {
+      type Tuple = [...string[], number];
+
+      const tuple: Tuple = ['', '', '', 0];
+
+      expect(tuple).toBeDefined();
+    });
+
+    test('Middle Rest Elements in Tuple Types', () => {
+      type Tuple = [boolean, ...string[], boolean];
+
+      const tuple: Tuple = [true, '', '', '', false];
+
+      expect(tuple).toBeDefined();
+    });
+
+    test('Stricter Checks For The in Operator', () => {
+      const flag = true;
+
+      // @ts-expect-error
+      expect(flag ? true : 'foo' in 42).toBeDefined();
+    });
+
+    // Not yet supported by Prettier.
+    test('abstract Construct Signatures', () => {
+      // abstract class Shape {
+      //   abstract getArea(): number;
+      //   }
+      class Shape {
+        getArea(): number {
+          return 0;
+        }
+      }
+
+      interface HasArea {
+        getArea(): number;
+      }
+
+      // const Ctor: abstract new () => HasArea = Shape;
+      const Ctor: new () => HasArea = Shape;
+
+      expect(Ctor).toBeDefined();
+    });
+  });
 });
