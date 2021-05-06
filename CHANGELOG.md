@@ -1,5 +1,18 @@
 # skuba
 
+## 3.13.1
+
+### Patch Changes
+
+- 4ecd622: **template/\*-npm-package:** Add `yarn commit` script
+- 94f3c4d: **template/lambda-sqs-worker-cdk:** Trim CDK deployment output
+- bc0d95d: **template:** @types/node ^15.0.0
+- e2d79cc: **deps:** typescript 4.2.4
+
+  See the [announcement](https://devblogs.microsoft.com/typescript/announcing-typescript-4-2/) for features and breaking changes. Note that the currently bundled version of Prettier does not support `abstract` construct signatures.
+
+- 94f3c4d: **template/lambda-sqs-worker-cdk:** Fix npm token in Buildkite pipeline
+
 ## 3.13.0
 
 ### Minor Changes
