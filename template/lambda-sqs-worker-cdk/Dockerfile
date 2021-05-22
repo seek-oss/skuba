@@ -15,16 +15,8 @@ RUN \
 
 ###
 
-FROM node:14-alpine AS dev-deps
+FROM node:14-alpine AS build
 
 WORKDIR /workdir
 
 COPY --from=unsafe-dev-deps /workdir .
-
-###
-
-FROM dev-deps AS build
-
-COPY . .
-
-RUN yarn build
