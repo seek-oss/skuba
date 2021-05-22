@@ -35,19 +35,21 @@ steps:
       - echo "--- Running yarn test :jest:"
       - yarn test
 
-  - label: 'CDK Deploy Staging  :shipit:'
+  - label: 'Build & CDK Deploy Staging  :shipit:'
     <<: *dev-agent
     plugins:
       <<: *plugins
     depends_on:
       - test
     command:
+      - echo "--- Building code"
+      - yarn build
       - echo "--- Running CDK deploy to staging"
       - yarn deploy:dev
     concurrency: 1
     concurrency_group: '<%- repoName %>/deploy/dev'
 
-  - label: 'CDK Deploy Production  :shipit:'
+  - label: 'Build & CDK Deploy Production  :shipit:'
     branches: 'master'
     <<: *prod-agent
     plugins:
@@ -55,6 +57,8 @@ steps:
     depends_on:
       - test
     command:
+      - echo "--- Building code"
+      - yarn build
       - echo "--- Running CDK deploy to production"
       - yarn deploy:prod
     concurrency: 1
