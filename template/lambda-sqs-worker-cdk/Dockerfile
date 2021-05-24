@@ -15,7 +15,7 @@ RUN \
 
 ###
 
-FROM node:14-alpine AS build
+FROM node:14-alpine AS dev-deps
 
 WORKDIR /workdir
 
