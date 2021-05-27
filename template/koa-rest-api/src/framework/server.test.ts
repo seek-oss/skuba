@@ -74,7 +74,11 @@ describe('createApp', () => {
 
     expect(rootLogger.error).not.toBeCalled();
 
-    expect(rootLogger.info).not.toBeCalled();
+    expect(rootLogger.info).nthCalledWith(
+      1,
+      expect.objectContaining({ status: 404 }),
+      'Client error',
+    );
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -84,7 +88,37 @@ describe('createApp', () => {
     ]);
   });
 
-  it('handles client error', async () => {
+  it('handles returned client error', async () => {
+    const message = chance.sentence();
+
+    middleware.mockImplementation((ctx) => {
+      ctx.body = message;
+      ctx.status = 400;
+    });
+
+    await agent
+      .get('/')
+      .expect(400, message)
+      .expect('server', /.+/)
+      .expect('x-api-version', /.+/);
+
+    expect(rootLogger.error).not.toBeCalled();
+
+    expect(rootLogger.info).nthCalledWith(
+      1,
+      expect.objectContaining({ status: 400 }),
+      'Client error',
+    );
+
+    metricsClient.expectTagSubset([
+      'http_method:get',
+      'http_status:400',
+      'http_status_family:4xx',
+      'route:/',
+    ]);
+  });
+
+  it('handles client error thrown from context', async () => {
     const message = chance.sentence();
 
     middleware.mockImplementation((ctx) => ctx.throw(400, message));
@@ -111,7 +145,7 @@ describe('createApp', () => {
     ]);
   });
 
-  it('handles server error', async () => {
+  it('handles server error thrown from context', async () => {
     const message = chance.sentence();
 
     middleware.mockImplementation((ctx) => ctx.throw(500, message));
