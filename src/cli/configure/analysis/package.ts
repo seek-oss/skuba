@@ -14,7 +14,7 @@ export const getDestinationManifest = async (
 ) => {
   const result = await readPkgUp(props);
 
-  if (typeof result === 'undefined') {
+  if (result === undefined) {
     log.err(
       'Could not find a',
       log.bold('package.json'),
@@ -27,7 +27,7 @@ export const getDestinationManifest = async (
 };
 
 const joinVersions = (a: string | undefined, b: string | undefined) =>
-  [a, b].filter((v) => typeof v !== 'undefined').join(' -> ');
+  [a, b].filter((v) => v !== undefined).join(' -> ');
 
 interface DiffDependenciesProps {
   old: Record<string, string | undefined>;
@@ -39,7 +39,7 @@ export const diffDependencies = (
 ): DependencyDiff => {
   const deletionsAndModifications = Object.fromEntries(
     Object.entries(props.old).flatMap(([name, oldVersion]) => {
-      if (oldVersion === props.new[name] || typeof oldVersion === 'undefined') {
+      if (oldVersion === props.new[name] || oldVersion === undefined) {
         return [];
       }
 
@@ -54,7 +54,7 @@ export const diffDependencies = (
 
   const additions = Object.fromEntries(
     Object.entries(props.new).flatMap(([name, version]) => {
-      if (name in props.old || typeof version === 'undefined') {
+      if (name in props.old || version === undefined) {
         return [];
       }
 

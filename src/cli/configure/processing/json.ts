@@ -16,14 +16,14 @@ export const formatObject = (
 
   return formatPrettier(
     output,
-    typeof filepath === 'undefined' ? { parser: 'json' } : { filepath },
+    filepath === undefined ? { parser: 'json' } : { filepath },
   );
 };
 
 export const parseObject = (
   input: string | undefined,
 ): Record<PropertyKey, unknown> | undefined => {
-  if (typeof input === 'undefined') {
+  if (input === undefined) {
     return;
   }
 

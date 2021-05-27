@@ -24,7 +24,7 @@ export const skubaDiveModule = ({ entryPoint, type }: Options): Module => {
 
       if (
         !packageJson?.dependencies?.['skuba-dive'] ||
-        typeof inputFile === 'undefined' ||
+        inputFile === undefined ||
         inputFile.includes('skuba-dive/register') ||
         registerFile?.includes('skuba-dive/register')
       ) {

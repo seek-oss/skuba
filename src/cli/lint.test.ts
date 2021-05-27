@@ -8,8 +8,8 @@ const concurrentlyCalls = () =>
   ((concurrently as unknown) as jest.Mock<typeof concurrently>).mock.calls
     .flat(2)
     .map(({ env, maxProcesses, ...rest }) => ({
-      ...(typeof env !== 'undefined' && { env: 'REDACTED' }),
-      ...(typeof maxProcesses !== 'undefined' && { maxProcesses: 'REDACTED' }),
+      ...(env !== undefined && { env: 'REDACTED' }),
+      ...(maxProcesses !== undefined && { maxProcesses: 'REDACTED' }),
       ...rest,
     }));
 

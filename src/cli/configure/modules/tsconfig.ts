@@ -52,7 +52,7 @@ export const tsconfigModule = async ({
       }
 
       // optimistically rewire Dockerfile for new output directory
-      if (typeof outDir !== 'undefined' && outDir !== 'lib') {
+      if (outDir !== undefined && outDir !== 'lib') {
         files.Dockerfile = files.Dockerfile?.split(outDir).join('lib');
       }
 

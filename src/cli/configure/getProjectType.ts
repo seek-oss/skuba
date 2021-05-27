@@ -22,7 +22,7 @@ export const getProjectType = async ({
     return manifest.packageJson.skuba.type;
   }
 
-  if (typeof templateConfig.type !== 'undefined') {
+  if (templateConfig.type !== undefined) {
     return templateConfig.type;
   }
 

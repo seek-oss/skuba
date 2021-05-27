@@ -1,6 +1,6 @@
 export const prependImport = (name: string, file?: string) =>
   [`import '${name}';\n`, file]
-    .filter((value) => typeof value !== 'undefined')
+    .filter((value) => value !== undefined)
     .join('\n');
 
 export const stripImports = (names: readonly string[], inputFile: string) => {

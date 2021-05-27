@@ -39,7 +39,7 @@ const createExportDefaultObjectLiteralExpression = (
     undefined,
     undefined,
     undefined,
-    typeof callExpression === 'undefined'
+    callExpression === undefined
       ? factory.createObjectLiteralExpression(props, true)
       : factory.createCallExpression(callExpression, undefined, [
           factory.createObjectLiteralExpression(props, true),

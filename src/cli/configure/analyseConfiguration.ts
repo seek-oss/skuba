@@ -42,9 +42,7 @@ export const analyseConfiguration = async (
 
     await Promise.all(
       Object.entries(files).map(([filename, { data }]) =>
-        typeof data === 'undefined'
-          ? fs.remove(filename)
-          : fs.writeFile(filename, data),
+        data === undefined ? fs.remove(filename) : fs.writeFile(filename, data),
       ),
     );
   };
