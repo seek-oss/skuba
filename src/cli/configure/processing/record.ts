@@ -8,7 +8,7 @@ export const getFirstDefined = <T>(
 ): T | undefined => {
   for (const key of keys) {
     const value = record[key];
-    if (typeof value !== 'undefined') {
+    if (value !== undefined) {
       return value;
     }
   }

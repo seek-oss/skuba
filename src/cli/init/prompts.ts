@@ -22,9 +22,7 @@ const BASE_CHOICES = [
       }
 
       return (
-        typeof team === 'undefined' ||
-        isGitHubTeam(team) ||
-        'fails GitHub validation'
+        team === undefined || isGitHubTeam(team) || 'fails GitHub validation'
       );
     },
   },

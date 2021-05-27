@@ -36,7 +36,7 @@ const registerModuleAliases = () => {
   // Consider revisiting this when we decide how to better support monorepos.
   const result = readPkgUp.sync();
 
-  if (typeof result === 'undefined') {
+  if (result === undefined) {
     log.warn(log.bold('src'), '→', 'not found');
 
     return;

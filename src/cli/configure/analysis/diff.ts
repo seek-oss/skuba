@@ -4,9 +4,9 @@ export const determineOperation = (
   oldData?: string,
   newData?: string,
 ): string => {
-  if (typeof oldData === 'undefined') {
+  if (oldData === undefined) {
     return chalk.green('A');
   }
 
-  return typeof newData === 'undefined' ? chalk.red('D') : chalk.yellow('M');
+  return newData === undefined ? chalk.red('D') : chalk.yellow('M');
 };

@@ -43,7 +43,7 @@ export const parsePackage = (
 ): PackageJson | undefined => {
   const data = parseObject(input);
 
-  if (typeof data === 'undefined') {
+  if (data === undefined) {
     return;
   }
 

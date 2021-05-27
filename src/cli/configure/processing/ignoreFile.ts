@@ -50,7 +50,7 @@ export const mergeWithIgnoreFile = (rawTemplateFile: string) => {
   ]);
 
   return (rawInputFile?: string) => {
-    if (typeof rawInputFile === 'undefined') {
+    if (rawInputFile === undefined) {
       return `${templateFile}\n`;
     }
 

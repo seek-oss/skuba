@@ -2,7 +2,7 @@ import { run } from 'jest';
 
 export const test = () => {
   // This is usually set in `jest-cli`'s binary wrapper
-  if (typeof process.env.NODE_ENV === 'undefined') {
+  if (process.env.NODE_ENV === undefined) {
     process.env.NODE_ENV = 'test';
   }
 

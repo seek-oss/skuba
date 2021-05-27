@@ -48,11 +48,9 @@ export const jestModule = async (): Promise<Module> => {
       const inputFile = tsFile ?? jsFile;
 
       const props =
-        typeof inputFile === 'undefined'
-          ? undefined
-          : readModuleExports(inputFile);
+        inputFile === undefined ? undefined : readModuleExports(inputFile);
 
-      if (typeof props === 'undefined') {
+      if (props === undefined) {
         return configFile;
       }
 

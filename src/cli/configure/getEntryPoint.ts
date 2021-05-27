@@ -27,7 +27,7 @@ export const getEntryPoint = ({
     return manifest.packageJson.skuba.entryPoint;
   }
 
-  if (typeof templateConfig.entryPoint !== 'undefined') {
+  if (templateConfig.entryPoint !== undefined) {
     return templateConfig.entryPoint;
   }
 

@@ -19,13 +19,13 @@ const DEFAULT_ENTRY_POINT = 'src/app.ts';
 let skubaManifest: NormalizedPackageJson | undefined;
 
 export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
-  if (typeof skubaManifest !== 'undefined') {
+  if (skubaManifest !== undefined) {
     return skubaManifest;
   }
 
   const result = await readPkgUp({ cwd: __dirname });
 
-  if (typeof result === 'undefined') {
+  if (result === undefined) {
     throw Error('skuba could not find its own manifest');
   }
 
@@ -37,7 +37,7 @@ export const getConsumerManifest = () => readPkgUp();
 export const getEntryPointFromManifest = async () => {
   const result = await getConsumerManifest();
 
-  return typeof result !== 'undefined' &&
+  return result !== undefined &&
     hasStringProp(result.packageJson.skuba, 'entryPoint')
     ? result.packageJson.skuba.entryPoint
     : DEFAULT_ENTRY_POINT;
@@ -47,7 +47,7 @@ export const isBabelFromManifest = async () => {
   const result = await getConsumerManifest();
 
   return (
-    typeof result !== 'undefined' &&
+    result !== undefined &&
     hasProp(result.packageJson.skuba, 'babel') &&
     Boolean(result.packageJson.skuba.babel)
   );
