@@ -19,7 +19,7 @@ const metrics = MetricsMiddleware.create(
 );
 
 const requestLogging = RequestLogging.createMiddleware((ctx, fields, err) => {
-  if (err === undefined) {
+  if (ctx.status < 400 && err === undefined) {
     // Depend on sidecar logging for happy path requests
     return;
   }
