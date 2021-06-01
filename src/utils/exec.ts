@@ -103,8 +103,10 @@ const whichCallback = npmWhich(__dirname);
 
 const which = util.promisify<string, string>(whichCallback);
 
-export const createExec = (opts: ExecOptions): Exec => (command, ...args) =>
-  runCommand(command, args, opts);
+export const createExec =
+  (opts: ExecOptions): Exec =>
+  (command, ...args) =>
+    runCommand(command, args, opts);
 
 export const exec: Exec = (command, ...args) => runCommand(command, args);
 

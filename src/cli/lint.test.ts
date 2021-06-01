@@ -1,3 +1,5 @@
+/* eslint-disable jest/no-disabled-tests */
+
 import concurrently from 'concurrently';
 
 import { internalLint, lint } from './lint';
@@ -5,7 +7,7 @@ import { internalLint, lint } from './lint';
 jest.mock('concurrently');
 
 const concurrentlyCalls = () =>
-  ((concurrently as unknown) as jest.Mock<typeof concurrently>).mock.calls
+  (concurrently as unknown as jest.Mock<typeof concurrently>).mock.calls
     .flat(2)
     .map(({ env, maxProcesses, ...rest }) => ({
       ...(env !== undefined && { env: 'REDACTED' }),
@@ -185,12 +187,12 @@ describe('TypeScript', () => {
       expect(flag ? true : 'foo' in 42).toBeDefined();
     });
 
-    // Not yet supported by Prettier.
     test('abstract Construct Signatures', () => {
-      // abstract class Shape {
-      //   abstract getArea(): number;
-      //   }
-      class Shape {
+      abstract class Shape {
+        abstract getArea(): number;
+      }
+
+      class Square extends Shape {
         getArea(): number {
           return 0;
         }
@@ -200,10 +202,79 @@ describe('TypeScript', () => {
         getArea(): number;
       }
 
-      // const Ctor: abstract new () => HasArea = Shape;
-      const Ctor: new () => HasArea = Shape;
+      const Ctor: abstract new () => HasArea = Square;
 
       expect(Ctor).toBeDefined();
+    });
+  });
+
+  describe('4.3', () => {
+    /**
+     * Not yet supported by Prettier with the default `typescript` parser.
+     *
+     * {@link https://github.com/prettier/prettier/issues/10642}
+     */
+    test.skip('Separate Write Types of Properties', () => {
+      interface Thing {
+        // get size(): number
+        // set size(value: number | string | boolean);
+      }
+
+      expect(true as unknown as Thing).toBeDefined();
+    });
+
+    /**
+     * Not yet supported by Prettier with the default `typescript` parser.
+     *
+     * {@link https://github.com/prettier/prettier/issues/10642}
+     */
+    test.skip('override and the --noImplicitOverride flag', () => {
+      class SomeComponent {
+        show() {}
+        hide() {}
+      }
+
+      class SpecializedComponent extends SomeComponent {
+        // override show() {}
+        // override hide() {}
+        show() {}
+        hide() {}
+      }
+
+      expect(SpecializedComponent).toBeDefined();
+    });
+
+    /**
+     * Not yet supported by ESLint.
+     *
+     * {@link https://github.com/typescript-eslint/typescript-eslint/issues/3430}
+     */
+    test.skip('ECMAScript #private Class Elements', () => {
+      class Foo {
+        // #someMethod() {}
+        someMethod() {}
+
+        // get #someValue() {
+        get someValue() {
+          return null;
+        }
+
+        // static #someStaticMethod() {
+        static someStaticMethod() {}
+      }
+
+      expect(Foo).toBeDefined();
+    });
+
+    test('static Index Signatures', () => {
+      class Foo {
+        static hello = 'hello';
+        static world = 1234;
+
+        static [propName: string]: string | number | undefined;
+      }
+
+      expect(Foo).toBeDefined();
     });
   });
 });
