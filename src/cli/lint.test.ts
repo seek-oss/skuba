@@ -209,6 +209,11 @@ describe('TypeScript', () => {
   });
 
   describe('4.3', () => {
+    /**
+     * Not yet supported by Prettier with the default `typescript` parser.
+     *
+     * {@link https://github.com/prettier/prettier/issues/10642}
+     */
     test.skip('Separate Write Types of Properties', () => {
       interface Thing {
         // get size(): number
@@ -218,6 +223,11 @@ describe('TypeScript', () => {
       expect(true as unknown as Thing).toBeDefined();
     });
 
+    /**
+     * Not yet supported by Prettier with the default `typescript` parser.
+     *
+     * {@link https://github.com/prettier/prettier/issues/10642}
+     */
     test.skip('override and the --noImplicitOverride flag', () => {
       class SomeComponent {
         show() {}
@@ -235,6 +245,8 @@ describe('TypeScript', () => {
     });
 
     /**
+     * Not yet supported by ESLint.
+     *
      * {@link https://github.com/typescript-eslint/typescript-eslint/issues/3430}
      */
     test.skip('ECMAScript #private Class Elements', () => {
