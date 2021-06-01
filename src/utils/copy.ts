@@ -47,20 +47,23 @@ interface CopyFilesOptions {
   stripUnderscorePrefix?: boolean;
 }
 
-export const createEjsRenderer = (
-  templateData: Record<string, unknown>,
-): TextProcessor => (contents) => ejs.render(contents, templateData);
+export const createEjsRenderer =
+  (templateData: Record<string, unknown>): TextProcessor =>
+  (contents) =>
+    ejs.render(contents, templateData);
 
-export const createStringReplacer = (
-  replacements: Array<{
-    input: RegExp;
-    output: string;
-  }>,
-): TextProcessor => (contents) =>
-  replacements.reduce(
-    (newContents, { input, output }) => newContents.replace(input, output),
-    contents,
-  );
+export const createStringReplacer =
+  (
+    replacements: Array<{
+      input: RegExp;
+      output: string;
+    }>,
+  ): TextProcessor =>
+  (contents) =>
+    replacements.reduce(
+      (newContents, { input, output }) => newContents.replace(input, output),
+      contents,
+    );
 
 export const copyFiles = async (
   opts: CopyFilesOptions,
