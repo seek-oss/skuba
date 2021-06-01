@@ -141,54 +141,53 @@ const expressionAsDefaultExport = (
  * There's no recursion needed here as we expect the import statement to be a
  * top-level node and therefore an immediate child of the source file.
  */
-const requireImportsTransformer: ts.TransformerFactory<ts.Node> = (context) => (
-  rootNode,
-) =>
-  ts.visitEachChild(
-    rootNode,
-    (node) => {
-      let declaration, moduleName;
+const requireImportsTransformer: ts.TransformerFactory<ts.Node> =
+  (context) => (rootNode) =>
+    ts.visitEachChild(
+      rootNode,
+      (node) => {
+        let declaration, moduleName;
 
-      if (
-        ts.isVariableStatement(node) &&
-        node.declarationList.declarations.length === 1 &&
-        ts.isVariableDeclaration(
-          (declaration = node.declarationList.declarations[0]),
-        ) &&
-        declaration.initializer &&
-        ts.isCallExpression(declaration.initializer) &&
-        declaration.initializer.arguments.length === 1 &&
-        ts.isStringLiteral(
-          (moduleName = declaration.initializer.arguments[0]),
-        ) &&
-        ts.isIdentifier(declaration.initializer.expression) &&
-        declaration.initializer.expression.text === 'require'
-      ) {
-        // const x
-        if (ts.isIdentifier(declaration.name)) {
-          return createImportFromExpression(
-            context.factory,
-            moduleName.text,
-            declaration.name.text,
-          );
+        if (
+          ts.isVariableStatement(node) &&
+          node.declarationList.declarations.length === 1 &&
+          ts.isVariableDeclaration(
+            (declaration = node.declarationList.declarations[0]),
+          ) &&
+          declaration.initializer &&
+          ts.isCallExpression(declaration.initializer) &&
+          declaration.initializer.arguments.length === 1 &&
+          ts.isStringLiteral(
+            (moduleName = declaration.initializer.arguments[0]),
+          ) &&
+          ts.isIdentifier(declaration.initializer.expression) &&
+          declaration.initializer.expression.text === 'require'
+        ) {
+          // const x
+          if (ts.isIdentifier(declaration.name)) {
+            return createImportFromExpression(
+              context.factory,
+              moduleName.text,
+              declaration.name.text,
+            );
+          }
+
+          // const { x }
+          if (ts.isObjectBindingPattern(declaration.name)) {
+            return createImportFromExpression(
+              context.factory,
+              moduleName.text,
+              declaration.name.elements.flatMap((element) =>
+                ts.isIdentifier(element.name) ? [element.name.text] : [],
+              ),
+            );
+          }
         }
 
-        // const { x }
-        if (ts.isObjectBindingPattern(declaration.name)) {
-          return createImportFromExpression(
-            context.factory,
-            moduleName.text,
-            declaration.name.elements.flatMap((element) =>
-              ts.isIdentifier(element.name) ? [element.name.text] : [],
-            ),
-          );
-        }
-      }
-
-      return node;
-    },
-    context,
-  );
+        return node;
+      },
+      context,
+    );
 
 /**
  * Create a transformer to mutate `module.exports` and `export default`:
@@ -209,74 +208,77 @@ const requireImportsTransformer: ts.TransformerFactory<ts.Node> = (context) => (
  * There's no recursion needed here as we expect the export statement to be a
  * top-level node and therefore an immediate child of the source file.
  */
-const createModuleExportsTransformer = (
-  transformProps: Transformer<Props>,
-): ts.TransformerFactory<ts.Node> => (context) => (rootNode) =>
-  ts.visitEachChild(
-    rootNode,
-    (node) => {
-      // module.exports =
-      if (
-        ts.isExpressionStatement(node) &&
-        ts.isBinaryExpression(node.expression) &&
-        ts.isPropertyAccessExpression(node.expression.left) &&
-        ts.isIdentifier(node.expression.left.expression) &&
-        node.expression.left.expression.escapedText === 'module' &&
-        node.expression.left.name.text === 'exports' &&
-        node.expression.operatorToken.kind === ts.SyntaxKind.EqualsToken
-      ) {
-        return (
-          expressionAsDefaultExport(
-            context,
-            transformProps,
-            node.expression.right,
-          ) ?? node
-        );
-      }
+const createModuleExportsTransformer =
+  (transformProps: Transformer<Props>): ts.TransformerFactory<ts.Node> =>
+  (context) =>
+  (rootNode) =>
+    ts.visitEachChild(
+      rootNode,
+      (node) => {
+        // module.exports =
+        if (
+          ts.isExpressionStatement(node) &&
+          ts.isBinaryExpression(node.expression) &&
+          ts.isPropertyAccessExpression(node.expression.left) &&
+          ts.isIdentifier(node.expression.left.expression) &&
+          node.expression.left.expression.escapedText === 'module' &&
+          node.expression.left.name.text === 'exports' &&
+          node.expression.operatorToken.kind === ts.SyntaxKind.EqualsToken
+        ) {
+          return (
+            expressionAsDefaultExport(
+              context,
+              transformProps,
+              node.expression.right,
+            ) ?? node
+          );
+        }
 
-      // export default
-      if (ts.isExportAssignment(node)) {
-        return (
-          expressionAsDefaultExport(context, transformProps, node.expression) ??
-          node
-        );
-      }
+        // export default
+        if (ts.isExportAssignment(node)) {
+          return (
+            expressionAsDefaultExport(
+              context,
+              transformProps,
+              node.expression,
+            ) ?? node
+          );
+        }
 
-      return node;
-    },
-    context,
-  );
+        return node;
+      },
+      context,
+    );
 
 /**
  * Create a transformer to filter out unspecified props from an object literal.
  */
-export const createPropFilter = (names: string[]): Transformer<Props> => (
-  context,
-  props,
-) => {
-  const nameSet = new Set<unknown>(names);
+export const createPropFilter =
+  (names: string[]): Transformer<Props> =>
+  (context, props) => {
+    const nameSet = new Set<unknown>(names);
 
-  const factory = context?.factory ?? ts.factory;
+    const factory = context?.factory ?? ts.factory;
 
-  return factory.createNodeArray(
-    props.filter((prop) => nameSet.has(getPropName(prop))),
-  );
-};
+    return factory.createNodeArray(
+      props.filter((prop) => nameSet.has(getPropName(prop))),
+    );
+  };
 
-export const createPropAppender = (
-  appendingProps: Props,
-): Transformer<Props> => (context, props) => {
-  const nameSet = new Set<unknown>(
-    props.map(getPropName).filter((prop) => typeof prop === 'string'),
-  );
+export const createPropAppender =
+  (appendingProps: Props): Transformer<Props> =>
+  (context, props) => {
+    const nameSet = new Set<unknown>(
+      props.map(getPropName).filter((prop) => typeof prop === 'string'),
+    );
 
-  const factory = context?.factory ?? ts.factory;
+    const factory = context?.factory ?? ts.factory;
 
-  return factory.createNodeArray([
-    ...props,
-    ...appendingProps.filter((prop) => !nameSet.has(getPropName(prop))),
-  ]);
-};
+    return factory.createNodeArray([
+      ...props,
+      ...appendingProps.filter((prop) => !nameSet.has(getPropName(prop))),
+    ]);
+  };
 
 /**
  * Read out `export default` or `module.exports` props from a source file.
@@ -304,9 +306,8 @@ export const transformModuleImportsAndExports = (
 ): string => {
   const sourceFile = ts.createSourceFile('', inputFile, ts.ScriptTarget.Latest);
 
-  const moduleExportsTransformer = createModuleExportsTransformer(
-    transformProps,
-  );
+  const moduleExportsTransformer =
+    createModuleExportsTransformer(transformProps);
 
   const result = ts.transform(sourceFile, [
     requireImportsTransformer,

@@ -66,12 +66,11 @@ export const createDependencyFilter = (
   });
 };
 
-export const withPackage = (fn: (data: PackageJson) => PackageJson) => (
-  input: string | undefined,
-) => {
-  const inputObject = parsePackage(input);
+export const withPackage =
+  (fn: (data: PackageJson) => PackageJson) => (input: string | undefined) => {
+    const inputObject = parsePackage(input);
 
-  const outputObject = fn(inputObject ?? {});
+    const outputObject = fn(inputObject ?? {});
 
-  return formatPackage(outputObject);
-};
+    return formatPackage(outputObject);
+  };

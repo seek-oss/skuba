@@ -7,7 +7,7 @@ import { format } from './format';
 jest.mock('execa');
 
 const execaCalls = () =>
-  ((execa as unknown) as jest.Mock<typeof execa>).mock.calls
+  (execa as unknown as jest.Mock<typeof execa>).mock.calls
     .flat(2)
     .map((val) =>
       Array.isArray(val) || !hasStringProp(val, 'localDir')

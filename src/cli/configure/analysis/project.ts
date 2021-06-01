@@ -9,19 +9,19 @@ import { FileDiff, Files, Module, Options } from '../types';
 
 import { determineOperation } from './diff';
 
-export const createDestinationFileReader = (root: string) => async (
-  filename: string,
-): Promise<string | undefined> => {
-  try {
-    return await fs.readFile(path.join(root, filename), 'utf8');
-  } catch (err: unknown) {
-    if (isErrorWithCode(err, 'ENOENT')) {
-      return;
-    }
+export const createDestinationFileReader =
+  (root: string) =>
+  async (filename: string): Promise<string | undefined> => {
+    try {
+      return await fs.readFile(path.join(root, filename), 'utf8');
+    } catch (err: unknown) {
+      if (isErrorWithCode(err, 'ENOENT')) {
+        return;
+      }
 
-    throw err;
-  }
-};
+      throw err;
+    }
+  };
 
 const loadModuleFiles = async (modules: Module[], destinationRoot: string) => {
   const readDestinationFile = createDestinationFileReader(destinationRoot);
