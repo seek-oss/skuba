@@ -44,6 +44,7 @@
       paths: ['template/**'],
 
       branchPrefix: 'renovate-template/',
+      rangeStrategy: 'replace',
       semanticCommitType: 'template',
     },
   ],
