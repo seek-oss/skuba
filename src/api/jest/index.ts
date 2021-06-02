@@ -15,6 +15,7 @@ type Props = Pick<
   | 'globalTeardown'
   | 'setupFiles'
   | 'setupFilesAfterEnv'
+  | 'snapshotSerializers'
   | 'testPathIgnorePatterns'
   | 'testTimeout'
 >;
