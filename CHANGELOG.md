@@ -1,5 +1,42 @@
 # skuba
 
+## 3.14.0
+
+### Minor Changes
+
+- 88ad97f: **deps:** Prettier 2.3
+
+  This release may require reformatting of your code. If your lint step is failing in CI, run your format command locally then push the resulting changes.
+
+  ```shell
+  yarn format
+  ```
+
+- 88ad97f: **deps:** TypeScript 4.3
+
+  This major release includes breaking changes. See the [announcement](https://devblogs.microsoft.com/typescript/announcing-typescript-4-3/) for more information.
+
+  `skuba format` and `skuba lint` will error on new TypeScript 4.3 syntax that are not yet supported by Prettier.
+
+- 28c62d4: **deps:** Jest 27
+
+  This major release includes breaking changes. See the Jest 27 [blog post](https://jestjs.io/blog/2021/05/25/jest-27) and [changelog](https://github.com/facebook/jest/blob/v27.0.3/CHANGELOG.md) for more information.
+
+### Patch Changes
+
+- 7ec71e8: **Jest.mergePreset:** Type `snapshotSerializers` option
+- 1742096: **template:** Banish `typeof undefined` syntax
+- 8842f92: **template/lambda-sqs-worker-cdk:** Always build before deploy
+
+  This prevents stale compiled code from being cached and deployed from ECR.
+
+- 1b72b4b: **template/koa-rest-api:** Log returned error responses
+- 50792c8: **template:** Prune `devDependencies` instead of installing twice in Docker
+
+  The template-bundled Dockerfiles would previously run `yarn install` twice to build a separate stage for production `dependencies` only. These have been updated to correctly share the Yarn cache across stages and to use `yarn install --production` to perform offline pruning.
+
+- d4ef636: **deps:** fs-extra ^10.0.0
+
 ## 3.13.1
 
 ### Patch Changes
