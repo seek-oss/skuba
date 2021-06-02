@@ -1,8 +1,9 @@
 {
   extends: [
-    ':prHourlyLimit2',
-    ':prNotPending',
+    ':prHourlyLimit4',
     ':rebaseStalePrs',
+    ':renovatePrefix',
+    ':semanticCommits',
     ':timezone(Australia/Melbourne)',
     ':updateNotScheduled',
     'preview:buildkite',
@@ -11,31 +12,49 @@
   ],
   packageRules: [
     {
-      paths: ['.buildkite/**', '*'],
+      commitMessageExtra: '{{newValue}}',
+      commitMessageTopic: '{{depName}}',
+      managers: ['buildkite', 'docker-compose', 'dockerfile', 'npm', 'nvm'],
+    },
+    {
+      managerBranchPrefix: '',
+      managers: ['buildkite'],
+    },
+    {
+      paths: ['*'],
 
-      extends: ['github>seek-oss/rynovate'],
-      recreateClosed: false,
+      automerge: true,
+      commitMessageExtra: '',
+      depTypeList: ['devDependencies'],
+      groupName: 'npm dev dependencies',
+      managers: ['npm'],
+      prPriority: 99,
+      recreateClosed: true,
+      schedule: 'before 3am on Tuesday',
+    },
+    {
+      paths: ['*'],
+
+      automerge: true,
+      prPriority: 99,
+      schedule: 'before 3am on every weekday',
+      updateTypes: ['pin'],
     },
     {
       paths: ['template/**'],
 
       branchPrefix: 'renovate-template/',
-      commitMessageAction: '',
-      commitMessagePrefix: 'template:',
-      ignoreNpmrcFile: true,
-      lazyGrouping: false,
-      postUpdateOptions: ['yarnDedupeHighest'],
-      prConcurrentLimit: 3,
-      prNotPendingHours: 1,
-      rangeStrategy: 'replace',
-      schedule: 'before 7am on every weekday',
-    },
-    {
-      managers: ['buildkite', 'gomod', 'npm', 'nvm'],
-      paths: ['template/**'],
-
-      commitMessageExtra: '{{newValue}}',
-      commitMessageTopic: '{{depName}}',
+      semanticCommitType: 'template',
     },
   ],
+  commitMessageAction: '',
+  ignoreNpmrcFile: true,
+  lazyGrouping: false,
+  postUpdateOptions: ['yarnDedupeHighest'],
+  prConcurrentLimit: 3,
+  prNotPendingHours: 1,
+  rangeStrategy: 'auto',
+  schedule: 'after 3am and before 6am on every weekday',
+  semanticCommitScope: '',
+  semanticCommitType: 'deps',
 }
