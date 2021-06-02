@@ -1,21 +1,21 @@
 {
   "dependencies": {
-    "@seek/logger": "^4.4.7",
-    "runtypes": "^6.0.0"
+    "@seek/logger": "4.4.7",
+    "runtypes": "6.3.0"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.95.1",
-    "@aws-cdk/aws-iam": "^1.95.1",
-    "@aws-cdk/aws-kms": "^1.95.1",
-    "@aws-cdk/aws-lambda": "^1.95.1",
-    "@aws-cdk/aws-lambda-event-sources": "^1.95.1",
-    "@aws-cdk/aws-sns": "^1.95.1",
-    "@aws-cdk/aws-sns-subscriptions": "^1.95.1",
-    "@aws-cdk/aws-sqs": "^1.95.1",
-    "@aws-cdk/core": "^1.95.1",
-    "@types/aws-lambda": "^8.10.73",
-    "@types/node": "^15.0.0",
-    "aws-cdk": "^1.18.0",
+    "@aws-cdk/assert": "1.107.0",
+    "@aws-cdk/aws-iam": "1.107.0",
+    "@aws-cdk/aws-kms": "1.107.0",
+    "@aws-cdk/aws-lambda": "1.107.0",
+    "@aws-cdk/aws-lambda-event-sources": "1.107.0",
+    "@aws-cdk/aws-sns": "1.107.0",
+    "@aws-cdk/aws-sns-subscriptions": "1.107.0",
+    "@aws-cdk/aws-sqs": "1.107.0",
+    "@aws-cdk/core": "1.107.0",
+    "@types/aws-lambda": "8.10.76",
+    "@types/node": "15.6.2",
+    "aws-cdk": "1.107.0",
     "skuba": "*"
   },
   "license": "UNLICENSED",

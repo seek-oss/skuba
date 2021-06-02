@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "skuba-dive": "^1.1.2"
+    "skuba-dive": "1.2.0"
   },
   "devDependencies": {
-    "@types/node": "^15.0.0",
+    "@types/node": "15.6.2",
     "skuba": "*"
   },
   "engines": {
