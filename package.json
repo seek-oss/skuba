@@ -89,7 +89,7 @@
     "serialize-error": "^8.0.1",
     "source-map-support": "^0.5.19",
     "ts-jest": "^27.0.2",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.0.0",
     "ts-node-dev": "1.1.6",
     "tsconfig-seek": "1.0.2",
     "typescript": "4.3.2"
