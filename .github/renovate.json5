@@ -10,38 +10,58 @@
     'preview:dockerCompose',
     'docker:disableMajor',
   ],
+  lockFileMaintenance: {
+    enabled: true,
+  },
   packageRules: [
     {
+      matchManagers: [
+        'buildkite',
+        'docker-compose',
+        'dockerfile',
+        'npm',
+        'nvm',
+      ],
+
       commitMessageExtra: '{{newValue}}',
       commitMessageTopic: '{{depName}}',
-      managers: ['buildkite', 'docker-compose', 'dockerfile', 'npm', 'nvm'],
     },
     {
-      managerBranchPrefix: '',
-      managers: ['buildkite'],
+      matchManagers: ['buildkite'],
+
+      additionalBranchPrefix: '',
     },
     {
-      paths: ['*'],
+      matchDepTypes: ['devDependencies'],
+      matchManagers: ['npm'],
+      matchPaths: ['*'],
+      matchUpdateTypes: ['major', 'minor', 'patch'],
 
       automerge: true,
       commitMessageExtra: '',
-      depTypeList: ['devDependencies'],
       groupName: 'npm dev dependencies',
-      managers: ['npm'],
       prPriority: 99,
       recreateClosed: true,
-      schedule: 'before 3am on Tuesday',
+      schedule: 'before 3:00 am every 2 weeks on Tuesday',
     },
     {
-      paths: ['*'],
+      matchPaths: ['*'],
+      matchUpdateTypes: ['lockFileMaintenance'],
 
       automerge: true,
       prPriority: 99,
-      schedule: 'before 3am on every weekday',
-      updateTypes: ['pin'],
+      schedule: 'before 3:00 am every 2 weeks on Wednesday',
     },
     {
-      paths: ['template/**'],
+      matchPaths: ['*'],
+      matchUpdateTypes: ['pin'],
+
+      automerge: true,
+      prPriority: 99,
+      schedule: 'before 3:00 am every weekday',
+    },
+    {
+      matchPaths: ['template/**'],
 
       branchPrefix: 'renovate-template/',
       rangeStrategy: 'replace',
@@ -49,13 +69,11 @@
     },
   ],
   commitMessageAction: '',
-  ignoreNpmrcFile: true,
-  lazyGrouping: false,
   postUpdateOptions: ['yarnDedupeHighest'],
   prConcurrentLimit: 3,
   prNotPendingHours: 1,
   rangeStrategy: 'auto',
-  schedule: 'after 3am and before 6am on every weekday',
+  schedule: 'after 3:00 am and before 6:00 am every weekday',
   semanticCommitScope: '',
   semanticCommitType: 'deps',
 }
