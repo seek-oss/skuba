@@ -209,12 +209,7 @@ describe('TypeScript', () => {
   });
 
   describe('4.3', () => {
-    /**
-     * Not yet supported by Prettier with the default `typescript` parser.
-     *
-     * {@link https://github.com/prettier/prettier/issues/10642}
-     */
-    test.skip('Separate Write Types of Properties', () => {
+    test('Separate Write Types of Properties', () => {
       interface Thing {
         // get size(): number
         // set size(value: number | string | boolean);
@@ -223,44 +218,43 @@ describe('TypeScript', () => {
       expect(true as unknown as Thing).toBeDefined();
     });
 
-    /**
-     * Not yet supported by Prettier with the default `typescript` parser.
-     *
-     * {@link https://github.com/prettier/prettier/issues/10642}
-     */
-    test.skip('override and the --noImplicitOverride flag', () => {
+    test('override and the --noImplicitOverride flag', () => {
       class SomeComponent {
         show() {}
         hide() {}
       }
 
       class SpecializedComponent extends SomeComponent {
-        // override show() {}
-        // override hide() {}
-        show() {}
-        hide() {}
+        override show() {}
+        override hide() {}
       }
 
       expect(SpecializedComponent).toBeDefined();
     });
 
     /**
-     * Not yet supported by ESLint.
+     * Not yet supported by ESLint, but this appears to pass linting rather than
+     * fail.
      *
      * {@link https://github.com/typescript-eslint/typescript-eslint/issues/3430}
      */
-    test.skip('ECMAScript #private Class Elements', () => {
+    test('ECMAScript #private Class Elements', () => {
       class Foo {
-        // #someMethod() {}
-        someMethod() {}
+        #someMethod() {
+          return 1;
+        }
 
-        // get #someValue() {
-        get someValue() {
+        get #someValue() {
           return null;
         }
 
-        // static #someStaticMethod() {
-        static someStaticMethod() {}
+        static #someStaticMethod() {}
+
+        somePublicMethod() {
+          this.#someMethod();
+          Foo.#someStaticMethod();
+          return this.#someValue;
+        }
       }
 
       expect(Foo).toBeDefined();
