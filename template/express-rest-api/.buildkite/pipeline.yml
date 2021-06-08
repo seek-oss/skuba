@@ -39,7 +39,7 @@ steps:
     label: 📦 Build & Package
     plugins:
       - *aws-sm
-      - seek-jobs/gantry#v1.2.11:
+      - seek-jobs/gantry#v1.3.0:
           command: build
           file: gantry.build.yml
           region: ap-southeast-2
@@ -54,7 +54,7 @@ steps:
     label: 🤞 Deploy Dev
     concurrency_group: <%- teamName %>/deploy/gantry/<%- devGantryEnvironmentName %>
     plugins:
-      - seek-jobs/gantry#v1.2.11:
+      - seek-jobs/gantry#v1.3.0:
           command: apply
           environment: <%- devGantryEnvironmentName %>
           file: gantry.apply.yml
@@ -71,7 +71,7 @@ steps:
     branches: master
     concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
     plugins:
-      - seek-jobs/gantry#v1.2.11:
+      - seek-jobs/gantry#v1.3.0:
           command: apply
           environment: <%- prodGantryEnvironmentName %>
           file: gantry.apply.yml
