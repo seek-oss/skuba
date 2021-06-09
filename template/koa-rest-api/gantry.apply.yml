@@ -30,6 +30,8 @@ authentication:
     - /health
     - /smoke
 
+sslEnabled: true
+
 autoScaling:
   maxCount: {{values "maxInstanceCount"}}
   minCount: {{values "minInstanceCount"}}
