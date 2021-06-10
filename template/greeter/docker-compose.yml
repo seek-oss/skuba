@@ -2,11 +2,7 @@ version: '3.7'
 
 services:
   app:
-    build:
-      args:
-        - NPM_READ_TOKEN
-      context: .
-      target: dev-deps
+    image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE}
     init: true
     volumes:
       - ./:/workdir
