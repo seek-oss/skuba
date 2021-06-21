@@ -94,6 +94,7 @@ functions:
   WorkerPreHook:
     name: ${self:functions.Worker.name}-pre-hook
     handler: lib/hooks.pre
+    memorySize: 128
     # This is generous because a timeout will hang the deployment
     timeout: 300
     environment:
