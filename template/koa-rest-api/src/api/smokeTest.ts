@@ -7,5 +7,5 @@ import { Middleware } from 'src/types/koa';
 export const smokeTestHandler: Middleware = async (ctx) => {
   await Promise.all([smokeTestJobStorage()]);
 
-  ctx.body = '';
+  ctx.body = 'Smoke test passed';
 };
