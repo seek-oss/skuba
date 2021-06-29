@@ -1,5 +1,21 @@
 # skuba
 
+## 3.14.2
+
+### Patch Changes
+
+- e359a67: **deps:** TypeScript 4.3.4
+- f3531e5: **deps:** prettier 2.3.2
+- 274efe2: **template/koa-rest-api:** Include success message in smoke test body
+- 3042866: **template/greeter:** Use `seek-oss/docker-ecr-cache` Buildkite plugin
+- b113d33: **template/lambda-sqs-worker:** Set `memorySize` for smoke test hook to 128 MiB
+- 3042866: **template/koa-rest-api:** Use `seek-oss/docker-ecr-cache` Buildkite plugin
+- 3042866: **template/express-rest-api:** Use `seek-oss/docker-ecr-cache` Buildkite plugin
+- 3042866: **template:** Reuse ECR cache in Docker Compose
+- 42cf80d: **deps:** ts-node-dev 1.1.7
+
+  Resolves [CVE-2021-33623](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-33623).
+
 ## 3.14.1
 
 ### Patch Changes
