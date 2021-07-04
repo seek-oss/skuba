@@ -10,7 +10,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.71",
     "@types/chance": "^1.1.1",
-    "@types/node": "^15.0.0",
+    "@types/node": "^16.0.0",
     "chance": "^1.1.7",
     "pino-pretty": "^5.0.0",
     "serverless": "^2.25.1",
