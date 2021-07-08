@@ -2,11 +2,11 @@ version: '3.7'
 
 services:
   app:
-    image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE}
     environment:
       - BUILDKITE_COMMIT
       - ENVIRONMENT
       - VERSION
+    image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}
     init: true
     volumes:
       - ./:/workdir
