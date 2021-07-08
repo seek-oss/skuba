@@ -17,6 +17,9 @@
   },
   "license": "UNLICENSED",
   "private": true,
+  "resolutions": {
+    "**/@jest/types/@types/node": "^15.0.0"
+  },
   "scripts": {
     "build": "skuba build",
     "format": "skuba format",
