@@ -120,6 +120,9 @@ export const configure = async () => {
       log.newline();
       process.exit(1);
     }
+    try {
+      await exec('npx', 'yarn-deduplicate', '--strategy=highest');
+    } catch {}
   }
 
   if (fixConfiguration || fixDependencies) {
