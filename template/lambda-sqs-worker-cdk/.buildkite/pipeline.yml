@@ -16,7 +16,7 @@ plugins: &plugins #alias for shared plugins
       - /workdir/lib
     environment:
       - NPM_READ_TOKEN
-  seek-oss/docker-ecr-cache#v1.9.0:
+  seek-oss/docker-ecr-cache#v1.11.0:
     build-args:
       - NPM_READ_TOKEN
     cache-on:
