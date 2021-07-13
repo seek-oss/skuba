@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "skuba build",
-    "deploy": "yarn build && serverless deploy --force --verbose",
+    "deploy": "serverless deploy --force --verbose",
     "format": "skuba format",
     "lint": "skuba lint",
     "smoke": "serverless invoke --data '{}' --function Worker",

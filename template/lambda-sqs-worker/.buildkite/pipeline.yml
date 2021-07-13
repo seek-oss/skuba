@@ -34,8 +34,14 @@ configs:
 
   base-steps:
     - &deploy
+      commands:
+        - echo '+++ yarn deploy'
+        - yarn deploy
       concurrency: 1
       plugins:
+        - artifacts#v1.3.0:
+            build: ${BUILDKITE_BUILD_ID}
+            download: lib/*
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
@@ -50,12 +56,15 @@ configs:
 
 steps:
   - <<: *prod
-    label: 🧪 Test & Lint
+    label: 🧪 Test, Lint & Build
+    artifact_paths: lib/**/*
     commands:
       - echo '+++ yarn test:ci'
       - yarn test:ci
       - echo '--- yarn lint'
       - yarn lint
+      - echo '--- yarn build'
+      - yarn build
     plugins:
       - *aws-sm
       - *private-npm
@@ -69,7 +78,6 @@ steps:
 
   - <<: *dev
     <<: *deploy
-    command: yarn deploy
     concurrency_group: <%- repoName %>/deploy/dev
     label: 🤞 Deploy Dev
 
@@ -78,6 +86,5 @@ steps:
   - <<: *prod
     <<: *deploy
     branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
-    command: yarn deploy
     concurrency_group: <%- repoName %>/deploy/prod
     label: 🚀 Deploy Prod
