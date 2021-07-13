@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  app:
+    environment:
+      - BUILDKITE_COMMIT
+      - ENVIRONMENT
+      - VERSION
+    image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}
+    init: true
+    volumes:
+      - ./:/workdir
+      - /workdir/lib/node_modules
+      - /workdir/node_modules

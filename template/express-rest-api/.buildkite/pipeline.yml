@@ -75,7 +75,7 @@ steps:
 
   - wait
   - block: 🙋🏻‍♀️ Deploy Dev
-    branches: '!master'
+    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
 
   - <<: *dev
     <<: *deploy
@@ -95,7 +95,7 @@ steps:
   - <<: *prod
     <<: *deploy
     label: 🚀 Deploy Prod
-    branches: master
+    branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
     concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
     depends_on: deploy-dev
     plugins:
