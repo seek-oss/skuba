@@ -2,45 +2,48 @@ env:
   VERSION: ${BUILDKITE_COMMIT:0:7}.${BUILDKITE_BUILD_NUMBER}
 
 configs:
-  - &aws-sm
-    seek-oss/aws-sm#v2.0.0:
+  environments:
+    - &dev
+      agents:
+        queue: <%- devBuildkiteQueueName %>
       env:
-        NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
+        ENVIRONMENT: dev
 
-  - &docker-ecr-cache
-    seek-oss/docker-ecr-cache#v1.5.0:
-      build-args:
-        - NPM_READ_TOKEN
-      cache-on:
-        - package.json
-        - yarn.lock
-      target: dev-deps
+    - &prod
+      agents:
+        queue: <%- prodBuildkiteQueueName %>
+      env:
+        ENVIRONMENT: prod
 
-  - &deploy
-    concurrency: 1
-    plugins:
-      - *aws-sm
-      - *docker-ecr-cache
-      - docker-compose#v3.7.0:
-          dependencies: false
-          run: app
-    retry:
-      manual:
-        # Only use this if you need to roll back a deployment ASAP.
-        # Always follow up with a proper revert or fix in Git history.
-        permit_on_passed: true
+  plugins:
+    - &aws-sm
+      seek-oss/aws-sm#v2.0.0:
+        env:
+          NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
-  - &dev
-    agents:
-      queue: <%- devBuildkiteQueueName %>
-    env:
-      ENVIRONMENT: dev
+    - &docker-ecr-cache
+      seek-oss/docker-ecr-cache#v1.5.0:
+        build-args:
+          - NPM_READ_TOKEN
+        cache-on:
+          - package.json
+          - yarn.lock
+        target: dev-deps
 
-  - &prod
-    agents:
-      queue: <%- prodBuildkiteQueueName %>
-    env:
-      ENVIRONMENT: prod
+  base-steps:
+    - &deploy
+      concurrency: 1
+      plugins:
+        - *aws-sm
+        - *docker-ecr-cache
+        - docker-compose#v3.7.0:
+            dependencies: false
+            run: app
+      retry:
+        manual:
+          # Only use this if you need to roll back a deployment ASAP.
+          # Always follow up with a proper revert or fix in Git history.
+          permit_on_passed: true
 
 steps:
   - <<: *prod
@@ -48,7 +51,7 @@ steps:
     commands:
       - echo '+++ yarn test:ci'
       - yarn test:ci
-      - echo '+++ yarn lint'
+      - echo '--- yarn lint'
       - yarn lint
     plugins:
       - *aws-sm
@@ -56,6 +59,7 @@ steps:
       - docker-compose#v3.7.0:
           run: app
 
+  - wait
   - block: 🙋🏻‍♀️ Deploy Dev
     branches: '!master'
 

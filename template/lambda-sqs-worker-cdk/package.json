@@ -30,7 +30,7 @@
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch",
-    "package": "yarn --prod --modules-folder ./lib/node_modules",
+    "package": "yarn install --ignore-optional --ignore-scripts --modules-folder ./lib/node_modules --non-interactive --offline --production",
     "deploy:dev": "cdk deploy appStack --require-approval never --context stage=dev",
     "deploy:prod": "cdk deploy appStack --require-approval never --context stage=prod"
   }
