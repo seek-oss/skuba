@@ -3,22 +3,20 @@ configs:
     - &dev
       agents:
         queue: <%- devBuildkiteQueueName %>
+      env:
+        ENVIRONMENT: dev
 
     - &prod
       agents:
         queue: <%- prodBuildkiteQueueName %>
+      env:
+        ENVIRONMENT: prod
 
   plugins:
     - &aws-sm
       seek-oss/aws-sm#v2.3.1:
         env:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
-
-    - &docker
-      docker#v3.8.0:
-        volumes:
-          - /workdir/lib
-          - /workdir/node_modules
 
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v1.11.0:
@@ -33,12 +31,20 @@ configs:
 
   base-steps:
     - &deploy
+      commands:
+        - echo '+++ yarn deploy'
+        - yarn deploy
       concurrency: 1
       plugins:
+        - artifacts#v1.3.0:
+            build: ${BUILDKITE_BUILD_ID}
+            download: lib/*
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - *docker
+        - docker-compose#v3.7.0:
+            dependencies: false
+            run: app
       retry:
         manual:
           # Only use this if you need to roll back a deployment ASAP.
@@ -47,17 +53,21 @@ configs:
 
 steps:
   - <<: *dev
-    label: 🧪 Test & Lint
+    label: 🧪 Test, Lint & Build
+    artifact_paths: lib/**/*
     commands:
       - echo '+++ yarn test:ci'
       - yarn test
       - echo '--- yarn lint'
       - yarn lint
+      - echo '--- yarn build'
+      - yarn build
     plugins:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - *docker
+      - docker-compose#v3.7.0:
+          run: app
 
   - wait
   - block: 🙋🏻‍♀️ Deploy Dev
@@ -66,11 +76,6 @@ steps:
   - <<: *dev
     <<: *deploy
     label: 🤞 Deploy Dev
-    commands:
-      - echo '--- yarn build'
-      - yarn build
-      - echo '+++ yarn deploy:dev'
-      - yarn deploy:dev
     concurrency_group: '<%- repoName %>/deploy/dev'
     key: deploy-dev
 
@@ -78,10 +83,5 @@ steps:
     <<: *deploy
     label: 🚀 Deploy Prod
     branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
-    commands:
-      - echo '--- yarn build'
-      - yarn build
-      - echo '+++ yarn deploy:prod'
-      - yarn deploy:prod
     concurrency_group: '<%- repoName %>/deploy/prod'
     depends_on: deploy-dev
