@@ -5,6 +5,8 @@ schemaVersion: v0.0
 image: '{{values "image"}}'
 
 buildArgs:
-  NPM_READ_TOKEN: '{{.Env.NPM_READ_TOKEN}}'
+  # https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin#building-on-the-resulting-image
+  BASE_IMAGE: '{{.Env.BUILDKITE_PLUGIN_DOCKER_ECR_CACHE_EXPORT_IMAGE}}'
+  BASE_TAG: '{{.Env.BUILDKITE_PLUGIN_DOCKER_ECR_CACHE_EXPORT_TAG}}'
 
 failOnScanFindings: true
