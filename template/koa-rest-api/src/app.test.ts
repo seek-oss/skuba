@@ -5,10 +5,8 @@ import app from './app';
 const agent = agentFromApp(app);
 
 describe('app', () => {
-  it('exports props for skuba start', () => {
-    expect(app).toHaveProperty('callback');
-    expect(app).toHaveProperty('port');
-  });
+  it('exports callback for skuba start', () =>
+    expect(app).toHaveProperty('callback'));
 
   it('has a happy health check', () => agent.get('/health').expect(200, ''));
 
