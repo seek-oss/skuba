@@ -22,17 +22,21 @@ configs:
 
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v1.11.0:
-        build-args:
-          - NPM_READ_TOKEN
         cache-on:
           - package.json
           - yarn.lock
+        secrets: id=npm,src=.npmrc
+
+    - &private-npm
+      seek-oss/private-npm#v1.2.0:
+        env: NPM_READ_TOKEN
 
   base-steps:
     - &deploy
       concurrency: 1
       plugins:
         - *aws-sm
+        - *private-npm
         - *docker-ecr-cache
         - *docker
       retry:
@@ -51,6 +55,7 @@ steps:
       - yarn lint
     plugins:
       - *aws-sm
+      - *private-npm
       - *docker-ecr-cache
       - *docker
 
