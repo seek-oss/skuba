@@ -26,8 +26,6 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
     logLevel: 'debug',
     name: '<%- serviceName %>',
     version: 'local',
-
-    port: Env.nonNegativeInteger('PORT', { default: Number('<%- port %>') }),
   }),
 
   test: () => ({
