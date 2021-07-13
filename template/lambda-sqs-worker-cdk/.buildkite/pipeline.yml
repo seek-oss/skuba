@@ -6,10 +6,10 @@ prod-agent: &prod-agent
   agents:
     queue: <%- prodBuildkiteQueueName %>
 
-plugins: &plugins #alias for shared plugins
+plugins: &plugins
   seek-oss/aws-sm#v2.3.1:
     env:
-      NPM_READ_TOKEN: 'arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token'
+      NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
   docker#v3.8.0:
     volumes:
       - /workdir/node_modules
@@ -24,24 +24,24 @@ plugins: &plugins #alias for shared plugins
       - yarn.lock
 
 steps:
-  - label: ':yarn: :eslint: Lint  and :jest: unit test'
+  - label: ':yarn: :eslint: Lint and :jest: unit test'
     <<: *dev-agent
     plugins:
       <<: *plugins
     key: test
-    command:
-      - echo "--- Running yarn lint"
-      - yarn lint
-      - echo "--- Running yarn test :jest:"
+    commands:
+      - echo "+++ yarn test:ci"
       - yarn test
+      - echo "--- yarn lint"
+      - yarn lint
 
-  - label: 'Build & CDK Deploy Staging  :shipit:'
+  - label: 'Build & CDK Deploy Staging :shipit:'
     <<: *dev-agent
     plugins:
       <<: *plugins
     depends_on:
       - test
-    command:
+    commands:
       - echo "--- Building code"
       - yarn build
       - echo "--- Running CDK deploy to staging"
@@ -49,14 +49,14 @@ steps:
     concurrency: 1
     concurrency_group: '<%- repoName %>/deploy/dev'
 
-  - label: 'Build & CDK Deploy Production  :shipit:'
+  - label: 'Build & CDK Deploy Production :shipit:'
     branches: 'master'
     <<: *prod-agent
     plugins:
       <<: *plugins
     depends_on:
       - test
-    command:
+    commands:
       - echo "--- Building code"
       - yarn build
       - echo "--- Running CDK deploy to production"

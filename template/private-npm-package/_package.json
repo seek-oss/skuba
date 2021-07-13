@@ -30,6 +30,7 @@
     "lint": "skuba lint",
     "release": "yarn build && skuba release",
     "test": "skuba test --coverage",
+    "test:ci": "yarn -s test",
     "test:watch": "skuba test --watch"
   },
   "config": {
