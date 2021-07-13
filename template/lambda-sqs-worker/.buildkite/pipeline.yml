@@ -46,8 +46,8 @@ steps:
   - <<: *prod
     label: 🧪 Test & Lint
     commands:
-      - echo '+++ yarn test'
-      - yarn test
+      - echo '+++ yarn test:ci'
+      - yarn test:ci
       - echo '+++ yarn lint'
       - yarn lint
     plugins:

@@ -28,6 +28,8 @@
     "format": "skuba format",
     "lint": "skuba lint",
     "test": "skuba test",
+    "test:ci": "skuba test --coverage",
+    "test:watch": "skuba test --watch",
     "package": "yarn --prod --modules-folder ./lib/node_modules",
     "deploy:dev": "cdk deploy appStack --require-approval never --context stage=dev",
     "deploy:prod": "cdk deploy appStack --require-approval never --context stage=prod"
