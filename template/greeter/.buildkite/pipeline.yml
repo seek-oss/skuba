@@ -35,5 +35,5 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v3.7.0:
+      - docker-compose#v3.8.0:
           run: app
