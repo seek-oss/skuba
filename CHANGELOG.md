@@ -1,5 +1,36 @@
 # skuba
 
+## 3.14.3
+
+### Patch Changes
+
+- 0973818: **template:** seek-oss/docker-ecr-cache v1.11.0
+- 5b00ffa: **template:** Add `test:ci` script
+- 2be05f5: **template:** Force `@jest/types` resolution to fix clean installs
+- df2d5d3: **template/lambda-sqs-worker:** Use [Docker Build secrets](https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information)
+- df2d5d3: **template/greeter:** Use [Docker Build secrets](https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information)
+- df2d5d3: **template/lambda-sqs-worker-cdk:** Use [Docker Build secrets](https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information)
+- e9a71d4: **template:** Group Buildkite pipeline anchors
+
+  This provides a bit more structure to our `pipeline.yml`s and allows anchored plugins to be recognised by Renovate.
+
+- 1216a45: **deps:** ts-node-dev 1.1.8
+- 985ff9a: **template/express-rest-api:** Use [Docker Build secrets](https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information)
+- 3e1005e: **template/\*-rest-api:** Reduce app boilerplate
+- ee44447: **template:** Default Docker Compose image to empty string
+
+  This suppresses Docker Compose CLI warnings and errors when running outside of Buildkite.
+
+- ec9a44a: **template:** Use BUILDKITE_PIPELINE_DEFAULT_BRANCH in `pipeline.yml`
+- 3f0f14d: **configure, init:** Deduplicate dependencies
+- 37503f5: **template:** Add placeholder test coverage configuration
+- 5b09594: **template/lambda-sqs-worker-\*:** Build once upfront
+
+  This employs Buildkite [artifacts](https://buildkite.com/docs/pipelines/artifacts) to share compiled code with each subsequent deployment step.
+
+- e9375b2: **deps:** TypeScript 4.3.5
+- 985ff9a: **template/koa-rest-api:** Use [Docker Build secrets](https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information)
+
 ## 3.14.2
 
 ### Patch Changes
