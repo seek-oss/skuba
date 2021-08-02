@@ -2028,10 +2028,10 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
-"@types/picomatch@2.2.5":
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/@types/picomatch/-/picomatch-2.2.5.tgz#c1243b1c43c635feb04130d549d0ec7bdb396298"
-  integrity sha512-HiwR+rLX7EGhQ0AjPKxjI98ABvLOCrky3fGEcrfsmpQBKcIlseFSCr6KLdgNayhThH6O3Jimyn6x4XZuLVdy/Q==
+"@types/picomatch@2.2.6":
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/@types/picomatch/-/picomatch-2.2.6.tgz#9f9f460d50e7f2f63f08fa8751aafe6bfd554eba"
+  integrity sha512-24Y8b5ENcUDAtmcvVOIzdCwQVuXDjGTSQJl6Y0RTkct4ivJZursOSRL1SVv14Tvtql1arS68LUpspbw3HD74DA==
 
 "@types/prettier@^2.1.5":
   version "2.3.0"
@@ -9112,10 +9112,10 @@ superagent@^6.1.0:
     readable-stream "^3.6.0"
     semver "^7.3.2"
 
-supertest@6.1.3:
-  version "6.1.3"
-  resolved "https://registry.yarnpkg.com/supertest/-/supertest-6.1.3.tgz#3f49ea964514c206c334073e8dc4e70519c7403f"
-  integrity sha512-v2NVRyP73XDewKb65adz+yug1XMtmvij63qIWHZzSX8tp6wiq6xBLUy4SUAd2NII6wIipOmHT/FD9eicpJwdgQ==
+supertest@6.1.4:
+  version "6.1.4"
+  resolved "https://registry.yarnpkg.com/supertest/-/supertest-6.1.4.tgz#ea8953343e0ca316e80e975b39340934f754eb06"
+  integrity sha512-giC9Zm+Bf1CZP09ciPdUyl+XlMAu6rbch79KYiYKOGcbK2R1wH8h+APul1i/3wN6RF1XfWOIF+8X1ga+7SBrug==
   dependencies:
     methods "^1.1.2"
     superagent "^6.1.0"
@@ -9507,10 +9507,10 @@ type-detect@4.0.8:
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
   integrity sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==
 
-type-fest@1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-1.2.2.tgz#1930bc36b2064f7ab4aa307a6d1b65965199c698"
-  integrity sha512-pfkPYCcuV0TJoo/jlsUeWNV8rk7uMU6ocnYNvca1Vu+pyKi8Rl8Zo2scPt9O72gCsXIm+dMxOOWuA3VFDSdzWA==
+type-fest@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-1.3.0.tgz#6be848243853df1173fa95530112e1358ab0810b"
+  integrity sha512-mYUYkAy6fPatVWtUeCV/qGeGL3IVucmdJOzeAEfwgCJDx8gP0JaW8jn6KQ5xDfPec31e0KXWn5EUOZMhquR1zA==
 
 type-fest@^0.13.1:
   version "0.13.1"
