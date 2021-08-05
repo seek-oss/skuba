@@ -1,6 +1,6 @@
 prodAccountId: '<%- prodAwsAccountId %>'
 
-image: '{{values "prodAccountId"}}.dkr.ecr.ap-southeast-2.amazonaws.com/{{values "service"}}:{{.BuildID}}'
+image: '{{values "prodAccountId"}}.dkr.ecr.<%- region %>.amazonaws.com/{{values "service"}}:{{.BuildID}}'
 service: '<%- serviceName %>'
 
 # TODO: enable Datadog agent

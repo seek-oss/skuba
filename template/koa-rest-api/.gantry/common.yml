@@ -1,7 +1,8 @@
 prodAccountId: '<%- prodAwsAccountId %>'
 
-image: '{{values "prodAccountId"}}.dkr.ecr.ap-southeast-2.amazonaws.com/{{values "service"}}:{{.BuildID}}'
+image: '{{values "prodAccountId"}}.dkr.ecr.{{values "region"}}.amazonaws.com/{{values "service"}}:{{.BuildID}}'
 service: '<%- serviceName %>'
+region: '<%- prodAwsAccountId %>'
 
 # TODO: enable Datadog agent
 # https://gantry.ssod.skinfra.xyz/docs/v1/resources/service.html#datadogSecretId
