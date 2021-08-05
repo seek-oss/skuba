@@ -41,7 +41,7 @@ module.exports = {
     {
       name: 'region',
       message: 'AWS region',
-      initial: 'ap-southeast-2',
+      initial: 'my-region-0',
       validate: (value) => /^[a-z]{2}-[a-z]+-\d+$/.test(value),
     },
   ],
