@@ -31,7 +31,7 @@ yarn skuba init << EOF
     "prodGantryEnvironmentName": "prod",
     "repoName": "${directory}",
     "serviceName": "serviceName",
-    "region: "ap-southeast-1"
+    "region": "ap-southeast-2"
   },
   "templateName": "${template}"
 }
