@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Parameterise AWS region
+**template/\*-rest-api:** Parameterise AWS region
