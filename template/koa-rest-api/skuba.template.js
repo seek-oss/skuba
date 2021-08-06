@@ -38,6 +38,12 @@ module.exports = {
       initial: '123456789012',
       validate: (value) => /^\d{12}$/.test(value),
     },
+    {
+      name: 'region',
+      message: 'AWS region',
+      initial: 'my-region-0',
+      validate: (value) => /^[a-z]{2}-[a-z]+-\d+$/.test(value),
+    },
   ],
   type: 'application',
 };

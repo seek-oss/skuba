@@ -30,7 +30,8 @@ yarn skuba init << EOF
     "prodBuildkiteQueueName": "my-account-prod:cicd",
     "prodGantryEnvironmentName": "prod",
     "repoName": "${directory}",
-    "serviceName": "serviceName"
+    "serviceName": "serviceName",
+    "region": "ap-southeast-2"
   },
   "templateName": "${template}"
 }

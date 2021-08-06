@@ -70,7 +70,7 @@ steps:
       - seek-jobs/gantry#v1.4.0:
           command: build
           file: gantry.build.yml
-          region: ap-southeast-2
+          region: <%- region %>
           values: .gantry/common.yml
 
   - wait
@@ -87,7 +87,7 @@ steps:
           command: apply
           environment: <%- devGantryEnvironmentName %>
           file: gantry.apply.yml
-          region: ap-southeast-2
+          region: <%- region %>
           values:
             - .gantry/common.yml
             - .gantry/dev.yml
@@ -103,7 +103,7 @@ steps:
           command: apply
           environment: <%- prodGantryEnvironmentName %>
           file: gantry.apply.yml
-          region: ap-southeast-2
+          region: <%- region %>
           values:
             - .gantry/common.yml
             - .gantry/prod.yml
