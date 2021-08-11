@@ -101,5 +101,8 @@
     "skuba-dive": {
       "optional": true
     }
+  },
+  "resolutions": {
+    "**/@jest/types/@types/node": "^14.17.9"
   }
 }
