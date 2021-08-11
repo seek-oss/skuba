@@ -103,6 +103,6 @@
     }
   },
   "resolutions": {
-    "**/@jest/types/@types/node": "^14.17.9"
+    "**/@jest/types/@types/node": "^16.0.0"
   }
 }
