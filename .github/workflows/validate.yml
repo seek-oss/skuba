@@ -68,4 +68,4 @@ jobs:
           node-version: 14.x
 
       - name: Test template
-        run: yarn test:template ${{ matrix.template }} || cat "/home/runner/work/skuba/tmp-${{ matrix.template }}/yarn-error.log" && exit 1
+        run: yarn test:template ${{ matrix.template }}
