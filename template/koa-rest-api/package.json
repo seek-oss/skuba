@@ -18,7 +18,7 @@
     "@types/koa": "^2.13.4",
     "@types/koa-bodyparser": "^5.0.2",
     "@types/koa__router": "^8.0.7",
-    "@types/node": "^15.14.7",
+    "@types/node": "^14.17.9",
     "@types/supertest": "^2.0.11",
     "@types/uuid": "^8.3.1",
     "chance": "^1.1.7",
@@ -32,7 +32,7 @@
   "license": "UNLICENSED",
   "private": true,
   "resolutions": {
-    "**/@jest/types/@types/node": "^15.14.7"
+    "**/@jest/types/@types/node": "^14.17.9"
   },
   "scripts": {
     "build": "skuba build",
