@@ -2,8 +2,8 @@
   "dependencies": {},
   "description": "<%- description %>",
   "devDependencies": {
-    "@types/node": "^15.0.0",
-    "commitizen": "^4.2.3",
+    "@types/node": "^14.17.9",
+    "commitizen": "^4.2.4",
     "skuba": "*"
   },
   "files": [
@@ -21,7 +21,7 @@
     "url": "git+https://github.com/<%- orgName %>/<%- repoName %>.git"
   },
   "resolutions": {
-    "**/@jest/types/@types/node": "^15.0.0"
+    "**/@jest/types/@types/node": "^14.17.9"
   },
   "scripts": {
     "build": "skuba build-package",
