@@ -1,5 +1,14 @@
 # skuba
 
+## 3.14.4
+
+### Patch Changes
+
+- d60f561: **template:** @types/node ^14.17.19
+- 5b74f50: **template:** seek-jobs/gantry v1.4.0
+- 66059b6: **deps:** @types/jest ^27.0.0
+- 3ca9796: **template/\*-rest-api:** Parameterise AWS region
+
 ## 3.14.3
 
 ### Patch Changes
