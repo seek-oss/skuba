@@ -50,7 +50,7 @@
     "express": "4.17.1",
     "koa": "2.13.1",
     "supertest": "6.1.5",
-    "type-fest": "1.4.0"
+    "type-fest": "2.0.0"
   },
   "dependencies": {
     "@babel/cli": "^7.14.3",
