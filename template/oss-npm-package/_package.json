@@ -20,9 +20,6 @@
     "type": "git",
     "url": "git+https://github.com/<%- orgName %>/<%- repoName %>.git"
   },
-  "resolutions": {
-    "**/@jest/types/@types/node": "^14.17.9"
-  },
   "scripts": {
     "build": "skuba build-package",
     "commit": "cz",

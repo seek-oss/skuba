@@ -23,9 +23,6 @@
   },
   "license": "UNLICENSED",
   "private": true,
-  "resolutions": {
-    "**/@jest/types/@types/node": "^14.17.9"
-  },
   "scripts": {
     "build": "skuba build",
     "deploy": "serverless deploy --force --verbose",
