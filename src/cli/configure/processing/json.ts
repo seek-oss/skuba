@@ -3,7 +3,7 @@ import { isObject } from '../../../utils/validation';
 import { formatPrettier } from './prettier';
 
 export const formatObject = (
-  data: Record<PropertyKey, unknown>,
+  data: Record<Exclude<PropertyKey, symbol>, unknown>,
   filepath?: string,
 ) => {
   const sortedData = Object.fromEntries(
@@ -22,7 +22,7 @@ export const formatObject = (
 
 export const parseObject = (
   input: string | undefined,
-): Record<PropertyKey, unknown> | undefined => {
+): Record<Exclude<PropertyKey, symbol>, unknown> | undefined => {
   if (input === undefined) {
     return;
   }
