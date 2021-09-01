@@ -52,7 +52,7 @@ configs:
           permit_on_passed: true
 
 steps:
-  - <<: *dev
+  - <<: *prod
     label: 🧪 Test, Lint & Build
     artifact_paths: lib/**/*
     commands:
