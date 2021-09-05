@@ -52,7 +52,7 @@ configs:
           permit_on_passed: true
 
 steps:
-  - <<: *dev
+  - <<: *prod
     label: 🧪 Test, Lint & Build
     artifact_paths: lib/**/*
     commands:
@@ -68,6 +68,15 @@ steps:
       - *docker-ecr-cache
       - docker-compose#v3.8.0:
           run: app
+
+  - <<: *dev
+    branches: '!renovate/*'
+    label: 🧖‍♀️ Warm Dev
+    command: ':'
+    plugins:
+      - *aws-sm
+      - *private-npm
+      - *docker-ecr-cache
 
   - wait
   - block: 🙋🏻‍♀️ Deploy Dev

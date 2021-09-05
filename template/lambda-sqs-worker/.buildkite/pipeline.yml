@@ -72,6 +72,15 @@ steps:
       - docker-compose#v3.8.0:
           run: app
 
+  - <<: *dev
+    branches: '!renovate/*'
+    label: 🧖‍♀️ Warm Dev
+    command: ':'
+    plugins:
+      - *aws-sm
+      - *private-npm
+      - *docker-ecr-cache
+
   - wait
   - block: 🙋🏻‍♀️ Deploy Dev
     branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
