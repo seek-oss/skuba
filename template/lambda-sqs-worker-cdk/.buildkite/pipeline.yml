@@ -36,7 +36,7 @@ configs:
         - yarn deploy
       concurrency: 1
       plugins:
-        - artifacts#v1.3.0:
+        - artifacts#v1.4.0:
             build: ${BUILDKITE_BUILD_ID}
             download: lib/*
         - *aws-sm
