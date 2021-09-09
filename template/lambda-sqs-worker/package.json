@@ -14,7 +14,7 @@
     "chance": "^1.1.7",
     "pino-pretty": "^7.0.0",
     "serverless": "^2.53.1",
-    "serverless-plugin-canary-deployments": "^0.6.0",
+    "serverless-plugin-canary-deployments": "^0.7.0",
     "serverless-prune-plugin": "^1.5.1",
     "skuba": "*"
   },
