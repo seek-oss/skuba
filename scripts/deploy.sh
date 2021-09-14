@@ -12,8 +12,6 @@ cp README.md dist-docs/
 
 cp -R docs dist-docs/docs/
 
-exit 0
-
 cd dist-docs
 
 git init
