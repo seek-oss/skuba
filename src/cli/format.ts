@@ -10,6 +10,7 @@ export const format = async () => {
     ...(debug ? ['--debug'] : []),
     '--ext=js,ts,tsx',
     '--fix',
+    '--report-unused-disable-directives',
     '.',
   );
   log.ok('✔ ESLint');

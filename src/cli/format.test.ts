@@ -35,6 +35,7 @@ describe('format', () => {
         "eslint",
         "--ext=js,ts,tsx",
         "--fix",
+        "--report-unused-disable-directives",
         ".",
         Object {
           "localDir": "REDACTED",
@@ -71,6 +72,7 @@ describe('format', () => {
         "--debug",
         "--ext=js,ts,tsx",
         "--fix",
+        "--report-unused-disable-directives",
         ".",
         Object {
           "localDir": "REDACTED",
