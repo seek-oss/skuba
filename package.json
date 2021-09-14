@@ -22,6 +22,7 @@
   "license": "MIT",
   "scripts": {
     "build": "yarn skuba build && scripts/postbuild.sh",
+    "deploy": "scripts/deploy.sh",
     "format": "yarn skuba format",
     "lint": "yarn skuba lint",
     "release": "yarn build && changeset publish",
