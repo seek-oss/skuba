@@ -3,8 +3,8 @@
 ## Table of contents
 
 - [Background](#background)
-- [Try it out](#try-it-out)
-- [Current limitations](#current-limitations)
+- [~~Try it out~~](#try-it-out)
+- [~~Current limitations~~](#current-limitations)
 
 ## Background
 
@@ -54,10 +54,9 @@ That said, Babel presents a few potential benefits for **skuba**:
   A neat example of this is [typecheck.macro],
   which generates runtime validators from TypeScript types that would ordinarily be stripped away at compile time.
 
-## Try it out
+## ~~Try it out~~
 
-> **Caution:** this is an experimental feature.
-> It may be significantly changed or even removed without a major version bump.
+> 🗑 This refers to functionality removed in [**skuba** v3.15.0].
 
 1. `babel.config.js`
 
@@ -99,14 +98,33 @@ That said, Babel presents a few potential benefits for **skuba**:
    yarn start
    ```
 
-## Current limitations
+## ~~Current limitations~~
 
-- Babel [doesn't support all TypeScript language features],
-  most notably `import =` and `export =` syntax
+> 🗑 This refers to functionality removed in [**skuba** v3.15.0].
 
-- Module alias support is hardcoded to `src`
+1. Babel [doesn't support all TypeScript language features].
 
-- Build command is hardcoded to input directory `src` and output directory `lib`
+1. Module alias support is hardcoded to `src`.
+
+1. Build command is hardcoded to input directory `src` and output directory `lib`.
+
+1. The `babel-node` REPL is fairly primitive.
+   While it can import TypeScript modules,
+   it does not support interactive TypeScript nor modern JavaScript syntax:
+
+   ```typescript
+   import { someExport } from 'src/someModule';
+   // Thrown: [...] Modules aren't supported in the REPL
+
+   const { someExport } = require('src/someModule');
+   // Thrown: [...] Only `var` variables are supported in the REPL
+
+   var { someExport } = require('src/someModule');
+   // undefined
+
+   var v: undefined;
+   // Thrown: [...] Unexpected token
+   ```
 
 [babel]: https://babeljs.io/
 [doesn't expose a plugin system]: https://github.com/Microsoft/TypeScript/issues/14419
@@ -117,3 +135,4 @@ That said, Babel presents a few potential benefits for **skuba**:
 [ttypescript]: https://github.com/cevek/ttypescript
 [type-only imports and exports]: https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/#type-only-imports-exports
 [typecheck.macro]: https://github.com/vedantroy/typecheck.macro
+[**skuba** v3.15.0]: https://github.com/seek-oss/skuba/releases/tag/v3.15.0

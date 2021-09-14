@@ -3,7 +3,7 @@
 import readPkgUp, { NormalizedPackageJson } from 'read-pkg-up';
 import * as t from 'runtypes';
 
-import { hasProp, hasStringProp } from './validation';
+import { hasStringProp } from './validation';
 
 export type ProjectType = t.Static<typeof ProjectType>;
 
@@ -41,14 +41,4 @@ export const getEntryPointFromManifest = async () => {
     hasStringProp(result.packageJson.skuba, 'entryPoint')
     ? result.packageJson.skuba.entryPoint
     : DEFAULT_ENTRY_POINT;
-};
-
-export const isBabelFromManifest = async () => {
-  const result = await getConsumerManifest();
-
-  return (
-    result !== undefined &&
-    hasProp(result.packageJson.skuba, 'babel') &&
-    Boolean(result.packageJson.skuba.babel)
-  );
 };

@@ -28,10 +28,6 @@ import readPkgUp from 'read-pkg-up';
 import { log } from './utils/logging';
 
 const registerModuleAliases = () => {
-  if (!process.env.__SKUBA_REGISTER_MODULE_ALIASES) {
-    return;
-  }
-
   // This may pick the wrong `package.json` if we are in a nested directory.
   // Consider revisiting this when we decide how to better support monorepos.
   const result = readPkgUp.sync();
