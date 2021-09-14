@@ -2,6 +2,8 @@ version: '3.7'
 
 services:
   app:
+    env:
+      - BUILDKITE
     image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}
     init: true
     volumes:

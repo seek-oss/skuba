@@ -3,6 +3,7 @@ version: '3.7'
 services:
   app:
     environment:
+      - BUILDKITE
       - BUILDKITE_COMMIT
       - ENVIRONMENT
       - VERSION
