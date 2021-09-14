@@ -260,27 +260,7 @@ import 'skuba-dive/register';
 import { rootLogger } 'src/framework/logging';
 ```
 
-> **Note:** if you're using the [experimental Babel toolchain],
-> you'll be limited to the fairly primitive `babel-node` REPL.
-> While it can import TypeScript modules,
-> it does not support interactive TypeScript nor modern JavaScript syntax:
->
-> ```typescript
-> import { someExport } from 'src/someModule';
-> // Thrown: [...] Modules aren't supported in the REPL
->
-> const { someExport } = require('src/someModule');
-> // Thrown: [...] Only `var` variables are supported in the REPL
->
-> var { someExport } = require('src/someModule');
-> // undefined
->
-> var v: undefined;
-> // Thrown: [...] Unexpected token
-> ```
-
 [`skuba-dive/register`]: https://github.com/seek-oss/skuba-dive#register
-[experimental babel toolchain]: ./docs/babel.md
 
 ### `skuba start`
 

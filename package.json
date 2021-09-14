@@ -54,14 +54,7 @@
     "type-fest": "2.3.2"
   },
   "dependencies": {
-    "@babel/cli": "^7.14.3",
-    "@babel/core": "^7.14.3",
-    "@babel/node": "^7.14.2",
-    "@babel/preset-env": "^7.14.4",
-    "@babel/preset-typescript": "^7.13.0",
     "@types/jest": "^27.0.1",
-    "babel-plugin-macros": "^3.1.0",
-    "babel-plugin-module-resolver": "^4.1.0",
     "chalk": "^4.1.0",
     "concurrently": "^6.0.0",
     "ejs": "^3.1.6",
@@ -78,7 +71,6 @@
     "latest-version": "^5.1.0",
     "lodash.mergewith": "^4.6.2",
     "module-alias": "^2.2.2",
-    "nodemon": "^2.0.7",
     "normalize-package-data": "^3.0.0",
     "npm-run-path": "^4.0.1",
     "npm-which": "^3.0.1",
