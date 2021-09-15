@@ -1,4 +1,8 @@
-# Migrating from `@seek/skuba`
+---
+parent: Migration guides
+---
+
+# `@seek/skuba`
 
 ## 1. Upgrade to `@seek/skuba@3.7` or newer
 
@@ -15,7 +19,7 @@ yarn upgrade @seek/skuba --latest
 We've introduced some new linting rules via ESLint 7 + `typescript-eslint` 3.
 See our [ESLint guide] for some tips, and reach out in [#typescriptification] if you get stuck on anything.
 
-[eslint guide]: ./eslint.md
+[eslint guide]: ../deep-dives/eslint.md
 [#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
 
 ## 2. Switch out packages

@@ -1,3 +1,7 @@
+---
+parent: Deep dives
+---
+
 # ESLint
 
 [ESLint] is _the_ JavaScript linter.
@@ -12,7 +16,6 @@ Our ESLint configuration introduces stricter rules around unsafe type usage.
 Here are some tips for making the move.
 
 [eslint]: https://eslint.org/
-[eslint guide]: ./eslint.md
 [sku]: https://github.com/seek-oss/sku
 [tslint]: https://palantir.github.io/tslint/
 [tslint is deprecated and will go out of support by december 2020.]: https://github.com/palantir/tslint/issues/4534

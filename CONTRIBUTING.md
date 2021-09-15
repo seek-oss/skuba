@@ -1,3 +1,7 @@
+---
+nav_order: 99
+---
+
 # Contributing
 
 Hi there, thanks for checking out our repo!
@@ -26,8 +30,8 @@ so don't commit or post anything that isn't ready for the entire world to see.
 
 ## Getting started
 
-**skuba** is documented through its [README](/README.md),
-along with some targeted topics under the [docs](/docs) directory.
+**skuba** is documented through its [README](README.md),
+along with some targeted topics under the [docs](docs) directory.
 We maintain a [changelog] and [release notes] on GitHub,
 and distribute it as an [npm package].
 
@@ -120,7 +124,7 @@ yarn lint
 yarn test
 ```
 
-Our [validate](/.github/workflows/validate.yml) GitHub Actions workflow also initialises each built-in **skuba** template and runs through a set of CLI commands.
+Our [validate](https://github.com/seek-oss/skuba/blob/master/.github/workflows/validate.yml) GitHub Actions workflow also initialises each built-in **skuba** template and runs through a set of CLI commands.
 This can be reproduced locally,
 but keep in mind that the script is fairly slow and you'll have to manually clean up afterwards.
 
@@ -177,18 +181,18 @@ You'll see a 🦋 bot gliding around pull requests.
 You should write a changeset if you are changing the public **skuba** interface,
 which includes:
 
-- [API](/src/api) for Node.js build and test code
-- [CLI](/src/cli) commands
-- [Config](/config) presets
-- [Template](/template) code and documentation
-- [npm dependencies](/package.json)
+- [API](https://github.com/seek-oss/skuba/tree/master/src/api) for Node.js build and test code
+- [CLI](https://github.com/seek-oss/skuba/tree/master/src/cli) commands
+- [Config](https://github.com/seek-oss/skuba/tree/master/config) presets
+- [Template](https://github.com/seek-oss/skuba/tree/master/template) code and documentation
+- [npm dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
 
 On the other hand,
 a changeset is not necessary for:
 
-- Documentation like the [README](/README.md)
+- Documentation like the [README](README.md)
 - Internal refactoring that preserves the existing interface
-- [npm dev dependencies](/package.json)
+- [npm dev dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
 
 ```shell
 yarn changeset
@@ -213,7 +217,7 @@ This makes it easy to eyeball which part of **skuba** a change relates to.
 **format, lint:** Introduce new ESLint rule
 ```
 
-The Changesets CLI will generate a Markdown file under [.changeset](/.changeset),
+The Changesets CLI will generate a Markdown file under [.changeset](https://github.com/seek-oss/skuba/tree/master/.changeset),
 which you should include in your pull request.
 It doesn't need to be part of the same commit as the rest of your changes.
 Feel free to manually edit this file to include more details about your change.
@@ -226,7 +230,7 @@ The changesets are used to infer the next semantic version and to update the [ch
 
 This PR may be left open to collate multiple changes into the next version.
 A maintainer will merge it once ready,
-and our [release](/.github/workflows/release.yml) GitHub Actions workflow will publish the associated GitHub release and npm package version.
+and our [release](https://github.com/seek-oss/skuba/blob/master/.github/workflows/release.yml) GitHub Actions workflow will publish the associated GitHub release and npm package version.
 
 ### Publishing a prerelease
 
@@ -245,7 +249,7 @@ yarn changeset version
 ```
 
 If previous betas have been released under the same semantic version,
-you will need to manually bump the version suffix in [package.json](/package.json):
+you will need to manually bump the version suffix in [package.json](https://github.com/seek-oss/skuba/blob/master/package.json):
 
 ```diff
 - "version": "4.0.0-beta.1",
@@ -261,7 +265,7 @@ git push --set-upstream origin beta
 ```
 
 [#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
-[changelog]: https://github.com/seek-oss/skuba/blob/master/CHANGELOG.md
+[changelog]: CHANGELOG.md
 [changesets]: https://github.com/atlassian/changesets
 [create a pull request]: https://github.com/seek-oss/skuba/compare
 [dist-tag]: https://docs.npmjs.com/cli/dist-tag

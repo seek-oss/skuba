@@ -604,7 +604,7 @@
 
   `seek-module-toolkit` users can now install `skuba` and run `skuba configure` to migrate their configuration.
 
-  Care should be taken around the [change in build directories](https://github.com/seek-oss/skuba/blob/master/docs/migrating-from-seek-module-toolkit.md#building).
+  Care should be taken around the [change in build directories](https://github.com/seek-oss/skuba/blob/master/docs/migration-guides/seek-module-toolkit.md#building).
 
 - f2f3925: **eslint:** skuba is now usable as a shareable config
 
@@ -621,7 +621,7 @@
 
   You can now build your project with Babel instead of tsc. Experimentally.
 
-  See [docs/babel.md](https://github.com/seek-oss/skuba/tree/master/docs/babel.md) for details.
+  See our [Babel topic](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/babel.md) for details.
 
 - b23bd23: **jest:** skuba is now usable as a preset
 
@@ -759,7 +759,7 @@
 
 - 0d3f0ad: **build-package:** Add opinionated command to replace `smt build`
 
-  See the [migration documentation](https://github.com/seek-oss/skuba/blob/master/docs/migrating-from-seek-module-toolkit.md) for more information.
+  See the [migration documentation](https://github.com/seek-oss/skuba/blob/master/docs/migration-guides/seek-module-toolkit.md) for more information.
 
 ### Patch Changes
 
