@@ -1,3 +1,7 @@
+---
+parent: Deep dives
+---
+
 # Babel
 
 ## Table of contents

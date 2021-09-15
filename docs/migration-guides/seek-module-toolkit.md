@@ -1,4 +1,8 @@
-# Migrating from `seek-module-toolkit`
+---
+parent: Migration guides
+---
+
+# `seek-module-toolkit`
 
 ## Table of contents
 
@@ -107,7 +111,7 @@ See our [ESLint guide] for some tips, and reach out in [#typescriptification] if
 
 [#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
 [eslint]: https://eslint.org/
-[eslint guide]: ./eslint.md
+[eslint guide]: ../deep-dives/eslint.md
 [tslint]: https://palantir.github.io/tslint/
 
 ## Committing and releasing
