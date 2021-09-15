@@ -44,7 +44,6 @@ Compile the project for compatibility with CommonJS and ES2015 modules.
 
 This is useful for building npm packages, and serves as a replacement for [`smt build`].
 
-TODO: this is hard
 [`smt build`]: ../migration-guides/seek-module-toolkit.md#building
 
 ## `skuba configure`
