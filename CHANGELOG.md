@@ -236,7 +236,7 @@
   yarn skuba node src/someLocalCliScript
   ```
 
-  If you use this alias in your production code, your production entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`](https://github.com/seek-oss/skuba-dive#register). For example, your `src/app.ts` may look like:
+  If you use this alias in your production code, your entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`](https://github.com/seek-oss/skuba-dive#register). For example, your `src/app.ts` may look like:
 
   ```typescript
   // This must be imported directly within the `src` directory

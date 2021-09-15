@@ -4,6 +4,8 @@ nav_order: 98
 
 # About
 
+---
+
 ## Goals
 
 ### Speed up prototyping and project creation
@@ -18,6 +20,8 @@ nav_order: 98
 
 This tooling is managed and upgraded for you.
 Upgrades are consolidated into one Renovate PR.
+
+---
 
 ## Non-goals
 
@@ -53,6 +57,8 @@ Here are some highlights:
 | 🔒 [@seek/node-s2sauth-issuer] | Call an [s2sauth]-protected service                    |
 | 🔒 [@seek/typegen]             | Generate TypeScript types from a JSON schema           |
 | 🔒 [@seek/zactive-directory]   | Authenticate and authorise [SSOd] users                |
+
+---
 
 ## Related reading
 
