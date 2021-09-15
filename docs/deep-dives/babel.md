@@ -4,11 +4,15 @@ parent: Deep dives
 
 # Babel
 
+---
+
 ## Table of contents
 
 - [Background](#background)
 - [~~Try it out~~](#try-it-out)
 - [~~Current limitations~~](#current-limitations)
+
+---
 
 ## Background
 
@@ -58,6 +62,8 @@ That said, Babel presents a few potential benefits for **skuba**:
   A neat example of this is [typecheck.macro],
   which generates runtime validators from TypeScript types that would ordinarily be stripped away at compile time.
 
+---
+
 ## ~~Try it out~~
 
 > 🗑 This refers to functionality removed in [**skuba** v3.15.0].
@@ -101,6 +107,8 @@ That said, Babel presents a few potential benefits for **skuba**:
    # uses Nodemon + babel-node instead of ts-node-dev
    yarn start
    ```
+
+---
 
 ## ~~Current limitations~~
 

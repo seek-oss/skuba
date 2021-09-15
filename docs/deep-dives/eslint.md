@@ -4,6 +4,8 @@ parent: Deep dives
 
 # ESLint
 
+---
+
 [ESLint] is _the_ JavaScript linter.
 You may be familiar with it from SEEK's frontend development toolkit,
 [sku].
@@ -19,6 +21,8 @@ Here are some tips for making the move.
 [sku]: https://github.com/seek-oss/sku
 [tslint]: https://palantir.github.io/tslint/
 [tslint is deprecated and will go out of support by december 2020.]: https://github.com/palantir/tslint/issues/4534
+
+---
 
 ## Avoid `any` and `object`
 

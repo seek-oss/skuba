@@ -2,7 +2,9 @@
 parent: Migration guides
 ---
 
-# `@seek/skuba`
+# @seek/skuba
+
+---
 
 ## 1. Upgrade to `@seek/skuba@3.7` or newer
 
@@ -21,6 +23,8 @@ See our [ESLint guide] for some tips, and reach out in [#typescriptification] if
 
 [eslint guide]: ../deep-dives/eslint.md
 [#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
+
+---
 
 ## 2. Switch out packages
 

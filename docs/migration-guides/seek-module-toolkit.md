@@ -2,7 +2,9 @@
 parent: Migration guides
 ---
 
-# `seek-module-toolkit`
+# @seek/seek-module-toolkit
+
+---
 
 ## Table of contents
 
@@ -10,6 +12,8 @@ parent: Migration guides
 - [Building](#building)
 - [Formatting and linting](#formatting-and-linting)
 - [Committing and releasing](#committing-and-releasing)
+
+---
 
 ## TL;DR
 
@@ -35,6 +39,8 @@ yarn smt migrate
 # See the Building section.
 yarn build && npm pack
 ```
+
+---
 
 ## Building
 
@@ -92,6 +98,8 @@ You may test out the packaging changes by either:
 - Locally packaging with `yarn build`, then `npm pack`.
 
   In a consuming repo, you can then `yarn add ../path/to/package.tgz` the local version to give it a whirl.
+
+---
 
 ## Formatting and linting
 
