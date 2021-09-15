@@ -8,8 +8,7 @@ rm -rf dist-docs
 
 mkdir -p dist-docs
 
-cp CONTRIBUTING.md dist-docs/CONTRIBUTING.md
-cp README.md dist-docs/index.md
+cp CONTRIBUTING.md index.md dist-docs/
 cp -R site/ dist-docs/
 cp -R docs/ dist-docs/docs/
 
