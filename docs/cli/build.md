@@ -13,11 +13,19 @@ The resulting output can be executed with a regular Node.js runtime,
 or in the case of packages,
 consumed in other projects without the need for additional transpilation.
 
+See our [Babel topic] for further deliberation over our choice of build tool.
+
 ---
 
 ## skuba build
 
 Compiles your project.
+
+```shell
+skuba build
+
+# TSFILE: ...
+```
 
 By convention, this points to a `tsconfig.build.json` that excludes tests from your production bundle.
 
@@ -50,6 +58,22 @@ Compiles your project for compatibility with CommonJS and ES2015 modules.
 
 This is useful for building isomorphic npm packages, and serves as a replacement for [`smt build`].
 
+```shell
+skuba build-package
+
+# [commonjs] TSFILE: ...
+# [commonjs] tsc exited with code 0
+# [es2015  ] TSFILE: ...
+# [es2015  ] tsc exited with code 0
+# [types   ] TSFILE: ...
+# [types   ] tsc exited with code 0
+```
+
+`skuba lint` runs concurrent processes by default.
+On a resource-constrained Buildkite agent,
+you can limit it to run serially by propagating the `BUILDKITE` environment variable.
+
 [`smt build`]: ../migration-guides/seek-module-toolkit.md#building
 [`skuba configure`]: ./configure.md#skuba-configure
+[babel deep dive]: ../deep-dives/babel.md
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

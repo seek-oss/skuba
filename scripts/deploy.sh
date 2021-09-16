@@ -8,8 +8,7 @@ rm -rf dist-docs
 
 mkdir -p dist-docs
 
-cp CHANGELOG.md CONTRIBUTING.md index.md dist-docs/
-cp -R site/ dist-docs/
+cp CHANGELOG.md CONTRIBUTING.md index.md site/_config.yml dist-docs/
 cp -R docs/ dist-docs/docs/
 
 cd dist-docs
