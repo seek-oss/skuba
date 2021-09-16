@@ -9,4 +9,12 @@ nav_order: 4
 
 **skuba** should be a `devDependency` that is excluded from your production bundle.
 
+```json
+{
+  "devDependencies": {
+    "skuba": "*"
+  }
+}
+```
+
 Its Node.js API can be used in build and test code.
