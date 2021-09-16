@@ -6,6 +6,11 @@ parent: Deep dives
 
 ---
 
+**skuba** currently uses [tsc] as its compiler of choice.
+This topic provides some context around this decision and discusses how Babel stacks up as an alternative.
+
+---
+
 ## Table of contents
 
 - [Background](#background)
