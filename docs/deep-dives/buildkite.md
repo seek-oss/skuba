@@ -6,10 +6,15 @@ parent: Deep dives
 
 ---
 
+Buildkite is SEEK's CI/CD platform of choice.
+This topic details common issues you may run into and their solutions.
+
+---
+
 ## My agent exits with status -1
 
 **Scenario:**
-you're running some skuba commands like [`skuba lint`],
+you're running a **skuba** command like [`skuba lint`],
 and observe the following error message on a Buildkite step:
 
 > Exited with status -1 (process killed or agent lost; see the timeline tab for more information)
