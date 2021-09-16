@@ -37,6 +37,7 @@
     "url": "https://github.com/seek-oss/skuba.git"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "0.4.1",
     "@changesets/cli": "2.17.0",
     "@types/concurrently": "6.2.1",
     "@types/ejs": "3.1.0",
