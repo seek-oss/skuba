@@ -4,6 +4,8 @@ nav_order: 99
 
 # Contributing
 
+---
+
 Hi there, thanks for checking out our repo!
 
 **skuba** is a toolkit for developing TypeScript backend applications and packages at SEEK.
@@ -12,6 +14,8 @@ this project is primarily driven by our internal priorities and technology strat
 
 SEEKers: this repo is public,
 so don't commit or post anything that isn't ready for the entire world to see.
+
+---
 
 ## Table of contents
 
@@ -27,6 +31,8 @@ so don't commit or post anything that isn't ready for the entire world to see.
   - [Creating a changeset](#creating-a-changeset)
   - [Publishing a release](#publishing-a-release)
   - [Publishing a prerelease](#publishing-a-prerelease)
+
+---
 
 ## Getting started
 
@@ -47,6 +53,8 @@ Feel free to [create a pull request] for trivial fixes and improvements.
 
 For more substantial features, please [submit an issue] first.
 This lets us evaluate whether the feature fits the direction of the project and discuss possible approaches.
+
+---
 
 ## Development
 
@@ -142,13 +150,13 @@ If you want to try out the **skuba** CLI on itself,
 a `yarn skuba` script is configured:
 
 ```shell
-# prints available commands
+# Prints available commands.
 yarn skuba
 
-# prints version from local package.json
+# Prints version from local package.json.
 yarn skuba version
 
-# builds skuba using itself
+# Builds skuba using itself.
 yarn skuba build
 ```
 
@@ -156,20 +164,22 @@ If you want to try out the **skuba** CLI on another local repo,
 you can use [npm link] to register your local copy as a global shell command:
 
 ```shell
-# do this once upfront
+# Do this once upfront.
 npm link
 
-# npm link points to the compiled JavaScript in ./lib/index.js, so
-# you'll need to rebuild skuba on every code change
+# npm link points to the compiled JavaScript in ./lib/index.js.
+# This means you'll need to rebuild skuba on every code change 😔.
 yarn build
 
-# run a skuba command against another repo
+# Run a skuba command against another repo.
 cd ../some-other-repo
 skuba version
 
-# avoid command confusion after you're done
+# Avoid command confusion after you're done.
 npm unlink
 ```
+
+---
 
 ## Releases
 
@@ -238,12 +248,12 @@ We currently have limited support for prereleases on the `beta` [dist-tag].
 This can only be performed by a maintainer.
 
 ```shell
-# revert beta branch to match master
+# Revert beta branch to match master.
 git fetch origin
 git switch beta
 git reset --hard origin/master
 
-# stage a beta release
+# Stage a beta release.
 yarn changeset pre enter beta
 yarn changeset version
 ```
