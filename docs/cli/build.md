@@ -75,5 +75,5 @@ you can limit it to run serially by propagating the `BUILDKITE` environment vari
 
 [`smt build`]: ../migration-guides/seek-module-toolkit.md#building
 [`skuba configure`]: ./configure.md#skuba-configure
-[babel deep dive]: ../deep-dives/babel.md
+[babel topic]: ../deep-dives/babel.md
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

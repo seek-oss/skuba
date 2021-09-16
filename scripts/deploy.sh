@@ -15,10 +15,9 @@ old_header='# skuba'
 new_header="$(cat << EOF
 ---
 nav_order: 98
-title: Changelog
 ---
 
-# skuba
+# Changelog
 
 ---
 EOF
