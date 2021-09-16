@@ -1,4 +1,11 @@
+---
+nav_order: 98
+title: Changelog
+---
+
 # skuba
+
+---
 
 ## 3.14.4
 
@@ -411,7 +418,7 @@
 
 - 4cc1a15: **start:** Support [Node.js debugging options](https://nodejs.org/en/docs/guides/debugging-getting-started/)
 
-  [`skuba start`](https://github.com/seek-oss/skuba#skuba-start) now accepts `--inspect` and `--inspect-brk` options. This allows you to attach a debugger to the process.
+  [`skuba start`](https://github.com/seek-oss/skuba/blob/master/docs/cli/run.md#skuba-start) now accepts `--inspect` and `--inspect-brk` options. This allows you to attach a debugger to the process.
 
 - 4e63643: **init:** Redesign base prompt
 
