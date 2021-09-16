@@ -11,3 +11,14 @@ nav_order: 5
 **skuba-dive** is an optional runtime component for **skuba**.
 
 **skuba-dive** should be a `dependency` that is included in your production bundle.
+
+```json
+{
+  "dependencies": {
+    "skuba-dive": "*"
+  },
+  "devDependencies": {
+    "skuba": "*"
+  }
+}
+```

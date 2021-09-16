@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -e
 
@@ -8,7 +8,25 @@ rm -rf dist-docs
 
 mkdir -p dist-docs
 
-cp CHANGELOG.md CONTRIBUTING.md index.md site/_config.yml dist-docs/
+changelog="$(cat CHANGELOG.md)"
+
+old_header='# skuba'
+
+new_header="$(cat << EOF
+---
+nav_order: 98
+title: Changelog
+---
+
+# skuba
+
+---
+EOF
+)"
+
+echo "${changelog/#"${old_header}"/"${new_header}"}" > dist-docs/CHANGELOG.md
+
+cp CONTRIBUTING.md index.md site/_config.yml dist-docs/
 cp -R docs/ dist-docs/docs/
 
 cd dist-docs

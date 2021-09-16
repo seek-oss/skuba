@@ -1,11 +1,4 @@
----
-nav_order: 98
-title: Changelog
----
-
 # skuba
-
----
 
 ## 3.14.4
 
