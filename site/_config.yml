@@ -8,6 +8,8 @@ remote_theme: pmarsceill/just-the-docs
 aux_links:
   GitHub:
     - https://github.com/seek-oss/skuba
+  npm:
+    - https://www.npmjs.com/package/skuba
 aux_links_new_tab: true
 
 gh_edit_link: true
