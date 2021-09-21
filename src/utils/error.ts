@@ -24,11 +24,13 @@ const isExecaError = (err: unknown): err is ExecaError =>
 
 export const handleCliError = (err: unknown) => {
   if (isExecaError(err)) {
-    process.exit(err.exitCode);
+    process.exitCode = err.exitCode;
+    return;
   }
 
   log.err(err);
-  process.exit(1);
+  process.exitCode = 1;
+  return;
 };
 
 export const isErrorWithCode = <T>(

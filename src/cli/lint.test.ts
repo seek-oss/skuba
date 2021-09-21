@@ -49,6 +49,7 @@ describe('lint', () => {
         },
         Object {
           "maxProcesses": "REDACTED",
+          "prefix": "{name} |",
         },
       ]
     `);
@@ -81,6 +82,7 @@ describe('lint', () => {
         },
         Object {
           "maxProcesses": "REDACTED",
+          "prefix": "{name} |",
         },
       ]
     `);

@@ -111,11 +111,22 @@ export const createExec =
 
 export const exec: Exec = (command, ...args) => runCommand(command, args);
 
-export const execConcurrently = async (commands: ExecConcurrentlyCommand[]) => {
-  const maxNameLength = commands.reduce(
-    (length, command) => Math.max(length, command.name.length),
-    0,
-  );
+export const execConcurrently = async (
+  commands: ExecConcurrentlyCommand[],
+  /**
+   * A set length to pad names to.
+   *
+   * If this argument is not supplied, the length will be inferred from the
+   * longest name in `commands`.
+   */
+  nameLength?: number,
+) => {
+  const maxNameLength =
+    nameLength ??
+    commands.reduce(
+      (length, command) => Math.max(length, command.name.length),
+      0,
+    );
 
   try {
     await concurrently(
@@ -128,6 +139,8 @@ export const execConcurrently = async (commands: ExecConcurrentlyCommand[]) => {
       {
         // Run serially on Buildkite, where we often use puny agents.
         maxProcesses: process.env.BUILDKITE ? 1 : cpus().length,
+        // Use a minimalist logging prefix.
+        prefix: '{name} |',
       },
     );
   } catch (err: unknown) {

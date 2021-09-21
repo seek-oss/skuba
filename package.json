@@ -21,13 +21,13 @@
   "sideEffects": false,
   "license": "MIT",
   "scripts": {
-    "build": "yarn skuba build && scripts/postbuild.sh",
+    "build": "ts-node --transpile-only src/skuba build && scripts/postbuild.sh",
     "deploy": "scripts/deploy.sh",
     "format": "yarn skuba format",
     "lint": "yarn skuba lint",
     "release": "yarn build && changeset publish",
     "stage": "changeset version && yarn format",
-    "skuba": "ts-node src/skuba",
+    "skuba": "ts-node --transpile-only src/skuba build && node lib/skuba",
     "test": "yarn skuba test",
     "test:watch": "yarn skuba test --watch",
     "test:template": "scripts/test-template.sh"
@@ -57,7 +57,7 @@
   "dependencies": {
     "@types/jest": "^27.0.1",
     "chalk": "^4.1.0",
-    "concurrently": "^6.0.0",
+    "concurrently": "^6.2.1",
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
     "eslint": "^7.27.0",
