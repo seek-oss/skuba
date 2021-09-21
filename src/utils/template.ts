@@ -1,8 +1,8 @@
 /* eslint-disable new-cap */
 
+import fs from 'fs';
 import path from 'path';
 
-import fs from 'fs-extra';
 import * as t from 'runtypes';
 
 import { ProjectType } from './manifest';
@@ -30,7 +30,7 @@ export const TEMPLATE_DIR = path.join(__dirname, '..', '..', 'template');
 export const BASE_TEMPLATE_DIR = path.join(TEMPLATE_DIR, 'base');
 
 export const ensureTemplateConfigDeletion = (dir: string): Promise<void> =>
-  fs.remove(path.join(dir, TEMPLATE_CONFIG_FILENAME));
+  fs.promises.rm(path.join(dir, TEMPLATE_CONFIG_FILENAME));
 
 export const readBaseTemplateFile = (src: string): Promise<string> =>
-  fs.readFile(path.join(BASE_TEMPLATE_DIR, src), 'utf8');
+  fs.promises.readFile(path.join(BASE_TEMPLATE_DIR, src), 'utf8');

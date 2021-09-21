@@ -1,6 +1,6 @@
+import fs from 'fs';
 import path from 'path';
 
-import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 import { NormalizedReadResult } from 'read-pkg-up';
 
@@ -130,7 +130,7 @@ export const analyseDependencies = async ({
       devDependencies: output.devDependencies,
     });
 
-    await fs.writeFile(packageJsonFilepath, updatedPackageJson);
+    await fs.promises.writeFile(packageJsonFilepath, updatedPackageJson);
 
     if (processors.length === 0) {
       return;

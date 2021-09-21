@@ -1,8 +1,8 @@
+import fs from 'fs';
 import path from 'path';
 
 import chalk from 'chalk';
 import { Form, FormChoice } from 'enquirer';
-import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy';
 import { isErrorWithCode } from '../../utils/error';
@@ -77,7 +77,7 @@ const confirmShouldContinue = async (choices: Readonly<FormChoice[]>) => {
 
 const createDirectory = async (dir: string) => {
   try {
-    await fs.mkdir(dir);
+    await fs.promises.mkdir(dir);
   } catch (err: unknown) {
     if (isErrorWithCode(err, 'EEXIST')) {
       log.err(`The directory '${dir}' already exists.`);
