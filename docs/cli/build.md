@@ -69,11 +69,14 @@ skuba build-package
 # types    | tsc exited with code 0
 ```
 
-`skuba lint` runs concurrent processes by default.
+`skuba lint` runs processes concurrently up to your [CPU core count].
 On a resource-constrained Buildkite agent,
 you can limit it to run serially by propagating the `BUILDKITE` environment variable.
+See our [Buildkite guide] for more information.
 
 [`smt build`]: ../migration-guides/seek-module-toolkit.md#building
 [`skuba configure`]: ./configure.md#skuba-configure
 [babel topic]: ../deep-dives/babel.md
+[buildkite guide]: ../deep-dives/buildkite.md
+[cpu core count]: https://nodejs.org/api/os.html#os_os_cpus
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

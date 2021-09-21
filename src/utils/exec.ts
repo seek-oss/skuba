@@ -1,3 +1,4 @@
+import { cpus } from 'os';
 import stream from 'stream';
 import util from 'util';
 
@@ -137,7 +138,7 @@ export const execConcurrently = async (
       })),
       {
         // Run serially on Buildkite, where we often use puny agents.
-        maxProcesses: process.env.BUILDKITE ? 1 : 0,
+        maxProcesses: process.env.BUILDKITE ? 1 : cpus().length,
         // Use a minimalist logging prefix.
         prefix: '{name} |',
       },
