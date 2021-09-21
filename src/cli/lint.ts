@@ -1,9 +1,9 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import fs from 'fs-extra';
 
 import { hasDebugFlag } from '../utils/args';
+import { pathExists } from '../utils/dir';
 import { execConcurrently } from '../utils/exec';
 import { getConsumerManifest } from '../utils/manifest';
 
@@ -44,7 +44,7 @@ const noSkubaTemplateJs = async () => {
     'skuba.template.js',
   );
 
-  if (await fs.pathExists(templateConfigPath)) {
+  if (await pathExists(templateConfigPath)) {
     throw Error(
       `Template is incomplete; run ${chalk.bold(
         'yarn skuba configure',
