@@ -1,6 +1,7 @@
 import path from 'path';
 
 import getPort from 'get-port';
+import * as tsNode from 'ts-node';
 
 import { parseRunArgs } from '../utils/args';
 import { createExec } from '../utils/exec';
@@ -11,14 +12,14 @@ export const node = async () => {
 
   const availablePort = await getPort();
 
-  const exec = createExec({
-    env: {
-      __SKUBA_ENTRY_POINT: args.entryPoint,
-      __SKUBA_PORT: String(isIpPort(args.port) ? args.port : availablePort),
-    },
-  });
-
   if (args.entryPoint) {
+    const exec = createExec({
+      env: {
+        __SKUBA_ENTRY_POINT: args.entryPoint,
+        __SKUBA_PORT: String(isIpPort(args.port) ? args.port : availablePort),
+      },
+    });
+
     // Run a script with plain `node` to support inspector options.
     // https://github.com/TypeStrong/ts-node#programmatic
     return exec(
@@ -34,12 +35,12 @@ export const node = async () => {
   }
 
   // REPL with `ts-node` to support import statements.
-  return exec(
-    'ts-node',
-    ...args.node,
-    '--require',
-    path.posix.join('skuba', 'lib', 'register'),
-    '--transpile-only',
-    ...args.script,
-  );
+  return tsNode
+    .createRepl({
+      service: tsNode.register({
+        require: [path.join(__dirname, '..', 'register')],
+        transpileOnly: true,
+      }),
+    })
+    .start();
 };
