@@ -118,7 +118,8 @@ export const configure = async () => {
       log.plain(log.bold('yarn format'));
 
       log.newline();
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
     try {
       await exec('npx', 'yarn-deduplicate', '--strategy=highest');

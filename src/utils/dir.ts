@@ -39,7 +39,6 @@ export const crawlDirectory = async (
 ) => {
   const ignoreFileFilter = await createInclusionFilter([
     path.join(root, ignoreFilename),
-  ]);
 
   const output = await new FDir()
     .crawlWithOptions(root, {

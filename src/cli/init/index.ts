@@ -112,7 +112,8 @@ export const init = async () => {
     log.ok('git push --set-upstream origin master');
 
     log.newline();
-    process.exit(1);
+    process.exitCode = 1;
+    return;
   }
 
   log.newline();
