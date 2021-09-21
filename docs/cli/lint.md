@@ -43,12 +43,12 @@ This command should be run in CI to verify that [`skuba format`] was applied and
 ```shell
 skuba lint
 
-# [Prettier] Checking formatting...
-# [Prettier] All matched files use Prettier code style!
-# [Prettier] prettier --check . exited with code 0
-# [ESLint  ] eslint --ext=js,ts,tsx --report-unused-disable-directives . exited with code 0
-# [tsc     ] TSFILE: /Users/rling/Code/seek-jobs/indie-ryanair-service/lib/tsconfig.tsbuildinfo
-# [tsc     ] tsc --noEmit exited with code 0
+# Prettier | Checking formatting...
+# Prettier | All matched files use Prettier code style!
+# Prettier | prettier --check . exited with code 0
+# ESLint   | eslint --ext=js,ts,tsx --report-unused-disable-directives . exited with code 0
+# tsc      | TSFILE: /Users/rling/Code/seek-jobs/indie-ryanair-service/lib/tsconfig.tsbuildinfo
+# tsc      | tsc --noEmit exited with code 0
 ```
 
 `skuba lint` runs concurrent processes by default.
