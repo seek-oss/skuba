@@ -1,6 +1,5 @@
+import fs from 'fs';
 import path from 'path';
-
-import fs from 'fs-extra';
 
 import * as packageAnalysis from '../configure/analysis/package';
 
@@ -16,9 +15,7 @@ describe('writePackageJson', () => {
       }),
     );
 
-  const writeFile = jest
-    .spyOn(fs, 'writeFile')
-    .mockImplementation(() => undefined);
+  const writeFile = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
 
   afterEach(() => writeFile.mockClear());
 

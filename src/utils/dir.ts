@@ -1,7 +1,7 @@
+import fs from 'fs';
 import path from 'path';
 
 import { fdir as FDir } from 'fdir';
-import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
 
@@ -34,7 +34,7 @@ export const buildPatternToFilepathMap = (
  * - `node_modules` subdirectories
  */
 export const crawlDirectory = async (root: string) => {
-  const gitIgnoreFilter = await createInclusionFilter([
+  const ignoreFileFilter = await createInclusionFilter([
     path.join(root, '.gitignore'),
   ]);
 
@@ -45,7 +45,7 @@ export const crawlDirectory = async (root: string) => {
         (pathname) => {
           const relativePathname = path.relative(root, pathname);
 
-          return gitIgnoreFilter(relativePathname);
+          return ignoreFileFilter(relativePathname);
         },
       ],
       includeBasePath: true,
@@ -63,13 +63,14 @@ export const crawlDirectory = async (root: string) => {
 };
 
 /**
- * Create a filter function that excludes filepaths based on `.gitignore`s.
+ * Create a filter function that excludes filepaths based on ignore files like
+ * `.gitignore` and `.prettierignore`.
  */
-export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
-  const gitIgnores = await Promise.all(
-    gitIgnorePaths.map(async (gitIgnorePath) => {
+export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
+  const ignoreFiles = await Promise.all(
+    ignoreFilepaths.map(async (ignoreFilepath) => {
       try {
-        return await fs.readFile(gitIgnorePath, 'utf8');
+        return await fs.promises.readFile(ignoreFilepath, 'utf8');
       } catch (err: unknown) {
         if (isErrorWithCode(err, 'ENOENT')) {
           return;
@@ -80,9 +81,15 @@ export const createInclusionFilter = async (gitIgnorePaths: string[]) => {
     }),
   );
 
-  const managers = gitIgnores
+  const managers = ignoreFiles
     .filter((value): value is string => typeof value === 'string')
     .map((value) => ignore().add(value));
 
   return ignore().add('.git').add(managers).createFilter();
 };
+
+export const pathExists = (accessPath: string) =>
+  fs.promises
+    .access(accessPath)
+    .then(() => true)
+    .catch(() => false);

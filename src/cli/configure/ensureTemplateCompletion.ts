@@ -1,7 +1,7 @@
+import fs from 'fs';
 import path from 'path';
 
 import chalk from 'chalk';
-import fs from 'fs-extra';
 import { NormalizedReadResult } from 'read-pkg-up';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
@@ -45,7 +45,7 @@ export const ensureTemplateCompletion = async ({
 
   const updatedPackageJson = formatObject(manifest.packageJson);
   const packageJsonFilepath = path.join(destinationRoot, 'package.json');
-  await fs.writeFile(packageJsonFilepath, updatedPackageJson);
+  await fs.promises.writeFile(packageJsonFilepath, updatedPackageJson);
 
   await copyFiles({
     sourceRoot: destinationRoot,

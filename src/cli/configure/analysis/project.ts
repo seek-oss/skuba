@@ -1,6 +1,5 @@
+import fs from 'fs';
 import path from 'path';
-
-import fs from 'fs-extra';
 
 import { buildPatternToFilepathMap, crawlDirectory } from '../../../utils/dir';
 import { isErrorWithCode } from '../../../utils/error';
@@ -13,7 +12,7 @@ export const createDestinationFileReader =
   (root: string) =>
   async (filename: string): Promise<string | undefined> => {
     try {
-      return await fs.readFile(path.join(root, filename), 'utf8');
+      return await fs.promises.readFile(path.join(root, filename), 'utf8');
     } catch (err: unknown) {
       if (isErrorWithCode(err, 'ENOENT')) {
         return;

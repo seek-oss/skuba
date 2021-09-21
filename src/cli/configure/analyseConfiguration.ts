@@ -1,6 +1,5 @@
+import fs from 'fs';
 import path from 'path';
-
-import fs from 'fs-extra';
 
 import { log } from '../../utils/logging';
 import { ProjectType } from '../../utils/manifest';
@@ -38,11 +37,17 @@ export const analyseConfiguration = async (
       ...new Set(Object.keys(files).map((filename) => path.dirname(filename))),
     ];
 
-    await Promise.all(dirnames.map((dirname) => fs.ensureDir(dirname)));
+    await Promise.all(
+      dirnames.map((dirname) =>
+        fs.promises.mkdir(dirname, { recursive: true }),
+      ),
+    );
 
     await Promise.all(
       Object.entries(files).map(([filename, { data }]) =>
-        data === undefined ? fs.remove(filename) : fs.writeFile(filename, data),
+        data === undefined
+          ? fs.promises.rm(filename)
+          : fs.promises.writeFile(filename, data),
       ),
     );
   };

@@ -1,5 +1,6 @@
 import { Input, Select } from 'enquirer';
-import fs from 'fs-extra';
+
+import { pathExists } from '../../utils/dir';
 
 import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
 
@@ -39,7 +40,7 @@ const BASE_CHOICES = [
         return 'fails GitHub validation';
       }
 
-      const exists = await fs.pathExists(value);
+      const exists = await pathExists(value);
 
       return !exists || `'${value}' is an existing directory`;
     },
