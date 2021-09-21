@@ -2,14 +2,24 @@
 
 import chalk from 'chalk';
 
-export const log = {
-  bold: chalk.bold,
-  formatSubtle: chalk.grey,
+export type Logger = typeof log;
 
-  subtle: (...message: unknown[]) => console.log(chalk.grey(...message)),
-  err: (...message: unknown[]) => console.error(chalk.red(...message)),
-  newline: () => console.log(),
-  ok: (...message: unknown[]) => console.log(chalk.green(...message)),
-  plain: (...message: unknown[]) => console.log(...message),
-  warn: (...message: unknown[]) => console.error(chalk.yellow(...message)),
+export const createLogger = (debug: boolean, ...prefixes: unknown[]) => {
+  const log = (...message: unknown[]) => console.log(...prefixes, ...message);
+
+  return {
+    bold: chalk.bold,
+    formatSubtle: chalk.grey,
+
+    debug: (...message: unknown[]) =>
+      debug ? log(chalk.grey(...message)) : undefined,
+    subtle: (...message: unknown[]) => log(chalk.grey(...message)),
+    err: (...message: unknown[]) => log(chalk.red(...message)),
+    newline: () => log(),
+    ok: (...message: unknown[]) => log(chalk.green(...message)),
+    plain: (...message: unknown[]) => log(...message),
+    warn: (...message: unknown[]) => log(chalk.yellow(...message)),
+  };
 };
+
+export const log = createLogger(false);
