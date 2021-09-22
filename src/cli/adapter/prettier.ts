@@ -71,7 +71,7 @@ const formatFile = async (
     return;
   }
 
-  await fs.promises.writeFile(filepath, data);
+  await fs.promises.writeFile(filepath, formatted);
 
   result.touched.push(filepath);
 };
