@@ -161,22 +161,26 @@ yarn skuba build
 ```
 
 If you want to try out the **skuba** CLI on another local repo,
-you can use [npm link] to register your local copy as a global shell command:
+use [yarn link]:
 
 ```shell
 # Do this once upfront.
-npm link
+yarn link
 
-# npm link points to the compiled JavaScript in ./lib/index.js.
+# `yarn link` points to the JavaScript output in `./lib`.
 # This means you'll need to rebuild skuba on every code change 😔.
 yarn build
 
-# Run a skuba command against another repo.
+# Link your local skuba binary to another local repo.
 cd ../some-other-repo
-skuba version
+yarn link skuba
+
+# Run skuba commands against the other repo.
+yarn skuba version
 
 # Avoid command confusion after you're done.
-npm unlink
+cd -
+yarn unlink
 ```
 
 ---
@@ -280,9 +284,9 @@ git push --set-upstream origin beta
 [create a pull request]: https://github.com/seek-oss/skuba/compare
 [dist-tag]: https://docs.npmjs.com/cli/dist-tag
 [fork the repo]: https://github.com/seek-oss/skuba/fork
-[npm link]: https://docs.npmjs.com/cli/link
 [npm package]: https://www.npmjs.com/package/skuba
 [release notes]: https://github.com/seek-oss/skuba/releases
 [semantic versioning]: https://semver.org/
 [submit an issue]: https://github.com/seek-oss/skuba/issues/new/choose
 [windows subsystem for linux]: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
+[yarn link]: https://classic.yarnpkg.com/lang/en/docs/cli/link/
