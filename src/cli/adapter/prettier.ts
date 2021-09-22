@@ -101,8 +101,6 @@ export const runPrettier = async (
   // and the headache of conflicting `.gitignore` and `.prettierignore` rules.
   const filepaths = await crawlDirectory(directory, '.prettierignore');
 
-  logger.debug('Formatting files...');
-
   const result: Result = {
     count: filepaths.length,
     errored: [],
@@ -111,11 +109,22 @@ export const runPrettier = async (
     untouched: [],
   };
 
+  logger.debug('Processing files...');
+
+  const start = process.hrtime.bigint();
+
   for (const filepath of filepaths) {
     await formatFile(filepath, logger, mode, result);
   }
 
-  logger.plain('Processed', result.count - result.unparsed.length, 'files.');
+  const end = process.hrtime.bigint();
+
+  logger.plain(
+    `Processed ${logger.pluralise(
+      result.count - result.unparsed.length,
+      'file',
+    )} in ${logger.timing(start, end)}.`,
+  );
 
   if (result.touched.length) {
     logger.plain('Changes:', result.touched.length);

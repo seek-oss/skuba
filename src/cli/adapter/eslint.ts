@@ -29,14 +29,23 @@ export const runESLint = async (
 
   logger.debug('Processing files...');
 
+  const start = process.hrtime.bigint();
+
   const [formatter, results] = await Promise.all([
     engine.loadFormatter(),
     engine.lintFiles('.'),
   ]);
 
-  let errors = 0;
+  const end = process.hrtime.bigint();
 
-  logger.plain('Processed', results.length, 'files.');
+  logger.plain(
+    `Processed ${logger.pluralise(results.length, 'file')} in ${logger.timing(
+      start,
+      end,
+    )}.`,
+  );
+
+  let errors = 0;
 
   for (const result of results) {
     errors += result.errorCount;

@@ -11,6 +11,11 @@ export const createLogger = (debug: boolean, ...prefixes: unknown[]) => {
     bold: chalk.bold,
     formatSubtle: chalk.grey,
 
+    pluralise: (count: number, subject: string) =>
+      `${count} ${subject}${count === 1 ? '' : 's'}`,
+    timing: (start: bigint, end: bigint) =>
+      `${Number((end - start) / BigInt(10_000_000)) / 100}s`,
+
     debug: (...message: unknown[]) =>
       debug ? log(chalk.grey(...message)) : undefined,
     subtle: (...message: unknown[]) => log(chalk.grey(...message)),
