@@ -10,7 +10,7 @@ import { getConsumerManifest } from '../../utils/manifest';
 
 interface Result {
   count: number;
-  errored: Array<{ err: unknown; filepath: string }>;
+  errored: Array<{ err?: unknown; filepath: string }>;
   touched: string[];
   unparsed: string[];
   untouched: string[];
@@ -51,7 +51,7 @@ const formatFile = async (
     }
 
     if (!ok) {
-      result.errored.push({ err: 'Did not pass check', filepath });
+      result.errored.push({ filepath });
     }
 
     result.untouched.push(filepath);
@@ -127,16 +127,18 @@ export const runPrettier = async (
   );
 
   if (result.touched.length) {
-    logger.plain('Changes:', result.touched.length);
+    logger.plain(
+      `Formatted ${logger.pluralise(result.touched.length, 'file')}:`,
+    );
     for (const file of result.touched) {
       logger.warn(file);
     }
   }
 
   if (result.errored.length) {
-    logger.plain('Errors:', result.errored.length);
+    logger.plain(`Flagged ${logger.pluralise(result.errored.length, 'file')}:`);
     for (const { err, filepath } of result.errored) {
-      logger.err(filepath, inspect(err));
+      logger.warn(filepath, ...(err ? [inspect(err)] : []));
     }
   }
 
