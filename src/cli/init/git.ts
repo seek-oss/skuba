@@ -1,6 +1,5 @@
+import fs from 'fs';
 import path from 'path';
-
-import fs from 'fs-extra';
 
 import { Exec, createExec } from '../../utils/exec';
 import { log } from '../../utils/logging';
@@ -76,7 +75,10 @@ export const downloadGitHubTemplate = async (
     '.',
   );
 
-  await fs.remove(path.join(destinationDir, '.git'));
+  await fs.promises.rm(path.join(destinationDir, '.git'), {
+    force: true,
+    recursive: true,
+  });
 
   log.newline();
   log.warn(

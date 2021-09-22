@@ -1,7 +1,7 @@
+import fs from 'fs';
 import path from 'path';
 
 import ejs from 'ejs';
-import fs from 'fs-extra';
 
 import { isErrorWithCode } from './error';
 import { log } from './logging';
@@ -13,7 +13,7 @@ const copyFile = async (
   destinationPath: string,
   { overwrite = true, processors }: CopyFilesOptions,
 ) => {
-  const oldContents = await fs.readFile(sourcePath, 'utf8');
+  const oldContents = await fs.promises.readFile(sourcePath, 'utf8');
 
   const newContents = processors.reduce(
     (contents, process) => process(contents),
@@ -25,7 +25,7 @@ const copyFile = async (
   }
 
   try {
-    await fs.writeFile(destinationPath, newContents, {
+    await fs.promises.writeFile(destinationPath, newContents, {
       flag: overwrite ? 'w' : 'wx',
     });
   } catch (err: unknown) {
@@ -70,7 +70,7 @@ export const copyFiles = async (
   currentSourceDir: string = opts.sourceRoot,
   currentDestinationDir: string = opts.destinationRoot,
 ) => {
-  const filenames = await fs.readdir(currentSourceDir);
+  const filenames = await fs.promises.readdir(currentSourceDir);
 
   const toDestinationPath = (filename: string) =>
     path.join(
@@ -97,7 +97,7 @@ export const copyFiles = async (
         await copyFile(sourcePath, destinationPath, opts);
       } catch (err: unknown) {
         if (isErrorWithCode(err, 'EISDIR')) {
-          await fs.ensureDir(destinationPath);
+          await fs.promises.mkdir(destinationPath, { recursive: true });
           return copyFiles(opts, sourcePath, destinationPath);
         }
 

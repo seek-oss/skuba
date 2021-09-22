@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs from 'fs';
 
 import { ProjectType } from '../../utils/manifest';
 import { getDestinationManifest } from '../configure/analysis/package';
@@ -33,5 +33,5 @@ export const writePackageJson = async ({
 
   const updatedPackageJson = formatPackage(manifest.packageJson);
 
-  await fs.writeFile(manifest.path, updatedPackageJson);
+  await fs.promises.writeFile(manifest.path, updatedPackageJson);
 };

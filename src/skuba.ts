@@ -34,7 +34,8 @@ const skuba = async () => {
 
     if (!hasProp(commandModule, moduleName)) {
       log.err(log.bold(commandName), "couldn't run! Please submit an issue.");
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
 
     const run = commandModule[moduleName] as () => Promise<unknown>;
@@ -46,7 +47,7 @@ const skuba = async () => {
   await showLogoAndVersionInfo();
   showHelp();
 
-  process.exit(1);
+  process.exitCode = 1;
 };
 
 skuba().catch(handleCliError);

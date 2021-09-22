@@ -10,6 +10,10 @@ nav_order: 3
 **skuba** lets you interactively run your TypeScript source code during development.
 The following commands are powered by [`ts-node`] and [`ts-node-dev`].
 
+These commands are only intended to serve local development and simple scripting scenarios,
+as a TypeScript process can present substantial overhead at runtime.
+In production, we recommend [`skuba build`]ing your project and executing under a regular Node.js runtime.
+
 ---
 
 ## skuba node
@@ -125,6 +129,7 @@ const app = express();
 export default Object.assign(app, { port });
 ```
 
+[`skuba build`]: ./build.md
 [`skuba-dive/register`]: https://github.com/seek-oss/skuba-dive#register
 [`ts-node-dev`]: https://github.com/whitecolor/ts-node-dev
 [`ts-node`]: https://github.com/typestrong/ts-node
