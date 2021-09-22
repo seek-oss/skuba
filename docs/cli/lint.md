@@ -47,7 +47,7 @@ skuba lint
 # Prettier | All matched files use Prettier code style!
 # Prettier | prettier --check . exited with code 0
 # ESLint   | eslint --ext=js,ts,tsx --report-unused-disable-directives . exited with code 0
-# tsc      | TSFILE: /Users/rling/Code/seek-jobs/indie-ryanair-service/lib/tsconfig.tsbuildinfo
+# tsc      | TSFILE: ...
 # tsc      | tsc --noEmit exited with code 0
 ```
 
