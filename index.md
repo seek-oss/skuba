@@ -22,9 +22,9 @@ nav_order: 1
 
 **skuba** is a toolkit for backend application and package development on SEEK's gravel and paved roads:
 
-- Write in TypeScript
-- Enforce coding standards with ESLint and Prettier
-- Test with Jest
+- Write in [TypeScript]
+- Enforce coding standards with [ESLint] and [Prettier]
+- Test with [Jest]
 - Deploy with [Gantry], [Serverless] or the [AWS CDK]
 
 [aws cdk]: https://docs.aws.amazon.com/cdk/latest/guide/work-with-cdk-typescript.html
@@ -33,42 +33,46 @@ nav_order: 1
 
 It provides you with:
 
-- Commands for developing your project
-- Templates to base your backend application or package on
+- [CLI] commands for developing your project
+- [Templates] to base your backend application or package on
+- [Development] and optional [runtime] APIs for cross-cutting concerns
+
+Learn more [about](docs/about.md) **skuba** and [contribute](CONTRIBUTING.md) to it.
 
 ---
 
-## Getting started
+**skuba** is distributed as an npm package.
 
-Create a new project:
+In projects that list it as a `devDependency`,
+usage may look something like this:
 
 ```shell
-npx skuba init
+# Install project dependencies.
+yarn
+
+# Run the skuba CLI.
+yarn skuba help
 ```
 
-Or bootstrap an existing project:
+Global installations are also supported to speed up local development:
 
 ```shell
-npx skuba configure
-```
-
-Global installations are supported to speed up local development:
-
-```shell
+# Install skuba globally.
 yarn global add skuba
 
 # Look, no `npx`!
-skuba version
+skuba help
 ```
 
----
+If you're new here, jump ahead to the [CLI] section to [create a new project] or [update an existing one].
 
-## Next steps
-
-View the CLI and API references:
-
-- [CLI](docs/cli)
-- [Development API](docs/development-api)
-- [Runtime API](docs/runtime-api)
-
-You can also learn more [about](docs/about.md) **skuba** and [contribute](CONTRIBUTING.md) to it.
+[cli]: ./docs/cli
+[create a new project]: ./docs/cli/init.md
+[development]: ./docs/development-api
+[eslint]: https://eslint.org/
+[jest]: https://jestjs.io
+[prettier]: https://prettier.io/
+[runtime]: ./docs/runtime-api
+[templates]: ./docs/templates
+[typescript]: https://www.typescriptlang.org/
+[update an existing one]: ./docs/cli/configure.md
