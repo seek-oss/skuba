@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+"skuba": patch
 ---
 
-**template:** pino-pretty ^7.0.0
+template: pino-pretty ^7.0.0

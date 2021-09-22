@@ -5,7 +5,7 @@
 const {
   getInfo,
   getInfoFromPullRequest,
-} = require('@changesets/get-github-info');
+} = require("@changesets/get-github-info");
 
 /** @type import('@changesets/types').ChangelogFunctions */
 const changelogFunctions = {
@@ -19,7 +19,7 @@ const changelogFunctions = {
         'Please provide a repo to this changelog generator like this:\n"changelog": ["./changelog.js", { "repo": "org/repo" }]',
       );
     }
-    if (dependenciesUpdated.length === 0) return '';
+    if (dependenciesUpdated.length === 0) return "";
 
     const changesetLink = `- Updated dependencies [${(
       await Promise.all(
@@ -35,13 +35,13 @@ const changelogFunctions = {
       )
     )
       .filter((_) => _)
-      .join(', ')}]:`;
+      .join(", ")}]:`;
 
     const updatedDependenciesList = dependenciesUpdated.map(
       (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
     );
 
-    return [changesetLink, ...updatedDependenciesList].join('\n');
+    return [changesetLink, ...updatedDependenciesList].join("\n");
   },
   getReleaseLine: async (changeset, _type, options) => {
     if (!options || !options.repo) {
@@ -59,20 +59,20 @@ const changelogFunctions = {
       .replace(/^\s*(?:pr|pull|pull\s+request):\s*#?(\d+)/im, (_, pr) => {
         let num = Number(pr);
         if (!isNaN(num)) prFromSummary = num;
-        return '';
+        return "";
       })
       .replace(/^\s*commit:\s*([^\s]+)/im, (_, commit) => {
         commitFromSummary = commit;
-        return '';
+        return "";
       })
       .replace(/^\s*(?:author|user):\s*@?([^\s]+)/gim, (_, user) => {
         usersFromSummary.push(user);
-        return '';
+        return "";
       })
       .trim();
 
     const [firstLine, ...futureLines] = replacedChangelog
-      .split('\n')
+      .split("\n")
       .map((l) => l.trimRight());
 
     const links = await (async () => {
@@ -104,11 +104,14 @@ const changelogFunctions = {
       };
     })();
 
+    // Bold the scope.
+    const formattedFirstLine = firstLine.replace(/^([^:]+): /, "**$1:** ");
+
     const suffix = links.pull ?? links.commit;
 
-    return `\n\n- ${firstLine}${suffix ? ` (${suffix})` : ''}\n${futureLines
-      .map((l) => `  ${l}`)
-      .join('\n')}`;
+    return `\n\n- ${formattedFirstLine}${
+      suffix ? ` (${suffix})` : ""
+    }\n${futureLines.map((l) => `  ${l}`).join("\n")}`;
   },
 };
 
