@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+"skuba": patch
 ---
 
 Jest.mergePreset: Allow `watchPathIgnorePatterns`
