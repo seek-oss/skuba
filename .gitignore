@@ -19,4 +19,5 @@ yarn-error.log
 # end managed by skuba
 
 /integration/format/
+/integration/lint/
 /template/**/yarn.lock

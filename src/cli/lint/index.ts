@@ -2,16 +2,23 @@ import path from 'path';
 
 import chalk from 'chalk';
 
-import { hasDebugFlag } from '../../utils/args';
+import { hasDebugFlag, hasSerialFlag } from '../../utils/args';
 import { pathExists } from '../../utils/dir';
 import { execConcurrently } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
-import { execWorkerThread } from '../../utils/worker';
 
+import { runESLintInMainThread, runESLintInWorkerThread } from './eslint';
+import { runPrettierInMainThread, runPrettierInWorkerThread } from './prettier';
 import type { Input } from './types';
 
-const execTsc = async ({ debug }: Input): Promise<boolean> => {
+const execTsc = async ({ debug, tscOutputStream }: Input): Promise<boolean> => {
+  const command = [
+    'tsc',
+    ...(debug ? ['--extendedDiagnostics'] : []),
+    '--noEmit',
+  ].join(' ');
+
   try {
     // Misappropriate `concurrently` as a stdio prefixer.
     // We can use our regular console logger once we decide on an approach for
@@ -20,12 +27,16 @@ const execTsc = async ({ debug }: Input): Promise<boolean> => {
     await execConcurrently(
       [
         {
-          command: `tsc${debug ? ' --extendedDiagnostics' : ''} --noEmit`,
+          command,
           name: 'tsc',
           prefixColor: 'blue',
         },
       ],
-      'Prettier'.length,
+      {
+        maxProcesses: 1,
+        nameLength: 'Prettier'.length,
+        outputStream: tscOutputStream,
+      },
     );
 
     return true;
@@ -34,19 +45,36 @@ const execTsc = async ({ debug }: Input): Promise<boolean> => {
   }
 };
 
-const externalLint = async (input: Input) => {
-  // TODO: run serially based on Buildkite flag or debug flag.
+const externalLintConcurrently = async (input: Input) => {
   const [eslintOk, prettierOk, tscOk] = await Promise.all([
-    execWorkerThread<Input, boolean>(
-      path.posix.join(__dirname, 'eslint.js'),
-      input,
-    ),
-    execWorkerThread<Input, boolean>(
-      path.posix.join(__dirname, 'prettier.js'),
-      input,
-    ),
+    runESLintInWorkerThread(input),
+    runPrettierInWorkerThread(input),
     execTsc(input),
   ]);
+
+  return { eslintOk, prettierOk, tscOk };
+};
+
+const externalLintSerially = async (input: Input) => {
+  const eslintOk = await runESLintInMainThread(input);
+  const prettierOk = await runPrettierInMainThread(input);
+  const tscOk = await execTsc(input);
+
+  return { eslintOk, prettierOk, tscOk };
+};
+
+const externalLint = async (input: Input) => {
+  log.newline();
+
+  const lint =
+    // `--debug` implies `--serial`.
+    input.debug || input.serial
+      ? externalLintSerially
+      : externalLintConcurrently;
+
+  const { eslintOk, prettierOk, tscOk } = await lint(input);
+
+  log.newline();
 
   if (eslintOk && prettierOk && tscOk) {
     return;
@@ -62,7 +90,8 @@ const externalLint = async (input: Input) => {
   ];
 
   log.err(tools.join(', '), 'found issues that require triage.');
-  log.err(`Did you forget to run ${chalk.bold('yarn skuba format')}?`);
+  log.newline();
+
   process.exitCode = 1;
 };
 
@@ -93,9 +122,14 @@ export const internalLint = async () => {
   await noSkubaTemplateJs();
 };
 
-export const lint = async () => {
+export const lint = async (
+  args = process.argv,
+  tscOutputStream: NodeJS.WritableStream | undefined = undefined,
+) => {
   const opts: Input = {
-    debug: hasDebugFlag(),
+    debug: hasDebugFlag(args),
+    serial: hasSerialFlag(args),
+    tscOutputStream,
   };
 
   await externalLint(opts);
