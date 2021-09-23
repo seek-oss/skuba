@@ -28,8 +28,8 @@
     "release": "yarn build && changeset publish",
     "stage": "changeset version && yarn format",
     "skuba": "ts-node --transpile-only src/skuba build && node lib/skuba",
-    "test": "yarn skuba test",
-    "test:watch": "yarn skuba test --watch",
+    "test": "yarn skuba test --runInBand",
+    "test:watch": "yarn skuba test --runInBand --watch",
     "test:template": "scripts/test-template.sh"
   },
   "repository": {

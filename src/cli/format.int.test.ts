@@ -79,17 +79,22 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
   return Object.fromEntries(entries);
 };
 
-afterAll(() =>
+const originalCwd = process.cwd();
+
+beforeEach(jest.clearAllMocks);
+
+afterAll(() => {
+  // Restore the original working directory to avoid confusion in other tests.
+  process.chdir(originalCwd);
+
   // Clean up temporary directories to avoid subsequent formatting and linting
   // warnings and to save on disk space. This can be commented out to inspect
   // the output.
-  fs.promises.rm(TEMP_PATH, {
+  return fs.promises.rm(TEMP_PATH, {
     force: true,
     recursive: true,
-  }),
-);
-
-beforeEach(jest.clearAllMocks);
+  });
+});
 
 interface Args {
   args: string[];
@@ -105,10 +110,12 @@ test.each`
   ${'ok --debug'} | ${['--debug']} | ${'ok'}        | ${undefined} | ${[]}
   ${'unfixable'}  | ${[]}          | ${'unfixable'} | ${1}         | ${['a/a/a.ts']}
 `('$description', async ({ args, base, exitCode, modified }: Args) => {
-
   const baseDir = path.join(BASE_PATH, base);
 
-  const tempDir = path.join(TEMP_PATH, `${base}-${crypto.randomBytes(32).toString('hex')}`);
+  const tempDir = path.join(
+    TEMP_PATH,
+    `${base}-${crypto.randomBytes(32).toString('hex')}`,
+  );
 
   const originalFiles = await prepareTempDirectory(baseDir, tempDir);
 
