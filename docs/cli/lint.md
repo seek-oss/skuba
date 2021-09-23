@@ -47,10 +47,8 @@ This command should be run in CI to verify that [`skuba format`] was applied and
 ```shell
 skuba lint
 
-# Prettier | Checking formatting...
-# Prettier | All matched files use Prettier code style!
-# Prettier | prettier --check . exited with code 0
-# ESLint   | eslint --ext=js,ts,tsx --report-unused-disable-directives . exited with code 0
+# ESLint   | Processed 60 files in 1.23s.
+# Prettier | Processed 74 files in 1.23s.
 # tsc      | TSFILE: ...
 # tsc      | tsc --noEmit exited with code 0
 ```
