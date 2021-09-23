@@ -145,5 +145,5 @@ test.each`
     }),
   );
 
-  expect(files.join('\n\n')).toMatchSnapshot();
+  expect(`\n${files.join('\n\n')}`).toMatchSnapshot();
 });
