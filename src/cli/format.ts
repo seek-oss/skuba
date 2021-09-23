@@ -6,8 +6,8 @@ import { createLogger, log } from '../utils/logging';
 import { runESLint } from './adapter/eslint';
 import { runPrettier } from './adapter/prettier';
 
-export const format = async () => {
-  const debug = hasDebugFlag();
+export const format = async (args = process.argv) => {
+  const debug = hasDebugFlag(args);
 
   log.newline();
   log.plain(chalk.magenta('Fixing code with ESLint'));
