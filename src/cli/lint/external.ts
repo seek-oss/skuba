@@ -38,9 +38,6 @@ export const externalLint = async (input: Input) => {
     return;
   }
 
-  // Some stdio doesn't resolve synchronously, so wait for a bit.
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
   const tools = [
     ...(eslintOk ? [] : ['ESLint']),
     ...(prettierOk ? [] : ['Prettier']),
