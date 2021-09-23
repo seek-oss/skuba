@@ -56,7 +56,11 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
 
 const originalCwd = process.cwd();
 
-beforeEach(jest.clearAllMocks);
+beforeEach(() => {
+  jest.clearAllMocks();
+
+  process.exitCode = undefined;
+});
 
 afterAll(() => {
   // Restore the original working directory to avoid confusion in other tests.
@@ -80,8 +84,8 @@ interface Args {
 test.each`
   description     | args           | base           | exitCode
   ${'fixable'}    | ${[]}          | ${'fixable'}   | ${1}
-  ${'ok'}         | ${[]}          | ${'ok'}        | ${1}
-  ${'ok --debug'} | ${['--debug']} | ${'ok'}        | ${1}
+  ${'ok'}         | ${[]}          | ${'ok'}        | ${undefined}
+  ${'ok --debug'} | ${['--debug']} | ${'ok'}        | ${undefined}
   ${'unfixable'}  | ${[]}          | ${'unfixable'} | ${1}
 `('$description', async ({ args, base, exitCode }: Args) => {
   const baseDir = path.join(BASE_PATH, base);
