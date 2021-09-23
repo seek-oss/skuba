@@ -66,6 +66,29 @@ interface ExecConcurrentlyCommand {
   prefixColor?: string;
 }
 
+interface ExecConcurrentlyOptions {
+  /**
+   * The maximum number of processes that can execute concurrently.
+   *
+   * Defaults to the CPU core count.
+   */
+  maxProcesses?: number;
+
+  /**
+   * A set length to pad names to.
+   *
+   * Defaults to the length of the longest command name.
+   */
+  nameLength?: number;
+
+  /**
+   * The stream that logging output will be written to.
+   *
+   * Defaults to `process.stdout`.
+   */
+  outputStream?: NodeJS.WritableStream;
+}
+
 type ExecOptions = execa.Options & { streamStdio?: true | 'yarn' };
 
 const envWithPath = {
@@ -113,13 +136,7 @@ export const exec: Exec = (command, ...args) => runCommand(command, args);
 
 export const execConcurrently = async (
   commands: ExecConcurrentlyCommand[],
-  /**
-   * A set length to pad names to.
-   *
-   * If this argument is not supplied, the length will be inferred from the
-   * longest name in `commands`.
-   */
-  nameLength?: number,
+  { maxProcesses, nameLength, outputStream }: ExecConcurrentlyOptions = {},
 ) => {
   const maxNameLength =
     nameLength ??
@@ -137,8 +154,10 @@ export const execConcurrently = async (
         prefixColor,
       })),
       {
-        // Run serially on Buildkite, where we often use puny agents.
-        maxProcesses: process.env.BUILDKITE ? 1 : cpus().length,
+        maxProcesses: maxProcesses ?? cpus().length,
+
+        outputStream,
+
         // Use a minimalist logging prefix.
         prefix: '{name} |',
       },
