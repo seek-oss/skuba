@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+"skuba": patch
 ---
 
 **build-package, lint:** Use minimalist logging prefix

@@ -218,17 +218,17 @@ The Changesets CLI is interactive and follows [semantic versioning]:
 - Minor release `0.X.0`: new, backwards-compatible functionality
 - Major release `X.0.0`: backwards-incompatible modification
 
-Prefix your changeset title with a `**scope:**`.
+Prefix your changeset title with a `scope:`.
 This makes it easy to eyeball which part of **skuba** a change relates to.
 
 ```text
-**test:** Fix command
+test: Fix command
 
-**template:** Add next steps to READMEs
+template: Add next steps to READMEs
 
-**template/koa-rest-api:** Switch to Express
+template/koa-rest-api: Switch to Express
 
-**format, lint:** Introduce new ESLint rule
+format, lint: Introduce new ESLint rule
 ```
 
 The Changesets CLI will generate a Markdown file under [.changeset](https://github.com/seek-oss/skuba/tree/master/.changeset),

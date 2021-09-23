@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+"skuba": patch
 ---
 
-**template:** seek-jobs/gantry v1.4.1
+template: seek-jobs/gantry v1.4.1

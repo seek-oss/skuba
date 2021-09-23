@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+"skuba": patch
 ---
 
 **build-package, lint:** Limit concurrency to CPU core count
