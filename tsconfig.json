@@ -7,6 +7,6 @@
     "outDir": "lib",
     "removeComments": false
   },
-  "exclude": ["lib*/**/*", "template/**/*"],
+  "exclude": ["lib*/**/*", "integration/**/*", "template/**/*"],
   "extends": "./config/tsconfig.json"
 }
