@@ -1,12 +1,7 @@
 // Uncomment the following line when there's an intentionally skipped test.
 // /* eslint-disable jest/no-disabled-tests */
 
-import { internalLint } from './lint';
-
-describe('internalLint', () => {
-  it('passes on skuba itself', () =>
-    expect(internalLint()).resolves.toBeUndefined());
-});
+import './lint';
 
 /**
  * Ensure compatibility between our lint command and new syntax features.
