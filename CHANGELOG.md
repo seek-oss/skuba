@@ -1,5 +1,67 @@
 # skuba
 
+## 3.15.0
+
+### Minor Changes
+
+- **node:** Run REPL in process ([#534](https://github.com/seek-oss/skuba/pull/534))
+
+  This avoids creating a separate Node.js process just to run the REPL.
+
+* **format:** Execute ESLint with `--report-unused-disable-directives` ([#512](https://github.com/seek-oss/skuba/pull/512))
+
+  `skuba format` will now flag unused disable directives, and will [automatically remove](https://eslint.org/blog/2021/06/whats-coming-in-eslint-8.0.0#unused-disable-directives-are-now-fixable) them once ESLint v8 is released.
+
+- **deps:** Prettier 2.4 ([#507](https://github.com/seek-oss/skuba/pull/507))
+
+  This includes TypeScript 4.4 support. See the [release notes](https://prettier.io/blog/2021/09/09/2.4.0.html) for more information.
+
+* **deps:** TypeScript 4.4 ([#497](https://github.com/seek-oss/skuba/pull/497))
+
+  This major release includes breaking changes. See the [announcement](https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/) for more information.
+
+  Note that new syntax in TypeScript 4.4 will only be supported by `skuba format` and `skuba lint` once ESLint v8 is released.
+
+- **build:** Remove experimental Babel support ([#513](https://github.com/seek-oss/skuba/pull/513))
+
+  There's limited upside to switching to [Babel-based builds](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/babel.md) for backend use cases, and it would be difficult to guarantee backwards compatibility with existing `tsconfig.json`-based configuration. Dropping Babel dependencies reduces our package size and resolves [SNYK-JS-SETVALUE-1540541](https://app.snyk.io/vuln/SNYK-JS-SETVALUE-1540541).
+
+### Patch Changes
+
+- **template:** pino-pretty ^7.0.0 ([#506](https://github.com/seek-oss/skuba/pull/506))
+
+* **template:** serverless-plugin-canary-deployments ^0.7.0 ([#508](https://github.com/seek-oss/skuba/pull/508))
+
+- **template/lambda-sqs-worker\*:** Prime dev ECR cache in Buildkite pipeline ([#503](https://github.com/seek-oss/skuba/pull/503))
+
+  This should result in faster "Deploy Dev" times as the ECR cache will already be warm.
+
+* **template:** seek-jobs/gantry v1.4.1 ([#504](https://github.com/seek-oss/skuba/pull/504))
+
+- **cli:** Drop `fs-extra` in favour of vanilla `fs` ([#536](https://github.com/seek-oss/skuba/pull/536))
+
+* **template:** Remove `@types/node` resolution override ([#498](https://github.com/seek-oss/skuba/pull/498))
+
+  Jest 27.1 is compatible with newer versions of `@types/node`.
+
+- **template/lambda-sqs-worker-cdk:** Run "Test, Lint & Build" step in prod ([#503](https://github.com/seek-oss/skuba/pull/503))
+
+  This reduces our dependence on a dev environment to successfully deploy to prod.
+
+* **build-package, lint:** Use minimalist logging prefix ([#535](https://github.com/seek-oss/skuba/pull/535))
+
+- **template:** Propagate BUILDKITE environment variable to Docker ([#514](https://github.com/seek-oss/skuba/pull/514))
+
+  This forces serial execution of certain **skuba** commands to avoid overwhelming underprovisioned Buildkite agents. See our [Buildkite topic](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/buildkite.md) for more information.
+
+* **build-package, lint:** Limit concurrency to CPU core count ([#540](https://github.com/seek-oss/skuba/pull/540))
+
+  These commands can be fairly compute intensive. The concurrency limit should help to reduce load and diminishing returns in compute-constrained environments such as `t3` Buildkite agents.
+
+- **template:** Remove Yarn cache from worker Docker images ([#499](https://github.com/seek-oss/skuba/pull/499))
+
+  This shrinks the cached Docker images that our worker templates generate.
+
 ## 3.14.4
 
 ### Patch Changes
