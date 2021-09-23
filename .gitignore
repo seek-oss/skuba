@@ -18,4 +18,5 @@ package-lock.json
 yarn-error.log
 # end managed by skuba
 
+/integration/format/
 /template/**/yarn.lock

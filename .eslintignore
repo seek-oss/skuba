@@ -10,4 +10,5 @@ node_modules*/
 /tmp*/
 # end managed by skuba
 
+/integration/base/
 /template/

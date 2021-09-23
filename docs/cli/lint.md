@@ -23,9 +23,13 @@ This command should be run locally before pushing code to a remote branch.
 ```shell
 skuba format
 
-# ✔ ESLint
-# ...
-# ✔ Prettier
+# Fixing code with ESLint
+# -----------------------
+# Processed X files in 1.23s.
+#
+# Formatting code with Prettier
+# -----------------------------
+# Processed X files in 1.23s.
 ```
 
 | Option    | Description                 |
@@ -66,6 +70,6 @@ See our [Buildkite guide] for more information.
 [eslint deep dive]: ../deep-dives/eslint.md
 [eslint-config-seek]: https://github.com/seek-oss/eslint-config-seek
 [eslint]: https://eslint.org/
-[prescribes eslint]: (https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#typescript)
+[prescribes eslint]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#typescript
 [prettier]: https://prettier.io/
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

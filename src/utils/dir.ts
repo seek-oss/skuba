@@ -29,13 +29,16 @@ export const buildPatternToFilepathMap = (
  *
  * This excludes:
  *
- * - `.gitignore`d paths
+ * - Patterns in the ignore files specified in `ignoreFilenames`
  * - `.git` subdirectories
  * - `node_modules` subdirectories
  */
-export const crawlDirectory = async (root: string) => {
+export const crawlDirectory = async (
+  root: string,
+  ignoreFilename = '.gitignore',
+) => {
   const ignoreFileFilter = await createInclusionFilter([
-    path.join(root, '.gitignore'),
+    path.join(root, ignoreFilename),
   ]);
 
   const output = await new FDir()

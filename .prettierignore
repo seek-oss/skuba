@@ -13,3 +13,5 @@ node_modules*/
 gantry*.yaml
 gantry*.yml
 # end managed by skuba
+
+/integration/base/
