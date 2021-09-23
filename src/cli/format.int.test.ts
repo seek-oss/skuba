@@ -125,8 +125,6 @@ test.each`
 
   await expect(format(args)).resolves.toBeUndefined();
 
-  expect(process.exitCode).toBe(exitCode);
-
   expect(stdout(new RegExp(tempDir, 'g'))).toMatchSnapshot();
 
   await expect(gitModifiedAndUnstaged(tempDir)).resolves.toStrictEqual(
@@ -157,4 +155,6 @@ test.each`
   );
 
   expect(`\n${files.join('\n\n')}`).toMatchSnapshot();
+
+  expect(process.exitCode).toBe(exitCode);
 });
