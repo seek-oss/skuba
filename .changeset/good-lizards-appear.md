@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+"skuba": patch
 ---
 
-**cli:** Drop `fs-extra` in favour of vanilla `fs`
+cli: Drop `fs-extra` in favour of vanilla `fs`
