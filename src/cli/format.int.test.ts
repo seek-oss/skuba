@@ -10,7 +10,11 @@ import { format } from './format';
 
 jest.setTimeout(15_000);
 
-const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+const stdoutMock = jest.fn();
+
+jest
+  .spyOn(console, 'log')
+  .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 
@@ -18,11 +22,11 @@ const BASE_PATH = path.join(__dirname, '..', '..', 'integration', 'base');
 
 const TEMP_PATH = path.join(__dirname, '..', '..', 'integration', 'format');
 
-const consoleLogCalls = (randomMatcher: RegExp) =>
-  consoleLog.mock.calls
-    .map((call) => call.join(' '))
-    .join('\n')
-    .replace(/ in \d+(\.\d+)?s\./g, ' in <random>s.')
+const stdout = (randomMatcher: RegExp) =>
+  stdoutMock.mock.calls
+    .flat(1)
+    .join('')
+    .replace(/ in [\d\.]+s\./g, ' in <random>s.')
     .replace(randomMatcher, '<random>');
 
 const gitAdd = (dir: string) =>
@@ -123,7 +127,7 @@ test.each`
 
   expect(process.exitCode).toBe(exitCode);
 
-  expect(consoleLogCalls(new RegExp(tempDir, 'g'))).toMatchSnapshot();
+  expect(stdout(new RegExp(tempDir, 'g'))).toMatchSnapshot();
 
   await expect(gitModifiedAndUnstaged(tempDir)).resolves.toStrictEqual(
     modified,

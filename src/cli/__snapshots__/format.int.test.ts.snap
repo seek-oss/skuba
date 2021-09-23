@@ -13,6 +13,7 @@ Formatted 3 files:
 b.md
 c.json
 d.js
+
 "
 `;
 
@@ -79,6 +80,7 @@ tsconfig.json
 a/a/a.ts
   parser: typescript
 Processed 6 files in <random>s.
+
 "
 `;
 
@@ -96,6 +98,7 @@ Processed 2 files in <random>s.
 Formatting code with Prettier
 -----------------------------
 Processed 6 files in <random>s.
+
 "
 `;
 
@@ -122,7 +125,8 @@ Processed 6 files in <random>s.
 Formatted 1 file:
 a/a/a.ts
 
-ESLint found issues that require triage."
+ESLint found issues that require triage.
+"
 `;
 
 exports[`unfixable 2`] = `
