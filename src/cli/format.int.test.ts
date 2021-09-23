@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
+import { copy } from 'fs-extra';
 import git from 'isomorphic-git';
 import { diff } from 'jest-diff';
 
@@ -48,9 +49,7 @@ const gitModifiedAndUnstaged = async (dir: string) => {
 };
 
 const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
-  await fs.promises.cp(baseDir, tempDir, {
-    recursive: true,
-  });
+  await copy(baseDir, tempDir, { recursive: true });
 
   process.chdir(tempDir);
 
@@ -80,8 +79,10 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
   return Object.fromEntries(entries);
 };
 
-beforeAll(() =>
-  // Clear out temporary directories from previous runs to save on disk space.
+afterAll(() =>
+  // Clean up temporary directories to avoid subsequent formatting and linting
+  // warnings and to save on disk space. This can be commented out to inspect
+  // the output.
   fs.promises.rm(TEMP_PATH, {
     force: true,
     recursive: true,
@@ -104,11 +105,10 @@ test.each`
   ${'ok --debug'} | ${['--debug']} | ${'ok'}        | ${undefined} | ${[]}
   ${'unfixable'}  | ${[]}          | ${'unfixable'} | ${1}         | ${['a/a/a.ts']}
 `('$description', async ({ args, base, exitCode, modified }: Args) => {
-  const randomDirName = crypto.randomBytes(32).toString('hex');
 
   const baseDir = path.join(BASE_PATH, base);
 
-  const tempDir = path.join(TEMP_PATH, randomDirName);
+  const tempDir = path.join(TEMP_PATH, `${base}-${crypto.randomBytes(32).toString('hex')}`);
 
   const originalFiles = await prepareTempDirectory(baseDir, tempDir);
 
