@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
 import { inspect } from 'util';
 
+import fs from 'fs-extra';
 import { check, format, getFileInfo, resolveConfig } from 'prettier';
 
 import { crawlDirectory } from '../../utils/dir';

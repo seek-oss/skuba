@@ -1,6 +1,5 @@
 import { Input, Select } from 'enquirer';
-
-import { pathExists } from '../../utils/dir';
+import { pathExists } from 'fs-extra';
 
 import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
 

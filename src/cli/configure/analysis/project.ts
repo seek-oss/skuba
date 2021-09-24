@@ -1,5 +1,6 @@
-import fs from 'fs';
 import path from 'path';
+
+import fs from 'fs-extra';
 
 import { buildPatternToFilepathMap, crawlDirectory } from '../../../utils/dir';
 import { isErrorWithCode } from '../../../utils/error';

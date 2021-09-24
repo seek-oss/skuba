@@ -1,8 +1,8 @@
 /* eslint-disable new-cap */
 
-import fs from 'fs';
 import path from 'path';
 
+import fs from 'fs-extra';
 import * as t from 'runtypes';
 
 import { ProjectType } from './manifest';

@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
 
 import chalk from 'chalk';
+import fs from 'fs-extra';
 import { NormalizedReadResult } from 'read-pkg-up';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy';

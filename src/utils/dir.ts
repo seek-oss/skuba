@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
 
 import { fdir as FDir } from 'fdir';
+import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
 
@@ -90,9 +90,3 @@ export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
 
   return ignore().add('.git').add(managers).createFilter();
 };
-
-export const pathExists = (accessPath: string) =>
-  fs.promises
-    .access(accessPath)
-    .then(() => true)
-    .catch(() => false);
