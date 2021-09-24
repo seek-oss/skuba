@@ -6,15 +6,24 @@ parent: Deep dives
 
 ---
 
-Buildkite is SEEK's CI/CD platform of choice.
-This topic details common issues you may run into and their solutions.
+Buildkite is SEEK's [CI/CD] platform of choice.
+See [Builds at SEEK] for more information.
+
+This topic details Buildkite integration features baked into **skuba**,
+as well as common issues faced when running your project on a Buildkite agent.
 
 ---
 
-## My agent exits with status -1
+## Buildkite annotations
+
+Coming soon!
+
+---
+
+## Buildkite agent exits with status -1
 
 **Scenario:**
-you're running a **skuba** command like [`skuba lint`],
+you're running a **skuba** command like [`skuba build-package`] or [`skuba lint`],
 and observe the following error message on a Buildkite step:
 
 > Exited with status -1 (process killed or agent lost; see the timeline tab for more information)
@@ -34,33 +43,12 @@ The agent may be tied up running a particularly compute-intensive step.
 
 **Options:**
 
-1. Propagate the `BUILDKITE` environment variable to [`skuba build-package`] and [`skuba lint`] steps.
-   This will cause them to run their underlying processes serially,
+1. Pass the `--serial` flag to [`skuba build-package`] and [`skuba lint`] steps.
+
+   This will cause them to run their underlying operations serially,
    reducing the chance of resource exhaustion.
 
-   With the [Docker Buildkite plugin],
-   you can achieve this in a couple ways:
-
-   ```yaml
-   steps:
-     - plugins:
-         - docker#v3.7.0:
-             # Option 1a: List environment variable explicitly
-             environment:
-               - BUILDKITE
-             # Option 1b: Propagate all pipeline variables
-             propagate-environment: true
-   ```
-
-   With Docker Compose,
-   you can add the variable to your [Compose file]:
-
-   ```yaml
-   services:
-     app:
-       environment:
-         - BUILDKITE
-   ```
+   Note that this is automatically inferred for builds on SEEK's central npm publishing pipeline.
 
 1. Reduce the number of agents that run on each instance.
 
@@ -72,5 +60,9 @@ The agent may be tied up running a particularly compute-intensive step.
 
 [`skuba build-package`]: ../cli/build.md#skuba-build-package
 [`skuba lint`]: ../cli/lint.md#skuba-lint
+[`skuba test`]: ../cli/test.md#skuba-test
+[buildkite annotations]: https://buildkite.com/docs/agent/v3/cli-annotate
+[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz/
+[ci/cd]: https://en.wikipedia.org/wiki/CI/CD
 [compose file]: https://docs.docker.com/compose/compose-file
 [docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin

@@ -55,14 +55,15 @@ skuba lint
 # tsc      | tsc --noEmit exited with code 0
 ```
 
-`skuba lint` runs processes concurrently up to your [CPU core count].
+`skuba lint` runs operations concurrently up to your [CPU core count].
 On a resource-constrained Buildkite agent,
-you can limit it to run serially by propagating the `BUILDKITE` environment variable.
+you can limit this with the `--serial` flag.
 See our [Buildkite guide] for more information.
 
-| Option    | Description                 |
-| :-------- | :-------------------------- |
-| `--debug` | Enable debug console output |
+| Option     | Description                                      |
+| :--------- | :----------------------------------------------- |
+| `--debug`  | Enable debug console output (implies `--serial`) |
+| `--serial` | Force serial execution of linting operations     |
 
 [`skuba format`]: #skuba-format
 [buildkite guide]: ../deep-dives/buildkite.md

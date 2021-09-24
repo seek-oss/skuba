@@ -1,4 +1,9 @@
-import { hasDebugFlag, parseProcessArgs, parseRunArgs } from './args';
+import {
+  hasDebugFlag,
+  hasSerialFlag,
+  parseProcessArgs,
+  parseRunArgs,
+} from './args';
 
 describe('hasDebugFlag', () => {
   test.each`
@@ -12,6 +17,25 @@ describe('hasDebugFlag', () => {
     ${'matching arg among others'} | ${['something', '--debug', 'else']} | ${true}
   `('$description => $expected', ({ args, expected }) =>
     expect(hasDebugFlag(args)).toBe(expected),
+  );
+});
+
+describe('hasSerialFlag', () => {
+  test.each`
+    description                    | args                                 | env                                                                       | expected
+    ${'no args'}                   | ${[]}                                | ${{}}                                                                     | ${false}
+    ${'unrelated args'}            | ${['something', 'else']}             | ${{}}                                                                     | ${false}
+    ${'single dash'}               | ${['-serial']}                       | ${{}}                                                                     | ${false}
+    ${'matching lowercase arg'}    | ${['--serial']}                      | ${{}}                                                                     | ${true}
+    ${'matching uppercase arg'}    | ${['--SERIAL']}                      | ${{}}                                                                     | ${true}
+    ${'matching spongebob arg'}    | ${['--sERiaL']}                      | ${{}}                                                                     | ${true}
+    ${'matching arg among others'} | ${['something', '--serial', 'else']} | ${{}}                                                                     | ${true}
+    ${'unrelated env'}             | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: '123456789012:cicd' }}               | ${false}
+    ${'matching env'}              | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: 'artefacts:npm' }}                   | ${true}
+    ${'matching env at start'}     | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: 'artefacts:npm,123456789012:cicd' }} | ${true}
+    ${'matching env at end'}       | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: '123456789012:cicd,artefacts:npm' }} | ${true}
+  `('$description => $expected', ({ args, env, expected }) =>
+    expect(hasSerialFlag(args, env)).toBe(expected),
   );
 });
 
