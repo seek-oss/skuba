@@ -1,6 +1,6 @@
-import fs from 'fs';
 import path from 'path';
 
+import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 import { NormalizedReadResult } from 'read-pkg-up';
 

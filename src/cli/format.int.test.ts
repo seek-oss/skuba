@@ -1,8 +1,7 @@
 import crypto from 'crypto';
-import fs from 'fs';
 import path from 'path';
 
-import { copy } from 'fs-extra';
+import fs, { copy } from 'fs-extra';
 import git from 'isomorphic-git';
 import { diff } from 'jest-diff';
 

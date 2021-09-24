@@ -1,8 +1,8 @@
 import path from 'path';
 
 import chalk from 'chalk';
+import { pathExists } from 'fs-extra';
 
-import { pathExists } from '../../utils/dir';
 import { log } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
 

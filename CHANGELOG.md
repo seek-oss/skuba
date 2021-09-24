@@ -123,7 +123,7 @@
 
 - 13b3bce: **template/lambda-sqs-worker-cdk:** Add new template
 - 78c9a48: **format, lint:** Support `--debug` flag
-- e7cd7ed: **all**: Upgrade templates to Node 14
+- e7cd7ed: **all:** Upgrade templates to Node 14
 
   Node.js 14 is [now supported on AWS Lambda](https://aws.amazon.com/about-aws/whats-new/2021/02/aws-lambda-now-supports-node-js-14/). This lets us upgrade the Node.js requirement for skuba's templates.
 
@@ -663,7 +663,7 @@
 - 0c1e129: **configure, init:** Sort dependencies
 - 93cdf6c: **template:** Redact `Authorization` headers in logs
 - 1b9b9c4: **template/package:** Make prompt unskippable
-- 5283618: **configure, init**: Exclude `lib-` directories from compilation
+- 5283618: **configure, init:** Exclude `lib-` directories from compilation
 - 676030a: **template/private-npm-package:** Fix ReferenceError on init
 - f36b136: **help:** Show `build-package` correctly
 - 1b7641f: **configure:** Migrate `collectCoverageFrom` Jest option

@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
 
 import ejs from 'ejs';
+import fs from 'fs-extra';
 
 import { isErrorWithCode } from './error';
 import { log } from './logging';
