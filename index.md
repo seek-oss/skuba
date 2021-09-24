@@ -1,17 +1,11 @@
 ---
 nav_order: 1
+title: 🤿
 ---
 
-# 🤿
+# ![🤿 skuba](./docs/logo.svg)
 
 ---
-
-```text
-    ╭─╮     ╭─╮
-╭───│ ╰─╭─┬─╮ ╰─╮───╮
-│_ ─┤  <│ ╵ │ • │ • │
-╰───╰─┴─╰───╯───╯── ╰
-```
 
 [![GitHub Release](https://github.com/seek-oss/skuba/workflows/Release/badge.svg?branch=master)](https://github.com/seek-oss/skuba/actions?query=workflow%3ARelease)
 [![GitHub Validate](https://github.com/seek-oss/skuba/workflows/Validate/badge.svg?branch=master)](https://github.com/seek-oss/skuba/actions?query=workflow%3AValidate)
