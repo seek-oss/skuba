@@ -2,38 +2,35 @@ import path from 'path';
 import { inspect } from 'util';
 
 import fs from 'fs-extra';
-import { check, format, getFileInfo, resolveConfig } from 'prettier';
+import { Options, check, format, getFileInfo, resolveConfig } from 'prettier';
 
 import { crawlDirectory } from '../../utils/dir';
 import { Logger } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
 
+interface File {
+  data: string;
+  options: Options;
+  parser: string | null;
+  filepath: string;
+}
+
 interface Result {
   count: number;
   errored: Array<{ err?: unknown; filepath: string }>;
-  touched: string[];
+  touched: Array<{ data: string; filepath: string }>;
   unparsed: string[];
 }
 
-const formatFile = async (
-  filepath: string,
+const formatOrLintFile = (
+  { data, filepath, options, parser }: File,
   logger: Logger,
   mode: 'format' | 'lint',
   result: Result,
 ) => {
   logger.debug(filepath);
 
-  const [config, data, fileInfo] = await Promise.all([
-    resolveConfig(filepath),
-    fs.promises.readFile(filepath, 'utf-8'),
-    getFileInfo(filepath, { resolveConfig: false }),
-  ]);
-
-  const options = { ...config, filepath };
-
-  const parser = fileInfo.inferredParser;
-
-  logger.debug('  parser:', fileInfo.inferredParser ?? '-');
+  logger.debug('  parser:', parser ?? '-');
 
   if (!parser) {
     result.unparsed.push(filepath);
@@ -68,16 +65,24 @@ const formatFile = async (
     return;
   }
 
-  await fs.promises.writeFile(filepath, formatted);
-
-  result.touched.push(filepath);
+  result.touched.push({ data: formatted, filepath });
 };
 
+/**
+ * Formats/lints files with Prettier.
+ *
+ * Prettier doesn't provide a higher-level Node.js API that replicates the
+ * behaviour of its CLI, so we have to plumb together its lower-level functions.
+ * On the other hands, this affords more flexibility in how we track and report
+ * on progress and results.
+ */
 export const runPrettier = async (
   mode: 'format' | 'lint',
   logger: Logger,
 ): Promise<boolean> => {
   logger.debug('Initialising Prettier...');
+
+  const start = process.hrtime.bigint();
 
   let directory = process.cwd();
 
@@ -98,6 +103,8 @@ export const runPrettier = async (
   // and the headache of conflicting `.gitignore` and `.prettierignore` rules.
   const filepaths = await crawlDirectory(directory, '.prettierignore');
 
+  logger.debug(`Discovered ${logger.pluralise(filepaths.length, 'file')}.`);
+
   const result: Result = {
     count: filepaths.length,
     errored: [],
@@ -105,13 +112,38 @@ export const runPrettier = async (
     unparsed: [],
   };
 
-  logger.debug('Processing files...');
+  logger.debug('Reading files...');
 
-  const start = process.hrtime.bigint();
+  const files = await Promise.all(
+    filepaths.map<Promise<File>>(async (filepath) => {
+      const [config, data, fileInfo] = await Promise.all([
+        resolveConfig(filepath),
+        fs.promises.readFile(filepath, 'utf-8'),
+        getFileInfo(filepath, { resolveConfig: false }),
+      ]);
 
-  for (const filepath of filepaths) {
-    await formatFile(filepath, logger, mode, result);
+      return {
+        data,
+        filepath,
+        options: { ...config, filepath },
+        parser: fileInfo.inferredParser,
+      };
+    }),
+  );
+
+  logger.debug(mode === 'format' ? 'Formatting' : 'Linting', 'files...');
+
+  for (const file of files) {
+    formatOrLintFile(file, logger, mode, result);
   }
+
+  logger.debug(`Writing ${logger.pluralise(result.touched.length, 'file')}...`);
+
+  await Promise.all(
+    result.touched.map(({ data, filepath }) =>
+      fs.promises.writeFile(filepath, data),
+    ),
+  );
 
   const end = process.hrtime.bigint();
 
@@ -126,8 +158,8 @@ export const runPrettier = async (
     logger.plain(
       `Formatted ${logger.pluralise(result.touched.length, 'file')}:`,
     );
-    for (const file of result.touched) {
-      logger.warn(file);
+    for (const { filepath } of result.touched) {
+      logger.warn(filepath);
     }
   }
 
