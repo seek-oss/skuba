@@ -84,7 +84,11 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
 
 const originalCwd = process.cwd();
 
-beforeEach(jest.clearAllMocks);
+beforeEach(() => {
+  jest.clearAllMocks();
+
+  process.exitCode = undefined;
+});
 
 afterAll(() => {
   // Restore the original working directory to avoid confusion in other tests.
