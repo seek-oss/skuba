@@ -130,6 +130,7 @@ Formatted 1 file:
 a/a/a.ts
 
 ESLint found issues that require triage.
+
 "
 `;
 

@@ -33,6 +33,7 @@ export const format = async (args = process.argv) => {
   ];
 
   log.err(tools.join(', '), 'found issues that require triage.');
+  log.newline();
 
   process.exitCode = 1;
 };
