@@ -33,7 +33,9 @@ ESLint   | ○ d.js
 Prettier | Initialising Prettier...
 Prettier | Detected project root: <random>
 Prettier | Discovering files...
-Prettier | Processing files...
+Prettier | Discovered 6 files.
+Prettier | Reading files...
+Prettier | Linting files...
 Prettier | b.md
 Prettier |   parser: markdown
 Prettier | c.json
@@ -46,6 +48,7 @@ Prettier | tsconfig.json
 Prettier |   parser: json
 Prettier | a/a/a.ts
 Prettier |   parser: typescript
+Prettier | Writing 0 files...
 Prettier | Processed 6 files in <random>s.
 tsc      | TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      | Files: <random>
@@ -101,8 +104,8 @@ exports[`unfixable 1`] = `
 ESLint   | Processed 2 files in <random>s.
 ESLint   | 
 <random>/a/a/a.ts
-  2:1  error  \`fs\` import should occur before import of \`path\`  import/order
-  7:3  error  Unexpected console statement                      no-console
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  8:3  error  Unexpected console statement                      no-console
 
 ✖ 2 problems (2 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
