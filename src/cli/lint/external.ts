@@ -1,7 +1,10 @@
 import { log } from '../../utils/logging';
 
-import { runESLintInMainThread, runESLintInWorkerThread } from './eslint';
-import { runPrettierInMainThread, runPrettierInWorkerThread } from './prettier';
+import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint';
+import {
+  runPrettierInCurrentThread,
+  runPrettierInWorkerThread,
+} from './prettier';
 import { runTscInNewProcess } from './tsc';
 import type { Input } from './types';
 
@@ -16,8 +19,8 @@ const lintConcurrently = async (input: Input) => {
 };
 
 const lintSerially = async (input: Input) => {
-  const eslintOk = await runESLintInMainThread(input);
-  const prettierOk = await runPrettierInMainThread(input);
+  const eslintOk = await runESLintInCurrentThread(input);
+  const prettierOk = await runPrettierInCurrentThread(input);
   const tscOk = await runTscInNewProcess(input);
 
   return { eslintOk, prettierOk, tscOk };

@@ -23,7 +23,7 @@ export const execWorkerThread = async <Input, Output>(
  * Runs a function in a Node.js worker thread context, forwarding the result
  * to the parent thread.
  */
-export const startWorkerThread = async <Input, Output>(
+export const postWorkerOutput = async <Input, Output>(
   fn: (input: Input) => Promise<Output>,
 ) => {
   if (!parentPort) {

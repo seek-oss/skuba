@@ -4,12 +4,12 @@ import { isMainThread } from 'worker_threads';
 import chalk from 'chalk';
 
 import { createLogger } from '../../utils/logging';
-import { execWorkerThread, startWorkerThread } from '../../utils/worker';
+import { execWorkerThread, postWorkerOutput } from '../../utils/worker';
 import { runPrettier } from '../adapter/prettier';
 
 import type { Input } from './types';
 
-export const runPrettierInMainThread = ({ debug }: Input) =>
+export const runPrettierInCurrentThread = ({ debug }: Input) =>
   runPrettier('lint', createLogger(debug, chalk.cyan('Prettier |')));
 
 export const runPrettierInWorkerThread = (input: Input) =>
@@ -19,7 +19,7 @@ export const runPrettierInWorkerThread = (input: Input) =>
   );
 
 if (!isMainThread) {
-  startWorkerThread(runPrettierInMainThread).catch((err) => {
+  postWorkerOutput(runPrettierInCurrentThread).catch((err) => {
     throw err;
   });
 }

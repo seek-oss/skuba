@@ -4,12 +4,12 @@ import { isMainThread } from 'worker_threads';
 import chalk from 'chalk';
 
 import { createLogger } from '../../utils/logging';
-import { execWorkerThread, startWorkerThread } from '../../utils/worker';
+import { execWorkerThread, postWorkerOutput } from '../../utils/worker';
 import { runESLint } from '../adapter/eslint';
 
 import type { Input } from './types';
 
-export const runESLintInMainThread = ({ debug }: Input) =>
+export const runESLintInCurrentThread = ({ debug }: Input) =>
   runESLint('lint', createLogger(debug, chalk.magenta('ESLint   |')));
 
 export const runESLintInWorkerThread = (input: Input) =>
@@ -19,7 +19,7 @@ export const runESLintInWorkerThread = (input: Input) =>
   );
 
 if (!isMainThread) {
-  startWorkerThread(runESLintInMainThread).catch((err) => {
+  postWorkerOutput(runESLintInCurrentThread).catch((err) => {
     throw err;
   });
 }
