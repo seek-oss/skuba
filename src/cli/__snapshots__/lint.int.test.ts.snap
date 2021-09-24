@@ -5,7 +5,7 @@ exports[`fixable 1`] = `
 ESLint   | Processed 2 files in <random>s.
 ESLint   | 
 <random>/a/a/a.ts
-  2:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
 
 ✖ 1 problem (1 error, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
