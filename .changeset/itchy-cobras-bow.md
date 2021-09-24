@@ -2,7 +2,7 @@
 "skuba": minor
 ---
 
-build-package, lint: Introduce `--serial` flag
+build-package, lint: Add `--serial` flag
 
 This explicitly disables concurrent command execution.
 
@@ -15,3 +15,5 @@ Propagating the `BUILDKITE` environment variable to these commands no longer con
 - lint
 + lint --serial
 ```
+
+See our [Buildkite guide](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/buildkite.md) for more information.

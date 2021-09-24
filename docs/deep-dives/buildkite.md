@@ -23,7 +23,7 @@ Coming soon!
 ## Buildkite agent exits with status -1
 
 **Scenario:**
-you're running a **skuba** command like [`skuba lint`],
+you're running a **skuba** command like [`skuba build-package`] or [`skuba lint`],
 and observe the following error message on a Buildkite step:
 
 > Exited with status -1 (process killed or agent lost; see the timeline tab for more information)
@@ -47,6 +47,8 @@ The agent may be tied up running a particularly compute-intensive step.
 
    This will cause them to run their underlying operations serially,
    reducing the chance of resource exhaustion.
+
+   Note that this is automatically inferred for builds on SEEK's central npm publishing pipeline.
 
 1. Reduce the number of agents that run on each instance.
 
