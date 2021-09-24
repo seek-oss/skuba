@@ -13,7 +13,6 @@ interface Result {
   errored: Array<{ err?: unknown; filepath: string }>;
   touched: string[];
   unparsed: string[];
-  untouched: string[];
 }
 
 const formatFile = async (
@@ -54,7 +53,6 @@ const formatFile = async (
       result.errored.push({ filepath });
     }
 
-    result.untouched.push(filepath);
     return;
   }
 
@@ -67,7 +65,6 @@ const formatFile = async (
   }
 
   if (formatted === data) {
-    result.untouched.push(filepath);
     return;
   }
 
@@ -106,7 +103,6 @@ export const runPrettier = async (
     errored: [],
     touched: [],
     unparsed: [],
-    untouched: [],
   };
 
   logger.debug('Processing files...');
