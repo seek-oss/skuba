@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
 
 import { fdir as FDir } from 'fdir';
+import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
 
@@ -29,13 +29,16 @@ export const buildPatternToFilepathMap = (
  *
  * This excludes:
  *
- * - `.gitignore`d paths
+ * - Patterns in the ignore files specified in `ignoreFilenames`
  * - `.git` subdirectories
  * - `node_modules` subdirectories
  */
-export const crawlDirectory = async (root: string) => {
+export const crawlDirectory = async (
+  root: string,
+  ignoreFilename = '.gitignore',
+) => {
   const ignoreFileFilter = await createInclusionFilter([
-    path.join(root, '.gitignore'),
+    path.join(root, ignoreFilename),
   ]);
 
   const output = await new FDir()
@@ -87,9 +90,3 @@ export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
 
   return ignore().add('.git').add(managers).createFilter();
 };
-
-export const pathExists = (accessPath: string) =>
-  fs.promises
-    .access(accessPath)
-    .then(() => true)
-    .catch(() => false);

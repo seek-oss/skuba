@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fixable 1`] = `
+"
+Fixing code with ESLint
+-----------------------
+Processed 2 files in <random>s.
+
+Formatting code with Prettier
+-----------------------------
+Processed 6 files in <random>s.
+Formatted 3 files:
+b.md
+c.json
+d.js
+
+"
+`;
+
+exports[`fixable 2`] = `
+"
+a/a/a.ts
+--------
+@@ -1,4 +1,4 @@
+  // Imports out-of-order
+- import path from 'path';
+  import fs from 'fs';
++ import path from 'path';
+
+
+b.md
+----
+@@ -2,3 +2,3 @@
+
+- Trailing space 
++ Trailing space
+
+
+c.json
+------
+@@ -2,3 +2,3 @@
+    \\"key\\": \\"value\\"
+-   }
++ }
+
+
+d.js
+----
+  // eslint-disable-next-line no-console
+-     console.log(process.argv);
++ console.log(process.argv);
+"
+`;
+
+exports[`ok --debug 1`] = `
+"
+Fixing code with ESLint
+-----------------------
+Initialising ESLint...
+Processing files...
+Processed 2 files in <random>s.
+○ a/a/a.ts
+○ d.js
+
+Formatting code with Prettier
+-----------------------------
+Initialising Prettier...
+Detected project root: <random>
+Discovering files...
+Discovered 6 files.
+Reading files...
+Formatting files...
+b.md
+  parser: markdown
+c.json
+  parser: json
+d.js
+  parser: babel
+package.json
+  parser: json-stringify
+tsconfig.json
+  parser: json
+a/a/a.ts
+  parser: typescript
+Writing 0 files...
+Processed 6 files in <random>s.
+
+"
+`;
+
+exports[`ok --debug 2`] = `
+"
+"
+`;
+
+exports[`ok 1`] = `
+"
+Fixing code with ESLint
+-----------------------
+Processed 2 files in <random>s.
+
+Formatting code with Prettier
+-----------------------------
+Processed 6 files in <random>s.
+
+"
+`;
+
+exports[`ok 2`] = `
+"
+"
+`;
+
+exports[`unfixable 1`] = `
+"
+Fixing code with ESLint
+-----------------------
+Processed 2 files in <random>s.
+
+<random>/a/a/a.ts
+  8:3  error  Unexpected console statement  no-console
+
+✖ 1 problem (1 error, 0 warnings)
+
+
+Formatting code with Prettier
+-----------------------------
+Processed 6 files in <random>s.
+Formatted 1 file:
+a/a/a.ts
+
+ESLint found issues that require triage.
+"
+`;
+
+exports[`unfixable 2`] = `
+"
+a/a/a.ts
+--------
+@@ -1,4 +1,4 @@
+  // Imports out-of-order
+- import path from 'path';
+  import fs from 'fs';
++ import path from 'path';
+
+@@ -7,3 +7,3 @@
+
+-   console.log('I forgot to remove this')
++   console.log('I forgot to remove this');
+  };"
+`;

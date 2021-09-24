@@ -1,25 +1,38 @@
+import chalk from 'chalk';
+
 import { hasDebugFlag } from '../utils/args';
-import { exec } from '../utils/exec';
-import { log } from '../utils/logging';
+import { createLogger, log } from '../utils/logging';
 
-export const format = async () => {
-  const debug = hasDebugFlag();
+import { runESLint } from './adapter/eslint';
+import { runPrettier } from './adapter/prettier';
 
-  await exec(
-    'eslint',
-    ...(debug ? ['--debug'] : []),
-    '--ext=js,ts,tsx',
-    '--fix',
-    '--report-unused-disable-directives',
-    '.',
-  );
-  log.ok('✔ ESLint');
+export const format = async (args = process.argv) => {
+  const debug = hasDebugFlag(args);
 
-  await exec(
-    'prettier',
-    ...(debug ? ['--loglevel', 'debug'] : []),
-    '--write',
-    '.',
-  );
-  log.ok('✔ Prettier');
+  log.newline();
+  log.plain(chalk.magenta('Fixing code with ESLint'));
+  log.plain(chalk.magenta('-----------------------'));
+
+  const eslintOk = await runESLint('format', createLogger(debug));
+
+  log.newline();
+  log.plain(chalk.cyan('Formatting code with Prettier'));
+  log.plain(chalk.cyan('-----------------------------'));
+
+  const prettierOk = await runPrettier('format', createLogger(debug));
+
+  log.newline();
+
+  if (eslintOk && prettierOk) {
+    return;
+  }
+
+  const tools = [
+    ...(eslintOk ? [] : ['ESLint']),
+    ...(prettierOk ? [] : ['Prettier']),
+  ];
+
+  log.err(tools.join(', '), 'found issues that require triage.');
+
+  process.exitCode = 1;
 };

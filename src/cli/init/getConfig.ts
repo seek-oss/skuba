@@ -1,8 +1,8 @@
-import fs from 'fs';
 import path from 'path';
 
 import chalk from 'chalk';
 import { Form, FormChoice } from 'enquirer';
+import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy';
 import { isErrorWithCode } from '../../utils/error';

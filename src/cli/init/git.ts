@@ -1,5 +1,6 @@
-import fs from 'fs';
 import path from 'path';
+
+import fs from 'fs-extra';
 
 import { Exec, createExec } from '../../utils/exec';
 import { log } from '../../utils/logging';

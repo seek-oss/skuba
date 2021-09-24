@@ -1,9 +1,9 @@
 import path from 'path';
 
 import chalk from 'chalk';
+import { pathExists } from 'fs-extra';
 
 import { hasDebugFlag } from '../utils/args';
-import { pathExists } from '../utils/dir';
 import { execConcurrently } from '../utils/exec';
 import { getConsumerManifest } from '../utils/manifest';
 
