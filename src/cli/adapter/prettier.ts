@@ -119,6 +119,7 @@ export const runPrettier = async (
       const [config, data, fileInfo] = await Promise.all([
         resolveConfig(filepath),
         fs.promises.readFile(filepath, 'utf-8'),
+        // Infer parser upfront so we can know to ignore unsupported file types.
         getFileInfo(filepath, { resolveConfig: false }),
       ]);
 
