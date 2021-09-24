@@ -19,13 +19,8 @@ const concurrentlyCalls = () =>
 describe('lint', () => {
   afterEach(jest.clearAllMocks);
 
-  const oldProcessArgv = process.argv;
-  afterAll(() => (process.argv = oldProcessArgv));
-
   it('handles no flags', async () => {
-    process.argv = [];
-
-    await expect(lint()).resolves.toBeUndefined();
+    await expect(lint([])).resolves.toBeUndefined();
 
     expect(concurrentlyCalls()).toMatchInlineSnapshot(`
       Array [
@@ -49,6 +44,7 @@ describe('lint', () => {
         },
         Object {
           "maxProcesses": "REDACTED",
+          "outputStream": undefined,
           "prefix": "{name} |",
         },
       ]
@@ -56,9 +52,9 @@ describe('lint', () => {
   });
 
   it('handles debug flag', async () => {
-    process.argv = ['something', '--DeBuG', 'else'];
-
-    await expect(lint()).resolves.toBeUndefined();
+    await expect(
+      lint(['something', '--DeBuG', 'else']),
+    ).resolves.toBeUndefined();
 
     expect(concurrentlyCalls()).toMatchInlineSnapshot(`
       Array [
@@ -82,6 +78,7 @@ describe('lint', () => {
         },
         Object {
           "maxProcesses": "REDACTED",
+          "outputStream": undefined,
           "prefix": "{name} |",
         },
       ]

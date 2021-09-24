@@ -5,6 +5,9 @@ import { COMMAND_ALIASES } from './command';
 export const hasDebugFlag = (args = process.argv) =>
   args.some((arg) => arg.toLocaleLowerCase() === '--debug');
 
+export const hasSerialFlag = (args = process.argv) =>
+  args.some((arg) => arg.toLocaleLowerCase() === '--serial');
+
 /**
  * Parse process arguments.
  *
