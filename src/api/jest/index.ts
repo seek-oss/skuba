@@ -18,6 +18,7 @@ type Props = Pick<
   | 'snapshotSerializers'
   | 'testPathIgnorePatterns'
   | 'testTimeout'
+  | 'watchPathIgnorePatterns'
 >;
 
 /**

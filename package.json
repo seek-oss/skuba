@@ -28,9 +28,11 @@
     "release": "yarn build && changeset publish",
     "stage": "changeset version && yarn format",
     "skuba": "ts-node --transpile-only src/skuba build && node lib/skuba",
-    "test": "yarn skuba test --runInBand",
-    "test:watch": "yarn skuba test --runInBand --watch",
-    "test:template": "scripts/test-template.sh"
+    "test": "yarn skuba test",
+    "test:ci": "yarn skuba test --config jest.config.int.ts --runInBand",
+    "test:int": "yarn skuba test --config jest.config.int.ts --runInBand",
+    "test:template": "scripts/test-template.sh",
+    "test:watch": "yarn skuba test --config jest.config.int.ts --runInBand --watch"
   },
   "repository": {
     "type": "git",
