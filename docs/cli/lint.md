@@ -56,7 +56,10 @@ skuba lint
 `skuba lint` runs operations concurrently up to your [CPU core count].
 On a resource-constrained Buildkite agent,
 you can limit this with the `--serial` flag.
-See our [Buildkite guide] for more information.
+
+`skuba lint` automatically emits Buildkite annotations when it detects that Buildkite environment variables and the `buildkite-agent` binary are present.
+
+See our [Buildkite guide] to learn more.
 
 | Option     | Description                                      |
 | :--------- | :----------------------------------------------- |
