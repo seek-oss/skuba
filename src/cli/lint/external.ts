@@ -70,6 +70,9 @@ export const externalLint = async (input: Input) => {
               .join('\n'),
           ),
         ]),
+    // TODO: provide richer error information from `tsc`.
+    // This is tricky at the moment because we run `tsc` as a CLI in a separate
+    // process and do not intercept its output stream.
     ...(tscOk ? [] : ['**tsc** build failed.']),
   ].join('\n\n');
 
