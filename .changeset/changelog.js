@@ -1,15 +1,61 @@
-/**
- * Adapted from {@link https://github.com/atlassian/changesets/blob/%40changesets/changelog-github%400.4.1/packages/changelog-github/src/index.ts}.
- */
-
-const builtInChangelog = require("@changesets/cli/changelog");
 const {
   getInfo,
   getInfoFromPullRequest,
 } = require("@changesets/get-github-info");
 
-/** @type import('@changesets/types').ChangelogFunctions */
-const changelogFunctions = {
+/**
+ * Bold the scope of the changelog entry.
+ *
+ * This is used later in our site packaging.
+ *
+ * @param {string} firstLine
+ */
+const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, "**$1:** ");
+
+/**
+ * Adapted from `@changesets/cli`.
+ *
+ * {@link https://github.com/atlassian/changesets/blob/%40changesets/cli%402.17.0/packages/cli/src/changelog/index.ts}
+ *
+ * @type import('@changesets/types').ChangelogFunctions
+ */
+const defaultChangelogFunctions = {
+  getDependencyReleaseLine: async (changesets, dependenciesUpdated) => {
+    if (dependenciesUpdated.length === 0) return "";
+
+    const changesetLinks = changesets.map(
+      (changeset) => `- Updated dependencies [${changeset.commit}]`,
+    );
+
+    const updatedDepenenciesList = dependenciesUpdated.map(
+      (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
+    );
+
+    return [...changesetLinks, ...updatedDepenenciesList].join("\n");
+  },
+  getReleaseLine: async (changeset) => {
+    const [firstLine, ...futureLines] = changeset.summary
+      .split("\n")
+      .map((l) => l.trimRight());
+
+    const formattedFirstLine = boldScope(firstLine);
+
+    const suffix = changeset.commit;
+
+    return `\n\n- ${formattedFirstLine}${
+      suffix ? ` (${suffix})` : ""
+    }\n${futureLines.map((l) => `  ${l}`).join("\n")}`;
+  },
+};
+
+/**
+ * Adapted from `@changesets/changelog-github`.
+ *
+ * {@link https://github.com/atlassian/changesets/blob/%40changesets/changelog-github%400.4.1/packages/changelog-github/src/index.ts}
+ *
+ * @type import('@changesets/types').ChangelogFunctions
+ */
+const gitHubChangelogFunctions = {
   getDependencyReleaseLine: async (
     changesets,
     dependenciesUpdated,
@@ -105,8 +151,7 @@ const changelogFunctions = {
       };
     })();
 
-    // Bold the scope.
-    const formattedFirstLine = firstLine.replace(/^([^:]+): /, "**$1:** ");
+    const formattedFirstLine = boldScope(firstLine);
 
     const suffix = links.pull ?? links.commit;
 
@@ -117,7 +162,7 @@ const changelogFunctions = {
 };
 
 if (process.env.GITHUB_TOKEN) {
-  module.exports = changelogFunctions;
+  module.exports = gitHubChangelogFunctions;
 } else {
   console.warn(
     `Defaulting to Git-based versioning.
@@ -125,5 +170,5 @@ Enable GitHub-based versioning by setting the GITHUB_TOKEN environment variable.
 This requires a GitHub personal access token with the \`public_repo\` scope: https://github.com/settings/tokens/new`,
   );
 
-  module.exports = builtInChangelog.default;
+  module.exports = defaultChangelogFunctions;
 }
