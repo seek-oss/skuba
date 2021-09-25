@@ -41,10 +41,13 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Dry-run site packaging
-        run: yarn stage && yarn ts-node --transpile-only scripts/package.ts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - if: env.GITHUB_EVENT_NAME == 'push'
+        name: Dry-run changelog versioning
+        run: yarn changeset version
+
+      - if: env.GITHUB_EVENT_NAME == 'push'
+        name: Dry-run site packaging
+        run: yarn skuba node scripts/package.ts
 
   template:
     name: Integrate

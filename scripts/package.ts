@@ -116,7 +116,7 @@ const compileChangesByTemplate = (changelog: string) => {
       .filter((line) => !line.startsWith('#'))
       .join('\n')
       // Split by list item prefix, which denotes a new changelog entry.
-      .split('\n- ')
+      .split(/\n[\*-] /)
       .map((entry) => entry.trim())
       .filter(Boolean);
 
@@ -160,10 +160,15 @@ const compileChangesByTemplate = (changelog: string) => {
             `- ${versionLink(version)}: ${entry
               // Strip out the scope as it is needlessly repetitive here.
               .replace(SCOPE_REGEX, '')
-              // Auto-link a commit hash prefix to GitHub.
+              // Auto-link a short commit hash like `1234567: ` to GitHub.
               .replace(
                 /^([0-9a-f]{7,}): /,
                 (_, commit: string) => `${commitLink(commit)}: `,
+              )
+              // Auto-link a short commit hash like `(1234567)` to GitHub.
+              .replace(
+                /\(([0-9a-f]{7,})\)/,
+                (_, commit: string) => `(${commitLink(commit)})`,
               )}`,
           );
         }
