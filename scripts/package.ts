@@ -2,7 +2,7 @@
 
 import path from 'path';
 
-import fs from 'fs-extra';
+import fs, { copy } from 'fs-extra';
 import semver from 'semver';
 
 import {
@@ -199,8 +199,9 @@ const main = async () => {
       path.join('dist-docs', 'CONTRIBUTING.md'),
     ),
     fs.promises.copyFile('index.md', path.join('dist-docs', 'index.md')),
-    fs.promises.cp('site', 'dist-docs', { recursive: true }),
-    fs.promises.cp('docs', path.join('dist-docs', 'docs'), { recursive: true }),
+    // `fs.promises.cp` is still experimental in Node.js 16.
+    copy('site', 'dist-docs', { recursive: true }),
+    copy('docs', path.join('dist-docs', 'docs'), { recursive: true }),
   ]);
 
   const templateChanges = compileChangesByTemplate(changelog);
