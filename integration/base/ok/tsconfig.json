@@ -2,7 +2,8 @@
   "compilerOptions": {
     "incremental": true,
     "moduleResolution": "node",
-    "outDir": "lib"
+    "outDir": "lib",
+    "skipLibCheck": true
   },
   "extends": "tsconfig-seek"
 }
