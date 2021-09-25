@@ -43,9 +43,11 @@ jobs:
 
       - name: Dry-run changelog versioning
         run: yarn changeset version
+        if: env.GITHUB_EVENT_NAME == push
 
       - name: Dry-run site packaging
         run: yarn skuba node scripts/package.ts
+        if: env.GITHUB_EVENT_NAME == push
 
   template:
     name: Integrate
