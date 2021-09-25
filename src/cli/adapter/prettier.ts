@@ -68,6 +68,11 @@ const formatOrLintFile = (
   result.touched.push({ data: formatted, filepath });
 };
 
+export interface PrettierOutput {
+  ok: boolean;
+  result: Result;
+}
+
 /**
  * Formats/lints files with Prettier.
  *
@@ -79,7 +84,7 @@ const formatOrLintFile = (
 export const runPrettier = async (
   mode: 'format' | 'lint',
   logger: Logger,
-): Promise<boolean> => {
+): Promise<PrettierOutput> => {
   logger.debug('Initialising Prettier...');
 
   const start = process.hrtime.bigint();
@@ -171,5 +176,5 @@ export const runPrettier = async (
     }
   }
 
-  return result.errored.length === 0;
+  return { ok: result.errored.length === 0, result };
 };

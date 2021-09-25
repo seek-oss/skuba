@@ -23,6 +23,38 @@ ESLint, Prettier found issues that require triage.
 "
 `;
 
+exports[`fixable 2`] = `
+Array [
+  "
+Options: {
+  context: 'skuba-lint-external',
+  scopeContextToStep: true,
+  style: 'error'
+}
+
+\`skuba lint\` found issues that require triage:
+
+**ESLint**
+
+\`\`\`term
+<random>/a/a/a.ts
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+
+✖ 1 problem (1 error, 0 warnings)
+  1 error and 0 warnings potentially fixable with the \`--fix\` option.
+\`\`\`
+
+**Prettier**
+
+\`\`\`term
+b.md
+c.json
+d.js
+\`\`\`
+",
+]
+`;
+
 exports[`ok --debug 1`] = `
 "
 ESLint   | Initialising ESLint...
@@ -89,6 +121,8 @@ tsc      | tsc --extendedDiagnostics --noEmit exited with code 0
 "
 `;
 
+exports[`ok --debug 2`] = `Array []`;
+
 exports[`ok 1`] = `
 "
 ESLint   | Processed 2 files in <random>s.
@@ -98,6 +132,8 @@ tsc      | tsc --noEmit exited with code 0
 
 "
 `;
+
+exports[`ok 2`] = `Array []`;
 
 exports[`unfixable 1`] = `
 "
@@ -119,4 +155,35 @@ tsc      | tsc --noEmit exited with code 0
 ESLint, Prettier found issues that require triage.
 
 "
+`;
+
+exports[`unfixable 2`] = `
+Array [
+  "
+Options: {
+  context: 'skuba-lint-external',
+  scopeContextToStep: true,
+  style: 'error'
+}
+
+\`skuba lint\` found issues that require triage:
+
+**ESLint**
+
+\`\`\`term
+<random>/a/a/a.ts
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  8:3  error  Unexpected console statement                      no-console
+
+✖ 2 problems (2 errors, 0 warnings)
+  1 error and 0 warnings potentially fixable with the \`--fix\` option.
+\`\`\`
+
+**Prettier**
+
+\`\`\`term
+a/a/a.ts
+\`\`\`
+",
+]
 `;

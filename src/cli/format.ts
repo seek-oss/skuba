@@ -13,23 +13,23 @@ export const format = async (args = process.argv) => {
   log.plain(chalk.magenta('Fixing code with ESLint'));
   log.plain(chalk.magenta('-----------------------'));
 
-  const eslintOk = await runESLint('format', createLogger(debug));
+  const eslint = await runESLint('format', createLogger(debug));
 
   log.newline();
   log.plain(chalk.cyan('Formatting code with Prettier'));
   log.plain(chalk.cyan('-----------------------------'));
 
-  const prettierOk = await runPrettier('format', createLogger(debug));
+  const prettier = await runPrettier('format', createLogger(debug));
 
   log.newline();
 
-  if (eslintOk && prettierOk) {
+  if (eslint.ok && prettier.ok) {
     return;
   }
 
   const tools = [
-    ...(eslintOk ? [] : ['ESLint']),
-    ...(prettierOk ? [] : ['Prettier']),
+    ...(eslint.ok ? [] : ['ESLint']),
+    ...(prettier.ok ? [] : ['Prettier']),
   ];
 
   log.err(tools.join(', '), 'found issues that require triage.');

@@ -16,7 +16,55 @@ as well as common issues faced when running your project on a Buildkite agent.
 
 ## Buildkite annotations
 
-Coming soon!
+**skuba** can output issues detected by [`skuba lint`] as [Buildkite annotations].
+
+This can be enabled by propagating Buildkite environment variables and the `buildkite-agent` binary.
+For example, with the Docker plugin:
+
+```yaml
+steps:
+  - command: yarn lint
+    plugins:
+      - *aws-sm
+      - *private-npm
+      - *docker-ecr-cache
+      - docker#v3.8.0:
+          environment:
+            # Enable Buildkite annotation support.
+            - BUILDKITE
+            - BUILDKITE_AGENT_ACCESS_TOKEN
+            - BUILDKITE_JOB_ID
+            - BUILDKITE_STEP_ID
+          # Disable SEEK BuildAgency's wrapped agent that requires Bash.
+          mount-buildkite-agent: false
+          volumes:
+            # Mount agent for Buildkite annotations.
+            - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+            # Mount cached dependencies.
+            - /workdir/node_modules
+```
+
+With Docker Compose,
+declare the environment variables and volume mounts in your [Compose file]:
+
+```yaml
+services:
+  app:
+    environment:
+      # Enable Buildkite annotation support.
+      - BUILDKITE
+      - BUILDKITE_AGENT_ACCESS_TOKEN
+      - BUILDKITE_JOB_ID
+      - BUILDKITE_STEP_ID
+    volumes:
+      - ./:/workdir
+      # Mount agent for Buildkite annotations.
+      - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+      # Mount cached dependencies.
+      - /workdir/node_modules
+```
+
+This feature is also planned for [`skuba test`] in future.
 
 ---
 

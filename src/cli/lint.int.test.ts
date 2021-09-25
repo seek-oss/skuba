@@ -2,12 +2,17 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import stream from 'stream';
+import { inspect } from 'util';
 
 import { copy } from 'fs-extra';
+
+import { Buildkite } from '..';
 
 import { lint } from './lint';
 
 jest.setTimeout(30_000);
+
+const buildkiteAnnotate = jest.spyOn(Buildkite, 'annotate').mockResolvedValue();
 
 const stdoutMock = jest.fn();
 
@@ -102,7 +107,19 @@ test.each`
     lint([...args, '--serial'], tscOutputStream),
   ).resolves.toBeUndefined();
 
-  expect(stdout(new RegExp(tempDir, 'g'))).toMatchSnapshot();
+  const tempDirRegex = new RegExp(tempDir, 'g');
+
+  expect(stdout(tempDirRegex)).toMatchSnapshot();
+
+  expect(
+    buildkiteAnnotate.mock.calls.map(
+      ([markdown, opts]) =>
+        `\nOptions: ${inspect(opts)}\n\n${markdown.replace(
+          tempDirRegex,
+          '<random>',
+        )}\n`,
+    ),
+  ).toMatchSnapshot();
 
   expect(process.exitCode).toBe(exitCode);
 });

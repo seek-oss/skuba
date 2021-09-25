@@ -197,21 +197,31 @@ export const ensureCommands = async (...names: string[]) => {
 
   await Promise.all(
     names.map(async (name) => {
-      try {
-        return await which(name);
-      } catch (err: unknown) {
-        if (isErrorWithCode(err, 'ENOENT')) {
-          success = false;
+      const result = await hasCommand(name);
 
-          return log.err(log.bold(name), 'needs to be installed.');
-        }
+      if (!result) {
+        success = false;
 
-        throw err;
+        log.err(log.bold(name), 'needs to be installed.');
       }
     }),
   );
 
   if (!success) {
     process.exit(1);
+  }
+};
+
+export const hasCommand = async (name: string) => {
+  try {
+    await which(name);
+
+    return true;
+  } catch (err: unknown) {
+    if (isErrorWithCode(err, 'ENOENT')) {
+      return false;
+    }
+
+    throw err;
   }
 };

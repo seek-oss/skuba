@@ -5,7 +5,7 @@ import chalk from 'chalk';
 
 import { createLogger } from '../../utils/logging';
 import { execWorkerThread, postWorkerOutput } from '../../utils/worker';
-import { runPrettier } from '../adapter/prettier';
+import { PrettierOutput, runPrettier } from '../adapter/prettier';
 
 import type { Input } from './types';
 
@@ -13,7 +13,7 @@ export const runPrettierInCurrentThread = ({ debug }: Input) =>
   runPrettier('lint', createLogger(debug, chalk.cyan('Prettier |')));
 
 export const runPrettierInWorkerThread = (input: Input) =>
-  execWorkerThread<Input, boolean>(
+  execWorkerThread<Input, PrettierOutput>(
     path.posix.join(__dirname, 'prettier.js'),
     input,
   );

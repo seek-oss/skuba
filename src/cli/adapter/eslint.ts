@@ -13,10 +13,15 @@ const symbolForResult = (result: ESLint.LintResult) => {
   return result.warningCount ? chalk.yellow('◍') : chalk.green('○');
 };
 
+export interface ESLintOutput {
+  ok: boolean;
+  output: string;
+}
+
 export const runESLint = async (
   mode: 'format' | 'lint',
   logger: Logger,
-): Promise<boolean> => {
+): Promise<ESLintOutput> => {
   logger.debug('Initialising ESLint...');
 
   const engine = new ESLint({
@@ -56,6 +61,8 @@ export const runESLint = async (
     logger.debug(symbolForResult(result), path.relative(cwd, result.filePath));
   }
 
+  const ok = errors === 0;
+
   await ESLint.outputFixes(results);
 
   const output = formatter.format(results);
@@ -64,5 +71,5 @@ export const runESLint = async (
     logger.plain(output);
   }
 
-  return errors === 0;
+  return { ok, output };
 };

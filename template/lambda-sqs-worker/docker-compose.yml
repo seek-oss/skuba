@@ -3,12 +3,21 @@ version: '3.7'
 services:
   app:
     environment:
+      # Enable Buildkite annotation support.
       - BUILDKITE
+      - BUILDKITE_AGENT_ACCESS_TOKEN
+      - BUILDKITE_JOB_ID
+      - BUILDKITE_STEP_ID
+      # Tag AWS resources with the commit hash.
       - BUILDKITE_COMMIT
+      # Pass through application configuration.
       - ENVIRONMENT
       - VERSION
     image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}
     init: true
     volumes:
       - ./:/workdir
+      # Mount agent for Buildkite annotations.
+      - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+      # Mount cached dependencies.
       - /workdir/node_modules
