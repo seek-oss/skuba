@@ -28,7 +28,7 @@ export const start = async () => {
     'ts-node-dev',
     ...args.node,
     '--require',
-    path.posix.join('skuba', 'lib', 'register'),
+    path.posix.join(__dirname, '..', 'register'),
     '--respawn',
     '--transpile-only',
     path.join(__dirname, '..', 'wrapper'),
