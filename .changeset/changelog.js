@@ -2,6 +2,7 @@
  * Adapted from {@link https://github.com/atlassian/changesets/blob/%40changesets/changelog-github%400.4.1/packages/changelog-github/src/index.ts}.
  */
 
+const builtInChangelog = require("@changesets/cli/changelog");
 const {
   getInfo,
   getInfoFromPullRequest,
@@ -115,4 +116,14 @@ const changelogFunctions = {
   },
 };
 
-module.exports = changelogFunctions;
+if (process.env.GITHUB_TOKEN) {
+  module.exports = changelogFunctions;
+} else {
+  console.warn(
+    `Defaulting to Git-based versioning.
+Enable GitHub-based versioning by setting the GITHUB_TOKEN environment variable.
+This requires a GitHub personal access token with the \`public_repo\` scope: https://github.com/settings/tokens/new`,
+  );
+
+  module.exports = builtInChangelog.default;
+}

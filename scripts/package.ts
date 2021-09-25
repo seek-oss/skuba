@@ -116,7 +116,7 @@ const compileChangesByTemplate = (changelog: string) => {
       .filter((line) => !line.startsWith('#'))
       .join('\n')
       // Split by list item prefix, which denotes a new changelog entry.
-      .split('\n- ')
+      .split(/\n[\*-] /)
       .map((entry) => entry.trim())
       .filter(Boolean);
 
