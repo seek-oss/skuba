@@ -3,7 +3,6 @@ import path from 'path';
 import chalk from 'chalk';
 import { ESLint } from 'eslint';
 
-import { Buildkite } from '../..';
 import { Logger } from '../../utils/logging';
 
 const symbolForResult = (result: ESLint.LintResult) => {
@@ -14,10 +13,15 @@ const symbolForResult = (result: ESLint.LintResult) => {
   return result.warningCount ? chalk.yellow('◍') : chalk.green('○');
 };
 
+export interface ESLintOutput {
+  ok: boolean;
+  output: string;
+}
+
 export const runESLint = async (
   mode: 'format' | 'lint',
   logger: Logger,
-): Promise<boolean> => {
+): Promise<ESLintOutput> => {
   logger.debug('Initialising ESLint...');
 
   const engine = new ESLint({
@@ -57,18 +61,15 @@ export const runESLint = async (
     logger.debug(symbolForResult(result), path.relative(cwd, result.filePath));
   }
 
+  const ok = errors === 0;
+
   await ESLint.outputFixes(results);
 
   const output = formatter.format(results);
 
   if (output) {
     logger.plain(output);
-
-    await Buildkite.annotate(output, {
-      context: `skuba-${mode}-eslint`,
-      style: 'error',
-    });
   }
 
-  return errors === 0;
+  return { ok, output };
 };

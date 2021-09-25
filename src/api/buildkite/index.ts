@@ -4,6 +4,15 @@ export type AnnotationStyle = 'success' | 'info' | 'warning' | 'error';
 
 interface AnnotationOptions {
   context?: string;
+
+  /**
+   * Scopes an annotation's context to the Buildkite step ID.
+   *
+   * This lets you emit distinct annotations per step, and only takes effect if
+   * the `BUILDKITE_STEP_ID` environment variable is present.
+   */
+  scopeContextToStep?: boolean;
+
   style?: AnnotationStyle;
 }
 
@@ -16,7 +25,6 @@ interface AnnotationOptions {
  * - `BUILDKITE`
  * - `BUILDKITE_AGENT_ACCESS_TOKEN`
  * - `BUILDKITE_JOB_ID`
- * - `BUILDKITE_STEP_ID`
  *
  * The `buildkite-agent` binary must also be on your `PATH`.
  */
@@ -28,17 +36,19 @@ export const annotate = async (
     !(
       process.env.BUILDKITE &&
       process.env.BUILDKITE_AGENT_ACCESS_TOKEN &&
-      process.env.BUILDKITE_JOB_ID &&
-      process.env.BUILDKITE_STEP_ID
+      process.env.BUILDKITE_JOB_ID
     )
   ) {
     return;
   }
 
   // Always scope to the current Buildkite step.
-  const context = [process.env.BUILDKITE_STEP_ID, opts.context]
+  const context = [
+    opts.scopeContextToStep && process.env.BUILDKITE_STEP_ID,
+    opts.context,
+  ]
     .filter(Boolean)
-    .join('-');
+    .join('|');
 
   const { style } = opts;
 
@@ -49,4 +59,11 @@ export const annotate = async (
     ...(style ? ['--style', style] : []),
     markdown,
   );
+};
+
+/**
+ * @internal
+ */
+export const md = {
+  terminal: (code: string) => `\`\`\`term\n${code}\n\`\`\``,
 };

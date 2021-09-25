@@ -16,7 +16,6 @@ the function will silently return without attempting to annotate:
 - `BUILDKITE`
 - `BUILDKITE_AGENT_ACCESS_TOKEN`
 - `BUILDKITE_JOB_ID`
-- `BUILDKITE_STEP_ID`
 
 The `buildkite-agent` binary must also be on your `PATH`.
 
