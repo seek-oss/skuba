@@ -216,14 +216,31 @@ const main = async () => {
 
     const input = await fs.promises.readFile(filepath, 'utf8');
 
+    const templateHeading = `## ${templateName}`;
+
     // Find the start of the section for this template.
-    const templateHeadingIndex = input.indexOf(`## ${templateName}`);
+    const templateHeadingIndex = input.indexOf(templateHeading);
+
+    if (templateHeadingIndex === -1) {
+      console.error(filepath, `Could not locate \`${templateHeading}\`.`);
+      process.exitCode = 1;
+      continue;
+    }
 
     // Find the end of the section as denoted by a `View on GitHub` link.
     const viewOnGitHubIndex = input.indexOf(
       'View on GitHub',
       templateHeadingIndex,
     );
+
+    if (viewOnGitHubIndex === -1) {
+      console.error(
+        filepath,
+        `Could not locate \`View on GitHub\` line within \`${templateHeading}\`.`,
+      );
+      process.exitCode = 1;
+      continue;
+    }
 
     // Find the line after the `View of GitHub` link.
     const changelogIndex = 1 + input.indexOf('\n', viewOnGitHubIndex);
