@@ -26,7 +26,11 @@ ESLint, Prettier found issues that require triage.
 exports[`fixable 2`] = `
 Array [
   "
-Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
+Options: {
+  context: 'skuba-lint-external',
+  scopeContextToStep: true,
+  style: 'error'
+}
 
 \`skuba lint\` found issues that require triage:
 
@@ -156,7 +160,11 @@ ESLint, Prettier found issues that require triage.
 exports[`unfixable 2`] = `
 Array [
   "
-Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
+Options: {
+  context: 'skuba-lint-external',
+  scopeContextToStep: true,
+  style: 'error'
+}
 
 \`skuba lint\` found issues that require triage:
 

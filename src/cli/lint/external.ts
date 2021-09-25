@@ -74,7 +74,7 @@ export const externalLint = async (input: Input) => {
   ].join('\n\n');
 
   await Buildkite.annotate(buildkiteOutput, {
-    context: 'skuba-lint',
+    context: 'skuba-lint-external',
     scopeContextToStep: true,
     style: 'error',
   });
