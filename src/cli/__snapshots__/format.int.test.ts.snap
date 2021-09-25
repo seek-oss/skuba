@@ -120,7 +120,10 @@ Processed 2 files in <random>s.
 <random>/a/a/a.ts
   8:3  error  Unexpected console statement  no-console
 
-✖ 1 problem (1 error, 0 warnings)
+<random>/d.js
+  1:0  error  Parsing error: Declaration or statement expected
+
+✖ 2 problems (2 errors, 0 warnings)
 
 
 Formatting code with Prettier
@@ -128,8 +131,13 @@ Formatting code with Prettier
 Processed 6 files in <random>s.
 Formatted 1 file:
 a/a/a.ts
+Flagged 1 file:
+d.js SyntaxError: Unexpected token (1:1)
+> 1 | }
+    | ^
+  2 |
 
-ESLint found issues that require triage.
+ESLint, Prettier found issues that require triage.
 
 "
 `;

@@ -1,4 +1,4 @@
-import { inspect } from 'util';
+import stream from 'stream';
 
 import { Buildkite } from '../..';
 import { log } from '../../utils/logging';
@@ -11,11 +11,29 @@ import {
 import { runTscInNewProcess } from './tsc';
 import type { Input } from './types';
 
-const lintConcurrently = async (input: Input) => {
+class StreamInterceptor extends stream.Transform {
+  private chunks: Uint8Array[] = [];
+
+  public output() {
+    return Buffer.concat(this.chunks).toString();
+  }
+
+  _transform(
+    chunk: any,
+    _encoding: BufferEncoding,
+    callback: stream.TransformCallback,
+  ) {
+    this.chunks.push(chunk);
+
+    callback(null, chunk);
+  }
+}
+
+const lintConcurrently = async ({ tscOutputStream, ...input }: Input) => {
   const [eslint, prettier, tscOk] = await Promise.all([
     runESLintInWorkerThread(input),
     runPrettierInWorkerThread(input),
-    runTscInNewProcess(input),
+    runTscInNewProcess({ ...input, tscOutputStream }),
   ]);
 
   return { eslint, prettier, tscOk };
@@ -32,16 +50,23 @@ const lintSerially = async (input: Input) => {
 export const externalLint = async (input: Input) => {
   log.newline();
 
-  const lint =
-    // `--debug` implies `--serial`.
-    input.debug || input.serial ? lintSerially : lintConcurrently;
+  // `--debug` implies `--serial`.
+  const isSerial = input.debug || input.serial;
 
-  const { eslint, prettier, tscOk } = await lint(input);
+  const lint = isSerial ? lintSerially : lintConcurrently;
 
-  log.newline();
+  const tscOutputStream = new StreamInterceptor();
+  tscOutputStream.pipe(input.tscOutputStream ?? process.stdout, { end: true });
+
+  const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
 
   if (eslint.ok && prettier.ok && tscOk) {
     return;
+  }
+
+  if (!isSerial) {
+    // stdio from worker threads can lag a bit, so we wait for a little while.
+    await new Promise((resolve) => setTimeout(resolve, 250));
   }
 
   const tools = [
@@ -50,6 +75,7 @@ export const externalLint = async (input: Input) => {
     ...(tscOk ? [] : ['tsc']),
   ];
 
+  log.newline();
   log.err(tools.join(', '), 'found issues that require triage.');
   log.newline();
 
@@ -65,15 +91,26 @@ export const externalLint = async (input: Input) => {
           Buildkite.md.terminal(
             prettier.result.errored
               .map(({ err, filepath }) =>
-                [filepath, ...(err ? [inspect(err)] : [])].join(' '),
+                [filepath, ...(err ? [String(err)] : [])].join(' '),
               )
               .join('\n'),
           ),
         ]),
-    // TODO: provide richer error information from `tsc`.
-    // This is tricky at the moment because we run `tsc` as a CLI in a separate
-    // process and do not intercept its output stream.
-    ...(tscOk ? [] : ['**tsc** build failed.']),
+    ...(tscOk
+      ? []
+      : [
+          '**tsc**',
+          Buildkite.md.terminal(
+            tscOutputStream
+              .output()
+              .split('\n')
+              .filter(Boolean)
+              .map((line) => line.replace(/^tsc\s+\| /, ''))
+              .filter((line) => !line.startsWith('TSFILE: '))
+              .join('\n')
+              .trim(),
+          ),
+        ]),
   ].join('\n\n');
 
   await Buildkite.annotate(buildkiteOutput, {
