@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`terminal handles 1 backtick 1`] = `
+"\`\`\`term
+\`echo foo\`
+\`\`\`"
+`;
+
+exports[`terminal handles 3 backticks 1`] = `
+"\`\`\`term
+\\\\\`\\\\\`\\\\\`echo foo\\\\\`\\\\\`\\\\\`
+\`\`\`"
+`;
+
+exports[`terminal handles 6 backticks 1`] = `
+"\`\`\`term
+\\\\\`\\\\\`\\\\\`\\\\\`\\\\\`\\\\\`
+\`\`\`"
+`;
+
+exports[`terminal handles harmless code 1`] = `
+"\`\`\`term
+echo foo
+\`\`\`"
+`;
