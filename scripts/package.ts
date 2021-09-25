@@ -164,6 +164,11 @@ const compileChangesByTemplate = (changelog: string) => {
               .replace(
                 /^([0-9a-f]{7,}): /,
                 (_, commit: string) => `${commitLink(commit)}: `,
+              )
+              // Auto-link a commit hash suffix to GitHub.
+              .replace(
+                /\(([0-9a-f]{7,})\)/,
+                (_, commit: string) => `(${commitLink(commit)})`,
               )}`,
           );
         }
