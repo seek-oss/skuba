@@ -117,7 +117,6 @@ tsc      | printTime time: <random>s
 tsc      | Emit time: <random>s
 tsc      | Total time: <random>s
 tsc      | tsc --extendedDiagnostics --noEmit exited with code 0
-
 "
 `;
 
@@ -129,7 +128,6 @@ ESLint   | Processed 2 files in <random>s.
 Prettier | Processed 6 files in <random>s.
 tsc      | TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      | tsc --noEmit exited with code 0
-
 "
 `;
 
@@ -143,16 +141,24 @@ ESLint   |
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
   8:3  error  Unexpected console statement                      no-console
 
-✖ 2 problems (2 errors, 0 warnings)
+<random>/d.js
+  1:0  error  Parsing error: Declaration or statement expected
+
+✖ 3 problems (3 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
 
 Prettier | Processed 6 files in <random>s.
-Prettier | Flagged 1 file:
+Prettier | Flagged 2 files:
+Prettier | d.js SyntaxError: Unexpected token (1:1)
+> 1 | }
+    | ^
+  2 |
 Prettier | a/a/a.ts
+tsc      | d.js(1,1): error TS1128: Declaration or statement expected.
 tsc      | TSFILE: <random>/lib/tsconfig.tsbuildinfo
-tsc      | tsc --noEmit exited with code 0
+tsc      | tsc --noEmit exited with code 2
 
-ESLint, Prettier found issues that require triage.
+ESLint, Prettier, tsc found issues that require triage.
 
 "
 `;
@@ -175,14 +181,28 @@ Options: {
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
   8:3  error  Unexpected console statement                      no-console
 
-✖ 2 problems (2 errors, 0 warnings)
+<random>/d.js
+  1:0  error  Parsing error: Declaration or statement expected
+
+✖ 3 problems (3 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
 \`\`\`
 
 **Prettier**
 
 \`\`\`term
+d.js SyntaxError: Unexpected token (1:1)
+> 1 | }
+    | ^
+  2 |
 a/a/a.ts
+\`\`\`
+
+**tsc**
+
+\`\`\`term
+d.js(1,1): error TS1128: Declaration or statement expected.
+tsc --noEmit exited with code 2
 \`\`\`
 ",
 ]
