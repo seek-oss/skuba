@@ -215,11 +215,13 @@ const main = async () => {
       changes.push("🍞 There's nothing here yet.");
     }
 
+    const config = TEMPLATE_DOCUMENTATION_CONFIG[templateName];
+
     const filepath = path.join(
       'dist-docs',
       'docs',
       'templates',
-      TEMPLATE_DOCUMENTATION_CONFIG[templateName].filename,
+      config.filename,
     );
 
     const input = await fs.promises.readFile(filepath, 'utf8');
@@ -250,12 +252,15 @@ const main = async () => {
       continue;
     }
 
-    // Find the line after the `View of GitHub` link.
+    // Find the line after the `View on GitHub` link.
     const changelogIndex = 1 + input.indexOf('\n', viewOnGitHubIndex);
 
     // Insert the changelog inside of a collapsed `details` element.
     const output = `
 ${input.slice(0, changelogIndex)}
+
+Added in ${versionLink(config.added)}
+
 <details markdown="block">
   <summary>
     Changelog
