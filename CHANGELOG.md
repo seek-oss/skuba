@@ -123,7 +123,7 @@
 
 - 13b3bce: **template/lambda-sqs-worker-cdk:** Add new template
 - 78c9a48: **format, lint:** Support `--debug` flag
-- e7cd7ed: **all:** Upgrade templates to Node 14
+- e7cd7ed: **template:** Upgrade to Node 14
 
   Node.js 14 is [now supported on AWS Lambda](https://aws.amazon.com/about-aws/whats-new/2021/02/aws-lambda-now-supports-node-js-14/). This lets us upgrade the Node.js requirement for skuba's templates.
 
@@ -662,7 +662,7 @@
 - 5753b38: **template/lambda-sqs-worker:** Drop `hot-shots` dependency
 - 0c1e129: **configure, init:** Sort dependencies
 - 93cdf6c: **template:** Redact `Authorization` headers in logs
-- 1b9b9c4: **template/package:** Make prompt unskippable
+- 1b9b9c4: **template/\*-npm-package:** Make prompt unskippable
 - 5283618: **configure, init:** Exclude `lib-` directories from compilation
 - 676030a: **template/private-npm-package:** Fix ReferenceError on init
 - f36b136: **help:** Show `build-package` correctly
@@ -674,7 +674,7 @@
 - 35b4b2e: **configure:** Sort more `package.json` props
 - 23d4e09: **init:** Install matching skuba version
 - bac749a: **init:** Extend validation on initial GitHub fields
-- cbce20b: **template/package:** Drop module aliasing from `tsconfig.json`
+- cbce20b: **template/\*-npm-package:** Drop module aliasing from `tsconfig.json`
 - b480dac: **template:** Redact `err.config.sockets` from logs
 - a52b995: **template/koa-rest-api:** Support improved Runtypes error messaging
 - 1fbb097: **configure:** Handle `skuba-dive` dependency upfront
@@ -723,7 +723,7 @@
 
 ### Minor Changes
 
-- 84a3262: ESLint 7 + `typescript-eslint` 3
+- 84a3262: **format, lint:** ESLint 7 + `typescript-eslint` 3
 
   This upgrade introduces stricter rules around `any` and `object` usage for type safety.
 
@@ -771,7 +771,8 @@
 
 - b39a0e0: **configure:** Use `latest-version` to check package versions
 - 70ae29a: **configure, init:** Switch to oss `skuba-dive` package
-- b44523a: Switch to `seek-datadog-custom-metrics` + `seek-koala`
+- b44523a: **template:** Switch to `seek-datadog-custom-metrics`
+- b44523a: **template/koa-rest-api:** Switch to `seek-koala`
 - 030ebb4: **configure:** Keep name, readme and version fields in package.json
 - a311624: **configure:** Drop `--ignore-optional` from `yarn install`
 - b61a3ca: **start:** Remove support for a custom port logging function
@@ -785,4 +786,4 @@
 
 ### Patch Changes
 
-- ef3abbe: Release on `seek-oss`
+- ef3abbe: **pkg:** Release on `seek-oss`

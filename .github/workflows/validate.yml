@@ -41,6 +41,11 @@ jobs:
       - name: Lint
         run: yarn lint
 
+      - name: Dry-run site packaging
+        run: yarn stage && yarn ts-node --transpile-only scripts/package.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   template:
     name: Integrate
     runs-on: ubuntu-latest

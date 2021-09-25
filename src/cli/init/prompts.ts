@@ -1,6 +1,8 @@
 import { Input, Select } from 'enquirer';
 import { pathExists } from 'fs-extra';
 
+import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
+
 import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
 
 export type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
@@ -66,16 +68,7 @@ export const GIT_PATH_PROMPT = new Input({
 });
 
 export const TEMPLATE_PROMPT = new Select({
-  choices: [
-    'express-rest-api',
-    'greeter',
-    'koa-rest-api',
-    'lambda-sqs-worker',
-    'lambda-sqs-worker-cdk',
-    'oss-npm-package',
-    'private-npm-package',
-    'github →',
-  ] as const,
+  choices: TEMPLATE_NAMES_WITH_BYO,
   message: 'Select a template:',
   name: 'templateName',
 });
