@@ -4,29 +4,7 @@ set -e
 
 echo '=> Packaging...'
 
-rm -rf dist-docs
-
-mkdir -p dist-docs
-
-changelog="$(cat CHANGELOG.md)"
-
-old_header='# skuba'
-
-new_header="$(cat << EOF
----
-nav_order: 98
----
-
-# Changelog
-
----
-EOF
-)"
-
-echo "${changelog/#"${old_header}"/"${new_header}"}" > dist-docs/CHANGELOG.md
-
-cp CONTRIBUTING.md index.md site/_config.yml dist-docs/
-cp -R docs/ dist-docs/docs/
+yarn ts-node --transpile-only scripts/package.ts
 
 cd dist-docs
 
