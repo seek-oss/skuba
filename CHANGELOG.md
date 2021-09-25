@@ -1,5 +1,95 @@
 # skuba
 
+## 3.15.0-beta.0
+
+### Minor Changes
+
+- **lint:** Run ESLint and Prettier in worker threads ([#548](https://github.com/seek-oss/skuba/pull/548))
+
+  This reduces the number of Node.js processes spawned by `skuba lint`. We've also been able to significantly enhance our logging output as a result, particularly when the `--debug` flag is supplied.
+
+* **build-package, lint:** Add `--serial` flag ([#556](https://github.com/seek-oss/skuba/pull/556))
+
+  This explicitly disables concurrent command execution.
+
+  Propagating the `BUILDKITE` environment variable to these commands no longer constrains their concurrency. If you were relying on this behaviour to reduce resource contention on undersized Buildkite agents, update your commands to pass in the flag:
+
+  ```diff
+  - build-package
+  + build-package --serial
+
+  - lint
+  + lint --serial
+  ```
+
+  See our [Buildkite guide](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/buildkite.md) for more information.
+
+- **node:** Run REPL in process ([#534](https://github.com/seek-oss/skuba/pull/534))
+
+  This avoids creating a separate Node.js process just to run the REPL.
+
+* **Buildkite.annotate:** Add development API for writing annotations ([#558](https://github.com/seek-oss/skuba/pull/558))
+
+- **format:** Execute ESLint with `--report-unused-disable-directives` ([#512](https://github.com/seek-oss/skuba/pull/512))
+
+  `skuba format` will now flag unused disable directives, and will [automatically remove](https://eslint.org/blog/2021/06/whats-coming-in-eslint-8.0.0#unused-disable-directives-are-now-fixable) them once ESLint v8 is released.
+
+* **deps:** Prettier 2.4 ([#507](https://github.com/seek-oss/skuba/pull/507))
+
+  This includes TypeScript 4.4 support. See the [release notes](https://prettier.io/blog/2021/09/09/2.4.0.html) for more information.
+
+- **deps:** TypeScript 4.4 ([#497](https://github.com/seek-oss/skuba/pull/497))
+
+  This major release includes breaking changes. See the [announcement](https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/) for more information.
+
+  Note that new syntax in TypeScript 4.4 will only be supported by `skuba format` and `skuba lint` once ESLint v8 is released.
+
+* **format:** Run ESLint and Prettier in process ([#539](https://github.com/seek-oss/skuba/pull/539))
+
+  This eliminates the overhead of spinning up separate Node.js processes. We've also been able to significantly enhance our logging output as a result, particularly when the `--debug` flag is supplied.
+
+- **build:** Remove experimental Babel support ([#513](https://github.com/seek-oss/skuba/pull/513))
+
+  There's limited upside to switching to [Babel-based builds](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/babel.md) for backend use cases, and it would be difficult to guarantee backwards compatibility with existing `tsconfig.json`-based configuration. Dropping Babel dependencies reduces our package size and resolves [SNYK-JS-SETVALUE-1540541](https://app.snyk.io/vuln/SNYK-JS-SETVALUE-1540541).
+
+* **lint:** Support Buildkite annotations ([#558](https://github.com/seek-oss/skuba/pull/558))
+
+  `skuba lint` can now output issues as Buildkite annotations.
+
+  See our [Buildkite guide](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/buildkite.md) for more information.
+
+### Patch Changes
+
+- **template:** pino-pretty ^7.0.0 ([#506](https://github.com/seek-oss/skuba/pull/506))
+
+* **template:** Configure environment variables and volume mounts for Buildkite annotations ([#558](https://github.com/seek-oss/skuba/pull/558))
+
+- **template:** serverless-plugin-canary-deployments ^0.7.0 ([#508](https://github.com/seek-oss/skuba/pull/508))
+
+* **template/lambda-sqs-worker\*:** Prime dev ECR cache in Buildkite pipeline ([#503](https://github.com/seek-oss/skuba/pull/503))
+
+  This should result in faster "Deploy Dev" times as the ECR cache will already be warm.
+
+- **template:** seek-jobs/gantry v1.4.1 ([#504](https://github.com/seek-oss/skuba/pull/504))
+
+* **template:** Remove `@types/node` resolution override ([#498](https://github.com/seek-oss/skuba/pull/498))
+
+  Jest 27.1 is compatible with newer versions of `@types/node`.
+
+- **template/lambda-sqs-worker-cdk:** Run "Test, Lint & Build" step in prod ([#503](https://github.com/seek-oss/skuba/pull/503))
+
+  This reduces our dependence on a dev environment to successfully deploy to prod.
+
+* **build-package, lint:** Simplify logging prefix ([#535](https://github.com/seek-oss/skuba/pull/535))
+
+- **Jest.mergePreset:** Allow `watchPathIgnorePatterns` ([#555](https://github.com/seek-oss/skuba/pull/555))
+
+* **build-package, lint:** Limit max concurrency to CPU core count ([#540](https://github.com/seek-oss/skuba/pull/540))
+
+- **template:** Remove Yarn cache from worker Docker images ([#499](https://github.com/seek-oss/skuba/pull/499))
+
+  This shrinks the cached Docker images that our worker templates generate.
+
 ## 3.14.4
 
 ### Patch Changes

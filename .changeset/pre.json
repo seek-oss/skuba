@@ -1,0 +1,30 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "3.14.4"
+  },
+  "changesets": [
+    "blue-suits-tie",
+    "bright-pots-live",
+    "chilled-dots-melt",
+    "chilled-vans-grow",
+    "few-rules-marry",
+    "giant-sloths-cross",
+    "itchy-cobras-bow",
+    "light-islands-begin",
+    "nine-fishes-swim",
+    "polite-hounds-carry",
+    "quick-plants-peel",
+    "short-baboons-leave",
+    "silent-pugs-fetch",
+    "silly-deers-draw",
+    "slimy-cars-wash",
+    "sour-stingrays-doubt",
+    "stale-numbers-carry",
+    "ten-snails-act",
+    "twelve-monkeys-cough",
+    "wet-penguins-switch",
+    "yellow-gorillas-pull"
+  ]
+}
