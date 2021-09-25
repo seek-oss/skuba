@@ -64,11 +64,6 @@ export const externalLint = async (input: Input) => {
     return;
   }
 
-  if (!isSerial) {
-    // stdio from worker threads can lag a bit, so we wait for a little while.
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
-
   const tools = [
     ...(eslint.ok ? [] : ['ESLint']),
     ...(prettier.ok ? [] : ['Prettier']),
