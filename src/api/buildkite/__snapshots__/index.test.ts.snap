@@ -1,11 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`annotate with all options annotates when environment variables are set 1`] = `
+"
+buildkite-agent
+annotate
+--context
+step-id|skuba-build
+--style
+warning
+**Message**
+"
+`;
+
 exports[`annotate with context and style options annotates when environment variables are set 1`] = `
 "
 buildkite-agent
 annotate
 --context
-step-id-skuba-test
+skuba-test
 --style
 error
 **Message**
@@ -17,7 +29,7 @@ exports[`annotate with context option annotates when environment variables are s
 buildkite-agent
 annotate
 --context
-step-id-skuba-lint
+skuba-lint
 **Message**
 "
 `;
@@ -26,8 +38,6 @@ exports[`annotate with empty options annotates when environment variables are se
 "
 buildkite-agent
 annotate
---context
-step-id
 **Message**
 "
 `;
@@ -36,8 +46,6 @@ exports[`annotate with style option annotates when environment variables are set
 "
 buildkite-agent
 annotate
---context
-step-id
 --style
 info
 **Message**
@@ -48,8 +56,6 @@ exports[`annotate with undefined options annotates when environment variables ar
 "
 buildkite-agent
 annotate
---context
-step-id
 **Message**
 "
 `;

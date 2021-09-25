@@ -3,11 +3,13 @@ import * as execModule from '../../utils/exec';
 import { annotate } from '.';
 
 const exec = jest.spyOn(execModule, 'exec');
+const hasCommand = jest.spyOn(execModule, 'hasCommand');
 
 beforeEach(() => {
   jest.clearAllMocks();
 
   exec.mockResolvedValue(undefined as any);
+  hasCommand.mockResolvedValue(true);
 });
 
 afterEach(() => {
@@ -34,6 +36,7 @@ describe('annotate', () => {
     ${'context option'}            | ${{ context: 'skuba-lint' }}
     ${'style option'}              | ${{ style: 'info' }}
     ${'context and style options'} | ${{ context: 'skuba-test', style: 'error' }}
+    ${'all options'}               | ${{ context: 'skuba-build', scopeContextToStep: true, style: 'warning' }}
   `('with $description', ({ opts }) => {
     it('annotates when environment variables are set', async () => {
       setEnvironmentVariables();
@@ -46,6 +49,14 @@ describe('annotate', () => {
     });
 
     it('skips when environment variables are not set', async () => {
+      await expect(annotate(markdown)).resolves.toBeUndefined();
+
+      expect(exec).not.toHaveBeenCalled();
+    });
+
+    it('skips when `buildkite-agent` is not present', async () => {
+      hasCommand.mockResolvedValue(false);
+
       await expect(annotate(markdown)).resolves.toBeUndefined();
 
       expect(exec).not.toHaveBeenCalled();

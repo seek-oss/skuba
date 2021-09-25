@@ -1,6 +1,14 @@
-import { exec } from '../../utils/exec';
+import { exec, hasCommand } from '../../utils/exec';
 
 export type AnnotationStyle = 'success' | 'info' | 'warning' | 'error';
+
+const isBuildkiteEnabled = async () =>
+  Boolean(
+    process.env.BUILDKITE &&
+      process.env.BUILDKITE_AGENT_ACCESS_TOKEN &&
+      process.env.BUILDKITE_JOB_ID &&
+      (await hasCommand('buildkite-agent')),
+  );
 
 interface AnnotationOptions {
   context?: string;
@@ -32,13 +40,7 @@ export const annotate = async (
   markdown: string,
   opts: AnnotationOptions = {},
 ): Promise<void> => {
-  if (
-    !(
-      process.env.BUILDKITE &&
-      process.env.BUILDKITE_AGENT_ACCESS_TOKEN &&
-      process.env.BUILDKITE_JOB_ID
-    )
-  ) {
+  if (!(await isBuildkiteEnabled())) {
     return;
   }
 
