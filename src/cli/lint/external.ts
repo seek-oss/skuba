@@ -56,7 +56,7 @@ export const externalLint = async (input: Input) => {
   const lint = isSerial ? lintSerially : lintConcurrently;
 
   const tscOutputStream = new StreamInterceptor();
-  tscOutputStream.pipe(input.tscOutputStream ?? process.stdout, { end: true });
+  tscOutputStream.pipe(input.tscOutputStream ?? process.stdout);
 
   const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
 
