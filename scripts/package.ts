@@ -12,8 +12,15 @@ import {
 
 const SCOPE_REGEX = /\*\*([^:]+):\*\* /;
 
+const commitLink = (commit: string) =>
+  `[\`${commit}\`](https://github.com/seek-oss/skuba/commit/${encodeURIComponent(
+    commit,
+  )})`;
+
 const versionLink = (version: string) =>
-  `[${version}](https://github.com/seek-oss/skuba/releases/tag/v${version})`;
+  `[${version}](https://github.com/seek-oss/skuba/releases/tag/v${encodeURIComponent(
+    version,
+  )})`;
 
 /**
  * Ensures that our template constant matches the `/template` directory.
@@ -156,7 +163,7 @@ const compileChangesByTemplate = (changelog: string) => {
               // Auto-link a commit hash prefix to GitHub.
               .replace(
                 /^([0-9a-f]{7,}): /,
-                '[`$1`](https://github.com/seek-oss/skuba/commit/$1): ',
+                (_, commit: string) => `${commitLink(commit)}: `,
               )}`,
           );
         }
