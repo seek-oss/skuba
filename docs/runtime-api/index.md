@@ -22,3 +22,10 @@ nav_order: 5
   }
 }
 ```
+
+**skuba-dive** is intentionally limited to boilerplate cross-cutting concerns and runtime augmentations,
+as our preference is to foster runtime packages that are specific and standalone rather than bundling a monolithic API.
+See our [goals] and [non-goals] to learn more.
+
+[goals]: ../about.md#goals
+[non-goals]: ../about.md#non-goals

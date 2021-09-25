@@ -7,6 +7,11 @@ parent: Templates
 
 ---
 
+**skuba** can initialise a new project from an externally-hosted template.
+This allows you to build and maintain template repositories with your own preferred baseline of boilerplate code and configuration.
+
+---
+
 ## github
 
 **skuba** will shallow-clone your template repo from GitHub and apply some of its base configuration on top.

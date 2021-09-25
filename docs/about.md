@@ -72,6 +72,7 @@ Here are some highlights:
 [@seek/node-s2sauth-issuer]: https://github.com/SEEK-Jobs/node-s2sauth-issuer
 [@seek/typegen]: https://github.com/SEEK-Jobs/typegen
 [@seek/zactive-directory]: https://github.com/SEEK-Jobs/zactive-directory
+[gantry]: https://gantry.ssod.skinfra.xyz
 [s2sauth]: https://github.com/SEEK-Jobs/s2sauth
 [seek-datadog-custom-metrics]: https://github.com/seek-oss/datadog-custom-metrics
 [seek-koala]: https://github.com/seek-oss/koala
