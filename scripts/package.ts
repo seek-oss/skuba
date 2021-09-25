@@ -160,12 +160,12 @@ const compileChangesByTemplate = (changelog: string) => {
             `- ${versionLink(version)}: ${entry
               // Strip out the scope as it is needlessly repetitive here.
               .replace(SCOPE_REGEX, '')
-              // Auto-link a commit hash prefix to GitHub.
+              // Auto-link a short commit hash like `1234567: ` to GitHub.
               .replace(
                 /^([0-9a-f]{7,}): /,
                 (_, commit: string) => `${commitLink(commit)}: `,
               )
-              // Auto-link a commit hash suffix to GitHub.
+              // Auto-link a short commit hash like `(1234567)` to GitHub.
               .replace(
                 /\(([0-9a-f]{7,})\)/,
                 (_, commit: string) => `(${commitLink(commit)})`,
