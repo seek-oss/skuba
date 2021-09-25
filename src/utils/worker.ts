@@ -15,19 +15,17 @@ export const execWorkerThread = async <Input, Output>(
       workerData: input,
     })
       .on('error', reject)
-      .on('exit', (code) => {
-        if (messageReceived) {
-          return resolve(output);
-        }
-
-        return reject(
-          new Error(
-            code
-              ? `Worker exited with code: ${code}`
-              : 'Worker exited without posting a message',
-          ),
-        );
-      })
+      .on('exit', (code) =>
+        messageReceived
+          ? resolve(output)
+          : reject(
+              new Error(
+                code
+                  ? `Worker exited with code: ${code}`
+                  : 'Worker exited without posting a message',
+              ),
+            ),
+      )
       .on('message', (message: Output) => {
         // Defer promise resolution to `exit` so stdio can settle.
         output = message;
