@@ -23,7 +23,7 @@ interface AnnotationOptions {
 export const annotate = async (
   markdown: string,
   opts: AnnotationOptions = {},
-) => {
+): Promise<void> => {
   if (
     !(
       process.env.BUILDKITE &&
