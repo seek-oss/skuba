@@ -41,11 +41,11 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - if: env.GITHUB_EVENT_NAME == 'push'
+      - if: github.event_name == 'push'
         name: Dry-run changelog versioning
         run: yarn changeset version
 
-      - if: env.GITHUB_EVENT_NAME == 'push'
+      - if: github.event_name == 'push'
         name: Dry-run site packaging
         run: yarn skuba node scripts/package.ts
 
