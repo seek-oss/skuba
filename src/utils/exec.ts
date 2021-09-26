@@ -2,7 +2,6 @@ import { cpus } from 'os';
 import stream from 'stream';
 import util from 'util';
 
-import chalk from 'chalk';
 import concurrently from 'concurrently';
 import execa, { ExecaChildProcess } from 'execa';
 import npmRunPath from 'npm-run-path';
@@ -169,24 +168,14 @@ export const execConcurrently = async (
       throw err;
     }
 
-    const messages = result.value
+    const failed = result.value
       .filter(({ exitCode }) => exitCode !== 0)
       .sort(({ index: indexA }, { index: indexB }) => indexA - indexB)
-      .map(
-        (a) =>
-          `[${a.command.name}] ${chalk.bold(
-            a.command.command,
-          )} exited with code ${chalk.bold(a.exitCode)}`,
-      );
-
-    log.newline();
-
-    messages.forEach((message) => log.err(message));
-    log.newline();
+      .map((subprocess) => subprocess.command.name);
 
     throw Error(
-      `${messages.length} subprocess${
-        messages.length === 1 ? '' : 'es'
+      `${failed.join(', ')} subprocess${
+        failed.length === 1 ? '' : 'es'
       } failed.`,
     );
   }

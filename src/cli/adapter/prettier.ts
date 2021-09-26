@@ -1,5 +1,4 @@
 import path from 'path';
-import { inspect } from 'util';
 
 import fs from 'fs-extra';
 import { Options, check, format, getFileInfo, resolveConfig } from 'prettier';
@@ -172,7 +171,7 @@ export const runPrettier = async (
   if (result.errored.length) {
     logger.plain(`Flagged ${logger.pluralise(result.errored.length, 'file')}:`);
     for (const { err, filepath } of result.errored) {
-      logger.warn(filepath, ...(err ? [inspect(err)] : []));
+      logger.warn(filepath, ...(err ? [String(err)] : []));
     }
   }
 

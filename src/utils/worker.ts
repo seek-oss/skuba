@@ -6,18 +6,34 @@ import { Worker, parentPort, workerData } from 'worker_threads';
 export const execWorkerThread = async <Input, Output>(
   filepath: string,
   input: Input,
-) =>
-  new Promise<Output>((resolve, reject) =>
+) => {
+  let output: Output;
+  let messageReceived = false;
+
+  return new Promise<Output>((resolve, reject) =>
     new Worker(filepath, {
       workerData: input,
     })
       .on('error', reject)
       .on('exit', (code) =>
-        reject(new Error(`Worker exited with code: ${code}`)),
+        messageReceived
+          ? resolve(output)
+          : reject(
+              new Error(
+                code
+                  ? `Worker exited with code: ${code}`
+                  : 'Worker exited without posting a message',
+              ),
+            ),
       )
-      .on('message', (message: Output) => resolve(message))
+      .on('message', (message: Output) => {
+        // Defer promise resolution to `exit` so stdio can settle.
+        output = message;
+        messageReceived = true;
+      })
       .on('messageerror', (err) => reject(err)),
   );
+};
 
 /**
  * Runs a function in a Node.js worker thread context, forwarding the result
