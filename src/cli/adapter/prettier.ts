@@ -77,7 +77,7 @@ export interface PrettierOutput {
  *
  * Prettier doesn't provide a higher-level Node.js API that replicates the
  * behaviour of its CLI, so we have to plumb together its lower-level functions.
- * On the other hands, this affords more flexibility in how we track and report
+ * On the other hand, this affords more flexibility in how we track and report
  * on progress and results.
  */
 export const runPrettier = async (
