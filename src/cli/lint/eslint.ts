@@ -10,7 +10,7 @@ import { ESLintOutput, runESLint } from '../adapter/eslint';
 import type { Input } from './types';
 
 export const runESLintInCurrentThread = ({ debug }: Input) =>
-  runESLint('lint', createLogger(debug, chalk.magenta('ESLint   |')));
+  runESLint('lint', createLogger(debug, chalk.magenta('ESLint   │')));
 
 export const runESLintInWorkerThread = (input: Input) =>
   execWorkerThread<Input, ESLintOutput>(

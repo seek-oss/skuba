@@ -158,7 +158,7 @@ export const execConcurrently = async (
         outputStream,
 
         // Use a minimalist logging prefix.
-        prefix: '{name} |',
+        prefix: '{name} │',
       },
     );
   } catch (err: unknown) {

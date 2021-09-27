@@ -2,18 +2,15 @@
 
 exports[`fixable 1`] = `
 "
-Fixing code with ESLint
------------------------
+ESLint
 Processed 2 files in <random>s.
 
-Formatting code with Prettier
------------------------------
+Prettier
 Processed 6 files in <random>s.
 Formatted 3 files:
 b.md
 c.json
 d.js
-
 "
 `;
 
@@ -54,16 +51,14 @@ d.js
 
 exports[`ok --debug 1`] = `
 "
-Fixing code with ESLint
------------------------
+ESLint
 Initialising ESLint...
 Processing files...
 Processed 2 files in <random>s.
 ○ a/a/a.ts
 ○ d.js
 
-Formatting code with Prettier
------------------------------
+Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
@@ -84,7 +79,6 @@ a/a/a.ts
   parser: typescript
 Writing 0 files...
 Processed 6 files in <random>s.
-
 "
 `;
 
@@ -95,14 +89,11 @@ exports[`ok --debug 2`] = `
 
 exports[`ok 1`] = `
 "
-Fixing code with ESLint
------------------------
+ESLint
 Processed 2 files in <random>s.
 
-Formatting code with Prettier
------------------------------
+Prettier
 Processed 6 files in <random>s.
-
 "
 `;
 
@@ -113,8 +104,7 @@ exports[`ok 2`] = `
 
 exports[`unfixable 1`] = `
 "
-Fixing code with ESLint
------------------------
+ESLint
 Processed 2 files in <random>s.
 
 <random>/a/a/a.ts
@@ -126,8 +116,7 @@ Processed 2 files in <random>s.
 ✖ 2 problems (2 errors, 0 warnings)
 
 
-Formatting code with Prettier
------------------------------
+Prettier
 Processed 6 files in <random>s.
 Formatted 1 file:
 a/a/a.ts
@@ -138,7 +127,6 @@ d.js SyntaxError: Unexpected token (1:1)
   2 |
 
 ESLint, Prettier found issues that require triage.
-
 "
 `;
 

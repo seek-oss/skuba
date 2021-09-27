@@ -2,24 +2,23 @@
 
 exports[`fixable 1`] = `
 "
-ESLint   | Processed 2 files in <random>s.
-ESLint   | 
+ESLint   │ Processed 2 files in <random>s.
+ESLint   │ 
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
 
 ✖ 1 problem (1 error, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
 
-Prettier | Processed 6 files in <random>s.
-Prettier | Flagged 3 files:
-Prettier | b.md
-Prettier | c.json
-Prettier | d.js
-tsc      | TSFILE: <random>/lib/tsconfig.tsbuildinfo
-tsc      | tsc --noEmit exited with code 0
+Prettier │ Processed 6 files in <random>s.
+Prettier │ Flagged 3 files:
+Prettier │ b.md
+Prettier │ c.json
+Prettier │ d.js
+tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
+tsc      │ tsc --noEmit exited with code 0
 
 ESLint, Prettier found issues that require triage.
-
 "
 `;
 
@@ -57,66 +56,66 @@ d.js
 
 exports[`ok --debug 1`] = `
 "
-ESLint   | Initialising ESLint...
-ESLint   | Processing files...
-ESLint   | Processed 2 files in <random>s.
-ESLint   | ○ a/a/a.ts
-ESLint   | ○ d.js
-Prettier | Initialising Prettier...
-Prettier | Detected project root: <random>
-Prettier | Discovering files...
-Prettier | Discovered 6 files.
-Prettier | Reading files...
-Prettier | Linting files...
-Prettier | b.md
-Prettier |   parser: markdown
-Prettier | c.json
-Prettier |   parser: json
-Prettier | d.js
-Prettier |   parser: babel
-Prettier | package.json
-Prettier |   parser: json-stringify
-Prettier | tsconfig.json
-Prettier |   parser: json
-Prettier | a/a/a.ts
-Prettier |   parser: typescript
-Prettier | Writing 0 files...
-Prettier | Processed 6 files in <random>s.
-tsc      | TSFILE: <random>/lib/tsconfig.tsbuildinfo
-tsc      | Files: <random>
-tsc      | Lines of Library: <random>
-tsc      | Lines of Definitions: <random>
-tsc      | Lines of TypeScript: <random>
-tsc      | Lines of JavaScript: <random>
-tsc      | Lines of JSON: <random>
-tsc      | Lines of Other: <random>
-tsc      | Nodes of Library: <random>
-tsc      | Nodes of Definitions: <random>
-tsc      | Nodes of TypeScript: <random>
-tsc      | Nodes of JavaScript: <random>
-tsc      | Nodes of JSON: <random>
-tsc      | Nodes of Other: <random>
-tsc      | Identifiers: <random>
-tsc      | Symbols: <random>
-tsc      | Types: <random>
-tsc      | Instantiations: <random>
-tsc      | Memory used: <random>K
-tsc      | Assignability cache size: <random>
-tsc      | Identity cache size: <random>
-tsc      | Subtype cache size: <random>
-tsc      | Strict subtype cache size: <random>
-tsc      | I/O Read time: <random>s
-tsc      | Parse time: <random>s
-tsc      | ResolveModule time: <random>s
-tsc      | ResolveTypeReference time: <random>s
-tsc      | Program time: <random>s
-tsc      | Bind time: <random>s
-tsc      | Check time: <random>s
-tsc      | I/O Write time: <random>s
-tsc      | printTime time: <random>s
-tsc      | Emit time: <random>s
-tsc      | Total time: <random>s
-tsc      | tsc --extendedDiagnostics --noEmit exited with code 0
+ESLint   │ Initialising ESLint...
+ESLint   │ Processing files...
+ESLint   │ Processed 2 files in <random>s.
+ESLint   │ ○ a/a/a.ts
+ESLint   │ ○ d.js
+Prettier │ Initialising Prettier...
+Prettier │ Detected project root: <random>
+Prettier │ Discovering files...
+Prettier │ Discovered 6 files.
+Prettier │ Reading files...
+Prettier │ Linting files...
+Prettier │ b.md
+Prettier │   parser: markdown
+Prettier │ c.json
+Prettier │   parser: json
+Prettier │ d.js
+Prettier │   parser: babel
+Prettier │ package.json
+Prettier │   parser: json-stringify
+Prettier │ tsconfig.json
+Prettier │   parser: json
+Prettier │ a/a/a.ts
+Prettier │   parser: typescript
+Prettier │ Writing 0 files...
+Prettier │ Processed 6 files in <random>s.
+tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
+tsc      │ Files: <random>
+tsc      │ Lines of Library: <random>
+tsc      │ Lines of Definitions: <random>
+tsc      │ Lines of TypeScript: <random>
+tsc      │ Lines of JavaScript: <random>
+tsc      │ Lines of JSON: <random>
+tsc      │ Lines of Other: <random>
+tsc      │ Nodes of Library: <random>
+tsc      │ Nodes of Definitions: <random>
+tsc      │ Nodes of TypeScript: <random>
+tsc      │ Nodes of JavaScript: <random>
+tsc      │ Nodes of JSON: <random>
+tsc      │ Nodes of Other: <random>
+tsc      │ Identifiers: <random>
+tsc      │ Symbols: <random>
+tsc      │ Types: <random>
+tsc      │ Instantiations: <random>
+tsc      │ Memory used: <random>K
+tsc      │ Assignability cache size: <random>
+tsc      │ Identity cache size: <random>
+tsc      │ Subtype cache size: <random>
+tsc      │ Strict subtype cache size: <random>
+tsc      │ I/O Read time: <random>s
+tsc      │ Parse time: <random>s
+tsc      │ ResolveModule time: <random>s
+tsc      │ ResolveTypeReference time: <random>s
+tsc      │ Program time: <random>s
+tsc      │ Bind time: <random>s
+tsc      │ Check time: <random>s
+tsc      │ I/O Write time: <random>s
+tsc      │ printTime time: <random>s
+tsc      │ Emit time: <random>s
+tsc      │ Total time: <random>s
+tsc      │ tsc --extendedDiagnostics --noEmit exited with code 0
 "
 `;
 
@@ -124,10 +123,10 @@ exports[`ok --debug 2`] = `Array []`;
 
 exports[`ok 1`] = `
 "
-ESLint   | Processed 2 files in <random>s.
-Prettier | Processed 6 files in <random>s.
-tsc      | TSFILE: <random>/lib/tsconfig.tsbuildinfo
-tsc      | tsc --noEmit exited with code 0
+ESLint   │ Processed 2 files in <random>s.
+Prettier │ Processed 6 files in <random>s.
+tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
+tsc      │ tsc --noEmit exited with code 0
 "
 `;
 
@@ -135,8 +134,8 @@ exports[`ok 2`] = `Array []`;
 
 exports[`unfixable 1`] = `
 "
-ESLint   | Processed 2 files in <random>s.
-ESLint   | 
+ESLint   │ Processed 2 files in <random>s.
+ESLint   │ 
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
   8:3  error  Unexpected console statement                      no-console
@@ -147,19 +146,18 @@ ESLint   |
 ✖ 3 problems (3 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
 
-Prettier | Processed 6 files in <random>s.
-Prettier | Flagged 2 files:
-Prettier | d.js SyntaxError: Unexpected token (1:1)
+Prettier │ Processed 6 files in <random>s.
+Prettier │ Flagged 2 files:
+Prettier │ d.js SyntaxError: Unexpected token (1:1)
 > 1 | }
     | ^
   2 |
-Prettier | a/a/a.ts
-tsc      | d.js(1,1): error TS1128: Declaration or statement expected.
-tsc      | TSFILE: <random>/lib/tsconfig.tsbuildinfo
-tsc      | tsc --noEmit exited with code 2
+Prettier │ a/a/a.ts
+tsc      │ d.js(1,1): error TS1128: Declaration or statement expected.
+tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
+tsc      │ tsc --noEmit exited with code 2
 
 ESLint, Prettier, tsc found issues that require triage.
-
 "
 `;
 

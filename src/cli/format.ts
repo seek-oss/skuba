@@ -9,19 +9,14 @@ import { runPrettier } from './adapter/prettier';
 export const format = async (args = process.argv) => {
   const debug = hasDebugFlag(args);
 
-  log.newline();
-  log.plain(chalk.magenta('Fixing code with ESLint'));
-  log.plain(chalk.magenta('-----------------------'));
+  log.plain(chalk.magenta('ESLint'));
 
   const eslint = await runESLint('format', createLogger(debug));
 
   log.newline();
-  log.plain(chalk.cyan('Formatting code with Prettier'));
-  log.plain(chalk.cyan('-----------------------------'));
+  log.plain(chalk.cyan('Prettier'));
 
   const prettier = await runPrettier('format', createLogger(debug));
-
-  log.newline();
 
   if (eslint.ok && prettier.ok) {
     return;
@@ -32,8 +27,8 @@ export const format = async (args = process.argv) => {
     ...(prettier.ok ? [] : ['Prettier']),
   ];
 
-  log.err(tools.join(', '), 'found issues that require triage.');
   log.newline();
+  log.err(tools.join(', '), 'found issues that require triage.');
 
   process.exitCode = 1;
 };

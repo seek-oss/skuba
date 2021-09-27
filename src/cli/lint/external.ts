@@ -48,8 +48,6 @@ const lintSerially = async (input: Input) => {
 };
 
 export const externalLint = async (input: Input) => {
-  log.newline();
-
   // `--debug` implies `--serial`.
   const isSerial = input.debug || input.serial;
 
@@ -72,7 +70,6 @@ export const externalLint = async (input: Input) => {
 
   log.newline();
   log.err(tools.join(', '), 'found issues that require triage.');
-  log.newline();
 
   const buildkiteOutput = [
     '`skuba lint` found issues that require triage:',
@@ -100,7 +97,7 @@ export const externalLint = async (input: Input) => {
               .output()
               .split('\n')
               .filter(Boolean)
-              .map((line) => line.replace(/^tsc\s+\| /, ''))
+              .map((line) => line.replace(/^tsc\s+│ /, ''))
               .filter((line) => !line.startsWith('TSFILE: '))
               .join('\n')
               .trim(),
