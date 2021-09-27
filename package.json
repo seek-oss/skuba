@@ -52,10 +52,10 @@
     "@types/picomatch": "2.2.6",
     "@types/supertest": "2.0.11",
     "express": "4.17.1",
-    "koa": "2.13.1",
+    "koa": "2.13.3",
     "semver": "7.3.5",
     "supertest": "6.1.6",
-    "type-fest": "2.3.2"
+    "type-fest": "2.3.4"
   },
   "dependencies": {
     "@types/jest": "^27.0.1",
