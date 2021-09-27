@@ -23,12 +23,10 @@ This command should be run locally before pushing code to a remote branch.
 ```shell
 skuba format
 
-# Fixing code with ESLint
-# -----------------------
+# ESLint
 # Processed X files in 1.23s.
 #
-# Formatting code with Prettier
-# -----------------------------
+# Prettier
 # Processed X files in 1.23s.
 ```
 
@@ -47,10 +45,10 @@ This command should be run in CI to verify that [`skuba format`] was applied and
 ```shell
 skuba lint
 
-# ESLint   | Processed 123 files in 1.23s.
-# Prettier | Processed 123 files in 1.23s.
-# tsc      | TSFILE: /lib/tsconfig.tsbuildinfo
-# tsc      | tsc --noEmit exited with code 0
+# ESLint   │ Processed 123 files in 1.23s.
+# Prettier │ Processed 123 files in 1.23s.
+# tsc      │ TSFILE: /lib/tsconfig.tsbuildinfo
+# tsc      │ tsc --noEmit exited with code 0
 ```
 
 `skuba lint` runs operations concurrently up to your [CPU core count].

@@ -21,12 +21,15 @@ const BASE_PATH = path.join(__dirname, '..', '..', 'integration', 'base');
 
 const TEMP_PATH = path.join(__dirname, '..', '..', 'integration', 'format');
 
-const stdout = (randomMatcher: RegExp) =>
-  stdoutMock.mock.calls
+const stdout = (randomMatcher: RegExp) => {
+  const result = stdoutMock.mock.calls
     .flat(1)
     .join('')
     .replace(/ in [\d\.]+s\./g, ' in <random>s.')
     .replace(randomMatcher, '<random>');
+
+  return `\n${result}`;
+};
 
 const gitAdd = (dir: string) =>
   Promise.all(

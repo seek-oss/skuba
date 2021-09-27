@@ -26,32 +26,35 @@ const BASE_PATH = path.join(__dirname, '..', '..', 'integration', 'base');
 
 const TEMP_PATH = path.join(__dirname, '..', '..', 'integration', 'lint');
 
-const stdout = (randomMatcher: RegExp) =>
-  stdoutMock.mock.calls
+const stdout = (randomMatcher: RegExp) => {
+  const result = stdoutMock.mock.calls
     .flat(1)
     .join('')
     .replace(/ in [\d\.]+s\./g, ' in <random>s.')
     .replace(
-      /tsc      \| Lines of ([^:]+):[ ]+\d+/g,
-      'tsc      | Lines of $1: <random>',
+      /tsc      │ Lines of ([^:]+):[ ]+\d+/g,
+      'tsc      │ Lines of $1: <random>',
     )
     .replace(
-      /tsc      \| Nodes of ([^:]+):[ ]+\d+/g,
-      'tsc      | Nodes of $1: <random>',
+      /tsc      │ Nodes of ([^:]+):[ ]+\d+/g,
+      'tsc      │ Nodes of $1: <random>',
     )
     .replace(
-      /tsc      \| (Files|Identifiers|Symbols|Types|Instantiations|Memory used):[ ]+\d+/g,
-      'tsc      | $1: <random>',
+      /tsc      │ (Files|Identifiers|Symbols|Types|Instantiations|Memory used):[ ]+\d+/g,
+      'tsc      │ $1: <random>',
     )
     .replace(
-      /tsc      \| (.+) cache size:[ ]+\d+/g,
-      'tsc      | $1 cache size: <random>',
+      /tsc      │ (.+) cache size:[ ]+\d+/g,
+      'tsc      │ $1 cache size: <random>',
     )
     .replace(
-      /tsc      \| (.+) time:[ ]+[\d\.]+s/g,
-      'tsc      | $1 time: <random>s',
+      /tsc      │ (.+) time:[ ]+[\d\.]+s/g,
+      'tsc      │ $1 time: <random>s',
     )
     .replace(randomMatcher, '<random>');
+
+  return `\n${result}`;
+};
 
 const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
   await copy(baseDir, tempDir, { recursive: true });
