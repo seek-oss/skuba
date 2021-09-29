@@ -15,7 +15,7 @@ export const createHandler = <Event, Output = unknown>(
       logger.info('request');
 
       return output;
-    } catch (err: unknown) {
+    } catch (err) {
       logger.error({ err }, 'request');
 
       throw new Error('invoke error');

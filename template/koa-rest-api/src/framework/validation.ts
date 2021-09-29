@@ -11,7 +11,7 @@ export const validate = <T>({
 }) => {
   try {
     return filter(input);
-  } catch (err: unknown) {
+  } catch (err) {
     // TODO: consider providing structured error messages for your consumers.
     return ctx.throw(422, err instanceof Error ? err.message : String(err));
   }

@@ -17,7 +17,7 @@ export const tsFileExists = async (filePath: string) => {
     );
 
     return stats.isFile();
-  } catch (err: unknown) {
+  } catch (err) {
     if (isErrorWithCode(err, 'ENOENT')) {
       return false;
     }

@@ -43,7 +43,7 @@ export const createRequestListenerFromFunction =
       const response: unknown = await fn(...args);
 
       await writeJsonResponse(200, response);
-    } catch (err: unknown) {
+    } catch (err) {
       await writeJsonResponse(500, serializeError(err));
     }
   };

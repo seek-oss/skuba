@@ -74,7 +74,7 @@ export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
     ignoreFilepaths.map(async (ignoreFilepath) => {
       try {
         return await fs.promises.readFile(ignoreFilepath, 'utf8');
-      } catch (err: unknown) {
+      } catch (err) {
         if (isErrorWithCode(err, 'ENOENT')) {
           return;
         }
