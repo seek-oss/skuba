@@ -78,7 +78,7 @@ const confirmShouldContinue = async (choices: Readonly<FormChoice[]>) => {
 const createDirectory = async (dir: string) => {
   try {
     await fs.promises.mkdir(dir);
-  } catch (err: unknown) {
+  } catch (err) {
     if (isErrorWithCode(err, 'EEXIST')) {
       log.err(`The directory '${dir}' already exists.`);
       process.exit(1);
@@ -131,7 +131,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
     const templateConfig = require(templateConfigPath) as unknown;
 
     return TemplateConfig.check(templateConfig);
-  } catch (err: unknown) {
+  } catch (err) {
     if (isErrorWithCode(err, 'MODULE_NOT_FOUND')) {
       return {
         entryPoint: undefined,

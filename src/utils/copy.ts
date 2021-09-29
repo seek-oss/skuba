@@ -28,7 +28,7 @@ const copyFile = async (
     await fs.promises.writeFile(destinationPath, newContents, {
       flag: overwrite ? 'w' : 'wx',
     });
-  } catch (err: unknown) {
+  } catch (err) {
     if (isErrorWithCode(err, 'EEXIST')) {
       return;
     }
@@ -95,7 +95,7 @@ export const copyFiles = async (
 
       try {
         await copyFile(sourcePath, destinationPath, opts);
-      } catch (err: unknown) {
+      } catch (err) {
         if (isErrorWithCode(err, 'EISDIR')) {
           await fs.promises.mkdir(destinationPath, { recursive: true });
           return copyFiles(opts, sourcePath, destinationPath);

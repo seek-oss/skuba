@@ -161,7 +161,7 @@ export const execConcurrently = async (
         prefix: '{name} │',
       },
     );
-  } catch (err: unknown) {
+  } catch (err) {
     const result = ConcurrentlyErrors.validate(err);
 
     if (!result.success) {
@@ -206,7 +206,7 @@ export const hasCommand = async (name: string) => {
     await which(name);
 
     return true;
-  } catch (err: unknown) {
+  } catch (err) {
     if (isErrorWithCode(err, 'ENOENT')) {
       return false;
     }

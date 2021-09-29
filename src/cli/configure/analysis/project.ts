@@ -14,7 +14,7 @@ export const createDestinationFileReader =
   async (filename: string): Promise<string | undefined> => {
     try {
       return await fs.promises.readFile(path.join(root, filename), 'utf8');
-    } catch (err: unknown) {
+    } catch (err) {
       if (isErrorWithCode(err, 'ENOENT')) {
         return;
       }
