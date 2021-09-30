@@ -116,7 +116,15 @@ describe('tsconfigModule', () => {
 
   it('migrates divergent outDir', async () => {
     const inputFiles = {
-      Dockerfile: 'COPY --from=build /workdir/dist ./dist',
+      Dockerfile: `
+ARG DIR dist
+
+FROM gcr.io/distroless/nodejs:14 AS runtime
+
+COPY --from=build /workdir/dist './dist'
+
+CMD ["dist/listen.js"]
+`,
       'tsconfig.json': '{"compilerOptions": {"outDir": "dist/"}}',
     };
 
@@ -126,7 +134,17 @@ describe('tsconfigModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles.Dockerfile).toBe('COPY --from=build /workdir/lib ./lib');
+    expect(outputFiles.Dockerfile).toMatchInlineSnapshot(`
+"
+ARG DIR lib
+
+FROM gcr.io/distroless/nodejs:14 AS runtime
+
+COPY --from=build /workdir/lib './lib'
+
+CMD [\\"lib/listen.js\\"]
+"
+`);
 
     const outputData = parseObject(
       outputFiles['tsconfig.json'],
