@@ -53,7 +53,10 @@ export const tsconfigModule = async ({
 
       // optimistically rewire Dockerfile for new output directory
       if (outDir !== undefined && outDir !== 'lib') {
-        files.Dockerfile = files.Dockerfile?.split(outDir).join('lib');
+        files.Dockerfile = files.Dockerfile?.replace(
+          new RegExp(`([^\\w])${outDir}([^\\w])`, 'g'),
+          '$1lib$2',
+        );
       }
 
       const outputData = merge(inputData ?? {}, baseData);
