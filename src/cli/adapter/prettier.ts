@@ -1,11 +1,14 @@
 import path from 'path';
 
 import fs from 'fs-extra';
+import pLimit from 'p-limit';
 import { Options, check, format, getFileInfo, resolveConfig } from 'prettier';
 
 import { crawlDirectory } from '../../utils/dir';
 import { Logger } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
+
+const fsLimit = pLimit(25);
 
 interface File {
   data: string;
@@ -121,10 +124,10 @@ export const runPrettier = async (
   const files = await Promise.all(
     filepaths.map<Promise<File>>(async (filepath) => {
       const [config, data, fileInfo] = await Promise.all([
-        resolveConfig(filepath),
-        fs.promises.readFile(filepath, 'utf-8'),
+        fsLimit(() => resolveConfig(filepath)),
+        fsLimit(() => fs.promises.readFile(filepath, 'utf-8')),
         // Infer parser upfront so we can know to ignore unsupported file types.
-        getFileInfo(filepath, { resolveConfig: false }),
+        fsLimit(() => getFileInfo(filepath, { resolveConfig: false })),
       ]);
 
       return {
@@ -146,7 +149,7 @@ export const runPrettier = async (
 
   await Promise.all(
     result.touched.map(({ data, filepath }) =>
-      fs.promises.writeFile(filepath, data),
+      fsLimit(() => fs.promises.writeFile(filepath, data)),
     ),
   );
 
