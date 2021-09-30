@@ -1,0 +1,13 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "3.15.0"
+  },
+  "changesets": [
+    "fair-tables-notice",
+    "quick-steaks-smile",
+    "shy-colts-warn",
+    "young-seas-smoke"
+  ]
+}
