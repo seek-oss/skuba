@@ -9,8 +9,10 @@ import { ESLintOutput, runESLint } from '../adapter/eslint';
 
 import type { Input } from './types';
 
+const LOG_PREFIX = chalk.magenta('ESLint   │');
+
 export const runESLintInCurrentThread = ({ debug }: Input) =>
-  runESLint('lint', createLogger(debug, chalk.magenta('ESLint   │')));
+  runESLint('lint', createLogger(debug, LOG_PREFIX));
 
 export const runESLintInWorkerThread = (input: Input) =>
   execWorkerThread<Input, ESLintOutput>(
@@ -19,7 +21,5 @@ export const runESLintInWorkerThread = (input: Input) =>
   );
 
 if (!isMainThread) {
-  postWorkerOutput(runESLintInCurrentThread).catch((err) => {
-    throw err;
-  });
+  postWorkerOutput(runESLintInCurrentThread, createLogger(false, LOG_PREFIX));
 }
