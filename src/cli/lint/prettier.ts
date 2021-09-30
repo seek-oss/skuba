@@ -9,8 +9,10 @@ import { PrettierOutput, runPrettier } from '../adapter/prettier';
 
 import type { Input } from './types';
 
+const LOG_PREFIX = chalk.cyan('Prettier │');
+
 export const runPrettierInCurrentThread = ({ debug }: Input) =>
-  runPrettier('lint', createLogger(debug, chalk.cyan('Prettier │')));
+  runPrettier('lint', createLogger(debug, LOG_PREFIX));
 
 export const runPrettierInWorkerThread = (input: Input) =>
   execWorkerThread<Input, PrettierOutput>(
@@ -19,7 +21,5 @@ export const runPrettierInWorkerThread = (input: Input) =>
   );
 
 if (!isMainThread) {
-  postWorkerOutput(runPrettierInCurrentThread).catch((err) => {
-    throw err;
-  });
+  postWorkerOutput(runPrettierInCurrentThread, createLogger(false, LOG_PREFIX));
 }

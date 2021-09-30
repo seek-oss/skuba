@@ -1,5 +1,7 @@
 import { Worker, parentPort, workerData } from 'worker_threads';
 
+import { log } from './logging';
+
 /**
  * Executes a script at `filepath` in a Node.js worker thread.
  */
@@ -21,8 +23,8 @@ export const execWorkerThread = async <Input, Output>(
           : reject(
               new Error(
                 code
-                  ? `Worker exited with code: ${code}`
-                  : 'Worker exited without posting a message',
+                  ? `Worker thread failed with exit code ${code}`
+                  : 'Worker thread exited without posting a message',
               ),
             ),
       )
@@ -39,14 +41,23 @@ export const execWorkerThread = async <Input, Output>(
  * Runs a function in a Node.js worker thread context, forwarding the result
  * to the parent thread.
  */
-export const postWorkerOutput = async <Input, Output>(
+export const postWorkerOutput = <Input, Output>(
   fn: (input: Input) => Promise<Output>,
+  logger = log,
 ) => {
-  if (!parentPort) {
-    throw new Error('startWorkerThread called outside of a worker context');
+  const port = parentPort;
+
+  if (!port) {
+    logger.err('`postWorkerOutput` called outside of a worker thread context');
+
+    process.exit(1);
   }
 
-  const output = await fn(workerData);
+  fn(workerData)
+    .then((output) => port.postMessage(output))
+    .catch((err) => {
+      logger.err(err);
 
-  parentPort.postMessage(output);
+      process.exit(1);
+    });
 };
