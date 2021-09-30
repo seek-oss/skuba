@@ -119,6 +119,8 @@ describe('tsconfigModule', () => {
       Dockerfile: `
 ARG DIR dist
 
+RUN echo redist
+
 FROM gcr.io/distroless/nodejs:14 AS runtime
 
 COPY --from=build /workdir/dist './dist'
@@ -137,6 +139,8 @@ CMD ["dist/listen.js"]
     expect(outputFiles.Dockerfile).toMatchInlineSnapshot(`
 "
 ARG DIR lib
+
+RUN echo redist
 
 FROM gcr.io/distroless/nodejs:14 AS runtime
 
