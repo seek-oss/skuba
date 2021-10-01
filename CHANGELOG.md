@@ -1,5 +1,25 @@
 # skuba
 
+## 3.15.1
+
+### Patch Changes
+
+- **configure:** Tone down Dockerfile `outDir` processing ([#585](https://github.com/seek-oss/skuba/pull/585))
+
+  This avoids rewriting sequences like "distroless" as "libroless".
+
+* **template:** Remove `unknown` specifier in catch clauses ([#580](https://github.com/seek-oss/skuba/pull/580))
+
+  Strict TypeScript 4.4 now defaults to typing catch clause variables as `unknown`.
+
+- **build-package, lint:** Handle worker thread errors more gracefully ([#583](https://github.com/seek-oss/skuba/pull/583))
+
+  The worker threads now correctly propagate an exit code and log errors instead of triggering an `UnhandledPromiseRejectionWarning`.
+
+* **format, lint:** Limit Prettier to 25 parallel file I/O operations ([#584](https://github.com/seek-oss/skuba/pull/584))
+
+  This should alleviate file descriptor issues that are not handled by `graceful-fs` such as `EBADF: bad file description, close`.
+
 ## 3.15.0
 
 ### Minor Changes
