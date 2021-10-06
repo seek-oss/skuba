@@ -1,3 +1,5 @@
+import fnArgs from 'function-arguments';
+
 import { log } from '../utils/logging';
 import { isFunction, isObject } from '../utils/validation';
 
@@ -31,6 +33,8 @@ export const runFunctionHandler = async ({
     log.subtle(log.bold(functionName), 'is not a function');
     return;
   }
+
+  log.warn(log.bold(functionName), `(${fnArgs(fn).join(', ')})`);
 
   const requestListener = createRequestListenerFromFunction(fn);
 
