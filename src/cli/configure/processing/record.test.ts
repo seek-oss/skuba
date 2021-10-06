@@ -17,25 +17,45 @@ describe('getFirstDefined', () => {
 });
 
 describe('merge', () => {
-  it('concats, dedupes and sorts arrays', () =>
-    expect(merge({ a: [1, 3] }, { a: [2, 4, 3] })).toStrictEqual({
+  it('concats, dedupes and sorts arrays', () => {
+    const target = { a: [1, 3] };
+    const source = { a: [2, 4, 3] };
+    expect(merge(target, source)).toStrictEqual({
       a: [1, 2, 3, 4],
-    }));
+    });
+    expect(target).toStrictEqual({ a: [1, 3] });
+    expect(source).toStrictEqual({ a: [2, 4, 3] });
+  });
 
-  it('merges nested objects', () =>
-    expect(
-      merge({ a1: { b1: { c1: null } } }, { a1: { b1: {}, b2: true } }),
-    ).toStrictEqual({ a1: { b1: { c1: null }, b2: true } }));
+  it('merges nested objects', () => {
+    const target = { a1: { b1: { c1: null } } };
+    const source = { a1: { b1: {}, b2: true } };
+    expect(merge(target, source)).toStrictEqual({
+      a1: { b1: { c1: null }, b2: true },
+    });
+    expect(target).toStrictEqual({ a1: { b1: { c1: null } } });
+    expect(source).toStrictEqual({ a1: { b1: {}, b2: true } });
+  });
 });
 
 describe('mergeRaw', () => {
-  it('concats arrays', () =>
-    expect(mergeRaw({ a: [1, 3] }, { a: [2, 4, 3] })).toStrictEqual({
+  it('concats arrays', () => {
+    const target = { a: [1, 3] };
+    const source = { a: [2, 4, 3] };
+    expect(mergeRaw(target, source)).toStrictEqual({
       a: [1, 3, 2, 4, 3],
-    }));
+    });
+    expect(target).toStrictEqual({ a: [1, 3] });
+    expect(source).toStrictEqual({ a: [2, 4, 3] });
+  });
 
-  it('merges nested objects', () =>
-    expect(
-      mergeRaw({ a1: { b1: { c1: null } } }, { a1: { b1: {}, b2: true } }),
-    ).toStrictEqual({ a1: { b1: { c1: null }, b2: true } }));
+  it('merges nested objects', () => {
+    const target = { a1: { b1: { c1: null } } };
+    const source = { a1: { b1: {}, b2: true } };
+    expect(mergeRaw(target, source)).toStrictEqual({
+      a1: { b1: { c1: null }, b2: true },
+    });
+    expect(target).toStrictEqual({ a1: { b1: { c1: null } } });
+    expect(source).toStrictEqual({ a1: { b1: {}, b2: true } });
+  });
 });

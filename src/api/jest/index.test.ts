@@ -22,7 +22,7 @@ describe('mergePreset', () => {
 
     expect(config).toHaveProperty('testEnvironment', 'node');
     expect(config.collectCoverageFrom).toContain('abc');
-    expect(config.setupFiles).toEqual(['abc']);
+    expect(config.setupFiles).toBeUndefined();
   });
 
   it('overrides colliding non-array props', () => {

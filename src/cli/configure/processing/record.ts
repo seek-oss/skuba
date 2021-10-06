@@ -22,7 +22,7 @@ export const getFirstDefined = <T>(
  * Array properties are sorted and deduped.
  */
 export const merge = <A, B>(obj: A, src: B) =>
-  mergeWith(obj, src, (objValue: unknown, srcValue: unknown) => {
+  mergeWith({}, obj, src, (objValue: unknown, srcValue: unknown) => {
     if (isArray(objValue) && isArray(srcValue)) {
       return [...new Set(objValue.concat(srcValue))].sort();
     }
@@ -34,7 +34,7 @@ export const merge = <A, B>(obj: A, src: B) =>
  * Like `merge`, but arrays are not deduped or sorted to preserve order.
  */
 export const mergeRaw = <A, B>(obj: A, src: B) =>
-  mergeWith(obj, src, (objValue: unknown, srcValue: unknown) =>
+  mergeWith({}, obj, src, (objValue: unknown, srcValue: unknown) =>
     isArray(objValue) && isArray(srcValue)
       ? objValue.concat(srcValue)
       : undefined,
