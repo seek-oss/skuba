@@ -17,11 +17,17 @@ describe('mergePreset', () => {
     expect(config.setupFiles).toEqual(['abc']);
   });
 
-  it('merges colliding props', () => {
+  it('merges colliding array props', () => {
     const config = mergePreset({ collectCoverageFrom: ['abc'] });
 
     expect(config).toHaveProperty('testEnvironment', 'node');
     expect(config.collectCoverageFrom).toContain('abc');
     expect(config.setupFiles).toEqual(['abc']);
+  });
+
+  it('overrides colliding non-array props', () => {
+    const config = mergePreset({ testEnvironment: 'jsdom' });
+
+    expect(config).toHaveProperty('testEnvironment', 'jsdom');
   });
 });
