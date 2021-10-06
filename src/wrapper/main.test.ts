@@ -79,6 +79,12 @@ test('expressRequestListener', async () => {
   ]);
 });
 
+test('invalidRequestListener', async () => {
+  await expect(initWrapper('invalidRequestListener')).resolves.toBeUndefined();
+
+  expect(serveRequestListener).not.toBeCalled();
+});
+
 test('koaRequestListener', async () => {
   // Without `.ts`
   await initWrapper('koaRequestListener');
@@ -95,12 +101,6 @@ test('koaRequestListener', async () => {
 
     agent.get('/express').expect(404),
   ]);
-});
-
-test('invalidRequestListener', async () => {
-  await expect(initWrapper('invalidRequestListener')).resolves.toBeUndefined();
-
-  expect(serveRequestListener).not.toBeCalled();
 });
 
 test('miscellaneousExportModule', async () => {
@@ -147,4 +147,21 @@ test('syncFunctionHandler', async () => {
         ),
       ),
   ]);
+});
+
+test('voidFunctionHandler', async () => {
+  // With `.ts`
+  await initWrapper('voidFunctionHandler.ts#handler');
+
+  expect(serveRequestListener).toBeCalledTimes(1);
+
+  return (
+    agent
+      .post('/')
+      // No request body
+      .send()
+      .expect(200)
+      // No response body
+      .expect(({ text }) => expect(text).toBe(''))
+  );
 });
