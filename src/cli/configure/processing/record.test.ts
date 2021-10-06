@@ -23,12 +23,8 @@ describe('merge', () => {
     expect(merge(target, source)).toStrictEqual({
       a: [1, 2, 3, 4],
     });
-    expect(target).toStrictEqual({
-      a: [2, 4, 3],
-    });
-    expect(source).toStrictEqual({
-      a: [1, 2],
-    });
+    expect(target).toStrictEqual({ a: [1, 3] });
+    expect(source).toStrictEqual({ a: [2, 4, 3] });
   });
 
   it('merges nested objects', () => {
