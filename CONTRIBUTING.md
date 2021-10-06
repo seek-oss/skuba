@@ -17,23 +17,6 @@ so don't commit or post anything that isn't ready for the entire world to see.
 
 ---
 
-## Table of contents
-
-- [Getting started](#getting-started)
-  - [I want to discuss or report something](#i-want-to-discuss-or-report-something)
-  - [I want to contribute a change](#i-want-to-contribute-a-change)
-- [Development](#development)
-  - [Prerequisites](#prerequisites)
-  - [Git workflow](#git-workflow)
-  - [Testing](#testing)
-  - [Running locally](#running-locally)
-- [Releases](#releases)
-  - [Creating a changeset](#creating-a-changeset)
-  - [Publishing a release](#publishing-a-release)
-  - [Publishing a prerelease](#publishing-a-prerelease)
-
----
-
 ## Getting started
 
 **skuba** is documented through its [README](README.md),

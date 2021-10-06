@@ -22,18 +22,6 @@ Next steps:
        request installation in [SEEK-Jobs/renovate].
 9. [ ] Delete this checklist 😌.
 
-## Table of contents
-
-- [Design](#design)
-- [Development](#development)
-  - [Test](#test)
-  - [Lint](#lint)
-  - [Start](#start)
-  - [Deploy](#deploy)
-- [Support](#support)
-  - [Dev](#dev)
-  - [Prod](#prod)
-
 ## Design
 
 <%-repoName %> is a Node.js [Lambda] application built in line with our [technology strategy].

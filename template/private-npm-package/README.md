@@ -18,20 +18,6 @@ Next steps:
        request installation in [SEEK-Jobs/renovate].
 7. [ ] Delete this checklist 😌.
 
-## Table of contents
-
-- [API](#api)
-  - [`log`](#log)
-- [Development](#development)
-  - [Prerequisites](#prerequisites)
-  - [Test](#test)
-  - [Lint](#lint)
-  - [Package](#package)
-- [Release](#release)
-  - [Commit messages](#commit-messages)
-  - [Releasing latest](#releasing-latest)
-  - [Releasing other dist-tags](#releasing-other-dist-tags)
-
 ## API
 
 ### `log`
