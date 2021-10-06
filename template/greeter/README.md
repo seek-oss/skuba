@@ -21,18 +21,6 @@ Next steps:
        request installation in [SEEK-Jobs/renovate].
 8. [ ] Delete this checklist 😌.
 
-## Table of contents
-
-- [Design](#design)
-- [Development](#development)
-  - [Test](#test)
-  - [Lint](#lint)
-  - [Start](#start)
-  - [Deploy](#deploy)
-- [Support](#support)
-  - [Dev](#dev)
-  - [Prod](#prod)
-
 ## Design
 
 The `greeter` template is the prototypical _hello world_ project.

@@ -11,14 +11,6 @@ This topic provides some context around this decision and discusses how Babel st
 
 ---
 
-## Table of contents
-
-- [Background](#background)
-- [~~Try it out~~](#try-it-out)
-- [~~Current limitations~~](#current-limitations)
-
----
-
 ## Background
 
 > ["Using the TypeScript compiler is still the preferred way to build TypeScript."](https://devblogs.microsoft.com/typescript/typescript-and-babel-7/)
