@@ -6,15 +6,6 @@ parent: Migration guides
 
 ---
 
-## Table of contents
-
-- [TL;DR](#tldr)
-- [Building](#building)
-- [Formatting and linting](#formatting-and-linting)
-- [Committing and releasing](#committing-and-releasing)
-
----
-
 ## TL;DR
 
 ```shell
