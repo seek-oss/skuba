@@ -1,5 +1,5 @@
 ---
-"skuba": minor
+"skuba": patch
 ---
 
 Jest.mergePreset: Allow configuration of test environment
