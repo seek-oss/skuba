@@ -26,6 +26,7 @@ provider:
   runtime: nodejs14.x
   stackName: ${self:service}
   stage: ${env:ENVIRONMENT}
+  variablesResolutionMode: 20210326
   versionFunctions: true
   deploymentBucket:
     # Use a shared account-level bucket for Lambda bundles and other artefacts.
