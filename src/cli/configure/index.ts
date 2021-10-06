@@ -34,7 +34,7 @@ export const configure = async () => {
 
   const [manifest] = await Promise.all([
     getDestinationManifest(),
-    ensureCommands('git', 'yarn'),
+    ensureCommands('yarn'),
   ]);
 
   const destinationRoot = path.dirname(manifest.path);
@@ -47,7 +47,7 @@ export const configure = async () => {
       path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
     ]),
 
-    auditWorkingTree(),
+    auditWorkingTree(destinationRoot),
   ]);
 
   const templateConfig = await ensureTemplateCompletion({

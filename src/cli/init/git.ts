@@ -1,8 +1,10 @@
 import path from 'path';
 
 import fs from 'fs-extra';
+import git from 'isomorphic-git';
+import http from 'isomorphic-git/http/node';
+import { crawlDirectory } from 'utils/dir';
 
-import { Exec, createExec } from '../../utils/exec';
 import { log } from '../../utils/logging';
 
 interface GitHubProject {
@@ -11,70 +13,63 @@ interface GitHubProject {
 }
 
 export const initialiseRepo = async (
-  exec: Exec,
+  dir: string,
   { orgName, repoName }: GitHubProject,
 ) => {
-  await exec('git', 'init');
+  await git.init({
+    // TODO: support main as an alternative.
+    defaultBranch: 'master',
+    dir,
+    fs,
+  });
 
-  await exec(
-    'git',
-    '-c',
-    'user.email=<>',
-    '-c',
-    'user.name=skuba',
-    'commit',
-    '--allow-empty',
-    '--author',
-    'skuba <>',
-    '--message',
-    'Initial commit',
-    '--quiet',
-  );
+  await git.commit({
+    author: { name: 'skuba' },
+    committer: { name: 'skuba' },
+    dir,
+    fs,
+    message: 'Initial commit',
+  });
 
-  await exec(
-    'git',
-    'remote',
-    'add',
-    'origin',
-    `git@github.com:${orgName}/${repoName}.git`,
-  );
+  await git.addRemote({
+    dir,
+    fs,
+    remote: 'origin',
+    url: `git@github.com:${orgName}/${repoName}.git`,
+  });
 };
 
-export const commitChanges = async (exec: Exec, message: string) => {
-  await exec('git', 'add', '--all');
+export const commitChanges = async (dir: string, message: string) => {
+  const filepaths = await crawlDirectory(dir);
 
-  await exec(
-    'git',
-    '-c',
-    'user.email=<>',
-    '-c',
-    'user.name=skuba',
-    'commit',
-    '--author',
-    'skuba <>',
-    '--message',
-    message,
-    '--quiet',
+  await Promise.all(
+    filepaths.map((filepath) => git.add({ dir, filepath, fs })),
   );
+
+  await git.commit({
+    author: { name: 'skuba' },
+    committer: { name: 'skuba' },
+    dir,
+    fs,
+    message,
+  });
 };
 
 export const downloadGitHubTemplate = async (
   gitHubPath: string,
   destinationDir: string,
 ) => {
-  const exec = createExec({ cwd: destinationDir });
-
   log.newline();
   log.plain('Downloading', log.bold(gitHubPath), 'from GitHub...');
 
-  await exec(
-    'git',
-    'clone',
-    '--depth=1',
-    '--quiet',
-    `git@github.com:${gitHubPath}.git`,
-    '.',
-  );
+  await git.clone({
+    depth: 1,
+    dir: destinationDir,
+    fs,
+    http,
+    singleBranch: true,
+    url: `git@github.com:${gitHubPath}.git`,
+  });
 
   await fs.promises.rm(path.join(destinationDir, '.git'), {
     force: true,

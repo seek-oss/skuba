@@ -1,26 +1,23 @@
-import { createExec } from '../../../utils/exec';
+import fs from 'fs-extra';
+import git from 'isomorphic-git';
+import { crawlDirectory } from 'utils/dir';
+
 import { log } from '../../../utils/logging';
 
-export const auditWorkingTree = async () => {
-  const exec = createExec({ stdio: 'pipe' });
+export const auditWorkingTree = async (dir: string) => {
+  const filepaths = await crawlDirectory(dir);
 
-  const [diff, status] = await Promise.all([
-    exec('git', 'diff', '--stat'),
-    exec('git', 'status', '--short'),
-  ]);
+  const statuses = await Promise.all(
+    filepaths.map((filepath) => git.status({ dir, fs, filepath })),
+  );
 
-  const workingTree = {
-    dirty: Boolean(diff.stdout),
-    untracked: Boolean(status.stdout),
-  };
-
-  if (workingTree.dirty || workingTree.untracked) {
-    const fileTypes = Object.entries(workingTree)
-      .filter(([, value]) => value)
-      .map(([key]) => key)
-      .join('/');
-
+  if (
+    statuses.some(
+      (status) =>
+        status !== 'absent' && status !== 'ignored' && status !== 'unmodified',
+    )
+  ) {
     log.newline();
-    log.warn('You have', fileTypes, 'files that may be overwritten.');
+    log.warn('You have dirty/untracked files that may be overwritten.');
   }
 };
