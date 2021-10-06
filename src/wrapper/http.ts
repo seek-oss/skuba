@@ -16,26 +16,30 @@ export const createRequestListenerFromFunction =
     fn: (...args: unknown[]) => unknown | Promise<unknown>,
   ): http.RequestListener =>
   async (req, res) => {
-    const writeJsonResponse = (statusCode: number, jsonResponse: unknown) =>
-      new Promise<void>((resolve, reject) =>
-        res
-          .writeHead(statusCode, { 'Content-Type': 'application/json' })
-          .write(JSON.stringify(jsonResponse, null, 2), 'utf8', (err) =>
-            err ? reject(err) : res.end(resolve),
-          ),
+    const writeJsonResponse = (statusCode: number, jsonResponse: unknown) => {
+      res.writeHead(statusCode, { 'Content-Type': 'application/json' });
+
+      return new Promise<void>((resolve, reject) =>
+        jsonResponse === undefined
+          ? res.end(resolve)
+          : res.write(JSON.stringify(jsonResponse, null, 2), 'utf8', (err) =>
+              err ? reject(err) : res.end(resolve),
+            ),
       );
+    };
 
     try {
       const requestBody = await new Promise<string>((resolve, reject) => {
-        let data = '';
+        const data: Buffer[] = [];
 
         req
-          .on('data', (chunk) => (data += chunk))
-          .on('end', () => resolve(data))
+          .on('data', (chunk) => data.push(chunk))
+          .on('end', () => resolve(Buffer.concat(data).toString()))
           .on('error', (err) => reject(err));
       });
 
-      const jsonRequest: unknown = JSON.parse(requestBody);
+      // Treat an empty body as no arguments
+      const jsonRequest: unknown = requestBody ? JSON.parse(requestBody) : [];
 
       // Pass a non-array request body as the first parameter
       const args = Array.isArray(jsonRequest) ? jsonRequest : [jsonRequest];
