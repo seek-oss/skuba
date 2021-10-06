@@ -3,8 +3,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
-import { crawlDirectory } from 'utils/dir';
 
+import { crawlDirectory } from '../../utils/dir';
 import { log } from '../../utils/logging';
 
 interface GitHubProject {
