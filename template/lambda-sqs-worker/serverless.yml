@@ -6,10 +6,10 @@ custom:
   envs:
     dev:
       deploymentBucket: 'TODO: deploymentBucketName'
-      isProduction: 'false'
+      isProduction: false
     prod:
       deploymentBucket: 'TODO: deploymentBucketName'
-      isProduction: 'true'
+      isProduction: true
   prune:
     automatic: true
     number: 3
