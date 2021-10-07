@@ -1,5 +1,7 @@
 service: <%- serviceName %>
 
+variablesResolutionMode: 20210326
+
 custom:
   description: <%- description %>
   env: ${self:custom.envs.${env:ENVIRONMENT}}
