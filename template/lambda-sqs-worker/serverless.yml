@@ -1,15 +1,17 @@
 service: <%- serviceName %>
 
+variablesResolutionMode: 20210326
+
 custom:
   description: <%- description %>
   env: ${self:custom.envs.${env:ENVIRONMENT}}
   envs:
     dev:
       deploymentBucket: 'TODO: deploymentBucketName'
-      isProduction: 'false'
+      isProduction: false
     prod:
       deploymentBucket: 'TODO: deploymentBucketName'
-      isProduction: 'true'
+      isProduction: true
   prune:
     automatic: true
     number: 3
