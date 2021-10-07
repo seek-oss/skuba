@@ -17,7 +17,7 @@ import { writePackageJson } from './writePackageJson';
 export const init = async () => {
   const skubaVersionInfo = await showLogoAndVersionInfo();
 
-  await ensureCommands('git', 'yarn');
+  await ensureCommands('yarn');
 
   const {
     destinationDir,
@@ -74,7 +74,7 @@ export const init = async () => {
   });
 
   log.newline();
-  await initialiseRepo(exec, templateData);
+  await initialiseRepo(destinationDir, templateData);
 
   const skubaSlug = `skuba@${skubaVersionInfo.local}`;
 
@@ -85,7 +85,7 @@ export const init = async () => {
     await exec('npx', 'yarn-deduplicate', '--strategy=highest');
   } catch {}
 
-  await commitChanges(exec, `Clone ${templateName}`);
+  await commitChanges(destinationDir, `Clone ${templateName}`);
 
   const logGitHubRepoCreation = () => {
     log.plain(
