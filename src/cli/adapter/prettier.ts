@@ -1,14 +1,11 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import pLimit from 'p-limit';
 import { Options, check, format, getFileInfo, resolveConfig } from 'prettier';
 
 import { crawlDirectory } from '../../utils/dir';
 import { Logger } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
-
-const fsLimit = pLimit(25);
 
 interface File {
   data: string;
@@ -20,7 +17,7 @@ interface File {
 interface Result {
   count: number;
   errored: Array<{ err?: unknown; filepath: string }>;
-  touched: Array<{ data: string; filepath: string }>;
+  touched: string[];
   unparsed: string[];
 }
 
@@ -29,7 +26,7 @@ const formatOrLintFile = (
   logger: Logger,
   mode: 'format' | 'lint',
   result: Result,
-) => {
+): string | undefined => {
   logger.debug(filepath);
 
   logger.debug('  parser:', parser ?? '-');
@@ -67,7 +64,8 @@ const formatOrLintFile = (
     return;
   }
 
-  result.touched.push({ data: formatted, filepath });
+  result.touched.push(filepath);
+  return formatted;
 };
 
 export interface PrettierOutput {
@@ -119,39 +117,29 @@ export const runPrettier = async (
     unparsed: [],
   };
 
-  logger.debug('Reading files...');
-
-  const files = await Promise.all(
-    filepaths.map<Promise<File>>(async (filepath) => {
-      const [config, data, fileInfo] = await Promise.all([
-        fsLimit(() => resolveConfig(filepath)),
-        fsLimit(() => fs.promises.readFile(filepath, 'utf-8')),
-        // Infer parser upfront so we can know to ignore unsupported file types.
-        fsLimit(() => getFileInfo(filepath, { resolveConfig: false })),
-      ]);
-
-      return {
-        data,
-        filepath,
-        options: { ...config, filepath },
-        parser: fileInfo.inferredParser,
-      };
-    }),
-  );
-
   logger.debug(mode === 'format' ? 'Formatting' : 'Linting', 'files...');
 
-  for (const file of files) {
-    formatOrLintFile(file, logger, mode, result);
+  for (const filepath of filepaths) {
+    const [config, data, fileInfo] = await Promise.all([
+      resolveConfig(filepath),
+      fs.promises.readFile(filepath, 'utf-8'),
+      // Infer parser upfront so we can know to ignore unsupported file types.
+      getFileInfo(filepath, { resolveConfig: false }),
+    ]);
+
+    const file: File = {
+      data,
+      filepath,
+      options: { ...config, filepath },
+      parser: fileInfo.inferredParser,
+    };
+
+    const formatted = formatOrLintFile(file, logger, mode, result);
+
+    if (typeof formatted === 'string') {
+      await fs.promises.writeFile(filepath, formatted);
+    }
   }
-
-  logger.debug(`Writing ${logger.pluralise(result.touched.length, 'file')}...`);
-
-  await Promise.all(
-    result.touched.map(({ data, filepath }) =>
-      fsLimit(() => fs.promises.writeFile(filepath, data)),
-    ),
-  );
 
   const end = process.hrtime.bigint();
 
@@ -166,7 +154,7 @@ export const runPrettier = async (
     logger.plain(
       `Formatted ${logger.pluralise(result.touched.length, 'file')}:`,
     );
-    for (const { filepath } of result.touched) {
+    for (const filepath of result.touched) {
       logger.warn(filepath);
     }
   }
