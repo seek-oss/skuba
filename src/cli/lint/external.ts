@@ -39,7 +39,22 @@ const lintConcurrently = async ({ tscOutputStream, ...input }: Input) => {
   return { eslint, prettier, tscOk };
 };
 
-const lintSerially = async (input: Input) => {
+/**
+ * Run linting tools `--serial`ly for resource-constrained environments.
+ *
+ * Note that we still run ESLint and Prettier in worker threads as a
+ * counterintuitive optimisation. Memory can be more readily freed on worker
+ * thread exit, which isn't as easy with a monolithic main thread.
+ */
+const lintSerially = async ({ tscOutputStream, ...input }: Input) => {
+  const eslint = await runESLintInWorkerThread(input);
+  const prettier = await runPrettierInWorkerThread(input);
+  const tscOk = await runTscInNewProcess({ ...input, tscOutputStream });
+
+  return { eslint, prettier, tscOk };
+};
+
+const lintSeriallyWithoutWorkerThreads = async (input: Input) => {
   const eslint = await runESLintInCurrentThread(input);
   const prettier = await runPrettierInCurrentThread(input);
   const tscOk = await runTscInNewProcess(input);
@@ -47,11 +62,19 @@ const lintSerially = async (input: Input) => {
   return { eslint, prettier, tscOk };
 };
 
-export const externalLint = async (input: Input) => {
+const selectLintFunction = (input: Input) => {
+  if (!input.workerThreads) {
+    return lintSeriallyWithoutWorkerThreads;
+  }
+
   // `--debug` implies `--serial`.
   const isSerial = input.debug || input.serial;
 
-  const lint = isSerial ? lintSerially : lintConcurrently;
+  return isSerial ? lintSerially : lintConcurrently;
+};
+
+export const externalLint = async (input: Input) => {
+  const lint = selectLintFunction(input);
 
   const tscOutputStream = new StreamInterceptor();
   tscOutputStream.pipe(input.tscOutputStream ?? process.stdout);
