@@ -2,6 +2,7 @@ import { cpus } from 'os';
 import stream from 'stream';
 import util from 'util';
 
+import type { Color } from 'chalk';
 import concurrently from 'concurrently';
 import execa, { ExecaChildProcess } from 'execa';
 import npmRunPath from 'npm-run-path';
@@ -62,7 +63,7 @@ export type Exec = (
 interface ExecConcurrentlyCommand {
   command: string;
   name: string;
-  prefixColor?: string;
+  prefixColor?: typeof Color;
 }
 
 interface ExecConcurrentlyOptions {
