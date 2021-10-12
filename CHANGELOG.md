@@ -1,5 +1,71 @@
 # skuba
 
+## 3.15.2
+
+### Patch Changes
+
+- **Jest.mergePreset:** Do not mutate underlying defaults ([#595](https://github.com/seek-oss/skuba/pull/595))
+
+  `Jest.mergePreset` no longer mutates the internal `jest-preset` object. Subsequent calls to `Jest.mergePreset` will no longer return results merged in from previous calls.
+
+  **Warning:** If you rely on mutating the core `jest-preset` object for later access, this is a _Breaking Change_.
+
+- **template/lambda-sqs-worker:** Convert Serverless `isProduction` config value to boolean ([#602](https://github.com/seek-oss/skuba/pull/602))
+
+  This avoids potentially surprising behaviour if you try to make use of this config value in a context that tests for truthiness. The boolean is still correctly applied as a string `seek:env:production` tag value.
+
+- **node, start:** Handle void function inputs and outputs ([#597](https://github.com/seek-oss/skuba/pull/597))
+
+  When running a function entrypoint, `skuba node` and `skuba start` now handle an omitted request body the same as an empty JSON array of arguments `[]`. The function can also return `undefined` to omit a response body.
+
+- **template/lambda-sqs-worker:** Opt in to [new Serverless variables resolver](https://www.serverless.com/framework/docs/deprecations/#NEW_VARIABLES_RESOLVER) ([#601](https://github.com/seek-oss/skuba/pull/601))
+
+- **lint:** Use worker threads when running `--serial`ly ([#607](https://github.com/seek-oss/skuba/pull/607))
+
+  This aims to reduce the memory footprint of `skuba lint --serial`. ESLint and Prettier are now run in worker threads so their memory can be more readily freed on thread exit.
+
+- **template:** Remove README tables of contents ([#596](https://github.com/seek-oss/skuba/pull/596))
+
+  GitHub's Markdown renderer now generates its own table of contents.
+
+- **configure, init:** Drop dependency on external Git installation ([#599](https://github.com/seek-oss/skuba/pull/599))
+
+  We now interface with `isomorphic-git` internally, which ensures compatibility and affords finer control over log output.
+
+- **format, lint:** Run Prettier serially on files ([#606](https://github.com/seek-oss/skuba/pull/606))
+
+  This aims to reduce the memory footprint of `skuba lint`.
+
+- **template:** seek-jobs/gantry v1.5.1 ([#604](https://github.com/seek-oss/skuba/pull/604))
+
+- **Jest.mergePreset:** Allow configuration of test environment ([#592](https://github.com/seek-oss/skuba/pull/592))
+
+  [Jest's `testEnvironment`](https://jestjs.io/docs/configuration#testenvironment-string) can now be passed to `Jest.mergePreset`:
+
+  ```ts
+  export default Jest.mergePreset({
+    testEnvironment: 'jsdom',
+  });
+  ```
+
+- **template/lambda-sqs-worker:** Fail fast on invalid Serverless config ([#605](https://github.com/seek-oss/skuba/pull/605))
+
+- **template:** pino-pretty ^6.0.0 ([#594](https://github.com/seek-oss/skuba/pull/594))
+
+  pino-pretty@7 requires pino@7, which has not been released on its stable channel yet.
+
+- **node, start:** Print function entrypoint parameters ([#600](https://github.com/seek-oss/skuba/pull/600))
+
+  When running a function entrypoint, `skuba node` and `skuba start` now print the function and parameter names as a usage hint:
+
+  ```javascript
+  yarn skuba node 'src/api/buildkite/annotate.ts#annotate'
+  // annotate (markdown, opts)
+  // listening on port 9001
+
+  curl --data '["_Hello there_", {}]' --include localhost:9001
+  ```
+
 ## 3.15.1
 
 ### Patch Changes
