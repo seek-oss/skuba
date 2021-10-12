@@ -106,8 +106,8 @@ test.each`
   await prepareTempDirectory(baseDir, tempDir);
 
   await expect(
-    // Force `--serial` as worker threads can't run in a TypeScript context.
-    lint([...args, '--serial'], tscOutputStream),
+    // Disable worker threads as they can't run in a TypeScript context.
+    lint(args, tscOutputStream, false),
   ).resolves.toBeUndefined();
 
   const tempDirRegex = new RegExp(tempDir, 'g');

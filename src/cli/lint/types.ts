@@ -22,4 +22,14 @@ export interface Input {
    * Defaults to `process.stdout`.
    */
   tscOutputStream?: NodeJS.WritableStream;
+
+  /**
+   * Whether to allow usage of Node.js worker threads.
+   *
+   * This may be set to `false` when there is a worker thread incompatibility,
+   * such as calling in from a TypeScript context in our Jest tests.
+   *
+   * Defaults to `true`.
+   */
+  workerThreads?: boolean;
 }
