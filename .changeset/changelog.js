@@ -155,9 +155,10 @@ const gitHubChangelogFunctions = {
 
     const suffix = links.pull ?? links.commit;
 
-    return `\n- ${formattedFirstLine}${
-      suffix ? ` (${suffix})` : ""
-    }\n${futureLines.map((l) => `  ${l}`).join("\n")}`;
+    return [
+      `\n- ${formattedFirstLine}${suffix ? ` (${suffix})` : ""}`,
+      ...futureLines.map((l) => `  ${l}`),
+    ].join("\n");
   },
 };
 
