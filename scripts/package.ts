@@ -89,6 +89,22 @@ nav_order: 98
   );
 
 /**
+ * Modifies the readme header to work better with Just the Docs.
+ *
+ * This is JIT-executed to hide the frontmatter from GitHub's Markdown renderer.
+ */
+const processReadmeHeader = (readme: string) =>
+  [
+    `
+---
+nav_order: 1
+title: 🤿
+---
+`.trim(),
+    readme,
+  ].join('\n\n');
+
+/**
  * Compiles changelog entries for each template for rendering on our
  * documentation site.
  */
@@ -191,19 +207,21 @@ const main = async () => {
   await fs.promises.mkdir('dist-docs', { recursive: true });
 
   const changelog = await fs.promises.readFile('CHANGELOG.md', 'utf8');
+  const readme = await fs.promises.readFile('README.md', 'utf8');
 
   const siteChangelog = processChangelogHeader(changelog);
+  const siteReadme = processReadmeHeader(readme);
 
   await Promise.all([
     fs.promises.writeFile(
       path.join('dist-docs', 'CHANGELOG.md'),
       siteChangelog,
     ),
+    fs.promises.writeFile(path.join('dist-docs', 'index.md'), siteReadme),
     fs.promises.copyFile(
       'CONTRIBUTING.md',
       path.join('dist-docs', 'CONTRIBUTING.md'),
     ),
-    fs.promises.copyFile('index.md', path.join('dist-docs', 'index.md')),
     // `fs.promises.cp` is still experimental in Node.js 16.
     copy('site', 'dist-docs', { recursive: true }),
     copy('docs', path.join('dist-docs', 'docs'), { recursive: true }),
