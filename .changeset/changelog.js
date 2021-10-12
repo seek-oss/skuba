@@ -27,11 +27,11 @@ const defaultChangelogFunctions = {
       (changeset) => `- Updated dependencies [${changeset.commit}]`,
     );
 
-    const updatedDepenenciesList = dependenciesUpdated.map(
+    const updatedDependenciesList = dependenciesUpdated.map(
       (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
     );
 
-    return [...changesetLinks, ...updatedDepenenciesList].join("\n");
+    return [...changesetLinks, ...updatedDependenciesList].join("\n");
   },
   getReleaseLine: async (changeset) => {
     const [firstLine, ...futureLines] = changeset.summary
@@ -155,7 +155,7 @@ const gitHubChangelogFunctions = {
 
     const suffix = links.pull ?? links.commit;
 
-    return `\n\n- ${formattedFirstLine}${
+    return `\n- ${formattedFirstLine}${
       suffix ? ` (${suffix})` : ""
     }\n${futureLines.map((l) => `  ${l}`).join("\n")}`;
   },
