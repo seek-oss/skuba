@@ -100,5 +100,8 @@
     "skuba-dive": {
       "optional": true
     }
+  },
+  "resolutions": {
+    "semantic-release/@semantic-release/npm/npm/**/ansi-regex": "5.0.1"
   }
 }
