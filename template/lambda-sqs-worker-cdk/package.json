@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@seek/logger": "^4.4.7",
+    "@seek/logger": "^5.0.0",
     "runtypes": "^6.3.2"
   },
   "devDependencies": {
