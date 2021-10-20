@@ -1,7 +1,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import { ESLint } from 'eslint';
+import { ESLint, Linter } from 'eslint';
 
 import { Logger } from '../../utils/logging';
 
@@ -13,7 +13,14 @@ const symbolForResult = (result: ESLint.LintResult) => {
   return result.warningCount ? chalk.yellow('◍') : chalk.green('○');
 };
 
+export interface ESLintResult {
+  messages: Linter.LintMessage[];
+  filePath: string;
+}
+
 export interface ESLintOutput {
+  errors: ESLintResult[];
+  warnings: ESLintResult[];
   ok: boolean;
   output: string;
 }
@@ -53,15 +60,28 @@ export const runESLint = async (
     )}.`,
   );
 
-  let errors = 0;
+  const errors: ESLintResult[] = [];
+  const warnings: ESLintResult[] = [];
 
   for (const result of results) {
-    errors += result.errorCount;
+    if (result.errorCount) {
+      errors.push({
+        filePath: result.filePath,
+        messages: result.messages,
+      });
+    }
+
+    if (result.warningCount) {
+      warnings.push({
+        filePath: result.filePath,
+        messages: result.messages,
+      });
+    }
 
     logger.debug(symbolForResult(result), path.relative(cwd, result.filePath));
   }
 
-  const ok = errors === 0;
+  const ok = Boolean(errors);
 
   await ESLint.outputFixes(results);
 
@@ -71,5 +91,5 @@ export const runESLint = async (
     logger.plain(output);
   }
 
-  return { ok, output };
+  return { ok, output, errors, warnings };
 };
