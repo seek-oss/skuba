@@ -81,7 +81,7 @@
     "npm-run-path": "^4.0.1",
     "npm-which": "^3.0.1",
     "picomatch": "^2.2.2",
-    "prettier": "2.4.1",
+    "prettier": "~2.4.1",
     "read-pkg-up": "^7.0.1",
     "runtypes": "^6.0.0",
     "semantic-release": "^17.4.7",
@@ -89,9 +89,9 @@
     "source-map-support": "^0.5.19",
     "ts-jest": "^27.0.5",
     "ts-node": "^9.1.1",
-    "ts-node-dev": "1.1.8",
+    "ts-node-dev": "^1.1.8",
     "tsconfig-seek": "1.0.2",
-    "typescript": "4.4.4"
+    "typescript": "~4.4.4"
   },
   "peerDependencies": {
     "skuba-dive": "1"
