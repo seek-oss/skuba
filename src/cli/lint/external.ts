@@ -1,6 +1,6 @@
 import stream from 'stream';
 
-import { log } from 'utils/logging';
+import { log } from '../../utils/logging';
 
 import { createAnnotations } from './annotate';
 import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint';

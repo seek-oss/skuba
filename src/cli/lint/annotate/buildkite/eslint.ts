@@ -1,5 +1,5 @@
-import { ESLintOutput } from 'cli/adapter/eslint';
-import { Buildkite } from 'index';
+import { Buildkite } from '../../../..';
+import { ESLintOutput } from '../../../../cli/adapter/eslint';
 
 const createEslintAnnotations = (eslint: ESLintOutput): string[] => {
   const annotations: string[] = [];

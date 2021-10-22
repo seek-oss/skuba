@@ -45,12 +45,6 @@ const isGithubAnnotationsEnabled = (): boolean =>
       process.env.BUILDKITE_BUILD_NUMBER &&
       process.env.GITHUB_API_TOKEN,
   );
-
-const authHeaders = {
-  Accept: 'application/vnd.github.v3+json',
-  Authorization: `token ${process.env.GITHUB_API_TOKEN as string}`,
-};
-
 // Pulls out the GitHub Owner + Repo String from repo urls eg.
 // git@github.com:seek-oss/skuba.git
 // https://github.com/seek-oss/skuba.git
@@ -62,14 +56,13 @@ const getOwnerRepoString = (): string => {
   const ownerRepoString = match?.[1];
 
   if (!ownerRepoString) {
-    throw new Error('Could not extract owner repo string from buildkite repo');
+    throw new Error(
+      'Could not extract Github owner/repo from BUILDKITE_REPO environment variable',
+    );
   }
 
   return ownerRepoString;
 };
-
-const getGithubCheckRunsUrl = (ownerRepoString: string): string =>
-  `https://api.github.com/repos/${ownerRepoString}/check-runs`;
 
 /**
  * Creates a Check Run
@@ -78,7 +71,6 @@ const getGithubCheckRunsUrl = (ownerRepoString: string): string =>
  * @param summary - Summary of the report
  * @param annotations - List of annotations
  * @param conclusion - Conclusion of the run
- * @param text - Additional details
  * @returns ID of the created Check Run
  */
 const createCheckRun = async (
@@ -87,67 +79,43 @@ const createCheckRun = async (
   summary: string,
   annotations: Annotation[],
   conclusion: CreateCheckRunParameters['conclusion'],
-  text?: string,
 ): Promise<void> => {
-  const ownerRepoString = getOwnerRepoString();
-  const url = getGithubCheckRunsUrl(ownerRepoString);
+  if (!isGithubAnnotationsEnabled()) {
+    return;
+  }
+
+  const client = axios.create({
+    headers: {
+      Accept: 'application/vnd.github.v3+json',
+      Authorization: `token ${process.env.GITHUB_API_TOKEN as string}`,
+    },
+    baseURL: `https://api.github.com/repos/${getOwnerRepoString()}/check-runs`,
+  });
 
   const annotationBatches = createBatches(
     annotations,
     GITHUB_MAX_ANNOTATIONS_PER_CALL,
   );
 
-  const data: CreateCheckRunParameters = {
+  const createData: CreateCheckRunParameters = {
     name,
     output: {
       title,
       summary,
       annotations: annotationBatches.length ? annotationBatches[0] : [],
-      ...(text && { text }),
     },
     head_sha: process.env.BUILDKITE_COMMIT as string,
     conclusion,
   };
 
-  const result = await axios.post<CreateCheckRunResponse>(
-    url,
-    { data },
-    { headers: authHeaders },
-  );
+  const result = await client.post<CreateCheckRunResponse>('/', {
+    data: createData,
+  });
 
   // Add the other annotations to the result
   await Promise.all(
-    annotationBatches
-      .slice(1)
-      .map((batch) => updateCheckRun(result.data.id, title, summary, batch)),
-  );
-};
-
-/**
- * Updates a Check Run
- * @param id - Check Run ID to update
- * @param title - Title of the report
- * @param summary - Summary of the report
- * @param annotations - List of annotations
- */
-const updateCheckRun = async (
-  id: number,
-  title: string,
-  summary: string,
-  annotations: Annotation[],
-): Promise<void> => {
-  const ownerRepoString = getOwnerRepoString();
-  const url = `${getGithubCheckRunsUrl(ownerRepoString)}/${id}`;
-
-  // The Checks API limits the number of annotations to a maximum of 50 per API request.
-  const batchAnnotations = createBatches(
-    annotations,
-    GITHUB_MAX_ANNOTATIONS_PER_CALL,
-  );
-
-  await Promise.all(
-    batchAnnotations.map((batch: Annotation[]) => {
-      const data: UpdateCheckRunParameters = {
+    annotationBatches.slice(1).map(async (batch) => {
+      const updateData: UpdateCheckRunParameters = {
         output: {
           title,
           summary,
@@ -155,15 +123,18 @@ const updateCheckRun = async (
         },
       };
 
-      return axios.patch<UpdateCheckRunResponse>(
-        url,
-        { data },
-        { headers: authHeaders },
-      );
+      await client.patch<UpdateCheckRunResponse>(`/${result.data.id}`, {
+        data: updateData,
+      });
     }),
   );
 };
 
 export { isGithubAnnotationsEnabled, createCheckRun };
 
-export type { Annotation };
+export type {
+  Annotation,
+  CreateCheckRunParameters,
+  UpdateCheckRunParameters,
+  CreateCheckRunResponse,
+};

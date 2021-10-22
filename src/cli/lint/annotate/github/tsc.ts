@@ -1,13 +1,15 @@
-import { Annotation } from 'api/github/check-run';
-import { StreamInterceptor } from 'cli/lint/external';
+import { Github } from '../../../../';
+import { StreamInterceptor } from '../../../../cli/lint/external';
 
-const tscOutputRegex = new RegExp(/^(.*)\(([0-9]+),([0-9]+)\): error (.*)/);
+const tscOutputRegex = new RegExp(
+  /^\x1B\[34mtsc      │\x1B\[39m (.*)\(([0-9]+),([0-9]+)\): error (.*)/,
+);
 
 const createTscAnnotations = (
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
 ) => {
-  const annotations: Annotation[] = [];
+  const annotations: Github.Annotation[] = [];
   if (!tscOk) {
     const lines = tscOutputStream.output().split('\n').filter(Boolean);
     lines.forEach((line) => {

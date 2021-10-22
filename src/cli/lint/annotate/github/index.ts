@@ -1,11 +1,8 @@
-import {
-  Annotation,
-  createCheckRun,
-  isGithubAnnotationsEnabled,
-} from 'api/github/check-run';
-import { ESLintOutput } from 'cli/adapter/eslint';
-import { PrettierOutput } from 'cli/adapter/prettier';
-import { StreamInterceptor } from 'cli/lint/external';
+import { Github } from '../../../..';
+import { ESLintOutput } from '../../../../cli/adapter/eslint';
+import { PrettierOutput } from '../../../../cli/adapter/prettier';
+import { StreamInterceptor } from '../../../../cli/lint/external';
+import { log } from '../../../../utils/logging';
 
 import { createEslintAnnotations } from './eslint';
 import { createPrettierAnnotations } from './prettier';
@@ -18,27 +15,30 @@ const createGitHubAnnotations = async (
   tscOutputStream: StreamInterceptor,
   summary: string,
 ) => {
-  if (!isGithubAnnotationsEnabled()) {
+  if (!Github.isGithubAnnotationsEnabled()) {
     return;
   }
+  log.plain('Sending annotations to Github');
 
-  const annotations: Annotation[] = [
+  const annotations: Github.Annotation[] = [
     ...createEslintAnnotations(eslint),
     ...createPrettierAnnotations(prettier),
     ...createTscAnnotations(tscOk, tscOutputStream),
   ];
 
-  const lintFailed = eslint.ok && prettier.ok && tscOk;
+  const lintPassed = eslint.ok && prettier.ok && tscOk;
+  const status = lintPassed ? 'passed' : 'failed';
+  const conclusion = lintPassed ? 'success' : 'failure';
 
   const buildNumber = `Build #${process.env.BUILDKITE_BUILD_NUMBER as string}`;
-  const status = lintFailed ? 'failed' : 'passed';
-  const title = `${buildNumber} ${status} (${annotations.length} annotations added)`;
 
-  const conclusion = lintFailed ? 'failure' : 'success';
+  const title = `${buildNumber} ${status} (${annotations.length} annotation${
+    annotations.length === 1 ? '' : 's'
+  } added)`;
 
-  const reportSummary = lintFailed ? summary : '';
+  const reportSummary = lintPassed ? 'Lint passed' : summary;
 
-  await createCheckRun(
+  await Github.createCheckRun(
     'skuba/lint',
     title,
     reportSummary,

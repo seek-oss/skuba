@@ -1,5 +1,5 @@
-import { PrettierOutput } from 'cli/adapter/prettier';
-import { Buildkite } from 'index';
+import { Buildkite } from '../../../..';
+import { PrettierOutput } from '../../../../cli/adapter/prettier';
 
 const createPrettierAnnotations = (prettier: PrettierOutput): string[] => {
   const annotations: string[] = [];

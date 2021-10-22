@@ -1,11 +1,12 @@
-import { Annotation } from 'api/github/check-run';
-import { ESLintOutput, ESLintResult } from 'cli/adapter/eslint';
 import { Linter } from 'eslint';
+
+import { Github } from '../../../../';
+import { ESLintOutput, ESLintResult } from '../../../../cli/adapter/eslint';
 
 const mapEslintResultToAnnotation = (
   result: ESLintResult,
   message: Linter.LintMessage,
-): Annotation => ({
+): Github.Annotation => ({
   annotation_level: message.severity === 2 ? 'failure' : 'warning',
   start_line: message.line,
   start_column: message.column,
@@ -17,8 +18,7 @@ const mapEslintResultToAnnotation = (
 });
 
 const createEslintAnnotations = (eslint: ESLintOutput) => {
-  const annotateWarnings = false;
-  const annotations: Annotation[] = [];
+  const annotations: Github.Annotation[] = [];
 
   if (!eslint.ok) {
     eslint.errors.forEach((result) => {
@@ -28,13 +28,11 @@ const createEslintAnnotations = (eslint: ESLintOutput) => {
     });
   }
 
-  if (annotateWarnings) {
-    eslint.errors.forEach((result) => {
-      result.messages.forEach((message) => {
-        annotations.push(mapEslintResultToAnnotation(result, message));
-      });
+  eslint.warnings.forEach((result) => {
+    result.messages.forEach((message) => {
+      annotations.push(mapEslintResultToAnnotation(result, message));
     });
-  }
+  });
   return annotations;
 };
 
