@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@seek/logger": "^5.0.0",
+    "@seek/logger": "^5.0.1",
     "aws-sdk": "^2.1011.0",
     "seek-datadog-custom-metrics": "^4.0.0",
     "skuba-dive": "^1.2.0",
