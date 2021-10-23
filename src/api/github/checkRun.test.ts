@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import { Octokit } from '@octokit/rest';
 import { Github } from 'index';
 import { mocked } from 'ts-jest/utils';
 
@@ -12,13 +12,15 @@ import {
 
 import { createCheckRun, isGithubAnnotationsEnabled } from '.';
 
-jest.mock('axios');
+jest.mock('@octokit/rest');
 jest.mock('../../utils/batch');
 
-const mockAxiosInstance = {
-  post: jest.fn(),
-  patch: jest.fn(),
-} as Partial<AxiosInstance> as AxiosInstance;
+const mockClient = {
+  checks: {
+    create: jest.fn(),
+    update: jest.fn(),
+  },
+};
 
 afterEach(() => {
   delete process.env.BUILDKITE_REPO;
@@ -58,7 +60,9 @@ const annotation: Github.Annotation = {
 };
 
 const createResponse = {
-  id: 3971870754,
+  data: {
+    id: 3971870754,
+  },
 } as CreateCheckRunResponse;
 
 describe('createCheckRun', () => {
@@ -69,11 +73,9 @@ describe('createCheckRun', () => {
   const conclusion = 'success';
 
   beforeEach(() => {
-    mocked(axios.create).mockReturnValue(mockAxiosInstance);
+    mocked(Octokit).mockReturnValue(mockClient as unknown as Octokit);
+    mockClient.checks.create.mockReturnValue(createResponse);
     mocked(createBatches).mockReturnValue([[annotation]]);
-    mocked(mockAxiosInstance.post).mockResolvedValue({
-      data: createResponse,
-    });
     setEnvironmentVariables();
   });
 
@@ -81,18 +83,14 @@ describe('createCheckRun', () => {
     delete process.env.BUILDKITE_REPO;
     await createCheckRun(name, title, summary, annotations, conclusion);
 
-    expect(axios.create).not.toHaveBeenCalled();
+    expect(mocked(Octokit)).not.toHaveBeenCalled();
   });
 
-  it('should create an axios client with a baseURL and headers formed from environment variables', async () => {
+  it('should create an octokit client with an auth token from an environment variable', async () => {
     await createCheckRun(name, title, summary, annotations, conclusion);
 
-    expect(axios.create).toBeCalledWith({
-      baseURL: 'https://api.github.com/repos/seek-oss/skuba/check-runs',
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-        Authorization: 'token ghu_someSecretToken',
-      },
+    expect(mocked(Octokit)).toBeCalledWith({
+      auth: 'ghu_someSecretToken',
     });
   });
 
@@ -102,12 +100,12 @@ describe('createCheckRun', () => {
     expect(createBatches).toBeCalledWith(annotations, 50);
   });
 
-  it('should call post on the axios instance with the correct CreateCheckRun parameters', async () => {
-    const expectedPath = '/';
-
+  it('should call the create method on the Octokit client with the correct parameters', async () => {
     await createCheckRun(name, title, summary, annotations, conclusion);
 
     const expectedParams: CreateCheckRunParameters = {
+      owner: 'seek-oss',
+      repo: 'skuba',
       name,
       output: {
         title,
@@ -118,19 +116,17 @@ describe('createCheckRun', () => {
       conclusion,
     };
 
-    expect(mockAxiosInstance.post).toBeCalledWith(expectedPath, {
-      data: expectedParams,
-    });
+    expect(mockClient.checks.create).toBeCalledWith(expectedParams);
   });
 
-  it('should call post on the axios instance with an empty array if createBatches returns an empty array', async () => {
+  it('should call the create method with an empty array when createBatches returns an empty array', async () => {
     mocked(createBatches).mockReturnValue([]);
-
-    const expectedPath = '/';
 
     await createCheckRun(name, title, summary, annotations, conclusion);
 
     const expectedParams: CreateCheckRunParameters = {
+      owner: 'seek-oss',
+      repo: 'skuba',
       name,
       output: {
         title,
@@ -141,9 +137,7 @@ describe('createCheckRun', () => {
       conclusion,
     };
 
-    expect(mockAxiosInstance.post).toBeCalledWith(expectedPath, {
-      data: expectedParams,
-    });
+    expect(mockClient.checks.create).toBeCalledWith(expectedParams);
   });
 
   it('should call patch on the axios instance if there extra batches on the id returned from Create Check Run', async () => {
@@ -156,9 +150,10 @@ describe('createCheckRun', () => {
     };
     mocked(createBatches).mockReturnValue([[annotation], [batchedAnnotation]]);
 
-    const expectedPath = `/${createResponse.id}`;
-
     const expectedParams: UpdateCheckRunParameters = {
+      owner: 'seek-oss',
+      repo: 'skuba',
+      check_run_id: 3971870754,
       output: {
         title,
         summary,
@@ -167,8 +162,6 @@ describe('createCheckRun', () => {
     };
 
     await createCheckRun(name, title, summary, annotations, conclusion);
-    expect(mockAxiosInstance.patch).toBeCalledWith(expectedPath, {
-      data: expectedParams,
-    });
+    expect(mockClient.checks.update).toBeCalledWith(expectedParams);
   });
 });

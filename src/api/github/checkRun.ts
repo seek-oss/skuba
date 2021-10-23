@@ -1,23 +1,27 @@
-import { paths } from '@octokit/openapi-types';
-import axios from 'axios';
+import { Octokit } from '@octokit/rest';
+import { Endpoints } from '@octokit/types';
 
 import { createBatches } from '../../utils/batch';
 
 type CreateCheckRunParameters =
-  paths['/repos/{owner}/{repo}/check-runs']['post']['requestBody']['content']['application/json'];
+  Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters'];
 
 type CreateCheckRunResponse =
-  paths['/repos/{owner}/{repo}/check-runs']['post']['responses']['201']['content']['application/json'];
+  Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
 
 type UpdateCheckRunParameters =
-  paths['/repos/{owner}/{repo}/check-runs/{check_run_id}']['patch']['requestBody']['content']['application/json'];
-
-type UpdateCheckRunResponse =
-  paths['/repos/{owner}/{repo}/check-runs/{check_run_id}']['patch']['responses']['200']['content']['application/json'];
+  Endpoints['PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}']['parameters'];
 
 type Output = NonNullable<CreateCheckRunParameters['output']>;
-type Annotations = NonNullable<Output>['annotations'];
-type Annotation = NonNullable<Annotations>[number];
+
+type Annotations = NonNullable<Output['annotations']>;
+
+type Annotation = Annotations[number];
+
+interface OwnerRepo {
+  owner: string;
+  repo: string;
+}
 
 const GITHUB_MAX_ANNOTATIONS_PER_CALL = 50;
 
@@ -32,19 +36,23 @@ const isGithubAnnotationsEnabled = (): boolean =>
 // git@github.com:seek-oss/skuba.git
 // https://github.com/seek-oss/skuba.git
 // Pulls out seek-oss/skuba
-const ownerRepoRegex = new RegExp(/github.com(?::|\/)(.*).git/);
+const ownerRepoRegex = new RegExp(/github.com(?::|\/)(.*)\/(.*).git/);
 
-const getOwnerRepoString = (): string => {
+const getOwnerRepo = (): OwnerRepo => {
   const match = ownerRepoRegex.exec(process.env.BUILDKITE_REPO as string);
-  const ownerRepoString = match?.[1];
+  const owner = match?.[1];
+  const repo = match?.[2];
 
-  if (!ownerRepoString) {
+  if (!owner || !repo) {
     throw new Error(
       'Could not extract Github owner/repo from BUILDKITE_REPO environment variable',
     );
   }
 
-  return ownerRepoString;
+  return {
+    owner,
+    repo,
+  };
 };
 
 /**
@@ -66,12 +74,8 @@ const createCheckRun = async (
     return;
   }
 
-  const client = axios.create({
-    headers: {
-      Accept: 'application/vnd.github.v3+json',
-      Authorization: `token ${process.env.GITHUB_API_TOKEN as string}`,
-    },
-    baseURL: `https://api.github.com/repos/${getOwnerRepoString()}/check-runs`,
+  const client = new Octokit({
+    auth: process.env.GITHUB_API_TOKEN,
   });
 
   const annotationBatches = createBatches(
@@ -79,7 +83,11 @@ const createCheckRun = async (
     GITHUB_MAX_ANNOTATIONS_PER_CALL,
   );
 
-  const createData: CreateCheckRunParameters = {
+  const { owner, repo } = getOwnerRepo();
+
+  const createParams: CreateCheckRunParameters = {
+    owner,
+    repo,
     name,
     output: {
       title,
@@ -90,14 +98,15 @@ const createCheckRun = async (
     conclusion,
   };
 
-  const result = await client.post<CreateCheckRunResponse>('/', {
-    data: createData,
-  });
+  const result = await client.checks.create(createParams);
 
   // Add the other annotations to the result
   await Promise.all(
     annotationBatches.slice(1).map(async (batch) => {
-      const updateData: UpdateCheckRunParameters = {
+      const updateParams: UpdateCheckRunParameters = {
+        owner,
+        repo,
+        check_run_id: result.data.id,
         output: {
           title,
           summary,
@@ -105,9 +114,7 @@ const createCheckRun = async (
         },
       };
 
-      await client.patch<UpdateCheckRunResponse>(`/${result.data.id}`, {
-        data: updateData,
-      });
+      await client.checks.update(updateParams);
     }),
   );
 };
@@ -117,6 +124,6 @@ export { isGithubAnnotationsEnabled, createCheckRun };
 export type {
   Annotation,
   CreateCheckRunParameters,
-  UpdateCheckRunParameters,
   CreateCheckRunResponse,
+  UpdateCheckRunParameters,
 };
