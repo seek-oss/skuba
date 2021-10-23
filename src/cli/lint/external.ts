@@ -87,7 +87,7 @@ export const externalLint = async (input: Input) => {
     ...(tscOk ? [] : ['tsc']),
   ];
 
-  const summary = `${tools.join(', ')}found issues that require triage.`;
+  const summary = `${tools.join(', ')} found issues that require triage.`;
   await createAnnotations(eslint, prettier, tscOk, tscOutputStream, summary);
 
   if (eslint.ok && prettier.ok && tscOk) {
