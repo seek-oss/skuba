@@ -31,10 +31,15 @@ const createGitHubAnnotations = async (
   const conclusion = lintPassed ? 'success' : 'failure';
 
   const buildNumber = `Build #${process.env.BUILDKITE_BUILD_NUMBER as string}`;
+  const numAnnotations =
+    annotations.length > Github.GITHUB_MAX_ANNOTATIONS
+      ? Github.GITHUB_MAX_ANNOTATIONS
+      : annotations.length;
+  const annotationString = `${numAnnotations} annotation${
+    numAnnotations === 1 ? '' : 's'
+  }`;
 
-  const title = `${buildNumber} ${status} (${annotations.length} annotation${
-    annotations.length === 1 ? '' : 's'
-  } added)`;
+  const title = `${buildNumber} ${status} (${annotationString} added)`;
 
   const reportSummary = lintPassed ? 'Lint passed' : summary;
 

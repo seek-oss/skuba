@@ -2,6 +2,7 @@ import { Octokit } from '@octokit/rest';
 import { Endpoints } from '@octokit/types';
 
 import { createBatches } from '../../utils/batch';
+import { log } from '../../utils/logging';
 
 type CreateCheckRunParameters =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters'];
@@ -24,6 +25,7 @@ interface OwnerRepo {
 }
 
 const GITHUB_MAX_ANNOTATIONS_PER_CALL = 50;
+const GITHUB_MAX_ANNOTATIONS = 200;
 
 const isGithubAnnotationsEnabled = (): boolean =>
   Boolean(
@@ -78,8 +80,14 @@ const createCheckRun = async (
     auth: process.env.GITHUB_API_TOKEN,
   });
 
+  if (annotations.length > GITHUB_MAX_ANNOTATIONS) {
+    log.warn(
+      `There are ${annotations.length} annotations. Capping the number of annotations to ${GITHUB_MAX_ANNOTATIONS}`,
+    );
+  }
+
   const annotationBatches = createBatches(
-    annotations,
+    annotations.slice(0, GITHUB_MAX_ANNOTATIONS_PER_CALL),
     GITHUB_MAX_ANNOTATIONS_PER_CALL,
   );
 
@@ -119,7 +127,7 @@ const createCheckRun = async (
   );
 };
 
-export { isGithubAnnotationsEnabled, createCheckRun };
+export { isGithubAnnotationsEnabled, createCheckRun, GITHUB_MAX_ANNOTATIONS };
 
 export type {
   Annotation,
