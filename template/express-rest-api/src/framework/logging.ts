@@ -12,5 +12,6 @@ export const rootLogger = createLogger({
 
   name: config.name,
 
-  prettyPrint: config.environment === 'local',
+  transport:
+    config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
 });

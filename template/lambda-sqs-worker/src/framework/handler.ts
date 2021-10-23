@@ -1,10 +1,10 @@
-import { pino } from '@seek/logger';
+import { Logger } from '@seek/logger';
 import { Context } from 'aws-lambda';
 
 import { contextLogger } from 'src/framework/logging';
 
 export const createHandler = <Event, Output = unknown>(
-  fn: (event: Event, ctx: { logger: pino.Logger }) => Promise<Output>,
+  fn: (event: Event, ctx: { logger: Logger }) => Promise<Output>,
 ) =>
   async function lambdaHandler(event: Event, ctx: Context) {
     const logger = contextLogger(ctx);
