@@ -81,7 +81,7 @@ export const runESLint = async (
     logger.debug(symbolForResult(result), path.relative(cwd, result.filePath));
   }
 
-  const ok = Boolean(errors);
+  const ok = errors.length === 0;
 
   await ESLint.outputFixes(results);
 
