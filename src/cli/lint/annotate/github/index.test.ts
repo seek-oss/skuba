@@ -11,6 +11,7 @@ import { createTscAnnotations } from './tsc';
 
 import { createGitHubAnnotations } from '.';
 
+jest.mock('../../../../utils/logging');
 jest.mock('../../../..');
 jest.mock('./eslint');
 jest.mock('./prettier');
