@@ -1,8 +1,8 @@
-import { Github } from '../../../../';
+import { GitHub } from '../../../../';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 
 const createPrettierAnnotations = (prettier: PrettierOutput) => {
-  const annotations: Github.Annotation[] = [];
+  const annotations: GitHub.Annotation[] = [];
   if (!prettier.ok) {
     prettier.result.errored.forEach((result) => {
       annotations.push({

@@ -2,21 +2,21 @@
 parent: Deep dives
 ---
 
-# Github
+# GitHub
 
 ---
 
-Github is SEEK's git repository of choice.
+GitHub is SEEK's git repository of choice.
 
-This topic details Github integration features baked into **skuba**
+This topic details GitHub integration features baked into **skuba**
 
 ---
 
-## Github annotations
+## GitHub annotations
 
-**skuba** can output issues detected by [`skuba lint`] as Github annotations via the [Github Checks API].
+**skuba** can output issues detected by [`skuba lint`] as GitHub annotations via the [GitHub Checks API].
 
-This can be enabled by propagating Buildkite environment variables and the Github API token.
+This can be enabled by propagating Buildkite environment variables and the GitHub API token.
 For example, with the Docker plugin:
 
 ```yaml
@@ -28,7 +28,7 @@ steps:
       - *docker-ecr-cache
       - docker#v3.8.0:
           environment:
-            # Enable Github annotation support.
+            # Enable GitHub annotation support.
             - BUILDKITE_REPO
             - BUILDKITE_COMMIT
             - BUILDKITE_BUILD_NUMBER
@@ -45,7 +45,7 @@ declare the environment variables and volume mounts in your [Compose file]:
 services:
   app:
     environment:
-      # Enable Github annotation support.
+      # Enable GitHub annotation support.
       - BUILDKITE_REPO
       - BUILDKITE_COMMIT
       - BUILDKITE_BUILD_NUMBER

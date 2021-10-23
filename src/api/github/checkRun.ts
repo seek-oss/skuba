@@ -27,7 +27,7 @@ interface OwnerRepo {
 const GITHUB_MAX_ANNOTATIONS_PER_CALL = 50;
 const GITHUB_MAX_ANNOTATIONS = 200;
 
-const isGithubAnnotationsEnabled = (): boolean =>
+const isGitHubAnnotationsEnabled = (): boolean =>
   Boolean(
     process.env.BUILDKITE_REPO &&
       process.env.BUILDKITE_COMMIT &&
@@ -47,7 +47,7 @@ const getOwnerRepo = (): OwnerRepo => {
 
   if (!owner || !repo) {
     throw new Error(
-      'Could not extract Github owner/repo from BUILDKITE_REPO environment variable',
+      'Could not extract GitHub owner/repo from BUILDKITE_REPO environment variable',
     );
   }
 
@@ -72,7 +72,7 @@ const createCheckRun = async (
   annotations: Annotation[],
   conclusion: CreateCheckRunParameters['conclusion'],
 ): Promise<void> => {
-  if (!isGithubAnnotationsEnabled()) {
+  if (!isGitHubAnnotationsEnabled()) {
     return;
   }
 
@@ -127,7 +127,7 @@ const createCheckRun = async (
   );
 };
 
-export { isGithubAnnotationsEnabled, createCheckRun, GITHUB_MAX_ANNOTATIONS };
+export { isGitHubAnnotationsEnabled, createCheckRun, GITHUB_MAX_ANNOTATIONS };
 
 export type {
   Annotation,

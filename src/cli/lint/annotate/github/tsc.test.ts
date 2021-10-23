@@ -1,4 +1,4 @@
-import { Github } from '../../../../';
+import { GitHub } from '../../../../';
 import { StreamInterceptor } from '../../../../cli/lint/external';
 
 import { createTscAnnotations } from './tsc';
@@ -20,7 +20,7 @@ it('should create annotations from TSC Output', () => {
     '\n\n\x1B[34mtsc      │\x1B[39m \x1B[0mtsc --noEmit exited with code 1\x1B[0m';
   mockOutput.mockReturnValue(output);
 
-  const expectedAnnotations: Github.Annotation[] = [
+  const expectedAnnotations: GitHub.Annotation[] = [
     {
       annotation_level: 'failure',
       path: 'src/index.ts',
@@ -44,7 +44,7 @@ it('should return an empty array when tscOk is true', () => {
     '\n\n\x1B[34mtsc      │\x1B[39m \x1B[0mtsc --noEmit exited with code 1\x1B[0m';
   mockOutput.mockReturnValue(output);
 
-  const expectedAnnotations: Github.Annotation[] = [];
+  const expectedAnnotations: GitHub.Annotation[] = [];
 
   const annotation = createTscAnnotations(tscOk, tscOutputStream);
 

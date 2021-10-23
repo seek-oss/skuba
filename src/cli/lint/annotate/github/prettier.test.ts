@@ -1,4 +1,4 @@
-import { Github } from '../../../../';
+import { GitHub } from '../../../../';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 
 import { createPrettierAnnotations } from './prettier';
@@ -14,7 +14,7 @@ it('should create annotations from Prettier errors', () => {
     },
   };
 
-  const expectedAnnotations: Github.Annotation[] = [
+  const expectedAnnotations: GitHub.Annotation[] = [
     {
       annotation_level: 'failure',
       start_line: 0,
@@ -40,7 +40,7 @@ it('should create an empty annotations array if there are no errors', () => {
     },
   };
 
-  const expectedAnnotations: Github.Annotation[] = [];
+  const expectedAnnotations: GitHub.Annotation[] = [];
 
   const annotations = createPrettierAnnotations(prettierOutput);
 

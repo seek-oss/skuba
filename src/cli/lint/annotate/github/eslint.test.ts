@@ -1,4 +1,4 @@
-import { Github } from '../../../../';
+import { GitHub } from '../../../../';
 import { ESLintOutput } from '../../../../cli/adapter/eslint';
 
 import { createEslintAnnotations } from './eslint';
@@ -28,7 +28,7 @@ it('should create failure annotations for eslint errors', () => {
     output: '',
     warnings: [],
   };
-  const expectedAnnotations: Github.Annotation[] = [
+  const expectedAnnotations: GitHub.Annotation[] = [
     {
       annotation_level: 'failure',
       end_column: 15,
@@ -71,7 +71,7 @@ it('should create warning annotations for eslint warnings', () => {
       },
     ],
   };
-  const expectedAnnotations: Github.Annotation[] = [
+  const expectedAnnotations: GitHub.Annotation[] = [
     {
       annotation_level: 'warning',
       end_column: 15,
@@ -132,7 +132,7 @@ it('should create both failure and warning annotations for eslint errors and war
       },
     ],
   };
-  const expectedAnnotations: Github.Annotation[] = [
+  const expectedAnnotations: GitHub.Annotation[] = [
     {
       annotation_level: 'failure',
       end_column: 15,

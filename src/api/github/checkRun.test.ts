@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/rest';
-import { Github } from 'index';
+import { GitHub } from 'index';
 import { mocked } from 'ts-jest/utils';
 
 import { createBatches } from '../../utils/batch';
@@ -10,7 +10,7 @@ import {
   UpdateCheckRunParameters,
 } from './checkRun';
 
-import { createCheckRun, isGithubAnnotationsEnabled } from '.';
+import { createCheckRun, isGitHubAnnotationsEnabled } from '.';
 
 jest.mock('@octokit/rest');
 jest.mock('../../utils/batch');
@@ -37,20 +37,20 @@ const setEnvironmentVariables = () => {
   process.env.GITHUB_API_TOKEN = 'ghu_someSecretToken';
 };
 
-describe('isGithubAnnotationsEnabled', () => {
+describe('isGitHubAnnotationsEnabled', () => {
   it('should return true if all the required environment variables are set', () => {
     setEnvironmentVariables();
-    const result = isGithubAnnotationsEnabled();
+    const result = isGitHubAnnotationsEnabled();
     expect(result).toBe(true);
   });
 
   it('should return false if all the required environment variables are not set', () => {
-    const result = isGithubAnnotationsEnabled();
+    const result = isGitHubAnnotationsEnabled();
     expect(result).toBe(false);
   });
 });
 
-const annotation: Github.Annotation = {
+const annotation: GitHub.Annotation = {
   annotation_level: 'failure',
   start_line: 0,
   end_line: 0,
@@ -141,7 +141,7 @@ describe('createCheckRun', () => {
   });
 
   it('should call patch on the axios instance if there extra batches on the id returned from Create Check Run', async () => {
-    const batchedAnnotation: Github.Annotation = {
+    const batchedAnnotation: GitHub.Annotation = {
       annotation_level: 'failure',
       start_line: 1,
       end_line: 1,

@@ -1,6 +1,6 @@
 import { mocked } from 'ts-jest/utils';
 
-import { Github } from '../../../..';
+import { GitHub } from '../../../..';
 import { ESLintOutput } from '../../../../cli/adapter/eslint';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 import { StreamInterceptor } from '../../../../cli/lint/external';
@@ -61,7 +61,7 @@ const tscOutputStream = {
 
 const summary = 'a summary';
 
-const mockEslintAnnotations: Github.Annotation[] = [
+const mockEslintAnnotations: GitHub.Annotation[] = [
   {
     annotation_level: 'failure',
     end_column: 15,
@@ -75,7 +75,7 @@ const mockEslintAnnotations: Github.Annotation[] = [
   },
 ];
 
-const mockPrettierAnnotations: Github.Annotation[] = [
+const mockPrettierAnnotations: GitHub.Annotation[] = [
   {
     annotation_level: 'failure',
     start_line: 0,
@@ -85,7 +85,7 @@ const mockPrettierAnnotations: Github.Annotation[] = [
   },
 ];
 
-const mockTscAnnotations: Github.Annotation[] = [
+const mockTscAnnotations: GitHub.Annotation[] = [
   {
     annotation_level: 'failure',
     path: 'src/index.ts',
@@ -102,7 +102,7 @@ const setEnvironmentVariables = () => {
 };
 
 beforeEach(() => {
-  mocked(Github.isGithubAnnotationsEnabled).mockReturnValue(true);
+  mocked(GitHub.isGitHubAnnotationsEnabled).mockReturnValue(true);
   mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
   mocked(createPrettierAnnotations).mockReturnValue(mockPrettierAnnotations);
   mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
@@ -150,7 +150,7 @@ it('should call call createTscAnnotations with the tscok and tscOutputStream', a
 });
 
 it('should combine all the annotations into an array and call the createCheckRun method with the array', async () => {
-  const expectedAnnotations: Github.Annotation[] = [
+  const expectedAnnotations: GitHub.Annotation[] = [
     ...mockEslintAnnotations,
     ...mockPrettierAnnotations,
     ...mockTscAnnotations,
@@ -164,7 +164,7 @@ it('should combine all the annotations into an array and call the createCheckRun
     summary,
   );
 
-  expect(Github.createCheckRun).toBeCalledWith(
+  expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
     expect.anything(),
     expect.anything(),
@@ -182,7 +182,7 @@ it('should set the status to failed if any of the outputs are not ok', async () 
     summary,
   );
 
-  expect(Github.createCheckRun).toBeCalledWith(
+  expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
     expect.anything(),
     expect.anything(),
@@ -200,7 +200,7 @@ it('should set the status to success if all outputs are ok', async () => {
     summary,
   );
 
-  expect(Github.createCheckRun).toBeCalledWith(
+  expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
     expect.anything(),
     expect.anything(),
@@ -221,7 +221,7 @@ it('should create a title with the number of annotations and buildkite build num
     summary,
   );
 
-  expect(Github.createCheckRun).toBeCalledWith(
+  expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
     expectedTitle,
     expect.anything(),
@@ -246,7 +246,7 @@ it('should create a title with passed and 0 annotations added when the outputs a
     summary,
   );
 
-  expect(Github.createCheckRun).toBeCalledWith(
+  expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
     expectedTitle,
     expect.anything(),
@@ -270,7 +270,7 @@ it('should successfully create a title with 1 annotation (without the s) added',
     summary,
   );
 
-  expect(Github.createCheckRun).toBeCalledWith(
+  expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
     expectedTitle,
     expect.anything(),
@@ -288,7 +288,7 @@ it('should use the summary in the createCheckRun if the outputs are not ok', asy
     summary,
   );
 
-  expect(Github.createCheckRun).toBeCalledWith(
+  expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
     expect.anything(),
     summary,
@@ -308,7 +308,7 @@ it('should use set the summary as Lint passed if the outputs are all ok', async 
     summary,
   );
 
-  expect(Github.createCheckRun).toBeCalledWith(
+  expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
     expect.anything(),
     expectedSummary,

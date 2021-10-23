@@ -66,9 +66,9 @@ you can limit this with the `--serial` flag.
 
 See our [Buildkite guide] to learn more.
 
-`skuba lint` also automatically emits Github annotations when it detects that Buildkite environment variables and the Github API token is set.
+`skuba lint` also automatically emits GitHub annotations when it detects that Buildkite environment variables and the GitHub API token is set.
 
-See our [Github guide] to learn more.
+See our [GitHub guide] to learn more.
 
 [`skuba format`]: #skuba-format
 [buildkite guide]: ../deep-dives/buildkite.md

@@ -1,12 +1,12 @@
 import { Linter } from 'eslint';
 
-import { Github } from '../../../../';
+import { GitHub } from '../../../../';
 import { ESLintOutput, ESLintResult } from '../../../../cli/adapter/eslint';
 
 const mapEslintResultToAnnotation = (
   result: ESLintResult,
   message: Linter.LintMessage,
-): Github.Annotation => ({
+): GitHub.Annotation => ({
   annotation_level: message.severity === 2 ? 'failure' : 'warning',
   start_line: message.line,
   start_column: message.column,
@@ -18,7 +18,7 @@ const mapEslintResultToAnnotation = (
 });
 
 const createEslintAnnotations = (eslint: ESLintOutput) => {
-  const annotations: Github.Annotation[] = [];
+  const annotations: GitHub.Annotation[] = [];
 
   if (!eslint.ok) {
     eslint.errors.forEach((result) => {
