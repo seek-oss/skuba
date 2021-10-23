@@ -71,7 +71,6 @@ const getOwnerRepoString = (): string => {
  * @param summary - Summary of the report
  * @param annotations - List of annotations
  * @param conclusion - Conclusion of the run
- * @returns ID of the created Check Run
  */
 const createCheckRun = async (
   name: string,
