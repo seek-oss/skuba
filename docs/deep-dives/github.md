@@ -14,7 +14,7 @@ This topic details GitHub integration features baked into **skuba**
 
 ## GitHub annotations
 
-**skuba** can output issues detected by [`skuba lint`] as GitHub annotations via the [GitHub Checks API].
+**skuba** can output issues detected by [`skuba lint`] as GitHub annotations via the [GitHub Checks API]. **skuba** will limit the maximum number of annotations displayed on Github per check run to 200.
 
 This can be enabled by propagating Buildkite environment variables and the GitHub API token.
 For example, with the Docker plugin:
