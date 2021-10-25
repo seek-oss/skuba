@@ -1,8 +1,8 @@
 import stream from 'stream';
 
-import { Buildkite } from '../..';
 import { log } from '../../utils/logging';
 
+import { createAnnotations } from './annotate';
 import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint';
 import {
   runPrettierInCurrentThread,
@@ -11,7 +11,7 @@ import {
 import { runTscInNewProcess } from './tsc';
 import type { Input } from './types';
 
-class StreamInterceptor extends stream.Transform {
+export class StreamInterceptor extends stream.Transform {
   private chunks: Uint8Array[] = [];
 
   public output() {
@@ -81,58 +81,21 @@ export const externalLint = async (input: Input) => {
 
   const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
 
-  if (eslint.ok && prettier.ok && tscOk) {
-    return;
-  }
-
   const tools = [
     ...(eslint.ok ? [] : ['ESLint']),
     ...(prettier.ok ? [] : ['Prettier']),
     ...(tscOk ? [] : ['tsc']),
   ];
 
+  const summary = `${tools.join(', ')} found issues that require triage.`;
+  await createAnnotations(eslint, prettier, tscOk, tscOutputStream);
+
+  if (eslint.ok && prettier.ok && tscOk) {
+    return;
+  }
+
   log.newline();
-  log.err(tools.join(', '), 'found issues that require triage.');
-
-  const buildkiteOutput = [
-    '`skuba lint` found issues that require triage:',
-    ...(eslint.ok
-      ? []
-      : ['**ESLint**', Buildkite.md.terminal(eslint.output.trim())]),
-    ...(prettier.ok
-      ? []
-      : [
-          '**Prettier**',
-          Buildkite.md.terminal(
-            prettier.result.errored
-              .map(({ err, filepath }) =>
-                [filepath, ...(err ? [String(err)] : [])].join(' '),
-              )
-              .join('\n'),
-          ),
-        ]),
-    ...(tscOk
-      ? []
-      : [
-          '**tsc**',
-          Buildkite.md.terminal(
-            tscOutputStream
-              .output()
-              .split('\n')
-              .filter(Boolean)
-              .map((line) => line.replace(/^tsc\s+│ /, ''))
-              .filter((line) => !line.startsWith('TSFILE: '))
-              .join('\n')
-              .trim(),
-          ),
-        ]),
-  ].join('\n\n');
-
-  await Buildkite.annotate(buildkiteOutput, {
-    context: 'skuba-lint-external',
-    scopeContextToStep: true,
-    style: 'error',
-  });
+  log.err(summary);
 
   process.exitCode = 1;
 };
