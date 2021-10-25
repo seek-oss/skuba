@@ -87,7 +87,7 @@ Navigating to the Timeline tab reveals this:
 
 **Explanation:**
 This implies that the step(s) exhausted the Buildkite agent's resources.
-The agent may be tied up running a particularly compute-intensive step.
+The agent may be tied up running a particularly compute- or memory-intensive step.
 
 **Options:**
 
