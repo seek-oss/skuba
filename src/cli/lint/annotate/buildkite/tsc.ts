@@ -5,7 +5,7 @@ export const createTscAnnotations = (
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
 ): string[] => [
-  ...(tscOk
+  ...(!tscOk
     ? [
         '**tsc**',
         Buildkite.md.terminal(
