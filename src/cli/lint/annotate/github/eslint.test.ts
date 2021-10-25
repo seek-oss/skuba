@@ -160,3 +160,44 @@ it('should create both failure and warning annotations for eslint errors and war
 
   expect(annotations).toStrictEqual(expectedAnnotations);
 });
+
+it('should not annotate column and end column only if start and end line are the same', () => {
+  const eslintOutput: ESLintOutput = {
+    errors: [
+      {
+        filePath: 'src/index.ts',
+        messages: [
+          {
+            ruleId: 'jest/no-disabled-tests',
+            severity: 2,
+            message: 'Skipped test',
+            line: 3,
+            column: 3,
+            nodeType: 'Identifier',
+            messageId: 'noDisabledTests',
+            endLine: 4,
+            endColumn: 15,
+          },
+        ],
+      },
+    ],
+    ok: false,
+    output: '',
+    warnings: [],
+  };
+
+  const expectedAnnotations: GitHub.Annotation[] = [
+    {
+      annotation_level: 'failure',
+      start_line: 3,
+      end_line: 4,
+      message: 'Skipped test',
+      path: 'src/index.ts',
+      title: 'jest/no-disabled-tests',
+    },
+  ];
+
+  const annotations = createEslintAnnotations(eslintOutput);
+
+  expect(annotations).toStrictEqual(expectedAnnotations);
+});
