@@ -5,7 +5,7 @@ import { StreamInterceptor } from '../external';
 
 import { createBuildkiteAnnotations } from './buildkite';
 
-const createAnnotations = async (
+export const createAnnotations = async (
   eslint: ESLintOutput,
   prettier: PrettierOutput,
   tscOk: boolean,
@@ -15,5 +15,3 @@ const createAnnotations = async (
     createBuildkiteAnnotations(eslint, prettier, tscOk, tscOutputStream),
   ]);
 };
-
-export { createAnnotations };

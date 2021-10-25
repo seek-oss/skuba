@@ -1,14 +1,8 @@
-import { Buildkite } from '../../../..';
+import * as Buildkite from '../../../../api/buildkite';
 import { ESLintOutput } from '../../../../cli/adapter/eslint';
 
-const createEslintAnnotations = (eslint: ESLintOutput): string[] => {
-  const annotations: string[] = [];
-
-  if (!eslint.ok) {
-    annotations.push('**ESLint**', Buildkite.md.terminal(eslint.output.trim()));
-  }
-
-  return annotations;
-};
-
-export { createEslintAnnotations };
+export const createEslintAnnotations = (eslint: ESLintOutput): string[] => [
+  ...(eslint.ok
+    ? ['**ESLint**', Buildkite.md.terminal(eslint.output.trim())]
+    : []),
+];

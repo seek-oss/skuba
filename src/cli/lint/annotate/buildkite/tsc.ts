@@ -1,28 +1,23 @@
-import { Buildkite } from '../../../..';
+import * as Buildkite from '../../../../api/buildkite';
 import { StreamInterceptor } from '../../../../cli/lint/external';
 
-const createTscAnnotations = (
+export const createTscAnnotations = (
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
-): string[] => {
-  const annotations: string[] = [];
-  if (!tscOk) {
-    annotations.push(
-      '**tsc**',
-      Buildkite.md.terminal(
-        tscOutputStream
-          .output()
-          .split('\n')
-          .filter(Boolean)
-          .map((line) => line.replace(/^tsc\s+│ /, ''))
-          .filter((line) => !line.startsWith('TSFILE: '))
-          .join('\n')
-          .trim(),
-      ),
-    );
-  }
-
-  return annotations;
-};
-
-export { createTscAnnotations };
+): string[] => [
+  ...(tscOk
+    ? [
+        '**tsc**',
+        Buildkite.md.terminal(
+          tscOutputStream
+            .output()
+            .split('\n')
+            .filter(Boolean)
+            .map((line) => line.replace(/^tsc\s+│ /, ''))
+            .filter((line) => !line.startsWith('TSFILE: '))
+            .join('\n')
+            .trim(),
+        ),
+      ]
+    : []),
+];

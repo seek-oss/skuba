@@ -7,7 +7,7 @@ import { createEslintAnnotations } from './eslint';
 import { createPrettierAnnotations } from './prettier';
 import { createTscAnnotations } from './tsc';
 
-const createBuildkiteAnnotations = async (
+export const createBuildkiteAnnotations = async (
   eslint: ESLintOutput,
   prettier: PrettierOutput,
   tscOk: boolean,
@@ -30,5 +30,3 @@ const createBuildkiteAnnotations = async (
     style: 'error',
   });
 };
-
-export { createBuildkiteAnnotations };
