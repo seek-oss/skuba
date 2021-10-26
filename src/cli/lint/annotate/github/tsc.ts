@@ -5,7 +5,7 @@ const tscOutputRegex = new RegExp(
   /^\x1B\[34mtsc      │\x1B\[39m (.*)\(([0-9]+),([0-9]+)\): error (.*)/,
 );
 
-const createTscAnnotations = (
+export const createTscAnnotations = (
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
 ): GitHub.Annotation[] => {
@@ -30,5 +30,3 @@ const createTscAnnotations = (
 
   return annotations;
 };
-
-export { createTscAnnotations };

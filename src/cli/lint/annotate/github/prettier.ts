@@ -1,7 +1,7 @@
 import * as GitHub from '../../../../api/github';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 
-const createPrettierAnnotations = (
+export const createPrettierAnnotations = (
   prettier: PrettierOutput,
 ): GitHub.Annotation[] => {
   const annotations: GitHub.Annotation[] = [];
@@ -19,5 +19,3 @@ const createPrettierAnnotations = (
 
   return annotations;
 };
-
-export { createPrettierAnnotations };

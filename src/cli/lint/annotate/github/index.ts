@@ -7,7 +7,7 @@ import { createEslintAnnotations } from './eslint';
 import { createPrettierAnnotations } from './prettier';
 import { createTscAnnotations } from './tsc';
 
-const createGitHubAnnotations = async (
+export const createGitHubAnnotations = async (
   eslint: ESLintOutput,
   prettier: PrettierOutput,
   tscOk: boolean,
@@ -32,5 +32,3 @@ const createGitHubAnnotations = async (
     conclusion,
   );
 };
-
-export { createGitHubAnnotations };
