@@ -1,4 +1,4 @@
-import { Buildkite } from '../../../..';
+import * as Buildkite from '../../../../api/buildkite';
 import { ESLintOutput } from '../../../../cli/adapter/eslint';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 import { StreamInterceptor } from '../../../../cli/lint/external';
