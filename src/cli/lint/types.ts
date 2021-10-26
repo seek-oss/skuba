@@ -9,7 +9,7 @@ export interface Input {
   /**
    * Whether to disable parallelism to run linting operations serially.
    *
-   * This can be useful for executing in compute-constrained environments and
+   * This can be useful for executing in resource-constrained environments and
    * snapshotting deterministic output in tests.
    *
    * Defaults to `false`.

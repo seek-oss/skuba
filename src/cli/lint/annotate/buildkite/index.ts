@@ -1,4 +1,4 @@
-import { Buildkite } from '../../../..';
+import * as Buildkite from '../../../../api/buildkite';
 import { ESLintOutput } from '../../../../cli/adapter/eslint';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 import { StreamInterceptor } from '../../../../cli/lint/external';
@@ -7,7 +7,7 @@ import { createEslintAnnotations } from './eslint';
 import { createPrettierAnnotations } from './prettier';
 import { createTscAnnotations } from './tsc';
 
-const createBuildkiteAnnotations = async (
+export const createBuildkiteAnnotations = async (
   eslint: ESLintOutput,
   prettier: PrettierOutput,
   tscOk: boolean,
@@ -30,5 +30,3 @@ const createBuildkiteAnnotations = async (
     style: 'error',
   });
 };
-
-export { createBuildkiteAnnotations };
