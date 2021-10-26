@@ -4,8 +4,8 @@ import { StreamInterceptor } from '../../../../cli/lint/external';
 export const createTscAnnotations = (
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
-): string[] => [
-  ...(!tscOk
+): string[] =>
+  !tscOk
     ? [
         '**tsc**',
         Buildkite.md.terminal(
@@ -19,5 +19,4 @@ export const createTscAnnotations = (
             .trim(),
         ),
       ]
-    : []),
-];
+    : [];

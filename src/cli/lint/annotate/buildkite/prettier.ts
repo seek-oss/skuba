@@ -1,10 +1,8 @@
 import * as Buildkite from '../../../../api/buildkite';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 
-export const createPrettierAnnotations = (
-  prettier: PrettierOutput,
-): string[] => [
-  ...(!prettier.ok
+export const createPrettierAnnotations = (prettier: PrettierOutput): string[] =>
+  !prettier.ok
     ? [
         '**Prettier**',
         Buildkite.md.terminal(
@@ -15,5 +13,4 @@ export const createPrettierAnnotations = (
             .join('\n'),
         ),
       ]
-    : []),
-];
+    : [];
