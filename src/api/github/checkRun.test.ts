@@ -2,19 +2,14 @@ import { Octokit } from '@octokit/rest';
 import { Endpoints } from '@octokit/types';
 import { mocked } from 'ts-jest/utils';
 
-import { createBatches } from '../../utils/batch';
 import * as GitHub from '../github';
 
 import { createCheckRun } from './checkRun';
-
-// type CreateCheckRunParameters =
-//   Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters'];
 
 type CreateCheckRunResponse =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
 
 jest.mock('@octokit/rest');
-jest.mock('../../utils/batch');
 
 const mockClient = {
   checks: {
@@ -62,7 +57,6 @@ describe('createCheckRun', () => {
   beforeEach(() => {
     mocked(Octokit).mockReturnValue(mockClient as unknown as Octokit);
     mockClient.checks.create.mockReturnValue(createResponse);
-    mocked(createBatches).mockReturnValue([[annotation]]);
     setEnvironmentVariables();
   });
 
