@@ -3,7 +3,7 @@ import { ESLintOutput } from '../../../../cli/adapter/eslint';
 
 export const createEslintAnnotations = (eslint: ESLintOutput) => {
   const annotations: GitHub.Annotation[] = [];
-  [...eslint.warnings, ...(!eslint.ok ? eslint.errors : [])].forEach(
+  [...(!eslint.ok ? eslint.errors : []), ...eslint.warnings].forEach(
     (result) => {
       result.messages.forEach((message) => {
         // Annotations only support start_column and end_column on the same line.
