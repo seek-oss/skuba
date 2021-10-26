@@ -1,4 +1,4 @@
-import { GitHub } from '../../../../';
+import * as GitHub from '../../../../api/github';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 
 import { createPrettierAnnotations } from './prettier';

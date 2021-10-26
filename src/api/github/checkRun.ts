@@ -1,31 +1,21 @@
 import { Octokit } from '@octokit/rest';
 import { Endpoints } from '@octokit/types';
 
-import { createBatches } from '../../utils/batch';
-import { log } from '../../utils/logging';
-
 type CreateCheckRunParameters =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters'];
-
-type CreateCheckRunResponse =
-  Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
-
-type UpdateCheckRunParameters =
-  Endpoints['PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}']['parameters'];
 
 type Output = NonNullable<CreateCheckRunParameters['output']>;
 
 type Annotations = NonNullable<Output['annotations']>;
 
-type Annotation = Annotations[number];
+export type Annotation = Annotations[number];
 
 interface OwnerRepo {
   owner: string;
   repo: string;
 }
 
-const GITHUB_MAX_ANNOTATIONS_PER_CALL = 50;
-const GITHUB_MAX_ANNOTATIONS = 200;
+const GITHUB_MAX_ANNOTATIONS = 50;
 
 const isGitHubAnnotationsEnabled = (): boolean =>
   Boolean(
@@ -58,19 +48,57 @@ const getOwnerRepo = (): OwnerRepo => {
 };
 
 /**
+ * Create a uniform title format for our check runs
+ * @param conclusion - `failure` or `success`
+ * @param annotationsLength - Number of annotations added
+ * @returns Title eg. Build #12 failed (24 annotations added)
+ */
+const createTitle = (
+  conclusion: 'failure' | 'success',
+  annotationsLength: number,
+): string => {
+  const build = `Build #${process.env.BUILDKITE_BUILD_NUMBER as string}`;
+  const numAnnotations =
+    annotationsLength > GITHUB_MAX_ANNOTATIONS
+      ? GITHUB_MAX_ANNOTATIONS
+      : annotationsLength;
+  const status = conclusion === 'success' ? 'passed' : 'failed';
+
+  const plural = numAnnotations === 1 ? '' : 's';
+  return `${build} ${status} (${numAnnotations} annotation${plural} added)`;
+};
+
+/**
+ * Adds more context to the summary provided
+ * @param summary - report summary
+ * @param annotationsLength - Number of annotations added
+ * @returns summary with extra metadata
+ */
+const createEnrichedSummary = (
+  summary: string,
+  annotationsLength: number,
+): string =>
+  [
+    summary,
+    ...(annotationsLength > GITHUB_MAX_ANNOTATIONS
+      ? [
+          `There were ${annotationsLength} annotations created. However, the number of annotations displayed has been capped to ${GITHUB_MAX_ANNOTATIONS}`,
+        ]
+      : []),
+  ].join('\n\n');
+
+/**
  * Creates a Check Run
  * @param name - Name of the Check Run
- * @param title - Title of the report
  * @param summary - Summary of the report
  * @param annotations - List of annotations
  * @param conclusion - Conclusion of the run
  */
-const createCheckRun = async (
+export const createCheckRun = async (
   name: string,
-  title: string,
   summary: string,
   annotations: Annotation[],
-  conclusion: CreateCheckRunParameters['conclusion'],
+  conclusion: 'failure' | 'success',
 ): Promise<void> => {
   if (!isGitHubAnnotationsEnabled()) {
     return;
@@ -79,59 +107,20 @@ const createCheckRun = async (
   const client = new Octokit({
     auth: process.env.GITHUB_API_TOKEN,
   });
-
-  if (annotations.length > GITHUB_MAX_ANNOTATIONS) {
-    log.warn(
-      `There are ${annotations.length} annotations. Capping the number of annotations to ${GITHUB_MAX_ANNOTATIONS}`,
-    );
-  }
-
-  const annotationBatches = createBatches(
-    annotations.slice(0, GITHUB_MAX_ANNOTATIONS_PER_CALL),
-    GITHUB_MAX_ANNOTATIONS_PER_CALL,
-  );
-
   const { owner, repo } = getOwnerRepo();
+  const title = createTitle(conclusion, annotations.length);
+  const enrichedSummary = createEnrichedSummary(summary, annotations.length);
 
-  const createParams: CreateCheckRunParameters = {
+  await client.checks.create({
     owner,
     repo,
     name,
     output: {
       title,
-      summary,
-      annotations: annotationBatches.length ? annotationBatches[0] : [],
+      summary: enrichedSummary,
+      annotations: annotations.slice(0, GITHUB_MAX_ANNOTATIONS),
     },
     head_sha: process.env.BUILDKITE_COMMIT as string,
     conclusion,
-  };
-
-  const result = await client.checks.create(createParams);
-
-  // Add the other annotations to the result
-  await Promise.all(
-    annotationBatches.slice(1).map(async (batch) => {
-      const updateParams: UpdateCheckRunParameters = {
-        owner,
-        repo,
-        check_run_id: result.data.id,
-        output: {
-          title,
-          summary,
-          annotations: batch,
-        },
-      };
-
-      await client.checks.update(updateParams);
-    }),
-  );
-};
-
-export { isGitHubAnnotationsEnabled, createCheckRun, GITHUB_MAX_ANNOTATIONS };
-
-export type {
-  Annotation,
-  CreateCheckRunParameters,
-  CreateCheckRunResponse,
-  UpdateCheckRunParameters,
+  });
 };

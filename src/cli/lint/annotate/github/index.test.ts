@@ -1,6 +1,6 @@
 import { mocked } from 'ts-jest/utils';
 
-import { GitHub } from '../../../..';
+import * as GitHub from '../../../../api/github';
 import { ESLintOutput } from '../../../../cli/adapter/eslint';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 import { StreamInterceptor } from '../../../../cli/lint/external';
@@ -12,7 +12,8 @@ import { createTscAnnotations } from './tsc';
 import { createGitHubAnnotations } from '.';
 
 jest.mock('../../../../utils/logging');
-jest.mock('../../../..');
+jest.mock('../../../../api/github');
+
 jest.mock('./eslint');
 jest.mock('./prettier');
 jest.mock('./tsc');
@@ -97,12 +98,7 @@ const mockTscAnnotations: GitHub.Annotation[] = [
   },
 ];
 
-const setEnvironmentVariables = () => {
-  process.env.BUILDKITE_BUILD_NUMBER = '23';
-};
-
 beforeEach(() => {
-  mocked(GitHub.isGitHubAnnotationsEnabled).mockReturnValue(true);
   mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
   mocked(createPrettierAnnotations).mockReturnValue(mockPrettierAnnotations);
   mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
@@ -110,7 +106,6 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks();
-  delete process.env.BUILDKITE_BUILD_NUMBER;
 });
 
 it('should call call createEslintAnnotations with the eslint output', async () => {
@@ -167,13 +162,12 @@ it('should combine all the annotations into an array and call the createCheckRun
   expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
     expect.anything(),
-    expect.anything(),
     expectedAnnotations,
     expect.anything(),
   );
 });
 
-it('should set the status to failed if any of the outputs are not ok', async () => {
+it('should set the conclusion to failure if any output is not ok', async () => {
   await createGitHubAnnotations(
     eslintOutput,
     prettierOutput,
@@ -183,7 +177,6 @@ it('should set the status to failed if any of the outputs are not ok', async () 
   );
 
   expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
     expect.anything(),
     expect.anything(),
     expect.anything(),
@@ -191,7 +184,7 @@ it('should set the status to failed if any of the outputs are not ok', async () 
   );
 });
 
-it('should set the status to success if all outputs are ok', async () => {
+it('should set the conclusion to success if all outputs are ok', async () => {
   await createGitHubAnnotations(
     { ...eslintOutput, ok: true },
     { ...prettierOutput, ok: true },
@@ -201,18 +194,13 @@ it('should set the status to success if all outputs are ok', async () => {
   );
 
   expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
     expect.anything(),
     expect.anything(),
     expect.anything(),
     'success',
   );
 });
-
-it('should create a title with the number of annotations and buildkite build number', async () => {
-  setEnvironmentVariables();
-  const expectedTitle = 'Build #23 failed (3 annotations added)';
-
+it('should pass the summary through if all outputs are not ok', async () => {
   await createGitHubAnnotations(
     eslintOutput,
     prettierOutput,
@@ -223,81 +211,13 @@ it('should create a title with the number of annotations and buildkite build num
 
   expect(GitHub.createCheckRun).toBeCalledWith(
     expect.anything(),
-    expectedTitle,
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-  );
-});
-
-it('should create a title with passed and 0 annotations added when the outputs all return ok', async () => {
-  mocked(createEslintAnnotations).mockReturnValue([]);
-  mocked(createPrettierAnnotations).mockReturnValue([]);
-  mocked(createTscAnnotations).mockReturnValue([]);
-
-  setEnvironmentVariables();
-  const expectedTitle = 'Build #23 passed (0 annotations added)';
-
-  await createGitHubAnnotations(
-    { ...eslintOutput, ok: true },
-    { ...prettierOutput, ok: true },
-    true,
-    tscOutputStream,
-    summary,
-  );
-
-  expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
-    expectedTitle,
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-  );
-});
-
-it('should successfully create a title with 1 annotation (without the s) added', async () => {
-  mocked(createPrettierAnnotations).mockReturnValue([]);
-  mocked(createTscAnnotations).mockReturnValue([]);
-
-  setEnvironmentVariables();
-  const expectedTitle = 'Build #23 passed (1 annotation added)';
-
-  await createGitHubAnnotations(
-    { ...eslintOutput, ok: true },
-    { ...prettierOutput, ok: true },
-    true,
-    tscOutputStream,
-    summary,
-  );
-
-  expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
-    expectedTitle,
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-  );
-});
-
-it('should use the summary in the createCheckRun if the outputs are not ok', async () => {
-  await createGitHubAnnotations(
-    eslintOutput,
-    prettierOutput,
-    tscOk,
-    tscOutputStream,
-    summary,
-  );
-
-  expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
-    expect.anything(),
     summary,
     expect.anything(),
     expect.anything(),
   );
 });
 
-it('should use set the summary as Lint passed if the outputs are all ok', async () => {
+it('should set the summary to Lint passed if all outputs are ok', async () => {
   const expectedSummary = 'Lint passed';
 
   await createGitHubAnnotations(
@@ -309,7 +229,6 @@ it('should use set the summary as Lint passed if the outputs are all ok', async 
   );
 
   expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
     expect.anything(),
     expectedSummary,
     expect.anything(),

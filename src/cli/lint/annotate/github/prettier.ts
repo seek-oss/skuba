@@ -1,7 +1,9 @@
-import { GitHub } from '../../../../';
+import * as GitHub from '../../../../api/github';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 
-const createPrettierAnnotations = (prettier: PrettierOutput) => {
+const createPrettierAnnotations = (
+  prettier: PrettierOutput,
+): GitHub.Annotation[] => {
   const annotations: GitHub.Annotation[] = [];
   if (!prettier.ok) {
     prettier.result.errored.forEach((result) => {

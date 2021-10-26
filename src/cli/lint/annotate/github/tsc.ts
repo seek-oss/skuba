@@ -1,4 +1,4 @@
-import { GitHub } from '../../../../';
+import * as GitHub from '../../../../api/github';
 import { StreamInterceptor } from '../../../../cli/lint/external';
 
 const tscOutputRegex = new RegExp(
@@ -8,7 +8,7 @@ const tscOutputRegex = new RegExp(
 const createTscAnnotations = (
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
-) => {
+): GitHub.Annotation[] => {
   const annotations: GitHub.Annotation[] = [];
   if (!tscOk) {
     const lines = tscOutputStream.output().split('\n').filter(Boolean);

@@ -1,8 +1,7 @@
-import { GitHub } from '../../../..';
+import * as GitHub from '../../../../api/github';
 import { ESLintOutput } from '../../../../cli/adapter/eslint';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 import { StreamInterceptor } from '../../../../cli/lint/external';
-import { log } from '../../../../utils/logging';
 
 import { createEslintAnnotations } from './eslint';
 import { createPrettierAnnotations } from './prettier';
@@ -15,37 +14,19 @@ const createGitHubAnnotations = async (
   tscOutputStream: StreamInterceptor,
   summary: string,
 ) => {
-  if (!GitHub.isGitHubAnnotationsEnabled()) {
-    return;
-  }
-  log.plain('Sending annotations to GitHub');
-
   const annotations: GitHub.Annotation[] = [
     ...createEslintAnnotations(eslint),
     ...createPrettierAnnotations(prettier),
     ...createTscAnnotations(tscOk, tscOutputStream),
   ];
 
-  const lintPassed = eslint.ok && prettier.ok && tscOk;
-  const status = lintPassed ? 'passed' : 'failed';
-  const conclusion = lintPassed ? 'success' : 'failure';
+  const conclusion = eslint.ok && prettier.ok && tscOk ? 'success' : 'failure';
 
-  const buildNumber = `Build #${process.env.BUILDKITE_BUILD_NUMBER as string}`;
-  const numAnnotations =
-    annotations.length > GitHub.GITHUB_MAX_ANNOTATIONS
-      ? GitHub.GITHUB_MAX_ANNOTATIONS
-      : annotations.length;
-  const annotationString = `${numAnnotations} annotation${
-    numAnnotations === 1 ? '' : 's'
-  }`;
-
-  const title = `${buildNumber} ${status} (${annotationString} added)`;
-
-  const reportSummary = lintPassed ? 'Lint passed' : summary;
+  const reportSummary =
+    eslint.ok && prettier.ok && tscOk ? 'Lint passed' : summary;
 
   await GitHub.createCheckRun(
     'skuba/lint',
-    title,
     reportSummary,
     annotations,
     conclusion,

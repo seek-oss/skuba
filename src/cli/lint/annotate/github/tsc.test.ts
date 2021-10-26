@@ -1,4 +1,4 @@
-import { GitHub } from '../../../../';
+import * as GitHub from '../../../../api/github';
 import { StreamInterceptor } from '../../../../cli/lint/external';
 
 import { createTscAnnotations } from './tsc';

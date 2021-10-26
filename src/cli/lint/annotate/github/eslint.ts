@@ -1,6 +1,6 @@
 import { Linter } from 'eslint';
 
-import { GitHub } from '../../../../';
+import * as GitHub from '../../../../api/github';
 import { ESLintOutput, ESLintResult } from '../../../../cli/adapter/eslint';
 
 const mapEslintResultToAnnotation = (
