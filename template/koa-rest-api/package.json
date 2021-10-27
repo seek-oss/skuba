@@ -18,7 +18,7 @@
     "@types/koa": "^2.13.4",
     "@types/koa-bodyparser": "^5.0.2",
     "@types/koa__router": "^8.0.8",
-    "@types/node": "^14.17.27",
+    "@types/node": "^16.0.0",
     "@types/supertest": "^2.0.11",
     "@types/uuid": "^8.3.1",
     "chance": "^1.1.8",
