@@ -7,7 +7,7 @@
     "skuba": "*"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "license": "UNLICENSED",
   "private": true,
