@@ -27,7 +27,7 @@ const isGitHubAnnotationsEnabled = (): boolean =>
 // Pulls out the GitHub Owner + Repo String from repo urls eg.
 // git@github.com:seek-oss/skuba.git
 // https://github.com/seek-oss/skuba.git
-// Pulls out seek-oss/skuba
+// Pulls out `seek-oss` as owner and `skuba` as repo
 const ownerRepoRegex = new RegExp(/github.com(?::|\/)(.*)\/(.*).git/);
 
 const getOwnerRepo = (): OwnerRepo => {
