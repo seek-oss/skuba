@@ -62,21 +62,18 @@ you can limit this with the `--serial` flag.
 
 ### Annotations
 
-`skuba lint` automatically emits Buildkite annotations when it detects that Buildkite environment variables and the `buildkite-agent` binary are present.
+`skuba lint` can automatically emit annotations in CI.
 
-See our [Buildkite guide] to learn more.
-
-`skuba lint` also automatically emits GitHub annotations when it detects that Buildkite environment variables and the GitHub API token is set.
-
-See our [GitHub guide] to learn more.
+- [Buildkite annotations] are enabled when Buildkite environment variables and the `buildkite-agent` binary are present.
+- [GitHub annotations] are enabled when Buildkite and GitHub environment variables are present.
 
 [`skuba format`]: #skuba-format
-[buildkite guide]: ../deep-dives/buildkite.md
+[buildkite annotations]: ../deep-dives/buildkite.md#buildkite-annotations
 [cpu core count]: https://nodejs.org/api/os.html#os_os_cpus
 [eslint deep dive]: ../deep-dives/eslint.md
 [eslint-config-seek]: https://github.com/seek-oss/eslint-config-seek
 [eslint]: https://eslint.org/
-[github guide]: ../deep-dives/github.md
+[github annotations]: ../deep-dives/github.md#github-annotations
 [prescribes eslint]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#typescript
 [prettier]: https://prettier.io/
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html
