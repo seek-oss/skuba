@@ -25,10 +25,5 @@ export const createGitHubAnnotations = async (
   const reportSummary =
     eslint.ok && prettier.ok && tscOk ? 'Lint passed' : summary;
 
-  await GitHub.createCheckRun(
-    'skuba/lint',
-    reportSummary,
-    annotations,
-    conclusion,
-  );
+  await GitHub.createCheckRun('lint', reportSummary, annotations, conclusion);
 };

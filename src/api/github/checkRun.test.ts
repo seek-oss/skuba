@@ -49,7 +49,7 @@ const createResponse = {
 } as CreateCheckRunResponse;
 
 describe('createCheckRun', () => {
-  const name = 'skuba/lint';
+  const name = 'lint';
   const summary = 'Eslint, Prettier, Tsc found issues that require triage';
   const annotations = [annotation];
   const conclusion = 'failure';
@@ -93,11 +93,11 @@ describe('createCheckRun', () => {
     );
   });
 
-  it('should pass through the name and conclusion to the GitHub create check run function', async () => {
+  it('should add `skuba/` to the name and pass conclusion to the GitHub create check run function', async () => {
     await createCheckRun(name, summary, annotations, conclusion);
 
     expect(mockClient.checks.create).toBeCalledWith(
-      expect.objectContaining({ name, conclusion }),
+      expect.objectContaining({ name: 'skuba/lint', conclusion }),
     );
   });
 

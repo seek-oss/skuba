@@ -89,10 +89,10 @@ const createEnrichedSummary = (
 
 /**
  * Creates a Check Run
- * @param name - Name of the Check Run
+ * @param name - Name of the Check Run eg. lint
  * @param summary - Summary of the report
  * @param annotations - List of annotations
- * @param conclusion - Conclusion of the run
+ * @param conclusion - Conclusion of the run `failure` or `success`
  */
 export const createCheckRun = async (
   name: string,
@@ -110,11 +110,12 @@ export const createCheckRun = async (
   const { owner, repo } = getOwnerRepo();
   const title = createTitle(conclusion, annotations.length);
   const enrichedSummary = createEnrichedSummary(summary, annotations.length);
+  const checkRunName = `skuba/${name}`;
 
   await client.checks.create({
     owner,
     repo,
-    name,
+    name: checkRunName,
     output: {
       title,
       summary: enrichedSummary,
