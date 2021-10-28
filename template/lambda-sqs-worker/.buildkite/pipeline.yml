@@ -45,7 +45,7 @@ configs:
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - docker-compose#v3.8.0:
+        - docker-compose#v3.9.0:
             dependencies: false
             run: app
       retry:
@@ -69,7 +69,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v3.8.0:
+      - docker-compose#v3.9.0:
           run: app
 
   - <<: *dev
