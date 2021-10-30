@@ -23,6 +23,7 @@ export const createTscAnnotations = (
           start_column: Number(matches[3]),
           end_column: Number(matches[3]),
           message: matches[4],
+          title: 'tsc',
         });
       }
     });

@@ -29,6 +29,7 @@ it('should create annotations from TSC Output', () => {
       start_column: 1,
       end_column: 1,
       message: "TS6133: 'missing' is declared but its value is never read.",
+      title: 'tsc',
     },
   ];
 

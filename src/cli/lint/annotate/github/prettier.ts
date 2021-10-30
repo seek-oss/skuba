@@ -12,7 +12,8 @@ export const createPrettierAnnotations = (
         start_line: 0,
         end_line: 0,
         path: result.filepath,
-        message: 'Prettier found an issue with this file',
+        message: 'There is an issue with this file',
+        title: 'Prettier',
       });
     });
   }

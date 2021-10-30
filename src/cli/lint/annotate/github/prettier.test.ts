@@ -20,7 +20,8 @@ it('should create annotations from Prettier errors', () => {
       start_line: 0,
       end_line: 0,
       path: 'src/index.ts',
-      message: 'Prettier found an issue with this file',
+      message: 'There is an issue with this file',
+      title: 'Prettier',
     },
   ];
 
