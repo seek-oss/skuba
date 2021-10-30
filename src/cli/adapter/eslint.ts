@@ -66,14 +66,14 @@ export const runESLint = async (
   for (const result of results) {
     if (result.errorCount) {
       errors.push({
-        filePath: result.filePath,
+        filePath: path.relative(cwd, result.filePath),
         messages: result.messages,
       });
     }
 
     if (result.warningCount) {
       warnings.push({
-        filePath: result.filePath,
+        filePath: path.relative(cwd, result.filePath),
         messages: result.messages,
       });
     }
