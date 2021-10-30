@@ -1,19 +1,11 @@
 import { Octokit } from '@octokit/rest';
 import { Endpoints } from '@octokit/types';
 
-type CreateCheckRunParameters =
-  Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters'];
+type Output = NonNullable<
+  Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters']['output']
+>;
 
-type Output = NonNullable<CreateCheckRunParameters['output']>;
-
-type Annotations = NonNullable<Output['annotations']>;
-
-export type Annotation = Annotations[number];
-
-interface OwnerRepo {
-  owner: string;
-  repo: string;
-}
+export type Annotation = NonNullable<Output['annotations']>[number];
 
 const GITHUB_MAX_ANNOTATIONS = 50;
 
@@ -30,7 +22,7 @@ const isGitHubAnnotationsEnabled = (): boolean =>
 // Pulls out `seek-oss` as owner and `skuba` as repo
 const ownerRepoRegex = new RegExp(/github.com(?::|\/)(.*)\/(.*).git/);
 
-const getOwnerRepo = (): OwnerRepo => {
+const getOwnerRepo = (): { owner: string; repo: string } => {
   const match = ownerRepoRegex.exec(process.env.BUILDKITE_REPO as string);
   const owner = match?.[1];
   const repo = match?.[2];
