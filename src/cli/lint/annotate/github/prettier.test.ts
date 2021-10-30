@@ -17,8 +17,8 @@ it('should create annotations from Prettier errors', () => {
   const expectedAnnotations: GitHub.Annotation[] = [
     {
       annotation_level: 'failure',
-      start_line: 0,
-      end_line: 0,
+      start_line: 1,
+      end_line: 1,
       path: 'src/index.ts',
       message: 'There is an issue with this file',
       title: 'Prettier',

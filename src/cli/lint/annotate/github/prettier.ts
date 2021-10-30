@@ -9,8 +9,8 @@ export const createPrettierAnnotations = (
     prettier.result.errored.forEach((result) => {
       annotations.push({
         annotation_level: 'failure',
-        start_line: 0,
-        end_line: 0,
+        start_line: 1,
+        end_line: 1,
         path: result.filepath,
         message: 'There is an issue with this file',
         title: 'Prettier',
