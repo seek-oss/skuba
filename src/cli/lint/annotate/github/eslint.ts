@@ -13,8 +13,8 @@ export const createEslintAnnotations = (eslint: ESLintOutput) => {
 
         annotations.push({
           annotation_level: message.severity === 2 ? 'failure' : 'warning',
-          start_line: message.line,
-          end_line: message.endLine || message.line,
+          start_line: message.line || 1,
+          end_line: message.endLine || message.line || 1,
           ...(column && { start_column: column }),
           ...(endColumn && { end_column: endColumn }),
           message: message.message,
