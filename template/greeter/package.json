@@ -3,11 +3,11 @@
     "skuba-dive": "^1.2.0"
   },
   "devDependencies": {
-    "@types/node": "^14.17.9",
+    "@types/node": "^16.0.0",
     "skuba": "*"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "license": "UNLICENSED",
   "private": true,
