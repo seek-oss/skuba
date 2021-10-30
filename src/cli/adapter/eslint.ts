@@ -64,21 +64,22 @@ export const runESLint = async (
   const warnings: ESLintResult[] = [];
 
   for (const result of results) {
+    const relativePath = path.relative(cwd, result.filePath);
     if (result.errorCount) {
       errors.push({
-        filePath: path.relative(cwd, result.filePath),
+        filePath: relativePath,
         messages: result.messages,
       });
     }
 
     if (result.warningCount) {
       warnings.push({
-        filePath: path.relative(cwd, result.filePath),
+        filePath: relativePath,
         messages: result.messages,
       });
     }
 
-    logger.debug(symbolForResult(result), path.relative(cwd, result.filePath));
+    logger.debug(symbolForResult(result), relativePath);
   }
 
   const ok = errors.length === 0;
