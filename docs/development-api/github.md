@@ -8,7 +8,7 @@ parent: Development API
 
 ## createCheckRun
 
-Asynchronously creates a GitHub Check Run with annotations
+Asynchronously creates a GitHub [Check Run] with annotations.
 
 If the following environment variables are not present,
 the function will silently return without attempting to create a check run:
@@ -24,15 +24,16 @@ import { GitHub } from 'skuba';
 const main = async () => {
   const annotations = await createAnnotations();
 
-  await GitHub.createCheckRun(
-    'lint',
-    'Eslint found issues that require triage.',
+  await GitHub.createCheckRun({
+    name: 'lint',
+    summary: 'Eslint found issues that require triage.',
     annotations,
-    'failure',
-  );
+    conclusion: 'failure',
+  });
 };
 ```
 
 See our [GitHub guide] for more information.
 
 [github guide]: ../deep-dives/github.md
+[check run]: https://docs.github.com/en/rest/reference/checks#runs
