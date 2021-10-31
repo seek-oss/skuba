@@ -20,7 +20,7 @@ export const createEslintAnnotations = (
           ...(endColumn && { end_column: endColumn }),
           message: message.message,
           path: result.filePath,
-          title: `Eslint${message.ruleId ? ` (${message.ruleId})` : ''}`,
+          title: `ESLint${message.ruleId ? ` (${message.ruleId})` : ''}`,
         };
       }),
   );
