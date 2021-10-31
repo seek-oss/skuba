@@ -1,9 +1,7 @@
 import * as GitHub from '../../../../api/github';
 import { StreamInterceptor } from '../../../../cli/lint/external';
 
-const tscOutputRegex = new RegExp(
-  /^\x1B\[34mtsc      │\x1B\[39m (.*)\(([0-9]+),([0-9]+)\): error (.*)/,
-);
+const tscOutputRegex = new RegExp(/([^\s]*)\(([0-9]+),([0-9]+)\): error (.*)/);
 
 export const createTscAnnotations = (
   tscOk: boolean,
