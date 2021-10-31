@@ -17,7 +17,7 @@ RUN yarn build
 
 ###
 
-FROM gcr.io/distroless/nodejs:14 AS runtime
+FROM gcr.io/distroless/nodejs:16 AS runtime
 
 WORKDIR /workdir
 
