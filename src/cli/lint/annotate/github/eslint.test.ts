@@ -38,7 +38,7 @@ it('should create failure annotations for eslint errors', () => {
       path: '/skuba/src/index.ts',
       start_column: 3,
       start_line: 4,
-      title: 'Eslint - @typescript-eslint/no-unused-vars',
+      title: 'Eslint (@typescript-eslint/no-unused-vars)',
     },
   ];
   const annotations = createEslintAnnotations(eslintOutput);
@@ -81,7 +81,7 @@ it('should create warning annotations for eslint warnings', () => {
       path: '/skuba/src/index.ts',
       start_column: 3,
       start_line: 4,
-      title: 'Eslint - @typescript-eslint/no-unused-vars',
+      title: 'Eslint (@typescript-eslint/no-unused-vars)',
     },
   ];
   const annotations = createEslintAnnotations(eslintOutput);
@@ -142,7 +142,7 @@ it('should create both failure and warning annotations for eslint errors and war
       path: '/skuba/src/index.ts',
       start_column: 3,
       start_line: 4,
-      title: 'Eslint - @typescript-eslint/no-unused-vars',
+      title: 'Eslint (@typescript-eslint/no-unused-vars)',
     },
     {
       annotation_level: 'warning',
@@ -153,7 +153,7 @@ it('should create both failure and warning annotations for eslint errors and war
       path: '/skuba/src/index.ts',
       start_column: 3,
       start_line: 4,
-      title: 'Eslint - @typescript-eslint/no-unused-vars',
+      title: 'Eslint (@typescript-eslint/no-unused-vars)',
     },
   ];
   const annotations = createEslintAnnotations(eslintOutput);
@@ -193,7 +193,7 @@ it('should not annotate column and end column only if start and end line are the
       end_line: 4,
       message: 'Skipped test',
       path: 'src/index.ts',
-      title: 'Eslint - jest/no-disabled-tests',
+      title: 'Eslint (jest/no-disabled-tests)',
     },
   ];
 
