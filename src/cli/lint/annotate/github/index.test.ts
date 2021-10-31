@@ -159,12 +159,12 @@ it('should combine all the annotations into an array and call the createCheckRun
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
-    expect.anything(),
-    expectedAnnotations,
-    expect.anything(),
-  );
+  expect(GitHub.createCheckRun).toBeCalledWith({
+    name: expect.any(String),
+    summary: expect.any(String),
+    annotations: expectedAnnotations,
+    conclusion: expect.any(String),
+  });
 });
 
 it('should set the conclusion to failure if any output is not ok', async () => {
@@ -176,12 +176,12 @@ it('should set the conclusion to failure if any output is not ok', async () => {
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-    'failure',
-  );
+  expect(GitHub.createCheckRun).toBeCalledWith({
+    name: expect.any(String),
+    summary: expect.any(String),
+    annotations: expect.any(Array),
+    conclusion: 'failure',
+  });
 });
 
 it('should set the conclusion to success if all outputs are ok', async () => {
@@ -193,12 +193,12 @@ it('should set the conclusion to success if all outputs are ok', async () => {
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-    'success',
-  );
+  expect(GitHub.createCheckRun).toBeCalledWith({
+    name: expect.any(String),
+    summary: expect.any(String),
+    annotations: expect.any(Array),
+    conclusion: 'success',
+  });
 });
 it('should pass the summary through if all outputs are not ok', async () => {
   await createGitHubAnnotations(
@@ -209,12 +209,12 @@ it('should pass the summary through if all outputs are not ok', async () => {
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
+  expect(GitHub.createCheckRun).toBeCalledWith({
+    name: expect.any(String),
     summary,
-    expect.anything(),
-    expect.anything(),
-  );
+    annotations: expect.any(Array),
+    conclusion: expect.any(String),
+  });
 });
 
 it('should set the summary to Lint passed if all outputs are ok', async () => {
@@ -228,10 +228,10 @@ it('should set the summary to Lint passed if all outputs are ok', async () => {
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith(
-    expect.anything(),
-    expectedSummary,
-    expect.anything(),
-    expect.anything(),
-  );
+  expect(GitHub.createCheckRun).toBeCalledWith({
+    name: expect.any(String),
+    summary: expectedSummary,
+    annotations: expect.any(Array),
+    conclusion: expect.any(String),
+  });
 });

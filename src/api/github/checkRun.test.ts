@@ -62,13 +62,13 @@ describe('createCheckRun', () => {
 
   it('should return immediately if the required environment variables are not set', async () => {
     delete process.env.BUILDKITE_REPO;
-    await createCheckRun(name, summary, annotations, conclusion);
+    await createCheckRun({ name, summary, annotations, conclusion });
 
     expect(mocked(Octokit)).not.toHaveBeenCalled();
   });
 
   it('should create an octokit client with an auth token from an environment variable', async () => {
-    await createCheckRun(name, summary, annotations, conclusion);
+    await createCheckRun({ name, summary, annotations, conclusion });
 
     expect(mocked(Octokit)).toBeCalledWith({
       auth: 'ghu_someSecretToken',
@@ -76,7 +76,7 @@ describe('createCheckRun', () => {
   });
 
   it('should successfully extract the owner and repo from the BUILDKITE_REPO env var for the GitHub create check run function', async () => {
-    await createCheckRun(name, summary, annotations, conclusion);
+    await createCheckRun({ name, summary, annotations, conclusion });
 
     expect(mockClient.checks.create).toBeCalledWith(
       expect.objectContaining({ owner: 'seek-oss', repo: 'skuba' }),
@@ -84,7 +84,7 @@ describe('createCheckRun', () => {
   });
 
   it('should use the BUILDKITE_COMMIT env variable as head_sha for the GitHub create check run function', async () => {
-    await createCheckRun(name, summary, annotations, conclusion);
+    await createCheckRun({ name, summary, annotations, conclusion });
 
     expect(mockClient.checks.create).toBeCalledWith(
       expect.objectContaining({
@@ -94,7 +94,7 @@ describe('createCheckRun', () => {
   });
 
   it('should add `skuba/` to the name and pass conclusion to the GitHub create check run function', async () => {
-    await createCheckRun(name, summary, annotations, conclusion);
+    await createCheckRun({ name, summary, annotations, conclusion });
 
     expect(mockClient.checks.create).toBeCalledWith(
       expect.objectContaining({ name: 'skuba/lint', conclusion }),
@@ -104,7 +104,7 @@ describe('createCheckRun', () => {
   it('should successfully generate a success title', async () => {
     const expectedTitle = 'Build #23 passed (1 annotation added)';
 
-    await createCheckRun(name, summary, annotations, 'success');
+    await createCheckRun({ name, summary, annotations, conclusion: 'success' });
 
     expect(mockClient.checks.create).toBeCalledWith(
       expect.objectContaining({
@@ -120,7 +120,7 @@ describe('createCheckRun', () => {
   it('should successfully generate a failed title', async () => {
     const expectedTitle = 'Build #23 failed (1 annotation added)';
 
-    await createCheckRun(name, summary, annotations, conclusion);
+    await createCheckRun({ name, summary, annotations, conclusion });
 
     expect(mockClient.checks.create).toBeCalledWith(
       expect.objectContaining({
@@ -140,7 +140,12 @@ describe('createCheckRun', () => {
     );
     const expectedTitle = 'Build #23 failed (50 annotations added)';
 
-    await createCheckRun(name, summary, manyAnnotations, conclusion);
+    await createCheckRun({
+      name,
+      summary,
+      annotations: manyAnnotations,
+      conclusion,
+    });
 
     expect(mockClient.checks.create).toBeCalledWith(
       expect.objectContaining({
@@ -154,7 +159,7 @@ describe('createCheckRun', () => {
   });
 
   it('should leave the summary untouched when # of annotations < GITHUB_MAX_ANNOTATIONS', async () => {
-    await createCheckRun(name, summary, annotations, conclusion);
+    await createCheckRun({ name, summary, annotations, conclusion });
 
     expect(mockClient.checks.create).toBeCalledWith(
       expect.objectContaining({
@@ -174,7 +179,12 @@ describe('createCheckRun', () => {
     );
     const expectedSummary = `${summary}\n\nThere were 51 annotations created. However, the number of annotations displayed has been capped to 50`;
 
-    await createCheckRun(name, summary, manyAnnotations, conclusion);
+    await createCheckRun({
+      name,
+      summary,
+      annotations: manyAnnotations,
+      conclusion,
+    });
 
     expect(mockClient.checks.create).toBeCalledWith(
       expect.objectContaining({
@@ -193,7 +203,12 @@ describe('createCheckRun', () => {
       (_) => annotation,
     );
 
-    await createCheckRun(name, summary, manyAnnotations, conclusion);
+    await createCheckRun({
+      name,
+      summary,
+      annotations: manyAnnotations,
+      conclusion,
+    });
 
     expect(mockClient.checks.create).toBeCalledWith(
       expect.objectContaining({

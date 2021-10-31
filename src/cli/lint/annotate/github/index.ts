@@ -20,10 +20,14 @@ export const createGitHubAnnotations = async (
     ...createTscAnnotations(tscOk, tscOutputStream),
   ];
 
-  const conclusion = eslint.ok && prettier.ok && tscOk ? 'success' : 'failure';
+  const isOk = eslint.ok && prettier.ok && tscOk;
+  const conclusion = isOk ? 'success' : 'failure';
+  const reportSummary = isOk ? 'Lint passed' : summary;
 
-  const reportSummary =
-    eslint.ok && prettier.ok && tscOk ? 'Lint passed' : summary;
-
-  await GitHub.createCheckRun('lint', reportSummary, annotations, conclusion);
+  await GitHub.createCheckRun({
+    name: 'lint',
+    summary: reportSummary,
+    annotations,
+    conclusion,
+  });
 };

@@ -79,19 +79,19 @@ const createEnrichedSummary = (
       : []),
   ].join('\n\n');
 
-/**
- * Creates a Check Run
- * @param name - Name of the Check Run eg. lint
- * @param summary - Summary of the report
- * @param annotations - List of annotations
- * @param conclusion - Conclusion of the run `failure` or `success`
- */
-export const createCheckRun = async (
-  name: string,
-  summary: string,
-  annotations: Annotation[],
-  conclusion: 'failure' | 'success',
-): Promise<void> => {
+interface CreateCheckRunParameters {
+  name: string;
+  summary: string;
+  annotations: Annotation[];
+  conclusion: 'failure' | 'success';
+}
+
+export const createCheckRun = async ({
+  name,
+  summary,
+  annotations,
+  conclusion,
+}: CreateCheckRunParameters): Promise<void> => {
   if (!isGitHubAnnotationsEnabled()) {
     return;
   }
