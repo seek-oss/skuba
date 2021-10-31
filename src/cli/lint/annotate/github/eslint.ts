@@ -14,8 +14,8 @@ export const createEslintAnnotations = (
 
         return {
           annotation_level: message.severity === 2 ? 'failure' : 'warning',
-          start_line: message.line || 1,
-          end_line: message.endLine || message.line || 1,
+          start_line: message.line ?? 1,
+          end_line: message.endLine ?? message.line ?? 1,
           ...(startColumn && { start_column: startColumn }),
           ...(endColumn && { end_column: endColumn }),
           message: message.message,
