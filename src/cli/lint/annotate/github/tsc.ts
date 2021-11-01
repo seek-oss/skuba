@@ -49,7 +49,7 @@ export const createTscAnnotations = (
           end_line: Number(match[2]),
           start_column: Number(match[3]),
           end_column: Number(match[3]),
-          message: match[6],
+          message: match[6].trim(),
           title: `tsc`,
         });
       }
