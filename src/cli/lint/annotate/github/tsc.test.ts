@@ -16,19 +16,19 @@ afterEach(() => {
 it('should create annotations from TSC Output', () => {
   const tscOk = false;
   const output =
-    "\x1B[34mtsc      │\x1B[39m src/index.ts(1,1): error TS6133: 'missing' is declared but its value is never read." +
-    '\n\n\x1B[34mtsc      │\x1B[39m \x1B[0mtsc --noEmit exited with code 1\x1B[0m';
+    "\u001b[34mtsc      │\u001b[39m \u001b[96msrc/skuba.ts\u001b[0m:\u001b[93m6\u001b[0m:\u001b[93m20\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2307: \u001b[0mCannot find module './bla' or its corresponding type declarations.\n\u001b[34mtsc      │\u001b[39m \n\u001b[34mtsc      │\u001b[39m \u001b[7m6\u001b[0m import {test} from './bla';\n\u001b[34mtsc      │\u001b[39m \u001b[7m \u001b[0m \u001b[91m                   ~~~~~~~\u001b[0m\n\u001b[34mtsc      │\u001b[39m \n\u001b[34mtsc      │\u001b[39m \n\u001b[34mtsc      │\u001b[39m Found 1 error.\n\u001b[34mtsc      │\u001b[39m \n\u001b[34mtsc      │\u001b[39m \u001b[0mtsc --noEmit exited with code 2\u001b[0m\n";
   mockOutput.mockReturnValue(output);
 
   const expectedAnnotations: GitHub.Annotation[] = [
     {
       annotation_level: 'failure',
-      path: 'src/index.ts',
-      start_line: 1,
-      end_line: 1,
-      start_column: 1,
-      end_column: 1,
-      message: "TS6133: 'missing' is declared but its value is never read.",
+      path: 'src/skuba.ts',
+      start_line: 6,
+      end_line: 6,
+      start_column: 20,
+      end_column: 20,
+      message:
+        "TS2307: Cannot find module './bla' or its corresponding type declarations.",
       title: 'tsc',
     },
   ];
@@ -41,8 +41,8 @@ it('should create annotations from TSC Output', () => {
 it('should return an empty array when tscOk is true', () => {
   const tscOk = true;
   const output =
-    "\x1B[34mtsc      │\x1B[39m src/index.ts(1,1): error TS6133: 'missing' is declared but its value is never read." +
-    '\n\n\x1B[34mtsc      │\x1B[39m \x1B[0mtsc --noEmit exited with code 1\x1B[0m';
+    "\u001b[34mtsc      │\u001b[39m \u001b[96msrc/skuba.ts\u001b[0m:\u001b[93m6\u001b[0m:\u001b[93m20\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2307: \u001b[0mCannot find module './bla' or its corresponding type declarations.\n\u001b[34mtsc      │\u001b[39m \n\u001b[34mtsc      │\u001b[39m \u001b[7m6\u001b[0m import {test} from './bla';\n\u001b[34mtsc      │\u001b[39m \u001b[7m \u001b[0m \u001b[91m                   ~~~~~~~\u001b[0m\n\u001b[34mtsc      │\u001b[39m \n\u001b[34mtsc      │\u001b[39m \n\u001b[34mtsc      │\u001b[39m Found 1 error.\n\u001b[34mtsc      │\u001b[39m \n\u001b[34mtsc      │\u001b[39m \u001b[0mtsc --noEmit exited with code 2\u001b[0m\n";
+
   mockOutput.mockReturnValue(output);
 
   const expectedAnnotations: GitHub.Annotation[] = [];
