@@ -3,7 +3,7 @@
     "@koa/router": "^10.1.1",
     "@seek/logger": "^5.0.1",
     "skuba-dive": "^1.2.0",
-    "hot-shots": "^8.5.2",
+    "hot-shots": "^9.0.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-compose": "^4.2.0",
