@@ -7,14 +7,20 @@ const ansiPattern = [
 ].join('|');
 const ansiRegex = new RegExp(ansiPattern, 'g');
 
-// Regex for typescript output lines. eg.
-// "\x1B[34mtsc      │\x1B[39m src/index.ts(1,2): error TS6133: 'missing' is declared but its value is never read."
-// Pulls out
-// group 1: src/index.ts
-// group 2: 1
-// group 3: 2
-// group 4: TS6133: 'missing' is declared but its value is never read.
-const tscOutputRegex = new RegExp(/([^\s]*):([0-9]+):([0-9]+) - error (.*)/);
+const tscOutputRegex = new RegExp(
+  /([^\s]*)[\(:](\d+)[,:](\d+)(?:\):\s+|\s+-\s+)(error|warning|info)\s+TS(\d+)\s*:\s*(.*)/,
+);
+
+type tscLevels = 'error' | 'warning' | 'info';
+
+const annotationLevelMap: Record<
+  tscLevels,
+  GitHub.Annotation['annotation_level']
+> = {
+  error: 'failure',
+  warning: 'warning',
+  info: 'notice',
+};
 
 export const createTscAnnotations = (
   tscOk: boolean,
@@ -26,16 +32,16 @@ export const createTscAnnotations = (
     lines.forEach((line) => {
       const plainLine = line.replace(ansiRegex, '');
       const matches = tscOutputRegex.exec(plainLine);
-      if (matches?.length === 5) {
+      if (matches?.length === 7) {
         annotations.push({
-          annotation_level: 'failure',
+          annotation_level: annotationLevelMap[matches[4] as tscLevels],
           path: matches[1],
           start_line: Number(matches[2]),
           end_line: Number(matches[2]),
           start_column: Number(matches[3]),
           end_column: Number(matches[3]),
-          message: matches[4],
-          title: 'tsc',
+          message: matches[6],
+          title: `tsc`,
         });
       }
     });

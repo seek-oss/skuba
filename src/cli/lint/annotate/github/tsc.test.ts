@@ -28,7 +28,7 @@ it('should create annotations from TSC Output', () => {
       start_column: 20,
       end_column: 20,
       message:
-        "TS2307: Cannot find module './bla' or its corresponding type declarations.",
+        "Cannot find module './bla' or its corresponding type declarations.",
       title: 'tsc',
     },
   ];
