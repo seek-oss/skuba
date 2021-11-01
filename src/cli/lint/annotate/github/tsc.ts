@@ -17,6 +17,21 @@ const ansiRegex = new RegExp(ansiPattern, 'g');
  */
 const tscPrefixRegex = new RegExp(/(tsc.*?│ )/, 'g');
 
+/**
+ * Matches regular and pretty tsc output
+ * src/skuba.ts:43:7 - error TS2769: No overload matches this call.
+  Overload 1 of 2, '(obj: LogContext, msg?: string | undefined, ...args: any[]): void', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'LogContext'.
+  Overload 2 of 2, '(msg?: string | undefined, ...args: any[]): void', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'string | undefined'.
+      Type 'unknown' is not assignable to type 'string'.
+  1: src/skuba.ts
+  2. 43
+  3. 7
+  4. error
+  5. 2769
+  6. No overload matches this call. until the very end.
+ */
 const tscOutputRegex = new RegExp(
   /([^\s]*)[\(:](\d+)[,:](\d+)(?:\):\s+|\s+-\s+)(error|warning|info)\s+TS(\d+)\s*:\s*([\s\S]*?)(?=\n\S)/,
   'g',
