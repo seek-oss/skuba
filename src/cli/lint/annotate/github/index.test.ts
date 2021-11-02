@@ -144,7 +144,7 @@ it('should call call createTscAnnotations with the tscok and tscOutputStream', a
   expect(createTscAnnotations).toBeCalledWith(tscOk, tscOutputStream);
 });
 
-it('should combine all the annotations into an array and call the createCheckRun method with the array', async () => {
+it('should combine all the annotations into an array and call the createCheckRunFromBuildkite method with the array', async () => {
   const expectedAnnotations: GitHub.Annotation[] = [
     ...mockEslintAnnotations,
     ...mockPrettierAnnotations,
@@ -159,7 +159,7 @@ it('should combine all the annotations into an array and call the createCheckRun
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expectedAnnotations,
@@ -176,7 +176,7 @@ it('should set the conclusion to failure if any output is not ok', async () => {
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expect.any(Array),
@@ -193,7 +193,7 @@ it('should set the conclusion to success if all outputs are ok', async () => {
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expect.any(Array),
@@ -209,7 +209,7 @@ it('should pass the summary through if all outputs are not ok', async () => {
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
     name: expect.any(String),
     summary,
     annotations: expect.any(Array),
@@ -228,7 +228,7 @@ it('should set the summary to Lint passed if all outputs are ok', async () => {
     summary,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
     name: expect.any(String),
     summary: expectedSummary,
     annotations: expect.any(Array),

@@ -6,7 +6,7 @@ parent: Development API
 
 ---
 
-## createCheckRun
+## createCheckRunFromBuildkite
 
 Asynchronously creates a GitHub [Check Run] with annotations.
 
@@ -26,7 +26,7 @@ import { GitHub } from 'skuba';
 const main = async () => {
   const annotations = await createAnnotations();
 
-  await GitHub.createCheckRun({
+  await GitHub.createCheckRunFromBuildkite({
     name: 'lint',
     summary: 'ESLint found issues that require triage.',
     annotations,

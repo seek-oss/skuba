@@ -11,9 +11,9 @@ const GITHUB_MAX_ANNOTATIONS = 50;
 
 const isGitHubAnnotationsEnabled = (): boolean =>
   Boolean(
-    process.env.BUILDKITE_REPO &&
+    process.env.BUILDKITE_BUILD_NUMBER &&
       process.env.BUILDKITE_COMMIT &&
-      process.env.BUILDKITE_BUILD_NUMBER &&
+      process.env.BUILDKITE_REPO &&
       process.env.GITHUB_API_TOKEN,
   );
 // Pulls out the GitHub Owner + Repo String from repo urls eg.
@@ -86,7 +86,7 @@ interface CreateCheckRunParameters {
   conclusion: 'failure' | 'success';
 }
 
-export const createCheckRun = async ({
+export const createCheckRunFromBuildkite = async ({
   name,
   summary,
   annotations,
