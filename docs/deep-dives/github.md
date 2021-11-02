@@ -6,17 +6,17 @@ parent: Deep dives
 
 ---
 
-GitHub is SEEK's git repository of choice.
+GitHub is the predominant Git host used at SEEK.
 
-This topic details GitHub integration features baked into **skuba**
+This topic details GitHub integration features baked into **skuba**.
 
 ---
 
 ## GitHub annotations
 
-**skuba** can output issues detected by [`skuba lint`] as GitHub annotations via the [GitHub Checks API]. **skuba** will limit the maximum number of annotations displayed on Github per check run to 200.
+**skuba** can annotate the first 50 issues detected by [`skuba lint`] via the [GitHub Checks API].
 
-This can be enabled by propagating Buildkite environment variables and the GitHub API token.
+This can be enabled by propagating Buildkite environment variables and a GitHub API token (at SEEK, this token can be configured through Build Agency).
 For example, with the Docker plugin:
 
 ```yaml

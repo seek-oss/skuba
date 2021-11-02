@@ -15,9 +15,9 @@ If the number of `annotations` provided exceeds 50, the number sent to GitHub wi
 If the following environment variables are not present,
 the function will silently return without attempting to create a check run:
 
-- `BUILDKITE_REPO`
-- `BUILDKITE_COMMIT`
 - `BUILDKITE_BUILD_NUMBER`
+- `BUILDKITE_COMMIT`
+- `BUILDKITE_REPO`
 - `GITHUB_API_TOKEN`
 
 ```typescript
@@ -37,5 +37,5 @@ const main = async () => {
 
 See our [GitHub guide] for more information.
 
-[github guide]: ../deep-dives/github.md
 [check run]: https://docs.github.com/en/rest/reference/checks#runs
+[github guide]: ../deep-dives/github.md
