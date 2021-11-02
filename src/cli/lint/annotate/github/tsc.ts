@@ -1,16 +1,9 @@
+import stripAnsi from 'strip-ansi';
+
 import * as GitHub from '../../../../api/github';
 import { StreamInterceptor } from '../../../../cli/lint/external';
 
 type TscLevel = 'error' | 'warning' | 'info';
-
-/**
- * Code from ansi-regex https://github.com/chalk/ansi-regex
- */
-const ansiPattern = [
-  '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
-  '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))',
-].join('|');
-const ansiRegex = new RegExp(ansiPattern, 'g');
 
 /**
  * Matches the tsc │ prefix on each tsc log
@@ -52,10 +45,10 @@ export const createTscAnnotations = (
 ): GitHub.Annotation[] => {
   const annotations: GitHub.Annotation[] = [];
   if (!tscOk) {
-    const rawOutput = tscOutputStream
-      .output()
-      .replace(ansiRegex, '')
-      .replace(tscPrefixRegex, '');
+    const rawOutput = stripAnsi(tscOutputStream.output()).replace(
+      tscPrefixRegex,
+      '',
+    );
     const matches = rawOutput.matchAll(tscOutputRegex);
     for (const match of matches) {
       if (match?.length === 7) {
