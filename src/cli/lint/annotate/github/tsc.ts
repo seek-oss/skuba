@@ -1,7 +1,7 @@
 import * as GitHub from '../../../../api/github';
 import { StreamInterceptor } from '../../../../cli/lint/external';
 
-type tscLevel = 'error' | 'warning' | 'info';
+type TscLevel = 'error' | 'warning' | 'info';
 
 /**
  * Code from ansi-regex https://github.com/chalk/ansi-regex
@@ -15,7 +15,7 @@ const ansiRegex = new RegExp(ansiPattern, 'g');
 /**
  * Matches the tsc │ prefix on each tsc log
  */
-const tscPrefixRegex = new RegExp(/(tsc.*?│ )/, 'g');
+const tscPrefixRegex = new RegExp(/(tsc\s+│ )/, 'g');
 
 /**
  * Matches regular and pretty tsc output
@@ -38,7 +38,7 @@ const tscOutputRegex = new RegExp(
 );
 
 const annotationLevelMap: Record<
-  tscLevel,
+  TscLevel,
   GitHub.Annotation['annotation_level']
 > = {
   error: 'failure',
@@ -52,13 +52,15 @@ export const createTscAnnotations = (
 ): GitHub.Annotation[] => {
   const annotations: GitHub.Annotation[] = [];
   if (!tscOk) {
-    const output = tscOutputStream.output();
-    const rawOutput = output.replace(ansiRegex, '').replace(tscPrefixRegex, '');
+    const rawOutput = tscOutputStream
+      .output()
+      .replace(ansiRegex, '')
+      .replace(tscPrefixRegex, '');
     const matches = rawOutput.matchAll(tscOutputRegex);
     for (const match of matches) {
       if (match?.length === 7) {
         annotations.push({
-          annotation_level: annotationLevelMap[match[4] as tscLevel],
+          annotation_level: annotationLevelMap[match[4] as TscLevel],
           path: match[1],
           start_line: Number(match[2]),
           end_line: Number(match[2]),
