@@ -10,7 +10,7 @@ parent: Development API
 
 Asynchronously creates a GitHub [Check Run] with annotations.
 
-If the number of `annotations` provided exceeds 50, the number sent to GitHub will be capped to 50 and an explanation will be appended to the `summary`.
+This writes the first 50 `annotations` in full to GitHub.
 
 If the following environment variables are not present,
 the function will silently return without attempting to create a check run:
