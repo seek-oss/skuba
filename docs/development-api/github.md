@@ -28,7 +28,7 @@ const main = async () => {
 
   await GitHub.createCheckRun({
     name: 'lint',
-    summary: 'Eslint found issues that require triage.',
+    summary: 'ESLint found issues that require triage.',
     annotations,
     conclusion: 'failure',
   });

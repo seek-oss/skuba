@@ -50,7 +50,7 @@ const createResponse = {
 
 describe('createCheckRun', () => {
   const name = 'lint';
-  const summary = 'Eslint, Prettier, Tsc found issues that require triage';
+  const summary = 'ESLint, Prettier, Tsc found issues that require triage';
   const annotations = [annotation];
   const conclusion = 'failure';
 
