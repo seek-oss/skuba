@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+"skuba": minor
 ---
 
 **template/lambda-sqs-worker:** Switch to ARM64 architecture
