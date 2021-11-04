@@ -1,0 +1,18 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "3.15.2"
+  },
+  "changesets": [
+    "famous-zebras-shop",
+    "gorgeous-taxis-grab",
+    "itchy-squids-eat",
+    "little-deers-unite",
+    "olive-ghosts-battle",
+    "proud-months-notice",
+    "rotten-mice-exercise",
+    "serious-spiders-help",
+    "tender-bugs-enjoy"
+  ]
+}

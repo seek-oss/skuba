@@ -1,5 +1,33 @@
 # skuba
 
+## 3.15.3-beta.0
+
+### Patch Changes
+
+- **template:** Bump non-Lambda templates to Node.js 16 ([#633](https://github.com/seek-oss/skuba/pull/633))
+
+  Node.js 16 is now in active LTS. The Lambda templates are stuck on Node.js 14 until the new AWS Lambda runtime is released.
+
+- **template:** seek-jobs/gantry v1.5.2 ([#634](https://github.com/seek-oss/skuba/pull/634))
+
+- **deps:** typescript 4.4.4 ([#616](https://github.com/seek-oss/skuba/pull/616))
+
+- **deps:** Relax ranges ([#622](https://github.com/seek-oss/skuba/pull/622))
+
+  Projects can now upgrade to new Prettier and TypeScript patches and `ts-node-dev` minors without us having to cut a new release.
+
+- **deps:** eslint-config-skuba 1.0.12 ([#623](https://github.com/seek-oss/skuba/pull/623))
+
+- **template:** hot-shots ^9.0.0 ([#639](https://github.com/seek-oss/skuba/pull/639))
+
+- **template/lambda-sqs-worker:** Remove `pino.Logger` indirection ([#624](https://github.com/seek-oss/skuba/pull/624))
+
+- **template:** @seek/logger ^5.0.0 ([#621](https://github.com/seek-oss/skuba/pull/621))
+
+- **template:** Ignore `.gantry` YAML paths via `.prettierignore` ([#636](https://github.com/seek-oss/skuba/pull/636))
+
+  Gantry resource and value files often live in the `.gantry` subdirectory and may use non-standard template syntax.
+
 ## 3.15.2
 
 ### Patch Changes
