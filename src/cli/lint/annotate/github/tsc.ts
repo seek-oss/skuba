@@ -6,7 +6,7 @@ import { StreamInterceptor } from '../../../../cli/lint/external';
 type TscLevel = 'error' | 'warning' | 'info';
 
 /**
- * Matches the tsc │ prefix on each tsc log
+ * Matches the `tsc │` prefix on each `tsc` log.
  */
 const tscPrefixRegex = new RegExp(/(tsc\s+│ )/, 'g');
 
