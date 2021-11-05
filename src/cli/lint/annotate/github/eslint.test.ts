@@ -3,7 +3,7 @@ import { ESLintOutput } from '../../../../cli/adapter/eslint';
 
 import { createEslintAnnotations } from './eslint';
 
-it('should create failure annotations for eslint errors', () => {
+it('should create failure annotations for ESLint errors', () => {
   const eslintOutput: ESLintOutput = {
     errors: [
       {
@@ -46,7 +46,7 @@ it('should create failure annotations for eslint errors', () => {
   expect(annotations).toStrictEqual(expectedAnnotations);
 });
 
-it('should create warning annotations for eslint warnings', () => {
+it('should create warning annotations for ESLint warnings', () => {
   const eslintOutput: ESLintOutput = {
     errors: [],
     ok: true,
@@ -89,7 +89,7 @@ it('should create warning annotations for eslint warnings', () => {
   expect(annotations).toStrictEqual(expectedAnnotations);
 });
 
-it('should create both failure and warning annotations for eslint errors and warnings', () => {
+it('should create both failure and warning annotations for ESLint errors and warnings', () => {
   const eslintOutput: ESLintOutput = {
     errors: [
       {
