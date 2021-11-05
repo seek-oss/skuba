@@ -13,7 +13,6 @@ export const createTscAnnotations = (
             .output()
             .split('\n')
             .filter(Boolean)
-            .map((line) => line.replace(/^tsc\s+│ /, ''))
             .filter((line) => !line.startsWith('TSFILE: '))
             .join('\n')
             .trim(),

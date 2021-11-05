@@ -11,11 +11,13 @@ import {
 import { runTscInNewProcess } from './tsc';
 import type { Input } from './types';
 
+const tscPrefixRegex = /^(.*?tsc\s+│.*?\s)/g;
+
 export class StreamInterceptor extends stream.Transform {
   private chunks: Uint8Array[] = [];
 
   public output() {
-    return Buffer.concat(this.chunks).toString();
+    return Buffer.concat(this.chunks).toString().replace(tscPrefixRegex, '');
   }
 
   _transform(

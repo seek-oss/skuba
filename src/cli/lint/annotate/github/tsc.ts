@@ -8,27 +8,32 @@ type TscLevel = 'error' | 'warning' | 'info';
 /**
  * Matches the `tsc │` prefix on each `tsc` log.
  */
-const tscPrefixRegex = new RegExp(/(tsc\s+│ )/, 'g');
 
 /**
- * Matches regular and pretty tsc output
+ * Matches regular and pretty `tsc` output.
+ *
+ * For example, given the following input string:
+ *
+ * ```console
  * src/skuba.ts:43:7 - error TS2769: No overload matches this call.
-  Overload 1 of 2, '(obj: LogContext, msg?: string | undefined, ...args: any[]): void', gave the following error.
-    Argument of type 'unknown' is not assignable to parameter of type 'LogContext'.
-  Overload 2 of 2, '(msg?: string | undefined, ...args: any[]): void', gave the following error.
-    Argument of type 'unknown' is not assignable to parameter of type 'string | undefined'.
-      Type 'unknown' is not assignable to type 'string'.
-  1: src/skuba.ts
-  2. 43
-  3. 7
-  4. error
-  5. 2769
-  6. No overload matches this call. until the very end.
+ *   Overload 1 of 2, '(obj: LogContext, msg?: string | undefined, ...args: any[]): void', gave the following error.
+ *     Argument of type 'unknown' is not assignable to parameter of type 'LogContext'.
+ *   Overload 2 of 2, '(msg?: string | undefined, ...args: any[]): void', gave the following error.
+ *     Argument of type 'unknown' is not assignable to parameter of type 'string | undefined'.
+ *       Type 'unknown' is not assignable to type 'string'.
+ * ```
+ *
+ * This pattern will produce the following matches:
+ *
+ * 1. src/skuba.ts
+ * 2. 43
+ * 3. 7
+ * 4. error
+ * 5. 2769
+ * 6. No overload matches this call [...] not assignable to type 'string'.
  */
-const tscOutputRegex = new RegExp(
-  /([^\s]*)[\(:](\d+)[,:](\d+)(?:\):\s+|\s+-\s+)(error|warning|info)\s+TS(\d+)\s*:\s*([\s\S]*?)(?=\n\S)/,
-  'g',
-);
+const tscOutputRegex =
+  /([^\s].*)[\(:](\d+)[,:](\d+)(?:\):\s+|\s+-\s+)(error|warning|info)\s+TS(\d+)\s*:\s*([\s\S]*?)(?=\n\S)/g;
 
 const annotationLevelMap: Record<
   TscLevel,
@@ -45,10 +50,7 @@ export const createTscAnnotations = (
 ): GitHub.Annotation[] => {
   const annotations: GitHub.Annotation[] = [];
   if (!tscOk) {
-    const rawOutput = stripAnsi(tscOutputStream.output()).replace(
-      tscPrefixRegex,
-      '',
-    );
+    const rawOutput = stripAnsi(tscOutputStream.output());
     const matches = rawOutput.matchAll(tscOutputRegex);
     for (const match of matches) {
       if (match?.length === 7) {
