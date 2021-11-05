@@ -200,6 +200,7 @@ it('should set the conclusion to success if all outputs are ok', async () => {
     conclusion: 'success',
   });
 });
+
 it('should pass the summary through if all outputs are not ok', async () => {
   await createGitHubAnnotations(
     eslintOutput,
