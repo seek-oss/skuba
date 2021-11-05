@@ -72,7 +72,7 @@ describe('createCheckRunFromBuildkite', () => {
     expect(mocked(Octokit)).not.toHaveBeenCalled();
   });
 
-  it('should create an Octokit client with an auth token from an environment variable', async () => {
+  it('should create an Octokit client with an auth token from the GITHUB_API_TOKEN environment variable', async () => {
     await createCheckRunFromBuildkite({
       name,
       summary,
@@ -85,7 +85,7 @@ describe('createCheckRunFromBuildkite', () => {
     });
   });
 
-  it('should successfully extract the owner and repo from the BUILDKITE_REPO env var for the GitHub create check run function', async () => {
+  it('should extract an owner and repo from the BUILDKITE_REPO environment variable', async () => {
     await createCheckRunFromBuildkite({
       name,
       summary,
@@ -98,7 +98,7 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should use the BUILDKITE_COMMIT env variable as head_sha for the GitHub create check run function', async () => {
+  it('should use the BUILDKITE_COMMIT environment variable as the `head_sha`', async () => {
     await createCheckRunFromBuildkite({
       name,
       summary,
@@ -113,7 +113,7 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should add `skuba/` to the name and pass conclusion to the GitHub create check run function', async () => {
+  it('should add `skuba/` to the name and propagate the conclusion', async () => {
     await createCheckRunFromBuildkite({
       name,
       summary,
@@ -126,7 +126,7 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should successfully generate a success title', async () => {
+  it('should generate a success title', async () => {
     const expectedTitle = 'Build #23 passed (1 annotation added)';
 
     await createCheckRunFromBuildkite({
@@ -147,7 +147,7 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should successfully generate a failed title', async () => {
+  it('should generate a failure title', async () => {
     const expectedTitle = 'Build #23 failed (1 annotation added)';
 
     await createCheckRunFromBuildkite({
@@ -168,7 +168,7 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should limit the max number of annotations to GITHUB_MAX_ANNOTATIONS in the title', async () => {
+  it('should limit the number of annotations to GITHUB_MAX_ANNOTATIONS in the title', async () => {
     const manyAnnotations: GitHub.Annotation[] = Array.from(
       { length: 51 },
       (_) => annotation,
@@ -193,7 +193,7 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should leave the summary untouched when # of annotations < GITHUB_MAX_ANNOTATIONS', async () => {
+  it('should leave the summary untouched when the number of annotations < GITHUB_MAX_ANNOTATIONS', async () => {
     await createCheckRunFromBuildkite({
       name,
       summary,
@@ -237,7 +237,7 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should cap the number of annotations to GITHUB_MAX_ANNOTATIONS in the GitHub create check runs function', async () => {
+  it('should limit the number of annotations to GITHUB_MAX_ANNOTATIONS in the check run', async () => {
     const manyAnnotations: GitHub.Annotation[] = Array.from(
       { length: 51 },
       (_) => annotation,
