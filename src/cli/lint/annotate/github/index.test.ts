@@ -108,7 +108,7 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-it('should call call createEslintAnnotations with the eslint output', async () => {
+it('should call createEslintAnnotations with the ESLint output', async () => {
   await createGitHubAnnotations(
     eslintOutput,
     prettierOutput,
@@ -120,7 +120,7 @@ it('should call call createEslintAnnotations with the eslint output', async () =
   expect(createEslintAnnotations).toBeCalledWith(eslintOutput);
 });
 
-it('should call call createPrettierAnnotations with the prettier output', async () => {
+it('should call createPrettierAnnotations with the Prettier output', async () => {
   await createGitHubAnnotations(
     eslintOutput,
     prettierOutput,
@@ -132,7 +132,7 @@ it('should call call createPrettierAnnotations with the prettier output', async 
   expect(createPrettierAnnotations).toBeCalledWith(prettierOutput);
 });
 
-it('should call call createTscAnnotations with the tscok and tscOutputStream', async () => {
+it('should call createTscAnnotations with tscOk and tscOutputStream', async () => {
   await createGitHubAnnotations(
     eslintOutput,
     prettierOutput,
@@ -144,7 +144,7 @@ it('should call call createTscAnnotations with the tscok and tscOutputStream', a
   expect(createTscAnnotations).toBeCalledWith(tscOk, tscOutputStream);
 });
 
-it('should combine all the annotations into an array and call the createCheckRunFromBuildkite method with the array', async () => {
+it('should combine all the annotations into an array for the check run', async () => {
   const expectedAnnotations: GitHub.Annotation[] = [
     ...mockEslintAnnotations,
     ...mockPrettierAnnotations,
@@ -171,7 +171,7 @@ it('should set the conclusion to failure if any output is not ok', async () => {
   await createGitHubAnnotations(
     eslintOutput,
     prettierOutput,
-    tscOk,
+    tscOk: true,
     tscOutputStream,
     summary,
   );
@@ -201,11 +201,11 @@ it('should set the conclusion to success if all outputs are ok', async () => {
   });
 });
 
-it('should pass the summary through if all outputs are not ok', async () => {
+it('should pass the summary through if any output is not ok', async () => {
   await createGitHubAnnotations(
     eslintOutput,
     prettierOutput,
-    tscOk,
+    tscOk: true,
     tscOutputStream,
     summary,
   );
@@ -218,7 +218,7 @@ it('should pass the summary through if all outputs are not ok', async () => {
   });
 });
 
-it('should set the summary to Lint passed if all outputs are ok', async () => {
+it('should set the summary to `Lint passed` if all outputs are ok', async () => {
   const expectedSummary = 'Lint passed';
 
   await createGitHubAnnotations(
