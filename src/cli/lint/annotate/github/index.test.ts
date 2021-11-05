@@ -169,9 +169,9 @@ it('should combine all the annotations into an array for the check run', async (
 
 it('should set the conclusion to failure if any output is not ok', async () => {
   await createGitHubAnnotations(
-    eslintOutput,
-    prettierOutput,
-    tscOk: true,
+    { ...eslintOutput, ok: false },
+    { ...prettierOutput, ok: true },
+    true,
     tscOutputStream,
     summary,
   );
@@ -203,9 +203,9 @@ it('should set the conclusion to success if all outputs are ok', async () => {
 
 it('should pass the summary through if any output is not ok', async () => {
   await createGitHubAnnotations(
-    eslintOutput,
-    prettierOutput,
-    tscOk: true,
+    { ...eslintOutput, ok: true },
+    { ...prettierOutput, ok: true },
+    false,
     tscOutputStream,
     summary,
   );
