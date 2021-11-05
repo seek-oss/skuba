@@ -13,7 +13,7 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-it('should create annotations from multiple single line output from TSC', () => {
+it('should create annotations from single-line tsc output', () => {
   const tscOk = false;
   const output =
     "\x1B[34mtsc      │\x1B[39m src/skuba.ts(1,4): error TS6133: 'hello' is declared but its value is never read.\n" +
@@ -50,7 +50,7 @@ it('should create annotations from multiple single line output from TSC', () => 
   expect(annotation).toStrictEqual(expectedAnnotations);
 });
 
-it('should create annotations from a single and a multiline result from TSC', () => {
+it('should create annotations from single- and multi-line tsc output', () => {
   const tscOk = false;
   const output =
     "\x1B[34mtsc      │\x1B[39m src/skuba.ts(1,4): error TS6133: 'hello' is declared but its value is never read.\n" +
@@ -98,7 +98,7 @@ it('should create annotations from a single and a multiline result from TSC', ()
   expect(annotation).toStrictEqual(expectedAnnotations);
 });
 
-it('should create annotations from a single and a multiline result from TSC when pretty is enabled', () => {
+it('should create annotations from single- and multi-line tsc output when `pretty` is enabled', () => {
   const tscOk = false;
   const output =
     "\x1B[34mtsc      │\x1B[39m \x1B[96msrc/skuba.ts\x1B[0m:\x1B[93m6\x1B[0m:\x1B[93m3\x1B[0m - \x1B[91merror\x1B[0m\x1B[90m TS6133: \x1B[0m'hello' is declared but its value is never read.\n" +
@@ -156,7 +156,8 @@ it('should create annotations from a single and a multiline result from TSC when
 
   expect(annotation).toStrictEqual(expectedAnnotations);
 });
-it('should return an empty array when tscOk is true', () => {
+
+it('should return an empty array when `tscOk` is true', () => {
   const tscOk = true;
   const output =
     "\x1B[34mtsc      │\x1B[39m src/index.ts(6,3): error TS6133: 'test' is declared but its value is never read.\n" +
