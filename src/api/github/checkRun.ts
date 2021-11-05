@@ -16,6 +16,7 @@ const isGitHubAnnotationsEnabled = (): boolean =>
       process.env.BUILDKITE_REPO &&
       process.env.GITHUB_API_TOKEN,
   );
+
 // Pulls out the GitHub Owner + Repo String from repo urls eg.
 // git@github.com:seek-oss/skuba.git
 // https://github.com/seek-oss/skuba.git
