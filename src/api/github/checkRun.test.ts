@@ -72,7 +72,7 @@ describe('createCheckRunFromBuildkite', () => {
     expect(mocked(Octokit)).not.toHaveBeenCalled();
   });
 
-  it('should create an octokit client with an auth token from an environment variable', async () => {
+  it('should create an Octokit client with an auth token from an environment variable', async () => {
     await createCheckRunFromBuildkite({
       name,
       summary,
