@@ -8,7 +8,7 @@ parent: Development API
 
 ## createCheckRunFromBuildkite
 
-Asynchronously creates a GitHub [Check Run] with annotations.
+Asynchronously creates a GitHub [check run] with annotations.
 
 This writes the first 50 `annotations` in full to GitHub.
 
