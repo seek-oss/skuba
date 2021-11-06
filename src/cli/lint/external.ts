@@ -83,21 +83,20 @@ export const externalLint = async (input: Input) => {
 
   const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
 
+  await createAnnotations(eslint, prettier, tscOk, tscOutputStream);
+
+  if (eslint.ok && prettier.ok && tscOk) {
+    return;
+  }
+
   const tools = [
     ...(eslint.ok ? [] : ['ESLint']),
     ...(prettier.ok ? [] : ['Prettier']),
     ...(tscOk ? [] : ['tsc']),
   ];
 
-  const summary = `${tools.join(', ')} found issues that require triage.`;
-  await createAnnotations(eslint, prettier, tscOk, tscOutputStream, summary);
-
-  if (eslint.ok && prettier.ok && tscOk) {
-    return;
-  }
-
   log.newline();
-  log.err(summary);
+  log.err(`${tools.join(', ')} found issues that require triage.`);
 
   process.exitCode = 1;
 };

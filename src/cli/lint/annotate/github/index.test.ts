@@ -60,8 +60,6 @@ const tscOutputStream = {
   output: mockOutput,
 } as unknown as StreamInterceptor;
 
-const summary = 'a summary';
-
 const mockEslintAnnotations: GitHub.Annotation[] = [
   {
     annotation_level: 'failure',
@@ -114,7 +112,6 @@ it('should call createEslintAnnotations with the ESLint output', async () => {
     prettierOutput,
     tscOk,
     tscOutputStream,
-    summary,
   );
 
   expect(createEslintAnnotations).toBeCalledWith(eslintOutput);
@@ -126,7 +123,6 @@ it('should call createPrettierAnnotations with the Prettier output', async () =>
     prettierOutput,
     tscOk,
     tscOutputStream,
-    summary,
   );
 
   expect(createPrettierAnnotations).toBeCalledWith(prettierOutput);
@@ -138,7 +134,6 @@ it('should call createTscAnnotations with tscOk and tscOutputStream', async () =
     prettierOutput,
     tscOk,
     tscOutputStream,
-    summary,
   );
 
   expect(createTscAnnotations).toBeCalledWith(tscOk, tscOutputStream);
@@ -156,7 +151,6 @@ it('should combine all the annotations into an array for the check run', async (
     prettierOutput,
     tscOk,
     tscOutputStream,
-    summary,
   );
 
   expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
@@ -173,7 +167,6 @@ it('should set the conclusion to failure if any output is not ok', async () => {
     { ...prettierOutput, ok: true },
     true,
     tscOutputStream,
-    summary,
   );
 
   expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
@@ -190,7 +183,6 @@ it('should set the conclusion to success if all outputs are ok', async () => {
     { ...prettierOutput, ok: true },
     true,
     tscOutputStream,
-    summary,
   );
 
   expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
@@ -201,32 +193,32 @@ it('should set the conclusion to success if all outputs are ok', async () => {
   });
 });
 
-it('should pass the summary through if any output is not ok', async () => {
+it('should report that skuba lint failed if the output is not ok', async () => {
+  const expectedSummary = '`skuba lint` found issues that require triage.';
+
   await createGitHubAnnotations(
-    { ...eslintOutput, ok: true },
-    { ...prettierOutput, ok: true },
+    { ...eslintOutput, ok: false },
+    { ...prettierOutput, ok: false },
     false,
     tscOutputStream,
-    summary,
   );
 
   expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
     name: expect.any(String),
-    summary,
+    summary: expectedSummary,
     annotations: expect.any(Array),
     conclusion: expect.any(String),
   });
 });
 
 it('should set the summary to `Lint passed` if all outputs are ok', async () => {
-  const expectedSummary = 'Lint passed';
+  const expectedSummary = '`skuba lint` passed.';
 
   await createGitHubAnnotations(
     { ...eslintOutput, ok: true },
     { ...prettierOutput, ok: true },
     true,
     tscOutputStream,
-    summary,
   );
 
   expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({

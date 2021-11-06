@@ -12,7 +12,6 @@ export const createGitHubAnnotations = async (
   prettier: PrettierOutput,
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
-  summary: string,
 ) => {
   const annotations: GitHub.Annotation[] = [
     ...createEslintAnnotations(eslint),
@@ -22,11 +21,14 @@ export const createGitHubAnnotations = async (
 
   const isOk = eslint.ok && prettier.ok && tscOk;
   const conclusion = isOk ? 'success' : 'failure';
-  const reportSummary = isOk ? 'Lint passed' : summary;
+
+  const summary = isOk
+    ? '`skuba lint` passed.'
+    : '`skuba lint` found issues that require triage.';
 
   await GitHub.createCheckRunFromBuildkite({
     name: 'skuba/lint',
-    summary: reportSummary,
+    summary,
     annotations,
     conclusion,
   });

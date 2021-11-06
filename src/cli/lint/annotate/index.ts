@@ -11,10 +11,9 @@ export const createAnnotations = async (
   prettier: PrettierOutput,
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
-  summary: string,
 ): Promise<void> => {
   await Promise.all([
-    createGitHubAnnotations(eslint, prettier, tscOk, tscOutputStream, summary),
+    createGitHubAnnotations(eslint, prettier, tscOk, tscOutputStream),
     createBuildkiteAnnotations(eslint, prettier, tscOk, tscOutputStream),
   ]);
 };
