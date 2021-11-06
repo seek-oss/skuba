@@ -103,12 +103,11 @@ export const createCheckRunFromBuildkite = async ({
   const { owner, repo } = getOwnerRepo();
   const title = createTitle(conclusion, annotations.length);
   const enrichedSummary = createEnrichedSummary(summary, annotations.length);
-  const checkRunName = `skuba/${name}`;
 
   await client.checks.create({
     owner,
     repo,
-    name: checkRunName,
+    name,
     output: {
       title,
       summary: enrichedSummary,

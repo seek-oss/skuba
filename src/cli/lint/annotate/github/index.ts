@@ -25,7 +25,7 @@ export const createGitHubAnnotations = async (
   const reportSummary = isOk ? 'Lint passed' : summary;
 
   await GitHub.createCheckRunFromBuildkite({
-    name: 'lint',
+    name: 'skuba/lint',
     summary: reportSummary,
     annotations,
     conclusion,

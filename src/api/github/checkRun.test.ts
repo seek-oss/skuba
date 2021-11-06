@@ -49,7 +49,7 @@ const createResponse = {
 } as CreateCheckRunResponse;
 
 describe('createCheckRunFromBuildkite', () => {
-  const name = 'lint';
+  const name = 'skuba/lint';
   const summary = 'ESLint, Prettier, Tsc found issues that require triage';
   const annotations = [annotation];
   const conclusion = 'failure';
@@ -113,7 +113,7 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should add `skuba/` to the name and propagate the conclusion', async () => {
+  it('should pass the name and conclusion directly to create check run', async () => {
     await createCheckRunFromBuildkite({
       name,
       summary,
@@ -122,7 +122,7 @@ describe('createCheckRunFromBuildkite', () => {
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
-      expect.objectContaining({ name: 'skuba/lint', conclusion }),
+      expect.objectContaining({ name, conclusion }),
     );
   });
 
