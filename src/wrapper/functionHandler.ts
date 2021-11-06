@@ -34,7 +34,13 @@ export const runFunctionHandler = async ({
     return;
   }
 
-  log.warn(log.bold(functionName), `(${fnArgs(fn).join(', ')})`);
+  log.warn(
+    log.bold(functionName),
+    `(${fnArgs(fn)
+      // Add a `?` placeholder for unnamed arguments.
+      .map((arg) => arg || '?')
+      .join(', ')})`,
+  );
 
   const requestListener = createRequestListenerFromFunction(fn);
 
