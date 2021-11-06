@@ -54,6 +54,14 @@ services:
       - /workdir/node_modules
 ```
 
+If you're running in GitHub Actions,
+propagate the following environment variables to achieve the same effect:
+
+- `CI` or `GITHUB_ACTIONS`
+- `GITHUB_JOB`
+- `GITHUB_RUN_NUMBER`
+- `GITHUB_TOKEN`
+
 This feature is also planned for [`skuba test`] in future.
 
 ---
