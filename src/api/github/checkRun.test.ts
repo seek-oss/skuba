@@ -217,7 +217,7 @@ describe('createCheckRunFromBuildkite', () => {
       { length: 51 },
       (_) => annotation,
     );
-    const expectedSummary = `${summary}\n\nThere were 51 annotations created. However, the number of annotations displayed has been capped to 50`;
+    const expectedSummary = `${summary}\n\n51 annotations were provided, but only the first 50 are visible in GitHub.`;
 
     await createCheckRunFromBuildkite({
       name,
