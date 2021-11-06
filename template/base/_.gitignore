@@ -12,6 +12,7 @@ node_modules*/
 /tmp*/
 
 .DS_Store
+.eslintcache
 .npmrc
 *.tgz
 *.tsbuildinfo
