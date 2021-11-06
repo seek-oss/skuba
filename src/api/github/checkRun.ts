@@ -31,7 +31,7 @@ const isGitHubAnnotationsEnabled = (): boolean =>
  *
  * 1. seek-oss
  * 2. skuba
-*/
+ */
 const ownerRepoRegex = /github.com(?::|\/)(.+)\/(.+).git$/;
 
 const getOwnerRepo = (): { owner: string; repo: string } => {
@@ -60,17 +60,17 @@ const getOwnerRepo = (): { owner: string; repo: string } => {
  */
 const createTitle = (
   conclusion: 'failure' | 'success',
-  annotationsLength: number,
+  inputAnnotations: number,
 ): string => {
   const build = `Build #${process.env.BUILDKITE_BUILD_NUMBER as string}`;
-  const numAnnotations =
-    annotationsLength > GITHUB_MAX_ANNOTATIONS
+  const addedAnnotations =
+    inputAnnotations > GITHUB_MAX_ANNOTATIONS
       ? GITHUB_MAX_ANNOTATIONS
-      : annotationsLength;
+      : inputAnnotations;
   const status = conclusion === 'success' ? 'passed' : 'failed';
 
-  const plural = numAnnotations === 1 ? '' : 's';
-  return `${build} ${status} (${numAnnotations} annotation${plural} added)`;
+  const plural = addedAnnotations === 1 ? '' : 's';
+  return `${build} ${status} (${addedAnnotations} annotation${plural} added)`;
 };
 
 /**
@@ -78,13 +78,13 @@ const createTitle = (
  */
 const createEnrichedSummary = (
   summary: string,
-  annotationsLength: number,
+  inputAnnotations: number,
 ): string =>
   [
     summary,
-    ...(annotationsLength > GITHUB_MAX_ANNOTATIONS
+    ...(inputAnnotations > GITHUB_MAX_ANNOTATIONS
       ? [
-          `There were ${annotationsLength} annotations created. However, the number of annotations displayed has been capped to ${GITHUB_MAX_ANNOTATIONS}`,
+          `${inputAnnotations} annotations were provided, but only the first ${GITHUB_MAX_ANNOTATIONS} are visible in GitHub.`,
         ]
       : []),
   ].join('\n\n');
