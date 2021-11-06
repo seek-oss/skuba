@@ -58,14 +58,14 @@ services:
 
 This feature is also planned for [`skuba test`] in future.
 
-**skuba**'s development API includes a [GitHub.createCheckRunFromBuildkite] function.
+**skuba**'s development API includes a [GitHub.createCheckRun] function.
 You can use this to create your own check runs from other JavaScript code running in your CI workflow.
 
 ---
 
 [`skuba lint`]: ../cli/lint.md#skuba-lint
 [`skuba test`]: ../cli/test.md#skuba-test
-[github.createcheckrunfrombuildkite]: ../development-api/github.md#createCheckRunFromBuildkite
+[github.createcheckrun]: ../development-api/github.md#createCheckRun
 [github checks api]: https://docs.github.com/en/rest/reference/checks/
 [compose file]: https://docs.docker.com/compose/compose-file
 [docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
