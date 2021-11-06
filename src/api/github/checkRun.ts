@@ -17,11 +17,22 @@ const isGitHubAnnotationsEnabled = (): boolean =>
       process.env.GITHUB_API_TOKEN,
   );
 
-// Pulls out the GitHub Owner + Repo String from repo urls eg.
-// git@github.com:seek-oss/skuba.git
-// https://github.com/seek-oss/skuba.git
-// Pulls out `seek-oss` as owner and `skuba` as repo
-const ownerRepoRegex = new RegExp(/github.com(?::|\/)(.*)\/(.*).git/);
+/**
+ * Matches the owner and repository names in a GitHub repository URL.
+ *
+ * For example, given the following input strings:
+ *
+ * ```console
+ * git@github.com:seek-oss/skuba.git
+ * https://github.com/seek-oss/skuba.git
+ * ```
+ *
+ * This pattern will produce the following matches:
+ *
+ * 1. seek-oss
+ * 2. skuba
+*/
+const ownerRepoRegex = /github.com(?::|\/)(.+)\/(.+).git$/;
 
 const getOwnerRepo = (): { owner: string; repo: string } => {
   const match = ownerRepoRegex.exec(process.env.BUILDKITE_REPO as string);
