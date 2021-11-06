@@ -161,7 +161,7 @@ it('should create both failure and warning annotations for ESLint errors and war
   expect(annotations).toStrictEqual(expectedAnnotations);
 });
 
-it('should not annotate column and end column only if start and end line are the same', () => {
+it('should not specify columns when an annotation spans multiple lines', () => {
   const eslintOutput: ESLintOutput = {
     errors: [
       {
