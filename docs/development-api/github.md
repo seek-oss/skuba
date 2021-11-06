@@ -27,8 +27,8 @@ const main = async () => {
   const annotations = await createAnnotations();
 
   await GitHub.createCheckRunFromBuildkite({
-    name: 'lint',
-    summary: 'ESLint found issues that require triage.',
+    name: 'skuba/lint',
+    summary: '`skuba/lint` found issues that require triage.',
     annotations,
     conclusion: 'failure',
   });
