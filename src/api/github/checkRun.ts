@@ -63,10 +63,7 @@ const createTitle = (
 };
 
 /**
- * Adds more context to the summary provided
- * @param summary - report summary
- * @param annotationsLength - Number of annotations added
- * @returns summary with extra metadata
+ * Enriches the summary with more context about the check run.
  */
 const createEnrichedSummary = (
   summary: string,
