@@ -48,13 +48,14 @@ export const createTscAnnotations = (
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
 ): GitHub.Annotation[] => {
-  const annotations: GitHub.Annotation[] = [];
-  if (!tscOk) {
-    const rawOutput = stripAnsi(tscOutputStream.output());
-    const matches = rawOutput.matchAll(tscOutputRegex);
-    for (const match of matches) {
-      if (match?.length === 7) {
-        annotations.push({
+  if (tscOk) {
+    return [];
+  }
+
+  const matches = stripAnsi(tscOutputStream.output()).matchAll(tscOutputRegex);
+  return Array.from(matches).flatMap<GitHub.Annotation>((match) =>
+    match?.length === 7
+      ? {
           annotation_level: annotationLevelMap[match[4] as TscLevel],
           path: match[1],
           start_line: Number(match[2]),
@@ -63,10 +64,7 @@ export const createTscAnnotations = (
           end_column: Number(match[3]),
           message: match[6].trim(),
           title: `tsc (TS${match[5]})`,
-        });
-      }
-    }
-  }
-
-  return annotations;
+        }
+      : [],
+  );
 };
