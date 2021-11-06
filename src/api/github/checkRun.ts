@@ -41,10 +41,11 @@ const getOwnerRepo = (): { owner: string; repo: string } => {
 };
 
 /**
- * Create a uniform title format for our check runs
- * @param conclusion - `failure` or `success`
- * @param annotationsLength - Number of annotations added
- * @returns Title eg. Build #12 failed (24 annotations added)
+ * Create a uniform title format for our check runs, e.g.
+ *
+ * ```text
+ * Build #12 failed (24 annotations added)
+ * ```
  */
 const createTitle = (
   conclusion: 'failure' | 'success',
