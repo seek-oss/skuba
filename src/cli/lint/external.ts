@@ -11,7 +11,7 @@ import {
 import { runTscInNewProcess } from './tsc';
 import type { Input } from './types';
 
-const tscPrefixRegex = /^(.*?tsc\s+│.*?\s)/g;
+const tscPrefixRegex = /^(.*?tsc\s+│.*?\s)/gm;
 
 export class StreamInterceptor extends stream.Transform {
   private chunks: Uint8Array[] = [];
