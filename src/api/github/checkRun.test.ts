@@ -5,7 +5,7 @@ import { mocked } from 'ts-jest/utils';
 
 import * as GitHub from '../github';
 
-import { createCheckRunFromBuildkite } from './checkRun';
+import { createCheckRun } from './checkRun';
 
 type CreateCheckRunResponse =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
@@ -21,17 +21,10 @@ const mockClient = {
 };
 
 afterEach(() => {
-  delete process.env.BUILDKITE_BUILD_NUMBER;
   delete process.env.GITHUB_API_TOKEN;
+  delete process.env.GITHUB_TOKEN;
   jest.resetAllMocks();
 });
-
-const setEnvironmentVariables = () => {
-  process.env.BUILDKITE = 'true';
-  process.env.BUILDKITE_BUILD_NUMBER = '23';
-  process.env.BUILDKITE_REPO = 'git@github.com:seek-oss/skuba.git';
-  process.env.GITHUB_API_TOKEN = 'ghu_someSecretToken';
-};
 
 const annotation: GitHub.Annotation = {
   annotation_level: 'failure',
@@ -48,58 +41,65 @@ const createResponse = {
   },
 } as CreateCheckRunResponse;
 
-describe('createCheckRunFromBuildkite', () => {
+describe('createCheckRun', () => {
   const name = 'skuba/lint';
   const summary = 'ESLint, Prettier, Tsc found issues that require triage';
   const annotations = [annotation];
   const conclusion = 'failure';
+  const title = 'Build #23 failed';
 
   beforeEach(() => {
     mocked(Octokit).mockReturnValue(mockClient as unknown as Octokit);
-    mockClient.checks.create.mockReturnValue(createResponse);
-    setEnvironmentVariables();
     mocked(git.listRemotes).mockResolvedValue([
       { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
     ]);
     mocked(git.log).mockResolvedValue([
-      {
-        oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad',
-      } as ReadCommitResult,
+      { oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad' } as ReadCommitResult,
     ]);
+    mockClient.checks.create.mockReturnValue(createResponse);
   });
 
-  it('should return immediately if the required environment variables are not set', async () => {
-    delete process.env.BUILDKITE;
+  it('should create an Octokit client with the GITHUB_API_TOKEN environment variable', async () => {
+    delete process.env.GITHUB_TOKEN;
+    process.env.GITHUB_API_TOKEN = 'Hello from GITHUB_API_TOKEN';
 
-    await createCheckRunFromBuildkite({
+    await createCheckRun({
       name,
       summary,
       annotations,
       conclusion,
-    });
-
-    expect(mocked(Octokit)).not.toHaveBeenCalled();
-  });
-
-  it('should create an Octokit client with an auth token from the GITHUB_API_TOKEN environment variable', async () => {
-    await createCheckRunFromBuildkite({
-      name,
-      summary,
-      annotations,
-      conclusion,
+      title,
     });
 
     expect(mocked(Octokit)).toBeCalledWith({
-      auth: 'ghu_someSecretToken',
+      auth: 'Hello from GITHUB_API_TOKEN',
+    });
+  });
+
+  it('should create an Octokit client with the GITHUB_TOKEN environment variable', async () => {
+    delete process.env.GITHUB_API_TOKEN;
+    process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
+
+    await createCheckRun({
+      name,
+      summary,
+      annotations,
+      conclusion,
+      title,
+    });
+
+    expect(mocked(Octokit)).toBeCalledWith({
+      auth: 'Hello from GITHUB_TOKEN',
     });
   });
 
   it('should extract a GitHub owner and repo from Git remotes', async () => {
-    await createCheckRunFromBuildkite({
+    await createCheckRun({
       name,
       summary,
       annotations,
       conclusion,
+      title,
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
@@ -108,11 +108,12 @@ describe('createCheckRunFromBuildkite', () => {
   });
 
   it('should use the current Git commit as the `head_sha`', async () => {
-    await createCheckRunFromBuildkite({
+    await createCheckRun({
       name,
       summary,
       annotations,
       conclusion,
+      title,
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
@@ -123,11 +124,12 @@ describe('createCheckRunFromBuildkite', () => {
   });
 
   it('should pass the name and conclusion directly to create check run', async () => {
-    await createCheckRunFromBuildkite({
+    await createCheckRun({
       name,
       summary,
       annotations,
       conclusion,
+      title,
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
@@ -135,35 +137,15 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should generate a success title', async () => {
+  it('should suffix a title', async () => {
     const expectedTitle = 'Build #23 passed (1 annotation added)';
 
-    await createCheckRunFromBuildkite({
+    await createCheckRun({
       name,
       summary,
       annotations,
       conclusion: 'success',
-    });
-
-    expect(mockClient.checks.create).toBeCalledWith(
-      expect.objectContaining({
-        output: {
-          title: expectedTitle,
-          summary: expect.any(String),
-          annotations: expect.any(Array),
-        },
-      }),
-    );
-  });
-
-  it('should generate a failure title', async () => {
-    const expectedTitle = 'Build #23 failed (1 annotation added)';
-
-    await createCheckRunFromBuildkite({
-      name,
-      summary,
-      annotations,
-      conclusion,
+      title: 'Build #23 passed',
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
@@ -184,11 +166,12 @@ describe('createCheckRunFromBuildkite', () => {
     );
     const expectedTitle = 'Build #23 failed (50 annotations added)';
 
-    await createCheckRunFromBuildkite({
+    await createCheckRun({
       name,
       summary,
       annotations: manyAnnotations,
       conclusion,
+      title,
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
@@ -203,11 +186,12 @@ describe('createCheckRunFromBuildkite', () => {
   });
 
   it('should leave the summary untouched when the number of annotations < GITHUB_MAX_ANNOTATIONS', async () => {
-    await createCheckRunFromBuildkite({
+    await createCheckRun({
       name,
       summary,
       annotations,
       conclusion,
+      title,
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
@@ -228,11 +212,12 @@ describe('createCheckRunFromBuildkite', () => {
     );
     const expectedSummary = `${summary}\n\n51 annotations were provided, but only the first 50 are visible in GitHub.`;
 
-    await createCheckRunFromBuildkite({
+    await createCheckRun({
       name,
       summary,
       annotations: manyAnnotations,
       conclusion,
+      title,
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
@@ -252,11 +237,12 @@ describe('createCheckRunFromBuildkite', () => {
       (_) => annotation,
     );
 
-    await createCheckRunFromBuildkite({
+    await createCheckRun({
       name,
       summary,
       annotations: manyAnnotations,
       conclusion,
+      title,
     });
 
     expect(mockClient.checks.create).toBeCalledWith(

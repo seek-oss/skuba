@@ -11,13 +11,6 @@ export type Annotation = NonNullable<Output['annotations']>[number];
 
 const GITHUB_MAX_ANNOTATIONS = 50;
 
-const isGitHubAnnotationsEnabled = (): boolean =>
-  Boolean(
-    process.env.BUILDKITE &&
-      process.env.BUILDKITE_BUILD_NUMBER &&
-      process.env.GITHUB_API_TOKEN,
-  );
-
 /**
  * Matches the owner and repository names in a GitHub repository URL.
  *
@@ -61,25 +54,21 @@ const getHeadSha = async (dir: string): Promise<string> => {
 };
 
 /**
- * Create a uniform title format for our check runs, e.g.
+ * Suffixes the title with the number of annotations added, e.g.
  *
  * ```text
  * Build #12 failed (24 annotations added)
  * ```
  */
-const createTitle = (
-  conclusion: 'failure' | 'success',
-  inputAnnotations: number,
-): string => {
-  const build = `Build #${process.env.BUILDKITE_BUILD_NUMBER as string}`;
+const suffixTitle = (title: string, inputAnnotations: number): string => {
   const addedAnnotations =
     inputAnnotations > GITHUB_MAX_ANNOTATIONS
       ? GITHUB_MAX_ANNOTATIONS
       : inputAnnotations;
-  const status = conclusion === 'success' ? 'passed' : 'failed';
 
   const plural = addedAnnotations === 1 ? '' : 's';
-  return `${build} ${status} (${addedAnnotations} annotation${plural} added)`;
+
+  return `${title} (${addedAnnotations} annotation${plural} added)`;
 };
 
 /**
@@ -103,30 +92,26 @@ interface CreateCheckRunParameters {
   conclusion: 'failure' | 'success';
   name: string;
   summary: string;
+  title: string;
 }
 
 /**
  * Asynchronously creates a GitHub [check run] with annotations.
  *
- * This writes the first 50 `annotations` in full to GitHub.
+ * The first 50 `annotations` are written in full to GitHub.
  *
- * If the following environment variables are not present,
- * the function will silently return without attempting to annotate:
- *
- * - `BUILDKITE`
- * - `BUILDKITE_BUILD_NUMBER`
- * - `GITHUB_API_TOKEN`
+ * A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with the `checks:write` permission
+ * must be present on the environment.
+
+
  */
-export const createCheckRunFromBuildkite = async ({
+export const createCheckRun = async ({
   annotations,
   conclusion,
   name,
   summary,
+  title,
 }: CreateCheckRunParameters): Promise<void> => {
-  if (!isGitHubAnnotationsEnabled()) {
-    return;
-  }
-
   const dir = process.cwd();
 
   const [headSha, { owner, repo }] = await Promise.all([
@@ -134,19 +119,19 @@ export const createCheckRunFromBuildkite = async ({
     getOwnerRepo(dir),
   ]);
 
-  const client = new Octokit({ auth: process.env.GITHUB_API_TOKEN });
-
-  const output = {
-    annotations: annotations.slice(0, GITHUB_MAX_ANNOTATIONS),
-    summary: createEnrichedSummary(summary, annotations.length),
-    title: createTitle(conclusion, annotations.length),
-  };
+  const client = new Octokit({
+    auth: process.env.GITHUB_API_TOKEN ?? process.env.GITHUB_TOKEN,
+  });
 
   await client.checks.create({
     conclusion,
     head_sha: headSha,
     name,
-    output,
+    output: {
+      annotations: annotations.slice(0, GITHUB_MAX_ANNOTATIONS),
+      summary: createEnrichedSummary(summary, annotations.length),
+      title: suffixTitle(title, annotations.length),
+    },
     owner,
     repo,
   });

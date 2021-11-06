@@ -97,13 +97,32 @@ const mockTscAnnotations: GitHub.Annotation[] = [
 ];
 
 beforeEach(() => {
+  process.env.CI = 'true';
+  process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
+
   mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
   mocked(createPrettierAnnotations).mockReturnValue(mockPrettierAnnotations);
   mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
 });
 
 afterEach(() => {
+  delete process.env.CI;
+  delete process.env.GITHUB_TOKEN;
+
   jest.resetAllMocks();
+});
+
+it('should return immediately if the required environment variables are not set', async () => {
+  delete process.env.CI;
+
+  await createGitHubAnnotations(
+    eslintOutput,
+    prettierOutput,
+    tscOk,
+    tscOutputStream,
+  );
+
+  expect(GitHub.createCheckRun).not.toHaveBeenCalled();
 });
 
 it('should call createEslintAnnotations with the ESLint output', async () => {
@@ -153,11 +172,12 @@ it('should combine all the annotations into an array for the check run', async (
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
+  expect(GitHub.createCheckRun).toBeCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expectedAnnotations,
     conclusion: expect.any(String),
+    title: 'Build failed',
   });
 });
 
@@ -169,11 +189,12 @@ it('should set the conclusion to failure if any output is not ok', async () => {
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
+  expect(GitHub.createCheckRun).toBeCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expect.any(Array),
     conclusion: 'failure',
+    title: 'Build failed',
   });
 });
 
@@ -185,11 +206,12 @@ it('should set the conclusion to success if all outputs are ok', async () => {
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
+  expect(GitHub.createCheckRun).toBeCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expect.any(Array),
     conclusion: 'success',
+    title: 'Build passed',
   });
 });
 
@@ -203,11 +225,12 @@ it('should report that skuba lint failed if the output is not ok', async () => {
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
+  expect(GitHub.createCheckRun).toBeCalledWith({
     name: expect.any(String),
     summary: expectedSummary,
     annotations: expect.any(Array),
     conclusion: expect.any(String),
+    title: expect.any(String),
   });
 });
 
@@ -221,10 +244,11 @@ it('should set the summary to `Lint passed` if all outputs are ok', async () => 
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRunFromBuildkite).toBeCalledWith({
+  expect(GitHub.createCheckRun).toBeCalledWith({
     name: expect.any(String),
     summary: expectedSummary,
     annotations: expect.any(Array),
     conclusion: expect.any(String),
+    title: expect.any(String),
   });
 });
