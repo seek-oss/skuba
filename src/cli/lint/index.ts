@@ -1,4 +1,5 @@
 import { hasDebugFlag, hasSerialFlag } from '../../utils/args';
+import { refreshIgnoreFiles } from '../configure/refreshIgnoreFiles';
 
 import { externalLint } from './external';
 import { internalLint } from './internal';
@@ -9,6 +10,8 @@ export const lint = async (
   tscOutputStream: NodeJS.WritableStream | undefined = undefined,
   workerThreads = true,
 ) => {
+  await refreshIgnoreFiles();
+
   const opts: Input = {
     debug: hasDebugFlag(args),
     serial: hasSerialFlag(args),
