@@ -17,11 +17,22 @@ const isGitHubAnnotationsEnabled = (): boolean =>
       process.env.GITHUB_API_TOKEN,
   );
 
-// Pulls out the GitHub Owner + Repo String from repo urls eg.
-// git@github.com:seek-oss/skuba.git
-// https://github.com/seek-oss/skuba.git
-// Pulls out `seek-oss` as owner and `skuba` as repo
-const ownerRepoRegex = new RegExp(/github.com(?::|\/)(.*)\/(.*).git/);
+/**
+ * Matches the owner and repository names in a GitHub repository URL.
+ *
+ * For example, given the following input strings:
+ *
+ * ```console
+ * git@github.com:seek-oss/skuba.git
+ * https://github.com/seek-oss/skuba.git
+ * ```
+ *
+ * This pattern will produce the following matches:
+ *
+ * 1. seek-oss
+ * 2. skuba
+*/
+const ownerRepoRegex = /github.com(?::|\/)(.+)\/(.+).git$/;
 
 const getOwnerRepo = (): { owner: string; repo: string } => {
   const match = ownerRepoRegex.exec(process.env.BUILDKITE_REPO as string);
@@ -41,10 +52,11 @@ const getOwnerRepo = (): { owner: string; repo: string } => {
 };
 
 /**
- * Create a uniform title format for our check runs
- * @param conclusion - `failure` or `success`
- * @param annotationsLength - Number of annotations added
- * @returns Title eg. Build #12 failed (24 annotations added)
+ * Create a uniform title format for our check runs, e.g.
+ *
+ * ```text
+ * Build #12 failed (24 annotations added)
+ * ```
  */
 const createTitle = (
   conclusion: 'failure' | 'success',
@@ -62,10 +74,7 @@ const createTitle = (
 };
 
 /**
- * Adds more context to the summary provided
- * @param summary - report summary
- * @param annotationsLength - Number of annotations added
- * @returns summary with extra metadata
+ * Enriches the summary with more context about the check run.
  */
 const createEnrichedSummary = (
   summary: string,
@@ -87,6 +96,19 @@ interface CreateCheckRunParameters {
   conclusion: 'failure' | 'success';
 }
 
+/**
+ * Asynchronously creates a GitHub [check run] with annotations.
+ *
+ * This writes the first 50 `annotations` in full to GitHub.
+ *
+ * If the following environment variables are not present,
+ * the function will silently return without attempting to annotate:
+ *
+ * - `BUILDKITE_BUILD_NUMBER`
+ * - `BUILDKITE_COMMIT`
+ * - `BUILDKITE_REPO`
+ * - `GITHUB_API_TOKEN`
+ */
 export const createCheckRunFromBuildkite = async ({
   name,
   summary,
@@ -113,7 +135,7 @@ export const createCheckRunFromBuildkite = async ({
       summary: enrichedSummary,
       annotations: annotations.slice(0, GITHUB_MAX_ANNOTATIONS),
     },
-    head_sha: process.env.BUILDKITE_COMMIT as string,
+    head_sha: process.env.BUILDKITE_COMMIT!,
     conclusion,
   });
 };
