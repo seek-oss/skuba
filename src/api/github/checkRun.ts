@@ -96,6 +96,19 @@ interface CreateCheckRunParameters {
   conclusion: 'failure' | 'success';
 }
 
+/**
+ * Asynchronously creates a GitHub [check run] with annotations.
+ *
+ * This writes the first 50 `annotations` in full to GitHub.
+ *
+ * If the following environment variables are not present,
+ * the function will silently return without attempting to annotate:
+ *
+ * - `BUILDKITE_BUILD_NUMBER`
+ * - `BUILDKITE_COMMIT`
+ * - `BUILDKITE_REPO`
+ * - `GITHUB_API_TOKEN`
+ */
 export const createCheckRunFromBuildkite = async ({
   name,
   summary,
