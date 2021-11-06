@@ -32,9 +32,7 @@ export const runESLint = async (
   logger.debug('Initialising ESLint...');
 
   const engine = new ESLint({
-    // TODO: enable this once we have a less overzealous `skuba configure` that
-    // everyone can apply to update their `.gitignore` files.
-    // cache: true,
+    cache: true,
     extensions: ['js', 'ts', 'tsx'],
     fix: mode === 'format',
     reportUnusedDisableDirectives: 'error',
