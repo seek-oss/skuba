@@ -123,7 +123,7 @@ export const createCheckRunFromBuildkite = async ({
       summary: enrichedSummary,
       annotations: annotations.slice(0, GITHUB_MAX_ANNOTATIONS),
     },
-    head_sha: process.env.BUILDKITE_COMMIT as string,
+    head_sha: process.env.BUILDKITE_COMMIT!,
     conclusion,
   });
 };
