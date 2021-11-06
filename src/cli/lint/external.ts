@@ -11,11 +11,13 @@ import {
 import { runTscInNewProcess } from './tsc';
 import type { Input } from './types';
 
+const tscPrefixRegex = /^(.*?tsc\s+│.*?\s)/gm;
+
 export class StreamInterceptor extends stream.Transform {
   private chunks: Uint8Array[] = [];
 
   public output() {
-    return Buffer.concat(this.chunks).toString();
+    return Buffer.concat(this.chunks).toString().replace(tscPrefixRegex, '');
   }
 
   _transform(
@@ -81,21 +83,20 @@ export const externalLint = async (input: Input) => {
 
   const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
 
-  const tools = [
-    ...(eslint.ok ? [] : ['ESLint']),
-    ...(prettier.ok ? [] : ['Prettier']),
-    ...(tscOk ? [] : ['tsc']),
-  ];
-
-  const summary = `${tools.join(', ')} found issues that require triage.`;
   await createAnnotations(eslint, prettier, tscOk, tscOutputStream);
 
   if (eslint.ok && prettier.ok && tscOk) {
     return;
   }
 
+  const tools = [
+    ...(eslint.ok ? [] : ['ESLint']),
+    ...(prettier.ok ? [] : ['Prettier']),
+    ...(tscOk ? [] : ['tsc']),
+  ];
+
   log.newline();
-  log.err(summary);
+  log.err(`${tools.join(', ')} found issues that require triage.`);
 
   process.exitCode = 1;
 };
