@@ -98,7 +98,9 @@ const mockTscAnnotations: GitHub.Annotation[] = [
 
 beforeEach(() => {
   process.env.CI = 'true';
+  process.env.GITHUB_RUN_NUMBER = '123';
   process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
+  process.env.GITHUB_WORKFLOW = 'Test';
 
   mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
   mocked(createPrettierAnnotations).mockReturnValue(mockPrettierAnnotations);
@@ -107,7 +109,9 @@ beforeEach(() => {
 
 afterEach(() => {
   delete process.env.CI;
+  delete process.env.GITHUB_RUN_NUMBER;
   delete process.env.GITHUB_TOKEN;
+  delete process.env.GITHUB_WORKFLOW;
 
   jest.resetAllMocks();
 });
@@ -177,7 +181,7 @@ it('should combine all the annotations into an array for the check run', async (
     summary: expect.any(String),
     annotations: expectedAnnotations,
     conclusion: expect.any(String),
-    title: 'Build failed',
+    title: 'Test #123 failed',
   });
 });
 
@@ -194,7 +198,7 @@ it('should set the conclusion to failure if any output is not ok', async () => {
     summary: expect.any(String),
     annotations: expect.any(Array),
     conclusion: 'failure',
-    title: 'Build failed',
+    title: 'Test #123 failed',
   });
 });
 
@@ -211,7 +215,7 @@ it('should set the conclusion to success if all outputs are ok', async () => {
     summary: expect.any(String),
     annotations: expect.any(Array),
     conclusion: 'success',
-    title: 'Build passed',
+    title: 'Test #123 passed',
   });
 });
 
