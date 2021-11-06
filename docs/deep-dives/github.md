@@ -29,8 +29,7 @@ steps:
       - docker#v3.8.0:
           environment:
             # Enable GitHub annotation support.
-            - BUILDKITE_REPO
-            - BUILDKITE_COMMIT
+            - BUILDKITE
             - BUILDKITE_BUILD_NUMBER
             - GITHUB_API_TOKEN
           volumes:
@@ -46,8 +45,7 @@ services:
   app:
     environment:
       # Enable GitHub annotation support.
-      - BUILDKITE_REPO
-      - BUILDKITE_COMMIT
+      - BUILDKITE
       - BUILDKITE_BUILD_NUMBER
       - GITHUB_API_TOKEN
     volumes:

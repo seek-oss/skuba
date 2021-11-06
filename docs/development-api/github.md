@@ -15,9 +15,8 @@ This writes the first 50 `annotations` in full to GitHub.
 If the following environment variables are not present,
 the function will silently return without attempting to create a check run:
 
+- `BUILDKITE`
 - `BUILDKITE_BUILD_NUMBER`
-- `BUILDKITE_COMMIT`
-- `BUILDKITE_REPO`
 - `GITHUB_API_TOKEN`
 
 ```typescript

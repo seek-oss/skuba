@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { Endpoints } from '@octokit/types';
+import git, { ReadCommitResult } from 'isomorphic-git';
 import { mocked } from 'ts-jest/utils';
 
 import * as GitHub from '../github';
@@ -10,6 +11,7 @@ type CreateCheckRunResponse =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
 
 jest.mock('@octokit/rest');
+jest.mock('isomorphic-git');
 
 const mockClient = {
   checks: {
@@ -19,17 +21,15 @@ const mockClient = {
 };
 
 afterEach(() => {
-  delete process.env.BUILDKITE_REPO;
-  delete process.env.BUILDKITE_COMMIT;
   delete process.env.BUILDKITE_BUILD_NUMBER;
   delete process.env.GITHUB_API_TOKEN;
   jest.resetAllMocks();
 });
 
 const setEnvironmentVariables = () => {
-  process.env.BUILDKITE_REPO = 'git@github.com:seek-oss/skuba.git';
-  process.env.BUILDKITE_COMMIT = 'cdd335a418c3dc6804be1c642b19bb63437e2cad';
+  process.env.BUILDKITE = 'true';
   process.env.BUILDKITE_BUILD_NUMBER = '23';
+  process.env.BUILDKITE_REPO = 'git@github.com:seek-oss/skuba.git';
   process.env.GITHUB_API_TOKEN = 'ghu_someSecretToken';
 };
 
@@ -58,10 +58,19 @@ describe('createCheckRunFromBuildkite', () => {
     mocked(Octokit).mockReturnValue(mockClient as unknown as Octokit);
     mockClient.checks.create.mockReturnValue(createResponse);
     setEnvironmentVariables();
+    mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
+    mocked(git.log).mockResolvedValue([
+      {
+        oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad',
+      } as ReadCommitResult,
+    ]);
   });
 
   it('should return immediately if the required environment variables are not set', async () => {
-    delete process.env.BUILDKITE_REPO;
+    delete process.env.BUILDKITE;
+
     await createCheckRunFromBuildkite({
       name,
       summary,
@@ -85,7 +94,7 @@ describe('createCheckRunFromBuildkite', () => {
     });
   });
 
-  it('should extract an owner and repo from the BUILDKITE_REPO environment variable', async () => {
+  it('should extract a GitHub owner and repo from Git remotes', async () => {
     await createCheckRunFromBuildkite({
       name,
       summary,
@@ -98,7 +107,7 @@ describe('createCheckRunFromBuildkite', () => {
     );
   });
 
-  it('should use the BUILDKITE_COMMIT environment variable as the `head_sha`', async () => {
+  it('should use the current Git commit as the `head_sha`', async () => {
     await createCheckRunFromBuildkite({
       name,
       summary,
