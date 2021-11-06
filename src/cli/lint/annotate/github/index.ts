@@ -1,4 +1,8 @@
 import * as GitHub from '../../../../api/github';
+import {
+  buildNameFromEnvironment,
+  enabledFromEnvironment,
+} from '../../../../api/github/environment';
 import { ESLintOutput } from '../../../../cli/adapter/eslint';
 import { PrettierOutput } from '../../../../cli/adapter/prettier';
 import { StreamInterceptor } from '../../../../cli/lint/external';
@@ -13,6 +17,10 @@ export const createGitHubAnnotations = async (
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
 ) => {
+  if (!enabledFromEnvironment()) {
+    return;
+  }
+
   const annotations: GitHub.Annotation[] = [
     ...createEslintAnnotations(eslint),
     ...createPrettierAnnotations(prettier),
@@ -26,10 +34,13 @@ export const createGitHubAnnotations = async (
     ? '`skuba lint` passed.'
     : '`skuba lint` found issues that require triage.';
 
-  await GitHub.createCheckRunFromBuildkite({
+  const build = buildNameFromEnvironment();
+
+  await GitHub.createCheckRun({
     name: 'skuba/lint',
     summary,
     annotations,
     conclusion,
+    title: `${build} ${isOk ? 'passed' : 'failed'}`,
   });
 };

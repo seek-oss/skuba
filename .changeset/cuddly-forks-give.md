@@ -2,4 +2,4 @@
 "skuba": minor
 ---
 
-GitHub.createCheckRunFromBuildkite: Add development API for writing annotations
+GitHub.createCheckRun: Add development API for writing annotations

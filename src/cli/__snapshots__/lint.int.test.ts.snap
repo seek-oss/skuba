@@ -64,8 +64,10 @@ ESLint   │ ○ d.js
 Prettier │ Initialising Prettier...
 Prettier │ Detected project root: <random>
 Prettier │ Discovering files...
-Prettier │ Discovered 6 files.
+Prettier │ Discovered 7 files.
 Prettier │ Linting files...
+Prettier │ .eslintcache
+Prettier │   parser: -
 Prettier │ b.md
 Prettier │   parser: markdown
 Prettier │ c.json

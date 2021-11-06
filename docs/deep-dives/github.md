@@ -29,8 +29,7 @@ steps:
       - docker#v3.8.0:
           environment:
             # Enable GitHub annotation support.
-            - BUILDKITE_REPO
-            - BUILDKITE_COMMIT
+            - BUILDKITE
             - BUILDKITE_BUILD_NUMBER
             - GITHUB_API_TOKEN
           volumes:
@@ -46,8 +45,7 @@ services:
   app:
     environment:
       # Enable GitHub annotation support.
-      - BUILDKITE_REPO
-      - BUILDKITE_COMMIT
+      - BUILDKITE
       - BUILDKITE_BUILD_NUMBER
       - GITHUB_API_TOKEN
     volumes:
@@ -55,6 +53,14 @@ services:
       # Mount cached dependencies.
       - /workdir/node_modules
 ```
+
+If you're running in GitHub Actions,
+propagate the following environment variables to achieve the same effect:
+
+- `CI` or `GITHUB_ACTIONS`
+- `GITHUB_JOB`
+- `GITHUB_RUN_NUMBER`
+- `GITHUB_TOKEN`
 
 This feature is also planned for [`skuba test`] in future.
 
