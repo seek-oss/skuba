@@ -21,10 +21,11 @@ const main = async () => {
   const annotations = await createAnnotations();
 
   await GitHub.createCheckRun({
-    name: 'skuba/lint',
-    summary: '`skuba/lint` found issues that require triage.',
     annotations,
     conclusion: 'failure',
+    name: 'skuba/lint',
+    summary: '`skuba/lint` found issues that require triage.',
+    title: 'Build #123 failed',
   });
 };
 ```
