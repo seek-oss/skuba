@@ -31,7 +31,7 @@ it('should create annotations from single-line tsc output', () => {
       start_column: 4,
       end_column: 4,
       message: "'hello' is declared but its value is never read.",
-      title: 'tsc',
+      title: 'tsc (TS6133)',
     },
     {
       annotation_level: 'failure',
@@ -41,7 +41,7 @@ it('should create annotations from single-line tsc output', () => {
       start_column: 3,
       end_column: 3,
       message: "'world' is declared but its value is never read.",
-      title: 'tsc',
+      title: 'tsc (TS6133)',
     },
   ];
 
@@ -73,7 +73,7 @@ it('should create annotations from single- and multi-line tsc output', () => {
       start_column: 4,
       end_column: 4,
       message: "'hello' is declared but its value is never read.",
-      title: 'tsc',
+      title: 'tsc (TS6133)',
     },
     {
       annotation_level: 'failure',
@@ -89,7 +89,7 @@ it('should create annotations from single- and multi-line tsc output', () => {
         "  Overload 2 of 2, '(msg?: string | undefined, ...args: any[]): void', gave the following error.\n" +
         "    Argument of type 'unknown' is not assignable to parameter of type 'string | undefined'.\n" +
         "      Type 'unknown' is not assignable to type 'string'.",
-      title: 'tsc',
+      title: 'tsc (TS2769)',
     },
   ];
 
@@ -131,8 +131,9 @@ it('should create annotations from single- and multi-line tsc output when `prett
       end_line: 6,
       start_column: 3,
       end_column: 3,
-      message: "'hello' is declared but its value is never read.",
-      title: 'tsc',
+      message:
+        "'hello' is declared but its value is never read.\n\n6   hello,\n    ~~~~",
+      title: 'tsc (TS6133)',
     },
     {
       annotation_level: 'failure',
@@ -147,8 +148,11 @@ it('should create annotations from single- and multi-line tsc output when `prett
         "    Argument of type 'unknown' is not assignable to parameter of type 'LogContext'.\n" +
         "  Overload 2 of 2, '(msg?: string | undefined, ...args: any[]): void', gave the following error.\n" +
         "    Argument of type 'unknown' is not assignable to parameter of type 'string | undefined'.\n" +
-        "      Type 'unknown' is not assignable to type 'string'.",
-      title: 'tsc',
+        "      Type 'unknown' is not assignable to type 'string'.\n" +
+        '\n' +
+        '18       error,\n' +
+        '         ~~~~~',
+      title: 'tsc (TS2769)',
     },
   ];
 

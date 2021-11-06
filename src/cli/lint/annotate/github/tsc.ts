@@ -33,7 +33,7 @@ type TscLevel = 'error' | 'warning' | 'info';
  * 6. No overload matches this call [...] not assignable to type 'string'.
  */
 const tscOutputRegex =
-  /([^\s].*)[\(:](\d+)[,:](\d+)(?:\):\s+|\s+-\s+)(error|warning|info)\s+TS(\d+)\s*:\s*([\s\S]*?)(?=\n\S)/g;
+  /([^\s].*)[\(:](\d+)[,:](\d+)(?:\):\s+|\s+-\s+)(error|warning|info)\s+TS(\d+)\s*:\s*([\s\S]*?)(?=\n\S)(?=\n\D)/g;
 
 const annotationLevelMap: Record<
   TscLevel,
@@ -62,7 +62,7 @@ export const createTscAnnotations = (
           start_column: Number(match[3]),
           end_column: Number(match[3]),
           message: match[6].trim(),
-          title: `tsc`,
+          title: `tsc (TS${match[5]})`,
         });
       }
     }
