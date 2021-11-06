@@ -5,11 +5,11 @@ import {
 
 describe('buildNameFromEnvironment', () => {
   it.each`
-    description                 | env                                                     | expected
-    ${'Buildkite'}              | ${{ BUILDKITE_BUILD_NUMBER: '123' }}                    | ${'Build #123'}
-    ${'partial GitHub Actions'} | ${{ GITHUB_RUN_NUMBER: '456' }}                         | ${'Build #456'}
-    ${'full GitHub Actions'}    | ${{ GITHUB_JOB: 'Validate', GITHUB_RUN_NUMBER: '789' }} | ${'Validate #789'}
-    ${'default'}                | ${{}}                                                   | ${'Build'}
+    description                 | env                                                          | expected
+    ${'Buildkite'}              | ${{ BUILDKITE_BUILD_NUMBER: '123' }}                         | ${'Build #123'}
+    ${'partial GitHub Actions'} | ${{ GITHUB_RUN_NUMBER: '456' }}                              | ${'Build #456'}
+    ${'full GitHub Actions'}    | ${{ GITHUB_RUN_NUMBER: '789', GITHUB_WORKFLOW: 'Validate' }} | ${'Validate #789'}
+    ${'default'}                | ${{}}                                                        | ${'Build'}
   `('returns "$expected" from $description environment', ({ env, expected }) =>
     expect(buildNameFromEnvironment(env)).toBe(expected),
   );

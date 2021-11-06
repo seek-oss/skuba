@@ -4,7 +4,7 @@ export const buildNameFromEnvironment = (env = process.env): string => {
   }
 
   if (env.GITHUB_RUN_NUMBER) {
-    return `${env.GITHUB_JOB ?? 'Build'} #${env.GITHUB_RUN_NUMBER}`;
+    return `${env.GITHUB_WORKFLOW ?? 'Build'} #${env.GITHUB_RUN_NUMBER}`;
   }
 
   return 'Build';
