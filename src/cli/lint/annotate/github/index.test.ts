@@ -98,6 +98,7 @@ const mockTscAnnotations: GitHub.Annotation[] = [
 
 beforeEach(() => {
   process.env.CI = 'true';
+  process.env.GITHUB_ACTIONS = 'true';
   process.env.GITHUB_RUN_NUMBER = '123';
   process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
   process.env.GITHUB_WORKFLOW = 'Test';
@@ -109,6 +110,7 @@ beforeEach(() => {
 
 afterEach(() => {
   delete process.env.CI;
+  delete process.env.GITHUB_ACTIONS;
   delete process.env.GITHUB_RUN_NUMBER;
   delete process.env.GITHUB_TOKEN;
   delete process.env.GITHUB_WORKFLOW;
@@ -118,6 +120,7 @@ afterEach(() => {
 
 it('should return immediately if the required environment variables are not set', async () => {
   delete process.env.CI;
+  delete process.env.GITHUB_ACTIONS;
 
   await createGitHubAnnotations(
     eslintOutput,
