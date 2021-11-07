@@ -44,4 +44,8 @@ module.exports = {
     '/node_modules.*/',
     '<rootDir>/(coverage|dist|lib|tmp).*/',
   ],
+  reporters: [
+    'default',
+    '<rootDir>/node_modules/skuba/lib/cli/test/reporters/github',
+  ],
 };
