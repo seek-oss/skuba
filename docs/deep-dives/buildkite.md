@@ -66,6 +66,9 @@ services:
 
 This feature is also planned for [`skuba test`] in future.
 
+**skuba**'s development API includes a [Buildkite.annotate] function.
+You can use this to create your own annotations from other JavaScript code running in your CI workflow.
+
 ---
 
 ## Buildkite agent exits with status -1
@@ -109,6 +112,7 @@ The agent may be tied up running a particularly compute- or memory-intensive ste
 [`skuba build-package`]: ../cli/build.md#skuba-build-package
 [`skuba lint`]: ../cli/lint.md#skuba-lint
 [`skuba test`]: ../cli/test.md#skuba-test
+[buildkite.annotate]: ../development-api/buildkite.md#annotate
 [buildkite annotations]: https://buildkite.com/docs/agent/v3/cli-annotate
 [builds at seek]: https://builds-at-seek.ssod.skinfra.xyz/
 [ci/cd]: https://en.wikipedia.org/wiki/CI/CD

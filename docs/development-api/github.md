@@ -6,19 +6,13 @@ parent: Development API
 
 ---
 
-## createCheckRunFromBuildkite
+## createCheckRun
 
 Asynchronously creates a GitHub [check run] with annotations.
 
-This writes the first 50 `annotations` in full to GitHub.
+The first 50 `annotations` are written in full to GitHub.
 
-If the following environment variables are not present,
-the function will silently return without attempting to create a check run:
-
-- `BUILDKITE_BUILD_NUMBER`
-- `BUILDKITE_COMMIT`
-- `BUILDKITE_REPO`
-- `GITHUB_API_TOKEN`
+A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with the `checks:write` permission must be present on the environment.
 
 ```typescript
 import { GitHub } from 'skuba';
@@ -26,11 +20,12 @@ import { GitHub } from 'skuba';
 const main = async () => {
   const annotations = await createAnnotations();
 
-  await GitHub.createCheckRunFromBuildkite({
-    name: 'skuba/lint',
-    summary: '`skuba/lint` found issues that require triage.',
+  await GitHub.createCheckRun({
     annotations,
     conclusion: 'failure',
+    name: 'skuba/lint',
+    summary: '`skuba/lint` found issues that require triage.',
+    title: 'Build #123 failed',
   });
 };
 ```
