@@ -5,8 +5,11 @@ import { createLogger, log } from '../utils/logging';
 
 import { runESLint } from './adapter/eslint';
 import { runPrettier } from './adapter/prettier';
+import { tryRefreshIgnoreFiles } from './configure/refreshIgnoreFiles';
 
 export const format = async (args = process.argv) => {
+  await tryRefreshIgnoreFiles();
+
   const debug = hasDebugFlag(args);
 
   log.plain(chalk.magenta('ESLint'));
