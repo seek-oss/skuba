@@ -29,21 +29,23 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
       sortedTestResults[displayName].push(testResult);
     });
 
-    // Create annotations for each display name group
-    const annotationResults: Record<string, GitHub.Annotation[]> = {};
-    Object.entries(sortedTestResults).forEach(([displayName, testResults]) => {
-      const annotations = createAnnotations(testResults);
-      annotationResults[displayName] = annotations;
-    });
+    // Create annotations for each display name
+    const annotationResults = Object.entries(sortedTestResults).map<{
+      displayName: string;
+      annotations: GitHub.Annotation[];
+    }>(([displayName, testResults]) => ({
+      displayName,
+      annotations: createAnnotations(testResults),
+    }));
 
     // Create a check run per display name. Run in series.
     await pMap(
-      Object.entries(annotationResults),
-      async ([displayName, annotations]) => {
+      annotationResults,
+      async ({ displayName, annotations }) => {
         const name = `skuba/test${
           displayName !== DEFAULT_NAME ? ` (${displayName})` : ''
         }`;
-        const isOk = Boolean(annotations.length);
+        const isOk = Boolean(!annotations.length);
         const conclusion = isOk ? 'success' : 'failure';
         const summary = isOk
           ? '`skuba test` passed.'
