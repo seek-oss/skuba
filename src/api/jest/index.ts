@@ -10,6 +10,7 @@ type Props = Pick<
   | 'collectCoverageOnlyFrom'
   | 'coveragePathIgnorePatterns'
   | 'coverageThreshold'
+  | 'displayName'
   | 'globals'
   | 'globalSetup'
   | 'globalTeardown'
