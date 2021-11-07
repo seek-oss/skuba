@@ -2,6 +2,7 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
+import { log } from '../../utils/logging';
 import { readBaseTemplateFile } from '../../utils/template';
 
 import { getDestinationManifest } from './analysis/package';
@@ -35,4 +36,13 @@ export const refreshIgnoreFiles = async () => {
     refreshIgnoreFile('.gitignore'),
     refreshIgnoreFile('.prettierignore'),
   ]);
+};
+
+export const tryRefreshIgnoreFiles = async () => {
+  try {
+    await refreshIgnoreFiles();
+  } catch (err) {
+    log.warn('Failed to refresh ignore files.');
+    log.warn(err);
+  }
 };

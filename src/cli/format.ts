@@ -5,10 +5,10 @@ import { createLogger, log } from '../utils/logging';
 
 import { runESLint } from './adapter/eslint';
 import { runPrettier } from './adapter/prettier';
-import { refreshIgnoreFiles } from './configure/refreshIgnoreFiles';
+import { tryRefreshIgnoreFiles } from './configure/refreshIgnoreFiles';
 
 export const format = async (args = process.argv) => {
-  await refreshIgnoreFiles();
+  await tryRefreshIgnoreFiles();
 
   const debug = hasDebugFlag(args);
 
