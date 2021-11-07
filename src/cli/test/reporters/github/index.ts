@@ -36,7 +36,7 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
       annotationResults[displayName] = annotations;
     });
 
-    // Process in series
+    // Create a check run per display name. Run in series.
     await pMap(
       Object.entries(annotationResults),
       async ([displayName, annotations]) => {
