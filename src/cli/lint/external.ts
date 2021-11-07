@@ -83,7 +83,12 @@ export const externalLint = async (input: Input) => {
 
   const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
 
-  await createAnnotations(eslint, prettier, tscOk, tscOutputStream);
+  try {
+    await createAnnotations(eslint, prettier, tscOk, tscOutputStream);
+  } catch (err) {
+    log.warn('Failed to annotate results.');
+    log.warn(err);
+  }
 
   if (eslint.ok && prettier.ok && tscOk) {
     return;
