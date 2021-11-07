@@ -3,7 +3,7 @@ import path from 'path';
 import chalk from 'chalk';
 import { ESLint, Linter } from 'eslint';
 
-import { Logger } from '../../utils/logging';
+import { Logger, pluralise } from '../../utils/logging';
 
 const symbolForResult = (result: ESLint.LintResult) => {
   if (result.errorCount) {
@@ -52,7 +52,7 @@ export const runESLint = async (
   const end = process.hrtime.bigint();
 
   logger.plain(
-    `Processed ${logger.pluralise(results.length, 'file')} in ${logger.timing(
+    `Processed ${pluralise(results.length, 'file')} in ${logger.timing(
       start,
       end,
     )}.`,

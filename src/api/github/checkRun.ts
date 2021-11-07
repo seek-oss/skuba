@@ -3,6 +3,8 @@ import { Endpoints } from '@octokit/types';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
+import { pluralise } from '../../utils/logging';
+
 type Output = NonNullable<
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters']['output']
 >;
@@ -66,9 +68,7 @@ const suffixTitle = (title: string, inputAnnotations: number): string => {
       ? GITHUB_MAX_ANNOTATIONS
       : inputAnnotations;
 
-  const plural = addedAnnotations === 1 ? '' : 's';
-
-  return `${title} (${addedAnnotations} annotation${plural} added)`;
+  return `${title} (${pluralise(addedAnnotations, 'annotation')} added)`;
 };
 
 /**
