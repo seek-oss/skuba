@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import { Options, check, format, getFileInfo, resolveConfig } from 'prettier';
 
 import { crawlDirectory } from '../../utils/dir';
-import { Logger } from '../../utils/logging';
+import { Logger, pluralise } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
 
 interface File {
@@ -108,7 +108,7 @@ export const runPrettier = async (
   // and the headache of conflicting `.gitignore` and `.prettierignore` rules.
   const filepaths = await crawlDirectory(directory, '.prettierignore');
 
-  logger.debug(`Discovered ${logger.pluralise(filepaths.length, 'file')}.`);
+  logger.debug(`Discovered ${pluralise(filepaths.length, 'file')}.`);
 
   const result: Result = {
     count: filepaths.length,
@@ -144,23 +144,21 @@ export const runPrettier = async (
   const end = process.hrtime.bigint();
 
   logger.plain(
-    `Processed ${logger.pluralise(
+    `Processed ${pluralise(
       result.count - result.unparsed.length,
       'file',
     )} in ${logger.timing(start, end)}.`,
   );
 
   if (result.touched.length) {
-    logger.plain(
-      `Formatted ${logger.pluralise(result.touched.length, 'file')}:`,
-    );
+    logger.plain(`Formatted ${pluralise(result.touched.length, 'file')}:`);
     for (const filepath of result.touched) {
       logger.warn(filepath);
     }
   }
 
   if (result.errored.length) {
-    logger.plain(`Flagged ${logger.pluralise(result.errored.length, 'file')}:`);
+    logger.plain(`Flagged ${pluralise(result.errored.length, 'file')}:`);
     for (const { err, filepath } of result.errored) {
       logger.warn(filepath, ...(err ? [String(err)] : []));
     }
