@@ -1,5 +1,17 @@
 # skuba
 
+## 3.16.1
+
+### Patch Changes
+
+- **deps:** Include `@octokit/types` ([#660](https://github.com/seek-oss/skuba/pull/660))
+
+  This should fix the following compilation error:
+
+  ```
+  node_modules/skuba/lib/api/github/checkRun.d.ts(2,45): error TS2339: Property 'POST /repos/{owner}/{repo}/check-runs' does not exist on type 'Endpoints'.
+  ```
+
 ## 3.16.0
 
 ### Minor Changes
