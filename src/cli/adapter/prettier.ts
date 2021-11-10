@@ -10,7 +10,6 @@ import { getConsumerManifest } from '../../utils/manifest';
 interface File {
   data: string;
   options: Options;
-  parser: string | null;
   filepath: string;
 }
 
@@ -22,20 +21,10 @@ interface Result {
 }
 
 const formatOrLintFile = (
-  { data, filepath, options, parser }: File,
-  logger: Logger,
+  { data, filepath, options }: File,
   mode: 'format' | 'lint',
   result: Result,
 ): string | undefined => {
-  logger.debug(filepath);
-
-  logger.debug('  parser:', parser ?? '-');
-
-  if (!parser) {
-    result.unparsed.push(filepath);
-    return;
-  }
-
   if (mode === 'lint') {
     let ok: boolean;
     try {
@@ -120,21 +109,29 @@ export const runPrettier = async (
   logger.debug(mode === 'format' ? 'Formatting' : 'Linting', 'files...');
 
   for (const filepath of filepaths) {
-    const [config, data, fileInfo] = await Promise.all([
+    // Infer parser upfront so we can skip unsupported files.
+    const fileInfo = await getFileInfo(filepath, { resolveConfig: false });
+
+    logger.debug(filepath);
+    logger.debug('  parser:', fileInfo.inferredParser ?? '-');
+
+    if (!fileInfo.inferredParser) {
+      result.unparsed.push(filepath);
+      continue;
+    }
+
+    const [config, data] = await Promise.all([
       resolveConfig(filepath),
       fs.promises.readFile(filepath, 'utf-8'),
-      // Infer parser upfront so we can know to ignore unsupported file types.
-      getFileInfo(filepath, { resolveConfig: false }),
     ]);
 
     const file: File = {
       data,
       filepath,
       options: { ...config, filepath },
-      parser: fileInfo.inferredParser,
     };
 
-    const formatted = formatOrLintFile(file, logger, mode, result);
+    const formatted = formatOrLintFile(file, mode, result);
 
     if (typeof formatted === 'string') {
       await fs.promises.writeFile(filepath, formatted);
