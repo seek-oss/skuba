@@ -37,7 +37,7 @@ let languages: SupportLanguage[] | undefined;
  * - seek-oss/skuba#659
  *
  */
-const inferParser = (filepath: string) => {
+export const inferParser = (filepath: string) => {
   const filename = path.basename(filepath).toLowerCase();
 
   languages ??= getSupportInfo().languages.filter((language) => language.since);
