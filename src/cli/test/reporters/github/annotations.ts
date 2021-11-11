@@ -6,7 +6,7 @@ const jestRegex = /\((.+?):(\d+):(\d+)\)/;
 
 import * as GitHub from '../../../../api/github';
 
-const createAnnotations = (testResults: TestResult[]) => {
+export const createAnnotations = (testResults: TestResult[]) => {
   const cwd = process.cwd();
 
   const annotations: GitHub.Annotation[] = [];
@@ -47,5 +47,3 @@ const createAnnotations = (testResults: TestResult[]) => {
 
   return annotations;
 };
-
-export { createAnnotations };
