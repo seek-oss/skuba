@@ -35,9 +35,8 @@ let languages: SupportLanguage[] | undefined;
  *
  * - https://github.com/prettier/prettier/blob/2.4.1/src/main/options.js#L167
  * - seek-oss/skuba#659
- *
  */
-export const inferParser = (filepath: string) => {
+export const inferParser = (filepath: string): string | undefined => {
   const filename = path.basename(filepath).toLowerCase();
 
   languages ??= getSupportInfo().languages.filter((language) => language.since);
