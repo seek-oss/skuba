@@ -2,4 +2,4 @@
 "skuba": patch
 ---
 
-Jest.mergePreset: Allow `displayName`
+Jest.mergePreset: Allow `displayName` and `projects`

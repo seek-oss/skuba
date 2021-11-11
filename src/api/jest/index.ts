@@ -14,6 +14,7 @@ type Props = Pick<
   | 'globals'
   | 'globalSetup'
   | 'globalTeardown'
+  | 'projects'
   | 'setupFiles'
   | 'setupFilesAfterEnv'
   | 'snapshotSerializers'
