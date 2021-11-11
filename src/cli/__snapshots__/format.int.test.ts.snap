@@ -62,9 +62,15 @@ Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 7 files.
+Discovered 10 files.
 Formatting files...
 .eslintcache
+  parser: -
+.eslintignore
+  parser: -
+.gitignore
+  parser: -
+.prettierignore
   parser: -
 b.md
   parser: markdown

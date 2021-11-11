@@ -1,5 +1,83 @@
 # skuba
 
+## 3.16.1
+
+### Patch Changes
+
+- **deps:** Include `@octokit/types` ([#660](https://github.com/seek-oss/skuba/pull/660))
+
+  This should fix the following compilation error:
+
+  ```
+  node_modules/skuba/lib/api/github/checkRun.d.ts(2,45): error TS2339: Property 'POST /repos/{owner}/{repo}/check-runs' does not exist on type 'Endpoints'.
+  ```
+
+## 3.16.0
+
+### Minor Changes
+
+- **GitHub.createCheckRun:** Add development API for writing annotations ([#625](https://github.com/seek-oss/skuba/pull/625))
+
+- **lint:** Add GitHub check run annotations ([#625](https://github.com/seek-oss/skuba/pull/625))
+
+  `skuba lint` can now automatically annotate GitHub commits when you [propagate Buildkite environment variables and a GitHub API token](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
+
+- **format, lint:** Enable ESLint caching ([#645](https://github.com/seek-oss/skuba/pull/645))
+
+  ESLint now writes to a local `.eslintcache` store. This speeds up subsequent runs of `skuba format` and `skuba lint` as they can skip unchanged files.
+
+- **deps:** eslint-config-skuba 1.0.12 ([#623](https://github.com/seek-oss/skuba/pull/623))
+
+  This adds a couple new linting rules:
+
+  - [jest/prefer-expect-resolves](https://github.com/jest-community/eslint-plugin-jest/blob/v25.2.2/docs/rules/prefer-expect-resolves.md)
+  - [jest/prefer-to-be](https://github.com/jest-community/eslint-plugin-jest/blob/v25.2.2/docs/rules/prefer-to-be.md)
+
+  Run `skuba format` to automatically align your code with these rules.
+
+- **format, lint:** Synchronise ignore files ([#646](https://github.com/seek-oss/skuba/pull/646))
+
+  `skuba format` and `skuba lint` will now keep `.eslintignore`, `.gitignore` and `.prettierignore` in sync. This automatically applies new exclusions like `.eslintcache` without the need for a manual `skuba configure`.
+
+### Patch Changes
+
+- **template:** Use correct `environment` key in `docker-compose.yml` ([#654](https://github.com/seek-oss/skuba/pull/654))
+
+- **template/lambda-sqs-worker:** Switch to ARM64 architecture ([#640](https://github.com/seek-oss/skuba/pull/640))
+
+  These are a bit cheaper and a bit faster than x86 Lambdas:
+  <https://aws.amazon.com/blogs/aws/aws-lambda-functions-powered-by-aws-graviton2-processor-run-your-functions-on-arm-and-get-up-to-34-better-price-performance/>
+
+  The underlying Lambda architecture should be invisible to typical TypeScript Lambdas.
+
+- **template:** Bump non-Lambda templates to Node.js 16 ([#633](https://github.com/seek-oss/skuba/pull/633))
+
+  Node.js 16 is now in active LTS. The Lambda templates are stuck on Node.js 14 until the new AWS Lambda runtime is released.
+
+- **template:** seek-jobs/gantry v1.5.2 ([#634](https://github.com/seek-oss/skuba/pull/634))
+
+- **deps:** typescript 4.4.4 ([#616](https://github.com/seek-oss/skuba/pull/616))
+
+- **start:** Add a `?` placeholder for unnamed function arguments ([#647](https://github.com/seek-oss/skuba/pull/647))
+
+- **deps:** Relax ranges ([#622](https://github.com/seek-oss/skuba/pull/622))
+
+  Projects can now upgrade to new Prettier and TypeScript patches and `ts-node-dev` minors without us having to cut a new release.
+
+- **template:** hot-shots ^9.0.0 ([#639](https://github.com/seek-oss/skuba/pull/639))
+
+- **template/lambda-sqs-worker:** Remove `pino.Logger` indirection ([#624](https://github.com/seek-oss/skuba/pull/624))
+
+- **template:** @seek/logger ^5.0.0 ([#621](https://github.com/seek-oss/skuba/pull/621))
+
+- **template:** Ignore `.gantry` YAML paths via `.prettierignore` ([#636](https://github.com/seek-oss/skuba/pull/636))
+
+  Gantry resource and value files often live in the `.gantry` subdirectory and may use non-standard template syntax.
+
+- **template:** Propagate environment variables for GitHub annotations ([#642](https://github.com/seek-oss/skuba/pull/642))
+
+  This enables GitHub annotations for newly-initialised projects with the appropriate Buildkite configuration.
+
 ## 3.15.2
 
 ### Patch Changes
