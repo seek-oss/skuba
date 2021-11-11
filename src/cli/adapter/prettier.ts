@@ -1,11 +1,54 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import { Options, check, format, getFileInfo, resolveConfig } from 'prettier';
+import {
+  Options,
+  SupportLanguage,
+  check,
+  format,
+  getSupportInfo,
+  resolveConfig,
+} from 'prettier';
 
 import { crawlDirectory } from '../../utils/dir';
 import { Logger, pluralise } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
+
+let languages: SupportLanguage[] | undefined;
+
+/**
+ * Infers a parser for the specified filepath.
+ *
+ * This is a cut-down version of Prettier's built-in function of the same name;
+ * ours operates purely on the `filepath` string and does not perform file I/O.
+ * Prettier's internal `getInterpreter` function can open a file to read the
+ * shebang, and its file descriptor usage can throw warnings on worker threads:
+ *
+ * ```console
+ * Warning: File descriptor 123 closed but not opened in unmanaged mode
+ *     at Object.closeSync (node:fs:530:11)
+ *     at Object.closeSync (node_modules/graceful-fs/graceful-fs.js:74:20)
+ *     ...
+ * ```
+ *
+ * References:
+ *
+ * - https://github.com/prettier/prettier/blob/2.4.1/src/main/options.js#L167
+ * - seek-oss/skuba#659
+ */
+export const inferParser = (filepath: string): string | undefined => {
+  const filename = path.basename(filepath).toLowerCase();
+
+  languages ??= getSupportInfo().languages.filter((language) => language.since);
+
+  const firstLanguage = languages.find(
+    (language) =>
+      language.extensions?.some((extension) => filename.endsWith(extension)) ||
+      language.filenames?.some((name) => name.toLowerCase() === filename),
+  );
+
+  return firstLanguage?.parsers[0];
+};
 
 interface File {
   data: string;
@@ -110,12 +153,12 @@ export const runPrettier = async (
 
   for (const filepath of filepaths) {
     // Infer parser upfront so we can skip unsupported files.
-    const fileInfo = await getFileInfo(filepath, { resolveConfig: false });
+    const parser = inferParser(filepath);
 
     logger.debug(filepath);
-    logger.debug('  parser:', fileInfo.inferredParser ?? '-');
+    logger.debug('  parser:', parser ?? '-');
 
-    if (!fileInfo.inferredParser) {
+    if (!parser) {
       result.unparsed.push(filepath);
       continue;
     }
