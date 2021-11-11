@@ -39,28 +39,24 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
     }));
 
     // Create a check run per display name. Run in series.
-    await pMap(
-      annotationResults,
-      async ({ displayName, annotations }) => {
-        const name = `skuba/test${
-          displayName !== DEFAULT_NAME ? ` (${displayName})` : ''
-        }`;
-        const isOk = Boolean(!annotations.length);
-        const conclusion = isOk ? 'success' : 'failure';
-        const summary = isOk
-          ? '`skuba test` passed.'
-          : '`skuba test` found issues that require triage.';
-        const build = buildNameFromEnvironment();
+    for (const { displayName, annotations } of annotationResults) {
+      const name = `skuba/test${
+        displayName !== DEFAULT_NAME ? ` (${displayName})` : ''
+      }`;
+      const isOk = Boolean(!annotations.length);
+      const conclusion = isOk ? 'success' : 'failure';
+      const summary = isOk
+        ? '`skuba test` passed.'
+        : '`skuba test` found issues that require triage.';
+      const build = buildNameFromEnvironment();
 
-        await GitHub.createCheckRun({
-          name,
-          annotations,
-          conclusion,
-          summary,
-          title: `${build} ${isOk ? 'passed' : 'failed'}`,
-        });
-      },
-      { concurrency: 1 },
-    );
+      await GitHub.createCheckRun({
+        name,
+        annotations,
+        conclusion,
+        summary,
+        title: `${build} ${isOk ? 'passed' : 'failed'}`,
+      });
+    }
   }
 }
