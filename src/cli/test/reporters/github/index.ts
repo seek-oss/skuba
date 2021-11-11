@@ -1,6 +1,5 @@
 import type { Context, Reporter } from '@jest/reporters';
 import type { AggregatedResult, TestResult } from '@jest/test-result';
-import pMap from 'p-map';
 
 import * as GitHub from '../../../../api/github';
 import {
