@@ -1,5 +1,19 @@
 # skuba
 
+## 3.16.2
+
+### Patch Changes
+
+- **format, lint:** Skip reading unsupported Prettier files into memory ([#662](https://github.com/seek-oss/skuba/pull/662))
+
+- **format, lint:** Fix file descriptor warnings ([#664](https://github.com/seek-oss/skuba/pull/664))
+
+  This resolves the following warning when processing files that Prettier cannot parse:
+
+  ```console
+  (node:123) Warning: File descriptor 456 closed but not opened in unmanaged mode
+  ```
+
 ## 3.16.1
 
 ### Patch Changes
