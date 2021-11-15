@@ -1,6 +1,7 @@
 import { AggregatedResult, Context } from '@jest/reporters';
 
 import * as GitHub from '../../../../api/github';
+import { log } from '../../../../utils/logging';
 
 import { createAnnotations } from './annotations';
 
@@ -10,6 +11,7 @@ const reporter = new GitHubReporter();
 
 jest.mock('../../../../api/github');
 jest.mock('./annotations');
+jest.mock('../../../../utils/logging');
 
 const annotations: GitHub.Annotation[] = [
   {
@@ -385,4 +387,11 @@ it('should sort tests by display name and call GitHub.createCheckRun with each g
     summary: expect.any(String),
     title: expect.any(String),
   });
+});
+
+it('should log a warning when it fails to create annotations', async () => {
+  (GitHub.createCheckRun as jest.Mock).mockRejectedValue(new Error());
+  await reporter.onRunComplete(context, failResults);
+
+  expect(log.warn).toBeCalled();
 });
