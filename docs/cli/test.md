@@ -30,11 +30,9 @@ Check runs are created with the default title `skuba/test` and can be customised
 
 eg. `displayName: "integration"` will set the Check run title as `skuba/test (integration)`.
 
-If this field is left blank the title will default to `skuba/test`.
-
 #### Multiple Test Runs
 
-To display annotations for different `skuba test` calls in a single pipeline build, provide a unique `displayName` for each test run.
+To display annotations for different `skuba test` calls in a single pipeline build, a unique `displayName` for each test type is required.
 
 eg. Unit Tests and Integration Tests which can be run with the following commands
 
