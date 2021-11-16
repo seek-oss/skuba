@@ -43,11 +43,11 @@ export const getOwnerRepo = async (
   throw new Error('Could not find a GitHub remote');
 };
 
-export const getCurrentBranch = async (dir: string): Promise<string> => {
+export const getCurrentBranchRef = async (dir: string): Promise<string> => {
   const branch = await git.currentBranch({
     fs,
     dir,
-    fullname: false,
+    fullname: true,
   });
 
   if (!branch) {
