@@ -1,6 +1,6 @@
 import picomatch from 'picomatch';
 
-import { Files, Module, Options } from '../types';
+import type { Files, Module, Options } from '../types';
 
 export function assertDefined<T>(value?: T): asserts value is T {
   expect(value).toBeDefined();

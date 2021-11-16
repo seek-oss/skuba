@@ -1,7 +1,7 @@
 import normalizeData from 'normalize-package-data';
 
 import { isObject } from '../../../utils/validation';
-import { PackageJson } from '../types';
+import type { PackageJson } from '../types';
 
 import { formatObject, parseObject } from './json';
 

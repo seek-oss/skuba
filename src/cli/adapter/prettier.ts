@@ -1,17 +1,12 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import {
-  Options,
-  SupportLanguage,
-  check,
-  format,
-  getSupportInfo,
-  resolveConfig,
-} from 'prettier';
+import type { Options, SupportLanguage } from 'prettier';
+import { check, format, getSupportInfo, resolveConfig } from 'prettier';
 
 import { crawlDirectory } from '../../utils/dir';
-import { Logger, pluralise } from '../../utils/logging';
+import type { Logger } from '../../utils/logging';
+import { pluralise } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
 
 let languages: SupportLanguage[] | undefined;

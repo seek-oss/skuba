@@ -1,7 +1,7 @@
-import { ESLintOutput } from 'cli/adapter/eslint';
-import { PrettierOutput } from 'cli/adapter/prettier';
+import type { ESLintOutput } from 'cli/adapter/eslint';
+import type { PrettierOutput } from 'cli/adapter/prettier';
 
-import { StreamInterceptor } from '../external';
+import type { StreamInterceptor } from '../external';
 
 import { createBuildkiteAnnotations } from './buildkite';
 import { createGitHubAnnotations } from './github';

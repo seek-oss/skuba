@@ -1,9 +1,9 @@
 import { mocked } from 'ts-jest/utils';
 
 import * as GitHub from '../../../../api/github';
-import { ESLintOutput } from '../../../../cli/adapter/eslint';
-import { PrettierOutput } from '../../../../cli/adapter/prettier';
-import { StreamInterceptor } from '../../../../cli/lint/external';
+import type { ESLintOutput } from '../../../../cli/adapter/eslint';
+import type { PrettierOutput } from '../../../../cli/adapter/prettier';
+import type { StreamInterceptor } from '../../../../cli/lint/external';
 
 import { createEslintAnnotations } from './eslint';
 import { createPrettierAnnotations } from './prettier';
