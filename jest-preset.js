@@ -44,4 +44,5 @@ module.exports = {
     '/node_modules.*/',
     '<rootDir>/(coverage|dist|lib|tmp).*/',
   ],
+  reporters: ['default', require.resolve('./lib/cli/test/reporters/github')],
 };

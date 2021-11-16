@@ -14,7 +14,7 @@ This topic details GitHub integration features baked into **skuba**.
 
 ## GitHub annotations
 
-**skuba** can annotate the first 50 issues detected by [`skuba lint`] via the [GitHub Checks API].
+**skuba** can annotate the first 50 issues detected by [`skuba lint`] and [`skuba test`] via the [GitHub Checks API].
 
 This can be enabled by propagating Buildkite environment variables and a GitHub API token (at SEEK, this token can be configured through Build Agency).
 For example, with the Docker plugin:
@@ -61,8 +61,6 @@ propagate the following environment variables to achieve the same effect:
 - `GITHUB_JOB`
 - `GITHUB_RUN_NUMBER`
 - `GITHUB_TOKEN`
-
-This feature is also planned for [`skuba test`] in future.
 
 **skuba**'s development API includes a [GitHub.createCheckRun] function.
 You can use this to create your own check runs from other JavaScript code running in your CI workflow.
