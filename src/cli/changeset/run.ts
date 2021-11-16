@@ -9,8 +9,8 @@ import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
 import * as semver from 'semver';
 
-import * as github from './actionsAdapter';
 import * as gitUtils from './gitUtils';
+import * as github from './githubAdapter';
 import readChangesetState from './readChangesetState';
 import {
   execWithOutput,
