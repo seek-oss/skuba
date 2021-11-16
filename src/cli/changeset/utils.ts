@@ -1,11 +1,12 @@
-import { exec } from '@actions/exec';
+// Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/gitUtils.ts
+
 import type { Package } from '@manypkg/get-packages';
 import { getPackages } from '@manypkg/get-packages';
+import execa from 'execa';
 import mdastToString from 'mdast-util-to-string';
 import remarkParse from 'remark-parse';
 import remarkStringify from 'remark-stringify';
-// @ts-ignore
-import unified from 'unified';
+import { unified } from 'unified';
 
 export const BumpLevels = {
   dep: 0,
@@ -41,7 +42,7 @@ export function getChangelogEntry(changelog: string, version: string) {
 
   let highestLevel: number = BumpLevels.dep;
 
-  const nodes = ast.children as Array<any>;
+  const nodes = ast.children;
   let headingStartInfo:
     | {
         index: number;
@@ -53,7 +54,7 @@ export function getChangelogEntry(changelog: string, version: string) {
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
     if (node.type === 'heading') {
-      const stringified: string = mdastToString(node);
+      const stringified: string = mdastToString.toString(node);
       const match = /(major|minor|patch)/.exec(stringified.toLowerCase());
       if (match !== null) {
         const level = BumpLevels[match[0] as 'major' | 'minor' | 'patch'];
@@ -77,10 +78,7 @@ export function getChangelogEntry(changelog: string, version: string) {
     }
   }
   if (headingStartInfo) {
-    ast.children = (ast.children as any).slice(
-      headingStartInfo.index + 1,
-      endIndex,
-    );
+    ast.children = ast.children.slice(headingStartInfo.index + 1, endIndex);
   }
   return {
     content: unified().use(remarkStringify).stringify(ast),
@@ -88,31 +86,35 @@ export function getChangelogEntry(changelog: string, version: string) {
   };
 }
 
-export async function execWithOutput(
+export const execWithOutput = async (
   command: string,
   args?: string[],
-  options?: { ignoreReturnCode?: boolean; cwd?: string },
-) {
-  let myOutput = '';
-  let myError = '';
+  options: { ignoreReturnCode?: boolean; cwd?: string } = {},
+) => {
+  try {
+    const { exitCode, stdout, stderr } = await execa(
+      command,
+      args,
+      ...(options.cwd ? [{ cwd: options.cwd }] : []),
+    );
 
-  return {
-    code: await exec(command, args, {
-      listeners: {
-        stdout: (data: Buffer) => {
-          myOutput += data.toString();
-        },
-        stderr: (data: Buffer) => {
-          myError += data.toString();
-        },
-      },
+    return {
+      code: exitCode,
+      stdout,
+      stderr,
+    };
+  } catch ({ exitCode, stdout, stderr }) {
+    if (!options.ignoreReturnCode) {
+      throw new Error(stderr as string);
+    }
 
-      ...options,
-    }),
-    stdout: myOutput,
-    stderr: myError,
-  };
-}
+    return {
+      code: exitCode,
+      stdout,
+      stderr,
+    };
+  }
+};
 
 export function sortTheThings(
   a: { private: boolean; highestLevel: number },

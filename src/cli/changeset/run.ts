@@ -1,14 +1,16 @@
+/* eslint-disable no-console */
+// Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/run.ts
 import path from 'path';
 
-import { exec } from '@actions/exec';
-import * as github from '@actions/github';
 import type { Package } from '@manypkg/get-packages';
 import { getPackages } from '@manypkg/get-packages';
+import execa from 'execa';
 import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
 import * as semver from 'semver';
 
 import * as gitUtils from './gitUtils';
+import * as github from './githubAdapter';
 import readChangesetState from './readChangesetState';
 import {
   execWithOutput,
@@ -17,6 +19,10 @@ import {
   getVersionsByDirectory,
   sortTheThings,
 } from './utils';
+
+type CommonError = {
+  code: string;
+};
 
 const createRelease = async (
   octokit: ReturnType<typeof github.getOctokit>,
@@ -44,11 +50,11 @@ const createRelease = async (
       tag_name: tagName,
       body: changelogEntry.content,
       prerelease: pkg.packageJson.version.includes('-'),
-      ...github.context.repo,
+      ...(await github.context(process.cwd())).repo,
     });
   } catch (err) {
     // if we can't find a changelog, the user has probably disabled changelogs
-    if (err.code !== 'ENOENT') {
+    if ((err as CommonError).code !== 'ENOENT') {
       throw err;
     }
   }
@@ -97,7 +103,7 @@ export async function runPublish({
     );
 
     for (const line of changesetPublishOutput.stdout.split('\n')) {
-      const match = line.match(newTagRegex);
+      const match = newTagRegex.exec(line);
       if (match === null) {
         continue;
       }
@@ -131,7 +137,7 @@ export async function runPublish({
     const newTagRegex = /New tag:/;
 
     for (const line of changesetPublishOutput.stdout.split('\n')) {
-      const match = line.match(newTagRegex);
+      const match = newTagRegex.exec(line);
 
       if (match) {
         releasedPackages.push(pkg);
@@ -157,11 +163,19 @@ export async function runPublish({
   return { published: false };
 }
 
+interface PackageJson {
+  version: string;
+}
+
 const requireChangesetsCliPkgJson = (cwd: string) => {
   try {
-    return require(resolveFrom(cwd, '@changesets/cli/package.json'));
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require(resolveFrom(
+      cwd,
+      '@changesets/cli/package.json',
+    )) as PackageJson;
   } catch (err) {
-    if (err && err.code === 'MODULE_NOT_FOUND') {
+    if (err && (err as CommonError).code === 'MODULE_NOT_FOUND') {
       throw new Error(
         `Have you forgotten to install \`@changesets/cli\` in "${cwd}"?`,
       );
@@ -187,26 +201,27 @@ export async function runVersion({
   commitMessage = 'Version Packages',
   hasPublishScript = false,
 }: VersionOptions) {
-  const repo = `${github.context.repo.owner}/${github.context.repo.repo}`;
-  const branch = github.context.ref.replace('refs/heads/', '');
+  const context = await github.context(cwd);
+  const repo = `${context.repo.owner}/${context.repo.repo}`;
+  const branch = context.ref.replace('refs/heads/', '');
   const versionBranch = `changeset-release/${branch}`;
   const octokit = github.getOctokit(githubToken);
   const { preState } = await readChangesetState(cwd);
 
   await gitUtils.switchToMaybeExistingBranch(versionBranch);
-  await gitUtils.reset(github.context.sha);
+  await gitUtils.reset(context.sha);
 
   const versionsByDirectory = await getVersionsByDirectory(cwd);
 
   if (script) {
     const [versionCommand, ...versionArgs] = script.split(/\s+/);
-    await exec(versionCommand, versionArgs, { cwd });
+    await execa(versionCommand, versionArgs, { cwd });
   } else {
     const changesetsCliPkgJson = requireChangesetsCliPkgJson(cwd);
     const cmd = semver.lt(changesetsCliPkgJson.version, '2.0.0')
       ? 'bump'
       : 'version';
-    await exec('node', [resolveFrom(cwd, '@changesets/cli/bin.js'), cmd], {
+    await execa('node', [resolveFrom(cwd, '@changesets/cli/bin.js'), cmd], {
       cwd,
     });
   }
@@ -227,9 +242,7 @@ ${
   Boolean(preState)
     ? `
 ⚠️⚠️⚠️⚠️⚠️⚠️
-
 \`${branch}\` is currently in **pre mode** so this branch has prereleases rather than normal releases. If you want to exit prereleases, run \`changeset pre exit\` on \`${branch}\`.
-
 ⚠️⚠️⚠️⚠️⚠️⚠️
 `
     : ''
@@ -260,14 +273,12 @@ ${(
   .map((x) => x.content)
   .join('\n ')}`)();
 
-  const finalPrTitle = `${prTitle}${
-    Boolean(preState) ? ` (${preState.tag})` : ''
-  }`;
+  const finalPrTitle = `${prTitle}${preState ? ` (${preState.tag})` : ''}`;
 
   // project with `commit: true` setting could have already committed files
   if (!(await gitUtils.checkIfClean())) {
     const finalCommitMessage = `${commitMessage}${
-      Boolean(preState) ? ` (${preState.tag})` : ''
+      preState ? ` (${preState.tag})` : ''
     }`;
     await gitUtils.commitAll(finalCommitMessage);
   }
@@ -283,14 +294,14 @@ ${(
       head: versionBranch,
       title: finalPrTitle,
       body: await prBodyPromise,
-      ...github.context.repo,
+      ...context.repo,
     });
   } else {
-    octokit.pulls.update({
+    await octokit.pulls.update({
       pull_number: searchResult.data.items[0].number,
       title: finalPrTitle,
       body: await prBodyPromise,
-      ...github.context.repo,
+      ...context.repo,
     });
     console.log('pull request found');
   }

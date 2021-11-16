@@ -1,6 +1,8 @@
-import * as core from '@actions/core';
+/* eslint-disable no-sync */
+/* eslint-disable no-console */
 import fs from 'fs-extra';
 
+import * as core from './coreAdapter';
 import * as gitUtils from './gitUtils';
 import readChangesetState from './readChangesetState';
 import { runPublish, runVersion } from './run';
@@ -20,7 +22,7 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
 
   console.log('setting GitHub credentials');
   await fs.writeFile(
-    `${process.env.HOME}/.netrc`,
+    `${process.env.HOME as string}/.netrc`,
     `machine github.com\nlogin github-actions[bot]\npassword ${githubToken}`,
   );
 
@@ -43,7 +45,7 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
         'No changesets found, attempting to publish any unpublished packages to npm',
       );
 
-      const userNpmrcPath = `${process.env.HOME}/.npmrc`;
+      const userNpmrcPath = `${process.env.HOME as string}/.npmrc`;
       if (fs.existsSync(userNpmrcPath)) {
         console.log('Found existing user .npmrc file');
         const userNpmrcContent = await fs.readFile(userNpmrcPath, 'utf8');
@@ -61,19 +63,23 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
           );
           fs.appendFileSync(
             userNpmrcPath,
-            `\n//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN}\n`,
+            `\n//registry.npmjs.org/:_authToken=${
+              process.env.NPM_TOKEN as string
+            }\n`,
           );
         }
       } else {
         console.log('No user .npmrc file found, creating one');
         fs.writeFileSync(
           userNpmrcPath,
-          `//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN}\n`,
+          `//registry.npmjs.org/:_authToken=${
+            process.env.NPM_TOKEN as string
+          }\n`,
         );
       }
 
       const result = await runPublish({
-        script: publishScript,
+        script: publishScript as string,
         githubToken,
       });
 
@@ -96,7 +102,7 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
       });
       return;
   }
-})().catch((err) => {
+})().catch((err: unknown) => {
   console.error(err);
-  core.setFailed(err.message);
+  core.setFailed((err as Error).message);
 });
