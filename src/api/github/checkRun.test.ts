@@ -2,16 +2,16 @@ import { Octokit } from '@octokit/rest';
 import type { Endpoints } from '@octokit/types';
 import { mocked } from 'ts-jest/utils';
 
+import { getHeadSha, getOwnerRepo } from '../../utils/git';
 import type * as GitHub from '../github';
 
 import { createCheckRun } from './checkRun';
-import { getHeadSha, getOwnerRepo } from './util';
 
 type CreateCheckRunResponse =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
 
 jest.mock('@octokit/rest');
-jest.mock('./util');
+jest.mock('../../utils/git');
 
 const mockClient = {
   checks: {

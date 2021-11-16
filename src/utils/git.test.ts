@@ -2,7 +2,7 @@ import type { ReadCommitResult } from 'isomorphic-git';
 import git from 'isomorphic-git';
 import { mocked } from 'ts-jest/utils';
 
-import { getHeadSha, getOwnerRepo } from './util';
+import { getHeadSha, getOwnerRepo } from './git';
 
 jest.mock('isomorphic-git');
 

@@ -1,9 +1,8 @@
 import { Octokit } from '@octokit/rest';
 import type { Endpoints } from '@octokit/types';
 
+import { getHeadSha, getOwnerRepo } from '../../utils/git';
 import { pluralise } from '../../utils/logging';
-
-import { getHeadSha, getOwnerRepo } from './util';
 
 type Output = NonNullable<
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters']['output']
