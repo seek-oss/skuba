@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
-const getHeadSha = async (dir: string): Promise<string> => {
+export const getHeadSha = async (dir: string): Promise<string> => {
   const [commit] = await git.log({ depth: 1, dir, fs });
 
   return commit.oid;
@@ -24,7 +24,7 @@ const getHeadSha = async (dir: string): Promise<string> => {
  */
 const ownerRepoRegex = /github.com(?::|\/)(.+)\/(.+).git$/;
 
-const getOwnerRepo = async (
+export const getOwnerRepo = async (
   dir: string,
 ): Promise<{ owner: string; repo: string }> => {
   const remotes = await git.listRemotes({ dir, fs });
@@ -42,5 +42,3 @@ const getOwnerRepo = async (
 
   throw new Error('Could not find a GitHub remote');
 };
-
-export { getOwnerRepo, getHeadSha };
