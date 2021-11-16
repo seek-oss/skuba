@@ -64,10 +64,10 @@ import { Jest } from './src';
 export default Jest.mergePreset({
   testPathIgnorePatterns: ['\\.int\\.test\\.ts'],
   projects: [
-    {
+    Jest.mergePreset({
       displayName: 'integration',
       testPathIgnorePatterns: ['/test\\.ts'],
-    },
+    }),
   ],
 });
 ```
