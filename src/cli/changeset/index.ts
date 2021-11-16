@@ -1,5 +1,1 @@
-import { init } from 'wrapper/testing/expressRequestListener';
-
-export const release = () => {
-  init();
-};
+export const release = async () => import('./init');
