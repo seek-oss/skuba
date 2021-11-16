@@ -24,7 +24,7 @@ skuba test --coverage path/to/file.test.ts
 
 ### Annotations
 
-`skuba lint` can automatically emit annotations in CI.
+`skuba test` can automatically emit annotations in CI.
 
 - [Buildkite annotations] are planned in future.
 - [GitHub annotations] are enabled when CI and GitHub environment variables are present.
