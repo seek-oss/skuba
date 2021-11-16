@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+"skuba": patch
 ---
 
 GitHub.createCheckRun: Support `text` parameter
