@@ -2,7 +2,7 @@ import { getSkubaVersion } from '../../../utils/version';
 import { deleteFiles } from '../processing/deleteFiles';
 import { withPackage } from '../processing/package';
 import { merge } from '../processing/record';
-import { Module, Options } from '../types';
+import type { Module, Options } from '../types';
 
 const DEFAULT_PACKAGE_FILES = [
   'lib*/**/*.d.ts',

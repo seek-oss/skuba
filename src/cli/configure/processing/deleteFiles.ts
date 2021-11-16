@@ -1,4 +1,4 @@
-import { Module } from '../types';
+import type { Module } from '../types';
 
 /**
  * Load files into cache and schedule them for deletion.

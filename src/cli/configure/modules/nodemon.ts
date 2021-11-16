@@ -1,4 +1,4 @@
 import { deleteFiles } from '../processing/deleteFiles';
-import { Module } from '../types';
+import type { Module } from '../types';
 
 export const nodemonModule = (): Module => deleteFiles('nodemon.json');

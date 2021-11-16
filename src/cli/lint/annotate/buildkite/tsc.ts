@@ -1,5 +1,5 @@
 import * as Buildkite from '../../../../api/buildkite';
-import { StreamInterceptor } from '../../../../cli/lint/external';
+import type { StreamInterceptor } from '../../../../cli/lint/external';
 
 export const createTscAnnotations = (
   tscOk: boolean,

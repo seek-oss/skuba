@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 
-import { ExecaError } from 'execa';
+import type { ExecaError } from 'execa';
 import * as t from 'runtypes';
 
 import { log } from './logging';

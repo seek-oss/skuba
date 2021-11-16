@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 
-import { ProjectType } from '../../utils/manifest';
+import type { ProjectType } from '../../utils/manifest';
 import { getDestinationManifest } from '../configure/analysis/package';
 import { formatPackage } from '../configure/processing/package';
 

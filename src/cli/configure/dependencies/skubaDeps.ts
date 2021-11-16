@@ -1,4 +1,4 @@
-import { DependencySet } from '../types';
+import type { DependencySet } from '../types';
 
 const DEV_DEPENDENCIES = [
   // replaced

@@ -1,4 +1,4 @@
-import { Config } from '@jest/types';
+import type { Config } from '@jest/types';
 
 import jestPreset from '../../../jest-preset';
 import { mergeRaw } from '../../cli/configure/processing/record';
