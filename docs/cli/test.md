@@ -28,7 +28,7 @@ skuba test --coverage path/to/file.test.ts
 
 Check runs with annotations are created with the default title `skuba/test` and can be customised further by using the [displayName] field available in Jest config files.
 
-eg. a `displayName: "integration"` will render `skuba/test (integration)` in the GitHub UI.
+eg. `displayName: "integration"` will render `skuba/test (integration)` in the GitHub UI.
 
 If this field is left blank the title will default to `skuba/test`.
 
