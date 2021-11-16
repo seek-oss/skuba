@@ -124,17 +124,20 @@ describe('createCheckRun', () => {
     );
   });
 
-  it('should pass the name and conclusion directly to create check run', async () => {
+  it('should pass the conclusion, name and text directly to create check run', async () => {
+    const text = 'Something happened.';
+
     await createCheckRun({
       name,
       summary,
       annotations,
       conclusion,
+      text,
       title,
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
-      expect.objectContaining({ name, conclusion }),
+      expect.objectContaining({ conclusion, name, text }),
     );
   });
 

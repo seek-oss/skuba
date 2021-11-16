@@ -44,11 +44,40 @@ const createEnrichedSummary = (
       : []),
   ].join('\n\n');
 
+/**
+ * {@link https://docs.github.com/en/rest/reference/checks#create-a-check-run}
+ */
 interface CreateCheckRunParameters {
+  /**
+   * Adds information from your analysis to specific lines of code.
+   * Annotations are visible on GitHub in the **Checks** and **Files changed**
+   * tab of the pull request.
+   */
   annotations: Annotation[];
+
+  /**
+   * The final conclusion of the check.
+   */
   conclusion: 'failure' | 'success';
+
+  /**
+   * The name of the check. For example, "code-coverage".
+   */
   name: string;
+
+  /**
+   * The summary of the check run. This parameter supports Markdown.
+   */
   summary: string;
+
+  /**
+   * The details of the check run. This parameter supports Markdown.
+   */
+  text?: string;
+
+  /**
+   * The title of the check run.
+   */
   title: string;
 }
 
@@ -59,14 +88,13 @@ interface CreateCheckRunParameters {
  *
  * A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with the `checks:write` permission
  * must be present on the environment.
-
-
  */
 export const createCheckRun = async ({
   annotations,
   conclusion,
   name,
   summary,
+  text,
   title,
 }: CreateCheckRunParameters): Promise<void> => {
   const dir = process.cwd();
@@ -87,6 +115,7 @@ export const createCheckRun = async ({
     output: {
       annotations: annotations.slice(0, GITHUB_MAX_ANNOTATIONS),
       summary: createEnrichedSummary(summary, annotations.length),
+      text,
       title: suffixTitle(title, annotations.length),
     },
     owner,
