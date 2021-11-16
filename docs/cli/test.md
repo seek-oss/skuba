@@ -22,61 +22,16 @@ Arguments are passed through to the Jest CLI:
 skuba test --coverage path/to/file.test.ts
 ```
 
-### GitHub Annotations
+### Annotations
 
-`skuba test` can automatically emit annotations in CI. [Github Annotations] are enabled when CI and GitHub environment variables are present.
+`skuba lint` can automatically emit annotations in CI.
 
-Check runs are created with the default title `skuba/test` and can be customised further by using the [displayName] field available in Jest config files.
+- [Buildkite annotations] are planned in future.
+- [GitHub annotations] are enabled when CI and GitHub environment variables are present.
 
-eg. `displayName: "integration"` will set the Check run title as `skuba/test (integration)`.
-
-#### Multiple Test Runs
-
-To display annotations for different `skuba test` calls in a single pipeline build, a unique `displayName` for each test type is required.
-
-eg. Unit Tests and Integration Tests which can be run with the following commands
-
-`skuba test --config jest.config.ts`
-
-`skuba test --config jest.config.int.ts`
-
-```typescript
-// jest.config.ts
-import { Jest } from './src';
-
-export default Jest.mergePreset({
-  testPathIgnorePatterns: ['\\.int\\.test\\.ts'],
-});
-```
-
-```typescript
-// jest.config.int.ts
-import { Jest } from './src';
-
-export default Jest.mergePreset({
-  displayName: 'integration',
-  testPathIgnorePatterns: ['/test\\.ts'],
-});
-```
-
-This will create two separate GitHub check runs with annotations `skuba/test` and `skuba/test (integration)`.
-
-Alternatively, you can also declare [projects] with unique [displayName] fields in a single Jest config file.
-
-```typescript
-// jest.config.ts
-import { Jest } from './src';
-
-export default Jest.mergePreset({
-  testPathIgnorePatterns: ['\\.int\\.test\\.ts'],
-  projects: [
-    Jest.mergePreset({
-      displayName: 'integration',
-      testPathIgnorePatterns: ['/test\\.ts'],
-    }),
-  ],
-});
-```
+GitHub check runs are created with a default title of `skuba/test`.
+You can further qualify this by providing a [displayName] in your Jest config;
+for example, the display name `integration` will result in the title `skuba/test (integration)`.
 
 [displayname]: https://jestjs.io/docs/configuration#displayname-string-object
 [github annotations]: ../deep-dives/github.md#github-annotations
