@@ -75,3 +75,4 @@ export default Jest.mergePreset({
 [`skuba test`]: ../cli/test.md
 [annotation]: ../cli/test.md#annotations
 [displayname]: https://jestjs.io/docs/configuration#displayname-string-object
+[projects]: https://jestjs.io/docs/configuration#projects-arraystring--projectconfig
