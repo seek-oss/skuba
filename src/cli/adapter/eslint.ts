@@ -1,9 +1,11 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import { ESLint, Linter } from 'eslint';
+import type { Linter } from 'eslint';
+import { ESLint } from 'eslint';
 
-import { Logger, pluralise } from '../../utils/logging';
+import type { Logger } from '../../utils/logging';
+import { pluralise } from '../../utils/logging';
 
 const symbolForResult = (result: ESLint.LintResult) => {
   if (result.errorCount) {

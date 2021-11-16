@@ -1,4 +1,4 @@
-import http from 'http';
+import type http from 'http';
 
 import { isFunction, isIpPort, isObject } from '../utils/validation';
 

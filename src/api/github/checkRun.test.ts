@@ -1,9 +1,10 @@
 import { Octokit } from '@octokit/rest';
-import { Endpoints } from '@octokit/types';
-import git, { ReadCommitResult } from 'isomorphic-git';
+import type { Endpoints } from '@octokit/types';
+import type { ReadCommitResult } from 'isomorphic-git';
+import git from 'isomorphic-git';
 import { mocked } from 'ts-jest/utils';
 
-import * as GitHub from '../github';
+import type * as GitHub from '../github';
 
 import { createCheckRun } from './checkRun';
 

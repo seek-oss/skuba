@@ -1,9 +1,9 @@
 import { Select } from 'enquirer';
-import { NormalizedReadResult } from 'read-pkg-up';
+import type { NormalizedReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging';
 import { PROJECT_TYPES, ProjectType } from '../../utils/manifest';
-import { TemplateConfig } from '../../utils/template';
+import type { TemplateConfig } from '../../utils/template';
 import { hasProp } from '../../utils/validation';
 
 interface Props {

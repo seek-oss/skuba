@@ -3,7 +3,7 @@ import { deleteFiles } from '../processing/deleteFiles';
 import { withPackage } from '../processing/package';
 import { formatPrettier } from '../processing/prettier';
 import { getFirstDefined } from '../processing/record';
-import { Module, Options } from '../types';
+import type { Module, Options } from '../types';
 
 const OTHER_CONFIG_FILENAMES = [
   '.github/renovate.json',

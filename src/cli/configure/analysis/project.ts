@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import { buildPatternToFilepathMap, crawlDirectory } from '../../../utils/dir';
 import { isErrorWithCode } from '../../../utils/error';
 import { loadModules } from '../modules';
-import { FileDiff, Files, Module, Options } from '../types';
+import type { FileDiff, Files, Module, Options } from '../types';
 
 import { determineOperation } from './diff';
 

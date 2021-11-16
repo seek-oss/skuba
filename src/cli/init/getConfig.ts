@@ -1,7 +1,8 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import { Form, FormChoice } from 'enquirer';
+import type { FormChoice } from 'enquirer';
+import { Form } from 'enquirer';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy';
@@ -15,14 +16,15 @@ import {
 } from '../../utils/template';
 
 import { downloadGitHubTemplate } from './git';
+import type { BaseFields } from './prompts';
 import {
   BASE_PROMPT_PROPS,
-  BaseFields,
   GIT_PATH_PROMPT,
   SHOULD_CONTINUE_PROMPT,
   TEMPLATE_PROMPT,
 } from './prompts';
-import { InitConfig, InitConfigInput } from './types';
+import type { InitConfig } from './types';
+import { InitConfigInput } from './types';
 
 export const runForm = <T = Record<string, string>>(props: {
   choices: Readonly<FormChoice[]>;

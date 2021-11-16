@@ -8,7 +8,7 @@ import {
   readModuleExports,
   transformModuleImportsAndExports,
 } from '../processing/typescript';
-import { Module } from '../types';
+import type { Module } from '../types';
 
 // Jest options to preserve during migration
 const filterProps = createPropFilter([

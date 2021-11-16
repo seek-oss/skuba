@@ -1,7 +1,7 @@
 import readPkgUp from 'read-pkg-up';
 
 import { log } from '../../../utils/logging';
-import { DependencyDiff, DependencySet } from '../types';
+import type { DependencyDiff, DependencySet } from '../types';
 
 import { determineOperation } from './diff';
 
