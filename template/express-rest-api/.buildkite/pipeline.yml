@@ -53,6 +53,8 @@ steps:
       - echo '--- yarn lint'
       - yarn lint
     depends_on: warm-prod
+    env:
+      GET_GITHUB_TOKEN: please
     plugins:
       - *aws-sm
       - *private-npm
