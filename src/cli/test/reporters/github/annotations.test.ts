@@ -1,4 +1,4 @@
-import { SerializableError, TestResult } from '@jest/test-result';
+import type { SerializableError, TestResult } from '@jest/test-result';
 
 import { createAnnotations } from './annotations';
 

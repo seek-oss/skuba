@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { TestResult } from '@jest/test-result';
+import type { TestResult } from '@jest/test-result';
 
 const jestRegex = /\((.+?):(\d+):(\d+)\)/;
 
