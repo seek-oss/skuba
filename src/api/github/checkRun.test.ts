@@ -1,17 +1,18 @@
 import { Octokit } from '@octokit/rest';
 import { Endpoints } from '@octokit/types';
-import git, { ReadCommitResult } from 'isomorphic-git';
 import { mocked } from 'ts-jest/utils';
 
 import * as GitHub from '../github';
 
 import { createCheckRun } from './checkRun';
+import { getHeadSha, getOwnerRepo } from './util';
 
 type CreateCheckRunResponse =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
 
 jest.mock('@octokit/rest');
 jest.mock('isomorphic-git');
+jest.mock('./util');
 
 const mockClient = {
   checks: {
@@ -50,12 +51,13 @@ describe('createCheckRun', () => {
 
   beforeEach(() => {
     mocked(Octokit).mockReturnValue(mockClient as unknown as Octokit);
-    mocked(git.listRemotes).mockResolvedValue([
-      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-    ]);
-    mocked(git.log).mockResolvedValue([
-      { oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad' } as ReadCommitResult,
-    ]);
+    mocked(getHeadSha).mockResolvedValue(
+      'cdd335a418c3dc6804be1c642b19bb63437e2cad',
+    );
+    mocked(getOwnerRepo).mockResolvedValue({
+      owner: 'seek-oss',
+      repo: 'skuba',
+    });
     mockClient.checks.create.mockReturnValue(createResponse);
   });
 
