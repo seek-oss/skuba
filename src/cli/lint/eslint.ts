@@ -5,7 +5,8 @@ import chalk from 'chalk';
 
 import { createLogger } from '../../utils/logging';
 import { execWorkerThread, postWorkerOutput } from '../../utils/worker';
-import { ESLintOutput, runESLint } from '../adapter/eslint';
+import type { ESLintOutput } from '../adapter/eslint';
+import { runESLint } from '../adapter/eslint';
 
 import type { Input } from './types';
 

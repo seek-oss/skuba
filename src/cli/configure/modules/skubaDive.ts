@@ -4,7 +4,7 @@ import { SKUBA_DIVE_HOOKS } from '../dependencies/skubaDive';
 import { prependImport, stripImports } from '../processing/javascript';
 import { loadFiles } from '../processing/loadFiles';
 import { parsePackage } from '../processing/package';
-import { Module, Options } from '../types';
+import type { Module, Options } from '../types';
 
 const DEFAULT_FILENAME = 'src/register.ts';
 

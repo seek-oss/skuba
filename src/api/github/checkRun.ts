@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/rest';
-import { Endpoints } from '@octokit/types';
+import type { Endpoints } from '@octokit/types';
 
 import { pluralise } from '../../utils/logging';
 

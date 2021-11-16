@@ -2,17 +2,18 @@ import path from 'path';
 
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
-import { NormalizedReadResult } from 'read-pkg-up';
+import type { NormalizedReadResult } from 'read-pkg-up';
 
-import { TextProcessor, copyFiles } from '../../utils/copy';
+import type { TextProcessor } from '../../utils/copy';
+import { copyFiles } from '../../utils/copy';
 import { log } from '../../utils/logging';
-import { ProjectType } from '../../utils/manifest';
+import type { ProjectType } from '../../utils/manifest';
 import { getSkubaVersion } from '../../utils/version';
 
 import { diffDependencies, generateNotices } from './analysis/package';
 import * as dependencyMutators from './dependencies';
 import { formatPackage } from './processing/package';
-import { DependencyDiff } from './types';
+import type { DependencyDiff } from './types';
 
 const logDiff = (diff: DependencyDiff): boolean => {
   const entries = Object.entries(diff);

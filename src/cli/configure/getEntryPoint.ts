@@ -2,11 +2,11 @@ import path from 'path';
 
 import chalk from 'chalk';
 import { Input } from 'enquirer';
-import { NormalizedReadResult } from 'read-pkg-up';
+import type { NormalizedReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging';
-import { ProjectType } from '../../utils/manifest';
-import { TemplateConfig } from '../../utils/template';
+import type { ProjectType } from '../../utils/manifest';
+import type { TemplateConfig } from '../../utils/template';
 import { hasStringProp } from '../../utils/validation';
 
 import { tsFileExists } from './analysis/files';

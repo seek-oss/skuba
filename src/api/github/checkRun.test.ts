@@ -1,8 +1,8 @@
 import { Octokit } from '@octokit/rest';
-import { Endpoints } from '@octokit/types';
+import type { Endpoints } from '@octokit/types';
 import { mocked } from 'ts-jest/utils';
 
-import * as GitHub from '../github';
+import type * as GitHub from '../github';
 
 import { createCheckRun } from './checkRun';
 import { getHeadSha, getOwnerRepo } from './util';

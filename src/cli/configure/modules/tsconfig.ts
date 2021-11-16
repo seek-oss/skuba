@@ -3,7 +3,7 @@ import { hasProp, hasStringProp, isObject } from '../../../utils/validation';
 import { formatObject, parseObject } from '../processing/json';
 import { loadFiles } from '../processing/loadFiles';
 import { merge } from '../processing/record';
-import { Module, Options } from '../types';
+import type { Module, Options } from '../types';
 
 export const tsconfigModule = async ({
   firstRun,
