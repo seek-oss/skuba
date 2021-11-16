@@ -1,7 +1,10 @@
-import git, { ReadCommitResult } from 'isomorphic-git';
+import type { ReadCommitResult } from 'isomorphic-git';
+import git from 'isomorphic-git';
 import { mocked } from 'ts-jest/utils';
 
 import { getHeadSha, getOwnerRepo } from './util';
+
+jest.mock('isomorphic-git');
 
 const dir = process.cwd();
 

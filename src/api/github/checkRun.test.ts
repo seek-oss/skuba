@@ -11,7 +11,6 @@ type CreateCheckRunResponse =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
 
 jest.mock('@octokit/rest');
-jest.mock('isomorphic-git');
 jest.mock('./util');
 
 const mockClient = {
