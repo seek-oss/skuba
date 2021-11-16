@@ -4,7 +4,7 @@ import type { TestResult } from '@jest/test-result';
 
 const jestRegex = /\((.+?):(\d+):(\d+)\)/;
 
-import * as GitHub from '../../../../api/github';
+import type * as GitHub from '../../../../api/github';
 
 export const createAnnotations = (
   testResults: TestResult[],
