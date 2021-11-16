@@ -4,14 +4,12 @@ import path from 'path';
 
 import type { Package } from '@manypkg/get-packages';
 import { getPackages } from '@manypkg/get-packages';
-import { Octokit } from '@octokit/rest';
 import execa from 'execa';
 import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
 import * as semver from 'semver';
 
-import { getCurrentBranch, getHeadSha, getOwnerRepo } from '../../utils/git';
-
+import * as github from './actionsAdapter';
 import * as gitUtils from './gitUtils';
 import readChangesetState from './readChangesetState';
 import {
@@ -22,8 +20,12 @@ import {
   sortTheThings,
 } from './utils';
 
+type CommonError = {
+  code: string;
+};
+
 const createRelease = async (
-  octokit: Octokit,
+  octokit: ReturnType<typeof github.getOctokit>,
   { pkg, tagName }: { pkg: Package; tagName: string },
 ) => {
   try {
@@ -48,7 +50,7 @@ const createRelease = async (
       tag_name: tagName,
       body: changelogEntry.content,
       prerelease: pkg.packageJson.version.includes('-'),
-      ...(await getOwnerRepo(process.cwd())),
+      ...(await github.context(process.cwd())).repo,
     });
   } catch (err) {
     // if we can't find a changelog, the user has probably disabled changelogs
@@ -75,16 +77,12 @@ type PublishResult =
       published: false;
     };
 
-type CommonError = {
-  code: string;
-};
-
 export async function runPublish({
   script,
   githubToken,
   cwd = process.cwd(),
 }: PublishOptions): Promise<PublishResult> {
-  const octokit = new Octokit({ auth: githubToken });
+  const octokit = github.getOctokit(githubToken);
   const [publishCommand, ...publishArgs] = script.split(/\s+/);
 
   const changesetPublishOutput = await execWithOutput(
@@ -165,9 +163,9 @@ export async function runPublish({
   return { published: false };
 }
 
-type PackageJson = {
+interface PackageJson {
   version: string;
-};
+}
 
 const requireChangesetsCliPkgJson = (cwd: string) => {
   try {
@@ -177,7 +175,7 @@ const requireChangesetsCliPkgJson = (cwd: string) => {
       '@changesets/cli/package.json',
     )) as PackageJson;
   } catch (err) {
-    if ((err as CommonError).code === 'MODULE_NOT_FOUND') {
+    if (err && (err as CommonError).code === 'MODULE_NOT_FOUND') {
       throw new Error(
         `Have you forgotten to install \`@changesets/cli\` in "${cwd}"?`,
       );
@@ -203,16 +201,15 @@ export async function runVersion({
   commitMessage = 'Version Packages',
   hasPublishScript = false,
 }: VersionOptions) {
-  const ownerRepo = await getOwnerRepo(cwd);
-  const repo = `${ownerRepo.owner}/${ownerRepo.repo}`;
-  const branch = await getCurrentBranch(cwd);
+  const context = await github.context(cwd);
+  const repo = `${context.repo.owner}/${context.repo.repo}`;
+  const branch = context.ref.replace('refs/heads/', '');
   const versionBranch = `changeset-release/${branch}`;
-  const octokit = new Octokit({ auth: githubToken });
+  const octokit = github.getOctokit(githubToken);
   const { preState } = await readChangesetState(cwd);
 
   await gitUtils.switchToMaybeExistingBranch(versionBranch);
-  const sha = await getHeadSha(cwd);
-  await gitUtils.reset(sha);
+  await gitUtils.reset(context.sha);
 
   const versionsByDirectory = await getVersionsByDirectory(cwd);
 
@@ -245,9 +242,7 @@ ${
   Boolean(preState)
     ? `
 ⚠️⚠️⚠️⚠️⚠️⚠️
-
 \`${branch}\` is currently in **pre mode** so this branch has prereleases rather than normal releases. If you want to exit prereleases, run \`changeset pre exit\` on \`${branch}\`.
-
 ⚠️⚠️⚠️⚠️⚠️⚠️
 `
     : ''
@@ -299,14 +294,14 @@ ${(
       head: versionBranch,
       title: finalPrTitle,
       body: await prBodyPromise,
-      ...ownerRepo,
+      ...context.repo,
     });
   } else {
     await octokit.pulls.update({
       pull_number: searchResult.data.items[0].number,
       title: finalPrTitle,
       body: await prBodyPromise,
-      ...ownerRepo,
+      ...context.repo,
     });
     console.log('pull request found');
   }
