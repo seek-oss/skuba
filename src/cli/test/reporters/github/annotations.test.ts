@@ -2,7 +2,7 @@ import { SerializableError, TestResult } from '@jest/test-result';
 
 import { createAnnotations } from './annotations';
 
-jest.spyOn(process, 'cwd').mockReturnValue('/workDir/skuba/');
+jest.spyOn(process, 'cwd').mockReturnValue('/workdir/skuba');
 
 it('should create annotations from Jest test results', () => {
   const testResult = {
@@ -28,7 +28,7 @@ it('should create annotations from Jest test results', () => {
       unmatched: 0,
       updated: 0,
     },
-    testFilePath: '/workDir/skuba/src/test.test.ts',
+    testFilePath: '/workdir/skuba/src/test.test.ts',
     testResults: [
       {
         ancestorTitles: [],
@@ -46,7 +46,7 @@ it('should create annotations from Jest test results', () => {
           },
         ],
         failureMessages: [
-          'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workDir/skuba/src/test.test.ts:2:15)\n    at Promise.then.completed (/workDir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workDir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workDir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workDir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workDir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workDir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workDir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
+          'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)\n    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
         ],
         fullName: 'should output a',
         invocations: 1,
@@ -74,16 +74,16 @@ it('should create annotations from Jest test results', () => {
         '\n' +
         'Expected: \x1B[32m"a"\x1B[39m\n' +
         'Received: \x1B[31m"b"\x1B[39m\n' +
-        '    at Object.<anonymous> (/workDir/skuba/src/test.test.ts:2:15)\n' +
-        '    at Promise.then.completed (/workDir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n' +
+        '    at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)\n' +
+        '    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n' +
         '    at new Promise (<anonymous>)\n' +
-        '    at callAsyncCircusFn (/workDir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n' +
-        '    at _callCircusTest (/workDir/skuba/node_modules/jest-circus/build/run.js:218:40)\n' +
+        '    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n' +
+        '    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\n' +
         '    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n' +
-        '    at _runTest (/workDir/skuba/node_modules/jest-circus/build/run.js:155:3)\n' +
-        '    at _runTestsForDescribeBlock (/workDir/skuba/node_modules/jest-circus/build/run.js:66:9)\n' +
-        '    at run (/workDir/skuba/node_modules/jest-circus/build/run.js:25:3)\n' +
-        '    at runAndTransformResultsToJestFormat (/workDir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
+        '    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\n' +
+        '    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\n' +
+        '    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\n' +
+        '    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
       title: 'Jest',
     },
   ]);
@@ -127,7 +127,7 @@ it('should create annotations from Jest exec errors', () => {
       updated: 0,
     },
     testExecError: error,
-    testFilePath: '/workDir/skuba/src/test.test.ts',
+    testFilePath: '/workdir/skuba/src/test.test.ts',
     testResults: [],
   } as TestResult;
 
