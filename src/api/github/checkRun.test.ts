@@ -137,7 +137,11 @@ describe('createCheckRun', () => {
     });
 
     expect(mockClient.checks.create).toBeCalledWith(
-      expect.objectContaining({ conclusion, name, text }),
+      expect.objectContaining({
+        conclusion,
+        name,
+        output: expect.objectContaining({ text }),
+      }),
     );
   });
 
