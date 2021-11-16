@@ -26,15 +26,15 @@ skuba test --coverage path/to/file.test.ts
 
 `skuba test` can automatically emit annotations in CI. [Github Annotations] are enabled when CI and GitHub environment variables are present.
 
-Check runs with annotations are created with the default title `skuba/test` and can be customised further by using the [displayName] field available in Jest config files.
+Check runs are created with the default title `skuba/test` and can be customised further by using the [displayName] field available in Jest config files.
 
-eg. `displayName: "integration"` will render `skuba/test (integration)` in the GitHub UI.
+eg. `displayName: "integration"` will set the Check run title as `skuba/test (integration)`.
 
 If this field is left blank the title will default to `skuba/test`.
 
 #### Multiple Test Runs
 
-In order to display annotations for different `skuba test` calls in a single pipeline run, provide a unique `displayName` for each test run.
+To display annotations for different `skuba test` calls in a single pipeline build, provide a unique `displayName` for each test run.
 
 eg. Unit Tests and Integration Tests which can be run with the following commands
 
