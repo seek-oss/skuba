@@ -2,7 +2,28 @@ import path from 'path';
 
 import type { TestResult } from '@jest/test-result';
 
-const jestRegex = /\((.+?):(\d+):(\d+)\)/;
+/**
+ * Matches the first stack trace location in a Jest failure message.
+ *
+ * For example, given the following input message:
+ *
+ * ```console
+ * Error: expect(received).toBe(expected) // Object.is equality
+ *
+ * Expected: "a"
+ * Received: "b"
+ *     at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)
+ *     at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)
+ *     ...
+ * ```
+ *
+ * This pattern will produce the following matches:
+ *
+ * 1. /workdir/skuba/src/test.test.ts
+ * 2. 2
+ * 2. 15
+ */
+const JEST_LOCATION_REGEX = /\((.+?):(\d+):(\d+)\)/;
 
 import type * as GitHub from '../../../../api/github';
 
@@ -22,10 +43,11 @@ export const createAnnotations = (
         title: 'Jest',
       };
     }
+
     if (testResult.numFailingTests > 0) {
       return testResult.testResults.flatMap((assertionResult) =>
         assertionResult.failureMessages.flatMap((failureMessage) => {
-          const match = jestRegex.exec(failureMessage);
+          const match = JEST_LOCATION_REGEX.exec(failureMessage);
           if (match?.length === 4) {
             return {
               annotation_level: 'failure',
@@ -38,10 +60,12 @@ export const createAnnotations = (
               title: 'Jest',
             };
           }
+
           return [];
         }),
       );
     }
+
     return [];
   });
 };
