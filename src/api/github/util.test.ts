@@ -22,8 +22,9 @@ afterEach(() => {
 });
 
 describe('getOwnerRepo', () => {
-  it('should extract a GitHub owner and repo from Git remotes', () => {
-    expect(getOwnerRepo(dir)).toStrictEqual({
+  it('should extract a GitHub owner and repo from Git remotes', async () => {
+    const result = await getOwnerRepo(dir);
+    expect(result).toStrictEqual({
       owner: 'seek-oss',
       repo: 'skuba',
     });
@@ -31,7 +32,8 @@ describe('getOwnerRepo', () => {
 });
 
 describe('getHeadSha', () => {
-  it('should extract a GitHub owner and repo from Git remotes', () => {
-    expect(getHeadSha(dir)).toBe('cdd335a418c3dc6804be1c642b19bb63437e2cad');
+  it('should extract a GitHub owner and repo from Git remotes', async () => {
+    const result = await getHeadSha(dir);
+    expect(result).toBe('cdd335a418c3dc6804be1c642b19bb63437e2cad');
   });
 });
