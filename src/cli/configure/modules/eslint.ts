@@ -3,7 +3,7 @@ import { deleteFiles } from '../processing/deleteFiles';
 import { mergeWithIgnoreFile } from '../processing/ignoreFile';
 import { withPackage } from '../processing/package';
 import { formatPrettier } from '../processing/prettier';
-import { Module } from '../types';
+import type { Module } from '../types';
 
 export const eslintModule = async (): Promise<Module> => {
   const [configFile, ignoreFile] = await Promise.all([

@@ -1,4 +1,4 @@
-import { Module, Options } from '../types';
+import type { Module, Options } from '../types';
 
 import { eslintModule } from './eslint';
 import { ignoreModule } from './ignore';

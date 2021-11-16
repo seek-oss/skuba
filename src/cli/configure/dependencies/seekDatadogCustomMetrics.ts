@@ -1,5 +1,5 @@
 import { replacePackageReferences } from '../processing/module';
-import { DependencySet } from '../types';
+import type { DependencySet } from '../types';
 
 const OLD_NAME = '@seek/node-datadog-custom-metrics';
 const NEW_NAME = 'seek-datadog-custom-metrics';

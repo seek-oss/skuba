@@ -5,7 +5,7 @@ import {
   defaultPackageOpts,
   executeModule,
 } from '../testing/module';
-import { TsConfigJson } from '../types';
+import type { TsConfigJson } from '../types';
 
 import { tsconfigModule } from './tsconfig';
 

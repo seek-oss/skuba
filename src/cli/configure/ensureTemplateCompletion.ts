@@ -2,14 +2,12 @@ import path from 'path';
 
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import { NormalizedReadResult } from 'read-pkg-up';
+import type { NormalizedReadResult } from 'read-pkg-up';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { log } from '../../utils/logging';
-import {
-  TemplateConfig,
-  ensureTemplateConfigDeletion,
-} from '../../utils/template';
+import type { TemplateConfig } from '../../utils/template';
+import { ensureTemplateConfigDeletion } from '../../utils/template';
 import { hasStringProp } from '../../utils/validation';
 import { getTemplateConfig, runForm } from '../init/getConfig';
 

@@ -1,5 +1,5 @@
 import http from 'http';
-import { AddressInfo } from 'net';
+import type { AddressInfo } from 'net';
 
 import { serializeError } from 'serialize-error';
 

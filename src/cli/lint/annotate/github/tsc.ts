@@ -1,7 +1,7 @@
 import stripAnsi from 'strip-ansi';
 
-import * as GitHub from '../../../../api/github';
-import { StreamInterceptor } from '../../../../cli/lint/external';
+import type * as GitHub from '../../../../api/github';
+import type { StreamInterceptor } from '../../../../cli/lint/external';
 
 type TscLevel = 'error' | 'warning' | 'info';
 
