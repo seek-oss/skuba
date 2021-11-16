@@ -2,6 +2,8 @@ import path from 'path';
 
 import type { TestResult } from '@jest/test-result';
 
+import type * as GitHub from '../../../../api/github';
+
 /**
  * Matches the first stack trace location in a Jest failure message.
  *
@@ -24,8 +26,6 @@ import type { TestResult } from '@jest/test-result';
  * 2. 15
  */
 const JEST_LOCATION_REGEX = /\((.+?):(\d+):(\d+)\)/;
-
-import type * as GitHub from '../../../../api/github';
 
 export const createAnnotations = (
   testResults: TestResult[],
@@ -68,4 +68,42 @@ export const createAnnotations = (
 
     return [];
   });
+};
+
+const DEFAULT_DISPLAY_NAME = Symbol('DEFAULT_DISPLAY_NAME');
+
+interface AnnotationEntry {
+  annotations: GitHub.Annotation[];
+  displayName: string | undefined;
+}
+
+export const generateAnnotationEntries = (
+  testResults: TestResult[],
+): AnnotationEntry[] => {
+  type ResultsByDisplayName = Record<string | symbol, TestResult[]>;
+
+  // Group test results by display name.
+  const resultsByDisplayName = testResults.reduce<ResultsByDisplayName>(
+    (acc, result) => {
+      const displayName = result.displayName?.name ?? DEFAULT_DISPLAY_NAME;
+
+      (acc[displayName] ??= []).push(result);
+
+      return acc;
+    },
+    {},
+  );
+
+  const defaultResults = resultsByDisplayName[DEFAULT_DISPLAY_NAME];
+
+  const entries = [
+    ...(defaultResults?.length ? ([[undefined, defaultResults]] as const) : []),
+    ...Object.entries(resultsByDisplayName),
+  ];
+
+  // Create annotations for each display name.
+  return entries.map<AnnotationEntry>(([displayName, results]) => ({
+    annotations: createAnnotations(results),
+    displayName,
+  }));
 };

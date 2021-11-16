@@ -1,5 +1,5 @@
 import type { Context, Reporter } from '@jest/reporters';
-import type { AggregatedResult, TestResult } from '@jest/test-result';
+import type { AggregatedResult } from '@jest/test-result';
 
 import * as GitHub from '../../../../api/github';
 import {
@@ -8,53 +8,37 @@ import {
 } from '../../../../api/github/environment';
 import { log } from '../../../../utils/logging';
 
-import { createAnnotations } from './annotations';
-
-const DEFAULT_NAME = 'noDisplayName';
+import { generateAnnotationEntries } from './annotations';
 
 export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
   async onRunComplete(
     _contexts: Set<Context>,
-    results: AggregatedResult,
+    { testResults }: AggregatedResult,
   ): Promise<void> {
     if (!enabledFromEnvironment()) {
       return;
     }
 
     try {
-      // Sort tests by display name
-      const sortedTestResults: Record<string, TestResult[]> = {};
-      results.testResults.forEach((testResult) => {
-        const displayName = testResult.displayName?.name ?? DEFAULT_NAME;
-        sortedTestResults[displayName] ??= [];
-        sortedTestResults[displayName].push(testResult);
-      });
+      const entries = generateAnnotationEntries(testResults);
 
-      // Create annotations for each display name
-      const annotationResults = Object.entries(sortedTestResults).map<{
-        displayName: string;
-        annotations: GitHub.Annotation[];
-      }>(([displayName, testResults]) => ({
-        displayName,
-        annotations: createAnnotations(testResults),
-      }));
+      const build = buildNameFromEnvironment();
 
-      // Create a check run per display name. Run in series.
-      for (const { displayName, annotations } of annotationResults) {
-        const name = `skuba/test${
-          displayName !== DEFAULT_NAME ? ` (${displayName})` : ''
-        }`;
-        const isOk = Boolean(!annotations.length);
-        const conclusion = isOk ? 'success' : 'failure';
+      // Create a check run per display name.
+      // Run in series to reduce the likelihood of exceeding GitHub rate limits.
+      for (const { displayName, annotations } of entries) {
+        const name = `skuba/test${displayName ? ` (${displayName})` : ''}`;
+
+        const isOk = !annotations.length;
+
         const summary = isOk
           ? '`skuba test` passed.'
           : '`skuba test` found issues that require triage.';
-        const build = buildNameFromEnvironment();
 
         await GitHub.createCheckRun({
           name,
           annotations,
-          conclusion,
+          conclusion: isOk ? 'success' : 'failure',
           summary,
           title: `${build} ${isOk ? 'passed' : 'failed'}`,
         });

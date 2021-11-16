@@ -1,46 +1,29 @@
 import type { AggregatedResult, Context } from '@jest/reporters';
+import { mocked } from 'ts-jest/utils';
 
 import * as GitHub from '../../../../api/github';
 import { log } from '../../../../utils/logging';
 
-import { createAnnotations } from './annotations';
-
-import { default as GitHubReporter } from '.';
+import GitHubReporter from '.';
 
 const reporter = new GitHubReporter();
 
 jest.mock('../../../../api/github');
-jest.mock('./annotations');
 jest.mock('../../../../utils/logging');
 
-const annotations: GitHub.Annotation[] = [
-  {
-    annotation_level: 'failure',
-    path: 'src/test.test.ts',
-    start_line: 2,
-    end_line: 2,
-    start_column: 15,
-    end_column: 15,
-    message: 'jest error',
-    title: 'Jest',
-  },
-];
-
 beforeEach(() => {
+  jest.spyOn(process, 'cwd').mockReturnValue('/workdir/skuba');
+
   process.env.CI = 'true';
   process.env.GITHUB_ACTIONS = 'true';
   process.env.GITHUB_RUN_NUMBER = '123';
   process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
   process.env.GITHUB_WORKFLOW = 'Test';
-
-  (createAnnotations as jest.Mock).mockReturnValue(annotations);
 });
 
-afterEach(() => {
-  jest.resetAllMocks();
-});
+afterEach(jest.resetAllMocks);
 
-let context: Set<Context>;
+const context = new Set<Context>();
 
 const failResults: AggregatedResult = {
   numFailedTestSuites: 1,
@@ -96,7 +79,7 @@ const failResults: AggregatedResult = {
         unmatched: 0,
         updated: 0,
       },
-      testFilePath: '/workDir/skuba/src/test.test.ts',
+      testFilePath: '/workdir/skuba/src/test.test.ts',
       testResults: [
         {
           ancestorTitles: [],
@@ -114,7 +97,7 @@ const failResults: AggregatedResult = {
             },
           ],
           failureMessages: [
-            'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workDir/skuba/src/test.test.ts:2:15)\n    at Promise.then.completed (/workDir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workDir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workDir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workDir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workDir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workDir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workDir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
+            'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)\n    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
           ],
           fullName: 'should output a',
           invocations: 1,
@@ -129,6 +112,23 @@ const failResults: AggregatedResult = {
     },
   ],
   wasInterrupted: false,
+};
+
+const successResults: AggregatedResult = {
+  ...failResults,
+  numFailedTestSuites: 0,
+  numFailedTests: 0,
+  numPassedTestSuites: 1,
+  numPassedTests: 1,
+  success: true,
+  testResults: [
+    {
+      ...failResults.testResults[0],
+      numFailingTests: 0,
+      numPassingTests: 1,
+      testResults: [],
+    },
+  ],
 };
 
 const failResultsDisplayNames: AggregatedResult = {
@@ -185,7 +185,7 @@ const failResultsDisplayNames: AggregatedResult = {
         unmatched: 0,
         updated: 0,
       },
-      testFilePath: '/workDir/skuba/src/test.test.ts',
+      testFilePath: '/workdir/skuba/src/test.test.ts',
       testResults: [
         {
           ancestorTitles: [],
@@ -203,7 +203,7 @@ const failResultsDisplayNames: AggregatedResult = {
             },
           ],
           failureMessages: [
-            'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workDir/skuba/src/test.test.ts:2:15)\n    at Promise.then.completed (/workDir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workDir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workDir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workDir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workDir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workDir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workDir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
+            'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)\n    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
           ],
           fullName: 'should output a',
           invocations: 1,
@@ -243,7 +243,7 @@ const failResultsDisplayNames: AggregatedResult = {
         unmatched: 0,
         updated: 0,
       },
-      testFilePath: '/workDir/skuba/src/index.test.ts',
+      testFilePath: '/workdir/skuba/src/index.test.ts',
       testResults: [
         {
           ancestorTitles: [],
@@ -261,7 +261,7 @@ const failResultsDisplayNames: AggregatedResult = {
             },
           ],
           failureMessages: [
-            'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workDir/skuba/src/index.test.ts:2:15)\n    at Promise.then.completed (/workDir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workDir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workDir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workDir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workDir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workDir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workDir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
+            'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workdir/skuba/src/index.test.ts:2:15)\n    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
           ],
           fullName: 'should output a',
           invocations: 1,
@@ -278,119 +278,109 @@ const failResultsDisplayNames: AggregatedResult = {
   wasInterrupted: false,
 };
 
-it('should call GitHub createCheckRun if the correct environment variables are set', async () => {
+it('should create check runs if the correct environment variables are set', async () => {
   await reporter.onRunComplete(context, failResults);
 
   expect(GitHub.createCheckRun).toBeCalled();
 });
 
-it('should not call GitHub createCheckRun if the correct environment variables are not set', async () => {
+it('should not create check runs if the correct environment variables are not set', async () => {
   delete process.env.CI;
   delete process.env.GITHUB_ACTIONS;
+
   await reporter.onRunComplete(context, failResults);
 
   expect(GitHub.createCheckRun).not.toBeCalled();
 });
 
-it('should call GitHub createCheckRun with the annotations returned from createAnnotations', async () => {
-  await reporter.onRunComplete(context, failResults);
+it('should create a successful check run when there are no annotations', async () => {
+  await reporter.onRunComplete(context, successResults);
 
   expect(GitHub.createCheckRun).toBeCalledTimes(1);
   expect(GitHub.createCheckRun).toBeCalledWith({
-    name: expect.any(String),
-    annotations,
-    conclusion: expect.any(String),
-    summary: expect.any(String),
-    title: expect.any(String),
-  });
-});
-
-it('should call GitHub createCheckRun with a failing title, conclusion and summary if createAnnotations returns annotations', async () => {
-  await reporter.onRunComplete(context, failResults);
-
-  expect(GitHub.createCheckRun).toBeCalledTimes(1);
-  expect(GitHub.createCheckRun).toBeCalledWith({
-    name: expect.any(String),
-    annotations: expect.any(Array),
-    conclusion: 'failure',
-    summary: '`skuba test` found issues that require triage.',
-    title: 'Test #123 failed',
-  });
-});
-
-it('should call GitHub createCheckRun with a successful title, conclusion and summary if createAnnotations does not return annotations', async () => {
-  (createAnnotations as jest.Mock).mockReturnValue([]);
-  await reporter.onRunComplete(context, failResults);
-
-  expect(GitHub.createCheckRun).toBeCalledTimes(1);
-  expect(GitHub.createCheckRun).toBeCalledWith({
-    name: expect.any(String),
-    annotations: expect.any(Array),
+    name: 'skuba/test',
+    annotations: [],
     conclusion: 'success',
     summary: '`skuba test` passed.',
     title: 'Test #123 passed',
   });
 });
 
-it('should call GitHub createCheckRun only once with the default title `skuba test` when there are no display names in tests', async () => {
+it('should create one annotated check run when there are no display names', async () => {
   await reporter.onRunComplete(context, failResults);
 
   expect(GitHub.createCheckRun).toBeCalledTimes(1);
   expect(GitHub.createCheckRun).toBeCalledWith({
     name: 'skuba/test',
-    annotations: expect.any(Array),
-    conclusion: expect.any(String),
-    summary: expect.any(String),
-    title: expect.any(String),
+    annotations: [
+      {
+        annotation_level: 'failure',
+        path: 'src/test.test.ts',
+        start_line: 2,
+        end_line: 2,
+        start_column: 15,
+        end_column: 15,
+        message: failResults.testResults[0].testResults[0].failureMessages[0],
+        title: 'Jest',
+      },
+    ],
+    conclusion: 'failure',
+    summary: '`skuba test` found issues that require triage.',
+    title: 'Test #123 failed',
   });
 });
 
-it('should call createAnnotations only once with all the testResults when there are no display names in tests', async () => {
-  await reporter.onRunComplete(context, failResults);
-
-  expect(createAnnotations).toBeCalledTimes(1);
-  expect(createAnnotations).toBeCalledWith(failResults.testResults);
-});
-
-it('should sort tests by display name and call createAnnotations with each group', async () => {
-  await reporter.onRunComplete(context, failResultsDisplayNames);
-
-  expect(createAnnotations).toBeCalledTimes(2);
-  expect(createAnnotations).toBeCalledWith([
-    failResultsDisplayNames.testResults[0],
-  ]);
-  expect(createAnnotations).toBeCalledWith([
-    failResultsDisplayNames.testResults[1],
-  ]);
-});
-
-it('should sort tests by display name and call GitHub.createCheckRun with each group returned from createAnnotations', async () => {
-  const moreAnnotations = [...annotations, ...annotations];
-  (createAnnotations as jest.Mock)
-    .mockReturnValueOnce(annotations)
-    .mockReturnValueOnce(moreAnnotations);
-
+it('should create an annotated check run per display name', async () => {
   await reporter.onRunComplete(context, failResultsDisplayNames);
 
   expect(GitHub.createCheckRun).toBeCalledTimes(2);
   expect(GitHub.createCheckRun).toBeCalledWith({
     name: 'skuba/test',
-    annotations,
-    conclusion: expect.any(String),
-    summary: expect.any(String),
-    title: expect.any(String),
+    annotations: [
+      {
+        annotation_level: 'failure',
+        path: 'src/test.test.ts',
+        start_line: 2,
+        end_line: 2,
+        start_column: 15,
+        end_column: 15,
+        message:
+          failResultsDisplayNames.testResults[0].testResults[0]
+            .failureMessages[0],
+        title: 'Jest',
+      },
+    ],
+    conclusion: 'failure',
+    summary: '`skuba test` found issues that require triage.',
+    title: 'Test #123 failed',
   });
   expect(GitHub.createCheckRun).toBeCalledWith({
     name: 'skuba/test (integration)',
-    annotations: moreAnnotations,
-    conclusion: expect.any(String),
-    summary: expect.any(String),
-    title: expect.any(String),
+    annotations: [
+      {
+        annotation_level: 'failure',
+        path: 'src/index.test.ts',
+        start_line: 2,
+        end_line: 2,
+        start_column: 15,
+        end_column: 15,
+        message:
+          failResultsDisplayNames.testResults[1].testResults[0]
+            .failureMessages[0],
+        title: 'Jest',
+      },
+    ],
+    conclusion: 'failure',
+    summary: '`skuba test` found issues that require triage.',
+    title: 'Test #123 failed',
   });
 });
 
 it('should log a warning when it fails to create annotations', async () => {
-  (GitHub.createCheckRun as jest.Mock).mockRejectedValue(new Error());
+  const err = new Error('Badness!');
+
+  mocked(GitHub.createCheckRun).mockRejectedValue(err);
+
   await reporter.onRunComplete(context, failResults);
 
   expect(log.warn).toBeCalled();
