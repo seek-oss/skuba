@@ -32,7 +32,7 @@ describe('getOwnerRepo', () => {
 });
 
 describe('getHeadSha', () => {
-  it('should extract a GitHub owner and repo from Git remotes', async () => {
+  it('should extract a commit hash from the Git log', async () => {
     const result = await getHeadSha(dir);
     expect(result).toBe('cdd335a418c3dc6804be1c642b19bb63437e2cad');
   });
