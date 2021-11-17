@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/rest';
-import { getCurrentBranchRef, getHeadSha, getOwnerRepo } from 'utils/git';
+
+import { getCurrentBranchRef, getHeadSha, getOwnerRepo } from '../../utils/git';
 
 export const getOctokit = (token: string) => new Octokit({ auth: token });
 
