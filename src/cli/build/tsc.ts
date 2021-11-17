@@ -13,9 +13,7 @@ const PROJECT_OPTS = new Set([
   '--project',
 ]);
 
-export const tsc = async () => {
-  const args = process.argv.slice(2);
-
+export const tsc = async (args = process.argv.slice(2)) => {
   const defaultArgs = args
     .map((arg) => arg.toLocaleLowerCase())
     .some((arg) => PROJECT_OPTS.has(arg))
