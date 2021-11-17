@@ -3,6 +3,8 @@
 /* eslint-disable no-console */
 import fs from 'fs-extra';
 
+import { apiTokenFromEnvironment } from '../../api/github/environment';
+
 import * as core from './coreAdapter';
 import * as gitUtils from './gitUtils';
 import readChangesetState from './readChangesetState';
@@ -11,7 +13,7 @@ import { runPublish, runVersion } from './run';
 const getOptionalInput = (name: string) => core.getInput(name) || undefined;
 
 const run = async () => {
-  const githubToken = process.env.GITHUB_TOKEN;
+  const githubToken = apiTokenFromEnvironment();
 
   if (!githubToken) {
     core.setFailed('Please add the GITHUB_TOKEN to the changesets action');

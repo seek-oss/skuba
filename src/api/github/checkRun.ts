@@ -4,6 +4,8 @@ import type { Endpoints } from '@octokit/types';
 import { getHeadSha, getOwnerRepo } from '../../utils/git';
 import { pluralise } from '../../utils/logging';
 
+import { apiTokenFromEnvironment } from './environment';
+
 type Output = NonNullable<
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters']['output']
 >;
@@ -105,7 +107,7 @@ export const createCheckRun = async ({
   ]);
 
   const client = new Octokit({
-    auth: process.env.GITHUB_API_TOKEN ?? process.env.GITHUB_TOKEN,
+    auth: apiTokenFromEnvironment(),
   });
 
   await client.checks.create({

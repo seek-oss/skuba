@@ -290,6 +290,7 @@ ${(
     auth: { type: 'gitHubApp', token: githubToken },
     branch: versionBranch,
     commitOid: await getHeadSha(cwd),
+    force: true,
   });
 
   const searchResult = await searchResultPromise;

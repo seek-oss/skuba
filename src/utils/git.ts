@@ -22,6 +22,7 @@ interface GitPushProps {
   branch: string;
   commitOid: string;
   dir: string;
+  force?: boolean;
 }
 
 export const gitPush = async ({
@@ -29,6 +30,7 @@ export const gitPush = async ({
   branch,
   commitOid,
   dir,
+  force,
 }: GitPushProps) => {
   const { owner, repo } = await getOwnerRepo(dir);
 
@@ -47,6 +49,7 @@ export const gitPush = async ({
     ref: commitOid,
     remoteRef: branch,
     url,
+    force,
   });
 };
 
