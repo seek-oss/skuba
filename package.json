@@ -70,7 +70,7 @@
     "enquirer": "^2.3.6",
     "eslint": "^7.27.0",
     "eslint-config-skuba": "1.0.12",
-    "execa": "^5.0.0",
+    "execa": "^6.0.0",
     "fdir": "^5.0.0",
     "fs-extra": "^10.0.0",
     "function-arguments": "^1.0.9",
