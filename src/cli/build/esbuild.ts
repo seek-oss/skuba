@@ -1,5 +1,6 @@
 import path from 'path';
 
+import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { build } from 'esbuild';
 
 import { crawlDirectory } from '../../utils/dir';
@@ -18,13 +19,17 @@ const SUPPORTED_FILE_EXTENSIONS = new Set([
 
 export const esbuild = async () => {
   // TODO: support `--project` option
-  const tsconfig = 'tsconfig.build.json';
+  const tsconfigFilepath = 'tsconfig.build.json';
 
   // TODO: read actual `tsconfig.json`
-  const config = {
+  const tsconfig = {
     compilerOptions: {
+      baseUrl: '.',
       declaration: true,
       outDir: 'lib',
+      paths: {
+        src: ['src'],
+      },
     },
     include: ['src/**/*'],
   };
@@ -42,15 +47,16 @@ export const esbuild = async () => {
     sourcemap: true,
 
     entryPoints: files,
-    outdir: config.compilerOptions.outDir,
-    tsconfig,
+    outdir: tsconfig.compilerOptions.outDir,
+    plugins: [tsconfigPaths({ tsconfig })],
+    tsconfig: tsconfigFilepath,
   });
 
   if (buildResult.errors.length) {
     process.exitCode = 1;
   }
 
-  if (config.compilerOptions.declaration) {
+  if (tsconfig.compilerOptions.declaration) {
     const { tsc } = await import('./tsc');
 
     await tsc(['--declaration', '--emitDeclarationOnly']);

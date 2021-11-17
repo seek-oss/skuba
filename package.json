@@ -61,6 +61,7 @@
     "type-fest": "2.5.2"
   },
   "dependencies": {
+    "@esbuild-plugins/tsconfig-paths": "^0.0.4",
     "@octokit/rest": "^18.12.0",
     "@octokit/types": "^6.34.0",
     "@types/jest": "^27.0.1",
