@@ -28,7 +28,6 @@ export const createGitHubAnnotations = async (
   ];
 
   const isOk = eslint.ok && prettier.ok && tscOk;
-  const conclusion = isOk ? 'success' : 'failure';
 
   const summary = isOk
     ? '`skuba lint` passed.'
@@ -40,7 +39,7 @@ export const createGitHubAnnotations = async (
     name: 'skuba/lint',
     summary,
     annotations,
-    conclusion,
+    conclusion: isOk ? 'success' : 'failure',
     title: `${build} ${isOk ? 'passed' : 'failed'}`,
   });
 };

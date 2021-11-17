@@ -23,7 +23,6 @@ Runs a TypeScript source file:
 ```shell
 skuba node src/some-cli-script.ts
 
-# src → /my-repo/src
 # ...
 ```
 
@@ -32,13 +31,12 @@ or launches a [`ts-node`] REPL if a file is not provided:
 ```shell
 skuba node src/some-cli-script.ts
 
-# src → /my-repo/src
 >
 ```
 
-`skuba node` automatically registers a `src` module alias for ease of local development.
-If you use this alias in your production code,
-your entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`].
+`skuba node` automatically registers your `tsconfig.json` paths as module aliases for ease of local development.
+If you use these aliases in your production code,
+your entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`] or [`tsconfig-paths`].
 For example, your `src/app.ts` may look like:
 
 ```typescript
@@ -65,9 +63,9 @@ The entry point is chosen from:
 1. Manifest configuration: `package.json#/skuba/entryPoint`
 1. Default: `src/app.ts`
 
-`skuba start` automatically registers a `src` module alias for ease of local development.
-If you use this alias in your production code,
-your entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`].
+`skuba start` automatically registers your `tsconfig.json` paths as module aliases for ease of local development.
+If you use these aliases in your production code,
+your entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`] or [`tsconfig-paths`].
 For example, your `src/app.ts` may look like:
 
 ```typescript
@@ -189,6 +187,7 @@ Execution should pause on the breakpoint until we hit `F5` or the `▶️` butto
 [`skuba-dive/register`]: https://github.com/seek-oss/skuba-dive#register
 [`ts-node-dev`]: https://github.com/whitecolor/ts-node-dev
 [`ts-node`]: https://github.com/typestrong/ts-node
+[`tsconfig-paths`]: https://github.com/dividab/tsconfig-paths
 [express]: https://expressjs.com/
 [koa]: https://koajs.com/
 [node.js options]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options

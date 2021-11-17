@@ -2,6 +2,54 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
 
+export const gitCommit = async ({
+  dir,
+  message,
+}: {
+  dir: string;
+  message: string;
+}) =>
+  git.commit({
+    author: { name: 'skuba' },
+    committer: { name: 'skuba' },
+    dir,
+    fs,
+    message,
+  });
+
+interface GitPushProps {
+  auth: { type: 'gitHubApp'; token: string };
+  branch: string;
+  commitOid: string;
+  dir: string;
+}
+
+export const gitPush = async ({
+  auth,
+  branch,
+  commitOid,
+  dir,
+}: GitPushProps) => {
+  const { owner, repo } = await getOwnerRepo(dir);
+
+  const url = `https://github.com/${encodeURIComponent(
+    owner,
+  )}/${encodeURIComponent(repo)}`;
+
+  return git.push({
+    onAuth: () => ({
+      username: 'x-access-token',
+      password: auth.token,
+    }),
+    http,
+    dir,
+    fs,
+    ref: commitOid,
+    remoteRef: branch,
+    url,
+  });
+};
+
 export const getHeadSha = async (dir: string): Promise<string> => {
   const [commit] = await git.log({ depth: 1, dir, fs });
 

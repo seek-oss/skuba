@@ -5,6 +5,8 @@ import request from 'supertest';
 import * as http from './http';
 import { main } from './main';
 
+jest.mock('../utils/logging');
+
 const initWrapper = (entryPoint: string) =>
   main(path.join('src', 'wrapper', 'testing', entryPoint), '8080');
 

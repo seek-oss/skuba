@@ -65,7 +65,7 @@ you can limit this with the `--serial` flag.
 `skuba lint` can automatically emit annotations in CI.
 
 - [Buildkite annotations] are enabled when Buildkite environment variables and the `buildkite-agent` binary are present.
-- [GitHub annotations] are enabled when Buildkite and GitHub environment variables are present.
+- [GitHub annotations] are enabled when CI and GitHub environment variables are present.
 
 [`skuba format`]: #skuba-format
 [buildkite annotations]: ../deep-dives/buildkite.md#buildkite-annotations

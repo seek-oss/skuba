@@ -5,6 +5,7 @@ import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
 
 import { crawlDirectory } from '../../utils/dir';
+import { gitCommit } from '../../utils/git';
 import { log } from '../../utils/logging';
 
 interface GitHubProject {
@@ -23,11 +24,8 @@ export const initialiseRepo = async (
     fs,
   });
 
-  await git.commit({
-    author: { name: 'skuba' },
-    committer: { name: 'skuba' },
+  await gitCommit({
     dir,
-    fs,
     message: 'Initial commit',
   });
 
@@ -46,11 +44,8 @@ export const commitChanges = async (dir: string, message: string) => {
     filepaths.map((filepath) => git.add({ dir, filepath, fs })),
   );
 
-  await git.commit({
-    author: { name: 'skuba' },
-    committer: { name: 'skuba' },
+  await gitCommit({
     dir,
-    fs,
     message,
   });
 };
