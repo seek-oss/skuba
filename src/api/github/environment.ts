@@ -10,6 +10,10 @@ export const buildNameFromEnvironment = (env = process.env): string => {
   return 'Build';
 };
 
+export const currentBranchFromEnvironment = (
+  env = process.env,
+): string | undefined => env.BUILDKITE_BRANCH || env.GITHUB_REF_NAME;
+
 export const enabledFromEnvironment = (env = process.env): boolean =>
   // Running in a CI environment.
   Boolean(env.BUILDKITE || env.CI || env.GITHUB_ACTIONS) &&
