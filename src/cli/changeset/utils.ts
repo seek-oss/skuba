@@ -1,12 +1,12 @@
 // Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/gitUtils.ts
-
 import type { Package } from '@manypkg/get-packages';
 import { getPackages } from '@manypkg/get-packages';
 import execa from 'execa';
 import mdastToString from 'mdast-util-to-string';
 import remarkParse from 'remark-parse';
 import remarkStringify from 'remark-stringify';
-import { unified } from 'unified';
+import unified from 'unified';
+import type { Node } from 'unist';
 
 export const BumpLevels = {
   dep: 0,
@@ -37,8 +37,17 @@ export async function getChangedPackages(
   return [...changedPackages];
 }
 
+interface Child {
+  type: string;
+  depth: number;
+}
+
+interface NodeExtended extends Node {
+  children: Child[];
+}
+
 export function getChangelogEntry(changelog: string, version: string) {
-  const ast = unified().use(remarkParse).parse(changelog);
+  const ast = unified().use(remarkParse).parse(changelog) as NodeExtended;
 
   let highestLevel: number = BumpLevels.dep;
 
