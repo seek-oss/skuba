@@ -83,7 +83,7 @@
     "jest": "^27.1.0",
     "latest-version": "^5.1.0",
     "lodash.mergewith": "^4.6.2",
-    "mdast-util-to-string": "^3.1.0",
+    "mdast-util-to-string": "^2.0.0",
     "module-alias": "^2.2.2",
     "normalize-package-data": "^3.0.0",
     "npm-run-path": "^4.0.1",

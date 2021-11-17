@@ -54,7 +54,7 @@ export function getChangelogEntry(changelog: string, version: string) {
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
     if (node.type === 'heading') {
-      const stringified: string = mdastToString.toString(node);
+      const stringified: string = mdastToString(node);
       const match = /(major|minor|patch)/.exec(stringified.toLowerCase());
       if (match !== null) {
         const level = BumpLevels[match[0] as 'major' | 'minor' | 'patch'];
