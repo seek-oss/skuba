@@ -8,6 +8,8 @@ import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
 import * as semver from 'semver';
 
+import { pushWithToken } from '../../utils/git';
+
 import * as gitUtils from './gitUtils';
 import * as github from './githubAdapter';
 import readChangesetState from './readChangesetState';
@@ -283,7 +285,7 @@ ${(
     await gitUtils.commitAll(finalCommitMessage);
   }
 
-  await gitUtils.push(versionBranch, { force: true });
+  await pushWithToken('seek-jobs-ci', githubToken);
 
   const searchResult = await searchResultPromise;
   console.log(JSON.stringify(searchResult.data, null, 2));

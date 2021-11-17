@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
+import http from 'isomorphic-git/http/node';
 
 export const getHeadSha = async (dir: string): Promise<string> => {
   const [commit] = await git.log({ depth: 1, dir, fs });
@@ -55,4 +56,12 @@ export const getCurrentBranchRef = async (dir: string): Promise<string> => {
   }
 
   return branch;
+};
+
+export const pushWithToken = async (username: string, token: string) => {
+  await git.push({
+    fs,
+    http,
+    onAuth: () => ({ username, password: token }),
+  });
 };
