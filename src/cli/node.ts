@@ -26,9 +26,9 @@ export const node = async () => {
       'node',
       ...args.node,
       '--require',
-      path.posix.join(__dirname, '..', 'register'),
+      'tsconfig-paths/register',
       '--require',
-      path.posix.join('ts-node', 'register', 'transpile-only'),
+      'ts-node/register/transpile-only',
       path.join(__dirname, '..', 'wrapper'),
       ...args.script,
     );
