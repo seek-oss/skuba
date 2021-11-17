@@ -8,7 +8,7 @@ import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
 import * as semver from 'semver';
 
-import { pushWithToken } from '../../utils/git';
+import { getHeadSha, gitPush } from '../../utils/git';
 
 import * as gitUtils from './gitUtils';
 import * as github from './githubAdapter';
@@ -285,7 +285,12 @@ ${(
     await gitUtils.commitAll(finalCommitMessage);
   }
 
-  await pushWithToken('seek-jobs-ci', githubToken);
+  await gitPush({
+    dir: cwd,
+    auth: { type: 'gitHubApp', token: githubToken },
+    branch: versionBranch,
+    commitOid: await getHeadSha(cwd),
+  });
 
   const searchResult = await searchResultPromise;
   console.log(JSON.stringify(searchResult.data, null, 2));

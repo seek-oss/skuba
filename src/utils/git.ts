@@ -105,11 +105,3 @@ export const getCurrentBranchRef = async (dir: string): Promise<string> => {
 
   return branch;
 };
-
-export const pushWithToken = async (username: string, token: string) => {
-  await git.push({
-    fs,
-    http,
-    onAuth: () => ({ username, password: token }),
-  });
-};
