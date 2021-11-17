@@ -105,7 +105,7 @@ const run = async () => {
   }
 };
 
-export const release = async () => {
+export const changeset = async () => {
   await run().catch((err: unknown) => {
     console.error(err);
     core.setFailed((err as Error).message);
