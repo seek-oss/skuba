@@ -4,7 +4,6 @@ import path from 'path';
 
 import type { Package } from '@manypkg/get-packages';
 import { getPackages } from '@manypkg/get-packages';
-import execa from 'execa';
 import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
 import * as semver from 'semver';
@@ -13,6 +12,7 @@ import * as gitUtils from './gitUtils';
 import * as github from './githubAdapter';
 import readChangesetState from './readChangesetState';
 import {
+  exec,
   execWithOutput,
   getChangedPackages,
   getChangelogEntry,
@@ -215,13 +215,13 @@ export async function runVersion({
 
   if (script) {
     const [versionCommand, ...versionArgs] = script.split(/\s+/);
-    await execa(versionCommand, versionArgs, { cwd });
+    await exec(versionCommand, versionArgs, { cwd });
   } else {
     const changesetsCliPkgJson = requireChangesetsCliPkgJson(cwd);
     const cmd = semver.lt(changesetsCliPkgJson.version, '2.0.0')
       ? 'bump'
       : 'version';
-    await execa('node', [resolveFrom(cwd, '@changesets/cli/bin.js'), cmd], {
+    await exec('node', [resolveFrom(cwd, '@changesets/cli/bin.js'), cmd], {
       cwd,
     });
   }

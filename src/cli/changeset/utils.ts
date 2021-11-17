@@ -137,3 +137,15 @@ export function sortTheThings(
   }
   return -1;
 }
+
+export const exec = async (
+  command: string,
+  args?: string[],
+  opts?: execa.Options<string> | undefined,
+) => {
+  try {
+    await execa(command, args, opts);
+  } catch (e) {
+    throw new Error('Command failed');
+  }
+};
