@@ -36,7 +36,7 @@ export const gitPush = async ({
     owner,
   )}/${encodeURIComponent(repo)}`;
 
-  const pushResult = await git.push({
+  return git.push({
     onAuth: () => ({
       username: 'x-access-token',
       password: auth.token,
@@ -48,11 +48,6 @@ export const gitPush = async ({
     remoteRef: branch,
     url,
   });
-
-  return {
-    commitOid,
-    pushResult,
-  };
 };
 
 export const getHeadSha = async (dir: string): Promise<string> => {
