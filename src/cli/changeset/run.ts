@@ -63,7 +63,9 @@ const createRelease = async (
 type PublishOptions = {
   script: string;
   githubToken: string;
+
   cwd?: string;
+  octokit: github.Octokit;
 };
 
 type PublishedPackage = { name: string; version: string };
@@ -81,8 +83,8 @@ export async function runPublish({
   script,
   githubToken,
   cwd = process.cwd(),
+  octokit,
 }: PublishOptions): Promise<PublishResult> {
-  const octokit = github.getOctokit(githubToken);
   const [publishCommand, ...publishArgs] = script.split(/\s+/);
 
   const changesetPublishOutput = await execWithOutput(
@@ -186,6 +188,7 @@ const requireChangesetsCliPkgJson = (cwd: string) => {
 
 type VersionOptions = {
   script?: string;
+  octokit: github.Octokit;
   githubToken: string;
   cwd?: string;
   prTitle?: string;
@@ -195,6 +198,7 @@ type VersionOptions = {
 
 export async function runVersion({
   script,
+  octokit,
   githubToken,
   cwd = process.cwd(),
   prTitle = 'Version Packages',
@@ -205,7 +209,6 @@ export async function runVersion({
   const repo = `${context.repo.owner}/${context.repo.repo}`;
   const branch = context.ref.replace('refs/heads/', '');
   const versionBranch = `changeset-release/${branch}`;
-  const octokit = github.getOctokit(githubToken);
   const { preState } = await readChangesetState(cwd);
 
   await gitUtils.switchToMaybeExistingBranch(cwd, versionBranch);

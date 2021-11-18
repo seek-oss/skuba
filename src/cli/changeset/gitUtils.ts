@@ -8,22 +8,19 @@ import {
   gitBranch,
   gitDeleteBranch,
   gitPush,
+  setGitUser,
 } from '../../utils/git';
 
+import type * as github from './githubAdapter';
 import { execWithOutput } from './utils';
 
-// TODO probably try and make this configurable
-const getBotName = () => 'skuba';
-
-export const setupUser = async () => {
-  await exec('git', 'config', '--global', 'user.name', getBotName());
-  await exec(
-    'git',
-    'config',
-    '--global',
-    'user.email',
-    `${getBotName()}@users.noreply.github.com`,
-  );
+export const setupUser = async (dir: string, octokit: github.Octokit) => {
+  const user = await octokit.users.getAuthenticated();
+  await setGitUser({
+    dir,
+    name: user.data.name as string,
+    email: user.data.email as string,
+  });
 };
 
 export const pullBranch = async (branch: string) => {

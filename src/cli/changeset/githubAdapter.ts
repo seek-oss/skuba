@@ -3,6 +3,8 @@ import { Octokit } from '@octokit/rest';
 import { currentBranchFromEnvironment } from '../../api/github/environment';
 import { getCurrentBranchRef, getHeadSha, getOwnerRepo } from '../../utils/git';
 
+export { Octokit };
+
 export const getOctokit = (token: string) => new Octokit({ auth: token });
 
 export const context = async (dir: string) => {

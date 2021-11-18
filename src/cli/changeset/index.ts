@@ -7,6 +7,7 @@ import { apiTokenFromEnvironment } from '../../api/github/environment';
 
 import * as core from './coreAdapter';
 import * as gitUtils from './gitUtils';
+import * as github from './githubAdapter';
 import readChangesetState from './readChangesetState';
 import { runPublish, runVersion } from './run';
 
@@ -20,8 +21,12 @@ const run = async () => {
     return;
   }
 
+  const cwd = process.cwd();
+
+  const octokit = github.getOctokit(githubToken);
+
   console.log('setting git user');
-  await gitUtils.setupUser();
+  await gitUtils.setupUser(cwd, octokit);
 
   const { changesets } = await readChangesetState();
 
@@ -78,6 +83,8 @@ const run = async () => {
       const result = await runPublish({
         script: publishScript as string,
         githubToken,
+        octokit,
+        cwd,
       });
 
       if (result.published) {
@@ -91,8 +98,10 @@ const run = async () => {
     }
     case hasChangesets:
       await runVersion({
+        cwd,
         script: getOptionalInput('version'),
         githubToken,
+        octokit,
         prTitle: getOptionalInput('title'),
         commitMessage: getOptionalInput('commit'),
         hasPublishScript,

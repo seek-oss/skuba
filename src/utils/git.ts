@@ -139,3 +139,18 @@ export const gitDeleteBranch = async ({
     ref,
   });
 };
+
+export const setGitUser = async ({
+  dir,
+  name,
+  email,
+}: {
+  dir: string;
+  name: string;
+  email: string;
+}): Promise<void> => {
+  await Promise.all([
+    git.setConfig({ fs, dir, path: 'user.name', value: name }),
+    git.setConfig({ fs, dir, path: 'user.email', value: email }),
+  ]);
+};
