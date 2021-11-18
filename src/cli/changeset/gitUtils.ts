@@ -2,12 +2,11 @@
 
 import git from 'isomorphic-git';
 
+import { commitChanges } from '../../cli/init/git';
 import { exec } from '../../utils/exec';
 import {
   getHeadSha,
-  gitAdd,
   gitBranch,
-  gitCommit,
   gitDeleteBranch,
   gitListTags,
   gitPush,
@@ -83,8 +82,7 @@ export const reset = async (
 };
 
 export const commitAll = async (dir: string, message: string) => {
-  await gitAdd({ dir, filepath: '.' });
-  await gitCommit({ dir, message });
+  await commitChanges(dir, message);
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {
