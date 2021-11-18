@@ -2,15 +2,16 @@
 
 import git from 'isomorphic-git';
 
-import { commitChanges } from '../../cli/init/git';
 import { exec } from '../../utils/exec';
 import {
+  getChangedFiles,
   getHeadSha,
+  gitAdd,
   gitBranch,
+  gitCommit,
   gitDeleteBranch,
   gitListTags,
   gitPush,
-  gitStatusPorcelain,
   setGitUser,
 } from '../../utils/git';
 
@@ -82,10 +83,12 @@ export const reset = async (
 };
 
 export const commitAll = async (dir: string, message: string) => {
-  await commitChanges(dir, message);
+  const changedFiles = await getChangedFiles({ dir });
+  await Promise.all(changedFiles.map((filepath) => gitAdd({ dir, filepath })));
+  await gitCommit({ dir, message });
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {
-  const changedFiles = await gitStatusPorcelain({ dir });
+  const changedFiles = await getChangedFiles({ dir });
   return !changedFiles.length;
 };

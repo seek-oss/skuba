@@ -166,10 +166,10 @@ export const gitListTags = async ({
   });
 
 /**
- * Returns file names of files which are changed
+ * Returns file paths of files which are changed
  */
 
-export const gitStatusPorcelain = async ({
+export const getChangedFiles = async ({
   dir,
 }: {
   dir: string;
