@@ -1,11 +1,19 @@
 // Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/utils.ts
 
+import git from 'isomorphic-git';
+
 import { exec } from '../../utils/exec';
+import {
+  getHeadSha,
+  gitBranch,
+  gitDeleteBranch,
+  gitPush,
+} from '../../utils/git';
 
 import { execWithOutput } from './utils';
 
 // TODO probably try and make this configurable
-const getBotName = () => 'buildkite';
+const getBotName = () => 'skuba';
 
 export const setupUser = async () => {
   await exec('git', 'config', '--global', 'user.name', getBotName());
@@ -23,30 +31,38 @@ export const pullBranch = async (branch: string) => {
 };
 
 export const push = async (
+  dir: string,
   branch: string,
+  token: string,
   { force }: { force?: boolean } = {},
 ) => {
-  await exec(
-    'git',
-    ...['push', 'origin', `HEAD:${branch}`, force && '--force'].filter<string>(
-      Boolean as any,
-    ),
-  );
+  await gitPush({
+    dir,
+    auth: { type: 'gitHubApp', token },
+    branch,
+    commitOid: await getHeadSha(dir),
+    force,
+  });
 };
 
 export const pushTags = async () => {
   await exec('git', 'push', 'origin', '--tags');
 };
 
-export const switchToMaybeExistingBranch = async (branch: string) => {
-  const { stderr } = await execWithOutput('git', ['checkout', branch], {
-    ignoreReturnCode: true,
-  });
-  const isCreatingBranch = !(stderr as Error)
-    .toString()
-    .includes(`Switched to a new branch '${branch}'`);
-  if (isCreatingBranch) {
-    await exec('git', 'checkout', '-b', branch);
+export const switchToMaybeExistingBranch = async (
+  dir: string,
+  branch: string,
+) => {
+  try {
+    await gitBranch({ dir, ref: branch, checkout: true });
+  } catch (error) {
+    if (error instanceof git.Errors.AlreadyExistsError) {
+      await gitDeleteBranch({ dir, ref: branch });
+      await gitBranch({ dir, ref: branch, checkout: true });
+      return;
+    }
+
+    throw error;
   }
 };
 

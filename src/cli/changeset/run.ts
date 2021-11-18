@@ -8,8 +8,6 @@ import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
 import * as semver from 'semver';
 
-import { getHeadSha, gitPush } from '../../utils/git';
-
 import * as gitUtils from './gitUtils';
 import * as github from './githubAdapter';
 import readChangesetState from './readChangesetState';
@@ -210,7 +208,7 @@ export async function runVersion({
   const octokit = github.getOctokit(githubToken);
   const { preState } = await readChangesetState(cwd);
 
-  await gitUtils.switchToMaybeExistingBranch(versionBranch);
+  await gitUtils.switchToMaybeExistingBranch(cwd, versionBranch);
   await gitUtils.reset(context.sha);
 
   const versionsByDirectory = await getVersionsByDirectory(cwd);
@@ -285,13 +283,7 @@ ${(
     await gitUtils.commitAll(finalCommitMessage);
   }
 
-  await gitPush({
-    dir: cwd,
-    auth: { type: 'gitHubApp', token: githubToken },
-    branch: versionBranch,
-    commitOid: await getHeadSha(cwd),
-    force: true,
-  });
+  await gitUtils.push(cwd, versionBranch, githubToken, { force: true });
 
   const searchResult = await searchResultPromise;
   console.log(JSON.stringify(searchResult.data, null, 2));

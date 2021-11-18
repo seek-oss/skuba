@@ -108,3 +108,34 @@ export const getCurrentBranchRef = async (dir: string): Promise<string> => {
 
   return branch;
 };
+
+export const gitBranch = async ({
+  dir,
+  ref,
+  checkout,
+}: {
+  dir: string;
+  ref: string;
+  checkout?: boolean;
+}): Promise<void> => {
+  await git.branch({
+    fs,
+    dir,
+    ref,
+    checkout,
+  });
+};
+
+export const gitDeleteBranch = async ({
+  dir,
+  ref,
+}: {
+  dir: string;
+  ref: string;
+}): Promise<void> => {
+  await git.deleteBranch({
+    fs,
+    dir,
+    ref,
+  });
+};
