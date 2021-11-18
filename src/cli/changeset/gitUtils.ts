@@ -5,7 +5,9 @@ import git from 'isomorphic-git';
 import { exec } from '../../utils/exec';
 import {
   getHeadSha,
+  gitAdd,
   gitBranch,
+  gitCommit,
   gitDeleteBranch,
   gitListTags,
   gitPush,
@@ -14,7 +16,6 @@ import {
 } from '../../utils/git';
 
 import type * as github from './githubAdapter';
-import { execWithOutput } from './utils';
 
 export const setupUser = async (dir: string, _octokit: github.Octokit) => {
   // const user = await octokit.users.getAuthenticated();
@@ -74,15 +75,16 @@ export const switchToMaybeExistingBranch = async (
 };
 
 export const reset = async (
+  cwd: string,
   pathSpec: string,
   mode: 'hard' | 'soft' | 'mixed' = 'hard',
 ) => {
   await exec('git', 'reset', `--${mode}`, pathSpec);
 };
 
-export const commitAll = async (message: string) => {
-  await exec('git', 'add', '.');
-  await exec('git', 'commit', '-m', message);
+export const commitAll = async (dir: string, message: string) => {
+  await gitAdd({ dir, filepath: '.' });
+  await gitCommit({ dir, message });
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {

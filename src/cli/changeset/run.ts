@@ -212,7 +212,7 @@ export async function runVersion({
   const { preState } = await readChangesetState(cwd);
 
   await gitUtils.switchToMaybeExistingBranch(cwd, versionBranch);
-  await gitUtils.reset(context.sha);
+  await gitUtils.reset(cwd, context.sha);
 
   const versionsByDirectory = await getVersionsByDirectory(cwd);
 
@@ -283,7 +283,7 @@ ${(
     const finalCommitMessage = `${commitMessage}${
       preState ? ` (${preState.tag})` : ''
     }`;
-    await gitUtils.commitAll(finalCommitMessage);
+    await gitUtils.commitAll(cwd, finalCommitMessage);
   }
 
   await gitUtils.push(cwd, versionBranch, githubToken, { force: true });

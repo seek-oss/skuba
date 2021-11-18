@@ -192,3 +192,23 @@ export const gitStatusPorcelain = async ({
     )
     .map((row) => row[0]);
 };
+
+export const gitAdd = async ({
+  dir,
+  filepath,
+}: {
+  dir: string;
+  filepath: string;
+}): Promise<void> => {
+  await git.add({ fs, dir, filepath });
+};
+
+export const gitReset = async ({
+  dir,
+  filepath,
+}: {
+  dir: string;
+  filepath: string;
+}): Promise<void> => {
+  await git.resetIndex({ fs, dir, filepath });
+};
