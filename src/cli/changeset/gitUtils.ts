@@ -15,12 +15,12 @@ import {
 import type * as github from './githubAdapter';
 import { execWithOutput } from './utils';
 
-export const setupUser = async (dir: string, octokit: github.Octokit) => {
-  const user = await octokit.users.getAuthenticated();
+export const setupUser = async (dir: string, _octokit: github.Octokit) => {
+  // const user = await octokit.users.getAuthenticated();
   await setGitUser({
     dir,
-    name: user.data.name as string,
-    email: user.data.email as string,
+    name: 'buildagencygitapitoken[bot]', // user.data.name as string
+    email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
   });
 };
 
