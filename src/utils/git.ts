@@ -164,3 +164,31 @@ export const gitListTags = async ({
     fs,
     dir,
   });
+
+/**
+ * Returns file names of files which are changed
+ */
+
+export const gitStatusPorcelain = async ({
+  dir,
+}: {
+  dir: string;
+}): Promise<string[]> => {
+  // Row Indexes
+  const HEAD = 1;
+  const WORKDIR = 2;
+  const STAGE = 3;
+
+  // State
+  const UNCHANGED = 1;
+
+  const statuses = await git.statusMatrix({ fs, dir });
+  return statuses
+    .filter(
+      (row) =>
+        row[HEAD] !== UNCHANGED ||
+        row[WORKDIR] !== UNCHANGED ||
+        row[STAGE] !== UNCHANGED,
+    )
+    .map((row) => row[0]);
+};

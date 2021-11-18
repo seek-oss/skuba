@@ -279,7 +279,7 @@ ${(
   const finalPrTitle = `${prTitle}${preState ? ` (${preState.tag})` : ''}`;
 
   // project with `commit: true` setting could have already committed files
-  if (!(await gitUtils.checkIfClean())) {
+  if (!(await gitUtils.checkIfClean(cwd))) {
     const finalCommitMessage = `${commitMessage}${
       preState ? ` (${preState.tag})` : ''
     }`;

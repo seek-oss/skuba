@@ -9,6 +9,7 @@ import {
   gitDeleteBranch,
   gitListTags,
   gitPush,
+  gitStatusPorcelain,
   setGitUser,
 } from '../../utils/git';
 
@@ -22,10 +23,6 @@ export const setupUser = async (dir: string, _octokit: github.Octokit) => {
     name: 'buildagencygitapitoken[bot]', // user.data.name as string
     email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
   });
-};
-
-export const pullBranch = async (branch: string) => {
-  await exec('git', 'pull', 'origin', branch);
 };
 
 export const push = async (
@@ -88,7 +85,7 @@ export const commitAll = async (message: string) => {
   await exec('git', 'commit', '-m', message);
 };
 
-export const checkIfClean = async (): Promise<boolean> => {
-  const { stdout } = await execWithOutput('git', ['status', '--porcelain']);
-  return !(stdout as Array<unknown>).length;
+export const checkIfClean = async (dir: string): Promise<boolean> => {
+  const changedFiles = await gitStatusPorcelain({ dir });
+  return !changedFiles.length;
 };
