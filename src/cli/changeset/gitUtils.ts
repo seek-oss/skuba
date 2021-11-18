@@ -7,6 +7,7 @@ import {
   getHeadSha,
   gitBranch,
   gitDeleteBranch,
+  gitListTags,
   gitPush,
   setGitUser,
 } from '../../utils/git';
@@ -42,8 +43,17 @@ export const push = async (
   });
 };
 
-export const pushTags = async () => {
-  await exec('git', 'push', 'origin', '--tags');
+export const pushTags = async (dir: string, token: string) => {
+  const tags = await gitListTags({ dir });
+
+  for (const tag of tags) {
+    await gitPush({
+      auth: { type: 'gitHubApp', token },
+      branch: tag,
+      commitOid: await getHeadSha(dir),
+      dir,
+    });
+  }
 };
 
 export const switchToMaybeExistingBranch = async (

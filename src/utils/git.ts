@@ -154,3 +154,13 @@ export const setGitUser = async ({
     git.setConfig({ fs, dir, path: 'user.email', value: email }),
   ]);
 };
+
+export const gitListTags = async ({
+  dir,
+}: {
+  dir: string;
+}): Promise<string[]> =>
+  git.listTags({
+    fs,
+    dir,
+  });

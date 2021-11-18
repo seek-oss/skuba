@@ -93,7 +93,7 @@ export async function runPublish({
     { cwd },
   );
 
-  await gitUtils.pushTags();
+  await gitUtils.pushTags(cwd, githubToken);
 
   const { packages, tool } = await getPackages(cwd);
   const releasedPackages: Package[] = [];
