@@ -45,15 +45,18 @@ export const push = async (
 
 export const pushTags = async (dir: string, token: string) => {
   const tags = await gitListTags({ dir });
+  const commitOid = await getHeadSha(dir);
 
-  for (const tag of tags) {
-    await gitPush({
-      auth: { type: 'gitHubApp', token },
-      branch: tag,
-      commitOid: await getHeadSha(dir),
-      dir,
-    });
-  }
+  await Promise.all(
+    tags.map((tag) =>
+      gitPush({
+        auth: { type: 'gitHubApp', token },
+        branch: tag,
+        commitOid,
+        dir,
+      }),
+    ),
+  );
 };
 
 export const switchToMaybeExistingBranch = async (
