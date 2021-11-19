@@ -11,6 +11,7 @@ import {
   gitDeleteBranch,
   gitListTags,
   gitPush,
+  gitRemove,
   gitReset,
   setGitUser,
 } from '../../utils/git';
@@ -80,7 +81,13 @@ export const reset = async (dir: string, pathSpec: string, branch: string) => {
 
 export const commitAll = async (dir: string, message: string) => {
   const changedFiles = await getChangedFiles({ dir });
-  await Promise.all(changedFiles.map((filepath) => gitAdd({ dir, filepath })));
+  await Promise.all(
+    changedFiles.map((file) =>
+      !file.deleted
+        ? gitAdd({ dir, filepath: file.path })
+        : gitRemove({ dir, filepath: file.path }),
+    ),
+  );
   await gitCommit({ dir, message });
 };
 

@@ -9,6 +9,7 @@ const WORKDIR = 2;
 const STAGE = 3;
 
 // Status Matrix State
+const ABSENT = 0;
 const UNCHANGED = 1;
 
 export const gitCommit = async ({
@@ -174,15 +175,19 @@ export const gitListTags = async ({
     dir,
   });
 
-/**
- * Returns file paths of files which are changed
- */
+export interface ChangedFile {
+  path: string;
+  deleted: boolean;
+}
 
+/**
+ * Returns files which have been changed
+ */
 export const getChangedFiles = async ({
   dir,
 }: {
   dir: string;
-}): Promise<string[]> => {
+}): Promise<ChangedFile[]> => {
   const allFiles = await git.statusMatrix({ fs, dir });
   return allFiles
     .filter(
@@ -191,7 +196,7 @@ export const getChangedFiles = async ({
         row[WORKDIR] !== UNCHANGED ||
         row[STAGE] !== UNCHANGED,
     )
-    .map((row) => row[FILEPATH]);
+    .map((row) => ({ path: row[FILEPATH], deleted: row[WORKDIR] === ABSENT }));
 };
 
 export const gitAdd = async ({
@@ -202,6 +207,16 @@ export const gitAdd = async ({
   filepath: string;
 }): Promise<void> => {
   await git.add({ fs, dir, filepath });
+};
+
+export const gitRemove = async ({
+  dir,
+  filepath,
+}: {
+  dir: string;
+  filepath: string;
+}): Promise<void> => {
+  await git.remove({ fs, dir, filepath });
 };
 
 export const gitReset = async ({
