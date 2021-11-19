@@ -183,8 +183,8 @@ export const getChangedFiles = async ({
 }: {
   dir: string;
 }): Promise<string[]> => {
-  const statuses = await git.statusMatrix({ fs, dir });
-  return statuses
+  const allFiles = await git.statusMatrix({ fs, dir });
+  return allFiles
     .filter(
       (row) =>
         row[HEAD] !== UNCHANGED ||
