@@ -2,6 +2,15 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
 
+// Status Matrix Row Indexes
+const FILEPATH = 0;
+const HEAD = 1;
+const WORKDIR = 2;
+const STAGE = 3;
+
+// Status Matrix State
+const UNCHANGED = 1;
+
 export const gitCommit = async ({
   dir,
   message,
@@ -174,14 +183,6 @@ export const getChangedFiles = async ({
 }: {
   dir: string;
 }): Promise<string[]> => {
-  // Row Indexes
-  const HEAD = 1;
-  const WORKDIR = 2;
-  const STAGE = 3;
-
-  // State
-  const UNCHANGED = 1;
-
   const statuses = await git.statusMatrix({ fs, dir });
   return statuses
     .filter(
@@ -190,7 +191,7 @@ export const getChangedFiles = async ({
         row[WORKDIR] !== UNCHANGED ||
         row[STAGE] !== UNCHANGED,
     )
-    .map((row) => row[0]);
+    .map((row) => row[FILEPATH]);
 };
 
 export const gitAdd = async ({
@@ -203,16 +204,32 @@ export const gitAdd = async ({
   await git.add({ fs, dir, filepath });
 };
 
-export const gitResetHard = async ({
+export const gitReset = async ({
   dir,
   branch,
   commitOid,
+  hard,
 }: {
   dir: string;
   branch: string;
   commitOid: string;
+  hard: boolean;
 }): Promise<void> => {
-  await fs.promises.writeFile(`${dir}/.git/refs/heads/${branch}`, commitOid);
-  await fs.promises.unlink(`${dir}/.git/index`);
-  await git.checkout({ dir, fs, ref: branch, force: true });
+  await fs.promises.writeFile(
+    `${dir}/.git/refs/heads/${branch}`,
+    `${commitOid}\n`,
+  );
+
+  if (hard) {
+    const allFiles = await git.statusMatrix({ dir, fs });
+    // Get all files which have been modified or staged - does not include new untracked files or deleted files
+    const modifiedFiles = allFiles
+      .filter((row) => row[WORKDIR] > UNCHANGED && row[STAGE] > UNCHANGED)
+      .map((row) => row[FILEPATH]);
+
+    // Delete modified/staged files
+    await Promise.all(modifiedFiles.map((path) => fs.promises.rm(path)));
+
+    await git.checkout({ dir, fs, ref: branch, force: true });
+  }
 };

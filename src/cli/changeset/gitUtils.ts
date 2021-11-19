@@ -11,7 +11,7 @@ import {
   gitDeleteBranch,
   gitListTags,
   gitPush,
-  gitResetHard,
+  gitReset,
   setGitUser,
 } from '../../utils/git';
 
@@ -75,7 +75,7 @@ export const switchToMaybeExistingBranch = async (
 };
 
 export const reset = async (dir: string, pathSpec: string, branch: string) => {
-  await gitResetHard({ dir, branch, commitOid: pathSpec });
+  await gitReset({ dir, branch, commitOid: pathSpec, hard: true });
 };
 
 export const commitAll = async (dir: string, message: string) => {
