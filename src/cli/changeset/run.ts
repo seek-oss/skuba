@@ -212,7 +212,7 @@ export async function runVersion({
   const { preState } = await readChangesetState(cwd);
 
   await gitUtils.switchToMaybeExistingBranch(cwd, versionBranch);
-  await gitUtils.reset(cwd, context.sha);
+  await gitUtils.reset(cwd, context.sha, versionBranch);
 
   const versionsByDirectory = await getVersionsByDirectory(cwd);
 

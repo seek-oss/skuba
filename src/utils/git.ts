@@ -203,12 +203,16 @@ export const gitAdd = async ({
   await git.add({ fs, dir, filepath });
 };
 
-export const gitReset = async ({
+export const gitResetHard = async ({
   dir,
-  filepath,
+  branch,
+  commitOid,
 }: {
   dir: string;
-  filepath: string;
+  branch: string;
+  commitOid: string;
 }): Promise<void> => {
-  await git.resetIndex({ fs, dir, filepath });
+  await fs.promises.writeFile(`${dir}/.git/refs/heads/${branch}`, commitOid);
+  await fs.promises.unlink(`${dir}/.git/index`);
+  await git.checkout({ dir, fs, ref: branch, force: true });
 };

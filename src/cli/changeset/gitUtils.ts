@@ -2,7 +2,6 @@
 
 import git from 'isomorphic-git';
 
-import { exec } from '../../utils/exec';
 import {
   getChangedFiles,
   getHeadSha,
@@ -12,6 +11,7 @@ import {
   gitDeleteBranch,
   gitListTags,
   gitPush,
+  gitResetHard,
   setGitUser,
 } from '../../utils/git';
 
@@ -74,12 +74,8 @@ export const switchToMaybeExistingBranch = async (
   }
 };
 
-export const reset = async (
-  cwd: string,
-  pathSpec: string,
-  mode: 'hard' | 'soft' | 'mixed' = 'hard',
-) => {
-  await exec('git', 'reset', `--${mode}`, pathSpec);
+export const reset = async (dir: string, pathSpec: string, branch: string) => {
+  await gitResetHard({ dir, branch, commitOid: pathSpec });
 };
 
 export const commitAll = async (dir: string, message: string) => {
