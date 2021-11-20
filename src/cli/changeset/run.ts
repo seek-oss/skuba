@@ -87,13 +87,15 @@ export async function runPublish({
 }: PublishOptions): Promise<PublishResult> {
   const [publishCommand, ...publishArgs] = script.split(/\s+/);
 
+  const existingTags = await gitUtils.listTags(cwd);
+
   const changesetPublishOutput = await execWithOutput(
     publishCommand,
     publishArgs,
     { cwd },
   );
 
-  await gitUtils.pushTags(cwd, githubToken);
+  await gitUtils.pushTags(cwd, existingTags, githubToken);
 
   const { packages, tool } = await getPackages(cwd);
   const releasedPackages: Package[] = [];

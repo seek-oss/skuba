@@ -42,27 +42,25 @@ export const push = async (
   });
 };
 
-export const pushTags = async (dir: string, token: string) => {
+export const listTags = async (dir: string): Promise<string[]> =>
+  gitListTags({ dir });
+
+export const pushTags = async (
+  dir: string,
+  existingTags: string[],
+  token: string,
+) => {
   const tags = await gitListTags({ dir });
+  const newTags = tags.filter((tag) => !existingTags.includes(tag));
 
   await Promise.all(
-    tags.map(async (tag) => {
-      try {
-        await gitPush({
-          auth: { type: 'gitHubApp', token },
-          commitOid: tag,
-          dir,
-        });
-      } catch (error) {
-        if (
-          error instanceof git.Errors.PushRejectedError &&
-          error.data.reason === 'tag-exists'
-        ) {
-          return;
-        }
-        throw error;
-      }
-    }),
+    newTags.map((tag) =>
+      gitPush({
+        auth: { type: 'gitHubApp', token },
+        commitOid: tag,
+        dir,
+      }),
+    ),
   );
 };
 
