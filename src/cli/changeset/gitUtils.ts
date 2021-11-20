@@ -45,16 +45,9 @@ export const push = async (
 export const listTags = async (dir: string): Promise<string[]> =>
   gitListTags({ dir });
 
-export const pushTags = async (
-  dir: string,
-  existingTags: string[],
-  token: string,
-) => {
-  const tags = await gitListTags({ dir });
-  const newTags = tags.filter((tag) => !existingTags.includes(tag));
-
+export const pushTags = async (dir: string, tags: string[], token: string) => {
   await Promise.all(
-    newTags.map((tag) =>
+    tags.map((tag) =>
       gitPush({
         auth: { type: 'gitHubApp', token },
         commitOid: tag,
