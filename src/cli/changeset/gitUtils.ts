@@ -46,13 +46,23 @@ export const pushTags = async (dir: string, token: string) => {
   const tags = await gitListTags({ dir });
 
   await Promise.all(
-    tags.map((tag) =>
-      gitPush({
-        auth: { type: 'gitHubApp', token },
-        commitOid: tag,
-        dir,
-      }),
-    ),
+    tags.map(async (tag) => {
+      try {
+        await gitPush({
+          auth: { type: 'gitHubApp', token },
+          commitOid: tag,
+          dir,
+        });
+      } catch (error) {
+        if (
+          error instanceof git.Errors.PushRejectedError &&
+          error.data.reason === 'tag-exists'
+        ) {
+          return;
+        }
+        throw error;
+      }
+    }),
   );
 };
 
