@@ -29,7 +29,7 @@ export const gitCommit = async ({
 
 interface GitPushProps {
   auth: { type: 'gitHubApp'; token: string };
-  branch: string;
+  branch?: string;
   commitOid: string;
   dir: string;
   force?: boolean;

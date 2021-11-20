@@ -44,14 +44,12 @@ export const push = async (
 
 export const pushTags = async (dir: string, token: string) => {
   const tags = await gitListTags({ dir });
-  const commitOid = await getHeadSha(dir);
 
   await Promise.all(
     tags.map((tag) =>
       gitPush({
         auth: { type: 'gitHubApp', token },
-        branch: tag,
-        commitOid,
+        commitOid: tag,
         dir,
       }),
     ),
