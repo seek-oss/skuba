@@ -8,6 +8,7 @@ import { gitReset } from './git';
 jest.mock('fs-extra', () => memfs);
 
 const author = { name: 'user', email: 'user@email.com' };
+const dir = './';
 
 describe('gitReset', () => {
   describe('soft', () => {
@@ -16,26 +17,26 @@ describe('gitReset', () => {
 
       const initialCommit = await git.commit({
         fs,
-        dir: './',
+        dir,
         message: 'initial commit',
         author,
       });
 
       const newFileName = 'newFile';
       await fs.promises.writeFile(newFileName, '');
-      await git.add({ fs, dir: './', filepath: newFileName });
+      await git.add({ fs, dir, filepath: newFileName });
       await git.commit({
         fs,
-        dir: './',
+        dir,
         message: 'new commit',
         author,
       });
 
-      await gitReset({ dir: './', branch: 'master', commitOid: initialCommit });
+      await gitReset({ dir, branch: 'master', commitOid: initialCommit });
 
       const commits = await git.log({
         fs,
-        dir: './',
+        dir,
         depth: 1,
       });
 
@@ -52,23 +53,23 @@ describe('gitReset', () => {
 
       const initialCommit = await git.commit({
         fs,
-        dir: './',
+        dir,
         message: 'initial commit',
         author,
       });
 
       const newFileName = 'newFile';
       await fs.promises.writeFile(newFileName, '');
-      await git.add({ fs, dir: './', filepath: newFileName });
+      await git.add({ fs, dir, filepath: newFileName });
       await git.commit({
         fs,
-        dir: './',
+        dir,
         message: 'new commit',
         author,
       });
 
       await gitReset({
-        dir: './',
+        dir,
         branch: 'master',
         commitOid: initialCommit,
         hard: true,
@@ -76,7 +77,7 @@ describe('gitReset', () => {
 
       const commits = await git.log({
         fs,
-        dir: './',
+        dir,
         depth: 1,
       });
 
@@ -91,17 +92,17 @@ describe('gitReset', () => {
 
       const initialCommit = await git.commit({
         fs,
-        dir: './',
+        dir,
         message: 'initial commit',
         author,
       });
 
       const newFileName = 'newFile';
       await fs.promises.writeFile(newFileName, '');
-      await git.add({ fs, dir: './', filepath: newFileName });
+      await git.add({ fs, dir, filepath: newFileName });
 
       await gitReset({
-        dir: './',
+        dir,
         branch: 'master',
         commitOid: initialCommit,
         hard: true,
@@ -109,7 +110,7 @@ describe('gitReset', () => {
 
       const commits = await git.log({
         fs,
-        dir: './',
+        dir,
         depth: 1,
       });
 
@@ -125,25 +126,25 @@ describe('gitReset', () => {
       const newFileName = 'newFile';
 
       await fs.promises.writeFile(newFileName, 'hello');
-      await git.add({ fs, dir: './', filepath: newFileName });
+      await git.add({ fs, dir, filepath: newFileName });
       const initialCommit = await git.commit({
         fs,
-        dir: './',
+        dir,
         message: 'initial commit',
         author,
       });
 
       await fs.promises.writeFile(newFileName, 'hello world');
-      await git.add({ fs, dir: './', filepath: newFileName });
+      await git.add({ fs, dir, filepath: newFileName });
       await git.commit({
         fs,
-        dir: './',
+        dir,
         message: 'new commit',
         author,
       });
 
       await gitReset({
-        dir: './',
+        dir,
         branch: 'master',
         commitOid: initialCommit,
         hard: true,
@@ -151,7 +152,7 @@ describe('gitReset', () => {
 
       const commits = await git.log({
         fs,
-        dir: './',
+        dir,
         depth: 1,
       });
 
