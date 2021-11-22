@@ -10,6 +10,10 @@ jest.mock('fs-extra', () => memfs);
 const author = { name: 'user', email: 'user@email.com' };
 const dir = './';
 
+beforeEach(() => {
+  vol.reset();
+});
+
 describe('gitReset', () => {
   describe('soft', () => {
     it('should keep the file added in another commit in the working directory', async () => {
