@@ -247,7 +247,7 @@ export const gitReset = async ({
   }
 };
 
-export const gitCommitAll = async ({
+export const gitCommitAllChanges = async ({
   dir,
   message,
   author = {

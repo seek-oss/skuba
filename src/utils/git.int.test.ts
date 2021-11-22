@@ -3,7 +3,7 @@ import memfs, { fs, vol } from 'memfs';
 
 import basicGit from '../../integration/git/basic.json';
 
-import { getChangedFiles, gitCommitAll, gitReset } from './git';
+import { getChangedFiles, gitCommitAllChanges, gitReset } from './git';
 
 jest.mock('fs-extra', () => memfs);
 
@@ -249,7 +249,7 @@ describe('getChangedFiles', () => {
   });
 });
 
-describe('gitCommitAll', () => {
+describe('gitCommitAllChanges', () => {
   const newFileName2 = 'newFile2';
   it('should stage and commit all the new files in the working directory', async () => {
     await Promise.all([
@@ -257,7 +257,7 @@ describe('gitCommitAll', () => {
       fs.promises.writeFile(newFileName2, ''),
     ]);
 
-    await gitCommitAll({
+    await gitCommitAllChanges({
       dir,
       message: 'initial commit',
       author,
@@ -294,7 +294,7 @@ describe('gitCommitAll', () => {
       fs.promises.rm(newFileName2),
     ]);
 
-    await gitCommitAll({
+    await gitCommitAllChanges({
       dir,
       message: 'remove commit',
       author,

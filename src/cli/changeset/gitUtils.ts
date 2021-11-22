@@ -6,7 +6,7 @@ import {
   getChangedFiles,
   getHeadSha,
   gitBranch,
-  gitCommitAll,
+  gitCommitAllChanges,
   gitDeleteBranch,
   gitListTags,
   gitPush,
@@ -70,7 +70,7 @@ export const commitAll = async (dir: string, message: string) => {
     name: 'buildagencygitapitoken[bot]', // user.data.name as string
     email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
   };
-  await gitCommitAll({ dir, message, author: user, committer: user });
+  await gitCommitAllChanges({ dir, message, author: user, committer: user });
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {
