@@ -44,7 +44,7 @@ describe('gitReset', () => {
         depth: 1,
       });
 
-      const directory = await fs.promises.readdir('./');
+      const directory = await fs.promises.readdir(dir);
 
       expect(commits[0].oid).toEqual(initialCommit);
       expect(directory).toContain(newFileName);
@@ -85,7 +85,7 @@ describe('gitReset', () => {
         depth: 1,
       });
 
-      const directory = await fs.promises.readdir('./');
+      const directory = await fs.promises.readdir(dir);
 
       expect(commits[0].oid).toEqual(initialCommit);
       expect(directory).not.toContain(newFileName);
@@ -118,7 +118,7 @@ describe('gitReset', () => {
         depth: 1,
       });
 
-      const directory = await fs.promises.readdir('./');
+      const directory = await fs.promises.readdir(dir);
 
       expect(commits[0].oid).toEqual(initialCommit);
       expect(directory).not.toContain(newFileName);
