@@ -29,7 +29,9 @@ describe('getHeadCommitId', () => {
   it('falls back to a commit ID from the Git log', async () => {
     mocked(git.log).mockResolvedValue([{ oid: 'a'.repeat(40) } as any]);
 
-    await expect(getHeadCommitId({ dir })).resolves.toBe('a'.repeat(40));
+    await expect(getHeadCommitId({ dir, env: {} })).resolves.toBe(
+      'a'.repeat(40),
+    );
 
     expect(git.log).toHaveBeenCalledTimes(1);
   });
@@ -38,7 +40,7 @@ describe('getHeadCommitId', () => {
     mocked(git.log).mockResolvedValue([]);
 
     await expect(
-      getHeadCommitId({ dir }),
+      getHeadCommitId({ dir, env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
       `"Git log does not contain any commits"`,
     );
