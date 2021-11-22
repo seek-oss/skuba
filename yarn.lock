@@ -1237,10 +1237,10 @@
   resolved "https://registry.yarnpkg.com/@types/ejs/-/ejs-3.1.0.tgz#ab8109208106b5e764e5a6c92b2ba1c625b73020"
   integrity sha512-DCg+Ka+uDQ31lJ/UtEXVlaeV3d6t81gifaVWKJy4MYVVgvJttyX/viREy+If7fz+tK/gVxTGMtyrFPnm4gjrVA==
 
-"@types/eslint@^7.2.12":
-  version "7.28.2"
-  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.28.2.tgz#0ff2947cdd305897c52d5372294e8c76f351db68"
-  integrity sha512-KubbADPkfoU75KgKeKLsFHXnU4ipH7wYg0TRT33NK3N3yiu7jlFAAoygIWBV+KbuHx/G+AvuGX6DllnK35gfJA==
+"@types/eslint@^8.0.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-8.2.0.tgz#afd0519223c29c347087542cbaee2fedc0873b16"
+  integrity sha512-74hbvsnc+7TEDa1z5YLSe4/q8hGYB3USNvCuzHUJrjPV6hXaq8IXcngCrHkuvFt0+8rFz7xYXrHgNayIX0UZvQ==
   dependencies:
     "@types/estree" "*"
     "@types/json-schema" "*"
@@ -3121,12 +3121,12 @@ eslint-config-seek@^7.0.9:
     eslint-plugin-react-hooks "^4.0.4"
     find-root "^1.1.0"
 
-eslint-config-skuba@1.0.12:
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.0.12.tgz#a039ffc0ef4da02e6375b03ed8eb8bda2ea0db0b"
-  integrity sha512-RGsz4giAfmKpwV5tTylUtwzCAFlfZNgLxZfFSw/tTgMO6gX/fhGt+H+w/7kRQrFg9ihJHZSENkK2+gPnbLvVSg==
+eslint-config-skuba@1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.0.13.tgz#50956cb32701fcbbdf6adb71c1d0ab9031c2ed7f"
+  integrity sha512-73SRzyjONgQOJOyOkOSiv6NuePhyXLgkOmQP9PVEe1uWYjFtSe0zTun96sii8qi3r3lfZzG94Abkgkwfe+J3Lw==
   dependencies:
-    "@types/eslint" "^7.2.12"
+    "@types/eslint" "^8.0.0"
     "@typescript-eslint/eslint-plugin" "^4.26.0"
     "@typescript-eslint/parser" "^4.26.0"
     eslint-config-seek "^7.0.9"
