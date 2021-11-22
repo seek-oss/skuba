@@ -279,7 +279,7 @@ describe('gitCommitAllChanges', () => {
 
     await Promise.all([
       git.add({ fs, dir, filepath: newFileName }),
-      git.add({ fs, dir, filepath: newFileName }),
+      git.add({ fs, dir, filepath: newFileName2 }),
     ]);
 
     await git.commit({
