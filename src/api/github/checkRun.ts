@@ -100,8 +100,8 @@ export const createCheckRun = async ({
   const dir = process.cwd();
 
   const [commitId, { owner, repo }] = await Promise.all([
-    Git.getHeadCommitId(dir),
-    Git.getOwnerAndRepo(dir),
+    Git.getHeadCommitId({ dir }),
+    Git.getOwnerAndRepo({ dir }),
   ]);
 
   const client = new Octokit({
