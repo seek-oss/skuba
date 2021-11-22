@@ -3,7 +3,7 @@ import memfs, { fs, vol } from 'memfs';
 
 import basicGit from '../../integration/git/basic.json';
 
-import { gitReset } from './git';
+import { getChangedFiles, gitReset } from './git';
 
 jest.mock('fs-extra', () => memfs);
 
@@ -165,5 +165,80 @@ describe('gitReset', () => {
       expect(commits[0].oid).toEqual(initialCommit);
       expect(Buffer.from(file).toString()).toBe('hello');
     });
+  });
+});
+
+describe('getChangedFiles', () => {
+  it('should return files which were added to the workdir', async () => {
+    vol.fromJSON(basicGit);
+
+    await git.commit({
+      fs,
+      dir,
+      message: 'initial commit',
+      author,
+    });
+
+    const newFileName = 'newFile';
+    await fs.promises.writeFile(newFileName, '');
+    const files = await getChangedFiles({ dir });
+
+    expect(files).toStrictEqual([{ path: newFileName, deleted: false }]);
+  });
+
+  it('should return files which were modified', async () => {
+    vol.fromJSON(basicGit);
+
+    const newFileName = 'newFile';
+    await fs.promises.writeFile(newFileName, '');
+    await git.add({ fs, dir, filepath: newFileName });
+    await git.commit({
+      fs,
+      dir,
+      message: 'initial commit',
+      author,
+    });
+
+    await fs.promises.writeFile(newFileName, 'hello world');
+    const files = await getChangedFiles({ dir });
+
+    expect(files).toStrictEqual([{ path: newFileName, deleted: false }]);
+  });
+
+  it('should return files which were deleted', async () => {
+    vol.fromJSON(basicGit);
+
+    const newFileName = 'newFile';
+    await fs.promises.writeFile(newFileName, '');
+    await git.add({ fs, dir, filepath: newFileName });
+    await git.commit({
+      fs,
+      dir,
+      message: 'initial commit',
+      author,
+    });
+
+    await fs.promises.rm(newFileName);
+    const files = await getChangedFiles({ dir });
+
+    expect(files).toStrictEqual([{ path: newFileName, deleted: true }]);
+  });
+
+  it('should return an empty array if no files were changed', async () => {
+    vol.fromJSON(basicGit);
+
+    const newFileName = 'newFile';
+    await fs.promises.writeFile(newFileName, '');
+    await git.add({ fs, dir, filepath: newFileName });
+    await git.commit({
+      fs,
+      dir,
+      message: 'initial commit',
+      author,
+    });
+
+    const files = await getChangedFiles({ dir });
+
+    expect(files).toStrictEqual([]);
   });
 });
