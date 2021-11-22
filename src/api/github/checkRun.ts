@@ -84,7 +84,7 @@ interface CreateCheckRunParameters {
 }
 
 /**
- * Asynchronously creates a GitHub [check run] with annotations.
+ * Asynchronously creates a GitHub check run with annotations.
  *
  * The first 50 `annotations` are written in full to GitHub.
  *
