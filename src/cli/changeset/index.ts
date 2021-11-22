@@ -26,7 +26,7 @@ const run = async () => {
   const octokit = github.getOctokit(githubToken);
 
   console.log('setting git user');
-  await gitUtils.setupUser(cwd, octokit);
+  gitUtils.setUser(octokit);
 
   const { changesets } = await readChangesetState();
 

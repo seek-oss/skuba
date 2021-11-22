@@ -13,18 +13,23 @@ import {
   gitPush,
   gitRemove,
   gitReset,
-  setGitUser,
 } from '../../utils/git';
 
 import type * as github from './githubAdapter';
 
-export const setupUser = async (dir: string, _octokit: github.Octokit) => {
+interface GitUser {
+  name: string;
+  email: string;
+}
+
+let gitUser: GitUser;
+
+export const setUser = (_octokit: github.Octokit) => {
   // const user = await octokit.users.getAuthenticated();
-  await setGitUser({
-    dir,
+  gitUser ??= {
     name: 'buildagencygitapitoken[bot]', // user.data.name as string
     email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
-  });
+  };
 };
 
 export const push = async (
@@ -87,7 +92,13 @@ export const commitAll = async (dir: string, message: string) => {
         : gitRemove({ dir, filepath: file.path }),
     ),
   );
-  await gitCommit({ dir, message });
+
+  await gitCommit({
+    dir,
+    message,
+    author: { name: gitUser.name, email: gitUser.email },
+    committer: { name: gitUser.name, email: gitUser.email },
+  });
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {

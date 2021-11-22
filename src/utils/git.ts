@@ -14,16 +14,26 @@ const STAGE = 3;
 const ABSENT = 0;
 const UNCHANGED = 1;
 
+type GitAuthor = NonNullable<Parameters<typeof git.commit>[0]['author']>;
+
 export const gitCommit = async ({
+  author = {
+    name: 'skuba',
+  },
+  committer = {
+    name: 'skuba',
+  },
   dir,
   message,
 }: {
+  author?: GitAuthor;
+  committer?: GitAuthor;
   dir: string;
   message: string;
 }) =>
   git.commit({
-    author: { name: 'skuba' },
-    committer: { name: 'skuba' },
+    author,
+    committer,
     dir,
     fs,
     message,
@@ -152,21 +162,6 @@ export const gitDeleteBranch = async ({
   });
 };
 
-export const setGitUser = async ({
-  dir,
-  name,
-  email,
-}: {
-  dir: string;
-  name: string;
-  email: string;
-}): Promise<void> => {
-  await Promise.all([
-    git.setConfig({ fs, dir, path: 'user.name', value: name }),
-    git.setConfig({ fs, dir, path: 'user.email', value: email }),
-  ]);
-};
-
 export const gitListTags = async ({
   dir,
 }: {
@@ -248,7 +243,6 @@ export const gitReset = async ({
     await Promise.all(
       modifiedFiles.map((filePath) => fs.promises.rm(filePath)),
     );
-
     await git.checkout({ dir, fs, ref: branch, force: true });
   }
 };
