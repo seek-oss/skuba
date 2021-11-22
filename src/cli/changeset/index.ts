@@ -6,7 +6,6 @@ import fs from 'fs-extra';
 import { apiTokenFromEnvironment } from '../../api/github/environment';
 
 import * as core from './coreAdapter';
-import * as gitUtils from './gitUtils';
 import * as github from './githubAdapter';
 import readChangesetState from './readChangesetState';
 import { runPublish, runVersion } from './run';
@@ -24,9 +23,6 @@ const run = async () => {
   const cwd = process.cwd();
 
   const octokit = github.getOctokit(githubToken);
-
-  console.log('setting git user');
-  gitUtils.setUser(octokit);
 
   const { changesets } = await readChangesetState();
 

@@ -5,32 +5,13 @@ import git from 'isomorphic-git';
 import {
   getChangedFiles,
   getHeadSha,
-  gitAdd,
   gitBranch,
-  gitCommit,
+  gitCommitAll,
   gitDeleteBranch,
   gitListTags,
   gitPush,
-  gitRemove,
   gitReset,
 } from '../../utils/git';
-
-import type * as github from './githubAdapter';
-
-interface GitUser {
-  name: string;
-  email: string;
-}
-
-let gitUser: GitUser;
-
-export const setUser = (_octokit: github.Octokit) => {
-  // const user = await octokit.users.getAuthenticated();
-  gitUser ??= {
-    name: 'buildagencygitapitoken[bot]', // user.data.name as string
-    email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
-  };
-};
 
 export const push = async (
   dir: string,
@@ -84,21 +65,12 @@ export const reset = async (dir: string, pathSpec: string, branch: string) => {
 };
 
 export const commitAll = async (dir: string, message: string) => {
-  const changedFiles = await getChangedFiles({ dir });
-  await Promise.all(
-    changedFiles.map((file) =>
-      !file.deleted
-        ? gitAdd({ dir, filepath: file.path })
-        : gitRemove({ dir, filepath: file.path }),
-    ),
-  );
-
-  await gitCommit({
-    dir,
-    message,
-    author: { name: gitUser.name, email: gitUser.email },
-    committer: { name: gitUser.name, email: gitUser.email },
-  });
+  // const user = await octokit.users.getAuthenticated();
+  const user = {
+    name: 'buildagencygitapitoken[bot]', // user.data.name as string
+    email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
+  };
+  await gitCommitAll({ dir, message, author: user, committer: user });
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {
