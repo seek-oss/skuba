@@ -1,3 +1,5 @@
+import path from 'path';
+
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
@@ -228,10 +230,10 @@ export const gitReset = async ({
   dir: string;
   branch: string;
   commitOid: string;
-  hard: boolean;
+  hard?: boolean;
 }): Promise<void> => {
   await fs.promises.writeFile(
-    `${dir}/.git/refs/heads/${branch}`,
+    path.join(dir, '.git/refs/heads', branch),
     `${commitOid}\n`,
   );
 
@@ -243,7 +245,9 @@ export const gitReset = async ({
       .map((row) => row[FILEPATH]);
 
     // Delete modified/staged files
-    await Promise.all(modifiedFiles.map((path) => fs.promises.rm(path)));
+    await Promise.all(
+      modifiedFiles.map((filePath) => fs.promises.rm(filePath)),
+    );
 
     await git.checkout({ dir, fs, ref: branch, force: true });
   }
