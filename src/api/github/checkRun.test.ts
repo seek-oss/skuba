@@ -23,7 +23,7 @@ const mockClient = {
 
 beforeEach(() => {
   delete process.env.GITHUB_API_TOKEN;
-  delete process.env.GITHUB_REF;
+  delete process.env.GITHUB_SHA;
   delete process.env.GITHUB_TOKEN;
 });
 
