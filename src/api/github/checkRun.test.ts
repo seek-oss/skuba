@@ -21,11 +21,13 @@ const mockClient = {
   },
 };
 
-afterEach(() => {
+beforeEach(() => {
   delete process.env.GITHUB_API_TOKEN;
+  delete process.env.GITHUB_REF;
   delete process.env.GITHUB_TOKEN;
-  jest.resetAllMocks();
 });
+
+afterEach(jest.resetAllMocks);
 
 const annotation: GitHub.Annotation = {
   annotation_level: 'failure',
