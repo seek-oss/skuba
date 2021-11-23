@@ -177,9 +177,9 @@ describe('hard', () => {
       depth: 1,
     });
 
-    const file = await fs.promises.readFile(newFileName);
+    const file = await fs.promises.readFile(newFileName, 'utf-8');
 
     expect(commits[0].oid).toEqual(initialCommit);
-    expect(Buffer.from(file).toString()).toBe('hello');
+    expect(file).toBe('hello');
   });
 });
