@@ -25,7 +25,7 @@ Stages and commits all changes in the local Git repository.
 ```typescript
 import { Git } from 'skuba';
 
-await Git.commitAll({ dir, message: 'Test a commit' });
+await Git.commitAllChanges({ dir, message: 'Test a commit' });
 ```
 
 ---
