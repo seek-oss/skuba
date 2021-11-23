@@ -10,6 +10,8 @@ interface GetPullRequestParameters {
    * present on the environment if this is not provided.
    */
   client?: Octokit;
+
+  env?: Record<string, string | undefined>;
 }
 
 interface PullRequest {
@@ -26,12 +28,14 @@ interface PullRequest {
 export const getPullRequest = async (
   params: GetPullRequestParameters = {},
 ): Promise<PullRequest> => {
+  const env = params.env ?? process.env;
+
   const dir = process.cwd();
 
   {
     const number = Number(
-      process.env.BUILDKITE_PULL_REQUEST ??
-        process.env.GITHUB_REF?.replace(/^refs\/pull\/(\d+)/, '$1'),
+      env.BUILDKITE_PULL_REQUEST ??
+        env.GITHUB_REF?.replace(/^refs\/pull\/(\d+).*$/, '$1'),
     );
 
     if (Number.isSafeInteger(number)) {
@@ -42,7 +46,7 @@ export const getPullRequest = async (
   const client =
     params.client ??
     new Octokit({
-      auth: process.env.GITHUB_API_TOKEN ?? process.env.GITHUB_TOKEN,
+      auth: env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN,
     });
 
   const [commitId, { owner, repo }] = await Promise.all([
@@ -65,7 +69,7 @@ export const getPullRequest = async (
   data
     .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
     .sort((a, b) => {
-      if (a.closed_at && b.closed_at) {
+      if (typeof a.closed_at === typeof b.closed_at) {
         return 0;
       }
 

@@ -4,20 +4,22 @@ import * as Git from '../git';
 
 import { getPullRequest } from './pullRequest';
 
-const getUserId = async (client: Octokit): Promise<string> => {
+const getUserId = async (client: Octokit): Promise<number> => {
   const { data } = await client.users.getAuthenticated();
 
-  return data.login;
+  return data.id;
 };
 
 /**
- * {@link https://docs.github.com/en/rest/reference/checks#create-a-check-run}
+ * https://docs.github.com/en/rest/reference/issues#create-an-issue-comment
  */
 interface PutIssueCommentParameters {
   /**
    * The body of the issue comment.
    */
   body: string;
+
+  env?: Record<string, string | undefined>;
 
   /**
    * The number that identifies the GitHub issue.
@@ -65,17 +67,19 @@ export const putIssueComment = async ({
   body,
   ...params
 }: PutIssueCommentParameters): Promise<IssueComment> => {
+  const env = params.env ?? process.env;
+
   const dir = process.cwd();
 
   const { owner, repo } = await Git.getOwnerAndRepo({ dir });
 
   const client = new Octokit({
-    auth: process.env.GITHUB_API_TOKEN ?? process.env.GITHUB_TOKEN,
+    auth: env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN,
   });
 
   const issueNumber =
     params.issueNumber ??
-    (await getPullRequest({ client, dir }).then(({ number }) => number));
+    (await getPullRequest({ client, env }).then(({ number }) => number));
 
   if (!issueNumber) {
     throw new Error('Failed to infer an issue number');
