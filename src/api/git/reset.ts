@@ -8,7 +8,7 @@ import { FILEPATH, STAGE, UNCHANGED, WORKDIR } from './statusMatrix';
 interface ResetParameters {
   dir: string;
   branch: string;
-  commitOid: string;
+  commitId: string;
   hard?: boolean;
 }
 
@@ -19,12 +19,12 @@ interface ResetParameters {
 export const reset = async ({
   dir,
   branch,
-  commitOid,
+  commitId,
   hard,
 }: ResetParameters): Promise<void> => {
   await fs.promises.writeFile(
     path.join(dir, '.git/refs/heads', branch),
-    `${commitOid}\n`,
+    `${commitId}\n`,
   );
 
   if (hard) {
