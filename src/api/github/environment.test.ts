@@ -40,9 +40,9 @@ describe('enabledFromEnvironment', () => {
 describe('apiTokenFromEnvironment', () => {
   it.each`
     description         | env
-    ${'Buildkite'}      | ${{ BUILDKITE: 'x', GITHUB_API_TOKEN: 'x' }}
-    ${'GitHub Actions'} | ${{ GITHUB_ACTIONS: 'x', GITHUB_TOKEN: 'x' }}
-    ${'generic CI'}     | ${{ CI: 'x', GITHUB_TOKEN: 'x' }}
+    ${'Buildkite'}      | ${{ GITHUB_API_TOKEN: 'x' }}
+    ${'GitHub Actions'} | ${{ GITHUB_TOKEN: 'x' }}
+    ${'generic CI'}     | ${{ GITHUB_TOKEN: 'x' }}
   `('returns an API token', ({ env }) =>
     expect(apiTokenFromEnvironment(env)).toBe('x'),
   );
