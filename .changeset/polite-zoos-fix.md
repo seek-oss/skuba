@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+"skuba": minor
 ---
 
 GitHub.getPullRequest: Export helper function
