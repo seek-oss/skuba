@@ -1,12 +1,15 @@
-import type { Octokit } from '@octokit/rest';
+import { Octokit } from '@octokit/rest';
 
-import { getHeadCommitId } from '../git';
+import * as Git from '../git';
 
 interface GetPullRequestParameters {
-  client: Octokit;
-  dir: string;
-  owner: string;
-  repo: string;
+  /**
+   * A preconstructed Octokit client to interact with GitHub's APIs.
+   *
+   * A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with write permissions must be
+   * present on the environment if this is not provided.
+   */
+  client?: Octokit;
 }
 
 interface PullRequest {
@@ -20,12 +23,11 @@ interface PullRequest {
  * and falls back to querying the GitHub Repos API for the latest pull request
  * associated with the head commit.
  */
-export const getPullRequest = async ({
-  client,
-  dir,
-  owner,
-  repo,
-}: GetPullRequestParameters): Promise<PullRequest> => {
+export const getPullRequest = async (
+  params: GetPullRequestParameters = {},
+): Promise<PullRequest> => {
+  const dir = process.cwd();
+
   {
     const number = Number(
       process.env.BUILDKITE_PULL_REQUEST ??
@@ -37,7 +39,16 @@ export const getPullRequest = async ({
     }
   }
 
-  const commitId = await getHeadCommitId({ dir });
+  const client =
+    params.client ??
+    new Octokit({
+      auth: process.env.GITHUB_API_TOKEN ?? process.env.GITHUB_TOKEN,
+    });
+
+  const [commitId, { owner, repo }] = await Promise.all([
+    Git.getHeadCommitId({ dir }),
+    Git.getOwnerAndRepo({ dir }),
+  ]);
 
   const { data } = await client.repos.listPullRequestsAssociatedWithCommit({
     commit_sha: commitId,

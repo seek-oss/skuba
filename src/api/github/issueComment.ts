@@ -46,19 +46,25 @@ interface PutIssueCommentParameters {
   userId?: number;
 }
 
+interface IssueComment {
+  id: number;
+}
+
 /**
  * Asynchronously creates or updates a GitHub issue comment.
  *
  * This emulates `put` behaviour by overwriting the first existing comment by
- * the same author on the issue.
+ * the same author on the issue, enabling use cases like a persistent bot
+ * comment at the top of the pull request that reflects the current status of a
+ * CI check.
  *
  * A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with write permissions must be present
  * on the environment.
  */
-export const putPullRequestComment = async ({
+export const putIssueComment = async ({
   body,
   ...params
-}: PutIssueCommentParameters): Promise<void> => {
+}: PutIssueCommentParameters): Promise<IssueComment> => {
   const dir = process.cwd();
 
   const { owner, repo } = await Git.getOwnerAndRepo({ dir });
@@ -69,9 +75,7 @@ export const putPullRequestComment = async ({
 
   const issueNumber =
     params.issueNumber ??
-    (await getPullRequest({ client, dir, owner, repo }).then(
-      ({ number }) => number,
-    ));
+    (await getPullRequest({ client, dir }).then(({ number }) => number));
 
   if (!issueNumber) {
     throw new Error('Failed to infer an issue number');
@@ -89,7 +93,7 @@ export const putPullRequestComment = async ({
     (comment) => comment.user?.id === userId,
   )?.id;
 
-  await (commentId
+  const response = await (commentId
     ? client.issues.updateComment({
         body,
         comment_id: commentId,
@@ -103,4 +107,8 @@ export const putPullRequestComment = async ({
         owner,
         repo,
       }));
+
+  return {
+    id: response.data.id,
+  };
 };
