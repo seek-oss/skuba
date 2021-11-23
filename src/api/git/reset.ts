@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
-import { FILEPATH, STAGE, UNCHANGED, WORKDIR } from './statusMatrix';
+import { FILEPATH, STAGE, UNMODIFIED, WORKDIR } from './statusMatrix';
 
 interface ResetParameters {
   dir: string;
@@ -31,7 +31,7 @@ export const reset = async ({
     const allFiles = await git.statusMatrix({ dir, fs });
     // Get all files which have been modified or staged - does not include new untracked files or deleted files
     const modifiedFiles = allFiles
-      .filter((row) => row[WORKDIR] > UNCHANGED && row[STAGE] > UNCHANGED)
+      .filter((row) => row[WORKDIR] > UNMODIFIED && row[STAGE] > UNMODIFIED)
       .map((row) => row[FILEPATH]);
 
     // Delete modified/staged files
