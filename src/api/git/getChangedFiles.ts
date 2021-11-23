@@ -15,14 +15,16 @@ export interface ChangedFile {
   deleted: boolean;
 }
 
+interface ChangedFilesParameters {
+  dir: string;
+}
+
 /**
  * Returns files which have been added, modified or deleted in the working directory since the last commit
  */
 export const getChangedFiles = async ({
   dir,
-}: {
-  dir: string;
-}): Promise<ChangedFile[]> => {
+}: ChangedFilesParameters): Promise<ChangedFile[]> => {
   const allFiles = await git.statusMatrix({ fs, dir });
   return allFiles
     .filter(

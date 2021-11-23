@@ -5,17 +5,19 @@ import { commit } from './commit';
 import type { Identity } from './commit';
 import { getChangedFiles } from './getChangedFiles';
 
+interface CommitAllParameters {
+  dir: string;
+  message: string;
+  author?: Identity;
+  committer?: Identity;
+}
+
 export const commitAllChanges = async ({
   dir,
   message,
   author,
   committer,
-}: {
-  dir: string;
-  message: string;
-  author?: Identity;
-  committer?: Identity;
-}): Promise<void> => {
+}: CommitAllParameters): Promise<void> => {
   const changedFiles = await getChangedFiles({ dir });
   await Promise.all(
     changedFiles.map((file) =>

@@ -5,17 +5,19 @@ import git from 'isomorphic-git';
 
 import { FILEPATH, STAGE, UNCHANGED, WORKDIR } from './statusMatrix';
 
+interface ResetParameters {
+  dir: string;
+  branch: string;
+  commitOid: string;
+  hard?: boolean;
+}
+
 export const reset = async ({
   dir,
   branch,
   commitOid,
   hard,
-}: {
-  dir: string;
-  branch: string;
-  commitOid: string;
-  hard?: boolean;
-}): Promise<void> => {
+}: ResetParameters): Promise<void> => {
   await fs.promises.writeFile(
     path.join(dir, '.git/refs/heads', branch),
     `${commitOid}\n`,
