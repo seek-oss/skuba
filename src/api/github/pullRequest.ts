@@ -50,7 +50,7 @@ export const getPullRequest = async (
     });
 
   const [commitId, { owner, repo }] = await Promise.all([
-    Git.getHeadCommitId({ dir }),
+    Git.getHeadCommitId({ dir, env }),
     Git.getOwnerAndRepo({ dir }),
   ]);
 
