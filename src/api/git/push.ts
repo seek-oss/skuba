@@ -42,6 +42,13 @@ interface PushParameters {
    * This defaults to `ref`.
    */
   remoteRef?: string;
+
+  /**
+   * Forcefully override any conflicts
+   *
+   * This defaults to false
+   */
+  force?: boolean;
 }
 
 /**
@@ -53,6 +60,7 @@ export const push = async ({
   ref,
   remote,
   remoteRef,
+  force,
 }: PushParameters) => {
   const { owner, repo } = await getOwnerAndRepo({ dir });
 
@@ -72,5 +80,6 @@ export const push = async ({
     remote,
     remoteRef,
     url,
+    force,
   });
 };
