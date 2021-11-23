@@ -1,3 +1,5 @@
+// Based off https://isomorphic-git.org/docs/en/statusMatrix.html
+
 // Status Matrix Row Indexes
 export const FILEPATH = 0;
 export const HEAD = 1;
@@ -6,4 +8,5 @@ export const STAGE = 3;
 
 // Status Matrix State
 export const ABSENT = 0;
-export const UNCHANGED = 1;
+export const UNMODIFIED = 1;
+export const MODIFIED = 2;
