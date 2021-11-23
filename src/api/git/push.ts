@@ -44,9 +44,9 @@ interface PushParameters {
   remoteRef?: string;
 
   /**
-   * Forcefully override any conflicts
+   * Forcefully override any conflicts.
    *
-   * This defaults to false
+   * This defaults to `false`.
    */
   force?: boolean;
 }

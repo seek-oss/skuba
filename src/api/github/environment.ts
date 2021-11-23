@@ -28,14 +28,14 @@ export const enabledFromEnvironment = (env = process.env): boolean =>
   Boolean(apiTokenFromEnvironment(env));
 
 /**
- * Tries to return an API token from the environment
+ * Tries to return a GitHub API token from the environment.
  */
 export const apiTokenFromEnvironment = (
   env = process.env,
 ): string | undefined => env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN;
 
 /**
- * Tries to return a branch name from CI environment variables
+ * Tries to return a branch name from CI environment variables.
  */
 export const currentBranchFromEnvironment = (
   env = process.env,
