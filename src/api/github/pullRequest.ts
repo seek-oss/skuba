@@ -2,6 +2,8 @@ import { Octokit } from '@octokit/rest';
 
 import * as Git from '../git';
 
+import { apiTokenFromEnvironment } from './environment';
+
 interface GetPullRequestParameters {
   /**
    * A preconstructed Octokit client to interact with GitHub's APIs.
@@ -44,10 +46,7 @@ export const getPullRequest = async (
   }
 
   const client =
-    params.client ??
-    new Octokit({
-      auth: env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN,
-    });
+    params.client ?? new Octokit({ auth: apiTokenFromEnvironment() });
 
   const [commitId, { owner, repo }] = await Promise.all([
     Git.getHeadCommitId({ dir, env }),

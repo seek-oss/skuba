@@ -106,9 +106,7 @@ export const createCheckRun = async ({
     Git.getOwnerAndRepo({ dir }),
   ]);
 
-  const client = new Octokit({
-    auth: apiTokenFromEnvironment(),
-  });
+  const client = new Octokit({ auth: apiTokenFromEnvironment() });
 
   await client.checks.create({
     conclusion,

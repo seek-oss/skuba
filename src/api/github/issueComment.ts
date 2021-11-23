@@ -2,6 +2,7 @@ import { Octokit } from '@octokit/rest';
 
 import * as Git from '../git';
 
+import { apiTokenFromEnvironment } from './environment';
 import { getPullRequest } from './pullRequest';
 
 const getUserId = async (client: Octokit): Promise<number> => {
@@ -73,9 +74,7 @@ export const putIssueComment = async ({
 
   const { owner, repo } = await Git.getOwnerAndRepo({ dir });
 
-  const client = new Octokit({
-    auth: env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN,
-  });
+  const client = new Octokit({ auth: apiTokenFromEnvironment() });
 
   const issueNumber =
     params.issueNumber ??
