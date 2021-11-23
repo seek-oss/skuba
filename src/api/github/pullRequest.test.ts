@@ -90,6 +90,11 @@ describe('getPullRequest', () => {
   });
 
   it('throws on an empty response from the GitHub API', async () => {
+    mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
+
     mockClient.repos.listPullRequestsAssociatedWithCommit.mockResolvedValue({
       data: [],
     });
