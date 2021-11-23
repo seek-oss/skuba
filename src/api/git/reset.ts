@@ -12,6 +12,10 @@ interface ResetParameters {
   hard?: boolean;
 }
 
+/**
+ * Resets the specified branch in the local Git repository to a particular
+ * commit.
+ */
 export const reset = async ({
   dir,
   branch,

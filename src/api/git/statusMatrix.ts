@@ -1,9 +1,9 @@
-// Status Matrix Row Indexes
+// Status matrix row indexes
 export const FILEPATH = 0;
 export const HEAD = 1;
 export const WORKDIR = 2;
 export const STAGE = 3;
 
-// Status Matrix State
+// Status matrix state
 export const ABSENT = 0;
 export const UNCHANGED = 1;
