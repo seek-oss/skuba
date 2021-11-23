@@ -25,4 +25,18 @@ export const enabledFromEnvironment = (env = process.env): boolean =>
   // Running in a CI environment.
   Boolean(env.BUILDKITE || env.CI || env.GITHUB_ACTIONS) &&
   // Has an API token at the ready.
-  Boolean(env.GITHUB_API_TOKEN || env.GITHUB_TOKEN);
+  Boolean(apiTokenFromEnvironment(env));
+
+/**
+ * Tries to return a GitHub API token from the environment.
+ */
+export const apiTokenFromEnvironment = (
+  env = process.env,
+): string | undefined => env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN;
+
+/**
+ * Tries to return a branch name from CI environment variables.
+ */
+export const currentBranchFromEnvironment = (
+  env = process.env,
+): string | undefined => env.BUILDKITE_BRANCH ?? env.GITHUB_REF_NAME;

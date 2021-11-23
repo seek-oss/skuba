@@ -2,6 +2,8 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
 
+import { apiTokenFromEnvironment } from '../github/environment';
+
 import { getOwnerAndRepo } from './remote';
 
 /**
@@ -40,6 +42,13 @@ interface PushParameters {
    * This defaults to `ref`.
    */
   remoteRef?: string;
+
+  /**
+   * Forcefully override any conflicts.
+   *
+   * This defaults to `false`.
+   */
+  force?: boolean;
 }
 
 /**
@@ -51,6 +60,7 @@ export const push = async ({
   ref,
   remote,
   remoteRef,
+  force,
 }: PushParameters) => {
   const { owner, repo } = await getOwnerAndRepo({ dir });
 
@@ -61,8 +71,7 @@ export const push = async ({
   return git.push({
     onAuth: () => ({
       username: 'x-access-token',
-      password:
-        auth.token ?? process.env.GITHUB_API_TOKEN ?? process.env.GITHUB_TOKEN,
+      password: auth.token ?? apiTokenFromEnvironment(),
     }),
     dir,
     fs,
@@ -71,5 +80,6 @@ export const push = async ({
     remote,
     remoteRef,
     url,
+    force,
   });
 };

@@ -56,6 +56,7 @@
     "express": "4.17.1",
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
+    "memfs": "3.3.0",
     "semver": "7.3.5",
     "supertest": "6.1.6",
     "type-fest": "2.5.4"
@@ -94,8 +95,8 @@
     "ts-jest": "^27.0.5",
     "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.8",
-    "tsconfig-seek": "1.0.2",
     "tsconfig-paths": "^3.11.0",
+    "tsconfig-seek": "1.0.2",
     "typescript": "~4.5.0"
   },
   "peerDependencies": {

@@ -38,6 +38,7 @@ describe('push', () => {
       `
       Object {
         "dir": "/workdir/skuba",
+        "force": undefined,
         "fs": Any<Object>,
         "http": Any<Object>,
         "onAuth": [Function],
