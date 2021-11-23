@@ -5,19 +5,34 @@ import {
   ABSENT,
   FILEPATH,
   HEAD,
+  MODIFIED,
   STAGE,
-  UNCHANGED,
+  UNMODIFIED,
   WORKDIR,
 } from './statusMatrix';
 
+type ChangedFileState = 'added' | 'modified' | 'deleted';
 export interface ChangedFile {
   path: string;
-  deleted: boolean;
+  state: ChangedFileState;
 }
-
 interface ChangedFilesParameters {
   dir: string;
 }
+
+const mapState = (
+  row: [string, 0 | 1, 0 | 1 | 2, 0 | 1 | 2 | 3],
+): ChangedFileState => {
+  if (row[HEAD] === ABSENT) {
+    return 'added';
+  }
+
+  if (row[WORKDIR] === MODIFIED) {
+    return 'modified';
+  }
+
+  return 'deleted';
+};
 
 /**
  * Returns files which have been added, modified or deleted in the working directory since the last commit
@@ -29,9 +44,9 @@ export const getChangedFiles = async ({
   return allFiles
     .filter(
       (row) =>
-        row[HEAD] !== UNCHANGED ||
-        row[WORKDIR] !== UNCHANGED ||
-        row[STAGE] !== UNCHANGED,
+        row[HEAD] !== UNMODIFIED ||
+        row[WORKDIR] !== UNMODIFIED ||
+        row[STAGE] !== UNMODIFIED,
     )
-    .map((row) => ({ path: row[FILEPATH], deleted: row[WORKDIR] === ABSENT }));
+    .map((row) => ({ path: row[FILEPATH], state: mapState(row) }));
 };

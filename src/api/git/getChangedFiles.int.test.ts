@@ -27,7 +27,7 @@ it('should return files which were added to the workdir', async () => {
   await fs.promises.writeFile(newFileName, '');
   const files = await getChangedFiles({ dir });
 
-  expect(files).toStrictEqual([{ path: newFileName, deleted: false }]);
+  expect(files).toStrictEqual([{ path: newFileName, state: 'added' }]);
 });
 
 it('should return files which were modified', async () => {
@@ -43,7 +43,7 @@ it('should return files which were modified', async () => {
   await fs.promises.writeFile(newFileName, 'hello world');
   const files = await getChangedFiles({ dir });
 
-  expect(files).toStrictEqual([{ path: newFileName, deleted: false }]);
+  expect(files).toStrictEqual([{ path: newFileName, state: 'modified' }]);
 });
 
 it('should return files which were deleted', async () => {
@@ -59,7 +59,7 @@ it('should return files which were deleted', async () => {
   await fs.promises.rm(newFileName);
   const files = await getChangedFiles({ dir });
 
-  expect(files).toStrictEqual([{ path: newFileName, deleted: true }]);
+  expect(files).toStrictEqual([{ path: newFileName, state: 'deleted' }]);
 });
 
 it('should return an empty array if no files were changed', async () => {

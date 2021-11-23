@@ -21,9 +21,9 @@ export const commitAllChanges = async ({
   const changedFiles = await getChangedFiles({ dir });
   await Promise.all(
     changedFiles.map((file) =>
-      !file.deleted
-        ? git.add({ fs, dir, filepath: file.path })
-        : git.remove({ fs, dir, filepath: file.path }),
+      file.state === 'deleted'
+        ? git.remove({ fs, dir, filepath: file.path })
+        : git.add({ fs, dir, filepath: file.path }),
     ),
   );
 
