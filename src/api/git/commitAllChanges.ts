@@ -12,6 +12,9 @@ interface CommitAllParameters {
   committer?: Identity;
 }
 
+/**
+ * Stages all changes and writes a commit to the local Git repository.
+ */
 export const commitAllChanges = async ({
   dir,
   message,

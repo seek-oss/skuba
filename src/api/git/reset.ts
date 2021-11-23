@@ -8,19 +8,23 @@ import { FILEPATH, STAGE, UNCHANGED, WORKDIR } from './statusMatrix';
 interface ResetParameters {
   dir: string;
   branch: string;
-  commitOid: string;
+  commitId: string;
   hard?: boolean;
 }
 
+/**
+ * Resets the specified branch in the local Git repository to a particular
+ * commit.
+ */
 export const reset = async ({
   dir,
   branch,
-  commitOid,
+  commitId,
   hard,
 }: ResetParameters): Promise<void> => {
   await fs.promises.writeFile(
     path.join(dir, '.git/refs/heads', branch),
-    `${commitOid}\n`,
+    `${commitId}\n`,
   );
 
   if (hard) {

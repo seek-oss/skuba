@@ -2,7 +2,7 @@
 parent: Development API
 ---
 
-# GitHub
+# Git
 
 ---
 
@@ -20,7 +20,7 @@ await Git.commit({ dir, message: 'Test a commit' });
 
 ## commitAllChanges
 
-Stages and commits all changes in the local Git repository.
+Stages all changes and writes a commit to the local Git repository.
 
 ```typescript
 import { Git } from 'skuba';
@@ -32,14 +32,12 @@ await Git.commitAllChanges({ dir, message: 'Test a commit' });
 
 ## getChangedFiles
 
-Returns all the files which have been added, modified or deleted in the local Git repository
+Returns all the files which have been added, modified or deleted in the working directory of the local Git repository since the last commit.
 
 ```typescript
 import { Git } from 'skuba';
 
-const modifiedFiles = await Git.getChangedFiles({
-  dir,
-});
+const changedFiles = await Git.getChangedFiles({ dir });
 ```
 
 ---
@@ -99,7 +97,7 @@ await Git.push({
 
 ## reset
 
-Resets the local Git repository branch to a particular commit
+Resets the specified branch in the local Git repository to a particular commit.
 
 ```typescript
 import { Git } from 'skuba';
@@ -107,7 +105,7 @@ import { Git } from 'skuba';
 await Git.reset({
   dir,
   branch: 'master',
-  commitOid: 'abcd1234',
+  commitId: 'abcd1234',
   hard: true,
 });
 ```

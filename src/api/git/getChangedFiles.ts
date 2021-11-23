@@ -35,7 +35,8 @@ const mapState = (
 };
 
 /**
- * Returns files which have been added, modified or deleted in the working directory since the last commit
+ * Returns all the files which have been added, modified or deleted in the
+ * working directory of the local Git repository since the last commit.
  */
 export const getChangedFiles = async ({
   dir,

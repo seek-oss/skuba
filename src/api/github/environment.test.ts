@@ -43,9 +43,12 @@ describe('apiTokenFromEnvironment', () => {
     ${'Buildkite'}      | ${{ GITHUB_API_TOKEN: 'x' }}
     ${'GitHub Actions'} | ${{ GITHUB_TOKEN: 'x' }}
     ${'generic CI'}     | ${{ GITHUB_TOKEN: 'x' }}
-  `('returns an API token', ({ env }) =>
+  `('returns an API token from $description', ({ env }) =>
     expect(apiTokenFromEnvironment(env)).toBe('x'),
   );
+
+  it('returns undefined when environment variables are not present', () =>
+    expect(apiTokenFromEnvironment({})).toBeUndefined());
 });
 
 describe('currentBranchFromEnvironment', () => {
@@ -53,7 +56,10 @@ describe('currentBranchFromEnvironment', () => {
     description         | env
     ${'Buildkite'}      | ${{ BUILDKITE_BRANCH: 'x' }}
     ${'GitHub Actions'} | ${{ GITHUB_REF_NAME: 'x' }}
-  `('returns a branch name', ({ env }) =>
+  `('returns a branch name from $description', ({ env }) =>
     expect(currentBranchFromEnvironment(env)).toBe('x'),
   );
+
+  it('returns undefined when environment variables are not present', () =>
+    expect(currentBranchFromEnvironment({})).toBeUndefined());
 });
