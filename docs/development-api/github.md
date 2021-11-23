@@ -67,5 +67,37 @@ if (enabled) {
 
 ---
 
+## getPullRequest
+
+Gets the number of the current pull request.
+
+This tries to extract the pull request from common CI environment variables,
+and falls back to querying the GitHub Repos API for the latest pull request associated with the head commit.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const { number } = await GitHub.getPullRequest();
+```
+
+---
+
+## putIssueComment
+
+Asynchronously creates or updates a GitHub issue comment.
+
+This emulates `put` behaviour by overwriting the first existing comment by the same author on the issue,
+enabling use cases like a persistent bot comment at the top of the pull request that reflects the current status of a CI check.
+
+A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with write permissions must be present on the environment.
+
+```typescript
+import { GitHub } from 'skuba';
+
+await GitHub.putIssueComment({ body: '😌 This change looks fine!' });
+```
+
+---
+
 [check run]: https://docs.github.com/en/rest/reference/checks#runs
 [github guide]: ../deep-dives/github.md
