@@ -1,5 +1,7 @@
 import {
+  apiTokenFromEnvironment,
   buildNameFromEnvironment,
+  currentBranchFromEnvironment,
   enabledFromEnvironment,
 } from './environment';
 
@@ -32,5 +34,26 @@ describe('enabledFromEnvironment', () => {
     ${'empty environment'}                          | ${{}}
   `('rejects $description', ({ env }) =>
     expect(enabledFromEnvironment(env)).toBe(false),
+  );
+});
+
+describe('apiTokenFromEnvironment', () => {
+  it.each`
+    description         | env
+    ${'Buildkite'}      | ${{ BUILDKITE: 'x', GITHUB_API_TOKEN: 'x' }}
+    ${'GitHub Actions'} | ${{ GITHUB_ACTIONS: 'x', GITHUB_TOKEN: 'x' }}
+    ${'generic CI'}     | ${{ CI: 'x', GITHUB_TOKEN: 'x' }}
+  `('returns an API token', ({ env }) =>
+    expect(apiTokenFromEnvironment(env)).toBe('x'),
+  );
+});
+
+describe('currentBranchFromEnvironment', () => {
+  it.each`
+    description         | env
+    ${'Buildkite'}      | ${{ BUILDKITE_BRANCH: 'x' }}
+    ${'GitHub Actions'} | ${{ GITHUB_REF_NAME: 'x' }}
+  `('returns a branch name', ({ env }) =>
+    expect(currentBranchFromEnvironment(env)).toBe('x'),
   );
 });

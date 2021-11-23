@@ -2,6 +2,8 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
 
+import { apiTokenFromEnvironment } from '../github/environment';
+
 import { getOwnerAndRepo } from './remote';
 
 /**
@@ -61,8 +63,7 @@ export const push = async ({
   return git.push({
     onAuth: () => ({
       username: 'x-access-token',
-      password:
-        auth.token ?? process.env.GITHUB_API_TOKEN ?? process.env.GITHUB_TOKEN,
+      password: auth.token ?? apiTokenFromEnvironment(),
     }),
     dir,
     fs,
