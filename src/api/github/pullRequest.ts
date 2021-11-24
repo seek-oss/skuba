@@ -16,34 +16,28 @@ interface GetPullRequestParameters {
   env?: Record<string, string | undefined>;
 }
 
-interface PullRequest {
-  number: number;
-}
-
 /**
  * Gets the number of the current pull request.
  *
  * This tries to extract the pull request from common CI environment variables,
  * and falls back to querying the GitHub Repos API for the latest pull request
  * associated with the head commit. An error is thrown if there are no
- * associated pull requests or if they are all closed.
+ * associated pull requests, or if they are all closed or locked.
  */
-export const getPullRequest = async (
+export const getPullRequestNumber = async (
   params: GetPullRequestParameters = {},
-): Promise<PullRequest> => {
+): Promise<number> => {
   const env = params.env ?? process.env;
 
   const dir = process.cwd();
 
-  {
-    const number = Number(
-      env.BUILDKITE_PULL_REQUEST ??
-        env.GITHUB_REF?.replace(/^refs\/pull\/(\d+).*$/, '$1'),
-    );
+  const number = Number(
+    env.BUILDKITE_PULL_REQUEST ??
+      env.GITHUB_REF?.replace(/^refs\/pull\/(\d+).*$/, '$1'),
+  );
 
-    if (Number.isSafeInteger(number)) {
-      return { number };
-    }
+  if (Number.isSafeInteger(number)) {
+    return number;
   }
 
   const client =
@@ -61,7 +55,7 @@ export const getPullRequest = async (
   });
 
   const data = response.data
-    .filter((pr) => !pr.closed_at)
+    .filter((pr) => pr.state === 'open' && !pr.locked)
     .sort((a, b) => b.updated_at.localeCompare(a.updated_at));
 
   if (!data.length) {
@@ -70,7 +64,5 @@ export const getPullRequest = async (
     );
   }
 
-  const { number } = data[0];
-
-  return { number };
+  return data[0].number;
 };

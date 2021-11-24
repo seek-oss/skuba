@@ -3,7 +3,7 @@ import { Octokit } from '@octokit/rest';
 import * as Git from '../git';
 
 import { apiTokenFromEnvironment } from './environment';
-import { getPullRequest } from './pullRequest';
+import { getPullRequestNumber } from './pullRequest';
 
 const getUserId = async (client: Octokit): Promise<number> => {
   const { data } = await client.users.getAuthenticated();
@@ -77,7 +77,7 @@ export const putIssueComment = async ({
   const client = new Octokit({ auth: apiTokenFromEnvironment() });
 
   const issueNumber =
-    params.issueNumber ?? (await getPullRequest({ client, env })).number;
+    params.issueNumber ?? (await getPullRequestNumber({ client, env }));
 
   if (!issueNumber) {
     throw new Error('Failed to infer an issue number');

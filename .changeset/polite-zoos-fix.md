@@ -2,4 +2,4 @@
 "skuba": minor
 ---
 
-GitHub.getPullRequest: Export helper function
+GitHub.getPullRequestNumber: Export helper function

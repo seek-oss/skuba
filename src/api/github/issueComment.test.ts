@@ -78,9 +78,10 @@ describe('putIssueComment', () => {
     mockClient.repos.listPullRequestsAssociatedWithCommit.mockResolvedValue({
       data: [
         {
-          closed_at: null,
           created_at: new Date(0).toISOString(),
+          locked: false,
           number: 123,
+          state: 'open',
           updated_at: new Date(0).toISOString(),
         },
       ],

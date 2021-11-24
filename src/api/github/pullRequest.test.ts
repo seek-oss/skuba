@@ -2,7 +2,7 @@ import { Octokit } from '@octokit/rest';
 import git from 'isomorphic-git';
 import { mocked } from 'ts-jest/utils';
 
-import { getPullRequest } from './pullRequest';
+import { getPullRequestNumber } from './pullRequest';
 
 jest.mock('@octokit/rest');
 jest.mock('isomorphic-git');
@@ -17,19 +17,19 @@ beforeEach(() => mocked(Octokit).mockReturnValue(mockClient as never));
 
 afterEach(jest.resetAllMocks);
 
-describe('getPullRequest', () => {
+describe('getPullRequestNumber', () => {
   it('prefers a Buildkite environment variable', async () => {
     await expect(
-      getPullRequest({ env: { BUILDKITE_PULL_REQUEST: '123' } }),
-    ).resolves.toStrictEqual({ number: 123 });
+      getPullRequestNumber({ env: { BUILDKITE_PULL_REQUEST: '123' } }),
+    ).resolves.toBe(123);
 
     expect(Octokit).not.toHaveBeenCalled();
   });
 
   it('prefers a GitHub Actions environment variable', async () => {
     await expect(
-      getPullRequest({ env: { GITHUB_REF: 'refs/pull/456/merge' } }),
-    ).resolves.toStrictEqual({ number: 456 });
+      getPullRequestNumber({ env: { GITHUB_REF: 'refs/pull/456/merge' } }),
+    ).resolves.toBe(456);
 
     expect(Octokit).not.toHaveBeenCalled();
   });
@@ -43,35 +43,44 @@ describe('getPullRequest', () => {
     mockClient.repos.listPullRequestsAssociatedWithCommit.mockResolvedValue({
       data: [
         {
-          closed_at: null,
           created_at: new Date(0).toISOString(),
+          locked: false,
           number: 1,
+          state: 'open',
           updated_at: new Date(0).toISOString(),
         },
         {
-          closed_at: null,
           created_at: new Date(0).toISOString(),
+          locked: false,
           number: 2,
+          state: 'open',
           updated_at: new Date(1).toISOString(),
         },
         {
-          closed_at: null,
           created_at: new Date(1).toISOString(),
+          locked: false,
           number: 3,
+          state: 'open',
           updated_at: new Date(0).toISOString(),
         },
         {
-          closed_at: new Date(2).toISOString(),
           created_at: new Date(2).toISOString(),
+          locked: false,
           number: 4,
+          state: 'closed',
+          updated_at: new Date(2).toISOString(),
+        },
+        {
+          created_at: new Date(2).toISOString(),
+          locked: true,
+          number: 5,
+          state: 'open',
           updated_at: new Date(2).toISOString(),
         },
       ],
     });
 
-    await expect(getPullRequest({ env: {} })).resolves.toStrictEqual({
-      number: 2,
-    });
+    await expect(getPullRequestNumber({ env: {} })).resolves.toBe(2);
 
     expect(
       mockClient.repos.listPullRequestsAssociatedWithCommit,
@@ -100,7 +109,7 @@ describe('getPullRequest', () => {
     });
 
     await expect(
-      getPullRequest({ env: {} }),
+      getPullRequestNumber({ env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
       `"Commit commit-id is not associated with an open GitHub pull request"`,
     );
