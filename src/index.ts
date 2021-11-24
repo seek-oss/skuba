@@ -10,7 +10,8 @@
  * ```
  */
 
-export * as GitHub from './api/github';
 export * as Buildkite from './api/buildkite';
+export * as Git from './api/git';
+export * as GitHub from './api/github';
 export * as Jest from './api/jest';
 export * as Net from './api/net';

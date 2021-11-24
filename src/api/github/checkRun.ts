@@ -1,8 +1,10 @@
 import { Octokit } from '@octokit/rest';
 import type { Endpoints } from '@octokit/types';
 
-import { getHeadSha, getOwnerRepo } from '../../utils/git';
 import { pluralise } from '../../utils/logging';
+import * as Git from '../git';
+
+import { apiTokenFromEnvironment } from './environment';
 
 import { apiTokenFromEnvironment } from './environment';
 
@@ -101,9 +103,9 @@ export const createCheckRun = async ({
 }: CreateCheckRunParameters): Promise<void> => {
   const dir = process.cwd();
 
-  const [headSha, { owner, repo }] = await Promise.all([
-    getHeadSha(dir),
-    getOwnerRepo(dir),
+  const [commitId, { owner, repo }] = await Promise.all([
+    Git.getHeadCommitId({ dir }),
+    Git.getOwnerAndRepo({ dir }),
   ]);
 
   const client = new Octokit({
@@ -112,7 +114,7 @@ export const createCheckRun = async ({
 
   await client.checks.create({
     conclusion,
-    head_sha: headSha,
+    head_sha: commitId,
     name,
     output: {
       annotations: annotations.slice(0, GITHUB_MAX_ANNOTATIONS),

@@ -1,17 +1,9 @@
 // Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/utils.ts
 
+import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
-import {
-  getChangedFiles,
-  getHeadSha,
-  gitBranch,
-  gitCommitAllChanges,
-  gitDeleteBranch,
-  gitListTags,
-  gitPush,
-  gitReset,
-} from '../../utils/git';
+import * as Git from '../../api/git';
 
 export const push = async (
   dir: string,
@@ -19,24 +11,26 @@ export const push = async (
   token: string,
   { force }: { force?: boolean } = {},
 ) => {
-  await gitPush({
+  await Git.push({
     dir,
     auth: { type: 'gitHubApp', token },
-    branch,
-    commitOid: await getHeadSha(dir),
+    ref: branch,
     force,
   });
 };
 
 export const listTags = async (dir: string): Promise<string[]> =>
-  gitListTags({ dir });
+  git.listTags({
+    fs,
+    dir,
+  });
 
 export const pushTags = async (dir: string, tags: string[], token: string) => {
   await Promise.all(
     tags.map((tag) =>
-      gitPush({
+      Git.push({
         auth: { type: 'gitHubApp', token },
-        commitOid: tag,
+        ref: tag,
         dir,
       }),
     ),
@@ -48,11 +42,25 @@ export const switchToMaybeExistingBranch = async (
   branch: string,
 ) => {
   try {
-    await gitBranch({ dir, ref: branch, checkout: true });
+    await git.branch({
+      fs,
+      dir,
+      ref: branch,
+      checkout: true,
+    });
   } catch (error) {
     if (error instanceof git.Errors.AlreadyExistsError) {
-      await gitDeleteBranch({ dir, ref: branch });
-      await gitBranch({ dir, ref: branch, checkout: true });
+      await git.deleteBranch({
+        fs,
+        dir,
+        ref: branch,
+      });
+      await git.branch({
+        fs,
+        dir,
+        ref: branch,
+        checkout: true,
+      });
       return;
     }
 
@@ -61,7 +69,7 @@ export const switchToMaybeExistingBranch = async (
 };
 
 export const reset = async (dir: string, pathSpec: string, branch: string) => {
-  await gitReset({ dir, branch, commitOid: pathSpec, hard: true });
+  await Git.reset({ dir, branch, commitId: pathSpec, hard: true });
 };
 
 export const commitAll = async (dir: string, message: string) => {
@@ -70,10 +78,10 @@ export const commitAll = async (dir: string, message: string) => {
     name: 'buildagencygitapitoken[bot]', // user.data.name as string
     email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
   };
-  await gitCommitAllChanges({ dir, message, author: user, committer: user });
+  await Git.commitAllChanges({ dir, message, author: user, committer: user });
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {
-  const changedFiles = await getChangedFiles({ dir });
+  const changedFiles = await Git.getChangedFiles({ dir });
   return !changedFiles.length;
 };

@@ -1,0 +1,11 @@
+{
+  ".git/hooks": null,
+  ".git/info/exclude": "# git ls-files --others --exclude-from=.git/info/exclude\n# Lines that start with '#' are comments.\n# For a project mostly in C, the following would be a good set of\n# exclude patterns (uncomment them if you want to use them):\n# *.[oa]\n# *~\n",
+  ".git/objects/info": null,
+  ".git/objects/pack": null,
+  ".git/refs/heads": null,
+  ".git/refs/tags": null,
+  ".git/config": "[core]\nrepositoryformatversion = 0\nfilemode = true\nbare = true\nignorecase = true\nprecomposeunicode = true\n",
+  ".git/description": "Unnamed repository; edit this file 'description' to name the repository.\n",
+  ".git/HEAD": "ref: refs/heads/master\n"
+}
