@@ -6,8 +6,6 @@ import * as Git from '../git';
 
 import { apiTokenFromEnvironment } from './environment';
 
-import { apiTokenFromEnvironment } from './environment';
-
 type Output = NonNullable<
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters']['output']
 >;
