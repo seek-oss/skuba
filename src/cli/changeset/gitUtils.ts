@@ -10,7 +10,7 @@ export const push = async (
   branch: string,
   token: string,
   { force }: { force?: boolean } = {},
-) => {
+): Promise<void> => {
   await Git.push({
     dir,
     auth: { type: 'gitHubApp', token },
@@ -25,7 +25,11 @@ export const listTags = async (dir: string): Promise<string[]> =>
     dir,
   });
 
-export const pushTags = async (dir: string, tags: string[], token: string) => {
+export const pushTags = async (
+  dir: string,
+  tags: string[],
+  token: string,
+): Promise<void> => {
   await Promise.all(
     tags.map((tag) =>
       Git.push({
@@ -40,7 +44,7 @@ export const pushTags = async (dir: string, tags: string[], token: string) => {
 export const switchToMaybeExistingBranch = async (
   dir: string,
   branch: string,
-) => {
+): Promise<void> => {
   try {
     await git.branch({
       fs,
@@ -68,11 +72,16 @@ export const switchToMaybeExistingBranch = async (
   }
 };
 
-export const reset = async (dir: string, pathSpec: string, branch: string) => {
-  await Git.reset({ dir, branch, commitId: pathSpec, hard: true });
-};
+export const reset = async (
+  dir: string,
+  commitId: string,
+  branch: string,
+): Promise<void> => Git.reset({ dir, branch, commitId, hard: true });
 
-export const commitAll = async (dir: string, message: string) => {
+export const commitAll = async (
+  dir: string,
+  message: string,
+): Promise<void> => {
   // const user = await octokit.users.getAuthenticated();
   const user = {
     name: 'buildagencygitapitoken[bot]', // user.data.name as string
