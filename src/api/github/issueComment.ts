@@ -77,8 +77,7 @@ export const putIssueComment = async ({
   const client = new Octokit({ auth: apiTokenFromEnvironment() });
 
   const issueNumber =
-    params.issueNumber ??
-    (await getPullRequest({ client, env })).number;
+    params.issueNumber ?? (await getPullRequest({ client, env })).number;
 
   if (!issueNumber) {
     throw new Error('Failed to infer an issue number');
