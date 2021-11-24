@@ -102,8 +102,10 @@ const run = async () => {
 };
 
 export const changeset = async () => {
-  await run().catch((err: unknown) => {
+  try {
+    await run();
+  } catch (err) {
     console.error(err);
     core.setFailed((err as Error).message);
-  });
+  }
 };
