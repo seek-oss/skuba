@@ -6,7 +6,6 @@ import fs from 'fs-extra';
 import { apiTokenFromEnvironment } from '../../api/github/environment';
 
 import * as core from './coreAdapter';
-import * as github from './githubAdapter';
 import readChangesetState from './readChangesetState';
 import { runPublish, runVersion } from './run';
 
@@ -21,8 +20,6 @@ const run = async () => {
   }
 
   const cwd = process.cwd();
-
-  const octokit = github.getOctokit(githubToken);
 
   const { changesets } = await readChangesetState();
 
@@ -79,7 +76,6 @@ const run = async () => {
       const result = await runPublish({
         script: publishScript as string,
         githubToken,
-        octokit,
         cwd,
       });
 
@@ -97,7 +93,6 @@ const run = async () => {
         cwd,
         script: getOptionalInput('version'),
         githubToken,
-        octokit,
         prTitle: getOptionalInput('title'),
         commitMessage: getOptionalInput('commit'),
         hasPublishScript,

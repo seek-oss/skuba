@@ -26,7 +26,13 @@ type CommonError = {
 
 const createRelease = async (
   octokit: ReturnType<typeof github.getOctokit>,
-  { pkg, tagName }: { pkg: Package; tagName: string },
+  {
+    pkg,
+    tagName,
+  }: {
+    pkg: Package;
+    tagName: string;
+  },
 ) => {
   try {
     const changelogFileName = path.join(pkg.dir, 'CHANGELOG.md');
@@ -65,7 +71,6 @@ type PublishOptions = {
   githubToken: string;
 
   cwd?: string;
-  octokit: github.Octokit;
 };
 
 type PublishedPackage = { name: string; version: string };
@@ -83,8 +88,8 @@ export async function runPublish({
   script,
   githubToken,
   cwd = process.cwd(),
-  octokit,
 }: PublishOptions): Promise<PublishResult> {
+  const octokit = github.getOctokit(githubToken);
   const [publishCommand, ...publishArgs] = script.split(/\s+/);
 
   const existingTags = await gitUtils.listTags(cwd);
@@ -193,7 +198,6 @@ const requireChangesetsCliPkgJson = (cwd: string) => {
 
 type VersionOptions = {
   script?: string;
-  octokit: github.Octokit;
   githubToken: string;
   cwd?: string;
   prTitle?: string;
@@ -203,7 +207,6 @@ type VersionOptions = {
 
 export async function runVersion({
   script,
-  octokit,
   githubToken,
   cwd = process.cwd(),
   prTitle = 'Version Packages',
@@ -214,6 +217,7 @@ export async function runVersion({
   const repo = `${context.repo.owner}/${context.repo.repo}`;
   const branch = context.ref.replace('refs/heads/', '');
   const versionBranch = `changeset-release/${branch}`;
+  const octokit = github.getOctokit(githubToken);
   const { preState } = await readChangesetState(cwd);
 
   await gitUtils.switchToMaybeExistingBranch(cwd, versionBranch);
