@@ -28,7 +28,7 @@ export const start = async () => {
     'ts-node-dev',
     ...args.node,
     '--require',
-    path.posix.join(__dirname, '..', 'register'),
+    'tsconfig-paths/register',
     '--respawn',
     '--transpile-only',
     path.join(__dirname, '..', 'wrapper'),

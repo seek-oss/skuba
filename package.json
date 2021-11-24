@@ -43,7 +43,7 @@
     "@changesets/cli": "2.18.0",
     "@changesets/get-github-info": "0.5.0",
     "@jest/reporters": "27.3.1",
-    "@types/concurrently": "6.3.0",
+    "@types/concurrently": "6.4.0",
     "@types/ejs": "3.1.0",
     "@types/express": "4.17.13",
     "@types/fs-extra": "9.0.13",
@@ -56,9 +56,10 @@
     "express": "4.17.1",
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
+    "memfs": "3.3.0",
     "semver": "7.3.5",
     "supertest": "6.1.6",
-    "type-fest": "2.5.2"
+    "type-fest": "2.5.4"
   },
   "dependencies": {
     "@octokit/rest": "^18.12.0",
@@ -69,7 +70,7 @@
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
     "eslint": "^7.27.0",
-    "eslint-config-skuba": "1.0.12",
+    "eslint-config-skuba": "1.0.13",
     "execa": "^5.0.0",
     "fdir": "^5.0.0",
     "fs-extra": "^10.0.0",
@@ -81,7 +82,6 @@
     "jest": "^27.1.0",
     "latest-version": "^5.1.0",
     "lodash.mergewith": "^4.6.2",
-    "module-alias": "^2.2.2",
     "normalize-package-data": "^3.0.0",
     "npm-run-path": "^4.0.1",
     "npm-which": "^3.0.1",
@@ -91,13 +91,13 @@
     "runtypes": "^6.0.0",
     "semantic-release": "^17.4.7",
     "serialize-error": "^8.0.1",
-    "source-map-support": "^0.5.19",
     "strip-ansi": "^6.0.1",
     "ts-jest": "^27.0.5",
     "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.8",
+    "tsconfig-paths": "^3.11.0",
     "tsconfig-seek": "1.0.2",
-    "typescript": "~4.4.4"
+    "typescript": "~4.5.0"
   },
   "peerDependencies": {
     "skuba-dive": "1"

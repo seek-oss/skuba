@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
 
+import * as Git from '../../api/git';
 import { crawlDirectory } from '../../utils/dir';
 import { log } from '../../utils/logging';
 
@@ -23,11 +24,8 @@ export const initialiseRepo = async (
     fs,
   });
 
-  await git.commit({
-    author: { name: 'skuba' },
-    committer: { name: 'skuba' },
+  await Git.commit({
     dir,
-    fs,
     message: 'Initial commit',
   });
 
@@ -46,11 +44,8 @@ export const commitChanges = async (dir: string, message: string) => {
     filepaths.map((filepath) => git.add({ dir, filepath, fs })),
   );
 
-  await git.commit({
-    author: { name: 'skuba' },
-    committer: { name: 'skuba' },
+  await Git.commit({
     dir,
-    fs,
     message,
   });
 };
