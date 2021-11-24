@@ -20,6 +20,16 @@ interface PutIssueCommentParameters {
    */
   body: string;
 
+  /**
+   * An internal identifier for the issue comment.
+   *
+   * This can be used to scope a given `put` to a particular comment, preventing
+   * it from clobbering other comments from the same bot or user.
+   *
+   * The identifier is embedded as hidden content in the comment body.
+   */
+  internalId?: string;
+
   env?: Record<string, string | undefined>;
 
   /**
@@ -64,10 +74,9 @@ interface IssueComment {
  * A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with write permissions must be present
  * on the environment.
  */
-export const putIssueComment = async ({
-  body,
-  ...params
-}: PutIssueCommentParameters): Promise<IssueComment> => {
+export const putIssueComment = async (
+  params: PutIssueCommentParameters,
+): Promise<IssueComment> => {
   const env = params.env ?? process.env;
 
   const dir = process.cwd();
@@ -92,8 +101,16 @@ export const putIssueComment = async ({
   const userId = params.userId ?? (await getUserId(client));
 
   const commentId = comments.data.find(
-    (comment) => comment.user?.id === userId,
+    (comment) =>
+      comment.user?.id === userId &&
+      (params.internalId
+        ? comment.body?.endsWith(`\n\n<!-- ${params.internalId} -->`)
+        : true),
   )?.id;
+
+  const body = params.internalId
+    ? [params.body.trim(), `<!-- ${params.internalId} -->`].join('\n\n')
+    : params.body.trim();
 
   const response = await (commentId
     ? client.issues.updateComment({

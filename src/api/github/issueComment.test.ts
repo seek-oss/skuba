@@ -148,6 +148,62 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.updateComment).not.toHaveBeenCalled();
   });
 
+  it('creates a new comment when the internal ID does not match', async () => {
+    mockClient.issues.createComment.mockResolvedValue({ data: { id: 789 } });
+    mockClient.issues.listComments.mockResolvedValue({
+      data: [{ body: 'No internal ID here!', id: 111, user: { id: 111 } }],
+    });
+    mockClient.users.getAuthenticated.mockResolvedValue({
+      data: { id: 111 },
+    });
+
+    mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
+
+    await expect(
+      putIssueComment({
+        body: 'Commentary!',
+        // Exercise environment variable short circuiting.
+        env: { BUILDKITE_PULL_REQUEST: '123' },
+        internalId: 'hunter2',
+      }),
+    ).resolves.toStrictEqual({ id: 789 });
+
+    expect(Octokit).toHaveBeenCalledTimes(1);
+
+    expect(mockClient.users.getAuthenticated).toHaveBeenCalledTimes(1);
+
+    expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
+    expect(mockClient.issues.listComments.mock.calls[0][0])
+      .toMatchInlineSnapshot(`
+      Object {
+        "issue_number": 123,
+        "owner": "seek-oss",
+        "repo": "skuba",
+      }
+    `);
+
+    expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
+    expect(mockClient.issues.createComment.mock.calls[0][0])
+      .toMatchInlineSnapshot(`
+      Object {
+        "body": "Commentary!
+
+      <!-- hunter2 -->",
+        "issue_number": 123,
+        "owner": "seek-oss",
+        "repo": "skuba",
+      }
+    `);
+
+    expect(mockClient.issues.updateComment).not.toHaveBeenCalled();
+    expect(
+      mockClient.repos.listPullRequestsAssociatedWithCommit,
+    ).not.toHaveBeenCalled();
+  });
+
   it('updates an existing comment from the authenticated user', async () => {
     mockClient.issues.updateComment.mockResolvedValue({ data: { id: 789 } });
     mockClient.issues.listComments.mockResolvedValue({
@@ -194,6 +250,69 @@ describe('putIssueComment', () => {
       .toMatchInlineSnapshot(`
       Object {
         "body": "Commentary!",
+        "comment_id": 111,
+        "issue_number": 123,
+        "owner": "seek-oss",
+        "repo": "skuba",
+      }
+    `);
+
+    expect(mockClient.issues.createComment).not.toHaveBeenCalled();
+    expect(
+      mockClient.repos.listPullRequestsAssociatedWithCommit,
+    ).not.toHaveBeenCalled();
+  });
+
+  it('updates an existing comment when the internal ID matches', async () => {
+    mockClient.issues.updateComment.mockResolvedValue({ data: { id: 789 } });
+    mockClient.issues.listComments.mockResolvedValue({
+      data: [
+        {
+          body: 'Internal ID here!\n\n<!-- hunter2 -->',
+          id: 111,
+          user: { id: 111 },
+        },
+      ],
+    });
+    mockClient.users.getAuthenticated.mockResolvedValue({
+      data: { id: 111 },
+    });
+
+    mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
+
+    await expect(
+      putIssueComment({
+        body: 'Commentary!',
+        // Exercise environment variable short circuiting.
+        env: { BUILDKITE_PULL_REQUEST: '123' },
+        internalId: 'hunter2',
+      }),
+    ).resolves.toStrictEqual({ id: 789 });
+
+    expect(Octokit).toHaveBeenCalledTimes(1);
+
+    expect(mockClient.users.getAuthenticated).toHaveBeenCalledTimes(1);
+
+    expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
+    expect(mockClient.issues.listComments.mock.calls[0][0])
+      .toMatchInlineSnapshot(`
+      Object {
+        "issue_number": 123,
+        "owner": "seek-oss",
+        "repo": "skuba",
+      }
+    `);
+
+    expect(mockClient.issues.updateComment).toHaveBeenCalledTimes(1);
+    expect(mockClient.issues.updateComment.mock.calls[0][0])
+      .toMatchInlineSnapshot(`
+      Object {
+        "body": "Commentary!
+
+      <!-- hunter2 -->",
         "comment_id": 111,
         "issue_number": 123,
         "owner": "seek-oss",
