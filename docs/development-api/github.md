@@ -73,6 +73,7 @@ Gets the number of the current pull request.
 
 This tries to extract the pull request from common CI environment variables,
 and falls back to querying the GitHub Repos API for the latest pull request associated with the head commit.
+An error is thrown if there are no associated pull requests or if they are all closed.
 
 ```typescript
 import { GitHub } from 'skuba';

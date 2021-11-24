@@ -25,7 +25,8 @@ interface PullRequest {
  *
  * This tries to extract the pull request from common CI environment variables,
  * and falls back to querying the GitHub Repos API for the latest pull request
- * associated with the head commit.
+ * associated with the head commit. An error is thrown if there are no
+ * associated pull requests or if they are all closed.
  */
 export const getPullRequest = async (
   params: GetPullRequestParameters = {},
@@ -53,27 +54,21 @@ export const getPullRequest = async (
     Git.getOwnerAndRepo({ dir }),
   ]);
 
-  const { data } = await client.repos.listPullRequestsAssociatedWithCommit({
+  const response = await client.repos.listPullRequestsAssociatedWithCommit({
     commit_sha: commitId,
     owner,
     repo,
   });
 
+  const data = response.data
+    .filter((pr) => !pr.closed_at)
+    .sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+
   if (!data.length) {
     throw new Error(
-      `Commit ${commitId} is not associated with a GitHub pull request`,
+      `Commit ${commitId} is not associated with an open GitHub pull request`,
     );
   }
-
-  data
-    .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
-    .sort((a, b) => {
-      if (typeof a.closed_at === typeof b.closed_at) {
-        return 0;
-      }
-
-      return a.closed_at ? 1 : -1;
-    });
 
   const { number } = data[0];
 
