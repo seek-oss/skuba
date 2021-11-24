@@ -78,7 +78,7 @@ export const putIssueComment = async ({
 
   const issueNumber =
     params.issueNumber ??
-    (await getPullRequest({ client, env }).then(({ number }) => number));
+    (await getPullRequest({ client, env })).number;
 
   if (!issueNumber) {
     throw new Error('Failed to infer an issue number');
