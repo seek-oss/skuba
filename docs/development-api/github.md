@@ -67,5 +67,57 @@ if (enabled) {
 
 ---
 
+## getPullRequestNumber
+
+Gets the number of the current pull request.
+
+This tries to extract the pull request from common CI environment variables,
+and falls back to querying the GitHub Repos API for the latest pull request associated with the head commit.
+An error is thrown if there are no associated pull requests, or if they are all closed or locked.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const pullRequestNumber = await GitHub.getPullRequestNumber();
+```
+
+---
+
+## putIssueComment
+
+Asynchronously creates or updates a GitHub issue comment.
+
+This emulates `put` behaviour by overwriting the first existing comment by the same author on the issue,
+enabling use cases like a persistent bot comment at the top of the pull request that reflects the current status of a CI check.
+
+A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with write permissions must be present on the environment.
+
+```typescript
+import { GitHub } from 'skuba';
+
+await GitHub.putIssueComment({ body: '😌 This change looks fine!' });
+```
+
+You can specify an internal identifier to scope the `put` to a particular comment,
+preventing it from clobbering other comments from the same bot or user.
+The identifier is embedded as hidden content in the comment body.
+
+```typescript
+import { GitHub } from 'skuba';
+
+await GitHub.putIssueComment({
+  body: 'Lint passed!',
+  internalId: 'lint-a8d9178b-822c-49ac-b456-93653662f685',
+});
+
+// This posts a distinct comment from the prior call.
+await GitHub.putIssueComment({
+  body: 'Test passed!',
+  internalId: 'test-bdc9db38-cc4a-45c3-a7bb-8ebbb3c746a4',
+});
+```
+
+---
+
 [check run]: https://docs.github.com/en/rest/reference/checks#runs
 [github guide]: ../deep-dives/github.md

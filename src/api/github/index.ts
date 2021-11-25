@@ -1,6 +1,6 @@
 export type { Annotation } from './checkRun';
+export { buildNameFromEnvironment } from './environment';
 export { createCheckRun } from './checkRun';
-export {
-  buildNameFromEnvironment,
-  enabledFromEnvironment,
-} from './environment';
+export { enabledFromEnvironment } from './environment';
+export { getPullRequestNumber } from './pullRequest';
+export { putIssueComment } from './issueComment';
