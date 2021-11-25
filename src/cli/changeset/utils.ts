@@ -146,6 +146,8 @@ export const exec = async (
   try {
     await execa(command, args, opts);
   } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
     throw new Error('Command failed');
   }
 };
