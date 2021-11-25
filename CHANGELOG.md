@@ -1,5 +1,11 @@
 # skuba
 
+## 3.17.0-beta.5
+
+### Patch Changes
+
+- **jest:** Fix undefined reference ([`99eaae1`](https://github.com/seek-oss/skuba/commit/99eaae1fa105dc4b6b58bada3def1839540ad0a7))
+
 ## 3.17.0-beta.4
 
 ### Patch Changes

@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+"skuba": patch
 ---
 
 jest: Fix undefined reference
