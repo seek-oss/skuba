@@ -20,8 +20,7 @@ const DEFAULT_PATHS = { src: ['src'], 'src/*': ['src/*'] };
  */
 const getConfigFromDisk = () => {
   const filename =
-    findConfigFile('.', sys.fileExists.bind(this), tsconfigName) ||
-    'tsconfig.json';
+    findConfigFile('.', sys.fileExists.bind(this)) || 'tsconfig.json';
 
   return readConfigFile(filename, sys.readFile.bind(this)).config;
 };
