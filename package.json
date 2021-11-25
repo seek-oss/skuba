@@ -12,6 +12,7 @@
   "typings": "lib/index.d.ts",
   "files": [
     "config/**/*",
+    "jest/**/*",
     "lib*/**/*.d.ts",
     "lib*/**/*.js",
     "lib*/**/*.js.map",
