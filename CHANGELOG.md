@@ -1,5 +1,11 @@
 # skuba
 
+## 3.17.0-beta.4
+
+### Patch Changes
+
+- **pkg:** Include `jest` subdirectory ([`f38556c`](https://github.com/seek-oss/skuba/commit/f38556c7480c9fb148abbd4525f44ab7eb83a669))
+
 ## 3.17.0-beta.3
 
 ### Minor Changes
