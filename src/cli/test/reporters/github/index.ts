@@ -40,21 +40,6 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
           ? '`skuba test` passed.'
           : '`skuba test` found issues that require triage.';
 
-        if (coverage) {
-          const buildkiteOutput: string = [
-            '`skuba test` coverage:',
-            Buildkite.md.terminal(coverage),
-          ].join('\n\n');
-
-          await Buildkite.annotate(buildkiteOutput, {
-            context: `skuba-test-${
-              displayName ? `-${Buffer.from(displayName).toString('hex')}` : ''
-            }`,
-            scopeContextToStep: true,
-            style: isOk ? 'success' : 'error',
-          });
-        }
-
         await GitHub.createCheckRun({
           name,
           annotations,
