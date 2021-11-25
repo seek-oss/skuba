@@ -1,3 +1,5 @@
+// Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/utils.test.ts
+
 import { BumpLevels, getChangelogEntry, sortTheThings } from './utils';
 
 const changelog = `# @keystone-alpha/email

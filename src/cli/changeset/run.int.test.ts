@@ -1,3 +1,5 @@
+// Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/run.test.ts
+
 import path from 'path';
 
 import type { Changeset } from '@changesets/types';
@@ -7,7 +9,7 @@ import fs from 'fs-extra';
 import * as github from './githubAdapter';
 import { runVersion } from './run';
 
-jest.spyOn(console, 'log');
+jest.spyOn(console, 'log').mockImplementation();
 
 jest.mock('./githubAdapter', () => ({
   context: () => ({
