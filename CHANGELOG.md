@@ -1,5 +1,59 @@
 # skuba
 
+## 3.17.0-beta.0
+
+### Minor Changes
+
+- **node, start:** Register `tsconfig-paths` ([#678](https://github.com/seek-oss/skuba/pull/678))
+
+  You can now define module aliases other than `src` for local development and scripting. Specify these through the `paths` compiler option in your `tsconfig.json`:
+
+  ```jsonc
+  // tsconfig.json
+  {
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "src": ["src"]
+      }
+    }
+  }
+  ```
+
+- **GitHub.buildNameFromEnvironment:** Export helper function ([#676](https://github.com/seek-oss/skuba/pull/676))
+
+- **git:** Export helper functions ([#689](https://github.com/seek-oss/skuba/pull/689))
+
+- **test:** Add GitHub check run annotations ([#648](https://github.com/seek-oss/skuba/pull/648))
+
+  `skuba test` can now automatically annotate GitHub commits when you [propagate CI environment variables and a GitHub API token](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
+
+- **GitHub.getPullRequestNumber:** Export helper function ([#690](https://github.com/seek-oss/skuba/pull/690))
+
+- **GitHub.putIssueComment:** Export helper function ([#690](https://github.com/seek-oss/skuba/pull/690))
+
+  This enables use cases like a persistent bot comment at the top of a pull request a la Changesets that reflects the current status of a CI check.
+
+- **GitHub.enabledFromEnvironment:** Export helper function ([#676](https://github.com/seek-oss/skuba/pull/676))
+
+### Patch Changes
+
+- **GitHub.createCheckRun:** Support `text` parameter ([#673](https://github.com/seek-oss/skuba/pull/673))
+
+- **template:** Retrieve GitHub token on Test & Lint ([#667](https://github.com/seek-oss/skuba/pull/667))
+
+- **deps:** TypeScript 4.5 ([#685](https://github.com/seek-oss/skuba/pull/685))
+
+  This major release includes breaking changes. See the [announcement](https://devblogs.microsoft.com/typescript/announcing-typescript-4-5/) for more information.
+
+  Note that new syntax in TypeScript 4.5 is not yet supported by ESLint and Prettier.
+
+- **node, start:** Deregister `source-map-support` ([#679](https://github.com/seek-oss/skuba/pull/679))
+
+  `ts-node` takes care of this for us.
+
+- **Jest.mergePreset:** Allow `displayName` and `projects` ([#648](https://github.com/seek-oss/skuba/pull/648))
+
 ## 3.16.2
 
 ### Patch Changes

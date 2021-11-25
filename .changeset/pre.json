@@ -1,0 +1,21 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "3.16.2"
+  },
+  "changesets": [
+    "dull-laws-drum",
+    "forty-seas-tell",
+    "funny-snails-share",
+    "gold-rats-burn",
+    "many-cooks-melt",
+    "nice-trees-sip",
+    "ninety-pillows-move",
+    "polite-zoos-fix",
+    "popular-eyes-bathe",
+    "six-knives-train",
+    "stupid-garlics-fold",
+    "unlucky-walls-drop"
+  ]
+}
