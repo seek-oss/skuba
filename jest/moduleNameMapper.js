@@ -9,8 +9,9 @@ const {
 } = require('typescript');
 
 /**
- * Note we default to `src` for backward compatibility.
- * TODO: drop `src` default in skuba v4.
+ * Set a default `src` module alias for backward compatibility.
+ *
+ * TODO: drop this default in skuba v4.
  */
 const DEFAULT_PATHS = { src: ['src'], 'src/*': ['src/*'] };
 
@@ -32,7 +33,7 @@ module.exports.createModuleNameMapper = (getConfig = getConfigFromDisk) => {
     const parsedConfig = parseJsonConfigFileContent(json, sys, '.');
 
     const paths = Object.fromEntries(
-      Object.entries(parsedConfig.options.paths ?? {}).flatMap(
+      Object.entries(parsedConfig.options.paths ?? DEFAULT_PATHS).flatMap(
         ([key, values]) => [
           [
             key.replace(/\/$/, ''),
@@ -68,11 +69,7 @@ module.exports.createModuleNameMapper = (getConfig = getConfigFromDisk) => {
       ]),
     );
   } catch {
-    // Bail out here to support a zero-config mode.
-
-    return pathsToModuleNameMapper(
-      { src: ['src'], 'src/*': ['src/*'] },
-      { prefix: '<rootDir>' },
-    );
+    // Bail out here to support zero-config mode.
+    return pathsToModuleNameMapper(DEFAULT_PATHS, { prefix: '<rootDir>' });
   }
 };

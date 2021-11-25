@@ -1,7 +1,7 @@
 import { createModuleNameMapper } from './moduleNameMapper';
 
 describe('moduleNameMapper', () => {
-  const act = (paths?: Record<string, string[]>, baseUrl?: string) =>
+  const act = (paths?: unknown, baseUrl?: string) =>
     createModuleNameMapper(() => ({
       compilerOptions: {
         baseUrl,
@@ -54,7 +54,22 @@ describe('moduleNameMapper', () => {
       }
     `));
 
-  it('handles undefined paths', () => expect(act(undefined)).toStrictEqual({}));
+  it('respects no paths', () =>
+    expect(act({})).toMatchInlineSnapshot(`Object {}`));
 
-  it('handles no paths', () => expect(act({})).toStrictEqual({}));
+  it('falls back on undefined paths', () =>
+    expect(act(undefined)).toMatchInlineSnapshot(`
+      Object {
+        "^src$": "<rootDir>/src",
+        "^src/(.*)$": "<rootDir>/src/$1",
+      }
+    `));
+
+  it('falls back on invalid config', () =>
+    expect(act('INVALID')).toMatchInlineSnapshot(`
+      Object {
+        "^src$": "<rootDir>/src",
+        "^src/(.*)$": "<rootDir>/src/$1",
+      }
+    `));
 });
