@@ -1,5 +1,13 @@
 # skuba
 
+## 3.17.0-beta.3
+
+### Minor Changes
+
+- **jest:** Support `tsconfig.json` paths ([`fe4ed57`](https://github.com/seek-oss/skuba/commit/fe4ed576152c0545136bc1327ea5892eb812f133))
+
+  Module aliases other than `src` are now supported in `skuba test`. Our Jest preset includes a dynamic `moduleNameMapper` that reads the `paths` compiler option from your `tsconfig.json`.
+
 ## 3.17.0-beta.0
 
 ### Minor Changes
