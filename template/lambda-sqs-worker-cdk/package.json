@@ -25,7 +25,7 @@
     "deploy": "cdk deploy appStack --require-approval never --context stage=${ENVIRONMENT} --progress events",
     "format": "skuba format",
     "lint": "skuba lint",
-    "package": "yarn install --ignore-optional --ignore-scripts --modules-folder ./lib/node_modules --non-interactive --production",
+    "package": "yarn install --ignore-optional --ignore-scripts --modules-folder ./lib/node_modules --non-interactive --offline --production",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"

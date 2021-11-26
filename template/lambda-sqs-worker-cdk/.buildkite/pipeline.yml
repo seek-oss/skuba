@@ -56,13 +56,12 @@ steps:
     label: 🧪 Test, Lint & Build
     artifact_paths: lib/**/*
     commands:
-      - yarn package
-      - echo '--- yarn build'
-      - yarn build
       - echo '+++ yarn test:ci'
       - yarn test
       - echo '--- yarn lint'
       - yarn lint
+      - echo '--- yarn build'
+      - yarn build
     env:
       GET_GITHUB_TOKEN: please
     plugins:
