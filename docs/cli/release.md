@@ -13,7 +13,7 @@ Runs a [semantic release] that will publish a package to npm.
 
 ## skuba changeset
 
-Creates a pull request with all of the package versions updated and changelogs updated. When the pull request is merged this will publish the package to npm and create a release in the GitHub repository. This matches the functionality of the [changesets action].
+Creates a pull request with all of the package versions and changelogs updated. When the pull request is merged this will publish packages to npm and create releases in the GitHub repository. This matches the functionality of the [changesets action].
 
 ```shell
 skuba changeset
