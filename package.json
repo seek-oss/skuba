@@ -12,6 +12,7 @@
   "typings": "lib/index.d.ts",
   "files": [
     "config/**/*",
+    "jest/**/*",
     "lib*/**/*.d.ts",
     "lib*/**/*.js",
     "lib*/**/*.js.map",
@@ -92,7 +93,7 @@
     "npm-run-path": "^4.0.1",
     "npm-which": "^3.0.1",
     "picomatch": "^2.2.2",
-    "prettier": "~2.4.1",
+    "prettier": "~2.5.0",
     "read-pkg-up": "^7.0.1",
     "remark-parse": "^9.0.0",
     "remark-stringify": "^9.0.1",
