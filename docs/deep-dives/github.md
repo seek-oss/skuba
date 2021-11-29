@@ -21,7 +21,12 @@ For example, with the Docker plugin:
 
 ```yaml
 steps:
-  - command: yarn lint
+  - commands:
+      - yarn lint
+      - yarn test
+    env:
+      # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step
+      GET_GITHUB_TOKEN: 'please'
     plugins:
       - *aws-sm
       - *private-npm
