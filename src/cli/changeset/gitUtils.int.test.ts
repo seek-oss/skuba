@@ -12,9 +12,7 @@ beforeEach(() => {
   vol.fromJSON(newGit);
 });
 
-// const author = { name: 'user', email: 'user@email.com' };
 const dir = './';
-// const newFileName = 'newFile';
 
 describe('listTags', () => {
   it('should list tags in the local directory and return them', async () => {
