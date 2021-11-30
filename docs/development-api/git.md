@@ -57,7 +57,7 @@ const headCommitId = await Git.getHeadCommitId({ dir });
 
 ---
 
-### getOwnerAndRepo
+## getOwnerAndRepo
 
 Extracts the owner and repository names from local Git remotes.
 
