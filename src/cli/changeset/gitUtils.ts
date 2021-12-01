@@ -1,5 +1,6 @@
 // Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/utils.ts
 
+import type { Octokit } from '@octokit/rest';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
@@ -81,13 +82,15 @@ export const reset = async (
 export const commitAll = async (
   dir: string,
   message: string,
+  octokit: Octokit,
 ): Promise<void> => {
-  // const user = await octokit.users.getAuthenticated();
-  const user = {
-    name: 'buildagencygitapitoken[bot]', // user.data.name as string
-    email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
+  const response = await octokit.apps.getAuthenticated();
+  const name = `${response.data.name}[bot]`;
+  const app = {
+    name,
+    email: `${response.data.id}+${name}@users.noreply.github.com`,
   };
-  await Git.commitAllChanges({ dir, message, author: user, committer: user });
+  await Git.commitAllChanges({ dir, message, author: app, committer: app });
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {

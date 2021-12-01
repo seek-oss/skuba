@@ -1,12 +1,23 @@
+import { Octokit } from '@octokit/rest';
 import { mocked } from 'ts-jest/utils';
 
 import * as Git from '../../api/git';
 
 import { checkIfClean, commitAll, push, pushTags, reset } from './gitUtils';
 
+const mockClient = {
+  apps: {
+    getAuthenticated: jest.fn(),
+  },
+};
+jest.mock('@octokit/rest');
 jest.mock('../../api/git');
 
 const dir = './';
+
+beforeEach(() => {
+  mocked(Octokit).mockReturnValue(mockClient as never);
+});
 
 afterEach(() => {
   jest.resetAllMocks();
@@ -61,7 +72,27 @@ describe('reset', () => {
 
 describe('commitAll', () => {
   it('should call Git commitAllChanges with a user', async () => {
-    await commitAll(dir, 'commit msg');
+    mockClient.apps.getAuthenticated.mockReturnValue({
+      data: {
+        id: 87109344,
+        slug: 'buildagencygitapitoken',
+        node_id: 'A_kwDOARLrRs4AAjeG',
+        owner: {},
+        name: 'buildagencygitapitoken',
+        description: '',
+        external_url: '',
+        html_url: 'https://github.com/apps/buildagencygitapitoken',
+        created_at: '2021-10-16T02:21:15Z',
+        updated_at: '2021-10-16T02:21:15Z',
+        permissions: {
+          checks: 'write',
+          metadata: 'read',
+        },
+        events: [],
+        installations_count: 1,
+      },
+    });
+    await commitAll(dir, 'commit msg', new Octokit());
 
     expect(Git.commitAllChanges).toBeCalledWith({
       dir,
