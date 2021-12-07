@@ -4,7 +4,7 @@
     "runtypes": "^6.3.2"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.118.0",
+    "@aws-cdk/assert": "^2.0.0",
     "@aws-cdk/aws-iam": "^1.118.0",
     "@aws-cdk/aws-kms": "^1.118.0",
     "@aws-cdk/aws-lambda": "^1.118.0",
