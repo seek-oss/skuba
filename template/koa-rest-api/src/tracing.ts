@@ -1,5 +1,5 @@
 /**
- * Opentelemetry tracing initialisation. This is a standalone ts/js module that is not
+ * OpenTelemetry tracing initialisation. This is a standalone TS/JS module that is not
  * referenced by application source code directly. It is required at runtime using the
  * node command's `--require` argument, see Dockerfile for details.
  */
