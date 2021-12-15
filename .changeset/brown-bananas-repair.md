@@ -2,4 +2,4 @@
 "skuba": minor
 ---
 
-template/koa-rest-api: Add opentelemetry support
+template/koa-rest-api: Add opt-in OpenTelemetry support
