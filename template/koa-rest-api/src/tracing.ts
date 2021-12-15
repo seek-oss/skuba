@@ -19,8 +19,8 @@ const log = (level: string, msg: string, extra = {}) => {
 };
 
 const main = () => {
-  // Use B3 propagation to ensure proper propagation between systems use OpenTelemetry and
-  // native Datadog APM, such as Istio/Envoy
+  // Use B3 propagation to ensure proper propagation between systems that use
+  // OpenTelemetry and native Datadog APM, such as Istio/Envoy.
   propagation.setGlobalPropagator(
     new CompositePropagator({
       propagators: [
