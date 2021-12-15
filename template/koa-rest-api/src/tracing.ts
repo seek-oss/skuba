@@ -38,7 +38,7 @@ const main = () => {
 
   sdk
     .start()
-    .then(() => log('info', 'Opentelemetry initialised'))
+    .then(() => log('info', 'OpenTelemetry initialised'))
     .catch((err: Error) =>
       log('error', 'Opentelemetry not initialised', { err }),
     );
