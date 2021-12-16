@@ -3,7 +3,7 @@
     "skuba-dive": "^1.2.0"
   },
   "devDependencies": {
-    "@types/node": "^16.0.0",
+    "@types/node": "^17.0.0",
     "skuba": "*"
   },
   "engines": {

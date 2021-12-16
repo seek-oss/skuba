@@ -14,7 +14,7 @@
     "@aws-cdk/aws-sqs": "^1.118.0",
     "@aws-cdk/core": "^1.118.0",
     "@types/aws-lambda": "^8.10.82",
-    "@types/node": "^14.0.0",
+    "@types/node": "^17.0.0",
     "aws-cdk": "^1.118.0",
     "skuba": "*"
   },
