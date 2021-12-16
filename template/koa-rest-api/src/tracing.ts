@@ -40,15 +40,15 @@ const main = () => {
     .start()
     .then(() => log('info', 'OpenTelemetry initialised'))
     .catch((err: Error) =>
-      log('error', 'Opentelemetry not initialised', { err }),
+      log('error', 'OpenTelemetry not initialised', { err }),
     );
 
   process.on('SIGTERM', () => {
     sdk
       .shutdown()
-      .then(() => log('info', 'Opentelemetry successfully terminated'))
+      .then(() => log('info', 'OpenTelemetry successfully terminated'))
       .catch((err: Error) =>
-        log('error', 'Opentelemetry terminating error', { err }),
+        log('error', 'OpenTelemetry failed to terminate', { err }),
       )
       .finally(() => process.exit(0)); // eslint-disable-line no-process-exit
   });
@@ -57,5 +57,5 @@ const main = () => {
 if (process.env.OPENTELEMETRY_ENABLED === 'true') {
   main();
 } else {
-  log('info', 'Opentelemetry not enabled');
+  log('info', 'OpenTelemetry not enabled');
 }
