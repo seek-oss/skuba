@@ -41,9 +41,9 @@
     "url": "https://github.com/seek-oss/skuba.git"
   },
   "devDependencies": {
-    "@changesets/cli": "2.18.1",
+    "@changesets/cli": "2.19.0",
     "@changesets/get-github-info": "0.5.0",
-    "@jest/reporters": "27.4.2",
+    "@jest/reporters": "27.4.5",
     "@types/concurrently": "6.4.0",
     "@types/ejs": "3.1.0",
     "@types/express": "4.17.13",
@@ -54,7 +54,7 @@
     "@types/npm-which": "3.0.1",
     "@types/picomatch": "2.3.0",
     "@types/supertest": "2.0.11",
-    "express": "4.17.1",
+    "express": "4.17.2",
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
     "memfs": "3.4.0",
