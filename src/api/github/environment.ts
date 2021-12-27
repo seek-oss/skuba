@@ -40,3 +40,9 @@ export const apiTokenFromEnvironment = (
 export const currentBranchFromEnvironment = (
   env = process.env,
 ): string | undefined => env.BUILDKITE_BRANCH ?? env.GITHUB_REF_NAME;
+
+/**
+ * Tries to return an app slug from CI environment variables.
+ */
+export const appSlugFromEnvironment = (env = process.env): string | undefined =>
+  env.GITHUB_APP_SLUG;

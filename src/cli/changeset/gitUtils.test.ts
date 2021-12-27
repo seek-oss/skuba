@@ -2,16 +2,18 @@ import { Octokit } from '@octokit/rest';
 import { mocked } from 'ts-jest/utils';
 
 import * as Git from '../../api/git';
+import { appSlugFromEnvironment } from '../../api/github/environment';
 
 import { checkIfClean, commitAll, push, pushTags, reset } from './gitUtils';
 
 const mockClient = {
   apps: {
-    getAuthenticated: jest.fn(),
+    getBySlug: jest.fn(),
   },
 };
 jest.mock('@octokit/rest');
 jest.mock('../../api/git');
+jest.mock('../../api/github/environment');
 
 const dir = './';
 
@@ -71,8 +73,9 @@ describe('reset', () => {
 });
 
 describe('commitAll', () => {
-  it('should call Git commitAllChanges with a user', async () => {
-    mockClient.apps.getAuthenticated.mockReturnValue({
+  it('should call Git commitAllChanges with a bot user when a app slug is provided', async () => {
+    mocked(appSlugFromEnvironment).mockReturnValue('buildagencygitapitoken');
+    mockClient.apps.getBySlug.mockReturnValue({
       data: {
         id: 87109344,
         slug: 'buildagencygitapitoken',
@@ -105,6 +108,27 @@ describe('commitAll', () => {
         name: 'buildagencygitapitoken[bot]', // user.data.name as string
         email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
       },
+    });
+  });
+
+  it('should call Git commitAllChanges without a user when calling GitHub Api fails', async () => {
+    mocked(appSlugFromEnvironment).mockReturnValue('buildagencygitapitoken');
+    mockClient.apps.getBySlug.mockRejectedValue(new Error());
+    await commitAll(dir, 'commit msg', new Octokit());
+
+    expect(Git.commitAllChanges).toBeCalledWith({
+      dir,
+      message: 'commit msg',
+    });
+  });
+
+  it('should call Git commitAllChanges without a user when app slug is not provided', async () => {
+    mocked(appSlugFromEnvironment).mockReturnValue(undefined);
+    await commitAll(dir, 'commit msg', new Octokit());
+
+    expect(Git.commitAllChanges).toBeCalledWith({
+      dir,
+      message: 'commit msg',
     });
   });
 });

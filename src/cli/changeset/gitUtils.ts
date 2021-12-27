@@ -5,6 +5,8 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
 import * as Git from '../../api/git';
+import { appSlugFromEnvironment } from '../../api/github/environment';
+import { log } from '../../utils/logging';
 
 export const push = async (
   dir: string,
@@ -84,13 +86,35 @@ export const commitAll = async (
   message: string,
   octokit: Octokit,
 ): Promise<void> => {
-  const response = await octokit.apps.getAuthenticated();
-  const name = `${response.data.name}[bot]`;
-  const app = {
-    name,
-    email: `${response.data.id}+${name}@users.noreply.github.com`,
-  };
-  await Git.commitAllChanges({ dir, message, author: app, committer: app });
+  const appSlug = appSlugFromEnvironment();
+  if (appSlug) {
+    // Commit as bot user
+    try {
+      const response = await octokit.apps.getBySlug({
+        app_slug: appSlug,
+      });
+      const name = `${response.data.name}[bot]`;
+      const app = {
+        name,
+        email: `${response.data.id}+${name}@users.noreply.github.com`,
+      };
+      return await Git.commitAllChanges({
+        dir,
+        message,
+        author: app,
+        committer: app,
+      });
+    } catch (error) {
+      log.warn('Failed to retrieve bot user details', error);
+    }
+  }
+
+  // Commit as default skuba user
+  await Git.commitAllChanges({
+    dir,
+    message,
+  });
+  return;
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {

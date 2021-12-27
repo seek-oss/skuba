@@ -1,5 +1,6 @@
 import {
   apiTokenFromEnvironment,
+  appSlugFromEnvironment,
   buildNameFromEnvironment,
   currentBranchFromEnvironment,
   enabledFromEnvironment,
@@ -62,4 +63,16 @@ describe('currentBranchFromEnvironment', () => {
 
   it('returns undefined when environment variables are not present', () =>
     expect(currentBranchFromEnvironment({})).toBeUndefined());
+});
+
+describe('appSlugFromEnvironment', () => {
+  it.each`
+    description          | env
+    ${'GITHUB_APP_SLUG'} | ${{ GITHUB_APP_SLUG: 'x' }}
+  `('returns a branch name from $description', ({ env }) =>
+    expect(appSlugFromEnvironment(env)).toBe('x'),
+  );
+
+  it('returns undefined when environment variables are not present', () =>
+    expect(appSlugFromEnvironment({})).toBeUndefined());
 });
