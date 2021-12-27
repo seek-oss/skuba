@@ -114,7 +114,6 @@ export const commitAll = async (
     dir,
     message,
   });
-  return;
 };
 
 export const checkIfClean = async (dir: string): Promise<boolean> => {
