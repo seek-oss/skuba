@@ -23,26 +23,26 @@ export class AppStack extends Stack {
     const accountPrincipal = new aws_iam.AccountPrincipal(this.account);
 
     const kmsKey = new aws_kms.Key(this, 'kms-key', {
-      description: 'serviceName',
+      description: '<%- serviceName %>',
       enableKeyRotation: true,
       admins: [accountPrincipal],
-      alias: 'seek/self/serviceName',
+      alias: 'seek/self/<%- serviceName %>',
     });
 
     kmsKey.grantEncrypt(accountPrincipal);
 
     const topic = new aws_sns.Topic(this, 'topic', {
-      topicName: 'serviceName',
+      topicName: '<%- serviceName %>',
       masterKey: kmsKey,
     });
 
     const deadLetterQueue = new aws_sqs.Queue(this, 'worker-queue-dlq', {
-      queueName: 'serviceName-dlq',
+      queueName: '<%- serviceName %>-dlq',
       encryptionMasterKey: kmsKey,
     });
 
     const queue = new aws_sqs.Queue(this, 'worker-queue', {
-      queueName: 'serviceName',
+      queueName: '<%- serviceName %>',
       deadLetterQueue: {
         maxReceiveCount: 3,
         queue: deadLetterQueue,
@@ -54,7 +54,7 @@ export class AppStack extends Stack {
       code: new aws_lambda.AssetCode('./lib'),
       runtime: aws_lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
-      functionName: 'serviceName',
+      functionName: '<%- serviceName %>',
       environmentEncryption: kmsKey,
       environment: {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
