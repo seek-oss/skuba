@@ -1,11 +1,15 @@
-import { AccountPrincipal } from '@aws-cdk/aws-iam';
-import { Key } from '@aws-cdk/aws-kms';
-import { AssetCode, Function, Runtime } from '@aws-cdk/aws-lambda';
-import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
-import { Topic } from '@aws-cdk/aws-sns';
-import { SqsSubscription } from '@aws-cdk/aws-sns-subscriptions';
-import { Queue } from '@aws-cdk/aws-sqs';
-import { Construct, Stack, StackProps } from '@aws-cdk/core';
+import {
+  Stack,
+  StackProps,
+  aws_iam,
+  aws_kms,
+  aws_lambda,
+  aws_lambda_event_sources,
+  aws_sns,
+  aws_sns_subscriptions,
+  aws_sqs,
+} from 'aws-cdk-lib';
+import type { Construct } from 'constructs';
 
 import { envContext, stageContext } from '../shared/context-types';
 
@@ -16,29 +20,29 @@ export class AppStack extends Stack {
     const stage = stageContext.check(this.node.tryGetContext('stage'));
     const context = envContext.check(this.node.tryGetContext(stage));
 
-    const accountPrincipal = new AccountPrincipal(this.account);
+    const accountPrincipal = new aws_iam.AccountPrincipal(this.account);
 
-    const kmsKey = new Key(this, 'kms-key', {
-      description: '<%- serviceName %>',
+    const kmsKey = new aws_kms.Key(this, 'kms-key', {
+      description: 'serviceName',
       enableKeyRotation: true,
       admins: [accountPrincipal],
-      alias: 'seek/self/<%- serviceName %>',
+      alias: 'seek/self/serviceName',
     });
 
     kmsKey.grantEncrypt(accountPrincipal);
 
-    const topic = new Topic(this, 'topic', {
-      topicName: '<%- serviceName %>',
+    const topic = new aws_sns.Topic(this, 'topic', {
+      topicName: 'serviceName',
       masterKey: kmsKey,
     });
 
-    const deadLetterQueue = new Queue(this, 'worker-queue-dlq', {
-      queueName: '<%- serviceName %>-dlq',
+    const deadLetterQueue = new aws_sqs.Queue(this, 'worker-queue-dlq', {
+      queueName: 'serviceName-dlq',
       encryptionMasterKey: kmsKey,
     });
 
-    const queue = new Queue(this, 'worker-queue', {
-      queueName: '<%- serviceName %>',
+    const queue = new aws_sqs.Queue(this, 'worker-queue', {
+      queueName: 'serviceName',
       deadLetterQueue: {
         maxReceiveCount: 3,
         queue: deadLetterQueue,
@@ -46,11 +50,11 @@ export class AppStack extends Stack {
       encryptionMasterKey: kmsKey,
     });
 
-    const worker = new Function(this, 'worker', {
-      code: new AssetCode('./lib'),
-      runtime: Runtime.NODEJS_14_X,
+    const worker = new aws_lambda.Function(this, 'worker', {
+      code: new aws_lambda.AssetCode('./lib'),
+      runtime: aws_lambda.Runtime.NODEJS_14_X,
       handler: 'app.handler',
-      functionName: '<%- serviceName %>',
+      functionName: 'serviceName',
       environmentEncryption: kmsKey,
       environment: {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
@@ -58,8 +62,8 @@ export class AppStack extends Stack {
       },
     });
 
-    worker.addEventSource(new SqsEventSource(queue));
+    worker.addEventSource(new aws_lambda_event_sources.SqsEventSource(queue));
 
-    topic.addSubscription(new SqsSubscription(queue));
+    topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
   }
 }
