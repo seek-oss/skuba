@@ -11,6 +11,7 @@ env:
   AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
 
   ENVIRONMENT: '{{.Environment}}'
+  OPENTELEMETRY_ENABLED: '{{.Values.openTelemetry.enabled | default false}}'
   SERVICE: '{{values "service"}}'
 
   {{range $key, $value := .Values.env}}
@@ -21,6 +22,13 @@ env:
 datadogSecretId: '{{values "datadogSecretId"}}'
 {{end}}
 
+openTelemetry:
+  enabled: {{.Values.openTelemetry.enabled | default false}}
+  {{if .Values.isProduction}}
+  datadogEnvironmentName: production
+  {{else}}
+  datadogEnvironmentName: development
+  {{end}}
 {{if .Values.pagerDutyEndpoint}}
 pagerDutyEndpoint: '{{values "pagerDutyEndpoint"}}'
 {{end}}

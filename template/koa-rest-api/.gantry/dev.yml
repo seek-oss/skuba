@@ -5,3 +5,6 @@ isProduction: false
 
 maxInstanceCount: 1
 minInstanceCount: 1
+
+openTelemetry:
+  enabled: false
