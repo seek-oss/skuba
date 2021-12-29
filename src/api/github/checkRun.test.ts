@@ -2,7 +2,6 @@ import { Octokit } from '@octokit/rest';
 import type { Endpoints } from '@octokit/types';
 import type { ReadCommitResult } from 'isomorphic-git';
 import git from 'isomorphic-git';
-import { mocked } from 'ts-jest/utils';
 
 import type * as GitHub from '../github';
 
@@ -52,13 +51,17 @@ describe('createCheckRun', () => {
   const title = 'Build #23 failed';
 
   beforeEach(() => {
-    mocked(Octokit).mockReturnValue(mockClient as unknown as Octokit);
-    mocked(git.listRemotes).mockResolvedValue([
-      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-    ]);
-    mocked(git.log).mockResolvedValue([
-      { oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad' } as ReadCommitResult,
-    ]);
+    jest.mocked(Octokit).mockReturnValue(mockClient as unknown as Octokit);
+    jest
+      .mocked(git.listRemotes)
+      .mockResolvedValue([
+        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+      ]);
+    jest
+      .mocked(git.log)
+      .mockResolvedValue([
+        { oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad' } as ReadCommitResult,
+      ]);
     mockClient.checks.create.mockReturnValue(createResponse);
   });
 
@@ -74,7 +77,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(mocked(Octokit)).toBeCalledWith({
+    expect(jest.mocked(Octokit)).toBeCalledWith({
       auth: 'Hello from GITHUB_API_TOKEN',
     });
   });
@@ -91,7 +94,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(mocked(Octokit)).toBeCalledWith({
+    expect(jest.mocked(Octokit)).toBeCalledWith({
       auth: 'Hello from GITHUB_TOKEN',
     });
   });

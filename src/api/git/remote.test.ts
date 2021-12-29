@@ -1,5 +1,4 @@
 import git from 'isomorphic-git';
-import { mocked } from 'ts-jest/utils';
 
 import { getOwnerAndRepo } from './remote';
 
@@ -11,9 +10,11 @@ afterEach(jest.resetAllMocks);
 
 describe('getOwnerAndRepo', () => {
   it('extracts an owner and repo from an HTTP GitHub remote', async () => {
-    mocked(git.listRemotes).mockResolvedValue([
-      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-    ]);
+    jest.jest
+      .mocked(git.listRemotes)
+      .mockResolvedValue([
+        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+      ]);
 
     await expect(getOwnerAndRepo({ dir })).resolves.toStrictEqual({
       owner: 'seek-oss',
@@ -22,8 +23,11 @@ describe('getOwnerAndRepo', () => {
   });
 
   it('extracts an owner and repo from an SSH GitHub remote', async () => {
-    mocked(git.listRemotes).mockResolvedValue([
-      { remote: 'origin', url: 'git@github.com:SEEK-Jobs/secret-codebase.git' },
+    jest.jest.mocked(git.listRemotes).mockResolvedValue([
+      {
+        remote: 'origin',
+        url: 'git@github.com:SEEK-Jobs/secret-codebase.git',
+      },
     ]);
 
     await expect(getOwnerAndRepo({ dir })).resolves.toStrictEqual({
@@ -33,7 +37,7 @@ describe('getOwnerAndRepo', () => {
   });
 
   it('throws on zero remotes', async () => {
-    mocked(git.listRemotes).mockResolvedValue([]);
+    jest.jest.mocked(git.listRemotes).mockResolvedValue([]);
 
     await expect(
       getOwnerAndRepo({ dir }),
@@ -43,7 +47,7 @@ describe('getOwnerAndRepo', () => {
   });
 
   it('throws on unrecognised remotes', async () => {
-    mocked(git.listRemotes).mockResolvedValue([
+    jest.jest.mocked(git.listRemotes).mockResolvedValue([
       { remote: 'public', url: 'git@gitlab.com:seek-oss/skuba.git' },
       {
         remote: 'private',
