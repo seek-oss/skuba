@@ -1,5 +1,4 @@
 import type { AggregatedResult, Context } from '@jest/reporters';
-import { mocked } from 'ts-jest/utils';
 
 import * as GitHub from '../../../../api/github';
 import { log } from '../../../../utils/logging';
@@ -379,7 +378,7 @@ it('should create an annotated check run per display name', async () => {
 it('should log a warning when it fails to create annotations', async () => {
   const err = new Error('Badness!');
 
-  mocked(GitHub.createCheckRun).mockRejectedValue(err);
+  jest.mocked(GitHub.createCheckRun).mockRejectedValue(err);
 
   await reporter.onRunComplete(context, failResults);
 

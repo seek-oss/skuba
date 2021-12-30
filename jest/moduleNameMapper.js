@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { pathsToModuleNameMapper } = require('ts-jest');
 const {
   sys,
   findConfigFile,

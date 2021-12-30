@@ -1,5 +1,4 @@
 import git from 'isomorphic-git';
-import { mocked } from 'ts-jest/utils';
 
 import { getHeadCommitId } from './log';
 
@@ -27,7 +26,7 @@ describe('getHeadCommitId', () => {
   });
 
   it('falls back to a commit ID from the Git log', async () => {
-    mocked(git.log).mockResolvedValue([{ oid: 'a'.repeat(40) } as any]);
+    jest.mocked(git.log).mockResolvedValue([{ oid: 'a'.repeat(40) } as any]);
 
     await expect(getHeadCommitId({ dir, env: {} })).resolves.toBe(
       'a'.repeat(40),
@@ -37,7 +36,7 @@ describe('getHeadCommitId', () => {
   });
 
   it('throws on an empty Git log', async () => {
-    mocked(git.log).mockResolvedValue([]);
+    jest.mocked(git.log).mockResolvedValue([]);
 
     await expect(
       getHeadCommitId({ dir, env: {} }),

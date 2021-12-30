@@ -1,5 +1,3 @@
-import { mocked } from 'ts-jest/utils';
-
 import * as GitHub from '../../../../api/github';
 import type { ESLintOutput } from '../../../../cli/adapter/eslint';
 import type { PrettierOutput } from '../../../../cli/adapter/prettier';
@@ -103,9 +101,11 @@ beforeEach(() => {
   process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
   process.env.GITHUB_WORKFLOW = 'Test';
 
-  mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
-  mocked(createPrettierAnnotations).mockReturnValue(mockPrettierAnnotations);
-  mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
+  jest.mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
+  jest
+    .mocked(createPrettierAnnotations)
+    .mockReturnValue(mockPrettierAnnotations);
+  jest.mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
 });
 
 afterEach(() => {
