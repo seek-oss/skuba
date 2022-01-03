@@ -44,7 +44,6 @@
     "@changesets/cli": "2.19.0",
     "@changesets/get-github-info": "0.5.0",
     "@jest/reporters": "27.4.5",
-    "@types/concurrently": "6.4.0",
     "@types/ejs": "3.1.0",
     "@types/express": "4.17.13",
     "@types/fs-extra": "9.0.13",
