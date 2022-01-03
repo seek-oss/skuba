@@ -57,7 +57,7 @@
     "express": "4.17.2",
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
-    "memfs": "3.4.0",
+    "memfs": "3.4.1",
     "semver": "7.3.5",
     "supertest": "6.1.6",
     "type-fest": "2.8.0"
