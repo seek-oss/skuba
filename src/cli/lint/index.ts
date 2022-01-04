@@ -1,3 +1,5 @@
+import type { Writable } from 'stream';
+
 import { hasDebugFlag, hasSerialFlag } from '../../utils/args';
 import { tryRefreshIgnoreFiles } from '../configure/refreshIgnoreFiles';
 
@@ -7,7 +9,7 @@ import type { Input } from './types';
 
 export const lint = async (
   args = process.argv,
-  tscOutputStream: NodeJS.WritableStream | undefined = undefined,
+  tscOutputStream: Writable | undefined = undefined,
   workerThreads = true,
 ) => {
   await tryRefreshIgnoreFiles();

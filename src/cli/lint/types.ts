@@ -1,3 +1,5 @@
+import type { Writable } from 'stream';
+
 export interface Input {
   /**
    * Whether to enable verbose debug logging.
@@ -21,7 +23,7 @@ export interface Input {
    *
    * Defaults to `process.stdout`.
    */
-  tscOutputStream?: NodeJS.WritableStream;
+  tscOutputStream?: Writable;
 
   /**
    * Whether to allow usage of Node.js worker threads.

@@ -87,7 +87,7 @@ interface ExecConcurrentlyOptions {
    *
    * Defaults to `process.stdout`.
    */
-  outputStream?: NodeJS.WritableStream;
+  outputStream?: stream.Writable;
 }
 
 type ExecOptions = execa.Options & { streamStdio?: true | 'yarn' };
@@ -162,7 +162,7 @@ export const execConcurrently = async (
         // Use a minimalist logging prefix.
         prefix: '{name} │',
       },
-    );
+    ).result;
   } catch (err) {
     const result = ConcurrentlyErrors.validate(err);
 
