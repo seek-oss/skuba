@@ -1,5 +1,89 @@
 # skuba
 
+## 3.17.0
+
+### Minor Changes
+
+- **template/koa-rest-api:** Add opt-in OpenTelemetry support ([#706](https://github.com/seek-oss/skuba/pull/706))
+
+- **deps:** Prettier 2.5 ([#701](https://github.com/seek-oss/skuba/pull/701))
+
+  See the [release notes](https://prettier.io/blog/2021/11/25/2.5.0.html) for more information.
+
+- **node, start:** Register `tsconfig-paths` ([#678](https://github.com/seek-oss/skuba/pull/678))
+
+  You can now define module aliases other than `src` for local development and scripting. Specify these through the `paths` compiler option in your `tsconfig.json`:
+
+  ```jsonc
+  // tsconfig.json
+  {
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "src": ["src"]
+      }
+    }
+  }
+  ```
+
+- **GitHub.buildNameFromEnvironment:** Export helper function ([#676](https://github.com/seek-oss/skuba/pull/676))
+
+- **jest:** Support `tsconfig.json` paths ([#698](https://github.com/seek-oss/skuba/pull/698))
+
+  Module aliases other than `src` are now supported in `skuba test`. Our Jest preset includes a dynamic `moduleNameMapper` that reads the `paths` compiler option from your `tsconfig.json`.
+
+- **git:** Export helper functions ([#689](https://github.com/seek-oss/skuba/pull/689))
+
+- **test:** Add GitHub check run annotations ([#648](https://github.com/seek-oss/skuba/pull/648))
+
+  `skuba test` can now automatically annotate GitHub commits when you [propagate CI environment variables and a GitHub API token](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
+
+- **GitHub.getPullRequestNumber:** Export helper function ([#690](https://github.com/seek-oss/skuba/pull/690))
+
+- **GitHub.putIssueComment:** Export helper function ([#690](https://github.com/seek-oss/skuba/pull/690))
+
+  This enables use cases like a persistent bot comment at the top of a pull request a la Changesets that reflects the current status of a CI check.
+
+- **GitHub.enabledFromEnvironment:** Export helper function ([#676](https://github.com/seek-oss/skuba/pull/676))
+
+### Patch Changes
+
+- **GitHub.createCheckRun:** Support `text` parameter ([#673](https://github.com/seek-oss/skuba/pull/673))
+
+- **template:** Retrieve GitHub token on Test & Lint ([#667](https://github.com/seek-oss/skuba/pull/667))
+
+- **template:** serverless-prune-plugin ^2.0.0 ([#719](https://github.com/seek-oss/skuba/pull/719))
+
+- **test:** Fix `ts-jest` imports ([#715](https://github.com/seek-oss/skuba/pull/715))
+
+  This resolves the following warning:
+
+  ```console
+  Replace any occurrences of "ts-jest/utils" with just "ts-jest".
+  ```
+
+  If you're using the `mocked` utility from `ts-jest`, switch over to the built-in Jest function:
+
+  ```diff
+  import git from 'isomorphic-git';
+  - import { mocked } from 'ts-jest';
+
+  jest.mock('isomorphic-git');
+
+  - mocked(git.commit).mockResolvedValue('');
+  + jest.mocked(git.commit).mockResolvedValue('');
+  ```
+
+- **template/lambda-sqs-worker-cdk:** Migrate to AWS CDK v2 ([#714](https://github.com/seek-oss/skuba/pull/714))
+
+- **node, start:** Deregister `source-map-support` ([#679](https://github.com/seek-oss/skuba/pull/679))
+
+  `ts-node` takes care of this for us.
+
+- **template/lambda-sqs-worker-cdk:** Fix docker-compose volume mount and deploy output ([#695](https://github.com/seek-oss/skuba/pull/695))
+
+- **Jest.mergePreset:** Allow `displayName` and `projects` ([#648](https://github.com/seek-oss/skuba/pull/648))
+
 ## 3.16.2
 
 ### Patch Changes
