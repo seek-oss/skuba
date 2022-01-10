@@ -8,7 +8,7 @@ This resolves the following error in Node.js 12 environments:
 
 ```typescript
 Object.entries(parsedConfig.options.paths ?? DEFAULT_PATHS).flatMap(
-                                                 ^
+                                           ^
 
 SyntaxError: Unexpected token '?'
 ```
