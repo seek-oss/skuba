@@ -64,7 +64,6 @@ const createImportFromExpression = (
           factory.createNamedImports(
             importNames.map((importName) =>
               factory.createImportSpecifier(
-                false,
                 undefined,
                 factory.createIdentifier(importName),
               ),
