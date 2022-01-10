@@ -80,7 +80,7 @@
     "is-installed-globally": "^0.4.0",
     "isomorphic-git": "^1.10.1",
     "jest": "^27.4.5",
-    "latest-version": "^5.1.0",
+    "latest-version": "^6.0.0",
     "lodash.mergewith": "^4.6.2",
     "normalize-package-data": "^3.0.0",
     "npm-run-path": "^4.0.1",
