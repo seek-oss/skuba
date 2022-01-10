@@ -1,5 +1,30 @@
 # skuba
 
+## 3.17.1
+
+### Patch Changes
+
+- **deps:** ts-jest ^27.1.2 ([#729](https://github.com/seek-oss/skuba/pull/729))
+
+  This resolves the following import issue in older 27.0.x versions of `ts-jest`:
+
+  ```console
+  TypeError: pathsToModuleNameMapper is not a function
+  ```
+
+- **test:** Restore Node.js 12 compatibility ([#730](https://github.com/seek-oss/skuba/pull/730))
+
+  This resolves the following error in Node.js 12 environments:
+
+  ```typescript
+  Object.entries(parsedConfig.options.paths ?? DEFAULT_PATHS).flatMap(
+                                             ^
+
+  SyntaxError: Unexpected token '?'
+  ```
+
+  Note that Node.js 12 will reach its end of life in May 2022.
+
 ## 3.17.0
 
 ### Minor Changes
