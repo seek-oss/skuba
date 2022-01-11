@@ -83,7 +83,7 @@
     "latest-version": "^5.1.0",
     "lodash.mergewith": "^4.6.2",
     "normalize-package-data": "^3.0.0",
-    "npm-run-path": "^4.0.1",
+    "npm-run-path": "^5.0.0",
     "npm-which": "^3.0.1",
     "picomatch": "^2.2.2",
     "prettier": "~2.5.0",
