@@ -108,6 +108,6 @@
     }
   },
   "resolutions": {
-    "semantic-release/@semantic-release/npm/npm/**/ansi-regex": "5.0.1"
+    "semantic-release/@semantic-release/npm/npm/**/ansi-regex": "6.0.1"
   }
 }
