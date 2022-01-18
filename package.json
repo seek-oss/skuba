@@ -91,6 +91,7 @@
     "runtypes": "^6.0.0",
     "semantic-release": "^17.4.7",
     "serialize-error": "^8.0.1",
+    "simple-git": "^2.48.0",
     "strip-ansi": "^6.0.1",
     "ts-jest": "^27.1.2",
     "ts-node": "^9.1.1",

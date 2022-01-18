@@ -2,7 +2,7 @@ import path from 'path';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
-import http from 'isomorphic-git/http/node';
+import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
 import { crawlDirectory } from '../../utils/dir';
@@ -57,14 +57,10 @@ export const downloadGitHubTemplate = async (
   log.newline();
   log.plain('Downloading', log.bold(gitHubPath), 'from GitHub...');
 
-  await git.clone({
-    depth: 1,
-    dir: destinationDir,
-    fs,
-    http,
-    singleBranch: true,
-    url: `git@github.com:${gitHubPath}.git`,
-  });
+  await simpleGit().clone(`git@github.com:${gitHubPath}.git`, destinationDir, [
+    '--depth=1',
+    '--quiet',
+  ]);
 
   await fs.promises.rm(path.join(destinationDir, '.git'), {
     force: true,
