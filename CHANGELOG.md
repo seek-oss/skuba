@@ -1,5 +1,38 @@
 # skuba
 
+## 3.17.2
+
+### Patch Changes
+
+- **init:** Fix GitHub template cloning ([#739](https://github.com/seek-oss/skuba/pull/739))
+
+  This resolves the following error when cloning a project template from GitHub:
+
+  ```typescript
+  UnknownTransportError: Git remote "git@github.com:owner/repo.git" uses an unrecognized transport protocol: "ssh"
+  ```
+
+- **template/lambda-sqs-worker:** Remove qualifier from smoke test invocation ([#743](https://github.com/seek-oss/skuba/pull/743))
+
+  Previously, this template's smoke test hook specified a `$LATEST` qualifier in its `Lambda.Invoke` API call. AWS authorised the call based on the unqualified Lambda ARN in our `serverless.yml` IAM policy, but will stop doing so after April 2022.
+
+  To avoid deployment failures, remove the qualifier in `src/hooks.ts`. An unqualified call is equivalent to targeting `$LATEST`.
+
+  ```diff
+  - Qualifier: '$LATEST',
+  + Qualifier: undefined,
+  ```
+
+- **node:** Register `tsconfig-paths` in REPL ([#745](https://github.com/seek-oss/skuba/pull/745))
+
+  This resolves the following error:
+
+  ```typescript
+  Error: Cannot find module '/node_modules/skuba/lib/register'
+  Require stack:
+  - internal/preload
+  ```
+
 ## 3.17.1
 
 ### Patch Changes
