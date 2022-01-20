@@ -38,7 +38,7 @@ export const node = async () => {
   return tsNode
     .createRepl({
       service: tsNode.register({
-        require: [path.join(__dirname, '..', 'register')],
+        require: ['tsconfig-paths/register'],
         transpileOnly: true,
       }),
     })
