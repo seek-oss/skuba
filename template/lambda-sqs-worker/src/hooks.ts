@@ -49,8 +49,9 @@ const smokeTestLambdaFunction = async (): Promise<Status> => {
       InvocationType: 'RequestResponse',
       // Treat an empty object as our smoke test event.
       Payload: '{}',
-      // $LATEST is updated by the time a pre hook runs.
-      Qualifier: '$LATEST',
+      // An unqualified reference implicitly invokes $LATEST, which has been
+      // updated to point to the new version when this pre hook runs.
+      Qualifier: undefined,
     })
     .promise();
 
