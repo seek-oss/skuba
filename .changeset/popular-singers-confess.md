@@ -2,4 +2,4 @@
 "skuba": patch
 ---
 
-template: seek-jobs/gantry v1.6.0
+template/\*-rest-api: seek-jobs/gantry v1.6.0
