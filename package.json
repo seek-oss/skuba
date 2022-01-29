@@ -78,7 +78,7 @@
     "get-port": "^5.1.1",
     "ignore": "^5.1.8",
     "is-installed-globally": "^0.4.0",
-    "isomorphic-git": "^1.10.1",
+    "isomorphic-git": "^1.11.1",
     "jest": "^27.4.5",
     "latest-version": "^5.1.0",
     "lodash.mergewith": "^4.6.2",
