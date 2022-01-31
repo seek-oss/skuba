@@ -3,16 +3,17 @@ service: <%- serviceName %>
 configValidationMode: error
 variablesResolutionMode: 20210326
 
+params:
+  default:
+    description: <%- description %>
+  dev:
+    deploymentBucket: 'TODO: deploymentBucketName'
+    isProduction: false
+  prod:
+    deploymentBucket: 'TODO: deploymentBucketName'
+    isProduction: true
+
 custom:
-  description: <%- description %>
-  env: ${self:custom.envs.${env:ENVIRONMENT}}
-  envs:
-    dev:
-      deploymentBucket: 'TODO: deploymentBucketName'
-      isProduction: false
-    prod:
-      deploymentBucket: 'TODO: deploymentBucketName'
-      isProduction: true
   prune:
     automatic: true
     number: 3
@@ -33,7 +34,7 @@ provider:
   deploymentBucket:
     # Use a shared account-level bucket for Lambda bundles and other artefacts.
     # This is easier to manage in terms of access, deployment, and tagging.
-    name: ${self:custom.env.deploymentBucket}
+    name: ${param:deploymentBucket}
   iam:
     role:
       statements:
@@ -58,7 +59,7 @@ provider:
     # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdatatypes
     # seek:data:types:restricted: job-ads
     seek:env:label: ${env:ENVIRONMENT}
-    seek:env:production: ${self:custom.env.isProduction}
+    seek:env:production: ${param:isProduction}
     seek:owner:team: '<%- teamName %>'
     seek:source:sha: ${env:BUILDKITE_COMMIT, 'na'}
     seek:source:url: 'https://github.com/SEEK-Jobs/<%- repoName %>'
@@ -73,7 +74,7 @@ functions:
   Worker:
     name: ${self:service}
     handler: lib/app.handler
-    description: ${self:custom.description}
+    description: ${param:description}
     memorySize: 128
     reservedConcurrency: 20
     timeout: 30
@@ -108,7 +109,7 @@ functions:
 
 resources:
   # This becomes the Lambda application's description
-  Description: ${self:custom.description}
+  Description: ${param:description}
 
   Resources:
     DeadLetterQueue:
