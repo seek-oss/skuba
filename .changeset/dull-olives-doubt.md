@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+"skuba": patch
 ---
 
 template/lambda-sqs-worker: Disable `tty` on deploy step
