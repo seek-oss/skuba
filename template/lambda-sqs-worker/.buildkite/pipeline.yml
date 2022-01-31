@@ -48,6 +48,7 @@ configs:
         - docker-compose#v3.9.0:
             dependencies: false
             run: app
+            tty: false
       retry:
         manual:
           # Only use this if you need to roll back a deployment ASAP.
