@@ -110,7 +110,7 @@ functions:
 
 resources:
   # This becomes the Lambda application's description
-  Description: ${self:custom.description}
+  Description: ${param:description}
 
   Resources:
     DeadLetterQueue:
