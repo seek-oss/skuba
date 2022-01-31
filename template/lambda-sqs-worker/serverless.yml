@@ -6,7 +6,6 @@ variablesResolutionMode: 20210326
 params:
   default:
     description: <%- description %>
-    isProduction: false
   dev:
     deploymentBucket: 'TODO: deploymentBucketName'
     isProduction: false
