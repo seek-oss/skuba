@@ -1,5 +1,6 @@
 {
   extends: [
+    ':dependencyDashboard',
     ':prHourlyLimit4',
     ':rebaseStalePrs',
     ':renovatePrefix',
