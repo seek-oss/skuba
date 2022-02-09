@@ -2,7 +2,7 @@
 "skuba": major
 ---
 
-Require Node.js 14.18+
+deps: Require Node.js 14.18+
 
 Node.js 12 will reach end of life by April 2022. The `semantic-release` package and stable `--enable-source-maps` flag necessitate this new minimum version.
 
