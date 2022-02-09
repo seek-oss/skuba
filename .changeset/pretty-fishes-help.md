@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+"skuba": major
 ---
 
 deps: semantic-release ^19.0.0
