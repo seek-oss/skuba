@@ -101,7 +101,7 @@
     "typescript": "~4.4.4"
   },
   "peerDependencies": {
-    "skuba-dive": "1"
+    "skuba-dive": "1 || 2"
   },
   "peerDependenciesMeta": {
     "skuba-dive": {
