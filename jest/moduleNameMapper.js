@@ -11,7 +11,7 @@ const {
 /**
  * Set a default `src` module alias for backward compatibility.
  *
- * TODO: drop this default in skuba v4.
+ * TODO: drop this default in skuba v5.
  */
 const DEFAULT_PATHS = { src: ['src'], 'src/*': ['src/*'] };
 
@@ -20,8 +20,7 @@ const DEFAULT_PATHS = { src: ['src'], 'src/*': ['src/*'] };
  */
 const getConfigFromDisk = () => {
   const filename =
-    // TODO: drop Node.js 12 compatibility and switch to ?? in skuba v4.
-    findConfigFile('.', sys.fileExists.bind(this)) || 'tsconfig.json';
+    findConfigFile('.', sys.fileExists.bind(this)) ?? 'tsconfig.json';
 
   return readConfigFile(filename, sys.readFile.bind(this)).config;
 };
@@ -33,8 +32,7 @@ module.exports.createModuleNameMapper = (getConfig = getConfigFromDisk) => {
     const parsedConfig = parseJsonConfigFileContent(json, sys, '.');
 
     const paths = Object.fromEntries(
-      // TODO: drop Node.js 12 compatibility and switch to ?? in skuba v4.
-      Object.entries(parsedConfig.options.paths || DEFAULT_PATHS).flatMap(
+      Object.entries(parsedConfig.options.paths ?? DEFAULT_PATHS).flatMap(
         ([key, values]) => [
           // Pass through the input path entry almost verbatim.
           // We trim a trailing slash because TypeScript allows `import 'src'`
@@ -66,8 +64,7 @@ module.exports.createModuleNameMapper = (getConfig = getConfigFromDisk) => {
       ),
     );
 
-    // TODO: drop Node.js 12 compatibility and switch to ?? in skuba v4.
-    const prefix = path.join('<rootDir>', parsedConfig.options.baseUrl || '.');
+    const prefix = path.join('<rootDir>', parsedConfig.options.baseUrl ?? '.');
 
     const moduleNameMapper = pathsToModuleNameMapper(paths, { prefix });
 
