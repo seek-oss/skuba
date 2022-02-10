@@ -9,11 +9,11 @@ parent: Migration guides
 ## TL;DR
 
 ```shell
-# Ensure you're using @seek/seek-module-toolkit v4.
+# Ensure you're using @seek/seek-module-toolkit v4 or later.
 # Renovate should automatically open a PR for this upgrade.
 # If you haven't configured Renovate on your repository, reach out in `#github`.
 yarn smt version
-# smt version 4.0.1
+# smt version 5.0.0
 
 # Upgrade ESLint and Prettier configs first via interactive prompt.
 # You can skip to `yarn smt migrate` if you're feeling adventurous.
