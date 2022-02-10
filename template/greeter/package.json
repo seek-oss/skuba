@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "skuba-dive": "^1.2.0"
+    "skuba-dive": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^16.0.0",
