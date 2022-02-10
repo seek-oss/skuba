@@ -11,7 +11,7 @@ We recommend migrating off of custom source map implementations in favour of thi
 For a containerised application, update your Dockerfile:
 
 ```diff
-- FROM gcr.io/distroless/nodejs:14 AS runtime
+- FROM gcr.io/distroless/nodejs:12 AS runtime
 + FROM gcr.io/distroless/nodejs:16 AS runtime
 
 + # https://nodejs.org/api/cli.html#cli_node_options_options
