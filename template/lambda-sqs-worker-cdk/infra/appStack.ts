@@ -59,6 +59,7 @@ export class AppStack extends Stack {
       environment: {
         // https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+        NODE_ENV: 'production',
         // https://nodejs.org/api/cli.html#cli_node_options_options
         NODE_OPTIONS: '--enable-source-maps',
         ...context.workerLambda.environment,

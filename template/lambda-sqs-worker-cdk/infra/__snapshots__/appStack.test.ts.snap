@@ -155,6 +155,7 @@ Object {
         "Environment": Object {
           "Variables": Object {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
             "SOMETHING": "dev",
           },
@@ -510,6 +511,7 @@ Object {
         "Environment": Object {
           "Variables": Object {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
             "SOMETHING": "prod",
           },
