@@ -2,7 +2,7 @@
   "dependencies": {
     "@seek/logger": "^5.0.1",
     "express": "^4.17.1",
-    "skuba-dive": "^1.2.0"
+    "skuba-dive": "^2.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
