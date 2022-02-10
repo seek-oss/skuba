@@ -61,6 +61,7 @@ export class AppStack extends Stack {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
         // https://nodejs.org/api/cli.html#cli_node_options_options
         NODE_OPTIONS: '--enable-source-maps',
+        NODE_ENV: 'production',
         ...context.workerLambda.environment,
       },
     });
