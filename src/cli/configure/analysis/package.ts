@@ -92,7 +92,7 @@ export const generateNotices = ({
       log.warn(
         'Read more:',
         log.bold(
-          'https://github.com/seek-oss/skuba/blob/master/docs/migrating-from-seek-module-toolkit.md#building',
+          'https://seek-oss.github.io/skuba/docs/migration-guides/seek-module-toolkit.html#building',
         ),
       );
     };
