@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+"skuba": minor
 ---
 
 deps: ts-node ^10.5.0
