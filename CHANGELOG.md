@@ -1,5 +1,103 @@
 # skuba
 
+## 4.0.0
+
+### Major Changes
+
+- **deps:** Require Node.js 14.18+ ([#760](https://github.com/seek-oss/skuba/pull/760))
+
+  Node.js 12 will reach end of life by April 2022. The `semantic-release` package and stable `--enable-source-maps` flag necessitate this new minimum version.
+
+  Consider upgrading the Node.js version for your project across:
+
+  - `.nvmrc`
+  - `package.json#/engines/node`
+  - CI/CD configuration (`.buildkite/pipeline.yml`, `Dockerfile`, etc.)
+
+- **deps:** semantic-release ^19.0.0 ([#757](https://github.com/seek-oss/skuba/pull/757))
+
+  Resolves [SNYK-JS-MARKED-2342073](https://app.snyk.io/vuln/SNYK-JS-MARKED-2342073) and [SNYK-JS-MARKED-2342082](https://app.snyk.io/vuln/SNYK-JS-MARKED-2342082).
+
+  This may alleviate the following `skuba release` error:
+
+  ```console
+  [semantic-release] › ✖  EGHNOPERMISSION The GitHub token doesn't allow to push on the repository owner/repo.
+  The user associated with the GitHub token (https://github.com/semantic-release/github/blob/master/README.md#github-authentication) configured in the GH_TOKEN or GITHUB_TOKEN environment variable must allows to push to the repository owner/repo.
+  ```
+
+- **template:** Use `--enable-source-maps` ([#761](https://github.com/seek-oss/skuba/pull/761))
+
+  Stable source map support has landed in Node.js 14.18+ via the built-in `--enable-source-maps` option.
+
+  We recommend migrating off of custom source map implementations in favour of this option. Upgrading to [**skuba-dive** v2](https://github.com/seek-oss/skuba-dive/releases/tag/v2.0.0) will remove `source-map-support` from the `skuba-dive/register` hook.
+
+  For a containerised application, update your Dockerfile:
+
+  ```diff
+  - FROM gcr.io/distroless/nodejs:12 AS runtime
+  + FROM gcr.io/distroless/nodejs:16 AS runtime
+
+  + # https://nodejs.org/api/cli.html#cli_node_options_options
+  + ENV NODE_OPTIONS --enable-source-maps
+  ```
+
+  For a Serverless Lambda application, update your `serverless.yml`:
+
+  ```diff
+  provider:
+  - runtime: nodejs12.x
+  + runtime: nodejs14.x
+
+  functions:
+    Worker:
+      environment:
+  +     # https://nodejs.org/api/cli.html#cli_node_options_options
+  +     NODE_OPTIONS: --enable-source-maps
+  ```
+
+  For a CDK Lambda application, update your stack:
+
+  ```diff
+  new aws_lambda.Function(this, 'worker', {
+  - runtime: aws_lambda.Runtime.NODEJS_12_X,
+  + runtime: aws_lambda.Runtime.NODEJS_14_X,
+    environment: {
+  +   // https://nodejs.org/api/cli.html#cli_node_options_options
+  +   NODE_OPTIONS: '--enable-source-maps',
+    },
+  });
+  ```
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Disable `tty` on deploy step ([#753](https://github.com/seek-oss/skuba/pull/753))
+
+  Serverless Framework v3 renders progress spinners on interactive terminals. We recommend disabling [tty](https://github.com/buildkite-plugins/docker-compose-buildkite-plugin#tty-optional-run-only) in CI/CD for cleaner log output.
+
+- **template/lambda-sqs-worker:** serverless ^3.0.0 ([#748](https://github.com/seek-oss/skuba/pull/748))
+
+- **template/lambda-sqs-worker:** Replace `custom.env` configuration with `params` ([#752](https://github.com/seek-oss/skuba/pull/752))
+
+  You can now define environment specific variables using the new Serverless parameters feature. See <https://www.serverless.com/framework/docs/guides/parameters> for more details.
+
+- **template/\*-rest-api:** seek-jobs/gantry v1.6.1 ([#759](https://github.com/seek-oss/skuba/pull/759))
+
+- **template/lambda-sqs-worker:** Remove `provider.lambdaHashingVersion` ([#751](https://github.com/seek-oss/skuba/pull/751))
+
+  This resolves the following deprecation warning in Serverless Framework v3:
+
+  ```console
+  Setting "20201221" for "provider.lambdaHashingVersion" is no longer effective as new hashing algorithm is now used by default. You can safely remove this property from your configuration.
+  ```
+
+- **deps:** eslint-config-skuba 1.0.14 ([#758](https://github.com/seek-oss/skuba/pull/758))
+
+  This disables the `tsdoc/syntax` ESLint rule in tests for compatibility with `/** @jest-environment env */` directives.
+
+- **deps:** isomorphic-git ^1.11.1 ([#750](https://github.com/seek-oss/skuba/pull/750))
+
+  Resolves [SNYK-JS-SIMPLEGET-2361683](https://security.snyk.io/vuln/SNYK-JS-SIMPLEGET-2361683).
+
 ## 3.17.2
 
 ### Patch Changes
