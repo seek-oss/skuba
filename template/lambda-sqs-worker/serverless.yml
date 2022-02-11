@@ -35,6 +35,12 @@ provider:
     # Use a shared account-level bucket for Lambda bundles and other artefacts.
     # This is easier to manage in terms of access, deployment, and tagging.
     name: ${param:deploymentBucket}
+  environment:
+    # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    NODE_ENV: production
+    # https://nodejs.org/api/cli.html#cli_node_options_options
+    NODE_OPTIONS: --enable-source-maps
   iam:
     role:
       statements:
@@ -83,12 +89,6 @@ functions:
       alias: Live
       preTrafficHook: WorkerPreHook
     environment:
-      # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-      NODE_ENV: production
-      # https://nodejs.org/api/cli.html#cli_node_options_options
-      NODE_OPTIONS: --enable-source-maps
-
       ENVIRONMENT: ${env:ENVIRONMENT}
       SERVICE: ${self:service}
       VERSION: ${env:VERSION, 'local'}
@@ -105,12 +105,6 @@ functions:
     # This is generous because a timeout will hang the deployment
     timeout: 300
     environment:
-      # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-      NODE_ENV: production
-      # https://nodejs.org/api/cli.html#cli_node_options_options
-      NODE_OPTIONS: --enable-source-maps
-
       FUNCTION_NAME_TO_INVOKE: ${self:functions.Worker.name}
 
 resources:
