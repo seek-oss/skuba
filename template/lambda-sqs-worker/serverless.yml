@@ -1,7 +1,6 @@
 service: <%- serviceName %>
 
 configValidationMode: error
-variablesResolutionMode: 20210326
 
 params:
   default:
