@@ -86,7 +86,7 @@ export const runESLint = async (
 
   await ESLint.outputFixes(results);
 
-  const output = formatter.format(results);
+  const output = await formatter.format(results);
 
   if (output) {
     logger.plain(output);
