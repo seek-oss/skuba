@@ -9,4 +9,5 @@ buildArgs:
   BASE_IMAGE: '{{.Env.BUILDKITE_PLUGIN_DOCKER_ECR_CACHE_EXPORT_IMAGE}}'
   BASE_TAG: '{{.Env.BUILDKITE_PLUGIN_DOCKER_ECR_CACHE_EXPORT_TAG}}'
 
-failOnScanFindings: true
+# SEEK-Jobs/gantry#1661
+failOnScanFindings: false

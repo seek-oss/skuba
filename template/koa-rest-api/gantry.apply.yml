@@ -115,6 +115,8 @@ cpu: 256
 memory: 512
 
 deployment:
+  # SEEK-Jobs/gantry#488
+  ignoreAlarms: true
   smokeTest:
     path: /smoke
     useExternalDns: true
