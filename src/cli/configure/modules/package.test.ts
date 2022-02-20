@@ -27,7 +27,7 @@ describe('packageModule', () => {
         build: 'skuba build',
         format: 'skuba format',
         lint: 'skuba lint',
-        start: 'ENVIRONMENT=local skuba start',
+        start: 'skuba start',
         test: 'skuba test --coverage',
         'test:watch': 'skuba test --watch',
       },
