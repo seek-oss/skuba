@@ -1,5 +1,40 @@
 # skuba
 
+## 4.1.0
+
+### Minor Changes
+
+- **node, start:** Load environment variables from `.env` file ([#774](https://github.com/seek-oss/skuba/pull/774))
+
+- **deps:** ts-node ^10.5.0 ([#764](https://github.com/seek-oss/skuba/pull/764))
+
+  This major release includes breaking changes. If your project uses a complex `ts-node` configuration either directly or on top of `skuba node` and `skuba start`, see the [changelog](https://github.com/TypeStrong/ts-node/releases/tag/v10.0.0) for more information.
+
+### Patch Changes
+
+- **template:** skuba-dive ^2.0.0 ([#766](https://github.com/seek-oss/skuba/pull/766))
+
+- **template/lambda-sqs-worker:** Remove `variablesResolutionMode` ([#768](https://github.com/seek-oss/skuba/pull/768))
+
+  This resolves the following deprecation warning in Serverless Framework v3:
+
+  ```console
+  Starting with v3.0, the "variablesResolutionMode" option is now useless. You can safely remove it from the configuration
+  More info: https://serverless.com/framework/docs/deprecations/#VARIABLES_RESOLUTION_MODE
+  ```
+
+- **template/\*-rest-api:** Ignore deployment alarms and ECR scanning ([#773](https://github.com/seek-oss/skuba/pull/773))
+
+- **configure:** Fix `@seek/seek-module-toolkit` migration guide link ([#762](https://github.com/seek-oss/skuba/pull/762))
+
+- **template/lambda-sqs-worker-cdk:** Add `NODE_ENV=production` to environment variables ([#763](https://github.com/seek-oss/skuba/pull/763))
+
+- **template/lambda-sqs-worker:** Add `NODE_ENV=production` to environment variables ([#763](https://github.com/seek-oss/skuba/pull/763))
+
+- **deps:** ts-node-dev ^2.0.0-0 ([#764](https://github.com/seek-oss/skuba/pull/764))
+
+- **template/lambda-sqs-worker:** Move environment variables to `provider.environment` to reduce repetition ([#767](https://github.com/seek-oss/skuba/pull/767))
+
 ## 4.0.0
 
 ### Major Changes
