@@ -26,6 +26,8 @@ export const node = async () => {
       'node',
       ...args.node,
       '--require',
+      'dotenv/config',
+      '--require',
       'tsconfig-paths/register',
       '--require',
       'ts-node/register/transpile-only',
@@ -38,7 +40,7 @@ export const node = async () => {
   return tsNode
     .createRepl({
       service: tsNode.register({
-        require: ['tsconfig-paths/register'],
+        require: ['dotenv/config', 'tsconfig-paths/register'],
         transpileOnly: true,
       }),
     })
