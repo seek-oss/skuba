@@ -1,13 +1,7 @@
+agents:
+  queue: <%- prodBuildkiteQueueName %>
+
 configs:
-  environments:
-    - &dev
-      agents:
-        queue: <%- devBuildkiteQueueName %>
-
-    - &prod
-      agents:
-        queue: <%- prodBuildkiteQueueName %>
-
   plugins:
     - &aws-sm
       seek-oss/aws-sm#v2.3.1:
@@ -36,8 +30,7 @@ configs:
           permit_on_passed: true
 
 steps:
-  - <<: *prod
-    label: 🧖‍♀️ Warm Prod
+  - label: 🧖‍♀️ Warm Prod
     command: ':'
     key: warm-prod
     plugins:
@@ -45,8 +38,7 @@ steps:
       - *private-npm
       - *docker-ecr-cache
 
-  - <<: *prod
-    label: 🧪 Test & Lint
+  - label: 🧪 Test & Lint
     commands:
       - echo '+++ yarn test:ci'
       - yarn test:ci
@@ -62,8 +54,7 @@ steps:
       - docker-compose#v3.9.0:
           run: app
 
-  - <<: *prod
-    label: 📦 Build & Package
+  - label: 📦 Build & Package
     depends_on: warm-prod
     plugins:
       - *aws-sm
@@ -79,8 +70,9 @@ steps:
   - block: 🙋🏻‍♀️ Deploy Dev
     branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
 
-  - <<: *dev
-    <<: *deploy
+  - <<: *deploy
+    agents:
+      queue: <%- devBuildkiteQueueName %>
     label: 🤞 Deploy Dev
     concurrency_group: <%- teamName %>/deploy/gantry/<%- devGantryEnvironmentName %>
     key: deploy-dev
@@ -94,8 +86,7 @@ steps:
             - .gantry/common.yml
             - .gantry/dev.yml
 
-  - <<: *prod
-    <<: *deploy
+  - <<: *deploy
     label: 🚀 Deploy Prod
     branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
     concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
