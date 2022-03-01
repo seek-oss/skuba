@@ -28,7 +28,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Publish to npm
-        uses: changesets/action@master
+        uses: changesets/action@v1
         with:
           publish: yarn release
           version: yarn stage
