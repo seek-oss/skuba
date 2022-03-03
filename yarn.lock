@@ -3106,34 +3106,32 @@ eslint-config-prettier@^6.11.0:
   dependencies:
     get-stdin "^6.0.0"
 
-eslint-config-seek@^7.0.9:
-  version "7.0.9"
-  resolved "https://registry.yarnpkg.com/eslint-config-seek/-/eslint-config-seek-7.0.9.tgz#5bf229dbbf4e14180750874ba5bd77c019dae2cb"
-  integrity sha512-eIFI4wN5b3LwXYtlpEKVqCQ2gYolmeGSfL4C7cPClGWDjpeZ/EGswhGC36VQI78kV6T0kZT2SYbkWGI48OqpTQ==
+eslint-config-seek@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-seek/-/eslint-config-seek-8.0.0.tgz#70baa4f38b982fa08ac73570f27facf690c63390"
+  integrity sha512-DL1Ll5/i2b5d2pmb9NsVT31nkAfuy47JVojEHvVehVaqEt9YMTKjI2mJ2T7ELYg6516fQ36mm2kmHsgLiiWZUw==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.8.1"
     "@typescript-eslint/parser" "^4.8.1"
     babel-eslint "^10.1.0"
     eslint-config-prettier "^6.11.0"
     eslint-import-resolver-node "^0.3.3"
-    eslint-plugin-css-modules "^2.11.0"
     eslint-plugin-cypress "^2.11.1"
-    eslint-plugin-flowtype "^5.1.3"
     eslint-plugin-import "^2.21.2"
     eslint-plugin-jest "^25.2.2"
     eslint-plugin-react "^7.20.0"
     eslint-plugin-react-hooks "^4.0.4"
     find-root "^1.1.0"
 
-eslint-config-skuba@1.0.14:
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.0.14.tgz#bd3c61486f5c462676ce7f66ec92839ff07059ca"
-  integrity sha512-ujjqSTJ53z+vqsNu5TZ91aCW2iYn55sEsZm7D7i9ahoVmBSg5711dBYMvB69/ckUh7kb3N3P3uoXehAS7hL2nQ==
+eslint-config-skuba@1.0.15:
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.0.15.tgz#b6a0cd331b1848a08858ad5c07319435bffc4e07"
+  integrity sha512-7Bl4mCogEDCex2yN2R19DFrRxAb6RCzN0TRM4n7A/pssUPDHAQ8ns8If+SKtgLWM+OpG9Q05R6eo0L0LNwEENA==
   dependencies:
     "@types/eslint" "^8.0.0"
     "@typescript-eslint/eslint-plugin" "^4.26.0"
     "@typescript-eslint/parser" "^4.26.0"
-    eslint-config-seek "^7.0.9"
+    eslint-config-seek "^8.0.0"
     eslint-plugin-jest "^25.2.2"
     eslint-plugin-tsdoc "^0.2.14"
 
@@ -3153,28 +3151,12 @@ eslint-module-utils@^2.7.2:
     debug "^3.2.7"
     find-up "^2.1.0"
 
-eslint-plugin-css-modules@^2.11.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-css-modules/-/eslint-plugin-css-modules-2.11.0.tgz#8de4d01d523a2d51c03043fa8004aab6b6cf3b1a"
-  integrity sha512-CLvQvJOMlCywZzaI4HVu7QH/ltgNXvCg7giJGiE+sA9wh5zQ+AqTgftAzrERV22wHe1p688wrU/Zwxt1Ry922w==
-  dependencies:
-    gonzales-pe "^4.0.3"
-    lodash "^4.17.2"
-
 eslint-plugin-cypress@^2.11.1:
   version "2.12.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-cypress/-/eslint-plugin-cypress-2.12.1.tgz#9aeee700708ca8c058e00cdafe215199918c2632"
   integrity sha512-c2W/uPADl5kospNDihgiLc7n87t5XhUbFDoTl6CfVkmG+kDAb5Ux10V9PoLPu9N+r7znpc+iQlcmAqT1A/89HA==
   dependencies:
     globals "^11.12.0"
-
-eslint-plugin-flowtype@^5.1.3:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-5.10.0.tgz#7764cc63940f215bf3f0bd2d9a1293b2b9b2b4bb"
-  integrity sha512-vcz32f+7TP+kvTUyMXZmCnNujBQZDNmcqPImw8b9PZ+16w1Qdm6ryRuYZYVaG9xRqqmAPr2Cs9FAX5gN+x/bjw==
-  dependencies:
-    lodash "^4.17.15"
-    string-natural-compare "^3.0.1"
 
 eslint-plugin-import@^2.21.2:
   version "2.25.4"
@@ -3862,13 +3844,6 @@ globby@^11.0.0, globby@^11.0.1, globby@^11.0.3, globby@^11.0.4:
     ignore "^5.2.0"
     merge2 "^1.4.1"
     slash "^3.0.0"
-
-gonzales-pe@^4.0.3:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/gonzales-pe/-/gonzales-pe-4.3.0.tgz#fe9dec5f3c557eead09ff868c65826be54d067b3"
-  integrity sha512-otgSPpUmdWJ43VXyiNgEYE4luzHCL2pz4wQ0OnDluC6Eg4Ko3Vexy/SrSynglw/eR+OhkzmqFCZa/OFa/RgAOQ==
-  dependencies:
-    minimist "^1.2.5"
 
 got@^9.6.0:
   version "9.6.0"
@@ -5358,7 +5333,7 @@ lodash.uniqby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
   integrity sha1-2ZwHpmnp5tJOE2Lf4mbGdhavEwI=
 
-lodash@^4.17.15, lodash@^4.17.2, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.7.0:
+lodash@^4.17.15, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -7329,11 +7304,6 @@ string-length@^4.0.1:
   dependencies:
     char-regex "^1.0.2"
     strip-ansi "^6.0.0"
-
-string-natural-compare@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/string-natural-compare/-/string-natural-compare-3.0.1.tgz#7a42d58474454963759e8e8b7ae63d71c1e7fdf4"
-  integrity sha512-n3sPwynL1nwKi3WJ6AIsClwBMa0zTi54fn2oLU6ndfTSIO05xaznjSf15PcBZU6FNWbmN5Q6cxT4V5hGvB4taw==
 
 "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
