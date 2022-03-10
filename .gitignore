@@ -23,5 +23,5 @@ yarn-error.log
 
 /integration/format/
 /integration/lint/
-/template/**/yarn.lock
 /template/**/src/**/*.js
+/template/**/yarn.lock
