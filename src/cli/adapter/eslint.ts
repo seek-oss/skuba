@@ -54,6 +54,8 @@ export const runESLint = async (
       // `eslint-plugin-react` prints this annoying error on non-React repos.
       // We still want to support React linting for repos that have React code,
       // so we have to manually suppress it.
+      //
+      // https://github.com/yannickcr/eslint-plugin-react/blob/7484acaca8351a8568fa99344bc811c5cd8396bd/lib/util/version.js#L61-L65
       'Warning: React version was set to "detect" in eslint-plugin-react settings, but the "react" package is not installed. Assuming latest React version for linting.'
     ) {
       ogConsoleError(...args);
