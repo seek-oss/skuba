@@ -48,7 +48,7 @@ export const runESLint = async (
 
   /* eslint-disable no-console */
   const ogConsoleError = console.error;
-  console.error = (...args: any[]) => {
+  console.error = (...args: unknown[]) => {
     if (
       args[0] !==
       // `eslint-plugin-react` prints this annoying error on non-React repos.
