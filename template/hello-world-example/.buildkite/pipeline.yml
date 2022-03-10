@@ -1,0 +1,74 @@
+agents:
+  queue: <%- devBuildkiteQueueName %>
+
+configs:
+  plugins:
+    - &aws-sm
+      seek-oss/aws-sm#v2.3.1:
+        env:
+          NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
+
+    - &private-npm
+      seek-oss/private-npm#v1.2.0:
+        env: NPM_READ_TOKEN
+
+  base-steps:
+    - &deploy
+      concurrency: 1
+      retry:
+        manual:
+          # Only use this if you need to roll back a deployment ASAP.
+          # Always follow up with a proper revert or fix in Git history.
+          permit_on_passed: true
+
+steps:
+  - label: 🧖‍♀️ Warm Prod
+    command: ':'
+    key: warm-prod
+    plugins:
+      - *aws-sm
+      - *private-npm
+
+  - label: 🧪 Test & Lint
+    commands:
+      - echo '+++ yarn test:ci'
+      - yarn test:ci
+      - echo '--- yarn lint'
+      - yarn lint
+    depends_on: warm-prod
+    env:
+      GET_GITHUB_TOKEN: please
+    plugins:
+      - *aws-sm
+      - *private-npm
+      - docker-compose#v3.9.0:
+          run: app
+
+  - label: 📦 Build & Package
+    depends_on: warm-prod
+    plugins:
+      - *aws-sm
+      - *private-npm
+      - seek-jobs/gantry#v1.6.2:
+          command: build
+          file: gantry.build.yml
+          region: <%- region %>
+          values: .gantry/common.yml
+
+  - wait
+  - block: 🙋🏻‍♀️ Deploy Dev
+    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
+
+  - <<: *deploy
+    label: 🤞 Deploy Dev
+    concurrency_group: <%- teamName %>/deploy/gantry/<%- gantryEnvironmentName %>
+    key: deploy-dev
+    plugins:
+      - seek-jobs/gantry#v1.6.2:
+          command: apply
+          environment: <%- gantryEnvironmentName %>
+          file: gantry.apply.yml
+          region: <%- region %>
+          values:
+            - .gantry/common.yml
+            - .gantry/dev.yml

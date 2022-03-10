@@ -1,0 +1,127 @@
+kind: Service
+
+schemaVersion: v0.0
+
+name: '{{values "service"}}'
+
+image: '{{values "image"}}'
+
+env:
+  # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
+  AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+
+  ENVIRONMENT: '{{.Environment}}'
+  OPENTELEMETRY_ENABLED: '{{.Values.openTelemetry.enabled | default false}}'
+  SERVICE: '{{values "service"}}'
+
+  {{range $key, $value := .Values.env}}
+  {{$key}}: {{$value}}
+  {{end}}
+
+{{if .Values.datadogSecretId}}
+datadogSecretId: '{{values "datadogSecretId"}}'
+{{end}}
+
+openTelemetry:
+  enabled: {{.Values.openTelemetry.enabled | default false}}
+  {{if .Values.isProduction}}
+  datadogEnvironmentName: production
+  {{else}}
+  datadogEnvironmentName: development
+  {{end}}
+{{if .Values.pagerDutyEndpoint}}
+pagerDutyEndpoint: '{{values "pagerDutyEndpoint"}}'
+{{end}}
+
+authentication:
+  ignoreRoutes:
+    - /health
+    - /smoke
+
+sslEnabled: true
+
+autoScaling:
+  maxCount: {{values "maxInstanceCount"}}
+  minCount: {{values "minInstanceCount"}}
+
+  cpuThreshold: 50
+  memoryThreshold: 50
+
+  # Disable Gantry's request-based scaling; the load a request generates can be
+  # highly variable. Instead, scale out when *either* CPU or memory are above
+  # the threshold, and scale in when *both* are 5% below the threshold.
+  #
+  # See https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html
+  autoScalingPolicies:
+    CpuAutoScalingPolicy:
+      Type: AWS::ApplicationAutoScaling::ScalingPolicy
+      Properties:
+        PolicyName: CpuAutoScalingPolicy
+        PolicyType: TargetTrackingScaling
+        ScalingTargetId:
+          Ref: AutoScalingTarget
+        TargetTrackingScalingPolicyConfiguration:
+          ScaleInCooldown: 300
+          ScaleOutCooldown: 60
+          TargetValue:
+            Ref: CpuUtilisationAutoScalingThreshold
+          PredefinedMetricSpecification:
+            PredefinedMetricType: ECSServiceAverageCPUUtilization
+
+    MemoryAutoScalingPolicy:
+      Type: AWS::ApplicationAutoScaling::ScalingPolicy
+      Properties:
+        PolicyName: MemoryAutoScalingPolicy
+        PolicyType: TargetTrackingScaling
+        ScalingTargetId:
+          Ref: AutoScalingTarget
+        TargetTrackingScalingPolicyConfiguration:
+          ScaleInCooldown: 300
+          ScaleOutCooldown: 60
+          TargetValue:
+            Ref: MemoryUtilisationAutoScalingThreshold
+          PredefinedMetricSpecification:
+            PredefinedMetricType: ECSServiceAverageMemoryUtilization
+
+    RequestsScaleOutAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmDescription: Stub alarm for Gantry to tag
+        Metrics:
+          - Id: missing
+            Expression: SUM(METRICS())
+            Period: 60
+            ReturnData: true
+        ActionsEnabled: false
+        EvaluationPeriods: 1
+        Threshold: 0
+        ComparisonOperator: LessThanThreshold
+
+    RequestsScaleInAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmDescription: Stub alarm for Gantry to tag
+        Metrics:
+          - Id: missing
+            Expression: SUM(METRICS())
+            Period: 60
+            ReturnData: true
+        ActionsEnabled: false
+        EvaluationPeriods: 1
+        Threshold: 0
+        ComparisonOperator: LessThanThreshold
+
+cpu: 256
+memory: 512
+
+deployment:
+  # SEEK-Jobs/gantry#488
+  ignoreAlarms: true
+  smokeTest:
+    path: /smoke
+    useExternalDns: true
+
+tags:
+  {{range $key, $value := .Values.tags}}
+  {{$key}}: '{{$value}}'
+  {{end}}

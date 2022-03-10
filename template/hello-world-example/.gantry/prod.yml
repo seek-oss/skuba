@@ -1,0 +1,12 @@
+# This file isn't used, but is included as an example of when you might have divering values files- compare to
+# dev.yml
+env:
+  SOME_ENVIRONMENT_VARIABLE: prod-value
+
+isProduction: true
+
+maxInstanceCount: 10
+minInstanceCount: 3
+
+openTelemetry:
+  enabled: false
