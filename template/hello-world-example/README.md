@@ -10,19 +10,19 @@ Next steps:
    yarn skuba configure
    ```
 
-If you were to productionise this repo, you would need to additionally: 
+If you were to productionise this repo, you would need to additionally:
 
-2. [ ] Create a new repository in the appropriate GitHub organisation. 
+2. [ ] Create a new repository in the appropriate GitHub organisation.
 3. [ ] Add the repository to BuildAgency;
-see [Builds at SEEK] for more information. 
+       see [Builds at SEEK] for more information.
 4. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
-see the [Codex] documentation for more information. 
+       see the [Codex] documentation for more information.
 5. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
-see the [Gantry] documentation for more information. 
-6. [ ] Push local commits to the upstream GitHub branch. 
-7. [ ] Configure [GitHub repository settings]. 
+       see the [Gantry] documentation for more information.
+6. [ ] Push local commits to the upstream GitHub branch.
+7. [ ] Configure [GitHub repository settings].
 8. [ ] Keep dependencies up to date with [Renovate];
-request installation in [SEEK-Jobs/renovate]. 
+       request installation in [SEEK-Jobs/renovate].
 9. [ ] Delete this checklist 😌.
 
 ## Design

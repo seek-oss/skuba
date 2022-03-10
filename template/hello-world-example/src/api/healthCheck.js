@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 exports.__esModule = true;
 exports.healthCheckHandler = void 0;
 /**
@@ -8,7 +8,7 @@ exports.healthCheckHandler = void 0;
  * unhealthy and needs to be recycled.
  */
 var healthCheckHandler = function (ctx) {
-    ctx.state.skipRequestLogging = true;
-    ctx.body = '';
+  ctx.state.skipRequestLogging = true;
+  ctx.body = '';
 };
 exports.healthCheckHandler = healthCheckHandler;
