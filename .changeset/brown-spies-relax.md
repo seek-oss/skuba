@@ -17,5 +17,5 @@ export default Jest.mergePreset({
     },
   },
   // Rest of config
-})
+});
 ```
