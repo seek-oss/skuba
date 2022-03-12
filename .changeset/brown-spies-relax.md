@@ -11,7 +11,7 @@ This will be defaulted for existing projects in a future major version. You can 
 ```typescript
 export default Jest.mergePreset({
   globals: {
-    'ts-jest': {
+    "ts-jest": {
       // seek-oss/skuba#626
       isolatedModules: true,
     },
