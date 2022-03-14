@@ -48,7 +48,7 @@
   },
   "description": "SEEK development toolkit for backend applications and packages",
   "devDependencies": {
-    "@changesets/cli": "2.21.0",
+    "@changesets/cli": "2.21.1",
     "@changesets/get-github-info": "0.5.0",
     "@jest/reporters": "27.5.1",
     "@types/ejs": "3.1.0",
