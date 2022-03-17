@@ -2708,9 +2708,9 @@ debug@2.6.9, debug@^2.6.9:
     ms "2.0.0"
 
 debug@4, debug@^4.0.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.3:
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.3.tgz#04266e0b70a98d4462e6e288e38259213332b664"
-  integrity sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
+  integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
   dependencies:
     ms "2.1.2"
 
@@ -7127,9 +7127,9 @@ simple-get@^4.0.1:
     simple-concat "^1.0.0"
 
 simple-git@^3.0.0:
-  version "3.2.6"
-  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-3.2.6.tgz#2e73ebe11f49b0fb3bf9a4ca1b0527fe4a78efb7"
-  integrity sha512-1AFxwgpFiqpBEKHhRC8lhZxtLPP6iuzw2SUN91gA4+Hi+kSfm/oOiUZ2YiT+sEZPP/77KWG7Ci47P9+OC7Dcaw==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-3.3.0.tgz#91692d576f851be691124781b79872b246d2f92c"
+  integrity sha512-K9qcbbZwPHhk7MLi0k0ekvSFXJIrRoXgHhqMXAFM75qS68vdHTcuzmul1ilKI02F/4lXshVgBoDll2t++JK0PQ==
   dependencies:
     "@kwsites/file-exists" "^1.1.1"
     "@kwsites/promise-deferred" "^1.1.1"
