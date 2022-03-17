@@ -326,10 +326,10 @@
     resolve-from "^5.0.0"
     semver "^5.4.1"
 
-"@changesets/assemble-release-plan@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@changesets/assemble-release-plan/-/assemble-release-plan-5.1.0.tgz#0fcb18253998e3bc037a554874de43bcc58c4840"
-  integrity sha512-iYlqffCMhcwZ+6Cv8cimf10OBGYXQKufBI7J6htpRgCV2nT99RKXEjbYOtrXWKQqzu0XxOsk15apSEwjZN0JRw==
+"@changesets/assemble-release-plan@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@changesets/assemble-release-plan/-/assemble-release-plan-5.1.1.tgz#43ad4a832aae55059a1096ee28c4e8708c79c674"
+  integrity sha512-TQRZnK1sqYuoibJdSwpqE81rfDh0Xrkkr/M6bCQZ1ogGoRJNVbNYDWvNfkNvR4rEdRylri8cfKzffo/ruoy8QA==
   dependencies:
     "@babel/runtime" "^7.10.4"
     "@changesets/errors" "^0.1.4"
@@ -345,19 +345,19 @@
   dependencies:
     "@changesets/types" "^4.1.0"
 
-"@changesets/cli@2.21.0":
-  version "2.21.0"
-  resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.21.0.tgz#b689f91ed908150efc06e0985e6b4cfbd9aea3a3"
-  integrity sha512-cJXRg28MmF9VbQrlwSjpY4AJA2xZUbXFCpQ3kFmX0IeppO7wknZ2QfocAhIqwM828t8d3R4Zpi5xnvJ/crIcQw==
+"@changesets/cli@2.21.1":
+  version "2.21.1"
+  resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.21.1.tgz#00da1ab14be3c07383030d351b61f2606305d16d"
+  integrity sha512-4AJKo/UW0P217m2VHjiuhZy+CstLw54eu9I1fsY7tst76GeEN7mX0mVrTNEisR6CvOH7wLav3ITqvDcKVPbKsw==
   dependencies:
     "@babel/runtime" "^7.10.4"
     "@changesets/apply-release-plan" "^5.0.5"
-    "@changesets/assemble-release-plan" "^5.1.0"
+    "@changesets/assemble-release-plan" "^5.1.1"
     "@changesets/changelog-git" "^0.1.10"
     "@changesets/config" "^1.7.0"
     "@changesets/errors" "^0.1.4"
     "@changesets/get-dependents-graph" "^1.3.1"
-    "@changesets/get-release-plan" "^3.0.6"
+    "@changesets/get-release-plan" "^3.0.7"
     "@changesets/git" "^1.3.1"
     "@changesets/logger" "^0.0.5"
     "@changesets/pre" "^1.0.10"
@@ -421,13 +421,13 @@
     dataloader "^1.4.0"
     node-fetch "^2.5.0"
 
-"@changesets/get-release-plan@^3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@changesets/get-release-plan/-/get-release-plan-3.0.6.tgz#15aac108b9d0f139841562c9372d8cfd738503dc"
-  integrity sha512-HpPyr8y6xkihy3rONLZ6OtfgYq88NotidPAuS3nwMeZjLHiIVLyejR2+/5q717f6HKcrATxAjTwMAcjl7X/uzA==
+"@changesets/get-release-plan@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@changesets/get-release-plan/-/get-release-plan-3.0.7.tgz#db4a393985dec813d433129f1f828810ac95fa88"
+  integrity sha512-zDp6RIEKvERIF4Osy8sJ5BzqTiiLMhPWBO02y6w3nzTQJ0VBMaTs4hhwImQ/54O9I34eUHR3D0DwmwGQ27ifaw==
   dependencies:
     "@babel/runtime" "^7.10.4"
-    "@changesets/assemble-release-plan" "^5.1.0"
+    "@changesets/assemble-release-plan" "^5.1.1"
     "@changesets/config" "^1.7.0"
     "@changesets/pre" "^1.0.10"
     "@changesets/read" "^0.5.4"
@@ -3938,17 +3938,24 @@ hook-std@^2.0.0:
   resolved "https://registry.yarnpkg.com/hook-std/-/hook-std-2.0.0.tgz#ff9aafdebb6a989a354f729bb6445cf4a3a7077c"
   integrity sha512-zZ6T5WcuBMIUVh49iPQS9t977t7C0l7OtHrpeMb5uk48JdflRX0NSFvCekfYNmGQETnLq9W/isMyHl69kxGi8g==
 
-hosted-git-info@*, hosted-git-info@^4.0.0, hosted-git-info@^4.0.1, hosted-git-info@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-4.1.0.tgz#827b82867e9ff1c8d0c4d9d53880397d2c86d224"
-  integrity sha512-kyCuEOWjJqZuDbRHzL8V93NzQhwIB71oFWSyzVo+KPZI+pnQPPxucdkrOZvkLRnrf5URsQM+IJ09Dw29cRALIA==
+hosted-git-info@*, hosted-git-info@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-5.0.0.tgz#df7a06678b4ebd722139786303db80fdf302ea56"
+  integrity sha512-rRnjWu0Bxj+nIfUOkz0695C0H6tRrN5iYIzYejb0tDEefe2AekHu/U5Kn9pEie5vsJqpNQU02az7TGSH3qpz4Q==
   dependencies:
-    lru-cache "^6.0.0"
+    lru-cache "^7.5.1"
 
 hosted-git-info@^2.1.4:
   version "2.8.9"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.9.tgz#dffc0bf9a21c02209090f2aa69429e1414daf3f9"
   integrity sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==
+
+hosted-git-info@^4.0.0, hosted-git-info@^4.0.1, hosted-git-info@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-4.1.0.tgz#827b82867e9ff1c8d0c4d9d53880397d2c86d224"
+  integrity sha512-kyCuEOWjJqZuDbRHzL8V93NzQhwIB71oFWSyzVo+KPZI+pnQPPxucdkrOZvkLRnrf5URsQM+IJ09Dw29cRALIA==
+  dependencies:
+    lru-cache "^6.0.0"
 
 html-encoding-sniffer@^2.0.1:
   version "2.0.1"
@@ -5370,10 +5377,10 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-lru-cache@^7.3.1:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.4.0.tgz#2830a779b483e9723e20f26fa5278463c50599d8"
-  integrity sha512-YOfuyWa/Ee+PXbDm40j9WXyJrzQUynVbgn4Km643UYcWNcrSfRkKL0WaiUcxcIbkXcVTgNpDqSnPXntWXT75cw==
+lru-cache@^7.3.1, lru-cache@^7.5.1:
+  version "7.5.1"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.5.1.tgz#660a134c2c3c015aa453b03df55d2a9f0c216a0f"
+  integrity sha512-q1TS8IqKvcg3aScamKCHpepSrHF537Ww7nHahBOxhDu9D2YoBXAsj/7uFdZFj1xJr9LmyeJ62AdyofCHafUbIA==
 
 make-dir@^3.0.0:
   version "3.1.0"
@@ -5829,6 +5836,16 @@ normalize-package-data@^3.0.0, normalize-package-data@^3.0.2:
     is-core-module "^2.5.0"
     semver "^7.3.4"
     validate-npm-package-license "^3.0.1"
+
+normalize-package-data@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-4.0.0.tgz#1122d5359af21d4cd08718b92b058a658594177c"
+  integrity sha512-m+GL22VXJKkKbw62ZaBBjv8u6IE3UI4Mh5QakIqs3fWiKe0Xyi6L97hakwZK41/LD4R/2ly71Bayx0NLMwLA/g==
+  dependencies:
+    hosted-git-info "^5.0.0"
+    is-core-module "^2.8.1"
+    semver "^7.3.5"
+    validate-npm-package-license "^3.0.4"
 
 normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"
@@ -6463,10 +6480,10 @@ prettier@^1.19.1:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
   integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
 
-prettier@~2.5.0:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.5.1.tgz#fff75fa9d519c54cf0fce328c1017d94546bc56a"
-  integrity sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==
+prettier@~2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.6.0.tgz#12f8f504c4d8ddb76475f441337542fa799207d4"
+  integrity sha512-m2FgJibYrBGGgQXNzfd0PuDGShJgRavjUoRCw1mZERIWVSXF0iLzLm+aOqTAbLnC3n6JzUhAA8uZnFVghHJ86A==
 
 pretty-format@^27.0.0, pretty-format@^27.5.1:
   version "27.5.1"
