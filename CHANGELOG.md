@@ -1,5 +1,45 @@
 # skuba
 
+## 4.1.1
+
+### Patch Changes
+
+- **template:** Disable type checking in tests ([#787](https://github.com/seek-oss/skuba/pull/787))
+
+  Newly initialised projects will skip TypeScript type checking on `skuba test` as it's already covered by `skuba lint`. You can now iterate on your tests without running into annoying compilation errors like TS6133 (unused declarations).
+
+  This will be defaulted for existing projects in a future major version. You can opt in early by setting the `globals` configuration option in your `jest.config.ts`:
+
+  ```typescript
+  export default Jest.mergePreset({
+    globals: {
+      'ts-jest': {
+        // seek-oss/skuba#626
+        isolatedModules: true,
+      },
+    },
+    // Rest of config
+  });
+  ```
+
+- **template:** Specify default Buildkite agent ([#775](https://github.com/seek-oss/skuba/pull/775))
+
+- **format, lint:** Suppress `eslint-plugin-react` warning ([#786](https://github.com/seek-oss/skuba/pull/786))
+
+  ```console
+  Warning: React version was set to "detect" in eslint-plugin-react settings, but the "react" package is not installed. Assuming latest React version for linting.
+  ```
+
+- **deps:** Prettier 2.6 ([#792](https://github.com/seek-oss/skuba/pull/792))
+
+  See the [release notes](https://prettier.io/blog/2022/03/16/2.6.0.html) for more information.
+
+- **node:** Throw unhandled rejections under Node.js 14 ([#777](https://github.com/seek-oss/skuba/pull/777))
+
+  When a rejected promise is left unhandled in Node.js 14, it simply logs a warning. This caused `skuba node` to effectively swallow such failures and report a process exit code of 0. We now override this behaviour with [`--unhandled-rejections=throw`](https://nodejs.org/docs/latest-v16.x/api/cli.html#--unhandled-rejectionsmode) to predictably fail with a non-zero exit code across supported Node.js versions.
+
+- **template/\*-rest-api:** seek-jobs/gantry v1.6.2 ([#778](https://github.com/seek-oss/skuba/pull/778))
+
 ## 4.1.0
 
 ### Minor Changes
