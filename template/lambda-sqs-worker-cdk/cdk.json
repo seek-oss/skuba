@@ -19,7 +19,7 @@
           "SOMETHING": "prod"
         }
       }
-    },
-    "progress": "events"
-  }
+    }
+  },
+  "progress": "events"
 }
