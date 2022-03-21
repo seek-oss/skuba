@@ -15,7 +15,7 @@
   "private": true,
   "scripts": {
     "build": "skuba build",
-    "deploy": "cdk deploy appStack --require-approval never --context stage=${ENVIRONMENT} --progress events",
+    "deploy": "cdk deploy appStack --require-approval never --context stage=${ENVIRONMENT}",
     "format": "skuba format",
     "lint": "skuba lint",
     "package": "yarn install --ignore-optional --ignore-scripts --modules-folder ./lib/node_modules --non-interactive --offline --production",
