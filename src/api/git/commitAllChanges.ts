@@ -20,8 +20,13 @@ export const commitAllChanges = async ({
   message,
   author,
   committer,
-}: CommitAllParameters): Promise<void> => {
+}: CommitAllParameters): Promise<string | undefined> => {
   const changedFiles = await getChangedFiles({ dir });
+
+  if (!changedFiles.length) {
+    return;
+  }
+
   await Promise.all(
     changedFiles.map((file) =>
       file.state === 'deleted'
@@ -30,7 +35,7 @@ export const commitAllChanges = async ({
     ),
   );
 
-  await commit({
+  return commit({
     dir,
     message,
     author,
