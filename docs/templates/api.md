@@ -24,5 +24,4 @@ A REST [resource API] built on the [Koa] web framework and deployed with [Gantry
 [express]: https://expressjs.com/
 [gantry]: https://gantry.ssod.skinfra.xyz
 [koa]: https://koajs.com/
-
-## [resource api]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#resource-api
+[resource api]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#resource-api
