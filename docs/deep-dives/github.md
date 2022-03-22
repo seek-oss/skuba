@@ -16,7 +16,8 @@ This topic details GitHub integration features baked into **skuba**.
 
 **skuba** can annotate the first 50 issues detected by [`skuba lint`] and [`skuba test`] via the [GitHub Checks API].
 
-This can be enabled by propagating Buildkite environment variables and a GitHub API token (at SEEK, this token can be configured through Build Agency).
+This can be enabled by propagating Buildkite environment variables and a GitHub API token.
+At SEEK, this token can be configured through a `:tw` repository suffix in BuildAgency.
 For example, with the Docker plugin:
 
 ```yaml
