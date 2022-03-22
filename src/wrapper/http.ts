@@ -33,7 +33,7 @@ export const createRequestListenerFromFunction =
         const data: Buffer[] = [];
 
         req
-          .on('data', (chunk) => data.push(chunk))
+          .on('data', (chunk: Buffer) => data.push(chunk))
           .on('end', () => resolve(Buffer.concat(data).toString()))
           .on('error', (err) => reject(err));
       });
@@ -42,7 +42,9 @@ export const createRequestListenerFromFunction =
       const jsonRequest: unknown = requestBody ? JSON.parse(requestBody) : [];
 
       // Pass a non-array request body as the first parameter
-      const args = Array.isArray(jsonRequest) ? jsonRequest : [jsonRequest];
+      const args: unknown[] = Array.isArray(jsonRequest)
+        ? jsonRequest
+        : [jsonRequest];
 
       const response: unknown = await fn(...args);
 

@@ -21,7 +21,7 @@ export class StreamInterceptor extends stream.Transform {
   }
 
   _transform(
-    chunk: any,
+    chunk: Uint8Array,
     _encoding: BufferEncoding,
     callback: stream.TransformCallback,
   ) {
