@@ -18,12 +18,23 @@ import git from 'isomorphic-git';
  */
 const ownerRepoRegex = /github.com(?::|\/)(.+)\/(.+).git$/;
 
+const ownerAndRepoFromUrl = (url: string) => {
+  const match = ownerRepoRegex.exec(url);
+
+  const owner = match?.[1];
+  const repo = match?.[2];
+
+  return { owner, repo };
+};
+
 interface GetOwnerAndRepoParameters {
   dir: string;
+  env?: Record<string, string | undefined>;
 }
 
 /**
- * Extracts the owner and repository names from local Git remotes.
+ * Extracts the owner and repository names from CI environment variables,
+ * falling back to local Git remotes.
  *
  * Currently, only GitHub repository URLs are supported:
  *
@@ -34,14 +45,28 @@ interface GetOwnerAndRepoParameters {
  */
 export const getOwnerAndRepo = async ({
   dir,
+  env = process.env,
 }: GetOwnerAndRepoParameters): Promise<{ owner: string; repo: string }> => {
+  if (env.GITHUB_REPOSITORY) {
+    const [owner, repo] = env.GITHUB_REPOSITORY.split('/');
+
+    if (owner && repo) {
+      return { owner, repo };
+    }
+  }
+
+  if (env.BUILDKITE_REPO) {
+    const { owner, repo } = ownerAndRepoFromUrl(env.BUILDKITE_REPO);
+
+    if (owner && repo) {
+      return { owner, repo };
+    }
+  }
+
   const remotes = await git.listRemotes({ dir, fs });
 
   for (const { url } of remotes) {
-    const match = ownerRepoRegex.exec(url);
-
-    const owner = match?.[1];
-    const repo = match?.[2];
+    const { owner, repo } = ownerAndRepoFromUrl(url);
 
     if (owner && repo) {
       return { owner, repo };
