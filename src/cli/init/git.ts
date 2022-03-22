@@ -5,7 +5,6 @@ import git from 'isomorphic-git';
 import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
-import { crawlDirectory } from '../../utils/dir';
 import { log } from '../../utils/logging';
 
 interface GitHubProject {
@@ -34,19 +33,6 @@ export const initialiseRepo = async (
     fs,
     remote: 'origin',
     url: `git@github.com:${orgName}/${repoName}.git`,
-  });
-};
-
-export const commitChanges = async (dir: string, message: string) => {
-  const filepaths = await crawlDirectory(dir);
-
-  await Promise.all(
-    filepaths.map((filepath) => git.add({ dir, filepath, fs })),
-  );
-
-  await Git.commit({
-    dir,
-    message,
   });
 };
 
