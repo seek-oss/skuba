@@ -34,7 +34,7 @@ jobs:
           publish: yarn release
           version: yarn stage
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}
 
       - name: Deploy to GitHub Pages
