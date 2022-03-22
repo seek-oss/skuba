@@ -23,11 +23,13 @@ it('should stage and commit all the new files in the working directory', async (
     fs.promises.writeFile(newFileName2, ''),
   ]);
 
-  await commitAllChanges({
-    dir,
-    message: 'initial commit',
-    author,
-  });
+  await expect(
+    commitAllChanges({
+      dir,
+      message: 'initial commit',
+      author,
+    }),
+  ).resolves.toMatch(/^[0-9a-f]{40}$/);
 
   const statuses = await Promise.all([
     git.status({ fs, dir, filepath: newFileName }),
@@ -60,11 +62,30 @@ it('should stage and commit removed files', async () => {
     fs.promises.rm(newFileName2),
   ]);
 
-  await commitAllChanges({
-    dir,
-    message: 'remove commit',
-    author,
-  });
+  await expect(
+    commitAllChanges({
+      dir,
+      message: 'remove commit',
+      author,
+    }),
+  ).resolves.toMatch(/^[0-9a-f]{40}$/);
+
+  const statuses = await Promise.all([
+    git.status({ fs, dir, filepath: newFileName }),
+    git.status({ fs, dir, filepath: newFileName2 }),
+  ]);
+
+  expect(statuses).toStrictEqual(['absent', 'absent']);
+});
+
+it('should no-op on clean directory', async () => {
+  await expect(
+    commitAllChanges({
+      dir,
+      message: 'remove commit',
+      author,
+    }),
+  ).resolves.toBeUndefined();
 
   const statuses = await Promise.all([
     git.status({ fs, dir, filepath: newFileName }),
