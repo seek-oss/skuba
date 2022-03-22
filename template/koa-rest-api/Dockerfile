@@ -1,14 +1,30 @@
+# syntax=docker/dockerfile:1.2
+
+FROM node:16-alpine AS dev-deps
+
+WORKDIR /workdir
+
+COPY package.json yarn.lock ./
+
+RUN \
+  --mount=type=secret,id=npm,dst=/workdir/.npmrc \
+  yarn install --frozen-lockfile --ignore-optional --non-interactive
+
+###
+
 FROM node:16-alpine AS deps
 
 WORKDIR /workdir
 
 COPY package.json yarn.lock ./
 
-RUN yarn install --ignore-optional --ignore-scripts --non-interactive --production
+RUN \
+  --mount=type=secret,id=npm,dst=/workdir/.npmrc \
+  yarn install --ignore-optional --ignore-scripts --non-interactive --production
 
 ###
 
-FROM deps AS build
+FROM dev-deps AS build
 
 COPY . .
 
