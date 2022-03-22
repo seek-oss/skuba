@@ -4,9 +4,13 @@ on:
   - pull_request
   - push
 
+permissions: {}
+
 jobs:
   validate:
     name: Lint & Test
+    permissions:
+      checks: write
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo

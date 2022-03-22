@@ -15,9 +15,13 @@ on:
     workflows:
       - Release
 
+permissions: {}
+
 jobs:
   core:
     name: Lint & Test
+    permissions:
+      checks: write
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo

@@ -6,6 +6,8 @@ on:
       - beta
       - master
 
+permissions: {}
+
 jobs:
   release:
     name: Publish & Deploy

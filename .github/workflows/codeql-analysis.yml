@@ -6,14 +6,19 @@
 name: CodeQL
 
 on:
-  push:
   pull_request:
+  push:
   schedule:
     - cron: '0 22 * * 0'
+
+permissions: {}
 
 jobs:
   analyze:
     name: Analyze
+    permissions:
+      actions: read
+      security-events: write
     runs-on: ubuntu-latest
 
     strategy:
