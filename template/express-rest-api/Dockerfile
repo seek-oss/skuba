@@ -1,15 +1,24 @@
-ARG BASE_IMAGE
-ARG BASE_TAG
+# syntax=docker/dockerfile:1.2
+
+FROM node:16-alpine AS dev-deps
+
+WORKDIR /workdir
+
+COPY package.json yarn.lock ./
+
+RUN \
+  --mount=type=secret,id=npm,dst=/workdir/.npmrc \
+  yarn install --frozen-lockfile --ignore-optional --non-interactive
 
 ###
 
-FROM ${BASE_IMAGE}:${BASE_TAG} AS deps
+FROM dev-deps AS deps
 
 RUN yarn install --ignore-optional --ignore-scripts --non-interactive --offline --production
 
 ###
 
-FROM ${BASE_IMAGE}:${BASE_TAG} AS build
+FROM dev-deps AS build
 
 COPY . .
 
@@ -34,4 +43,4 @@ ARG PORT=8001
 ENV PORT ${PORT}
 EXPOSE ${PORT}
 
-CMD ["lib/listen.js"]
+CMD ["--require", "./lib/tracing.js", "./lib/listen.js"]
