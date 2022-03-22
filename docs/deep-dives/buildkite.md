@@ -103,11 +103,11 @@ The agent may be tied up running a particularly compute- or memory-intensive ste
 
 1. Reduce the number of agents that run on each instance.
 
-   At SEEK, this can be configured through Build Agency.
+   At SEEK, this can be configured through BuildAgency.
 
 1. Increase the instance size.
 
-   At SEEK, this can be configured through Build Agency.
+   At SEEK, this can be configured through BuildAgency.
 
 [`skuba build-package`]: ../cli/build.md#skuba-build-package
 [`skuba lint`]: ../cli/lint.md#skuba-lint
