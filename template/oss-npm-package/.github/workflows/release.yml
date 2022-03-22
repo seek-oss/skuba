@@ -10,14 +10,11 @@ jobs:
   release:
     name: Publish & Deploy
     runs-on: ubuntu-latest
-    env:
-      CI: true
     steps:
       - name: Check out repo
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          lfs: true
 
       - name: Set up Node.js 16.x
         uses: actions/setup-node@v2
