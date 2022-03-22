@@ -60,7 +60,7 @@
     "@types/npm-which": "3.0.1",
     "@types/picomatch": "2.3.0",
     "@types/supertest": "2.0.11",
-    "enhanced-resolve": "^5.9.2",
+    "enhanced-resolve": "5.9.2",
     "express": "4.17.3",
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
