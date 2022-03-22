@@ -29,5 +29,8 @@ type Props = Pick<
  *
  * This concatenates array options like `testPathIgnorePatterns`.
  */
-export const mergePreset = (props: Props): Config.InitialOptions =>
-  mergeRaw(jestPreset, props);
+export const mergePreset = <
+  AdditionalProps extends Partial<Config.InitialOptions>,
+>(
+  props: AdditionalProps & Props,
+): Config.InitialOptions => mergeRaw(jestPreset, props);
