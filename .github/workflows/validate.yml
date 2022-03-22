@@ -26,6 +26,12 @@ jobs:
         uses: actions/checkout@master
         with:
           lfs: true
+          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
+
+      - name: Set Git user
+        run: |
+          git config user.name seek-oss-ci
+          git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
       - name: Set up Node.js 16.x
         uses: actions/setup-node@master

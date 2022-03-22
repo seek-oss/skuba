@@ -3,6 +3,7 @@ import stream from 'stream';
 import { log } from '../../utils/logging';
 
 import { createAnnotations } from './annotate';
+import { autofix } from './autofix';
 import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint';
 import {
   runPrettierInCurrentThread,
@@ -104,4 +105,11 @@ export const externalLint = async (input: Input) => {
   log.err(`${tools.join(', ')} found issues that require triage.`);
 
   process.exitCode = 1;
+
+  if (eslint.ok && prettier.ok) {
+    // If these are fine then the issue lies with tsc, which we can't autofix.
+    return;
+  }
+
+  await autofix(input);
 };

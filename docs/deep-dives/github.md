@@ -34,9 +34,11 @@ steps:
       - *docker-ecr-cache
       - docker#v3.8.0:
           environment:
-            # Enable GitHub annotation support.
+            # Enable GitHub integrations.
             - BUILDKITE
+            - BUILDKITE_BRANCH
             - BUILDKITE_BUILD_NUMBER
+            - BUILDKITE_PIPELINE_DEFAULT_BRANCH
             - GITHUB_API_TOKEN
           volumes:
             # Mount cached dependencies.
@@ -50,9 +52,11 @@ declare the environment variables and volume mounts in your [Compose file]:
 services:
   app:
     environment:
-      # Enable GitHub annotation support.
+      # Enable GitHub integrations.
       - BUILDKITE
+      - BUILDKITE_BRANCH
       - BUILDKITE_BUILD_NUMBER
+      - BUILDKITE_PIPELINE_DEFAULT_BRANCH
       - GITHUB_API_TOKEN
     volumes:
       - ./:/workdir
@@ -63,13 +67,19 @@ services:
 If you're running in GitHub Actions,
 propagate the following environment variables to achieve the same effect:
 
-- `CI` or `GITHUB_ACTIONS`
+- `GITHUB_ACTIONS`
 - `GITHUB_JOB`
+- `GITHUB_REF_NAME`
+- `GITHUB_REF_PROTECTED`
 - `GITHUB_RUN_NUMBER`
 - `GITHUB_TOKEN`
 
 **skuba**'s development API includes a [GitHub.createCheckRun] function.
 You can use this to create your own check runs from other JavaScript code running in your CI workflow.
+
+---
+
+## GitHub autofixes
 
 ---
 
