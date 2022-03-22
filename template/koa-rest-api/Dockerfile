@@ -12,15 +12,9 @@ RUN \
 
 ###
 
-FROM node:16-alpine AS deps
+FROM dev-deps AS deps
 
-WORKDIR /workdir
-
-COPY package.json yarn.lock ./
-
-RUN \
-  --mount=type=secret,id=npm,dst=/workdir/.npmrc \
-  yarn install --ignore-optional --ignore-scripts --non-interactive --production
+RUN yarn install --ignore-optional --ignore-scripts --non-interactive --offline --production
 
 ###
 
