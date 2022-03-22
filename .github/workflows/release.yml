@@ -6,9 +6,13 @@ on:
       - beta
       - master
 
+permissions: {}
+
 jobs:
   release:
     name: Publish & Deploy
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
