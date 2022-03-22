@@ -1,15 +1,14 @@
-ARG BASE_IMAGE
-ARG BASE_TAG
+FROM node:16-alpine AS deps
+
+WORKDIR /workdir
+
+COPY package.json yarn.lock ./
+
+RUN yarn install --ignore-optional --ignore-scripts --non-interactive --production
 
 ###
 
-FROM ${BASE_IMAGE}:${BASE_TAG} AS deps
-
-RUN yarn install --ignore-optional --ignore-scripts --non-interactive --offline --production
-
-###
-
-FROM ${BASE_IMAGE}:${BASE_TAG} AS build
+FROM deps AS build
 
 COPY . .
 

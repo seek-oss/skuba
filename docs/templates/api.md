@@ -26,14 +26,3 @@ A REST [resource API] built on the [Koa] web framework and deployed with [Gantry
 [koa]: https://koajs.com/
 
 ## [resource api]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#resource-api
-
-## hello-world-example
-
-A REST [resource API] built on the [Koa] web framework and deployed with [Gantry], but with simpified deployment steps intended for learning and testing, not production.
-
-[View on GitHub](https://github.com/seek-oss/skuba/tree/master/template/koa-rest-api)
-
-[express]: https://expressjs.com/
-[gantry]: https://gantry.ssod.skinfra.xyz
-[koa]: https://koajs.com/
-[resource api]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#resource-api

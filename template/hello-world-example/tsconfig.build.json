@@ -1,5 +1,0 @@
-{
-  "exclude": ["**/__mocks__/**/*", "**/testing/**/*", "**/*.test.ts"],
-  "extends": "./tsconfig.json",
-  "include": ["src/**/*"]
-}

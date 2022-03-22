@@ -15,7 +15,6 @@ export const TEMPLATE_NAMES = [
   'lambda-sqs-worker-cdk',
   'oss-npm-package',
   'private-npm-package',
-  'hello-world-example',
 ] as const;
 
 export type TemplateName = typeof TEMPLATE_NAMES[number];
@@ -69,10 +68,6 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
   'private-npm-package': {
     added: '3.6.0',
     filename: 'package.md',
-  },
-  'hello-world-example': {
-    added: '4.1.0',
-    filename: 'api.md',
   },
 };
 
