@@ -68,7 +68,8 @@ export const tsconfigModule = async ({
         const hasLibStar = exclude.includes('lib*/**/*');
 
         outputData.exclude = exclude.filter(
-          (pattern) => !(hasLibStar && ['lib', 'lib/**/*'].includes(pattern)),
+          (pattern: unknown) =>
+            !(hasLibStar && new Set<unknown>(['lib', 'lib/**/*']).has(pattern)),
         );
       }
 

@@ -35,7 +35,7 @@ jobs:
           git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
       - name: Set up Node.js 16.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
@@ -74,9 +74,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Node.js 16.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
-      - name: Test template
+      - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
+        name: Test template
         run: yarn test:template ${{ matrix.template }}
