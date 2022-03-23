@@ -1,3 +1,4 @@
+// TODO: remove once Jest 28 is released
 // https://github.com/typescript-eslint/typescript-eslint/blob/v5.16.0/tests/jest-resolver.js
 // https://github.com/typescript-eslint/typescript-eslint/issues/4210#issuecomment-981203332
 
