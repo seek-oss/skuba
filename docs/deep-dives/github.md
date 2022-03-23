@@ -103,6 +103,8 @@ If you're running in GitHub Actions,
 you need to supply a personal access token to [actions/checkout].
 Your repository's default `GITHUB_TOKEN` will not suffice as its commits [will not trigger workflows] and will lack (required) status checks.
 
+<!-- {% raw %} -->
+
 ```yaml
 jobs:
   validate:
@@ -117,6 +119,8 @@ jobs:
       - name: Lint
         run: yarn lint
 ```
+
+<!-- {% endraw %} -->
 
 ---
 
