@@ -2,4 +2,4 @@
 "skuba": minor
 ---
 
-Reduce complexity of Dockerfile to allow for local building
+template: Reduce Docker complexity to allow for local building
