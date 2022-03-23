@@ -6,15 +6,20 @@ on:
       - beta
       - master
 
+permissions: {}
+
 jobs:
   release:
     name: Publish & Deploy
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
       - name: Set up Node.js 16.x
         uses: actions/setup-node@v2
