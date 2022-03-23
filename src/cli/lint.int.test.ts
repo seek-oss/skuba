@@ -64,6 +64,12 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
 
 const originalCwd = process.cwd();
 
+beforeAll(() => {
+  delete process.env.BUILDKITE;
+  delete process.env.CI;
+  delete process.env.GITHUB_ACTIONS;
+});
+
 beforeEach(() => {
   jest.clearAllMocks();
 

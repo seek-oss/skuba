@@ -5,7 +5,7 @@ import git from 'isomorphic-git';
  * Tries to return a Git branch name from CI environment variables.
  */
 const currentBranchFromEnvironment = (env = process.env): string | undefined =>
-  env.BUILDKITE_BRANCH ?? env.GITHUB_REF_NAME;
+  env.BUILDKITE_BRANCH ?? env.GITHUB_HEAD_REF ?? env.GITHUB_REF_NAME;
 
 interface CurrentBranchParameters {
   dir?: string;
