@@ -2,4 +2,4 @@
 "skuba": patch
 ---
 
-template: Propagate additional Buildkite environment variables
+template: Propagate Buildkite environment variables for lint autofixing
