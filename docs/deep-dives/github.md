@@ -95,8 +95,8 @@ SEEKers should review our internal "Builds at SEEK" documentation and configure 
 
 ```yaml
 clusters:
-    gitRepositories:
-      - git@github.com:seek-oss/skuba.git:tw
+  gitRepositories:
+    - git@github.com:seek-oss/skuba.git:tw
 ```
 
 If you're running in GitHub Actions,
