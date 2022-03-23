@@ -30,7 +30,7 @@ steps:
       - *docker-ecr-cache
       - docker#v3.8.0:
           environment:
-            # Enable Buildkite annotation support.
+            # Enable Buildkite integrations.
             - BUILDKITE
             - BUILDKITE_AGENT_ACCESS_TOKEN
             - BUILDKITE_JOB_ID
@@ -51,7 +51,7 @@ declare the environment variables and volume mounts in your [Compose file]:
 services:
   app:
     environment:
-      # Enable Buildkite annotation support.
+      # Enable Buildkite integrations.
       - BUILDKITE
       - BUILDKITE_AGENT_ACCESS_TOKEN
       - BUILDKITE_JOB_ID

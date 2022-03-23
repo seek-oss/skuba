@@ -10,9 +10,10 @@ describe('currentBranch', () => {
   const dir = process.cwd();
 
   it.each`
-    description         | env
-    ${'Buildkite'}      | ${{ BUILDKITE_BRANCH: 'x' }}
-    ${'GitHub Actions'} | ${{ GITHUB_REF_NAME: 'x' }}
+    description                | env
+    ${'Buildkite'}             | ${{ BUILDKITE_BRANCH: 'x' }}
+    ${'GitHub Actions branch'} | ${{ GITHUB_REF_NAME: 'x' }}
+    ${'GitHub Actions PR'}     | ${{ GITHUB_HEAD_REF: 'x' }}
   `('returns a branch name from $description', async ({ env }) => {
     await expect(currentBranch({ env })).resolves.toBe('x');
 
