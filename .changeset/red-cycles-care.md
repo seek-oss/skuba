@@ -18,7 +18,7 @@ If you wish to relax some of the new rules, [extend](https://eslint.org/docs/use
 module.exports = {
   extends: ['skuba'],
   rules: {
-    // Demote new TypeScript ESLint rule from "error" to "warn".
+    // Demote new TypeScript ESLint rule from 'error' to 'warn'.
     '@typescript-eslint/no-unsafe-argument': 'warn',
   },
 };
