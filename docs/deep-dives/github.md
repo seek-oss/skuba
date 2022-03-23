@@ -68,6 +68,7 @@ If you're running in GitHub Actions,
 propagate the following environment variables to achieve the same effect:
 
 - `GITHUB_ACTIONS`
+- `GITHUB_HEAD_REF`
 - `GITHUB_JOB`
 - `GITHUB_REF_NAME`
 - `GITHUB_REF_PROTECTED`
