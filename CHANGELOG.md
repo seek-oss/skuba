@@ -1,5 +1,29 @@
 # skuba
 
+## 4.2.0-beta.0
+
+### Minor Changes
+
+- **lint:** Autofix in CI ([#800](https://github.com/seek-oss/skuba/pull/800))
+
+  `skuba lint` can now automatically push ESLint and Prettier autofixes. This lets us introduce new autofixable linting rules and version upgrades without requiring a manual `skuba format` on each project.
+
+  You'll need to configure your CI environment to support this feature. See our [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) documentation to learn more.
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Fix progress configuration in `cdk.json` ([#797](https://github.com/seek-oss/skuba/pull/797))
+
+- **Git.currentBranch:** Add helper function ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **Git.commitAllChanges:** Skip commit and return `undefined` when there are no changes ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **template:** Propagate additional Buildkite environment variables ([#800](https://github.com/seek-oss/skuba/pull/800))
+
+- **Git.getOwnerAndRepo:** Support reading from CI environment variables ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **Git.getHeadCommitMessage:** Add helper function ([#804](https://github.com/seek-oss/skuba/pull/804))
+
 ## 4.1.1
 
 ### Patch Changes
