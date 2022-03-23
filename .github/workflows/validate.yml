@@ -71,5 +71,6 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Test template
+      - if: github.head_ref != 'skip-integration-release' && github.ref_name != 'skip-integration-release'
+        name: Test template
         run: yarn test:template ${{ matrix.template }}
