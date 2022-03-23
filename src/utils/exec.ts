@@ -16,7 +16,7 @@ class YarnSpamFilter extends stream.Transform {
   silenced = false;
 
   _transform(
-    chunk: any,
+    chunk: Uint8Array,
     _encoding: BufferEncoding,
     callback: stream.TransformCallback,
   ) {
@@ -41,7 +41,7 @@ class YarnSpamFilter extends stream.Transform {
 
 class YarnWarningFilter extends stream.Transform {
   _transform(
-    chunk: any,
+    chunk: Uint8Array,
     _encoding: BufferEncoding,
     callback: stream.TransformCallback,
   ) {
