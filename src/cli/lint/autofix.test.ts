@@ -146,6 +146,7 @@ describe('autofix', () => {
 
   it('uses isomorphic-git in other CI environments', async () => {
     jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+    jest.mocked(Git.currentBranch).mockResolvedValue('dev');
 
     await expect(autofix({ debug: false })).resolves.toBeUndefined();
 
@@ -154,6 +155,7 @@ describe('autofix', () => {
       auth: { type: 'gitHubApp' },
       dir: expect.any(String),
       ref: 'commit-sha',
+      remoteRef: 'dev',
     });
 
     expect(stdout()).toMatchInlineSnapshot(`
