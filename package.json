@@ -104,7 +104,6 @@
   },
   "scripts": {
     "build": "ts-node --transpile-only src/skuba build && scripts/postbuild.sh",
-    "changeset:add": "changeset add && prettier --loglevel silent --write '.changeset/*.md'",
     "deploy": "scripts/deploy.sh",
     "format": "yarn skuba format",
     "lint": "yarn skuba lint",

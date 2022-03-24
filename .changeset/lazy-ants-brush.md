@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
 template/oss-npm-package: Lock down GitHub workflow permissions
