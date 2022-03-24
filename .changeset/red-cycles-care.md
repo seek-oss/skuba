@@ -1,5 +1,5 @@
 ---
-"skuba": minor
+'skuba': minor
 ---
 
 deps: ESLint 8 + eslint-config-seek 9
@@ -16,10 +16,10 @@ If you wish to relax some of the new rules, [extend](https://eslint.org/docs/use
 
 ```javascript
 module.exports = {
-  extends: ["skuba"],
+  extends: ['skuba'],
   rules: {
-    // Demote new TypeScript ESLint rule from "error" to "warn".
-    "@typescript-eslint/no-unsafe-argument": "warn",
+    // Demote new TypeScript ESLint rule from 'error' to 'warn'.
+    '@typescript-eslint/no-unsafe-argument': 'warn',
   },
 };
 ```

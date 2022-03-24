@@ -1,5 +1,5 @@
 ---
-"skuba": minor
+'skuba': minor
 ---
 
 lint: Autofix in CI

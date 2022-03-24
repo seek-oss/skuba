@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
 Git.currentBranch: Add helper function
