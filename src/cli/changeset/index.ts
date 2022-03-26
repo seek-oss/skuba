@@ -31,7 +31,7 @@ const run = async () => {
       );
 
       await runPublish({
-        script: publishScript as string,
+        script: publishScript,
         githubToken,
         cwd,
       });

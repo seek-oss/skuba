@@ -102,6 +102,8 @@ describe('version', () => {
     await runVersion({
       githubToken: '@@GITHUB_TOKEN',
       cwd,
+      commitMessage: 'Version Packages',
+      prTitle: 'Version Packages',
     });
 
     expect(mockedGithubMethods.pulls.create.mock.calls[0]).toMatchSnapshot();
@@ -133,6 +135,8 @@ describe('version', () => {
     await runVersion({
       githubToken: '@@GITHUB_TOKEN',
       cwd,
+      commitMessage: 'Version Packages',
+      prTitle: 'Version Packages',
     });
 
     expect(mockedGithubMethods.pulls.create.mock.calls[0]).toMatchSnapshot();
@@ -164,6 +168,8 @@ describe('version', () => {
     await runVersion({
       githubToken: '@@GITHUB_TOKEN',
       cwd,
+      commitMessage: 'Version Packages',
+      prTitle: 'Version Packages',
     });
 
     expect(mockedGithubMethods.pulls.create.mock.calls[0]).toMatchSnapshot();
