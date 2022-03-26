@@ -53,7 +53,7 @@ export const postWorkerOutput = <Input, Output>(
     process.exit(1);
   }
 
-  fn(workerData)
+  fn(workerData as Input)
     .then((output) => port.postMessage(output))
     .catch((err) => {
       logger.err(err);

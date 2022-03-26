@@ -1,7 +1,6 @@
 import git from 'isomorphic-git';
-import { mocked } from 'ts-jest/utils';
 
-import { getHeadCommitId } from './log';
+import { getHeadCommitId, getHeadCommitMessage } from './log';
 
 jest.mock('isomorphic-git');
 
@@ -27,7 +26,7 @@ describe('getHeadCommitId', () => {
   });
 
   it('falls back to a commit ID from the Git log', async () => {
-    mocked(git.log).mockResolvedValue([{ oid: 'a'.repeat(40) } as any]);
+    jest.mocked(git.log).mockResolvedValue([{ oid: 'a'.repeat(40) } as any]);
 
     await expect(getHeadCommitId({ dir, env: {} })).resolves.toBe(
       'a'.repeat(40),
@@ -37,10 +36,44 @@ describe('getHeadCommitId', () => {
   });
 
   it('throws on an empty Git log', async () => {
-    mocked(git.log).mockResolvedValue([]);
+    jest.mocked(git.log).mockResolvedValue([]);
 
     await expect(
       getHeadCommitId({ dir, env: {} }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
+      `"Git log does not contain any commits"`,
+    );
+
+    expect(git.log).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('getHeadCommitMessage', () => {
+  it('prefers a commit message from a Buildkite environment', async () => {
+    await expect(
+      getHeadCommitMessage({ dir, env: { BUILDKITE_MESSAGE: 'Do work' } }),
+    ).resolves.toBe('Do work');
+
+    expect(git.log).not.toHaveBeenCalled();
+  });
+
+  it('falls back to a commit ID from the Git log', async () => {
+    jest
+      .mocked(git.log)
+      .mockResolvedValue([{ commit: { message: 'Do work' } } as any]);
+
+    await expect(getHeadCommitMessage({ dir, env: {} })).resolves.toBe(
+      'Do work',
+    );
+
+    expect(git.log).toHaveBeenCalledTimes(1);
+  });
+
+  it('throws on an empty Git log', async () => {
+    jest.mocked(git.log).mockResolvedValue([]);
+
+    await expect(
+      getHeadCommitMessage({ dir, env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
       `"Git log does not contain any commits"`,
     );

@@ -192,7 +192,7 @@ a changeset is not necessary for:
 - [npm dev dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
 
 ```shell
-yarn changeset:add
+yarn changeset
 ```
 
 The Changesets CLI is interactive and follows [semantic versioning]:

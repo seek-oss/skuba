@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { pathsToModuleNameMapper } = require('ts-jest');
 const {
   sys,
   findConfigFile,
@@ -11,7 +11,7 @@ const {
 /**
  * Set a default `src` module alias for backward compatibility.
  *
- * TODO: drop this default in skuba v4.
+ * TODO: drop this default in skuba v5.
  */
 const DEFAULT_PATHS = { src: ['src'], 'src/*': ['src/*'] };
 
@@ -20,7 +20,7 @@ const DEFAULT_PATHS = { src: ['src'], 'src/*': ['src/*'] };
  */
 const getConfigFromDisk = () => {
   const filename =
-    findConfigFile('.', sys.fileExists.bind(this)) || 'tsconfig.json';
+    findConfigFile('.', sys.fileExists.bind(this)) ?? 'tsconfig.json';
 
   return readConfigFile(filename, sys.readFile.bind(this)).config;
 };
@@ -64,7 +64,7 @@ module.exports.createModuleNameMapper = (getConfig = getConfigFromDisk) => {
       ),
     );
 
-    const prefix = path.join('<rootDir>', parsedConfig.options.baseUrl || '.');
+    const prefix = path.join('<rootDir>', parsedConfig.options.baseUrl ?? '.');
 
     const moduleNameMapper = pathsToModuleNameMapper(paths, { prefix });
 

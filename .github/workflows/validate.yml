@@ -15,20 +15,27 @@ on:
     workflows:
       - Release
 
+permissions: {}
+
 jobs:
   core:
     name: Lint & Test
+    permissions:
+      checks: write
     runs-on: ubuntu-latest
-    env:
-      CI: true
     steps:
       - name: Check out repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
-          lfs: true
+          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
+
+      - name: Set Git user
+        run: |
+          git config user.name seek-oss-ci
+          git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
       - name: Set up Node.js 16.x
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
@@ -52,8 +59,6 @@ jobs:
   template:
     name: Integrate
     runs-on: ubuntu-latest
-    env:
-      CI: true
     strategy:
       matrix:
         template:
@@ -66,14 +71,13 @@ jobs:
           - private-npm-package
     steps:
       - name: Check out repo
-        uses: actions/checkout@master
-        with:
-          lfs: true
+        uses: actions/checkout@v3
 
       - name: Set up Node.js 16.x
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
-      - name: Test template
+      - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
+        name: Test template
         run: yarn test:template ${{ matrix.template }}

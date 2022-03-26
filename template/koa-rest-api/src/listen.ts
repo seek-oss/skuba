@@ -1,3 +1,5 @@
+import './register';
+
 import app from './app';
 import { config } from './config';
 import { rootLogger } from './framework/logging';
