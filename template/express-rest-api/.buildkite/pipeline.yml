@@ -1,26 +1,6 @@
 agents:
   queue: <%- prodBuildkiteQueueName %>
 
-configs:
-  plugins:
-    - &aws-sm
-      seek-oss/aws-sm#v2.3.1:
-        env:
-          NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
-
-    - &private-npm
-      seek-oss/private-npm#v1.2.0:
-        env: NPM_READ_TOKEN
-
-  base-steps:
-    - &deploy
-      concurrency: 1
-      retry:
-        manual:
-          # Only use this if you need to roll back a deployment ASAP.
-          # Always follow up with a proper revert or fix in Git history.
-          permit_on_passed: true
-
 steps:
   - label: 🧪 Test & Lint
     commands:
@@ -31,8 +11,13 @@ steps:
     env:
       GET_GITHUB_TOKEN: please
     plugins:
-      - *aws-sm
-      - *private-npm
+      - &aws-sm
+        seek-oss/aws-sm#v2.3.1:
+          env:
+            NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
+      - &private-npm
+        seek-oss/private-npm#v1.2.0:
+          env: NPM_READ_TOKEN
       - docker-compose#v3.9.0:
           run: app
 
@@ -50,33 +35,36 @@ steps:
   - block: 🙋🏻‍♀️ Deploy Dev
     branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
 
-  - <<: *deploy
-    agents:
-      queue: <%- devBuildkiteQueueName %>
-    label: 🤞 Deploy Dev
-    concurrency_group: <%- teamName %>/deploy/gantry/<%- devGantryEnvironmentName %>
-    key: deploy-dev
+  - concurrency: 1
+    concurrency_group: <%- teamName %>/deploy/gantry/{{matrix.environment}}
+    label: '{{matrix.label}}'
+    matrix:
+      adjustments:
+        - with:
+            environment: <%- devGantryEnvironmentName %>
+            label: 🤞 Deploy Dev
+            values: dev
+          agents:
+            queue: <%- devBuildkiteQueueName %>
+          key: deploy-dev
+        - with:
+            environment: <%- prodGantryEnvironmentName %>
+            label: 🚀 Deploy Prod
+            values: prod
+          branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
+          depends_on: deploy-dev
+      setup: {}
     plugins:
       - seek-jobs/gantry#v1.6.2:
           command: apply
-          environment: <%- devGantryEnvironmentName %>
+          environment: '{{matrix.environment}}'
           file: gantry.apply.yml
           region: <%- region %>
           values:
             - .gantry/common.yml
-            - .gantry/dev.yml
-
-  - <<: *deploy
-    label: 🚀 Deploy Prod
-    branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
-    concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
-    depends_on: deploy-dev
-    plugins:
-      - seek-jobs/gantry#v1.6.2:
-          command: apply
-          environment: <%- prodGantryEnvironmentName %>
-          file: gantry.apply.yml
-          region: <%- region %>
-          values:
-            - .gantry/common.yml
-            - .gantry/prod.yml
+            - .gantry/{{matrix.values}}.yml
+    retry:
+      manual:
+        # Only use this if you need to roll back a deployment ASAP.
+        # Always follow up with a proper revert or fix in Git history.
+        permit_on_passed: true
