@@ -1,5 +1,4 @@
 import { Octokit } from '@octokit/rest';
-import { mocked } from 'ts-jest/utils';
 
 import * as Git from '../../api/git';
 
@@ -17,7 +16,7 @@ jest.mock('../../api/github/environment');
 const dir = './';
 
 beforeEach(() => {
-  mocked(Octokit).mockReturnValue(mockClient as never);
+  jest.mocked(Octokit).mockReturnValue(mockClient as never);
 });
 
 afterEach(() => {
@@ -84,7 +83,7 @@ describe('commitAll', () => {
 
 describe('checkIfClean', () => {
   it('should call Git getChangedFiles and return true if it returns an empty array', async () => {
-    mocked(Git.getChangedFiles).mockResolvedValue([]);
+    jest.mocked(Git.getChangedFiles).mockResolvedValue([]);
 
     const result = await checkIfClean(dir);
 
@@ -93,9 +92,9 @@ describe('checkIfClean', () => {
   });
 
   it('should call Git getChangedFiles and return false if it returns files', async () => {
-    mocked(Git.getChangedFiles).mockResolvedValue([
-      { path: 'index.ts', state: 'added' },
-    ]);
+    jest
+      .mocked(Git.getChangedFiles)
+      .mockResolvedValue([{ path: 'index.ts', state: 'added' }]);
 
     const result = await checkIfClean(dir);
 
