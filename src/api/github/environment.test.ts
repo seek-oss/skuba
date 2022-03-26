@@ -1,7 +1,6 @@
 import {
   apiTokenFromEnvironment,
   buildNameFromEnvironment,
-  currentBranchFromEnvironment,
   enabledFromEnvironment,
 } from './environment';
 
@@ -49,17 +48,4 @@ describe('apiTokenFromEnvironment', () => {
 
   it('returns undefined when environment variables are not present', () =>
     expect(apiTokenFromEnvironment({})).toBeUndefined());
-});
-
-describe('currentBranchFromEnvironment', () => {
-  it.each`
-    description         | env
-    ${'Buildkite'}      | ${{ BUILDKITE_BRANCH: 'x' }}
-    ${'GitHub Actions'} | ${{ GITHUB_REF_NAME: 'x' }}
-  `('returns a branch name from $description', ({ env }) =>
-    expect(currentBranchFromEnvironment(env)).toBe('x'),
-  );
-
-  it('returns undefined when environment variables are not present', () =>
-    expect(currentBranchFromEnvironment({})).toBeUndefined());
 });

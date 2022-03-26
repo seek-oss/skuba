@@ -35,10 +35,3 @@ export const enabledFromEnvironment = (env = process.env): boolean =>
 export const apiTokenFromEnvironment = (
   env = process.env,
 ): string | undefined => env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN;
-
-/**
- * Tries to return a branch name from CI environment variables.
- */
-export const currentBranchFromEnvironment = (
-  env = process.env,
-): string | undefined => env.BUILDKITE_BRANCH ?? env.GITHUB_REF_NAME;
