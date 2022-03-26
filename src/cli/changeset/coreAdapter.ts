@@ -12,5 +12,3 @@ export const setFailed = (message: string) => {
   console.error(message);
   throw new Error();
 };
-
-export const setOutput = (_key: string, _value: string) => {};
