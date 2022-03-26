@@ -1,11 +1,10 @@
-const inputs: Record<string, string | undefined> = {
+const inputs = {
   publish: 'yarn changeset publish',
-  version: undefined,
-  commit: undefined,
-  title: undefined,
-};
+  commit: 'Version Packages',
+  title: 'Version Packages',
+} as const;
 
-export const getInput = (name: string): string | undefined => inputs[name];
+export const getInput = (name: keyof typeof inputs): string => inputs[name];
 
 // Maybe we could store these in a checkrun..?
 export const setFailed = (message: string) => {

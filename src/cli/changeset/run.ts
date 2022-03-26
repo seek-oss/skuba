@@ -197,21 +197,17 @@ const requireChangesetsCliPkgJson = (cwd: string) => {
 };
 
 type VersionOptions = {
-  script?: string;
   githubToken: string;
   cwd?: string;
-  prTitle?: string;
-  commitMessage?: string;
-  hasPublishScript?: boolean;
+  prTitle: string;
+  commitMessage: string;
 };
 
 export async function runVersion({
-  script,
   githubToken,
   cwd = process.cwd(),
-  prTitle = 'Version Packages',
-  commitMessage = 'Version Packages',
-  hasPublishScript = false,
+  prTitle,
+  commitMessage,
 }: VersionOptions) {
   const context = await github.context(cwd);
   const repo = `${context.repo.owner}/${context.repo.repo}`;
@@ -225,18 +221,13 @@ export async function runVersion({
 
   const versionsByDirectory = await getVersionsByDirectory(cwd);
 
-  if (script) {
-    const [versionCommand, ...versionArgs] = script.split(/\s+/);
-    await exec(versionCommand, versionArgs, { cwd });
-  } else {
-    const changesetsCliPkgJson = requireChangesetsCliPkgJson(cwd);
-    const cmd = semver.lt(changesetsCliPkgJson.version, '2.0.0')
-      ? 'bump'
-      : 'version';
-    await exec('node', [resolveFrom(cwd, '@changesets/cli/bin.js'), cmd], {
-      cwd,
-    });
-  }
+  const changesetsCliPkgJson = requireChangesetsCliPkgJson(cwd);
+  const cmd = semver.lt(changesetsCliPkgJson.version, '2.0.0')
+    ? 'bump'
+    : 'version';
+  await exec('node', [resolveFrom(cwd, '@changesets/cli/bin.js'), cmd], {
+    cwd,
+  });
 
   const searchQuery = `repo:${repo}+state:open+head:${versionBranch}+base:${branch}`;
   const searchResultPromise = octokit.search.issuesAndPullRequests({
@@ -245,11 +236,7 @@ export async function runVersion({
   const changedPackages = await getChangedPackages(cwd, versionsByDirectory);
 
   const prBodyPromise = (async () =>
-    `This PR was opened by the [Changesets release](https://github.com/changesets/action) GitHub action. When you're ready to do a release, you can merge this and ${
-      hasPublishScript
-        ? `the packages will be published to npm automatically`
-        : `publish to npm yourself or [setup this action to publish automatically](https://github.com/changesets/action#with-publishing)`
-    }. If you're not ready to do a release yet, that's fine, whenever you add more changesets to ${branch}, this PR will be updated.
+    `This PR was opened by the [Changesets release](https://github.com/changesets/action) GitHub action. When you're ready to do a release, you can merge this and the packages will be published to npm automatically. If you're not ready to do a release yet, that's fine, whenever you add more changesets to ${branch}, this PR will be updated.
 ${
   Boolean(preState)
     ? `
