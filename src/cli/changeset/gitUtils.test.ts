@@ -2,7 +2,6 @@ import { Octokit } from '@octokit/rest';
 import { mocked } from 'ts-jest/utils';
 
 import * as Git from '../../api/git';
-import { appSlugFromEnvironment } from '../../api/github/environment';
 
 import { checkIfClean, commitAll, push, pushTags, reset } from './gitUtils';
 
@@ -73,58 +72,8 @@ describe('reset', () => {
 });
 
 describe('commitAll', () => {
-  it('should call Git commitAllChanges with a bot user when a app slug is provided', async () => {
-    mocked(appSlugFromEnvironment).mockReturnValue('buildagencygitapitoken');
-    mockClient.apps.getBySlug.mockReturnValue({
-      data: {
-        id: 87109344,
-        slug: 'buildagencygitapitoken',
-        node_id: 'A_kwDOARLrRs4AAjeG',
-        owner: {},
-        name: 'buildagencygitapitoken',
-        description: '',
-        external_url: '',
-        html_url: 'https://github.com/apps/buildagencygitapitoken',
-        created_at: '2021-10-16T02:21:15Z',
-        updated_at: '2021-10-16T02:21:15Z',
-        permissions: {
-          checks: 'write',
-          metadata: 'read',
-        },
-        events: [],
-        installations_count: 1,
-      },
-    });
-    await commitAll(dir, 'commit msg', new Octokit());
-
-    expect(Git.commitAllChanges).toBeCalledWith({
-      dir,
-      message: 'commit msg',
-      author: {
-        name: 'buildagencygitapitoken[bot]', // user.data.name as string
-        email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
-      },
-      committer: {
-        name: 'buildagencygitapitoken[bot]', // user.data.name as string
-        email: '87109344+buildagencygitapitoken[bot]@users.noreply.github.com', // `${user.data.id}+${user.data.name}@users.noreply.github.com`
-      },
-    });
-  });
-
-  it('should call Git commitAllChanges without a user when calling GitHub Api fails', async () => {
-    mocked(appSlugFromEnvironment).mockReturnValue('buildagencygitapitoken');
-    mockClient.apps.getBySlug.mockRejectedValue(new Error());
-    await commitAll(dir, 'commit msg', new Octokit());
-
-    expect(Git.commitAllChanges).toBeCalledWith({
-      dir,
-      message: 'commit msg',
-    });
-  });
-
-  it('should call Git commitAllChanges without a user when app slug is not provided', async () => {
-    mocked(appSlugFromEnvironment).mockReturnValue(undefined);
-    await commitAll(dir, 'commit msg', new Octokit());
+  it('should call Git commitAllChanges with a commit message', async () => {
+    await commitAll(dir, 'commit msg');
 
     expect(Git.commitAllChanges).toBeCalledWith({
       dir,

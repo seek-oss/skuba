@@ -292,7 +292,7 @@ ${(
     const finalCommitMessage = `${commitMessage}${
       preState ? ` (${preState.tag})` : ''
     }`;
-    await gitUtils.commitAll(cwd, finalCommitMessage, octokit);
+    await gitUtils.commitAll(cwd, finalCommitMessage);
   }
 
   await gitUtils.push(cwd, versionBranch, githubToken, { force: true });
