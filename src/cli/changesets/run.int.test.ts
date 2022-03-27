@@ -52,7 +52,7 @@ beforeEach(() => {
 
 const fCopy = async (source: string, destination: string) => {
   const destinationFolder = './tmp';
-  const sourceFolder = './integration/changeset';
+  const sourceFolder = './integration/changesets';
 
   const sourcePath = path.join(sourceFolder, source);
   const destinationPath = path.join(destinationFolder, destination);
