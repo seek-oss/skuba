@@ -8,7 +8,7 @@ parent: Deep dives
 
 This topic details the changesets version and release functionality baked into **skuba**. This functionality is based off the [changesets action].
 
-Running `skuba changeset` will run one of two steps: [version](#version) or [publish](#publish).
+Running `skuba changesets` will run one of two steps: [version](#version) or [publish](#publish).
 
 ---
 

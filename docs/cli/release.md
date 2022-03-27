@@ -11,9 +11,9 @@ nav_order: 7
 
 Runs a [semantic release] that will publish a package to npm.
 
-## skuba changeset
+## skuba changesets
 
-Runs a changeset release similar to the [changesets action] that will publish a package to npm. View the [changesets deep-dive] for more information.
+Runs a changesets release similar to the [changesets action] that will publish a package to npm. View the [changesets deep-dive] for more information.
 
 [changesets action]: https://github.com/changesets/action
 [changesets deep-dive]: ../deep-dives/changesets.md
