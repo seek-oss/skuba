@@ -67,8 +67,6 @@ const createRelease = async (
 
 type PublishOptions = {
   script: string;
-  githubToken: string;
-
   cwd?: string;
 };
 
@@ -85,10 +83,9 @@ type PublishResult =
 
 export async function runPublish({
   script,
-  githubToken,
   cwd = process.cwd(),
 }: PublishOptions): Promise<PublishResult> {
-  const octokit = github.getOctokit(githubToken);
+  const octokit = github.getOctokit();
   const [publishCommand, ...publishArgs] = script.split(/\s+/);
 
   const existingTags = await gitUtils.listTags(cwd);
@@ -102,7 +99,7 @@ export async function runPublish({
   const tags = await gitUtils.listTags(cwd);
   const newTags = tags.filter((tag) => !existingTags.includes(tag));
 
-  await gitUtils.pushTags(cwd, newTags, githubToken);
+  await gitUtils.pushTags(cwd, newTags);
 
   const { packages, tool } = await getPackages(cwd);
   const releasedPackages: Package[] = [];
@@ -175,14 +172,12 @@ export async function runPublish({
 }
 
 type VersionOptions = {
-  githubToken: string;
   cwd?: string;
   prTitle: string;
   commitMessage: string;
 };
 
 export async function runVersion({
-  githubToken,
   cwd = process.cwd(),
   prTitle,
   commitMessage,
@@ -191,7 +186,7 @@ export async function runVersion({
   const repo = `${context.repo.owner}/${context.repo.repo}`;
   const branch = context.ref.replace('refs/heads/', '');
   const versionBranch = `changeset-release/${branch}`;
-  const octokit = github.getOctokit(githubToken);
+  const octokit = github.getOctokit();
   const { preState } = await readChangesetState(cwd);
 
   await gitUtils.switchToMaybeExistingBranch(cwd, versionBranch);
@@ -256,7 +251,7 @@ ${(
     await gitUtils.commitAll(cwd, finalCommitMessage);
   }
 
-  await gitUtils.push(cwd, versionBranch, githubToken, { force: true });
+  await gitUtils.push(cwd, versionBranch, { force: true });
 
   const searchResult = await searchResultPromise;
   console.log(JSON.stringify(searchResult.data, null, 2));

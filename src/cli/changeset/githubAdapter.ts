@@ -1,3 +1,5 @@
 import { Octokit } from '@octokit/rest';
+import { apiTokenFromEnvironment } from 'api/github/environment';
 
-export const getOctokit = (token: string) => new Octokit({ auth: token });
+export const getOctokit = () =>
+  new Octokit({ auth: apiTokenFromEnvironment() });

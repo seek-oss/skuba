@@ -25,11 +25,11 @@ afterEach(() => {
 
 describe('push', () => {
   it('should call our Git api push method', async () => {
-    await push(dir, 'branch', 'api-token');
+    await push(dir, 'branch');
 
     expect(Git.push).toBeCalledWith({
       dir,
-      auth: { type: 'gitHubApp', token: 'api-token' },
+      auth: { type: 'gitHubApp' },
       ref: 'branch',
       force: undefined,
     });
@@ -38,19 +38,19 @@ describe('push', () => {
 
 describe('pushTags', () => {
   it('should call Git push for every tag', async () => {
-    await pushTags(dir, ['tag1', 'tag2'], 'api-token');
+    await pushTags(dir, ['tag1', 'tag2']);
 
     expect(Git.push).toBeCalledTimes(2);
     expect(Git.push).toBeCalledWith({
       dir,
-      auth: { type: 'gitHubApp', token: 'api-token' },
+      auth: { type: 'gitHubApp' },
       ref: 'tag1',
       force: undefined,
     });
 
     expect(Git.push).toBeCalledWith({
       dir,
-      auth: { type: 'gitHubApp', token: 'api-token' },
+      auth: { type: 'gitHubApp' },
       ref: 'tag2',
       force: undefined,
     });

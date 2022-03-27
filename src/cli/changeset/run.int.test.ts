@@ -100,7 +100,6 @@ describe('version', () => {
     );
 
     await runVersion({
-      githubToken: '@@GITHUB_TOKEN',
       cwd,
       commitMessage: 'Version Packages',
       prTitle: 'Version Packages',
@@ -133,7 +132,6 @@ describe('version', () => {
     );
 
     await runVersion({
-      githubToken: '@@GITHUB_TOKEN',
       cwd,
       commitMessage: 'Version Packages',
       prTitle: 'Version Packages',
@@ -166,7 +164,6 @@ describe('version', () => {
     );
 
     await runVersion({
-      githubToken: '@@GITHUB_TOKEN',
       cwd,
       commitMessage: 'Version Packages',
       prTitle: 'Version Packages',

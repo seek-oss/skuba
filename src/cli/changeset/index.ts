@@ -9,11 +9,8 @@ import readChangesetState from './readChangesetState';
 import { runPublish, runVersion } from './run';
 
 const run = async () => {
-  const githubToken = apiTokenFromEnvironment();
-
-  if (!githubToken) {
+  if (!apiTokenFromEnvironment()) {
     core.setFailed('Please add the GITHUB_TOKEN to the changesets action');
-    return;
   }
 
   const cwd = process.cwd();
@@ -32,7 +29,6 @@ const run = async () => {
 
       await runPublish({
         script: publishScript,
-        githubToken,
         cwd,
       });
 
@@ -41,7 +37,6 @@ const run = async () => {
     case hasChangesets:
       await runVersion({
         cwd,
-        githubToken,
         prTitle: core.getInput('title'),
         commitMessage: core.getInput('commit'),
       });

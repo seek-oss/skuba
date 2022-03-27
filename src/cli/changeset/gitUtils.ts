@@ -8,12 +8,11 @@ import * as Git from '../../api/git';
 export const push = async (
   dir: string,
   branch: string,
-  token: string,
   { force }: { force?: boolean } = {},
 ): Promise<void> => {
   await Git.push({
     dir,
-    auth: { type: 'gitHubApp', token },
+    auth: { type: 'gitHubApp' },
     ref: branch,
     force,
   });
@@ -25,15 +24,11 @@ export const listTags = async (dir: string): Promise<string[]> =>
     dir,
   });
 
-export const pushTags = async (
-  dir: string,
-  tags: string[],
-  token: string,
-): Promise<void> => {
+export const pushTags = async (dir: string, tags: string[]): Promise<void> => {
   await Promise.all(
     tags.map((tag) =>
       Git.push({
-        auth: { type: 'gitHubApp', token },
+        auth: { type: 'gitHubApp' },
         ref: tag,
         dir,
       }),
