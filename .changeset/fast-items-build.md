@@ -1,5 +1,5 @@
 ---
-"skuba": minor
+'skuba': minor
 ---
 
 release: Added changesets release functionality
