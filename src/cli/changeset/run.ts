@@ -6,7 +6,6 @@ import type { Package } from '@manypkg/get-packages';
 import { getPackages } from '@manypkg/get-packages';
 import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
-import * as semver from 'semver';
 
 import * as gitUtils from './gitUtils';
 import * as github from './githubAdapter';
@@ -175,27 +174,6 @@ export async function runPublish({
   return { published: false };
 }
 
-interface PackageJson {
-  version: string;
-}
-
-const requireChangesetsCliPkgJson = (cwd: string) => {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require(resolveFrom(
-      cwd,
-      '@changesets/cli/package.json',
-    )) as PackageJson;
-  } catch (err) {
-    if (err && (err as CommonError).code === 'MODULE_NOT_FOUND') {
-      throw new Error(
-        `Have you forgotten to install \`@changesets/cli\` in "${cwd}"?`,
-      );
-    }
-    throw err;
-  }
-};
-
 type VersionOptions = {
   githubToken: string;
   cwd?: string;
@@ -221,11 +199,7 @@ export async function runVersion({
 
   const versionsByDirectory = await getVersionsByDirectory(cwd);
 
-  const changesetsCliPkgJson = requireChangesetsCliPkgJson(cwd);
-  const cmd = semver.lt(changesetsCliPkgJson.version, '2.0.0')
-    ? 'bump'
-    : 'version';
-  await exec('node', [resolveFrom(cwd, '@changesets/cli/bin.js'), cmd], {
+  await exec('node', [resolveFrom(cwd, '@changesets/cli/bin.js'), 'version'], {
     cwd,
   });
 
