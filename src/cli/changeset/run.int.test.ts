@@ -6,22 +6,13 @@ import type { Changeset } from '@changesets/types';
 import writeChangeset from '@changesets/write';
 import fs from 'fs-extra';
 
+import * as gitUtils from './gitUtils';
 import * as github from './githubAdapter';
 import { runVersion } from './run';
 
 jest.spyOn(console, 'log').mockImplementation();
 
-jest.mock('./githubAdapter', () => ({
-  context: () => ({
-    repo: {
-      owner: 'changesets',
-      repo: 'action',
-    },
-    ref: 'refs/heads/some-branch',
-    sha: 'xeac7',
-  }),
-  getOctokit: jest.fn(),
-}));
+jest.mock('./githubAdapter', () => ({ getOctokit: jest.fn() }));
 jest.mock('./gitUtils');
 
 const mockedGithubMethods = {
@@ -48,6 +39,14 @@ const writeChangesets = (changesets: Changeset[], cwd: string) =>
 
 beforeEach(() => {
   jest.clearAllMocks();
+  jest.mocked(gitUtils.context).mockResolvedValue({
+    repo: {
+      owner: 'changesets',
+      repo: 'action',
+    },
+    ref: 'refs/heads/some-branch',
+    sha: 'xeac7',
+  });
 });
 
 const fCopy = async (source: string, destination: string) => {

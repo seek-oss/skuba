@@ -56,7 +56,7 @@ const createRelease = async (
       tag_name: tagName,
       body: changelogEntry.content,
       prerelease: pkg.packageJson.version.includes('-'),
-      ...(await github.context(process.cwd())).repo,
+      ...(await gitUtils.context(process.cwd())).repo,
     });
   } catch (err) {
     // if we can't find a changelog, the user has probably disabled changelogs
@@ -209,7 +209,7 @@ export async function runVersion({
   prTitle,
   commitMessage,
 }: VersionOptions) {
-  const context = await github.context(cwd);
+  const context = await gitUtils.context(cwd);
   const repo = `${context.repo.owner}/${context.repo.repo}`;
   const branch = context.ref.replace('refs/heads/', '');
   const versionBranch = `changeset-release/${branch}`;

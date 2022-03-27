@@ -92,3 +92,26 @@ export const checkIfClean = async (dir: string): Promise<boolean> => {
   const changedFiles = await Git.getChangedFiles({ dir });
   return !changedFiles.length;
 };
+
+export const context = async (dir: string) => {
+  const [{ owner, repo }, currentBranch, headSha] = await Promise.all([
+    Git.getOwnerAndRepo({ dir }),
+    Git.currentBranch({ dir }),
+    Git.getHeadCommitId({ dir }),
+  ]);
+
+  if (!currentBranch) {
+    throw new Error(
+      'Could not determine the current Git branch from environment variables or local directory',
+    );
+  }
+
+  return {
+    sha: headSha,
+    ref: currentBranch,
+    repo: {
+      repo,
+      owner,
+    },
+  };
+};
