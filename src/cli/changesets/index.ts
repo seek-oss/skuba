@@ -44,7 +44,7 @@ const run = async () => {
   }
 };
 
-export const changeset = async () => {
+export const changesets = async () => {
   try {
     await run();
   } catch (err) {
