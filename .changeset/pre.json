@@ -1,0 +1,22 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "4.1.1"
+  },
+  "changesets": [
+    "brave-peas-carry",
+    "bright-rivers-hear",
+    "brown-experts-tease",
+    "cool-melons-work",
+    "curvy-papayas-remember",
+    "fast-items-build",
+    "lazy-ants-brush",
+    "lemon-buttons-move",
+    "old-points-brush",
+    "purple-balloons-speak",
+    "purple-candles-retire",
+    "red-cycles-care",
+    "spicy-gifts-smash"
+  ]
+}
