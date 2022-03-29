@@ -246,7 +246,16 @@ yarn changeset version
 ```
 
 If previous betas have been released under the same semantic version,
-you will need to manually bump the version suffix in [package.json](https://github.com/seek-oss/skuba/blob/master/package.json):
+you will need to manually bump the version suffix.
+
+In [CHANGELOG.md](https://github.com/seek-oss/skuba/blob/master/CHANGELOG.md):
+
+```diff
+- ## 4.0.0-beta.1
++ ## 4.0.0-beta.2
+```
+
+In [package.json](https://github.com/seek-oss/skuba/blob/master/package.json):
 
 ```diff
 - "version": "4.0.0-beta.1",
