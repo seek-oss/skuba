@@ -1,6 +1,6 @@
 # skuba
 
-## 4.2.0-beta.2
+## 4.2.0-beta.5
 
 ### Minor Changes
 
