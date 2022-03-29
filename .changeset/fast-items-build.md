@@ -2,6 +2,6 @@
 'skuba': minor
 ---
 
-release: Added changesets release functionality
+changesets: Integrate Changesets release workflow
 
-You can now use skuba to release packages with the changesets workflow using the new `skuba changesets` command. This is largely based on the [GitHub changesets action](https://github.com/changesets/action). Visit the [changesets deep-dive](https://seek-oss.github.io/skuba/docs/deep-dives/changesets.html) for more information.
+You can now release npm packages with the `skuba changesets` command, which is a Buildkite-compatible port of the [GitHub Changesets Release Action](https://github.com/changesets/action). See the [Changesets deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/changesets.html) for more information.
