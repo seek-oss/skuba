@@ -14,6 +14,7 @@ export const COMMAND_DIR = path.join(__dirname, '..', 'cli');
 export const COMMAND_LIST = [
   'build',
   'build-package',
+  'changesets',
   'configure',
   'format',
   'help',
