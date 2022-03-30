@@ -4,9 +4,9 @@
 
 template: Exclude DOM type definitions by default
 
-TypeScript will now raise compiler errors when DOM globals like `document` and `window` are referenced in new projects. This catches unsafe usage of browser APIs that will throw exceptions in a Node.js context.
+TypeScript will now raise compiler errors when DOM globals like `document` and `window` are referenced in new projects. This catches unsafe usage of Web APIs that will throw exceptions in a Node.js context.
 
-If you are developing a new npm package for browser use, you can opt in to DOM type definitions in your `tsconfig.json`:
+If you are developing a new npm package for browser use or require specific Node.js-compatible Web APIs like the [Encoding API](https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API), you can opt in to DOM type definitions in your `tsconfig.json`:
 
 ```diff
 {
