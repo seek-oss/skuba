@@ -35,7 +35,7 @@ const run = async (): Promise<void> => {
 
   switch (true) {
     case isChangesetReleaseBranch: {
-      console.log('changeset-release/ branch detected. Skipping publish');
+      console.log('changeset-release branch detected. Skipping publish');
       return;
     }
     case !hasChangesets: {
