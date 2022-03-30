@@ -2,27 +2,43 @@
 
 /* eslint-disable no-console */
 
+import * as Git from '../../api/git';
 import { apiTokenFromEnvironment } from '../../api/github/environment';
 
 import * as core from './coreAdapter';
 import readChangesetState from './readChangesetState';
 import { runPublish, runVersion } from './run';
 
-const run = async () => {
+const run = async (): Promise<void> => {
   if (!apiTokenFromEnvironment()) {
-    core.setFailed('Please add the GITHUB_TOKEN to the changesets action');
+    return core.setFailed(
+      'Please add the GITHUB_TOKEN to the changesets action',
+    );
   }
 
   const cwd = process.cwd();
 
-  const { changesets } = await readChangesetState();
+  const [{ changesets }, currentBranch] = await Promise.all([
+    readChangesetState(),
+    Git.currentBranch({ dir: cwd }),
+  ]);
+
+  if (!currentBranch) {
+    return core.setFailed('Could not determine the current git branch');
+  }
 
   const publishScript = core.getInput('publish');
   const hasChangesets = changesets.length !== 0;
-  const hasPublishScript = Boolean(publishScript);
+  const releaseBranchPrefix = core.getInput('branch');
+  const isChangesetReleaseBranch =
+    currentBranch.startsWith(releaseBranchPrefix);
 
   switch (true) {
-    case !hasChangesets && hasPublishScript: {
+    case isChangesetReleaseBranch: {
+      console.log('changeset-release/ branch detected. Skipping publish');
+      return;
+    }
+    case !hasChangesets: {
       console.log(
         'No changesets found, attempting to publish any unpublished packages to npm',
       );

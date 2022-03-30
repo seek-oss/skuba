@@ -2,6 +2,7 @@ const inputs = {
   publish: 'yarn changeset publish',
   commit: 'Version Packages',
   title: 'Version Packages',
+  branch: 'changeset-release/',
 } as const;
 
 export const getInput = (name: keyof typeof inputs): string => inputs[name];
