@@ -113,7 +113,7 @@
   + FROM gcr.io/distroless/nodejs:16 AS runtime
 
   + # https://nodejs.org/api/cli.html#cli_node_options_options
-  + ENV NODE_OPTIONS --enable-source-maps
+  + ENV NODE_OPTIONS=--enable-source-maps
   ```
 
   For a Serverless Lambda application, update your `serverless.yml`:
