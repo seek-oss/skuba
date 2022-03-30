@@ -4,8 +4,10 @@
     "declaration": true,
     // TODO: set in /config/tsconfig.json
     "isolatedModules": true,
+    "lib": ["ES2020"],
     "outDir": "lib",
-    "removeComments": false
+    "removeComments": false,
+    "target": "ES2020"
   },
   "exclude": ["lib*/**/*", "integration/**/*", "template/**/*"],
   "extends": "./config/tsconfig.json"
