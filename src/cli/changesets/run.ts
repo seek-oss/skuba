@@ -7,6 +7,7 @@ import { getPackages } from '@manypkg/get-packages';
 import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
 
+import * as core from './coreAdapter';
 import * as gitUtils from './gitUtils';
 import * as github from './githubAdapter';
 import readChangesetState from './readChangesetState';
@@ -185,7 +186,7 @@ export async function runVersion({
   const context = await gitUtils.context(cwd);
   const repo = `${context.repo.owner}/${context.repo.repo}`;
   const branch = context.ref.replace('refs/heads/', '');
-  const versionBranch = `changeset-release/${branch}`;
+  const versionBranch = `${core.getInput('branch')}${branch}`;
   const octokit = github.getOctokit();
   const { preState } = await readChangesetState(cwd);
 
