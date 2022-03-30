@@ -151,7 +151,7 @@ test.each`
       return [
         filename,
         '-'.repeat(filename.length),
-        diff(new TextDecoder().decode(oldFile.blob), newFile, {
+        diff(Buffer.from(oldFile.blob).toString(), newFile, {
           contextLines: 1,
           expand: false,
           omitAnnotationLines: true,
