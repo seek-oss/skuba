@@ -1,5 +1,3 @@
-import resolveFrom from 'resolve-from';
-
 import * as git from '../../../api/git';
 import { createExec } from '../../../utils/exec';
 import type { Logger } from '../../../utils/logging';
@@ -13,11 +11,7 @@ export const runPublish = async (logger: Logger, { dir }: PublishOptions) => {
   const existingTags = await git.getTags(dir);
 
   const exec = createExec({ cwd: dir });
-  const publishOutput = await exec(
-    'node',
-    resolveFrom(dir, '@changesets/cli/bin.js'),
-    'publish',
-  );
+  const publishOutput = await exec('changeset', 'publish');
 
   const currentTags = await git.getTags(dir);
 

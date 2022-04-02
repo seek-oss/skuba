@@ -1,5 +1,4 @@
 import type { PreState } from '@changesets/types';
-import resolveFrom from 'resolve-from';
 
 import * as git from '../../../api/git';
 import { createExec } from '../../../utils/exec';
@@ -27,7 +26,7 @@ export const runVersion = async (
   const currentVersions = await getPackageVersions(dir);
 
   const exec = createExec({ cwd: dir });
-  await exec('node', resolveFrom(dir, '@changesets/cli/bin.js'), 'version');
+  await exec('changeset', 'version');
 
   // project with `commit: true` setting could have already committed files
   const [changedFiles, changedPackages] = await Promise.all([
