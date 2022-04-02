@@ -4,9 +4,8 @@ import path from 'path';
 import type { Package } from '@manypkg/get-packages';
 import { getPackages } from '@manypkg/get-packages';
 
-import * as github from '../../api/github';
-
-import { getChangelogEntry } from './changelog';
+import * as github from '../../../api/github';
+import { getChangelogEntry } from '../changelog';
 
 interface CommonError {
   code: string;

@@ -1,8 +1,8 @@
 import resolveFrom from 'resolve-from';
 
-import * as git from '../../api/git';
-import { createExec } from '../../utils/exec';
-import type { Logger } from '../../utils/logging';
+import * as git from '../../../api/git';
+import { createExec } from '../../../utils/exec';
+import type { Logger } from '../../../utils/logging';
 
 import { releasePackages } from './release';
 

@@ -6,13 +6,13 @@ import writeChangeset from '@changesets/write';
 import { Octokit } from '@octokit/rest';
 import fs from 'fs-extra';
 
-import type { Logger } from '../../utils/logging';
+import type { Logger } from '../../../utils/logging';
 
-import { runVersion } from './version';
+import { runVersion } from '.';
 
 jest.mock('@octokit/rest');
 
-jest.mock('../../api/git/push');
+jest.mock('../../../api/git/push');
 
 const mockedGithubMethods = {
   search: {
@@ -32,7 +32,7 @@ const mockLogger = {
 
 const linkNodeModules = async (cwd: string) => {
   await fs.symlink(
-    path.join(__dirname, '../../', 'node_modules'),
+    path.join(__dirname, '../../../', 'node_modules'),
     path.join(cwd, 'node_modules'),
   );
 };

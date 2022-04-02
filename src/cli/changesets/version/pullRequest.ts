@@ -3,55 +3,15 @@ import path from 'path';
 
 import type { PreState } from '@changesets/types';
 import type { Package } from '@manypkg/get-packages';
-import { getPackages } from '@manypkg/get-packages';
 import fs from 'fs-extra';
-import resolveFrom from 'resolve-from';
 
-import * as git from '../../api/git';
-import * as github from '../../api/github';
-import type { PullRequestDetails } from '../../api/github/pullRequest';
-import { createExec } from '../../utils/exec';
-import type { Logger } from '../../utils/logging';
-
-import { getChangelogEntry } from './changelog';
-
-interface VersionParams {
-  dir: string;
-  currentBranch: string;
-  preState: PreState | undefined;
-  versionBranch: string;
-}
-
-const createCommitMessage = (preState: PreState | undefined): string =>
-  `Version Packages${preState ? ` (${preState.tag})` : ''}`;
+import * as github from '../../../api/github';
+import type { PullRequestDetails } from '../../../api/github/pullRequest';
+import type { Logger } from '../../../utils/logging';
+import { getChangelogEntry } from '../changelog';
 
 const createPrTitle = (preState: PreState | undefined): string =>
   `Version Packages${preState ? ` (${preState.tag})` : ''}`;
-
-type PackageVersions = Record<string, string>;
-
-const getPackageVersions = async (cwd: string): Promise<PackageVersions> => {
-  const { packages } = await getPackages(cwd);
-  return Object.fromEntries(
-    packages.map((pkg) => [pkg.dir, pkg.packageJson.version]),
-  );
-};
-
-const getChangedPackages = async (
-  cwd: string,
-  previousVersions: PackageVersions,
-) => {
-  const { packages } = await getPackages(cwd);
-  const changedPackages = new Set<Package>();
-
-  for (const pkg of packages) {
-    if (previousVersions[pkg.dir] !== pkg.packageJson.version) {
-      changedPackages.add(pkg);
-    }
-  }
-
-  return [...changedPackages];
-};
 
 const sortReleases = (
   a: { private: boolean; highestLevel: number },
@@ -110,34 +70,22 @@ ${preStateText}
 ${releases}`;
 };
 
-export const runVersion = async (
+interface CreatePullRequestParams {
+  currentBranch: string;
+  versionBranch: string;
+  preState: PreState | undefined;
+  changedPackages: Package[];
+}
+
+export const createPullRequest = async (
   logger: Logger,
-  { currentBranch, dir, preState, versionBranch }: VersionParams,
+  {
+    currentBranch,
+    versionBranch,
+    preState,
+    changedPackages,
+  }: CreatePullRequestParams,
 ) => {
-  await git.createBranch({ dir, name: versionBranch, clean: true });
-
-  const currentVersions = await getPackageVersions(dir);
-
-  const exec = createExec({ cwd: dir });
-  await exec('node', resolveFrom(dir, '@changesets/cli/bin.js'), 'version');
-
-  // project with `commit: true` setting could have already committed files
-  const [changedFiles, changedPackages] = await Promise.all([
-    git.getChangedFiles({ dir }),
-    getChangedPackages(dir, currentVersions),
-  ]);
-
-  if (!changedFiles.length) {
-    await git.commitAllChanges({ dir, message: createCommitMessage(preState) });
-  }
-
-  await git.push({
-    auth: { type: 'gitHubApp' },
-    dir,
-    ref: versionBranch,
-    force: true,
-  });
-
   const [body, number] = await Promise.all([
     createPrBody({
       currentBranch,
