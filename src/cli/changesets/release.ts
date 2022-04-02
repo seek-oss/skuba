@@ -6,7 +6,7 @@ import { getPackages } from '@manypkg/get-packages';
 
 import * as github from '../../api/github';
 
-import { getChangelogEntry } from './utils';
+import { getChangelogEntry } from './changelog';
 
 interface CommonError {
   code: string;

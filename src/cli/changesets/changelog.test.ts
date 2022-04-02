@@ -1,6 +1,6 @@
 // Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/utils.test.ts
 
-import { BumpLevels, getChangelogEntry, sortTheThings } from './utils';
+import { BumpLevels, getChangelogEntry } from './changelog';
 
 const changelog = `# @keystone-alpha/email
 ## 3.0.1
@@ -48,25 +48,4 @@ test('it works with patch', () => {
   const entry = getChangelogEntry(changelog, '3.0.1');
   expect(entry.content).toMatchSnapshot();
   expect(entry.highestLevel).toBe(BumpLevels.patch);
-});
-
-test('it sorts the things right', () => {
-  const things = [
-    {
-      name: 'a',
-      highestLevel: BumpLevels.major,
-      private: true,
-    },
-    {
-      name: 'b',
-      highestLevel: BumpLevels.patch,
-      private: false,
-    },
-    {
-      name: 'c',
-      highestLevel: BumpLevels.major,
-      private: false,
-    },
-  ];
-  expect(things.sort(sortTheThings)).toMatchSnapshot();
 });

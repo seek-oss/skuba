@@ -2,6 +2,8 @@
 import path from 'path';
 
 import type { PreState } from '@changesets/types';
+import type { Package } from '@manypkg/get-packages';
+import { getPackages } from '@manypkg/get-packages';
 import fs from 'fs-extra';
 import resolveFrom from 'resolve-from';
 
@@ -11,12 +13,7 @@ import type { PullRequestDetails } from '../../api/github/pullRequest';
 import { createExec } from '../../utils/exec';
 import type { Logger } from '../../utils/logging';
 
-import {
-  getChangedPackages,
-  getChangelogEntry,
-  getVersionsByDirectory,
-  sortTheThings,
-} from './utils';
+import { getChangelogEntry } from './changelog';
 
 interface VersionParams {
   dir: string;
@@ -31,19 +28,53 @@ const createCommitMessage = (preState: PreState | undefined): string =>
 const createPrTitle = (preState: PreState | undefined): string =>
   `Version Packages${preState ? ` (${preState.tag})` : ''}`;
 
+type PackageVersions = Record<string, string>;
+
+const getPackageVersions = async (cwd: string): Promise<PackageVersions> => {
+  const { packages } = await getPackages(cwd);
+  return Object.fromEntries(
+    packages.map((pkg) => [pkg.dir, pkg.packageJson.version]),
+  );
+};
+
+const getChangedPackages = async (
+  cwd: string,
+  previousVersions: PackageVersions,
+) => {
+  const { packages } = await getPackages(cwd);
+  const changedPackages = new Set<Package>();
+
+  for (const pkg of packages) {
+    if (previousVersions[pkg.dir] !== pkg.packageJson.version) {
+      changedPackages.add(pkg);
+    }
+  }
+
+  return [...changedPackages];
+};
+
+const sortReleases = (
+  a: { private: boolean; highestLevel: number },
+  b: { private: boolean; highestLevel: number },
+): number => {
+  if (a.private === b.private) {
+    return b.highestLevel - a.highestLevel;
+  }
+  if (a.private) {
+    return 1;
+  }
+  return -1;
+};
+
 const createPrBody = async ({
-  dir,
   currentBranch,
   preState,
-  currentVersions,
+  changedPackages,
 }: {
-  dir: string;
   currentBranch: string;
   preState: PreState | undefined;
-  currentVersions: Map<string, string>;
+  changedPackages: Package[];
 }) => {
-  const changedPackages = await getChangedPackages(dir, currentVersions);
-
   const packages = await Promise.all(
     changedPackages.map(async (pkg) => {
       const changelogContents = await fs.readFile(
@@ -65,7 +96,7 @@ const createPrBody = async ({
 
   const releases = packages
     .filter((x) => x)
-    .sort(sortTheThings)
+    .sort(sortReleases)
     .map((x) => x.content)
     .join('\n ');
 
@@ -85,13 +116,17 @@ export const runVersion = async (
 ) => {
   await git.createBranch({ dir, name: versionBranch, clean: true });
 
-  const currentVersions = await getVersionsByDirectory(dir);
+  const currentVersions = await getPackageVersions(dir);
 
   const exec = createExec({ cwd: dir });
   await exec('node', resolveFrom(dir, '@changesets/cli/bin.js'), 'version');
 
   // project with `commit: true` setting could have already committed files
-  const changedFiles = await git.getChangedFiles({ dir });
+  const [changedFiles, changedPackages] = await Promise.all([
+    git.getChangedFiles({ dir }),
+    getChangedPackages(dir, currentVersions),
+  ]);
+
   if (!changedFiles.length) {
     await git.commitAllChanges({ dir, message: createCommitMessage(preState) });
   }
@@ -106,9 +141,8 @@ export const runVersion = async (
   const [body, number] = await Promise.all([
     createPrBody({
       currentBranch,
-      dir,
       preState,
-      currentVersions,
+      changedPackages,
     }),
     github.getPullRequestNumberByBranches({
       head: versionBranch,

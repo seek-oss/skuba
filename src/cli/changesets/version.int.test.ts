@@ -57,6 +57,7 @@ const fCleanup = async () => {
 };
 
 beforeAll(async () => {
+  process.env.GITHUB_TOKEN = 'token';
   await fCleanup();
   jest.mocked(Octokit).mockImplementation(() => mockedGithubMethods as any);
 });

@@ -1,6 +1,3 @@
-import type { Package } from '@manypkg/get-packages';
-import { getPackages } from '@manypkg/get-packages';
-import execa from 'execa';
 import mdastToString from 'mdast-util-to-string';
 import remarkParse from 'remark-parse';
 import remarkStringify from 'remark-stringify';
@@ -14,28 +11,6 @@ export const BumpLevels = {
   major: 3,
 } as const;
 
-export async function getVersionsByDirectory(cwd: string) {
-  const { packages } = await getPackages(cwd);
-  return new Map(packages.map((x) => [x.dir, x.packageJson.version]));
-}
-
-export async function getChangedPackages(
-  cwd: string,
-  previousVersions: Map<string, string>,
-) {
-  const { packages } = await getPackages(cwd);
-  const changedPackages = new Set<Package>();
-
-  for (const pkg of packages) {
-    const previousVersion = previousVersions.get(pkg.dir);
-    if (previousVersion !== pkg.packageJson.version) {
-      changedPackages.add(pkg);
-    }
-  }
-
-  return [...changedPackages];
-}
-
 interface Child {
   type: string;
   depth: number;
@@ -45,7 +20,7 @@ interface NodeExtended extends Node {
   children: Child[];
 }
 
-export function getChangelogEntry(changelog: string, version: string) {
+export const getChangelogEntry = (changelog: string, version: string) => {
   const ast = unified().use(remarkParse).parse(changelog) as NodeExtended;
 
   let highestLevel: number = BumpLevels.dep;
@@ -92,31 +67,4 @@ export function getChangelogEntry(changelog: string, version: string) {
     content: unified().use(remarkStringify).stringify(ast),
     highestLevel,
   };
-}
-
-export function sortTheThings(
-  a: { private: boolean; highestLevel: number },
-  b: { private: boolean; highestLevel: number },
-) {
-  if (a.private === b.private) {
-    return b.highestLevel - a.highestLevel;
-  }
-  if (a.private) {
-    return 1;
-  }
-  return -1;
-}
-
-export const exec = async (
-  command: string,
-  args?: string[],
-  opts?: execa.Options<string> | undefined,
-) => {
-  try {
-    await execa(command, args, opts);
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(e);
-    throw new Error('Command failed');
-  }
 };
