@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/run.ts
 import path from 'path';
 
