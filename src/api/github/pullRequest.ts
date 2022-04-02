@@ -4,7 +4,7 @@ import * as Git from '../git';
 
 import { apiTokenFromEnvironment } from './environment';
 
-interface GetPullRequestParameters {
+interface GetPullRequestNumberParameters {
   /**
    * A preconstructed Octokit client to interact with GitHub's APIs.
    *
@@ -25,7 +25,7 @@ interface GetPullRequestParameters {
  * associated pull requests, or if they are all closed or locked.
  */
 export const getPullRequestNumber = async (
-  params: GetPullRequestParameters = {},
+  params: GetPullRequestNumberParameters = {},
 ): Promise<number> => {
   const env = params.env ?? process.env;
 
@@ -65,4 +65,117 @@ export const getPullRequestNumber = async (
   }
 
   return data[0].number;
+};
+
+interface GetPullRequestByBranchesParameters {
+  /**
+   * Head branch for the PR
+   */
+  head: string;
+  /**
+   * Base branch for the PR
+   */
+  base: string;
+}
+
+export const getPullRequestNumberByBranches = async (
+  params: GetPullRequestByBranchesParameters,
+): Promise<number | undefined> => {
+  const dir = process.cwd();
+
+  const { owner, repo } = await Git.getOwnerAndRepo({ dir });
+
+  const client = new Octokit({ auth: apiTokenFromEnvironment() });
+
+  const response = await client.search.issuesAndPullRequests({
+    q: `repo:${owner}/${repo}+state:open+head:${params.head}+base:${params.base}`,
+  });
+
+  return response.data.items?.[0]?.number;
+};
+
+interface UpdatePullRequestParams {
+  /**
+   * Pull request number
+   */
+  number: number;
+  /**
+   * Pull request title
+   */
+  title: string;
+  /**
+   * Pull request body
+   */
+  body: string;
+}
+
+export const updatePullRequest = async (
+  params: UpdatePullRequestParams,
+): Promise<PullRequestDetails> => {
+  const dir = process.cwd();
+
+  const { owner, repo } = await Git.getOwnerAndRepo({ dir });
+
+  const client = new Octokit({ auth: apiTokenFromEnvironment() });
+
+  const response = await client.pulls.update({
+    pull_number: params.number,
+    title: params.title,
+    body: params.body,
+    owner,
+    repo,
+  });
+
+  return {
+    number: response.data.number,
+    url: response.data.url,
+  };
+};
+
+interface CreatePullRequestParams {
+  /**
+   * Base branch for the PR
+   */
+  base: string;
+  /**
+   * Head branch for the PR
+   */
+  head: string;
+  /**
+   * The title of the PR
+   */
+  title: string;
+  /**
+   * The body of the PR
+   */
+  body: string;
+}
+
+export interface PullRequestDetails {
+  number: number;
+  url: string;
+}
+
+export const createPullRequest = async (
+  params: CreatePullRequestParams,
+): Promise<PullRequestDetails> => {
+  const dir = process.cwd();
+
+  const { owner, repo } = await Git.getOwnerAndRepo({ dir });
+
+  const client = new Octokit({ auth: apiTokenFromEnvironment() });
+
+  const response = await client.pulls.create({
+    base: params.base,
+    head: params.head,
+    title: params.title,
+    body: params.body,
+    owner,
+    repo,
+  });
+
+  return {
+    number: response.data.number,
+    url: response.data.url,
+  };
 };

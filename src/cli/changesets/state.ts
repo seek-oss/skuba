@@ -1,21 +1,19 @@
-// Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/readChangesetState.ts
-
 import { readPreState } from '@changesets/pre';
 import readChangesets from '@changesets/read';
 import type { NewChangeset, PreState } from '@changesets/types';
 
-export type ChangesetState = {
+export interface ChangesetState {
   preState: PreState | undefined;
   changesets: NewChangeset[];
-};
+}
 
-export default async function readChangesetState(
-  cwd: string = process.cwd(),
-): Promise<ChangesetState> {
-  const preState = await readPreState(cwd);
+export const readChangesetState = async (
+  dir: string,
+): Promise<ChangesetState> => {
+  const preState = await readPreState(dir);
   const isInPreMode = preState !== undefined && preState.mode === 'pre';
 
-  let changesets = await readChangesets(cwd);
+  let changesets = await readChangesets(dir);
 
   if (isInPreMode) {
     const changesetsToFilter = new Set(preState.changesets);
@@ -26,4 +24,4 @@ export default async function readChangesetState(
     preState: isInPreMode ? preState : undefined,
     changesets,
   };
-}
+};

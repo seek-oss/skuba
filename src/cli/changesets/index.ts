@@ -1,70 +1,52 @@
-// Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/index.ts
-
-/* eslint-disable no-console */
-
 import * as Git from '../../api/git';
-import { apiTokenFromEnvironment } from '../../api/github/environment';
+import { hasDebugFlag } from '../../utils/args';
+import { createLogger } from '../../utils/logging';
 
-import * as core from './coreAdapter';
-import readChangesetState from './readChangesetState';
-import { runPublish, runVersion } from './run';
+import { runPublish } from './publish';
+import { readChangesetState } from './state';
+import { runVersion } from './version';
 
-const run = async (): Promise<void> => {
-  if (!apiTokenFromEnvironment()) {
-    return core.setFailed(
-      'Please add the GITHUB_TOKEN to the changesets action',
-    );
-  }
+const RELEASE_BRANCH_PREFIX = 'changeset-release/';
 
+export const changesetsRelease = async (args = process.argv) => {
   const cwd = process.cwd();
+  const debug = hasDebugFlag(args);
+  const logger = createLogger(debug);
 
-  const [{ changesets }, currentBranch] = await Promise.all([
-    readChangesetState(),
-    Git.currentBranch({ dir: cwd }),
-  ]);
+  const currentBranch = await Git.currentBranch({ dir: cwd });
 
   if (!currentBranch) {
-    return core.setFailed('Could not determine the current git branch');
+    logger.err('Could not determine the current git branch');
+    process.exit(1);
   }
 
-  const publishScript = core.getInput('publish');
-  const hasChangesets = changesets.length !== 0;
-  const releaseBranchPrefix = core.getInput('branch');
-  const isChangesetReleaseBranch =
-    currentBranch.startsWith(releaseBranchPrefix);
+  const isReleaseBranch = currentBranch.startsWith(RELEASE_BRANCH_PREFIX);
 
-  switch (true) {
-    case isChangesetReleaseBranch: {
-      console.log('changeset-release branch detected. Skipping publish');
-      return;
-    }
-    case !hasChangesets: {
-      console.log(
-        'No changesets found, attempting to publish any unpublished packages to npm',
-      );
-
-      await runPublish({
-        script: publishScript,
-        cwd,
-      });
-
-      return;
-    }
-    case hasChangesets:
-      await runVersion({
-        cwd,
-        prTitle: core.getInput('title'),
-        commitMessage: core.getInput('commit'),
-      });
-      return;
+  if (isReleaseBranch) {
+    logger.plain(
+      'changeset-release branch detected. Skipping publish and version',
+    );
+    return;
   }
-};
 
-export const changesets = async () => {
-  try {
-    await run();
-  } catch (err) {
-    console.error(err);
-    core.setFailed((err as Error).message);
+  const { changesets, preState } = await readChangesetState(cwd);
+
+  const hasChangesets = Boolean(changesets.length !== 0);
+
+  if (!hasChangesets) {
+    logger.plain('No changesets found, attempting run publish');
+
+    return await runPublish(logger, { dir: cwd });
   }
+
+  logger.plain('Changesets found, attempting run version');
+
+  const versionBranch = `${RELEASE_BRANCH_PREFIX}${currentBranch}`;
+
+  return await runVersion(logger, {
+    currentBranch,
+    dir: cwd,
+    preState,
+    versionBranch,
+  });
 };

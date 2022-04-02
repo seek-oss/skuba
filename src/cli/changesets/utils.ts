@@ -1,4 +1,3 @@
-// Adapted from https://github.com/changesets/action/blob/21240c3cd1d2efa2672d64e0235a03cf139b83e6/src/gitUtils.ts
 import type { Package } from '@manypkg/get-packages';
 import { getPackages } from '@manypkg/get-packages';
 import execa from 'execa';
@@ -94,36 +93,6 @@ export function getChangelogEntry(changelog: string, version: string) {
     highestLevel,
   };
 }
-
-export const execWithOutput = async (
-  command: string,
-  args?: string[],
-  options: { ignoreReturnCode?: boolean; cwd?: string } = {},
-) => {
-  try {
-    const { exitCode, stdout, stderr } = await execa(
-      command,
-      args,
-      ...(options.cwd ? [{ cwd: options.cwd }] : []),
-    );
-
-    return {
-      code: exitCode,
-      stdout,
-      stderr,
-    };
-  } catch ({ exitCode, stdout, stderr }) {
-    if (!options.ignoreReturnCode) {
-      throw new Error(stderr as string);
-    }
-
-    return {
-      code: exitCode,
-      stdout,
-      stderr,
-    };
-  }
-};
 
 export function sortTheThings(
   a: { private: boolean; highestLevel: number },
