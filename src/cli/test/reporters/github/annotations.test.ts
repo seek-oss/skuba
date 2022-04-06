@@ -61,32 +61,33 @@ it('should create annotations from Jest test results', () => {
   } as TestResult;
 
   const annotations = createAnnotations([testResult]);
-  expect(annotations).toStrictEqual([
-    {
-      annotation_level: 'failure',
-      path: 'src/test.test.ts',
-      start_line: 2,
-      end_line: 2,
-      start_column: 15,
-      end_column: 15,
-      message:
-        'Error: \x1B[2mexpect(\x1B[22m\x1B[31mreceived\x1B[39m\x1B[2m).\x1B[22mtoBe\x1B[2m(\x1B[22m\x1B[32mexpected\x1B[39m\x1B[2m) // Object.is equality\x1B[22m\n' +
-        '\n' +
-        'Expected: \x1B[32m"a"\x1B[39m\n' +
-        'Received: \x1B[31m"b"\x1B[39m\n' +
-        '    at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)\n' +
-        '    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n' +
-        '    at new Promise (<anonymous>)\n' +
-        '    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n' +
-        '    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\n' +
-        '    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n' +
-        '    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\n' +
-        '    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\n' +
-        '    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\n' +
-        '    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
-      title: 'Jest',
-    },
-  ]);
+  expect(annotations).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "annotation_level": "failure",
+        "end_column": 15,
+        "end_line": 2,
+        "message": "Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: \\"a\\"
+    Received: \\"b\\"
+        at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)
+        at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)
+        at new Promise (<anonymous>)
+        at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)
+        at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)
+        at processTicksAndRejections (node:internal/process/task_queues:96:5)
+        at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)
+        at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)
+        at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)
+        at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)",
+        "path": "src/test.test.ts",
+        "start_column": 15,
+        "start_line": 2,
+        "title": "Jest",
+      },
+    ]
+  `);
 });
 
 it('should create annotations from Jest exec errors', () => {
@@ -132,22 +133,23 @@ it('should create annotations from Jest exec errors', () => {
   } as TestResult;
 
   const annotations = createAnnotations([testResult]);
-  expect(annotations).toStrictEqual([
-    {
-      annotation_level: 'failure',
-      path: 'src/test.test.ts',
-      start_line: 1,
-      end_line: 1,
-      message:
-        "\x1B[96msrc/test.ts\x1B[0m:\x1B[93m1\x1B[0m:\x1B[93m1\x1B[0m - \x1B[91merror\x1B[0m\x1B[90m TS6133: \x1B[0m'a' is declared but its value is never read.\n" +
-        '\n' +
-        "\x1B[7m1\x1B[0m import { a } from 'b';\n" +
-        '\x1B[7m \x1B[0m \x1B[91m~~~~~~~~~~~~~~~~~~~~~~\x1B[0m\n' +
-        "\x1B[96msrc/test.ts\x1B[0m:\x1B[93m1\x1B[0m:\x1B[93m19\x1B[0m - \x1B[91merror\x1B[0m\x1B[90m TS2307: \x1B[0mCannot find module 'b' or its corresponding type declarations.\n" +
-        '\n' +
-        "\x1B[7m1\x1B[0m import { a } from 'b';\n" +
-        '\x1B[7m \x1B[0m \x1B[91m                  ~~~\x1B[0m',
-      title: 'Jest',
-    },
-  ]);
+  expect(annotations).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "annotation_level": "failure",
+        "end_line": 1,
+        "message": "src/test.ts:1:1 - error TS6133: 'a' is declared but its value is never read.
+
+    1 import { a } from 'b';
+      ~~~~~~~~~~~~~~~~~~~~~~
+    src/test.ts:1:19 - error TS2307: Cannot find module 'b' or its corresponding type declarations.
+
+    1 import { a } from 'b';
+                        ~~~",
+        "path": "src/test.test.ts",
+        "start_line": 1,
+        "title": "Jest",
+      },
+    ]
+  `);
 });

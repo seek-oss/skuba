@@ -1,6 +1,7 @@
 import path from 'path';
 
 import type { TestResult } from '@jest/test-result';
+import stripAnsi from 'strip-ansi';
 
 import type * as GitHub from '../../../../api/github';
 
@@ -39,7 +40,7 @@ export const createAnnotations = (
         path: path.relative(cwd, testResult.testFilePath),
         start_line: 1,
         end_line: 1,
-        message: testResult.testExecError.message,
+        message: stripAnsi(testResult.testExecError.message),
         title: 'Jest',
       };
     }
@@ -56,7 +57,7 @@ export const createAnnotations = (
               end_line: Number(match[2]),
               start_column: Number(match[3]),
               end_column: Number(match[3]),
-              message: failureMessage,
+              message: stripAnsi(failureMessage),
               title: 'Jest',
             };
           }

@@ -1,5 +1,115 @@
 # skuba
 
+## 4.2.0
+
+### Minor Changes
+
+- **deps:** TypeScript 4.6 ([#811](https://github.com/seek-oss/skuba/pull/811))
+
+  This major release includes breaking changes. See the [TypeScript 4.5](https://devblogs.microsoft.com/typescript/announcing-typescript-4-5/) and [TypeScript 4.6](https://devblogs.microsoft.com/typescript/announcing-typescript-4-6/) announcements for more information.
+
+- **lint:** Autofix in CI ([#800](https://github.com/seek-oss/skuba/pull/800))
+
+  `skuba lint` can now automatically push ESLint and Prettier autofixes. This eases adoption of linting rule changes and automatically resolves issues arising from a forgotten `skuba format`.
+
+  You'll need to configure your CI environment to support this feature. See our [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) documentation to learn more.
+
+- **deps:** ESLint 8 + eslint-config-seek 9 ([#806](https://github.com/seek-oss/skuba/pull/806))
+
+  These major upgrades bundle new parser and plugin versions. See the [ESLint 8 guide](https://eslint.org/docs/8.0.0/user-guide/migrating-to-8.0.0) and [eslint-config-seek 9 release](https://github.com/seek-oss/eslint-config-seek/releases/tag/v9.0.0) for more details on the underlying changes.
+
+  We've introduced new linting rules like [@typescript-eslint/no-unsafe-argument](https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/no-unsafe-argument.md), and resolved the following installation warning:
+
+  ```console
+  babel-eslint is now @babel/eslint-parser. This package will no longer receive updates.
+  ```
+
+  If you wish to relax some of the new rules, [extend](https://eslint.org/docs/user-guide/configuring/configuration-files#extending-configuration-files) your `.eslintrc.js` config:
+
+  ```javascript
+  module.exports = {
+    extends: ['skuba'],
+    rules: {
+      // Demote new TypeScript ESLint rule from 'error' to 'warn'.
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+    },
+  };
+  ```
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Fix progress configuration in `cdk.json` ([#797](https://github.com/seek-oss/skuba/pull/797))
+
+- **Jest.mergePreset:** Allow additional props via type parameter ([#806](https://github.com/seek-oss/skuba/pull/806))
+
+- **Git.currentBranch:** Add helper function ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **test:** Strip ANSI escape codes from error messages for GitHub annotations ([#825](https://github.com/seek-oss/skuba/pull/825))
+
+- **Git.commitAllChanges:** Skip commit and return `undefined` when there are no changes ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **template/oss-npm-package:** Lock down GitHub workflow permissions ([#807](https://github.com/seek-oss/skuba/pull/807))
+
+  This aligns with [OpenSSF guidance](https://github.com/ossf/scorecard/blob/main/docs/checks.md#token-permissions).
+
+- **template:** Propagate Buildkite environment variables for lint autofixing ([#800](https://github.com/seek-oss/skuba/pull/800))
+
+- **template:** Exclude DOM type definitions by default ([#822](https://github.com/seek-oss/skuba/pull/822))
+
+  TypeScript will now raise compiler errors when DOM globals like `document` and `window` are referenced in new projects. This catches unsafe usage of Web APIs that will throw exceptions in a Node.js context.
+
+  If you are developing a new npm package for browser use or require specific Node.js-compatible Web APIs like the [Encoding API](https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API), you can opt in to DOM type definitions in your `tsconfig.json`:
+
+  ```diff
+  {
+    "compilerOptions": {
+  -   "lib": ["ES2020"]
+  +   "lib": ["DOM", "ES2020"]
+    }
+  }
+  ```
+
+  If you have an existing backend project, you can opt out of DOM type definitions in your `tsconfig.json`.
+
+  For Node.js 14:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "lib": ["ES2020"],
+      "target": "ES2020"
+    }
+  }
+  ```
+
+  For Node.js 16:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "lib": ["ES2021"],
+      "target": "ES2021"
+    }
+  }
+  ```
+
+- **Git.getOwnerAndRepo:** Support reading from CI environment variables ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **Git.getHeadCommitMessage:** Add helper function ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **template/\*-rest-api:** Avoid alternative syntax for ENV instructions ([#823](https://github.com/seek-oss/skuba/pull/823))
+
+  Omitting the `=` symbol in ENV instructions [is discouraged and may be disallowed in future](https://docs.docker.com/engine/reference/builder/#env).
+
+  ```diff
+  - ENV NODE_ENV production
+  + ENV NODE_ENV=production
+  ```
+
+- **template/oss-npm-package:** Pin GitHub action versions ([#805](https://github.com/seek-oss/skuba/pull/805))
+
+- **template/\*-rest-api:** seek-jobs/gantry v1.7.0 ([#824](https://github.com/seek-oss/skuba/pull/824))
+
 ## 4.1.1
 
 ### Patch Changes

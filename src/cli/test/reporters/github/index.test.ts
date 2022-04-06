@@ -319,7 +319,7 @@ it('should create one annotated check run when there are no display names', asyn
         end_line: 2,
         start_column: 15,
         end_column: 15,
-        message: failResults.testResults[0].testResults[0].failureMessages[0],
+        message: expect.any(String),
         title: 'Jest',
       },
     ],
@@ -343,9 +343,7 @@ it('should create an annotated check run per display name', async () => {
         end_line: 2,
         start_column: 15,
         end_column: 15,
-        message:
-          failResultsDisplayNames.testResults[0].testResults[0]
-            .failureMessages[0],
+        message: expect.any(String),
         title: 'Jest',
       },
     ],
@@ -363,9 +361,7 @@ it('should create an annotated check run per display name', async () => {
         end_line: 2,
         start_column: 15,
         end_column: 15,
-        message:
-          failResultsDisplayNames.testResults[1].testResults[0]
-            .failureMessages[0],
+        message: expect.any(String),
         title: 'Jest',
       },
     ],
