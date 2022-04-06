@@ -170,6 +170,7 @@ export default Jest.mergePreset({
     "data": "{
   \\"compilerOptions\\": {
     \\"baseUrl\\": \\".\\",
+    \\"lib\\": [\\"ES2020\\"],
     \\"outDir\\": \\"lib\\",
     \\"paths\\": {
       \\"src\\": [\\"src\\"]
