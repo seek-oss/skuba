@@ -1,5 +1,3 @@
-import path from 'path';
-
 import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
@@ -15,15 +13,13 @@ jest.mock('../../cli/adapter/prettier');
 
 const MOCK_ERROR = new Error('Badness!');
 
-const rootDir = path.join(__dirname, '..', '..', '..');
-
 const stdoutMock = jest.fn();
 
 const stdout = () => {
   const result = stdoutMock.mock.calls
     .flat(1)
-    .map((line) => line.replaceAll(rootDir, '<rootDir>'))
-    .join('');
+    .join('')
+    .replace(/(at Object\.\<anonymous\>)[\s\S]+$/, '$1...');
   return `\n${result}`;
 };
 
@@ -215,17 +211,7 @@ describe('autofix', () => {
       Failed to push fix commit.
       Does your CI environment have write access to your Git repository?
       Error: Badness!
-          at Object.<anonymous> (<rootDir>/src/cli/lint/autofix.test.ts:16:20)
-          at Runtime._execModule (<rootDir>/node_modules/jest-runtime/build/index.js:1646:24)
-          at Runtime._loadModule (<rootDir>/node_modules/jest-runtime/build/index.js:1185:12)
-          at Runtime.requireModule (<rootDir>/node_modules/jest-runtime/build/index.js:1009:12)
-          at jestAdapter (<rootDir>/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:13)
-          at processTicksAndRejections (node:internal/process/task_queues:96:5)
-          at runTestInternal (<rootDir>/node_modules/jest-runner/build/runTest.js:389:16)
-          at runTest (<rootDir>/node_modules/jest-runner/build/runTest.js:475:34)
-          at TestRunner.runTests (<rootDir>/node_modules/jest-runner/build/index.js:101:12)
-          at TestScheduler.scheduleTests (<rootDir>/node_modules/@jest/core/build/TestScheduler.js:333:13)
-      "
+          at Object.<anonymous>..."
     `);
   });
 
@@ -249,17 +235,7 @@ describe('autofix', () => {
       Failed to push fix commit.
       Does your CI environment have write access to your Git repository?
       Error: Badness!
-          at Object.<anonymous> (<rootDir>/src/cli/lint/autofix.test.ts:16:20)
-          at Runtime._execModule (<rootDir>/node_modules/jest-runtime/build/index.js:1646:24)
-          at Runtime._loadModule (<rootDir>/node_modules/jest-runtime/build/index.js:1185:12)
-          at Runtime.requireModule (<rootDir>/node_modules/jest-runtime/build/index.js:1009:12)
-          at jestAdapter (<rootDir>/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:13)
-          at processTicksAndRejections (node:internal/process/task_queues:96:5)
-          at runTestInternal (<rootDir>/node_modules/jest-runner/build/runTest.js:389:16)
-          at runTest (<rootDir>/node_modules/jest-runner/build/runTest.js:475:34)
-          at TestRunner.runTests (<rootDir>/node_modules/jest-runner/build/index.js:101:12)
-          at TestScheduler.scheduleTests (<rootDir>/node_modules/@jest/core/build/TestScheduler.js:333:13)
-      "
+          at Object.<anonymous>..."
     `);
   });
 });
