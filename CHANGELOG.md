@@ -1,5 +1,11 @@
 # skuba
 
+## 4.2.1-beta.0
+
+### Patch Changes
+
+- **cli:** Make warning logs more verbose ([#826](https://github.com/seek-oss/skuba/pull/826))
+
 ## 4.2.0
 
 ### Minor Changes
