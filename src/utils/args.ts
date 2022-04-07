@@ -13,8 +13,8 @@ export const hasSerialFlag = (args = process.argv, env = process.env) =>
     
     env.BUILDKITE_AGENT_META_DATA_QUEUE?.split(',').reduce(
       (accumulator, currentValue) => accumulator || currentValue.includes('artefacts:npm'),
-      false
-    )
+      false,
+    ),
   );
 
 /**
