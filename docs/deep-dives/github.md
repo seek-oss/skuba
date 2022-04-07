@@ -32,14 +32,11 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v3.8.0:
+      - docker#v3.12.0:
+          # Enable GitHub integrations.
           environment:
-            # Enable GitHub integrations.
-            - BUILDKITE
-            - BUILDKITE_BRANCH
-            - BUILDKITE_BUILD_NUMBER
-            - BUILDKITE_PIPELINE_DEFAULT_BRANCH
             - GITHUB_API_TOKEN
+          propagate-environment: true
           volumes:
             # Mount cached dependencies.
             - /workdir/node_modules
@@ -65,7 +62,7 @@ services:
 ```
 
 If you're running in GitHub Actions,
-propagate the following environment variables to achieve the same effect:
+your workflow will automatically have access to the following environment variables to achieve the same effect:
 
 - `GITHUB_ACTIONS`
 - `GITHUB_HEAD_REF`
