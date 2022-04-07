@@ -16,7 +16,10 @@ const MOCK_ERROR = new Error('Badness!');
 const stdoutMock = jest.fn();
 
 const stdout = () => {
-  const result = stdoutMock.mock.calls.flat(1).join('');
+  const result = stdoutMock.mock.calls
+    .flat(1)
+    .join('')
+    .replace(/(at Object\.\<anonymous\>)[\s\S]+$/, '$1...');
   return `\n${result}`;
 };
 
@@ -208,7 +211,7 @@ describe('autofix', () => {
       Failed to push fix commit.
       Does your CI environment have write access to your Git repository?
       Error: Badness!
-      "
+          at Object.<anonymous>..."
     `);
   });
 
@@ -232,7 +235,7 @@ describe('autofix', () => {
       Failed to push fix commit.
       Does your CI environment have write access to your Git repository?
       Error: Badness!
-      "
+          at Object.<anonymous>..."
     `);
   });
 });

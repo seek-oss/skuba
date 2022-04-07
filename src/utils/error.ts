@@ -1,5 +1,7 @@
 /* eslint-disable new-cap */
 
+import { inspect } from 'util';
+
 import type { ExecaError } from 'execa';
 import * as t from 'runtypes';
 
@@ -28,7 +30,7 @@ export const handleCliError = (err: unknown) => {
     return;
   }
 
-  log.err(err);
+  log.err(inspect(err));
   process.exitCode = 1;
   return;
 };

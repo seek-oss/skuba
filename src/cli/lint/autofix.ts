@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
@@ -103,6 +105,6 @@ export const autofix = async (input: Pick<Input, 'debug'>): Promise<void> => {
         'Does your CI environment have write access to your Git repository?',
       ),
     );
-    log.subtle(err);
+    log.subtle(inspect(err));
   }
 };
