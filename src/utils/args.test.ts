@@ -34,6 +34,9 @@ describe('hasSerialFlag', () => {
     ${'matching env'}              | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: 'artefacts:npm' }}                   | ${true}
     ${'matching env at start'}     | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: 'artefacts:npm,123456789012:cicd' }} | ${true}
     ${'matching env at end'}       | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: '123456789012:cicd,artefacts:npm' }} | ${true}
+    ${'matching env2 at start'}     | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: 'artefacts:npm2,123456789012:cicd' }} | ${true}
+    ${'matching env2 at end'}       | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: '123456789012:cicd,artefacts:npm2' }} | ${true}
+    ${'unrelated env2'}             | ${[]}                                | ${{ BUILDKITE_AGENT_META_DATA_QUEUE: '123456789012:cicd,artefacts:2npm' }} | ${false}
   `('$description => $expected', ({ args, env, expected }) =>
     expect(hasSerialFlag(args, env)).toBe(expected),
   );
