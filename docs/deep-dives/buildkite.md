@@ -28,15 +28,11 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v3.8.0:
-          environment:
-            # Enable Buildkite integrations.
-            - BUILDKITE
-            - BUILDKITE_AGENT_ACCESS_TOKEN
-            - BUILDKITE_JOB_ID
-            - BUILDKITE_STEP_ID
+      - docker#v3.12.0:
           # Disable SEEK BuildAgency's wrapped agent that requires Bash.
           mount-buildkite-agent: false
+          # Enable Buildkite integrations.
+          propagate-environment: true
           volumes:
             # Mount agent for Buildkite annotations.
             - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
