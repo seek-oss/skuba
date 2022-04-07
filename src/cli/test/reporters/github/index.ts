@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import type { Context, Reporter } from '@jest/reporters';
 import type { AggregatedResult } from '@jest/test-result';
 
@@ -44,8 +46,8 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
         });
       }
     } catch (err) {
-      log.warn('Failed to annotate results.');
-      log.warn(err);
+      log.warn('Failed to report test results to GitHub.');
+      log.subtle(inspect(err));
     }
   }
 }

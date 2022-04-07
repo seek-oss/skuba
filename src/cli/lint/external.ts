@@ -1,4 +1,5 @@
 import stream from 'stream';
+import { inspect } from 'util';
 
 import { log } from '../../utils/logging';
 
@@ -87,8 +88,8 @@ export const externalLint = async (input: Input) => {
   try {
     await createAnnotations(eslint, prettier, tscOk, tscOutputStream);
   } catch (err) {
-    log.warn('Failed to annotate results.');
-    log.warn(err);
+    log.warn('Failed to annotate lint results.');
+    log.subtle(inspect(err));
   }
 
   if (eslint.ok && prettier.ok && tscOk) {
