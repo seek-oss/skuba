@@ -114,11 +114,3 @@ The agent may be tied up running a particularly compute- or memory-intensive ste
 [ci/cd]: https://en.wikipedia.org/wiki/CI/CD
 [compose file]: https://docs.docker.com/compose/compose-file
 [docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
-
----
-
-## Buildkite pipeline optimisations
-
-### Optimisations for workers
-
-### Optimisations for workers
