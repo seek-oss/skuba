@@ -24,10 +24,15 @@ jobs:
       checks: write
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repo
+      - if: github.event.repository.fork == false
+        name: Check out repo
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
+
+      - if: github.event.repository.fork == true
+        name: Check out repo
+        uses: actions/checkout@v3
 
       - name: Set Git user
         run: |
