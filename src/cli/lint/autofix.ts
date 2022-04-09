@@ -7,6 +7,7 @@ import { runESLint } from '../../cli/adapter/eslint';
 import { runPrettier } from '../../cli/adapter/prettier';
 import { isCiEnv } from '../../utils/env';
 import { createLogger, log } from '../../utils/logging';
+import { throwOnTimeout } from '../../utils/wait';
 
 import type { Input } from './types';
 
@@ -86,16 +87,19 @@ export const autofix = async (input: Pick<Input, 'debug'>): Promise<void> => {
       return log.warn('No autofixes detected.');
     }
 
-    await (process.env.GITHUB_ACTIONS
-      ? // GitHub's checkout action should preconfigure the Git CLI.
-        simpleGit().push()
-      : // In other CI environments (Buildkite) we fall back to GitHub App auth.
-        Git.push({
-          auth: { type: 'gitHubApp' },
-          dir: process.cwd(),
-          ref,
-          remoteRef: currentBranch,
-        }));
+    await throwOnTimeout<unknown>(
+      process.env.GITHUB_ACTIONS
+        ? // GitHub's checkout action should preconfigure the Git CLI.
+          simpleGit().push()
+        : // In other CI environments (Buildkite) we fall back to GitHub App auth.
+          Git.push({
+            auth: { type: 'gitHubApp' },
+            dir: process.cwd(),
+            ref,
+            remoteRef: currentBranch,
+          }),
+      { s: 30 },
+    );
 
     log.warn(`Pushed fix commit ${ref}.`);
   } catch (err) {
