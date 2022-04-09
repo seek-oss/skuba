@@ -55,6 +55,20 @@ describe('withTimeout', () => {
       .then(() => undefined)
       .then(() => undefined);
 
+  it('propagates a static value for easier `jest.mock`ing', async () => {
+    sleep.mockImplementation(withMicrotaskDelay);
+
+    const value = 123;
+
+    await expect(wait.withTimeout(value, { s: 1 })).resolves.toStrictEqual({
+      ok: true,
+      value,
+    });
+
+    expect(sleep).toHaveBeenCalledTimes(1);
+    expect(sleep).toHaveBeenNthCalledWith(1, 1_000);
+  });
+
   it('propagates a fulfilled promise within the timeout', async () => {
     sleep.mockImplementation(withMicrotaskDelay);
 

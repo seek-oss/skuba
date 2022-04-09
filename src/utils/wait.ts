@@ -20,10 +20,10 @@ export const throwOnTimeout = async <T>(
 type TimeoutResult<T> = { ok: true; value: T } | { ok: false };
 
 export const withTimeout = <T>(
-  promise: PromiseLike<T>,
+  promise: T | PromiseLike<T>,
   { s }: { s: number },
 ): Promise<TimeoutResult<T>> =>
   Promise.race<TimeoutResult<T>>([
-    promise.then((value) => ({ ok: true, value })),
+    Promise.resolve(promise).then((value) => ({ ok: true, value })),
     sleep(s * 1_000).then(() => ({ ok: false })),
   ]);
