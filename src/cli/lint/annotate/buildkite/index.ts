@@ -17,7 +17,7 @@ export const createBuildkiteAnnotations = async (
     return;
   }
 
-  const buildkiteOutput: string = [
+  const buildkiteOutput = [
     '`skuba lint` found issues that require triage:',
     ...createEslintAnnotations(eslint),
     ...createPrettierAnnotations(prettier),

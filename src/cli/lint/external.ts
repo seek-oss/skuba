@@ -2,6 +2,7 @@ import stream from 'stream';
 import { inspect } from 'util';
 
 import { log } from '../../utils/logging';
+import { throwOnTimeout } from '../../utils/wait';
 
 import { createAnnotations } from './annotate';
 import { autofix } from './autofix';
@@ -86,7 +87,10 @@ export const externalLint = async (input: Input) => {
   const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
 
   try {
-    await createAnnotations(eslint, prettier, tscOk, tscOutputStream);
+    await throwOnTimeout(
+      createAnnotations(eslint, prettier, tscOk, tscOutputStream),
+      { s: 30 },
+    );
   } catch (err) {
     log.warn('Failed to annotate lint results.');
     log.subtle(inspect(err));
