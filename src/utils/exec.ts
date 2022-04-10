@@ -16,7 +16,7 @@ class YarnSpamFilter extends stream.Transform {
   silenced = false;
 
   _transform(
-    chunk: any,
+    chunk: Uint8Array,
     _encoding: BufferEncoding,
     callback: stream.TransformCallback,
   ) {
@@ -41,7 +41,7 @@ class YarnSpamFilter extends stream.Transform {
 
 class YarnWarningFilter extends stream.Transform {
   _transform(
-    chunk: any,
+    chunk: Uint8Array,
     _encoding: BufferEncoding,
     callback: stream.TransformCallback,
   ) {
@@ -87,7 +87,7 @@ interface ExecConcurrentlyOptions {
    *
    * Defaults to `process.stdout`.
    */
-  outputStream?: NodeJS.WritableStream;
+  outputStream?: stream.Writable;
 }
 
 type ExecOptions = execa.Options & { streamStdio?: true | 'yarn' };
@@ -162,7 +162,7 @@ export const execConcurrently = async (
         // Use a minimalist logging prefix.
         prefix: '{name} │',
       },
-    );
+    ).result;
   } catch (err) {
     const result = ConcurrentlyErrors.validate(err);
 

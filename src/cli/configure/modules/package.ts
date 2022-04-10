@@ -24,7 +24,7 @@ export const packageModule = async ({
       build: type === 'package' ? 'skuba build-package' : 'skuba build',
       format: 'skuba format',
       lint: 'skuba lint',
-      ...(type === 'package' ? {} : { start: 'ENVIRONMENT=local skuba start' }),
+      ...(type === 'package' ? {} : { start: 'skuba start' }),
       test: 'skuba test --coverage',
       'test:watch': 'skuba test --watch',
     },

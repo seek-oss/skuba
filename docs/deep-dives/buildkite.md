@@ -28,15 +28,13 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v3.8.0:
+      - docker#v3.12.0:
           environment:
-            # Enable Buildkite annotation support.
-            - BUILDKITE
             - BUILDKITE_AGENT_ACCESS_TOKEN
-            - BUILDKITE_JOB_ID
-            - BUILDKITE_STEP_ID
           # Disable SEEK BuildAgency's wrapped agent that requires Bash.
           mount-buildkite-agent: false
+          # Enable Buildkite integrations.
+          propagate-environment: true
           volumes:
             # Mount agent for Buildkite annotations.
             - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
@@ -51,7 +49,7 @@ declare the environment variables and volume mounts in your [Compose file]:
 services:
   app:
     environment:
-      # Enable Buildkite annotation support.
+      # Enable Buildkite integrations.
       - BUILDKITE
       - BUILDKITE_AGENT_ACCESS_TOKEN
       - BUILDKITE_JOB_ID
@@ -103,11 +101,11 @@ The agent may be tied up running a particularly compute- or memory-intensive ste
 
 1. Reduce the number of agents that run on each instance.
 
-   At SEEK, this can be configured through Build Agency.
+   At SEEK, this can be configured through BuildAgency.
 
 1. Increase the instance size.
 
-   At SEEK, this can be configured through Build Agency.
+   At SEEK, this can be configured through BuildAgency.
 
 [`skuba build-package`]: ../cli/build.md#skuba-build-package
 [`skuba lint`]: ../cli/lint.md#skuba-lint

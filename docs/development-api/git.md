@@ -22,10 +22,25 @@ await Git.commit({ dir, message: 'Test a commit' });
 
 Stages all changes and writes a commit to the local Git repository.
 
+Skips the commit and returns `undefined` if there are no changes.
+
 ```typescript
 import { Git } from 'skuba';
 
 await Git.commitAllChanges({ dir, message: 'Test a commit' });
+```
+
+---
+
+## currentBranch
+
+Tries to return a Git branch name from CI environment variables,
+falling back to the local Git repository when the current working `dir` is supplied.
+
+```typescript
+import { Git } from 'skuba';
+
+const currentBranch = Git.currentBranch({ dir });
 ```
 
 ---
@@ -57,9 +72,25 @@ const headCommitId = await Git.getHeadCommitId({ dir });
 
 ---
 
-### getOwnerAndRepo
+## getHeadCommitMessage
 
-Extracts the owner and repository names from local Git remotes.
+Gets the message of the head commit.
+
+This tries to extract the message from common CI environment variables,
+and falls back to the local Git repository log.
+
+```typescript
+import { Git } from 'skuba';
+
+const headCommitMessage = await Git.getHeadCommitMessage({ dir });
+```
+
+---
+
+## getOwnerAndRepo
+
+Extracts the owner and repository names from CI environment variables,
+falling back to local Git remotes.
 
 Currently, only GitHub repository URLs are supported:
 

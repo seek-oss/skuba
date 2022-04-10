@@ -118,6 +118,12 @@ export default Jest.mergePreset({
       statements: 0,
     },
   },
+  globals: {
+    'ts-jest': {
+      // seek-oss/skuba#626
+      isolatedModules: true,
+    },
+  },
   setupFiles: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/test\\\\\\\\.ts'],
 });
@@ -137,7 +143,7 @@ export default Jest.mergePreset({
     \\"build\\": \\"skuba build\\",
     \\"format\\": \\"skuba format\\",
     \\"lint\\": \\"skuba lint\\",
-    \\"start\\": \\"ENVIRONMENT=local skuba start\\",
+    \\"start\\": \\"skuba start\\",
     \\"test\\": \\"skuba test --coverage\\",
     \\"test:watch\\": \\"skuba test --watch\\"
   },
@@ -164,6 +170,7 @@ export default Jest.mergePreset({
     "data": "{
   \\"compilerOptions\\": {
     \\"baseUrl\\": \\".\\",
+    \\"lib\\": [\\"ES2020\\"],
     \\"outDir\\": \\"lib\\",
     \\"paths\\": {
       \\"src\\": [\\"src\\"]

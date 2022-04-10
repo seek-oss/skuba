@@ -36,7 +36,7 @@ This would be replaced with an external data store in production.
 
 This project is deployed as a containerised application with [Gantry].
 A typical resource API instance does not require more than 1 vCPU,
-so we eskew clustering configurations in favour of a single Node.js process per container.
+so we eschew clustering configurations in favour of a single Node.js process per container.
 Under load, we autoscale horizontally in terms of container count up to `autoScaling.maxCount`.
 
 Gantry configures [CodeDeploy] for a blue-green deployment approach.

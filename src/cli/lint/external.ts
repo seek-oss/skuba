@@ -1,8 +1,11 @@
 import stream from 'stream';
+import { inspect } from 'util';
 
 import { log } from '../../utils/logging';
+import { throwOnTimeout } from '../../utils/wait';
 
 import { createAnnotations } from './annotate';
+import { autofix } from './autofix';
 import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint';
 import {
   runPrettierInCurrentThread,
@@ -21,7 +24,7 @@ export class StreamInterceptor extends stream.Transform {
   }
 
   _transform(
-    chunk: any,
+    chunk: Uint8Array,
     _encoding: BufferEncoding,
     callback: stream.TransformCallback,
   ) {
@@ -84,10 +87,13 @@ export const externalLint = async (input: Input) => {
   const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
 
   try {
-    await createAnnotations(eslint, prettier, tscOk, tscOutputStream);
+    await throwOnTimeout(
+      createAnnotations(eslint, prettier, tscOk, tscOutputStream),
+      { s: 30 },
+    );
   } catch (err) {
-    log.warn('Failed to annotate results.');
-    log.warn(err);
+    log.warn('Failed to annotate lint results.');
+    log.subtle(inspect(err));
   }
 
   if (eslint.ok && prettier.ok && tscOk) {
@@ -104,4 +110,11 @@ export const externalLint = async (input: Input) => {
   log.err(`${tools.join(', ')} found issues that require triage.`);
 
   process.exitCode = 1;
+
+  if (eslint.ok && prettier.ok) {
+    // If these are fine then the issue lies with tsc, which we can't autofix.
+    return;
+  }
+
+  await autofix(input);
 };

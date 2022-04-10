@@ -1,5 +1,6 @@
 {
   extends: [
+    ':dependencyDashboard',
     ':prHourlyLimit4',
     ':rebaseStalePrs',
     ':renovatePrefix',
@@ -53,6 +54,7 @@
       schedule: 'before 3:00 am every 2 weeks on Wednesday',
     },
     {
+      excludePackageNames: ['@types/node'],
       matchPaths: ['*'],
       matchUpdateTypes: ['pin'],
 

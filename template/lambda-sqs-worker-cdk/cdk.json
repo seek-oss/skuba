@@ -1,7 +1,6 @@
 {
   "app": "npx ts-node infra/index.ts",
   "context": {
-    "@aws-cdk/core:enableStackNameDuplicates": "true",
     "global": {
       "appName": "<%- serviceName %>"
     },
@@ -20,7 +19,7 @@
           "SOMETHING": "prod"
         }
       }
-    },
-    "progress": "events"
-  }
+    }
+  },
+  "progress": "events"
 }

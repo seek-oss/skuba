@@ -1,16 +1,13 @@
 import latestVersion from 'latest-version';
 
 import { getSkubaManifest } from './manifest';
-
-const sleep = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms));
+import { withTimeout } from './wait';
 
 const latestSkubaVersion = async (): Promise<string | null> => {
   try {
-    // Don't pull an Apple; bail out before holding up the command for too long
-    const result = await Promise.race([latestVersion('skuba'), sleep(2_000)]);
+    const result = await withTimeout(latestVersion('skuba'), { s: 2 });
 
-    return typeof result === 'string' ? result : null;
+    return result.ok ? result.value : null;
   } catch {
     return null;
   }

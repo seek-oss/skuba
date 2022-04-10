@@ -26,9 +26,14 @@ export const node = async () => {
       'node',
       ...args.node,
       '--require',
+      'dotenv/config',
+      '--require',
       'tsconfig-paths/register',
       '--require',
       'ts-node/register/transpile-only',
+      // Override dangerously warn-only default on Node.js <15 so that we
+      // predictably return a non-zero exit code on an unhandled rejection.
+      '--unhandled-rejections=throw',
       path.join(__dirname, '..', 'wrapper'),
       ...args.script,
     );
@@ -38,7 +43,7 @@ export const node = async () => {
   return tsNode
     .createRepl({
       service: tsNode.register({
-        require: [path.join(__dirname, '..', 'register')],
+        require: ['dotenv/config', 'tsconfig-paths/register'],
         transpileOnly: true,
       }),
     })

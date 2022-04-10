@@ -6,21 +6,22 @@ on:
       - beta
       - master
 
+permissions: {}
+
 jobs:
   release:
     name: Publish & Deploy
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
-    env:
-      CI: true
     steps:
       - name: Check out repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          lfs: true
 
       - name: Set up Node.js 16.x
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
