@@ -1,5 +1,7 @@
 /* eslint-disable new-cap */
 
+import { inspect } from 'util';
+
 import type { ExecaError } from 'execa';
 import * as t from 'runtypes';
 
@@ -19,6 +21,20 @@ export const ConcurrentlyErrors = t.Array(
   }),
 );
 
+/**
+ * Creates an error that returns its plain `message` rather than a full stack
+ * trace when `util.inspect`ed.
+ *
+ * This can be useful for terser handling and logging of known error scenarios
+ * that have descriptive messages.
+ *
+ * https://nodejs.org/api/util.html#custom-inspection-functions-on-objects
+ */
+export const createTerseError = (message?: string) =>
+  Object.assign(new Error(message), {
+    [inspect.custom]: () => message,
+  });
+
 const isExecaError = (err: unknown): err is ExecaError =>
   hasNumberProp(err, 'exitCode');
 
@@ -28,7 +44,7 @@ export const handleCliError = (err: unknown) => {
     return;
   }
 
-  log.err(err);
+  log.err(inspect(err));
   process.exitCode = 1;
   return;
 };

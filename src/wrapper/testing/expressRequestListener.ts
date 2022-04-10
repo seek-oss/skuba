@@ -5,7 +5,7 @@ const app = express().use((req, res) => {
     return res.end('Express!');
   }
 
-  res.status(404).end();
+  return res.status(404).end();
 });
 
 Object.assign(app, {

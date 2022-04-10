@@ -1,5 +1,4 @@
-/* eslint-disable no-new */
-import { App } from '@aws-cdk/core';
+import { App } from 'aws-cdk-lib';
 
 import { globalContext } from '../shared/context-types';
 
@@ -9,6 +8,7 @@ const app = new App();
 
 const context = globalContext.check(app.node.tryGetContext('global'));
 
+// eslint-disable-next-line no-new
 new AppStack(app, 'appStack', {
   stackName: context.appName,
 });

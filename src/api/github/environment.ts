@@ -1,3 +1,5 @@
+import { isCiEnv } from '../../utils/env';
+
 /**
  * Returns the name of the build as seen in GitHub status checks.
  *
@@ -23,6 +25,13 @@ export const buildNameFromEnvironment = (env = process.env): string => {
  */
 export const enabledFromEnvironment = (env = process.env): boolean =>
   // Running in a CI environment.
-  Boolean(env.BUILDKITE || env.CI || env.GITHUB_ACTIONS) &&
+  isCiEnv(env) &&
   // Has an API token at the ready.
-  Boolean(env.GITHUB_API_TOKEN || env.GITHUB_TOKEN);
+  Boolean(apiTokenFromEnvironment(env));
+
+/**
+ * Tries to return a GitHub API token from the environment.
+ */
+export const apiTokenFromEnvironment = (
+  env = process.env,
+): string | undefined => env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN;

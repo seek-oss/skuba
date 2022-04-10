@@ -1,7 +1,7 @@
 const {
   getInfo,
   getInfoFromPullRequest,
-} = require("@changesets/get-github-info");
+} = require('@changesets/get-github-info');
 
 /**
  * Bold the scope of the changelog entry.
@@ -10,7 +10,7 @@ const {
  *
  * @param {string} firstLine
  */
-const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, "**$1:** ");
+const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, '**$1:** ');
 
 /**
  * Adapted from `@changesets/cli`.
@@ -21,7 +21,7 @@ const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, "**$1:** ");
  */
 const defaultChangelogFunctions = {
   getDependencyReleaseLine: async (changesets, dependenciesUpdated) => {
-    if (dependenciesUpdated.length === 0) return "";
+    if (dependenciesUpdated.length === 0) return '';
 
     const changesetLinks = changesets.map(
       (changeset) => `- Updated dependencies [${changeset.commit}]`,
@@ -31,11 +31,11 @@ const defaultChangelogFunctions = {
       (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
     );
 
-    return [...changesetLinks, ...updatedDependenciesList].join("\n");
+    return [...changesetLinks, ...updatedDependenciesList].join('\n');
   },
   getReleaseLine: async (changeset) => {
     const [firstLine, ...futureLines] = changeset.summary
-      .split("\n")
+      .split('\n')
       .map((l) => l.trimRight());
 
     const formattedFirstLine = boldScope(firstLine);
@@ -43,8 +43,8 @@ const defaultChangelogFunctions = {
     const suffix = changeset.commit;
 
     return `\n\n- ${formattedFirstLine}${
-      suffix ? ` (${suffix})` : ""
-    }\n${futureLines.map((l) => `  ${l}`).join("\n")}`;
+      suffix ? ` (${suffix})` : ''
+    }\n${futureLines.map((l) => `  ${l}`).join('\n')}`;
   },
 };
 
@@ -66,7 +66,7 @@ const gitHubChangelogFunctions = {
         'Please provide a repo to this changelog generator like this:\n"changelog": ["./changelog.js", { "repo": "org/repo" }]',
       );
     }
-    if (dependenciesUpdated.length === 0) return "";
+    if (dependenciesUpdated.length === 0) return '';
 
     const changesetLink = `- Updated dependencies [${(
       await Promise.all(
@@ -82,13 +82,13 @@ const gitHubChangelogFunctions = {
       )
     )
       .filter((_) => _)
-      .join(", ")}]:`;
+      .join(', ')}]:`;
 
     const updatedDependenciesList = dependenciesUpdated.map(
       (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
     );
 
-    return [changesetLink, ...updatedDependenciesList].join("\n");
+    return [changesetLink, ...updatedDependenciesList].join('\n');
   },
   getReleaseLine: async (changeset, _type, options) => {
     if (!options || !options.repo) {
@@ -106,20 +106,20 @@ const gitHubChangelogFunctions = {
       .replace(/^\s*(?:pr|pull|pull\s+request):\s*#?(\d+)/im, (_, pr) => {
         let num = Number(pr);
         if (!isNaN(num)) prFromSummary = num;
-        return "";
+        return '';
       })
       .replace(/^\s*commit:\s*([^\s]+)/im, (_, commit) => {
         commitFromSummary = commit;
-        return "";
+        return '';
       })
       .replace(/^\s*(?:author|user):\s*@?([^\s]+)/gim, (_, user) => {
         usersFromSummary.push(user);
-        return "";
+        return '';
       })
       .trim();
 
     const [firstLine, ...futureLines] = replacedChangelog
-      .split("\n")
+      .split('\n')
       .map((l) => l.trimRight());
 
     const links = await (async () => {
@@ -156,9 +156,9 @@ const gitHubChangelogFunctions = {
     const suffix = links.pull ?? links.commit;
 
     return [
-      `\n- ${formattedFirstLine}${suffix ? ` (${suffix})` : ""}`,
+      `\n- ${formattedFirstLine}${suffix ? ` (${suffix})` : ''}`,
       ...futureLines.map((l) => `  ${l}`),
-    ].join("\n");
+    ].join('\n');
   },
 };
 

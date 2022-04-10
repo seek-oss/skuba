@@ -1,11 +1,7 @@
-configs:
-  environments:
-    - &prod
-      agents:
-        queue: <%- prodBuildkiteQueueName %>
-      env:
-        ENVIRONMENT: prod
+agents:
+  queue: <%- prodBuildkiteQueueName %>
 
+configs:
   plugins:
     - &aws-sm
       seek-oss/aws-sm#v2.3.1:
@@ -24,8 +20,7 @@ configs:
         env: NPM_READ_TOKEN
 
 steps:
-  - <<: *prod
-    label: 🧪 Test & Lint
+  - label: 🧪 Test & Lint
     commands:
       - echo '+++ yarn test:ci'
       - yarn test:ci

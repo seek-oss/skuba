@@ -1,4 +1,5 @@
 import path from 'path';
+import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
@@ -43,6 +44,6 @@ export const tryRefreshIgnoreFiles = async () => {
     await refreshIgnoreFiles();
   } catch (err) {
     log.warn('Failed to refresh ignore files.');
-    log.warn(err);
+    log.subtle(inspect(err));
   }
 };

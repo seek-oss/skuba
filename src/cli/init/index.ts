@@ -1,5 +1,6 @@
 import path from 'path';
 
+import { commitAllChanges } from '../../api/git';
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
@@ -11,7 +12,7 @@ import {
 } from '../../utils/template';
 
 import { getConfig } from './getConfig';
-import { commitChanges, initialiseRepo } from './git';
+import { initialiseRepo } from './git';
 import { writePackageJson } from './writePackageJson';
 
 export const init = async () => {
@@ -85,7 +86,10 @@ export const init = async () => {
     await exec('npx', 'yarn-deduplicate', '--strategy=highest');
   } catch {}
 
-  await commitChanges(destinationDir, `Clone ${templateName}`);
+  await commitAllChanges({
+    dir: destinationDir,
+    message: `Clone ${templateName}`,
+  });
 
   const logGitHubRepoCreation = () => {
     log.plain(

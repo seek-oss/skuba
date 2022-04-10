@@ -1,3 +1,4 @@
+import { inspect } from 'util';
 import { Worker, parentPort, workerData } from 'worker_threads';
 
 import { log } from './logging';
@@ -53,10 +54,10 @@ export const postWorkerOutput = <Input, Output>(
     process.exit(1);
   }
 
-  fn(workerData)
+  fn(workerData as Input)
     .then((output) => port.postMessage(output))
     .catch((err) => {
-      logger.err(err);
+      logger.err(inspect(err));
 
       process.exit(1);
     });

@@ -1,5 +1,430 @@
 # skuba
 
+## 4.2.0
+
+### Minor Changes
+
+- **deps:** TypeScript 4.6 ([#811](https://github.com/seek-oss/skuba/pull/811))
+
+  This major release includes breaking changes. See the [TypeScript 4.5](https://devblogs.microsoft.com/typescript/announcing-typescript-4-5/) and [TypeScript 4.6](https://devblogs.microsoft.com/typescript/announcing-typescript-4-6/) announcements for more information.
+
+- **lint:** Autofix in CI ([#800](https://github.com/seek-oss/skuba/pull/800))
+
+  `skuba lint` can now automatically push ESLint and Prettier autofixes. This eases adoption of linting rule changes and automatically resolves issues arising from a forgotten `skuba format`.
+
+  You'll need to configure your CI environment to support this feature. See our [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) documentation to learn more.
+
+- **deps:** ESLint 8 + eslint-config-seek 9 ([#806](https://github.com/seek-oss/skuba/pull/806))
+
+  These major upgrades bundle new parser and plugin versions. See the [ESLint 8 guide](https://eslint.org/docs/8.0.0/user-guide/migrating-to-8.0.0) and [eslint-config-seek 9 release](https://github.com/seek-oss/eslint-config-seek/releases/tag/v9.0.0) for more details on the underlying changes.
+
+  We've introduced new linting rules like [@typescript-eslint/no-unsafe-argument](https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/no-unsafe-argument.md), and resolved the following installation warning:
+
+  ```console
+  babel-eslint is now @babel/eslint-parser. This package will no longer receive updates.
+  ```
+
+  If you wish to relax some of the new rules, [extend](https://eslint.org/docs/user-guide/configuring/configuration-files#extending-configuration-files) your `.eslintrc.js` config:
+
+  ```javascript
+  module.exports = {
+    extends: ['skuba'],
+    rules: {
+      // Demote new TypeScript ESLint rule from 'error' to 'warn'.
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+    },
+  };
+  ```
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Fix progress configuration in `cdk.json` ([#797](https://github.com/seek-oss/skuba/pull/797))
+
+- **Jest.mergePreset:** Allow additional props via type parameter ([#806](https://github.com/seek-oss/skuba/pull/806))
+
+- **Git.currentBranch:** Add helper function ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **test:** Strip ANSI escape codes from error messages for GitHub annotations ([#825](https://github.com/seek-oss/skuba/pull/825))
+
+- **Git.commitAllChanges:** Skip commit and return `undefined` when there are no changes ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **template/oss-npm-package:** Lock down GitHub workflow permissions ([#807](https://github.com/seek-oss/skuba/pull/807))
+
+  This aligns with [OpenSSF guidance](https://github.com/ossf/scorecard/blob/main/docs/checks.md#token-permissions).
+
+- **template:** Propagate Buildkite environment variables for lint autofixing ([#800](https://github.com/seek-oss/skuba/pull/800))
+
+- **template:** Exclude DOM type definitions by default ([#822](https://github.com/seek-oss/skuba/pull/822))
+
+  TypeScript will now raise compiler errors when DOM globals like `document` and `window` are referenced in new projects. This catches unsafe usage of Web APIs that will throw exceptions in a Node.js context.
+
+  If you are developing a new npm package for browser use or require specific Node.js-compatible Web APIs like the [Encoding API](https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API), you can opt in to DOM type definitions in your `tsconfig.json`:
+
+  ```diff
+  {
+    "compilerOptions": {
+  -   "lib": ["ES2020"]
+  +   "lib": ["DOM", "ES2020"]
+    }
+  }
+  ```
+
+  If you have an existing backend project, you can opt out of DOM type definitions in your `tsconfig.json`.
+
+  For Node.js 14:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "lib": ["ES2020"],
+      "target": "ES2020"
+    }
+  }
+  ```
+
+  For Node.js 16:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "lib": ["ES2021"],
+      "target": "ES2021"
+    }
+  }
+  ```
+
+- **Git.getOwnerAndRepo:** Support reading from CI environment variables ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **Git.getHeadCommitMessage:** Add helper function ([#804](https://github.com/seek-oss/skuba/pull/804))
+
+- **template/\*-rest-api:** Avoid alternative syntax for ENV instructions ([#823](https://github.com/seek-oss/skuba/pull/823))
+
+  Omitting the `=` symbol in ENV instructions [is discouraged and may be disallowed in future](https://docs.docker.com/engine/reference/builder/#env).
+
+  ```diff
+  - ENV NODE_ENV production
+  + ENV NODE_ENV=production
+  ```
+
+- **template/oss-npm-package:** Pin GitHub action versions ([#805](https://github.com/seek-oss/skuba/pull/805))
+
+- **template/\*-rest-api:** seek-jobs/gantry v1.7.0 ([#824](https://github.com/seek-oss/skuba/pull/824))
+
+## 4.1.1
+
+### Patch Changes
+
+- **template:** Disable type checking in tests ([#787](https://github.com/seek-oss/skuba/pull/787))
+
+  Newly initialised projects will skip TypeScript type checking on `skuba test` as it's already covered by `skuba lint`. You can now iterate on your tests without running into annoying compilation errors like TS6133 (unused declarations).
+
+  This will be defaulted for existing projects in a future major version. You can opt in early by setting the `globals` configuration option in your `jest.config.ts`:
+
+  ```typescript
+  export default Jest.mergePreset({
+    globals: {
+      'ts-jest': {
+        // seek-oss/skuba#626
+        isolatedModules: true,
+      },
+    },
+    // Rest of config
+  });
+  ```
+
+- **template:** Specify default Buildkite agent ([#775](https://github.com/seek-oss/skuba/pull/775))
+
+- **format, lint:** Suppress `eslint-plugin-react` warning ([#786](https://github.com/seek-oss/skuba/pull/786))
+
+  ```console
+  Warning: React version was set to "detect" in eslint-plugin-react settings, but the "react" package is not installed. Assuming latest React version for linting.
+  ```
+
+- **deps:** Prettier 2.6 ([#792](https://github.com/seek-oss/skuba/pull/792))
+
+  See the [release notes](https://prettier.io/blog/2022/03/16/2.6.0.html) for more information.
+
+- **node:** Throw unhandled rejections under Node.js 14 ([#777](https://github.com/seek-oss/skuba/pull/777))
+
+  When a rejected promise is left unhandled in Node.js 14, it simply logs a warning. This caused `skuba node` to effectively swallow such failures and report a process exit code of 0. We now override this behaviour with [`--unhandled-rejections=throw`](https://nodejs.org/docs/latest-v16.x/api/cli.html#--unhandled-rejectionsmode) to predictably fail with a non-zero exit code across supported Node.js versions.
+
+- **template/\*-rest-api:** seek-jobs/gantry v1.6.2 ([#778](https://github.com/seek-oss/skuba/pull/778))
+
+## 4.1.0
+
+### Minor Changes
+
+- **node, start:** Load environment variables from `.env` file ([#774](https://github.com/seek-oss/skuba/pull/774))
+
+- **deps:** ts-node ^10.5.0 ([#764](https://github.com/seek-oss/skuba/pull/764))
+
+  This major release includes breaking changes. If your project uses a complex `ts-node` configuration either directly or on top of `skuba node` and `skuba start`, see the [changelog](https://github.com/TypeStrong/ts-node/releases/tag/v10.0.0) for more information.
+
+### Patch Changes
+
+- **template:** skuba-dive ^2.0.0 ([#766](https://github.com/seek-oss/skuba/pull/766))
+
+- **template/lambda-sqs-worker:** Remove `variablesResolutionMode` ([#768](https://github.com/seek-oss/skuba/pull/768))
+
+  This resolves the following deprecation warning in Serverless Framework v3:
+
+  ```console
+  Starting with v3.0, the "variablesResolutionMode" option is now useless. You can safely remove it from the configuration
+  More info: https://serverless.com/framework/docs/deprecations/#VARIABLES_RESOLUTION_MODE
+  ```
+
+- **template/\*-rest-api:** Ignore deployment alarms and ECR scanning ([#773](https://github.com/seek-oss/skuba/pull/773))
+
+- **configure:** Fix `@seek/seek-module-toolkit` migration guide link ([#762](https://github.com/seek-oss/skuba/pull/762))
+
+- **template/lambda-sqs-worker-cdk:** Add `NODE_ENV=production` to environment variables ([#763](https://github.com/seek-oss/skuba/pull/763))
+
+- **template/lambda-sqs-worker:** Add `NODE_ENV=production` to environment variables ([#763](https://github.com/seek-oss/skuba/pull/763))
+
+- **deps:** ts-node-dev ^2.0.0-0 ([#764](https://github.com/seek-oss/skuba/pull/764))
+
+- **template/lambda-sqs-worker:** Move environment variables to `provider.environment` to reduce repetition ([#767](https://github.com/seek-oss/skuba/pull/767))
+
+## 4.0.0
+
+### Major Changes
+
+- **deps:** Require Node.js 14.18+ ([#760](https://github.com/seek-oss/skuba/pull/760))
+
+  Node.js 12 will reach end of life by April 2022. The `semantic-release` package and stable `--enable-source-maps` flag necessitate this new minimum version.
+
+  Consider upgrading the Node.js version for your project across:
+
+  - `.nvmrc`
+  - `package.json#/engines/node`
+  - CI/CD configuration (`.buildkite/pipeline.yml`, `Dockerfile`, etc.)
+
+- **deps:** semantic-release ^19.0.0 ([#757](https://github.com/seek-oss/skuba/pull/757))
+
+  Resolves [SNYK-JS-MARKED-2342073](https://app.snyk.io/vuln/SNYK-JS-MARKED-2342073) and [SNYK-JS-MARKED-2342082](https://app.snyk.io/vuln/SNYK-JS-MARKED-2342082).
+
+  This may alleviate the following `skuba release` error:
+
+  ```console
+  [semantic-release] › ✖  EGHNOPERMISSION The GitHub token doesn't allow to push on the repository owner/repo.
+  The user associated with the GitHub token (https://github.com/semantic-release/github/blob/master/README.md#github-authentication) configured in the GH_TOKEN or GITHUB_TOKEN environment variable must allows to push to the repository owner/repo.
+  ```
+
+- **template:** Use `--enable-source-maps` ([#761](https://github.com/seek-oss/skuba/pull/761))
+
+  Stable source map support has landed in Node.js 14.18+ via the built-in `--enable-source-maps` option.
+
+  We recommend migrating off of custom source map implementations in favour of this option. Upgrading to [**skuba-dive** v2](https://github.com/seek-oss/skuba-dive/releases/tag/v2.0.0) will remove `source-map-support` from the `skuba-dive/register` hook.
+
+  For a containerised application, update your Dockerfile:
+
+  ```diff
+  - FROM gcr.io/distroless/nodejs:12 AS runtime
+  + FROM gcr.io/distroless/nodejs:16 AS runtime
+
+  + # https://nodejs.org/api/cli.html#cli_node_options_options
+  + ENV NODE_OPTIONS=--enable-source-maps
+  ```
+
+  For a Serverless Lambda application, update your `serverless.yml`:
+
+  ```diff
+  provider:
+  - runtime: nodejs12.x
+  + runtime: nodejs14.x
+
+  functions:
+    Worker:
+      environment:
+  +     # https://nodejs.org/api/cli.html#cli_node_options_options
+  +     NODE_OPTIONS: --enable-source-maps
+  ```
+
+  For a CDK Lambda application, update your stack:
+
+  ```diff
+  new aws_lambda.Function(this, 'worker', {
+  - runtime: aws_lambda.Runtime.NODEJS_12_X,
+  + runtime: aws_lambda.Runtime.NODEJS_14_X,
+    environment: {
+  +   // https://nodejs.org/api/cli.html#cli_node_options_options
+  +   NODE_OPTIONS: '--enable-source-maps',
+    },
+  });
+  ```
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Disable `tty` on deploy step ([#753](https://github.com/seek-oss/skuba/pull/753))
+
+  Serverless Framework v3 renders progress spinners on interactive terminals. We recommend disabling [tty](https://github.com/buildkite-plugins/docker-compose-buildkite-plugin#tty-optional-run-only) in CI/CD for cleaner log output.
+
+- **template/lambda-sqs-worker:** serverless ^3.0.0 ([#748](https://github.com/seek-oss/skuba/pull/748))
+
+- **template/lambda-sqs-worker:** Replace `custom.env` configuration with `params` ([#752](https://github.com/seek-oss/skuba/pull/752))
+
+  You can now define environment specific variables using the new Serverless parameters feature. See <https://www.serverless.com/framework/docs/guides/parameters> for more details.
+
+- **template/\*-rest-api:** seek-jobs/gantry v1.6.1 ([#759](https://github.com/seek-oss/skuba/pull/759))
+
+- **template/lambda-sqs-worker:** Remove `provider.lambdaHashingVersion` ([#751](https://github.com/seek-oss/skuba/pull/751))
+
+  This resolves the following deprecation warning in Serverless Framework v3:
+
+  ```console
+  Setting "20201221" for "provider.lambdaHashingVersion" is no longer effective as new hashing algorithm is now used by default. You can safely remove this property from your configuration.
+  ```
+
+- **deps:** eslint-config-skuba 1.0.14 ([#758](https://github.com/seek-oss/skuba/pull/758))
+
+  This disables the `tsdoc/syntax` ESLint rule in tests for compatibility with `/** @jest-environment env */` directives.
+
+- **deps:** isomorphic-git ^1.11.1 ([#750](https://github.com/seek-oss/skuba/pull/750))
+
+  Resolves [SNYK-JS-SIMPLEGET-2361683](https://security.snyk.io/vuln/SNYK-JS-SIMPLEGET-2361683).
+
+## 3.17.2
+
+### Patch Changes
+
+- **init:** Fix GitHub template cloning ([#739](https://github.com/seek-oss/skuba/pull/739))
+
+  This resolves the following error when cloning a project template from GitHub:
+
+  ```typescript
+  UnknownTransportError: Git remote "git@github.com:owner/repo.git" uses an unrecognized transport protocol: "ssh"
+  ```
+
+- **template/lambda-sqs-worker:** Remove qualifier from smoke test invocation ([#743](https://github.com/seek-oss/skuba/pull/743))
+
+  Previously, this template's smoke test hook specified a `$LATEST` qualifier in its `Lambda.Invoke` API call. AWS authorised the call based on the unqualified Lambda ARN in our `serverless.yml` IAM policy, but will stop doing so after April 2022.
+
+  To avoid deployment failures, remove the qualifier in `src/hooks.ts`. An unqualified call is equivalent to targeting `$LATEST`.
+
+  ```diff
+  - Qualifier: '$LATEST',
+  + Qualifier: undefined,
+  ```
+
+- **node:** Register `tsconfig-paths` in REPL ([#745](https://github.com/seek-oss/skuba/pull/745))
+
+  This resolves the following error:
+
+  ```typescript
+  Error: Cannot find module '/node_modules/skuba/lib/register'
+  Require stack:
+  - internal/preload
+  ```
+
+## 3.17.1
+
+### Patch Changes
+
+- **deps:** ts-jest ^27.1.2 ([#729](https://github.com/seek-oss/skuba/pull/729))
+
+  This resolves the following import issue in older 27.0.x versions of `ts-jest`:
+
+  ```console
+  TypeError: pathsToModuleNameMapper is not a function
+  ```
+
+- **test:** Restore Node.js 12 compatibility ([#730](https://github.com/seek-oss/skuba/pull/730))
+
+  This resolves the following error in Node.js 12 environments:
+
+  ```typescript
+  Object.entries(parsedConfig.options.paths ?? DEFAULT_PATHS).flatMap(
+                                             ^
+
+  SyntaxError: Unexpected token '?'
+  ```
+
+  Note that Node.js 12 will reach its end of life in May 2022.
+
+## 3.17.0
+
+### Minor Changes
+
+- **template/koa-rest-api:** Add opt-in OpenTelemetry support ([#706](https://github.com/seek-oss/skuba/pull/706))
+
+- **deps:** Prettier 2.5 ([#701](https://github.com/seek-oss/skuba/pull/701))
+
+  See the [release notes](https://prettier.io/blog/2021/11/25/2.5.0.html) for more information.
+
+- **node, start:** Register `tsconfig-paths` ([#678](https://github.com/seek-oss/skuba/pull/678))
+
+  You can now define module aliases other than `src` for local development and scripting. Specify these through the `paths` compiler option in your `tsconfig.json`:
+
+  ```jsonc
+  // tsconfig.json
+  {
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "src": ["src"]
+      }
+    }
+  }
+  ```
+
+- **GitHub.buildNameFromEnvironment:** Export helper function ([#676](https://github.com/seek-oss/skuba/pull/676))
+
+- **jest:** Support `tsconfig.json` paths ([#698](https://github.com/seek-oss/skuba/pull/698))
+
+  Module aliases other than `src` are now supported in `skuba test`. Our Jest preset includes a dynamic `moduleNameMapper` that reads the `paths` compiler option from your `tsconfig.json`.
+
+- **git:** Export helper functions ([#689](https://github.com/seek-oss/skuba/pull/689))
+
+- **test:** Add GitHub check run annotations ([#648](https://github.com/seek-oss/skuba/pull/648))
+
+  `skuba test` can now automatically annotate GitHub commits when you [propagate CI environment variables and a GitHub API token](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
+
+- **GitHub.getPullRequestNumber:** Export helper function ([#690](https://github.com/seek-oss/skuba/pull/690))
+
+- **GitHub.putIssueComment:** Export helper function ([#690](https://github.com/seek-oss/skuba/pull/690))
+
+  This enables use cases like a persistent bot comment at the top of a pull request a la Changesets that reflects the current status of a CI check.
+
+- **GitHub.enabledFromEnvironment:** Export helper function ([#676](https://github.com/seek-oss/skuba/pull/676))
+
+### Patch Changes
+
+- **GitHub.createCheckRun:** Support `text` parameter ([#673](https://github.com/seek-oss/skuba/pull/673))
+
+- **template:** Retrieve GitHub token on Test & Lint ([#667](https://github.com/seek-oss/skuba/pull/667))
+
+- **template:** serverless-prune-plugin ^2.0.0 ([#719](https://github.com/seek-oss/skuba/pull/719))
+
+- **test:** Fix `ts-jest` imports ([#715](https://github.com/seek-oss/skuba/pull/715))
+
+  This resolves the following warning:
+
+  ```console
+  Replace any occurrences of "ts-jest/utils" with just "ts-jest".
+  ```
+
+  If you're using the `mocked` utility from `ts-jest`, switch over to the built-in Jest function:
+
+  ```diff
+  import git from 'isomorphic-git';
+  - import { mocked } from 'ts-jest';
+
+  jest.mock('isomorphic-git');
+
+  - mocked(git.commit).mockResolvedValue('');
+  + jest.mocked(git.commit).mockResolvedValue('');
+  ```
+
+- **template/lambda-sqs-worker-cdk:** Migrate to AWS CDK v2 ([#714](https://github.com/seek-oss/skuba/pull/714))
+
+- **node, start:** Deregister `source-map-support` ([#679](https://github.com/seek-oss/skuba/pull/679))
+
+  `ts-node` takes care of this for us.
+
+- **template/lambda-sqs-worker-cdk:** Fix docker-compose volume mount and deploy output ([#695](https://github.com/seek-oss/skuba/pull/695))
+
+- **Jest.mergePreset:** Allow `displayName` and `projects` ([#648](https://github.com/seek-oss/skuba/pull/648))
+
 ## 3.16.2
 
 ### Patch Changes

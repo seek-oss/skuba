@@ -1,17 +1,7 @@
+agents:
+  queue: <%- prodBuildkiteQueueName %>
+
 configs:
-  environments:
-    - &dev
-      agents:
-        queue: <%- devBuildkiteQueueName %>
-      env:
-        ENVIRONMENT: dev
-
-    - &prod
-      agents:
-        queue: <%- prodBuildkiteQueueName %>
-      env:
-        ENVIRONMENT: prod
-
   plugins:
     - &aws-sm
       seek-oss/aws-sm#v2.3.1:
@@ -36,7 +26,7 @@ configs:
         - yarn deploy
       concurrency: 1
       plugins:
-        - artifacts#v1.4.0:
+        - artifacts#v1.5.0:
             build: ${BUILDKITE_BUILD_ID}
             download: lib/*
         - *aws-sm
@@ -52,8 +42,7 @@ configs:
           permit_on_passed: true
 
 steps:
-  - <<: *prod
-    label: 🧪 Test, Lint & Build
+  - label: 🧪 Test, Lint & Build
     artifact_paths: lib/**/*
     commands:
       - echo '+++ yarn test:ci'
@@ -71,7 +60,8 @@ steps:
       - docker-compose#v3.9.0:
           run: app
 
-  - <<: *dev
+  - agents:
+      queue: <%- devBuildkiteQueueName %>
     branches: '!renovate/*'
     label: 🧖‍♀️ Warm Dev
     command: ':'
@@ -84,14 +74,18 @@ steps:
   - block: 🙋🏻‍♀️ Deploy Dev
     branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
 
-  - <<: *dev
-    <<: *deploy
+  - <<: *deploy
+    agents:
+      queue: <%- devBuildkiteQueueName %>
+    env:
+      ENVIRONMENT: dev
     label: 🤞 Deploy Dev
     concurrency_group: '<%- repoName %>/deploy/dev'
     key: deploy-dev
 
-  - <<: *prod
-    <<: *deploy
+  - <<: *deploy
+    env:
+      ENVIRONMENT: prod
     label: 🚀 Deploy Prod
     branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
     concurrency_group: '<%- repoName %>/deploy/prod'

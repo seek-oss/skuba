@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import type { Context, Reporter } from '@jest/reporters';
 import type { AggregatedResult } from '@jest/test-result';
 
@@ -7,6 +9,7 @@ import {
   enabledFromEnvironment,
 } from '../../../../api/github/environment';
 import { log } from '../../../../utils/logging';
+import { throwOnTimeout } from '../../../../utils/wait';
 
 import { generateAnnotationEntries } from './annotations';
 
@@ -35,17 +38,20 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
           ? '`skuba test` passed.'
           : '`skuba test` found issues that require triage.';
 
-        await GitHub.createCheckRun({
-          name,
-          annotations,
-          conclusion: isOk ? 'success' : 'failure',
-          summary,
-          title: `${build} ${isOk ? 'passed' : 'failed'}`,
-        });
+        await throwOnTimeout(
+          GitHub.createCheckRun({
+            name,
+            annotations,
+            conclusion: isOk ? 'success' : 'failure',
+            summary,
+            title: `${build} ${isOk ? 'passed' : 'failed'}`,
+          }),
+          { s: 30 },
+        );
       }
     } catch (err) {
-      log.warn('Failed to annotate results.');
-      log.warn(err);
+      log.warn('Failed to report test results to GitHub.');
+      log.subtle(inspect(err));
     }
   }
 }

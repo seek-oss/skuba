@@ -13,9 +13,7 @@ export const start = async () => {
     getPort(),
   ]);
 
-  if (!args.entryPoint) {
-    args.entryPoint = await getEntryPointFromManifest();
-  }
+  args.entryPoint ??= await getEntryPointFromManifest();
 
   const execProcess = createExec({
     env: {
@@ -28,7 +26,9 @@ export const start = async () => {
     'ts-node-dev',
     ...args.node,
     '--require',
-    path.posix.join(__dirname, '..', 'register'),
+    'dotenv/config',
+    '--require',
+    'tsconfig-paths/register',
     '--respawn',
     '--transpile-only',
     path.join(__dirname, '..', 'wrapper'),

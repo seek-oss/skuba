@@ -1,4 +1,5 @@
 import {
+  apiTokenFromEnvironment,
   buildNameFromEnvironment,
   enabledFromEnvironment,
 } from './environment';
@@ -33,4 +34,18 @@ describe('enabledFromEnvironment', () => {
   `('rejects $description', ({ env }) =>
     expect(enabledFromEnvironment(env)).toBe(false),
   );
+});
+
+describe('apiTokenFromEnvironment', () => {
+  it.each`
+    description         | env
+    ${'Buildkite'}      | ${{ GITHUB_API_TOKEN: 'x' }}
+    ${'GitHub Actions'} | ${{ GITHUB_TOKEN: 'x' }}
+    ${'generic CI'}     | ${{ GITHUB_TOKEN: 'x' }}
+  `('returns an API token from $description', ({ env }) =>
+    expect(apiTokenFromEnvironment(env)).toBe('x'),
+  );
+
+  it('returns undefined when environment variables are not present', () =>
+    expect(apiTokenFromEnvironment({})).toBeUndefined());
 });
