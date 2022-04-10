@@ -8,12 +8,12 @@ interface PublishOptions {
   dir: string;
 }
 export const runPublish = async (logger: Logger, { dir }: PublishOptions) => {
-  const existingTags = await git.getTags(dir);
+  const existingTags = await git.getTags({ dir });
 
   const exec = createExec({ cwd: dir });
   const publishOutput = await exec('changeset', 'publish');
 
-  const currentTags = await git.getTags(dir);
+  const currentTags = await git.getTags({ dir });
 
   const newTags = currentTags.filter((tag) => !new Set(existingTags).has(tag));
 

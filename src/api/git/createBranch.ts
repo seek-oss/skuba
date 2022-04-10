@@ -5,11 +5,13 @@ interface BranchParameters {
   dir: string;
   name: string;
   clean?: boolean;
+  checkout?: boolean;
 }
 
 export const createBranch = async ({
   dir,
   name,
+  checkout = true,
   clean,
 }: BranchParameters): Promise<void> => {
   try {
@@ -17,7 +19,7 @@ export const createBranch = async ({
       fs,
       dir,
       ref: name,
-      checkout: true,
+      checkout,
     });
   } catch (error) {
     if (clean) {
@@ -31,7 +33,7 @@ export const createBranch = async ({
           fs,
           dir,
           ref: name,
-          checkout: true,
+          checkout,
         });
         return;
       }

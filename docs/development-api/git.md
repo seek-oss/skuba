@@ -32,6 +32,23 @@ await Git.commitAllChanges({ dir, message: 'Test a commit' });
 
 ---
 
+## createBranch
+
+Tries to create a new Git branch locally which will throw an error if the branch already exists. You may set clean to `true` if you would like to delete the existing branch if it exists and create a new branch.
+
+```typescript
+import { Git } from 'skuba';
+
+await Git.createBranch({
+  dir,
+  name: 'new-branch',
+  checkout: true,
+  clean: true,
+});
+```
+
+---
+
 ## currentBranch
 
 Tries to return a Git branch name from CI environment variables,
@@ -103,6 +120,20 @@ https://github.com/seek-oss/skuba.git
 import { Git } from 'skuba';
 
 const { owner, repo } = await getOwnerAndRepo({ dir });
+```
+
+---
+
+## getTags
+
+Gets the tags from local Git repository
+
+```typescript
+import { Git } from 'skuba';
+
+await Git.getTags({
+  dir,
+});
 ```
 
 ---
