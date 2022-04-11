@@ -65,9 +65,9 @@
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
     "memfs": "3.4.1",
-    "semver": "7.3.5",
+    "semver": "7.3.6",
     "supertest": "6.2.2",
-    "type-fest": "2.12.1"
+    "type-fest": "2.12.2"
   },
   "engines": {
     "node": ">=14.18"
