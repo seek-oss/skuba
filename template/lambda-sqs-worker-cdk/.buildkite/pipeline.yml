@@ -59,6 +59,7 @@ steps:
       - *docker-ecr-cache
       - docker-compose#v3.9.0:
           run: app
+    timeout_in_minutes: 10
 
   - agents:
       queue: <%- devBuildkiteQueueName %>
