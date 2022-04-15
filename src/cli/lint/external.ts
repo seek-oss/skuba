@@ -96,25 +96,22 @@ export const externalLint = async (input: Input) => {
     log.subtle(inspect(err));
   }
 
-  if (eslint.ok && prettier.ok && tscOk) {
-    return;
+  if (!eslint.ok || !prettier.ok || !tscOk) {
+    const tools = [
+      ...(eslint.ok ? [] : ['ESLint']),
+      ...(prettier.ok ? [] : ['Prettier']),
+      ...(tscOk ? [] : ['tsc']),
+    ];
+
+    log.newline();
+    log.err(`${tools.join(', ')} found issues that require triage.`);
+
+    process.exitCode = 1;
   }
 
-  const tools = [
-    ...(eslint.ok ? [] : ['ESLint']),
-    ...(prettier.ok ? [] : ['Prettier']),
-    ...(tscOk ? [] : ['tsc']),
-  ];
-
-  log.newline();
-  log.err(`${tools.join(', ')} found issues that require triage.`);
-
-  process.exitCode = 1;
-
-  if (eslint.ok && prettier.ok) {
-    // If these are fine then the issue lies with tsc, which we can't autofix.
-    return;
-  }
-
-  await autofix(input);
+  await autofix({
+    debug: input.debug,
+    eslint: eslint.fixable,
+    prettier: !prettier.ok,
+  });
 };

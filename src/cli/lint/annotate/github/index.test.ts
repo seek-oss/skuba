@@ -36,6 +36,7 @@ const eslintOutput: ESLintOutput = {
       ],
     },
   ],
+  fixable: false,
   ok: false,
   output: '',
   warnings: [],

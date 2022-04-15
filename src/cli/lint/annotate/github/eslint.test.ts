@@ -24,6 +24,7 @@ it('should create failure annotations for ESLint errors', () => {
         ],
       },
     ],
+    fixable: false,
     ok: false,
     output: '',
     warnings: [],
@@ -49,6 +50,7 @@ it('should create failure annotations for ESLint errors', () => {
 it('should create warning annotations for ESLint warnings', () => {
   const eslintOutput: ESLintOutput = {
     errors: [],
+    fixable: false,
     ok: true,
     output: '',
     warnings: [
@@ -110,6 +112,7 @@ it('should create both failure and warning annotations for ESLint errors and war
         ],
       },
     ],
+    fixable: false,
     ok: false,
     output: '',
     warnings: [
@@ -181,6 +184,7 @@ it('should not specify columns when an annotation spans multiple lines', () => {
         ],
       },
     ],
+    fixable: false,
     ok: false,
     output: '',
     warnings: [],
