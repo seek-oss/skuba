@@ -107,7 +107,7 @@
     "semantic-release/@semantic-release/npm/npm/**/ansi-regex": "5.0.1"
   },
   "scripts": {
-    "build": "ts-node --transpile-only src/skuba build && scripts/postbuild.sh",
+    "build": "scripts/build.sh",
     "deploy": "scripts/deploy.sh",
     "format": "yarn skuba format",
     "lint": "yarn skuba lint",

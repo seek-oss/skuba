@@ -5,7 +5,7 @@ import { build } from 'esbuild';
 import type { TsConfigJson } from 'type-fest';
 import ts, { ModuleKind, ModuleResolutionKind } from 'typescript';
 
-import { log } from '../../utils/logging';
+import { createLogger, pluralise } from '../../utils/logging';
 
 import { parseTscArgs } from './args';
 
@@ -15,10 +15,17 @@ const formatHost: ts.FormatDiagnosticsHost = {
   getNewLine: () => ts.sys.newLine,
 };
 
+interface EsbuildParameters {
+  bundle: boolean;
+  debug: boolean;
+}
+
 export const esbuild = async (
-  bundle: boolean,
+  { bundle, debug }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
+  const log = createLogger(debug);
+
   const tscArgs = parseTscArgs(args);
 
   if (tscArgs.build) {
@@ -69,17 +76,18 @@ export const esbuild = async (
   const { fileNames: entryPoints, options: compilerOptions } =
     parsedCommandLine;
 
-  // TODO: propagate debug logger
-  log.debug('Files');
+  log.debug(log.bold('Files'));
   entryPoints.forEach((filepath) => log.debug(filepath));
 
-  log.debug('Compiler options');
+  log.debug(log.bold('Compiler options'));
   log.debug(inspect(compilerOptions));
 
   // TODO: do we need to check both of these?
   const isNode =
     compilerOptions.module === ModuleKind.CommonJS ||
     compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs;
+
+  const start = process.hrtime.bigint();
 
   await build({
     bundle,
@@ -96,6 +104,15 @@ export const esbuild = async (
     sourcemap: compilerOptions.sourceMap,
     tsconfig: tscArgs.pathname,
   });
+
+  const end = process.hrtime.bigint();
+
+  log.plain(
+    `Processed ${pluralise(entryPoints.length, 'file')} in ${log.timing(
+      start,
+      end,
+    )}.`,
+  );
 
   if (compilerOptions.declaration) {
     const { tsc } = await import('./tsc');
