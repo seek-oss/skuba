@@ -82,24 +82,17 @@ export const esbuild = async (
   log.debug(log.bold('Compiler options'));
   log.debug(inspect(compilerOptions));
 
-  // TODO: do we need to check both of these?
-  const isNode =
-    compilerOptions.module === ModuleKind.CommonJS ||
-    compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs;
-
   const start = process.hrtime.bigint();
 
   await build({
     bundle,
-
-    // TODO: investigate incremental builds
-    // incremental: true
-
-    // TODO: figure out CJS vs ESM
-    ...(isNode ? { format: 'cjs', platform: 'node' } : null),
-
     entryPoints,
+    format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
+    platform:
+      compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
+        ? 'node'
+        : undefined,
     plugins: [tsconfigPaths({ tsconfig })],
     sourcemap: compilerOptions.sourceMap,
     tsconfig: tscArgs.pathname,
