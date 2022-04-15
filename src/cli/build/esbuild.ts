@@ -7,25 +7,32 @@ import ts, { ModuleKind, ModuleResolutionKind } from 'typescript';
 
 import { log } from '../../utils/logging';
 
+import { parseTscArgs } from './args';
+
 const formatHost: ts.FormatDiagnosticsHost = {
-  getCanonicalFileName: (path) => path,
+  getCanonicalFileName: (fileName) => fileName,
   getCurrentDirectory: ts.sys.getCurrentDirectory.bind(undefined),
   getNewLine: () => ts.sys.newLine,
 };
 
-export const esbuild = async () => {
-  const currentDir = process.cwd();
+export const esbuild = async (args = process.argv.slice(2)) => {
+  const tscArgs = parseTscArgs(args);
 
-  // TODO: support `--project` option
-  const tsconfigFilepath = 'tsconfig.build.json';
+  if (tscArgs.build) {
+    log.err(
+      'skuba does not currently support the tsc --build flag with esbuild',
+    );
+    process.exitCode = 1;
+    return;
+  }
 
   const tsconfigFile = ts.findConfigFile(
-    currentDir,
+    tscArgs.dirname,
     ts.sys.fileExists.bind(undefined),
-    tsconfigFilepath,
+    tscArgs.basename,
   );
   if (!tsconfigFile) {
-    log.err(`Could not find ${tsconfigFilepath}.`);
+    log.err(`Could not find ${tscArgs.pathname}.`);
     process.exitCode = 1;
     return;
   }
@@ -35,7 +42,7 @@ export const esbuild = async () => {
     ts.sys.readFile.bind(undefined),
   );
   if (readConfigFile.error) {
-    log.err(`Could not read ${tsconfigFilepath}.`);
+    log.err(`Could not read ${tscArgs.pathname}.`);
     log.subtle(ts.formatDiagnostic(readConfigFile.error, formatHost));
     process.exitCode = 1;
     return;
@@ -46,11 +53,11 @@ export const esbuild = async () => {
   const parsedCommandLine = ts.parseJsonConfigFileContent(
     tsconfig,
     ts.sys,
-    currentDir,
+    tscArgs.dirname,
   );
 
   if (parsedCommandLine.errors.length) {
-    log.err(`Could not parse ${tsconfigFilepath}.`);
+    log.err(`Could not parse ${tscArgs.pathname}.`);
     log.subtle(ts.formatDiagnostics(parsedCommandLine.errors, formatHost));
     process.exitCode = 1;
     return;
@@ -85,7 +92,7 @@ export const esbuild = async () => {
     entryPoints,
     outdir: compilerOptions.outDir,
     plugins: [tsconfigPaths({ tsconfig })],
-    tsconfig: tsconfigFilepath,
+    tsconfig: tscArgs.pathname,
   });
 
   if (compilerOptions.declaration) {
