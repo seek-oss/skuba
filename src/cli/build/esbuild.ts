@@ -81,7 +81,6 @@ export const esbuild = async (args = process.argv.slice(2)) => {
   await build({
     // TODO: make these configurable
     bundle: false,
-    sourcemap: true,
 
     // TODO: investigate incremental builds
     // incremental: true
@@ -92,6 +91,7 @@ export const esbuild = async (args = process.argv.slice(2)) => {
     entryPoints,
     outdir: compilerOptions.outDir,
     plugins: [tsconfigPaths({ tsconfig })],
+    sourcemap: compilerOptions.sourceMap,
     tsconfig: tscArgs.pathname,
   });
 
