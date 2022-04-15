@@ -36,6 +36,14 @@ export const esbuild = async (
     return;
   }
 
+  log.debug(
+    log.bold(
+      'tsconfig',
+      ...(tscArgs.project ? ['--project', tscArgs.project] : []),
+    ),
+  );
+  log.debug(tscArgs.pathname);
+
   const tsconfigFile = ts.findConfigFile(
     tscArgs.dirname,
     ts.sys.fileExists.bind(undefined),
