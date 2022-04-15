@@ -7,6 +7,9 @@ import {
   getStringPropFromConsumerManifest,
 } from '../../utils/manifest';
 
+import { esbuild } from './esbuild';
+import { tsc } from './tsc';
+
 export const build = async (args = process.argv.slice(2)) => {
   const tool = await getStringPropFromConsumerManifest('build');
 
@@ -20,7 +23,6 @@ export const build = async (args = process.argv.slice(2)) => {
       const debug = hasDebugFlag(args);
 
       log.plain(chalk.yellow('esbuild'));
-      const { esbuild } = await import('./esbuild');
       await esbuild({ bundle, debug }, args);
       return;
     }
@@ -29,7 +31,6 @@ export const build = async (args = process.argv.slice(2)) => {
     case undefined:
     case 'tsc': {
       log.plain(chalk.blue('tsc'));
-      const { tsc } = await import('./tsc');
       await tsc(args);
       return;
     }

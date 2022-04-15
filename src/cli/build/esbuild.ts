@@ -8,6 +8,7 @@ import ts, { ModuleKind, ModuleResolutionKind } from 'typescript';
 import { createLogger, pluralise } from '../../utils/logging';
 
 import { parseTscArgs } from './args';
+import { tsc } from './tsc';
 
 const formatHost: ts.FormatDiagnosticsHost = {
   getCanonicalFileName: (fileName) => fileName,
@@ -116,8 +117,6 @@ export const esbuild = async (
   );
 
   if (compilerOptions.declaration) {
-    const { tsc } = await import('./tsc');
-
     await tsc([
       '--declaration',
       '--emitDeclarationOnly',
