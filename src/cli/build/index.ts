@@ -1,16 +1,24 @@
 import chalk from 'chalk';
 
 import { log } from '../../utils/logging';
-import { getStringPropFromConsumerManifest } from '../../utils/manifest';
+import {
+  getBooleanPropFromConsumerManifest,
+  getStringPropFromConsumerManifest,
+} from '../../utils/manifest';
 
 export const build = async () => {
-  const tool = await getStringPropFromConsumerManifest('build');
+  // TODO: define a unified `package.json#/skuba` schema and parser so we don't
+  // need all these messy lookups.
+  const [tool, bundle] = await Promise.all([
+    getStringPropFromConsumerManifest('build'),
+    getBooleanPropFromConsumerManifest('bundle').then((prop) => prop ?? false),
+  ]);
 
   switch (tool) {
     case 'esbuild': {
       log.plain(chalk.yellow('esbuild'));
       const { esbuild } = await import('./esbuild');
-      await esbuild();
+      await esbuild({ bundle });
       return;
     }
 

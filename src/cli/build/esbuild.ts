@@ -15,7 +15,10 @@ const formatHost: ts.FormatDiagnosticsHost = {
   getNewLine: () => ts.sys.newLine,
 };
 
-export const esbuild = async (args = process.argv.slice(2)) => {
+export const esbuild = async (
+  bundle: boolean,
+  args = process.argv.slice(2),
+) => {
   const tscArgs = parseTscArgs(args);
 
   if (tscArgs.build) {
@@ -79,8 +82,7 @@ export const esbuild = async (args = process.argv.slice(2)) => {
     compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs;
 
   await build({
-    // TODO: make these configurable
-    bundle: false,
+    bundle,
 
     // TODO: investigate incremental builds
     // incremental: true

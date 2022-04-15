@@ -4,7 +4,7 @@ import type { NormalizedPackageJson } from 'read-pkg-up';
 import readPkgUp from 'read-pkg-up';
 import * as t from 'runtypes';
 
-import { hasStringProp } from './validation';
+import { hasBooleanProp, hasStringProp } from './validation';
 
 export type ProjectType = t.Static<typeof ProjectType>;
 
@@ -34,6 +34,16 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
 };
 
 export const getConsumerManifest = () => readPkgUp();
+
+export const getBooleanPropFromConsumerManifest = async <T extends string>(
+  prop: T,
+): Promise<boolean | undefined> => {
+  const result = await getConsumerManifest();
+
+  return result !== undefined && hasBooleanProp(result.packageJson.skuba, prop)
+    ? result.packageJson.skuba[prop]
+    : undefined;
+};
 
 export const getStringPropFromConsumerManifest = async <T extends string>(
   prop: T,

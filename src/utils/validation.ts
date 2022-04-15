@@ -19,6 +19,12 @@ export const hasProp = <P extends PropertyKey>(
   prop: P,
 ): value is Record<P, unknown> => isObject(value) && value.hasOwnProperty(prop);
 
+export const hasBooleanProp = <P extends PropertyKey>(
+  value: unknown,
+  prop: P,
+): value is Record<P, boolean> =>
+  isObject(value) && typeof value[prop] === 'boolean';
+
 export const hasNumberProp = <P extends PropertyKey>(
   value: unknown,
   prop: P,
