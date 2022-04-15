@@ -20,7 +20,7 @@ export const parseTscArgs = (args: string[]) => {
     pathname: path.join(dirname, basename),
 
     build: Boolean(argv.build),
-    project: Boolean(argv.project),
+    project: argv.project,
   };
 };
 

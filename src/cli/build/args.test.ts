@@ -24,7 +24,7 @@ describe('parseTscArgs', () => {
       build: false,
       dirname: '.',
       pathname: 'tsconfig.build.json',
-      project: false,
+      project: undefined,
     }));
 
   it('handles irrelevant args', () =>
@@ -33,7 +33,7 @@ describe('parseTscArgs', () => {
       build: false,
       dirname: '.',
       pathname: 'tsconfig.build.json',
-      project: false,
+      project: undefined,
     }));
 
   describe.each(['-b', '--build'])('%s', (flag) => {
@@ -43,7 +43,7 @@ describe('parseTscArgs', () => {
         build: true,
         dirname: '.',
         pathname: 'tsconfig.build.json',
-        project: false,
+        project: undefined,
       }));
   });
 
@@ -54,7 +54,7 @@ describe('parseTscArgs', () => {
         build: false,
         dirname: '.',
         pathname: 'tsconfig.prod.json',
-        project: true,
+        project: 'tsconfig.prod.json',
       }));
 
     it('handles directory', () =>
@@ -63,7 +63,7 @@ describe('parseTscArgs', () => {
         build: false,
         dirname: 'path/to',
         pathname: 'path/to/tsconfig.json',
-        project: true,
+        project: 'path/to',
       }));
 
     it('handles path', () =>
@@ -72,7 +72,7 @@ describe('parseTscArgs', () => {
         build: false,
         dirname: '/mnt/c',
         pathname: '/mnt/c/tsconfig.dev.json',
-        project: true,
+        project: '/mnt/c/tsconfig.dev.json',
       }));
   });
 });

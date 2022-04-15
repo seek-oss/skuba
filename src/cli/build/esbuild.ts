@@ -110,6 +110,10 @@ export const esbuild = async (
   if (compilerOptions.declaration) {
     const { tsc } = await import('./tsc');
 
-    await tsc(['--declaration', '--emitDeclarationOnly']);
+    await tsc([
+      '--declaration',
+      '--emitDeclarationOnly',
+      ...(tscArgs.project ? ['--project', tscArgs.project] : []),
+    ]);
   }
 };
