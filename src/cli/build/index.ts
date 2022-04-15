@@ -7,7 +7,7 @@ import {
   getStringPropFromConsumerManifest,
 } from '../../utils/manifest';
 
-export const build = async (args = process.argv) => {
+export const build = async (args = process.argv.slice(2)) => {
   const tool = await getStringPropFromConsumerManifest('build');
 
   switch (tool) {
