@@ -2,28 +2,22 @@ import chalk from 'chalk';
 
 import { hasDebugFlag } from '../../utils/args';
 import { log } from '../../utils/logging';
-import {
-  getBooleanPropFromConsumerManifest,
-  getStringPropFromConsumerManifest,
-} from '../../utils/manifest';
+import { getStringPropFromConsumerManifest } from '../../utils/manifest';
 
 import { esbuild } from './esbuild';
 import { tsc } from './tsc';
 
 export const build = async (args = process.argv.slice(2)) => {
+  // TODO: define a unified `package.json#/skuba` schema and parser so we don't
+  // need all these messy lookups.
   const tool = await getStringPropFromConsumerManifest('build');
 
   switch (tool) {
     case 'esbuild': {
-      // TODO: define a unified `package.json#/skuba` schema and parser so we
-      // don't need all these messy lookups.
-      const bundle =
-        (await getBooleanPropFromConsumerManifest('bundle')) ?? false;
-
       const debug = hasDebugFlag(args);
 
       log.plain(chalk.yellow('esbuild'));
-      await esbuild({ bundle, debug }, args);
+      await esbuild({ debug }, args);
       return;
     }
 

@@ -123,7 +123,6 @@
   "sideEffects": false,
   "skuba": {
     "build": "esbuild",
-    "bundle": false,
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",

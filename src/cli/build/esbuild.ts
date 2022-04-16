@@ -16,12 +16,11 @@ const formatHost: ts.FormatDiagnosticsHost = {
 };
 
 interface EsbuildParameters {
-  bundle: boolean;
   debug: boolean;
 }
 
 export const esbuild = async (
-  { bundle, debug }: EsbuildParameters,
+  { debug }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
   const log = createLogger(debug);
@@ -90,8 +89,8 @@ export const esbuild = async (
 
   const start = process.hrtime.bigint();
 
+  // TODO: `bundle`, `minify`, `splitting`, `treeShaking`
   await build({
-    bundle,
     entryPoints,
     format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
