@@ -4,7 +4,7 @@ import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { build } from 'esbuild';
 import ts, { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
-import { createLogger, pluralise } from '../../utils/logging';
+import { createLogger } from '../../utils/logging';
 
 import { parseTscArgs } from './args';
 import { tsc } from './tsc';
@@ -95,6 +95,7 @@ export const esbuild = async (
     entryPoints,
     format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
+    logLevel: debug ? 'debug' : 'info',
     platform:
       compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
         ? 'node'
@@ -113,12 +114,7 @@ export const esbuild = async (
 
   const end = process.hrtime.bigint();
 
-  log.plain(
-    `Processed ${pluralise(entryPoints.length, 'file')} in ${log.timing(
-      start,
-      end,
-    )}.`,
-  );
+  log.plain(`Built in ${log.timing(start, end)}.`);
 
   if (compilerOptions.declaration) {
     await tsc([
