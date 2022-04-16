@@ -56,7 +56,18 @@ const shouldPush = async ({
   return true;
 };
 
-export const autofix = async (input: Pick<Input, 'debug'>): Promise<void> => {
+interface AutofixParameters {
+  debug: Input['debug'];
+
+  eslint: boolean;
+  prettier: boolean;
+}
+
+export const autofix = async (params: AutofixParameters): Promise<void> => {
+  if (!params.eslint && !params.prettier) {
+    return;
+  }
+
   const dir = process.cwd();
 
   let currentBranch;
@@ -68,14 +79,19 @@ export const autofix = async (input: Pick<Input, 'debug'>): Promise<void> => {
     return;
   }
 
-  // Naively try to autofix issues as we can't tell from ESLint output.
   try {
     log.newline();
-    log.warn(`Trying to autofix with ESLint and Prettier...`);
+    log.warn(
+      `Trying to autofix with ${params.eslint ? 'ESLint and ' : ''}Prettier...`,
+    );
 
-    const logger = createLogger(input.debug);
+    const logger = createLogger(params.debug);
 
-    await runESLint('format', logger);
+    if (params.eslint) {
+      await runESLint('format', logger);
+    }
+    // Unconditionally re-run Prettier; reaching here means we have pre-existing
+    // format violations or may have created new ones through ESLint fixes.
     await runPrettier('format', logger);
 
     const ref = await Git.commitAllChanges({

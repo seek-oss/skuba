@@ -22,9 +22,10 @@ export interface ESLintResult {
 
 export interface ESLintOutput {
   errors: ESLintResult[];
-  warnings: ESLintResult[];
+  fixable: boolean;
   ok: boolean;
   output: string;
+  warnings: ESLintResult[];
 }
 
 export const runESLint = async (
@@ -81,9 +82,14 @@ export const runESLint = async (
 
   const errors: ESLintResult[] = [];
   const warnings: ESLintResult[] = [];
+  let fixable = false;
 
   for (const result of results) {
     const relativePath = path.relative(cwd, result.filePath);
+    if (result.fixableErrorCount + result.fixableWarningCount) {
+      fixable = true;
+    }
+
     if (result.errorCount) {
       errors.push({
         filePath: relativePath,
@@ -111,5 +117,5 @@ export const runESLint = async (
     logger.plain(output);
   }
 
-  return { ok, output, errors, warnings };
+  return { errors, fixable, ok, output, warnings };
 };

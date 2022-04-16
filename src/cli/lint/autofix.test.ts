@@ -23,8 +23,10 @@ const stdout = () => {
   return `\n${result}`;
 };
 
-const expectAutofixCommit = () => {
-  expect(runESLint).toHaveBeenCalledTimes(1);
+const expectAutofixCommit = (
+  { eslint }: { eslint: boolean } = { eslint: true },
+) => {
+  expect(runESLint).toHaveBeenCalledTimes(eslint ? 1 : 0);
   expect(runPrettier).toHaveBeenCalledTimes(1);
   expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
 };
@@ -51,10 +53,12 @@ beforeEach(() => {
 afterEach(jest.resetAllMocks);
 
 describe('autofix', () => {
+  const params = { debug: false, eslint: true, prettier: true };
+
   it('bails on a non-CI environment', async () => {
     delete process.env.CI;
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectNoAutofix();
   });
@@ -62,7 +66,7 @@ describe('autofix', () => {
   it('bails on the master branch', async () => {
     jest.mocked(Git.currentBranch).mockResolvedValue('master');
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectNoAutofix();
   });
@@ -70,7 +74,7 @@ describe('autofix', () => {
   it('bails on the main branch', async () => {
     jest.mocked(Git.currentBranch).mockResolvedValue('main');
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectNoAutofix();
   });
@@ -80,7 +84,7 @@ describe('autofix', () => {
 
     jest.mocked(Git.currentBranch).mockResolvedValue('devel');
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectNoAutofix();
   });
@@ -90,7 +94,7 @@ describe('autofix', () => {
 
     jest.mocked(Git.currentBranch).mockResolvedValue('beta');
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectNoAutofix();
   });
@@ -101,7 +105,15 @@ describe('autofix', () => {
       .mocked(Git.getHeadCommitMessage)
       .mockResolvedValue('Run `skuba format`');
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
+
+    expectNoAutofix();
+  });
+
+  it('bails on no fixable issues', async () => {
+    await expect(
+      autofix({ ...params, eslint: false, prettier: false }),
+    ).resolves.toBeUndefined();
 
     expectNoAutofix();
   });
@@ -109,7 +121,7 @@ describe('autofix', () => {
   it('skips push on empty commit', async () => {
     jest.mocked(Git.commitAllChanges).mockResolvedValue(undefined);
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectAutofixCommit();
     expect(Git.push).not.toHaveBeenCalled();
@@ -131,7 +143,7 @@ describe('autofix', () => {
 
     jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectAutofixCommit();
 
@@ -151,7 +163,7 @@ describe('autofix', () => {
     jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
     jest.mocked(Git.currentBranch).mockResolvedValue('dev');
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectAutofixCommit();
     expect(Git.push).toHaveBeenNthCalledWith(1, {
@@ -170,6 +182,58 @@ describe('autofix', () => {
     `);
   });
 
+  it('handles fixable issues from ESLint only', async () => {
+    jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+    jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+    await expect(
+      autofix({ ...params, eslint: true, prettier: false }),
+    ).resolves.toBeUndefined();
+
+    expectAutofixCommit();
+    expect(Git.push).toHaveBeenNthCalledWith(1, {
+      auth: { type: 'gitHubApp' },
+      dir: expect.any(String),
+      ref: 'commit-sha',
+      remoteRef: 'dev',
+    });
+
+    // We should run both ESLint and Prettier
+    expect(stdout()).toMatchInlineSnapshot(`
+      "
+
+      Trying to autofix with ESLint and Prettier...
+      Pushed fix commit commit-sha.
+      "
+    `);
+  });
+
+  it('handles fixable issues from Prettier only', async () => {
+    jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+    jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+    await expect(
+      autofix({ ...params, eslint: false, prettier: true }),
+    ).resolves.toBeUndefined();
+
+    expectAutofixCommit({ eslint: false });
+    expect(Git.push).toHaveBeenNthCalledWith(1, {
+      auth: { type: 'gitHubApp' },
+      dir: expect.any(String),
+      ref: 'commit-sha',
+      remoteRef: 'dev',
+    });
+
+    // We should only run Prettier
+    expect(stdout()).toMatchInlineSnapshot(`
+      "
+
+      Trying to autofix with Prettier...
+      Pushed fix commit commit-sha.
+      "
+    `);
+  });
+
   it('tolerates guard errors', async () => {
     const ERROR = new Error('badness!');
 
@@ -178,7 +242,7 @@ describe('autofix', () => {
 
     jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectAutofixCommit();
     expect(Git.push).toHaveBeenNthCalledWith(1, {
@@ -199,7 +263,7 @@ describe('autofix', () => {
   it('bails on commit error', async () => {
     jest.mocked(Git.commitAllChanges).mockRejectedValue(MOCK_ERROR);
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectAutofixCommit();
     expect(Git.push).not.toHaveBeenCalled();
@@ -219,7 +283,7 @@ describe('autofix', () => {
     jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
     jest.mocked(Git.push).mockRejectedValue(MOCK_ERROR);
 
-    await expect(autofix({ debug: false })).resolves.toBeUndefined();
+    await expect(autofix(params)).resolves.toBeUndefined();
 
     expectAutofixCommit();
     expect(Git.push).toHaveBeenNthCalledWith(1, {
