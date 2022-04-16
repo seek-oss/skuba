@@ -2,7 +2,6 @@ import { inspect } from 'util';
 
 import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { build } from 'esbuild';
-import type { TsConfigJson } from 'type-fest';
 import ts, { ModuleKind, ModuleResolutionKind } from 'typescript';
 
 import { createLogger, pluralise } from '../../utils/logging';
@@ -67,10 +66,8 @@ export const esbuild = async (
     return;
   }
 
-  const tsconfig = readConfigFile.config as TsConfigJson;
-
   const parsedCommandLine = ts.parseJsonConfigFileContent(
-    tsconfig,
+    readConfigFile.config,
     ts.sys,
     tscArgs.dirname,
   );
@@ -102,7 +99,11 @@ export const esbuild = async (
       compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
         ? 'node'
         : undefined,
-    plugins: [tsconfigPaths({ tsconfig })],
+    plugins: [
+      tsconfigPaths({
+        tsconfig: { baseUrl: compilerOptions.baseUrl, compilerOptions },
+      }),
+    ],
     sourcemap: compilerOptions.sourceMap,
     tsconfig: tscArgs.pathname,
   });
