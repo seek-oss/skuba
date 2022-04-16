@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { build } from 'esbuild';
-import ts, { ModuleKind, ModuleResolutionKind } from 'typescript';
+import ts, { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
 import { createLogger, pluralise } from '../../utils/logging';
 
@@ -105,6 +105,9 @@ export const esbuild = async (
       }),
     ],
     sourcemap: compilerOptions.sourceMap,
+    target: compilerOptions.target
+      ? ScriptTarget[compilerOptions.target].toLocaleLowerCase()
+      : undefined,
     tsconfig: tscArgs.pathname,
   });
 
