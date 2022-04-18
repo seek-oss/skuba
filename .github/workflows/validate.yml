@@ -24,15 +24,20 @@ jobs:
       checks: write
     runs-on: ubuntu-latest
     steps:
-      - if: github.event.repository.fork == false
+      - if: >-
+          github.event_name != 'pull_request' ||
+          github.event.pull_request.head.repo.full_name == github.repository
         name: Check out repo
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
-      - if: github.event.repository.fork == true
+      - if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name != github.repository
         name: Check out repo
         uses: actions/checkout@v3
+        # We don't share secrets with forks.
 
       - name: Set Git user
         run: |

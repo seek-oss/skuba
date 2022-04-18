@@ -25,6 +25,10 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
       return;
     }
 
+    type CheckRun = Parameters<typeof GitHub.createCheckRun>[0];
+
+    let lastCheckRun: CheckRun | undefined;
+
     try {
       const coverage = renderCoverageText(coverageMap);
 
@@ -43,23 +47,31 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
           ? '`skuba test` passed.'
           : '`skuba test` found issues that require triage.';
 
-        await throwOnTimeout(
-          GitHub.createCheckRun({
-            name,
-            annotations,
-            conclusion: isOk ? 'success' : 'failure',
-            summary,
-            text: coverage
-              ? Buildkite.md.terminal(stripAnsi(coverage))
-              : undefined,
-            title: `${build} ${isOk ? 'passed' : 'failed'}`,
-          }),
-          { s: 30 },
-        );
+        const checkRun: CheckRun = {
+          name,
+          annotations,
+          conclusion: isOk ? 'success' : 'failure',
+          summary,
+          text: coverage
+            ? Buildkite.md.terminal(stripAnsi(coverage))
+            : undefined,
+          title: `${build} ${isOk ? 'passed' : 'failed'}`,
+        };
+
+        lastCheckRun = checkRun;
+
+        await throwOnTimeout(GitHub.createCheckRun(checkRun), {
+          s: 30,
+        });
       }
     } catch (err) {
       log.warn('Failed to report test results to GitHub.');
       log.subtle(inspect(err));
+
+      if (lastCheckRun) {
+        log.subtle('Last request:');
+        log.subtle(JSON.stringify(lastCheckRun));
+      }
     }
   }
 }
