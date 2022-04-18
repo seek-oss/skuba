@@ -95,6 +95,7 @@ export const esbuild = async (
     format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
     logLevel: debug ? 'debug' : 'info',
+    logLimit: 0,
     platform:
       compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
         ? 'node'
