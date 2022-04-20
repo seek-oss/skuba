@@ -1963,7 +1963,7 @@ async-lock@^1.1.0:
   resolved "https://registry.yarnpkg.com/async-lock/-/async-lock-1.3.1.tgz#f2301c200600cde97acc386453b7126fa8aced3c"
   integrity sha512-zK7xap9UnttfbE23JmcrNIyueAn6jWshihJqA33U/hEnKprF/lVGBDsBv/bqLm2YMMl1DnpHhUY044eA0t1TUw==
 
-async@0.9.x, async@3.2.3:
+async@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/async/-/async-3.2.3.tgz#ac53dafd3f4720ee9e8a160628f18ea91df196c9"
   integrity sha512-spZRyzKL5l5BZQrr/6m/SqFdBN0q3OCI0f9rjfBzCMBIP4p75P620rR3gTmaksNOhmzgdxcaxdNfMy6anrbM0g==
@@ -4478,11 +4478,11 @@ istanbul-reports@^3.1.3:
     istanbul-lib-report "^3.0.0"
 
 jake@^10.6.1:
-  version "10.8.4"
-  resolved "https://registry.yarnpkg.com/jake/-/jake-10.8.4.tgz#f6a8b7bf90c6306f768aa82bb7b98bf4ca15e84a"
-  integrity sha512-MtWeTkl1qGsWUtbl/Jsca/8xSoK3x0UmS82sNbjqxxG/de/M/3b1DntdjHgPMC50enlTNwXOCRqPXLLt5cCfZA==
+  version "10.8.5"
+  resolved "https://registry.yarnpkg.com/jake/-/jake-10.8.5.tgz#f2183d2c59382cb274226034543b9c03b8164c46"
+  integrity sha512-sVpxYeuAhWt0OTWITwT98oyV0GsXyMlXCF+3L1SuafBVUIr/uILGRB+NqwkzhgXKvoJpDIpQvqkUALgdmQsQxw==
   dependencies:
-    async "0.9.x"
+    async "^3.2.3"
     chalk "^4.0.2"
     filelist "^1.0.1"
     minimatch "^3.0.4"
