@@ -25,7 +25,7 @@
     "ignore": "^5.1.8",
     "is-installed-globally": "^0.4.0",
     "isomorphic-git": "^1.11.1",
-    "jest": "^27.4.5",
+    "jest": "^28.0.0",
     "latest-version": "^5.1.0",
     "lodash.mergewith": "^4.6.2",
     "normalize-package-data": "^4.0.0",
