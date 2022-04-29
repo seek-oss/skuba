@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import type { Context, Reporter } from '@jest/reporters';
+import type { Reporter, TestContext } from '@jest/reporters';
 import type { AggregatedResult } from '@jest/test-result';
 
 import * as GitHub from '../../../../api/github';
@@ -15,7 +15,7 @@ import { generateAnnotationEntries } from './annotations';
 
 export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
   async onRunComplete(
-    _contexts: Set<Context>,
+    _contexts: Set<TestContext>,
     { testResults }: AggregatedResult,
   ): Promise<void> {
     if (!enabledFromEnvironment()) {
