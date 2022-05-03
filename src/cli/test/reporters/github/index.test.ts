@@ -1,4 +1,4 @@
-import type { AggregatedResult, Context } from '@jest/reporters';
+import type { AggregatedResult, TestContext } from '@jest/reporters';
 
 import * as GitHub from '../../../../api/github';
 import { log } from '../../../../utils/logging';
@@ -22,7 +22,7 @@ beforeEach(() => {
 
 afterEach(jest.resetAllMocks);
 
-const context = new Set<Context>();
+const context = new Set<TestContext>();
 
 const failResults: AggregatedResult = {
   numFailedTestSuites: 1,
