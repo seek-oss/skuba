@@ -2,7 +2,9 @@
   "compilerOptions": {
     "incremental": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    // TODO: facebook/jest#12772
+    "skipLibCheck": true
   },
   "extends": "tsconfig-seek"
 }
