@@ -50,7 +50,7 @@
   "devDependencies": {
     "@changesets/cli": "2.22.0",
     "@changesets/get-github-info": "0.5.0",
-    "@jest/reporters": "28.0.3",
+    "@jest/reporters": "28.1.0",
     "@types/ejs": "3.1.0",
     "@types/express": "4.17.13",
     "@types/fs-extra": "9.0.13",
@@ -61,12 +61,12 @@
     "@types/picomatch": "2.3.0",
     "@types/supertest": "2.0.12",
     "enhanced-resolve": "5.9.3",
-    "express": "4.18.0",
+    "express": "4.18.1",
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
     "memfs": "3.4.1",
     "semver": "7.3.7",
-    "supertest": "6.2.2",
+    "supertest": "6.2.3",
     "type-fest": "2.12.2"
   },
   "engines": {
