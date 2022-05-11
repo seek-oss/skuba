@@ -25,7 +25,7 @@ provider:
   logRetentionInDays: 30
   name: aws
   region: ap-southeast-2
-  runtime: nodejs14.x
+  runtime: nodejs16.x
   architecture: arm64
   stackName: ${self:service}
   stage: ${env:ENVIRONMENT}
