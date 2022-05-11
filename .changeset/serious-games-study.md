@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
-template/lambda-sqs-worker: Bump up node version to 16
+template/lambda-sqs-worker\*: Bump Node.js version to 16
