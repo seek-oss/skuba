@@ -29,7 +29,6 @@ provider:
   architecture: arm64
   stackName: ${self:service}
   stage: ${env:ENVIRONMENT}
-  versionFunctions: true
   deploymentBucket:
     # Use a shared account-level bucket for Lambda bundles and other artefacts.
     # This is easier to manage in terms of access, deployment, and tagging.
