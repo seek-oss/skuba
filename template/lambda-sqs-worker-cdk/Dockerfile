@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.2
 
-FROM node:14-alpine AS dev-deps
+FROM node:16-alpine AS dev-deps
 
 WORKDIR /workdir
 
