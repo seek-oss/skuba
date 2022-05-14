@@ -1,13 +1,27 @@
+import { AsyncLocalStorage } from 'async_hooks';
+
 import createLogger from '@seek/logger';
 import { RequestLogging } from 'seek-koala';
 
 import { config } from 'src/config';
-import { Context } from 'src/types/koa';
+import { Middleware } from 'src/types/koa';
 
-export const rootLogger = createLogger({
+export const loggingContext = new AsyncLocalStorage<RequestLogging.Fields>();
+
+export const loggingContextMiddleware: Middleware = async (ctx, next) => {
+  await loggingContext.run(RequestLogging.contextFields(ctx), async () =>
+    next(),
+  );
+};
+
+export const logger = createLogger({
   base: {
     environment: config.environment,
     version: config.version,
+  },
+
+  mixin() {
+    return loggingContext.getStore() ?? {};
   },
 
   level: config.logLevel,
@@ -17,6 +31,3 @@ export const rootLogger = createLogger({
   transport:
     config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
 });
-
-export const contextLogger = (ctx: Context) =>
-  rootLogger.child(RequestLogging.contextFields(ctx));

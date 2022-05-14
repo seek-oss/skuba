@@ -1,4 +1,4 @@
-import { contextLogger } from 'src/framework/logging';
+import { logger } from 'src/framework/logging';
 import { metricsClient } from 'src/framework/metrics';
 import { validateRequestBody } from 'src/framework/validation';
 import * as storage from 'src/storage/jobs';
@@ -11,7 +11,7 @@ export const postJobHandler: Middleware = async (ctx) => {
   const job = await storage.createJob(jobInput);
 
   // no PII in these jobs
-  contextLogger(ctx).debug({ job }, 'created job');
+  logger.debug({ job }, 'created job');
 
   metricsClient.increment('job.creations');
 
