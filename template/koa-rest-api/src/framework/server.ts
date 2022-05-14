@@ -9,7 +9,7 @@ import {
 } from 'seek-koala';
 
 import { config } from 'src/config';
-import { logger, loggingContextMiddleware } from 'src/framework/logging';
+import { logger, loggerContextMiddleware } from 'src/framework/logging';
 import { metricsClient } from 'src/framework/metrics';
 
 const metrics = MetricsMiddleware.create(
@@ -43,7 +43,7 @@ export const createApp = <State, Context>(
     // https://github.com/seek-oss/koala/tree/master/src/secureHeaders
     // https://github.com/venables/koa-helmet
     // .use(SecureHeaders.middleware)
-    .use(loggingContextMiddleware)
+    .use(loggerContextMiddleware)
     .use(requestLogging)
     .use(metrics)
     .use(ErrorMiddleware.handle)
