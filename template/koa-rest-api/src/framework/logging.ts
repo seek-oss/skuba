@@ -9,9 +9,7 @@ import { Middleware } from 'src/types/koa';
 export const loggingContext = new AsyncLocalStorage<RequestLogging.Fields>();
 
 export const loggingContextMiddleware: Middleware = async (ctx, next) => {
-  await loggingContext.run(RequestLogging.contextFields(ctx), async () =>
-    next(),
-  );
+  await loggingContext.run(RequestLogging.contextFields(ctx), () => next());
 };
 
 export const logger = createLogger({
