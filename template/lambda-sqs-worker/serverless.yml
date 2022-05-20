@@ -27,6 +27,7 @@ provider:
   region: ap-southeast-2
   runtime: nodejs16.x
   architecture: arm64
+  deploymentMethod: direct
   stackName: ${self:service}
   stage: ${env:ENVIRONMENT}
   deploymentBucket:
