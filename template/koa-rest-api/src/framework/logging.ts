@@ -2,13 +2,19 @@ import createLogger from '@seek/logger';
 import { RequestLogging } from 'seek-koala';
 
 import { config } from 'src/config';
-import { Context } from 'src/types/koa';
 
-export const rootLogger = createLogger({
+const { createContextMiddleware, mixin } =
+  RequestLogging.createContextStorage();
+
+export const contextMiddleware = createContextMiddleware();
+
+export const logger = createLogger({
   base: {
     environment: config.environment,
     version: config.version,
   },
+
+  mixin,
 
   level: config.logLevel,
 
@@ -17,6 +23,3 @@ export const rootLogger = createLogger({
   transport:
     config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
 });
-
-export const contextLogger = (ctx: Context) =>
-  rootLogger.child(RequestLogging.contextFields(ctx));
