@@ -1,16 +1,12 @@
-import { AsyncLocalStorage } from 'async_hooks';
-
 import createLogger from '@seek/logger';
 import { RequestLogging } from 'seek-koala';
 
 import { config } from 'src/config';
-import { Middleware } from 'src/types/koa';
 
-const loggerContext = new AsyncLocalStorage<RequestLogging.Fields>();
+const { createContextMiddleware, mixin } =
+  RequestLogging.createContextStorage();
 
-export const loggerContextMiddleware: Middleware = async (ctx, next) => {
-  await loggerContext.run(RequestLogging.contextFields(ctx), next);
-};
+export const contextMiddleware = createContextMiddleware();
 
 export const logger = createLogger({
   base: {
@@ -18,9 +14,7 @@ export const logger = createLogger({
     version: config.version,
   },
 
-  mixin() {
-    return loggerContext.getStore() ?? {};
-  },
+  mixin,
 
   level: config.logLevel,
 
