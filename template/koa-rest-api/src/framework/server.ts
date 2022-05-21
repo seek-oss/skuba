@@ -9,7 +9,7 @@ import {
 } from 'seek-koala';
 
 import { config } from 'src/config';
-import { logger, contextMiddleware } from 'src/framework/logging';
+import { contextMiddleware, logger } from 'src/framework/logging';
 import { metricsClient } from 'src/framework/metrics';
 
 const metrics = MetricsMiddleware.create(
