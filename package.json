@@ -25,7 +25,7 @@
     "ignore": "^5.1.8",
     "is-installed-globally": "^0.4.0",
     "isomorphic-git": "^1.11.1",
-    "jest": "^28.0.3",
+    "jest": "^28.1.0",
     "latest-version": "^5.1.0",
     "lodash.mergewith": "^4.6.2",
     "normalize-package-data": "^4.0.0",
@@ -39,12 +39,12 @@
     "serialize-error": "^8.0.1",
     "simple-git": "^3.5.0",
     "strip-ansi": "^6.0.1",
-    "ts-jest": "^28.0.1",
-    "ts-node": "^10.5.0",
+    "ts-jest": "^28.0.2",
+    "ts-node": "^10.7.0",
     "ts-node-dev": "^2.0.0-0",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "1.0.2",
-    "typescript": "~4.6.2"
+    "typescript": "~4.6.4"
   },
   "description": "SEEK development toolkit for backend applications and packages",
   "devDependencies": {

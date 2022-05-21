@@ -1,8 +1,18 @@
 import { createTerseError } from './error';
 import { pluralise } from './logging';
 
-export const sleep = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms));
+interface Timeout extends PromiseLike<void> {
+  clear?: () => void;
+}
+
+export const sleep = (ms: number): Timeout => {
+  let timeout: NodeJS.Timeout;
+
+  return Object.assign(
+    new Promise<void>((resolve) => (timeout = setTimeout(resolve, ms))),
+    { clear: () => clearTimeout(timeout) },
+  );
+};
 
 export const throwOnTimeout = async <T>(
   promise: PromiseLike<T>,
@@ -19,11 +29,18 @@ export const throwOnTimeout = async <T>(
 
 type TimeoutResult<T> = { ok: true; value: T } | { ok: false };
 
-export const withTimeout = <T>(
+export const withTimeout = async <T>(
   promise: T | PromiseLike<T>,
   { s }: { s: number },
-): Promise<TimeoutResult<T>> =>
-  Promise.race<TimeoutResult<T>>([
-    Promise.resolve(promise).then((value) => ({ ok: true, value })),
-    sleep(s * 1_000).then(() => ({ ok: false })),
-  ]);
+): Promise<TimeoutResult<T>> => {
+  const timeout = sleep(s * 1_000);
+
+  try {
+    return await Promise.race<TimeoutResult<T>>([
+      Promise.resolve(promise).then((value) => ({ ok: true, value })),
+      timeout.then(() => ({ ok: false })),
+    ]);
+  } finally {
+    timeout.clear?.();
+  }
+};
