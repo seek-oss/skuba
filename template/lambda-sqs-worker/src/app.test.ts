@@ -1,6 +1,6 @@
 import { metricsClient } from 'src/framework/metrics';
 import { createCtx, createSqsEvent } from 'src/testing/handler';
-import { contextLogger } from 'src/testing/logging';
+import { logger } from 'src/testing/logging';
 import { scoringService, sns } from 'src/testing/services';
 import { chance, mockJobPublishedEvent } from 'src/testing/types';
 
@@ -19,7 +19,7 @@ describe('handler', () => {
 
   const increment = jest.spyOn(metricsClient, 'increment').mockReturnValue();
 
-  beforeAll(contextLogger.spy);
+  beforeAll(logger.spy);
   beforeAll(scoringService.spy);
   beforeAll(sns.spy);
 
@@ -31,7 +31,7 @@ describe('handler', () => {
   });
 
   afterEach(() => {
-    contextLogger.clear();
+    logger.clear();
     increment.mockClear();
     scoringService.clear();
     sns.clear();
@@ -44,9 +44,9 @@ describe('handler', () => {
 
     expect(scoringService.request).toBeCalledTimes(1);
 
-    expect(contextLogger.error).not.toBeCalled();
+    expect(logger.error).not.toBeCalled();
 
-    expect(contextLogger.info.mock.calls).toEqual([
+    expect(logger.info.mock.calls).toEqual([
       [{ count: 1 }, 'received jobs'],
       [{ snsMessageId: expect.any(String) }, 'scored job'],
       ['request'],
@@ -75,7 +75,7 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
 
-    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toBeCalledWith({ err }, 'request');
   });
 
   it('bubbles up SNS error', async () => {
@@ -87,7 +87,7 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
 
-    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toBeCalledWith({ err }, 'request');
   });
 
   it('throws on zero records', async () => {
@@ -97,7 +97,7 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
 
-    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toBeCalledWith({ err }, 'request');
   });
 
   it('throws on multiple records', async () => {
@@ -110,6 +110,6 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
 
-    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toBeCalledWith({ err }, 'request');
   });
 });
