@@ -10,13 +10,17 @@ Before:
 
 ```typescript
 import createLogger from '@seek/logger';
-import Koa from 'koa';
+import Koa, { Context } from 'koa';
 import { RequestLogging } from 'seek-koala';
+
 const rootLogger = createLogger();
+
 const contextLogger = (ctx: Context) =>
   rootLogger.child(RequestLogging.contextFields(ctx));
+
 const app = new Koa().use((ctx) => {
   rootLogger.info('Has no context');
+
   contextLogger(ctx).info('Has context');
 });
 ```
@@ -27,10 +31,14 @@ After:
 import createLogger from '@seek/logger';
 import Koa from 'koa';
 import { RequestLogging } from 'seek-koala';
+
 const { createContextMiddleware, mixin } =
   RequestLogging.createContextStorage();
+
 const contextMiddleware = createContextMiddleware();
+
 const logger = createLogger({ mixin });
+
 const app = new Koa().use(contextMiddleware).use((ctx) => {
   logger.info('Has context');
 });
