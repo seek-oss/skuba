@@ -18,7 +18,7 @@ export const logger = createLogger({
 
   level: config.logLevel,
 
-  mixin: () => loggerContext.getStore() ?? {},
+  mixin: () => ({ ...loggerContext.getStore() }),
 
   name: config.name,
 
