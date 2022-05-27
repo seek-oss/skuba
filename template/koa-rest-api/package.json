@@ -15,7 +15,7 @@
     "runtypes": "^6.4.1",
     "runtypes-filter": "^0.6.0",
     "seek-datadog-custom-metrics": "^4.0.0",
-    "seek-koala": "^5.2.0",
+    "seek-koala": "^5.2.1",
     "skuba-dive": "^2.0.0",
     "uuid": "^8.3.2"
   },
