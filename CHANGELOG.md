@@ -99,7 +99,7 @@
   const loggerContext = new AsyncLocalStorage<{ awsRequestId: string }>();
 
   const logger = createLogger({
-    mixin: () => loggerContext.getStore() ?? {},
+    mixin: () => ({ ...loggerContext.getStore() }),
   });
 
   const handler = (_event: unknown, { awsRequestId }: Context) =>
