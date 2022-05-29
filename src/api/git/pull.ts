@@ -43,9 +43,9 @@ interface PullParameters {
 }
 
 /**
- * Pulls the specified `ref` from the remote to local Git repository
+ * Fast forwards the local branch to the remote state
  */
-export const pullBranch = async ({
+export const fastForwardBranch = async ({
   auth,
   dir,
   ref,

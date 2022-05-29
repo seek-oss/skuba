@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import path from 'path';
 
 import { graphql } from '@octokit/graphql';
 import type {
@@ -49,7 +48,7 @@ export const commitAndPushAllChanges = async ({
   updateLocal,
 }: CommitAndPushAllChangesParams) => {
   const changedFiles = await Git.getChangedFiles({ dir });
-  const fileChanges = await mapChangedFilesToFileChanges(dir, changedFiles);
+  const fileChanges = await mapChangedFilesToFileChanges(changedFiles);
 
   await commitAndPush({
     dir,
@@ -67,7 +66,6 @@ interface FileChanges {
 }
 
 export const mapChangedFilesToFileChanges = async (
-  dir: string,
   changedFiles: ChangedFile[],
 ): Promise<FileChanges> => {
   const { added, deleted } = changedFiles.reduce<{
@@ -90,7 +88,7 @@ export const mapChangedFilesToFileChanges = async (
   const additions: FileAddition[] = await Promise.all(
     added.map(async (filePath) => ({
       path: filePath,
-      contents: await fs.readFile(path.join(dir, filePath), {
+      contents: await fs.readFile(filePath, {
         encoding: 'base64',
       }),
     })),
@@ -176,15 +174,20 @@ export const commitAndPush = async ({
   );
 
   if (updateLocal) {
-    await Git.reset({ branch, commitId: headCommitId, dir, hard: true });
+    const changedFiles = await Git.getChangedFiles({ dir });
+    await Promise.all(changedFiles.map((file) => fs.rm(file.path)));
 
-    await Git.pullBranch({ ref: branch, auth: { type: 'gitHubApp' }, dir });
+    await Git.fastForwardBranch({
+      ref: branch,
+      auth: { type: 'gitHubApp' },
+      dir,
+    });
   }
 };
 
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'remove nullish',
+  messageHeadline: 'change update local logic',
   updateLocal: true,
 }).catch(console.error);
