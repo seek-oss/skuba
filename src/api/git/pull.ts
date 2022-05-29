@@ -58,7 +58,7 @@ export const pullBranch = async ({
     owner,
   )}/${encodeURIComponent(repo)}`;
 
-  return git.pull({
+  return git.fastForward({
     onAuth: () => ({
       username: 'x-access-token',
       password: auth.token ?? apiTokenFromEnvironment(),
