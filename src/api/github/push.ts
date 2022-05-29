@@ -46,11 +46,11 @@ export const commitAndPushAllChanges = async ({
   messageHeadline,
   messageBody,
   updateLocal,
-}: CommitAndPushAllChangesParams) => {
+}: CommitAndPushAllChangesParams): Promise<string> => {
   const changedFiles = await Git.getChangedFiles({ dir });
   const fileChanges = await mapChangedFilesToFileChanges(changedFiles);
 
-  await commitAndPush({
+  return await commitAndPush({
     dir,
     branch,
     messageHeadline,
@@ -135,7 +135,7 @@ export const commitAndPush = async ({
   messageBody,
   fileChanges,
   updateLocal = false,
-}: CommitAndPushParams) => {
+}: CommitAndPushParams): Promise<string> => {
   const [{ owner, repo }, headCommitId] = await Promise.all([
     Git.getOwnerAndRepo({ dir }),
     Git.getHeadCommitId({ dir }),
@@ -155,7 +155,7 @@ export const commitAndPush = async ({
     fileChanges,
   };
 
-  await graphql<CreateCommitResult>(
+  const result = await graphql<CreateCommitResult>(
     `
       mutation Mutation($input: CreateCommitOnBranchInput!) {
         createCommitOnBranch(input: $input) {
@@ -174,8 +174,11 @@ export const commitAndPush = async ({
   );
 
   if (updateLocal) {
-    const changedFiles = await Git.getChangedFiles({ dir });
-    await Promise.all(changedFiles.map((file) => fs.rm(file.path)));
+    await Promise.all(
+      [...fileChanges.additions, ...fileChanges.deletions].map((file) =>
+        fs.rm(file.path),
+      ),
+    );
 
     await Git.fastForwardBranch({
       ref: branch,
@@ -183,11 +186,13 @@ export const commitAndPush = async ({
       dir,
     });
   }
+
+  return result.createCommitOnBranch.commit.id;
 };
 
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'change update local logic',
+  messageHeadline: 'reuse file changes',
   updateLocal: true,
 }).catch(console.error);
