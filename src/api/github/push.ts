@@ -150,7 +150,7 @@ export const commitAndPush = async ({
     },
     message: {
       headline: messageHeadline,
-      body: messageBody ?? null,
+      body: messageBody,
     },
     expectedHeadOid: headCommitId,
     clientMutationId: 'skuba',
@@ -185,6 +185,6 @@ export const commitAndPush = async ({
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'refactor',
+  messageHeadline: 'remove nullish',
   updateLocal: true,
 }).catch(console.error);
