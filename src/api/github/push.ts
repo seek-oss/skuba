@@ -23,9 +23,22 @@ interface CreateCommitResult {
 
 interface CommitAndPushAllChangesParams {
   dir: string;
+  /**
+   * The branch name
+   */
   branch: string;
+  /**
+   * The headline of the commit message
+   */
   messageHeadline: string;
+  /**
+   * The body of the commit message
+   */
   messageBody?: string;
+  /**
+   * Updates the local git working directory to reflect the new remote state
+   */
+  updateLocal?: boolean;
 }
 
 export const commitAndPushAllChanges = async ({
@@ -33,6 +46,7 @@ export const commitAndPushAllChanges = async ({
   branch,
   messageHeadline,
   messageBody,
+  updateLocal,
 }: CommitAndPushAllChangesParams) => {
   const changedFiles = await Git.getChangedFiles({ dir });
   const fileChanges = await mapChangedFilesToFileChanges(dir, changedFiles);
@@ -43,6 +57,7 @@ export const commitAndPushAllChanges = async ({
     messageHeadline,
     messageBody,
     fileChanges,
+    updateLocal,
   });
 };
 
@@ -93,10 +108,26 @@ export const mapChangedFilesToFileChanges = async (
 
 interface CommitAndPushParams {
   dir: string;
+  /**
+   * The branch name
+   */
   branch: string;
+  /**
+   * The headline of the commit message
+   */
   messageHeadline: string;
+  /**
+   * The body of the commit message
+   */
   messageBody?: string;
+  /**
+   * File additions and deletions
+   */
   fileChanges: FileChanges;
+  /**
+   * Updates the local git working directory to reflect the new remote state
+   */
+  updateLocal?: boolean;
 }
 
 export const commitAndPush = async ({
@@ -105,6 +136,7 @@ export const commitAndPush = async ({
   messageHeadline,
   messageBody,
   fileChanges,
+  updateLocal = false,
 }: CommitAndPushParams) => {
   const [{ owner, repo }, headCommitId] = await Promise.all([
     Git.getOwnerAndRepo({ dir }),
@@ -143,15 +175,16 @@ export const commitAndPush = async ({
     },
   );
 
-  // This sets the current working branch to the same state as our remote
+  if (updateLocal) {
+    await Git.reset({ branch, commitId: headCommitId, dir, hard: true });
 
-  await Git.reset({ branch, commitId: headCommitId, dir, hard: true });
-
-  await Git.pullBranch({ ref: branch, auth: { type: 'gitHubApp' }, dir });
+    await Git.pullBranch({ ref: branch, auth: { type: 'gitHubApp' }, dir });
+  }
 };
 
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'try updating local',
+  messageHeadline: 'refactor',
+  updateLocal: true,
 }).catch(console.error);
