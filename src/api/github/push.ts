@@ -73,9 +73,9 @@ export const mapChangedFilesToFileChanges = async (
   const additions: FileAddition[] = await Promise.all(
     added.map(async (filePath) => ({
       path: filePath,
-      contents: (
-        await fs.readFile(path.join(dir, filePath))
-      ).toString('base64'),
+      contents: await fs.readFile(path.join(dir, filePath), {
+        encoding: 'base64',
+      }),
     })),
   );
 
@@ -143,5 +143,5 @@ export const commitAndPush = async ({
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'add new graphql',
+  messageHeadline: 'make syntax nicer',
 }).catch(console.error);
