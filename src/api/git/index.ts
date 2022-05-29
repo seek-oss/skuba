@@ -5,4 +5,5 @@ export { getChangedFiles } from './getChangedFiles';
 export { getHeadCommitId, getHeadCommitMessage } from './log';
 export { getOwnerAndRepo } from './remote';
 export { push } from './push';
+export { pullBranch } from './pull';
 export { reset } from './reset';

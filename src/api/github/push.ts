@@ -8,10 +8,8 @@ import type {
   FileDeletion,
 } from '@octokit/graphql-schema';
 
+import * as Git from '../git';
 import type { ChangedFile } from '../git/getChangedFiles';
-import { getChangedFiles } from '../git/getChangedFiles';
-import { getHeadCommitId } from '../git/log';
-import { getOwnerAndRepo } from '../git/remote';
 
 import { apiTokenFromEnvironment } from './environment';
 
@@ -36,7 +34,7 @@ export const commitAndPushAllChanges = async ({
   messageHeadline,
   messageBody,
 }: CommitAndPushAllChangesParams) => {
-  const changedFiles = await getChangedFiles({ dir });
+  const changedFiles = await Git.getChangedFiles({ dir });
   const fileChanges = await mapChangedFilesToFileChanges(dir, changedFiles);
 
   await commitAndPush({
@@ -109,8 +107,8 @@ export const commitAndPush = async ({
   fileChanges,
 }: CommitAndPushParams) => {
   const [{ owner, repo }, headCommitId] = await Promise.all([
-    getOwnerAndRepo({ dir }),
-    getHeadCommitId({ dir }),
+    Git.getOwnerAndRepo({ dir }),
+    Git.getHeadCommitId({ dir }),
   ]);
 
   const input: CreateCommitOnBranchInput = {
@@ -144,10 +142,16 @@ export const commitAndPush = async ({
       },
     },
   );
+
+  // This sets the current working branch to the same state as our remote
+
+  await Git.reset({ branch, commitId: headCommitId, dir, hard: true });
+
+  await Git.pullBranch({ ref: branch, auth: { type: 'gitHubApp' }, dir });
 };
 
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'use input type',
+  messageHeadline: 'try updating local',
 }).catch(console.error);
