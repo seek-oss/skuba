@@ -2,7 +2,11 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import { graphql } from '@octokit/graphql';
-import type { FileAddition, FileDeletion } from '@octokit/graphql-schema';
+import type {
+  CreateCommitOnBranchInput,
+  FileAddition,
+  FileDeletion,
+} from '@octokit/graphql-schema';
 
 import type { ChangedFile } from '../git/getChangedFiles';
 import { getChangedFiles } from '../git/getChangedFiles';
@@ -109,6 +113,20 @@ export const commitAndPush = async ({
     getHeadCommitId({ dir }),
   ]);
 
+  const input: CreateCommitOnBranchInput = {
+    branch: {
+      repositoryNameWithOwner: `${owner}/${repo}`,
+      branchName: branch,
+    },
+    message: {
+      headline: messageHeadline,
+      body: messageBody ?? null,
+    },
+    expectedHeadOid: headCommitId,
+    clientMutationId: 'skuba',
+    fileChanges,
+  };
+
   await graphql<CreateCommitResult>(
     `
       mutation Mutation($input: CreateCommitOnBranchInput!) {
@@ -120,19 +138,7 @@ export const commitAndPush = async ({
       }
     `,
     {
-      input: {
-        branch: {
-          repositoryNameWithOwner: `${owner}/${repo}`,
-          branchName: branch,
-        },
-        message: {
-          headline: messageHeadline,
-          body: messageBody ?? null,
-        },
-        expectedHeadOid: headCommitId,
-        clientMutationId: 'skuba',
-        fileChanges,
-      },
+      input,
       headers: {
         authorization: `bearer ${apiTokenFromEnvironment() || ''}`,
       },
@@ -143,5 +149,5 @@ export const commitAndPush = async ({
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'make syntax nicer',
+  messageHeadline: 'use input type',
 }).catch(console.error);
