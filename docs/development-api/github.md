@@ -29,7 +29,7 @@ Commits using this method appear verified on GitHub.
 ```typescript
 import { GitHub } from 'skuba';
 
-const pullRequestNumber = await GitHub.commitAndPush({
+const commitId = await GitHub.commitAndPush({
   dir: './',
   branch: 'some-branch',
   fileChanges: {
@@ -53,7 +53,7 @@ Commits using this method appear verified on GitHub.
 ```typescript
 import { GitHub } from 'skuba';
 
-const pullRequestNumber = await GitHub.commitAndPushAllChanges({
+const commitId = await GitHub.commitAndPushAllChanges({
   dir: './',
   branch: 'some-branch',
   messageHeadline: 'some-commit',
