@@ -1,7 +1,6 @@
-import fs from 'fs/promises';
-
 import { graphql } from '@octokit/graphql';
 import type { FileChanges } from '@octokit/graphql-schema';
+import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
 import { apiTokenFromEnvironment } from './environment';
@@ -14,7 +13,7 @@ import {
 jest.mock('@octokit/graphql');
 jest.mock('isomorphic-git');
 jest.mock('./environment');
-jest.mock('fs/promises');
+jest.mock('fs-extra');
 
 afterEach(() => {
   jest.resetAllMocks();
@@ -149,7 +148,7 @@ describe('commitAndPush', () => {
 
 describe('mapChangedFilesToFileChanges', () => {
   it('should read modified and added files from the file system', async () => {
-    jest.mocked(fs.readFile).mockResolvedValue('base64-contents');
+    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
     const result = await mapChangedFilesToFileChanges([
       { path: 'some-path', state: 'added' },
       { path: 'another-path', state: 'modified' },
@@ -164,10 +163,10 @@ describe('mapChangedFilesToFileChanges', () => {
       deletions: [{ path: 'delete-path' }],
     };
 
-    expect(fs.readFile).toBeCalledWith('some-path', {
+    expect(fs.promises.readFile).toBeCalledWith('some-path', {
       encoding: 'base64',
     });
-    expect(fs.readFile).toBeCalledWith('another-path', {
+    expect(fs.promises.readFile).toBeCalledWith('another-path', {
       encoding: 'base64',
     });
     expect(result).toStrictEqual(expectedFileChanges);
@@ -186,7 +185,7 @@ describe('commitAndPushAllChanges', () => {
 
   it('should get all modified files and call the graphql client with the changed files', async () => {
     jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
-    jest.mocked(fs.readFile).mockResolvedValue('base64-contents');
+    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
     jest.mocked(git.statusMatrix).mockResolvedValue([
       ['modified-file', 1, 2, 1],
       ['new-file', 0, 2, 0],

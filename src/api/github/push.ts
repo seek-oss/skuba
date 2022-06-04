@@ -1,11 +1,10 @@
-import fs from 'fs/promises';
-
 import { graphql } from '@octokit/graphql';
 import type {
   CreateCommitOnBranchInput,
   FileAddition,
   FileDeletion,
 } from '@octokit/graphql-schema';
+import fs from 'fs-extra';
 
 import * as Git from '../git';
 import type { ChangedFile } from '../git/getChangedFiles';
@@ -88,7 +87,7 @@ export const mapChangedFilesToFileChanges = async (
   const additions: FileAddition[] = await Promise.all(
     added.map(async (filePath) => ({
       path: filePath,
-      contents: await fs.readFile(filePath, {
+      contents: await fs.promises.readFile(filePath, {
         encoding: 'base64',
       }),
     })),
