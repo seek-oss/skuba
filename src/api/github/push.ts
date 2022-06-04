@@ -188,13 +188,13 @@ export const commitAndPush = async ({
       ),
     );
 
-    console.log(
-      await Git.fastForwardBranch({
-        ref: branch,
-        auth: { type: 'gitHubApp' },
-        dir,
-      }),
-    );
+    const res = await Git.fastForwardBranch({
+      ref: branch,
+      auth: { type: 'gitHubApp' },
+      dir,
+    });
+
+    console.log(res);
   }
 
   return result.createCommitOnBranch.commit.id;
@@ -203,6 +203,6 @@ export const commitAndPush = async ({
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'add some tests',
+  messageHeadline: 'test log',
   updateLocal: true,
 }).catch(console.error);
