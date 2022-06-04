@@ -16,10 +16,6 @@ jest.mock('isomorphic-git');
 jest.mock('./environment');
 jest.mock('fs-extra');
 
-afterEach(() => {
-  jest.resetAllMocks();
-});
-
 beforeEach(() => {
   jest
     .mocked(git.listRemotes)
