@@ -1,6 +1,7 @@
 import { graphql } from '@octokit/graphql';
 import type { FileChanges } from '@octokit/graphql-schema';
 import fs from 'fs-extra';
+import type { ReadCommitResult } from 'isomorphic-git';
 import git from 'isomorphic-git';
 
 import { apiTokenFromEnvironment } from './environment';
@@ -19,15 +20,18 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
+beforeEach(() => {
+  jest
+    .mocked(git.listRemotes)
+    .mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
+  jest
+    .mocked(git.log)
+    .mockResolvedValue([{ oid: 'commit-id' } as ReadCommitResult]);
+});
+
 describe('commitAndPush', () => {
-  beforeEach(() => {
-    jest
-      .mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-  });
   it('should throw an error if it cannot resolve an API token', async () => {
     await expect(
       commitAndPush({
@@ -174,15 +178,6 @@ describe('mapChangedFilesToFileChanges', () => {
 });
 
 describe('commitAndPushAllChanges', () => {
-  beforeEach(() => {
-    jest
-      .mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-  });
-
   it('should get all modified files and call the graphql client with the changed files', async () => {
     jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
     jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
