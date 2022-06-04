@@ -128,6 +128,9 @@ interface CommitAndPushParams {
   updateLocal?: boolean;
 }
 
+/**
+ * Commits and pushes file changes up to a GitHub branch
+ */
 export const commitAndPush = async ({
   dir,
   branch,
@@ -136,6 +139,11 @@ export const commitAndPush = async ({
   fileChanges,
   updateLocal = false,
 }: CommitAndPushParams): Promise<string> => {
+  const authToken = apiTokenFromEnvironment();
+  if (!authToken) {
+    throw new Error('Could not determine API token from the environment');
+  }
+
   const [{ owner, repo }, headCommitId] = await Promise.all([
     Git.getOwnerAndRepo({ dir }),
     Git.getHeadCommitId({ dir }),
@@ -168,7 +176,7 @@ export const commitAndPush = async ({
     {
       input,
       headers: {
-        authorization: `bearer ${apiTokenFromEnvironment() || ''}`,
+        authorization: `bearer ${authToken}`,
       },
     },
   );
@@ -180,11 +188,13 @@ export const commitAndPush = async ({
       ),
     );
 
-    await Git.fastForwardBranch({
-      ref: branch,
-      auth: { type: 'gitHubApp' },
-      dir,
-    });
+    console.log(
+      await Git.fastForwardBranch({
+        ref: branch,
+        auth: { type: 'gitHubApp' },
+        dir,
+      }),
+    );
   }
 
   return result.createCommitOnBranch.commit.id;
@@ -193,6 +203,6 @@ export const commitAndPush = async ({
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'reuse file changes',
+  messageHeadline: 'add some tests',
   updateLocal: true,
 }).catch(console.error);
