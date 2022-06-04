@@ -201,6 +201,6 @@ export const commitAndPush = async ({
 commitAndPushAllChanges({
   dir: process.cwd(),
   branch: 'graphql-commit',
-  messageHeadline: 'fix-tests',
+  messageHeadline: 'add-doco',
   updateLocal: true,
 }).catch(console.error);

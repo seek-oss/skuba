@@ -20,6 +20,50 @@ const buildName = GitHub.buildNameFromEnvironment();
 
 ---
 
+## commitAndPush
+
+Commits and pushes file changes from the local workspace to a specified GitHub branch.
+
+Commits using this method appear verified on GitHub.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const pullRequestNumber = await GitHub.commitAndPush({
+  dir: './',
+  branch: 'some-branch',
+  fileChanges: {
+    additions: [{ contents: '', path: 'another-path' }],
+    deletions: [{ path: 'some-path' }],
+  },
+  messageHeadline: 'some-commit',
+  messageBody: 'extra-body',
+  updateLocal: true, // Updates the local git repository with the new git commit
+});
+```
+
+---
+
+## commitAndPushAllChanges
+
+Retrieves all file changes from the local git repository using [getchangedfiles], commits and pushes file changes from the local workspace to a specified GitHub branch.
+
+Commits using this method appear verified on GitHub.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const pullRequestNumber = await GitHub.commitAndPushAllChanges({
+  dir: './',
+  branch: 'some-branch',
+  messageHeadline: 'some-commit',
+  messageBody: 'extra-body',
+  updateLocal: true, // Updates the local git repository with the new git commit
+});
+```
+
+---
+
 ## createCheckRun
 
 Asynchronously creates a GitHub [check run] with annotations.
@@ -119,5 +163,23 @@ await GitHub.putIssueComment({
 
 ---
 
+## mapChangedFilesToFileChanges
+
+Maps changes files from [getChangedFiles] to GitHub GraphQL [file changes]
+
+```typescript
+import { GitHub } from 'skuba';
+
+const fileChanges = await GitHub.mapChangedFilesToFileChanges([
+  { path: 'added-path', state: 'added' },
+  { path: 'modified-path', state: 'modified' },
+  { path: 'delete-path', state: 'deleted' },
+]);
+```
+
+---
+
 [check run]: https://docs.github.com/en/rest/reference/checks#runs
+[file changes]: https://docs.github.com/en/graphql/reference/input-objects#filechanges
+[getchangedfiles]: ./git.md#getchangedfiles
 [github guide]: ../deep-dives/github.md
