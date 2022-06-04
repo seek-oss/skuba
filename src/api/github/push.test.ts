@@ -16,6 +16,18 @@ jest.mock('isomorphic-git');
 jest.mock('./environment');
 jest.mock('fs-extra');
 
+beforeAll(() => {
+  process.env.BUILDKITE = 'commit-id';
+});
+
+afterAll(() => {
+  delete process.env.BUILDKITE;
+});
+
+afterEach(() => {
+  jest.resetAllMocks();
+});
+
 beforeEach(() => {
   jest
     .mocked(git.listRemotes)
