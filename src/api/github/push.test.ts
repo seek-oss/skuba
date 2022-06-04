@@ -17,11 +17,11 @@ jest.mock('./environment');
 jest.mock('fs-extra');
 
 beforeAll(() => {
-  process.env.BUILDKITE = 'commit-id';
+  process.env.BUILDKITE_COMMIT = 'commit-id';
 });
 
 afterAll(() => {
-  delete process.env.BUILDKITE;
+  delete process.env.BUILDKITE_COMMIT;
 });
 
 afterEach(() => {
