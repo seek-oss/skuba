@@ -39,6 +39,9 @@ interface CommitAndPushAllChangesParams {
   updateLocal?: boolean;
 }
 
+/**
+ * Commits and pushes all changes from the local git repository up to a GitHub branch
+ */
 export const commitAndPushAllChanges = async ({
   dir,
   branch,
@@ -64,6 +67,9 @@ interface FileChanges {
   deletions: FileDeletion[];
 }
 
+/**
+ * Maps ChangedFiles to {@link https://docs.github.com/en/graphql/reference/input-objects#filechanges| FileChanges}
+ */
 export const mapChangedFilesToFileChanges = async (
   changedFiles: ChangedFile[],
 ): Promise<FileChanges> => {
