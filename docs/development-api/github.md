@@ -165,7 +165,7 @@ await GitHub.putIssueComment({
 
 ## mapChangedFilesToFileChanges
 
-Maps changes files from [getChangedFiles] to GitHub GraphQL [file changes]
+Maps changed files from [getChangedFiles] to GitHub GraphQL [file changes]
 
 ```typescript
 import { GitHub } from 'skuba';
