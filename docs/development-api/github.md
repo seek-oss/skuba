@@ -38,7 +38,7 @@ const commitId = await GitHub.commitAndPush({
   },
   messageHeadline: 'some-commit',
   messageBody: 'extra-body',
-  updateLocal: true, // Updates the local git repository with the new git commit
+  updateLocal: true, // Updates the local git repository to reflect the new remote branch state
 });
 ```
 
@@ -46,7 +46,7 @@ const commitId = await GitHub.commitAndPush({
 
 ## commitAndPushAllChanges
 
-Retrieves all file changes from the local git repository using [getchangedfiles], commits and pushes file changes from the local workspace to a specified GitHub branch.
+Retrieves all file changes from the local git repository using [getChangedFiles], commits and pushes file changes from the local workspace to a specified GitHub branch.
 
 Commits using this method appear verified on GitHub.
 
@@ -58,7 +58,7 @@ const commitId = await GitHub.commitAndPushAllChanges({
   branch: 'some-branch',
   messageHeadline: 'some-commit',
   messageBody: 'extra-body',
-  updateLocal: true, // Updates the local git repository with the new git commit
+  updateLocal: true, // Updates the local git repository to reflect the new remote branch state
 });
 ```
 
