@@ -65,10 +65,10 @@
     "express": "4.18.1",
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
-    "memfs": "3.4.3",
+    "memfs": "3.4.4",
     "semver": "7.3.7",
     "supertest": "6.2.3",
-    "type-fest": "2.12.2"
+    "type-fest": "2.13.0"
   },
   "engines": {
     "node": ">=14.18"
