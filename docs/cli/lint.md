@@ -60,6 +60,8 @@ you can limit this with the `--serial` flag.
 | `--debug`  | Enable debug console output (implies `--serial`) |
 | `--serial` | Force serial execution of linting operations     |
 
+[GitHub Autofixes] are enabled when CI and GitHub environment variables are present.
+
 ### Annotations
 
 `skuba lint` can automatically emit annotations in CI.
@@ -74,6 +76,7 @@ you can limit this with the `--serial` flag.
 [eslint-config-seek]: https://github.com/seek-oss/eslint-config-seek
 [eslint]: https://eslint.org/
 [github annotations]: ../deep-dives/github.md#github-annotations
+[github autofixes]: ../deep-dives/github.md#github-autofixes
 [prescribes eslint]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#typescript
 [prettier]: https://prettier.io/
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html
