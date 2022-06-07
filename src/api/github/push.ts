@@ -51,7 +51,7 @@ export const commitAndPushAllChanges = async ({
   updateLocal,
 }: CommitAndPushAllChangesParams): Promise<string | undefined> => {
   const changedFiles = await Git.getChangedFiles({ dir });
-  if (!changedFiles) {
+  if (!changedFiles.length) {
     return undefined;
   }
   const fileChanges = await mapChangedFilesToFileChanges(changedFiles);
