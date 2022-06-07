@@ -62,7 +62,7 @@ describe('commitAndPush', () => {
     jest.mocked(graphql).mockResolvedValue({
       createCommitOnBranch: {
         commit: {
-          id: 'upstream-id',
+          oid: 'upstream-id',
         },
       },
     });
@@ -84,7 +84,7 @@ describe('commitAndPush', () => {
             mutation Mutation($input: CreateCommitOnBranchInput!) {
               createCommitOnBranch(input: $input) {
                 commit {
-                  id
+                  oid
                 }
               }
             }
@@ -230,7 +230,7 @@ describe('commitAndPushAllChanges', () => {
             mutation Mutation($input: CreateCommitOnBranchInput!) {
               createCommitOnBranch(input: $input) {
                 commit {
-                  id
+                  oid
                 }
               }
             }

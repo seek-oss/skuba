@@ -14,7 +14,7 @@ import { apiTokenFromEnvironment } from './environment';
 interface CreateCommitResult {
   createCommitOnBranch: {
     commit: {
-      id: string;
+      oid: string;
     };
   };
 }
@@ -177,7 +177,7 @@ export const commitAndPush = async ({
       mutation Mutation($input: CreateCommitOnBranchInput!) {
         createCommitOnBranch(input: $input) {
           commit {
-            id
+            oid
           }
         }
       }
@@ -204,5 +204,5 @@ export const commitAndPush = async ({
     });
   }
 
-  return result.createCommitOnBranch.commit.id;
+  return result.createCommitOnBranch.commit.oid;
 };
