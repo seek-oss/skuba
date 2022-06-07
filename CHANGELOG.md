@@ -1,5 +1,29 @@
 # skuba
 
+## 4.3.0-beta.0
+
+### Minor Changes
+
+- **test:** Add [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead) plugin (0b635ed)
+
+  This enables typeahead suggestions when filtering by file or test name in watch mode.
+
+* **Git:** Add [fastForwardBranch](https://seek-oss.github.io/skuba/docs/development-api/git.html#fastForwardBranch) method. (38f3bef)
+
+- **deps:** TypeScript 4.7 (e9bba5a)
+
+  This major release includes breaking changes. See the [TypeScript 4.7](https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/) announcement for more information.
+
+  While ECMAScript Module support for Node.js is now stable in TypeScript, other aspects of our toolchain have not caught up yet; notably, Node.js still lacks stable APIs for Jest to implement its usual suite of mocking capabilities. We are holding off on recommending existing repositories to make the switch and on providing reference implementations via our templates. As it stands, migrating from CJS to ESM is still an arduous exercise in rewriting import statements and restructuring mocks and test suites at the bare minimum.
+
+* **GitHub:** Add new methods to create and push verified commits using the GitHub GraphQL API. See the [GitHub API documentation](https://seek-oss.github.io/skuba/docs/development-api/github.html#commitAndPush) for more information. (38f3bef)
+
+### Patch Changes
+
+- **test:** Improve file detection for GitHub annotations (8923dfc)
+
+* **template/\*-rest-api:** seek-jobs/gantry v1.8.1 (c88bf14)
+
 ## 4.2.2
 
 ### Patch Changes
@@ -53,7 +77,7 @@
   const contextLogger = (ctx: Context) =>
     rootLogger.child(RequestLogging.contextFields(ctx));
 
-  const app = new Koa().use((ctx) => {
+  const app = new Koa().use(ctx => {
     rootLogger.info('Has no context');
 
     contextLogger(ctx).info('Has context');
@@ -67,14 +91,16 @@
   import Koa from 'koa';
   import { RequestLogging } from 'seek-koala';
 
-  const { createContextMiddleware, mixin } =
-    RequestLogging.createContextStorage();
+  const {
+    createContextMiddleware,
+    mixin,
+  } = RequestLogging.createContextStorage();
 
   const contextMiddleware = createContextMiddleware();
 
   const logger = createLogger({ mixin });
 
-  const app = new Koa().use(contextMiddleware).use((ctx) => {
+  const app = new Koa().use(contextMiddleware).use(ctx => {
     logger.info('Has context');
   });
   ```

@@ -1,0 +1,15 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "4.2.2"
+  },
+  "changesets": [
+    "beige-pandas-cry",
+    "big-buses-yell",
+    "great-snakes-notice",
+    "stale-forks-love",
+    "tender-icons-sleep",
+    "thin-carrots-burn"
+  ]
+}
