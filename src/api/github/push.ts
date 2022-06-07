@@ -40,7 +40,8 @@ interface CommitAndPushAllChangesParams {
 }
 
 /**
- * Commits and pushes all changes from the local git repository up to a GitHub branch
+ * Commits and pushes all changes from the local git repository up to a GitHub branch.
+ * Returns the commit id or `undefined` if there are no changes to commit.
  */
 export const commitAndPushAllChanges = async ({
   dir,
@@ -48,8 +49,11 @@ export const commitAndPushAllChanges = async ({
   messageHeadline,
   messageBody,
   updateLocal,
-}: CommitAndPushAllChangesParams): Promise<string> => {
+}: CommitAndPushAllChangesParams): Promise<string | undefined> => {
   const changedFiles = await Git.getChangedFiles({ dir });
+  if (!changedFiles) {
+    return undefined;
+  }
   const fileChanges = await mapChangedFilesToFileChanges(changedFiles);
 
   return await commitAndPush({
@@ -62,7 +66,7 @@ export const commitAndPushAllChanges = async ({
   });
 };
 
-interface FileChanges {
+export interface FileChanges {
   additions: FileAddition[];
   deletions: FileDeletion[];
 }

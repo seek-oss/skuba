@@ -50,6 +50,8 @@ Retrieves all file changes from the local git repository using [getChangedFiles]
 
 Commits using this method appear verified on GitHub.
 
+`undefined` is returned instead of a commit id when there are no changes to push.
+
 ```typescript
 import { GitHub } from 'skuba';
 

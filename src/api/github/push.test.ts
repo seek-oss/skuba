@@ -186,6 +186,21 @@ describe('mapChangedFilesToFileChanges', () => {
 });
 
 describe('commitAndPushAllChanges', () => {
+  it('should return undefined if there are no file changes to commit', async () => {
+    jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
+    jest
+      .mocked(git.statusMatrix)
+      .mockResolvedValue([['unchanged-file', 1, 1, 1]]);
+
+    const result = await commitAndPushAllChanges({
+      dir: './',
+      branch: 'existing-branch',
+      messageHeadline: 'commit headline',
+      messageBody: 'commit body',
+    });
+
+    expect(result).toBeUndefined();
+  });
   it('should get all modified files and call the graphql client with the changed files', async () => {
     jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
     jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
