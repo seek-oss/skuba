@@ -28,6 +28,7 @@
     "is-installed-globally": "^0.4.0",
     "isomorphic-git": "^1.11.1",
     "jest": "^28.1.0",
+    "jest-watch-typeahead": "^1.1.0",
     "latest-version": "^5.1.0",
     "lodash.mergewith": "^4.6.2",
     "normalize-package-data": "^4.0.0",
@@ -43,7 +44,7 @@
     "strip-ansi": "^6.0.1",
     "ts-jest": "^28.0.2",
     "ts-node": "^10.7.0",
-    "ts-node-dev": "^2.0.0-0",
+    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "1.0.2",
     "typescript": "~4.7.0"
@@ -67,10 +68,10 @@
     "graphql-tag": "2.12.6",
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
-    "memfs": "3.4.3",
+    "memfs": "3.4.4",
     "semver": "7.3.7",
     "supertest": "6.2.3",
-    "type-fest": "2.12.2"
+    "type-fest": "2.13.0"
   },
   "engines": {
     "node": ">=14.18"

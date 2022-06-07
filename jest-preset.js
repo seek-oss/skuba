@@ -21,10 +21,14 @@ module.exports = {
     '!<rootDir>/jest.*.ts',
   ],
   coverageDirectory: 'coverage',
+  reporters: ['default', require.resolve('./lib/cli/test/reporters/github')],
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/node_modules.*/',
     '<rootDir>/(coverage|dist|lib|tmp).*/',
   ],
-  reporters: ['default', require.resolve('./lib/cli/test/reporters/github')],
+  watchPlugins: [
+    require.resolve('jest-watch-typeahead/filename'),
+    require.resolve('jest-watch-typeahead/testname'),
+  ],
 };
