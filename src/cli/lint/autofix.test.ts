@@ -1,6 +1,7 @@
 import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
+import * as GitHub from '../../api/github';
 import { runESLint } from '../../cli/adapter/eslint';
 import { runPrettier } from '../../cli/adapter/prettier';
 
@@ -8,6 +9,7 @@ import { autofix } from './autofix';
 
 jest.mock('simple-git');
 jest.mock('../../api/git');
+jest.mock('../../api/github');
 jest.mock('../../cli/adapter/eslint');
 jest.mock('../../cli/adapter/prettier');
 
@@ -21,21 +23,6 @@ const stdout = () => {
     .join('')
     .replace(/(at Object\.\<anonymous\>)[\s\S]+$/, '$1...');
   return `\n${result}`;
-};
-
-const expectAutofixCommit = (
-  { eslint }: { eslint: boolean } = { eslint: true },
-) => {
-  expect(runESLint).toHaveBeenCalledTimes(eslint ? 1 : 0);
-  expect(runPrettier).toHaveBeenCalledTimes(1);
-  expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
-};
-
-const expectNoAutofix = () => {
-  expect(runESLint).not.toHaveBeenCalled();
-  expect(runPrettier).not.toHaveBeenCalled();
-  expect(Git.commitAllChanges).not.toHaveBeenCalled();
-  expect(Git.push).not.toHaveBeenCalled();
 };
 
 beforeEach(() => {
@@ -55,251 +42,404 @@ afterEach(jest.resetAllMocks);
 describe('autofix', () => {
   const params = { debug: false, eslint: true, prettier: true };
 
-  it('bails on a non-CI environment', async () => {
-    delete process.env.CI;
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectNoAutofix();
-  });
-
-  it('bails on the master branch', async () => {
-    jest.mocked(Git.currentBranch).mockResolvedValue('master');
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectNoAutofix();
-  });
-
-  it('bails on the main branch', async () => {
-    jest.mocked(Git.currentBranch).mockResolvedValue('main');
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectNoAutofix();
-  });
-
-  it('bails on the Buildkite default branch', async () => {
-    process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH = 'devel';
-
-    jest.mocked(Git.currentBranch).mockResolvedValue('devel');
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectNoAutofix();
-  });
-
-  it('bails on a GitHub protected branch', async () => {
-    process.env.GITHUB_REF_PROTECTED = 'true';
-
-    jest.mocked(Git.currentBranch).mockResolvedValue('beta');
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectNoAutofix();
-  });
-
-  it('bails on an autofix head commit', async () => {
-    jest.mocked(Git.currentBranch).mockResolvedValue('feature');
-    jest
-      .mocked(Git.getHeadCommitMessage)
-      .mockResolvedValue('Run `skuba format`');
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectNoAutofix();
-  });
-
-  it('bails on no fixable issues', async () => {
-    await expect(
-      autofix({ ...params, eslint: false, prettier: false }),
-    ).resolves.toBeUndefined();
-
-    expectNoAutofix();
-  });
-
-  it('skips push on empty commit', async () => {
-    jest.mocked(Git.commitAllChanges).mockResolvedValue(undefined);
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectAutofixCommit();
-    expect(Git.push).not.toHaveBeenCalled();
-
-    expect(stdout()).toMatchInlineSnapshot(`
-      "
-
-      Trying to autofix with ESLint and Prettier...
-      No autofixes detected.
-      "
-    `);
-  });
-
-  it('uses Git CLI in GitHub Actions', async () => {
-    process.env.GITHUB_ACTIONS = 'true';
-
+  describe('GitHub Actions', () => {
     const push = jest.fn();
-    jest.mocked(simpleGit).mockReturnValue({ push } as any);
 
-    jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+    const expectAutofixCommit = (
+      { eslint }: { eslint: boolean } = { eslint: true },
+    ) => {
+      expect(runESLint).toHaveBeenCalledTimes(eslint ? 1 : 0);
+      expect(runPrettier).toHaveBeenCalledTimes(1);
+      expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
+    };
 
-    await expect(autofix(params)).resolves.toBeUndefined();
+    const expectNoAutofix = () => {
+      expect(runESLint).not.toHaveBeenCalled();
+      expect(runPrettier).not.toHaveBeenCalled();
+      expect(Git.commitAllChanges).not.toHaveBeenCalled();
+      expect(push).not.toHaveBeenCalled();
+    };
 
-    expectAutofixCommit();
-
-    expect(Git.push).not.toHaveBeenCalled();
-    expect(push).toHaveBeenNthCalledWith(1);
-
-    expect(stdout()).toMatchInlineSnapshot(`
-      "
-
-      Trying to autofix with ESLint and Prettier...
-      Pushed fix commit commit-sha.
-      "
-    `);
-  });
-
-  it('uses isomorphic-git in other CI environments', async () => {
-    jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-    jest.mocked(Git.currentBranch).mockResolvedValue('dev');
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectAutofixCommit();
-    expect(Git.push).toHaveBeenNthCalledWith(1, {
-      auth: { type: 'gitHubApp' },
-      dir: expect.any(String),
-      ref: 'commit-sha',
-      remoteRef: 'dev',
+    beforeEach(() => {
+      process.env.GITHUB_ACTIONS = 'true';
+      jest.mocked(simpleGit).mockReturnValue({ push } as any);
     });
 
-    expect(stdout()).toMatchInlineSnapshot(`
-      "
+    it('bails on a non-CI environment', async () => {
+      delete process.env.CI;
+      delete process.env.GITHUB_ACTIONS;
 
-      Trying to autofix with ESLint and Prettier...
-      Pushed fix commit commit-sha.
-      "
-    `);
-  });
+      await expect(autofix(params)).resolves.toBeUndefined();
 
-  it('handles fixable issues from ESLint only', async () => {
-    jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-    jest.mocked(Git.currentBranch).mockResolvedValue('dev');
-
-    await expect(
-      autofix({ ...params, eslint: true, prettier: false }),
-    ).resolves.toBeUndefined();
-
-    expectAutofixCommit();
-    expect(Git.push).toHaveBeenNthCalledWith(1, {
-      auth: { type: 'gitHubApp' },
-      dir: expect.any(String),
-      ref: 'commit-sha',
-      remoteRef: 'dev',
+      expectNoAutofix();
     });
 
-    // We should run both ESLint and Prettier
-    expect(stdout()).toMatchInlineSnapshot(`
-      "
+    it('bails on the master branch', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('master');
 
-      Trying to autofix with ESLint and Prettier...
-      Pushed fix commit commit-sha.
-      "
-    `);
-  });
+      await expect(autofix(params)).resolves.toBeUndefined();
 
-  it('handles fixable issues from Prettier only', async () => {
-    jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-    jest.mocked(Git.currentBranch).mockResolvedValue('dev');
-
-    await expect(
-      autofix({ ...params, eslint: false, prettier: true }),
-    ).resolves.toBeUndefined();
-
-    expectAutofixCommit({ eslint: false });
-    expect(Git.push).toHaveBeenNthCalledWith(1, {
-      auth: { type: 'gitHubApp' },
-      dir: expect.any(String),
-      ref: 'commit-sha',
-      remoteRef: 'dev',
+      expectNoAutofix();
     });
 
-    // We should only run Prettier
-    expect(stdout()).toMatchInlineSnapshot(`
-      "
+    it('bails on the main branch', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('main');
 
-      Trying to autofix with Prettier...
-      Pushed fix commit commit-sha.
-      "
-    `);
-  });
+      await expect(autofix(params)).resolves.toBeUndefined();
 
-  it('tolerates guard errors', async () => {
-    const ERROR = new Error('badness!');
-
-    jest.mocked(Git.currentBranch).mockRejectedValue(ERROR);
-    jest.mocked(Git.getHeadCommitMessage).mockRejectedValue(ERROR);
-
-    jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectAutofixCommit();
-    expect(Git.push).toHaveBeenNthCalledWith(1, {
-      auth: { type: 'gitHubApp' },
-      dir: expect.any(String),
-      ref: 'commit-sha',
+      expectNoAutofix();
     });
 
-    expect(stdout()).toMatchInlineSnapshot(`
-      "
+    it('bails on the Buildkite default branch', async () => {
+      process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH = 'devel';
 
-      Trying to autofix with ESLint and Prettier...
-      Pushed fix commit commit-sha.
-      "
-    `);
-  });
+      jest.mocked(Git.currentBranch).mockResolvedValue('devel');
 
-  it('bails on commit error', async () => {
-    jest.mocked(Git.commitAllChanges).mockRejectedValue(MOCK_ERROR);
+      await expect(autofix(params)).resolves.toBeUndefined();
 
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectAutofixCommit();
-    expect(Git.push).not.toHaveBeenCalled();
-
-    expect(stdout()).toMatchInlineSnapshot(`
-      "
-
-      Trying to autofix with ESLint and Prettier...
-      Failed to push fix commit.
-      Does your CI environment have write access to your Git repository?
-      Error: Badness!
-          at Object.<anonymous>..."
-    `);
-  });
-
-  it('bails on push error', async () => {
-    jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-    jest.mocked(Git.push).mockRejectedValue(MOCK_ERROR);
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expectAutofixCommit();
-    expect(Git.push).toHaveBeenNthCalledWith(1, {
-      auth: { type: 'gitHubApp' },
-      dir: expect.any(String),
-      ref: 'commit-sha',
+      expectNoAutofix();
     });
 
-    expect(stdout()).toMatchInlineSnapshot(`
-      "
+    it('bails on a GitHub protected branch', async () => {
+      process.env.GITHUB_REF_PROTECTED = 'true';
 
-      Trying to autofix with ESLint and Prettier...
-      Failed to push fix commit.
-      Does your CI environment have write access to your Git repository?
-      Error: Badness!
-          at Object.<anonymous>..."
-    `);
+      jest.mocked(Git.currentBranch).mockResolvedValue('beta');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('bails on an autofix head commit', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('feature');
+      jest
+        .mocked(Git.getHeadCommitMessage)
+        .mockResolvedValue('Run `skuba format`');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('bails on no fixable issues', async () => {
+      await expect(
+        autofix({ ...params, eslint: false, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('skips push on empty commit', async () => {
+      jest.mocked(Git.commitAllChanges).mockResolvedValue(undefined);
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit();
+      expect(push).not.toHaveBeenCalled();
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with ESLint and Prettier...
+        No autofixes detected.
+        "
+      `);
+    });
+
+    it('uses Git CLI in GitHub Actions', async () => {
+      process.env.GITHUB_ACTIONS = 'true';
+
+      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit();
+
+      expect(push).toHaveBeenNthCalledWith(1);
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with ESLint and Prettier...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
+    it('handles fixable issues from ESLint only', async () => {
+      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+      await expect(
+        autofix({ ...params, eslint: true, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectAutofixCommit();
+
+      expect(push).toHaveBeenNthCalledWith(1);
+
+      // We should run both ESLint and Prettier
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with ESLint and Prettier...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
+    it('handles fixable issues from Prettier only', async () => {
+      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: true }),
+      ).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: false });
+      expect(push).toHaveBeenNthCalledWith(1);
+
+      // We should only run Prettier
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with Prettier...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
+    it('tolerates guard errors', async () => {
+      const ERROR = new Error('badness!');
+
+      jest.mocked(Git.currentBranch).mockRejectedValue(ERROR);
+      jest.mocked(Git.getHeadCommitMessage).mockRejectedValue(ERROR);
+
+      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit();
+      expect(push).toHaveBeenNthCalledWith(1);
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with ESLint and Prettier...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
+    it('bails on commit error', async () => {
+      jest.mocked(Git.commitAllChanges).mockRejectedValue(MOCK_ERROR);
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit();
+      expect(push).not.toHaveBeenCalled();
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with ESLint and Prettier...
+        Failed to push fix commit.
+        Does your CI environment have write access to your Git repository?
+        Error: Badness!
+            at Object.<anonymous>..."
+      `);
+    });
+  });
+
+  describe('Other CI', () => {
+    const expectAutofixCommit = (
+      { eslint }: { eslint: boolean } = { eslint: true },
+    ) => {
+      expect(runESLint).toHaveBeenCalledTimes(eslint ? 1 : 0);
+      expect(runPrettier).toHaveBeenCalledTimes(1);
+      expect(GitHub.commitAndPushAllChanges).toHaveBeenCalledTimes(1);
+    };
+
+    const expectNoAutofix = () => {
+      expect(runESLint).not.toHaveBeenCalled();
+      expect(runPrettier).not.toHaveBeenCalled();
+      expect(GitHub.commitAndPushAllChanges).not.toHaveBeenCalled();
+    };
+
+    it('bails on a non-CI environment', async () => {
+      delete process.env.CI;
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('bails on the master branch', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('master');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('bails on the main branch', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('main');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('bails on the Buildkite default branch', async () => {
+      process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH = 'devel';
+
+      jest.mocked(Git.currentBranch).mockResolvedValue('devel');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('bails on a GitHub protected branch', async () => {
+      process.env.GITHUB_REF_PROTECTED = 'true';
+
+      jest.mocked(Git.currentBranch).mockResolvedValue('beta');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('bails on an autofix head commit', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('feature');
+      jest
+        .mocked(Git.getHeadCommitMessage)
+        .mockResolvedValue('Run `skuba format`');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('bails on no fixable issues', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('feature');
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('skips push when there are no changes', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('feature');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit();
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with ESLint and Prettier...
+        No autofixes detected.
+        "
+      `);
+    });
+
+    it('handles fixable issues from ESLint only', async () => {
+      jest
+        .mocked(GitHub.commitAndPushAllChanges)
+        .mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+      await expect(
+        autofix({ ...params, eslint: true, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectAutofixCommit();
+      expect(GitHub.commitAndPushAllChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        branch: 'dev',
+        messageHeadline: 'Run `skuba format`',
+      });
+
+      // We should run both ESLint and Prettier
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with ESLint and Prettier...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
+    it('handles fixable issues from Prettier only', async () => {
+      jest
+        .mocked(GitHub.commitAndPushAllChanges)
+        .mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: true }),
+      ).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: false });
+      expect(GitHub.commitAndPushAllChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        branch: 'dev',
+        messageHeadline: 'Run `skuba format`',
+      });
+
+      // We should only run Prettier
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with Prettier...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
+    it('logs a warning when the current branch cannot be determined', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue(undefined);
+
+      jest
+        .mocked(GitHub.commitAndPushAllChanges)
+        .mockResolvedValue('commit-sha');
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expect(GitHub.commitAndPushAllChanges).not.toBeCalled();
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with ESLint and Prettier...
+        Could not determine the current branch
+        "
+      `);
+    });
+
+    it('bails on commit error', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+      jest.mocked(GitHub.commitAndPushAllChanges).mockRejectedValue(MOCK_ERROR);
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit();
+      expect(Git.push).not.toHaveBeenCalled();
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to autofix with ESLint and Prettier...
+        Failed to push fix commit.
+        Does your CI environment have write access to your Git repository?
+        Error: Badness!
+            at Object.<anonymous>..."
+      `);
+    });
   });
 });
