@@ -16,7 +16,7 @@
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
     "eslint": "^8.11.0",
-    "eslint-config-skuba": "1.1.0",
+    "eslint-config-skuba": "1.1.1",
     "execa": "^5.0.0",
     "fdir": "^5.0.0",
     "fs-extra": "^10.0.0",
