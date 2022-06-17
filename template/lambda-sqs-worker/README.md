@@ -13,14 +13,12 @@ Next steps:
 2. [ ] Create a new repository in the appropriate GitHub organisation.
 3. [ ] Add the repository to BuildAgency;
        see [Builds at SEEK] for more information.
-4. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
-       see the [Codex] documentation for more information.
-5. [ ] Add deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
-6. [ ] Push local commits to the upstream GitHub branch.
-7. [ ] Configure [GitHub repository settings].
-8. [ ] Keep dependencies up to date with [Renovate];
+4. [ ] Add deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
+5. [ ] Push local commits to the upstream GitHub branch.
+6. [ ] Configure [GitHub repository settings].
+7. [ ] Keep dependencies up to date with [Renovate];
        request installation in [SEEK-Jobs/renovate].
-9. [ ] Delete this checklist 😌.
+8. [ ] Delete this checklist 😌.
 
 ## Design
 
@@ -129,7 +127,6 @@ TODO: add support links for the prod environment.
 
 [builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
 [codedeploy]: https://docs.aws.amazon.com/codedeploy
-[codex]: https://codex.ssod.skinfra.xyz/docs
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [lambda]: https://docs.aws.amazon.com/lambda
 [renovate]: https://github.com/apps/renovate
