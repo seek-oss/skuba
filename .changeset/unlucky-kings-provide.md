@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-lint(autofix): Use GitHub GraphQL API to push verified commits
+lint: Use GitHub GraphQL API to push verified autofix commits

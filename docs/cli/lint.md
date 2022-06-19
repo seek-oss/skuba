@@ -60,7 +60,7 @@ you can limit this with the `--serial` flag.
 | `--debug`  | Enable debug console output (implies `--serial`) |
 | `--serial` | Force serial execution of linting operations     |
 
-[GitHub Autofixes] are enabled when CI and GitHub environment variables are present.
+[GitHub autofixes] are enabled when CI and GitHub environment variables are present.
 
 ### Annotations
 

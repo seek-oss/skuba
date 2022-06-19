@@ -40,8 +40,9 @@ interface CommitAndPushAllChangesParams {
 }
 
 /**
- * Commits and pushes all changes from the local git repository up to a GitHub branch.
- * Returns the commit id or `undefined` if there are no changes to commit.
+ * Commits and pushes all changes from the local Git repository up to a GitHub branch.
+ *
+ * Returns the commit ID, or `undefined` if there are no changes to commit.
  */
 export const commitAndPushAllChanges = async ({
   dir,

@@ -24,7 +24,7 @@ const buildName = GitHub.buildNameFromEnvironment();
 
 Commits and pushes file changes from the local workspace to a specified GitHub branch.
 
-Commits using this method appear verified on GitHub.
+Commits pushed using this method appear verified on GitHub.
 
 ```typescript
 import { GitHub } from 'skuba';
@@ -38,7 +38,7 @@ const commitId = await GitHub.commitAndPush({
   },
   messageHeadline: 'some-commit',
   messageBody: 'extra-body',
-  updateLocal: true, // Updates the local git repository to reflect the new remote branch state
+  updateLocal: true, // Updates the local Git repository to reflect the new remote branch state
 });
 ```
 
@@ -60,7 +60,7 @@ const commitId = await GitHub.commitAndPushAllChanges({
   branch: 'some-branch',
   messageHeadline: 'some-commit',
   messageBody: 'extra-body',
-  updateLocal: true, // Updates the local git repository to reflect the new remote branch state
+  updateLocal: true, // Updates the local Git repository to reflect the new remote branch state
 });
 ```
 
