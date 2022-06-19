@@ -10,13 +10,11 @@ Next steps:
 
 1. [ ] Create a new repository in the [SEEK-Jobs] GitHub organisation.
 2. [ ] Follow [Gutenberg] instructions for [installing on your repository].
-3. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
-       see the [Codex] documentation for more information.
-4. [ ] Push local commits to the upstream GitHub branch.
-5. [ ] Configure [GitHub repository settings].
-6. [ ] Keep dependencies up to date with [Renovate];
+3. [ ] Push local commits to the upstream GitHub branch.
+4. [ ] Configure [GitHub repository settings].
+5. [ ] Keep dependencies up to date with [Renovate];
        request installation in [SEEK-Jobs/renovate].
-7. [ ] Delete this checklist 😌.
+6. [ ] Delete this checklist 😌.
 
 ## API
 
@@ -103,7 +101,6 @@ Here are some branches that **semantic-release** supports by default:
 
 For more information, see the **semantic-release** docs on [triggering a release].
 
-[codex]: https://codex.ssod.skinfra.xyz/docs
 [distribution tags]: https://docs.npmjs.com/adding-dist-tags-to-packages
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [gutenberg]: https://github.com/SEEK-Jobs/gutenberg
