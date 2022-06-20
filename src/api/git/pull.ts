@@ -28,14 +28,14 @@ interface PullParameters {
   dir: string;
 
   /**
-   * The branch to merge into
+   * The local branch to fast forward.
    */
   ref: string;
 
   remote?: string;
 
   /**
-   * The destination branch or tag on the remote.
+   * The branch or tag on the remote to reference.
    *
    * This defaults to `ref`.
    */
@@ -43,7 +43,7 @@ interface PullParameters {
 }
 
 /**
- * Fast forwards the local branch to the remote state
+ * Fast forwards the specified `ref` on the local Git repository to match the remote branch.
  */
 export const fastForwardBranch = async ({
   auth,

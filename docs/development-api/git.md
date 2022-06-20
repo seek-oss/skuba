@@ -47,7 +47,7 @@ const currentBranch = Git.currentBranch({ dir });
 
 ## fastForwardBranch
 
-Fast forwards the specified `ref` from the remote to the local Git repository
+Fast forwards the specified `ref` on the local Git repository to match the remote branch.
 
 Currently, only GitHub app tokens are supported as an auth mechanism.
 
