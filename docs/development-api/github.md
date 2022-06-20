@@ -46,11 +46,12 @@ const commitId = await GitHub.commitAndPush({
 
 ## commitAndPushAllChanges
 
-Retrieves all file changes from the local git repository using [getChangedFiles], commits and pushes file changes from the local workspace to a specified GitHub branch.
+Retrieves all file changes from the local Git repository using [getChangedFiles],
+then commits and pushes the changes to a specified GitHub branch using [commitAndPush](#commitandpush).
 
-Commits using this method appear verified on GitHub.
+Commits pushed using this method appear verified on GitHub.
 
-`undefined` is returned instead of a commit id when there are no changes to push.
+`undefined` is returned instead of a commit ID when there are no changes to push.
 
 ```typescript
 import { GitHub } from 'skuba';
