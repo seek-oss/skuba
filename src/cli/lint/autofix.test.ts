@@ -257,13 +257,13 @@ describe('autofix', () => {
     ) => {
       expect(runESLint).toHaveBeenCalledTimes(eslint ? 1 : 0);
       expect(runPrettier).toHaveBeenCalledTimes(1);
-      expect(GitHub.commitAndPushAllChanges).toHaveBeenCalledTimes(1);
+      expect(GitHub.pushAllFileChanges).toHaveBeenCalledTimes(1);
     };
 
     const expectNoAutofix = () => {
       expect(runESLint).not.toHaveBeenCalled();
       expect(runPrettier).not.toHaveBeenCalled();
-      expect(GitHub.commitAndPushAllChanges).not.toHaveBeenCalled();
+      expect(GitHub.pushAllFileChanges).not.toHaveBeenCalled();
     };
 
     it('bails on a non-CI environment', async () => {
@@ -348,9 +348,7 @@ describe('autofix', () => {
     });
 
     it('handles fixable issues from ESLint only', async () => {
-      jest
-        .mocked(GitHub.commitAndPushAllChanges)
-        .mockResolvedValue('commit-sha');
+      jest.mocked(GitHub.pushAllFileChanges).mockResolvedValue('commit-sha');
       jest.mocked(Git.currentBranch).mockResolvedValue('dev');
 
       await expect(
@@ -358,7 +356,7 @@ describe('autofix', () => {
       ).resolves.toBeUndefined();
 
       expectAutofixCommit();
-      expect(GitHub.commitAndPushAllChanges).toHaveBeenNthCalledWith(1, {
+      expect(GitHub.pushAllFileChanges).toHaveBeenNthCalledWith(1, {
         dir: expect.any(String),
         branch: 'dev',
         messageHeadline: 'Run `skuba format`',
@@ -375,9 +373,7 @@ describe('autofix', () => {
     });
 
     it('handles fixable issues from Prettier only', async () => {
-      jest
-        .mocked(GitHub.commitAndPushAllChanges)
-        .mockResolvedValue('commit-sha');
+      jest.mocked(GitHub.pushAllFileChanges).mockResolvedValue('commit-sha');
       jest.mocked(Git.currentBranch).mockResolvedValue('dev');
 
       await expect(
@@ -385,7 +381,7 @@ describe('autofix', () => {
       ).resolves.toBeUndefined();
 
       expectAutofixCommit({ eslint: false });
-      expect(GitHub.commitAndPushAllChanges).toHaveBeenNthCalledWith(1, {
+      expect(GitHub.pushAllFileChanges).toHaveBeenNthCalledWith(1, {
         dir: expect.any(String),
         branch: 'dev',
         messageHeadline: 'Run `skuba format`',
@@ -404,13 +400,11 @@ describe('autofix', () => {
     it('logs a warning when the current branch cannot be determined', async () => {
       jest.mocked(Git.currentBranch).mockResolvedValue(undefined);
 
-      jest
-        .mocked(GitHub.commitAndPushAllChanges)
-        .mockResolvedValue('commit-sha');
+      jest.mocked(GitHub.pushAllFileChanges).mockResolvedValue('commit-sha');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
-      expect(GitHub.commitAndPushAllChanges).not.toBeCalled();
+      expect(GitHub.pushAllFileChanges).not.toBeCalled();
 
       expect(stdout()).toMatchInlineSnapshot(`
         "
@@ -424,7 +418,7 @@ describe('autofix', () => {
     it('bails on commit error', async () => {
       jest.mocked(Git.currentBranch).mockResolvedValue('dev');
 
-      jest.mocked(GitHub.commitAndPushAllChanges).mockRejectedValue(MOCK_ERROR);
+      jest.mocked(GitHub.pushAllFileChanges).mockRejectedValue(MOCK_ERROR);
 
       await expect(autofix(params)).resolves.toBeUndefined();
 

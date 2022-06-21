@@ -5,11 +5,7 @@ import type { ReadCommitResult } from 'isomorphic-git';
 import git from 'isomorphic-git';
 
 import { apiTokenFromEnvironment } from './environment';
-import {
-  commitAndPush,
-  commitAndPushAllChanges,
-  mapChangedFilesToFileChanges,
-} from './push';
+import { pushAllFileChanges, pushFileChanges, readFileChanges } from './push';
 
 jest.mock('@octokit/graphql');
 jest.mock('isomorphic-git');
@@ -39,10 +35,10 @@ beforeEach(() => {
     .mockResolvedValue([{ oid: 'commit-id' } as ReadCommitResult]);
 });
 
-describe('commitAndPush', () => {
+describe('pushFileChanges', () => {
   it('should throw an error if it cannot resolve an API token', async () => {
     await expect(
-      commitAndPush({
+      pushFileChanges({
         dir: './',
         branch: 'some-branch',
         fileChanges: {
@@ -67,7 +63,7 @@ describe('commitAndPush', () => {
       },
     });
 
-    const result = await commitAndPush({
+    const result = await pushFileChanges({
       dir: './',
       branch: 'existing-branch',
       fileChanges: {
@@ -123,45 +119,12 @@ describe('commitAndPush', () => {
     `);
     expect(result).toBe('upstream-id');
   });
-
-  it('should update the local git state when updateLocal is set', async () => {
-    jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
-    jest.mocked(graphql).mockResolvedValue({
-      createCommitOnBranch: {
-        commit: {
-          id: 'upstream-id',
-        },
-      },
-    });
-
-    await commitAndPush({
-      dir: './',
-      branch: 'existing-branch',
-      fileChanges: {
-        additions: [{ contents: '', path: 'another-path' }],
-        deletions: [{ path: 'some-path' }],
-      },
-      messageHeadline: 'commit headline',
-      messageBody: 'commit body',
-      updateLocal: true,
-    });
-
-    expect(fs.rm).toBeCalledWith('some-path');
-    expect(fs.rm).toBeCalledWith('another-path');
-
-    expect(git.fastForward).toBeCalledWith(
-      expect.objectContaining({
-        ref: 'existing-branch',
-        dir: './',
-      }),
-    );
-  });
 });
 
-describe('mapChangedFilesToFileChanges', () => {
+describe('readFileChanges', () => {
   it('should read modified and added files from the file system', async () => {
     jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
-    const result = await mapChangedFilesToFileChanges([
+    const result = await readFileChanges([
       { path: 'some-path', state: 'added' },
       { path: 'another-path', state: 'modified' },
       { path: 'delete-path', state: 'deleted' },
@@ -185,14 +148,14 @@ describe('mapChangedFilesToFileChanges', () => {
   });
 });
 
-describe('commitAndPushAllChanges', () => {
+describe('pushAllFileChanges', () => {
   it('should return undefined if there are no file changes to commit', async () => {
     jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
     jest
       .mocked(git.statusMatrix)
       .mockResolvedValue([['unchanged-file', 1, 1, 1]]);
 
-    const result = await commitAndPushAllChanges({
+    const result = await pushAllFileChanges({
       dir: './',
       branch: 'existing-branch',
       messageHeadline: 'commit headline',
@@ -217,7 +180,7 @@ describe('commitAndPushAllChanges', () => {
       },
     });
 
-    await commitAndPushAllChanges({
+    await pushAllFileChanges({
       dir: './',
       branch: 'existing-branch',
       messageHeadline: 'commit headline',
@@ -271,5 +234,41 @@ describe('commitAndPushAllChanges', () => {
         },
       ]
     `);
+  });
+
+  it('should update the local git repository with changes from upstream when updateLocal is set', async () => {
+    jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
+    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
+    jest.mocked(git.statusMatrix).mockResolvedValue([
+      ['modified-file', 1, 2, 1],
+      ['new-file', 0, 2, 0],
+      ['deleted-file', 1, 0, 1],
+    ]);
+    jest.mocked(graphql).mockResolvedValue({
+      createCommitOnBranch: {
+        commit: {
+          id: 'upstream-id',
+        },
+      },
+    });
+
+    await pushAllFileChanges({
+      dir: './',
+      branch: 'existing-branch',
+      messageHeadline: 'commit headline',
+      messageBody: 'commit body',
+      updateLocal: true,
+    });
+
+    expect(fs.rm).toBeCalledWith('modified-file');
+    expect(fs.rm).toBeCalledWith('new-file');
+    expect(fs.rm).toBeCalledWith('deleted-file');
+
+    expect(git.fastForward).toBeCalledWith(
+      expect.objectContaining({
+        ref: 'existing-branch',
+        dir: './',
+      }),
+    );
   });
 });

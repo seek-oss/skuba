@@ -19,7 +19,7 @@ interface CreateCommitResult {
   };
 }
 
-interface CommitAndPushAllChangesParams {
+interface PushAllFileChangesParams {
   dir: string;
   /**
    * The branch name
@@ -40,31 +40,46 @@ interface CommitAndPushAllChangesParams {
 }
 
 /**
- * Commits and pushes all changes from the local Git repository up to a GitHub branch.
+ * Pushes all changes from the local Git repository up to a GitHub branch.
  *
  * Returns the commit ID, or `undefined` if there are no changes to commit.
  */
-export const commitAndPushAllChanges = async ({
+export const pushAllFileChanges = async ({
   dir,
   branch,
   messageHeadline,
   messageBody,
-  updateLocal,
-}: CommitAndPushAllChangesParams): Promise<string | undefined> => {
+  updateLocal = false,
+}: PushAllFileChangesParams): Promise<string | undefined> => {
   const changedFiles = await Git.getChangedFiles({ dir });
   if (!changedFiles.length) {
     return undefined;
   }
-  const fileChanges = await mapChangedFilesToFileChanges(changedFiles);
+  const fileChanges = await readFileChanges(changedFiles);
 
-  return await commitAndPush({
+  const commitId = await pushFileChanges({
     dir,
     branch,
     messageHeadline,
     messageBody,
     fileChanges,
-    updateLocal,
   });
+
+  if (updateLocal) {
+    await Promise.all(
+      [...fileChanges.additions, ...fileChanges.deletions].map((file) =>
+        fs.rm(file.path),
+      ),
+    );
+
+    await Git.fastForwardBranch({
+      ref: branch,
+      auth: { type: 'gitHubApp' },
+      dir,
+    });
+  }
+
+  return commitId;
 };
 
 export interface FileChanges {
@@ -73,9 +88,9 @@ export interface FileChanges {
 }
 
 /**
- * Maps ChangedFiles to {@link https://docs.github.com/en/graphql/reference/input-objects#filechanges| FileChanges}
+ * Takes a list of ChangedFiles, reads them from the file system and maps them to {@link https://docs.github.com/en/graphql/reference/input-objects#filechanges| FileChanges}
  */
-export const mapChangedFilesToFileChanges = async (
+export const readFileChanges = async (
   changedFiles: ChangedFile[],
 ): Promise<FileChanges> => {
   const { added, deleted } = changedFiles.reduce<{
@@ -114,7 +129,7 @@ export const mapChangedFilesToFileChanges = async (
   };
 };
 
-interface CommitAndPushParams {
+interface PushFileChangesParams {
   dir: string;
   /**
    * The branch name
@@ -132,23 +147,18 @@ interface CommitAndPushParams {
    * File additions and deletions
    */
   fileChanges: FileChanges;
-  /**
-   * Updates the local git working directory to reflect the new remote state
-   */
-  updateLocal?: boolean;
 }
 
 /**
- * Commits and pushes file changes up to a GitHub branch
+ * Pushes file changes up to a GitHub branch
  */
-export const commitAndPush = async ({
+export const pushFileChanges = async ({
   dir,
   branch,
   messageHeadline,
   messageBody,
   fileChanges,
-  updateLocal = false,
-}: CommitAndPushParams): Promise<string> => {
+}: PushFileChangesParams): Promise<string> => {
   const authToken = apiTokenFromEnvironment();
   if (!authToken) {
     throw new Error('Could not determine API token from the environment');
@@ -190,20 +200,6 @@ export const commitAndPush = async ({
       },
     },
   );
-
-  if (updateLocal) {
-    await Promise.all(
-      [...fileChanges.additions, ...fileChanges.deletions].map((file) =>
-        fs.rm(file.path),
-      ),
-    );
-
-    await Git.fastForwardBranch({
-      ref: branch,
-      auth: { type: 'gitHubApp' },
-      dir,
-    });
-  }
 
   return result.createCommitOnBranch.commit.oid;
 };

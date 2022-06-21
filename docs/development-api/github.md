@@ -20,16 +20,18 @@ const buildName = GitHub.buildNameFromEnvironment();
 
 ---
 
-## commitAndPush
+## pushFileChanges
 
-Commits and pushes file changes from the local workspace to a specified GitHub branch.
+Pushes file changes from the local workspace to a specified GitHub branch.
 
-Commits pushed using this method appear verified on GitHub.
+These file changes will appear as verified commits on GitHub.
+
+Please note: this will not update the local Git repository
 
 ```typescript
 import { GitHub } from 'skuba';
 
-const commitId = await GitHub.commitAndPush({
+const commitId = await GitHub.pushFileChanges({
   dir: './',
   branch: 'some-branch',
   fileChanges: {
@@ -38,25 +40,26 @@ const commitId = await GitHub.commitAndPush({
   },
   messageHeadline: 'some-commit',
   messageBody: 'extra-body',
-  updateLocal: true, // Updates the local Git repository to reflect the new remote branch state
 });
 ```
 
 ---
 
-## commitAndPushAllChanges
+## pushAllFileChanges
 
 Retrieves all file changes from the local Git repository using [getChangedFiles],
-then commits and pushes the changes to a specified GitHub branch using [commitAndPush](#commitandpush).
+and then pushes the changes to a specified GitHub branch using [pushFileChanges](#pushFileChanges).
 
-Commits pushed using this method appear verified on GitHub.
+These file changes will appear as verified commits on GitHub.
 
 `undefined` is returned instead of a commit ID when there are no changes to push.
+
+Please note: this will not update the local Git repository by default unless `updateLocal` is specified.
 
 ```typescript
 import { GitHub } from 'skuba';
 
-const commitId = await GitHub.commitAndPushAllChanges({
+const commitId = await GitHub.pushAllFileChanges({
   dir: './',
   branch: 'some-branch',
   messageHeadline: 'some-commit',
@@ -166,14 +169,14 @@ await GitHub.putIssueComment({
 
 ---
 
-## mapChangedFilesToFileChanges
+## readFileChanges
 
-Maps changed files from [getChangedFiles] to GitHub GraphQL [file changes]
+Takes a list of ChangedFiles from [getChangedFiles], reads them from the file system and maps them to GitHub GraphQL [file changes]
 
 ```typescript
 import { GitHub } from 'skuba';
 
-const fileChanges = await GitHub.mapChangedFilesToFileChanges([
+const fileChanges = await GitHub.readFileChanges([
   { path: 'added-path', state: 'added' },
   { path: 'modified-path', state: 'modified' },
   { path: 'delete-path', state: 'deleted' },
@@ -183,6 +186,6 @@ const fileChanges = await GitHub.mapChangedFilesToFileChanges([
 ---
 
 [check run]: https://docs.github.com/en/rest/reference/checks#runs
-[file changes]: https://docs.github.com/en/graphql/reference/input-objects#filechanges
+[filechanges]: https://docs.github.com/en/graphql/reference/input-objects#filechanges
 [getchangedfiles]: ./git.md#getchangedfiles
 [github guide]: ../deep-dives/github.md
