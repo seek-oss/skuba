@@ -113,7 +113,10 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
     // Other CI Environments, use GitHub API
     if (!currentBranch) {
-      log.warn('Could not determine the current branch');
+      log.warn('Could not determine the current branch.');
+      log.warn(
+        'Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.',
+      );
       return;
     }
 

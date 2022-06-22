@@ -410,7 +410,8 @@ describe('autofix', () => {
         "
 
         Trying to autofix with ESLint and Prettier...
-        Could not determine the current branch
+        Could not determine the current branch.
+        Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.
         "
       `);
     });
