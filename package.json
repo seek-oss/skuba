@@ -6,6 +6,8 @@
     "url": "https://github.com/seek-oss/skuba/issues"
   },
   "dependencies": {
+    "@octokit/graphql": "^4.8.0",
+    "@octokit/graphql-schema": "^10.73.0",
     "@octokit/rest": "^18.12.0",
     "@octokit/types": "^6.34.0",
     "@types/jest": "^28.0.0",
