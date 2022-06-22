@@ -48,12 +48,12 @@ describe('pushFileChanges', () => {
         messageHeadline: 'commit headline',
         messageBody: 'commit body',
       }),
-    ).rejects.toThrowError(
-      'Could not determine API token from the environment',
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
+      `"Could not read a GitHub API token from the environment. Please set GITHUB_API_TOKEN or GITHUB_TOKEN."`,
     );
   });
 
-  it('should return a commit id', async () => {
+  it('should return a commit ID', async () => {
     jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
     jest.mocked(graphql).mockResolvedValue({
       createCommitOnBranch: {
@@ -87,7 +87,7 @@ describe('pushFileChanges', () => {
           ",
         Object {
           "headers": Object {
-            "authorization": "bearer api-token",
+            "authorization": "Bearer api-token",
           },
           "input": Object {
             "branch": Object {
@@ -164,7 +164,8 @@ describe('pushAllFileChanges', () => {
 
     expect(result).toBeUndefined();
   });
-  it('should get all modified files and call the graphql client with the changed files', async () => {
+
+  it('should get all modified files and call the GraphQL client with the changed files', async () => {
     jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
     jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
     jest.mocked(git.statusMatrix).mockResolvedValue([
@@ -200,7 +201,7 @@ describe('pushAllFileChanges', () => {
           ",
         Object {
           "headers": Object {
-            "authorization": "bearer api-token",
+            "authorization": "Bearer api-token",
           },
           "input": Object {
             "branch": Object {

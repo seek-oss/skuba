@@ -178,7 +178,9 @@ export const pushFileChanges = async ({
 }: PushFileChangesParams): Promise<string> => {
   const authToken = apiTokenFromEnvironment();
   if (!authToken) {
-    throw new Error('Could not determine API token from the environment');
+    throw new Error(
+      'Could not read a GitHub API token from the environment. Please set GITHUB_API_TOKEN or GITHUB_TOKEN.',
+    );
   }
 
   const [{ owner, repo }, headCommitId] = await Promise.all([
@@ -213,7 +215,7 @@ export const pushFileChanges = async ({
     {
       input,
       headers: {
-        authorization: `bearer ${authToken}`,
+        authorization: `Bearer ${authToken}`,
       },
     },
   );
