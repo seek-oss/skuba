@@ -1,23 +1,20 @@
-import { Logger } from '@seek/logger';
 import { Context } from 'aws-lambda';
 
-import { contextLogger } from 'src/framework/logging';
+import { logger, loggerContext } from 'src/framework/logging';
 
-export const createHandler = <Event, Output = unknown>(
-  fn: (event: Event, ctx: { logger: Logger }) => Promise<Output>,
-) =>
-  async function lambdaHandler(event: Event, ctx: Context) {
-    const logger = contextLogger(ctx);
+export const createHandler =
+  <Event, Output = unknown>(fn: (event: Event) => Promise<Output>) =>
+  (event: Event, { awsRequestId }: Context) =>
+    loggerContext.run({ awsRequestId }, async () => {
+      try {
+        const output = await fn(event);
 
-    try {
-      const output = await fn(event, { logger });
+        logger.info('request');
 
-      logger.info('request');
+        return output;
+      } catch (err) {
+        logger.error({ err }, 'request');
 
-      return output;
-    } catch (err) {
-      logger.error({ err }, 'request');
-
-      throw new Error('invoke error');
-    }
-  };
+        throw new Error('invoke error');
+      }
+    });

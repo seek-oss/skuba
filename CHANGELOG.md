@@ -1,5 +1,142 @@
 # skuba
 
+## 4.2.2
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Avoid mutation of logger context ([#879](https://github.com/seek-oss/skuba/pull/879))
+
+  We now perform a shallow copy when retrieving the logger context from `AsyncLocalStorage`.
+
+  ```diff
+  - mixin: () => loggerContext.getStore() ?? {},
+  + mixin: () => ({ ...loggerContext.getStore() }),
+  ```
+
+## 4.2.1
+
+### Patch Changes
+
+- **template/private-npm-package:** Use `npm2` build agent queue ([#843](https://github.com/seek-oss/skuba/pull/843))
+
+- **lint, test:** Set timeout for Buildkite and GitHub integrations ([#835](https://github.com/seek-oss/skuba/pull/835))
+
+  Transient network failures can impact annotations and autofixes. We now specify a 30 second timeout for these integration features to prevent them from hanging and indefinitely preoccupying your build agents.
+
+- **template:** Time out Buildkite test steps after 10 minutes ([#842](https://github.com/seek-oss/skuba/pull/842))
+
+  Successful testing and linting should complete within this window. This timeout prevents commands from hanging and indefinitely preoccupying your Buildkite agents.
+
+  ```diff
+  steps:
+    - label: 🧪 Test & Lint
+  +   timeout_in_minutes: 10
+  ```
+
+- **cli:** Make warning logs more verbose ([#826](https://github.com/seek-oss/skuba/pull/826))
+
+- **template/lambda-sqs-worker:** Change deployment method to `direct` ([#868](https://github.com/seek-oss/skuba/pull/868))
+
+- **template/koa-rest-api:** Use [AsyncLocalStorage](https://nodejs.org/docs/latest-v16.x/api/async_context.html#asynchronous-context-tracking) to track logger context ([#864](https://github.com/seek-oss/skuba/pull/864))
+
+  We now employ [RequestLogging.createContextStorage](https://github.com/seek-oss/koala/blob/master/src/requestLogging/README.md#context-logging) to thread logging context through the middleware stack of your Koa application. This enables use of a singleton `logger` instance instead of manually propagating Koa context and juggling `rootLogger`s and `contextLogger`s.
+
+  Before:
+
+  ```typescript
+  import createLogger from '@seek/logger';
+  import Koa, { Context } from 'koa';
+  import { RequestLogging } from 'seek-koala';
+
+  const rootLogger = createLogger();
+
+  const contextLogger = (ctx: Context) =>
+    rootLogger.child(RequestLogging.contextFields(ctx));
+
+  const app = new Koa().use((ctx) => {
+    rootLogger.info('Has no context');
+
+    contextLogger(ctx).info('Has context');
+  });
+  ```
+
+  After:
+
+  ```typescript
+  import createLogger from '@seek/logger';
+  import Koa from 'koa';
+  import { RequestLogging } from 'seek-koala';
+
+  const { createContextMiddleware, mixin } =
+    RequestLogging.createContextStorage();
+
+  const contextMiddleware = createContextMiddleware();
+
+  const logger = createLogger({ mixin });
+
+  const app = new Koa().use(contextMiddleware).use((ctx) => {
+    logger.info('Has context');
+  });
+  ```
+
+- **template/lambda-sqs-worker:** Use [AsyncLocalStorage](https://nodejs.org/docs/latest-v16.x/api/async_context.html#asynchronous-context-tracking) to track logger context ([#871](https://github.com/seek-oss/skuba/pull/871))
+
+  We now employ this Node.js API to thread logging context through the handler of your Lambda function. This enables use of a singleton `logger` instance instead of manually propagating Lambda context and juggling `rootLogger`s and `contextLogger`s, and is equivalent to #864.
+
+  Before:
+
+  ```typescript
+  import createLogger from '@seek/logger';
+  import { Context } from 'aws-lambda';
+
+  const rootLogger = createLogger();
+
+  const contextLogger = ({ awsRequestId }: Context) =>
+    rootLogger.child({ awsRequestId });
+
+  const handler = async (_event: unknown, ctx: Context) => {
+    rootLogger.info('Has no context');
+
+    contextLogger(ctx).info('Has context');
+  };
+  ```
+
+  After:
+
+  ```typescript
+  import { AsyncLocalStorage } from 'async_hooks';
+
+  import createLogger from '@seek/logger';
+  import { Context } from 'aws-lambda';
+
+  const loggerContext = new AsyncLocalStorage<{ awsRequestId: string }>();
+
+  const logger = createLogger({
+    mixin: () => ({ ...loggerContext.getStore() }),
+  });
+
+  const handler = (_event: unknown, { awsRequestId }: Context) =>
+    loggerContext.run({ awsRequestId }, async () => {
+      logger.info('Has context');
+    });
+  ```
+
+- **template/lambda-sqs-worker\*:** Bump Node.js version to 16 ([#862](https://github.com/seek-oss/skuba/pull/862))
+
+- **build-package, lint:** Improve detection of SEEK Buildkite queues for serial execution ([#829](https://github.com/seek-oss/skuba/pull/829))
+
+- **lint:** Detect and autofix ESLint warnings ([#844](https://github.com/seek-oss/skuba/pull/844))
+
+- **lint:** Skip autofixing when ESLint reports no fixable issues ([#844](https://github.com/seek-oss/skuba/pull/844))
+
+- **format, lint:** Avoid unnecessary template literals ([#849](https://github.com/seek-oss/skuba/pull/849))
+
+  We now automatically convert unnecessary template literals into single-quoted strings for consistency.
+
+- **deps:** Jest 28 ([#856](https://github.com/seek-oss/skuba/pull/856))
+
+  This major release includes breaking changes. See the [announcement post](https://jestjs.io/blog/2022/04/25/jest-28) for more information.
+
 ## 4.2.0
 
 ### Minor Changes
