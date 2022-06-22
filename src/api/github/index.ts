@@ -4,4 +4,8 @@ export { createCheckRun } from './checkRun';
 export { enabledFromEnvironment } from './environment';
 export { getPullRequestNumber } from './pullRequest';
 export { putIssueComment } from './issueComment';
-export { pushFileChanges, pushAllFileChanges, readFileChanges } from './push';
+export {
+  readFileChanges,
+  uploadAllFileChanges,
+  uploadFileChanges,
+} from './push';

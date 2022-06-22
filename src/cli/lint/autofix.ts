@@ -121,7 +121,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     }
 
     const ref = await throwOnTimeout(
-      GitHub.pushAllFileChanges({
+      GitHub.uploadAllFileChanges({
         dir,
         branch: currentBranch,
         messageHeadline: AUTOFIX_COMMIT_MESSAGE,

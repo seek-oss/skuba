@@ -19,7 +19,7 @@ interface CreateCommitResult {
   };
 }
 
-interface PushAllFileChangesParams {
+interface UploadAllFileChangesParams {
   dir: string;
   /**
    * The branch name
@@ -34,31 +34,30 @@ interface PushAllFileChangesParams {
    */
   messageBody?: string;
   /**
-   * Updates the local Git repository to reflect the new remote branch state
+   * Updates the local Git repository to match the new remote branch state
    */
   updateLocal?: boolean;
 }
 
 /**
  * Retrieves all file changes from the local Git repository using
- * `getChangedFiles`, then pushes the changes to a specified GitHub branch using
- * `pushFileChanges`.
+ * `getChangedFiles`, then uploads the changes to a specified GitHub branch
+ * using `uploadFileChanges`.
  *
  * Returns the commit ID, or `undefined` if there are no changes to commit.
  *
  * The file changes will appear as verified commits on GitHub.
  *
- * This function is roughly equivalent to
- * `git add --all && git commit && git push`, but it will not update the local
- * Git repository unless `updateLocal` is specified.
+ * This will not update the local Git repository unless `updateLocal` is
+ * specified.
  */
-export const pushAllFileChanges = async ({
+export const uploadAllFileChanges = async ({
   dir,
   branch,
   messageHeadline,
   messageBody,
   updateLocal = false,
-}: PushAllFileChangesParams): Promise<string | undefined> => {
+}: UploadAllFileChangesParams): Promise<string | undefined> => {
   const changedFiles = await Git.getChangedFiles({ dir });
   if (!changedFiles.length) {
     return undefined;
@@ -66,7 +65,7 @@ export const pushAllFileChanges = async ({
 
   const fileChanges = await readFileChanges(changedFiles);
 
-  const commitId = await pushFileChanges({
+  const commitId = await uploadFileChanges({
     dir,
     branch,
     messageHeadline,
@@ -141,7 +140,7 @@ export const readFileChanges = async (
   };
 };
 
-interface PushFileChangesParams {
+interface UploadFileChangesParams {
   dir: string;
   /**
    * The branch name
@@ -162,20 +161,19 @@ interface PushFileChangesParams {
 }
 
 /**
- * Pushes file changes from the local workspace to a specified GitHub branch.
+ * Uploads file changes from the local workspace to a specified GitHub branch.
  *
  * The file changes will appear as verified commits on GitHub.
  *
- * This function is roughly equivalent to `git push`, but it will not update the
- * local Git repository.
+ * This will not update the local Git repository.
  */
-export const pushFileChanges = async ({
+export const uploadFileChanges = async ({
   dir,
   branch,
   messageHeadline,
   messageBody,
   fileChanges,
-}: PushFileChangesParams): Promise<string> => {
+}: UploadFileChangesParams): Promise<string> => {
   const authToken = apiTokenFromEnvironment();
   if (!authToken) {
     throw new Error(

@@ -5,7 +5,11 @@ import type { ReadCommitResult } from 'isomorphic-git';
 import git from 'isomorphic-git';
 
 import { apiTokenFromEnvironment } from './environment';
-import { pushAllFileChanges, pushFileChanges, readFileChanges } from './push';
+import {
+  readFileChanges,
+  uploadAllFileChanges,
+  uploadFileChanges,
+} from './push';
 
 jest.mock('@octokit/graphql');
 jest.mock('isomorphic-git');
@@ -35,10 +39,10 @@ beforeEach(() => {
     .mockResolvedValue([{ oid: 'commit-id' } as ReadCommitResult]);
 });
 
-describe('pushFileChanges', () => {
+describe('uploadFileChanges', () => {
   it('should throw an error if it cannot resolve an API token', async () => {
     await expect(
-      pushFileChanges({
+      uploadFileChanges({
         dir: './',
         branch: 'some-branch',
         fileChanges: {
@@ -63,7 +67,7 @@ describe('pushFileChanges', () => {
       },
     });
 
-    const result = await pushFileChanges({
+    const result = await uploadFileChanges({
       dir: './',
       branch: 'existing-branch',
       fileChanges: {
@@ -148,14 +152,14 @@ describe('readFileChanges', () => {
   });
 });
 
-describe('pushAllFileChanges', () => {
+describe('uploadAllFileChanges', () => {
   it('should return undefined if there are no file changes to commit', async () => {
     jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
     jest
       .mocked(git.statusMatrix)
       .mockResolvedValue([['unchanged-file', 1, 1, 1]]);
 
-    const result = await pushAllFileChanges({
+    const result = await uploadAllFileChanges({
       dir: './',
       branch: 'existing-branch',
       messageHeadline: 'commit headline',
@@ -181,7 +185,7 @@ describe('pushAllFileChanges', () => {
       },
     });
 
-    await pushAllFileChanges({
+    await uploadAllFileChanges({
       dir: './',
       branch: 'existing-branch',
       messageHeadline: 'commit headline',
@@ -253,7 +257,7 @@ describe('pushAllFileChanges', () => {
       },
     });
 
-    await pushAllFileChanges({
+    await uploadAllFileChanges({
       dir: './',
       branch: 'existing-branch',
       messageHeadline: 'commit headline',
