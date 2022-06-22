@@ -88,7 +88,10 @@ export interface FileChanges {
 }
 
 /**
- * Takes a list of ChangedFiles, reads them from the file system and maps them to {@link https://docs.github.com/en/graphql/reference/input-objects#filechanges| FileChanges}
+ * Takes a list of `ChangedFiles`, reads them from the file system, and maps
+ * them to GitHub GraphQL `FileChanges`.
+ *
+ * https://docs.github.com/en/graphql/reference/input-objects#filechanges
  */
 export const readFileChanges = async (
   changedFiles: ChangedFile[],

@@ -26,7 +26,8 @@ Pushes file changes from the local workspace to a specified GitHub branch.
 
 These file changes will appear as verified commits on GitHub.
 
-Please note: this will not update the local Git repository
+This function is roughly equivalent to `git push`,
+but it will not update the local Git repository.
 
 ```typescript
 import { GitHub } from 'skuba';
@@ -54,7 +55,8 @@ These file changes will appear as verified commits on GitHub.
 
 `undefined` is returned instead of a commit ID when there are no changes to push.
 
-Please note: this will not update the local Git repository by default unless `updateLocal` is specified.
+This function is roughly equivalent to `git add --all && git commit && git push`,
+but it will not update the local Git repository unless `updateLocal` is specified.
 
 ```typescript
 import { GitHub } from 'skuba';
@@ -171,7 +173,9 @@ await GitHub.putIssueComment({
 
 ## readFileChanges
 
-Takes a list of ChangedFiles from [getChangedFiles], reads them from the file system and maps them to GitHub GraphQL [file changes]
+Takes a list of `ChangedFiles` from [getChangedFiles],
+reads them from the file system,
+and maps them to GitHub GraphQL [FileChanges].
 
 ```typescript
 import { GitHub } from 'skuba';
