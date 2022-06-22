@@ -126,5 +126,5 @@
     "version": "4.0.0"
   },
   "types": "./lib/index.d.ts",
-  "version": "4.2.2"
+  "version": "4.3.0"
 }

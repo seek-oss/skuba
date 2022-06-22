@@ -1,5 +1,51 @@
 # skuba
 
+## 4.3.0
+
+### Minor Changes
+
+- **test:** Add [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead) plugin ([#893](https://github.com/seek-oss/skuba/pull/893))
+
+  This enables typeahead suggestions when filtering by file or test name in watch mode.
+
+- **Git:** Add [fastForwardBranch](https://seek-oss.github.io/skuba/docs/development-api/git.html#fastforwardbranch) function ([#882](https://github.com/seek-oss/skuba/pull/882))
+
+- **deps:** TypeScript 4.7 ([#877](https://github.com/seek-oss/skuba/pull/877))
+
+  This major release includes breaking changes. See the [TypeScript 4.7](https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/) announcement for more information.
+
+  While ECMAScript Module support for Node.js is now stable in TypeScript, other aspects of our toolchain have not caught up yet; notably, Node.js still lacks stable APIs for Jest to implement its usual suite of mocking capabilities. We are holding off on recommending existing repositories to make the switch and on providing reference implementations via our templates. As it stands, migrating from CJS to ESM is still an arduous exercise in rewriting import statements and restructuring mocks and test suites at the bare minimum.
+
+- **GitHub:** Add functions to create and upload verified commits using the GitHub GraphQL API ([#882](https://github.com/seek-oss/skuba/pull/882))
+
+  See our [GitHub API documentation](https://seek-oss.github.io/skuba/docs/development-api/github.html) for more information.
+
+- **deps:** Prettier 2.7 ([#899](https://github.com/seek-oss/skuba/pull/899))
+
+  See the [release notes](https://prettier.io/blog/2022/06/14/2.7.0.html) for more information.
+
+### Patch Changes
+
+- **test:** Improve file detection for GitHub annotations ([#885](https://github.com/seek-oss/skuba/pull/885))
+
+- **deps:** package-json ^7.0.0 ([#903](https://github.com/seek-oss/skuba/pull/903))
+
+  Resolves [SNYK-JS-GOT-2932019](https://security.snyk.io/vuln/SNYK-JS-GOT-2932019).
+
+- **template/\*-rest-api:** seek-jobs/gantry v1.8.1 ([#887](https://github.com/seek-oss/skuba/pull/887))
+
+- **template/\*:** Remove `.me` files ([#902](https://github.com/seek-oss/skuba/pull/902))
+
+  SEEK is moving away from Codex to off-the-shelf software powered by Backstage `catalog-info.yaml` files.
+
+  At the moment we're only asking teams to document their systems, which typically span across multiple repositories. We may add `catalog-info.yaml` files back to the templates if there's a need for teams to document their components at a repository level.
+
+- **lint:** Use GitHub GraphQL API to upload verified autofix commits ([#882](https://github.com/seek-oss/skuba/pull/882))
+
+- **template:** Use ARM64 architecture ([#873](https://github.com/seek-oss/skuba/pull/873))
+
+  We now recommend building and running projects on ARM64 hardware for greater cost efficiency. This requires a Graviton-based Buildkite cluster; see our [ARM64 guide](https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html) for more information.
+
 ## 4.2.2
 
 ### Patch Changes
