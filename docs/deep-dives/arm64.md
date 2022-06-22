@@ -41,7 +41,7 @@ clusters:
       instanceType: t4g.xlarge # g is for Graviton
 ```
 
-See [Builds at SEEK] for more information.
+See [Builds at SEEK] and the [Gantry ARM reference] for more information.
 
 ---
 
@@ -85,5 +85,6 @@ provider:
 [builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
 [ci/cd]: ./buildkite.md
 [gantry]: https://gantry.ssod.skinfra.xyz
+[gantry arm reference]: https://gantry.ssod.skinfra.xyz/docs/v1/reference/using-arm.html
 [graviton-based]: https://aws.amazon.com/ec2/graviton/
 [serverless]: https://serverless.com/
