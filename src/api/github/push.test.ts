@@ -236,7 +236,7 @@ describe('pushAllFileChanges', () => {
     `);
   });
 
-  it('should update the local git repository with changes from upstream when updateLocal is set', async () => {
+  it('should update the local Git repository with changes from upstream when updateLocal is set', async () => {
     jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
     jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
     jest.mocked(git.statusMatrix).mockResolvedValue([

@@ -20,58 +20,6 @@ const buildName = GitHub.buildNameFromEnvironment();
 
 ---
 
-## pushFileChanges
-
-Pushes file changes from the local workspace to a specified GitHub branch.
-
-These file changes will appear as verified commits on GitHub.
-
-This function is roughly equivalent to `git push`,
-but it will not update the local Git repository.
-
-```typescript
-import { GitHub } from 'skuba';
-
-const commitId = await GitHub.pushFileChanges({
-  dir: './',
-  branch: 'some-branch',
-  fileChanges: {
-    additions: [{ contents: '', path: 'another-path' }],
-    deletions: [{ path: 'some-path' }],
-  },
-  messageHeadline: 'some-commit',
-  messageBody: 'extra-body',
-});
-```
-
----
-
-## pushAllFileChanges
-
-Retrieves all file changes from the local Git repository using [getChangedFiles],
-and then pushes the changes to a specified GitHub branch using [pushFileChanges](#pushFileChanges).
-
-These file changes will appear as verified commits on GitHub.
-
-`undefined` is returned instead of a commit ID when there are no changes to push.
-
-This function is roughly equivalent to `git add --all && git commit && git push`,
-but it will not update the local Git repository unless `updateLocal` is specified.
-
-```typescript
-import { GitHub } from 'skuba';
-
-const commitId = await GitHub.pushAllFileChanges({
-  dir: './',
-  branch: 'some-branch',
-  messageHeadline: 'some-commit',
-  messageBody: 'extra-body',
-  updateLocal: true, // Updates the local Git repository to reflect the new remote branch state
-});
-```
-
----
-
 ## createCheckRun
 
 Asynchronously creates a GitHub [check run] with annotations.
@@ -131,6 +79,58 @@ An error is thrown if there are no associated pull requests, or if they are all 
 import { GitHub } from 'skuba';
 
 const pullRequestNumber = await GitHub.getPullRequestNumber();
+```
+
+---
+
+## pushAllFileChanges
+
+Retrieves all file changes from the local Git repository using [getChangedFiles],
+then pushes the changes to a specified GitHub branch using [pushFileChanges](#pushFileChanges).
+
+Returns the commit ID, or `undefined` if there are no changes to commit.
+
+The file changes will appear as verified commits on GitHub.
+
+This function is roughly equivalent to `git add --all && git commit && git push`,
+but it will not update the local Git repository unless `updateLocal` is specified.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const maybeCommitId = await GitHub.pushAllFileChanges({
+  dir: './',
+  branch: 'some-branch',
+  messageHeadline: 'some-commit',
+  messageBody: 'extra-body',
+  updateLocal: true, // Updates the local Git repository to reflect the new remote branch state
+});
+```
+
+---
+
+## pushFileChanges
+
+Pushes file changes from the local workspace to a specified GitHub branch.
+
+The file changes will appear as verified commits on GitHub.
+
+This function is roughly equivalent to `git push`,
+but it will not update the local Git repository.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const commitId = await GitHub.pushFileChanges({
+  dir: './',
+  branch: 'some-branch',
+  fileChanges: {
+    additions: [{ contents: '', path: 'another-path' }],
+    deletions: [{ path: 'some-path' }],
+  },
+  messageHeadline: 'some-commit',
+  messageBody: 'extra-body',
+});
 ```
 
 ---

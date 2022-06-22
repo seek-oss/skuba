@@ -34,15 +34,23 @@ interface PushAllFileChangesParams {
    */
   messageBody?: string;
   /**
-   * Updates the local git working directory to reflect the new remote state
+   * Updates the local Git repository to reflect the new remote branch state
    */
   updateLocal?: boolean;
 }
 
 /**
- * Pushes all changes from the local Git repository up to a GitHub branch.
+ * Retrieves all file changes from the local Git repository using
+ * `getChangedFiles`, then pushes the changes to a specified GitHub branch using
+ * `pushFileChanges`.
  *
  * Returns the commit ID, or `undefined` if there are no changes to commit.
+ *
+ * The file changes will appear as verified commits on GitHub.
+ *
+ * This function is roughly equivalent to
+ * `git add --all && git commit && git push`, but it will not update the local
+ * Git repository unless `updateLocal` is specified.
  */
 export const pushAllFileChanges = async ({
   dir,
@@ -55,6 +63,7 @@ export const pushAllFileChanges = async ({
   if (!changedFiles.length) {
     return undefined;
   }
+
   const fileChanges = await readFileChanges(changedFiles);
 
   const commitId = await pushFileChanges({
@@ -153,7 +162,12 @@ interface PushFileChangesParams {
 }
 
 /**
- * Pushes file changes up to a GitHub branch
+ * Pushes file changes from the local workspace to a specified GitHub branch.
+ *
+ * The file changes will appear as verified commits on GitHub.
+ *
+ * This function is roughly equivalent to `git push`, but it will not update the
+ * local Git repository.
  */
 export const pushFileChanges = async ({
   dir,
