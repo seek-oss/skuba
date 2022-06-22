@@ -51,8 +51,9 @@ export class AppStack extends Stack {
     });
 
     const worker = new aws_lambda.Function(this, 'worker', {
+      architecture: aws_lambda.Architecture.ARM_64,
       code: new aws_lambda.AssetCode('./lib'),
-      runtime: aws_lambda.Runtime.NODEJS_14_X,
+      runtime: aws_lambda.Runtime.NODEJS_16_X,
       handler: 'app.handler',
       functionName: '<%- serviceName %>',
       environmentEncryption: kmsKey,

@@ -3,9 +3,9 @@ import { createStatsDClient } from 'seek-datadog-custom-metrics';
 
 import { config } from 'src/config';
 
-import { rootLogger } from './logging';
+import { logger } from './logging';
 
 /* istanbul ignore next: StatsD client is not our responsibility */
 export const metricsClient = createStatsDClient(StatsD, config, (err) =>
-  rootLogger.error({ err }, 'StatsD error'),
+  logger.error({ err }, 'StatsD error'),
 );

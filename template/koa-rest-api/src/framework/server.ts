@@ -9,7 +9,7 @@ import {
 } from 'seek-koala';
 
 import { config } from 'src/config';
-import { rootLogger } from 'src/framework/logging';
+import { contextMiddleware, logger } from 'src/framework/logging';
 import { metricsClient } from 'src/framework/metrics';
 
 const metrics = MetricsMiddleware.create(
@@ -26,8 +26,8 @@ const requestLogging = RequestLogging.createMiddleware((ctx, fields, err) => {
   }
 
   return ctx.status < 500
-    ? rootLogger.info(fields, 'Client error')
-    : rootLogger.error(fields, 'Server error');
+    ? logger.info(fields, 'Client error')
+    : logger.error(fields, 'Server error');
 });
 
 const version = VersionMiddleware.create({
@@ -43,6 +43,7 @@ export const createApp = <State, Context>(
     // https://github.com/seek-oss/koala/tree/master/src/secureHeaders
     // https://github.com/venables/koa-helmet
     // .use(SecureHeaders.middleware)
+    .use(contextMiddleware)
     .use(requestLogging)
     .use(metrics)
     .use(ErrorMiddleware.handle)

@@ -1,31 +1,16 @@
 import * as logging from 'src/framework/logging';
 
-export const contextLogger = {
+export const logger = {
   error: jest.fn(),
   info: jest.fn(),
 
   clear: () => {
-    contextLogger.error.mockClear();
-    contextLogger.info.mockClear();
-  },
-
-  spy: () =>
-    jest.spyOn(logging, 'contextLogger').mockReturnValue(contextLogger as any),
-};
-
-export const rootLogger = {
-  error: jest.fn(),
-  info: jest.fn(),
-
-  clear: () => {
-    rootLogger.error.mockClear();
-    rootLogger.info.mockClear();
+    logger.error.mockClear();
+    logger.info.mockClear();
   },
 
   spy: () => {
-    jest
-      .spyOn(logging.rootLogger, 'error')
-      .mockImplementation(rootLogger.error);
-    jest.spyOn(logging.rootLogger, 'info').mockImplementation(rootLogger.info);
+    jest.spyOn(logging.logger, 'error').mockImplementation(logger.error);
+    jest.spyOn(logging.logger, 'info').mockImplementation(logger.info);
   },
 };

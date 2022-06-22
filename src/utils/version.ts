@@ -1,11 +1,23 @@
-import latestVersion from 'latest-version';
+import packageJson from 'package-json';
 
 import { getSkubaManifest } from './manifest';
 import { withTimeout } from './wait';
 
+export const latestNpmVersion = async (
+  packageName: string,
+): Promise<string> => {
+  const { version } = await packageJson(packageName);
+
+  if (typeof version !== 'string') {
+    throw new Error(`No version found for package "${packageName}"`);
+  }
+
+  return version;
+};
+
 const latestSkubaVersion = async (): Promise<string | null> => {
   try {
-    const result = await withTimeout(latestVersion('skuba'), { s: 2 });
+    const result = await withTimeout(latestNpmVersion('skuba'), { s: 2 });
 
     return result.ok ? result.value : null;
   } catch {

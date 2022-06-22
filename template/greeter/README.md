@@ -4,22 +4,28 @@
 
 Next steps:
 
-1. [ ] Finish templating if this was skipped earlier:
+1. [ ] Check if your team has a Graviton-based Buildkite cluster;
+       see the [ARM64 guide] for more information.
+2. [ ] Finish templating if this was skipped earlier:
 
    ```shell
    yarn skuba configure
    ```
 
-2. [ ] Create a new repository in the appropriate GitHub organisation.
-3. [ ] Add the repository to BuildAgency;
+3. [ ] Create a new repository in the appropriate GitHub organisation.
+4. [ ] Add the repository to BuildAgency;
        see [Builds at SEEK] for more information.
-4. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
-       see the [Codex] documentation for more information.
 5. [ ] Push local commits to the upstream GitHub branch.
 6. [ ] Configure [GitHub repository settings].
 7. [ ] Keep dependencies up to date with [Renovate];
        request installation in [SEEK-Jobs/renovate].
 8. [ ] Delete this checklist 😌.
+
+[arm64]: https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html
+[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
+[renovate]: https://github.com/apps/renovate
+[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
 
 ## Design
 
@@ -94,9 +100,4 @@ TODO: add support links for the prod environment.
 - Splunk logs
 -->
 
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
-[codex]: https://codex.ssod.skinfra.xyz/docs
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
-[renovate]: https://github.com/apps/renovate
-[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
 [technology strategy]: https://tech-strategy.ssod.skinfra.xyz

@@ -3,6 +3,7 @@ import * as wait from './wait';
 const delayMicrotask = () =>
   Promise.resolve()
     .then(() => undefined)
+    .then(() => undefined)
     .then(() => undefined);
 
 const sleep = jest.spyOn(wait, 'sleep');

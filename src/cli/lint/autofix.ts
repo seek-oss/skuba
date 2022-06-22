@@ -3,6 +3,7 @@ import { inspect } from 'util';
 import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
+import * as GitHub from '../../api/github';
 import { runESLint } from '../../cli/adapter/eslint';
 import { runPrettier } from '../../cli/adapter/prettier';
 import { isCiEnv } from '../../utils/env';
@@ -94,28 +95,43 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     // format violations or may have created new ones through ESLint fixes.
     await runPrettier('format', logger);
 
-    const ref = await Git.commitAllChanges({
-      dir,
-      message: AUTOFIX_COMMIT_MESSAGE,
-    });
+    if (process.env.GITHUB_ACTIONS) {
+      // GitHub runners have Git installed locally
+      const ref = await Git.commitAllChanges({
+        dir,
+        message: AUTOFIX_COMMIT_MESSAGE,
+      });
+
+      if (!ref) {
+        return log.warn('No autofixes detected.');
+      }
+
+      await throwOnTimeout(simpleGit().push(), { s: 30 });
+      log.warn(`Pushed fix commit ${ref}.`);
+      return;
+    }
+
+    // Other CI Environments, use GitHub API
+    if (!currentBranch) {
+      log.warn('Could not determine the current branch.');
+      log.warn(
+        'Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.',
+      );
+      return;
+    }
+
+    const ref = await throwOnTimeout(
+      GitHub.uploadAllFileChanges({
+        dir,
+        branch: currentBranch,
+        messageHeadline: AUTOFIX_COMMIT_MESSAGE,
+      }),
+      { s: 30 },
+    );
 
     if (!ref) {
       return log.warn('No autofixes detected.');
     }
-
-    await throwOnTimeout<unknown>(
-      process.env.GITHUB_ACTIONS
-        ? // GitHub's checkout action should preconfigure the Git CLI.
-          simpleGit().push()
-        : // In other CI environments (Buildkite) we fall back to GitHub App auth.
-          Git.push({
-            auth: { type: 'gitHubApp' },
-            dir: process.cwd(),
-            ref,
-            remoteRef: currentBranch,
-          }),
-      { s: 30 },
-    );
 
     log.warn(`Pushed fix commit ${ref}.`);
   } catch (err) {

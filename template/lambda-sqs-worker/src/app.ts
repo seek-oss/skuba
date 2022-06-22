@@ -3,6 +3,7 @@ import 'skuba-dive/register';
 import { SQSEvent } from 'aws-lambda';
 
 import { createHandler } from 'src/framework/handler';
+import { logger } from 'src/framework/logging';
 import { metricsClient } from 'src/framework/metrics';
 import { validateJson } from 'src/framework/validation';
 import { scoreJobPublishedEvent, scoringService } from 'src/services/jobScorer';
@@ -16,7 +17,7 @@ const smokeTest = async () => {
   await Promise.all([scoringService.smokeTest(), sendPipelineEvent({}, true)]);
 };
 
-export const handler = createHandler<SQSEvent>(async (event, { logger }) => {
+export const handler = createHandler<SQSEvent>(async (event) => {
   // Treat an empty object as our smoke test event.
   if (!Object.keys(event).length) {
     logger.info('received smoke test request');
