@@ -15,7 +15,7 @@ Next steps:
 3. [ ] Create a new repository in the appropriate GitHub organisation.
 4. [ ] Add the repository to BuildAgency;
        see [Builds at SEEK] for more information.
-4. [ ] Add deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
+5. [ ] Add deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
 6. [ ] Push local commits to the upstream GitHub branch.
 7. [ ] Configure [GitHub repository settings].
 8. [ ] Keep dependencies up to date with [Renovate];
