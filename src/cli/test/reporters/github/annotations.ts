@@ -52,7 +52,9 @@ export const createAnnotations = (
         path: path.relative(cwd, testResult.testFilePath),
         start_line: 1,
         end_line: 1,
-        message: stripAnsi(testResult.testExecError.message),
+        message: stripAnsi(
+          testResult.failureMessage ?? testResult.testExecError.message,
+        ),
         title: 'Jest',
       };
     }
