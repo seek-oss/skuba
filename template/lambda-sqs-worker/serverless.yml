@@ -54,9 +54,6 @@ provider:
         - Action: sns:Publish
           Effect: Allow
           Resource: !Ref DestinationTopic
-        - Action: sqs:SendMessage*
-          Effect: Allow
-          Resource: !GetAtt DeadLetterQueue.Arn
   stackTags:
     # TODO: add data classification tags
     # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers
