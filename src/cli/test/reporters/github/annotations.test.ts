@@ -180,15 +180,14 @@ it('should create annotation from Jest exec error', () => {
         "end_line": 1,
         "message": "  ● Test suite failed to run
 
-        src/test.ts:1:1 - error TS6133: 'a' is declared but its value is never read.
+    src/test.ts:1:1 - error TS6133: 'a' is declared but its value is never read.
 
-        1 import { a } from 'b';
-          ~~~~~~~~~~~~~~~~~~~~~~
-        src/test.ts:1:19 - error TS2307: Cannot find module 'b' or its corresponding type declarations.
+    1 import { a } from 'b';
+      ~~~~~~~~~~~~~~~~~~~~~~
+    src/test.ts:1:19 - error TS2307: Cannot find module 'b' or its corresponding type declarations.
 
-        1 import { a } from 'b';
-                            ~~~
-    ",
+    1 import { a } from 'b';
+                        ~~~",
         "path": "src/test.test.ts",
         "start_line": 1,
         "title": "Jest",
