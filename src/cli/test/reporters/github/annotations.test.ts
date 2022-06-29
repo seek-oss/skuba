@@ -162,6 +162,7 @@ it('should create annotation from Jest exec error', () => {
       '\x1B[7m \x1B[0m \x1B[91m                  ~~~\x1B[0m',
   } as SerializableError;
 
+  // Prefer `failureMessage` for its "Test suite failed to run" headline
   const testResult: TestResult = {
     ...COMMON_TEST_RESULT_FIELDS,
     failureMessage:
@@ -173,6 +174,37 @@ it('should create annotation from Jest exec error', () => {
 
   const annotations = createAnnotations([testResult]);
   expect(annotations).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "annotation_level": "failure",
+        "end_line": 1,
+        "message": "  ● Test suite failed to run
+
+    src/test.ts:1:1 - error TS6133: 'a' is declared but its value is never read.
+
+    1 import { a } from 'b';
+      ~~~~~~~~~~~~~~~~~~~~~~
+    src/test.ts:1:19 - error TS2307: Cannot find module 'b' or its corresponding type declarations.
+
+    1 import { a } from 'b';
+                        ~~~",
+        "path": "src/test.test.ts",
+        "start_line": 1,
+        "title": "Jest",
+      },
+    ]
+  `);
+
+  // Fall back on the off chance we have no `failureMessage`
+  const testResultWithoutFailureMessage: TestResult = {
+    ...testResult,
+    failureMessage: null,
+  };
+
+  const annotationsForNoFailureMessage = createAnnotations([
+    testResultWithoutFailureMessage,
+  ]);
+  expect(annotationsForNoFailureMessage).toMatchInlineSnapshot(`
     Array [
       Object {
         "annotation_level": "failure",
