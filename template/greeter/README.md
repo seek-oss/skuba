@@ -21,7 +21,7 @@ Next steps:
        request installation in [SEEK-Jobs/renovate].
 8. [ ] Delete this checklist 😌.
 
-[arm64]: https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html
+[arm64 guide]: https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html
 [builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [renovate]: https://github.com/apps/renovate
