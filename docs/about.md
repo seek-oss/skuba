@@ -68,7 +68,6 @@ Here are some highlights:
 [@seek/db-client]: https://github.com/SEEK-Jobs/db-client
 [@seek/graphql-utils]: https://github.com/SEEK-Jobs/graphql-utils
 [@seek/logger]: https://github.com/seek-oss/logger
-[@seek/node-authentication]: https://github.com/SEEK-Jobs/node-authentication
 [@seek/node-s2sauth-issuer]: https://github.com/SEEK-Jobs/node-s2sauth-issuer
 [@seek/typegen]: https://github.com/SEEK-Jobs/typegen
 [@seek/zactive-directory]: https://github.com/SEEK-Jobs/zactive-directory
