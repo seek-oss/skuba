@@ -69,6 +69,8 @@
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
     "memfs": "3.4.6",
+    "remark-cli": "11.0.0",
+    "remark-preset-lint-recommended": "6.1.2",
     "semver": "7.3.7",
     "supertest": "6.2.3",
     "type-fest": "2.13.1"
@@ -98,6 +100,28 @@
     }
   },
   "private": false,
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-recommended",
+      [
+        "remark-lint-list-item-indent",
+        false
+      ],
+      [
+        "remark-lint-no-shortcut-reference-link",
+        false
+      ],
+      [
+        "remark-lint-no-undefined-references",
+        {
+          "allow": [
+            " ",
+            "x"
+          ]
+        }
+      ]
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/seek-oss/skuba.git"
@@ -109,7 +133,8 @@
     "build": "ts-node --transpile-only src/skuba build && scripts/postbuild.sh",
     "deploy": "scripts/deploy.sh",
     "format": "yarn skuba format",
-    "lint": "yarn skuba lint",
+    "lint": "yarn skuba lint && yarn lint:md",
+    "lint:md": "remark --frail --quiet .",
     "release": "yarn build && changeset publish",
     "stage": "changeset version && yarn format",
     "skuba": "yarn build && node lib/skuba",
