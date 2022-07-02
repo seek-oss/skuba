@@ -18,7 +18,7 @@ This topic details GitHub integration features baked into **skuba**.
 
 This can be enabled by propagating Buildkite environment variables and a GitHub API token.
 At SEEK, this token can be configured through a `:tw` repository suffix in BuildAgency.
-For example, with the Docker plugin:
+For example, with the [Docker Buildkite plugin]:
 
 ```yaml
 steps:
