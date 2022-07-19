@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@koa/router": "^11.0.0",
+    "@koa/router": "^12.0.0",
     "@opentelemetry/api": "^1.1.0",
     "@opentelemetry/exporter-collector-grpc": "^0.25.0",
     "@opentelemetry/instrumentation-aws-sdk": "^0.8.0",
