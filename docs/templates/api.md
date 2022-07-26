@@ -22,6 +22,6 @@ A REST [resource API] built on the [Koa] web framework and deployed with [Gantry
 [View on GitHub](https://github.com/seek-oss/skuba/tree/master/template/koa-rest-api)
 
 [express]: https://expressjs.com/
-[gantry]: https://gantry.ssod.skinfra.xyz
+[gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
 [koa]: https://koajs.com/
 [resource api]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#resource-api
