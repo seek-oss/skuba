@@ -109,6 +109,6 @@ TODO: add support links for the prod environment.
 -->
 
 [codedeploy]: https://docs.aws.amazon.com/codedeploy
-[gantry]: https://gantry.ssod.skinfra.xyz
+[gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
 [koa]: https://koajs.com
 [technology strategy]: https://tech-strategy.ssod.skinfra.xyz
