@@ -1,5 +1,23 @@
 # skuba
 
+## 4.3.1
+
+### Patch Changes
+
+- **deps:** jest-watch-typeahead ^2.0.0 ([#925](https://github.com/seek-oss/skuba/pull/925))
+
+- **template/\*-rest-api:** seek-jobs/gantry v2.0.0 ([#935](https://github.com/seek-oss/skuba/pull/935))
+
+- **template/lambda-sqs-worker:** Remove tty disable from pipeline ([#918](https://github.com/seek-oss/skuba/pull/918))
+
+- **test:** Prefer verbose failure message in execution error annotations ([#910](https://github.com/seek-oss/skuba/pull/910))
+
+- **template/lambda-sqs-worker:** Remove unnecessary IAM permission ([#908](https://github.com/seek-oss/skuba/pull/908))
+
+- **template:** Fix README link to ARM64 guide ([#913](https://github.com/seek-oss/skuba/pull/913))
+
+- **template/\*-rest-api:** Fix Gantry documentation links ([#931](https://github.com/seek-oss/skuba/pull/931))
+
 ## 4.3.0
 
 ### Minor Changes
