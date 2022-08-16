@@ -26,9 +26,13 @@ describe('postJobHandler', () => {
       .send(jobInput)
       .expect(422)
       .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(
-          `"Expected { hirer: { id: string; }; }, but was incompatible"`,
-        ),
+        expect(text).toMatchInlineSnapshot(`
+          "Validation failed:
+          {
+            \\"hirer\\": \\"Expected { id: string; }, but was missing\\"
+          }.
+          Object should match { hirer: { id: string; }; }"
+        `),
       );
   });
 });
