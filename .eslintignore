@@ -3,12 +3,12 @@
 .serverless/
 .vscode/
 node_modules*/
+cdk.out/
 
 /coverage*/
 /dist*/
 /lib*/
 /tmp*/
-cdk.out*/
 # end managed by skuba
 
 /integration/base/
