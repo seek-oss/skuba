@@ -29,6 +29,7 @@ yarn-error.log
 .idea/
 .serverless/
 .vscode/
+cdk.out/
 node_modules*/
 
 /coverage*/
@@ -84,6 +85,7 @@ yarn-error.log
 .idea/
 .serverless/
 .vscode/
+cdk.out/
 node_modules*/
 
 /coverage*/
