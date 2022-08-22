@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Add ignore cdk.out directory linting rule
+template: Add ignore cdk.out directory linting rule
