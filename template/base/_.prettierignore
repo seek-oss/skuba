@@ -3,6 +3,7 @@
 .serverless/
 .vscode/
 node_modules*/
+cdk.out/
 
 /coverage*/
 /dist*/
@@ -14,5 +15,4 @@ node_modules*/
 /.gantry/**/*.yml
 gantry*.yaml
 gantry*.yml
-cdk.out*/
 # end managed by skuba
