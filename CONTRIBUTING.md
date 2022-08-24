@@ -28,7 +28,7 @@ and distribute it as an [npm package].
 
 [Submit an issue] if you have a question, feature request or bug report.
 
-If you work at SEEK, [#typescriptification] is your friend.
+If you work at SEEK, start a discussion in [#typescriptification].
 
 ### I want to contribute a change
 
@@ -36,6 +36,8 @@ Feel free to [create a pull request] for trivial fixes and improvements.
 
 For more substantial features, please [submit an issue] first.
 This lets us evaluate whether the feature fits the direction of the project and discuss possible approaches.
+
+If you work at SEEK, start a discussion in [#skuba-development].
 
 ---
 
@@ -270,6 +272,7 @@ git commit --message 'Publish v4.0.0-beta.2'
 git push --set-upstream origin beta
 ```
 
+[#skuba-development]: https://slack.com/app_redirect?channel=C03UM9GBGET
 [#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
 [changelog]: CHANGELOG.md
 [changesets]: https://github.com/atlassian/changesets
