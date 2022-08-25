@@ -137,18 +137,18 @@ CMD ["dist/listen.js"]
     );
 
     expect(outputFiles.Dockerfile).toMatchInlineSnapshot(`
-"
-ARG DIR lib
+      "
+      ARG DIR lib
 
-RUN echo redist
+      RUN echo redist
 
-FROM gcr.io/distroless/nodejs:16 AS runtime
+      FROM gcr.io/distroless/nodejs:16 AS runtime
 
-COPY --from=build /workdir/lib './lib'
+      COPY --from=build /workdir/lib './lib'
 
-CMD [\\"lib/listen.js\\"]
-"
-`);
+      CMD ["lib/listen.js"]
+      "
+    `);
 
     const outputData = parseObject(
       outputFiles['tsconfig.json'],
