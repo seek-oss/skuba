@@ -117,6 +117,8 @@ describe('withPackage', () => {
             a: '1',
           },
           scripts: {
+            lint: 'echo Linting',
+            prelint: 'echo Prepare for lint-off',
             prebuild: 'rm -rf system32',
             build: 'npm install freebsd',
           },
@@ -135,7 +137,9 @@ describe('withPackage', () => {
         ],
         \\"scripts\\": {
           \\"prebuild\\": \\"rm -rf system32\\",
-          \\"build\\": \\"npm install freebsd\\"
+          \\"build\\": \\"npm install freebsd\\",
+          \\"prelint\\": \\"echo Prepare for lint-off\\",
+          \\"lint\\": \\"echo Linting\\"
         },
         \\"dependencies\\": {
           \\"a\\": \\"1\\",

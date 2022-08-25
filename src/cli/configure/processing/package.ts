@@ -9,10 +9,7 @@ import { formatPrettier } from './prettier';
 export const formatPackage = (rawData: PackageJson) => {
   normalizeData(rawData);
 
-  // we don't want to sort scripts, so make a copy to overwrite the sorted scripts
-  const scripts = rawData.scripts && { ...rawData.scripts };
   const data = sortPackageJson(rawData);
-  data.scripts = scripts;
 
   // normalize-package-data fields that aren't useful for applications
 
