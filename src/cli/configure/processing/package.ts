@@ -1,23 +1,18 @@
 import normalizeData from 'normalize-package-data';
+import sortPackageJson from 'sort-package-json';
 
-import { isObject } from '../../../utils/validation';
 import type { PackageJson } from '../types';
 
-import { formatObject, parseObject } from './json';
+import { parseObject } from './json';
+import { formatPrettier } from './prettier';
 
-const sortRecord = <T>(record: Record<string, T>): Record<string, T> =>
-  Object.fromEntries(
-    Object.entries(record).sort(([keyA], [keyB]) => keyA.localeCompare(keyB)),
-  );
+export const formatPackage = (rawData: PackageJson) => {
+  normalizeData(rawData);
 
-export const formatPackage = (data: PackageJson) => {
-  normalizeData(data);
-
-  for (const [key, value] of Object.entries(data)) {
-    if (key !== 'scripts' && isObject(value) && !Array.isArray(value)) {
-      data[key] = sortRecord(value);
-    }
-  }
+  // we don't want to sort scripts, so make a copy to overwrite the sorted scripts
+  const scripts = rawData.scripts && { ...rawData.scripts };
+  const data = sortPackageJson(rawData);
+  data.scripts = scripts;
 
   // normalize-package-data fields that aren't useful for applications
 
@@ -35,7 +30,9 @@ export const formatPackage = (data: PackageJson) => {
     delete data.version;
   }
 
-  return formatObject(data, 'package.json');
+  return formatPrettier(JSON.stringify(data), {
+    filepath: 'package.json',
+  });
 };
 
 export const parsePackage = (

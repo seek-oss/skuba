@@ -87,18 +87,18 @@ describe('withPackage', () => {
       })(
         JSON.stringify({
           description: 'My Package',
-          name: 'my-package',
           readme: 'https://github.com/my-org/my-package#readme',
           version: '0.1.0',
+          name: 'my-package',
         }),
       ),
     ).toMatchInlineSnapshot(`
       "{
-        \\"$name\\": \\"unit-test\\",
-        \\"description\\": \\"My Package\\",
         \\"name\\": \\"my-package\\",
-        \\"readme\\": \\"https://github.com/my-org/my-package#readme\\",
-        \\"version\\": \\"0.1.0\\"
+        \\"version\\": \\"0.1.0\\",
+        \\"description\\": \\"My Package\\",
+        \\"$name\\": \\"unit-test\\",
+        \\"readme\\": \\"https://github.com/my-org/my-package#readme\\"
       }
       "
     `));
@@ -116,7 +116,6 @@ describe('withPackage', () => {
             b: '2',
             a: '1',
           },
-          files: ['b', 'a'],
           scripts: {
             prebuild: 'rm -rf system32',
             build: 'npm install freebsd',
@@ -125,10 +124,19 @@ describe('withPackage', () => {
             version: '1.0.0',
             type: 'application',
           },
+          files: ['b', 'a'],
         }),
       ),
     ).toMatchInlineSnapshot(`
       "{
+        \\"files\\": [
+          \\"b\\",
+          \\"a\\"
+        ],
+        \\"scripts\\": {
+          \\"prebuild\\": \\"rm -rf system32\\",
+          \\"build\\": \\"npm install freebsd\\"
+        },
         \\"dependencies\\": {
           \\"a\\": \\"1\\",
           \\"b\\": \\"2\\"
@@ -138,17 +146,9 @@ describe('withPackage', () => {
           \\"d\\": \\"4\\",
           \\"e\\": \\"5\\"
         },
-        \\"files\\": [
-          \\"b\\",
-          \\"a\\"
-        ],
-        \\"scripts\\": {
-          \\"prebuild\\": \\"rm -rf system32\\",
-          \\"build\\": \\"npm install freebsd\\"
-        },
         \\"skuba\\": {
-          \\"type\\": \\"application\\",
-          \\"version\\": \\"1.0.0\\"
+          \\"version\\": \\"1.0.0\\",
+          \\"type\\": \\"application\\"
         }
       }
       "

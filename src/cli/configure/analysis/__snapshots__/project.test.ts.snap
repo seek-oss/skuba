@@ -139,8 +139,8 @@ export default Jest.mergePreset({
   },
   "package.json": Object {
     "data": "{
-  \\"license\\": \\"UNLICENSED\\",
   \\"private\\": true,
+  \\"license\\": \\"UNLICENSED\\",
   \\"scripts\\": {
     \\"build\\": \\"skuba build\\",
     \\"format\\": \\"skuba format\\",
