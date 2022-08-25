@@ -87,18 +87,18 @@ describe('withPackage', () => {
       })(
         JSON.stringify({
           description: 'My Package',
-          name: 'my-package',
           readme: 'https://github.com/my-org/my-package#readme',
           version: '0.1.0',
+          name: 'my-package',
         }),
       ),
     ).toMatchInlineSnapshot(`
       "{
-        \\"$name\\": \\"unit-test\\",
-        \\"description\\": \\"My Package\\",
         \\"name\\": \\"my-package\\",
-        \\"readme\\": \\"https://github.com/my-org/my-package#readme\\",
-        \\"version\\": \\"0.1.0\\"
+        \\"version\\": \\"0.1.0\\",
+        \\"description\\": \\"My Package\\",
+        \\"$name\\": \\"unit-test\\",
+        \\"readme\\": \\"https://github.com/my-org/my-package#readme\\"
       }
       "
     `));
@@ -111,13 +111,17 @@ describe('withPackage', () => {
             c: '3',
             e: '5',
             d: '4',
+            '@types/koa__router': '^8.0.8',
+            '@types/koa-bodyparser': '^5.0.2',
+            '@types/koa': '^2.13.4',
           },
           dependencies: {
             b: '2',
             a: '1',
           },
-          files: ['b', 'a'],
           scripts: {
+            lint: 'echo Linting',
+            prelint: 'echo Prepare for lint-off',
             prebuild: 'rm -rf system32',
             build: 'npm install freebsd',
           },
@@ -125,30 +129,36 @@ describe('withPackage', () => {
             version: '1.0.0',
             type: 'application',
           },
+          files: ['b', 'a'],
         }),
       ),
     ).toMatchInlineSnapshot(`
       "{
-        \\"dependencies\\": {
-          \\"a\\": \\"1\\",
-          \\"b\\": \\"2\\"
-        },
-        \\"devDependencies\\": {
-          \\"c\\": \\"3\\",
-          \\"d\\": \\"4\\",
-          \\"e\\": \\"5\\"
-        },
         \\"files\\": [
           \\"b\\",
           \\"a\\"
         ],
         \\"scripts\\": {
           \\"prebuild\\": \\"rm -rf system32\\",
-          \\"build\\": \\"npm install freebsd\\"
+          \\"build\\": \\"npm install freebsd\\",
+          \\"prelint\\": \\"echo Prepare for lint-off\\",
+          \\"lint\\": \\"echo Linting\\"
+        },
+        \\"dependencies\\": {
+          \\"a\\": \\"1\\",
+          \\"b\\": \\"2\\"
+        },
+        \\"devDependencies\\": {
+          \\"@types/koa\\": \\"^2.13.4\\",
+          \\"@types/koa-bodyparser\\": \\"^5.0.2\\",
+          \\"@types/koa__router\\": \\"^8.0.8\\",
+          \\"c\\": \\"3\\",
+          \\"d\\": \\"4\\",
+          \\"e\\": \\"5\\"
         },
         \\"skuba\\": {
-          \\"type\\": \\"application\\",
-          \\"version\\": \\"1.0.0\\"
+          \\"version\\": \\"1.0.0\\",
+          \\"type\\": \\"application\\"
         }
       }
       "
