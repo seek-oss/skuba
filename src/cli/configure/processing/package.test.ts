@@ -111,6 +111,9 @@ describe('withPackage', () => {
             c: '3',
             e: '5',
             d: '4',
+            '@types/koa__router': '^8.0.8',
+            '@types/koa-bodyparser': '^5.0.2',
+            '@types/koa': '^2.13.4',
           },
           dependencies: {
             b: '2',
@@ -146,6 +149,9 @@ describe('withPackage', () => {
           \\"b\\": \\"2\\"
         },
         \\"devDependencies\\": {
+          \\"@types/koa\\": \\"^2.13.4\\",
+          \\"@types/koa-bodyparser\\": \\"^5.0.2\\",
+          \\"@types/koa__router\\": \\"^8.0.8\\",
           \\"c\\": \\"3\\",
           \\"d\\": \\"4\\",
           \\"e\\": \\"5\\"
