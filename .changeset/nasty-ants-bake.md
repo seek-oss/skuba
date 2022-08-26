@@ -8,7 +8,6 @@ This major release includes breaking changes. See the [announcement post](https:
 
 The `collectCoverageOnlyFrom` configuration option has been removed, and the default snapshot format has been simplified:
 
-
 ```diff
 - Expected: \\"a\\"
 + Expected: "a"
