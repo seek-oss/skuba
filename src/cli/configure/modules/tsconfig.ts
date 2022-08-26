@@ -62,7 +62,7 @@ export const tsconfigModule = async ({
       const outputData = merge(inputData ?? {}, baseData);
 
       // Remove `lib/**/*` and `lib`, which duplicate `lib*/**/*`
-      if (Array.isArray(outputData.exclude)) {
+      if (hasProp(outputData, 'exclude') && Array.isArray(outputData.exclude)) {
         const { exclude } = outputData;
 
         const hasLibStar = exclude.includes('lib*/**/*');
@@ -76,6 +76,7 @@ export const tsconfigModule = async ({
       // for optimal ESLinting, base config should compile all files and leave
       // exclusions to .eslintignore and tsconfig.build.json
       if (
+        hasProp(outputData, 'include') &&
         !initialFiles['tsconfig.json']?.includes('skuba/config/tsconfig.json')
       ) {
         delete outputData.include;
