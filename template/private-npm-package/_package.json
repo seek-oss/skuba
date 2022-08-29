@@ -18,7 +18,7 @@
   "name": "<%- moduleName %>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/<%- orgName %>/<%- repoName %>.git"
+    "url": "git+ssh://git@github.com/<%- orgName %>/<%- repoName %>.git"
   },
   "scripts": {
     "build": "skuba build-package",
