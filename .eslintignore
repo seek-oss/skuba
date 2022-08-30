@@ -1,4 +1,5 @@
 # managed by skuba
+.cdk.staging/
 .idea/
 .serverless/
 .vscode/

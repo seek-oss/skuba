@@ -26,6 +26,7 @@ yarn-error.log
   },
   ".eslintignore": Object {
     "data": "# managed by skuba
+.cdk.staging/
 .idea/
 .serverless/
 .vscode/
@@ -82,6 +83,7 @@ yarn-error.log
   },
   ".prettierignore": Object {
     "data": "# managed by skuba
+.cdk.staging/
 .idea/
 .serverless/
 .vscode/
