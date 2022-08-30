@@ -280,7 +280,7 @@ const failResultsDisplayNames: AggregatedResult = {
 it('should create check runs if the correct environment variables are set', async () => {
   await reporter.onRunComplete(context, failResults);
 
-  expect(GitHub.createCheckRun).toBeCalled();
+  expect(GitHub.createCheckRun).toHaveBeenCalled();
 });
 
 it('should not create check runs if the correct environment variables are not set', async () => {
@@ -289,14 +289,14 @@ it('should not create check runs if the correct environment variables are not se
 
   await reporter.onRunComplete(context, failResults);
 
-  expect(GitHub.createCheckRun).not.toBeCalled();
+  expect(GitHub.createCheckRun).not.toHaveBeenCalled();
 });
 
 it('should create a successful check run when there are no annotations', async () => {
   await reporter.onRunComplete(context, successResults);
 
-  expect(GitHub.createCheckRun).toBeCalledTimes(1);
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledTimes(1);
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: 'skuba/test',
     annotations: [],
     conclusion: 'success',
@@ -308,8 +308,8 @@ it('should create a successful check run when there are no annotations', async (
 it('should create one annotated check run when there are no display names', async () => {
   await reporter.onRunComplete(context, failResults);
 
-  expect(GitHub.createCheckRun).toBeCalledTimes(1);
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledTimes(1);
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: 'skuba/test',
     annotations: [
       {
@@ -332,8 +332,8 @@ it('should create one annotated check run when there are no display names', asyn
 it('should create an annotated check run per display name', async () => {
   await reporter.onRunComplete(context, failResultsDisplayNames);
 
-  expect(GitHub.createCheckRun).toBeCalledTimes(2);
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledTimes(2);
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: 'skuba/test',
     annotations: [
       {
@@ -351,7 +351,7 @@ it('should create an annotated check run per display name', async () => {
     summary: '`skuba test` found issues that require triage.',
     title: 'Test #123 failed',
   });
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: 'skuba/test (integration)',
     annotations: [
       {

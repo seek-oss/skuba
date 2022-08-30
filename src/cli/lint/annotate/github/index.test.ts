@@ -141,7 +141,7 @@ it('should call createEslintAnnotations with the ESLint output', async () => {
     tscOutputStream,
   );
 
-  expect(createEslintAnnotations).toBeCalledWith(eslintOutput);
+  expect(createEslintAnnotations).toHaveBeenCalledWith(eslintOutput);
 });
 
 it('should call createPrettierAnnotations with the Prettier output', async () => {
@@ -152,7 +152,7 @@ it('should call createPrettierAnnotations with the Prettier output', async () =>
     tscOutputStream,
   );
 
-  expect(createPrettierAnnotations).toBeCalledWith(prettierOutput);
+  expect(createPrettierAnnotations).toHaveBeenCalledWith(prettierOutput);
 });
 
 it('should call createTscAnnotations with tscOk and tscOutputStream', async () => {
@@ -163,7 +163,7 @@ it('should call createTscAnnotations with tscOk and tscOutputStream', async () =
     tscOutputStream,
   );
 
-  expect(createTscAnnotations).toBeCalledWith(tscOk, tscOutputStream);
+  expect(createTscAnnotations).toHaveBeenCalledWith(tscOk, tscOutputStream);
 });
 
 it('should combine all the annotations into an array for the check run', async () => {
@@ -180,7 +180,7 @@ it('should combine all the annotations into an array for the check run', async (
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expectedAnnotations,
@@ -197,7 +197,7 @@ it('should set the conclusion to failure if any output is not ok', async () => {
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expect.any(Array),
@@ -214,7 +214,7 @@ it('should set the conclusion to success if all outputs are ok', async () => {
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expect.any(Array),
@@ -233,7 +233,7 @@ it('should report that skuba lint failed if the output is not ok', async () => {
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: expect.any(String),
     summary: expectedSummary,
     annotations: expect.any(Array),
@@ -252,7 +252,7 @@ it('should set the summary to `Lint passed` if all outputs are ok', async () => 
     tscOutputStream,
   );
 
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: expect.any(String),
     summary: expectedSummary,
     annotations: expect.any(Array),

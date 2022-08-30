@@ -25,7 +25,7 @@ test('asyncFunctionHandler', async () => {
   // Without `.ts`
   await initWrapper('asyncFunctionHandler#handler');
 
-  expect(serveRequestListener).toBeCalledTimes(1);
+  expect(serveRequestListener).toHaveBeenCalledTimes(1);
 
   return Promise.all([
     agent
@@ -84,7 +84,7 @@ test('expressRequestListener', async () => {
 test('invalidRequestListener', async () => {
   await expect(initWrapper('invalidRequestListener')).resolves.toBeUndefined();
 
-  expect(serveRequestListener).not.toBeCalled();
+  expect(serveRequestListener).not.toHaveBeenCalled();
 });
 
 test('koaRequestListener', async () => {
@@ -110,20 +110,20 @@ test('miscellaneousExportModule', async () => {
     initWrapper('miscellaneousExportModule'),
   ).resolves.toBeUndefined();
 
-  expect(serveRequestListener).not.toBeCalled();
+  expect(serveRequestListener).not.toHaveBeenCalled();
 });
 
 test('noExportModule', async () => {
   await expect(initWrapper('noExportModule')).resolves.toBeUndefined();
 
-  expect(serveRequestListener).not.toBeCalled();
+  expect(serveRequestListener).not.toHaveBeenCalled();
 });
 
 test('syncFunctionHandler', async () => {
   // With `.ts`
   await initWrapper('syncFunctionHandler.ts#handler');
 
-  expect(serveRequestListener).toBeCalledTimes(1);
+  expect(serveRequestListener).toHaveBeenCalledTimes(1);
 
   return Promise.all([
     agent
@@ -155,7 +155,7 @@ test('voidFunctionHandler', async () => {
   // With `.ts`
   await initWrapper('voidFunctionHandler.ts#handler');
 
-  expect(serveRequestListener).toBeCalledTimes(1);
+  expect(serveRequestListener).toHaveBeenCalledTimes(1);
 
   return (
     agent

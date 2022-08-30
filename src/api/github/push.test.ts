@@ -142,10 +142,10 @@ describe('readFileChanges', () => {
       deletions: [{ path: 'delete-path' }],
     };
 
-    expect(fs.promises.readFile).toBeCalledWith('some-path', {
+    expect(fs.promises.readFile).toHaveBeenCalledWith('some-path', {
       encoding: 'base64',
     });
-    expect(fs.promises.readFile).toBeCalledWith('another-path', {
+    expect(fs.promises.readFile).toHaveBeenCalledWith('another-path', {
       encoding: 'base64',
     });
     expect(result).toStrictEqual(expectedFileChanges);
@@ -265,11 +265,11 @@ describe('uploadAllFileChanges', () => {
       updateLocal: true,
     });
 
-    expect(fs.rm).toBeCalledWith('modified-file');
-    expect(fs.rm).toBeCalledWith('new-file');
-    expect(fs.rm).toBeCalledWith('deleted-file');
+    expect(fs.rm).toHaveBeenCalledWith('modified-file');
+    expect(fs.rm).toHaveBeenCalledWith('new-file');
+    expect(fs.rm).toHaveBeenCalledWith('deleted-file');
 
-    expect(git.fastForward).toBeCalledWith(
+    expect(git.fastForward).toHaveBeenCalledWith(
       expect.objectContaining({
         ref: 'existing-branch',
         dir: './',
