@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-template: Ignore linting on `cdk.out` directory
+configure, template: Ignore linting on `cdk.out` directory
