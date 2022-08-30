@@ -26,9 +26,10 @@ yarn-error.log
   },
   ".eslintignore": {
     "data": "# managed by skuba
-.idea/
+.idea/*
+.vscode/*
+
 .serverless/
-.vscode/
 cdk.out/
 node_modules*/
 
@@ -56,10 +57,11 @@ node_modules*/
   },
   ".gitignore": {
     "data": "# managed by skuba
+.idea/*
+.vscode/*
+
 .cdk.staging/
-.idea/
 .serverless/
-.vscode/
 cdk.out/
 node_modules*/
 
@@ -82,9 +84,10 @@ yarn-error.log
   },
   ".prettierignore": {
     "data": "# managed by skuba
-.idea/
+.idea/*
+.vscode/*
+
 .serverless/
-.vscode/
 cdk.out/
 node_modules*/
 
