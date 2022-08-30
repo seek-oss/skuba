@@ -45,7 +45,7 @@ describe('validate', () => {
         expect(text).toMatchInlineSnapshot(`
           "Validation failed:
           {
-            \\"id\\": \\"Expected string, but was null\\"
+            "id": "Expected string, but was null"
           }.
           Object should match { id: string; description: string; }"
         `),
@@ -61,8 +61,8 @@ describe('validate', () => {
         expect(text).toMatchInlineSnapshot(`
           "Validation failed:
           {
-            \\"id\\": \\"Expected string, but was missing\\",
-            \\"description\\": \\"Expected string, but was missing\\"
+            "id": "Expected string, but was missing",
+            "description": "Expected string, but was missing"
           }.
           Object should match { id: string; description: string; }"
         `),

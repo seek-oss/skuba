@@ -34,9 +34,9 @@ test('asyncFunctionHandler', async () => {
       .expect(200)
       .expect(({ body }) =>
         expect(body).toMatchInlineSnapshot(`
-          Object {
+          {
             "awsRequestId": "123",
-            "event": Object {
+            "event": {
               "id": 1,
             },
             "msg": "Processed event",
@@ -52,7 +52,7 @@ test('asyncFunctionHandler', async () => {
         expect(body).toMatchInlineSnapshot(
           { stack: expect.any(String) },
           `
-          Object {
+          {
             "message": "falsy event",
             "name": "Error",
             "stack": Any<String>,
@@ -140,7 +140,7 @@ test('syncFunctionHandler', async () => {
         expect(body).toMatchInlineSnapshot(
           { stack: expect.any(String) },
           `
-          Object {
+          {
             "message": "Unexpected token I in JSON at position 0",
             "name": "SyntaxError",
             "stack": Any<String>,

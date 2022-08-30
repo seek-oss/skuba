@@ -29,7 +29,7 @@ describe('postJobHandler', () => {
         expect(text).toMatchInlineSnapshot(`
           "Validation failed:
           {
-            \\"hirer\\": \\"Expected { id: string; }, but was missing\\"
+            "hirer": "Expected { id: string; }, but was missing"
           }.
           Object should match { hirer: { id: string; }; }"
         `),

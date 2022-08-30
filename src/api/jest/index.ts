@@ -12,7 +12,6 @@ import { mergeRaw } from '../../cli/configure/processing/record';
 type DefaultOptions =
   | 'collectCoverage'
   | 'collectCoverageFrom'
-  | 'collectCoverageOnlyFrom'
   | 'coveragePathIgnorePatterns'
   | 'coverageThreshold'
   | 'displayName'

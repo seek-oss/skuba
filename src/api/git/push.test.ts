@@ -37,7 +37,7 @@ describe('push', () => {
     expect(jest.mocked(git.push).mock.calls[0][0]).toMatchInlineSnapshot(
       { http: expect.any(Object), fs: expect.any(Object) },
       `
-      Object {
+      {
         "dir": "/workdir/skuba",
         "force": undefined,
         "fs": Any<Object>,
