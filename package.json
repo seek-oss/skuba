@@ -129,8 +129,7 @@
     "url": "git+ssh://git@github.com/seek-oss/skuba.git"
   },
   "resolutions": {
-    "**/@types/node": ">=14.18",
-    "jest-watch-typeahead/jest-watcher": "^29.0.1"
+    "**/@types/node": ">=14.18"
   },
   "scripts": {
     "build": "ts-node --transpile-only src/skuba build && scripts/postbuild.sh",
