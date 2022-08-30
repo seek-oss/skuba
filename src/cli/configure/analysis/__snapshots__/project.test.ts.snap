@@ -29,6 +29,7 @@ yarn-error.log
 .idea/*
 .vscode/*
 
+.cdk.staging/
 .serverless/
 cdk.out/
 node_modules*/
@@ -87,6 +88,7 @@ yarn-error.log
 .idea/*
 .vscode/*
 
+.cdk.staging/
 .serverless/
 cdk.out/
 node_modules*/
