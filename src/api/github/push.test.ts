@@ -79,7 +79,7 @@ describe('uploadFileChanges', () => {
     });
 
     expect(jest.mocked(graphql).mock.calls[0]).toMatchInlineSnapshot(`
-      Array [
+      [
         "
             mutation Mutation($input: CreateCommitOnBranchInput!) {
               createCommitOnBranch(input: $input) {
@@ -89,31 +89,31 @@ describe('uploadFileChanges', () => {
               }
             }
           ",
-        Object {
-          "headers": Object {
+        {
+          "headers": {
             "authorization": "Bearer api-token",
           },
-          "input": Object {
-            "branch": Object {
+          "input": {
+            "branch": {
               "branchName": "existing-branch",
               "repositoryNameWithOwner": "seek-oss/skuba",
             },
             "clientMutationId": "skuba",
             "expectedHeadOid": "commit-id",
-            "fileChanges": Object {
-              "additions": Array [
-                Object {
+            "fileChanges": {
+              "additions": [
+                {
                   "contents": "",
                   "path": "another-path",
                 },
               ],
-              "deletions": Array [
-                Object {
+              "deletions": [
+                {
                   "path": "some-path",
                 },
               ],
             },
-            "message": Object {
+            "message": {
               "body": "commit body",
               "headline": "commit headline",
             },
@@ -193,7 +193,7 @@ describe('uploadAllFileChanges', () => {
     });
 
     expect(jest.mocked(graphql).mock.calls[0]).toMatchInlineSnapshot(`
-      Array [
+      [
         "
             mutation Mutation($input: CreateCommitOnBranchInput!) {
               createCommitOnBranch(input: $input) {
@@ -203,35 +203,35 @@ describe('uploadAllFileChanges', () => {
               }
             }
           ",
-        Object {
-          "headers": Object {
+        {
+          "headers": {
             "authorization": "Bearer api-token",
           },
-          "input": Object {
-            "branch": Object {
+          "input": {
+            "branch": {
               "branchName": "existing-branch",
               "repositoryNameWithOwner": "seek-oss/skuba",
             },
             "clientMutationId": "skuba",
             "expectedHeadOid": "commit-id",
-            "fileChanges": Object {
-              "additions": Array [
-                Object {
+            "fileChanges": {
+              "additions": [
+                {
                   "contents": "base64-contents",
                   "path": "modified-file",
                 },
-                Object {
+                {
                   "contents": "base64-contents",
                   "path": "new-file",
                 },
               ],
-              "deletions": Array [
-                Object {
+              "deletions": [
+                {
                   "path": "deleted-file",
                 },
               ],
             },
-            "message": Object {
+            "message": {
               "body": "commit body",
               "headline": "commit headline",
             },

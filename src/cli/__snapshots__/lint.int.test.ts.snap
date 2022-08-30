@@ -23,7 +23,7 @@ ESLint, Prettier found issues that require triage.
 `;
 
 exports[`fixable 2`] = `
-Array [
+[
   "
 Options: {
   context: 'skuba-lint-external',
@@ -125,7 +125,7 @@ tsc      │ tsc --extendedDiagnostics --noEmit exited with code 0
 "
 `;
 
-exports[`ok --debug 2`] = `Array []`;
+exports[`ok --debug 2`] = `[]`;
 
 exports[`ok 1`] = `
 "
@@ -136,7 +136,7 @@ tsc      │ tsc --noEmit exited with code 0
 "
 `;
 
-exports[`ok 2`] = `Array []`;
+exports[`ok 2`] = `[]`;
 
 exports[`unfixable 1`] = `
 "
@@ -168,7 +168,7 @@ ESLint, Prettier, tsc found issues that require triage.
 `;
 
 exports[`unfixable 2`] = `
-Array [
+[
   "
 Options: {
   context: 'skuba-lint-external',

@@ -12,6 +12,7 @@ describe('createDependencyFilter', () => {
           b: '0.0.1',
           c: '0.0.1',
         },
+
         devDependencies: {
           a: '0.0.1',
           b: '0.0.1',
@@ -19,13 +20,13 @@ describe('createDependencyFilter', () => {
         },
       }),
     ).toMatchInlineSnapshot(`
-      Object {
-        "dependencies": Object {
+      {
+        "dependencies": {
           "a": "0.0.1",
           "b": "0.0.1",
           "c": "0.0.1",
         },
-        "devDependencies": Object {
+        "devDependencies": {
           "b": "0.0.1",
         },
       }
@@ -42,6 +43,7 @@ describe('createDependencyFilter', () => {
           b: '0.0.1',
           c: '0.0.1',
         },
+
         devDependencies: {
           a: '0.0.1',
           b: '0.0.1',
@@ -49,12 +51,12 @@ describe('createDependencyFilter', () => {
         },
       }),
     ).toMatchInlineSnapshot(`
-      Object {
-        "dependencies": Object {
+      {
+        "dependencies": {
           "a": "0.0.1",
           "c": "0.0.1",
         },
-        "devDependencies": Object {
+        "devDependencies": {
           "a": "0.0.1",
           "b": "0.0.1",
           "c": "0.0.1",
@@ -73,7 +75,7 @@ describe('withPackage', () => {
       })('{}'),
     ).toMatchInlineSnapshot(`
       "{
-        \\"$name\\": \\"unit-test\\"
+        "$name": "unit-test"
       }
       "
     `));
@@ -94,11 +96,11 @@ describe('withPackage', () => {
       ),
     ).toMatchInlineSnapshot(`
       "{
-        \\"name\\": \\"my-package\\",
-        \\"version\\": \\"0.1.0\\",
-        \\"description\\": \\"My Package\\",
-        \\"$name\\": \\"unit-test\\",
-        \\"readme\\": \\"https://github.com/my-org/my-package#readme\\"
+        "name": "my-package",
+        "version": "0.1.0",
+        "description": "My Package",
+        "$name": "unit-test",
+        "readme": "https://github.com/my-org/my-package#readme"
       }
       "
     `));
@@ -115,50 +117,54 @@ describe('withPackage', () => {
             '@types/koa-bodyparser': '^5.0.2',
             '@types/koa': '^2.13.4',
           },
+
           dependencies: {
             b: '2',
             a: '1',
           },
+
           scripts: {
             lint: 'echo Linting',
             prelint: 'echo Prepare for lint-off',
             prebuild: 'rm -rf system32',
             build: 'npm install freebsd',
           },
+
           skuba: {
             version: '1.0.0',
             type: 'application',
           },
+
           files: ['b', 'a'],
         }),
       ),
     ).toMatchInlineSnapshot(`
       "{
-        \\"files\\": [
-          \\"b\\",
-          \\"a\\"
+        "files": [
+          "b",
+          "a"
         ],
-        \\"scripts\\": {
-          \\"prebuild\\": \\"rm -rf system32\\",
-          \\"build\\": \\"npm install freebsd\\",
-          \\"prelint\\": \\"echo Prepare for lint-off\\",
-          \\"lint\\": \\"echo Linting\\"
+        "scripts": {
+          "prebuild": "rm -rf system32",
+          "build": "npm install freebsd",
+          "prelint": "echo Prepare for lint-off",
+          "lint": "echo Linting"
         },
-        \\"dependencies\\": {
-          \\"a\\": \\"1\\",
-          \\"b\\": \\"2\\"
+        "dependencies": {
+          "a": "1",
+          "b": "2"
         },
-        \\"devDependencies\\": {
-          \\"@types/koa\\": \\"^2.13.4\\",
-          \\"@types/koa-bodyparser\\": \\"^5.0.2\\",
-          \\"@types/koa__router\\": \\"^8.0.8\\",
-          \\"c\\": \\"3\\",
-          \\"d\\": \\"4\\",
-          \\"e\\": \\"5\\"
+        "devDependencies": {
+          "@types/koa": "^2.13.4",
+          "@types/koa-bodyparser": "^5.0.2",
+          "@types/koa__router": "^8.0.8",
+          "c": "3",
+          "d": "4",
+          "e": "5"
         },
-        \\"skuba\\": {
-          \\"version\\": \\"1.0.0\\",
-          \\"type\\": \\"application\\"
+        "skuba": {
+          "version": "1.0.0",
+          "type": "application"
         }
       }
       "
@@ -173,7 +179,7 @@ describe('withPackage', () => {
       })('}'),
     ).toMatchInlineSnapshot(`
       "{
-        \\"$name\\": \\"unit-test\\"
+        "$name": "unit-test"
       }
       "
     `));

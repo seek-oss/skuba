@@ -21,11 +21,11 @@ describe('commit', () => {
     expect(jest.mocked(git.commit).mock.calls[0][0]).toMatchInlineSnapshot(
       { fs: expect.any(Object) },
       `
-      Object {
-        "author": Object {
+      {
+        "author": {
           "name": "skuba",
         },
-        "committer": Object {
+        "committer": {
           "name": "skuba",
         },
         "dir": "/workdir/skuba",

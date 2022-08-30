@@ -50,7 +50,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -60,7 +60,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.createComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!",
         "issue_number": 123,
         "owner": "seek-oss",
@@ -120,7 +120,7 @@ describe('putIssueComment', () => {
     expect(
       mockClient.repos.listPullRequestsAssociatedWithCommit.mock.calls[0][0],
     ).toMatchInlineSnapshot(`
-      Object {
+      {
         "commit_sha": "commit-id",
         "owner": "seek-oss",
         "repo": "skuba",
@@ -130,7 +130,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -140,7 +140,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.createComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!",
         "issue_number": 123,
         "owner": "seek-oss",
@@ -183,7 +183,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -193,7 +193,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.createComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!
 
       <!-- hunter2 -->",
@@ -245,7 +245,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -255,7 +255,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.updateComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.updateComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!",
         "comment_id": 111,
         "issue_number": 123,
@@ -308,7 +308,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -318,7 +318,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.updateComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.updateComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!
 
       <!-- hunter2 -->",

@@ -66,15 +66,15 @@ it('should create annotation from Jest test failure', () => {
 
   const annotations = createAnnotations([testResult]);
   expect(annotations).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "annotation_level": "failure",
         "end_column": 15,
         "end_line": 2,
         "message": "Error: expect(received).toBe(expected) // Object.is equality
 
-    Expected: \\"a\\"
-    Received: \\"b\\"
+    Expected: "a"
+    Received: "b"
         at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)
         at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)
         at new Promise (<anonymous>)
@@ -123,13 +123,13 @@ it('should create annotation from Jest timeout', () => {
 
   const annotations = createAnnotations([testResult]);
   expect(annotations).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "annotation_level": "failure",
         "end_column": 6,
         "end_line": 55,
-        "message": "Error: thrown: \\"Exceeded timeout of 5000 ms for a test.
-    Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.\\"
+        "message": "Error: thrown: "Exceeded timeout of 5000 ms for a test.
+    Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test."
         at /workdir/skuba/src/test.test.ts:55:6
         at _dispatchDescribe (/workdir/skuba/node_modules/jest-circus/build/index.js:98:26)
         at describe (/workdir/skuba/node_modules/jest-circus/build/index.js:60:5)
@@ -174,8 +174,8 @@ it('should create annotation from Jest exec error', () => {
 
   const annotations = createAnnotations([testResult]);
   expect(annotations).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "annotation_level": "failure",
         "end_line": 1,
         "message": "  ● Test suite failed to run
@@ -205,8 +205,8 @@ it('should create annotation from Jest exec error', () => {
     testResultWithoutFailureMessage,
   ]);
   expect(annotationsForNoFailureMessage).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "annotation_level": "failure",
         "end_line": 1,
         "message": "src/test.ts:1:1 - error TS6133: 'a' is declared but its value is never read.
