@@ -74,7 +74,7 @@ describe('createApp', () => {
 
     expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).nthCalledWith(
+    expect(logger.info).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ status: 404 }),
       'Client error',
@@ -104,7 +104,7 @@ describe('createApp', () => {
 
     expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).nthCalledWith(
+    expect(logger.info).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ status: 400 }),
       'Client error',
@@ -131,7 +131,7 @@ describe('createApp', () => {
 
     expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).nthCalledWith(
+    expect(logger.info).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err: expect.any(Error), status: 400 }),
       'Client error',
@@ -156,7 +156,7 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).nthCalledWith(
+    expect(logger.error).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err: expect.any(Error), status: 500 }),
       'Server error',
@@ -185,7 +185,7 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).nthCalledWith(
+    expect(logger.error).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err, status: 500 }),
       'Server error',
@@ -213,7 +213,7 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).nthCalledWith(
+    expect(logger.error).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err: null, status: 500 }),
       'Server error',
@@ -242,7 +242,7 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).nthCalledWith(
+    expect(logger.error).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err, status: 500 }),
       'Server error',
