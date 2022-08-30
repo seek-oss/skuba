@@ -29,9 +29,9 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset(['env:test', 'version:test']);
     metricsClient.expectTagSubset([
@@ -51,9 +51,9 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:put',
@@ -72,7 +72,7 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
     expect(logger.info).nthCalledWith(
       1,
@@ -102,7 +102,7 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
     expect(logger.info).nthCalledWith(
       1,
@@ -129,7 +129,7 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
     expect(logger.info).nthCalledWith(
       1,
@@ -162,7 +162,7 @@ describe('createApp', () => {
       'Server error',
     );
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -191,7 +191,7 @@ describe('createApp', () => {
       'Server error',
     );
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -219,7 +219,7 @@ describe('createApp', () => {
       'Server error',
     );
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -248,7 +248,7 @@ describe('createApp', () => {
       'Server error',
     );
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:get',

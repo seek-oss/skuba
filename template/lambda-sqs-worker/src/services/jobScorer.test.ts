@@ -25,7 +25,7 @@ describe('scoreJobPublishedEvent', () => {
       eventType: 'JobScored',
     });
 
-    expect(scoringService.request).toBeCalledTimes(1);
+    expect(scoringService.request).toHaveBeenCalledTimes(1);
   });
 
   it('bubbles up scoring service error', async () => {
@@ -39,6 +39,6 @@ describe('scoreJobPublishedEvent', () => {
       ),
     ).rejects.toThrow(err);
 
-    expect(scoringService.request).toBeCalledTimes(1);
+    expect(scoringService.request).toHaveBeenCalledTimes(1);
   });
 });
