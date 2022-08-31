@@ -404,7 +404,7 @@ describe('autofix', () => {
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
-      expect(GitHub.uploadAllFileChanges).not.toBeCalled();
+      expect(GitHub.uploadAllFileChanges).not.toHaveBeenCalled();
 
       expect(stdout()).toMatchInlineSnapshot(`
         "

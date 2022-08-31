@@ -42,9 +42,9 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).resolves.toBeUndefined();
 
-    expect(scoringService.request).toBeCalledTimes(1);
+    expect(scoringService.request).toHaveBeenCalledTimes(1);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
     expect(logger.info.mock.calls).toEqual([
       [{ count: 1 }, 'received jobs'],
@@ -57,7 +57,7 @@ describe('handler', () => {
       ['job.scored', 1],
     ]);
 
-    expect(sns.publish).toBeCalledTimes(1);
+    expect(sns.publish).toHaveBeenCalledTimes(1);
   });
 
   it('throws on invalid input', () => {
@@ -75,7 +75,7 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
 
-    expect(logger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
   });
 
   it('bubbles up SNS error', async () => {
@@ -87,7 +87,7 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
 
-    expect(logger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
   });
 
   it('throws on zero records', async () => {
@@ -97,7 +97,7 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
 
-    expect(logger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
   });
 
   it('throws on multiple records', async () => {
@@ -110,6 +110,6 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
 
-    expect(logger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
   });
 });

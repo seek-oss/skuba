@@ -25,7 +25,7 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).resolves.toBe(output);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
     expect(logger.info.mock.calls).toEqual([
       ['hello from handler'],
@@ -42,7 +42,7 @@ describe('createHandler', () => {
 
     expect(logger.error.mock.calls).toEqual([[{ err }, 'request']]);
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
   });
 
   it('handles sync error', async () => {
@@ -56,6 +56,6 @@ describe('createHandler', () => {
 
     expect(logger.error.mock.calls).toEqual([[{ err }, 'request']]);
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
   });
 });
