@@ -1,5 +1,63 @@
 # skuba
 
+## 4.4.0
+
+### Minor Changes
+
+- **deps:** Jest 29 ([#953](https://github.com/seek-oss/skuba/pull/953))
+
+  This major release includes breaking changes. See the [announcement post](https://jestjs.io/blog/2022/08/25/jest-29) for more information.
+
+  The `collectCoverageOnlyFrom` configuration option has been removed, and the default snapshot format has been simplified:
+
+  ```diff
+  - Expected: \\"a\\"
+  + Expected: "a"
+
+  - Object {
+  -   Array []
+  - }
+  + {
+  +   []
+  + }
+  ```
+
+- **deps:** eslint-plugin-jest 27 ([#959](https://github.com/seek-oss/skuba/pull/959))
+
+  This major release includes breaking changes. See the [release note](https://github.com/jest-community/eslint-plugin-jest/releases/tag/v27.0.0) for more information.
+
+  The `jest/no-alias-methods` rule is now [enforced](https://github.com/jest-community/eslint-plugin-jest/pull/1221) and [autofixed](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) to discourage usage of alias methods that will be [removed in Jest 30](https://github.com/facebook/jest/issues/13164).
+
+  ```diff
+  - .toBeCalled()
+  + .toHaveBeenCalled()
+  ```
+
+- **configure, init:** Format `package.json` with [sort-package-json](https://github.com/keithamus/sort-package-json) ([#951](https://github.com/seek-oss/skuba/pull/951))
+
+- **deps:** TypeScript 4.8 ([#954](https://github.com/seek-oss/skuba/pull/954))
+
+  This major release includes breaking changes. See the [TypeScript 4.8](https://devblogs.microsoft.com/typescript/announcing-typescript-4-8/) announcement for more information.
+
+### Patch Changes
+
+- **configure, template:** Ignore linting on `.cdk.staging` directory ([#957](https://github.com/seek-oss/skuba/pull/957))
+
+- **configure, template:** Ignore linting on `cdk.out` directory ([#940](https://github.com/seek-oss/skuba/pull/940))
+
+- **template/\*-npm-package:** Use SSH scheme in repository URL ([#955](https://github.com/seek-oss/skuba/pull/955))
+
+  We have changed the templated format of the `package.json#repository/url` field. This may resolve `skuba release` errors that reference [Git password authentication is shutting down](https://github.blog/changelog/2021-08-12-git-password-authentication-is-shutting-down/) on the GitHub Blog.
+
+  ```diff
+  - git+https://github.com/org/repo.git
+  + git+ssh://git@github.com/org/repo.git
+  ```
+
+- **configure, template:** Allow `.idea` and `.vscode` ignore overrides ([#956](https://github.com/seek-oss/skuba/pull/956))
+
+  You can now append lines like `!.vscode/launch.json` to your ignore files to allow specific editor files to be committed, formatted and/or linted.
+
 ## 4.3.1
 
 ### Patch Changes
