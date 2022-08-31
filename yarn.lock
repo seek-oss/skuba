@@ -3323,10 +3323,10 @@ eslint-config-prettier@^8.5.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.5.0.tgz#5a81680ec934beca02c7b1a61cf8ca34b66feab1"
   integrity sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==
 
-eslint-config-seek@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-seek/-/eslint-config-seek-9.0.0.tgz#fa8deed4a2092a528cd93617aa517600c3a2e32d"
-  integrity sha512-xSbenoHcgZUpJGhwOga9koZmkoMCR9XkXyouSmlm1Qg4glYe9YQ5LLW3fI28kMwyvomz3K1/8Q5G5NtBvBL0lw==
+eslint-config-seek@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-seek/-/eslint-config-seek-10.0.0.tgz#cea478d21866ca39e7f3a37d2f62fbaa5f3f3d7d"
+  integrity sha512-P+ZcZEep3/ZehZacWe52LwOEDCTIcLCYjfzzuhgR+abEkdj5cwIsMtiOVtgiMW0skB2gA1Ej9oHP4vG7WofJBg==
   dependencies:
     "@babel/core" "^7.17.8"
     "@babel/eslint-parser" "^7.17.0"
@@ -3337,20 +3337,20 @@ eslint-config-seek@^9.0.0:
     eslint-import-resolver-node "^0.3.6"
     eslint-plugin-cypress "^2.12.1"
     eslint-plugin-import "^2.25.4"
-    eslint-plugin-jest "^26.1.2"
+    eslint-plugin-jest "^27.0.1"
     eslint-plugin-react "^7.29.4"
     eslint-plugin-react-hooks "^4.3.0"
     find-root "^1.1.0"
 
-eslint-config-skuba@1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.1.3.tgz#c924d61c891e40dd20069de2ece7186f1b041339"
-  integrity sha512-iiw6NBLT82zuv3uY4iVirlyrtCMqpEauMhULGkw1SuQjQZkZTyIgYIU29fBBcoegZuRl7vH/D+Xr2GsJiY54xA==
+eslint-config-skuba@1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.1.4.tgz#9f4afd3a3cee8e0219564838dd3273d394304144"
+  integrity sha512-nGwBDKT7aGj4aRYmU1XkoHwmDYmezyTHqm+grMcg2Uddo2bH/Ol9QqHe3Q3buRkJ/hNYO8Z455/g2O0yS4jj0w==
   dependencies:
     "@types/eslint" "^8.4.1"
     "@typescript-eslint/eslint-plugin" "^5.36.0"
     "@typescript-eslint/parser" "^5.36.0"
-    eslint-config-seek "^9.0.0"
+    eslint-config-seek "^10.0.0"
     eslint-plugin-jest "^27.0.0"
     eslint-plugin-tsdoc "^0.2.14"
 
@@ -3395,14 +3395,7 @@ eslint-plugin-import@^2.25.4:
     resolve "^1.22.0"
     tsconfig-paths "^3.14.1"
 
-eslint-plugin-jest@^26.1.2:
-  version "26.9.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-26.9.0.tgz#7931c31000b1c19e57dbfb71bbf71b817d1bf949"
-  integrity sha512-TWJxWGp1J628gxh2KhaH1H1paEdgE2J61BBF1I59c6xWeL5+D1BzMxGDN/nXAfX+aSkR5u80K+XhskK6Gwq9ng==
-  dependencies:
-    "@typescript-eslint/utils" "^5.10.0"
-
-eslint-plugin-jest@^27.0.0:
+eslint-plugin-jest@^27.0.0, eslint-plugin-jest@^27.0.1:
   version "27.0.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-27.0.1.tgz#3e67ee2051411540988c62075e8788702a1064da"
   integrity sha512-LosUsrkwVSs/8Z/I8Hqn5vWgTEsHrfIquDEKOsV8/cl+gbFR4tiRCE1AimEotsHjSC0Rx1tYm6vPhw8C3ktmmg==
