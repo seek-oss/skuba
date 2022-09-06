@@ -15,11 +15,10 @@ Next steps:
 3. [ ] Create a new repository in the appropriate GitHub organisation.
 4. [ ] Add the repository to BuildAgency;
        see [Builds at SEEK] for more information.
-5. [ ] Add deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
-6. [ ] Enable Datadog extension in [.buildkite/pipeline.yml](.buildkite/pipeline.yml) and [serverless.yml](serverless.yml).
-7. [ ] Push local commits to the upstream GitHub branch.
-8. [ ] Configure [GitHub repository settings].
-9. [ ] Delete this checklist 😌.
+5. [ ] Add Datadog extension, deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
+6. [ ] Push local commits to the upstream GitHub branch.
+7. [ ] Configure [GitHub repository settings].
+8. [ ] Delete this checklist 😌.
 
 [arm64 guide]: https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html
 [builds at seek]: https://builds-at-seek.ssod.skinfra.xyz

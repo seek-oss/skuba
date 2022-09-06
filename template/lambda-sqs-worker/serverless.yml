@@ -4,6 +4,7 @@ configValidationMode: error
 
 params:
   default:
+    datadogApiKeySecretArn: arn:aws:secretsmanager:ap-southeast-2:ACCOUNT-ID:secret:SECRET-NAME
     description: <%- description %>
   dev:
     deploymentBucket: 'TODO: deploymentBucketName'
@@ -13,10 +14,12 @@ params:
     isProduction: true
 
 custom:
-  # TODO: enable Datadog extension
-  # datadog:
-  #   addExtension: true
-  #   apiKey: ${env:DATADOG_API_KEY}
+  datadog:
+    # TODO: enable Datadog extension
+    # addExtension: true
+    apiKeySecretArn: ${param:datadogApiKeySecretArn}
+    enableDDLogs: false
+    injectLogContext: false
   prune:
     automatic: true
     number: 3
@@ -56,6 +59,9 @@ provider:
         - Action: lambda:InvokeFunction
           Effect: Allow
           Resource: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:functions.Worker.name}
+        - Action: secretsmanager:GetSecretValue
+          Effect: Allow
+          Resource: ${param:datadogApiKeySecretArn}-??????
         - Action: sns:Publish
           Effect: Allow
           Resource: !Ref DestinationTopic
@@ -90,12 +96,6 @@ functions:
       alias: Live
       preTrafficHook: WorkerPreHook
     environment:
-      # https://docs.datadoghq.com/serverless/libraries_integrations/extension/
-      DD_ENV: ${env:ENVIRONMENT}
-      # https://docs.datadoghq.com/tracing/setup_overview/setup/nodejs/?tab=containers#instrumentation
-      DD_LOGS_INJECTION: 'false'
-      DD_SERVERLESS_LOGS_ENABLED: 'false'
-
       ENVIRONMENT: ${env:ENVIRONMENT}
       SERVICE: ${self:service}
       VERSION: ${env:VERSION, 'local'}
