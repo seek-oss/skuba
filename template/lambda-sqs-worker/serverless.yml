@@ -4,7 +4,7 @@ configValidationMode: error
 
 params:
   default:
-    datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:ap-southeast-2:ACCOUNT-ID:secret:SECRET-NAME'
+    datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:SECRET-NAME'
     description: <%- description %>
   dev:
     deploymentBucket: 'TODO: deployment-bucket-name'
