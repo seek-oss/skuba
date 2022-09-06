@@ -23,6 +23,9 @@
   },
   "license": "UNLICENSED",
   "private": true,
+  "resolutions": {
+    "@types/responselike": "1.0.0"
+  },
   "scripts": {
     "build": "skuba build",
     "deploy": "serverless deploy --force --verbose",
