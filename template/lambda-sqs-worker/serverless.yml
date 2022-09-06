@@ -22,6 +22,7 @@ custom:
     exclude:
       - WorkerPreHook
     injectLogContext: false
+    version: ${env:VERSION}
   prune:
     automatic: true
     number: 3
