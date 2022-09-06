@@ -13,12 +13,17 @@ params:
     isProduction: true
 
 custom:
+  # TODO: enable Datadog extension
+  # datadog:
+  #   addExtension: true
+  #   apiKey: ${env:DATADOG_API_KEY}
   prune:
     automatic: true
     number: 3
 
 plugins:
   - serverless-plugin-canary-deployments
+  - serverless-plugin-datadog
   - serverless-prune-plugin
 
 provider:
@@ -85,6 +90,12 @@ functions:
       alias: Live
       preTrafficHook: WorkerPreHook
     environment:
+      # https://docs.datadoghq.com/serverless/libraries_integrations/extension/
+      DD_ENV: ${env:ENVIRONMENT}
+      # https://docs.datadoghq.com/tracing/setup_overview/setup/nodejs/?tab=containers#instrumentation
+      DD_LOGS_INJECTION: 'false'
+      DD_SERVERLESS_LOGS_ENABLED: 'false'
+
       ENVIRONMENT: ${env:ENVIRONMENT}
       SERVICE: ${self:service}
       VERSION: ${env:VERSION, 'local'}

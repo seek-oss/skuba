@@ -17,7 +17,9 @@ describe('handler', () => {
 
   const score = chance.floating({ max: 1, min: 0 });
 
-  const increment = jest.spyOn(metricsClient, 'increment').mockReturnValue();
+  const distribution = jest
+    .spyOn(metricsClient, 'distribution')
+    .mockReturnValue();
 
   beforeAll(logger.spy);
   beforeAll(scoringService.spy);
@@ -32,7 +34,7 @@ describe('handler', () => {
 
   afterEach(() => {
     logger.clear();
-    increment.mockClear();
+    distribution.mockClear();
     scoringService.clear();
     sns.clear();
   });
@@ -52,7 +54,7 @@ describe('handler', () => {
       ['request'],
     ]);
 
-    expect(increment.mock.calls).toEqual([
+    expect(distribution.mock.calls).toEqual([
       ['job.received', 1],
       ['job.scored', 1],
     ]);

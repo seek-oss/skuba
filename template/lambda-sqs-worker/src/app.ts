@@ -32,7 +32,7 @@ export const handler = createHandler<SQSEvent>(async (event) => {
 
   logger.info({ count }, 'received jobs');
 
-  metricsClient.increment('job.received', event.Records.length);
+  metricsClient.distribution('job.received', event.Records.length);
 
   const record = event.Records[0];
 
@@ -48,5 +48,5 @@ export const handler = createHandler<SQSEvent>(async (event) => {
 
   logger.info({ snsMessageId }, 'scored job');
 
-  metricsClient.increment('job.scored', 1);
+  metricsClient.distribution('job.scored', 1);
 });

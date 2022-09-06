@@ -6,6 +6,8 @@ configs:
     - &aws-sm
       seek-oss/aws-sm#v2.3.1:
         env:
+          # TODO: enable Datadog extension
+          # DATADOG_API_KEY: arn:aws:secretsmanager:ap-southeast-2:ACCOUNT-ID:secret:SECRET-NAME
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
     - &docker-ecr-cache
@@ -34,6 +36,8 @@ configs:
         - *docker-ecr-cache
         - docker-compose#v3.10.0:
             dependencies: false
+            environment:
+              - DATADOG_API_KEY
             run: app
       retry:
         manual:
