@@ -11,6 +11,8 @@
     "@octokit/graphql-schema": "^12.0.0",
     "@octokit/rest": "^19.0.0",
     "@octokit/types": "^7.0.0",
+    "@types/cacheable-request": "^6.0.2",
+    "@types/responselike": "^1.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": ">=14.18",
     "chalk": "^4.1.0",
