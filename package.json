@@ -11,10 +11,9 @@
     "@octokit/graphql-schema": "^12.0.0",
     "@octokit/rest": "^19.0.0",
     "@octokit/types": "^7.0.0",
-    "@types/cacheable-request": "^6.0.2",
-    "@types/responselike": "^1.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": ">=14.18",
+    "@types/validate-npm-package-name": "^4.0.0",
     "chalk": "^4.1.0",
     "concurrently": "^7.0.0",
     "dotenv": "^16.0.0",
@@ -36,7 +35,6 @@
     "normalize-package-data": "^4.0.0",
     "npm-run-path": "^4.0.1",
     "npm-which": "^3.0.1",
-    "package-json": "^7.0.0",
     "picomatch": "^2.2.2",
     "prettier": "~2.7.0",
     "read-pkg-up": "^7.0.1",
@@ -52,7 +50,8 @@
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "1.0.2",
-    "typescript": "~4.8.2"
+    "typescript": "~4.8.2",
+    "validate-npm-package-name": "^4.0.0"
   },
   "description": "SEEK development toolkit for backend applications and packages",
   "devDependencies": {
