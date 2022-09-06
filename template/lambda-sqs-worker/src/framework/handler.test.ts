@@ -18,7 +18,7 @@ describe('createHandler', () => {
     const handler = createHandler((event) => {
       expect(event).toBe(input);
 
-      logger.info('hello from handler');
+      logger.info('Handler invoked');
 
       return Promise.resolve(output);
     });
@@ -28,8 +28,8 @@ describe('createHandler', () => {
     expect(logger.error).not.toHaveBeenCalled();
 
     expect(logger.info.mock.calls).toEqual([
-      ['hello from handler'],
-      ['request'],
+      ['Handler invoked'],
+      ['Function succeeded'],
     ]);
   });
 
@@ -38,9 +38,9 @@ describe('createHandler', () => {
 
     const handler = createHandler(() => Promise.reject(err));
 
-    await expect(handler(input, ctx)).rejects.toThrow('invoke error');
+    await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error.mock.calls).toEqual([[{ err }, 'request']]);
+    expect(logger.error.mock.calls).toEqual([[{ err }, 'Function failed']]);
 
     expect(logger.info).not.toHaveBeenCalled();
   });
@@ -52,9 +52,9 @@ describe('createHandler', () => {
       throw err;
     });
 
-    await expect(handler(input, ctx)).rejects.toThrow('invoke error');
+    await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error.mock.calls).toEqual([[{ err }, 'request']]);
+    expect(logger.error.mock.calls).toEqual([[{ err }, 'Function failed']]);
 
     expect(logger.info).not.toHaveBeenCalled();
   });

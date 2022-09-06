@@ -65,7 +65,7 @@ describe('handler', () => {
   it('throws on invalid input', () => {
     const event = createSqsEvent(['}']);
 
-    return expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    return expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
   });
 
   it('bubbles up scoring service error', async () => {
@@ -75,9 +75,9 @@ describe('handler', () => {
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 
   it('bubbles up SNS error', async () => {
@@ -87,9 +87,9 @@ describe('handler', () => {
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 
   it('throws on zero records', async () => {
@@ -97,9 +97,9 @@ describe('handler', () => {
 
     const event = createSqsEvent([]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 
   it('throws on multiple records', async () => {
@@ -110,8 +110,8 @@ describe('handler', () => {
       JSON.stringify(jobPublished),
     ]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 });

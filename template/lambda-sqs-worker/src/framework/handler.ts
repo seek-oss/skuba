@@ -1,10 +1,16 @@
-import { Context } from 'aws-lambda';
 import { datadog } from 'datadog-lambda-js';
 
 import { config } from 'src/config';
 import { logger, loggerContext } from 'src/framework/logging';
 
-type Handler<Event, Output> = (event: Event) => Promise<Output>;
+interface LambdaContext {
+  awsRequestId: string;
+}
+
+type Handler<Event, Output> = (
+  event: Event,
+  ctx: LambdaContext,
+) => Promise<Output>;
 
 /**
  * Conditionally applies the Datadog wrapper to a Lambda handler.
@@ -20,18 +26,18 @@ const withDatadog = <Event, Output = unknown>(
 export const createHandler = <Event, Output = unknown>(
   fn: (event: Event) => Promise<Output>,
 ) =>
-  withDatadog((event: Event, { awsRequestId }: Context) =>
+  withDatadog<Event>((event, { awsRequestId }) =>
     loggerContext.run({ awsRequestId }, async () => {
       try {
         const output = await fn(event);
 
-        logger.info('request');
+        logger.info('Function succeeded');
 
         return output;
       } catch (err) {
-        logger.error({ err }, 'request');
+        logger.error({ err }, 'Function failed');
 
-        throw new Error('Invoke error');
+        throw new Error('Function failed');
       }
     }),
   );
