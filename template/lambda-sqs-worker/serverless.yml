@@ -19,6 +19,8 @@ custom:
     enableDDLogs: false
     # TODO: enable Datadog extension
     enabled: false
+    exclude:
+      - WorkerPreHook
     injectLogContext: false
   prune:
     automatic: true
