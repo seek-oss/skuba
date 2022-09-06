@@ -49,9 +49,9 @@ describe('handler', () => {
     expect(logger.error).not.toHaveBeenCalled();
 
     expect(logger.info.mock.calls).toEqual([
-      [{ count: 1 }, 'received jobs'],
-      [{ snsMessageId: expect.any(String) }, 'scored job'],
-      ['request'],
+      [{ count: 1 }, 'Received jobs'],
+      [{ snsMessageId: expect.any(String) }, 'Scored job'],
+      ['Function succeeded'],
     ]);
 
     expect(distribution.mock.calls).toEqual([
@@ -93,7 +93,7 @@ describe('handler', () => {
   });
 
   it('throws on zero records', async () => {
-    const err = new Error('received 0 records');
+    const err = new Error('Received 0 records');
 
     const event = createSqsEvent([]);
 
@@ -103,7 +103,7 @@ describe('handler', () => {
   });
 
   it('throws on multiple records', async () => {
-    const err = new Error('received 2 records');
+    const err = new Error('Received 2 records');
 
     const event = createSqsEvent([
       JSON.stringify(jobPublished),
