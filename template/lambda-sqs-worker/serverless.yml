@@ -4,21 +4,21 @@ configValidationMode: error
 
 params:
   default:
-    datadogApiKeySecretArn: arn:aws:secretsmanager:ap-southeast-2:ACCOUNT-ID:secret:SECRET-NAME
+    datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:ap-southeast-2:ACCOUNT-ID:secret:SECRET-NAME'
     description: <%- description %>
   dev:
-    deploymentBucket: 'TODO: deploymentBucketName'
+    deploymentBucket: 'TODO: deployment-bucket-name'
     isProduction: false
   prod:
-    deploymentBucket: 'TODO: deploymentBucketName'
+    deploymentBucket: 'TODO: deployment-bucket-name'
     isProduction: true
 
 custom:
   datadog:
-    # TODO: enable Datadog extension
-    # addExtension: true
     apiKeySecretArn: ${param:datadogApiKeySecretArn}
     enableDDLogs: false
+    # TODO: enable Datadog extension
+    enabled: false
     injectLogContext: false
   prune:
     automatic: true
