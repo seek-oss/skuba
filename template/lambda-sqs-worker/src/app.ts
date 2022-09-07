@@ -20,19 +20,19 @@ const smokeTest = async () => {
 export const handler = createHandler<SQSEvent>(async (event) => {
   // Treat an empty object as our smoke test event.
   if (!Object.keys(event).length) {
-    logger.info('received smoke test request');
+    logger.info('Received smoke test request');
     return smokeTest();
   }
 
   const count = event.Records.length;
 
   if (count !== 1) {
-    throw Error(`received ${count} records`);
+    throw Error(`Received ${count} records`);
   }
 
-  logger.info({ count }, 'received jobs');
+  logger.info({ count }, 'Received jobs');
 
-  metricsClient.increment('job.received', event.Records.length);
+  metricsClient.distribution('job.received', event.Records.length);
 
   const record = event.Records[0];
 
@@ -46,7 +46,7 @@ export const handler = createHandler<SQSEvent>(async (event) => {
 
   const snsMessageId = await sendPipelineEvent(scoredJob);
 
-  logger.info({ snsMessageId }, 'scored job');
+  logger.info({ snsMessageId }, 'Scored job');
 
-  metricsClient.increment('job.scored', 1);
+  metricsClient.distribution('job.scored', 1);
 });

@@ -4,21 +4,33 @@ configValidationMode: error
 
 params:
   default:
+    datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:SECRET-NAME'
     description: <%- description %>
   dev:
-    deploymentBucket: 'TODO: deploymentBucketName'
+    deploymentBucket: 'TODO: deployment-bucket-name'
     isProduction: false
   prod:
-    deploymentBucket: 'TODO: deploymentBucketName'
+    deploymentBucket: 'TODO: deployment-bucket-name'
     isProduction: true
 
 custom:
+  datadog:
+    addLayers: false
+    apiKeySecretArn: ${param:datadogApiKeySecretArn}
+    enableDDLogs: false
+    # TODO: enable Datadog extension
+    enabled: false
+    exclude:
+      - WorkerPreHook
+    injectLogContext: false
+    version: ${env:VERSION}
   prune:
     automatic: true
     number: 3
 
 plugins:
   - serverless-plugin-canary-deployments
+  - serverless-plugin-datadog
   - serverless-prune-plugin
 
 provider:
@@ -51,6 +63,9 @@ provider:
         - Action: lambda:InvokeFunction
           Effect: Allow
           Resource: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:functions.Worker.name}
+        - Action: secretsmanager:GetSecretValue
+          Effect: Allow
+          Resource: ${param:datadogApiKeySecretArn}-??????
         - Action: sns:Publish
           Effect: Allow
           Resource: !Ref DestinationTopic

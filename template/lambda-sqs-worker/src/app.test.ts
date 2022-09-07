@@ -17,7 +17,9 @@ describe('handler', () => {
 
   const score = chance.floating({ max: 1, min: 0 });
 
-  const increment = jest.spyOn(metricsClient, 'increment').mockReturnValue();
+  const distribution = jest
+    .spyOn(metricsClient, 'distribution')
+    .mockReturnValue();
 
   beforeAll(logger.spy);
   beforeAll(scoringService.spy);
@@ -32,7 +34,7 @@ describe('handler', () => {
 
   afterEach(() => {
     logger.clear();
-    increment.mockClear();
+    distribution.mockClear();
     scoringService.clear();
     sns.clear();
   });
@@ -47,12 +49,12 @@ describe('handler', () => {
     expect(logger.error).not.toHaveBeenCalled();
 
     expect(logger.info.mock.calls).toEqual([
-      [{ count: 1 }, 'received jobs'],
-      [{ snsMessageId: expect.any(String) }, 'scored job'],
-      ['request'],
+      [{ count: 1 }, 'Received jobs'],
+      [{ snsMessageId: expect.any(String) }, 'Scored job'],
+      ['Function succeeded'],
     ]);
 
-    expect(increment.mock.calls).toEqual([
+    expect(distribution.mock.calls).toEqual([
       ['job.received', 1],
       ['job.scored', 1],
     ]);
@@ -63,7 +65,7 @@ describe('handler', () => {
   it('throws on invalid input', () => {
     const event = createSqsEvent(['}']);
 
-    return expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    return expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
   });
 
   it('bubbles up scoring service error', async () => {
@@ -73,9 +75,9 @@ describe('handler', () => {
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 
   it('bubbles up SNS error', async () => {
@@ -85,31 +87,31 @@ describe('handler', () => {
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 
   it('throws on zero records', async () => {
-    const err = new Error('received 0 records');
+    const err = new Error('Received 0 records');
 
     const event = createSqsEvent([]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 
   it('throws on multiple records', async () => {
-    const err = new Error('received 2 records');
+    const err = new Error('Received 2 records');
 
     const event = createSqsEvent([
       JSON.stringify(jobPublished),
       JSON.stringify(jobPublished),
     ]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 });
