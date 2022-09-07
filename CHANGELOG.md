@@ -1,5 +1,40 @@
 # skuba
 
+## 4.4.1
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Switch to modern Datadog integration ([#965](https://github.com/seek-oss/skuba/pull/965))
+
+  Datadog's CloudWatch integration and the associated [`createCloudWatchClient`](https://github.com/seek-oss/datadog-custom-metrics/pull/177) function from [`seek-datadog-custom-metrics`](https://github.com/seek-oss/datadog-custom-metrics) have been deprecated. We recommend [Datadog's Serverless Framework Plugin](https://docs.datadoghq.com/serverless/libraries_integrations/plugin/) along with their first-party [datadog-lambda-js](https://github.com/DataDog/datadog-lambda-js) and [dd-trace](https://github.com/DataDog/dd-trace-js) npm packages.
+
+- **deps:** Drop `package-json` ([#962](https://github.com/seek-oss/skuba/pull/962))
+
+  This circumvents the [following TypeScript compilation error](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/62111) on a clean install:
+
+  ```console
+  Error: node_modules/@types/cacheable-request/index.d.ts(0,0): error TS2709: Cannot use namespace 'ResponseLike' as a type.
+  ```
+
+  If you run into this issue elsewhere in your project, you can temporarily work around it with a [resolution](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) in your `package.json`:
+
+  ```json
+  {
+    "resolutions": {
+      "@types/responselike": "1.0.0"
+    }
+  }
+  ```
+
+- **template/koa-rest-api:** Drop `uuid` ([#964](https://github.com/seek-oss/skuba/pull/964))
+
+  V4 UUIDs can be generated using the built-in [`crypto.randomUUID()`](https://nodejs.org/docs/latest-v16.x/api/crypto.html#cryptorandomuuidoptions) function starting from Node.js 14.17. This is analogous to the [`Crypto.randomUUID()`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID) Web API.
+
+  ```diff
+  - import { v4 as randomUUID } from 'uuid';
+  + import { randomUUID } from 'crypto';
+  ```
+
 ## 4.4.0
 
 ### Minor Changes
