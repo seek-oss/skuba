@@ -12,9 +12,10 @@ Next steps:
 2. [ ] Follow [Gutenberg] instructions for [installing on your repository].
 3. [ ] Push local commits to the upstream GitHub branch.
 4. [ ] Configure [GitHub repository settings].
-5. [ ] Keep dependencies up to date with [Renovate];
-       request installation in [SEEK-Jobs/renovate].
-6. [ ] Delete this checklist 😌.
+5. [ ] Delete this checklist 😌.
+
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
+[installing on your repository]: https://github.com/SEEK-Jobs/gutenberg#installing-on-your-repository
 
 ## API
 
@@ -102,11 +103,7 @@ Here are some branches that **semantic-release** supports by default:
 For more information, see the **semantic-release** docs on [triggering a release].
 
 [distribution tags]: https://docs.npmjs.com/adding-dist-tags-to-packages
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [gutenberg]: https://github.com/SEEK-Jobs/gutenberg
-[installing on your repository]: https://github.com/SEEK-Jobs/gutenberg#installing-on-your-repository
-[renovate]: https://github.com/apps/renovate
 [seek-jobs]: https://github.com/orgs/seek-jobs/sso
-[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
 [semantic-release]: https://github.com/semantic-release/semantic-release
 [triggering a release]: https://github.com/semantic-release/semantic-release/#triggering-a-release

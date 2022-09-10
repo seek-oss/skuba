@@ -15,7 +15,7 @@ describe('sendPipelineEvent', () => {
 
     await expect(sendPipelineEvent({})).resolves.toBe(messageId);
 
-    expect(sns.publish).toBeCalledTimes(1);
+    expect(sns.publish).toHaveBeenCalledTimes(1);
   });
 
   it('bubbles up SNS error', () => {

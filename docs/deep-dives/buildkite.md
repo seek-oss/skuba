@@ -19,7 +19,7 @@ as well as common issues faced when running your project on a Buildkite agent.
 **skuba** can output issues detected by [`skuba lint`] as [Buildkite annotations].
 
 This can be enabled by propagating Buildkite environment variables and the `buildkite-agent` binary.
-For example, with the Docker plugin:
+For example, with the [Docker Buildkite plugin]:
 
 ```yaml
 steps:

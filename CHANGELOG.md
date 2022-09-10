@@ -1,5 +1,116 @@
 # skuba
 
+## 4.4.1
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Switch to modern Datadog integration ([#965](https://github.com/seek-oss/skuba/pull/965))
+
+  Datadog's CloudWatch integration and the associated [`createCloudWatchClient`](https://github.com/seek-oss/datadog-custom-metrics/pull/177) function from [`seek-datadog-custom-metrics`](https://github.com/seek-oss/datadog-custom-metrics) have been deprecated. We recommend [Datadog's Serverless Framework Plugin](https://docs.datadoghq.com/serverless/libraries_integrations/plugin/) along with their first-party [datadog-lambda-js](https://github.com/DataDog/datadog-lambda-js) and [dd-trace](https://github.com/DataDog/dd-trace-js) npm packages.
+
+- **deps:** Drop `package-json` ([#962](https://github.com/seek-oss/skuba/pull/962))
+
+  This circumvents the [following TypeScript compilation error](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/62111) on a clean install:
+
+  ```console
+  Error: node_modules/@types/cacheable-request/index.d.ts(0,0): error TS2709: Cannot use namespace 'ResponseLike' as a type.
+  ```
+
+  If you run into this issue elsewhere in your project, you can temporarily work around it with a [resolution](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) in your `package.json`:
+
+  ```json
+  {
+    "resolutions": {
+      "@types/responselike": "1.0.0"
+    }
+  }
+  ```
+
+- **template/koa-rest-api:** Drop `uuid` ([#964](https://github.com/seek-oss/skuba/pull/964))
+
+  V4 UUIDs can be generated using the built-in [`crypto.randomUUID()`](https://nodejs.org/docs/latest-v16.x/api/crypto.html#cryptorandomuuidoptions) function starting from Node.js 14.17. This is analogous to the [`Crypto.randomUUID()`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID) Web API.
+
+  ```diff
+  - import { v4 as randomUUID } from 'uuid';
+  + import { randomUUID } from 'crypto';
+  ```
+
+## 4.4.0
+
+### Minor Changes
+
+- **deps:** Jest 29 ([#953](https://github.com/seek-oss/skuba/pull/953))
+
+  This major release includes breaking changes. See the [announcement post](https://jestjs.io/blog/2022/08/25/jest-29) for more information.
+
+  The `collectCoverageOnlyFrom` configuration option has been removed, and the default snapshot format has been simplified:
+
+  ```diff
+  - Expected: \\"a\\"
+  + Expected: "a"
+
+  - Object {
+  -   Array []
+  - }
+  + {
+  +   []
+  + }
+  ```
+
+- **deps:** eslint-plugin-jest 27 ([#959](https://github.com/seek-oss/skuba/pull/959))
+
+  This major release includes breaking changes. See the [release note](https://github.com/jest-community/eslint-plugin-jest/releases/tag/v27.0.0) for more information.
+
+  The `jest/no-alias-methods` rule is now [enforced](https://github.com/jest-community/eslint-plugin-jest/pull/1221) and [autofixed](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) to discourage usage of alias methods that will be [removed in Jest 30](https://github.com/facebook/jest/issues/13164).
+
+  ```diff
+  - .toBeCalled()
+  + .toHaveBeenCalled()
+  ```
+
+- **configure, init:** Format `package.json` with [sort-package-json](https://github.com/keithamus/sort-package-json) ([#951](https://github.com/seek-oss/skuba/pull/951))
+
+- **deps:** TypeScript 4.8 ([#954](https://github.com/seek-oss/skuba/pull/954))
+
+  This major release includes breaking changes. See the [TypeScript 4.8](https://devblogs.microsoft.com/typescript/announcing-typescript-4-8/) announcement for more information.
+
+### Patch Changes
+
+- **configure, template:** Ignore linting on `.cdk.staging` directory ([#957](https://github.com/seek-oss/skuba/pull/957))
+
+- **configure, template:** Ignore linting on `cdk.out` directory ([#940](https://github.com/seek-oss/skuba/pull/940))
+
+- **template/\*-npm-package:** Use SSH scheme in repository URL ([#955](https://github.com/seek-oss/skuba/pull/955))
+
+  We have changed the templated format of the `package.json#repository/url` field. This may resolve `skuba release` errors that reference [Git password authentication is shutting down](https://github.blog/changelog/2021-08-12-git-password-authentication-is-shutting-down/) on the GitHub Blog.
+
+  ```diff
+  - git+https://github.com/org/repo.git
+  + git+ssh://git@github.com/org/repo.git
+  ```
+
+- **configure, template:** Allow `.idea` and `.vscode` ignore overrides ([#956](https://github.com/seek-oss/skuba/pull/956))
+
+  You can now append lines like `!.vscode/launch.json` to your ignore files to allow specific editor files to be committed, formatted and/or linted.
+
+## 4.3.1
+
+### Patch Changes
+
+- **deps:** jest-watch-typeahead ^2.0.0 ([#925](https://github.com/seek-oss/skuba/pull/925))
+
+- **template/\*-rest-api:** seek-jobs/gantry v2.0.0 ([#935](https://github.com/seek-oss/skuba/pull/935))
+
+- **template/lambda-sqs-worker:** Remove tty disable from pipeline ([#918](https://github.com/seek-oss/skuba/pull/918))
+
+- **test:** Prefer verbose failure message in execution error annotations ([#910](https://github.com/seek-oss/skuba/pull/910))
+
+- **template/lambda-sqs-worker:** Remove unnecessary IAM permission ([#908](https://github.com/seek-oss/skuba/pull/908))
+
+- **template:** Fix README link to ARM64 guide ([#913](https://github.com/seek-oss/skuba/pull/913))
+
+- **template/\*-rest-api:** Fix Gantry documentation links ([#931](https://github.com/seek-oss/skuba/pull/931))
+
 ## 4.3.0
 
 ### Minor Changes

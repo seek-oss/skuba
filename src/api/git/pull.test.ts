@@ -25,7 +25,7 @@ describe('fastForwardBranch', () => {
     expect(jest.mocked(git.fastForward).mock.calls[0][0]).toMatchInlineSnapshot(
       { http: expect.any(Object), fs: expect.any(Object) },
       `
-      Object {
+      {
         "dir": "/workdir/skuba",
         "fs": Any<Object>,
         "http": Any<Object>,

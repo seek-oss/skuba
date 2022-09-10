@@ -17,15 +17,11 @@ Next steps:
        see [Builds at SEEK] for more information.
 5. [ ] Push local commits to the upstream GitHub branch.
 6. [ ] Configure [GitHub repository settings].
-7. [ ] Keep dependencies up to date with [Renovate];
-       request installation in [SEEK-Jobs/renovate].
-8. [ ] Delete this checklist 😌.
+7. [ ] Delete this checklist 😌.
 
-[arm64]: https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html
+[arm64 guide]: https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html
 [builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
-[renovate]: https://github.com/apps/renovate
-[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
 
 ## Design
 
@@ -35,8 +31,8 @@ or serve as a starting point for a backend project if the other built-in templat
 
 It's a barebones Node.js application that comprises:
 
-- A [src/app.ts] that can be run locally to greet the user
-- A [src/app.test.ts] that demonstrates rudimentary Jest usage
+- A [src/app.ts](src/app.ts) that can be run locally to greet the user
+- A [src/app.test.ts](src/app.test.ts) that demonstrates rudimentary Jest usage
 
 ## Development
 

@@ -10,9 +10,9 @@ describe('formatObject', () => {
       }),
     ).toMatchInlineSnapshot(`
       "{
-        \\"a\\": null,
-        \\"b\\": 1,
-        \\"c\\": []
+        "a": null,
+        "b": 1,
+        "c": []
       }
       "
     `));
@@ -20,7 +20,7 @@ describe('formatObject', () => {
   it('handles ordinary JSON array formatting', () =>
     expect(formatObject({ files: ['1', '2', '3'] })).toMatchInlineSnapshot(`
       "{
-        \\"files\\": [\\"1\\", \\"2\\", \\"3\\"]
+        "files": ["1", "2", "3"]
       }
       "
     `));
@@ -29,10 +29,10 @@ describe('formatObject', () => {
     expect(formatObject({ files: ['1', '2', '3'] }, 'package.json'))
       .toMatchInlineSnapshot(`
       "{
-        \\"files\\": [
-          \\"1\\",
-          \\"2\\",
-          \\"3\\"
+        "files": [
+          "1",
+          "2",
+          "3"
         ]
       }
       "

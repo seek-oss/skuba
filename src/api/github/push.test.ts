@@ -79,7 +79,7 @@ describe('uploadFileChanges', () => {
     });
 
     expect(jest.mocked(graphql).mock.calls[0]).toMatchInlineSnapshot(`
-      Array [
+      [
         "
             mutation Mutation($input: CreateCommitOnBranchInput!) {
               createCommitOnBranch(input: $input) {
@@ -89,31 +89,31 @@ describe('uploadFileChanges', () => {
               }
             }
           ",
-        Object {
-          "headers": Object {
+        {
+          "headers": {
             "authorization": "Bearer api-token",
           },
-          "input": Object {
-            "branch": Object {
+          "input": {
+            "branch": {
               "branchName": "existing-branch",
               "repositoryNameWithOwner": "seek-oss/skuba",
             },
             "clientMutationId": "skuba",
             "expectedHeadOid": "commit-id",
-            "fileChanges": Object {
-              "additions": Array [
-                Object {
+            "fileChanges": {
+              "additions": [
+                {
                   "contents": "",
                   "path": "another-path",
                 },
               ],
-              "deletions": Array [
-                Object {
+              "deletions": [
+                {
                   "path": "some-path",
                 },
               ],
             },
-            "message": Object {
+            "message": {
               "body": "commit body",
               "headline": "commit headline",
             },
@@ -142,10 +142,10 @@ describe('readFileChanges', () => {
       deletions: [{ path: 'delete-path' }],
     };
 
-    expect(fs.promises.readFile).toBeCalledWith('some-path', {
+    expect(fs.promises.readFile).toHaveBeenCalledWith('some-path', {
       encoding: 'base64',
     });
-    expect(fs.promises.readFile).toBeCalledWith('another-path', {
+    expect(fs.promises.readFile).toHaveBeenCalledWith('another-path', {
       encoding: 'base64',
     });
     expect(result).toStrictEqual(expectedFileChanges);
@@ -193,7 +193,7 @@ describe('uploadAllFileChanges', () => {
     });
 
     expect(jest.mocked(graphql).mock.calls[0]).toMatchInlineSnapshot(`
-      Array [
+      [
         "
             mutation Mutation($input: CreateCommitOnBranchInput!) {
               createCommitOnBranch(input: $input) {
@@ -203,35 +203,35 @@ describe('uploadAllFileChanges', () => {
               }
             }
           ",
-        Object {
-          "headers": Object {
+        {
+          "headers": {
             "authorization": "Bearer api-token",
           },
-          "input": Object {
-            "branch": Object {
+          "input": {
+            "branch": {
               "branchName": "existing-branch",
               "repositoryNameWithOwner": "seek-oss/skuba",
             },
             "clientMutationId": "skuba",
             "expectedHeadOid": "commit-id",
-            "fileChanges": Object {
-              "additions": Array [
-                Object {
+            "fileChanges": {
+              "additions": [
+                {
                   "contents": "base64-contents",
                   "path": "modified-file",
                 },
-                Object {
+                {
                   "contents": "base64-contents",
                   "path": "new-file",
                 },
               ],
-              "deletions": Array [
-                Object {
+              "deletions": [
+                {
                   "path": "deleted-file",
                 },
               ],
             },
-            "message": Object {
+            "message": {
               "body": "commit body",
               "headline": "commit headline",
             },
@@ -265,11 +265,11 @@ describe('uploadAllFileChanges', () => {
       updateLocal: true,
     });
 
-    expect(fs.rm).toBeCalledWith('modified-file');
-    expect(fs.rm).toBeCalledWith('new-file');
-    expect(fs.rm).toBeCalledWith('deleted-file');
+    expect(fs.rm).toHaveBeenCalledWith('modified-file');
+    expect(fs.rm).toHaveBeenCalledWith('new-file');
+    expect(fs.rm).toHaveBeenCalledWith('deleted-file');
 
-    expect(git.fastForward).toBeCalledWith(
+    expect(git.fastForward).toHaveBeenCalledWith(
       expect.objectContaining({
         ref: 'existing-branch',
         dir: './',

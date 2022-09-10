@@ -42,9 +42,13 @@ describe('validate', () => {
       .send({ ...idDescription, id: null })
       .expect(422)
       .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(
-          `"Expected { id: string; description: string; }, but was incompatible"`,
-        ),
+        expect(text).toMatchInlineSnapshot(`
+          "Validation failed:
+          {
+            "id": "Expected string, but was null"
+          }.
+          Object should match { id: string; description: string; }"
+        `),
       );
   });
 
@@ -54,8 +58,13 @@ describe('validate', () => {
       .send({})
       .expect(422)
       .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(
-          `"Expected { id: string; description: string; }, but was incompatible"`,
-        ),
+        expect(text).toMatchInlineSnapshot(`
+          "Validation failed:
+          {
+            "id": "Expected string, but was missing",
+            "description": "Expected string, but was missing"
+          }.
+          Object should match { id: string; description: string; }"
+        `),
       ));
 });

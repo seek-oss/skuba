@@ -1,29 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`returns expected CloudFormation stack for dev 1`] = `
-Object {
-  "Resources": Object {
-    "kmskey49FBC3B3": Object {
+{
+  "Resources": {
+    "kmskey49FBC3B3": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "Description": "serviceName",
         "EnableKeyRotation": true,
-        "KeyPolicy": Object {
-          "Statement": Array [
-            Object {
+        "KeyPolicy": {
+          "Statement": [
+            {
               "Action": "kms:*",
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -33,8 +33,8 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Create*",
                 "kms:Describe*",
                 "kms:Enable*",
@@ -51,17 +51,17 @@ Object {
                 "kms:CancelKeyDeletion",
               ],
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -71,24 +71,24 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Encrypt",
                 "kms:ReEncrypt*",
                 "kms:GenerateDataKey*",
               ],
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -98,13 +98,13 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Decrypt",
                 "kms:GenerateDataKey",
               ],
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "sns.amazonaws.com",
               },
               "Resource": "*",
@@ -116,11 +116,11 @@ Object {
       "Type": "AWS::KMS::Key",
       "UpdateReplacePolicy": "Retain",
     },
-    "kmskeyAlias39245779": Object {
-      "Properties": Object {
+    "kmskeyAlias39245779": {
+      "Properties": {
         "AliasName": "alias/seek/self/serviceName",
-        "TargetKeyId": Object {
-          "Fn::GetAtt": Array [
+        "TargetKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
@@ -128,10 +128,10 @@ Object {
       },
       "Type": "AWS::KMS::Alias",
     },
-    "topic69831491": Object {
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+    "topic69831491": {
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
@@ -140,23 +140,23 @@ Object {
       },
       "Type": "AWS::SNS::Topic",
     },
-    "worker28EA3E30": Object {
-      "DependsOn": Array [
+    "worker28EA3E30": {
+      "DependsOn": [
         "workerServiceRoleDefaultPolicyBA498553",
         "workerServiceRole2130CC7F",
       ],
-      "Properties": Object {
-        "Architectures": Array [
+      "Properties": {
+        "Architectures": [
           "arm64",
         ],
-        "Code": Object {
-          "S3Bucket": Object {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Environment": Object {
-          "Variables": Object {
+        "Environment": {
+          "Variables": {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
@@ -165,14 +165,14 @@ Object {
         },
         "FunctionName": "serviceName",
         "Handler": "app.handler",
-        "KmsKeyArn": Object {
-          "Fn::GetAtt": Array [
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
             "Arn",
           ],
@@ -181,27 +181,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerServiceRole2130CC7F": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "workerServiceRole2130CC7F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -212,12 +212,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "workerServiceRoleDefaultPolicyBA498553": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "workerServiceRoleDefaultPolicyBA498553": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "sqs:ReceiveMessage",
                 "sqs:ChangeMessageVisibility",
                 "sqs:GetQueueUrl",
@@ -225,18 +225,18 @@ Object {
                 "sqs:GetQueueAttributes",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "workerqueueA05CE5C6",
                   "Arn",
                 ],
               },
             },
-            Object {
+            {
               "Action": "kms:Decrypt",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "kmskey49FBC3B3",
                   "Arn",
                 ],
@@ -246,41 +246,41 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "workerServiceRoleDefaultPolicyBA498553",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "workerServiceRole2130CC7F",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "workerSqsEventSourceappStackworkerqueue8281B9F47B9F582B": Object {
-      "Properties": Object {
-        "EventSourceArn": Object {
-          "Fn::GetAtt": Array [
+    "workerSqsEventSourceappStackworkerqueue8281B9F47B9F582B": {
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
             "workerqueueA05CE5C6",
             "Arn",
           ],
         },
-        "FunctionName": Object {
+        "FunctionName": {
           "Ref": "worker28EA3E30",
         },
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
-    "workerqueueA05CE5C6": Object {
+    "workerqueueA05CE5C6": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
         "QueueName": "serviceName",
-        "RedrivePolicy": Object {
-          "deadLetterTargetArn": Object {
-            "Fn::GetAtt": Array [
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::GetAtt": [
               "workerqueuedlq42262778",
               "Arn",
             ],
@@ -291,25 +291,25 @@ Object {
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
-    "workerqueuePolicy97054CB4": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "workerqueuePolicy97054CB4": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "sqs:SendMessage",
-              "Condition": Object {
-                "ArnEquals": Object {
-                  "aws:SourceArn": Object {
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
                     "Ref": "topic69831491",
                   },
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "sns.amazonaws.com",
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "workerqueueA05CE5C6",
                   "Arn",
                 ],
@@ -318,34 +318,34 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "Queues": Array [
-          Object {
+        "Queues": [
+          {
             "Ref": "workerqueueA05CE5C6",
           },
         ],
       },
       "Type": "AWS::SQS::QueuePolicy",
     },
-    "workerqueueappStacktopic0CA45134AFB31FF4": Object {
-      "Properties": Object {
-        "Endpoint": Object {
-          "Fn::GetAtt": Array [
+    "workerqueueappStacktopic0CA45134AFB31FF4": {
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
             "workerqueueA05CE5C6",
             "Arn",
           ],
         },
         "Protocol": "sqs",
-        "TopicArn": Object {
+        "TopicArn": {
           "Ref": "topic69831491",
         },
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "workerqueuedlq42262778": Object {
+    "workerqueuedlq42262778": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
@@ -360,29 +360,29 @@ Object {
 `;
 
 exports[`returns expected CloudFormation stack for prod 1`] = `
-Object {
-  "Resources": Object {
-    "kmskey49FBC3B3": Object {
+{
+  "Resources": {
+    "kmskey49FBC3B3": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "Description": "serviceName",
         "EnableKeyRotation": true,
-        "KeyPolicy": Object {
-          "Statement": Array [
-            Object {
+        "KeyPolicy": {
+          "Statement": [
+            {
               "Action": "kms:*",
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -392,8 +392,8 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Create*",
                 "kms:Describe*",
                 "kms:Enable*",
@@ -410,17 +410,17 @@ Object {
                 "kms:CancelKeyDeletion",
               ],
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -430,24 +430,24 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Encrypt",
                 "kms:ReEncrypt*",
                 "kms:GenerateDataKey*",
               ],
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -457,13 +457,13 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Decrypt",
                 "kms:GenerateDataKey",
               ],
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "sns.amazonaws.com",
               },
               "Resource": "*",
@@ -475,11 +475,11 @@ Object {
       "Type": "AWS::KMS::Key",
       "UpdateReplacePolicy": "Retain",
     },
-    "kmskeyAlias39245779": Object {
-      "Properties": Object {
+    "kmskeyAlias39245779": {
+      "Properties": {
         "AliasName": "alias/seek/self/serviceName",
-        "TargetKeyId": Object {
-          "Fn::GetAtt": Array [
+        "TargetKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
@@ -487,10 +487,10 @@ Object {
       },
       "Type": "AWS::KMS::Alias",
     },
-    "topic69831491": Object {
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+    "topic69831491": {
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
@@ -499,23 +499,23 @@ Object {
       },
       "Type": "AWS::SNS::Topic",
     },
-    "worker28EA3E30": Object {
-      "DependsOn": Array [
+    "worker28EA3E30": {
+      "DependsOn": [
         "workerServiceRoleDefaultPolicyBA498553",
         "workerServiceRole2130CC7F",
       ],
-      "Properties": Object {
-        "Architectures": Array [
+      "Properties": {
+        "Architectures": [
           "arm64",
         ],
-        "Code": Object {
-          "S3Bucket": Object {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Environment": Object {
-          "Variables": Object {
+        "Environment": {
+          "Variables": {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
@@ -524,14 +524,14 @@ Object {
         },
         "FunctionName": "serviceName",
         "Handler": "app.handler",
-        "KmsKeyArn": Object {
-          "Fn::GetAtt": Array [
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
             "Arn",
           ],
@@ -540,27 +540,27 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerServiceRole2130CC7F": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "workerServiceRole2130CC7F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -571,12 +571,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "workerServiceRoleDefaultPolicyBA498553": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "workerServiceRoleDefaultPolicyBA498553": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "sqs:ReceiveMessage",
                 "sqs:ChangeMessageVisibility",
                 "sqs:GetQueueUrl",
@@ -584,18 +584,18 @@ Object {
                 "sqs:GetQueueAttributes",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "workerqueueA05CE5C6",
                   "Arn",
                 ],
               },
             },
-            Object {
+            {
               "Action": "kms:Decrypt",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "kmskey49FBC3B3",
                   "Arn",
                 ],
@@ -605,41 +605,41 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "workerServiceRoleDefaultPolicyBA498553",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "workerServiceRole2130CC7F",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "workerSqsEventSourceappStackworkerqueue8281B9F47B9F582B": Object {
-      "Properties": Object {
-        "EventSourceArn": Object {
-          "Fn::GetAtt": Array [
+    "workerSqsEventSourceappStackworkerqueue8281B9F47B9F582B": {
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
             "workerqueueA05CE5C6",
             "Arn",
           ],
         },
-        "FunctionName": Object {
+        "FunctionName": {
           "Ref": "worker28EA3E30",
         },
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
-    "workerqueueA05CE5C6": Object {
+    "workerqueueA05CE5C6": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
         "QueueName": "serviceName",
-        "RedrivePolicy": Object {
-          "deadLetterTargetArn": Object {
-            "Fn::GetAtt": Array [
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::GetAtt": [
               "workerqueuedlq42262778",
               "Arn",
             ],
@@ -650,25 +650,25 @@ Object {
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
-    "workerqueuePolicy97054CB4": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "workerqueuePolicy97054CB4": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "sqs:SendMessage",
-              "Condition": Object {
-                "ArnEquals": Object {
-                  "aws:SourceArn": Object {
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
                     "Ref": "topic69831491",
                   },
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "sns.amazonaws.com",
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "workerqueueA05CE5C6",
                   "Arn",
                 ],
@@ -677,34 +677,34 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "Queues": Array [
-          Object {
+        "Queues": [
+          {
             "Ref": "workerqueueA05CE5C6",
           },
         ],
       },
       "Type": "AWS::SQS::QueuePolicy",
     },
-    "workerqueueappStacktopic0CA45134AFB31FF4": Object {
-      "Properties": Object {
-        "Endpoint": Object {
-          "Fn::GetAtt": Array [
+    "workerqueueappStacktopic0CA45134AFB31FF4": {
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
             "workerqueueA05CE5C6",
             "Arn",
           ],
         },
         "Protocol": "sqs",
-        "TopicArn": Object {
+        "TopicArn": {
           "Ref": "topic69831491",
         },
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "workerqueuedlq42262778": Object {
+    "workerqueuedlq42262778": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],

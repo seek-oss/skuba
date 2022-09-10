@@ -2,6 +2,7 @@ import path from 'path';
 
 import type { TestResult } from '@jest/test-result';
 import stripAnsi from 'strip-ansi';
+import dedent from 'ts-dedent';
 
 import type * as GitHub from '../../../../api/github';
 
@@ -52,7 +53,11 @@ export const createAnnotations = (
         path: path.relative(cwd, testResult.testFilePath),
         start_line: 1,
         end_line: 1,
-        message: stripAnsi(testResult.testExecError.message),
+        message: stripAnsi(
+          testResult.failureMessage
+            ? dedent(testResult.failureMessage)
+            : testResult.testExecError.message,
+        ),
         title: 'Jest',
       };
     }
