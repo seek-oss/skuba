@@ -1,6 +1,6 @@
 import { metricsClient } from 'src/framework/metrics';
 import { createCtx, createSqsEvent } from 'src/testing/handler';
-import { contextLogger } from 'src/testing/logging';
+import { logger } from 'src/testing/logging';
 import { scoringService, sns } from 'src/testing/services';
 import { chance, mockJobPublishedEvent } from 'src/testing/types';
 
@@ -17,9 +17,11 @@ describe('handler', () => {
 
   const score = chance.floating({ max: 1, min: 0 });
 
-  const increment = jest.spyOn(metricsClient, 'increment').mockReturnValue();
+  const distribution = jest
+    .spyOn(metricsClient, 'distribution')
+    .mockReturnValue();
 
-  beforeAll(contextLogger.spy);
+  beforeAll(logger.spy);
   beforeAll(scoringService.spy);
   beforeAll(sns.spy);
 
@@ -31,8 +33,8 @@ describe('handler', () => {
   });
 
   afterEach(() => {
-    contextLogger.clear();
-    increment.mockClear();
+    logger.clear();
+    distribution.mockClear();
     scoringService.clear();
     sns.clear();
   });
@@ -42,28 +44,28 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).resolves.toBeUndefined();
 
-    expect(scoringService.request).toBeCalledTimes(1);
+    expect(scoringService.request).toHaveBeenCalledTimes(1);
 
-    expect(contextLogger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(contextLogger.info.mock.calls).toEqual([
-      [{ count: 1 }, 'received jobs'],
-      [{ snsMessageId: expect.any(String) }, 'scored job'],
-      ['request'],
+    expect(logger.info.mock.calls).toEqual([
+      [{ count: 1 }, 'Received jobs'],
+      [{ snsMessageId: expect.any(String) }, 'Scored job'],
+      ['Function succeeded'],
     ]);
 
-    expect(increment.mock.calls).toEqual([
+    expect(distribution.mock.calls).toEqual([
       ['job.received', 1],
       ['job.scored', 1],
     ]);
 
-    expect(sns.publish).toBeCalledTimes(1);
+    expect(sns.publish).toHaveBeenCalledTimes(1);
   });
 
   it('throws on invalid input', () => {
     const event = createSqsEvent(['}']);
 
-    return expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    return expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
   });
 
   it('bubbles up scoring service error', async () => {
@@ -73,9 +75,9 @@ describe('handler', () => {
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 
   it('bubbles up SNS error', async () => {
@@ -85,31 +87,31 @@ describe('handler', () => {
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 
   it('throws on zero records', async () => {
-    const err = new Error('received 0 records');
+    const err = new Error('Received 0 records');
 
     const event = createSqsEvent([]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 
   it('throws on multiple records', async () => {
-    const err = new Error('received 2 records');
+    const err = new Error('Received 2 records');
 
     const event = createSqsEvent([
       JSON.stringify(jobPublished),
       JSON.stringify(jobPublished),
     ]);
 
-    await expect(app.handler(event, ctx)).rejects.toThrow('invoke error');
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(contextLogger.error).toBeCalledWith({ err }, 'request');
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
   });
 });

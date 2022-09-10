@@ -28,21 +28,28 @@ describe('validateJson', () => {
   it('blocks mistyped prop', () => {
     const input = JSON.stringify({ ...idDescription, id: null });
 
-    expect(() =>
-      validateJson(input, filterIdDescription),
-    ).toThrowErrorMatchingInlineSnapshot(
-      `"Expected { id: string; description: string; }, but was incompatible"`,
-    );
+    expect(() => validateJson(input, filterIdDescription))
+      .toThrowErrorMatchingInlineSnapshot(`
+      "Validation failed:
+      {
+        "id": "Expected string, but was null"
+      }.
+      Object should match { id: string; description: string; }"
+    `);
   });
 
   it('blocks missing prop', () => {
     const input = '{}';
 
-    expect(() =>
-      validateJson(input, filterIdDescription),
-    ).toThrowErrorMatchingInlineSnapshot(
-      `"Expected { id: string; description: string; }, but was incompatible"`,
-    );
+    expect(() => validateJson(input, filterIdDescription))
+      .toThrowErrorMatchingInlineSnapshot(`
+      "Validation failed:
+      {
+        "id": "Expected string, but was missing",
+        "description": "Expected string, but was missing"
+      }.
+      Object should match { id: string; description: string; }"
+    `);
   });
 
   it('blocks invalid JSON', () => {

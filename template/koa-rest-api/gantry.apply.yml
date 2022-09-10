@@ -125,3 +125,5 @@ tags:
   {{range $key, $value := .Values.tags}}
   {{$key}}: '{{$value}}'
   {{end}}
+
+cpuArchitecture: arm64

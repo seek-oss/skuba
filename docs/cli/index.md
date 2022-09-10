@@ -37,5 +37,4 @@ yarn format
 [gradle]: https://gradle.org/
 [make]: https://www.gnu.org/software/make/
 [package.json]: https://nodejs.dev/learn/the-package-json-guide
-[sku]: https://github.com/seek-oss/sku
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

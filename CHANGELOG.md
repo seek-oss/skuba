@@ -1,5 +1,299 @@
 # skuba
 
+## 4.4.1
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Switch to modern Datadog integration ([#965](https://github.com/seek-oss/skuba/pull/965))
+
+  Datadog's CloudWatch integration and the associated [`createCloudWatchClient`](https://github.com/seek-oss/datadog-custom-metrics/pull/177) function from [`seek-datadog-custom-metrics`](https://github.com/seek-oss/datadog-custom-metrics) have been deprecated. We recommend [Datadog's Serverless Framework Plugin](https://docs.datadoghq.com/serverless/libraries_integrations/plugin/) along with their first-party [datadog-lambda-js](https://github.com/DataDog/datadog-lambda-js) and [dd-trace](https://github.com/DataDog/dd-trace-js) npm packages.
+
+- **deps:** Drop `package-json` ([#962](https://github.com/seek-oss/skuba/pull/962))
+
+  This circumvents the [following TypeScript compilation error](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/62111) on a clean install:
+
+  ```console
+  Error: node_modules/@types/cacheable-request/index.d.ts(0,0): error TS2709: Cannot use namespace 'ResponseLike' as a type.
+  ```
+
+  If you run into this issue elsewhere in your project, you can temporarily work around it with a [resolution](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) in your `package.json`:
+
+  ```json
+  {
+    "resolutions": {
+      "@types/responselike": "1.0.0"
+    }
+  }
+  ```
+
+- **template/koa-rest-api:** Drop `uuid` ([#964](https://github.com/seek-oss/skuba/pull/964))
+
+  V4 UUIDs can be generated using the built-in [`crypto.randomUUID()`](https://nodejs.org/docs/latest-v16.x/api/crypto.html#cryptorandomuuidoptions) function starting from Node.js 14.17. This is analogous to the [`Crypto.randomUUID()`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID) Web API.
+
+  ```diff
+  - import { v4 as randomUUID } from 'uuid';
+  + import { randomUUID } from 'crypto';
+  ```
+
+## 4.4.0
+
+### Minor Changes
+
+- **deps:** Jest 29 ([#953](https://github.com/seek-oss/skuba/pull/953))
+
+  This major release includes breaking changes. See the [announcement post](https://jestjs.io/blog/2022/08/25/jest-29) for more information.
+
+  The `collectCoverageOnlyFrom` configuration option has been removed, and the default snapshot format has been simplified:
+
+  ```diff
+  - Expected: \\"a\\"
+  + Expected: "a"
+
+  - Object {
+  -   Array []
+  - }
+  + {
+  +   []
+  + }
+  ```
+
+- **deps:** eslint-plugin-jest 27 ([#959](https://github.com/seek-oss/skuba/pull/959))
+
+  This major release includes breaking changes. See the [release note](https://github.com/jest-community/eslint-plugin-jest/releases/tag/v27.0.0) for more information.
+
+  The `jest/no-alias-methods` rule is now [enforced](https://github.com/jest-community/eslint-plugin-jest/pull/1221) and [autofixed](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) to discourage usage of alias methods that will be [removed in Jest 30](https://github.com/facebook/jest/issues/13164).
+
+  ```diff
+  - .toBeCalled()
+  + .toHaveBeenCalled()
+  ```
+
+- **configure, init:** Format `package.json` with [sort-package-json](https://github.com/keithamus/sort-package-json) ([#951](https://github.com/seek-oss/skuba/pull/951))
+
+- **deps:** TypeScript 4.8 ([#954](https://github.com/seek-oss/skuba/pull/954))
+
+  This major release includes breaking changes. See the [TypeScript 4.8](https://devblogs.microsoft.com/typescript/announcing-typescript-4-8/) announcement for more information.
+
+### Patch Changes
+
+- **configure, template:** Ignore linting on `.cdk.staging` directory ([#957](https://github.com/seek-oss/skuba/pull/957))
+
+- **configure, template:** Ignore linting on `cdk.out` directory ([#940](https://github.com/seek-oss/skuba/pull/940))
+
+- **template/\*-npm-package:** Use SSH scheme in repository URL ([#955](https://github.com/seek-oss/skuba/pull/955))
+
+  We have changed the templated format of the `package.json#repository/url` field. This may resolve `skuba release` errors that reference [Git password authentication is shutting down](https://github.blog/changelog/2021-08-12-git-password-authentication-is-shutting-down/) on the GitHub Blog.
+
+  ```diff
+  - git+https://github.com/org/repo.git
+  + git+ssh://git@github.com/org/repo.git
+  ```
+
+- **configure, template:** Allow `.idea` and `.vscode` ignore overrides ([#956](https://github.com/seek-oss/skuba/pull/956))
+
+  You can now append lines like `!.vscode/launch.json` to your ignore files to allow specific editor files to be committed, formatted and/or linted.
+
+## 4.3.1
+
+### Patch Changes
+
+- **deps:** jest-watch-typeahead ^2.0.0 ([#925](https://github.com/seek-oss/skuba/pull/925))
+
+- **template/\*-rest-api:** seek-jobs/gantry v2.0.0 ([#935](https://github.com/seek-oss/skuba/pull/935))
+
+- **template/lambda-sqs-worker:** Remove tty disable from pipeline ([#918](https://github.com/seek-oss/skuba/pull/918))
+
+- **test:** Prefer verbose failure message in execution error annotations ([#910](https://github.com/seek-oss/skuba/pull/910))
+
+- **template/lambda-sqs-worker:** Remove unnecessary IAM permission ([#908](https://github.com/seek-oss/skuba/pull/908))
+
+- **template:** Fix README link to ARM64 guide ([#913](https://github.com/seek-oss/skuba/pull/913))
+
+- **template/\*-rest-api:** Fix Gantry documentation links ([#931](https://github.com/seek-oss/skuba/pull/931))
+
+## 4.3.0
+
+### Minor Changes
+
+- **test:** Add [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead) plugin ([#893](https://github.com/seek-oss/skuba/pull/893))
+
+  This enables typeahead suggestions when filtering by file or test name in watch mode.
+
+- **Git:** Add [fastForwardBranch](https://seek-oss.github.io/skuba/docs/development-api/git.html#fastforwardbranch) function ([#882](https://github.com/seek-oss/skuba/pull/882))
+
+- **deps:** TypeScript 4.7 ([#877](https://github.com/seek-oss/skuba/pull/877))
+
+  This major release includes breaking changes. See the [TypeScript 4.7](https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/) announcement for more information.
+
+  While ECMAScript Module support for Node.js is now stable in TypeScript, other aspects of our toolchain have not caught up yet; notably, Node.js still lacks stable APIs for Jest to implement its usual suite of mocking capabilities. We are holding off on recommending existing repositories to make the switch and on providing reference implementations via our templates. As it stands, migrating from CJS to ESM is still an arduous exercise in rewriting import statements and restructuring mocks and test suites at the bare minimum.
+
+- **GitHub:** Add functions to create and upload verified commits using the GitHub GraphQL API ([#882](https://github.com/seek-oss/skuba/pull/882))
+
+  See our [GitHub API documentation](https://seek-oss.github.io/skuba/docs/development-api/github.html) for more information.
+
+- **deps:** Prettier 2.7 ([#899](https://github.com/seek-oss/skuba/pull/899))
+
+  See the [release notes](https://prettier.io/blog/2022/06/14/2.7.0.html) for more information.
+
+### Patch Changes
+
+- **test:** Improve file detection for GitHub annotations ([#885](https://github.com/seek-oss/skuba/pull/885))
+
+- **deps:** package-json ^7.0.0 ([#903](https://github.com/seek-oss/skuba/pull/903))
+
+  Resolves [SNYK-JS-GOT-2932019](https://security.snyk.io/vuln/SNYK-JS-GOT-2932019).
+
+- **template/\*-rest-api:** seek-jobs/gantry v1.8.1 ([#887](https://github.com/seek-oss/skuba/pull/887))
+
+- **template/\*:** Remove `.me` files ([#902](https://github.com/seek-oss/skuba/pull/902))
+
+  SEEK is moving away from Codex to off-the-shelf software powered by Backstage `catalog-info.yaml` files.
+
+  At the moment we're only asking teams to document their systems, which typically span across multiple repositories. We may add `catalog-info.yaml` files back to the templates if there's a need for teams to document their components at a repository level.
+
+- **lint:** Use GitHub GraphQL API to upload verified autofix commits ([#882](https://github.com/seek-oss/skuba/pull/882))
+
+- **template:** Use ARM64 architecture ([#873](https://github.com/seek-oss/skuba/pull/873))
+
+  We now recommend building and running projects on ARM64 hardware for greater cost efficiency. This requires a Graviton-based Buildkite cluster; see our [ARM64 guide](https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html) for more information.
+
+## 4.2.2
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Avoid mutation of logger context ([#879](https://github.com/seek-oss/skuba/pull/879))
+
+  We now perform a shallow copy when retrieving the logger context from `AsyncLocalStorage`.
+
+  ```diff
+  - mixin: () => loggerContext.getStore() ?? {},
+  + mixin: () => ({ ...loggerContext.getStore() }),
+  ```
+
+## 4.2.1
+
+### Patch Changes
+
+- **template/private-npm-package:** Use `npm2` build agent queue ([#843](https://github.com/seek-oss/skuba/pull/843))
+
+- **lint, test:** Set timeout for Buildkite and GitHub integrations ([#835](https://github.com/seek-oss/skuba/pull/835))
+
+  Transient network failures can impact annotations and autofixes. We now specify a 30 second timeout for these integration features to prevent them from hanging and indefinitely preoccupying your build agents.
+
+- **template:** Time out Buildkite test steps after 10 minutes ([#842](https://github.com/seek-oss/skuba/pull/842))
+
+  Successful testing and linting should complete within this window. This timeout prevents commands from hanging and indefinitely preoccupying your Buildkite agents.
+
+  ```diff
+  steps:
+    - label: 🧪 Test & Lint
+  +   timeout_in_minutes: 10
+  ```
+
+- **cli:** Make warning logs more verbose ([#826](https://github.com/seek-oss/skuba/pull/826))
+
+- **template/lambda-sqs-worker:** Change deployment method to `direct` ([#868](https://github.com/seek-oss/skuba/pull/868))
+
+- **template/koa-rest-api:** Use [AsyncLocalStorage](https://nodejs.org/docs/latest-v16.x/api/async_context.html#asynchronous-context-tracking) to track logger context ([#864](https://github.com/seek-oss/skuba/pull/864))
+
+  We now employ [RequestLogging.createContextStorage](https://github.com/seek-oss/koala/blob/master/src/requestLogging/README.md#context-logging) to thread logging context through the middleware stack of your Koa application. This enables use of a singleton `logger` instance instead of manually propagating Koa context and juggling `rootLogger`s and `contextLogger`s.
+
+  Before:
+
+  ```typescript
+  import createLogger from '@seek/logger';
+  import Koa, { Context } from 'koa';
+  import { RequestLogging } from 'seek-koala';
+
+  const rootLogger = createLogger();
+
+  const contextLogger = (ctx: Context) =>
+    rootLogger.child(RequestLogging.contextFields(ctx));
+
+  const app = new Koa().use((ctx) => {
+    rootLogger.info('Has no context');
+
+    contextLogger(ctx).info('Has context');
+  });
+  ```
+
+  After:
+
+  ```typescript
+  import createLogger from '@seek/logger';
+  import Koa from 'koa';
+  import { RequestLogging } from 'seek-koala';
+
+  const { createContextMiddleware, mixin } =
+    RequestLogging.createContextStorage();
+
+  const contextMiddleware = createContextMiddleware();
+
+  const logger = createLogger({ mixin });
+
+  const app = new Koa().use(contextMiddleware).use((ctx) => {
+    logger.info('Has context');
+  });
+  ```
+
+- **template/lambda-sqs-worker:** Use [AsyncLocalStorage](https://nodejs.org/docs/latest-v16.x/api/async_context.html#asynchronous-context-tracking) to track logger context ([#871](https://github.com/seek-oss/skuba/pull/871))
+
+  We now employ this Node.js API to thread logging context through the handler of your Lambda function. This enables use of a singleton `logger` instance instead of manually propagating Lambda context and juggling `rootLogger`s and `contextLogger`s, and is equivalent to #864.
+
+  Before:
+
+  ```typescript
+  import createLogger from '@seek/logger';
+  import { Context } from 'aws-lambda';
+
+  const rootLogger = createLogger();
+
+  const contextLogger = ({ awsRequestId }: Context) =>
+    rootLogger.child({ awsRequestId });
+
+  const handler = async (_event: unknown, ctx: Context) => {
+    rootLogger.info('Has no context');
+
+    contextLogger(ctx).info('Has context');
+  };
+  ```
+
+  After:
+
+  ```typescript
+  import { AsyncLocalStorage } from 'async_hooks';
+
+  import createLogger from '@seek/logger';
+  import { Context } from 'aws-lambda';
+
+  const loggerContext = new AsyncLocalStorage<{ awsRequestId: string }>();
+
+  const logger = createLogger({
+    mixin: () => ({ ...loggerContext.getStore() }),
+  });
+
+  const handler = (_event: unknown, { awsRequestId }: Context) =>
+    loggerContext.run({ awsRequestId }, async () => {
+      logger.info('Has context');
+    });
+  ```
+
+- **template/lambda-sqs-worker\*:** Bump Node.js version to 16 ([#862](https://github.com/seek-oss/skuba/pull/862))
+
+- **build-package, lint:** Improve detection of SEEK Buildkite queues for serial execution ([#829](https://github.com/seek-oss/skuba/pull/829))
+
+- **lint:** Detect and autofix ESLint warnings ([#844](https://github.com/seek-oss/skuba/pull/844))
+
+- **lint:** Skip autofixing when ESLint reports no fixable issues ([#844](https://github.com/seek-oss/skuba/pull/844))
+
+- **format, lint:** Avoid unnecessary template literals ([#849](https://github.com/seek-oss/skuba/pull/849))
+
+  We now automatically convert unnecessary template literals into single-quoted strings for consistency.
+
+- **deps:** Jest 28 ([#856](https://github.com/seek-oss/skuba/pull/856))
+
+  This major release includes breaking changes. See the [announcement post](https://jestjs.io/blog/2022/04/25/jest-28) for more information.
+
 ## 4.2.0
 
 ### Minor Changes
