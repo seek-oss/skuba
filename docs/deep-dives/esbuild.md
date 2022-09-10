@@ -120,7 +120,7 @@ This integration is still experimental and only includes the bare minimum to sup
 
 1. Some TypeScript language features are not supported.
 
-   See esbuild's [TypeScript caveats](https://esbuild.github.io/content-types/#typescript-caveats) for more information.
+   See esbuild's [TypeScript caveats] for more information.
 
 2. esbuild is not wired up to [`skuba build-package`], [`skuba node`] nor [`skuba start`].
 
