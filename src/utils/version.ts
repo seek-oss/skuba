@@ -1,48 +1,27 @@
-import path from 'path';
-
+import searchNpm from 'libnpmsearch';
 import validatePackageName from 'validate-npm-package-name';
 
 import { getSkubaManifest } from './manifest';
-import { isObject } from './validation';
 import { withTimeout } from './wait';
 
-const loadPackageJson = async (
+export const latestNpmVersion = async (
   packageName: string,
-): Promise<Record<string, unknown>> => {
+): Promise<string> => {
   const { validForNewPackages } = validatePackageName(packageName);
 
   if (!validForNewPackages) {
     throw new Error(`Package "${packageName}" does not have a valid name`);
   }
 
-  const message = `Package "${packageName}" does not have a valid package.json manifest`;
+  const [result] = await searchNpm(packageName, { limit: 1, timeout: 5_000 });
 
-  let packageJson: unknown;
-  try {
-    packageJson = await import(path.posix.join(packageName, 'package.json'));
-  } catch {
-    throw new Error(message);
-  }
-
-  if (!isObject(packageJson)) {
-    throw new Error(message);
-  }
-
-  return packageJson;
-};
-
-export const latestNpmVersion = async (
-  packageName: string,
-): Promise<string> => {
-  const { version } = await loadPackageJson(packageName);
-
-  if (typeof version !== 'string') {
+  if (result?.name !== packageName) {
     throw new Error(
-      `Package "${packageName}" does not have a valid version in its package.json manifest`,
+      `Package "${packageName}" does not exist on the npm registry`,
     );
   }
 
-  return version;
+  return result.version;
 };
 
 const latestSkubaVersion = async (): Promise<string | null> => {
