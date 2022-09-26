@@ -1523,10 +1523,10 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
 
-"@types/express@*", "@types/express@4.17.13":
-  version "4.17.13"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.13.tgz#a76e2995728999bab51a33fabce1d705a3709034"
-  integrity sha512-6bSZTPaTIACxn48l50SR+axgrqm6qXFIxrdAKaG6PaJk3+zuUr35hBlgT7vOmJcum+OEaIBLtHV/qloEAFITeA==
+"@types/express@*", "@types/express@4.17.14":
+  version "4.17.14"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.14.tgz#143ea0557249bc1b3b54f15db4c81c3d4eb3569c"
+  integrity sha512-TEbt+vaPFQ+xpxFLFssxUDXj5cWCxZJjIcB7Yg0k0GMHGtgtQgpvx/MUQUeAkNbA9AAGrwkAsoeItdTgS7FMyg==
   dependencies:
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "^4.17.18"
@@ -5402,14 +5402,7 @@ libnpmpublish@^6.0.2:
     semver "^7.3.7"
     ssri "^9.0.0"
 
-libnpmsearch@^5.0.2:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/libnpmsearch/-/libnpmsearch-5.0.3.tgz#ed502a4c2c70ea36723180455fae1357546b2184"
-  integrity sha512-Ofq76qKAPhxbiyzPf/5LPjJln26VTKwU9hIU0ACxQ6tNtBJ1CHmI7iITrdp7vNezhZc0FlkXwrIpqXjhBJZgLQ==
-  dependencies:
-    npm-registry-fetch "^13.0.0"
-
-libnpmsearch@^5.0.4:
+libnpmsearch@^5.0.2, libnpmsearch@^5.0.4:
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/libnpmsearch/-/libnpmsearch-5.0.4.tgz#b32aa2b23051c00cdcc0912274d0d416e6655d81"
   integrity sha512-XHDmsvpN5+pufvGnfLRqpy218gcGGbbbXR6wPrDJyd1em6agKdYByzU5ccskDHH9iVm2UeLydpDsW1ksYuU0cg==
