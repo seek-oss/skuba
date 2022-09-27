@@ -78,7 +78,7 @@
     "remark-preset-lint-recommended": "6.1.2",
     "semver": "7.3.7",
     "supertest": "6.2.4",
-    "type-fest": "2.19.0"
+    "type-fest": "3.0.0"
   },
   "engines": {
     "node": ">=14.18"
