@@ -1,9 +1,5 @@
 import { agentFromMiddleware } from 'src/testing/server';
-import {
-  chance,
-  filterIdDescription,
-  mockIdDescription,
-} from 'src/testing/types';
+import { IdDescription, chance, mockIdDescription } from 'src/testing/types';
 
 import { jsonBodyParser } from './middleware';
 import { validate } from './validation';
@@ -12,7 +8,7 @@ const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
   const result = validate({
     ctx,
     input: ctx.request.body,
-    filter: filterIdDescription,
+    type: IdDescription,
   });
 
   ctx.body = result;
@@ -43,11 +39,17 @@ describe('validate', () => {
       .expect(422)
       .expect(({ text }) =>
         expect(text).toMatchInlineSnapshot(`
-          "Validation failed:
-          {
-            "id": "Expected string, but was null"
-          }.
-          Object should match { id: string; description: string; }"
+          "[
+            {
+              "code": "invalid_type",
+              "expected": "string",
+              "received": "null",
+              "path": [
+                "id"
+              ],
+              "message": "Expected string, received null"
+            }
+          ]"
         `),
       );
   });
@@ -59,12 +61,26 @@ describe('validate', () => {
       .expect(422)
       .expect(({ text }) =>
         expect(text).toMatchInlineSnapshot(`
-          "Validation failed:
-          {
-            "id": "Expected string, but was missing",
-            "description": "Expected string, but was missing"
-          }.
-          Object should match { id: string; description: string; }"
+          "[
+            {
+              "code": "invalid_type",
+              "expected": "string",
+              "received": "undefined",
+              "path": [
+                "id"
+              ],
+              "message": "Required"
+            },
+            {
+              "code": "invalid_type",
+              "expected": "string",
+              "received": "undefined",
+              "path": [
+                "description"
+              ],
+              "message": "Required"
+            }
+          ]"
         `),
       ));
 });

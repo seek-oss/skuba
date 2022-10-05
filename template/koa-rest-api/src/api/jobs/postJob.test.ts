@@ -27,11 +27,17 @@ describe('postJobHandler', () => {
       .expect(422)
       .expect(({ text }) =>
         expect(text).toMatchInlineSnapshot(`
-          "Validation failed:
-          {
-            "hirer": "Expected { id: string; }, but was missing"
-          }.
-          Object should match { hirer: { id: string; }; }"
+          "[
+            {
+              "code": "invalid_type",
+              "expected": "object",
+              "received": "undefined",
+              "path": [
+                "hirer"
+              ],
+              "message": "Required"
+            }
+          ]"
         `),
       );
   });

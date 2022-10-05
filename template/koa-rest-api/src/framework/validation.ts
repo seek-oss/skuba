@@ -1,23 +1,23 @@
+import { z } from 'zod';
+
 import { Context } from 'src/types/koa';
 
 export const validate = <T>({
   ctx,
   input,
-  filter,
+  type,
 }: {
   ctx: Context;
   input: unknown;
-  filter: (data: unknown) => T;
+  type: z.ZodSchema<T>;
 }) => {
   try {
-    return filter(input);
+    return type.parse(input);
   } catch (err) {
     // TODO: consider providing structured error messages for your consumers.
     return ctx.throw(422, err instanceof Error ? err.message : String(err));
   }
 };
 
-export const validateRequestBody = <T>(
-  ctx: Context,
-  filter: (input: unknown) => T,
-): T => validate({ ctx, input: ctx.request.body as unknown, filter });
+export const validateRequestBody = <T>(ctx: Context, type: z.ZodSchema<T>): T =>
+  validate<T>({ ctx, input: ctx.request.body as unknown, type });
