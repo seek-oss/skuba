@@ -8,7 +8,7 @@ import { metricsClient } from 'src/framework/metrics';
 import { validateJson } from 'src/framework/validation';
 import { scoreJobPublishedEvent, scoringService } from 'src/services/jobScorer';
 import { sendPipelineEvent } from 'src/services/pipelineEventSender';
-import { filterJobPublishedEvent } from 'src/types/pipelineEvents';
+import { JobPublishedEvent } from 'src/types/pipelineEvents';
 
 /**
  * Tests connectivity to ensure appropriate access and network configuration.
@@ -40,7 +40,7 @@ export const handler = createHandler<SQSEvent>(async (event) => {
   // the event and eventually send it to your dead-letter queue. If you don't
   // trust your source to provide consistently well-formed input, consider
   // catching and handling this error in code.
-  const publishedJob = validateJson(record.body, filterJobPublishedEvent);
+  const publishedJob = validateJson(record.body, JobPublishedEvent);
 
   const scoredJob = await scoreJobPublishedEvent(publishedJob);
 
