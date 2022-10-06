@@ -17,8 +17,8 @@ export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const stage = stageContext.check(this.node.tryGetContext('stage'));
-    const context = envContext.check(this.node.tryGetContext(stage));
+    const stage = stageContext.parse(this.node.tryGetContext('stage'));
+    const context = envContext.parse(this.node.tryGetContext(stage));
 
     const accountPrincipal = new aws_iam.AccountPrincipal(this.account);
 

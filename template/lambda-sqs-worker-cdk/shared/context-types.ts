@@ -1,30 +1,29 @@
-/* eslint-disable new-cap */
-import * as t from 'runtypes';
+import { z } from 'zod';
 
-export const stageContext = t.Union(t.Literal('dev'), t.Literal('prod'));
-export type StageContext = t.Static<typeof stageContext>;
+export const stageContext = z.enum(['dev', 'prod']);
+export type StageContext = z.infer<typeof stageContext>;
 
-export const envContext = t
-  .Record({
-    workerLambda: t
-      .Record({
-        reservedConcurrency: t.Number,
-        environment: t
-          .Record({
-            SOMETHING: t.String,
+export const envContext = z
+  .object({
+    workerLambda: z
+      .object({
+        reservedConcurrency: z.number(),
+        environment: z
+          .object({
+            SOMETHING: z.string(),
           })
-          .asReadonly(),
+          .transform((val) => Object.freeze(val)),
       })
-      .asReadonly(),
+      .transform((val) => Object.freeze(val)),
   })
-  .asReadonly();
+  .transform((val) => Object.freeze(val));
 
-export type EnvContext = t.Static<typeof envContext>;
+export type EnvContext = z.infer<typeof envContext>;
 
-export const globalContext = t
-  .Record({
-    appName: t.String,
+export const globalContext = z
+  .object({
+    appName: z.string(),
   })
-  .asReadonly();
+  .transform((val) => Object.freeze(val));
 
-export type GlobalContext = t.Static<typeof globalContext>;
+export type GlobalContext = z.infer<typeof globalContext>;

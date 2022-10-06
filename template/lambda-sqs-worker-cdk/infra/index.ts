@@ -6,7 +6,7 @@ import { AppStack } from './appStack';
 
 const app = new App();
 
-const context = globalContext.check(app.node.tryGetContext('global'));
+const context = globalContext.parse(app.node.tryGetContext('global'));
 
 // eslint-disable-next-line no-new
 new AppStack(app, 'appStack', {
