@@ -6,6 +6,13 @@
     "commitizen": "^4.2.4",
     "skuba": "*"
   },
+  "exports": {
+    ".": {
+      "types": "./lib-types/index.d.ts",
+      "import": "./lib-es2015/index.js",
+      "require": "./lib-commonjs/index.js"
+    }
+  },
   "files": [
     "lib*/**/*.d.ts",
     "lib*/**/*.js",
@@ -36,6 +43,7 @@
     }
   },
   "sideEffects": false,
+  "type": "module",
   "types": "./lib-types/index.d.ts",
   "version": "0.0.0-semantically-released"
 }
