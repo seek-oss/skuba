@@ -42,7 +42,7 @@ node_modules*/
 ",
     "operation": "A",
   },
-  ".eslintrc.js": {
+  ".eslintrc.cjs": {
     "data": "module.exports = {
   extends: ['skuba'],
 };
@@ -107,7 +107,7 @@ gantry*.yml
 ",
     "operation": "A",
   },
-  ".prettierrc.js": {
+  ".prettierrc.cjs": {
     "data": "module.exports = require('skuba/config/prettier');
 ",
     "operation": "A",

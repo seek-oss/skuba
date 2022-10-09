@@ -43,7 +43,7 @@ export const init = async () => {
     // prefer template-specific files
     overwrite: false,
     processors,
-    // base template has files like _.eslintrc.js
+    // base template has files like _.eslintrc.cjs
     stripUnderscorePrefix: true,
   });
 

@@ -81,7 +81,7 @@ describe('tsconfigModule', () => {
       'tsconfig.build.json': '{}',
       'tsconfig.json':
         '{"compilerOptions": {"target": "ES2020"}, "exclude": [".idea"], "include": ["src"]}',
-      '.eslintrc.js': undefined,
+      '.eslintrc.cjs': undefined,
       '.prettierrc.toml': undefined,
       'package.json': JSON.stringify({
         name: 'secret-service',

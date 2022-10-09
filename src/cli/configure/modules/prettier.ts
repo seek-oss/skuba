@@ -6,13 +6,14 @@ import type { Module } from '../types';
 
 export const prettierModule = async (): Promise<Module> => {
   const [configFile, ignoreFile] = await Promise.all([
-    readBaseTemplateFile('_.prettierrc.js'),
+    readBaseTemplateFile('_.prettierrc.cjs'),
     readBaseTemplateFile('_.prettierignore'),
   ]);
 
   return {
     ...deleteFiles(
       '.prettierrc',
+      'prettierrc.js',
       '.prettierrc.json',
       '.prettierrc.toml',
       '.prettierrc.yaml',
@@ -23,7 +24,7 @@ export const prettierModule = async (): Promise<Module> => {
     '.prettierignore': mergeWithIgnoreFile(ignoreFile),
 
     // enforce skuba opinions as there's no value in customising Prettier configs
-    '.prettierrc.js': () => configFile,
+    '.prettierrc.cjs': () => configFile,
 
     'package.json': withPackage(({ prettier, ...data }) => data),
   };

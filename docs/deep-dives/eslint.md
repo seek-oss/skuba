@@ -24,7 +24,7 @@ Please contribute to the [eslint-config-seek] preset if you feel something is mi
 It may worthwhile starting with a discussion in [#typescriptification] to garner feedback.
 
 If you wish to enforce additional rules within a given codebase or team,
-you can [extend] your `.eslintrc.js`:
+you can [extend] your `.eslintrc.cjs`:
 
 ```javascript
 module.exports = {

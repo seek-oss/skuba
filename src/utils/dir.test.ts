@@ -103,7 +103,7 @@ describe('createInclusionFilter', () => {
     it.each([
       '.buildkite/pipeline.yml',
       '.eslintignore',
-      '.prettierrc.js',
+      '.prettierrc.cjs',
       'Dockerfile',
       'jest.config.ts',
       'README.md',

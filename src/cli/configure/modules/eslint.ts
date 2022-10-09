@@ -7,13 +7,13 @@ import type { Module } from '../types';
 
 export const eslintModule = async (): Promise<Module> => {
   const [configFile, ignoreFile] = await Promise.all([
-    readBaseTemplateFile('_.eslintrc.js'),
+    readBaseTemplateFile('_.eslintrc.cjs'),
     readBaseTemplateFile('_.eslintignore'),
   ]);
 
   return {
     ...deleteFiles(
-      '.eslintrc.cjs',
+      '.eslintrc.js',
       '.eslintrc.yaml',
       '.eslintrc.yml',
       '.eslintrc.json',
@@ -21,7 +21,7 @@ export const eslintModule = async (): Promise<Module> => {
     ),
 
     // allow customised ESLint configs that extend skuba
-    '.eslintrc.js': (inputFile) => {
+    '.eslintrc.cjs': (inputFile) => {
       if (inputFile?.includes('skuba')) {
         const processedFile = inputFile.replace(
           /require.resolve\(['"](@seek\/)?skuba\/config\/eslint['"]\)/,
