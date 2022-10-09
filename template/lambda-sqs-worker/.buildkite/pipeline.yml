@@ -32,7 +32,7 @@ configs:
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - docker-compose#v3.13.0:
+        - docker-compose#v4.0.0:
             dependencies: false
             run: app
       retry:
@@ -60,7 +60,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v3.13.0:
+      - docker-compose#v4.0.0:
           run: app
     timeout_in_minutes: 10
 
