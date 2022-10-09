@@ -158,7 +158,7 @@ Familiarise yourself with the directory structure that **skuba** has created:
 ├── Dockerfile
 ├── README.md
 ├── docker-compose.yml
-├── jest.config.cjs
+├── jest.config.ts
 ├── jest.setup.ts
 ├── package.json
 ├── skuba.template.cjs
