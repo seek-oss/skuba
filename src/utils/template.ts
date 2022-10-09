@@ -87,7 +87,7 @@ export const TemplateConfig = t.Record({
   type: ProjectType.optional(),
 });
 
-export const TEMPLATE_CONFIG_FILENAME = 'skuba.template.js';
+export const TEMPLATE_CONFIG_FILENAME = 'skuba.template.cjs';
 
 export const TEMPLATE_DIR = path.join(__dirname, '..', '..', 'template');
 

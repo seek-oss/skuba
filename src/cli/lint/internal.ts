@@ -15,7 +15,7 @@ const noSkubaTemplateJs = async () => {
 
   const templateConfigPath = path.join(
     path.dirname(manifest.path),
-    'skuba.template.js',
+    'skuba.template.cjs',
   );
 
   if (await pathExists(templateConfigPath)) {

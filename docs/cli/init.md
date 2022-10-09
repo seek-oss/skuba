@@ -161,7 +161,7 @@ Familiarise yourself with the directory structure that **skuba** has created:
 ├── jest.config.js
 ├── jest.setup.ts
 ├── package.json
-├── skuba.template.js
+├── skuba.template.cjs
 ├── tsconfig.build.json
 ├── tsconfig.json
 └── yarn.lock
