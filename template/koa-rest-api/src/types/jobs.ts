@@ -8,9 +8,9 @@ export interface Job {
   };
 }
 
-export type JobInput = z.infer<typeof JobInput>;
+export type JobInput = z.infer<typeof JobInputSchema>;
 
-export const JobInput = z.object({
+export const JobInputSchema = z.object({
   hirer: z.object({
     id: z.string(),
   }),

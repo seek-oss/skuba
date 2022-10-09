@@ -3,9 +3,9 @@ import { z } from 'zod';
 
 import { JobInput } from 'src/types/jobs';
 
-export type IdDescription = z.infer<typeof IdDescription>;
+export type IdDescription = z.infer<typeof IdDescriptionSchema>;
 
-export const IdDescription = z.object({
+export const IdDescriptionSchema = z.object({
   id: z.string(),
   description: z.string(),
 });

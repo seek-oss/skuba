@@ -1,15 +1,15 @@
 import { z } from 'zod';
 
-export type JobScorerInput = z.infer<typeof JobScorerInput>;
+export type JobScorerInput = z.infer<typeof JobScorerInputSchema>;
 
-const JobScorerInput = z.object({
+const JobScorerInputSchema = z.object({
   id: z.string(),
   details: z.string(),
 });
 
-export type JobScorerOutput = z.infer<typeof JobScorerOutput>;
+export type JobScorerOutput = z.infer<typeof JobScorerOutputSchema>;
 
-export const JobScorerOutput = z.object({
+export const JobScorerOutputSchema = z.object({
   id: z.string(),
   score: z.number(),
 });

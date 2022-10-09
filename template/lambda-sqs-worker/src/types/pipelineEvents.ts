@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-export type JobPublishedEvent = z.infer<typeof JobPublishedEvent>;
+export type JobPublishedEvent = z.infer<typeof JobPublishedEventSchema>;
 
-export const JobPublishedEvent = z.object({
+export const JobPublishedEventSchema = z.object({
   data: z.object({
     details: z.string(),
   }),
@@ -10,9 +10,9 @@ export const JobPublishedEvent = z.object({
   eventType: z.literal('JobPublished'),
 });
 
-export type JobScoredEvent = z.infer<typeof JobScoredEvent>;
+export type JobScoredEvent = z.infer<typeof JobScoredEventSchema>;
 
-export const JobScoredEvent = z.object({
+export const JobScoredEventSchema = z.object({
   data: z.object({
     score: z.number(),
   }),

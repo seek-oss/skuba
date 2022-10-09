@@ -11,14 +11,14 @@ import {
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
 
-import { envContext, stageContext } from '../shared/context-types';
+import { envContextSchema, stageContextSchema } from '../shared/context-types';
 
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const stage = stageContext.parse(this.node.tryGetContext('stage'));
-    const context = envContext.parse(this.node.tryGetContext(stage));
+    const stage = stageContextSchema.parse(this.node.tryGetContext('stage'));
+    const context = envContextSchema.parse(this.node.tryGetContext(stage));
 
     const accountPrincipal = new aws_iam.AccountPrincipal(this.account);
 
