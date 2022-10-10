@@ -26,19 +26,9 @@ describe('postJobHandler', () => {
       .send(jobInput)
       .expect(422)
       .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(`
-          "[
-            {
-              "code": "invalid_type",
-              "expected": "object",
-              "received": "undefined",
-              "path": [
-                "hirer"
-              ],
-              "message": "Required"
-            }
-          ]"
-        `),
+        expect(text).toMatchInlineSnapshot(
+          `"{"message":"Input validation failed","invalidFields":{"/hirer":"Required"}}"`,
+        ),
       );
   });
 });

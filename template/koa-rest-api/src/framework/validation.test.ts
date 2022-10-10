@@ -42,19 +42,9 @@ describe('validate', () => {
       .send({ ...idDescription, id: null })
       .expect(422)
       .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(`
-          "[
-            {
-              "code": "invalid_type",
-              "expected": "string",
-              "received": "null",
-              "path": [
-                "id"
-              ],
-              "message": "Expected string, received null"
-            }
-          ]"
-        `),
+        expect(text).toMatchInlineSnapshot(
+          `"{"message":"Input validation failed","invalidFields":{"/id":"Expected string, received null"}}"`,
+        ),
       );
   });
 
@@ -64,27 +54,8 @@ describe('validate', () => {
       .send({})
       .expect(422)
       .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(`
-          "[
-            {
-              "code": "invalid_type",
-              "expected": "string",
-              "received": "undefined",
-              "path": [
-                "id"
-              ],
-              "message": "Required"
-            },
-            {
-              "code": "invalid_type",
-              "expected": "string",
-              "received": "undefined",
-              "path": [
-                "description"
-              ],
-              "message": "Required"
-            }
-          ]"
-        `),
+        expect(text).toMatchInlineSnapshot(
+          `"{"message":"Input validation failed","invalidFields":{"/id":"Required","/description":"Required"}}"`,
+        ),
       ));
 });
