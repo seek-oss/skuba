@@ -14,6 +14,6 @@ const TS_JEST_PATH = require.resolve(TS_JEST_NAME);
 module.exports.transform = Object.fromEntries(
   Object.entries(defaults.transform).map(([key, value]) => [
     key,
-    value === TS_JEST_NAME ? TS_JEST_PATH : value,
+    value === TS_JEST_NAME ? [TS_JEST_PATH, { isolatedModules: true }] : value,
   ]),
 );
