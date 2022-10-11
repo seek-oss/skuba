@@ -5,7 +5,7 @@ import {
 import {
   JobScorerInput,
   JobScorerOutput,
-  filterJobScorerOutput,
+  JobScorerOutputSchema,
 } from 'src/types/jobScorer';
 import { JobPublishedEvent, JobScoredEvent } from 'src/types/pipelineEvents';
 
@@ -39,7 +39,7 @@ const scoreJob = async ({
 }: JobScorerInput): Promise<JobScorerOutput> => {
   const score = await scoringService.request(details);
 
-  return filterJobScorerOutput({
+  return JobScorerOutputSchema.parse({
     id,
     score,
   });

@@ -4,8 +4,7 @@
     "aws-sdk": "^2.1011.0",
     "datadog-lambda-js": "^6.83.0",
     "skuba-dive": "^2.0.0",
-    "runtypes": "^6.4.1",
-    "runtypes-filter": "^0.6.0"
+    "zod": "^3.19.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.84",
