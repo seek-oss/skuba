@@ -1,5 +1,7 @@
 const { defaults } = require('ts-jest/presets');
 
+const { tryParseTsConfig } = require('./tsConfig');
+
 const TS_JEST_NAME = 'ts-jest';
 
 /**
@@ -10,10 +12,17 @@ const TS_JEST_NAME = 'ts-jest';
  */
 const TS_JEST_PATH = require.resolve(TS_JEST_NAME);
 
+const maybeTsConfig = tryParseTsConfig();
+
 // Rewrite `ts-jest` transformations using our resolved `TS_JEST_PATH`.
 module.exports.transform = Object.fromEntries(
   Object.entries(defaults.transform).map(([key, value]) => [
     key,
-    value === TS_JEST_NAME ? [TS_JEST_PATH, { isolatedModules: true }] : value,
+    value === TS_JEST_NAME
+      ? [
+          TS_JEST_PATH,
+          { isolatedModules: maybeTsConfig?.options.isolatedModules ?? true },
+        ]
+      : value,
   ]),
 );

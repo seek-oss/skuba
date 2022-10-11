@@ -56,19 +56,9 @@ describe('moduleNameMapper', () => {
 
   it('respects no paths', () => expect(act({})).toMatchInlineSnapshot(`{}`));
 
-  it('falls back on undefined paths', () =>
-    expect(act(undefined)).toMatchInlineSnapshot(`
-      {
-        "^src$": "<rootDir>/src",
-        "^src/(.*)$": "<rootDir>/src/$1",
-      }
-    `));
+  it('defaults to no paths on undefined', () =>
+    expect(act(undefined)).toMatchInlineSnapshot(`{}`));
 
-  it('falls back on invalid config', () =>
-    expect(act('INVALID')).toMatchInlineSnapshot(`
-      {
-        "^src$": "<rootDir>/src",
-        "^src/(.*)$": "<rootDir>/src/$1",
-      }
-    `));
+  it('defaults to no paths on invalid config', () =>
+    expect(act('INVALID')).toMatchInlineSnapshot(`{}`));
 });
