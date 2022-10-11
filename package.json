@@ -6,6 +6,7 @@
     "url": "https://github.com/seek-oss/skuba/issues"
   },
   "dependencies": {
+    "@esbuild-plugins/tsconfig-paths": "^0.0.4",
     "@jest/types": "^29.0.0",
     "@octokit/graphql": "^5.0.0",
     "@octokit/graphql-schema": "^12.0.0",
@@ -18,6 +19,7 @@
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
+    "esbuild": "~0.15.7",
     "eslint": "^8.11.0",
     "eslint-config-skuba": "1.1.4",
     "execa": "^5.0.0",
@@ -32,6 +34,7 @@
     "jest-watch-typeahead": "^2.1.1",
     "libnpmsearch": "^5.0.4",
     "lodash.mergewith": "^4.6.2",
+    "minimist": "^1.2.6",
     "normalize-package-data": "^4.0.0",
     "npm-run-path": "^4.0.1",
     "npm-which": "^3.0.1",
@@ -135,7 +138,7 @@
     "**/@types/node": ">=14.18"
   },
   "scripts": {
-    "build": "ts-node --transpile-only src/skuba build && scripts/postbuild.sh",
+    "build": "scripts/build.sh",
     "deploy": "scripts/deploy.sh",
     "format": "yarn skuba format",
     "lint": "yarn skuba lint && yarn lint:md",
@@ -151,6 +154,7 @@
   },
   "sideEffects": false,
   "skuba": {
+    "build": "esbuild",
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
