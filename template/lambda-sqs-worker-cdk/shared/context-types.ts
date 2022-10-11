@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-export const stageContextSchema = z.enum(['dev', 'prod']);
-export type StageContext = z.infer<typeof stageContextSchema>;
+export const StageContextSchema = z.enum(['dev', 'prod']);
+export type StageContext = z.infer<typeof StageContextSchema>;
 
-export const envContextSchema = z.object({
+export const EnvContextSchema = z.object({
   workerLambda: z.object({
     reservedConcurrency: z.number(),
     environment: z.object({
@@ -12,10 +12,10 @@ export const envContextSchema = z.object({
   }),
 });
 
-export type EnvContext = z.infer<typeof envContextSchema>;
+export type EnvContext = z.infer<typeof EnvContextSchema>;
 
-export const globalContextSchema = z.object({
+export const GlobalContextSchema = z.object({
   appName: z.string(),
 });
 
-export type GlobalContext = z.infer<typeof globalContextSchema>;
+export type GlobalContext = z.infer<typeof GlobalContextSchema>;
