@@ -1,6 +1,6 @@
 import {
+  IdDescriptionSchema,
   chance,
-  filterIdDescription,
   mockIdDescription,
 } from 'src/testing/types';
 
@@ -12,7 +12,7 @@ describe('validateJson', () => {
   it('permits valid input', () => {
     const input = JSON.stringify(idDescription);
 
-    expect(validateJson(input, filterIdDescription)).toStrictEqual(
+    expect(validateJson(input, IdDescriptionSchema)).toStrictEqual(
       idDescription,
     );
   });
@@ -20,7 +20,7 @@ describe('validateJson', () => {
   it('filters additional properties', () => {
     const input = JSON.stringify({ ...idDescription, hacker: chance.name() });
 
-    expect(validateJson(input, filterIdDescription)).toStrictEqual(
+    expect(validateJson(input, IdDescriptionSchema)).toStrictEqual(
       idDescription,
     );
   });
@@ -28,27 +28,47 @@ describe('validateJson', () => {
   it('blocks mistyped prop', () => {
     const input = JSON.stringify({ ...idDescription, id: null });
 
-    expect(() => validateJson(input, filterIdDescription))
+    expect(() => validateJson(input, IdDescriptionSchema))
       .toThrowErrorMatchingInlineSnapshot(`
-      "Validation failed:
-      {
-        "id": "Expected string, but was null"
-      }.
-      Object should match { id: string; description: string; }"
+      "[
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "received": "null",
+          "path": [
+            "id"
+          ],
+          "message": "Expected string, received null"
+        }
+      ]"
     `);
   });
 
   it('blocks missing prop', () => {
     const input = '{}';
 
-    expect(() => validateJson(input, filterIdDescription))
+    expect(() => validateJson(input, IdDescriptionSchema))
       .toThrowErrorMatchingInlineSnapshot(`
-      "Validation failed:
-      {
-        "id": "Expected string, but was missing",
-        "description": "Expected string, but was missing"
-      }.
-      Object should match { id: string; description: string; }"
+      "[
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "received": "undefined",
+          "path": [
+            "id"
+          ],
+          "message": "Required"
+        },
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "received": "undefined",
+          "path": [
+            "description"
+          ],
+          "message": "Required"
+        }
+      ]"
     `);
   });
 
@@ -56,7 +76,7 @@ describe('validateJson', () => {
     const input = '}';
 
     expect(() =>
-      validateJson(input, filterIdDescription),
+      validateJson(input, IdDescriptionSchema),
     ).toThrowErrorMatchingInlineSnapshot(
       `"Unexpected token } in JSON at position 0"`,
     );
