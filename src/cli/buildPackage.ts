@@ -1,7 +1,7 @@
 import { hasSerialFlag } from '../utils/args';
 import { execConcurrently } from '../utils/exec';
 
-export const buildPackage = (args = process.argv) =>
+export const buildPackage = (args = process.argv.slice(2)) =>
   execConcurrently(
     [
       {
