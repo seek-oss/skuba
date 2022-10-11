@@ -4,25 +4,27 @@ import { z } from 'zod';
 import { Context } from 'src/types/koa';
 
 /**
- * Converts a ZodError into an invalidFields object
+ * Converts a `ZodError` into an `invalidFields` object
  *
- * example ZodError:
+ * For example, the `ZodError`:
  *
  * ```json
  * {
- *   "issues":[
+ *   "issues": [
  *     {
- *       "code":"invalid_type",
- *       "expected":"string",
- *       "received":"undefined",
- *       "path":["advertiserId"],
- *       "message":"advertiserId is required in the URL"
+ *       "code": "invalid_type",
+ *       "expected": "string",
+ *       "received": "undefined",
+ *       "path": ["advertiserId"],
+ *       "message": "advertiserId is required in the URL"
  *     }
  *   ],
- *   "name":"ZodError"
+ *   "name": "ZodError"
  * }
  * ```
+ *
  * Returns:
+ *
  * ```json
  * { "/advertiserId": "advertiserId is required in the URL" }
  * ```
