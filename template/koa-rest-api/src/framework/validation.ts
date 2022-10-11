@@ -29,7 +29,9 @@ import { Context } from 'src/types/koa';
  * { "/advertiserId": "advertiserId is required in the URL" }
  * ```
  */
-const parseInvalidFieldsFromError = (err: z.ZodError): Record<string, string> =>
+const parseInvalidFieldsFromError = ({
+  errors,
+}: z.ZodError): Record<string, string> =>
   Object.fromEntries(
     errors.map((err) => [`/${err.path.join('/')}`, err.message]),
   );
