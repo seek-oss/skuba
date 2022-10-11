@@ -26,6 +26,16 @@
       enabled: false,
     },
     {
+      matchManagers: ['npm'],
+      matchPackageNames: [
+        // Should be synchronised with AWS Lambda runtimes and Docker images
+        '@types/node',
+      ],
+      matchPaths: ['template/**'],
+
+      enabled: false,
+    },
+    {
       matchManagers: [
         'buildkite',
         'docker-compose',
