@@ -1,23 +1,64 @@
+import { ErrorMiddleware } from 'seek-koala';
+import { z } from 'zod';
+
 import { Context } from 'src/types/koa';
+
+/**
+ * Converts a `ZodError` into an `invalidFields` object
+ *
+ * For example, the `ZodError`:
+ *
+ * ```json
+ * {
+ *   "issues": [
+ *     {
+ *       "code": "invalid_type",
+ *       "expected": "string",
+ *       "received": "undefined",
+ *       "path": ["advertiserId"],
+ *       "message": "advertiserId is required in the URL"
+ *     }
+ *   ],
+ *   "name": "ZodError"
+ * }
+ * ```
+ *
+ * Returns:
+ *
+ * ```json
+ * { "/advertiserId": "advertiserId is required in the URL" }
+ * ```
+ */
+const parseInvalidFieldsFromError = ({
+  errors,
+}: z.ZodError): Record<string, string> =>
+  Object.fromEntries(
+    errors.map((err) => [`/${err.path.join('/')}`, err.message]),
+  );
 
 export const validate = <T>({
   ctx,
   input,
-  filter,
+  schema,
 }: {
   ctx: Context;
   input: unknown;
-  filter: (data: unknown) => T;
+  schema: z.ZodSchema<T>;
 }) => {
-  try {
-    return filter(input);
-  } catch (err) {
-    // TODO: consider providing structured error messages for your consumers.
-    return ctx.throw(422, err instanceof Error ? err.message : String(err));
+  const parseResult = schema.safeParse(input);
+  if (parseResult.success === false) {
+    return ctx.throw(
+      422,
+      new ErrorMiddleware.JsonResponse('Input validation failed', {
+        message: 'Input validation failed',
+        invalidFields: parseInvalidFieldsFromError(parseResult.error),
+      }),
+    );
   }
+  return parseResult.data;
 };
 
 export const validateRequestBody = <T>(
   ctx: Context,
-  filter: (input: unknown) => T,
-): T => validate({ ctx, input: ctx.request.body as unknown, filter });
+  schema: z.ZodSchema<T>,
+): T => validate<T>({ ctx, input: ctx.request.body as unknown, schema });

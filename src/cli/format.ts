@@ -7,7 +7,7 @@ import { runESLint } from './adapter/eslint';
 import { runPrettier } from './adapter/prettier';
 import { tryRefreshIgnoreFiles } from './configure/refreshIgnoreFiles';
 
-export const format = async (args = process.argv): Promise<void> => {
+export const format = async (args = process.argv.slice(2)): Promise<void> => {
   await tryRefreshIgnoreFiles();
 
   const debug = hasDebugFlag(args);

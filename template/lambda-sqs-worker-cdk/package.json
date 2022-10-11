@@ -1,12 +1,12 @@
 {
   "dependencies": {
     "@seek/logger": "^5.0.1",
-    "runtypes": "^6.3.2"
+    "zod": "^3.19.1"
   },
   "devDependencies": {
     "@aws-cdk/assert": "^2.24.0",
     "@types/aws-lambda": "^8.10.82",
-    "@types/node": "^16.0.0",
+    "@types/node": "16.11.64",
     "aws-cdk": "^2.24.0",
     "aws-cdk-lib": "^2.24.0",
     "constructs": "^10.0.17",

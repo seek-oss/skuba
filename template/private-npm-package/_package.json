@@ -2,7 +2,7 @@
   "dependencies": {},
   "description": "<%- description %>",
   "devDependencies": {
-    "@types/node": "^16.0.0",
+    "@types/node": "16.11.64",
     "commitizen": "^4.2.4",
     "skuba": "*"
   },
