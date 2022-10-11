@@ -30,12 +30,8 @@ import { Context } from 'src/types/koa';
  * ```
  */
 const parseInvalidFieldsFromError = (err: z.ZodError): Record<string, string> =>
-  err.errors.reduce(
-    (prevValue, currentValue) => ({
-      ...prevValue,
-      [`/${currentValue.path.join('/')}`]: currentValue.message,
-    }),
-    {},
+  Object.fromEntries(
+    errors.map((err) => [`/${err.path.join('/')}`, err.message]),
   );
 
 export const validate = <T>({
