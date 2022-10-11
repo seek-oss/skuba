@@ -89,8 +89,11 @@ export const esbuild = async (
 
   const start = process.hrtime.bigint();
 
-  // TODO: `bundle`, `minify`, `splitting`, `treeShaking`
+  // TODO: support `bundle`, `minify`, `splitting`, `treeShaking`
+  const bundle = false;
+
   await build({
+    bundle,
     entryPoints,
     format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
@@ -100,11 +103,14 @@ export const esbuild = async (
       compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
         ? 'node'
         : undefined,
-    plugins: [
-      tsconfigPaths({
-        tsconfig: { baseUrl: compilerOptions.baseUrl, compilerOptions },
-      }),
-    ],
+    plugins: bundle
+      ? []
+      : [
+          // evanw/esbuild#394
+          tsconfigPaths({
+            tsconfig: { baseUrl: compilerOptions.baseUrl, compilerOptions },
+          }),
+        ],
     sourcemap: compilerOptions.sourceMap,
     target: compilerOptions.target
       ? ScriptTarget[compilerOptions.target].toLocaleLowerCase()
