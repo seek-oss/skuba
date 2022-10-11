@@ -6,7 +6,7 @@
   "devDependencies": {
     "@aws-cdk/assert": "^2.24.0",
     "@types/aws-lambda": "^8.10.82",
-    "@types/node": "16.11.65",
+    "@types/node": "16.11.64",
     "aws-cdk": "^2.24.0",
     "aws-cdk-lib": "^2.24.0",
     "constructs": "^10.0.17",
