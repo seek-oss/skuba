@@ -1,5 +1,5 @@
 import * as app from './app';
 
 describe('app', () => {
-  it('is importable', () => expect(app).resolves.toEqual({}));
+  it('is importable', () => expect(app).toStrictEqual({}));
 });
