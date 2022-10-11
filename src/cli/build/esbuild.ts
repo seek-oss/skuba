@@ -97,6 +97,13 @@ export const esbuild = async (
     entryPoints,
     format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
+    loader: {
+      // TODO: should we use an external file loader instead?
+      // https://esbuild.github.io/content-types/#external-file
+      '.gql': 'text',
+      '.graphql': 'text',
+      '.sql': 'text',
+    },
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,
     platform:

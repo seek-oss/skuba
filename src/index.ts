@@ -16,7 +16,9 @@ export * as GitHub from './api/github';
 export * as Jest from './api/jest';
 export * as Net from './api/net';
 
-// evanw/esbuild#2388
+/**
+ * evanw/esbuild#2388
+ */
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace WebAssembly {
