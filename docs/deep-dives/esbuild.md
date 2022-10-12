@@ -103,7 +103,7 @@ At the same time, esbuild presents potential benefits for **skuba**:
    }
    ```
 
-   (**skuba** is likely to default this option to true in a future release.)
+   ([**skuba** v5.0.0] defaults this option to true.)
 
 1. ...and that's it!
 
@@ -126,9 +126,10 @@ This integration is still experimental and only includes the bare minimum to sup
 
 3. Bundling and minification are not supported.
 
-[`skuba lint`]: ../cli/lint.md#skuba-lint
+[**skuba** v5.0.0]: https://github.com/seek-oss/skuba/releases/tag/v5.0.0
 [`skuba build`]: ../cli/build.md#skuba-build
 [`skuba build-package`]: ../cli/build.md#skuba-build-package
+[`skuba lint`]: ../cli/lint.md#skuba-lint
 [`skuba node`]: ../cli/run.md#skuba-node
 [`skuba start`]: ../cli/run.md#skuba-start
 [babel]: https://babeljs.io/
@@ -141,6 +142,6 @@ This integration is still experimental and only includes the bare minimum to sup
 [skuba-dive]: https://github.com/seek-oss/skuba-dive
 [swc]: https://swc.rs/
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html
-[typescript caveats]: https://esbuild.github.io/content-types/#typescript-caveats
 [ttypescript]: https://github.com/cevek/ttypescript
+[typescript caveats]: https://esbuild.github.io/content-types/#typescript-caveats
 [vite]: https://vitejs.dev/

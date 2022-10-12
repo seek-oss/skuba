@@ -178,4 +178,63 @@ describe('jestModule', () => {
     );
     expect(outputFiles['jest.setup.ts']).toBeUndefined();
   });
+
+  it.each([
+    {
+      description: 'with comment',
+      config: `
+import { Jest } from 'skuba';
+
+export default Jest.mergePreset({
+  globals: {
+    'ts-jest': {
+      // seek-oss/skuba#626
+      isolatedModules: true,
+    },
+  },
+  // Rest of config
+});
+`,
+    },
+    {
+      description: 'without comment',
+      config: `
+import { Jest } from 'skuba';
+
+export default Jest.mergePreset({
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },
+  // Rest of config
+});
+`,
+    },
+  ])(
+    'strips outdated `isolatedModules` config snippets $description',
+    async ({ config }) => {
+      const inputFiles = {
+        'jest.config.ts': config,
+        'jest.setup.ts': undefined,
+      };
+
+      const outputFiles = await executeModule(
+        jestModule,
+        inputFiles,
+        defaultOpts,
+      );
+
+      expect(outputFiles['jest.config.ts']).toMatchInlineSnapshot(`
+      "
+      import { Jest } from 'skuba';
+
+      export default Jest.mergePreset({
+        // Rest of config
+      });
+      "
+    `);
+      expect(outputFiles['jest.setup.ts']).toBeUndefined();
+    },
+  );
 });

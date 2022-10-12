@@ -11,10 +11,6 @@ Discussion continues in the [esbuild](./esbuild.md) deep dive.
 
 ---
 
-## Background
-
----
-
 ## ~~Try it out~~
 
 > 🗑 This refers to functionality removed in [**skuba** v3.15.0].
@@ -47,7 +43,7 @@ Discussion continues in the [esbuild](./esbuild.md) deep dive.
    }
    ```
 
-   (**skuba** is likely to default this option to true in a future release.)
+   ([**skuba** v5.0.0] defaults this option to true.)
 
 1. ...and that's it!
 
@@ -89,5 +85,6 @@ Discussion continues in the [esbuild](./esbuild.md) deep dive.
    // Thrown: [...] Unexpected token
    ```
 
-[doesn't support all typescript language features]: https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats
 [**skuba** v3.15.0]: https://github.com/seek-oss/skuba/releases/tag/v3.15.0
+[**skuba** v5.0.0]: https://github.com/seek-oss/skuba/releases/tag/v5.0.0
+[doesn't support all typescript language features]: https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats

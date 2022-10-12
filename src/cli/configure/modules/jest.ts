@@ -10,6 +10,22 @@ import {
 } from '../processing/typescript';
 import type { Module } from '../types';
 
+const OUTDATED_ISOLATED_MODULES_CONFIG_SNIPPETS = [
+  `
+  globals: {
+    'ts-jest': {
+      // seek-oss/skuba#626
+      isolatedModules: true,
+    },
+  },`,
+  `
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },`,
+];
+
 // Jest options to preserve during migration
 const filterProps = createPropFilter([
   'collectCoverageFrom',
@@ -33,7 +49,10 @@ export const jestModule = async (): Promise<Module> => {
     'jest.config.ts': (tsFile, currentFiles, initialFiles) => {
       // Allow customised TS Jest config that extends skuba
       if (tsFile?.includes('skuba')) {
-        return tsFile;
+        return OUTDATED_ISOLATED_MODULES_CONFIG_SNIPPETS.reduce(
+          (acc, snippet) => acc.replace(snippet, ''),
+          tsFile,
+        );
       }
 
       const jsFile = initialFiles['jest.config.js'];

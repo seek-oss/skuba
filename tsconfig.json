@@ -2,8 +2,6 @@
   "compilerOptions": {
     "baseUrl": "src",
     "declaration": true,
-    // TODO: hoist to /config/tsconfig.json in skuba v5.
-    "isolatedModules": true,
     "lib": ["ES2020"],
     "outDir": "lib",
     "removeComments": false,
