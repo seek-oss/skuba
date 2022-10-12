@@ -12,7 +12,7 @@ This is not expected to affect most projects. If yours makes use of the `src` al
 import { app } from 'src/app.ts';
 ```
 
-Ensure that you declare these paths in a `tsconfig.json` situated in your project root:
+Ensure that you declare this path in a `tsconfig.json` located in your project root:
 
 ```diff
 {
