@@ -11,7 +11,7 @@
     "@octokit/graphql": "^5.0.0",
     "@octokit/graphql-schema": "^12.0.0",
     "@octokit/rest": "^19.0.0",
-    "@octokit/types": "^7.0.0",
+    "@octokit/types": "^8.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": ">=14.18",
     "chalk": "^4.1.0",
