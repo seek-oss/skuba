@@ -1,5 +1,106 @@
 # skuba
 
+## 5.0.0-beta.0
+
+### Major Changes
+
+- **test:** Remove default `src` module alias (350ea31)
+
+  Our Jest preset automatically registers your `tsconfig.json` paths as module aliases, but would previously fall back to the `src` alias if the option was omitted or failed to load. This default has now been removed.
+
+  This is not expected to affect most projects. If yours makes use of the `src` alias and its tests are now failing on imports like the following:
+
+  ```typescript
+  import { app } from 'src/app.ts';
+  ```
+
+  Ensure that you declare this path in a `tsconfig.json` located in your project root:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "paths": {
+  +     "src": ["src"]
+  +   }
+    },
+    "extends": "skuba/config/tsconfig.json"
+  }
+  ```
+
+- **build, test:** Default to isolated modules (350ea31)
+
+  Our Jest and TypeScript presets now enable [`isolatedModules`](https://www.typescriptlang.org/tsconfig#isolatedModules) by default. Your Jest tests should start quicker, consume less resources, and no longer get stuck on pesky type errors. This should not compromise the type safety of your project as `skuba lint` is intended to type check all production and testing code.
+
+  If your project contains files without imports and exports like `jest.setup.ts`, you can add an empty export statement to them to placate the TypeScript compiler:
+
+  ```console
+  jest.setup.ts(1,1): error TS1208: 'jest.setup.ts' cannot be compiled under '--isolatedModules' because it is considered a global script file. Add an import, export, or an empty 'export {}' statement to make it a module.
+  ```
+
+  ```diff
+  process.env.ENVIRONMENT = 'test';
+
+  + export {};
+  ```
+
+  If you previously enabled `isolatedModules` via the `globals` option in your Jest config, this is no longer functional due to syntax changes in ts-jest 29. You should be able to rely on our default going forward. `skuba configure` can attempt to clean up the stale option, or you can remove it from your `jest.config.ts` manually:
+
+  ```diff
+  export default Jest.mergePreset({
+  - globals: {
+  -   'ts-jest': {
+  -     // seek-oss/skuba#626
+  -     isolatedModules: true,
+  -   },
+  - },
+    // Rest of config
+  });
+  ```
+
+  Isolated modules are incompatible with certain language features like `const enum`s. We recommend migrating away from such features as they are not supported by the broader ecosystem, including transpilers like Babel and esbuild. If your project is not yet ready for isolated modules, you can override the default in your `tsconfig.json`:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "isolatedModules": false
+    },
+    "extends": "skuba/config/tsconfig.json"
+  }
+  ```
+
+### Minor Changes
+
+- **build:** Add experimental esbuild support (f693668)
+
+  You can now build your project with [esbuild](https://esbuild.github.io/). Note that this integration is still experimental, only includes the bare minimum to supplant a basic `tsc`-based build, and is not guaranteed to match `tsc` output. See the [esbuild deep dive](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/esbuild.md) for more information.
+
+  To opt in, modify your `package.json`:
+
+  ```diff
+  {
+    "skuba": {
+  +   "build": "esbuild",
+      "template": null
+    }
+  }
+  ```
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Replace Runtypes with Zod as default schema validator (1753391)
+
+- **template/lambda-sqs-worker:** Replace Runtypes with Zod as default schema validator (1753391)
+
+- **configure:** Fix package version lookups (680f6ec)
+
+  This resolves the following error:
+
+  ```console
+  Error: Package "xyz" does not have a valid package.json manifest
+  ```
+
+- **template/koa-rest-api:** Replace Runtypes with Zod as default schema validator (1753391)
+
 ## 4.4.1
 
 ### Patch Changes

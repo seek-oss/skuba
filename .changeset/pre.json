@@ -1,0 +1,16 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "4.4.1"
+  },
+  "changesets": [
+    "neat-parents-jump",
+    "pink-gorillas-repair",
+    "poor-bottles-hide",
+    "rare-cows-attend",
+    "thin-kings-teach",
+    "unlucky-cobras-tan",
+    "witty-fireants-look"
+  ]
+}
