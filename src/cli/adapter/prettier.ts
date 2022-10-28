@@ -8,6 +8,7 @@ import { crawlDirectory } from '../../utils/dir';
 import type { Logger } from '../../utils/logging';
 import { pluralise } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
+import { formatPackage, parsePackage } from '../configure/processing/package';
 
 let languages: SupportLanguage[] | undefined;
 
@@ -85,6 +86,18 @@ const formatOrLintFile = (
   } catch (err) {
     result.errored.push({ err, filepath });
     return;
+  }
+
+  // Perform additional formatting (i.e. sorting) on a `package.json` manifest.
+  try {
+    if (path.basename(filepath) === 'package.json') {
+      const packageJson = parsePackage(formatted);
+      if (packageJson) {
+        formatted = formatPackage(packageJson);
+      }
+    }
+  } catch {
+    // Our additional formatting is strictly optional; don't throw if it fails.
   }
 
   if (formatted === data) {

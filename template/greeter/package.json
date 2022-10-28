@@ -1,16 +1,6 @@
 {
-  "dependencies": {
-    "skuba-dive": "^2.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "16.11.64",
-    "skuba": "*"
-  },
-  "engines": {
-    "node": ">=16"
-  },
-  "license": "UNLICENSED",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "build": "skuba build",
     "format": "skuba format",
@@ -20,5 +10,15 @@
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
+  },
+  "dependencies": {
+    "skuba-dive": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "16.11.64",
+    "skuba": "*"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }
