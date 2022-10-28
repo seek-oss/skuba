@@ -7,10 +7,11 @@ Processed 2 files in <random>s.
 
 Prettier
 Processed 6 files in <random>s.
-Formatted 3 files:
+Formatted 4 files:
 b.md
 c.json
 d.js
+package.json
 "
 `;
 
