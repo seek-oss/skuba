@@ -1,9 +1,71 @@
 {
+  "name": "skuba",
+  "version": "4.4.1",
+  "private": false,
+  "description": "SEEK development toolkit for backend applications and packages",
+  "homepage": "https://github.com/seek-oss/skuba#readme",
+  "bugs": {
+    "url": "https://github.com/seek-oss/skuba/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/seek-oss/skuba.git"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "lib/index.js",
+  "types": "./lib/index.d.ts",
   "bin": {
     "skuba": "lib/skuba.js"
   },
-  "bugs": {
-    "url": "https://github.com/seek-oss/skuba/issues"
+  "files": [
+    "config/**/*",
+    "jest/**/*",
+    "lib*/**/*.d.ts",
+    "lib*/**/*.js",
+    "lib*/**/*.js.map",
+    "template/**/*",
+    "jest-preset.js"
+  ],
+  "scripts": {
+    "build": "scripts/build.sh",
+    "deploy": "scripts/deploy.sh",
+    "format": "yarn skuba format",
+    "lint": "yarn skuba lint && yarn lint:md",
+    "lint:md": "remark --frail --quiet .",
+    "release": "yarn build && changeset publish",
+    "skuba": "yarn build && node lib/skuba",
+    "stage": "changeset version && yarn format",
+    "test": "yarn skuba test",
+    "test:ci": "yarn skuba test --config jest.config.int.ts --runInBand",
+    "test:int": "yarn skuba test --config jest.config.int.ts --runInBand",
+    "test:template": "scripts/test-template.sh",
+    "test:watch": "yarn skuba test --config jest.config.int.ts --runInBand --watch"
+  },
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-recommended",
+      [
+        "remark-lint-list-item-indent",
+        false
+      ],
+      [
+        "remark-lint-no-shortcut-reference-link",
+        false
+      ],
+      [
+        "remark-lint-no-undefined-references",
+        {
+          "allow": [
+            " ",
+            "x"
+          ]
+        }
+      ]
+    ]
+  },
+  "resolutions": {
+    "**/@types/node": ">=14.18"
   },
   "dependencies": {
     "@esbuild-plugins/tsconfig-paths": "^0.0.4",
@@ -56,7 +118,6 @@
     "typescript": "~4.8.2",
     "validate-npm-package-name": "^5.0.0"
   },
-  "description": "SEEK development toolkit for backend applications and packages",
   "devDependencies": {
     "@changesets/cli": "2.25.0",
     "@changesets/get-github-info": "0.5.1",
@@ -83,22 +144,6 @@
     "supertest": "6.3.0",
     "type-fest": "2.19.0"
   },
-  "engines": {
-    "node": ">=14.18"
-  },
-  "files": [
-    "config/**/*",
-    "jest/**/*",
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map",
-    "template/**/*",
-    "jest-preset.js"
-  ],
-  "homepage": "https://github.com/seek-oss/skuba#readme",
-  "license": "MIT",
-  "main": "lib/index.js",
-  "name": "skuba",
   "peerDependencies": {
     "skuba-dive": "1 || 2"
   },
@@ -107,59 +152,14 @@
       "optional": true
     }
   },
-  "private": false,
-  "remarkConfig": {
-    "plugins": [
-      "remark-preset-lint-recommended",
-      [
-        "remark-lint-list-item-indent",
-        false
-      ],
-      [
-        "remark-lint-no-shortcut-reference-link",
-        false
-      ],
-      [
-        "remark-lint-no-undefined-references",
-        {
-          "allow": [
-            " ",
-            "x"
-          ]
-        }
-      ]
-    ]
+  "engines": {
+    "node": ">=14.18"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/seek-oss/skuba.git"
-  },
-  "resolutions": {
-    "**/@types/node": ">=14.18"
-  },
-  "scripts": {
-    "build": "scripts/build.sh",
-    "deploy": "scripts/deploy.sh",
-    "format": "yarn skuba format",
-    "lint": "yarn skuba lint && yarn lint:md",
-    "lint:md": "remark --frail --quiet .",
-    "release": "yarn build && changeset publish",
-    "stage": "changeset version && yarn format",
-    "skuba": "yarn build && node lib/skuba",
-    "test": "yarn skuba test",
-    "test:ci": "yarn skuba test --config jest.config.int.ts --runInBand",
-    "test:int": "yarn skuba test --config jest.config.int.ts --runInBand",
-    "test:template": "scripts/test-template.sh",
-    "test:watch": "yarn skuba test --config jest.config.int.ts --runInBand --watch"
-  },
-  "sideEffects": false,
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
     "version": "4.0.0"
-  },
-  "types": "./lib/index.d.ts",
-  "version": "4.4.1"
+  }
 }
