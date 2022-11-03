@@ -108,8 +108,9 @@ At the same time, esbuild presents potential benefits for **skuba**:
 1. ...and that's it!
 
    ```shell
-   # uses esbuild instead of tsc
-   yarn build
+   # these will now use esbuild instead of tsc
+   yarn skuba build
+   yarn skuba build-package
    ```
 
 ---
@@ -122,7 +123,7 @@ This integration is still experimental and only includes the bare minimum to sup
 
    See esbuild's [TypeScript caveats] for more information.
 
-2. esbuild is not wired up to [`skuba build-package`], [`skuba node`] nor [`skuba start`].
+2. esbuild is not wired up to [`skuba node`] nor [`skuba start`].
 
 3. Bundling and minification are not supported.
 

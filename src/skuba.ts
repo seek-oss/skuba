@@ -26,11 +26,9 @@ const skuba = async () => {
   if (COMMAND_SET.has(commandName)) {
     const moduleName = commandToModule(commandName);
 
-    /* eslint-disable @typescript-eslint/no-var-requires */
-    const commandModule = require(path.join(
-      COMMAND_DIR,
-      moduleName,
-    )) as unknown;
+    const commandModule: unknown = await import(
+      path.join(COMMAND_DIR, moduleName)
+    );
 
     if (!hasProp(commandModule, moduleName)) {
       log.err(log.bold(commandName), "couldn't run! Please submit an issue.");

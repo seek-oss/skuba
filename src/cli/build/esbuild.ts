@@ -1,6 +1,7 @@
 import { inspect } from 'util';
 
 import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
+import type { BuildOptions } from 'esbuild';
 import { build } from 'esbuild';
 import ts, { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
@@ -15,12 +16,23 @@ const formatHost: ts.FormatDiagnosticsHost = {
   getNewLine: () => ts.sys.newLine,
 };
 
+const packageModeToOutExtension: Record<
+  PackageMode,
+  BuildOptions['outExtension']
+> = {
+  cjs: { '.js': '.cjs' },
+  esm: { '.js': '.mjs' },
+};
+
+type PackageMode = 'cjs' | 'esm';
+
 interface EsbuildParameters {
   debug: boolean;
+  packageMode?: PackageMode;
 }
 
 export const esbuild = async (
-  { debug }: EsbuildParameters,
+  { debug, packageMode }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
   const log = createLogger(debug);
@@ -95,14 +107,21 @@ export const esbuild = async (
   await build({
     bundle,
     entryPoints,
-    format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
+    format:
+      packageMode ??
+      (compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined),
     outdir: compilerOptions.outDir,
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,
+    outExtension: packageMode
+      ? packageModeToOutExtension[packageMode]
+      : undefined,
     platform:
+      // TODO: what should this be for Node16 and NodeNext?
       compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
         ? 'node'
-        : undefined,
+        : // TODO: set this for applications too?
+          undefined,
     plugins: bundle
       ? []
       : [

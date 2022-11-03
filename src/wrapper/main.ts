@@ -12,8 +12,7 @@ export const main = async (rawEntryPoint: string, rawPort: string) => {
     .split('#', 2);
 
   // Load entry point as module
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const entryPoint = require(modulePath) as unknown;
+  const entryPoint: unknown = await import(modulePath);
 
   return functionName
     ? runFunctionHandler({ availablePort, entryPoint, functionName })
