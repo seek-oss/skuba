@@ -128,5 +128,5 @@ jobs:
 [compose file]: https://docs.docker.com/compose/compose-file
 [docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
 [github checks api]: https://docs.github.com/en/rest/reference/checks/
-[github.createcheckrun]: ../development-api/github.md#createCheckRun
+[github.createcheckrun]: ../development-api/github.md#createcheckrun
 [will not trigger workflows]: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow

@@ -140,7 +140,7 @@ const fileChanges = await GitHub.readFileChanges([
 ## uploadAllFileChanges
 
 Retrieves all file changes from the local Git repository using [getChangedFiles],
-then uploads the changes to a specified GitHub branch using [uploadFileChanges](#uploadFileChanges).
+then uploads the changes to a specified GitHub branch using [uploadFileChanges](#uploadfilechanges).
 
 Returns the commit ID, or `undefined` if there are no changes to commit.
 
