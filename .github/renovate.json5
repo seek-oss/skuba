@@ -3,7 +3,6 @@
     ':dependencyDashboard',
     ':prHourlyLimit4',
     ':rebaseStalePrs',
-    ':renovatePrefix',
     ':semanticCommits',
     ':timezone(Australia/Melbourne)',
     ':updateNotScheduled',
@@ -85,11 +84,12 @@
     {
       matchPaths: ['template/**'],
 
-      branchPrefix: 'renovate-template/',
+      branchPrefix: 'renovate-template--',
       rangeStrategy: 'replace',
       semanticCommitType: 'template',
     },
   ],
+  branchPrefix: 'renovate--',
   commitMessageAction: '',
   postUpdateOptions: ['yarnDedupeHighest'],
   prConcurrentLimit: 3,

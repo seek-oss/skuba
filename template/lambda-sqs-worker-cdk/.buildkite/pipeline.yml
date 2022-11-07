@@ -63,7 +63,7 @@ steps:
 
   - agents:
       queue: <%- devBuildkiteQueueName %>
-    branches: '!renovate/*'
+    branches: '!renovate--*'
     label: 🧖‍♀️ Warm Dev
     command: ':'
     plugins:
