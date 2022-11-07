@@ -15,10 +15,10 @@
     "skuba-dive": "^2.0.0"
   },
   "devDependencies": {
-    "@types/node": "16.11.64",
+    "@types/node": "^18.11.5",
     "skuba": "*"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   }
 }
