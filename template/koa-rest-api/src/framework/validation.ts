@@ -69,7 +69,7 @@ export const validateRequestBody = <
 >(
   ctx: Context,
   schema: z.ZodSchema<Output, Def, Input>,
-) =>
+): Output =>
   validate<Output, Def, Input>({
     ctx,
     input: ctx.request.body as unknown,
