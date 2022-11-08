@@ -12,4 +12,4 @@ buildArgs:
 # SEEK-Jobs/gantry#1661
 failOnScanFindings: false
 
-cpuArchitecture: arm64
+cpuArchitecture: <%- platformName %>

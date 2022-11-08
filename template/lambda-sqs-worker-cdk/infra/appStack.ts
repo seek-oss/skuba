@@ -50,8 +50,10 @@ export class AppStack extends Stack {
       encryptionMasterKey: kmsKey,
     });
 
+    const architecture = '<%- lambdaCdkArchitecture %>';
+
     const worker = new aws_lambda.Function(this, 'worker', {
-      architecture: aws_lambda.Architecture.ARM_64,
+      architecture: aws_lambda.Architecture[architecture],
       code: new aws_lambda.AssetCode('./lib'),
       runtime: aws_lambda.Runtime.NODEJS_16_X,
       handler: 'app.handler',

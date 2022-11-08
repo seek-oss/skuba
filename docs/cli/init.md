@@ -105,6 +105,7 @@ skuba init << EOF
   "templateData": {
     "ownerName": "my-org/my-team",
     "prodBuildkiteQueueName": "123456789012:cicd",
+    "platformName": "arm64",
     "repoName": "tmp-greeter"
   },
   "templateName": "greeter"

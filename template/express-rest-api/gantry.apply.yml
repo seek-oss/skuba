@@ -119,4 +119,4 @@ tags:
   {{$key}}: '{{$value}}'
   {{end}}
 
-cpuArchitecture: arm64
+cpuArchitecture: <%- platformName %>
