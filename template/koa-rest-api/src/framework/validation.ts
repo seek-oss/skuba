@@ -36,15 +36,19 @@ const parseInvalidFieldsFromError = ({
     errors.map((err) => [`/${err.path.join('/')}`, err.message]),
   );
 
-export const validate = <T>({
+export const validate = <
+  Output,
+  Def extends z.ZodTypeDef = z.ZodTypeDef,
+  Input = Output,
+>({
   ctx,
   input,
   schema,
 }: {
   ctx: Context;
   input: unknown;
-  schema: z.ZodSchema<T>;
-}) => {
+  schema: z.ZodSchema<Output, Def, Input>;
+}): Output => {
   const parseResult = schema.safeParse(input);
   if (parseResult.success === false) {
     return ctx.throw(
@@ -58,7 +62,16 @@ export const validate = <T>({
   return parseResult.data;
 };
 
-export const validateRequestBody = <T>(
+export const validateRequestBody = <
+  Output,
+  Def extends z.ZodTypeDef = z.ZodTypeDef,
+  Input = Output,
+>(
   ctx: Context,
-  schema: z.ZodSchema<T>,
-): T => validate<T>({ ctx, input: ctx.request.body as unknown, schema });
+  schema: z.ZodSchema<Output, Def, Input>,
+) =>
+  validate<Output, Def, Input>({
+    ctx,
+    input: ctx.request.body as unknown,
+    schema,
+  });
