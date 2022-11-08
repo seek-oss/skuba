@@ -50,12 +50,15 @@ See [Builds at SEEK] and the [Gantry ARM reference] for more information.
 If you are not ready to build and run your projects on ARM64 hardware,
 you can downgrade a templated project to be compatible with AMD64 hardware.
 
-Replace hardcoded `--platform` values in your Dockerfile(s),
+Replace the relevant `--platform` values in your Dockerfile(s),
 then ensure that you run your builds on AMD64 hardware:
 
 ```diff
-- FROM --platform=arm64 gcr.io/distroless/nodejs:16 AS runtime
-+ FROM --platform=${BUILDPLATFORM} gcr.io/distroless/nodejs:16 AS runtime
+- FROM --platform=arm64 gcr.io/distroless/nodejs:18 AS runtime
++ FROM --platform=${BUILDPLATFORM:-amd64} gcr.io/distroless/nodejs:18 AS runtime
+
+- FROM --platform=${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs:18 AS runtime
++ FROM --platform=${BUILDPLATFORM:-amd64} gcr.io/distroless/nodejs:18 AS runtime
 ```
 
 For a [Gantry] service, modify the `cpuArchitecture` property in your `gantry.build.yml` and `gantry.apply.yml` resource files:
