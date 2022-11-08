@@ -84,7 +84,7 @@
     "esbuild": "~0.15.7",
     "eslint": "^8.11.0",
     "eslint-config-skuba": "1.1.4",
-    "execa": "^5.0.0",
+    "execa": "^6.0.0",
     "fdir": "^5.0.0",
     "fs-extra": "^10.0.0",
     "function-arguments": "^1.0.9",
