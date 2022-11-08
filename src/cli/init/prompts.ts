@@ -1,9 +1,10 @@
-import { Input, Select } from 'enquirer';
 import { pathExists } from 'fs-extra';
 
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
 
 import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
+
+import { Input, Select } from 'enquirer';
 
 export type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
 
