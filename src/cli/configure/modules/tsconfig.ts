@@ -17,11 +17,14 @@ export const tsconfigModule = async ({
   const baseData = parseObject(baseFile);
 
   // existing project may target earlier Node.js versions than skuba
-  if (
-    hasProp(baseData, 'compilerOptions') &&
-    hasProp(baseData.compilerOptions, 'target')
-  ) {
-    delete baseData.compilerOptions.target;
+  if (hasProp(baseData, 'compilerOptions')) {
+    if (hasProp(baseData.compilerOptions, 'lib')) {
+      delete baseData.compilerOptions.lib;
+    }
+
+    if (hasProp(baseData.compilerOptions, 'target')) {
+      delete baseData.compilerOptions.target;
+    }
   }
 
   // packages should not use module aliases
