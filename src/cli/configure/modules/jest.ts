@@ -1,6 +1,5 @@
 import { readBaseTemplateFile } from '../../../utils/template';
 import { deleteFiles } from '../processing/deleteFiles';
-import { loadFiles } from '../processing/loadFiles';
 import { withPackage } from '../processing/package';
 import {
   createPropAppender,
@@ -43,8 +42,7 @@ export const jestModule = async (): Promise<Module> => {
   ]);
 
   return {
-    ...deleteFiles('jest.config.js'),
-    ...loadFiles('jest.setup.js'),
+    ...deleteFiles('jest.config.js', 'jest.setup.js'),
 
     'jest.config.ts': (tsFile, currentFiles, initialFiles) => {
       // Allow customised TS Jest config that extends skuba
@@ -62,7 +60,8 @@ export const jestModule = async (): Promise<Module> => {
         return transformModuleImportsAndExports(jsFile, (_, p) => p);
       }
 
-      currentFiles['jest.setup.ts'] ??= setupFile;
+      currentFiles['jest.setup.ts'] ??=
+        initialFiles['jest.setup.js'] ?? setupFile;
 
       const inputFile = tsFile ?? jsFile;
 
