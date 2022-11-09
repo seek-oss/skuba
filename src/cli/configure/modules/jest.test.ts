@@ -179,6 +179,22 @@ describe('jestModule', () => {
     expect(outputFiles['jest.setup.ts']).toBeUndefined();
   });
 
+  it('migrates JavaScript setup file', async () => {
+    const inputFiles = {
+      'jest.config.ts': 'export default {}',
+      'jest.setup.js': "process.env.FORCE_COLOR = '0';",
+    };
+
+    const outputFiles = await executeModule(
+      jestModule,
+      inputFiles,
+      defaultOpts,
+    );
+
+    expect(outputFiles['jest.setup.js']).toBeUndefined();
+    expect(outputFiles['jest.setup.ts']).toBe(inputFiles['jest.setup.js']);
+  });
+
   it.each([
     {
       description: 'with comment',

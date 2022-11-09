@@ -177,7 +177,8 @@ export {};
     "outDir": "lib",
     "paths": {
       "src": ["src"]
-    }
+    },
+    "target": "ES2022"
   },
   "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"
