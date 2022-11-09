@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.2
 
-FROM --platform=${BUILDPLATFORM} node:18-alpine AS dev-deps
+FROM --platform=${BUILDPLATFORM:-arm64} node:18-alpine AS dev-deps
 
 WORKDIR /workdir
 
