@@ -1,5 +1,124 @@
 # skuba
 
+## 5.0.0
+
+### Major Changes
+
+- **test:** Remove default `src` module alias ([#987](https://github.com/seek-oss/skuba/pull/987))
+
+  Our Jest preset automatically registers your `tsconfig.json` paths as module aliases, but would previously fall back to the `src` alias if the option was omitted or failed to load. This default has now been removed.
+
+  This is not expected to affect most projects. If yours makes use of the `src` alias and its tests are now failing on imports like the following:
+
+  ```typescript
+  import { app } from 'src/app.ts';
+  ```
+
+  Ensure that you declare this path in a `tsconfig.json` located in your project root:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "paths": {
+  +     "src": ["src"]
+  +   }
+    },
+    "extends": "skuba/config/tsconfig.json"
+  }
+  ```
+
+- **build, test:** Default to isolated modules ([#987](https://github.com/seek-oss/skuba/pull/987))
+
+  Our Jest and TypeScript presets now enable [`isolatedModules`](https://www.typescriptlang.org/tsconfig#isolatedModules) by default. Your Jest tests should start quicker, consume less resources, and no longer get stuck on pesky type errors. This should not compromise the type safety of your project as `skuba lint` is intended to type check all production and testing code.
+
+  If your project contains files without imports and exports like `jest.setup.ts`, you can add an empty export statement to them to placate the TypeScript compiler:
+
+  ```console
+  jest.setup.ts(1,1): error TS1208: 'jest.setup.ts' cannot be compiled under '--isolatedModules' because it is considered a global script file. Add an import, export, or an empty 'export {}' statement to make it a module.
+  ```
+
+  ```diff
+  process.env.ENVIRONMENT = 'test';
+
+  + export {};
+  ```
+
+  If you previously enabled `isolatedModules` via the `globals` option in your Jest config, this is no longer functional due to syntax changes in ts-jest 29. You should be able to rely on our default going forward. `skuba configure` can attempt to clean up the stale option, or you can remove it from your `jest.config.ts` manually:
+
+  ```diff
+  export default Jest.mergePreset({
+  - globals: {
+  -   'ts-jest': {
+  -     // seek-oss/skuba#626
+  -     isolatedModules: true,
+  -   },
+  - },
+    // Rest of config
+  });
+  ```
+
+  Isolated modules are incompatible with certain language features like `const enum`s. We recommend migrating away from such features as they are not supported by the broader ecosystem, including transpilers like Babel and esbuild. If your project is not yet ready for isolated modules, you can override the default in your `tsconfig.json`:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "isolatedModules": false
+    },
+    "extends": "skuba/config/tsconfig.json"
+  }
+  ```
+
+### Minor Changes
+
+- **format:** Sort package.json ([#1016](https://github.com/seek-oss/skuba/pull/1016))
+
+- **build:** Add experimental esbuild support ([#681](https://github.com/seek-oss/skuba/pull/681))
+
+  You can now build your project with [esbuild](https://esbuild.github.io/). Note that this integration is still experimental, only includes the bare minimum to supplant a basic `tsc`-based build, and is not guaranteed to match `tsc` output. See the [esbuild deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/esbuild.html) for more information.
+
+  To opt in, modify your `package.json`:
+
+  ```diff
+  {
+    "skuba": {
+  +   "build": "esbuild",
+      "template": null
+    }
+  }
+  ```
+
+### Patch Changes
+
+- **configure:** Fix `tsconfig.json#/compilerOptions/lib` clobbering ([#1031](https://github.com/seek-oss/skuba/pull/1031))
+
+- **template:** Bump greeter and API templates to Node.js 18 ([#1011](https://github.com/seek-oss/skuba/pull/1011))
+
+  Node.js 18 is now in active LTS. The Lambda templates are stuck on Node.js 16 until the new AWS Lambda runtime is released.
+
+- **template/lambda-sqs-worker-cdk:** Replace Runtypes with Zod as default schema validator ([#984](https://github.com/seek-oss/skuba/pull/984))
+
+- **template/lambda-sqs-worker:** Replace Runtypes with Zod as default schema validator ([#984](https://github.com/seek-oss/skuba/pull/984))
+
+- **configure:** Fix package version lookups ([#974](https://github.com/seek-oss/skuba/pull/974))
+
+  This resolves the following error:
+
+  ```console
+  Error: Package "xyz" does not have a valid package.json manifest
+  ```
+
+- **configure:** Fix `jest.setup.js` clobbering ([#1031](https://github.com/seek-oss/skuba/pull/1031))
+
+- **template/lambda-sqs-worker\*:** Adjust Buildkite pipelines for new `renovate--` branch name prefix ([#1022](https://github.com/seek-oss/skuba/pull/1022))
+
+  See the [pull request](https://github.com/seek-oss/rynovate/pull/76) that aligns our Renovate presets for more information.
+
+- **template:** Support AMD64 Docker builds via `BUILDPLATFORM` ([#1021](https://github.com/seek-oss/skuba/pull/1021))
+
+  See the [Docker documentation](https://docs.docker.com/build/building/multi-platform/#building-multi-platform-images) for more information. Note that this does not allow you to build on AMD64 hardware then deploy to ARM64 hardware and vice versa. It is provided for convenience if you need to revert to an AMD64 workflow and/or build and run an image on local AMD64 hardware.
+
+- **template/koa-rest-api:** Replace Runtypes with Zod as default schema validator ([#984](https://github.com/seek-oss/skuba/pull/984))
+
 ## 4.4.1
 
 ### Patch Changes
