@@ -16,17 +16,6 @@ export const tsconfigModule = async ({
 
   const baseData = parseObject(baseFile);
 
-  // existing project may target earlier Node.js versions than skuba
-  if (hasProp(baseData, 'compilerOptions')) {
-    if (hasProp(baseData.compilerOptions, 'lib')) {
-      delete baseData.compilerOptions.lib;
-    }
-
-    if (hasProp(baseData.compilerOptions, 'target')) {
-      delete baseData.compilerOptions.target;
-    }
-  }
-
   // packages should not use module aliases
   if (
     type === 'package' &&
@@ -60,6 +49,23 @@ export const tsconfigModule = async ({
           new RegExp(`([^\\w])${outDir}([^\\w])`, 'g'),
           '$1lib$2',
         );
+      }
+
+      // existing project may target earlier Node.js versions than skuba
+      if (hasProp(baseData, 'compilerOptions')) {
+        if (
+          hasProp(baseData.compilerOptions, 'lib') &&
+          hasProp(inputData?.compilerOptions, 'lib')
+        ) {
+          delete baseData.compilerOptions.lib;
+        }
+
+        if (
+          hasProp(baseData.compilerOptions, 'target') &&
+          hasProp(inputData?.compilerOptions, 'target')
+        ) {
+          delete baseData.compilerOptions.target;
+        }
       }
 
       const outputData = merge(inputData ?? {}, baseData);
