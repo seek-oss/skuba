@@ -1,5 +1,15 @@
 # skuba
 
+## 5.0.1
+
+### Patch Changes
+
+- **jest:** Fix `isolatedModules` transform config ([#1036](https://github.com/seek-oss/skuba/pull/1036))
+
+- **deps:** eslint-config-skuba 1.2.0 ([#1035](https://github.com/seek-oss/skuba/pull/1035))
+
+  This introduces an autofix for the TS1205 compiler error.
+
 ## 5.0.0
 
 ### Major Changes
