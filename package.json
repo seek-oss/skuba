@@ -83,7 +83,7 @@
     "enquirer": "^2.3.6",
     "esbuild": "~0.15.7",
     "eslint": "^8.11.0",
-    "eslint-config-skuba": "1.1.4",
+    "eslint-config-skuba": "1.2.0",
     "execa": "^5.0.0",
     "fdir": "^5.0.0",
     "fs-extra": "^10.0.0",
