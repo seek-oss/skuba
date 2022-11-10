@@ -31,22 +31,20 @@ module.exports.transform = Object.fromEntries(
       ];
     }
 
-    if (Array.isArray(value)) {
-      return [
-        key,
-        value[0] === TS_JEST_NAME
-          ? [
-              TS_JEST_PATH,
-              {
-                ...value[1],
-                isolatedModules:
-                  value[1]?.isolatedModules ??
-                  maybeTsConfig?.isolatedModules ??
-                  true,
-              },
-            ]
-          : value,
-      ];
-    }
+    return [
+      key,
+      value[0] === TS_JEST_NAME
+        ? [
+            TS_JEST_PATH,
+            {
+              ...value[1],
+              isolatedModules:
+                value[1]?.isolatedModules ??
+                maybeTsConfig?.isolatedModules ??
+                true,
+            },
+          ]
+        : value,
+    ];
   }),
 );
