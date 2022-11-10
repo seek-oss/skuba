@@ -18,7 +18,8 @@ const maybeTsConfig = tryParseTsConfig();
 module.exports.transform = Object.fromEntries(
   Object.entries(defaults.transform).map(([key, value]) => [
     key,
-    value === TS_JEST_NAME
+    (typeof value === 'string' && value === TS_JEST_NAME) ||
+    (Array.isArray(value) && value[0] === TS_JEST_NAME)
       ? [
           TS_JEST_PATH,
           { isolatedModules: maybeTsConfig?.options.isolatedModules ?? true },
