@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Fix Jest `isolatedModules` transform config
+jest: Fix `isolatedModules` transform config
