@@ -2,11 +2,20 @@ import { pathExists } from 'fs-extra';
 
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
 
-import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
+import type { Platform } from './validation';
+import {
+  PLATFORM_OPTIONS,
+  isGitHubOrg,
+  isGitHubRepo,
+  isGitHubTeam,
+  isPlatform,
+} from './validation';
 
 import { Input, Select } from 'enquirer';
 
-export type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
+export type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string> & {
+  platformName: Platform;
+};
 
 const BASE_CHOICES = [
   {
@@ -47,11 +56,18 @@ const BASE_CHOICES = [
       return !exists || `'${value}' is an existing directory`;
     },
   },
+  {
+    name: 'platformName',
+    message: 'Platform',
+    initial: PLATFORM_OPTIONS,
+    validate: (value: unknown) =>
+      isPlatform(value) || `must be ${PLATFORM_OPTIONS}`,
+  },
 ] as const;
 
 export const BASE_PROMPT_PROPS = {
   choices: BASE_CHOICES,
-  message: 'For starters, some GitHub details:',
+  message: 'For starters, some project details:',
   name: 'baseAnswers',
 };
 

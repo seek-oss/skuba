@@ -29,6 +29,7 @@ yarn skuba init << EOF
     "prodAwsAccountId": "000000000000",
     "prodBuildkiteQueueName": "my-account-prod:cicd",
     "prodGantryEnvironmentName": "prod",
+    "platformName": "arm64",
     "repoName": "${directory}",
     "serviceName": "serviceName",
     "region": "ap-southeast-2"
