@@ -2,6 +2,19 @@
 
 exports[`fixable 1`] = `
 "
+=============
+
+WARNING: You are currently running a version of TypeScript which is not officially supported by @typescript-eslint/typescript-estree.
+
+You may find that it works just fine, or you may not.
+
+SUPPORTED TYPESCRIPT VERSIONS: >=3.3.1 <4.9.0
+
+YOUR TYPESCRIPT VERSION: 4.9.3
+
+Please only submit bug reports when using the officially supported version.
+
+=============
 ESLint   │ Processed 2 files in <random>s.
 ESLint   │ 
 <random>/a/a/a.ts
@@ -95,12 +108,6 @@ tsc      │ Lines of TypeScript: <random>
 tsc      │ Lines of JavaScript: <random>
 tsc      │ Lines of JSON: <random>
 tsc      │ Lines of Other: <random>
-tsc      │ Nodes of Library: <random>
-tsc      │ Nodes of Definitions: <random>
-tsc      │ Nodes of TypeScript: <random>
-tsc      │ Nodes of JavaScript: <random>
-tsc      │ Nodes of JSON: <random>
-tsc      │ Nodes of Other: <random>
 tsc      │ Identifiers: <random>
 tsc      │ Symbols: <random>
 tsc      │ Types: <random>
