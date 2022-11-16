@@ -2,21 +2,8 @@
 
 exports[`fixable 1`] = `
 "
-=============
-
-WARNING: You are currently running a version of TypeScript which is not officially supported by @typescript-eslint/typescript-estree.
-
-You may find that it works just fine, or you may not.
-
-SUPPORTED TYPESCRIPT VERSIONS: >=3.3.1 <4.9.0
-
-YOUR TYPESCRIPT VERSION: 4.9.3
-
-Please only submit bug reports when using the officially supported version.
-
-=============
 ESLint   │ Processed 2 files in <random>s.
-ESLint   │ 
+ESLint   │
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
 
@@ -148,7 +135,7 @@ exports[`ok 2`] = `[]`;
 exports[`unfixable 1`] = `
 "
 ESLint   │ Processed 2 files in <random>s.
-ESLint   │ 
+ESLint   │
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
   8:3  error  Unexpected console statement                      no-console

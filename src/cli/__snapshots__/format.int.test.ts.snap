@@ -3,19 +3,6 @@
 exports[`fixable 1`] = `
 "
 ESLint
-=============
-
-WARNING: You are currently running a version of TypeScript which is not officially supported by @typescript-eslint/typescript-estree.
-
-You may find that it works just fine, or you may not.
-
-SUPPORTED TYPESCRIPT VERSIONS: >=3.3.1 <4.9.0
-
-YOUR TYPESCRIPT VERSION: 4.9.3
-
-Please only submit bug reports when using the officially supported version.
-
-=============
 Processed 2 files in <random>s.
 
 Prettier
@@ -43,7 +30,7 @@ b.md
 ----
 @@ -2,3 +2,3 @@
 
-- Trailing space 
+- Trailing space
 + Trailing space
 
 
