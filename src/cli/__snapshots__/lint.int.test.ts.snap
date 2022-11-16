@@ -3,7 +3,7 @@
 exports[`fixable 1`] = `
 "
 ESLint   │ Processed 2 files in <random>s.
-ESLint   │
+ESLint   │ 
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
 
@@ -135,7 +135,7 @@ exports[`ok 2`] = `[]`;
 exports[`unfixable 1`] = `
 "
 ESLint   │ Processed 2 files in <random>s.
-ESLint   │
+ESLint   │ 
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
   8:3  error  Unexpected console statement                      no-console
