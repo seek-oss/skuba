@@ -11,10 +11,11 @@ ESLint   │
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
 
 Prettier │ Processed 6 files in <random>s.
-Prettier │ Flagged 3 files:
+Prettier │ Flagged 4 files:
 Prettier │ b.md
 Prettier │ c.json
 Prettier │ d.js
+Prettier │ package.json
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
 
@@ -49,6 +50,7 @@ Options: {
 b.md
 c.json
 d.js
+package.json
 \`\`\`
 ",
 ]
