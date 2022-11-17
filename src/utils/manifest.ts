@@ -35,11 +35,18 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
 
 export const getConsumerManifest = () => readPkgUp();
 
-export const getEntryPointFromManifest = async () => {
+export const getStringPropFromConsumerManifest = async <T extends string>(
+  prop: T,
+): Promise<string | undefined> => {
   const result = await getConsumerManifest();
 
-  return result !== undefined &&
-    hasStringProp(result.packageJson.skuba, 'entryPoint')
-    ? result.packageJson.skuba.entryPoint
-    : DEFAULT_ENTRY_POINT;
+  return result !== undefined && hasStringProp(result.packageJson.skuba, prop)
+    ? result.packageJson.skuba[prop]
+    : undefined;
+};
+
+export const getEntryPointFromManifest = async (): Promise<string> => {
+  const entryPoint = await getStringPropFromConsumerManifest('entryPoint');
+
+  return entryPoint ?? DEFAULT_ENTRY_POINT;
 };

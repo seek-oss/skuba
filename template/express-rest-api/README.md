@@ -4,24 +4,21 @@
 
 Next steps:
 
-1. [ ] Check if your team has a Graviton-based Buildkite cluster;
-       see the [ARM64 guide] for more information.
-2. [ ] Finish templating if this was skipped earlier:
+1. [ ] Finish templating if this was skipped earlier:
 
    ```shell
    yarn skuba configure
    ```
 
-3. [ ] Create a new repository in the appropriate GitHub organisation.
-4. [ ] Add the repository to BuildAgency;
+2. [ ] Create a new repository in the appropriate GitHub organisation.
+3. [ ] Add the repository to BuildAgency;
        see [Builds at SEEK] for more information.
-5. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
+4. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
        see the [Gantry] documentation for more information.
-6. [ ] Push local commits to the upstream GitHub branch.
-7. [ ] Configure [GitHub repository settings].
-8. [ ] Delete this checklist 😌.
+5. [ ] Push local commits to the upstream GitHub branch.
+6. [ ] Configure [GitHub repository settings].
+7. [ ] Delete this checklist 😌.
 
-[arm64 guide]: https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html
 [builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 

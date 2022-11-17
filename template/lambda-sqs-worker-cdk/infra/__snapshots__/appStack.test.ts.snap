@@ -327,6 +327,9 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       "Type": "AWS::SQS::QueuePolicy",
     },
     "workerqueueappStacktopic0CA45134AFB31FF4": {
+      "DependsOn": [
+        "workerqueuePolicy97054CB4",
+      ],
       "Properties": {
         "Endpoint": {
           "Fn::GetAtt": [
@@ -686,6 +689,9 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       "Type": "AWS::SQS::QueuePolicy",
     },
     "workerqueueappStacktopic0CA45134AFB31FF4": {
+      "DependsOn": [
+        "workerqueuePolicy97054CB4",
+      ],
       "Properties": {
         "Endpoint": {
           "Fn::GetAtt": [

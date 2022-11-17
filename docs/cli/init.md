@@ -34,9 +34,10 @@ skuba init
 and answering a few starter questions:
 
 ```shell
-? For starters, some GitHub details:
-⊙  Owner : SEEK-Jobs/my-team
-⊙   Repo : my-repo
+? For starters, some project details:
+⊙    Owner : SEEK-Jobs/my-team
+⊙     Repo : my-repo
+⊙ Platform : amd64 | arm64
 
 # ...
 ```
@@ -105,6 +106,7 @@ skuba init << EOF
   "templateData": {
     "ownerName": "my-org/my-team",
     "prodBuildkiteQueueName": "123456789012:cicd",
+    "platformName": "arm64",
     "repoName": "tmp-greeter"
   },
   "templateName": "greeter"

@@ -1,22 +1,6 @@
 {
-  "dependencies": {
-    "@seek/logger": "^5.0.1",
-    "runtypes": "^6.3.2"
-  },
-  "devDependencies": {
-    "@aws-cdk/assert": "^2.24.0",
-    "@types/aws-lambda": "^8.10.82",
-    "@types/node": "^16.0.0",
-    "aws-cdk": "^2.24.0",
-    "aws-cdk-lib": "^2.24.0",
-    "constructs": "^10.0.17",
-    "skuba": "*"
-  },
-  "engines": {
-    "node": ">=16"
-  },
-  "license": "UNLICENSED",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "build": "skuba build",
     "deploy": "cdk deploy appStack --require-approval never --context stage=${ENVIRONMENT}",
@@ -26,5 +10,21 @@
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
+  },
+  "dependencies": {
+    "@seek/logger": "^5.0.1",
+    "zod": "^3.19.1"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "^2.24.0",
+    "@types/aws-lambda": "^8.10.82",
+    "@types/node": "16.11.64",
+    "aws-cdk": "^2.24.0",
+    "aws-cdk-lib": "^2.24.0",
+    "constructs": "^10.0.17",
+    "skuba": "*"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }

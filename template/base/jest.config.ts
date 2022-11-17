@@ -10,12 +10,6 @@ export default Jest.mergePreset({
       statements: 0,
     },
   },
-  globals: {
-    'ts-jest': {
-      // seek-oss/skuba#626
-      isolatedModules: true,
-    },
-  },
   setupFiles: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/test\\.ts'],
 });

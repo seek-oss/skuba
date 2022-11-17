@@ -8,6 +8,7 @@ import { crawlDirectory } from '../../utils/dir';
 import type { Logger } from '../../utils/logging';
 import { pluralise } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
+import { formatPackage, parsePackage } from '../configure/processing/package';
 
 let languages: SupportLanguage[] | undefined;
 
@@ -45,6 +46,28 @@ export const inferParser = (filepath: string): string | undefined => {
   return firstLanguage?.parsers[0];
 };
 
+const isPackageJsonOk = ({
+  data,
+  filepath,
+}: {
+  data: string;
+  filepath: string;
+}): boolean => {
+  if (path.basename(filepath) !== 'package.json') {
+    return true;
+  }
+
+  try {
+    const packageJson = parsePackage(data);
+
+    return !packageJson || formatPackage(packageJson) === data;
+  } catch {
+    // Be more lenient about our custom formatting and don't throw if it errors.
+  }
+
+  return true;
+};
+
 interface File {
   data: string;
   options: Options;
@@ -66,7 +89,7 @@ const formatOrLintFile = (
   if (mode === 'lint') {
     let ok: boolean;
     try {
-      ok = check(data, options);
+      ok = check(data, options) && isPackageJsonOk({ data, filepath });
     } catch (err) {
       result.errored.push({ err, filepath });
       return;
@@ -85,6 +108,18 @@ const formatOrLintFile = (
   } catch (err) {
     result.errored.push({ err, filepath });
     return;
+  }
+
+  // Perform additional formatting (i.e. sorting) on a `package.json` manifest.
+  try {
+    if (path.basename(filepath) === 'package.json') {
+      const packageJson = parsePackage(formatted);
+      if (packageJson) {
+        formatted = formatPackage(packageJson);
+      }
+    }
+  } catch {
+    // Be more lenient about our custom formatting and don't throw if it errors.
   }
 
   if (formatted === data) {

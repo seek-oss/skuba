@@ -1,7 +1,7 @@
 import { agentFromMiddleware } from 'src/testing/server';
 import {
+  IdDescriptionSchema,
   chance,
-  filterIdDescription,
   mockIdDescription,
 } from 'src/testing/types';
 
@@ -12,7 +12,7 @@ const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
   const result = validate({
     ctx,
     input: ctx.request.body,
-    filter: filterIdDescription,
+    schema: IdDescriptionSchema,
   });
 
   ctx.body = result;
@@ -41,13 +41,14 @@ describe('validate', () => {
       .post('/')
       .send({ ...idDescription, id: null })
       .expect(422)
-      .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(`
-          "Validation failed:
+      .expect(({ body }) =>
+        expect(body).toMatchInlineSnapshot(`
           {
-            "id": "Expected string, but was null"
-          }.
-          Object should match { id: string; description: string; }"
+            "invalidFields": {
+              "/id": "Expected string, received null",
+            },
+            "message": "Input validation failed",
+          }
         `),
       );
   });
@@ -57,14 +58,15 @@ describe('validate', () => {
       .post('/')
       .send({})
       .expect(422)
-      .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(`
-          "Validation failed:
+      .expect(({ body }) =>
+        expect(body).toMatchInlineSnapshot(`
           {
-            "id": "Expected string, but was missing",
-            "description": "Expected string, but was missing"
-          }.
-          Object should match { id: string; description: string; }"
+            "invalidFields": {
+              "/description": "Required",
+              "/id": "Required",
+            },
+            "message": "Input validation failed",
+          }
         `),
       ));
 });

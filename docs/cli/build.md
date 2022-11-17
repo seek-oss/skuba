@@ -7,13 +7,13 @@ nav_order: 6
 
 ---
 
-**skuba** uses [tsc] to transpile your TypeScript source code to JavaScript output.
+**skuba** uses [tsc] or [esbuild] to transpile your TypeScript source code to JavaScript output.
 
 The resulting output can be executed with a regular Node.js runtime,
 or in the case of packages,
 consumed in other projects without the need for additional transpilation.
 
-See our [Babel topic] for further deliberation over our choice of build tool.
+See our [esbuild] topic for further deliberation over our choice of build tool.
 
 ---
 
@@ -50,6 +50,18 @@ By convention, this points to a `tsconfig.build.json` that excludes tests from y
 
 Run [`skuba configure`] if you don't already have this file.
 
+With tsc, you can supply any [compiler option] with the following caveats:
+
+1. Long-form option names must use a double `--` prefix rather than a single `-` prefix
+2. Complex configurations make it difficult to port your project between build tools
+
+With esbuild, you can supply the following options:
+
+| Option      | Description                               |
+| :---------- | :---------------------------------------- |
+| `--debug`   | Enable debug console output               |
+| `--project` | Point to a different `tsconfig.json` file |
+
 ---
 
 ## skuba build-package
@@ -80,7 +92,8 @@ See our [Buildkite guide] for more information.
 
 [`smt build`]: ../migration-guides/seek-module-toolkit.md#building
 [`skuba configure`]: ./configure.md#skuba-configure
-[babel topic]: ../deep-dives/babel.md
 [buildkite guide]: ../deep-dives/buildkite.md
+[compiler option]: https://www.typescriptlang.org/docs/handbook/compiler-options.html#compiler-options
 [cpu core count]: https://nodejs.org/api/os.html#os_os_cpus
+[esbuild]: ../deep-dives/esbuild.md
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

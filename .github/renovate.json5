@@ -3,7 +3,6 @@
     ':dependencyDashboard',
     ':prHourlyLimit4',
     ':rebaseStalePrs',
-    ':renovatePrefix',
     ':semanticCommits',
     ':timezone(Australia/Melbourne)',
     ':updateNotScheduled',
@@ -15,6 +14,26 @@
     enabled: true,
   },
   packageRules: [
+    {
+      matchManagers: ['npm'],
+      matchPackageNames: [
+        // Incompatible with read-pkg-up@7
+        'type-fest',
+      ],
+      matchUpdateTypes: ['major'],
+
+      enabled: false,
+    },
+    {
+      matchManagers: ['npm'],
+      matchPackageNames: [
+        // Should be synchronised with AWS Lambda runtimes and Docker images
+        '@types/node',
+      ],
+      matchPaths: ['template/**'],
+
+      enabled: false,
+    },
     {
       matchManagers: [
         'buildkite',
@@ -65,11 +84,12 @@
     {
       matchPaths: ['template/**'],
 
-      branchPrefix: 'renovate-template/',
+      branchPrefix: 'renovate-template--',
       rangeStrategy: 'replace',
       semanticCommitType: 'template',
     },
   ],
+  branchPrefix: 'renovate--',
   commitMessageAction: '',
   postUpdateOptions: ['yarnDedupeHighest'],
   prConcurrentLimit: 3,

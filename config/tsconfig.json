@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
+    "isolatedModules": true,
     "moduleResolution": "node",
     "resolveJsonModule": true
   },

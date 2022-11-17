@@ -11,14 +11,14 @@ import {
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
 
-import { envContext, stageContext } from '../shared/context-types';
+import { EnvContextSchema, StageContextSchema } from '../shared/context-types';
 
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const stage = stageContext.check(this.node.tryGetContext('stage'));
-    const context = envContext.check(this.node.tryGetContext(stage));
+    const stage = StageContextSchema.parse(this.node.tryGetContext('stage'));
+    const context = EnvContextSchema.parse(this.node.tryGetContext(stage));
 
     const accountPrincipal = new aws_iam.AccountPrincipal(this.account);
 
@@ -50,8 +50,10 @@ export class AppStack extends Stack {
       encryptionMasterKey: kmsKey,
     });
 
+    const architecture = '<%- lambdaCdkArchitecture %>';
+
     const worker = new aws_lambda.Function(this, 'worker', {
-      architecture: aws_lambda.Architecture.ARM_64,
+      architecture: aws_lambda.Architecture[architecture],
       code: new aws_lambda.AssetCode('./lib'),
       runtime: aws_lambda.Runtime.NODEJS_16_X,
       handler: 'app.handler',
