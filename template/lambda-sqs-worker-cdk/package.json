@@ -18,13 +18,13 @@
   "devDependencies": {
     "@aws-cdk/assert": "^2.24.0",
     "@types/aws-lambda": "^8.10.82",
-    "@types/node": "18.11.9",
+    "@types/node": "^18.11.9",
     "aws-cdk": "^2.51.1",
     "aws-cdk-lib": "^2.51.1",
     "constructs": "^10.0.17",
     "skuba": "*"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   }
 }
