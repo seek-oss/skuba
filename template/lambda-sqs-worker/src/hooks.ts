@@ -36,16 +36,12 @@ const smokeTestLambdaFunction = async (): Promise<Status> => {
 
   console.info('Function:', functionName);
 
-  const event: SmokeTestEvent = {
-    smokeTest: true,
-    Records: [],
-  };
-
   const response = await lambda.send(
     new InvokeCommand({
       FunctionName: functionName,
       InvocationType: 'RequestResponse',
-      Payload: Buffer.from(JSON.stringify(event)),
+      // Treat an empty object as our smoke test event.
+      Payload: Buffer.from('{}'),
     }),
   );
 
