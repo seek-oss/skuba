@@ -2,29 +2,30 @@
 /* istanbul ignore file */
 
 // Use minimal dependencies to reduce the chance of crashes on module load.
-import { CodeDeploy, Lambda } from 'aws-sdk';
+import {
+  CodeDeployClient,
+  CodeDeployClientConfig,
+  PutLifecycleEventHookExecutionStatusCommand,
+} from '@aws-sdk/client-codedeploy';
+import {
+  InvokeCommand,
+  LambdaClient,
+  LambdaClientConfig,
+} from '@aws-sdk/client-lambda';
+import { toUtf8 } from '@aws-sdk/util-utf8-node';
 
 /**
  * Common AWS options to avoid hanging the deployment on a transient error.
  *
  * AWS uses exponential backoff, so we wait for ~15 seconds total per request.
  */
-const awsRetryOptions = {
-  maxRetries: 5,
-  retryDelayOptions: {
-    base: 500,
-  },
+const retryConfig: CodeDeployClientConfig | LambdaClientConfig = {
+  maxAttempts: 5,
 };
 
-const codeDeploy = new CodeDeploy({
-  ...awsRetryOptions,
-  apiVersion: '2014-10-06',
-});
+const codeDeploy = new CodeDeployClient(clientConfig);
 
-const lambda = new Lambda({
-  ...awsRetryOptions,
-  apiVersion: '2015-03-31',
-});
+const lambda = new LambdaClient(clientConfig);
 
 type Status = 'Succeeded' | 'Failed';
 
@@ -43,24 +44,27 @@ const smokeTestLambdaFunction = async (): Promise<Status> => {
 
   console.info('Function:', functionName);
 
-  const response = await lambda
-    .invoke({
+  const event: SmokeTestEvent = {
+    smokeTest: true,
+    Records: [],
+  };
+
+  const response = await lambda.send(
+    new InvokeCommand({
       FunctionName: functionName,
       InvocationType: 'RequestResponse',
-      // Treat an empty object as our smoke test event.
-      Payload: '{}',
-      // An unqualified reference implicitly invokes $LATEST, which has been
-      // updated to point to the new version when this pre hook runs.
-      Qualifier: undefined,
-    })
-    .promise();
+      Payload: Buffer.from(JSON.stringify(event)),
+    }),
+  );
 
   console.info('Version:', response.ExecutedVersion ?? '?');
   console.info('Status', response.StatusCode ?? '?');
 
   if (response.FunctionError) {
     console.error('Error:', response.FunctionError);
-    console.error(response.Payload);
+    if (response.Payload) {
+      console.error(toUtf8(response.Payload));
+    }
     return 'Failed';
   }
 
@@ -94,11 +98,11 @@ export const pre = async (
     status = 'Failed';
   }
 
-  await codeDeploy
-    .putLifecycleEventHookExecutionStatus({
+  await codeDeploy.send(
+    new PutLifecycleEventHookExecutionStatusCommand({
       deploymentId: event.DeploymentId,
       lifecycleEventHookExecutionId: event.LifecycleEventHookExecutionId,
       status,
-    })
-    .promise();
+    }),
+  );
 };

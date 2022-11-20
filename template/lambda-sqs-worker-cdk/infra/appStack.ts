@@ -55,13 +55,11 @@ export class AppStack extends Stack {
     const worker = new aws_lambda.Function(this, 'worker', {
       architecture: aws_lambda.Architecture[architecture],
       code: new aws_lambda.AssetCode('./lib'),
-      runtime: aws_lambda.Runtime.NODEJS_16_X,
+      runtime: aws_lambda.Runtime.NODEJS_18_X,
       handler: 'app.handler',
       functionName: '<%- serviceName %>',
       environmentEncryption: kmsKey,
       environment: {
-        // https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
-        AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
         NODE_ENV: 'production',
         // https://nodejs.org/api/cli.html#cli_node_options_options
         NODE_OPTIONS: '--enable-source-maps',
