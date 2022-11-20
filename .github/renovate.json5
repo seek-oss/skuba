@@ -89,7 +89,7 @@
       semanticCommitType: 'template',
     },
   ],
-  branchPrefix: 'renovate--',
+  branchPrefix: 'renovate-',
   commitMessageAction: '',
   postUpdateOptions: ['yarnDedupeHighest'],
   prConcurrentLimit: 3,
