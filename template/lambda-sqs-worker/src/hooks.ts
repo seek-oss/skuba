@@ -4,28 +4,20 @@
 // Use minimal dependencies to reduce the chance of crashes on module load.
 import {
   CodeDeployClient,
-  CodeDeployClientConfig,
   PutLifecycleEventHookExecutionStatusCommand,
 } from '@aws-sdk/client-codedeploy';
-import {
-  InvokeCommand,
-  LambdaClient,
-  LambdaClientConfig,
-} from '@aws-sdk/client-lambda';
+import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import { toUtf8 } from '@aws-sdk/util-utf8-node';
 
-/**
- * Common AWS options to avoid hanging the deployment on a transient error.
- *
- * AWS uses exponential backoff, so we wait for ~15 seconds total per request.
- */
-const retryConfig: CodeDeployClientConfig | LambdaClientConfig = {
+const codeDeploy = new CodeDeployClient({
+  apiVersion: '2014-10-06',
   maxAttempts: 5,
-};
+});
 
-const codeDeploy = new CodeDeployClient(clientConfig);
-
-const lambda = new LambdaClient(clientConfig);
+const lambda = new LambdaClient({
+  apiVersion: '2015-03-31',
+  maxAttempts: 5,
+});
 
 type Status = 'Succeeded' | 'Failed';
 
