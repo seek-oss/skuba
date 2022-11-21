@@ -1,13 +1,12 @@
+import { PublishCommand } from '@aws-sdk/client-sns';
+
 import { metricsClient } from 'src/framework/metrics';
-import { sendPipelineEvent } from 'src/services/pipelineEventSender';
 import { createCtx, createSqsEvent } from 'src/testing/handler';
 import { logger } from 'src/testing/logging';
-import { scoringService } from 'src/testing/services';
+import { scoringService, sns } from 'src/testing/services';
 import { chance, mockJobPublishedEvent } from 'src/testing/types';
 
 import * as app from './app';
-
-jest.mock('src/services/pipelineEventSender');
 
 describe('app', () => {
   it('exports a handler', () => expect(app).toHaveProperty('handler'));
@@ -29,15 +28,14 @@ describe('handler', () => {
 
   beforeEach(() => {
     scoringService.request.mockResolvedValue(score);
-    jest
-      .mocked(sendPipelineEvent)
-      .mockResolvedValue(chance.guid({ version: 4 }));
+    sns.publish.resolves({ MessageId: chance.guid({ version: 4 }) });
   });
 
   afterEach(() => {
     logger.clear();
     distribution.mockClear();
     scoringService.clear();
+    sns.clear();
   });
 
   it('handles one record', async () => {
@@ -60,7 +58,7 @@ describe('handler', () => {
       ['job.scored', 1],
     ]);
 
-    expect(sendPipelineEvent).toHaveBeenCalledTimes(1);
+    expect(sns.client).toReceiveCommandTimes(PublishCommand, 1);
   });
 
   it('throws on invalid input', () => {
@@ -84,7 +82,7 @@ describe('handler', () => {
   it('bubbles up SNS error', async () => {
     const err = Error(chance.sentence());
 
-    jest.mocked(sendPipelineEvent).mockRejectedValue(err);
+    sns.publish.rejects(err);
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
