@@ -1,33 +1,40 @@
-import { sns } from 'src/testing/services';
+import 'aws-sdk-client-mock-jest';
+
+import { PublishCommand } from '@aws-sdk/client-sns';
+import { mockClient } from 'aws-sdk-client-mock';
+
 import { chance } from 'src/testing/types';
 
+import { sns } from './aws';
 import { sendPipelineEvent } from './pipelineEventSender';
 
-describe('sendPipelineEvent', () => {
-  beforeAll(sns.spy);
+const snsMock = mockClient(sns);
 
-  afterEach(sns.clear);
+describe('sendPipelineEvent', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('handles happy path', async () => {
     const messageId = chance.guid({ version: 4 });
 
-    sns.publish.mockPromise(Promise.resolve({ MessageId: messageId }));
+    snsMock.on(PublishCommand).resolves({ MessageId: messageId });
 
     await expect(sendPipelineEvent({})).resolves.toBe(messageId);
 
-    expect(sns.publish).toHaveBeenCalledTimes(1);
+    expect(snsMock).toReceiveCommandTimes(PublishCommand, 1);
   });
 
   it('bubbles up SNS error', () => {
     const err = Error(chance.sentence());
 
-    sns.publish.mockPromise(Promise.reject(err));
+    snsMock.on(PublishCommand).rejects(err);
 
     return expect(sendPipelineEvent({})).rejects.toThrow(err);
   });
 
   it('throws on missing message ID', () => {
-    sns.publish.mockPromise(Promise.resolve({}));
+    snsMock.on(PublishCommand).resolves({});
 
     return expect(
       sendPipelineEvent({}),

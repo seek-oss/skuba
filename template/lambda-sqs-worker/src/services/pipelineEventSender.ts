@@ -24,6 +24,7 @@ export const sendPipelineEvent = async (
       TopicArn: config.destinationSnsTopicArn,
     }),
   );
+
   if (snsResponse.MessageId === undefined) {
     throw Error('SNS did not return a message ID');
   }
