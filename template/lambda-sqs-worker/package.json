@@ -13,6 +13,9 @@
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
   },
+  "resolutions": {
+    "aws-sdk-client-mock/@types/sinon": "10.0.12"
+  },
   "dependencies": {
     "@aws-sdk/client-sns": "^3.213.0",
     "@seek/logger": "^5.0.1",
