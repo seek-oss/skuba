@@ -17,6 +17,7 @@
     "@seek/logger": "^5.0.1",
     "aws-sdk": "^2.1011.0",
     "datadog-lambda-js": "^6.83.0",
+    "dd-trace": "^3.8.0",
     "skuba-dive": "^2.0.0",
     "zod": "^3.19.1"
   },
