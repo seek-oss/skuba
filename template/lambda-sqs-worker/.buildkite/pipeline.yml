@@ -26,13 +26,13 @@ configs:
         - yarn deploy
       concurrency: 1
       plugins:
-        - artifacts#v1.7.0:
+        - artifacts#v1.8.0:
             build: ${BUILDKITE_BUILD_ID}
             download: lib/*
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - docker-compose#v4.6.0:
+        - docker-compose#v4.7.0:
             dependencies: false
             run: app
       retry:
@@ -60,13 +60,13 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v4.6.0:
+      - docker-compose#v4.7.0:
           run: app
     timeout_in_minutes: 10
 
   - agents:
       queue: <%- devBuildkiteQueueName %>
-    branches: '!renovate--*'
+    branches: '!renovate-*'
     label: 🧖‍♀️ Warm Dev
     command: ':'
     plugins:
