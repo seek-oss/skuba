@@ -48,16 +48,21 @@ describe('handler', () => {
 
     expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info.mock.calls).toEqual([
-      [{ count: 1 }, 'Received jobs'],
-      [{ snsMessageId: expect.any(String) }, 'Scored job'],
-      ['Function succeeded'],
-    ]);
+    expect(logger.info).toHaveBeenNthCalledWith(
+      1,
+      { count: 1 },
+      'Received jobs',
+    );
 
-    expect(distribution.mock.calls).toEqual([
-      ['job.received', 1],
-      ['job.scored', 1],
-    ]);
+    expect(logger.info).toHaveBeenNthCalledWith(
+      2,
+      { snsMessageId: expect.any(String) },
+      'Scored job',
+    );
+    expect(logger.info).toHaveBeenNthCalledWith(3, 'Function succeeded');
+
+    expect(distribution).toHaveBeenNthCalledWith(1, 'job.received', 1);
+    expect(distribution).toHaveBeenNthCalledWith(2, 'job.scored', 1);
 
     expect(sns.publish).toHaveBeenCalledTimes(1);
   });

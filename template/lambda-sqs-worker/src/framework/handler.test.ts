@@ -27,10 +27,8 @@ describe('createHandler', () => {
 
     expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info.mock.calls).toEqual([
-      ['Handler invoked'],
-      ['Function succeeded'],
-    ]);
+    expect(logger.info).toHaveBeenNthCalledWith(1, 'Handler invoked');
+    expect(logger.info).toHaveBeenNthCalledWith(2, 'Function succeeded');
   });
 
   it('handles async error', async () => {
@@ -40,7 +38,7 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error.mock.calls).toEqual([[{ err }, 'Function failed']]);
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
     expect(logger.info).not.toHaveBeenCalled();
   });
@@ -54,7 +52,7 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error.mock.calls).toEqual([[{ err }, 'Function failed']]);
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
     expect(logger.info).not.toHaveBeenCalled();
   });
