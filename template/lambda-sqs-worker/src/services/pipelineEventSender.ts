@@ -1,3 +1,5 @@
+import { PublishCommand } from '@aws-sdk/client-sns';
+
 import { config } from 'src/config';
 
 import { sns } from './aws';
@@ -6,8 +8,8 @@ export const sendPipelineEvent = async (
   event: unknown,
   smokeTest: boolean = false,
 ): Promise<string> => {
-  const snsResponse = await sns
-    .publish({
+  const snsResponse = await sns.send(
+    new PublishCommand({
       Message: JSON.stringify(event),
       ...(smokeTest && {
         MessageAttributes: {
@@ -20,8 +22,8 @@ export const sendPipelineEvent = async (
         },
       }),
       TopicArn: config.destinationSnsTopicArn,
-    })
-    .promise();
+    }),
+  );
 
   if (snsResponse.MessageId === undefined) {
     throw Error('SNS did not return a message ID');

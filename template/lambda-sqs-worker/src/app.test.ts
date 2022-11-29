@@ -1,3 +1,5 @@
+import { PublishCommand } from '@aws-sdk/client-sns';
+
 import { metricsClient } from 'src/framework/metrics';
 import { createCtx, createSqsEvent } from 'src/testing/handler';
 import { logger } from 'src/testing/logging';
@@ -23,13 +25,10 @@ describe('handler', () => {
 
   beforeAll(logger.spy);
   beforeAll(scoringService.spy);
-  beforeAll(sns.spy);
 
   beforeEach(() => {
     scoringService.request.mockResolvedValue(score);
-    sns.publish.mockPromise(
-      Promise.resolve({ MessageId: chance.guid({ version: 4 }) }),
-    );
+    sns.publish.resolves({ MessageId: chance.guid({ version: 4 }) });
   });
 
   afterEach(() => {
@@ -59,7 +58,7 @@ describe('handler', () => {
       ['job.scored', 1],
     ]);
 
-    expect(sns.publish).toHaveBeenCalledTimes(1);
+    expect(sns.client).toReceiveCommandTimes(PublishCommand, 1);
   });
 
   it('throws on invalid input', () => {
@@ -83,7 +82,7 @@ describe('handler', () => {
   it('bubbles up SNS error', async () => {
     const err = Error(chance.sentence());
 
-    sns.publish.mockPromise(Promise.reject(err));
+    sns.publish.rejects(err);
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 

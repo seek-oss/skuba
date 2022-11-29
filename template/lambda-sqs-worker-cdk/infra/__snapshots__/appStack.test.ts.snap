@@ -157,7 +157,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "Environment": {
           "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
             "SOMETHING": "dev",
@@ -177,7 +176,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -519,7 +518,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "Environment": {
           "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
             "SOMETHING": "prod",
@@ -539,7 +537,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
       },
       "Type": "AWS::Lambda::Function",
     },
