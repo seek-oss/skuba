@@ -40,7 +40,7 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error.mock.calls).toEqual([[{ err }, 'Function failed']]);
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
     expect(logger.info).not.toHaveBeenCalled();
   });
@@ -54,7 +54,7 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error.mock.calls).toEqual([[{ err }, 'Function failed']]);
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
     expect(logger.info).not.toHaveBeenCalled();
   });
