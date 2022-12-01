@@ -37,7 +37,7 @@ provider:
   logRetentionInDays: 30
   name: aws
   region: ap-southeast-2
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   architecture: <%- lambdaServerlessArchitecture %>
   deploymentMethod: direct
   stackName: ${self:service}
@@ -47,8 +47,6 @@ provider:
     # This is easier to manage in terms of access, deployment, and tagging.
     name: ${param:deploymentBucket}
   environment:
-    # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     NODE_ENV: production
     # https://nodejs.org/api/cli.html#cli_node_options_options
     NODE_OPTIONS: --enable-source-maps
