@@ -133,7 +133,7 @@
     "@types/picomatch": "2.3.0",
     "@types/supertest": "2.0.12",
     "@types/validate-npm-package-name": "4.0.0",
-    "enhanced-resolve": "5.10.0",
+    "enhanced-resolve": "5.12.0",
     "express": "4.18.2",
     "jsonfile": "6.1.0",
     "koa": "2.13.4",
@@ -141,7 +141,7 @@
     "remark-cli": "11.0.0",
     "remark-preset-lint-recommended": "6.1.2",
     "semver": "7.3.8",
-    "supertest": "6.3.1",
+    "supertest": "6.3.2",
     "type-fest": "2.19.0"
   },
   "peerDependencies": {
