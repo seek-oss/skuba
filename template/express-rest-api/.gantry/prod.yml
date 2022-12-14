@@ -1,3 +1,4 @@
+environment: prod
 env:
   SOME_ENVIRONMENT_VARIABLE: prod-value
 

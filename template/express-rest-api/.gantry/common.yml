@@ -13,7 +13,7 @@ tags:
   # seek:data:consumers: internal
   # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdatatypes
   # seek:data:types:restricted: job-ads
-  seek:env:label: '{{.Environment}}'
+  seek:env:label: '{{values "environment"}}'
   seek:env:production: '{{values "isProduction"}}'
   seek:owner:team: '<%- teamName %>'
   seek:source:sha: '{{.CommitSHA}}'
