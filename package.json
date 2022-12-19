@@ -119,11 +119,11 @@
     "validate-npm-package-name": "^5.0.0"
   },
   "devDependencies": {
-    "@changesets/cli": "2.25.2",
-    "@changesets/get-github-info": "0.5.1",
+    "@changesets/cli": "2.26.0",
+    "@changesets/get-github-info": "0.5.2",
     "@jest/reporters": "29.3.1",
     "@types/ejs": "3.1.1",
-    "@types/express": "4.17.14",
+    "@types/express": "4.17.15",
     "@types/fs-extra": "9.0.13",
     "@types/koa": "2.13.5",
     "@types/libnpmsearch": "2.0.3",
@@ -136,12 +136,12 @@
     "enhanced-resolve": "5.12.0",
     "express": "4.18.2",
     "jsonfile": "6.1.0",
-    "koa": "2.13.4",
+    "koa": "2.14.1",
     "memfs": "3.4.12",
     "remark-cli": "11.0.0",
     "remark-preset-lint-recommended": "6.1.2",
     "semver": "7.3.8",
-    "supertest": "6.3.2",
+    "supertest": "6.3.3",
     "type-fest": "2.19.0"
   },
   "peerDependencies": {
