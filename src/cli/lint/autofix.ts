@@ -1,7 +1,5 @@
 import { inspect } from 'util';
 
-import simpleGit from 'simple-git';
-
 import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
 import { runESLint } from '../../cli/adapter/eslint';
@@ -94,22 +92,6 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     // Unconditionally re-run Prettier; reaching here means we have pre-existing
     // format violations or may have created new ones through ESLint fixes.
     await runPrettier('format', logger);
-
-    if (process.env.GITHUB_ACTIONS) {
-      // GitHub runners have Git installed locally
-      const ref = await Git.commitAllChanges({
-        dir,
-        message: AUTOFIX_COMMIT_MESSAGE,
-      });
-
-      if (!ref) {
-        return log.warn('No autofixes detected.');
-      }
-
-      await throwOnTimeout(simpleGit().push(), { s: 30 });
-      log.warn(`Pushed fix commit ${ref}.`);
-      return;
-    }
 
     // Other CI Environments, use GitHub API
     if (!currentBranch) {
