@@ -1,5 +1,68 @@
 # skuba
 
+## 5.1.0
+
+### Minor Changes
+
+- **deps:** Prettier 2.8 ([#1056](https://github.com/seek-oss/skuba/pull/1056))
+
+  See the [release notes](https://prettier.io/blog/2022/11/23/2.8.0.html) for more information.
+
+- **deps:** TypeScript 4.9 ([#1046](https://github.com/seek-oss/skuba/pull/1046))
+
+  This major release includes breaking changes. See the [TypeScript 4.9](https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/) announcement for more information.
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Declare `dd-trace` dependency ([#1051](https://github.com/seek-oss/skuba/pull/1051))
+
+  This resolves a `Runtime.ImportModuleError` that occurs if this transitive dependency is not installed:
+
+  ```console
+  Runtime.ImportModuleError
+  Error: Cannot find module 'dd-trace'
+  ```
+
+  Alternatively, you can [configure the Datadog Serverless plugin](https://docs.datadoghq.com/serverless/libraries_integrations/plugin/#configuration-parameters) to bundle these dependencies via [Lambda layers](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html):
+
+  ```diff
+  serverless.yml
+
+  custom:
+    datadog:
+  -   addLayers: false
+  +   addLayers: true
+  ```
+
+  ```diff
+  package.json
+
+  {
+    "dependencies": {
+  -   "datadog-lambda-js: "x.y.z",
+  -   "dd-trace: "x.y.z"
+    },
+    "devDependencies": {
+  +   "datadog-lambda-js: "x.y.z",
+  +   "dd-trace: "x.y.z"
+    }
+  }
+  ```
+
+- **template/lambda-sqs-worker\*:** Bump Node.js version to 18 ([#1049](https://github.com/seek-oss/skuba/pull/1049))
+
+  This release contains some breaking changes to the Lambda runtime such as the removal of AWS SDK V2 in favour of AWS SDK V3. See the [AWS Lambda Node.js 18.x runtime announcement](https://aws.amazon.com/blogs/compute/node-js-18-x-runtime-now-available-in-aws-lambda/) for more information.
+
+- **template:** Prompt for target platform (`amd64` or `arm64`) ([#1041](https://github.com/seek-oss/skuba/pull/1041))
+
+- **template/lambda-sqs-worker\*:** Use single hyphen in `renovate-` branch name prefix ([#1050](https://github.com/seek-oss/skuba/pull/1050))
+
+- **deps:** esbuild ~0.16.0 ([#1062](https://github.com/seek-oss/skuba/pull/1062))
+
+- **template/\*-rest-api:** Replace `'{{.Environment}}'` with a custom `environment` Gantry value. ([#1065](https://github.com/seek-oss/skuba/pull/1065))
+
+- **lint:** Require package.json to be sorted ([#1048](https://github.com/seek-oss/skuba/pull/1048))
+
 ## 5.0.1
 
 ### Patch Changes
