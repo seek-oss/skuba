@@ -14,7 +14,7 @@ import type { Input } from './types';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
-const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
+export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
   {
     path: '.npmrc',
     state: 'added',
