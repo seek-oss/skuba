@@ -1,5 +1,16 @@
 # skuba
 
+## 5.1.1
+
+### Patch Changes
+
+- **lint:** Exclude internal files from autofix commits ([#1074](https://github.com/seek-oss/skuba/pull/1074))
+
+  `skuba lint` now avoids committing the following internal files in a [GitHub autofix](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes):
+
+  - `.npmrc`
+  - `Dockerfile-incunabulum`
+
 ## 5.1.0
 
 ### Minor Changes
