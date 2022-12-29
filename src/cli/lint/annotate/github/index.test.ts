@@ -1,7 +1,7 @@
 import * as GitHub from '../../../../api/github';
-import type { ESLintOutput } from '../../../../cli/adapter/eslint';
-import type { PrettierOutput } from '../../../../cli/adapter/prettier';
-import type { StreamInterceptor } from '../../../../cli/lint/external';
+import type { ESLintOutput } from '../../../adapter/eslint';
+import type { PrettierOutput } from '../../../adapter/prettier';
+import type { StreamInterceptor } from '../../../lint/external';
 
 import { createEslintAnnotations } from './eslint';
 import { createPrettierAnnotations } from './prettier';
