@@ -17,7 +17,6 @@ node_modules*/
 .npmrc
 *.tgz
 *.tsbuildinfo
-Dockerfile-incunabulum
 npm-debug.log
 package-lock.json
 yarn-error.log
