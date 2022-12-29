@@ -38,7 +38,6 @@ const createExportDefaultObjectLiteralExpression = (
   factory.createExportAssignment(
     undefined,
     undefined,
-    undefined,
     callExpression === undefined
       ? factory.createObjectLiteralExpression(props, true)
       : factory.createCallExpression(callExpression, undefined, [
@@ -73,7 +72,6 @@ const createImportFromExpression = (
         );
 
   return factory.createImportDeclaration(
-    undefined,
     undefined,
     importClause,
     factory.createStringLiteral(moduleName),
@@ -122,7 +120,6 @@ const expressionAsDefaultExport = (
 
       // Anything else
       return context.factory.createExportAssignment(
-        undefined,
         undefined,
         undefined,
         expression,
