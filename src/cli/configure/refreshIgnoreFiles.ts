@@ -39,7 +39,7 @@ export const refreshIgnoreFiles = async () => {
   };
 
   await Promise.all(
-    REFRESHABLE_IGNORE_FILES.map((ignoreFIle) => refreshIgnoreFile(ignoreFIle)),
+    REFRESHABLE_IGNORE_FILES.map(refreshIgnoreFile),
   );
 };
 
