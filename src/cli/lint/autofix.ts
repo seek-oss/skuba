@@ -4,11 +4,11 @@ import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
-import { runESLint } from '../../cli/adapter/eslint';
-import { runPrettier } from '../../cli/adapter/prettier';
 import { isCiEnv } from '../../utils/env';
 import { createLogger, log } from '../../utils/logging';
 import { throwOnTimeout } from '../../utils/wait';
+import { runESLint } from '../adapter/eslint';
+import { runPrettier } from '../adapter/prettier';
 
 import type { Input } from './types';
 

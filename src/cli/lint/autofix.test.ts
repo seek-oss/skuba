@@ -2,16 +2,16 @@ import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
-import { runESLint } from '../../cli/adapter/eslint';
-import { runPrettier } from '../../cli/adapter/prettier';
+import { runESLint } from '../adapter/eslint';
+import { runPrettier } from '../adapter/prettier';
 
 import { AUTOFIX_IGNORE_FILES, autofix } from './autofix';
 
 jest.mock('simple-git');
 jest.mock('../../api/git');
 jest.mock('../../api/github');
-jest.mock('../../cli/adapter/eslint');
-jest.mock('../../cli/adapter/prettier');
+jest.mock('../adapter/eslint');
+jest.mock('../adapter/prettier');
 
 const MOCK_ERROR = new Error('Badness!');
 
