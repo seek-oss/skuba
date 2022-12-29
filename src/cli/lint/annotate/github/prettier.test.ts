@@ -1,5 +1,5 @@
 import type * as GitHub from '../../../../api/github';
-import type { PrettierOutput } from '../../../../cli/adapter/prettier';
+import type { PrettierOutput } from '../../../adapter/prettier';
 
 import { createPrettierAnnotations } from './prettier';
 
