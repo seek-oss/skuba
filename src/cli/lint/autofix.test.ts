@@ -2,16 +2,16 @@ import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
-import { runESLint } from '../../cli/adapter/eslint';
-import { runPrettier } from '../../cli/adapter/prettier';
+import { runESLint } from '../adapter/eslint';
+import { runPrettier } from '../adapter/prettier';
 
 import { AUTOFIX_IGNORE_FILES, autofix } from './autofix';
 
 jest.mock('simple-git');
 jest.mock('../../api/git');
 jest.mock('../../api/github');
-jest.mock('../../cli/adapter/eslint');
-jest.mock('../../cli/adapter/prettier');
+jest.mock('../adapter/eslint');
+jest.mock('../adapter/prettier');
 
 const MOCK_ERROR = new Error('Badness!');
 
@@ -35,6 +35,8 @@ beforeEach(() => {
   jest
     .spyOn(console, 'log')
     .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+
+  jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([]);
 });
 
 afterEach(jest.resetAllMocks);
@@ -46,10 +48,13 @@ describe('autofix', () => {
     const push = jest.fn();
 
     const expectAutofixCommit = (
-      { eslint }: { eslint: boolean } = { eslint: true },
+      { eslint, prettier }: Record<'eslint' | 'prettier', boolean> = {
+        eslint: true,
+        prettier: true,
+      },
     ) => {
       expect(runESLint).toHaveBeenCalledTimes(eslint ? 1 : 0);
-      expect(runPrettier).toHaveBeenCalledTimes(1);
+      expect(runPrettier).toHaveBeenCalledTimes(prettier ? 1 : 0);
       expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
     };
 
@@ -203,7 +208,7 @@ describe('autofix', () => {
         autofix({ ...params, eslint: false, prettier: true }),
       ).resolves.toBeUndefined();
 
-      expectAutofixCommit({ eslint: false });
+      expectAutofixCommit({ eslint: false, prettier: true });
 
       expect(Git.commitAllChanges).toHaveBeenNthCalledWith(1, {
         dir: expect.any(String),
@@ -219,6 +224,41 @@ describe('autofix', () => {
         "
 
         Trying to autofix with Prettier...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
+    it('handles codegen changes only', async () => {
+      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+        {
+          path: '.gitignore',
+          state: 'modified',
+        },
+      ]);
+
+      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: false, prettier: false });
+
+      expect(Git.commitAllChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        message: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES,
+      });
+
+      expect(push).toHaveBeenNthCalledWith(1);
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to push codegen updates...
         Pushed fix commit commit-sha.
         "
       `);
@@ -268,10 +308,13 @@ describe('autofix', () => {
 
   describe('Other CI', () => {
     const expectAutofixCommit = (
-      { eslint }: { eslint: boolean } = { eslint: true },
+      { eslint, prettier }: Record<'eslint' | 'prettier', boolean> = {
+        eslint: true,
+        prettier: true,
+      },
     ) => {
       expect(runESLint).toHaveBeenCalledTimes(eslint ? 1 : 0);
-      expect(runPrettier).toHaveBeenCalledTimes(1);
+      expect(runPrettier).toHaveBeenCalledTimes(prettier ? 1 : 0);
       expect(GitHub.uploadAllFileChanges).toHaveBeenCalledTimes(1);
     };
 
@@ -371,6 +414,7 @@ describe('autofix', () => {
       ).resolves.toBeUndefined();
 
       expectAutofixCommit();
+
       expect(GitHub.uploadAllFileChanges).toHaveBeenNthCalledWith(1, {
         branch: 'dev',
         dir: expect.any(String),
@@ -397,7 +441,8 @@ describe('autofix', () => {
         autofix({ ...params, eslint: false, prettier: true }),
       ).resolves.toBeUndefined();
 
-      expectAutofixCommit({ eslint: false });
+      expectAutofixCommit({ eslint: false, prettier: true });
+
       expect(GitHub.uploadAllFileChanges).toHaveBeenNthCalledWith(1, {
         branch: 'dev',
         dir: expect.any(String),
@@ -411,6 +456,40 @@ describe('autofix', () => {
         "
 
         Trying to autofix with Prettier...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
+    it('handles codegen changes only', async () => {
+      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+        {
+          path: '.gitignore',
+          state: 'modified',
+        },
+      ]);
+
+      jest.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: false, prettier: false });
+
+      expect(GitHub.uploadAllFileChanges).toHaveBeenNthCalledWith(1, {
+        branch: 'dev',
+        dir: expect.any(String),
+        messageHeadline: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES,
+      });
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to push codegen updates...
         Pushed fix commit commit-sha.
         "
       `);

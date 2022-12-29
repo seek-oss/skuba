@@ -10,6 +10,12 @@ import { getDestinationManifest } from './analysis/package';
 import { createDestinationFileReader } from './analysis/project';
 import { mergeWithIgnoreFile } from './processing/ignoreFile';
 
+export const REFRESHABLE_IGNORE_FILES = [
+  '.eslintignore',
+  '.gitignore',
+  '.prettierignore',
+];
+
 export const refreshIgnoreFiles = async () => {
   const manifest = await getDestinationManifest();
 
@@ -32,11 +38,9 @@ export const refreshIgnoreFiles = async () => {
     await fs.promises.writeFile(filepath, data);
   };
 
-  await Promise.all([
-    refreshIgnoreFile('.eslintignore'),
-    refreshIgnoreFile('.gitignore'),
-    refreshIgnoreFile('.prettierignore'),
-  ]);
+  await Promise.all(
+    REFRESHABLE_IGNORE_FILES.map((ignoreFIle) => refreshIgnoreFile(ignoreFIle)),
+  );
 };
 
 export const tryRefreshIgnoreFiles = async () => {

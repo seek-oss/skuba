@@ -1,18 +1,34 @@
+import path from 'path';
 import { inspect } from 'util';
 
+import fs from 'fs-extra';
 import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
-import { runESLint } from '../../cli/adapter/eslint';
-import { runPrettier } from '../../cli/adapter/prettier';
 import { isCiEnv } from '../../utils/env';
 import { createLogger, log } from '../../utils/logging';
 import { throwOnTimeout } from '../../utils/wait';
+import { runESLint } from '../adapter/eslint';
+import { runPrettier } from '../adapter/prettier';
+import { JEST_SETUP_FILES } from '../configure/addEmptyExports';
+import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
 
 import type { Input } from './types';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
+
+const AUTOFIX_DELETE_FILES = [
+  // Try to delete this SEEK-Jobs/gutenberg automation file that may have been
+  // accidentally committed in a prior autofix.
+  'Dockerfile-incunabulum',
+];
+
+const AUTOFIX_CODEGEN_FILES = new Set<string>([
+  ...AUTOFIX_DELETE_FILES,
+  ...JEST_SETUP_FILES,
+  ...REFRESHABLE_IGNORE_FILES,
+]);
 
 export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
   {
@@ -75,12 +91,51 @@ interface AutofixParameters {
   prettier: boolean;
 }
 
+/**
+ * @returns Whether skuba codegenned a file change which should be included in
+ * an autofix commit.
+ */
+const tryCodegen = async (dir: string): Promise<boolean> => {
+  try {
+    // Try to forcibly remove `AUTOFIX_DELETE_FILES` from source control.
+    // These may include outdated configuration files or internal files that
+    // were accidentally committed by an autofix.
+    await Promise.all(
+      AUTOFIX_DELETE_FILES.map((filename) =>
+        fs.promises.rm(path.join(dir, filename), { force: true }),
+      ),
+    );
+
+    // Search codegenned file changes in the local Git working directory.
+    // These may include the `AUTOFIX_DELETE_FILES` deleted above or fixups to
+    // ignore files and module exports that were run at the start of the
+    // `skuba lint` command.
+    const changedFiles = await Git.getChangedFiles({
+      dir,
+
+      ignore: AUTOFIX_IGNORE_FILES,
+    });
+
+    // Determine if a meaningful codegen change
+    return changedFiles.some((changedFile) =>
+      AUTOFIX_CODEGEN_FILES.has(changedFile.path),
+    );
+  } catch (err) {
+    log.warn(log.bold('Failed to evaluate codegen changes.'));
+    log.subtle(inspect(err));
+
+    return false;
+  }
+};
+
 export const autofix = async (params: AutofixParameters): Promise<void> => {
-  if (!params.eslint && !params.prettier) {
+  const dir = process.cwd();
+
+  const codegen = await tryCodegen(dir);
+
+  if (!params.eslint && !params.prettier && !codegen) {
     return;
   }
-
-  const dir = process.cwd();
 
   let currentBranch;
   try {
@@ -93,18 +148,24 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
   try {
     log.newline();
-    log.warn(
-      `Trying to autofix with ${params.eslint ? 'ESLint and ' : ''}Prettier...`,
-    );
+    if (!params.eslint && !params.prettier) {
+      log.warn('Trying to push codegen updates...');
+    } else {
+      log.warn(
+        `Trying to autofix with ${
+          params.eslint ? 'ESLint and ' : ''
+        }Prettier...`,
+      );
 
-    const logger = createLogger(params.debug);
+      const logger = createLogger(params.debug);
 
-    if (params.eslint) {
-      await runESLint('format', logger);
+      if (params.eslint) {
+        await runESLint('format', logger);
+      }
+      // Unconditionally re-run Prettier; reaching here means we have pre-existing
+      // format violations or may have created new ones through ESLint fixes.
+      await runPrettier('format', logger);
     }
-    // Unconditionally re-run Prettier; reaching here means we have pre-existing
-    // format violations or may have created new ones through ESLint fixes.
-    await runPrettier('format', logger);
 
     if (process.env.GITHUB_ACTIONS) {
       // GitHub runners have Git installed locally
