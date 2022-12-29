@@ -14,6 +14,17 @@ import type { Input } from './types';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
+export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
+  {
+    path: '.npmrc',
+    state: 'added',
+  },
+  {
+    path: 'Dockerfile-incunabulum',
+    state: 'added',
+  },
+];
+
 const shouldPush = async ({
   currentBranch,
   dir,
@@ -100,6 +111,8 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
       const ref = await Git.commitAllChanges({
         dir,
         message: AUTOFIX_COMMIT_MESSAGE,
+
+        ignore: AUTOFIX_IGNORE_FILES,
       });
 
       if (!ref) {
@@ -122,9 +135,11 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
     const ref = await throwOnTimeout(
       GitHub.uploadAllFileChanges({
-        dir,
         branch: currentBranch,
+        dir,
         messageHeadline: AUTOFIX_COMMIT_MESSAGE,
+
+        ignore: AUTOFIX_IGNORE_FILES,
       }),
       { s: 30 },
     );

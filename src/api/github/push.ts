@@ -7,7 +7,6 @@ import type {
 import fs from 'fs-extra';
 
 import * as Git from '../git';
-import type { ChangedFile } from '../git/getChangedFiles';
 
 import { apiTokenFromEnvironment } from './environment';
 
@@ -29,6 +28,13 @@ interface UploadAllFileChangesParams {
    * The headline of the commit message
    */
   messageHeadline: string;
+
+  /**
+   * File changes to exclude from the upload.
+   *
+   * Defaults to `[]` (no exclusions).
+   */
+  ignore?: Git.ChangedFile[];
   /**
    * The body of the commit message
    */
@@ -52,15 +58,18 @@ interface UploadAllFileChangesParams {
  * specified.
  */
 export const uploadAllFileChanges = async ({
-  dir,
   branch,
+  dir,
   messageHeadline,
+
+  ignore,
   messageBody,
   updateLocal = false,
 }: UploadAllFileChangesParams): Promise<string | undefined> => {
-  const changedFiles = await Git.getChangedFiles({ dir });
+  const changedFiles = await Git.getChangedFiles({ dir, ignore });
+
   if (!changedFiles.length) {
-    return undefined;
+    return;
   }
 
   const fileChanges = await readFileChanges(changedFiles);
@@ -102,7 +111,7 @@ export interface FileChanges {
  * https://docs.github.com/en/graphql/reference/input-objects#filechanges
  */
 export const readFileChanges = async (
-  changedFiles: ChangedFile[],
+  changedFiles: Git.ChangedFile[],
 ): Promise<FileChanges> => {
   const { added, deleted } = changedFiles.reduce<{
     added: string[];

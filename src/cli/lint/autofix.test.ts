@@ -5,7 +5,7 @@ import * as GitHub from '../../api/github';
 import { runESLint } from '../../cli/adapter/eslint';
 import { runPrettier } from '../../cli/adapter/prettier';
 
-import { autofix } from './autofix';
+import { AUTOFIX_IGNORE_FILES, autofix } from './autofix';
 
 jest.mock('simple-git');
 jest.mock('../../api/git');
@@ -155,6 +155,13 @@ describe('autofix', () => {
 
       expectAutofixCommit();
 
+      expect(Git.commitAllChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        message: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES,
+      });
+
       expect(push).toHaveBeenNthCalledWith(1);
 
       expect(stdout()).toMatchInlineSnapshot(`
@@ -197,6 +204,14 @@ describe('autofix', () => {
       ).resolves.toBeUndefined();
 
       expectAutofixCommit({ eslint: false });
+
+      expect(Git.commitAllChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        message: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES,
+      });
+
       expect(push).toHaveBeenNthCalledWith(1);
 
       // We should only run Prettier
@@ -357,9 +372,11 @@ describe('autofix', () => {
 
       expectAutofixCommit();
       expect(GitHub.uploadAllFileChanges).toHaveBeenNthCalledWith(1, {
-        dir: expect.any(String),
         branch: 'dev',
+        dir: expect.any(String),
         messageHeadline: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES,
       });
 
       // We should run both ESLint and Prettier
@@ -382,9 +399,11 @@ describe('autofix', () => {
 
       expectAutofixCommit({ eslint: false });
       expect(GitHub.uploadAllFileChanges).toHaveBeenNthCalledWith(1, {
-        dir: expect.any(String),
         branch: 'dev',
+        dir: expect.any(String),
         messageHeadline: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES,
       });
 
       // We should only run Prettier
