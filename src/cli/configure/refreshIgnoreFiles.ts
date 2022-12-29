@@ -38,9 +38,7 @@ export const refreshIgnoreFiles = async () => {
     await fs.promises.writeFile(filepath, data);
   };
 
-  await Promise.all(
-    REFRESHABLE_IGNORE_FILES.map(refreshIgnoreFile),
-  );
+  await Promise.all(REFRESHABLE_IGNORE_FILES.map(refreshIgnoreFile));
 };
 
 export const tryRefreshIgnoreFiles = async () => {
