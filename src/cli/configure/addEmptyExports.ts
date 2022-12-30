@@ -9,6 +9,9 @@ import { getDestinationManifest } from './analysis/package';
 import { createDestinationFileReader } from './analysis/project';
 import { formatPrettier } from './processing/prettier';
 
+// TODO: glob `**/jest.*setup*.ts`?
+export const JEST_SETUP_FILES = ['jest.setup.ts', 'jest.setup.int.ts'];
+
 const addEmptyExports = async () => {
   const manifest = await getDestinationManifest();
 
@@ -39,10 +42,7 @@ const addEmptyExports = async () => {
     await fs.promises.writeFile(filepath, data);
   };
 
-  // TODO: glob `**/jest.*setup*.ts`?
-  const jestSetupFiles = ['jest.setup.ts', 'jest.setup.int.ts'];
-
-  await Promise.all(jestSetupFiles.map(addEmptyExport));
+  await Promise.all(JEST_SETUP_FILES.map(addEmptyExport));
 };
 
 /**
