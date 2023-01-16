@@ -137,7 +137,7 @@
     "express": "4.18.2",
     "jsonfile": "6.1.0",
     "koa": "2.14.1",
-    "memfs": "3.4.12",
+    "memfs": "3.4.13",
     "remark-cli": "11.0.0",
     "remark-preset-lint-recommended": "6.1.2",
     "semver": "7.3.8",
