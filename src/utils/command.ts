@@ -1,6 +1,6 @@
 import path from 'path';
 
-export type Command = typeof COMMAND_LIST[number];
+export type Command = (typeof COMMAND_LIST)[number];
 
 export const COMMAND_ALIASES: Record<string, Command> = {
   '-h': 'help',
