@@ -11,7 +11,7 @@ interface Config {
   destinationSnsTopicArn: string;
 }
 
-type Environment = typeof environments[number];
+type Environment = (typeof environments)[number];
 
 const environments = ['local', 'test', 'dev', 'prod'] as const;
 

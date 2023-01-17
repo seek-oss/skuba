@@ -12,7 +12,7 @@ export const isGitHubTeam = (value: string) =>
 
 const PLATFORMS = ['amd64', 'arm64'] as const;
 
-export type Platform = typeof PLATFORMS[number];
+export type Platform = (typeof PLATFORMS)[number];
 
 export const PLATFORM_OPTIONS = PLATFORMS.join(' | ');
 

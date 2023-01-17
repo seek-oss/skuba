@@ -13,7 +13,10 @@ import {
 
 import { Input, Select } from 'enquirer';
 
-export type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string> & {
+export type BaseFields = Record<
+  (typeof BASE_CHOICES)[number]['name'],
+  string
+> & {
   platformName: Platform;
 };
 

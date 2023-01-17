@@ -17,7 +17,7 @@ export const TEMPLATE_NAMES = [
   'private-npm-package',
 ] as const;
 
-export type TemplateName = typeof TEMPLATE_NAMES[number];
+export type TemplateName = (typeof TEMPLATE_NAMES)[number];
 
 export const TEMPLATE_NAMES_WITH_BYO = [...TEMPLATE_NAMES, 'github →'] as const;
 
