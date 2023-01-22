@@ -124,7 +124,7 @@
     "@jest/reporters": "29.3.1",
     "@types/ejs": "3.1.1",
     "@types/express": "4.17.15",
-    "@types/fs-extra": "9.0.13",
+    "@types/fs-extra": "11.0.1",
     "@types/koa": "2.13.5",
     "@types/libnpmsearch": "2.0.3",
     "@types/lodash.mergewith": "4.6.7",
