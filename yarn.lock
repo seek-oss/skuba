@@ -586,10 +586,10 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@esbuild-plugins/tsconfig-paths@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@esbuild-plugins/tsconfig-paths/-/tsconfig-paths-0.0.4.tgz#675730e1ae44c798882a71e35aebafdcb71c458d"
-  integrity sha512-/86k8BmhfJOFoFLR2oKtoxUVUpIYBtJy29QSM5TXzZP8vdjuMPtXSUeCL+8Aa2GZ3to2k6VD9WLBE9OU+j1yQQ==
+"@esbuild-plugins/tsconfig-paths@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@esbuild-plugins/tsconfig-paths/-/tsconfig-paths-0.1.0.tgz#d6fc428191e6b6e28ae299fbc003d0dfeac3dc19"
+  integrity sha512-ox0mj9pZ1CYQ2bCGBX9UMWzsGcC/5dHALap/3xSc7bX6w0hp0XeHKyt/+YhsCmHRKa96mMfnWw+Y7s2d02V/mg==
   dependencies:
     debug "^4.3.1"
     find-up "^5.0.0"
