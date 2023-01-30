@@ -57,7 +57,7 @@ const stdout = (randomMatcher: RegExp) => {
 };
 
 const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
-  await copy(baseDir, tempDir, { recursive: true });
+  await copy(baseDir, tempDir);
 
   process.chdir(tempDir);
 };

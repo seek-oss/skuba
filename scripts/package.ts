@@ -222,9 +222,9 @@ const main = async () => {
       'CONTRIBUTING.md',
       path.join('dist-docs', 'CONTRIBUTING.md'),
     ),
-    // `fs.promises.cp` is still experimental in Node.js 16.
-    copy('site', 'dist-docs', { recursive: true }),
-    copy('docs', path.join('dist-docs', 'docs'), { recursive: true }),
+    // `fs.promises.cp` is still experimental in Node.js 18.
+    copy('site', 'dist-docs'),
+    copy('docs', path.join('dist-docs', 'docs')),
   ]);
 
   const templateChanges = compileChangesByTemplate(changelog);
