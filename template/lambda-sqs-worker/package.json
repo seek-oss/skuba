@@ -14,9 +14,10 @@
     "test:watch": "skuba test --watch"
   },
   "dependencies": {
-    "@aws-sdk/client-codedeploy": "^3.213.0",
-    "@aws-sdk/client-lambda": "^3.213.0",
-    "@aws-sdk/client-sns": "^3.213.0",
+    "@aws-sdk/client-codedeploy": "^3.259.0",
+    "@aws-sdk/client-lambda": "^3.259.0",
+    "@aws-sdk/client-sns": "^3.259.0",
+    "@aws-sdk/util-utf8-node": "^3.259.0",
     "@seek/logger": "^5.0.1",
     "datadog-lambda-js": "^6.83.0",
     "dd-trace": "^3.8.0",
