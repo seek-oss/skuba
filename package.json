@@ -68,7 +68,7 @@
     "**/@types/node": ">=14.18"
   },
   "dependencies": {
-    "@esbuild-plugins/tsconfig-paths": "^0.0.4",
+    "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@jest/types": "^29.0.0",
     "@octokit/graphql": "^5.0.0",
     "@octokit/graphql-schema": "^12.0.0",
