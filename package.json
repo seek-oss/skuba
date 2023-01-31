@@ -71,7 +71,7 @@
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@jest/types": "^29.0.0",
     "@octokit/graphql": "^5.0.0",
-    "@octokit/graphql-schema": "^12.0.0",
+    "@octokit/graphql-schema": "^13.0.0",
     "@octokit/rest": "^19.0.0",
     "@octokit/types": "^9.0.0",
     "@types/jest": "^29.0.0",
