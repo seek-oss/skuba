@@ -29,3 +29,8 @@ parent: Deep dives
      }
    }
    ```
+
+## Webstorm
+
+1. Go to Settings > Languages & Frameworks > JavaScript > Code Quality Tools > ESLint and tick `Run eslint --fix on save`.
+2. Go to Settings > Langauge & Frameworks > JavaScript > Prettier and tick `On save`.
