@@ -60,7 +60,7 @@ export const createRequestListenerFromFunction =
  * This function resolves when the server is closed.
  */
 export const serveRequestListener = (
-  requestListener?: http.RequestListener,
+  requestListener: http.RequestListener,
   port?: number,
 ) => {
   const server = http.createServer(requestListener);
