@@ -138,6 +138,7 @@ const createApp = async () => {
   const app = fastify();
   await app.ready();
 };
+const app = createApp();
 
 export default app;
 ```
