@@ -115,6 +115,7 @@ interface Export {
   // One of these is required.
   callback?: () => http.RequestListener;
   requestListener?: http.RequestListener;
+  server?: http.Server;
 
   // Optional; falls back to an available port.
   port?: number;
@@ -128,6 +129,17 @@ const app = new Koa();
 
 // You can also use `export =` syntax as required by koa-cluster.
 export default Object.assign(app, { port });
+```
+
+As should [Fastify]:
+
+```typescript
+const createApp = async () => {
+  const app = fastify();
+  await app.ready();
+};
+
+export default app;
 ```
 
 As should [Express]:
@@ -189,5 +201,6 @@ Execution should pause on the breakpoint until we hit `F5` or the `▶️` butto
 [`ts-node`]: https://github.com/typestrong/ts-node
 [`tsconfig-paths`]: https://github.com/dividab/tsconfig-paths
 [express]: https://expressjs.com/
+[fastify]: https://www.fastify.io/
 [koa]: https://koajs.com/
 [node.js options]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options
