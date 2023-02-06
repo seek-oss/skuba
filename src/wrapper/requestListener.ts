@@ -18,7 +18,7 @@ interface ObjectConfig {
   // Fastify compatibility
   server?: http.Server;
 
-  default?: unknown;
+  default?: Promise<unknown>;
   port?: unknown;
 }
 
@@ -46,7 +46,7 @@ export const runRequestListener = async ({
     return;
   }
 
-  let config = await entryPoint;
+  let config: FunctionConfig | ObjectConfig = await entryPoint;
 
   if (typeof config === 'object' && isConfig(config.default)) {
     // Prefer `export default` over `export =`
