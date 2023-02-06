@@ -64,8 +64,16 @@ export const serveRequestListener = (
   port?: number,
 ) => {
   const server = http.createServer(requestListener);
+  return startServer(server, port);
+};
 
-  return new Promise<void>((resolve, reject) =>
+/**
+ * Returns a HTTP server wrapped in a promise
+ *
+ * This function resolves when the server is closed.
+ */
+export const startServer = (server: http.Server, port?: number) =>
+  new Promise<void>((resolve, reject) =>
     server
       .listen(port)
       .on('close', resolve)
@@ -76,4 +84,3 @@ export const serveRequestListener = (
         log.ok('listening on port', log.bold(address.port));
       }),
   );
-};
