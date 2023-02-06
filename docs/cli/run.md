@@ -137,6 +137,7 @@ As should [Fastify]:
 const createApp = async () => {
   const app = fastify();
   await app.ready();
+  return app;
 };
 const app = createApp();
 
