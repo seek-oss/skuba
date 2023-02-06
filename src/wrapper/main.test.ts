@@ -1,3 +1,4 @@
+import nodeHttp from 'http';
 import path from 'path';
 
 import request from 'supertest';
@@ -12,20 +13,20 @@ const initWrapper = (entryPoint: string) =>
 
 let agent: request.SuperAgentTest;
 
-const serveRequestListener = jest
-  .spyOn(http, 'serveRequestListener')
-  .mockImplementation((requestListener) => {
-    agent = request.agent(requestListener);
+const startServer = jest
+  .spyOn(http, 'startServer')
+  .mockImplementation((server) => {
+    agent = request.agent(server);
     return Promise.resolve();
   });
 
-afterEach(serveRequestListener.mockClear);
+afterEach(startServer.mockClear);
 
 test('asyncFunctionHandler', async () => {
   // Without `.ts`
   await initWrapper('asyncFunctionHandler#handler');
 
-  expect(serveRequestListener).toHaveBeenCalledTimes(1);
+  expect(startServer).toHaveBeenCalledTimes(1);
 
   return Promise.all([
     agent
@@ -67,8 +68,8 @@ test('expressRequestListener', async () => {
   // With `.ts`
   await initWrapper('expressRequestListener.ts');
 
-  expect(serveRequestListener.mock.calls).toEqual([
-    [expect.any(Function), 12345],
+  expect(startServer.mock.calls).toEqual([
+    [expect.any(nodeHttp.Server), 12345],
   ]);
 
   return Promise.all([
@@ -84,16 +85,14 @@ test('expressRequestListener', async () => {
 test('invalidRequestListener', async () => {
   await expect(initWrapper('invalidRequestListener')).resolves.toBeUndefined();
 
-  expect(serveRequestListener).not.toHaveBeenCalled();
+  expect(startServer).not.toHaveBeenCalled();
 });
 
 test('koaRequestListener', async () => {
   // Without `.ts`
   await initWrapper('koaRequestListener');
 
-  expect(serveRequestListener.mock.calls).toEqual([
-    [expect.any(Function), 8080],
-  ]);
+  expect(startServer.mock.calls).toEqual([[expect.any(nodeHttp.Server), 8080]]);
 
   return Promise.all([
     agent
@@ -105,25 +104,39 @@ test('koaRequestListener', async () => {
   ]);
 });
 
+test('fastifyRequestListener', async () => {
+  // Without `.ts`
+  await initWrapper('fastifyRequestListener');
+
+  return Promise.all([
+    agent
+      .get('/fastify')
+      .expect(200)
+      .expect(({ text }) => expect(text).toMatchInlineSnapshot(`"Fastify!"`)),
+
+    agent.get('/express').expect(404),
+  ]);
+});
+
 test('miscellaneousExportModule', async () => {
   await expect(
     initWrapper('miscellaneousExportModule'),
   ).resolves.toBeUndefined();
 
-  expect(serveRequestListener).not.toHaveBeenCalled();
+  expect(startServer).not.toHaveBeenCalled();
 });
 
 test('noExportModule', async () => {
   await expect(initWrapper('noExportModule')).resolves.toBeUndefined();
 
-  expect(serveRequestListener).not.toHaveBeenCalled();
+  expect(startServer).not.toHaveBeenCalled();
 });
 
 test('syncFunctionHandler', async () => {
   // With `.ts`
   await initWrapper('syncFunctionHandler.ts#handler');
 
-  expect(serveRequestListener).toHaveBeenCalledTimes(1);
+  expect(startServer).toHaveBeenCalledTimes(1);
 
   return Promise.all([
     agent
@@ -155,7 +168,7 @@ test('voidFunctionHandler', async () => {
   // With `.ts`
   await initWrapper('voidFunctionHandler.ts#handler');
 
-  expect(serveRequestListener).toHaveBeenCalledTimes(1);
+  expect(startServer).toHaveBeenCalledTimes(1);
 
   return (
     agent
