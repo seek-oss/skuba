@@ -85,7 +85,7 @@
     "eslint": "^8.11.0",
     "eslint-config-skuba": "1.2.1",
     "execa": "^5.0.0",
-    "fdir": "^5.0.0",
+    "fdir": "^6.0.0",
     "fs-extra": "^11.0.0",
     "function-arguments": "^1.0.9",
     "get-port": "^5.1.1",
