@@ -1,5 +1,43 @@
 # skuba
 
+## 5.2.0-beta.0
+
+### Minor Changes
+
+- **format, lint:** Bundle `eslint-plugin-yml` (2cb3bf4)
+
+  [eslint-plugin-yml](https://github.com/ota-meshi/eslint-plugin-yml) is now supported on `skuba format` and `skuba lint`. While the default configuration should be unobtrusive, you can opt in to stricter rules in your `.eslintrc.js`:
+
+  ```diff
+  module.exports = {
+    extends: ['skuba'],
+  + overrides: [
+  +   {
+  +     files: ['my/strict/config.yaml'],
+  +     rules: {
+  +       'yml/sort-keys': 'error',
+  +     },
+  +   },
+  + ],
+  };
+  ```
+
+  YAML files with non-standard syntax may fail ESLint parsing with this change. Gantry resource files should be excluded by default due to their custom templating syntax, and you can list additional exclusions in your `.eslintignore`.
+
+- **run:** Add Fastify support (b62e585)
+
+  `skuba start` can now be used to create a live-reloading server for Fastify based projects. See https://seek-oss.github.io/skuba/docs/cli/run.html#skuba-start for more information.
+
+### Patch Changes
+
+- **lint:** Commit codegen updates (5eca770)
+
+  `skuba lint` can locally codegen updates to ignore files and module exports. These changes are now automatically committed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
+- **lint:** Delete `Dockerfile-incunabulum` (5eca770)
+
+  `skuba lint` may have accidentally committed this internal file to source control in prior versions. It is now automatically removed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
 ## 5.1.1
 
 ### Patch Changes

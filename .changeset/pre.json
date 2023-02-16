@@ -1,0 +1,13 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "5.1.1"
+  },
+  "changesets": [
+    "forty-spies-tie",
+    "khaki-drinks-warn",
+    "ninety-geckos-perform",
+    "young-candles-speak"
+  ]
+}
