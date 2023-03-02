@@ -2,7 +2,7 @@
 'skuba': patch
 ---
 
-template/\*-rest-api: Set `keepAliveTimeout` to 30.5 seconds to prevent 502 errors
+template/\*-rest-api: Set `keepAliveTimeout` to 31 seconds to prevent 502 errors
 
 The default Node.js server keep alive timeout is set to 5 seconds. However, the Gantry default ALB idle timeout is 30 seconds. This would lead to the occasional issues where the sidecar would throw `proxyStatus` 502 errors. AWS recommends setting an application timeout larger than the ALB idle timeout.
 

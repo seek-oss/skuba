@@ -20,4 +20,4 @@ const listener = app.listen(config.port, () => {
 // Node default is 5 seconds
 // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout
 // AWS recommends setting an application timeout larger than the load balancer
-listener.keepAliveTimeout = 30500;
+listener.keepAliveTimeout = 31000;
