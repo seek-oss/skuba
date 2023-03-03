@@ -15,7 +15,7 @@ const listener = app.listen(config.port, () => {
   }
 });
 
-// Gantry ALB Default Idle timeout is 30 seconds
+// Gantry ALB default idle timeout is 30 seconds
 // https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout
 // Node default is 5 seconds
 // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout
