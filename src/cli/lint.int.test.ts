@@ -5,6 +5,7 @@ import stream from 'stream';
 import { inspect } from 'util';
 
 import { copy } from 'fs-extra';
+import git from 'isomorphic-git';
 
 import { Buildkite } from '..';
 
@@ -19,6 +20,12 @@ const stdoutMock = jest.fn();
 jest
   .spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+
+jest
+  .spyOn(git, 'listRemotes')
+  .mockResolvedValue([
+    { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+  ]);
 
 const tscOutputStream = new stream.PassThrough().on('data', stdoutMock);
 
