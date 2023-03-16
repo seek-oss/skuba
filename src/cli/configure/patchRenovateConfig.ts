@@ -107,13 +107,7 @@ const patchRenovateConfig = async () => {
     })),
   );
 
-  const config = maybeConfigs.find(
-    (
-      maybeConfig,
-    ): maybeConfig is typeof maybeConfig & {
-      input: NonNullable<(typeof maybeConfig)['input']>;
-    } => Boolean(maybeConfig.input),
-  );
+  const config = maybeConfigs.find((maybeConfig) => Boolean(maybeConfig.input));
 
   if (
     // No file was found.
@@ -121,7 +115,7 @@ const patchRenovateConfig = async () => {
     // The file appears to mention the baseline preset for the configured Git
     // owner. This is a very naive check that we don't want to overcomplicate
     // because it is invoked before each skuba format and lint.
-    RENOVATE_PRESETS.some((preset) => config.input.includes(preset))
+    config.input.includes(presetToAdd)
   ) {
     return;
   }
@@ -134,7 +128,11 @@ const patchRenovateConfig = async () => {
 
   const patchFile = patchByFiletype[filetype];
 
-  await patchFile({ ...config, presetToAdd });
+  await patchFile({
+    filepath: config.filepath,
+    input: config.input,
+    presetToAdd,
+  });
 };
 
 export const tryPatchRenovateConfig = async () => {
