@@ -17,8 +17,9 @@ const JSON = `
 const JSON5 = `
 {
   extends: [
-    // nice one bro
+    // Preceding comment
     'seek',
+    // Succeeding comment
   ]
 }
 `;
@@ -63,10 +64,11 @@ it('patches a JSON5 config', async () => {
     .toMatchInlineSnapshot(`
     "{
       extends: [
-        // nice one bro
+        // Preceding comment
         'local>seekasia/renovate-config',
 
         'seek',
+        // Succeeding comment
       ],
     }
     "
