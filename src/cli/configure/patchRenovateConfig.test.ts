@@ -24,7 +24,11 @@ const JSON5 = `
 }
 `;
 
+const JSON5_CONFIGURED = `{extends: ['github>seek-oss/rynovate', local>seek-jobs/renovate-config']}`;
+
 const getOwnerAndRepo = jest.spyOn(Git, 'getOwnerAndRepo');
+
+const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(jest.clearAllMocks);
 beforeEach(() => vol.reset());
@@ -38,15 +42,16 @@ it('patches a JSON config for a SEEK-Jobs project', async () => {
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
-  await expect(fs.promises.readFile('renovate.json', 'utf-8')).resolves
-    .toMatchInlineSnapshot(`
-    "{
+  expect(volToJson()).toMatchInlineSnapshot(`
+    {
+      "renovate.json": "{
       "extends": [
         "local>seek-jobs/renovate-config",
         "github>seek-oss/rynovate:third-party-major"
       ]
     }
-    "
+    ",
+    }
   `);
 });
 
@@ -60,9 +65,9 @@ it('patches a JSON5 config for a seekasia project', async () => {
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
-  await expect(fs.promises.readFile('.github/renovate.json5', 'utf-8')).resolves
-    .toMatchInlineSnapshot(`
-    "{
+  expect(volToJson()).toMatchInlineSnapshot(`
+    {
+      ".github/renovate.json5": "{
       extends: [
         // Preceding comment
         'local>seekasia/renovate-config',
@@ -71,34 +76,51 @@ it('patches a JSON5 config for a seekasia project', async () => {
         // Succeeding comment
       ],
     }
-    "
+    ",
+    }
   `);
+});
+
+it('handles a lack of Renovate config', async () => {
+  getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'monolith' });
+
+  await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
+
+  expect(volToJson()).toStrictEqual({});
 });
 
 it('skips a seek-oss project', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'seek-oss', repo: 'skuba' });
 
-  vol.fromJSON({
-    'renovate.json5': JSON5,
-  });
+  const files = { 'renovate.json5': JSON5 };
+
+  vol.fromJSON(files);
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
-  await expect(fs.promises.readFile('renovate.json5', 'utf-8')).resolves.toBe(
-    JSON5,
-  );
+  expect(volToJson()).toStrictEqual(files);
 });
 
 it('skips a personal project', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'Seekie1337', repo: 'fizz-buzz' });
 
-  vol.fromJSON({
-    '.renovaterc': JSON,
-  });
+  const files = { '.renovaterc': JSON };
+
+  vol.fromJSON(files);
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
-  await expect(fs.promises.readFile('.renovaterc', 'utf-8')).resolves.toBe(
-    JSON,
-  );
+  expect(volToJson()).toStrictEqual(files);
+});
+
+it('skips a configured SEEK-Jobs project', async () => {
+  getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'monolith' });
+
+  const files = { '.github/renovate.json5': JSON5_CONFIGURED };
+
+  vol.fromJSON(files);
+
+  await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
+
+  expect(volToJson()).toStrictEqual(files);
 });

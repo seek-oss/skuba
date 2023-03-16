@@ -22,12 +22,8 @@ type RenovateFiletype = 'json' | 'json5';
 
 type RenovatePreset = (typeof RENOVATE_PRESETS)[number];
 
-const renovatePresetSet = new Set<unknown>(RENOVATE_PRESETS);
-
 const RenovateConfig = t.Record({
-  extends: t.Array(
-    t.String.withConstraint((preset) => !renovatePresetSet.has(preset)),
-  ),
+  extends: t.Array(t.String),
 });
 
 const ownerToRenovatePreset = (owner: string): RenovatePreset | undefined => {
@@ -95,14 +91,21 @@ const patchRenovateConfig = async () => {
 
   const readFile = createDestinationFileReader(dir);
 
-  const [{ owner }, ...maybeConfigs] = await Promise.all([
-    Git.getOwnerAndRepo({ dir }),
+  const { owner } = await Git.getOwnerAndRepo({ dir });
 
-    ...RENOVATE_CONFIG_FILENAMES.map(async (filepath) => ({
+  const presetToAdd = ownerToRenovatePreset(owner);
+
+  if (!presetToAdd) {
+    // No baseline preset needs to be added for the configured Git owner.
+    return;
+  }
+
+  const maybeConfigs = await Promise.all(
+    RENOVATE_CONFIG_FILENAMES.map(async (filepath) => ({
       input: await readFile(filepath),
       filepath,
     })),
-  ]);
+  );
 
   const config = maybeConfigs.find(
     (
@@ -112,9 +115,14 @@ const patchRenovateConfig = async () => {
     } => Boolean(maybeConfig.input),
   );
 
-  const presetToAdd = ownerToRenovatePreset(owner);
-
-  if (!config?.input || !presetToAdd) {
+  if (
+    // No file was found.
+    !config?.input ||
+    // The file appears to mention the baseline preset for the configured Git
+    // owner. This is a very naive check that we don't want to overcomplicate
+    // because it is invoked before each skuba format and lint.
+    RENOVATE_PRESETS.some((preset) => config.input.includes(preset))
+  ) {
     return;
   }
 
