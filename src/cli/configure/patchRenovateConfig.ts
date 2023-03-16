@@ -30,12 +30,19 @@ const RenovateConfig = t.Record({
   ),
 });
 
-const ownerToRenovatePreset = (owner: string): RenovatePreset => {
-  if (owner.toLowerCase() === 'seekasia') {
-    return 'local>seekasia/renovate-config';
-  }
+const ownerToRenovatePreset = (owner: string): RenovatePreset | undefined => {
+  const lowercaseOwner = owner.toLowerCase();
 
-  return 'local>seek-jobs/renovate-config';
+  switch (lowercaseOwner) {
+    case 'seekasia':
+      return 'local>seekasia/renovate-config';
+
+    case 'seek-jobs':
+      return 'local>seek-jobs/renovate-config';
+
+    default:
+      return;
+  }
 };
 
 type PatchFile = (props: {
@@ -105,7 +112,9 @@ const patchRenovateConfig = async () => {
     } => Boolean(maybeConfig.input),
   );
 
-  if (!config?.input) {
+  const presetToAdd = ownerToRenovatePreset(owner);
+
+  if (!config?.input || !presetToAdd) {
     return;
   }
 
@@ -114,8 +123,6 @@ const patchRenovateConfig = async () => {
     .endsWith('.json5')
     ? 'json5'
     : 'json';
-
-  const presetToAdd = ownerToRenovatePreset(owner);
 
   const patchFile = patchByFiletype[filetype];
 
