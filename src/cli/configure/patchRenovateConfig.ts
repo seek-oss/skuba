@@ -65,7 +65,6 @@ const patchJson: PatchFile = async ({ filepath, input, presetToAdd }) => {
   await fs.promises.writeFile(
     filepath,
     formatPrettier(JSON.stringify(config), { parser: 'json' }),
-    'utf-8',
   );
 
   return;
@@ -89,12 +88,9 @@ const patchJson5: PatchFile = async ({ filepath, input, presetToAdd }) => {
 
   config.extends.splice(seekPresetIndex, 0, presetToAdd);
 
-  const output = fleece.patch(input, config);
-
   await fs.promises.writeFile(
     filepath,
-    formatPrettier(output, { parser: 'json5' }),
-    'utf-8',
+    formatPrettier(fleece.patch(input, config), { parser: 'json5' }),
   );
 
   return;

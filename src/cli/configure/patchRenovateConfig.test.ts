@@ -1,8 +1,10 @@
-import fs from 'fs-extra';
+import memfs, { fs, vol } from 'memfs';
 
 import * as Git from '../../api/git';
 
 import { tryPatchRenovateConfig } from './patchRenovateConfig';
+
+jest.mock('fs-extra', () => memfs);
 
 const JSON = `
 {
@@ -23,40 +25,27 @@ const JSON5 = `
 
 const getOwnerAndRepo = jest.spyOn(Git, 'getOwnerAndRepo');
 
-const readFile = jest.spyOn(fs.promises, 'readFile');
-
-const writeFile = jest
-  .spyOn(fs.promises, 'writeFile')
-  .mockResolvedValue(undefined);
-
 beforeEach(jest.clearAllMocks);
+beforeEach(() => vol.reset());
 
 it('patches a JSON config', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'VersionNet' });
 
-  readFile.mockImplementation((filepath) => {
-    if (filepath.toString().endsWith('.json5')) {
-      return Promise.reject(Object.assign(new Error(), { code: 'ENOENT' }));
-    }
-
-    return Promise.resolve(JSON);
+  vol.fromJSON({
+    'renovate.json': JSON,
   });
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
-  expect(writeFile).toHaveBeenCalledTimes(1);
-  expect(writeFile.mock.calls[0]).toMatchInlineSnapshot(`
-    [
-      ".github/renovate.json",
-      "{
+  await expect(fs.promises.readFile('renovate.json', 'utf-8')).resolves
+    .toMatchInlineSnapshot(`
+    "{
       "extends": [
         "local>seek-jobs/renovate-config",
         "github>seek-oss/rynovate:third-party-major"
       ]
     }
-    ",
-      "utf-8",
-    ]
+    "
   `);
 });
 
@@ -66,15 +55,13 @@ it('patches a JSON5 config', async () => {
     repo: 'VersionCobol',
   });
 
-  readFile.mockResolvedValue(JSON5);
+  vol.fromJSON({ '.github/renovate.json5': JSON5 });
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
-  expect(writeFile).toHaveBeenCalledTimes(1);
-  expect(writeFile.mock.calls[0]).toMatchInlineSnapshot(`
-    [
-      ".github/renovate.json5",
-      "{
+  await expect(fs.promises.readFile('.github/renovate.json5', 'utf-8')).resolves
+    .toMatchInlineSnapshot(`
+    "{
       extends: [
         // nice one bro
         'local>seekasia/renovate-config',
@@ -82,8 +69,6 @@ it('patches a JSON5 config', async () => {
         'seek',
       ],
     }
-    ",
-      "utf-8",
-    ]
+    "
   `);
 });
