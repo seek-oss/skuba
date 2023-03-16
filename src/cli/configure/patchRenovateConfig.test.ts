@@ -1,4 +1,4 @@
-import memfs, { fs, vol } from 'memfs';
+import memfs, { vol } from 'memfs';
 
 import * as Git from '../../api/git';
 
