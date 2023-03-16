@@ -51,16 +51,7 @@ const patchJson: PatchFile = async ({ filepath, input, presetToAdd }) => {
     return;
   }
 
-  const seekPresetIndex = config.extends.findIndex(
-    (preset) =>
-      preset === 'seek' || preset.startsWith('github>seek-oss/rynovate'),
-  );
-
-  if (seekPresetIndex === -1) {
-    return;
-  }
-
-  config.extends.splice(seekPresetIndex, 0, presetToAdd);
+  config.extends.unshift(presetToAdd);
 
   await fs.promises.writeFile(
     filepath,
@@ -77,16 +68,7 @@ const patchJson5: PatchFile = async ({ filepath, input, presetToAdd }) => {
     return;
   }
 
-  const seekPresetIndex = config.extends.findIndex(
-    (preset) =>
-      preset === 'seek' || preset.startsWith('github>seek-oss/rynovate'),
-  );
-
-  if (seekPresetIndex === -1) {
-    return;
-  }
-
-  config.extends.splice(seekPresetIndex, 0, presetToAdd);
+  config.extends.unshift(presetToAdd);
 
   await fs.promises.writeFile(
     filepath,
