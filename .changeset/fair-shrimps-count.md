@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+'skuba': minor
 ---
 
 format, lint, template/\*-rest-api: Set `keepAliveTimeout` to 31 seconds to prevent HTTP 502s
