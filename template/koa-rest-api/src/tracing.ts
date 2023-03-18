@@ -36,12 +36,7 @@ const main = () => {
     instrumentations: [new HttpInstrumentation(), new AwsInstrumentation()],
   });
 
-  sdk
-    .start()
-    .then(() => log('info', 'OpenTelemetry initialised'))
-    .catch((err: Error) =>
-      log('error', 'OpenTelemetry not initialised', { err }),
-    );
+  sdk.start();
 
   process.on('SIGTERM', () => {
     sdk
