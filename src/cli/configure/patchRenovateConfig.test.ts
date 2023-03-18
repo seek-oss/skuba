@@ -65,6 +65,9 @@ it('patches a JSON5 config for a seekasia project', async () => {
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
+  // Note that `golden-fleece` can't do any better than this imperfect output,
+  // but at least it allows us to preserve the comments rather than dropping
+  // them entirely.
   expect(volToJson()).toMatchInlineSnapshot(`
     {
       ".github/renovate.json5": "{
