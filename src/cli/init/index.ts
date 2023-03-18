@@ -10,6 +10,7 @@ import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
+import { tryPatchRenovateConfig } from '../configure/patchRenovateConfig';
 
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
@@ -76,6 +77,9 @@ export const init = async () => {
 
   log.newline();
   await initialiseRepo(destinationDir, templateData);
+
+  // Patch in a baseline Renovate preset based on the configured Git owner.
+  await tryPatchRenovateConfig(destinationDir);
 
   const skubaSlug = `skuba@${skubaVersionInfo.local}`;
 

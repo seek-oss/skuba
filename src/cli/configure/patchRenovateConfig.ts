@@ -86,9 +86,7 @@ const patchByFiletype: Record<RenovateFiletype, PatchFile> = {
   json5: patchJson5,
 };
 
-const patchRenovateConfig = async () => {
-  const dir = process.cwd();
-
+const patchRenovateConfig = async (dir: string) => {
   const readFile = createDestinationFileReader(dir);
 
   const { owner } = await Git.getOwnerAndRepo({ dir });
@@ -135,9 +133,9 @@ const patchRenovateConfig = async () => {
   });
 };
 
-export const tryPatchRenovateConfig = async () => {
+export const tryPatchRenovateConfig = async (dir = process.cwd()) => {
   try {
-    await patchRenovateConfig();
+    await patchRenovateConfig(dir);
   } catch (err) {
     log.warn('Failed to patch Renovate config.');
     log.subtle(inspect(err));
