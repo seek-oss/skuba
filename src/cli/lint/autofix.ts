@@ -12,6 +12,7 @@ import { throwOnTimeout } from '../../utils/wait';
 import { runESLint } from '../adapter/eslint';
 import { runPrettier } from '../adapter/prettier';
 import { JEST_SETUP_FILES } from '../configure/addEmptyExports';
+import { RENOVATE_CONFIG_FILENAMES } from '../configure/modules/renovate';
 import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
 
 import type { Input } from './types';
@@ -28,6 +29,7 @@ const AUTOFIX_CODEGEN_FILES = new Set<string>([
   ...AUTOFIX_DELETE_FILES,
   ...JEST_SETUP_FILES,
   ...REFRESHABLE_IGNORE_FILES,
+  ...RENOVATE_CONFIG_FILENAMES,
 ]);
 
 export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
