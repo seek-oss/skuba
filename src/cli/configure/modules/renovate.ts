@@ -13,6 +13,11 @@ const OTHER_CONFIG_FILENAMES = [
   'renovate.json5',
 ];
 
+export const RENOVATE_CONFIG_FILENAMES = [
+  '.github/renovate.json5',
+  ...OTHER_CONFIG_FILENAMES,
+];
+
 export const renovateModule = async ({ type }: Options): Promise<Module> => {
   const configFile = await readBaseTemplateFile('.github/renovate.json5');
 
