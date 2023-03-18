@@ -6,7 +6,7 @@
 
 import { propagation } from '@opentelemetry/api';
 import { CompositePropagator } from '@opentelemetry/core';
-import { CollectorTraceExporter } from '@opentelemetry/exporter-collector-grpc';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { B3InjectEncoding, B3Propagator } from '@opentelemetry/propagator-b3';
@@ -31,17 +31,12 @@ const main = () => {
   );
 
   const sdk = new NodeSDK({
-    traceExporter: new CollectorTraceExporter(),
+    traceExporter: new OTLPTraceExporter(),
     autoDetectResources: false,
     instrumentations: [new HttpInstrumentation(), new AwsInstrumentation()],
   });
 
-  sdk
-    .start()
-    .then(() => log('info', 'OpenTelemetry initialised'))
-    .catch((err: Error) =>
-      log('error', 'OpenTelemetry not initialised', { err }),
-    );
+  sdk.start();
 
   process.on('SIGTERM', () => {
     sdk
