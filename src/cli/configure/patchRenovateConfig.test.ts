@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import memfs, { vol } from 'memfs';
 
 import * as Git from '../../api/git';
@@ -28,6 +30,8 @@ const JSON5_CONFIGURED = `{extends: ['github>seek-oss/rynovate', local>seek-jobs
 
 const getOwnerAndRepo = jest.spyOn(Git, 'getOwnerAndRepo');
 
+const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(jest.clearAllMocks);
@@ -36,9 +40,7 @@ beforeEach(() => vol.reset());
 it('patches a JSON config for a SEEK-Jobs project', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'VersionNet' });
 
-  vol.fromJSON({
-    'renovate.json': JSON,
-  });
+  vol.fromJSON({ 'renovate.json': JSON });
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
@@ -90,6 +92,38 @@ it('handles a lack of Renovate config', async () => {
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
   expect(volToJson()).toStrictEqual({});
+});
+
+it('handles a filesystem error', async () => {
+  const err = new Error('Badness!');
+
+  jest.spyOn(memfs.fs.promises, 'writeFile').mockRejectedValueOnce(err);
+
+  getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'VersionNet' });
+
+  const files = { 'renovate.json5': JSON5 };
+
+  vol.fromJSON(files);
+
+  await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
+
+  expect(volToJson()).toStrictEqual(files);
+
+  expect(consoleLog).toHaveBeenCalledWith('Failed to patch Renovate config.');
+  expect(consoleLog).toHaveBeenCalledWith(inspect(err));
+});
+
+it('handles a non-Git directory', async () => {
+  const err = new Error('Badness!');
+
+  getOwnerAndRepo.mockRejectedValue(err);
+
+  await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
+
+  expect(volToJson()).toStrictEqual({});
+
+  expect(consoleLog).toHaveBeenCalledWith('Failed to patch Renovate config.');
+  expect(consoleLog).toHaveBeenCalledWith(inspect(err));
 });
 
 it('skips a seek-oss project', async () => {
