@@ -2,10 +2,10 @@
   "compilerOptions": {
     "baseUrl": "src",
     "declaration": true,
-    "lib": ["ES2020"],
+    "lib": ["ES2021"],
     "outDir": "lib",
     "removeComments": false,
-    "target": "ES2020"
+    "target": "ES2021"
   },
   "exclude": ["integration/**/*", "lib*/**/*", "template/**/*"],
   "extends": "./config/tsconfig.json"
