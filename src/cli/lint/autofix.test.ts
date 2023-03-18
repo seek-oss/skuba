@@ -264,6 +264,41 @@ describe('autofix', () => {
       `);
     });
 
+    it('handles nested Renovate changes only', async () => {
+      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+        {
+          path: '.github/renovate.json5',
+          state: 'modified',
+        },
+      ]);
+
+      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: false, prettier: false });
+
+      expect(Git.commitAllChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        message: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES,
+      });
+
+      expect(push).toHaveBeenNthCalledWith(1);
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Trying to push codegen updates...
+        Pushed fix commit commit-sha.
+        "
+      `);
+    });
+
     it('tolerates guard errors', async () => {
       const ERROR = new Error('badness!');
 
