@@ -1,5 +1,76 @@
 # skuba
 
+## 5.2.0-beta.1
+
+### Minor Changes
+
+- **format, lint:** Prepend baseline SEEK `renovate-config` preset (dbd4853)
+
+  `skuba format` and `skuba lint` will now automatically prepend an appropriate baseline preset if your project is configured with a `SEEK-Jobs` or `seekasia` remote:
+
+  ```diff
+  // SEEK-Jobs
+  {
+  - extends: ['seek'],
+  + extends: ['local>seek-jobs/renovate-config', 'seek'],
+  }
+
+  // seekasia
+  {
+  - extends: ['seek'],
+  + extends: ['local>seekasia/renovate-config', 'seek'],
+  }
+  ```
+
+  Renovate requires this new configuration to reliably access private SEEK packages. Adding the preset should fix recent issues where Renovate would open then autoclose pull requests, and report ⚠ Dependency Lookup Warnings ⚠.
+
+  See [SEEK-Jobs/renovate-config](https://github.com/SEEK-Jobs/renovate-config) and [seekasia/renovate-config](https://github.com/seekasia/renovate-config) for more information.
+
+- **format, lint:** Bundle `eslint-plugin-yml` (2cb3bf4)
+
+  [eslint-plugin-yml](https://github.com/ota-meshi/eslint-plugin-yml) is now supported on `skuba format` and `skuba lint`. While the default configuration should be unobtrusive, you can opt in to stricter rules in your `.eslintrc.js`:
+
+  ```diff
+  module.exports = {
+    extends: ['skuba'],
+  + overrides: [
+  +   {
+  +     files: ['my/strict/config.yaml'],
+  +     rules: {
+  +       'yml/sort-keys': 'error',
+  +     },
+  +   },
+  + ],
+  };
+  ```
+
+  YAML files with non-standard syntax may fail ESLint parsing with this change. Gantry resource files should be excluded by default due to their custom templating syntax, and you can list additional exclusions in your `.eslintignore`.
+
+- **run:** Add Fastify support (b62e585)
+
+  `skuba start` can now be used to create a live-reloading server for Fastify based projects. See https://seek-oss.github.io/skuba/docs/cli/run.html#skuba-start for more information.
+
+### Patch Changes
+
+- **init:** Include baseline SEEK `renovate-config` preset (dbd4853)
+
+- **template/\*-rest-api:** Set `keepAliveTimeout` to 31 seconds to prevent HTTP 502s (cab3636)
+
+  The default Node.js server keep-alive timeout is set to 5 seconds. However, the Gantry default ALB idle timeout is 30 seconds. This would lead to the occasional issues where the sidecar would throw `proxyStatus=502` errors. AWS recommends setting an application timeout larger than the ALB idle timeout.
+
+  A more detailed explanation can be found in the below links:
+
+  1. <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout>
+  2. <https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout>
+
+- **lint:** Commit codegen updates (5eca770)
+
+  `skuba lint` can locally codegen updates to ignore files and module exports. These changes are now automatically committed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
+- **lint:** Delete `Dockerfile-incunabulum` (5eca770)
+
+  `skuba lint` may have accidentally committed this internal file to source control in prior versions. It is now automatically removed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
 ## 5.1.1
 
 ### Patch Changes
