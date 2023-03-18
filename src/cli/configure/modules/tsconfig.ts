@@ -95,6 +95,7 @@ export const tsconfigModule = async ({
       if (
         firstRun &&
         type === 'package' &&
+        hasProp(outputData, 'compilerOptions') &&
         isObject(outputData.compilerOptions) &&
         !outputData.compilerOptions.removeComments
       ) {
