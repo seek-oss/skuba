@@ -32,6 +32,8 @@ const getOwnerAndRepo = jest.spyOn(Git, 'getOwnerAndRepo');
 
 const consoleLog = jest.spyOn(console, 'log').mockImplementation();
 
+const writeFile = jest.spyOn(memfs.fs.promises, 'writeFile');
+
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(jest.clearAllMocks);
@@ -97,7 +99,7 @@ it('handles a lack of Renovate config', async () => {
 it('handles a filesystem error', async () => {
   const err = new Error('Badness!');
 
-  jest.spyOn(memfs.fs.promises, 'writeFile').mockRejectedValueOnce(err);
+  writeFile.mockRejectedValueOnce(err);
 
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'VersionNet' });
 
@@ -136,6 +138,8 @@ it('skips a seek-oss project', async () => {
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
   expect(volToJson()).toStrictEqual(files);
+
+  expect(writeFile).not.toHaveBeenCalled();
 });
 
 it('skips a personal project', async () => {
@@ -148,6 +152,22 @@ it('skips a personal project', async () => {
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
   expect(volToJson()).toStrictEqual(files);
+
+  expect(writeFile).not.toHaveBeenCalled();
+});
+
+it('skips a strange config without `extends`', async () => {
+  getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'monolith' });
+
+  const files = { '.github/renovate.json5': '{}' };
+
+  vol.fromJSON(files);
+
+  await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
+
+  expect(volToJson()).toStrictEqual(files);
+
+  expect(writeFile).not.toHaveBeenCalled();
 });
 
 it('skips a configured SEEK-Jobs project', async () => {
@@ -160,4 +180,6 @@ it('skips a configured SEEK-Jobs project', async () => {
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
   expect(volToJson()).toStrictEqual(files);
+
+  expect(writeFile).not.toHaveBeenCalled();
 });
