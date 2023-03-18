@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+'skuba': minor
 ---
 
 lint: Commit codegen updates
