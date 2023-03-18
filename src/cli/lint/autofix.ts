@@ -13,6 +13,7 @@ import { runESLint } from '../adapter/eslint';
 import { runPrettier } from '../adapter/prettier';
 import { JEST_SETUP_FILES } from '../configure/addEmptyExports';
 import { RENOVATE_CONFIG_FILENAMES } from '../configure/modules/renovate';
+import { SERVER_LISTENER_FILENAME } from '../configure/patchServerListener';
 import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
 
 import type { Input } from './types';
@@ -30,6 +31,7 @@ const AUTOFIX_CODEGEN_FILES = new Set<string>([
   ...JEST_SETUP_FILES,
   ...REFRESHABLE_IGNORE_FILES,
   ...RENOVATE_CONFIG_FILENAMES,
+  SERVER_LISTENER_FILENAME,
 ]);
 
 export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
