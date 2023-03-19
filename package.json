@@ -65,7 +65,7 @@
     ]
   },
   "resolutions": {
-    "**/@types/node": ">=16"
+    "**/@types/node": ">=16.11"
   },
   "dependencies": {
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
@@ -75,7 +75,7 @@
     "@octokit/rest": "^19.0.0",
     "@octokit/types": "^9.0.0",
     "@types/jest": "^29.0.0",
-    "@types/node": ">=16",
+    "@types/node": ">=16.11",
     "chalk": "^4.1.0",
     "concurrently": "^7.0.0",
     "dotenv": "^16.0.0",
@@ -155,7 +155,7 @@
     }
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=16.11"
   },
   "skuba": {
     "build": "esbuild",
