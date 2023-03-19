@@ -15,6 +15,11 @@
   },
   packageRules: [
     {
+      matchDepTypes: ['peerDependencies'],
+
+      rangeStrategy: 'widen',
+    },
+    {
       matchManagers: ['npm'],
       matchPackageNames: [
         // Incompatible with read-pkg-up@7
@@ -94,7 +99,7 @@
   postUpdateOptions: ['yarnDedupeHighest'],
   prConcurrentLimit: 3,
   prNotPendingHours: 1,
-  rangeStrategy: 'auto',
+  rangeStrategy: 'replace',
   schedule: 'after 3:00 am and before 6:00 am every weekday',
   semanticCommitScope: '',
   semanticCommitType: 'deps',
