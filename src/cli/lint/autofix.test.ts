@@ -496,6 +496,21 @@ describe('autofix', () => {
       `);
     });
 
+    it('skips an .npmrc modification only', async () => {
+      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+        {
+          path: '.npmrc',
+          state: 'modified',
+        },
+      ]);
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
     it('handles codegen changes only', async () => {
       jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
         {
