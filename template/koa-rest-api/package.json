@@ -24,7 +24,7 @@
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-compose": "^4.2.0",
-    "seek-datadog-custom-metrics": "^4.0.0",
+    "seek-datadog-custom-metrics": "~4.1.0",
     "seek-koala": "^6.0.0",
     "skuba-dive": "^2.0.0",
     "zod": "^3.19.1"
