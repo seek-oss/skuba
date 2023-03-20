@@ -1,5 +1,113 @@
 # skuba
 
+## 6.0.0
+
+### Major Changes
+
+- **deps:** Require Node.js 16.11+ ([#1124](https://github.com/seek-oss/skuba/pull/1124))
+
+  Node.js 14 will reach end of life by April 2023.
+
+  Consider upgrading the Node.js version for your project across:
+
+  - `.nvmrc`
+  - `package.json#/engines/node`
+  - CI/CD configuration (`.buildkite/pipeline.yml`, `Dockerfile`, etc.)
+
+### Minor Changes
+
+- **format, lint:** Prepend baseline SEEK `renovate-config` preset ([#1117](https://github.com/seek-oss/skuba/pull/1117))
+
+  `skuba format` and `skuba lint` will now automatically prepend an appropriate baseline preset if your project is configured with a `SEEK-Jobs` or `seekasia` remote:
+
+  ```diff
+  // SEEK-Jobs
+  {
+  - extends: ['seek'],
+  + extends: ['local>seek-jobs/renovate-config', 'seek'],
+  }
+
+  // seekasia
+  {
+  - extends: ['seek'],
+  + extends: ['local>seekasia/renovate-config', 'seek'],
+  }
+  ```
+
+  Renovate requires this new configuration to reliably access private SEEK packages. Adding the preset should fix recent issues where Renovate would open then autoclose pull requests, and report ⚠ Dependency Lookup Warnings ⚠.
+
+  See [SEEK-Jobs/renovate-config](https://github.com/SEEK-Jobs/renovate-config) and [seekasia/renovate-config](https://github.com/seekasia/renovate-config) for more information.
+
+- **format, lint, template/\*-rest-api:** Set `keepAliveTimeout` to 31 seconds to prevent HTTP 502s ([#1111](https://github.com/seek-oss/skuba/pull/1111))
+
+  The default Node.js server keep-alive timeout is set to 5 seconds. However, the Gantry default ALB idle timeout is 30 seconds. This would lead to the occasional issues where the sidecar would throw `proxyStatus=502` errors. AWS recommends setting an application timeout larger than the ALB idle timeout.
+
+  `skuba format` and `skuba lint` will now automatically append a keep-alive timeout to a typical `src/listen.ts`:
+
+  ```diff
+  // With a listener callback
+  const listener = app.listen(config.port, () => {
+    const address = listener.address();
+  })
+  +
+  + listener.keepAliveTimeout = 31000;
+
+  // Without a listener callback
+  - app.listen(config.port);
+  + const listener = app.listen(config.port);
+  +
+  + listener.keepAliveTimeout = 31000;
+  ```
+
+  A more detailed explanation can be found in the below links:
+
+  1. <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout>
+  2. <https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout>
+
+- **format, lint:** Bundle `eslint-plugin-yml` ([#1107](https://github.com/seek-oss/skuba/pull/1107))
+
+  [eslint-plugin-yml](https://github.com/ota-meshi/eslint-plugin-yml) is now supported on `skuba format` and `skuba lint`. While the default configuration should be unobtrusive, you can opt in to stricter rules in your `.eslintrc.js`:
+
+  ```diff
+  module.exports = {
+    extends: ['skuba'],
+  + overrides: [
+  +   {
+  +     files: ['my/strict/config.yaml'],
+  +     rules: {
+  +       'yml/sort-keys': 'error',
+  +     },
+  +   },
+  + ],
+  };
+  ```
+
+  YAML files with non-standard syntax may fail ESLint parsing with this change. Gantry resource files should be excluded by default due to their custom templating syntax, and you can list additional exclusions in your `.eslintignore`.
+
+- **start:** Add Fastify support ([#1101](https://github.com/seek-oss/skuba/pull/1101))
+
+  `skuba start` can now be used to create a live-reloading server for Fastify based projects. See the [`skuba start` documentation](https://seek-oss.github.io/skuba/docs/cli/run.html#skuba-start) for more information.
+
+- **format, lint:** Configure ESLint for `{cjs,cts,mjs,mts}` files ([#1126](https://github.com/seek-oss/skuba/pull/1126))
+
+- **lint:** Commit codegen updates ([#1078](https://github.com/seek-oss/skuba/pull/1078))
+
+  `skuba lint` can locally codegen updates to ignore files, module exports and Renovate configuration. These changes are now automatically committed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
+- **deps:** TypeScript 5.0 ([#1118](https://github.com/seek-oss/skuba/pull/1118))
+
+  This major release includes breaking changes. See the [TypeScript 5.0](https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/) announcement for more information.
+
+### Patch Changes
+
+- **init:** Include baseline SEEK `renovate-config` preset ([#1117](https://github.com/seek-oss/skuba/pull/1117))
+
+- **template/\*-package:** Require Node.js 16.11+ ([#1124](https://github.com/seek-oss/skuba/pull/1124))
+
+- **lint:** Delete `Dockerfile-incunabulum` ([#1078](https://github.com/seek-oss/skuba/pull/1078))
+
+  `skuba lint` may have accidentally committed this internal file to source control in prior versions. It is now automatically removed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
 ## 5.1.1
 
 ### Patch Changes
