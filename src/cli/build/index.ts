@@ -24,7 +24,7 @@ export const build = async (args = process.argv.slice(2)) => {
       return;
     }
 
-    // TODO: flip the default case over to `esbuild` in skuba v5.
+    // TODO: flip the default case over to `esbuild` in skuba vNext.
     case undefined:
     case 'tsc': {
       log.plain(chalk.blue('tsc'));
