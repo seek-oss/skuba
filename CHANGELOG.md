@@ -1,5 +1,13 @@
 # skuba
 
+## 6.0.1
+
+### Patch Changes
+
+- **lint:** Avoid committing `.npmrc` changes ([#1129](https://github.com/seek-oss/skuba/pull/1129))
+
+  `skuba lint` can automatically commit codegen changes if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project. Previously we made sure to exclude a new `.npmrc` file from the commit, but we now exclude changes to an existing `.npmrc` too.
+
 ## 6.0.0
 
 ### Major Changes
