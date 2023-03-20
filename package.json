@@ -102,7 +102,7 @@
     "npm-run-path": "^4.0.1",
     "npm-which": "^3.0.1",
     "picomatch": "^2.2.2",
-    "prettier": "~2.8.0",
+    "prettier": "~2.8.5",
     "read-pkg-up": "^7.0.1",
     "runtypes": "^6.0.0",
     "semantic-release": "^19.0.0",
