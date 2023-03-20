@@ -40,6 +40,12 @@ export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
     state: 'added',
   },
   {
+    // This file may already exist in version control, but we shouldn't commit
+    // further changes as the CI environment may have appended an npm token.
+    path: '.npmrc',
+    state: 'modified',
+  },
+  {
     path: 'Dockerfile-incunabulum',
     state: 'added',
   },
