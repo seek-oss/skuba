@@ -18,6 +18,8 @@ const RENOVATE_PRESETS = [
   'local>seek-jobs/renovate-config',
 ] as const;
 
+const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;
+
 type RenovateFiletype = 'json' | 'json5';
 
 type RenovatePreset = (typeof RENOVATE_PRESETS)[number];
@@ -113,7 +115,9 @@ const patchRenovateConfig = async (dir: string) => {
     // The file appears to mention the baseline preset for the configured Git
     // owner. This is a very naive check that we don't want to overcomplicate
     // because it is invoked before each skuba format and lint.
-    config.input.includes(presetToAdd)
+    config.input.includes(presetToAdd) ||
+    // Ignore any renovate configuration which already extends a SEEK-Jobs or seekasia config
+    EXISTING_REPO_PRESET_REGEX.exec(config.input)
   ) {
     return;
   }
