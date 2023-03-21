@@ -1,5 +1,11 @@
 # skuba
 
+## 6.0.2
+
+### Patch Changes
+
+- **lint:** Avoid patching Renovate config when it already extends a `SEEK-Jobs` or `seekasia` preset ([#1132](https://github.com/seek-oss/skuba/pull/1132))
+
 ## 6.0.1
 
 ### Patch Changes
