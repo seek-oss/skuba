@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-lint: Avoid patching renovate config when it already extends a seek-jobs or seekasia configuration.
+lint: Avoid patching Renovate config when it already extends a `SEEK-Jobs` or `seekasia` preset
