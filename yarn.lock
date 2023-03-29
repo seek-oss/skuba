@@ -3666,10 +3666,10 @@ eslint-config-seek@^10.2.0:
     eslint-plugin-react-hooks "^4.6.0"
     find-root "^1.1.0"
 
-eslint-config-skuba@1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.4.1.tgz#ce504944f7ae5da00676118e1f74e2e9cb6e03c2"
-  integrity sha512-wGmy0Q/hLSrpFjYh+vqDfw5AgpGWVd8lmavcoE+DUktO8LjphR5Fyhg7CM5twd5RXxiQUSKh51sJsQ95IbEpxg==
+eslint-config-skuba@1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.4.2.tgz#d774dee270daf789f0ded4f7be47ce1087ee8128"
+  integrity sha512-pa27gBE4nBst42VyykKGTALykWhNFvLtiAr6X78s88E3qYdjT4QOoBra+j/u5VuQFQhqVQ7elV/I0XnzDfVbwA==
   dependencies:
     "@types/eslint" "^8.4.1"
     "@typescript-eslint/eslint-plugin" "^5.55.0"
