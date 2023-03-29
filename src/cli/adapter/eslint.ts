@@ -36,18 +36,6 @@ export const runESLint = async (
 
   const engine = new ESLint({
     cache: true,
-    extensions: [
-      'cjs',
-      'cts',
-      'js',
-      'jsx',
-      'mjs',
-      'mts',
-      'ts',
-      'tsx',
-      'yaml',
-      'yml',
-    ],
     fix: mode === 'format',
     reportUnusedDisableDirectives: 'error',
   });

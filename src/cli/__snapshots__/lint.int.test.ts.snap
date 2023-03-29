@@ -2,15 +2,21 @@
 
 exports[`fixable 1`] = `
 "
-ESLint   │ Processed 2 files in <random>s.
+ESLint   │ Processed 4 files in <random>s.
 ESLint   │ 
+<random>/a/a/a.mjs
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+
+<random>/a/a/a.mts
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
 
-✖ 1 problem (1 error, 0 warnings)
-  1 error and 0 warnings potentially fixable with the \`--fix\` option.
+✖ 3 problems (3 errors, 0 warnings)
+  3 errors and 0 warnings potentially fixable with the \`--fix\` option.
 
-Prettier │ Processed 6 files in <random>s.
+Prettier │ Processed 8 files in <random>s.
 Prettier │ Flagged 4 files:
 Prettier │ b.md
 Prettier │ c.json
@@ -37,11 +43,17 @@ Options: {
 **ESLint**
 
 \`\`\`term
+<random>/a/a/a.mjs
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+
+<random>/a/a/a.mts
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
 
-✖ 1 problem (1 error, 0 warnings)
-  1 error and 0 warnings potentially fixable with the \`--fix\` option.
+✖ 3 problems (3 errors, 0 warnings)
+  3 errors and 0 warnings potentially fixable with the \`--fix\` option.
 \`\`\`
 
 **Prettier**
@@ -143,7 +155,7 @@ ESLint   │
   8:3  error  Unexpected console statement                      no-console
 
 <random>/d.js
-  1:0  error  Parsing error: Declaration or statement expected
+  1:0  error  Parsing error: Unexpected token (1:0)
 
 ✖ 3 problems (3 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
@@ -182,7 +194,7 @@ Options: {
   8:3  error  Unexpected console statement                      no-console
 
 <random>/d.js
-  1:0  error  Parsing error: Declaration or statement expected
+  1:0  error  Parsing error: Unexpected token (1:0)
 
 ✖ 3 problems (3 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
