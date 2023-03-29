@@ -28,6 +28,8 @@ const JSON5 = `
 
 const JSON5_CONFIGURED = `{extends: ['github>seek-oss/rynovate', local>seek-jobs/renovate-config']}`;
 
+const JSON5_EXTENDED = `{extends: ['github>seek-jobs/custom-config']}`;
+
 const getOwnerAndRepo = jest.spyOn(Git, 'getOwnerAndRepo');
 
 const consoleLog = jest.spyOn(console, 'log').mockImplementation();
@@ -174,6 +176,20 @@ it('skips a configured SEEK-Jobs project', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'monolith' });
 
   const files = { '.github/renovate.json5': JSON5_CONFIGURED };
+
+  vol.fromJSON(files);
+
+  await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
+
+  expect(volToJson()).toStrictEqual(files);
+
+  expect(writeFile).not.toHaveBeenCalled();
+});
+
+it('skips a SEEK-Jobs project which already extends a config', async () => {
+  getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'monolith' });
+
+  const files = { '.github/renovate.json5': JSON5_EXTENDED };
 
   vol.fromJSON(files);
 
