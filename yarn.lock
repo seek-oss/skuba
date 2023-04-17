@@ -3669,10 +3669,10 @@ eslint-config-prettier@^8.6.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.8.0.tgz#bfda738d412adc917fd7b038857110efe98c9348"
   integrity sha512-wLbQiFre3tdGgpDv67NQKnJuTlcUVYHas3k+DZCc2U2BadthoEY4B7hLPvAxaqdyOGCzuLfii2fqGph10va7oA==
 
-eslint-config-seek@^10.2.0:
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-seek/-/eslint-config-seek-10.2.0.tgz#701ffb2559da96691c5d499bc3602f02b85e7b12"
-  integrity sha512-lxO29+e8wZpATZ29ESH+rxiLFQFOOx2BcZJaSrAaSc4IFEtwE7q7Gbep+9M3lLIGHsGVKRzKLYkj9aFWfZv5JA==
+eslint-config-seek@^10.3.0:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-seek/-/eslint-config-seek-10.3.0.tgz#5a4718a4b4635be92a81eae14faded913cb92ab2"
+  integrity sha512-IIgOMNIwtCBLUOuyxMmMDbksZ7cmDCUjscld8Hg1hM5+3fvwbMzQLAWJBmp2FWFMUeReuIzWfMwXJV8GacsGyQ==
   dependencies:
     "@babel/core" "^7.21.0"
     "@babel/eslint-parser" "^7.19.1"
@@ -3688,15 +3688,15 @@ eslint-config-seek@^10.2.0:
     eslint-plugin-react-hooks "^4.6.0"
     find-root "^1.1.0"
 
-eslint-config-skuba@1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-1.4.2.tgz#d774dee270daf789f0ded4f7be47ce1087ee8128"
-  integrity sha512-pa27gBE4nBst42VyykKGTALykWhNFvLtiAr6X78s88E3qYdjT4QOoBra+j/u5VuQFQhqVQ7elV/I0XnzDfVbwA==
+eslint-config-skuba@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-2.0.0.tgz#b44f04225f4754c25cac0c3860252dfbb87214e1"
+  integrity sha512-ZcdOXhmgzmwIFlVd1PJ8pxKiPFH0vDlPVXR5aUC1tBepH7tzEHvEB5RFP5UvqF59idHFLukHVIFamDhHq1yb4A==
   dependencies:
     "@types/eslint" "^8.4.1"
     "@typescript-eslint/eslint-plugin" "^5.55.0"
     "@typescript-eslint/parser" "^5.55.0"
-    eslint-config-seek "^10.2.0"
+    eslint-config-seek "^10.3.0"
     eslint-plugin-jest "^27.0.0"
     eslint-plugin-tsdoc "^0.2.14"
     eslint-plugin-yml "^1.5.0"
