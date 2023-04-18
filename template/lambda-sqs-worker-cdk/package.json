@@ -12,7 +12,7 @@
     "test:watch": "skuba test --watch"
   },
   "dependencies": {
-    "@seek/logger": "^5.0.1",
+    "@seek/logger": "^6.0.0",
     "zod": "^3.19.1"
   },
   "devDependencies": {
