@@ -1365,9 +1365,9 @@
     universal-user-agent "^6.0.0"
 
 "@octokit/graphql-schema@^14.0.0":
-  version "14.4.0"
-  resolved "https://registry.yarnpkg.com/@octokit/graphql-schema/-/graphql-schema-14.4.0.tgz#9336f64c3103a2e82ee3ce060c3ccf99d177d7f0"
-  integrity sha512-+O6/dsLlR6V9gv+t1lqsN+x73TLwyQWZpd3M8/eYnuny7VaznV9TAyUxf18tX8WBBS5IqtlLDk1nG+aSTPRZzQ==
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/@octokit/graphql-schema/-/graphql-schema-14.1.0.tgz#e59ca63e4c476c293306880ac6e76cc02948720e"
+  integrity sha512-RMq/ghKcszEhXmzW1FFxnWUY2P9zM3PvfQtgVyTIRmDL+sfGj2Q+3mMPMVnTrIcFVtHH0bErJB54UWYYKw6eRg==
   dependencies:
     graphql "^16.0.0"
     graphql-tag "^2.10.3"
@@ -1381,10 +1381,10 @@
     "@octokit/types" "^9.0.0"
     universal-user-agent "^6.0.0"
 
-"@octokit/openapi-types@^17.0.0":
-  version "17.0.0"
-  resolved "https://registry.yarnpkg.com/@octokit/openapi-types/-/openapi-types-17.0.0.tgz#7356d287f48b20e9a1f497ef8dfaabdff9cf8622"
-  integrity sha512-V8BVJGN0ZmMlURF55VFHFd/L92XQQ43KvFjNmY1IYbCN3V/h/uUFV6iQi19WEHM395Nn+1qhUbViCAD/1czzog==
+"@octokit/openapi-types@^16.0.0":
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/@octokit/openapi-types/-/openapi-types-16.0.0.tgz#d92838a6cd9fb4639ca875ddb3437f1045cc625e"
+  integrity sha512-JbFWOqTJVLHZSUUoF4FzAZKYtqdxWu9Z5m2QQnOyEa04fOFljvyh7D3GYKbfuaSWisqehImiVIMG4eyJeP5VEA==
 
 "@octokit/plugin-paginate-rest@^6.0.0":
   version "6.0.0"
@@ -1438,11 +1438,11 @@
     "@octokit/plugin-rest-endpoint-methods" "^7.0.0"
 
 "@octokit/types@^9.0.0":
-  version "9.1.2"
-  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-9.1.2.tgz#1a8d35b1f4a3d2ad386e223f249dd5f7506979c1"
-  integrity sha512-LPbJIuu1WNoRHbN4UMysEdlissRFpTCWyoKT7kHPufI8T+XX33/qilfMWJo3mCOjNIKu0+43oSQPf+HJa0+TTQ==
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-9.0.0.tgz#6050db04ddf4188ec92d60e4da1a2ce0633ff635"
+  integrity sha512-LUewfj94xCMH2rbD5YJ+6AQ4AVjFYTgpp6rboWM5T7N3IsIF65SBEOVcYMGAEzO/kKNiNaW4LoWtoThOhH06gw==
   dependencies:
-    "@octokit/openapi-types" "^17.0.0"
+    "@octokit/openapi-types" "^16.0.0"
 
 "@pkgr/utils@^2.3.1":
   version "2.3.1"
