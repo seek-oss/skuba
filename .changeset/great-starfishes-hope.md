@@ -2,7 +2,7 @@
 'skuba': minor
 ---
 
-eslint-config-skuba 2
+deps: eslint-config-skuba 2
 
 This major upgrade removes [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) due to configuration issues experienced on non-React projects.
 

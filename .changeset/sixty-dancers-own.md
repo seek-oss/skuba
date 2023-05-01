@@ -2,7 +2,7 @@
 'skuba': minor
 ---
 
-eslint-config-seek 11
+deps: eslint-config-seek 11
 
 This major upgrade enforces [consistent type imports and exports](https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/).
 
