@@ -1,7 +1,7 @@
 import { ErrorMiddleware } from 'seek-koala';
-import { z } from 'zod';
+import type { z } from 'zod';
 
-import { Context } from 'src/types/koa';
+import type { Context } from 'src/types/koa';
 
 /**
  * Converts a `ZodError` into an `invalidFields` object

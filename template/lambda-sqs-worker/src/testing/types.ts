@@ -1,7 +1,7 @@
 import { Chance } from 'chance';
 import { z } from 'zod';
 
-import { JobPublishedEvent } from 'src/types/pipelineEvents';
+import type { JobPublishedEvent } from 'src/types/pipelineEvents';
 
 export type IdDescription = z.infer<typeof IdDescriptionSchema>;
 

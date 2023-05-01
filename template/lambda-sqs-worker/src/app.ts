@@ -1,6 +1,6 @@
 import 'skuba-dive/register';
 
-import { SQSEvent } from 'aws-lambda';
+import type { SQSEvent } from 'aws-lambda';
 
 import { createHandler } from 'src/framework/handler';
 import { logger } from 'src/framework/logging';
