@@ -1,5 +1,6 @@
-import type { Stack, StackProps } from 'aws-cdk-lib';
+import type { StackProps } from 'aws-cdk-lib';
 import {
+  Stack,
   aws_iam,
   aws_kms,
   aws_lambda,
