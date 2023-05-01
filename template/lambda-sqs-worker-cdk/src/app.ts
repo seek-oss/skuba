@@ -1,5 +1,5 @@
 import createLogger from '@seek/logger';
-import { SQSEvent, SQSHandler } from 'aws-lambda';
+import type { SQSEvent, SQSHandler } from 'aws-lambda';
 
 const logger = createLogger({
   name: '<%- serviceName %>',

@@ -1,4 +1,4 @@
-import {
+import type {
   Stack,
   StackProps,
   aws_iam,
