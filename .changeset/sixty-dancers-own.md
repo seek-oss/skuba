@@ -11,4 +11,4 @@ This major upgrade enforces [consistent type imports and exports](https://typesc
 + import type { Context } from 'aws-lambda';
 ```
 
-`skuba format` will auto-fix imports and exports to align with these linting rules. These changes are automatically committed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+`skuba format` will modify your imports and exports to be consistent with linting rules. These changes are automatically committed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
