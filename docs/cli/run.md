@@ -152,7 +152,7 @@ const app = express();
 export default Object.assign(app, { port });
 ```
 
-As should a [Http Server]:
+As should a [HTTP Server]:
 
 ```typescript
 const app = http.createServer();
