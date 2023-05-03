@@ -1,5 +1,30 @@
 # skuba
 
+## 6.1.0
+
+### Minor Changes
+
+- **deps:** eslint-config-skuba 2 ([#1155](https://github.com/seek-oss/skuba/pull/1155))
+
+  This major upgrade removes [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) due to configuration issues experienced on non-React projects.
+
+  Raise a GitHub issue or send us a Slack message if this negatively affects your project.
+
+- **start:** Add `http.Server` support ([#1159](https://github.com/seek-oss/skuba/pull/1159))
+
+  `skuba start` can now be used to create a live-reloading server for `http.Server` instances. See the [`skuba start` documentation](https://seek-oss.github.io/skuba/docs/cli/run.html#skuba-start) for more information.
+
+- **deps:** eslint-config-seek 11 ([#1155](https://github.com/seek-oss/skuba/pull/1155))
+
+  This major upgrade enforces [consistent type imports and exports](https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/).
+
+  ```diff
+  - import { Context } from 'aws-lambda';
+  + import type { Context } from 'aws-lambda';
+  ```
+
+  `skuba format` will modify your imports and exports to be consistent with linting rules. These changes are automatically committed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
 ## 6.0.2
 
 ### Patch Changes
