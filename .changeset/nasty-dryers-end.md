@@ -1,5 +1,5 @@
 ---
-"skuba": minor
+'skuba': minor
 ---
 
 start: Add `http.Server` support
