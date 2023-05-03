@@ -104,6 +104,24 @@ test('koaRequestListener', async () => {
   ]);
 });
 
+test('httpServerRequestListener', async () => {
+  // Without `.ts`
+  await initWrapper('httpServerRequestListener');
+
+  expect(startServer.mock.calls).toEqual([[expect.any(nodeHttp.Server), 8080]]);
+
+  return Promise.all([
+    agent
+      .get('/httpServer')
+      .expect(200)
+      .expect(({ text }) =>
+        expect(text).toMatchInlineSnapshot(`"Http Server!"`),
+      ),
+
+    agent.get('/express').expect(404),
+  ]);
+});
+
 test('fastifyRequestListener', async () => {
   // Without `.ts`
   await initWrapper('fastifyRequestListener');

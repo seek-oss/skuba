@@ -60,6 +60,11 @@ export const runRequestListener = async ({
 
   const port = isIpPort(config.port) ? config.port : availablePort;
 
+  // http.Server support
+  if (typeof config !== 'function' && config instanceof http.Server) {
+    return startServer(config, port);
+  }
+
   // Fastify workaround
   if (
     typeof config !== 'function' &&
