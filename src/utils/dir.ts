@@ -13,10 +13,11 @@ import { isErrorWithCode } from './error';
 export const buildPatternToFilepathMap = (
   patterns: string[],
   allFilepaths: string[],
+  options?: picomatch.PicomatchOptions,
 ) =>
   Object.fromEntries(
     patterns.map((pattern) => {
-      const isMatch = picomatch(pattern);
+      const isMatch = picomatch(pattern, options);
 
       const filepaths = allFilepaths.filter((filepath) => isMatch(filepath));
 

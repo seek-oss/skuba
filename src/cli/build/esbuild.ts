@@ -2,18 +2,12 @@ import { inspect } from 'util';
 
 import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { build } from 'esbuild';
-import ts, { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
+import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
 import { createLogger } from '../../utils/logging';
 
 import { parseTscArgs } from './args';
-import { tsc } from './tsc';
-
-const formatHost: ts.FormatDiagnosticsHost = {
-  getCanonicalFileName: (fileName) => fileName,
-  getCurrentDirectory: ts.sys.getCurrentDirectory.bind(undefined),
-  getNewLine: () => ts.sys.newLine,
-};
+import { readTsconfig, tsc } from './tsc';
 
 interface EsbuildParameters {
   debug: boolean;
@@ -35,46 +29,9 @@ export const esbuild = async (
     return;
   }
 
-  log.debug(
-    log.bold(
-      'tsconfig',
-      ...(tscArgs.project ? ['--project', tscArgs.project] : []),
-    ),
-  );
-  log.debug(tscArgs.pathname);
+  const parsedCommandLine = readTsconfig(args, log);
 
-  const tsconfigFile = ts.findConfigFile(
-    tscArgs.dirname,
-    ts.sys.fileExists.bind(undefined),
-    tscArgs.basename,
-  );
-  if (!tsconfigFile) {
-    log.err(`Could not find ${tscArgs.pathname}.`);
-    process.exitCode = 1;
-    return;
-  }
-
-  const readConfigFile = ts.readConfigFile(
-    tsconfigFile,
-    ts.sys.readFile.bind(undefined),
-  );
-  if (readConfigFile.error) {
-    log.err(`Could not read ${tscArgs.pathname}.`);
-    log.subtle(ts.formatDiagnostic(readConfigFile.error, formatHost));
-    process.exitCode = 1;
-    return;
-  }
-
-  const parsedCommandLine = ts.parseJsonConfigFileContent(
-    readConfigFile.config,
-    ts.sys,
-    tscArgs.dirname,
-  );
-
-  if (parsedCommandLine.errors.length) {
-    log.err(`Could not parse ${tscArgs.pathname}.`);
-    log.subtle(ts.formatDiagnostics(parsedCommandLine.errors, formatHost));
-    process.exitCode = 1;
+  if (!parsedCommandLine || process.exitCode) {
     return;
   }
 
