@@ -56,6 +56,34 @@ describe('buildPatternToFilepathMap', () => {
         ],
       }
     `));
+
+  it('deals with different filenames and extensions (with options)', () =>
+    expect(
+      buildPatternToFilepathMap(
+        ['**/*.vocab/*trans.json'],
+        [
+          'src/app.ts',
+          'src/.vocab/index.ts',
+          'src/.vocab/trans.json',
+          'src/.vocab/id.trans.json',
+          'src/.vocab/th.trans.json',
+          'src/other.vocab/index.ts',
+          'src/other.vocab/trans.json',
+          'src/other.vocab/id.trans.json',
+          'src/other.vocab/th.trans.json',
+        ],
+        { dot: true, ignore: '**/id.trans.json' },
+      ),
+    ).toMatchInlineSnapshot(`
+      {
+        "**/*.vocab/*trans.json": [
+          "src/.vocab/trans.json",
+          "src/.vocab/th.trans.json",
+          "src/other.vocab/trans.json",
+          "src/other.vocab/th.trans.json",
+        ],
+      }
+    `));
 });
 
 describe('crawlDirectory', () => {
