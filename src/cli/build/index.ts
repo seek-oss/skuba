@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 
 import { hasDebugFlag } from '../../utils/args';
-import { copyAssets } from '../../utils/copy';
 import { log } from '../../utils/logging';
 import { getStringPropFromConsumerManifest } from '../../utils/manifest';
 import { tryAddEmptyExports } from '../configure/addEmptyExports';
 
+import { copyAssets } from './assets';
 import { esbuild } from './esbuild';
 import { readTsconfig, tsc } from './tsc';
 

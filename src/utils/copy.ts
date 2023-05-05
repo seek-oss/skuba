@@ -3,14 +3,12 @@ import path from 'path';
 import ejs from 'ejs';
 import fs from 'fs-extra';
 
-import { buildPatternToFilepathMap, crawlDirectory } from './dir';
 import { isErrorWithCode } from './error';
-import { type Logger, log } from './logging';
-import { getConsumerManifest, getPropFromConsumerManifest } from './manifest';
+import { log } from './logging';
 
 export type TextProcessor = (contents: string) => string;
 
-const copyFile = async (
+export const copyFile = async (
   sourcePath: string,
   destinationPath: string,
   {
@@ -112,47 +110,4 @@ export const copyFiles = async (
       }
     }),
   );
-};
-
-export const copyAssets = async (
-  destinationDir: string,
-  logger: Logger = log,
-) => {
-  const manifest = await getConsumerManifest();
-  const preserveAssets = await getPropFromConsumerManifest<string[]>(
-    'preserveAssets',
-  );
-
-  if (!manifest || !preserveAssets) {
-    return;
-  }
-
-  const resolvedSrcDir = path.join(path.dirname(manifest.path), 'src');
-  const resolvedDestinationDir = path.join(
-    path.dirname(manifest.path),
-    destinationDir,
-  );
-  const allFiles = await crawlDirectory(resolvedSrcDir);
-  const filesByPattern = buildPatternToFilepathMap(preserveAssets, allFiles, {
-    cwd: resolvedSrcDir,
-    dot: true,
-  });
-
-  for (const filenames of Object.values(filesByPattern)) {
-    await Promise.all(
-      filenames.map(async (filename) => {
-        logger?.subtle(`Copying ${filename}`);
-
-        await fs.promises.mkdir(
-          path.dirname(path.join(resolvedDestinationDir, filename)),
-          { recursive: true },
-        );
-        await copyFile(
-          path.join(resolvedSrcDir, filename),
-          path.join(resolvedDestinationDir, filename),
-          { processors: [] },
-        );
-      }),
-    );
-  }
 };

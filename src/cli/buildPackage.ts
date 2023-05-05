@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 
 import { hasSerialFlag } from '../utils/args';
-import { copyAssets } from '../utils/copy';
 import { execConcurrently } from '../utils/exec';
 import { createLogger } from '../utils/logging';
 
+import { copyAssets } from './build/assets';
 import { tryAddEmptyExports } from './configure/addEmptyExports';
 
 export const buildPackage = async (args = process.argv.slice(2)) => {
