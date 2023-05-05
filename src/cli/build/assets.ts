@@ -1,10 +1,12 @@
 import path from 'path';
 
+import type { Color } from 'chalk';
+import chalk from 'chalk';
 import fs from 'fs-extra';
 
 import { copyFile } from '../../utils/copy';
 import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir';
-import { type Logger, log } from '../../utils/logging';
+import { type Logger, createLogger, log } from '../../utils/logging';
 import {
   getConsumerManifest,
   getPropFromConsumerManifest,
@@ -49,4 +51,29 @@ export const copyAssets = async (
       }),
     );
   }
+};
+
+interface CopyAssetsConfig {
+  outDir: string;
+  name: string;
+  prefixColor: typeof Color;
+}
+
+export const copyAssetsConcurrently = async (configs: CopyAssetsConfig[]) => {
+  const maxNameLength = configs.reduce(
+    (length, command) => Math.max(length, command.name.length),
+    0,
+  );
+
+  await Promise.all(
+    configs.map(({ outDir, name, prefixColor }) =>
+      copyAssets(
+        outDir,
+        createLogger(
+          false,
+          chalk[prefixColor](`${name.padEnd(maxNameLength)} │`),
+        ),
+      ),
+    ),
+  );
 };

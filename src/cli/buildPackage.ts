@@ -1,10 +1,7 @@
-import chalk from 'chalk';
-
 import { hasSerialFlag } from '../utils/args';
 import { execConcurrently } from '../utils/exec';
-import { createLogger } from '../utils/logging';
 
-import { copyAssets } from './build/assets';
+import { copyAssetsConcurrently } from './build/assets';
 import { tryAddEmptyExports } from './configure/addEmptyExports';
 
 export const buildPackage = async (args = process.argv.slice(2)) => {
@@ -36,8 +33,16 @@ export const buildPackage = async (args = process.argv.slice(2)) => {
     },
   );
 
-  await Promise.all([
-    copyAssets('lib-commonjs', createLogger(false, chalk.green('commonjs │'))),
-    copyAssets('lib-es2015', createLogger(false, chalk.yellow('es2015   │'))),
+  await copyAssetsConcurrently([
+    {
+      outDir: 'lib-commonjs',
+      name: 'commonjs',
+      prefixColor: 'green',
+    },
+    {
+      outDir: 'lib-es2015',
+      name: 'es2015',
+      prefixColor: 'yellow',
+    },
   ]);
 };
