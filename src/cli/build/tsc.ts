@@ -13,6 +13,9 @@ const formatHost: ts.FormatDiagnosticsHost = {
   getNewLine: () => ts.sys.newLine,
 };
 
+const tsconfigCache = new Map<string, ts.ParsedCommandLine>();
+const computeCacheKey = (args: string[]) => Array.from(args).sort().toString();
+
 export const tsc = async (args = process.argv.slice(2)) => {
   const tscArgs = parseTscArgs(args);
 
@@ -25,41 +28,46 @@ export const tsc = async (args = process.argv.slice(2)) => {
 export const readTsconfig = (args = process.argv.slice(2), log: Logger) => {
   const tscArgs = parseTscArgs(args);
 
-  log.debug(
-    log.bold(
-      'tsconfig',
-      ...(tscArgs.project ? ['--project', tscArgs.project] : []),
-    ),
-  );
-  log.debug(tscArgs.pathname);
+  let parsedCommandLine = tsconfigCache.get(computeCacheKey(args));
 
-  const tsconfigFile = ts.findConfigFile(
-    tscArgs.dirname,
-    ts.sys.fileExists.bind(undefined),
-    tscArgs.basename,
-  );
-  if (!tsconfigFile) {
-    log.err(`Could not find ${tscArgs.pathname}.`);
-    process.exitCode = 1;
-    return;
+  if (!parsedCommandLine) {
+    log.debug(
+      log.bold(
+        'tsconfig',
+        ...(tscArgs.project ? ['--project', tscArgs.project] : []),
+      ),
+    );
+    log.debug(tscArgs.pathname);
+
+    const tsconfigFile = ts.findConfigFile(
+      tscArgs.dirname,
+      ts.sys.fileExists.bind(undefined),
+      tscArgs.basename,
+    );
+    if (!tsconfigFile) {
+      log.err(`Could not find ${tscArgs.pathname}.`);
+      process.exitCode = 1;
+      return;
+    }
+
+    const readConfigFile = ts.readConfigFile(
+      tsconfigFile,
+      ts.sys.readFile.bind(undefined),
+    );
+    if (readConfigFile.error) {
+      log.err(`Could not read ${tscArgs.pathname}.`);
+      log.subtle(ts.formatDiagnostic(readConfigFile.error, formatHost));
+      process.exitCode = 1;
+      return;
+    }
+
+    parsedCommandLine = ts.parseJsonConfigFileContent(
+      readConfigFile.config,
+      ts.sys,
+      tscArgs.dirname,
+    );
+    tsconfigCache.set(computeCacheKey(args), parsedCommandLine);
   }
-
-  const readConfigFile = ts.readConfigFile(
-    tsconfigFile,
-    ts.sys.readFile.bind(undefined),
-  );
-  if (readConfigFile.error) {
-    log.err(`Could not read ${tscArgs.pathname}.`);
-    log.subtle(ts.formatDiagnostic(readConfigFile.error, formatHost));
-    process.exitCode = 1;
-    return;
-  }
-
-  const parsedCommandLine = ts.parseJsonConfigFileContent(
-    readConfigFile.config,
-    ts.sys,
-    tscArgs.dirname,
-  );
 
   if (parsedCommandLine.errors.length) {
     log.err(`Could not parse ${tscArgs.pathname}.`);
