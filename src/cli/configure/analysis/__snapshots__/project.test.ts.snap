@@ -164,7 +164,14 @@ export {};
     "data": "{
   "exclude": ["**/__mocks__/**/*", "**/*.test.ts", "src/testing/**/*"],
   "extends": "./tsconfig.json",
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*",
+    // Must be explicit about including dotfiles otherwise TypeScript ignores them
+    // https://github.com/microsoft/TypeScript/blob/v5.0.4/src/compiler/utilities.ts#L8828-L8830
+    "src/**/.*",
+    "src/**/.*/**/*",
+    "src/**/.*/**/.*"
+  ]
 }
 ",
     "operation": "A",
