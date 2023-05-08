@@ -17,7 +17,7 @@ export const copyAssets = async (
   logger: Logger = log,
 ) => {
   const manifest = await getConsumerManifest();
-  const assets = await getPropFromConsumerManifest<string[]>('assets');
+  const assets = await getPropFromConsumerManifest<string, string[]>('assets');
 
   if (!manifest || !assets) {
     return;

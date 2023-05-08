@@ -35,20 +35,23 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
 
 export const getConsumerManifest = () => readPkgUp();
 
-export const getPropFromConsumerManifest = async <V, T extends string = string>(
+export const getPropFromConsumerManifest = async <
+  T extends string,
+  V = unknown,
+>(
   prop: T,
 ): Promise<V | undefined> => {
   const result = await getConsumerManifest();
 
-  return result !== undefined && hasProp(result.packageJson.skuba, prop)
-    ? (result.packageJson.skuba as Record<T, V>)[prop]
+  return result !== undefined && hasProp<T, V>(result.packageJson.skuba, prop)
+    ? result.packageJson.skuba[prop]
     : undefined;
 };
 
 export const getStringPropFromConsumerManifest = async <T extends string>(
   prop: T,
 ): Promise<string | undefined> => {
-  const result = await getPropFromConsumerManifest<unknown, T>(prop);
+  const result = await getPropFromConsumerManifest(prop);
 
   return typeof result === 'string' ? result : undefined;
 };
