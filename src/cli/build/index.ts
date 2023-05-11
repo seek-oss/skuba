@@ -52,5 +52,10 @@ export const build = async (args = process.argv.slice(2)) => {
   }
 
   const { options: compilerOptions } = parsedCommandLine;
-  await copyAssets(compilerOptions.outDir ?? 'lib');
+
+  if (!compilerOptions.outDir) {
+    return;
+  }
+
+  await copyAssets(compilerOptions.outDir);
 };

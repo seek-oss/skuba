@@ -32,6 +32,7 @@ beforeEach(() => {
     'package.json': JSON.stringify({
       skuba: {
         assets: ['**/*.vocab/*translations.json'],
+        entryPoint: 'src/index.ts',
       },
     }),
     'src/app.ts': '',
