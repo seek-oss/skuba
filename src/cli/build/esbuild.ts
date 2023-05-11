@@ -110,7 +110,7 @@ export const esbuild = async (
       dot: true,
       ignore: [
         '**/*.d.ts',
-        // TODO: read tsconfig.build.json#exclude
+        // TODO: use `exclude` from tsconfig
         '**/__mocks__/**/*',
         '**/*.test.ts',
         'src/testing/**/*',
