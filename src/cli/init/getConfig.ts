@@ -36,8 +36,8 @@ export const runForm = <T = Record<string, string>>(props: {
 
   const choices = props.choices.map((choice) => ({
     ...choice,
-    validate: (value: string) => {
-      if (value === '' || value === choice.initial) {
+    validate: (value: string | undefined) => {
+      if (!value || value === '' || value === choice.initial) {
         return 'Form is not complete';
       }
 

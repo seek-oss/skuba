@@ -66,7 +66,7 @@ export const createAnnotations = (
       return testResult.testResults.flatMap((assertionResult) =>
         assertionResult.failureMessages.flatMap((failureMessage) => {
           const match = JEST_LOCATION_REGEX.exec(failureMessage);
-          if (match?.length === 5) {
+          if (match?.length === 5 && match[2]) {
             return {
               annotation_level: 'failure',
               path: path.relative(cwd, match[2]),
