@@ -34,7 +34,7 @@ describe('push', () => {
     });
 
     expect(git.push).toHaveBeenCalledTimes(1);
-    expect(jest.mocked(git.push).mock.calls[0][0]).toMatchInlineSnapshot(
+    expect(jest.mocked(git.push).mock.calls[0]?.[0]).toMatchInlineSnapshot(
       { http: expect.any(Object), fs: expect.any(Object) },
       `
       {
