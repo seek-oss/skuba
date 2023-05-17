@@ -57,6 +57,7 @@ export const createTscAnnotations = (
     match?.length === 7 &&
     typeof match[1] === 'string' &&
     typeof match[4] === 'string' &&
+    typeof match[5] === 'string' &&
     typeof match[6] === 'string'
       ? {
           annotation_level: annotationLevelMap[match[4] as TscLevel],
