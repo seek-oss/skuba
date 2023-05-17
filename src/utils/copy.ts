@@ -8,10 +8,13 @@ import { log } from './logging';
 
 export type TextProcessor = (contents: string) => string;
 
-const copyFile = async (
+export const copyFile = async (
   sourcePath: string,
   destinationPath: string,
-  { overwrite = true, processors }: CopyFilesOptions,
+  {
+    overwrite = true,
+    processors,
+  }: Pick<CopyFilesOptions, 'overwrite' | 'processors'>,
 ) => {
   const oldContents = await fs.promises.readFile(sourcePath, 'utf8');
 
