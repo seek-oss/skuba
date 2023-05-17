@@ -54,7 +54,10 @@ export const createTscAnnotations = (
 
   const matches = stripAnsi(tscOutputStream.output()).matchAll(tscOutputRegex);
   return Array.from(matches).flatMap<GitHub.Annotation>((match) =>
-    match?.length === 7
+    match?.length === 7 &&
+    typeof match[1] === 'string' &&
+    typeof match[4] === 'string' &&
+    typeof match[6] === 'string'
       ? {
           annotation_level: annotationLevelMap[match[4] as TscLevel],
           path: match[1],

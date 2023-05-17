@@ -33,7 +33,7 @@ export const copyAssets = async (
   }
 
   const pathSegments = entryPoint.split(path.sep);
-  const srcDir = pathSegments.length > 1 ? pathSegments[0] : '';
+  const srcDir = pathSegments[0] ?? '';
   const resolvedSrcDir = path.resolve(path.dirname(manifest.path), srcDir);
   const resolvedDestinationDir = path.resolve(
     path.dirname(manifest.path),

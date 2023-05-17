@@ -103,7 +103,8 @@ const expressionAsDefaultExport = (
       // fn({})
       if (
         ts.isCallExpression(expression) &&
-        expression.arguments.length === 1
+        expression.arguments.length === 1 &&
+        expression.arguments[0]
       ) {
         const [firstArgument] = expression.arguments;
 
@@ -149,12 +150,14 @@ const requireImportsTransformer: ts.TransformerFactory<ts.Node> =
         if (
           ts.isVariableStatement(node) &&
           node.declarationList.declarations.length === 1 &&
+          node.declarationList.declarations[0] &&
           ts.isVariableDeclaration(
             (declaration = node.declarationList.declarations[0]),
           ) &&
           declaration.initializer &&
           ts.isCallExpression(declaration.initializer) &&
           declaration.initializer.arguments.length === 1 &&
+          declaration.initializer.arguments[0] &&
           ts.isStringLiteral(
             (moduleName = declaration.initializer.arguments[0]),
           ) &&
