@@ -317,6 +317,12 @@ export const transformModuleImportsAndExports = (
 
   const [transformedFile] = result.transformed;
 
+  if (!transformedFile) {
+    throw new Error(
+      `Could not get transformed result for ${JSON.stringify(result)}`,
+    );
+  }
+
   const text = ts
     .createPrinter()
     .printNode(ts.EmitHint.SourceFile, transformedFile, sourceFile)

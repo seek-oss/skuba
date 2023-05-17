@@ -156,6 +156,10 @@ const baseToTemplateData = async ({
 
   const port = String(await getRandomPort());
 
+  if (!orgName) {
+    throw new Error('Could not determine an ownerName');
+  }
+
   return {
     orgName,
     ownerName,
