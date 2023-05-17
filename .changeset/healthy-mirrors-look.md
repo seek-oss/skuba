@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+'skuba': major
 ---
 
 deps: tsconfig-seek 2
