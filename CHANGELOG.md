@@ -1,5 +1,72 @@
 # skuba
 
+## 6.2.0
+
+### Minor Changes
+
+- **build, build-package:** Add a skuba config key named `assets` to copy assets to the output directory. ([#1163](https://github.com/seek-oss/skuba/pull/1163))
+
+  In your `package.json`:
+
+  ```diff
+   {
+     "skuba": {
+  +    "assets": [
+  +      "**/*.vocab/*translations.json"
+  +    ],
+       "entryPoint": "src/index.ts",
+       "type": "package",
+     }
+   }
+  ```
+
+  This will instruct skuba to copy the files matching the list of globs to the output directory/ies, preserving the directory structure from the source:
+
+  - for `skuba build-package` it will copy them to `lib-commonjs` and `lib-es2015`
+  - for `skuba build` it will copy them to `tsconfig.json#/compilerOptions.outDir` (`lib` by default)
+
+### Patch Changes
+
+- **template:** Include manifest files in CODEOWNERS ([#1162](https://github.com/seek-oss/skuba/pull/1162))
+
+  Our templates previously excluded `package.json` and `yarn.lock` from CODEOWNERS. This was intended to support advanced workflows such as auto-merging PRs and augmenting GitHub push notifications with custom tooling. However, we are reverting this configuration as it is more common for SEEKers to prefer a simpler CODEOWNERS-based workflow.
+
+  This will not affect existing projects. If you create a new project and wish to restore the previous behaviour, you can manually extend `.github/CODEOWNERS`:
+
+  ```diff
+  * @<%- ownerName %>
+
+  + # Configured by Renovate
+  + package.json
+  + yarn.lock
+  ```
+
+- **deps:** Bump @octokit dependencies ([#1174](https://github.com/seek-oss/skuba/pull/1174))
+
+  This should resolve the following compiler error:
+
+  ```bash
+  error TS2339: Property 'annotations' does not exist on type '{}'.
+  ```
+
+- **deps:** ts-jest ^29.1.0 ([#1166](https://github.com/seek-oss/skuba/pull/1166))
+
+  This resolves the following `skuba test` warning:
+
+  ```console
+  Version 5.0.2 of typescript installed has not been tested with ts-jest. If you're experiencing issues, consider using a supported version (>=4.3.0 <5.0.0-0). Please do not report issues in ts-jest if you are using unsupported versions.
+  ```
+
+- **template/\*-rest-api:** Remove Gantry `ignoreAlarms` override ([#1160](https://github.com/seek-oss/skuba/pull/1160))
+
+  This issue has been resolved in Gantry v2.2.0; see its [release notes](https://github.com/SEEK-Jobs/gantry/releases/tag/v2.2.0) for more information.
+
+  ```diff
+  deployment:
+  - # SEEK-Jobs/gantry#488
+  - ignoreAlarms: true
+  ```
+
 ## 6.1.0
 
 ### Minor Changes
