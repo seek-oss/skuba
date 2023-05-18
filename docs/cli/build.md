@@ -81,7 +81,7 @@ skuba build-package
 # types    │ tsc exited with code 0
 ```
 
-`skuba lint` runs operations concurrently up to your [CPU core count].
+`skuba build-package` runs operations concurrently up to your [CPU core count].
 On a resource-constrained Buildkite agent,
 you can limit this with the `--serial` flag.
 See our [Buildkite guide] for more information.

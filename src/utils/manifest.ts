@@ -4,7 +4,7 @@ import type { NormalizedPackageJson } from 'read-pkg-up';
 import readPkgUp from 'read-pkg-up';
 import * as t from 'runtypes';
 
-import { hasStringProp } from './validation';
+import { hasProp } from './validation';
 
 export type ProjectType = t.Static<typeof ProjectType>;
 
@@ -35,14 +35,25 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
 
 export const getConsumerManifest = () => readPkgUp();
 
+export const getPropFromConsumerManifest = async <
+  T extends string,
+  V = unknown,
+>(
+  prop: T,
+): Promise<V | undefined> => {
+  const result = await getConsumerManifest();
+
+  return result !== undefined && hasProp<T, V>(result.packageJson.skuba, prop)
+    ? result.packageJson.skuba[prop]
+    : undefined;
+};
+
 export const getStringPropFromConsumerManifest = async <T extends string>(
   prop: T,
 ): Promise<string | undefined> => {
-  const result = await getConsumerManifest();
+  const result = await getPropFromConsumerManifest(prop);
 
-  return result !== undefined && hasStringProp(result.packageJson.skuba, prop)
-    ? result.packageJson.skuba[prop]
-    : undefined;
+  return typeof result === 'string' ? result : undefined;
 };
 
 export const getEntryPointFromManifest = async (): Promise<string> => {

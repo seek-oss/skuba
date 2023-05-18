@@ -5,8 +5,9 @@ import { log } from '../../utils/logging';
 import { getStringPropFromConsumerManifest } from '../../utils/manifest';
 import { tryAddEmptyExports } from '../configure/addEmptyExports';
 
+import { copyAssets } from './assets';
 import { esbuild } from './esbuild';
-import { tsc } from './tsc';
+import { readTsconfig, tsc } from './tsc';
 
 export const build = async (args = process.argv.slice(2)) => {
   await tryAddEmptyExports();
@@ -21,7 +22,7 @@ export const build = async (args = process.argv.slice(2)) => {
 
       log.plain(chalk.yellow('esbuild'));
       await esbuild({ debug }, args);
-      return;
+      break;
     }
 
     // TODO: flip the default case over to `esbuild` in skuba vNext.
@@ -29,7 +30,7 @@ export const build = async (args = process.argv.slice(2)) => {
     case 'tsc': {
       log.plain(chalk.blue('tsc'));
       await tsc(args);
-      return;
+      break;
     }
 
     default: {
@@ -43,4 +44,18 @@ export const build = async (args = process.argv.slice(2)) => {
       return;
     }
   }
+
+  const parsedCommandLine = readTsconfig(args, log);
+
+  if (!parsedCommandLine || process.exitCode) {
+    return;
+  }
+
+  const { options: compilerOptions } = parsedCommandLine;
+
+  if (!compilerOptions.outDir) {
+    return;
+  }
+
+  await copyAssets(compilerOptions.outDir);
 };
