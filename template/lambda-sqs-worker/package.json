@@ -20,7 +20,7 @@
     "@aws-sdk/util-utf8-node": "^3.259.0",
     "@seek/logger": "^6.0.0",
     "datadog-lambda-js": "^7.0.0",
-    "dd-trace": "^3.8.0",
+    "dd-trace": "^4.0.0",
     "skuba-dive": "^2.0.0",
     "zod": "^3.19.1"
   },
