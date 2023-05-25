@@ -31,7 +31,7 @@ export const createHandler = <Event, Output = unknown>(
       try {
         const output = await fn(event);
 
-        logger.info('Function succeeded');
+        logger.debug('Function succeeded');
 
         return output;
       } catch (err) {

@@ -18,7 +18,7 @@ describe('createHandler', () => {
     const handler = createHandler((event) => {
       expect(event).toBe(input);
 
-      logger.info('Handler invoked');
+      logger.debug('Handler invoked');
 
       return Promise.resolve(output);
     });
@@ -27,7 +27,7 @@ describe('createHandler', () => {
 
     expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info.mock.calls).toEqual([
+    expect(logger.debug.mock.calls).toEqual([
       ['Handler invoked'],
       ['Function succeeded'],
     ]);
@@ -42,7 +42,7 @@ describe('createHandler', () => {
 
     expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
-    expect(logger.info).not.toHaveBeenCalled();
+    expect(logger.debug).not.toHaveBeenCalled();
   });
 
   it('handles sync error', async () => {
@@ -56,6 +56,6 @@ describe('createHandler', () => {
 
     expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
-    expect(logger.info).not.toHaveBeenCalled();
+    expect(logger.debug).not.toHaveBeenCalled();
   });
 });
