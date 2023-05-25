@@ -7,7 +7,7 @@ import * as Git from '../git';
 import { apiTokenFromEnvironment } from './environment';
 
 type Output = NonNullable<
-  Endpoints['POST /repos/{owner}/{repo}/check-runs']['parameters']['output']
+  Endpoints['PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}']['parameters']['output']
 >;
 
 export type Annotation = NonNullable<Output['annotations']>[number];
