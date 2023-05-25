@@ -4,7 +4,7 @@
 
 deps: tsconfig-seek 2
 
-This change sets the `noUncheckedIndexedAccess` compiler option to `true` by default.
+This change sets the [`noUncheckedIndexedAccess`](https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess) compiler option to `true` by default.
 
 This will flag possible issues with indexed access of arrays and records.
 
