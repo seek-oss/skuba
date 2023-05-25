@@ -47,7 +47,7 @@ describe('handler', () => {
 
     expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info.mock.calls).toEqual([
+    expect(logger.debug.mock.calls).toEqual([
       [{ count: 1 }, 'Received jobs'],
       [{ snsMessageId: expect.any(String) }, 'Scored job'],
       ['Function succeeded'],
