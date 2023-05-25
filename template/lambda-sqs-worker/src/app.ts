@@ -36,11 +36,17 @@ export const handler = createHandler<SQSEvent>(async (event) => {
 
   const record = event.Records[0];
 
+  const body = record?.body;
+
+  if (!body) {
+    throw new Error(`Record: ${JSON.stringify(record)} is malformed`);
+  }
+
   // TODO: this throws an error, which will cause the Lambda function to retry
   // the event and eventually send it to your dead-letter queue. If you don't
   // trust your source to provide consistently well-formed input, consider
   // catching and handling this error in code.
-  const publishedJob = validateJson(record.body, JobPublishedEventSchema);
+  const publishedJob = validateJson(body, JobPublishedEventSchema);
 
   const scoredJob = await scoreJobPublishedEvent(publishedJob);
 
