@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
 template/oss-npm-package: Set `publishConfig.provenance` to `true`.
