@@ -168,15 +168,16 @@ const compileChangesByTemplate = (changelog: string) => {
 
       for (const templateName of TEMPLATE_NAMES) {
         const { added } = TEMPLATE_DOCUMENTATION_CONFIG[templateName];
+        const changes = changesByTemplate[templateName];
 
         // Note that the changeset entry applies to the template if it existed
         // as of this version and the scope is a match.
         if (
           semver.gt(version, added) &&
           templateMatcher.test(templateName) &&
-          changesByTemplate[templateName]
+          changes
         ) {
-          changesByTemplate[templateName]!.push(
+          changes.push(
             `- ${versionLink(version)}: ${entry
               // Strip out the scope as it is needlessly repetitive here.
               .replace(SCOPE_REGEX, '')

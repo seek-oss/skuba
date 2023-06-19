@@ -35,12 +35,11 @@ export const handler = createHandler<SQSEvent>(async (event) => {
   metricsClient.distribution('job.received', event.Records.length);
 
   const record = event.Records[0];
-
-  const body = record?.body;
-
-  if (!body) {
-    throw new Error(`Record: ${JSON.stringify(record)} is malformed`);
+  if (!record) {{
+    throw new Error('Malformed SQS event with no records');
   }
+  
+  const { body } = record;
 
   // TODO: this throws an error, which will cause the Lambda function to retry
   // the event and eventually send it to your dead-letter queue. If you don't

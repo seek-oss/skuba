@@ -44,7 +44,7 @@ describe('soft', () => {
 
     const directory = await fs.promises.readdir(dir);
 
-    expect(commits[0]?.oid).toEqual(initialCommit);
+    expect(commits[0]!.oid).toEqual(initialCommit);
     expect(directory).toContain(newFileName);
   });
 });
