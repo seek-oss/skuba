@@ -38,7 +38,7 @@ To address this you will need to also explicitly check the index you are accessi
 ```ts
 if (list.length === 3 && list[1]) {
   const b = list[1];
-  //    ^? const b: string | undefined
+  //    ^? const b: string
 }
 ```
 
