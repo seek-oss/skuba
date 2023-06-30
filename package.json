@@ -82,6 +82,7 @@
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
     "esbuild": "~0.17.0",
+    "esbuild-register": "^3.4.2",
     "eslint": "^8.11.0",
     "eslint-config-skuba": "2.0.2",
     "execa": "^5.0.0",
@@ -117,7 +118,8 @@
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "1.0.2",
     "typescript": "~5.0.0",
-    "validate-npm-package-name": "^5.0.0"
+    "validate-npm-package-name": "^5.0.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@changesets/cli": "2.26.1",
