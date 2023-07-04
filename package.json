@@ -103,7 +103,7 @@
     "npm-which": "^3.0.1",
     "picomatch": "^2.2.2",
     "prettier": "~2.8.5",
-    "read-pkg-up": "^7.0.1",
+    "read-pkg-up": "^10.0.0",
     "runtypes": "^6.0.0",
     "semantic-release": "^19.0.0",
     "serialize-error": "^8.0.1",
