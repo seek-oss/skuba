@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
 deps: eslint-config-skuba 2.0.3
