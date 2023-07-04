@@ -13,6 +13,7 @@ jobs:
     name: Publish & Deploy
     permissions:
       contents: write
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
