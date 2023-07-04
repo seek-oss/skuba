@@ -122,6 +122,7 @@ tsc      │ I/O Read time: <random>s
 tsc      │ Parse time: <random>s
 tsc      │ ResolveModule time: <random>s
 tsc      │ ResolveTypeReference time: <random>s
+tsc      │ ResolveLibrary time: <random>s
 tsc      │ Program time: <random>s
 tsc      │ Bind time: <random>s
 tsc      │ Check time: <random>s

@@ -53,6 +53,7 @@ const skuba = async () => {
   showHelp();
 
   process.exitCode = 1;
+  return;
 };
 
 skuba().catch(handleCliError);
