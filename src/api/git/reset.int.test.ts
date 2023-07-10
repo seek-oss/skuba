@@ -44,7 +44,7 @@ describe('soft', () => {
 
     const directory = await fs.promises.readdir(dir);
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]!.oid).toEqual(initialCommit);
     expect(directory).toContain(newFileName);
   });
 });
@@ -82,7 +82,7 @@ describe('hard', () => {
 
     const directory = await fs.promises.readdir(dir);
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]?.oid).toEqual(initialCommit);
     expect(directory).not.toContain(newFileName);
   });
 
@@ -111,7 +111,7 @@ describe('hard', () => {
 
     const directory = await fs.promises.readdir(dir);
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]?.oid).toEqual(initialCommit);
     expect(directory).toContain(newFileName);
   });
 
@@ -141,7 +141,7 @@ describe('hard', () => {
 
     const directory = await fs.promises.readdir(dir);
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]?.oid).toEqual(initialCommit);
     expect(directory).not.toContain(newFileName);
   });
 
@@ -179,7 +179,7 @@ describe('hard', () => {
 
     const file = await fs.promises.readFile(newFileName, 'utf-8');
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]?.oid).toEqual(initialCommit);
     expect(file).toBe('hello');
   });
 });

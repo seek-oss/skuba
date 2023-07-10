@@ -32,7 +32,7 @@ const BASE_CHOICES = [
 
       const [org, team] = value.split('/');
 
-      if (!isGitHubOrg(org)) {
+      if (!org || !isGitHubOrg(org)) {
         return 'fails GitHub validation';
       }
 

@@ -9557,10 +9557,10 @@ tsconfig-paths@^4.0.0:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tsconfig-seek@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/tsconfig-seek/-/tsconfig-seek-1.0.2.tgz#a97a31d39bfb4957f45f906a17ee24a999f3ff01"
-  integrity sha512-ktPqoYc9NWU0pMlmB71R6UVxzzZrfThJIN6Axgwc6S4Ln7MjQvhbXiMIEmjEQp/dbk7nEQXIC5ogi24Bg49nlQ==
+tsconfig-seek@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/tsconfig-seek/-/tsconfig-seek-2.0.0.tgz#4b6df09cf0668046d214c72dfc42763eca827e11"
+  integrity sha512-pcKqW1I+CxGS6LI2QcNSdHGkJUWIP4VzcRzYAFH/LcQOlCBtD2q5w7RXZrIQxSANtcdN2RIT+o5pYEIPd81vRQ==
 
 tsconfig@^7.0.0:
   version "7.0.0"

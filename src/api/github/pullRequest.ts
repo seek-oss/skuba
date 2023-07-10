@@ -58,11 +58,12 @@ export const getPullRequestNumber = async (
     .filter((pr) => pr.state === 'open' && !pr.locked)
     .sort((a, b) => b.updated_at.localeCompare(a.updated_at));
 
-  if (!data.length) {
+  const pullRequestData = data[0];
+  if (!pullRequestData) {
     throw new Error(
       `Commit ${commitId} is not associated with an open GitHub pull request`,
     );
   }
 
-  return data[0].number;
+  return pullRequestData.number;
 };

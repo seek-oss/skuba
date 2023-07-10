@@ -34,6 +34,6 @@ export const commandToModule = (command: Command): string =>
     .map((segment, index) =>
       index === 0
         ? segment
-        : `${segment[0].toLocaleUpperCase()}${segment.slice(1)}`,
+        : `${(segment[0] ?? '').toLocaleUpperCase()}${segment.slice(1)}`,
     )
     .join('');

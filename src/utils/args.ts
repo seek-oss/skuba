@@ -87,7 +87,8 @@ export const parseRunArgs = (argv: string[]): RunArgs => {
   return state;
 };
 
-const isDigits = (arg: unknown) => typeof arg === 'string' && /^\d+$/.test(arg);
+const isDigits = (arg: unknown): arg is string =>
+  typeof arg === 'string' && /^\d+$/.test(arg);
 
 const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
   const [arg1, arg2] = args;

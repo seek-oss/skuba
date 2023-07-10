@@ -36,8 +36,8 @@ export const runForm = <T = Record<string, string>>(props: {
 
   const choices = props.choices.map((choice) => ({
     ...choice,
-    validate: (value: string) => {
-      if (value === '' || value === choice.initial) {
+    validate: (value: string | undefined) => {
+      if (!value || value === '' || value === choice.initial) {
         return 'Form is not complete';
       }
 
@@ -155,6 +155,10 @@ const baseToTemplateData = async ({
   const [orgName, teamName] = ownerName.split('/');
 
   const port = String(await getRandomPort());
+
+  if (!orgName) {
+    throw new Error(`Invalid format for owner name: ${ownerName}`);
+  }
 
   return {
     orgName,

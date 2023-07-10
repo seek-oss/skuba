@@ -120,14 +120,16 @@ const successResults: AggregatedResult = {
   numPassedTestSuites: 1,
   numPassedTests: 1,
   success: true,
-  testResults: [
-    {
-      ...failResults.testResults[0],
-      numFailingTests: 0,
-      numPassingTests: 1,
-      testResults: [],
-    },
-  ],
+  testResults: failResults.testResults[0]
+    ? [
+        {
+          ...failResults.testResults[0],
+          numFailingTests: 0,
+          numPassingTests: 1,
+          testResults: [],
+        },
+      ]
+    : [],
 };
 
 const failResultsDisplayNames: AggregatedResult = {

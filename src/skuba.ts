@@ -13,7 +13,12 @@
 import path from 'path';
 
 import { parseProcessArgs } from './utils/args';
-import { COMMAND_DIR, COMMAND_SET, commandToModule } from './utils/command';
+import {
+  COMMAND_DIR,
+  COMMAND_SET,
+  type Command,
+  commandToModule,
+} from './utils/command';
 import { handleCliError } from './utils/error';
 import { showHelp } from './utils/help';
 import { log } from './utils/logging';
@@ -24,7 +29,7 @@ const skuba = async () => {
   const { commandName } = parseProcessArgs(process.argv);
 
   if (COMMAND_SET.has(commandName)) {
-    const moduleName = commandToModule(commandName);
+    const moduleName = commandToModule(commandName as Command);
 
     /* eslint-disable @typescript-eslint/no-var-requires */
     const commandModule = require(path.join(
