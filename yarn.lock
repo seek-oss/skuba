@@ -1561,6 +1561,13 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
+"@octokit/types@^11.0.0":
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-11.1.0.tgz#9e5db741d582b05718a4d91bac8cc987def235ea"
+  integrity sha512-Fz0+7GyLm/bHt8fwEqgvRBWwIV1S6wRRyq+V6exRKLVWaKGsuy6H9QFYeBVDV7rK6fO3XwHgQOPxv+cLj2zpXQ==
+  dependencies:
+    "@octokit/openapi-types" "^18.0.0"
+
 "@octokit/types@^9.0.0", "@octokit/types@^9.2.3":
   version "9.3.2"
   resolved "https://registry.yarnpkg.com/@octokit/types/-/types-9.3.2.tgz#3f5f89903b69f6a2d196d78ec35f888c0013cac5"
