@@ -2,13 +2,12 @@ const { ts } = require('eslint-config-seek/extensions');
 
 module.exports = {
   extends: ['skuba'],
-
   overrides: [
     {
-      // TypeScript config
-      files: [`**/*.{${ts}}`],
+      files: [`integration/**/*.{${ts}}`],
       parser: '@typescript-eslint/parser',
       parserOptions: {
+        // typescript-eslint/typescript-eslint#3851
         allowAutomaticSingleRunInference: false,
       },
     },
