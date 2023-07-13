@@ -73,7 +73,7 @@
     "@octokit/graphql": "^6.0.0",
     "@octokit/graphql-schema": "^14.5.0",
     "@octokit/rest": "^19.0.8",
-    "@octokit/types": "^10.0.0",
+    "@octokit/types": "^11.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": ">=16.11",
     "chalk": "^4.1.0",
