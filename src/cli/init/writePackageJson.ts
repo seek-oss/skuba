@@ -31,7 +31,7 @@ export const writePackageJson = async ({
     version,
   };
 
-  const updatedPackageJson = formatPackage(manifest.packageJson);
+  const updatedPackageJson = await formatPackage(manifest.packageJson);
 
   await fs.promises.writeFile(manifest.path, updatedPackageJson);
 };

@@ -236,8 +236,8 @@ describe('transformModuleImportsAndExports', () => {
 });
 
 describe('readModuleExports', () => {
-  it('extracts props from a module.exports expression', () => {
-    const result = readModuleExports(JEST_CONFIG);
+  it('extracts props from a module.exports expression', async () => {
+    const result = await readModuleExports(JEST_CONFIG);
 
     assertDefined(result);
     expect(result).toHaveLength(5);

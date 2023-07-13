@@ -33,7 +33,7 @@ const addEmptyExports = async () => {
       return;
     }
 
-    const data = formatPrettier([inputFile, 'export {}'].join('\n\n'), {
+    const data = await formatPrettier([inputFile, 'export {}'].join('\n\n'), {
       parser: 'typescript',
     });
 
