@@ -69,6 +69,10 @@ export const esbuild = async (
           }),
         ],
     sourcemap: compilerOptions.sourceMap,
+    // TODO: as of 0.18, the esbuild CLI no longer infers the target property to
+    // avoid ambiguity where multiple `tsconfig.json`s are involved in a build.
+    // This would be unusual for a typical SEEK project but we can still explore
+    // an explicit setting once we implement `skuba.config.ts` (#1167).
     target: compilerOptions.target
       ? ScriptTarget[compilerOptions.target].toLocaleLowerCase()
       : undefined,
