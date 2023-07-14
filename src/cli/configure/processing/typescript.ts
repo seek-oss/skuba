@@ -286,10 +286,15 @@ export const createPropAppender =
  *
  * The props can then be used when transforming another source file.
  */
-export const readModuleExports = async (inputFile: string): Promise<Props | undefined> => {
+export const readModuleExports = async (
+  inputFile: string,
+): Promise<Props | undefined> => {
   let result: Props | undefined;
 
-  await transformModuleImportsAndExports(inputFile, (_, props) => (result = props));
+  await transformModuleImportsAndExports(
+    inputFile,
+    (_, props) => (result = props),
+  );
 
   return result;
 };

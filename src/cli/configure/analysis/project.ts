@@ -68,13 +68,15 @@ const processTextFiles = async (
     }),
   );
 
-  await Promise.all(textProcessorEntries.map(async ([filepath, processText]) => {
-    outputFiles[filepath] = await processText(
-      outputFiles[filepath],
-      outputFiles,
-      inputFiles,
-    );
-  }))
+  await Promise.all(
+    textProcessorEntries.map(async ([filepath, processText]) => {
+      outputFiles[filepath] = await processText(
+        outputFiles[filepath],
+        outputFiles,
+        inputFiles,
+      );
+    }),
+  );
 
   return outputFiles;
 };
@@ -86,7 +88,11 @@ export const diffFiles = async (opts: Options): Promise<FileDiff> => {
     await loadModuleFiles(modules, opts.destinationRoot),
   );
 
-  const outputFiles = await processTextFiles(modules, inputFiles, patternToFilepaths);
+  const outputFiles = await processTextFiles(
+    modules,
+    inputFiles,
+    patternToFilepaths,
+  );
 
   const diffEntries = Object.entries(outputFiles)
     .filter(([filepath, data]) => inputFiles[filepath] !== data)

@@ -32,11 +32,12 @@ let languages: SupportLanguage[] | undefined;
  * - https://github.com/prettier/prettier/blob/2.4.1/src/main/options.js#L167
  * - seek-oss/skuba#659
  */
-export const inferParser = async (filepath: string): Promise<string | undefined> => {
+export const inferParser = async (
+  filepath: string,
+): Promise<string | undefined> => {
   const filename = path.basename(filepath).toLowerCase();
 
-  const supportInfo = await getSupportInfo()
-  languages ??= supportInfo.languages.filter((language) => language.since);
+  languages ??= (await getSupportInfo()).languages;
 
   const firstLanguage = languages.find(
     (language) =>
@@ -61,7 +62,7 @@ const isPackageJsonOk = async ({
   try {
     const packageJson = parsePackage(data);
 
-    return !packageJson || await formatPackage(packageJson) === data;
+    return !packageJson || (await formatPackage(packageJson)) === data;
   } catch {
     // Be more lenient about our custom formatting and don't throw if it errors.
   }
@@ -90,7 +91,9 @@ const formatOrLintFile = async (
   if (mode === 'lint') {
     let ok: boolean;
     try {
-      ok = (await check(data, options)) && (await isPackageJsonOk({ data, filepath }));
+      ok =
+        (await check(data, options)) &&
+        (await isPackageJsonOk({ data, filepath }));
     } catch (err) {
       result.errored.push({ err, filepath });
       return;
@@ -205,7 +208,7 @@ export const runPrettier = async (
       options: { ...config, filepath },
     };
 
-    const formatted = formatOrLintFile(file, mode, result);
+    const formatted = await formatOrLintFile(file, mode, result);
 
     if (typeof formatted === 'string') {
       await fs.promises.writeFile(filepath, formatted);
