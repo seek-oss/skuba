@@ -139,7 +139,13 @@ const patchRenovateConfig = async (dir: string) => {
 
 export const tryPatchRenovateConfig = async (dir = process.cwd()) => {
   try {
-    await patchRenovateConfig(dir);
+    // In a monorepo we may be invoked within a subdirectory, but we are working
+    // with Renovate config that should be relative to the repository root.
+    const gitRoot = await Git.findRoot({ dir });
+
+    if (gitRoot) {
+      await patchRenovateConfig(gitRoot);
+    }
   } catch (err) {
     log.warn('Failed to patch Renovate config.');
     log.subtle(inspect(err));
