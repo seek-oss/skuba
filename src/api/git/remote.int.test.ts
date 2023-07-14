@@ -9,6 +9,9 @@ jest.mock('fs-extra', () => memfs);
 import fs from 'fs-extra';
 
 beforeEach(async () => {
+  delete process.env.BUILDKITE_REPO;
+  delete process.env.GITHUB_REPOSITORY;
+
   vol.reset();
 
   vol.fromJSON({
