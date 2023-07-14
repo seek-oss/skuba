@@ -100,6 +100,8 @@ If all is well, they will merge your pull request into master.
 You may find it easier to develop alongside unit tests:
 
 ```shell
+export NODE_OPTIONS=--experimental-vm-modules
+
 yarn test --watch
 ```
 
