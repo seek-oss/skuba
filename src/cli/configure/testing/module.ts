@@ -38,15 +38,13 @@ export const executeModule = async (
     // Some modules create a new file at the specified pattern.
     const filepaths = [pattern, ...allFilepaths.filter((p) => isMatch(p))];
 
-    await Promise.all(
-      [...new Set(filepaths)].map(async (filepath) => {
-        outputFiles[filepath] = await processText(
-          outputFiles[filepath],
-          outputFiles,
-          inputFiles,
-        );
-      }),
-    );
+    for (const filepath of [...new Set(filepaths)]) {
+      outputFiles[filepath] = await processText(
+        outputFiles[filepath],
+        outputFiles,
+        inputFiles,
+      );
+    }
   }
 
   return outputFiles;
