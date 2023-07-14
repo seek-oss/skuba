@@ -70,7 +70,7 @@
   "dependencies": {
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@jest/types": "^29.0.0",
-    "@octokit/graphql": "^6.0.0",
+    "@octokit/graphql": "^7.0.0",
     "@octokit/graphql-schema": "^14.5.0",
     "@octokit/rest": "^19.0.8",
     "@octokit/types": "^11.0.0",
