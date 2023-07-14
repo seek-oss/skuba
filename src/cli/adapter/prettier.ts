@@ -169,10 +169,14 @@ export const runPrettier = async (
 
   logger.debug('Discovering files...');
 
-  // Match Prettier's opinion of not respecting `.gitignore`.
+  // Match Prettier's opinion of respecting `.gitignore`.
   // This avoids exhibiting different behaviour than a Prettier IDE integration,
-  // and the headache of conflicting `.gitignore` and `.prettierignore` rules.
-  const filepaths = await crawlDirectory(directory, '.prettierignore');
+  // though it may present headaches if `.gitignore` and `.prettierignore` rules
+  // conflict.
+  const filepaths = await crawlDirectory(directory, [
+    '.gitignore',
+    '.prettierignore',
+  ]);
 
   logger.debug(`Discovered ${pluralise(filepaths.length, 'file')}.`);
 
