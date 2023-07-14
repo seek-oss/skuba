@@ -68,15 +68,13 @@ const processTextFiles = async (
     }),
   );
 
-  await Promise.all(
-    textProcessorEntries.map(async ([filepath, processText]) => {
-      outputFiles[filepath] = await processText(
-        outputFiles[filepath],
-        outputFiles,
-        inputFiles,
-      );
-    }),
-  );
+  for (const [filepath, processText] of textProcessorEntries) {
+    outputFiles[filepath] = await processText(
+      outputFiles[filepath],
+      outputFiles,
+      inputFiles,
+    );
+  }
 
   return outputFiles;
 };
