@@ -63,7 +63,9 @@ export const getOwnerAndRepo = async ({
     }
   }
 
-  const remotes = await git.listRemotes({ dir, fs });
+  const gitRoot = await git.findRoot({ filepath: dir, fs });
+
+  const remotes = await git.listRemotes({ dir: gitRoot, fs });
 
   for (const { url } of remotes) {
     const { owner, repo } = ownerAndRepoFromUrl(url);
