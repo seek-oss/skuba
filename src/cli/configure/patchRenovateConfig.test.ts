@@ -44,12 +44,13 @@ beforeEach(() => vol.reset());
 it('patches a JSON config for a SEEK-Jobs project', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'VersionNet' });
 
-  vol.fromJSON({ 'renovate.json': JSON });
+  vol.fromJSON({ '.git': null, 'renovate.json': JSON });
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
   expect(volToJson()).toMatchInlineSnapshot(`
     {
+      ".git": null,
       "renovate.json": "{
       "extends": [
         "local>seek-jobs/renovate-config",
@@ -67,7 +68,7 @@ it('patches a JSON5 config for a seekasia project', async () => {
     repo: 'VersionCobol',
   });
 
-  vol.fromJSON({ '.github/renovate.json5': JSON5 });
+  vol.fromJSON({ '.git': null, '.github/renovate.json5': JSON5 });
 
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
@@ -76,6 +77,7 @@ it('patches a JSON5 config for a seekasia project', async () => {
   // them entirely.
   expect(volToJson()).toMatchInlineSnapshot(`
     {
+      ".git": null,
       ".github/renovate.json5": "{
       extends: [
         // Preceding comment
@@ -93,9 +95,13 @@ it('patches a JSON5 config for a seekasia project', async () => {
 it('handles a lack of Renovate config', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'monolith' });
 
+  const files = { '.git': null };
+
+  vol.fromJSON(files);
+
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
-  expect(volToJson()).toStrictEqual({});
+  expect(volToJson()).toStrictEqual(files);
 });
 
 it('handles a filesystem error', async () => {
@@ -105,7 +111,7 @@ it('handles a filesystem error', async () => {
 
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'VersionNet' });
 
-  const files = { 'renovate.json5': JSON5 };
+  const files = { '.git': null, 'renovate.json5': JSON5 };
 
   vol.fromJSON(files);
 
@@ -122,18 +128,21 @@ it('handles a non-Git directory', async () => {
 
   getOwnerAndRepo.mockRejectedValue(err);
 
+  const files = {};
+
+  vol.fromJSON(files);
+
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
-  expect(volToJson()).toStrictEqual({});
+  expect(volToJson()).toStrictEqual(files);
 
-  expect(consoleLog).toHaveBeenCalledWith('Failed to patch Renovate config.');
-  expect(consoleLog).toHaveBeenCalledWith(inspect(err));
+  expect(consoleLog).not.toHaveBeenCalled();
 });
 
 it('skips a seek-oss project', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'seek-oss', repo: 'skuba' });
 
-  const files = { 'renovate.json5': JSON5 };
+  const files = { '.git': null, 'renovate.json5': JSON5 };
 
   vol.fromJSON(files);
 
@@ -147,7 +156,7 @@ it('skips a seek-oss project', async () => {
 it('skips a personal project', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'Seekie1337', repo: 'fizz-buzz' });
 
-  const files = { '.renovaterc': JSON };
+  const files = { '.git': null, '.renovaterc': JSON };
 
   vol.fromJSON(files);
 
@@ -161,7 +170,7 @@ it('skips a personal project', async () => {
 it('skips a strange config without `extends`', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'monolith' });
 
-  const files = { '.github/renovate.json5': '{}' };
+  const files = { '.git': null, '.github/renovate.json5': '{}' };
 
   vol.fromJSON(files);
 
@@ -175,7 +184,7 @@ it('skips a strange config without `extends`', async () => {
 it('skips a configured SEEK-Jobs project', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'monolith' });
 
-  const files = { '.github/renovate.json5': JSON5_CONFIGURED };
+  const files = { '.git': null, '.github/renovate.json5': JSON5_CONFIGURED };
 
   vol.fromJSON(files);
 
@@ -189,7 +198,7 @@ it('skips a configured SEEK-Jobs project', async () => {
 it('skips a SEEK-Jobs project which already extends a config', async () => {
   getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'monolith' });
 
-  const files = { '.github/renovate.json5': JSON5_EXTENDED };
+  const files = { '.git': null, '.github/renovate.json5': JSON5_EXTENDED };
 
   vol.fromJSON(files);
 
