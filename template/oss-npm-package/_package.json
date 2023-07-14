@@ -39,7 +39,7 @@
     "skuba": "*"
   },
   "engines": {
-    "node": ">=16.11"
+    "node": ">=18.12"
   },
   "publishConfig": {
     "provenance": true
