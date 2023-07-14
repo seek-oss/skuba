@@ -66,22 +66,22 @@ describe('createDependencyFilter', () => {
 });
 
 describe('withPackage', () => {
-  it('applies function', () =>
-    expect(
+  it('applies function', async () =>
+    await expect(
       withPackage((data) => {
         data.$name = 'unit-test';
 
         return data;
       })('{}'),
-    ).toMatchInlineSnapshot(`
+    ).resolves.toMatchInlineSnapshot(`
       "{
         "$name": "unit-test"
       }
       "
     `));
 
-  it('preserves legitimate fields', () =>
-    expect(
+  it('preserves legitimate fields', async () =>
+    await expect(
       withPackage((data) => {
         data.$name = 'unit-test';
 
@@ -94,7 +94,7 @@ describe('withPackage', () => {
           name: 'my-package',
         }),
       ),
-    ).toMatchInlineSnapshot(`
+    ).resolves.toMatchInlineSnapshot(`
       "{
         "name": "my-package",
         "version": "0.1.0",
@@ -105,8 +105,8 @@ describe('withPackage', () => {
       "
     `));
 
-  it('sorts fields', () =>
-    expect(
+  it('sorts fields', async () =>
+    await expect(
       withPackage((data) => data)(
         JSON.stringify({
           devDependencies: {
@@ -138,7 +138,7 @@ describe('withPackage', () => {
           files: ['b', 'a'],
         }),
       ),
-    ).toMatchInlineSnapshot(`
+    ).resolves.toMatchInlineSnapshot(`
       "{
         "files": [
           "b",
@@ -170,14 +170,14 @@ describe('withPackage', () => {
       "
     `));
 
-  it('handles bad JSON gracefully', () =>
-    expect(
+  it('handles bad JSON gracefully', async () =>
+    await expect(
       withPackage((data) => {
         data.$name = 'unit-test';
 
         return data;
       })('}'),
-    ).toMatchInlineSnapshot(`
+    ).resolves.toMatchInlineSnapshot(`
       "{
         "$name": "unit-test"
       }
