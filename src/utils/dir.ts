@@ -36,11 +36,11 @@ export const buildPatternToFilepathMap = (
  */
 export const crawlDirectory = async (
   root: string,
-  ignoreFilename = '.gitignore',
+  ignoreFilenames = ['.gitignore'],
 ) => {
-  const ignoreFileFilter = await createInclusionFilter([
-    path.join(root, ignoreFilename),
-  ]);
+  const ignoreFileFilter = await createInclusionFilter(
+    ignoreFilenames.map((ignoreFilename) => path.join(root, ignoreFilename)),
+  );
 
   const output = await new FDir()
     .crawlWithOptions(root, {
