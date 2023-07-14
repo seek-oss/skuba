@@ -72,7 +72,7 @@
     "@jest/types": "^29.0.0",
     "@octokit/graphql": "^7.0.0",
     "@octokit/graphql-schema": "^14.5.0",
-    "@octokit/rest": "^19.0.8",
+    "@octokit/rest": "^20.0.0",
     "@octokit/types": "^11.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": ">=16.11",
