@@ -42,7 +42,7 @@ const patchServerListener = async (dir: string) => {
 
   await fs.promises.writeFile(
     SERVER_LISTENER_FILENAME,
-    formatPrettier(listener, {
+    await formatPrettier(listener, {
       parser: 'typescript',
     }),
   );

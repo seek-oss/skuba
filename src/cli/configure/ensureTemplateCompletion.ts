@@ -41,7 +41,7 @@ export const ensureTemplateCompletion = async ({
     name: 'customAnswers',
   });
 
-  const updatedPackageJson = formatPackage(manifest.packageJson);
+  const updatedPackageJson = await formatPackage(manifest.packageJson);
   const packageJsonFilepath = path.join(destinationRoot, 'package.json');
   await fs.promises.writeFile(packageJsonFilepath, updatedPackageJson);
 

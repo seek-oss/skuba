@@ -9,7 +9,9 @@ describe('inferParser', () => {
     ${'client.tsx'}                     | ${'typescript'}
     ${'server.ts'}                      | ${'typescript'}
     ${'vanilla.js'}                     | ${'babel'}
-  `('inferParser($filepath) === $parser', ({ filepath, parser }) =>
-    expect(inferParser(filepath)).toBe(parser),
+  `(
+    'inferParser($filepath) === $parser',
+    async ({ filepath, parser }) =>
+      await expect(inferParser(filepath)).resolves.toBe(parser),
   );
 });

@@ -124,7 +124,7 @@ export const analyseDependencies = async ({
   }
 
   return async () => {
-    const updatedPackageJson = formatPackage({
+    const updatedPackageJson = await formatPackage({
       ...packageJson,
       dependencies: output.dependencies,
       devDependencies: output.devDependencies,

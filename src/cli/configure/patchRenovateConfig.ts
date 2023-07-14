@@ -60,7 +60,7 @@ const patchJson: PatchFile = async ({ filepath, input, presetToAdd }) => {
 
   await fs.promises.writeFile(
     filepath,
-    formatPrettier(JSON.stringify(config), { parser: 'json' }),
+    await formatPrettier(JSON.stringify(config), { parser: 'json' }),
   );
 
   return;
@@ -77,7 +77,7 @@ const patchJson5: PatchFile = async ({ filepath, input, presetToAdd }) => {
 
   await fs.promises.writeFile(
     filepath,
-    formatPrettier(fleece.patch(input, config), { parser: 'json5' }),
+    await formatPrettier(fleece.patch(input, config), { parser: 'json5' }),
   );
 
   return;

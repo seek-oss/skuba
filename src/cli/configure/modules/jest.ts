@@ -44,7 +44,7 @@ export const jestModule = async (): Promise<Module> => {
   return {
     ...deleteFiles('jest.config.js', 'jest.setup.js'),
 
-    'jest.config.ts': (tsFile, currentFiles, initialFiles) => {
+    'jest.config.ts': async (tsFile, currentFiles, initialFiles) => {
       // Allow customised TS Jest config that extends skuba
       if (tsFile?.includes('skuba')) {
         return OUTDATED_ISOLATED_MODULES_CONFIG_SNIPPETS.reduce(
@@ -66,7 +66,9 @@ export const jestModule = async (): Promise<Module> => {
       const inputFile = tsFile ?? jsFile;
 
       const props =
-        inputFile === undefined ? undefined : readModuleExports(inputFile);
+        inputFile === undefined
+          ? undefined
+          : await readModuleExports(inputFile);
 
       if (props === undefined) {
         return configFile;

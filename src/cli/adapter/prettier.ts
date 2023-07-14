@@ -32,10 +32,12 @@ let languages: SupportLanguage[] | undefined;
  * - https://github.com/prettier/prettier/blob/2.4.1/src/main/options.js#L167
  * - seek-oss/skuba#659
  */
-export const inferParser = (filepath: string): string | undefined => {
+export const inferParser = async (
+  filepath: string,
+): Promise<string | undefined> => {
   const filename = path.basename(filepath).toLowerCase();
 
-  languages ??= getSupportInfo().languages.filter((language) => language.since);
+  languages ??= (await getSupportInfo()).languages;
 
   const firstLanguage = languages.find(
     (language) =>
@@ -46,13 +48,13 @@ export const inferParser = (filepath: string): string | undefined => {
   return firstLanguage?.parsers[0];
 };
 
-const isPackageJsonOk = ({
+const isPackageJsonOk = async ({
   data,
   filepath,
 }: {
   data: string;
   filepath: string;
-}): boolean => {
+}): Promise<boolean> => {
   if (path.basename(filepath) !== 'package.json') {
     return true;
   }
@@ -60,7 +62,7 @@ const isPackageJsonOk = ({
   try {
     const packageJson = parsePackage(data);
 
-    return !packageJson || formatPackage(packageJson) === data;
+    return !packageJson || (await formatPackage(packageJson)) === data;
   } catch {
     // Be more lenient about our custom formatting and don't throw if it errors.
   }
@@ -81,15 +83,17 @@ interface Result {
   unparsed: string[];
 }
 
-const formatOrLintFile = (
+const formatOrLintFile = async (
   { data, filepath, options }: File,
   mode: 'format' | 'lint',
   result: Result,
-): string | undefined => {
+): Promise<string | undefined> => {
   if (mode === 'lint') {
     let ok: boolean;
     try {
-      ok = check(data, options) && isPackageJsonOk({ data, filepath });
+      ok =
+        (await check(data, options)) &&
+        (await isPackageJsonOk({ data, filepath }));
     } catch (err) {
       result.errored.push({ err, filepath });
       return;
@@ -104,7 +108,7 @@ const formatOrLintFile = (
 
   let formatted: string;
   try {
-    formatted = format(data, options);
+    formatted = await format(data, options);
   } catch (err) {
     result.errored.push({ err, filepath });
     return;
@@ -115,7 +119,7 @@ const formatOrLintFile = (
     if (path.basename(filepath) === 'package.json') {
       const packageJson = parsePackage(formatted);
       if (packageJson) {
-        formatted = formatPackage(packageJson);
+        formatted = await formatPackage(packageJson);
       }
     }
   } catch {
@@ -183,7 +187,7 @@ export const runPrettier = async (
 
   for (const filepath of filepaths) {
     // Infer parser upfront so we can skip unsupported files.
-    const parser = inferParser(filepath);
+    const parser = await inferParser(filepath);
 
     logger.debug(filepath);
     logger.debug('  parser:', parser ?? '-');
@@ -204,7 +208,7 @@ export const runPrettier = async (
       options: { ...config, filepath },
     };
 
-    const formatted = formatOrLintFile(file, mode, result);
+    const formatted = await formatOrLintFile(file, mode, result);
 
     if (typeof formatted === 'string') {
       await fs.promises.writeFile(filepath, formatted);
