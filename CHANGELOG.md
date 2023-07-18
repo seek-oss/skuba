@@ -1,5 +1,120 @@
 # skuba
 
+## 7.0.0
+
+### Major Changes
+
+- **deps:** tsconfig-seek 2 ([#1175](https://github.com/seek-oss/skuba/pull/1175))
+
+  This change sets the [`noUncheckedIndexedAccess`](https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess) compiler option to `true` by default.
+
+  This will flag possible issues with indexed access of arrays and records.
+
+  Before:
+
+  ```ts
+  const a: string[] = [];
+  const b = a[0];
+  //    ^? const b: string
+  ```
+
+  After:
+
+  ```ts
+  const a: string[] = [];
+  const b = a[0];
+  //    ^? const b: string | undefined
+  ```
+
+  Unfortunately, this change is a double edged sword as your previous code which may look like this may now be invalid.
+
+  ```ts
+  if (list.length === 3) {
+    const b = list[1];
+    //    ^? const b: string | undefined
+  }
+  ```
+
+  To address this you will need to also explicitly check the index you are accessing.
+
+  ```ts
+  if (list.length === 3 && list[1]) {
+    const b = list[1];
+    //    ^? const b: string
+  }
+  ```
+
+  This may seem like overkill, however, when you consider that Javascript will also allow this it may make sense
+
+  ```ts
+  const a: string[] = [];
+  a[1000] = 'foo';
+  console.log(a.length); // 1001
+  ```
+
+  You can override this setting in your project's `tsconfig.json` by setting it to false.
+
+  ```json
+  {
+    "compilerOptions": {
+      "noUncheckedIndexedAccess": false
+    }
+  }
+  ```
+
+- **deps:** Require Node.js 18.12+ ([#1206](https://github.com/seek-oss/skuba/pull/1206))
+
+  Node.js 16 will reach end of life by September 2023. We have aligned our version support with [sku 18](https://github.com/seek-oss/sku/releases/tag/sku%4012.0.0).
+
+  Consider upgrading the Node.js version for your project across:
+
+  - `.nvmrc`
+  - `package.json#/engines/node`
+  - `@types/node` package version
+  - CI/CD configuration (`.buildkite/pipeline.yml`, `Dockerfile`, etc.)
+
+### Minor Changes
+
+- **deps:** esbuild 0.18 ([#1190](https://github.com/seek-oss/skuba/pull/1190))
+
+  `skuba build` will continue to infer `target` from `tsconfig.json` at this time. See the [esbuild release notes](https://github.com/evanw/esbuild/releases/tag/v0.18.0) for other details.
+
+- **format, lint:** Have Prettier respect `.gitignore` ([#1217](https://github.com/seek-oss/skuba/pull/1217))
+
+  This aligns with the behaviour of the [Prettier 3.0 CLI](https://prettier.io/blog/2023/07/05/3.0.0.html#cli).
+
+- **deps:** TypeScript 5.1 ([#1183](https://github.com/seek-oss/skuba/pull/1183))
+
+  This major release includes breaking changes. See the [TypeScript 5.1](https://devblogs.microsoft.com/typescript/announcing-typescript-5-1/) announcement for more information.
+
+- **deps:** Prettier 3.0 ([#1202](https://github.com/seek-oss/skuba/pull/1202))
+
+  See the [release notes](https://prettier.io/blog/2023/07/05/3.0.0.html) for more information.
+
+### Patch Changes
+
+- **template:** Require Node.js 18.12+ ([#1206](https://github.com/seek-oss/skuba/pull/1206))
+
+- **template/oss-npm-package:** Set `publishConfig.provenance` to `true` ([#1182](https://github.com/seek-oss/skuba/pull/1182))
+
+  See <https://github.blog/2023-04-19-introducing-npm-package-provenance/> for more information.
+
+- **template/lambda-sqs-worker:** Change some info logs to debug ([#1178](https://github.com/seek-oss/skuba/pull/1178))
+
+  The "Function succeeded" log message was changed from `info` to `debug` to reduce the amount of unnecessary logs in production. The message will still be logged in dev environments but at a `debug` level.
+
+- **tsconfig:** Turn off [`noUnusedLocals`](https://www.typescriptlang.org/tsconfig#noUnusedLocals) and [`noUnusedParameters`](https://www.typescriptlang.org/tsconfig#noUnusedParameters) ([#1181](https://github.com/seek-oss/skuba/pull/1181))
+
+  [SEEK's ESLint config](https://github.com/seek-oss/eslint-config-seek) has a [rule](https://eslint.org/docs/latest/rules/no-unused-vars) which works for both function and types. We do not need both tools to do the same thing and ESLint has better support for ignoring files if needed.
+
+- **lint:** Resolve Git root before attempting to autofix ([#1215](https://github.com/seek-oss/skuba/pull/1215))
+
+- **configure:** Resolve Git root before attempting to patch Renovate config ([#1215](https://github.com/seek-oss/skuba/pull/1215))
+
+- **template/lambda-sqs-worker:** Bump aws-sdk-client-mock to 3.0.0 ([#1197](https://github.com/seek-oss/skuba/pull/1197))
+
+  AWS SDK v3.363.0 shipped with breaking type changes.
+
 ## 6.2.0
 
 ### Minor Changes
