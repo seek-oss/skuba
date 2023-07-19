@@ -27,6 +27,8 @@ module.exports = {
     '/node_modules.*/',
     '<rootDir>/(coverage|dist|lib|tmp).*/',
   ],
+  // jestjs/jest#14305
+  prettierPath: null,
   watchPlugins: [
     require.resolve('jest-watch-typeahead/filename'),
     require.resolve('jest-watch-typeahead/testname'),
