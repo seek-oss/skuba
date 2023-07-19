@@ -21,14 +21,18 @@ module.exports = {
     '!<rootDir>/jest.*.ts',
   ],
   coverageDirectory: 'coverage',
-  reporters: ['default', require.resolve('./lib/cli/test/reporters/github')],
+  // jestjs/jest#14305
+  prettierPath: null,
+  reporters: [
+    'default',
+    require.resolve('./lib/cli/test/reporters/github'),
+    require.resolve('./lib/cli/test/reporters/prettier'),
+  ],
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/node_modules.*/',
     '<rootDir>/(coverage|dist|lib|tmp).*/',
   ],
-  // jestjs/jest#14305
-  prettierPath: null,
   watchPlugins: [
     require.resolve('jest-watch-typeahead/filename'),
     require.resolve('jest-watch-typeahead/testname'),

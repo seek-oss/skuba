@@ -83,10 +83,10 @@ interface Result {
   unparsed: string[];
 }
 
-const formatOrLintFile = async (
+export const formatOrLintFile = async (
   { data, filepath, options }: File,
   mode: 'format' | 'lint',
-  result: Result,
+  result: Result | null,
 ): Promise<string | undefined> => {
   if (mode === 'lint') {
     let ok: boolean;
@@ -95,12 +95,12 @@ const formatOrLintFile = async (
         (await check(data, options)) &&
         (await isPackageJsonOk({ data, filepath }));
     } catch (err) {
-      result.errored.push({ err, filepath });
+      result?.errored.push({ err, filepath });
       return;
     }
 
     if (!ok) {
-      result.errored.push({ filepath });
+      result?.errored.push({ filepath });
     }
 
     return;
@@ -110,7 +110,7 @@ const formatOrLintFile = async (
   try {
     formatted = await format(data, options);
   } catch (err) {
-    result.errored.push({ err, filepath });
+    result?.errored.push({ err, filepath });
     return;
   }
 
@@ -130,7 +130,7 @@ const formatOrLintFile = async (
     return;
   }
 
-  result.touched.push(filepath);
+  result?.touched.push(filepath);
   return formatted;
 };
 
