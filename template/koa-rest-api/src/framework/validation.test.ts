@@ -1,7 +1,7 @@
 import { agentFromMiddleware } from 'src/testing/server';
 import {
+  IdDescriptionSchema,
   chance,
-  filterIdDescription,
   mockIdDescription,
 } from 'src/testing/types';
 
@@ -12,7 +12,7 @@ const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
   const result = validate({
     ctx,
     input: ctx.request.body,
-    filter: filterIdDescription,
+    schema: IdDescriptionSchema,
   });
 
   ctx.body = result;
@@ -41,10 +41,15 @@ describe('validate', () => {
       .post('/')
       .send({ ...idDescription, id: null })
       .expect(422)
-      .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(
-          `"Expected { id: string; description: string; }, but was incompatible"`,
-        ),
+      .expect(({ body }) =>
+        expect(body).toMatchInlineSnapshot(`
+          {
+            "invalidFields": {
+              "/id": "Expected string, received null",
+            },
+            "message": "Input validation failed",
+          }
+        `),
       );
   });
 
@@ -53,9 +58,15 @@ describe('validate', () => {
       .post('/')
       .send({})
       .expect(422)
-      .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(
-          `"Expected { id: string; description: string; }, but was incompatible"`,
-        ),
+      .expect(({ body }) =>
+        expect(body).toMatchInlineSnapshot(`
+          {
+            "invalidFields": {
+              "/description": "Required",
+              "/id": "Required",
+            },
+            "message": "Input validation failed",
+          }
+        `),
       ));
 });

@@ -1,5 +1,5 @@
 import { smokeTestJobStorage } from 'src/storage/jobs';
-import { Middleware } from 'src/types/koa';
+import type { Middleware } from 'src/types/koa';
 
 /**
  * Tests connectivity to ensure appropriate access and network configuration.

@@ -1,8 +1,6 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import type { FormChoice } from 'enquirer';
-import { Form } from 'enquirer';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy';
@@ -26,6 +24,9 @@ import {
 import type { InitConfig } from './types';
 import { InitConfigInput } from './types';
 
+import { Form } from 'enquirer';
+import type { FormChoice } from 'enquirer';
+
 export const runForm = <T = Record<string, string>>(props: {
   choices: Readonly<FormChoice[]>;
   message: string;
@@ -35,8 +36,8 @@ export const runForm = <T = Record<string, string>>(props: {
 
   const choices = props.choices.map((choice) => ({
     ...choice,
-    validate: (value: string) => {
-      if (value === '' || value === choice.initial) {
+    validate: (value: string | undefined) => {
+      if (!value || value === '' || value === choice.initial) {
         return 'Form is not complete';
       }
 
@@ -146,26 +147,46 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
   }
 };
 
-const baseToTemplateData = async ({ ownerName, repoName }: BaseFields) => {
+const baseToTemplateData = async ({
+  ownerName,
+  platformName,
+  repoName,
+}: BaseFields) => {
   const [orgName, teamName] = ownerName.split('/');
 
   const port = String(await getRandomPort());
 
+  if (!orgName) {
+    throw new Error(`Invalid format for owner name: ${ownerName}`);
+  }
+
   return {
     orgName,
     ownerName,
-    port,
     repoName,
     // Use standalone username in `teamName` contexts
     teamName: teamName ?? orgName,
+
+    port,
+
+    platformName,
+    lambdaCdkArchitecture: platformName === 'amd64' ? 'X86_64' : 'ARM_64',
+    lambdaServerlessArchitecture:
+      platformName === 'amd64' ? 'x86_64' : platformName,
   };
 };
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
-  const { ownerName, repoName } = await runForm(BASE_PROMPT_PROPS);
+  const { ownerName, platformName, repoName } = await runForm<BaseFields>(
+    BASE_PROMPT_PROPS,
+  );
   log.plain(chalk.cyan(repoName), 'by', chalk.cyan(ownerName));
 
-  const templateData = await baseToTemplateData({ ownerName, repoName });
+  const templateData = await baseToTemplateData({
+    ownerName,
+    platformName,
+    repoName,
+  });
 
   const destinationDir = repoName;
 

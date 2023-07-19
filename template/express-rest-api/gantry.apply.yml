@@ -10,7 +10,7 @@ env:
   # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
   AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
 
-  ENVIRONMENT: '{{.Environment}}'
+  ENVIRONMENT: '{{values "environment"}}'
   SERVICE: '{{values "service"}}'
 
   {{range $key, $value := .Values.env}}
@@ -108,8 +108,6 @@ cpu: 256
 memory: 512
 
 deployment:
-  # SEEK-Jobs/gantry#488
-  ignoreAlarms: true
   smokeTest:
     path: /smoke
     useExternalDns: true
@@ -118,3 +116,5 @@ tags:
   {{range $key, $value := .Values.tags}}
   {{$key}}: '{{$value}}'
   {{end}}
+
+cpuArchitecture: <%- platformName %>

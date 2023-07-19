@@ -3,6 +3,7 @@ import git from 'isomorphic-git';
 
 import { commit } from './commit';
 import type { Identity } from './commit';
+import type { ChangedFile } from './getChangedFiles';
 import { getChangedFiles } from './getChangedFiles';
 
 interface CommitAllParameters {
@@ -10,6 +11,13 @@ interface CommitAllParameters {
   message: string;
   author?: Identity;
   committer?: Identity;
+
+  /**
+   * File changes to exclude from the commit.
+   *
+   * Defaults to `[]` (no exclusions).
+   */
+  ignore?: ChangedFile[];
 }
 
 /**
@@ -18,10 +26,12 @@ interface CommitAllParameters {
 export const commitAllChanges = async ({
   dir,
   message,
+
   author,
   committer,
+  ignore,
 }: CommitAllParameters): Promise<string | undefined> => {
-  const changedFiles = await getChangedFiles({ dir });
+  const changedFiles = await getChangedFiles({ dir, ignore });
 
   if (!changedFiles.length) {
     return;

@@ -35,8 +35,8 @@ for example, the display name `integration` will result in the title `skuba/test
 
 See our [Jest guide] for a more detailed configuration breakdown.
 
+[buildkite annotations]: ../deep-dives/buildkite.md#buildkite-annotations
 [displayname]: https://jestjs.io/docs/configuration#displayname-string-object
 [github annotations]: ../deep-dives/github.md#github-annotations
 [jest]: https://jestjs.io
 [jest guide]: ../deep-dives/jest.md
-[projects]: https://jestjs.io/docs/configuration#projects-arraystring--projectconfig

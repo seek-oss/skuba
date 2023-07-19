@@ -11,6 +11,7 @@ const INIT_CONFIG_INPUT_FIELDS = {
     .Record({
       ownerName: t.String,
       repoName: t.String,
+      platformName: t.Union(t.Literal('amd64'), t.Literal('arm64')),
     })
     .And(t.Dictionary(t.String, t.String)),
   templateName: t.String,

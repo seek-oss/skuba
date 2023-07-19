@@ -10,13 +10,16 @@ Next steps:
 
 1. [ ] Read [SEEK's Open Source RFC].
 2. [ ] Create a new repository in the [seek-oss] GitHub organisation.
-3. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
-       see the [Codex] documentation for more information.
-4. [ ] Push local commits to the upstream GitHub branch.
-5. [ ] Configure [GitHub repository settings].
-6. [ ] Keep dependencies up to date with [Renovate];
+3. [ ] Push local commits to the upstream GitHub branch.
+4. [ ] Configure [GitHub repository settings].
+5. [ ] Keep dependencies up to date with [Renovate];
        request installation in [#open-source].
-7. [ ] Delete this checklist 😌.
+6. [ ] Delete this checklist 😌.
+
+[#open-source]: https://slack.com/app_redirect?channel=C39P1H2SU
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
+[renovate]: https://github.com/apps/renovate
+[seek's open source rfc]: https://rfc.skinfra.xyz/RFC016-Open-Source.html
 
 ## API
 
@@ -117,14 +120,9 @@ Here are some branches that **semantic-release** supports by default:
 
 For more information, see the **semantic-release** docs on [triggering a release].
 
-[#open-source]: https://slack.com/app_redirect?channel=C39P1H2SU
-[codex]: https://codex.ssod.skinfra.xyz/docs
 [distribution tags]: https://docs.npmjs.com/adding-dist-tags-to-packages
 [oss npm package guidance]: https://github.com/SEEK-Jobs/seek-oss-ci/blob/master/NPM_PACKAGES.md#access-to-publish-to-npm
 [release workflow]: .github/workflows/release.yml
 [seek-oss]: https://github.com/seek-oss
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
-[seek's open source rfc]: https://rfc.skinfra.xyz/RFC016-Open-Source.html
-[renovate]: https://github.com/apps/renovate
 [semantic-release]: https://github.com/semantic-release/semantic-release
 [triggering a release]: https://github.com/semantic-release/semantic-release/#triggering-a-release

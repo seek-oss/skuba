@@ -20,10 +20,12 @@ describe('diffFiles', () => {
 
     const manifest = outputFiles['package.json'];
 
-    manifest.data = manifest.data?.replace(
-      new RegExp(version, 'g'),
-      '0.0.0-semantically-released',
-    );
+    if (manifest) {
+      manifest.data = manifest.data?.replace(
+        new RegExp(version, 'g'),
+        '0.0.0-semantically-released',
+      );
+    }
 
     expect(outputFiles).toMatchSnapshot();
   });

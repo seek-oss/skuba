@@ -1,8 +1,13 @@
 import { hasSerialFlag } from '../utils/args';
 import { execConcurrently } from '../utils/exec';
 
-export const buildPackage = (args = process.argv) =>
-  execConcurrently(
+import { copyAssetsConcurrently } from './build/assets';
+import { tryAddEmptyExports } from './configure/addEmptyExports';
+
+export const buildPackage = async (args = process.argv.slice(2)) => {
+  await tryAddEmptyExports();
+
+  await execConcurrently(
     [
       {
         command:
@@ -27,3 +32,17 @@ export const buildPackage = (args = process.argv) =>
       maxProcesses: hasSerialFlag(args) ? 1 : undefined,
     },
   );
+
+  await copyAssetsConcurrently([
+    {
+      outDir: 'lib-commonjs',
+      name: 'commonjs',
+      prefixColor: 'green',
+    },
+    {
+      outDir: 'lib-es2015',
+      name: 'es2015',
+      prefixColor: 'yellow',
+    },
+  ]);
+};

@@ -13,10 +13,11 @@ import { isErrorWithCode } from './error';
 export const buildPatternToFilepathMap = (
   patterns: string[],
   allFilepaths: string[],
+  options?: picomatch.PicomatchOptions,
 ) =>
   Object.fromEntries(
     patterns.map((pattern) => {
-      const isMatch = picomatch(pattern);
+      const isMatch = picomatch(pattern, options);
 
       const filepaths = allFilepaths.filter((filepath) => isMatch(filepath));
 
@@ -35,11 +36,11 @@ export const buildPatternToFilepathMap = (
  */
 export const crawlDirectory = async (
   root: string,
-  ignoreFilename = '.gitignore',
+  ignoreFilenames = ['.gitignore'],
 ) => {
-  const ignoreFileFilter = await createInclusionFilter([
-    path.join(root, ignoreFilename),
-  ]);
+  const ignoreFileFilter = await createInclusionFilter(
+    ignoreFilenames.map((ignoreFilename) => path.join(root, ignoreFilename)),
+  );
 
   const output = await new FDir()
     .crawlWithOptions(root, {

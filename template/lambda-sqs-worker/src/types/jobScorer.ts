@@ -1,22 +1,15 @@
-/* eslint-disable new-cap */
+import { z } from 'zod';
 
-import * as t from 'runtypes';
-import checkFilter from 'runtypes-filter';
+export type JobScorerInput = z.infer<typeof JobScorerInputSchema>;
 
-export type JobScorerInput = t.Static<typeof JobScorerInput>;
-
-const JobScorerInput = t.Record({
-  id: t.String,
-  details: t.String,
+const JobScorerInputSchema = z.object({
+  id: z.string(),
+  details: z.string(),
 });
 
-export const filterJobScorerInput = checkFilter(JobScorerInput);
+export type JobScorerOutput = z.infer<typeof JobScorerOutputSchema>;
 
-export type JobScorerOutput = t.Static<typeof JobScorerOutput>;
-
-const JobScorerOutput = t.Record({
-  id: t.String,
-  score: t.Number,
+export const JobScorerOutputSchema = z.object({
+  id: z.string(),
+  score: z.number(),
 });
-
-export const filterJobScorerOutput = checkFilter(JobScorerOutput);

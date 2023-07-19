@@ -15,6 +15,12 @@ jest
   .spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
+jest
+  .spyOn(git, 'listRemotes')
+  .mockResolvedValue([
+    { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+  ]);
+
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 
 const BASE_PATH = path.join(__dirname, '..', '..', 'integration', 'base');
@@ -55,7 +61,7 @@ const gitModifiedAndUnstaged = async (dir: string) => {
 };
 
 const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
-  await copy(baseDir, tempDir, { recursive: true });
+  await copy(baseDir, tempDir);
 
   process.chdir(tempDir);
 

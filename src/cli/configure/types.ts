@@ -21,7 +21,7 @@ type FileProcessor = (
   file: string | undefined,
   files: Files,
   initialFiles: Readonly<Files>,
-) => string | undefined;
+) => Promise<string | undefined> | string | undefined;
 
 export type FileDiff = Record<
   string,

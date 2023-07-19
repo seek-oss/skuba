@@ -39,7 +39,7 @@ export const executeModule = async (
     const filepaths = [pattern, ...allFilepaths.filter((p) => isMatch(p))];
 
     for (const filepath of [...new Set(filepaths)]) {
-      outputFiles[filepath] = processText(
+      outputFiles[filepath] = await processText(
         outputFiles[filepath],
         outputFiles,
         inputFiles,

@@ -12,7 +12,7 @@ describe('moduleNameMapper', () => {
   it('expands wildcard paths', () =>
     expect(act({ 'src/*': ['src/*'], 'lib/wip/*': ['lib/wip/*'] }))
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "^lib/wip$": "<rootDir>/lib/wip",
         "^lib/wip/(.*)$": "<rootDir>/lib/wip/$1",
         "^src$": "<rootDir>/src",
@@ -22,7 +22,7 @@ describe('moduleNameMapper', () => {
 
   it('expands non-wildcard paths', () =>
     expect(act({ cli: ['cli'], 'src/': ['src/'] })).toMatchInlineSnapshot(`
-      Object {
+      {
         "^cli$": "<rootDir>/cli",
         "^cli/(.*)$": "<rootDir>/cli/$1",
         "^src$": "<rootDir>/src",
@@ -37,7 +37,7 @@ describe('moduleNameMapper', () => {
         'jquery/*': ['node_modules/jquery/dist/jquery/*'],
       }),
     ).toMatchInlineSnapshot(`
-      Object {
+      {
         "^jquery$": "<rootDir>/node_modules/jquery/dist/jquery",
         "^jquery/(.*)$": "<rootDir>/node_modules/jquery/dist/jquery/$1",
       }
@@ -46,7 +46,7 @@ describe('moduleNameMapper', () => {
   it('respects a base URL', () =>
     expect(act({ cli: ['../cli'], 'app/*': ['app/*'] }, 'src'))
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "^app$": "<rootDir>/src/app",
         "^app/(.*)$": "<rootDir>/src/app/$1",
         "^cli$": "<rootDir>/cli",
@@ -54,22 +54,11 @@ describe('moduleNameMapper', () => {
       }
     `));
 
-  it('respects no paths', () =>
-    expect(act({})).toMatchInlineSnapshot(`Object {}`));
+  it('respects no paths', () => expect(act({})).toMatchInlineSnapshot(`{}`));
 
-  it('falls back on undefined paths', () =>
-    expect(act(undefined)).toMatchInlineSnapshot(`
-      Object {
-        "^src$": "<rootDir>/src",
-        "^src/(.*)$": "<rootDir>/src/$1",
-      }
-    `));
+  it('defaults to no paths on undefined', () =>
+    expect(act(undefined)).toMatchInlineSnapshot(`{}`));
 
-  it('falls back on invalid config', () =>
-    expect(act('INVALID')).toMatchInlineSnapshot(`
-      Object {
-        "^src$": "<rootDir>/src",
-        "^src/(.*)$": "<rootDir>/src/$1",
-      }
-    `));
+  it('defaults to no paths on invalid config', () =>
+    expect(act('INVALID')).toMatchInlineSnapshot(`{}`));
 });

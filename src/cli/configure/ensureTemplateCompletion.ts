@@ -11,7 +11,7 @@ import { ensureTemplateConfigDeletion } from '../../utils/template';
 import { hasStringProp } from '../../utils/validation';
 import { getTemplateConfig, runForm } from '../init/getConfig';
 
-import { formatObject } from './processing/json';
+import { formatPackage } from './processing/package';
 
 interface Props {
   destinationRoot: string;
@@ -41,7 +41,7 @@ export const ensureTemplateCompletion = async ({
     name: 'customAnswers',
   });
 
-  const updatedPackageJson = formatObject(manifest.packageJson);
+  const updatedPackageJson = await formatPackage(manifest.packageJson);
   const packageJsonFilepath = path.join(destinationRoot, 'package.json');
   await fs.promises.writeFile(packageJsonFilepath, updatedPackageJson);
 

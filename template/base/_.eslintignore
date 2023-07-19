@@ -1,7 +1,10 @@
 # managed by skuba
-.idea/
+.idea/*
+.vscode/*
+
+.cdk.staging/
 .serverless/
-.vscode/
+cdk.out/
 node_modules*/
 
 /coverage*/

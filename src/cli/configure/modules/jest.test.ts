@@ -178,4 +178,79 @@ describe('jestModule', () => {
     );
     expect(outputFiles['jest.setup.ts']).toBeUndefined();
   });
+
+  it('migrates JavaScript setup file', async () => {
+    const inputFiles = {
+      'jest.config.ts': 'export default {}',
+      'jest.setup.js': "process.env.FORCE_COLOR = '0';",
+    };
+
+    const outputFiles = await executeModule(
+      jestModule,
+      inputFiles,
+      defaultOpts,
+    );
+
+    expect(outputFiles['jest.setup.js']).toBeUndefined();
+    expect(outputFiles['jest.setup.ts']).toBe(inputFiles['jest.setup.js']);
+  });
+
+  it.each([
+    {
+      description: 'with comment',
+      config: `
+import { Jest } from 'skuba';
+
+export default Jest.mergePreset({
+  globals: {
+    'ts-jest': {
+      // seek-oss/skuba#626
+      isolatedModules: true,
+    },
+  },
+  // Rest of config
+});
+`,
+    },
+    {
+      description: 'without comment',
+      config: `
+import { Jest } from 'skuba';
+
+export default Jest.mergePreset({
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },
+  // Rest of config
+});
+`,
+    },
+  ])(
+    'strips outdated `isolatedModules` config snippets $description',
+    async ({ config }) => {
+      const inputFiles = {
+        'jest.config.ts': config,
+        'jest.setup.ts': undefined,
+      };
+
+      const outputFiles = await executeModule(
+        jestModule,
+        inputFiles,
+        defaultOpts,
+      );
+
+      expect(outputFiles['jest.config.ts']).toMatchInlineSnapshot(`
+      "
+      import { Jest } from 'skuba';
+
+      export default Jest.mergePreset({
+        // Rest of config
+      });
+      "
+    `);
+      expect(outputFiles['jest.setup.ts']).toBeUndefined();
+    },
+  );
 });

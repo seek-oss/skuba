@@ -168,11 +168,16 @@ const compileChangesByTemplate = (changelog: string) => {
 
       for (const templateName of TEMPLATE_NAMES) {
         const { added } = TEMPLATE_DOCUMENTATION_CONFIG[templateName];
+        const changes = changesByTemplate[templateName];
 
         // Note that the changeset entry applies to the template if it existed
         // as of this version and the scope is a match.
-        if (semver.gt(version, added) && templateMatcher.test(templateName)) {
-          changesByTemplate[templateName].push(
+        if (
+          semver.gt(version, added) &&
+          templateMatcher.test(templateName) &&
+          changes
+        ) {
+          changes.push(
             `- ${versionLink(version)}: ${entry
               // Strip out the scope as it is needlessly repetitive here.
               .replace(SCOPE_REGEX, '')
@@ -222,9 +227,9 @@ const main = async () => {
       'CONTRIBUTING.md',
       path.join('dist-docs', 'CONTRIBUTING.md'),
     ),
-    // `fs.promises.cp` is still experimental in Node.js 16.
-    copy('site', 'dist-docs', { recursive: true }),
-    copy('docs', path.join('dist-docs', 'docs'), { recursive: true }),
+    // `fs.promises.cp` is still experimental in Node.js 18.
+    copy('site', 'dist-docs'),
+    copy('docs', path.join('dist-docs', 'docs')),
   ]);
 
   const templateChanges = compileChangesByTemplate(changelog);
@@ -232,6 +237,10 @@ const main = async () => {
   // Run serially to avoid clobbering files that house multiple templates.
   for (const templateName of TEMPLATE_NAMES) {
     const changes = templateChanges[templateName];
+
+    if (!changes) {
+      continue;
+    }
 
     if (!changes.length) {
       // Add a friendly placeholder if the template is fresh out of the oven.

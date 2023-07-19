@@ -10,7 +10,9 @@ export const hasSerialFlag = (args = process.argv, env = process.env) =>
   Boolean(
     // Run serially on SEEK's central npm publishing pipeline.
     // Exhausting agents here can cause grief.
-    env.BUILDKITE_AGENT_META_DATA_QUEUE?.split(',').includes('artefacts:npm'),
+    env.BUILDKITE_AGENT_META_DATA_QUEUE?.split(',').some((queueName) =>
+      queueName.startsWith('artefacts:npm'),
+    ),
   );
 
 /**
@@ -85,7 +87,8 @@ export const parseRunArgs = (argv: string[]): RunArgs => {
   return state;
 };
 
-const isDigits = (arg: unknown) => typeof arg === 'string' && /^\d+$/.test(arg);
+const isDigits = (arg: unknown): arg is string =>
+  typeof arg === 'string' && /^\d+$/.test(arg);
 
 const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
   const [arg1, arg2] = args;

@@ -1,11 +1,11 @@
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
-import { Job, JobInput } from 'src/types/jobs';
+import type { Job, JobInput } from 'src/types/jobs';
 
 const jobStore: Record<string, Job> = {};
 
 export const createJob = (jobInput: JobInput): Promise<Job> => {
-  const id = uuidv4();
+  const id = randomUUID();
 
   const job = { ...jobInput, id };
 

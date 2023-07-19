@@ -4,39 +4,49 @@ configValidationMode: error
 
 params:
   default:
+    datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:SECRET-NAME'
     description: <%- description %>
   dev:
-    deploymentBucket: 'TODO: deploymentBucketName'
+    deploymentBucket: 'TODO: deployment-bucket-name'
     isProduction: false
   prod:
-    deploymentBucket: 'TODO: deploymentBucketName'
+    deploymentBucket: 'TODO: deployment-bucket-name'
     isProduction: true
 
 custom:
+  datadog:
+    addLayers: false
+    apiKeySecretArn: ${param:datadogApiKeySecretArn}
+    enableDDLogs: false
+    # TODO: enable Datadog extension
+    enabled: false
+    exclude:
+      - WorkerPreHook
+    injectLogContext: false
+    version: ${env:VERSION}
   prune:
     automatic: true
     number: 3
 
 plugins:
   - serverless-plugin-canary-deployments
+  - serverless-plugin-datadog
   - serverless-prune-plugin
 
 provider:
   logRetentionInDays: 30
   name: aws
   region: ap-southeast-2
-  runtime: nodejs14.x
-  architecture: arm64
+  runtime: nodejs18.x
+  architecture: <%- lambdaServerlessArchitecture %>
+  deploymentMethod: direct
   stackName: ${self:service}
   stage: ${env:ENVIRONMENT}
-  versionFunctions: true
   deploymentBucket:
     # Use a shared account-level bucket for Lambda bundles and other artefacts.
     # This is easier to manage in terms of access, deployment, and tagging.
     name: ${param:deploymentBucket}
   environment:
-    # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     NODE_ENV: production
     # https://nodejs.org/api/cli.html#cli_node_options_options
     NODE_OPTIONS: --enable-source-maps
@@ -51,12 +61,12 @@ provider:
         - Action: lambda:InvokeFunction
           Effect: Allow
           Resource: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:functions.Worker.name}
+        - Action: secretsmanager:GetSecretValue
+          Effect: Allow
+          Resource: ${param:datadogApiKeySecretArn}-??????
         - Action: sns:Publish
           Effect: Allow
           Resource: !Ref DestinationTopic
-        - Action: sqs:SendMessage*
-          Effect: Allow
-          Resource: !GetAtt DeadLetterQueue.Arn
   stackTags:
     # TODO: add data classification tags
     # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers

@@ -28,7 +28,7 @@ and distribute it as an [npm package].
 
 [Submit an issue] if you have a question, feature request or bug report.
 
-If you work at SEEK, [#typescriptification] is your friend.
+If you work at SEEK, start a discussion in [#typescriptification].
 
 ### I want to contribute a change
 
@@ -36,6 +36,8 @@ Feel free to [create a pull request] for trivial fixes and improvements.
 
 For more substantial features, please [submit an issue] first.
 This lets us evaluate whether the feature fits the direction of the project and discuss possible approaches.
+
+If you work at SEEK, start a discussion in [#skuba-development].
 
 ---
 
@@ -98,6 +100,8 @@ If all is well, they will merge your pull request into master.
 You may find it easier to develop alongside unit tests:
 
 ```shell
+export NODE_OPTIONS=--experimental-vm-modules
+
 yarn test --watch
 ```
 
@@ -231,54 +235,23 @@ and our [release](https://github.com/seek-oss/skuba/blob/master/.github/workflow
 
 ### Publishing a prerelease
 
-We currently have limited support for prereleases on the `beta` [dist-tag].
-This can only be performed by a maintainer.
+Prereleases can be created on demand via [seek-oss/changesets-snapshot].
 
-```shell
-# Revert beta branch to match master.
-git fetch origin
-git switch beta
-git reset --hard origin/master
+Run the [Snapshot workflow] in GitHub Actions to publish a new snapshot version to npm.
 
-# Stage a beta release.
-yarn changeset pre enter beta
-yarn changeset version
-```
+<https://www.npmjs.com/package/skuba?activeTab=versions>
 
-If previous betas have been released under the same semantic version,
-you will need to manually bump the version suffix.
-
-In [CHANGELOG.md](https://github.com/seek-oss/skuba/blob/master/CHANGELOG.md):
-
-```diff
-- ## 4.0.0-beta.1
-+ ## 4.0.0-beta.2
-```
-
-In [package.json](https://github.com/seek-oss/skuba/blob/master/package.json):
-
-```diff
-- "version": "4.0.0-beta.1",
-+ "version": "4.0.0-beta.2",
-```
-
-Then, commit and push your changes:
-
-```shell
-git add --all
-git commit --message 'Publish v4.0.0-beta.2'
-git push --set-upstream origin beta
-```
-
+[#skuba-development]: https://slack.com/app_redirect?channel=C03UM9GBGET
 [#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
 [changelog]: CHANGELOG.md
 [changesets]: https://github.com/atlassian/changesets
 [create a pull request]: https://github.com/seek-oss/skuba/compare
-[dist-tag]: https://docs.npmjs.com/cli/dist-tag
 [fork the repo]: https://github.com/seek-oss/skuba/fork
 [npm package]: https://www.npmjs.com/package/skuba
 [release notes]: https://github.com/seek-oss/skuba/releases
+[seek-oss/changesets-snapshot]: https://github.com/seek-oss/changesets-snapshot
 [semantic versioning]: https://semver.org/
+[snapshot workflow]: https://github.com/seek-oss/skuba/actions/workflows/snapshot.yml
 [submit an issue]: https://github.com/seek-oss/skuba/issues/new/choose
 [windows subsystem for linux]: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
 [yarn link]: https://classic.yarnpkg.com/lang/en/docs/cli/link/

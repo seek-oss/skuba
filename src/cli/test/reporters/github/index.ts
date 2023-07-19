@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import type { Context, Reporter } from '@jest/reporters';
+import type { Reporter, TestContext } from '@jest/reporters';
 import type { AggregatedResult } from '@jest/test-result';
 
 import * as GitHub from '../../../../api/github';
@@ -9,17 +9,22 @@ import {
   enabledFromEnvironment,
 } from '../../../../api/github/environment';
 import { log } from '../../../../utils/logging';
+import { throwOnTimeout } from '../../../../utils/wait';
 
 import { generateAnnotationEntries } from './annotations';
 
 export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
   async onRunComplete(
-    _contexts: Set<Context>,
+    _contexts: Set<TestContext>,
     { testResults }: AggregatedResult,
   ): Promise<void> {
     if (!enabledFromEnvironment()) {
       return;
     }
+
+    type CheckRun = Parameters<typeof GitHub.createCheckRun>[0];
+
+    let lastCheckRun: CheckRun | undefined;
 
     try {
       const entries = generateAnnotationEntries(testResults);
@@ -37,17 +42,28 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
           ? '`skuba test` passed.'
           : '`skuba test` found issues that require triage.';
 
-        await GitHub.createCheckRun({
+        const checkRun: CheckRun = {
           name,
           annotations,
           conclusion: isOk ? 'success' : 'failure',
           summary,
           title: `${build} ${isOk ? 'passed' : 'failed'}`,
+        };
+
+        lastCheckRun = checkRun;
+
+        await throwOnTimeout(GitHub.createCheckRun(checkRun), {
+          s: 30,
         });
       }
     } catch (err) {
       log.warn('Failed to report test results to GitHub.');
       log.subtle(inspect(err));
+
+      if (lastCheckRun) {
+        log.subtle('Last request:');
+        log.subtle(JSON.stringify(lastCheckRun));
+      }
     }
   }
 }

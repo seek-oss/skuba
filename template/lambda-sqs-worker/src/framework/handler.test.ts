@@ -1,5 +1,5 @@
 import { createCtx } from 'src/testing/handler';
-import { contextLogger } from 'src/testing/logging';
+import { logger } from 'src/testing/logging';
 import { chance } from 'src/testing/types';
 
 import { createHandler } from './handler';
@@ -8,28 +8,28 @@ describe('createHandler', () => {
   const ctx = createCtx();
   const input = chance.paragraph();
 
-  beforeAll(contextLogger.spy);
+  beforeAll(logger.spy);
 
-  afterEach(contextLogger.clear);
+  afterEach(logger.clear);
 
   it('handles happy path', async () => {
     const output = chance.paragraph();
 
-    const handler = createHandler((event, { logger }) => {
+    const handler = createHandler((event) => {
       expect(event).toBe(input);
 
-      logger.info('hello from handler');
+      logger.debug('Handler invoked');
 
       return Promise.resolve(output);
     });
 
     await expect(handler(input, ctx)).resolves.toBe(output);
 
-    expect(contextLogger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(contextLogger.info.mock.calls).toEqual([
-      ['hello from handler'],
-      ['request'],
+    expect(logger.debug.mock.calls).toEqual([
+      ['Handler invoked'],
+      ['Function succeeded'],
     ]);
   });
 
@@ -38,11 +38,11 @@ describe('createHandler', () => {
 
     const handler = createHandler(() => Promise.reject(err));
 
-    await expect(handler(input, ctx)).rejects.toThrow('invoke error');
+    await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(contextLogger.error.mock.calls).toEqual([[{ err }, 'request']]);
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
-    expect(contextLogger.info).not.toBeCalled();
+    expect(logger.debug).not.toHaveBeenCalled();
   });
 
   it('handles sync error', async () => {
@@ -52,10 +52,10 @@ describe('createHandler', () => {
       throw err;
     });
 
-    await expect(handler(input, ctx)).rejects.toThrow('invoke error');
+    await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(contextLogger.error.mock.calls).toEqual([[{ err }, 'request']]);
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
-    expect(contextLogger.info).not.toBeCalled();
+    expect(logger.debug).not.toHaveBeenCalled();
   });
 });

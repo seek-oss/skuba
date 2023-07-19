@@ -115,6 +115,7 @@ interface Export {
   // One of these is required.
   callback?: () => http.RequestListener;
   requestListener?: http.RequestListener;
+  server?: http.Server;
 
   // Optional; falls back to an available port.
   port?: number;
@@ -130,10 +131,31 @@ const app = new Koa();
 export default Object.assign(app, { port });
 ```
 
+As should [Fastify]:
+
+```typescript
+const createApp = async () => {
+  const app = fastify();
+  await app.ready();
+  return app;
+};
+const app = createApp();
+
+export default app;
+```
+
 As should [Express]:
 
 ```typescript
 const app = express();
+
+export default Object.assign(app, { port });
+```
+
+As should a [HTTP Server]:
+
+```typescript
+const app = http.createServer();
 
 export default Object.assign(app, { port });
 ```
@@ -189,5 +211,7 @@ Execution should pause on the breakpoint until we hit `F5` or the `▶️` butto
 [`ts-node`]: https://github.com/typestrong/ts-node
 [`tsconfig-paths`]: https://github.com/dividab/tsconfig-paths
 [express]: https://expressjs.com/
+[fastify]: https://www.fastify.io/
+[http server]: https://nodejs.org/docs/latest-v18.x/api/http.html#class-httpserver
 [koa]: https://koajs.com/
 [node.js options]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options

@@ -79,8 +79,14 @@ describe('tsconfigModule', () => {
   it('augments existing config', async () => {
     const inputFiles = {
       'tsconfig.build.json': '{}',
-      'tsconfig.json':
-        '{"compilerOptions": {"target": "ES2020"}, "exclude": [".idea"], "include": ["src"]}',
+      'tsconfig.json': JSON.stringify({
+        compilerOptions: {
+          lib: ['ES2020'],
+          target: 'ES2020',
+        },
+        exclude: ['.idea'],
+        include: ['src'],
+      }),
       '.eslintrc.js': undefined,
       '.prettierrc.toml': undefined,
       'package.json': JSON.stringify({
@@ -105,13 +111,28 @@ describe('tsconfigModule', () => {
       outputFiles['tsconfig.json'],
     ) as TsConfigJson;
 
-    assertDefined(outputData);
-    expect(outputData.compilerOptions!.outDir).toBe('lib');
-    expect(outputData.compilerOptions!.target).toBe('ES2020');
-    expect(outputData.exclude).toContain('lib*/**/*');
-    expect(outputData.exclude).toContain('.idea');
-    expect(outputData.extends).toBe('skuba/config/tsconfig.json');
-    expect(outputData.include).toBeUndefined();
+    expect(outputData).toMatchInlineSnapshot(`
+      {
+        "compilerOptions": {
+          "baseUrl": ".",
+          "lib": [
+            "ES2020",
+          ],
+          "outDir": "lib",
+          "paths": {
+            "src": [
+              "src",
+            ],
+          },
+          "target": "ES2020",
+        },
+        "exclude": [
+          ".idea",
+          "lib*/**/*",
+        ],
+        "extends": "skuba/config/tsconfig.json",
+      }
+    `);
   });
 
   it('migrates divergent outDir', async () => {
@@ -137,18 +158,18 @@ CMD ["dist/listen.js"]
     );
 
     expect(outputFiles.Dockerfile).toMatchInlineSnapshot(`
-"
-ARG DIR lib
+      "
+      ARG DIR lib
 
-RUN echo redist
+      RUN echo redist
 
-FROM gcr.io/distroless/nodejs:16 AS runtime
+      FROM gcr.io/distroless/nodejs:16 AS runtime
 
-COPY --from=build /workdir/lib './lib'
+      COPY --from=build /workdir/lib './lib'
 
-CMD [\\"lib/listen.js\\"]
-"
-`);
+      CMD ["lib/listen.js"]
+      "
+    `);
 
     const outputData = parseObject(
       outputFiles['tsconfig.json'],

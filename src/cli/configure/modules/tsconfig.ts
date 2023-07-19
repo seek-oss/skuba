@@ -16,14 +16,6 @@ export const tsconfigModule = async ({
 
   const baseData = parseObject(baseFile);
 
-  // existing project may target earlier Node.js versions than skuba
-  if (
-    hasProp(baseData, 'compilerOptions') &&
-    hasProp(baseData.compilerOptions, 'target')
-  ) {
-    delete baseData.compilerOptions.target;
-  }
-
   // packages should not use module aliases
   if (
     type === 'package' &&
@@ -59,10 +51,27 @@ export const tsconfigModule = async ({
         );
       }
 
+      // existing project may target earlier Node.js versions than skuba
+      if (hasProp(baseData, 'compilerOptions')) {
+        if (
+          hasProp(baseData.compilerOptions, 'lib') &&
+          hasProp(inputData?.compilerOptions, 'lib')
+        ) {
+          delete baseData.compilerOptions.lib;
+        }
+
+        if (
+          hasProp(baseData.compilerOptions, 'target') &&
+          hasProp(inputData?.compilerOptions, 'target')
+        ) {
+          delete baseData.compilerOptions.target;
+        }
+      }
+
       const outputData = merge(inputData ?? {}, baseData);
 
       // Remove `lib/**/*` and `lib`, which duplicate `lib*/**/*`
-      if (Array.isArray(outputData.exclude)) {
+      if (hasProp(outputData, 'exclude') && Array.isArray(outputData.exclude)) {
         const { exclude } = outputData;
 
         const hasLibStar = exclude.includes('lib*/**/*');
@@ -76,6 +85,7 @@ export const tsconfigModule = async ({
       // for optimal ESLinting, base config should compile all files and leave
       // exclusions to .eslintignore and tsconfig.build.json
       if (
+        hasProp(outputData, 'include') &&
         !initialFiles['tsconfig.json']?.includes('skuba/config/tsconfig.json')
       ) {
         delete outputData.include;
@@ -85,6 +95,7 @@ export const tsconfigModule = async ({
       if (
         firstRun &&
         type === 'package' &&
+        hasProp(outputData, 'compilerOptions') &&
         isObject(outputData.compilerOptions) &&
         !outputData.compilerOptions.removeComments
       ) {

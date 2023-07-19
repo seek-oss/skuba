@@ -13,15 +13,14 @@ Next steps:
 2. [ ] Create a new repository in the appropriate GitHub organisation.
 3. [ ] Add the repository to BuildAgency;
        see [Builds at SEEK] for more information.
-4. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
-       see the [Codex] documentation for more information.
-5. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
+4. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
        see the [Gantry] documentation for more information.
-6. [ ] Push local commits to the upstream GitHub branch.
-7. [ ] Configure [GitHub repository settings].
-8. [ ] Keep dependencies up to date with [Renovate];
-       request installation in [SEEK-Jobs/renovate].
-9. [ ] Delete this checklist 😌.
+5. [ ] Push local commits to the upstream GitHub branch.
+6. [ ] Configure [GitHub repository settings].
+7. [ ] Delete this checklist 😌.
+
+[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 
 ## Design
 
@@ -101,12 +100,7 @@ TODO: add support links for the prod environment.
 - Splunk logs
 -->
 
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
 [codedeploy]: https://docs.aws.amazon.com/codedeploy
-[codex]: https://codex.ssod.skinfra.xyz/docs
 [express]: https://expressjs.com
-[gantry]: https://gantry.ssod.skinfra.xyz
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
-[renovate]: https://github.com/apps/renovate
-[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
+[gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
 [technology strategy]: https://tech-strategy.ssod.skinfra.xyz

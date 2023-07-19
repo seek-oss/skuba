@@ -1,7 +1,9 @@
 import * as Buildkite from '../../../../api/buildkite';
-import type { PrettierOutput } from '../../../../cli/adapter/prettier';
+import type { PrettierOutput } from '../../../adapter/prettier';
 
-export const createPrettierAnnotations = (prettier: PrettierOutput): string[] =>
+export const createPrettierAnnotations = (
+  prettier: PrettierOutput,
+): string[] =>
   !prettier.ok
     ? [
         '**Prettier**',

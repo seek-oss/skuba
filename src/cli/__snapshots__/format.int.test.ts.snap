@@ -3,14 +3,15 @@
 exports[`fixable 1`] = `
 "
 ESLint
-Processed 2 files in <random>s.
+Processed 4 files in <random>s.
 
 Prettier
-Processed 6 files in <random>s.
-Formatted 3 files:
+Processed 8 files in <random>s.
+Formatted 4 files:
 b.md
 c.json
 d.js
+package.json
 "
 `;
 
@@ -36,7 +37,7 @@ b.md
 c.json
 ------
 @@ -2,3 +2,3 @@
-    \\"key\\": \\"value\\"
+    "key": "value"
 -   }
 + }
 
@@ -62,10 +63,8 @@ Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 10 files.
+Discovered 9 files.
 Formatting files...
-.eslintcache
-  parser: -
 .eslintignore
   parser: -
 .gitignore
@@ -117,7 +116,7 @@ Processed 2 files in <random>s.
   8:3  error  Unexpected console statement  no-console
 
 <random>/d.js
-  1:0  error  Parsing error: Declaration or statement expected
+  1:0  error  Parsing error: Unexpected token (1:0)
 
 ✖ 2 problems (2 errors, 0 warnings)
 

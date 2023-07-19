@@ -4,7 +4,7 @@ image: '{{values "prodAccountId"}}.dkr.ecr.<%- region %>.amazonaws.com/{{values 
 service: '<%- serviceName %>'
 
 # TODO: enable Datadog agent
-# https://gantry.ssod.skinfra.xyz/docs/v1/resources/service.html#datadogSecretId
+# https://backstage.myseek.xyz/docs/default/component/gantry/v1/reference/resources/service/#datadogSecretId
 # datadogSecretId: arn:aws:secretsmanager:<%- region %>:<aws-account-id>:secret:<secret-name>
 
 tags:
@@ -13,7 +13,7 @@ tags:
   # seek:data:consumers: internal
   # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdatatypes
   # seek:data:types:restricted: job-ads
-  seek:env:label: '{{.Environment}}'
+  seek:env:label: '{{values "environment"}}'
   seek:env:production: '{{values "isProduction"}}'
   seek:owner:team: '<%- teamName %>'
   seek:source:sha: '{{.CommitSHA}}'

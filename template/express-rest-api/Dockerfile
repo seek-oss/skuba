@@ -17,7 +17,7 @@ RUN yarn build
 
 ###
 
-FROM gcr.io/distroless/nodejs:16 AS runtime
+FROM --platform=${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs:18 AS runtime
 
 WORKDIR /workdir
 

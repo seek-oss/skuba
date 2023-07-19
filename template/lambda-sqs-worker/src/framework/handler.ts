@@ -1,23 +1,43 @@
-import { Logger } from '@seek/logger';
-import { Context } from 'aws-lambda';
+import { datadog } from 'datadog-lambda-js';
 
-import { contextLogger } from 'src/framework/logging';
+import { config } from 'src/config';
+import { logger, loggerContext } from 'src/framework/logging';
+
+interface LambdaContext {
+  awsRequestId: string;
+}
+
+type Handler<Event, Output> = (
+  event: Event,
+  ctx: LambdaContext,
+) => Promise<Output>;
+
+/**
+ * Conditionally applies the Datadog wrapper to a Lambda handler.
+ *
+ * This also "fixes" its broken type definitions.
+ */
+const withDatadog = <Event, Output = unknown>(
+  fn: Handler<Event, Output>,
+): Handler<Event, Output> =>
+  // istanbul ignore next
+  config.metrics ? (datadog(fn) as Handler<Event, Output>) : fn;
 
 export const createHandler = <Event, Output = unknown>(
-  fn: (event: Event, ctx: { logger: Logger }) => Promise<Output>,
+  fn: (event: Event) => Promise<Output>,
 ) =>
-  async function lambdaHandler(event: Event, ctx: Context) {
-    const logger = contextLogger(ctx);
+  withDatadog<Event>((event, { awsRequestId }) =>
+    loggerContext.run({ awsRequestId }, async () => {
+      try {
+        const output = await fn(event);
 
-    try {
-      const output = await fn(event, { logger });
+        logger.debug('Function succeeded');
 
-      logger.info('request');
+        return output;
+      } catch (err) {
+        logger.error({ err }, 'Function failed');
 
-      return output;
-    } catch (err) {
-      logger.error({ err }, 'request');
-
-      throw new Error('invoke error');
-    }
-  };
+        throw new Error('Function failed');
+      }
+    }),
+  );

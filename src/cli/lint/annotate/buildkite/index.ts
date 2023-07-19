@@ -1,7 +1,7 @@
 import * as Buildkite from '../../../../api/buildkite';
-import type { ESLintOutput } from '../../../../cli/adapter/eslint';
-import type { PrettierOutput } from '../../../../cli/adapter/prettier';
-import type { StreamInterceptor } from '../../../../cli/lint/external';
+import type { ESLintOutput } from '../../../adapter/eslint';
+import type { PrettierOutput } from '../../../adapter/prettier';
+import type { StreamInterceptor } from '../../../lint/external';
 
 import { createEslintAnnotations } from './eslint';
 import { createPrettierAnnotations } from './prettier';
@@ -17,7 +17,7 @@ export const createBuildkiteAnnotations = async (
     return;
   }
 
-  const buildkiteOutput: string = [
+  const buildkiteOutput = [
     '`skuba lint` found issues that require triage:',
     ...createEslintAnnotations(eslint),
     ...createPrettierAnnotations(prettier),

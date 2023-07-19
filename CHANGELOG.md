@@ -1,5 +1,854 @@
 # skuba
 
+## 7.0.1
+
+### Patch Changes
+
+- **test:** Fix Prettier snapshot formatting ([#1220](https://github.com/seek-oss/skuba/pull/1220))
+
+  Jest is not yet compatible with Prettier 3, causing snapshot updates to fail with the following error:
+
+  ```typescript
+  TypeError: prettier.resolveConfig.sync is not a function
+      at runPrettier (node_modules/jest-snapshot/build/InlineSnapshots.js:308:30)
+  ```
+
+  Our [Jest preset](https://seek-oss.github.io/skuba/docs/development-api/jest.html#mergepreset) now implements custom formatting as a workaround until [jestjs/jest#14305](https://github.com/jestjs/jest/issues/14305) is resolved.
+
+  If you do not use our preset, you can temporarily disable formatting in your `jest.config.ts` then manually run `skuba format` after updating snapshots:
+
+  ```diff
+  export default {
+  + prettierPath: null,
+  }
+  ```
+
+## 7.0.0
+
+### Major Changes
+
+- **deps:** tsconfig-seek 2 ([#1175](https://github.com/seek-oss/skuba/pull/1175))
+
+  This change sets the [`noUncheckedIndexedAccess`](https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess) compiler option to `true` by default.
+
+  This will flag possible issues with indexed access of arrays and records.
+
+  Before:
+
+  ```ts
+  const a: string[] = [];
+  const b = a[0];
+  //    ^? const b: string
+  ```
+
+  After:
+
+  ```ts
+  const a: string[] = [];
+  const b = a[0];
+  //    ^? const b: string | undefined
+  ```
+
+  Unfortunately, this change is a double edged sword as your previous code which may look like this may now be invalid.
+
+  ```ts
+  if (list.length === 3) {
+    const b = list[1];
+    //    ^? const b: string | undefined
+  }
+  ```
+
+  To address this you will need to also explicitly check the index you are accessing.
+
+  ```ts
+  if (list.length === 3 && list[1]) {
+    const b = list[1];
+    //    ^? const b: string
+  }
+  ```
+
+  This may seem like overkill, however, when you consider that Javascript will also allow this it may make sense
+
+  ```ts
+  const a: string[] = [];
+  a[1000] = 'foo';
+  console.log(a.length); // 1001
+  ```
+
+  You can override this setting in your project's `tsconfig.json` by setting it to false.
+
+  ```json
+  {
+    "compilerOptions": {
+      "noUncheckedIndexedAccess": false
+    }
+  }
+  ```
+
+- **deps:** Require Node.js 18.12+ ([#1206](https://github.com/seek-oss/skuba/pull/1206))
+
+  Node.js 16 will reach end of life by September 2023. We have aligned our version support with [sku 12](https://github.com/seek-oss/sku/releases/tag/sku%4012.0.0).
+
+  Consider upgrading the Node.js version for your project across:
+
+  - `.nvmrc`
+  - `package.json#/engines/node`
+  - `@types/node` package version
+  - CI/CD configuration (`.buildkite/pipeline.yml`, `Dockerfile`, etc.)
+
+### Minor Changes
+
+- **deps:** esbuild 0.18 ([#1190](https://github.com/seek-oss/skuba/pull/1190))
+
+  `skuba build` will continue to infer `target` from `tsconfig.json` at this time. See the [esbuild release notes](https://github.com/evanw/esbuild/releases/tag/v0.18.0) for other details.
+
+- **format, lint:** Have Prettier respect `.gitignore` ([#1217](https://github.com/seek-oss/skuba/pull/1217))
+
+  This aligns with the behaviour of the [Prettier 3.0 CLI](https://prettier.io/blog/2023/07/05/3.0.0.html#cli).
+
+- **deps:** TypeScript 5.1 ([#1183](https://github.com/seek-oss/skuba/pull/1183))
+
+  This major release includes breaking changes. See the [TypeScript 5.1](https://devblogs.microsoft.com/typescript/announcing-typescript-5-1/) announcement for more information.
+
+- **deps:** Prettier 3.0 ([#1202](https://github.com/seek-oss/skuba/pull/1202))
+
+  See the [release notes](https://prettier.io/blog/2023/07/05/3.0.0.html) for more information.
+
+### Patch Changes
+
+- **template:** Require Node.js 18.12+ ([#1206](https://github.com/seek-oss/skuba/pull/1206))
+
+- **template/oss-npm-package:** Set `publishConfig.provenance` to `true` ([#1182](https://github.com/seek-oss/skuba/pull/1182))
+
+  See <https://github.blog/2023-04-19-introducing-npm-package-provenance/> for more information.
+
+- **template/lambda-sqs-worker:** Change some info logs to debug ([#1178](https://github.com/seek-oss/skuba/pull/1178))
+
+  The "Function succeeded" log message was changed from `info` to `debug` to reduce the amount of unnecessary logs in production. The message will still be logged in dev environments but at a `debug` level.
+
+- **tsconfig:** Turn off [`noUnusedLocals`](https://www.typescriptlang.org/tsconfig#noUnusedLocals) and [`noUnusedParameters`](https://www.typescriptlang.org/tsconfig#noUnusedParameters) ([#1181](https://github.com/seek-oss/skuba/pull/1181))
+
+  [SEEK's ESLint config](https://github.com/seek-oss/eslint-config-seek) has a [rule](https://eslint.org/docs/latest/rules/no-unused-vars) which works for both function and types. We do not need both tools to do the same thing and ESLint has better support for ignoring files if needed.
+
+- **lint:** Resolve Git root before attempting to autofix ([#1215](https://github.com/seek-oss/skuba/pull/1215))
+
+- **configure:** Resolve Git root before attempting to patch Renovate config ([#1215](https://github.com/seek-oss/skuba/pull/1215))
+
+- **template/lambda-sqs-worker:** Bump aws-sdk-client-mock to 3.0.0 ([#1197](https://github.com/seek-oss/skuba/pull/1197))
+
+  AWS SDK v3.363.0 shipped with breaking type changes.
+
+## 6.2.0
+
+### Minor Changes
+
+- **build, build-package:** Add a skuba config key named `assets` to copy assets to the output directory. ([#1163](https://github.com/seek-oss/skuba/pull/1163))
+
+  In your `package.json`:
+
+  ```diff
+   {
+     "skuba": {
+  +    "assets": [
+  +      "**/*.vocab/*translations.json"
+  +    ],
+       "entryPoint": "src/index.ts",
+       "type": "package",
+     }
+   }
+  ```
+
+  This will instruct skuba to copy the files matching the list of globs to the output directory/ies, preserving the directory structure from the source:
+
+  - for `skuba build-package` it will copy them to `lib-commonjs` and `lib-es2015`
+  - for `skuba build` it will copy them to `tsconfig.json#/compilerOptions.outDir` (`lib` by default)
+
+### Patch Changes
+
+- **template:** Include manifest files in CODEOWNERS ([#1162](https://github.com/seek-oss/skuba/pull/1162))
+
+  Our templates previously excluded `package.json` and `yarn.lock` from CODEOWNERS. This was intended to support advanced workflows such as auto-merging PRs and augmenting GitHub push notifications with custom tooling. However, we are reverting this configuration as it is more common for SEEKers to prefer a simpler CODEOWNERS-based workflow.
+
+  This will not affect existing projects. If you create a new project and wish to restore the previous behaviour, you can manually extend `.github/CODEOWNERS`:
+
+  ```diff
+  * @<%- ownerName %>
+
+  + # Configured by Renovate
+  + package.json
+  + yarn.lock
+  ```
+
+- **deps:** Bump @octokit dependencies ([#1174](https://github.com/seek-oss/skuba/pull/1174))
+
+  This should resolve the following compiler error:
+
+  ```bash
+  error TS2339: Property 'annotations' does not exist on type '{}'.
+  ```
+
+- **deps:** ts-jest ^29.1.0 ([#1166](https://github.com/seek-oss/skuba/pull/1166))
+
+  This resolves the following `skuba test` warning:
+
+  ```console
+  Version 5.0.2 of typescript installed has not been tested with ts-jest. If you're experiencing issues, consider using a supported version (>=4.3.0 <5.0.0-0). Please do not report issues in ts-jest if you are using unsupported versions.
+  ```
+
+- **template/\*-rest-api:** Remove Gantry `ignoreAlarms` override ([#1160](https://github.com/seek-oss/skuba/pull/1160))
+
+  This issue has been resolved in Gantry v2.2.0; see its [release notes](https://github.com/SEEK-Jobs/gantry/releases/tag/v2.2.0) for more information.
+
+  ```diff
+  deployment:
+  - # SEEK-Jobs/gantry#488
+  - ignoreAlarms: true
+  ```
+
+## 6.1.0
+
+### Minor Changes
+
+- **deps:** eslint-config-skuba 2 ([#1155](https://github.com/seek-oss/skuba/pull/1155))
+
+  This major upgrade removes [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) due to configuration issues experienced on non-React projects.
+
+  Raise a GitHub issue or send us a Slack message if this negatively affects your project.
+
+- **start:** Add `http.Server` support ([#1159](https://github.com/seek-oss/skuba/pull/1159))
+
+  `skuba start` can now be used to create a live-reloading server for `http.Server` instances. See the [`skuba start` documentation](https://seek-oss.github.io/skuba/docs/cli/run.html#skuba-start) for more information.
+
+- **deps:** eslint-config-seek 11 ([#1155](https://github.com/seek-oss/skuba/pull/1155))
+
+  This major upgrade enforces [consistent type imports and exports](https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/).
+
+  ```diff
+  - import { Context } from 'aws-lambda';
+  + import type { Context } from 'aws-lambda';
+  ```
+
+  `skuba format` will modify your imports and exports to be consistent with linting rules. These changes are automatically committed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
+## 6.0.2
+
+### Patch Changes
+
+- **lint:** Avoid patching Renovate config when it already extends a `SEEK-Jobs` or `seekasia` preset ([#1132](https://github.com/seek-oss/skuba/pull/1132))
+
+## 6.0.1
+
+### Patch Changes
+
+- **lint:** Avoid committing `.npmrc` changes ([#1129](https://github.com/seek-oss/skuba/pull/1129))
+
+  `skuba lint` can automatically commit codegen changes if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project. Previously we made sure to exclude a new `.npmrc` file from the commit, but we now exclude changes to an existing `.npmrc` too.
+
+## 6.0.0
+
+### Major Changes
+
+- **deps:** Require Node.js 16.11+ ([#1124](https://github.com/seek-oss/skuba/pull/1124))
+
+  Node.js 14 will reach end of life by April 2023.
+
+  Consider upgrading the Node.js version for your project across:
+
+  - `.nvmrc`
+  - `package.json#/engines/node`
+  - CI/CD configuration (`.buildkite/pipeline.yml`, `Dockerfile`, etc.)
+
+### Minor Changes
+
+- **format, lint:** Prepend baseline SEEK `renovate-config` preset ([#1117](https://github.com/seek-oss/skuba/pull/1117))
+
+  `skuba format` and `skuba lint` will now automatically prepend an appropriate baseline preset if your project is configured with a `SEEK-Jobs` or `seekasia` remote:
+
+  ```diff
+  // SEEK-Jobs
+  {
+  - extends: ['seek'],
+  + extends: ['local>seek-jobs/renovate-config', 'seek'],
+  }
+
+  // seekasia
+  {
+  - extends: ['seek'],
+  + extends: ['local>seekasia/renovate-config', 'seek'],
+  }
+  ```
+
+  Renovate requires this new configuration to reliably access private SEEK packages. Adding the preset should fix recent issues where Renovate would open then autoclose pull requests, and report ⚠ Dependency Lookup Warnings ⚠.
+
+  See [SEEK-Jobs/renovate-config](https://github.com/SEEK-Jobs/renovate-config) and [seekasia/renovate-config](https://github.com/seekasia/renovate-config) for more information.
+
+- **format, lint, template/\*-rest-api:** Set `keepAliveTimeout` to 31 seconds to prevent HTTP 502s ([#1111](https://github.com/seek-oss/skuba/pull/1111))
+
+  The default Node.js server keep-alive timeout is set to 5 seconds. However, the Gantry default ALB idle timeout is 30 seconds. This would lead to the occasional issues where the sidecar would throw `proxyStatus=502` errors. AWS recommends setting an application timeout larger than the ALB idle timeout.
+
+  `skuba format` and `skuba lint` will now automatically append a keep-alive timeout to a typical `src/listen.ts`:
+
+  ```diff
+  // With a listener callback
+  const listener = app.listen(config.port, () => {
+    const address = listener.address();
+  })
+  +
+  + listener.keepAliveTimeout = 31000;
+
+  // Without a listener callback
+  - app.listen(config.port);
+  + const listener = app.listen(config.port);
+  +
+  + listener.keepAliveTimeout = 31000;
+  ```
+
+  A more detailed explanation can be found in the below links:
+
+  1. <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout>
+  2. <https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout>
+
+- **format, lint:** Bundle `eslint-plugin-yml` ([#1107](https://github.com/seek-oss/skuba/pull/1107))
+
+  [eslint-plugin-yml](https://github.com/ota-meshi/eslint-plugin-yml) is now supported on `skuba format` and `skuba lint`. While the default configuration should be unobtrusive, you can opt in to stricter rules in your `.eslintrc.js`:
+
+  ```diff
+  module.exports = {
+    extends: ['skuba'],
+  + overrides: [
+  +   {
+  +     files: ['my/strict/config.yaml'],
+  +     rules: {
+  +       'yml/sort-keys': 'error',
+  +     },
+  +   },
+  + ],
+  };
+  ```
+
+  YAML files with non-standard syntax may fail ESLint parsing with this change. Gantry resource files should be excluded by default due to their custom templating syntax, and you can list additional exclusions in your `.eslintignore`.
+
+- **start:** Add Fastify support ([#1101](https://github.com/seek-oss/skuba/pull/1101))
+
+  `skuba start` can now be used to create a live-reloading server for Fastify based projects. See the [`skuba start` documentation](https://seek-oss.github.io/skuba/docs/cli/run.html#skuba-start) for more information.
+
+- **format, lint:** Configure ESLint for `{cjs,cts,mjs,mts}` files ([#1126](https://github.com/seek-oss/skuba/pull/1126))
+
+- **lint:** Commit codegen updates ([#1078](https://github.com/seek-oss/skuba/pull/1078))
+
+  `skuba lint` can locally codegen updates to ignore files, module exports and Renovate configuration. These changes are now automatically committed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
+- **deps:** TypeScript 5.0 ([#1118](https://github.com/seek-oss/skuba/pull/1118))
+
+  This major release includes breaking changes. See the [TypeScript 5.0](https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/) announcement for more information.
+
+### Patch Changes
+
+- **init:** Include baseline SEEK `renovate-config` preset ([#1117](https://github.com/seek-oss/skuba/pull/1117))
+
+- **template/\*-package:** Require Node.js 16.11+ ([#1124](https://github.com/seek-oss/skuba/pull/1124))
+
+- **lint:** Delete `Dockerfile-incunabulum` ([#1078](https://github.com/seek-oss/skuba/pull/1078))
+
+  `skuba lint` may have accidentally committed this internal file to source control in prior versions. It is now automatically removed if you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled on your project.
+
+## 5.1.1
+
+### Patch Changes
+
+- **lint:** Exclude internal files from autofix commits ([#1074](https://github.com/seek-oss/skuba/pull/1074))
+
+  `skuba lint` now avoids committing the following internal files in a [GitHub autofix](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes):
+
+  - `.npmrc`
+  - `Dockerfile-incunabulum`
+
+## 5.1.0
+
+### Minor Changes
+
+- **deps:** Prettier 2.8 ([#1056](https://github.com/seek-oss/skuba/pull/1056))
+
+  See the [release notes](https://prettier.io/blog/2022/11/23/2.8.0.html) for more information.
+
+- **deps:** TypeScript 4.9 ([#1046](https://github.com/seek-oss/skuba/pull/1046))
+
+  This major release includes breaking changes. See the [TypeScript 4.9](https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/) announcement for more information.
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Declare `dd-trace` dependency ([#1051](https://github.com/seek-oss/skuba/pull/1051))
+
+  This resolves a `Runtime.ImportModuleError` that occurs if this transitive dependency is not installed:
+
+  ```console
+  Runtime.ImportModuleError
+  Error: Cannot find module 'dd-trace'
+  ```
+
+  Alternatively, you can [configure the Datadog Serverless plugin](https://docs.datadoghq.com/serverless/libraries_integrations/plugin/#configuration-parameters) to bundle these dependencies via [Lambda layers](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html):
+
+  ```diff
+  serverless.yml
+
+  custom:
+    datadog:
+  -   addLayers: false
+  +   addLayers: true
+  ```
+
+  ```diff
+  package.json
+
+  {
+    "dependencies": {
+  -   "datadog-lambda-js: "x.y.z",
+  -   "dd-trace: "x.y.z"
+    },
+    "devDependencies": {
+  +   "datadog-lambda-js: "x.y.z",
+  +   "dd-trace: "x.y.z"
+    }
+  }
+  ```
+
+- **template/lambda-sqs-worker\*:** Bump Node.js version to 18 ([#1049](https://github.com/seek-oss/skuba/pull/1049))
+
+  This release contains some breaking changes to the Lambda runtime such as the removal of AWS SDK V2 in favour of AWS SDK V3. See the [AWS Lambda Node.js 18.x runtime announcement](https://aws.amazon.com/blogs/compute/node-js-18-x-runtime-now-available-in-aws-lambda/) for more information.
+
+- **template:** Prompt for target platform (`amd64` or `arm64`) ([#1041](https://github.com/seek-oss/skuba/pull/1041))
+
+- **template/lambda-sqs-worker\*:** Use single hyphen in `renovate-` branch name prefix ([#1050](https://github.com/seek-oss/skuba/pull/1050))
+
+- **deps:** esbuild ~0.16.0 ([#1062](https://github.com/seek-oss/skuba/pull/1062))
+
+- **template/\*-rest-api:** Replace `'{{.Environment}}'` with a custom `environment` Gantry value. ([#1065](https://github.com/seek-oss/skuba/pull/1065))
+
+- **lint:** Require package.json to be sorted ([#1048](https://github.com/seek-oss/skuba/pull/1048))
+
+## 5.0.1
+
+### Patch Changes
+
+- **jest:** Fix `isolatedModules` transform config ([#1036](https://github.com/seek-oss/skuba/pull/1036))
+
+- **deps:** eslint-config-skuba 1.2.0 ([#1035](https://github.com/seek-oss/skuba/pull/1035))
+
+  This introduces an autofix for the TS1205 compiler error.
+
+## 5.0.0
+
+### Major Changes
+
+- **test:** Remove default `src` module alias ([#987](https://github.com/seek-oss/skuba/pull/987))
+
+  Our Jest preset automatically registers your `tsconfig.json` paths as module aliases, but would previously fall back to the `src` alias if the option was omitted or failed to load. This default has now been removed.
+
+  This is not expected to affect most projects. If yours makes use of the `src` alias and its tests are now failing on imports like the following:
+
+  ```typescript
+  import { app } from 'src/app.ts';
+  ```
+
+  Ensure that you declare this path in a `tsconfig.json` located in your project root:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "paths": {
+  +     "src": ["src"]
+  +   }
+    },
+    "extends": "skuba/config/tsconfig.json"
+  }
+  ```
+
+- **build, test:** Default to isolated modules ([#987](https://github.com/seek-oss/skuba/pull/987))
+
+  Our Jest and TypeScript presets now enable [`isolatedModules`](https://www.typescriptlang.org/tsconfig#isolatedModules) by default. Your Jest tests should start quicker, consume less resources, and no longer get stuck on pesky type errors. This should not compromise the type safety of your project as `skuba lint` is intended to type check all production and testing code.
+
+  If your project contains files without imports and exports like `jest.setup.ts`, you can add an empty export statement to them to placate the TypeScript compiler:
+
+  ```console
+  jest.setup.ts(1,1): error TS1208: 'jest.setup.ts' cannot be compiled under '--isolatedModules' because it is considered a global script file. Add an import, export, or an empty 'export {}' statement to make it a module.
+  ```
+
+  ```diff
+  process.env.ENVIRONMENT = 'test';
+
+  + export {};
+  ```
+
+  If you previously enabled `isolatedModules` via the `globals` option in your Jest config, this is no longer functional due to syntax changes in ts-jest 29. You should be able to rely on our default going forward. `skuba configure` can attempt to clean up the stale option, or you can remove it from your `jest.config.ts` manually:
+
+  ```diff
+  export default Jest.mergePreset({
+  - globals: {
+  -   'ts-jest': {
+  -     // seek-oss/skuba#626
+  -     isolatedModules: true,
+  -   },
+  - },
+    // Rest of config
+  });
+  ```
+
+  Isolated modules are incompatible with certain language features like `const enum`s. We recommend migrating away from such features as they are not supported by the broader ecosystem, including transpilers like Babel and esbuild. If your project is not yet ready for isolated modules, you can override the default in your `tsconfig.json`:
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "isolatedModules": false
+    },
+    "extends": "skuba/config/tsconfig.json"
+  }
+  ```
+
+### Minor Changes
+
+- **format:** Sort package.json ([#1016](https://github.com/seek-oss/skuba/pull/1016))
+
+- **build:** Add experimental esbuild support ([#681](https://github.com/seek-oss/skuba/pull/681))
+
+  You can now build your project with [esbuild](https://esbuild.github.io/). Note that this integration is still experimental, only includes the bare minimum to supplant a basic `tsc`-based build, and is not guaranteed to match `tsc` output. See the [esbuild deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/esbuild.html) for more information.
+
+  To opt in, modify your `package.json`:
+
+  ```diff
+  {
+    "skuba": {
+  +   "build": "esbuild",
+      "template": null
+    }
+  }
+  ```
+
+### Patch Changes
+
+- **configure:** Fix `tsconfig.json#/compilerOptions/lib` clobbering ([#1031](https://github.com/seek-oss/skuba/pull/1031))
+
+- **template:** Bump greeter and API templates to Node.js 18 ([#1011](https://github.com/seek-oss/skuba/pull/1011))
+
+  Node.js 18 is now in active LTS. The Lambda templates are stuck on Node.js 16 until the new AWS Lambda runtime is released.
+
+- **template/lambda-sqs-worker-cdk:** Replace Runtypes with Zod as default schema validator ([#984](https://github.com/seek-oss/skuba/pull/984))
+
+- **template/lambda-sqs-worker:** Replace Runtypes with Zod as default schema validator ([#984](https://github.com/seek-oss/skuba/pull/984))
+
+- **configure:** Fix package version lookups ([#974](https://github.com/seek-oss/skuba/pull/974))
+
+  This resolves the following error:
+
+  ```console
+  Error: Package "xyz" does not have a valid package.json manifest
+  ```
+
+- **configure:** Fix `jest.setup.js` clobbering ([#1031](https://github.com/seek-oss/skuba/pull/1031))
+
+- **template/lambda-sqs-worker\*:** Adjust Buildkite pipelines for new `renovate--` branch name prefix ([#1022](https://github.com/seek-oss/skuba/pull/1022))
+
+  See the [pull request](https://github.com/seek-oss/rynovate/pull/76) that aligns our Renovate presets for more information.
+
+- **template:** Support AMD64 Docker builds via `BUILDPLATFORM` ([#1021](https://github.com/seek-oss/skuba/pull/1021))
+
+  See the [Docker documentation](https://docs.docker.com/build/building/multi-platform/#building-multi-platform-images) for more information. Note that this does not allow you to build on AMD64 hardware then deploy to ARM64 hardware and vice versa. It is provided for convenience if you need to revert to an AMD64 workflow and/or build and run an image on local AMD64 hardware.
+
+- **template/koa-rest-api:** Replace Runtypes with Zod as default schema validator ([#984](https://github.com/seek-oss/skuba/pull/984))
+
+## 4.4.1
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Switch to modern Datadog integration ([#965](https://github.com/seek-oss/skuba/pull/965))
+
+  Datadog's CloudWatch integration and the associated [`createCloudWatchClient`](https://github.com/seek-oss/datadog-custom-metrics/pull/177) function from [`seek-datadog-custom-metrics`](https://github.com/seek-oss/datadog-custom-metrics) have been deprecated. We recommend [Datadog's Serverless Framework Plugin](https://docs.datadoghq.com/serverless/libraries_integrations/plugin/) along with their first-party [datadog-lambda-js](https://github.com/DataDog/datadog-lambda-js) and [dd-trace](https://github.com/DataDog/dd-trace-js) npm packages.
+
+- **deps:** Drop `package-json` ([#962](https://github.com/seek-oss/skuba/pull/962))
+
+  This circumvents the [following TypeScript compilation error](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/62111) on a clean install:
+
+  ```console
+  Error: node_modules/@types/cacheable-request/index.d.ts(0,0): error TS2709: Cannot use namespace 'ResponseLike' as a type.
+  ```
+
+  If you run into this issue elsewhere in your project, you can temporarily work around it with a [resolution](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) in your `package.json`:
+
+  ```json
+  {
+    "resolutions": {
+      "@types/responselike": "1.0.0"
+    }
+  }
+  ```
+
+- **template/koa-rest-api:** Drop `uuid` ([#964](https://github.com/seek-oss/skuba/pull/964))
+
+  V4 UUIDs can be generated using the built-in [`crypto.randomUUID()`](https://nodejs.org/docs/latest-v16.x/api/crypto.html#cryptorandomuuidoptions) function starting from Node.js 14.17. This is analogous to the [`Crypto.randomUUID()`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID) Web API.
+
+  ```diff
+  - import { v4 as randomUUID } from 'uuid';
+  + import { randomUUID } from 'crypto';
+  ```
+
+## 4.4.0
+
+### Minor Changes
+
+- **deps:** Jest 29 ([#953](https://github.com/seek-oss/skuba/pull/953))
+
+  This major release includes breaking changes. See the [announcement post](https://jestjs.io/blog/2022/08/25/jest-29) for more information.
+
+  The `collectCoverageOnlyFrom` configuration option has been removed, and the default snapshot format has been simplified:
+
+  ```diff
+  - Expected: \\"a\\"
+  + Expected: "a"
+
+  - Object {
+  -   Array []
+  - }
+  + {
+  +   []
+  + }
+  ```
+
+- **deps:** eslint-plugin-jest 27 ([#959](https://github.com/seek-oss/skuba/pull/959))
+
+  This major release includes breaking changes. See the [release note](https://github.com/jest-community/eslint-plugin-jest/releases/tag/v27.0.0) for more information.
+
+  The `jest/no-alias-methods` rule is now [enforced](https://github.com/jest-community/eslint-plugin-jest/pull/1221) and [autofixed](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) to discourage usage of alias methods that will be [removed in Jest 30](https://github.com/facebook/jest/issues/13164).
+
+  ```diff
+  - .toBeCalled()
+  + .toHaveBeenCalled()
+  ```
+
+- **configure, init:** Format `package.json` with [sort-package-json](https://github.com/keithamus/sort-package-json) ([#951](https://github.com/seek-oss/skuba/pull/951))
+
+- **deps:** TypeScript 4.8 ([#954](https://github.com/seek-oss/skuba/pull/954))
+
+  This major release includes breaking changes. See the [TypeScript 4.8](https://devblogs.microsoft.com/typescript/announcing-typescript-4-8/) announcement for more information.
+
+### Patch Changes
+
+- **configure, template:** Ignore linting on `.cdk.staging` directory ([#957](https://github.com/seek-oss/skuba/pull/957))
+
+- **configure, template:** Ignore linting on `cdk.out` directory ([#940](https://github.com/seek-oss/skuba/pull/940))
+
+- **template/\*-npm-package:** Use SSH scheme in repository URL ([#955](https://github.com/seek-oss/skuba/pull/955))
+
+  We have changed the templated format of the `package.json#repository/url` field. This may resolve `skuba release` errors that reference [Git password authentication is shutting down](https://github.blog/changelog/2021-08-12-git-password-authentication-is-shutting-down/) on the GitHub Blog.
+
+  ```diff
+  - git+https://github.com/org/repo.git
+  + git+ssh://git@github.com/org/repo.git
+  ```
+
+- **configure, template:** Allow `.idea` and `.vscode` ignore overrides ([#956](https://github.com/seek-oss/skuba/pull/956))
+
+  You can now append lines like `!.vscode/launch.json` to your ignore files to allow specific editor files to be committed, formatted and/or linted.
+
+## 4.3.1
+
+### Patch Changes
+
+- **deps:** jest-watch-typeahead ^2.0.0 ([#925](https://github.com/seek-oss/skuba/pull/925))
+
+- **template/\*-rest-api:** seek-jobs/gantry v2.0.0 ([#935](https://github.com/seek-oss/skuba/pull/935))
+
+- **template/lambda-sqs-worker:** Remove tty disable from pipeline ([#918](https://github.com/seek-oss/skuba/pull/918))
+
+- **test:** Prefer verbose failure message in execution error annotations ([#910](https://github.com/seek-oss/skuba/pull/910))
+
+- **template/lambda-sqs-worker:** Remove unnecessary IAM permission ([#908](https://github.com/seek-oss/skuba/pull/908))
+
+- **template:** Fix README link to ARM64 guide ([#913](https://github.com/seek-oss/skuba/pull/913))
+
+- **template/\*-rest-api:** Fix Gantry documentation links ([#931](https://github.com/seek-oss/skuba/pull/931))
+
+## 4.3.0
+
+### Minor Changes
+
+- **test:** Add [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead) plugin ([#893](https://github.com/seek-oss/skuba/pull/893))
+
+  This enables typeahead suggestions when filtering by file or test name in watch mode.
+
+- **Git:** Add [fastForwardBranch](https://seek-oss.github.io/skuba/docs/development-api/git.html#fastforwardbranch) function ([#882](https://github.com/seek-oss/skuba/pull/882))
+
+- **deps:** TypeScript 4.7 ([#877](https://github.com/seek-oss/skuba/pull/877))
+
+  This major release includes breaking changes. See the [TypeScript 4.7](https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/) announcement for more information.
+
+  While ECMAScript Module support for Node.js is now stable in TypeScript, other aspects of our toolchain have not caught up yet; notably, Node.js still lacks stable APIs for Jest to implement its usual suite of mocking capabilities. We are holding off on recommending existing repositories to make the switch and on providing reference implementations via our templates. As it stands, migrating from CJS to ESM is still an arduous exercise in rewriting import statements and restructuring mocks and test suites at the bare minimum.
+
+- **GitHub:** Add functions to create and upload verified commits using the GitHub GraphQL API ([#882](https://github.com/seek-oss/skuba/pull/882))
+
+  See our [GitHub API documentation](https://seek-oss.github.io/skuba/docs/development-api/github.html) for more information.
+
+- **deps:** Prettier 2.7 ([#899](https://github.com/seek-oss/skuba/pull/899))
+
+  See the [release notes](https://prettier.io/blog/2022/06/14/2.7.0.html) for more information.
+
+### Patch Changes
+
+- **test:** Improve file detection for GitHub annotations ([#885](https://github.com/seek-oss/skuba/pull/885))
+
+- **deps:** package-json ^7.0.0 ([#903](https://github.com/seek-oss/skuba/pull/903))
+
+  Resolves [SNYK-JS-GOT-2932019](https://security.snyk.io/vuln/SNYK-JS-GOT-2932019).
+
+- **template/\*-rest-api:** seek-jobs/gantry v1.8.1 ([#887](https://github.com/seek-oss/skuba/pull/887))
+
+- **template/\*:** Remove `.me` files ([#902](https://github.com/seek-oss/skuba/pull/902))
+
+  SEEK is moving away from Codex to off-the-shelf software powered by Backstage `catalog-info.yaml` files.
+
+  At the moment we're only asking teams to document their systems, which typically span across multiple repositories. We may add `catalog-info.yaml` files back to the templates if there's a need for teams to document their components at a repository level.
+
+- **lint:** Use GitHub GraphQL API to upload verified autofix commits ([#882](https://github.com/seek-oss/skuba/pull/882))
+
+- **template:** Use ARM64 architecture ([#873](https://github.com/seek-oss/skuba/pull/873))
+
+  We now recommend building and running projects on ARM64 hardware for greater cost efficiency. This requires a Graviton-based Buildkite cluster; see our [ARM64 guide](https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html) for more information.
+
+## 4.2.2
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Avoid mutation of logger context ([#879](https://github.com/seek-oss/skuba/pull/879))
+
+  We now perform a shallow copy when retrieving the logger context from `AsyncLocalStorage`.
+
+  ```diff
+  - mixin: () => loggerContext.getStore() ?? {},
+  + mixin: () => ({ ...loggerContext.getStore() }),
+  ```
+
+## 4.2.1
+
+### Patch Changes
+
+- **template/private-npm-package:** Use `npm2` build agent queue ([#843](https://github.com/seek-oss/skuba/pull/843))
+
+- **lint, test:** Set timeout for Buildkite and GitHub integrations ([#835](https://github.com/seek-oss/skuba/pull/835))
+
+  Transient network failures can impact annotations and autofixes. We now specify a 30 second timeout for these integration features to prevent them from hanging and indefinitely preoccupying your build agents.
+
+- **template:** Time out Buildkite test steps after 10 minutes ([#842](https://github.com/seek-oss/skuba/pull/842))
+
+  Successful testing and linting should complete within this window. This timeout prevents commands from hanging and indefinitely preoccupying your Buildkite agents.
+
+  ```diff
+  steps:
+    - label: 🧪 Test & Lint
+  +   timeout_in_minutes: 10
+  ```
+
+- **cli:** Make warning logs more verbose ([#826](https://github.com/seek-oss/skuba/pull/826))
+
+- **template/lambda-sqs-worker:** Change deployment method to `direct` ([#868](https://github.com/seek-oss/skuba/pull/868))
+
+- **template/koa-rest-api:** Use [AsyncLocalStorage](https://nodejs.org/docs/latest-v16.x/api/async_context.html#asynchronous-context-tracking) to track logger context ([#864](https://github.com/seek-oss/skuba/pull/864))
+
+  We now employ [RequestLogging.createContextStorage](https://github.com/seek-oss/koala/blob/master/src/requestLogging/README.md#context-logging) to thread logging context through the middleware stack of your Koa application. This enables use of a singleton `logger` instance instead of manually propagating Koa context and juggling `rootLogger`s and `contextLogger`s.
+
+  Before:
+
+  ```typescript
+  import createLogger from '@seek/logger';
+  import Koa, { Context } from 'koa';
+  import { RequestLogging } from 'seek-koala';
+
+  const rootLogger = createLogger();
+
+  const contextLogger = (ctx: Context) =>
+    rootLogger.child(RequestLogging.contextFields(ctx));
+
+  const app = new Koa().use((ctx) => {
+    rootLogger.info('Has no context');
+
+    contextLogger(ctx).info('Has context');
+  });
+  ```
+
+  After:
+
+  ```typescript
+  import createLogger from '@seek/logger';
+  import Koa from 'koa';
+  import { RequestLogging } from 'seek-koala';
+
+  const { createContextMiddleware, mixin } =
+    RequestLogging.createContextStorage();
+
+  const contextMiddleware = createContextMiddleware();
+
+  const logger = createLogger({ mixin });
+
+  const app = new Koa().use(contextMiddleware).use((ctx) => {
+    logger.info('Has context');
+  });
+  ```
+
+- **template/lambda-sqs-worker:** Use [AsyncLocalStorage](https://nodejs.org/docs/latest-v16.x/api/async_context.html#asynchronous-context-tracking) to track logger context ([#871](https://github.com/seek-oss/skuba/pull/871))
+
+  We now employ this Node.js API to thread logging context through the handler of your Lambda function. This enables use of a singleton `logger` instance instead of manually propagating Lambda context and juggling `rootLogger`s and `contextLogger`s, and is equivalent to #864.
+
+  Before:
+
+  ```typescript
+  import createLogger from '@seek/logger';
+  import { Context } from 'aws-lambda';
+
+  const rootLogger = createLogger();
+
+  const contextLogger = ({ awsRequestId }: Context) =>
+    rootLogger.child({ awsRequestId });
+
+  const handler = async (_event: unknown, ctx: Context) => {
+    rootLogger.info('Has no context');
+
+    contextLogger(ctx).info('Has context');
+  };
+  ```
+
+  After:
+
+  ```typescript
+  import { AsyncLocalStorage } from 'async_hooks';
+
+  import createLogger from '@seek/logger';
+  import { Context } from 'aws-lambda';
+
+  const loggerContext = new AsyncLocalStorage<{ awsRequestId: string }>();
+
+  const logger = createLogger({
+    mixin: () => ({ ...loggerContext.getStore() }),
+  });
+
+  const handler = (_event: unknown, { awsRequestId }: Context) =>
+    loggerContext.run({ awsRequestId }, async () => {
+      logger.info('Has context');
+    });
+  ```
+
+- **template/lambda-sqs-worker\*:** Bump Node.js version to 16 ([#862](https://github.com/seek-oss/skuba/pull/862))
+
+- **build-package, lint:** Improve detection of SEEK Buildkite queues for serial execution ([#829](https://github.com/seek-oss/skuba/pull/829))
+
+- **lint:** Detect and autofix ESLint warnings ([#844](https://github.com/seek-oss/skuba/pull/844))
+
+- **lint:** Skip autofixing when ESLint reports no fixable issues ([#844](https://github.com/seek-oss/skuba/pull/844))
+
+- **format, lint:** Avoid unnecessary template literals ([#849](https://github.com/seek-oss/skuba/pull/849))
+
+  We now automatically convert unnecessary template literals into single-quoted strings for consistency.
+
+- **deps:** Jest 28 ([#856](https://github.com/seek-oss/skuba/pull/856))
+
+  This major release includes breaking changes. See the [announcement post](https://jestjs.io/blog/2022/04/25/jest-28) for more information.
+
 ## 4.2.0
 
 ### Minor Changes

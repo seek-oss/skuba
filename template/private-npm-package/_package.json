@@ -1,25 +1,22 @@
 {
-  "dependencies": {},
+  "name": "<%- moduleName %>",
+  "version": "0.0.0-semantically-released",
   "description": "<%- description %>",
-  "devDependencies": {
-    "@types/node": "^16.0.0",
-    "commitizen": "^4.2.4",
-    "skuba": "*"
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/<%- orgName %>/<%- repoName %>.git"
   },
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "main": "./lib-commonjs/index.js",
+  "module": "./lib-es2015/index.js",
+  "types": "./lib-types/index.d.ts",
   "files": [
     "lib*/**/*.d.ts",
     "lib*/**/*.js",
     "lib*/**/*.js.map",
     "lib*/**/*.json"
   ],
-  "license": "UNLICENSED",
-  "main": "./lib-commonjs/index.js",
-  "module": "./lib-es2015/index.js",
-  "name": "<%- moduleName %>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/<%- orgName %>/<%- repoName %>.git"
-  },
   "scripts": {
     "build": "skuba build-package",
     "commit": "cz",
@@ -35,7 +32,13 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "sideEffects": false,
-  "types": "./lib-types/index.d.ts",
-  "version": "0.0.0-semantically-released"
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^16.18.3",
+    "commitizen": "^4.2.4",
+    "skuba": "*"
+  },
+  "engines": {
+    "node": ">=18.12"
+  }
 }

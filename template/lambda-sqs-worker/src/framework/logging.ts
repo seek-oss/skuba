@@ -1,9 +1,16 @@
+import { AsyncLocalStorage } from 'async_hooks';
+
 import createLogger from '@seek/logger';
-import { Context } from 'aws-lambda';
 
 import { config } from 'src/config';
 
-export const rootLogger = createLogger({
+interface LoggerContext {
+  awsRequestId: string;
+}
+
+export const loggerContext = new AsyncLocalStorage<LoggerContext>();
+
+export const logger = createLogger({
   base: {
     environment: config.environment,
     version: config.version,
@@ -11,12 +18,10 @@ export const rootLogger = createLogger({
 
   level: config.logLevel,
 
+  mixin: () => ({ ...loggerContext.getStore() }),
+
   name: config.name,
 
   transport:
     config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
 });
-
-/* istanbul ignore next: @seek/logger interface */
-export const contextLogger = ({ awsRequestId }: Context) =>
-  rootLogger.child({ awsRequestId });

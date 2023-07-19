@@ -1,4 +1,4 @@
-import { Handler } from 'express';
+import type { Handler } from 'express';
 
 /**
  * Signifies that the API is available to serve requests.
