@@ -60,16 +60,6 @@ steps:
       - docker-compose#v3.9.0:
           run: app
 
-  - agents:
-      queue: <%- devBuildkiteQueueName %>
-    branches: '!renovate/*'
-    label: 🧖‍♀️ Warm Dev
-    command: ':'
-    plugins:
-      - *aws-sm
-      - *private-npm
-      - *docker-ecr-cache
-
   - wait
   - block: 🙋🏻‍♀️ Deploy Dev
     branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
