@@ -90,6 +90,7 @@ yarn-error.log
 /.gantry/**/*.yml
 gantry*.yaml
 gantry*.yml
+pnpm-lock.yaml
 # end managed by skuba
 ",
     "operation": "A",
