@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-Add pnpm-lock.yaml to .prettierignore
+lint/format: Add pnpm-lock.yaml to .prettierignore
