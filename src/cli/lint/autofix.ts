@@ -18,7 +18,7 @@ import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
 
 import type { Input } from './types';
 
-const RENOVATE_DEFAULT_PREFIX = 'renovate';
+const RENOVATE_DEFAULT_PREFIX = 'renovate-skuba-';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
