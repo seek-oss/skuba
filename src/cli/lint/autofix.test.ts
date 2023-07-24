@@ -1,5 +1,6 @@
 import simpleGit from 'simple-git';
 
+import * as Buildkite from '../../api/buildkite';
 import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
 import { runESLint } from '../adapter/eslint';
@@ -10,6 +11,7 @@ import { AUTOFIX_IGNORE_FILES, autofix } from './autofix';
 jest.mock('simple-git');
 jest.mock('../../api/git');
 jest.mock('../../api/github');
+jest.mock('../../api/buildkite');
 jest.mock('../adapter/eslint');
 jest.mock('../adapter/prettier');
 
@@ -116,6 +118,8 @@ describe('autofix', () => {
         );
 
       await expect(autofix(params)).resolves.toBeUndefined();
+
+      expect(Buildkite.annotate).toHaveBeenCalled();
 
       expectNoAutofix();
     });

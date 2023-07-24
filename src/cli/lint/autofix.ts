@@ -4,6 +4,7 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 import simpleGit from 'simple-git';
 
+import * as Buildkite from '../../api/buildkite';
 import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
 import { isCiEnv } from '../../utils/env';
@@ -85,9 +86,13 @@ const shouldPush = async ({
     try {
       await GitHub.getPullRequestNumber();
     } catch (error) {
-      log.warn(
-        'Could not find an open pull request for this branch. The autofix commit will not be applied to allow Renovate to open a pull request successfully.',
-      );
+      const warning =
+        'An autofix is available but it was not pushed because an open pull request for this skuba renovate branch could not be found. If a pull request has since been created, retry the lint step to push the fix.';
+      log.warn(warning);
+      try {
+        await Buildkite.annotate(Buildkite.md.terminal(warning));
+      } catch {}
+
       return false;
     }
   }
