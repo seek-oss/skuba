@@ -18,6 +18,8 @@ import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
 
 import type { Input } from './types';
 
+const RENOVATE_DEFAULT_PREFIX = 'renovate';
+
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
 const AUTOFIX_DELETE_FILES = [
@@ -77,6 +79,17 @@ const shouldPush = async ({
     // The current branch is a protected branch.
     // We respect GitHub Flow; avoid pushing directly to the default branch.
     return false;
+  }
+
+  if (currentBranch?.startsWith(RENOVATE_DEFAULT_PREFIX)) {
+    try {
+      await GitHub.getPullRequestNumber();
+    } catch (error) {
+      log.warn(
+        'Could not find an open pull request for this branch. The autofix commit will not be applied to allow Renovate to open a pull request successfully.',
+      );
+      return false;
+    }
   }
 
   let headCommitMessage;

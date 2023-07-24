@@ -105,6 +105,30 @@ describe('autofix', () => {
       expectNoAutofix();
     });
 
+    it('bails on a renovate- branch when there is no open pull request', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
+      jest
+        .mocked(GitHub.getPullRequestNumber)
+        .mockRejectedValue(
+          new Error(
+            `Commit cdd1520 is not associated with an open GitHub pull request`,
+          ),
+        );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('suceeds on a renovate- branch when there is an open pull request associated with the commit', async () => {
+      jest.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
+      jest.mocked(GitHub.getPullRequestNumber).mockResolvedValue(6);
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit();
+    });
+
     it('bails on a GitHub protected branch', async () => {
       process.env.GITHUB_REF_PROTECTED = 'true';
 
