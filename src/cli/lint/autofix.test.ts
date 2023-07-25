@@ -107,7 +107,7 @@ describe('autofix', () => {
       expectNoAutofix();
     });
 
-    it('bails on a renovate- branch when there is no open pull request', async () => {
+    it('bails on a renovate branch when there is no open pull request', async () => {
       jest.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
       jest
         .mocked(GitHub.getPullRequestNumber)
@@ -124,7 +124,7 @@ describe('autofix', () => {
       expectNoAutofix();
     });
 
-    it('suceeds on a renovate- branch when there is an open pull request associated with the commit', async () => {
+    it('suceeds on a renovate branch when there is an open pull request associated with the commit', async () => {
       jest.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
       jest.mocked(GitHub.getPullRequestNumber).mockResolvedValue(6);
 
