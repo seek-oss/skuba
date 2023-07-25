@@ -17,7 +17,7 @@ RUN yarn build
 
 ###
 
-FROM --platform=${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs:18 AS runtime
+FROM --platform=${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs18-debian11 AS runtime
 
 WORKDIR /workdir
 
