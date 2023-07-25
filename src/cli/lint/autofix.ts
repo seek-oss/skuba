@@ -87,7 +87,7 @@ const shouldPush = async ({
       await GitHub.getPullRequestNumber();
     } catch (error) {
       const warning =
-        'An autofix is available but it was not pushed because an open pull request for this skuba renovate branch could not be found. If a pull request has since been created, retry the lint step to push the fix.';
+        'An autofix is available, but it was not pushed because an open pull request for this Renovate branch could not be found. If a pull request has since been created, retry the lint step to push the fix.';
       log.warn(warning);
       try {
         await Buildkite.annotate(Buildkite.md.terminal(warning));
