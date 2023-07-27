@@ -95,7 +95,7 @@ describe('TypeScript', () => {
     test('Stricter Checks For The in Operator', () => {
       const flag = true;
 
-      // @ts-expect-error
+      // @ts-expect-error - testing lint error
       expect(flag ? true : 'foo' in 42).toBeDefined();
     });
 

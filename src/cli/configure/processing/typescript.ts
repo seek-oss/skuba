@@ -222,7 +222,7 @@ const createModuleExportsTransformer =
           ts.isBinaryExpression(node.expression) &&
           ts.isPropertyAccessExpression(node.expression.left) &&
           ts.isIdentifier(node.expression.left.expression) &&
-          node.expression.left.expression.escapedText === 'module' &&
+          node.expression.left.expression.escapedText.toString() === 'module' &&
           node.expression.left.name.text === 'exports' &&
           node.expression.operatorToken.kind === ts.SyntaxKind.EqualsToken
         ) {
