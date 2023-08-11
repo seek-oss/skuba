@@ -1,6 +1,6 @@
 import {
-  type StackProps,
   Stack,
+  type StackProps,
   aws_iam,
   aws_kms,
   aws_lambda,
