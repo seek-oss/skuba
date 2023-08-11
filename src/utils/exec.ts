@@ -4,8 +4,7 @@ import util from 'util';
 
 import type { Color } from 'chalk';
 import concurrently from 'concurrently';
-import type { ExecaChildProcess } from 'execa';
-import execa from 'execa';
+import execa, { type ExecaChildProcess } from 'execa';
 import npmRunPath from 'npm-run-path';
 import npmWhich from 'npm-which';
 

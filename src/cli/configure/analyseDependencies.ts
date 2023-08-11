@@ -3,8 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
-import type { TextProcessor } from '../../utils/copy';
-import { copyFiles } from '../../utils/copy';
+import { type TextProcessor, copyFiles } from '../../utils/copy';
 import { log } from '../../utils/logging';
 import type { ProjectType } from '../../utils/manifest';
 import { getSkubaVersion, latestNpmVersion } from '../../utils/version';

@@ -1,7 +1,6 @@
 /* eslint-disable new-cap */
 
-import type { NormalizedPackageJson } from 'read-pkg-up';
-import readPkgUp from 'read-pkg-up';
+import readPkgUp, { type NormalizedPackageJson } from 'read-pkg-up';
 import * as t from 'runtypes';
 
 import { hasProp } from './validation';

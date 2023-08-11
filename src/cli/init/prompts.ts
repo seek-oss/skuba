@@ -2,9 +2,9 @@ import { pathExists } from 'fs-extra';
 
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
 
-import type { Platform } from './validation';
 import {
   PLATFORM_OPTIONS,
+  type Platform,
   isGitHubOrg,
   isGitHubRepo,
   isGitHubTeam,

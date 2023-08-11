@@ -1,10 +1,8 @@
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
-import { commit } from './commit';
-import type { Identity } from './commit';
-import type { ChangedFile } from './getChangedFiles';
-import { getChangedFiles } from './getChangedFiles';
+import { type Identity, commit } from './commit';
+import { type ChangedFile, getChangedFiles } from './getChangedFiles';
 
 interface CommitAllParameters {
   dir: string;
