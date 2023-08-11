@@ -126,7 +126,7 @@ export const configure = async () => {
     } catch {}
   }
 
-  if (fixConfiguration || fixDependencies) {
+  if (fixConfiguration ?? fixDependencies) {
     log.newline();
     log.ok(log.bold('✔ All done! Try running:'));
 

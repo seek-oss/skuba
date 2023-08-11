@@ -95,6 +95,7 @@ describe('TypeScript', () => {
     test('Stricter Checks For The in Operator', () => {
       const flag = true;
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       expect(flag ? true : 'foo' in 42).toBeDefined();
     });
@@ -122,6 +123,7 @@ describe('TypeScript', () => {
 
   describe('4.3', () => {
     test('Separate Write Types of Properties', () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-interface
       interface Thing {
         // get size(): number
         // set size(value: number | string | boolean);
@@ -132,12 +134,16 @@ describe('TypeScript', () => {
 
     test('override and the --noImplicitOverride flag', () => {
       class SomeComponent {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         show() {}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         hide() {}
       }
 
       class SpecializedComponent extends SomeComponent {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         override show() {}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         override hide() {}
       }
 
@@ -156,10 +162,12 @@ describe('TypeScript', () => {
           return 1;
         }
 
+        // eslint-disable-next-line @typescript-eslint/class-literal-property-style
         get #someValue() {
           return null;
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         static #someStaticMethod() {}
 
         somePublicMethod() {
