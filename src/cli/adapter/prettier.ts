@@ -1,12 +1,17 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import type { Options, SupportLanguage } from 'prettier';
-import { check, format, getSupportInfo, resolveConfig } from 'prettier';
+import {
+  type Options,
+  type SupportLanguage,
+  check,
+  format,
+  getSupportInfo,
+  resolveConfig,
+} from 'prettier';
 
 import { crawlDirectory } from '../../utils/dir';
-import type { Logger } from '../../utils/logging';
-import { pluralise } from '../../utils/logging';
+import { type Logger, pluralise } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
 import { formatPackage, parsePackage } from '../configure/processing/package';
 

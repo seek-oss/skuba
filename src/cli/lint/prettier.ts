@@ -5,8 +5,7 @@ import chalk from 'chalk';
 
 import { createLogger } from '../../utils/logging';
 import { execWorkerThread, postWorkerOutput } from '../../utils/worker';
-import type { PrettierOutput } from '../adapter/prettier';
-import { runPrettier } from '../adapter/prettier';
+import { type PrettierOutput, runPrettier } from '../adapter/prettier';
 
 import type { Input } from './types';
 

@@ -1,8 +1,7 @@
 import { graphql } from '@octokit/graphql';
 import type { FileChanges } from '@octokit/graphql-schema';
 import fs from 'fs-extra';
-import type { ReadCommitResult } from 'isomorphic-git';
-import git from 'isomorphic-git';
+import git, { type ReadCommitResult } from 'isomorphic-git';
 
 import { apiTokenFromEnvironment } from './environment';
 import {

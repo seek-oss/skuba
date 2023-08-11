@@ -14,18 +14,16 @@ import {
 } from '../../utils/template';
 
 import { downloadGitHubTemplate } from './git';
-import type { BaseFields } from './prompts';
 import {
   BASE_PROMPT_PROPS,
+  type BaseFields,
   GIT_PATH_PROMPT,
   SHOULD_CONTINUE_PROMPT,
   TEMPLATE_PROMPT,
 } from './prompts';
-import type { InitConfig } from './types';
-import { InitConfigInput } from './types';
+import { type InitConfig, InitConfigInput } from './types';
 
-import { Form } from 'enquirer';
-import type { FormChoice } from 'enquirer';
+import { Form, type FormChoice } from 'enquirer';
 
 export const runForm = <T = Record<string, string>>(props: {
   choices: Readonly<FormChoice[]>;
