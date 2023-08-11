@@ -6,8 +6,10 @@ import type { NormalizedReadResult } from 'read-pkg-up';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { log } from '../../utils/logging';
-import type { TemplateConfig } from '../../utils/template';
-import { ensureTemplateConfigDeletion } from '../../utils/template';
+import {
+  type TemplateConfig,
+  ensureTemplateConfigDeletion,
+} from '../../utils/template';
 import { hasStringProp } from '../../utils/validation';
 import { getTemplateConfig, runForm } from '../init/getConfig';
 
