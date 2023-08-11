@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import type { Endpoints } from '@octokit/types';
-import git, type { ReadCommitResult } from 'isomorphic-git';
+import git, { type ReadCommitResult } from 'isomorphic-git';
 
 import type * as GitHub from '../github';
 
