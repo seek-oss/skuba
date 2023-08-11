@@ -1,6 +1,6 @@
 import path from 'path';
 
-import chalk, type { Color } from 'chalk';
+import chalk, { type Color } from 'chalk';
 import fs from 'fs-extra';
 
 import { copyFile } from '../../utils/copy';
