@@ -1,5 +1,5 @@
-import type { StackProps } from 'aws-cdk-lib';
 import {
+  type StackProps,
   Stack,
   aws_iam,
   aws_kms,
