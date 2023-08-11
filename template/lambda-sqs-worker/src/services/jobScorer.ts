@@ -2,8 +2,11 @@ import {
   jobPublishedEventToScorerInput,
   jobScorerOutputToScoredEvent,
 } from 'src/mapping/jobScorer';
-import type { JobScorerInput, JobScorerOutput } from 'src/types/jobScorer';
-import { JobScorerOutputSchema } from 'src/types/jobScorer';
+import {
+  type JobScorerInput,
+  type JobScorerOutput,
+  JobScorerOutputSchema,
+} from 'src/types/jobScorer';
 import type {
   JobPublishedEvent,
   JobScoredEvent,
