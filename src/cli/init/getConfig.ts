@@ -249,7 +249,9 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   let text = '';
 
   await new Promise((resolve) =>
-    process.stdin.on('data', (chunk) => (text += chunk)).once('end', resolve),
+    process.stdin
+      .on('data', (chunk) => (text += chunk.toString()))
+      .once('end', resolve),
   );
 
   text = text.trim();

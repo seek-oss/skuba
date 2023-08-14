@@ -20,6 +20,7 @@ export * as Net from './api/net';
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace WebAssembly {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface Module {}
   }
 }

@@ -46,7 +46,7 @@ interface CopyFilesOptions {
 
   include: (pathname: string) => boolean;
   overwrite?: boolean;
-  processors: Array<TextProcessor>;
+  processors: TextProcessor[];
   stripUnderscorePrefix?: boolean;
 }
 

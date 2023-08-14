@@ -36,7 +36,7 @@ const version = VersionMiddleware.create({
 });
 
 export const createApp = <State, Context>(
-  ...middleware: Koa.Middleware<State, Context>[]
+  ...middleware: Array<Koa.Middleware<State, Context>>
 ) =>
   new Koa()
     // TODO: consider using a middleware that adds secure HTTP headers.

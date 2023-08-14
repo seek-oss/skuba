@@ -12,9 +12,7 @@ import { log } from '../utils/logging';
  * - The function's return value is JSON stringified into the response body.
  */
 export const createRequestListenerFromFunction =
-  (
-    fn: (...args: unknown[]) => unknown | Promise<unknown>,
-  ): http.RequestListener =>
+  (fn: (...args: unknown[]) => Promise<unknown>): http.RequestListener =>
   async (req, res) => {
     const writeJsonResponse = (statusCode: number, jsonResponse: unknown) => {
       res.writeHead(statusCode, { 'Content-Type': 'application/json' });
