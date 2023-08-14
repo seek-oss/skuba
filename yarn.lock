@@ -3743,10 +3743,10 @@ eslint-config-seek@^11.3.1:
     eslint-plugin-rulesdir "^0.2.2"
     find-root "^1.1.0"
 
-eslint-config-skuba@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-2.0.4.tgz#8fbaaecf579827657dbeeb293b6352e7b721c3bc"
-  integrity sha512-UqtJIngUmzs7TIoLaHJF6eBa31zfJ+4tifwOx//q3IB4D2NRfoIE4RgJmRtpSJ7FzkQGGCUxBesQ3Qn6dNxXiA==
+eslint-config-skuba@2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/eslint-config-skuba/-/eslint-config-skuba-2.0.6.tgz#c1999c7f6162f8ac8af43837535551e0029d2961"
+  integrity sha512-GNtCEIbwvrWszTtHgSoWukXZ8tyzwzn5/yLgXPrUfLcsGhmBybDBPRTkVg4JqKleLk9MlIniC3+oHx6sRoVOTA==
   dependencies:
     "@types/eslint" "^8.4.1"
     "@typescript-eslint/eslint-plugin" "^5.61.0"
