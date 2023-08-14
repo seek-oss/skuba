@@ -81,7 +81,7 @@
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
-    "esbuild": "~0.18.0",
+    "esbuild": "~0.19.0",
     "eslint": "^8.11.0",
     "eslint-config-skuba": "3.0.1",
     "execa": "^5.0.0",
