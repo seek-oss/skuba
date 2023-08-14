@@ -17,7 +17,7 @@ This topic details GitHub integration features baked into **skuba**.
 **skuba** can annotate the first 50 issues detected by [`skuba lint`] and [`skuba test`] via the [GitHub Checks API].
 
 This can be enabled by propagating Buildkite environment variables and a GitHub API token.
-At SEEK, this token can be configured through a `:tw` repository suffix in BuildAgency.
+
 For example, with the [Docker Buildkite plugin]:
 
 ```yaml
@@ -86,15 +86,6 @@ CI autofixes can be enabled by:
 
 1. Propagating the environment variables documented above for [GitHub annotations](#github-annotations)
 2. Granting repository write access to your CI environment
-
-In Buildkite, your pipeline needs to be configured with write access.
-SEEKers should review our internal "Builds at SEEK" documentation and configure their repository with a `:tw` suffix:
-
-```yaml
-clusters:
-  - gitRepositories:
-      - git@github.com:seek-oss/skuba.git:tw
-```
 
 If you're running in GitHub Actions,
 you need to supply a personal access token to [actions/checkout].
