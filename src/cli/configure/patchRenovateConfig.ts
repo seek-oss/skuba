@@ -1,5 +1,6 @@
 /* eslint-disable new-cap */
 
+import path from 'path';
 import { inspect } from 'util';
 
 import fs from 'fs-extra';
@@ -131,7 +132,7 @@ const patchRenovateConfig = async (dir: string) => {
   const patchFile = patchByFiletype[filetype];
 
   await patchFile({
-    filepath: config.filepath,
+    filepath: path.resolve(dir, config.filepath),
     input: config.input,
     presetToAdd,
   });
