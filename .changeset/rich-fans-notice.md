@@ -16,7 +16,6 @@ Diff patch from eslint-config-skuba 2 and eslint-config-skuba 3
 +  '@typescript-eslint/consistent-generic-constructors': '...',
 +  '@typescript-eslint/consistent-indexed-object-style': '...',
 +  '@typescript-eslint/consistent-type-assertions': '...',
-+  '@typescript-eslint/consistent-type-definitions': '...',
 +  'dot-notation': '...',
 +  '@typescript-eslint/dot-notation': '...',
 +  '@typescript-eslint/no-base-to-string': '...',
