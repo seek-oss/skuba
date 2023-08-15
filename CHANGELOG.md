@@ -1,5 +1,58 @@
 # skuba
 
+## 7.1.0
+
+### Minor Changes
+
+- **format, lint:** Skip autofixing on Renovate branches when there is no open pull request ([#1226](https://github.com/seek-oss/skuba/pull/1226))
+
+  This prevents an issue where a Renovate branch can get stuck in the `Edited/Blocked` state without a pull request being raised.
+
+- **deps:** eslint-config-skuba 3 ([#1234](https://github.com/seek-oss/skuba/pull/1234))
+
+  This major upgrade brings in new rules from [typescript-eslint v6](https://typescript-eslint.io/blog/announcing-typescript-eslint-v6/).
+
+  Diff patch from eslint-config-skuba 2 and eslint-config-skuba 3
+
+  ```diff
+  {
+  +  '@typescript-eslint/array-type': '...',
+  +  '@typescript-eslint/ban-tslint-comment': '...',
+  +  '@typescript-eslint/class-literal-property-style': '...',
+  +  '@typescript-eslint/consistent-generic-constructors': '...',
+  +  '@typescript-eslint/consistent-indexed-object-style': '...',
+  +  '@typescript-eslint/consistent-type-assertions': '...',
+  +  'dot-notation': '...',
+  +  '@typescript-eslint/dot-notation': '...',
+  +  '@typescript-eslint/no-base-to-string': '...',
+  +  '@typescript-eslint/no-confusing-non-null-assertion': '...',
+  +  '@typescript-eslint/no-duplicate-enum-values': '...',
+  +  '@typescript-eslint/no-duplicate-type-constituents': '...',
+  +  '@typescript-eslint/no-redundant-type-constituents': '...',
+  +  '@typescript-eslint/no-unsafe-declaration-merging': '...',
+  +  '@typescript-eslint/no-unsafe-enum-comparison': '...',
+  +  '@typescript-eslint/prefer-for-of': '...',
+  +  '@typescript-eslint/prefer-function-type': '...',
+  +  '@typescript-eslint/prefer-nullish-coalescing': '...',
+  +  '@typescript-eslint/prefer-optional-chain': '...',
+  +  '@typescript-eslint/prefer-string-starts-ends-with': '...',
+  -  'no-extra-semi': '...',
+  -  '@typescript-eslint/no-extra-semi': '...',
+  }
+  ```
+
+- **format, lint:** Add `pnpm-lock.yaml` to `.prettierignore` ([#1225](https://github.com/seek-oss/skuba/pull/1225))
+
+- **deps:** esbuild 0.19 ([#1236](https://github.com/seek-oss/skuba/pull/1236))
+
+- **format, lint:** Switch distroless image from `nodejs` to `nodejs-debian11` ([#1224](https://github.com/seek-oss/skuba/pull/1224))
+
+  `skuba format` and `skuba lint` will now automatically switch your `gcr.io/distroless/nodejs:18` image to `gcr.io/distroless/nodejs18-debian11`. This is now the [recommended](https://github.com/GoogleContainerTools/distroless/blob/main/nodejs/README.md) base image for Node.js.
+
+### Patch Changes
+
+- **template/\*-rest-api:** Switch distroless image from `nodejs:18` to `nodejs18-debian11` ([#1224](https://github.com/seek-oss/skuba/pull/1224))
+
 ## 7.0.1
 
 ### Patch Changes
