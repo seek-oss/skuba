@@ -1,5 +1,13 @@
 # skuba
 
+## 7.1.1
+
+### Patch Changes
+
+- **init:** Resolve directory path when patching Renovate config ([#1241](https://github.com/seek-oss/skuba/pull/1241))
+
+  This should fix the `Failed to patch Renovate config.` warning when creating a new repo.
+
 ## 7.1.0
 
 ### Minor Changes
