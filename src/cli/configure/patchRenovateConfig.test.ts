@@ -62,6 +62,27 @@ it('patches a JSON config for a SEEK-Jobs project', async () => {
   `);
 });
 
+it('patches a JSON config for a new SEEK-Jobs project', async () => {
+  getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'VersionNet' });
+
+  vol.fromJSON({ 'foo/.git': null, 'foo/renovate.json': JSON });
+
+  await expect(tryPatchRenovateConfig('foo')).resolves.toBeUndefined();
+
+  expect(volToJson()).toMatchInlineSnapshot(`
+    {
+      "foo/.git": null,
+      "foo/renovate.json": "{
+      "extends": [
+        "local>seek-jobs/renovate-config",
+        "github>seek-oss/rynovate:third-party-major"
+      ]
+    }
+    ",
+    }
+  `);
+});
+
 it('patches a JSON5 config for a seekasia project', async () => {
   getOwnerAndRepo.mockResolvedValue({
     owner: 'sEEkAsIa',
