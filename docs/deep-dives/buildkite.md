@@ -28,11 +28,9 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v3.12.0:
+      - docker#v5.0.0:
           environment:
             - BUILDKITE_AGENT_ACCESS_TOKEN
-          # Disable SEEK BuildAgency's wrapped agent that requires Bash.
-          mount-buildkite-agent: false
           # Enable Buildkite integrations.
           propagate-environment: true
           volumes:
