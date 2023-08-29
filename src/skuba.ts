@@ -32,10 +32,9 @@ const skuba = async () => {
     const moduleName = commandToModule(commandName as Command);
 
     /* eslint-disable @typescript-eslint/no-var-requires */
-    const commandModule = require(path.join(
-      COMMAND_DIR,
-      moduleName,
-    )) as unknown;
+    const commandModule = require(
+      path.join(COMMAND_DIR, moduleName),
+    ) as unknown;
 
     if (!hasProp(commandModule, moduleName)) {
       log.err(log.bold(commandName), "couldn't run! Please submit an issue.");
