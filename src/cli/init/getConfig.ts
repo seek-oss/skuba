@@ -175,9 +175,8 @@ const baseToTemplateData = async ({
 };
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
-  const { ownerName, platformName, repoName } = await runForm<BaseFields>(
-    BASE_PROMPT_PROPS,
-  );
+  const { ownerName, platformName, repoName } =
+    await runForm<BaseFields>(BASE_PROMPT_PROPS);
   log.plain(chalk.cyan(repoName), 'by', chalk.cyan(ownerName));
 
   const templateData = await baseToTemplateData({
