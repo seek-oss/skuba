@@ -102,7 +102,7 @@
     "npm-run-path": "^4.0.1",
     "npm-which": "^3.0.1",
     "picomatch": "^2.2.2",
-    "prettier": "~3.0.0",
+    "prettier": "~3.0.3",
     "read-pkg-up": "^7.0.1",
     "runtypes": "^6.0.0",
     "semantic-release": "^21.0.0",
@@ -116,7 +116,7 @@
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "2.0.0",
-    "typescript": "~5.1.5",
+    "typescript": "~5.2.0",
     "validate-npm-package-name": "^5.0.0"
   },
   "devDependencies": {
