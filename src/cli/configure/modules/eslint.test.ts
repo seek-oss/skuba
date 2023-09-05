@@ -2,6 +2,8 @@ import { defaultOpts, executeModule } from '../testing/module';
 
 import { eslintModule } from './eslint';
 
+jest.mock('sort-package-json');
+
 describe('eslintModule', () => {
   it('works from scratch', async () => {
     const inputFiles = {};

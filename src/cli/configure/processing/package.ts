@@ -1,15 +1,16 @@
 import normalizeData from 'normalize-package-data';
-import sortPackageJson from 'sort-package-json';
 
 import type { PackageJson } from '../types';
 
 import { parseObject } from './json';
 import { formatPrettier } from './prettier';
 
-export const formatPackage = (rawData: PackageJson) => {
+export const formatPackage = async (rawData: PackageJson) => {
+  const sortPackageJson = await import('sort-package-json');
+
   normalizeData(rawData);
 
-  const data = sortPackageJson(rawData);
+  const data = sortPackageJson.sortPackageJson(rawData);
 
   // normalize-package-data fields that aren't useful for applications
 
