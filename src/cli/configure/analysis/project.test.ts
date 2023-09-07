@@ -5,8 +5,6 @@ import { defaultOpts } from '../testing/module';
 import * as project from './project';
 import { diffFiles } from './project';
 
-jest.mock('sort-package-json');
-
 describe('diffFiles', () => {
   it('works from scratch', async () => {
     jest
