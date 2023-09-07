@@ -28,7 +28,7 @@ jobs:
           github.event_name != 'pull_request' ||
           github.event.pull_request.head.repo.full_name == github.repository
         name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
@@ -36,7 +36,7 @@ jobs:
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name != github.repository
         name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         # We don't share secrets with forks.
 
       - name: Set Git user
@@ -83,7 +83,7 @@ jobs:
           - private-npm-package
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js 18.x
         uses: actions/setup-node@v3
