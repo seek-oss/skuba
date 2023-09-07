@@ -1,5 +1,29 @@
 # skuba
 
+## 7.2.0
+
+### Minor Changes
+
+- **deps:** TypeScript 5.2 ([#1247](https://github.com/seek-oss/skuba/pull/1247))
+
+  This major release includes breaking changes. See the [TypeScript 5.2](https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/) announcement for more information.
+
+### Patch Changes
+
+- **deps:** libnpmsearch 7 ([#1255](https://github.com/seek-oss/skuba/pull/1255))
+
+- **deps:** Prettier 3.0.3 ([#1247](https://github.com/seek-oss/skuba/pull/1247))
+
+  See the [release notes](https://github.com/prettier/prettier/blob/main/CHANGELOG.md#303) for more information.
+
+- **deps:** sort-package-json 2.5.1 ([#1257](https://github.com/seek-oss/skuba/pull/1257))
+
+  This should resolve the following TypeScript compiler error:
+
+  ```console
+  node_modules/@types/glob/index.d.ts(29,42): error TS2694: Namespace '"node_modules/minimatch/dist/cjs/index"' has no exported member 'IOptions'.
+  ```
+
 ## 7.1.1
 
 ### Patch Changes

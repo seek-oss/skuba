@@ -1,6 +1,6 @@
 {
   "name": "skuba",
-  "version": "7.1.1",
+  "version": "7.2.0",
   "private": false,
   "description": "SEEK development toolkit for backend applications and packages",
   "homepage": "https://github.com/seek-oss/skuba#readme",
