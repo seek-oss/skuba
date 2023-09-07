@@ -1,7 +1,5 @@
 import { Jest } from './src';
 
-const compilePackages = ['sort-package-json'];
-
 export default Jest.mergePreset({
   coveragePathIgnorePatterns: ['<rootDir>/integration/', '<rootDir>/template/'],
   displayName: 'unit',
@@ -11,8 +9,4 @@ export default Jest.mergePreset({
     '\\.int\\.test\\.ts',
     '/test\\.ts',
   ],
-  transform: {
-    '^.+\\.m?[tj]s?$': ['ts-jest', { useESM: true }],
-  },
-  transformIgnorePatterns: [`/node_modules/(?!(${compilePackages.join('|')}))`],
 });
