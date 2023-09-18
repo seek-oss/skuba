@@ -102,7 +102,7 @@ const shouldPush = async ({
     headCommitMessage = await Git.getHeadCommitMessage({ dir });
   } catch {}
 
-  if (headCommitMessage === AUTOFIX_COMMIT_MESSAGE) {
+  if (headCommitMessage?.startsWith(AUTOFIX_COMMIT_MESSAGE)) {
     // Short circuit when the head commit appears to be one of our autofixes.
     // Repeating the same operation is unlikely to correct outstanding issues.
     return false;

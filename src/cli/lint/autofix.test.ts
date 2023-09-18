@@ -147,7 +147,7 @@ describe('autofix', () => {
       jest.mocked(Git.currentBranch).mockResolvedValue('feature');
       jest
         .mocked(Git.getHeadCommitMessage)
-        .mockResolvedValue('Run `skuba format`');
+        .mockResolvedValue('Run `skuba format`\n');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
