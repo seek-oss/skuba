@@ -2,7 +2,7 @@
 'skuba': patch
 ---
 
-template/*: seek-oss/docker-ecr-cache 2.1
+template/\*: seek-oss/docker-ecr-cache 2.1
 
 This update brings a new `skip-pull-from-cache` option which is useful on `Warm`/`Build Cache` steps.
 
