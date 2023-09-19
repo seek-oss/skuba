@@ -4,6 +4,6 @@
 
 template: seek-oss/docker-ecr-cache 2.1
 
-This update brings a new `skip-pull-from-cache` option which is useful on `Warm`/`Build Cache` steps.
+This update brings a [new `skip-pull-from-cache` option](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin#skipping-image-pull-from-cache) which is useful on `Warm`/`Build Cache` steps.
 
-At SEEK, the build agents no longer persist cache from previous steps, so this option allows us to proceed to the next step without needing to pull down the ECR cache. This can save on average ~ 1 minute for a 2 GB Docker image size per build.
+At SEEK, our build agents no longer persist their Docker build cache from previous steps. This option allows a preparatory step to proceed on a cache hit without pulling the image from ECR, which can save on average ~1 minute per build for a 2GB Docker image.
