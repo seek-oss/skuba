@@ -149,6 +149,33 @@ describe('readFileChanges', () => {
     });
     expect(result).toStrictEqual(expectedFileChanges);
   });
+
+  it('should support a nested directory', async () => {
+    jest.mocked(git.findRoot).mockResolvedValue('/path/to/repo');
+    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
+
+    const result = await readFileChanges('/path/to/repo/packages/package', [
+      { path: 'some-path', state: 'added' },
+      { path: 'another-path', state: 'modified' },
+      { path: 'delete-path', state: 'deleted' },
+    ]);
+
+    const expectedFileChanges: FileChanges = {
+      additions: [
+        { contents: 'base64-contents', path: 'packages/package/some-path' },
+        { contents: 'base64-contents', path: 'packages/package/another-path' },
+      ],
+      deletions: [{ path: 'packages/package/delete-path' }],
+    };
+
+    expect(fs.promises.readFile).toHaveBeenCalledWith('some-path', {
+      encoding: 'base64',
+    });
+    expect(fs.promises.readFile).toHaveBeenCalledWith('another-path', {
+      encoding: 'base64',
+    });
+    expect(result).toStrictEqual(expectedFileChanges);
+  });
 });
 
 describe('uploadAllFileChanges', () => {
@@ -169,77 +196,6 @@ describe('uploadAllFileChanges', () => {
   });
 
   it('should get all modified files and call the GraphQL client with the changed files', async () => {
-    jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
-    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
-    jest.mocked(git.statusMatrix).mockResolvedValue([
-      ['modified-file', 1, 2, 1],
-      ['new-file', 0, 2, 0],
-      ['deleted-file', 1, 0, 1],
-    ]);
-    jest.mocked(graphql).mockResolvedValue({
-      createCommitOnBranch: {
-        commit: {
-          id: 'upstream-id',
-        },
-      },
-    });
-
-    await uploadAllFileChanges({
-      dir: './',
-      branch: 'existing-branch',
-      messageHeadline: 'commit headline',
-      messageBody: 'commit body',
-    });
-
-    expect(jest.mocked(graphql).mock.calls[0]).toMatchInlineSnapshot(`
-      [
-        "
-            mutation Mutation($input: CreateCommitOnBranchInput!) {
-              createCommitOnBranch(input: $input) {
-                commit {
-                  oid
-                }
-              }
-            }
-          ",
-        {
-          "headers": {
-            "authorization": "Bearer api-token",
-          },
-          "input": {
-            "branch": {
-              "branchName": "existing-branch",
-              "repositoryNameWithOwner": "seek-oss/skuba",
-            },
-            "clientMutationId": "skuba",
-            "expectedHeadOid": "commit-id",
-            "fileChanges": {
-              "additions": [
-                {
-                  "contents": "base64-contents",
-                  "path": "modified-file",
-                },
-                {
-                  "contents": "base64-contents",
-                  "path": "new-file",
-                },
-              ],
-              "deletions": [
-                {
-                  "path": "deleted-file",
-                },
-              ],
-            },
-            "message": {
-              "body": "commit body",
-              "headline": "commit headline",
-            },
-          },
-        },
-      ]
-    `);
-  });
-  it('should support a nested directory', async () => {
     jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
     jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
     jest.mocked(git.statusMatrix).mockResolvedValue([
