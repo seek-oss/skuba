@@ -1,3 +1,5 @@
+import path from 'path';
+
 import git from 'isomorphic-git';
 import memfs, { fs, vol } from 'memfs';
 
@@ -18,10 +20,22 @@ const newFileName = 'newFile';
 const newFileName2 = 'newFile2';
 
 it('should stage and commit all the new files in the working directory', async () => {
+  const expectStatuses = (statuses: string[]) =>
+    expect(
+      Promise.all([
+        git.status({ fs, dir, filepath: newFileName }),
+        git.status({ fs, dir, filepath: newFileName2 }),
+      ]),
+    ).resolves.toStrictEqual(statuses);
+
+  await expectStatuses(['absent', 'absent']);
+
   await Promise.all([
     fs.promises.writeFile(newFileName, ''),
     fs.promises.writeFile(newFileName2, ''),
   ]);
+
+  await expectStatuses(['*added', '*added']);
 
   await expect(
     commitAllChanges({
@@ -31,12 +45,7 @@ it('should stage and commit all the new files in the working directory', async (
     }),
   ).resolves.toMatch(/^[0-9a-f]{40}$/);
 
-  const statuses = await Promise.all([
-    git.status({ fs, dir, filepath: newFileName }),
-    git.status({ fs, dir, filepath: newFileName2 }),
-  ]);
-
-  expect(statuses).toStrictEqual(['unmodified', 'unmodified']);
+  await expectStatuses(['unmodified', 'unmodified']);
 });
 
 it('should stage and commit removed files', async () => {
@@ -76,6 +85,42 @@ it('should stage and commit removed files', async () => {
   ]);
 
   expect(statuses).toStrictEqual(['absent', 'absent']);
+});
+
+it('should handle a nested working directory', async () => {
+  const nestedDir = path.join(dir, '/packages/package');
+
+  await fs.promises.mkdir(nestedDir, { recursive: true });
+
+  await Promise.all([
+    fs.promises.writeFile(path.join(nestedDir, newFileName), ''),
+    // Not in our `nestedDir`!
+    fs.promises.writeFile(newFileName2, ''),
+  ]);
+
+  await commitAllChanges({
+    dir: nestedDir,
+    message: 'initial commit',
+    author,
+  });
+
+  await expect(
+    commitAllChanges({
+      dir: nestedDir,
+      message: 'initial commit',
+      author,
+    }),
+  ).resolves.toMatch(/^[0-9a-f]{40}$/);
+
+  const statuses = await Promise.all([
+    git.status({ fs, dir, filepath: newFileName }),
+    git.status({ fs, dir, filepath: newFileName2 }),
+    git.status({ fs, dir, filepath: path.join(nestedDir, newFileName) }),
+    git.status({ fs, dir, filepath: path.join(nestedDir, newFileName2) }),
+  ]);
+
+  // The file outside of our `nestedDir` remains uncommitted.
+  expect(statuses).toStrictEqual(['absent', '*added', 'unmodified', 'absent']);
 });
 
 it('should no-op on clean directory', async () => {
