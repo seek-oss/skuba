@@ -128,7 +128,7 @@ and maps them to GitHub GraphQL [FileChanges].
 ```typescript
 import { GitHub } from 'skuba';
 
-const fileChanges = await GitHub.readFileChanges([
+const fileChanges = await GitHub.readFileChanges(dir, [
   { path: 'added-path', state: 'added' },
   { path: 'modified-path', state: 'modified' },
   { path: 'delete-path', state: 'deleted' },
