@@ -43,5 +43,6 @@
   },
   "engines": {
     "node": ">=18.12"
-  }
+  },
+  "readme": "ERROR: No README data found!"
 }
