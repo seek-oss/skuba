@@ -160,7 +160,6 @@
   "publishConfig": {
     "provenance": true
   },
-  "readme": "ERROR: No README data found!",
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",

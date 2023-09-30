@@ -16,7 +16,7 @@ export const formatPackage = async (rawData: PackageJson) => {
     delete rawData.name;
   }
 
-  if (rawData.readme === 'ERROR: No README rawData found!') {
+  if (rawData.readme === 'ERROR: No README data found!') {
     delete rawData.readme;
   }
 
