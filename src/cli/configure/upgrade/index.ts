@@ -7,9 +7,11 @@ import { getSkubaManifest } from '../../../utils/manifest';
 import { getSkubaVersion } from '../../../utils/version';
 
 const getPatches = async (manifestVersion: string): Promise<string[]> => {
-  const filenames = await readdir(path.join(__dirname, 'patches'));
+  const patches = await readdir(path.join(__dirname, 'patches'));
 
-  return sort(filenames.filter((filename) => gte(filename, manifestVersion)));
+  // The patches are sorted by the version they were added from.
+  // Only return patches that are newer or equal to the current version.
+  return sort(patches.filter((filename) => gte(filename, manifestVersion)));
 };
 
 export const upgradeSkuba = async () => {
@@ -25,7 +27,13 @@ export const upgradeSkuba = async () => {
 
   const patches = await getPatches(manifestVersion);
 
-  // TODO: Apply patches
+  // Run these in series in case a previous patch relies on another patch
+  for (const patch of patches) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
+    const patchFile = require(`./patches/${patch}`);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    await patchFile.upgrade();
+  }
 
-  // TODO: Update manifest version
+  // TODO Update manifest version
 };
