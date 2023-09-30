@@ -36,7 +36,6 @@ describe('writePackageJson', () => {
   [
     "/package.json",
     "{
-  "readme": "ERROR: No README data found!",
   "skuba": {
     "entryPoint": "src/app.ts",
     "template": "hello-world",

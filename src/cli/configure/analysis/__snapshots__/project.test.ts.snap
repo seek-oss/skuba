@@ -138,7 +138,6 @@ export {};
     "test": "skuba test --coverage",
     "test:watch": "skuba test --watch"
   },
-  "readme": "ERROR: No README data found!",
   "skuba": {
     "entryPoint": "src/app.ts",
     "template": null,

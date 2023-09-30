@@ -75,8 +75,7 @@ describe('withPackage', () => {
       })('{}'),
     ).resolves.toMatchInlineSnapshot(`
 "{
-  "$name": "unit-test",
-  "readme": "ERROR: No README data found!"
+  "$name": "unit-test"
 }
 "
 `));
@@ -163,7 +162,6 @@ describe('withPackage', () => {
     "d": "4",
     "e": "5"
   },
-  "readme": "ERROR: No README data found!",
   "skuba": {
     "version": "1.0.0",
     "type": "application"
@@ -181,8 +179,7 @@ describe('withPackage', () => {
       })('}'),
     ).resolves.toMatchInlineSnapshot(`
 "{
-  "$name": "unit-test",
-  "readme": "ERROR: No README data found!"
+  "$name": "unit-test"
 }
 "
 `));
