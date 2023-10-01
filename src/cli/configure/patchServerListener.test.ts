@@ -36,24 +36,24 @@ it('patches a listener with a callback and existing variable reference', async (
   await expect(tryPatchServerListener()).resolves.toBeUndefined();
 
   expect(volToJson()).toMatchInlineSnapshot(`
-{
-  "src/listen.ts": "const listener = app.listen(config.port, () => {
-  const address = listener.address();
+    {
+      "src/listen.ts": "const listener = app.listen(config.port, () => {
+      const address = listener.address();
 
-  if (typeof address === 'object' && address) {
-    logger.debug(\`listening on port \${address.port}\`);
-  }
-});
+      if (typeof address === 'object' && address) {
+        logger.debug(\`listening on port \${address.port}\`);
+      }
+    });
 
-// Gantry ALB default idle timeout is 30 seconds
-// https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout
-// Node default is 5 seconds
-// https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout
-// AWS recommends setting an application timeout larger than the load balancer
-listener.keepAliveTimeout = 31000;
-",
-}
-`);
+    // Gantry ALB default idle timeout is 30 seconds
+    // https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout
+    // Node default is 5 seconds
+    // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout
+    // AWS recommends setting an application timeout larger than the load balancer
+    listener.keepAliveTimeout = 31000;
+    ",
+    }
+  `);
 });
 
 it('patches a listener without a callback', async () => {
@@ -62,18 +62,18 @@ it('patches a listener without a callback', async () => {
   await expect(tryPatchServerListener()).resolves.toBeUndefined();
 
   expect(volToJson()).toMatchInlineSnapshot(`
-{
-  "src/listen.ts": "const listener = app.listen(config.port);
+    {
+      "src/listen.ts": "const listener = app.listen(config.port);
 
-// Gantry ALB default idle timeout is 30 seconds
-// https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout
-// Node default is 5 seconds
-// https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout
-// AWS recommends setting an application timeout larger than the load balancer
-listener.keepAliveTimeout = 31000;
-",
-}
-`);
+    // Gantry ALB default idle timeout is 30 seconds
+    // https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout
+    // Node default is 5 seconds
+    // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout
+    // AWS recommends setting an application timeout larger than the load balancer
+    listener.keepAliveTimeout = 31000;
+    ",
+    }
+  `);
 });
 
 it('handles a lack of server listener', async () => {
