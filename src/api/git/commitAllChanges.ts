@@ -60,7 +60,6 @@ export const commitAllChanges = async ({
     ),
   );
 
-  
   return commit({
     dir: gitRoot,
     message,
