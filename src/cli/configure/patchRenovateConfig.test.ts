@@ -49,17 +49,17 @@ it('patches a JSON config for a SEEK-Jobs project', async () => {
   await expect(tryPatchRenovateConfig()).resolves.toBeUndefined();
 
   expect(volToJson()).toMatchInlineSnapshot(`
-{
-  ".git": null,
-  "renovate.json": "{
-  "extends": [
-    "local>seek-jobs/renovate-config",
-    "github>seek-oss/rynovate:third-party-major"
-  ]
-}
-",
-}
-`);
+    {
+      ".git": null,
+      "renovate.json": "{
+      "extends": [
+        "local>seek-jobs/renovate-config",
+        "github>seek-oss/rynovate:third-party-major"
+      ]
+    }
+    ",
+    }
+  `);
 });
 
 it('patches a JSON config for a new SEEK-Jobs project', async () => {
@@ -70,17 +70,17 @@ it('patches a JSON config for a new SEEK-Jobs project', async () => {
   await expect(tryPatchRenovateConfig('foo')).resolves.toBeUndefined();
 
   expect(volToJson()).toMatchInlineSnapshot(`
-{
-  "foo/.git": null,
-  "foo/renovate.json": "{
-  "extends": [
-    "local>seek-jobs/renovate-config",
-    "github>seek-oss/rynovate:third-party-major"
-  ]
-}
-",
-}
-`);
+    {
+      "foo/.git": null,
+      "foo/renovate.json": "{
+      "extends": [
+        "local>seek-jobs/renovate-config",
+        "github>seek-oss/rynovate:third-party-major"
+      ]
+    }
+    ",
+    }
+  `);
 });
 
 it('patches a JSON5 config for a seekasia project', async () => {
@@ -97,20 +97,20 @@ it('patches a JSON5 config for a seekasia project', async () => {
   // but at least it allows us to preserve the comments rather than dropping
   // them entirely.
   expect(volToJson()).toMatchInlineSnapshot(`
-{
-  ".git": null,
-  ".github/renovate.json5": "{
-  extends: [
-    // Preceding comment
-    'local>seekasia/renovate-config',
+    {
+      ".git": null,
+      ".github/renovate.json5": "{
+      extends: [
+        // Preceding comment
+        'local>seekasia/renovate-config',
 
-    'seek',
-    // Succeeding comment
-  ],
-}
-",
-}
-`);
+        'seek',
+        // Succeeding comment
+      ],
+    }
+    ",
+    }
+  `);
 });
 
 it('handles a lack of Renovate config', async () => {
