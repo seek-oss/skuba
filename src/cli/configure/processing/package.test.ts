@@ -74,11 +74,11 @@ describe('withPackage', () => {
         return data;
       })('{}'),
     ).resolves.toMatchInlineSnapshot(`
-"{
-  "$name": "unit-test"
-}
-"
-`));
+      "{
+        "$name": "unit-test"
+      }
+      "
+    `));
 
   it('preserves legitimate fields', async () =>
     await expect(
@@ -178,9 +178,9 @@ describe('withPackage', () => {
         return data;
       })('}'),
     ).resolves.toMatchInlineSnapshot(`
-"{
-  "$name": "unit-test"
-}
-"
-`));
+      "{
+        "$name": "unit-test"
+      }
+      "
+    `));
 });
