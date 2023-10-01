@@ -140,7 +140,7 @@ it('should no-op on clean directory', async () => {
   expect(statuses).toStrictEqual(['absent', 'absent']);
 });
 
-it('should respect gitIgnore in a directory which is not relative', async () => {
+it('should work in a directory which is not relative with a gitIgnore file', async () => {
   const gitIgnoreFilename = '.gitignore';
   const gitIgnoreContent = `/${newFileName2}`;
 
