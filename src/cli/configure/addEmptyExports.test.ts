@@ -29,9 +29,12 @@ describe('tryAddEmptyExports', () => {
     expect(writeFile.mock.calls.flat().join('\n')).toMatchInlineSnapshot(`
       "~/project/jest.setup.ts
       // jest.setup.ts
+
       export {};
+
       ~/project/jest.setup.int.ts
       // jest.setup.int.ts
+
       export {};
       "
     `);
