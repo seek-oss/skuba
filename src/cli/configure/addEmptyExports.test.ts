@@ -27,17 +27,14 @@ describe('tryAddEmptyExports', () => {
     await expect(tryAddEmptyExports()).resolves.toBeUndefined();
 
     expect(writeFile.mock.calls.flat().join('\n')).toMatchInlineSnapshot(`
-    "~/project/jest.setup.ts
-    // jest.setup.ts
-
-    export {};
-
-    ~/project/jest.setup.int.ts
-    // jest.setup.int.ts
-
-    export {};
-    "
-  `);
+      "~/project/jest.setup.ts
+      // jest.setup.ts
+      export {};
+      ~/project/jest.setup.int.ts
+      // jest.setup.int.ts
+      export {};
+      "
+    `);
   });
 
   it('no-ops compliant Jest setup files', async () => {
