@@ -1,5 +1,7 @@
 ---
-'skuba': patch
+'skuba': minor
 ---
 
-lint: Use `prettier-plugin-packagejson` instead of `sort-package-json`.
+lint: Add `prettier-plugin-packagejson`
+
+This Prettier plugin sorts and formats your `package.json` file.
