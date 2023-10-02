@@ -1,5 +1,38 @@
 # skuba
 
+## 7.3.0
+
+### Minor Changes
+
+- **lint:** Add `prettier-plugin-packagejson` ([#1276](https://github.com/seek-oss/skuba/pull/1276))
+
+  This Prettier plugin sorts and formats your `package.json` file.
+
+### Patch Changes
+
+- **Git:** Handle non-root working directories in [`commitAllChanges`](https://seek-oss.github.io/skuba/docs/development-api/git.html#commitallchanges) ([#1269](https://github.com/seek-oss/skuba/pull/1269))
+
+- **template:** seek-oss/docker-ecr-cache 2.1 ([#1266](https://github.com/seek-oss/skuba/pull/1266))
+
+  This update brings a [new `skip-pull-from-cache` option](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin#skipping-image-pull-from-cache) which is useful on `Warm`/`Build Cache` steps.
+
+  At SEEK, our build agents no longer persist their Docker build cache from previous steps. This option allows a preparatory step to proceed on a cache hit without pulling the image from ECR, which can save on average ~1 minute per build for a 2GB Docker image.
+
+- **lint:** Resolve infinite autofix loop ([#1262](https://github.com/seek-oss/skuba/pull/1262))
+
+- **GitHub:** Add working directory parameter to [`readFileChanges`](https://seek-oss.github.io/skuba/docs/development-api/github.html#readfilechanges) ([#1269](https://github.com/seek-oss/skuba/pull/1269))
+
+  The input `ChangedFiles` need to be evaluated against a working directory. While this is technically a breaking change, we have not found any external usage of the function in `SEEK-Jobs`.
+
+  ```diff
+  - GitHub.readFileChanges(changedFiles)
+  + GitHub.readFileChanges(dir, changedFiles)
+  ```
+
+- **lint:** Handle non-root working directories in autofix commits ([#1269](https://github.com/seek-oss/skuba/pull/1269))
+
+  Previously, `skuba lint` could produce surprising autofix commits if it was invoked in a directory other than the Git root. Now, it correctly evaluates its working directory in relation to the Git root, and will only commit file changes within its working directory.
+
 ## 7.2.0
 
 ### Minor Changes
