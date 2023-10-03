@@ -3,6 +3,10 @@
 set -e
 
 template="${1}"
+if [ -z "$template" ]; then
+  echo "Usage: yarn test:template <template_name>"
+  exit 1
+fi
 
 directory="tmp-${template}"
 
