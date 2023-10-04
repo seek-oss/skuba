@@ -17,10 +17,18 @@ describe('app', () => {
       }
     }));
 
+  /**
+   * Test assertion with logic
+   */
   it('has a reachable nested route', () =>
     agent.get('/jobs').expect(({ status }) => {
-      if (status === 404) {
-        throw new Error('Unreachable nested route');
+      switch (status) {
+        case 200:
+          return;
+        case 404:
+          throw new Error('Unreachable jobs route');
+        default:
+          throw new Error(`Unexpected status: ${status}`);
       }
     }));
 
