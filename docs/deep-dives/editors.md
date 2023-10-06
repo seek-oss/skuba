@@ -25,8 +25,8 @@ parent: Deep dives
    {
      "[typescript]": {
        "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      },
+         "source.fixAll.eslint": true
+       },
        "editor.defaultFormatter": "esbenp.prettier-vscode"
      }
    }
