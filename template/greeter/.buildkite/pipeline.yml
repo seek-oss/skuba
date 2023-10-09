@@ -11,8 +11,9 @@ configs:
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v2.1.0:
         cache-on:
+          - .npmrc
           - package.json
-          - yarn.lock
+          - pnpm-lock.yaml
         secrets: id=npm,src=tmp/.npmrc
 
     - &private-npm
