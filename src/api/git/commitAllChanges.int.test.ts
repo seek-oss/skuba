@@ -139,3 +139,35 @@ it('should no-op on clean directory', async () => {
 
   expect(statuses).toStrictEqual(['absent', 'absent']);
 });
+
+it('should work in a directory which is not relative with a gitIgnore file', async () => {
+  const gitIgnoreFilename = '.gitignore';
+  const gitIgnoreContent = `/${newFileName2}`;
+
+  await Promise.all([
+    fs.promises.writeFile(gitIgnoreFilename, gitIgnoreContent),
+    fs.promises.writeFile(newFileName, ''),
+    fs.promises.writeFile(newFileName2, ''),
+  ]);
+
+  await Promise.all([
+    git.add({ fs, dir, filepath: gitIgnoreFilename }),
+    git.add({ fs, dir, filepath: newFileName }),
+    git.add({ fs, dir, filepath: newFileName2 }),
+  ]);
+
+  await expect(
+    commitAllChanges({
+      dir: process.cwd(),
+      message: 'remove commit',
+      author,
+    }),
+  ).resolves.toMatch(/^[0-9a-f]{40}$/);
+
+  const statuses = await Promise.all([
+    git.status({ fs, dir, filepath: newFileName }),
+    git.status({ fs, dir, filepath: newFileName2 }),
+  ]);
+
+  expect(statuses).toStrictEqual(['unmodified', 'ignored']);
+});
