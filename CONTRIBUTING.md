@@ -50,13 +50,13 @@ If you're on Windows, we recommend the [Windows Subsystem for Linux].
 
 First, some JavaScript tooling:
 
-- Node.js 16+
-- Yarn 1.x
+- Node.js LTS
+- pnpm
 
 Next, install npm dependencies:
 
 ```shell
-yarn install
+pnpm install
 ```
 
 ### Git workflow
@@ -102,21 +102,21 @@ You may find it easier to develop alongside unit tests:
 ```shell
 export NODE_OPTIONS=--experimental-vm-modules
 
-yarn test --watch
+pnpm run test --watch
 ```
 
 Format your code once you're happy with it:
 
 ```shell
-yarn format
+pnpm run format
 ```
 
 We run linting and testing in CI,
 but consider running these commands locally for a faster feedback loop:
 
 ```shell
-yarn lint
-yarn test
+pnpm run lint
+pnpm run test
 ```
 
 Our [validate](https://github.com/seek-oss/skuba/blob/master/.github/workflows/validate.yml) GitHub Actions workflow also initialises each built-in **skuba** template and runs through a set of CLI commands.
@@ -125,7 +125,7 @@ but keep in mind that the script is fairly slow and you'll have to manually clea
 
 ```shell
 # greeter | koa-rest-api | ...
-yarn test:template greeter
+pnpm run test:template greeter
 
 # clean up temporary sibling directory
 rm -fr ../tmp-greeter
@@ -134,40 +134,35 @@ rm -fr ../tmp-greeter
 ### Running locally
 
 If you want to try out the **skuba** CLI on itself,
-a `yarn skuba` script is configured:
+a `pnpm run skuba` script is configured:
 
 ```shell
 # Prints available commands.
-yarn skuba
+pnpm run skuba
 
 # Prints version from local package.json.
-yarn skuba version
+pnpm run skuba version
 
 # Builds skuba using itself.
-yarn skuba build
+pnpm run skuba build
 ```
 
 If you want to try out the **skuba** CLI on another local repo,
-use [yarn link]:
+use [pnpm link]:
 
 ```shell
 # Do this once upfront.
-yarn link
+pnpm link --global
 
-# `yarn link` points to the JavaScript output in `./lib`.
+# `pnpm link` points to the JavaScript output in `./lib`.
 # This means you'll need to rebuild skuba on every code change 😔.
-yarn build
-
-# Link your local skuba binary to another local repo.
-cd ../some-other-repo
-yarn link skuba
+pnpm run build
 
 # Run skuba commands against the other repo.
-yarn skuba version
+skuba version
 
 # Avoid command confusion after you're done.
-cd -
-yarn unlink
+pnpm uninstall --global skuba
 ```
 
 ---
@@ -196,7 +191,7 @@ a changeset is not necessary for:
 - [npm dev dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
 
 ```shell
-yarn changeset
+pnpm exec changeset
 ```
 
 The Changesets CLI is interactive and follows [semantic versioning]:
@@ -254,4 +249,4 @@ Run the [Snapshot workflow] in GitHub Actions to publish a new snapshot version 
 [snapshot workflow]: https://github.com/seek-oss/skuba/actions/workflows/snapshot.yml
 [submit an issue]: https://github.com/seek-oss/skuba/issues/new/choose
 [windows subsystem for linux]: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
-[yarn link]: https://classic.yarnpkg.com/lang/en/docs/cli/link/
+[pnpm link]: https://pnpm.io/cli/link
