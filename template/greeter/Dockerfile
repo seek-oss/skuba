@@ -2,8 +2,7 @@
 
 FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:18-alpine AS dev-deps
 
-RUN corepack enable
-RUN corepack prepare pnpm@latest --activate
+RUN corepack enable pnpm
 RUN pnpm config set store-dir /workdir/.pnpm-store
 
 WORKDIR /workdir
