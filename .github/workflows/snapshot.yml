@@ -22,13 +22,15 @@ jobs:
         with:
           node-version: 18.x
 
+      - uses: pnpm/action-setup@v2
+
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Publish to npm
         uses: seek-oss/changesets-snapshot@v0
         with:
-          pre-publish: yarn build
+          pre-publish: pnpm run build
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}

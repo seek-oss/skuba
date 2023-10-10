@@ -30,17 +30,17 @@
   "scripts": {
     "build": "scripts/build.sh",
     "deploy": "scripts/deploy.sh",
-    "format": "yarn skuba format",
-    "lint": "yarn skuba lint && yarn lint:md",
+    "format": "pnpm run skuba format",
+    "lint": "pnpm run skuba lint && pnpm run lint:md",
     "lint:md": "remark --frail --quiet .",
-    "release": "yarn build && changeset publish",
-    "skuba": "yarn build && node lib/skuba",
-    "stage": "changeset version && yarn format",
-    "test": "yarn skuba test",
-    "test:ci": "yarn skuba test --config jest.config.int.ts --runInBand",
-    "test:int": "yarn skuba test --config jest.config.int.ts --runInBand",
+    "release": "pnpm run build && changeset publish",
+    "skuba": "pnpm run build && node lib/skuba",
+    "stage": "changeset version && pnpm run format",
+    "test": "pnpm run skuba test",
+    "test:ci": "pnpm run skuba test --config jest.config.int.ts --runInBand",
+    "test:int": "pnpm run skuba test --config jest.config.int.ts --runInBand",
     "test:template": "scripts/test-template.sh",
-    "test:watch": "yarn skuba test --config jest.config.int.ts --runInBand --watch"
+    "test:watch": "pnpm run skuba test --config jest.config.int.ts --runInBand --watch"
   },
   "remarkConfig": {
     "plugins": [
@@ -63,9 +63,6 @@
         }
       ]
     ]
-  },
-  "resolutions": {
-    "**/@types/node": ">=18.12"
   },
   "dependencies": {
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",

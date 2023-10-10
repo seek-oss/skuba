@@ -44,31 +44,31 @@ jobs:
           git config user.name seek-oss-ci
           git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
-      - uses: pnpm/action-setup@v2
-
       - name: Set up Node.js 18.x
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
+      - uses: pnpm/action-setup@v2
+
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Test
-        run: yarn test:ci
+        run: pnpm run test:ci
         env:
           NODE_OPTIONS: --experimental-vm-modules
 
       - name: Lint
-        run: yarn lint
+        run: pnpm run lint
 
       - if: github.event_name == 'push'
         name: Dry-run changelog versioning
-        run: yarn changeset version
+        run: pnpm exec changeset version
 
       - if: github.event_name == 'push'
         name: Dry-run site packaging
-        run: yarn skuba node scripts/package.ts
+        run: pnpm run skuba node scripts/package.ts
 
   template:
     name: Integrate
@@ -87,15 +87,15 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
-
       - name: Set up Node.js 18.x
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
+      - uses: pnpm/action-setup@v2
+
       - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
         name: Test template
-        run: yarn test:template ${{ matrix.template }}
+        run: pnpm run test:template ${{ matrix.template }}
         env:
           NODE_OPTIONS: --experimental-vm-modules
