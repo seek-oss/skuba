@@ -2,7 +2,6 @@
 
 FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:18-alpine AS dev-deps
 
-RUN apk --no-cache add curl
 RUN corepack enable
 RUN corepack prepare pnpm@latest --activate
 RUN pnpm config set store-dir /workdir/.pnpm-store
