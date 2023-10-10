@@ -10,7 +10,8 @@ import { getRandomPort } from '../../utils/port';
 import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
-  TemplateConfig,
+  type TemplateConfig,
+  templateConfigSchema,
 } from '../../utils/template';
 
 import { downloadGitHubTemplate } from './git';
@@ -21,7 +22,7 @@ import {
   SHOULD_CONTINUE_PROMPT,
   TEMPLATE_PROMPT,
 } from './prompts';
-import { type InitConfig, InitConfigInput } from './types';
+import { type InitConfig, initConfigInputSchema } from './types';
 
 import { Form, type FormChoice } from 'enquirer';
 
@@ -131,7 +132,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
     /* eslint-disable-next-line @typescript-eslint/no-var-requires */
     const templateConfig = require(templateConfigPath) as unknown;
 
-    return TemplateConfig.check(templateConfig);
+    return templateConfigSchema.parse(templateConfig);
   } catch (err) {
     if (isErrorWithCode(err, 'MODULE_NOT_FOUND')) {
       return {
@@ -269,19 +270,19 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     process.exit(1);
   }
 
-  const result = InitConfigInput.validate(value);
+  const result = initConfigInputSchema.safeParse(value);
 
   if (!result.success) {
     log.err('Invalid data from stdin:');
-    log.err(result.message);
+    log.err(result.error);
     process.exit(1);
   }
 
-  const { destinationDir, templateComplete, templateName } = result.value;
+  const { destinationDir, templateComplete, templateName } = result.data;
 
   const templateData = {
-    ...(await baseToTemplateData(result.value.templateData)),
-    ...result.value.templateData,
+    ...(await baseToTemplateData(result.data.templateData)),
+    ...result.data.templateData,
   };
 
   await createDirectory(destinationDir);
@@ -299,7 +300,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     }
 
     return {
-      ...result.value,
+      ...result.data,
       entryPoint,
       templateData: {
         ...templateData,
@@ -323,7 +324,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   }
 
   return {
-    ...result.value,
+    ...result.data,
     entryPoint,
     templateData,
     type,
