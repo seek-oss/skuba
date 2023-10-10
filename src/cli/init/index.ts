@@ -115,7 +115,8 @@ export const init = async () => {
     log.newline();
     log.plain('Then, resume initialisation:');
     log.ok('cd', destinationDir);
-    log.ok('yarn add --dev', skubaSlug);
+    // The `-D` shorthand is portable across our package managers.
+    log.ok(packageManager, 'add', '-D', skubaSlug);
     log.ok('git add --all');
     log.ok('git commit --message', `'Pin ${skubaSlug}'`);
     log.ok('git push --set-upstream origin master');
