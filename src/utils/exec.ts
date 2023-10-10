@@ -8,7 +8,7 @@ import execa, { type ExecaChildProcess } from 'execa';
 import npmRunPath from 'npm-run-path';
 import npmWhich from 'npm-which';
 
-import { ConcurrentlyErrors, isErrorWithCode } from './error';
+import { concurrentlyErrorsSchema, isErrorWithCode } from './error';
 import { log } from './logging';
 
 class YarnSpamFilter extends stream.Transform {
@@ -163,13 +163,13 @@ export const execConcurrently = async (
       },
     ).result;
   } catch (err) {
-    const result = ConcurrentlyErrors.validate(err);
+    const result = concurrentlyErrorsSchema.safeParse(err);
 
     if (!result.success) {
       throw err;
     }
 
-    const failed = result.value
+    const failed = result.data
       .filter(({ exitCode }) => exitCode !== 0)
       .sort(({ index: indexA }, { index: indexB }) => indexA - indexB)
       .map((subprocess) => subprocess.command.name);
