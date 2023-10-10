@@ -69,6 +69,7 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
   },
 };
 
+// TODO: consider changing to this to `pnpm` in a future major version.
 export const DEFAULT_PACKAGE_MANAGER = 'yarn';
 
 export type PackageManager = z.infer<typeof packageManagerSchema>;

@@ -86,6 +86,7 @@ export const init = async () => {
 
   let depsInstalled = false;
   try {
+    // The `-D` shorthand is portable across our package managers.
     await exec(packageManager, 'add', '-D', skubaSlug);
     depsInstalled = true;
   } catch {}
