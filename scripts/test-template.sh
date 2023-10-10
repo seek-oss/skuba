@@ -13,14 +13,17 @@ directory="tmp-${template}"
 echo '--- cleanup'
 rm -rf "${directory}" "../${directory}"
 
-echo '--- yarn install'
-yarn install --frozen-lockfile --ignore-optional --non-interactive
+echo '--- pnpm install'
+pnpm install --frozen-lockfile --no-optional
 
-echo '--- yarn build'
-yarn build
+echo '--- pnpm run build'
+pnpm run build
+
+echo '--- pnpm link --global'
+pnpm link --global
 
 echo "--- skuba init ${template}"
-yarn skuba init << EOF
+skuba init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
@@ -46,22 +49,19 @@ mv "${directory}" "../${directory}"
 
 cd "../${directory}" || exit 1
 
-echo '--- yarn add skuba'
-yarn add --dev 'file:../skuba'
-
 echo "--- skuba version ${template}"
-yarn skuba version
-yarn skuba -v
-yarn skuba --version
+skuba version
+skuba -v
+skuba --version
 
-echo "--- skuba build ${template}"
-yarn build
+echo "--- pnpm run build ${template}"
+pnpm run build
 
-echo "--- skuba lint ${template}"
-yarn lint
+echo "--- pnpm run lint ${template}"
+pnpm run lint
 
-echo "--- skuba format ${template}"
-yarn format
+echo "--- pnpm run format ${template}"
+pnpm run format
 
-echo "--- skuba test ${template}"
-yarn test
+echo "--- pnpm run test ${template}"
+pnpm run test
