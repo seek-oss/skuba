@@ -1,16 +1,14 @@
-/* eslint-disable new-cap */
-
 import readPkgUp, { type NormalizedPackageJson } from 'read-pkg-up';
-import * as t from 'runtypes';
+import { z } from 'zod';
 
 import { hasProp } from './validation';
 
-export type ProjectType = t.Static<typeof ProjectType>;
+export type ProjectType = z.infer<typeof projectTypeSchema>;
 
-export const ProjectType = t.Union(
-  t.Literal('application'),
-  t.Literal('package'),
-);
+export const projectTypeSchema = z.union([
+  z.literal('application'),
+  z.literal('package'),
+]);
 
 export const PROJECT_TYPES = ['application', 'package'] as const;
 
