@@ -82,7 +82,7 @@ If you use the `Squash and merge` option on pull requests, take extra care to fo
 ### Releasing latest
 
 Commits to the `master` branch will be released with the `latest` tag,
-which is the default used when running `npm install` or `yarn install`.
+which is the default used when running `npm install` or `pnpm install`.
 
 ### Releasing other dist-tags
 
