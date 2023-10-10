@@ -87,7 +87,6 @@ export const init = async () => {
   try {
     await exec('yarn', 'add', '--dev', skubaSlug);
     depsInstalled = true;
-    await exec('npx', 'yarn-deduplicate', '--strategy=highest');
   } catch {}
 
   await commitAllChanges({

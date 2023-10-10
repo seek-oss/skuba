@@ -121,9 +121,6 @@ export const configure = async () => {
       process.exitCode = 1;
       return;
     }
-    try {
-      await exec('npx', 'yarn-deduplicate', '--strategy=highest');
-    } catch {}
   }
 
   if (fixConfiguration ?? fixDependencies) {
