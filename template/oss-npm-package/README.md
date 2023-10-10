@@ -39,33 +39,33 @@ log();
 ### Prerequisites
 
 - Node.js LTS
-- Yarn 1.x
+- pnpm
 
 ```shell
-yarn install
+pnpm install
 ```
 
 ### Test
 
 ```shell
-yarn test
+pnpm run test
 ```
 
 ### Lint
 
 ```shell
 # Fix issues
-yarn format
+pnpm run format
 
 # Check for issues
-yarn lint
+pnpm run lint
 ```
 
 ### Package
 
 ```shell
 # Compile source
-yarn build
+pnpm run build
 
 # Review bundle
 npm pack
@@ -100,7 +100,7 @@ If you use the `Squash and merge` option on pull requests, take extra care to fo
 ### Releasing latest
 
 Commits to the `master` branch will be released with the `latest` tag,
-which is the default used when running `npm install` or `yarn install`.
+which is the default used when running `npm install` or `pnpm install`.
 
 ### Releasing other dist-tags
 
