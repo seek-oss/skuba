@@ -16,5 +16,3 @@ node_modules*/
 npm-debug.log
 yarn-error.log
 # end managed by skuba
-
-!.npmrc
