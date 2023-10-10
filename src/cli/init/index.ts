@@ -88,7 +88,6 @@ export const init = async () => {
   try {
     await exec(packageManager, 'add', '-D', skubaSlug);
     depsInstalled = true;
-    await exec('npx', 'yarn-deduplicate', '--strategy=highest');
   } catch {}
 
   await commitAllChanges({
