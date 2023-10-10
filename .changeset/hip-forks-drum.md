@@ -9,7 +9,7 @@ New projects based on built-in templates will now use pnpm as their package mana
 Custom templates will continue to default to Yarn 1.x until a future major version, though you can opt in to pnpm via `skuba.template.js`:
 
 ```diff
-{
+module.exports = {
 + packageManager: 'pnpm',
-}
+};
 ```
