@@ -19,16 +19,17 @@ import { writePackageJson } from './writePackageJson';
 export const init = async () => {
   const skubaVersionInfo = await showLogoAndVersionInfo();
 
-  await ensureCommands('yarn');
-
   const {
     destinationDir,
     entryPoint,
+    packageManager,
     templateComplete,
     templateData,
     templateName,
     type,
   } = await getConfig();
+
+  await ensureCommands(packageManager);
 
   const include = await createInclusionFilter([
     path.join(destinationDir, '.gitignore'),
@@ -72,7 +73,7 @@ export const init = async () => {
   const exec = createExec({
     cwd: destinationDir,
     stdio: 'pipe',
-    streamStdio: 'yarn',
+    streamStdio: packageManager === 'yarn' ? 'yarn' : true,
   });
 
   log.newline();
@@ -85,7 +86,7 @@ export const init = async () => {
 
   let depsInstalled = false;
   try {
-    await exec('yarn', 'add', '--dev', skubaSlug);
+    await exec(packageManager, 'add', '-D', skubaSlug);
     depsInstalled = true;
     await exec('npx', 'yarn-deduplicate', '--strategy=highest');
   } catch {}

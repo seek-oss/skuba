@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { projectTypeSchema } from '../../utils/manifest';
+import { packageManagerSchema } from '../../utils/template';
 
 export type InitConfigInput = z.infer<typeof initConfigInputSchema>;
 
@@ -40,5 +41,6 @@ const initConfigSchema = initConfigInputSchema
       .catchall(z.string()),
 
     entryPoint: z.string().optional(),
+    packageManager: packageManagerSchema,
     type: projectTypeSchema.optional(),
   });

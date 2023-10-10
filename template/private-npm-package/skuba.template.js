@@ -20,5 +20,6 @@ module.exports = {
   ],
   // `moduleName` is required for a valid `package.json`
   noSkip: true,
+  packageManager: 'pnpm',
   type: 'package',
 };

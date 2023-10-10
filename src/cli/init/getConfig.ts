@@ -8,6 +8,7 @@ import { isErrorWithCode } from '../../utils/error';
 import { log } from '../../utils/logging';
 import { getRandomPort } from '../../utils/port';
 import {
+  DEFAULT_PACKAGE_MANAGER,
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
   type TemplateConfig,
@@ -138,6 +139,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
       return {
         entryPoint: undefined,
         fields: [],
+        packageManager: DEFAULT_PACKAGE_MANAGER,
         type: undefined,
       };
     }
@@ -195,14 +197,14 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 
   await cloneTemplate(templateName, destinationDir);
 
-  const { entryPoint, fields, noSkip, type } = getTemplateConfig(
-    path.join(process.cwd(), destinationDir),
-  );
+  const { entryPoint, fields, noSkip, packageManager, type } =
+    getTemplateConfig(path.join(process.cwd(), destinationDir));
 
   if (fields.length === 0) {
     return {
       destinationDir,
       entryPoint,
+      packageManager,
       templateComplete: true,
       templateData,
       templateName,
@@ -223,6 +225,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     return {
       destinationDir,
       entryPoint,
+      packageManager,
       templateComplete: true,
       templateData: { ...templateData, ...customAnswers },
       templateName,
@@ -238,6 +241,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   return {
     destinationDir,
     entryPoint,
+    packageManager,
     templateComplete: false,
     templateData: { ...templateData, ...customAnswers },
     templateName,
@@ -289,9 +293,8 @@ const configureFromPipe = async (): Promise<InitConfig> => {
 
   await cloneTemplate(templateName, destinationDir);
 
-  const { entryPoint, fields, noSkip, type } = getTemplateConfig(
-    path.join(process.cwd(), destinationDir),
-  );
+  const { entryPoint, fields, noSkip, packageManager, type } =
+    getTemplateConfig(path.join(process.cwd(), destinationDir));
 
   if (!templateComplete) {
     if (noSkip) {
@@ -302,6 +305,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     return {
       ...result.data,
       entryPoint,
+      packageManager,
       templateData: {
         ...templateData,
         ...generatePlaceholders(fields),
@@ -326,6 +330,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   return {
     ...result.data,
     entryPoint,
+    packageManager,
     templateData,
     type,
   };

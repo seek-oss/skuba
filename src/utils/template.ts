@@ -69,6 +69,14 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
   },
 };
 
+export const DEFAULT_PACKAGE_MANAGER = 'yarn';
+
+export type PackageManager = z.infer<typeof packageManagerSchema>;
+
+export const packageManagerSchema = z
+  .union([z.literal('pnpm'), z.literal('yarn')])
+  .default(DEFAULT_PACKAGE_MANAGER);
+
 export type TemplateConfig = z.infer<typeof templateConfigSchema>;
 
 export const templateConfigSchema = z.object({
@@ -82,6 +90,7 @@ export const templateConfigSchema = z.object({
   ),
   entryPoint: z.string().optional(),
   noSkip: z.boolean().optional(),
+  packageManager: packageManagerSchema,
   type: projectTypeSchema.optional(),
 });
 

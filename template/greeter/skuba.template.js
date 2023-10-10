@@ -12,5 +12,6 @@ module.exports = {
       validate: (value) => /^.+:.+$/.test(value),
     },
   ],
+  packageManager: 'pnpm',
   type: 'application',
 };
