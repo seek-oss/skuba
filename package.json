@@ -36,11 +36,11 @@
     "release": "yarn build && changeset publish",
     "skuba": "yarn build && node lib/skuba",
     "stage": "changeset version && yarn format",
-    "test": "yarn skuba test",
-    "test:ci": "yarn skuba test --config jest.config.int.ts --runInBand",
-    "test:int": "yarn skuba test --config jest.config.int.ts --runInBand",
+    "test": "yarn skuba test --selectProjects unit",
+    "test:ci": "yarn skuba test --runInBand",
+    "test:int": "yarn skuba test --selectProjects integration --runInBand",
     "test:template": "scripts/test-template.sh",
-    "test:watch": "yarn skuba test --config jest.config.int.ts --runInBand --watch"
+    "test:watch": "yarn skuba test --runInBand --watch"
   },
   "remarkConfig": {
     "plugins": [

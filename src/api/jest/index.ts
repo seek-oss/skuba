@@ -37,3 +37,5 @@ export const mergePreset = <
 >(
   options: Pick<Config.InitialOptions, AdditionalOptions | DefaultOptions>,
 ): Config.InitialOptions => mergeRaw(jestPreset, options);
+
+export type { Config };
