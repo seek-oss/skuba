@@ -2,15 +2,15 @@
 'skuba': minor
 ---
 
-test: Propagate root config to `projects` array in `Jest.mergePreset`
+Jest.mergePreset: Propagate root-level configuration options to `projects`
 
-`Jest.mergePreset` now propagates the `transform`and`moduleNameMapper`options from the root config preset to the`projects` array.
+[`Jest.mergePreset`](https://seek-oss.github.io/skuba/docs/development-api/jest.html#mergepreset) now propagates the `moduleNameMapper` and `transform` options from root-level configuration to the `projects` array.
 
-If you were refencing the base config in the `projects` array
+If you were referencing the base config in the `projects` array:
 
 ```ts
 const baseConfig = Jest.mergePreset({
-  ...
+  // ...
 });
 
 export default {
@@ -29,14 +29,14 @@ export default {
       testMatch: ['**/*.int.test.ts'],
     },
   ],
-}
+};
 ```
 
-You can replace it with the following config:
+You can replace it with the following:
 
 ```ts
 export default Jest.mergePreset({
-  ...
+  // ...
   projects: [
     {
       displayName: 'unit',
@@ -49,7 +49,7 @@ export default Jest.mergePreset({
       testMatch: ['**/*.int.test.ts'],
     },
   ],
-})
+});
 ```
 
-The `projects` option can allow you to reuse a single Jest config file for different test types. View the [Jest documentation](https://jestjs.io/docs/configuration#projects-arraystring--projectconfig) for more information.
+The `projects` option allows you to reuse a single Jest config file for different test types. View the [Jest documentation](https://jestjs.io/docs/configuration#projects-arraystring--projectconfig) for more information.
