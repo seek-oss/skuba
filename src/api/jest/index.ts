@@ -54,5 +54,3 @@ export const mergePreset = <
     };
   }),
 });
-
-export type { Config };
