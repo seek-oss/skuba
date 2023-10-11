@@ -30,4 +30,31 @@ describe('mergePreset', () => {
 
     expect(config).toHaveProperty('testEnvironment', 'jsdom');
   });
+
+  it('provides the jest preset transform and moduleNameMapper to projects', () => {
+    const config = mergePreset({
+      projects: [{ displayName: 'unit' }, { displayName: 'integration' }],
+    });
+
+    expect(config.projects).toStrictEqual([
+      {
+        displayName: 'unit',
+        transform: expect.any(Object),
+        moduleNameMapper: expect.any(Object),
+      },
+      {
+        displayName: 'integration',
+        transform: expect.any(Object),
+        moduleNameMapper: expect.any(Object),
+      },
+    ]);
+  });
+
+  it('allows paths to be passed to projects', () => {
+    const config = mergePreset({
+      projects: ['src/project1', 'src/project2'],
+    });
+
+    expect(config.projects).toStrictEqual(['src/project1', 'src/project2']);
+  });
 });

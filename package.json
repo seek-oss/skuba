@@ -36,11 +36,11 @@
     "release": "pnpm run build && changeset publish",
     "skuba": "pnpm run build && node lib/skuba",
     "stage": "changeset version && pnpm run format",
-    "test": "pnpm run skuba test",
-    "test:ci": "pnpm run skuba test --config jest.config.int.ts --runInBand",
-    "test:int": "pnpm run skuba test --config jest.config.int.ts --runInBand",
+    "test": "pnpm run skuba test --selectProjects unit",
+    "test:ci": "pnpm run skuba test --runInBand",
+    "test:int": "pnpm run skuba test --runInBand --selectProjects integration",
     "test:template": "scripts/test-template.sh",
-    "test:watch": "pnpm run skuba test --config jest.config.int.ts --runInBand --watch"
+    "test:watch": "pnpm run skuba test --runInBand --watch"
   },
   "remarkConfig": {
     "plugins": [

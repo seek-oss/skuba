@@ -34,6 +34,28 @@ type DefaultOptions =
  */
 export const mergePreset = <
   AdditionalOptions extends keyof Config.InitialOptions,
->(
-  options: Pick<Config.InitialOptions, AdditionalOptions | DefaultOptions>,
-): Config.InitialOptions => mergeRaw(jestPreset, options);
+>({
+  projects,
+  ...options
+}: Pick<
+  Config.InitialOptions,
+  AdditionalOptions | DefaultOptions
+>): Config.InitialOptions => {
+  const root = mergeRaw(jestPreset, options);
+
+  return {
+    ...root,
+
+    projects: projects?.map((project) => {
+      if (typeof project === 'string') {
+        return project;
+      }
+
+      return {
+        moduleNameMapper: root.moduleNameMapper,
+        transform: root.transform,
+        ...project,
+      };
+    }),
+  };
+};
