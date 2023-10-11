@@ -2,9 +2,9 @@
 'skuba': minor
 ---
 
-test: Inject root config into `Jest.mergePreset` `projects`
+test: Propagate root config to `projects` array in `Jest.mergePreset`
 
-`Jest.mergePreset` now propogates the `transform` and `moduleNameMapper` root config to `projects` array.
+`Jest.mergePreset` now propagates the `transform`and`moduleNameMapper`options from the root config preset to the`projects` array.
 
 If you were refencing the base config in the `projects` array
 
@@ -52,4 +52,4 @@ export default Jest.mergePreset({
 })
 ```
 
-The `projects` option can allow you to reuse a single Jest config file for multiple test types.
+The `projects` option can allow you to reuse a single Jest config file for multiple test types. View the [Jest documentation](https://jestjs.io/docs/configuration#projects-arraystring--projectconfig) for more information.
