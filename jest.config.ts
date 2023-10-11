@@ -1,6 +1,6 @@
 import { Jest } from './src';
 
-const defaultConfig = Jest.mergePreset({
+export default Jest.mergePreset({
   coveragePathIgnorePatterns: ['<rootDir>/integration/', '<rootDir>/template/'],
   displayName: 'unit',
   setupFiles: ['<rootDir>/jest.setup.ts'],
@@ -9,26 +9,20 @@ const defaultConfig = Jest.mergePreset({
     '<rootDir>/integration/format/',
     '<rootDir>/integration/lint/',
   ],
-});
-
-const { transform, moduleNameMapper, setupFiles } = defaultConfig;
-
-export default {
-  ...defaultConfig,
   projects: [
     {
-      transform,
-      moduleNameMapper,
-      setupFiles,
+      setupFiles: ['<rootDir>/jest.setup.ts'],
       displayName: 'unit',
-      testPathIgnorePatterns: ['<rootDir>/template/', '\\.int\\.test\\.ts'],
+      testPathIgnorePatterns: [
+        '<rootDir>/template/',
+        '/test\\.ts',
+        '\\.int\\.test\\.ts',
+      ],
     },
     {
-      transform,
-      moduleNameMapper,
-      setupFiles,
+      setupFiles: ['<rootDir>/jest.setup.ts'],
       displayName: 'integration',
       testMatch: ['**/*.int.test.ts'],
     },
   ],
-} satisfies Jest.Config.InitialOptions;
+});
