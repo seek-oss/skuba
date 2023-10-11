@@ -11,8 +11,8 @@ export default Jest.mergePreset({
   ],
   projects: [
     {
-      setupFiles: ['<rootDir>/jest.setup.ts'],
       displayName: 'unit',
+      setupFiles: ['<rootDir>/jest.setup.ts'],
       testPathIgnorePatterns: [
         '<rootDir>/template/',
         '/test\\.ts',
@@ -20,8 +20,8 @@ export default Jest.mergePreset({
       ],
     },
     {
-      setupFiles: ['<rootDir>/jest.setup.ts'],
       displayName: 'integration',
+      setupFiles: ['<rootDir>/jest.setup.ts'],
       testMatch: ['**/*.int.test.ts'],
     },
   ],
