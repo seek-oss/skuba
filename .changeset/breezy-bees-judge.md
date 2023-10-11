@@ -52,4 +52,4 @@ export default Jest.mergePreset({
 })
 ```
 
-The `projects` option can allow you to reuse a single Jest config file for multiple test types. View the [Jest documentation](https://jestjs.io/docs/configuration#projects-arraystring--projectconfig) for more information.
+The `projects` option can allow you to reuse a single Jest config file for different test types. View the [Jest documentation](https://jestjs.io/docs/configuration#projects-arraystring--projectconfig) for more information.
