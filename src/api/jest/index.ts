@@ -40,17 +40,22 @@ export const mergePreset = <
 }: Pick<
   Config.InitialOptions,
   AdditionalOptions | DefaultOptions
->): Config.InitialOptions => ({
-  ...mergeRaw(jestPreset, options),
-  projects: projects?.map((project) => {
-    if (typeof project === 'string') {
-      return project;
-    }
+>): Config.InitialOptions => {
+  const root = mergeRaw(jestPreset, options);
 
-    return {
-      transform: jestPreset.transform,
-      moduleNameMapper: jestPreset.moduleNameMapper,
-      ...project,
-    };
-  }),
-});
+  return {
+    ...root,
+
+    projects: projects?.map((project) => {
+      if (typeof project === 'string') {
+        return project;
+      }
+
+      return {
+        moduleNameMapper: root.moduleNameMapper,
+        transform: root.transform,
+        ...project,
+      };
+    }),
+  };
+};
