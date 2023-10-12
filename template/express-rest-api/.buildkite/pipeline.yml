@@ -69,6 +69,11 @@ steps:
           file: gantry.build.yml
           region: <%- region %>
           values: .gantry/common.yml
+    retry:
+      manual:
+        # Use this if you need to re-push a build image to ECR.
+        # This may be helpful in a disaster recovery scenario.
+        permit_on_passed: true
 
   - wait
   - block: 🙋🏻‍♀️ Deploy Dev
