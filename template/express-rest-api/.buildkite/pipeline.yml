@@ -54,7 +54,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v4.14.0:
+      - docker-compose#v4.15.0:
           run: app
     timeout_in_minutes: 10
 
