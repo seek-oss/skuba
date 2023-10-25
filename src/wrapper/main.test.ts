@@ -172,7 +172,7 @@ test('syncFunctionHandler', async () => {
           { stack: expect.any(String) },
           `
           {
-            "message": "Unexpected token I in JSON at position 0",
+            "message": "Unexpected token 'I', "Invalid JSON" is not valid JSON",
             "name": "SyntaxError",
             "stack": Any<String>,
           }

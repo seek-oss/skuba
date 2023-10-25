@@ -44,10 +44,10 @@ jobs:
           git config user.name seek-oss-ci
           git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
-      - name: Set up Node.js 18.x
+      - name: Set up Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -85,10 +85,10 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 18.x
+      - name: Set up Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
 
       - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
         name: Test template
