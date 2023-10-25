@@ -100,6 +100,8 @@ beforeEach(() => {
 });
 
 afterAll(() => {
+  process.exitCode = undefined;
+
   // Restore the original working directory to avoid confusion in other tests.
   process.chdir(originalCwd);
 
