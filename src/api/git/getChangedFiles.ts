@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
+import { findRoot } from './findRoot';
 import {
   ABSENT,
   FILEPATH,
@@ -23,7 +24,7 @@ export interface IgnoredFile extends ChangedFile {
    * @param file - The file to validate.
    * @returns boolean - Whether the file should be ignored.
    */
-  rule?: (dir: string, file: ChangedFile) => Promise<boolean>;
+  rule?: (params: { file: ChangedFile; gitRoot: string }) => Promise<boolean>;
 }
 
 interface ChangedFilesParameters {
@@ -60,6 +61,11 @@ export const getChangedFiles = async ({
 
   ignore = [],
 }: ChangedFilesParameters): Promise<ChangedFile[]> => {
+  const gitRoot = await findRoot({ dir });
+
+  if (!gitRoot) {
+    throw new Error(`Could not find Git root from directory: ${dir}`);
+  }
   const allFiles = await git.statusMatrix({ fs, dir });
   return allFiles
     .filter(
@@ -75,7 +81,7 @@ export const getChangedFiles = async ({
           (i) =>
             i.path === changedFile.path &&
             i.state === changedFile.state &&
-            i.rule?.(dir, changedFile),
+            i.rule?.({ gitRoot, file: changedFile }),
         ),
     );
 };

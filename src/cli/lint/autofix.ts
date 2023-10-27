@@ -47,11 +47,7 @@ export const AUTOFIX_IGNORE_FILES: Git.IgnoredFile[] = [
     // further changes as the CI environment may have appended an npm token.
     path: '.npmrc',
     state: 'modified',
-    rule: async (dir, file) => {
-      const gitRoot = await Git.findRoot({ dir });
-      if (!gitRoot) {
-        throw new Error(`Could not find Git root from directory: ${dir}`);
-      }
+    rule: async ({ file, gitRoot }) => {
       const content = await fs.promises.readFile(
         path.join(gitRoot, file.path),
         'utf8',
