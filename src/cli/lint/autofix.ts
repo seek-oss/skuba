@@ -37,7 +37,7 @@ const AUTOFIX_CODEGEN_FILES = new Set<string>([
   SERVER_LISTENER_FILENAME,
 ]);
 
-export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
+export const AUTOFIX_IGNORE_FILES: Git.IgnoredFile[] = [
   {
     path: '.npmrc',
     state: 'added',
@@ -47,6 +47,17 @@ export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
     // further changes as the CI environment may have appended an npm token.
     path: '.npmrc',
     state: 'modified',
+    rule: async (dir, file) => {
+      const gitRoot = await Git.findRoot({ dir });
+      if (!gitRoot) {
+        throw new Error(`Could not find Git root from directory: ${dir}`);
+      }
+      const content = await fs.promises.readFile(
+        path.join(gitRoot, file.path),
+        'utf8',
+      );
+      return content.includes(':_authToken=');
+    },
   },
   {
     path: 'Dockerfile-incunabulum',

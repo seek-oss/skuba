@@ -16,6 +16,16 @@ export interface ChangedFile {
   path: string;
   state: ChangedFileState;
 }
+
+export interface IgnoredFile extends ChangedFile {
+  /**
+   * Optional validation rule to apply to the file.
+   * @param file - The file to validate.
+   * @returns boolean - Whether the file should be ignored.
+   */
+  rule?: (dir: string, file: ChangedFile) => Promise<boolean>;
+}
+
 interface ChangedFilesParameters {
   dir: string;
 
@@ -24,7 +34,7 @@ interface ChangedFilesParameters {
    *
    * Defaults to `[]` (no exclusions).
    */
-  ignore?: ChangedFile[];
+  ignore?: IgnoredFile[];
 }
 
 const mapState = (
@@ -62,7 +72,10 @@ export const getChangedFiles = async ({
     .filter(
       (changedFile) =>
         !ignore.some(
-          (i) => i.path === changedFile.path && i.state === changedFile.state,
+          (i) =>
+            i.path === changedFile.path &&
+            i.state === changedFile.state &&
+            i.rule?.(dir, changedFile),
         ),
     );
 };
