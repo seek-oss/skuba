@@ -75,7 +75,7 @@ export const getChangedFiles = async ({
           (i) =>
             i.path === changedFile.path &&
             i.state === changedFile.state &&
-            i.rule?.({ dir, file: changedFile }),
+            (!i.rule || i.rule({ dir, file: changedFile })),
         ),
     );
 };

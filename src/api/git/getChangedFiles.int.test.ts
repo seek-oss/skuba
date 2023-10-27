@@ -66,9 +66,11 @@ it('should exclude file changes based on ignore parameter', async () => {
   await Promise.all([
     fs.promises.writeFile('a', '1'),
     fs.promises.writeFile('b', '1'),
+    fs.promises.writeFile('d', '1'),
+    fs.promises.writeFile('e', '1'),
   ]);
 
-  await git.add({ fs, dir, filepath: ['a', 'b'] });
+  await git.add({ fs, dir, filepath: ['a', 'b', 'd', 'e'] });
   await git.commit({
     fs,
     dir,
@@ -78,9 +80,14 @@ it('should exclude file changes based on ignore parameter', async () => {
 
   await Promise.all([
     fs.promises.rm('a'),
-    fs.promises.writeFile('b', '2'),
-    fs.promises.writeFile('c', '2'),
+    fs.promises.writeFile('b', '21'),
+    fs.promises.writeFile('c', '21'),
+    fs.promises.writeFile('d', '21'),
+    fs.promises.writeFile('e', '21'),
   ]);
+
+  const ruleD = jest.fn().mockReturnValue(true);
+  const ruleE = jest.fn().mockReturnValue(false);
 
   const files = await getChangedFiles({
     dir,
@@ -100,6 +107,18 @@ it('should exclude file changes based on ignore parameter', async () => {
         path: 'b',
         state: 'modified',
       },
+      {
+        // d file change is matched, rule returns true and therefore ignored
+        path: 'd',
+        state: 'modified',
+        rule: ruleD,
+      },
+      {
+        // e file change is matched, rule returns false and therefore not ignored
+        path: 'e',
+        state: 'modified',
+        rule: ruleE,
+      },
     ],
   });
 
@@ -107,7 +126,17 @@ it('should exclude file changes based on ignore parameter', async () => {
     // b file change is matched and therefore ignored
     { path: 'a', state: 'deleted' },
     { path: 'c', state: 'added' },
+    { path: 'e', state: 'modified' },
   ]);
+
+  expect(ruleD).toHaveBeenCalledWith({
+    dir,
+    file: { path: 'd', state: 'modified' },
+  });
+  expect(ruleE).toHaveBeenCalledWith({
+    dir,
+    file: { path: 'e', state: 'modified' },
+  });
 });
 
 it('should return an empty array if no files were changed', async () => {
