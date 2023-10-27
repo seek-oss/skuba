@@ -57,7 +57,7 @@ export const AUTOFIX_IGNORE_FILES: Git.IgnoredFile[] = [
         path.join(gitRoot, file.path),
         'utf8',
       );
-      return content.includes(':_authToken=');
+      return content.includes('_authToken=');
     },
   },
   {
