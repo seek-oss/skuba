@@ -22,31 +22,12 @@ const listener = app.listen(config.port, () => {
 // AWS recommends setting an application timeout larger than the load balancer
 listener.keepAliveTimeout = 31000;
 
-const gracefullyShutdown = () => {
+process.on('SIGTERM', () => {
   logger.debug('Draining remaining connections');
-
   listener.close(() => {
     logger.debug('Remaining connections drained');
     // Additional cleanup tasks go here, e.g., close database connection
     // eslint-disable-next-line no-process-exit
     process.exit(0);
-  });
-};
-
-process.on('SIGTERM', () => {
-  listener.close(() => {
-    gracefullyShutdown();
-  });
-});
-
-process.on('SIGTERM', () => {
-  listener.close(() => {
-    gracefullyShutdown();
-  });
-});
-
-process.on('SIGINT', () => {
-  listener.close(() => {
-    gracefullyShutdown();
   });
 });
