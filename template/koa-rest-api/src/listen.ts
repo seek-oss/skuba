@@ -24,8 +24,10 @@ const listener = app.listen(config.port, () => {
 listener.keepAliveTimeout = 31000;
 
 const gracefullyShutdown = () => {
+  logger.debug('Draining remaining connections');
+
   listener.close(() => {
-    logger.debug('Closed out remaining connections');
+    logger.debug('Remaining connections drained');
     // Additional cleanup tasks go here, e.g., close database connection
     // eslint-disable-next-line no-process-exit
     process.exit(0);
