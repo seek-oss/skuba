@@ -29,12 +29,15 @@ const AUTOFIX_DELETE_FILES = [
   'Dockerfile-incunabulum',
 ];
 
+const NPMRC_FILE = '.npmrc';
+
 const AUTOFIX_CODEGEN_FILES = new Set<string>([
   ...AUTOFIX_DELETE_FILES,
   ...JEST_SETUP_FILES,
   ...REFRESHABLE_IGNORE_FILES,
   ...RENOVATE_CONFIG_FILENAMES,
   SERVER_LISTENER_FILENAME,
+  NPMRC_FILE,
 ]);
 
 export const AUTOFIX_IGNORE_FILES: Git.IgnoredFile[] = [
@@ -47,16 +50,8 @@ export const AUTOFIX_IGNORE_FILES: Git.IgnoredFile[] = [
     // further changes as the CI environment may have appended an npm token.
     path: '.npmrc',
     state: 'modified',
-    rule: async ({ file, dir }) => {
-      const gitRoot = await Git.findRoot({ dir });
-
-      if (!gitRoot) {
-        throw new Error(`Could not find Git root from directory: ${dir}`);
-      }
-      const content = await fs.promises.readFile(
-        path.join(gitRoot, file.path),
-        'utf8',
-      );
+    rule: async ({ file }) => {
+      const content = await fs.promises.readFile(file.path, 'utf8');
       return content.includes(':_authToken=');
     },
   },

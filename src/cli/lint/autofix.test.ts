@@ -1,3 +1,4 @@
+import * as fs from 'fs-extra';
 import simpleGit from 'simple-git';
 
 import * as Buildkite from '../../api/buildkite';
@@ -524,19 +525,88 @@ describe('autofix', () => {
       `);
     });
 
-    it('skips an .npmrc modification only', async () => {
+    it('skips a .npmrc addition if it contains an auth token', async () => {
       jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
         {
           path: '.npmrc',
           state: 'modified',
         },
       ]);
+      jest
+        .spyOn(fs.promises, 'readFile')
+        .mockResolvedValue(`//registry.npmjs.org/:_authToken=xyz`);
 
       await expect(
         autofix({ ...params, eslint: false, prettier: false }),
       ).resolves.toBeUndefined();
 
       expectNoAutofix();
+    });
+
+    it('handles a .npmrc addition if it does not contain an auth token', async () => {
+      jest.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+        {
+          path: '.npmrc',
+          state: 'added',
+        },
+      ]);
+      jest.spyOn(fs.promises, 'readFile').mockResolvedValue(`# managed by skuba
+        public-hoist-pattern[]="*eslint*"
+        public-hoist-pattern[]="*prettier*"
+        public-hoist-pattern[]="@types*"
+        public-hoist-pattern[]="*jest*"
+        public-hoist-pattern[]="tsconfig-seek"
+        # end managed by skuba`);
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: false, prettier: false });
+    });
+
+    it('skips an .npmrc modification if it contains an auth token', async () => {
+      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+        {
+          path: '.npmrc',
+          state: 'modified',
+        },
+      ]);
+      jest
+        .spyOn(fs.promises, 'readFile')
+        .mockResolvedValue(`//registry.npmjs.org/:_authToken=xyz`);
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectNoAutofix();
+    });
+
+    it('handles an .npmrc modification if it does not contain an auth token', async () => {
+      jest.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+        {
+          path: '.npmrc',
+          state: 'modified',
+        },
+      ]);
+      jest.spyOn(fs.promises, 'readFile').mockResolvedValue(`# managed by skuba
+        public-hoist-pattern[]="*eslint*"
+        public-hoist-pattern[]="*prettier*"
+        public-hoist-pattern[]="@types*"
+        public-hoist-pattern[]="*jest*"
+        public-hoist-pattern[]="tsconfig-seek"
+        # end managed by skuba`);
+
+      await expect(
+        autofix({ ...params, eslint: false, prettier: false }),
+      ).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: false, prettier: false });
     });
 
     it('handles codegen changes only', async () => {
