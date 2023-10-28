@@ -52,7 +52,7 @@ export const AUTOFIX_IGNORE_FILES: Git.IgnoredFile[] = [
     state: 'modified',
     rule: async ({ file }) => {
       const content = await fs.promises.readFile(file.path, 'utf8');
-      return content.includes(':_authToken=');
+      return content.includes('authToken=');
     },
   },
   {
