@@ -30,7 +30,7 @@ process.on('SIGTERM', () => {
     // eslint-disable-next-line no-process-exit
     process.exit(0);
   });
-  // Tell clients that the connection is closed
+  // Tell clients the keep-alive connection is closed
   listener.on('request', (_req, res) => {
     res.setHeader('Connection', 'close');
   });
