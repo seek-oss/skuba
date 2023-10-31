@@ -24,4 +24,4 @@ A REST [resource API] built on the [Koa] web framework and deployed with [Gantry
 [express]: https://expressjs.com/
 [gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
 [koa]: https://koajs.com/
-[resource api]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#resource-api
+[resource api]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346236/#Resource-API
