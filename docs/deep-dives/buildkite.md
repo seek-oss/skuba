@@ -110,7 +110,7 @@ The agent may be tied up running a particularly compute- or memory-intensive ste
 [`skuba test`]: ../cli/test.md#skuba-test
 [buildkite.annotate]: ../development-api/buildkite.md#annotate
 [buildkite annotations]: https://buildkite.com/docs/agent/v3/cli-annotate
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz/
+[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
 [ci/cd]: https://en.wikipedia.org/wiki/CI/CD
 [compose file]: https://docs.docker.com/compose/compose-file
 [docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin

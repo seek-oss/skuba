@@ -17,7 +17,7 @@ Next steps:
 5. [ ] Configure [GitHub repository settings].
 6. [ ] Delete this checklist 😌.
 
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
+[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 
 ## Design
