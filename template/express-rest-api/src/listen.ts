@@ -22,7 +22,7 @@ const listener = app.listen(config.port, () => {
 // AWS recommends setting an application timeout larger than the load balancer
 listener.keepAliveTimeout = 31000;
 
-// Gracefully shutdown the server
+// Gracefully shut down the server
 process.on('SIGTERM', () => {
   rootLogger.debug('Draining remaining connections');
   listener.close(() => {
