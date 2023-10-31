@@ -1,5 +1,115 @@
 # skuba
 
+## 7.3.0
+
+### Minor Changes
+
+- **Jest.mergePreset:** Propagate root-level configuration options to `projects` ([#1294](https://github.com/seek-oss/skuba/pull/1294))
+
+  [`Jest.mergePreset`](https://seek-oss.github.io/skuba/docs/development-api/jest.html#mergepreset) now propagates the `moduleNameMapper` and `transform` options from root-level configuration to the `projects` array.
+
+  If you were referencing the base config in the `projects` array:
+
+  ```ts
+  const baseConfig = Jest.mergePreset({
+    // ...
+  });
+
+  export default {
+    ...baseConfig,
+    projects: [
+      {
+        ...baseConfig,
+        displayName: 'unit',
+        setupFiles: ['<rootDir>/jest.setup.ts'],
+        testPathIgnorePatterns: ['\\.int\\.test\\.ts'],
+      },
+      {
+        ...baseConfig,
+        displayName: 'integration',
+        setupFiles: ['<rootDir>/jest.setup.ts'],
+        testMatch: ['**/*.int.test.ts'],
+      },
+    ],
+  };
+  ```
+
+  You can replace it with the following:
+
+  ```ts
+  export default Jest.mergePreset({
+    // ...
+    projects: [
+      {
+        displayName: 'unit',
+        setupFiles: ['<rootDir>/jest.setup.ts'],
+        testPathIgnorePatterns: ['\\.int\\.test\\.ts'],
+      },
+      {
+        displayName: 'integration',
+        setupFiles: ['<rootDir>/jest.setup.ts'],
+        testMatch: ['**/*.int.test.ts'],
+      },
+    ],
+  });
+  ```
+
+  The `projects` option allows you to reuse a single Jest config file for different test types. View the [Jest documentation](https://jestjs.io/docs/configuration#projects-arraystring--projectconfig) for more information.
+
+- **Net.waitFor:** Use Docker Compose V2 ([#1281](https://github.com/seek-oss/skuba/pull/1281))
+
+  This function now executes `docker compose` under the hood as `docker-compose` stopped receiving updates in July 2023. See the [Docker manual](https://docs.docker.com/compose/migrate/) for more information.
+
+- **lint:** Add `prettier-plugin-packagejson` ([#1276](https://github.com/seek-oss/skuba/pull/1276))
+
+  This Prettier plugin sorts and formats your `package.json` file.
+
+### Patch Changes
+
+- **Git:** Handle non-root working directories in [`commitAllChanges`](https://seek-oss.github.io/skuba/docs/development-api/git.html#commitallchanges) ([#1269](https://github.com/seek-oss/skuba/pull/1269))
+
+- **template/koa-rest-api:** Fix `app.test.ts` assertions ([#1282](https://github.com/seek-oss/skuba/pull/1282))
+
+  Previously, [custom `.expect((res) => {})` assertions](https://github.com/ladjs/supertest#expectfunctionres-) were incorrectly defined to return false rather than throw an error. The template has been updated to avoid this syntax, but the most straightforward diff to demonstrate the fix is as follows:
+
+  ```diff
+  - await agent.get('/').expect(({ status }) => status !== 404);
+  + await agent.get('/').expect(({ status }) => expect(status).not.toBe(404));
+  ```
+
+- **template:** seek-oss/docker-ecr-cache 2.1 ([#1266](https://github.com/seek-oss/skuba/pull/1266))
+
+  This update brings a [new `skip-pull-from-cache` option](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin#skipping-image-pull-from-cache) which is useful on `Warm`/`Build Cache` steps.
+
+  At SEEK, our build agents no longer persist their Docker build cache from previous steps. This option allows a preparatory step to proceed on a cache hit without pulling the image from ECR, which can save on average ~1 minute per build for a 2GB Docker image.
+
+- **lint:** Resolve infinite autofix loop ([#1262](https://github.com/seek-oss/skuba/pull/1262))
+
+- **GitHub:** Add working directory parameter to [`readFileChanges`](https://seek-oss.github.io/skuba/docs/development-api/github.html#readfilechanges) ([#1269](https://github.com/seek-oss/skuba/pull/1269))
+
+  The input `ChangedFiles` need to be evaluated against a working directory. While this is technically a breaking change, we have not found any external usage of the function in `SEEK-Jobs`.
+
+  ```diff
+  - GitHub.readFileChanges(changedFiles)
+  + GitHub.readFileChanges(dir, changedFiles)
+  ```
+
+- **lint:** Handle non-root working directories in autofix commits ([#1269](https://github.com/seek-oss/skuba/pull/1269))
+
+  Previously, `skuba lint` could produce surprising autofix commits if it was invoked in a directory other than the Git root. Now, it correctly evaluates its working directory in relation to the Git root, and will only commit file changes within its working directory.
+
+- **cli:** Migrate from Runtypes to Zod ([#1288](https://github.com/seek-oss/skuba/pull/1288))
+
+  The skuba CLI now uses Zod internally. This should not result in noticeable differences for consumers.
+
+- **template:** Mount npm build secret to a separate directory ([#1278](https://github.com/seek-oss/skuba/pull/1278))
+
+  Our templated Buildkite pipelines currently retrieve a temporary `.npmrc`. This file contains an npm read token that allows us to fetch private `@seek`-scoped packages.
+
+  New projects now write this file to `/tmp/` on the Buildkite agent and mount it as a secret to `/root/` in Docker. This separation allows you to commit a non-sensitive `.npmrc` to your GitHub repository while avoiding accidental exposure of the npm read token. This is especially important if you are migrating a project to [pnpm](https://pnpm.io/), which houses some of its configuration options in `.npmrc`.
+
+  Existing projects are generally advised to wait until we've paved a cleaner migration path for pnpm.
+
 ## 7.2.0
 
 ### Minor Changes
