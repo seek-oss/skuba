@@ -1,8 +1,8 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
-template/*: Update to Node 20
+template/\*: Update to Node 20
 
 Consider upgrading the Node.js version for your project across:
 
