@@ -69,6 +69,8 @@ export class AppStack extends Stack {
         NODE_OPTIONS: '--enable-source-maps',
         ...context.workerLambda.environment,
       },
+      // aws-sdk-v3 sets this to true by default so it is not necessary to set the environment variable
+      awsSdkConnectionReuse: false,
     });
 
     worker.addEventSource(new aws_lambda_event_sources.SqsEventSource(queue));
