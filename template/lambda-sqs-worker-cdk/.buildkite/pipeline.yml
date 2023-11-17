@@ -27,9 +27,6 @@ configs:
         - yarn deploy
       concurrency: 1
       plugins:
-        - artifacts#v1.9.2:
-            build: ${BUILDKITE_BUILD_ID}
-            download: lib/*
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
@@ -44,14 +41,11 @@ configs:
 
 steps:
   - label: 🧪 Test, Lint & Build
-    artifact_paths: lib/**/*
     commands:
       - echo '+++ yarn test:ci'
       - yarn test
       - echo '--- yarn lint'
       - yarn lint
-      - echo '--- yarn build'
-      - yarn build
     env:
       GET_GITHUB_TOKEN: please
     plugins:
