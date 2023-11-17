@@ -4,6 +4,7 @@ import {
   aws_iam,
   aws_kms,
   aws_lambda,
+  aws_lambda_nodejs,
   aws_lambda_event_sources,
   aws_sns,
   aws_sns_subscriptions,
@@ -52,11 +53,14 @@ export class AppStack extends Stack {
 
     const architecture = '<%- lambdaCdkArchitecture %>';
 
-    const worker = new aws_lambda.Function(this, 'worker', {
+    const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
       architecture: aws_lambda.Architecture[architecture],
-      code: new aws_lambda.AssetCode('./lib'),
+      entry: './src/app.ts',
+      bundling: {
+        sourceMap: true,
+        target: 'node20',
+      },
       runtime: aws_lambda.Runtime.NODEJS_20_X,
-      handler: 'app.handler',
       functionName: '<%- serviceName %>',
       environmentEncryption: kmsKey,
       environment: {

@@ -157,13 +157,14 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "Environment": {
           "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
             "SOMETHING": "dev",
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "app.handler",
+        "Handler": "index.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
@@ -518,13 +519,14 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "Environment": {
           "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
             "SOMETHING": "prod",
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "app.handler",
+        "Handler": "index.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
