@@ -78,7 +78,9 @@ export const templateConfigSchema = z.object({
       message: z.string(),
       initial: z.string(),
       validate: z
-        .function(z.tuple([z.string()]), z.union([z.boolean(), z.string()]))
+        .function()
+        .args(z.string())
+        .returns(z.union([z.boolean(), z.string()]))
         .optional(),
     }),
   ),
