@@ -1,5 +1,29 @@
 # skuba
 
+## 7.3.1
+
+### Patch Changes
+
+- **deps:** Prettier 3.1 ([#1314](https://github.com/seek-oss/skuba/pull/1314))
+
+  See the [release notes](https://prettier.io/blog/2023/11/13/3.1.0.html) for more information.
+
+- **init:** Fix `skuba.template.js` validation ([#1325](https://github.com/seek-oss/skuba/pull/1325))
+
+  This resolves an "Invalid function return type" error on `skuba init`.
+
+- **template:** Update to Node 20 ([#1317](https://github.com/seek-oss/skuba/pull/1317))
+
+  Consider upgrading the Node.js version for your project across:
+
+  - `.nvmrc`
+  - `package.json#/engines/node`
+  - `serverless.yml`
+  - `@types/node` package version
+  - CI/CD configuration (`.buildkite/pipeline.yml`, `Dockerfile`, etc.)
+
+  If you are updating your AWS Lambda runtime to `nodejs20.x`, consider reading the [release announcement](https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/) as there are some breaking changes with this upgrade.
+
 ## 7.3.0
 
 ### Minor Changes
