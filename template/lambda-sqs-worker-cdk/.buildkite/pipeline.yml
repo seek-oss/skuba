@@ -81,6 +81,23 @@ steps:
     concurrency_group: '<%- repoName %>/deploy/dev'
     key: deploy-dev
 
+  - block: 🙋🏻‍♀️ Deploy Dev (Hotswap)
+    key: deploy-dev-hotswap-block
+    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
+
+  - <<: *deploy
+    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
+    depends_on: deploy-dev-hotswap-block
+    agents:
+      queue: <%- devBuildkiteQueueName %>
+    env:
+      ENVIRONMENT: dev
+    commands:
+      - echo '+++ yarn deploy --hotswap'
+      - yarn deploy --hotswap
+    label: 🤞 Deploy Dev (Hotswap)
+    concurrency_group: '<%- repoName %>/deploy/dev'
+
   - <<: *deploy
     env:
       ENVIRONMENT: prod
