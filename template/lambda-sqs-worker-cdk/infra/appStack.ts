@@ -59,7 +59,7 @@ export class AppStack extends Stack {
       bundling: {
         sourceMap: true,
         target: 'node20',
-        // By default the aws-sdk-v3 is set as an external module however we want it to be bundled with the lambda
+        // By default the aws-sdk-v3 is set as an external module, however, we want it to be bundled with the lambda
         externalModules: [],
       },
       runtime: aws_lambda.Runtime.NODEJS_20_X,
