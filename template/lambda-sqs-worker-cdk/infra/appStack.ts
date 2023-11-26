@@ -1,6 +1,9 @@
 import {
+  Duration,
   Stack,
   type StackProps,
+  aws_cloudwatch,
+  aws_codedeploy,
   aws_iam,
   aws_kms,
   aws_lambda,
@@ -51,6 +54,8 @@ export class AppStack extends Stack {
       encryptionMasterKey: kmsKey,
     });
 
+    topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
+
     const architecture = '<%- lambdaCdkArchitecture %>';
 
     const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
@@ -75,8 +80,69 @@ export class AppStack extends Stack {
       awsSdkConnectionReuse: false,
     });
 
-    worker.addEventSource(new aws_lambda_event_sources.SqsEventSource(queue));
+    const alias = new aws_lambda.Alias(this, 'worker-live-alias', {
+      aliasName: 'live',
+      version: worker.currentVersion,
+      description: 'The Lambda version currently receiving traffic',
+    });
 
-    topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
+    alias.addEventSource(new aws_lambda_event_sources.SqsEventSource(queue));
+
+    const preHook = new aws_lambda_nodejs.NodejsFunction(
+      this,
+      'worker-pre-hook',
+      {
+        architecture: aws_lambda.Architecture[architecture],
+        entry: './src/hooks.ts',
+        handler: 'pre',
+        timeout: Duration.seconds(30),
+        bundling: {
+          sourceMap: true,
+          target: 'node20',
+          externalModules: [],
+        },
+        runtime: aws_lambda.Runtime.NODEJS_20_X,
+        functionName: '<%- serviceName %>-pre-hook',
+        environmentEncryption: kmsKey,
+        environment: {
+          NODE_ENV: 'production',
+          // https://nodejs.org/api/cli.html#cli_node_options_options
+          NODE_OPTIONS: '--enable-source-maps',
+          FUNCTION_NAME_TO_INVOKE: worker.functionName,
+          ...context.workerLambda.environment,
+        },
+        // aws-sdk-v3 sets this to true by default so it is unnecessary to set the environment variable
+        awsSdkConnectionReuse: false,
+      },
+    );
+
+    worker.grantInvoke(preHook);
+
+    const application = new aws_codedeploy.LambdaApplication(
+      this,
+      'codedeploy-application',
+    );
+
+    const deploymentGroup = new aws_codedeploy.LambdaDeploymentGroup(
+      this,
+      'codedeploy-group',
+      {
+        application,
+        alias,
+        deploymentConfig: aws_codedeploy.LambdaDeploymentConfig.ALL_AT_ONCE,
+      },
+    );
+
+    const alarm = new aws_cloudwatch.Alarm(this, 'codedeploy-alarm', {
+      metric: alias.metricErrors({
+        period: Duration.seconds(60),
+      }),
+      threshold: 1,
+      evaluationPeriods: 1,
+    });
+
+    deploymentGroup.addAlarm(alarm);
+
+    deploymentGroup.addPreHook(preHook);
   }
 }
