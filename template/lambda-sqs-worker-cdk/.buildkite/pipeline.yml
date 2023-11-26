@@ -93,8 +93,8 @@ steps:
     env:
       ENVIRONMENT: dev
     commands:
-      - echo '+++ yarn deploy --hotswap'
-      - yarn deploy --hotswap
+      - echo '+++ yarn deploy:hotswap'
+      - yarn deploy:hotswap
     label: 🤞 Deploy Dev (Hotswap)
     concurrency_group: '<%- repoName %>/deploy/dev'
 
