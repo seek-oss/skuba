@@ -7,7 +7,6 @@ import {
   PutLifecycleEventHookExecutionStatusCommand,
 } from '@aws-sdk/client-codedeploy';
 import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
-import { toUtf8 } from '@aws-sdk/util-utf8-node';
 
 const codeDeploy = new CodeDeployClient({
   apiVersion: '2014-10-06',
@@ -51,7 +50,7 @@ const smokeTestLambdaFunction = async (): Promise<Status> => {
   if (response.FunctionError) {
     console.error('Error:', response.FunctionError);
     if (response.Payload) {
-      console.error(toUtf8(response.Payload));
+      console.error(response.Payload.transformToString());
     }
     return 'Failed';
   }
