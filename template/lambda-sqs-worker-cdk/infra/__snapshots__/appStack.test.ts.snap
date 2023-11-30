@@ -443,10 +443,11 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           ],
         },
         "Runtime": "nodejs20.x",
+        "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerCurrentVersionFA5B4BF46832d574311a37fe8f39f779939e7c86": {
+    "workerCurrentVersionFA5B4BF4cf8913238b16580a0a7bb0d23b6b08ba": {
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -535,7 +536,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF46832d574311a37fe8f39f779939e7c86",
+            "workerCurrentVersionFA5B4BF4cf8913238b16580a0a7bb0d23b6b08ba",
             "Version",
           ],
         },
