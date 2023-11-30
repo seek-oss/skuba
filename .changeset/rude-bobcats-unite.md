@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+'skuba': patch
 ---
 
 template/lambda-sqs-worker-cdk: Introduce bundling with esbuild, `--hotswap` and `--watch`
