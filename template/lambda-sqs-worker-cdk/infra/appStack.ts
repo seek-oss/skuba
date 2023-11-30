@@ -56,8 +56,10 @@ export class AppStack extends Stack {
 
     topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
 
+    const architecture = '<%- lambdaCdkArchitecture %>';
+
     const defaultWorkerConfig: aws_lambda_nodejs.NodejsFunctionProps = {
-      architecture: aws_lambda.Architecture['<%- lambdaCdkArchitecture %>'],
+      architecture: aws_lambda.Architecture[architecture],
       runtime: aws_lambda.Runtime.NODEJS_20_X,
       environmentEncryption: kmsKey,
       // aws-sdk-v3 sets this to true by default so it is not necessary to set the environment variable
