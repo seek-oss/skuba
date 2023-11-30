@@ -17,7 +17,12 @@ echo '--- yarn install'
 yarn install --frozen-lockfile --ignore-optional --non-interactive
 
 echo '--- yarn build'
-yarn build
+build_output=$(yarn build 2>&1)
+
+if [[ $? -ne 0 && $build_output != *"Command \"build\" not found"* ]]; then
+    echo "An error occurred: $build_output"
+    exit 1
+fi
 
 echo "--- skuba init ${template}"
 yarn skuba init << EOF
