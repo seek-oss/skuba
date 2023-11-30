@@ -56,28 +56,37 @@ export class AppStack extends Stack {
 
     topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
 
-    const architecture = '<%- lambdaCdkArchitecture %>';
-
-    const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
-      architecture: aws_lambda.Architecture[architecture],
-      entry: './src/app.ts',
-      bundling: {
-        sourceMap: true,
-        target: 'node20',
-        // By default the aws-sdk-v3 is set as an external module, however, we want it to be bundled with the lambda
-        externalModules: [],
-      },
+    const defaultWorkerConfig: aws_lambda_nodejs.NodejsFunctionProps = {
+      architecture: aws_lambda.Architecture['<%- lambdaCdkArchitecture %>'],
       runtime: aws_lambda.Runtime.NODEJS_20_X,
-      functionName: '<%- serviceName %>',
       environmentEncryption: kmsKey,
-      environment: {
-        NODE_ENV: 'production',
-        // https://nodejs.org/api/cli.html#cli_node_options_options
-        NODE_OPTIONS: '--enable-source-maps',
-        ...context.workerLambda.environment,
-      },
       // aws-sdk-v3 sets this to true by default so it is not necessary to set the environment variable
       awsSdkConnectionReuse: false,
+    };
+
+    const defaultWorkerBundlingConfig: aws_lambda_nodejs.BundlingOptions = {
+      sourceMap: true,
+      target: 'node20',
+      // By default the aws-sdk-v3 is set as an external module, however, we want it to be bundled with the lambda
+      externalModules: [],
+    };
+
+    const defaultWorkerEnvironment: Record<string, string> = {
+      NODE_ENV: 'production',
+      // https://nodejs.org/api/cli.html#cli_node_options_options
+      NODE_OPTIONS: '--enable-source-maps',
+    };
+
+    const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+      ...defaultWorkerConfig,
+      entry: './src/app.ts',
+      timeout: Duration.seconds(30),
+      bundling: defaultWorkerBundlingConfig,
+      functionName: '<%- serviceName %>',
+      environment: {
+        ...defaultWorkerEnvironment,
+        ...context.workerLambda.environment,
+      },
     });
 
     const alias = new aws_lambda.Alias(this, 'worker-live-alias', {
@@ -92,27 +101,17 @@ export class AppStack extends Stack {
       this,
       'worker-pre-hook',
       {
-        architecture: aws_lambda.Architecture[architecture],
+        ...defaultWorkerConfig,
         entry: './src/hooks.ts',
         handler: 'pre',
         timeout: Duration.seconds(30),
-        bundling: {
-          sourceMap: true,
-          target: 'node20',
-          externalModules: [],
-        },
-        runtime: aws_lambda.Runtime.NODEJS_20_X,
+        bundling: defaultWorkerBundlingConfig,
         functionName: '<%- serviceName %>-pre-hook',
-        environmentEncryption: kmsKey,
         environment: {
-          NODE_ENV: 'production',
-          // https://nodejs.org/api/cli.html#cli_node_options_options
-          NODE_OPTIONS: '--enable-source-maps',
-          FUNCTION_NAME_TO_INVOKE: worker.functionName,
+          ...defaultWorkerEnvironment,
           ...context.workerLambda.environment,
+          FUNCTION_NAME_TO_INVOKE: worker.functionName,
         },
-        // aws-sdk-v3 sets this to true by default so it is unnecessary to set the environment variable
-        awsSdkConnectionReuse: false,
       },
     );
 
