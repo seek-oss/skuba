@@ -5,6 +5,7 @@ import {
   aws_kms,
   aws_lambda,
   aws_lambda_event_sources,
+  aws_lambda_nodejs,
   aws_sns,
   aws_sns_subscriptions,
   aws_sqs,
@@ -52,11 +53,16 @@ export class AppStack extends Stack {
 
     const architecture = '<%- lambdaCdkArchitecture %>';
 
-    const worker = new aws_lambda.Function(this, 'worker', {
+    const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
       architecture: aws_lambda.Architecture[architecture],
-      code: new aws_lambda.AssetCode('./lib'),
+      entry: './src/app.ts',
+      bundling: {
+        sourceMap: true,
+        target: 'node20',
+        // By default the aws-sdk-v3 is set as an external module, however, we want it to be bundled with the lambda
+        externalModules: [],
+      },
       runtime: aws_lambda.Runtime.NODEJS_20_X,
-      handler: 'app.handler',
       functionName: '<%- serviceName %>',
       environmentEncryption: kmsKey,
       environment: {
@@ -65,6 +71,8 @@ export class AppStack extends Stack {
         NODE_OPTIONS: '--enable-source-maps',
         ...context.workerLambda.environment,
       },
+      // aws-sdk-v3 sets this to true by default so it is not necessary to set the environment variable
+      awsSdkConnectionReuse: false,
     });
 
     worker.addEventSource(new aws_lambda_event_sources.SqsEventSource(queue));

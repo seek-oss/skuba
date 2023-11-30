@@ -2,11 +2,11 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "skuba build",
     "deploy": "cdk deploy appStack --require-approval never --context stage=${ENVIRONMENT}",
+    "deploy:hotswap": "yarn deploy --hotswap",
+    "deploy:watch": "yarn deploy:hotswap --watch",
     "format": "skuba format",
     "lint": "skuba lint",
-    "package": "yarn install --ignore-optional --ignore-scripts --modules-folder ./lib/node_modules --non-interactive --offline --production",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"

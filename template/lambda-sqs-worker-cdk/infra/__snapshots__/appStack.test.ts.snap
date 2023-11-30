@@ -163,7 +163,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "app.handler",
+        "Handler": "index.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
@@ -524,7 +524,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "app.handler",
+        "Handler": "index.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
