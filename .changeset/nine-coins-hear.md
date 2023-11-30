@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+'skuba': patch
 ---
 
 template/lambda-sqs-worker-cdk: Add blue-green deployment and boilerplate code
