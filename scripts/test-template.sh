@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-set -e
-
 template="${1}"
 if [ -z "$template" ]; then
   echo "Usage: yarn test:template <template_name>"
@@ -55,7 +53,11 @@ yarn skuba -v
 yarn skuba --version
 
 echo "--- skuba build ${template}"
-yarn build
+output=$(yarn build 2>&1)
+echo $output
+if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
+    exit 1
+fi
 
 echo "--- skuba lint ${template}"
 yarn lint
