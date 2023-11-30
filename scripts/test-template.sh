@@ -55,10 +55,9 @@ yarn skuba -v
 yarn skuba --version
 
 echo "--- skuba build ${template}"
-build_output=$(yarn build 2>&1)
-
-if [[ $? -ne 0 && $build_output != *"Command \"build\" not found"* ]]; then
-    echo "An error occurred: $build_output"
+output=$(yarn build 2>&1)
+echo $output
+if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
     exit 1
 fi
 
