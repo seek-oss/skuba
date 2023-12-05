@@ -17,6 +17,20 @@ const contexts = [
   },
 ];
 
+const currentDate = '2023-12-05T05:00:21.059Z';
+
+jest.useFakeTimers({
+  legacyFakeTimers: false,
+  doNotFake: [
+    'nextTick',
+    'setInterval',
+    'clearInterval',
+    'setTimeout',
+    'clearTimeout',
+  ],
+  now: new Date(currentDate),
+});
+
 it.each(contexts)(
   'returns expected CloudFormation stack for $stage',
   (context) => {
@@ -29,14 +43,6 @@ it.each(contexts)(
       (_, hash) => `"S3Key":"${'x'.repeat(hash.length)}.zip"`,
     );
 
-    expect(JSON.parse(json)).toMatchSnapshot({
-      Resources: {
-        worker28EA3E30: {
-          Properties: {
-            Description: expect.any(String),
-          },
-        },
-      },
-    });
+    expect(JSON.parse(json)).toMatchSnapshot();
   },
 );
