@@ -29,6 +29,14 @@ it.each(contexts)(
       (_, hash) => `"S3Key":"${'x'.repeat(hash.length)}.zip"`,
     );
 
-    expect(JSON.parse(json)).toMatchSnapshot();
+    expect(JSON.parse(json)).toMatchSnapshot({
+      Resources: {
+        worker28EA3E30: {
+          Properties: {
+            Description: expect.any(String),
+          },
+        },
+      },
+    });
   },
 );

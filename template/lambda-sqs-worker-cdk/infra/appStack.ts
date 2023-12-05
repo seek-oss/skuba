@@ -89,6 +89,8 @@ export class AppStack extends Stack {
         ...defaultWorkerEnvironment,
         ...context.workerLambda.environment,
       },
+      // https://github.com/aws/aws-cdk/issues/28237
+      description: `Lambda description - updated at ${new Date().toISOString()}`,
     });
 
     const alias = new aws_lambda.Alias(this, 'worker-live-alias', {
@@ -119,6 +121,36 @@ export class AppStack extends Stack {
 
     worker.grantInvoke(preHook);
 
+    const postHook = new aws_lambda_nodejs.NodejsFunction(
+      this,
+      'worker-post-hook',
+      {
+        ...defaultWorkerConfig,
+        entry: './src/postHook.ts',
+        timeout: Duration.seconds(30),
+        bundling: defaultWorkerBundlingConfig,
+        functionName: 'serviceName-post-hook',
+        environment: {
+          ...defaultWorkerEnvironment,
+          ...context.workerLambda.environment,
+          FUNCTION_NAME_TO_PRUNE: worker.functionName,
+        },
+      },
+    );
+
+    const prunePermissions = new aws_iam.PolicyStatement({
+      actions: [
+        'lambda:ListAliases',
+        'lambda:ListVersionsByFunction',
+        'lambda:DeleteFunction',
+        'lambda:ListLayerVersions',
+        'lambda:DeleteLayerVersion',
+      ],
+      resources: [worker.functionArn, `${worker.functionArn}:*`],
+    });
+
+    postHook.addToRolePolicy(prunePermissions);
+
     const application = new aws_codedeploy.LambdaApplication(
       this,
       'codedeploy-application',
@@ -145,5 +177,7 @@ export class AppStack extends Stack {
     deploymentGroup.addAlarm(alarm);
 
     deploymentGroup.addPreHook(preHook);
+
+    deploymentGroup.addPostHook(postHook);
   }
 }

@@ -257,6 +257,32 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 },
               ],
             },
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "workerposthook150842D6",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "workerposthook150842D6",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -421,6 +447,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
+        "Description": Any<String>,
         "Environment": {
           "Variables": {
             "NODE_ENV": "production",
@@ -447,7 +474,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerCurrentVersionFA5B4BF4cf8913238b16580a0a7bb0d23b6b08ba": {
+    "workerCurrentVersionFA5B4BF4069b35b0f637afbfb5e8f754bd7bae36": {
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -536,7 +563,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF4cf8913238b16580a0a7bb0d23b6b08ba",
+            "workerCurrentVersionFA5B4BF4069b35b0f637afbfb5e8f754bd7bae36",
             "Version",
           ],
         },
@@ -545,6 +572,9 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       "Type": "AWS::Lambda::Alias",
       "UpdatePolicy": {
         "CodeDeployLambdaAliasUpdate": {
+          "AfterAllowTrafficHook": {
+            "Ref": "workerposthook150842D6",
+          },
           "ApplicationName": {
             "Ref": "codedeployapplicationF49B9864",
           },
@@ -589,6 +619,160 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
+    "workerposthook150842D6": {
+      "DependsOn": [
+        "workerposthookServiceRoleDefaultPolicy6A92F69C",
+        "workerposthookServiceRole25452300",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "FUNCTION_NAME_TO_PRUNE": {
+              "Ref": "worker28EA3E30",
+            },
+            "NODE_ENV": "production",
+            "NODE_OPTIONS": "--enable-source-maps",
+            "SOMETHING": "dev",
+          },
+        },
+        "FunctionName": "serviceName-post-hook",
+        "Handler": "index.handler",
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
+            "kmskey49FBC3B3",
+            "Arn",
+          ],
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "workerposthookServiceRole25452300",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "workerposthookServiceRole25452300": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "workerposthookServiceRoleDefaultPolicy6A92F69C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "lambda:ListAliases",
+                "lambda:ListVersionsByFunction",
+                "lambda:DeleteFunction",
+                "lambda:ListLayerVersions",
+                "lambda:DeleteLayerVersion",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "worker28EA3E30",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "worker28EA3E30",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "codedeploy:PutLifecycleEventHookExecutionStatus",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codedeploy:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":deploymentgroup:",
+                    {
+                      "Ref": "codedeployapplicationF49B9864",
+                    },
+                    "/",
+                    {
+                      "Ref": "codedeploygroup441B094B",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "workerposthookServiceRoleDefaultPolicy6A92F69C",
+        "Roles": [
+          {
+            "Ref": "workerposthookServiceRole25452300",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "workerprehook415B13CE": {
       "DependsOn": [
         "workerprehookServiceRoleDefaultPolicy991A21B9",
@@ -615,7 +799,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
         },
         "FunctionName": "serviceName-pre-hook",
-        "Handler": "index.pre",
+        "Handler": "index.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
@@ -1088,6 +1272,32 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 },
               ],
             },
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "workerposthook150842D6",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "workerposthook150842D6",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -1252,6 +1462,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
+        "Description": Any<String>,
         "Environment": {
           "Variables": {
             "NODE_ENV": "production",
@@ -1278,7 +1489,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerCurrentVersionFA5B4BF49ae903ec5e786ad8c4b2a87535346227": {
+    "workerCurrentVersionFA5B4BF40432fa18fd71de509aa07f91a2385e6c": {
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -1367,7 +1578,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF49ae903ec5e786ad8c4b2a87535346227",
+            "workerCurrentVersionFA5B4BF40432fa18fd71de509aa07f91a2385e6c",
             "Version",
           ],
         },
@@ -1376,6 +1587,9 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       "Type": "AWS::Lambda::Alias",
       "UpdatePolicy": {
         "CodeDeployLambdaAliasUpdate": {
+          "AfterAllowTrafficHook": {
+            "Ref": "workerposthook150842D6",
+          },
           "ApplicationName": {
             "Ref": "codedeployapplicationF49B9864",
           },
@@ -1420,6 +1634,160 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
+    "workerposthook150842D6": {
+      "DependsOn": [
+        "workerposthookServiceRoleDefaultPolicy6A92F69C",
+        "workerposthookServiceRole25452300",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "FUNCTION_NAME_TO_PRUNE": {
+              "Ref": "worker28EA3E30",
+            },
+            "NODE_ENV": "production",
+            "NODE_OPTIONS": "--enable-source-maps",
+            "SOMETHING": "prod",
+          },
+        },
+        "FunctionName": "serviceName-post-hook",
+        "Handler": "index.handler",
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
+            "kmskey49FBC3B3",
+            "Arn",
+          ],
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "workerposthookServiceRole25452300",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "workerposthookServiceRole25452300": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "workerposthookServiceRoleDefaultPolicy6A92F69C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "lambda:ListAliases",
+                "lambda:ListVersionsByFunction",
+                "lambda:DeleteFunction",
+                "lambda:ListLayerVersions",
+                "lambda:DeleteLayerVersion",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "worker28EA3E30",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "worker28EA3E30",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "codedeploy:PutLifecycleEventHookExecutionStatus",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codedeploy:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":deploymentgroup:",
+                    {
+                      "Ref": "codedeployapplicationF49B9864",
+                    },
+                    "/",
+                    {
+                      "Ref": "codedeploygroup441B094B",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "workerposthookServiceRoleDefaultPolicy6A92F69C",
+        "Roles": [
+          {
+            "Ref": "workerposthookServiceRole25452300",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "workerprehook415B13CE": {
       "DependsOn": [
         "workerprehookServiceRoleDefaultPolicy991A21B9",
@@ -1446,7 +1814,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
         },
         "FunctionName": "serviceName-pre-hook",
-        "Handler": "index.pre",
+        "Handler": "index.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
