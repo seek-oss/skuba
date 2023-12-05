@@ -1,9 +1,10 @@
-import 'skuba-dive/register';
+import createLogger from '@seek/logger';
 
 import type { SQSEvent, SQSHandler } from 'aws-lambda';
 
-import { logger } from 'src/framework/logging';
-
+const logger = createLogger({
+  name: '<%- serviceName %>',
+});
 /**
  * Tests connectivity to ensure appropriate access and network configuration.
  */
