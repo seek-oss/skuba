@@ -106,8 +106,7 @@ export class AppStack extends Stack {
       'worker-pre-hook',
       {
         ...defaultWorkerConfig,
-        entry: './src/hooks.ts',
-        handler: 'pre',
+        entry: './src/preHook.ts',
         timeout: Duration.seconds(30),
         bundling: defaultWorkerBundlingConfig,
         functionName: '<%- serviceName %>-pre-hook',
