@@ -9,7 +9,7 @@ const logger = createLogger({
  * Tests connectivity to ensure appropriate access and network configuration.
  */
 const smokeTest = async () => {
-  return true;
+  return Promise.resolve(true);
 };
 
 export const handler: SQSHandler = (event: SQSEvent) => {
