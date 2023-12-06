@@ -7,9 +7,7 @@ const logger = createLogger({
 /**
  * Tests connectivity to ensure appropriate access and network configuration.
  */
-const smokeTest = async () => {
-  return Promise.resolve();
-};
+const smokeTest = async () => Promise.resolve();
 
 export const handler: SQSHandler = (event: SQSEvent) => {
   // Treat an empty object as our smoke test event.
