@@ -1,5 +1,4 @@
 import createLogger from '@seek/logger';
-
 import type { SQSEvent, SQSHandler } from 'aws-lambda';
 
 const logger = createLogger({
@@ -9,7 +8,7 @@ const logger = createLogger({
  * Tests connectivity to ensure appropriate access and network configuration.
  */
 const smokeTest = async () => {
-  return Promise.resolve(true);
+  return Promise.resolve();
 };
 
 export const handler: SQSHandler = (event: SQSEvent) => {

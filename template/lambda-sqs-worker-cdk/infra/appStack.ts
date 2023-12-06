@@ -90,6 +90,8 @@ export class AppStack extends Stack {
         ...context.workerLambda.environment,
       },
       // https://github.com/aws/aws-cdk/issues/28237
+      // This forces the lambda to be updated on every deployment
+      // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
       description: `Lambda description - updated at ${new Date().toISOString()}`,
     });
 
