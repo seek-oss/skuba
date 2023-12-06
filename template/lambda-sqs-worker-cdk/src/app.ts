@@ -17,4 +17,5 @@ export const handler: SQSHandler = (event: SQSEvent) => {
   }
 
   logger.info('Hello World!');
+  return;
 };
