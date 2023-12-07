@@ -447,7 +447,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Description": Any<String>,
+        "Description": "Lambda description - updated at 2023-12-05T05:00:21.059Z",
         "Environment": {
           "Variables": {
             "NODE_ENV": "production",
@@ -1462,7 +1462,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Description": Any<String>,
+        "Description": "Lambda description - updated at 2023-12-05T05:00:21.059Z",
         "Environment": {
           "Variables": {
             "NODE_ENV": "production",
