@@ -135,10 +135,10 @@ git remote get-url origin
 
 **skuba** has committed its initial template files and configured a remote `origin` for you.
 You should create the corresponding repository on GitHub and push to it.
-Replace `master` with another default branch like `main` as appropriate:
+Replace `main` with your default branch name as appropriate:
 
 ```shell
-git push --set-upstream origin master
+git push --set-upstream origin main
 ```
 
 ### Directory structure
