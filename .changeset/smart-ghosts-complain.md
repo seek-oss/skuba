@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-Support `main` branch in `skuba init`
+cli: Support `main` branch in `skuba init`
