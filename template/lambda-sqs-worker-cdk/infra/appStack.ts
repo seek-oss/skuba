@@ -130,7 +130,7 @@ export class AppStack extends Stack {
         entry: './src/postHook.ts',
         timeout: Duration.seconds(30),
         bundling: defaultWorkerBundlingConfig,
-        functionName: 'serviceName-post-hook',
+        functionName: '<%- serviceName %>-post-hook',
         environment: {
           ...defaultWorkerEnvironment,
           ...context.workerLambda.environment,
