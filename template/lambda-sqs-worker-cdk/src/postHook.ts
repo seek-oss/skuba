@@ -8,12 +8,9 @@ import {
 import {
   type AliasConfiguration,
   DeleteFunctionCommand,
-  DeleteLayerVersionCommand,
   type FunctionConfiguration,
   LambdaClient,
-  type LayerVersionsListItem,
   ListAliasesCommand,
-  ListLayerVersionsCommand,
   ListVersionsByFunctionCommand,
 } from '@aws-sdk/client-lambda';
 import { z } from 'zod';
@@ -63,27 +60,6 @@ const listAliases = async (
   return aliases;
 };
 
-const listLayerVersions = async (
-  layerName: string,
-  marker?: string,
-): Promise<LayerVersionsListItem[]> => {
-  const result = await lambda.send(
-    new ListLayerVersionsCommand({
-      LayerName: layerName,
-      Marker: marker,
-    }),
-  );
-  const versions = result.LayerVersions ?? [];
-  if (result.NextMarker) {
-    return [
-      ...versions,
-      ...(await listLayerVersions(layerName, result.NextMarker)),
-    ];
-  }
-
-  return versions;
-};
-
 const pruneLambdas = async (
   functionName: string,
   numberToKeep: number,
@@ -128,44 +104,9 @@ const pruneLambdas = async (
   );
 };
 
-const pruneLayers = async (
-  layerNames: string[],
-  numberToKeep: number,
-): Promise<void> => {
-  await Promise.all(
-    layerNames.map(async (layerName) => {
-      const layerVersion = await listLayerVersions(layerName);
-      const versionsToPrune = layerVersion
-        .filter((version) => version.Version)
-        .sort((a, b) => Number(b.Version) - Number(a.Version))
-        .slice(numberToKeep);
-      return Promise.all(
-        versionsToPrune.map((version) =>
-          lambda.send(
-            new DeleteLayerVersionCommand({
-              LayerName: layerName,
-              VersionNumber: version.Version,
-            }),
-          ),
-        ),
-      );
-    }),
-  );
-};
-
 const EnvSchema = z.object({
   FUNCTION_NAME_TO_PRUNE: z.string(),
   NUMBER_OF_VERSIONS_TO_KEEP: z.coerce.number().default(0),
-  LAYER_NAMES_TO_PRUNE: z
-    .string()
-    .optional()
-    .transform(
-      (str) =>
-        str
-          ?.split(',')
-          .map((s) => s.trim())
-          .filter(Boolean) ?? [],
-    ),
 });
 
 type Status = 'Succeeded' | 'Failed';
@@ -189,15 +130,11 @@ export const handler = async (
   let status: Status = 'Succeeded';
   try {
     const {
-      LAYER_NAMES_TO_PRUNE: layerNames,
       FUNCTION_NAME_TO_PRUNE: functionName,
       NUMBER_OF_VERSIONS_TO_KEEP: numberToKeep,
     } = EnvSchema.parse(process.env);
 
-    await Promise.all([
-      pruneLambdas(functionName, numberToKeep),
-      pruneLayers(layerNames, numberToKeep),
-    ]);
+    await pruneLambdas(functionName, numberToKeep);
   } catch (err) {
     console.error('Exception:', err);
     status = 'Failed';

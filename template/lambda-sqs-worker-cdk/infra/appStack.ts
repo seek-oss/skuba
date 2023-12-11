@@ -144,8 +144,6 @@ export class AppStack extends Stack {
         'lambda:ListAliases',
         'lambda:ListVersionsByFunction',
         'lambda:DeleteFunction',
-        'lambda:ListLayerVersions',
-        'lambda:DeleteLayerVersion',
       ],
       resources: [worker.functionArn, `${worker.functionArn}:*`],
     });
