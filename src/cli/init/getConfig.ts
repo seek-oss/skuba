@@ -150,6 +150,7 @@ const baseToTemplateData = async ({
   ownerName,
   platformName,
   repoName,
+  defaultBranch,
 }: BaseFields) => {
   const [orgName, teamName] = ownerName.split('/');
 
@@ -163,6 +164,7 @@ const baseToTemplateData = async ({
     orgName,
     ownerName,
     repoName,
+    defaultBranch,
     // Use standalone username in `teamName` contexts
     teamName: teamName ?? orgName,
 
@@ -176,7 +178,7 @@ const baseToTemplateData = async ({
 };
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
-  const { ownerName, platformName, repoName } =
+  const { ownerName, platformName, repoName, defaultBranch } =
     await runForm<BaseFields>(BASE_PROMPT_PROPS);
   log.plain(chalk.cyan(repoName), 'by', chalk.cyan(ownerName));
 
@@ -184,6 +186,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     ownerName,
     platformName,
     repoName,
+    defaultBranch,
   });
 
   const destinationDir = repoName;

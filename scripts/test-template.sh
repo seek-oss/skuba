@@ -34,7 +34,8 @@ yarn skuba init << EOF
     "platformName": "arm64",
     "repoName": "${directory}",
     "serviceName": "serviceName",
-    "region": "ap-southeast-2"
+    "region": "ap-southeast-2",
+    "defaultBranch": "main"
   },
   "templateName": "${template}"
 }
