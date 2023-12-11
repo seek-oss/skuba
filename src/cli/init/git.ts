@@ -18,7 +18,6 @@ export const initialiseRepo = async (
   { orgName, repoName, defaultBranch }: GitHubProject,
 ) => {
   await git.init({
-    // TODO: support main as an alternative.
     defaultBranch,
     dir,
     fs,
