@@ -39,14 +39,13 @@ export const upgradeSkuba = async () => {
     return;
   }
 
+  log.newline();
   log.plain(chalk.white('Updating skuba...'));
 
   const patches = await getPatches(manifestVersion);
 
   // Run these in series in case a previous patch relies on another patch
   for (const patch of patches) {
-    log.newline();
-    log.plain(chalk.white('Updating Skuba...'));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const patchFile = await import(`./patches/${patch}/index`);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
