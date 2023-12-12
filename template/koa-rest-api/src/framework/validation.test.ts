@@ -45,11 +45,13 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
 {
   "invalidFields": {
-    "/id": [
+    "/id_0": [
       "Expected string, received null",
+    ],
+    "/id_1": [
       "Expected number, received null",
     ],
-    "/summary": [
+    "/summary_1": [
       "Required",
     ],
   },
@@ -68,14 +70,16 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
 {
   "invalidFields": {
-    "/description": [
+    "/description_0": [
       "Required",
     ],
-    "/id": [
-      "Required",
+    "/id_0": [
       "Required",
     ],
-    "/summary": [
+    "/id_1": [
+      "Required",
+    ],
+    "/summary_1": [
       "Required",
     ],
   },

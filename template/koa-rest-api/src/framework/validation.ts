@@ -33,14 +33,17 @@ type InvalidFields = Record<string, string[]>;
 const parseInvalidFieldsFromError = (
   invalidFields: InvalidFields,
   { errors }: z.ZodError,
+  unionIdx?: number,
 ) => {
   errors.map((err) => {
     if (err.code === ZodIssueCode.invalid_union) {
-      err.unionErrors.map((unionError) => {
-        parseInvalidFieldsFromError(invalidFields, unionError);
+      err.unionErrors.map((unionError, idx) => {
+        parseInvalidFieldsFromError(invalidFields, unionError, idx);
       });
     } else {
-      const path = `/${err.path.join('/')}`;
+      const path = `/${err.path.join('/')}${
+        unionIdx !== undefined ? `_${unionIdx}` : ''
+      }`;
       const fieldError = invalidFields[path];
       if (fieldError) {
         fieldError.push(err.message);
