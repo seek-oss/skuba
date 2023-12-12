@@ -3,6 +3,7 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../utils/logging';
+import { SERVER_LISTENER_FILENAME } from '../../../../lint/autofix';
 import { createDestinationFileReader } from '../../../analysis/project';
 import { formatPrettier } from '../../../processing/prettier';
 
@@ -14,8 +15,6 @@ export const KEEP_ALIVE_CODE = `
 // AWS recommends setting an application timeout larger than the load balancer
 listener.keepAliveTimeout = 31000;
 `;
-
-export const SERVER_LISTENER_FILENAME = 'src/listen.ts';
 
 const patchServerListener = async (dir: string) => {
   const readFile = createDestinationFileReader(dir);

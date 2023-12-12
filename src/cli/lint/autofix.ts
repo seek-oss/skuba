@@ -14,12 +14,15 @@ import { runESLint } from '../adapter/eslint';
 import { runPrettier } from '../adapter/prettier';
 import { RENOVATE_CONFIG_FILENAMES } from '../configure/modules/renovate';
 import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
-import { JEST_SETUP_FILES } from '../configure/upgrade/patches/7.3.1/addEmptyExports';
-import { SERVER_LISTENER_FILENAME } from '../configure/upgrade/patches/7.3.1/patchServerListener';
 
 import type { Input } from './types';
 
 const RENOVATE_DEFAULT_PREFIX = 'renovate';
+
+// TODO: glob `**/jest.*setup*.ts`?
+export const JEST_SETUP_FILES = ['jest.setup.ts', 'jest.setup.int.ts'];
+
+export const SERVER_LISTENER_FILENAME = 'src/listen.ts';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
