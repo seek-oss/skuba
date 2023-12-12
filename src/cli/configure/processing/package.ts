@@ -6,29 +6,25 @@ import { parseObject } from './json';
 import { formatPrettier } from './prettier';
 
 export const formatPackage = async (rawData: PackageJson) => {
-  const sortPackageJson = await import('sort-package-json');
-
   normalizeData(rawData);
-
-  const data = sortPackageJson.sortPackageJson(rawData);
 
   // normalize-package-data fields that aren't useful for applications
 
-  delete data._id;
+  delete rawData._id;
 
-  if (data.name === '') {
-    delete data.name;
+  if (rawData.name === '') {
+    delete rawData.name;
   }
 
-  if (data.readme === 'ERROR: No README data found!') {
-    delete data.readme;
+  if (rawData.readme === 'ERROR: No README data found!') {
+    delete rawData.readme;
   }
 
-  if (data.version === '') {
-    delete data.version;
+  if (rawData.version === '') {
+    delete rawData.version;
   }
 
-  return formatPrettier(JSON.stringify(data), {
+  return formatPrettier(JSON.stringify(rawData), {
     filepath: 'package.json',
   });
 };

@@ -1,11 +1,9 @@
-/* eslint-disable new-cap */
-
 import path from 'path';
 
 import fs from 'fs-extra';
-import * as t from 'runtypes';
+import { z } from 'zod';
 
-import { ProjectType } from './manifest';
+import { projectTypeSchema } from './manifest';
 
 export const TEMPLATE_NAMES = [
   'express-rest-api',
@@ -71,20 +69,24 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
   },
 };
 
-export type TemplateConfig = t.Static<typeof TemplateConfig>;
+export type TemplateConfig = z.infer<typeof templateConfigSchema>;
 
-export const TemplateConfig = t.Record({
-  fields: t.Array(
-    t.Record({
-      name: t.String,
-      message: t.String,
-      initial: t.String,
-      validate: t.Function.optional(),
+export const templateConfigSchema = z.object({
+  fields: z.array(
+    z.object({
+      name: z.string(),
+      message: z.string(),
+      initial: z.string(),
+      validate: z
+        .function()
+        .args(z.string())
+        .returns(z.union([z.boolean(), z.string()]))
+        .optional(),
     }),
   ),
-  entryPoint: t.String.optional(),
-  noSkip: t.Boolean.optional(),
-  type: ProjectType.optional(),
+  entryPoint: z.string().optional(),
+  noSkip: z.boolean().optional(),
+  type: projectTypeSchema.optional(),
 });
 
 export const TEMPLATE_CONFIG_FILENAME = 'skuba.template.js';

@@ -28,17 +28,14 @@ On AWS' cloud platform, this means [Graviton-based] instances rather than Intel-
 
 If you'd like to build and run your projects on ARM64 hardware,
 specify a Buildkite cluster with a Graviton-based instance type.
-Your strategy file may look something like this:
+This is now the default for `vCurrent` strategies:
 
 ```yaml
+schemaVersion: vCurrent
 clusters:
-  - agentTags:
-      os: linux
-    # ...
-    instance:
-      agentsPerInstance: 2
-      # ...
-      instanceType: t4g.xlarge # g is for Graviton
+  - # Take care to right-size instances and disk size
+    instanceType: t4g.large # Optional; g is for Graviton
+    rootVolumeSize: 8 # Optional
 ```
 
 See [Builds at SEEK] and the [Gantry ARM reference] for more information.
@@ -54,11 +51,11 @@ Replace the relevant `--platform` values in your Dockerfile(s),
 then ensure that you run your builds on AMD64 hardware:
 
 ```diff
-- FROM --platform=arm64 gcr.io/distroless/nodejs18-debian11 AS runtime
-+ FROM --platform=${BUILDPLATFORM:-amd64} gcr.io/distroless/nodejs18-debian11 AS runtime
+- FROM --platform=arm64 gcr.io/distroless/nodejs20-debian11 AS runtime
++ FROM --platform=${BUILDPLATFORM:-amd64} gcr.io/distroless/nodejs20-debian11 AS runtime
 
-- FROM --platform=${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs18-debian11 AS runtime
-+ FROM --platform=${BUILDPLATFORM:-amd64} gcr.io/distroless/nodejs18-debian11 AS runtime
+- FROM --platform=${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs20-debian11 AS runtime
++ FROM --platform=${BUILDPLATFORM:-amd64} gcr.io/distroless/nodejs20-debian11 AS runtime
 ```
 
 For a [Gantry] service, modify the `cpuArchitecture` property in your `gantry.build.yml` and `gantry.apply.yml` resource files:
@@ -86,7 +83,7 @@ provider:
 ```
 
 [aws cdk]: https://docs.aws.amazon.com/cdk/latest/guide/work-with-cdk-typescript.html
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
+[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
 [ci/cd]: ./buildkite.md
 [gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
 [gantry arm reference]: https://backstage.myseek.xyz/docs/default/component/gantry/v1/reference/using-arm/

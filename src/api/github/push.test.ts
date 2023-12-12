@@ -127,7 +127,7 @@ describe('uploadFileChanges', () => {
 describe('readFileChanges', () => {
   it('should read modified and added files from the file system', async () => {
     jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
-    const result = await readFileChanges([
+    const result = await readFileChanges('.', [
       { path: 'some-path', state: 'added' },
       { path: 'another-path', state: 'modified' },
       { path: 'delete-path', state: 'deleted' },
@@ -139,6 +139,33 @@ describe('readFileChanges', () => {
         { contents: 'base64-contents', path: 'another-path' },
       ],
       deletions: [{ path: 'delete-path' }],
+    };
+
+    expect(fs.promises.readFile).toHaveBeenCalledWith('some-path', {
+      encoding: 'base64',
+    });
+    expect(fs.promises.readFile).toHaveBeenCalledWith('another-path', {
+      encoding: 'base64',
+    });
+    expect(result).toStrictEqual(expectedFileChanges);
+  });
+
+  it('should support a nested directory', async () => {
+    jest.mocked(git.findRoot).mockResolvedValue('/path/to/repo');
+    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
+
+    const result = await readFileChanges('/path/to/repo/packages/package', [
+      { path: 'some-path', state: 'added' },
+      { path: 'another-path', state: 'modified' },
+      { path: 'delete-path', state: 'deleted' },
+    ]);
+
+    const expectedFileChanges: FileChanges = {
+      additions: [
+        { contents: 'base64-contents', path: 'packages/package/some-path' },
+        { contents: 'base64-contents', path: 'packages/package/another-path' },
+      ],
+      deletions: [{ path: 'packages/package/delete-path' }],
     };
 
     expect(fs.promises.readFile).toHaveBeenCalledWith('some-path', {

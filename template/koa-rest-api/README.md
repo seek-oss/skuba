@@ -19,12 +19,12 @@ Next steps:
 6. [ ] Configure [GitHub repository settings].
 7. [ ] Delete this checklist 😌.
 
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
+[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 
 ## Design
 
-<%-repoName %> is a Node.js HTTP server built in line with our [technology strategy].
+<%-repoName %> is a Node.js HTTP server built in line with our [Technical Guidelines].
 It uses the [Koa] middleware framework and common SEEK packages.
 Resource APIs enable synchronous interactions and serve as the backbone of SEEK's general service architecture.
 
@@ -105,7 +105,7 @@ TODO: add support links for the prod environment.
 - Splunk logs
 -->
 
-[codedeploy]: https://docs.aws.amazon.com/codedeploy
-[gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
-[koa]: https://koajs.com
-[technology strategy]: https://tech-strategy.ssod.skinfra.xyz
+[CodeDeploy]: https://docs.aws.amazon.com/codedeploy
+[Gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
+[Koa]: https://koajs.com
+[Technical Guidelines]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346017/

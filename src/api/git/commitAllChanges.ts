@@ -1,7 +1,10 @@
+import path from 'path';
+
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
 import { type Identity, commit } from './commit';
+import { findRoot } from './findRoot';
 import { type ChangedFile, getChangedFiles } from './getChangedFiles';
 
 interface CommitAllParameters {
@@ -35,16 +38,30 @@ export const commitAllChanges = async ({
     return;
   }
 
+  const gitRoot = await findRoot({ dir });
+
+  if (!gitRoot) {
+    throw new Error(`Could not find Git root from directory: ${dir}`);
+  }
+
   await Promise.all(
     changedFiles.map((file) =>
       file.state === 'deleted'
-        ? git.remove({ fs, dir, filepath: file.path })
-        : git.add({ fs, dir, filepath: file.path }),
+        ? git.remove({
+            fs,
+            dir: gitRoot,
+            filepath: path.relative(gitRoot, path.join(dir, file.path)),
+          })
+        : git.add({
+            fs,
+            dir: gitRoot,
+            filepath: path.relative(gitRoot, path.join(dir, file.path)),
+          }),
     ),
   );
 
   return commit({
-    dir,
+    dir: gitRoot,
     message,
     author,
     committer,

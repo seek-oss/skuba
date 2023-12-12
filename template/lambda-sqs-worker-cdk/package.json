@@ -2,11 +2,11 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "skuba build",
     "deploy": "cdk deploy appStack --require-approval never --context stage=${ENVIRONMENT}",
+    "deploy:hotswap": "yarn deploy --hotswap",
+    "deploy:watch": "yarn deploy:hotswap --watch",
     "format": "skuba format",
     "lint": "skuba lint",
-    "package": "yarn install --ignore-optional --ignore-scripts --modules-folder ./lib/node_modules --non-interactive --offline --production",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
@@ -18,13 +18,13 @@
   "devDependencies": {
     "@aws-cdk/assert": "^2.24.0",
     "@types/aws-lambda": "^8.10.82",
-    "@types/node": "^18.11.9",
-    "aws-cdk": "^2.51.1",
-    "aws-cdk-lib": "^2.51.1",
+    "@types/node": "^20.9.0",
+    "aws-cdk": "^2.109.0",
+    "aws-cdk-lib": "^2.109.0",
     "constructs": "^10.0.17",
     "skuba": "*"
   },
   "engines": {
-    "node": ">=18.12"
+    "node": ">=20"
   }
 }

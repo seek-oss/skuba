@@ -88,7 +88,6 @@ export const init = async () => {
   try {
     await exec('yarn', 'add', '--dev', skubaSlug);
     depsInstalled = true;
-    await exec('npx', 'yarn-deduplicate', '--strategy=highest');
   } catch {}
 
   await commitAllChanges({
@@ -118,7 +117,7 @@ export const init = async () => {
     log.ok('yarn add --dev', skubaSlug);
     log.ok('git add --all');
     log.ok('git commit --message', `'Pin ${skubaSlug}'`);
-    log.ok('git push --set-upstream origin master');
+    log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
 
     log.newline();
     process.exitCode = 1;
@@ -134,7 +133,7 @@ export const init = async () => {
   log.newline();
   log.plain('Then, push your local changes:');
   log.ok('cd', destinationDir);
-  log.ok('git push --set-upstream origin master');
+  log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
 
   log.newline();
 };

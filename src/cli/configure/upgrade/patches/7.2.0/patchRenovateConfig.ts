@@ -1,11 +1,9 @@
-/* eslint-disable new-cap */
-
 import path from 'path';
 import { inspect } from 'util';
 
 import fs from 'fs-extra';
 import * as fleece from 'golden-fleece';
-import * as t from 'runtypes';
+import { z } from 'zod';
 
 import * as Git from '../../api/git';
 import { log } from '../../utils/logging';
@@ -25,8 +23,8 @@ type RenovateFiletype = 'json' | 'json5';
 
 type RenovatePreset = (typeof RENOVATE_PRESETS)[number];
 
-const RenovateConfig = t.Record({
-  extends: t.Array(t.String),
+const renovateConfigSchema = z.object({
+  extends: z.array(z.string()),
 });
 
 const ownerToRenovatePreset = (owner: string): RenovatePreset | undefined => {
@@ -51,34 +49,38 @@ type PatchFile = (props: {
 }) => Promise<void>;
 
 const patchJson: PatchFile = async ({ filepath, input, presetToAdd }) => {
-  const config: unknown = JSON.parse(input);
+  const json: unknown = JSON.parse(input);
 
-  if (!RenovateConfig.guard(config)) {
+  const config = renovateConfigSchema.safeParse(json);
+
+  if (!config.success) {
     return;
   }
 
-  config.extends.unshift(presetToAdd);
+  config.data.extends.unshift(presetToAdd);
 
   await fs.promises.writeFile(
     filepath,
-    await formatPrettier(JSON.stringify(config), { parser: 'json' }),
+    await formatPrettier(JSON.stringify(config.data), { parser: 'json' }),
   );
 
   return;
 };
 
 const patchJson5: PatchFile = async ({ filepath, input, presetToAdd }) => {
-  const config: unknown = fleece.evaluate(input);
+  const json: unknown = fleece.evaluate(input);
 
-  if (!RenovateConfig.guard(config)) {
+  const config = renovateConfigSchema.safeParse(json);
+
+  if (!config.success) {
     return;
   }
 
-  config.extends.unshift(presetToAdd);
+  config.data.extends.unshift(presetToAdd);
 
   await fs.promises.writeFile(
     filepath,
-    await formatPrettier(fleece.patch(input, config), { parser: 'json5' }),
+    await formatPrettier(fleece.patch(input, config.data), { parser: 'json5' }),
   );
 
   return;

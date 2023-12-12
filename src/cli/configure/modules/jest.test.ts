@@ -2,8 +2,6 @@ import { defaultOpts, executeModule } from '../testing/module';
 
 import { jestModule } from './jest';
 
-jest.mock('sort-package-json');
-
 describe('jestModule', () => {
   it('works from scratch', async () => {
     const inputFiles = {};

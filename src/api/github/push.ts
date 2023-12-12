@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { graphql } from '@octokit/graphql';
 import type {
   CreateCommitOnBranchInput,
@@ -72,7 +74,7 @@ export const uploadAllFileChanges = async ({
     return;
   }
 
-  const fileChanges = await readFileChanges(changedFiles);
+  const fileChanges = await readFileChanges(dir, changedFiles);
 
   const commitId = await uploadFileChanges({
     dir,
@@ -111,6 +113,7 @@ export interface FileChanges {
  * https://docs.github.com/en/graphql/reference/input-objects#filechanges
  */
 export const readFileChanges = async (
+  dir: string,
   changedFiles: Git.ChangedFile[],
 ): Promise<FileChanges> => {
   const { added, deleted } = changedFiles.reduce<{
@@ -130,9 +133,21 @@ export const readFileChanges = async (
     { added: [], deleted: [] },
   );
 
+  const gitRoot = await Git.findRoot({ dir });
+
+  const toGitHubPath = (filePath: string) => {
+    if (!gitRoot) {
+      return filePath;
+    }
+
+    const pathDir = path.relative(gitRoot, dir);
+
+    return path.join(pathDir, filePath);
+  };
+
   const additions: FileAddition[] = await Promise.all(
     added.map(async (filePath) => ({
-      path: filePath,
+      path: toGitHubPath(filePath),
       contents: await fs.promises.readFile(filePath, {
         encoding: 'base64',
       }),
@@ -140,7 +155,7 @@ export const readFileChanges = async (
   );
 
   const deletions: FileDeletion[] = deleted.map((filePath) => ({
-    path: filePath,
+    path: toGitHubPath(filePath),
   }));
 
   return {

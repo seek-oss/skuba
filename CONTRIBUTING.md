@@ -10,7 +10,7 @@ Hi there, thanks for checking out our repo!
 
 **skuba** is a toolkit for developing TypeScript backend applications and packages at SEEK.
 While third-party contributions are certainly welcome,
-this project is primarily driven by our internal priorities and technology strategy.
+this project is primarily driven by our internal priorities and technical guidelines.
 
 SEEKers: this repo is public,
 so don't commit or post anything that isn't ready for the entire world to see.
