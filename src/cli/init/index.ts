@@ -4,14 +4,14 @@ import { commitAllChanges } from '../../api/git';
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
-import { log } from '../../utils/logging';
+import { createLogger, log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';
 import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
+import { runPrettier } from '../adapter/prettier';
 import { tryPatchRenovateConfig } from '../configure/patchRenovateConfig';
-import { format } from '../format';
 
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
@@ -36,7 +36,6 @@ export const init = async () => {
     path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
   ]);
 
-  // TODO: add Prettier here, or later?
   const processors = [createEjsRenderer(templateData)];
 
   await copyFiles({
@@ -89,7 +88,7 @@ export const init = async () => {
   try {
     await exec('yarn', 'add', '--dev', skubaSlug);
 
-    await format([]);
+    await runPrettier('format', createLogger(false), destinationDir);
 
     depsInstalled = true;
   } catch {}

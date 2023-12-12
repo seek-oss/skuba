@@ -155,14 +155,15 @@ export interface PrettierOutput {
 export const runPrettier = async (
   mode: 'format' | 'lint',
   logger: Logger,
+  cwd = process.cwd(),
 ): Promise<PrettierOutput> => {
   logger.debug('Initialising Prettier...');
 
   const start = process.hrtime.bigint();
 
-  let directory = process.cwd();
+  let directory = cwd;
 
-  const manifest = await getConsumerManifest();
+  const manifest = await getConsumerManifest(cwd);
   if (manifest) {
     directory = path.dirname(manifest.path);
   }
