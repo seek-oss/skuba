@@ -19,8 +19,8 @@ yarn install --frozen-lockfile --ignore-optional --non-interactive
 echo '--- yarn build'
 yarn build
 
-echo "--- skuba init --debug ${template}"
-yarn skuba init --debug << EOF
+echo "--- skuba init ${template}"
+yarn skuba init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
