@@ -5,6 +5,7 @@ import { gte, sort } from 'semver';
 
 import { getConsumerManifest } from '../../../utils/manifest';
 import { getSkubaVersion } from '../../../utils/version';
+import type { SkubaPackageJson } from '../../init/writePackageJson';
 import { formatPackage } from '../processing/package';
 
 const getPatches = async (manifestVersion: string): Promise<string[]> => {
@@ -21,10 +22,11 @@ export const upgradeSkuba = async () => {
     getConsumerManifest(),
   ]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  const manifestVersion = manifest?.packageJson.skuba?.version;
+  const manifestVersion = (
+    manifest?.packageJson.skuba as SkubaPackageJson | undefined
+  )?.version;
 
-  if (!manifest || typeof manifestVersion !== 'string') {
+  if (!manifest || !manifestVersion) {
     throw new Error(
       'Could not find a skuba manifest, please run `skuba configure`',
     );
@@ -45,8 +47,7 @@ export const upgradeSkuba = async () => {
     await patchFile.upgrade();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  manifest.packageJson.skuba.version = currentVersion;
+  (manifest.packageJson.skuba as SkubaPackageJson).version = currentVersion;
 
   const updatedPackageJson = await formatPackage(manifest.packageJson);
 
