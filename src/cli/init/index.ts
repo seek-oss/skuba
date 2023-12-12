@@ -1,6 +1,7 @@
 import path from 'path';
 
 import { commitAllChanges } from '../../api/git';
+import { hasDebugFlag } from '../../utils/args';
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
@@ -15,9 +16,14 @@ import { tryPatchRenovateConfig } from '../configure/patchRenovateConfig';
 
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
+import type { Input } from './types';
 import { writePackageJson } from './writePackageJson';
 
-export const init = async () => {
+export const init = async (args = process.argv.slice(2)) => {
+  const opts: Input = {
+    debug: hasDebugFlag(args),
+  };
+
   const skubaVersionInfo = await showLogoAndVersionInfo();
 
   await ensureCommands('yarn');
@@ -88,7 +94,7 @@ export const init = async () => {
   try {
     await exec('yarn', 'add', '--dev', skubaSlug);
 
-    await runPrettier('format', createLogger(false), destinationDir);
+    await runPrettier('format', createLogger(opts.debug), destinationDir);
 
     depsInstalled = true;
   } catch (err) {
