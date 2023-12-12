@@ -43,13 +43,13 @@ describe('validate', () => {
       .expect(422)
       .expect(({ body }) =>
         expect(body).toMatchInlineSnapshot(`
-          {
-            "invalidFields": {
-              "/id": "Expected string, received null",
-            },
-            "message": "Input validation failed",
-          }
-        `),
+{
+  "invalidFields": {
+    "/": "Invalid input",
+  },
+  "message": "Input validation failed",
+}
+`),
       );
   });
 
@@ -60,13 +60,12 @@ describe('validate', () => {
       .expect(422)
       .expect(({ body }) =>
         expect(body).toMatchInlineSnapshot(`
-          {
-            "invalidFields": {
-              "/description": "Required",
-              "/id": "Required",
-            },
-            "message": "Input validation failed",
-          }
-        `),
+{
+  "invalidFields": {
+    "/": "Invalid input",
+  },
+  "message": "Input validation failed",
+}
+`),
       ));
 });
