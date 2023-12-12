@@ -3,11 +3,12 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { log } from '../../../../../utils/logging';
-import { readBaseTemplateFile } from '../../../../../utils/template';
-import { getDestinationManifest } from '../../../analysis/package';
-import { createDestinationFileReader } from '../../../analysis/project';
-import { mergeWithIgnoreFile } from '../../../processing/ignoreFile';
+import { log } from '../../utils/logging';
+import { readBaseTemplateFile } from '../../utils/template';
+
+import { getDestinationManifest } from './analysis/package';
+import { createDestinationFileReader } from './analysis/project';
+import { mergeWithIgnoreFile } from './processing/ignoreFile';
 
 export const REFRESHABLE_IGNORE_FILES = [
   '.eslintignore',

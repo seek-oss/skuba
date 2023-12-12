@@ -15,7 +15,7 @@ import { runPrettier } from '../adapter/prettier';
 import { JEST_SETUP_FILES } from '../configure/addEmptyExports';
 import { RENOVATE_CONFIG_FILENAMES } from '../configure/modules/renovate';
 import { SERVER_LISTENER_FILENAME } from '../configure/patchServerListener';
-import { REFRESHABLE_IGNORE_FILES } from '../configure/upgrade/patches/7.2.0/refreshIgnoreFiles';
+import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
 
 import type { Input } from './types';
 

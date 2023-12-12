@@ -2,7 +2,6 @@ import { tryAddEmptyExports } from './addEmptyExports';
 import { tryPatchDockerfile } from './patchDockerfile';
 import { tryPatchRenovateConfig } from './patchRenovateConfig';
 import { tryPatchServerListener } from './patchServerListener';
-import { tryRefreshIgnoreFiles } from './refreshIgnoreFiles';
 
 export const upgrade = async () => {
   await Promise.all([
@@ -10,6 +9,5 @@ export const upgrade = async () => {
     tryPatchRenovateConfig(),
     tryPatchDockerfile(),
     tryPatchServerListener(),
-    tryRefreshIgnoreFiles(),
   ]);
 };
