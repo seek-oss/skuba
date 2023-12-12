@@ -82,8 +82,8 @@ on:
   push:
     branches:
       # add others as necessary
+      - $default-branch
       - beta
-      - <%- defaultBranch %>
       # - alpha
 ```
 
