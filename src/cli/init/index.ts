@@ -18,6 +18,7 @@ import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
 import type { Input } from './types';
 import { writePackageJson } from './writePackageJson';
+import { inspect } from 'util';
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {
@@ -94,11 +95,13 @@ export const init = async (args = process.argv.slice(2)) => {
   try {
     await exec('yarn', 'add', '--dev', skubaSlug);
 
+    // Templating can initially leave certain files in an unformatted state;
+    // consider a Markdown table with columns sized based on content length.
     await runPrettier('format', createLogger(opts.debug), destinationDir);
 
     depsInstalled = true;
   } catch (err) {
-    log.warn(err);
+    log.warn(inspect(err));
   }
 
   await commitAllChanges({
