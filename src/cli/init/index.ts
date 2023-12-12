@@ -11,6 +11,7 @@ import {
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
 import { tryPatchRenovateConfig } from '../configure/patchRenovateConfig';
+import { format } from '../format';
 
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
@@ -35,6 +36,7 @@ export const init = async () => {
     path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
   ]);
 
+  // TODO: add Prettier here, or later?
   const processors = [createEjsRenderer(templateData)];
 
   await copyFiles({
@@ -86,6 +88,9 @@ export const init = async () => {
   let depsInstalled = false;
   try {
     await exec('yarn', 'add', '--dev', skubaSlug);
+
+    await format([]);
+
     depsInstalled = true;
   } catch {}
 
@@ -114,6 +119,7 @@ export const init = async () => {
     log.plain('Then, resume initialisation:');
     log.ok('cd', destinationDir);
     log.ok('yarn add --dev', skubaSlug);
+    log.ok('yarn format');
     log.ok('git add --all');
     log.ok('git commit --message', `'Pin ${skubaSlug}'`);
     log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
