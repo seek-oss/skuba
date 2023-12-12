@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
 
-import * as Git from '../../../../../api/git';
+import * as Git from '../../api/git';
 
 import { tryPatchRenovateConfig } from './patchRenovateConfig';
 

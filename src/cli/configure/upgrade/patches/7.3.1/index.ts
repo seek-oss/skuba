@@ -1,6 +1,7 @@
+import { tryPatchRenovateConfig } from '../../../patchRenovateConfig';
+
 import { tryAddEmptyExports } from './addEmptyExports';
 import { tryPatchDockerfile } from './patchDockerfile';
-import { tryPatchRenovateConfig } from './patchRenovateConfig';
 import { tryPatchServerListener } from './patchServerListener';
 
 export const upgrade = async () => {
