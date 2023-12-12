@@ -161,12 +161,9 @@ export const runPrettier = async (
 
   const start = process.hrtime.bigint();
 
-  let directory = cwd;
-
   const manifest = await getConsumerManifest(cwd);
-  if (manifest) {
-    directory = path.dirname(manifest.path);
-  }
+
+  const directory = manifest ? path.dirname(manifest.path) : cwd;
 
   logger.debug(
     manifest ? 'Detected project root:' : 'Detected working directory:',
