@@ -55,12 +55,14 @@ yarn skuba version
 yarn skuba -v
 yarn skuba --version
 
+set +e
 echo "--- skuba build ${template}"
 output=$(yarn build 2>&1)
 echo $output
 if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
     exit 1
 fi
+set -e
 
 echo "--- skuba lint ${template}"
 yarn lint
