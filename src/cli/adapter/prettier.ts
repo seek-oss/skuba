@@ -193,6 +193,8 @@ export const runPrettier = async (
   logger.debug(mode === 'format' ? 'Formatting' : 'Linting', 'files...');
 
   for (const relativeFilepath of relativeFilepaths) {
+    // Use relative paths to keep log output cleaner, particularly in the common
+    // case where we are executing against the current working directory.
     const filepath = path.relative(
       process.cwd(),
       path.join(directory, relativeFilepath),
