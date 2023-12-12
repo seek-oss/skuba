@@ -62,5 +62,3 @@ export const upgradeSkuba = async () => {
   log.newline();
   log.plain(chalk.white('Skuba update finished'));
 };
-
-upgradeSkuba().catch(console.error);
