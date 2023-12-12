@@ -12,10 +12,10 @@ import { createLogger, log } from '../../utils/logging';
 import { throwOnTimeout } from '../../utils/wait';
 import { runESLint } from '../adapter/eslint';
 import { runPrettier } from '../adapter/prettier';
-import { JEST_SETUP_FILES } from '../configure/addEmptyExports';
 import { RENOVATE_CONFIG_FILENAMES } from '../configure/modules/renovate';
-import { SERVER_LISTENER_FILENAME } from '../configure/patchServerListener';
 import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
+import { JEST_SETUP_FILES } from '../configure/upgrade/patches/7.3.1/addEmptyExports';
+import { SERVER_LISTENER_FILENAME } from '../configure/upgrade/patches/7.3.1/patchServerListener';
 
 import type { Input } from './types';
 

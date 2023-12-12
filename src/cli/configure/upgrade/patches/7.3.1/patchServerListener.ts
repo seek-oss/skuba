@@ -2,10 +2,9 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { log } from '../../utils/logging';
-
-import { createDestinationFileReader } from './analysis/project';
-import { formatPrettier } from './processing/prettier';
+import { log } from '../../../../../utils/logging';
+import { createDestinationFileReader } from '../../../analysis/project';
+import { formatPrettier } from '../../../processing/prettier';
 
 export const KEEP_ALIVE_CODE = `
 // Gantry ALB default idle timeout is 30 seconds

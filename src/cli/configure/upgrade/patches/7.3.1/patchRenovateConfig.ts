@@ -5,12 +5,11 @@ import fs from 'fs-extra';
 import * as fleece from 'golden-fleece';
 import { z } from 'zod';
 
-import * as Git from '../../api/git';
-import { log } from '../../utils/logging';
-
-import { createDestinationFileReader } from './analysis/project';
-import { RENOVATE_CONFIG_FILENAMES } from './modules/renovate';
-import { formatPrettier } from './processing/prettier';
+import * as Git from '../../../../../api/git';
+import { log } from '../../../../../utils/logging';
+import { createDestinationFileReader } from '../../../analysis/project';
+import { RENOVATE_CONFIG_FILENAMES } from '../../../modules/renovate';
+import { formatPrettier } from '../../../processing/prettier';
 
 const RENOVATE_PRESETS = [
   'local>seekasia/renovate-config',

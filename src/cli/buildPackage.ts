@@ -2,11 +2,8 @@ import { hasSerialFlag } from '../utils/args';
 import { execConcurrently } from '../utils/exec';
 
 import { copyAssetsConcurrently } from './build/assets';
-import { tryAddEmptyExports } from './configure/addEmptyExports';
 
 export const buildPackage = async (args = process.argv.slice(2)) => {
-  await tryAddEmptyExports();
-
   await execConcurrently(
     [
       {
