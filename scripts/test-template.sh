@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -e
+
 template="${1}"
 if [ -z "$template" ]; then
   echo "Usage: yarn test:template <template_name>"
