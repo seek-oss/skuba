@@ -1,7 +1,6 @@
 import { readdir, writeFile } from 'fs/promises';
 import path from 'path';
 
-import chalk from 'chalk';
 import { gte, sort } from 'semver';
 
 import { log } from '../../../utils/logging';
@@ -40,7 +39,7 @@ export const upgradeSkuba = async () => {
   }
 
   log.newline();
-  log.plain(chalk.white('Updating skuba...'));
+  log.plain('Updating skuba...');
 
   const patches = await getPatches(manifestVersion);
 
@@ -51,7 +50,7 @@ export const upgradeSkuba = async () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     await patchFile.upgrade();
     log.newline();
-    log.plain(chalk.white(`Patch ${patch} applied.`));
+    log.plain(`Patch ${patch} applied.`);
   }
 
   (manifest.packageJson.skuba as SkubaPackageJson).version = currentVersion;
@@ -60,5 +59,5 @@ export const upgradeSkuba = async () => {
 
   await writeFile(manifest.path, updatedPackageJson);
   log.newline();
-  log.plain(chalk.white('Skuba update finished'));
+  log.plain('Skuba update finished.');
 };

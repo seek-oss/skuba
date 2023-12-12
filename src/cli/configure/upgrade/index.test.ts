@@ -11,6 +11,7 @@ import { upgradeSkuba } from '.';
 jest.mock('../../../utils/manifest');
 jest.mock('../../../utils/version');
 jest.mock('fs/promises');
+jest.mock('../../../utils/logging');
 
 beforeEach(() => {
   jest.clearAllMocks();
