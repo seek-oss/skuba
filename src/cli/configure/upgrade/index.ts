@@ -40,7 +40,7 @@ export const upgradeSkuba = async () => {
   // Run these in series in case a previous patch relies on another patch
   for (const patch of patches) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const patchFile = await import(`./patches/${patch}/index.js`);
+    const patchFile = await import(`./patches/${patch}/index`);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     await patchFile.upgrade();
   }
