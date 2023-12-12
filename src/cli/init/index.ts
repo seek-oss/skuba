@@ -91,7 +91,9 @@ export const init = async () => {
     await runPrettier('format', createLogger(false), destinationDir);
 
     depsInstalled = true;
-  } catch {}
+  } catch (err) {
+    log.warn(err);
+  }
 
   await commitAllChanges({
     dir: destinationDir,
