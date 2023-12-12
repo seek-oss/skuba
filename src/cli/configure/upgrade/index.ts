@@ -17,6 +17,25 @@ const getPatches = async (manifestVersion: string): Promise<string[]> => {
   return sort(patches.filter((filename) => gte(filename, manifestVersion)));
 };
 
+const fileExtensions = ['js', 'ts'];
+
+const resolvePatch = async (
+  patch: string,
+): Promise<
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  typeof import('/Users/samc/work/skuba/src/cli/configure/upgrade/patches/7.3.1/index')
+> => {
+  for (const extension of fileExtensions) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return await import(`./patches/${patch}/index.${extension}`);
+    } catch {
+      // Ignore
+    }
+  }
+  throw new Error(`Could not resolve patch ${patch}`);
+};
+
 export const upgradeSkuba = async () => {
   const [currentVersion, manifest] = await Promise.all([
     getSkubaVersion(),
@@ -45,9 +64,7 @@ export const upgradeSkuba = async () => {
 
   // Run these in series in case a previous patch relies on another patch
   for (const patch of patches) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const patchFile = await import(`./patches/${patch}/index.js`);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const patchFile = await resolvePatch(patch);
     await patchFile.upgrade();
     log.newline();
     log.plain(`Patch ${patch} applied.`);
@@ -60,4 +77,5 @@ export const upgradeSkuba = async () => {
   await writeFile(manifest.path, updatedPackageJson);
   log.newline();
   log.plain('Skuba update finished.');
+  log.newline();
 };

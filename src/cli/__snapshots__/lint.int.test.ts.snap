@@ -2,6 +2,13 @@
 
 exports[`fixable 1`] = `
 "
+
+Updating skuba...
+
+Patch 7.3.1 applied.
+
+Skuba update finished.
+
 ESLint   │ Processed 4 files in <random>s.
 ESLint   │ 
 <random>/a/a/a.mjs
@@ -68,6 +75,13 @@ d.js
 
 exports[`ok --debug 1`] = `
 "
+
+Updating skuba...
+
+Patch 7.3.1 applied.
+
+Skuba update finished.
+
 ESLint   │ Initialising ESLint...
 ESLint   │ Processing files...
 ESLint   │ Processed 2 files in <random>s.
@@ -134,6 +148,13 @@ exports[`ok --debug 2`] = `[]`;
 
 exports[`ok 1`] = `
 "
+
+Updating skuba...
+
+Patch 7.3.1 applied.
+
+Skuba update finished.
+
 ESLint   │ Processed 2 files in <random>s.
 Prettier │ Processed 6 files in <random>s.
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
@@ -145,6 +166,13 @@ exports[`ok 2`] = `[]`;
 
 exports[`unfixable 1`] = `
 "
+
+Updating skuba...
+
+Patch 7.3.1 applied.
+
+Skuba update finished.
+
 ESLint   │ Processed 2 files in <random>s.
 ESLint   │ 
 <random>/a/a/a.ts
