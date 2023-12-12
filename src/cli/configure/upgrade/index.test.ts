@@ -91,17 +91,6 @@ describe('upgradeSkuba', () => {
 
     await expect(upgradeSkuba()).resolves.toBeUndefined();
     expect(mockUpgrade.upgrade).toHaveBeenCalledTimes(2);
-    //     expect(writeFile).toHaveBeenCalledWith(
-    //       '/package.json',
-    //       `{
-    //   "name": "some-api",
-    //   "version": "1.0.0",
-    //   "skuba": {
-    //     "version": "2.0.0"
-    //   }
-    // }
-    // `,
-    //     );
   });
 
   it('should update the consumer manifest version', async () => {
