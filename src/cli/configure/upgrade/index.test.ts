@@ -60,13 +60,13 @@ describe('upgradeSkuba', () => {
       upgrade: jest.fn(),
     };
 
-    jest.mock(`./patches/0.9.0/index`, () => mockUpgrade, {
+    jest.mock(`./patches/0.9.0/index.js`, () => mockUpgrade, {
       virtual: true,
     });
-    jest.mock(`./patches/1.0.0/index`, () => mockUpgrade, {
+    jest.mock(`./patches/1.0.0/index.js`, () => mockUpgrade, {
       virtual: true,
     });
-    jest.mock(`./patches/2.0.0/index`, () => mockUpgrade, {
+    jest.mock(`./patches/2.0.0/index.js`, () => mockUpgrade, {
       virtual: true,
     });
 
@@ -99,7 +99,7 @@ describe('upgradeSkuba', () => {
       upgrade: jest.fn(),
     };
 
-    jest.mock(`./patches/2.0.0/index`, () => mockUpgrade, {
+    jest.mock(`./patches/2.0.0/index.js`, () => mockUpgrade, {
       virtual: true,
     });
 
