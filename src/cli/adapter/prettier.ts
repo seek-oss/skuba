@@ -193,12 +193,15 @@ export const runPrettier = async (
   logger.debug(mode === 'format' ? 'Formatting' : 'Linting', 'files...');
 
   for (const relativeFilepath of relativeFilepaths) {
-    const filepath = path.join(directory, relativeFilepath);
+    const filepath = path.relative(
+      process.cwd(),
+      path.join(directory, relativeFilepath),
+    );
 
     // Infer parser upfront so we can skip unsupported files.
     const parser = await inferParser(filepath);
 
-    logger.debug(relativeFilepath);
+    logger.debug(filepath);
     logger.debug('  parser:', parser ?? '-');
 
     if (!parser) {
@@ -236,17 +239,14 @@ export const runPrettier = async (
   if (result.touched.length) {
     logger.plain(`Formatted ${pluralise(result.touched.length, 'file')}:`);
     for (const filepath of result.touched) {
-      logger.warn(path.relative(directory, filepath));
+      logger.warn(filepath);
     }
   }
 
   if (result.errored.length) {
     logger.plain(`Flagged ${pluralise(result.errored.length, 'file')}:`);
     for (const { err, filepath } of result.errored) {
-      logger.warn(
-        path.relative(directory, filepath),
-        ...(err ? [String(err)] : []),
-      );
+      logger.warn(filepath, ...(err ? [String(err)] : []));
     }
   }
 
