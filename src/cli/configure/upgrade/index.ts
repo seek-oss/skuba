@@ -1,8 +1,10 @@
 import { readdir, writeFile } from 'fs/promises';
 import path from 'path';
 
+import chalk from 'chalk';
 import { gte, sort } from 'semver';
 
+import { log } from '../../../utils/logging';
 import { getConsumerManifest } from '../../../utils/manifest';
 import { getSkubaVersion } from '../../../utils/version';
 import type { SkubaPackageJson } from '../../init/writePackageJson';
@@ -37,14 +39,20 @@ export const upgradeSkuba = async () => {
     return;
   }
 
+  log.plain(chalk.white('Updating skuba...'));
+
   const patches = await getPatches(manifestVersion);
 
   // Run these in series in case a previous patch relies on another patch
   for (const patch of patches) {
+    log.newline();
+    log.plain(chalk.white('Updating Skuba...'));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const patchFile = await import(`./patches/${patch}/index`);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     await patchFile.upgrade();
+    log.newline();
+    log.plain(chalk.white(`Patch ${patch} applied.`));
   }
 
   (manifest.packageJson.skuba as SkubaPackageJson).version = currentVersion;
@@ -52,4 +60,8 @@ export const upgradeSkuba = async () => {
   const updatedPackageJson = await formatPackage(manifest.packageJson);
 
   await writeFile(manifest.path, updatedPackageJson);
+  log.newline();
+  log.plain(chalk.white('Skuba update finished'));
 };
+
+upgradeSkuba().catch(console.error);
