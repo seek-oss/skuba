@@ -176,15 +176,15 @@ export const runPrettier = async (
   // This avoids exhibiting different behaviour than a Prettier IDE integration,
   // though it may present headaches if `.gitignore` and `.prettierignore` rules
   // conflict.
-  const filepaths = await crawlDirectory(directory, [
+  const relativeFilepaths = await crawlDirectory(directory, [
     '.gitignore',
     '.prettierignore',
   ]);
 
-  logger.debug(`Discovered ${pluralise(filepaths.length, 'file')}.`);
+  logger.debug(`Discovered ${pluralise(relativeFilepaths.length, 'file')}.`);
 
   const result: Result = {
-    count: filepaths.length,
+    count: relativeFilepaths.length,
     errored: [],
     touched: [],
     unparsed: [],
@@ -192,11 +192,13 @@ export const runPrettier = async (
 
   logger.debug(mode === 'format' ? 'Formatting' : 'Linting', 'files...');
 
-  for (const filepath of filepaths) {
+  for (const relativeFilepath of relativeFilepaths) {
+    const filepath = path.join(directory, relativeFilepath);
+
     // Infer parser upfront so we can skip unsupported files.
     const parser = await inferParser(filepath);
 
-    logger.debug(filepath);
+    logger.debug(relativeFilepath);
     logger.debug('  parser:', parser ?? '-');
 
     if (!parser) {
@@ -234,14 +236,17 @@ export const runPrettier = async (
   if (result.touched.length) {
     logger.plain(`Formatted ${pluralise(result.touched.length, 'file')}:`);
     for (const filepath of result.touched) {
-      logger.warn(filepath);
+      logger.warn(path.relative(directory, filepath));
     }
   }
 
   if (result.errored.length) {
     logger.plain(`Flagged ${pluralise(result.errored.length, 'file')}:`);
     for (const { err, filepath } of result.errored) {
-      logger.warn(filepath, ...(err ? [String(err)] : []));
+      logger.warn(
+        path.relative(directory, filepath),
+        ...(err ? [String(err)] : []),
+      );
     }
   }
 
