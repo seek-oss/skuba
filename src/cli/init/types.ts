@@ -12,6 +12,7 @@ export const initConfigInputSchema = z.object({
       ownerName: z.string(),
       repoName: z.string(),
       platformName: z.union([z.literal('amd64'), z.literal('arm64')]),
+      defaultBranch: z.string(),
     })
     .catchall(z.string()),
   templateName: z.string(),
@@ -28,6 +29,7 @@ const initConfigSchema = initConfigInputSchema
       .object({
         ownerName: z.string(),
         repoName: z.string(),
+        defaultBranch: z.string(),
 
         // Derived from ownerName
         // TODO: use zod to transform `InitConfigInput` -> `InitConfig`?
