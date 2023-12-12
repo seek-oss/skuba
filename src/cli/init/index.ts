@@ -10,12 +10,11 @@ import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
+import { tryPatchRenovateConfig } from '../configure/upgrade/patches/7.3.1/patchRenovateConfig';
 
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
 import { writePackageJson } from './writePackageJson';
-
-import { tryPatchRenovateConfig } from 'cli/configure/upgrade/patches/7.3.1/patchRenovateConfig';
 
 export const init = async () => {
   const skubaVersionInfo = await showLogoAndVersionInfo();
