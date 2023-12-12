@@ -45,7 +45,13 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
 {
   "invalidFields": {
-    "/": "Invalid input",
+    "/id": [
+      "Expected string, received null",
+      "Expected number, received null",
+    ],
+    "/summary": [
+      "Required",
+    ],
   },
   "message": "Input validation failed",
 }
@@ -62,7 +68,16 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
 {
   "invalidFields": {
-    "/": "Invalid input",
+    "/description": [
+      "Required",
+    ],
+    "/id": [
+      "Required",
+      "Required",
+    ],
+    "/summary": [
+      "Required",
+    ],
   },
   "message": "Input validation failed",
 }

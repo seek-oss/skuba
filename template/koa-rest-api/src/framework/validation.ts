@@ -1,8 +1,9 @@
 import { ErrorMiddleware } from 'seek-koala';
-import type { z } from 'zod';
+import { ZodIssueCode, type z } from 'zod';
 
 import type { Context } from 'src/types/koa';
 
+type InvalidFields = Record<string, string[]>;
 /**
  * Converts a `ZodError` into an `invalidFields` object
  *
@@ -26,15 +27,30 @@ import type { Context } from 'src/types/koa';
  * Returns:
  *
  * ```json
- * { "/advertiserId": "advertiserId is required in the URL" }
+ * { "/advertiserId": ["advertiserId is required in the URL"] }
  * ```
  */
-const parseInvalidFieldsFromError = ({
-  errors,
-}: z.ZodError): Record<string, string> =>
-  Object.fromEntries(
-    errors.map((err) => [`/${err.path.join('/')}`, err.message]),
-  );
+const parseInvalidFieldsFromError = (
+  invalidFields: InvalidFields,
+  { errors }: z.ZodError,
+) => {
+  errors.map((err) => {
+    if (err.code === ZodIssueCode.invalid_union) {
+      err.unionErrors.map((unionError) => {
+        parseInvalidFieldsFromError(invalidFields, unionError);
+      });
+    } else {
+      const path = `/${err.path.join('/')}`;
+      const fieldError = invalidFields[path];
+      if (fieldError) {
+        fieldError.push(err.message);
+        invalidFields[path] = fieldError;
+      } else {
+        invalidFields[path] = [err.message];
+      }
+    }
+  });
+};
 
 export const validate = <
   Output,
@@ -51,11 +67,13 @@ export const validate = <
 }): Output => {
   const parseResult = schema.safeParse(input);
   if (parseResult.success === false) {
+    const invalidFields: InvalidFields = {};
+    parseInvalidFieldsFromError(invalidFields, parseResult.error);
     return ctx.throw(
       422,
       new ErrorMiddleware.JsonResponse('Input validation failed', {
         message: 'Input validation failed',
-        invalidFields: parseInvalidFieldsFromError(parseResult.error),
+        invalidFields,
       }),
     );
   }
