@@ -109,7 +109,7 @@ At the same time, esbuild presents potential benefits for **skuba**:
 
    ```shell
    # uses esbuild instead of tsc
-   yarn build
+   pnpm run build
    ```
 
 ---

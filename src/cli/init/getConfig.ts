@@ -12,6 +12,7 @@ import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
   type TemplateConfig,
+  execForPackageManager,
   templateConfigSchema,
 } from '../../utils/template';
 
@@ -237,7 +238,12 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   }
 
   log.newline();
-  log.warn(`Resume this later with ${chalk.bold('yarn skuba configure')}.`);
+  log.warn(
+    `Resume this later with ${chalk.bold(
+      execForPackageManager(packageManager),
+      'skuba configure',
+    )}.`,
+  );
 
   const customAnswers = generatePlaceholders(fields);
 
