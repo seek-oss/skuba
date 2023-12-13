@@ -4,6 +4,7 @@ import type { SQSEvent, SQSHandler } from 'aws-lambda';
 const logger = createLogger({
   name: '<%- serviceName %>',
 });
+
 /**
  * Tests connectivity to ensure appropriate access and network configuration.
  */
@@ -17,5 +18,6 @@ export const handler: SQSHandler = (event: SQSEvent) => {
   }
 
   logger.info('Hello World!');
+
   return;
 };
