@@ -10,15 +10,15 @@ import { log } from '../../utils/logging';
 interface GitHubProject {
   orgName: string;
   repoName: string;
+  defaultBranch: string;
 }
 
 export const initialiseRepo = async (
   dir: string,
-  { orgName, repoName }: GitHubProject,
+  { orgName, repoName, defaultBranch }: GitHubProject,
 ) => {
   await git.init({
-    // TODO: support main as an alternative.
-    defaultBranch: 'master',
+    defaultBranch,
     dir,
     fs,
   });

@@ -1,22 +1,30 @@
 import path from 'path';
+import { inspect } from 'util';
 
 import { commitAllChanges } from '../../api/git';
+import { hasDebugFlag } from '../../utils/args';
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
-import { log } from '../../utils/logging';
+import { createLogger, log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';
 import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
+import { runPrettier } from '../adapter/prettier';
 import { tryPatchRenovateConfig } from '../configure/patchRenovateConfig';
 
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
+import type { Input } from './types';
 import { writePackageJson } from './writePackageJson';
 
-export const init = async () => {
+export const init = async (args = process.argv.slice(2)) => {
+  const opts: Input = {
+    debug: hasDebugFlag(args),
+  };
+
   const skubaVersionInfo = await showLogoAndVersionInfo();
 
   await ensureCommands('yarn');
@@ -86,8 +94,15 @@ export const init = async () => {
   let depsInstalled = false;
   try {
     await exec('yarn', 'add', '--dev', skubaSlug);
+
+    // Templating can initially leave certain files in an unformatted state;
+    // consider a Markdown table with columns sized based on content length.
+    await runPrettier('format', createLogger(opts.debug), destinationDir);
+
     depsInstalled = true;
-  } catch {}
+  } catch (err) {
+    log.warn(inspect(err));
+  }
 
   await commitAllChanges({
     dir: destinationDir,
@@ -114,9 +129,10 @@ export const init = async () => {
     log.plain('Then, resume initialisation:');
     log.ok('cd', destinationDir);
     log.ok('yarn add --dev', skubaSlug);
+    log.ok('yarn format');
     log.ok('git add --all');
     log.ok('git commit --message', `'Pin ${skubaSlug}'`);
-    log.ok('git push --set-upstream origin master');
+    log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
 
     log.newline();
     process.exitCode = 1;
@@ -132,7 +148,7 @@ export const init = async () => {
   log.newline();
   log.plain('Then, push your local changes:');
   log.ok('cd', destinationDir);
-  log.ok('git push --set-upstream origin master');
+  log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
 
   log.newline();
 };
