@@ -24,4 +24,5 @@ yarn-error.log
 
 /integration/format/
 /integration/lint/
+/template/**/pnpm-lock.yaml
 /template/**/yarn.lock
