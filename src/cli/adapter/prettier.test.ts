@@ -1,6 +1,8 @@
-import { inferParser, runPrettier } from './prettier';
 import path from 'path';
+
 import { log } from '../../utils/logging';
+
+import { inferParser, runPrettier } from './prettier';
 
 describe('inferParser', () => {
   test.each`
