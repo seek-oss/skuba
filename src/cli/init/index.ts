@@ -81,7 +81,7 @@ export const init = async (args = process.argv.slice(2)) => {
   const exec = createExec({
     cwd: destinationDir,
     stdio: 'pipe',
-    streamStdio: packageManager === 'yarn' ? 'yarn' : true,
+    streamStdio: packageManager,
   });
 
   log.newline();
