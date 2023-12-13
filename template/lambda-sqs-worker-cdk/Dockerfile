@@ -2,6 +2,9 @@
 
 FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:20-alpine AS dev-deps
 
+# Needed for cdk
+RUN apk add --no-cache bash
+
 WORKDIR /workdir
 
 COPY package.json yarn.lock ./
