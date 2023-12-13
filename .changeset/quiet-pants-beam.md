@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-template/koa-rest-api: fix validation error logs with zod union schema error
+template/koa-rest-api: Improve input validation error response for Zod unions
