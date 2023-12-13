@@ -1,4 +1,5 @@
 import path from 'path';
+import { inspect } from 'util';
 
 import { commitAllChanges } from '../../api/git';
 import { hasDebugFlag } from '../../utils/args';
@@ -18,7 +19,6 @@ import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
 import type { Input } from './types';
 import { writePackageJson } from './writePackageJson';
-import { inspect } from 'util';
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {
