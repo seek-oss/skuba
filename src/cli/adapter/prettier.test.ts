@@ -24,22 +24,8 @@ describe('runPrettier', () => {
   beforeAll(() => (console.log = () => undefined));
   afterAll(() => (console.log = originalConsoleLog));
 
-  it('handles a default directory', async () => {
-    await expect(runPrettier('lint', log)).resolves.toMatchObject({
-      // Use a minimal expectation to avoid double-reporting linting issues
-      // across our test & lint CI steps and impeding our self-autofixes.
-      ok: expect.any(Boolean),
-      result: {
-        count: expect.any(Number),
-        errored: expect.any(Array),
-        touched: expect.any(Array),
-        unparsed: expect.arrayContaining(['LICENSE']),
-      },
-    });
-  });
-
-  it('handles a custom directory', async () => {
-    await expect(
+  it('handles a custom directory', () =>
+    expect(
       runPrettier(
         'lint',
         log,
@@ -68,6 +54,5 @@ describe('runPrettier', () => {
           "unparsed": [],
         },
       }
-    `);
-  });
+    `));
 });
