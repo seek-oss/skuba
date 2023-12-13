@@ -23,7 +23,7 @@ export type Patch = {
   upgrade: () => Promise<void>;
 };
 
-// Hack to allow tests to resolve the patches
+// Hack to allow our Jest environment/transform to resolve the patches
 // In normal scenarios this will resolve immediately after the .js import
 const resolvePatch = async (patch: string): Promise<Patch> => {
   for (const extension of fileExtensions) {
