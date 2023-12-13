@@ -35,33 +35,33 @@ log();
 ### Prerequisites
 
 - Node.js LTS
-- Yarn 1.x
+- pnpm
 
 ```shell
-yarn install
+pnpm install
 ```
 
 ### Test
 
 ```shell
-yarn test
+pnpm run test
 ```
 
 ### Lint
 
 ```shell
 # Fix issues
-yarn format
+pnpm run format
 
 # Check for issues
-yarn lint
+pnpm run lint
 ```
 
 ### Package
 
 ```shell
 # Compile source
-yarn build
+pnpm run build
 
 # Review bundle
 npm pack
@@ -76,7 +76,7 @@ It depends on this repo being hosted on [SEEK-Jobs] with appropriate access.
 ### Commit messages
 
 This package is published with **[semantic-release]**, which requires a particular commit format to manage semantic versioning.
-You can run the interactive `yarn commit` command in place of `git commit` to generate a compliant commit title and message.
+You can run the interactive `pnpm run commit` command in place of `git commit` to generate a compliant commit title and message.
 If you use the `Squash and merge` option on pull requests, take extra care to format the squashed commit in the GitHub UI before merging.
 
 ### Releasing latest

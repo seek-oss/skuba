@@ -94,7 +94,7 @@ To set up this repo for publishing, follow the instructions in our [OSS npm pack
 ### Commit messages
 
 This package is published with **[semantic-release]**, which requires a particular commit format to manage semantic versioning.
-You can run the interactive `yarn commit` command in place of `git commit` to generate a compliant commit title and message.
+You can run the interactive `pnpm run commit` command in place of `git commit` to generate a compliant commit title and message.
 If you use the `Squash and merge` option on pull requests, take extra care to format the squashed commit in the GitHub UI before merging.
 
 ### Releasing latest

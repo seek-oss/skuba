@@ -7,7 +7,7 @@ Next steps:
 1. [ ] Finish templating if this was skipped earlier:
 
    ```shell
-   yarn skuba configure
+   pnpm exec skuba configure
    ```
 
 2. [ ] Create a new repository in the appropriate GitHub organisation.
@@ -43,27 +43,27 @@ This defaults to an HTTP request to the `GET /smoke` endpoint.
 ### Test
 
 ```shell
-yarn test
+pnpm run test
 ```
 
 ### Lint
 
 ```shell
 # fix
-yarn format
+pnpm run format
 
 # check
-yarn lint
+pnpm run lint
 ```
 
 ### Start
 
 ```shell
 # Start a local HTTP server
-yarn start
+pnpm run start
 
 # Start with Node.js Inspector enabled
-yarn start:debug
+pnpm run start:debug
 ```
 
 ### Deploy
