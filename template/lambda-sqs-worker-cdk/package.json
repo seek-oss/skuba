@@ -3,8 +3,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "deploy": "cdk deploy appStack --require-approval never --context stage=${ENVIRONMENT}",
-    "deploy:hotswap": "yarn deploy --hotswap",
-    "deploy:watch": "yarn deploy:hotswap --watch",
+    "deploy:hotswap": "pnpm run --silent deploy --hotswap",
+    "deploy:watch": "pnpm run --silent deploy:hotswap --watch",
     "format": "skuba format",
     "lint": "skuba lint",
     "test": "skuba test",
