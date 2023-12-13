@@ -189,7 +189,7 @@ Try out some of the commands documented throughout this [CLI] section.
 [`skuba lint`] may be a good starting point:
 
 ```shell
-pnpm run lint
+skuba lint
 ```
 
 ### Templating

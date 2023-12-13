@@ -49,10 +49,10 @@ Discussion continues in the [esbuild](./esbuild.md) deep dive.
 
    ```shell
    # uses Babel instead of tsc
-   yarn build
+   skuba build
 
    # uses Nodemon + babel-node instead of ts-node-dev
-   yarn start
+   skuba start
    ```
 
 ---
