@@ -25,7 +25,7 @@ const resolvePatch = async (
   patch: string,
 ): Promise<
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  typeof import('/Users/samc/work/skuba/src/cli/configure/upgrade/patches/7.3.1/index')
+  typeof import('/Users/samc/work/skuba/src/cli/configure/upgrade/patches/7.3.1')
 > => {
   for (const extension of fileExtensions) {
     try {
