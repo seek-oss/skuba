@@ -35,9 +35,10 @@ and answering a few starter questions:
 
 ```shell
 ? For starters, some project details:
-⊙    Owner : SEEK-Jobs/my-team
-⊙     Repo : my-repo
-⊙ Platform : amd64 | arm64
+⊙          Owner : SEEK-Jobs/my-team
+⊙           Repo : my-repo
+⊙       Platform : arm64
+⊙ Default Branch : main
 
 # ...
 ```

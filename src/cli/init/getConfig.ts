@@ -18,6 +18,7 @@ import { downloadGitHubTemplate } from './git';
 import {
   BASE_PROMPT_PROPS,
   type BaseFields,
+  type Choice,
   GIT_PATH_PROMPT,
   SHOULD_CONTINUE_PROMPT,
   TEMPLATE_PROMPT,
@@ -27,7 +28,7 @@ import { type InitConfig, initConfigInputSchema } from './types';
 import { Form, type FormChoice } from 'enquirer';
 
 export const runForm = <T = Record<string, string>>(props: {
-  choices: Readonly<FormChoice[]>;
+  choices: Readonly<Choice[]>;
   message: string;
   name: string;
 }) => {
@@ -36,7 +37,11 @@ export const runForm = <T = Record<string, string>>(props: {
   const choices = props.choices.map((choice) => ({
     ...choice,
     validate: (value: string | undefined) => {
-      if (!value || value === '' || value === choice.initial) {
+      if (
+        !value ||
+        value === '' ||
+        (value === choice.initial && !choice.allowInitial)
+      ) {
         return 'Form is not complete';
       }
 

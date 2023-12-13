@@ -11,7 +11,16 @@ import {
   isPlatform,
 } from './validation';
 
-import { Input, Select } from 'enquirer';
+import { type FormChoice, Input, Select } from 'enquirer';
+
+export type Choice = FormChoice & {
+  /**
+   * Whether the user is allowed to skip field entry and use the initial value.
+   *
+   * Defaults to `false`.
+   */
+  allowInitial?: boolean;
+};
 
 export type BaseFields = Record<
   (typeof BASE_CHOICES)[number]['name'],
@@ -62,14 +71,16 @@ const BASE_CHOICES = [
   {
     name: 'platformName',
     message: 'Platform',
-    initial: PLATFORM_OPTIONS,
+    initial: 'arm64',
+    allowInitial: true,
     validate: (value: unknown) =>
       isPlatform(value) || `must be ${PLATFORM_OPTIONS}`,
   },
   {
     name: 'defaultBranch',
     message: 'Default Branch',
-    initial: 'master | main',
+    initial: 'main',
+    allowInitial: true,
     validate: (value: unknown) =>
       typeof value === 'string' && value.length > 0 ? true : 'required',
   },
