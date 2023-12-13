@@ -30,7 +30,6 @@
   "scripts": {
     "build": "scripts/build.sh",
     "deploy": "scripts/deploy.sh",
-    "env": "export NODE_OPTIONS=--experimental-vm-modules",
     "format": "yarn skuba format",
     "lint": "yarn skuba lint && yarn lint:md",
     "lint:md": "remark --frail --quiet .",
