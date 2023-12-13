@@ -23,8 +23,8 @@ For example, with the [Docker Buildkite plugin]:
 ```yaml
 steps:
   - commands:
-      - yarn lint
-      - yarn test
+      - pnpm run lint
+      - pnpm run test
     env:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
       GET_GITHUB_TOKEN: 'please'
@@ -108,7 +108,7 @@ jobs:
       # Set up Node.js, install dependencies, run tests...
 
       - name: Lint
-        run: yarn lint
+        run: pnpm run lint
 ```
 
 <!-- {% endraw %} -->
