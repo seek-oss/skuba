@@ -17,7 +17,7 @@ const contexts = [
   },
 ];
 
-const currentDate = '2023-12-05T05:00:21.059Z';
+const currentDate = '1212-12-12T12:12:12.121Z';
 
 jest.useFakeTimers({
   legacyFakeTimers: false,

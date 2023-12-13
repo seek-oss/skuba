@@ -10,6 +10,7 @@ export const EnvContextSchema = z.object({
       SOMETHING: z.string(),
     }),
   }),
+  sourceSnsTopicArn: z.string(),
 });
 
 export type EnvContext = z.infer<typeof EnvContextSchema>;

@@ -70,9 +70,9 @@ const pruneLambdas = async (
   ]);
 
   const aliasMap = new Map(
-    aliases
-      .filter((alias) => alias.FunctionVersion)
-      .map((alias) => [alias.FunctionVersion as string, alias]),
+    aliases.flatMap((alias) =>
+      alias.FunctionVersion ? [alias.FunctionVersion, alias] : [],
+    ),
   );
 
   const versionsToPrune = versions
@@ -90,7 +90,11 @@ const pruneLambdas = async (
     return;
   }
 
-  console.log(`Pruning ${versionsToPrune.length} function versions`);
+  console.log(
+    `Pruning function versions: ${versionsToPrune
+      .map((version) => version.Version)
+      .join(', ')}`,
+  );
 
   await Promise.all(
     versionsToPrune.map((version) =>

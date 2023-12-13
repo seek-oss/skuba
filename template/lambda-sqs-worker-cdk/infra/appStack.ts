@@ -35,10 +35,11 @@ export class AppStack extends Stack {
 
     kmsKey.grantEncrypt(accountPrincipal);
 
-    const topic = new aws_sns.Topic(this, 'topic', {
-      topicName: '<%- serviceName %>',
-      masterKey: kmsKey,
-    });
+    const topic = aws_sns.Topic.fromTopicArn(
+      this,
+      'source-topic',
+      context.sourceSnsTopicArn,
+    );
 
     const deadLetterQueue = new aws_sqs.Queue(this, 'worker-queue-dlq', {
       queueName: '<%- serviceName %>-dlq',
@@ -93,7 +94,7 @@ export class AppStack extends Stack {
       // https://github.com/aws/aws-cdk/issues/28237
       // This forces the lambda to be updated on every deployment
       // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
-      description: `Lambda description - updated at ${new Date().toISOString()}`,
+      description: `Updated at ${new Date().toISOString()}`,
     });
 
     const alias = new aws_lambda.Alias(this, 'worker-live-alias', {
@@ -110,7 +111,7 @@ export class AppStack extends Stack {
       {
         ...defaultWorkerConfig,
         entry: './src/preHook.ts',
-        timeout: Duration.seconds(30),
+        timeout: Duration.seconds(120),
         bundling: defaultWorkerBundlingConfig,
         functionName: '<%- serviceName %>-pre-hook',
         environment: {

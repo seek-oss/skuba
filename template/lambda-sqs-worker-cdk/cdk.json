@@ -10,7 +10,8 @@
         "environment": {
           "SOMETHING": "dev"
         }
-      }
+      },
+      "sourceSnsTopicArn": "TODO: sourceSnsTopicArn"
     },
     "prod": {
       "workerLambda": {
@@ -18,7 +19,8 @@
         "environment": {
           "SOMETHING": "prod"
         }
-      }
+      },
+      "sourceSnsTopicArn": "TODO: sourceSnsTopicArn"
     }
   },
   "progress": "events",
