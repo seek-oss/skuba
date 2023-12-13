@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import { z } from 'zod';
 
 import { projectTypeSchema } from './manifest';
+import { packageManagerSchema } from './packageManager';
 
 export const TEMPLATE_NAMES = [
   'express-rest-api',
@@ -68,27 +69,6 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
     filename: 'package.md',
   },
 };
-
-// TODO: consider changing to this to `pnpm` in a future major version.
-export const DEFAULT_PACKAGE_MANAGER = 'yarn';
-
-export const execForPackageManager = (
-  packageManager: PackageManager,
-): string => {
-  switch (packageManager) {
-    case 'pnpm':
-      return 'pnpm exec';
-
-    case 'yarn':
-      return 'yarn';
-  }
-};
-
-export type PackageManager = z.infer<typeof packageManagerSchema>;
-
-export const packageManagerSchema = z
-  .union([z.literal('pnpm'), z.literal('yarn')])
-  .default(DEFAULT_PACKAGE_MANAGER);
 
 export type TemplateConfig = z.infer<typeof templateConfigSchema>;
 

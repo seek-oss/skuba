@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { projectTypeSchema } from '../../utils/manifest';
-import { packageManagerSchema } from '../../utils/template';
+import { packageManagerSchema } from '../../utils/packageManager';
 
 export interface Input {
   /**

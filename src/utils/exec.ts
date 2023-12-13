@@ -10,7 +10,7 @@ import npmWhich from 'npm-which';
 
 import { concurrentlyErrorsSchema, isErrorWithCode } from './error';
 import { log } from './logging';
-import type { PackageManager } from './template';
+import type { PackageManager } from './packageManager';
 
 class YarnSpamFilter extends stream.Transform {
   silenced = false;
