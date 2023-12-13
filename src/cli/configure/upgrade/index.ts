@@ -77,6 +77,6 @@ export const upgradeSkuba = async () => {
 
   await writeFile(manifest.path, updatedPackageJson);
   log.newline();
-  log.plain('Skuba update finished.');
+  log.plain('Skuba update complete.');
   log.newline();
 };
