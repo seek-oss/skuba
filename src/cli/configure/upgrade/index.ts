@@ -19,6 +19,8 @@ const getPatches = async (manifestVersion: string): Promise<string[]> => {
 
 const fileExtensions = ['js', 'ts'];
 
+// Hack to allow tests to resolve the patches
+// In normal scenarios this will resolve immediately after the .js import
 const resolvePatch = async (
   patch: string,
 ): Promise<
