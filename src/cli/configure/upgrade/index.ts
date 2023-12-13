@@ -19,14 +19,13 @@ const getPatches = async (manifestVersion: string): Promise<string[]> => {
 
 const fileExtensions = ['js', 'ts'];
 
+export type Patch = {
+  upgrade: () => Promise<void>;
+};
+
 // Hack to allow tests to resolve the patches
 // In normal scenarios this will resolve immediately after the .js import
-const resolvePatch = async (
-  patch: string,
-): Promise<
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  typeof import('/Users/samc/work/skuba/src/cli/configure/upgrade/patches/7.3.1')
-> => {
+const resolvePatch = async (patch: string): Promise<Patch> => {
   for (const extension of fileExtensions) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
