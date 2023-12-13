@@ -54,8 +54,6 @@ jobs:
 
       - name: Test
         run: yarn test:ci
-        env:
-          NODE_OPTIONS: --experimental-vm-modules
 
       - name: Lint
         run: yarn lint
@@ -93,5 +91,3 @@ jobs:
       - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
         name: Test template
         run: yarn test:template ${{ matrix.template }}
-        env:
-          NODE_OPTIONS: --experimental-vm-modules

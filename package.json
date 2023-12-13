@@ -34,7 +34,7 @@
     "lint": "yarn skuba lint && yarn lint:md",
     "lint:md": "remark --frail --quiet .",
     "release": "yarn build && changeset publish",
-    "skuba": "yarn build && node lib/skuba",
+    "skuba": "yarn build && node --require dotenv/config lib/skuba",
     "stage": "changeset version && yarn format",
     "test": "yarn skuba test --selectProjects unit",
     "test:ci": "yarn skuba test --runInBand",
