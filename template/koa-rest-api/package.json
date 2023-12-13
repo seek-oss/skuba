@@ -14,12 +14,12 @@
   "dependencies": {
     "@koa/router": "^12.0.0",
     "@opentelemetry/api": "^1.1.0",
-    "@opentelemetry/core": "^1.17.0",
-    "@opentelemetry/exporter-trace-otlp-grpc": "^0.44.0",
-    "@opentelemetry/instrumentation-aws-sdk": "^0.36.0",
-    "@opentelemetry/instrumentation-http": "^0.44.0",
-    "@opentelemetry/propagator-b3": "^1.17.0",
-    "@opentelemetry/sdk-node": "^0.43.0",
+    "@opentelemetry/core": "^1.18.1",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.45.0",
+    "@opentelemetry/instrumentation-aws-sdk": "^0.37.0",
+    "@opentelemetry/instrumentation-http": "^0.45.0",
+    "@opentelemetry/propagator-b3": "^1.18.1",
+    "@opentelemetry/sdk-node": "^0.45.0",
     "@seek/logger": "^6.0.0",
     "aws-sdk": "^2.1039.0",
     "hot-shots": "^10.0.0",
@@ -36,7 +36,7 @@
     "@types/koa": "^2.13.4",
     "@types/koa-bodyparser": "^5.0.2",
     "@types/koa__router": "^12.0.0",
-    "@types/node": "^18.11.5",
+    "@types/node": "^20.9.0",
     "@types/supertest": "^2.0.11",
     "chance": "^1.1.8",
     "pino-pretty": "^10.0.0",
@@ -44,6 +44,6 @@
     "supertest": "^6.1.6"
   },
   "engines": {
-    "node": ">=18.12"
+    "node": ">=20"
   }
 }

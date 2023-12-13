@@ -17,13 +17,13 @@ Next steps:
 5. [ ] Configure [GitHub repository settings].
 6. [ ] Delete this checklist 😌.
 
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
+[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 
 ## Design
 
 The `greeter` template is the prototypical _hello world_ project.
-It can function as a playground for the TypeScript tooling prescribed by our [technology strategy],
+It can function as a playground for the TypeScript tooling prescribed by our [Technical Guidelines],
 or serve as a starting point for a backend project if the other built-in templates are not a good fit.
 
 It's a barebones Node.js application that comprises:
@@ -93,4 +93,4 @@ TODO: add support links for the prod environment.
 - Splunk logs
 -->
 
-[technology strategy]: https://tech-strategy.ssod.skinfra.xyz
+[Technical Guidelines]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346017/

@@ -103,7 +103,7 @@ Here are some branches that **semantic-release** supports by default:
 For more information, see the **semantic-release** docs on [triggering a release].
 
 [distribution tags]: https://docs.npmjs.com/adding-dist-tags-to-packages
-[gutenberg]: https://github.com/SEEK-Jobs/gutenberg
-[seek-jobs]: https://github.com/orgs/seek-jobs/sso
+[Gutenberg]: https://github.com/SEEK-Jobs/gutenberg
+[SEEK-Jobs]: https://github.com/orgs/seek-jobs/sso
 [semantic-release]: https://github.com/semantic-release/semantic-release
 [triggering a release]: https://github.com/semantic-release/semantic-release/#triggering-a-release

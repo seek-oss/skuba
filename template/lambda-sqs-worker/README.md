@@ -18,12 +18,12 @@ Next steps:
 6. [ ] Configure [GitHub repository settings].
 7. [ ] Delete this checklist 😌.
 
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
+[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
 [github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 
 ## Design
 
-<%-repoName %> is a Node.js [Lambda] application built in line with our [technology strategy].
+<%-repoName %> is a Node.js [Lambda] application built in line with our [Technical Guidelines].
 It is backed by a typical SQS message + dead letter queue configuration and uses common SEEK packages.
 Workers enable fault-tolerant asynchronous processing of events.
 
@@ -126,7 +126,7 @@ TODO: add support links for the prod environment.
 - Splunk logs
 -->
 
-[codedeploy]: https://docs.aws.amazon.com/codedeploy
-[lambda]: https://docs.aws.amazon.com/lambda
-[serverless]: https://www.serverless.com/
-[technology strategy]: https://tech-strategy.ssod.skinfra.xyz
+[CodeDeploy]: https://docs.aws.amazon.com/codedeploy
+[Lambda]: https://docs.aws.amazon.com/lambda
+[Serverless]: https://www.serverless.com/
+[Technical Guidelines]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346017/

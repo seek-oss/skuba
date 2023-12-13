@@ -66,6 +66,13 @@ const BASE_CHOICES = [
     validate: (value: unknown) =>
       isPlatform(value) || `must be ${PLATFORM_OPTIONS}`,
   },
+  {
+    name: 'defaultBranch',
+    message: 'Default Branch',
+    initial: 'master | main',
+    validate: (value: unknown) =>
+      typeof value === 'string' && value.length > 0 ? true : 'required',
+  },
 ] as const;
 
 export const BASE_PROMPT_PROPS = {

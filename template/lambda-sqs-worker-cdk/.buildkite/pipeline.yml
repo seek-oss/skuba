@@ -28,13 +28,10 @@ configs:
         - yarn deploy
       concurrency: 1
       plugins:
-        - artifacts#v1.9.2:
-            build: ${BUILDKITE_BUILD_ID}
-            download: lib/*
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - docker-compose#v4.14.0:
+        - docker-compose#v4.16.0:
             dependencies: false
             run: app
       retry:
@@ -45,21 +42,18 @@ configs:
 
 steps:
   - label: 🧪 Test, Lint & Build
-    artifact_paths: lib/**/*
     commands:
       - echo '+++ yarn test:ci'
       - yarn test
       - echo '--- yarn lint'
       - yarn lint
-      - echo '--- yarn build'
-      - yarn build
     env:
       GET_GITHUB_TOKEN: please
     plugins:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v4.14.0:
+      - docker-compose#v4.16.0:
           run: app
     timeout_in_minutes: 10
 
@@ -87,6 +81,23 @@ steps:
     label: 🤞 Deploy Dev
     concurrency_group: '<%- repoName %>/deploy/dev'
     key: deploy-dev
+
+  - block: 🙋🏻‍♀️ Deploy Dev (Hotswap)
+    key: deploy-dev-hotswap-block
+    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
+
+  - <<: *deploy
+    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
+    depends_on: deploy-dev-hotswap-block
+    agents:
+      queue: <%- devBuildkiteQueueName %>
+    env:
+      ENVIRONMENT: dev
+    commands:
+      - echo '+++ yarn deploy:hotswap'
+      - yarn deploy:hotswap
+    label: 🤞 Deploy Dev (Hotswap)
+    concurrency_group: '<%- repoName %>/deploy/dev'
 
   - <<: *deploy
     env:

@@ -78,7 +78,7 @@ describe('validateJson', () => {
     expect(() =>
       validateJson(input, IdDescriptionSchema),
     ).toThrowErrorMatchingInlineSnapshot(
-      `"Unexpected token } in JSON at position 0"`,
+      `"Unexpected token '}', "}" is not valid JSON"`,
     );
   });
 });

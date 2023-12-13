@@ -23,6 +23,10 @@ Creates a new local project from a starter [template].
 and only requires a connection to the public npm registry.
 Most of its built-in templates start you off with a [Buildkite pipeline] that should be ready to go once you push your repository to GitHub and configure Buildkite.
 
+| Option    | Description                 |
+| :-------- | :-------------------------- |
+| `--debug` | Enable debug console output |
+
 ### Interactive walkthrough
 
 Let's start by running the command:
@@ -134,10 +138,11 @@ git remote get-url origin
 ```
 
 **skuba** has committed its initial template files and configured a remote `origin` for you.
-You should create the corresponding repository on GitHub and push to it:
+You should create the corresponding repository on GitHub and push to it.
+Replace `main` with your default branch name as appropriate:
 
 ```shell
-git push --set-upstream origin master
+git push --set-upstream origin main
 ```
 
 ### Directory structure

@@ -39,7 +39,8 @@ skuba init << EOF
     "platformName": "arm64",
     "repoName": "${directory}",
     "serviceName": "serviceName",
-    "region": "ap-southeast-2"
+    "region": "ap-southeast-2",
+    "defaultBranch": "main"
   },
   "templateName": "${template}"
 }
@@ -54,8 +55,14 @@ skuba version
 skuba -v
 skuba --version
 
+set +e
 echo "--- pnpm run build ${template}"
-pnpm run build
+output=$(pnpm run build 2>&1)
+echo $output
+if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
+    exit 1
+fi
+set -e
 
 echo "--- pnpm run lint ${template}"
 pnpm run lint
