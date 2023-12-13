@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -e
+
 template="${1}"
 if [ -z "$template" ]; then
   echo "Usage: yarn test:template <template_name>"
@@ -34,7 +36,8 @@ yarn skuba init << EOF
     "platformName": "arm64",
     "repoName": "${directory}",
     "serviceName": "serviceName",
-    "region": "ap-southeast-2"
+    "region": "ap-southeast-2",
+    "defaultBranch": "main"
   },
   "templateName": "${template}"
 }
@@ -52,12 +55,14 @@ yarn skuba version
 yarn skuba -v
 yarn skuba --version
 
+set +e
 echo "--- skuba build ${template}"
 output=$(yarn build 2>&1)
 echo $output
 if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
     exit 1
 fi
+set -e
 
 echo "--- skuba lint ${template}"
 yarn lint

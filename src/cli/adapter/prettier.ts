@@ -155,17 +155,15 @@ export interface PrettierOutput {
 export const runPrettier = async (
   mode: 'format' | 'lint',
   logger: Logger,
+  cwd = process.cwd(),
 ): Promise<PrettierOutput> => {
   logger.debug('Initialising Prettier...');
 
   const start = process.hrtime.bigint();
 
-  let directory = process.cwd();
+  const manifest = await getConsumerManifest(cwd);
 
-  const manifest = await getConsumerManifest();
-  if (manifest) {
-    directory = path.dirname(manifest.path);
-  }
+  const directory = manifest ? path.dirname(manifest.path) : cwd;
 
   logger.debug(
     manifest ? 'Detected project root:' : 'Detected working directory:',
@@ -178,15 +176,15 @@ export const runPrettier = async (
   // This avoids exhibiting different behaviour than a Prettier IDE integration,
   // though it may present headaches if `.gitignore` and `.prettierignore` rules
   // conflict.
-  const filepaths = await crawlDirectory(directory, [
+  const relativeFilepaths = await crawlDirectory(directory, [
     '.gitignore',
     '.prettierignore',
   ]);
 
-  logger.debug(`Discovered ${pluralise(filepaths.length, 'file')}.`);
+  logger.debug(`Discovered ${pluralise(relativeFilepaths.length, 'file')}.`);
 
   const result: Result = {
-    count: filepaths.length,
+    count: relativeFilepaths.length,
     errored: [],
     touched: [],
     unparsed: [],
@@ -194,7 +192,14 @@ export const runPrettier = async (
 
   logger.debug(mode === 'format' ? 'Formatting' : 'Linting', 'files...');
 
-  for (const filepath of filepaths) {
+  for (const relativeFilepath of relativeFilepaths) {
+    // Use relative paths to keep log output cleaner, particularly in the common
+    // case where we are executing against the current working directory.
+    const filepath = path.relative(
+      process.cwd(),
+      path.join(directory, relativeFilepath),
+    );
+
     // Infer parser upfront so we can skip unsupported files.
     const parser = await inferParser(filepath);
 
