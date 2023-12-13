@@ -63,7 +63,7 @@ export const upgradeSkuba = async () => {
 
   const patches = await getPatches(manifestVersion);
 
-  // Run these in series in case a previous patch relies on another patch
+  // Run these in series in case a subsequent patch relies on a previous patch
   for (const patch of patches) {
     const patchFile = await resolvePatch(patch);
     await patchFile.upgrade();
