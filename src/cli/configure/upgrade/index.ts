@@ -58,7 +58,6 @@ export const upgradeSkuba = async () => {
     return;
   }
 
-  log.newline();
   log.plain('Updating skuba...');
 
   const patches = await getPatches(manifestVersion);
@@ -77,6 +76,6 @@ export const upgradeSkuba = async () => {
 
   await writeFile(manifest.path, updatedPackageJson);
   log.newline();
-  log.plain('Skuba update complete.');
+  log.plain('skuba update complete.');
   log.newline();
 };

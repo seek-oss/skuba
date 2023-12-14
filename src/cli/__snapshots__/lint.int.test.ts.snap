@@ -2,12 +2,11 @@
 
 exports[`fixable 1`] = `
 "
-
 Updating skuba...
 
 Patch 7.3.1 applied.
 
-Skuba update complete.
+skuba update complete.
 
 ESLint   │ Processed 4 files in <random>s.
 ESLint   │ 
@@ -80,7 +79,7 @@ Updating skuba...
 
 Patch 7.3.1 applied.
 
-Skuba update complete.
+skuba update complete.
 
 ESLint   │ Initialising ESLint...
 ESLint   │ Processing files...
@@ -153,7 +152,7 @@ Updating skuba...
 
 Patch 7.3.1 applied.
 
-Skuba update complete.
+skuba update complete.
 
 ESLint   │ Processed 2 files in <random>s.
 Prettier │ Processed 6 files in <random>s.
@@ -171,7 +170,7 @@ Updating skuba...
 
 Patch 7.3.1 applied.
 
-Skuba update complete.
+skuba update complete.
 
 ESLint   │ Processed 2 files in <random>s.
 ESLint   │ 
