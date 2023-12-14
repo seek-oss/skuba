@@ -1,8 +1,6 @@
-import { inspect } from 'util';
-
 import { detect } from 'detect-package-manager';
 import isInstalledGlobally from 'is-installed-globally';
-import { z } from 'zod';
+import { ZodError, z } from 'zod';
 
 import { log } from './logging';
 
@@ -41,8 +39,9 @@ export const detectPackageManager = async (
 ): Promise<PackageManagerConfig> => {
   let packageManager: PackageManager = DEFAULT_PACKAGE_MANAGER;
 
+  let raw: string | undefined;
   try {
-    const raw = await detect({ cwd, includeGlobalBun: false });
+    raw = await detect({ cwd, includeGlobalBun: false });
 
     packageManager = packageManagerSchema.parse(raw);
   } catch (err) {
@@ -51,7 +50,22 @@ export const detectPackageManager = async (
         DEFAULT_PACKAGE_MANAGER,
       )}.`,
     );
-    log.subtle(inspect(err));
+    log.subtle(
+      (() => {
+        switch (true) {
+          case err instanceof ZodError:
+            return `Expected ${Object.keys(PACKAGE_MANAGERS).join(
+              '|',
+            )}, received ${raw}`;
+
+          case err instanceof Error:
+            return err.message;
+
+          default:
+            return String(err);
+        }
+      })(),
+    );
   }
 
   return configForPackageManager(packageManager);

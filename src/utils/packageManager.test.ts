@@ -10,15 +10,9 @@ jest
   .spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
-const stdout = () => {
-  if (!stdoutMock.mock.calls.length) {
-    return;
-  }
+const stdout = () => stdoutMock.mock.calls.flat(1).join('').trim();
 
-  const result = stdoutMock.mock.calls.flat(1).join('');
-
-  return `\n${result}`;
-};
+afterEach(stdoutMock.mockReset);
 
 describe('detectPackageManager', () => {
   it('detects pnpm', async () => {
@@ -33,7 +27,7 @@ describe('detectPackageManager', () => {
       }
     `);
 
-    expect(stdout()).toBeUndefined();
+    expect(stdout()).toBe('');
   });
 
   it('detects yarn', async () => {
@@ -49,7 +43,7 @@ describe('detectPackageManager', () => {
       }
     `);
 
-    expect(stdout()).toBeUndefined();
+    expect(stdout()).toBe('');
   });
 
   it('defaults on unrecognised package manager', async () => {
@@ -65,13 +59,18 @@ describe('detectPackageManager', () => {
       }
     `);
 
-    expect(stdout()).toContain(
-      'Failed to detect package manager; defaulting to yarn.',
+    expect(stdout()).toBe(
+      [
+        'Failed to detect package manager; defaulting to yarn.',
+        'Expected pnpm|yarn, received npm',
+      ].join('\n'),
     );
   });
 
   it('defaults on detection failure', async () => {
-    detect.mockRejectedValue(new Error('Badness!'));
+    const message = 'Badness!';
+
+    detect.mockRejectedValue(new Error(message));
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
@@ -83,8 +82,10 @@ describe('detectPackageManager', () => {
       }
     `);
 
-    expect(stdout()).toContain(
-      'Failed to detect package manager; defaulting to yarn.',
+    expect(stdout()).toBe(
+      ['Failed to detect package manager; defaulting to yarn.', message].join(
+        '\n',
+      ),
     );
   });
 });
