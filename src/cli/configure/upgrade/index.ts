@@ -43,15 +43,14 @@ export const upgradeSkuba = async () => {
     getConsumerManifest(),
   ]);
 
-  const manifestVersion = (
-    manifest?.packageJson.skuba as SkubaPackageJson | undefined
-  )?.version;
-
-  if (!manifest || !manifestVersion) {
-    throw new Error(
-      'Could not find a skuba manifest, please run `skuba configure`',
-    );
+  if (!manifest) {
+    throw new Error('Could not find a package json for this project');
   }
+
+  manifest.packageJson.skuba ??= { version: '1.0.0' };
+
+  const manifestVersion = (manifest.packageJson.skuba as SkubaPackageJson)
+    .version;
 
   // We are up to date, avoid apply patches
   if (gte(manifestVersion, currentVersion)) {

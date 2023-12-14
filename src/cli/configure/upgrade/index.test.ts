@@ -19,18 +19,10 @@ beforeEach(() => {
 
 describe('upgradeSkuba', () => {
   it('should throw an error if no skuba manifest can be found', async () => {
-    jest.mocked(getConsumerManifest).mockResolvedValue({
-      packageJson: {
-        _id: 'test',
-        name: 'some-api',
-        readme: '',
-        version: '1.0.0',
-      } as NormalizedPackageJson,
-      path: '/package.json',
-    });
+    jest.mocked(getConsumerManifest).mockResolvedValue(undefined);
 
     await expect(upgradeSkuba()).rejects.toThrow(
-      'Could not find a skuba manifest, please run `skuba configure`',
+      'Could not find a package json for this project',
     );
   });
 
@@ -108,6 +100,45 @@ describe('upgradeSkuba', () => {
         skuba: {
           version: '1.0.0',
         },
+        _id: 'test',
+        name: 'some-api',
+        readme: '',
+        version: '1.0.0',
+      } as NormalizedPackageJson,
+      path: '/package.json',
+    });
+
+    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+
+    // readdir has overloads and the mocked version doesn't match the string version
+    jest.mocked(readdir).mockResolvedValue(['2.0.0'] as unknown as Dirent[]);
+
+    await expect(upgradeSkuba()).resolves.toBeUndefined();
+
+    expect(writeFile).toHaveBeenCalledWith(
+      '/package.json',
+      `{
+  "name": "some-api",
+  "version": "1.0.0",
+  "skuba": {
+    "version": "2.0.0"
+  }
+}
+`,
+    );
+  });
+
+  it('should handle skuba section not being present in the packageJson', async () => {
+    const mockUpgrade = {
+      upgrade: jest.fn(),
+    };
+
+    jest.mock(`./patches/2.0.0/index.js`, () => mockUpgrade, {
+      virtual: true,
+    });
+
+    jest.mocked(getConsumerManifest).mockResolvedValue({
+      packageJson: {
         _id: 'test',
         name: 'some-api',
         readme: '',
