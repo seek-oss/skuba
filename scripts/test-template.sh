@@ -14,7 +14,7 @@ echo '--- cleanup'
 rm -rf "${directory}" "../${directory}"
 
 echo '--- pnpm install'
-pnpm install --frozen-lockfile --no-optional
+pnpm install --frozen-lockfile
 
 echo '--- pnpm run build'
 pnpm run build
