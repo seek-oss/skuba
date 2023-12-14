@@ -2,6 +2,15 @@ import { z } from 'zod';
 
 import { projectTypeSchema } from '../../utils/manifest';
 
+export interface Input {
+  /**
+   * Whether to enable verbose debug logging.
+   *
+   * Defaults to `false`.
+   */
+  debug: boolean;
+}
+
 export type InitConfigInput = z.infer<typeof initConfigInputSchema>;
 
 export const initConfigInputSchema = z.object({
