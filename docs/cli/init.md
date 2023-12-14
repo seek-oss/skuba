@@ -23,6 +23,10 @@ Creates a new local project from a starter [template].
 and only requires a connection to the public npm registry.
 Most of its built-in templates start you off with a [Buildkite pipeline] that should be ready to go once you push your repository to GitHub and configure Buildkite.
 
+| Option    | Description                 |
+| :-------- | :-------------------------- |
+| `--debug` | Enable debug console output |
+
 ### Interactive walkthrough
 
 Let's start by running the command:
@@ -35,9 +39,10 @@ and answering a few starter questions:
 
 ```shell
 ? For starters, some project details:
-⊙    Owner : SEEK-Jobs/my-team
-⊙     Repo : my-repo
-⊙ Platform : amd64 | arm64
+⊙          Owner : SEEK-Jobs/my-team
+⊙           Repo : my-repo
+⊙       Platform : arm64
+⊙ Default Branch : main
 
 # ...
 ```
