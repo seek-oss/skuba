@@ -1,10 +1,8 @@
 import type { Writable } from 'stream';
 
 import { hasDebugFlag, hasSerialFlag } from '../../utils/args';
-import { tryAddEmptyExports } from '../configure/addEmptyExports';
-import { tryPatchRenovateConfig } from '../configure/patchRenovateConfig';
-import { tryPatchServerListener } from '../configure/patchServerListener';
 import { tryRefreshIgnoreFiles } from '../configure/refreshIgnoreFiles';
+import { upgradeSkuba } from '../configure/upgrade';
 
 import { externalLint } from './external';
 import { internalLint } from './internal';
@@ -15,12 +13,7 @@ export const lint = async (
   tscOutputStream: Writable | undefined = undefined,
   workerThreads = true,
 ) => {
-  await Promise.all([
-    tryAddEmptyExports(),
-    tryPatchRenovateConfig(),
-    tryPatchServerListener(),
-    tryRefreshIgnoreFiles(),
-  ]);
+  await Promise.all([tryRefreshIgnoreFiles(), upgradeSkuba()]);
 
   const opts: Input = {
     debug: hasDebugFlag(args),
