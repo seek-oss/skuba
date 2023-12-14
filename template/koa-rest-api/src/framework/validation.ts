@@ -3,7 +3,8 @@ import { ZodIssueCode, type z } from 'zod';
 
 import type { Context } from 'src/types/koa';
 
-type InvalidFields = Record<string, string[]>;
+type InvalidFields = Record<string, string>;
+type UnionErrorIdx = number | undefined;
 /**
  * Converts a `ZodError` into an `invalidFields` object
  *
@@ -27,32 +28,32 @@ type InvalidFields = Record<string, string[]>;
  * Returns:
  *
  * ```json
- * { "/advertiserId": ["advertiserId is required in the URL"] }
+ * { "/advertiserId": "advertiserId is required in the URL" }
  * ```
  */
-const parseInvalidFieldsFromError = (
-  invalidFields: InvalidFields,
-  { errors }: z.ZodError,
-  unionIdx?: number,
-) => {
-  errors.map((err) => {
-    if (err.code === ZodIssueCode.invalid_union) {
-      err.unionErrors.map((unionError, idx) => {
-        parseInvalidFieldsFromError(invalidFields, unionError, idx);
+
+const parseInvalidFieldsFromError = ({ errors }: z.ZodError) => {
+  const invalidFields: InvalidFields = {};
+  const flattenedIssues: Array<[z.ZodIssue, UnionErrorIdx]> = errors.map(
+    (issue) => [issue, undefined],
+  );
+
+  for (const [issue, unionIdx] of flattenedIssues) {
+    if (issue.code === ZodIssueCode.invalid_union) {
+      issue.unionErrors.forEach((err, idx) => {
+        err.errors.forEach((childIssue) => {
+          flattenedIssues.push([childIssue, idx]);
+        });
       });
     } else {
-      const path = `/${err.path.join('/')}${
-        unionIdx !== undefined ? `_${unionIdx}` : ''
+      const path = `/${issue.path.join('/')}${
+        unionIdx !== undefined ? `_union${unionIdx}` : ''
       }`;
-      const fieldError = invalidFields[path];
-      if (fieldError) {
-        fieldError.push(err.message);
-        invalidFields[path] = fieldError;
-      } else {
-        invalidFields[path] = [err.message];
-      }
+      invalidFields[path] = issue.message;
     }
-  });
+  }
+
+  return invalidFields;
 };
 
 export const validate = <
@@ -70,8 +71,7 @@ export const validate = <
 }): Output => {
   const parseResult = schema.safeParse(input);
   if (parseResult.success === false) {
-    const invalidFields: InvalidFields = {};
-    parseInvalidFieldsFromError(invalidFields, parseResult.error);
+    const invalidFields = parseInvalidFieldsFromError(parseResult.error);
     return ctx.throw(
       422,
       new ErrorMiddleware.JsonResponse('Input validation failed', {
