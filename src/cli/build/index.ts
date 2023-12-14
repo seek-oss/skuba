@@ -3,15 +3,12 @@ import chalk from 'chalk';
 import { hasDebugFlag } from '../../utils/args';
 import { log } from '../../utils/logging';
 import { getStringPropFromConsumerManifest } from '../../utils/manifest';
-import { tryAddEmptyExports } from '../configure/addEmptyExports';
 
 import { copyAssets } from './assets';
 import { esbuild } from './esbuild';
 import { readTsconfig, tsc } from './tsc';
 
 export const build = async (args = process.argv.slice(2)) => {
-  await tryAddEmptyExports();
-
   // TODO: define a unified `package.json#/skuba` schema and parser so we don't
   // need all these messy lookups.
   const tool = await getStringPropFromConsumerManifest('build');

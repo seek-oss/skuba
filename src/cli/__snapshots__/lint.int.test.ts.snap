@@ -2,6 +2,12 @@
 
 exports[`fixable 1`] = `
 "
+Updating skuba...
+
+Patch 7.3.1 applied.
+
+skuba update complete.
+
 ESLint   │ Processed 4 files in <random>s.
 ESLint   │ 
 <random>/a/a/a.mjs
@@ -17,11 +23,10 @@ ESLint   │
   3 errors and 0 warnings potentially fixable with the \`--fix\` option.
 
 Prettier │ Processed 8 files in <random>s.
-Prettier │ Flagged 4 files:
+Prettier │ Flagged 3 files:
 Prettier │ b.md
 Prettier │ c.json
 Prettier │ d.js
-Prettier │ package.json
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
 
@@ -62,7 +67,6 @@ Options: {
 b.md
 c.json
 d.js
-package.json
 \`\`\`
 ",
 ]
@@ -70,6 +74,12 @@ package.json
 
 exports[`ok --debug 1`] = `
 "
+Updating skuba...
+
+Patch 7.3.1 applied.
+
+skuba update complete.
+
 ESLint   │ Initialising ESLint...
 ESLint   │ Processing files...
 ESLint   │ Processed 2 files in <random>s.
@@ -136,6 +146,12 @@ exports[`ok --debug 2`] = `[]`;
 
 exports[`ok 1`] = `
 "
+Updating skuba...
+
+Patch 7.3.1 applied.
+
+skuba update complete.
+
 ESLint   │ Processed 2 files in <random>s.
 Prettier │ Processed 6 files in <random>s.
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
@@ -147,6 +163,12 @@ exports[`ok 2`] = `[]`;
 
 exports[`unfixable 1`] = `
 "
+Updating skuba...
+
+Patch 7.3.1 applied.
+
+skuba update complete.
+
 ESLint   │ Processed 2 files in <random>s.
 ESLint   │ 
 <random>/a/a/a.ts
