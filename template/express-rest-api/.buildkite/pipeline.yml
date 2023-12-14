@@ -44,8 +44,8 @@ steps:
 
   - label: 🧪 Test & Lint
     commands:
-      - echo '+++ pnpm install --offline'
-      - pnpm install --offline
+      - echo '+++ pnpm install --offline --recursive'
+      - pnpm install --offline --recursive
       - echo '+++ pnpm run test:ci'
       - pnpm run test:ci
       - echo '--- pnpm run lint'

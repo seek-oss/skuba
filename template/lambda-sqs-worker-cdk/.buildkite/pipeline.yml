@@ -24,8 +24,8 @@ configs:
   base-steps:
     - &deploy
       commands:
-        - echo '+++ pnpm install --offline'
-        - pnpm install --offline
+        - echo '+++ pnpm install --offline --recursive'
+        - pnpm install --offline --recursive
         - echo '+++ pnpm run deploy'
         - pnpm run deploy
       concurrency: 1
@@ -45,8 +45,8 @@ configs:
 steps:
   - label: 🧪 Test, Lint & Build
     commands:
-      - echo '+++ pnpm install --offline'
-      - pnpm install --offline
+      - echo '+++ pnpm install --offline --recursive'
+      - pnpm install --offline --recursive
       - echo '+++ pnpm run test:ci'
       - pnpm run test
       - echo '--- pnpm run lint'
@@ -98,8 +98,8 @@ steps:
     env:
       ENVIRONMENT: dev
     commands:
-      - echo '+++ pnpm install --offline'
-      - pnpm install --offline
+      - echo '+++ pnpm install --offline --recursive'
+      - pnpm install --offline --recursive
       - echo '+++ pnpm run deploy:hotswap'
       - pnpm run deploy:hotswap
     label: 🤞 Deploy Dev (Hotswap)
