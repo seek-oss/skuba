@@ -12,14 +12,17 @@ import { createLogger, log } from '../../utils/logging';
 import { throwOnTimeout } from '../../utils/wait';
 import { runESLint } from '../adapter/eslint';
 import { runPrettier } from '../adapter/prettier';
-import { JEST_SETUP_FILES } from '../configure/addEmptyExports';
 import { RENOVATE_CONFIG_FILENAMES } from '../configure/modules/renovate';
-import { SERVER_LISTENER_FILENAME } from '../configure/patchServerListener';
 import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
 
 import type { Input } from './types';
 
 const RENOVATE_DEFAULT_PREFIX = 'renovate';
+
+// TODO: glob `**/jest.*setup*.ts`?
+export const JEST_SETUP_FILES = ['jest.setup.ts', 'jest.setup.int.ts'];
+
+export const SERVER_LISTENER_FILENAME = 'src/listen.ts';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 

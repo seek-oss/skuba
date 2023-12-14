@@ -166,6 +166,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "4.0.0"
+    "version": "7.3.1"
   }
 }

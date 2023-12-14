@@ -3,14 +3,11 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { log } from '../../utils/logging';
-
-import { getDestinationManifest } from './analysis/package';
-import { createDestinationFileReader } from './analysis/project';
-import { formatPrettier } from './processing/prettier';
-
-// TODO: glob `**/jest.*setup*.ts`?
-export const JEST_SETUP_FILES = ['jest.setup.ts', 'jest.setup.int.ts'];
+import { log } from '../../../../../utils/logging';
+import { JEST_SETUP_FILES } from '../../../../lint/autofix';
+import { getDestinationManifest } from '../../../analysis/package';
+import { createDestinationFileReader } from '../../../analysis/project';
+import { formatPrettier } from '../../../processing/prettier';
 
 const addEmptyExports = async () => {
   const manifest = await getDestinationManifest();
