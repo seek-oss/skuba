@@ -13,7 +13,7 @@ export const lint = async (
   tscOutputStream: Writable | undefined = undefined,
   workerThreads = true,
 ) => {
-  await Promise.all([tryRefreshIgnoreFiles(), upgradeSkuba()]);
+  await Promise.all([tryRefreshIgnoreFiles({ linting: true }), upgradeSkuba()]);
 
   const opts: Input = {
     debug: hasDebugFlag(args),
