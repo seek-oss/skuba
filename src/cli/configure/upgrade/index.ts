@@ -1,6 +1,6 @@
-import { readdir, writeFile } from 'fs/promises';
 import path from 'path';
 
+import { readdir, writeFile } from 'fs-extra';
 import { gte, sort } from 'semver';
 
 import { log } from '../../../utils/logging';

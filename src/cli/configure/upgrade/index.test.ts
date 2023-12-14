@@ -1,6 +1,4 @@
-import type { Dirent } from 'fs';
-import { readdir, writeFile } from 'fs/promises';
-
+import { readdir, writeFile } from 'fs-extra';
 import type { NormalizedPackageJson } from 'read-pkg-up';
 
 import { getConsumerManifest } from '../../../utils/manifest';
@@ -10,7 +8,7 @@ import { upgradeSkuba } from '.';
 
 jest.mock('../../../utils/manifest');
 jest.mock('../../../utils/version');
-jest.mock('fs/promises');
+jest.mock('fs-extra');
 jest.mock('../../../utils/logging');
 
 beforeEach(() => {
@@ -80,7 +78,7 @@ describe('upgradeSkuba', () => {
     // readdir has overloads and the mocked version doesn't match the string version
     jest
       .mocked(readdir)
-      .mockResolvedValue(['0.9.0', '1.0.0', '2.0.0'] as unknown as Dirent[]);
+      .mockResolvedValue(['0.9.0', '1.0.0', '2.0.0'] as never);
 
     await expect(upgradeSkuba()).resolves.toBeUndefined();
     expect(mockUpgrade.upgrade).toHaveBeenCalledTimes(2);
@@ -111,7 +109,7 @@ describe('upgradeSkuba', () => {
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    jest.mocked(readdir).mockResolvedValue(['2.0.0'] as unknown as Dirent[]);
+    jest.mocked(readdir).mockResolvedValue(['2.0.0'] as never);
 
     await expect(upgradeSkuba()).resolves.toBeUndefined();
 
@@ -150,7 +148,7 @@ describe('upgradeSkuba', () => {
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    jest.mocked(readdir).mockResolvedValue(['2.0.0'] as unknown as Dirent[]);
+    jest.mocked(readdir).mockResolvedValue(['2.0.0'] as never);
 
     await expect(upgradeSkuba()).resolves.toBeUndefined();
 
