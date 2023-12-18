@@ -52,10 +52,10 @@ then ensure that you run your builds on AMD64 hardware:
 
 ```diff
 - FROM --platform=arm64 gcr.io/distroless/nodejs20-debian11 AS runtime
-+ FROM --platform=${BUILDPLATFORM:-amd64} gcr.io/distroless/nodejs20-debian11 AS runtime
++ FROM --platform=amd64 gcr.io/distroless/nodejs20-debian11 AS runtime
 
-- FROM --platform=${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs20-debian11 AS runtime
-+ FROM --platform=${BUILDPLATFORM:-amd64} gcr.io/distroless/nodejs20-debian11 AS runtime
+- FROM --platform=arm64 gcr.io/distroless/nodejs20-debian11 AS runtime
++ FROM --platform=amd64 gcr.io/distroless/nodejs20-debian11 AS runtime
 ```
 
 For a [Gantry] service, modify the `cpuArchitecture` property in your `gantry.build.yml` and `gantry.apply.yml` resource files:
