@@ -52,11 +52,4 @@ export const downloadGitHubTemplate = async (
     force: true,
     recursive: true,
   });
-
-  log.newline();
-  log.warn(
-    'You may need to run',
-    log.bold('yarn skuba configure'),
-    'once this is done.',
-  );
 };

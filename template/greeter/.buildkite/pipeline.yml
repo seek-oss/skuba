@@ -10,9 +10,7 @@ configs:
 
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v2.1.0:
-        cache-on:
-          - package.json
-          - yarn.lock
+        cache-on: pnpm-lock.yaml
         secrets: id=npm,src=tmp/.npmrc
 
     - &private-npm
@@ -23,10 +21,12 @@ configs:
 steps:
   - label: 🧪 Test & Lint
     commands:
-      - echo '+++ yarn test:ci'
-      - yarn test:ci
-      - echo '--- yarn lint'
-      - yarn lint
+      - echo '+++ pnpm install --offline'
+      - pnpm install --offline
+      - echo '+++ pnpm run test:ci'
+      - pnpm run test:ci
+      - echo '--- pnpm run lint'
+      - pnpm run lint
     env:
       GET_GITHUB_TOKEN: please
     plugins:

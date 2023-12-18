@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import { z } from 'zod';
 
 import { projectTypeSchema } from './manifest';
+import { packageManagerSchema } from './packageManager';
 
 export const TEMPLATE_NAMES = [
   'express-rest-api',
@@ -86,6 +87,7 @@ export const templateConfigSchema = z.object({
   ),
   entryPoint: z.string().optional(),
   noSkip: z.boolean().optional(),
+  packageManager: packageManagerSchema,
   type: projectTypeSchema.optional(),
 });
 

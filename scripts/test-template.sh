@@ -4,7 +4,7 @@ set -e
 
 template="${1}"
 if [ -z "$template" ]; then
-  echo "Usage: yarn test:template <template_name>"
+  echo "Usage: pnpm run test:template <template_name>"
   exit 1
 fi
 
@@ -13,14 +13,17 @@ directory="tmp-${template}"
 echo '--- cleanup'
 rm -rf "${directory}" "../${directory}"
 
-echo '--- yarn install'
-yarn install --frozen-lockfile --ignore-optional --non-interactive
+echo '--- pnpm install'
+pnpm install --frozen-lockfile
 
-echo '--- yarn build'
-yarn build
+echo '--- pnpm run build'
+pnpm run build
+
+echo '--- pnpm link --global'
+pnpm link --global
 
 echo "--- skuba init ${template}"
-yarn skuba init << EOF
+skuba init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
@@ -47,28 +50,25 @@ mv "${directory}" "../${directory}"
 
 cd "../${directory}" || exit 1
 
-echo '--- yarn add skuba'
-yarn add --dev 'file:../skuba'
-
 echo "--- skuba version ${template}"
-yarn skuba version
-yarn skuba -v
-yarn skuba --version
+skuba version
+skuba -v
+skuba --version
 
 set +e
-echo "--- skuba build ${template}"
-output=$(yarn build 2>&1)
+echo "--- pnpm run build ${template}"
+output=$(pnpm run build 2>&1)
 echo $output
 if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
     exit 1
 fi
 set -e
 
-echo "--- skuba lint ${template}"
-yarn lint
+echo "--- pnpm run lint ${template}"
+pnpm run lint
 
-echo "--- skuba format ${template}"
-yarn format
+echo "--- pnpm run format ${template}"
+pnpm run format
 
-echo "--- skuba test ${template}"
-yarn test
+echo "--- pnpm run test ${template}"
+pnpm run test

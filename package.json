@@ -30,17 +30,17 @@
   "scripts": {
     "build": "scripts/build.sh",
     "deploy": "scripts/deploy.sh",
-    "format": "yarn skuba format",
-    "lint": "yarn skuba lint && yarn lint:md",
+    "format": "pnpm run --silent skuba format",
+    "lint": "pnpm run --silent skuba lint && pnpm run --silent lint:md",
     "lint:md": "remark --frail --quiet .",
-    "release": "yarn build && changeset publish",
-    "skuba": "yarn build && node --env-file=.env lib/skuba",
-    "stage": "changeset version && yarn format",
-    "test": "yarn skuba test --selectProjects unit",
-    "test:ci": "yarn skuba test --runInBand",
-    "test:int": "yarn skuba test --selectProjects integration --runInBand",
+    "release": "pnpm run --silent build && changeset publish",
+    "skuba": "pnpm run --silent build && node --env-file=.env lib/skuba",
+    "stage": "changeset version && pnpm run format",
+    "test": "pnpm run --silent skuba test --selectProjects unit",
+    "test:ci": "pnpm run --silent skuba test --runInBand",
+    "test:int": "pnpm run --silent skuba test --runInBand --selectProjects integration",
     "test:template": "scripts/test-template.sh",
-    "test:watch": "yarn skuba test --runInBand --watch"
+    "test:watch": "pnpm run --silent skuba test --runInBand --watch"
   },
   "remarkConfig": {
     "plugins": [
@@ -64,9 +64,6 @@
       ]
     ]
   },
-  "resolutions": {
-    "**/@types/node": ">=18.12"
-  },
   "dependencies": {
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@jest/types": "^29.0.0",
@@ -78,6 +75,7 @@
     "@types/node": ">=18.12",
     "chalk": "^4.1.0",
     "concurrently": "^8.0.0",
+    "detect-package-manager": "^3.0.1",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
@@ -123,6 +121,7 @@
     "@changesets/cli": "2.26.2",
     "@changesets/get-github-info": "0.5.2",
     "@jest/reporters": "29.7.0",
+    "@jest/test-result": "29.7.0",
     "@types/ejs": "3.1.5",
     "@types/express": "4.17.21",
     "@types/fs-extra": "11.0.4",
@@ -137,6 +136,7 @@
     "enhanced-resolve": "5.15.0",
     "express": "4.18.2",
     "fastify": "4.24.3",
+    "jest-diff": "29.7.0",
     "jsonfile": "6.1.0",
     "koa": "2.14.2",
     "memfs": "4.6.0",
@@ -154,6 +154,7 @@
       "optional": true
     }
   },
+  "packageManager": "pnpm@8.9.0",
   "engines": {
     "node": ">=18.12"
   },

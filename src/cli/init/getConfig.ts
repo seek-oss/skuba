@@ -6,6 +6,10 @@ import fs from 'fs-extra';
 import { copyFiles } from '../../utils/copy';
 import { isErrorWithCode } from '../../utils/error';
 import { log } from '../../utils/logging';
+import {
+  DEFAULT_PACKAGE_MANAGER,
+  configForPackageManager,
+} from '../../utils/packageManager';
 import { getRandomPort } from '../../utils/port';
 import {
   TEMPLATE_CONFIG_FILENAME,
@@ -95,23 +99,48 @@ const createDirectory = async (dir: string) => {
   }
 };
 
-const cloneTemplate = async (templateName: string, destinationDir: string) => {
-  if (templateName.startsWith('github:')) {
+const cloneTemplate = async (
+  templateName: string,
+  destinationDir: string,
+): Promise<TemplateConfig> => {
+  const isCustomTemplate = templateName.startsWith('github:');
+
+  if (isCustomTemplate) {
     const gitHubPath = templateName.slice('github:'.length);
-    return downloadGitHubTemplate(gitHubPath, destinationDir);
+
+    await downloadGitHubTemplate(gitHubPath, destinationDir);
+  } else {
+    const templateDir = path.join(TEMPLATE_DIR, templateName);
+
+    await copyFiles({
+      // assume built-in templates have no extraneous files
+      include: () => true,
+      sourceRoot: templateDir,
+      destinationRoot: destinationDir,
+      processors: [],
+      // built-in templates have files like _package.json
+      stripUnderscorePrefix: true,
+    });
   }
 
-  const templateDir = path.join(TEMPLATE_DIR, templateName);
+  const templateConfig = getTemplateConfig(
+    path.join(process.cwd(), destinationDir),
+  );
 
-  await copyFiles({
-    // assume built-in templates have no extraneous files
-    include: () => true,
-    sourceRoot: templateDir,
-    destinationRoot: destinationDir,
-    processors: [],
-    // built-in templates have files like _package.json
-    stripUnderscorePrefix: true,
-  });
+  if (isCustomTemplate) {
+    log.newline();
+    log.warn(
+      'You may need to run',
+      log.bold(
+        configForPackageManager(templateConfig.packageManager).exec,
+        'skuba',
+        'configure',
+      ),
+      'once this is done.',
+    );
+  }
+
+  return templateConfig;
 };
 
 const getTemplateName = async () => {
@@ -143,6 +172,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
       return {
         entryPoint: undefined,
         fields: [],
+        packageManager: DEFAULT_PACKAGE_MANAGER,
         type: undefined,
       };
     }
@@ -201,16 +231,14 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   log.newline();
   const templateName = await getTemplateName();
 
-  await cloneTemplate(templateName, destinationDir);
-
-  const { entryPoint, fields, noSkip, type } = getTemplateConfig(
-    path.join(process.cwd(), destinationDir),
-  );
+  const { entryPoint, fields, noSkip, packageManager, type } =
+    await cloneTemplate(templateName, destinationDir);
 
   if (fields.length === 0) {
     return {
       destinationDir,
       entryPoint,
+      packageManager,
       templateComplete: true,
       templateData,
       templateName,
@@ -231,6 +259,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     return {
       destinationDir,
       entryPoint,
+      packageManager,
       templateComplete: true,
       templateData: { ...templateData, ...customAnswers },
       templateName,
@@ -239,13 +268,19 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   }
 
   log.newline();
-  log.warn(`Resume this later with ${chalk.bold('yarn skuba configure')}.`);
+  log.warn(
+    `Resume this later with ${chalk.bold(
+      configForPackageManager(packageManager).exec,
+      'skuba configure',
+    )}.`,
+  );
 
   const customAnswers = generatePlaceholders(fields);
 
   return {
     destinationDir,
     entryPoint,
+    packageManager,
     templateComplete: false,
     templateData: { ...templateData, ...customAnswers },
     templateName,
@@ -295,11 +330,8 @@ const configureFromPipe = async (): Promise<InitConfig> => {
 
   await createDirectory(destinationDir);
 
-  await cloneTemplate(templateName, destinationDir);
-
-  const { entryPoint, fields, noSkip, type } = getTemplateConfig(
-    path.join(process.cwd(), destinationDir),
-  );
+  const { entryPoint, fields, noSkip, packageManager, type } =
+    await cloneTemplate(templateName, destinationDir);
 
   if (!templateComplete) {
     if (noSkip) {
@@ -310,6 +342,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     return {
       ...result.data,
       entryPoint,
+      packageManager,
       templateData: {
         ...templateData,
         ...generatePlaceholders(fields),
@@ -334,6 +367,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   return {
     ...result.data,
     entryPoint,
+    packageManager,
     templateData,
     type,
   };

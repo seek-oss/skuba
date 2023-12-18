@@ -17,7 +17,6 @@ node_modules*/
 /tmp*/
 
 .DS_Store
-.npmrc
 npm-debug.log
 yarn-error.log
 # end managed by skuba
@@ -30,6 +29,7 @@ yarn-error.log
 .vscode/*
 
 .cdk.staging/
+.pnpm-store/
 .serverless/
 cdk.out/
 node_modules*/
@@ -73,7 +73,7 @@ node_modules*/
 
 .DS_Store
 .eslintcache
-.npmrc
+.pnpm-debug.log
 *.tgz
 *.tsbuildinfo
 npm-debug.log

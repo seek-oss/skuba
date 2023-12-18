@@ -37,17 +37,17 @@ usage may look something like this:
 
 ```shell
 # Install project dependencies.
-yarn
+pnpm install
 
 # Run the skuba CLI.
-yarn skuba help
+pnpm exec skuba help
 ```
 
 Global installations are also supported to speed up local development:
 
 ```shell
 # Install skuba globally.
-yarn global add skuba
+pnpm add --global skuba
 
 # Look, no `npx`!
 skuba help

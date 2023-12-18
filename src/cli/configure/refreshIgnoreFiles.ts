@@ -17,6 +17,12 @@ export const REFRESHABLE_IGNORE_FILES = [
 ];
 
 export const refreshIgnoreFiles = async () => {
+  // TODO: check current state of .gitignore
+  // If it contains !.npmrc, break
+  // If it contains .npmrc, we can either
+  // 1. Move the entry below the skuba-managed section for manual triage
+  // 2. Delete any local .npmrc state before un-ignoring the .npmrc
+
   const manifest = await getDestinationManifest();
 
   const destinationRoot = path.dirname(manifest.path);

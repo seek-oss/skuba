@@ -10,6 +10,7 @@ import npmWhich from 'npm-which';
 
 import { concurrentlyErrorsSchema, isErrorWithCode } from './error';
 import { log } from './logging';
+import type { PackageManager } from './packageManager';
 
 class YarnSpamFilter extends stream.Transform {
   silenced = false;
@@ -89,7 +90,7 @@ interface ExecConcurrentlyOptions {
   outputStream?: stream.Writable;
 }
 
-type ExecOptions = execa.Options & { streamStdio?: true | 'yarn' };
+type ExecOptions = execa.Options & { streamStdio?: true | PackageManager };
 
 const envWithPath = {
   PATH: npmRunPath({ cwd: __dirname }),
@@ -113,6 +114,7 @@ const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
 
       break;
 
+    case 'pnpm':
     case true:
       subprocess.stderr?.pipe(process.stderr);
       subprocess.stdout?.pipe(process.stdout);

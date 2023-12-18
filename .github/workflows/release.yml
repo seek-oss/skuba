@@ -27,20 +27,22 @@ jobs:
         with:
           node-version: 20.x
 
+      - uses: pnpm/action-setup@v2
+
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Publish to npm
         uses: changesets/action@v1
         with:
-          publish: yarn release
-          version: yarn stage
+          publish: pnpm run release
+          version: pnpm run stage
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}
 
       - name: Deploy to GitHub Pages
-        run: yarn deploy
+        run: pnpm run deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IS_GITHUB_PAGES: true

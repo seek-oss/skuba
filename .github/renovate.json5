@@ -96,7 +96,7 @@
   ],
   branchPrefix: 'renovate-',
   commitMessageAction: '',
-  postUpdateOptions: ['yarnDedupeHighest'],
+  postUpdateOptions: [],
   prConcurrentLimit: 3,
   prNotPendingHours: 1,
   rangeStrategy: 'replace',
