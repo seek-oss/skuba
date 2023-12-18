@@ -5,7 +5,10 @@ ARG BASE_TAG
 
 FROM ${BASE_IMAGE}:${BASE_TAG} AS deps
 
-RUN pnpm install --offline --production
+RUN --mount=type=bind,source=.npmrc,target=.npmrc \
+    --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    pnpm install --offline --production
 
 ###
 
