@@ -1,9 +1,8 @@
 ARG BASE_IMAGE
-ARG BASE_TAG
 
 ###
 
-FROM ${BASE_IMAGE}:${BASE_TAG} AS build
+FROM ${BASE_IMAGE} AS build
 
 COPY . .
 
