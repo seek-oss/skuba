@@ -3,21 +3,13 @@ ARG BASE_TAG
 
 ###
 
-FROM ${BASE_IMAGE}:${BASE_TAG} AS deps
-
-RUN --mount=type=bind,source=.npmrc,target=.npmrc \
-    --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
-    pnpm install --offline --production
-
-###
-
 FROM ${BASE_IMAGE}:${BASE_TAG} AS build
 
 COPY . .
 
 RUN pnpm install --offline
 RUN pnpm run build
+RUN pnpm install --offline --prod
 
 ###
 
@@ -26,8 +18,7 @@ FROM --platform=${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs20
 WORKDIR /workdir
 
 COPY --from=build /workdir/lib lib
-
-COPY --from=deps /workdir/node_modules node_modules
+COPY --from=build /workdir/node_modules node_modules
 
 ENV NODE_ENV=production
 
