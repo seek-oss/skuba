@@ -1,6 +1,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
+import { Form, type FormChoice } from 'enquirer';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy';
@@ -28,8 +29,6 @@ import {
   TEMPLATE_PROMPT,
 } from './prompts';
 import { type InitConfig, initConfigInputSchema } from './types';
-
-import { Form, type FormChoice } from 'enquirer';
 
 export const runForm = <T = Record<string, string>>(props: {
   choices: Readonly<Choice[]>;
