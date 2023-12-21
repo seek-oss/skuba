@@ -1,5 +1,7 @@
 import path from 'path';
 
+import { Select } from 'enquirer';
+
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
@@ -15,8 +17,6 @@ import { getDestinationManifest } from './analysis/package';
 import { ensureTemplateCompletion } from './ensureTemplateCompletion';
 import { getEntryPoint } from './getEntryPoint';
 import { getProjectType } from './getProjectType';
-
-import { Select } from 'enquirer';
 
 const shouldApply = async (name: string) => {
   const prompt = new Select({
