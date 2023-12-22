@@ -3,6 +3,10 @@ import type { Config } from '@jest/types';
 import jestPreset from '../../../jest-preset';
 import { mergeRaw } from '../../cli/configure/processing/record';
 
+// Avoid TS4082 in Jest configuration files:
+// Default export of the module has or is using private name `ConfigGlobals`.
+export type { Config } from '@jest/types';
+
 /**
  * Set of Jest options that are recommended and supported for customisation.
  *
