@@ -6,7 +6,7 @@
  * This is where you end up when you run:
  *
  * ```bash
- * [yarn] skuba help
+ * [pnpm|yarn] skuba help
  * ```
  */
 

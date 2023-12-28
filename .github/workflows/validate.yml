@@ -49,24 +49,26 @@ jobs:
         with:
           node-version: 20.x
 
+      - uses: pnpm/action-setup@v2
+
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Test
-        run: yarn test:ci
+        run: pnpm run test:ci
         env:
           NODE_OPTIONS: --experimental-vm-modules
 
       - name: Lint
-        run: yarn lint
+        run: pnpm run lint
 
       - if: github.event_name == 'push'
         name: Dry-run changelog versioning
-        run: yarn changeset version
+        run: pnpm exec changeset version
 
       - if: github.event_name == 'push'
         name: Dry-run site packaging
-        run: yarn skuba node scripts/package.ts
+        run: pnpm run skuba node scripts/package.ts
 
   template:
     name: Integrate
@@ -90,6 +92,8 @@ jobs:
         with:
           node-version: 20.x
 
+      - uses: pnpm/action-setup@v2
+
       - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
         name: Test template
-        run: yarn test:template ${{ matrix.template }}
+        run: pnpm run test:template ${{ matrix.template }}

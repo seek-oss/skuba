@@ -4,15 +4,13 @@ agents:
 configs:
   plugins:
     - &aws-sm
-      seek-oss/aws-sm#v2.3.1:
+      seek-oss/aws-sm#v2.3.2:
         env:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.1.0: &docker-ecr-cache-defaults
-        cache-on:
-          - package.json
-          - yarn.lock
+      seek-oss/docker-ecr-cache#v2.1.1: &docker-ecr-cache-defaults
+        cache-on: pnpm-lock.yaml
         secrets: id=npm,src=tmp/.npmrc
 
     - &private-npm
@@ -23,8 +21,10 @@ configs:
   base-steps:
     - &deploy
       commands:
-        - echo '+++ yarn deploy'
-        - yarn deploy
+        - echo '+++ pnpm install --offline'
+        - pnpm install --offline
+        - echo '+++ pnpm run deploy'
+        - pnpm run deploy
       concurrency: 1
       plugins:
         - *aws-sm
@@ -42,10 +42,12 @@ configs:
 steps:
   - label: 🧪 Test, Lint & Build
     commands:
-      - echo '+++ yarn test:ci'
-      - yarn test
-      - echo '--- yarn lint'
-      - yarn lint
+      - echo '+++ pnpm install --offline'
+      - pnpm install --offline
+      - echo '+++ pnpm run test:ci'
+      - pnpm run test
+      - echo '--- pnpm run lint'
+      - pnpm run lint
     env:
       GET_GITHUB_TOKEN: please
     plugins:
@@ -64,7 +66,7 @@ steps:
     plugins:
       - *aws-sm
       - *private-npm
-      - seek-oss/docker-ecr-cache#v2.1.0:
+      - seek-oss/docker-ecr-cache#v2.1.1:
           <<: *docker-ecr-cache-defaults
           skip-pull-from-cache: true
 
@@ -93,8 +95,10 @@ steps:
     env:
       ENVIRONMENT: dev
     commands:
-      - echo '+++ yarn deploy:hotswap'
-      - yarn deploy:hotswap
+      - echo '+++ pnpm install --offline'
+      - pnpm install --offline
+      - echo '+++ pnpm run deploy:hotswap'
+      - pnpm run deploy:hotswap
     label: 🤞 Deploy Dev (Hotswap)
     concurrency_group: '<%- repoName %>/deploy/dev'
 

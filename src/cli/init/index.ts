@@ -27,16 +27,17 @@ export const init = async (args = process.argv.slice(2)) => {
 
   const skubaVersionInfo = await showLogoAndVersionInfo();
 
-  await ensureCommands('yarn');
-
   const {
     destinationDir,
     entryPoint,
+    packageManager,
     templateComplete,
     templateData,
     templateName,
     type,
   } = await getConfig();
+
+  await ensureCommands(packageManager);
 
   const include = await createInclusionFilter([
     path.join(destinationDir, '.gitignore'),
@@ -80,7 +81,7 @@ export const init = async (args = process.argv.slice(2)) => {
   const exec = createExec({
     cwd: destinationDir,
     stdio: 'pipe',
-    streamStdio: 'yarn',
+    streamStdio: packageManager,
   });
 
   log.newline();
@@ -93,7 +94,8 @@ export const init = async (args = process.argv.slice(2)) => {
 
   let depsInstalled = false;
   try {
-    await exec('yarn', 'add', '--dev', skubaSlug);
+    // The `-D` shorthand is portable across our package managers.
+    await exec(packageManager, 'add', '-D', skubaSlug);
 
     // Templating can initially leave certain files in an unformatted state;
     // consider a Markdown table with columns sized based on content length.
@@ -128,8 +130,9 @@ export const init = async (args = process.argv.slice(2)) => {
     log.newline();
     log.plain('Then, resume initialisation:');
     log.ok('cd', destinationDir);
-    log.ok('yarn add --dev', skubaSlug);
-    log.ok('yarn format');
+    // The `-D` shorthand is portable across our package managers.
+    log.ok(packageManager, 'add', '-D', skubaSlug);
+    log.ok(packageManager, 'run', 'format');
     log.ok('git add --all');
     log.ok('git commit --message', `'Pin ${skubaSlug}'`);
     log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);

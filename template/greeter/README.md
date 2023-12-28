@@ -7,7 +7,7 @@ Next steps:
 1. [ ] Finish templating if this was skipped earlier:
 
    ```shell
-   yarn skuba configure
+   pnpm exec skuba configure
    ```
 
 2. [ ] Create a new repository in the appropriate GitHub organisation.
@@ -36,27 +36,27 @@ It's a barebones Node.js application that comprises:
 ### Test
 
 ```shell
-yarn test
+pnpm run test
 ```
 
 ### Lint
 
 ```shell
 # Fix issues
-yarn format
+pnpm run format
 
 # Check for issues
-yarn lint
+pnpm run lint
 ```
 
 ### Start
 
 ```shell
 # Start a live-reloading process
-yarn start
+pnpm run start
 
 # Start with Node.js Inspector enabled
-yarn start:debug
+pnpm run start:debug
 ```
 
 This runs a live-reloading Node.js process pointing to the [src/app.ts](src/app.ts) entrypoint.

@@ -1,10 +1,9 @@
+import type { ESLintOutput } from '../../../cli/adapter/eslint';
+import type { PrettierOutput } from '../../../cli/adapter/prettier';
 import type { StreamInterceptor } from '../external';
 
 import { createBuildkiteAnnotations } from './buildkite';
 import { createGitHubAnnotations } from './github';
-
-import type { ESLintOutput } from 'cli/adapter/eslint';
-import type { PrettierOutput } from 'cli/adapter/prettier';
 
 export const createAnnotations = async (
   eslint: ESLintOutput,

@@ -13,6 +13,7 @@ const DEFAULT_PACKAGE_FILES = [
 
 export const packageModule = async ({
   entryPoint,
+  packageManager,
   type,
 }: Options): Promise<Module> => {
   const version = await getSkubaVersion();
@@ -92,7 +93,7 @@ export const packageModule = async ({
             .filter((script): script is string => typeof script === 'string')
             .map((script) =>
               script
-                .replace(/^smt build$/, 'yarn build')
+                .replace(/^smt build$/, `${packageManager.runSilent} build`)
                 .replace(/^smt /, 'skuba ')
                 .trim(),
             )

@@ -16,16 +16,18 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v3
 
-      - name: Set up Node.js 16.x
+      - name: Set up Node.js 20.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
+
+      - uses: pnpm/action-setup@v2
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Test
-        run: yarn test:ci
+        run: pnpm run test:ci
 
       - name: Lint
-        run: yarn lint
+        run: pnpm run lint

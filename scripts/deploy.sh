@@ -4,7 +4,7 @@ set -e
 
 echo '=> Packaging...'
 
-yarn ts-node --transpile-only scripts/package.ts
+pnpm exec ts-node --transpile-only scripts/package.ts
 
 cd dist-docs
 

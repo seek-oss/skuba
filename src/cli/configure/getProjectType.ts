@@ -1,3 +1,4 @@
+import { Select } from 'enquirer';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging';
@@ -8,8 +9,6 @@ import {
 } from '../../utils/manifest';
 import type { TemplateConfig } from '../../utils/template';
 import { hasProp } from '../../utils/validation';
-
-import { Select } from 'enquirer';
 
 interface Props {
   manifest: NormalizedReadResult;

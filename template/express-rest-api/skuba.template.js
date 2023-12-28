@@ -45,5 +45,6 @@ module.exports = {
       validate: (value) => /^[a-z]{2}-[a-z]+-\d+$/.test(value),
     },
   ],
+  packageManager: 'pnpm',
   type: 'application',
 };

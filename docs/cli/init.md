@@ -80,7 +80,7 @@ This template uses the following information:
   yes
 ❯ no
 
-Resume this later with yarn skuba configure.
+Resume this later with pnpm exec skuba configure.
 ```
 
 `skuba init` will take a while to install some initial dependencies,
@@ -169,10 +169,10 @@ Familiarise yourself with the directory structure that **skuba** has created:
 ├── jest.config.js
 ├── jest.setup.ts
 ├── package.json
+├── pnpm-lock.yaml
 ├── skuba.template.js
 ├── tsconfig.build.json
 ├── tsconfig.json
-└── yarn.lock
 ```
 
 A few points to call out:
@@ -189,7 +189,7 @@ Try out some of the commands documented throughout this [CLI] section.
 [`skuba lint`] may be a good starting point:
 
 ```shell
-yarn lint
+skuba lint
 ```
 
 ### Templating

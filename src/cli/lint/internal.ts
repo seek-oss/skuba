@@ -5,9 +5,13 @@ import { pathExists } from 'fs-extra';
 
 import { log } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
+import { detectPackageManager } from '../../utils/packageManager';
 
 const noSkubaTemplateJs = async () => {
-  const manifest = await getConsumerManifest();
+  const [manifest, packageManager] = await Promise.all([
+    getConsumerManifest(),
+    detectPackageManager(),
+  ]);
 
   if (!manifest) {
     return;
@@ -21,7 +25,9 @@ const noSkubaTemplateJs = async () => {
   if (await pathExists(templateConfigPath)) {
     log.err(
       `Template is incomplete; run ${chalk.bold(
-        'yarn skuba configure',
+        packageManager.exec,
+        'skuba',
+        'configure',
       )}. ${chalk.dim('no-skuba-template-js')}`,
     );
 
