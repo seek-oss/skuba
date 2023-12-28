@@ -8,7 +8,13 @@ export type IdDescription = z.infer<typeof IdDescriptionSchema>;
 export const IdDescriptionSchema = z.union([
   z.object({
     id: z.string(),
-    description: z.string(),
+    description: z.union([
+      z.string(),
+      z.object({
+        fontSize: z.number(),
+        content: z.string(),
+      }),
+    ]),
   }),
   z.object({
     id: z.number(),
