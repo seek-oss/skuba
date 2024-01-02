@@ -1,6 +1,6 @@
+import fs from 'fs';
 import { inspect } from 'util';
 
-import fs from 'fs-extra';
 import memfs, { vol } from 'memfs';
 
 import { tryPatchServerListener } from './patchServerListener';
