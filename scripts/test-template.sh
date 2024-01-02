@@ -50,6 +50,9 @@ mv "${directory}" "../${directory}"
 
 cd "../${directory}" || exit 1
 
+echo '--- pnpm link --global skuba'
+pnpm link --global skuba
+
 echo "--- skuba version ${template}"
 skuba version
 skuba -v
