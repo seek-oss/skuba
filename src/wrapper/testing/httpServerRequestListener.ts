@@ -9,7 +9,7 @@ const app = new Koa().use((ctx) => {
 });
 
 // FIXME: https://github.com/koajs/koa/issues/1755
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
+
 const httpServer = http.createServer(app.callback());
 
 Object.assign(httpServer, {
