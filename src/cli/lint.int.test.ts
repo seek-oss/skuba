@@ -1,10 +1,9 @@
 import crypto from 'crypto';
-import fs from 'fs';
 import path from 'path';
 import stream from 'stream';
 import { inspect } from 'util';
 
-import { copy } from 'fs-extra';
+import fs, { copy } from 'fs-extra';
 import git from 'isomorphic-git';
 
 import { Buildkite } from '..';
