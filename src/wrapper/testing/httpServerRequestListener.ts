@@ -8,8 +8,6 @@ const app = new Koa().use((ctx) => {
   }
 });
 
-// FIXME: https://github.com/koajs/koa/issues/1755
-
 const httpServer = http.createServer(app.callback());
 
 Object.assign(httpServer, {
