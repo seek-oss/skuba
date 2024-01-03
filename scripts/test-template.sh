@@ -10,6 +10,8 @@ fi
 
 directory="tmp-${template}"
 
+types_jest="@types/jest@$(jq --raw-output '.dependencies."@types/jest"' < package.json)"
+
 echo '--- cleanup'
 rm -rf "${directory}" "../${directory}"
 
@@ -48,8 +50,8 @@ mv "${directory}" "../${directory}"
 cd "../${directory}" || exit 1
 
 # @types/jest doesn't seem to get hoisted correctly when linking with pnpm.
-echo '--- pnpm add --save-dev ../skuba @types/jest'
-pnpm add --save-dev ../skuba @types/jest
+echo "--- pnpm add --save-dev ../skuba ${types_jest}"
+pnpm add --save-dev ../skuba "${types_jest}"
 
 echo "--- skuba version ${template}"
 pnpm exec skuba version
