@@ -48,8 +48,8 @@ mv "${directory}" "../${directory}"
 cd "../${directory}" || exit 1
 
 # @types/jest doesn't seem to get hoisted correctly when linking with pnpm.
-echo '--- pnpm add ../skuba @types/jest'
-pnpm add ../skuba @types/jest
+echo '--- pnpm add --save-dev ../skuba @types/jest'
+pnpm add --save-dev ../skuba @types/jest
 
 echo "--- skuba version ${template}"
 pnpm exec skuba version
