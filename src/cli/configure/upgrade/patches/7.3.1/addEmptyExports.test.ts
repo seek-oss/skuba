@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs-extra';
 
 import * as packageAnalysis from '../../../analysis/package';
 import * as projectAnalysis from '../../../analysis/project';
