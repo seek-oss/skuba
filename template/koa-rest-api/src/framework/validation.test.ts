@@ -45,9 +45,9 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
 {
   "invalidFields": {
-    "/id~union0": "Expected string, received null",
-    "/id~union1": "Expected number, received null",
-    "/summary~union1": "Required",
+    "~union0/id": "Expected string, received null",
+    "~union1/id": "Expected number, received null",
+    "~union1/summary": "Required",
   },
   "message": "Input validation failed",
 }
@@ -64,11 +64,11 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
 {
   "invalidFields": {
-    "/description~union0~union0": "Required",
-    "/description~union0~union1": "Required",
-    "/id~union0": "Required",
-    "/id~union1": "Required",
-    "/summary~union1": "Required",
+    "~union0/description~union0": "Required",
+    "~union0/description~union1": "Required",
+    "~union0/id": "Required",
+    "~union1/id": "Required",
+    "~union1/summary": "Required",
   },
   "message": "Input validation failed",
 }
@@ -91,11 +91,11 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
 {
   "invalidFields": {
-    "/description~union0/content~union1": "Required",
-    "/description~union0~union0": "Expected string, received object",
-    "/id~union0": "Expected string, received null",
-    "/id~union1": "Expected number, received null",
-    "/summary~union1": "Required",
+    "~union0/description~union0": "Expected string, received object",
+    "~union0/description~union1/content": "Required",
+    "~union0/id": "Expected string, received null",
+    "~union1/id": "Expected number, received null",
+    "~union1/summary": "Required",
   },
   "message": "Input validation failed",
 }
