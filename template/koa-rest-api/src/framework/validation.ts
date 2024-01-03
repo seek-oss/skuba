@@ -40,7 +40,7 @@ const parseInvalidFieldsFromError = (err: z.ZodError): InvalidFields =>
 const parseTuples = (
   { errors }: z.ZodError,
   unions: Record<number, number[]>,
-): Array<[string, string]> =>
+): Array<readonly [string, string]> =>
   errors.flatMap((issue) => {
     if (issue.code === ZodIssueCode.invalid_union) {
       return issue.unionErrors.flatMap((err, idx) =>
