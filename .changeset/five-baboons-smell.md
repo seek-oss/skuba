@@ -4,7 +4,7 @@
 
 lint: Disable `Promise<void>` return checks in tests
 
-This works around the following incompatibility between Koa and the built-in `http.RequestListener` type:
+This works around an [existing incompatibility](https://github.com/koajs/koa/issues/1755) between Koa and the built-in `http.RequestListener` type:
 
 ```typescript
 const app = new Koa();
