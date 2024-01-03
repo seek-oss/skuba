@@ -20,7 +20,7 @@ echo '--- pnpm run build'
 pnpm run build
 
 echo "--- skuba init ${template}"
-skuba init << EOF
+pnpm exec skuba init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
@@ -52,9 +52,9 @@ echo '--- pnpm add ../skuba @types/jest'
 pnpm add ../skuba @types/jest
 
 echo "--- skuba version ${template}"
-skuba version
-skuba -v
-skuba --version
+pnpm exec skuba version
+pnpm exec skuba -v
+pnpm exec skuba --version
 
 set +e
 echo "--- pnpm run build ${template}"
