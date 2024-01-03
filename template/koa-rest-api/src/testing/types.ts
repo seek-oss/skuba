@@ -5,10 +5,22 @@ import type { JobInput } from 'src/types/jobs';
 
 export type IdDescription = z.infer<typeof IdDescriptionSchema>;
 
-export const IdDescriptionSchema = z.object({
-  id: z.string(),
-  description: z.string(),
-});
+export const IdDescriptionSchema = z.union([
+  z.object({
+    id: z.string(),
+    description: z.union([
+      z.string(),
+      z.object({
+        fontSize: z.number(),
+        content: z.string(),
+      }),
+    ]),
+  }),
+  z.object({
+    id: z.number(),
+    summary: z.string(),
+  }),
+]);
 
 export const chance = new Chance();
 
