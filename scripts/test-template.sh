@@ -20,7 +20,7 @@ echo '--- pnpm run build'
 pnpm run build
 
 echo "--- skuba init ${template}"
-pnpm exec skuba init << EOF
+pnpm run skuba:exec init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
