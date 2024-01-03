@@ -19,9 +19,6 @@ pnpm install --frozen-lockfile
 echo '--- pnpm run build'
 pnpm run build
 
-echo '--- pnpm link --global'
-pnpm link --global
-
 echo "--- skuba init ${template}"
 skuba init << EOF
 {
@@ -50,8 +47,9 @@ mv "${directory}" "../${directory}"
 
 cd "../${directory}" || exit 1
 
-echo '--- pnpm link --global skuba'
-pnpm link --global skuba
+# @types/jest doesn't seem to get hoisted correctly when linking with pnpm.
+echo '--- pnpm add ../skuba @types/jest'
+pnpm add ../skuba @types/jest
 
 echo "--- skuba version ${template}"
 skuba version
