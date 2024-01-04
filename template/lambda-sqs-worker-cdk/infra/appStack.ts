@@ -9,8 +9,8 @@ import {
   aws_lambda,
   aws_lambda_event_sources,
   aws_lambda_nodejs,
-  aws_sns,
-  aws_sns_subscriptions,
+  // aws_sns,
+  // aws_sns_subscriptions,
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
