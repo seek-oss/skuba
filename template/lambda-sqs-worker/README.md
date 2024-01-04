@@ -7,7 +7,7 @@ Next steps:
 1. [ ] Finish templating if this was skipped earlier:
 
    ```shell
-   yarn skuba configure
+   pnpm exec skuba configure
    ```
 
 2. [ ] Create a new repository in the appropriate GitHub organisation.
@@ -47,33 +47,33 @@ This defaults to an invocation with an empty object `{}`, per [src/hooks.ts](src
 
 ```shell
 # Run Jest tests locally
-yarn test
+pnpm run test
 
 # Authenticate to dev account
 awsauth
 
 # Run smoke test against deployed application
-ENVIRONMENT=dev yarn smoke
+ENVIRONMENT=dev pnpm run smoke
 ```
 
 ### Lint
 
 ```shell
 # Fix issues
-yarn format
+pnpm run format
 
 # Check for issues
-yarn lint
+pnpm run lint
 ```
 
 ### Start
 
 ```shell
 # Start a local HTTP server
-yarn start
+pnpm run start
 
 # Start with Node.js Inspector enabled
-yarn start:debug
+pnpm run start:debug
 ```
 
 This serves the Lambda application over HTTP.
@@ -96,7 +96,7 @@ To deploy locally:
 # Authenticate to dev account
 awsauth
 
-ENVIRONMENT=dev yarn deploy
+ENVIRONMENT=dev pnpm run deploy
 ```
 
 To rapidly roll back a change,

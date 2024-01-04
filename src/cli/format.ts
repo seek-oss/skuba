@@ -5,20 +5,11 @@ import { createLogger, log } from '../utils/logging';
 
 import { runESLint } from './adapter/eslint';
 import { runPrettier } from './adapter/prettier';
-import { tryAddEmptyExports } from './configure/addEmptyExports';
-import { tryPatchDockerfile } from './configure/patchDockerfile';
-import { tryPatchRenovateConfig } from './configure/patchRenovateConfig';
-import { tryPatchServerListener } from './configure/patchServerListener';
 import { tryRefreshIgnoreFiles } from './configure/refreshIgnoreFiles';
+import { upgradeSkuba } from './configure/upgrade';
 
 export const format = async (args = process.argv.slice(2)): Promise<void> => {
-  await Promise.all([
-    tryAddEmptyExports(),
-    tryPatchRenovateConfig(),
-    tryPatchDockerfile(),
-    tryPatchServerListener(),
-    tryRefreshIgnoreFiles(),
-  ]);
+  await Promise.all([tryRefreshIgnoreFiles(), upgradeSkuba()]);
 
   const debug = hasDebugFlag(args);
   const logger = createLogger(debug);

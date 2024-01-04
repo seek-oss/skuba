@@ -1,6 +1,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
+import { Input } from 'enquirer';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging';
@@ -9,8 +10,6 @@ import type { TemplateConfig } from '../../utils/template';
 import { hasStringProp } from '../../utils/validation';
 
 import { tsFileExists } from './analysis/files';
-
-import { Input } from 'enquirer';
 
 interface Props {
   destinationRoot: string;

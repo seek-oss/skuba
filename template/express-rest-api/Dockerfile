@@ -1,19 +1,14 @@
 ARG BASE_IMAGE
-ARG BASE_TAG
 
 ###
 
-FROM ${BASE_IMAGE}:${BASE_TAG} AS deps
-
-RUN yarn install --ignore-optional --ignore-scripts --non-interactive --offline --production
-
-###
-
-FROM ${BASE_IMAGE}:${BASE_TAG} AS build
+FROM ${BASE_IMAGE} AS build
 
 COPY . .
 
-RUN yarn build
+RUN pnpm install --offline
+RUN pnpm run build
+RUN pnpm install --offline --prod
 
 ###
 
@@ -22,8 +17,7 @@ FROM --platform=${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs20
 WORKDIR /workdir
 
 COPY --from=build /workdir/lib lib
-
-COPY --from=deps /workdir/node_modules node_modules
+COPY --from=build /workdir/node_modules node_modules
 
 ENV NODE_ENV=production
 

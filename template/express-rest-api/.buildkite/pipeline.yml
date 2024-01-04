@@ -4,15 +4,13 @@ agents:
 configs:
   plugins:
     - &aws-sm
-      seek-oss/aws-sm#v2.3.1:
+      seek-oss/aws-sm#v2.3.2:
         env:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.1.0: &docker-ecr-cache-defaults
-        cache-on:
-          - package.json
-          - yarn.lock
+      seek-oss/docker-ecr-cache#v2.1.1: &docker-ecr-cache-defaults
+        cache-on: pnpm-lock.yaml
         dockerfile: Dockerfile.dev-deps
         secrets: id=npm,src=tmp/.npmrc
 
@@ -37,16 +35,18 @@ steps:
     plugins:
       - *aws-sm
       - *private-npm
-      - seek-oss/docker-ecr-cache#v2.1.0:
+      - seek-oss/docker-ecr-cache#v2.1.1:
           <<: *docker-ecr-cache-defaults
           skip-pull-from-cache: true
 
   - label: 🧪 Test & Lint
     commands:
-      - echo '+++ yarn test:ci'
-      - yarn test:ci
-      - echo '--- yarn lint'
-      - yarn lint
+      - echo '+++ pnpm install --offline'
+      - pnpm install --offline
+      - echo '+++ pnpm run test:ci'
+      - pnpm run test:ci
+      - echo '--- pnpm run lint'
+      - pnpm run lint
     depends_on: warm-prod
     env:
       GET_GITHUB_TOKEN: please

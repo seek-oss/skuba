@@ -23,7 +23,7 @@ For example, with the [Docker Buildkite plugin]:
 
 ```yaml
 steps:
-  - command: yarn lint
+  - command: pnpm run lint
     plugins:
       - *aws-sm
       - *private-npm

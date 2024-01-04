@@ -1,9 +1,12 @@
 import path from 'path';
 
+import { Select } from 'enquirer';
+
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';
+import { detectPackageManager } from '../../utils/packageManager';
 import { BASE_TEMPLATE_DIR } from '../../utils/template';
 import { hasProp } from '../../utils/validation';
 
@@ -14,8 +17,6 @@ import { getDestinationManifest } from './analysis/package';
 import { ensureTemplateCompletion } from './ensureTemplateCompletion';
 import { getEntryPoint } from './getEntryPoint';
 import { getProjectType } from './getProjectType';
-
-import { Select } from 'enquirer';
 
 const shouldApply = async (name: string) => {
   const prompt = new Select({
@@ -32,10 +33,12 @@ const shouldApply = async (name: string) => {
 export const configure = async () => {
   await showLogoAndVersionInfo();
 
-  const [manifest] = await Promise.all([
+  const [manifest, packageManager] = await Promise.all([
     getDestinationManifest(),
-    ensureCommands('yarn'),
+    detectPackageManager(),
   ]);
+
+  await ensureCommands(packageManager.command);
 
   const destinationRoot = path.dirname(manifest.path);
 
@@ -89,6 +92,7 @@ export const configure = async () => {
     destinationRoot,
     entryPoint,
     firstRun,
+    packageManager,
     type,
   });
 
@@ -103,19 +107,19 @@ export const configure = async () => {
   if (fixDependencies) {
     const exec = createExec({
       stdio: 'pipe',
-      streamStdio: 'yarn',
+      streamStdio: packageManager.command,
     });
 
     log.newline();
     try {
-      await exec('yarn', 'install');
+      await exec(packageManager.install);
     } catch {
       log.newline();
       log.warn(log.bold('✗ Failed to install dependencies. Resume with:'));
 
       log.newline();
-      log.plain(log.bold('yarn install'));
-      log.plain(log.bold('yarn format'));
+      log.plain(log.bold(packageManager, 'install'));
+      log.plain(log.bold(packageManager, 'run', 'format'));
 
       log.newline();
       process.exitCode = 1;
@@ -128,7 +132,7 @@ export const configure = async () => {
     log.ok(log.bold('✔ All done! Try running:'));
 
     log.newline();
-    log.plain(log.bold('yarn format'));
+    log.plain(log.bold(packageManager, 'run', 'format'));
   }
 
   log.newline();
