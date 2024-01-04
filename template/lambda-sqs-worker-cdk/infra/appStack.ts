@@ -35,11 +35,6 @@ export class AppStack extends Stack {
 
     kmsKey.grantEncrypt(accountPrincipal);
 
-    const topic = aws_sns.Topic.fromTopicArn(
-      this,
-      'source-topic',
-      context.sourceSnsTopicArn,
-    );
 
     const deadLetterQueue = new aws_sqs.Queue(this, 'worker-queue-dlq', {
       queueName: '<%- serviceName %>-dlq',
@@ -55,7 +50,15 @@ export class AppStack extends Stack {
       encryptionMasterKey: kmsKey,
     });
 
-    topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
+    // TODO: uncomment once topic ARN has been filled out in `cdk.json`.
+
+    // const topic = aws_sns.Topic.fromTopicArn(
+    //   this,
+    //   'source-topic',
+    //   context.sourceSnsTopicArn,
+    // );
+
+    // topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
 
     const architecture = '<%- lambdaCdkArchitecture %>';
 
