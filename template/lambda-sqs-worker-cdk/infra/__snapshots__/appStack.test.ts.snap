@@ -390,17 +390,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
               },
               "Resource": "*",
             },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:GenerateDataKey",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "sns.amazonaws.com",
-              },
-              "Resource": "*",
-            },
           ],
           "Version": "2012-10-17",
         },
@@ -420,18 +409,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::KMS::Alias",
     },
-    "topic69831491": {
-      "Properties": {
-        "KmsMasterKeyId": {
-          "Fn::GetAtt": [
-            "kmskey49FBC3B3",
-            "Arn",
-          ],
-        },
-        "TopicName": "serviceName",
-      },
-      "Type": "AWS::SNS::Topic",
-    },
     "worker28EA3E30": {
       "DependsOn": [
         "workerServiceRoleDefaultPolicyBA498553",
@@ -447,7 +424,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Description": "Lambda description - updated at 2023-12-05T05:00:21.059Z",
+        "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
             "NODE_ENV": "production",
@@ -474,7 +451,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerCurrentVersionFA5B4BF4f5a61e9d71cd0601d1ed660e07e0d4ed": {
+    "workerCurrentVersionFA5B4BF40511cedb42f6a199ae2909ac3c82fae6": {
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -563,7 +540,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF4f5a61e9d71cd0601d1ed660e07e0d4ed",
+            "workerCurrentVersionFA5B4BF40511cedb42f6a199ae2909ac3c82fae6",
             "Version",
           ],
         },
@@ -811,7 +788,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           ],
         },
         "Runtime": "nodejs20.x",
-        "Timeout": 30,
+        "Timeout": 120,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -941,59 +918,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
-    },
-    "workerqueuePolicy97054CB4": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sqs:SendMessage",
-              "Condition": {
-                "ArnEquals": {
-                  "aws:SourceArn": {
-                    "Ref": "topic69831491",
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "sns.amazonaws.com",
-              },
-              "Resource": {
-                "Fn::GetAtt": [
-                  "workerqueueA05CE5C6",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Queues": [
-          {
-            "Ref": "workerqueueA05CE5C6",
-          },
-        ],
-      },
-      "Type": "AWS::SQS::QueuePolicy",
-    },
-    "workerqueueappStacktopic0CA45134AFB31FF4": {
-      "DependsOn": [
-        "workerqueuePolicy97054CB4",
-      ],
-      "Properties": {
-        "Endpoint": {
-          "Fn::GetAtt": [
-            "workerqueueA05CE5C6",
-            "Arn",
-          ],
-        },
-        "Protocol": "sqs",
-        "TopicArn": {
-          "Ref": "topic69831491",
-        },
-      },
-      "Type": "AWS::SNS::Subscription",
     },
     "workerqueuedlq42262778": {
       "DeletionPolicy": "Delete",
@@ -1403,17 +1327,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
               },
               "Resource": "*",
             },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:GenerateDataKey",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "sns.amazonaws.com",
-              },
-              "Resource": "*",
-            },
           ],
           "Version": "2012-10-17",
         },
@@ -1433,18 +1346,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::KMS::Alias",
     },
-    "topic69831491": {
-      "Properties": {
-        "KmsMasterKeyId": {
-          "Fn::GetAtt": [
-            "kmskey49FBC3B3",
-            "Arn",
-          ],
-        },
-        "TopicName": "serviceName",
-      },
-      "Type": "AWS::SNS::Topic",
-    },
     "worker28EA3E30": {
       "DependsOn": [
         "workerServiceRoleDefaultPolicyBA498553",
@@ -1460,7 +1361,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Description": "Lambda description - updated at 2023-12-05T05:00:21.059Z",
+        "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
             "NODE_ENV": "production",
@@ -1487,7 +1388,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerCurrentVersionFA5B4BF4e69e917f70864c05ca9cdaaaf7c8a287": {
+    "workerCurrentVersionFA5B4BF4ee20a76340ab96b2d06d555daaec89f1": {
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -1576,7 +1477,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF4e69e917f70864c05ca9cdaaaf7c8a287",
+            "workerCurrentVersionFA5B4BF4ee20a76340ab96b2d06d555daaec89f1",
             "Version",
           ],
         },
@@ -1824,7 +1725,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           ],
         },
         "Runtime": "nodejs20.x",
-        "Timeout": 30,
+        "Timeout": 120,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -1954,59 +1855,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
-    },
-    "workerqueuePolicy97054CB4": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sqs:SendMessage",
-              "Condition": {
-                "ArnEquals": {
-                  "aws:SourceArn": {
-                    "Ref": "topic69831491",
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "sns.amazonaws.com",
-              },
-              "Resource": {
-                "Fn::GetAtt": [
-                  "workerqueueA05CE5C6",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Queues": [
-          {
-            "Ref": "workerqueueA05CE5C6",
-          },
-        ],
-      },
-      "Type": "AWS::SQS::QueuePolicy",
-    },
-    "workerqueueappStacktopic0CA45134AFB31FF4": {
-      "DependsOn": [
-        "workerqueuePolicy97054CB4",
-      ],
-      "Properties": {
-        "Endpoint": {
-          "Fn::GetAtt": [
-            "workerqueueA05CE5C6",
-            "Arn",
-          ],
-        },
-        "Protocol": "sqs",
-        "TopicArn": {
-          "Ref": "topic69831491",
-        },
-      },
-      "Type": "AWS::SNS::Subscription",
     },
     "workerqueuedlq42262778": {
       "DeletionPolicy": "Delete",
