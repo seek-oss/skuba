@@ -71,7 +71,7 @@ const pruneLambdas = async (
 
   const aliasMap = new Map(
     aliases.flatMap((alias) =>
-      alias.FunctionVersion ? [alias.FunctionVersion, alias] : [],
+      alias.FunctionVersion ? [[alias.FunctionVersion, alias]] : [] as const,
     ),
   );
 
