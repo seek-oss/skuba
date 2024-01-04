@@ -35,7 +35,6 @@ export class AppStack extends Stack {
 
     kmsKey.grantEncrypt(accountPrincipal);
 
-
     const deadLetterQueue = new aws_sqs.Queue(this, 'worker-queue-dlq', {
       queueName: '<%- serviceName %>-dlq',
       encryptionMasterKey: kmsKey,
