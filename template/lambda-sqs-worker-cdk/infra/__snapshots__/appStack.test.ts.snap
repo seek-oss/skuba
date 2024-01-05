@@ -451,7 +451,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerCurrentVersionFA5B4BF40511cedb42f6a199ae2909ac3c82fae6": {
+    "workerCurrentVersionFA5B4BF48eefcd60470daaddaf0e1448ba89a032": {
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -540,7 +540,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF40511cedb42f6a199ae2909ac3c82fae6",
+            "workerCurrentVersionFA5B4BF48eefcd60470daaddaf0e1448ba89a032",
             "Version",
           ],
         },
@@ -1388,7 +1388,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerCurrentVersionFA5B4BF4ee20a76340ab96b2d06d555daaec89f1": {
+    "workerCurrentVersionFA5B4BF4323275fa54fb77538a715a52202e154d": {
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -1477,7 +1477,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF4ee20a76340ab96b2d06d555daaec89f1",
+            "workerCurrentVersionFA5B4BF4323275fa54fb77538a715a52202e154d",
             "Version",
           ],
         },
