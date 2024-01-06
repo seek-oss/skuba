@@ -3,11 +3,12 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../utils/logging';
-import { SERVER_LISTENER_FILENAME } from '../../../../lint/autofix';
-import { createDestinationFileReader } from '../../../analysis/project';
-import { formatPrettier } from '../../../processing/prettier';
+import { createDestinationFileReader } from '../../../../configure/analysis/project';
+import { formatPrettier } from '../../../../configure/processing/prettier';
 
-export const KEEP_ALIVE_CODE = `
+const SERVER_LISTENER_FILENAME = 'src/listen.ts';
+
+const KEEP_ALIVE_CODE = `
 // Gantry ALB default idle timeout is 30 seconds
 // https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout
 // Node default is 5 seconds

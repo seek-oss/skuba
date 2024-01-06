@@ -9,6 +9,7 @@ export const createLogger = (debug: boolean, ...prefixes: unknown[]) => {
 
   return {
     bold: chalk.bold,
+    dim: chalk.dim,
     formatSubtle: chalk.grey,
 
     timing: (start: bigint, end: bigint) =>

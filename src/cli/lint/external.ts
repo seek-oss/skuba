@@ -5,7 +5,6 @@ import { log } from '../../utils/logging';
 import { throwOnTimeout } from '../../utils/wait';
 
 import { createAnnotations } from './annotate';
-import { autofix } from './autofix';
 import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint';
 import {
   runPrettierInCurrentThread,
@@ -109,9 +108,8 @@ export const externalLint = async (input: Input) => {
     process.exitCode = 1;
   }
 
-  await autofix({
-    debug: input.debug,
-    eslint: eslint.fixable,
-    prettier: !prettier.ok,
-  });
+  return {
+    eslint,
+    prettier,
+  };
 };

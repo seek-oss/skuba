@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 
-import * as packageAnalysis from '../../../analysis/package';
-import * as projectAnalysis from '../../../analysis/project';
+import * as packageAnalysis from '../../../../configure/analysis/package';
+import * as projectAnalysis from '../../../../configure/analysis/project';
 
 import { tryAddEmptyExports } from './addEmptyExports';
 

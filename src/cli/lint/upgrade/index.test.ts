@@ -1,6 +1,7 @@
 import { readdir, writeFile } from 'fs-extra';
 import type { NormalizedPackageJson } from 'read-pkg-up';
 
+import { log } from '../../../utils/logging';
 import { getConsumerManifest } from '../../../utils/manifest';
 import { getSkubaVersion } from '../../../utils/version';
 
@@ -15,11 +16,11 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe('upgradeSkuba', () => {
+describe('upgradeSkuba in format mode', () => {
   it('should throw an error if no skuba manifest can be found', async () => {
     jest.mocked(getConsumerManifest).mockResolvedValue(undefined);
 
-    await expect(upgradeSkuba()).rejects.toThrow(
+    await expect(upgradeSkuba('format', log)).rejects.toThrow(
       'Could not find a package json for this project',
     );
   });
@@ -40,7 +41,10 @@ describe('upgradeSkuba', () => {
 
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
-    await expect(upgradeSkuba()).resolves.toBeUndefined();
+    await expect(upgradeSkuba('format', log)).resolves.toEqual({
+      ok: true,
+      fixable: false,
+    });
 
     expect(readdir).not.toHaveBeenCalled();
   });
@@ -80,7 +84,10 @@ describe('upgradeSkuba', () => {
       .mocked(readdir)
       .mockResolvedValue(['0.9.0', '1.0.0', '2.0.0'] as never);
 
-    await expect(upgradeSkuba()).resolves.toBeUndefined();
+    await expect(upgradeSkuba('format', log)).resolves.toEqual({
+      ok: true,
+      fixable: false,
+    });
     expect(mockUpgrade.upgrade).toHaveBeenCalledTimes(2);
   });
 
@@ -111,7 +118,10 @@ describe('upgradeSkuba', () => {
     // readdir has overloads and the mocked version doesn't match the string version
     jest.mocked(readdir).mockResolvedValue(['2.0.0'] as never);
 
-    await expect(upgradeSkuba()).resolves.toBeUndefined();
+    await expect(upgradeSkuba('format', log)).resolves.toEqual({
+      ok: true,
+      fixable: false,
+    });
 
     expect(writeFile).toHaveBeenCalledWith(
       '/package.json',
@@ -150,7 +160,10 @@ describe('upgradeSkuba', () => {
     // readdir has overloads and the mocked version doesn't match the string version
     jest.mocked(readdir).mockResolvedValue(['2.0.0'] as never);
 
-    await expect(upgradeSkuba()).resolves.toBeUndefined();
+    await expect(upgradeSkuba('format', log)).resolves.toEqual({
+      ok: true,
+      fixable: false,
+    });
 
     expect(writeFile).toHaveBeenCalledWith(
       '/package.json',
@@ -163,5 +176,90 @@ describe('upgradeSkuba', () => {
 }
 `,
     );
+  });
+});
+
+describe('upgradeSkuba in lint mode', () => {
+  it('should throw an error if no skuba manifest can be found', async () => {
+    jest.mocked(getConsumerManifest).mockResolvedValue(undefined);
+
+    await expect(upgradeSkuba('lint', log)).rejects.toThrow(
+      'Could not find a package json for this project',
+    );
+  });
+
+  it('should return early if the skuba manifest version is greater than or equal to the skuba current version', async () => {
+    jest.mocked(getConsumerManifest).mockResolvedValue({
+      packageJson: {
+        skuba: {
+          version: '2.0.0',
+        },
+        _id: 'test',
+        name: 'some-api',
+        readme: '',
+        version: '1.0.0',
+      } as NormalizedPackageJson,
+      path: '/package.json',
+    });
+
+    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+
+    await expect(upgradeSkuba('lint', log)).resolves.toEqual({
+      ok: true,
+      fixable: false,
+    });
+
+    expect(readdir).not.toHaveBeenCalled();
+  });
+
+  it('should return ok: false, fixable: true if there are lints to apply', async () => {
+    jest.mocked(getConsumerManifest).mockResolvedValue({
+      packageJson: {
+        skuba: {
+          version: '1.0.0',
+        },
+        _id: 'test',
+        name: 'some-api',
+        readme: '',
+        version: '1.0.0',
+      } as NormalizedPackageJson,
+      path: '/package.json',
+    });
+
+    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+
+    // readdir has overloads and the mocked version doesn't match the string version
+    jest
+      .mocked(readdir)
+      .mockResolvedValue(['0.9.0', '1.0.0', '2.0.0'] as never);
+
+    await expect(upgradeSkuba('lint', log)).resolves.toEqual({
+      ok: false,
+      fixable: true,
+    });
+  });
+
+  it('should return ok: true, fixable: false if there are no lints to apply despite package.json being out of date', async () => {
+    jest.mocked(getConsumerManifest).mockResolvedValue({
+      packageJson: {
+        skuba: {
+          version: '1.0.0',
+        },
+        _id: 'test',
+        name: 'some-api',
+        readme: '',
+        version: '1.0.0',
+      } as NormalizedPackageJson,
+      path: '/package.json',
+    });
+
+    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+
+    jest.mocked(readdir).mockResolvedValue(['0.9.0'] as never);
+
+    await expect(upgradeSkuba('lint', log)).resolves.toEqual({
+      ok: true,
+      fixable: false,
+    });
   });
 });

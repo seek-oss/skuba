@@ -7,10 +7,15 @@ import fs, { copy } from 'fs-extra';
 import git from 'isomorphic-git';
 
 import { Buildkite } from '..';
+import type { Logger } from '../utils/logging';
+import { getSkubaVersion } from '../utils/version';
 
 import { lint } from './lint';
+import { refreshIgnoreFiles } from './lint/internalLints/refreshIgnoreFiles';
 
 jest.setTimeout(30_000);
+
+jest.mock('../utils/version');
 
 const buildkiteAnnotate = jest.spyOn(Buildkite, 'annotate').mockResolvedValue();
 
@@ -64,8 +69,13 @@ const stdout = (randomMatcher: RegExp) => {
 
 const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
   await copy(baseDir, tempDir);
-
   process.chdir(tempDir);
+  const result = await refreshIgnoreFiles('format', {
+    bold: jest.fn(),
+    dim: jest.fn(),
+    warn: jest.fn(),
+  } as unknown as Logger);
+  expect(result.ok).toBe(true);
 };
 
 const originalCwd = process.cwd();
@@ -100,16 +110,20 @@ afterAll(() => {
 interface Args {
   args: string[];
   base: string;
+  skubaVersion: string;
   exitCode: number | undefined;
 }
 
 test.each`
-  description     | args           | base           | exitCode
-  ${'fixable'}    | ${[]}          | ${'fixable'}   | ${1}
-  ${'ok'}         | ${[]}          | ${'ok'}        | ${undefined}
-  ${'ok --debug'} | ${['--debug']} | ${'ok'}        | ${undefined}
-  ${'unfixable'}  | ${[]}          | ${'unfixable'} | ${1}
-`('$description', async ({ args, base, exitCode }: Args) => {
+  description        | args           | base           | skubaVersion | exitCode
+  ${'fixable'}       | ${[]}          | ${'fixable'}   | ${'0.0.0'}   | ${1}
+  ${'ok'}            | ${[]}          | ${'ok'}        | ${'0.0.0'}   | ${undefined}
+  ${'ok --debug'}    | ${['--debug']} | ${'ok'}        | ${'0.0.0'}   | ${undefined}
+  ${'unfixable'}     | ${[]}          | ${'unfixable'} | ${'0.0.0'}   | ${1}
+  ${'needs patches'} | ${[]}          | ${'ok'}        | ${'1.0.0'}   | ${1}
+`('$description', async ({ args, base, skubaVersion, exitCode }: Args) => {
+  jest.mocked(getSkubaVersion).mockResolvedValue(skubaVersion);
+
   const baseDir = path.join(BASE_PATH, base);
 
   const tempDir = path.join(

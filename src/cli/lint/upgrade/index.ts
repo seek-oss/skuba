@@ -3,11 +3,12 @@ import path from 'path';
 import { readdir, writeFile } from 'fs-extra';
 import { gte, sort } from 'semver';
 
-import { log } from '../../../utils/logging';
+import type { Logger } from '../../../utils/logging';
 import { getConsumerManifest } from '../../../utils/manifest';
+import { detectPackageManager } from '../../../utils/packageManager';
 import { getSkubaVersion } from '../../../utils/version';
+import { formatPackage } from '../../configure/processing/package';
 import type { SkubaPackageJson } from '../../init/writePackageJson';
-import { formatPackage } from '../processing/package';
 
 const getPatches = async (manifestVersion: string): Promise<string[]> => {
   const patches = await readdir(path.join(__dirname, 'patches'));
@@ -37,7 +38,7 @@ const resolvePatch = async (patch: string): Promise<Patch> => {
   throw new Error(`Could not resolve patch ${patch}`);
 };
 
-export const upgradeSkuba = async () => {
+export const upgradeSkuba = async (mode: 'lint' | 'format', logger: Logger) => {
   const [currentVersion, manifest] = await Promise.all([
     getSkubaVersion(),
     getConsumerManifest(),
@@ -52,21 +53,45 @@ export const upgradeSkuba = async () => {
   const manifestVersion = (manifest.packageJson.skuba as SkubaPackageJson)
     .version;
 
-  // We are up to date, avoid apply patches
+  // We are up to date, skip patches
   if (gte(manifestVersion, currentVersion)) {
-    return;
+    return { ok: true, fixable: false };
   }
 
-  log.plain('Updating skuba...');
-
   const patches = await getPatches(manifestVersion);
+
+  if (patches.length === 0) {
+    // TODO: Do we want to _always_ write the version?
+    // Or only if there's associated patches for that version / it's missing?
+    // Also see 'should return ok: true, fixable: false if there are no lints to apply despite package.json being out of date'
+    return { ok: true, fixable: false };
+  }
+
+  if (mode === 'lint') {
+    const packageManager = await detectPackageManager();
+
+    logger.warn(
+      `skuba has patches to apply. Run ${logger.bold(
+        packageManager.exec,
+        'skuba',
+        'format',
+      )} to run them. ${logger.dim('skuba-patches')}`,
+    );
+
+    // TODO: Do we want to declare patches as optional?
+    // TODO: Should we return ok: true if all patches are no-ops?
+
+    return { ok: false, fixable: true };
+  }
+
+  logger.plain('Updating skuba...');
 
   // Run these in series in case a subsequent patch relies on a previous patch
   for (const patch of patches) {
     const patchFile = await resolvePatch(patch);
     await patchFile.upgrade();
-    log.newline();
-    log.plain(`Patch ${patch} applied.`);
+    logger.newline();
+    logger.plain(`Patch ${patch} applied.`);
   }
 
   (manifest.packageJson.skuba as SkubaPackageJson).version = currentVersion;
@@ -74,7 +99,12 @@ export const upgradeSkuba = async () => {
   const updatedPackageJson = await formatPackage(manifest.packageJson);
 
   await writeFile(manifest.path, updatedPackageJson);
-  log.newline();
-  log.plain('skuba update complete.');
-  log.newline();
+  logger.newline();
+  logger.plain('skuba update complete.');
+  logger.newline();
+
+  return {
+    ok: true,
+    fixable: false,
+  };
 };
