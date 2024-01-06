@@ -99,9 +99,7 @@ export class AppStack extends Stack {
       description: `Updated at ${new Date().toISOString()}`,
     });
 
-    const alias = new aws_lambda.Alias(this, 'worker-live-alias', {
-      aliasName: 'live',
-      version: worker.currentVersion,
+    const alias = worker.addAlias('live', {
       description: 'The Lambda version currently receiving traffic',
     });
 
