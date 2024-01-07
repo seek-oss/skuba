@@ -40,7 +40,7 @@ export const noSkubaTemplateJs = async (
       fixable: false,
       annotations: [
         {
-          path: templateConfigPath,
+          path: 'skuba.template.js',
           message: `Template is incomplete; run ${packageManager.exec} skuba configure.`,
         },
       ],

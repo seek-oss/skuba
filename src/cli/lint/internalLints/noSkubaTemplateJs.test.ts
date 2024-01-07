@@ -52,7 +52,7 @@ describe('noSkubaTemplateJs', () => {
         annotations: [
           {
             message: 'Template is incomplete; run pnpm exec skuba configure.',
-            path: '/Users/amoat/Programming/seek-oss/skuba/skuba.template.js',
+            path: 'skuba.template.js',
           },
         ],
       });
