@@ -64,7 +64,7 @@ jobs:
 
       - if: github.event_name == 'push'
         name: Dry-run changelog versioning
-        run: pnpm exec changeset version
+        run: pnpm run changeset version
 
       - if: github.event_name == 'push'
         name: Dry-run site packaging
