@@ -29,6 +29,7 @@
   ],
   "scripts": {
     "build": "scripts/build.sh",
+    "changeset": "changeset",
     "deploy": "scripts/deploy.sh",
     "format": "pnpm run --silent skuba format",
     "lint": "pnpm run --silent skuba lint && pnpm run --silent lint:md",
