@@ -51,16 +51,17 @@ describe('upgradeSkuba in format mode', () => {
 
   it('should apply patches which are equal to or greater than the manifest version', async () => {
     const mockUpgrade = {
-      upgrade: jest.fn(),
+      apply: jest.fn().mockImplementation(() => ({ result: 'apply' })),
+      description: 'mock',
     };
 
-    jest.mock(`./patches/0.9.0/index.js`, () => mockUpgrade, {
+    jest.mock(`./patches/0.9.0/index.js`, () => ({ patches: [mockUpgrade] }), {
       virtual: true,
     });
-    jest.mock(`./patches/1.0.0/index.js`, () => mockUpgrade, {
+    jest.mock(`./patches/1.0.0/index.js`, () => ({ patches: [mockUpgrade] }), {
       virtual: true,
     });
-    jest.mock(`./patches/2.0.0/index.js`, () => mockUpgrade, {
+    jest.mock(`./patches/2.0.0/index.js`, () => ({ patches: [mockUpgrade] }), {
       virtual: true,
     });
 
@@ -88,15 +89,16 @@ describe('upgradeSkuba in format mode', () => {
       ok: true,
       fixable: false,
     });
-    expect(mockUpgrade.upgrade).toHaveBeenCalledTimes(2);
+    expect(mockUpgrade.apply).toHaveBeenCalledTimes(2);
   });
 
   it('should update the consumer manifest version', async () => {
     const mockUpgrade = {
-      upgrade: jest.fn(),
+      apply: jest.fn().mockImplementation(() => ({ result: 'apply' })),
+      description: 'mock',
     };
 
-    jest.mock(`./patches/2.0.0/index.js`, () => mockUpgrade, {
+    jest.mock(`./patches/2.0.0/index.js`, () => ({ patches: [mockUpgrade] }), {
       virtual: true,
     });
 
@@ -138,10 +140,11 @@ describe('upgradeSkuba in format mode', () => {
 
   it('should handle skuba section not being present in the packageJson', async () => {
     const mockUpgrade = {
-      upgrade: jest.fn(),
+      apply: jest.fn().mockImplementation(() => ({ result: 'apply' })),
+      description: 'mock',
     };
 
-    jest.mock(`./patches/2.0.0/index.js`, () => mockUpgrade, {
+    jest.mock(`./patches/2.0.0/index.js`, () => ({ patches: [mockUpgrade] }), {
       virtual: true,
     });
 

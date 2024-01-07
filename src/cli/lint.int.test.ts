@@ -120,7 +120,7 @@ test.each`
   ${'ok'}            | ${[]}          | ${'ok'}        | ${'0.0.0'}   | ${undefined}
   ${'ok --debug'}    | ${['--debug']} | ${'ok'}        | ${'0.0.0'}   | ${undefined}
   ${'unfixable'}     | ${[]}          | ${'unfixable'} | ${'0.0.0'}   | ${1}
-  ${'needs patches'} | ${[]}          | ${'ok'}        | ${'1.0.0'}   | ${1}
+  ${'needs patches'} | ${[]}          | ${'patch'}     | ${'1.0.0'}   | ${1}
 `('$description', async ({ args, base, skubaVersion, exitCode }: Args) => {
   jest.mocked(getSkubaVersion).mockResolvedValue(skubaVersion);
 

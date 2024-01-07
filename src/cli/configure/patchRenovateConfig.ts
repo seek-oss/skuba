@@ -11,6 +11,7 @@ import { log } from '../../utils/logging';
 import { createDestinationFileReader } from './analysis/project';
 import { RENOVATE_CONFIG_FILENAMES } from './modules/renovate';
 import { formatPrettier } from './processing/prettier';
+import type { PatchFunction, PatchReturnType } from './upgrade';
 
 const RENOVATE_PRESETS = [
   'local>seekasia/renovate-config',
@@ -91,7 +92,10 @@ const patchByFiletype: Record<RenovateFiletype, PatchFile> = {
   json5: patchJson5,
 };
 
-const patchRenovateConfig = async (dir: string) => {
+const patchRenovateConfig = async (
+  mode: 'format' | 'lint',
+  dir: string,
+): Promise<PatchReturnType> => {
   const readFile = createDestinationFileReader(dir);
 
   const { owner } = await Git.getOwnerAndRepo({ dir });
@@ -99,8 +103,10 @@ const patchRenovateConfig = async (dir: string) => {
   const presetToAdd = ownerToRenovatePreset(owner);
 
   if (!presetToAdd) {
-    // No baseline preset needs to be added for the configured Git owner.
-    return;
+    return {
+      result: 'skip',
+      reason: "owner does not map to any of SEEK's renovate auth config",
+    };
   }
 
   const maybeConfigs = await Promise.all(
@@ -111,10 +117,11 @@ const patchRenovateConfig = async (dir: string) => {
   );
 
   const config = maybeConfigs.find((maybeConfig) => Boolean(maybeConfig.input));
+  if (!config?.input) {
+    return { result: 'skip', reason: 'no renovate config found' };
+  }
 
   if (
-    // No file was found.
-    !config?.input ||
     // The file appears to mention the baseline preset for the configured Git
     // owner. This is a very naive check that we don't want to overcomplicate
     // because it is invoked before each skuba format and lint.
@@ -122,7 +129,14 @@ const patchRenovateConfig = async (dir: string) => {
     // Ignore any renovate configuration which already extends a SEEK-Jobs or seekasia config
     EXISTING_REPO_PRESET_REGEX.exec(config.input)
   ) {
-    return;
+    return {
+      result: 'skip',
+      reason: 'renovate config already has private auth',
+    };
+  }
+
+  if (mode === 'lint') {
+    return { result: 'apply' };
   }
 
   const filetype: RenovateFiletype = config.filepath
@@ -138,19 +152,26 @@ const patchRenovateConfig = async (dir: string) => {
     input: config.input,
     presetToAdd,
   });
+
+  return { result: 'apply' };
 };
 
-export const tryPatchRenovateConfig = async (dir = process.cwd()) => {
+export const tryPatchRenovateConfig = (async (
+  mode: 'format' | 'lint',
+  dir = process.cwd(),
+) => {
   try {
     // In a monorepo we may be invoked within a subdirectory, but we are working
     // with Renovate config that should be relative to the repository root.
     const gitRoot = await Git.findRoot({ dir });
-
-    if (gitRoot) {
-      await patchRenovateConfig(gitRoot);
+    if (!gitRoot) {
+      return { result: 'skip', reason: 'could not find git root' };
     }
+
+    return await patchRenovateConfig(mode, gitRoot);
   } catch (err) {
     log.warn('Failed to patch Renovate config.');
     log.subtle(inspect(err));
+    return { result: 'skip', reason: 'due to an error' };
   }
-};
+}) satisfies PatchFunction;

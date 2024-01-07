@@ -11,32 +11,44 @@ import type { SkubaPackageJson } from '../../init/writePackageJson';
 import type { InternalLintResult } from '../../lint/internal';
 import { formatPackage } from '../processing/package';
 
-const getPatches = async (manifestVersion: string): Promise<string[]> => {
+export type Patches = Patch[];
+export type Patch = {
+  apply: PatchFunction;
+  description: string;
+};
+export type PatchReturnType =
+  | { result: 'apply' }
+  | { result: 'skip'; reason?: string };
+export type PatchFunction = (
+  mode: 'format' | 'lint',
+) => Promise<PatchReturnType>;
+
+const getPatches = async (manifestVersion: string): Promise<Patches> => {
   const patches = await readdir(path.join(__dirname, 'patches'));
 
   // The patches are sorted by the version they were added from.
   // Only return patches that are newer or equal to the current version.
-  return sort(patches.filter((filename) => gte(filename, manifestVersion)));
+  const patchesForVersion = sort(
+    patches.filter((filename) => gte(filename, manifestVersion)),
+  );
+
+  return (await Promise.all(patchesForVersion.map(resolvePatches))).flat();
 };
 
 const fileExtensions = ['js', 'ts'];
 
-export type Patch = {
-  upgrade: () => Promise<void>;
-};
-
 // Hack to allow our Jest environment/transform to resolve the patches
 // In normal scenarios this will resolve immediately after the .js import
-const resolvePatch = async (patch: string): Promise<Patch> => {
+const resolvePatches = async (version: string): Promise<Patches> => {
   for (const extension of fileExtensions) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return await import(`./patches/${patch}/index.${extension}`);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+      return (await import(`./patches/${version}/index.${extension}`)).patches;
     } catch {
       // Ignore
     }
   }
-  throw new Error(`Could not resolve patch ${patch}`);
+  throw new Error(`Could not resolve patches for ${version}`);
 };
 
 export const upgradeSkuba = async (
@@ -63,17 +75,20 @@ export const upgradeSkuba = async (
   }
 
   const patches = await getPatches(manifestVersion);
-
+  // No patches to apply even if version out of date. Early exit to avoid unnecessary commits.
   if (patches.length === 0) {
-    // TODO: Do we want to _always_ write the version?
-    // Or only if there's associated patches for that version / it's missing?
-    // Also see 'should return ok: true, fixable: false if there are no lints to apply despite package.json being out of date'
     return { ok: true, fixable: false };
   }
 
   if (mode === 'lint') {
-    // TODO: Do we want to declare patches as optional?
-    // TODO: Should we return ok: true if all patches are no-ops?
+    const results = await Promise.all(
+      patches.map(async ({ apply }) => await apply(mode)),
+    );
+
+    // No patches are applicable. Early exit to avoid unnecessary commits.
+    if (results.every(({ result }) => result === 'skip')) {
+      return { ok: true, fixable: false };
+    }
 
     const packageManager = await detectPackageManager();
 
@@ -91,7 +106,7 @@ export const upgradeSkuba = async (
       annotations: [
         {
           // package.json as likely skuba version has changed
-          // TODO: location the "skuba": {} config in the package.json and annotate on the version property
+          // TODO: locate the "skuba": {} config in the package.json and annotate on the version property
           path: manifest.path,
           message: `skuba has patches to apply. Run ${packageManager.exec} skuba format to run them.`,
         },
@@ -102,11 +117,18 @@ export const upgradeSkuba = async (
   logger.plain('Updating skuba...');
 
   // Run these in series in case a subsequent patch relies on a previous patch
-  for (const patch of patches) {
-    const patchFile = await resolvePatch(patch);
-    await patchFile.upgrade();
+  for (const { apply, description } of patches) {
+    const result = await apply(mode);
     logger.newline();
-    logger.plain(`Patch ${patch} applied.`);
+    if (result.result === 'skip') {
+      logger.plain(
+        `Patch skipped: ${description}${
+          result.reason ? ` - ${result.reason}` : ''
+        }`,
+      );
+    } else {
+      logger.plain(`Patch applied: ${description}`);
+    }
   }
 
   (manifest.packageJson.skuba as SkubaPackageJson).version = currentVersion;

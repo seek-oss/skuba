@@ -2,6 +2,7 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
+import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../utils/logging';
 import { createDestinationFileReader } from '../../../analysis/project';
 import { formatPrettier } from '../../../processing/prettier';
@@ -17,13 +18,19 @@ const KEEP_ALIVE_CODE = `
 listener.keepAliveTimeout = 31000;
 `;
 
-const patchServerListener = async (dir: string) => {
+const patchServerListener = async (
+  mode: 'format' | 'lint',
+  dir: string,
+): Promise<PatchReturnType> => {
   const readFile = createDestinationFileReader(dir);
 
   let listener = await readFile(SERVER_LISTENER_FILENAME);
+  if (!listener) {
+    return { result: 'skip', reason: 'no listener file found' };
+  }
 
-  if (!listener || listener.includes('keepAliveTimeout')) {
-    return;
+  if (listener.includes('keepAliveTimeout')) {
+    return { result: 'skip', reason: 'keepAliveTimeout already configured' };
   }
 
   if (listener.includes('\napp.listen(')) {
@@ -34,7 +41,11 @@ const patchServerListener = async (dir: string) => {
   }
 
   if (!listener.includes('\nconst listener = app.listen(')) {
-    return;
+    return { result: 'skip', reason: 'no server listener found' };
+  }
+
+  if (mode === 'lint') {
+    return { result: 'apply' };
   }
 
   listener = `${listener}${KEEP_ALIVE_CODE}`;
@@ -45,13 +56,19 @@ const patchServerListener = async (dir: string) => {
       parser: 'typescript',
     }),
   );
+
+  return { result: 'apply' };
 };
 
-export const tryPatchServerListener = async (dir = process.cwd()) => {
+export const tryPatchServerListener: PatchFunction = async (
+  mode: 'format' | 'lint',
+  dir = process.cwd(),
+) => {
   try {
-    await patchServerListener(dir);
+    return await patchServerListener(mode, dir);
   } catch (err) {
     log.warn('Failed to patch server listener.');
     log.subtle(inspect(err));
+    return { result: 'skip', reason: 'due to an error' };
   }
 };

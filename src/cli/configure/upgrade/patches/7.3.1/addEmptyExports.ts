@@ -3,6 +3,7 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
+import type { PatchFunction } from '../..';
 import { log } from '../../../../../utils/logging';
 import { getDestinationManifest } from '../../../analysis/package';
 import { createDestinationFileReader } from '../../../analysis/project';
@@ -10,7 +11,7 @@ import { formatPrettier } from '../../../processing/prettier';
 
 const JEST_SETUP_FILES = ['jest.setup.ts', 'jest.setup.int.ts'];
 
-const addEmptyExports = async () => {
+const addEmptyExports = async (mode: 'format' | 'lint') => {
   const manifest = await getDestinationManifest();
 
   const destinationRoot = path.dirname(manifest.path);
@@ -28,7 +29,11 @@ const addEmptyExports = async () => {
       inputFile.includes('import ') ||
       inputFile.includes('export ')
     ) {
-      return;
+      return 'skip';
+    }
+
+    if (mode === 'lint') {
+      return 'apply';
     }
 
     const data = await formatPrettier([inputFile, 'export {}'].join('\n\n'), {
@@ -38,20 +43,26 @@ const addEmptyExports = async () => {
     const filepath = path.join(destinationRoot, filename);
 
     await fs.promises.writeFile(filepath, data);
+
+    return 'apply';
   };
 
-  await Promise.all(JEST_SETUP_FILES.map(addEmptyExport));
+  const results = await Promise.all(JEST_SETUP_FILES.map(addEmptyExport));
+  return results.every((result) => result === 'skip') ? 'skip' : 'apply';
 };
 
 /**
  * Tries to add an empty `export {}` statement to the bottom of Jest setup files
  * for compliance with TypeScript isolated modules.
  */
-export const tryAddEmptyExports = async () => {
+export const tryAddEmptyExports: PatchFunction = async (
+  mode: 'format' | 'lint',
+) => {
   try {
-    await addEmptyExports();
+    return { result: await addEmptyExports(mode) };
   } catch (err) {
     log.warn('Failed to convert Jest setup files to isolated modules.');
     log.subtle(inspect(err));
+    return { result: 'skip', reason: 'due to an error' };
   }
 };
