@@ -16,13 +16,42 @@ export const REFRESHABLE_IGNORE_FILES = [
   '.prettierignore',
 ];
 
-export const refreshIgnoreFiles = async () => {
-  // TODO: check current state of .gitignore
-  // If it contains !.npmrc, break
-  // If it contains .npmrc, we can either
-  // 1. Move the entry below the skuba-managed section for manual triage
-  // 2. Delete any local .npmrc state before un-ignoring the .npmrc
+const merge = async ({
+  filename,
+  inputFile,
+  templateFile,
+}: {
+  filename: string;
+  inputFile?: string;
+  templateFile: string;
+}) => {
+  if (filename === '.gitignore') {
+    try {
+      await fs.promises.rm('.npmrc');
+    } catch (err) {
+      if (!(err instanceof Error && 'code' in err && err.code === 'ENOENT')) {
+        throw err;
+      }
+    }
+  }
 
+  if (filename === '.gitignore' && inputFile) {
+    // TODO: check current state of .gitignore
+    // If it contains !.npmrc, break
+    // If it contains .npmrc, we can either
+    // 1. Move the entry below the skuba-managed section for manual triage
+    // 2. Delete any local .npmrc state before un-ignoring the .npmrc
+  }
+
+  if (filename === '.npmrc' && inputFile) {
+  }
+
+  return inputFile
+    ? mergeWithIgnoreFile(templateFile)(inputFile)
+    : templateFile;
+};
+
+export const refreshIgnoreFiles = async () => {
   const manifest = await getDestinationManifest();
 
   const destinationRoot = path.dirname(manifest.path);
@@ -35,9 +64,7 @@ export const refreshIgnoreFiles = async () => {
       readBaseTemplateFile(`_${filename}`),
     ]);
 
-    const data = inputFile
-      ? mergeWithIgnoreFile(templateFile)(inputFile)
-      : templateFile;
+    const data = await merge({ filename, inputFile, templateFile });
 
     const filepath = path.join(destinationRoot, filename);
 
