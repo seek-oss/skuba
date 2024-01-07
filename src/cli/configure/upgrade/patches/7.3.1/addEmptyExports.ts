@@ -4,9 +4,9 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../utils/logging';
-import { getDestinationManifest } from '../../../../configure/analysis/package';
-import { createDestinationFileReader } from '../../../../configure/analysis/project';
-import { formatPrettier } from '../../../../configure/processing/prettier';
+import { getDestinationManifest } from '../../../analysis/package';
+import { createDestinationFileReader } from '../../../analysis/project';
+import { formatPrettier } from '../../../processing/prettier';
 
 const JEST_SETUP_FILES = ['jest.setup.ts', 'jest.setup.int.ts'];
 

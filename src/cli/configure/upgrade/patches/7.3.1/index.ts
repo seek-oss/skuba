@@ -1,4 +1,4 @@
-import { tryPatchRenovateConfig } from '../../../../configure/patchRenovateConfig';
+import { tryPatchRenovateConfig } from '../../../patchRenovateConfig';
 
 import { tryAddEmptyExports } from './addEmptyExports';
 import { tryPatchDockerfile } from './patchDockerfile';

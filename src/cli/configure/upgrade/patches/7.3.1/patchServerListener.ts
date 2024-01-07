@@ -3,8 +3,8 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../utils/logging';
-import { createDestinationFileReader } from '../../../../configure/analysis/project';
-import { formatPrettier } from '../../../../configure/processing/prettier';
+import { createDestinationFileReader } from '../../../analysis/project';
+import { formatPrettier } from '../../../processing/prettier';
 
 const SERVER_LISTENER_FILENAME = 'src/listen.ts';
 

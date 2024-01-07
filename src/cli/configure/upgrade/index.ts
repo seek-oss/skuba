@@ -7,8 +7,8 @@ import type { Logger } from '../../../utils/logging';
 import { getConsumerManifest } from '../../../utils/manifest';
 import { detectPackageManager } from '../../../utils/packageManager';
 import { getSkubaVersion } from '../../../utils/version';
-import { formatPackage } from '../../configure/processing/package';
 import type { SkubaPackageJson } from '../../init/writePackageJson';
+import { formatPackage } from '../processing/package';
 
 const getPatches = async (manifestVersion: string): Promise<string[]> => {
   const patches = await readdir(path.join(__dirname, 'patches'));
