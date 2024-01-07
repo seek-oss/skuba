@@ -24,20 +24,17 @@ Prettier │ d.js
 Prettier │ package.json
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
-
-ESLint, Prettier found issues that require triage.
 skuba    │ Processed skuba lints in <random>s.
+ESLint, Prettier found issues that require triage.
+
+Try running yarn skuba format to fix them.
 "
 `;
 
 exports[`fixable 2`] = `
 [
   "
-Options: {
-  context: 'skuba-lint-external',
-  scopeContextToStep: true,
-  style: 'error'
-}
+Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 
 \`skuba lint\` found issues that require triage:
 
@@ -76,12 +73,28 @@ Prettier │ Processed 6 files in <random>s.
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
 skuba    │ skuba has patches to apply. Run yarn skuba format to run them. skuba-patches
-skuba    │ Some skuba lints failed. Try running yarn skuba format to fix them. skuba-lint
 skuba    │ Processed skuba lints in <random>s.
+skuba found issues that require triage.
+
+Try running yarn skuba format to fix them.
 "
 `;
 
-exports[`needs patches 2`] = `[]`;
+exports[`needs patches 2`] = `
+[
+  "
+Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
+
+\`skuba lint\` found issues that require triage:
+
+**skuba**
+
+\`\`\`term
+<random>/package.json skuba has patches to apply. Run yarn skuba format to run them.
+\`\`\`
+",
+]
+`;
 
 exports[`ok --debug 1`] = `
 "
@@ -186,20 +199,17 @@ Prettier │ a/a/a.ts
 tsc      │ d.js(1,1): error TS1128: Declaration or statement expected.
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 2
-
-ESLint, Prettier, tsc found issues that require triage.
 skuba    │ Processed skuba lints in <random>s.
+ESLint, Prettier, tsc found issues that require triage.
+
+Try running yarn skuba format to fix them.
 "
 `;
 
 exports[`unfixable 2`] = `
 [
   "
-Options: {
-  context: 'skuba-lint-external',
-  scopeContextToStep: true,
-  style: 'error'
-}
+Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 
 \`skuba lint\` found issues that require triage:
 

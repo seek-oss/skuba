@@ -5,6 +5,7 @@ import { pathExists, rm } from 'fs-extra';
 
 import type { Logger } from '../../../utils/logging';
 import { detectPackageManager } from '../../../utils/packageManager';
+import type { InternalLintResult } from '../internal';
 
 const AUTOFIX_DELETE_FILES = [
   // Try to delete this SEEK-Jobs/gutenberg automation file that may have been
@@ -15,7 +16,7 @@ const AUTOFIX_DELETE_FILES = [
 export const deleteFilesLint = async (
   mode: 'format' | 'lint',
   logger: Logger,
-) => {
+): Promise<InternalLintResult> => {
   const dir = process.cwd();
 
   const toDelete = (
@@ -71,6 +72,10 @@ export const deleteFilesLint = async (
     return {
       ok: false,
       fixable: true,
+      annotations: toDelete.map((filename) => ({
+        path: filename,
+        message: 'This file should be deleted.',
+      })),
     };
   }
 

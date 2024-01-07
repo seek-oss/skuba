@@ -8,6 +8,7 @@ import { getConsumerManifest } from '../../../utils/manifest';
 import { detectPackageManager } from '../../../utils/packageManager';
 import { getSkubaVersion } from '../../../utils/version';
 import type { SkubaPackageJson } from '../../init/writePackageJson';
+import type { InternalLintResult } from '../../lint/internal';
 import { formatPackage } from '../processing/package';
 
 const getPatches = async (manifestVersion: string): Promise<string[]> => {
@@ -38,7 +39,10 @@ const resolvePatch = async (patch: string): Promise<Patch> => {
   throw new Error(`Could not resolve patch ${patch}`);
 };
 
-export const upgradeSkuba = async (mode: 'lint' | 'format', logger: Logger) => {
+export const upgradeSkuba = async (
+  mode: 'lint' | 'format',
+  logger: Logger,
+): Promise<InternalLintResult> => {
   const [currentVersion, manifest] = await Promise.all([
     getSkubaVersion(),
     getConsumerManifest(),
@@ -68,6 +72,9 @@ export const upgradeSkuba = async (mode: 'lint' | 'format', logger: Logger) => {
   }
 
   if (mode === 'lint') {
+    // TODO: Do we want to declare patches as optional?
+    // TODO: Should we return ok: true if all patches are no-ops?
+
     const packageManager = await detectPackageManager();
 
     logger.warn(
@@ -78,10 +85,18 @@ export const upgradeSkuba = async (mode: 'lint' | 'format', logger: Logger) => {
       )} to run them. ${logger.dim('skuba-patches')}`,
     );
 
-    // TODO: Do we want to declare patches as optional?
-    // TODO: Should we return ok: true if all patches are no-ops?
-
-    return { ok: false, fixable: true };
+    return {
+      ok: false,
+      fixable: true,
+      annotations: [
+        {
+          // package.json as likely skuba version has changed
+          // TODO: location the "skuba": {} config in the package.json and annotate on the version property
+          path: manifest.path,
+          message: `skuba has patches to apply. Run ${packageManager.exec} skuba format to run them.`,
+        },
+      ],
+    };
   }
 
   logger.plain('Updating skuba...');

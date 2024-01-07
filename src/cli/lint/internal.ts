@@ -3,7 +3,6 @@ import { inspect } from 'util';
 import chalk from 'chalk';
 
 import { type Logger, createLogger } from '../../utils/logging';
-import { detectPackageManager } from '../../utils/packageManager';
 import { upgradeSkuba } from '../configure/upgrade';
 
 import { deleteFilesLint } from './internalLints/deleteFiles';
@@ -11,15 +10,23 @@ import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs';
 import { tryRefreshIgnoreFiles } from './internalLints/refreshIgnoreFiles';
 import type { Input } from './types';
 
-const lints = [
-  deleteFilesLint,
-  noSkubaTemplateJs,
-  tryRefreshIgnoreFiles,
-  upgradeSkuba,
-];
+export type InternalLintResult = {
+  ok: boolean;
+  fixable: boolean;
+  annotations?: Array<{
+    start_line?: number;
+    end_line?: number;
+    path: string;
+    message: string;
+  }>;
+};
+
+const lints: Array<
+  (mode: 'format' | 'lint', logger: Logger) => Promise<InternalLintResult>
+> = [deleteFilesLint, noSkubaTemplateJs, tryRefreshIgnoreFiles, upgradeSkuba];
 
 const lintSerially = async (mode: 'format' | 'lint', logger: Logger) => {
-  const results = [];
+  const results: InternalLintResult[] = [];
   for (const lint of lints) {
     results.push(await lint(mode, logger));
   }
@@ -34,7 +41,10 @@ const selectLintFunction = (input?: Input) => {
   return isSerial ? lintSerially : lintConcurrently;
 };
 
-export const internalLint = async (mode: 'format' | 'lint', input?: Input) => {
+export const internalLint = async (
+  mode: 'format' | 'lint',
+  input?: Input,
+): Promise<InternalLintResult> => {
   const start = process.hrtime.bigint();
   const logger = createLogger(
     input?.debug ?? false,
@@ -44,7 +54,7 @@ export const internalLint = async (mode: 'format' | 'lint', input?: Input) => {
   try {
     const lint = selectLintFunction(input);
     const results = await lint(mode, logger);
-    const result = await processResults(results, logger);
+    const result = combineResults(results);
     const end = process.hrtime.bigint();
     logger.plain(`Processed skuba lints in ${logger.timing(start, end)}.`);
     return result;
@@ -54,42 +64,16 @@ export const internalLint = async (mode: 'format' | 'lint', input?: Input) => {
 
     process.exitCode = 1;
 
-    return { ok: false, fixable: false };
+    return { ok: false, fixable: false, annotations: [] };
   }
 };
 
-const processResults = async (
-  results: Array<{ ok: boolean; fixable: boolean }>,
-  logger: Logger,
-) => {
-  const result = results.reduce(
+const combineResults = (results: InternalLintResult[]): InternalLintResult =>
+  results.reduce(
     (cur, next) => ({
       ok: cur.ok && next.ok,
       fixable: cur.fixable || next.fixable,
+      annotations: [...(cur.annotations ?? []), ...(next.annotations ?? [])],
     }),
     { ok: true, fixable: false },
   );
-
-  if (!result.ok) {
-    process.exitCode = 1;
-
-    if (result.fixable) {
-      const packageManager = await detectPackageManager();
-      logger.err(
-        `Some skuba lints failed. Try running ${logger.bold(
-          packageManager.exec,
-          'skuba',
-          'format',
-        )} to fix them. ${logger.dim('skuba-lint')}`,
-      );
-    } else {
-      logger.err(
-        `Some skuba lints failed which require triage. ${logger.dim(
-          'skuba-lint',
-        )}`,
-      );
-    }
-  }
-
-  return result;
-};

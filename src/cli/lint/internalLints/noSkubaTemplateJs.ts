@@ -5,11 +5,12 @@ import { pathExists } from 'fs-extra';
 import type { Logger } from '../../../utils/logging';
 import { getConsumerManifest } from '../../../utils/manifest';
 import { detectPackageManager } from '../../../utils/packageManager';
+import type { InternalLintResult } from '../internal';
 
 export const noSkubaTemplateJs = async (
   _mode: 'format' | 'lint',
   logger: Logger,
-) => {
+): Promise<InternalLintResult> => {
   const [manifest, packageManager] = await Promise.all([
     getConsumerManifest(),
     detectPackageManager(),
@@ -34,7 +35,16 @@ export const noSkubaTemplateJs = async (
       )}. ${logger.dim('no-skuba-template-js')}`,
     );
 
-    return { ok: false, fixable: false };
+    return {
+      ok: false,
+      fixable: false,
+      annotations: [
+        {
+          path: templateConfigPath,
+          message: `Template is incomplete; run ${packageManager.exec} skuba configure.`,
+        },
+      ],
+    };
   }
 
   return { ok: true, fixable: false };

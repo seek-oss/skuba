@@ -236,6 +236,13 @@ describe('upgradeSkuba in lint mode', () => {
     await expect(upgradeSkuba('lint', log)).resolves.toEqual({
       ok: false,
       fixable: true,
+      annotations: [
+        {
+          message:
+            'skuba has patches to apply. Run pnpm exec skuba format to run them.',
+          path: '/package.json',
+        },
+      ],
     });
   });
 

@@ -58,6 +58,7 @@ describe('refreshIgnoreFiles', () => {
       await expect(refreshIgnoreFiles('lint', log)).resolves.toEqual({
         ok: true,
         fixable: false,
+        annotations: [],
       });
 
       expect(stdout()).toBe('');
@@ -78,6 +79,18 @@ describe('refreshIgnoreFiles', () => {
       await expect(refreshIgnoreFiles('lint', log)).resolves.toEqual({
         ok: false,
         fixable: true,
+        annotations: [
+          {
+            message:
+              'The .eslintignore file is out of date. Run `pnpm exec skuba format` to update it.',
+            path: '.eslintignore',
+          },
+          {
+            message:
+              'The .gitignore file is out of date. Run `pnpm exec skuba format` to update it.',
+            path: '.gitignore',
+          },
+        ],
       });
 
       expect(`\n${stdout()}`).toBe(`
@@ -103,6 +116,7 @@ The .gitignore file is out of date. Run pnpm exec skuba format to update it. ref
       await expect(refreshIgnoreFiles('format', log)).resolves.toEqual({
         ok: true,
         fixable: false,
+        annotations: [],
       });
 
       expect(stdout()).toBe('');
@@ -123,6 +137,7 @@ The .gitignore file is out of date. Run pnpm exec skuba format to update it. ref
       await expect(refreshIgnoreFiles('format', log)).resolves.toEqual({
         ok: true,
         fixable: false,
+        annotations: [],
       });
 
       expect(stdout()).toBe(

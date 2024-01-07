@@ -9,6 +9,7 @@ import { readBaseTemplateFile } from '../../../utils/template';
 import { getDestinationManifest } from '../../configure/analysis/package';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithIgnoreFile } from '../../configure/processing/ignoreFile';
+import type { InternalLintResult } from '../internal';
 
 const REFRESHABLE_IGNORE_FILES = [
   '.eslintignore',
@@ -19,7 +20,7 @@ const REFRESHABLE_IGNORE_FILES = [
 export const refreshIgnoreFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
-) => {
+): Promise<InternalLintResult> => {
   // TODO: check current state of .gitignore
   // If it contains !.npmrc, break
   // If it contains .npmrc, we can either
@@ -70,6 +71,8 @@ export const refreshIgnoreFiles = async (
           'skuba',
           'format',
         )} to update it. ${logger.dim('refresh-ignore-files')}`,
+        filename,
+        annotationMessage: `The ${filename} file is out of date. Run \`${packageManager.exec} skuba format\` to update it.`,
       };
     }
 
@@ -92,13 +95,24 @@ export const refreshIgnoreFiles = async (
   return {
     ok: !anyNeedChanging,
     fixable: anyNeedChanging,
+    annotations: results.flatMap(
+      ({ needsChange, filename, annotationMessage }) =>
+        needsChange && annotationMessage
+          ? [
+              {
+                path: filename,
+                message: annotationMessage,
+              },
+            ]
+          : [],
+    ),
   };
 };
 
 export const tryRefreshIgnoreFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
-) => {
+): Promise<InternalLintResult> => {
   try {
     return await refreshIgnoreFiles(mode, logger);
   } catch (err) {
@@ -108,6 +122,7 @@ export const tryRefreshIgnoreFiles = async (
     return {
       ok: false,
       fixable: false,
+      annotations: [],
     };
   }
 };

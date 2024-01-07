@@ -50,6 +50,12 @@ describe('deleteFilesLint', () => {
       await expect(deleteFilesLint('lint', log)).resolves.toEqual({
         ok: false,
         fixable: true,
+        annotations: [
+          {
+            message: 'This file should be deleted.',
+            path: 'Dockerfile-incunabulum',
+          },
+        ],
       });
 
       expect(stdout()).toBe(

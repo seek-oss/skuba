@@ -15,5 +15,6 @@ describe('internalLint', () => {
     expect(internalLint('lint')).resolves.toEqual({
       ok: true,
       fixable: false,
+      annotations: [],
     }));
 });
