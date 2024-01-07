@@ -451,6 +451,70 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
+    "workerAliaslive62FE5FAF": {
+      "Properties": {
+        "Description": "The Lambda version currently receiving traffic",
+        "FunctionName": {
+          "Ref": "worker28EA3E30",
+        },
+        "FunctionVersion": {
+          "Fn::GetAtt": [
+            "workerCurrentVersionFA5B4BF48eefcd60470daaddaf0e1448ba89a032",
+            "Version",
+          ],
+        },
+        "Name": "live",
+      },
+      "Type": "AWS::Lambda::Alias",
+      "UpdatePolicy": {
+        "CodeDeployLambdaAliasUpdate": {
+          "AfterAllowTrafficHook": {
+            "Ref": "workerposthook150842D6",
+          },
+          "ApplicationName": {
+            "Ref": "codedeployapplicationF49B9864",
+          },
+          "BeforeAllowTrafficHook": {
+            "Ref": "workerprehook415B13CE",
+          },
+          "DeploymentGroupName": {
+            "Ref": "codedeploygroup441B094B",
+          },
+        },
+      },
+    },
+    "workerAliasliveSqsEventSourceappStackworkerqueue8281B9F42DEDB47B": {
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "workerqueueA05CE5C6",
+            "Arn",
+          ],
+        },
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::Select": [
+                  6,
+                  {
+                    "Fn::Split": [
+                      ":",
+                      {
+                        "Ref": "workerAliaslive62FE5FAF",
+                      },
+                    ],
+                  },
+                ],
+              },
+              ":live",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
     "workerCurrentVersionFA5B4BF48eefcd60470daaddaf0e1448ba89a032": {
       "Properties": {
         "FunctionName": {
@@ -531,70 +595,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "workerlivealias0FB0E122": {
-      "Properties": {
-        "Description": "The Lambda version currently receiving traffic",
-        "FunctionName": {
-          "Ref": "worker28EA3E30",
-        },
-        "FunctionVersion": {
-          "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF48eefcd60470daaddaf0e1448ba89a032",
-            "Version",
-          ],
-        },
-        "Name": "live",
-      },
-      "Type": "AWS::Lambda::Alias",
-      "UpdatePolicy": {
-        "CodeDeployLambdaAliasUpdate": {
-          "AfterAllowTrafficHook": {
-            "Ref": "workerposthook150842D6",
-          },
-          "ApplicationName": {
-            "Ref": "codedeployapplicationF49B9864",
-          },
-          "BeforeAllowTrafficHook": {
-            "Ref": "workerprehook415B13CE",
-          },
-          "DeploymentGroupName": {
-            "Ref": "codedeploygroup441B094B",
-          },
-        },
-      },
-    },
-    "workerlivealiasSqsEventSourceappStackworkerqueue8281B9F406984E63": {
-      "Properties": {
-        "EventSourceArn": {
-          "Fn::GetAtt": [
-            "workerqueueA05CE5C6",
-            "Arn",
-          ],
-        },
-        "FunctionName": {
-          "Fn::Join": [
-            "",
-            [
-              {
-                "Fn::Select": [
-                  6,
-                  {
-                    "Fn::Split": [
-                      ":",
-                      {
-                        "Ref": "workerlivealias0FB0E122",
-                      },
-                    ],
-                  },
-                ],
-              },
-              ":live",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::EventSourceMapping",
     },
     "workerposthook150842D6": {
       "DependsOn": [
@@ -1388,6 +1388,70 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
+    "workerAliaslive62FE5FAF": {
+      "Properties": {
+        "Description": "The Lambda version currently receiving traffic",
+        "FunctionName": {
+          "Ref": "worker28EA3E30",
+        },
+        "FunctionVersion": {
+          "Fn::GetAtt": [
+            "workerCurrentVersionFA5B4BF4323275fa54fb77538a715a52202e154d",
+            "Version",
+          ],
+        },
+        "Name": "live",
+      },
+      "Type": "AWS::Lambda::Alias",
+      "UpdatePolicy": {
+        "CodeDeployLambdaAliasUpdate": {
+          "AfterAllowTrafficHook": {
+            "Ref": "workerposthook150842D6",
+          },
+          "ApplicationName": {
+            "Ref": "codedeployapplicationF49B9864",
+          },
+          "BeforeAllowTrafficHook": {
+            "Ref": "workerprehook415B13CE",
+          },
+          "DeploymentGroupName": {
+            "Ref": "codedeploygroup441B094B",
+          },
+        },
+      },
+    },
+    "workerAliasliveSqsEventSourceappStackworkerqueue8281B9F42DEDB47B": {
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "workerqueueA05CE5C6",
+            "Arn",
+          ],
+        },
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::Select": [
+                  6,
+                  {
+                    "Fn::Split": [
+                      ":",
+                      {
+                        "Ref": "workerAliaslive62FE5FAF",
+                      },
+                    ],
+                  },
+                ],
+              },
+              ":live",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
     "workerCurrentVersionFA5B4BF4323275fa54fb77538a715a52202e154d": {
       "Properties": {
         "FunctionName": {
@@ -1468,70 +1532,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "workerlivealias0FB0E122": {
-      "Properties": {
-        "Description": "The Lambda version currently receiving traffic",
-        "FunctionName": {
-          "Ref": "worker28EA3E30",
-        },
-        "FunctionVersion": {
-          "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF4323275fa54fb77538a715a52202e154d",
-            "Version",
-          ],
-        },
-        "Name": "live",
-      },
-      "Type": "AWS::Lambda::Alias",
-      "UpdatePolicy": {
-        "CodeDeployLambdaAliasUpdate": {
-          "AfterAllowTrafficHook": {
-            "Ref": "workerposthook150842D6",
-          },
-          "ApplicationName": {
-            "Ref": "codedeployapplicationF49B9864",
-          },
-          "BeforeAllowTrafficHook": {
-            "Ref": "workerprehook415B13CE",
-          },
-          "DeploymentGroupName": {
-            "Ref": "codedeploygroup441B094B",
-          },
-        },
-      },
-    },
-    "workerlivealiasSqsEventSourceappStackworkerqueue8281B9F406984E63": {
-      "Properties": {
-        "EventSourceArn": {
-          "Fn::GetAtt": [
-            "workerqueueA05CE5C6",
-            "Arn",
-          ],
-        },
-        "FunctionName": {
-          "Fn::Join": [
-            "",
-            [
-              {
-                "Fn::Select": [
-                  6,
-                  {
-                    "Fn::Split": [
-                      ":",
-                      {
-                        "Ref": "workerlivealias0FB0E122",
-                      },
-                    ],
-                  },
-                ],
-              },
-              ":live",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::EventSourceMapping",
     },
     "workerposthook150842D6": {
       "DependsOn": [
