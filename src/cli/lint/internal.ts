@@ -4,12 +4,12 @@ import chalk from 'chalk';
 
 import { type Logger, createLogger } from '../../utils/logging';
 import { detectPackageManager } from '../../utils/packageManager';
+import { upgradeSkuba } from '../configure/upgrade';
 
 import { deleteFilesLint } from './internalLints/deleteFiles';
 import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs';
 import { tryRefreshIgnoreFiles } from './internalLints/refreshIgnoreFiles';
 import type { Input } from './types';
-import { upgradeSkuba } from './upgrade';
 
 const lints = [
   deleteFilesLint,
