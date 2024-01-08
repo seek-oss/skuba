@@ -397,6 +397,17 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
               },
               "Resource": "*",
             },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:GenerateDataKey",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sns.amazonaws.com",
+              },
+              "Resource": "*",
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -415,6 +426,9 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
       },
       "Type": "AWS::KMS::Alias",
+    },
+    "sourcetopic7C3DC892": {
+      "Type": "AWS::SNS::Topic",
     },
     "worker28EA3E30": {
       "DependsOn": [
@@ -926,6 +940,59 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
+    "workerqueuePolicy97054CB4": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:SendMessage",
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Ref": "sourcetopic7C3DC892",
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sns.amazonaws.com",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "workerqueueA05CE5C6",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Queues": [
+          {
+            "Ref": "workerqueueA05CE5C6",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
+    "workerqueueappStacksourcetopic613C6BDBD2F224F5": {
+      "DependsOn": [
+        "workerqueuePolicy97054CB4",
+      ],
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
+            "workerqueueA05CE5C6",
+            "Arn",
+          ],
+        },
+        "Protocol": "sqs",
+        "TopicArn": {
+          "Ref": "sourcetopic7C3DC892",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
     "workerqueuedlq42262778": {
       "DeletionPolicy": "Delete",
       "Properties": {
@@ -1368,6 +1435,17 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
               },
               "Resource": "*",
             },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:GenerateDataKey",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sns.amazonaws.com",
+              },
+              "Resource": "*",
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -1386,6 +1464,9 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
       },
       "Type": "AWS::KMS::Alias",
+    },
+    "sourcetopic7C3DC892": {
+      "Type": "AWS::SNS::Topic",
     },
     "worker28EA3E30": {
       "DependsOn": [
@@ -1896,6 +1977,59 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
+    },
+    "workerqueuePolicy97054CB4": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:SendMessage",
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Ref": "sourcetopic7C3DC892",
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sns.amazonaws.com",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "workerqueueA05CE5C6",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Queues": [
+          {
+            "Ref": "workerqueueA05CE5C6",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
+    "workerqueueappStacksourcetopic613C6BDBD2F224F5": {
+      "DependsOn": [
+        "workerqueuePolicy97054CB4",
+      ],
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
+            "workerqueueA05CE5C6",
+            "Arn",
+          ],
+        },
+        "Protocol": "sqs",
+        "TopicArn": {
+          "Ref": "sourcetopic7C3DC892",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
     },
     "workerqueuedlq42262778": {
       "DeletionPolicy": "Delete",

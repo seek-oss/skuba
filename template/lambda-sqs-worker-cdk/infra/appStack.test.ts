@@ -1,4 +1,4 @@
-import { App } from 'aws-cdk-lib';
+import { App, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
 import cdkJson from '../cdk.json';
@@ -34,6 +34,10 @@ jest.useFakeTimers({
 it.each(contexts)(
   'returns expected CloudFormation stack for $stage',
   (context) => {
+    jest
+      .spyOn(aws_sns.Topic, 'fromTopicArn')
+      .mockImplementation((scope, id) => new aws_sns.Topic(scope, id));
+
     const app = new App({ context });
 
     const stack = new AppStack(app, 'appStack');

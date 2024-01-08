@@ -9,8 +9,8 @@ import {
   aws_lambda,
   aws_lambda_event_sources,
   aws_lambda_nodejs,
-  // aws_sns,
-  // aws_sns_subscriptions,
+  aws_sns,
+  aws_sns_subscriptions,
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
@@ -49,15 +49,13 @@ export class AppStack extends Stack {
       encryptionMasterKey: kmsKey,
     });
 
-    // TODO: uncomment once topic ARN has been filled out in `cdk.json`.
+    const topic = aws_sns.Topic.fromTopicArn(
+      this,
+      'source-topic',
+      context.sourceSnsTopicArn,
+    );
 
-    // const topic = aws_sns.Topic.fromTopicArn(
-    //   this,
-    //   'source-topic',
-    //   context.sourceSnsTopicArn,
-    // );
-
-    // topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
+    topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
 
     const architecture = '<%- lambdaCdkArchitecture %>';
 
