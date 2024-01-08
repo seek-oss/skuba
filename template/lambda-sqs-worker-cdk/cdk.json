@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node infra/index.ts",
+  "app": "pnpm exec skuba node infra/index.ts",
   "context": {
     "global": {
       "appName": "<%- serviceName %>"
@@ -10,7 +10,8 @@
         "environment": {
           "SOMETHING": "dev"
         }
-      }
+      },
+      "sourceSnsTopicArn": "TODO: sourceSnsTopicArn"
     },
     "prod": {
       "workerLambda": {
@@ -18,7 +19,8 @@
         "environment": {
           "SOMETHING": "prod"
         }
-      }
+      },
+      "sourceSnsTopicArn": "TODO: sourceSnsTopicArn"
     }
   },
   "progress": "events",
