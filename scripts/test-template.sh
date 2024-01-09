@@ -10,8 +10,6 @@ fi
 
 directory="tmp-${template}"
 
-skuba_tar="skuba-$(jq --raw-output '.version' < package.json).tgz"
-
 echo '--- cleanup'
 rm -rf "${directory}" "../${directory}"
 
@@ -22,7 +20,7 @@ echo '--- pnpm run build'
 pnpm run build
 
 echo '--- pnpm pack'
-pnpm pack
+skuba_tar=$(pnpm pack)
 
 echo "--- skuba init ${template}"
 pnpm run skuba:exec init << EOF
