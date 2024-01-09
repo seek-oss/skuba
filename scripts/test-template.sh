@@ -10,8 +10,6 @@ fi
 
 directory="tmp-${template}"
 
-types_jest="@types/jest@$(jq --raw-output '.dependencies."@types/jest"' < package.json)"
-
 echo '--- cleanup'
 rm -rf "${directory}" "../${directory}"
 
@@ -20,6 +18,9 @@ pnpm install --frozen-lockfile
 
 echo '--- pnpm run build'
 pnpm run build
+
+echo '--- pnpm pack'
+skuba_tar=$(pnpm pack)
 
 echo "--- skuba init ${template}"
 pnpm run skuba:exec init << EOF
@@ -49,9 +50,8 @@ mv "${directory}" "../${directory}"
 
 cd "../${directory}" || exit 1
 
-# @types/jest doesn't seem to get hoisted correctly when linking with pnpm.
-echo "--- pnpm add --save-dev ../skuba ${types_jest}"
-pnpm add --save-dev ../skuba "${types_jest}"
+echo "--- pnpm add --save-dev ../skuba/${skuba_tar}"
+pnpm add --save-dev "../skuba/${skuba_tar}"
 
 echo "--- skuba version ${template}"
 pnpm exec skuba version
