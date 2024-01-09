@@ -21,8 +21,8 @@ pnpm install --frozen-lockfile
 echo '--- pnpm run build'
 pnpm run build
 
-echo '--- npm pack'
-npm pack
+echo '--- pnpm pack'
+pnpm pack
 
 echo "--- skuba init ${template}"
 pnpm run skuba:exec init << EOF
