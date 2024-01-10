@@ -35,4 +35,5 @@ steps:
       - *docker-ecr-cache
       - docker-compose#v4.16.0:
           run: app
+          propagate-environment: true
     timeout_in_minutes: 10
