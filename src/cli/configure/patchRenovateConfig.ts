@@ -105,7 +105,7 @@ const patchRenovateConfig = async (
   if (!presetToAdd) {
     return {
       result: 'skip',
-      reason: "owner does not map to any of SEEK's renovate auth config",
+      reason: 'owner does not map to a SEEK preset',
     };
   }
 
@@ -118,7 +118,7 @@ const patchRenovateConfig = async (
 
   const config = maybeConfigs.find((maybeConfig) => Boolean(maybeConfig.input));
   if (!config?.input) {
-    return { result: 'skip', reason: 'no renovate config found' };
+    return { result: 'skip', reason: 'no config found' };
   }
 
   if (
@@ -131,7 +131,7 @@ const patchRenovateConfig = async (
   ) {
     return {
       result: 'skip',
-      reason: 'renovate config already has private auth',
+      reason: 'config already has a SEEK preset',
     };
   }
 
@@ -165,7 +165,7 @@ export const tryPatchRenovateConfig = (async (
     // with Renovate config that should be relative to the repository root.
     const gitRoot = await Git.findRoot({ dir });
     if (!gitRoot) {
-      return { result: 'skip', reason: 'could not find git root' };
+      return { result: 'skip', reason: 'no Git root found' };
     }
 
     return await patchRenovateConfig(mode, gitRoot);

@@ -139,7 +139,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
         result: 'skip',
-        reason: 'no renovate config found',
+        reason: 'no config found',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -183,7 +183,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
         result: 'skip',
-        reason: 'could not find git root',
+        reason: 'no Git root found',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -200,7 +200,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
         result: 'skip',
-        reason: "owner does not map to any of SEEK's renovate auth config",
+        reason: 'owner does not map to a SEEK preset',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -220,7 +220,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
         result: 'skip',
-        reason: "owner does not map to any of SEEK's renovate auth config",
+        reason: 'owner does not map to a SEEK preset',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -262,7 +262,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
         result: 'skip',
-        reason: 'renovate config already has private auth',
+        reason: 'config already has a SEEK preset',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -282,7 +282,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
         result: 'skip',
-        reason: 'renovate config already has private auth',
+        reason: 'config already has a SEEK preset',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -356,7 +356,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
         result: 'skip',
-        reason: 'no renovate config found',
+        reason: 'no config found',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -373,7 +373,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
         result: 'skip',
-        reason: 'could not find git root',
+        reason: 'no Git root found',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -390,7 +390,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
         result: 'skip',
-        reason: "owner does not map to any of SEEK's renovate auth config",
+        reason: 'owner does not map to a SEEK preset',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -410,7 +410,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
         result: 'skip',
-        reason: "owner does not map to any of SEEK's renovate auth config",
+        reason: 'owner does not map to a SEEK preset',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -452,7 +452,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
         result: 'skip',
-        reason: 'renovate config already has private auth',
+        reason: 'config already has a SEEK preset',
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -472,7 +472,7 @@ describe('patchRenovateConfig', () => {
 
       await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
         result: 'skip',
-        reason: 'renovate config already has private auth',
+        reason: 'config already has a SEEK preset',
       });
 
       expect(volToJson()).toStrictEqual(files);

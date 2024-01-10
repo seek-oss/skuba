@@ -10,9 +10,9 @@ Updating skuba...
 
 Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
 
-Patch skipped: Update renovate config for private Renovate auth - owner does not map to any of SEEK's renovate auth config
+Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
 
-Patch skipped: Swap node distroless Docker image to -debian11 variant - no Dockerfile found
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
@@ -77,9 +77,9 @@ Updating skuba...
 
 Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
 
-Patch skipped: Update renovate config for private Renovate auth - owner does not map to any of SEEK's renovate auth config
+Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
 
-Patch skipped: Swap node distroless Docker image to -debian11 variant - no Dockerfile found
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
@@ -137,9 +137,9 @@ Updating skuba...
 
 Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
 
-Patch skipped: Update renovate config for private Renovate auth - owner does not map to any of SEEK's renovate auth config
+Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
 
-Patch skipped: Swap node distroless Docker image to -debian11 variant - no Dockerfile found
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
@@ -170,9 +170,9 @@ Updating skuba...
 
 Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
 
-Patch skipped: Update renovate config for private Renovate auth - owner does not map to any of SEEK's renovate auth config
+Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
 
-Patch skipped: Swap node distroless Docker image to -debian11 variant - no Dockerfile found
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 

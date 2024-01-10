@@ -13,11 +13,11 @@ export const patches: Patches = [
   },
   {
     apply: tryPatchRenovateConfig,
-    description: 'Update renovate config for private Renovate auth',
+    description: 'Update Renovate config to support private SEEK packages',
   },
   {
     apply: tryPatchDockerfile,
-    description: 'Swap node distroless Docker image to -debian11 variant',
+    description: 'Upgrade Node.js Distroless Docker image to -debian11 variant',
   },
   {
     apply: tryPatchServerListener,
