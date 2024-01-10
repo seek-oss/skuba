@@ -8,10 +8,11 @@ import { runPrettier } from './adapter/prettier';
 import { internalLint } from './lint/internal';
 
 export const format = async (args = process.argv.slice(2)): Promise<void> => {
-  log.plain(chalk.blueBright('skuba lints'));
-  const internal = await internalLint('format', { debug: false, serial: true });
-
   const debug = hasDebugFlag(args);
+
+  log.plain(chalk.blueBright('skuba lints'));
+  const internal = await internalLint('format', { debug, serial: true });
+
   const logger = createLogger(debug);
 
   log.newline();
