@@ -123,8 +123,7 @@ const patchRenovateConfig = async (
 
   if (
     // The file appears to mention the baseline preset for the configured Git
-    // owner. This is a very naive check that we don't want to overcomplicate
-    // because it is invoked before each skuba format and lint.
+    // owner. This is a naive check for simplicity.
     config.input.includes(presetToAdd) ||
     // Ignore any renovate configuration which already extends a SEEK-Jobs or seekasia config
     EXISTING_REPO_PRESET_REGEX.exec(config.input)
