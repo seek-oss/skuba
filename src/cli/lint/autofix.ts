@@ -1,7 +1,5 @@
-import path from 'path';
 import { inspect } from 'util';
 
-import fs from 'fs-extra';
 import simpleGit from 'simple-git';
 
 import * as Buildkite from '../../api/buildkite';
@@ -12,33 +10,13 @@ import { createLogger, log } from '../../utils/logging';
 import { throwOnTimeout } from '../../utils/wait';
 import { runESLint } from '../adapter/eslint';
 import { runPrettier } from '../adapter/prettier';
-import { RENOVATE_CONFIG_FILENAMES } from '../configure/modules/renovate';
-import { REFRESHABLE_IGNORE_FILES } from '../configure/refreshIgnoreFiles';
 
+import { internalLint } from './internal';
 import type { Input } from './types';
 
 const RENOVATE_DEFAULT_PREFIX = 'renovate';
 
-// TODO: glob `**/jest.*setup*.ts`?
-export const JEST_SETUP_FILES = ['jest.setup.ts', 'jest.setup.int.ts'];
-
-export const SERVER_LISTENER_FILENAME = 'src/listen.ts';
-
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
-
-const AUTOFIX_DELETE_FILES = [
-  // Try to delete this SEEK-Jobs/gutenberg automation file that may have been
-  // accidentally committed in a prior autofix.
-  'Dockerfile-incunabulum',
-];
-
-const AUTOFIX_CODEGEN_FILES = new Set<string>([
-  ...AUTOFIX_DELETE_FILES,
-  ...JEST_SETUP_FILES,
-  ...REFRESHABLE_IGNORE_FILES,
-  ...RENOVATE_CONFIG_FILENAMES,
-  SERVER_LISTENER_FILENAME,
-]);
 
 export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
   {
@@ -120,51 +98,13 @@ interface AutofixParameters {
 
   eslint: boolean;
   prettier: boolean;
+  internal: boolean;
 }
-
-/**
- * @returns Whether skuba codegenned a file change which should be included in
- * an autofix commit.
- */
-const tryCodegen = async (dir: string): Promise<boolean> => {
-  try {
-    // Try to forcibly remove `AUTOFIX_DELETE_FILES` from source control.
-    // These may include outdated configuration files or internal files that
-    // were accidentally committed by an autofix.
-    await Promise.all(
-      AUTOFIX_DELETE_FILES.map((filename) =>
-        fs.promises.rm(path.join(dir, filename), { force: true }),
-      ),
-    );
-
-    // Search codegenned file changes in the local Git working directory.
-    // These may include the `AUTOFIX_DELETE_FILES` deleted above or fixups to
-    // ignore files and module exports that were run at the start of the
-    // `skuba lint` command.
-    const changedFiles = await Git.getChangedFiles({
-      dir,
-
-      ignore: AUTOFIX_IGNORE_FILES,
-    });
-
-    // Determine if a meaningful codegen change
-    return changedFiles.some((changedFile) =>
-      AUTOFIX_CODEGEN_FILES.has(changedFile.path),
-    );
-  } catch (err) {
-    log.warn(log.bold('Failed to evaluate codegen changes.'));
-    log.subtle(inspect(err));
-
-    return false;
-  }
-};
 
 export const autofix = async (params: AutofixParameters): Promise<void> => {
   const dir = process.cwd();
 
-  const codegen = await tryCodegen(dir);
-
-  if (!params.eslint && !params.prettier && !codegen) {
+  if (!params.eslint && !params.prettier && !params.internal) {
     return;
   }
 
@@ -179,24 +119,30 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
   try {
     log.newline();
-    if (!params.eslint && !params.prettier) {
-      log.warn('Trying to push codegen updates...');
-    } else {
-      log.warn(
-        `Trying to autofix with ${
-          params.eslint ? 'ESLint and ' : ''
-        }Prettier...`,
-      );
 
-      const logger = createLogger(params.debug);
+    log.warn(
+      `Attempting to autofix issues (${[
+        params.eslint ? 'ESLint' : undefined,
+        params.internal ? 'skuba' : undefined,
+        'Prettier', // Prettier is always run
+      ]
+        .filter((s) => s !== undefined)
+        .join(', ')})...`,
+    );
 
-      if (params.eslint) {
-        await runESLint('format', logger);
-      }
-      // Unconditionally re-run Prettier; reaching here means we have pre-existing
-      // format violations or may have created new ones through ESLint fixes.
-      await runPrettier('format', logger);
+    const logger = createLogger(params.debug);
+
+    if (params.internal) {
+      await internalLint('format');
     }
+
+    if (params.eslint) {
+      await runESLint('format', logger);
+    }
+
+    // Unconditionally re-run Prettier; reaching here means we have pre-existing
+    // format violations or may have created new ones through ESLint/internal fixes.
+    await runPrettier('format', logger);
 
     if (process.env.GITHUB_ACTIONS) {
       // GitHub runners have Git installed locally

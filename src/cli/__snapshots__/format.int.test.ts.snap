@@ -2,11 +2,23 @@
 
 exports[`fixable 1`] = `
 "
+skuba lints
+Refreshed .eslintignore. refresh-ignore-files
+Refreshed .gitignore. refresh-ignore-files
+Refreshed .prettierignore. refresh-ignore-files
 Updating skuba...
 
-Patch 7.3.1 applied.
+Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
+
+Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
+
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
+
+Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
 skuba update complete.
+
+Processed skuba lints in <random>s.
 
 ESLint
 Processed 4 files in <random>s.
@@ -57,11 +69,23 @@ d.js
 
 exports[`ok --debug 1`] = `
 "
+skuba lints
+Refreshed .eslintignore. refresh-ignore-files
+Refreshed .gitignore. refresh-ignore-files
+Refreshed .prettierignore. refresh-ignore-files
 Updating skuba...
 
-Patch 7.3.1 applied.
+Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
+
+Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
+
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
+
+Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
 skuba update complete.
+
+Processed skuba lints in <random>s.
 
 ESLint
 Initialising ESLint...
@@ -105,11 +129,23 @@ exports[`ok --debug 2`] = `
 
 exports[`ok 1`] = `
 "
+skuba lints
+Refreshed .eslintignore. refresh-ignore-files
+Refreshed .gitignore. refresh-ignore-files
+Refreshed .prettierignore. refresh-ignore-files
 Updating skuba...
 
-Patch 7.3.1 applied.
+Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
+
+Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
+
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
+
+Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
 skuba update complete.
+
+Processed skuba lints in <random>s.
 
 ESLint
 Processed 2 files in <random>s.
@@ -126,11 +162,23 @@ exports[`ok 2`] = `
 
 exports[`unfixable 1`] = `
 "
+skuba lints
+Refreshed .eslintignore. refresh-ignore-files
+Refreshed .gitignore. refresh-ignore-files
+Refreshed .prettierignore. refresh-ignore-files
 Updating skuba...
 
-Patch 7.3.1 applied.
+Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
+
+Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
+
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
+
+Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
 skuba update complete.
+
+Processed skuba lints in <random>s.
 
 ESLint
 Processed 2 files in <random>s.
