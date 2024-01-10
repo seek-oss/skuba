@@ -2,6 +2,7 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { writeFile } from 'fs-extra';
+import stripAnsi from 'strip-ansi';
 
 import type { Logger } from '../../../utils/logging';
 import { detectPackageManager } from '../../../utils/packageManager';
@@ -53,9 +54,8 @@ export const refreshIgnoreFiles = async (
       await writeFile(filepath, data);
       return {
         needsChange: false,
-        msg: `Refreshed ${logger.bold(filename)}. ${logger.dim(
-          'refresh-ignore-files',
-        )}`,
+        msg: `Refreshed ${logger.bold(filename)}.`,
+        filename,
       };
     }
 
@@ -66,13 +66,12 @@ export const refreshIgnoreFiles = async (
         needsChange: true,
         msg: `The ${logger.bold(
           filename,
-        )} file is out of date. Run ${logger.bold(
+        )} file is out of date. Run \`${logger.bold(
           packageManager.exec,
           'skuba',
           'format',
-        )} to update it. ${logger.dim('refresh-ignore-files')}`,
+        )}\` to update it.`,
         filename,
-        annotationMessage: `The ${filename} file is out of date. Run \`${packageManager.exec} skuba format\` to update it.`,
       };
     }
 
@@ -86,7 +85,7 @@ export const refreshIgnoreFiles = async (
   // Log after for reproducible test output ordering
   results.forEach((result) => {
     if (result.msg) {
-      logger.warn(result.msg);
+      logger.warn(result.msg, logger.dim('refresh-ignore-files'));
     }
   });
 
@@ -95,16 +94,15 @@ export const refreshIgnoreFiles = async (
   return {
     ok: !anyNeedChanging,
     fixable: anyNeedChanging,
-    annotations: results.flatMap(
-      ({ needsChange, filename, annotationMessage }) =>
-        needsChange && annotationMessage
-          ? [
-              {
-                path: filename,
-                message: annotationMessage,
-              },
-            ]
-          : [],
+    annotations: results.flatMap(({ needsChange, filename, msg }) =>
+      needsChange && msg
+        ? [
+            {
+              path: filename,
+              message: stripAnsi(msg),
+            },
+          ]
+        : [],
     ),
   };
 };

@@ -94,8 +94,8 @@ describe('refreshIgnoreFiles', () => {
       });
 
       expect(`\n${stdout()}`).toBe(`
-The .eslintignore file is out of date. Run pnpm exec skuba format to update it. refresh-ignore-files
-The .gitignore file is out of date. Run pnpm exec skuba format to update it. refresh-ignore-files
+The .eslintignore file is out of date. Run \`pnpm exec skuba format\` to update it. refresh-ignore-files
+The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it. refresh-ignore-files
 `);
 
       expect(writeFile).not.toHaveBeenCalled();
