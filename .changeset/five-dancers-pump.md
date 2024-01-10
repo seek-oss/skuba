@@ -2,14 +2,13 @@
 'skuba': minor
 ---
 
-lint: Overhaul skuba's internal linting system
+lint: Overhaul internal linting system
 
-Internal (skuba) linting is now promoted to a top-level tool alongside ESLint, tsc, and Prettier.
+Internal linting is now promoted to a top-level tool alongside ESLint, Prettier, and tsc.
 
-This fixes issues where skuba would not fail a `lint` check but silently make changes.
-These changes may never end up being committed and causes noise when running `lint` or `format` later.
+This fixes issues where skuba would not fail a `skuba lint` check but silently make changes to your working tree. These changes may have never been committed and subsequently led to noise when running `skuba format` or `skuba lint`.
 
-Now, lints report whether changes need to be made and are applied in `format` or autofix modes (in CI).
+Now, internal linting rules report whether changes need to be made, and changes are only applied in `format` or autofix modes (in CI).
 
 In addition, `skuba lint` can now automatically push autofixes. This eases adoption of linting rule changes and automatically resolves issues arising from a forgotten `skuba format`.
 
