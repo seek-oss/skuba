@@ -8,8 +8,8 @@ import { createDestinationFileReader } from '../../../analysis/project';
 
 const DOCKERFILE_FILENAME = 'Dockerfile';
 
-const NON_DEBIAN_REGEX = /gcr.io\/distroless\/nodejs:(16|18|20)/g;
-const DEBIAN_REGEX = /gcr.io\/distroless\/nodejs(16|18|20)-debian11/g;
+const NON_DEBIAN_REGEX = /gcr.io\/distroless\/nodejs:(18|20)/g;
+const DEBIAN_REGEX = /gcr.io\/distroless\/nodejs(18|20)-debian11/g;
 const VERSION_DEBIAN_REPLACE = 'gcr.io/distroless/nodejs$1-debian12';
 
 const patchDockerfile = async (
