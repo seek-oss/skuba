@@ -5,8 +5,8 @@
 format: Automatically upgrade projects to Node.js 20
 
 `skuba format` will now attempt to automatically upgrade projects to Node.js 20.
-It will look in the project root for Dockerfiles, `.nvmrc`, and Serverless files running Node.js 18 and try to
-upgrade them to Node.js 20.
+It will look in the project root for Dockerfiles, `.nvmrc`, and Serverless files,
+as well as CDK files in `infra/`, using Node.js 18 and try to upgrade them to Node.js 20.
 
 skuba might not be able to upgrade all projects, so please check your project for any files that skuba missed. It's
 possible that skuba will modify a file incorrectly, in which case please

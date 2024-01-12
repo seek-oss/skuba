@@ -15,7 +15,7 @@ const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 beforeEach(jest.clearAllMocks);
 beforeEach(() => vol.reset());
 
-const reason = 'unable to find any Node.js 20 usage';
+const reason = 'unable to find any Node.js <20 usage';
 
 describe('tryUpgradeToNode20', () => {
   const scenarios: Array<{
@@ -40,6 +40,8 @@ describe('tryUpgradeToNode20', () => {
           'provider:\n  logRetentionInDays: 30\n  runtime: nodejs18.x\n  region: ap-southeast-2',
         'serverless.melb.yaml':
           'provider:\n  logRetentionInDays: 7\n  runtime: nodejs16.x\n  region: ap-southeast-4',
+        'infra/myCoolStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_18_X,\n}`,
+        'infra/myCoolFolder/evenCoolerStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_16_X,\n}`,
       },
       filesAfter: {
         '.nvmrc': '20',
@@ -50,6 +52,8 @@ describe('tryUpgradeToNode20', () => {
           'provider:\n  logRetentionInDays: 30\n  runtime: nodejs20.x\n  region: ap-southeast-2',
         'serverless.melb.yaml':
           'provider:\n  logRetentionInDays: 7\n  runtime: nodejs20.x\n  region: ap-southeast-4',
+        'infra/myCoolStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_20_X,\n}`,
+        'infra/myCoolFolder/evenCoolerStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_20_X,\n}`,
       },
       result: { result: 'apply' },
     },

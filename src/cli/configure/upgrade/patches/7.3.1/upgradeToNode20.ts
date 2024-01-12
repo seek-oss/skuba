@@ -32,7 +32,11 @@ const subPatches: SubPatch[] = [
     test: /nodejs(16|18).x/gm,
     replace: 'nodejs20.x',
   },
-  // TODO: CDK, CloudFormation?
+  {
+    files: 'infra/**/*.ts',
+    test: /NODEJS_(16|18)_X/g,
+    replace: 'NODEJS_20_X',
+  },
 ];
 
 const runSubPatch = async (
