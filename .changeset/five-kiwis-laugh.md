@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-format: Switch distroless image from `nodejs-debian11` to `nodejs-debian12`
+format: Switch Distroless image from `nodejs-debian11` to `nodejs-debian12`
