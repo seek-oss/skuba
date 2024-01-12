@@ -12,7 +12,7 @@ Patch skipped: Add empty exports to Jest files for compliance with TypeScript is
 
 Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
 
-Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
@@ -79,7 +79,7 @@ Patch skipped: Add empty exports to Jest files for compliance with TypeScript is
 
 Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
 
-Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
@@ -139,7 +139,7 @@ Patch skipped: Add empty exports to Jest files for compliance with TypeScript is
 
 Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
 
-Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
@@ -172,7 +172,7 @@ Patch skipped: Add empty exports to Jest files for compliance with TypeScript is
 
 Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset
 
-Patch skipped: Upgrade Node.js Distroless Docker image to -debian11 variant - no Dockerfile found
+Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 

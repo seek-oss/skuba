@@ -17,7 +17,7 @@ export const patches: Patches = [
   },
   {
     apply: tryPatchDockerfile,
-    description: 'Upgrade Node.js Distroless Docker image to -debian11 variant',
+    description: 'Upgrade Node.js Distroless Docker image to -debian12 variant',
   },
   {
     apply: tryPatchServerListener,
