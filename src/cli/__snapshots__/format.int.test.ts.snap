@@ -16,6 +16,8 @@ Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
+Patch skipped: Upgrade Node.js to 20 - unable to find any Node.js <20 usage
+
 skuba update complete.
 
 Processed skuba lints in <random>s.
@@ -83,6 +85,8 @@ Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
+Patch skipped: Upgrade Node.js to 20 - unable to find any Node.js <20 usage
+
 skuba update complete.
 
 Processed skuba lints in <random>s.
@@ -143,6 +147,8 @@ Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
+Patch skipped: Upgrade Node.js to 20 - unable to find any Node.js <20 usage
+
 skuba update complete.
 
 Processed skuba lints in <random>s.
@@ -175,6 +181,8 @@ Patch skipped: Update Renovate config to support private SEEK packages - owner d
 Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
+
+Patch skipped: Upgrade Node.js to 20 - unable to find any Node.js <20 usage
 
 skuba update complete.
 

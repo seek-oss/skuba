@@ -4,6 +4,7 @@ import { tryPatchRenovateConfig } from '../../../patchRenovateConfig';
 import { tryAddEmptyExports } from './addEmptyExports';
 import { tryPatchDockerfile } from './patchDockerfile';
 import { tryPatchServerListener } from './patchServerListener';
+import { tryUpgradeToNode20 } from './upgradeToNode20';
 
 export const patches: Patches = [
   {
@@ -22,5 +23,9 @@ export const patches: Patches = [
   {
     apply: tryPatchServerListener,
     description: 'Add keepAliveTimeout to server listener',
+  },
+  {
+    apply: tryUpgradeToNode20,
+    description: 'Upgrade Node.js to 20',
   },
 ];

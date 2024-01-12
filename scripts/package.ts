@@ -227,7 +227,7 @@ const main = async () => {
       'CONTRIBUTING.md',
       path.join('dist-docs', 'CONTRIBUTING.md'),
     ),
-    // `fs.promises.cp` is still experimental in Node.js 18.
+    // `fs.promises.cp` is still experimental in Node.js 20.
     copy('site', 'dist-docs'),
     copy('docs', path.join('dist-docs', 'docs')),
   ]);

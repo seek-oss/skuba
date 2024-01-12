@@ -212,6 +212,6 @@ Execution should pause on the breakpoint until we hit `F5` or the `▶️` butto
 [`tsconfig-paths`]: https://github.com/dividab/tsconfig-paths
 [express]: https://expressjs.com/
 [fastify]: https://www.fastify.io/
-[http server]: https://nodejs.org/docs/latest-v18.x/api/http.html#class-httpserver
+[http server]: https://nodejs.org/docs/latest-v20.x/api/http.html#class-httpserver
 [koa]: https://koajs.com/
 [node.js options]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options

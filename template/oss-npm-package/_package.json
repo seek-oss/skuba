@@ -34,13 +34,13 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^16.18.3",
+    "@types/node": "^20.11.0",
     "commitizen": "^4.2.4",
     "skuba": "*"
   },
   "packageManager": "pnpm@8.9.0",
   "engines": {
-    "node": ">=18.12"
+    "node": ">=20.9.0"
   },
   "publishConfig": {
     "provenance": true
