@@ -28,8 +28,8 @@ Discussion continues in the [esbuild](./esbuild.md) deep dive.
    ```jsonc
    {
      "skuba": {
-       "babel": true
-     }
+       "babel": true,
+     },
    }
    ```
 
