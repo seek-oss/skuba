@@ -72,11 +72,11 @@ Expect something like this:
     "lib*/**/*.d.ts",
     "lib*/**/*.js",
     "lib*/**/*.js.map",
-    "lib*/**/*.json"
+    "lib*/**/*.json",
   ],
   "main": "./lib-commonjs/index.js",
   "module": "./lib-es2015/index.js",
-  "types": "./lib-types/index.d.ts"
+  "types": "./lib-types/index.d.ts",
 }
 ```
 

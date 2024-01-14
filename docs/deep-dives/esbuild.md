@@ -88,8 +88,8 @@ At the same time, esbuild presents potential benefits for **skuba**:
    ```jsonc
    {
      "skuba": {
-       "build": "esbuild"
-     }
+       "build": "esbuild",
+     },
    }
    ```
 
