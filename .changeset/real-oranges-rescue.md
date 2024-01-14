@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+'skuba': major
 ---
 
 format: Automatically upgrade projects to Node.js 20
