@@ -88,7 +88,7 @@ export const init = async (args = process.argv.slice(2)) => {
   await initialiseRepo(destinationDir, templateData);
 
   // Patch in a baseline Renovate preset based on the configured Git owner.
-  await tryPatchRenovateConfig(destinationDir);
+  await tryPatchRenovateConfig('format', destinationDir);
 
   const skubaSlug = `skuba@${skubaVersionInfo.local}`;
 
