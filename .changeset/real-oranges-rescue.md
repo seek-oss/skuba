@@ -19,6 +19,6 @@ This is required on the first run of `skuba format` after upgrading skuba only.
 Node.js 20 comes with its own breaking changes, so please read the [Node.js 20 release notes](https://nodejs.org/en/blog/announcements/v20-release-announce) alongside the skuba release notes. In addition,
 
 - For AWS Lambda runtime updates to `nodejs20.x`, consider reading the [release announcement](https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/) as there are some breaking changes with this upgrade.
-- You may need to upgrade your versions of CDK and Serverless as appropriate to support nodejs20.x. 
+- You may need to upgrade your versions of CDK and Serverless as appropriate to support nodejs20.x.
 
 A future version of skuba will drop support for Node.js 18.
