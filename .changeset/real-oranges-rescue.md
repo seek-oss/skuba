@@ -16,7 +16,9 @@ If you cannot upgrade to Node.js 20, after upgrading skuba, you can run `skuba f
 `SKIP_NODE_20_PATCH=true` to prevent skuba from upgrading to Node.js 20.
 This is required on the first run of `skuba format` after upgrading skuba only.
 
-Please read the [Node.js 20 release notes](https://nodejs.org/en/blog/announcements/v20-release-announce) alongside the
-skuba release notes.
+Node.js 20 comes with its own breaking changes, so please read the [Node.js 20 release notes](https://nodejs.org/en/blog/announcements/v20-release-announce) alongside the skuba release notes. In addition,
+
+- For AWS Lambda runtime updates to `nodejs20.x`, consider reading the [release announcement](https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/) as there are some breaking changes with this upgrade.
+- You may need to upgrade your versions of CDK and Serverless as appropriate to support
 
 A future version of skuba will drop support for Node.js 18.
