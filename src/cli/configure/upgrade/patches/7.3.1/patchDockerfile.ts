@@ -8,8 +8,9 @@ import { createDestinationFileReader } from '../../../analysis/project';
 
 const DOCKERFILE_FILENAME = 'Dockerfile';
 
-const VERSION_REGEX = /gcr.io\/distroless\/nodejs:(16|18|20)/g;
-const VERSION_DEBIAN_REPLACE = 'gcr.io/distroless/nodejs$1-debian11';
+const NON_DEBIAN_REGEX = /gcr.io\/distroless\/nodejs:(18|20)/g;
+const DEBIAN_REGEX = /gcr.io\/distroless\/nodejs(18|20)-debian11/g;
+const VERSION_DEBIAN_REPLACE = 'gcr.io/distroless/nodejs$1-debian12';
 
 const patchDockerfile = async (
   mode: 'format' | 'lint',
@@ -23,10 +24,9 @@ const patchDockerfile = async (
     return { result: 'skip', reason: 'no Dockerfile found' };
   }
 
-  const patched = maybeDockerfile.replaceAll(
-    VERSION_REGEX,
-    VERSION_DEBIAN_REPLACE,
-  );
+  const patched = maybeDockerfile
+    .replaceAll(NON_DEBIAN_REGEX, VERSION_DEBIAN_REPLACE)
+    .replaceAll(DEBIAN_REGEX, VERSION_DEBIAN_REPLACE);
 
   if (patched === maybeDockerfile) {
     return { result: 'skip' };

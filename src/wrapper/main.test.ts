@@ -11,7 +11,7 @@ jest.mock('../utils/logging');
 const initWrapper = (entryPoint: string) =>
   main(path.join('src', 'wrapper', 'testing', entryPoint), '8080');
 
-let agent: request.SuperAgentTest;
+let agent: ReturnType<(typeof request)['agent']>;
 
 const startServer = jest
   .spyOn(http, 'startServer')
