@@ -125,3 +125,4 @@ tags:
   {{end}}
 
 cpuArchitecture: <%- platformName %>
+readOnlyRootFilesystem: true
