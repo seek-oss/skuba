@@ -18,6 +18,10 @@ env:
   {{$key}}: {{$value}}
   {{end}}
 
+{{if .Values.cloudwatchDashboardDisabled}}
+cloudwatchDashboardDisabled: {{values "cloudwatchDashboardDisabled"}}
+{{end}}
+
 {{if .Values.datadogSecretId}}
 datadogSecretId: '{{values "datadogSecretId"}}'
 {{end}}
