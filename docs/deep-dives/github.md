@@ -43,18 +43,12 @@ steps:
 ```
 
 With Docker Compose,
-declare the environment variables and volume mounts in your [Compose file]:
+declare volume mounts in your [Compose file].
+You won't need to declare the environment variables in the compose file anymore since `propagate-environment: true` will ensure the variables defined are propagated to the docker environment.
 
 ```yaml
 services:
   app:
-    environment:
-      # Enable GitHub integrations.
-      - BUILDKITE
-      - BUILDKITE_BRANCH
-      - BUILDKITE_BUILD_NUMBER
-      - BUILDKITE_PIPELINE_DEFAULT_BRANCH
-      - GITHUB_API_TOKEN
     volumes:
       - ./:/workdir
       # Mount cached dependencies.
