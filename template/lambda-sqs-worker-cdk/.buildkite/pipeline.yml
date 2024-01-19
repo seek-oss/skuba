@@ -58,7 +58,9 @@ steps:
       - docker-compose#v4.16.0:
           run: app
           environment:
-            - GITHUB_API_TOKEN
+            - ENVIRONMENT  
+            - GITHUB_API_TOKEN  
+            - VERSION  
           propagate-environment: true
     timeout_in_minutes: 10
 
