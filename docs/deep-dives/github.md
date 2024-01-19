@@ -48,6 +48,7 @@ declare volume mounts in your [Compose file].
 You won't need to declare the environment variables in the compose file since `propagate-environment: true` will ensure the variables defined are propagated to the docker environment.
 
 For example, with the [Docker Compose Buildkite plugin], we will need to add the `propagate-environment: true`:
+
 ```yaml
 steps:
   - commands:
@@ -57,9 +58,9 @@ steps:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
       GET_GITHUB_TOKEN: 'please'
     plugins:
-      - *aws-sm  
-      - *private-npm  
-      - *docker-ecr-cache  
+      - *aws-sm
+      - *private-npm
+      - *docker-ecr-cache
       - docker#v5.0.0:
           # Enable GitHub integrations.
           environment:
@@ -73,6 +74,7 @@ steps:
 And then your [Compose file] will not need to define the `environment` like you had to before to ensure the environment variables are available in Docker
 
 Docker compose file before:
+
 ```yaml
 services:
   app:
@@ -90,6 +92,7 @@ services:
 ```
 
 Docker compose file after:
+
 ```yaml
 services:
   app:

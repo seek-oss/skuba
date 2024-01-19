@@ -33,10 +33,10 @@ configs:
         - docker-compose#v4.16.0:
             dependencies: false
             run: app
-          environment:
-            - ENVIRONMENT
-            - GITHUB_API_TOKEN
-            - VERSION
+            environment:
+              - ENVIRONMENT
+              - GITHUB_API_TOKEN
+              - VERSION
             propagate-environment: true
       retry:
         manual:
