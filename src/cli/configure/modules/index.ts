@@ -9,7 +9,6 @@ import { prettierModule } from './prettier';
 import { renovateModule } from './renovate';
 import { serverlessModule } from './serverless';
 import { skubaDiveModule } from './skubaDive';
-import { tsconfigModule } from './tsconfig';
 import { tslintModule } from './tslint';
 
 export const loadModules = (opts: Options): Promise<Module[]> =>
@@ -24,7 +23,6 @@ export const loadModules = (opts: Options): Promise<Module[]> =>
       renovateModule,
       serverlessModule,
       skubaDiveModule,
-      tsconfigModule,
       tslintModule,
     ].map((createModule) => createModule(opts)),
   );

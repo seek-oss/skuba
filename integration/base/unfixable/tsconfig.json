@@ -3,7 +3,7 @@
     "incremental": true,
     "moduleResolution": "node",
     "outDir": "lib",
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
-  "extends": "tsconfig-seek"
+  "extends": "tsconfig-seek",
 }
