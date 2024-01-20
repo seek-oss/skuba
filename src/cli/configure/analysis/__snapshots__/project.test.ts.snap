@@ -148,31 +148,5 @@ export {};
 ",
     "operation": "A",
   },
-  "tsconfig.build.json": {
-    "data": "{
-  "exclude": ["**/__mocks__/**/*", "**/*.test.ts", "src/testing/**/*"],
-  "extends": "./tsconfig.json",
-  "include": ["src/**/*"]
-}
-",
-    "operation": "A",
-  },
-  "tsconfig.json": {
-    "data": "{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "lib": ["ES2022"],
-    "outDir": "lib",
-    "paths": {
-      "src": ["src"]
-    },
-    "target": "ES2022"
-  },
-  "exclude": ["lib*/**/*"],
-  "extends": "skuba/config/tsconfig.json"
-}
-",
-    "operation": "A",
-  },
 }
 `;
