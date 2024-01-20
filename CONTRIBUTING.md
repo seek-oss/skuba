@@ -198,6 +198,33 @@ The Changesets CLI is interactive and follows [semantic versioning]:
 - Minor release `0.X.0`: new, backwards-compatible functionality
 - Major release `X.0.0`: backwards-incompatible modification
 
+We humour several transgressions to this versioning scheme in practice:
+
+1. Breaking changes to `skuba lint` should be downgraded to minor.
+
+   It's not feasible for us to semantically version based on whether `skuba lint` will pass or fail,
+   especially given that lint rules can change between minor and patch versions of transitive ESLint dependencies.
+   The general thought here is that changes that can affect the runtime behaviour of your project should be major,
+   while changes to build-time validation of a project should not be major.
+
+   We also support [autofixes](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-autofixes) to ease adoption of lint rule changes.
+
+1. Breaking changes in TypeScript upgrades should be downgraded to minor.
+
+   TypeScript does not follow semantic versioning,
+   and its point releases generally come with breaking changes.
+   These are typically edge cases that would not affect a typical SEEK project.
+
+   In the event that a new compiler rule presents significant challenges to existing SEEK projects,
+   we may turn off the rule by default to revert its impact,
+   or publish a major with detailed guidance on how to comply with or disable the rule.
+
+1. Changes to built-in templates should be downgraded to patch.
+
+   Release notes and package versioning are most pertinent to existing projects.
+   Once you've run `skuba init`, updates to built-in templates are largely inconsequential to your project,
+   and mostly serve as a footnote to communicate best current practices.
+
 Prefix your changeset title with a `scope:`.
 This makes it easy to eyeball which part of **skuba** a change relates to.
 
