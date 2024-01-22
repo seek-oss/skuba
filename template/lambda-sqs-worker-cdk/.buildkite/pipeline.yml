@@ -21,7 +21,7 @@ configs:
   base-steps:
     - &deploy
       commands:
-        - echo '+++ pnpm install --offline'
+        - echo '--- pnpm install --offline'
         - pnpm install --offline
         - echo '+++ pnpm run deploy'
         - pnpm run deploy
@@ -42,7 +42,7 @@ configs:
 steps:
   - label: 🧪 Test, Lint & Build
     commands:
-      - echo '+++ pnpm install --offline'
+      - echo '--- pnpm install --offline'
       - pnpm install --offline
       - echo '+++ pnpm run test:ci'
       - pnpm run test
@@ -95,7 +95,7 @@ steps:
     env:
       ENVIRONMENT: dev
     commands:
-      - echo '+++ pnpm install --offline'
+      - echo '--- pnpm install --offline'
       - pnpm install --offline
       - echo '+++ pnpm run deploy:hotswap'
       - pnpm run deploy:hotswap
