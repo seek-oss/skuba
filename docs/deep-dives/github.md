@@ -42,12 +42,18 @@ steps:
             - /workdir/node_modules
 ```
 
-With Docker Compose,
-declare volume mounts in your [Compose file].
+With Docker Compose, declare the volume mounts in your [Compose file]:
 
-You won't need to declare the environment variables in the compose file since `propagate-environment: true` will ensure the variables defined are propagated to the docker environment.
+```yaml
+services:
+  app:
+    volumes:
+      - ./:/workdir
+      # Mount cached dependencies.
+      - /workdir/node_modules
+```
 
-For example, with the [Docker Compose Buildkite plugin], we will need to add the `propagate-environment: true`:
+and declare the environment variables in the [Docker Compose Buildkite plugin]:
 
 ```yaml
 steps:
@@ -61,45 +67,12 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v5.0.0:
+      - docker-compose#v4.16.0:
+          run: app
           # Enable GitHub integrations.
           environment:
             - GITHUB_API_TOKEN
           propagate-environment: true
-          volumes:
-            # Mount cached dependencies.
-            - /workdir/node_modules
-```
-
-And then your [Compose file] will not need to define the `environment` like you had to before to ensure the environment variables are available in Docker
-
-Docker compose file before:
-
-```yaml
-services:
-  app:
-    environment:
-      # Enable GitHub integrations.
-      - BUILDKITE
-      - BUILDKITE_BRANCH
-      - BUILDKITE_BUILD_NUMBER
-      - BUILDKITE_PIPELINE_DEFAULT_BRANCH
-      - GITHUB_API_TOKEN
-    volumes:
-      - ./:/workdir
-      # Mount cached dependencies.
-      - /workdir/node_modules
-```
-
-Docker compose file after:
-
-```yaml
-services:
-  app:
-    volumes:
-      - ./:/workdir
-      # Mount cached dependencies.
-      - /workdir/node_modules
 ```
 
 If you're running in GitHub Actions,
