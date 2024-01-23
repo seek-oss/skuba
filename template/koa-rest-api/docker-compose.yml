@@ -2,16 +2,6 @@ version: '3.7'
 
 services:
   app:
-    environment:
-      # Enable Buildkite + GitHub integrations.
-      - BUILDKITE
-      - BUILDKITE_AGENT_ACCESS_TOKEN
-      - BUILDKITE_BRANCH
-      - BUILDKITE_BUILD_NUMBER
-      - BUILDKITE_JOB_ID
-      - BUILDKITE_PIPELINE_DEFAULT_BRANCH
-      - BUILDKITE_STEP_ID
-      - GITHUB_API_TOKEN
     image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}
     init: true
     volumes:

@@ -36,6 +36,7 @@ configs:
         - docker-compose#v4.16.0:
             dependencies: false
             run: app
+            propagate-environment: true
       retry:
         manual:
           # Only use this if you need to roll back a deployment ASAP.
@@ -65,6 +66,9 @@ steps:
       - *docker-ecr-cache
       - docker-compose#v4.16.0:
           run: app
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
     timeout_in_minutes: 10
 
   - agents:

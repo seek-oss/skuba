@@ -33,11 +33,17 @@ configs:
         - docker-compose#v4.16.0:
             dependencies: false
             run: app
+            environment:
+              - GITHUB_API_TOKEN
+            propagate-environment: true
       retry:
         manual:
           # Only use this if you need to roll back a deployment ASAP.
           # Always follow up with a proper revert or fix in Git history.
           permit_on_passed: true
+
+env:
+  VERSION: ${BUILDKITE_COMMIT:0:7}.${BUILDKITE_BUILD_NUMBER}
 
 steps:
   - label: 🧪 Test, Lint & Build
@@ -56,6 +62,9 @@ steps:
       - *docker-ecr-cache
       - docker-compose#v4.16.0:
           run: app
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
     timeout_in_minutes: 10
 
   - agents:

@@ -48,10 +48,12 @@ EOF
 
 mv "${directory}" "../${directory}"
 
+skuba_dir=$(pwd)
+
 cd "../${directory}" || exit 1
 
-echo "--- pnpm add --save-dev ../skuba/${skuba_tar}"
-pnpm add --save-dev "../skuba/${skuba_tar}"
+echo "--- pnpm add --save-dev ${skuba_dir}/${skuba_tar}"
+pnpm add --save-dev "${skuba_dir}/${skuba_tar}"
 
 echo "--- skuba version ${template}"
 pnpm exec skuba version
