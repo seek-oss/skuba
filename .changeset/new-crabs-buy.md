@@ -47,7 +47,7 @@ steps:
       - *docker-ecr-cache
       - docker-compose#v4.16.0:
           run: app
-          # Enable GitHub integrations.
++         # Enable GitHub integrations.
 +         environment:
 +           - GITHUB_API_TOKEN
 +         propagate-environment: true
