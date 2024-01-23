@@ -53,7 +53,7 @@ services:
       - /workdir/node_modules
 ```
 
-and declare the environment variables in the [Docker Compose Buildkite plugin]:
+and the `environment` and `propagate-environment` options in the [Docker Compose Buildkite plugin]:
 
 ```yaml
 steps:
