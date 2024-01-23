@@ -44,6 +44,9 @@ configs:
           # Always follow up with a proper revert or fix in Git history.
           permit_on_passed: true
 
+env:
+  VERSION: ${BUILDKITE_COMMIT:0:7}.${BUILDKITE_BUILD_NUMBER}
+
 steps:
   - label: 🧪 Test, Lint & Build
     commands:
@@ -62,7 +65,6 @@ steps:
       - docker-compose#v4.16.0:
           run: app
           environment:
-            - ENVIRONMENT
             - GITHUB_API_TOKEN
             - VERSION
           propagate-environment: true
