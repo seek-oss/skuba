@@ -2,11 +2,11 @@
 'skuba': patch
 ---
 
-templates/\*: Use `propagate-environment` for Docker Compose Buildkite plugin
+template: Use `propagate-environment` for Docker Compose Buildkite plugin
 
-This simplifies the Docker Compose environment variable configuration which is required for Buildkite and GitHub integrations.
+This simplifies the Docker Compose environment variable configuration required for Buildkite and GitHub integrations.
 
-docker-compose.yml:
+In your `docker-compose.yml`:
 
 ```diff
 services:
@@ -31,7 +31,7 @@ services:
       - /workdir/node_modules
 ```
 
-pipeline.yml:
+In your `.buildkite/pipeline.yml`:
 
 ```diff
 steps:
@@ -46,9 +46,8 @@ steps:
       - *private-npm
       - *docker-ecr-cache
       - docker-compose#v4.16.0:
-          run: app
-+         # Enable GitHub integrations.
 +         environment:
 +           - GITHUB_API_TOKEN
 +         propagate-environment: true
+          run: app
 ```
