@@ -36,6 +36,9 @@ configs:
         - docker-compose#v4.16.0:
             dependencies: false
             run: app
+            environment:
+              - ENVIRONMENT
+              - VERSION
             propagate-environment: true
       retry:
         manual:
@@ -67,6 +70,7 @@ steps:
       - docker-compose#v4.16.0:
           run: app
           environment:
+            - ENVIRONMENT
             - GITHUB_API_TOKEN
             - VERSION
           propagate-environment: true
