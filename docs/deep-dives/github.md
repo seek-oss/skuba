@@ -68,11 +68,10 @@ steps:
       - *private-npm
       - *docker-ecr-cache
       - docker-compose#v4.16.0:
-          run: app
-          # Enable GitHub integrations.
           environment:
             - GITHUB_API_TOKEN
           propagate-environment: true
+          run: app
 ```
 
 If you're running in GitHub Actions,
