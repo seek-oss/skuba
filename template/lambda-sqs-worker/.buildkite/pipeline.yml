@@ -36,7 +36,6 @@ configs:
         - docker-compose#v4.16.0:
             dependencies: false
             run: app
-            environment:
             propagate-environment: true
       retry:
         manual:
