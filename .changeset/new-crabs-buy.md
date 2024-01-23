@@ -48,7 +48,7 @@ steps:
       - docker-compose#v4.16.0:
           run: app
           # Enable GitHub integrations.
-          environment:
-            - GITHUB_API_TOKEN
++         environment:
++           - GITHUB_API_TOKEN
 +         propagate-environment: true
 ```
