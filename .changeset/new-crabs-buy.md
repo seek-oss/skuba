@@ -2,11 +2,12 @@
 'skuba': patch
 ---
 
-templates/*: Use `propagate-environment` for docker-compose buildkite plugin
+templates/\*: Use `propagate-environment` for docker-compose buildkite plugin
 
 This simplifies the Docker Compose environment variable configuration which is required for Buildkite and Github integrations.
 
 docker-compose.yml:
+
 ```diff
 services:
   app:
