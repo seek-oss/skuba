@@ -6,13 +6,14 @@ params:
   default:
     datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:SECRET-NAME'
     description: <%- description %>
-    concurrency: 20
   dev:
     deploymentBucket: 'TODO: deployment-bucket-name'
     isProduction: false
+    concurrency: 2
   prod:
     deploymentBucket: 'TODO: deployment-bucket-name'
     isProduction: true
+    concurrency: 20
 
 custom:
   datadog:
