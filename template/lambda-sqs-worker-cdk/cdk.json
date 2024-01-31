@@ -6,7 +6,7 @@
     },
     "dev": {
       "workerLambda": {
-        "reservedConcurrency": 1,
+        "reservedConcurrency": 2,
         "environment": {
           "SOMETHING": "dev"
         }
@@ -15,7 +15,7 @@
     },
     "prod": {
       "workerLambda": {
-        "reservedConcurrency": 2,
+        "reservedConcurrency": 20,
         "environment": {
           "SOMETHING": "prod"
         }
