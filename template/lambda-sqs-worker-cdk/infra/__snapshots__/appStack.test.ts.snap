@@ -461,7 +461,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "Arn",
           ],
         },
-        "ReservedConcurrentExecutions": 20,
+        "ReservedConcurrentExecutions": 2,
         "Role": {
           "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
