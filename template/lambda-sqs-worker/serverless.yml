@@ -6,6 +6,7 @@ params:
   default:
     datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:SECRET-NAME'
     description: <%- description %>
+    concurrency: 20
   dev:
     deploymentBucket: 'TODO: deployment-bucket-name'
     isProduction: false
@@ -91,7 +92,7 @@ functions:
     handler: lib/app.handler
     description: ${param:description}
     memorySize: 128
-    reservedConcurrency: 20
+    reservedConcurrency: ${param:concurrency}
     timeout: 30
     deploymentSettings:
       type: AllAtOnce
@@ -107,6 +108,7 @@ functions:
       - sqs:
           arn: !GetAtt MessageQueue.Arn
           batchSize: 1
+          maximumConcurrency: ${param:concurrency}
   WorkerPreHook:
     name: ${self:functions.Worker.name}-pre-hook
     handler: lib/hooks.pre
