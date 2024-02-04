@@ -24,7 +24,9 @@ const ensureNoNpmrcExclusion = (s: string) =>
 const ensureNoAuthToken = (s: string) =>
   s
     .split('\n')
-    .filter((line) => !line.includes('authToken'))
+    // Preventing against _auth, _authToken, _password
+    // https://docs.npmjs.com/cli/v10/configuring-npm/npmrc#auth-related-configuration
+    .filter((line) => !line.includes('_auth') && !line.includes('_password'))
     .join('\n');
 
 const REFRESHABLE_CONFIG_FILES = [
