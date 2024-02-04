@@ -5,6 +5,7 @@ import { writeFile } from 'fs-extra';
 import stripAnsi from 'strip-ansi';
 
 import type { Logger } from '../../../utils/logging';
+import { hasNpmrcSecret } from '../../../utils/npmrc';
 import {
   type PackageManagerConfig,
   detectPackageManager,
@@ -21,12 +22,10 @@ const ensureNoNpmrcExclusion = (s: string) =>
     .filter((line) => line.includes('!') || !line.includes('.npmrc'))
     .join('\n');
 
-const ensureNoAuthToken = (s: string) =>
-  s
+const ensureNoAuthToken = (fileContents: string) =>
+  fileContents
     .split('\n')
-    // Preventing against _auth, _authToken, _password
-    // https://docs.npmjs.com/cli/v10/configuring-npm/npmrc#auth-related-configuration
-    .filter((line) => !line.includes('_auth') && !line.includes('_password'))
+    .filter((line) => !hasNpmrcSecret(line))
     .join('\n');
 
 const REFRESHABLE_CONFIG_FILES = [
