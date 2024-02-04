@@ -3,9 +3,10 @@
 exports[`fixable 1`] = `
 "
 skuba lints
-Refreshed .eslintignore. refresh-ignore-files
-Refreshed .gitignore. refresh-ignore-files
-Refreshed .prettierignore. refresh-ignore-files
+Refreshed .eslintignore. refresh-config-files
+Refreshed .gitignore. refresh-config-files
+Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Updating skuba...
 
 Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
@@ -70,9 +71,10 @@ d.js
 exports[`ok --debug 1`] = `
 "
 skuba lints
-Refreshed .eslintignore. refresh-ignore-files
-Refreshed .gitignore. refresh-ignore-files
-Refreshed .prettierignore. refresh-ignore-files
+Refreshed .eslintignore. refresh-config-files
+Refreshed .gitignore. refresh-config-files
+Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Updating skuba...
 
 Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
@@ -98,11 +100,13 @@ Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 9 files.
+Discovered 10 files.
 Formatting files...
 .eslintignore
   parser: -
 .gitignore
+  parser: -
+.npmrc
   parser: -
 .prettierignore
   parser: -
@@ -130,9 +134,10 @@ exports[`ok --debug 2`] = `
 exports[`ok 1`] = `
 "
 skuba lints
-Refreshed .eslintignore. refresh-ignore-files
-Refreshed .gitignore. refresh-ignore-files
-Refreshed .prettierignore. refresh-ignore-files
+Refreshed .eslintignore. refresh-config-files
+Refreshed .gitignore. refresh-config-files
+Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Updating skuba...
 
 Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules
@@ -163,9 +168,10 @@ exports[`ok 2`] = `
 exports[`unfixable 1`] = `
 "
 skuba lints
-Refreshed .eslintignore. refresh-ignore-files
-Refreshed .gitignore. refresh-ignore-files
-Refreshed .prettierignore. refresh-ignore-files
+Refreshed .eslintignore. refresh-config-files
+Refreshed .gitignore. refresh-config-files
+Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Updating skuba...
 
 Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules

@@ -12,37 +12,47 @@ import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithIgnoreFile } from '../../configure/processing/ignoreFile';
 import type { InternalLintResult } from '../internal';
 
-const REFRESHABLE_IGNORE_FILES = [
-  '.eslintignore',
-  '.gitignore',
-  '.prettierignore',
+const ensureNoNpmrcExclusion = (s: string) =>
+  s
+    .split('\n')
+    .filter((line) => line.includes('!') || !line.includes('.npmrc'))
+    .join('\n');
+
+const ensureNoAuthToken = (s: string) =>
+  s
+    .split('\n')
+    .filter((line) => !line.includes('authToken'))
+    .join('\n');
+
+const REFRESHABLE_CONFIG_FILES = [
+  { name: '.eslintignore' },
+  { name: '.gitignore', additionalMapping: ensureNoNpmrcExclusion },
+  { name: '.prettierignore' },
+  { name: '.npmrc', additionalMapping: ensureNoAuthToken },
 ];
 
-export const refreshIgnoreFiles = async (
+export const refreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
 ): Promise<InternalLintResult> => {
-  // TODO: check current state of .gitignore
-  // If it contains !.npmrc, break
-  // If it contains .npmrc, we can either
-  // 1. Move the entry below the skuba-managed section for manual triage
-  // 2. Delete any local .npmrc state before un-ignoring the .npmrc
-
   const manifest = await getDestinationManifest();
 
   const destinationRoot = path.dirname(manifest.path);
 
   const readDestinationFile = createDestinationFileReader(destinationRoot);
 
-  const refreshIgnoreFile = async (filename: string) => {
+  const refreshConfigFile = async (
+    filename: string,
+    additionalMapping: (s: string) => string = (s) => s,
+  ) => {
     const [inputFile, templateFile] = await Promise.all([
       readDestinationFile(filename),
       readBaseTemplateFile(`_${filename}`),
     ]);
 
-    const data = inputFile
-      ? mergeWithIgnoreFile(templateFile)(inputFile)
-      : templateFile;
+    const data = additionalMapping(
+      inputFile ? mergeWithIgnoreFile(templateFile)(inputFile) : templateFile,
+    );
 
     const filepath = path.join(destinationRoot, filename);
 
@@ -79,13 +89,15 @@ export const refreshIgnoreFiles = async (
   };
 
   const results = await Promise.all(
-    REFRESHABLE_IGNORE_FILES.map(refreshIgnoreFile),
+    REFRESHABLE_CONFIG_FILES.map((conf) =>
+      refreshConfigFile(conf.name, conf.additionalMapping),
+    ),
   );
 
   // Log after for reproducible test output ordering
   results.forEach((result) => {
     if (result.msg) {
-      logger.warn(result.msg, logger.dim('refresh-ignore-files'));
+      logger.warn(result.msg, logger.dim('refresh-config-files'));
     }
   });
 
@@ -107,14 +119,14 @@ export const refreshIgnoreFiles = async (
   };
 };
 
-export const tryRefreshIgnoreFiles = async (
+export const tryRefreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
 ): Promise<InternalLintResult> => {
   try {
-    return await refreshIgnoreFiles(mode, logger);
+    return await refreshConfigFiles(mode, logger);
   } catch (err) {
-    logger.warn('Failed to refresh ignore files.');
+    logger.warn('Failed to refresh config files.');
     logger.subtle(inspect(err));
 
     return {

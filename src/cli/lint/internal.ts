@@ -7,7 +7,7 @@ import { upgradeSkuba } from '../configure/upgrade';
 
 import { deleteFilesLint } from './internalLints/deleteFiles';
 import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs';
-import { tryRefreshIgnoreFiles } from './internalLints/refreshIgnoreFiles';
+import { tryRefreshConfigFiles } from './internalLints/refreshConfigFiles';
 import type { Input } from './types';
 
 export type InternalLintResult = {
@@ -23,7 +23,7 @@ export type InternalLintResult = {
 
 const lints: Array<
   (mode: 'format' | 'lint', logger: Logger) => Promise<InternalLintResult>
-> = [deleteFilesLint, noSkubaTemplateJs, tryRefreshIgnoreFiles, upgradeSkuba];
+> = [deleteFilesLint, noSkubaTemplateJs, tryRefreshConfigFiles, upgradeSkuba];
 
 const lintSerially = async (mode: 'format' | 'lint', logger: Logger) => {
   const results: InternalLintResult[] = [];
