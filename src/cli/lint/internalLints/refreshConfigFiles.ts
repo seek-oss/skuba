@@ -5,7 +5,10 @@ import { writeFile } from 'fs-extra';
 import stripAnsi from 'strip-ansi';
 
 import type { Logger } from '../../../utils/logging';
-import { detectPackageManager } from '../../../utils/packageManager';
+import {
+  type PackageManagerConfig,
+  detectPackageManager,
+} from '../../../utils/packageManager';
 import { readBaseTemplateFile } from '../../../utils/template';
 import { getDestinationManifest } from '../../configure/analysis/package';
 import { createDestinationFileReader } from '../../configure/analysis/project';
@@ -26,15 +29,31 @@ const ensureNoAuthToken = (s: string) =>
 
 const REFRESHABLE_CONFIG_FILES = [
   { name: '.eslintignore' },
-  { name: '.gitignore', additionalMapping: ensureNoNpmrcExclusion },
+  {
+    name: '.gitignore',
+    additionalMapping: (
+      contents: string,
+      packageManager: PackageManagerConfig,
+    ) => {
+      if (packageManager.command === 'pnpm') {
+        return ensureNoNpmrcExclusion(contents);
+      }
+      return contents;
+    },
+  },
   { name: '.prettierignore' },
-  { name: '.npmrc', additionalMapping: ensureNoAuthToken },
+  {
+    name: '.npmrc',
+    additionalMapping: ensureNoAuthToken,
+    if: (packageManager: PackageManagerConfig) =>
+      packageManager.command === 'pnpm',
+  },
 ];
 
 export const refreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
-): Promise<InternalLintResult> => {
+) => {
   const manifest = await getDestinationManifest();
 
   const destinationRoot = path.dirname(manifest.path);
@@ -43,8 +62,17 @@ export const refreshConfigFiles = async (
 
   const refreshConfigFile = async (
     filename: string,
-    additionalMapping: (s: string) => string = (s) => s,
+    packageManager: PackageManagerConfig,
+    additionalMapping: (
+      s: string,
+      packageManager: PackageManagerConfig,
+    ) => string = (s) => s,
+    condition: (packageManager: PackageManagerConfig) => boolean = () => true,
   ) => {
+    if (!condition(packageManager)) {
+      return { needsChange: false };
+    }
+
     const [inputFile, templateFile] = await Promise.all([
       readDestinationFile(filename),
       readBaseTemplateFile(`_${filename}`),
@@ -52,6 +80,7 @@ export const refreshConfigFiles = async (
 
     const data = additionalMapping(
       inputFile ? mergeWithIgnoreFile(templateFile)(inputFile) : templateFile,
+      packageManager,
     );
 
     const filepath = path.join(destinationRoot, filename);
@@ -70,8 +99,6 @@ export const refreshConfigFiles = async (
     }
 
     if (data !== inputFile) {
-      const packageManager = await detectPackageManager();
-
       return {
         needsChange: true,
         msg: `The ${logger.bold(
@@ -88,9 +115,16 @@ export const refreshConfigFiles = async (
     return { needsChange: false };
   };
 
+  const packageManager = await detectPackageManager(destinationRoot);
+
   const results = await Promise.all(
     REFRESHABLE_CONFIG_FILES.map((conf) =>
-      refreshConfigFile(conf.name, conf.additionalMapping),
+      refreshConfigFile(
+        conf.name,
+        packageManager,
+        conf.additionalMapping,
+        conf.if,
+      ),
     ),
   );
 
