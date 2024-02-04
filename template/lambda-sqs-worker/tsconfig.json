@@ -4,10 +4,10 @@
     "lib": ["ES2022"],
     "outDir": "lib",
     "paths": {
-      "src": ["src"],
+      "src": ["src"]
     },
-    "target": "ES2022",
+    "target": "ES2022"
   },
   "exclude": ["lib*/**/*"],
-  "extends": "skuba/config/tsconfig.json",
+  "extends": "skuba/config/tsconfig.json"
 }
