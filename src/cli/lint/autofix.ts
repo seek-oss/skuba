@@ -97,7 +97,7 @@ const shouldPush = async ({
 };
 
 const getIgnores = async (dir: string): Promise<Git.ChangedFile[]> => {
-  const contents = await createDestinationFileReader(dir)('.gitignore');
+  const contents = await createDestinationFileReader(dir)('.npmrc');
 
   // If an .npmrc has secrets, we need to ignore it
   if (hasNpmrcSecret(contents ?? '')) {
