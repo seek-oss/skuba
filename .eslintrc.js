@@ -12,6 +12,23 @@ module.exports = {
         allowAutomaticSingleRunInference: false,
       },
     },
+    {
+      files: [`src/**/*.{${ts}}`],
+      rules: {
+        'no-restricted-imports': [
+          'error',
+          {
+            paths: [
+              {
+                name: 'fs',
+                message:
+                  'Prefer fs-extra as it implements graceful-fs behaviour.',
+              },
+            ],
+          },
+        ],
+      },
+    },
   ],
   rules: {
     // internal to skuba itself
