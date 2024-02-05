@@ -5,44 +5,67 @@ import { writeFile } from 'fs-extra';
 import stripAnsi from 'strip-ansi';
 
 import type { Logger } from '../../../utils/logging';
-import { detectPackageManager } from '../../../utils/packageManager';
+import { hasNpmrcSecret } from '../../../utils/npmrc';
+import {
+  type PackageManagerConfig,
+  detectPackageManager,
+} from '../../../utils/packageManager';
 import { readBaseTemplateFile } from '../../../utils/template';
 import { getDestinationManifest } from '../../configure/analysis/package';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithIgnoreFile } from '../../configure/processing/ignoreFile';
 import type { InternalLintResult } from '../internal';
 
-const REFRESHABLE_IGNORE_FILES = [
-  '.eslintignore',
-  '.gitignore',
-  '.prettierignore',
+const ensureNoAuthToken = (fileContents: string) =>
+  fileContents
+    .split('\n')
+    .filter((line) => !hasNpmrcSecret(line))
+    .join('\n');
+
+const REFRESHABLE_CONFIG_FILES = [
+  { name: '.eslintignore' },
+  { name: '.gitignore' },
+  { name: '.prettierignore' },
+  {
+    name: '.npmrc',
+    additionalMapping: ensureNoAuthToken,
+    if: (packageManager: PackageManagerConfig) =>
+      packageManager.command === 'pnpm',
+  },
 ];
 
-export const refreshIgnoreFiles = async (
+export const refreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
-): Promise<InternalLintResult> => {
-  // TODO: check current state of .gitignore
-  // If it contains !.npmrc, break
-  // If it contains .npmrc, we can either
-  // 1. Move the entry below the skuba-managed section for manual triage
-  // 2. Delete any local .npmrc state before un-ignoring the .npmrc
-
+) => {
   const manifest = await getDestinationManifest();
 
   const destinationRoot = path.dirname(manifest.path);
 
   const readDestinationFile = createDestinationFileReader(destinationRoot);
 
-  const refreshIgnoreFile = async (filename: string) => {
+  const refreshConfigFile = async (
+    filename: string,
+    packageManager: PackageManagerConfig,
+    additionalMapping: (
+      s: string,
+      packageManager: PackageManagerConfig,
+    ) => string = (s) => s,
+    condition: (packageManager: PackageManagerConfig) => boolean = () => true,
+  ) => {
+    if (!condition(packageManager)) {
+      return { needsChange: false };
+    }
+
     const [inputFile, templateFile] = await Promise.all([
       readDestinationFile(filename),
       readBaseTemplateFile(`_${filename}`),
     ]);
 
-    const data = inputFile
-      ? mergeWithIgnoreFile(templateFile)(inputFile)
-      : templateFile;
+    const data = additionalMapping(
+      inputFile ? mergeWithIgnoreFile(templateFile)(inputFile) : templateFile,
+      packageManager,
+    );
 
     const filepath = path.join(destinationRoot, filename);
 
@@ -60,8 +83,6 @@ export const refreshIgnoreFiles = async (
     }
 
     if (data !== inputFile) {
-      const packageManager = await detectPackageManager();
-
       return {
         needsChange: true,
         msg: `The ${logger.bold(
@@ -78,14 +99,23 @@ export const refreshIgnoreFiles = async (
     return { needsChange: false };
   };
 
+  const packageManager = await detectPackageManager(destinationRoot);
+
   const results = await Promise.all(
-    REFRESHABLE_IGNORE_FILES.map(refreshIgnoreFile),
+    REFRESHABLE_CONFIG_FILES.map((conf) =>
+      refreshConfigFile(
+        conf.name,
+        packageManager,
+        conf.additionalMapping,
+        conf.if,
+      ),
+    ),
   );
 
   // Log after for reproducible test output ordering
   results.forEach((result) => {
     if (result.msg) {
-      logger.warn(result.msg, logger.dim('refresh-ignore-files'));
+      logger.warn(result.msg, logger.dim('refresh-config-files'));
     }
   });
 
@@ -107,14 +137,14 @@ export const refreshIgnoreFiles = async (
   };
 };
 
-export const tryRefreshIgnoreFiles = async (
+export const tryRefreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
 ): Promise<InternalLintResult> => {
   try {
-    return await refreshIgnoreFiles(mode, logger);
+    return await refreshConfigFiles(mode, logger);
   } catch (err) {
-    logger.warn('Failed to refresh ignore files.');
+    logger.warn('Failed to refresh config files.');
     logger.subtle(inspect(err));
 
     return {

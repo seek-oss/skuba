@@ -5,8 +5,13 @@ import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
 import { runESLint } from '../adapter/eslint';
 import { runPrettier } from '../adapter/prettier';
+import { createDestinationFileReader } from '../configure/analysis/project';
 
-import { AUTOFIX_IGNORE_FILES, autofix } from './autofix';
+import {
+  AUTOFIX_IGNORE_FILES_BASE,
+  AUTOFIX_IGNORE_FILES_NPMRC,
+  autofix,
+} from './autofix';
 import { internalLint } from './internal';
 
 jest.mock('simple-git');
@@ -16,6 +21,7 @@ jest.mock('../../api/buildkite');
 jest.mock('../adapter/eslint');
 jest.mock('../adapter/prettier');
 jest.mock('./internal');
+jest.mock('../configure/analysis/project');
 
 const MOCK_ERROR = new Error('Badness!');
 
@@ -41,6 +47,10 @@ beforeEach(() => {
     .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
   jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([]);
+
+  jest
+    .mocked(createDestinationFileReader)
+    .mockReturnValue(jest.fn().mockResolvedValue(null));
 });
 
 afterEach(jest.resetAllMocks);
@@ -200,7 +210,7 @@ describe('autofix', () => {
         dir: expect.any(String),
         message: 'Run `skuba format`',
 
-        ignore: AUTOFIX_IGNORE_FILES,
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
       });
 
       expect(push).toHaveBeenNthCalledWith(1);
@@ -250,7 +260,7 @@ describe('autofix', () => {
         dir: expect.any(String),
         message: 'Run `skuba format`',
 
-        ignore: AUTOFIX_IGNORE_FILES,
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
       });
 
       expect(push).toHaveBeenNthCalledWith(1);
@@ -286,7 +296,7 @@ describe('autofix', () => {
         dir: expect.any(String),
         message: 'Run `skuba format`',
 
-        ignore: AUTOFIX_IGNORE_FILES,
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
       });
 
       expect(push).toHaveBeenNthCalledWith(1);
@@ -338,6 +348,42 @@ describe('autofix', () => {
         Does your CI environment have write access to your Git repository?
         Error: Badness!
             at Object.<anonymous>..."
+      `);
+    });
+
+    it('will ignore .npmrc if it has auth secrets', async () => {
+      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+        {
+          path: '.npmrc',
+          state: 'modified',
+        },
+      ]);
+
+      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      jest
+        .mocked(createDestinationFileReader)
+        .mockReturnValue(jest.fn().mockResolvedValue('_authToken'));
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: true, internal: true });
+
+      expect(Git.commitAllChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        message: 'Run `skuba format`',
+
+        ignore: [...AUTOFIX_IGNORE_FILES_BASE, ...AUTOFIX_IGNORE_FILES_NPMRC],
+      });
+
+      expect(push).toHaveBeenNthCalledWith(1);
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Pushed fix commit commit-sha.
+        "
       `);
     });
   });
@@ -458,7 +504,7 @@ describe('autofix', () => {
         dir: expect.any(String),
         messageHeadline: 'Run `skuba format`',
 
-        ignore: AUTOFIX_IGNORE_FILES,
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
       });
 
       // We should run both ESLint and Prettier
@@ -486,7 +532,7 @@ describe('autofix', () => {
         dir: expect.any(String),
         messageHeadline: 'Run `skuba format`',
 
-        ignore: AUTOFIX_IGNORE_FILES,
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
       });
 
       // We should only run Prettier
@@ -521,7 +567,7 @@ describe('autofix', () => {
         dir: expect.any(String),
         messageHeadline: 'Run `skuba format`',
 
-        ignore: AUTOFIX_IGNORE_FILES,
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
       });
 
       expect(stdout()).toMatchInlineSnapshot(`
@@ -570,6 +616,41 @@ describe('autofix', () => {
         Does your CI environment have write access to your Git repository?
         Error: Badness!
             at Object.<anonymous>..."
+      `);
+    });
+
+    it('will ignore .npmrc if it has auth secrets', async () => {
+      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+        {
+          path: '.npmrc',
+          state: 'modified',
+        },
+      ]);
+
+      jest.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      jest
+        .mocked(createDestinationFileReader)
+        .mockReturnValue(jest.fn().mockResolvedValue('_authToken'));
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: true, internal: true });
+
+      expect(GitHub.uploadAllFileChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        branch: 'dev',
+        messageHeadline: 'Run `skuba format`',
+
+        ignore: [...AUTOFIX_IGNORE_FILES_BASE, ...AUTOFIX_IGNORE_FILES_NPMRC],
+      });
+
+      expect(stdout()).toMatchInlineSnapshot(`
+        "
+
+        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Pushed fix commit commit-sha.
+        "
       `);
     });
   });
