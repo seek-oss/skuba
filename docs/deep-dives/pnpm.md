@@ -14,7 +14,25 @@ This topic details how to use pnpm with **skuba**.
 
 ## Background
 
-**skuba** simply serves a wrapper for numerous developer packages such as TypeScript, Jest, Prettier & Eslint and abstracts the dependency management of those packages across all of our repos at SEEK. This means that when you are using skuba, you do not need to declare these packages as devDependencies. In our previously recommended package manager [yarn], these packages and others are hoisted to create a flattened dependency tree. However, this behaviour can lead to some [silly bugs] when updating packages.
+**skuba** simply serves a wrapper for numerous developer packages such as TypeScript, Jest, Prettier & Eslint and abstracts the dependency management of those packages across all of our repos at SEEK. This means that when you are using skuba, you do not need to declare these packages as devDependencies. In our previously recommended package manager [yarn], these packages, and others are hoisted to create a flattened dependency tree.
+
+```json
+{
+  "devDependencies": {
+    "skuba": "7.2.0"
+  }
+}
+```
+
+```
+node_modules
+├── jest
+├── prettier
+├── skuba
+└── other-skuba-deps
+```
+
+However, this behaviour can lead to some [silly bugs] when updating packages.
 
 ## pnpm in skuba
 
