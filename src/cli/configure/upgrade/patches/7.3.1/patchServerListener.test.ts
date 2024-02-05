@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports -- fs-extra is mocked
 import fs from 'fs';
 import { inspect } from 'util';
 
