@@ -124,9 +124,16 @@ const compileChangesByTemplate = (changelog: string) => {
 
     const version = section.slice(0, split);
 
-    const entries = section
-      .slice(split)
-      .split('\n')
+    const linesAfterVersion = section.slice(split).split('\n');
+
+    // We may have a preamble that summarises the version.
+    // After this, h3s should exist to denote major/minor/patch changes.
+    const postPreambleIndex = linesAfterVersion.findIndex((line) =>
+      line.startsWith('### '),
+    );
+
+    const entries = linesAfterVersion
+      .slice(postPreambleIndex)
       // Filter out headings, such as those denoting major/minor/patch.
       // Our templates aren't semantically versioned so these don't matter.
       .filter((line) => !line.startsWith('#'))
