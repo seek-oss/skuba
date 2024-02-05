@@ -2,6 +2,7 @@ import type { Patches } from '../..';
 import { tryPatchRenovateConfig } from '../../../patchRenovateConfig';
 
 import { tryAddEmptyExports } from './addEmptyExports';
+import { tryMoveNpmrcOutOfGitignoreManagedSection } from './moveNpmrcOutOfGitignoreManagedSection';
 import { tryPatchDockerfile } from './patchDockerfile';
 import { tryPatchServerListener } from './patchServerListener';
 
@@ -22,5 +23,9 @@ export const patches: Patches = [
   {
     apply: tryPatchServerListener,
     description: 'Add keepAliveTimeout to server listener',
+  },
+  {
+    apply: tryMoveNpmrcOutOfGitignoreManagedSection,
+    description: 'Move .npmrc out of the .gitignore managed section',
   },
 ];

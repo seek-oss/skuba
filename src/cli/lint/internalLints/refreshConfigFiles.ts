@@ -16,12 +16,6 @@ import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithIgnoreFile } from '../../configure/processing/ignoreFile';
 import type { InternalLintResult } from '../internal';
 
-const ensureNoNpmrcExclusion = (s: string) =>
-  s
-    .split('\n')
-    .filter((line) => line.includes('!') || !line.includes('.npmrc'))
-    .join('\n');
-
 const ensureNoAuthToken = (fileContents: string) =>
   fileContents
     .split('\n')
@@ -30,18 +24,7 @@ const ensureNoAuthToken = (fileContents: string) =>
 
 const REFRESHABLE_CONFIG_FILES = [
   { name: '.eslintignore' },
-  {
-    name: '.gitignore',
-    additionalMapping: (
-      contents: string,
-      packageManager: PackageManagerConfig,
-    ) => {
-      if (packageManager.command === 'pnpm') {
-        return ensureNoNpmrcExclusion(contents);
-      }
-      return contents;
-    },
-  },
+  { name: '.gitignore' },
   { name: '.prettierignore' },
   {
     name: '.npmrc',

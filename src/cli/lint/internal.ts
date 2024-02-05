@@ -22,19 +22,36 @@ export type InternalLintResult = {
 };
 
 const lints: Array<
-  (mode: 'format' | 'lint', logger: Logger) => Promise<InternalLintResult>
-> = [deleteFilesLint, noSkubaTemplateJs, tryRefreshConfigFiles, upgradeSkuba];
+  Array<
+    (mode: 'format' | 'lint', logger: Logger) => Promise<InternalLintResult>
+  >
+> = [
+  // Run upgradeSkuba before refreshConfigFiles for npmrc handling
+  [upgradeSkuba],
+  [deleteFilesLint, noSkubaTemplateJs, tryRefreshConfigFiles],
+];
 
 const lintSerially = async (mode: 'format' | 'lint', logger: Logger) => {
   const results: InternalLintResult[] = [];
-  for (const lint of lints) {
-    results.push(await lint(mode, logger));
+  for (const lintGroup of lints) {
+    for (const lint of lintGroup) {
+      results.push(await lint(mode, logger));
+    }
   }
   return results;
 };
 
-const lintConcurrently = (mode: 'format' | 'lint', logger: Logger) =>
-  Promise.all(lints.map((lint) => lint(mode, logger)));
+const lintConcurrently = async (mode: 'format' | 'lint', logger: Logger) => {
+  const results: InternalLintResult[] = [];
+
+  for (const lintGroup of lints) {
+    results.push(
+      ...(await Promise.all(lintGroup.map((lint) => lint(mode, logger)))),
+    );
+  }
+
+  return results;
+};
 
 const selectLintFunction = (input?: Input) => {
   const isSerial = input?.debug || input?.serial;
