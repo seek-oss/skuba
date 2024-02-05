@@ -41,10 +41,10 @@ describe('tryMoveNpmrcOutOfGitignoreManagedSection', () => {
         other stuff
         # end managed by skuba
 
-        # Ignore .npmrc. Previously managed by skuba, but removed as pnpm projects require a managed .npmrc.
-        # If migrating to pnpm, remove this line.
-        # IMPORTANT: Ensure you add a .npmrc file IN THE SAME COMMIT to avoid secret exposure.
-        # skuba can generate an .npmrc for you with \`skuba format\` if you move to pnpm - but committing an empty file is sufficient for security reasons.
+        # Ignore .npmrc. This is no longer managed by skuba as pnpm projects use a managed .npmrc.
+        # IMPORTANT: if migrating to pnpm, remove this line and add an .npmrc IN THE SAME COMMIT.
+        # You can use \`skuba format\` to generate the file or otherwise commit an empty file.
+        # Doing so will conflict with a local .npmrc and make it more difficult to unintentionally commit auth secrets.
         .npmrc
         "
       `);
