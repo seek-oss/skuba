@@ -132,9 +132,9 @@ jobs:
 [`skuba lint`]: ../cli/lint.md#skuba-lint
 [`skuba test`]: ../cli/test.md#skuba-test
 [actions/checkout]: https://github.com/actions/checkout
-[compose file]: https://docs.docker.com/compose/compose-file
-[docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
-[docker compose buildkite plugin]: https://github.com/buildkite-plugins/docker-compose-buildkite-plugin
-[github checks api]: https://docs.github.com/en/rest/reference/checks/
-[github.createcheckrun]: ../development-api/github.md#createcheckrun
+[Compose file]: https://docs.docker.com/compose/compose-file
+[Docker Buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
+[Docker Compose Buildkite plugin]: https://github.com/buildkite-plugins/docker-compose-buildkite-plugin
+[GitHub Checks API]: https://docs.github.com/en/rest/reference/checks/
+[GitHub.createCheckRun]: ../development-api/github.md#createcheckrun
 [will not trigger workflows]: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
