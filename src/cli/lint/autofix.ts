@@ -7,9 +7,11 @@ import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
 import { isCiEnv } from '../../utils/env';
 import { createLogger, log } from '../../utils/logging';
+import { hasNpmrcSecret } from '../../utils/npmrc';
 import { throwOnTimeout } from '../../utils/wait';
 import { runESLint } from '../adapter/eslint';
 import { runPrettier } from '../adapter/prettier';
+import { createDestinationFileReader } from '../configure/analysis/project';
 
 import { internalLint } from './internal';
 import type { Input } from './types';
@@ -18,20 +20,21 @@ const RENOVATE_DEFAULT_PREFIX = 'renovate';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
-export const AUTOFIX_IGNORE_FILES: Git.ChangedFile[] = [
-  {
-    path: '.npmrc',
-    state: 'added',
-  },
-  {
-    // This file may already exist in version control, but we shouldn't commit
-    // further changes as the CI environment may have appended an npm token.
-    path: '.npmrc',
-    state: 'modified',
-  },
+export const AUTOFIX_IGNORE_FILES_BASE: Git.ChangedFile[] = [
   {
     path: 'Dockerfile-incunabulum',
     state: 'added',
+  },
+];
+
+export const AUTOFIX_IGNORE_FILES_NPMRC: Git.ChangedFile[] = [
+  {
+    path: '.npmrc',
+    state: 'added',
+  },
+  {
+    path: '.npmrc',
+    state: 'modified',
   },
 ];
 
@@ -93,6 +96,17 @@ const shouldPush = async ({
   return true;
 };
 
+const getIgnores = async (dir: string): Promise<Git.ChangedFile[]> => {
+  const contents = await createDestinationFileReader(dir)('.npmrc');
+
+  // If an .npmrc has secrets, we need to ignore it
+  if (hasNpmrcSecret(contents ?? '')) {
+    return [...AUTOFIX_IGNORE_FILES_BASE, ...AUTOFIX_IGNORE_FILES_NPMRC];
+  }
+
+  return AUTOFIX_IGNORE_FILES_BASE;
+};
+
 interface AutofixParameters {
   debug: Input['debug'];
 
@@ -150,7 +164,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
         dir,
         message: AUTOFIX_COMMIT_MESSAGE,
 
-        ignore: AUTOFIX_IGNORE_FILES,
+        ignore: await getIgnores(dir),
       });
 
       if (!ref) {
@@ -177,7 +191,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
         dir,
         messageHeadline: AUTOFIX_COMMIT_MESSAGE,
 
-        ignore: AUTOFIX_IGNORE_FILES,
+        ignore: await getIgnores(dir),
       }),
       { s: 30 },
     );
