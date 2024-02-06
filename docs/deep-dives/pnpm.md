@@ -175,7 +175,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Run `pnpm install foo` to resolve this error.
 
-12. Modify `Dockerfile` or `Dockerfile.dev-deps`
+11. Modify `Dockerfile` or `Dockerfile.dev-deps`
 
     Your build pipeline may have previously mounted an ephemeral `.npmrc` with an auth token at `/workdir`.
     This needs to be mounted elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -209,7 +209,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
-14. Replace `yarn` with `pnpm` in `Dockerfile`
+12. Replace `yarn` with `pnpm` in `Dockerfile`
 
     As `pnpm fetch` does not actually install dependencies,
     run a subsequent `pnpm install --offline` before any command which may reference a dependency.
@@ -247,7 +247,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       ENV NODE_ENV=production
     ```
 
-16. Modify plugins in `.buildkite/pipeline.yml`
+13. Modify plugins in `.buildkite/pipeline.yml`
 
     Your build pipeline may have previously output an ephemeral `.npmrc` with an auth token on the build agent.
     This needs to be output elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -271,7 +271,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +  secrets: id=npm,src=tmp/.npmrc
     ```
 
-18. Replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
+14. Replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
