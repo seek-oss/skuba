@@ -23,8 +23,8 @@ configs:
       commands:
         - echo '--- pnpm install --offline'
         - pnpm install --offline
-        - echo '+++ pnpm deploy'
-        - pnpm deploy
+        - echo '+++ pnpm run deploy'
+        - pnpm run deploy
       concurrency: 1
       plugins:
         - artifacts#v1.9.3:

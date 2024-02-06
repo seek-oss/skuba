@@ -43,7 +43,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}
 
       - name: Deploy to GitHub Pages
-        run: pnpm deploy
+        run: pnpm run deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IS_GITHUB_PAGES: true
