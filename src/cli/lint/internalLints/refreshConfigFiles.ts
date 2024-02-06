@@ -5,7 +5,7 @@ import { writeFile } from 'fs-extra';
 import stripAnsi from 'strip-ansi';
 
 import type { Logger } from '../../../utils/logging';
-import { hasNpmrcSecret } from '../../../utils/npmrc';
+import { NPMRC_LINES, hasNpmrcSecret } from '../../../utils/npmrc';
 import {
   type PackageManagerConfig,
   detectPackageManager,
@@ -34,7 +34,28 @@ type RefreshableConfigFile = {
 
 const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   { name: '.eslintignore', type: 'ignore' },
-  { name: '.gitignore', type: 'ignore' },
+  {
+    name: '.gitignore',
+    type: 'ignore',
+    additionalMapping: (gitignore: string) => {
+      const npmrcLines = gitignore
+        .split('\n')
+        .filter((line) => NPMRC_LINES.includes(line.trim()));
+
+      // If we're only left with !.npmrc line we can remove it
+      // TODO: Consider if we should generalise this
+      if (
+        npmrcLines.length > 0 &&
+        npmrcLines.every((line) => line.includes('!'))
+      ) {
+        return gitignore
+          .split('\n')
+          .filter((line) => !NPMRC_LINES.includes(line.trim()))
+          .join('\n');
+      }
+      return gitignore;
+    },
+  },
   { name: '.prettierignore', type: 'ignore' },
   {
     name: '.npmrc',
