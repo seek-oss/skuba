@@ -28,6 +28,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup jq
+        uses: dcarbone/install-jq-action@v2.1.0
+
+
       - name: Publish to npm
         uses: seek-oss/changesets-snapshot@v0
         with:
