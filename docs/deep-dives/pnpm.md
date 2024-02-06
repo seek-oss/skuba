@@ -187,7 +187,42 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
     You can view the new `koa-rest-api` template [`Dockerfile.dev-deps`] as a reference point.
 
-11. Modify your `.buildkite/pipeline.yml` file plugins
+11. Modify your usages of `yarn` to `pnpm` in `Dockerfile`
+
+    Since we installed our dependencies with `pnpm fetch`, we will now also have to run a `pnpm install -offline` before any command which may call a dependency. You will also need to exchange `yarn` for `pnpm run`. We have also simplified the usage of stages by removing the `AS dep` stage.
+
+    ```diff
+      ###
+    -
+    - FROM ${BASE_IMAGE} AS deps
+    -
+    - RUN yarn install --ignore-optional --ignore-scripts --non-interactive --offline --production
+    -
+    - ###
+    -
+      FROM ${BASE_IMAGE} AS build
+
+      COPY . .
+
+    - RUN yarn build
+    + RUN pnpm install --offline
+    + RUN pnpm run build
+    + RUN pnpm install --offline --prod
+
+      ###
+
+      FROM --platform=${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs20-debian12 AS runtime
+      WORKDIR /workdir
+
+      COPY --from=build /workdir/lib lib
+
+    - COPY --from=deps /workdir/node_modules node_modules
+    + COPY --from=build /workdir/node_modules node_modules
+
+      ENV NODE_ENV=production
+    ```
+
+12. Modify your `.buildkite/pipeline.yml` file plugins
 
     As our application now contains a `.npmrc` file in our `workdir`, we now also need to also change the mount path in our buildkite plugins. We will also be exchanging the `yarn.lock` file for `pnpm-lock.yaml`
 
@@ -208,9 +243,9 @@ This migration guide assumes that you scaffolded your project with a skuba templ
     +  secrets: id=npm,src=tmp/.npmrc
     ```
 
-12. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml` and scripts
+13. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml`
 
-    Since we installed our dev dependencies with `pnpm fetch`, we will now also have to run a `pnpm install` before any regular `skuba` command. You will also need to exchange `yarn` for `pnpm run`.
+    Since we installed our dependencies with `pnpm fetch`, we will now also have to run a `pnpm install` before any regular `skuba` command. You will also need to exchange `yarn` for `pnpm run`.
 
     ```diff
      - label: 🧪 Test & Lint
