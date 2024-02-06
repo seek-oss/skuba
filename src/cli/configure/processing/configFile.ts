@@ -14,7 +14,7 @@ const TRAILING_SLASH = /\/$/;
  * Note that these patterns are not actually equivalent (e.g. `lib` matches more
  * than `lib/`) but they generally represent the same _intent_.
  */
-export const generateSimpleVariants = (patterns: string[]) => {
+export const generateIgnoreFileSimpleVariants = (patterns: string[]) => {
   const set = new Set<string>();
 
   for (const pattern of patterns) {
@@ -41,10 +41,40 @@ export const generateSimpleVariants = (patterns: string[]) => {
   return set;
 };
 
-export const mergeWithIgnoreFile = (rawTemplateFile: string) => {
+export const generateNpmrcSimpleVariants = (patterns: string[]) => {
+  const set = new Set<string>();
+
+  for (const pattern of patterns) {
+    set.add(pattern);
+
+    const match = pattern.match(/^(?<key>[^"=]+)="?(?<value>[^"=]+)"?$/);
+    if (!match?.groups) {
+      continue;
+    }
+
+    const { key, value } = match.groups;
+
+    set.add(`${key}=${value}`);
+    set.add(`${key}="${value}"`);
+  }
+
+  set.delete('');
+
+  return set;
+};
+
+export const mergeWithConfigFile = (
+  rawTemplateFile: string,
+  fileType: 'ignore' | 'npmrc' = 'ignore',
+) => {
   const templateFile = rawTemplateFile.trim();
 
-  const templatePatterns = generateSimpleVariants([
+  const generator =
+    fileType === 'ignore'
+      ? generateIgnoreFileSimpleVariants
+      : generateNpmrcSimpleVariants;
+
+  const templatePatterns = generator([
     ...OUTDATED_PATTERNS,
     ...templateFile.split('\n').map((line) => line.trim()),
   ]);

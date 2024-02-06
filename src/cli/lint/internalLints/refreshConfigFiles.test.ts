@@ -339,5 +339,41 @@ Refreshed .npmrc. refresh-config-files
 
       expect(writeFile).not.toHaveBeenCalled();
     });
+
+    it('should format an extraneous !.npmrc', async () => {
+      setupDestinationFiles({
+        '.gitignore':
+          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\nstuff\n!.npmrc\n!/.npmrc\nother stuff',
+      });
+
+      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(writeFile).toHaveBeenCalledWith(
+        path.join(process.cwd(), '.gitignore'),
+        '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\nstuff\nother stuff',
+      );
+    });
+
+    it('should not strip !.npmrc if ignored out of the managed file for no good reason', async () => {
+      setupDestinationFiles({
+        '.gitignore':
+          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n.npmrc\n!.npmrc\n',
+      });
+
+      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(writeFile).not.toHaveBeenCalledWith(
+        path.join(process.cwd(), '.gitignore'),
+        expect.any(String),
+      );
+    });
   });
 });

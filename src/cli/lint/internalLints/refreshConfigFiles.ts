@@ -5,7 +5,7 @@ import { writeFile } from 'fs-extra';
 import stripAnsi from 'strip-ansi';
 
 import type { Logger } from '../../../utils/logging';
-import { hasNpmrcSecret } from '../../../utils/npmrc';
+import { NPMRC_LINES, hasNpmrcSecret } from '../../../utils/npmrc';
 import {
   type PackageManagerConfig,
   detectPackageManager,
@@ -13,7 +13,7 @@ import {
 import { readBaseTemplateFile } from '../../../utils/template';
 import { getDestinationManifest } from '../../configure/analysis/package';
 import { createDestinationFileReader } from '../../configure/analysis/project';
-import { mergeWithIgnoreFile } from '../../configure/processing/ignoreFile';
+import { mergeWithConfigFile } from '../../configure/processing/configFile';
 import type { InternalLintResult } from '../internal';
 
 const ensureNoAuthToken = (fileContents: string) =>
@@ -22,12 +22,44 @@ const ensureNoAuthToken = (fileContents: string) =>
     .filter((line) => !hasNpmrcSecret(line))
     .join('\n');
 
-const REFRESHABLE_CONFIG_FILES = [
-  { name: '.eslintignore' },
-  { name: '.gitignore' },
-  { name: '.prettierignore' },
+type RefreshableConfigFile = {
+  name: string;
+  type: 'ignore' | 'npmrc';
+  additionalMapping?: (
+    s: string,
+    packageManager: PackageManagerConfig,
+  ) => string;
+  if?: (packageManager: PackageManagerConfig) => boolean;
+};
+
+const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
+  { name: '.eslintignore', type: 'ignore' },
+  {
+    name: '.gitignore',
+    type: 'ignore',
+    additionalMapping: (gitignore: string) => {
+      const npmrcLines = gitignore
+        .split('\n')
+        .filter((line) => NPMRC_LINES.includes(line.trim()));
+
+      // If we're only left with !.npmrc line we can remove it
+      // TODO: Consider if we should generalise this
+      if (
+        npmrcLines.length > 0 &&
+        npmrcLines.every((line) => line.includes('!'))
+      ) {
+        return gitignore
+          .split('\n')
+          .filter((line) => !NPMRC_LINES.includes(line.trim()))
+          .join('\n');
+      }
+      return gitignore;
+    },
+  },
+  { name: '.prettierignore', type: 'ignore' },
   {
     name: '.npmrc',
+    type: 'npmrc',
     additionalMapping: ensureNoAuthToken,
     if: (packageManager: PackageManagerConfig) =>
       packageManager.command === 'pnpm',
@@ -45,13 +77,13 @@ export const refreshConfigFiles = async (
   const readDestinationFile = createDestinationFileReader(destinationRoot);
 
   const refreshConfigFile = async (
-    filename: string,
+    {
+      name: filename,
+      type: fileType,
+      additionalMapping = (s) => s,
+      if: condition = () => true,
+    }: RefreshableConfigFile,
     packageManager: PackageManagerConfig,
-    additionalMapping: (
-      s: string,
-      packageManager: PackageManagerConfig,
-    ) => string = (s) => s,
-    condition: (packageManager: PackageManagerConfig) => boolean = () => true,
   ) => {
     if (!condition(packageManager)) {
       return { needsChange: false };
@@ -63,7 +95,9 @@ export const refreshConfigFiles = async (
     ]);
 
     const data = additionalMapping(
-      inputFile ? mergeWithIgnoreFile(templateFile)(inputFile) : templateFile,
+      inputFile
+        ? mergeWithConfigFile(templateFile, fileType)(inputFile)
+        : templateFile,
       packageManager,
     );
 
@@ -103,12 +137,7 @@ export const refreshConfigFiles = async (
 
   const results = await Promise.all(
     REFRESHABLE_CONFIG_FILES.map((conf) =>
-      refreshConfigFile(
-        conf.name,
-        packageManager,
-        conf.additionalMapping,
-        conf.if,
-      ),
+      refreshConfigFile(conf, packageManager),
     ),
   );
 

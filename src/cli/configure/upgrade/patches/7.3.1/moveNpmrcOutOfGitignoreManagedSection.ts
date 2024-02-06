@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../utils/logging';
+import { NPMRC_LINES } from '../../../../../utils/npmrc';
 import { createDestinationFileReader } from '../../../analysis/project';
 
 const NPMRC_IGNORE_SECTION = `
@@ -62,7 +63,7 @@ const moveNpmrcOutOfGitignoreManagedSection = async (
   const newGitignore =
     gitignore
       .split('\n')
-      .filter((line) => line.trim().replace(/^[!/]+/g, '') !== '.npmrc')
+      .filter((line) => !NPMRC_LINES.includes(line.trim()))
       .join('\n')
       .trim() + NPMRC_IGNORE_SECTION;
 
