@@ -28,7 +28,7 @@ In our previously-recommended package manager, [Yarn], these packages and others
 }
 ```
 
-```
+```console
 node_modules
 ├── jest
 ├── prettier
@@ -38,7 +38,7 @@ node_modules
 
 However, this behaviour can lead to some [silly bugs] when updating packages.
 
-## pnpm in skuba
+### pnpm in skuba
 
 [pnpm] addresses the hoisting issue with a [symlinked structure].
 Each package is guaranteed to resolve compatible versions of its dependencies, rather than whichever versions were incidentally hoisted.
@@ -47,7 +47,7 @@ This behaviour is a double-edged sword for a toolkit like **skuba**.
 Dependencies like Prettier and ESLint end up nested in a `node_modules/skuba/node_modules` subdirectory,
 where most editor and developer tooling integrations will not know to look.
 
-```
+```console
 node_modules
 ├── skuba -> ./.pnpm/skuba@7.2.0
 └── .pnpm
@@ -59,7 +59,7 @@ node_modules
             └── other-dep -> <store>/other-dep
 ```
 
-#### .npmrc
+### .npmrc
 
 pnpm allows us to specify dependencies to hoist via command line or [`.npmrc`].
 The number of package patterns we need to hoist may fluctuate over time,
@@ -67,7 +67,7 @@ so specifying hoist patterns via command line would be difficult to maintain.
 
 The **skuba**-maintained `.npmrc` currently instructs pnpm to hoist the following dependencies:
 
-```
+```shell
 # managed by skuba
 public-hoist-pattern[]="@types*"
 public-hoist-pattern[]="*eslint*"
@@ -81,7 +81,7 @@ public-hoist-pattern[]="tsconfig-seek"
 From the previous example, this will produce the following `node_modules` layout,
 allowing external integrations to find `prettier` in `node_modules/prettier` as before.
 
-```
+```console
 node_modules
 ├── prettier -> ./.pnpm/prettier@3.0.0
 ├── skuba -> ./.pnpm/skuba@7.2.0
@@ -169,7 +169,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     For example:
 
-    ```
+    ```shell
     Cannot find module 'foo'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option? ts(2792)
     ```
 
