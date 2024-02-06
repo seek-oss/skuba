@@ -86,7 +86,7 @@ node_modules
 
 ## Migrating to pnpm from yarn or npm
 
-1. Install skuba 7.4.0
+1. Install skuba 7.4.0 or greater
 
 2. Install pnpm
 
