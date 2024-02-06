@@ -257,7 +257,7 @@ and our [release](https://github.com/seek-oss/skuba/blob/master/.github/workflow
 
 Prereleases can be created on demand via [seek-oss/changesets-snapshot].
 
-Run the [Snapshot workflow] in GitHub Actions to publish a new snapshot version to npm.
+Manually run the [Snapshot workflow] for the `master` branch in GitHub Actions to publish a new snapshot version to npm.
 
 <https://www.npmjs.com/package/skuba?activeTab=versions>
 
