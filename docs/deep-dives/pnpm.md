@@ -157,7 +157,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
 10. Handle transitive dependency issues
 
-    Since installing `pnpm` you may have noticed that there are some imports you are making to your code which no longer work. This is an intended behaviour of `pnpm` as these dependencies are no longer behind hoisted. You will now need to explicitly declare those dependencies as `dependencies` or `devDependencies` in your `package.json`.
+    Since installing `pnpm` you may have noticed that there are some imports you are making to your code which no longer work. This is an intended behaviour of `pnpm` as these dependencies are no longer being hoisted. You will now need to explicitly declare these as `dependencies` or `devDependencies` in your `package.json`.
 
     For example:
 
