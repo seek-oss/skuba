@@ -92,11 +92,12 @@ node_modules
             └── other-dep -> <store>/other-dep
 ```
 
-However, this presents challenges as our applications make use of `.npmrc` for authentication to the SEEK packages on the npm registry. You will see how we deal with this in the migration guide below.
+This presents challenges to build pipelines that synthesise an ephemeral `.npmrc` to access private SEEK packages on the npm registry.
+We deal with this in the migration guide below.
 
 ## Migrating to pnpm from Yarn or npm
 
-This migration guide assumes that you scaffolded your project with a skuba template.
+This migration guide assumes that you scaffolded your project with a **skuba** template.
 
 1. Install **skuba** 7.4.0 or greater
 
@@ -118,7 +119,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
 4. Create [`pnpm-workspace.yaml`](https://pnpm.io/pnpm-workspace_yaml)
 
-   If you are not using Yarn workspaces, you can skip this step.
+   Skip this step if your project does not use Yarn workspaces.
 
    ```yaml
    packages:
@@ -130,7 +131,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
    This converts your `yarn.lock` or `package-lock.json` into a `pnpm-lock.yaml` file.
 
-6. Delete the `yarn.lock` or `package-lock.json` file.
+6. Delete the `yarn.lock` or `package-lock.json` file
 
 7. Run `skuba format`
 
@@ -138,17 +139,17 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
 8. Include additional hoisting settings into `.npmrc`
 
-   If your application is not using Serverless, you can skip this step.
+   Skip this step if your project does not use Serverless.
 
    ```diff
-     # managed by skuba
-     public-hoist-pattern[]="@types*"
-     public-hoist-pattern[]="*eslint*"
-     public-hoist-pattern[]="*prettier*"
-     public-hoist-pattern[]="esbuild"
-     public-hoist-pattern[]="jest"
-     public-hoist-pattern[]="tsconfig-seek"
-     # end managed by skuba
+   # managed by skuba
+   public-hoist-pattern[]="@types*"
+   public-hoist-pattern[]="*eslint*"
+   public-hoist-pattern[]="*prettier*"
+   public-hoist-pattern[]="esbuild"
+   public-hoist-pattern[]="jest"
+   public-hoist-pattern[]="tsconfig-seek"
+   # end managed by skuba
    +
    + # Required for Serverless packaging
    + node-linker=hoisted
@@ -159,7 +160,9 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
 10. Handle transitive dependency issues
 
-    Since installing `pnpm` you may have noticed that there are some imports you are making to your code which no longer work. This is an intended behaviour of `pnpm` as these dependencies are no longer being hoisted. You will now need to explicitly declare these as `dependencies` or `devDependencies` in your `package.json`.
+    Since installing pnpm, you may have noticed that some imports you are making in your code no longer work.
+    This is an intended behaviour of pnpm as these dependencies are no longer being hoisted.
+    You will now need to explicitly declare these as `dependencies` or `devDependencies` in your `package.json`.
 
     For example:
 
@@ -167,11 +170,12 @@ This migration guide assumes that you scaffolded your project with a skuba templ
     Cannot find module 'foo'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option? ts(2792)
     ```
 
-    To resolve this, you would need to run `pnpm install foo`
+    To resolve this, you would need to run `pnpm install foo`.
 
-11. Modify your `Dockerfile` or `Dockerfile.dev-deps` files.
+11. Modify your `Dockerfile` or `Dockerfile.dev-deps` file
 
-    Your application may be mounting a `.npmrc` secret with an auth token at `/workdir` but because we now have a configuration `.npmrc` file we will need to mount this elsewhere.
+    Your build pipeline may mount an ephemeral `.npmrc` with an auth token at `/workdir`.
+    We need to mount this elsewhere now that our Git repository stores pnpm configuration in `.npmrc`.
 
     ```diff
       FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:20-alpine AS dev-deps
@@ -185,23 +189,26 @@ This migration guide assumes that you scaffolded your project with a skuba templ
     - COPY packages/foo/package.json packages/foo/
 
     - RUN --mount=type=secret,id=npm,dst=/workdir/.npmrc \
-    -   yarn install --frozen-lockfile --ignore-optional --non-interactive
+    -     yarn install --frozen-lockfile --ignore-optional --non-interactive
     + RUN --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
-    +   --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
-    +   pnpm fetch
+    +     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
+    +     pnpm fetch
     ```
 
-    Here we are also utilising a [bind mount] instead of the `COPY` to mount the `pnpm-lock.yaml` file.
+    We move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc` so it does not overwrite our pnpm configuration,
+    and utilise a [bind mount] instead of the `COPY` to mount the `pnpm-lock.yaml` file.
 
-    We have also replaced the `secret` `dst` location from `/workdir/.npmrc` to `/root/.npmrc`.
+    You will notice that we are no longer copying `package.json` in the `Dockerfile`.
+    [`pnpm fetch`] does not require this file to resolve packages,
+    so trivial updates to the `package.json` file will no longer result in a cache miss.
+    `pnpm fetch` is also optimised for monorepo setups,
+    so if you were previously declaring sub-package directories in your `Dockerfile`,
+    you can remove them completely.
+    The usage of `pnpm fetch` does have some implications which we will cover in the next step.
 
-    You will also notice that we are no longer copying `package.json` to the `Dockerfile`.
+    You can view [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
-    This is because [`pnpm fetch`] does not require one to resolve packages, which means that trivial updates to the `package.json` file will now no longer result in a cache miss. `pnpm fetch` is also optimised for monorepo setups so if you were previously declaring sub-package folders in your `Dockerfile`, you can remove them completely. The usage of `pnpm fetch` does have some implications which we will cover in the next step.
-
-    You can view the new `koa-rest-api` template [`Dockerfile.dev-deps`] as a reference point.
-
-12. Modify your usages of `yarn` to `pnpm` in `Dockerfile`
+13. Modify your usages of `yarn` to `pnpm` in `Dockerfile`
 
     Since we installed our dependencies with `pnpm fetch`, we will now also have to run a `pnpm install -offline` before any command which may call a dependency. You will also need to exchange `yarn` for `pnpm run`. We have also simplified the usage of stages by removing the `AS dep` stage.
 
@@ -236,7 +243,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
       ENV NODE_ENV=production
     ```
 
-13. Modify your `.buildkite/pipeline.yml` plugins
+14. Modify your `.buildkite/pipeline.yml` plugins
 
     As our application now contains a `.npmrc` file in our `workdir`, we now also need to also change the mount path of our auth token `.npmrc` file in our buildkite plugins. We will also be exchanging the `yarn.lock` file for `pnpm-lock.yaml`
 
@@ -257,7 +264,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
     +  secrets: id=npm,src=tmp/.npmrc
     ```
 
-14. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml`
+15. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
