@@ -13,7 +13,7 @@ import {
 import { readBaseTemplateFile } from '../../../utils/template';
 import { getDestinationManifest } from '../../configure/analysis/package';
 import { createDestinationFileReader } from '../../configure/analysis/project';
-import { mergeWithIgnoreFile } from '../../configure/processing/ignoreFile';
+import { mergeWithConfigFile } from '../../configure/processing/configFile';
 import type { InternalLintResult } from '../internal';
 
 const ensureNoAuthToken = (fileContents: string) =>
@@ -22,10 +22,21 @@ const ensureNoAuthToken = (fileContents: string) =>
     .filter((line) => !hasNpmrcSecret(line))
     .join('\n');
 
-const REFRESHABLE_CONFIG_FILES = [
-  { name: '.eslintignore' },
+type RefreshableConfigFile = {
+  name: string;
+  type: 'ignore' | 'npmrc';
+  additionalMapping?: (
+    s: string,
+    packageManager: PackageManagerConfig,
+  ) => string;
+  if?: (packageManager: PackageManagerConfig) => boolean;
+};
+
+const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
+  { name: '.eslintignore', type: 'ignore' },
   {
     name: '.gitignore',
+    type: 'ignore',
     additionalMapping: (gitignore: string) => {
       const npmrcLines = gitignore
         .split('\n')
@@ -45,9 +56,10 @@ const REFRESHABLE_CONFIG_FILES = [
       return gitignore;
     },
   },
-  { name: '.prettierignore' },
+  { name: '.prettierignore', type: 'ignore' },
   {
     name: '.npmrc',
+    type: 'npmrc',
     additionalMapping: ensureNoAuthToken,
     if: (packageManager: PackageManagerConfig) =>
       packageManager.command === 'pnpm',
@@ -65,13 +77,13 @@ export const refreshConfigFiles = async (
   const readDestinationFile = createDestinationFileReader(destinationRoot);
 
   const refreshConfigFile = async (
-    filename: string,
+    {
+      name: filename,
+      type: fileType,
+      additionalMapping = (s) => s,
+      if: condition = () => true,
+    }: RefreshableConfigFile,
     packageManager: PackageManagerConfig,
-    additionalMapping: (
-      s: string,
-      packageManager: PackageManagerConfig,
-    ) => string = (s) => s,
-    condition: (packageManager: PackageManagerConfig) => boolean = () => true,
   ) => {
     if (!condition(packageManager)) {
       return { needsChange: false };
@@ -83,7 +95,9 @@ export const refreshConfigFiles = async (
     ]);
 
     const data = additionalMapping(
-      inputFile ? mergeWithIgnoreFile(templateFile)(inputFile) : templateFile,
+      inputFile
+        ? mergeWithConfigFile(templateFile, fileType)(inputFile)
+        : templateFile,
       packageManager,
     );
 
@@ -123,12 +137,7 @@ export const refreshConfigFiles = async (
 
   const results = await Promise.all(
     REFRESHABLE_CONFIG_FILES.map((conf) =>
-      refreshConfigFile(
-        conf.name,
-        packageManager,
-        conf.additionalMapping,
-        conf.if,
-      ),
+      refreshConfigFile(conf, packageManager),
     ),
   );
 
