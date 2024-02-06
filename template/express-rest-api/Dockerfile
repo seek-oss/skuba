@@ -7,7 +7,7 @@ FROM ${BASE_IMAGE} AS build
 COPY . .
 
 RUN pnpm install --offline
-RUN pnpm run build
+RUN pnpm build
 RUN pnpm install --offline --prod
 
 ###

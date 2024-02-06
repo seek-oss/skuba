@@ -167,21 +167,21 @@ The `--inspect` and `--inspect-brk` [Node.js options] are supported for debuggin
 Try this out by starting your project with inspector enabled:
 
 ```bash
-pnpm run start:debug
+pnpm start:debug
 ```
 
 Next, attach VS Code's debugger to the running process:
 
 1. Hit `⌘ + ⇧ + P` to bring up the Command Palette.
 1. Select `Debug: Attach to Node Process`
-1. Select the `node` process that is pointing to `pnpm run start:debug`
+1. Select the `node` process that is pointing to `pnpm start:debug`
 
 ```shell
 Pick the node.js process to attach to
 
 ...
 
-node /Users/seeker/.nvm/versions/node/vX.Y.Z/bin/pnpm run start --inspect-brk
+node /Users/seeker/.nvm/versions/node/vX.Y.Z/bin/pnpm start --inspect-brk
 process id: 1000 (SIGUSR1)
 ```
 

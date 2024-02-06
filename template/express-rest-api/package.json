@@ -6,7 +6,7 @@
     "format": "skuba format",
     "lint": "skuba lint",
     "start": "skuba start --port <%- port %>",
-    "start:debug": "pnpm run --silent start --inspect-brk",
+    "start:debug": "pnpm --silent start --inspect-brk",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"

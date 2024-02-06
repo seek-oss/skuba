@@ -23,8 +23,8 @@ configs:
       commands:
         - echo '--- pnpm install --offline'
         - pnpm install --offline
-        - echo '+++ pnpm run deploy'
-        - pnpm run deploy
+        - echo '+++ pnpm deploy'
+        - pnpm deploy
       concurrency: 1
       plugins:
         - artifacts#v1.9.3:
@@ -52,12 +52,12 @@ steps:
     commands:
       - echo '--- pnpm install --offline'
       - pnpm install --offline
-      - echo '+++ pnpm run test:ci'
-      - pnpm run test:ci
-      - echo '--- pnpm run lint'
-      - pnpm run lint
-      - echo '--- pnpm run build'
-      - pnpm run build
+      - echo '+++ pnpm test:ci'
+      - pnpm test:ci
+      - echo '--- pnpm lint'
+      - pnpm lint
+      - echo '--- pnpm build'
+      - pnpm build
     env:
       GET_GITHUB_TOKEN: please
     plugins:

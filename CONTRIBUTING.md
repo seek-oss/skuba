@@ -100,21 +100,21 @@ If all is well, they will merge your pull request into master.
 You may find it easier to develop alongside unit tests:
 
 ```shell
-pnpm run test --watch
+pnpm test --watch
 ```
 
 Format your code once you're happy with it:
 
 ```shell
-pnpm run format
+pnpm format
 ```
 
 We run linting and testing in CI,
 but consider running these commands locally for a faster feedback loop:
 
 ```shell
-pnpm run lint
-pnpm run test
+pnpm lint
+pnpm test
 ```
 
 Our [validate](https://github.com/seek-oss/skuba/blob/master/.github/workflows/validate.yml) GitHub Actions workflow also initialises each built-in **skuba** template and runs through a set of CLI commands.
@@ -123,7 +123,7 @@ but keep in mind that the script is fairly slow and you'll have to manually clea
 
 ```shell
 # greeter | koa-rest-api | ...
-pnpm run test:template greeter
+pnpm test:template greeter
 
 # clean up temporary sibling directory
 rm -fr ../tmp-greeter
@@ -132,17 +132,17 @@ rm -fr ../tmp-greeter
 ### Running locally
 
 If you want to try out the **skuba** CLI on itself,
-a `pnpm run skuba` script is configured:
+a `pnpm skuba` script is configured:
 
 ```shell
 # Prints available commands.
-pnpm run skuba
+pnpm skuba
 
 # Prints version from local package.json.
-pnpm run skuba version
+pnpm skuba version
 
 # Builds skuba using itself.
-pnpm run skuba build
+pnpm skuba build
 ```
 
 If you want to try out the **skuba** CLI on another local repo,
@@ -154,7 +154,7 @@ pnpm link --global
 
 # `pnpm link` points to the JavaScript output in `./lib`.
 # This means you'll need to rebuild skuba on every code change 😔.
-pnpm run build
+pnpm build
 
 # Run skuba commands against the other repo.
 skuba version
@@ -189,7 +189,7 @@ a changeset is not necessary for:
 - [npm dev dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
 
 ```shell
-pnpm run changeset
+pnpm changeset
 ```
 
 The Changesets CLI is interactive and follows [semantic versioning]:

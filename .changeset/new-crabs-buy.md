@@ -36,8 +36,8 @@ In your `.buildkite/pipeline.yml`:
 ```diff
 steps:
   - commands:
-      - pnpm run lint
-      - pnpm run test
+      - pnpm lint
+      - pnpm test
     env:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
       GET_GITHUB_TOKEN: 'please'
