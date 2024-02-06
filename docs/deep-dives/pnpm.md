@@ -208,7 +208,7 @@ This migration guide assumes that you scaffolded your project with a **skuba** t
 
     You can view [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
-13. Modify your usages of `yarn` to `pnpm` in `Dockerfile`
+12. Modify your usages of `yarn` to `pnpm` in `Dockerfile`
 
     Since we installed our dependencies with `pnpm fetch`, we will now also have to run a `pnpm install -offline` before any command which may call a dependency. You will also need to exchange `yarn` for `pnpm run`. We have also simplified the usage of stages by removing the `AS dep` stage.
 
@@ -243,7 +243,7 @@ This migration guide assumes that you scaffolded your project with a **skuba** t
       ENV NODE_ENV=production
     ```
 
-14. Modify your `.buildkite/pipeline.yml` plugins
+13. Modify your `.buildkite/pipeline.yml` plugins
 
     As our application now contains a `.npmrc` file in our `workdir`, we now also need to also change the mount path of our auth token `.npmrc` file in our buildkite plugins. We will also be exchanging the `yarn.lock` file for `pnpm-lock.yaml`
 
@@ -264,7 +264,7 @@ This migration guide assumes that you scaffolded your project with a **skuba** t
     +  secrets: id=npm,src=tmp/.npmrc
     ```
 
-15. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml`
+14. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
