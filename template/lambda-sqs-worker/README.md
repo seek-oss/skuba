@@ -96,7 +96,7 @@ To deploy locally:
 # Authenticate to dev account
 awsauth
 
-ENVIRONMENT=dev pnpm deploy
+ENVIRONMENT=dev pnpm run deploy
 ```
 
 To rapidly roll back a change,

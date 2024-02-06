@@ -23,8 +23,8 @@ configs:
       commands:
         - echo '--- pnpm install --offline'
         - pnpm install --offline
-        - echo '+++ pnpm deploy'
-        - pnpm deploy
+        - echo '+++ pnpm run deploy'
+        - pnpm run deploy
       concurrency: 1
       plugins:
         - *aws-sm
@@ -106,8 +106,8 @@ steps:
     commands:
       - echo '--- pnpm install --offline'
       - pnpm install --offline
-      - echo '+++ pnpm deploy:hotswap'
-      - pnpm deploy:hotswap
+      - echo '+++ pnpm run deploy:hotswap'
+      - pnpm run deploy:hotswap
     label: 🤞 Deploy Dev (Hotswap)
     concurrency_group: '<%- repoName %>/deploy/dev'
 
