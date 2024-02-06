@@ -2,7 +2,7 @@
 'skuba': minor
 ---
 
-template: Initialise new projects with [pnpm](https://pnpm.io/)
+init: Initialise new projects with [pnpm](https://pnpm.io/)
 
 New projects based on built-in templates will now use pnpm as their package manager as per updated organisational guidance.
 

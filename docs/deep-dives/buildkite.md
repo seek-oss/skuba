@@ -23,7 +23,7 @@ For example, with the [Docker Buildkite plugin]:
 
 ```yaml
 steps:
-  - command: pnpm run lint
+  - command: pnpm lint
     plugins:
       - *aws-sm
       - *private-npm
@@ -57,7 +57,7 @@ and the `environment` and `propagate-environment` options in the [Docker Compose
 
 ```yaml
 steps:
-  - command: pnpm run lint
+  - command: pnpm lint
     plugins:
       - *aws-sm
       - *private-npm

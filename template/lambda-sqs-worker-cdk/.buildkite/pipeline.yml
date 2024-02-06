@@ -23,8 +23,8 @@ configs:
       commands:
         - echo '--- pnpm install --offline'
         - pnpm install --offline
-        - echo '+++ pnpm run deploy'
-        - pnpm run deploy
+        - echo '+++ pnpm deploy'
+        - pnpm deploy
       concurrency: 1
       plugins:
         - *aws-sm
@@ -50,10 +50,10 @@ steps:
     commands:
       - echo '--- pnpm install --offline'
       - pnpm install --offline
-      - echo '+++ pnpm run test:ci'
-      - pnpm run test
-      - echo '--- pnpm run lint'
-      - pnpm run lint
+      - echo '+++ pnpm test:ci'
+      - pnpm test
+      - echo '--- pnpm lint'
+      - pnpm lint
     env:
       GET_GITHUB_TOKEN: please
     plugins:
@@ -106,8 +106,8 @@ steps:
     commands:
       - echo '--- pnpm install --offline'
       - pnpm install --offline
-      - echo '+++ pnpm run deploy:hotswap'
-      - pnpm run deploy:hotswap
+      - echo '+++ pnpm deploy:hotswap'
+      - pnpm deploy:hotswap
     label: 🤞 Deploy Dev (Hotswap)
     concurrency_group: '<%- repoName %>/deploy/dev'
 

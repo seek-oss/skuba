@@ -29,8 +29,8 @@ the lowest-friction way of defining reusable scripts is within your [package.jso
 These scripts are executable through your package manager:
 
 ```shell
-pnpm run build
-pnpm run format
+pnpm build
+pnpm format
 ```
 
 [eslint]: https://eslint.org/
