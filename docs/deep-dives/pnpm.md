@@ -14,7 +14,7 @@ This topic details how to use pnpm with **skuba**.
 
 ## Background
 
-**skuba** serves a wrapper for numerous developer tools such as TypeScript, Jest, Prettier & ESLint,
+**skuba** serves as a wrapper for numerous developer tools such as TypeScript, Jest, Prettier & ESLint,
 abstracting the dependency management of those packages across SEEK projects.
 When you are using **skuba**,
 you do not need to declare these packages as direct `devDependencies`.
