@@ -92,6 +92,8 @@ node_modules
             └── other-dep -> <store>/other-dep
 ```
 
+However, this presents challenges as our applications make use of `.npmrc` for authentication to the SEEK registry. You will see how we deal with this in the migration guide below.
+
 ## Migrating to pnpm from Yarn or npm
 
 This migration guide assumes that you scaffolded your project with a skuba template.
