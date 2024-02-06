@@ -34,8 +34,8 @@ jobs:
       - name: Publish to npm
         uses: seek-oss/changesets-snapshot@v0
         with:
-          pre-version: pnpm changeset version && jq -r '.version' package.json > .changeset-version && git checkout .
-          pre-publish: jq -r '.version = "'$(cat .changeset-version)'" + (.version | sub("0.0.0"; ""))' package.json > package.json.tmp && mv package.json.tmp package.json && rm .changeset-version && pnpm run build
+          pre-version: ./scripts/snapshot-pre-version.sh
+          pre-publish: ./scripts/snapshot-pre-publish.sh
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}
