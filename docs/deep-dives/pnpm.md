@@ -257,8 +257,6 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
 14. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml`
 
-    Since we installed our dependencies with `pnpm fetch`, we will now also have to run a `pnpm install` before any regular `skuba` command. You will also need to exchange `yarn` for `pnpm run`.
-
     ```diff
      - label: 🧪 Test & Lint
        commands:
