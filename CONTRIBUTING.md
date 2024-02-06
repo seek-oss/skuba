@@ -257,7 +257,19 @@ and our [release](https://github.com/seek-oss/skuba/blob/master/.github/workflow
 
 Prereleases can be created on demand via [seek-oss/changesets-snapshot].
 
+If not already, beta version will need to be entered:
+
+```shell
+pnpm changeset pre enter beta
+```
+
 Manually run the [Snapshot workflow] for the `master` branch in GitHub Actions to publish a new snapshot version to npm.
+
+Once ready to release, the prerelease can be promoted to a stable release:
+
+```shell
+pnpm changeset pre exit
+```
 
 <https://www.npmjs.com/package/skuba?activeTab=versions>
 

@@ -1,0 +1,8 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "skuba": "7.3.1"
+  },
+  "changesets": []
+}
