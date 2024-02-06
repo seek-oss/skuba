@@ -6,7 +6,7 @@ parent: Deep dives
 
 ---
 
-pnpm is the recommended package manager of choice for projects at SEEK.
+pnpm is the recommended package manager of choice for TypeScript projects at SEEK.
 
 This topic details how to use pnpm with **skuba**.
 
@@ -14,9 +14,9 @@ This topic details how to use pnpm with **skuba**.
 
 ## Background
 
-**skuba** simply serves a wrapper for numerous developer tools such as TypeScript, Jest, Prettier & ESLint,
+**skuba** serves a wrapper for numerous developer tools such as TypeScript, Jest, Prettier & ESLint,
 abstracting the dependency management of those packages across SEEK projects.
-This means that when you are using **skuba**,
+When you are using **skuba**,
 you do not need to declare these packages as direct `devDependencies`.
 In our previously-recommended package manager, [Yarn], these packages and others are automatically hoisted to create a flattened dependency tree.
 
@@ -40,10 +40,11 @@ However, this behaviour can lead to some [silly bugs] when updating packages.
 
 ## pnpm in skuba
 
-[pnpm] addresses the hoisting issue by using a [symlinked structure] which allows every package to use the version range of the package they declared as opposed to the version which may have been hoisted.
+[pnpm] addresses the hoisting issue with a [symlinked structure].
+Each package is guaranteed to resolve compatible versions of its dependencies, rather than whichever versions were incidentally hoisted.
 
-This is a double-edged sword when it comes to using **skuba**,
-as this means that our dependencies such as Prettier and ESLint become nested within a `node_modules/skuba/node_modules` subdirectory,
+This behaviour is a double-edged sword for a toolkit like **skuba**.
+Dependencies like Prettier and ESLint end up nested in a `node_modules/skuba/node_modules` subdirectory,
 where most editor and developer tooling integrations will not know to look.
 
 ```
@@ -60,11 +61,11 @@ node_modules
 
 #### .npmrc
 
-pnpm allows us to specify dependencies to hoist via command line or [`.npmrc`] file.
-However, the number of package patterns we need to hoist may fluctuate,
+pnpm allows us to specify dependencies to hoist via command line or [`.npmrc`].
+The number of package patterns we need to hoist may fluctuate over time,
 so specifying hoist patterns via command line would be difficult to maintain.
 
-The **skuba**-maintained `.npmrc` instructs the following dependencies to be hoisted:
+The **skuba**-maintained `.npmrc` currently instructs pnpm to hoist the following dependencies:
 
 ```
 # managed by skuba
@@ -77,7 +78,8 @@ public-hoist-pattern[]="tsconfig-seek"
 # end managed by skuba
 ```
 
-From the previous example, this will produce the following `node_modules` layout which means that our integrations will now be able to find `prettier` in `node_modules/prettier` like before.
+From the previous example, this will produce the following `node_modules` layout,
+allowing external integrations to find `prettier` in `node_modules/prettier` as before.
 
 ```
 node_modules
@@ -92,26 +94,26 @@ node_modules
             └── other-dep -> <store>/other-dep
 ```
 
-This presents challenges to build pipelines that synthesise an ephemeral `.npmrc` to access private SEEK packages on the npm registry.
-We deal with this in the migration guide below.
+Committing pnpm configuration in `.npmrc` can conflict with build pipelines that synthesise an ephemeral `.npmrc` to access private SEEK packages on the npm registry.
+A solution to this problem is detailed in the migration guide below.
 
 ## Migrating to pnpm from Yarn or npm
 
-This migration guide assumes that you scaffolded your project with a **skuba** template.
+This migration guide assumes that your project was scaffolded with a **skuba** template.
 
 1. Install **skuba** 7.4.0 or greater
 
 2. Install pnpm
 
-   On macOS you can run the following:
+   Run the following on macOS:
 
    ```bash
    brew install pnpm
    ```
 
-   For other operating systems you can check the [install guide].
+   (Check the [install guide] for other operating systems.)
 
-3. Add a `packageManager` key to your `package.json`
+3. Add a `packageManager` key to `package.json`
 
    ```json
    "packageManager": "pnpm@8.15.1",
@@ -123,21 +125,21 @@ This migration guide assumes that you scaffolded your project with a **skuba** t
 
    ```yaml
    packages:
-     # all packages in direct subdirs of packages/
+     # all packages in direct subdirectories of packages/
      - 'packages/*'
    ```
 
 5. Run [`pnpm import`]
 
-   This converts your `yarn.lock` or `package-lock.json` into a `pnpm-lock.yaml` file.
+   This converts a `package-lock.json` or `yarn.lock` into a `pnpm-lock.yaml`.
 
-6. Delete the `yarn.lock` or `package-lock.json` file
+6. Delete `package-lock.json` or `yarn.lock`
 
 7. Run `skuba format`
 
-   This will synthesise some managed hoist patterns into `.npmrc`.
+   This will synthesise managed hoist patterns into `.npmrc`.
 
-8. Include additional hoisting settings into `.npmrc`
+8. Include additional hoisting settings in `.npmrc`
 
    Skip this step if your project does not use Serverless.
 
@@ -156,13 +158,14 @@ This migration guide assumes that you scaffolded your project with a **skuba** t
    + shamefully-hoist=true
    ```
 
-9. Run `pnpm i`
+9. Run `pnpm install`
 
 10. Handle transitive dependency issues
 
-    Since installing pnpm, you may have noticed that some imports you are making in your code no longer work.
-    This is an intended behaviour of pnpm as these dependencies are no longer being hoisted.
-    You will now need to explicitly declare these as `dependencies` or `devDependencies` in your `package.json`.
+    After running `pnpm install`,
+    you may notice that some module imports no longer work.
+    This is intended behaviour as these packages are no longer hoisted by default.
+    Explicitly declare these as `dependencies` or `devDependencies` in `package.json`.
 
     For example:
 
@@ -170,12 +173,12 @@ This migration guide assumes that you scaffolded your project with a **skuba** t
     Cannot find module 'foo'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option? ts(2792)
     ```
 
-    To resolve this, you would need to run `pnpm install foo`.
+    Run `pnpm install foo` to resolve this error.
 
-11. Modify your `Dockerfile` or `Dockerfile.dev-deps` file
+12. Modify `Dockerfile` or `Dockerfile.dev-deps`
 
-    Your build pipeline may mount an ephemeral `.npmrc` with an auth token at `/workdir`.
-    We need to mount this elsewhere now that our Git repository stores pnpm configuration in `.npmrc`.
+    Your build pipeline may have previously mounted an ephemeral `.npmrc` with an auth token at `/workdir`.
+    This needs to be mounted elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
 
     ```diff
       FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:20-alpine AS dev-deps
@@ -195,22 +198,23 @@ This migration guide assumes that you scaffolded your project with a **skuba** t
     +     pnpm fetch
     ```
 
-    We move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc` so it does not overwrite our pnpm configuration,
-    and utilise a [bind mount] instead of the `COPY` to mount the `pnpm-lock.yaml` file.
+    The `dst` of the ephemeral `.npmrc` can be moved from `/workdir/.npmrc` to `/root/.npmrc`,
+    and a [bind mount] can be used in place of `COPY` to mount `pnpm-lock.yaml`.
 
-    You will notice that we are no longer copying `package.json` in the `Dockerfile`.
-    [`pnpm fetch`] does not require this file to resolve packages,
-    so trivial updates to the `package.json` file will no longer result in a cache miss.
-    `pnpm fetch` is also optimised for monorepo setups,
-    so if you were previously declaring sub-package directories in your `Dockerfile`,
-    you can remove them completely.
-    The usage of `pnpm fetch` does have some implications which we will cover in the next step.
+    [`pnpm fetch`] can does not require `package.json` to be copied to resolve packages;
+    trivial updates to `package.json` like a change in `scripts` will no longer result in a cache miss.
+    `pnpm fetch` is also optimised for monorepo setups and does away with the need to copy nested `package.json`s.
+    However, this command only serves to populate a local store and stops short of installing the packages,
+    the implications of which are covered in the next step.
 
-    You can view [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
+    Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
-12. Modify your usages of `yarn` to `pnpm` in `Dockerfile`
+14. Replace `yarn` with `pnpm` in `Dockerfile`
 
-    Since we installed our dependencies with `pnpm fetch`, we will now also have to run a `pnpm install -offline` before any command which may call a dependency. You will also need to exchange `yarn` for `pnpm run`. We have also simplified the usage of stages by removing the `AS dep` stage.
+    As `pnpm fetch` does not actually install dependencies,
+    run a subsequent `pnpm install --offline` before any command which may reference a dependency.
+    Swap out `yarn` commands for `pnpm run` commands,
+    and drop the unnecessary `AS deps` stage.
 
     ```diff
       ###
@@ -236,16 +240,19 @@ This migration guide assumes that you scaffolded your project with a **skuba** t
       WORKDIR /workdir
 
       COPY --from=build /workdir/lib lib
-
+    -
     - COPY --from=deps /workdir/node_modules node_modules
     + COPY --from=build /workdir/node_modules node_modules
 
       ENV NODE_ENV=production
     ```
 
-13. Modify your `.buildkite/pipeline.yml` plugins
+16. Modify plugins in `.buildkite/pipeline.yml`
 
-    As our application now contains a `.npmrc` file in our `workdir`, we now also need to also change the mount path of our auth token `.npmrc` file in our buildkite plugins. We will also be exchanging the `yarn.lock` file for `pnpm-lock.yaml`
+    Your build pipeline may have previously output an ephemeral `.npmrc` with an auth token on the build agent.
+    This needs to be output elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
+
+    Swap out caching on `package.json` and `yarn.lock` for `pnpm-lock.yaml` at the same time.
 
     ```diff
       seek-oss/private-npm#v1.2.0:
@@ -255,16 +262,16 @@ This migration guide assumes that you scaffolded your project with a **skuba** t
 
     ```diff
      seek-oss/docker-ecr-cache#v2.1.0:
-       cache-on:
+    -  cache-on:
     -    - package.json
     -    - yarn.lock
-    +    - pnpm-lock.yaml
+    +  cache-on: pnpm-lock.yaml
        dockerfile: Dockerfile.dev-deps
     -  secrets: id=npm,src=.npmrc
     +  secrets: id=npm,src=tmp/.npmrc
     ```
 
-14. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml`
+18. Replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
