@@ -155,7 +155,19 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
 9. Run `pnpm i`
 
-10. Modify your `Dockerfile` or `Dockerfile.dev-deps` files.
+10. Handle transitive dependency issues
+
+    Since installing `pnpm` you may have noticed that there are some imports you are making to your code which no longer work. This is an intended behaviour of `pnpm` as these dependencies are no longer behind hoisted. You will now need to explicitly declare those dependencies as `dependencies` or `devDependencies` in your `package.json`.
+
+    For example:
+
+    ```
+    Cannot find module 'foo'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option? ts(2792)
+    ```
+
+    To resolve this, you would need to run `pnpm install foo`
+
+11. Modify your `Dockerfile` or `Dockerfile.dev-deps` files.
 
     Your application may be mounting a `.npmrc` secret with an auth token at `/workdir` but because we now have a configuration `.npmrc` file we will need to mount this elsewhere.
 
@@ -187,7 +199,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
     You can view the new `koa-rest-api` template [`Dockerfile.dev-deps`] as a reference point.
 
-11. Modify your usages of `yarn` to `pnpm` in `Dockerfile`
+12. Modify your usages of `yarn` to `pnpm` in `Dockerfile`
 
     Since we installed our dependencies with `pnpm fetch`, we will now also have to run a `pnpm install -offline` before any command which may call a dependency. You will also need to exchange `yarn` for `pnpm run`. We have also simplified the usage of stages by removing the `AS dep` stage.
 
@@ -222,7 +234,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
       ENV NODE_ENV=production
     ```
 
-12. Modify your `.buildkite/pipeline.yml` file plugins
+13. Modify your `.buildkite/pipeline.yml` file plugins
 
     As our application now contains a `.npmrc` file in our `workdir`, we now also need to also change the mount path in our buildkite plugins. We will also be exchanging the `yarn.lock` file for `pnpm-lock.yaml`
 
@@ -243,7 +255,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
     +  secrets: id=npm,src=tmp/.npmrc
     ```
 
-13. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml`
+14. Modify your usages of `yarn` to `pnpm` in `.buildkite/pipeline.yml`
 
     Since we installed our dependencies with `pnpm fetch`, we will now also have to run a `pnpm install` before any regular `skuba` command. You will also need to exchange `yarn` for `pnpm run`.
 
