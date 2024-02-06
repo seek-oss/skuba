@@ -114,6 +114,7 @@ node_modules
    packages:
      # all packages in direct subdirs of packages/
      - 'packages/*'
+   ```
 
 4. Run [`pnpm import`]
 
