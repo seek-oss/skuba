@@ -84,12 +84,50 @@ node_modules
             └── other-dep -> <store>/other-dep
 ```
 
-## Migrating to pnpm from yarn
+## Migrating to pnpm from yarn or npm
 
-// TODO
+1. Install skuba 7.4.0
+
+2. Install pnpm
+
+   On Mac OSX you can run the following:
+
+   ```bash
+   brew install pnpm
+   ```
+
+   For other operating systems you can check the [install guide].
+
+3. Create [pnpm-workspace.yaml](https://pnpm.io/pnpm-workspace_yaml)
+
+   If you are not using yarn workspaces, you can completely skip this step.
+
+   ```yaml
+   packages:
+     # all packages in direct subdirs of packages/
+     - 'packages/*'
+   ```
+
+   You can also delete the `workspaces` key in your package.json
+
+4. Run [`pnpm import`]
+
+   This converts your `yarn.lock` or `packge-json.lock` into a `pnpm-lock.yaml` file.
+
+5. Delete the `yarn.lock` or `packge-json.lock` file.
+
+6. Run `skuba format`
+
+   This will create a `.npmrc` file with some managed hoist patterns.
+
+7. Run `pnpm i`
+
+// TODO Check your .npmrc buildkite/dockerfile for auth stuff
 
 [.npmrc]: https://pnpm.io/npmrc
+[install guide]: https://pnpm.io/installation
 [pnpm]: https://pnpm.io/
+[`pnpm import`]: https://pnpm.io/cli/import
 [silly bugs]: https://www.kochan.io/nodejs/pnpms-strictness-helps-to-avoid-silly-bugs.html
 [symlinked structure]: https://pnpm.io/symlinked-node-modules-structure
 [yarn]: https://classic.yarnpkg.com/
