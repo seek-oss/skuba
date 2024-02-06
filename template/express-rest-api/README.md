@@ -43,27 +43,27 @@ This defaults to an HTTP request to the `GET /smoke` endpoint.
 ### Test
 
 ```shell
-pnpm run test
+pnpm test
 ```
 
 ### Lint
 
 ```shell
 # fix
-pnpm run format
+pnpm format
 
 # check
-pnpm run lint
+pnpm lint
 ```
 
 ### Start
 
 ```shell
 # Start a local HTTP server
-pnpm run start
+pnpm start
 
 # Start with Node.js Inspector enabled
-pnpm run start:debug
+pnpm start:debug
 ```
 
 ### Deploy

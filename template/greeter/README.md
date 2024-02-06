@@ -36,27 +36,27 @@ It's a barebones Node.js application that comprises:
 ### Test
 
 ```shell
-pnpm run test
+pnpm test
 ```
 
 ### Lint
 
 ```shell
 # Fix issues
-pnpm run format
+pnpm format
 
 # Check for issues
-pnpm run lint
+pnpm lint
 ```
 
 ### Start
 
 ```shell
 # Start a live-reloading process
-pnpm run start
+pnpm start
 
 # Start with Node.js Inspector enabled
-pnpm run start:debug
+pnpm start:debug
 ```
 
 This runs a live-reloading Node.js process pointing to the [src/app.ts](src/app.ts) entrypoint.

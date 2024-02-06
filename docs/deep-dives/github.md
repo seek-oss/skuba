@@ -23,8 +23,8 @@ For example, with the [Docker Buildkite plugin]:
 ```yaml
 steps:
   - commands:
-      - pnpm run lint
-      - pnpm run test
+      - pnpm lint
+      - pnpm test
     env:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
       GET_GITHUB_TOKEN: 'please'
@@ -58,8 +58,8 @@ and the `environment` and `propagate-environment` options in the [Docker Compose
 ```yaml
 steps:
   - commands:
-      - pnpm run lint
-      - pnpm run test
+      - pnpm lint
+      - pnpm test
     env:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
       GET_GITHUB_TOKEN: 'please'
@@ -121,7 +121,7 @@ jobs:
       # Set up Node.js, install dependencies, run tests...
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm lint
 ```
 
 <!-- {% endraw %} -->

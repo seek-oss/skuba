@@ -56,20 +56,20 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Test
-        run: pnpm run test:ci
+        run: pnpm test:ci
         env:
           NODE_OPTIONS: --experimental-vm-modules
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm lint
 
       - if: github.event_name == 'push'
         name: Dry-run changelog versioning
-        run: pnpm run changeset version
+        run: pnpm changeset version
 
       - if: github.event_name == 'push'
         name: Dry-run site packaging
-        run: pnpm run skuba node scripts/package.ts
+        run: pnpm skuba node scripts/package.ts
 
   template:
     name: Integrate
@@ -98,4 +98,4 @@ jobs:
 
       - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
         name: Test template
-        run: pnpm run test:template ${{ matrix.template }}
+        run: pnpm test:template ${{ matrix.template }}

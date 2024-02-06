@@ -36,14 +36,14 @@ jobs:
       - name: Publish to npm
         uses: changesets/action@v1
         with:
-          publish: pnpm run release
-          version: pnpm run stage
+          publish: pnpm release
+          version: pnpm stage
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}
 
       - name: Deploy to GitHub Pages
-        run: pnpm run deploy
+        run: pnpm deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IS_GITHUB_PAGES: true
