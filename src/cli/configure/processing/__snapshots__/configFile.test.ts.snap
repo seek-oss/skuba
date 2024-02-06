@@ -37,7 +37,6 @@ node_modules*/
 # end managed by skuba
 
 .DS_Store
-node_modules
 "
 `;
 
@@ -142,9 +141,6 @@ exports[`mergeWithConfigFile for ignore files provided with outdated managed sec
 node_modules*/
 .DS_Store
 # end managed by skuba
-
-.DS_Store
-node_modules
 "
 `;
 
@@ -157,7 +153,6 @@ node_modules*/
 .DS_Store
 # end managed by skuba
 
-.DS_Store
 node_modules
 "
 `;
@@ -183,7 +178,8 @@ exports[`mergeWithConfigFile for npmrc files provided with managed section and a
 public-hoist-pattern[]="tsconfig-seek"
 # end managed by skuba
 
-public-hoist-pattern[]=b"
+public-hoist-pattern[]=b
+"
 `;
 
 exports[`mergeWithConfigFile for npmrc files provided with managed section and fully superseded config 1`] = `

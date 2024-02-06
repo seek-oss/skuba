@@ -124,7 +124,7 @@ describe('mergeWithConfigFile for npmrc files', () => {
     [
       'provided with managed section and partially superseded config',
       updatedBaseTemplate,
-      'public-hoist-pattern[]=a\npublic-hoist-pattern[]=jest',
+      `${baseTemplate}\npublic-hoist-pattern[]=a\npublic-hoist-pattern[]=jest`,
     ],
     [
       'provided with managed section and fully superseded config',

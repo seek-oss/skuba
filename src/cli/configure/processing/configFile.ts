@@ -79,29 +79,37 @@ export const mergeWithConfigFile = (
     ...templateFile.split('\n').map((line) => line.trim()),
   ]);
 
-  return (rawInputFile?: string) => {
-    if (rawInputFile === undefined) {
-      return `${templateFile}\n`;
-    }
-
-    const replacedFile = rawInputFile
-      .replace(/\r?\n/g, '\n')
-      .replace(/# managed by skuba[\s\S]*# end managed by skuba/, templateFile);
-
-    if (replacedFile.includes(templateFile)) {
-      return replacedFile;
-    }
-
-    // Crunch the existing lines of a non-skuba config.
-    const migratedFile = replacedFile
+  const removeRedundant = (portion: string) =>
+    portion
       .split('\n')
       .filter((line) => !templatePatterns.has(line))
       .join('\n')
       .replace(/\n{3,}/g, '\n\n')
       .trim();
 
-    const outputFile = [templateFile, migratedFile].join('\n\n').trim();
+  return (rawInputFile?: string) => {
+    if (rawInputFile === undefined) {
+      return `${templateFile}\n`;
+    }
 
-    return `${outputFile}\n`;
+    let replacedFile = rawInputFile
+      .replace(/\r?\n/g, '\n')
+      .replace(/# managed by skuba[\s\S]*# end managed by skuba/, templateFile);
+
+    if (!replacedFile.includes(templateFile)) {
+      replacedFile = `${templateFile}\n${replacedFile}`;
+    }
+
+    // Remove patterns that are superseded by the template
+    replacedFile = replacedFile.replace(
+      /^([\s\S]*)(# managed by skuba[\s\S]*# end managed by skuba)([\s\S]*)$/,
+      (_match: string, prefix: string, managed: string, suffix: string) =>
+        [removeRedundant(prefix), managed, removeRedundant(suffix)]
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0)
+          .join('\n\n'),
+    );
+
+    return `${replacedFile}\n`;
   };
 };
