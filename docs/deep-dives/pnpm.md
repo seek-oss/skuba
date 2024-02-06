@@ -217,8 +217,6 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     and drop the unnecessary `AS deps` stage.
 
     ```diff
-      ###
-    -
     - FROM ${BASE_IMAGE} AS deps
     -
     - RUN yarn install --ignore-optional --ignore-scripts --non-interactive --offline --production
