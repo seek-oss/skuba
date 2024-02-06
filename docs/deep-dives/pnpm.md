@@ -236,7 +236,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
 
 13. Modify your `.buildkite/pipeline.yml` plugins
 
-    As our application now contains a `.npmrc` file in our `workdir`, we now also need to also change the mount path in our buildkite plugins. We will also be exchanging the `yarn.lock` file for `pnpm-lock.yaml`
+    As our application now contains a `.npmrc` file in our `workdir`, we now also need to also change the mount path of our auth token `.npmrc` file in our buildkite plugins. We will also be exchanging the `yarn.lock` file for `pnpm-lock.yaml`
 
     ```diff
       seek-oss/private-npm#v1.2.0:
