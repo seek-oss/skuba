@@ -131,7 +131,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 5. Run [`pnpm import`]
 
-   This converts a `package-lock.json` or `yarn.lock` into a `pnpm-lock.yaml`.
+   This converts a `package-lock.json` or `yarn.lock` to a `pnpm-lock.yaml`.
 
 6. Delete `package-lock.json` or `yarn.lock`
 
@@ -198,20 +198,20 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +     pnpm fetch
     ```
 
-    The `dst` of the ephemeral `.npmrc` can be moved from `/workdir/.npmrc` to `/root/.npmrc`,
-    and a [bind mount] can be used in place of `COPY` to mount `pnpm-lock.yaml`.
+    Move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc`,
+    and use a [bind mount] in place of `COPY` to mount `pnpm-lock.yaml`.
 
-    [`pnpm fetch`] can does not require `package.json` to be copied to resolve packages;
+    [`pnpm fetch`] does not require `package.json` to be copied to resolve packages;
     trivial updates to `package.json` like a change in `scripts` will no longer result in a cache miss.
-    `pnpm fetch` is also optimised for monorepo setups and does away with the need to copy nested `package.json`s.
-    However, this command only serves to populate a local store and stops short of installing the packages,
+    `pnpm fetch` is also optimised for monorepos and does away with the need to copy nested `package.json`s.
+    However, this command only serves to populate a local package store and stops short of installing the packages,
     the implications of which are covered in the next step.
 
     Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
 12. Replace `yarn` with `pnpm` in `Dockerfile`
 
-    As `pnpm fetch` does not actually install dependencies,
+    As `pnpm fetch` does not actually install packages,
     run a subsequent `pnpm install --offline` before any command which may reference a dependency.
     Swap out `yarn` commands for `pnpm run` commands,
     and drop the unnecessary `AS deps` stage.
