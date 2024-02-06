@@ -234,7 +234,7 @@ This migration guide assumes that you scaffolded your project with a skuba templ
       ENV NODE_ENV=production
     ```
 
-13. Modify your `.buildkite/pipeline.yml` file plugins
+13. Modify your `.buildkite/pipeline.yml` plugins
 
     As our application now contains a `.npmrc` file in our `workdir`, we now also need to also change the mount path in our buildkite plugins. We will also be exchanging the `yarn.lock` file for `pnpm-lock.yaml`
 
