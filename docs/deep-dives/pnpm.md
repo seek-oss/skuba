@@ -135,7 +135,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
    This converts `yarn.lock` to `pnpm-lock.yaml`.
 
-6. Delete `yarn.lock` and the `node_modules` folder.
+6. Delete `yarn.lock`
 
 7. Run `pnpm skuba format`
 
@@ -175,9 +175,13 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    - .npmrc
    ```
 
-10. Run `pnpm install`
+10. Delete the `node_modules` folder
 
-11. Handle transitive dependency issues
+    This will ensure your local workspace will not have any lingering hoisted dependencies from `yarn`.
+
+11. Run `pnpm install`
+
+12. Handle transitive dependency issues
 
     After running `pnpm install`,
     you may notice that some module imports no longer work.
@@ -192,7 +196,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Run `pnpm install foo` to resolve this error.
 
-12. Modify `Dockerfile` or `Dockerfile.dev-deps`
+13. Modify `Dockerfile` or `Dockerfile.dev-deps`
 
     Your build pipeline may have previously mounted an ephemeral `.npmrc` with an auth token at `/workdir`.
     This needs to be mounted elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -226,7 +230,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
-13. Replace `yarn` with `pnpm` in `Dockerfile`
+14. Replace `yarn` with `pnpm` in `Dockerfile`
 
     As `pnpm fetch` does not actually install packages,
     run a subsequent `pnpm install --offline` before any command which may reference a dependency.
@@ -262,7 +266,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       ENV NODE_ENV=production
     ```
 
-14. Modify plugins in `.buildkite/pipeline.yml`
+15. Modify plugins in `.buildkite/pipeline.yml`
 
     Your build pipeline may have previously output an ephemeral `.npmrc` with an auth token on the build agent.
     This needs to be output elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -286,7 +290,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +  secrets: id=npm,src=tmp/.npmrc
     ```
 
-15. Replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
+16. Replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
