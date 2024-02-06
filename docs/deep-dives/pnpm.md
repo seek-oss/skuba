@@ -97,7 +97,9 @@ node_modules
 Committing pnpm configuration in `.npmrc` can conflict with build pipelines that synthesise an ephemeral `.npmrc` to access private SEEK packages on the npm registry.
 A solution to this problem is detailed in the migration guide below.
 
-## Migrating to pnpm from Yarn or npm
+---
+
+## Migrating from Yarn 1.x to pnpm
 
 This migration guide assumes that your project was scaffolded with a **skuba** template.
 
@@ -131,9 +133,9 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 5. Run [`pnpm import`]
 
-   This converts a `package-lock.json` or `yarn.lock` to a `pnpm-lock.yaml`.
+   This converts `yarn.lock` to `pnpm-lock.yaml`.
 
-6. Delete `package-lock.json` or `yarn.lock`
+6. Delete `yarn.lock`
 
 7. Run `skuba format`
 
