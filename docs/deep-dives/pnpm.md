@@ -137,7 +137,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 6. Delete `yarn.lock`
 
-7. Run `skuba format`
+7. Run `pnpm skuba format`
 
    This will synthesise managed hoist patterns into `.npmrc`.
 
