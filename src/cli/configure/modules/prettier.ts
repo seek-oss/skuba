@@ -1,6 +1,6 @@
 import { readBaseTemplateFile } from '../../../utils/template';
+import { mergeWithConfigFile } from '../processing/configFile';
 import { deleteFiles } from '../processing/deleteFiles';
-import { mergeWithIgnoreFile } from '../processing/ignoreFile';
 import { withPackage } from '../processing/package';
 import type { Module } from '../types';
 
@@ -20,7 +20,7 @@ export const prettierModule = async (): Promise<Module> => {
       'prettier.config.js',
     ),
 
-    '.prettierignore': mergeWithIgnoreFile(ignoreFile),
+    '.prettierignore': mergeWithConfigFile(ignoreFile),
 
     // enforce skuba opinions as there's no value in customising Prettier configs
     '.prettierrc.js': () => configFile,
