@@ -24,12 +24,21 @@ export type PatchFunction = (
 ) => Promise<PatchReturnType>;
 
 const getPatches = async (manifestVersion: string): Promise<Patches> => {
-  const patches = await readdir(path.join(__dirname, 'patches'));
+  const patches = await readdir(path.join(__dirname, 'patches'), {
+    withFileTypes: true,
+  });
 
   // The patches are sorted by the version they were added from.
   // Only return patches that are newer or equal to the current version.
   const patchesForVersion = sort(
-    patches.filter((filename) => gte(filename, manifestVersion)),
+    patches.flatMap((patch) =>
+      // Is a directory rather than a JavaScript source file
+      patch.isDirectory() &&
+      // Has been added since the last patch run on the project
+      gte(patch.name, manifestVersion)
+        ? patch.name
+        : [],
+    ),
   );
 
   return (await Promise.all(patchesForVersion.map(resolvePatches))).flat();
