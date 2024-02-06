@@ -100,7 +100,7 @@ node_modules
 
 3. Create [pnpm-workspace.yaml](https://pnpm.io/pnpm-workspace_yaml)
 
-   If you are not using yarn workspaces, you can completely skip this step.
+   If you are not using yarn workspaces, you can skip this step.
 
    ```yaml
    packages:
