@@ -160,9 +160,24 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    + shamefully-hoist=true
    ```
 
-9. Run `pnpm install`
+9. Remove `.npmrc` ignore entry from `.gitignore`
 
-10. Handle transitive dependency issues
+   Heed the warning and ensure that a safe `.npmrc` is included in the same commit.
+
+   ```diff
+   yarn-error.log
+   # end managed by skuba
+   -
+   - # Ignore .npmrc. This is no longer managed by skuba as pnpm projects use a managed .npmrc.
+   - # IMPORTANT: if migrating to pnpm, remove this line and add an .npmrc IN THE SAME COMMIT.
+   - # You can use `skuba format` to generate the file or otherwise commit an empty file.
+   - # Doing so will conflict with a local .npmrc and make it more difficult to unintentionally commit auth secrets.
+   - .npmrc
+   ```
+
+10. Run `pnpm install`
+
+11. Handle transitive dependency issues
 
     After running `pnpm install`,
     you may notice that some module imports no longer work.
@@ -177,7 +192,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Run `pnpm install foo` to resolve this error.
 
-11. Modify `Dockerfile` or `Dockerfile.dev-deps`
+12. Modify `Dockerfile` or `Dockerfile.dev-deps`
 
     Your build pipeline may have previously mounted an ephemeral `.npmrc` with an auth token at `/workdir`.
     This needs to be mounted elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -211,7 +226,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
-12. Replace `yarn` with `pnpm` in `Dockerfile`
+13. Replace `yarn` with `pnpm` in `Dockerfile`
 
     As `pnpm fetch` does not actually install packages,
     run a subsequent `pnpm install --offline` before any command which may reference a dependency.
@@ -247,7 +262,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       ENV NODE_ENV=production
     ```
 
-13. Modify plugins in `.buildkite/pipeline.yml`
+14. Modify plugins in `.buildkite/pipeline.yml`
 
     Your build pipeline may have previously output an ephemeral `.npmrc` with an auth token on the build agent.
     This needs to be output elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -271,7 +286,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +  secrets: id=npm,src=tmp/.npmrc
     ```
 
-14. Replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
+15. Replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
