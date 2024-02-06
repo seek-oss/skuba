@@ -81,9 +81,12 @@ describe('upgradeSkuba in format mode', () => {
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    jest
-      .mocked(readdir)
-      .mockResolvedValue(['0.9.0', '1.0.0', '2.0.0'] as never);
+    jest.mocked(readdir).mockResolvedValue([
+      { isDirectory: () => true, name: '0.9.0' },
+      { isDirectory: () => true, name: '1.0.0' },
+      { isDirectory: () => true, name: '2.0.0' },
+      { isDirectory: () => false, name: 'index.d.ts' },
+    ] as never);
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
@@ -118,7 +121,9 @@ describe('upgradeSkuba in format mode', () => {
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    jest.mocked(readdir).mockResolvedValue(['2.0.0'] as never);
+    jest
+      .mocked(readdir)
+      .mockResolvedValue([{ isDirectory: () => true, name: '2.0.0' }] as never);
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
@@ -161,7 +166,9 @@ describe('upgradeSkuba in format mode', () => {
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    jest.mocked(readdir).mockResolvedValue(['2.0.0'] as never);
+    jest
+      .mocked(readdir)
+      .mockResolvedValue([{ isDirectory: () => true, name: '2.0.0' }] as never);
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
@@ -232,9 +239,11 @@ describe('upgradeSkuba in lint mode', () => {
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    jest
-      .mocked(readdir)
-      .mockResolvedValue(['0.9.0', '1.0.0', '2.0.0'] as never);
+    jest.mocked(readdir).mockResolvedValue([
+      { isDirectory: () => true, name: '0.9.0' },
+      { isDirectory: () => true, name: '1.0.0' },
+      { isDirectory: () => true, name: '2.0.0' },
+    ] as never);
 
     await expect(upgradeSkuba('lint', log)).resolves.toEqual({
       ok: false,
@@ -265,7 +274,9 @@ describe('upgradeSkuba in lint mode', () => {
 
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
-    jest.mocked(readdir).mockResolvedValue(['0.9.0'] as never);
+    jest
+      .mocked(readdir)
+      .mockResolvedValue([{ isDirectory: () => true, name: '0.9.0' }] as never);
 
     await expect(upgradeSkuba('lint', log)).resolves.toEqual({
       ok: true,
