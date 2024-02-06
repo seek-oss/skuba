@@ -36,7 +36,7 @@ However, this behaviour can lead to some [silly bugs] when updating packages.
 
 ## pnpm in skuba
 
-[pnpm] addresses the hoisting issue by using a [symlinked structure](https://pnpm.io/symlinked-node-modules-structure) which allows every package to use the version range of the package they declared as opposed to the version which may have been hoisted.
+[pnpm] addresses the hoisting issue by using a [symlinked structure] which allows every package to use the version range of the package they declared as opposed to the version which may have been hoisted.
 
 This is a double-edged sword when it comes to using skuba, as this means that our developer dependencies such as Prettier and Eslint become nested within the skuba folder where most editor and developer tooling integrations do not know where to find it.
 
