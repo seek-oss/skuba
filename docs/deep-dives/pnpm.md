@@ -288,13 +288,27 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +    - pnpm run lint
     ```
 
+---
+
+## Contributing
+
+This guide is not comprehensive just yet,
+and it may not account for certain intricacies of your project.
+
+If you run into an issue that is not documented here,
+please [start a discussion] or [contribute a change] so others can benefit from your findings.
+This page may be [edited on GitHub].
+
 [`.npmrc`]: https://pnpm.io/npmrc
-[`pnpm fetch`]: https://pnpm.io/cli/fetch
-[bind mount]: https://docs.docker.com/engine/reference/builder/#run---mounttypebind
 [`Dockerfile.dev-deps`]: https://github.com/seek-oss/skuba/blob/master/template/koa-rest-api/Dockerfile.dev-deps
+[`pnpm fetch`]: https://pnpm.io/cli/fetch
+[`pnpm import`]: https://pnpm.io/cli/import
+[bind mount]: https://docs.docker.com/engine/reference/builder/#run---mounttypebind
+[contribute a change]: https://seek-oss.github.io/skuba/CONTRIBUTING.html#i-want-to-contribute-a-change
+[edited on GitHub]: https://github.com/seek-oss/skuba/edit/master/docs/deep-dives/pnpm.md
 [install guide]: https://pnpm.io/installation
 [pnpm]: https://pnpm.io/
-[`pnpm import`]: https://pnpm.io/cli/import
 [silly bugs]: https://www.kochan.io/nodejs/pnpms-strictness-helps-to-avoid-silly-bugs.html
+[start a discussion]: https://seek-oss.github.io/skuba/CONTRIBUTING.html#i-want-to-discuss-or-report-something
 [symlinked structure]: https://pnpm.io/symlinked-node-modules-structure
 [yarn]: https://classic.yarnpkg.com/
