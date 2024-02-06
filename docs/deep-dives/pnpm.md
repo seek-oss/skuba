@@ -230,7 +230,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     As `pnpm fetch` does not actually install packages,
     run a subsequent `pnpm install --offline` before any command which may reference a dependency.
-    Swap out `yarn` commands for `pnpm run` commands,
+    Swap out `yarn` commands for `pnpm` commands,
     and drop the unnecessary `AS deps` stage.
 
     ```diff
@@ -246,7 +246,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     - RUN yarn build
     + RUN pnpm install --offline
-    + RUN pnpm run build
+    + RUN pnpm build
     + RUN pnpm install --offline --prod
 
       ###
@@ -297,10 +297,10 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     -    - yarn test:ci
     -    - echo '--- yarn lint'
     -    - yarn lint
-    +    - echo '+++ pnpm run test:ci'
-    +    - pnpm run test:ci
-    +    - echo '--- pnpm run lint'
-    +    - pnpm run lint
+    +    - echo '+++ pnpm test:ci'
+    +    - pnpm test:ci
+    +    - echo '--- pnpm lint'
+    +    - pnpm lint
     ```
 
 ---
