@@ -1,6 +1,6 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-set -eux
+set -euo pipefail
 
 pnpm changeset version
 jq -r '.version' package.json > .changeset-version
