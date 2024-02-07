@@ -175,9 +175,11 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    - .npmrc
    ```
 
-10. Delete the `node_modules` folder
+10. Delete the `node_modules` folder.
 
     This will ensure your local workspace will not have any lingering hoisted dependencies from `yarn`.
+
+    If you have a monorepo setup, ensure you delete all sub-package `node_modules` folders.
 
 11. Run `pnpm install`
 
