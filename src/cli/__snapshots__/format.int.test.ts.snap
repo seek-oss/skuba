@@ -15,11 +15,14 @@ Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
 Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore file found
 
+Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
@@ -84,11 +87,14 @@ Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
 Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore file found
 
+Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
@@ -102,8 +108,10 @@ Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 9 files.
+Discovered 10 files.
 Formatting files...
+.dockerignore
+  parser: -
 .eslintignore
   parser: -
 .gitignore
@@ -146,11 +154,14 @@ Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
 Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore file found
 
+Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
@@ -181,11 +192,14 @@ Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
 Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore file found
 
+Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint

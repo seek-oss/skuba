@@ -6,7 +6,10 @@ import { log } from '../../../utils/logging';
 import { detectPackageManager } from '../../../utils/packageManager';
 import * as project from '../../configure/analysis/project';
 
-import { refreshConfigFiles } from './refreshConfigFiles';
+import {
+  REFRESHABLE_CONFIG_FILES,
+  refreshConfigFiles,
+} from './refreshConfigFiles';
 
 const stdoutMock = jest.fn();
 
@@ -53,23 +56,27 @@ describe('refreshConfigFiles', () => {
     project.createDestinationFileReader,
   );
 
-  function setupDestinationFiles(data: Record<string, string>) {
+  function setupDestinationFiles(data: Record<string, string | undefined>) {
+    const contents = {
+      ...Object.fromEntries(
+        REFRESHABLE_CONFIG_FILES.map((f) => [
+          f.name,
+          `# managed by skuba\nfake content for _${f.name}\n# end managed by skuba\n`,
+        ]),
+      ),
+      ...data,
+    };
+
     createDestinationFileReader.mockImplementation(
-      () => (filename: string) => Promise.resolve(data[filename]),
+      () => (filename: string) => Promise.resolve(contents[filename]),
     );
   }
 
   describe('lint mode', () => {
     it('should report ok if files are up to date, and output nothing', async () => {
       setupDestinationFiles({
-        '.eslintignore':
-          '# managed by skuba\nfake content for _.eslintignore\n# end managed by skuba',
         '.gitignore':
           '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n\nstuff afterwards',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba',
-        '.npmrc':
-          '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba',
       });
 
       await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
@@ -91,8 +98,6 @@ describe('refreshConfigFiles', () => {
           '# managed by skuba\n# end managed by skuba\n\nstuff afterwards',
         '.prettierignore':
           '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba\nstuff afterwards',
-        '.npmrc':
-          '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba',
       });
 
       await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
@@ -122,12 +127,8 @@ The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
 
     it('should flag an .npmrc containing authToken even if otherwise up to date', async () => {
       setupDestinationFiles({
-        '.eslintignore':
-          '# managed by skuba\nfake content for _.eslintignore\n# end managed by skuba',
         '.gitignore':
           '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n\nstuff afterwards',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba',
         '.npmrc':
           '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba\n//registry.npmjs.org/:_authToken=not-a-real-token',
       });
@@ -153,12 +154,7 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
 
     it('should flag creation of an .npmrc for pnpm projects if missing', async () => {
       setupDestinationFiles({
-        '.eslintignore':
-          '# managed by skuba\nfake content for _.eslintignore\n# end managed by skuba',
-        '.gitignore':
-          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba',
+        '.npmrc': undefined,
       });
 
       await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
@@ -184,12 +180,7 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
       givenMockPackageManager('yarn');
 
       setupDestinationFiles({
-        '.eslintignore':
-          '# managed by skuba\nfake content for _.eslintignore\n# end managed by skuba',
-        '.gitignore':
-          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba',
+        '.npmrc': undefined,
       });
 
       await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
@@ -207,14 +198,8 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
   describe('format mode', () => {
     it('should report ok if files are up to date, and write or output nothing', async () => {
       setupDestinationFiles({
-        '.eslintignore':
-          '# managed by skuba\nfake content for _.eslintignore\n# end managed by skuba',
         '.gitignore':
           '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n\nstuff afterwards',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba',
-        '.npmrc':
-          '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba',
       });
 
       await expect(refreshConfigFiles('format', log)).resolves.toEqual({
@@ -236,8 +221,6 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
           '# managed by skuba\n# end managed by skuba\n\nstuff afterwards',
         '.prettierignore':
           '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba\nstuff afterwards',
-        '.npmrc':
-          '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba',
       });
 
       await expect(refreshConfigFiles('format', log)).resolves.toEqual({
@@ -263,12 +246,8 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
 
     it('should strip an authToken line from an .npmrc file', async () => {
       setupDestinationFiles({
-        '.eslintignore':
-          '# managed by skuba\nfake content for _.eslintignore\n# end managed by skuba',
         '.gitignore':
           '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n\nstuff afterwards',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba',
         '.npmrc':
           '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba\n//registry.npmjs.org/:_authToken=not-a-real-token',
       });
@@ -292,12 +271,7 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
 
     it('should create an .npmrc for pnpm projects if missing', async () => {
       setupDestinationFiles({
-        '.eslintignore':
-          '# managed by skuba\nfake content for _.eslintignore\n# end managed by skuba',
-        '.gitignore':
-          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba',
+        '.npmrc': undefined,
       });
 
       await expect(refreshConfigFiles('format', log)).resolves.toEqual({
@@ -321,12 +295,7 @@ Refreshed .npmrc. refresh-config-files
       givenMockPackageManager('yarn');
 
       setupDestinationFiles({
-        '.eslintignore':
-          '# managed by skuba\nfake content for _.eslintignore\n# end managed by skuba',
-        '.gitignore':
-          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba',
+        '.npmrc': undefined,
       });
 
       await expect(refreshConfigFiles('format', log)).resolves.toEqual({
@@ -355,6 +324,24 @@ Refreshed .npmrc. refresh-config-files
       expect(writeFile).toHaveBeenCalledWith(
         path.join(process.cwd(), '.gitignore'),
         '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\nstuff\nother stuff',
+      );
+    });
+
+    it('should also manage .dockerignore', async () => {
+      setupDestinationFiles({
+        '.dockerignore':
+          '# managed by skuba\nfake content for _.dockerignore\n# end managed by skuba\nstuff\n!.npmrc\n!/.npmrc\nother stuff',
+      });
+
+      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(writeFile).toHaveBeenCalledWith(
+        path.join(process.cwd(), '.dockerignore'),
+        '# managed by skuba\nfake content for _.dockerignore\n# end managed by skuba\nstuff\nother stuff',
       );
     });
 

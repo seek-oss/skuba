@@ -32,29 +32,28 @@ type RefreshableConfigFile = {
   if?: (packageManager: PackageManagerConfig) => boolean;
 };
 
-const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
+const removeRedundantNpmrc = (contents: string) => {
+  const npmrcLines = contents
+    .split('\n')
+    .filter((line) => NPMRC_LINES.includes(line.trim()));
+
+  // If we're only left with !.npmrc line we can remove it
+  // TODO: Consider if we should generalise this
+  if (npmrcLines.length > 0 && npmrcLines.every((line) => line.includes('!'))) {
+    return contents
+      .split('\n')
+      .filter((line) => !NPMRC_LINES.includes(line.trim()))
+      .join('\n');
+  }
+  return contents;
+};
+
+export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   { name: '.eslintignore', type: 'ignore' },
   {
     name: '.gitignore',
     type: 'ignore',
-    additionalMapping: (gitignore: string) => {
-      const npmrcLines = gitignore
-        .split('\n')
-        .filter((line) => NPMRC_LINES.includes(line.trim()));
-
-      // If we're only left with !.npmrc line we can remove it
-      // TODO: Consider if we should generalise this
-      if (
-        npmrcLines.length > 0 &&
-        npmrcLines.every((line) => line.includes('!'))
-      ) {
-        return gitignore
-          .split('\n')
-          .filter((line) => !NPMRC_LINES.includes(line.trim()))
-          .join('\n');
-      }
-      return gitignore;
-    },
+    additionalMapping: removeRedundantNpmrc,
   },
   { name: '.prettierignore', type: 'ignore' },
   {
@@ -63,6 +62,11 @@ const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
     additionalMapping: ensureNoAuthToken,
     if: (packageManager: PackageManagerConfig) =>
       packageManager.command === 'pnpm',
+  },
+  {
+    name: '.dockerignore',
+    type: 'ignore',
+    additionalMapping: removeRedundantNpmrc,
   },
 ];
 
