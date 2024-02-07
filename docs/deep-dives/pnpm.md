@@ -131,6 +131,9 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
      - 'packages/*'
    ```
 
+   (Optional) If your sub-package `package.json`'s reference one another using the syntax `foo: *`,
+   you can replace these references with the [workspace protocol]. Eg. `foo: workspace:*`.
+
 5. Run [`pnpm import`]
 
    This converts `yarn.lock` to `pnpm-lock.yaml`.
@@ -217,7 +220,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     - RUN --mount=type=secret,id=npm,dst=/workdir/.npmrc \
     -     yarn install --frozen-lockfile --ignore-optional --non-interactive
     + RUN --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
-    + RUN --mount=type=bind,source=.npmrc,target=.npmrc \
+    +     --mount=type=bind,source=.npmrc,target=.npmrc \
     +     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
     +     pnpm fetch
     ```
@@ -334,4 +337,5 @@ This page may be [edited on GitHub].
 [silly bugs]: https://www.kochan.io/nodejs/pnpms-strictness-helps-to-avoid-silly-bugs.html
 [start a discussion]: https://seek-oss.github.io/skuba/CONTRIBUTING.html#i-want-to-discuss-or-report-something
 [symlinked structure]: https://pnpm.io/symlinked-node-modules-structure
+[workspace protocol]: https://pnpm.io/workspaces#workspace-protocol-workspace
 [yarn]: https://classic.yarnpkg.com/
