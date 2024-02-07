@@ -17,22 +17,23 @@ const NPMRC_IGNORE_SECTION = `
 .npmrc
 `;
 
-const moveNpmrcOutOfGitignoreManagedSection = async (
+const moveNpmrcOutOfIgnoreManagedSection = async (
   mode: 'format' | 'lint',
   dir: string,
+  fileName: '.gitignore' | '.dockerignore',
 ): Promise<PatchReturnType> => {
   const readFile = createDestinationFileReader(dir);
 
-  const gitignore = await readFile('.gitignore');
+  const ignoreFile = await readFile(fileName);
 
-  if (!gitignore) {
-    return { result: 'skip', reason: 'no .gitignore file found' };
+  if (!ignoreFile) {
+    return { result: 'skip', reason: `no ${fileName} file found` };
   }
 
   let isIgnored: { inManaged: boolean } | undefined;
   let currentlyInManagedSection = false;
 
-  for (const line of gitignore.split('\n')) {
+  for (const line of ignoreFile.split('\n')) {
     if (line.trim() === '# managed by skuba') {
       currentlyInManagedSection = true;
     } else if (line.trim() === '# end managed by skuba') {
@@ -60,27 +61,27 @@ const moveNpmrcOutOfGitignoreManagedSection = async (
     return { result: 'apply' };
   }
 
-  const newGitignore =
-    gitignore
+  const newIgnoreFile =
+    ignoreFile
       .split('\n')
       .filter((line) => !NPMRC_LINES.includes(line.trim()))
       .join('\n')
       .trim() + NPMRC_IGNORE_SECTION;
 
-  await fs.promises.writeFile(path.join(dir, '.gitignore'), newGitignore);
+  await fs.promises.writeFile(path.join(dir, fileName), newIgnoreFile);
 
   return { result: 'apply' };
 };
 
-export const tryMoveNpmrcOutOfGitignoreManagedSection = (async (
-  mode: 'format' | 'lint',
-  dir = process.cwd(),
-) => {
-  try {
-    return await moveNpmrcOutOfGitignoreManagedSection(mode, dir);
-  } catch (err) {
-    log.warn('Failed to move .npmrc out of .gitignore managed section.');
-    log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
-  }
-}) satisfies PatchFunction;
+export const tryMoveNpmrcOutOfIgnoreManagedSection = (
+  type: '.gitignore' | '.dockerignore',
+) =>
+  (async (mode: 'format' | 'lint', dir = process.cwd()) => {
+    try {
+      return await moveNpmrcOutOfIgnoreManagedSection(mode, dir, type);
+    } catch (err) {
+      log.warn(`Failed to move .npmrc out of ${type} managed sections.`);
+      log.subtle(inspect(err));
+      return { result: 'skip', reason: 'due to an error' };
+    }
+  }) satisfies PatchFunction;
