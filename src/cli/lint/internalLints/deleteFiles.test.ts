@@ -30,9 +30,7 @@ describe('deleteFilesLint', () => {
   const rm = jest.mocked(fsExtra.rm);
 
   describe('lint mode', () => {
-    it('should report ok if no files to delete, and output nothing', async () => {
-      jest.mocked(pathExists).mockResolvedValueOnce(false);
-
+    it('should pretend everything is fine in lint mode even if file to delete exists', async () => {
       await expect(deleteFilesLint('lint', log)).resolves.toEqual({
         ok: true,
         fixable: false,
@@ -40,29 +38,7 @@ describe('deleteFilesLint', () => {
 
       expect(stdout()).toBe('');
 
-      expect(pathExists).toHaveBeenCalledTimes(1);
-      expect(rm).not.toHaveBeenCalled();
-    });
-
-    it('should report not ok + fixable if files to delete, and output a message', async () => {
-      jest.mocked(pathExists).mockResolvedValueOnce(true);
-
-      await expect(deleteFilesLint('lint', log)).resolves.toEqual({
-        ok: false,
-        fixable: true,
-        annotations: [
-          {
-            message: 'This file should be deleted.',
-            path: 'Dockerfile-incunabulum',
-          },
-        ],
-      });
-
-      expect(stdout()).toBe(
-        'Some files should be deleted. Run pnpm exec skuba format to delete them. delete-files\n',
-      );
-
-      expect(pathExists).toHaveBeenCalledTimes(1);
+      expect(pathExists).not.toHaveBeenCalled();
       expect(rm).not.toHaveBeenCalled();
     });
   });
