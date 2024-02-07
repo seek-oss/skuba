@@ -1,5 +1,180 @@
 # skuba
 
+## 7.4.0
+
+This version of skuba should not require significant upgrade effort for most projects, but it does contain some notable changes:
+
+- Internal linting and patching have been overhauled to streamline code generation on version upgrades.
+
+  To make upgrades easy now and going forward, we recommend setting up [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes).
+
+- New projects will now be initialised with pnpm, along with improved pnpm support.
+
+  A future release of skuba may transition existing projects to pnpm.
+
+Continue reading for more details on these changes and other improvements in this release.
+
+### Minor Changes
+
+- **lint:** Overhaul internal linting system ([#1370](https://github.com/seek-oss/skuba/pull/1370))
+
+  Previously, internal lint rules would not fail a `skuba lint` check but would silently make changes to your working tree. These changes may have never been committed and may have caused subsequent noise when running `skuba format` or `skuba lint`.
+
+  Now, internal linting is now promoted to a top-level tool alongside ESLint, Prettier, and tsc. Rules will report whether changes need to be made, and changes will only be applied in `format` or autofix modes (in CI). As a consequence, `skuba lint` may fail upon upgrading to this version if your project has internal lint violations that have been left unaddressed up to this point.
+
+  You can configure `skuba lint` to automatically push autofixes; this eases adoption of linting rule changes and automatically resolves issues arising from a forgotten `skuba format`. You'll need to configure your CI environment to support this feature. See our [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) documentation to learn more.
+
+- **format:** Switch Distroless image from `nodejs-debian11` to `nodejs-debian12` ([#1381](https://github.com/seek-oss/skuba/pull/1381))
+
+- **deps:** Prettier 3.2 ([#1384](https://github.com/seek-oss/skuba/pull/1384))
+
+  See the [release notes](https://prettier.io/blog/2024/01/12/3.2.0) for more information.
+
+- **init:** Initialise new projects with [pnpm](https://pnpm.io/) ([#1289](https://github.com/seek-oss/skuba/pull/1289))
+
+  New projects based on built-in templates will now use pnpm as their package manager as per updated organisational guidance.
+
+  Custom templates will continue to default to Yarn 1.x until a future major version, though you can opt in to pnpm via `skuba.template.js`:
+
+  ```diff
+  module.exports = {
+  + packageManager: 'pnpm',
+  };
+  ```
+
+- **lint:** Manage `.npmrc` for pnpm projects ([#1413](https://github.com/seek-oss/skuba/pull/1413))
+
+  skuba now manages a section of `.npmrc` when a project uses `pnpm` to enable [dependency hoisting](https://pnpm.io/npmrc#dependency-hoisting-settings). It will continue to avoid committing autofixes to the file if it contains auth secrets.
+
+- **deps:** TypeScript 5.3 ([#1324](https://github.com/seek-oss/skuba/pull/1324))
+
+  This major release includes breaking changes. See the [TypeScript 5.3](https://devblogs.microsoft.com/typescript/announcing-typescript-5-3/) announcement for more information.
+
+- **lint:** Manage `.dockerignore` ([#1433](https://github.com/seek-oss/skuba/pull/1433))
+
+  skuba now manages a section of `.dockerignore` for you, ensuring that the file is up to date with the latest enhancements in skuba.
+
+- **init:** Default to `arm64` platform and `main` branch ([#1343](https://github.com/seek-oss/skuba/pull/1343))
+
+- **init:** Run Prettier after templating ([#1337](https://github.com/seek-oss/skuba/pull/1337))
+
+- **init:** Support `main` default branch ([#1335](https://github.com/seek-oss/skuba/pull/1335))
+
+- **lint:** Introduce skuba patches ([#1274](https://github.com/seek-oss/skuba/pull/1274))
+
+  This feature adds patches which are run only once on the `lint` or `format` commands following a skuba update. If your build pipeline is utilising [autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes), these changes will be pushed up automatically.
+
+### Patch Changes
+
+- **lint:** Disable `Promise<void>` return checks in tests ([#1366](https://github.com/seek-oss/skuba/pull/1366))
+
+  This works around an [existing incompatibility](https://github.com/koajs/koa/issues/1755) between Koa and the built-in `http.RequestListener` type:
+
+  ```typescript
+  const app = new Koa();
+
+  const agent = supertest.agent(app.callback());
+  //                            ~~~~~~~~~~~~~~
+  // Promise returned in function argument where a void return was expected.
+  // @typescript-eslint/no-misused-promises
+  ```
+
+- **deps:** picomatch ^3.0.0 ([#1309](https://github.com/seek-oss/skuba/pull/1309))
+
+- **Jest:** Export `Config` type ([#1360](https://github.com/seek-oss/skuba/pull/1360))
+
+  This resolves a TypeScript error that could present itself when using `Jest.mergePreset` with the [`declaration`](https://www.typescriptlang.org/tsconfig#declaration) compiler option:
+
+  > TS4082: Default export of the module has or is using private name `ConfigGlobals`.
+
+- **template/lambda-sqs-worker:** Remove `@aws-sdk/util-utf8-node` library ([#1326](https://github.com/seek-oss/skuba/pull/1326))
+
+- **build, build-package, test:** Remove empty export synthesis for Jest setup files ([#1274](https://github.com/seek-oss/skuba/pull/1274))
+
+  [`isolatedModules`](https://www.typescriptlang.org/tsconfig#isolatedModules) was enabled by default in [v5.0.0](https://github.com/seek-oss/skuba/releases/tag/v5.0.0). To ease this migration, the commands listed above were updated to dynamically synthesise an empty export for `jest.setup.ts` and `jest.setup.int.ts` files; this compatibility logic has now been removed.
+
+  Up-to-date projects are unlikely to be affected, but you can easily add an empty export statement to placate the TypeScript compiler:
+
+  ```console
+  jest.setup.ts(1,1): error TS1208: 'jest.setup.ts' cannot be compiled under '--isolatedModules' because it is considered a global script file. Add an import, export, or an empty 'export {}' statement to make it a module.
+  ```
+
+  ```diff
+  process.env.ENVIRONMENT = 'test';
+
+  + export {};
+  ```
+
+- **template/lambda-sqs-worker-cdk:** Switch to `aws-cdk-lib/assertions` ([#1372](https://github.com/seek-oss/skuba/pull/1372))
+
+- **template/\*-rest-api:** Set `readonlyRootFilesystem` as a security best practice ([#1394](https://github.com/seek-oss/skuba/pull/1394))
+
+- **template:** Use `propagate-environment` for Docker Compose Buildkite plugin ([#1392](https://github.com/seek-oss/skuba/pull/1392))
+
+  This simplifies the Docker Compose environment variable configuration required for Buildkite and GitHub integrations.
+
+  In your `docker-compose.yml`:
+
+  ```diff
+  services:
+    app:
+  -   environment:
+  -     # Enable Buildkite + GitHub integrations.
+  -     - BUILDKITE
+  -     - BUILDKITE_AGENT_ACCESS_TOKEN
+  -     - BUILDKITE_BRANCH
+  -     - BUILDKITE_BUILD_NUMBER
+  -     - BUILDKITE_JOB_ID
+  -     - BUILDKITE_PIPELINE_DEFAULT_BRANCH
+  -     - BUILDKITE_STEP_ID
+  -     - GITHUB_API_TOKEN
+      image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}
+      init: true
+      volumes:
+        - ./:/workdir
+        # Mount agent for Buildkite annotations.
+        - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+        # Mount cached dependencies.
+        - /workdir/node_modules
+  ```
+
+  In your `.buildkite/pipeline.yml`:
+
+  ```diff
+  steps:
+    - commands:
+        - pnpm lint
+        - pnpm test
+      env:
+        # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
+        GET_GITHUB_TOKEN: 'please'
+      plugins:
+        - *aws-sm
+        - *private-npm
+        - *docker-ecr-cache
+        - docker-compose#v4.16.0:
+  +         environment:
+  +           - GITHUB_API_TOKEN
+  +         propagate-environment: true
+            run: app
+  ```
+
+- **template/\*-rest-api:** Disable dev CloudWatch dashboards for cost savings ([#1395](https://github.com/seek-oss/skuba/pull/1395))
+
+- **template/lambda-sqs-worker-cdk:** Add blue-green deployment, smoke test and version pruning functionality ([#1327](https://github.com/seek-oss/skuba/pull/1327))
+
+- **template/lambda-sqs-worker\*:** Set [maximum concurrency](https://aws.amazon.com/blogs/compute/introducing-maximum-concurrency-of-aws-lambda-functions-when-using-amazon-sqs-as-an-event-source/) ([#1412](https://github.com/seek-oss/skuba/pull/1412))
+
+  This prevents messages from going directly to the DLQ when the function reaches its reserved concurrency limit.
+
+- **template/koa-rest-api:** Improve input validation error response for Zod unions ([#1339](https://github.com/seek-oss/skuba/pull/1339))
+
+- **template/lambda-sqs-worker-cdk:** Introduce bundling with esbuild, `--hotswap` and `--watch` ([#1321](https://github.com/seek-oss/skuba/pull/1321))
+
+  This template now uses the `aws_lambda_nodejs.NodejsFunction` construct which uses esbuild to bundle the Lambda function. This [reduces cold start time](https://aws.amazon.com/blogs/developer/reduce-lambda-cold-start-times-migrate-to-aws-sdk-for-javascript-v3/) and time to build on CI.
+
+  The `--hotswap` and `--watch` options allow you to rapidly deploy your code changes to AWS, enhancing the developer feedback loop. This change introduces `deploy:hotswap` and `deploy:watch` scripts to the `package.json` manifest and a `Deploy Dev (Hotswap)` step to the Buildkite pipeline. Read more about watch and hotswap [on the AWS Developer Tools Blog](https://aws.amazon.com/blogs/developer/increasing-development-speed-with-cdk-watch/).
+
 ## 7.3.1
 
 ### Patch Changes
