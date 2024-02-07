@@ -208,15 +208,15 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     ```diff
       FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:20-alpine AS dev-deps
-
+    
     + RUN corepack enable pnpm
     + RUN pnpm config set store-dir /root/.pnpm-store
-
+    
       WORKDIR /workdir
-
+    
     - COPY package.json yarn.lock ./
     - COPY packages/foo/package.json packages/foo/
-
+    
     - RUN --mount=type=secret,id=npm,dst=/workdir/.npmrc \
     -     yarn install --frozen-lockfile --ignore-optional --non-interactive
     + RUN --mount=type=bind,source=.npmrc,target=.npmrc \
@@ -251,24 +251,24 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     - ###
     -
       FROM ${BASE_IMAGE} AS build
-
+    
       COPY . .
-
+    
     - RUN yarn build
     + RUN pnpm install --offline
     + RUN pnpm build
     + RUN pnpm install --offline --prod
-
+    
       ###
-
+    
       FROM --platform=${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs20-debian12 AS runtime
       WORKDIR /workdir
-
+    
       COPY --from=build /workdir/lib lib
     -
     - COPY --from=deps /workdir/node_modules node_modules
     + COPY --from=build /workdir/node_modules node_modules
-
+    
       ENV NODE_ENV=production
     ```
 
@@ -277,7 +277,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     Your build pipeline may have previously output an ephemeral `.npmrc` with an auth token on the build agent.
     This needs to be output elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
 
-    Swap out caching on `package.json` and `yarn.lock` for `pnpm-lock.yaml` at the same time.
+    Swap out caching on `package.json` and `yarn.lock` for `.npmrc` and `pnpm-lock.yaml` at the same time.
 
     ```diff
       seek-oss/private-npm#v1.2.0:
