@@ -215,6 +215,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     - RUN --mount=type=secret,id=npm,dst=/workdir/.npmrc \
     -     yarn install --frozen-lockfile --ignore-optional --non-interactive
     + RUN --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    + RUN --mount=type=bind,source=.npmrc,target=.npmrc \
     +     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
     +     pnpm fetch
     ```
@@ -281,10 +282,11 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     ```diff
      seek-oss/docker-ecr-cache#v2.1.0:
-    -  cache-on:
+       cache-on:
     -    - package.json
     -    - yarn.lock
-    +  cache-on: pnpm-lock.yaml
+    +    - .npmrc
+    +    - pnpm-lock.yaml
        dockerfile: Dockerfile.dev-deps
     -  secrets: id=npm,src=.npmrc
     +  secrets: id=npm,src=tmp/.npmrc
