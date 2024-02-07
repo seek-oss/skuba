@@ -8,3 +8,5 @@ pnpm-lock.yaml
 # end managed by skuba
 
 /integration/base/
+
+docs/deep-dives/pnpm.md
