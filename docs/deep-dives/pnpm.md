@@ -163,7 +163,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    + shamefully-hoist=true
    ```
 
-9. Remove `.npmrc` ignore entry from `.gitignore`
+9. Remove `.npmrc` ignore entry from `.gitignore` and `.dockerignore`
 
    Heed the warning and ensure that a safe `.npmrc` is included in the same commit.
 
