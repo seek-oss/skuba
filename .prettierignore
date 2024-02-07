@@ -9,4 +9,5 @@ pnpm-lock.yaml
 
 /integration/base/
 
+# TODO: figure out a better formatting system
 docs/deep-dives/pnpm.md
