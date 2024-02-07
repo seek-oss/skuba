@@ -1,5 +1,11 @@
 # skuba
 
+## 7.4.1
+
+### Patch Changes
+
+- **lint:** Fix issue where `skuba lint` would fail in `gutenberg` projects due to the existence of `Dockerfile-incunabulum` files ([#1439](https://github.com/seek-oss/skuba/pull/1439))
+
 ## 7.4.0
 
 This version of skuba should not require significant upgrade effort for most projects, but it does contain some notable changes:
