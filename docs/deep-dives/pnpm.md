@@ -206,6 +206,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     Your build pipeline may have previously mounted an ephemeral `.npmrc` with an auth token at `/workdir`.
     This needs to be mounted elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
 
+    <!-- prettier-ignore -->
     ```diff
       FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:20-alpine AS dev-deps
     
@@ -225,6 +226,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +     pnpm fetch
     ```
 
+    <!-- prettier-ignore -->
     Move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc`,
     and use a [bind mount] in place of `COPY` to mount `pnpm-lock.yaml`.
 
@@ -243,6 +245,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     Swap out `yarn` commands for `pnpm` commands,
     and drop the unnecessary `AS deps` stage.
 
+    <!-- prettier-ignore -->
     ```diff
     - FROM ${BASE_IMAGE} AS deps
     -
@@ -271,6 +274,8 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     
       ENV NODE_ENV=production
     ```
+
+    <!-- prettier-ignore -->
 
 15. Modify plugins in `.buildkite/pipeline.yml`
 
