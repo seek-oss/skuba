@@ -186,7 +186,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 11. Run `pnpm install`
 
-12. Handle transitive dependency issues
+12. Run `pnpm skuba lint`
 
     After running `pnpm install`,
     you may notice that some module imports no longer work.
