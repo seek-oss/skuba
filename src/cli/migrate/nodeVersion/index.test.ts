@@ -1,8 +1,6 @@
 import memfs, { vol } from 'memfs';
 
-import type { PatchReturnType } from '../..';
-
-import { tryUpgradeToNode20 } from './upgradeToNode20';
+import { CURRENT_NODE_LTS, nodeVersionMigration } from '.';
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
@@ -15,24 +13,20 @@ const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 beforeEach(jest.clearAllMocks);
 beforeEach(() => vol.reset());
 
-const reason = 'unable to find any Node.js <20 usage';
-
-describe('tryUpgradeToNode20', () => {
+describe('nodeVersionMigration', () => {
   const scenarios: Array<{
     filesBefore: Record<string, string>;
     filesAfter?: Record<string, string>;
-    result: PatchReturnType;
     scenario: string;
   }> = [
     {
       scenario: 'an empty project',
       filesBefore: {},
-      result: { result: 'skip', reason },
     },
     {
       scenario: 'several files to patch',
       filesBefore: {
-        '.nvmrc': 'v18.1.2',
+        '.nvmrc': 'v18.1.2\n',
         Dockerfile: 'FROM node:18.1.2\nRUN echo "hello"',
         'Dockerfile.dev-deps':
           'FROM --platform=linux/amd64 node:18-slim AS dev-deps\nRUN echo "hello"',
@@ -44,7 +38,7 @@ describe('tryUpgradeToNode20', () => {
         'infra/myCoolFolder/evenCoolerStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_16_X,\n}`,
       },
       filesAfter: {
-        '.nvmrc': '20',
+        '.nvmrc': '20\n',
         Dockerfile: 'FROM node:20\nRUN echo "hello"',
         'Dockerfile.dev-deps':
           'FROM --platform=linux/amd64 node:20-slim AS dev-deps\nRUN echo "hello"',
@@ -55,12 +49,11 @@ describe('tryUpgradeToNode20', () => {
         'infra/myCoolStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_20_X,\n}`,
         'infra/myCoolFolder/evenCoolerStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_20_X,\n}`,
       },
-      result: { result: 'apply' },
     },
     {
       scenario: 'various node formats',
       filesBefore: {
-        '.nvmrc': '18.3.4',
+        '.nvmrc': '18.3.4\n',
         'Dockerfile.1': 'FROM node:18.1.2\nRUN echo "hello"',
         'Dockerfile.2': 'FROM node:18\nRUN echo "hello"',
         'Dockerfile.3': 'FROM node:18-slim\nRUN echo "hello"',
@@ -79,7 +72,7 @@ describe('tryUpgradeToNode20', () => {
           'FROM --platform=linux/amd64 gcr.io/distroless/nodejs18-debian12 AS dev-deps\nRUN echo "hello"',
       },
       filesAfter: {
-        '.nvmrc': '20',
+        '.nvmrc': '20\n',
         'Dockerfile.1': 'FROM node:20\nRUN echo "hello"',
         'Dockerfile.2': 'FROM node:20\nRUN echo "hello"',
         'Dockerfile.3': 'FROM node:20-slim\nRUN echo "hello"',
@@ -97,55 +90,34 @@ describe('tryUpgradeToNode20', () => {
         'Dockerfile.10':
           'FROM --platform=linux/amd64 gcr.io/distroless/nodejs20-debian12 AS dev-deps\nRUN echo "hello"',
       },
-      result: { result: 'apply' },
     },
     {
       scenario: 'already node 20',
       filesBefore: {
-        '.nvmrc': '20',
+        '.nvmrc': '20\n',
         Dockerfile: 'FROM node:20\nRUN echo "hello"',
         'Dockerfile.dev-deps':
           'FROM --platform=linux/amd64 node:20-slim AS dev-deps\nRUN echo "hello"',
         'serverless.yml':
           'provider:\n  logRetentionInDays: 30\n  runtime: nodejs20.x\n  region: ap-southeast-2',
       },
-      result: { result: 'skip', reason },
     },
     {
       scenario: 'not detectable',
       filesBefore: {
-        '.nvmrc': 'lts/*',
         Dockerfile: 'FROM node:latest\nRUN echo "hello"',
       },
-      result: { result: 'skip', reason },
     },
   ];
 
-  describe('format mode', () => {
-    it.each(scenarios)(
-      'handles $scenario',
-      async ({ filesBefore, filesAfter, result: expected }) => {
-        vol.fromJSON(filesBefore, process.cwd());
+  it.each(scenarios)(
+    'handles $scenario',
+    async ({ filesBefore, filesAfter }) => {
+      vol.fromJSON(filesBefore, process.cwd());
 
-        const result = await tryUpgradeToNode20('format');
+      await nodeVersionMigration(CURRENT_NODE_LTS);
 
-        expect(result).toEqual(expected);
-        expect(volToJson()).toEqual(filesAfter ?? filesBefore);
-      },
-    );
-  });
-
-  describe('lint mode', () => {
-    it.each(scenarios)(
-      'handles $scenario',
-      async ({ filesBefore, result: expected }) => {
-        vol.fromJSON(filesBefore, process.cwd());
-
-        const result = await tryUpgradeToNode20('lint');
-
-        expect(result).toEqual(expected);
-        expect(volToJson()).toEqual(filesBefore); // no changes
-      },
-    );
-  });
+      expect(volToJson()).toEqual(filesAfter ?? filesBefore);
+    },
+  );
 });
