@@ -21,25 +21,30 @@ const migrations = {
 
 type Migration = keyof typeof migrations;
 
+const logAvailableMigrations = () => {
+  log.ok('Available migrations:');
+  Object.keys(migrations).forEach((migration) => {
+    log.ok(`- ${migration}`);
+  });
+};
+
 export const migrate = async (args = process.argv.slice(2)) => {
   if (!args[0]) {
     log.err('Provide a migration to run.');
+    logAvailableMigrations();
     process.exitCode = 1;
-  } else if (!migrations[args[0] as Migration]) {
-    log.err(`Migration "${args[0]}" is not a valid option.`);
-    process.exitCode = 1;
+    return;
   }
 
-  if (
-    args.includes('--help') ||
-    args.includes('-h') ||
-    args[0] === 'help' ||
-    process.exitCode === 1
-  ) {
-    log.ok('Available migrations:');
-    Object.keys(migrations).forEach((migration) => {
-      log.ok(`- ${migration}`);
-    });
+  if (args.includes('--help') || args.includes('-h') || args[0] === 'help') {
+    logAvailableMigrations();
+    return;
+  }
+
+  if (!migrations[args[0] as Migration]) {
+    log.err(`Migration "${args[0]}" is not a valid option.`);
+    logAvailableMigrations();
+    process.exitCode = 1;
     return;
   }
 
