@@ -11,7 +11,7 @@ import type { Logger } from '../utils/logging';
 import { getSkubaVersion } from '../utils/version';
 
 import { lint } from './lint';
-import { refreshIgnoreFiles } from './lint/internalLints/refreshIgnoreFiles';
+import { refreshConfigFiles } from './lint/internalLints/refreshConfigFiles';
 
 jest.setTimeout(30_000);
 
@@ -70,7 +70,7 @@ const stdout = (randomMatcher: RegExp) => {
 const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
   await copy(baseDir, tempDir);
   process.chdir(tempDir);
-  const result = await refreshIgnoreFiles('format', {
+  const result = await refreshConfigFiles('format', {
     bold: jest.fn(),
     dim: jest.fn(),
     warn: jest.fn(),

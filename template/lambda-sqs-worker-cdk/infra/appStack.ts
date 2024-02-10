@@ -95,13 +95,18 @@ export class AppStack extends Stack {
       // This forces the lambda to be updated on every deployment
       // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
       description: `Updated at ${new Date().toISOString()}`,
+      reservedConcurrentExecutions: context.workerLambda.reservedConcurrency,
     });
 
     const alias = worker.addAlias('live', {
       description: 'The Lambda version currently receiving traffic',
     });
 
-    alias.addEventSource(new aws_lambda_event_sources.SqsEventSource(queue));
+    alias.addEventSource(
+      new aws_lambda_event_sources.SqsEventSource(queue, {
+        maxConcurrency: context.workerLambda.reservedConcurrency,
+      }),
+    );
 
     const preHook = new aws_lambda_nodejs.NodejsFunction(
       this,

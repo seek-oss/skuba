@@ -1,5 +1,5 @@
 import { readBaseTemplateFile } from '../../../utils/template';
-import { mergeWithIgnoreFile } from '../processing/ignoreFile';
+import { mergeWithConfigFile } from '../processing/configFile';
 import type { Module } from '../types';
 
 export const ignoreModule = async (): Promise<Module> => {
@@ -9,8 +9,8 @@ export const ignoreModule = async (): Promise<Module> => {
   ]);
 
   return {
-    '.dockerignore': mergeWithIgnoreFile(dockerFile),
+    '.dockerignore': mergeWithConfigFile(dockerFile),
 
-    '.gitignore': mergeWithIgnoreFile(gitFile),
+    '.gitignore': mergeWithConfigFile(gitFile),
   };
 };

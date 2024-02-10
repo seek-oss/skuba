@@ -461,6 +461,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "Arn",
           ],
         },
+        "ReservedConcurrentExecutions": 2,
         "Role": {
           "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
@@ -480,7 +481,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF42b0ddfc326dbf01ad4617d855ec5ac63",
+            "workerCurrentVersionFA5B4BF4c6e1b764a3a99fdb70911ac06ee9afd5",
             "Version",
           ],
         },
@@ -533,10 +534,13 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             ],
           ],
         },
+        "ScalingConfig": {
+          "MaximumConcurrency": 2,
+        },
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
-    "workerCurrentVersionFA5B4BF42b0ddfc326dbf01ad4617d855ec5ac63": {
+    "workerCurrentVersionFA5B4BF4c6e1b764a3a99fdb70911ac06ee9afd5": {
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -1499,6 +1503,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "Arn",
           ],
         },
+        "ReservedConcurrentExecutions": 20,
         "Role": {
           "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
@@ -1518,7 +1523,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "workerCurrentVersionFA5B4BF44d168cc709f38ecb408a0929304cea9d",
+            "workerCurrentVersionFA5B4BF40f2ad063ab6223cdd6c6489f9188cf94",
             "Version",
           ],
         },
@@ -1571,10 +1576,13 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             ],
           ],
         },
+        "ScalingConfig": {
+          "MaximumConcurrency": 20,
+        },
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
-    "workerCurrentVersionFA5B4BF44d168cc709f38ecb408a0929304cea9d": {
+    "workerCurrentVersionFA5B4BF40f2ad063ab6223cdd6c6489f9188cf94": {
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",

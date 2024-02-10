@@ -8,7 +8,7 @@
     "lint": "skuba lint",
     "smoke": "serverless invoke --data '{}' --function Worker",
     "start": "skuba start --port <%- port %>",
-    "start:debug": "pnpm run --silent start --inspect-brk",
+    "start:debug": "pnpm --silent start --inspect-brk",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
@@ -19,7 +19,7 @@
     "@aws-sdk/client-sns": "^3.363.0",
     "@seek/logger": "^6.0.0",
     "datadog-lambda-js": "^7.102.0",
-    "dd-trace": "^4.0.0",
+    "dd-trace": "^5.0.0",
     "skuba-dive": "^2.0.0",
     "zod": "^3.19.1"
   },
@@ -37,6 +37,7 @@
     "serverless-prune-plugin": "^2.0.0",
     "skuba": "*"
   },
+  "packageManager": "pnpm@8.15.1",
   "engines": {
     "node": ">=20"
   }

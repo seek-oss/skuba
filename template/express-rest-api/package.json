@@ -6,7 +6,7 @@
     "format": "skuba format",
     "lint": "skuba lint",
     "start": "skuba start --port <%- port %>",
-    "start:debug": "pnpm run --silent start --inspect-brk",
+    "start:debug": "pnpm --silent start --inspect-brk",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
@@ -24,6 +24,7 @@
     "skuba": "*",
     "supertest": "^6.1.6"
   },
+  "packageManager": "pnpm@8.15.1",
   "engines": {
     "node": ">=20"
   }

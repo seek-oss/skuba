@@ -10,7 +10,9 @@ configs:
 
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v2.1.1: &docker-ecr-cache-defaults
-        cache-on: pnpm-lock.yaml
+        cache-on:
+          - .npmrc
+          - pnpm-lock.yaml
         secrets: id=npm,src=tmp/.npmrc
 
     - &private-npm
@@ -21,13 +23,13 @@ configs:
   base-steps:
     - &deploy
       commands:
-        - echo '+++ pnpm install --offline'
+        - echo '--- pnpm install --offline'
         - pnpm install --offline
         - echo '+++ pnpm run deploy'
         - pnpm run deploy
       concurrency: 1
       plugins:
-        - artifacts#v1.9.2:
+        - artifacts#v1.9.3:
             build: ${BUILDKITE_BUILD_ID}
             download: lib/*
         - *aws-sm
@@ -36,6 +38,7 @@ configs:
         - docker-compose#v4.16.0:
             dependencies: false
             run: app
+            propagate-environment: true
       retry:
         manual:
           # Only use this if you need to roll back a deployment ASAP.
@@ -49,14 +52,14 @@ steps:
   - label: 🧪 Test, Lint & Build
     artifact_paths: lib/**/*
     commands:
-      - echo '+++ pnpm install --offline'
+      - echo '--- pnpm install --offline'
       - pnpm install --offline
-      - echo '+++ pnpm run test:ci'
-      - pnpm run test:ci
-      - echo '--- pnpm run lint'
-      - pnpm run lint
-      - echo '--- pnpm run build'
-      - pnpm run build
+      - echo '+++ pnpm test:ci'
+      - pnpm test:ci
+      - echo '--- pnpm lint'
+      - pnpm lint
+      - echo '--- pnpm build'
+      - pnpm build
     env:
       GET_GITHUB_TOKEN: please
     plugins:
@@ -65,6 +68,9 @@ steps:
       - *docker-ecr-cache
       - docker-compose#v4.16.0:
           run: app
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
     timeout_in_minutes: 10
 
   - agents:

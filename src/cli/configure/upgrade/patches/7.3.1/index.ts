@@ -2,6 +2,7 @@ import type { Patches } from '../..';
 import { tryPatchRenovateConfig } from '../../../patchRenovateConfig';
 
 import { tryAddEmptyExports } from './addEmptyExports';
+import { tryMoveNpmrcOutOfIgnoreManagedSection } from './moveNpmrcOutOfIgnoreManagedSection';
 import { tryPatchDockerfile } from './patchDockerfile';
 import { tryPatchServerListener } from './patchServerListener';
 import { tryUpgradeToNode20 } from './upgradeToNode20';
@@ -27,5 +28,13 @@ export const patches: Patches = [
   {
     apply: tryUpgradeToNode20,
     description: 'Upgrade Node.js to 20',
+  },
+  {
+    apply: tryMoveNpmrcOutOfIgnoreManagedSection('.gitignore'),
+    description: 'Move .npmrc out of the .gitignore managed section',
+  },
+  {
+    apply: tryMoveNpmrcOutOfIgnoreManagedSection('.dockerignore'),
+    description: 'Move .npmrc out of the .dockerignore managed section',
   },
 ];

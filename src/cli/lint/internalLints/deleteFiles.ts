@@ -17,6 +17,16 @@ export const deleteFilesLint = async (
   mode: 'format' | 'lint',
   logger: Logger,
 ): Promise<InternalLintResult> => {
+  if (mode === 'lint') {
+    // Flagging Dockerfile-incunabulum for deletion is breaking gutenberg installs of skuba as it's (typically) not in source control
+    // TODO: Handle this better (only flag for deletion / delete if in source control)
+
+    return {
+      ok: true,
+      fixable: false,
+    };
+  }
+
   const dir = process.cwd();
 
   const toDelete = (

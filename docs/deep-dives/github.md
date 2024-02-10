@@ -23,8 +23,8 @@ For example, with the [Docker Buildkite plugin]:
 ```yaml
 steps:
   - commands:
-      - pnpm run lint
-      - pnpm run test
+      - pnpm lint
+      - pnpm test
     env:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
       GET_GITHUB_TOKEN: 'please'
@@ -42,23 +42,36 @@ steps:
             - /workdir/node_modules
 ```
 
-With Docker Compose,
-declare the environment variables and volume mounts in your [Compose file]:
+With Docker Compose, declare the volume mounts in your [Compose file]:
 
 ```yaml
 services:
   app:
-    environment:
-      # Enable GitHub integrations.
-      - BUILDKITE
-      - BUILDKITE_BRANCH
-      - BUILDKITE_BUILD_NUMBER
-      - BUILDKITE_PIPELINE_DEFAULT_BRANCH
-      - GITHUB_API_TOKEN
     volumes:
       - ./:/workdir
       # Mount cached dependencies.
       - /workdir/node_modules
+```
+
+and the `environment` and `propagate-environment` options in the [Docker Compose Buildkite plugin]:
+
+```yaml
+steps:
+  - commands:
+      - pnpm lint
+      - pnpm test
+    env:
+      # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
+      GET_GITHUB_TOKEN: 'please'
+    plugins:
+      - *aws-sm
+      - *private-npm
+      - *docker-ecr-cache
+      - docker-compose#v4.16.0:
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
+          run: app
 ```
 
 If you're running in GitHub Actions,
@@ -101,14 +114,14 @@ jobs:
   validate:
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       # Set up Node.js, install dependencies, run tests...
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm lint
 ```
 
 <!-- {% endraw %} -->
@@ -119,8 +132,9 @@ jobs:
 [`skuba lint`]: ../cli/lint.md#skuba-lint
 [`skuba test`]: ../cli/test.md#skuba-test
 [actions/checkout]: https://github.com/actions/checkout
-[compose file]: https://docs.docker.com/compose/compose-file
-[docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
-[github checks api]: https://docs.github.com/en/rest/reference/checks/
-[github.createcheckrun]: ../development-api/github.md#createcheckrun
+[Compose file]: https://docs.docker.com/compose/compose-file
+[Docker Buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
+[Docker Compose Buildkite plugin]: https://github.com/buildkite-plugins/docker-compose-buildkite-plugin
+[GitHub Checks API]: https://docs.github.com/en/rest/reference/checks/
+[GitHub.createCheckRun]: ../development-api/github.md#createcheckrun
 [will not trigger workflows]: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow

@@ -4,7 +4,7 @@ set -e
 
 template="${1}"
 if [ -z "$template" ]; then
-  echo "Usage: pnpm run test:template <template_name>"
+  echo "Usage: pnpm test:template <template_name>"
   exit 1
 fi
 
@@ -16,14 +16,14 @@ rm -rf "${directory}" "../${directory}"
 echo '--- pnpm install'
 pnpm install --frozen-lockfile
 
-echo '--- pnpm run build'
-pnpm run build
+echo '--- pnpm build'
+pnpm build
 
 echo '--- pnpm pack'
 skuba_tar=$(pnpm pack)
 
 echo "--- skuba init ${template}"
-pnpm run skuba:exec init << EOF
+pnpm skuba:exec init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
@@ -48,10 +48,12 @@ EOF
 
 mv "${directory}" "../${directory}"
 
+skuba_dir=$(pwd)
+
 cd "../${directory}" || exit 1
 
-echo "--- pnpm add --save-dev ../skuba/${skuba_tar}"
-pnpm add --save-dev "../skuba/${skuba_tar}"
+echo "--- pnpm add --save-dev ${skuba_dir}/${skuba_tar}"
+pnpm add --save-dev "${skuba_dir}/${skuba_tar}"
 
 echo "--- skuba version ${template}"
 pnpm exec skuba version
@@ -59,19 +61,19 @@ pnpm exec skuba -v
 pnpm exec skuba --version
 
 set +e
-echo "--- pnpm run build ${template}"
-output=$(pnpm run build 2>&1)
+echo "--- pnpm build ${template}"
+output=$(pnpm build 2>&1)
 echo $output
 if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
     exit 1
 fi
 set -e
 
-echo "--- pnpm run lint ${template}"
-pnpm run lint
+echo "--- pnpm lint ${template}"
+pnpm lint
 
-echo "--- pnpm run format ${template}"
-pnpm run format
+echo "--- pnpm format ${template}"
+pnpm format
 
-echo "--- pnpm run test ${template}"
-pnpm run test
+echo "--- pnpm test ${template}"
+pnpm test

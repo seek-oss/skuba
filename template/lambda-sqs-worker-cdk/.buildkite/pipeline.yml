@@ -10,7 +10,9 @@ configs:
 
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v2.1.1: &docker-ecr-cache-defaults
-        cache-on: pnpm-lock.yaml
+        cache-on:
+          - .npmrc
+          - pnpm-lock.yaml
         secrets: id=npm,src=tmp/.npmrc
 
     - &private-npm
@@ -21,7 +23,7 @@ configs:
   base-steps:
     - &deploy
       commands:
-        - echo '+++ pnpm install --offline'
+        - echo '--- pnpm install --offline'
         - pnpm install --offline
         - echo '+++ pnpm run deploy'
         - pnpm run deploy
@@ -33,21 +35,27 @@ configs:
         - docker-compose#v4.16.0:
             dependencies: false
             run: app
+            environment:
+              - GITHUB_API_TOKEN
+            propagate-environment: true
       retry:
         manual:
           # Only use this if you need to roll back a deployment ASAP.
           # Always follow up with a proper revert or fix in Git history.
           permit_on_passed: true
 
+env:
+  VERSION: ${BUILDKITE_COMMIT:0:7}.${BUILDKITE_BUILD_NUMBER}
+
 steps:
   - label: 🧪 Test, Lint & Build
     commands:
-      - echo '+++ pnpm install --offline'
+      - echo '--- pnpm install --offline'
       - pnpm install --offline
-      - echo '+++ pnpm run test:ci'
-      - pnpm run test
-      - echo '--- pnpm run lint'
-      - pnpm run lint
+      - echo '+++ pnpm test:ci'
+      - pnpm test
+      - echo '--- pnpm lint'
+      - pnpm lint
     env:
       GET_GITHUB_TOKEN: please
     plugins:
@@ -56,6 +64,9 @@ steps:
       - *docker-ecr-cache
       - docker-compose#v4.16.0:
           run: app
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
     timeout_in_minutes: 10
 
   - agents:
@@ -95,7 +106,7 @@ steps:
     env:
       ENVIRONMENT: dev
     commands:
-      - echo '+++ pnpm install --offline'
+      - echo '--- pnpm install --offline'
       - pnpm install --offline
       - echo '+++ pnpm run deploy:hotswap'
       - pnpm run deploy:hotswap

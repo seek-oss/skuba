@@ -34,7 +34,7 @@ By convention, this points to a `tsconfig.build.json` that excludes tests from y
 {
   "exclude": ["**/__mocks__/**/*", "**/*.test.ts", "src/testing/**/*"],
   "extends": "tsconfig.json",
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
 }
 ```
 
@@ -42,9 +42,9 @@ By convention, this points to a `tsconfig.build.json` that excludes tests from y
 // tsconfig.json
 {
   "compilerOptions": {
-    "outDir": "lib"
+    "outDir": "lib",
   },
-  "exclude": ["lib*/**/*"]
+  "exclude": ["lib*/**/*"],
 }
 ```
 
