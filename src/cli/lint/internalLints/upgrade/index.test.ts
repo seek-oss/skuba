@@ -1,16 +1,16 @@
 import { readdir, writeFile } from 'fs-extra';
 import type { NormalizedPackageJson } from 'read-pkg-up';
 
-import { log } from '../../../utils/logging';
-import { getConsumerManifest } from '../../../utils/manifest';
-import { getSkubaVersion } from '../../../utils/version';
+import { log } from '../../../../utils/logging';
+import { getConsumerManifest } from '../../../../utils/manifest';
+import { getSkubaVersion } from '../../../../utils/version';
 
 import { upgradeSkuba } from '.';
 
-jest.mock('../../../utils/manifest');
-jest.mock('../../../utils/version');
+jest.mock('../../../../utils/manifest');
+jest.mock('../../../../utils/version');
 jest.mock('fs-extra');
-jest.mock('../../../utils/logging');
+jest.mock('../../../../utils/logging');
 
 beforeEach(() => {
   jest.clearAllMocks();

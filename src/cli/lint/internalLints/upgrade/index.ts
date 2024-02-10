@@ -3,13 +3,13 @@ import path from 'path';
 import { readdir, writeFile } from 'fs-extra';
 import { gte, sort } from 'semver';
 
-import type { Logger } from '../../../utils/logging';
-import { getConsumerManifest } from '../../../utils/manifest';
-import { detectPackageManager } from '../../../utils/packageManager';
-import { getSkubaVersion } from '../../../utils/version';
-import type { SkubaPackageJson } from '../../init/writePackageJson';
-import type { InternalLintResult } from '../../lint/internal';
-import { formatPackage } from '../processing/package';
+import type { Logger } from '../../../../utils/logging';
+import { getConsumerManifest } from '../../../../utils/manifest';
+import { detectPackageManager } from '../../../../utils/packageManager';
+import { getSkubaVersion } from '../../../../utils/version';
+import { formatPackage } from '../../../configure/processing/package';
+import type { SkubaPackageJson } from '../../../init/writePackageJson';
+import type { InternalLintResult } from '../../internal';
 
 export type Patches = Patch[];
 export type Patch = {

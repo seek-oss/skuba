@@ -3,8 +3,8 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
-import { log } from '../../../../../utils/logging';
-import { createDestinationFileReader } from '../../../analysis/project';
+import { log } from '../../../../../../utils/logging';
+import { createDestinationFileReader } from '../../../../../configure/analysis/project';
 
 const DOCKERFILE_FILENAME = 'Dockerfile';
 

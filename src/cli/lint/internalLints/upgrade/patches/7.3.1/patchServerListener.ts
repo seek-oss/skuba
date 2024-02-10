@@ -3,9 +3,9 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
-import { log } from '../../../../../utils/logging';
-import { createDestinationFileReader } from '../../../analysis/project';
-import { formatPrettier } from '../../../processing/prettier';
+import { log } from '../../../../../../utils/logging';
+import { createDestinationFileReader } from '../../../../../configure/analysis/project';
+import { formatPrettier } from '../../../../../configure/processing/prettier';
 
 const SERVER_LISTENER_FILENAME = 'src/listen.ts';
 

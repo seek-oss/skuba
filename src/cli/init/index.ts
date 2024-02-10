@@ -13,7 +13,7 @@ import {
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
 import { runPrettier } from '../adapter/prettier';
-import { tryPatchRenovateConfig } from '../configure/patchRenovateConfig';
+import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig';
 
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
