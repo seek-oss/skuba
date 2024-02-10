@@ -33,7 +33,7 @@ import { hasProp } from './utils/validation';
 const THIRTY_MINUTES = 30 * 60 * 1000;
 
 const skuba = async () => {
-  const { commandName, args } = parseProcessArgs(process.argv);
+  const { commandName } = parseProcessArgs(process.argv);
 
   if (COMMAND_SET.has(commandName)) {
     const moduleName = commandToModule(commandName as Command);
