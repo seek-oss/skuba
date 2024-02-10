@@ -54,13 +54,9 @@ const skuba = async () => {
     // If we're not in a CI environment, we don't need to worry about timeouts, which are primarily to prevent
     // builds running "forever" in CI without our knowledge.
     // Local commands may run for a long time, e.g. `skuba node` and `skuba start`, which are unlikely to be used in CI.
-    if (!isCiEnv() || args.includes('--no-timeout')) {
+    if (!isCiEnv() || process.env.SKUBA_NO_TIMEOUT === 'true') {
       return run();
     }
-
-    const timeoutArg = args
-      .find((arg) => arg.startsWith('--timeout-ms='))
-      ?.split('=')[1];
 
     const timeoutId = setTimeout(
       () => {
@@ -73,7 +69,9 @@ const skuba = async () => {
         // Need to force exit because promises may be hanging so node won't exit on its own.
         process.exit(1);
       },
-      timeoutArg ? parseInt(timeoutArg, 10) : THIRTY_MINUTES,
+      process.env.SKUBA_TIMEOUT_MS
+        ? parseInt(process.env.SKUBA_TIMEOUT_MS, 10)
+        : THIRTY_MINUTES,
     );
 
     return run().finally(() => clearTimeout(timeoutId));
