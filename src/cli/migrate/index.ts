@@ -2,7 +2,15 @@ import { log } from '../../utils/logging';
 
 import { CURRENT_NODE_LTS, nodeVersionMigration } from './nodeVersion';
 
-const migrations = {
+interface MigrationBase<T extends unknown[]> {
+  migrate: (...args: T) => Promise<void>;
+  getArgs: (args: string[]) => T;
+}
+
+// If adding other migrations this will need to be unioned together with the other formats (fixme if you can think of a better way)
+type Migration = MigrationBase<[number]>;
+
+const migrations: Record<string, Migration> = {
   'node-version': {
     migrate: nodeVersionMigration,
     getArgs: (args: string[]): [number] => {
@@ -18,8 +26,6 @@ const migrations = {
     },
   },
 };
-
-type Migration = keyof typeof migrations;
 
 const logAvailableMigrations = () => {
   log.ok('Available migrations:');
@@ -41,14 +47,14 @@ export const migrate = async (args = process.argv.slice(2)) => {
     return;
   }
 
-  if (!migrations[args[0] as Migration]) {
+  const migration = migrations[args[0]];
+
+  if (!migration) {
     log.err(`Migration "${args[0]}" is not a valid option.`);
     logAvailableMigrations();
     process.exitCode = 1;
     return;
   }
-
-  const migration = migrations[args[0] as Migration];
 
   await migration.migrate(...migration.getArgs(args.slice(1)));
 };
