@@ -37,6 +37,10 @@ describe('nodeVersionMigration', () => {
           'provider:\n  logRetentionInDays: 7\n  runtime: nodejs16.x\n  region: ap-southeast-4',
         'infra/myCoolStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_18_X,\n}`,
         'infra/myCoolFolder/evenCoolerStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_16_X,\n}`,
+        '.buildkite/pipeline.yml':
+          'plugins:\n  - docker#v3.0.0:\n      image: node:18.1.2-slim\n',
+        '.buildkite/pipeline2.yml':
+          'plugins:\n  - docker#v3.0.0:\n      image: node:18\n',
       },
       filesAfter: {
         '.nvmrc': '20\n',
@@ -49,6 +53,10 @@ describe('nodeVersionMigration', () => {
           'provider:\n  logRetentionInDays: 7\n  runtime: nodejs20.x\n  region: ap-southeast-4',
         'infra/myCoolStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_20_X,\n}`,
         'infra/myCoolFolder/evenCoolerStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_20_X,\n}`,
+        '.buildkite/pipeline.yml':
+          'plugins:\n  - docker#v3.0.0:\n      image: node:20-slim\n',
+        '.buildkite/pipeline2.yml':
+          'plugins:\n  - docker#v3.0.0:\n      image: node:20\n',
       },
     },
     {

@@ -38,6 +38,11 @@ const subPatches: SubPatch[] = [
     test: /NODEJS_\d+_X/g,
     replace: 'NODEJS_<%- version %>_X',
   },
+  {
+    files: '.buildkite/*',
+    test: /image: node:[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
+    replace: 'image: node:<%- version %>$2',
+  },
 ];
 
 const runSubPatch = async (version: number, dir: string, patch: SubPatch) => {
