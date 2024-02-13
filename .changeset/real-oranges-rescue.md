@@ -6,7 +6,7 @@ migrate: Introduce `skuba migrate node-version` to automatically upgrade a proje
 
 `skuba migrate node-version` will attempt to automatically upgrade projects to Node.js 20.
 It will look in the project root for Dockerfiles, `.nvmrc`, and Serverless files,
-as well as CDK files in `infra/`, and try to upgrade them to a Node.js 20 version.
+as well as CDK files in `infra/` and `.buildkite/` files, and try to upgrade them to a Node.js 20 version.
 
 Other Node.js versions can be specified with `skuba migrate node-version <version>`.
 
