@@ -6,8 +6,6 @@ import fs from 'fs-extra';
 import { log } from '../../../utils/logging';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 
-export const CURRENT_NODE_LTS = 20;
-
 type SubPatch = (
   | { files: string; file?: never }
   | { file: string; files?: never }

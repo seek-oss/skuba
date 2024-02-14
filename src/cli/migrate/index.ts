@@ -1,30 +1,9 @@
 import { log } from '../../utils/logging';
 
-import { CURRENT_NODE_LTS, nodeVersionMigration } from './nodeVersion';
+import { nodeVersionMigration } from './nodeVersion';
 
-interface MigrationBase<T extends unknown[]> {
-  migrate: (...args: T) => Promise<void>;
-  getArgs: (args: string[]) => T;
-}
-
-// If adding other migrations this will need to be unioned together with the other formats (fixme if you can think of a better way)
-type Migration = MigrationBase<[number]>;
-
-const migrations: Record<string, Migration> = {
-  'node-version': {
-    migrate: nodeVersionMigration,
-    getArgs: (args: string[]): [number] => {
-      if (args.length === 0) return [CURRENT_NODE_LTS];
-
-      const version = Number(args[0]);
-      if (Number.isNaN(version)) {
-        log.err('Provide a valid Node.js version to migrate to.');
-        process.exit(1);
-      }
-
-      return [version];
-    },
-  },
+const migrations: Record<string, () => Promise<void>> = {
+  node20: () => nodeVersionMigration(20),
 };
 
 const logAvailableMigrations = () => {
@@ -56,5 +35,5 @@ export const migrate = async (args = process.argv.slice(2)) => {
     return;
   }
 
-  await migration.migrate(...migration.getArgs(args.slice(1)));
+  await migration();
 };

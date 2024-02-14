@@ -1,6 +1,6 @@
 import memfs, { vol } from 'memfs';
 
-import { CURRENT_NODE_LTS, nodeVersionMigration } from '.';
+import { nodeVersionMigration } from '.';
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
@@ -124,7 +124,7 @@ describe('nodeVersionMigration', () => {
     async ({ filesBefore, filesAfter }) => {
       vol.fromJSON(filesBefore, process.cwd());
 
-      await nodeVersionMigration(CURRENT_NODE_LTS);
+      await nodeVersionMigration(20);
 
       expect(volToJson()).toEqual(filesAfter ?? filesBefore);
     },
