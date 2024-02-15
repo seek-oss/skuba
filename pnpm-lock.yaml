@@ -59,6 +59,9 @@ dependencies:
   execa:
     specifier: ^5.0.0
     version: 5.1.1
+  fast-glob:
+    specifier: ^3.3.2
+    version: 3.3.2
   fdir:
     specifier: ^6.0.0
     version: 6.1.1(picomatch@3.0.1)

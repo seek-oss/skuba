@@ -3,10 +3,10 @@ import { inspect } from 'util';
 import chalk from 'chalk';
 
 import { type Logger, createLogger } from '../../utils/logging';
-import { upgradeSkuba } from '../configure/upgrade';
 
 import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs';
 import { tryRefreshConfigFiles } from './internalLints/refreshConfigFiles';
+import { upgradeSkuba } from './internalLints/upgrade';
 import type { Input } from './types';
 
 export type InternalLintResult = {

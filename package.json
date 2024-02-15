@@ -85,6 +85,7 @@
     "eslint": "^8.11.0",
     "eslint-config-skuba": "3.1.0",
     "execa": "^5.0.0",
+    "fast-glob": "^3.3.2",
     "fdir": "^6.0.0",
     "fs-extra": "^11.0.0",
     "function-arguments": "^1.0.9",
