@@ -64,7 +64,7 @@ dependencies:
     version: 3.3.2
   fdir:
     specifier: ^6.0.0
-    version: 6.1.1(picomatch@3.0.1)
+    version: 6.1.1(picomatch@4.0.1)
   fs-extra:
     specifier: ^11.0.0
     version: 11.2.0
@@ -111,8 +111,8 @@ dependencies:
     specifier: ^3.0.1
     version: 3.0.1
   picomatch:
-    specifier: ^3.0.0
-    version: 3.0.1
+    specifier: ^4.0.0
+    version: 4.0.1
   prettier:
     specifier: ~3.2.5
     version: 3.2.5
@@ -4485,7 +4485,7 @@ packages:
     dependencies:
       bser: 2.1.1
 
-  /fdir@6.1.1(picomatch@3.0.1):
+  /fdir@6.1.1(picomatch@4.0.1):
     resolution: {integrity: sha512-QfKBVg453Dyn3mr0Q0O+Tkr1r79lOTAKSi9f/Ot4+qVEwxWhav2Z+SudrG9vQjM2aYRMQQZ2/Q1zdA8ACM1pDg==}
     peerDependencies:
       picomatch: 3.x
@@ -4493,7 +4493,7 @@ packages:
       picomatch:
         optional: true
     dependencies:
-      picomatch: 3.0.1
+      picomatch: 4.0.1
     dev: false
 
   /figures@2.0.0:
@@ -7716,9 +7716,9 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  /picomatch@3.0.1:
-    resolution: {integrity: sha512-I3EurrIQMlRc9IaAZnqRR044Phh2DXY+55o7uJ0V+hYZAcQYSuFWsc9q5PvyDHUSCe1Qxn/iBz+78s86zWnGag==}
-    engines: {node: '>=10'}
+  /picomatch@4.0.1:
+    resolution: {integrity: sha512-xUXwsxNjwTQ8K3GnT4pCJm+xq3RUPQbmkYJTP5aFIfNIvbcc/4MUxgBaaRSZJ6yGJZiGSyYlM6MzwTsRk8SYCg==}
+    engines: {node: '>=12'}
     dev: false
 
   /pify@3.0.0:
