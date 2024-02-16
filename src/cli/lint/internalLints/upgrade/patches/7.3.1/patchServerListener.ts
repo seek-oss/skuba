@@ -3,15 +3,15 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
-import { log } from '../../../../../utils/logging';
-import { createDestinationFileReader } from '../../../analysis/project';
-import { formatPrettier } from '../../../processing/prettier';
+import { log } from '../../../../../../utils/logging';
+import { createDestinationFileReader } from '../../../../../configure/analysis/project';
+import { formatPrettier } from '../../../../../configure/processing/prettier';
 
 const SERVER_LISTENER_FILENAME = 'src/listen.ts';
 
 const KEEP_ALIVE_CODE = `
 // Gantry ALB default idle timeout is 30 seconds
-// https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout
+// https://nodejs.org/docs/latest-v20.x/api/http.html#serverkeepalivetimeout
 // Node default is 5 seconds
 // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout
 // AWS recommends setting an application timeout larger than the load balancer

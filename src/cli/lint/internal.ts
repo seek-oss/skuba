@@ -3,11 +3,10 @@ import { inspect } from 'util';
 import chalk from 'chalk';
 
 import { type Logger, createLogger } from '../../utils/logging';
-import { upgradeSkuba } from '../configure/upgrade';
 
-import { deleteFilesLint } from './internalLints/deleteFiles';
 import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs';
 import { tryRefreshConfigFiles } from './internalLints/refreshConfigFiles';
+import { upgradeSkuba } from './internalLints/upgrade';
 import type { Input } from './types';
 
 export type InternalLintResult = {
@@ -28,7 +27,7 @@ const lints: Array<
 > = [
   // Run upgradeSkuba before refreshConfigFiles for npmrc handling
   [upgradeSkuba],
-  [deleteFilesLint, noSkubaTemplateJs, tryRefreshConfigFiles],
+  [noSkubaTemplateJs, tryRefreshConfigFiles],
 ];
 
 const lintSerially = async (mode: 'format' | 'lint', logger: Logger) => {

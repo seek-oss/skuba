@@ -6,7 +6,7 @@ parent: Deep dives
 
 ---
 
-pnpm is the recommended package manager of choice for TypeScript projects at SEEK.
+[pnpm] is the recommended package manager of choice for TypeScript projects at SEEK.
 
 This topic details how to use pnpm with **skuba**.
 
@@ -40,7 +40,7 @@ However, this behaviour can lead to some [silly bugs] when updating packages.
 
 ### pnpm in skuba
 
-[pnpm] addresses the hoisting issue with a [symlinked structure].
+pnpm addresses the hoisting issue with a [symlinked structure].
 Each package is guaranteed to resolve compatible versions of its dependencies, rather than whichever versions were incidentally hoisted.
 
 This behaviour is a double-edged sword for a toolkit like **skuba**.
@@ -186,7 +186,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 11. Run `pnpm install`
 
-12. Handle transitive dependency issues
+12. Run `pnpm skuba lint`
 
     After running `pnpm install`,
     you may notice that some module imports no longer work.
