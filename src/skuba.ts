@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import whyIsNodeRunning from 'why-is-node-running';
+
 /**
  * Entry point for the CLI.
  *
@@ -10,6 +12,7 @@
  * ```
  */
 
+// eslint-disable-next-line import/order -- why-is-node-running must be imported before anything else
 import path from 'path';
 
 import { parseProcessArgs } from './utils/args';
@@ -19,11 +22,14 @@ import {
   type Command,
   commandToModule,
 } from './utils/command';
+import { isCiEnv } from './utils/env';
 import { handleCliError } from './utils/error';
 import { showHelp } from './utils/help';
 import { log } from './utils/logging';
 import { showLogoAndVersionInfo } from './utils/logo';
 import { hasProp } from './utils/validation';
+
+const THIRTY_MINUTES = 30 * 60 * 1000;
 
 const skuba = async () => {
   const { commandName } = parseProcessArgs(process.argv);
@@ -44,7 +50,29 @@ const skuba = async () => {
 
     const run = commandModule[moduleName] as () => Promise<unknown>;
 
-    return run();
+    // If we're not in a CI environment, we don't need to worry about timeouts, which are primarily to prevent
+    // builds running "forever" in CI without our knowledge.
+    // Local commands may run for a long time, e.g. `skuba node` and `skuba start`, which are unlikely to be used in CI.
+    if (!isCiEnv() || process.env.SKUBA_NO_TIMEOUT === 'true') {
+      return run();
+    }
+
+    const timeoutId = setTimeout(
+      () => {
+        log.err(
+          log.bold(commandName),
+          'timed out. This may indicate a process hanging - please file an issue.',
+        );
+        whyIsNodeRunning();
+        // Need to force exit because promises may be hanging so node won't exit on its own.
+        process.exit(1);
+      },
+      process.env.SKUBA_TIMEOUT_MS
+        ? parseInt(process.env.SKUBA_TIMEOUT_MS, 10)
+        : THIRTY_MINUTES,
+    );
+
+    return run().finally(() => clearTimeout(timeoutId));
   }
 
   log.err(log.bold(commandName), 'is not recognised as a command.');
