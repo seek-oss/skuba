@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-// @ts-expect-error - no types
 import whyIsNodeRunning from 'why-is-node-running';
 
 /**
@@ -64,7 +63,6 @@ const skuba = async () => {
           log.bold(commandName),
           'timed out. This may indicate a process hanging - please file an issue.',
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         whyIsNodeRunning();
         // Need to force exit because promises may be hanging so node won't exit on its own.
         process.exit(1);
