@@ -31,15 +31,6 @@ jest.useFakeTimers({
   now: new Date(currentDate),
 });
 
-class AppStackWithStableHash extends AppStack {
-  get defaultWorkerBundlingConfig() {
-    return {
-      ...super.defaultWorkerBundlingConfig,
-      assetHash: 'mocked',
-    };
-  }
-}
-
 it.each(contexts)(
   'returns expected CloudFormation stack for $stage',
   (context) => {
@@ -49,14 +40,19 @@ it.each(contexts)(
 
     const app = new App({ context });
 
-    const stack = new AppStackWithStableHash(app, 'appStack');
+    const stack = new AppStack(app, 'appStack');
 
     const template = Template.fromStack(stack);
 
-    const json = JSON.stringify(template.toJSON()).replace(
-      /"S3Key":"([0-9a-f]+)\.zip"/g,
-      (_, hash) => `"S3Key":"${'x'.repeat(hash.length)}.zip"`,
-    );
+    const json = JSON.stringify(template.toJSON())
+      .replace(
+        /"S3Key":"([0-9a-f]+)\.zip"/g,
+        (_, hash) => `"S3Key":"${'x'.repeat(hash.length)}.zip"`,
+      )
+      .replaceAll(
+        /workerCurrentVersion([0-9a-zA-Z]+)"/g,
+        (_, hash) => `workerCurrentVersion${'x'.repeat(hash.length)}"`,
+      );
 
     expect(JSON.parse(json)).toMatchSnapshot();
   },
