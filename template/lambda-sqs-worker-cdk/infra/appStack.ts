@@ -68,13 +68,6 @@ export class AppStack extends Stack {
       awsSdkConnectionReuse: false,
     };
 
-    const defaultWorkerBundlingConfig: aws_lambda_nodejs.BundlingOptions = {
-      sourceMap: true,
-      target: 'node20',
-      // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
-      externalModules: [],
-    };
-
     const defaultWorkerEnvironment: Record<string, string> = {
       NODE_ENV: 'production',
       // https://nodejs.org/api/cli.html#cli_node_options_options
@@ -85,7 +78,7 @@ export class AppStack extends Stack {
       ...defaultWorkerConfig,
       entry: './src/app.ts',
       timeout: Duration.seconds(30),
-      bundling: defaultWorkerBundlingConfig,
+      bundling: this.defaultWorkerBundlingConfig,
       functionName: '<%- serviceName %>',
       environment: {
         ...defaultWorkerEnvironment,
@@ -115,7 +108,7 @@ export class AppStack extends Stack {
         ...defaultWorkerConfig,
         entry: './src/preHook.ts',
         timeout: Duration.seconds(120),
-        bundling: defaultWorkerBundlingConfig,
+        bundling: this.defaultWorkerBundlingConfig,
         functionName: '<%- serviceName %>-pre-hook',
         environment: {
           ...defaultWorkerEnvironment,
@@ -134,7 +127,7 @@ export class AppStack extends Stack {
         ...defaultWorkerConfig,
         entry: './src/postHook.ts',
         timeout: Duration.seconds(30),
-        bundling: defaultWorkerBundlingConfig,
+        bundling: this.defaultWorkerBundlingConfig,
         functionName: '<%- serviceName %>-post-hook',
         environment: {
           ...defaultWorkerEnvironment,
@@ -183,5 +176,14 @@ export class AppStack extends Stack {
     deploymentGroup.addPreHook(preHook);
 
     deploymentGroup.addPostHook(postHook);
+  }
+
+  get defaultWorkerBundlingConfig(): aws_lambda_nodejs.BundlingOptions {
+    return {
+      sourceMap: true,
+      target: 'node20',
+      // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
+      externalModules: [],
+    };
   }
 }

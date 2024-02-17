@@ -31,6 +31,15 @@ jest.useFakeTimers({
   now: new Date(currentDate),
 });
 
+class AppStackWithStableHash extends AppStack {
+  get defaultWorkerBundlingConfig() {
+    return {
+      ...super.defaultWorkerBundlingConfig,
+      assetHash: 'mocked',
+    };
+  }
+}
+
 it.each(contexts)(
   'returns expected CloudFormation stack for $stage',
   (context) => {
@@ -40,7 +49,7 @@ it.each(contexts)(
 
     const app = new App({ context });
 
-    const stack = new AppStack(app, 'appStack');
+    const stack = new AppStackWithStableHash(app, 'appStack');
 
     const template = Template.fromStack(stack);
 
