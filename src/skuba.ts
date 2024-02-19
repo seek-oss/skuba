@@ -50,9 +50,14 @@ const skuba = async () => {
 
     const run = commandModule[moduleName] as () => Promise<unknown>;
 
+    if (commandModule.longRunning) {
+      // This is a long-running command, so we don't want to impose a timeout.
+      return run();
+    }
+
     // If we're not in a CI environment, we don't need to worry about timeouts, which are primarily to prevent
     // builds running "forever" in CI without our knowledge.
-    // Local commands may run for a long time, e.g. `skuba node` and `skuba start`, which are unlikely to be used in CI.
+    // Local commands may run for a long time, e.g. `skuba start` or `skuba test --watch`, which are unlikely to be used in CI.
     if (!isCiEnv() || process.env.SKUBA_NO_TIMEOUT === 'true') {
       return run();
     }
