@@ -1,5 +1,34 @@
 # skuba
 
+## 7.5.0
+
+### Minor Changes
+
+- **cli:** Add 30-minute timeout to skuba commands in CI to avoid potential hanging builds. ([#1444](https://github.com/seek-oss/skuba/pull/1444))
+
+  If there are use cases this breaks, please file an issue. A `SKUBA_NO_TIMEOUT` environment variable is supported on all commands to use the old behaviour. Timeout duration can be adjusted with a `SKUBA_TIMEOUT_MS` environment variable.
+
+- **migrate:** Introduce `skuba migrate node20` to automatically upgrade a project's Node.js version ([#1382](https://github.com/seek-oss/skuba/pull/1382))
+
+  `skuba migrate node20` will attempt to automatically upgrade projects to Node.js 20. It will look in the project root for Dockerfiles, `.nvmrc`, and Serverless files, as well as CDK files in `infra/` and `.buildkite/` files, and try to upgrade them to a Node.js 20 version.
+
+  skuba might not be able to upgrade all projects, so please check your project for any files that skuba missed. It's possible that skuba will modify a file incorrectly, in which case please [open an issue](https://github.com/seek-oss/skuba/issues/new).
+
+  Node.js 20 comes with its own breaking changes, so please read the [Node.js 20 release notes](https://nodejs.org/en/blog/announcements/v20-release-announce) alongside the skuba release notes. In addition,
+
+  - For AWS Lambda runtime updates to `nodejs20.x`, consider reading the [release announcement](https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/) as there are some breaking changes with this upgrade.
+  - You may need to upgrade your versions of CDK and Serverless as appropriate to support nodejs20.x.
+
+### Patch Changes
+
+- **lint:** Remove `Dockerfile-incunabulum` rule ([#1441](https://github.com/seek-oss/skuba/pull/1441))
+
+  Previously, `skuba lint` would search for and delete a file named `Dockerfile-incunabulum` to correct a historical issue that had it committed to source control. This rule has been removed as the file has been cleaned up from most SEEK repositories.
+
+- **template/lambda-sqs-worker-cdk:** Update tests to use a stable identifier for the `AWS::Lambda::Version` logical IDs in snapshots. This avoid snapshot changes on unrelated source code changes. ([#1450](https://github.com/seek-oss/skuba/pull/1450))
+
+- **deps:** picomatch ^4.0.0 ([#1442](https://github.com/seek-oss/skuba/pull/1442))
+
 ## 7.4.1
 
 ### Patch Changes
