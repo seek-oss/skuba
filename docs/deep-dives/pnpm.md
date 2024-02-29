@@ -302,7 +302,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +  secrets: id=npm,src=tmp/.npmrc
     ```
 
-16. Replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
+16. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
@@ -318,6 +318,8 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +    - echo '--- pnpm lint'
     +    - pnpm lint
     ```
+
+17. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
 
 ---
 
