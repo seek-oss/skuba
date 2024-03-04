@@ -4,6 +4,8 @@ schemaVersion: v0.0
 
 name: '{{values "service"}}'
 
+owner: '{{values "owner"}}'
+
 image: '{{values "image"}}'
 
 env:
