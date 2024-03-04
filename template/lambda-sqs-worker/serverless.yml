@@ -6,12 +6,17 @@ params:
   default:
     datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:SECRET-NAME'
     dataStoreTags:
-      seek:auto:backup:frequency: none
+      - Key: seek:auto:backup:frequency
+        Value: none
       # TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#data-services
-      # seek:data:derived: copy
-      # seek:data:domain: unassigned
-      # seek:data:jurisdiction-source: australia hong-kong indonesia malaysia new-zealand philippines singapore thailand
-      # seek:data:types:restricted: job-ads
+      # - Key: seek:data:derived
+      #   Value: copy
+      # - Key: seek:data:domain
+      #   Value: unassigned
+      # - Key: seek:data:jurisdiction-source
+      #   Value: australia hong-kong indonesia malaysia new-zealand philippines singapore thailand
+      # - Key: seek:data:types:restricted
+      #   Value: job-ads
     description: <%- description %>
   dev:
     deploymentBucket: 'TODO: deployment-bucket-name'
