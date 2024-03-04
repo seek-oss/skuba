@@ -5,6 +5,13 @@ configValidationMode: error
 params:
   default:
     datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:SECRET-NAME'
+    dataStoreTags:
+      seek:auto:backup:frequency: none
+      # TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#data-services
+      # seek:data:derived: copy
+      # seek:data:domain: unassigned
+      # seek:data:jurisdiction-source: australia hong-kong indonesia malaysia new-zealand philippines singapore thailand
+      # seek:data:types:restricted: job-ads
     description: <%- description %>
   dev:
     deploymentBucket: 'TODO: deployment-bucket-name'
@@ -70,16 +77,15 @@ provider:
           Effect: Allow
           Resource: !Ref DestinationTopic
   stackTags:
-    # TODO: add data classification tags
-    # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers
-    # seek:data:consumers: internal
-    # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdatatypes
-    # seek:data:types:restricted: job-ads
     seek:env:label: ${env:ENVIRONMENT}
-    seek:env:production: ${param:isProduction}
-    seek:owner:team: '<%- teamName %>'
+    seek:env:prod: ${param:isProduction}
+    # seek:owner:cost-centre: 'TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#required-tags'
+    seek:owner:technical: '<%- teamName %>'
     seek:source:sha: ${env:BUILDKITE_COMMIT, 'na'}
     seek:source:url: 'https://github.com/SEEK-Jobs/<%- repoName %>'
+    seek:system:deployed-by: CFN
+    # seek:system:name: 'TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#required-tags'
+    # seek:system:org: 'TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#required-tags'
 
 package:
   patterns:
@@ -131,6 +137,7 @@ resources:
         KmsDataKeyReusePeriodSeconds: 300
         KmsMasterKeyId: !Ref EncryptionKey
         QueueName: ${self:service}-dead-letters
+        Tags: ${param:dataStoreTags}
 
     MessageQueue:
       Type: AWS::SQS::Queue
@@ -142,6 +149,7 @@ resources:
         RedrivePolicy:
           deadLetterTargetArn: !GetAtt DeadLetterQueue.Arn
           maxReceiveCount: 3
+        Tags: ${param:dataStoreTags}
         VisibilityTimeout: 180
 
     # MessageQueuePolicy:
@@ -173,6 +181,7 @@ resources:
       Type: AWS::SNS::Topic
       Properties:
         KmsMasterKeyId: alias/aws/sns
+        Tags: ${param:dataStoreTags}
         TopicName: ${self:service}
 
     EncryptionKey:
