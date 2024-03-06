@@ -8,7 +8,7 @@
       "workerLambda": {
         "reservedConcurrency": 2,
         "environment": {
-          "SOMETHING": "dev"
+          "STAGE": "dev"
         }
       },
       "sourceSnsTopicArn": "TODO: sourceSnsTopicArn"
@@ -17,7 +17,7 @@
       "workerLambda": {
         "reservedConcurrency": 20,
         "environment": {
-          "SOMETHING": "prod"
+          "STAGE": "prod"
         }
       },
       "sourceSnsTopicArn": "TODO: sourceSnsTopicArn"
