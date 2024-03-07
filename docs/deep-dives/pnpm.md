@@ -319,6 +319,12 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +    - pnpm lint
     ```
 
+    #### FAQ
+
+    **Q:** I'm running into `ERR_PNPM_CANNOT_DEPLOY  A deploy is only possible from inside a workspace`
+
+    **A:** `pnpm deploy` is a reserved command. Use `pnpm run deploy` instead.
+
 17. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
 
 ---
