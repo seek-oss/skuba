@@ -448,9 +448,9 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
+            "ENVIRONMENT": "dev",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "ENVIRONMENT": "dev",
           },
         },
         "FunctionName": "serviceName",
@@ -638,12 +638,12 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "Environment": {
           "Variables": {
+            "ENVIRONMENT": "dev",
             "FUNCTION_NAME_TO_PRUNE": {
               "Ref": "worker28EA3E30",
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "ENVIRONMENT": "dev",
           },
         },
         "FunctionName": "serviceName-post-hook",
@@ -790,12 +790,12 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "Environment": {
           "Variables": {
+            "ENVIRONMENT": "dev",
             "FUNCTION_NAME_TO_INVOKE": {
               "Ref": "worker28EA3E30",
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "ENVIRONMENT": "dev",
           },
         },
         "FunctionName": "serviceName-pre-hook",
@@ -1490,9 +1490,9 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
+            "ENVIRONMENT": "prod",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "ENVIRONMENT": "prod",
           },
         },
         "FunctionName": "serviceName",
@@ -1680,12 +1680,12 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "Environment": {
           "Variables": {
+            "ENVIRONMENT": "prod",
             "FUNCTION_NAME_TO_PRUNE": {
               "Ref": "worker28EA3E30",
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "ENVIRONMENT": "prod",
           },
         },
         "FunctionName": "serviceName-post-hook",
@@ -1832,12 +1832,12 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "Environment": {
           "Variables": {
+            "ENVIRONMENT": "prod",
             "FUNCTION_NAME_TO_INVOKE": {
               "Ref": "worker28EA3E30",
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "ENVIRONMENT": "prod",
           },
         },
         "FunctionName": "serviceName-pre-hook",
