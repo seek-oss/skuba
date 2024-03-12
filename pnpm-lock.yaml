@@ -15,8 +15,8 @@ dependencies:
     specifier: ^8.0.0
     version: 8.0.1
   '@octokit/graphql-schema':
-    specifier: ^14.5.0
-    version: 14.55.1
+    specifier: ^15.3.0
+    version: 15.3.0
   '@octokit/rest':
     specifier: ^20.0.0
     version: 20.0.2
@@ -1591,8 +1591,8 @@ packages:
       universal-user-agent: 6.0.1
     dev: false
 
-  /@octokit/graphql-schema@14.55.1:
-    resolution: {integrity: sha512-2D+ozyxfsbOdGeiLj/9wfBFVODj8eTQ8qeTwr9wOPyhIYtVcGPFJJTt8u/9Tfj+rImkg0xQg6fyFDO+In6Jb8Q==}
+  /@octokit/graphql-schema@15.3.0:
+    resolution: {integrity: sha512-yGj0haNZY1/4DZO72KpJdOzvKQFYPUkD5d6PdntPSbekABUoOdStAtEsOtuwZz52cPrbQEEoZ0wN7aemA1y8PA==}
     dependencies:
       graphql: 16.8.1
       graphql-tag: 2.12.6(graphql@16.8.1)
