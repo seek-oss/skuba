@@ -10,7 +10,6 @@
  * ```
  */
 
-// eslint-disable-next-line import/order -- why-is-node-running must be imported before anything else
 import path from 'path';
 
 import { hasDebugFlag, parseProcessArgs } from './utils/args';
