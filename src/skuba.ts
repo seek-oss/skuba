@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-import whyIsNodeRunning from 'why-is-node-running';
-
 /**
  * Entry point for the CLI.
  *
@@ -12,7 +10,6 @@ import whyIsNodeRunning from 'why-is-node-running';
  * ```
  */
 
-// eslint-disable-next-line import/order -- why-is-node-running must be imported before anything else
 import path from 'path';
 
 import { parseProcessArgs } from './utils/args';
@@ -68,7 +65,7 @@ const skuba = async () => {
           log.bold(commandName),
           'timed out. This may indicate a process hanging - please file an issue.',
         );
-        whyIsNodeRunning();
+
         // Need to force exit because promises may be hanging so node won't exit on its own.
         process.exit(1);
       },

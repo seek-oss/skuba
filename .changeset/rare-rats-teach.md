@@ -2,4 +2,6 @@
 'skuba': patch
 ---
 
-deps: Remove `fdir` dependency, which is now unused
+deps: Remove `fdir`
+
+This dependency is no longer used internally.
