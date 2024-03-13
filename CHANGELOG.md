@@ -1,5 +1,39 @@
 # skuba
 
+## 7.5.1
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Comply with latest AWS tagging guidance ([#1461](https://github.com/seek-oss/skuba/pull/1461))
+
+- **GitHub.putIssueComment:** Support `userId: 'seek-build-agency'` ([#1474](https://github.com/seek-oss/skuba/pull/1474))
+
+  The `userId` parameter is an optimisation to skip user lookup. A descriptive constant is now supported on SEEK build agents:
+
+  ```diff
+  await GitHub.putIssueComment({
+    body,
+  - userId: 87109344, // https://api.github.com/users/buildagencygitapitoken[bot]
+  + userId: 'seek-build-agency',
+  });
+  ```
+
+- **deps:** Remove `why-is-node-running` ([#1476](https://github.com/seek-oss/skuba/pull/1476))
+
+  [`why-is-node-running`](https://www.npmjs.com/package/why-is-node-running) was previously added to the skuba CLI to troubleshoot scenarios where commands were timing out in CI. This has now been removed to avoid disruption to commands such as [`jest --detectOpenHandles`](https://jestjs.io/docs/cli#--detectopenhandles).
+
+- **deps:** Remove `fdir` ([#1463](https://github.com/seek-oss/skuba/pull/1463))
+
+  This dependency is no longer used internally.
+
+- **template/\*-rest-api:** Comply with latest AWS tagging guidance ([#1459](https://github.com/seek-oss/skuba/pull/1459))
+
+  This includes an upgrade to Gantry v3.
+
+- **deps:** @octokit/graphql ^8.0.0 ([#1473](https://github.com/seek-oss/skuba/pull/1473))
+
+- **deps:** @octokit/graphql-schema ^15.3.0 ([#1473](https://github.com/seek-oss/skuba/pull/1473))
+
 ## 7.5.0
 
 ### Minor Changes
