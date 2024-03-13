@@ -12,7 +12,7 @@
 
 import path from 'path';
 
-import { hasDebugFlag, parseProcessArgs } from './utils/args';
+import { parseProcessArgs } from './utils/args';
 import {
   COMMAND_DIR,
   COMMAND_SET,
@@ -29,14 +29,6 @@ import { hasProp } from './utils/validation';
 const THIRTY_MINUTES = 30 * 60 * 1000;
 
 const skuba = async () => {
-  const debug = hasDebugFlag(process.argv);
-
-  // Only import `why-is-node-running` if we're in debug mode as it has unwanted
-  // side effects like `jest --detectOpenHandles` reporting its open handles.
-  const whyIsNodeRunning = debug
-    ? (await import('why-is-node-running')).default
-    : () => undefined;
-
   const { commandName } = parseProcessArgs(process.argv);
 
   if (COMMAND_SET.has(commandName)) {
@@ -73,7 +65,7 @@ const skuba = async () => {
           log.bold(commandName),
           'timed out. This may indicate a process hanging - please file an issue.',
         );
-        whyIsNodeRunning();
+
         // Need to force exit because promises may be hanging so node won't exit on its own.
         process.exit(1);
       },
