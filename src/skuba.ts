@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-import whyIsNodeRunning from 'why-is-node-running';
-
 /**
  * Entry point for the CLI.
  *
@@ -15,7 +13,7 @@ import whyIsNodeRunning from 'why-is-node-running';
 // eslint-disable-next-line import/order -- why-is-node-running must be imported before anything else
 import path from 'path';
 
-import { parseProcessArgs } from './utils/args';
+import { hasDebugFlag, parseProcessArgs } from './utils/args';
 import {
   COMMAND_DIR,
   COMMAND_SET,
@@ -32,6 +30,14 @@ import { hasProp } from './utils/validation';
 const THIRTY_MINUTES = 30 * 60 * 1000;
 
 const skuba = async () => {
+  const debug = hasDebugFlag(process.argv);
+
+  // Only import `why-is-node-running` if we're in debug mode as it has unwanted
+  // side effects like `jest --detectOpenHandles` reporting its open handles.
+  const whyIsNodeRunning = debug
+    ? (await import('why-is-node-running')).default
+    : () => undefined;
+
   const { commandName } = parseProcessArgs(process.argv);
 
   if (COMMAND_SET.has(commandName)) {
