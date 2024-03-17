@@ -17,22 +17,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js 20.x
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
 
-      - uses: pnpm/action-setup@v2
+      - name: Set up pnpm
+        run: corepack enable pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Publish to npm
-        run: pnpm run release
+        run: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}

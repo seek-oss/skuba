@@ -2,6 +2,7 @@ import * as GitHub from '../../../../api/github';
 import type { ESLintOutput } from '../../../adapter/eslint';
 import type { PrettierOutput } from '../../../adapter/prettier';
 import type { StreamInterceptor } from '../../../lint/external';
+import type { InternalLintResult } from '../../internal';
 
 import { createEslintAnnotations } from './eslint';
 import { createPrettierAnnotations } from './prettier';
@@ -52,12 +53,34 @@ const prettierOutput: PrettierOutput = {
   },
 };
 
+const internalOutput: InternalLintResult = {
+  ok: false,
+  fixable: false,
+  annotations: [
+    {
+      path: 'src/index.ts',
+      message: 'something is wrong about this',
+    },
+  ],
+};
+
 const tscOk = false;
 const mockOutput = jest.fn<string, any>();
 
 const tscOutputStream = {
   output: mockOutput,
 } as unknown as StreamInterceptor;
+
+const mockInternalAnnotations: GitHub.Annotation[] = [
+  {
+    annotation_level: 'failure',
+    end_line: 1,
+    message: 'something is wrong about this',
+    path: 'src/index.ts',
+    start_line: 1,
+    title: 'skuba lint',
+  },
+];
 
 const mockEslintAnnotations: GitHub.Annotation[] = [
   {
@@ -124,6 +147,7 @@ it('should return immediately if the required environment variables are not set'
   delete process.env.GITHUB_ACTIONS;
 
   await createGitHubAnnotations(
+    internalOutput,
     eslintOutput,
     prettierOutput,
     tscOk,
@@ -135,6 +159,7 @@ it('should return immediately if the required environment variables are not set'
 
 it('should call createEslintAnnotations with the ESLint output', async () => {
   await createGitHubAnnotations(
+    internalOutput,
     eslintOutput,
     prettierOutput,
     tscOk,
@@ -146,6 +171,7 @@ it('should call createEslintAnnotations with the ESLint output', async () => {
 
 it('should call createPrettierAnnotations with the Prettier output', async () => {
   await createGitHubAnnotations(
+    internalOutput,
     eslintOutput,
     prettierOutput,
     tscOk,
@@ -157,6 +183,7 @@ it('should call createPrettierAnnotations with the Prettier output', async () =>
 
 it('should call createTscAnnotations with tscOk and tscOutputStream', async () => {
   await createGitHubAnnotations(
+    internalOutput,
     eslintOutput,
     prettierOutput,
     tscOk,
@@ -168,12 +195,14 @@ it('should call createTscAnnotations with tscOk and tscOutputStream', async () =
 
 it('should combine all the annotations into an array for the check run', async () => {
   const expectedAnnotations: GitHub.Annotation[] = [
+    ...mockInternalAnnotations,
     ...mockEslintAnnotations,
     ...mockPrettierAnnotations,
     ...mockTscAnnotations,
   ];
 
   await createGitHubAnnotations(
+    internalOutput,
     eslintOutput,
     prettierOutput,
     tscOk,
@@ -191,6 +220,7 @@ it('should combine all the annotations into an array for the check run', async (
 
 it('should set the conclusion to failure if any output is not ok', async () => {
   await createGitHubAnnotations(
+    { ...internalOutput, ok: true },
     { ...eslintOutput, ok: false },
     { ...prettierOutput, ok: true },
     true,
@@ -208,6 +238,7 @@ it('should set the conclusion to failure if any output is not ok', async () => {
 
 it('should set the conclusion to success if all outputs are ok', async () => {
   await createGitHubAnnotations(
+    { ...internalOutput, ok: true },
     { ...eslintOutput, ok: true },
     { ...prettierOutput, ok: true },
     true,
@@ -227,6 +258,7 @@ it('should report that skuba lint failed if the output is not ok', async () => {
   const expectedSummary = '`skuba lint` found issues that require triage.';
 
   await createGitHubAnnotations(
+    internalOutput,
     { ...eslintOutput, ok: false },
     { ...prettierOutput, ok: false },
     false,
@@ -246,6 +278,7 @@ it('should set the summary to `Lint passed` if all outputs are ok', async () => 
   const expectedSummary = '`skuba lint` passed.';
 
   await createGitHubAnnotations(
+    { ...internalOutput, ok: true },
     { ...eslintOutput, ok: true },
     { ...prettierOutput, ok: true },
     true,

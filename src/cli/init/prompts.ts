@@ -1,3 +1,4 @@
+import { type FormChoice, Input, Select } from 'enquirer';
 import { pathExists } from 'fs-extra';
 
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
@@ -10,8 +11,6 @@ import {
   isGitHubTeam,
   isPlatform,
 } from './validation';
-
-import { type FormChoice, Input, Select } from 'enquirer';
 
 export type Choice = FormChoice & {
   /**

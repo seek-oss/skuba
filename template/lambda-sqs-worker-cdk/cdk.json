@@ -1,24 +1,26 @@
 {
-  "app": "npx ts-node infra/index.ts",
+  "app": "pnpm exec skuba node infra/index.ts",
   "context": {
     "global": {
       "appName": "<%- serviceName %>"
     },
     "dev": {
       "workerLambda": {
-        "reservedConcurrency": 1,
+        "reservedConcurrency": 2,
         "environment": {
-          "SOMETHING": "dev"
+          "ENVIRONMENT": "dev"
         }
-      }
+      },
+      "sourceSnsTopicArn": "TODO: sourceSnsTopicArn"
     },
     "prod": {
       "workerLambda": {
-        "reservedConcurrency": 2,
+        "reservedConcurrency": 20,
         "environment": {
-          "SOMETHING": "prod"
+          "ENVIRONMENT": "prod"
         }
-      }
+      },
+      "sourceSnsTopicArn": "TODO: sourceSnsTopicArn"
     }
   },
   "progress": "events",

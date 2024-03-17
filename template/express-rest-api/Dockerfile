@@ -7,12 +7,12 @@ FROM ${BASE_IMAGE} AS build
 COPY . .
 
 RUN pnpm install --offline
-RUN pnpm run build
+RUN pnpm build
 RUN pnpm install --offline --prod
 
 ###
 
-FROM --platform=<%- platformName %> gcr.io/distroless/nodejs20-debian11 AS runtime
+FROM --platform=<%- platformName %> gcr.io/distroless/nodejs20-debian12 AS runtime
 
 WORKDIR /workdir
 

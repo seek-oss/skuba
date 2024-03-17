@@ -23,7 +23,7 @@ For example, with the [Docker Buildkite plugin]:
 
 ```yaml
 steps:
-  - command: pnpm run lint
+  - command: pnpm lint
     plugins:
       - *aws-sm
       - *private-npm
@@ -31,7 +31,6 @@ steps:
       - docker#v5.0.0:
           environment:
             - BUILDKITE_AGENT_ACCESS_TOKEN
-          # Enable Buildkite integrations.
           propagate-environment: true
           volumes:
             # Mount agent for Buildkite annotations.
@@ -46,18 +45,28 @@ declare the environment variables and volume mounts in your [Compose file]:
 ```yaml
 services:
   app:
-    environment:
-      # Enable Buildkite integrations.
-      - BUILDKITE
-      - BUILDKITE_AGENT_ACCESS_TOKEN
-      - BUILDKITE_JOB_ID
-      - BUILDKITE_STEP_ID
     volumes:
       - ./:/workdir
       # Mount agent for Buildkite annotations.
       - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
       # Mount cached dependencies.
       - /workdir/node_modules
+```
+
+and the `environment` and `propagate-environment` options in the [Docker Compose Buildkite plugin]:
+
+```yaml
+steps:
+  - command: pnpm lint
+    plugins:
+      - *aws-sm
+      - *private-npm
+      - *docker-ecr-cache
+      - docker-compose#v4.16.0:
+          environment:
+            - BUILDKITE_AGENT_ACCESS_TOKEN
+          propagate-environment: true
+          run: app
 ```
 
 This feature is also planned for [`skuba test`] in future.
@@ -108,9 +117,10 @@ The agent may be tied up running a particularly compute- or memory-intensive ste
 [`skuba build-package`]: ../cli/build.md#skuba-build-package
 [`skuba lint`]: ../cli/lint.md#skuba-lint
 [`skuba test`]: ../cli/test.md#skuba-test
-[buildkite.annotate]: ../development-api/buildkite.md#annotate
-[buildkite annotations]: https://buildkite.com/docs/agent/v3/cli-annotate
-[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
-[ci/cd]: https://en.wikipedia.org/wiki/CI/CD
-[compose file]: https://docs.docker.com/compose/compose-file
-[docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
+[Buildkite annotations]: https://buildkite.com/docs/agent/v3/cli-annotate
+[Buildkite.annotate]: ../development-api/buildkite.md#annotate
+[Builds at SEEK]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
+[CI/CD]: https://en.wikipedia.org/wiki/CI/CD
+[Compose file]: https://docs.docker.com/compose/compose-file
+[Docker Buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
+[Docker Compose Buildkite plugin]: https://github.com/buildkite-plugins/docker-compose-buildkite-plugin

@@ -1,6 +1,5 @@
 import path from 'path';
 
-import { graphql } from '@octokit/graphql';
 import type {
   CreateCommitOnBranchInput,
   FileAddition,
@@ -11,6 +10,7 @@ import fs from 'fs-extra';
 import * as Git from '../git';
 
 import { apiTokenFromEnvironment } from './environment';
+import { graphql } from './octokit';
 
 interface CreateCommitResult {
   createCommitOnBranch: {

@@ -4,6 +4,8 @@ schemaVersion: v0.0
 
 name: '{{values "service"}}'
 
+owner: '{{values "owner"}}'
+
 image: '{{values "image"}}'
 
 env:
@@ -16,6 +18,10 @@ env:
   {{range $key, $value := .Values.env}}
   {{$key}}: {{$value}}
   {{end}}
+
+{{if .Values.cloudwatchDashboardDisabled}}
+cloudwatchDashboardDisabled: {{values "cloudwatchDashboardDisabled"}}
+{{end}}
 
 {{if .Values.datadogSecretId}}
 datadogSecretId: '{{values "datadogSecretId"}}'
@@ -118,3 +124,4 @@ tags:
   {{end}}
 
 cpuArchitecture: <%- platformName %>
+readOnlyRootFilesystem: true

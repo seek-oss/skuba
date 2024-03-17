@@ -1,11 +1,5 @@
 import stream from 'stream';
-import { inspect } from 'util';
 
-import { log } from '../../utils/logging';
-import { throwOnTimeout } from '../../utils/wait';
-
-import { createAnnotations } from './annotate';
-import { autofix } from './autofix';
 import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint';
 import {
   runPrettierInCurrentThread,
@@ -86,32 +80,10 @@ export const externalLint = async (input: Input) => {
 
   const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
 
-  try {
-    await throwOnTimeout(
-      createAnnotations(eslint, prettier, tscOk, tscOutputStream),
-      { s: 30 },
-    );
-  } catch (err) {
-    log.warn('Failed to annotate lint results.');
-    log.subtle(inspect(err));
-  }
-
-  if (!eslint.ok || !prettier.ok || !tscOk) {
-    const tools = [
-      ...(eslint.ok ? [] : ['ESLint']),
-      ...(prettier.ok ? [] : ['Prettier']),
-      ...(tscOk ? [] : ['tsc']),
-    ];
-
-    log.newline();
-    log.err(`${tools.join(', ')} found issues that require triage.`);
-
-    process.exitCode = 1;
-  }
-
-  await autofix({
-    debug: input.debug,
-    eslint: eslint.fixable,
-    prettier: !prettier.ok,
-  });
+  return {
+    eslint,
+    prettier,
+    tscOk,
+    tscOutputStream,
+  };
 };

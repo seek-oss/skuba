@@ -7,9 +7,10 @@ export const EnvContextSchema = z.object({
   workerLambda: z.object({
     reservedConcurrency: z.number(),
     environment: z.object({
-      SOMETHING: z.string(),
+      ENVIRONMENT: z.string(),
     }),
   }),
+  sourceSnsTopicArn: z.string(),
 });
 
 export type EnvContext = z.infer<typeof EnvContextSchema>;

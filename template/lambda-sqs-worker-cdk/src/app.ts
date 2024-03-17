@@ -5,6 +5,19 @@ const logger = createLogger({
   name: '<%- serviceName %>',
 });
 
-export const handler: SQSHandler = (_: SQSEvent) => {
+/**
+ * Tests connectivity to ensure appropriate access and network configuration.
+ */
+const smokeTest = async () => Promise.resolve();
+
+export const handler: SQSHandler = (event: SQSEvent) => {
+  // Treat an empty object as our smoke test event.
+  if (!Object.keys(event).length) {
+    logger.debug('Received smoke test request');
+    return smokeTest();
+  }
+
   logger.info('Hello World!');
+
+  return;
 };

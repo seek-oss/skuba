@@ -100,21 +100,21 @@ If all is well, they will merge your pull request into master.
 You may find it easier to develop alongside unit tests:
 
 ```shell
-pnpm run test --watch
+pnpm test --watch
 ```
 
 Format your code once you're happy with it:
 
 ```shell
-pnpm run format
+pnpm format
 ```
 
 We run linting and testing in CI,
 but consider running these commands locally for a faster feedback loop:
 
 ```shell
-pnpm run lint
-pnpm run test
+pnpm lint
+pnpm test
 ```
 
 Our [validate](https://github.com/seek-oss/skuba/blob/master/.github/workflows/validate.yml) GitHub Actions workflow also initialises each built-in **skuba** template and runs through a set of CLI commands.
@@ -123,7 +123,7 @@ but keep in mind that the script is fairly slow and you'll have to manually clea
 
 ```shell
 # greeter | koa-rest-api | ...
-pnpm run test:template greeter
+pnpm test:template greeter
 
 # clean up temporary sibling directory
 rm -fr ../tmp-greeter
@@ -132,17 +132,17 @@ rm -fr ../tmp-greeter
 ### Running locally
 
 If you want to try out the **skuba** CLI on itself,
-a `pnpm run skuba` script is configured:
+a `pnpm skuba` script is configured:
 
 ```shell
 # Prints available commands.
-pnpm run skuba
+pnpm skuba
 
 # Prints version from local package.json.
-pnpm run skuba version
+pnpm skuba version
 
 # Builds skuba using itself.
-pnpm run skuba build
+pnpm skuba build
 ```
 
 If you want to try out the **skuba** CLI on another local repo,
@@ -154,7 +154,7 @@ pnpm link --global
 
 # `pnpm link` points to the JavaScript output in `./lib`.
 # This means you'll need to rebuild skuba on every code change 😔.
-pnpm run build
+pnpm build
 
 # Run skuba commands against the other repo.
 skuba version
@@ -189,7 +189,7 @@ a changeset is not necessary for:
 - [npm dev dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
 
 ```shell
-pnpm exec changeset
+pnpm changeset
 ```
 
 The Changesets CLI is interactive and follows [semantic versioning]:
@@ -197,6 +197,33 @@ The Changesets CLI is interactive and follows [semantic versioning]:
 - Patch release `0.0.X`: fixes or tweaks to existing functionality
 - Minor release `0.X.0`: new, backwards-compatible functionality
 - Major release `X.0.0`: backwards-incompatible modification
+
+We humour several transgressions to this versioning scheme in practice:
+
+1. Breaking changes to `skuba lint` should be downgraded to minor.
+
+   It's not feasible for us to semantically version based on whether `skuba lint` will pass or fail,
+   especially given that lint rules can change between minor and patch versions of transitive ESLint dependencies.
+   The general thought here is that changes that can affect the runtime behaviour of your project should be major,
+   while changes to build-time validation of a project should not be major.
+
+   We also support [autofixes](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-autofixes) to ease adoption of lint rule changes.
+
+1. Breaking changes in TypeScript upgrades should be downgraded to minor.
+
+   TypeScript does not follow semantic versioning,
+   and its point releases generally come with breaking changes.
+   These are typically edge cases that would not affect a typical SEEK project.
+
+   In the event that a new compiler rule presents significant challenges to existing SEEK projects,
+   we may turn off the rule by default to revert its impact,
+   or publish a major with detailed guidance on how to comply with or disable the rule.
+
+1. Changes to built-in templates should be downgraded to patch.
+
+   Release notes and package versioning are most pertinent to existing projects.
+   Once you've run `skuba init`, updates to built-in templates are largely inconsequential to your project,
+   and mostly serve as a footnote to communicate best current practices.
 
 Prefix your changeset title with a `scope:`.
 This makes it easy to eyeball which part of **skuba** a change relates to.
@@ -230,7 +257,7 @@ and our [release](https://github.com/seek-oss/skuba/blob/master/.github/workflow
 
 Prereleases can be created on demand via [seek-oss/changesets-snapshot].
 
-Run the [Snapshot workflow] in GitHub Actions to publish a new snapshot version to npm.
+Manually run the [Snapshot workflow] for the `master` branch in GitHub Actions to publish a new snapshot version to npm.
 
 <https://www.npmjs.com/package/skuba?activeTab=versions>
 

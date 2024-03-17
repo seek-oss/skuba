@@ -15,4 +15,5 @@ node_modules*/
 # end managed by skuba
 
 /integration/base/
+/integration/format/
 /template/
