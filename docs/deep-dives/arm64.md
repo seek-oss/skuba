@@ -275,16 +275,18 @@ As these have no set naming convention, you can look for:
 Once you have located these files,
 set the `cpuArchitecture` property on the `ContainerImage` and `Service` resources:
 
+<!-- prettier-ignore -->
 ```diff
   kind: ContainerImage
-
+  
   schemaVersion: v0.0
-
+  
 + cpuArchitecture: arm64
-
+  
   ...
 ```
 
+<!-- prettier-ignore -->
 ```diff
 kind: Service
 
