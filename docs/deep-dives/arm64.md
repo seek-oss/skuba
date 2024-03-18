@@ -276,13 +276,13 @@ Once you have located these files,
 set the `cpuArchitecture` property on the `ContainerImage` and `Service` resources:
 
 ```diff
-kind: ContainerImage
+  kind: ContainerImage
 
-schemaVersion: v0.0
+  schemaVersion: v0.0
 
 + cpuArchitecture: arm64
 
-...
+  ...
 ```
 
 ```diff
@@ -331,16 +331,18 @@ const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
 
 For a [Serverless] worker, set the `provider.architecture` property in [`serverless.yml`]:
 
+<!-- prettier-ignore -->
 ```diff
 provider:
   name: aws
-
+  
 + architecture: arm64
   runtime: nodejs20.x
-
+  
   ...
 ```
 
+<!-- prettier-ignore -->
 [`.buildkite/pipeline.yml`]: https://buildkite.com/docs/pipelines/defining-steps#customizing-the-pipeline-upload-path
 [`FROM`]: https://docs.docker.com/reference/dockerfile/#from
 [`serverless.yml`]: https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml
