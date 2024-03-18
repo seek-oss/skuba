@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:20-alpine AS dev-deps
+FROM --platform=<%- platformName %> node:20-alpine AS dev-deps
 
 RUN corepack enable pnpm
 RUN pnpm config set store-dir /root/.pnpm-store

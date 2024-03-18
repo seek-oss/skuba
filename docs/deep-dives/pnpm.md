@@ -208,7 +208,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     <!-- prettier-ignore -->
     ```diff
-      FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:20-alpine AS dev-deps
+      FROM --platform=arm64 node:20-alpine AS dev-deps
     
     + RUN corepack enable pnpm
     + RUN pnpm config set store-dir /root/.pnpm-store
@@ -264,7 +264,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     
       ###
     
-      FROM --platform=${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs20-debian12 AS runtime
+      FROM --platform=arm64 gcr.io/distroless/nodejs20-debian12 AS runtime
       WORKDIR /workdir
     
       COPY --from=build /workdir/lib lib

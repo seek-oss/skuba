@@ -22,7 +22,7 @@ const dockerfileDebian11 = `
 ARG BASE_IMAGE
 ARG BASE_TAG
 
-FROM --platform=\${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs20-debian11 AS runtime
+FROM --platform=<%- platformName %> gcr.io/distroless/nodejs20-debian11 AS runtime
 
 WORKDIR /workdir
 `;
@@ -31,7 +31,7 @@ const dockerfileNonDistroless = `
 ARG BASE_IMAGE
 ARG BASE_TAG
 
-FROM --platform=\${BUILDPLATFORM:-<%- platformName %>} node:20-alpine AS runtime
+FROM --platform=\${BUILDPLATFORM:-arm64} node:20-alpine AS runtime
 
 WORKDIR /workdir
 `;
@@ -72,7 +72,7 @@ describe('tryPatchDockerfile', () => {
     ARG BASE_IMAGE
     ARG BASE_TAG
 
-    FROM --platform=\${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs20-debian12 AS runtime
+    FROM --platform=<%- platformName %> gcr.io/distroless/nodejs20-debian12 AS runtime
 
     WORKDIR /workdir
     ",
