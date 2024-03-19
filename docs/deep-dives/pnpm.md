@@ -226,7 +226,6 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +     pnpm fetch
     ```
 
-    <!-- prettier-ignore -->
     Move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc`,
     and use a [bind mount] in place of `COPY` to mount `pnpm-lock.yaml`.
 
@@ -274,8 +273,6 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     
       ENV NODE_ENV=production
     ```
-
-    <!-- prettier-ignore -->
 
 15. Modify plugins in `.buildkite/pipeline.yml`
 

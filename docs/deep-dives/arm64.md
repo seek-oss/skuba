@@ -172,18 +172,18 @@ modify `cpuArchitecture` property on the `ContainerImage` and `Service` resource
   ...
 ```
 
+<!-- prettier-ignore -->
 ```diff
   kind: Service
-
+  
   schemaVersion: v0.0
-
+  
 - cpuArchitecture: arm64
 + cpuArchitecture: amd64
-
+  
   ...
 ```
 
-<!-- prettier-ignore -->
 For an [AWS CDK] worker,
 modify the `architecture` property on the Lambda function resource in `infra/appStack.ts`:
 
@@ -290,17 +290,17 @@ set the `cpuArchitecture` property on the `ContainerImage` and `Service` resourc
   ...
 ```
 
+<!-- prettier-ignore -->
 ```diff
   kind: Service
-
+  
   schemaVersion: v0.0
-
+  
 + cpuArchitecture: arm64
-
+  
   ...
 ```
 
-<!-- prettier-ignore -->
 ### AWS CDK
 
 For an [AWS CDK] worker, first locate your application stack.
@@ -348,7 +348,6 @@ provider:
   ...
 ```
 
-<!-- prettier-ignore -->
 [`.buildkite/pipeline.yml`]: https://buildkite.com/docs/pipelines/defining-steps#customizing-the-pipeline-upload-path
 [`FROM`]: https://docs.docker.com/reference/dockerfile/#from
 [`serverless.yml`]: https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml
