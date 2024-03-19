@@ -30,23 +30,24 @@ If you'd like to build and run your projects on ARM64 hardware,
 create a Buildkite cluster with a Graviton-based instance type.
 In a `vCurrent` strategy:
 
+<!-- prettier-ignore -->
 ```diff
-schemaVersion: vCurrent
-clusters:
-  - name: cicd # Existing cluster
-
-    instanceType: t3.large
-    rootVolumeSize: 8
-
-    # ...
-+
-+ - name: graviton # New cluster; choose a name you like
-+
-+   cpuArchitecture: arm64
-+   instanceType: t4g.large # Required; g is for Graviton
-+   rootVolumeSize: 8 # Optional
-+
-+   # ...
+  schemaVersion: vCurrent
+  clusters:
+    - name: cicd # Existing cluster
+      
+      instanceType: t3.large
+      rootVolumeSize: 8
+      
+      # ...
++   
++   - name: graviton # New cluster; choose a name you like
++     
++     cpuArchitecture: arm64
++     instanceType: t4g.large # Required; g is for Graviton
++     rootVolumeSize: 8 # Optional
++     
++     # ...
 ```
 
 Repeat this process for all accounts and strategies under your remit,
@@ -58,22 +59,22 @@ This approach allows you to gradually migrate existing projects over to the new 
 then delete the original clusters once complete:
 
 ```diff
-schemaVersion: vCurrent
-clusters:
-- - name: cicd
+  schemaVersion: vCurrent
+  clusters:
+-   - name: cicd
 -
--   instanceType: t3.large
--   rootVolumeSize: 8
+-     instanceType: t3.large
+-     rootVolumeSize: 8
 -
--   # ...
+-     # ...
 -
-  - name: graviton
+    - name: graviton
 
-    cpuArchitecture: arm64
-    instanceType: t4g.large
-    rootVolumeSize: 8
+      cpuArchitecture: arm64
+      instanceType: t4g.large
+      rootVolumeSize: 8
 
-    # ...
+      # ...
 ```
 
 See [Builds at SEEK] and the [Gantry ARM reference] for more information.
@@ -132,17 +133,17 @@ you can revert your project to be compatible with AMD64 hardware.
 Point your `agents.queue`s back to the original cluster(s) in `pipeline.yml`:
 
 ```diff
-agents:
-- queue: my-prod-account:graviton
-+ queue: my-prod-account:cicd
+  agents:
+-   queue: my-prod-account:graviton
++   queue: my-prod-account:cicd
 
-steps:
-  - label: Prod
+  steps:
+    - label: Prod
 
-  - label: Dev
-    agents:
--     queue: my-dev-account:graviton
-+     queue: my-dev-account:cicd
+    - label: Dev
+      agents:
+-       queue: my-dev-account:graviton
++       queue: my-dev-account:cicd
 ```
 
 Replace the relevant `--platform` flags in your Dockerfile(s):
@@ -150,7 +151,9 @@ Replace the relevant `--platform` flags in your Dockerfile(s):
 ```diff
 - FROM --platform=arm64 node:20-alpine AS dev-deps
 + FROM --platform=amd64 node:20-alpine AS dev-deps
+```
 
+```diff
 - FROM --platform=arm64 gcr.io/distroless/nodejs20-debian12 AS runtime
 + FROM --platform=amd64 gcr.io/distroless/nodejs20-debian12 AS runtime
 ```
@@ -158,45 +161,47 @@ Replace the relevant `--platform` flags in your Dockerfile(s):
 For a [Gantry] service,
 modify `cpuArchitecture` property on the `ContainerImage` and `Service` resources in `gantry.build.yml` and `gantry.apply.yml`:
 
+<!-- prettier-ignore -->
 ```diff
-kind: ContainerImage
-
-schemaVersion: v0.0
-
+  kind: ContainerImage
+  
+  schemaVersion: v0.0
+  
 - cpuArchitecture: arm64
 + cpuArchitecture: amd64
-
-...
+  
+  ...
 ```
 
+<!-- prettier-ignore -->
 ```diff
-kind: Service
-
-schemaVersion: v0.0
-
+  kind: Service
+  
+  schemaVersion: v0.0
+  
 - cpuArchitecture: arm64
 + cpuArchitecture: amd64
-
-...
+  
+  ...
 ```
 
 For an [AWS CDK] worker,
 modify the `architecture` property on the Lambda function resource in `infra/appStack.ts`:
 
 ```diff
-const worker = new aws_lambda.Function(this, 'worker', {
-- architecture: aws_lambda.Architecture.ARM_64,
-+ architecture: aws_lambda.Architecture.X86_64,
-});
+  const worker = new aws_lambda.Function(this, 'worker', {
+-   architecture: aws_lambda.Architecture.ARM_64,
++   architecture: aws_lambda.Architecture.X86_64,
+  });
 ```
 
 For a [Serverless] worker,
 modify the `provider.architecture` property in `serverless.yml`:
 
 ```diff
-provider:
-- architecture: arm64
-+ architecture: x86_64
+  provider:
+-   architecture: arm64
++   architecture: x86_64
 ```
 
 ---
@@ -211,9 +216,9 @@ Your default pipeline should be defined in [`.buildkite/pipeline.yml`],
 though you may have auxiliary pipelines under a similar or nested directory.
 
 ```diff
-agents:
-- queue: my-prod-account:cicd
-+ queue: my-prod-account:graviton # Should be the new name you chose above
+  agents:
+-   queue: my-prod-account:cicd
++   queue: my-prod-account:graviton # Should be the new name you chose above
 
 steps:
   - label: Prod
@@ -229,9 +234,9 @@ Set the `--platform=arm64` flag on each external [`FROM`] command in your Docker
 ```diff
 - FROM node:20-alpine AS dev-deps
 + FROM --platform=arm64 node:20-alpine AS dev-deps
+```
 
-# ...
-
+```diff
 - FROM gcr.io/distroless/nodejs20-debian12 AS runtime
 + FROM --platform=arm64 gcr.io/distroless/nodejs20-debian12 AS runtime
 ```
@@ -275,24 +280,26 @@ As these have no set naming convention, you can look for:
 Once you have located these files,
 set the `cpuArchitecture` property on the `ContainerImage` and `Service` resources:
 
+<!-- prettier-ignore -->
 ```diff
-kind: ContainerImage
-
-schemaVersion: v0.0
-
+  kind: ContainerImage
+  
+  schemaVersion: v0.0
+  
 + cpuArchitecture: arm64
-
-...
+  
+  ...
 ```
 
+<!-- prettier-ignore -->
 ```diff
-kind: Service
-
-schemaVersion: v0.0
-
+  kind: Service
+  
+  schemaVersion: v0.0
+  
 + cpuArchitecture: arm64
-
-...
+  
+  ...
 ```
 
 ### AWS CDK
@@ -312,33 +319,34 @@ Once you have located this file,
 set the `architecture` property on the Lambda function resource:
 
 ```diff
-const worker = new aws_lambda.Function(this, 'worker', {
-+ architecture: aws_lambda.Architecture.ARM_64,
-  runtime: aws_lambda.Runtime.NODEJS_20_X,
-  // ...
-});
+  const worker = new aws_lambda.Function(this, 'worker', {
++   architecture: aws_lambda.Architecture.ARM_64,
+    runtime: aws_lambda.Runtime.NODEJS_20_X,
+    // ...
+  });
 ```
 
 ```diff
-const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
-+ architecture: aws_lambda.Architecture.ARM_64,
-  runtime: aws_lambda.Runtime.NODEJS_20_X,
-  // ...
-});
+  const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
++   architecture: aws_lambda.Architecture.ARM_64,
+    runtime: aws_lambda.Runtime.NODEJS_20_X,
+    // ...
+  });
 ```
 
 ### Serverless
 
 For a [Serverless] worker, set the `provider.architecture` property in [`serverless.yml`]:
 
+<!-- prettier-ignore -->
 ```diff
-provider:
-  name: aws
-
-+ architecture: arm64
-  runtime: nodejs20.x
-
-  ...
+  provider:
+    name: aws
+    
++   architecture: arm64
+    runtime: nodejs20.x
+    
+    ...
 ```
 
 [`.buildkite/pipeline.yml`]: https://buildkite.com/docs/pipelines/defining-steps#customizing-the-pipeline-upload-path
