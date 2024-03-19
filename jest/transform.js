@@ -40,7 +40,7 @@ module.exports.transform = Object.fromEntries(
               ...value[1],
               isolatedModules:
                 value[1]?.isolatedModules ??
-                maybeTsConfig?.isolatedModules ??
+                maybeTsConfig?.options.isolatedModules ??
                 true,
             },
           ]
