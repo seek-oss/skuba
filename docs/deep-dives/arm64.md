@@ -150,7 +150,9 @@ Replace the relevant `--platform` flags in your Dockerfile(s):
 ```diff
 - FROM --platform=arm64 node:20-alpine AS dev-deps
 + FROM --platform=amd64 node:20-alpine AS dev-deps
+```
 
+```diff
 - FROM --platform=arm64 gcr.io/distroless/nodejs20-debian12 AS runtime
 + FROM --platform=amd64 gcr.io/distroless/nodejs20-debian12 AS runtime
 ```
@@ -158,36 +160,38 @@ Replace the relevant `--platform` flags in your Dockerfile(s):
 For a [Gantry] service,
 modify `cpuArchitecture` property on the `ContainerImage` and `Service` resources in `gantry.build.yml` and `gantry.apply.yml`:
 
+<!-- prettier-ignore -->
 ```diff
-kind: ContainerImage
+  kind: ContainerImage
+  
+  schemaVersion: v0.0
+  
+- cpuArchitecture: arm64
++ cpuArchitecture: amd64
+  
+  ...
+```
 
-schemaVersion: v0.0
+```diff
+  kind: Service
+
+  schemaVersion: v0.0
 
 - cpuArchitecture: arm64
 + cpuArchitecture: amd64
 
-...
+  ...
 ```
 
-```diff
-kind: Service
-
-schemaVersion: v0.0
-
-- cpuArchitecture: arm64
-+ cpuArchitecture: amd64
-
-...
-```
-
+<!-- prettier-ignore -->
 For an [AWS CDK] worker,
 modify the `architecture` property on the Lambda function resource in `infra/appStack.ts`:
 
 ```diff
-const worker = new aws_lambda.Function(this, 'worker', {
-- architecture: aws_lambda.Architecture.ARM_64,
-+ architecture: aws_lambda.Architecture.X86_64,
-});
+  const worker = new aws_lambda.Function(this, 'worker', {
+-   architecture: aws_lambda.Architecture.ARM_64,
++   architecture: aws_lambda.Architecture.X86_64,
+  });
 ```
 
 For a [Serverless] worker,
@@ -229,9 +233,9 @@ Set the `--platform=arm64` flag on each external [`FROM`] command in your Docker
 ```diff
 - FROM node:20-alpine AS dev-deps
 + FROM --platform=arm64 node:20-alpine AS dev-deps
+```
 
-# ...
-
+```diff
 - FROM gcr.io/distroless/nodejs20-debian12 AS runtime
 + FROM --platform=arm64 gcr.io/distroless/nodejs20-debian12 AS runtime
 ```
@@ -286,17 +290,17 @@ set the `cpuArchitecture` property on the `ContainerImage` and `Service` resourc
   ...
 ```
 
-<!-- prettier-ignore -->
 ```diff
-kind: Service
+  kind: Service
 
-schemaVersion: v0.0
+  schemaVersion: v0.0
 
 + cpuArchitecture: arm64
 
-...
+  ...
 ```
 
+<!-- prettier-ignore -->
 ### AWS CDK
 
 For an [AWS CDK] worker, first locate your application stack.
@@ -314,18 +318,18 @@ Once you have located this file,
 set the `architecture` property on the Lambda function resource:
 
 ```diff
-const worker = new aws_lambda.Function(this, 'worker', {
-+ architecture: aws_lambda.Architecture.ARM_64,
-  runtime: aws_lambda.Runtime.NODEJS_20_X,
-  // ...
-});
+  const worker = new aws_lambda.Function(this, 'worker', {
++   architecture: aws_lambda.Architecture.ARM_64,
+    runtime: aws_lambda.Runtime.NODEJS_20_X,
+    // ...
+  });
 ```
 
 ```diff
-const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
-+ architecture: aws_lambda.Architecture.ARM_64,
-  runtime: aws_lambda.Runtime.NODEJS_20_X,
-  // ...
+  const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
++   architecture: aws_lambda.Architecture.ARM_64,
+    runtime: aws_lambda.Runtime.NODEJS_20_X,
+    // ...
 });
 ```
 
