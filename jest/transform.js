@@ -35,7 +35,7 @@ const BROKEN_MODULE_RESOLUTIONS = new Set([
 const tsconfig = BROKEN_MODULE_RESOLUTIONS.has(
   maybeTsConfig?.options.moduleResolution,
 )
-  ? { moduleResolution: 'Node' }
+  ? { tsconfig: { moduleResolution: 'Node' } }
   : undefined;
 
 // Rewrite `ts-jest` transformations using our resolved `TS_JEST_PATH`.
@@ -48,8 +48,8 @@ module.exports.transform = Object.fromEntries(
           ? [
               TS_JEST_PATH,
               {
+                ...tsconfig,
                 isolatedModules,
-                tsconfig,
               },
             ]
           : value,
@@ -63,8 +63,8 @@ module.exports.transform = Object.fromEntries(
             TS_JEST_PATH,
             {
               ...value[1],
+              ...tsconfig,
               isolatedModules,
-              tsconfig,
             },
           ]
         : value,
