@@ -30,23 +30,24 @@ If you'd like to build and run your projects on ARM64 hardware,
 create a Buildkite cluster with a Graviton-based instance type.
 In a `vCurrent` strategy:
 
+<!-- prettier-ignore -->
 ```diff
-schemaVersion: vCurrent
-clusters:
-  - name: cicd # Existing cluster
-
-    instanceType: t3.large
-    rootVolumeSize: 8
-
-    # ...
-+
-+ - name: graviton # New cluster; choose a name you like
-+
-+   cpuArchitecture: arm64
-+   instanceType: t4g.large # Required; g is for Graviton
-+   rootVolumeSize: 8 # Optional
-+
-+   # ...
+  schemaVersion: vCurrent
+  clusters:
+    - name: cicd # Existing cluster
+      
+      instanceType: t3.large
+      rootVolumeSize: 8
+      
+      # ...
++   
++   - name: graviton # New cluster; choose a name you like
++     
++     cpuArchitecture: arm64
++     instanceType: t4g.large # Required; g is for Graviton
++     rootVolumeSize: 8 # Optional
++     
++     # ...
 ```
 
 Repeat this process for all accounts and strategies under your remit,
@@ -58,22 +59,22 @@ This approach allows you to gradually migrate existing projects over to the new 
 then delete the original clusters once complete:
 
 ```diff
-schemaVersion: vCurrent
-clusters:
-- - name: cicd
+  schemaVersion: vCurrent
+  clusters:
+-   - name: cicd
 -
--   instanceType: t3.large
--   rootVolumeSize: 8
+-     instanceType: t3.large
+-     rootVolumeSize: 8
 -
--   # ...
+-     # ...
 -
-  - name: graviton
+    - name: graviton
 
-    cpuArchitecture: arm64
-    instanceType: t4g.large
-    rootVolumeSize: 8
+      cpuArchitecture: arm64
+      instanceType: t4g.large
+      rootVolumeSize: 8
 
-    # ...
+      # ...
 ```
 
 See [Builds at SEEK] and the [Gantry ARM reference] for more information.
@@ -132,17 +133,17 @@ you can revert your project to be compatible with AMD64 hardware.
 Point your `agents.queue`s back to the original cluster(s) in `pipeline.yml`:
 
 ```diff
-agents:
-- queue: my-prod-account:graviton
-+ queue: my-prod-account:cicd
+  agents:
+-   queue: my-prod-account:graviton
++   queue: my-prod-account:cicd
 
-steps:
-  - label: Prod
+  steps:
+    - label: Prod
 
-  - label: Dev
-    agents:
--     queue: my-dev-account:graviton
-+     queue: my-dev-account:cicd
+    - label: Dev
+      agents:
+-       queue: my-dev-account:graviton
++       queue: my-dev-account:cicd
 ```
 
 Replace the relevant `--platform` flags in your Dockerfile(s):
@@ -198,9 +199,9 @@ For a [Serverless] worker,
 modify the `provider.architecture` property in `serverless.yml`:
 
 ```diff
-provider:
-- architecture: arm64
-+ architecture: x86_64
+  provider:
+-   architecture: arm64
++   architecture: x86_64
 ```
 
 ---
@@ -215,9 +216,9 @@ Your default pipeline should be defined in [`.buildkite/pipeline.yml`],
 though you may have auxiliary pipelines under a similar or nested directory.
 
 ```diff
-agents:
-- queue: my-prod-account:cicd
-+ queue: my-prod-account:graviton # Should be the new name you chose above
+  agents:
+-   queue: my-prod-account:cicd
++   queue: my-prod-account:graviton # Should be the new name you chose above
 
 steps:
   - label: Prod
@@ -330,7 +331,7 @@ set the `architecture` property on the Lambda function resource:
 +   architecture: aws_lambda.Architecture.ARM_64,
     runtime: aws_lambda.Runtime.NODEJS_20_X,
     // ...
-});
+  });
 ```
 
 ### Serverless
@@ -339,13 +340,13 @@ For a [Serverless] worker, set the `provider.architecture` property in [`serverl
 
 <!-- prettier-ignore -->
 ```diff
-provider:
-  name: aws
-  
-+ architecture: arm64
-  runtime: nodejs20.x
-  
-  ...
+  provider:
+    name: aws
+    
++   architecture: arm64
+    runtime: nodejs20.x
+    
+    ...
 ```
 
 [`.buildkite/pipeline.yml`]: https://buildkite.com/docs/pipelines/defining-steps#customizing-the-pipeline-upload-path
