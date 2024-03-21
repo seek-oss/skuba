@@ -38,6 +38,9 @@
     "typescript": ">= 3.9"
   },
   "packageManager": "pnpm@8.15.5",
+  "publishConfig": {
+    "provenance": true
+  },
   "skuba": {
     "entryPoint": "index.js",
     "template": "oss-npm-package",
