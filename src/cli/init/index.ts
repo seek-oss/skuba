@@ -95,11 +95,7 @@ export const init = async (args = process.argv.slice(2)) => {
   let depsInstalled = false;
   try {
     // The `-D` shorthand is portable across our package managers.
-    if (packageManager === 'yarn') {
-      await exec(packageManager, 'add', '-D', skubaSlug);
-    } else {
-      await exec(packageManager, 'add', '-D', '--ignore-workspace', skubaSlug);
-    }
+    await exec(packageManager, 'add', '-D', skubaSlug);
 
     // Templating can initially leave certain files in an unformatted state;
     // consider a Markdown table with columns sized based on content length.
