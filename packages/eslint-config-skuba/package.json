@@ -43,7 +43,7 @@
     "eslint": ">= 7.2",
     "typescript": ">= 3.9"
   },
-  "packageManager": "pnpm@8.15.1",
+  "packageManager": "pnpm@8.15.5",
   "skuba": {
     "entryPoint": "index.js",
     "template": "oss-npm-package",
