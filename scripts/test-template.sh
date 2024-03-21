@@ -8,11 +8,6 @@ if [ -z "$template" ]; then
   exit 1
 fi
 
-directory="tmp-${template}"
-
-echo '--- cleanup'
-rm -rf "${directory}" "../${directory}"
-
 echo '--- pnpm install'
 pnpm install --frozen-lockfile
 
@@ -20,10 +15,25 @@ echo '--- pnpm build'
 pnpm build
 
 echo '--- pnpm pack'
-skuba_tar=$(pnpm pack)
+skuba_tar=$(pwd)/$(pnpm pack)
+
+skuba_temp_directory='tmp-skuba'
+
+echo '--- cleanup'
+rm -rf "../${skuba_temp_directory}"
+
+echo "--- setting up ${skuba_temp_directory}"
+mkdir "../${skuba_temp_directory}"
+
+cd "../${skuba_temp_directory}" || exit 1
+
+echo "--- pnpm add --save-dev ${skuba_tar}"
+pnpm add --save-dev ${skuba_tar}
+
+directory="tmp-${template}"
 
 echo "--- skuba init ${template}"
-pnpm skuba:exec init << EOF
+pnpm exec skuba init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
@@ -46,14 +56,10 @@ pnpm skuba:exec init << EOF
 }
 EOF
 
-mv "${directory}" "../${directory}"
+cd "${directory}" || exit 1
 
-skuba_dir=$(pwd)
-
-cd "../${directory}" || exit 1
-
-echo "--- pnpm add --save-dev ${skuba_dir}/${skuba_tar}"
-pnpm add --save-dev "${skuba_dir}/${skuba_tar}"
+echo "--- pnpm add --save-dev ${skuba_tar}"
+pnpm add --save-dev ${skuba_tar}
 
 echo "--- skuba version ${template}"
 pnpm exec skuba version
