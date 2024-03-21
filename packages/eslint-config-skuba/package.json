@@ -22,8 +22,7 @@
   ],
   "scripts": {
     "format": "skuba format",
-    "lint": "skuba lint",
-    "release": "changeset publish"
+    "lint": "skuba lint"
   },
   "dependencies": {
     "@types/eslint": "^8.4.1",
