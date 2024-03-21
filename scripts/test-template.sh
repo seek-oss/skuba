@@ -22,6 +22,8 @@ pnpm build
 echo '--- pnpm pack'
 skuba_tar=$(pnpm pack)
 
+rm pnpm-workspace.yaml
+
 echo "--- skuba init ${template}"
 pnpm skuba:exec init << EOF
 {
@@ -50,7 +52,6 @@ skuba_dir=$(pwd)
 
 cd "${directory}" || exit 1
 
-touch pnpm-workspace.yaml
 echo "--- pnpm add --save-dev ${skuba_dir}/${skuba_tar}"
 pnpm add --save-dev "${skuba_dir}/${skuba_tar}"
 
