@@ -11,7 +11,7 @@ fi
 directory="tmp-${template}"
 
 echo '--- cleanup'
-rm -rf "${directory}"
+rm -rf "${directory}" "../${directory}"
 
 echo '--- pnpm install'
 pnpm install --frozen-lockfile
@@ -21,8 +21,6 @@ pnpm build
 
 echo '--- pnpm pack'
 skuba_tar=$(pnpm pack)
-
-rm pnpm-workspace.yaml
 
 echo "--- skuba init ${template}"
 pnpm skuba:exec init << EOF
@@ -48,9 +46,11 @@ pnpm skuba:exec init << EOF
 }
 EOF
 
+mv "${directory}" "../${directory}"
+
 skuba_dir=$(pwd)
 
-cd "${directory}" || exit 1
+cd "../${directory}" || exit 1
 
 echo "--- pnpm add --save-dev ${skuba_dir}/${skuba_tar}"
 pnpm add --save-dev "${skuba_dir}/${skuba_tar}"
