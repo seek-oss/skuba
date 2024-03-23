@@ -24,7 +24,7 @@ const defaultChangelogFunctions = {
     if (dependenciesUpdated.length === 0) return '';
 
     const changesetLinks = changesets.map(
-      (changeset) => `- **deps:**: Updated dependencies [${changeset.commit}]`,
+      (changeset) => `- **deps:** Updated dependencies [${changeset.commit}]`,
     );
 
     const updatedDependenciesList = dependenciesUpdated.map(
