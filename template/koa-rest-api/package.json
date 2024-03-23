@@ -43,7 +43,7 @@
     "skuba": "*",
     "supertest": "^6.1.6"
   },
-  "packageManager": "pnpm@8.15.4",
+  "packageManager": "pnpm@8.15.5",
   "engines": {
     "node": ">=20"
   }
