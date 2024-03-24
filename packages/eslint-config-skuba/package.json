@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "@types/eslint": "^8.4.1",
-    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^6.13.2",
     "eslint-config-seek": "^12.0.1",
     "eslint-plugin-jest": "^27.6.0",
