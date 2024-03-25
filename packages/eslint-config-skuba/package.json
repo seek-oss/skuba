@@ -21,8 +21,9 @@
     "index.js"
   ],
   "scripts": {
-    "format": "skuba format",
-    "lint": "skuba lint"
+    "format": "pnpm --silent skuba format",
+    "lint": "pnpm --silent skuba lint",
+    "skuba": "node --env-file=../../.env ../../lib/skuba"
   },
   "dependencies": {
     "@types/eslint": "^8.4.1",
@@ -35,7 +36,6 @@
   },
   "devDependencies": {
     "eslint": "^8.11.0",
-    "skuba": "workspace:*",
     "typescript": "~5.3.0"
   },
   "peerDependencies": {
