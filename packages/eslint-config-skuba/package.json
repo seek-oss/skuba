@@ -3,7 +3,7 @@
   "version": "4.0.0",
   "private": false,
   "description": "ESLint config for skuba",
-  "homepage": "https://github.com/seek-oss/skuba/tree/master/packages/eslint-config-skuba#readme",
+  "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-config-skuba#readme",
   "bugs": {
     "url": "https://github.com/seek-oss/skuba/issues"
   },
