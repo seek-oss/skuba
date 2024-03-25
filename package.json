@@ -35,6 +35,7 @@
     "lint": "pnpm --silent skuba lint && pnpm --silent lint:md",
     "lint:md": "remark --frail --quiet .",
     "prepack": "pnpm --silent build",
+    "prepare": "scripts/build.sh",
     "release": "changeset publish",
     "skuba": "pnpm --silent build && pnpm --silent skuba:exec",
     "skuba:exec": "node --env-file=.env lib/skuba",
