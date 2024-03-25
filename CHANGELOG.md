@@ -1,5 +1,11 @@
 # skuba
 
+## 8.0.1
+
+### Patch Changes
+
+- **template/oss-npm-package:** Set timeout to 20 minutes for GitHub Actions ([#1501](https://github.com/seek-oss/skuba/pull/1501))
+
 ## 8.0.0
 
 This version of skuba looks more scary than it is. The major change is that our dependencies have bumped their minimum Node.js requirement from 18.12 to 18.18. Most SEEK projects do not pin minor Node.js versions and are unlikely to be affected by this change.
