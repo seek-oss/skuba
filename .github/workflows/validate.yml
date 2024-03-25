@@ -95,6 +95,9 @@ jobs:
       - name: Set up pnpm
         run: corepack enable pnpm
 
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - if: github.head_ref != 'changeset-release/master' && github.ref_name != 'changeset-release/master'
         name: Lint package
         run: pnpm --filter ${{ matrix.template }} lint
