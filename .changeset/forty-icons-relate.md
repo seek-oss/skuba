@@ -2,6 +2,12 @@
 'eslint-config-skuba': major
 ---
 
-deps: Bump @typescript-eslint to 7.2.0, eslint-config-seek to 13.0.0
+deps: eslint-config-seek 13 + typescript-eslint ^7.2.0
 
-This sets the minimum Node.js requirement to >=18.18.0, Eslint to >=8.56.0, Typescript to >=4.7.5.
+These major upgrades bump our minimum requirements:
+
+- Node.js >=18.18.0
+- ESLint >=8.56.0
+- TypeScript >=4.7.4
+
+See the [typescript-eslint v7 announcement](https://typescript-eslint.io/blog/announcing-typescript-eslint-v7/) for more information.
