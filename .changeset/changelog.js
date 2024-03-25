@@ -21,17 +21,7 @@ const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, '**$1:** ');
  */
 const defaultChangelogFunctions = {
   getDependencyReleaseLine: async (changesets, dependenciesUpdated) => {
-    if (dependenciesUpdated.length === 0) return '';
-
-    const changesetLinks = changesets.map(
-      (changeset) => `- **deps:** Updated dependencies [${changeset.commit}]`,
-    );
-
-    const updatedDependenciesList = dependenciesUpdated.map(
-      (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
-    );
-
-    return [...changesetLinks, ...updatedDependenciesList].join('\n');
+    return '';
   },
   getReleaseLine: async (changeset) => {
     const [firstLine, ...futureLines] = changeset.summary
