@@ -28,7 +28,7 @@ and distribute it as an [npm package].
 
 [Submit an issue] if you have a question, feature request or bug report.
 
-If you work at SEEK, start a discussion in [#typescriptification].
+If you work at SEEK, start a discussion in [#skuba-support].
 
 ### I want to contribute a change
 
@@ -37,7 +37,7 @@ Feel free to [create a pull request] for trivial fixes and improvements.
 For more substantial features, please [submit an issue] first.
 This lets us evaluate whether the feature fits the direction of the project and discuss possible approaches.
 
-If you work at SEEK, start a discussion in [#skuba-development].
+If you work at SEEK, start a discussion in [#sig-backend-tooling].
 
 ---
 
@@ -261,8 +261,8 @@ Manually run the [Snapshot workflow] for the `master` branch in GitHub Actions t
 
 <https://www.npmjs.com/package/skuba?activeTab=versions>
 
-[#skuba-development]: https://slack.com/app_redirect?channel=C03UM9GBGET
-[#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
+[#skuba-support]: https://slack.com/app_redirect?channel=C03UM9GBGET
+[#sig-backend-tooling]: https://slack.com/app_redirect?channel=C06QWMV5BSA
 [changelog]: CHANGELOG.md
 [changesets]: https://github.com/atlassian/changesets
 [create a pull request]: https://github.com/seek-oss/skuba/compare
