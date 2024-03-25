@@ -8,4 +8,4 @@ pnpm-lock.yaml
 # end managed by skuba
 
 /integration/base/
-/packages/
+/packages/**/*/lib*
