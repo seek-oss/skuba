@@ -12,6 +12,7 @@ jobs:
     permissions:
       checks: write
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
