@@ -20,7 +20,7 @@ const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, '**$1:** ');
  * @type import('@changesets/types').ChangelogFunctions
  */
 const defaultChangelogFunctions = {
-  getDependencyReleaseLine: async (changesets, dependenciesUpdated) => {
+  getDependencyReleaseLine: async (_changesets, _dependenciesUpdated) => {
     return '';
   },
   getReleaseLine: async (changeset) => {
@@ -47,38 +47,11 @@ const defaultChangelogFunctions = {
  */
 const gitHubChangelogFunctions = {
   getDependencyReleaseLine: async (
-    changesets,
-    dependenciesUpdated,
-    options,
+    _changesets,
+    _dependenciesUpdated,
+    _options,
   ) => {
-    if (!options.repo) {
-      throw new Error(
-        'Please provide a repo to this changelog generator like this:\n"changelog": ["./changelog.js", { "repo": "org/repo" }]',
-      );
-    }
-    if (dependenciesUpdated.length === 0) return '';
-
-    const changesetLink = `- Updated dependencies [${(
-      await Promise.all(
-        changesets.map(async (cs) => {
-          if (cs.commit) {
-            let { links } = await getInfo({
-              repo: options.repo,
-              commit: cs.commit,
-            });
-            return links.commit;
-          }
-        }),
-      )
-    )
-      .filter((_) => _)
-      .join(', ')}]:`;
-
-    const updatedDependenciesList = dependenciesUpdated.map(
-      (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
-    );
-
-    return [changesetLink, ...updatedDependenciesList].join('\n');
+    return '';
   },
   getReleaseLine: async (changeset, _type, options) => {
     if (!options || !options.repo) {
