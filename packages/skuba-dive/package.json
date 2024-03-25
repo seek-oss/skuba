@@ -26,7 +26,7 @@
     "build": "skuba build",
     "format": "skuba format",
     "lint": "skuba lint",
-    "release": "yarn build && skuba release",
+    "prepack": "skuba build",
     "test": "skuba test",
     "test:ci": "skuba test --coverage"
   },
