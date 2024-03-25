@@ -23,6 +23,7 @@ jobs:
     permissions:
       checks: write
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - if: >-
           github.actor != 'dependabot[bot]' && (
@@ -78,6 +79,7 @@ jobs:
   template:
     name: Integrate
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         template:
