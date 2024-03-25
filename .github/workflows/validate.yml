@@ -75,6 +75,34 @@ jobs:
         name: Dry-run site packaging
         run: pnpm skuba node scripts/package.ts
 
+  package:
+    name: Lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        template:
+          - eslint-config-skuba
+          - skuba-dive
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Set up pnpm
+        run: corepack enable pnpm
+
+      - if: github.head_ref != 'changeset-release/master' && github.ref_name != 'changeset-release/master'
+        name: Lint package
+        run: pnpm --filter lint ${{ matrix.template }}
+
+      - if: github.head_ref != 'changeset-release/master' && github.ref_name != 'changeset-release/master'
+        name: Lint package
+        run: pnpm --filter test ${{ matrix.template }}
+
   template:
     name: Integrate
     runs-on: ubuntu-latest
@@ -100,6 +128,6 @@ jobs:
       - name: Set up pnpm
         run: corepack enable pnpm
 
-      - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
+      - if: github.head_ref != 'changeset-release/master' && github.ref_name != 'changeset-release/master'
         name: Test template
         run: pnpm test:template ${{ matrix.template }}

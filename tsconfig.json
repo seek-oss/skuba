@@ -6,6 +6,6 @@
     "removeComments": false,
     "target": "ES2022"
   },
-  "exclude": ["integration/**/*", "lib*/**/*", "template/**/*"],
+  "exclude": ["integration/**/*", "lib*/**/*", "template/**/*",],
   "extends": "./config/tsconfig.json"
 }
