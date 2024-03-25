@@ -259,8 +259,8 @@ importers:
         specifier: ^7.2.0
         version: 7.3.1(eslint@8.57.0)(typescript@5.3.3)
       eslint-config-seek:
-        specifier: 0.0.0-pr-136-20240313053421
-        version: 0.0.0-pr-136-20240313053421(eslint@8.57.0)(jest@29.7.0)(typescript@5.3.3)
+        specifier: ^13.0.0
+        version: 13.0.0(eslint@8.57.0)(jest@29.7.0)(typescript@5.3.3)
       eslint-plugin-jest:
         specifier: ^27.9.0
         version: 27.9.0(@typescript-eslint/eslint-plugin@7.3.1)(eslint@8.57.0)(jest@29.7.0)(typescript@5.3.3)
@@ -3981,8 +3981,8 @@ packages:
       eslint: 8.57.0
     dev: false
 
-  /eslint-config-seek@0.0.0-pr-136-20240313053421(eslint@8.57.0)(jest@29.7.0)(typescript@5.3.3):
-    resolution: {integrity: sha512-h4epHn8irfuPm+oSPmvf4jBw9ou+icFjqBiMAJOaC8q/VtE3u4KMc2wHIh3Dzgvj1F76/8Z1MUrUb44ISvzHiA==}
+  /eslint-config-seek@13.0.0(eslint@8.57.0)(jest@29.7.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-y/msx2mkIA6WTpLY4A05IYfUWjIeLnIJAUlqRwyq+Cm6a5rTWAouUYs1MHcUCKuNEcMcNe5WaqDOqbQ67gObRg==}
     engines: {node: '>=18.18.0'}
     peerDependencies:
       eslint: '>=8.56.0'
