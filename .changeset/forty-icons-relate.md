@@ -8,6 +8,6 @@ These major upgrades bump our minimum requirements:
 
 - Node.js >=18.18.0
 - ESLint >=8.56.0
-- TypeScript >=4.7.4
+- TypeScript >=4.7.5
 
 See the [typescript-eslint v7 announcement](https://typescript-eslint.io/blog/announcing-typescript-eslint-v7/) for more information.
