@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-deps: semantic-release 23
+deps: semantic-release 22
