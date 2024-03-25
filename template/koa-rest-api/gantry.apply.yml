@@ -29,12 +29,8 @@ datadogSecretId: '{{values "datadogSecretId"}}'
 {{end}}
 
 openTelemetry:
-  enabled: {{.Values.openTelemetry.enabled | default false}}
-  {{if .Values.isProduction}}
-  datadogEnvironmentName: production
-  {{else}}
-  datadogEnvironmentName: development
-  {{end}}
+  datadogEnvironmentName: '{{values "openTelemetry.datadogEnvironmentName"}}'
+  enabled: {{values "openTelemetry.enabled"}}
 {{if .Values.pagerDutyEndpoint}}
 pagerDutyEndpoint: '{{values "pagerDutyEndpoint"}}'
 {{end}}
