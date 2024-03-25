@@ -11,11 +11,13 @@ fi
 echo '--- pnpm install'
 pnpm install --frozen-lockfile
 
-echo '--- pnpm build'
-pnpm build
+
+# pnpm prepack is explictly called because pnpm prepack pollutes the output that we need from pnpm pack
+echo '--- pnpm prepack'
+pnpm prepack
 
 echo '--- pnpm pack'
-skuba_tar=$(pwd)/$(pnpm pack)
+skuba_tar=$(pwd)/$(pnpm --config.ignore-scripts pack)
 
 skuba_temp_directory='tmp-skuba'
 
