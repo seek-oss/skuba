@@ -37,7 +37,7 @@ Feel free to [create a pull request] for trivial fixes and improvements.
 For more substantial features, please [submit an issue] first.
 This lets us evaluate whether the feature fits the direction of the project and discuss possible approaches.
 
-If you work at SEEK, start a discussion in [#skuba-development].
+If you work at SEEK, start a discussion in [#sig-backend-tooling].
 
 ---
 
