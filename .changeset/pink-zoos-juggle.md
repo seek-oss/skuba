@@ -4,4 +4,4 @@
 'skuba': patch
 ---
 
-TEST
+deps: TEST
