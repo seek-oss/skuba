@@ -11,7 +11,6 @@ fi
 echo '--- pnpm install'
 pnpm install --frozen-lockfile
 
-
 echo '--- pnpm build'
 pnpm build
 
