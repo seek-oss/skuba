@@ -1,5 +1,73 @@
 # skuba
 
+## 8.0.0
+
+This version of skuba looks more scary than it is. The major change is that our dependencies have bumped their minimum Node.js requirement from 18.12 to 18.18. Most SEEK projects do not pin minor Node.js versions and are unlikely to be affected by this change.
+
+In the spirit of upgrades, we recently refreshed our [ARM64 migration guide](https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html#migrating-an-existing-project) and also have [one for pnpm](https://seek-oss.github.io/skuba/docs/deep-dives/pnpm.html). A previous release landed a [`skuba migrate`](https://seek-oss.github.io/skuba/docs/cli/migrate.html) command to simplify upgrades to Node.js 20 (active LTS) before Node.js 18 reaches EOL in April 2025.
+
+### Major Changes
+
+- **deps:** eslint-config-seek 13 + eslint-config-skuba 4 + typescript-eslint ^7.2.0 ([#1487](https://github.com/seek-oss/skuba/pull/1487))
+
+  These major upgrades bump our minimum requirement from Node.js 18.12 to 18.18.
+
+  See the [typescript-eslint v7 announcement](https://typescript-eslint.io/blog/announcing-typescript-eslint-v7/) for more information, and consider upgrading your project to the active LTS release with [`skuba migrate`](https://seek-oss.github.io/skuba/docs/cli/migrate.html) before Node.js 18 reaches EOL in April 2025.
+
+### Minor Changes
+
+- **deps:** semantic-release 22 ([#1492](https://github.com/seek-oss/skuba/pull/1492))
+
+- **deps:** TypeScript 5.4 ([#1491](https://github.com/seek-oss/skuba/pull/1491))
+
+  This major release includes breaking changes. See the [TypeScript 5.4](https://devblogs.microsoft.com/typescript/announcing-typescript-5-4/) announcement for more information.
+
+### Patch Changes
+
+- **template:** Remove `BUILDPLATFORM` from Dockerfiles ([#1350](https://github.com/seek-oss/skuba/pull/1350))
+
+  Previously, the built-in templates made use of [`BUILDPLATFORM`](https://docs.docker.com/build/guide/multi-platform/#platform-build-arguments) and a fallback value:
+
+  ```dockerfile
+  FROM --platform=${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs20-debian11
+  ```
+
+  1. Choose the platform of the host machine running the Docker build. An [AWS Graviton](https://aws.amazon.com/ec2/graviton/) Buildkite agent or Apple Silicon laptop will build under `arm64`, while an Intel laptop will build under `amd64`.
+  2. Fall back to `arm64` if the build platform is not available. This maintains compatibility with toolchains like Gantry that lack support for the `BUILDPLATFORM` argument.
+
+  This approach allowed you to quickly build images and run containers in a local environment without emulation. For example, you could `docker build` an `arm64` image on an Apple Silicon laptop for local troubleshooting, while your CI/CD solution employed `amd64` hardware across its build and runtime environments. The catch is that your local `arm64` image may exhibit different behaviour, and is unsuitable for use in your `amd64` runtime environment without cross-compilation.
+
+  The built-in templates now hardcode `--platform` as we have largely converged on `arm64` across local, build and runtime environments:
+
+  ```dockerfile
+  FROM --platform=arm64 gcr.io/distroless/nodejs20-debian11
+  ```
+
+  This approach is more explicit and predictable, reducing surprises when working across different environments and toolchains. Building an image on a different platform will be slower and rely on emulation.
+
+- **Jest.mergePreset:** Fudge `Node16` and `NodeNext` module resolutions ([#1481](https://github.com/seek-oss/skuba/pull/1481))
+
+  This works around a `ts-jest` issue where test cases fail to run if your `moduleResolution` is set to a modern mode:
+
+  ```json
+  {
+    "compilerOptions": {
+      "moduleResolution": "Node16 | NodeNext"
+    }
+  }
+  ```
+
+  ```console
+  error TS5110: Option 'module' must be set to 'Node16' when option 'moduleResolution' is set to 'Node16'.
+  error TS5110: Option 'module' must be set to 'NodeNext' when option 'moduleResolution' is set to 'NodeNext'.
+  ```
+
+- **pkg:** Exclude `jest/*.test.ts` files ([#1481](https://github.com/seek-oss/skuba/pull/1481))
+
+- **template:** Remove account-level tags from resources ([#1494](https://github.com/seek-oss/skuba/pull/1494))
+
+  This partially reverts [#1459](https://github.com/seek-oss/skuba/pull/1459) and [#1461](https://github.com/seek-oss/skuba/pull/1461) to avoid unnecessary duplication of account-level tags in our templates.
+
 ## 7.5.1
 
 ### Patch Changes
