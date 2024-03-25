@@ -97,11 +97,11 @@ jobs:
 
       - if: github.head_ref != 'changeset-release/master' && github.ref_name != 'changeset-release/master'
         name: Lint package
-        run: pnpm --filter lint ${{ matrix.template }}
+        run: pnpm --filter ${{ matrix.template }} lint
 
       - if: github.head_ref != 'changeset-release/master' && github.ref_name != 'changeset-release/master'
         name: Lint package
-        run: pnpm --filter test ${{ matrix.template }}
+        run: pnpm --filter ${{ matrix.template }} test
 
   template:
     name: Integrate
