@@ -1,0 +1,8 @@
+# managed by skuba
+# Gantry resource files support non-standard template syntax
+/.gantry/**/*.yaml
+/.gantry/**/*.yml
+gantry*.yaml
+gantry*.yml
+pnpm-lock.yaml
+# end managed by skuba
