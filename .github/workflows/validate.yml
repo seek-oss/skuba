@@ -100,7 +100,7 @@ jobs:
         run: pnpm --filter ${{ matrix.template }} lint
 
       - if: github.head_ref != 'changeset-release/master' && github.ref_name != 'changeset-release/master'
-        name: Lint package
+        name: Test package
         run: pnpm --filter ${{ matrix.template }} test
 
   template:
