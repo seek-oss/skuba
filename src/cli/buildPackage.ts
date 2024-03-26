@@ -1,9 +1,70 @@
-import { hasSerialFlag } from '../utils/args';
-import { execConcurrently } from '../utils/exec';
+import chalk from 'chalk';
 
-import { copyAssetsConcurrently } from './build/assets';
+import { hasDebugFlag, hasSerialFlag } from '../utils/args';
+import { execConcurrently } from '../utils/exec';
+import { type Logger, createLogger } from '../utils/logging';
+import { getStringPropFromConsumerManifest } from '../utils/manifest';
+
+import { copyAssets, copyAssetsConcurrently } from './build/assets';
+import { esbuild } from './build/esbuild';
+import { readTsconfig } from './build/tsc';
 
 export const buildPackage = async (args = process.argv.slice(2)) => {
+  const debug = hasDebugFlag(args);
+
+  const log = createLogger(debug);
+
+  // TODO: define a unified `package.json#/skuba` schema and parser so we don't
+  // need all these messy lookups.
+  const tool = await getStringPropFromConsumerManifest('build');
+
+  switch (tool) {
+    case 'esbuild': {
+      log.plain(chalk.yellow('esbuild'));
+      await runEsbuild(debug, log, args);
+      break;
+    }
+
+    // TODO: flip the default case over to `esbuild` in skuba vNext.
+    case undefined:
+    case 'tsc': {
+      log.plain(chalk.blue('tsc'));
+      await tsc(args);
+      break;
+    }
+
+    default: {
+      log.err(
+        'We don’t support the build tool specified in your',
+        log.bold('package.json'),
+        'yet:',
+      );
+      log.err(log.subtle(JSON.stringify({ skuba: { build: tool } }, null, 2)));
+      process.exitCode = 1;
+      return;
+    }
+  }
+};
+
+const runEsbuild = async (debug: boolean, log: Logger, args: string[]) => {
+  await esbuild({ debug, mode: 'build-package' }, args);
+
+  const parsedCommandLine = readTsconfig(args, log);
+
+  if (!parsedCommandLine || process.exitCode) {
+    return;
+  }
+
+  const { options: compilerOptions } = parsedCommandLine;
+
+  if (!compilerOptions.outDir) {
+    return;
+  }
+
+  await copyAssets(compilerOptions.outDir);
+};
+
+const tsc = async (args: string[]) => {
   await execConcurrently(
     [
       {

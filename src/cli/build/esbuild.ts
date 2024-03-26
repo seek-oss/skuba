@@ -1,8 +1,8 @@
 import { inspect } from 'util';
 
 import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
-import { build } from 'esbuild';
-import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
+import { type BuildOptions, build } from 'esbuild';
+import { type CompilerOptions, ModuleKind, ScriptTarget } from 'typescript';
 
 import { createLogger } from '../../utils/logging';
 
@@ -11,10 +11,11 @@ import { readTsconfig, tsc } from './tsc';
 
 interface EsbuildParameters {
   debug: boolean;
+  mode: 'build' | 'build-package';
 }
 
 export const esbuild = async (
-  { debug }: EsbuildParameters,
+  { debug, mode }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
   const log = createLogger(debug);
@@ -46,20 +47,115 @@ export const esbuild = async (
 
   const start = process.hrtime.bigint();
 
+  switch (mode) {
+    case 'build':
+      await runBuild({
+        compilerOptions,
+        debug,
+        entryPoints,
+        tsconfig: tscArgs.pathname,
+      });
+
+      break;
+
+    case 'build-package':
+      await runBuild({
+        compilerOptions: {
+          ...compilerOptions,
+          module: ModuleKind.ESNext,
+        },
+        debug,
+        entryPoints,
+        outExtension: { '.js': '.mjs' },
+        tsconfig: tscArgs.pathname,
+      });
+
+      await runBuild({
+        compilerOptions: {
+          ...compilerOptions,
+          module: ModuleKind.NodeNext,
+        },
+        debug,
+        entryPoints,
+        outExtension: { '.js': '.cjs' },
+        tsconfig: tscArgs.pathname,
+      });
+
+      break;
+  }
+
+  const end = process.hrtime.bigint();
+
+  log.plain(`Built in ${log.timing(start, end)}.`);
+
+  if (compilerOptions.declaration) {
+    await tsc([
+      '--declaration',
+      '--emitDeclarationOnly',
+      ...(tscArgs.project ? ['--project', tscArgs.project] : []),
+    ]);
+  }
+};
+
+const ES_MODULE_KINDS = new Set<ModuleKind | undefined>([
+  ModuleKind.ES2015,
+  ModuleKind.ES2020,
+  ModuleKind.ES2022,
+  ModuleKind.ESNext,
+]);
+
+const NODE_MODULE_KINDS = new Set<ModuleKind | undefined>([
+  ModuleKind.CommonJS,
+  ModuleKind.Node16,
+  ModuleKind.NodeNext,
+]);
+
+const mapModule = (
+  compilerOptions: CompilerOptions,
+): Pick<BuildOptions, 'format' | 'platform'> => {
+  if (NODE_MODULE_KINDS.has(compilerOptions.module)) {
+    return { format: 'cjs', platform: 'node' };
+  }
+
+  if (ES_MODULE_KINDS.has(compilerOptions.module)) {
+    return { format: 'esm', platform: 'neutral' };
+  }
+
+  return { format: undefined, platform: undefined };
+};
+
+type RunEsbuildOptions = {
+  compilerOptions: Pick<
+    CompilerOptions,
+    'baseUrl' | 'module' | 'outDir' | 'paths' | 'sourceMap' | 'target'
+  >;
+  debug: boolean;
+  entryPoints: string[];
+  outExtension?: BuildOptions['outExtension'];
+  tsconfig: string;
+};
+
+const runBuild = async ({
+  compilerOptions,
+  debug,
+  entryPoints,
+  outExtension,
+  tsconfig,
+}: RunEsbuildOptions) => {
   // TODO: support `bundle`, `minify`, `splitting`, `treeShaking`
   const bundle = false;
+
+  const { format, platform } = mapModule(compilerOptions);
 
   await build({
     bundle,
     entryPoints,
-    format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
+    format,
     outdir: compilerOptions.outDir,
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,
-    platform:
-      compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
-        ? 'node'
-        : undefined,
+    outExtension,
+    platform,
     plugins: bundle
       ? []
       : [
@@ -76,18 +172,6 @@ export const esbuild = async (
     target: compilerOptions.target
       ? ScriptTarget[compilerOptions.target].toLocaleLowerCase()
       : undefined,
-    tsconfig: tscArgs.pathname,
+    tsconfig,
   });
-
-  const end = process.hrtime.bigint();
-
-  log.plain(`Built in ${log.timing(start, end)}.`);
-
-  if (compilerOptions.declaration) {
-    await tsc([
-      '--declaration',
-      '--emitDeclarationOnly',
-      ...(tscArgs.project ? ['--project', tscArgs.project] : []),
-    ]);
-  }
 };

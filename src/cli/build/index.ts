@@ -18,7 +18,7 @@ export const build = async (args = process.argv.slice(2)) => {
       const debug = hasDebugFlag(args);
 
       log.plain(chalk.yellow('esbuild'));
-      await esbuild({ debug }, args);
+      await esbuild({ debug, mode: 'build' }, args);
       break;
     }
 
