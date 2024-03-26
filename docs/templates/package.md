@@ -13,7 +13,7 @@ A public npm package published via [semantic-release] pipeline.
 
 This is intended for [seek-oss] projects.
 
-[View on GitHub](https://github.com/seek-oss/skuba/tree/master/template/oss-npm-package)
+[View on GitHub](https://github.com/seek-oss/skuba/tree/main/template/oss-npm-package)
 
 ---
 
@@ -23,7 +23,7 @@ A private npm package published via [semantic-release] pipeline.
 
 This is intended for [SEEK-Jobs] projects under the `@seek` npm org.
 
-[View on GitHub](https://github.com/seek-oss/skuba/tree/master/template/private-npm-package)
+[View on GitHub](https://github.com/seek-oss/skuba/tree/main/template/private-npm-package)
 
 [seek-jobs]: https://github.com/orgs/seek-jobs/sso
 [seek-oss]: https://github.com/seek-oss

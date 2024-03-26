@@ -29,7 +29,7 @@ echo '=> Deploying...'
     GIT_URL="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/seek-oss/skuba.git"
   fi
 
-  git push --force --quiet "${GIT_URL}" 'master:gh-pages'
+  git push --force --quiet "${GIT_URL}" 'main:gh-pages'
 }
 
 cd ..
