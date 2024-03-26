@@ -1757,7 +1757,7 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **test:** Add GitHub check run annotations ([#648](https://github.com/seek-oss/skuba/pull/648))
 
-  `skuba test` can now automatically annotate GitHub commits when you [propagate CI environment variables and a GitHub API token](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
+  `skuba test` can now automatically annotate GitHub commits when you [propagate CI environment variables and a GitHub API token](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
 
 - **GitHub.getPullRequestNumber:** Export helper function ([#690](https://github.com/seek-oss/skuba/pull/690))
 
@@ -1839,7 +1839,7 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **lint:** Add GitHub check run annotations ([#625](https://github.com/seek-oss/skuba/pull/625))
 
-  `skuba lint` can now automatically annotate GitHub commits when you [propagate Buildkite environment variables and a GitHub API token](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
+  `skuba lint` can now automatically annotate GitHub commits when you [propagate Buildkite environment variables and a GitHub API token](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
 
 - **format, lint:** Enable ESLint caching ([#645](https://github.com/seek-oss/skuba/pull/645))
 
@@ -2005,7 +2005,7 @@ Continue reading for more details on these changes and other improvements in thi
   + lint --serial
   ```
 
-  See our [Buildkite guide](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/buildkite.md) for more information.
+  See our [Buildkite guide](https://seek-oss.github.io/skuba/docs/deep-dives/buildkite.html) for more information.
 
 - **node:** Run REPL in process ([#534](https://github.com/seek-oss/skuba/pull/534))
 
@@ -2033,13 +2033,13 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **build:** Remove experimental Babel support ([#513](https://github.com/seek-oss/skuba/pull/513))
 
-  There's limited upside to switching to [Babel-based builds](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/babel.md) for backend use cases, and it would be difficult to guarantee backwards compatibility with existing `tsconfig.json`-based configuration. Dropping Babel dependencies reduces our package size and resolves [SNYK-JS-SETVALUE-1540541](https://app.snyk.io/vuln/SNYK-JS-SETVALUE-1540541).
+  There's limited upside to switching to [Babel-based builds](https://seek-oss.github.io/skuba/docs/deep-dives/babel.html) for backend use cases, and it would be difficult to guarantee backwards compatibility with existing `tsconfig.json`-based configuration. Dropping Babel dependencies reduces our package size and resolves [SNYK-JS-SETVALUE-1540541](https://app.snyk.io/vuln/SNYK-JS-SETVALUE-1540541).
 
 - **lint:** Support Buildkite annotations ([#558](https://github.com/seek-oss/skuba/pull/558))
 
   `skuba lint` can now output issues as Buildkite annotations.
 
-  See our [Buildkite guide](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/buildkite.md) for more information.
+  See our [Buildkite guide](https://seek-oss.github.io/skuba/docs/deep-dives/buildkite.html) for more information.
 
 ### Patch Changes
 
@@ -2486,7 +2486,7 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **start:** Support [Node.js debugging options](https://nodejs.org/en/docs/guides/debugging-getting-started/) ([#230](https://github.com/seek-oss/skuba/pull/230))
 
-  [`skuba start`](https://github.com/seek-oss/skuba/blob/master/docs/cli/run.md#skuba-start) now accepts `--inspect` and `--inspect-brk` options. This allows you to attach a debugger to the process.
+  [`skuba start`](https://seek-oss.github.io/skuba/docs/cli/run.html#skuba-start) now accepts `--inspect` and `--inspect-brk` options. This allows you to attach a debugger to the process.
 
 - **init:** Redesign base prompt ([#234](https://github.com/seek-oss/skuba/pull/234))
 
@@ -2679,7 +2679,7 @@ Continue reading for more details on these changes and other improvements in thi
 
   `seek-module-toolkit` users can now install `skuba` and run `skuba configure` to migrate their configuration.
 
-  Care should be taken around the [change in build directories](https://github.com/seek-oss/skuba/blob/master/docs/migration-guides/seek-module-toolkit.md#building).
+  Care should be taken around the [change in build directories](https://seek-oss.github.io/skuba/docs/migration-guides/seek-module-toolkit.html#building).
 
 - **eslint:** skuba is now usable as a shareable config ([#81](https://github.com/seek-oss/skuba/pull/81))
 
@@ -2696,7 +2696,7 @@ Continue reading for more details on these changes and other improvements in thi
 
   You can now build your project with Babel instead of tsc. Experimentally.
 
-  See our [Babel topic](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/babel.md) for details.
+  See our [Babel topic](https://seek-oss.github.io/skuba/docs/deep-dives/babel.html) for details.
 
 - **jest:** skuba is now usable as a preset ([#50](https://github.com/seek-oss/skuba/pull/50))
 
@@ -2834,7 +2834,7 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **build-package:** Add opinionated command to replace `smt build` ([#15](https://github.com/seek-oss/skuba/pull/15))
 
-  See the [migration documentation](https://github.com/seek-oss/skuba/blob/master/docs/migration-guides/seek-module-toolkit.md) for more information.
+  See the [migration documentation](https://seek-oss.github.io/skuba/docs/migration-guides/seek-module-toolkit.html) for more information.
 
 ### Patch Changes
 
