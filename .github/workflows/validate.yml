@@ -5,11 +5,11 @@ on:
 
   push:
     branches-ignore:
-      - master
+      - main
 
   workflow_run:
     branches:
-      - master
+      - main
     types:
       - completed
     workflows:
@@ -102,6 +102,6 @@ jobs:
       - name: Set up pnpm
         run: corepack enable pnpm
 
-      - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
+      - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
         name: Test template
         run: pnpm test:template ${{ matrix.template }}

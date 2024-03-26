@@ -336,12 +336,12 @@ please [start a discussion] or [contribute a change] so others can benefit from 
 This page may be [edited on GitHub].
 
 [`.npmrc`]: https://pnpm.io/npmrc
-[`Dockerfile.dev-deps`]: https://github.com/seek-oss/skuba/blob/master/template/koa-rest-api/Dockerfile.dev-deps
+[`Dockerfile.dev-deps`]: https://github.com/seek-oss/skuba/blob/main/template/koa-rest-api/Dockerfile.dev-deps
 [`pnpm fetch`]: https://pnpm.io/cli/fetch
 [`pnpm import`]: https://pnpm.io/cli/import
 [bind mount]: https://docs.docker.com/engine/reference/builder/#run---mounttypebind
 [contribute a change]: https://seek-oss.github.io/skuba/CONTRIBUTING.html#i-want-to-contribute-a-change
-[edited on GitHub]: https://github.com/seek-oss/skuba/edit/master/docs/deep-dives/pnpm.md
+[edited on GitHub]: https://github.com/seek-oss/skuba/edit/main/docs/deep-dives/pnpm.md
 [install guide]: https://pnpm.io/installation
 [pnpm]: https://pnpm.io/
 [silly bugs]: https://www.kochan.io/nodejs/pnpms-strictness-helps-to-avoid-silly-bugs.html
