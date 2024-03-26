@@ -20,6 +20,11 @@
     "index.d.ts",
     "index.js"
   ],
+  "scripts": {
+    "format": "pnpm --silent skuba format",
+    "lint": "pnpm --silent skuba lint",
+    "skuba": "node --env-file=../../.env ../../lib/skuba"
+  },
   "dependencies": {
     "@types/eslint": "^8.4.1",
     "@typescript-eslint/eslint-plugin": "^7.2.0",

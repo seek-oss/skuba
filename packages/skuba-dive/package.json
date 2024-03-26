@@ -1,0 +1,49 @@
+{
+  "name": "skuba-dive",
+  "version": "2.0.0",
+  "private": false,
+  "description": "Minimal runtime for skuba",
+  "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/skuba-dive#readme",
+  "bugs": {
+    "url": "https://github.com/seek-oss/skuba/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seek-oss/skuba.git"
+  },
+  "license": "MIT",
+  "sideEffects": true,
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/**/*.d.ts",
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "register.js"
+  ],
+  "scripts": {
+    "build": "pnpm skuba build",
+    "format": "pnpm skuba format",
+    "lint": "pnpm skuba lint",
+    "prepack": "pnpm skuba build",
+    "skuba": "node --env-file=../../.env ../../lib/skuba",
+    "test": "pnpm skuba test",
+    "test:ci": "pnpm skuba test --coverage"
+  },
+  "dependencies": {
+    "module-alias": "^2.2.2"
+  },
+  "devDependencies": {
+    "@types/module-alias": "2.0.4"
+  },
+  "engines": {
+    "node": ">=14.18"
+  },
+  "skuba": {
+    "entryPoint": "src/index.ts",
+    "template": "oss-npm-package",
+    "type": "package",
+    "version": "7.5.0"
+  }
+}
