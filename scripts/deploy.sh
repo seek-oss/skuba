@@ -8,7 +8,7 @@ pnpm exec ts-node --transpile-only scripts/package.ts
 
 cd dist-docs
 
-git init
+git init --initial-branch=main
 
 git add --all
 
