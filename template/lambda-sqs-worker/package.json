@@ -30,7 +30,7 @@
     "aws-sdk-client-mock": "^4.0.0",
     "aws-sdk-client-mock-jest": "^4.0.0",
     "chance": "^1.1.8",
-    "pino-pretty": "^10.0.0",
+    "pino-pretty": "^11.0.0",
     "serverless": "^3.37.0",
     "serverless-plugin-canary-deployments": "^0.8.0",
     "serverless-plugin-datadog": "^5.12.0",
