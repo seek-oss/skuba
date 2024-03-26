@@ -1,7 +1,7 @@
 # eslint-config-skuba
 
-[![npm package](https://img.shields.io/npm/v/eslint-config-seek)](https://www.npmjs.com/package/eslint-config-seek)
-[![Powered by skuba](https://img.shields.io/badge/🤿%20skuba-powered-009DC4)](https://github.com/seek-oss/skuba)
+[![Node.js version](https://img.shields.io/badge/node-%3E%3D%2018.18-brightgreen)](https://nodejs.org/en/)
+[![npm package](https://img.shields.io/npm/v/eslint-config-skuba)](https://www.npmjs.com/package/eslint-config-skuba)
 
 Shareable ESLint config for **[skuba]**.
 

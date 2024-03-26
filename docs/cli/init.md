@@ -93,7 +93,7 @@ Installing dependencies...
 ✔ All done! Try running:
 
 cd my-repo
-git push --set-upstream origin master
+git push --set-upstream origin main
 ```
 
 You can now proceed to the [next steps](#next-steps).
