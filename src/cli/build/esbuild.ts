@@ -77,7 +77,7 @@ export const esbuild = async (
         },
         debug,
         entryPoints,
-        outExtension: { '.js': '.cjs' },
+        outExtension: { '.js': '.js' },
         tsconfig: tscArgs.pathname,
       });
 
