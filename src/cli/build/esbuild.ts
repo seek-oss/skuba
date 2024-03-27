@@ -60,6 +60,7 @@ export const esbuild = async (
 
     case 'build-package':
       await runBuild({
+        bundle: true,
         compilerOptions: {
           ...compilerOptions,
           module: ModuleKind.ESNext,
@@ -71,6 +72,7 @@ export const esbuild = async (
       });
 
       await runBuild({
+        bundle: true,
         compilerOptions: {
           ...compilerOptions,
           module: ModuleKind.NodeNext,
@@ -125,6 +127,7 @@ const mapModule = (
 };
 
 type RunEsbuildOptions = {
+  bundle?: boolean;
   compilerOptions: Pick<
     CompilerOptions,
     'baseUrl' | 'module' | 'outDir' | 'paths' | 'sourceMap' | 'target'
@@ -136,17 +139,16 @@ type RunEsbuildOptions = {
 };
 
 const runBuild = async ({
+  bundle = false,
   compilerOptions,
   debug,
   entryPoints,
   outExtension,
   tsconfig,
 }: RunEsbuildOptions) => {
-  // TODO: support `bundle`, `minify`, `splitting`, `treeShaking`
-  const bundle = false;
-
   const { format, platform } = mapModule(compilerOptions);
 
+  // TODO: support `minify`, `splitting`, `treeShaking`
   await build({
     bundle,
     entryPoints,
@@ -155,6 +157,7 @@ const runBuild = async ({
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,
     outExtension,
+    packages: 'external',
     platform,
     plugins: bundle
       ? []
