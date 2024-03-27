@@ -210,7 +210,9 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     ```diff
       FROM --platform=arm64 node:20-alpine AS dev-deps
     
-    + RUN corepack enable pnpm
+    + RUN --mount=type=bind,source=package.json,target=package.json \
+    + corepack enable pnpm
+    
     + RUN pnpm config set store-dir /root/.pnpm-store
     
       WORKDIR /workdir
@@ -279,7 +281,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     Your build pipeline may have previously output an ephemeral `.npmrc` with an auth token on the build agent.
     This needs to be output elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
 
-    Swap out caching on `package.json` and `yarn.lock` for `.npmrc` and `pnpm-lock.yaml` at the same time.
+    Swap out caching on `yarn.lock` for `.npmrc` and `pnpm-lock.yaml` at the same time.
 
     ```diff
       seek-oss/private-npm#v1.2.0:
@@ -290,9 +292,9 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     ```diff
      seek-oss/docker-ecr-cache#v2.1.0:
        cache-on:
-    -    - package.json
-    -    - yarn.lock
     +    - .npmrc
+         - package.json
+    -    - yarn.lock
     +    - pnpm-lock.yaml
        dockerfile: Dockerfile.dev-deps
     -  secrets: id=npm,src=.npmrc

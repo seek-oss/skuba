@@ -5,7 +5,9 @@ FROM --platform=<%- platformName %> node:20-alpine AS dev-deps
 # Needed for cdk
 RUN apk add --no-cache bash
 
-RUN corepack enable pnpm
+RUN --mount=type=bind,source=package.json,target=package.json \
+    corepack enable pnpm
+
 RUN pnpm config set store-dir /root/.pnpm-store
 
 WORKDIR /workdir
