@@ -1,73 +1,30 @@
-import chalk from 'chalk';
 import type { CompilerOptions } from 'typescript';
 
-import { hasDebugFlag, hasSerialFlag } from '../utils/args';
+import { hasSerialFlag } from '../utils/args';
 import { execConcurrently } from '../utils/exec';
-import { createLogger } from '../utils/logging';
-import { getStringPropFromConsumerManifest } from '../utils/manifest';
 
 import { copyAssets, copyAssetsConcurrently } from './build/assets';
-import { type EsbuildParameters, esbuild } from './build/esbuild';
-import { readTsconfig } from './build/tsc';
+import { type EsbuildParameters, esbuild as runEsbuild } from './build/esbuild';
+import { runBuildTool } from './build/runner';
 
-export const buildPackage = async (args = process.argv.slice(2)) => {
-  const debug = hasDebugFlag(args);
+export const buildPackage = async (args = process.argv.slice(2)) =>
+  runBuildTool({ esbuild, tsc }, args);
 
-  const log = createLogger(debug);
-
-  const parsedCommandLine = readTsconfig(args, log);
-
-  if (!parsedCommandLine) {
-    process.exitCode = 1;
-    return;
-  }
-
-  const { compilerOptions, entryPoints } = parsedCommandLine;
-
-  // TODO: define a unified `package.json#/skuba` schema and parser so we don't
-  // need all these messy lookups.
-  const tool = await getStringPropFromConsumerManifest('build');
-
-  switch (tool) {
-    case 'esbuild': {
-      log.plain(chalk.yellow('esbuild'));
-      await runEsbuild({ compilerOptions, debug, entryPoints, log }, args);
-      break;
-    }
-
-    // TODO: flip the default case over to `esbuild` in skuba vNext.
-    case undefined:
-    case 'tsc': {
-      log.plain(chalk.blue('tsc'));
-      await runTsc(compilerOptions, args);
-      break;
-    }
-
-    default: {
-      log.err(
-        'We don’t support the build tool specified in your',
-        log.bold('package.json'),
-        'yet:',
-      );
-      log.err(log.subtle(JSON.stringify({ skuba: { build: tool } }, null, 2)));
-      process.exitCode = 1;
-      return;
-    }
-  }
-};
-
-const runEsbuild = async (
+const esbuild = async (
   { compilerOptions, ...params }: Omit<EsbuildParameters, 'mode'>,
   args: string[],
 ) => {
-  await esbuild({ ...params, compilerOptions, mode: 'build-package' }, args);
+  await runEsbuild({ ...params, compilerOptions, mode: 'build-package' }, args);
 
   if (compilerOptions.outDir) {
     await copyAssets(compilerOptions.outDir);
   }
 };
 
-const runTsc = async (compilerOptions: CompilerOptions, args: string[]) => {
+const tsc = async (
+  { compilerOptions }: { compilerOptions: CompilerOptions },
+  args: string[],
+) => {
   const removeComments = compilerOptions.removeComments ?? false;
 
   await execConcurrently(

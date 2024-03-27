@@ -4,18 +4,13 @@ import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { type BuildOptions, build } from 'esbuild';
 import { type CompilerOptions, ModuleKind, ScriptTarget } from 'typescript';
 
-import type { Logger } from '../../utils/logging';
-
 import { parseTscArgs } from './args';
+import type { RunnerParams } from './runner';
 import { tsc } from './tsc';
 
-export interface EsbuildParameters {
-  compilerOptions: CompilerOptions;
-  debug: boolean;
-  entryPoints: string[];
-  log: Logger;
+export type EsbuildParameters = RunnerParams & {
   mode: 'build' | 'build-package';
-}
+};
 
 export const esbuild = async (
   { compilerOptions, debug, entryPoints, log, mode }: EsbuildParameters,
