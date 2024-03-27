@@ -1,12 +1,13 @@
 import chalk from 'chalk';
+import type { CompilerOptions } from 'typescript';
 
 import { hasDebugFlag, hasSerialFlag } from '../utils/args';
 import { execConcurrently } from '../utils/exec';
-import { type Logger, createLogger } from '../utils/logging';
+import { createLogger } from '../utils/logging';
 import { getStringPropFromConsumerManifest } from '../utils/manifest';
 
 import { copyAssets, copyAssetsConcurrently } from './build/assets';
-import { EsbuildParameters, esbuild } from './build/esbuild';
+import { type EsbuildParameters, esbuild } from './build/esbuild';
 import { readTsconfig } from './build/tsc';
 
 export const buildPackage = async (args = process.argv.slice(2)) => {
@@ -38,7 +39,7 @@ export const buildPackage = async (args = process.argv.slice(2)) => {
     case undefined:
     case 'tsc': {
       log.plain(chalk.blue('tsc'));
-      await tsc(args);
+      await runTsc(compilerOptions, args);
       break;
     }
 
@@ -66,7 +67,9 @@ const runEsbuild = async (
   }
 };
 
-const tsc = async (args: string[]) => {
+const runTsc = async (compilerOptions: CompilerOptions, args: string[]) => {
+  const removeComments = compilerOptions.removeComments ?? false;
+
   await execConcurrently(
     [
       {
@@ -82,8 +85,7 @@ const tsc = async (args: string[]) => {
         prefixColor: 'yellow',
       },
       {
-        command:
-          'tsc --allowJS false --declaration --emitDeclarationOnly --outDir lib-types --project tsconfig.build.json',
+        command: `tsc --allowJS false --declaration --emitDeclarationOnly --outDir lib-types --project tsconfig.build.json --removeComments ${removeComments}`,
         name: 'types',
         prefixColor: 'blue',
       },

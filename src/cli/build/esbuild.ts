@@ -4,7 +4,7 @@ import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { type BuildOptions, build } from 'esbuild';
 import { type CompilerOptions, ModuleKind, ScriptTarget } from 'typescript';
 
-import { Logger } from '../../utils/logging';
+import type { Logger } from '../../utils/logging';
 
 import { parseTscArgs } from './args';
 import { tsc } from './tsc';
@@ -83,10 +83,14 @@ export const esbuild = async (
   log.plain(`Built in ${log.timing(start, end)}.`);
 
   if (compilerOptions.declaration) {
+    const removeComments = compilerOptions.removeComments ?? false;
+
     await tsc([
       '--declaration',
       '--emitDeclarationOnly',
       ...(tscArgs.project ? ['--project', tscArgs.project] : []),
+      '--removeComments',
+      removeComments.toString(),
     ]);
   }
 };
