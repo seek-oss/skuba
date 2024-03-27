@@ -82,7 +82,7 @@ export const esbuild = async (
 
   log.plain(`Built in ${log.timing(start, end)}.`);
 
-  if (compilerOptions.declaration) {
+  if (compilerOptions.declaration || mode === 'build-package') {
     const removeComments = compilerOptions.removeComments ?? false;
 
     await tsc([
