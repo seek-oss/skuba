@@ -6,13 +6,22 @@ import { type Logger, createLogger } from '../utils/logging';
 import { getStringPropFromConsumerManifest } from '../utils/manifest';
 
 import { copyAssets, copyAssetsConcurrently } from './build/assets';
-import { esbuild } from './build/esbuild';
+import { EsbuildParameters, esbuild } from './build/esbuild';
 import { readTsconfig } from './build/tsc';
 
 export const buildPackage = async (args = process.argv.slice(2)) => {
   const debug = hasDebugFlag(args);
 
   const log = createLogger(debug);
+
+  const parsedCommandLine = readTsconfig(args, log);
+
+  if (!parsedCommandLine) {
+    process.exitCode = 1;
+    return;
+  }
+
+  const { compilerOptions, entryPoints } = parsedCommandLine;
 
   // TODO: define a unified `package.json#/skuba` schema and parser so we don't
   // need all these messy lookups.
@@ -21,7 +30,7 @@ export const buildPackage = async (args = process.argv.slice(2)) => {
   switch (tool) {
     case 'esbuild': {
       log.plain(chalk.yellow('esbuild'));
-      await runEsbuild(debug, log, args);
+      await runEsbuild({ compilerOptions, debug, entryPoints, log }, args);
       break;
     }
 
@@ -46,22 +55,15 @@ export const buildPackage = async (args = process.argv.slice(2)) => {
   }
 };
 
-const runEsbuild = async (debug: boolean, log: Logger, args: string[]) => {
-  await esbuild({ debug, mode: 'build-package' }, args);
+const runEsbuild = async (
+  { compilerOptions, ...params }: Omit<EsbuildParameters, 'mode'>,
+  args: string[],
+) => {
+  await esbuild({ ...params, compilerOptions, mode: 'build-package' }, args);
 
-  const parsedCommandLine = readTsconfig(args, log);
-
-  if (!parsedCommandLine || process.exitCode) {
-    return;
+  if (compilerOptions.outDir) {
+    await copyAssets(compilerOptions.outDir);
   }
-
-  const { options: compilerOptions } = parsedCommandLine;
-
-  if (!compilerOptions.outDir) {
-    return;
-  }
-
-  await copyAssets(compilerOptions.outDir);
 };
 
 const tsc = async (args: string[]) => {

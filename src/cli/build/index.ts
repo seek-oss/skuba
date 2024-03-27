@@ -9,6 +9,15 @@ import { esbuild } from './esbuild';
 import { readTsconfig, tsc } from './tsc';
 
 export const build = async (args = process.argv.slice(2)) => {
+  const parsedCommandLine = readTsconfig(args, log);
+
+  if (!parsedCommandLine) {
+    process.exitCode = 1;
+    return;
+  }
+
+  const { compilerOptions, entryPoints } = parsedCommandLine;
+
   // TODO: define a unified `package.json#/skuba` schema and parser so we don't
   // need all these messy lookups.
   const tool = await getStringPropFromConsumerManifest('build');
@@ -18,7 +27,10 @@ export const build = async (args = process.argv.slice(2)) => {
       const debug = hasDebugFlag(args);
 
       log.plain(chalk.yellow('esbuild'));
-      await esbuild({ debug, mode: 'build' }, args);
+      await esbuild(
+        { compilerOptions, debug, entryPoints, log, mode: 'build' },
+        args,
+      );
       break;
     }
 
@@ -42,17 +54,7 @@ export const build = async (args = process.argv.slice(2)) => {
     }
   }
 
-  const parsedCommandLine = readTsconfig(args, log);
-
-  if (!parsedCommandLine || process.exitCode) {
-    return;
+  if (compilerOptions.outDir) {
+    await copyAssets(compilerOptions.outDir);
   }
-
-  const { options: compilerOptions } = parsedCommandLine;
-
-  if (!compilerOptions.outDir) {
-    return;
-  }
-
-  await copyAssets(compilerOptions.outDir);
 };

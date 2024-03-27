@@ -4,22 +4,23 @@ import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { type BuildOptions, build } from 'esbuild';
 import { type CompilerOptions, ModuleKind, ScriptTarget } from 'typescript';
 
-import { createLogger } from '../../utils/logging';
+import { Logger } from '../../utils/logging';
 
 import { parseTscArgs } from './args';
-import { readTsconfig, tsc } from './tsc';
+import { tsc } from './tsc';
 
-interface EsbuildParameters {
+export interface EsbuildParameters {
+  compilerOptions: CompilerOptions;
   debug: boolean;
+  entryPoints: string[];
+  log: Logger;
   mode: 'build' | 'build-package';
 }
 
 export const esbuild = async (
-  { debug, mode }: EsbuildParameters,
+  { compilerOptions, debug, entryPoints, log, mode }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
-  const log = createLogger(debug);
-
   const tscArgs = parseTscArgs(args);
 
   if (tscArgs.build) {
@@ -29,15 +30,6 @@ export const esbuild = async (
     process.exitCode = 1;
     return;
   }
-
-  const parsedCommandLine = readTsconfig(args, log);
-
-  if (!parsedCommandLine || process.exitCode) {
-    return;
-  }
-
-  const { fileNames: entryPoints, options: compilerOptions } =
-    parsedCommandLine;
 
   log.debug(log.bold('Files'));
   entryPoints.forEach((filepath) => log.debug(filepath));
