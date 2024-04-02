@@ -39,6 +39,7 @@
     "@types/node": "^20.9.0",
     "@types/supertest": "^6.0.0",
     "chance": "^1.1.8",
+    "mime": "^4.0.1",
     "pino-pretty": "^11.0.0",
     "skuba": "*",
     "supertest": "^6.1.6"
