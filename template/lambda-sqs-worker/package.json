@@ -37,7 +37,7 @@
     "serverless-prune-plugin": "^2.0.0",
     "skuba": "*"
   },
-  "packageManager": "pnpm@8.15.5",
+  "packageManager": "pnpm@8.15.6",
   "engines": {
     "node": ">=20"
   }
