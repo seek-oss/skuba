@@ -211,7 +211,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       FROM --platform=arm64 node:20-alpine AS dev-deps
     
     + RUN --mount=type=bind,source=package.json,target=package.json \
-    + corepack enable pnpm
+    + corepack enable pnpm && corepack install
     
     + RUN pnpm config set store-dir /root/.pnpm-store
     
