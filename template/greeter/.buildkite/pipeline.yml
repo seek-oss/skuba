@@ -1,6 +1,8 @@
 agents:
   queue: <%- prodBuildkiteQueueName %>
 
+# Allow conditional unblock + dodgy CI stuffs
+
 configs:
   plugins:
     - &aws-sm
@@ -12,6 +14,7 @@ configs:
       seek-oss/docker-ecr-cache#v2.1.1:
         cache-on:
           - .npmrc
+          - package.json
           - pnpm-lock.yaml
         secrets: id=npm,src=tmp/.npmrc
 
