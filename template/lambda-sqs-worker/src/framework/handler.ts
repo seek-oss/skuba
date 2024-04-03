@@ -31,21 +31,19 @@ const withDatadog = <Event, Output = unknown>(
 export const createHandler = <Event, Output = unknown>(
   fn: (event: Event, ctx: LambdaContext) => Promise<Output>,
 ) =>
-  withDatadog<Event>((event, { awsRequestId }) =>
-    loggerContext.run({ awsRequestId }, async () => {
-      try {
-        const output = await fn(event);
+  withDatadog<Event>(async (event, ctx) => {
+    try {
+      const output = await fn(event, ctx);
 
-        logger.debug('Function succeeded');
+      logger.debug({ awsRequestId: ctx.awsRequestId }, 'Function succeeded');
 
-        return output;
-      } catch (err) {
-        logger.error({ err }, 'Function failed');
+      return output;
+    } catch (err) {
+      logger.error({ awsRequestId: ctx.awsRequestId, err }, 'Function failed');
 
-        throw new Error('Function failed');
-      }
-    }),
-  );
+      throw new Error('Function failed');
+    }
+  });
 
 export const createBatchSQSHandler =
   (
