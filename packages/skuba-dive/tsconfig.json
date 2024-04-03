@@ -9,6 +9,6 @@
     "removeComments": false,
     "target": "ES2020"
   },
-  "exclude": ["lib*/**/*", "template/**/*"],
+  "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json"
 }
