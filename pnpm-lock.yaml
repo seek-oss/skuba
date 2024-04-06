@@ -54,7 +54,7 @@ importers:
         specifier: ~0.20.0
         version: 0.20.2
       eslint:
-        specifier: ^8.11.0
+        specifier: ^8.56.0
         version: 8.57.0
       eslint-config-skuba:
         specifier: workspace:*
