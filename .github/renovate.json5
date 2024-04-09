@@ -114,8 +114,7 @@
     },
     {
       customType: 'regex',
-      fileMatch: ['.*.md$'],
-      ignorePaths: ['**/CHANGELOG.md'],
+      fileMatch: ['docs/.*.md$'],
 
       // Matches Buildkite plugins but preserves versions in the before diffs
       // - docker-compose#v2.0.0: PASS
