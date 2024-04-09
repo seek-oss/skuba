@@ -105,6 +105,7 @@
   semanticCommitType: 'deps',
   customManagers: [
     {
+      customType: 'regex',
       fileMatch: ['pnpm.md$'],
       matchStrings: [
         '"packageManager": "(?<depName>.*?)@(?<currentValue>.*?)",',
