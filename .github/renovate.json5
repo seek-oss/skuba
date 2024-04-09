@@ -114,14 +114,14 @@
     },
     {
       customType: 'regex',
-      fileMatch: ['.md$'],
+      fileMatch: ['^(?!CHANGELOG.md$).*.md$'],
 
       // Matches Buildkite plugins but preserves versions in the before diffs
       // - docker-compose#v2.0.0: PASS
       // - - docker-compose#v2.0.0: FAIL
       // + - docker-compose#v2.0.0: PASS
       matchStrings: [
-        '^[s+]*- (?<depName>[a-zA-Z0-9-]+?)#v(?<currentValue>.*?):',
+        '^[s+]*- (?<depName>[a-zA-Z0-9-/]+?)#(?<currentValue>.*?):',
       ],
       datasourceTemplate: 'buildkite',
     },
