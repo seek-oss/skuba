@@ -114,7 +114,7 @@
     },
     {
       customType: 'regex',
-      fileMatch: ['*.md$'],
+      fileMatch: ['.*.md$'],
       ignorePaths: ['**/CHANGELOG.md'],
 
       // Matches Buildkite plugins but preserves versions in the before diffs
