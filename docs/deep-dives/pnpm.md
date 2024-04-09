@@ -290,15 +290,17 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     ```
 
     ```diff
-     seek-oss/docker-ecr-cache#v2.1.0:
-       cache-on:
-    +    - .npmrc
-         - package.json
-    -    - yarn.lock
-    +    - pnpm-lock.yaml
-       dockerfile: Dockerfile.dev-deps
-    -  secrets: id=npm,src=.npmrc
-    +  secrets: id=npm,src=tmp/.npmrc
+    - seek-oss/docker-ecr-cache#v2.1.0:
+    + seek-oss/docker-ecr-cache#v2.2.0:
+        cache-on:
+    +     - .npmrc
+    -     - package.json
+    +     - package.json#.packageManager
+    -     - yarn.lock
+    +     - pnpm-lock.yaml
+        dockerfile: Dockerfile.dev-deps
+    -   secrets: id=npm,src=.npmrc
+    +   secrets: id=npm,src=tmp/.npmrc
     ```
 
 16. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
