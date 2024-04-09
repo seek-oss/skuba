@@ -118,7 +118,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 3. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@8.15.1",
+   "packageManager": "pnpm@8.15.6",
    ```
 
 4. Create [`pnpm-workspace.yaml`](https://pnpm.io/pnpm-workspace_yaml)
@@ -211,7 +211,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       FROM --platform=arm64 node:20-alpine AS dev-deps
     
     + RUN --mount=type=bind,source=package.json,target=package.json \
-    + corepack enable pnpm
+    + corepack enable pnpm && corepack install
     
     + RUN pnpm config set store-dir /root/.pnpm-store
     
