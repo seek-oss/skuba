@@ -283,7 +283,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Swap out caching on `yarn.lock` for `.npmrc` and `pnpm-lock.yaml` at the same time.
 
-    We are also using updated caching syntax on the package.json which caches only on the `packageManager` key. This requires seek-oss/docker-ecr-cache version 2.2.0 or above.
+    We are also using an updated caching syntax on `package.json` which caches only on the `packageManager` key. This requires seek-oss/docker-ecr-cache version 2.2.0 or above.
 
     ```diff
       seek-oss/private-npm#v1.2.0:
