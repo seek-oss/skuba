@@ -27,7 +27,7 @@ Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-8.15.4.tgz.
 Do you want to continue? [Y/n]
 ```
 
-To avoid this issue, modify (1) Buildkite pipelines to cache on the `packageManager` property in `package.json`, and (2) Dockerfiles to mount `package.json` and run `corepack install`:
+To avoid this issue, modify (1) Buildkite pipelines to cache on the [`packageManager` property](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin/releases/tag/v2.2.0) in `package.json`, and (2) Dockerfiles to mount `package.json` and run `corepack install`:
 
 ```diff
 - seek-oss/docker-ecr-cache#v2.1.0:
