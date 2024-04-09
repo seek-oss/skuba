@@ -12,7 +12,7 @@ configs:
       seek-oss/docker-ecr-cache#v2.2.0: &docker-ecr-cache-defaults
         cache-on:
           - .npmrc
-          - package.json
+          - package.json#.packageManager
           - pnpm-lock.yaml
         dockerfile: Dockerfile.dev-deps
         secrets: id=npm,src=tmp/.npmrc
