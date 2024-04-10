@@ -1,5 +1,6 @@
 import fg from 'fast-glob';
 import { readFile, writeFile } from 'fs-extra';
+import { lt } from 'semver';
 
 import type { PatchReturnType } from '../..';
 import { getConsumerManifest } from '../../../../../../utils/manifest';
@@ -9,8 +10,10 @@ const DOCKERFILE_COREPACK_COMMAND = 'RUN corepack enable pnpm';
 const PACKAGE_JSON_MOUNT = `RUN --mount=type=bind,source=package.json,target=package.json \\
   corepack enable pnpm && corepack install`;
 const PACKAGE_JSON_CACHE = '- package.json#.packageManager';
+
 const BEFORE_PIPELINE_REGEX =
   /(\s*cache-on:\s*\n\s*-\s*\.npmrc\s*\n)((\s*)-\s*pnpm-lock\.yaml)/gm;
+const ECR_REGEX = /seek-oss\/docker-ecr-cache#v([\d\.]+)/gm;
 
 const fetchFiles = async (files: string[]) =>
   Promise.all(
@@ -91,7 +94,17 @@ const patchPnpmPackageManager = async (
           `$1$3${PACKAGE_JSON_CACHE}\n$2`,
         );
 
-        await writeFile(file, patchedContent);
+        const patchedEcrContent = patchedContent.replace(
+          ECR_REGEX,
+          (match, version) => {
+            if (typeof version === 'string' && lt(version, '2.2.0')) {
+              return 'seek-oss/docker-ecr-cache#v2.2.0';
+            }
+            return match;
+          },
+        );
+
+        await writeFile(file, patchedEcrContent);
       }),
     );
   }
