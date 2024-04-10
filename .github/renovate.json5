@@ -115,9 +115,9 @@
     {
       customType: 'regex',
       fileMatch: ['docs\\/.*\\.md$'],
-      // This allows us to use the non breaking space to prefix plugins in diffs which we do not want Renovate to update
+      // (\\s|\\n) allows us to use the non breaking space to prefix plugins in diffs which we don't want Renovate to touch
       matchStrings: [
-        '\\s(?<depName>[a-zA-Z0-9\\/_\\.\\-]+)#(?<currentValue>v[^:]+)',
+        '(\\s|\\n)(?<depName>[a-zA-Z0-9\\/_\\.\\-]+)#(?<currentValue>v[^:]+)',
       ],
       packageNameTemplate: "{{#if (containsString depName '/')}}{{depName}}-buildkite-plugin{{else}}buildkite-plugins/{{depName}}-buildkite-plugin{{/if}}",
       depNameTemplate: '{{depName}}',
