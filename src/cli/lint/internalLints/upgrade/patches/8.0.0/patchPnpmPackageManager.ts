@@ -5,7 +5,7 @@ import type { PatchReturnType } from '../..';
 import { getConsumerManifest } from '../../../../../../utils/manifest';
 import type { PackageManagerConfig } from '../../../../../../utils/packageManager';
 
-const DOCKERFILE_COREPACK_COMMAND = 'corepack enable pnpm';
+const DOCKERFILE_COREPACK_COMMAND = 'RUN corepack enable pnpm';
 const PACKAGE_JSON_MOUNT = `RUN --mount=type=bind,source=package.json,target=package.json \\
   corepack enable pnpm && corepack install`;
 const PACKAGE_JSON_CACHE = '- package.json#.packageManager';
@@ -111,8 +111,8 @@ const patchPnpmPackageManager = async (
   return { result: 'apply' };
 };
 
-// patchPnpmPackageManager('format', {
-//   command: 'pnpm',
-// } as PackageManagerConfig)
-//   .then(console.log)
-//   .catch(console.error);
+patchPnpmPackageManager('format', {
+  command: 'pnpm',
+} as PackageManagerConfig)
+  .then(console.log)
+  .catch(console.error);
