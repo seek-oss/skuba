@@ -114,16 +114,13 @@
     },
     {
       customType: 'regex',
-      fileMatch: ['docs/.*.md$'],
-
-      // Matches Buildkite plugins but preserves versions in the before diffs
-      // - docker-compose#v2.0.0: PASS
-      // - - docker-compose#v2.0.0: FAIL
-      // + - docker-compose#v2.0.0: PASS
+      fileMatch: ['docs\\/.*\\.md$'],
+      // (\\s|\\n) allows us to use the non breaking space to prefix plugins in diffs which we don't want Renovate to touch
       matchStrings: [
-        '^[s+]*- (?<depName>[a-zA-Z0-9-/]+?)#(?<currentValue>.*?):',
+        '(\\s|\\n)(?<depName>[a-zA-Z0-9\\/_\\.\\-]+)#(?<currentValue>v[^:]+)',
       ],
-      datasourceTemplate: 'buildkite',
+      packageNameTemplate: "{{#if (containsString depName '/')}}{{depName}}-buildkite-plugin{{else}}buildkite-plugins/{{depName}}-buildkite-plugin{{/if}}",
+      datasourceTemplate: 'github-tags',
     },
   ],
 }
