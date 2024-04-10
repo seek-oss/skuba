@@ -120,7 +120,6 @@
         '(\\s|\\n)(?<depName>[a-zA-Z0-9\\/_\\.\\-]+)#(?<currentValue>v[^:]+)',
       ],
       packageNameTemplate: "{{#if (containsString depName '/')}}{{depName}}-buildkite-plugin{{else}}buildkite-plugins/{{depName}}-buildkite-plugin{{/if}}",
-      depNameTemplate: '{{depName}}',
       datasourceTemplate: 'github-tags',
     },
   ],
