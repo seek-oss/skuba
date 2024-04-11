@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 
+import type { PatchConfig } from '../..';
 import * as packageAnalysis from '../../../../../configure/analysis/package';
 import * as projectAnalysis from '../../../../../configure/analysis/project';
 
@@ -32,10 +33,10 @@ describe('tryMoveNpmrcOutOfIgnoreManagedSection', () => {
           );
 
           await expect(
-            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)(
-              'format',
-              '~/project',
-            ),
+            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)({
+              mode: 'format',
+              dir: '~/project',
+            } as PatchConfig),
           ).resolves.toEqual({
             result: 'apply',
           });
@@ -67,10 +68,10 @@ describe('tryMoveNpmrcOutOfIgnoreManagedSection', () => {
           );
 
           await expect(
-            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)(
-              'format',
-              '~/project',
-            ),
+            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)({
+              mode: 'format',
+              dir: '~/project',
+            } as PatchConfig),
           ).resolves.toEqual({
             result: 'skip',
             reason: 'not ignored',
@@ -87,10 +88,10 @@ describe('tryMoveNpmrcOutOfIgnoreManagedSection', () => {
           );
 
           await expect(
-            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)(
-              'format',
-              '~/project',
-            ),
+            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)({
+              mode: 'format',
+              dir: '~/project',
+            } as PatchConfig),
           ).resolves.toEqual({
             result: 'skip',
             reason: 'already ignored in unmanaged section',
@@ -107,10 +108,10 @@ describe('tryMoveNpmrcOutOfIgnoreManagedSection', () => {
           );
 
           await expect(
-            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)(
-              'format',
-              '~/project',
-            ),
+            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)({
+              mode: 'format',
+              dir: '~/project',
+            } as PatchConfig),
           ).resolves.toEqual({
             result: 'skip',
             reason: 'not ignored',
@@ -129,10 +130,10 @@ describe('tryMoveNpmrcOutOfIgnoreManagedSection', () => {
           );
 
           await expect(
-            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)(
-              'lint',
-              '~/project',
-            ),
+            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)({
+              mode: 'lint',
+              dir: '~/project',
+            } as PatchConfig),
           ).resolves.toEqual({
             result: 'apply',
           });
@@ -148,10 +149,10 @@ describe('tryMoveNpmrcOutOfIgnoreManagedSection', () => {
           );
 
           await expect(
-            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)(
-              'lint',
-              '~/project',
-            ),
+            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)({
+              mode: 'lint',
+              dir: '~/project',
+            } as PatchConfig),
           ).resolves.toEqual({
             result: 'skip',
             reason: 'not ignored',
@@ -168,10 +169,10 @@ describe('tryMoveNpmrcOutOfIgnoreManagedSection', () => {
           );
 
           await expect(
-            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)(
-              'lint',
-              '~/project',
-            ),
+            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)({
+              mode: 'lint',
+              dir: '~/project',
+            } as PatchConfig),
           ).resolves.toEqual({
             result: 'skip',
             reason: 'already ignored in unmanaged section',
@@ -188,10 +189,10 @@ describe('tryMoveNpmrcOutOfIgnoreManagedSection', () => {
           );
 
           await expect(
-            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)(
-              'lint',
-              '~/project',
-            ),
+            tryMoveNpmrcOutOfIgnoreManagedSection(fileName)({
+              mode: 'lint',
+              dir: '~/project',
+            } as PatchConfig),
           ).resolves.toEqual({
             result: 'skip',
             reason: 'not ignored',

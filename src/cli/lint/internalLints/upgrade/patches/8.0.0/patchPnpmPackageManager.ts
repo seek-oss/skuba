@@ -1,10 +1,11 @@
+import { inspect } from 'util';
+
 import fg from 'fast-glob';
 import { readFile, writeFile } from 'fs-extra';
 import { lt } from 'semver';
 
-import type { PatchReturnType } from '../..';
-import { getConsumerManifest } from '../../../../../../utils/manifest';
-import type { PackageManagerConfig } from '../../../../../../utils/packageManager';
+import type { PatchFunction, PatchReturnType } from '../..';
+import { log } from '../../../../../../utils/logging';
 
 const DOCKERFILE_COREPACK_COMMAND = 'RUN corepack enable pnpm';
 const PACKAGE_JSON_MOUNT = `RUN --mount=type=bind,source=package.json,target=package.json \\
@@ -27,23 +28,22 @@ const fetchFiles = async (files: string[]) =>
     }),
   );
 
-const patchPnpmPackageManager = async (
-  mode: 'format' | 'lint',
-  packageManager: PackageManagerConfig,
-): Promise<PatchReturnType> => {
+const patchPnpmPackageManager: PatchFunction = async ({
+  mode,
+  manifest,
+  packageManager,
+}): Promise<PatchReturnType> => {
   if (packageManager.command !== 'pnpm') {
     return {
       result: 'skip',
-      reason: 'not using pnpm package manager',
+      reason: 'not using pnpm',
     };
   }
 
-  const packageJson = await getConsumerManifest();
-
   if (
     !(
-      packageJson?.packageJson as { packageManager?: string }
-    )?.packageManager?.includes('pnpm')
+      manifest.packageJson as { packageManager?: string }
+    ).packageManager?.includes('pnpm')
   ) {
     return {
       result: 'skip',
@@ -124,8 +124,18 @@ const patchPnpmPackageManager = async (
   return { result: 'apply' };
 };
 
-patchPnpmPackageManager('format', {
-  command: 'pnpm',
-} as PackageManagerConfig)
-  .then(console.log)
-  .catch(console.error);
+export const tryPatchPnpmPackageManager: PatchFunction = async (config) => {
+  try {
+    return await patchPnpmPackageManager(config);
+  } catch (err) {
+    log.warn('Failed to patch pnpm packageManager CI configuration.');
+    log.subtle(inspect(err));
+    return { result: 'skip', reason: 'due to an error' };
+  }
+};
+
+// patchPnpmPackageManager('format', {
+//   command: 'pnpm',
+// } as PackageManagerConfig)
+//   .then(console.log)
+//   .catch(console.error);
