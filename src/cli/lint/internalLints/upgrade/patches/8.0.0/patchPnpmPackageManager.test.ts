@@ -11,7 +11,7 @@ jest.mock('fast-glob');
 jest.mock('fs-extra');
 
 describe('patchPnpmPackageManager', () => {
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => jest.resetAllMocks());
 
   it('should skip if we are not using pnpm', async () => {
     await expect(
@@ -186,8 +186,7 @@ describe('patchPnpmPackageManager', () => {
     jest
       .mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
-      .mockResolvedValueOnce(['.buildkite/pipeline.yml'])
-      .mockResolvedValueOnce([]);
+      .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
       .mocked(readFile)
       .mockResolvedValueOnce(
@@ -225,6 +224,46 @@ describe('patchPnpmPackageManager', () => {
         '        - package.json#.packageManager\n' +
         '        - pnpm-lock.yaml\n' +
         'seek-oss/docker-ecr-cache#v2.2.0:\n' +
+        '      cache-on:\n' +
+        '        - .npmrc\n' +
+        '        - package.json#.packageManager\n' +
+        '        - pnpm-lock.yaml\n') as never,
+    );
+  });
+
+  it('should avoid patching the docker ecr cache plugin version if it is greater than 2.2.0', async () => {
+    jest
+      .mocked(fg)
+      .mockResolvedValueOnce(['Dockerfile'])
+      .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
+    jest
+      .mocked(readFile)
+      .mockResolvedValueOnce(
+        ('# syntax=docker/dockerfile:1.7\n' +
+          'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
+          'RUN corepack enable pnpm\n') as never,
+      )
+      .mockResolvedValueOnce(
+        ('seek-oss/docker-ecr-cache#v2.3.0:\n' +
+          '      cache-on:\n' +
+          '        - .npmrc\n' +
+          '        - pnpm-lock.yaml\n') as never,
+      );
+
+    await expect(
+      tryPatchPnpmPackageManager({
+        mode: 'format',
+        packageManager: { command: 'pnpm' } as PackageManagerConfig,
+        manifest: validManifest,
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      2,
+      '.buildkite/pipeline.yml',
+      ('seek-oss/docker-ecr-cache#v2.3.0:\n' +
         '      cache-on:\n' +
         '        - .npmrc\n' +
         '        - package.json#.packageManager\n' +
