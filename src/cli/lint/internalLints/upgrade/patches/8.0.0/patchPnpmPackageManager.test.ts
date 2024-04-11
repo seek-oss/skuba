@@ -13,7 +13,7 @@ jest.mock('fs-extra');
 describe('patchPnpmPackageManager', () => {
   afterEach(() => jest.resetAllMocks());
 
-  it('should skip if we are not using pnpm', async () => {
+  it('should skip if pnpm is not used', async () => {
     await expect(
       tryPatchPnpmPackageManager({
         mode: 'format',
@@ -269,5 +269,40 @@ describe('patchPnpmPackageManager', () => {
         '        - package.json#.packageManager\n' +
         '        - pnpm-lock.yaml\n') as never,
     );
+  });
+
+  it('should skip patching if it is already up to date', async () => {
+    jest
+      .mocked(fg)
+      .mockResolvedValueOnce(['Dockerfile'])
+      .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
+    jest
+      .mocked(readFile)
+      .mockResolvedValueOnce(
+        ('# syntax=docker/dockerfile:1.7\n' +
+          'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
+          'RUN --mount=type=bind,source=package.json,target=package.json \\\n' +
+          '  corepack enable pnpm && corepack install\n') as never,
+      )
+      .mockResolvedValueOnce(
+        ('seek-oss/docker-ecr-cache#v2.1.0:\n' +
+          '      cache-on:\n' +
+          '        - .npmrc\n' +
+          '        - package.json\n' +
+          '        - pnpm-lock.yaml\n') as never,
+      );
+
+    await expect(
+      tryPatchPnpmPackageManager({
+        mode: 'format',
+        packageManager: { command: 'pnpm' } as PackageManagerConfig,
+        manifest: validManifest,
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'skip',
+      reason: 'no pipeline or dockerfiles to patch',
+    });
+
+    expect(writeFile).not.toHaveBeenCalled();
   });
 });

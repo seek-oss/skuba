@@ -71,7 +71,7 @@ const patchPnpmPackageManager: PatchFunction = async ({
   const dockerFilesToPatch = dockerfiles.filter(
     ({ contents }) =>
       contents.includes(DOCKERFILE_COREPACK_COMMAND) &&
-      !contents.includes('target=package.json'), // consider this as already patched,
+      !contents.includes('target=package.json'),
   );
 
   const pipelinesToPatch = pipelines.filter(({ contents }) =>
