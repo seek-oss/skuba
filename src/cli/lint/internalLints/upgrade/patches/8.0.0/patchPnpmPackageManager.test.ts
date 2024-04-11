@@ -1,5 +1,5 @@
 import fg from 'fast-glob';
-import { readFile } from 'fs-extra';
+import { readFile, writeFile } from 'fs-extra';
 import type { NormalizedPackageJson } from 'read-pkg-up';
 
 import type { PatchConfig } from '../..';
@@ -11,9 +11,12 @@ jest.mock('fast-glob');
 jest.mock('fs-extra');
 
 describe('patchPnpmPackageManager', () => {
+  afterEach(() => jest.clearAllMocks());
+
   it('should skip if we are not using pnpm', async () => {
     await expect(
       tryPatchPnpmPackageManager({
+        mode: 'format',
         packageManager: { command: 'yarn' } as PackageManagerConfig,
       } as PatchConfig),
     ).resolves.toEqual({
@@ -25,6 +28,7 @@ describe('patchPnpmPackageManager', () => {
   it('should skip if packageManager is not declared in package.json', async () => {
     await expect(
       tryPatchPnpmPackageManager({
+        mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: { packageJson: {} },
       } as PatchConfig),
@@ -48,12 +52,13 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['.buldkite/pipeline.yml']);
     await expect(
       tryPatchPnpmPackageManager({
+        mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
-      reason: 'no Dockerfiles or pipelines found',
+      reason: 'Either dockerfiles or pipelines were not found',
     });
   });
 
@@ -64,12 +69,13 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce([]);
     await expect(
       tryPatchPnpmPackageManager({
+        mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
-      reason: 'no Dockerfiles or pipelines found',
+      reason: 'Either dockerfiles or pipelines were not found',
     });
   });
 
@@ -85,6 +91,7 @@ describe('patchPnpmPackageManager', () => {
 
     await expect(
       tryPatchPnpmPackageManager({
+        mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
       } as PatchConfig),
@@ -92,5 +99,136 @@ describe('patchPnpmPackageManager', () => {
       result: 'skip',
       reason: 'no pipeline or dockerfiles to patch',
     });
+  });
+
+  it('should patch both dockerfiles and pipelines', async () => {
+    jest
+      .mocked(fg)
+      .mockResolvedValueOnce(['Dockerfile'])
+      .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
+    jest
+      .mocked(readFile)
+      .mockResolvedValueOnce(
+        ('# syntax=docker/dockerfile:1.7\n' +
+          'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
+          'RUN corepack enable pnpm\n') as never,
+      )
+      .mockResolvedValueOnce(
+        ('seek-oss/docker-ecr-cache#v2.1.0:\n' +
+          '      cache-on:\n' +
+          '        - .npmrc\n' +
+          '        - pnpm-lock.yaml\n') as never,
+      );
+
+    await expect(
+      tryPatchPnpmPackageManager({
+        mode: 'format',
+        packageManager: { command: 'pnpm' } as PackageManagerConfig,
+        manifest: validManifest,
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      1,
+      'Dockerfile',
+      ('# syntax=docker/dockerfile:1.7\n' +
+        'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
+        'RUN --mount=type=bind,source=package.json,target=package.json \\\n' +
+        '  corepack enable pnpm && corepack install\n') as never,
+    );
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      2,
+      '.buildkite/pipeline.yml',
+      ('seek-oss/docker-ecr-cache#v2.2.0:\n' +
+        '      cache-on:\n' +
+        '        - .npmrc\n' +
+        '        - package.json#.packageManager\n' +
+        '        - pnpm-lock.yaml\n') as never,
+    );
+  });
+
+  it('should not patch in lint mode', async () => {
+    jest
+      .mocked(fg)
+      .mockResolvedValueOnce(['Dockerfile'])
+      .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
+    jest
+      .mocked(readFile)
+      .mockResolvedValueOnce(
+        ('# syntax=docker/dockerfile:1.7\n' +
+          'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
+          'RUN corepack enable pnpm\n') as never,
+      )
+      .mockResolvedValueOnce(
+        ('seek-oss/docker-ecr-cache#v2.1.0:\n' +
+          '      cache-on:\n' +
+          '        - .npmrc\n' +
+          '        - pnpm-lock.yaml\n') as never,
+      );
+
+    await expect(
+      tryPatchPnpmPackageManager({
+        mode: 'lint',
+        packageManager: { command: 'pnpm' } as PackageManagerConfig,
+        manifest: validManifest,
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).not.toHaveBeenCalled();
+  });
+
+  it('should patch multiple cache entries in pipelines', async () => {
+    jest
+      .mocked(fg)
+      .mockResolvedValueOnce(['Dockerfile'])
+      .mockResolvedValueOnce(['.buildkite/pipeline.yml'])
+      .mockResolvedValueOnce([]);
+    jest
+      .mocked(readFile)
+      .mockResolvedValueOnce(
+        ('# syntax=docker/dockerfile:1.7\n' +
+          'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
+          'RUN corepack enable pnpm\n') as never,
+      )
+      .mockResolvedValueOnce(
+        ('seek-oss/docker-ecr-cache#v2.1.0:\n' +
+          '      cache-on:\n' +
+          '        - .npmrc\n' +
+          '        - pnpm-lock.yaml\n' +
+          'seek-oss/docker-ecr-cache#v2.1.0:\n' +
+          '      cache-on:\n' +
+          '        - .npmrc\n' +
+          '        - pnpm-lock.yaml\n') as never,
+      );
+
+    await expect(
+      tryPatchPnpmPackageManager({
+        mode: 'format',
+        packageManager: { command: 'pnpm' } as PackageManagerConfig,
+        manifest: validManifest,
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      2,
+      '.buildkite/pipeline.yml',
+      ('seek-oss/docker-ecr-cache#v2.2.0:\n' +
+        '      cache-on:\n' +
+        '        - .npmrc\n' +
+        '        - package.json#.packageManager\n' +
+        '        - pnpm-lock.yaml\n' +
+        'seek-oss/docker-ecr-cache#v2.2.0:\n' +
+        '      cache-on:\n' +
+        '        - .npmrc\n' +
+        '        - package.json#.packageManager\n' +
+        '        - pnpm-lock.yaml\n') as never,
+    );
   });
 });

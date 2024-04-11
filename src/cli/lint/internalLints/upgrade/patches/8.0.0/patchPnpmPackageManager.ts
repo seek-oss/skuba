@@ -57,7 +57,10 @@ const patchPnpmPackageManager: PatchFunction = async ({
   ]);
 
   if (!maybeDockerfiles.length || !maybePipelines.length) {
-    return { result: 'skip', reason: 'no Dockerfiles or pipelines found' };
+    return {
+      result: 'skip',
+      reason: 'Either dockerfiles or pipelines were not found',
+    };
   }
 
   const [dockerfiles, pipelines] = await Promise.all([
@@ -86,6 +89,18 @@ const patchPnpmPackageManager: PatchFunction = async ({
     return { result: 'apply' };
   }
 
+  if (dockerFilesToPatch.length) {
+    await Promise.all(
+      dockerFilesToPatch.map(async ({ file, contents }) => {
+        const patchedContent = contents.replace(
+          DOCKERFILE_COREPACK_COMMAND,
+          PACKAGE_JSON_MOUNT,
+        );
+        await writeFile(file, patchedContent);
+      }),
+    );
+  }
+
   if (pipelinesToPatch.length) {
     await Promise.all(
       pipelinesToPatch.map(async ({ file, contents }) => {
@@ -105,18 +120,6 @@ const patchPnpmPackageManager: PatchFunction = async ({
         );
 
         await writeFile(file, patchedEcrContent);
-      }),
-    );
-  }
-
-  if (dockerFilesToPatch.length) {
-    await Promise.all(
-      dockerFilesToPatch.map(async ({ file, contents }) => {
-        const patchedContent = contents.replace(
-          DOCKERFILE_COREPACK_COMMAND,
-          PACKAGE_JSON_MOUNT,
-        );
-        await writeFile(file, patchedContent);
       }),
     );
   }
