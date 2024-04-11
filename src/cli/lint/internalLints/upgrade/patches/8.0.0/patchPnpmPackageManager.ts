@@ -136,9 +136,3 @@ export const tryPatchPnpmPackageManager: PatchFunction = async (config) => {
     return { result: 'skip', reason: 'due to an error' };
   }
 };
-
-// patchPnpmPackageManager('format', {
-//   command: 'pnpm',
-// } as PackageManagerConfig)
-//   .then(console.log)
-//   .catch(console.error);
