@@ -166,7 +166,7 @@ The `--inspect` and `--inspect-brk` [Node.js options] are supported for debuggin
 
 #### Automatically attaching a debugger
 
-The simplest way to a attach a debugger to VS Code is to use the in-built debug terminal.
+The simplest way to attach a debugger to VS Code is to use its built-in debug terminal.
 
 1. Hit `⌘ + ⇧ + P` to bring up the Command Palette.
 2. Select `Debug: JavaScript Debug Terminal`
