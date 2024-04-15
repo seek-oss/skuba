@@ -164,6 +164,18 @@ export default Object.assign(app, { port });
 
 The `--inspect` and `--inspect-brk` [Node.js options] are supported for debugging sessions.
 
+
+#### Attaching Automatically
+
+The simplest way to a debugger on VS Code is to use the in-built debug terminal.
+
+1. Hit `⌘ + ⇧ + P` to bring up the Command Palette.
+2. Select `Debug: Javascript Debug Terminal`
+3. Run any command within the terminal; for example, `skuba test`, `skuba start` and VS Code will automatically hook into it.
+
+
+#### Attaching Manually
+
 Try this out by starting your project with inspector enabled:
 
 ```bash
@@ -173,8 +185,8 @@ pnpm start:debug
 Next, attach VS Code's debugger to the running process:
 
 1. Hit `⌘ + ⇧ + P` to bring up the Command Palette.
-1. Select `Debug: Attach to Node Process`
-1. Select the `node` process that is pointing to `pnpm start:debug`
+2. Select `Debug: Attach to Node Process`
+3. Select the `node` process that is pointing to `pnpm start:debug`
 
 ```shell
 Pick the node.js process to attach to
