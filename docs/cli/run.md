@@ -164,15 +164,17 @@ export default Object.assign(app, { port });
 
 The `--inspect` and `--inspect-brk` [Node.js options] are supported for debugging sessions.
 
-#### Attaching Automatically
 
-The simplest way to a debugger on VS Code is to use the in-built debug terminal.
+#### Automatically attaching a debugger
+
+The simplest way to a attach a debugger to VS Code is to use the in-built debug terminal.
 
 1. Hit `⌘ + ⇧ + P` to bring up the Command Palette.
-2. Select `Debug: Javascript Debug Terminal`
-3. Run any command within the terminal; for example, `skuba test`, `skuba start` and VS Code will automatically hook into it.
+2. Select `Debug: JavaScript Debug Terminal`
+3. Run any command within the terminal; for example, `skuba test`, `skuba start` and VS Code will automatically attach to it.
 
-#### Attaching Manually
+
+#### Manually attaching a debugger
 
 Try this out by starting your project with inspector enabled:
 
