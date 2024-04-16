@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`returns expected CloudFormation stack for $stage 1`] = `
+exports[`returns expected CloudFormation stack for dev 1`] = `
 {
   "Mappings": {
     "ServiceprincipalMap": {
@@ -1042,7 +1042,7 @@ exports[`returns expected CloudFormation stack for $stage 1`] = `
 }
 `;
 
-exports[`returns expected CloudFormation stack for $stage 2`] = `
+exports[`returns expected CloudFormation stack for prod 1`] = `
 {
   "Mappings": {
     "ServiceprincipalMap": {
@@ -1503,7 +1503,7 @@ exports[`returns expected CloudFormation stack for $stage 2`] = `
             "Arn",
           ],
         },
-        "ReservedConcurrentExecutions": 10,
+        "ReservedConcurrentExecutions": 20,
         "Role": {
           "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
@@ -1577,7 +1577,7 @@ exports[`returns expected CloudFormation stack for $stage 2`] = `
           ],
         },
         "ScalingConfig": {
-          "MaximumConcurrency": 10,
+          "MaximumConcurrency": 20,
         },
       },
       "Type": "AWS::Lambda::EventSourceMapping",

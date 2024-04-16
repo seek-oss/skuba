@@ -20,7 +20,7 @@ afterEach(() => {
 });
 
 it.each(['dev', 'prod'])(
-  'returns expected CloudFormation stack for $stage',
+  'returns expected CloudFormation stack for %s',
   async (env) => {
     process.env.ENVIRONMENT = env;
 
