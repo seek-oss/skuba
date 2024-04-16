@@ -1503,7 +1503,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "Arn",
           ],
         },
-        "ReservedConcurrentExecutions": 10,
+        "ReservedConcurrentExecutions": 20,
         "Role": {
           "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
@@ -1577,7 +1577,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           ],
         },
         "ScalingConfig": {
-          "MaximumConcurrency": 10,
+          "MaximumConcurrency": 20,
         },
       },
       "Type": "AWS::Lambda::EventSourceMapping",

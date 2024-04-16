@@ -29,7 +29,7 @@ export const configs: Record<Environment, Config> = {
   prod: {
     appName: '<%- serviceName %>',
     workerLambda: {
-      reservedConcurrency: 10,
+      reservedConcurrency: 20,
       environment: {
         ENVIRONMENT: 'prod',
       },
