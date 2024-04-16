@@ -1,22 +1,6 @@
 import { App, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
-import cdkJson from '../cdk.json';
-
-import { AppStack } from './appStack';
-
-const contexts = [
-  {
-    stage: 'dev',
-    ...cdkJson.context,
-  },
-
-  {
-    stage: 'prod',
-    ...cdkJson.context,
-  },
-];
-
 const currentDate = '1212-12-12T12:12:12.121Z';
 
 jest.useFakeTimers({
@@ -31,14 +15,22 @@ jest.useFakeTimers({
   now: new Date(currentDate),
 });
 
-it.each(contexts)(
+afterEach(() => {
+  jest.resetModules();
+});
+
+it.each(['dev', 'prod'])(
   'returns expected CloudFormation stack for $stage',
-  (context) => {
+  async (env) => {
+    process.env.ENVIRONMENT = env;
+
+    const { AppStack } = await import('./appStack');
+
     jest
       .spyOn(aws_sns.Topic, 'fromTopicArn')
       .mockImplementation((scope, id) => new aws_sns.Topic(scope, id));
 
-    const app = new App({ context });
+    const app = new App();
 
     const stack = new AppStack(app, 'appStack');
 
