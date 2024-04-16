@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-template/lambda-sqs-worker-cdk: Replace CDK Context based config with TypeScript config
+template/lambda-sqs-worker-cdk: Replace CDK context based config with TypeScript config
