@@ -1,7 +1,6 @@
 import { App } from 'aws-cdk-lib';
 
 import { AppStack } from './appStack';
-
 import { config } from './config';
 
 const app = new App();
