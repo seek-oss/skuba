@@ -15,6 +15,12 @@ jest.useFakeTimers({
   now: new Date(currentDate),
 });
 
+const originalEnv = process.env.ENVIRONMENT;
+
+afterAll(() => {
+  process.env.ENVIRONMENT = originalEnv;
+});
+
 afterEach(() => {
   jest.resetModules();
 });
