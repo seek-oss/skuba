@@ -15,14 +15,11 @@ import {
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
 
-import { EnvContextSchema, StageContextSchema } from '../shared/context-types';
+import { config } from './config';
 
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
-
-    const stage = StageContextSchema.parse(this.node.tryGetContext('stage'));
-    const context = EnvContextSchema.parse(this.node.tryGetContext(stage));
 
     const accountPrincipal = new aws_iam.AccountPrincipal(this.account);
 
@@ -52,7 +49,7 @@ export class AppStack extends Stack {
     const topic = aws_sns.Topic.fromTopicArn(
       this,
       'source-topic',
-      context.sourceSnsTopicArn,
+      config.sourceSnsTopicArn,
     );
 
     topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
@@ -89,13 +86,13 @@ export class AppStack extends Stack {
       functionName: '<%- serviceName %>',
       environment: {
         ...defaultWorkerEnvironment,
-        ...context.workerLambda.environment,
+        ...config.workerLambda.environment,
       },
       // https://github.com/aws/aws-cdk/issues/28237
       // This forces the lambda to be updated on every deployment
       // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
       description: `Updated at ${new Date().toISOString()}`,
-      reservedConcurrentExecutions: context.workerLambda.reservedConcurrency,
+      reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
     });
 
     const alias = worker.addAlias('live', {
@@ -104,7 +101,7 @@ export class AppStack extends Stack {
 
     alias.addEventSource(
       new aws_lambda_event_sources.SqsEventSource(queue, {
-        maxConcurrency: context.workerLambda.reservedConcurrency,
+        maxConcurrency: config.workerLambda.reservedConcurrency,
       }),
     );
 
@@ -119,7 +116,7 @@ export class AppStack extends Stack {
         functionName: '<%- serviceName %>-pre-hook',
         environment: {
           ...defaultWorkerEnvironment,
-          ...context.workerLambda.environment,
+          ...config.workerLambda.environment,
           FUNCTION_NAME_TO_INVOKE: worker.functionName,
         },
       },
@@ -138,7 +135,7 @@ export class AppStack extends Stack {
         functionName: '<%- serviceName %>-post-hook',
         environment: {
           ...defaultWorkerEnvironment,
-          ...context.workerLambda.environment,
+          ...config.workerLambda.environment,
           FUNCTION_NAME_TO_PRUNE: worker.functionName,
         },
       },
