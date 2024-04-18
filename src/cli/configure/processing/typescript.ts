@@ -38,7 +38,6 @@ const createExportDefaultObjectLiteralExpression = (
   factory.createExportAssignment(
     undefined,
     undefined,
-    undefined,
     callExpression === undefined
       ? factory.createObjectLiteralExpression(props, true)
       : factory.createCallExpression(callExpression, undefined, [
@@ -74,7 +73,6 @@ const createImportFromExpression = (
 
   return factory.createImportDeclaration(
     undefined,
-    undefined,
     importClause,
     factory.createStringLiteral(moduleName),
   );
@@ -105,7 +103,8 @@ const expressionAsDefaultExport = (
       // fn({})
       if (
         ts.isCallExpression(expression) &&
-        expression.arguments.length === 1
+        expression.arguments.length === 1 &&
+        expression.arguments[0]
       ) {
         const [firstArgument] = expression.arguments;
 
@@ -122,7 +121,6 @@ const expressionAsDefaultExport = (
 
       // Anything else
       return context.factory.createExportAssignment(
-        undefined,
         undefined,
         undefined,
         expression,
@@ -152,12 +150,14 @@ const requireImportsTransformer: ts.TransformerFactory<ts.Node> =
         if (
           ts.isVariableStatement(node) &&
           node.declarationList.declarations.length === 1 &&
+          node.declarationList.declarations[0] &&
           ts.isVariableDeclaration(
             (declaration = node.declarationList.declarations[0]),
           ) &&
           declaration.initializer &&
           ts.isCallExpression(declaration.initializer) &&
           declaration.initializer.arguments.length === 1 &&
+          declaration.initializer.arguments[0] &&
           ts.isStringLiteral(
             (moduleName = declaration.initializer.arguments[0]),
           ) &&
@@ -222,7 +222,7 @@ const createModuleExportsTransformer =
           ts.isBinaryExpression(node.expression) &&
           ts.isPropertyAccessExpression(node.expression.left) &&
           ts.isIdentifier(node.expression.left.expression) &&
-          node.expression.left.expression.escapedText === 'module' &&
+          node.expression.left.expression.escapedText.toString() === 'module' &&
           node.expression.left.name.text === 'exports' &&
           node.expression.operatorToken.kind === ts.SyntaxKind.EqualsToken
         ) {
@@ -286,10 +286,15 @@ export const createPropAppender =
  *
  * The props can then be used when transforming another source file.
  */
-export const readModuleExports = (inputFile: string): Props | undefined => {
+export const readModuleExports = async (
+  inputFile: string,
+): Promise<Props | undefined> => {
   let result: Props | undefined;
 
-  transformModuleImportsAndExports(inputFile, (_, props) => (result = props));
+  await transformModuleImportsAndExports(
+    inputFile,
+    (_, props) => (result = props),
+  );
 
   return result;
 };
@@ -301,10 +306,10 @@ export const readModuleExports = (inputFile: string): Props | undefined => {
  * - Convert `module.exports =` into `export default`
  * - Run a transformer over the exported props
  */
-export const transformModuleImportsAndExports = (
+export const transformModuleImportsAndExports = async (
   inputFile: string,
   transformProps: Transformer<Props>,
-): string => {
+): Promise<string> => {
   const sourceFile = ts.createSourceFile('', inputFile, ts.ScriptTarget.Latest);
 
   const moduleExportsTransformer =
@@ -316,6 +321,12 @@ export const transformModuleImportsAndExports = (
   ]);
 
   const [transformedFile] = result.transformed;
+
+  if (!transformedFile) {
+    throw new Error(
+      `Could not get transformed result for ${JSON.stringify(result)}`,
+    );
+  }
 
   const text = ts
     .createPrinter()

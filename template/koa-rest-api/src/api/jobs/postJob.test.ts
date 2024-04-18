@@ -27,7 +27,7 @@ describe('postJobHandler', () => {
       .expect(422)
       .expect(({ text }) =>
         expect(text).toMatchInlineSnapshot(
-          `"Expected { hirer: { id: string; }; }, but was incompatible"`,
+          `"{"message":"Input validation failed","invalidFields":{"/hirer":"Required"}}"`,
         ),
       );
   });

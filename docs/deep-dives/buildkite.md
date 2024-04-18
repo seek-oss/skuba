@@ -19,21 +19,18 @@ as well as common issues faced when running your project on a Buildkite agent.
 **skuba** can output issues detected by [`skuba lint`] as [Buildkite annotations].
 
 This can be enabled by propagating Buildkite environment variables and the `buildkite-agent` binary.
-For example, with the Docker plugin:
+For example, with the [Docker Buildkite plugin]:
 
 ```yaml
 steps:
-  - command: yarn lint
+  - command: pnpm lint
     plugins:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v3.12.0:
+      - docker#v5.10.0:
           environment:
             - BUILDKITE_AGENT_ACCESS_TOKEN
-          # Disable SEEK BuildAgency's wrapped agent that requires Bash.
-          mount-buildkite-agent: false
-          # Enable Buildkite integrations.
           propagate-environment: true
           volumes:
             # Mount agent for Buildkite annotations.
@@ -48,18 +45,28 @@ declare the environment variables and volume mounts in your [Compose file]:
 ```yaml
 services:
   app:
-    environment:
-      # Enable Buildkite integrations.
-      - BUILDKITE
-      - BUILDKITE_AGENT_ACCESS_TOKEN
-      - BUILDKITE_JOB_ID
-      - BUILDKITE_STEP_ID
     volumes:
       - ./:/workdir
       # Mount agent for Buildkite annotations.
       - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
       # Mount cached dependencies.
       - /workdir/node_modules
+```
+
+and the `environment` and `propagate-environment` options in the [Docker Compose Buildkite plugin]:
+
+```yaml
+steps:
+  - command: pnpm lint
+    plugins:
+      - *aws-sm
+      - *private-npm
+      - *docker-ecr-cache
+      - docker-compose#v5.2.0:
+          environment:
+            - BUILDKITE_AGENT_ACCESS_TOKEN
+          propagate-environment: true
+          run: app
 ```
 
 This feature is also planned for [`skuba test`] in future.
@@ -110,9 +117,10 @@ The agent may be tied up running a particularly compute- or memory-intensive ste
 [`skuba build-package`]: ../cli/build.md#skuba-build-package
 [`skuba lint`]: ../cli/lint.md#skuba-lint
 [`skuba test`]: ../cli/test.md#skuba-test
-[buildkite.annotate]: ../development-api/buildkite.md#annotate
-[buildkite annotations]: https://buildkite.com/docs/agent/v3/cli-annotate
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz/
-[ci/cd]: https://en.wikipedia.org/wiki/CI/CD
-[compose file]: https://docs.docker.com/compose/compose-file
-[docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
+[Buildkite annotations]: https://buildkite.com/docs/agent/v3/cli-annotate
+[Buildkite.annotate]: ../development-api/buildkite.md#annotate
+[Builds at SEEK]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
+[CI/CD]: https://en.wikipedia.org/wiki/CI/CD
+[Compose file]: https://docs.docker.com/compose/compose-file
+[Docker Buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
+[Docker Compose Buildkite plugin]: https://github.com/buildkite-plugins/docker-compose-buildkite-plugin

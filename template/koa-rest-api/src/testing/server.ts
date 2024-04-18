@@ -1,5 +1,5 @@
-import Router from '@koa/router';
-import Koa from 'koa';
+import type Router from '@koa/router';
+import type Koa from 'koa';
 import request from 'supertest';
 
 import { createApp } from 'src/framework/server';
@@ -14,7 +14,7 @@ export const agentFromApp = <State, Context>(app: Koa<State, Context>) =>
  * Create a new SuperTest agent from a set of Koa middleware.
  */
 export const agentFromMiddleware = <State, Context>(
-  ...middleware: Koa.Middleware<State, Context>[]
+  ...middleware: Array<Koa.Middleware<State, Context>>
 ) => {
   const app = createApp(...middleware);
 

@@ -5,7 +5,7 @@ describe('createEjsRenderer', () => {
     const input = {
       name: '<%- packageName %>',
       repository: {
-        url: 'git+https://github.com/<%- orgName %>/<%- repoName %>.git',
+        url: 'git+ssh://git@github.com/<%- orgName %>/<%- repoName %>.git',
       },
     };
 
@@ -22,7 +22,7 @@ describe('createEjsRenderer', () => {
     expect(JSON.parse(output)).toEqual({
       name: 'seek-koala',
       repository: {
-        url: 'git+https://github.com/seek-oss/koala.git',
+        url: 'git+ssh://git@github.com/seek-oss/koala.git',
       },
     });
   });

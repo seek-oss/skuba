@@ -1,8 +1,8 @@
-import type http from 'http';
+import http from 'http';
 
 import { isFunction, isIpPort, isObject } from '../utils/validation';
 
-import { serveRequestListener } from './http';
+import { serveRequestListener, startServer } from './http';
 
 // Express compatibility
 interface FunctionConfig extends http.RequestListener {
@@ -15,11 +15,16 @@ interface ObjectConfig {
 
   requestListener?: http.RequestListener;
 
-  default?: unknown;
+  // Fastify compatibility
+  server?: http.Server;
+
+  default?: Promise<unknown>;
   port?: unknown;
 }
 
-const isConfig = (data: unknown): data is FunctionConfig | ObjectConfig =>
+const isConfig = (
+  data: unknown,
+): data is Promise<FunctionConfig> | Promise<ObjectConfig> =>
   isFunction(data) || isObject(data);
 
 interface Args {
@@ -41,16 +46,32 @@ export const runRequestListener = async ({
     return;
   }
 
-  let config = entryPoint;
+  let config: FunctionConfig | ObjectConfig = await entryPoint;
 
   if (typeof config === 'object' && isConfig(config.default)) {
     // Prefer `export default` over `export =`
-    config = config.default;
+    config = await config.default;
   }
 
   if (Object.keys(config).length === 0) {
     // Assume an executable script with no exports
     return;
+  }
+
+  const port = isIpPort(config.port) ? config.port : availablePort;
+
+  // http.Server support
+  if (typeof config !== 'function' && config instanceof http.Server) {
+    return startServer(config, port);
+  }
+
+  // Fastify workaround
+  if (
+    typeof config !== 'function' &&
+    config.server &&
+    config.server instanceof http.Server
+  ) {
+    return startServer(config.server, port);
   }
 
   const requestListener =
@@ -62,8 +83,6 @@ export const runRequestListener = async ({
     // Assume an executable script with non-request listener exports
     return;
   }
-
-  const port = isIpPort(config.port) ? config.port : availablePort;
 
   return serveRequestListener(requestListener, port);
 };

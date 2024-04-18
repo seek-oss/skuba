@@ -7,24 +7,23 @@ Next steps:
 1. [ ] Finish templating if this was skipped earlier:
 
    ```shell
-   yarn skuba configure
+   pnpm exec skuba configure
    ```
 
 2. [ ] Create a new repository in the appropriate GitHub organisation.
 3. [ ] Add the repository to BuildAgency;
        see [Builds at SEEK] for more information.
-4. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
-       see the [Codex] documentation for more information.
-5. [ ] Add deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
-6. [ ] Push local commits to the upstream GitHub branch.
-7. [ ] Configure [GitHub repository settings].
-8. [ ] Keep dependencies up to date with [Renovate];
-       request installation in [SEEK-Jobs/renovate].
-9. [ ] Delete this checklist 😌.
+4. [ ] Add Datadog extension, deployment bucket configuration and data classification tags to [serverless.yml](serverless.yml).
+5. [ ] Push local commits to the upstream GitHub branch.
+6. [ ] Configure [GitHub repository settings].
+7. [ ] Delete this checklist 😌.
+
+[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 
 ## Design
 
-<%-repoName %> is a Node.js [Lambda] application built in line with our [technology strategy].
+<%-repoName %> is a Node.js [Lambda] application built in line with our [Technical Guidelines].
 It is backed by a typical SQS message + dead letter queue configuration and uses common SEEK packages.
 Workers enable fault-tolerant asynchronous processing of events.
 
@@ -48,33 +47,33 @@ This defaults to an invocation with an empty object `{}`, per [src/hooks.ts](src
 
 ```shell
 # Run Jest tests locally
-yarn test
+pnpm test
 
 # Authenticate to dev account
 awsauth
 
 # Run smoke test against deployed application
-ENVIRONMENT=dev yarn smoke
+ENVIRONMENT=dev pnpm smoke
 ```
 
 ### Lint
 
 ```shell
 # Fix issues
-yarn format
+pnpm format
 
 # Check for issues
-yarn lint
+pnpm lint
 ```
 
 ### Start
 
 ```shell
 # Start a local HTTP server
-yarn start
+pnpm start
 
 # Start with Node.js Inspector enabled
-yarn start:debug
+pnpm start:debug
 ```
 
 This serves the Lambda application over HTTP.
@@ -97,7 +96,7 @@ To deploy locally:
 # Authenticate to dev account
 awsauth
 
-ENVIRONMENT=dev yarn deploy
+ENVIRONMENT=dev pnpm run deploy
 ```
 
 To rapidly roll back a change,
@@ -127,12 +126,7 @@ TODO: add support links for the prod environment.
 - Splunk logs
 -->
 
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
-[codedeploy]: https://docs.aws.amazon.com/codedeploy
-[codex]: https://codex.ssod.skinfra.xyz/docs
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
-[lambda]: https://docs.aws.amazon.com/lambda
-[renovate]: https://github.com/apps/renovate
-[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
-[serverless]: https://www.serverless.com/
-[technology strategy]: https://tech-strategy.ssod.skinfra.xyz
+[CodeDeploy]: https://docs.aws.amazon.com/codedeploy
+[Lambda]: https://docs.aws.amazon.com/lambda
+[Serverless]: https://www.serverless.com/
+[Technical Guidelines]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346017/

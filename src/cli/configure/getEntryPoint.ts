@@ -41,6 +41,10 @@ export const getEntryPoint = ({
       // Support exported function targeting, e.g. `src/module.ts#callMeMaybe`
       const [modulePath] = value.split('#', 2);
 
+      if (!modulePath) {
+        return `${chalk.bold(value)} is an invalid module path`;
+      }
+
       const exists = await tsFileExists(path.join(destinationRoot, modulePath));
 
       return exists || `${chalk.bold(value)} is not a TypeScript file.`;

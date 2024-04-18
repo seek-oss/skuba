@@ -17,7 +17,8 @@ export const resolveComposeAddress = async (
   const exec = createExec({ stdio: 'pipe' });
 
   const { stdout } = await exec(
-    'docker-compose',
+    'docker',
+    'compose',
     'port',
     privateHost,
     String(privatePort),

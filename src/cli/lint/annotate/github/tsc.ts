@@ -1,7 +1,7 @@
 import stripAnsi from 'strip-ansi';
 
 import type * as GitHub from '../../../../api/github';
-import type { StreamInterceptor } from '../../../../cli/lint/external';
+import type { StreamInterceptor } from '../../../lint/external';
 
 type TscLevel = 'error' | 'warning' | 'info';
 
@@ -54,7 +54,7 @@ export const createTscAnnotations = (
 
   const matches = stripAnsi(tscOutputStream.output()).matchAll(tscOutputRegex);
   return Array.from(matches).flatMap<GitHub.Annotation>((match) =>
-    match?.length === 7
+    match?.length === 7 && match[1] && match[4] && match[5] && match[6]
       ? {
           annotation_level: annotationLevelMap[match[4] as TscLevel],
           path: match[1],

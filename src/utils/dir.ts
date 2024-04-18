@@ -1,6 +1,5 @@
 import path from 'path';
 
-import { fdir as FDir } from 'fdir';
 import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
@@ -13,10 +12,11 @@ import { isErrorWithCode } from './error';
 export const buildPatternToFilepathMap = (
   patterns: string[],
   allFilepaths: string[],
+  options?: picomatch.PicomatchOptions,
 ) =>
   Object.fromEntries(
     patterns.map((pattern) => {
-      const isMatch = picomatch(pattern);
+      const isMatch = picomatch(pattern, options);
 
       const filepaths = allFilepaths.filter((filepath) => isMatch(filepath));
 
@@ -35,28 +35,17 @@ export const buildPatternToFilepathMap = (
  */
 export const crawlDirectory = async (
   root: string,
-  ignoreFilename = '.gitignore',
+  ignoreFilenames = ['.gitignore'],
 ) => {
-  const ignoreFileFilter = await createInclusionFilter([
-    path.join(root, ignoreFilename),
-  ]);
+  const ignoreFileFilter = await createInclusionFilter(
+    ignoreFilenames.map((ignoreFilename) => path.join(root, ignoreFilename)),
+  );
 
-  const output = await new FDir()
-    .crawlWithOptions(root, {
-      exclude: (dirname) => ['.git', 'node_modules'].includes(dirname),
-      filters: [
-        (pathname) => {
-          const relativePathname = path.relative(root, pathname);
-
-          return ignoreFileFilter(relativePathname);
-        },
-      ],
-      includeBasePath: true,
-    })
-    .withPromise();
-
-  // Patch over non-specific `fdir` typings.
-  const absoluteFilenames = output as string[];
+  const absoluteFilenames = await crawl(root, {
+    includeDirName: (dirname) => !['.git', 'node_modules'].includes(dirname),
+    includeFilePath: (pathname) =>
+      ignoreFileFilter(path.relative(root, pathname)),
+  });
 
   const relativeFilepaths = absoluteFilenames.map((filepath) =>
     path.relative(root, filepath),
@@ -90,3 +79,43 @@ export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
 
   return ignore().add('.git').add(managers).createFilter();
 };
+
+/**
+ * Recursively crawl a directory and return all file paths that match the
+ * filters. `paths` is mutated and returned.
+ */
+async function crawl(
+  directoryPath: string,
+  filters: {
+    includeDirName: (dirName: string) => boolean;
+    includeFilePath: (path: string) => boolean;
+  },
+  paths: string[] = [],
+) {
+  try {
+    const entries = await fs.promises.readdir(directoryPath, {
+      withFileTypes: true,
+    });
+
+    await Promise.all(
+      entries.map(async (entry) => {
+        const fullPath = path.join(directoryPath, entry.name);
+
+        if (
+          (entry.isFile() || entry.isSymbolicLink()) &&
+          filters.includeFilePath(fullPath)
+        ) {
+          paths.push(fullPath);
+        }
+
+        if (entry.isDirectory() && filters.includeDirName(entry.name)) {
+          await crawl(fullPath, filters, paths);
+        }
+      }),
+    );
+  } catch {
+    // Ignore errors, because of e.g. permission issues reading directories
+  }
+
+  return paths;
+}

@@ -12,9 +12,7 @@ import { log } from '../utils/logging';
  * - The function's return value is JSON stringified into the response body.
  */
 export const createRequestListenerFromFunction =
-  (
-    fn: (...args: unknown[]) => unknown | Promise<unknown>,
-  ): http.RequestListener =>
+  (fn: (...args: unknown[]) => Promise<unknown>): http.RequestListener =>
   async (req, res) => {
     const writeJsonResponse = (statusCode: number, jsonResponse: unknown) => {
       res.writeHead(statusCode, { 'Content-Type': 'application/json' });
@@ -64,8 +62,16 @@ export const serveRequestListener = (
   port?: number,
 ) => {
   const server = http.createServer(requestListener);
+  return startServer(server, port);
+};
 
-  return new Promise<void>((resolve, reject) =>
+/**
+ * Returns a HTTP server wrapped in a promise
+ *
+ * This function resolves when the server is closed.
+ */
+export const startServer = (server: http.Server, port?: number) =>
+  new Promise<void>((resolve, reject) =>
     server
       .listen(port)
       .on('close', resolve)
@@ -76,4 +82,3 @@ export const serveRequestListener = (
         log.ok('listening on port', log.bold(address.port));
       }),
   );
-};

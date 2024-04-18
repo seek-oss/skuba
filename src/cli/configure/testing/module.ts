@@ -1,5 +1,9 @@
 import picomatch from 'picomatch';
 
+import {
+  DEFAULT_PACKAGE_MANAGER,
+  configForPackageManager,
+} from '../../../utils/packageManager';
 import type { Files, Module, Options } from '../types';
 
 export function assertDefined<T>(value?: T): asserts value is T {
@@ -10,6 +14,7 @@ export const defaultOpts: Options = {
   destinationRoot: '/tmp',
   entryPoint: 'src/app.ts',
   firstRun: true,
+  packageManager: configForPackageManager(DEFAULT_PACKAGE_MANAGER),
   type: 'application',
 };
 
@@ -17,6 +22,7 @@ export const defaultPackageOpts: Options = {
   destinationRoot: '/tmp',
   entryPoint: 'src/index.ts',
   firstRun: true,
+  packageManager: configForPackageManager(DEFAULT_PACKAGE_MANAGER),
   type: 'package',
 };
 
@@ -39,7 +45,7 @@ export const executeModule = async (
     const filepaths = [pattern, ...allFilepaths.filter((p) => isMatch(p))];
 
     for (const filepath of [...new Set(filepaths)]) {
-      outputFiles[filepath] = processText(
+      outputFiles[filepath] = await processText(
         outputFiles[filepath],
         outputFiles,
         inputFiles,

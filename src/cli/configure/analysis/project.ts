@@ -49,7 +49,7 @@ const loadModuleFiles = async (modules: Module[], destinationRoot: string) => {
   };
 };
 
-const processTextFiles = (
+const processTextFiles = async (
   modules: Module[],
   inputFiles: Readonly<Files>,
   patternToFilepaths: Record<string, string[]>,
@@ -69,7 +69,7 @@ const processTextFiles = (
   );
 
   for (const [filepath, processText] of textProcessorEntries) {
-    outputFiles[filepath] = processText(
+    outputFiles[filepath] = await processText(
       outputFiles[filepath],
       outputFiles,
       inputFiles,
@@ -86,7 +86,11 @@ export const diffFiles = async (opts: Options): Promise<FileDiff> => {
     await loadModuleFiles(modules, opts.destinationRoot),
   );
 
-  const outputFiles = processTextFiles(modules, inputFiles, patternToFilepaths);
+  const outputFiles = await processTextFiles(
+    modules,
+    inputFiles,
+    patternToFilepaths,
+  );
 
   const diffEntries = Object.entries(outputFiles)
     .filter(([filepath, data]) => inputFiles[filepath] !== data)

@@ -1,28 +1,21 @@
-/* eslint-disable new-cap */
+import { z } from 'zod';
 
-import * as t from 'runtypes';
-import checkFilter from 'runtypes-filter';
+export type JobPublishedEvent = z.infer<typeof JobPublishedEventSchema>;
 
-export type JobPublishedEvent = t.Static<typeof JobPublishedEvent>;
-
-const JobPublishedEvent = t.Record({
-  data: t.Record({
-    details: t.String,
+export const JobPublishedEventSchema = z.object({
+  data: z.object({
+    details: z.string(),
   }),
-  entityId: t.String,
-  eventType: t.Literal('JobPublished'),
+  entityId: z.string(),
+  eventType: z.literal('JobPublished'),
 });
 
-export const filterJobPublishedEvent = checkFilter(JobPublishedEvent);
+export type JobScoredEvent = z.infer<typeof JobScoredEventSchema>;
 
-export type JobScoredEvent = t.Static<typeof JobScoredEvent>;
-
-const JobScoredEvent = t.Record({
-  data: t.Record({
-    score: t.Number,
+export const JobScoredEventSchema = z.object({
+  data: z.object({
+    score: z.number(),
   }),
-  entityId: t.String,
-  eventType: t.Literal('JobScored'),
+  entityId: z.string(),
+  eventType: z.literal('JobScored'),
 });
-
-export const filterJobScoredEvent = checkFilter(JobScoredEvent);

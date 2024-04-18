@@ -4,21 +4,23 @@ agents:
 configs:
   plugins:
     - &aws-sm
-      seek-oss/aws-sm#v2.3.1:
+      seek-oss/aws-sm#v2.3.2:
         env:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.0.0:
+      seek-oss/docker-ecr-cache#v2.2.0: &docker-ecr-cache-defaults
         cache-on:
-          - package.json
-          - yarn.lock
+          - .npmrc
+          - package.json#.packageManager
+          - pnpm-lock.yaml
         dockerfile: Dockerfile.dev-deps
-        secrets: id=npm,src=.npmrc
+        secrets: id=npm,src=tmp/.npmrc
 
     - &private-npm
       seek-oss/private-npm#v1.2.0:
         env: NPM_READ_TOKEN
+        output-path: tmp/
 
   base-steps:
     - &deploy
@@ -36,14 +38,18 @@ steps:
     plugins:
       - *aws-sm
       - *private-npm
-      - *docker-ecr-cache
+      - seek-oss/docker-ecr-cache#v2.2.0:
+          <<: *docker-ecr-cache-defaults
+          skip-pull-from-cache: true
 
   - label: 🧪 Test & Lint
     commands:
-      - echo '+++ yarn test:ci'
-      - yarn test:ci
-      - echo '--- yarn lint'
-      - yarn lint
+      - echo '--- pnpm install --offline'
+      - pnpm install --offline
+      - echo '+++ pnpm test:ci'
+      - pnpm test:ci
+      - echo '--- pnpm lint'
+      - pnpm lint
     depends_on: warm-prod
     env:
       GET_GITHUB_TOKEN: please
@@ -51,8 +57,11 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v3.9.0:
+      - docker-compose#v5.2.0:
           run: app
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
     timeout_in_minutes: 10
 
   - label: 📦 Build & Package
@@ -61,7 +70,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - seek-jobs/gantry#v1.7.0:
+      - seek-jobs/gantry#v3.0.0:
           command: build
           file: gantry.build.yml
           region: <%- region %>
@@ -78,7 +87,7 @@ steps:
     concurrency_group: <%- teamName %>/deploy/gantry/<%- devGantryEnvironmentName %>
     key: deploy-dev
     plugins:
-      - seek-jobs/gantry#v1.7.0:
+      - seek-jobs/gantry#v3.0.0:
           command: apply
           environment: <%- devGantryEnvironmentName %>
           file: gantry.apply.yml
@@ -93,7 +102,7 @@ steps:
     concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
     depends_on: deploy-dev
     plugins:
-      - seek-jobs/gantry#v1.7.0:
+      - seek-jobs/gantry#v3.0.0:
           command: apply
           environment: <%- prodGantryEnvironmentName %>
           file: gantry.apply.yml

@@ -7,6 +7,8 @@ import { parseRunArgs } from '../utils/args';
 import { createExec } from '../utils/exec';
 import { isIpPort } from '../utils/validation';
 
+export const longRunning = true;
+
 export const node = async () => {
   const args = parseRunArgs(process.argv.slice(2));
 

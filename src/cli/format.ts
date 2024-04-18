@@ -5,14 +5,17 @@ import { createLogger, log } from '../utils/logging';
 
 import { runESLint } from './adapter/eslint';
 import { runPrettier } from './adapter/prettier';
-import { tryRefreshIgnoreFiles } from './configure/refreshIgnoreFiles';
+import { internalLint } from './lint/internal';
 
-export const format = async (args = process.argv): Promise<void> => {
-  await tryRefreshIgnoreFiles();
-
+export const format = async (args = process.argv.slice(2)): Promise<void> => {
   const debug = hasDebugFlag(args);
+
+  log.plain(chalk.blueBright('skuba lints'));
+  const internal = await internalLint('format', { debug, serial: true });
+
   const logger = createLogger(debug);
 
+  log.newline();
   log.plain(chalk.magenta('ESLint'));
 
   const eslint = await runESLint('format', logger);
@@ -22,13 +25,14 @@ export const format = async (args = process.argv): Promise<void> => {
 
   const prettier = await runPrettier('format', logger);
 
-  if (eslint.ok && prettier.ok) {
+  if (eslint.ok && prettier.ok && internal.ok) {
     return;
   }
 
   const tools = [
     ...(eslint.ok ? [] : ['ESLint']),
     ...(prettier.ok ? [] : ['Prettier']),
+    ...(internal.ok ? [] : ['skuba']),
   ];
 
   log.newline();

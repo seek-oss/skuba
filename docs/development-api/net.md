@@ -10,18 +10,16 @@ parent: Development API
 
 Waits for a resource to start listening on a socket address.
 
-This can be used to wait for a Docker container to start listening on its port,
-as described in <https://docs.docker.com/compose/startup-order/>.
+This can be used to wait for a Docker container to start listening on its port.
 
 ```js
-// jest.config.int.js
+// jest.config.int.ts
 
-const rootConfig = require('./jest.config');
+import { Jest } from 'skuba';
 
-module.exports = {
-  ...rootConfig,
+export default Jest.mergePreset({
   globalSetup: '<rootDir>/jest.setup.int.ts',
-};
+});
 ```
 
 ```typescript
@@ -29,7 +27,7 @@ module.exports = {
 
 import { Net } from 'skuba';
 
-module.exports = () =>
+export default () =>
   Net.waitFor({
     host: 'composeService',
     port: 5432,

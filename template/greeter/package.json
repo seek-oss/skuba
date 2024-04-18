@@ -1,24 +1,25 @@
 {
-  "dependencies": {
-    "skuba-dive": "^2.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^16.0.0",
-    "skuba": "*"
-  },
-  "engines": {
-    "node": ">=16"
-  },
-  "license": "UNLICENSED",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "build": "skuba build",
     "format": "skuba format",
     "lint": "skuba lint",
     "start": "skuba start",
-    "start:debug": "yarn start --inspect-brk",
+    "start:debug": "pnpm --silent start --inspect-brk",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
+  },
+  "dependencies": {
+    "skuba-dive": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "skuba": "*"
+  },
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=20"
   }
 }

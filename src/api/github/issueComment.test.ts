@@ -50,7 +50,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -60,7 +60,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.createComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!",
         "issue_number": 123,
         "owner": "seek-oss",
@@ -120,7 +120,7 @@ describe('putIssueComment', () => {
     expect(
       mockClient.repos.listPullRequestsAssociatedWithCommit.mock.calls[0][0],
     ).toMatchInlineSnapshot(`
-      Object {
+      {
         "commit_sha": "commit-id",
         "owner": "seek-oss",
         "repo": "skuba",
@@ -130,7 +130,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -140,7 +140,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.createComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!",
         "issue_number": 123,
         "owner": "seek-oss",
@@ -183,7 +183,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -193,7 +193,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.createComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!
 
       <!-- hunter2 -->",
@@ -245,7 +245,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -255,7 +255,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.updateComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.updateComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!",
         "comment_id": 111,
         "issue_number": 123,
@@ -308,7 +308,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "issue_number": 123,
         "owner": "seek-oss",
         "repo": "skuba",
@@ -318,10 +318,65 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.updateComment).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.updateComment.mock.calls[0][0])
       .toMatchInlineSnapshot(`
-      Object {
+      {
         "body": "Commentary!
 
       <!-- hunter2 -->",
+        "comment_id": 111,
+        "issue_number": 123,
+        "owner": "seek-oss",
+        "repo": "skuba",
+      }
+    `);
+
+    expect(mockClient.issues.createComment).not.toHaveBeenCalled();
+    expect(
+      mockClient.repos.listPullRequestsAssociatedWithCommit,
+    ).not.toHaveBeenCalled();
+  });
+
+  it('updates an existing comment for the seek-build-agency user ID', async () => {
+    mockClient.issues.updateComment.mockResolvedValue({ data: { id: 789 } });
+    mockClient.issues.listComments.mockResolvedValue({
+      data: [{ id: 111, user: { id: 87109344 } }],
+    });
+
+    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    jest
+      .mocked(git.listRemotes)
+      .mockResolvedValue([
+        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+      ]);
+
+    await expect(
+      putIssueComment({
+        body: 'Commentary!',
+        // Exercise environment variable short circuiting.
+        env: { BUILDKITE_PULL_REQUEST: '123' },
+        userId: 'seek-build-agency',
+      }),
+    ).resolves.toStrictEqual({ id: 789 });
+
+    expect(Octokit).toHaveBeenCalledTimes(1);
+
+    // This should be skipped when `userId` is specified.
+    expect(mockClient.users.getAuthenticated).not.toHaveBeenCalled();
+
+    expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
+    expect(mockClient.issues.listComments.mock.calls[0][0])
+      .toMatchInlineSnapshot(`
+      {
+        "issue_number": 123,
+        "owner": "seek-oss",
+        "repo": "skuba",
+      }
+    `);
+
+    expect(mockClient.issues.updateComment).toHaveBeenCalledTimes(1);
+    expect(mockClient.issues.updateComment.mock.calls[0][0])
+      .toMatchInlineSnapshot(`
+      {
+        "body": "Commentary!",
         "comment_id": 111,
         "issue_number": 123,
         "owner": "seek-oss",

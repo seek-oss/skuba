@@ -4,18 +4,24 @@ schemaVersion: v0.0
 
 name: '{{values "service"}}'
 
+owner: '{{values "owner"}}'
+
 image: '{{values "image"}}'
 
 env:
   # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
   AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
 
-  ENVIRONMENT: '{{.Environment}}'
+  ENVIRONMENT: '{{values "environment"}}'
   SERVICE: '{{values "service"}}'
 
   {{range $key, $value := .Values.env}}
   {{$key}}: {{$value}}
   {{end}}
+
+{{if .Values.cloudwatchDashboardDisabled}}
+cloudwatchDashboardDisabled: {{values "cloudwatchDashboardDisabled"}}
+{{end}}
 
 {{if .Values.datadogSecretId}}
 datadogSecretId: '{{values "datadogSecretId"}}'
@@ -108,8 +114,6 @@ cpu: 256
 memory: 512
 
 deployment:
-  # SEEK-Jobs/gantry#488
-  ignoreAlarms: true
   smokeTest:
     path: /smoke
     useExternalDns: true
@@ -118,3 +122,6 @@ tags:
   {{range $key, $value := .Values.tags}}
   {{$key}}: '{{$value}}'
   {{end}}
+
+cpuArchitecture: <%- platformName %>
+readOnlyRootFilesystem: true

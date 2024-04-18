@@ -2,28 +2,20 @@
 /* istanbul ignore file */
 
 // Use minimal dependencies to reduce the chance of crashes on module load.
-import { CodeDeploy, Lambda } from 'aws-sdk';
+import {
+  CodeDeployClient,
+  PutLifecycleEventHookExecutionStatusCommand,
+} from '@aws-sdk/client-codedeploy';
+import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 
-/**
- * Common AWS options to avoid hanging the deployment on a transient error.
- *
- * AWS uses exponential backoff, so we wait for ~15 seconds total per request.
- */
-const awsRetryOptions = {
-  maxRetries: 5,
-  retryDelayOptions: {
-    base: 500,
-  },
-};
-
-const codeDeploy = new CodeDeploy({
-  ...awsRetryOptions,
+const codeDeploy = new CodeDeployClient({
   apiVersion: '2014-10-06',
+  maxAttempts: 5,
 });
 
-const lambda = new Lambda({
-  ...awsRetryOptions,
+const lambda = new LambdaClient({
   apiVersion: '2015-03-31',
+  maxAttempts: 5,
 });
 
 type Status = 'Succeeded' | 'Failed';
@@ -43,24 +35,23 @@ const smokeTestLambdaFunction = async (): Promise<Status> => {
 
   console.info('Function:', functionName);
 
-  const response = await lambda
-    .invoke({
+  const response = await lambda.send(
+    new InvokeCommand({
       FunctionName: functionName,
       InvocationType: 'RequestResponse',
       // Treat an empty object as our smoke test event.
-      Payload: '{}',
-      // An unqualified reference implicitly invokes $LATEST, which has been
-      // updated to point to the new version when this pre hook runs.
-      Qualifier: undefined,
-    })
-    .promise();
+      Payload: Buffer.from('{}'),
+    }),
+  );
 
   console.info('Version:', response.ExecutedVersion ?? '?');
   console.info('Status', response.StatusCode ?? '?');
 
   if (response.FunctionError) {
     console.error('Error:', response.FunctionError);
-    console.error(response.Payload);
+    if (response.Payload) {
+      console.error(response.Payload.transformToString());
+    }
     return 'Failed';
   }
 
@@ -94,11 +85,11 @@ export const pre = async (
     status = 'Failed';
   }
 
-  await codeDeploy
-    .putLifecycleEventHookExecutionStatus({
+  await codeDeploy.send(
+    new PutLifecycleEventHookExecutionStatusCommand({
       deploymentId: event.DeploymentId,
       lifecycleEventHookExecutionId: event.LifecycleEventHookExecutionId,
       status,
-    })
-    .promise();
+    }),
+  );
 };

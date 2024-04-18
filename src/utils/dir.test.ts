@@ -15,16 +15,16 @@ describe('buildPatternToFilepathMap', () => {
         ['file.txt', 'a/file.txt', 'a/b/file.txt', 'file.unrelated'],
       ),
     ).toMatchInlineSnapshot(`
-      Object {
-        "**/file.txt": Array [
+      {
+        "**/file.txt": [
           "file.txt",
           "a/file.txt",
           "a/b/file.txt",
         ],
-        "*/file.txt": Array [
+        "*/file.txt": [
           "a/file.txt",
         ],
-        "file.txt": Array [
+        "file.txt": [
           "file.txt",
         ],
       }
@@ -37,22 +37,50 @@ describe('buildPatternToFilepathMap', () => {
         ['a.md', 'a.ts', 'b.md', 'bs.md', 'b.s.md', 'b.ts', 'b.unrelated'],
       ),
     ).toMatchInlineSnapshot(`
-      Object {
-        "*.md": Array [
+      {
+        "*.md": [
           "a.md",
           "b.md",
           "bs.md",
           "b.s.md",
         ],
-        "*.txt": Array [],
-        "a.*": Array [
+        "*.txt": [],
+        "a.*": [
           "a.md",
           "a.ts",
         ],
-        "b*.md": Array [
+        "b*.md": [
           "b.md",
           "bs.md",
           "b.s.md",
+        ],
+      }
+    `));
+
+  it('deals with different filenames and extensions (with options)', () =>
+    expect(
+      buildPatternToFilepathMap(
+        ['**/*.vocab/*trans.json'],
+        [
+          'src/app.ts',
+          'src/.vocab/index.ts',
+          'src/.vocab/trans.json',
+          'src/.vocab/id.trans.json',
+          'src/.vocab/th.trans.json',
+          'src/other.vocab/index.ts',
+          'src/other.vocab/trans.json',
+          'src/other.vocab/id.trans.json',
+          'src/other.vocab/th.trans.json',
+        ],
+        { dot: true, ignore: '**/id.trans.json' },
+      ),
+    ).toMatchInlineSnapshot(`
+      {
+        "**/*.vocab/*trans.json": [
+          "src/.vocab/trans.json",
+          "src/.vocab/th.trans.json",
+          "src/other.vocab/trans.json",
+          "src/other.vocab/th.trans.json",
         ],
       }
     `));
@@ -91,7 +119,9 @@ describe('createInclusionFilter', () => {
 
     it.each([
       '.git/hooks',
-      '.npmrc',
+      // TODO: ensure that `.npmrc` is not wrongly included in a code path that
+      // could lead to accidental exposure.
+      // '.npmrc',
       'lib/index.js',
       'lib/tsconfig.tsbuildinfo',
       'node_modules_bak/abc',

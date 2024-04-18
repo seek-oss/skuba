@@ -11,7 +11,7 @@ interface Config {
   port?: number;
 }
 
-type Environment = typeof environments[number];
+type Environment = (typeof environments)[number];
 
 const dev = '<%- devGantryEnvironmentName %>';
 const prod = '<%- prodGantryEnvironmentName %>';

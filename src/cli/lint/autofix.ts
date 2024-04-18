@@ -2,16 +2,41 @@ import { inspect } from 'util';
 
 import simpleGit from 'simple-git';
 
+import * as Buildkite from '../../api/buildkite';
 import * as Git from '../../api/git';
-import { runESLint } from '../../cli/adapter/eslint';
-import { runPrettier } from '../../cli/adapter/prettier';
+import * as GitHub from '../../api/github';
 import { isCiEnv } from '../../utils/env';
 import { createLogger, log } from '../../utils/logging';
+import { hasNpmrcSecret } from '../../utils/npmrc';
 import { throwOnTimeout } from '../../utils/wait';
+import { runESLint } from '../adapter/eslint';
+import { runPrettier } from '../adapter/prettier';
+import { createDestinationFileReader } from '../configure/analysis/project';
 
+import { internalLint } from './internal';
 import type { Input } from './types';
 
+const RENOVATE_DEFAULT_PREFIX = 'renovate';
+
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
+
+export const AUTOFIX_IGNORE_FILES_BASE: Git.ChangedFile[] = [
+  {
+    path: 'Dockerfile-incunabulum',
+    state: 'added',
+  },
+];
+
+export const AUTOFIX_IGNORE_FILES_NPMRC: Git.ChangedFile[] = [
+  {
+    path: '.npmrc',
+    state: 'added',
+  },
+  {
+    path: '.npmrc',
+    state: 'modified',
+  },
+];
 
 const shouldPush = async ({
   currentBranch,
@@ -41,12 +66,27 @@ const shouldPush = async ({
     return false;
   }
 
+  if (currentBranch?.startsWith(RENOVATE_DEFAULT_PREFIX)) {
+    try {
+      await GitHub.getPullRequestNumber();
+    } catch (error) {
+      const warning =
+        'An autofix is available, but it was not pushed because an open pull request for this Renovate branch could not be found. If a pull request has since been created, retry the lint step to push the fix.';
+      log.warn(warning);
+      try {
+        await Buildkite.annotate(Buildkite.md.terminal(warning));
+      } catch {}
+
+      return false;
+    }
+  }
+
   let headCommitMessage;
   try {
     headCommitMessage = await Git.getHeadCommitMessage({ dir });
   } catch {}
 
-  if (headCommitMessage === AUTOFIX_COMMIT_MESSAGE) {
+  if (headCommitMessage?.startsWith(AUTOFIX_COMMIT_MESSAGE)) {
     // Short circuit when the head commit appears to be one of our autofixes.
     // Repeating the same operation is unlikely to correct outstanding issues.
     return false;
@@ -56,19 +96,31 @@ const shouldPush = async ({
   return true;
 };
 
+const getIgnores = async (dir: string): Promise<Git.ChangedFile[]> => {
+  const contents = await createDestinationFileReader(dir)('.npmrc');
+
+  // If an .npmrc has secrets, we need to ignore it
+  if (hasNpmrcSecret(contents ?? '')) {
+    return [...AUTOFIX_IGNORE_FILES_BASE, ...AUTOFIX_IGNORE_FILES_NPMRC];
+  }
+
+  return AUTOFIX_IGNORE_FILES_BASE;
+};
+
 interface AutofixParameters {
   debug: Input['debug'];
 
   eslint: boolean;
   prettier: boolean;
+  internal: boolean;
 }
 
 export const autofix = async (params: AutofixParameters): Promise<void> => {
-  if (!params.eslint && !params.prettier) {
+  const dir = process.cwd();
+
+  if (!params.eslint && !params.prettier && !params.internal) {
     return;
   }
-
-  const dir = process.cwd();
 
   let currentBranch;
   try {
@@ -81,41 +133,72 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
   try {
     log.newline();
+
     log.warn(
-      `Trying to autofix with ${params.eslint ? 'ESLint and ' : ''}Prettier...`,
+      `Attempting to autofix issues (${[
+        params.eslint ? 'ESLint' : undefined,
+        params.internal ? 'skuba' : undefined,
+        'Prettier', // Prettier is always run
+      ]
+        .filter((s) => s !== undefined)
+        .join(', ')})...`,
     );
 
     const logger = createLogger(params.debug);
 
+    if (params.internal) {
+      await internalLint('format');
+    }
+
     if (params.eslint) {
       await runESLint('format', logger);
     }
+
     // Unconditionally re-run Prettier; reaching here means we have pre-existing
-    // format violations or may have created new ones through ESLint fixes.
+    // format violations or may have created new ones through ESLint/internal fixes.
     await runPrettier('format', logger);
 
-    const ref = await Git.commitAllChanges({
-      dir,
-      message: AUTOFIX_COMMIT_MESSAGE,
-    });
+    if (process.env.GITHUB_ACTIONS) {
+      // GitHub runners have Git installed locally
+      const ref = await Git.commitAllChanges({
+        dir,
+        message: AUTOFIX_COMMIT_MESSAGE,
+
+        ignore: await getIgnores(dir),
+      });
+
+      if (!ref) {
+        return log.warn('No autofixes detected.');
+      }
+
+      await throwOnTimeout(simpleGit().push(), { s: 30 });
+      log.warn(`Pushed fix commit ${ref}.`);
+      return;
+    }
+
+    // Other CI Environments, use GitHub API
+    if (!currentBranch) {
+      log.warn('Could not determine the current branch.');
+      log.warn(
+        'Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.',
+      );
+      return;
+    }
+
+    const ref = await throwOnTimeout(
+      GitHub.uploadAllFileChanges({
+        branch: currentBranch,
+        dir,
+        messageHeadline: AUTOFIX_COMMIT_MESSAGE,
+
+        ignore: await getIgnores(dir),
+      }),
+      { s: 30 },
+    );
 
     if (!ref) {
       return log.warn('No autofixes detected.');
     }
-
-    await throwOnTimeout<unknown>(
-      process.env.GITHUB_ACTIONS
-        ? // GitHub's checkout action should preconfigure the Git CLI.
-          simpleGit().push()
-        : // In other CI environments (Buildkite) we fall back to GitHub App auth.
-          Git.push({
-            auth: { type: 'gitHubApp' },
-            dir: process.cwd(),
-            ref,
-            remoteRef: currentBranch,
-          }),
-      { s: 30 },
-    );
 
     log.warn(`Pushed fix commit ${ref}.`);
   } catch (err) {

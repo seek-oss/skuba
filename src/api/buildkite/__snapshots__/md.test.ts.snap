@@ -8,13 +8,13 @@ exports[`terminal handles 1 backtick 1`] = `
 
 exports[`terminal handles 3 backticks 1`] = `
 "\`\`\`term
-\\\\\`\\\\\`\\\\\`echo foo\\\\\`\\\\\`\\\\\`
+\\\`\\\`\\\`echo foo\\\`\\\`\\\`
 \`\`\`"
 `;
 
 exports[`terminal handles 6 backticks 1`] = `
 "\`\`\`term
-\\\\\`\\\\\`\\\\\`\\\\\`\\\\\`\\\\\`
+\\\`\\\`\\\`\\\`\\\`\\\`
 \`\`\`"
 `;
 

@@ -4,72 +4,83 @@ agents:
 configs:
   plugins:
     - &aws-sm
-      seek-oss/aws-sm#v2.3.1:
+      seek-oss/aws-sm#v2.3.2:
         env:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.0.0:
+      seek-oss/docker-ecr-cache#v2.2.0: &docker-ecr-cache-defaults
         cache-on:
-          - package.json
-          - yarn.lock
-        secrets: id=npm,src=.npmrc
+          - .npmrc
+          - package.json#.packageManager
+          - pnpm-lock.yaml
+        secrets: id=npm,src=tmp/.npmrc
 
     - &private-npm
       seek-oss/private-npm#v1.2.0:
         env: NPM_READ_TOKEN
+        output-path: tmp/
 
   base-steps:
     - &deploy
       commands:
-        - echo '+++ yarn deploy'
-        - yarn deploy
+        - echo '--- pnpm install --offline'
+        - pnpm install --offline
+        - echo '+++ pnpm run deploy'
+        - pnpm run deploy
       concurrency: 1
       plugins:
-        - artifacts#v1.5.0:
-            build: ${BUILDKITE_BUILD_ID}
-            download: lib/*
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - docker-compose#v3.9.0:
+        - docker-compose#v5.2.0:
             dependencies: false
             run: app
+            environment:
+              - GITHUB_API_TOKEN
+            propagate-environment: true
       retry:
         manual:
           # Only use this if you need to roll back a deployment ASAP.
           # Always follow up with a proper revert or fix in Git history.
           permit_on_passed: true
 
+env:
+  VERSION: ${BUILDKITE_COMMIT:0:7}.${BUILDKITE_BUILD_NUMBER}
+
 steps:
   - label: 🧪 Test, Lint & Build
-    artifact_paths: lib/**/*
     commands:
-      - echo '+++ yarn test:ci'
-      - yarn test
-      - echo '--- yarn lint'
-      - yarn lint
-      - echo '--- yarn build'
-      - yarn build
+      - echo '--- pnpm install --offline'
+      - pnpm install --offline
+      - echo '+++ pnpm test:ci'
+      - pnpm test
+      - echo '--- pnpm lint'
+      - pnpm lint
     env:
       GET_GITHUB_TOKEN: please
     plugins:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v3.9.0:
+      - docker-compose#v5.2.0:
           run: app
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
     timeout_in_minutes: 10
 
   - agents:
       queue: <%- devBuildkiteQueueName %>
-    branches: '!renovate/*'
+    branches: '!renovate-*'
     label: 🧖‍♀️ Warm Dev
     command: ':'
     plugins:
       - *aws-sm
       - *private-npm
-      - *docker-ecr-cache
+      - seek-oss/docker-ecr-cache#v2.2.0:
+          <<: *docker-ecr-cache-defaults
+          skip-pull-from-cache: true
 
   - wait
   - block: 🙋🏻‍♀️ Deploy Dev
@@ -83,6 +94,25 @@ steps:
     label: 🤞 Deploy Dev
     concurrency_group: '<%- repoName %>/deploy/dev'
     key: deploy-dev
+
+  - block: 🙋🏻‍♀️ Deploy Dev (Hotswap)
+    key: deploy-dev-hotswap-block
+    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
+
+  - <<: *deploy
+    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
+    depends_on: deploy-dev-hotswap-block
+    agents:
+      queue: <%- devBuildkiteQueueName %>
+    env:
+      ENVIRONMENT: dev
+    commands:
+      - echo '--- pnpm install --offline'
+      - pnpm install --offline
+      - echo '+++ pnpm run deploy:hotswap'
+      - pnpm run deploy:hotswap
+    label: 🤞 Deploy Dev (Hotswap)
+    concurrency_group: '<%- repoName %>/deploy/dev'
 
   - <<: *deploy
     env:

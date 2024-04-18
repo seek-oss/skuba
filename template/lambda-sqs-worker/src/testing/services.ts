@@ -1,4 +1,9 @@
-import * as aws from 'src/services/aws';
+import 'aws-sdk-client-mock-jest';
+
+import { PublishCommand } from '@aws-sdk/client-sns';
+import { mockClient } from 'aws-sdk-client-mock';
+
+import { sns as snsClient } from 'src/services/aws';
 import * as jobScorer from 'src/services/jobScorer';
 
 export const scoringService = {
@@ -12,13 +17,12 @@ export const scoringService = {
       .mockImplementation(scoringService.request),
 };
 
+const snsMock = mockClient(snsClient);
+
 export const sns = {
-  publish: Object.assign(jest.fn(), {
-    mockPromise: (promise: Promise<unknown>) =>
-      sns.publish.mockReturnValue({ promise: () => promise } as any),
-  }),
+  publish: snsMock.on(PublishCommand),
 
-  clear: () => sns.publish.mockClear(),
+  clear: () => snsMock.resetHistory(),
 
-  spy: () => jest.spyOn(aws.sns, 'publish').mockImplementation(sns.publish),
+  client: snsMock,
 };

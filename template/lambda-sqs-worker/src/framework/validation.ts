@@ -1,2 +1,10 @@
-export const validateJson = <T>(input: string, filter: (data: unknown) => T) =>
-  filter(JSON.parse(input));
+import type { z } from 'zod';
+
+export const validateJson = <
+  Output,
+  Def extends z.ZodTypeDef = z.ZodTypeDef,
+  Input = Output,
+>(
+  input: string,
+  schema: z.ZodSchema<Output, Def, Input>,
+): Output => schema.parse(JSON.parse(input));

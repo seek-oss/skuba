@@ -1,7 +1,7 @@
 import { logger } from 'src/framework/logging';
 import { metricsClient } from 'src/framework/metrics';
 import * as storage from 'src/storage/jobs';
-import { Middleware } from 'src/types/koa';
+import type { Middleware } from 'src/types/koa';
 
 export const getJobsHandler: Middleware = async (ctx) => {
   const jobs = await storage.readJobs();

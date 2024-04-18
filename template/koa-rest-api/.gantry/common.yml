@@ -1,20 +1,14 @@
+owner: '<%- teamName %>'
 prodAccountId: '<%- prodAwsAccountId %>'
-
-image: '{{values "prodAccountId"}}.dkr.ecr.<%- region %>.amazonaws.com/{{values "service"}}:{{.BuildID}}'
 service: '<%- serviceName %>'
 
+image: '{{values "prodAccountId"}}.dkr.ecr.<%- region %>.amazonaws.com/{{values "service"}}:{{.BuildID}}'
+
 # TODO: enable Datadog agent
-# https://gantry.ssod.skinfra.xyz/docs/v1/resources/service.html#datadogSecretId
+# https://backstage.myseek.xyz/docs/default/component/gantry/v1/reference/resources/service/#datadogSecretId
 # datadogSecretId: arn:aws:secretsmanager:<%- region %>:<aws-account-id>:secret:<secret-name>
 
 tags:
-  # TODO: add data classification tags
-  # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers
-  # seek:data:consumers: internal
-  # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdatatypes
-  # seek:data:types:restricted: job-ads
-  seek:env:label: '{{.Environment}}'
-  seek:env:production: '{{values "isProduction"}}'
-  seek:owner:team: '<%- teamName %>'
   seek:source:sha: '{{.CommitSHA}}'
   seek:source:url: 'https://github.com/SEEK-Jobs/<%- repoName %>'
+  # seek:system:name: 'TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#required-tags'

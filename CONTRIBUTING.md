@@ -10,7 +10,7 @@ Hi there, thanks for checking out our repo!
 
 **skuba** is a toolkit for developing TypeScript backend applications and packages at SEEK.
 While third-party contributions are certainly welcome,
-this project is primarily driven by our internal priorities and technology strategy.
+this project is primarily driven by our internal priorities and technical guidelines.
 
 SEEKers: this repo is public,
 so don't commit or post anything that isn't ready for the entire world to see.
@@ -28,7 +28,7 @@ and distribute it as an [npm package].
 
 [Submit an issue] if you have a question, feature request or bug report.
 
-If you work at SEEK, [#typescriptification] is your friend.
+If you work at SEEK, start a discussion in [#skuba-support].
 
 ### I want to contribute a change
 
@@ -36,6 +36,8 @@ Feel free to [create a pull request] for trivial fixes and improvements.
 
 For more substantial features, please [submit an issue] first.
 This lets us evaluate whether the feature fits the direction of the project and discuss possible approaches.
+
+If you work at SEEK, start a discussion in [#sig-backend-tooling].
 
 ---
 
@@ -48,24 +50,24 @@ If you're on Windows, we recommend the [Windows Subsystem for Linux].
 
 First, some JavaScript tooling:
 
-- Node.js 16+
-- Yarn 1.x
+- Node.js LTS
+- pnpm
 
 Next, install npm dependencies:
 
 ```shell
-yarn install
+pnpm install
 ```
 
 ### Git workflow
 
 We use [GitHub flow](https://guides.github.com/introduction/flow/).
 
-Create a new branch off of the latest commit on master:
+Create a new branch off of the latest commit on the default branch:
 
 ```shell
 git fetch origin
-git switch --create your-branch-name origin/master
+git switch --create your-branch-name origin/main
 ```
 
 Develop, [test](#testing) and commit your changes on this branch.
@@ -91,37 +93,37 @@ git push --set-upstream fork your-branch-name
 ```
 
 A maintainer will get to your pull request and review the changes.
-If all is well, they will merge your pull request into master.
+If all is well, they will merge your pull request into the default branch.
 
 ### Testing
 
 You may find it easier to develop alongside unit tests:
 
 ```shell
-yarn test --watch
+pnpm test --watch
 ```
 
 Format your code once you're happy with it:
 
 ```shell
-yarn format
+pnpm format
 ```
 
 We run linting and testing in CI,
 but consider running these commands locally for a faster feedback loop:
 
 ```shell
-yarn lint
-yarn test
+pnpm lint
+pnpm test
 ```
 
-Our [validate](https://github.com/seek-oss/skuba/blob/master/.github/workflows/validate.yml) GitHub Actions workflow also initialises each built-in **skuba** template and runs through a set of CLI commands.
+Our [validate](https://github.com/seek-oss/skuba/blob/main/.github/workflows/validate.yml) GitHub Actions workflow also initialises each built-in **skuba** template and runs through a set of CLI commands.
 This can be reproduced locally,
 but keep in mind that the script is fairly slow and you'll have to manually clean up afterwards.
 
 ```shell
 # greeter | koa-rest-api | ...
-yarn test:template greeter
+pnpm test:template greeter
 
 # clean up temporary sibling directory
 rm -fr ../tmp-greeter
@@ -130,40 +132,35 @@ rm -fr ../tmp-greeter
 ### Running locally
 
 If you want to try out the **skuba** CLI on itself,
-a `yarn skuba` script is configured:
+a `pnpm skuba` script is configured:
 
 ```shell
 # Prints available commands.
-yarn skuba
+pnpm skuba
 
 # Prints version from local package.json.
-yarn skuba version
+pnpm skuba version
 
 # Builds skuba using itself.
-yarn skuba build
+pnpm skuba build
 ```
 
 If you want to try out the **skuba** CLI on another local repo,
-use [yarn link]:
+use [pnpm link]:
 
 ```shell
 # Do this once upfront.
-yarn link
+pnpm link --global
 
-# `yarn link` points to the JavaScript output in `./lib`.
+# `pnpm link` points to the JavaScript output in `./lib`.
 # This means you'll need to rebuild skuba on every code change 😔.
-yarn build
-
-# Link your local skuba binary to another local repo.
-cd ../some-other-repo
-yarn link skuba
+pnpm build
 
 # Run skuba commands against the other repo.
-yarn skuba version
+skuba version
 
 # Avoid command confusion after you're done.
-cd -
-yarn unlink
+pnpm uninstall --global skuba
 ```
 
 ---
@@ -178,21 +175,21 @@ You'll see a 🦋 bot gliding around pull requests.
 You should write a changeset if you are changing the public **skuba** interface,
 which includes:
 
-- [API](https://github.com/seek-oss/skuba/tree/master/src/api) for Node.js build and test code
-- [CLI](https://github.com/seek-oss/skuba/tree/master/src/cli) commands
-- [Config](https://github.com/seek-oss/skuba/tree/master/config) presets
-- [Template](https://github.com/seek-oss/skuba/tree/master/template) code and documentation
-- [npm dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
+- [API](https://github.com/seek-oss/skuba/tree/main/src/api) for Node.js build and test code
+- [CLI](https://github.com/seek-oss/skuba/tree/main/src/cli) commands
+- [Config](https://github.com/seek-oss/skuba/tree/main/config) presets
+- [Template](https://github.com/seek-oss/skuba/tree/main/template) code and documentation
+- [npm dependencies](https://github.com/seek-oss/skuba/blob/main/package.json)
 
 On the other hand,
 a changeset is not necessary for:
 
 - Documentation like the [README](README.md)
 - Internal refactoring that preserves the existing interface
-- [npm dev dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
+- [npm dev dependencies](https://github.com/seek-oss/skuba/blob/main/package.json)
 
 ```shell
-yarn changeset
+pnpm changeset
 ```
 
 The Changesets CLI is interactive and follows [semantic versioning]:
@@ -200,6 +197,33 @@ The Changesets CLI is interactive and follows [semantic versioning]:
 - Patch release `0.0.X`: fixes or tweaks to existing functionality
 - Minor release `0.X.0`: new, backwards-compatible functionality
 - Major release `X.0.0`: backwards-incompatible modification
+
+We humour several transgressions to this versioning scheme in practice:
+
+1. Breaking changes to `skuba lint` should be downgraded to minor.
+
+   It's not feasible for us to semantically version based on whether `skuba lint` will pass or fail,
+   especially given that lint rules can change between minor and patch versions of transitive ESLint dependencies.
+   The general thought here is that changes that can affect the runtime behaviour of your project should be major,
+   while changes to build-time validation of a project should not be major.
+
+   We also support [autofixes](https://github.com/seek-oss/skuba/blob/main/docs/deep-dives/github.md#github-autofixes) to ease adoption of lint rule changes.
+
+1. Breaking changes in TypeScript upgrades should be downgraded to minor.
+
+   TypeScript does not follow semantic versioning,
+   and its point releases generally come with breaking changes.
+   These are typically edge cases that would not affect a typical SEEK project.
+
+   In the event that a new compiler rule presents significant challenges to existing SEEK projects,
+   we may turn off the rule by default to revert its impact,
+   or publish a major with detailed guidance on how to comply with or disable the rule.
+
+1. Changes to built-in templates should be downgraded to patch.
+
+   Release notes and package versioning are most pertinent to existing projects.
+   Once you've run `skuba init`, updates to built-in templates are largely inconsequential to your project,
+   and mostly serve as a footnote to communicate best current practices.
 
 Prefix your changeset title with a `scope:`.
 This makes it easy to eyeball which part of **skuba** a change relates to.
@@ -214,7 +238,7 @@ template/koa-rest-api: Switch to Express
 format, lint: Introduce new ESLint rule
 ```
 
-The Changesets CLI will generate a Markdown file under [.changeset](https://github.com/seek-oss/skuba/tree/master/.changeset),
+The Changesets CLI will generate a Markdown file under [.changeset](https://github.com/seek-oss/skuba/tree/main/.changeset),
 which you should include in your pull request.
 It doesn't need to be part of the same commit as the rest of your changes.
 Feel free to manually edit this file to include more details about your change.
@@ -227,58 +251,27 @@ The changesets are used to infer the next semantic version and to update the [ch
 
 This PR may be left open to collate multiple changes into the next version.
 A maintainer will merge it once ready,
-and our [release](https://github.com/seek-oss/skuba/blob/master/.github/workflows/release.yml) GitHub Actions workflow will publish the associated GitHub release and npm package version.
+and our [release](https://github.com/seek-oss/skuba/blob/main/.github/workflows/release.yml) GitHub Actions workflow will publish the associated GitHub release and npm package version.
 
 ### Publishing a prerelease
 
-We currently have limited support for prereleases on the `beta` [dist-tag].
-This can only be performed by a maintainer.
+Prereleases can be created on demand via [seek-oss/changesets-snapshot].
 
-```shell
-# Revert beta branch to match master.
-git fetch origin
-git switch beta
-git reset --hard origin/master
+Manually run the [Snapshot workflow] for the `main` branch in GitHub Actions to publish a new snapshot version to npm.
 
-# Stage a beta release.
-yarn changeset pre enter beta
-yarn changeset version
-```
+<https://www.npmjs.com/package/skuba?activeTab=versions>
 
-If previous betas have been released under the same semantic version,
-you will need to manually bump the version suffix.
-
-In [CHANGELOG.md](https://github.com/seek-oss/skuba/blob/master/CHANGELOG.md):
-
-```diff
-- ## 4.0.0-beta.1
-+ ## 4.0.0-beta.2
-```
-
-In [package.json](https://github.com/seek-oss/skuba/blob/master/package.json):
-
-```diff
-- "version": "4.0.0-beta.1",
-+ "version": "4.0.0-beta.2",
-```
-
-Then, commit and push your changes:
-
-```shell
-git add --all
-git commit --message 'Publish v4.0.0-beta.2'
-git push --set-upstream origin beta
-```
-
-[#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
+[#skuba-support]: https://slack.com/app_redirect?channel=C03UM9GBGET
+[#sig-backend-tooling]: https://slack.com/app_redirect?channel=C06QWMV5BSA
 [changelog]: CHANGELOG.md
 [changesets]: https://github.com/atlassian/changesets
 [create a pull request]: https://github.com/seek-oss/skuba/compare
-[dist-tag]: https://docs.npmjs.com/cli/dist-tag
 [fork the repo]: https://github.com/seek-oss/skuba/fork
 [npm package]: https://www.npmjs.com/package/skuba
 [release notes]: https://github.com/seek-oss/skuba/releases
+[seek-oss/changesets-snapshot]: https://github.com/seek-oss/changesets-snapshot
 [semantic versioning]: https://semver.org/
+[snapshot workflow]: https://github.com/seek-oss/skuba/actions/workflows/snapshot.yml
 [submit an issue]: https://github.com/seek-oss/skuba/issues/new/choose
 [windows subsystem for linux]: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
-[yarn link]: https://classic.yarnpkg.com/lang/en/docs/cli/link/
+[pnpm link]: https://pnpm.io/cli/link

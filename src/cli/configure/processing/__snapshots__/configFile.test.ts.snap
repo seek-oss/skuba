@@ -1,0 +1,234 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mergeWithConfigFile for ignore files empty provided 1`] = `
+"# managed by skuba
+node_modules*/
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files empty provided 2`] = `
+"# managed by skuba
+node_modules*/
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files identical 1`] = `
+"# managed by skuba
+node_modules*/
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files identical 2`] = `
+"# managed by skuba
+node_modules*/
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with managed section and additional lines 1`] = `
+".idea
+.vscode
+
+# managed by skuba
+node_modules*/
+# end managed by skuba
+
+.DS_Store
+node_modules
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with managed section and additional lines 2`] = `
+".idea
+.vscode
+
+# managed by skuba
+node_modules*/
+# end managed by skuba
+
+.DS_Store
+node_modules
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with managed section and fully superseded config 1`] = `
+"# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with managed section and fully superseded config 2`] = `
+"# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+
+node_modules
+node_modules_bak
+/node_modules
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with managed section and partially superseded config 1`] = `
+"# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+
+system32
+
+*.zip
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with managed section and partially superseded config 2`] = `
+"# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+
+system32
+
+node_modules/
+
+*.zip
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with no managed section 1`] = `
+"# managed by skuba
+node_modules*/
+# end managed by skuba
+
+.DS_Store
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with no managed section 2`] = `
+"# managed by skuba
+node_modules*/
+# end managed by skuba
+
+.DS_Store
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with outdated managed section 1`] = `
+"# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with outdated managed section 2`] = `
+"# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with outdated managed section and additional lines 1`] = `
+".idea
+.vscode
+
+# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+
+.DS_Store
+node_modules
+"
+`;
+
+exports[`mergeWithConfigFile for ignore files provided with outdated managed section and additional lines 2`] = `
+".idea
+.vscode
+
+# managed by skuba
+node_modules*/
+.DS_Store
+# end managed by skuba
+
+.DS_Store
+node_modules
+"
+`;
+
+exports[`mergeWithConfigFile for npmrc files empty provided 1`] = `
+"# managed by skuba
+public-hoist-pattern[]="tsconfig-seek"
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for npmrc files identical 1`] = `
+"# managed by skuba
+public-hoist-pattern[]="tsconfig-seek"
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for npmrc files provided with managed section and additional lines 1`] = `
+"public-hoist-pattern[]=a
+
+# managed by skuba
+public-hoist-pattern[]="tsconfig-seek"
+# end managed by skuba
+
+public-hoist-pattern[]=b"
+`;
+
+exports[`mergeWithConfigFile for npmrc files provided with managed section and fully superseded config 1`] = `
+"# managed by skuba
+public-hoist-pattern[]="tsconfig-seek"
+public-hoist-pattern[]="jest"
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for npmrc files provided with managed section and partially superseded config 1`] = `
+"# managed by skuba
+public-hoist-pattern[]="tsconfig-seek"
+public-hoist-pattern[]="jest"
+# end managed by skuba
+
+public-hoist-pattern[]=a
+"
+`;
+
+exports[`mergeWithConfigFile for npmrc files provided with no managed section 1`] = `
+"# managed by skuba
+public-hoist-pattern[]="tsconfig-seek"
+# end managed by skuba
+
+public-hoist-pattern[]="mystuff"
+"
+`;
+
+exports[`mergeWithConfigFile for npmrc files provided with outdated managed section 1`] = `
+"# managed by skuba
+public-hoist-pattern[]="tsconfig-seek"
+public-hoist-pattern[]="jest"
+# end managed by skuba
+"
+`;
+
+exports[`mergeWithConfigFile for npmrc files provided with outdated managed section and additional lines 1`] = `
+"public-hoist-pattern[]=a
+
+# managed by skuba
+public-hoist-pattern[]="tsconfig-seek"
+public-hoist-pattern[]="jest"
+# end managed by skuba
+
+public-hoist-pattern[]="jest"=b
+"
+`;

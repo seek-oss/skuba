@@ -1,4 +1,4 @@
-import { Handler } from 'express';
+import type { Handler } from 'express';
 
 /**
  * Tests connectivity to ensure appropriate access and network configuration.

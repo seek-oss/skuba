@@ -7,25 +7,24 @@ Next steps:
 1. [ ] Finish templating if this was skipped earlier:
 
    ```shell
-   yarn skuba configure
+   pnpm exec skuba configure
    ```
 
 2. [ ] Create a new repository in the appropriate GitHub organisation.
 3. [ ] Add the repository to BuildAgency;
        see [Builds at SEEK] for more information.
-4. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
-       see the [Codex] documentation for more information.
-5. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
+4. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
        see the [Gantry] documentation for more information.
-6. [ ] Push local commits to the upstream GitHub branch.
-7. [ ] Configure [GitHub repository settings].
-8. [ ] Keep dependencies up to date with [Renovate];
-       request installation in [SEEK-Jobs/renovate].
-9. [ ] Delete this checklist 😌.
+5. [ ] Push local commits to the upstream GitHub branch.
+6. [ ] Configure [GitHub repository settings].
+7. [ ] Delete this checklist 😌.
+
+[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 
 ## Design
 
-<%-repoName %> is a Node.js HTTP server built in line with our [technology strategy].
+<%-repoName %> is a Node.js HTTP server built in line with our [Technical Guidelines].
 It uses the [Koa] middleware framework and common SEEK packages.
 Resource APIs enable synchronous interactions and serve as the backbone of SEEK's general service architecture.
 
@@ -49,27 +48,27 @@ This defaults to an HTTP request to the `GET /smoke` endpoint.
 ### Test
 
 ```shell
-yarn test
+pnpm test
 ```
 
 ### Lint
 
 ```shell
 # Fix issues
-yarn format
+pnpm format
 
 # Check for issues
-yarn lint
+pnpm lint
 ```
 
 ### Start
 
 ```shell
 # Start a local HTTP server
-yarn start
+pnpm start
 
 # Start with Node.js Inspector enabled
-yarn start:debug
+pnpm start:debug
 ```
 
 ### Deploy
@@ -106,12 +105,7 @@ TODO: add support links for the prod environment.
 - Splunk logs
 -->
 
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
-[codedeploy]: https://docs.aws.amazon.com/codedeploy
-[codex]: https://codex.ssod.skinfra.xyz/docs
-[gantry]: https://gantry.ssod.skinfra.xyz
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
-[koa]: https://koajs.com
-[renovate]: https://github.com/apps/renovate
-[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
-[technology strategy]: https://tech-strategy.ssod.skinfra.xyz
+[CodeDeploy]: https://docs.aws.amazon.com/codedeploy
+[Gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
+[Koa]: https://koajs.com
+[Technical Guidelines]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346017/

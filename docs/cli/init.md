@@ -23,6 +23,10 @@ Creates a new local project from a starter [template].
 and only requires a connection to the public npm registry.
 Most of its built-in templates start you off with a [Buildkite pipeline] that should be ready to go once you push your repository to GitHub and configure Buildkite.
 
+| Option    | Description                 |
+| :-------- | :-------------------------- |
+| `--debug` | Enable debug console output |
+
 ### Interactive walkthrough
 
 Let's start by running the command:
@@ -34,9 +38,11 @@ skuba init
 and answering a few starter questions:
 
 ```shell
-? For starters, some GitHub details:
-⊙  Owner : SEEK-Jobs/my-team
-⊙   Repo : my-repo
+? For starters, some project details:
+⊙          Owner : SEEK-Jobs/my-team
+⊙           Repo : my-repo
+⊙       Platform : arm64
+⊙ Default Branch : main
 
 # ...
 ```
@@ -74,7 +80,7 @@ This template uses the following information:
   yes
 ❯ no
 
-Resume this later with yarn skuba configure.
+Resume this later with pnpm exec skuba configure.
 ```
 
 `skuba init` will take a while to install some initial dependencies,
@@ -87,7 +93,7 @@ Installing dependencies...
 ✔ All done! Try running:
 
 cd my-repo
-git push --set-upstream origin master
+git push --set-upstream origin main
 ```
 
 You can now proceed to the [next steps](#next-steps).
@@ -105,6 +111,7 @@ skuba init << EOF
   "templateData": {
     "ownerName": "my-org/my-team",
     "prodBuildkiteQueueName": "123456789012:cicd",
+    "platformName": "arm64",
     "repoName": "tmp-greeter"
   },
   "templateName": "greeter"
@@ -132,10 +139,11 @@ git remote get-url origin
 ```
 
 **skuba** has committed its initial template files and configured a remote `origin` for you.
-You should create the corresponding repository on GitHub and push to it:
+You should create the corresponding repository on GitHub and push to it.
+Replace `main` with your default branch name as appropriate:
 
 ```shell
-git push --set-upstream origin master
+git push --set-upstream origin main
 ```
 
 ### Directory structure
@@ -161,10 +169,10 @@ Familiarise yourself with the directory structure that **skuba** has created:
 ├── jest.config.js
 ├── jest.setup.ts
 ├── package.json
+├── pnpm-lock.yaml
 ├── skuba.template.js
 ├── tsconfig.build.json
 ├── tsconfig.json
-└── yarn.lock
 ```
 
 A few points to call out:
@@ -181,7 +189,7 @@ Try out some of the commands documented throughout this [CLI] section.
 [`skuba lint`] may be a good starting point:
 
 ```shell
-yarn lint
+skuba lint
 ```
 
 ### Templating

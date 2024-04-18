@@ -4,13 +4,13 @@ import util from 'util';
 
 import type { Color } from 'chalk';
 import concurrently from 'concurrently';
-import type { ExecaChildProcess } from 'execa';
-import execa from 'execa';
+import execa, { type ExecaChildProcess } from 'execa';
 import npmRunPath from 'npm-run-path';
 import npmWhich from 'npm-which';
 
-import { ConcurrentlyErrors, isErrorWithCode } from './error';
+import { concurrentlyErrorsSchema, isErrorWithCode } from './error';
 import { log } from './logging';
+import type { PackageManager } from './packageManager';
 
 class YarnSpamFilter extends stream.Transform {
   silenced = false;
@@ -90,7 +90,7 @@ interface ExecConcurrentlyOptions {
   outputStream?: stream.Writable;
 }
 
-type ExecOptions = execa.Options & { streamStdio?: true | 'yarn' };
+type ExecOptions = execa.Options & { streamStdio?: true | PackageManager };
 
 const envWithPath = {
   PATH: npmRunPath({ cwd: __dirname }),
@@ -114,6 +114,7 @@ const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
 
       break;
 
+    case 'pnpm':
     case true:
       subprocess.stderr?.pipe(process.stderr);
       subprocess.stdout?.pipe(process.stdout);
@@ -164,13 +165,13 @@ export const execConcurrently = async (
       },
     ).result;
   } catch (err) {
-    const result = ConcurrentlyErrors.validate(err);
+    const result = concurrentlyErrorsSchema.safeParse(err);
 
     if (!result.success) {
       throw err;
     }
 
-    const failed = result.value
+    const failed = result.data
       .filter(({ exitCode }) => exitCode !== 0)
       .sort(({ index: indexA }, { index: indexB }) => indexA - indexB)
       .map((subprocess) => subprocess.command.name);

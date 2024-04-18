@@ -1,7 +1,7 @@
 import { agentFromMiddleware } from 'src/testing/server';
 import {
+  IdDescriptionSchema,
   chance,
-  filterIdDescription,
   mockIdDescription,
 } from 'src/testing/types';
 
@@ -12,7 +12,7 @@ const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
   const result = validate({
     ctx,
     input: ctx.request.body,
-    filter: filterIdDescription,
+    schema: IdDescriptionSchema,
   });
 
   ctx.body = result;
@@ -41,10 +41,17 @@ describe('validate', () => {
       .post('/')
       .send({ ...idDescription, id: null })
       .expect(422)
-      .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(
-          `"Expected { id: string; description: string; }, but was incompatible"`,
-        ),
+      .expect(({ body }) =>
+        expect(body).toMatchInlineSnapshot(`
+{
+  "invalidFields": {
+    "~union0/id": "Expected string, received null",
+    "~union1/id": "Expected number, received null",
+    "~union1/summary": "Required",
+  },
+  "message": "Input validation failed",
+}
+`),
       );
   });
 
@@ -53,9 +60,46 @@ describe('validate', () => {
       .post('/')
       .send({})
       .expect(422)
-      .expect(({ text }) =>
-        expect(text).toMatchInlineSnapshot(
-          `"Expected { id: string; description: string; }, but was incompatible"`,
-        ),
+      .expect(({ body }) =>
+        expect(body).toMatchInlineSnapshot(`
+{
+  "invalidFields": {
+    "~union0/description~union0": "Required",
+    "~union0/description~union1": "Required",
+    "~union0/id": "Required",
+    "~union1/id": "Required",
+    "~union1/summary": "Required",
+  },
+  "message": "Input validation failed",
+}
+`),
       ));
+
+  it('blocks invalid nested union prop', () => {
+    const idDescription = {
+      ...mockIdDescription(),
+      description: {
+        fontSize: chance.integer(),
+      },
+    };
+
+    return agent
+      .post('/')
+      .send({ ...idDescription, id: null })
+      .expect(422)
+      .expect(({ body }) =>
+        expect(body).toMatchInlineSnapshot(`
+{
+  "invalidFields": {
+    "~union0/description~union0": "Expected string, received object",
+    "~union0/description~union1/content": "Required",
+    "~union0/id": "Expected string, received null",
+    "~union1/id": "Expected number, received null",
+    "~union1/summary": "Required",
+  },
+  "message": "Input validation failed",
+}
+`),
+      );
+  });
 });

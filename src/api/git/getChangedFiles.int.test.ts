@@ -62,6 +62,54 @@ it('should return files which were deleted', async () => {
   expect(files).toStrictEqual([{ path: newFileName, state: 'deleted' }]);
 });
 
+it('should exclude file changes based on ignore parameter', async () => {
+  await Promise.all([
+    fs.promises.writeFile('a', '1'),
+    fs.promises.writeFile('b', '1'),
+  ]);
+
+  await git.add({ fs, dir, filepath: ['a', 'b'] });
+  await git.commit({
+    fs,
+    dir,
+    message: 'initial commit',
+    author,
+  });
+
+  await Promise.all([
+    fs.promises.rm('a'),
+    fs.promises.writeFile('b', '2'),
+    fs.promises.writeFile('c', '2'),
+  ]);
+
+  const files = await getChangedFiles({
+    dir,
+    ignore: [
+      {
+        path: 'c',
+        // c file change is not matched
+        state: 'modified',
+      },
+      {
+        path: 'a',
+        // a file change is not matched
+        state: 'added',
+      },
+      {
+        // b file change is matched and therefore ignored
+        path: 'b',
+        state: 'modified',
+      },
+    ],
+  });
+
+  expect(files).toStrictEqual([
+    // b file change is matched and therefore ignored
+    { path: 'a', state: 'deleted' },
+    { path: 'c', state: 'added' },
+  ]);
+});
+
 it('should return an empty array if no files were changed', async () => {
   await fs.promises.writeFile(newFileName, '');
   await git.add({ fs, dir, filepath: newFileName });

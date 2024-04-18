@@ -3,7 +3,6 @@
     ':dependencyDashboard',
     ':prHourlyLimit4',
     ':rebaseStalePrs',
-    ':renovatePrefix',
     ':semanticCommits',
     ':timezone(Australia/Melbourne)',
     ':updateNotScheduled',
@@ -15,6 +14,31 @@
     enabled: true,
   },
   packageRules: [
+    {
+      matchDepTypes: ['peerDependencies'],
+
+      rangeStrategy: 'widen',
+    },
+    {
+      matchManagers: ['npm'],
+      matchPackageNames: [
+        // Incompatible with read-pkg-up@7
+        'type-fest',
+      ],
+      matchUpdateTypes: ['major'],
+
+      enabled: false,
+    },
+    {
+      matchManagers: ['npm'],
+      matchPackageNames: [
+        // Should be synchronised with AWS Lambda runtimes and Docker images
+        '@types/node',
+      ],
+      matchPaths: ['template/**'],
+
+      enabled: false,
+    },
     {
       matchManagers: [
         'buildkite',
@@ -65,17 +89,38 @@
     {
       matchPaths: ['template/**'],
 
-      branchPrefix: 'renovate-template/',
+      branchPrefix: 'renovate-template--',
       rangeStrategy: 'replace',
       semanticCommitType: 'template',
     },
   ],
+  branchPrefix: 'renovate-',
   commitMessageAction: '',
-  postUpdateOptions: ['yarnDedupeHighest'],
+  postUpdateOptions: [],
   prConcurrentLimit: 3,
   prNotPendingHours: 1,
-  rangeStrategy: 'auto',
+  rangeStrategy: 'replace',
   schedule: 'after 3:00 am and before 6:00 am every weekday',
   semanticCommitScope: '',
   semanticCommitType: 'deps',
+  customManagers: [
+    {
+      customType: 'regex',
+      fileMatch: ['pnpm.md$'],
+      matchStrings: [
+        '"packageManager": "(?<depName>.*?)@(?<currentValue>.*?)",',
+      ],
+      datasourceTemplate: 'npm',
+    },
+    {
+      customType: 'regex',
+      fileMatch: ['docs\\/.*\\.md$'],
+      // (\\s|\\n) allows us to use the non breaking space to prefix plugins in diffs which we don't want Renovate to touch
+      matchStrings: [
+        '(\\s|\\n)(?<depName>[a-zA-Z0-9\\/_\\.\\-]+)#(?<currentValue>v[^:]+)',
+      ],
+      packageNameTemplate: "{{#if (containsString depName '/')}}{{depName}}-buildkite-plugin{{else}}buildkite-plugins/{{depName}}-buildkite-plugin{{/if}}",
+      datasourceTemplate: 'github-tags',
+    },
+  ],
 }

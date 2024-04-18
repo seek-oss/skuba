@@ -1,23 +1,21 @@
-/* eslint-disable new-cap */
-
 import { inspect } from 'util';
 
 import type { ExecaError } from 'execa';
-import * as t from 'runtypes';
+import { z } from 'zod';
 
 import { log } from './logging';
 import { hasNumberProp, hasProp } from './validation';
 
-export type ConcurrentlyErrors = t.Static<typeof ConcurrentlyErrors>;
+export type ConcurrentlyErrors = z.infer<typeof concurrentlyErrorsSchema>;
 
-export const ConcurrentlyErrors = t.Array(
-  t.Record({
-    command: t.Record({
-      command: t.String,
-      name: t.String,
+export const concurrentlyErrorsSchema = z.array(
+  z.object({
+    command: z.object({
+      command: z.string(),
+      name: z.string(),
     }),
-    index: t.Number,
-    exitCode: t.Number,
+    index: z.number(),
+    exitCode: z.number(),
   }),
 );
 

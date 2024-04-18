@@ -1,38 +1,39 @@
 import { formatObject, parseObject } from './json';
 
 describe('formatObject', () => {
-  it('sorts and formats', () =>
-    expect(
+  it('sorts and formats', async () =>
+    await expect(
       formatObject({
         b: 1,
         a: null,
         c: [],
       }),
-    ).toMatchInlineSnapshot(`
+    ).resolves.toMatchInlineSnapshot(`
       "{
-        \\"a\\": null,
-        \\"b\\": 1,
-        \\"c\\": []
+        "a": null,
+        "b": 1,
+        "c": []
       }
       "
     `));
 
-  it('handles ordinary JSON array formatting', () =>
-    expect(formatObject({ files: ['1', '2', '3'] })).toMatchInlineSnapshot(`
-      "{
-        \\"files\\": [\\"1\\", \\"2\\", \\"3\\"]
-      }
-      "
-    `));
-
-  it('handles special-cased package.json array formatting', () =>
-    expect(formatObject({ files: ['1', '2', '3'] }, 'package.json'))
+  it('handles ordinary JSON array formatting', async () =>
+    await expect(formatObject({ files: ['1', '2', '3'] })).resolves
       .toMatchInlineSnapshot(`
       "{
-        \\"files\\": [
-          \\"1\\",
-          \\"2\\",
-          \\"3\\"
+        "files": ["1", "2", "3"]
+      }
+      "
+    `));
+
+  it('handles special-cased package.json array formatting', async () =>
+    await expect(formatObject({ files: ['1', '2', '3'] }, 'package.json'))
+      .resolves.toMatchInlineSnapshot(`
+      "{
+        "files": [
+          "1",
+          "2",
+          "3"
         ]
       }
       "

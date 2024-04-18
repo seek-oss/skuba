@@ -32,15 +32,15 @@ describe('writePackageJson', () => {
     ).resolves.toBeUndefined();
 
     expect(writeFile.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           "/package.json",
           "{
-        \\"skuba\\": {
-          \\"entryPoint\\": \\"src/app.ts\\",
-          \\"template\\": \\"hello-world\\",
-          \\"type\\": \\"package\\",
-          \\"version\\": \\"0.0.1\\"
+        "skuba": {
+          "entryPoint": "src/app.ts",
+          "template": "hello-world",
+          "type": "package",
+          "version": "0.0.1"
         }
       }
       ",

@@ -4,7 +4,7 @@ import { logger } from 'src/testing/logging';
 import { metricsClient } from 'src/testing/metrics';
 import { agentFromRouter } from 'src/testing/server';
 import { chance } from 'src/testing/types';
-import { Middleware } from 'src/types/koa';
+import type { Middleware } from 'src/types/koa';
 
 const middleware = jest.fn<void, Parameters<Middleware>>();
 
@@ -29,9 +29,9 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset(['env:test', 'version:test']);
     metricsClient.expectTagSubset([
@@ -51,9 +51,9 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:put',
@@ -72,9 +72,9 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).nthCalledWith(
+    expect(logger.info).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ status: 404 }),
       'Client error',
@@ -102,9 +102,9 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).nthCalledWith(
+    expect(logger.info).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ status: 400 }),
       'Client error',
@@ -129,9 +129,9 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info).nthCalledWith(
+    expect(logger.info).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err: expect.any(Error), status: 400 }),
       'Client error',
@@ -156,13 +156,13 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).nthCalledWith(
+    expect(logger.error).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err: expect.any(Error), status: 500 }),
       'Server error',
     );
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -185,13 +185,13 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).nthCalledWith(
+    expect(logger.error).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err, status: 500 }),
       'Server error',
     );
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -213,13 +213,13 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).nthCalledWith(
+    expect(logger.error).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err: null, status: 500 }),
       'Server error',
     );
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -242,13 +242,13 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).nthCalledWith(
+    expect(logger.error).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ err, status: 500 }),
       'Server error',
     );
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.info).not.toHaveBeenCalled();
 
     metricsClient.expectTagSubset([
       'http_method:get',

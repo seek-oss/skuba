@@ -1,4 +1,4 @@
-import { Middleware } from 'src/types/koa';
+import type { Middleware } from 'src/types/koa';
 
 /**
  * Signifies that the API is available to serve requests.

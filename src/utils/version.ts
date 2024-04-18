@@ -1,11 +1,32 @@
-import latestVersion from 'latest-version';
+import searchNpm from 'libnpmsearch';
+import validatePackageName from 'validate-npm-package-name';
 
 import { getSkubaManifest } from './manifest';
 import { withTimeout } from './wait';
 
+export const latestNpmVersion = async (
+  packageName: string,
+): Promise<string> => {
+  const { validForNewPackages } = validatePackageName(packageName);
+
+  if (!validForNewPackages) {
+    throw new Error(`Package "${packageName}" does not have a valid name`);
+  }
+
+  const [result] = await searchNpm(packageName, { limit: 1, timeout: 5_000 });
+
+  if (result?.name !== packageName) {
+    throw new Error(
+      `Package "${packageName}" does not exist on the npm registry`,
+    );
+  }
+
+  return result.version;
+};
+
 const latestSkubaVersion = async (): Promise<string | null> => {
   try {
-    const result = await withTimeout(latestVersion('skuba'), { s: 2 });
+    const result = await withTimeout(latestNpmVersion('skuba'), { s: 2 });
 
     return result.ok ? result.value : null;
   } catch {

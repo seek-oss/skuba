@@ -45,6 +45,24 @@ const currentBranch = Git.currentBranch({ dir });
 
 ---
 
+## fastForwardBranch
+
+Fast forwards the specified `ref` on the local Git repository to match the remote branch.
+
+Currently, only GitHub app tokens are supported as an auth mechanism.
+
+```typescript
+import { Git } from 'skuba';
+
+await Git.fastForwardBranch({
+  auth: { type: 'gitHubApp' },
+  dir,
+  ref: 'branch-name',
+});
+```
+
+---
+
 ## getChangedFiles
 
 Returns all the files which have been added, modified or deleted in the working directory of the local Git repository since the last commit.
@@ -135,7 +153,7 @@ import { Git } from 'skuba';
 
 await Git.reset({
   dir,
-  branch: 'master',
+  branch: 'main',
   commitId: 'abcd1234',
   hard: true,
 });

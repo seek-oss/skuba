@@ -3,15 +3,18 @@ import {
   buildNameFromEnvironment,
   enabledFromEnvironment,
 } from '../../../../api/github/environment';
-import type { ESLintOutput } from '../../../../cli/adapter/eslint';
-import type { PrettierOutput } from '../../../../cli/adapter/prettier';
-import type { StreamInterceptor } from '../../../../cli/lint/external';
+import type { ESLintOutput } from '../../../adapter/eslint';
+import type { PrettierOutput } from '../../../adapter/prettier';
+import type { StreamInterceptor } from '../../../lint/external';
+import type { InternalLintResult } from '../../internal';
 
 import { createEslintAnnotations } from './eslint';
+import { createInternalAnnotations } from './internal';
 import { createPrettierAnnotations } from './prettier';
 import { createTscAnnotations } from './tsc';
 
 export const createGitHubAnnotations = async (
+  internal: InternalLintResult,
   eslint: ESLintOutput,
   prettier: PrettierOutput,
   tscOk: boolean,
@@ -22,12 +25,13 @@ export const createGitHubAnnotations = async (
   }
 
   const annotations: GitHub.Annotation[] = [
+    ...createInternalAnnotations(internal),
     ...createEslintAnnotations(eslint),
     ...createPrettierAnnotations(prettier),
     ...createTscAnnotations(tscOk, tscOutputStream),
   ];
 
-  const isOk = eslint.ok && prettier.ok && tscOk;
+  const isOk = eslint.ok && prettier.ok && internal.ok && tscOk;
 
   const summary = isOk
     ? '`skuba lint` passed.'

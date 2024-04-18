@@ -1,3 +1,4 @@
+import nodeHttp from 'http';
 import path from 'path';
 
 import request from 'supertest';
@@ -10,22 +11,22 @@ jest.mock('../utils/logging');
 const initWrapper = (entryPoint: string) =>
   main(path.join('src', 'wrapper', 'testing', entryPoint), '8080');
 
-let agent: request.SuperAgentTest;
+let agent: ReturnType<(typeof request)['agent']>;
 
-const serveRequestListener = jest
-  .spyOn(http, 'serveRequestListener')
-  .mockImplementation((requestListener) => {
-    agent = request.agent(requestListener);
+const startServer = jest
+  .spyOn(http, 'startServer')
+  .mockImplementation((server) => {
+    agent = request.agent(server);
     return Promise.resolve();
   });
 
-afterEach(serveRequestListener.mockClear);
+afterEach(startServer.mockClear);
 
 test('asyncFunctionHandler', async () => {
   // Without `.ts`
   await initWrapper('asyncFunctionHandler#handler');
 
-  expect(serveRequestListener).toBeCalledTimes(1);
+  expect(startServer).toHaveBeenCalledTimes(1);
 
   return Promise.all([
     agent
@@ -34,9 +35,9 @@ test('asyncFunctionHandler', async () => {
       .expect(200)
       .expect(({ body }) =>
         expect(body).toMatchInlineSnapshot(`
-          Object {
+          {
             "awsRequestId": "123",
-            "event": Object {
+            "event": {
               "id": 1,
             },
             "msg": "Processed event",
@@ -52,7 +53,7 @@ test('asyncFunctionHandler', async () => {
         expect(body).toMatchInlineSnapshot(
           { stack: expect.any(String) },
           `
-          Object {
+          {
             "message": "falsy event",
             "name": "Error",
             "stack": Any<String>,
@@ -67,8 +68,8 @@ test('expressRequestListener', async () => {
   // With `.ts`
   await initWrapper('expressRequestListener.ts');
 
-  expect(serveRequestListener.mock.calls).toEqual([
-    [expect.any(Function), 12345],
+  expect(startServer.mock.calls).toEqual([
+    [expect.any(nodeHttp.Server), 12345],
   ]);
 
   return Promise.all([
@@ -84,16 +85,14 @@ test('expressRequestListener', async () => {
 test('invalidRequestListener', async () => {
   await expect(initWrapper('invalidRequestListener')).resolves.toBeUndefined();
 
-  expect(serveRequestListener).not.toBeCalled();
+  expect(startServer).not.toHaveBeenCalled();
 });
 
 test('koaRequestListener', async () => {
   // Without `.ts`
   await initWrapper('koaRequestListener');
 
-  expect(serveRequestListener.mock.calls).toEqual([
-    [expect.any(Function), 8080],
-  ]);
+  expect(startServer.mock.calls).toEqual([[expect.any(nodeHttp.Server), 8080]]);
 
   return Promise.all([
     agent
@@ -105,25 +104,57 @@ test('koaRequestListener', async () => {
   ]);
 });
 
+test('httpServerRequestListener', async () => {
+  // Without `.ts`
+  await initWrapper('httpServerRequestListener');
+
+  expect(startServer.mock.calls).toEqual([[expect.any(nodeHttp.Server), 8080]]);
+
+  return Promise.all([
+    agent
+      .get('/httpServer')
+      .expect(200)
+      .expect(({ text }) =>
+        expect(text).toMatchInlineSnapshot(`"Http Server!"`),
+      ),
+
+    agent.get('/express').expect(404),
+  ]);
+});
+
+test('fastifyRequestListener', async () => {
+  // Without `.ts`
+  await initWrapper('fastifyRequestListener');
+
+  return Promise.all([
+    agent
+      .get('/fastify')
+      .expect(200)
+      .expect(({ text }) => expect(text).toMatchInlineSnapshot(`"Fastify!"`)),
+
+    agent.get('/express').expect(404),
+  ]);
+});
+
 test('miscellaneousExportModule', async () => {
   await expect(
     initWrapper('miscellaneousExportModule'),
   ).resolves.toBeUndefined();
 
-  expect(serveRequestListener).not.toBeCalled();
+  expect(startServer).not.toHaveBeenCalled();
 });
 
 test('noExportModule', async () => {
   await expect(initWrapper('noExportModule')).resolves.toBeUndefined();
 
-  expect(serveRequestListener).not.toBeCalled();
+  expect(startServer).not.toHaveBeenCalled();
 });
 
 test('syncFunctionHandler', async () => {
   // With `.ts`
   await initWrapper('syncFunctionHandler.ts#handler');
 
-  expect(serveRequestListener).toBeCalledTimes(1);
+  expect(startServer).toHaveBeenCalledTimes(1);
 
   return Promise.all([
     agent
@@ -140,8 +171,8 @@ test('syncFunctionHandler', async () => {
         expect(body).toMatchInlineSnapshot(
           { stack: expect.any(String) },
           `
-          Object {
-            "message": "Unexpected token I in JSON at position 0",
+          {
+            "message": "Unexpected token 'I', "Invalid JSON" is not valid JSON",
             "name": "SyntaxError",
             "stack": Any<String>,
           }
@@ -155,7 +186,7 @@ test('voidFunctionHandler', async () => {
   // With `.ts`
   await initWrapper('voidFunctionHandler.ts#handler');
 
-  expect(serveRequestListener).toBeCalledTimes(1);
+  expect(startServer).toHaveBeenCalledTimes(1);
 
   return (
     agent

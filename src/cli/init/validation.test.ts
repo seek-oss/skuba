@@ -1,4 +1,9 @@
-import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
+import {
+  isGitHubOrg,
+  isGitHubRepo,
+  isGitHubTeam,
+  isPlatform,
+} from './validation';
 
 describe('isGitHubOrg', () => {
   test.each([
@@ -40,4 +45,19 @@ describe('isGitHubTeam', () => {
     ['ending dash', 'oh-no-', false],
     ['empty string', '', false],
   ])('%s', (_, input, expected) => expect(isGitHubTeam(input)).toBe(expected));
+
+  describe('isPlatform', () => {
+    test.each([
+      ['amd64', true],
+      ['arm64', true],
+      ['linux/amd64', false],
+      ['linux/arm64', false],
+      ['x86_64', false],
+      ['', false],
+      [undefined, false],
+      [null, false],
+      [{}, false],
+      [[], false],
+    ])('%p', (input, expected) => expect(isPlatform(input)).toBe(expected));
+  });
 });

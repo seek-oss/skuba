@@ -6,8 +6,9 @@ image: '{{values "image"}}'
 
 buildArgs:
   # https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin#building-on-the-resulting-image
-  BASE_IMAGE: '{{.Env.BUILDKITE_PLUGIN_DOCKER_ECR_CACHE_EXPORT_IMAGE}}'
-  BASE_TAG: '{{.Env.BUILDKITE_PLUGIN_DOCKER_ECR_CACHE_EXPORT_TAG}}'
+  BASE_IMAGE: '{{.Env.BUILDKITE_PLUGIN_DOCKER_ECR_CACHE_EXPORT_IMAGE}}:{{.Env.BUILDKITE_PLUGIN_DOCKER_ECR_CACHE_EXPORT_TAG}}'
 
 # SEEK-Jobs/gantry#1661
 failOnScanFindings: false
+
+cpuArchitecture: <%- platformName %>

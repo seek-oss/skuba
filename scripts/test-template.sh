@@ -3,20 +3,37 @@
 set -e
 
 template="${1}"
+if [ -z "$template" ]; then
+  echo "Usage: pnpm test:template <template_name>"
+  exit 1
+fi
+
+echo '--- pnpm install'
+pnpm install --frozen-lockfile
+
+echo '--- pnpm build'
+pnpm build
+
+echo '--- pnpm pack'
+skuba_tar=$(pwd)/$(pnpm pack)
+
+skuba_temp_directory='tmp-skuba'
+
+echo '--- cleanup'
+rm -rf "../${skuba_temp_directory}"
+
+echo "--- setting up ${skuba_temp_directory}"
+mkdir "../${skuba_temp_directory}"
+
+cd "../${skuba_temp_directory}" || exit 1
+
+echo "--- pnpm add --save-dev ${skuba_tar}"
+pnpm add --save-dev ${skuba_tar}
 
 directory="tmp-${template}"
 
-echo '--- cleanup'
-rm -rf "${directory}" "../${directory}"
-
-echo '--- yarn install'
-yarn install --frozen-lockfile --ignore-optional --non-interactive
-
-echo '--- yarn build'
-yarn build
-
 echo "--- skuba init ${template}"
-yarn skuba init << EOF
+pnpm exec skuba init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
@@ -29,34 +46,40 @@ yarn skuba init << EOF
     "prodAwsAccountId": "000000000000",
     "prodBuildkiteQueueName": "my-account-prod:cicd",
     "prodGantryEnvironmentName": "prod",
+    "platformName": "arm64",
     "repoName": "${directory}",
     "serviceName": "serviceName",
-    "region": "ap-southeast-2"
+    "region": "ap-southeast-2",
+    "defaultBranch": "main"
   },
   "templateName": "${template}"
 }
 EOF
 
-mv "${directory}" "../${directory}"
+cd "${directory}" || exit 1
 
-cd "../${directory}" || exit 1
-
-echo '--- yarn add skuba'
-yarn add --dev 'file:../skuba'
+echo "--- pnpm add --save-dev ${skuba_tar}"
+pnpm add --save-dev ${skuba_tar}
 
 echo "--- skuba version ${template}"
-yarn skuba version
-yarn skuba -v
-yarn skuba --version
+pnpm exec skuba version
+pnpm exec skuba -v
+pnpm exec skuba --version
 
-echo "--- skuba build ${template}"
-yarn build
+set +e
+echo "--- pnpm build ${template}"
+output=$(pnpm build 2>&1)
+echo $output
+if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
+    exit 1
+fi
+set -e
 
-echo "--- skuba lint ${template}"
-yarn lint
+echo "--- pnpm lint ${template}"
+pnpm lint
 
-echo "--- skuba format ${template}"
-yarn format
+echo "--- pnpm format ${template}"
+pnpm format
 
-echo "--- skuba test ${template}"
-yarn test
+echo "--- pnpm test ${template}"
+pnpm test

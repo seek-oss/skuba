@@ -1,11 +1,32 @@
-import { Input, Select } from 'enquirer';
+import { type FormChoice, Input, Select } from 'enquirer';
 import { pathExists } from 'fs-extra';
 
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
 
-import { isGitHubOrg, isGitHubRepo, isGitHubTeam } from './validation';
+import {
+  PLATFORM_OPTIONS,
+  type Platform,
+  isGitHubOrg,
+  isGitHubRepo,
+  isGitHubTeam,
+  isPlatform,
+} from './validation';
 
-export type BaseFields = Record<typeof BASE_CHOICES[number]['name'], string>;
+export type Choice = FormChoice & {
+  /**
+   * Whether the user is allowed to skip field entry and use the initial value.
+   *
+   * Defaults to `false`.
+   */
+  allowInitial?: boolean;
+};
+
+export type BaseFields = Record<
+  (typeof BASE_CHOICES)[number]['name'],
+  string
+> & {
+  platformName: Platform;
+};
 
 const BASE_CHOICES = [
   {
@@ -19,7 +40,7 @@ const BASE_CHOICES = [
 
       const [org, team] = value.split('/');
 
-      if (!isGitHubOrg(org)) {
+      if (!org || !isGitHubOrg(org)) {
         return 'fails GitHub validation';
       }
 
@@ -46,11 +67,27 @@ const BASE_CHOICES = [
       return !exists || `'${value}' is an existing directory`;
     },
   },
+  {
+    name: 'platformName',
+    message: 'Platform',
+    initial: 'arm64',
+    allowInitial: true,
+    validate: (value: unknown) =>
+      isPlatform(value) || `must be ${PLATFORM_OPTIONS}`,
+  },
+  {
+    name: 'defaultBranch',
+    message: 'Default Branch',
+    initial: 'main',
+    allowInitial: true,
+    validate: (value: unknown) =>
+      typeof value === 'string' && value.length > 0 ? true : 'required',
+  },
 ] as const;
 
 export const BASE_PROMPT_PROPS = {
   choices: BASE_CHOICES,
-  message: 'For starters, some GitHub details:',
+  message: 'For starters, some project details:',
   name: 'baseAnswers',
 };
 

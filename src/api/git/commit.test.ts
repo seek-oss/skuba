@@ -18,14 +18,14 @@ describe('commit', () => {
     ).resolves.toBe('b'.repeat(40));
 
     expect(git.commit).toHaveBeenCalledTimes(1);
-    expect(jest.mocked(git.commit).mock.calls[0][0]).toMatchInlineSnapshot(
+    expect(jest.mocked(git.commit).mock.calls[0]![0]).toMatchInlineSnapshot(
       { fs: expect.any(Object) },
       `
-      Object {
-        "author": Object {
+      {
+        "author": {
           "name": "skuba",
         },
-        "committer": Object {
+        "committer": {
           "name": "skuba",
         },
         "dir": "/workdir/skuba",

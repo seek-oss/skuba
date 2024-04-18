@@ -1,37 +1,46 @@
 agents:
   queue: <%- prodBuildkiteQueueName %>
 
+# Allow conditional unblock + dodgy CI stuffs
+
 configs:
   plugins:
     - &aws-sm
-      seek-oss/aws-sm#v2.3.1:
+      seek-oss/aws-sm#v2.3.2:
         env:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.0.0:
+      seek-oss/docker-ecr-cache#v2.2.0:
         cache-on:
-          - package.json
-          - yarn.lock
-        secrets: id=npm,src=.npmrc
+          - .npmrc
+          - package.json#.packageManager
+          - pnpm-lock.yaml
+        secrets: id=npm,src=tmp/.npmrc
 
     - &private-npm
       seek-oss/private-npm#v1.2.0:
         env: NPM_READ_TOKEN
+        output-path: tmp/
 
 steps:
   - label: 🧪 Test & Lint
     commands:
-      - echo '+++ yarn test:ci'
-      - yarn test:ci
-      - echo '--- yarn lint'
-      - yarn lint
+      - echo '--- pnpm install --offline'
+      - pnpm install --offline
+      - echo '+++ pnpm test:ci'
+      - pnpm test:ci
+      - echo '--- pnpm lint'
+      - pnpm lint
     env:
       GET_GITHUB_TOKEN: please
     plugins:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v3.9.0:
+      - docker-compose#v5.2.0:
           run: app
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
     timeout_in_minutes: 10

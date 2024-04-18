@@ -1,8 +1,9 @@
 # managed by skuba
+.idea/*
+.vscode/*
+
 .cdk.staging/
-.idea/
 .serverless/
-.vscode/
 cdk.out/
 node_modules*/
 
@@ -13,7 +14,7 @@ node_modules*/
 
 .DS_Store
 .eslintcache
-.npmrc
+.pnpm-debug.log
 *.tgz
 *.tsbuildinfo
 npm-debug.log
@@ -23,4 +24,5 @@ yarn-error.log
 
 /integration/format/
 /integration/lint/
+/template/**/pnpm-lock.yaml
 /template/**/yarn.lock

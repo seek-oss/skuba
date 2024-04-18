@@ -1,6 +1,6 @@
 import { readBaseTemplateFile } from '../../../utils/template';
+import { mergeWithConfigFile } from '../processing/configFile';
 import { deleteFiles } from '../processing/deleteFiles';
-import { mergeWithIgnoreFile } from '../processing/ignoreFile';
 import { withPackage } from '../processing/package';
 import { formatPrettier } from '../processing/prettier';
 import type { Module } from '../types';
@@ -34,7 +34,7 @@ export const eslintModule = async (): Promise<Module> => {
       return configFile;
     },
 
-    '.eslintignore': mergeWithIgnoreFile(ignoreFile),
+    '.eslintignore': mergeWithConfigFile(ignoreFile),
 
     'package.json': withPackage(({ eslintConfig, ...data }) => data),
   };

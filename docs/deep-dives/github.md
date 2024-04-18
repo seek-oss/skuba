@@ -17,14 +17,14 @@ This topic details GitHub integration features baked into **skuba**.
 **skuba** can annotate the first 50 issues detected by [`skuba lint`] and [`skuba test`] via the [GitHub Checks API].
 
 This can be enabled by propagating Buildkite environment variables and a GitHub API token.
-At SEEK, this token can be configured through a `:tw` repository suffix in BuildAgency.
-For example, with the Docker plugin:
+
+For example, with the [Docker Buildkite plugin]:
 
 ```yaml
 steps:
   - commands:
-      - yarn lint
-      - yarn test
+      - pnpm lint
+      - pnpm test
     env:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
       GET_GITHUB_TOKEN: 'please'
@@ -32,7 +32,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v3.12.0:
+      - docker#v5.10.0:
           # Enable GitHub integrations.
           environment:
             - GITHUB_API_TOKEN
@@ -42,23 +42,36 @@ steps:
             - /workdir/node_modules
 ```
 
-With Docker Compose,
-declare the environment variables and volume mounts in your [Compose file]:
+With Docker Compose, declare the volume mounts in your [Compose file]:
 
 ```yaml
 services:
   app:
-    environment:
-      # Enable GitHub integrations.
-      - BUILDKITE
-      - BUILDKITE_BRANCH
-      - BUILDKITE_BUILD_NUMBER
-      - BUILDKITE_PIPELINE_DEFAULT_BRANCH
-      - GITHUB_API_TOKEN
     volumes:
       - ./:/workdir
       # Mount cached dependencies.
       - /workdir/node_modules
+```
+
+and the `environment` and `propagate-environment` options in the [Docker Compose Buildkite plugin]:
+
+```yaml
+steps:
+  - commands:
+      - pnpm lint
+      - pnpm test
+    env:
+      # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
+      GET_GITHUB_TOKEN: 'please'
+    plugins:
+      - *aws-sm
+      - *private-npm
+      - *docker-ecr-cache
+      - docker-compose#v5.2.0:
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
+          run: app
 ```
 
 If you're running in GitHub Actions,
@@ -88,17 +101,13 @@ CI autofixes can be enabled by:
 2. Granting repository write access to your CI environment
 
 In Buildkite, your pipeline needs to be configured with write access.
-SEEKers should review our internal "Builds at SEEK" documentation and configure their repository with a `:tw` suffix:
-
-```yaml
-clusters:
-  - gitRepositories:
-      - git@github.com:seek-oss/skuba.git:tw
-```
+SEEKers should review our internal "Builds at SEEK" documentation relating to the environment variables documented above for [GitHub annotations](#github-annotations).
 
 If you're running in GitHub Actions,
 you need to supply a personal access token to [actions/checkout].
 Your repository's default `GITHUB_TOKEN` will not suffice as its commits [will not trigger workflows] and will lack (required) status checks.
+
+The following sample is tailored to [seek-oss] projects:
 
 <!-- {% raw %} -->
 
@@ -107,14 +116,19 @@ jobs:
   validate:
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN || github.com }}
+
+      - name: Set Git user
+        run: |
+          git config user.name seek-oss-ci
+          git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
       # Set up Node.js, install dependencies, run tests...
 
       - name: Lint
-        run: yarn lint
+        run: pnpm lint
 ```
 
 <!-- {% endraw %} -->
@@ -125,8 +139,10 @@ jobs:
 [`skuba lint`]: ../cli/lint.md#skuba-lint
 [`skuba test`]: ../cli/test.md#skuba-test
 [actions/checkout]: https://github.com/actions/checkout
-[compose file]: https://docs.docker.com/compose/compose-file
-[docker buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
-[github checks api]: https://docs.github.com/en/rest/reference/checks/
-[github.createcheckrun]: ../development-api/github.md#createCheckRun
+[Compose file]: https://docs.docker.com/compose/compose-file
+[Docker Buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin
+[Docker Compose Buildkite plugin]: https://github.com/buildkite-plugins/docker-compose-buildkite-plugin
+[GitHub Checks API]: https://docs.github.com/en/rest/reference/checks/
+[GitHub.createCheckRun]: ../development-api/github.md#createcheckrun
+[seek-oss]: https://github.com/seek-oss
 [will not trigger workflows]: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow

@@ -29,13 +29,12 @@ the lowest-friction way of defining reusable scripts is within your [package.jso
 These scripts are executable through your package manager:
 
 ```shell
-yarn build
-yarn format
+pnpm build
+pnpm format
 ```
 
 [eslint]: https://eslint.org/
 [gradle]: https://gradle.org/
 [make]: https://www.gnu.org/software/make/
 [package.json]: https://nodejs.dev/learn/the-package-json-guide
-[sku]: https://github.com/seek-oss/sku
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

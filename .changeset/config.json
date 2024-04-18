@@ -1,9 +1,12 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@1.6.1/schema.json",
+  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": ["./changelog.js", { "repo": "seek-oss/skuba" }],
   "commit": false,
   "linked": [],
   "access": "public",
-  "baseBranch": "master",
-  "updateInternalDependencies": "patch"
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "snapshot": {
+    "useCalculatedVersion": true
+  }
 }

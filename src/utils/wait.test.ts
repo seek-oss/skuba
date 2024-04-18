@@ -8,7 +8,7 @@ const delayMicrotask = () =>
 
 const sleep = jest.spyOn(wait, 'sleep');
 
-beforeEach(jest.resetAllMocks);
+beforeEach(jest.clearAllMocks);
 
 describe('throwOnTimeout', () => {
   it('propagates a fulfilled promise within the timeout', async () => {

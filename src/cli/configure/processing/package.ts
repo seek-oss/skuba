@@ -1,41 +1,32 @@
 import normalizeData from 'normalize-package-data';
 
-import { isObject } from '../../../utils/validation';
 import type { PackageJson } from '../types';
 
-import { formatObject, parseObject } from './json';
+import { parseObject } from './json';
+import { formatPrettier } from './prettier';
 
-const sortRecord = <T>(record: Record<string, T>): Record<string, T> =>
-  Object.fromEntries(
-    Object.entries(record).sort(([keyA], [keyB]) => keyA.localeCompare(keyB)),
-  );
-
-export const formatPackage = (data: PackageJson) => {
-  normalizeData(data);
-
-  for (const [key, value] of Object.entries(data)) {
-    if (key !== 'scripts' && isObject(value) && !Array.isArray(value)) {
-      data[key] = sortRecord(value);
-    }
-  }
+export const formatPackage = async (rawData: PackageJson) => {
+  normalizeData(rawData);
 
   // normalize-package-data fields that aren't useful for applications
 
-  delete data._id;
+  delete rawData._id;
 
-  if (data.name === '') {
-    delete data.name;
+  if (rawData.name === '') {
+    delete rawData.name;
   }
 
-  if (data.readme === 'ERROR: No README data found!') {
-    delete data.readme;
+  if (rawData.readme === 'ERROR: No README data found!') {
+    delete rawData.readme;
   }
 
-  if (data.version === '') {
-    delete data.version;
+  if (rawData.version === '') {
+    delete rawData.version;
   }
 
-  return formatObject(data, 'package.json');
+  return formatPrettier(JSON.stringify(rawData), {
+    filepath: 'package.json',
+  });
 };
 
 export const parsePackage = (

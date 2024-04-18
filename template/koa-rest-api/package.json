@@ -1,50 +1,51 @@
 {
-  "dependencies": {
-    "@koa/router": "^10.1.1",
-    "@opentelemetry/api": "^1.1.0",
-    "@opentelemetry/exporter-collector-grpc": "^0.25.0",
-    "@opentelemetry/instrumentation-aws-sdk": "^0.7.0",
-    "@opentelemetry/instrumentation-http": "^0.28.0",
-    "@opentelemetry/sdk-node": "^0.28.0",
-    "@seek/logger": "^5.0.1",
-    "aws-sdk": "^2.1039.0",
-    "hot-shots": "^9.0.0",
-    "koa": "^2.13.4",
-    "koa-bodyparser": "^4.3.0",
-    "koa-compose": "^4.2.0",
-    "runtypes": "^6.4.1",
-    "runtypes-filter": "^0.6.0",
-    "seek-datadog-custom-metrics": "^4.0.0",
-    "seek-koala": "^5.2.0",
-    "skuba-dive": "^2.0.0",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "@types/chance": "^1.1.3",
-    "@types/koa": "^2.13.4",
-    "@types/koa-bodyparser": "^5.0.2",
-    "@types/koa__router": "^8.0.8",
-    "@types/node": "^16.0.0",
-    "@types/supertest": "^2.0.11",
-    "@types/uuid": "^8.3.1",
-    "chance": "^1.1.8",
-    "pino-pretty": "^7.1.0",
-    "skuba": "*",
-    "supertest": "^6.1.6"
-  },
-  "engines": {
-    "node": ">=16"
-  },
-  "license": "UNLICENSED",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "build": "skuba build",
     "format": "skuba format",
     "lint": "skuba lint",
     "start": "skuba start --port <%- port %>",
-    "start:debug": "yarn start --inspect-brk",
+    "start:debug": "pnpm --silent start --inspect-brk",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
+  },
+  "dependencies": {
+    "@koa/router": "^12.0.0",
+    "@opentelemetry/api": "^1.1.0",
+    "@opentelemetry/core": "^1.18.1",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.50.0",
+    "@opentelemetry/instrumentation-aws-sdk": "^0.40.0",
+    "@opentelemetry/instrumentation-http": "^0.50.0",
+    "@opentelemetry/propagator-b3": "^1.18.1",
+    "@opentelemetry/sdk-node": "^0.50.0",
+    "@seek/logger": "^6.0.0",
+    "aws-sdk": "^2.1039.0",
+    "hot-shots": "^10.0.0",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa-compose": "^4.2.0",
+    "seek-datadog-custom-metrics": "^4.2.1",
+    "seek-koala": "^7.0.0",
+    "skuba-dive": "^2.0.0",
+    "zod": "^3.19.1"
+  },
+  "devDependencies": {
+    "@types/chance": "^1.1.3",
+    "@types/koa": "^2.13.4",
+    "@types/koa-bodyparser": "^5.0.2",
+    "@types/koa__router": "^12.0.0",
+    "@types/node": "^20.9.0",
+    "@types/supertest": "^6.0.0",
+    "chance": "^1.1.8",
+    "mime": "^4.0.1",
+    "pino-pretty": "^11.0.0",
+    "skuba": "*",
+    "supertest": "^6.1.6"
+  },
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=20"
   }
 }

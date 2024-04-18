@@ -4,13 +4,14 @@ interface Config {
   environment: Environment;
 
   logLevel: string;
+  metrics: boolean;
   name: string;
   version: string;
 
   destinationSnsTopicArn: string;
 }
 
-type Environment = typeof environments[number];
+type Environment = (typeof environments)[number];
 
 const environments = ['local', 'test', 'dev', 'prod'] as const;
 
@@ -20,6 +21,7 @@ const environment = Env.oneOf(environments)('ENVIRONMENT');
 const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   local: () => ({
     logLevel: 'debug',
+    metrics: false,
     name: '<%- serviceName %>',
     version: 'local',
 
@@ -41,6 +43,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
 
   prod: () => ({
     logLevel: 'info',
+    metrics: true,
     name: Env.string('SERVICE'),
     version: Env.string('VERSION'),
 

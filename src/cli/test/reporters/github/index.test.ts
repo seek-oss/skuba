@@ -120,14 +120,16 @@ const successResults: AggregatedResult = {
   numPassedTestSuites: 1,
   numPassedTests: 1,
   success: true,
-  testResults: [
-    {
-      ...failResults.testResults[0],
-      numFailingTests: 0,
-      numPassingTests: 1,
-      testResults: [],
-    },
-  ],
+  testResults: failResults.testResults[0]
+    ? [
+        {
+          ...failResults.testResults[0],
+          numFailingTests: 0,
+          numPassingTests: 1,
+          testResults: [],
+        },
+      ]
+    : [],
 };
 
 const failResultsDisplayNames: AggregatedResult = {
@@ -280,7 +282,7 @@ const failResultsDisplayNames: AggregatedResult = {
 it('should create check runs if the correct environment variables are set', async () => {
   await reporter.onRunComplete(context, failResults);
 
-  expect(GitHub.createCheckRun).toBeCalled();
+  expect(GitHub.createCheckRun).toHaveBeenCalled();
 });
 
 it('should not create check runs if the correct environment variables are not set', async () => {
@@ -289,14 +291,14 @@ it('should not create check runs if the correct environment variables are not se
 
   await reporter.onRunComplete(context, failResults);
 
-  expect(GitHub.createCheckRun).not.toBeCalled();
+  expect(GitHub.createCheckRun).not.toHaveBeenCalled();
 });
 
 it('should create a successful check run when there are no annotations', async () => {
   await reporter.onRunComplete(context, successResults);
 
-  expect(GitHub.createCheckRun).toBeCalledTimes(1);
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledTimes(1);
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: 'skuba/test',
     annotations: [],
     conclusion: 'success',
@@ -308,8 +310,8 @@ it('should create a successful check run when there are no annotations', async (
 it('should create one annotated check run when there are no display names', async () => {
   await reporter.onRunComplete(context, failResults);
 
-  expect(GitHub.createCheckRun).toBeCalledTimes(1);
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledTimes(1);
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: 'skuba/test',
     annotations: [
       {
@@ -332,8 +334,8 @@ it('should create one annotated check run when there are no display names', asyn
 it('should create an annotated check run per display name', async () => {
   await reporter.onRunComplete(context, failResultsDisplayNames);
 
-  expect(GitHub.createCheckRun).toBeCalledTimes(2);
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledTimes(2);
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: 'skuba/test',
     annotations: [
       {
@@ -351,7 +353,7 @@ it('should create an annotated check run per display name', async () => {
     summary: '`skuba test` found issues that require triage.',
     title: 'Test #123 failed',
   });
-  expect(GitHub.createCheckRun).toBeCalledWith({
+  expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: 'skuba/test (integration)',
     annotations: [
       {
@@ -397,7 +399,7 @@ it('should log a warning when it fails to create annotations', async () => {
     Error: Badness!
         at Object.<anonymous>...
     Last request:
-    {\\"name\\":\\"skuba/test\\",\\"annotations\\":[{\\"annotation_level\\":\\"failure\\",\\"path\\":\\"src/test.test.ts\\",\\"start_line\\":2,\\"end_line\\":2,\\"start_column\\":15,\\"end_column\\":15,\\"message\\":\\"Error: expect(received).toBe(expected) // Object.is equality\\\\n\\\\nExpected: \\\\\\"a\\\\\\"\\\\nReceived: \\\\\\"b\\\\\\"\\\\n    at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)\\\\n    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\\\\n    at new Promise (<anonymous>)\\\\n    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\\\\n    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\\\\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\\\\n    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\\\\n    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\\\\n    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\\\\n    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)\\",\\"title\\":\\"Jest\\"}],\\"conclusion\\":\\"failure\\",\\"summary\\":\\"\`skuba test\` found issues that require triage.\\",\\"title\\":\\"Test #123 failed\\"}
+    {"name":"skuba/test","annotations":[{"annotation_level":"failure","path":"src/test.test.ts","start_line":2,"end_line":2,"start_column":15,"end_column":15,"message":"Error: expect(received).toBe(expected) // Object.is equality\\n\\nExpected: \\"a\\"\\nReceived: \\"b\\"\\n    at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)\\n    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\\n    at new Promise (<anonymous>)\\n    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\\n    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\\n    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\\n    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\\n    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\\n    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)","title":"Jest"}],"conclusion":"failure","summary":"\`skuba test\` found issues that require triage.","title":"Test #123 failed"}
     "
   `);
 });

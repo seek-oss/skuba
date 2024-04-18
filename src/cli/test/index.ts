@@ -1,6 +1,6 @@
 import { run } from 'jest';
 
-export const test = () => {
+export const test = async () => {
   // This is usually set in `jest-cli`'s binary wrapper
   process.env.NODE_ENV ??= 'test';
 

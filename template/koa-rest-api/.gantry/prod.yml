@@ -1,10 +1,10 @@
+environment: prod
 env:
   SOME_ENVIRONMENT_VARIABLE: prod-value
-
-isProduction: true
 
 maxInstanceCount: 10
 minInstanceCount: 3
 
 openTelemetry:
+  datadogEnvironmentName: production
   enabled: false

@@ -1,0 +1,1 @@
+FROM gcr.io/distroless/nodejs:18 AS runtime

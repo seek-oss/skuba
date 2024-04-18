@@ -2,9 +2,9 @@
 
 ---
 
-[![GitHub Release](https://github.com/seek-oss/skuba/workflows/Release/badge.svg?branch=master)](https://github.com/seek-oss/skuba/actions?query=workflow%3ARelease)
-[![GitHub Validate](https://github.com/seek-oss/skuba/workflows/Validate/badge.svg?branch=master)](https://github.com/seek-oss/skuba/actions?query=workflow%3AValidate)
-[![Node.js version](https://img.shields.io/badge/node-%3E%3D%2014.18-brightgreen)](https://nodejs.org/en/)
+[![GitHub Release](https://github.com/seek-oss/skuba/workflows/Release/badge.svg?branch=main)](https://github.com/seek-oss/skuba/actions?query=workflow%3ARelease)
+[![GitHub Validate](https://github.com/seek-oss/skuba/workflows/Validate/badge.svg?branch=main)](https://github.com/seek-oss/skuba/actions?query=workflow%3AValidate)
+[![Node.js version](https://img.shields.io/badge/node-%3E%3D%2018.18-brightgreen)](https://nodejs.org/en/)
 [![npm package](https://img.shields.io/npm/v/skuba)](https://www.npmjs.com/package/skuba)
 
 ---
@@ -17,7 +17,7 @@
 - Deploy with [Gantry], [Serverless] or the [AWS CDK]
 
 [aws cdk]: https://docs.aws.amazon.com/cdk/latest/guide/work-with-cdk-typescript.html
-[gantry]: https://gantry.ssod.skinfra.xyz
+[gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
 [serverless]: https://serverless.com/
 
 It provides you with:
@@ -37,17 +37,17 @@ usage may look something like this:
 
 ```shell
 # Install project dependencies.
-yarn
+pnpm install
 
 # Run the skuba CLI.
-yarn skuba help
+pnpm exec skuba help
 ```
 
 Global installations are also supported to speed up local development:
 
 ```shell
 # Install skuba globally.
-yarn global add skuba
+pnpm add --global skuba
 
 # Look, no `npx`!
 skuba help

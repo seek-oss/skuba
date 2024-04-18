@@ -1,6 +1,5 @@
 import { readBaseTemplateFile } from '../../../utils/template';
 import { deleteFiles } from '../processing/deleteFiles';
-import { loadFiles } from '../processing/loadFiles';
 import { withPackage } from '../processing/package';
 import {
   createPropAppender,
@@ -9,6 +8,22 @@ import {
   transformModuleImportsAndExports,
 } from '../processing/typescript';
 import type { Module } from '../types';
+
+const OUTDATED_ISOLATED_MODULES_CONFIG_SNIPPETS = [
+  `
+  globals: {
+    'ts-jest': {
+      // seek-oss/skuba#626
+      isolatedModules: true,
+    },
+  },`,
+  `
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },`,
+];
 
 // Jest options to preserve during migration
 const filterProps = createPropFilter([
@@ -27,13 +42,15 @@ export const jestModule = async (): Promise<Module> => {
   ]);
 
   return {
-    ...deleteFiles('jest.config.js'),
-    ...loadFiles('jest.setup.js'),
+    ...deleteFiles('jest.config.js', 'jest.setup.js'),
 
-    'jest.config.ts': (tsFile, currentFiles, initialFiles) => {
+    'jest.config.ts': async (tsFile, currentFiles, initialFiles) => {
       // Allow customised TS Jest config that extends skuba
       if (tsFile?.includes('skuba')) {
-        return tsFile;
+        return OUTDATED_ISOLATED_MODULES_CONFIG_SNIPPETS.reduce(
+          (acc, snippet) => acc.replace(snippet, ''),
+          tsFile,
+        );
       }
 
       const jsFile = initialFiles['jest.config.js'];
@@ -43,12 +60,15 @@ export const jestModule = async (): Promise<Module> => {
         return transformModuleImportsAndExports(jsFile, (_, p) => p);
       }
 
-      currentFiles['jest.setup.ts'] ??= setupFile;
+      currentFiles['jest.setup.ts'] ??=
+        initialFiles['jest.setup.js'] ?? setupFile;
 
       const inputFile = tsFile ?? jsFile;
 
       const props =
-        inputFile === undefined ? undefined : readModuleExports(inputFile);
+        inputFile === undefined
+          ? undefined
+          : await readModuleExports(inputFile);
 
       if (props === undefined) {
         return configFile;

@@ -1,28 +1,6 @@
 {
-  "dependencies": {
-    "@seek/logger": "^5.0.1",
-    "aws-sdk": "^2.1011.0",
-    "seek-datadog-custom-metrics": "^4.0.0",
-    "skuba-dive": "^2.0.0",
-    "runtypes": "^6.4.1",
-    "runtypes-filter": "^0.6.0"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.84",
-    "@types/chance": "^1.1.3",
-    "@types/node": "^16.0.0",
-    "chance": "^1.1.8",
-    "pino-pretty": "^7.1.0",
-    "serverless": "^3.17.0",
-    "serverless-plugin-canary-deployments": "^0.8.0",
-    "serverless-prune-plugin": "^2.0.0",
-    "skuba": "*"
-  },
-  "engines": {
-    "node": ">=16"
-  },
-  "license": "UNLICENSED",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "build": "skuba build",
     "deploy": "serverless deploy --force --verbose",
@@ -30,9 +8,37 @@
     "lint": "skuba lint",
     "smoke": "serverless invoke --data '{}' --function Worker",
     "start": "skuba start --port <%- port %>",
-    "start:debug": "yarn start --inspect-brk",
+    "start:debug": "pnpm --silent start --inspect-brk",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
+  },
+  "dependencies": {
+    "@aws-sdk/client-codedeploy": "^3.363.0",
+    "@aws-sdk/client-lambda": "^3.363.0",
+    "@aws-sdk/client-sns": "^3.363.0",
+    "@seek/logger": "^6.0.0",
+    "datadog-lambda-js": "^8.0.0",
+    "dd-trace": "^5.0.0",
+    "skuba-dive": "^2.0.0",
+    "zod": "^3.19.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.84",
+    "@types/chance": "^1.1.3",
+    "@types/node": "^20.9.0",
+    "aws-sdk-client-mock": "^4.0.0",
+    "aws-sdk-client-mock-jest": "^4.0.0",
+    "chance": "^1.1.8",
+    "pino-pretty": "^11.0.0",
+    "serverless": "^3.37.0",
+    "serverless-plugin-canary-deployments": "^0.8.0",
+    "serverless-plugin-datadog": "^5.12.0",
+    "serverless-prune-plugin": "^2.0.0",
+    "skuba": "*"
+  },
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=20"
   }
 }

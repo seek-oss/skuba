@@ -1,11 +1,9 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import type { Linter } from 'eslint';
-import { ESLint } from 'eslint';
+import { ESLint, type Linter } from 'eslint';
 
-import type { Logger } from '../../utils/logging';
-import { pluralise } from '../../utils/logging';
+import { type Logger, pluralise } from '../../utils/logging';
 
 const symbolForResult = (result: ESLint.LintResult) => {
   if (result.errorCount) {
@@ -36,7 +34,6 @@ export const runESLint = async (
 
   const engine = new ESLint({
     cache: true,
-    extensions: ['js', 'ts', 'tsx'],
     fix: mode === 'format',
     reportUnusedDisableDirectives: 'error',
   });
@@ -47,29 +44,10 @@ export const runESLint = async (
 
   const start = process.hrtime.bigint();
 
-  /* eslint-disable no-console */
-  const ogConsoleError = console.error;
-  console.error = (...args: unknown[]) => {
-    if (
-      args[0] !==
-      // `eslint-plugin-react` prints this annoying error on non-React repos.
-      // We still want to support React linting for repos that have React code,
-      // so we have to manually suppress it.
-      //
-      // https://github.com/yannickcr/eslint-plugin-react/blob/7484acaca8351a8568fa99344bc811c5cd8396bd/lib/util/version.js#L61-L65
-      'Warning: React version was set to "detect" in eslint-plugin-react settings, but the "react" package is not installed. Assuming latest React version for linting.'
-    ) {
-      ogConsoleError(...args);
-    }
-  };
-
   const [formatter, results] = await Promise.all([
     engine.loadFormatter(),
     engine.lintFiles('.'),
   ]);
-
-  console.error = ogConsoleError;
-  /* eslint-enable no-console */
 
   const end = process.hrtime.bigint();
 

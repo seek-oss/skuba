@@ -1,33 +1,56 @@
-import { SynthUtils } from '@aws-cdk/assert';
-import { App } from 'aws-cdk-lib';
+import { App, aws_sns } from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
 
-import cdkJson from '../cdk.json';
+const currentDate = '1212-12-12T12:12:12.121Z';
 
-import { AppStack } from './appStack';
+jest.useFakeTimers({
+  legacyFakeTimers: false,
+  doNotFake: [
+    'nextTick',
+    'setInterval',
+    'clearInterval',
+    'setTimeout',
+    'clearTimeout',
+  ],
+  now: new Date(currentDate),
+});
 
-const contexts = [
-  {
-    stage: 'dev',
-    ...cdkJson.context,
-  },
+const originalEnv = process.env.ENVIRONMENT;
 
-  {
-    stage: 'prod',
-    ...cdkJson.context,
-  },
-];
+afterAll(() => {
+  process.env.ENVIRONMENT = originalEnv;
+});
 
-it.each(contexts)(
-  'returns expected CloudFormation stack for $stage',
-  (context) => {
-    const app = new App({ context });
+afterEach(() => {
+  jest.resetModules();
+});
+
+it.each(['dev', 'prod'])(
+  'returns expected CloudFormation stack for %s',
+  async (env) => {
+    process.env.ENVIRONMENT = env;
+
+    const { AppStack } = await import('./appStack');
+
+    jest
+      .spyOn(aws_sns.Topic, 'fromTopicArn')
+      .mockImplementation((scope, id) => new aws_sns.Topic(scope, id));
+
+    const app = new App();
 
     const stack = new AppStack(app, 'appStack');
 
-    const json = JSON.stringify(SynthUtils.toCloudFormation(stack)).replace(
-      /"S3Key":"([0-9a-f]+)\.zip"/g,
-      (_, hash) => `"S3Key":"${'x'.repeat(hash.length)}.zip"`,
-    );
+    const template = Template.fromStack(stack);
+
+    const json = JSON.stringify(template.toJSON())
+      .replace(
+        /"S3Key":"([0-9a-f]+)\.zip"/g,
+        (_, hash) => `"S3Key":"${'x'.repeat(hash.length)}.zip"`,
+      )
+      .replaceAll(
+        /workerCurrentVersion([0-9a-zA-Z]+)"/g,
+        (_, hash) => `workerCurrentVersion${'x'.repeat(hash.length)}"`,
+      );
 
     expect(JSON.parse(json)).toMatchSnapshot();
   },

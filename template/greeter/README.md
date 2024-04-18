@@ -7,57 +7,56 @@ Next steps:
 1. [ ] Finish templating if this was skipped earlier:
 
    ```shell
-   yarn skuba configure
+   pnpm exec skuba configure
    ```
 
 2. [ ] Create a new repository in the appropriate GitHub organisation.
 3. [ ] Add the repository to BuildAgency;
        see [Builds at SEEK] for more information.
-4. [ ] Fill out [.me](.me) to power SEEK's system catalogue;
-       see the [Codex] documentation for more information.
-5. [ ] Push local commits to the upstream GitHub branch.
-6. [ ] Configure [GitHub repository settings].
-7. [ ] Keep dependencies up to date with [Renovate];
-       request installation in [SEEK-Jobs/renovate].
-8. [ ] Delete this checklist 😌.
+4. [ ] Push local commits to the upstream GitHub branch.
+5. [ ] Configure [GitHub repository settings].
+6. [ ] Delete this checklist 😌.
+
+[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
+[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 
 ## Design
 
 The `greeter` template is the prototypical _hello world_ project.
-It can function as a playground for the TypeScript tooling prescribed by our [technology strategy],
+It can function as a playground for the TypeScript tooling prescribed by our [Technical Guidelines],
 or serve as a starting point for a backend project if the other built-in templates are not a good fit.
 
 It's a barebones Node.js application that comprises:
 
-- A [src/app.ts] that can be run locally to greet the user
-- A [src/app.test.ts] that demonstrates rudimentary Jest usage
+- A [src/app.ts](src/app.ts) that can be run locally to greet the user
+- A [src/app.test.ts](src/app.test.ts) that demonstrates rudimentary Jest usage
 
 ## Development
 
 ### Test
 
 ```shell
-yarn test
+pnpm test
 ```
 
 ### Lint
 
 ```shell
 # Fix issues
-yarn format
+pnpm format
 
 # Check for issues
-yarn lint
+pnpm lint
 ```
 
 ### Start
 
 ```shell
 # Start a live-reloading process
-yarn start
+pnpm start
 
 # Start with Node.js Inspector enabled
-yarn start:debug
+pnpm start:debug
 ```
 
 This runs a live-reloading Node.js process pointing to the [src/app.ts](src/app.ts) entrypoint.
@@ -94,9 +93,4 @@ TODO: add support links for the prod environment.
 - Splunk logs
 -->
 
-[builds at seek]: https://builds-at-seek.ssod.skinfra.xyz
-[codex]: https://codex.ssod.skinfra.xyz/docs
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
-[renovate]: https://github.com/apps/renovate
-[seek-jobs/renovate]: https://github.com/SEEK-Jobs/renovate
-[technology strategy]: https://tech-strategy.ssod.skinfra.xyz
+[Technical Guidelines]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346017/

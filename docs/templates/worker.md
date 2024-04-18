@@ -16,7 +16,7 @@ For fault tolerance,
 a message queue is employed between the source topic and the Lambda function,
 and unprocessed events are sent to a dead-letter queue for manual triage.
 
-[View on GitHub](https://github.com/seek-oss/skuba/tree/master/template/lambda-sqs-worker)
+[View on GitHub](https://github.com/seek-oss/skuba/tree/main/template/lambda-sqs-worker)
 
 ---
 
@@ -30,9 +30,9 @@ SNS -> SQS (with a dead-letter queue) -> Lambda
 
 Comes with configuration validation and infrastructure snapshot testing.
 
-[View on GitHub](https://github.com/seek-oss/skuba/tree/master/template/lambda-sqs-worker-cdk)
+[View on GitHub](https://github.com/seek-oss/skuba/tree/main/template/lambda-sqs-worker-cdk)
 
-[aws cdk]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#cdk
-[aws lambda]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#lambda
+[aws cdk]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346041/#CDK
+[aws lambda]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346041/#Lambda-updated
 [serverless]: https://serverless.com/
-[worker]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/components.html#worker
+[worker]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346236/#Worker

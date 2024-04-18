@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 
 import { log } from '../../utils/logging';
 import type { ProjectType } from '../../utils/manifest';
+import type { PackageManagerConfig } from '../../utils/packageManager';
 
 import { diffFiles } from './analysis/project';
 
@@ -11,6 +12,7 @@ interface Props {
   destinationRoot: string;
   entryPoint: string;
   firstRun: boolean;
+  packageManager: PackageManagerConfig;
   type: ProjectType;
 }
 

@@ -1,33 +1,37 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import type { FormChoice } from 'enquirer';
-import { Form } from 'enquirer';
+import { Form, type FormChoice } from 'enquirer';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy';
 import { isErrorWithCode } from '../../utils/error';
 import { log } from '../../utils/logging';
+import {
+  DEFAULT_PACKAGE_MANAGER,
+  configForPackageManager,
+} from '../../utils/packageManager';
 import { getRandomPort } from '../../utils/port';
 import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
-  TemplateConfig,
+  type TemplateConfig,
+  templateConfigSchema,
 } from '../../utils/template';
 
 import { downloadGitHubTemplate } from './git';
-import type { BaseFields } from './prompts';
 import {
   BASE_PROMPT_PROPS,
+  type BaseFields,
+  type Choice,
   GIT_PATH_PROMPT,
   SHOULD_CONTINUE_PROMPT,
   TEMPLATE_PROMPT,
 } from './prompts';
-import type { InitConfig } from './types';
-import { InitConfigInput } from './types';
+import { type InitConfig, initConfigInputSchema } from './types';
 
 export const runForm = <T = Record<string, string>>(props: {
-  choices: Readonly<FormChoice[]>;
+  choices: Readonly<Choice[]>;
   message: string;
   name: string;
 }) => {
@@ -35,8 +39,12 @@ export const runForm = <T = Record<string, string>>(props: {
 
   const choices = props.choices.map((choice) => ({
     ...choice,
-    validate: (value: string) => {
-      if (value === '' || value === choice.initial) {
+    validate: (value: string | undefined) => {
+      if (
+        !value ||
+        value === '' ||
+        (value === choice.initial && !choice.allowInitial)
+      ) {
         return 'Form is not complete';
       }
 
@@ -90,23 +98,48 @@ const createDirectory = async (dir: string) => {
   }
 };
 
-const cloneTemplate = async (templateName: string, destinationDir: string) => {
-  if (templateName.startsWith('github:')) {
+const cloneTemplate = async (
+  templateName: string,
+  destinationDir: string,
+): Promise<TemplateConfig> => {
+  const isCustomTemplate = templateName.startsWith('github:');
+
+  if (isCustomTemplate) {
     const gitHubPath = templateName.slice('github:'.length);
-    return downloadGitHubTemplate(gitHubPath, destinationDir);
+
+    await downloadGitHubTemplate(gitHubPath, destinationDir);
+  } else {
+    const templateDir = path.join(TEMPLATE_DIR, templateName);
+
+    await copyFiles({
+      // assume built-in templates have no extraneous files
+      include: () => true,
+      sourceRoot: templateDir,
+      destinationRoot: destinationDir,
+      processors: [],
+      // built-in templates have files like _package.json
+      stripUnderscorePrefix: true,
+    });
   }
 
-  const templateDir = path.join(TEMPLATE_DIR, templateName);
+  const templateConfig = getTemplateConfig(
+    path.join(process.cwd(), destinationDir),
+  );
 
-  await copyFiles({
-    // assume built-in templates have no extraneous files
-    include: () => true,
-    sourceRoot: templateDir,
-    destinationRoot: destinationDir,
-    processors: [],
-    // built-in templates have files like _package.json
-    stripUnderscorePrefix: true,
-  });
+  if (isCustomTemplate) {
+    log.newline();
+    log.warn(
+      'You may need to run',
+      log.bold(
+        configForPackageManager(templateConfig.packageManager).exec,
+        'skuba',
+        'configure',
+      ),
+      'once this is done.',
+    );
+  }
+
+  return templateConfig;
 };
 
 const getTemplateName = async () => {
@@ -132,12 +165,13 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
     /* eslint-disable-next-line @typescript-eslint/no-var-requires */
     const templateConfig = require(templateConfigPath) as unknown;
 
-    return TemplateConfig.check(templateConfig);
+    return templateConfigSchema.parse(templateConfig);
   } catch (err) {
     if (isErrorWithCode(err, 'MODULE_NOT_FOUND')) {
       return {
         entryPoint: undefined,
         fields: [],
+        packageManager: DEFAULT_PACKAGE_MANAGER,
         type: undefined,
       };
     }
@@ -146,26 +180,48 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
   }
 };
 
-const baseToTemplateData = async ({ ownerName, repoName }: BaseFields) => {
+const baseToTemplateData = async ({
+  ownerName,
+  platformName,
+  repoName,
+  defaultBranch,
+}: BaseFields) => {
   const [orgName, teamName] = ownerName.split('/');
 
   const port = String(await getRandomPort());
 
+  if (!orgName) {
+    throw new Error(`Invalid format for owner name: ${ownerName}`);
+  }
+
   return {
     orgName,
     ownerName,
-    port,
     repoName,
+    defaultBranch,
     // Use standalone username in `teamName` contexts
     teamName: teamName ?? orgName,
+
+    port,
+
+    platformName,
+    lambdaCdkArchitecture: platformName === 'amd64' ? 'X86_64' : 'ARM_64',
+    lambdaServerlessArchitecture:
+      platformName === 'amd64' ? 'x86_64' : platformName,
   };
 };
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
-  const { ownerName, repoName } = await runForm(BASE_PROMPT_PROPS);
+  const { ownerName, platformName, repoName, defaultBranch } =
+    await runForm<BaseFields>(BASE_PROMPT_PROPS);
   log.plain(chalk.cyan(repoName), 'by', chalk.cyan(ownerName));
 
-  const templateData = await baseToTemplateData({ ownerName, repoName });
+  const templateData = await baseToTemplateData({
+    ownerName,
+    platformName,
+    repoName,
+    defaultBranch,
+  });
 
   const destinationDir = repoName;
 
@@ -174,16 +230,14 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   log.newline();
   const templateName = await getTemplateName();
 
-  await cloneTemplate(templateName, destinationDir);
-
-  const { entryPoint, fields, noSkip, type } = getTemplateConfig(
-    path.join(process.cwd(), destinationDir),
-  );
+  const { entryPoint, fields, noSkip, packageManager, type } =
+    await cloneTemplate(templateName, destinationDir);
 
   if (fields.length === 0) {
     return {
       destinationDir,
       entryPoint,
+      packageManager,
       templateComplete: true,
       templateData,
       templateName,
@@ -204,6 +258,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     return {
       destinationDir,
       entryPoint,
+      packageManager,
       templateComplete: true,
       templateData: { ...templateData, ...customAnswers },
       templateName,
@@ -212,13 +267,19 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   }
 
   log.newline();
-  log.warn(`Resume this later with ${chalk.bold('yarn skuba configure')}.`);
+  log.warn(
+    `Resume this later with ${chalk.bold(
+      configForPackageManager(packageManager).exec,
+      'skuba configure',
+    )}.`,
+  );
 
   const customAnswers = generatePlaceholders(fields);
 
   return {
     destinationDir,
     entryPoint,
+    packageManager,
     templateComplete: false,
     templateData: { ...templateData, ...customAnswers },
     templateName,
@@ -230,7 +291,9 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   let text = '';
 
   await new Promise((resolve) =>
-    process.stdin.on('data', (chunk) => (text += chunk)).once('end', resolve),
+    process.stdin
+      .on('data', (chunk) => (text += chunk.toString()))
+      .once('end', resolve),
   );
 
   text = text.trim();
@@ -249,28 +312,25 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     process.exit(1);
   }
 
-  const result = InitConfigInput.validate(value);
+  const result = initConfigInputSchema.safeParse(value);
 
   if (!result.success) {
     log.err('Invalid data from stdin:');
-    log.err(result.message);
+    log.err(result.error);
     process.exit(1);
   }
 
-  const { destinationDir, templateComplete, templateName } = result.value;
+  const { destinationDir, templateComplete, templateName } = result.data;
 
   const templateData = {
-    ...(await baseToTemplateData(result.value.templateData)),
-    ...result.value.templateData,
+    ...(await baseToTemplateData(result.data.templateData)),
+    ...result.data.templateData,
   };
 
   await createDirectory(destinationDir);
 
-  await cloneTemplate(templateName, destinationDir);
-
-  const { entryPoint, fields, noSkip, type } = getTemplateConfig(
-    path.join(process.cwd(), destinationDir),
-  );
+  const { entryPoint, fields, noSkip, packageManager, type } =
+    await cloneTemplate(templateName, destinationDir);
 
   if (!templateComplete) {
     if (noSkip) {
@@ -279,8 +339,9 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     }
 
     return {
-      ...result.value,
+      ...result.data,
       entryPoint,
+      packageManager,
       templateData: {
         ...templateData,
         ...generatePlaceholders(fields),
@@ -303,8 +364,9 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   }
 
   return {
-    ...result.value,
+    ...result.data,
     entryPoint,
+    packageManager,
     templateData,
     type,
   };

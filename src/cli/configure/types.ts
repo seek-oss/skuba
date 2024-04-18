@@ -1,6 +1,7 @@
 import type { PackageJson as TypeFestPackageJson } from 'type-fest';
 
 import type { ProjectType } from '../../utils/manifest';
+import type { PackageManagerConfig } from '../../utils/packageManager';
 
 export type { TsConfigJson } from 'type-fest';
 
@@ -21,7 +22,7 @@ type FileProcessor = (
   file: string | undefined,
   files: Files,
   initialFiles: Readonly<Files>,
-) => string | undefined;
+) => Promise<string | undefined> | string | undefined;
 
 export type FileDiff = Record<
   string,
@@ -36,5 +37,6 @@ export interface Options {
   destinationRoot: string;
   entryPoint: string;
   firstRun: boolean;
+  packageManager: PackageManagerConfig;
   type: ProjectType;
 }

@@ -52,11 +52,11 @@ interface PutIssueCommentParameters {
    * https://docs.github.com/en/rest/reference/users#get-the-authenticated-user
    *
    * If you're at SEEK and using BuildAgency's GitHub API integration, you may
-   * hardcode this to `87109344` as an optimisation to skip the user lookup.
+   * use `'seek-build-agency'` as an optimisation to skip the user lookup.
    *
    * https://api.github.com/users/buildagencygitapitoken[bot]
    */
-  userId?: number;
+  userId?: number | 'seek-build-agency';
 }
 
 interface IssueComment {
@@ -98,7 +98,11 @@ export const putIssueComment = async (
     repo,
   });
 
-  const userId = params.userId ?? (await getUserId(client));
+  const userId: number =
+    params.userId === 'seek-build-agency'
+      ? // https://api.github.com/users/buildagencygitapitoken[bot]
+        87109344
+      : params.userId ?? (await getUserId(client));
 
   const commentId = comments.data.find(
     (comment) =>

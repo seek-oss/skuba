@@ -18,18 +18,18 @@ describe('createHandler', () => {
     const handler = createHandler((event) => {
       expect(event).toBe(input);
 
-      logger.info('hello from handler');
+      logger.debug('Handler invoked');
 
       return Promise.resolve(output);
     });
 
     await expect(handler(input, ctx)).resolves.toBe(output);
 
-    expect(logger.error).not.toBeCalled();
+    expect(logger.error).not.toHaveBeenCalled();
 
-    expect(logger.info.mock.calls).toEqual([
-      ['hello from handler'],
-      ['request'],
+    expect(logger.debug.mock.calls).toEqual([
+      ['Handler invoked'],
+      ['Function succeeded'],
     ]);
   });
 
@@ -38,11 +38,11 @@ describe('createHandler', () => {
 
     const handler = createHandler(() => Promise.reject(err));
 
-    await expect(handler(input, ctx)).rejects.toThrow('invoke error');
+    await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error.mock.calls).toEqual([[{ err }, 'request']]);
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.debug).not.toHaveBeenCalled();
   });
 
   it('handles sync error', async () => {
@@ -52,10 +52,10 @@ describe('createHandler', () => {
       throw err;
     });
 
-    await expect(handler(input, ctx)).rejects.toThrow('invoke error');
+    await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error.mock.calls).toEqual([[{ err }, 'request']]);
+    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
 
-    expect(logger.info).not.toBeCalled();
+    expect(logger.debug).not.toHaveBeenCalled();
   });
 });

@@ -1,19 +1,26 @@
-/* eslint-disable new-cap */
-
 import { Chance } from 'chance';
-import * as t from 'runtypes';
-import checkFilter from 'runtypes-filter';
+import { z } from 'zod';
 
-import { JobInput } from 'src/types/jobs';
+import type { JobInput } from 'src/types/jobs';
 
-export type IdDescription = t.Static<typeof IdDescription>;
+export type IdDescription = z.infer<typeof IdDescriptionSchema>;
 
-const IdDescription = t.Record({
-  id: t.String,
-  description: t.String,
-});
-
-export const filterIdDescription = checkFilter(IdDescription);
+export const IdDescriptionSchema = z.union([
+  z.object({
+    id: z.string(),
+    description: z.union([
+      z.string(),
+      z.object({
+        fontSize: z.number(),
+        content: z.string(),
+      }),
+    ]),
+  }),
+  z.object({
+    id: z.number(),
+    summary: z.string(),
+  }),
+]);
 
 export const chance = new Chance();
 

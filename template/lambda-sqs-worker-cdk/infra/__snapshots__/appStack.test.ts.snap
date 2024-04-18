@@ -1,29 +1,328 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`returns expected CloudFormation stack for dev 1`] = `
-Object {
-  "Resources": Object {
-    "kmskey49FBC3B3": Object {
+{
+  "Mappings": {
+    "ServiceprincipalMap": {
+      "af-south-1": {
+        "codedeploy": "codedeploy.af-south-1.amazonaws.com",
+      },
+      "ap-east-1": {
+        "codedeploy": "codedeploy.ap-east-1.amazonaws.com",
+      },
+      "ap-northeast-1": {
+        "codedeploy": "codedeploy.ap-northeast-1.amazonaws.com",
+      },
+      "ap-northeast-2": {
+        "codedeploy": "codedeploy.ap-northeast-2.amazonaws.com",
+      },
+      "ap-northeast-3": {
+        "codedeploy": "codedeploy.ap-northeast-3.amazonaws.com",
+      },
+      "ap-south-1": {
+        "codedeploy": "codedeploy.ap-south-1.amazonaws.com",
+      },
+      "ap-south-2": {
+        "codedeploy": "codedeploy.ap-south-2.amazonaws.com",
+      },
+      "ap-southeast-1": {
+        "codedeploy": "codedeploy.ap-southeast-1.amazonaws.com",
+      },
+      "ap-southeast-2": {
+        "codedeploy": "codedeploy.ap-southeast-2.amazonaws.com",
+      },
+      "ap-southeast-3": {
+        "codedeploy": "codedeploy.ap-southeast-3.amazonaws.com",
+      },
+      "ap-southeast-4": {
+        "codedeploy": "codedeploy.ap-southeast-4.amazonaws.com",
+      },
+      "ca-central-1": {
+        "codedeploy": "codedeploy.ca-central-1.amazonaws.com",
+      },
+      "cn-north-1": {
+        "codedeploy": "codedeploy.cn-north-1.amazonaws.com.cn",
+      },
+      "cn-northwest-1": {
+        "codedeploy": "codedeploy.cn-northwest-1.amazonaws.com.cn",
+      },
+      "eu-central-1": {
+        "codedeploy": "codedeploy.eu-central-1.amazonaws.com",
+      },
+      "eu-central-2": {
+        "codedeploy": "codedeploy.eu-central-2.amazonaws.com",
+      },
+      "eu-north-1": {
+        "codedeploy": "codedeploy.eu-north-1.amazonaws.com",
+      },
+      "eu-south-1": {
+        "codedeploy": "codedeploy.eu-south-1.amazonaws.com",
+      },
+      "eu-south-2": {
+        "codedeploy": "codedeploy.eu-south-2.amazonaws.com",
+      },
+      "eu-west-1": {
+        "codedeploy": "codedeploy.eu-west-1.amazonaws.com",
+      },
+      "eu-west-2": {
+        "codedeploy": "codedeploy.eu-west-2.amazonaws.com",
+      },
+      "eu-west-3": {
+        "codedeploy": "codedeploy.eu-west-3.amazonaws.com",
+      },
+      "il-central-1": {
+        "codedeploy": "codedeploy.il-central-1.amazonaws.com",
+      },
+      "me-central-1": {
+        "codedeploy": "codedeploy.me-central-1.amazonaws.com",
+      },
+      "me-south-1": {
+        "codedeploy": "codedeploy.me-south-1.amazonaws.com",
+      },
+      "sa-east-1": {
+        "codedeploy": "codedeploy.sa-east-1.amazonaws.com",
+      },
+      "us-east-1": {
+        "codedeploy": "codedeploy.us-east-1.amazonaws.com",
+      },
+      "us-east-2": {
+        "codedeploy": "codedeploy.us-east-2.amazonaws.com",
+      },
+      "us-gov-east-1": {
+        "codedeploy": "codedeploy.us-gov-east-1.amazonaws.com",
+      },
+      "us-gov-west-1": {
+        "codedeploy": "codedeploy.us-gov-west-1.amazonaws.com",
+      },
+      "us-iso-east-1": {
+        "codedeploy": "codedeploy.amazonaws.com",
+      },
+      "us-iso-west-1": {
+        "codedeploy": "codedeploy.amazonaws.com",
+      },
+      "us-isob-east-1": {
+        "codedeploy": "codedeploy.amazonaws.com",
+      },
+      "us-west-1": {
+        "codedeploy": "codedeploy.us-west-1.amazonaws.com",
+      },
+      "us-west-2": {
+        "codedeploy": "codedeploy.us-west-2.amazonaws.com",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "codedeployalarm9F48D05F": {
+      "Properties": {
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "worker28EA3E30",
+            },
+          },
+          {
+            "Name": "Resource",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "worker28EA3E30",
+                  },
+                  ":live",
+                ],
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "codedeployapplicationF49B9864": {
+      "Properties": {
+        "ComputePlatform": "Lambda",
+      },
+      "Type": "AWS::CodeDeploy::Application",
+    },
+    "codedeploygroup441B094B": {
+      "Properties": {
+        "AlarmConfiguration": {
+          "Alarms": [
+            {
+              "Name": {
+                "Ref": "codedeployalarm9F48D05F",
+              },
+            },
+          ],
+          "Enabled": true,
+        },
+        "ApplicationName": {
+          "Ref": "codedeployapplicationF49B9864",
+        },
+        "AutoRollbackConfiguration": {
+          "Enabled": true,
+          "Events": [
+            "DEPLOYMENT_FAILURE",
+            "DEPLOYMENT_STOP_ON_ALARM",
+          ],
+        },
+        "DeploymentConfigName": "CodeDeployDefault.LambdaAllAtOnce",
+        "DeploymentStyle": {
+          "DeploymentOption": "WITH_TRAFFIC_CONTROL",
+          "DeploymentType": "BLUE_GREEN",
+        },
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "codedeploygroupServiceRole1BD49E37",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::CodeDeploy::DeploymentGroup",
+    },
+    "codedeploygroupServiceRole1BD49E37": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": {
+                  "Fn::FindInMap": [
+                    "ServiceprincipalMap",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    "codedeploy",
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSCodeDeployRoleForLambdaLimited",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "codedeploygroupServiceRoleDefaultPolicy2027BC9A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "workerprehook415B13CE",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "workerprehook415B13CE",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "workerposthook150842D6",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "workerposthook150842D6",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "codedeploygroupServiceRoleDefaultPolicy2027BC9A",
+        "Roles": [
+          {
+            "Ref": "codedeploygroupServiceRole1BD49E37",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "kmskey49FBC3B3": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "Description": "serviceName",
         "EnableKeyRotation": true,
-        "KeyPolicy": Object {
-          "Statement": Array [
-            Object {
+        "KeyPolicy": {
+          "Statement": [
+            {
               "Action": "kms:*",
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -33,8 +332,8 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Create*",
                 "kms:Describe*",
                 "kms:Enable*",
@@ -51,17 +350,17 @@ Object {
                 "kms:CancelKeyDeletion",
               ],
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -71,24 +370,24 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Encrypt",
                 "kms:ReEncrypt*",
                 "kms:GenerateDataKey*",
               ],
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -98,13 +397,13 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Decrypt",
                 "kms:GenerateDataKey",
               ],
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "sns.amazonaws.com",
               },
               "Resource": "*",
@@ -116,11 +415,11 @@ Object {
       "Type": "AWS::KMS::Key",
       "UpdateReplacePolicy": "Retain",
     },
-    "kmskeyAlias39245779": Object {
-      "Properties": Object {
+    "kmskeyAlias39245779": {
+      "Properties": {
         "AliasName": "alias/seek/self/serviceName",
-        "TargetKeyId": Object {
-          "Fn::GetAtt": Array [
+        "TargetKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
@@ -128,77 +427,148 @@ Object {
       },
       "Type": "AWS::KMS::Alias",
     },
-    "topic69831491": Object {
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
-            "kmskey49FBC3B3",
-            "Arn",
-          ],
-        },
-        "TopicName": "serviceName",
-      },
+    "sourcetopic7C3DC892": {
       "Type": "AWS::SNS::Topic",
     },
-    "worker28EA3E30": Object {
-      "DependsOn": Array [
+    "worker28EA3E30": {
+      "DependsOn": [
         "workerServiceRoleDefaultPolicyBA498553",
         "workerServiceRole2130CC7F",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Environment": Object {
-          "Variables": Object {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+        "Description": "Updated at 1212-12-12T12:12:12.121Z",
+        "Environment": {
+          "Variables": {
+            "ENVIRONMENT": "dev",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "SOMETHING": "dev",
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "app.handler",
-        "KmsKeyArn": Object {
-          "Fn::GetAtt": Array [
+        "Handler": "index.handler",
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "ReservedConcurrentExecutions": 2,
+        "Role": {
+          "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
+        "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerServiceRole2130CC7F": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "workerAliaslive62FE5FAF": {
+      "Properties": {
+        "Description": "The Lambda version currently receiving traffic",
+        "FunctionName": {
+          "Ref": "worker28EA3E30",
+        },
+        "FunctionVersion": {
+          "Fn::GetAtt": [
+            "workerCurrentVersionxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "Version",
+          ],
+        },
+        "Name": "live",
+      },
+      "Type": "AWS::Lambda::Alias",
+      "UpdatePolicy": {
+        "CodeDeployLambdaAliasUpdate": {
+          "AfterAllowTrafficHook": {
+            "Ref": "workerposthook150842D6",
+          },
+          "ApplicationName": {
+            "Ref": "codedeployapplicationF49B9864",
+          },
+          "BeforeAllowTrafficHook": {
+            "Ref": "workerprehook415B13CE",
+          },
+          "DeploymentGroupName": {
+            "Ref": "codedeploygroup441B094B",
+          },
+        },
+      },
+    },
+    "workerAliasliveSqsEventSourceappStackworkerqueue8281B9F42DEDB47B": {
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "workerqueueA05CE5C6",
+            "Arn",
+          ],
+        },
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::Select": [
+                  6,
+                  {
+                    "Fn::Split": [
+                      ":",
+                      {
+                        "Ref": "workerAliaslive62FE5FAF",
+                      },
+                    ],
+                  },
+                ],
+              },
+              ":live",
+            ],
+          ],
+        },
+        "ScalingConfig": {
+          "MaximumConcurrency": 2,
+        },
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "workerCurrentVersionxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": {
+      "Properties": {
+        "FunctionName": {
+          "Ref": "worker28EA3E30",
+        },
+      },
+      "Type": "AWS::Lambda::Version",
+    },
+    "workerServiceRole2130CC7F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -209,12 +579,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "workerServiceRoleDefaultPolicyBA498553": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "workerServiceRoleDefaultPolicyBA498553": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "sqs:ReceiveMessage",
                 "sqs:ChangeMessageVisibility",
                 "sqs:GetQueueUrl",
@@ -222,18 +592,18 @@ Object {
                 "sqs:GetQueueAttributes",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "workerqueueA05CE5C6",
                   "Arn",
                 ],
               },
             },
-            Object {
+            {
               "Action": "kms:Decrypt",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "kmskey49FBC3B3",
                   "Arn",
                 ],
@@ -243,42 +613,328 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "workerServiceRoleDefaultPolicyBA498553",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "workerServiceRole2130CC7F",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "workerSqsEventSourceappStackworkerqueue8281B9F47B9F582B": Object {
-      "Properties": Object {
-        "EventSourceArn": Object {
-          "Fn::GetAtt": Array [
-            "workerqueueA05CE5C6",
+    "workerposthook150842D6": {
+      "DependsOn": [
+        "workerposthookServiceRoleDefaultPolicy6A92F69C",
+        "workerposthookServiceRole25452300",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "ENVIRONMENT": "dev",
+            "FUNCTION_NAME_TO_PRUNE": {
+              "Ref": "worker28EA3E30",
+            },
+            "NODE_ENV": "production",
+            "NODE_OPTIONS": "--enable-source-maps",
+          },
+        },
+        "FunctionName": "serviceName-post-hook",
+        "Handler": "index.handler",
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
+            "kmskey49FBC3B3",
             "Arn",
           ],
         },
-        "FunctionName": Object {
-          "Ref": "worker28EA3E30",
+        "Role": {
+          "Fn::GetAtt": [
+            "workerposthookServiceRole25452300",
+            "Arn",
+          ],
         },
+        "Runtime": "nodejs20.x",
+        "Timeout": 30,
       },
-      "Type": "AWS::Lambda::EventSourceMapping",
+      "Type": "AWS::Lambda::Function",
     },
-    "workerqueueA05CE5C6": Object {
+    "workerposthookServiceRole25452300": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "workerposthookServiceRoleDefaultPolicy6A92F69C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "lambda:ListAliases",
+                "lambda:ListVersionsByFunction",
+                "lambda:DeleteFunction",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "worker28EA3E30",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "worker28EA3E30",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "codedeploy:PutLifecycleEventHookExecutionStatus",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codedeploy:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":deploymentgroup:",
+                    {
+                      "Ref": "codedeployapplicationF49B9864",
+                    },
+                    "/",
+                    {
+                      "Ref": "codedeploygroup441B094B",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "workerposthookServiceRoleDefaultPolicy6A92F69C",
+        "Roles": [
+          {
+            "Ref": "workerposthookServiceRole25452300",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "workerprehook415B13CE": {
+      "DependsOn": [
+        "workerprehookServiceRoleDefaultPolicy991A21B9",
+        "workerprehookServiceRole8F8D9379",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "ENVIRONMENT": "dev",
+            "FUNCTION_NAME_TO_INVOKE": {
+              "Ref": "worker28EA3E30",
+            },
+            "NODE_ENV": "production",
+            "NODE_OPTIONS": "--enable-source-maps",
+          },
+        },
+        "FunctionName": "serviceName-pre-hook",
+        "Handler": "index.handler",
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
+            "kmskey49FBC3B3",
+            "Arn",
+          ],
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "workerprehookServiceRole8F8D9379",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 120,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "workerprehookServiceRole8F8D9379": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "workerprehookServiceRoleDefaultPolicy991A21B9": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "worker28EA3E30",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "worker28EA3E30",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "codedeploy:PutLifecycleEventHookExecutionStatus",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codedeploy:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":deploymentgroup:",
+                    {
+                      "Ref": "codedeployapplicationF49B9864",
+                    },
+                    "/",
+                    {
+                      "Ref": "codedeploygroup441B094B",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "workerprehookServiceRoleDefaultPolicy991A21B9",
+        "Roles": [
+          {
+            "Ref": "workerprehookServiceRole8F8D9379",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "workerqueueA05CE5C6": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
         "QueueName": "serviceName",
-        "RedrivePolicy": Object {
-          "deadLetterTargetArn": Object {
-            "Fn::GetAtt": Array [
-              "workerqueuedlq42262778",
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::GetAtt": [
+              "workerqueuedeadletters83F3505C",
               "Arn",
             ],
           },
@@ -288,25 +944,25 @@ Object {
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
-    "workerqueuePolicy97054CB4": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "workerqueuePolicy97054CB4": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "sqs:SendMessage",
-              "Condition": Object {
-                "ArnEquals": Object {
-                  "aws:SourceArn": Object {
-                    "Ref": "topic69831491",
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Ref": "sourcetopic7C3DC892",
                   },
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "sns.amazonaws.com",
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "workerqueueA05CE5C6",
                   "Arn",
                 ],
@@ -315,71 +971,400 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "Queues": Array [
-          Object {
+        "Queues": [
+          {
             "Ref": "workerqueueA05CE5C6",
           },
         ],
       },
       "Type": "AWS::SQS::QueuePolicy",
     },
-    "workerqueueappStacktopic0CA45134AFB31FF4": Object {
-      "Properties": Object {
-        "Endpoint": Object {
-          "Fn::GetAtt": Array [
+    "workerqueueappStacksourcetopic613C6BDBD2F224F5": {
+      "DependsOn": [
+        "workerqueuePolicy97054CB4",
+      ],
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
             "workerqueueA05CE5C6",
             "Arn",
           ],
         },
         "Protocol": "sqs",
-        "TopicArn": Object {
-          "Ref": "topic69831491",
+        "TopicArn": {
+          "Ref": "sourcetopic7C3DC892",
         },
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "workerqueuedlq42262778": Object {
+    "workerqueuedeadletters83F3505C": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
-        "QueueName": "serviceName-dlq",
+        "QueueName": "serviceName-dead-letters",
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
     },
   },
 }
 `;
 
 exports[`returns expected CloudFormation stack for prod 1`] = `
-Object {
-  "Resources": Object {
-    "kmskey49FBC3B3": Object {
+{
+  "Mappings": {
+    "ServiceprincipalMap": {
+      "af-south-1": {
+        "codedeploy": "codedeploy.af-south-1.amazonaws.com",
+      },
+      "ap-east-1": {
+        "codedeploy": "codedeploy.ap-east-1.amazonaws.com",
+      },
+      "ap-northeast-1": {
+        "codedeploy": "codedeploy.ap-northeast-1.amazonaws.com",
+      },
+      "ap-northeast-2": {
+        "codedeploy": "codedeploy.ap-northeast-2.amazonaws.com",
+      },
+      "ap-northeast-3": {
+        "codedeploy": "codedeploy.ap-northeast-3.amazonaws.com",
+      },
+      "ap-south-1": {
+        "codedeploy": "codedeploy.ap-south-1.amazonaws.com",
+      },
+      "ap-south-2": {
+        "codedeploy": "codedeploy.ap-south-2.amazonaws.com",
+      },
+      "ap-southeast-1": {
+        "codedeploy": "codedeploy.ap-southeast-1.amazonaws.com",
+      },
+      "ap-southeast-2": {
+        "codedeploy": "codedeploy.ap-southeast-2.amazonaws.com",
+      },
+      "ap-southeast-3": {
+        "codedeploy": "codedeploy.ap-southeast-3.amazonaws.com",
+      },
+      "ap-southeast-4": {
+        "codedeploy": "codedeploy.ap-southeast-4.amazonaws.com",
+      },
+      "ca-central-1": {
+        "codedeploy": "codedeploy.ca-central-1.amazonaws.com",
+      },
+      "cn-north-1": {
+        "codedeploy": "codedeploy.cn-north-1.amazonaws.com.cn",
+      },
+      "cn-northwest-1": {
+        "codedeploy": "codedeploy.cn-northwest-1.amazonaws.com.cn",
+      },
+      "eu-central-1": {
+        "codedeploy": "codedeploy.eu-central-1.amazonaws.com",
+      },
+      "eu-central-2": {
+        "codedeploy": "codedeploy.eu-central-2.amazonaws.com",
+      },
+      "eu-north-1": {
+        "codedeploy": "codedeploy.eu-north-1.amazonaws.com",
+      },
+      "eu-south-1": {
+        "codedeploy": "codedeploy.eu-south-1.amazonaws.com",
+      },
+      "eu-south-2": {
+        "codedeploy": "codedeploy.eu-south-2.amazonaws.com",
+      },
+      "eu-west-1": {
+        "codedeploy": "codedeploy.eu-west-1.amazonaws.com",
+      },
+      "eu-west-2": {
+        "codedeploy": "codedeploy.eu-west-2.amazonaws.com",
+      },
+      "eu-west-3": {
+        "codedeploy": "codedeploy.eu-west-3.amazonaws.com",
+      },
+      "il-central-1": {
+        "codedeploy": "codedeploy.il-central-1.amazonaws.com",
+      },
+      "me-central-1": {
+        "codedeploy": "codedeploy.me-central-1.amazonaws.com",
+      },
+      "me-south-1": {
+        "codedeploy": "codedeploy.me-south-1.amazonaws.com",
+      },
+      "sa-east-1": {
+        "codedeploy": "codedeploy.sa-east-1.amazonaws.com",
+      },
+      "us-east-1": {
+        "codedeploy": "codedeploy.us-east-1.amazonaws.com",
+      },
+      "us-east-2": {
+        "codedeploy": "codedeploy.us-east-2.amazonaws.com",
+      },
+      "us-gov-east-1": {
+        "codedeploy": "codedeploy.us-gov-east-1.amazonaws.com",
+      },
+      "us-gov-west-1": {
+        "codedeploy": "codedeploy.us-gov-west-1.amazonaws.com",
+      },
+      "us-iso-east-1": {
+        "codedeploy": "codedeploy.amazonaws.com",
+      },
+      "us-iso-west-1": {
+        "codedeploy": "codedeploy.amazonaws.com",
+      },
+      "us-isob-east-1": {
+        "codedeploy": "codedeploy.amazonaws.com",
+      },
+      "us-west-1": {
+        "codedeploy": "codedeploy.us-west-1.amazonaws.com",
+      },
+      "us-west-2": {
+        "codedeploy": "codedeploy.us-west-2.amazonaws.com",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "codedeployalarm9F48D05F": {
+      "Properties": {
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "worker28EA3E30",
+            },
+          },
+          {
+            "Name": "Resource",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "worker28EA3E30",
+                  },
+                  ":live",
+                ],
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "codedeployapplicationF49B9864": {
+      "Properties": {
+        "ComputePlatform": "Lambda",
+      },
+      "Type": "AWS::CodeDeploy::Application",
+    },
+    "codedeploygroup441B094B": {
+      "Properties": {
+        "AlarmConfiguration": {
+          "Alarms": [
+            {
+              "Name": {
+                "Ref": "codedeployalarm9F48D05F",
+              },
+            },
+          ],
+          "Enabled": true,
+        },
+        "ApplicationName": {
+          "Ref": "codedeployapplicationF49B9864",
+        },
+        "AutoRollbackConfiguration": {
+          "Enabled": true,
+          "Events": [
+            "DEPLOYMENT_FAILURE",
+            "DEPLOYMENT_STOP_ON_ALARM",
+          ],
+        },
+        "DeploymentConfigName": "CodeDeployDefault.LambdaAllAtOnce",
+        "DeploymentStyle": {
+          "DeploymentOption": "WITH_TRAFFIC_CONTROL",
+          "DeploymentType": "BLUE_GREEN",
+        },
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "codedeploygroupServiceRole1BD49E37",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::CodeDeploy::DeploymentGroup",
+    },
+    "codedeploygroupServiceRole1BD49E37": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": {
+                  "Fn::FindInMap": [
+                    "ServiceprincipalMap",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    "codedeploy",
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSCodeDeployRoleForLambdaLimited",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "codedeploygroupServiceRoleDefaultPolicy2027BC9A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "workerprehook415B13CE",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "workerprehook415B13CE",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "workerposthook150842D6",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "workerposthook150842D6",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "codedeploygroupServiceRoleDefaultPolicy2027BC9A",
+        "Roles": [
+          {
+            "Ref": "codedeploygroupServiceRole1BD49E37",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "kmskey49FBC3B3": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "Description": "serviceName",
         "EnableKeyRotation": true,
-        "KeyPolicy": Object {
-          "Statement": Array [
-            Object {
+        "KeyPolicy": {
+          "Statement": [
+            {
               "Action": "kms:*",
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -389,8 +1374,8 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Create*",
                 "kms:Describe*",
                 "kms:Enable*",
@@ -407,17 +1392,17 @@ Object {
                 "kms:CancelKeyDeletion",
               ],
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -427,24 +1412,24 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Encrypt",
                 "kms:ReEncrypt*",
                 "kms:GenerateDataKey*",
               ],
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -454,13 +1439,13 @@ Object {
               },
               "Resource": "*",
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "kms:Decrypt",
                 "kms:GenerateDataKey",
               ],
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "sns.amazonaws.com",
               },
               "Resource": "*",
@@ -472,11 +1457,11 @@ Object {
       "Type": "AWS::KMS::Key",
       "UpdateReplacePolicy": "Retain",
     },
-    "kmskeyAlias39245779": Object {
-      "Properties": Object {
+    "kmskeyAlias39245779": {
+      "Properties": {
         "AliasName": "alias/seek/self/serviceName",
-        "TargetKeyId": Object {
-          "Fn::GetAtt": Array [
+        "TargetKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
@@ -484,77 +1469,148 @@ Object {
       },
       "Type": "AWS::KMS::Alias",
     },
-    "topic69831491": Object {
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
-            "kmskey49FBC3B3",
-            "Arn",
-          ],
-        },
-        "TopicName": "serviceName",
-      },
+    "sourcetopic7C3DC892": {
       "Type": "AWS::SNS::Topic",
     },
-    "worker28EA3E30": Object {
-      "DependsOn": Array [
+    "worker28EA3E30": {
+      "DependsOn": [
         "workerServiceRoleDefaultPolicyBA498553",
         "workerServiceRole2130CC7F",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Environment": Object {
-          "Variables": Object {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+        "Description": "Updated at 1212-12-12T12:12:12.121Z",
+        "Environment": {
+          "Variables": {
+            "ENVIRONMENT": "prod",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "SOMETHING": "prod",
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "app.handler",
-        "KmsKeyArn": Object {
-          "Fn::GetAtt": Array [
+        "Handler": "index.handler",
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "ReservedConcurrentExecutions": 20,
+        "Role": {
+          "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
+        "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
     },
-    "workerServiceRole2130CC7F": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "workerAliaslive62FE5FAF": {
+      "Properties": {
+        "Description": "The Lambda version currently receiving traffic",
+        "FunctionName": {
+          "Ref": "worker28EA3E30",
+        },
+        "FunctionVersion": {
+          "Fn::GetAtt": [
+            "workerCurrentVersionxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "Version",
+          ],
+        },
+        "Name": "live",
+      },
+      "Type": "AWS::Lambda::Alias",
+      "UpdatePolicy": {
+        "CodeDeployLambdaAliasUpdate": {
+          "AfterAllowTrafficHook": {
+            "Ref": "workerposthook150842D6",
+          },
+          "ApplicationName": {
+            "Ref": "codedeployapplicationF49B9864",
+          },
+          "BeforeAllowTrafficHook": {
+            "Ref": "workerprehook415B13CE",
+          },
+          "DeploymentGroupName": {
+            "Ref": "codedeploygroup441B094B",
+          },
+        },
+      },
+    },
+    "workerAliasliveSqsEventSourceappStackworkerqueue8281B9F42DEDB47B": {
+      "Properties": {
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "workerqueueA05CE5C6",
+            "Arn",
+          ],
+        },
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::Select": [
+                  6,
+                  {
+                    "Fn::Split": [
+                      ":",
+                      {
+                        "Ref": "workerAliaslive62FE5FAF",
+                      },
+                    ],
+                  },
+                ],
+              },
+              ":live",
+            ],
+          ],
+        },
+        "ScalingConfig": {
+          "MaximumConcurrency": 20,
+        },
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "workerCurrentVersionxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": {
+      "Properties": {
+        "FunctionName": {
+          "Ref": "worker28EA3E30",
+        },
+      },
+      "Type": "AWS::Lambda::Version",
+    },
+    "workerServiceRole2130CC7F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -565,12 +1621,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "workerServiceRoleDefaultPolicyBA498553": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "workerServiceRoleDefaultPolicyBA498553": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "sqs:ReceiveMessage",
                 "sqs:ChangeMessageVisibility",
                 "sqs:GetQueueUrl",
@@ -578,18 +1634,18 @@ Object {
                 "sqs:GetQueueAttributes",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "workerqueueA05CE5C6",
                   "Arn",
                 ],
               },
             },
-            Object {
+            {
               "Action": "kms:Decrypt",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "kmskey49FBC3B3",
                   "Arn",
                 ],
@@ -599,42 +1655,328 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "workerServiceRoleDefaultPolicyBA498553",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "workerServiceRole2130CC7F",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "workerSqsEventSourceappStackworkerqueue8281B9F47B9F582B": Object {
-      "Properties": Object {
-        "EventSourceArn": Object {
-          "Fn::GetAtt": Array [
-            "workerqueueA05CE5C6",
+    "workerposthook150842D6": {
+      "DependsOn": [
+        "workerposthookServiceRoleDefaultPolicy6A92F69C",
+        "workerposthookServiceRole25452300",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "ENVIRONMENT": "prod",
+            "FUNCTION_NAME_TO_PRUNE": {
+              "Ref": "worker28EA3E30",
+            },
+            "NODE_ENV": "production",
+            "NODE_OPTIONS": "--enable-source-maps",
+          },
+        },
+        "FunctionName": "serviceName-post-hook",
+        "Handler": "index.handler",
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
+            "kmskey49FBC3B3",
             "Arn",
           ],
         },
-        "FunctionName": Object {
-          "Ref": "worker28EA3E30",
+        "Role": {
+          "Fn::GetAtt": [
+            "workerposthookServiceRole25452300",
+            "Arn",
+          ],
         },
+        "Runtime": "nodejs20.x",
+        "Timeout": 30,
       },
-      "Type": "AWS::Lambda::EventSourceMapping",
+      "Type": "AWS::Lambda::Function",
     },
-    "workerqueueA05CE5C6": Object {
+    "workerposthookServiceRole25452300": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "workerposthookServiceRoleDefaultPolicy6A92F69C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "lambda:ListAliases",
+                "lambda:ListVersionsByFunction",
+                "lambda:DeleteFunction",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "worker28EA3E30",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "worker28EA3E30",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "codedeploy:PutLifecycleEventHookExecutionStatus",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codedeploy:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":deploymentgroup:",
+                    {
+                      "Ref": "codedeployapplicationF49B9864",
+                    },
+                    "/",
+                    {
+                      "Ref": "codedeploygroup441B094B",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "workerposthookServiceRoleDefaultPolicy6A92F69C",
+        "Roles": [
+          {
+            "Ref": "workerposthookServiceRole25452300",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "workerprehook415B13CE": {
+      "DependsOn": [
+        "workerprehookServiceRoleDefaultPolicy991A21B9",
+        "workerprehookServiceRole8F8D9379",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "ENVIRONMENT": "prod",
+            "FUNCTION_NAME_TO_INVOKE": {
+              "Ref": "worker28EA3E30",
+            },
+            "NODE_ENV": "production",
+            "NODE_OPTIONS": "--enable-source-maps",
+          },
+        },
+        "FunctionName": "serviceName-pre-hook",
+        "Handler": "index.handler",
+        "KmsKeyArn": {
+          "Fn::GetAtt": [
+            "kmskey49FBC3B3",
+            "Arn",
+          ],
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "workerprehookServiceRole8F8D9379",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 120,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "workerprehookServiceRole8F8D9379": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "workerprehookServiceRoleDefaultPolicy991A21B9": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "worker28EA3E30",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "worker28EA3E30",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "codedeploy:PutLifecycleEventHookExecutionStatus",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codedeploy:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":deploymentgroup:",
+                    {
+                      "Ref": "codedeployapplicationF49B9864",
+                    },
+                    "/",
+                    {
+                      "Ref": "codedeploygroup441B094B",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "workerprehookServiceRoleDefaultPolicy991A21B9",
+        "Roles": [
+          {
+            "Ref": "workerprehookServiceRole8F8D9379",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "workerqueueA05CE5C6": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
         "QueueName": "serviceName",
-        "RedrivePolicy": Object {
-          "deadLetterTargetArn": Object {
-            "Fn::GetAtt": Array [
-              "workerqueuedlq42262778",
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::GetAtt": [
+              "workerqueuedeadletters83F3505C",
               "Arn",
             ],
           },
@@ -644,25 +1986,25 @@ Object {
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
-    "workerqueuePolicy97054CB4": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "workerqueuePolicy97054CB4": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "sqs:SendMessage",
-              "Condition": Object {
-                "ArnEquals": Object {
-                  "aws:SourceArn": Object {
-                    "Ref": "topic69831491",
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Ref": "sourcetopic7C3DC892",
                   },
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "sns.amazonaws.com",
               },
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "workerqueueA05CE5C6",
                   "Arn",
                 ],
@@ -671,42 +2013,72 @@ Object {
           ],
           "Version": "2012-10-17",
         },
-        "Queues": Array [
-          Object {
+        "Queues": [
+          {
             "Ref": "workerqueueA05CE5C6",
           },
         ],
       },
       "Type": "AWS::SQS::QueuePolicy",
     },
-    "workerqueueappStacktopic0CA45134AFB31FF4": Object {
-      "Properties": Object {
-        "Endpoint": Object {
-          "Fn::GetAtt": Array [
+    "workerqueueappStacksourcetopic613C6BDBD2F224F5": {
+      "DependsOn": [
+        "workerqueuePolicy97054CB4",
+      ],
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
             "workerqueueA05CE5C6",
             "Arn",
           ],
         },
         "Protocol": "sqs",
-        "TopicArn": Object {
-          "Ref": "topic69831491",
+        "TopicArn": {
+          "Ref": "sourcetopic7C3DC892",
         },
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "workerqueuedlq42262778": Object {
+    "workerqueuedeadletters83F3505C": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "KmsMasterKeyId": Object {
-          "Fn::GetAtt": Array [
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
-        "QueueName": "serviceName-dlq",
+        "QueueName": "serviceName-dead-letters",
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
     },
   },
 }

@@ -18,6 +18,13 @@ export interface ChangedFile {
 }
 interface ChangedFilesParameters {
   dir: string;
+
+  /**
+   * File changes to exclude from the result.
+   *
+   * Defaults to `[]` (no exclusions).
+   */
+  ignore?: ChangedFile[];
 }
 
 const mapState = (
@@ -40,6 +47,8 @@ const mapState = (
  */
 export const getChangedFiles = async ({
   dir,
+
+  ignore = [],
 }: ChangedFilesParameters): Promise<ChangedFile[]> => {
   const allFiles = await git.statusMatrix({ fs, dir });
   return allFiles
@@ -49,5 +58,11 @@ export const getChangedFiles = async ({
         row[WORKDIR] !== UNMODIFIED ||
         row[STAGE] !== UNMODIFIED,
     )
-    .map((row) => ({ path: row[FILEPATH], state: mapState(row) }));
+    .map((row) => ({ path: row[FILEPATH], state: mapState(row) }))
+    .filter(
+      (changedFile) =>
+        !ignore.some(
+          (i) => i.path === changedFile.path && i.state === changedFile.state,
+        ),
+    );
 };

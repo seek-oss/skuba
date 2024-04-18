@@ -1,7 +1,11 @@
 # managed by skuba
-.idea/
+.idea/*
+.vscode/*
+
+.cdk.staging/
+.pnpm-store/
 .serverless/
-.vscode/
+cdk.out/
 node_modules*/
 
 /coverage*/
@@ -11,4 +15,5 @@ node_modules*/
 # end managed by skuba
 
 /integration/base/
+/integration/format/
 /template/

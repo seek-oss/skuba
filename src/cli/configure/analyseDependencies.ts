@@ -1,14 +1,12 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import latestVersion from 'latest-version';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
-import type { TextProcessor } from '../../utils/copy';
-import { copyFiles } from '../../utils/copy';
+import { type TextProcessor, copyFiles } from '../../utils/copy';
 import { log } from '../../utils/logging';
 import type { ProjectType } from '../../utils/manifest';
-import { getSkubaVersion } from '../../utils/version';
+import { getSkubaVersion, latestNpmVersion } from '../../utils/version';
 
 import { diffDependencies, generateNotices } from './analysis/package';
 import * as dependencyMutators from './dependencies';
@@ -42,7 +40,7 @@ const pinUnspecifiedVersions = async (
       .map(async ([name]) => {
         const version = await (name === 'skuba'
           ? getSkubaVersion()
-          : latestVersion(name));
+          : latestNpmVersion(name));
 
         return [name, version] as const;
       }),
@@ -125,7 +123,7 @@ export const analyseDependencies = async ({
   }
 
   return async () => {
-    const updatedPackageJson = formatPackage({
+    const updatedPackageJson = await formatPackage({
       ...packageJson,
       dependencies: output.dependencies,
       devDependencies: output.devDependencies,

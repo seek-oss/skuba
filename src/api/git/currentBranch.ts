@@ -30,8 +30,10 @@ export const currentBranch = async ({
     return;
   }
 
+  const gitRoot = await git.findRoot({ filepath: dir, fs });
+
   const fromRepo = await git.currentBranch({
-    dir,
+    dir: gitRoot,
     fs,
   });
 

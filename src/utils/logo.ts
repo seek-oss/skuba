@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import isInstalledGlobally from 'is-installed-globally';
 
 import { log } from './logging';
+import { detectPackageManager } from './packageManager';
 import { getSkubaVersionInfo } from './version';
 
 const LOGO = chalk.blueBright(`
@@ -12,7 +12,10 @@ const LOGO = chalk.blueBright(`
 `);
 
 export const showLogoAndVersionInfo = async () => {
-  const versionInfo = await getSkubaVersionInfo();
+  const [versionInfo, packageManager] = await Promise.all([
+    getSkubaVersionInfo(),
+    detectPackageManager(),
+  ]);
 
   log.plain(LOGO);
   log.subtle(
@@ -27,14 +30,7 @@ export const showLogoAndVersionInfo = async () => {
     log.warn('Your skuba installation is out of date.');
     log.warn('Consider upgrading:');
     log.newline();
-    log.warn(
-      log.bold(
-        'yarn',
-        ...(isInstalledGlobally ? ['global'] : []),
-        'upgrade',
-        `skuba@${versionInfo.latest}`,
-      ),
-    );
+    log.warn(log.bold(packageManager.update, `skuba@${versionInfo.latest}`));
     log.newline();
   }
 

@@ -1,6 +1,6 @@
 import path from 'path';
 
-export type Command = typeof COMMAND_LIST[number];
+export type Command = (typeof COMMAND_LIST)[number];
 
 export const COMMAND_ALIASES: Record<string, Command> = {
   '-h': 'help',
@@ -19,6 +19,7 @@ export const COMMAND_LIST = [
   'help',
   'init',
   'lint',
+  'migrate',
   'node',
   'release',
   'start',
@@ -34,6 +35,6 @@ export const commandToModule = (command: Command): string =>
     .map((segment, index) =>
       index === 0
         ? segment
-        : `${segment[0].toLocaleUpperCase()}${segment.slice(1)}`,
+        : `${(segment[0] ?? '').toLocaleUpperCase()}${segment.slice(1)}`,
     )
     .join('');

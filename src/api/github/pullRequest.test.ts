@@ -89,7 +89,7 @@ describe('getPullRequestNumber', () => {
     expect(
       mockClient.repos.listPullRequestsAssociatedWithCommit.mock.calls[0][0],
     ).toMatchInlineSnapshot(`
-      Object {
+      {
         "commit_sha": "commit-id",
         "owner": "seek-oss",
         "repo": "skuba",

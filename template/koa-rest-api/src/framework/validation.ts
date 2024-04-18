@@ -1,23 +1,100 @@
-import { Context } from 'src/types/koa';
+import { ErrorMiddleware } from 'seek-koala';
+import { ZodIssueCode, type z } from 'zod';
 
-export const validate = <T>({
+import type { Context } from 'src/types/koa';
+
+type InvalidFields = Record<string, string>;
+
+/**
+ * Converts a `ZodError` into an `invalidFields` object
+ *
+ * For example, the `ZodError`:
+ *
+ * ```json
+ * {
+ *   "issues": [
+ *     {
+ *       "code": "invalid_type",
+ *       "expected": "string",
+ *       "received": "undefined",
+ *       "path": ["advertiserId"],
+ *       "message": "advertiserId is required in the URL"
+ *     }
+ *   ],
+ *   "name": "ZodError"
+ * }
+ * ```
+ *
+ * Returns:
+ *
+ * ```json
+ * { "/advertiserId": "advertiserId is required in the URL" }
+ * ```
+ *
+ * For union errors, the path will be appended with `~union${unionIdx}` to indicate which union type failed.
+ * @see [union error example](./validation.test.ts)
+ */
+const parseInvalidFieldsFromError = (err: z.ZodError): InvalidFields =>
+  Object.fromEntries(parseTuples(err, {}));
+
+const parseTuples = (
+  { errors }: z.ZodError,
+  unions: Record<number, number[]>,
+): Array<readonly [string, string]> =>
+  errors.flatMap((issue) => {
+    if (issue.code === ZodIssueCode.invalid_union) {
+      return issue.unionErrors.flatMap((err, idx) =>
+        parseTuples(err, {
+          ...unions,
+          [issue.path.length]: [...(unions[issue.path.length] ?? []), idx],
+        }),
+      );
+    }
+
+    const path = ['', ...issue.path]
+      .map((prop, idx) => [prop, ...(unions[idx] ?? [])].join('~union'))
+      .join('/');
+
+    return [[path, issue.message]] as const;
+  });
+
+export const validate = <
+  Output,
+  Def extends z.ZodTypeDef = z.ZodTypeDef,
+  Input = Output,
+>({
   ctx,
   input,
-  filter,
+  schema,
 }: {
   ctx: Context;
   input: unknown;
-  filter: (data: unknown) => T;
-}) => {
-  try {
-    return filter(input);
-  } catch (err) {
-    // TODO: consider providing structured error messages for your consumers.
-    return ctx.throw(422, err instanceof Error ? err.message : String(err));
+  schema: z.ZodSchema<Output, Def, Input>;
+}): Output => {
+  const parseResult = schema.safeParse(input);
+  if (parseResult.success === false) {
+    const invalidFields = parseInvalidFieldsFromError(parseResult.error);
+    return ctx.throw(
+      422,
+      new ErrorMiddleware.JsonResponse('Input validation failed', {
+        message: 'Input validation failed',
+        invalidFields,
+      }),
+    );
   }
+  return parseResult.data;
 };
 
-export const validateRequestBody = <T>(
+export const validateRequestBody = <
+  Output,
+  Def extends z.ZodTypeDef = z.ZodTypeDef,
+  Input = Output,
+>(
   ctx: Context,
-  filter: (input: unknown) => T,
-): T => validate({ ctx, input: ctx.request.body as unknown, filter });
+  schema: z.ZodSchema<Output, Def, Input>,
+): Output =>
+  validate<Output, Def, Input>({
+    ctx,
+    input: ctx.request.body as unknown,
+    schema,
+  });

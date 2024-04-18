@@ -34,7 +34,7 @@ describe('soft', () => {
       author,
     });
 
-    await reset({ dir, branch: 'master', commitId: initialCommit });
+    await reset({ dir, branch: 'main', commitId: initialCommit });
 
     const commits = await git.log({
       fs,
@@ -44,7 +44,7 @@ describe('soft', () => {
 
     const directory = await fs.promises.readdir(dir);
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]!.oid).toEqual(initialCommit);
     expect(directory).toContain(newFileName);
   });
 });
@@ -69,7 +69,7 @@ describe('hard', () => {
 
     await reset({
       dir,
-      branch: 'master',
+      branch: 'main',
       commitId: initialCommit,
       hard: true,
     });
@@ -82,7 +82,7 @@ describe('hard', () => {
 
     const directory = await fs.promises.readdir(dir);
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]?.oid).toEqual(initialCommit);
     expect(directory).not.toContain(newFileName);
   });
 
@@ -98,7 +98,7 @@ describe('hard', () => {
 
     await reset({
       dir,
-      branch: 'master',
+      branch: 'main',
       commitId: initialCommit,
       hard: true,
     });
@@ -111,7 +111,7 @@ describe('hard', () => {
 
     const directory = await fs.promises.readdir(dir);
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]?.oid).toEqual(initialCommit);
     expect(directory).toContain(newFileName);
   });
 
@@ -128,7 +128,7 @@ describe('hard', () => {
 
     await reset({
       dir,
-      branch: 'master',
+      branch: 'main',
       commitId: initialCommit,
       hard: true,
     });
@@ -141,7 +141,7 @@ describe('hard', () => {
 
     const directory = await fs.promises.readdir(dir);
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]?.oid).toEqual(initialCommit);
     expect(directory).not.toContain(newFileName);
   });
 
@@ -166,7 +166,7 @@ describe('hard', () => {
 
     await reset({
       dir,
-      branch: 'master',
+      branch: 'main',
       commitId: initialCommit,
       hard: true,
     });
@@ -179,7 +179,7 @@ describe('hard', () => {
 
     const file = await fs.promises.readFile(newFileName, 'utf-8');
 
-    expect(commits[0].oid).toEqual(initialCommit);
+    expect(commits[0]?.oid).toEqual(initialCommit);
     expect(file).toBe('hello');
   });
 });

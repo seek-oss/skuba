@@ -115,6 +115,7 @@ interface Export {
   // One of these is required.
   callback?: () => http.RequestListener;
   requestListener?: http.RequestListener;
+  server?: http.Server;
 
   // Optional; falls back to an available port.
   port?: number;
@@ -130,6 +131,19 @@ const app = new Koa();
 export default Object.assign(app, { port });
 ```
 
+As should [Fastify]:
+
+```typescript
+const createApp = async () => {
+  const app = fastify();
+  await app.ready();
+  return app;
+};
+const app = createApp();
+
+export default app;
+```
+
 As should [Express]:
 
 ```typescript
@@ -138,28 +152,46 @@ const app = express();
 export default Object.assign(app, { port });
 ```
 
+As should a [HTTP Server]:
+
+```typescript
+const app = http.createServer();
+
+export default Object.assign(app, { port });
+```
+
 ### Debugging options
 
 The `--inspect` and `--inspect-brk` [Node.js options] are supported for debugging sessions.
 
+#### Automatically attaching a debugger
+
+The simplest way to attach a debugger to VS Code is to use its built-in debug terminal.
+
+1. Hit `⌘ + ⇧ + P` to bring up the Command Palette.
+2. Select `Debug: JavaScript Debug Terminal`
+3. Run any command within the terminal; for example, `skuba test`, `skuba start` and VS Code will automatically attach to it.
+
+#### Manually attaching a debugger
+
 Try this out by starting your project with inspector enabled:
 
 ```bash
-yarn start:debug
+pnpm start:debug
 ```
 
 Next, attach VS Code's debugger to the running process:
 
 1. Hit `⌘ + ⇧ + P` to bring up the Command Palette.
-1. Select `Debug: Attach to Node Process`
-1. Select the `node` process that is pointing to `yarn start:debug`
+2. Select `Debug: Attach to Node Process`
+3. Select the `node` process that is pointing to `pnpm start:debug`
 
 ```shell
 Pick the node.js process to attach to
 
 ...
 
-node /Users/seeker/.nvm/versions/node/vX.Y.Z/bin/yarn start --inspect-brk
+node /Users/seeker/.nvm/versions/node/vX.Y.Z/bin/pnpm start --inspect-brk
 process id: 1000 (SIGUSR1)
 ```
 
@@ -189,5 +221,7 @@ Execution should pause on the breakpoint until we hit `F5` or the `▶️` butto
 [`ts-node`]: https://github.com/typestrong/ts-node
 [`tsconfig-paths`]: https://github.com/dividab/tsconfig-paths
 [express]: https://expressjs.com/
+[fastify]: https://www.fastify.io/
+[http server]: https://nodejs.org/docs/latest-v20.x/api/http.html#class-httpserver
 [koa]: https://koajs.com/
 [node.js options]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options

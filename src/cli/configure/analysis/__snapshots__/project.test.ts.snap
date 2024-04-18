@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`diffFiles works from scratch 1`] = `
-Object {
-  ".dockerignore": Object {
+{
+  ".dockerignore": {
     "data": "# managed by skuba
 .gantry/
 .git/
@@ -17,18 +17,21 @@ node_modules*/
 /tmp*/
 
 .DS_Store
-.npmrc
 npm-debug.log
 yarn-error.log
 # end managed by skuba
 ",
     "operation": "A",
   },
-  ".eslintignore": Object {
+  ".eslintignore": {
     "data": "# managed by skuba
-.idea/
+.idea/*
+.vscode/*
+
+.cdk.staging/
+.pnpm-store/
 .serverless/
-.vscode/
+cdk.out/
 node_modules*/
 
 /coverage*/
@@ -39,26 +42,27 @@ node_modules*/
 ",
     "operation": "A",
   },
-  ".eslintrc.js": Object {
+  ".eslintrc.js": {
     "data": "module.exports = {
   extends: ['skuba'],
 };
 ",
     "operation": "A",
   },
-  ".github/renovate.json5": Object {
+  ".github/renovate.json5": {
     "data": "{
   extends: ['github>seek-oss/rynovate'],
 }
 ",
     "operation": "A",
   },
-  ".gitignore": Object {
+  ".gitignore": {
     "data": "# managed by skuba
+.idea/*
+.vscode/*
+
 .cdk.staging/
-.idea/
 .serverless/
-.vscode/
 cdk.out/
 node_modules*/
 
@@ -69,7 +73,7 @@ node_modules*/
 
 .DS_Store
 .eslintcache
-.npmrc
+.pnpm-debug.log
 *.tgz
 *.tsbuildinfo
 npm-debug.log
@@ -79,33 +83,24 @@ yarn-error.log
 ",
     "operation": "A",
   },
-  ".prettierignore": Object {
+  ".prettierignore": {
     "data": "# managed by skuba
-.idea/
-.serverless/
-.vscode/
-node_modules*/
-
-/coverage*/
-/dist*/
-/lib*/
-/tmp*/
-
 # Gantry resource files support non-standard template syntax
 /.gantry/**/*.yaml
 /.gantry/**/*.yml
 gantry*.yaml
 gantry*.yml
+pnpm-lock.yaml
 # end managed by skuba
 ",
     "operation": "A",
   },
-  ".prettierrc.js": Object {
+  ".prettierrc.js": {
     "data": "module.exports = require('skuba/config/prettier');
 ",
     "operation": "A",
   },
-  "jest.config.ts": Object {
+  "jest.config.ts": {
     "data": "import { Jest } from 'skuba';
 
 export default Jest.mergePreset({
@@ -118,66 +113,37 @@ export default Jest.mergePreset({
       statements: 0,
     },
   },
-  globals: {
-    'ts-jest': {
-      // seek-oss/skuba#626
-      isolatedModules: true,
-    },
-  },
   setupFiles: ['<rootDir>/jest.setup.ts'],
-  testPathIgnorePatterns: ['/test\\\\\\\\.ts'],
+  testPathIgnorePatterns: ['/test\\\\.ts'],
 });
 ",
     "operation": "A",
   },
-  "jest.setup.ts": Object {
+  "jest.setup.ts": {
     "data": "process.env.ENVIRONMENT = 'test';
+
+export {};
 ",
     "operation": "A",
   },
-  "package.json": Object {
+  "package.json": {
     "data": "{
-  \\"license\\": \\"UNLICENSED\\",
-  \\"private\\": true,
-  \\"scripts\\": {
-    \\"build\\": \\"skuba build\\",
-    \\"format\\": \\"skuba format\\",
-    \\"lint\\": \\"skuba lint\\",
-    \\"start\\": \\"skuba start\\",
-    \\"test\\": \\"skuba test --coverage\\",
-    \\"test:watch\\": \\"skuba test --watch\\"
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "skuba build",
+    "format": "skuba format",
+    "lint": "skuba lint",
+    "start": "skuba start",
+    "test": "skuba test --coverage",
+    "test:watch": "skuba test --watch"
   },
-  \\"skuba\\": {
-    \\"entryPoint\\": \\"src/app.ts\\",
-    \\"template\\": null,
-    \\"type\\": \\"application\\",
-    \\"version\\": \\"0.0.0-semantically-released\\"
+  "skuba": {
+    "entryPoint": "src/app.ts",
+    "template": null,
+    "type": "application",
+    "version": "0.0.0-semantically-released"
   }
-}
-",
-    "operation": "A",
-  },
-  "tsconfig.build.json": Object {
-    "data": "{
-  \\"exclude\\": [\\"**/__mocks__/**/*\\", \\"**/*.test.ts\\", \\"src/testing/**/*\\"],
-  \\"extends\\": \\"./tsconfig.json\\",
-  \\"include\\": [\\"src/**/*\\"]
-}
-",
-    "operation": "A",
-  },
-  "tsconfig.json": Object {
-    "data": "{
-  \\"compilerOptions\\": {
-    \\"baseUrl\\": \\".\\",
-    \\"lib\\": [\\"ES2020\\"],
-    \\"outDir\\": \\"lib\\",
-    \\"paths\\": {
-      \\"src\\": [\\"src\\"]
-    }
-  },
-  \\"exclude\\": [\\"lib*/**/*\\"],
-  \\"extends\\": \\"skuba/config/tsconfig.json\\"
 }
 ",
     "operation": "A",

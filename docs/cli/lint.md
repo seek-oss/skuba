@@ -7,7 +7,7 @@ nav_order: 5
 
 ---
 
-SEEK's Technology Strategy [prescribes ESLint] for code analysis and the [eslint-config-seek] preset in particular.
+SEEK's Technical Guidelines [prescribe ESLint] for code analysis and the [eslint-config-seek] preset in particular.
 **skuba** uses a combination of [ESLint], [Prettier] and [tsc] to enforce code quality.
 
 See our [ESLint deep dive] for guidance on resolving linting issues and customising linting rules.
@@ -60,6 +60,8 @@ you can limit this with the `--serial` flag.
 | `--debug`  | Enable debug console output (implies `--serial`) |
 | `--serial` | Force serial execution of linting operations     |
 
+[GitHub autofixes] are enabled when CI and GitHub environment variables are present.
+
 ### Annotations
 
 `skuba lint` can automatically emit annotations in CI.
@@ -68,12 +70,13 @@ you can limit this with the `--serial` flag.
 - [GitHub annotations] are enabled when CI and GitHub environment variables are present.
 
 [`skuba format`]: #skuba-format
-[buildkite annotations]: ../deep-dives/buildkite.md#buildkite-annotations
-[cpu core count]: https://nodejs.org/api/os.html#os_os_cpus
+[Buildkite annotations]: ../deep-dives/buildkite.md#buildkite-annotations
+[CPU core count]: https://nodejs.org/api/os.html#os_os_cpus
 [eslint deep dive]: ../deep-dives/eslint.md
 [eslint-config-seek]: https://github.com/seek-oss/eslint-config-seek
-[eslint]: https://eslint.org/
-[github annotations]: ../deep-dives/github.md#github-annotations
-[prescribes eslint]: https://tech-strategy.ssod.skinfra.xyz/docs/v1/technology.html#typescript
-[prettier]: https://prettier.io/
+[ESLint]: https://eslint.org/
+[GitHub annotations]: ../deep-dives/github.md#github-annotations
+[GitHub autofixes]: ../deep-dives/github.md#github-autofixes
+[prescribe ESLint]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346041/#TypeScript
+[Prettier]: https://prettier.io/
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

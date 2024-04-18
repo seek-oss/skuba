@@ -2,45 +2,56 @@
 
 exports[`fixable 1`] = `
 "
-ESLint   │ Processed 2 files in <random>s.
+ESLint   │ Processed 4 files in <random>s.
 ESLint   │ 
+<random>/a/a/a.mjs
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+
+<random>/a/a/a.mts
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
 
-✖ 1 problem (1 error, 0 warnings)
-  1 error and 0 warnings potentially fixable with the \`--fix\` option.
+✖ 3 problems (3 errors, 0 warnings)
+  3 errors and 0 warnings potentially fixable with the \`--fix\` option.
 
-Prettier │ Processed 6 files in <random>s.
-Prettier │ Flagged 3 files:
+Prettier │ Processed 8 files in <random>s.
+Prettier │ Flagged 4 files:
 Prettier │ b.md
 Prettier │ c.json
 Prettier │ d.js
+Prettier │ package.json
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
-
+skuba    │ Processed skuba lints in <random>s.
 ESLint, Prettier found issues that require triage.
+
+Try running yarn skuba format to fix them.
 "
 `;
 
 exports[`fixable 2`] = `
-Array [
+[
   "
-Options: {
-  context: 'skuba-lint-external',
-  scopeContextToStep: true,
-  style: 'error'
-}
+Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 
 \`skuba lint\` found issues that require triage:
 
 **ESLint**
 
 \`\`\`term
+<random>/a/a/a.mjs
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+
+<random>/a/a/a.mts
+  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+
 <random>/a/a/a.ts
   3:1  error  \`fs\` import should occur before import of \`path\`  import/order
 
-✖ 1 problem (1 error, 0 warnings)
-  1 error and 0 warnings potentially fixable with the \`--fix\` option.
+✖ 3 problems (3 errors, 0 warnings)
+  3 errors and 0 warnings potentially fixable with the \`--fix\` option.
 \`\`\`
 
 **Prettier**
@@ -49,6 +60,37 @@ Options: {
 b.md
 c.json
 d.js
+package.json
+\`\`\`
+",
+]
+`;
+
+exports[`needs patches 1`] = `
+"
+ESLint   │ Processed 2 files in <random>s.
+Prettier │ Processed 6 files in <random>s.
+tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
+tsc      │ tsc --noEmit exited with code 0
+skuba    │ skuba has patches to apply. Run yarn skuba format to run them. skuba-patches
+skuba    │ Processed skuba lints in <random>s.
+skuba found issues that require triage.
+
+Try running yarn skuba format to fix them.
+"
+`;
+
+exports[`needs patches 2`] = `
+[
+  "
+Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
+
+\`skuba lint\` found issues that require triage:
+
+**skuba**
+
+\`\`\`term
+<random>/package.json skuba has patches to apply. Run yarn skuba format to run them.
 \`\`\`
 ",
 ]
@@ -66,7 +108,7 @@ Prettier │ Detected project root: <random>
 Prettier │ Discovering files...
 Prettier │ Discovered 10 files.
 Prettier │ Linting files...
-Prettier │ .eslintcache
+Prettier │ .dockerignore
 Prettier │   parser: -
 Prettier │ .eslintignore
 Prettier │   parser: -
@@ -95,12 +137,6 @@ tsc      │ Lines of TypeScript: <random>
 tsc      │ Lines of JavaScript: <random>
 tsc      │ Lines of JSON: <random>
 tsc      │ Lines of Other: <random>
-tsc      │ Nodes of Library: <random>
-tsc      │ Nodes of Definitions: <random>
-tsc      │ Nodes of TypeScript: <random>
-tsc      │ Nodes of JavaScript: <random>
-tsc      │ Nodes of JSON: <random>
-tsc      │ Nodes of Other: <random>
 tsc      │ Identifiers: <random>
 tsc      │ Symbols: <random>
 tsc      │ Types: <random>
@@ -114,6 +150,7 @@ tsc      │ I/O Read time: <random>s
 tsc      │ Parse time: <random>s
 tsc      │ ResolveModule time: <random>s
 tsc      │ ResolveTypeReference time: <random>s
+tsc      │ ResolveLibrary time: <random>s
 tsc      │ Program time: <random>s
 tsc      │ Bind time: <random>s
 tsc      │ Check time: <random>s
@@ -122,10 +159,11 @@ tsc      │ printTime time: <random>s
 tsc      │ Emit time: <random>s
 tsc      │ Total time: <random>s
 tsc      │ tsc --extendedDiagnostics --noEmit exited with code 0
+skuba    │ Processed skuba lints in <random>s.
 "
 `;
 
-exports[`ok --debug 2`] = `Array []`;
+exports[`ok --debug 2`] = `[]`;
 
 exports[`ok 1`] = `
 "
@@ -133,10 +171,11 @@ ESLint   │ Processed 2 files in <random>s.
 Prettier │ Processed 6 files in <random>s.
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
+skuba    │ Processed skuba lints in <random>s.
 "
 `;
 
-exports[`ok 2`] = `Array []`;
+exports[`ok 2`] = `[]`;
 
 exports[`unfixable 1`] = `
 "
@@ -147,7 +186,7 @@ ESLint   │
   8:3  error  Unexpected console statement                      no-console
 
 <random>/d.js
-  1:0  error  Parsing error: Declaration or statement expected
+  1:0  error  Parsing error: Unexpected token (1:0)
 
 ✖ 3 problems (3 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
@@ -162,19 +201,17 @@ Prettier │ a/a/a.ts
 tsc      │ d.js(1,1): error TS1128: Declaration or statement expected.
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 2
-
+skuba    │ Processed skuba lints in <random>s.
 ESLint, Prettier, tsc found issues that require triage.
+
+Try running yarn skuba format to fix them.
 "
 `;
 
 exports[`unfixable 2`] = `
-Array [
+[
   "
-Options: {
-  context: 'skuba-lint-external',
-  scopeContextToStep: true,
-  style: 'error'
-}
+Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 
 \`skuba lint\` found issues that require triage:
 
@@ -186,7 +223,7 @@ Options: {
   8:3  error  Unexpected console statement                      no-console
 
 <random>/d.js
-  1:0  error  Parsing error: Declaration or statement expected
+  1:0  error  Parsing error: Unexpected token (1:0)
 
 ✖ 3 problems (3 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.

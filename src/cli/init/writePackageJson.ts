@@ -12,6 +12,13 @@ interface WritePackageJsonProps {
   version: string;
 }
 
+export interface SkubaPackageJson {
+  entryPoint: string | null;
+  template: string;
+  type?: string;
+  version: string;
+}
+
 /**
  * Write a `skuba` section into the destination `package.json`.
  */
@@ -29,9 +36,9 @@ export const writePackageJson = async ({
     template,
     type,
     version,
-  };
+  } satisfies SkubaPackageJson;
 
-  const updatedPackageJson = formatPackage(manifest.packageJson);
+  const updatedPackageJson = await formatPackage(manifest.packageJson);
 
   await fs.promises.writeFile(manifest.path, updatedPackageJson);
 };

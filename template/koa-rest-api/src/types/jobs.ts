@@ -1,7 +1,4 @@
-/* eslint-disable new-cap */
-
-import * as t from 'runtypes';
-import checkFilter from 'runtypes-filter';
+import { z } from 'zod';
 
 export interface Job {
   id: string;
@@ -11,12 +8,10 @@ export interface Job {
   };
 }
 
-export type JobInput = t.Static<typeof JobInput>;
+export type JobInput = z.infer<typeof JobInputSchema>;
 
-const JobInput = t.Record({
-  hirer: t.Record({
-    id: t.String,
+export const JobInputSchema = z.object({
+  hirer: z.object({
+    id: z.string(),
   }),
 });
-
-export const filterJobInput = checkFilter(JobInput);

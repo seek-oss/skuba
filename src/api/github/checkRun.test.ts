@@ -1,7 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import type { Endpoints } from '@octokit/types';
-import type { ReadCommitResult } from 'isomorphic-git';
-import git from 'isomorphic-git';
+import git, { type ReadCommitResult } from 'isomorphic-git';
 
 import type * as GitHub from '../github';
 
@@ -77,7 +76,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(jest.mocked(Octokit)).toBeCalledWith({
+    expect(jest.mocked(Octokit)).toHaveBeenCalledWith({
       auth: 'Hello from GITHUB_API_TOKEN',
     });
   });
@@ -94,7 +93,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(jest.mocked(Octokit)).toBeCalledWith({
+    expect(jest.mocked(Octokit)).toHaveBeenCalledWith({
       auth: 'Hello from GITHUB_TOKEN',
     });
   });
@@ -108,7 +107,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(mockClient.checks.create).toBeCalledWith(
+    expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({ owner: 'seek-oss', repo: 'skuba' }),
     );
   });
@@ -122,7 +121,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(mockClient.checks.create).toBeCalledWith(
+    expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         head_sha: 'cdd335a418c3dc6804be1c642b19bb63437e2cad',
       }),
@@ -141,7 +140,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(mockClient.checks.create).toBeCalledWith(
+    expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         conclusion,
         name,
@@ -161,7 +160,7 @@ describe('createCheckRun', () => {
       title: 'Build #23 passed',
     });
 
-    expect(mockClient.checks.create).toBeCalledWith(
+    expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         output: {
           title: expectedTitle,
@@ -187,7 +186,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(mockClient.checks.create).toBeCalledWith(
+    expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         output: {
           title: expectedTitle,
@@ -207,7 +206,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(mockClient.checks.create).toBeCalledWith(
+    expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         output: {
           title: expect.any(String),
@@ -233,7 +232,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(mockClient.checks.create).toBeCalledWith(
+    expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         output: {
           title: expect.any(String),
@@ -258,7 +257,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(mockClient.checks.create).toBeCalledWith(
+    expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         output: {
           title: expect.any(String),

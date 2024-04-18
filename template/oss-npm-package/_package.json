@@ -1,31 +1,28 @@
 {
-  "dependencies": {},
+  "name": "<%- moduleName %>",
+  "version": "0.0.0-semantically-released",
   "description": "<%- description %>",
-  "devDependencies": {
-    "@types/node": "^16.0.0",
-    "commitizen": "^4.2.4",
-    "skuba": "*"
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/<%- orgName %>/<%- repoName %>.git"
   },
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./lib-commonjs/index.js",
+  "module": "./lib-es2015/index.js",
+  "types": "./lib-types/index.d.ts",
   "files": [
     "lib*/**/*.d.ts",
     "lib*/**/*.js",
     "lib*/**/*.js.map",
     "lib*/**/*.json"
   ],
-  "license": "MIT",
-  "main": "./lib-commonjs/index.js",
-  "module": "./lib-es2015/index.js",
-  "name": "<%- moduleName %>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/<%- orgName %>/<%- repoName %>.git"
-  },
   "scripts": {
     "build": "skuba build-package",
     "commit": "cz",
     "format": "skuba format",
     "lint": "skuba lint",
-    "release": "yarn build && skuba release",
+    "release": "pnpm --silent build && skuba release",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
@@ -35,7 +32,17 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "sideEffects": false,
-  "types": "./lib-types/index.d.ts",
-  "version": "0.0.0-semantically-released"
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^18.19.8",
+    "commitizen": "^4.2.4",
+    "skuba": "*"
+  },
+  "packageManager": "pnpm@8.9.0",
+  "engines": {
+    "node": ">=18.12"
+  },
+  "publishConfig": {
+    "provenance": true
+  }
 }

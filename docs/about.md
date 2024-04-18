@@ -12,7 +12,7 @@ nav_order: 97
 
 ### Standardise tooling
 
-**skuba** tracks technology recommendations from [SEEK's Technology Strategy].
+**skuba** tracks technology recommendations from [SEEK's Technical Guidelines].
 
 ### Reduce maintenance overhead
 
@@ -53,7 +53,6 @@ Here are some highlights:
 | [seek-datadog-custom-metrics]  | Write Datadog metrics in [Gantry] and Lambda           |
 | [seek-koala]                   | Add SEEK-standard observability to Koa servers         |
 | 🔒 [@seek/db-client]           | Connect to databases with credential (rotation) smarts |
-| 🔒 [@seek/graphql-utils]       | Add observability to GraphQL servers                   |
 | 🔒 [@seek/node-s2sauth-issuer] | Call an [s2sauth]-protected service                    |
 | 🔒 [@seek/typegen]             | Generate TypeScript types from a JSON schema           |
 | 🔒 [@seek/zactive-directory]   | Authenticate and authorise [SSOd] users                |
@@ -62,20 +61,18 @@ Here are some highlights:
 
 ## Related reading
 
-- [SEEK's Technology Strategy]
+- [SEEK's Technical Guidelines]
 - SEEK's frontend development toolkit, [sku]
 
 [@seek/db-client]: https://github.com/SEEK-Jobs/db-client
-[@seek/graphql-utils]: https://github.com/SEEK-Jobs/graphql-utils
 [@seek/logger]: https://github.com/seek-oss/logger
-[@seek/node-authentication]: https://github.com/SEEK-Jobs/node-authentication
 [@seek/node-s2sauth-issuer]: https://github.com/SEEK-Jobs/node-s2sauth-issuer
 [@seek/typegen]: https://github.com/SEEK-Jobs/typegen
 [@seek/zactive-directory]: https://github.com/SEEK-Jobs/zactive-directory
-[gantry]: https://gantry.ssod.skinfra.xyz
+[Gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
 [s2sauth]: https://github.com/SEEK-Jobs/s2sauth
 [seek-datadog-custom-metrics]: https://github.com/seek-oss/datadog-custom-metrics
 [seek-koala]: https://github.com/seek-oss/koala
-[seek's technology strategy]: https://tech-strategy.ssod.skinfra.xyz
+[SEEK's Technical Guidelines]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346017/
 [sku]: https://github.com/seek-oss/sku
-[ssod]: https://github.com/SEEK-Jobs/seek-ssod-ingress
+[SSOd]: https://github.com/SEEK-Jobs/seek-ssod-ingress

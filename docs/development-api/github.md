@@ -119,5 +119,75 @@ await GitHub.putIssueComment({
 
 ---
 
+## readFileChanges
+
+Takes a list of `ChangedFiles` from [getChangedFiles],
+reads them from the file system,
+and maps them to GitHub GraphQL [FileChanges].
+
+```typescript
+import { GitHub } from 'skuba';
+
+const fileChanges = await GitHub.readFileChanges(dir, [
+  { path: 'added-path', state: 'added' },
+  { path: 'modified-path', state: 'modified' },
+  { path: 'delete-path', state: 'deleted' },
+]);
+```
+
+---
+
+## uploadAllFileChanges
+
+Retrieves all file changes from the local Git repository using [getChangedFiles],
+then uploads the changes to a specified GitHub branch using [uploadFileChanges](#uploadfilechanges).
+
+Returns the commit ID, or `undefined` if there are no changes to commit.
+
+The file changes will appear as verified commits on GitHub.
+
+This will not update the local Git repository unless `updateLocal` is specified.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const maybeCommitId = await GitHub.uploadAllFileChanges({
+  dir: './',
+  branch: 'some-branch',
+  messageHeadline: 'some-commit',
+  messageBody: 'extra-body',
+  updateLocal: true, // Updates the local Git repository to match the new remote branch state
+});
+```
+
+---
+
+## uploadFileChanges
+
+Uploads file changes from the local workspace to a specified GitHub branch.
+
+The file changes will appear as verified commits on GitHub.
+
+This will not update the local Git repository.
+
+```typescript
+import { GitHub } from 'skuba';
+
+const commitId = await GitHub.uploadFileChanges({
+  dir: './',
+  branch: 'some-branch',
+  fileChanges: {
+    additions: [{ contents: '', path: 'another-path' }],
+    deletions: [{ path: 'some-path' }],
+  },
+  messageHeadline: 'some-commit',
+  messageBody: 'extra-body',
+});
+```
+
+---
+
 [check run]: https://docs.github.com/en/rest/reference/checks#runs
+[filechanges]: https://docs.github.com/en/graphql/reference/input-objects#filechanges
+[getchangedfiles]: ./git.md#getchangedfiles
 [github guide]: ../deep-dives/github.md

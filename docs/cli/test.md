@@ -40,4 +40,3 @@ See our [Jest guide] for a more detailed configuration breakdown.
 [github annotations]: ../deep-dives/github.md#github-annotations
 [jest]: https://jestjs.io
 [jest guide]: ../deep-dives/jest.md
-[projects]: https://jestjs.io/docs/configuration#projects-arraystring--projectconfig

@@ -1,10 +1,14 @@
-import {
-  createCloudWatchClient,
-  createTimedSpan,
-} from 'seek-datadog-custom-metrics';
+import { sendDistributionMetric } from 'datadog-lambda-js';
 
 import { config } from 'src/config';
 
-export const metricsClient = createCloudWatchClient(config);
+const prefix = `${config.name}.`;
 
-export const timedSpan = createTimedSpan(metricsClient);
+export const metricsClient = {
+  distribution: (
+    ...[name, ...rest]: Parameters<typeof sendDistributionMetric>
+  ) =>
+    config.metrics
+      ? sendDistributionMetric(`${prefix}${name}`, ...rest)
+      : undefined,
+};

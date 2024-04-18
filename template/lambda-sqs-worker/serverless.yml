@@ -4,29 +4,53 @@ configValidationMode: error
 
 params:
   default:
+    datadogApiKeySecretArn: 'TODO: arn:aws:secretsmanager:${aws:region}:${aws:accountId}:secret:SECRET-NAME'
+    dataStoreTags:
+      - Key: seek:auto:backup:frequency
+        Value: none
+      # TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#data-services
+      # - Key: seek:data:derived
+      #   Value: copy
+      # - Key: seek:data:domain
+      #   Value: unassigned
+      # - Key: seek:data:jurisdiction-source
+      #   Value: australia hong-kong indonesia malaysia new-zealand philippines singapore thailand
+      # - Key: seek:data:types:restricted
+      #   Value: job-ads
     description: <%- description %>
   dev:
-    deploymentBucket: 'TODO: deploymentBucketName'
-    isProduction: false
+    deploymentBucket: 'TODO: deployment-bucket-name'
+    concurrency: 2
   prod:
-    deploymentBucket: 'TODO: deploymentBucketName'
-    isProduction: true
+    deploymentBucket: 'TODO: deployment-bucket-name'
+    concurrency: 20
 
 custom:
+  datadog:
+    addLayers: false
+    apiKeySecretArn: ${param:datadogApiKeySecretArn}
+    enableDDLogs: false
+    # TODO: enable Datadog extension
+    enabled: false
+    exclude:
+      - WorkerPreHook
+    injectLogContext: false
+    version: ${env:VERSION}
   prune:
     automatic: true
     number: 3
 
 plugins:
   - serverless-plugin-canary-deployments
+  - serverless-plugin-datadog
   - serverless-prune-plugin
 
 provider:
   logRetentionInDays: 30
   name: aws
   region: ap-southeast-2
-  runtime: nodejs16.x
-  architecture: arm64
+  runtime: nodejs20.x
+  architecture: <%- lambdaServerlessArchitecture %>
   deploymentMethod: direct
   stackName: ${self:service}
   stage: ${env:ENVIRONMENT}
@@ -35,8 +59,6 @@ provider:
     # This is easier to manage in terms of access, deployment, and tagging.
     name: ${param:deploymentBucket}
   environment:
-    # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     NODE_ENV: production
     # https://nodejs.org/api/cli.html#cli_node_options_options
     NODE_OPTIONS: --enable-source-maps
@@ -51,23 +73,18 @@ provider:
         - Action: lambda:InvokeFunction
           Effect: Allow
           Resource: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:functions.Worker.name}
+        - Action: secretsmanager:GetSecretValue
+          Effect: Allow
+          Resource: ${param:datadogApiKeySecretArn}-??????
         - Action: sns:Publish
           Effect: Allow
           Resource: !Ref DestinationTopic
-        - Action: sqs:SendMessage*
-          Effect: Allow
-          Resource: !GetAtt DeadLetterQueue.Arn
   stackTags:
-    # TODO: add data classification tags
-    # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdataconsumers
-    # seek:data:consumers: internal
-    # https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#seekdatatypes
-    # seek:data:types:restricted: job-ads
     seek:env:label: ${env:ENVIRONMENT}
-    seek:env:production: ${param:isProduction}
-    seek:owner:team: '<%- teamName %>'
     seek:source:sha: ${env:BUILDKITE_COMMIT, 'na'}
     seek:source:url: 'https://github.com/SEEK-Jobs/<%- repoName %>'
+    seek:system:deployed-by: CFN
+    # seek:system:name: 'TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#required-tags'
 
 package:
   patterns:
@@ -81,7 +98,7 @@ functions:
     handler: lib/app.handler
     description: ${param:description}
     memorySize: 128
-    reservedConcurrency: 20
+    reservedConcurrency: ${param:concurrency}
     timeout: 30
     deploymentSettings:
       type: AllAtOnce
@@ -97,6 +114,7 @@ functions:
       - sqs:
           arn: !GetAtt MessageQueue.Arn
           batchSize: 1
+          maximumConcurrency: ${param:concurrency}
   WorkerPreHook:
     name: ${self:functions.Worker.name}-pre-hook
     handler: lib/hooks.pre
@@ -118,6 +136,7 @@ resources:
         KmsDataKeyReusePeriodSeconds: 300
         KmsMasterKeyId: !Ref EncryptionKey
         QueueName: ${self:service}-dead-letters
+        Tags: ${param:dataStoreTags}
 
     MessageQueue:
       Type: AWS::SQS::Queue
@@ -129,6 +148,7 @@ resources:
         RedrivePolicy:
           deadLetterTargetArn: !GetAtt DeadLetterQueue.Arn
           maxReceiveCount: 3
+        Tags: ${param:dataStoreTags}
         VisibilityTimeout: 180
 
     # MessageQueuePolicy:
@@ -160,6 +180,7 @@ resources:
       Type: AWS::SNS::Topic
       Properties:
         KmsMasterKeyId: alias/aws/sns
+        Tags: ${param:dataStoreTags}
         TopicName: ${self:service}
 
     EncryptionKey:

@@ -5,11 +5,11 @@ on:
 
   push:
     branches-ignore:
-      - master
+      - main
 
   workflow_run:
     branches:
-      - master
+      - main
     types:
       - completed
     workflows:
@@ -23,52 +23,63 @@ jobs:
     permissions:
       checks: write
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - if: >-
-          github.event_name != 'pull_request' ||
-          github.event.pull_request.head.repo.full_name == github.repository
+          github.actor != 'dependabot[bot]' && (
+            github.event_name != 'pull_request' ||
+            github.event.pull_request.head.repo.full_name == github.repository
+          )
         name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
+          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN || github.token }}
 
       - if: >-
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name != github.repository
+          github.actor == 'dependabot[bot]' || (
+            github.event_name == 'pull_request' &&
+            github.event.pull_request.head.repo.full_name != github.repository
+          )
         name: Check out repo
-        uses: actions/checkout@v3
-        # We don't share secrets with forks.
+        uses: actions/checkout@v4
+        # We don't share secrets with Dependabot nor forks.
 
       - name: Set Git user
         run: |
           git config user.name seek-oss-ci
           git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
-      - name: Set up Node.js 16.x
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 20.x
+
+      - name: Set up pnpm
+        run: corepack enable pnpm && corepack install
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Test
-        run: yarn test:ci
+        run: pnpm test:ci
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
 
       - name: Lint
-        run: yarn lint
+        run: pnpm lint
 
       - if: github.event_name == 'push'
         name: Dry-run changelog versioning
-        run: yarn changeset version
+        run: pnpm changeset version
 
       - if: github.event_name == 'push'
         name: Dry-run site packaging
-        run: yarn skuba node scripts/package.ts
+        run: pnpm skuba node scripts/package.ts
 
   template:
     name: Integrate
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         template:
@@ -81,13 +92,16 @@ jobs:
           - private-npm-package
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js 16.x
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 20.x
 
-      - if: github.head_ref != 'beta' && github.head_ref != 'changeset-release/master' && github.ref_name != 'beta' && github.ref_name != 'changeset-release/master'
+      - name: Set up pnpm
+        run: corepack enable pnpm && corepack install
+
+      - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
         name: Test template
-        run: yarn test:template ${{ matrix.template }}
+        run: pnpm test:template ${{ matrix.template }}

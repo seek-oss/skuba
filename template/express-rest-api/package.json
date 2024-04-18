@@ -1,30 +1,32 @@
 {
-  "dependencies": {
-    "@seek/logger": "^5.0.1",
-    "express": "^4.17.1",
-    "skuba-dive": "^2.0.0"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.13",
-    "@types/node": "^16.0.0",
-    "@types/supertest": "^2.0.11",
-    "pino-pretty": "^7.1.0",
-    "skuba": "*",
-    "supertest": "^6.1.6"
-  },
-  "engines": {
-    "node": ">=16"
-  },
-  "license": "UNLICENSED",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "build": "skuba build",
     "format": "skuba format",
     "lint": "skuba lint",
     "start": "skuba start --port <%- port %>",
-    "start:debug": "yarn start --inspect-brk",
+    "start:debug": "pnpm --silent start --inspect-brk",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"
+  },
+  "dependencies": {
+    "@seek/logger": "^6.0.0",
+    "express": "^4.17.1",
+    "skuba-dive": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^20.9.0",
+    "@types/supertest": "^6.0.0",
+    "mime": "^4.0.1",
+    "pino-pretty": "^11.0.0",
+    "skuba": "*",
+    "supertest": "^6.1.6"
+  },
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=20"
   }
 }
