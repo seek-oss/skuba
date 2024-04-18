@@ -26,7 +26,7 @@
     "constructs": "^10.0.17",
     "skuba": "*"
   },
-  "packageManager": "pnpm@8.15.6",
+  "packageManager": "pnpm@9.0.2",
   "engines": {
     "node": ">=20"
   }
