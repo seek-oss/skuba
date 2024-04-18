@@ -18,15 +18,15 @@ const maybeTsConfig = tryParseTsConfig();
 const isolatedModules = maybeTsConfig?.options.isolatedModules ?? true;
 
 const BROKEN_MODULE_RESOLUTIONS = new Set([
+  ModuleResolutionKind.Bundler,
   ModuleResolutionKind.Node16,
   ModuleResolutionKind.NodeNext,
 ]);
 
 /**
- * Passing through `Node16` or `NodeNext` seems to break `ts-jest`.
+ * Passing through these module resolutions seems to break `ts-jest`.
  *
  * ```
- * error TS5110: Option 'module' must be set to 'Node16' when option 'moduleResolution' is set to 'Node16'.
  * error TS5110: Option 'module' must be set to 'NodeNext' when option 'moduleResolution' is set to 'NodeNext'.
  * ```
  *

@@ -2,7 +2,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "deploy": "cdk deploy appStack --require-approval never --context stage=${ENVIRONMENT}",
+    "deploy": "cdk deploy appStack --require-approval never",
     "deploy:hotswap": "pnpm --silent deploy --hotswap",
     "deploy:watch": "pnpm --silent deploy:hotswap --watch",
     "format": "skuba format",
@@ -26,7 +26,7 @@
     "constructs": "^10.0.17",
     "skuba": "*"
   },
-  "packageManager": "pnpm@8.15.5",
+  "packageManager": "pnpm@8.15.6",
   "engines": {
     "node": ">=20"
   }

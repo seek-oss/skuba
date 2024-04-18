@@ -55,7 +55,7 @@ jobs:
           node-version: 20.x
 
       - name: Set up pnpm
-        run: corepack enable pnpm
+        run: corepack enable pnpm && corepack install
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -135,7 +135,7 @@ jobs:
           node-version: 20.x
 
       - name: Set up pnpm
-        run: corepack enable pnpm
+        run: corepack enable pnpm && corepack install
 
       - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
         name: Test template

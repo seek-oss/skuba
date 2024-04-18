@@ -1,6 +1,6 @@
 {
   "name": "skuba",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "private": false,
   "description": "SEEK development toolkit for backend applications and packages",
   "homepage": "https://github.com/seek-oss/skuba#readme",
@@ -72,7 +72,7 @@
     "@octokit/graphql": "^8.0.0",
     "@octokit/graphql-schema": "^15.3.0",
     "@octokit/rest": "^20.0.0",
-    "@octokit/types": "^12.0.0",
+    "@octokit/types": "^13.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": ">=18.12",
     "chalk": "^4.1.0",
@@ -82,7 +82,7 @@
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
     "esbuild": "~0.20.0",
-    "eslint": "^8.11.0",
+    "eslint": "^8.56.0",
     "eslint-config-skuba": "workspace:*",
     "execa": "^5.0.0",
     "fast-glob": "^3.3.2",
@@ -156,7 +156,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@8.15.5",
+  "packageManager": "pnpm@8.15.6",
   "engines": {
     "node": ">=18.18.0"
   },
