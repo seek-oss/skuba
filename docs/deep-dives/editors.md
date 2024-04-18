@@ -24,7 +24,9 @@ parent: Deep dives
    ```json
    {
      "[typescript]": {
-       "editor.codeActionsOnSave": ["source.fixAll.eslint"],
+       "editor.codeActionsOnSave": { 
+         "source.fixAll.eslint": "explicit"
+       },
        "editor.defaultFormatter": "esbenp.prettier-vscode"
      }
    }
