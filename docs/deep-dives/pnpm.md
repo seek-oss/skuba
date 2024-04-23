@@ -118,7 +118,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 3. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@9.0.2",
+   "packageManager": "pnpm@9.0.5",
    ```
 
 4. Create [`pnpm-workspace.yaml`](https://pnpm.io/pnpm-workspace_yaml)
