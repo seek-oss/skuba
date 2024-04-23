@@ -1,8 +1,4 @@
-import { z } from 'zod';
-
-const environment = z.enum(['dev', 'prod']).parse(process.env.ENVIRONMENT);
-
-type Environment = typeof environment;
+import { Env } from 'skuba-dive';
 
 export interface Config {
   appName: string;
@@ -12,8 +8,15 @@ export interface Config {
       ENVIRONMENT: Environment;
     };
   };
+  version: string;
   sourceSnsTopicArn: string;
 }
+
+type Environment = typeof environment;
+
+const environments = ['dev', 'prod'] as const;
+
+const environment = Env.oneOf(environments).parse(process.env.ENVIRONMENT);
 
 export const configs: Record<Environment, Config> = {
   dev: {
@@ -25,6 +28,7 @@ export const configs: Record<Environment, Config> = {
       },
     },
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
+    version: Env.string('VERSION'),
   },
   prod: {
     appName: '<%- serviceName %>',
@@ -35,6 +39,7 @@ export const configs: Record<Environment, Config> = {
       },
     },
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
+    version: Env.string('VERSION'),
   },
 };
 
