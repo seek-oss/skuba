@@ -1,7 +1,7 @@
 # 🤿🌊
 
+[![Node.js version](https://img.shields.io/badge/node-%3E%3D%2014.18-brightgreen)](https://nodejs.org/en/)
 [![npm package](https://img.shields.io/npm/v/skuba-dive)](https://www.npmjs.com/package/skuba-dive)
-[![Powered by skuba](https://img.shields.io/badge/🤿%20skuba-powered-009DC4)](https://github.com/seek-oss/skuba)
 
 Minimal runtime for [`skuba`](https://github.com/seek-oss/skuba).
 
