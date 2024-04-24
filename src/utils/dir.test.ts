@@ -108,13 +108,14 @@ describe('createInclusionFilter', () => {
     return expect(promise).resolves.toBeDefined();
   });
 
-  describe('with sensible template defaults', () => {
+  describe('with sensible template defaults and explicit inclusions', () => {
     let include: (pathname: string) => boolean;
 
     beforeAll(async () => {
-      include = await createInclusionFilter([
-        path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
-      ]);
+      include = await createInclusionFilter(
+        [path.join(BASE_TEMPLATE_DIR, '_.gitignore')],
+        ['.vscode/extensions.json'],
+      );
     });
 
     it.each([
@@ -136,6 +137,7 @@ describe('createInclusionFilter', () => {
       '.prettierrc.js',
       'Dockerfile',
       'jest.config.ts',
+      'vscode/extensions.json',
       'README.md',
       'src/app.ts',
     ])('includes %s', (filename) => expect(include(filename)).toBe(true));

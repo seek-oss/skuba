@@ -58,7 +58,10 @@ export const crawlDirectory = async (
  * Create a filter function that excludes filepaths based on ignore files like
  * `.gitignore` and `.prettierignore`.
  */
-export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
+export const createInclusionFilter = async (
+  ignoreFilepaths: string[],
+  includeFiles: string[] = [],
+) => {
   const ignoreFiles = await Promise.all(
     ignoreFilepaths.map(async (ignoreFilepath) => {
       try {
@@ -67,7 +70,6 @@ export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
         if (isErrorWithCode(err, 'ENOENT')) {
           return;
         }
-
         throw err;
       }
     }),
@@ -77,7 +79,15 @@ export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
     .filter((value): value is string => typeof value === 'string')
     .map((value) => ignore().add(value));
 
-  return ignore().add('.git').add(managers).createFilter();
+  const filter = ignore().add('.git').add(managers).createFilter();
+
+  // Allow for explicit inclusions to override ignore files
+  return (filepath: string) => {
+    if (includeFiles.includes(filepath)) {
+      return true;
+    }
+    return filter(filepath);
+  };
 };
 
 /**

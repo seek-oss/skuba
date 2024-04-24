@@ -39,10 +39,14 @@ export const init = async (args = process.argv.slice(2)) => {
 
   await ensureCommands(packageManager);
 
-  const include = await createInclusionFilter([
+  const ignoreFilepaths = [
     path.join(destinationDir, '.gitignore'),
     path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
-  ]);
+  ];
+
+  const includeFiles = ['.vscode/extensions.json'];
+
+  const include = await createInclusionFilter(ignoreFilepaths, includeFiles);
 
   const processors = [createEjsRenderer(templateData)];
 
