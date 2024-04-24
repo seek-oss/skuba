@@ -278,6 +278,16 @@ importers:
         specifier: ~5.3.0
         version: 5.3.3
 
+  packages/skuba-dive:
+    dependencies:
+      module-alias:
+        specifier: ^2.2.2
+        version: 2.2.3
+    devDependencies:
+      '@types/module-alias':
+        specifier: 2.0.4
+        version: 2.0.4
+
 packages:
 
   '@aashutoshrathi/word-wrap@1.2.6':
