@@ -76,3 +76,13 @@ export type PackageManager = z.infer<typeof packageManagerSchema>;
 export const packageManagerSchema = z
   .enum(['pnpm', 'yarn'])
   .default(DEFAULT_PACKAGE_MANAGER);
+
+async function main() {
+  const packageManager = await detectPackageManager();
+  console.log(packageManager);
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
