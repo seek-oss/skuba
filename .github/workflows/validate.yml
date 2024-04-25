@@ -65,6 +65,11 @@ jobs:
         env:
           NODE_OPTIONS: --experimental-vm-modules
 
+      - name: Test projects
+        run: pnpm -r test:ci
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
+
       - name: Lint
         run: pnpm lint
 
@@ -75,41 +80,6 @@ jobs:
       - if: github.event_name == 'push'
         name: Dry-run site packaging
         run: pnpm skuba node scripts/package.ts
-
-  package:
-    name: Lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    strategy:
-      matrix:
-        template:
-          - eslint-config-skuba
-          - skuba-dive
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-
-      - name: Set up pnpm
-        run: corepack enable pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Setup Skuba
-        run: pnpm build
-
-      - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
-        name: Lint package
-        run: pnpm --filter ${{ matrix.template }} lint
-
-      - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
-        name: Test package
-        run: pnpm --filter ${{ matrix.template }} test
 
   template:
     name: Integrate
