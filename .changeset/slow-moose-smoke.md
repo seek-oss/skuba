@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-Add coverage to .prettierignore
+lint: Add coverage to .prettierignore
