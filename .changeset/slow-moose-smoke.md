@@ -1,5 +1,5 @@
 ---
-"skuba": minor
+'skuba': minor
 ---
 
 Add coverage to .prettierignore
