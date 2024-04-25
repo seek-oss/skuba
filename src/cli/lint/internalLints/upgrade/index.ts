@@ -101,8 +101,6 @@ export const upgradeSkuba = async (
 
     const packageManager = await detectPackageManager();
 
-    console.log('packageManager detected', JSON.stringify(packageManager));
-
     logger.warn(
       `skuba has patches to apply. Run ${logger.bold(
         packageManager.exec,
