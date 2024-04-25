@@ -61,6 +61,6 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: what
-        run: pnpm skuba node src/utils/packageManager.ts
+        run: pnpm test:ci src/cli/lint.int.test.ts
         env:
           NODE_OPTIONS: --experimental-vm-modules
