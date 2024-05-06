@@ -195,7 +195,7 @@ Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
-Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore file found
+Patch skipped: Move .npmrc out of the .gitignore managed section - not ignored
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 

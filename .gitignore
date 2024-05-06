@@ -27,3 +27,6 @@ yarn-error.log
 /template/**/pnpm-lock.yaml
 /template/**/yarn.lock
 /packages/**/*/lib*
+
+# otherwise changesets break:
+/packages/**/.npmrc
