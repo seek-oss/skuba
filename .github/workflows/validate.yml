@@ -62,8 +62,6 @@ jobs:
 
       - name: Test
         run: pnpm test:ci
-        env:
-          NODE_OPTIONS: --experimental-vm-modules
 
       - name: Lint
         run: pnpm lint
