@@ -22,6 +22,7 @@ skuba update complete.
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
@@ -94,6 +95,7 @@ skuba update complete.
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
@@ -108,13 +110,15 @@ Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 10 files.
+Discovered 11 files.
 Formatting files...
 .dockerignore
   parser: -
 .eslintignore
   parser: -
 .gitignore
+  parser: -
+.npmrc
   parser: -
 .prettierignore
   parser: -
@@ -161,6 +165,7 @@ skuba update complete.
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
@@ -199,6 +204,7 @@ skuba update complete.
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint

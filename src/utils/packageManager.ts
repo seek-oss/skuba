@@ -1,6 +1,6 @@
-import { detect } from 'detect-package-manager';
+import findUp from 'find-up';
 import isInstalledGlobally from 'is-installed-globally';
-import { ZodError, z } from 'zod';
+import { z } from 'zod';
 
 import { log } from './logging';
 
@@ -39,11 +39,17 @@ export const detectPackageManager = async (
 ): Promise<PackageManagerConfig> => {
   let packageManager: PackageManager = DEFAULT_PACKAGE_MANAGER;
 
-  let raw: string | undefined;
   try {
-    raw = await detect({ cwd, includeGlobalBun: false });
+    const [yarnDepth, pnpmDepth] = await Promise.all([
+      findDepth('yarn.lock', cwd),
+      findDepth('pnpm-lock.yaml', cwd),
+    ]);
 
-    packageManager = packageManagerSchema.parse(raw);
+    if (yarnDepth === undefined && pnpmDepth === undefined) {
+      throw new Error('No package manager lockfile found.');
+    }
+
+    packageManager = (pnpmDepth ?? -1) > (yarnDepth ?? -1) ? 'pnpm' : 'yarn';
   } catch (err) {
     log.warn(
       `Failed to detect package manager; defaulting to ${log.bold(
@@ -53,11 +59,6 @@ export const detectPackageManager = async (
     log.subtle(
       (() => {
         switch (true) {
-          case err instanceof ZodError:
-            return `Expected ${Object.keys(PACKAGE_MANAGERS).join(
-              '|',
-            )}, received ${raw}`;
-
           case err instanceof Error:
             return err.message;
 
@@ -69,6 +70,11 @@ export const detectPackageManager = async (
   }
 
   return configForPackageManager(packageManager);
+};
+
+const findDepth = async (filename: string, cwd?: string) => {
+  const path = await findUp(filename, { cwd });
+  return path ? path.split('/').length : undefined;
 };
 
 export type PackageManager = z.infer<typeof packageManagerSchema>;
