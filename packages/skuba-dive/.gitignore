@@ -1,7 +1,6 @@
 # managed by skuba
 .idea/*
 .vscode/*
-!.vscode/extensions.json
 
 .cdk.staging/
 .serverless/
@@ -22,12 +21,3 @@ npm-debug.log
 package-lock.json
 yarn-error.log
 # end managed by skuba
-
-/integration/format/
-/integration/lint/
-/template/**/pnpm-lock.yaml
-/template/**/yarn.lock
-/packages/**/*/lib*
-
-# otherwise changesets break:
-/packages/**/.npmrc
