@@ -137,7 +137,7 @@ describe('createInclusionFilter', () => {
       '.prettierrc.js',
       'Dockerfile',
       'jest.config.ts',
-      'vscode/extensions.json',
+      '.vscode/extensions.json',
       'README.md',
       'src/app.ts',
     ])('includes %s', (filename) => expect(include(filename)).toBe(true));
