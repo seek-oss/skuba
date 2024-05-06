@@ -18,7 +18,6 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
 import type { Input } from './types';
-import { setupVSCode } from './vsCodeSetup';
 import { writePackageJson } from './writePackageJson';
 
 export const init = async (args = process.argv.slice(2)) => {
@@ -68,9 +67,6 @@ export const init = async (args = process.argv.slice(2)) => {
     include,
     processors,
   });
-
-  // Create .vscode dir and add extension recommendations
-  await setupVSCode(destinationDir);
 
   await Promise.all([
     templateComplete
