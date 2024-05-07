@@ -26,11 +26,7 @@ interface AnnotationOptions {
 
 // Buildkite annotation only supports 1MiB of data
 export const MAX_SIZE = 1024 * 1024; // 1MiB in bytes
-export const TRUNCATION_MESSAGE = '... [Truncated due to size limit]';
-export const TRUNCATION_MESSAGE_LENGTH = Buffer.from(
-  TRUNCATION_MESSAGE,
-  'utf-8',
-).length;
+export const TRUNCATION_WARNING = '... [Truncated due to size limit]';
 
 /**
  * Asynchronously uploads a Buildkite annotation.
@@ -58,8 +54,8 @@ export const annotate = async (
   if (buffer.length > MAX_SIZE) {
     // Notify user of truncation, leave space for message
     truncatedMarkdown =
-      buffer.toString('utf-8', 0, MAX_SIZE - TRUNCATION_MESSAGE_LENGTH) +
-      TRUNCATION_MESSAGE;
+      buffer.toString('utf-8', 0, MAX_SIZE - TRUNCATION_WARNING.length) +
+      TRUNCATION_WARNING;
     // TODO: Log the full annotation to the build log
   }
 

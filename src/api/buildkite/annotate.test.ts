@@ -1,6 +1,6 @@
 import * as execModule from '../../utils/exec';
 
-import { MAX_SIZE, TRUNCATION_MESSAGE, annotate } from './annotate';
+import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate';
 
 const exec = jest.spyOn(execModule, 'exec');
 const hasCommand = jest.spyOn(execModule, 'hasCommand');
@@ -70,7 +70,7 @@ describe('annotate', () => {
         throw new Error('Expected the last argument to be a string');
       }
 
-      expect(lastArgument.endsWith(TRUNCATION_MESSAGE)).toBe(true);
+      expect(lastArgument.endsWith(TRUNCATION_WARNING)).toBe(true);
     });
 
     // TODO: Test logging the full annotation to the build log
