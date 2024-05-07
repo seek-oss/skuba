@@ -134,6 +134,7 @@ describe('createInclusionFilter', () => {
       '.buildkite/pipeline.yml',
       '.eslintignore',
       '.prettierrc.js',
+      '.vscode/extensions.json',
       'Dockerfile',
       'jest.config.ts',
       'README.md',
