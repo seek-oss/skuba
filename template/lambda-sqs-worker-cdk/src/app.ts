@@ -1,6 +1,6 @@
 import createLogger from '@seek/logger';
 import type { SQSEvent, SQSHandler } from 'aws-lambda';
-import { config } from 'config';
+import { config } from './config';
 import { AsyncLocalStorage } from 'async_hooks';
 
 interface LoggerContext {
