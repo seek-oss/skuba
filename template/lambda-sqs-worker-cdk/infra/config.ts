@@ -38,4 +38,4 @@ export const configs: Record<Environment, Config> = {
   },
 };
 
-export const config = configs[environment];
+export const config: Config = configs[environment];
