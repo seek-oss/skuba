@@ -1,7 +1,10 @@
-import createLogger from '@seek/logger';
-import type { SQSEvent, SQSHandler } from 'aws-lambda';
-import { config } from './config';
 import { AsyncLocalStorage } from 'async_hooks';
+
+import createLogger from '@seek/logger';
+
+import { config } from './config';
+
+import type { SQSEvent, SQSHandler } from 'aws-lambda';
 
 interface LoggerContext {
   awsRequestId: string;
