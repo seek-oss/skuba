@@ -1,10 +1,28 @@
 import createLogger from '@seek/logger';
 import type { SQSEvent, SQSHandler } from 'aws-lambda';
 import { config } from 'config';
+import { AsyncLocalStorage } from 'async_hooks';
 
-const logger = createLogger({
-  name: '<%- serviceName %>',
-  version: config.version,
+interface LoggerContext {
+  awsRequestId: string;
+}
+
+export const loggerContext = new AsyncLocalStorage<LoggerContext>();
+
+export const logger = createLogger({
+  base: {
+    environment: config.environment,
+    version: config.version,
+  },
+
+  level: config.logLevel,
+
+  mixin: () => ({ ...loggerContext.getStore() }),
+
+  name: config.name,
+
+  transport:
+    config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
 });
 
 /**
