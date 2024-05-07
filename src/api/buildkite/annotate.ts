@@ -24,6 +24,14 @@ interface AnnotationOptions {
   style?: AnnotationStyle;
 }
 
+// Buildkite annotation only supports 1MiB of data
+export const MAX_SIZE = 1024 * 1024; // 1MiB in bytes
+export const TRUNCATION_MESSAGE = '... [Truncated due to size limit]';
+export const TRUNCATION_MESSAGE_LENGTH = Buffer.from(
+  TRUNCATION_MESSAGE,
+  'utf-8',
+).length;
+
 /**
  * Asynchronously uploads a Buildkite annotation.
  *
@@ -44,6 +52,17 @@ export const annotate = async (
     return;
   }
 
+  // Check if the annotation exceeds the maximum size
+  const buffer = Buffer.from(markdown, 'utf-8');
+  let truncatedMarkdown = markdown;
+  if (buffer.length > MAX_SIZE) {
+    // Notify user of truncation, leave space for message
+    truncatedMarkdown =
+      buffer.toString('utf-8', 0, MAX_SIZE - TRUNCATION_MESSAGE_LENGTH) +
+      TRUNCATION_MESSAGE;
+    // TODO: Log the full annotation to the build log
+  }
+
   // Always scope to the current Buildkite step.
   const context = [
     opts.scopeContextToStep && process.env.BUILDKITE_STEP_ID,
@@ -59,6 +78,6 @@ export const annotate = async (
     'annotate',
     ...(context ? ['--context', context] : []),
     ...(style ? ['--style', style] : []),
-    markdown,
+    truncatedMarkdown,
   );
 };

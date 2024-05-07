@@ -1,6 +1,6 @@
 import * as execModule from '../../utils/exec';
 
-import { annotate } from './annotate';
+import { MAX_SIZE, TRUNCATION_MESSAGE, annotate } from './annotate';
 
 const exec = jest.spyOn(execModule, 'exec');
 const hasCommand = jest.spyOn(execModule, 'hasCommand');
@@ -28,6 +28,7 @@ const setEnvironmentVariables = () => {
 
 describe('annotate', () => {
   const markdown = '**Message**';
+  const oversizeMarkdown = 'a'.repeat(MAX_SIZE + 100);
 
   describe.each`
     description                    | opts
@@ -53,6 +54,26 @@ describe('annotate', () => {
 
       expect(exec).not.toHaveBeenCalled();
     });
+
+    it('warns about truncation when annotation exceeds the maximum size', async () => {
+      setEnvironmentVariables();
+      await annotate(oversizeMarkdown, opts);
+
+      const lastCall = exec.mock.calls[exec.mock.calls.length - 1];
+      if (!lastCall) {
+        throw new Error('Expected exec to have been called at least once');
+      }
+
+      const lastArgument = lastCall[lastCall.length - 1];
+
+      if (typeof lastArgument !== 'string') {
+        throw new Error('Expected the last argument to be a string');
+      }
+
+      expect(lastArgument.endsWith(TRUNCATION_MESSAGE)).toBe(true);
+    });
+
+    // TODO: Test logging the full annotation to the build log
 
     it('skips when `buildkite-agent` is not present', async () => {
       hasCommand.mockResolvedValue(false);
