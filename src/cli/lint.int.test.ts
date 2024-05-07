@@ -70,6 +70,7 @@ const stdout = (randomMatcher: RegExp) => {
 const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
   await copy(baseDir, tempDir);
   process.chdir(tempDir);
+  await git.init({ fs, dir: tempDir });
   const result = await refreshConfigFiles('format', {
     bold: jest.fn(),
     dim: jest.fn(),

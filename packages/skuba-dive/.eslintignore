@@ -13,8 +13,3 @@ node_modules*/
 /lib*/
 /tmp*/
 # end managed by skuba
-
-/integration/base/
-/integration/format/
-/template/
-/packages/**/*/lib*/

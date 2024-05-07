@@ -153,6 +153,7 @@ Familiarise yourself with the directory structure that **skuba** has created:
 ```shell
 ├── .buildkite
 ├── .github
+├── .vscode
 └── src
     ├── app.test.ts
     ├── app.ts
