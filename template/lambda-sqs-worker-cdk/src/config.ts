@@ -6,15 +6,12 @@ interface Config {
   logLevel: string;
   name: string;
   version: string;
-
-  metricsServer?: string;
-  port?: number;
 }
 
 type Environment = (typeof environments)[number];
 
-const dev = '<%- devGantryEnvironmentName %>';
-const prod = '<%- prodGantryEnvironmentName %>';
+const dev = 'dev';
+const prod = 'prod';
 
 const environments = ['local', 'test', dev, prod] as const;
 
@@ -45,9 +42,6 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
     logLevel: 'info',
     name: Env.string('SERVICE'),
     version: Env.string('VERSION'),
-
-    metricsServer: 'localhost',
-    port: Env.nonNegativeInteger('PORT'),
   }),
 };
 
