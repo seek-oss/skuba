@@ -134,7 +134,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    (Optional) If your sub-package `package.json`s reference one another using the syntax `foo: *`,
    you can replace these references with the [workspace protocol] using the syntax `foo: workspace:*`.
 
-5. Run [`pnpm import && rm yarn.lock`]
+5. Run `pnpm import && rm yarn.lock`
 
    This converts `yarn.lock` to `pnpm-lock.yaml`.
 
@@ -340,7 +340,6 @@ This page may be [edited on GitHub].
 [`.npmrc`]: https://pnpm.io/npmrc
 [`Dockerfile.dev-deps`]: https://github.com/seek-oss/skuba/blob/main/template/koa-rest-api/Dockerfile.dev-deps
 [`pnpm fetch`]: https://pnpm.io/cli/fetch
-[`pnpm import`]: https://pnpm.io/cli/import
 [bind mount]: https://docs.docker.com/engine/reference/builder/#run---mounttypebind
 [contribute a change]: https://seek-oss.github.io/skuba/CONTRIBUTING.html#i-want-to-contribute-a-change
 [edited on GitHub]: https://github.com/seek-oss/skuba/edit/main/docs/deep-dives/pnpm.md
