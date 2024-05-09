@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-template/lambda-sqs-worker-cdk: Add VERSION variable to `lambda-sqs-worker-cdk` logger
+template/lambda-sqs-worker-cdk: Add `version` property to logs
