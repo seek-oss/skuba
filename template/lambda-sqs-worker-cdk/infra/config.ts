@@ -26,7 +26,7 @@ export const configs: Record<Environment, Config> = {
       reservedConcurrency: 2,
       environment: {
         ENVIRONMENT: 'dev',
-        SERVICE: Env.string('SERVICE', { default: '<%- serviceName %>' }),
+        SERVICE: '<%- serviceName %>',
         VERSION: Env.string('VERSION', { default: 'local' }),
       },
     },
@@ -38,7 +38,7 @@ export const configs: Record<Environment, Config> = {
       reservedConcurrency: 20,
       environment: {
         ENVIRONMENT: 'prod',
-        SERVICE: Env.string('SERVICE', { default: '<%- serviceName %>' }),
+        SERVICE: '<%- serviceName %>',
         VERSION: Env.string('VERSION', { default: 'local' }),
       },
     },
