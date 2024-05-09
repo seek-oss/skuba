@@ -19,6 +19,9 @@ import { getEntryPoint } from './getEntryPoint';
 import { getProjectType } from './getProjectType';
 
 const shouldApply = async (name: string) => {
+  if (!process.stdin.isTTY) {
+    return 'yes';
+  }
   const prompt = new Select({
     choices: ['yes', 'no'] as const,
     message: 'Apply changes?',
@@ -118,8 +121,8 @@ export const configure = async () => {
       log.warn(log.bold('✗ Failed to install dependencies. Resume with:'));
 
       log.newline();
-      log.plain(log.bold(packageManager, 'install'));
-      log.plain(log.bold(packageManager, 'run', 'format'));
+      log.plain(log.bold(packageManager.install));
+      log.plain(log.bold(packageManager.exec, 'format'));
 
       log.newline();
       process.exitCode = 1;
@@ -132,7 +135,7 @@ export const configure = async () => {
     log.ok(log.bold('✔ All done! Try running:'));
 
     log.newline();
-    log.plain(log.bold(packageManager, 'run', 'format'));
+    log.plain(log.bold(packageManager.exec, 'format'));
   }
 
   log.newline();
