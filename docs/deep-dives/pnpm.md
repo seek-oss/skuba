@@ -178,9 +178,9 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 9. Run `rm -rf node_modules && pnpm install`
 
-    This will ensure your local workspace will not have any lingering hoisted dependencies from `yarn`.
+   This will ensure your local workspace will not have any lingering hoisted dependencies from `yarn`.
 
-    If you have a monorepo, delete all sub-package `node_modules` directories.
+   If you have a monorepo, delete all sub-package `node_modules` directories.
 
 10. Run `pnpm skuba lint`
 
