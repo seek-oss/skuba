@@ -26,7 +26,7 @@ interface Props {
   manifest: NormalizedReadResult;
 }
 
-const recordSchema = z.record(z.string());
+const recordSchema = z.object({ templateData: z.record(z.string()) });
 
 const getTemplateDataFromStdIn = async (
   templateConfig: TemplateConfig,
@@ -35,7 +35,7 @@ const getTemplateDataFromStdIn = async (
   const data = recordSchema.parse(config);
 
   templateConfig.fields.forEach((field) => {
-    const value = data[field.name];
+    const value = data.templateData[field.name];
     if (value === undefined) {
       throw new Error(`Missing field: ${field.name}`);
     }
@@ -45,7 +45,7 @@ const getTemplateDataFromStdIn = async (
     }
   });
 
-  return data;
+  return data.templateData;
 };
 
 export const ensureTemplateCompletion = async ({
