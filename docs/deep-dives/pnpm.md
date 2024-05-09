@@ -134,17 +134,15 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    (Optional) If your sub-package `package.json`s reference one another using the syntax `foo: *`,
    you can replace these references with the [workspace protocol] using the syntax `foo: workspace:*`.
 
-5. Run [`pnpm import`]
+5. Run [`pnpm import && rm yarn.lock`]
 
    This converts `yarn.lock` to `pnpm-lock.yaml`.
 
-6. Delete `yarn.lock`
-
-7. Run `pnpm skuba format`
+6. Run `pnpm skuba format`
 
    This will synthesise managed hoist patterns into `.npmrc`.
 
-8. Include additional hoisting settings in `.npmrc`
+7. Include additional hoisting settings in `.npmrc`
 
    Skip this step if your project does not use Serverless.
 
@@ -163,7 +161,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    + shamefully-hoist=true
    ```
 
-9. Remove `.npmrc` ignore entry from `.gitignore` and `.dockerignore`
+8. Remove the `.npmrc` ignore entry from `.gitignore` and `.dockerignore`
 
    Heed the warning and ensure that a safe `.npmrc` is included in the same commit.
 
@@ -178,15 +176,13 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    - .npmrc
    ```
 
-10. Delete the `node_modules` directory
+9. Run `rm -rf node_modules && pnpm install`
 
     This will ensure your local workspace will not have any lingering hoisted dependencies from `yarn`.
 
     If you have a monorepo, delete all sub-package `node_modules` directories.
 
-11. Run `pnpm install`
-
-12. Run `pnpm skuba lint`
+10. Run `pnpm skuba lint`
 
     After running `pnpm install`,
     you may notice that some module imports no longer work.
@@ -201,7 +197,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Run `pnpm install foo` to resolve this error.
 
-13. Modify `Dockerfile` or `Dockerfile.dev-deps`
+11. Modify `Dockerfile` or `Dockerfile.dev-deps`
 
     Your build pipeline may have previously mounted an ephemeral `.npmrc` with an auth token at `/workdir`.
     This needs to be mounted elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -239,7 +235,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
-14. Replace `yarn` with `pnpm` in `Dockerfile`
+12. Replace `yarn` with `pnpm` in `Dockerfile`
 
     As `pnpm fetch` does not actually install packages,
     run a subsequent `pnpm install --offline` before any command which may reference a dependency.
@@ -276,7 +272,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       ENV NODE_ENV=production
     ```
 
-15. Modify plugins in `.buildkite/pipeline.yml`
+13. Modify plugins in `.buildkite/pipeline.yml`
 
     Your build pipeline may have previously output an ephemeral `.npmrc` with an auth token on the build agent.
     This needs to be output elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -305,7 +301,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +   secrets: id=npm,src=tmp/.npmrc
     ```
 
-16. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
+14. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
@@ -328,7 +324,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     **A:** `pnpm deploy` is a reserved command. Use `pnpm run deploy` instead.
 
-17. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
+15. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
 
 ---
 
