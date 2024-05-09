@@ -26,13 +26,13 @@ interface Props {
   manifest: NormalizedReadResult;
 }
 
-const recordSchema = z.object({ templateData: z.record(z.string()) });
+const templateDataSchema = z.object({ templateData: z.record(z.string()) });
 
 const getTemplateDataFromStdIn = async (
   templateConfig: TemplateConfig,
 ): Promise<Record<string, string>> => {
   const config = await readJSONFromStdIn();
-  const data = recordSchema.parse(config);
+  const data = templateDataSchema.parse(config);
 
   templateConfig.fields.forEach((field) => {
     const value = data.templateData[field.name];
