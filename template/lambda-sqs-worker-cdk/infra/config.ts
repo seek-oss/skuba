@@ -11,10 +11,9 @@ export interface Config {
     environment: {
       ENVIRONMENT: Environment;
     };
+    SERVICE: string;
   };
   sourceSnsTopicArn: string;
-  SERVICE: string;
-  VERSION: string;
 }
 
 export const configs: Record<Environment, Config> = {
@@ -25,10 +24,9 @@ export const configs: Record<Environment, Config> = {
       environment: {
         ENVIRONMENT: 'dev',
       },
+      SERVICE: '<%- serviceName %>',
     },
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
-    SERVICE: '<%- serviceName %>',
-    VERSION: '<%- version %>',
   },
   prod: {
     appName: '<%- serviceName %>',
@@ -37,10 +35,9 @@ export const configs: Record<Environment, Config> = {
       environment: {
         ENVIRONMENT: 'prod',
       },
+      SERVICE: '<%- serviceName %>',
     },
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
-    SERVICE: '<%- serviceName %>',
-    VERSION: '<%- version %>',
   },
 };
 
