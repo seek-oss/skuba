@@ -1,8 +1,10 @@
-import { z } from 'zod';
+import { Env } from 'skuba-dive';
 
-const environment = z.enum(['dev', 'prod']).parse(process.env.ENVIRONMENT);
+const ENVIRONMENTS = ['dev', 'prod'] as const;
 
-type Environment = typeof environment;
+export type Environment = (typeof ENVIRONMENTS)[number];
+
+export const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
 
 export interface Config {
   appName: string;
@@ -10,8 +12,9 @@ export interface Config {
     reservedConcurrency: number;
     environment: {
       ENVIRONMENT: Environment;
+      SERVICE: string;
+      VERSION: string;
     };
-    SERVICE: string;
   };
   sourceSnsTopicArn: string;
 }
@@ -23,8 +26,9 @@ export const configs: Record<Environment, Config> = {
       reservedConcurrency: 2,
       environment: {
         ENVIRONMENT: 'dev',
+        SERVICE: Env.string('SERVICE', { default: '<%- serviceName %>' }),
+        VERSION: Env.string('VERSION', { default: 'local' }),
       },
-      SERVICE: '<%- serviceName %>',
     },
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
@@ -34,8 +38,9 @@ export const configs: Record<Environment, Config> = {
       reservedConcurrency: 20,
       environment: {
         ENVIRONMENT: 'prod',
+        SERVICE: Env.string('SERVICE', { default: '<%- serviceName %>' }),
+        VERSION: Env.string('VERSION', { default: 'local' }),
       },
-      SERVICE: '<%- serviceName %>',
     },
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
