@@ -2,11 +2,11 @@ import { Env } from 'skuba-dive';
 
 const ENVIRONMENTS = ['dev', 'prod'] as const;
 
-export type Environment = (typeof ENVIRONMENTS)[number];
+type Environment = (typeof ENVIRONMENTS)[number];
 
-export const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
+const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
 
-export interface Config {
+interface Config {
   appName: string;
   workerLambda: {
     reservedConcurrency: number;
@@ -19,7 +19,7 @@ export interface Config {
   sourceSnsTopicArn: string;
 }
 
-export const configs: Record<Environment, Config> = {
+const configs: Record<Environment, Config> = {
   dev: {
     appName: '<%- serviceName %>',
     workerLambda: {
