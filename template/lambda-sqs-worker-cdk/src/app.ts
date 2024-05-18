@@ -1,8 +1,20 @@
 import createLogger from '@seek/logger';
 import type { SQSEvent, SQSHandler } from 'aws-lambda';
 
-const logger = createLogger({
-  name: '<%- serviceName %>',
+import { config } from './config';
+
+export const logger = createLogger({
+  base: {
+    environment: config.environment,
+    version: config.version,
+  },
+
+  level: config.logLevel,
+
+  name: config.name,
+
+  transport:
+    config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
 });
 
 /**
