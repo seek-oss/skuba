@@ -44,7 +44,7 @@ For example, your `src/app.ts` may look like:
 import 'skuba-dive/register';
 
 // You can use the `src` module alias after registration.
-import { rootLogger } 'src/framework/logging';
+import { logger } 'src/framework/logging';
 ```
 
 ---
@@ -73,7 +73,7 @@ For example, your `src/app.ts` may look like:
 import 'skuba-dive/register';
 
 // You can use the `src` module alias after registration.
-import { rootLogger } 'src/framework/logging';
+import { logger } 'src/framework/logging';
 ```
 
 ### Start an executable script
