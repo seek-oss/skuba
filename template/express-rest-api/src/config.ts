@@ -7,8 +7,8 @@ interface Config {
   name: string;
   version: string;
 
-  metricsServer?: string;
-  port?: number;
+  metricsServer: string | null;
+  port: number | null;
 }
 
 type Environment = (typeof environments)[number];
@@ -26,19 +26,27 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
     logLevel: 'debug',
     name: '<%- serviceName %>',
     version: 'local',
+
+    metricsServer: null,
+    port: null,
   }),
 
   test: () => ({
-    ...configs.local(),
-
     logLevel: Env.string('LOG_LEVEL', { default: 'silent' }),
+    name: '<%- serviceName %>',
     version: 'test',
+
+    metricsServer: null,
+    port: null,
   }),
 
   [dev]: () => ({
-    ...configs[prod](),
-
     logLevel: 'debug',
+    name: Env.string('SERVICE'),
+    version: Env.string('VERSION'),
+
+    metricsServer: 'localhost',
+    port: Env.nonNegativeInteger('PORT'),
   }),
 
   [prod]: () => ({

@@ -2,7 +2,7 @@ import createLogger from '@seek/logger';
 
 import { config } from 'src/config';
 
-export const rootLogger = createLogger({
+export const logger = createLogger({
   base: {
     environment: config.environment,
     version: config.version,
