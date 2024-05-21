@@ -32,6 +32,7 @@
     "test:ci": "pnpm skuba test --coverage"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.580.0",
     "module-alias": "^2.2.2"
   },
   "devDependencies": {
