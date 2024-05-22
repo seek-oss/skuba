@@ -82,7 +82,7 @@ export const signature = Secret.binary('signature', { default: undefined });
 // Uint8Array | undefined
 ```
 
-Each function will throw if the secret cannot be fetched or is messing a value when `opts.default` is not provided.
+Each function will throw if the secret cannot be fetched or is missing a value when `opts.default` is not provided.
 
 ### Register
 
