@@ -19,7 +19,7 @@ describe('create', () => {
 
   describe('with default', () => {
     it('parses the secret command', async () => {
-      smMock.on(GetSecretValueCommand).resolves({
+      smMock.on(GetSecretValueCommand, {SecretId: "SECRET"}).resolves({
         SecretString: '123',
         $metadata: {},
       });
@@ -29,7 +29,7 @@ describe('create', () => {
     });
 
     it('defaults on missing values', async () => {
-      smMock.on(GetSecretValueCommand).resolves({
+      smMock.on(GetSecretValueCommand, {SecretId: "SECRET"}).resolves({
         $metadata: {},
       });
       await expect(
@@ -40,7 +40,7 @@ describe('create', () => {
 
   describe('without default', () => {
     it('maps a set environment variable', async () => {
-      smMock.on(GetSecretValueCommand).resolves({
+      smMock.on(GetSecretValueCommand, {SecretId: "SECRET"}).resolves({
         SecretString: '123',
         $metadata: {},
       });
@@ -48,7 +48,7 @@ describe('create', () => {
     });
 
     it('throws on missing values', async () => {
-      smMock.on(GetSecretValueCommand).resolves({
+      smMock.on(GetSecretValueCommand, {SecretId: "SECRET"}).resolves({
         $metadata: {},
       });
       await expect(create(parse)('SECRET')).rejects.toMatchInlineSnapshot(
