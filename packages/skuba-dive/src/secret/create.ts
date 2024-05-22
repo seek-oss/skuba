@@ -1,8 +1,8 @@
 import {
   GetSecretValueCommand,
   type GetSecretValueCommandOutput,
-  SecretsManagerClient
- } from '@aws-sdk/client-secrets-manager';
+  SecretsManagerClient,
+} from '@aws-sdk/client-secrets-manager';
 
 /**
  * Create a function that reads an environment variable and runs it through the
@@ -10,7 +10,10 @@ import {
  */
 export const create =
   <T>(parse: (commandOutput: GetSecretValueCommandOutput, name: string) => T) =>
-  async <U = T>(name: string, opts?: Readonly<{ default: U }>): Promise<T | U> => {
+  async <U = T>(
+    name: string,
+    opts?: Readonly<{ default: U }>,
+  ): Promise<T | U> => {
     const client = new SecretsManagerClient();
     const response = await client.send(
       new GetSecretValueCommand({
@@ -18,7 +21,10 @@ export const create =
       }),
     );
 
-    if (response.SecretString !== undefined || response.SecretBinary !== undefined) {
+    if (
+      response.SecretString !== undefined ||
+      response.SecretBinary !== undefined
+    ) {
       return parse(response, name);
     }
 

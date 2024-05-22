@@ -67,7 +67,7 @@ Each function will throw if its environment variable is not set and `opts.defaul
 
 ### Secret
 
-Functions for reading secrets from [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html). 
+Functions for reading secrets from [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html).
 These helpers take the secret id/name as input and use the default credential chain to call the AWS SM API.
 
 For example, in your `/src/config.ts`:
@@ -78,7 +78,7 @@ import { Secret } from 'skuba-dive';
 export const apiKey = Secret.string('api-key', { default: 'local' });
 // string | 'local'
 
-export const signature = Secret.binary('signature', {default: undefined });
+export const signature = Secret.binary('signature', { default: undefined });
 // Uint8Array | undefined
 ```
 
