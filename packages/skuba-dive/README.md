@@ -10,6 +10,7 @@ Minimal runtime for [`skuba`](https://github.com/seek-oss/skuba).
 - [API reference](#api-reference)
   - [Assert](#assert)
   - [Env](#env)
+  - [Secret](#secret)
   - [Register](#register)
 - [Design](#design)
 
@@ -63,6 +64,25 @@ export const flag = Env.boolean('FLAG');
 ```
 
 Each function will throw if its environment variable is not set and `opts.default` is not provided.
+
+### Secret
+
+Functions for reading secrets from [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html). 
+These helpers take the secret id/name as input and use the default credential chain to call the AWS SM API.
+
+For example, in your `/src/config.ts`:
+
+```typescript
+import { Secret } from 'skuba-dive';
+
+export const apiKey = Secret.string('api-key', { default: 'local' });
+// string | 'local'
+
+export const signature = Secret.binary('signature', {default: undefined });
+// Uint8Array | undefined
+```
+
+Each function will throw if the secret cannot be fetched or is messing a value when `opts.default` is not provided.
 
 ### Register
 
