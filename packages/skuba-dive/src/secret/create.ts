@@ -5,7 +5,7 @@ import {
 } from '@aws-sdk/client-secrets-manager';
 
 /**
- * Create a function that reads an environment variable and runs it through the
+ * Create a function that retrieves an AWS Secrets Manager secret and runs it through the
  * provided parsing function.
  */
 export const create =
