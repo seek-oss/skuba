@@ -36,7 +36,8 @@
     "module-alias": "^2.2.2"
   },
   "devDependencies": {
-    "@types/module-alias": "2.0.4"
+    "@types/module-alias": "2.0.4",
+    "aws-sdk-client-mock": "^4.0.0"
   },
   "engines": {
     "node": ">=14.18"
