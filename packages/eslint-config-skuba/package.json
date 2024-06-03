@@ -20,6 +20,11 @@
     "index.d.ts",
     "index.js"
   ],
+  "scripts": {
+    "format": "pnpm --silent skuba format",
+    "lint": "pnpm --silent skuba lint",
+    "skuba": "node --experimental-vm-modules ../../lib/skuba"
+  },
   "dependencies": {
     "@types/eslint": "^8.4.1",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -37,7 +42,7 @@
     "eslint": ">=8.56.0",
     "typescript": ">=4.7.5"
   },
-  "packageManager": "pnpm@8.15.6",
+  "packageManager": "pnpm@9.0.5",
   "engines": {
     "node": ">=18.18.0"
   },

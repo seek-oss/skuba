@@ -1,6 +1,4 @@
 environment: dev
-env:
-  SOME_ENVIRONMENT_VARIABLE: dev-value
 
 maxInstanceCount: 1
 minInstanceCount: 1
