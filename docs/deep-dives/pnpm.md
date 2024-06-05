@@ -105,21 +105,19 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 1. Install **skuba** 7.4.0 or greater
 
-2. Install pnpm
-
-   Run the following on macOS:
-
-   ```bash
-   brew install pnpm
-   ```
-
-   (Check the [install guide] for other operating systems.)
-
-3. Add a `packageManager` key to `package.json`
+2. Add a `packageManager` key to `package.json`
 
    ```json
    "packageManager": "pnpm@9.1.4",
    ```
+
+3. Install pnpm
+
+   ```bash
+   corepack enable && corepack install
+   ```
+
+   (Check the [install guide] for alternate methods)
 
 4. Create [`pnpm-workspace.yaml`](https://pnpm.io/pnpm-workspace_yaml)
 
