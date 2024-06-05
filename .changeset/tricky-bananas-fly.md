@@ -1,5 +1,5 @@
 ---
-"skuba": patch
+'skuba': patch
 ---
 
 **template:** Remove deprecated `docker-compose.yml` version
