@@ -114,7 +114,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 3. Install pnpm
 
    ```bash
-   corepack install
+   corepack enable && corepack install
    ```
 
    (Check the [install guide] for alternate methods)
