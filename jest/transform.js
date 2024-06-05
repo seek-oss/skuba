@@ -1,4 +1,5 @@
 const { defaults } = require('ts-jest/presets');
+const { ModuleResolutionKind } = require('typescript');
 
 const { tryParseTsConfig } = require('./tsConfig');
 
@@ -14,6 +15,29 @@ const TS_JEST_PATH = require.resolve(TS_JEST_NAME);
 
 const maybeTsConfig = tryParseTsConfig();
 
+const isolatedModules = maybeTsConfig?.options.isolatedModules ?? true;
+
+const BROKEN_MODULE_RESOLUTIONS = new Set([
+  ModuleResolutionKind.Bundler,
+  ModuleResolutionKind.Node16,
+  ModuleResolutionKind.NodeNext,
+]);
+
+/**
+ * Passing through these module resolutions seems to break `ts-jest`.
+ *
+ * ```
+ * error TS5110: Option 'module' must be set to 'NodeNext' when option 'moduleResolution' is set to 'NodeNext'.
+ * ```
+ *
+ * https://github.com/kulshekhar/ts-jest/issues/4198
+ */
+const tsconfig = BROKEN_MODULE_RESOLUTIONS.has(
+  maybeTsConfig?.options.moduleResolution,
+)
+  ? { tsconfig: { moduleResolution: 'Node' } }
+  : undefined;
+
 // Rewrite `ts-jest` transformations using our resolved `TS_JEST_PATH`.
 module.exports.transform = Object.fromEntries(
   Object.entries(defaults.transform).map(([key, value]) => {
@@ -24,7 +48,8 @@ module.exports.transform = Object.fromEntries(
           ? [
               TS_JEST_PATH,
               {
-                isolatedModules: maybeTsConfig?.options.isolatedModules ?? true,
+                ...tsconfig,
+                isolatedModules,
               },
             ]
           : value,
@@ -38,10 +63,8 @@ module.exports.transform = Object.fromEntries(
             TS_JEST_PATH,
             {
               ...value[1],
-              isolatedModules:
-                value[1]?.isolatedModules ??
-                maybeTsConfig?.isolatedModules ??
-                true,
+              ...tsconfig,
+              isolatedModules,
             },
           ]
         : value,

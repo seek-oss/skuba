@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2021"],
+    "outDir": "lib",
+    "target": "ES2021"
+  },
+  "exclude": ["lib*/**/*"],
+  "extends": "../../config/tsconfig.json",
+  "include": [".eslintrc.js", "index.d.ts", "index.js"]
+}

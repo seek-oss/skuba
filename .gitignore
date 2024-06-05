@@ -1,6 +1,7 @@
 # managed by skuba
 .idea/*
 .vscode/*
+!.vscode/extensions.json
 
 .cdk.staging/
 .serverless/
@@ -26,3 +27,7 @@ yarn-error.log
 /integration/lint/
 /template/**/pnpm-lock.yaml
 /template/**/yarn.lock
+/packages/**/*/lib*
+
+# otherwise changesets break:
+/packages/**/.npmrc

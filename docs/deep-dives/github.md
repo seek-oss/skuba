@@ -32,7 +32,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v5.0.0:
+      - docker#v5.11.0:
           # Enable GitHub integrations.
           environment:
             - GITHUB_API_TOKEN
@@ -67,7 +67,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v4.16.0:
+      - docker-compose#v5.2.0:
           environment:
             - GITHUB_API_TOKEN
           propagate-environment: true
@@ -107,6 +107,8 @@ If you're running in GitHub Actions,
 you need to supply a personal access token to [actions/checkout].
 Your repository's default `GITHUB_TOKEN` will not suffice as its commits [will not trigger workflows] and will lack (required) status checks.
 
+The following sample is tailored to [seek-oss] projects:
+
 <!-- {% raw %} -->
 
 ```yaml
@@ -116,7 +118,12 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN || github.com }}
+
+      - name: Set Git user
+        run: |
+          git config user.name seek-oss-ci
+          git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
       # Set up Node.js, install dependencies, run tests...
 
@@ -137,4 +144,5 @@ jobs:
 [Docker Compose Buildkite plugin]: https://github.com/buildkite-plugins/docker-compose-buildkite-plugin
 [GitHub Checks API]: https://docs.github.com/en/rest/reference/checks/
 [GitHub.createCheckRun]: ../development-api/github.md#createcheckrun
+[seek-oss]: https://github.com/seek-oss
 [will not trigger workflows]: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow

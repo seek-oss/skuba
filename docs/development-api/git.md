@@ -153,7 +153,7 @@ import { Git } from 'skuba';
 
 await Git.reset({
   dir,
-  branch: 'master',
+  branch: 'main',
   commitId: 'abcd1234',
   hard: true,
 });

@@ -34,7 +34,7 @@ describe('soft', () => {
       author,
     });
 
-    await reset({ dir, branch: 'master', commitId: initialCommit });
+    await reset({ dir, branch: 'main', commitId: initialCommit });
 
     const commits = await git.log({
       fs,
@@ -69,7 +69,7 @@ describe('hard', () => {
 
     await reset({
       dir,
-      branch: 'master',
+      branch: 'main',
       commitId: initialCommit,
       hard: true,
     });
@@ -98,7 +98,7 @@ describe('hard', () => {
 
     await reset({
       dir,
-      branch: 'master',
+      branch: 'main',
       commitId: initialCommit,
       hard: true,
     });
@@ -128,7 +128,7 @@ describe('hard', () => {
 
     await reset({
       dir,
-      branch: 'master',
+      branch: 'main',
       commitId: initialCommit,
       hard: true,
     });
@@ -166,7 +166,7 @@ describe('hard', () => {
 
     await reset({
       dir,
-      branch: 'master',
+      branch: 'main',
       commitId: initialCommit,
       hard: true,
     });

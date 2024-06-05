@@ -1,5 +1,183 @@
 # skuba
 
+## 8.0.1
+
+### Patch Changes
+
+- **deps:** eslint 8.56.0 ([#1521](https://github.com/seek-oss/skuba/pull/1521))
+
+  This upgrade is required for [eslint-config-seek 13](https://github.com/seek-oss/eslint-config-seek/releases/tag/v13.0.0).
+
+- **template:** Install specific pnpm version via Corepack ([#1515](https://github.com/seek-oss/skuba/pull/1515))
+
+  Previously, our Dockerfiles ran `corepack enable pnpm` without installing a specific version. This does not guarantee installation of the pnpm version specified in `package.json`, which could cause a subsequent `pnpm install --offline` to run Corepack online or otherwise hang on stdin:
+
+  ```dockerfile
+  FROM --platform=arm64 node:20-alpine
+
+  RUN corepack enable pnpm
+  ```
+
+  ```json
+  {
+    "packageManager": "pnpm@8.15.4",
+    "engines": {
+      "node": ">=20"
+    }
+  }
+  ```
+
+  ```console
+  Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-8.15.4.tgz.
+
+  Do you want to continue? [Y/n]
+  ```
+
+  To avoid this issue, modify (1) Buildkite pipelines to cache on the [`packageManager` property](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin/releases/tag/v2.2.0) in `package.json`, and (2) Dockerfiles to mount `package.json` and run `corepack install`:
+
+  ```diff
+  - seek-oss/docker-ecr-cache#v2.1.0:
+  + seek-oss/docker-ecr-cache#v2.2.0:
+      cache-on:
+       - .npmrc
+  +    - package.json#.packageManager
+       - pnpm-lock.yaml
+  ```
+
+  ```diff
+  FROM --platform=arm64 node:20-alpine
+
+  - RUN corepack enable pnpm
+  + RUN --mount=type=bind,source=package.json,target=package.json \
+  + corepack enable pnpm && corepack install
+  ```
+
+- **template/\*-rest-api:** Fix lint failure ([#1514](https://github.com/seek-oss/skuba/pull/1514))
+
+  This resolves the following failure on a newly-initialised project due to a regression in the `@types/express` dependency chain:
+
+  ```console
+  error TS2688: Cannot find type definition file for 'mime'.
+    The file is in the program because:
+      Entry point for implicit type library 'mime'
+  ```
+
+  A temporary workaround is to install `mime` as a dev dependency.
+
+- **deps:** @octokit/types ^13.0.0 ([#1536](https://github.com/seek-oss/skuba/pull/1536))
+
+- **template/lambda-sqs-worker-cdk:** Align dead letter queue naming with Serverless template ([#1542](https://github.com/seek-oss/skuba/pull/1542))
+
+- **Jest.mergePreset:** Fudge `Bundler` module resolution ([#1513](https://github.com/seek-oss/skuba/pull/1513))
+
+  This extends [#1481](https://github.com/seek-oss/skuba/pull/1481) to work around a `ts-jest` issue where test cases fail to run.
+
+- **template/oss-npm-package:** Set timeout to 20 minutes for GitHub Actions ([#1501](https://github.com/seek-oss/skuba/pull/1501))
+
+- **template/lambda-sqs-worker-cdk:** Replace CDK context based config with TypeScript config ([#1541](https://github.com/seek-oss/skuba/pull/1541))
+
+## 8.0.0
+
+This version of skuba looks more scary than it is. The major change is that our dependencies have bumped their minimum Node.js requirement from 18.12 to 18.18. Most SEEK projects do not pin minor Node.js versions and are unlikely to be affected by this change.
+
+In the spirit of upgrades, we recently refreshed our [ARM64 migration guide](https://seek-oss.github.io/skuba/docs/deep-dives/arm64.html#migrating-an-existing-project) and also have [one for pnpm](https://seek-oss.github.io/skuba/docs/deep-dives/pnpm.html). A previous release landed a [`skuba migrate`](https://seek-oss.github.io/skuba/docs/cli/migrate.html) command to simplify upgrades to Node.js 20 (active LTS) before Node.js 18 reaches EOL in April 2025.
+
+### Major Changes
+
+- **deps:** eslint-config-seek 13 + eslint-config-skuba 4 + typescript-eslint ^7.2.0 ([#1487](https://github.com/seek-oss/skuba/pull/1487))
+
+  These major upgrades bump our minimum requirement from Node.js 18.12 to 18.18.
+
+  See the [typescript-eslint v7 announcement](https://typescript-eslint.io/blog/announcing-typescript-eslint-v7/) for more information, and consider upgrading your project to the active LTS release with [`skuba migrate`](https://seek-oss.github.io/skuba/docs/cli/migrate.html) before Node.js 18 reaches EOL in April 2025.
+
+### Minor Changes
+
+- **deps:** semantic-release 22 ([#1492](https://github.com/seek-oss/skuba/pull/1492))
+
+- **deps:** TypeScript 5.4 ([#1491](https://github.com/seek-oss/skuba/pull/1491))
+
+  This major release includes breaking changes. See the [TypeScript 5.4](https://devblogs.microsoft.com/typescript/announcing-typescript-5-4/) announcement for more information.
+
+### Patch Changes
+
+- **template:** Remove `BUILDPLATFORM` from Dockerfiles ([#1350](https://github.com/seek-oss/skuba/pull/1350))
+
+  Previously, the built-in templates made use of [`BUILDPLATFORM`](https://docs.docker.com/build/guide/multi-platform/#platform-build-arguments) and a fallback value:
+
+  ```dockerfile
+  FROM --platform=${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs20-debian11
+  ```
+
+  1. Choose the platform of the host machine running the Docker build. An [AWS Graviton](https://aws.amazon.com/ec2/graviton/) Buildkite agent or Apple Silicon laptop will build under `arm64`, while an Intel laptop will build under `amd64`.
+  2. Fall back to `arm64` if the build platform is not available. This maintains compatibility with toolchains like Gantry that lack support for the `BUILDPLATFORM` argument.
+
+  This approach allowed you to quickly build images and run containers in a local environment without emulation. For example, you could `docker build` an `arm64` image on an Apple Silicon laptop for local troubleshooting, while your CI/CD solution employed `amd64` hardware across its build and runtime environments. The catch is that your local `arm64` image may exhibit different behaviour, and is unsuitable for use in your `amd64` runtime environment without cross-compilation.
+
+  The built-in templates now hardcode `--platform` as we have largely converged on `arm64` across local, build and runtime environments:
+
+  ```dockerfile
+  FROM --platform=arm64 gcr.io/distroless/nodejs20-debian11
+  ```
+
+  This approach is more explicit and predictable, reducing surprises when working across different environments and toolchains. Building an image on a different platform will be slower and rely on emulation.
+
+- **Jest.mergePreset:** Fudge `Node16` and `NodeNext` module resolutions ([#1481](https://github.com/seek-oss/skuba/pull/1481))
+
+  This works around a `ts-jest` issue where test cases fail to run if your `moduleResolution` is set to a modern mode:
+
+  ```json
+  {
+    "compilerOptions": {
+      "moduleResolution": "Node16 | NodeNext"
+    }
+  }
+  ```
+
+  ```console
+  error TS5110: Option 'module' must be set to 'Node16' when option 'moduleResolution' is set to 'Node16'.
+  error TS5110: Option 'module' must be set to 'NodeNext' when option 'moduleResolution' is set to 'NodeNext'.
+  ```
+
+- **pkg:** Exclude `jest/*.test.ts` files ([#1481](https://github.com/seek-oss/skuba/pull/1481))
+
+- **template:** Remove account-level tags from resources ([#1494](https://github.com/seek-oss/skuba/pull/1494))
+
+  This partially reverts [#1459](https://github.com/seek-oss/skuba/pull/1459) and [#1461](https://github.com/seek-oss/skuba/pull/1461) to avoid unnecessary duplication of account-level tags in our templates.
+
+## 7.5.1
+
+### Patch Changes
+
+- **template/lambda-sqs-worker:** Comply with latest AWS tagging guidance ([#1461](https://github.com/seek-oss/skuba/pull/1461))
+
+- **GitHub.putIssueComment:** Support `userId: 'seek-build-agency'` ([#1474](https://github.com/seek-oss/skuba/pull/1474))
+
+  The `userId` parameter is an optimisation to skip user lookup. A descriptive constant is now supported on SEEK build agents:
+
+  ```diff
+  await GitHub.putIssueComment({
+    body,
+  - userId: 87109344, // https://api.github.com/users/buildagencygitapitoken[bot]
+  + userId: 'seek-build-agency',
+  });
+  ```
+
+- **deps:** Remove `why-is-node-running` ([#1476](https://github.com/seek-oss/skuba/pull/1476))
+
+  [`why-is-node-running`](https://www.npmjs.com/package/why-is-node-running) was previously added to the skuba CLI to troubleshoot scenarios where commands were timing out in CI. This has now been removed to avoid disruption to commands such as [`jest --detectOpenHandles`](https://jestjs.io/docs/cli#--detectopenhandles).
+
+- **deps:** Remove `fdir` ([#1463](https://github.com/seek-oss/skuba/pull/1463))
+
+  This dependency is no longer used internally.
+
+- **template/\*-rest-api:** Comply with latest AWS tagging guidance ([#1459](https://github.com/seek-oss/skuba/pull/1459))
+
+  This includes an upgrade to Gantry v3.
+
+- **deps:** @octokit/graphql ^8.0.0 ([#1473](https://github.com/seek-oss/skuba/pull/1473))
+
+- **deps:** @octokit/graphql-schema ^15.3.0 ([#1473](https://github.com/seek-oss/skuba/pull/1473))
+
 ## 7.5.0
 
 ### Minor Changes
@@ -1655,7 +1833,7 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **test:** Add GitHub check run annotations ([#648](https://github.com/seek-oss/skuba/pull/648))
 
-  `skuba test` can now automatically annotate GitHub commits when you [propagate CI environment variables and a GitHub API token](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
+  `skuba test` can now automatically annotate GitHub commits when you [propagate CI environment variables and a GitHub API token](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
 
 - **GitHub.getPullRequestNumber:** Export helper function ([#690](https://github.com/seek-oss/skuba/pull/690))
 
@@ -1737,7 +1915,7 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **lint:** Add GitHub check run annotations ([#625](https://github.com/seek-oss/skuba/pull/625))
 
-  `skuba lint` can now automatically annotate GitHub commits when you [propagate Buildkite environment variables and a GitHub API token](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
+  `skuba lint` can now automatically annotate GitHub commits when you [propagate Buildkite environment variables and a GitHub API token](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-annotations). These annotations also appear inline with code under the “Files changed” tab in pull requests.
 
 - **format, lint:** Enable ESLint caching ([#645](https://github.com/seek-oss/skuba/pull/645))
 
@@ -1903,7 +2081,7 @@ Continue reading for more details on these changes and other improvements in thi
   + lint --serial
   ```
 
-  See our [Buildkite guide](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/buildkite.md) for more information.
+  See our [Buildkite guide](https://seek-oss.github.io/skuba/docs/deep-dives/buildkite.html) for more information.
 
 - **node:** Run REPL in process ([#534](https://github.com/seek-oss/skuba/pull/534))
 
@@ -1931,13 +2109,13 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **build:** Remove experimental Babel support ([#513](https://github.com/seek-oss/skuba/pull/513))
 
-  There's limited upside to switching to [Babel-based builds](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/babel.md) for backend use cases, and it would be difficult to guarantee backwards compatibility with existing `tsconfig.json`-based configuration. Dropping Babel dependencies reduces our package size and resolves [SNYK-JS-SETVALUE-1540541](https://app.snyk.io/vuln/SNYK-JS-SETVALUE-1540541).
+  There's limited upside to switching to [Babel-based builds](https://seek-oss.github.io/skuba/docs/deep-dives/babel.html) for backend use cases, and it would be difficult to guarantee backwards compatibility with existing `tsconfig.json`-based configuration. Dropping Babel dependencies reduces our package size and resolves [SNYK-JS-SETVALUE-1540541](https://app.snyk.io/vuln/SNYK-JS-SETVALUE-1540541).
 
 - **lint:** Support Buildkite annotations ([#558](https://github.com/seek-oss/skuba/pull/558))
 
   `skuba lint` can now output issues as Buildkite annotations.
 
-  See our [Buildkite guide](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/buildkite.md) for more information.
+  See our [Buildkite guide](https://seek-oss.github.io/skuba/docs/deep-dives/buildkite.html) for more information.
 
 ### Patch Changes
 
@@ -2384,7 +2562,7 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **start:** Support [Node.js debugging options](https://nodejs.org/en/docs/guides/debugging-getting-started/) ([#230](https://github.com/seek-oss/skuba/pull/230))
 
-  [`skuba start`](https://github.com/seek-oss/skuba/blob/master/docs/cli/run.md#skuba-start) now accepts `--inspect` and `--inspect-brk` options. This allows you to attach a debugger to the process.
+  [`skuba start`](https://seek-oss.github.io/skuba/docs/cli/run.html#skuba-start) now accepts `--inspect` and `--inspect-brk` options. This allows you to attach a debugger to the process.
 
 - **init:** Redesign base prompt ([#234](https://github.com/seek-oss/skuba/pull/234))
 
@@ -2577,7 +2755,7 @@ Continue reading for more details on these changes and other improvements in thi
 
   `seek-module-toolkit` users can now install `skuba` and run `skuba configure` to migrate their configuration.
 
-  Care should be taken around the [change in build directories](https://github.com/seek-oss/skuba/blob/master/docs/migration-guides/seek-module-toolkit.md#building).
+  Care should be taken around the [change in build directories](https://seek-oss.github.io/skuba/docs/migration-guides/seek-module-toolkit.html#building).
 
 - **eslint:** skuba is now usable as a shareable config ([#81](https://github.com/seek-oss/skuba/pull/81))
 
@@ -2594,7 +2772,7 @@ Continue reading for more details on these changes and other improvements in thi
 
   You can now build your project with Babel instead of tsc. Experimentally.
 
-  See our [Babel topic](https://github.com/seek-oss/skuba/tree/master/docs/deep-dives/babel.md) for details.
+  See our [Babel topic](https://seek-oss.github.io/skuba/docs/deep-dives/babel.html) for details.
 
 - **jest:** skuba is now usable as a preset ([#50](https://github.com/seek-oss/skuba/pull/50))
 
@@ -2732,7 +2910,7 @@ Continue reading for more details on these changes and other improvements in thi
 
 - **build-package:** Add opinionated command to replace `smt build` ([#15](https://github.com/seek-oss/skuba/pull/15))
 
-  See the [migration documentation](https://github.com/seek-oss/skuba/blob/master/docs/migration-guides/seek-module-toolkit.md) for more information.
+  See the [migration documentation](https://seek-oss.github.io/skuba/docs/migration-guides/seek-module-toolkit.html) for more information.
 
 ### Patch Changes
 

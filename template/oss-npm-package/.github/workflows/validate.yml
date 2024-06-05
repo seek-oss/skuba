@@ -12,6 +12,7 @@ jobs:
     permissions:
       checks: write
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -22,7 +23,7 @@ jobs:
           node-version: 20.x
 
       - name: Set up pnpm
-        run: corepack enable pnpm
+        run: corepack enable pnpm && corepack install
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -1,8 +1,10 @@
-# syntax=docker/dockerfile:1.6
+# syntax=docker/dockerfile:1.7
 
-FROM --platform=${BUILDPLATFORM:-<%- platformName %>} node:20-alpine AS dev-deps
+FROM --platform=<%- platformName %> node:20-alpine AS dev-deps
 
-RUN corepack enable pnpm
+RUN --mount=type=bind,source=package.json,target=package.json \
+    corepack enable pnpm && corepack install
+
 RUN pnpm config set store-dir /root/.pnpm-store
 
 WORKDIR /workdir

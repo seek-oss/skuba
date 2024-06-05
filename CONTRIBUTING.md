@@ -28,7 +28,7 @@ and distribute it as an [npm package].
 
 [Submit an issue] if you have a question, feature request or bug report.
 
-If you work at SEEK, start a discussion in [#typescriptification].
+If you work at SEEK, start a discussion in [#skuba-support].
 
 ### I want to contribute a change
 
@@ -37,7 +37,7 @@ Feel free to [create a pull request] for trivial fixes and improvements.
 For more substantial features, please [submit an issue] first.
 This lets us evaluate whether the feature fits the direction of the project and discuss possible approaches.
 
-If you work at SEEK, start a discussion in [#skuba-development].
+If you work at SEEK, start a discussion in [#sig-backend-tooling].
 
 ---
 
@@ -63,11 +63,11 @@ pnpm install
 
 We use [GitHub flow](https://guides.github.com/introduction/flow/).
 
-Create a new branch off of the latest commit on master:
+Create a new branch off of the latest commit on the default branch:
 
 ```shell
 git fetch origin
-git switch --create your-branch-name origin/master
+git switch --create your-branch-name origin/main
 ```
 
 Develop, [test](#testing) and commit your changes on this branch.
@@ -93,7 +93,7 @@ git push --set-upstream fork your-branch-name
 ```
 
 A maintainer will get to your pull request and review the changes.
-If all is well, they will merge your pull request into master.
+If all is well, they will merge your pull request into the default branch.
 
 ### Testing
 
@@ -117,7 +117,7 @@ pnpm lint
 pnpm test
 ```
 
-Our [validate](https://github.com/seek-oss/skuba/blob/master/.github/workflows/validate.yml) GitHub Actions workflow also initialises each built-in **skuba** template and runs through a set of CLI commands.
+Our [validate](https://github.com/seek-oss/skuba/blob/main/.github/workflows/validate.yml) GitHub Actions workflow also initialises each built-in **skuba** template and runs through a set of CLI commands.
 This can be reproduced locally,
 but keep in mind that the script is fairly slow and you'll have to manually clean up afterwards.
 
@@ -175,18 +175,18 @@ You'll see a 🦋 bot gliding around pull requests.
 You should write a changeset if you are changing the public **skuba** interface,
 which includes:
 
-- [API](https://github.com/seek-oss/skuba/tree/master/src/api) for Node.js build and test code
-- [CLI](https://github.com/seek-oss/skuba/tree/master/src/cli) commands
-- [Config](https://github.com/seek-oss/skuba/tree/master/config) presets
-- [Template](https://github.com/seek-oss/skuba/tree/master/template) code and documentation
-- [npm dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
+- [API](https://github.com/seek-oss/skuba/tree/main/src/api) for Node.js build and test code
+- [CLI](https://github.com/seek-oss/skuba/tree/main/src/cli) commands
+- [Config](https://github.com/seek-oss/skuba/tree/main/config) presets
+- [Template](https://github.com/seek-oss/skuba/tree/main/template) code and documentation
+- [npm dependencies](https://github.com/seek-oss/skuba/blob/main/package.json)
 
 On the other hand,
 a changeset is not necessary for:
 
 - Documentation like the [README](README.md)
 - Internal refactoring that preserves the existing interface
-- [npm dev dependencies](https://github.com/seek-oss/skuba/blob/master/package.json)
+- [npm dev dependencies](https://github.com/seek-oss/skuba/blob/main/package.json)
 
 ```shell
 pnpm changeset
@@ -207,7 +207,7 @@ We humour several transgressions to this versioning scheme in practice:
    The general thought here is that changes that can affect the runtime behaviour of your project should be major,
    while changes to build-time validation of a project should not be major.
 
-   We also support [autofixes](https://github.com/seek-oss/skuba/blob/master/docs/deep-dives/github.md#github-autofixes) to ease adoption of lint rule changes.
+   We also support [autofixes](https://github.com/seek-oss/skuba/blob/main/docs/deep-dives/github.md#github-autofixes) to ease adoption of lint rule changes.
 
 1. Breaking changes in TypeScript upgrades should be downgraded to minor.
 
@@ -238,7 +238,7 @@ template/koa-rest-api: Switch to Express
 format, lint: Introduce new ESLint rule
 ```
 
-The Changesets CLI will generate a Markdown file under [.changeset](https://github.com/seek-oss/skuba/tree/master/.changeset),
+The Changesets CLI will generate a Markdown file under [.changeset](https://github.com/seek-oss/skuba/tree/main/.changeset),
 which you should include in your pull request.
 It doesn't need to be part of the same commit as the rest of your changes.
 Feel free to manually edit this file to include more details about your change.
@@ -251,18 +251,18 @@ The changesets are used to infer the next semantic version and to update the [ch
 
 This PR may be left open to collate multiple changes into the next version.
 A maintainer will merge it once ready,
-and our [release](https://github.com/seek-oss/skuba/blob/master/.github/workflows/release.yml) GitHub Actions workflow will publish the associated GitHub release and npm package version.
+and our [release](https://github.com/seek-oss/skuba/blob/main/.github/workflows/release.yml) GitHub Actions workflow will publish the associated GitHub release and npm package version.
 
 ### Publishing a prerelease
 
 Prereleases can be created on demand via [seek-oss/changesets-snapshot].
 
-Manually run the [Snapshot workflow] for the `master` branch in GitHub Actions to publish a new snapshot version to npm.
+Manually run the [Snapshot workflow] for the `main` branch in GitHub Actions to publish a new snapshot version to npm.
 
 <https://www.npmjs.com/package/skuba?activeTab=versions>
 
-[#skuba-development]: https://slack.com/app_redirect?channel=C03UM9GBGET
-[#typescriptification]: https://slack.com/app_redirect?channel=CDCPCEPV3
+[#skuba-support]: https://slack.com/app_redirect?channel=C03UM9GBGET
+[#sig-backend-tooling]: https://slack.com/app_redirect?channel=C06QWMV5BSA
 [changelog]: CHANGELOG.md
 [changesets]: https://github.com/atlassian/changesets
 [create a pull request]: https://github.com/seek-oss/skuba/compare

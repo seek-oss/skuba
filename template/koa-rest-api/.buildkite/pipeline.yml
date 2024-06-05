@@ -9,9 +9,10 @@ configs:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.1.1: &docker-ecr-cache-defaults
+      seek-oss/docker-ecr-cache#v2.2.0: &docker-ecr-cache-defaults
         cache-on:
           - .npmrc
+          - package.json#.packageManager
           - pnpm-lock.yaml
         dockerfile: Dockerfile.dev-deps
         secrets: id=npm,src=tmp/.npmrc
@@ -37,7 +38,7 @@ steps:
     plugins:
       - *aws-sm
       - *private-npm
-      - seek-oss/docker-ecr-cache#v2.1.1:
+      - seek-oss/docker-ecr-cache#v2.2.0:
           <<: *docker-ecr-cache-defaults
           skip-pull-from-cache: true
 
@@ -56,7 +57,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v5.0.0:
+      - docker-compose#v5.2.0:
           run: app
           environment:
             - GITHUB_API_TOKEN
@@ -69,7 +70,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - seek-jobs/gantry#v2.0.0:
+      - seek-jobs/gantry#v3.0.0:
           command: build
           file: gantry.build.yml
           region: <%- region %>
@@ -86,7 +87,7 @@ steps:
     concurrency_group: <%- teamName %>/deploy/gantry/<%- devGantryEnvironmentName %>
     key: deploy-dev
     plugins:
-      - seek-jobs/gantry#v2.0.0:
+      - seek-jobs/gantry#v3.0.0:
           command: apply
           environment: <%- devGantryEnvironmentName %>
           file: gantry.apply.yml
@@ -101,7 +102,7 @@ steps:
     concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
     depends_on: deploy-dev
     plugins:
-      - seek-jobs/gantry#v2.0.0:
+      - seek-jobs/gantry#v3.0.0:
           command: apply
           environment: <%- prodGantryEnvironmentName %>
           file: gantry.apply.yml

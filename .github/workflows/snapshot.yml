@@ -10,6 +10,7 @@ jobs:
     permissions:
       id-token: write
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -23,19 +24,15 @@ jobs:
           node-version: 20.x
 
       - name: Set up pnpm
-        run: corepack enable pnpm
+        run: corepack enable pnpm && corepack install
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Setup jq
-        uses: dcarbone/install-jq-action@v2.1.0
-
       - name: Publish to npm
         uses: seek-oss/changesets-snapshot@v0
         with:
-          pre-version: ./scripts/snapshot-pre-version.sh
-          pre-publish: ./scripts/snapshot-pre-publish.sh
+          pre-publish: pnpm run build
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}

@@ -15,18 +15,18 @@
     "@koa/router": "^12.0.0",
     "@opentelemetry/api": "^1.1.0",
     "@opentelemetry/core": "^1.18.1",
-    "@opentelemetry/exporter-trace-otlp-grpc": "^0.48.0",
-    "@opentelemetry/instrumentation-aws-sdk": "^0.38.0",
-    "@opentelemetry/instrumentation-http": "^0.48.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.50.0",
+    "@opentelemetry/instrumentation-aws-sdk": "^0.40.0",
+    "@opentelemetry/instrumentation-http": "^0.50.0",
     "@opentelemetry/propagator-b3": "^1.18.1",
-    "@opentelemetry/sdk-node": "^0.48.0",
+    "@opentelemetry/sdk-node": "^0.50.0",
     "@seek/logger": "^6.0.0",
     "aws-sdk": "^2.1039.0",
     "hot-shots": "^10.0.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-compose": "^4.2.0",
-    "seek-datadog-custom-metrics": "^4.2.1",
+    "seek-datadog-custom-metrics": "^4.6.3",
     "seek-koala": "^7.0.0",
     "skuba-dive": "^2.0.0",
     "zod": "^3.19.1"
@@ -39,11 +39,12 @@
     "@types/node": "^20.9.0",
     "@types/supertest": "^6.0.0",
     "chance": "^1.1.8",
-    "pino-pretty": "^10.0.0",
+    "mime": "^4.0.1",
+    "pino-pretty": "^11.0.0",
     "skuba": "*",
     "supertest": "^6.1.6"
   },
-  "packageManager": "pnpm@8.15.3",
+  "packageManager": "pnpm@9.0.2",
   "engines": {
     "node": ">=20"
   }

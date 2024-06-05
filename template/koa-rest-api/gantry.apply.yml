@@ -4,19 +4,14 @@ schemaVersion: v0.0
 
 name: '{{values "service"}}'
 
+owner: '{{values "owner"}}'
+
 image: '{{values "image"}}'
 
 env:
-  # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
-  AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
-
   ENVIRONMENT: '{{values "environment"}}'
   OPENTELEMETRY_ENABLED: '{{.Values.openTelemetry.enabled | default false}}'
   SERVICE: '{{values "service"}}'
-
-  {{range $key, $value := .Values.env}}
-  {{$key}}: {{$value}}
-  {{end}}
 
 {{if .Values.cloudwatchDashboardDisabled}}
 cloudwatchDashboardDisabled: {{values "cloudwatchDashboardDisabled"}}
@@ -27,12 +22,8 @@ datadogSecretId: '{{values "datadogSecretId"}}'
 {{end}}
 
 openTelemetry:
-  enabled: {{.Values.openTelemetry.enabled | default false}}
-  {{if .Values.isProduction}}
-  datadogEnvironmentName: production
-  {{else}}
-  datadogEnvironmentName: development
-  {{end}}
+  datadogEnvironmentName: '{{values "openTelemetry.datadogEnvironmentName"}}'
+  enabled: {{values "openTelemetry.enabled"}}
 {{if .Values.pagerDutyEndpoint}}
 pagerDutyEndpoint: '{{values "pagerDutyEndpoint"}}'
 {{end}}

@@ -1,6 +1,8 @@
 agents:
   queue: <%- prodBuildkiteQueueName %>
 
+# Allow conditional unblock + dodgy CI stuffs
+
 configs:
   plugins:
     - &aws-sm
@@ -9,9 +11,10 @@ configs:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.1.1:
+      seek-oss/docker-ecr-cache#v2.2.0:
         cache-on:
           - .npmrc
+          - package.json#.packageManager
           - pnpm-lock.yaml
         secrets: id=npm,src=tmp/.npmrc
 
@@ -35,7 +38,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v5.0.0:
+      - docker-compose#v5.2.0:
           run: app
           environment:
             - GITHUB_API_TOKEN

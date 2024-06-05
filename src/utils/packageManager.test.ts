@@ -1,6 +1,6 @@
-const detect = jest.fn();
+const findUp = jest.fn();
 
-jest.mock('detect-package-manager', () => ({ detect }));
+jest.mock('find-up', () => findUp);
 
 import { detectPackageManager } from './packageManager';
 
@@ -16,7 +16,54 @@ afterEach(stdoutMock.mockReset);
 
 describe('detectPackageManager', () => {
   it('detects pnpm', async () => {
-    detect.mockResolvedValue('pnpm');
+    findUp.mockImplementation((file: string) =>
+      Promise.resolve(
+        file === 'pnpm-lock.yaml' ? '/root/pnpm-lock.yaml' : undefined,
+      ),
+    );
+
+    await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
+      {
+        "command": "pnpm",
+        "exec": "pnpm exec",
+        "install": "pnpm install",
+        "runSilent": "pnpm --silent run",
+        "update": "pnpm update",
+      }
+    `);
+
+    expect(stdout()).toBe('');
+  });
+
+  it('preferences yarn on confusing project setups with sibling lockfiles', async () => {
+    findUp.mockImplementation((file: string) =>
+      Promise.resolve(
+        file === 'pnpm-lock.yaml' ? '/root/pnpm-lock.yaml' : '/root/yarn.lock',
+      ),
+    );
+
+    await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
+      {
+        "command": "yarn",
+        "exec": "yarn",
+        "install": "yarn install",
+        "runSilent": "yarn -s",
+        "update": "yarn upgrade",
+      }
+    `);
+
+    expect(stdout()).toBe('');
+  });
+
+  it('preferences the closest lockfile if at different levels', async () => {
+    findUp.mockImplementation((file: string) =>
+      Promise.resolve(
+        file === 'pnpm-lock.yaml'
+          ? '/root/a/b/c/pnpm-lock.yaml'
+          : '/root/yarn.lock',
+      ),
+    );
+
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
         "command": "pnpm",
@@ -31,7 +78,9 @@ describe('detectPackageManager', () => {
   });
 
   it('detects yarn', async () => {
-    detect.mockResolvedValue('yarn');
+    findUp.mockImplementation((file: string) =>
+      Promise.resolve(file === 'yarn.lock' ? '/root/yarn.lock' : undefined),
+    );
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
@@ -47,7 +96,7 @@ describe('detectPackageManager', () => {
   });
 
   it('defaults on unrecognised package manager', async () => {
-    detect.mockResolvedValue('npm');
+    findUp.mockResolvedValue(undefined);
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
@@ -62,7 +111,7 @@ describe('detectPackageManager', () => {
     expect(stdout()).toBe(
       [
         'Failed to detect package manager; defaulting to yarn.',
-        'Expected pnpm|yarn, received npm',
+        'No package manager lockfile found.',
       ].join('\n'),
     );
   });
@@ -70,7 +119,7 @@ describe('detectPackageManager', () => {
   it('defaults on detection failure', async () => {
     const message = 'Badness!';
 
-    detect.mockRejectedValue(new Error(message));
+    findUp.mockRejectedValue(new Error(message));
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {

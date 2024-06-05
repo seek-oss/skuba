@@ -1,8 +1,4 @@
 environment: dev
-env:
-  SOME_ENVIRONMENT_VARIABLE: dev-value
-
-isProduction: false
 
 maxInstanceCount: 1
 minInstanceCount: 1
@@ -11,4 +7,5 @@ minInstanceCount: 1
 cloudwatchDashboardDisabled: true
 
 openTelemetry:
+  datadogEnvironmentName: development
   enabled: false
