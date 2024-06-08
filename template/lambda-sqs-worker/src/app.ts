@@ -18,8 +18,6 @@ const smokeTest = async () => {
 };
 
 const recordHandler = createBatchSQSHandler(async (record, _ctx) => {
-  metricsClient.distribution('job.received', 1);
-
   const { body } = record;
 
   // TODO: this throws an error, which will cause the Lambda function to retry
@@ -48,6 +46,8 @@ export const handler = createHandler<SQSEvent>(
     const count = event.Records.length;
 
     logger.debug({ count }, 'Received jobs');
+
+    metricsClient.distribution('job.received', count);
 
     return recordHandler(event, ctx);
   },
