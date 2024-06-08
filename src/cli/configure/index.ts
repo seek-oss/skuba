@@ -122,7 +122,7 @@ export const configure = async () => {
 
       log.newline();
       log.plain(log.bold(packageManager.install));
-      log.plain(log.bold(packageManager.exec, 'format'));
+      log.plain(log.bold(packageManager, 'format'));
 
       log.newline();
       process.exitCode = 1;
@@ -135,7 +135,7 @@ export const configure = async () => {
     log.ok(log.bold('✔ All done! Try running:'));
 
     log.newline();
-    log.plain(log.bold(packageManager.exec, 'format'));
+    log.plain(log.bold(packageManager, 'format'));
   }
 
   log.newline();
