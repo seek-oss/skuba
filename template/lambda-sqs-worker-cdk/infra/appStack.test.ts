@@ -1,4 +1,4 @@
-import { App, aws_sns } from 'aws-cdk-lib';
+import { App, aws_secretsmanager, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
 const currentDate = '1212-12-12T12:12:12.121Z';
@@ -35,6 +35,12 @@ it.each(['dev', 'prod'])(
     jest
       .spyOn(aws_sns.Topic, 'fromTopicArn')
       .mockImplementation((scope, id) => new aws_sns.Topic(scope, id));
+
+    jest
+      .spyOn(aws_secretsmanager.Secret, 'fromSecretPartialArn')
+      .mockImplementation(
+        (scope, id) => new aws_secretsmanager.Secret(scope, id),
+      );
 
     const app = new App();
 

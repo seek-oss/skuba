@@ -9,12 +9,13 @@ import {
   aws_lambda,
   aws_lambda_event_sources,
   aws_lambda_nodejs,
+  aws_secretsmanager,
   aws_sns,
   aws_sns_subscriptions,
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
-import { Datadog } from 'datadog-cdk-constructs-v2';
+import { Datadog, getExtensionLayerArn } from 'datadog-cdk-constructs-v2';
 
 import { config } from './config';
 
@@ -70,10 +71,18 @@ export class AppStack extends Stack {
       topicName: '<%- serviceName %>',
     });
 
+    const datadogSecret = aws_secretsmanager.Secret.fromSecretPartialArn(
+      this,
+      'datadog-api-key-secret',
+      config.datadogApiKeySecretArn,
+    );
+
     const datadog = new Datadog(this, 'datadog', {
-      apiKeySecretArn: config.datadogApiKeySecretArn,
+      apiKeySecret: datadogSecret,
       addLayers: false,
       enableDatadogLogs: false,
+      flushMetricsToLogs: false,
+      extensionLayerVersion: 58,
     });
 
     const architecture = '<%- lambdaCdkArchitecture %>';
@@ -116,6 +125,18 @@ export class AppStack extends Stack {
       // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
       description: `Updated at ${new Date().toISOString()}`,
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
+      layers: [
+        // Workaround for https://github.com/DataDog/datadog-cdk-constructs/issues/201
+        aws_lambda.LayerVersion.fromLayerVersionArn(
+          this,
+          'datadog-layer',
+          getExtensionLayerArn(
+            this.region,
+            datadog.props.extensionLayerVersion as number,
+            defaultWorkerConfig.architecture === aws_lambda.Architecture.ARM_64,
+          ),
+        ),
+      ],
     });
 
     datadog.addLambdaFunctions([worker]);

@@ -302,6 +302,14 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
+    "datadogapikeysecret046FEF06": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
     "destinationtopicDCE2E0B8": {
       "Properties": {
         "KmsMasterKeyId": {
@@ -474,14 +482,17 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
-            "DD_API_KEY_SECRET_ARN": "TODO: datadogApiKeySecretArn",
+            "DD_API_KEY_SECRET_ARN": {
+              "Ref": "datadogapikeysecret046FEF06",
+            },
             "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
-            "DD_FLUSH_TO_LOG": "true",
+            "DD_FLUSH_TO_LOG": "false",
             "DD_LAMBDA_HANDLER": "index.handler",
-            "DD_LOGS_INJECTION": "true",
+            "DD_LOGS_INJECTION": "false",
             "DD_MERGE_XRAY_TRACES": "false",
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
+            "DD_SITE": "datadoghq.com",
             "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
             "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
@@ -502,6 +513,20 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "Arn",
           ],
         },
+        "Layers": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":464622532012:layer:Datadog-Extension-ARM:58",
+              ],
+            ],
+          },
+        ],
         "ReservedConcurrentExecutions": 2,
         "Role": {
           "Fn::GetAtt": [
@@ -630,6 +655,16 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "datadogapikeysecret046FEF06",
+              },
+            },
             {
               "Action": [
                 "sqs:ReceiveMessage",
@@ -1395,6 +1430,14 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
+    "datadogapikeysecret046FEF06": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
     "destinationtopicDCE2E0B8": {
       "Properties": {
         "KmsMasterKeyId": {
@@ -1567,14 +1610,17 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
-            "DD_API_KEY_SECRET_ARN": "TODO: datadogApiKeySecretArn",
+            "DD_API_KEY_SECRET_ARN": {
+              "Ref": "datadogapikeysecret046FEF06",
+            },
             "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
-            "DD_FLUSH_TO_LOG": "true",
+            "DD_FLUSH_TO_LOG": "false",
             "DD_LAMBDA_HANDLER": "index.handler",
-            "DD_LOGS_INJECTION": "true",
+            "DD_LOGS_INJECTION": "false",
             "DD_MERGE_XRAY_TRACES": "false",
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
+            "DD_SITE": "datadoghq.com",
             "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
             "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
@@ -1595,6 +1641,20 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "Arn",
           ],
         },
+        "Layers": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":464622532012:layer:Datadog-Extension-ARM:58",
+              ],
+            ],
+          },
+        ],
         "ReservedConcurrentExecutions": 20,
         "Role": {
           "Fn::GetAtt": [
@@ -1723,6 +1783,16 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "datadogapikeysecret046FEF06",
+              },
+            },
             {
               "Action": [
                 "sqs:ReceiveMessage",
