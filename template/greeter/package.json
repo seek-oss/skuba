@@ -1,4 +1,5 @@
 {
+  "name": "greeter",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
