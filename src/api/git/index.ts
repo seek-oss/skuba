@@ -9,3 +9,4 @@ export { getOwnerAndRepo } from './remote';
 export { push } from './push';
 export { fastForwardBranch } from './pull';
 export { reset } from './reset';
+export { isFileGitIgnored } from './isFileGitIgnored';

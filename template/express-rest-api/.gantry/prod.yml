@@ -1,6 +1,4 @@
 environment: prod
-env:
-  SOME_ENVIRONMENT_VARIABLE: prod-value
 
 maxInstanceCount: 10
 minInstanceCount: 3

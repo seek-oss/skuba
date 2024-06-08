@@ -32,7 +32,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v5.0.0:
+      - docker#v5.11.0:
           # Enable GitHub integrations.
           environment:
             - GITHUB_API_TOKEN
@@ -67,7 +67,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v4.16.0:
+      - docker-compose#v5.2.0:
           environment:
             - GITHUB_API_TOKEN
           propagate-environment: true

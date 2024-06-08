@@ -451,6 +451,8 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "ENVIRONMENT": "dev",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName",
@@ -644,6 +646,8 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName-post-hook",
@@ -796,6 +800,8 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName-pre-hook",
@@ -934,7 +940,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "RedrivePolicy": {
           "deadLetterTargetArn": {
             "Fn::GetAtt": [
-              "workerqueuedlq42262778",
+              "workerqueuedeadletters83F3505C",
               "Arn",
             ],
           },
@@ -997,7 +1003,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "workerqueuedlq42262778": {
+    "workerqueuedeadletters83F3505C": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "KmsMasterKeyId": {
@@ -1006,7 +1012,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "Arn",
           ],
         },
-        "QueueName": "serviceName-dlq",
+        "QueueName": "serviceName-dead-letters",
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
@@ -1493,6 +1499,8 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "ENVIRONMENT": "prod",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName",
@@ -1686,6 +1694,8 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName-post-hook",
@@ -1838,6 +1848,8 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName-pre-hook",
@@ -1976,7 +1988,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "RedrivePolicy": {
           "deadLetterTargetArn": {
             "Fn::GetAtt": [
-              "workerqueuedlq42262778",
+              "workerqueuedeadletters83F3505C",
               "Arn",
             ],
           },
@@ -2039,7 +2051,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "workerqueuedlq42262778": {
+    "workerqueuedeadletters83F3505C": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "KmsMasterKeyId": {
@@ -2048,7 +2060,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "Arn",
           ],
         },
-        "QueueName": "serviceName-dlq",
+        "QueueName": "serviceName-dead-letters",
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
