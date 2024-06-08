@@ -158,7 +158,10 @@ export class AppStack extends Stack {
         entry: './src/hooks.ts',
         handler: 'post',
         timeout: Duration.seconds(30),
-        bundling: defaultWorkerBundlingConfig,
+        bundling: {
+          ...defaultWorkerBundlingConfig,
+          nodeModules: ['datadog-lambda-js', 'dd-trace'],
+        },
         functionName: '<%- serviceName %>-post-hook',
         environment: {
           ...defaultWorkerEnvironment,
