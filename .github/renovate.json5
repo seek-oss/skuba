@@ -31,6 +31,11 @@
     },
     {
       matchManagers: ['npm'],
+      matchPackagePatterns: ['^@opentelemetry/'],
+      groupName: 'opentelemetry',
+    },
+    {
+      matchManagers: ['npm'],
       matchPackageNames: [
         // Should be synchronised with AWS Lambda runtimes and Docker images
         '@types/node',
