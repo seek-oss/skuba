@@ -25,6 +25,8 @@
         // Incompatible with read-pkg-up@7
         'type-fest',
       ],
+      matchUpdateTypes: ['major'],
+      enabled: false,
     },
     {
       matchManagers: ['npm'],
