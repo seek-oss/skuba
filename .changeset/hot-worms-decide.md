@@ -1,5 +1,5 @@
 ---
-'skuba': major
+'skuba': patch
 ---
 
 template/lambda-sqs-worker-cdk: Align template with Serverless template
