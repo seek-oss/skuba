@@ -113,7 +113,7 @@ functions:
     events:
       - sqs:
           arn: !GetAtt MessageQueue.Arn
-          batchSize: 10
+          batchSize: 5
           maximumConcurrency: ${param:concurrency}
           functionResponseType: ReportBatchItemFailures
   WorkerPreHook:

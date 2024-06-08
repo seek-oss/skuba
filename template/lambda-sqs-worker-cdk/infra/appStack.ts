@@ -58,6 +58,17 @@ export class AppStack extends Stack {
 
     topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
 
+    const snsKey = aws_kms.Alias.fromAliasName(
+      this,
+      'alias-aws-sns',
+      'alias/aws/sns',
+    );
+
+    const destinationTopic = new aws_sns.Topic(this, 'destination-topic', {
+      masterKey: snsKey,
+      topicName: '<%- serviceName %>',
+    });
+
     const architecture = '<%- lambdaCdkArchitecture %>';
 
     const defaultWorkerConfig: aws_lambda_nodejs.NodejsFunctionProps = {
@@ -88,9 +99,11 @@ export class AppStack extends Stack {
       timeout: Duration.seconds(30),
       bundling: defaultWorkerBundlingConfig,
       functionName: '<%- serviceName %>',
+      memorySize: 512,
       environment: {
         ...defaultWorkerEnvironment,
         ...config.workerLambda.environment,
+        DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
       },
       // https://github.com/aws/aws-cdk/issues/28237
       // This forces the lambda to be updated on every deployment
@@ -106,6 +119,8 @@ export class AppStack extends Stack {
     alias.addEventSource(
       new aws_lambda_event_sources.SqsEventSource(queue, {
         maxConcurrency: config.workerLambda.reservedConcurrency,
+        batchSize: 5,
+        reportBatchItemFailures: true,
       }),
     );
 
@@ -114,7 +129,8 @@ export class AppStack extends Stack {
       'worker-pre-hook',
       {
         ...defaultWorkerConfig,
-        entry: './src/preHook.ts',
+        entry: './src/hooks.ts',
+        handler: 'pre',
         timeout: Duration.seconds(120),
         bundling: defaultWorkerBundlingConfig,
         functionName: '<%- serviceName %>-pre-hook',
@@ -133,7 +149,8 @@ export class AppStack extends Stack {
       'worker-post-hook',
       {
         ...defaultWorkerConfig,
-        entry: './src/postHook.ts',
+        entry: './src/hooks.ts',
+        handler: 'post',
         timeout: Duration.seconds(30),
         bundling: defaultWorkerBundlingConfig,
         functionName: '<%- serviceName %>-post-hook',
