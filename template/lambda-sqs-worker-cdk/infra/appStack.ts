@@ -14,6 +14,7 @@ import {
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
+import { Datadog } from 'datadog-cdk-constructs-v2';
 
 import { config } from './config';
 
@@ -58,6 +59,23 @@ export class AppStack extends Stack {
 
     topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
 
+    const snsKey = aws_kms.Alias.fromAliasName(
+      this,
+      'alias-aws-sns',
+      'alias/aws/sns',
+    );
+
+    const destinationTopic = new aws_sns.Topic(this, 'destination-topic', {
+      masterKey: snsKey,
+      topicName: '<%- serviceName %>',
+    });
+
+    const datadog = new Datadog(this, 'datadog', {
+      apiKeySecretArn: config.datadogApiKeySecretArn,
+      addLayers: false,
+      enableDatadogLogs: false,
+    });
+
     const architecture = '<%- lambdaCdkArchitecture %>';
 
     const defaultWorkerConfig: aws_lambda_nodejs.NodejsFunctionProps = {
@@ -91,6 +109,7 @@ export class AppStack extends Stack {
       environment: {
         ...defaultWorkerEnvironment,
         ...config.workerLambda.environment,
+        DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
       },
       // https://github.com/aws/aws-cdk/issues/28237
       // This forces the lambda to be updated on every deployment
@@ -98,6 +117,8 @@ export class AppStack extends Stack {
       description: `Updated at ${new Date().toISOString()}`,
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
     });
+
+    datadog.addLambdaFunctions([worker]);
 
     const alias = worker.addAlias('live', {
       description: 'The Lambda version currently receiving traffic',
