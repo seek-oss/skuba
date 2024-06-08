@@ -113,7 +113,10 @@ export class AppStack extends Stack {
       ...defaultWorkerConfig,
       entry: './src/app.ts',
       timeout: Duration.seconds(30),
-      bundling: defaultWorkerBundlingConfig,
+      bundling: {
+        ...defaultWorkerBundlingConfig,
+        nodeModules: ['datadog-lambda-js', 'dd-trace'],
+      },
       functionName: '<%- serviceName %>',
       environment: {
         ...defaultWorkerEnvironment,
