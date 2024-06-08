@@ -1,10 +1,11 @@
-import { datadog } from 'datadog-lambda-js';
-import {
-  SQSRecord,
-  SQSEvent,
-  SQSBatchResponse,
+import type {
   SQSBatchItemFailure,
+  SQSBatchResponse,
+  SQSEvent,
+  SQSRecord,
 } from 'aws-lambda';
+import { datadog } from 'datadog-lambda-js';
+
 import { config } from 'src/config';
 import { logger, loggerContext } from 'src/framework/logging';
 
@@ -50,7 +51,7 @@ export const createBatchSQSHandler =
     fn: (record: SQSRecord, ctx: LambdaContext) => Promise<unknown>,
   ): Handler<SQSEvent, SQSBatchResponse> =>
   async (event, ctx) => {
-    const processRecord = async (
+    const processRecord = (
       record: SQSRecord,
     ): Promise<SQSBatchItemFailure | undefined> =>
       loggerContext.run(

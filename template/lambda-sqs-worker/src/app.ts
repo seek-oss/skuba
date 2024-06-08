@@ -1,6 +1,6 @@
 import 'skuba-dive/register';
 
-import type { SQSEvent, SQSBatchResponse } from 'aws-lambda';
+import type { SQSBatchResponse, SQSEvent } from 'aws-lambda';
 
 import { createBatchSQSHandler, createHandler } from 'src/framework/handler';
 import { logger } from 'src/framework/logging';
@@ -36,7 +36,7 @@ const recordHandler = createBatchSQSHandler(async (record, _ctx) => {
 });
 
 export const handler = createHandler<SQSEvent>(
-  async (event, ctx): Promise<SQSBatchResponse> => {
+  async (event, ctx): Promise<SQSBatchResponse | void> => {
     // Treat an empty object as our smoke test event.
     if (!Object.keys(event).length) {
       logger.debug('Received smoke test request');

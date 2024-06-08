@@ -9,5 +9,5 @@ export const createCtx = () =>
 
 export const createSqsEvent = (bodies: string[]) =>
   ({
-    Records: bodies.map((body) => ({ body })),
+    Records: bodies.map((body, id) => ({ body, messageId: id.toString() })),
   }) as SQSEvent;
