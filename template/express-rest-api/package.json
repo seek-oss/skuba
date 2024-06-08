@@ -14,6 +14,8 @@
   "dependencies": {
     "@seek/logger": "^6.0.0",
     "express": "^4.17.1",
+    "hot-shots": "^10.0.0",
+    "seek-datadog-custom-metrics": "^4.6.3",
     "skuba-dive": "^2.0.0"
   },
   "devDependencies": {
