@@ -97,7 +97,7 @@ functions:
     name: ${self:service}
     handler: lib/app.handler
     description: ${param:description}
-    memorySize: 128
+    memorySize: 512
     reservedConcurrency: ${param:concurrency}
     timeout: 30
     deploymentSettings:
@@ -113,8 +113,9 @@ functions:
     events:
       - sqs:
           arn: !GetAtt MessageQueue.Arn
-          batchSize: 1
+          batchSize: 10
           maximumConcurrency: ${param:concurrency}
+          functionResponseType: ReportBatchItemFailures
   WorkerPreHook:
     name: ${self:functions.Worker.name}-pre-hook
     handler: lib/hooks.pre
