@@ -47,9 +47,14 @@ it.each(['dev', 'prod'])(
         /"S3Key":"([0-9a-f]+)\.zip"/g,
         (_, hash) => `"S3Key":"${'x'.repeat(hash.length)}.zip"`,
       )
-      .replaceAll(
+      .replace(
         /workerCurrentVersion([0-9a-zA-Z]+)"/g,
         (_, hash) => `workerCurrentVersion${'x'.repeat(hash.length)}"`,
+      )
+      .replace(
+        /"DD_TAGS":"git.commit.sha:([0-9a-f]+),git.repository_url:([^\"]+)"/g,
+        (_, sha, url) =>
+          `"DD_TAGS":"git.commit.sha:${'x'.repeat(sha.length)},git.repository_url:${'x'.repeat(url.length)}"`,
       );
 
     expect(JSON.parse(json)).toMatchSnapshot();

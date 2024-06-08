@@ -482,7 +482,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "DD_MERGE_XRAY_TRACES": "false",
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
-            "DD_TAGS": "git.commit.sha:35dc8987935bd77d1cec2f58622c158c1ec5a936,git.repository_url:github.com/my-org/tmp-lambda-sqs-worker-cdk.git",
+            "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
             "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
@@ -1575,7 +1575,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "DD_MERGE_XRAY_TRACES": "false",
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
-            "DD_TAGS": "git.commit.sha:35dc8987935bd77d1cec2f58622c158c1ec5a936,git.repository_url:github.com/my-org/tmp-lambda-sqs-worker-cdk.git",
+            "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
             "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
