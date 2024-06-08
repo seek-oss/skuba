@@ -135,7 +135,8 @@ export class AppStack extends Stack {
       'worker-pre-hook',
       {
         ...defaultWorkerConfig,
-        entry: './src/preHook.ts',
+        entry: './src/hooks.ts',
+        handler: 'pre',
         timeout: Duration.seconds(120),
         bundling: defaultWorkerBundlingConfig,
         functionName: '<%- serviceName %>-pre-hook',
@@ -154,7 +155,8 @@ export class AppStack extends Stack {
       'worker-post-hook',
       {
         ...defaultWorkerConfig,
-        entry: './src/postHook.ts',
+        entry: './src/hooks.ts',
+        handler: 'post',
         timeout: Duration.seconds(30),
         bundling: defaultWorkerBundlingConfig,
         functionName: '<%- serviceName %>-post-hook',
