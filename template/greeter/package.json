@@ -1,5 +1,5 @@
 {
-  "name": "greeter",
+  "name": "@seek/greeter",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

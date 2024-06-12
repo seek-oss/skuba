@@ -1,5 +1,5 @@
 {
-  "name": "<%- serviceName %>",
+  "name": "@seek/<%- serviceName %>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
