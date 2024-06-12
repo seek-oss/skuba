@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-deps: prettier 3.3.0
+deps: prettier 3.3
