@@ -1,2 +1,0 @@
-# This excludes node_modules from the `skuba` bundle and is not included in the final package.
-node_modules
