@@ -2,3 +2,4 @@ packages:
   # https://github.com/changesets/changesets/issues/1133#issuecomment-1594844204
   - .
   - packages/*
+  - template/*
