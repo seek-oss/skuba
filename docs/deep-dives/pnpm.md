@@ -75,6 +75,7 @@ public-hoist-pattern[]="*prettier*"
 public-hoist-pattern[]="esbuild"
 public-hoist-pattern[]="jest"
 public-hoist-pattern[]="tsconfig-seek"
+package-manager-strict-version=true
 # end managed by skuba
 ```
 
@@ -152,6 +153,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    public-hoist-pattern[]="esbuild"
    public-hoist-pattern[]="jest"
    public-hoist-pattern[]="tsconfig-seek"
+   package-manager-strict-version=true
    # end managed by skuba
    +
    + # Required for Serverless packaging
