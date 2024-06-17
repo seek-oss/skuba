@@ -1,4 +1,5 @@
 {
+  "name": "@seek/<%- serviceName %>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -27,7 +28,7 @@
     "skuba": "*",
     "supertest": "^6.1.6"
   },
-  "packageManager": "pnpm@9.0.2",
+  "packageManager": "pnpm@9.3.0",
   "engines": {
     "node": ">=20"
   }
