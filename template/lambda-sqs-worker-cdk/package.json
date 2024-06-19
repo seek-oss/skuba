@@ -1,4 +1,5 @@
 {
+  "name": "@seek/<%- serviceName %>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -35,7 +36,7 @@
     "pino-pretty": "^11.0.0",
     "skuba": "*"
   },
-  "packageManager": "pnpm@9.0.2",
+  "packageManager": "pnpm@9.4.0",
   "engines": {
     "node": ">=20"
   }

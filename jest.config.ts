@@ -9,9 +9,11 @@ export default Jest.mergePreset({
     '<rootDir>/integration/format/',
     '<rootDir>/integration/lint/',
   ],
+  roots: ['src'],
   projects: [
     {
       displayName: 'unit',
+      roots: ['src'],
       setupFiles: ['<rootDir>/jest.setup.ts'],
       testPathIgnorePatterns: [
         '<rootDir>/template/',
@@ -21,6 +23,7 @@ export default Jest.mergePreset({
     },
     {
       displayName: 'integration',
+      roots: ['src'],
       setupFiles: ['<rootDir>/jest.setup.ts'],
       testMatch: ['**/*.int.test.ts'],
     },
