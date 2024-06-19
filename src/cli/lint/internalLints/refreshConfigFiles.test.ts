@@ -2,6 +2,7 @@ import path from 'path';
 
 import * as fsExtra from 'fs-extra';
 
+import { Git } from '../../..';
 import { log } from '../../../utils/logging';
 import { detectPackageManager } from '../../../utils/packageManager';
 import * as project from '../../configure/analysis/project';
@@ -27,6 +28,13 @@ jest.mock('../../../utils/template', () => ({
 }));
 
 jest.mock('../../configure/analysis/project');
+
+jest.mock('../../..', () => ({
+  Git: {
+    isFileGitIgnored: jest.fn(),
+    findRoot: () => Promise.resolve('/path/to/git/root'),
+  },
+}));
 
 const givenMockPackageManager = (command: 'pnpm' | 'yarn') => {
   jest
@@ -193,6 +201,37 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
 
       expect(writeFile).not.toHaveBeenCalled();
     });
+
+    it('should not flag creation of files that are `.gitignore`d', async () => {
+      jest
+        .mocked(Git.isFileGitIgnored)
+        .mockImplementation(({ absolutePath }) =>
+          Promise.resolve(absolutePath.endsWith('.eslintignore')),
+        );
+
+      setupDestinationFiles({
+        '.eslintignore': undefined,
+        '.dockerignore': undefined,
+      });
+
+      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
+        ok: false,
+        fixable: true,
+        annotations: [
+          {
+            message:
+              'The .dockerignore file is out of date. Run `pnpm exec skuba format` to update it.',
+            path: '.dockerignore',
+          },
+        ],
+      });
+
+      expect(`\n${stdout()}`).toBe(`
+The .dockerignore file is out of date. Run \`pnpm exec skuba format\` to update it. refresh-config-files
+`);
+
+      expect(writeFile).not.toHaveBeenCalled();
+    });
   });
 
   describe('format mode', () => {
@@ -307,6 +346,35 @@ Refreshed .npmrc. refresh-config-files
       expect(stdout()).toBe('');
 
       expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it('should not create files that are `.gitignore`d', async () => {
+      jest
+        .mocked(Git.isFileGitIgnored)
+        .mockImplementation(({ absolutePath }) =>
+          Promise.resolve(absolutePath.endsWith('.eslintignore')),
+        );
+
+      setupDestinationFiles({
+        '.eslintignore': undefined,
+        '.dockerignore': undefined,
+      });
+
+      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(`\n${stdout()}`).toBe(`
+Refreshed .dockerignore. refresh-config-files
+`);
+
+      expect(writeFile).toHaveBeenCalledTimes(1);
+      expect(writeFile).toHaveBeenCalledWith(
+        path.join(process.cwd(), '.dockerignore'),
+        '# managed by skuba\nfake content for _.dockerignore\n# end managed by skuba',
+      );
     });
 
     it('should format an extraneous !.npmrc', async () => {

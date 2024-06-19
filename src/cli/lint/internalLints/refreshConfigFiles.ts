@@ -4,6 +4,7 @@ import { inspect } from 'util';
 import { writeFile } from 'fs-extra';
 import stripAnsi from 'strip-ansi';
 
+import { Git } from '../../..';
 import type { Logger } from '../../../utils/logging';
 import { NPMRC_LINES, hasNpmrcSecret } from '../../../utils/npmrc';
 import {
@@ -74,7 +75,10 @@ export const refreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
 ) => {
-  const manifest = await getDestinationManifest();
+  const [manifest, gitRoot] = await Promise.all([
+    getDestinationManifest(),
+    Git.findRoot({ dir: process.cwd() }),
+  ]);
 
   const destinationRoot = path.dirname(manifest.path);
 
@@ -93,10 +97,21 @@ export const refreshConfigFiles = async (
       return { needsChange: false };
     }
 
-    const [inputFile, templateFile] = await Promise.all([
+    const [inputFile, templateFile, isGitIgnored] = await Promise.all([
       readDestinationFile(filename),
       readBaseTemplateFile(`_${filename}`),
+      gitRoot
+        ? Git.isFileGitIgnored({
+            gitRoot,
+            absolutePath: path.join(destinationRoot, filename),
+          })
+        : false,
     ]);
+
+    // If the file is gitignored and doesn't exist, don't make it
+    if (inputFile === undefined && isGitIgnored) {
+      return { needsChange: false };
+    }
 
     const data = additionalMapping(
       inputFile

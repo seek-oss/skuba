@@ -1,4 +1,5 @@
 {
+  "name": "@seek/<%- serviceName %>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -14,6 +15,8 @@
   "dependencies": {
     "@seek/logger": "^6.0.0",
     "express": "^4.17.1",
+    "hot-shots": "^10.0.0",
+    "seek-datadog-custom-metrics": "^4.6.3",
     "skuba-dive": "^2.0.0"
   },
   "devDependencies": {
@@ -23,9 +26,9 @@
     "mime": "^4.0.1",
     "pino-pretty": "^11.0.0",
     "skuba": "*",
-    "supertest": "^6.1.6"
+    "supertest": "^7.0.0"
   },
-  "packageManager": "pnpm@8.15.6",
+  "packageManager": "pnpm@9.4.0",
   "engines": {
     "node": ">=20"
   }

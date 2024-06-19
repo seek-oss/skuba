@@ -15,7 +15,7 @@ echo '--- pnpm build'
 pnpm build
 
 echo '--- pnpm pack'
-skuba_tar=$(pwd)/$(pnpm pack)
+skuba_tar="$(pwd)/$(pnpm pack | grep -o 'skuba-.*\.tgz')"
 
 skuba_temp_directory='tmp-skuba'
 

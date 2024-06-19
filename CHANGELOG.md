@@ -1,5 +1,81 @@
 # skuba
 
+## 8.0.1
+
+### Patch Changes
+
+- **deps:** eslint 8.56.0 ([#1521](https://github.com/seek-oss/skuba/pull/1521))
+
+  This upgrade is required for [eslint-config-seek 13](https://github.com/seek-oss/eslint-config-seek/releases/tag/v13.0.0).
+
+- **template:** Install specific pnpm version via Corepack ([#1515](https://github.com/seek-oss/skuba/pull/1515))
+
+  Previously, our Dockerfiles ran `corepack enable pnpm` without installing a specific version. This does not guarantee installation of the pnpm version specified in `package.json`, which could cause a subsequent `pnpm install --offline` to run Corepack online or otherwise hang on stdin:
+
+  ```dockerfile
+  FROM --platform=arm64 node:20-alpine
+
+  RUN corepack enable pnpm
+  ```
+
+  ```json
+  {
+    "packageManager": "pnpm@8.15.4",
+    "engines": {
+      "node": ">=20"
+    }
+  }
+  ```
+
+  ```console
+  Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-8.15.4.tgz.
+
+  Do you want to continue? [Y/n]
+  ```
+
+  To avoid this issue, modify (1) Buildkite pipelines to cache on the [`packageManager` property](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin/releases/tag/v2.2.0) in `package.json`, and (2) Dockerfiles to mount `package.json` and run `corepack install`:
+
+  ```diff
+  - seek-oss/docker-ecr-cache#v2.1.0:
+  + seek-oss/docker-ecr-cache#v2.2.0:
+      cache-on:
+       - .npmrc
+  +    - package.json#.packageManager
+       - pnpm-lock.yaml
+  ```
+
+  ```diff
+  FROM --platform=arm64 node:20-alpine
+
+  - RUN corepack enable pnpm
+  + RUN --mount=type=bind,source=package.json,target=package.json \
+  + corepack enable pnpm && corepack install
+  ```
+
+- **template/\*-rest-api:** Fix lint failure ([#1514](https://github.com/seek-oss/skuba/pull/1514))
+
+  This resolves the following failure on a newly-initialised project due to a regression in the `@types/express` dependency chain:
+
+  ```console
+  error TS2688: Cannot find type definition file for 'mime'.
+    The file is in the program because:
+      Entry point for implicit type library 'mime'
+  ```
+
+  A temporary workaround is to install `mime` as a dev dependency.
+
+- **deps:** @octokit/types ^13.0.0 ([#1536](https://github.com/seek-oss/skuba/pull/1536))
+
+- **template/lambda-sqs-worker-cdk:** Align dead letter queue naming with Serverless template ([#1542](https://github.com/seek-oss/skuba/pull/1542))
+
+- **Jest.mergePreset:** Fudge `Bundler` module resolution ([#1513](https://github.com/seek-oss/skuba/pull/1513))
+
+  This extends [#1481](https://github.com/seek-oss/skuba/pull/1481) to work around a `ts-jest` issue where test cases fail to run.
+
+- **template/oss-npm-package:** Set timeout to 20 minutes for GitHub Actions ([#1501](https://github.com/seek-oss/skuba/pull/1501))
+
+- **template/lambda-sqs-worker-cdk:** Replace CDK context based config with TypeScript config ([#1541](https://github.com/seek-oss/skuba/pull/1541))
+
 ## 8.0.0
 
 This version of skuba looks more scary than it is. The major change is that our dependencies have bumped their minimum Node.js requirement from 18.12 to 18.18. Most SEEK projects do not pin minor Node.js versions and are unlikely to be affected by this change.
