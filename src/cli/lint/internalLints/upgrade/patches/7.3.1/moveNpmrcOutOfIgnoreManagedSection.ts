@@ -76,7 +76,7 @@ const moveNpmrcOutOfIgnoreManagedSection = async (
 export const tryMoveNpmrcOutOfIgnoreManagedSection = (
   type: '.gitignore' | '.dockerignore',
 ) =>
-  (async (mode: 'format' | 'lint', dir = process.cwd()) => {
+  (async ({ mode, dir = process.cwd() }) => {
     try {
       return await moveNpmrcOutOfIgnoreManagedSection(mode, dir, type);
     } catch (err) {
