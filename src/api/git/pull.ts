@@ -51,7 +51,7 @@ export const fastForwardBranch = async ({
   ref,
   remote,
   remoteRef,
-}: PullParameters) => {
+}: PullParameters): Promise<void> => {
   const { owner, repo } = await getOwnerAndRepo({ dir });
 
   const url = `https://github.com/${encodeURIComponent(
