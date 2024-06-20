@@ -287,7 +287,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   };
 };
 
-const configureFromPipe = async (): Promise<InitConfig> => {
+export const readJSONFromStdIn = async () => {
   let text = '';
 
   await new Promise((resolve) =>
@@ -311,6 +311,12 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     log.err('Invalid JSON from stdin.');
     process.exit(1);
   }
+
+  return value;
+};
+
+const configureFromPipe = async (): Promise<InitConfig> => {
+  const value = await readJSONFromStdIn();
 
   const result = initConfigInputSchema.safeParse(value);
 
