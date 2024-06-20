@@ -55,9 +55,7 @@ const addEmptyExports = async (mode: 'format' | 'lint') => {
  * Tries to add an empty `export {}` statement to the bottom of Jest setup files
  * for compliance with TypeScript isolated modules.
  */
-export const tryAddEmptyExports: PatchFunction = async (
-  mode: 'format' | 'lint',
-) => {
+export const tryAddEmptyExports: PatchFunction = async ({ mode }) => {
   try {
     return { result: await addEmptyExports(mode) };
   } catch (err) {
