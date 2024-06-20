@@ -17,7 +17,7 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - not using pnpm
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
 skuba update complete.
 
@@ -92,7 +92,7 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - not using pnpm
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
 skuba update complete.
 
@@ -164,7 +164,7 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - not using pnpm
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
 skuba update complete.
 
@@ -205,7 +205,7 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - not ignored
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - not using pnpm
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
 skuba update complete.
 
