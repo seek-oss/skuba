@@ -5,6 +5,7 @@ import memfs, { vol } from 'memfs';
 import * as Git from '../../../api/git';
 
 import { tryPatchRenovateConfig } from './patchRenovateConfig';
+import type { PatchConfig } from './upgrade';
 
 jest.mock('fs-extra', () => memfs);
 
@@ -51,7 +52,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON({ '.git': null, 'renovate.json': JSON });
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -77,7 +80,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON({ 'foo/.git': null, 'foo/renovate.json': JSON });
 
-      await expect(tryPatchRenovateConfig('format', 'foo')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format', dir: 'foo' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -103,7 +108,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON({ '.git': null, '.github/renovate.json5': JSON5 });
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -137,7 +144,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no config found',
       });
@@ -159,7 +168,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'due to an error',
       });
@@ -181,7 +192,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no Git root found',
       });
@@ -198,7 +211,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'owner does not map to a SEEK preset',
       });
@@ -218,7 +233,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'owner does not map to a SEEK preset',
       });
@@ -238,7 +255,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -260,7 +279,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'config already has a SEEK preset',
       });
@@ -280,7 +301,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('format')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'config already has a SEEK preset',
       });
@@ -300,7 +323,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON({ '.git': null, 'renovate.json': JSON });
 
-      await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -315,7 +340,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON({ 'foo/.git': null, 'foo/renovate.json': JSON });
 
-      await expect(tryPatchRenovateConfig('lint', 'foo')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint', dir: 'foo' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -333,7 +360,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON({ '.git': null, '.github/renovate.json5': JSON5 });
 
-      await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -354,7 +383,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no config found',
       });
@@ -371,7 +402,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no Git root found',
       });
@@ -388,7 +421,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'owner does not map to a SEEK preset',
       });
@@ -408,7 +443,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'owner does not map to a SEEK preset',
       });
@@ -428,7 +465,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -450,7 +489,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'config already has a SEEK preset',
       });
@@ -470,7 +511,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchRenovateConfig('lint')).resolves.toEqual({
+      await expect(
+        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'config already has a SEEK preset',
       });

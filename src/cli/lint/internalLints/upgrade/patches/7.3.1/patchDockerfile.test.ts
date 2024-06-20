@@ -1,5 +1,7 @@
 import memfs, { vol } from 'memfs';
 
+import type { PatchConfig } from '../..';
+
 import { tryPatchDockerfile } from './patchDockerfile';
 
 jest.mock('fs-extra', () => memfs);
@@ -41,7 +43,9 @@ describe('tryPatchDockerfile', () => {
     it('patches a Dockerfile with nodejs:18', async () => {
       vol.fromJSON({ Dockerfile: dockerfile });
 
-      await expect(tryPatchDockerfile('format')).resolves.toEqual({
+      await expect(
+        tryPatchDockerfile({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -62,7 +66,9 @@ describe('tryPatchDockerfile', () => {
     it('patches a Dockerfile with nodejs18-debian11', async () => {
       vol.fromJSON({ Dockerfile: dockerfileDebian11 });
 
-      await expect(tryPatchDockerfile('format')).resolves.toEqual({
+      await expect(
+        tryPatchDockerfile({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -83,7 +89,9 @@ describe('tryPatchDockerfile', () => {
     it('ignores when a Dockerfile is missing', async () => {
       vol.fromJSON({});
 
-      await expect(tryPatchDockerfile('format')).resolves.toEqual({
+      await expect(
+        tryPatchDockerfile({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no Dockerfile found',
       });
@@ -92,7 +100,9 @@ describe('tryPatchDockerfile', () => {
     it('ignores when a Dockerfile is not distroless', async () => {
       vol.fromJSON({ Dockerfile: dockerfileNonDistroless });
 
-      await expect(tryPatchDockerfile('format')).resolves.toEqual({
+      await expect(
+        tryPatchDockerfile({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
       });
 
@@ -104,7 +114,9 @@ describe('tryPatchDockerfile', () => {
     it('patches a Dockerfile with nodejs:18', async () => {
       vol.fromJSON({ Dockerfile: dockerfile });
 
-      await expect(tryPatchDockerfile('lint')).resolves.toEqual({
+      await expect(
+        tryPatchDockerfile({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -114,7 +126,9 @@ describe('tryPatchDockerfile', () => {
     it('patches a Dockerfile with nodejs18-debian11', async () => {
       vol.fromJSON({ Dockerfile: dockerfileDebian11 });
 
-      await expect(tryPatchDockerfile('lint')).resolves.toEqual({
+      await expect(
+        tryPatchDockerfile({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -124,7 +138,9 @@ describe('tryPatchDockerfile', () => {
     it('ignores when a Dockerfile is missing', async () => {
       vol.fromJSON({});
 
-      await expect(tryPatchDockerfile('lint')).resolves.toEqual({
+      await expect(
+        tryPatchDockerfile({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no Dockerfile found',
       });
@@ -135,7 +151,9 @@ describe('tryPatchDockerfile', () => {
     it('ignores when a Dockerfile is not distroless', async () => {
       vol.fromJSON({ Dockerfile: dockerfileNonDistroless });
 
-      await expect(tryPatchDockerfile('format')).resolves.toEqual({
+      await expect(
+        tryPatchDockerfile({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
       });
 

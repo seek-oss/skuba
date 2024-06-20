@@ -41,10 +41,10 @@ const patchDockerfile = async (
   return { result: 'apply' };
 };
 
-export const tryPatchDockerfile: PatchFunction = async (
-  mode: 'format' | 'lint',
+export const tryPatchDockerfile: PatchFunction = async ({
+  mode,
   dir = process.cwd(),
-) => {
+}) => {
   try {
     return await patchDockerfile(mode, dir);
   } catch (err) {
