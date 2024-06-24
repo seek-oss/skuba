@@ -46,7 +46,6 @@ export const readTsconfig = (args = process.argv.slice(2), log: Logger) => {
     );
     if (!tsconfigFile) {
       log.err(`Could not find ${tscArgs.pathname}.`);
-      process.exitCode = 1;
       return;
     }
 
@@ -57,7 +56,6 @@ export const readTsconfig = (args = process.argv.slice(2), log: Logger) => {
     if (readConfigFile.error) {
       log.err(`Could not read ${tscArgs.pathname}.`);
       log.subtle(ts.formatDiagnostic(readConfigFile.error, formatHost));
-      process.exitCode = 1;
       return;
     }
 
@@ -72,9 +70,11 @@ export const readTsconfig = (args = process.argv.slice(2), log: Logger) => {
   if (parsedCommandLine.errors.length) {
     log.err(`Could not parse ${tscArgs.pathname}.`);
     log.subtle(ts.formatDiagnostics(parsedCommandLine.errors, formatHost));
-    process.exitCode = 1;
     return;
   }
 
-  return parsedCommandLine;
+  return {
+    compilerOptions: parsedCommandLine.options,
+    entryPoints: parsedCommandLine.fileNames,
+  };
 };
