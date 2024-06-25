@@ -116,7 +116,7 @@
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "2.0.0",
-    "typescript": "~5.4.0",
+    "typescript": "~5.5.0",
     "validate-npm-package-name": "^5.0.0",
     "zod": "^3.22.4"
   },
