@@ -1,5 +1,5 @@
 ---
-'eslint-config-skuba': patch
+'eslint-config-skuba': minor
 ---
 
 deps: @typescript/eslint ^7.14.1
