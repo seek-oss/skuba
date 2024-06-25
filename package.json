@@ -131,6 +131,7 @@
     "@types/koa": "2.15.0",
     "@types/libnpmsearch": "2.0.7",
     "@types/lodash.mergewith": "4.6.9",
+    "@types/minimist": "1.2.5",
     "@types/module-alias": "2.0.4",
     "@types/npm-which": "3.0.3",
     "@types/picomatch": "2.3.3",
