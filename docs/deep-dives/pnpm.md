@@ -75,6 +75,7 @@ public-hoist-pattern[]="*prettier*"
 public-hoist-pattern[]="esbuild"
 public-hoist-pattern[]="jest"
 public-hoist-pattern[]="tsconfig-seek"
+package-manager-strict-version=true
 # end managed by skuba
 ```
 
@@ -108,7 +109,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 2. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@9.1.4",
+   "packageManager": "pnpm@9.2.0",
    ```
 
 3. Install pnpm
@@ -152,6 +153,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    public-hoist-pattern[]="esbuild"
    public-hoist-pattern[]="jest"
    public-hoist-pattern[]="tsconfig-seek"
+   package-manager-strict-version=true
    # end managed by skuba
    +
    + # Required for Serverless packaging
