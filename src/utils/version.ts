@@ -1,5 +1,8 @@
 import searchNpm from 'libnpmsearch';
+import type readPkgUp from 'read-pkg-up';
 import validatePackageName from 'validate-npm-package-name';
+
+import type { SkubaPackageJson } from '../cli/init/writePackageJson';
 
 import { getSkubaManifest } from './manifest';
 import { withTimeout } from './wait';
@@ -32,6 +35,14 @@ const latestSkubaVersion = async (): Promise<string | null> => {
   } catch {
     return null;
   }
+};
+
+export const manifestSkubaVersion = (
+  manifest: readPkgUp.NormalizedReadResult,
+) => {
+  const skuba = manifest.packageJson.skuba as SkubaPackageJson | undefined;
+
+  return skuba?.version ?? '1.0.0';
 };
 
 export const getSkubaVersion = async (): Promise<string> => {
