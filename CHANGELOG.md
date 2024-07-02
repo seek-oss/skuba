@@ -1,5 +1,11 @@
 # skuba
 
+## 8.1.1
+
+### Patch Changes
+
+- **configure:** Fix `[object Object]` output appearing during `skuba configure` ([#1597](https://github.com/seek-oss/skuba/pull/1597))
+
 ## 8.1.0
 
 ### Minor Changes
