@@ -85,10 +85,6 @@ export const refreshConfigFiles = async (
 
   const manifestVersion = manifestSkubaVersion(manifest);
 
-  process.stdout.write(
-    `${JSON.stringify({ currentVersion, manifestVersion })}\n`,
-  );
-
   // The local version that we're running is older than the version that last
   // wrote to the manifest; avoid reverting config files back to a prior state.
   if (gt(manifestVersion, currentVersion)) {
