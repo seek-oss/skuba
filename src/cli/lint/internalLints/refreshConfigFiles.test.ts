@@ -5,6 +5,7 @@ import * as fsExtra from 'fs-extra';
 import { Git } from '../../..';
 import { log } from '../../../utils/logging';
 import { detectPackageManager } from '../../../utils/packageManager';
+import * as packageAnalysis from '../../configure/analysis/package';
 import * as project from '../../configure/analysis/project';
 
 import {
@@ -48,7 +49,17 @@ const givenMockPackageManager = (command: 'pnpm' | 'yarn') => {
 
 jest.mock('../../../utils/packageManager');
 
+let getDestinationManifest = jest.spyOn(
+  packageAnalysis,
+  'getDestinationManifest',
+);
+
 beforeEach(() => {
+  getDestinationManifest = jest.spyOn(
+    packageAnalysis,
+    'getDestinationManifest',
+  );
+
   jest
     .spyOn(console, 'log')
     .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
@@ -56,7 +67,11 @@ beforeEach(() => {
   givenMockPackageManager('pnpm');
 });
 
-afterEach(jest.resetAllMocks);
+afterEach(() => {
+  jest.resetAllMocks();
+
+  getDestinationManifest.mockRestore();
+});
 
 describe('refreshConfigFiles', () => {
   const writeFile = jest.mocked(fsExtra.writeFile);
@@ -91,6 +106,27 @@ describe('refreshConfigFiles', () => {
         ok: true,
         fixable: false,
         annotations: [],
+      });
+
+      expect(stdout()).toBe('');
+
+      expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it('should report ok if local skuba version is out of date, and output nothing', async () => {
+      getDestinationManifest.mockResolvedValue({
+        packageJson: {
+          skuba: {
+            version: '2147483647.0.0',
+          },
+        },
+      } as any);
+
+      setupDestinationFiles({});
+
+      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
       });
 
       expect(stdout()).toBe('');
@@ -245,6 +281,27 @@ The .dockerignore file is out of date. Run \`pnpm exec skuba format\` to update 
         ok: true,
         fixable: false,
         annotations: [],
+      });
+
+      expect(stdout()).toBe('');
+
+      expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it('should report ok if local skuba version is out of date, and output nothing', async () => {
+      getDestinationManifest.mockResolvedValue({
+        packageJson: {
+          skuba: {
+            version: '2147483647.0.0',
+          },
+        },
+      } as any);
+
+      setupDestinationFiles({});
+
+      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
       });
 
       expect(stdout()).toBe('');
