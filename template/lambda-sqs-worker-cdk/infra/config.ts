@@ -16,6 +16,7 @@ interface Config {
       VERSION: string;
     };
   };
+  datadogApiKeySecretArn: string;
   sourceSnsTopicArn: string;
 }
 
@@ -30,6 +31,7 @@ const configs: Record<Environment, Config> = {
         VERSION: Env.string('VERSION', { default: 'local' }),
       },
     },
+    datadogApiKeySecretArn: 'TODO: datadogApiKeySecretArn',
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
   prod: {
@@ -42,6 +44,7 @@ const configs: Record<Environment, Config> = {
         VERSION: Env.string('VERSION', { default: 'local' }),
       },
     },
+    datadogApiKeySecretArn: 'TODO: datadogApiKeySecretArn',
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
 };
