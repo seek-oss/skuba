@@ -10,16 +10,11 @@ describe('app', () => {
 
   it('has a happy health check', () => agent.get('/health').expect(200, ''));
 
-  it('has a reachable smoke test', async () => {
-    const response = await agent.get('/smoke');
-    expect(response.status).not.toBe(404);
-  });
+  it('has a reachable smoke test', () =>
+    agent.options('/smoke').expect(200, '').expect('Allow', 'HEAD, GET'));
 
-  it('has a reachable nested route', async () => {
-    const response = await agent.get('/jobs');
-    expect(response.status).not.toBe(404);
-  });
+  it('has a reachable nested route', () =>
+    agent.options('/jobs').expect(200, '').expect('Allow', /POST/));
 
-  it('has OPTIONS for a nested route', () =>
-    agent.options('/jobs').expect(200).expect('allow', /HEAD/));
+  it('handles an unknown route', () => agent.options('/admin.php').expect(404));
 });
