@@ -334,7 +334,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 **Q** I'm seeing `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "workspace" not found` in my pipeline
 
-**A** `pnpm workspace <PACKAGE_NAME>` does not work. Replace it with the [`filter`](https://pnpm.io/filtering) flag.
+**A** `pnpm workspace <PACKAGE_NAME>` does not work. Replace it with the [`--filter`](https://pnpm.io/filtering) flag.
 
 ---
 
