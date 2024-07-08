@@ -326,15 +326,15 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 ---
 
-**Q** I'm seeing `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "<NAME>" not found` in my pipeline
+**Q:** I'm seeing `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "<NAME>" not found` in my pipeline
 
-**A** Ensure `pnpm install --offline` is referenced earlier within pipeline step as shown in step 14.
+**A:** Ensure `pnpm install --offline` is referenced earlier within pipeline step as shown in step 14.
 
 ---
 
-**Q** I'm seeing `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "workspace" not found` in my pipeline
+**Q:** I'm seeing `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "workspace" not found` in my pipeline
 
-**A** `pnpm workspace <PACKAGE_NAME>` does not work. Replace it with the [`--filter`](https://pnpm.io/filtering) flag.
+**A:** `pnpm workspace <PACKAGE_NAME>` does not work. Replace it with the [`--filter`](https://pnpm.io/filtering) flag.
 
 ---
 
