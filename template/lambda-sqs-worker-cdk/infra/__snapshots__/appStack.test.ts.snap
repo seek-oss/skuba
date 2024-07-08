@@ -38,7 +38,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "codedeploy": "codedeploy.ap-southeast-4.amazonaws.com",
       },
       "ap-southeast-5": {
-         "codedeploy": "codedeploy.ap-southeast-5.amazonaws.com",
+        "codedeploy": "codedeploy.ap-southeast-5.amazonaws.com",
       },
       "ap-southeast-7": {
         "codedeploy": "codedeploy.ap-southeast-7.amazonaws.com",
@@ -1101,7 +1101,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "codedeploy": "codedeploy.ap-southeast-4.amazonaws.com",
       },
       "ap-southeast-5": {
-         "codedeploy": "codedeploy.ap-southeast-5.amazonaws.com",
+        "codedeploy": "codedeploy.ap-southeast-5.amazonaws.com",
       },
       "ap-southeast-7": {
         "codedeploy": "codedeploy.ap-southeast-7.amazonaws.com",
