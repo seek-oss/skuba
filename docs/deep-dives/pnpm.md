@@ -263,7 +263,6 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       WORKDIR /workdir
     
       COPY --from=build /workdir/lib lib
-    - COPY --from=build /workdir/packages packages
     - COPY --from=deps /workdir/node_modules node_modules
     + COPY --from=build /workdir/node_modules node_modules
     
