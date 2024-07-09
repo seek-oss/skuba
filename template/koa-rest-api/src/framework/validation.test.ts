@@ -5,7 +5,7 @@ import {
   mockIdDescription,
 } from 'src/testing/types';
 
-import { jsonBodyParser } from './middleware';
+import { jsonBodyParser } from './bodyParser';
 import { validate } from './validation';
 
 const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {

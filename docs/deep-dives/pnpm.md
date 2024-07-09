@@ -265,7 +265,6 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       WORKDIR /workdir
     
       COPY --from=build /workdir/lib lib
-    -
     - COPY --from=deps /workdir/node_modules node_modules
     + COPY --from=build /workdir/node_modules node_modules
     
@@ -291,10 +290,10 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     - seek-oss/docker-ecr-cache#v2.1.0:
     + seek-oss/docker-ecr-cache#v2.2.0:
         cache-on:
-    +     - .npmrc
     -     - package.json
-    +     - package.json#.packageManager
     -     - yarn.lock
+    +     - .npmrc
+    +     - package.json#.packageManager
     +     - pnpm-lock.yaml
         dockerfile: Dockerfile.dev-deps
     -   secrets: id=npm,src=.npmrc
@@ -318,13 +317,25 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +    - pnpm lint
     ```
 
-    #### FAQ
-
-    **Q:** I'm running into `ERR_PNPM_CANNOT_DEPLOY  A deploy is only possible from inside a workspace`
-
-    **A:** `pnpm deploy` is a reserved command. Use `pnpm run deploy` instead.
-
 15. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
+
+## FAQ
+
+**Q:** I'm running into `ERR_PNPM_CANNOT_DEPLOY  A deploy is only possible from inside a workspace`
+
+**A:** `pnpm deploy` is a reserved command. Use `pnpm run deploy` instead.
+
+---
+
+**Q:** I'm seeing `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "<NAME>" not found` in my pipeline
+
+**A:** Ensure `pnpm install --offline` is referenced earlier within pipeline step as shown in step 14.
+
+---
+
+**Q:** I'm seeing `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "workspace" not found` in my pipeline
+
+**A:** `pnpm workspace <PACKAGE_NAME>` does not work. Replace it with the [`--filter`](https://pnpm.io/filtering) flag.
 
 ---
 

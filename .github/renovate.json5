@@ -24,6 +24,7 @@
       matchPackageNames: [
         // Incompatible with read-pkg-up@7
         'type-fest',
+        'serverless',
       ],
       matchUpdateTypes: ['major'],
 
