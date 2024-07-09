@@ -69,6 +69,7 @@ The **skuba**-maintained `.npmrc` currently instructs pnpm to hoist the followin
 
 ```shell
 # managed by skuba
+package-manager-strict-version=true
 public-hoist-pattern[]="@types*"
 public-hoist-pattern[]="*eslint*"
 public-hoist-pattern[]="*prettier*"
@@ -108,7 +109,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 2. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@9.1.4",
+   "packageManager": "pnpm@9.2.0",
    ```
 
 3. Install pnpm
@@ -146,6 +147,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
    ```diff
    # managed by skuba
+   package-manager-strict-version=true
    public-hoist-pattern[]="@types*"
    public-hoist-pattern[]="*eslint*"
    public-hoist-pattern[]="*prettier*"
