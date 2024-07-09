@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-\*: Enforce `package-manager-strict-version` for pnpm projects
+format, lint: Set `package-manager-strict-version=true` for pnpm projects
