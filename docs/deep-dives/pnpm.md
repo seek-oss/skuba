@@ -69,13 +69,13 @@ The **skuba**-maintained `.npmrc` currently instructs pnpm to hoist the followin
 
 ```shell
 # managed by skuba
+package-manager-strict-version=true
 public-hoist-pattern[]="@types*"
 public-hoist-pattern[]="*eslint*"
 public-hoist-pattern[]="*prettier*"
 public-hoist-pattern[]="esbuild"
 public-hoist-pattern[]="jest"
 public-hoist-pattern[]="tsconfig-seek"
-package-manager-strict-version=true
 # end managed by skuba
 ```
 
@@ -147,13 +147,13 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
    ```diff
    # managed by skuba
+   package-manager-strict-version=true
    public-hoist-pattern[]="@types*"
    public-hoist-pattern[]="*eslint*"
    public-hoist-pattern[]="*prettier*"
    public-hoist-pattern[]="esbuild"
    public-hoist-pattern[]="jest"
    public-hoist-pattern[]="tsconfig-seek"
-   package-manager-strict-version=true
    # end managed by skuba
    +
    + # Required for Serverless packaging
