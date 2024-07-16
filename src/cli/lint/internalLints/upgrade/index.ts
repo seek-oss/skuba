@@ -10,7 +10,10 @@ import {
   type PackageManagerConfig,
   detectPackageManager,
 } from '../../../../utils/packageManager';
-import { getSkubaVersion } from '../../../../utils/version';
+import {
+  getSkubaVersion,
+  manifestSkubaVersion,
+} from '../../../../utils/version';
 import { formatPackage } from '../../../configure/processing/package';
 import type { SkubaPackageJson } from '../../../init/writePackageJson';
 import type { InternalLintResult } from '../../internal';
@@ -84,10 +87,7 @@ export const upgradeSkuba = async (
     throw new Error('Could not find a package json for this project');
   }
 
-  manifest.packageJson.skuba ??= { version: '1.0.0' };
-
-  const manifestVersion = (manifest.packageJson.skuba as SkubaPackageJson)
-    .version;
+  const manifestVersion = manifestSkubaVersion(manifest);
 
   // We are up to date, skip patches
   if (gte(manifestVersion, currentVersion)) {
@@ -160,7 +160,8 @@ export const upgradeSkuba = async (
     }
   }
 
-  (manifest.packageJson.skuba as SkubaPackageJson).version = currentVersion;
+  ((manifest.packageJson.skuba ??= {}) as SkubaPackageJson).version =
+    currentVersion;
 
   const updatedPackageJson = await formatPackage(manifest.packageJson);
 
