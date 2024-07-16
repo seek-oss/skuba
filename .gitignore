@@ -21,6 +21,7 @@ node_modules*/
 npm-debug.log
 package-lock.json
 yarn-error.log
+cdk.context.json
 # end managed by skuba
 
 /integration/format/
