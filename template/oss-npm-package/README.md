@@ -17,9 +17,9 @@ Next steps:
 6. [ ] Delete this checklist 😌.
 
 [#open-source]: https://slack.com/app_redirect?channel=C39P1H2SU
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
-[renovate]: https://github.com/apps/renovate
-[seek's open source rfc]: https://rfc.skinfra.xyz/RFC016-Open-Source.html
+[GitHub repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
+[Renovate]: https://github.com/apps/renovate
+[SEEK's Open Source RFC]: https://rfc.skinfra.xyz/RFC016-Open-Source.html
 
 ## API
 
