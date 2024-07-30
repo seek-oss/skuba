@@ -6,7 +6,6 @@ const DEV_DEPENDENCIES = [
   'eslint-config-seek',
   'nodemon',
   'ts-node-dev',
-  'ts-node',
   'tslint-config-seek',
   'tslint',
 
@@ -19,6 +18,7 @@ const DEV_DEPENDENCIES = [
   'prettier',
   'semantic-release',
   'ts-jest',
+  'ts-node',
   'tsconfig-seek',
   'tsx',
   'typescript',
