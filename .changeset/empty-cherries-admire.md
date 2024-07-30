@@ -2,4 +2,6 @@
 'skuba': major
 ---
 
-Replace ts-node with tsx
+node, start: Replace `ts-node` with `tsx`
+
+TODO: Insert words
