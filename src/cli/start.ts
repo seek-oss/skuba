@@ -23,7 +23,8 @@ export const start = async () => {
   });
 
   return execProcess(
-    'ts-node-dev',
+    'tsx',
+    'watch',
     ...args.node,
     '--require',
     'dotenv/config',

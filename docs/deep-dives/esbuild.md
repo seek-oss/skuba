@@ -47,7 +47,7 @@ There are a couple of gotchas when evaluating alternative build tools like esbui
 
   esbuild is not fully compatible with all existing `tsc` configurations,
   may lag behind TypeScript in language features,
-  and lacks rich interoperability with tooling like Jest (via `ts-jest`) and `ts-node`.
+  and lacks rich interoperability with tooling like Jest (via `ts-jest`).
 
   These issues can be mostly contained within a centralised toolkit like skuba,
   but it makes it more difficult to duct tape tools together on an ad-hoc basis,

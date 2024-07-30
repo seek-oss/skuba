@@ -1,7 +1,6 @@
 import path from 'path';
 
 import getPort from 'get-port';
-import * as tsNode from 'ts-node';
 
 import { parseRunArgs } from '../utils/args';
 import { createExec } from '../utils/exec';
@@ -22,17 +21,13 @@ export const node = async () => {
       },
     });
 
-    // Run a script with plain `node` to support inspector options.
-    // https://github.com/TypeStrong/ts-node#programmatic
     return exec(
-      'node',
+      'tsx',
       ...args.node,
       '--require',
       'dotenv/config',
       '--require',
       'tsconfig-paths/register',
-      '--require',
-      'ts-node/register/transpile-only',
       // Override dangerously warn-only default on Node.js <15 so that we
       // predictably return a non-zero exit code on an unhandled rejection.
       '--unhandled-rejections=throw',
@@ -41,13 +36,6 @@ export const node = async () => {
     );
   }
 
-  // REPL with `ts-node` to support import statements.
-  return tsNode
-    .createRepl({
-      service: tsNode.register({
-        require: ['dotenv/config', 'tsconfig-paths/register'],
-        transpileOnly: true,
-      }),
-    })
-    .start();
+  // @ts-expect-error -- untyped
+  return import('tsx/cli');
 };
