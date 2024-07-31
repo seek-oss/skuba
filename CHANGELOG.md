@@ -4,10 +4,11 @@
 
 ### Patch Changes
 
-- **template:** Remove JSON schema definitions from Buildkite pipeline files (undoing [#1611](https://github.com/seek-oss/skuba/pull/1611)), ([#1624](https://github.com/seek-oss/skuba/pull/1624))
-  due to incompatibility with pipeline signing.
+- **template:** Remove JSON schema definitions from Buildkite pipeline files ([#1624](https://github.com/seek-oss/skuba/pull/1624))
 
-- **template/\*:** docker-compose v5.3.0 ([#1620](https://github.com/seek-oss/skuba/pull/1620))
+  This reverts [#1611](https://github.com/seek-oss/skuba/pull/1611) due to incompatibility with pipeline signing.
+
+- **template:** docker-compose v5.3.0 ([#1620](https://github.com/seek-oss/skuba/pull/1620))
 
 - **template/lambda-sqs-worker-cdk:** Fix deploy:hotswap script ([#1616](https://github.com/seek-oss/skuba/pull/1616))
 
