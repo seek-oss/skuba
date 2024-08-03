@@ -25,13 +25,12 @@ export const start = async () => {
   return execProcess(
     'tsx',
     'watch',
+    '--clear-screen=false',
     ...args.node,
     '--require',
     'dotenv/config',
     '--require',
     'tsconfig-paths/register',
-    '--respawn',
-    '--transpile-only',
     path.join(__dirname, '..', 'wrapper'),
     ...args.script,
   );

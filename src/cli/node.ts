@@ -1,5 +1,6 @@
 import path from 'path';
 
+import execa from 'execa';
 import getPort from 'get-port';
 
 import { parseRunArgs } from '../utils/args';
@@ -13,6 +14,14 @@ export const node = async () => {
 
   const availablePort = await getPort();
 
+  const commonArgs = [
+    ...args.node,
+    '--require',
+    require.resolve('dotenv/config'),
+    '--require',
+    require.resolve('tsconfig-paths/register'),
+  ];
+
   if (args.entryPoint) {
     const exec = createExec({
       env: {
@@ -23,19 +32,23 @@ export const node = async () => {
 
     return exec(
       'tsx',
-      ...args.node,
-      '--require',
-      'dotenv/config',
-      '--require',
-      'tsconfig-paths/register',
-      // Override dangerously warn-only default on Node.js <15 so that we
-      // predictably return a non-zero exit code on an unhandled rejection.
-      '--unhandled-rejections=throw',
+      ...commonArgs,
       path.join(__dirname, '..', 'wrapper'),
       ...args.script,
     );
   }
 
-  // @ts-expect-error -- untyped
-  return import('tsx/cli');
+  return execa(
+    require.resolve('tsx/cli'),
+    [
+      ...commonArgs,
+      '--require',
+      // Unsure if bug or feature that this is needed, but tsx appears to not do anything typescript in the REPL without this!
+      // Doesn't occur when just running the tsx binary directly 🧐
+      require.resolve('tsx/patch-repl'),
+    ],
+    {
+      stdio: 'inherit',
+    },
+  );
 };
