@@ -10,6 +10,23 @@ import { mergeWithConfigFile } from '../../../../../configure/processing/configF
 const upgradeESLint: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
+  let originalIgnoreContents;
+
+  try {
+    originalIgnoreContents = await readFile('.eslintignore', 'utf8');
+  } catch (err) {
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      'code' in err &&
+      err.code === 'ENOENT'
+    ) {
+      return { result: 'skip', reason: 'already migrated' };
+    }
+
+    throw err;
+  }
+
   if (mode === 'lint') {
     return { result: 'apply' };
   }
@@ -17,7 +34,7 @@ const upgradeESLint: PatchFunction = async ({
   // Remove managed section of .eslintignore
   await writeFile(
     '.eslintignore',
-    mergeWithConfigFile('', 'ignore')(await readFile('.eslintignore', 'utf8')),
+    mergeWithConfigFile('', 'ignore')(originalIgnoreContents),
   );
 
   const exec = createExec({
@@ -49,4 +66,4 @@ export const tryUpgradeESLint: PatchFunction = async (config) => {
   }
 };
 
-// TODO: write some tests and handle skip cases
+// TODO: write some tests

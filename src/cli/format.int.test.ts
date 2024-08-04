@@ -96,11 +96,16 @@ const originalCwd = process.cwd();
 beforeEach(() => {
   jest.clearAllMocks();
 
+  // @ts-expect-error
+  global.SKIP_ESLINT_IGNORE = true;
+
   process.exitCode = undefined;
 });
 
 afterAll(() => {
   process.exitCode = undefined;
+  // @ts-expect-error
+  delete global.SKIP_ESLINT_IGNORE;
 
   // Restore the original working directory to avoid confusion in other tests.
   process.chdir(originalCwd);

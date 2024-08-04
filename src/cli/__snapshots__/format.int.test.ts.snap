@@ -19,6 +19,8 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Upgrade to ESLint flat config - already migrated
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -54,7 +56,7 @@ b.md
 ----
 @@ -2,3 +2,3 @@
 
-- Trailing space
+- Trailing space 
 + Trailing space
 
 
@@ -93,6 +95,8 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Upgrade to ESLint flat config - already migrated
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -105,14 +109,14 @@ ESLint
 Initialising ESLint...
 Processing files...
 Processed 2 files in <random>s.
-○ a/a/a.ts
 ○ d.js
+○ a/a/a.ts
 
 Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 11 files.
+Discovered 10 files.
 Formatting files...
 .dockerignore
   parser: -
@@ -162,6 +166,8 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Upgrade to ESLint flat config - already migrated
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -201,6 +207,8 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - not ignored
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
+
+Patch skipped: Upgrade to ESLint flat config - already migrated
 
 skuba update complete.
 

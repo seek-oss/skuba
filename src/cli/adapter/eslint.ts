@@ -36,20 +36,17 @@ export const runESLint = async (
 
   const ESLint = await loadESLint({ useFlatConfig: true });
   const engine = new ESLint({
-    allowInlineConfig: true,
     cache: true,
-    errorOnUnmatchedPattern: true,
-    ignore: true,
+    ignore:
+      'SKIP_ESLINT_IGNORE' in global && global.SKIP_ESLINT_IGNORE === true
+        ? false
+        : true,
     fix: mode === 'format',
     overrideConfig: {
-      languageOptions: { globals: {}, parserOptions: {} },
-      rules: {},
       linterOptions: {
         reportUnusedDisableDirectives: true,
       },
     },
-    stats: false,
-    warnIgnored: true,
   });
 
   logger.debug('Processing files...');

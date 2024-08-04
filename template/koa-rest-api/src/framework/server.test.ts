@@ -233,6 +233,7 @@ describe('createApp', () => {
     const err = chance.sentence();
 
     middleware.mockImplementation(() => {
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw err;
     });
 
