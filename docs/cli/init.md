@@ -158,12 +158,12 @@ Familiarise yourself with the directory structure that **skuba** has created:
     ├── app.test.ts
     ├── app.ts
 ├── .dockerignore
-├── .eslintrc.js
 ├── .gitignore
 ├── .nvmrc
 ├── .prettierignore
 ├── .prettierrc.js
 ├── Dockerfile
+├── eslint.config.js
 ├── README.md
 ├── docker-compose.yml
 ├── jest.config.js

@@ -51,7 +51,7 @@ export const runESLint = async (
 
   const [formatter, results] = await Promise.all([
     engine.loadFormatter(),
-    engine.lintFiles('.'),
+    engine.lintFiles([]),
   ]);
 
   const end = process.hrtime.bigint();

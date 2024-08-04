@@ -5,7 +5,7 @@ import { formatPrettier } from '../processing/prettier';
 import type { Module } from '../types';
 
 export const eslintModule = async (): Promise<Module> => {
-  const configFile = await readBaseTemplateFile('_.eslintrc.js');
+  const configFile = await readBaseTemplateFile('_eslint.config.js');
 
   return {
     ...deleteFiles(
@@ -18,7 +18,7 @@ export const eslintModule = async (): Promise<Module> => {
     ),
 
     // allow customised ESLint configs that extend skuba
-    '.eslintrc.js': (inputFile) => {
+    'eslint.config.js': (inputFile) => {
       if (inputFile?.includes('skuba')) {
         const processedFile = inputFile.replace(
           /require.resolve\(['"](@seek\/)?skuba\/config\/eslint['"]\)/,
