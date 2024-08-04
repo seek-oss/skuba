@@ -23,25 +23,6 @@ yarn-error.log
 ",
     "operation": "A",
   },
-  ".eslintignore": {
-    "data": "# managed by skuba
-.idea/*
-.vscode/*
-
-.cdk.staging/
-.pnpm-store/
-.serverless/
-cdk.out/
-node_modules*/
-
-/coverage*/
-/dist*/
-/lib*/
-/tmp*/
-# end managed by skuba
-",
-    "operation": "A",
-  },
   ".eslintrc.js": {
     "data": "module.exports = {
   extends: ['skuba'],

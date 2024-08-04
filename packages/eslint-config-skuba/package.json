@@ -29,18 +29,18 @@
     "@types/eslint": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "eslint-config-seek": "^13.0.0",
+    "eslint-config-seek": "0.0.0-eslint-9-etc-20240804101852",
     "eslint-plugin-jest": "^28.0.0",
     "eslint-plugin-tsdoc": "^0.3.0",
     "eslint-plugin-yml": "^1.5.0"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
-    "typescript": "~5.5.0"
+    "eslint": "^9.8.0",
+    "typescript": "~5.5.4"
   },
   "peerDependencies": {
-    "eslint": ">=8.56.0",
-    "typescript": ">=4.7.5"
+    "eslint": ">=9.8.0",
+    "typescript": ">=5.5.4"
   },
   "packageManager": "pnpm@9.6.0",
   "engines": {
@@ -53,6 +53,6 @@
     "entryPoint": "index.js",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "7.5.1"
+    "version": "8.2.1"
   }
 }

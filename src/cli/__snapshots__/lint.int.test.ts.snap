@@ -3,15 +3,15 @@
 exports[`fixable 1`] = `
 "
 ESLint   │ Processed 4 files in <random>s.
-ESLint   │ 
+ESLint   │
 <random>/a/a/a.mjs
-  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  3:1  error  \`fs\` import should occur before import of \`path\`  import-x/order
 
 <random>/a/a/a.mts
-  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  3:1  error  \`fs\` import should occur before import of \`path\`  import-x/order
 
 <random>/a/a/a.ts
-  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  3:1  error  \`fs\` import should occur before import of \`path\`  import-x/order
 
 ✖ 3 problems (3 errors, 0 warnings)
   3 errors and 0 warnings potentially fixable with the \`--fix\` option.
@@ -42,13 +42,13 @@ Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 
 \`\`\`term
 <random>/a/a/a.mjs
-  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  3:1  error  \`fs\` import should occur before import of \`path\`  import-x/order
 
 <random>/a/a/a.mts
-  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  3:1  error  \`fs\` import should occur before import of \`path\`  import-x/order
 
 <random>/a/a/a.ts
-  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  3:1  error  \`fs\` import should occur before import of \`path\`  import-x/order
 
 ✖ 3 problems (3 errors, 0 warnings)
   3 errors and 0 warnings potentially fixable with the \`--fix\` option.
@@ -109,8 +109,6 @@ Prettier │ Discovering files...
 Prettier │ Discovered 11 files.
 Prettier │ Linting files...
 Prettier │ .dockerignore
-Prettier │   parser: -
-Prettier │ .eslintignore
 Prettier │   parser: -
 Prettier │ .gitignore
 Prettier │   parser: -
@@ -182,9 +180,9 @@ exports[`ok 2`] = `[]`;
 exports[`unfixable 1`] = `
 "
 ESLint   │ Processed 2 files in <random>s.
-ESLint   │ 
+ESLint   │
 <random>/a/a/a.ts
-  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  3:1  error  \`fs\` import should occur before import of \`path\`  import-x/order
   8:3  error  Unexpected console statement                      no-console
 
 <random>/d.js
@@ -221,7 +219,7 @@ Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 
 \`\`\`term
 <random>/a/a/a.ts
-  3:1  error  \`fs\` import should occur before import of \`path\`  import/order
+  3:1  error  \`fs\` import should occur before import of \`path\`  import-x/order
   8:3  error  Unexpected console statement                      no-console
 
 <random>/d.js

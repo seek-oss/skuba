@@ -69,6 +69,7 @@
   },
   "dependencies": {
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
+    "@eslint/migrate-config": "^1.2.0",
     "@jest/types": "^29.0.0",
     "@octokit/graphql": "^8.0.0",
     "@octokit/graphql-schema": "^15.3.0",
@@ -170,6 +171,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "8.1.0"
+    "version": "8.2.1"
   }
 }

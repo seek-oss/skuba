@@ -21,7 +21,6 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -55,7 +54,7 @@ b.md
 ----
 @@ -2,3 +2,3 @@
 
-- Trailing space 
+- Trailing space
 + Trailing space
 
 
@@ -96,7 +95,6 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -117,8 +115,6 @@ Discovering files...
 Discovered 11 files.
 Formatting files...
 .dockerignore
-  parser: -
-.eslintignore
   parser: -
 .gitignore
   parser: -
@@ -168,7 +164,6 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -209,7 +204,6 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files

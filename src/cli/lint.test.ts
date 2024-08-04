@@ -42,6 +42,7 @@ describe('TypeScript', () => {
 
     test('unknown on catch Clause Bindings', () => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_err: unknown) {}
     });
   });

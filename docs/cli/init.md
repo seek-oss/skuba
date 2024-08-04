@@ -158,7 +158,6 @@ Familiarise yourself with the directory structure that **skuba** has created:
     ├── app.test.ts
     ├── app.ts
 ├── .dockerignore
-├── .eslintignore
 ├── .eslintrc.js
 ├── .gitignore
 ├── .nvmrc

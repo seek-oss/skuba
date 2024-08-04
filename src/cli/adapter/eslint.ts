@@ -1,7 +1,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import { ESLint, type Linter, loadESLint } from 'eslint';
+import { type ESLint, type Linter, loadESLint } from 'eslint';
 
 import { type Logger, pluralise } from '../../utils/logging';
 
@@ -34,11 +34,15 @@ export const runESLint = async (
 
   const cwd = process.cwd();
 
-  const LegacyESLint = await loadESLint({ useFlatConfig: false });
-  const engine = new LegacyESLint({
+  const ESLint = await loadESLint();
+  const engine = new ESLint({
     cache: true,
     fix: mode === 'format',
-    reportUnusedDisableDirectives: 'error',
+    overrideConfig: {
+      linterOptions: {
+        reportUnusedDisableDirectives: true,
+      },
+    },
   });
 
   logger.debug('Processing files...');
