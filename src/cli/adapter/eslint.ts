@@ -37,10 +37,9 @@ export const runESLint = async (
   const ESLint = await loadESLint({ useFlatConfig: true });
   const engine = new ESLint({
     cache: true,
-    ignore:
+    ignore: !(
       'SKIP_ESLINT_IGNORE' in global && global.SKIP_ESLINT_IGNORE === true
-        ? false
-        : true,
+    ),
     fix: mode === 'format',
     overrideConfig: {
       linterOptions: {

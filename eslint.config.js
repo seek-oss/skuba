@@ -42,6 +42,11 @@ module.exports = [
               message:
                 'Prefer fs-extra as it implements graceful-fs behaviour.',
             },
+            {
+              name: 'fs/promises',
+              message:
+                'Prefer fs-extra as it implements graceful-fs behaviour.',
+            },
           ],
         },
       ],

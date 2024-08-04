@@ -96,7 +96,7 @@ const originalCwd = process.cwd();
 beforeEach(() => {
   jest.clearAllMocks();
 
-  // @ts-expect-error
+  // @ts-expect-error -- hacks
   global.SKIP_ESLINT_IGNORE = true;
 
   process.exitCode = undefined;
@@ -104,7 +104,7 @@ beforeEach(() => {
 
 afterAll(() => {
   process.exitCode = undefined;
-  // @ts-expect-error
+  // @ts-expect-error -- hacks
   delete global.SKIP_ESLINT_IGNORE;
 
   // Restore the original working directory to avoid confusion in other tests.

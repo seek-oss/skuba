@@ -85,7 +85,7 @@ beforeAll(() => {
   delete process.env.BUILDKITE;
   delete process.env.CI;
   delete process.env.GITHUB_ACTIONS;
-  // @ts-expect-error
+  // @ts-expect-error -- hacks
   global.SKIP_ESLINT_IGNORE = true;
 });
 
@@ -97,7 +97,7 @@ beforeEach(() => {
 
 afterAll(() => {
   process.exitCode = undefined;
-  // @ts-expect-error
+  // @ts-expect-error -- hacks
   delete global.SKIP_ESLINT_IGNORE;
 
   // Restore the original working directory to avoid confusion in other tests.
