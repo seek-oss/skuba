@@ -34,15 +34,22 @@ export const runESLint = async (
 
   const cwd = process.cwd();
 
-  const ESLint = await loadESLint();
+  const ESLint = await loadESLint({ useFlatConfig: true });
   const engine = new ESLint({
+    allowInlineConfig: true,
     cache: true,
+    errorOnUnmatchedPattern: true,
+    ignore: true,
     fix: mode === 'format',
     overrideConfig: {
+      languageOptions: { globals: {}, parserOptions: {} },
+      rules: {},
       linterOptions: {
         reportUnusedDisableDirectives: true,
       },
     },
+    stats: false,
+    warnIgnored: true,
   });
 
   logger.debug('Processing files...');
