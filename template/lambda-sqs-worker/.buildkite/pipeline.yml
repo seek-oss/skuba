@@ -30,7 +30,7 @@ configs:
         - pnpm run deploy
       concurrency: 1
       plugins:
-        - artifacts#v1.9.3:
+        - artifacts#v1.9.4:
             build: ${BUILDKITE_BUILD_ID}
             download: lib/*
         - *aws-sm
