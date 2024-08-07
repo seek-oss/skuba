@@ -1,35 +1,54 @@
-import createLogger from '@seek/logger';
-import type { SQSEvent, SQSHandler } from 'aws-lambda';
+import 'skuba-dive/register';
 
-import { config } from './config';
+import type { SQSBatchResponse, SQSEvent } from 'aws-lambda';
 
-export const logger = createLogger({
-  base: {
-    environment: config.environment,
-    version: config.version,
-  },
-
-  level: config.logLevel,
-
-  name: config.name,
-
-  transport:
-    config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
-});
+import { createBatchSQSHandler, createHandler } from 'src/framework/handler';
+import { logger } from 'src/framework/logging';
+import { metricsClient } from 'src/framework/metrics';
+import { validateJson } from 'src/framework/validation';
+import { scoreJobPublishedEvent, scoringService } from 'src/services/jobScorer';
+import { sendPipelineEvent } from 'src/services/pipelineEventSender';
+import { JobPublishedEventSchema } from 'src/types/pipelineEvents';
 
 /**
  * Tests connectivity to ensure appropriate access and network configuration.
  */
-const smokeTest = async () => Promise.resolve();
-
-export const handler: SQSHandler = (event: SQSEvent) => {
-  // Treat an empty object as our smoke test event.
-  if (!Object.keys(event).length) {
-    logger.debug('Received smoke test request');
-    return smokeTest();
-  }
-
-  logger.info('Hello World!');
-
-  return;
+const smokeTest = async () => {
+  await Promise.all([scoringService.smokeTest(), sendPipelineEvent({}, true)]);
 };
+
+const recordHandler = createBatchSQSHandler(async (record, _ctx) => {
+  const { body } = record;
+
+  // TODO: this throws an error, which will cause the Lambda function to retry
+  // the event and eventually send it to your dead-letter queue. If you don't
+  // trust your source to provide consistently well-formed input, consider
+  // catching and handling this error in code.
+  const publishedJob = validateJson(body, JobPublishedEventSchema);
+
+  const scoredJob = await scoreJobPublishedEvent(publishedJob);
+
+  const snsMessageId = await sendPipelineEvent(scoredJob);
+
+  logger.debug({ snsMessageId }, 'Scored job');
+
+  metricsClient.distribution('job.scored', 1);
+});
+
+export const handler = createHandler<SQSEvent>(
+  async (event, ctx): Promise<SQSBatchResponse | void> => {
+    // Treat an empty object as our smoke test event.
+    if (!Object.keys(event).length) {
+      logger.debug('Received smoke test request');
+      return smokeTest();
+    }
+
+    const count = event.Records.length;
+
+    logger.debug({ count }, 'Received jobs');
+
+    metricsClient.distribution('job.received', count);
+
+    return recordHandler(event, ctx);
+  },
+);

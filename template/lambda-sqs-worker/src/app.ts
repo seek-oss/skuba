@@ -1,8 +1,8 @@
 import 'skuba-dive/register';
 
-import type { SQSEvent } from 'aws-lambda';
+import type { SQSBatchResponse, SQSEvent } from 'aws-lambda';
 
-import { createHandler } from 'src/framework/handler';
+import { createBatchSQSHandler, createHandler } from 'src/framework/handler';
 import { logger } from 'src/framework/logging';
 import { metricsClient } from 'src/framework/metrics';
 import { validateJson } from 'src/framework/validation';
@@ -17,28 +17,7 @@ const smokeTest = async () => {
   await Promise.all([scoringService.smokeTest(), sendPipelineEvent({}, true)]);
 };
 
-export const handler = createHandler<SQSEvent>(async (event) => {
-  // Treat an empty object as our smoke test event.
-  if (!Object.keys(event).length) {
-    logger.debug('Received smoke test request');
-    return smokeTest();
-  }
-
-  const count = event.Records.length;
-
-  if (count !== 1) {
-    throw Error(`Received ${count} records`);
-  }
-
-  logger.debug({ count }, 'Received jobs');
-
-  metricsClient.distribution('job.received', event.Records.length);
-
-  const record = event.Records[0];
-  if (!record) {
-    throw new Error('Malformed SQS event with no records');
-  }
-
+const recordHandler = createBatchSQSHandler(async (record, _ctx) => {
   const { body } = record;
 
   // TODO: this throws an error, which will cause the Lambda function to retry
@@ -55,3 +34,21 @@ export const handler = createHandler<SQSEvent>(async (event) => {
 
   metricsClient.distribution('job.scored', 1);
 });
+
+export const handler = createHandler<SQSEvent>(
+  async (event, ctx): Promise<SQSBatchResponse | void> => {
+    // Treat an empty object as our smoke test event.
+    if (!Object.keys(event).length) {
+      logger.debug('Received smoke test request');
+      return smokeTest();
+    }
+
+    const count = event.Records.length;
+
+    logger.debug({ count }, 'Received jobs');
+
+    metricsClient.distribution('job.received', count);
+
+    return recordHandler(event, ctx);
+  },
+);
