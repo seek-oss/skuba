@@ -52,7 +52,13 @@ export const runESLint = async (
 
   const start = process.hrtime.bigint();
 
-  logger.debug('Config file:', await engine.findConfigFile());
+  logger.debug(
+    'Config file:',
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    JSON.stringify(
+      await engine.calculateConfigForFile((await engine.findConfigFile())!),
+    ),
+  );
 
   const [formatter, results] = await Promise.all([
     engine.loadFormatter(),
