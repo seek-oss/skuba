@@ -19,9 +19,10 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Upgrade to ESLint flat config - already migrated
+
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -94,9 +95,10 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Upgrade to ESLint flat config - already migrated
+
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -107,18 +109,16 @@ ESLint
 Initialising ESLint...
 Processing files...
 Processed 2 files in <random>s.
-○ a/a/a.ts
 ○ d.js
+○ a/a/a.ts
 
 Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 11 files.
+Discovered 10 files.
 Formatting files...
 .dockerignore
-  parser: -
-.eslintignore
   parser: -
 .gitignore
   parser: -
@@ -166,9 +166,10 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Upgrade to ESLint flat config - already migrated
+
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -207,9 +208,10 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Upgrade to ESLint flat config - already migrated
+
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files

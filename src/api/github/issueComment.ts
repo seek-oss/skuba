@@ -103,7 +103,7 @@ export const putIssueComment = async (
     params.userId === 'seek-build-agency'
       ? // https://api.github.com/users/buildagencygitapitoken[bot]
         87109344
-      : (params.userId ?? (await getUserId(client)));
+      : params.userId ?? (await getUserId(client));
 
   const commentId = comments.data.find(
     (comment) =>

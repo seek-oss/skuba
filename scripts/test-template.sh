@@ -15,7 +15,13 @@ echo '--- pnpm build'
 pnpm build
 
 echo '--- pnpm pack'
+# I'm sure there's a better way to do this
+eslint_config_skuba_tar="$(pwd)/packages/eslint-config-skuba/$(cd packages/eslint-config-skuba && pnpm pack | grep -o 'eslint-config-skuba-.*\.tgz')"
+jq ".dependencies[\"eslint-config-skuba\"] = \"file:${eslint_config_skuba_tar}\"" package.json > package.json.tmp
+mv package.json package.json.bak
+mv package.json.tmp package.json
 skuba_tar="$(pwd)/$(pnpm pack | grep -o 'skuba-.*\.tgz')"
+mv package.json.bak package.json
 
 skuba_temp_directory='tmp-skuba'
 

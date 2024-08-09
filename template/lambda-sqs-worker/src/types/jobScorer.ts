@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export type JobScorerInput = z.infer<typeof JobScorerInputSchema>;
 
-const JobScorerInputSchema = z.object({
+export const JobScorerInputSchema = z.object({
   id: z.string(),
   details: z.string(),
 });

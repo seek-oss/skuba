@@ -5,7 +5,7 @@ import { currentBranch } from './currentBranch';
 
 jest.mock('fs-extra', () => memfs);
 
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 import fs from 'fs-extra';
 
 beforeEach(async () => {

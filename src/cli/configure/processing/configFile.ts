@@ -47,7 +47,7 @@ export const generateNpmrcSimpleVariants = (patterns: string[]) => {
   for (const pattern of patterns) {
     set.add(pattern);
 
-    const match = pattern.match(/^(?<key>[^"=]+)="?(?<value>[^"=]+)"?$/);
+    const match = /^(?<key>[^"=]+)="?(?<value>[^"=]+)"?$/.exec(pattern);
     if (!match?.groups) {
       continue;
     }

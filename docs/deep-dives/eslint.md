@@ -24,16 +24,17 @@ Please contribute to the [eslint-config-seek] preset if you feel something is mi
 It may worthwhile starting with a discussion in [#typescriptification] to garner feedback.
 
 If you wish to enforce additional rules within a given codebase or team,
-you can [extend] your `.eslintrc.js`:
+you can [extend] your `eslint.config.js`:
 
 ```javascript
-module.exports = {
-  extends: ['skuba'],
-  rules: {
-    // https://eslint.org/docs/rules/complexity
-    complexity: ['error', { max: 3 }],
+module.exports = [
+  ...require('eslint-config-skuba'),
+  {
+    rules: {
+      // Your custom rules here
+    },
   },
-};
+];
 ```
 
 Let's check that our new rule has taken effect.

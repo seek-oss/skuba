@@ -1,7 +1,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import { ESLint, type Linter } from 'eslint';
+import { type ESLint, type Linter, loadESLint } from 'eslint';
 
 import { type Logger, pluralise } from '../../utils/logging';
 
@@ -32,13 +32,21 @@ export const runESLint = async (
 ): Promise<ESLintOutput> => {
   logger.debug('Initialising ESLint...');
 
+  const cwd = process.cwd();
+
+  const ESLint = await loadESLint({ useFlatConfig: true });
   const engine = new ESLint({
     cache: true,
+    ignore: !(
+      'SKIP_ESLINT_IGNORE' in global && global.SKIP_ESLINT_IGNORE === true
+    ),
     fix: mode === 'format',
-    reportUnusedDisableDirectives: 'error',
+    overrideConfig: {
+      linterOptions: {
+        reportUnusedDisableDirectives: true,
+      },
+    },
   });
-
-  const cwd = process.cwd();
 
   logger.debug('Processing files...');
 
@@ -46,7 +54,7 @@ export const runESLint = async (
 
   const [formatter, results] = await Promise.all([
     engine.loadFormatter(),
-    engine.lintFiles('.'),
+    engine.lintFiles([]),
   ]);
 
   const end = process.hrtime.bigint();
@@ -89,7 +97,10 @@ export const runESLint = async (
 
   await ESLint.outputFixes(results);
 
-  const output = await formatter.format(results);
+  const output = await formatter.format(results, {
+    cwd,
+    rulesMeta: engine.getRulesMetaForResults(results),
+  });
 
   if (output) {
     logger.plain(output);

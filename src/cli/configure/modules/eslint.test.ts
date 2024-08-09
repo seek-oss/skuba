@@ -12,13 +12,13 @@ describe('eslintModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.eslintrc.js']).toContain('skuba');
+    expect(outputFiles['eslint.config.js']).toContain('skuba');
   });
 
   it('deletes rogue configs', async () => {
     const inputFiles = {
       '.eslintrc': 'this is deprecated!',
-      '.eslintrc.js': undefined,
+      'eslint.config.js': undefined,
       '.eslintrc.yml': undefined,
       'package.json': JSON.stringify({
         $name: 'secret-service',
@@ -35,7 +35,7 @@ describe('eslintModule', () => {
     );
 
     expect(outputFiles['.eslintrc']).toBeUndefined();
-    expect(outputFiles['.eslintrc.js']).toContain('skuba');
+    expect(outputFiles['eslint.config.js']).toContain('skuba');
     expect(outputFiles['.eslintrc.yml']).toBeUndefined();
     expect(outputFiles['package.json']).toContain('secret-service');
     expect(outputFiles['package.json']).not.toContain('eslintConfig');
@@ -43,7 +43,7 @@ describe('eslintModule', () => {
 
   it('overwrites divergent config', async () => {
     const inputFiles = {
-      '.eslintrc.js': "module.exports = { extends: ['skydive'] }",
+      'eslint.config.js': "module.exports = { extends: ['skydive'] }",
     };
 
     const outputFiles = await executeModule(
@@ -52,13 +52,13 @@ describe('eslintModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.eslintrc.js']).toContain('skuba');
-    expect(outputFiles['.eslintrc.js']).not.toContain('skydive');
+    expect(outputFiles['eslint.config.js']).toContain('skuba');
+    expect(outputFiles['eslint.config.js']).not.toContain('skydive');
   });
 
   it('preserves config extending old module import', async () => {
     const inputFiles = {
-      '.eslintrc.js':
+      'eslint.config.js':
         "module.exports = { extends: [require.resolve('@seek/skuba/config/eslint')], rules: { 'no-process-exit': 'off' } }",
     };
 
@@ -68,7 +68,7 @@ describe('eslintModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.eslintrc.js']).toMatchInlineSnapshot(`
+    expect(outputFiles['eslint.config.js']).toMatchInlineSnapshot(`
       "module.exports = { extends: ['skuba'], rules: { 'no-process-exit': 'off' } };
       "
     `);
@@ -76,7 +76,7 @@ describe('eslintModule', () => {
 
   it('preserves config extending new module import', async () => {
     const inputFiles = {
-      '.eslintrc.js': `module.exports = { extends: [
+      'eslint.config.js': `module.exports = { extends: [
           require.resolve("skuba/config/eslint")], rules: { "no-process-exit": "off" } }`,
     };
 
@@ -86,7 +86,7 @@ describe('eslintModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.eslintrc.js']).toMatchInlineSnapshot(`
+    expect(outputFiles['eslint.config.js']).toMatchInlineSnapshot(`
       "module.exports = { extends: ['skuba'], rules: { 'no-process-exit': 'off' } };
       "
     `);
@@ -94,7 +94,7 @@ describe('eslintModule', () => {
 
   it('preserves config extending shareable config', async () => {
     const inputFiles = {
-      '.eslintrc.js':
+      'eslint.config.js':
         "module.exports = { extends: ['skuba'], rules: { 'no-process-exit': 'off' } };\n",
     };
 
@@ -104,6 +104,8 @@ describe('eslintModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles['.eslintrc.js']).toBe(inputFiles['.eslintrc.js']);
+    expect(outputFiles['eslint.config.js']).toBe(
+      inputFiles['eslint.config.js'],
+    );
   });
 });

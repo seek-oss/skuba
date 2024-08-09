@@ -162,7 +162,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
   const templateConfigPath = path.join(dir, TEMPLATE_CONFIG_FILENAME);
 
   try {
-    /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const templateConfig = require(templateConfigPath) as unknown;
 
     return templateConfigSchema.parse(templateConfig);

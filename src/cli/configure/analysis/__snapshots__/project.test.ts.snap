@@ -23,32 +23,6 @@ yarn-error.log
 ",
     "operation": "A",
   },
-  ".eslintignore": {
-    "data": "# managed by skuba
-.idea/*
-.vscode/*
-
-.cdk.staging/
-.pnpm-store/
-.serverless/
-cdk.out/
-node_modules*/
-
-/coverage*/
-/dist*/
-/lib*/
-/tmp*/
-# end managed by skuba
-",
-    "operation": "A",
-  },
-  ".eslintrc.js": {
-    "data": "module.exports = {
-  extends: ['skuba'],
-};
-",
-    "operation": "A",
-  },
   ".github/renovate.json5": {
     "data": "{
   extends: ['github>seek-oss/rynovate'],
@@ -100,6 +74,11 @@ coverage
   },
   ".prettierrc.js": {
     "data": "module.exports = require('skuba/config/prettier');
+",
+    "operation": "A",
+  },
+  "eslint.config.js": {
+    "data": "module.exports = require('eslint-config-skuba');
 ",
     "operation": "A",
   },

@@ -55,7 +55,7 @@ export const init = async (args = process.argv.slice(2)) => {
     // prefer template-specific files
     overwrite: false,
     processors,
-    // base template has files like _.eslintrc.js
+    // base template has files like _eslint.config.js
     stripUnderscorePrefix: true,
   });
 

@@ -132,7 +132,6 @@ describe('createInclusionFilter', () => {
 
     it.each([
       '.buildkite/pipeline.yml',
-      '.eslintignore',
       '.prettierrc.js',
       '.vscode/extensions.json',
       'Dockerfile',

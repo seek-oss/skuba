@@ -1,4 +1,5 @@
 // Hack to add a preamble from .changeset/.PREAMBLE.md to the CHANGELOG.md for a given release
+/* eslint-disable no-sync */
 
 const fs = require('fs');
 

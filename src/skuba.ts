@@ -34,7 +34,7 @@ const skuba = async () => {
   if (COMMAND_SET.has(commandName)) {
     const moduleName = commandToModule(commandName as Command);
 
-    /* eslint-disable @typescript-eslint/no-var-requires */
+    /* eslint-disable @typescript-eslint/no-require-imports */
     const commandModule = require(
       path.join(COMMAND_DIR, moduleName),
     ) as unknown;
