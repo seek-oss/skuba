@@ -52,8 +52,6 @@ export const runESLint = async (
 
   const start = process.hrtime.bigint();
 
-  logger.debug('Config file:', await engine.findConfigFile());
-
   const [formatter, results] = await Promise.all([
     engine.loadFormatter(),
     engine.lintFiles([]),
