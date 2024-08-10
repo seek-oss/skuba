@@ -33,7 +33,7 @@ configs:
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - docker-compose#v5.2.0:
+        - docker-compose#v5.3.0:
             dependencies: false
             run: app
             environment:
@@ -63,7 +63,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v5.2.0:
+      - docker-compose#v5.3.0:
           run: app
           environment:
             - GITHUB_API_TOKEN
@@ -83,6 +83,7 @@ steps:
           skip-pull-from-cache: true
 
   - wait
+
   - block: 🙋🏻‍♀️ Deploy Dev
     branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
 
@@ -94,25 +95,6 @@ steps:
     label: 🤞 Deploy Dev
     concurrency_group: '<%- repoName %>/deploy/dev'
     key: deploy-dev
-
-  - block: 🙋🏻‍♀️ Deploy Dev (Hotswap)
-    key: deploy-dev-hotswap-block
-    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
-
-  - <<: *deploy
-    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
-    depends_on: deploy-dev-hotswap-block
-    agents:
-      queue: <%- devBuildkiteQueueName %>
-    env:
-      ENVIRONMENT: dev
-    commands:
-      - echo '--- pnpm install --offline'
-      - pnpm install --offline
-      - echo '+++ pnpm run deploy:hotswap'
-      - pnpm run deploy:hotswap
-    label: 🤞 Deploy Dev (Hotswap)
-    concurrency_group: '<%- repoName %>/deploy/dev'
 
   - <<: *deploy
     env:

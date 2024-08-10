@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "deploy": "cdk deploy appStack --require-approval never",
-    "deploy:hotswap": "pnpm --silent deploy --hotswap",
+    "deploy:hotswap": "pnpm --silent run deploy --hotswap",
     "deploy:watch": "pnpm --silent deploy:hotswap --watch",
     "format": "skuba format",
     "lint": "skuba lint",
@@ -29,7 +29,7 @@
     "pino-pretty": "^11.0.0",
     "skuba": "*"
   },
-  "packageManager": "pnpm@9.4.0",
+  "packageManager": "pnpm@9.6.0",
   "engines": {
     "node": ">=20"
   }

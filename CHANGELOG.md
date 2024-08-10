@@ -1,5 +1,35 @@
 # skuba
 
+## 8.2.1
+
+### Patch Changes
+
+- **template:** Remove JSON schema definitions from Buildkite pipeline files ([#1624](https://github.com/seek-oss/skuba/pull/1624))
+
+  This reverts [#1611](https://github.com/seek-oss/skuba/pull/1611) due to incompatibility with pipeline signing.
+
+- **template:** docker-compose v5.3.0 ([#1620](https://github.com/seek-oss/skuba/pull/1620))
+
+- **template/lambda-sqs-worker-cdk:** Fix deploy:hotswap script ([#1616](https://github.com/seek-oss/skuba/pull/1616))
+
+- **deps:** esbuild 0.23 ([#1610](https://github.com/seek-oss/skuba/pull/1610))
+
+## 8.2.0
+
+### Minor Changes
+
+- **format, lint:** Set `package-manager-strict-version=true` for pnpm projects ([#1572](https://github.com/seek-oss/skuba/pull/1572))
+
+### Patch Changes
+
+- **configure:** Fix `[object Object]` output appearing during `skuba configure` ([#1597](https://github.com/seek-oss/skuba/pull/1597))
+
+- **template/koa-rest-api:** Clean up `src/app.test.ts` ([#1606](https://github.com/seek-oss/skuba/pull/1606))
+
+- **template:** Add JSON schema definitions to Buildkite pipeline files ([#1611](https://github.com/seek-oss/skuba/pull/1611))
+
+- **deps:** @octokit/rest ^21.0.0 ([#1599](https://github.com/seek-oss/skuba/pull/1599))
+
 ## 8.1.0
 
 ### Minor Changes
