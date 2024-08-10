@@ -113,6 +113,8 @@ interface AutofixParameters {
   eslint: boolean;
   prettier: boolean;
   internal: boolean;
+
+  eslintConfigFile?: string;
 }
 
 export const autofix = async (params: AutofixParameters): Promise<void> => {
@@ -151,7 +153,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     }
 
     if (params.eslint) {
-      await runESLint('format', logger);
+      await runESLint('format', logger, params.eslintConfigFile);
     }
 
     // Unconditionally re-run Prettier; reaching here means we have pre-existing

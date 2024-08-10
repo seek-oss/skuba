@@ -96,16 +96,11 @@ const originalCwd = process.cwd();
 beforeEach(() => {
   jest.clearAllMocks();
 
-  // @ts-expect-error -- hacks
-  global.SKIP_ESLINT_IGNORE = true;
-
   process.exitCode = undefined;
 });
 
 afterAll(() => {
   process.exitCode = undefined;
-  // @ts-expect-error -- hacks
-  delete global.SKIP_ESLINT_IGNORE;
 
   // Restore the original working directory to avoid confusion in other tests.
   process.chdir(originalCwd);
@@ -142,7 +137,9 @@ test.each`
 
   const originalFiles = await prepareTempDirectory(baseDir, tempDir);
 
-  await expect(format(args)).resolves.toBeUndefined();
+  await expect(
+    format(args, require.resolve('eslint-config-skuba')),
+  ).resolves.toBeUndefined();
 
   expect(stdout(new RegExp(tempDir, 'g'))).toMatchSnapshot();
 

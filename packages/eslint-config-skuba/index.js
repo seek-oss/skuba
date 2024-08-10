@@ -114,7 +114,7 @@ module.exports = [
       sourceType: 'script',
 
       parserOptions: {
-        project: true,
+        projectService: true,
       },
     },
 

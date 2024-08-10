@@ -29,6 +29,7 @@ export interface ESLintOutput {
 export const runESLint = async (
   mode: 'format' | 'lint',
   logger: Logger,
+  overrideConfigFile?: string,
 ): Promise<ESLintOutput> => {
   logger.debug('Initialising ESLint...');
 
@@ -37,10 +38,8 @@ export const runESLint = async (
   const ESLint = await loadESLint({ useFlatConfig: true });
   const engine = new ESLint({
     cache: true,
-    ignore: !(
-      'SKIP_ESLINT_IGNORE' in global && global.SKIP_ESLINT_IGNORE === true
-    ),
     fix: mode === 'format',
+    overrideConfigFile,
     overrideConfig: {
       linterOptions: {
         reportUnusedDisableDirectives: true,
