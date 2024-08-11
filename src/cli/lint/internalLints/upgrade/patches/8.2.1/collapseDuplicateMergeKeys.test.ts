@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports -- fs-extra is mocked
 import fsp from 'fs/promises';
 
 import memfs, { vol } from 'memfs';
