@@ -15,7 +15,7 @@ const upgradeESLint: PatchFunction = async ({
   const readFile = createDestinationFileReader(dir);
   const originalIgnoreContents = await readFile('.eslintignore');
 
-  if (originalIgnoreContents === null) {
+  if (originalIgnoreContents === undefined) {
     return { result: 'skip', reason: 'already migrated' };
   }
 

@@ -19,6 +19,8 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
+
 Patch skipped: Upgrade to ESLint flat config - already migrated
 
 skuba update complete.
@@ -95,6 +97,8 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
+
 Patch skipped: Upgrade to ESLint flat config - already migrated
 
 skuba update complete.
@@ -166,6 +170,8 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
+
 Patch skipped: Upgrade to ESLint flat config - already migrated
 
 skuba update complete.
@@ -207,6 +213,8 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - not ignored
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
+
+Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
 
 Patch skipped: Upgrade to ESLint flat config - already migrated
 
