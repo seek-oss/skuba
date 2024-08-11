@@ -1,30 +1,22 @@
 import { inspect } from 'util';
 
-import { readFile, rm, writeFile } from 'fs-extra';
+import { rm, writeFile } from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { createExec } from '../../../../../../utils/exec';
 import { log } from '../../../../../../utils/logging';
+import { createDestinationFileReader } from '../../../../../configure/analysis/project';
 import { mergeWithConfigFile } from '../../../../../configure/processing/configFile';
 
 const upgradeESLint: PatchFunction = async ({
   mode,
+  dir = process.cwd(),
 }): Promise<PatchReturnType> => {
-  let originalIgnoreContents;
+  const readFile = createDestinationFileReader(dir);
+  const originalIgnoreContents = await readFile('.eslintignore');
 
-  try {
-    originalIgnoreContents = await readFile('.eslintignore', 'utf8');
-  } catch (err) {
-    if (
-      typeof err === 'object' &&
-      err !== null &&
-      'code' in err &&
-      err.code === 'ENOENT'
-    ) {
-      return { result: 'skip', reason: 'already migrated' };
-    }
-
-    throw err;
+  if (originalIgnoreContents === null) {
+    return { result: 'skip', reason: 'already migrated' };
   }
 
   if (mode === 'lint') {
@@ -32,10 +24,14 @@ const upgradeESLint: PatchFunction = async ({
   }
 
   // Remove managed section of .eslintignore
-  await writeFile(
-    '.eslintignore',
-    mergeWithConfigFile('', 'ignore')(originalIgnoreContents),
-  );
+  const merged = mergeWithConfigFile('', 'ignore')(originalIgnoreContents);
+  let deletedIgnoreFile = false;
+  if (merged.trim().length === 0) {
+    await rm('.eslintignore');
+    deletedIgnoreFile = true;
+  } else {
+    await writeFile('.eslintignore', merged);
+  }
 
   const exec = createExec({
     cwd: process.cwd(),
@@ -44,16 +40,38 @@ const upgradeESLint: PatchFunction = async ({
 
   await exec('eslint-migrate-config', '.eslintrc.js', '--commonjs');
 
-  const output = await readFile('eslint.config.cjs', 'utf8');
+  const output = fiddleWithOutput((await readFile('eslint.config.cjs')) ?? '');
   await writeFile('eslint.config.js', output);
 
   await Promise.all([
-    rm('.eslintignore'),
+    deletedIgnoreFile ? Promise.resolve() : rm('.eslintignore'),
     rm('eslint.config.cjs'),
     rm('.eslintrc.js'),
   ]);
 
   return { result: 'apply' };
+};
+
+const fiddleWithOutput = (input: string) => {
+  let output = input.replace(/compat.extends\(["']skuba["']\)/, 'skuba');
+
+  if (!output.includes('eslint-config-skuba')) {
+    output = `const skuba = require('eslint-config-skuba');\n\n${output}`;
+  }
+
+  if (!output.includes('compat.')) {
+    output = output.replace(/const compat = new FlatCompat\(\{[^}]+\}\);/m, '');
+    output = output.replace(
+      /const \{\s*FlatCompat,?\s*\}\s*=\s*require\(["']@eslint\/eslintrc["']\);/m,
+      '',
+    );
+  }
+
+  if (!output.includes('js.')) {
+    output = output.replace(/const js = require\(['"]@eslint\/js['"]\);/, '');
+  }
+
+  return output;
 };
 
 export const tryUpgradeESLint: PatchFunction = async (config) => {

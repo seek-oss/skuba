@@ -51,10 +51,28 @@ export const runESLint = async (
 
   const start = process.hrtime.bigint();
 
-  const [formatter, results] = await Promise.all([
+  const [formatter, { type, results }] = await Promise.all([
     engine.loadFormatter(),
-    engine.lintFiles([]),
+    engine
+      .lintFiles([])
+      .then((r) => ({ type: 'results', results: r }) as const)
+      .catch((error) => {
+        if (
+          error instanceof Error &&
+          error.message === 'Could not find config file.'
+        ) {
+          return { type: 'no-config', results: undefined } as const;
+        }
+        throw error;
+      }),
   ]);
+
+  if (type === 'no-config') {
+    logger.plain(
+      'skuba could not find an eslint config file. Do you need to run format or configure?',
+    );
+    return { ok: false, fixable: false, errors: [], warnings: [], output: '' };
+  }
 
   const end = process.hrtime.bigint();
 
