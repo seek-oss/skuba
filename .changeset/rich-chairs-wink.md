@@ -2,7 +2,7 @@
 'skuba': minor
 ---
 
-Replace `.buildkite/` files with duplicated YAML merge keys, for example:
+lint: Replace `.buildkite/` files with duplicated YAML merge keys, for example:
 
 ```yaml
 # Before
