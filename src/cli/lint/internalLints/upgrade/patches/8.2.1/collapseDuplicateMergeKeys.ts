@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
-import { readFile, writeFile } from 'fs-extra';
+import { glob } from 'fast-glob';
+import { promises as fs } from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
@@ -9,14 +9,17 @@ import { log } from '../../../../../../utils/logging';
 const collapseDuplicateMergeKeys: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const buildkiteFiles = await fg(['.buildkite/**/*'], { onlyFiles: true });
+  const buildkiteFiles = await glob(
+    ['.buildkite/**/*.yml', '.buildkite/**/*.yaml'],
+    { onlyFiles: true },
+  );
 
   if (buildkiteFiles.length === 0) {
     return { result: 'skip', reason: 'no Buildkite files found' };
   }
 
   const input = await Promise.all(
-    buildkiteFiles.map((name) => readFile(name, 'utf-8')),
+    buildkiteFiles.map((name) => fs.readFile(name, 'utf-8')),
   );
 
   const replaced = await Promise.all(
@@ -24,7 +27,7 @@ const collapseDuplicateMergeKeys: PatchFunction = async ({
   );
 
   if (replaced.every((r, i) => r === input[i])) {
-    return { result: 'skip' };
+    return { result: 'skip', reason: 'no duplicate merge keys found' };
   }
 
   if (mode === 'lint') {
@@ -33,7 +36,7 @@ const collapseDuplicateMergeKeys: PatchFunction = async ({
 
   await Promise.all(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    buildkiteFiles.map((name, i) => writeFile(name, replaced[i]!)),
+    buildkiteFiles.map((name, i) => fs.writeFile(name, replaced[i]!)),
   );
 
   return { result: 'apply' };
@@ -76,5 +79,3 @@ export const tryCollapseDuplicateMergeKeys: PatchFunction = async (config) => {
     return { result: 'skip', reason: 'due to an error' };
   }
 };
-
-// TODO: write some tests
