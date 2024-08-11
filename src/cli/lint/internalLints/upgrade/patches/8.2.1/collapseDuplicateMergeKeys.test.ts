@@ -1,10 +1,11 @@
-import memfs, { vol } from 'memfs';
 import fsp from 'fs/promises';
 
+import memfs, { vol } from 'memfs';
+
 import type { PatchConfig } from '../..';
+import { configForPackageManager } from '../../../../../../utils/packageManager';
 
 import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys';
-import { configForPackageManager } from '../../../../../../utils/packageManager';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -40,12 +41,15 @@ describe('collapseDuplicateMergeKeys', () => {
           '.buildkite/pipeline.yml': contents,
         });
 
-        expect(
-          await tryCollapseDuplicateMergeKeys({
+        await expect(
+          tryCollapseDuplicateMergeKeys({
             ...baseArgs,
             mode,
           }),
-        ).toEqual({ result: 'skip', reason: 'no duplicate merge keys found' });
+        ).resolves.toEqual({
+          result: 'skip',
+          reason: 'no duplicate merge keys found',
+        });
 
         expect(volToJson()).toEqual({
           '.buildkite/pipeline.yml': contents,
@@ -54,18 +58,21 @@ describe('collapseDuplicateMergeKeys', () => {
     });
 
     it('should skip if no Buildkite files are found', async () => {
-      expect(
-        await tryCollapseDuplicateMergeKeys({
+      await expect(
+        tryCollapseDuplicateMergeKeys({
           ...baseArgs,
           mode,
         }),
-      ).toEqual({ result: 'skip', reason: 'no Buildkite files found' });
+      ).resolves.toEqual({
+        result: 'skip',
+        reason: 'no Buildkite files found',
+      });
 
       expect(volToJson()).toEqual({});
     });
 
     it('should skip if no duplicate merge keys are found', async () => {
-      let input = `
+      const input = `
 configs:
   environments:
     - &prod
@@ -82,12 +89,15 @@ steps:
         '.buildkite/pipeline.yml': input,
       });
 
-      expect(
-        await tryCollapseDuplicateMergeKeys({
+      await expect(
+        tryCollapseDuplicateMergeKeys({
           ...baseArgs,
           mode,
         }),
-      ).toEqual({ result: 'skip', reason: 'no duplicate merge keys found' });
+      ).resolves.toEqual({
+        result: 'skip',
+        reason: 'no duplicate merge keys found',
+      });
 
       expect(volToJson()).toEqual({
         '.buildkite/pipeline.yml': input,
@@ -95,7 +105,7 @@ steps:
     });
 
     it('should process 2 duplicate merge keys', async () => {
-      let input = `
+      const input = `
 configs:
   environments:
     - &prod
@@ -116,12 +126,12 @@ steps:
         '.buildkite/pipeline.yml': input,
       });
 
-      expect(
-        await tryCollapseDuplicateMergeKeys({
+      await expect(
+        tryCollapseDuplicateMergeKeys({
           ...baseArgs,
           mode,
         }),
-      ).toEqual({ result: 'apply' });
+      ).resolves.toEqual({ result: 'apply' });
 
       expect(volToJson()).toEqual({
         '.buildkite/pipeline.yml':
@@ -146,7 +156,7 @@ steps:
     });
 
     it('should process multiple duplicate merge keys', async () => {
-      let input = `
+      const input = `
 configs:
   environments:
     - &prod
@@ -168,12 +178,12 @@ steps:
         '.buildkite/pipeline.yml': input,
       });
 
-      expect(
-        await tryCollapseDuplicateMergeKeys({
+      await expect(
+        tryCollapseDuplicateMergeKeys({
           ...baseArgs,
           mode,
         }),
-      ).toEqual({ result: 'apply' });
+      ).resolves.toEqual({ result: 'apply' });
 
       expect(volToJson()).toEqual({
         '.buildkite/pipeline.yml':
@@ -198,7 +208,7 @@ steps:
     });
 
     it('should not bother if the keys are separated by other keys', async () => {
-      let input = `steps:
+      const input = `steps:
   - <<: *prod
     label: 'My Step'
     <<: *timeout
@@ -209,12 +219,15 @@ steps:
         '.buildkite/pipeline.yml': input,
       });
 
-      expect(
-        await tryCollapseDuplicateMergeKeys({
+      await expect(
+        tryCollapseDuplicateMergeKeys({
           ...baseArgs,
           mode,
         }),
-      ).toEqual({ result: 'skip', reason: 'no duplicate merge keys found' });
+      ).resolves.toEqual({
+        result: 'skip',
+        reason: 'no duplicate merge keys found',
+      });
 
       expect(volToJson()).toEqual({
         '.buildkite/pipeline.yml': input,
@@ -222,7 +235,7 @@ steps:
     });
 
     it('should not merge when not at the same level', async () => {
-      let input = `steps:
+      const input = `steps:
   - plugins:
       <<: *plugins
     <<: *timeout
@@ -233,12 +246,15 @@ steps:
         '.buildkite/pipeline.yml': input,
       });
 
-      expect(
-        await tryCollapseDuplicateMergeKeys({
+      await expect(
+        tryCollapseDuplicateMergeKeys({
           ...baseArgs,
           mode,
         }),
-      ).toEqual({ result: 'skip', reason: 'no duplicate merge keys found' });
+      ).resolves.toEqual({
+        result: 'skip',
+        reason: 'no duplicate merge keys found',
+      });
 
       expect(volToJson()).toEqual({
         '.buildkite/pipeline.yml': input,
