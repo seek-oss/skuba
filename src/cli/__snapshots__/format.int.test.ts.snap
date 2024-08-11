@@ -21,7 +21,7 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
 
-Patch skipped: Upgrade to ESLint flat config - already migrated
+Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
 
 skuba update complete.
 
@@ -99,7 +99,7 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
 
-Patch skipped: Upgrade to ESLint flat config - already migrated
+Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
 
 skuba update complete.
 
@@ -172,7 +172,7 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
 
-Patch skipped: Upgrade to ESLint flat config - already migrated
+Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
 
 skuba update complete.
 
@@ -216,7 +216,7 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
 
-Patch skipped: Upgrade to ESLint flat config - already migrated
+Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
 
 skuba update complete.
 

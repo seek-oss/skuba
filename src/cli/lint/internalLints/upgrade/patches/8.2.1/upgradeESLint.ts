@@ -1,55 +1,91 @@
+// eslint-disable-next-line no-restricted-imports -- fs-extra is mocked
+import * as fsp from 'fs/promises';
+import path from 'path';
 import { inspect } from 'util';
 
-import { rm, writeFile } from 'fs-extra';
+import { promises as fsExtra } from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { createExec } from '../../../../../../utils/exec';
 import { log } from '../../../../../../utils/logging';
 import { createDestinationFileReader } from '../../../../../configure/analysis/project';
 import { mergeWithConfigFile } from '../../../../../configure/processing/configFile';
+import { formatPrettier } from '../../../../../configure/processing/prettier';
 
 const upgradeESLint: PatchFunction = async ({
   mode,
-  dir = process.cwd(),
+  dir: cwd = process.cwd(),
 }): Promise<PatchReturnType> => {
-  const readFile = createDestinationFileReader(dir);
-  const originalIgnoreContents = await readFile('.eslintignore');
+  const readFile = createDestinationFileReader(cwd);
+  const [originalIgnoreContents, eslintConfig] = await Promise.all([
+    readFile('.eslintignore'),
+    readFile('.eslintrc.js'),
+  ]);
 
-  if (originalIgnoreContents === undefined) {
-    return { result: 'skip', reason: 'already migrated' };
+  if (eslintConfig === undefined) {
+    return {
+      result: 'skip',
+      reason: 'no .eslintrc.js - have you already migrated?',
+    };
   }
 
   if (mode === 'lint') {
     return { result: 'apply' };
   }
 
-  // Remove managed section of .eslintignore
-  const merged = mergeWithConfigFile('', 'ignore')(originalIgnoreContents);
-  let deletedIgnoreFile = false;
-  if (merged.trim().length === 0) {
-    await rm('.eslintignore');
-    deletedIgnoreFile = true;
-  } else {
-    await writeFile('.eslintignore', merged);
-  }
+  const mergedIgnoreContent = mergeWithConfigFile(
+    '',
+    'ignore',
+  )(originalIgnoreContents);
 
   const exec = createExec({
     cwd: process.cwd(),
     stdio: 'ignore',
   });
 
-  await exec('eslint-migrate-config', '.eslintrc.js', '--commonjs');
+  // eslint-migrate-config require()s the file, so for testability, put it in a temporary location
+  const dir = await writeTemporaryFiles({
+    '.eslintrc.js': eslintConfig,
+    ...(mergedIgnoreContent.trim().length > 0
+      ? { '.eslintignore': mergedIgnoreContent }
+      : {}),
+  });
+  try {
+    await exec(
+      'eslint-migrate-config',
+      path.join(dir, '.eslintrc.js'),
+      '--commonjs',
+    );
 
-  const output = fiddleWithOutput((await readFile('eslint.config.cjs')) ?? '');
-  await writeFile('eslint.config.js', output);
+    const output = fiddleWithOutput(
+      await fsp.readFile(path.join(dir, 'eslint.config.cjs'), 'utf-8'),
+    );
+    await fsExtra.writeFile(
+      'eslint.config.js',
+      await formatPrettier(output, { filepath: 'eslint.config.js' }),
+    );
 
-  await Promise.all([
-    deletedIgnoreFile ? Promise.resolve() : rm('.eslintignore'),
-    rm('eslint.config.cjs'),
-    rm('.eslintrc.js'),
-  ]);
+    await Promise.all([
+      originalIgnoreContents === undefined
+        ? Promise.resolve()
+        : fsExtra.rm('.eslintignore'),
+      fsExtra.rm('.eslintrc.js'),
+    ]);
 
-  return { result: 'apply' };
+    return { result: 'apply' };
+  } finally {
+    await fsp.rm(dir, { recursive: true });
+  }
+};
+
+const writeTemporaryFiles = async (contents: Record<string, string>) => {
+  const dir = await fsp.mkdtemp('eslint-migrate-config');
+
+  for (const [file, content] of Object.entries(contents)) {
+    await fsp.writeFile(path.join(dir, file), content);
+  }
+
+  return dir;
 };
 
 const fiddleWithOutput = (input: string) => {
@@ -71,6 +107,11 @@ const fiddleWithOutput = (input: string) => {
     output = output.replace(/const js = require\(['"]@eslint\/js['"]\);/, '');
   }
 
+  output = output.replace(
+    /^const skuba = require\('eslint-config-skuba'\);\s*module.exports = \[...skuba\];$/m,
+    "module.exports = require('eslint-config-skuba');",
+  );
+
   return output;
 };
 
@@ -78,10 +119,8 @@ export const tryUpgradeESLint: PatchFunction = async (config) => {
   try {
     return await upgradeESLint(config);
   } catch (err) {
-    log.warn('Failed to upgrade ESLint to flag config.');
+    log.warn('Failed to upgrade ESLint to flat config.');
     log.subtle(inspect(err));
     return { result: 'skip', reason: 'due to an error' };
   }
 };
-
-// TODO: write some tests
