@@ -93,13 +93,6 @@
       schedule: 'before 3:00 am every weekday',
     },
     {
-      matchPaths: ['template/**'],
-
-      branchPrefix: 'renovate-template--',
-      rangeStrategy: 'replace',
-      semanticCommitType: 'template',
-    },
-    {
       matchDepTypes: ['devDependencies'],
       matchManagers: ['npm'],
       semanticCommitType: 'devDeps',
@@ -108,6 +101,13 @@
       matchDepTypes: ['dependencies', 'peerDependencies'],
       matchManagers: ['npm'],
       semanticCommitType: 'deps',
+    },
+    {
+      matchPaths: ['template/**'],
+
+      branchPrefix: 'renovate-template--',
+      rangeStrategy: 'replace',
+      semanticCommitType: 'template',
     },
   ],
   branchPrefix: 'renovate-',
