@@ -68,7 +68,7 @@ With esbuild, you can supply the following options:
 
 Compiles your project for compatibility with CommonJS and ES2015 modules.
 
-This is useful for building isomorphic npm packages, and serves as a replacement for [`smt build`].
+This is useful for building isomorphic npm packages.
 
 ```shell
 skuba build-package
@@ -90,7 +90,6 @@ See our [Buildkite guide] for more information.
 | :--------- | :----------------------------------------------- |
 | `--serial` | Force serial execution of compilation operations |
 
-[`smt build`]: ../migration-guides/seek-module-toolkit.md#building
 [`skuba configure`]: ./configure.md#skuba-configure
 [buildkite guide]: ../deep-dives/buildkite.md
 [compiler option]: https://www.typescriptlang.org/docs/handbook/compiler-options.html#compiler-options
