@@ -30,7 +30,7 @@ export const initConfigInputSchema = z.object({
 
 export type InitConfig = z.infer<typeof initConfigSchema>;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line unused-imports/no-unused-vars
 const initConfigSchema = initConfigInputSchema
   .omit({
     templateData: true,

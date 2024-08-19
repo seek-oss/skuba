@@ -135,6 +135,9 @@ module.exports = [
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/non-nullable-type-assertion-style': 'off',
       '@typescript-eslint/consistent-type-definitions': 'off',
+
+      // Enabled with `unused-imports/` in `eslint-config-seek`
+      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
   {
