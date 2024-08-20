@@ -6,6 +6,8 @@ import { readFile, writeFile } from 'fs-extra';
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
 
+const DOCKER_COMPOSE_VERSION_REGEX = /version: '.*'\n/;
+
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
@@ -50,9 +52,6 @@ const patchDockerComposeFiles: PatchFunction = async ({
       result: 'apply',
     };
   }
-
-  // regex for a docker-compose file with any version
-  const DOCKER_COMPOSE_VERSION_REGEX = /version: '.*'\n/;
 
   await Promise.all(
     dockerComposeFilesToPatch.map(async ({ file, contents }) => {

@@ -5,7 +5,6 @@ import { tryPatchDockerComposeFiles } from './patchDockerCompose';
 export const patches: Patches = [
   {
     apply: tryPatchDockerComposeFiles,
-    description:
-      'Add empty exports to Jest files for compliance with TypeScript isolated modules',
+    description: 'Remove version field from docker-compose files',
   },
 ];
