@@ -6,7 +6,7 @@ import { readFile, writeFile } from 'fs-extra';
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
 
-const DOCKER_COMPOSE_VERSION_REGEX = /version: '.*'\n/;
+const DOCKER_COMPOSE_VERSION_REGEX = /^version: ['"]?\d+(\.\d+)*['"]?\n*/m;
 
 const fetchFiles = async (files: string[]) =>
   Promise.all(
