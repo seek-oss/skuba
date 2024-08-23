@@ -59,4 +59,27 @@ describe('patchDockerComposeFile', () => {
       reason: 'no docker-compose files to patch',
     });
   });
+  it('should not remove intended version in docker compose file', async () => {
+    jest.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
+    jest
+      .mocked(readFile)
+      .mockResolvedValueOnce(
+        `${mockPatchableDockerComposeContents}\n     version: 7\nversion: 0.2` as never,
+      );
+    await expect(
+      tryPatchDockerComposeFiles({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+    expect(writeFile).toHaveBeenCalledWith(
+      'docker-compose.yml',
+      'services:\n' +
+        'app:\n' +
+        "image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}\n" +
+        'init: true\n' +
+        'volumes:\n' +
+        '     version: 7\n' +
+        'version: 0.2',
+    );
+  });
 });
