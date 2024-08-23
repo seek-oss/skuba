@@ -37,7 +37,7 @@ const patchDockerComposeFiles: PatchFunction = async ({
   const dockerComposeFiles = await fetchFiles(maybeDockerComposeFiles);
 
   const dockerComposeFilesToPatch = dockerComposeFiles.filter(({ contents }) =>
-    contents.includes('version:'),
+    contents.match(DOCKER_COMPOSE_VERSION_REGEX),
   );
 
   if (!dockerComposeFilesToPatch.length) {
