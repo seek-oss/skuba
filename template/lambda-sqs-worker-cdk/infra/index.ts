@@ -1,7 +1,7 @@
 import { App } from 'aws-cdk-lib';
 
 import { AppStack } from './appStack';
-import { config } from './config';
+import { config, environment } from './config';
 
 const app = new App();
 
@@ -9,9 +9,9 @@ const app = new App();
 new AppStack(app, 'appStack', {
   stackName: config.appName,
   tags: {
-    'seek:env:label': config.workerLambda.environment.ENVIRONMENT,
+    'seek:env:label': environment,
     'seek:source:sha': process.env.BUILDKITE_COMMIT ?? 'na',
-    'seek:source:url': 'ToDo: add source URL',
-    'seek:system:name': 'ToDo: add system name',
+    // 'seek:source:url': 'TODO: add source URL',
+    // 'seek:system:name': 'TODO: add system name',
   },
 });
