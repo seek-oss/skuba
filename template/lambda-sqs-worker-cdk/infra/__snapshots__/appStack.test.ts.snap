@@ -19,7 +19,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "Value": {
               "Ref": "worker28EA3E30",
             },
-          }
+          },
         ],
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
@@ -936,7 +936,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "Value": {
               "Ref": "worker28EA3E30",
             },
-          }
+          },
         ],
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
