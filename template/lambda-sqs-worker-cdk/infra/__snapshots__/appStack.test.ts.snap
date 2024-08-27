@@ -294,6 +294,24 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           ],
           "Version": "2012-10-17",
         },
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
       },
       "Type": "AWS::KMS::Key",
       "UpdateReplacePolicy": "Retain",
@@ -311,6 +329,26 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       "Type": "AWS::KMS::Alias",
     },
     "sourcetopic7C3DC892": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
+      },
       "Type": "AWS::SNS::Topic",
     },
     "worker28EA3E30": {
@@ -354,6 +392,24 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           ],
         },
         "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
         "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
@@ -461,6 +517,24 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             ],
           },
         ],
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
       },
       "Type": "AWS::IAM::Role",
     },
@@ -548,6 +622,24 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           ],
         },
         "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
         "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
@@ -578,6 +670,24 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
               ],
             ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
           },
         ],
       },
@@ -702,6 +812,24 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           ],
         },
         "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
         "Timeout": 120,
       },
       "Type": "AWS::Lambda::Function",
@@ -732,6 +860,24 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
               ],
             ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
           },
         ],
       },
@@ -829,6 +975,24 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
           "maxReceiveCount": 3,
         },
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
@@ -896,6 +1060,24 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           ],
         },
         "QueueName": "serviceName-dead-letters",
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "dev",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
@@ -1225,6 +1407,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           ],
           "Version": "2012-10-17",
         },
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
       },
       "Type": "AWS::KMS::Key",
       "UpdateReplacePolicy": "Retain",
@@ -1242,6 +1442,26 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       "Type": "AWS::KMS::Alias",
     },
     "sourcetopic7C3DC892": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
+      },
       "Type": "AWS::SNS::Topic",
     },
     "worker28EA3E30": {
@@ -1285,6 +1505,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           ],
         },
         "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
         "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
@@ -1392,6 +1630,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             ],
           },
         ],
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
       },
       "Type": "AWS::IAM::Role",
     },
@@ -1479,6 +1735,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           ],
         },
         "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
         "Timeout": 30,
       },
       "Type": "AWS::Lambda::Function",
@@ -1509,6 +1783,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
               ],
             ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
           },
         ],
       },
@@ -1633,6 +1925,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           ],
         },
         "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
         "Timeout": 120,
       },
       "Type": "AWS::Lambda::Function",
@@ -1663,6 +1973,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
               ],
             ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
           },
         ],
       },
@@ -1760,6 +2088,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
           "maxReceiveCount": 3,
         },
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
@@ -1827,6 +2173,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           ],
         },
         "QueueName": "serviceName-dead-letters",
+        "Tags": [
+          {
+            "Key": "seek:env:label",
+            "Value": "prod",
+          },
+          {
+            "Key": "seek:source:sha",
+            "Value": "*",
+          },
+          {
+            "Key": "seek:source:url",
+            "Value": "ToDo: add source URL",
+          },
+          {
+            "Key": "seek:system:name",
+            "Value": "ToDo: add system name",
+          },
+        ],
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
