@@ -19,26 +19,12 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "Value": {
               "Ref": "worker28EA3E30",
             },
-          },
-          {
-            "Name": "Resource",
-            "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "worker28EA3E30",
-                  },
-                  ":live",
-                ],
-              ],
-            },
-          },
+          }
         ],
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "Period": 60,
+        "Period": 30,
         "Statistic": "Sum",
         "Threshold": 1,
       },
@@ -950,26 +936,12 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "Value": {
               "Ref": "worker28EA3E30",
             },
-          },
-          {
-            "Name": "Resource",
-            "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "worker28EA3E30",
-                  },
-                  ":live",
-                ],
-              ],
-            },
-          },
+          }
         ],
         "EvaluationPeriods": 1,
         "MetricName": "Errors",
         "Namespace": "AWS/Lambda",
-        "Period": 60,
+        "Period": 30,
         "Statistic": "Sum",
         "Threshold": 1,
       },

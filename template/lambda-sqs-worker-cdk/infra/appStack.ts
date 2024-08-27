@@ -173,7 +173,7 @@ export class AppStack extends Stack {
 
     const alarm = new aws_cloudwatch.Alarm(this, 'codedeploy-alarm', {
       metric: worker.metricErrors({
-        period: Duration.seconds(60),
+        period: Duration.seconds(30),
       }),
       threshold: 1,
       evaluationPeriods: 1,
