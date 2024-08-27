@@ -16,7 +16,6 @@ import {
 import type { Construct } from 'constructs';
 
 import { config } from './config';
-import { applyTags } from './tags';
 
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -30,7 +29,6 @@ export class AppStack extends Stack {
       admins: [accountPrincipal],
       alias: 'seek/self/<%- serviceName %>',
     });
-    applyTags(kmsKey);
 
     kmsKey.grantEncrypt(accountPrincipal);
 
@@ -42,7 +40,6 @@ export class AppStack extends Stack {
         encryptionMasterKey: kmsKey,
       },
     );
-    applyTags(deadLetterQueue);
 
     const queue = new aws_sqs.Queue(this, 'worker-queue', {
       queueName: '<%- serviceName %>',
@@ -52,14 +49,12 @@ export class AppStack extends Stack {
       },
       encryptionMasterKey: kmsKey,
     });
-    applyTags(queue);
 
     const topic = aws_sns.Topic.fromTopicArn(
       this,
       'source-topic',
       config.sourceSnsTopicArn,
     );
-    applyTags(topic);
 
     topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
 
@@ -103,7 +98,6 @@ export class AppStack extends Stack {
       description: `Updated at ${new Date().toISOString()}`,
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
     });
-    applyTags(worker);
 
     const alias = worker.addAlias('live', {
       description: 'The Lambda version currently receiving traffic',
@@ -131,7 +125,6 @@ export class AppStack extends Stack {
         },
       },
     );
-    applyTags(preHook);
 
     worker.grantInvoke(preHook);
 
@@ -151,7 +144,6 @@ export class AppStack extends Stack {
         },
       },
     );
-    applyTags(postHook);
 
     const prunePermissions = new aws_iam.PolicyStatement({
       actions: [

@@ -50,10 +50,6 @@ it.each(['dev', 'prod'])(
       .replaceAll(
         /workerCurrentVersion([0-9a-zA-Z]+)"/g,
         (_, hash) => `workerCurrentVersion${'x'.repeat(hash.length)}"`,
-      )
-      .replace(
-        /"Key":\s*"seek:source:sha",\s*"Value":\s*".*?"/g,
-        '"Key": "seek:source:sha", "Value": "*"',
       );
 
     expect(JSON.parse(json)).toMatchSnapshot();
