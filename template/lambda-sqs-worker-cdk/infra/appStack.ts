@@ -1,9 +1,8 @@
+import { LambdaDeployment } from '@seek/aws-codedeploy-infra';
 import {
   Duration,
   Stack,
   type StackProps,
-  aws_cloudwatch,
-  aws_codedeploy,
   aws_iam,
   aws_kms,
   aws_lambda,
@@ -14,7 +13,6 @@ import {
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
-
 import { config } from './config';
 
 export class AppStack extends Stack {
@@ -74,6 +72,7 @@ export class AppStack extends Stack {
       target: 'node20',
       // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
       externalModules: [],
+      nodeModules: ['@seek/logger', 'skuba-dive'],
     };
 
     const defaultWorkerEnvironment: Record<string, string> = {
@@ -99,90 +98,12 @@ export class AppStack extends Stack {
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
     });
 
-    const alias = worker.addAlias('live', {
-      description: 'The Lambda version currently receiving traffic',
+    const workerDeployment = new LambdaDeployment(this, 'workerDeployment', {
+      lambdaFunction: worker,
     });
 
-    alias.addEventSource(
-      new aws_lambda_event_sources.SqsEventSource(queue, {
-        maxConcurrency: config.workerLambda.reservedConcurrency,
-      }),
+    workerDeployment.alias.addEventSource(
+      new aws_lambda_event_sources.SqsEventSource(queue),
     );
-
-    const preHook = new aws_lambda_nodejs.NodejsFunction(
-      this,
-      'worker-pre-hook',
-      {
-        ...defaultWorkerConfig,
-        entry: './src/preHook.ts',
-        timeout: Duration.seconds(120),
-        bundling: defaultWorkerBundlingConfig,
-        functionName: '<%- serviceName %>-pre-hook',
-        environment: {
-          ...defaultWorkerEnvironment,
-          ...config.workerLambda.environment,
-          FUNCTION_NAME_TO_INVOKE: worker.functionName,
-        },
-      },
-    );
-
-    worker.grantInvoke(preHook);
-
-    const postHook = new aws_lambda_nodejs.NodejsFunction(
-      this,
-      'worker-post-hook',
-      {
-        ...defaultWorkerConfig,
-        entry: './src/postHook.ts',
-        timeout: Duration.seconds(30),
-        bundling: defaultWorkerBundlingConfig,
-        functionName: '<%- serviceName %>-post-hook',
-        environment: {
-          ...defaultWorkerEnvironment,
-          ...config.workerLambda.environment,
-          FUNCTION_NAME_TO_PRUNE: worker.functionName,
-        },
-      },
-    );
-
-    const prunePermissions = new aws_iam.PolicyStatement({
-      actions: [
-        'lambda:ListAliases',
-        'lambda:ListVersionsByFunction',
-        'lambda:DeleteFunction',
-      ],
-      resources: [worker.functionArn, `${worker.functionArn}:*`],
-    });
-
-    postHook.addToRolePolicy(prunePermissions);
-
-    const application = new aws_codedeploy.LambdaApplication(
-      this,
-      'codedeploy-application',
-    );
-
-    const deploymentGroup = new aws_codedeploy.LambdaDeploymentGroup(
-      this,
-      'codedeploy-group',
-      {
-        application,
-        alias,
-        deploymentConfig: aws_codedeploy.LambdaDeploymentConfig.ALL_AT_ONCE,
-      },
-    );
-
-    const alarm = new aws_cloudwatch.Alarm(this, 'codedeploy-alarm', {
-      metric: alias.metricErrors({
-        period: Duration.seconds(60),
-      }),
-      threshold: 1,
-      evaluationPeriods: 1,
-    });
-
-    deploymentGroup.addAlarm(alarm);
-
-    deploymentGroup.addPreHook(preHook);
-
-    deploymentGroup.addPostHook(postHook);
   }
 }
