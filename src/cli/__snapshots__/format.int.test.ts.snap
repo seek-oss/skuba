@@ -19,6 +19,8 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
@@ -94,6 +96,8 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
@@ -166,6 +170,8 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
@@ -206,6 +212,8 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - not ignored
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
 
 skuba update complete.
 
