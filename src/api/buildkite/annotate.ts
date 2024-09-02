@@ -1,5 +1,5 @@
 import { exec, hasCommand } from '../../utils/exec';
-import { createLogger } from '../../utils/logging';
+import { log } from '../../utils/logging';
 
 export type AnnotationStyle = 'success' | 'info' | 'warning' | 'error';
 
@@ -58,9 +58,7 @@ export const annotate = async (
       buffer.toString('utf-8', 0, MAX_SIZE - TRUNCATION_WARNING.length) +
       TRUNCATION_WARNING;
     // Log full message to the build log
-    createLogger(true).warn(
-      `Annotation truncated, full message is: ${markdown}`,
-    );
+    log.warn(`Annotation truncated, full message is: ${markdown}`);
   }
 
   // Always scope to the current Buildkite step.
