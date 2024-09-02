@@ -77,7 +77,7 @@ export const runRequestListener = async ({
   const requestListener =
     typeof config === 'function'
       ? config
-      : (config.requestListener ?? config.callback?.());
+      : config.requestListener ?? config.callback?.();
 
   if (typeof requestListener !== 'function') {
     // Assume an executable script with non-request listener exports

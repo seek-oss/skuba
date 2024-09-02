@@ -7,8 +7,7 @@ nav_order: 3
 
 ---
 
-**skuba** lets you interactively run your TypeScript source code during development.
-The following commands are powered by [`ts-node`] and [`ts-node-dev`].
+**skuba** lets you interactively run your TypeScript source code during development, powered by [`tsx`].
 
 These commands are only intended to serve local development and simple scripting scenarios,
 as a TypeScript process can present substantial overhead at runtime.
@@ -26,7 +25,7 @@ skuba node src/some-cli-script.ts
 # ...
 ```
 
-or launches a [`ts-node`] REPL if a file is not provided:
+or launches a [`tsx`] REPL if a file is not provided:
 
 ```shell
 skuba node src/some-cli-script.ts
@@ -217,9 +216,8 @@ Execution should pause on the breakpoint until we hit `F5` or the `▶️` butto
 
 [`skuba build`]: ./build.md
 [`skuba-dive/register`]: https://github.com/seek-oss/skuba-dive#register
-[`ts-node-dev`]: https://github.com/whitecolor/ts-node-dev
-[`ts-node`]: https://github.com/typestrong/ts-node
 [`tsconfig-paths`]: https://github.com/dividab/tsconfig-paths
+[`tsx`]: https://github.com/privatenumber/tsx
 [express]: https://expressjs.com/
 [fastify]: https://www.fastify.io/
 [http server]: https://nodejs.org/docs/latest-v20.x/api/http.html#class-httpserver

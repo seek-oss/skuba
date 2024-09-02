@@ -1,7 +1,7 @@
 import path from 'path';
 
+import execa from 'execa';
 import getPort from 'get-port';
-import * as tsNode from 'ts-node';
 
 import { parseRunArgs } from '../utils/args';
 import { createExec } from '../utils/exec';
@@ -14,6 +14,14 @@ export const node = async () => {
 
   const availablePort = await getPort();
 
+  const commonArgs = [
+    ...args.node,
+    '--require',
+    require.resolve('dotenv/config'),
+    '--require',
+    require.resolve('tsconfig-paths/register'),
+  ];
+
   if (args.entryPoint) {
     const exec = createExec({
       env: {
@@ -22,32 +30,25 @@ export const node = async () => {
       },
     });
 
-    // Run a script with plain `node` to support inspector options.
-    // https://github.com/TypeStrong/ts-node#programmatic
     return exec(
-      'node',
-      ...args.node,
-      '--require',
-      'dotenv/config',
-      '--require',
-      'tsconfig-paths/register',
-      '--require',
-      'ts-node/register/transpile-only',
-      // Override dangerously warn-only default on Node.js <15 so that we
-      // predictably return a non-zero exit code on an unhandled rejection.
-      '--unhandled-rejections=throw',
+      'tsx',
+      ...commonArgs,
       path.join(__dirname, '..', 'wrapper'),
       ...args.script,
     );
   }
 
-  // REPL with `ts-node` to support import statements.
-  return tsNode
-    .createRepl({
-      service: tsNode.register({
-        require: ['dotenv/config', 'tsconfig-paths/register'],
-        transpileOnly: true,
-      }),
-    })
-    .start();
+  return execa(
+    require.resolve('tsx/cli'),
+    [
+      ...commonArgs,
+      '--require',
+      // Unsure if bug or feature that this is needed, but tsx appears to not do anything typescript in the REPL without this!
+      // Doesn't occur when just running the tsx binary directly 🧐
+      require.resolve('tsx/patch-repl'),
+    ],
+    {
+      stdio: 'inherit',
+    },
+  );
 };
