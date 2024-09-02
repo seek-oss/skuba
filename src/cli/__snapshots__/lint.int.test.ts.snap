@@ -27,7 +27,7 @@ tsc      │ tsc --noEmit exited with code 0
 skuba    │ Processed skuba lints in <random>s.
 ESLint, Prettier found issues that require triage.
 
-Try running yarn skuba format to fix them.
+Try running pnpm exec skuba format to fix them.
 "
 `;
 
@@ -72,11 +72,11 @@ ESLint   │ Processed 2 files in <random>s.
 Prettier │ Processed 6 files in <random>s.
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
-skuba    │ skuba has patches to apply. Run yarn skuba format to run them. skuba-patches
+skuba    │ skuba has patches to apply. Run pnpm exec skuba format to run them. skuba-patches
 skuba    │ Processed skuba lints in <random>s.
 skuba found issues that require triage.
 
-Try running yarn skuba format to fix them.
+Try running pnpm exec skuba format to fix them.
 "
 `;
 
@@ -90,7 +90,7 @@ Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 **skuba**
 
 \`\`\`term
-<random>/package.json skuba has patches to apply. Run yarn skuba format to run them.
+<random>/package.json skuba has patches to apply. Run pnpm exec skuba format to run them.
 \`\`\`
 ",
 ]
@@ -106,13 +106,15 @@ ESLint   │ ○ d.js
 Prettier │ Initialising Prettier...
 Prettier │ Detected project root: <random>
 Prettier │ Discovering files...
-Prettier │ Discovered 10 files.
+Prettier │ Discovered 11 files.
 Prettier │ Linting files...
 Prettier │ .dockerignore
 Prettier │   parser: -
 Prettier │ .eslintignore
 Prettier │   parser: -
 Prettier │ .gitignore
+Prettier │   parser: -
+Prettier │ .npmrc
 Prettier │   parser: -
 Prettier │ .prettierignore
 Prettier │   parser: -
@@ -204,7 +206,7 @@ tsc      │ tsc --noEmit exited with code 2
 skuba    │ Processed skuba lints in <random>s.
 ESLint, Prettier, tsc found issues that require triage.
 
-Try running yarn skuba format to fix them.
+Try running pnpm exec skuba format to fix them.
 "
 `;
 

@@ -17,11 +17,16 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
@@ -89,11 +94,16 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
@@ -108,13 +118,15 @@ Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 10 files.
+Discovered 11 files.
 Formatting files...
 .dockerignore
   parser: -
 .eslintignore
   parser: -
 .gitignore
+  parser: -
+.npmrc
   parser: -
 .prettierignore
   parser: -
@@ -156,11 +168,16 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
 
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
@@ -190,16 +207,20 @@ Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found
 
-Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore file found
+Patch skipped: Move .npmrc out of the .gitignore managed section - not ignored
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found
+
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
 
 skuba update complete.
 
 Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
-Refreshed .dockerignore. refresh-config-files
+Refreshed .npmrc. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint

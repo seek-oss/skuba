@@ -9,16 +9,9 @@ owner: '{{values "owner"}}'
 image: '{{values "image"}}'
 
 env:
-  # https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-reusing-connections.html
-  AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
-
   ENVIRONMENT: '{{values "environment"}}'
   OPENTELEMETRY_ENABLED: '{{.Values.openTelemetry.enabled | default false}}'
   SERVICE: '{{values "service"}}'
-
-  {{range $key, $value := .Values.env}}
-  {{$key}}: {{$value}}
-  {{end}}
 
 {{if .Values.cloudwatchDashboardDisabled}}
 cloudwatchDashboardDisabled: {{values "cloudwatchDashboardDisabled"}}

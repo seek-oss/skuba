@@ -155,10 +155,10 @@ const patchRenovateConfig = async (
   return { result: 'apply' };
 };
 
-export const tryPatchRenovateConfig = (async (
-  mode: 'format' | 'lint',
+export const tryPatchRenovateConfig = (async ({
+  mode,
   dir = process.cwd(),
-) => {
+}) => {
   try {
     // In a monorepo we may be invoked within a subdirectory, but we are working
     // with Renovate config that should be relative to the repository root.

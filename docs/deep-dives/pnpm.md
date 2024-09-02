@@ -69,6 +69,7 @@ The **skuba**-maintained `.npmrc` currently instructs pnpm to hoist the followin
 
 ```shell
 # managed by skuba
+package-manager-strict-version=true
 public-hoist-pattern[]="@types*"
 public-hoist-pattern[]="*eslint*"
 public-hoist-pattern[]="*prettier*"
@@ -105,21 +106,19 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 1. Install **skuba** 7.4.0 or greater
 
-2. Install pnpm
-
-   Run the following on macOS:
-
-   ```bash
-   brew install pnpm
-   ```
-
-   (Check the [install guide] for other operating systems.)
-
-3. Add a `packageManager` key to `package.json`
+2. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@9.0.5",
+   "packageManager": "pnpm@9.7.0",
    ```
+
+3. Install pnpm
+
+   ```bash
+   corepack enable && corepack install
+   ```
+
+   (Check the [install guide] for alternate methods)
 
 4. Create [`pnpm-workspace.yaml`](https://pnpm.io/pnpm-workspace_yaml)
 
@@ -134,36 +133,13 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    (Optional) If your sub-package `package.json`s reference one another using the syntax `foo: *`,
    you can replace these references with the [workspace protocol] using the syntax `foo: workspace:*`.
 
-5. Run [`pnpm import`]
+5. Run `pnpm import && rm yarn.lock`
 
    This converts `yarn.lock` to `pnpm-lock.yaml`.
 
-6. Delete `yarn.lock`
+6. Run `pnpm skuba format`
 
-7. Run `pnpm skuba format`
-
-   This will synthesise managed hoist patterns into `.npmrc`.
-
-8. Include additional hoisting settings in `.npmrc`
-
-   Skip this step if your project does not use Serverless.
-
-   ```diff
-   # managed by skuba
-   public-hoist-pattern[]="@types*"
-   public-hoist-pattern[]="*eslint*"
-   public-hoist-pattern[]="*prettier*"
-   public-hoist-pattern[]="esbuild"
-   public-hoist-pattern[]="jest"
-   public-hoist-pattern[]="tsconfig-seek"
-   # end managed by skuba
-   +
-   + # Required for Serverless packaging
-   + node-linker=hoisted
-   + shamefully-hoist=true
-   ```
-
-9. Remove `.npmrc` ignore entry from `.gitignore` and `.dockerignore`
+7. Remove the `.npmrc` ignore entry from `.gitignore` and `.dockerignore`
 
    Heed the warning and ensure that a safe `.npmrc` is included in the same commit.
 
@@ -178,15 +154,39 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    - .npmrc
    ```
 
-10. Delete the `node_modules` directory
+   A safe `.npmrc` will be synthesised for you in the next step.
+
+8. Run `pnpm skuba format`
+
+   This will synthesise managed hoist patterns into `.npmrc`.
+
+9. Include additional hoisting settings in `.npmrc`
+
+   Skip this step if your project does not use Serverless.
+
+   ```diff
+   # managed by skuba
+   package-manager-strict-version=true
+   public-hoist-pattern[]="@types*"
+   public-hoist-pattern[]="*eslint*"
+   public-hoist-pattern[]="*prettier*"
+   public-hoist-pattern[]="esbuild"
+   public-hoist-pattern[]="jest"
+   public-hoist-pattern[]="tsconfig-seek"
+   # end managed by skuba
+   +
+   + # Required for Serverless packaging
+   + node-linker=hoisted
+   + shamefully-hoist=true
+   ```
+
+10. Run `rm -rf node_modules && pnpm install`
 
     This will ensure your local workspace will not have any lingering hoisted dependencies from `yarn`.
 
     If you have a monorepo, delete all sub-package `node_modules` directories.
 
-11. Run `pnpm install`
-
-12. Run `pnpm skuba lint`
+11. Run `pnpm skuba lint`
 
     After running `pnpm install`,
     you may notice that some module imports no longer work.
@@ -201,7 +201,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Run `pnpm install foo` to resolve this error.
 
-13. Modify `Dockerfile` or `Dockerfile.dev-deps`
+12. Modify `Dockerfile` or `Dockerfile.dev-deps`
 
     Your build pipeline may have previously mounted an ephemeral `.npmrc` with an auth token at `/workdir`.
     This needs to be mounted elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -239,7 +239,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
-14. Replace `yarn` with `pnpm` in `Dockerfile`
+13. Replace `yarn` with `pnpm` in `Dockerfile`
 
     As `pnpm fetch` does not actually install packages,
     run a subsequent `pnpm install --offline` before any command which may reference a dependency.
@@ -269,14 +269,13 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       WORKDIR /workdir
     
       COPY --from=build /workdir/lib lib
-    -
     - COPY --from=deps /workdir/node_modules node_modules
     + COPY --from=build /workdir/node_modules node_modules
     
       ENV NODE_ENV=production
     ```
 
-15. Modify plugins in `.buildkite/pipeline.yml`
+14. Modify plugins in `.buildkite/pipeline.yml`
 
     Your build pipeline may have previously output an ephemeral `.npmrc` with an auth token on the build agent.
     This needs to be output elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
@@ -295,17 +294,17 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     - seek-oss/docker-ecr-cache#v2.1.0:
     + seek-oss/docker-ecr-cache#v2.2.0:
         cache-on:
-    +     - .npmrc
     -     - package.json
-    +     - package.json#.packageManager
     -     - yarn.lock
+    +     - .npmrc
+    +     - package.json#.packageManager
     +     - pnpm-lock.yaml
         dockerfile: Dockerfile.dev-deps
     -   secrets: id=npm,src=.npmrc
     +   secrets: id=npm,src=tmp/.npmrc
     ```
 
-16. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
+15. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
@@ -322,13 +321,25 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +    - pnpm lint
     ```
 
-    #### FAQ
+16. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
 
-    **Q:** I'm running into `ERR_PNPM_CANNOT_DEPLOY  A deploy is only possible from inside a workspace`
+## FAQ
 
-    **A:** `pnpm deploy` is a reserved command. Use `pnpm run deploy` instead.
+**Q:** I'm running into `ERR_PNPM_CANNOT_DEPLOY  A deploy is only possible from inside a workspace`
 
-17. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
+**A:** `pnpm deploy` is a reserved command. Use `pnpm run deploy` instead.
+
+---
+
+**Q:** I'm seeing `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "<NAME>" not found` in my pipeline
+
+**A:** Ensure `pnpm install --offline` is referenced earlier within pipeline step as shown in step 14.
+
+---
+
+**Q:** I'm seeing `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "workspace" not found` in my pipeline
+
+**A:** `pnpm workspace <PACKAGE_NAME>` does not work. Replace it with the [`--filter`](https://pnpm.io/filtering) flag.
 
 ---
 
@@ -344,7 +355,6 @@ This page may be [edited on GitHub].
 [`.npmrc`]: https://pnpm.io/npmrc
 [`Dockerfile.dev-deps`]: https://github.com/seek-oss/skuba/blob/main/template/koa-rest-api/Dockerfile.dev-deps
 [`pnpm fetch`]: https://pnpm.io/cli/fetch
-[`pnpm import`]: https://pnpm.io/cli/import
 [bind mount]: https://docs.docker.com/engine/reference/builder/#run---mounttypebind
 [contribute a change]: https://seek-oss.github.io/skuba/CONTRIBUTING.html#i-want-to-contribute-a-change
 [edited on GitHub]: https://github.com/seek-oss/skuba/edit/main/docs/deep-dives/pnpm.md

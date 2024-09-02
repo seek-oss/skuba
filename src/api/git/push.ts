@@ -51,6 +51,19 @@ interface PushParameters {
   force?: boolean;
 }
 
+interface PushResult {
+  ok: boolean;
+  error: string | null;
+  refs: Record<
+    string,
+    {
+      ok: boolean;
+      error: string;
+    }
+  >;
+  headers?: Record<string, string> | undefined;
+}
+
 /**
  * Pushes the specified `ref` from the local Git repository to a remote.
  */
@@ -61,7 +74,7 @@ export const push = async ({
   remote,
   remoteRef,
   force,
-}: PushParameters) => {
+}: PushParameters): Promise<PushResult> => {
   const { owner, repo } = await getOwnerAndRepo({ dir });
 
   const url = `https://github.com/${encodeURIComponent(

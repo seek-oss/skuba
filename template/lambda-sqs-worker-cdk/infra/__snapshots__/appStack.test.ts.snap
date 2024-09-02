@@ -2,115 +2,6 @@
 
 exports[`returns expected CloudFormation stack for dev 1`] = `
 {
-  "Mappings": {
-    "ServiceprincipalMap": {
-      "af-south-1": {
-        "codedeploy": "codedeploy.af-south-1.amazonaws.com",
-      },
-      "ap-east-1": {
-        "codedeploy": "codedeploy.ap-east-1.amazonaws.com",
-      },
-      "ap-northeast-1": {
-        "codedeploy": "codedeploy.ap-northeast-1.amazonaws.com",
-      },
-      "ap-northeast-2": {
-        "codedeploy": "codedeploy.ap-northeast-2.amazonaws.com",
-      },
-      "ap-northeast-3": {
-        "codedeploy": "codedeploy.ap-northeast-3.amazonaws.com",
-      },
-      "ap-south-1": {
-        "codedeploy": "codedeploy.ap-south-1.amazonaws.com",
-      },
-      "ap-south-2": {
-        "codedeploy": "codedeploy.ap-south-2.amazonaws.com",
-      },
-      "ap-southeast-1": {
-        "codedeploy": "codedeploy.ap-southeast-1.amazonaws.com",
-      },
-      "ap-southeast-2": {
-        "codedeploy": "codedeploy.ap-southeast-2.amazonaws.com",
-      },
-      "ap-southeast-3": {
-        "codedeploy": "codedeploy.ap-southeast-3.amazonaws.com",
-      },
-      "ap-southeast-4": {
-        "codedeploy": "codedeploy.ap-southeast-4.amazonaws.com",
-      },
-      "ca-central-1": {
-        "codedeploy": "codedeploy.ca-central-1.amazonaws.com",
-      },
-      "cn-north-1": {
-        "codedeploy": "codedeploy.cn-north-1.amazonaws.com.cn",
-      },
-      "cn-northwest-1": {
-        "codedeploy": "codedeploy.cn-northwest-1.amazonaws.com.cn",
-      },
-      "eu-central-1": {
-        "codedeploy": "codedeploy.eu-central-1.amazonaws.com",
-      },
-      "eu-central-2": {
-        "codedeploy": "codedeploy.eu-central-2.amazonaws.com",
-      },
-      "eu-north-1": {
-        "codedeploy": "codedeploy.eu-north-1.amazonaws.com",
-      },
-      "eu-south-1": {
-        "codedeploy": "codedeploy.eu-south-1.amazonaws.com",
-      },
-      "eu-south-2": {
-        "codedeploy": "codedeploy.eu-south-2.amazonaws.com",
-      },
-      "eu-west-1": {
-        "codedeploy": "codedeploy.eu-west-1.amazonaws.com",
-      },
-      "eu-west-2": {
-        "codedeploy": "codedeploy.eu-west-2.amazonaws.com",
-      },
-      "eu-west-3": {
-        "codedeploy": "codedeploy.eu-west-3.amazonaws.com",
-      },
-      "il-central-1": {
-        "codedeploy": "codedeploy.il-central-1.amazonaws.com",
-      },
-      "me-central-1": {
-        "codedeploy": "codedeploy.me-central-1.amazonaws.com",
-      },
-      "me-south-1": {
-        "codedeploy": "codedeploy.me-south-1.amazonaws.com",
-      },
-      "sa-east-1": {
-        "codedeploy": "codedeploy.sa-east-1.amazonaws.com",
-      },
-      "us-east-1": {
-        "codedeploy": "codedeploy.us-east-1.amazonaws.com",
-      },
-      "us-east-2": {
-        "codedeploy": "codedeploy.us-east-2.amazonaws.com",
-      },
-      "us-gov-east-1": {
-        "codedeploy": "codedeploy.us-gov-east-1.amazonaws.com",
-      },
-      "us-gov-west-1": {
-        "codedeploy": "codedeploy.us-gov-west-1.amazonaws.com",
-      },
-      "us-iso-east-1": {
-        "codedeploy": "codedeploy.amazonaws.com",
-      },
-      "us-iso-west-1": {
-        "codedeploy": "codedeploy.amazonaws.com",
-      },
-      "us-isob-east-1": {
-        "codedeploy": "codedeploy.amazonaws.com",
-      },
-      "us-west-1": {
-        "codedeploy": "codedeploy.us-west-1.amazonaws.com",
-      },
-      "us-west-2": {
-        "codedeploy": "codedeploy.us-west-2.amazonaws.com",
-      },
-    },
-  },
   "Parameters": {
     "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
@@ -203,15 +94,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": {
-                "Service": {
-                  "Fn::FindInMap": [
-                    "ServiceprincipalMap",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    "codedeploy",
-                  ],
-                },
+                "Service": "codedeploy.amazonaws.com",
               },
             },
           ],
@@ -451,6 +334,8 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "ENVIRONMENT": "dev",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName",
@@ -644,6 +529,8 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName-post-hook",
@@ -796,6 +683,8 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName-pre-hook",
@@ -1044,115 +933,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
 
 exports[`returns expected CloudFormation stack for prod 1`] = `
 {
-  "Mappings": {
-    "ServiceprincipalMap": {
-      "af-south-1": {
-        "codedeploy": "codedeploy.af-south-1.amazonaws.com",
-      },
-      "ap-east-1": {
-        "codedeploy": "codedeploy.ap-east-1.amazonaws.com",
-      },
-      "ap-northeast-1": {
-        "codedeploy": "codedeploy.ap-northeast-1.amazonaws.com",
-      },
-      "ap-northeast-2": {
-        "codedeploy": "codedeploy.ap-northeast-2.amazonaws.com",
-      },
-      "ap-northeast-3": {
-        "codedeploy": "codedeploy.ap-northeast-3.amazonaws.com",
-      },
-      "ap-south-1": {
-        "codedeploy": "codedeploy.ap-south-1.amazonaws.com",
-      },
-      "ap-south-2": {
-        "codedeploy": "codedeploy.ap-south-2.amazonaws.com",
-      },
-      "ap-southeast-1": {
-        "codedeploy": "codedeploy.ap-southeast-1.amazonaws.com",
-      },
-      "ap-southeast-2": {
-        "codedeploy": "codedeploy.ap-southeast-2.amazonaws.com",
-      },
-      "ap-southeast-3": {
-        "codedeploy": "codedeploy.ap-southeast-3.amazonaws.com",
-      },
-      "ap-southeast-4": {
-        "codedeploy": "codedeploy.ap-southeast-4.amazonaws.com",
-      },
-      "ca-central-1": {
-        "codedeploy": "codedeploy.ca-central-1.amazonaws.com",
-      },
-      "cn-north-1": {
-        "codedeploy": "codedeploy.cn-north-1.amazonaws.com.cn",
-      },
-      "cn-northwest-1": {
-        "codedeploy": "codedeploy.cn-northwest-1.amazonaws.com.cn",
-      },
-      "eu-central-1": {
-        "codedeploy": "codedeploy.eu-central-1.amazonaws.com",
-      },
-      "eu-central-2": {
-        "codedeploy": "codedeploy.eu-central-2.amazonaws.com",
-      },
-      "eu-north-1": {
-        "codedeploy": "codedeploy.eu-north-1.amazonaws.com",
-      },
-      "eu-south-1": {
-        "codedeploy": "codedeploy.eu-south-1.amazonaws.com",
-      },
-      "eu-south-2": {
-        "codedeploy": "codedeploy.eu-south-2.amazonaws.com",
-      },
-      "eu-west-1": {
-        "codedeploy": "codedeploy.eu-west-1.amazonaws.com",
-      },
-      "eu-west-2": {
-        "codedeploy": "codedeploy.eu-west-2.amazonaws.com",
-      },
-      "eu-west-3": {
-        "codedeploy": "codedeploy.eu-west-3.amazonaws.com",
-      },
-      "il-central-1": {
-        "codedeploy": "codedeploy.il-central-1.amazonaws.com",
-      },
-      "me-central-1": {
-        "codedeploy": "codedeploy.me-central-1.amazonaws.com",
-      },
-      "me-south-1": {
-        "codedeploy": "codedeploy.me-south-1.amazonaws.com",
-      },
-      "sa-east-1": {
-        "codedeploy": "codedeploy.sa-east-1.amazonaws.com",
-      },
-      "us-east-1": {
-        "codedeploy": "codedeploy.us-east-1.amazonaws.com",
-      },
-      "us-east-2": {
-        "codedeploy": "codedeploy.us-east-2.amazonaws.com",
-      },
-      "us-gov-east-1": {
-        "codedeploy": "codedeploy.us-gov-east-1.amazonaws.com",
-      },
-      "us-gov-west-1": {
-        "codedeploy": "codedeploy.us-gov-west-1.amazonaws.com",
-      },
-      "us-iso-east-1": {
-        "codedeploy": "codedeploy.amazonaws.com",
-      },
-      "us-iso-west-1": {
-        "codedeploy": "codedeploy.amazonaws.com",
-      },
-      "us-isob-east-1": {
-        "codedeploy": "codedeploy.amazonaws.com",
-      },
-      "us-west-1": {
-        "codedeploy": "codedeploy.us-west-1.amazonaws.com",
-      },
-      "us-west-2": {
-        "codedeploy": "codedeploy.us-west-2.amazonaws.com",
-      },
-    },
-  },
   "Parameters": {
     "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
@@ -1245,15 +1025,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": {
-                "Service": {
-                  "Fn::FindInMap": [
-                    "ServiceprincipalMap",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    "codedeploy",
-                  ],
-                },
+                "Service": "codedeploy.amazonaws.com",
               },
             },
           ],
@@ -1493,6 +1265,8 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "ENVIRONMENT": "prod",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName",
@@ -1686,6 +1460,8 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName-post-hook",
@@ -1838,6 +1614,8 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             },
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
+            "SERVICE": "serviceName",
+            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName-pre-hook",

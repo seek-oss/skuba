@@ -1,5 +1,94 @@
 # skuba
 
+## 8.2.1
+
+### Patch Changes
+
+- **template:** Remove JSON schema definitions from Buildkite pipeline files ([#1624](https://github.com/seek-oss/skuba/pull/1624))
+
+  This reverts [#1611](https://github.com/seek-oss/skuba/pull/1611) due to incompatibility with pipeline signing.
+
+- **template:** docker-compose v5.3.0 ([#1620](https://github.com/seek-oss/skuba/pull/1620))
+
+- **template/lambda-sqs-worker-cdk:** Fix deploy:hotswap script ([#1616](https://github.com/seek-oss/skuba/pull/1616))
+
+- **deps:** esbuild 0.23 ([#1610](https://github.com/seek-oss/skuba/pull/1610))
+
+## 8.2.0
+
+### Minor Changes
+
+- **format, lint:** Set `package-manager-strict-version=true` for pnpm projects ([#1572](https://github.com/seek-oss/skuba/pull/1572))
+
+### Patch Changes
+
+- **configure:** Fix `[object Object]` output appearing during `skuba configure` ([#1597](https://github.com/seek-oss/skuba/pull/1597))
+
+- **template/koa-rest-api:** Clean up `src/app.test.ts` ([#1606](https://github.com/seek-oss/skuba/pull/1606))
+
+- **template:** Add JSON schema definitions to Buildkite pipeline files ([#1611](https://github.com/seek-oss/skuba/pull/1611))
+
+- **deps:** @octokit/rest ^21.0.0 ([#1599](https://github.com/seek-oss/skuba/pull/1599))
+
+## 8.1.0
+
+### Minor Changes
+
+- **lint:** Skip generation of config files when present in `.gitignore` ([#1554](https://github.com/seek-oss/skuba/pull/1554))
+
+  `skuba lint` and `skuba format` now skip the generation of config files, like `.dockerignore` and `.npmrc`, if they are ignored by `.gitignore` files.
+
+- **deps:** esbuild 0.21 ([#1569](https://github.com/seek-oss/skuba/pull/1569))
+
+- **deps:** TypeScript 5.5 ([#1596](https://github.com/seek-oss/skuba/pull/1596))
+
+  This major release includes breaking changes. See the [TypeScript 5.5](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5/) announcement for more information.
+
+- **api:** Add Git.isFileGitIgnored ([#1554](https://github.com/seek-oss/skuba/pull/1554))
+
+- **lint:** Add coverage to .prettierignore ([#1552](https://github.com/seek-oss/skuba/pull/1552))
+
+- **configure:** Accept template data from stdin to allow for integration testing ([#1558](https://github.com/seek-oss/skuba/pull/1558))
+
+- **lint:** Swap out `detect-package-manager` for manual lockfile detection ([#1552](https://github.com/seek-oss/skuba/pull/1552))
+
+  `detect-package-manager` has been removed, in lieu of using `find-up` to detect the closest
+  `pnpm-lock.yaml` or `yarn.lock` to infer the package manager.
+
+- **lint:** Patch installing specific pnpm version via Corepack ([#1534](https://github.com/seek-oss/skuba/pull/1534))
+
+- **deps:** prettier 3.3 ([#1580](https://github.com/seek-oss/skuba/pull/1580))
+
+### Patch Changes
+
+- **template:** Add extension recommendations to `.vscode/extensions.json` ([#1556](https://github.com/seek-oss/skuba/pull/1556))
+
+- **Git:** Explicitly declare return types to enable compatibility with the `Node16` module ([#1589](https://github.com/seek-oss/skuba/pull/1589))
+
+- **template/oss-npm-package:** Skip excessive action runs ([#1586](https://github.com/seek-oss/skuba/pull/1586))
+
+- **template/lambda-sqs-worker-cdk:** Add worker config file ([#1548](https://github.com/seek-oss/skuba/pull/1548))
+
+- **lint:** Exclude `.vscode/extensions.json` from being ignored by `.gitignore` ([#1556](https://github.com/seek-oss/skuba/pull/1556))
+
+- **template:** Make all configuration values explicit ([#1560](https://github.com/seek-oss/skuba/pull/1560))
+
+  Previously, `src/config.ts` included optional configuration values and inheritance between environments in the spirit of [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself). While the templated file was wired up in a "safe" way—the production environment never inherited from other environments and explicitly specified all its configuration values—its pattern was misappropriated elsewhere and led to local configuration values affecting production environments.
+
+  Instead, we now list all configuration values explicitly against each environment.
+
+- **template:** Remove deprecated `docker-compose.yml` version ([#1570](https://github.com/seek-oss/skuba/pull/1570))
+
+  Docker has ignored this for a while, and now generates a warning on every build:
+  https://github.com/compose-spec/compose-spec/blob/master/04-version-and-name.md
+
+- **template/\*-rest-api:** Clean up templated environment variables ([#1562](https://github.com/seek-oss/skuba/pull/1562))
+
+  - `AWS_NODEJS_CONNECTION_REUSE_ENABLED` is no longer required with AWS SDK V3.
+  - The `env` boilerplate in Gantry values files was largely unnecessary and confusing.
+
+    Our templates prefer to declare configuration values directly in `src/config.ts`.
+
 ## 8.0.1
 
 ### Patch Changes

@@ -7,7 +7,7 @@ parent: Deep dives
 ---
 
 Buildkite is SEEK's [CI/CD] platform of choice.
-See [Builds at SEEK] for more information.
+See our internal [Buildkite Docs] for more information.
 
 This topic details Buildkite integration features baked into **skuba**,
 as well as common issues faced when running your project on a Buildkite agent.
@@ -28,7 +28,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v5.10.0:
+      - docker#v5.11.0:
           environment:
             - BUILDKITE_AGENT_ACCESS_TOKEN
           propagate-environment: true
@@ -62,7 +62,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v5.2.0:
+      - docker-compose#v5.3.0:
           environment:
             - BUILDKITE_AGENT_ACCESS_TOKEN
           propagate-environment: true
@@ -119,7 +119,7 @@ The agent may be tied up running a particularly compute- or memory-intensive ste
 [`skuba test`]: ../cli/test.md#skuba-test
 [Buildkite annotations]: https://buildkite.com/docs/agent/v3/cli-annotate
 [Buildkite.annotate]: ../development-api/buildkite.md#annotate
-[Builds at SEEK]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
+[Buildkite Docs]: https://backstage.myseek.xyz/docs/default/component/buildkite-docs
 [CI/CD]: https://en.wikipedia.org/wiki/CI/CD
 [Compose file]: https://docs.docker.com/compose/compose-file
 [Docker Buildkite plugin]: https://github.com/buildkite-plugins/docker-buildkite-plugin

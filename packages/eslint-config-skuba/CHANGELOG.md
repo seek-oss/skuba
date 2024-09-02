@@ -1,5 +1,17 @@
 # eslint-config-skuba
 
+## 4.1.0
+
+### Minor Changes
+
+- **deps:** eslint-plugin-tsdoc 0.3.0 ([#1579](https://github.com/seek-oss/skuba/pull/1579))
+
+- **deps:** @typescript/eslint ^7.14.1 ([#1596](https://github.com/seek-oss/skuba/pull/1596))
+
+  This addresses compatibility with TypeScript 5.5
+
+- **deps:** eslint-plugin-jest 28 ([#1538](https://github.com/seek-oss/skuba/pull/1538))
+
 ## 4.0.0
 
 ### Major Changes

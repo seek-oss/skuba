@@ -60,10 +60,12 @@ node_modules*/
     "data": "# managed by skuba
 .idea/*
 .vscode/*
+!.vscode/extensions.json
 
 .cdk.staging/
 .serverless/
 cdk.out/
+cdk.context.json
 node_modules*/
 
 /coverage*/
@@ -91,6 +93,7 @@ yarn-error.log
 gantry*.yaml
 gantry*.yml
 pnpm-lock.yaml
+coverage
 # end managed by skuba
 ",
     "operation": "A",

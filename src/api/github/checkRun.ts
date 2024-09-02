@@ -1,10 +1,10 @@
-import { Octokit } from '@octokit/rest';
 import type { Endpoints } from '@octokit/types';
 
 import { pluralise } from '../../utils/logging';
 import * as Git from '../git';
 
 import { apiTokenFromEnvironment } from './environment';
+import { createRestClient } from './octokit';
 
 type Output = NonNullable<
   Endpoints['PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}']['parameters']['output']
@@ -106,7 +106,7 @@ export const createCheckRun = async ({
     Git.getOwnerAndRepo({ dir }),
   ]);
 
-  const client = new Octokit({ auth: apiTokenFromEnvironment() });
+  const client = await createRestClient({ auth: apiTokenFromEnvironment() });
 
   await client.checks.create({
     conclusion,

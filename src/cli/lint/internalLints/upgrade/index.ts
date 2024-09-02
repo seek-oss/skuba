@@ -1,11 +1,15 @@
 import path from 'path';
 
 import { readdir, writeFile } from 'fs-extra';
+import type readPkgUp from 'read-pkg-up';
 import { gte, sort } from 'semver';
 
 import type { Logger } from '../../../../utils/logging';
 import { getConsumerManifest } from '../../../../utils/manifest';
-import { detectPackageManager } from '../../../../utils/packageManager';
+import {
+  type PackageManagerConfig,
+  detectPackageManager,
+} from '../../../../utils/packageManager';
 import { getSkubaVersion } from '../../../../utils/version';
 import { formatPackage } from '../../../configure/processing/package';
 import type { SkubaPackageJson } from '../../../init/writePackageJson';
@@ -19,9 +23,15 @@ export type Patch = {
 export type PatchReturnType =
   | { result: 'apply' }
   | { result: 'skip'; reason?: string };
-export type PatchFunction = (
-  mode: 'format' | 'lint',
-) => Promise<PatchReturnType>;
+
+export type PatchConfig = {
+  mode: 'format' | 'lint';
+  manifest: readPkgUp.NormalizedReadResult;
+  packageManager: PackageManagerConfig;
+  dir?: string;
+};
+
+export type PatchFunction = (config: PatchConfig) => Promise<PatchReturnType>;
 
 const getPatches = async (manifestVersion: string): Promise<Patches> => {
   const patches = await readdir(path.join(__dirname, 'patches'), {
@@ -64,9 +74,10 @@ export const upgradeSkuba = async (
   mode: 'lint' | 'format',
   logger: Logger,
 ): Promise<InternalLintResult> => {
-  const [currentVersion, manifest] = await Promise.all([
+  const [currentVersion, manifest, packageManager] = await Promise.all([
     getSkubaVersion(),
     getConsumerManifest(),
+    detectPackageManager(),
   ]);
 
   if (!manifest) {
@@ -91,15 +102,20 @@ export const upgradeSkuba = async (
 
   if (mode === 'lint') {
     const results = await Promise.all(
-      patches.map(async ({ apply }) => await apply(mode)),
+      patches.map(
+        async ({ apply }) =>
+          await apply({
+            mode,
+            manifest,
+            packageManager,
+          }),
+      ),
     );
 
     // No patches are applicable. Early exit to avoid unnecessary commits.
     if (results.every(({ result }) => result === 'skip')) {
       return { ok: true, fixable: false };
     }
-
-    const packageManager = await detectPackageManager();
 
     logger.warn(
       `skuba has patches to apply. Run ${logger.bold(
@@ -127,7 +143,11 @@ export const upgradeSkuba = async (
 
   // Run these in series in case a subsequent patch relies on a previous patch
   for (const { apply, description } of patches) {
-    const result = await apply(mode);
+    const result = await apply({
+      mode,
+      manifest,
+      packageManager,
+    });
     logger.newline();
     if (result.result === 'skip') {
       logger.plain(

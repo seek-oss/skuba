@@ -29,16 +29,21 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   }),
 
   test: () => ({
-    ...configs.local(),
-
     logLevel: Env.string('LOG_LEVEL', { default: 'silent' }),
+    metrics: false,
+    name: '<%- serviceName %>',
     version: 'test',
+
+    destinationSnsTopicArn: 'arn:aws:sns:us-east-2:123456789012:destination',
   }),
 
   dev: () => ({
-    ...configs.prod(),
-
     logLevel: 'debug',
+    metrics: true,
+    name: Env.string('SERVICE'),
+    version: Env.string('VERSION'),
+
+    destinationSnsTopicArn: Env.string('DESTINATION_SNS_TOPIC_ARN'),
   }),
 
   prod: () => ({
