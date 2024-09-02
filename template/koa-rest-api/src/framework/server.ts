@@ -39,6 +39,7 @@ export const createApp = <State, Context>(
   ...middleware: Array<Koa.Middleware<State, Context>>
 ) =>
   new Koa()
+    // Read: https://github.com/seek-oss/koala/tree/master/src/secureHeaders
     .use(SecureHeaders.middleware)
     .use(contextMiddleware)
     .use(requestLogging)
