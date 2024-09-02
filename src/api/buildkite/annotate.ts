@@ -1,4 +1,5 @@
 import { exec, hasCommand } from '../../utils/exec';
+import { createLogger } from '../../utils/logging';
 
 export type AnnotationStyle = 'success' | 'info' | 'warning' | 'error';
 
@@ -24,7 +25,7 @@ interface AnnotationOptions {
   style?: AnnotationStyle;
 }
 
-// Buildkite annotation only supports 1MiB of data
+// Buildkite annotation currently only supports 1MiB of data
 export const MAX_SIZE = 1024 * 1024; // 1MiB in bytes
 export const TRUNCATION_WARNING = '... [Truncated due to size limit]';
 
@@ -56,7 +57,10 @@ export const annotate = async (
     truncatedMarkdown =
       buffer.toString('utf-8', 0, MAX_SIZE - TRUNCATION_WARNING.length) +
       TRUNCATION_WARNING;
-    // TODO: Log the full annotation to the build log
+    // Log full message to the build log
+    createLogger(true).warn(
+      `Annotation truncated, full message is: ${markdown}`,
+    );
   }
 
   // Always scope to the current Buildkite step.
