@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Enable secure headers middleware by default
+template/koa-rest-api: Enable secure headers middleware by default
