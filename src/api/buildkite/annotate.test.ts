@@ -78,16 +78,6 @@ describe('annotate', () => {
       expect(lastArgument.endsWith(TRUNCATION_WARNING)).toBe(true);
     });
 
-    // it('logs the full message when annotation is truncated', async () => {
-    //   setEnvironmentVariables();
-    //   await annotate(oversizeMarkdown, opts);
-
-    //   // FIXME: How can I properly mock the logger?
-    //   expect(console.log).toHaveBeenCalledWith(
-    //     expect.stringContaining(oversizeMarkdown),
-    //   );
-    // });
-
     it('skips when `buildkite-agent` is not present', async () => {
       hasCommand.mockResolvedValue(false);
 
