@@ -1,4 +1,5 @@
 import * as execModule from '../../utils/exec';
+import { log } from '../../utils/logging';
 
 import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate';
 
@@ -6,8 +7,7 @@ const exec = jest.spyOn(execModule, 'exec');
 const hasCommand = jest.spyOn(execModule, 'hasCommand');
 
 beforeAll(() => {
-  // Mock console.log to prevent output during tests
-  jest.spyOn(console, 'log').mockImplementation(() => undefined);
+  jest.spyOn(log, 'warn').mockImplementation(() => undefined);
 });
 
 beforeEach(() => {
@@ -76,6 +76,15 @@ describe('annotate', () => {
       }
 
       expect(lastArgument.endsWith(TRUNCATION_WARNING)).toBe(true);
+    });
+
+    it('logs the full message when annotation is truncated', async () => {
+      setEnvironmentVariables();
+      await annotate(oversizeMarkdown, opts);
+
+      expect(log.warn).toHaveBeenCalledWith(
+        expect.stringContaining(oversizeMarkdown),
+      );
     });
 
     it('skips when `buildkite-agent` is not present', async () => {
