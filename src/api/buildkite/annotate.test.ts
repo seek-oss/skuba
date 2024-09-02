@@ -5,6 +5,11 @@ import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate';
 const exec = jest.spyOn(execModule, 'exec');
 const hasCommand = jest.spyOn(execModule, 'hasCommand');
 
+beforeAll(() => {
+  // Mock console.log to prevent output during tests
+  jest.spyOn(console, 'log').mockImplementation(() => undefined);
+});
+
 beforeEach(() => {
   jest.clearAllMocks();
 
@@ -73,7 +78,15 @@ describe('annotate', () => {
       expect(lastArgument.endsWith(TRUNCATION_WARNING)).toBe(true);
     });
 
-    // TODO: Test logging the full annotation to the build log
+    // it('logs the full message when annotation is truncated', async () => {
+    //   setEnvironmentVariables();
+    //   await annotate(oversizeMarkdown, opts);
+
+    //   // FIXME: How can I properly mock the logger?
+    //   expect(console.log).toHaveBeenCalledWith(
+    //     expect.stringContaining(oversizeMarkdown),
+    //   );
+    // });
 
     it('skips when `buildkite-agent` is not present', async () => {
       hasCommand.mockResolvedValue(false);
