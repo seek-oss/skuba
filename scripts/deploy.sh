@@ -4,7 +4,7 @@ set -e
 
 echo '=> Packaging...'
 
-pnpm exec ts-node --transpile-only scripts/package.ts
+pnpm exec tsx scripts/package.ts
 
 cd dist-docs
 
