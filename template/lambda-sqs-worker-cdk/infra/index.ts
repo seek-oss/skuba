@@ -1,6 +1,6 @@
+import { HookStack } from '@seek/aws-codedeploy-infra';
 import { App } from 'aws-cdk-lib';
 
-import { HookStack } from '@seek/aws-codedeploy-infra';
 import { AppStack } from './appStack';
 import { config, environment } from './config';
 

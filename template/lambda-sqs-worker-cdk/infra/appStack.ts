@@ -13,6 +13,7 @@ import {
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
+
 import { config } from './config';
 
 export class AppStack extends Stack {
