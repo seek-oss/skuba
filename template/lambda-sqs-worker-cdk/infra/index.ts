@@ -6,7 +6,6 @@ import { config, environment } from './config';
 
 const app = new App();
 
-// eslint-disable-next-line no-new
 const appStack = new AppStack(app, 'appStack', {
   stackName: config.appName,
   tags: {
@@ -17,7 +16,10 @@ const appStack = new AppStack(app, 'appStack', {
   },
 });
 
-// eslint-disable-next-line no-new
+/**
+ * TODO: If deploying multiple stacks in one AWS account, deploy HookStack centrally rather than here
+ * You can find the envisioned workflow here: {@link https://github.com/seek-oss/skuba/issues/1640#issuecomment-2323854827}
+ */
 const hookStack = new HookStack(app, 'hookStack');
 
 // ensure that hookStack (codedeploy preTraffic) is deployed before appStack

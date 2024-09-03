@@ -16,13 +16,12 @@
     "@aws-sdk/client-codedeploy": "^3.363.0",
     "@aws-sdk/client-lambda": "^3.363.0",
     "@aws-sdk/client-sns": "^3.363.0",
-    "@aws-sdk/client-sso-oidc": "^3.637.0",
-    "@seek/aws-codedeploy-infra": "^2.1.0",
     "@seek/logger": "^6.0.0",
     "skuba-dive": "^2.0.0",
     "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@seek/aws-codedeploy-infra": "^2.1.0",
     "@types/aws-lambda": "^8.10.82",
     "@types/node": "^20.9.0",
     "aws-cdk": "^2.109.0",
