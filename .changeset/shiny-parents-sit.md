@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-Use aws-codedeploy-hook for lambda-sqs-worker-cdk template
+template/lambda-sqs-worker-cdk: Replace custom hooks with `@seek/aws-codedeploy-infra` 
