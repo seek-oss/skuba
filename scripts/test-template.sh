@@ -2,7 +2,17 @@
 
 set -e
 
+update_snapshot=false
+
+# Process optional flag
+if [ "$1" == "-u" ]; then
+  update_snapshot=true
+  shift
+fi
+
 template="${1}"
+
+echo "--- testing template ${update_snapshot}, ${template}"
 if [ -z "$template" ]; then
   echo "Usage: pnpm test:template <template_name>"
   exit 1
@@ -81,5 +91,12 @@ pnpm lint
 echo "--- pnpm format ${template}"
 pnpm format
 
-echo "--- pnpm test ${template}"
-pnpm test
+if [ "$update_snapshot" = true ]; then
+  echo "--- pnpm test --updateSnapshot ${template}"
+  pnpm test -- --updateSnapshot
+  cd ../../skuba || exit 1
+  bash ./scripts/update-template-snapshot.sh ${skuba_temp_directory} ${template}
+else 
+  echo "--- pnpm test ${template}"
+  pnpm test 
+fi

@@ -43,6 +43,7 @@
     "test:ci": "pnpm --silent skuba test --runInBand",
     "test:int": "pnpm --silent skuba test --selectProjects integration --runInBand",
     "test:template": "scripts/test-template.sh",
+    "test:template:updateSnapshot": "scripts/test-template.sh -u",
     "test:watch": "pnpm --silent skuba test --runInBand --watch"
   },
   "remarkConfig": {
