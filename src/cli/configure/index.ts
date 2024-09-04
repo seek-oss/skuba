@@ -107,7 +107,7 @@ export const configure = async () => {
     });
 
     log.plain('Installing dependencies...');
-    await exec('pnpm', 'install', '--silent');
+    await exec('pnpm', 'install', '--reporter=silent');
   }
 
   if (fixConfiguration || fixDependencies) {
