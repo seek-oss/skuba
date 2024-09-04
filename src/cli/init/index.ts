@@ -20,7 +20,7 @@ import { writePackageJson } from './writePackageJson';
 export const init = async () => {
   const skubaVersion = await showLogo();
 
-  await ensureCommands('git', 'yarn');
+  await ensureCommands('git', 'pnpm');
 
   const {
     destinationDir,
@@ -73,7 +73,7 @@ export const init = async () => {
   const exec = createExec({
     cwd: destinationDir,
     stdio: 'pipe',
-    streamStdio: 'yarn',
+    streamStdio: 'pnpm',
   });
 
   log.newline();
@@ -81,11 +81,11 @@ export const init = async () => {
 
   log.plain('Installing dependencies...');
   await exec(
-    'yarn',
+    'pnpm',
     'add',
-    '--dev',
-    '--exact',
-    '--silent',
+    '--save-dev',
+    '--save-exact',
+    '--reporter=silent',
     `skuba@${skubaVersion}`,
   );
 

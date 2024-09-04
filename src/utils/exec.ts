@@ -38,7 +38,7 @@ interface ExecConcurrentlyCommand {
   prefixColor?: string;
 }
 
-type ExecOptions = execa.Options & { streamStdio?: true | 'yarn' };
+type ExecOptions = execa.Options & { streamStdio?: true | 'pnpm' };
 
 const envWithPath = {
   PATH: npmRunPath({ cwd: __dirname }),
@@ -53,7 +53,7 @@ const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
   });
 
   switch (opts?.streamStdio) {
-    case 'yarn':
+    case 'pnpm':
       const filter = new YarnWarningFilter();
 
       subprocess.stderr?.pipe(filter).pipe(process.stderr);

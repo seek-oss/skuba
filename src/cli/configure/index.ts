@@ -34,7 +34,7 @@ export const configure = async () => {
 
   const [manifest] = await Promise.all([
     getDestinationManifest(),
-    ensureCommands('git', 'yarn'),
+    ensureCommands('git', 'pnpm'),
   ]);
 
   const destinationRoot = path.dirname(manifest.path);
@@ -103,15 +103,15 @@ export const configure = async () => {
   if (fixDependencies) {
     const exec = createExec({
       stdio: 'pipe',
-      streamStdio: 'yarn',
+      streamStdio: 'pnpm',
     });
 
     log.plain('Installing dependencies...');
-    await exec('yarn', 'install', '--silent');
+    await exec('pnpm', 'install', '--silent');
   }
 
   if (fixConfiguration || fixDependencies) {
     log.newline();
-    log.ok(`Try running ${log.bold('yarn format')}.`);
+    log.ok(`Try running ${log.bold('pnpm format')}.`);
   }
 };

@@ -98,7 +98,7 @@ export const packageModule = async ({
             .filter((script): script is string => typeof script === 'string')
             .map((script) =>
               script
-                .replace(/^smt build$/, 'yarn build')
+                .replace(/^smt build$/, 'pnpm build')
                 .replace(/^smt /, 'skuba ')
                 .trim(),
             )

@@ -197,7 +197,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   }
 
   log.newline();
-  log.warn(`Resume this later with ${chalk.bold('yarn skuba configure')}.`);
+  log.warn(`Resume this later with ${chalk.bold('pnpm skuba configure')}.`);
 
   const customAnswers = generatePlaceholders(fields);
 
