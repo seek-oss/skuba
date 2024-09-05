@@ -21,6 +21,7 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@seek/aws-codedeploy-infra": "^2.1.0",
     "@types/aws-lambda": "^8.10.82",
     "@types/node": "^20.9.0",
     "aws-cdk": "^2.109.0",
