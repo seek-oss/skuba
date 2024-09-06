@@ -129,6 +129,16 @@ pnpm test:template greeter
 rm -fr ../tmp-greeter
 ```
 
+Snapshots in `templates` can be updated with the following command but note that manual clean up is necessary afterwards
+
+```shell
+# greeter being name of template
+pnpm test:template:updateSnapshot greeter
+
+# clean up temporary sibling directory
+rm -fr ../tmp-greeter
+```
+
 ### Running locally
 
 If you want to try out the **skuba** CLI on itself,
