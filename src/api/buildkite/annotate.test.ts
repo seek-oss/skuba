@@ -5,7 +5,6 @@ import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate';
 
 const exec = jest.spyOn(execModule, 'exec');
 const hasCommand = jest.spyOn(execModule, 'hasCommand');
-// Mock impl stops printing to console
 const mockWarn = jest.spyOn(log, 'warn').mockImplementation(() => undefined);
 
 beforeEach(() => {
