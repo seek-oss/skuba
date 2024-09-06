@@ -2,7 +2,7 @@
   "compilerOptions": {
     "incremental": true,
     "isolatedModules": true,
-    "moduleResolution": "node",
+    "module": "CommonJS",
     "resolveJsonModule": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false

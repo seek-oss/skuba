@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "outDir": "lib",
     "skipLibCheck": true
   },
