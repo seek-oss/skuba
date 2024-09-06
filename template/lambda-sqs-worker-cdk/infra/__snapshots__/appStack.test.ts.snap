@@ -182,7 +182,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
         "Timeout": 30,
@@ -321,7 +321,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
       },
@@ -352,7 +352,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
       },
@@ -389,7 +389,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
       },
@@ -534,7 +534,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
       },
@@ -885,7 +885,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
         "Timeout": 30,
@@ -1024,7 +1024,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
       },
@@ -1055,7 +1055,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
       },
@@ -1092,7 +1092,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
       },
@@ -1237,7 +1237,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
-            "Value": "2.1.1-8a9d620b7ff7fbe76112f7c96c06f51e36bb2cb3",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
           },
         ],
       },

@@ -50,8 +50,11 @@ it.each(['dev', 'prod'])(
       .replaceAll(
         /workerCurrentVersion([0-9a-zA-Z]+)"/g,
         (_, hash) => `workerCurrentVersion${'x'.repeat(hash.length)}"`,
+      )
+      .replaceAll(
+        /"Value":"\d+\.\d+\.\d+-([^"]+)"/g,
+        (_, hash) => `"Value": "x.x.x-${'x'.repeat(hash.length)}"`,
       );
-
     expect(JSON.parse(json)).toMatchSnapshot();
   },
 );
