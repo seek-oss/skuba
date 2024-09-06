@@ -99,10 +99,10 @@ describe('copyAssetsConcurrently', () => {
       commonjs │ Copying .vocab/translations.json
       commonjs │ Copying other.vocab/th.translations.json
       commonjs │ Copying other.vocab/translations.json
-      esm   │ Copying .vocab/th.translations.json
-      esm   │ Copying .vocab/translations.json
-      esm   │ Copying other.vocab/th.translations.json
-      esm   │ Copying other.vocab/translations.json
+      esm      │ Copying .vocab/th.translations.json
+      esm      │ Copying .vocab/translations.json
+      esm      │ Copying other.vocab/th.translations.json
+      esm      │ Copying other.vocab/translations.json
     `);
   });
 });
