@@ -1,6 +1,7 @@
 import type { Patches } from '../..';
 
 import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys';
+import { tryPatchDockerComposeFiles } from './patchDockerCompose';
 import { tryUpgradeESLint } from './upgradeESLint';
 
 export const patches: Patches = [
@@ -11,5 +12,9 @@ export const patches: Patches = [
   {
     apply: tryUpgradeESLint,
     description: 'Upgrade to ESLint flat config',
+  },
+  {
+    apply: tryPatchDockerComposeFiles,
+    description: 'Remove version field from docker-compose files',
   },
 ];

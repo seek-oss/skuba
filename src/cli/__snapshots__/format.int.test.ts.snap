@@ -23,6 +23,8 @@ Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite 
 
 Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
 
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -101,6 +103,8 @@ Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite 
 
 Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
 
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -174,6 +178,8 @@ Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite 
 
 Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
 
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -217,6 +223,8 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
 
 Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
 
 skuba update complete.
 
