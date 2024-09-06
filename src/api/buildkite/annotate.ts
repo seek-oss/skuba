@@ -50,13 +50,11 @@ export const annotate = async (
   }
 
   // Check if the annotation exceeds the maximum size
-  const buffer = Buffer.from(markdown, 'utf-8');
   let truncatedMarkdown = markdown;
-  if (buffer.length > MAX_SIZE) {
+  if (markdown.length > MAX_SIZE) {
     // Notify user of truncation, leave space for message
-    truncatedMarkdown =
-      buffer.toString('utf-8', 0, MAX_SIZE - TRUNCATION_WARNING.length) +
-      TRUNCATION_WARNING;
+    const remainingSpace = MAX_SIZE - TRUNCATION_WARNING.length;
+    truncatedMarkdown = markdown.slice(0, remainingSpace) + TRUNCATION_WARNING;
     // Log full message to the build log
     log.warn(`Annotation truncated, full message is: ${markdown}`);
   }
