@@ -76,8 +76,8 @@ describe('copyAssetsConcurrently', () => {
         prefixColor: 'green',
       },
       {
-        outDir: 'lib-es2015',
-        name: 'es2015',
+        outDir: 'lib-esm',
+        name: 'esm',
         prefixColor: 'yellow',
       },
     ]);
@@ -88,10 +88,10 @@ describe('copyAssetsConcurrently', () => {
         "lib-commonjs/.vocab/translations.json": "",
         "lib-commonjs/other.vocab/th.translations.json": "",
         "lib-commonjs/other.vocab/translations.json": "",
-        "lib-es2015/.vocab/th.translations.json": "",
-        "lib-es2015/.vocab/translations.json": "",
-        "lib-es2015/other.vocab/th.translations.json": "",
-        "lib-es2015/other.vocab/translations.json": "",
+        "lib-esm/.vocab/th.translations.json": "",
+        "lib-esm/.vocab/translations.json": "",
+        "lib-esm/other.vocab/th.translations.json": "",
+        "lib-esm/other.vocab/translations.json": "",
       }
     `);
     expect(getStdOut()).toMatchInlineSnapshot(`
@@ -99,10 +99,10 @@ describe('copyAssetsConcurrently', () => {
       commonjs │ Copying .vocab/translations.json
       commonjs │ Copying other.vocab/th.translations.json
       commonjs │ Copying other.vocab/translations.json
-      es2015   │ Copying .vocab/th.translations.json
-      es2015   │ Copying .vocab/translations.json
-      es2015   │ Copying other.vocab/th.translations.json
-      es2015   │ Copying other.vocab/translations.json
+      esm   │ Copying .vocab/th.translations.json
+      esm   │ Copying .vocab/translations.json
+      esm   │ Copying other.vocab/th.translations.json
+      esm   │ Copying other.vocab/translations.json
     `);
   });
 });

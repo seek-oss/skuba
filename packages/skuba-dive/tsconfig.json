@@ -3,8 +3,8 @@
     "declaration": true,
     "incremental": true,
     "lib": ["ES2020"],
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "outDir": "lib",
     "removeComments": false,
     "target": "ES2020"

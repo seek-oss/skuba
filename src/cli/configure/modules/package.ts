@@ -103,7 +103,7 @@ export const packageModule = async ({
           // Align with the required syntax for package.json#/paths
           if (outputData.scripts.build === 'skuba build-package') {
             outputData.main = './lib-commonjs/index.js';
-            outputData.module = './lib-es2015/index.js';
+            outputData.module = './lib-esm/index.js';
             outputData.types = './lib-types/index.d.ts';
           } else {
             outputData.main = './lib/index.js';
