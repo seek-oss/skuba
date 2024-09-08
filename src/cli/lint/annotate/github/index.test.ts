@@ -23,7 +23,7 @@ const eslintOutput: ESLintOutput = {
       filePath: '/skuba/src/index.ts',
       messages: [
         {
-          ruleId: 'unused-imports/no-unused-vars',
+          ruleId: '@typescript-eslint/no-unused-vars',
           severity: 2,
           message:
             "'unused' is defined but never used. Allowed unused args must match /^_/u.",
@@ -92,7 +92,7 @@ const mockEslintAnnotations: GitHub.Annotation[] = [
     path: '/skuba/src/index.ts',
     start_column: 3,
     start_line: 4,
-    title: 'unused-imports/no-unused-vars',
+    title: '@typescript-eslint/no-unused-vars',
   },
 ];
 

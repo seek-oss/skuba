@@ -1,4 +1,5 @@
 const tsParser = require('@typescript-eslint/parser');
+
 const skuba = require('eslint-config-skuba');
 
 module.exports = [

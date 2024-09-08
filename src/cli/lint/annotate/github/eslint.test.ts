@@ -10,7 +10,7 @@ it('should create failure annotations for ESLint errors', () => {
         filePath: '/skuba/src/index.ts',
         messages: [
           {
-            ruleId: 'unused-imports/no-unused-vars',
+            ruleId: '@typescript-eslint/no-unused-vars',
             severity: 2,
             message:
               "'unused' is defined but never used. Allowed unused args must match /^_/u.",
@@ -39,7 +39,7 @@ it('should create failure annotations for ESLint errors', () => {
       path: '/skuba/src/index.ts',
       start_column: 3,
       start_line: 4,
-      title: 'ESLint (unused-imports/no-unused-vars)',
+      title: 'ESLint (@typescript-eslint/no-unused-vars)',
     },
   ];
   const annotations = createEslintAnnotations(eslintOutput);
@@ -58,7 +58,7 @@ it('should create warning annotations for ESLint warnings', () => {
         filePath: '/skuba/src/index.ts',
         messages: [
           {
-            ruleId: 'unused-imports/no-unused-vars',
+            ruleId: '@typescript-eslint/no-unused-vars',
             severity: 1,
             message:
               "'unused' is defined but never used. Allowed unused args must match /^_/u.",
@@ -83,7 +83,7 @@ it('should create warning annotations for ESLint warnings', () => {
       path: '/skuba/src/index.ts',
       start_column: 3,
       start_line: 4,
-      title: 'ESLint (unused-imports/no-unused-vars)',
+      title: 'ESLint (@typescript-eslint/no-unused-vars)',
     },
   ];
   const annotations = createEslintAnnotations(eslintOutput);
@@ -98,7 +98,7 @@ it('should create both failure and warning annotations for ESLint errors and war
         filePath: '/skuba/src/index.ts',
         messages: [
           {
-            ruleId: 'unused-imports/no-unused-vars',
+            ruleId: '@typescript-eslint/no-unused-vars',
             severity: 2,
             message:
               "'unused' is defined but never used. Allowed unused args must match /^_/u.",
@@ -120,7 +120,7 @@ it('should create both failure and warning annotations for ESLint errors and war
         filePath: '/skuba/src/index.ts',
         messages: [
           {
-            ruleId: 'unused-imports/no-unused-vars',
+            ruleId: '@typescript-eslint/no-unused-vars',
             severity: 1,
             message:
               "'unused' is defined but never used. Allowed unused args must match /^_/u.",
@@ -145,7 +145,7 @@ it('should create both failure and warning annotations for ESLint errors and war
       path: '/skuba/src/index.ts',
       start_column: 3,
       start_line: 4,
-      title: 'ESLint (unused-imports/no-unused-vars)',
+      title: 'ESLint (@typescript-eslint/no-unused-vars)',
     },
     {
       annotation_level: 'warning',
@@ -156,7 +156,7 @@ it('should create both failure and warning annotations for ESLint errors and war
       path: '/skuba/src/index.ts',
       start_column: 3,
       start_line: 4,
-      title: 'ESLint (unused-imports/no-unused-vars)',
+      title: 'ESLint (@typescript-eslint/no-unused-vars)',
     },
   ];
   const annotations = createEslintAnnotations(eslintOutput);
