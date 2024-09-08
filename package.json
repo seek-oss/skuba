@@ -76,7 +76,7 @@
     "@octokit/rest": "^21.0.0",
     "@octokit/types": "^13.0.0",
     "@types/jest": "^29.0.0",
-    "@types/node": ">=18.12",
+    "@types/node": ">=20",
     "chalk": "^4.1.0",
     "concurrently": "^8.0.0",
     "dotenv": "^16.0.0",
@@ -161,7 +161,7 @@
   },
   "packageManager": "pnpm@9.7.0",
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=20.8.1"
   },
   "publishConfig": {
     "provenance": true
