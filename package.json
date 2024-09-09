@@ -135,7 +135,7 @@
     "@types/minimist": "1.2.5",
     "@types/module-alias": "2.0.4",
     "@types/npm-which": "3.0.3",
-    "@types/picomatch": "2.3.4",
+    "@types/picomatch": "3.0.1",
     "@types/supertest": "6.0.2",
     "@types/validate-npm-package-name": "4.0.2",
     "enhanced-resolve": "5.17.1",
