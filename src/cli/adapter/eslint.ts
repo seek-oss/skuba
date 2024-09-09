@@ -53,18 +53,7 @@ export const runESLint = async (
 
   const [formatter, { type, results }] = await Promise.all([
     engine.loadFormatter(),
-    engine
-      .lintFiles([])
-      .then((r) => ({ type: 'results', results: r }) as const)
-      .catch((error) => {
-        if (
-          error instanceof Error &&
-          error.message === 'Could not find config file.'
-        ) {
-          return { type: 'no-config', results: undefined } as const;
-        }
-        throw error;
-      }),
+    lintFiles(engine),
   ]);
 
   if (type === 'no-config') {
@@ -124,4 +113,19 @@ export const runESLint = async (
   }
 
   return { errors, fixable, ok, output, warnings };
+};
+
+const lintFiles = async (engine: ESLint) => {
+  try {
+    const result = await engine.lintFiles([]);
+    return { type: 'results', results: result } as const;
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === 'Could not find config file.'
+    ) {
+      return { type: 'no-config', results: undefined } as const;
+    }
+    throw error;
+  }
 };
