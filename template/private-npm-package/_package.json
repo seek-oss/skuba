@@ -34,12 +34,12 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^20.14.8",
+    "@types/node": "^18.19.8",
     "commitizen": "^4.2.4",
     "skuba": "*"
   },
   "packageManager": "pnpm@8.15.1",
   "engines": {
-    "node": ">=20.8.1"
+    "node": ">=18.12"
   }
 }

@@ -76,7 +76,7 @@
     "@octokit/rest": "^21.0.0",
     "@octokit/types": "^13.0.0",
     "@types/jest": "^29.0.0",
-    "@types/node": ">=20",
+    "@types/node": ">=18.12",
     "chalk": "^4.1.0",
     "concurrently": "^8.0.0",
     "dotenv": "^16.0.0",
@@ -107,7 +107,7 @@
     "prettier": "~3.3.0",
     "prettier-plugin-packagejson": "^2.4.10",
     "read-pkg-up": "^7.0.1",
-    "semantic-release": "^24.0.0",
+    "semantic-release": "^22.0.12",
     "serialize-error": "^8.0.1",
     "simple-git": "^3.5.0",
     "strip-ansi": "^6.0.1",
@@ -161,7 +161,7 @@
   },
   "packageManager": "pnpm@9.7.0",
   "engines": {
-    "node": ">=20.8.1"
+    "node": ">=18.18.0"
   },
   "publishConfig": {
     "provenance": true
