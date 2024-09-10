@@ -88,13 +88,14 @@ export const packageModule = async ({
           outputData.scripts.release = [
             outputData.scripts.prepublish,
             outputData.scripts.prerelease,
-            outputData.scripts.release ?? 'skuba release',
+            outputData.scripts.release ?? 'semantic-release --success false',
           ]
             .filter((script): script is string => typeof script === 'string')
             .map((script) =>
               script
                 .replace(/^smt build$/, `${packageManager.runSilent} build`)
                 .replace(/^smt /, 'skuba ')
+                .replace(/skuba release/, 'semantic-release --success false')
                 .trim(),
             )
             .filter(Boolean)

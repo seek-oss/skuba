@@ -16,7 +16,6 @@ const DEV_DEPENDENCIES = [
   'eslint',
   'jest',
   'prettier',
-  'semantic-release',
   'ts-jest',
   'ts-node',
   'tsconfig-seek',

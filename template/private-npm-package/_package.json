@@ -22,7 +22,7 @@
     "commit": "cz",
     "format": "skuba format",
     "lint": "skuba lint",
-    "release": "pnpm --silent build && skuba release",
+    "release": "pnpm --silent build && semantic-release --success false",
     "test": "skuba test --coverage",
     "test:ci": "pnpm --silent test",
     "test:watch": "skuba test --watch"
@@ -36,10 +36,11 @@
   "devDependencies": {
     "@types/node": "^18.19.8",
     "commitizen": "^4.2.4",
+    "semantic-release": "^24.1.0",
     "skuba": "*"
   },
   "packageManager": "pnpm@8.15.1",
   "engines": {
-    "node": ">=18.12"
+    "node": ">=20.8.1"
   }
 }

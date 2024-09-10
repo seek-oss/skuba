@@ -21,7 +21,6 @@ export const COMMAND_LIST = [
   'lint',
   'migrate',
   'node',
-  'release',
   'start',
   'test',
   'version',
