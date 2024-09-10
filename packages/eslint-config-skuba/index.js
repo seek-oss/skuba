@@ -17,6 +17,7 @@ module.exports = [
   { plugins: { jest: jestPlugin } },
   {
     ignores: [
+      // Gantry resource files support non-standard syntax (Go templating)
       '**/.gantry/**/*.yaml',
       '**/.gantry/**/*.yml',
       '**/gantry*.yaml',
@@ -80,6 +81,7 @@ module.exports = [
       'jest/valid-title': 'error',
       'no-use-before-define': 'off',
 
+      // https://github.com/prettier/eslint-config-prettier/blob/v8.5.0/README.md#quotes
       quotes: [
         'warn',
         'single',
@@ -121,7 +123,7 @@ module.exports = [
     rules: {
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
-
+      // allow || on strings and booleans
       '@typescript-eslint/prefer-nullish-coalescing': [
         'error',
         {
@@ -131,9 +133,10 @@ module.exports = [
           },
         },
       ],
-
+      // prefer type assertions over null assertions
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/non-nullable-type-assertion-style': 'off',
+      // too spicy 🌶️
       '@typescript-eslint/consistent-type-definitions': 'off',
     },
   },
@@ -162,17 +165,29 @@ module.exports = [
     files: [`**/*.test.{${tsExtensions}}`, `**/testing/**/*.{${tsExtensions}}`],
 
     rules: {
+      // Allow `any` in tests
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+
+      // Allow ! in tests
       '@typescript-eslint/no-non-null-assertion': 'off',
+
+      // Allow e.g. `expect(logger.child).toBeCalledWith()`
       '@typescript-eslint/unbound-method': 'off',
+
+      // Allow backtick default in `expect().toMatchInlineSnapshot()`
       quotes: 'off',
+
+      // Allow e.g. `/** @jest-environment jsdom */` directives
       'tsdoc/syntax': 'off',
 
+      // Allow potential floating promises in tests only for Koa compatibility
+      // https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/no-misused-promises.md#checksvoidreturn
+      // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/42551#issuecomment-648816869
       '@typescript-eslint/no-misused-promises': [
         'error',
         {
