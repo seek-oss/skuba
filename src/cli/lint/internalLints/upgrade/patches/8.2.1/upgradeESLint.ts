@@ -12,20 +12,25 @@ import { createDestinationFileReader } from '../../../../../configure/analysis/p
 import { mergeWithConfigFile } from '../../../../../configure/processing/configFile';
 import { formatPrettier } from '../../../../../configure/processing/prettier';
 
+const IGNORE_FILE = '.eslintignore';
+const OLD_CONFIG_FILE = '.eslintrc.js';
+const NEW_CONFIG_FILE_CJS = 'eslint.config.cjs';
+const NEW_CONFIG_FILE_JS = 'eslint.config.js';
+
 const upgradeESLint: PatchFunction = async ({
   mode,
   dir: cwd = process.cwd(),
 }): Promise<PatchReturnType> => {
   const readFile = createDestinationFileReader(cwd);
-  const [originalIgnoreContents, eslintConfig] = await Promise.all([
-    readFile('.eslintignore'),
-    readFile('.eslintrc.js'),
+  const [ignoreFileContents, oldConfig] = await Promise.all([
+    readFile(IGNORE_FILE),
+    readFile(OLD_CONFIG_FILE),
   ]);
 
-  if (eslintConfig === undefined) {
+  if (oldConfig === undefined) {
     return {
       result: 'skip',
-      reason: 'no .eslintrc.js - have you already migrated?',
+      reason: `no ${OLD_CONFIG_FILE} - have you already migrated?`,
     };
   }
 
@@ -33,10 +38,10 @@ const upgradeESLint: PatchFunction = async ({
     return { result: 'apply' };
   }
 
-  const mergedIgnoreContent = mergeWithConfigFile(
+  const ignoreContentsWithoutSkubaManaged = mergeWithConfigFile(
     '',
     'ignore',
-  )(originalIgnoreContents);
+  )(ignoreFileContents);
 
   const exec = createExec({
     cwd: process.cwd(),
@@ -45,31 +50,31 @@ const upgradeESLint: PatchFunction = async ({
 
   // eslint-migrate-config require()s the file, so for testability, put it in a temporary location
   const dir = await writeTemporaryFiles({
-    '.eslintrc.js': eslintConfig,
-    ...(mergedIgnoreContent.trim().length > 0
-      ? { '.eslintignore': mergedIgnoreContent }
+    OLD_CONFIG_FILE: oldConfig,
+    ...(ignoreContentsWithoutSkubaManaged.trim().length > 0
+      ? { IGNORE_FILE: ignoreContentsWithoutSkubaManaged }
       : {}),
   });
   try {
     await exec(
       'eslint-migrate-config',
-      path.join(dir, '.eslintrc.js'),
+      path.join(dir, OLD_CONFIG_FILE),
       '--commonjs',
     );
 
     const output = fiddleWithOutput(
-      await fsp.readFile(path.join(dir, 'eslint.config.cjs'), 'utf-8'),
+      await fsp.readFile(path.join(dir, NEW_CONFIG_FILE_CJS), 'utf-8'),
     );
     await fsExtra.writeFile(
-      'eslint.config.js',
-      await formatPrettier(output, { filepath: 'eslint.config.js' }),
+      NEW_CONFIG_FILE_JS,
+      await formatPrettier(output, { filepath: NEW_CONFIG_FILE_JS }),
     );
 
     await Promise.all([
-      originalIgnoreContents === undefined
+      ignoreFileContents === undefined
         ? Promise.resolve()
-        : fsExtra.rm('.eslintignore'),
-      fsExtra.rm('.eslintrc.js'),
+        : fsExtra.rm(IGNORE_FILE),
+      fsExtra.rm(OLD_CONFIG_FILE),
     ]);
 
     return { result: 'apply' };
