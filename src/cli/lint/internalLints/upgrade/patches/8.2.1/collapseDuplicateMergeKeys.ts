@@ -22,9 +22,7 @@ const collapseDuplicateMergeKeys: PatchFunction = async ({
     buildkiteFiles.map((name) => fs.readFile(name, 'utf-8')),
   );
 
-  const replaced = await Promise.all(
-    input.map(collapseDuplicateMergeKeysInFile),
-  );
+  const replaced = input.map(collapseDuplicateMergeKeysInFile);
 
   if (replaced.every((r, i) => r === input[i])) {
     return { result: 'skip', reason: 'no duplicate merge keys found' };
