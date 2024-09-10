@@ -23,7 +23,7 @@
   "devDependencies": {
     "@seek/aws-codedeploy-infra": "^2.1.0",
     "@types/aws-lambda": "^8.10.82",
-    "@types/node": "^22.5.4",
+    "@types/node": "^20.14.8",
     "aws-cdk": "^2.109.0",
     "aws-cdk-lib": "^2.109.0",
     "constructs": "^10.0.17",
