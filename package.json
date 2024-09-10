@@ -77,7 +77,7 @@
     "@octokit/rest": "^21.0.0",
     "@octokit/types": "^13.0.0",
     "@types/jest": "^29.0.0",
-    "@types/node": ">=20",
+    "@types/node": "^20.16.5",
     "chalk": "^4.1.0",
     "concurrently": "^8.0.0",
     "dotenv": "^16.0.0",
@@ -108,7 +108,7 @@
     "prettier": "~3.3.0",
     "prettier-plugin-packagejson": "^2.4.10",
     "read-pkg-up": "^7.0.1",
-    "semantic-release": "^24.0.0",
+    "semantic-release": "^22.0.12",
     "serialize-error": "^8.0.1",
     "simple-git": "^3.5.0",
     "strip-ansi": "^6.0.1",
@@ -118,12 +118,12 @@
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "2.0.0",
     "tsx": "^4.16.2",
-    "typescript": "~5.5.4",
+    "typescript": "~5.6.0",
     "validate-npm-package-name": "^5.0.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@changesets/cli": "2.27.7",
+    "@changesets/cli": "2.27.8",
     "@changesets/get-github-info": "0.6.0",
     "@jest/reporters": "29.7.0",
     "@jest/test-result": "29.7.0",
@@ -136,7 +136,7 @@
     "@types/minimist": "1.2.5",
     "@types/module-alias": "2.0.4",
     "@types/npm-which": "3.0.3",
-    "@types/picomatch": "2.3.4",
+    "@types/picomatch": "3.0.1",
     "@types/supertest": "6.0.2",
     "@types/validate-npm-package-name": "4.0.2",
     "enhanced-resolve": "5.17.1",
@@ -160,9 +160,9 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@9.7.0",
+  "packageManager": "pnpm@9.10.0",
   "engines": {
-    "node": ">=20.8.1"
+    "node": ">=18.18.0"
   },
   "publishConfig": {
     "provenance": true

@@ -1,1 +1,1 @@
-FROM gcr.io/distroless/nodejs:20 AS runtime
+FROM gcr.io/distroless/nodejs:18 AS runtime
