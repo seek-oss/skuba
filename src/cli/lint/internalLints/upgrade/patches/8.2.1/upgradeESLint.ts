@@ -50,9 +50,9 @@ const upgradeESLint: PatchFunction = async ({
 
   // eslint-migrate-config require()s the file, so for testability, put it in a temporary location
   const dir = await writeTemporaryFiles({
-    OLD_CONFIG_FILE: oldConfig,
+    [OLD_CONFIG_FILE]: oldConfig,
     ...(ignoreContentsWithoutSkubaManaged.trim().length > 0
-      ? { IGNORE_FILE: ignoreContentsWithoutSkubaManaged }
+      ? { [IGNORE_FILE]: ignoreContentsWithoutSkubaManaged }
       : {}),
   });
   try {
