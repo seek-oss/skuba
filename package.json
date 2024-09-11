@@ -139,7 +139,7 @@
     "@types/supertest": "6.0.2",
     "@types/validate-npm-package-name": "4.0.2",
     "enhanced-resolve": "5.17.1",
-    "express": "4.19.2",
+    "express": "4.20.0",
     "fastify": "4.28.1",
     "jest-diff": "29.7.0",
     "jsonfile": "6.1.0",
