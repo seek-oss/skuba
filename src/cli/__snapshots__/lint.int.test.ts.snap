@@ -186,7 +186,7 @@ ESLint   │
   8:3  error  Unexpected console statement                      no-console
 
 <random>/d.js
-  1:0  error  Parsing error: Unexpected token (1:0)
+  1:1  error  Parsing error: Unexpected token }
 
 ✖ 3 problems (3 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
@@ -223,7 +223,7 @@ Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
   8:3  error  Unexpected console statement                      no-console
 
 <random>/d.js
-  1:0  error  Parsing error: Unexpected token (1:0)
+  1:1  error  Parsing error: Unexpected token }
 
 ✖ 3 problems (3 errors, 0 warnings)
   1 error and 0 warnings potentially fixable with the \`--fix\` option.

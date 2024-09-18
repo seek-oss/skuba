@@ -240,7 +240,7 @@ Processed 2 files in <random>s.
   8:3  error  Unexpected console statement  no-console
 
 <random>/d.js
-  1:0  error  Parsing error: Unexpected token (1:0)
+  1:1  error  Parsing error: Unexpected token }
 
 ✖ 2 problems (2 errors, 0 warnings)
 
