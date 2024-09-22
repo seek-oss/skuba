@@ -1,15 +1,9 @@
-const { FlatCompat } = require('@eslint/eslintrc');
-const js = require('@eslint/js');
 const base = require('eslint-config-seek/base');
 const extensions = require('eslint-config-seek/extensions');
 const jestPlugin = require('eslint-plugin-jest');
 const tsdoc = require('eslint-plugin-tsdoc');
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
+const eslintPluginYml = require('eslint-plugin-yml');
+const tseslint = require('typescript-eslint');
 
 const { js: jsExtensions, ts: tsExtensions } = extensions;
 
@@ -99,15 +93,13 @@ module.exports = [
       ],
     },
   },
-  ...compat
-    .extends(
-      'plugin:@typescript-eslint/recommended-type-checked',
-      'plugin:@typescript-eslint/stylistic-type-checked',
-    )
-    .map((config) => ({
-      ...config,
-      files: [`**/*.{${tsExtensions}}`],
-    })),
+  ...[
+    ...tseslint.configs.recommendedTypeChecked,
+    ...tseslint.configs.stylisticTypeChecked,
+  ].map((config) => ({
+    ...config,
+    files: [`**/*.{${tsExtensions}}`],
+  })),
   {
     files: [`**/*.{${tsExtensions}}`],
 
@@ -147,7 +139,6 @@ module.exports = [
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      'import-x/no-unresolved': 'off',
     },
   },
   {
@@ -196,7 +187,7 @@ module.exports = [
       ],
     },
   },
-  ...compat.extends('plugin:yml/prettier').map((config) => ({
+  ...eslintPluginYml.configs['flat/prettier'].map((config) => ({
     ...config,
     files: ['**/*.{yaml,yml}'],
   })),

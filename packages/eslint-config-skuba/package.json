@@ -27,12 +27,11 @@
   },
   "dependencies": {
     "@types/eslint": "^9.6.1",
-    "@typescript-eslint/eslint-plugin": "^8.4.0",
-    "@typescript-eslint/parser": "^8.4.0",
-    "eslint-config-seek": "0.0.0-eslint-9-etc-20240918042509",
+    "eslint-config-seek": "0.0.0-eslint-9-etc-20240922070719",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-tsdoc": "^0.3.0",
-    "eslint-plugin-yml": "^1.14.0"
+    "eslint-plugin-yml": "^1.14.0",
+    "typescript-eslint": "^8.6.0"
   },
   "devDependencies": {
     "eslint": "^9.10.0",
