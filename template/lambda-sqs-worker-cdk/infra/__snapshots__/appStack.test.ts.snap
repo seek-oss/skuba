@@ -304,6 +304,12 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             ],
           ],
         },
+        "Tags": [
+          {
+            "Key": "aws-codedeploy-hooks",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          },
+        ],
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
@@ -1007,6 +1013,12 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             ],
           ],
         },
+        "Tags": [
+          {
+            "Key": "aws-codedeploy-hooks",
+            "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          },
+        ],
       },
       "Type": "AWS::Lambda::EventSourceMapping",
     },
