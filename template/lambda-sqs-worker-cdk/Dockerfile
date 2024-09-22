@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.9
+# syntax=docker/dockerfile:1.10
 
 FROM --platform=<%- platformName %> node:20-alpine AS dev-deps
 

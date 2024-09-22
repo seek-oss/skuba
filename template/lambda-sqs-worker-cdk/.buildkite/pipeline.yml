@@ -33,7 +33,7 @@ configs:
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - docker-compose#v5.3.0:
+        - docker-compose#v5.4.0:
             dependencies: false
             run: app
             environment:
@@ -63,7 +63,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v5.3.0:
+      - docker-compose#v5.4.0:
           run: app
           environment:
             - GITHUB_API_TOKEN
