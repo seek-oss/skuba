@@ -101,7 +101,7 @@
     "lodash.mergewith": "^4.6.2",
     "minimist": "^1.2.6",
     "normalize-package-data": "^6.0.0",
-    "npm-run-path": "^4.0.1",
+    "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
     "picomatch": "^4.0.0",
     "prettier": "~3.3.0",
