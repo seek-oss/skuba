@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -e
 
@@ -79,8 +79,9 @@ pnpm exec skuba --version
 set +e
 echo "--- pnpm build ${template}"
 output=$(pnpm build 2>&1)
-echo $output
-if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
+result=$?
+echo "$output"
+if [[ $result -ne 0 && $output != *"Command \"build\" not found"* ]]; then
     exit 1
 fi
 set -e
@@ -96,7 +97,7 @@ if [ "$update_snapshot" = true ]; then
   pnpm test -- --updateSnapshot
   cd ../../skuba || exit 1
   bash ./scripts/update-template-snapshot.sh ${skuba_temp_directory} ${template}
-else 
+else
   echo "--- pnpm test ${template}"
-  pnpm test 
+  pnpm test
 fi
