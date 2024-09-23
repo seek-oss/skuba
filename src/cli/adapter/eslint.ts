@@ -103,10 +103,10 @@ export const runESLint = async (
 
   await ESLint.outputFixes(results);
 
-  const output = await formatter.format(results, {
-    cwd,
-    rulesMeta: engine.getRulesMetaForResults(results),
-  });
+  const output = await formatter.format(
+    results,
+    engine.getRulesMetaForResults(results),
+  );
 
   if (output) {
     logger.plain(output);

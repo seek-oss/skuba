@@ -26,8 +26,6 @@
     "skuba": "node --experimental-vm-modules ../../lib/skuba"
   },
   "dependencies": {
-    "@eslint/core": "^0.6.0",
-    "@types/eslint": "^9.6.1",
     "eslint-config-seek": "^14.0.0",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-tsdoc": "^0.3.0",
@@ -35,11 +33,11 @@
     "typescript-eslint": "^8.6.0"
   },
   "devDependencies": {
-    "eslint": "^9.10.0",
+    "eslint": "^9.11.1",
     "typescript": "~5.6.0"
   },
   "peerDependencies": {
-    "eslint": ">=9.10.0",
+    "eslint": ">=9.11.1",
     "typescript": ">=5.5.4"
   },
   "packageManager": "pnpm@9.10.0",
