@@ -86,11 +86,11 @@ const upgradeESLint: PatchFunction = async ({
 const writeTemporaryFiles = async (contents: Record<string, string>) => {
   const dir = await fsp.mkdtemp('eslint-migrate-config');
 
-await Promise.all(
-  Object.entries(contents).map(([file, content]) =>
-    fsp.writeFile(path.join(dir, file), content)
-  )
-);
+  await Promise.all(
+    Object.entries(contents).map(([file, content]) =>
+      fsp.writeFile(path.join(dir, file), content),
+    ),
+  );
 
   return dir;
 };
