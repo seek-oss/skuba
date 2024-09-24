@@ -1,15 +1,11 @@
 import { readBaseTemplateFile } from '../../../utils/template';
-import { mergeWithConfigFile } from '../processing/configFile';
 import { deleteFiles } from '../processing/deleteFiles';
 import { withPackage } from '../processing/package';
 import { formatPrettier } from '../processing/prettier';
 import type { Module } from '../types';
 
 export const eslintModule = async (): Promise<Module> => {
-  const [configFile, ignoreFile] = await Promise.all([
-    readBaseTemplateFile('_.eslintrc.js'),
-    readBaseTemplateFile('_.eslintignore'),
-  ]);
+  const configFile = await readBaseTemplateFile('_eslint.config.js');
 
   return {
     ...deleteFiles(
@@ -18,10 +14,11 @@ export const eslintModule = async (): Promise<Module> => {
       '.eslintrc.yml',
       '.eslintrc.json',
       '.eslintrc',
+      '.eslintignore',
     ),
 
     // allow customised ESLint configs that extend skuba
-    '.eslintrc.js': (inputFile) => {
+    'eslint.config.js': (inputFile) => {
       if (inputFile?.includes('skuba')) {
         const processedFile = inputFile.replace(
           /require.resolve\(['"](@seek\/)?skuba\/config\/eslint['"]\)/,
@@ -33,8 +30,6 @@ export const eslintModule = async (): Promise<Module> => {
 
       return configFile;
     },
-
-    '.eslintignore': mergeWithConfigFile(ignoreFile),
 
     'package.json': withPackage(({ eslintConfig, ...data }) => data),
   };

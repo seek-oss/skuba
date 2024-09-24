@@ -69,7 +69,7 @@ const shouldPush = async ({
   if (currentBranch?.startsWith(RENOVATE_DEFAULT_PREFIX)) {
     try {
       await GitHub.getPullRequestNumber();
-    } catch (error) {
+    } catch {
       const warning =
         'An autofix is available, but it was not pushed because an open pull request for this Renovate branch could not be found. If a pull request has since been created, retry the lint step to push the fix.';
       log.warn(warning);
@@ -113,6 +113,8 @@ interface AutofixParameters {
   eslint: boolean;
   prettier: boolean;
   internal: boolean;
+
+  eslintConfigFile?: string;
 }
 
 export const autofix = async (params: AutofixParameters): Promise<void> => {
@@ -151,7 +153,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     }
 
     if (params.eslint) {
-      await runESLint('format', logger);
+      await runESLint('format', logger, params.eslintConfigFile);
     }
 
     // Unconditionally re-run Prettier; reaching here means we have pre-existing
