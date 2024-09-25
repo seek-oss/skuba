@@ -1,6 +1,5 @@
 const base = require('eslint-config-seek/base');
 const extensions = require('eslint-config-seek/extensions');
-const jestPlugin = require('eslint-plugin-jest');
 const tsdoc = require('eslint-plugin-tsdoc');
 const eslintPluginYml = require('eslint-plugin-yml');
 const tseslint = require('typescript-eslint');
@@ -8,7 +7,6 @@ const tseslint = require('typescript-eslint');
 const { js: jsExtensions, ts: tsExtensions } = extensions;
 
 module.exports = [
-  { plugins: { jest: jestPlugin } },
   {
     ignores: [
       // Gantry resource files support non-standard syntax (Go templating)
@@ -29,10 +27,7 @@ module.exports = [
       'tmp*/',
     ],
   },
-  ...base.map(({ plugins: { jest: _jest, ...restPlugins } = {}, ...conf }) => ({
-    ...conf,
-    plugins: restPlugins,
-  })),
+  ...base,
   {
     rules: {
       'import-x/no-duplicates': 'error',
