@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.10
 
-FROM --platform=<%- platformName %> node:20-alpine AS dev-deps
+FROM --platform=<%- platformName %> public.ecr.aws/docker/library/node:20-alpine AS dev-deps
 
 RUN --mount=type=bind,source=package.json,target=package.json \
     corepack enable pnpm && corepack install
