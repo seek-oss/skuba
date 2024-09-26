@@ -92,7 +92,7 @@ export const tryPatchDockerImages: PatchFunction = async (config) => {
   try {
     return await patchDockerImages(config);
   } catch (err) {
-    log.warn('Failed to patch pnpm packageManager CI configuration.');
+    log.warn('Failed to patch Docker images');
     log.subtle(inspect(err));
     return { result: 'skip', reason: 'due to an error' };
   }
