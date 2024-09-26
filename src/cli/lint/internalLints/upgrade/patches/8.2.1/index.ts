@@ -20,6 +20,7 @@ export const patches: Patches = [
   },
   {
     apply: tryPatchDockerImages,
-    description: 'Update docker image references to use public.ecr.aws',
+    description:
+      'Update docker image references to use public.ecr.aws and remove --platform flag',
   },
 ];
