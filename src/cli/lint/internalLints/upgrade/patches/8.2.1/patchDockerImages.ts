@@ -45,7 +45,7 @@ const patchDockerImages: PatchFunction = async ({
 
   const dockerFilesToPatch = dockerFiles.filter(
     ({ contents }) =>
-      DOCKER_IMAGE_REGEX.exec(contents) ||
+      DOCKER_IMAGE_REGEX.exec(contents) ??
       DOCKER_IMAGE_PLATFORM_REGEX.exec(contents),
   );
 
