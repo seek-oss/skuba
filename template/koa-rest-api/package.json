@@ -21,7 +21,7 @@
     "@opentelemetry/instrumentation-http": "^0.53.0",
     "@opentelemetry/propagator-b3": "^1.25.0",
     "@opentelemetry/sdk-node": "^0.53.0",
-    "@seek/logger": "^6.0.0",
+    "@seek/logger": "^9.0.0",
     "hot-shots": "^10.0.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
