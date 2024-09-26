@@ -8,7 +8,7 @@ import { log } from '../../../../../../utils/logging';
 
 const DOCKER_IMAGE_REGEX = /^(FROM\s?.*)(\s)(node|python)(:.*)/gm;
 const DOCKER_COMPOSE_IMAGE_REGEX = /^(\s+image:\s+)(node|python)(:.*)/gm;
-const PUBLIC_ECR = `public.ecr.aws/docker/library/`;
+const PUBLIC_ECR = 'public.ecr.aws/docker/library/';
 
 const fetchFiles = async (files: string[]) =>
   Promise.all(

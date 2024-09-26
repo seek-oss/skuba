@@ -2,7 +2,6 @@ import fg from 'fast-glob';
 import { readFile, writeFile } from 'fs-extra';
 
 import type { PatchConfig } from '../..';
-import type { PackageManagerConfig } from '../../../../../../utils/packageManager';
 
 import { tryPatchDockerImages } from './patchDockerImages';
 
