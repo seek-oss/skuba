@@ -10,8 +10,8 @@ eg.
 
 ```Dockerfile
 ## Before
-FROM --platform=arm64 node:20-alpine AS dev-deps
+FROM node:20-alpine AS dev-deps
 
 ## After
-FROM --platform=arm64 public.ecr.aws/docker/library/node:20-alpine AS dev-deps
+FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
 ```
