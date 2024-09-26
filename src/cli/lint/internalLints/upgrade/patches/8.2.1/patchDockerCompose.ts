@@ -23,9 +23,7 @@ const fetchFiles = async (files: string[]) =>
 const patchDockerComposeFiles: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const maybeDockerComposeFiles = await Promise.resolve(
-    fg(['docker-compose*.yml']),
-  );
+  const maybeDockerComposeFiles = await fg(['docker-compose*.yml']);
 
   if (!maybeDockerComposeFiles.length) {
     return {
