@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-template/\*: Update Docker base images to point to AWS ECR Public
+template/\*: Update Docker base images to point to AWS ECR Public and remove --platform flag
