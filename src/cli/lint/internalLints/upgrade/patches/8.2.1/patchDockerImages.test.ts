@@ -43,14 +43,14 @@ describe('patchDockerImages', () => {
     });
   });
 
-  it('should patch simple Dockerfile and docker-compose files', async () => {
+  it('should patch a simple Dockerfile and docker-compose files', async () => {
     jest
       .mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
     jest
       .mocked(readFile)
-      .mockResolvedValueOnce('FROM node:18\n' as never)
+      .mockResolvedValueOnce('FROM --platform=arm64 node:18\n' as never)
       .mockResolvedValueOnce('    image: node:14\n' as never);
 
     await expect(
@@ -108,6 +108,8 @@ describe('patchDockerImages', () => {
         ('# syntax=docker/dockerfile:1.10\n' +
           '\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n' +
+          'FROM --otherflag=bar --platform=arm64 node:20-alpine\n' +
+          'FROM --otherflag=boo --platform=${BUILDPLATFORM} --anotherflag=coo node:20-alpine\n' +
           'FROM gcr.io/distroless/nodejs20-debian12 AS runtime\n' +
           'FROM --newflag node:latest\n' +
           'FROM node:12:@940049cabf21bf4cd20b86641c800c2b9995e4fb85fa4698b1781239fc0f6853') as never,
@@ -140,7 +142,9 @@ describe('patchDockerImages', () => {
       'Dockerfile',
       '# syntax=docker/dockerfile:1.10\n' +
         '\n' +
-        'FROM --platform=arm64 public.ecr.aws/docker/library/node:20-alpine AS dev-deps\n' +
+        'FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps\n' +
+        'FROM --otherflag=bar public.ecr.aws/docker/library/node:20-alpine\n' +
+        'FROM --otherflag=boo --anotherflag=coo public.ecr.aws/docker/library/node:20-alpine\n' +
         'FROM gcr.io/distroless/nodejs20-debian12 AS runtime\n' +
         'FROM --newflag public.ecr.aws/docker/library/node:latest\n' +
         'FROM public.ecr.aws/docker/library/node:12:@940049cabf21bf4cd20b86641c800c2b9995e4fb85fa4698b1781239fc0f6853',

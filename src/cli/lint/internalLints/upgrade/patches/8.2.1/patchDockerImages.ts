@@ -7,7 +7,8 @@ import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
 
 const DOCKER_IMAGE_REGEX = /^(FROM\s?.*)(\s)(node|python)(:.*)/gm;
-const DOCKER_COMPOSE_IMAGE_REGEX = /^(\s+image:\s+)(node|python)(:.*)/gm;
+const DOCKER_IMAGE_PLATFORM_REGEX = /^(FROM\s?.*)(--platform=[^\s]+) /gm;
+const DOCKER_COMPOSE_IMAGE_REGEX = /^(\s+image:\s)(node|python)(:.*)/gm;
 const PUBLIC_ECR = 'public.ecr.aws/docker/library/';
 
 const fetchFiles = async (files: string[]) =>
@@ -42,8 +43,10 @@ const patchDockerImages: PatchFunction = async ({
     fetchFiles(maybeDockerComposePaths),
   ]);
 
-  const dockerFilesToPatch = dockerFiles.filter(({ contents }) =>
-    DOCKER_IMAGE_REGEX.exec(contents),
+  const dockerFilesToPatch = dockerFiles.filter(
+    ({ contents }) =>
+      DOCKER_IMAGE_REGEX.exec(contents) ||
+      DOCKER_IMAGE_PLATFORM_REGEX.exec(contents),
   );
 
   const dockerComposeFilesToPatch = dockerComposeFiles.filter(({ contents }) =>
@@ -65,10 +68,9 @@ const patchDockerImages: PatchFunction = async ({
 
   const dockerFilePatches = dockerFilesToPatch.map(
     async ({ file, contents }) => {
-      const patchedContents = contents.replace(
-        DOCKER_IMAGE_REGEX,
-        `$1$2${PUBLIC_ECR}$3$4`,
-      );
+      const patchedContents = contents
+        .replace(DOCKER_IMAGE_REGEX, `$1$2${PUBLIC_ECR}$3$4`)
+        .replace(DOCKER_IMAGE_PLATFORM_REGEX, `$1`);
       await writeFile(file, patchedContents);
     },
   );
