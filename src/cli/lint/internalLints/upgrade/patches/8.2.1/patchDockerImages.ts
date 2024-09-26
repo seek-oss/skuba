@@ -70,7 +70,7 @@ const patchDockerImages: PatchFunction = async ({
     async ({ file, contents }) => {
       const patchedContents = contents
         .replace(DOCKER_IMAGE_REGEX, `$1$2${PUBLIC_ECR}$3$4`)
-        .replace(DOCKER_IMAGE_PLATFORM_REGEX, `$1`);
+        .replace(DOCKER_IMAGE_PLATFORM_REGEX, '$1');
       await writeFile(file, patchedContents);
     },
   );
