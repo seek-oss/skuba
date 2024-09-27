@@ -43,36 +43,6 @@ describe('patchDockerImages', () => {
     });
   });
 
-  it('should patch a simple Dockerfile and docker-compose files', async () => {
-    jest
-      .mocked(fg)
-      .mockResolvedValueOnce(['Dockerfile'])
-      .mockResolvedValueOnce(['docker-compose.yml']);
-    jest
-      .mocked(readFile)
-      .mockResolvedValueOnce('FROM --platform=arm64 node:18\n' as never)
-      .mockResolvedValueOnce('    image: node:14\n' as never);
-
-    await expect(
-      tryPatchDockerImages({
-        mode: 'format',
-      } as PatchConfig),
-    ).resolves.toEqual({
-      result: 'apply',
-    });
-
-    expect(writeFile).toHaveBeenNthCalledWith(
-      1,
-      'Dockerfile',
-      'FROM public.ecr.aws/docker/library/node:18\n',
-    );
-    expect(writeFile).toHaveBeenNthCalledWith(
-      2,
-      'docker-compose.yml',
-      '    image: public.ecr.aws/docker/library/node:14\n',
-    );
-  });
-
   it('should skip already patched Dockerfile and docker-compose files', async () => {
     jest
       .mocked(fg)
@@ -140,7 +110,37 @@ describe('patchDockerImages', () => {
     });
   });
 
-  it('should patch a Dockerfile with already patched images but invalid platform usage', async () => {
+  it('should patch a simple Dockerfile and docker-compose file', async () => {
+    jest
+      .mocked(fg)
+      .mockResolvedValueOnce(['Dockerfile'])
+      .mockResolvedValueOnce(['docker-compose.yml']);
+    jest
+      .mocked(readFile)
+      .mockResolvedValueOnce('FROM --platform=arm64 node:18\n' as never)
+      .mockResolvedValueOnce('    image: node:14\n' as never);
+
+    await expect(
+      tryPatchDockerImages({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      1,
+      'Dockerfile',
+      'FROM public.ecr.aws/docker/library/node:18\n',
+    );
+    expect(writeFile).toHaveBeenNthCalledWith(
+      2,
+      'docker-compose.yml',
+      '    image: public.ecr.aws/docker/library/node:14\n',
+    );
+  });
+
+  it('should patch a Dockerfile with invalid platform usage and already patched base images', async () => {
     jest
       .mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
