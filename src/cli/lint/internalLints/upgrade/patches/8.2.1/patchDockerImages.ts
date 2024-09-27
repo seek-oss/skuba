@@ -34,7 +34,7 @@ const isInvalidPlatformFlagUsage = (contents: string) => {
     ...new Set(matches.map(([, , platform]) => platform as string)),
   ];
 
-  // Multiple --platform flags are used which indicate a multi arch build
+  // Multiple --platform flags are used which may indicate a multi arch build
   if (uniquePlatforms.length > 1) {
     return false;
   }
