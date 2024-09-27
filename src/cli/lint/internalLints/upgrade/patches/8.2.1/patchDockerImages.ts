@@ -23,15 +23,39 @@ const fetchFiles = async (files: string[]) =>
     }),
   );
 
+const isInvalidPlatformFlagUsage = (contents: string) => {
+  const matches = [...contents.matchAll(DOCKER_IMAGE_PLATFORM_REGEX)];
+
+  if (!matches.length) {
+    return false;
+  }
+
+  const uniquePlatforms = [
+    ...new Set(matches.map(([, , platform]) => platform as string)),
+  ];
+
+  // Multiple --platform flags are used which indicate a multi arch build
+  if (uniquePlatforms.length > 1) {
+    return false;
+  }
+
+  // Avoid patching as they may be using args to set the platform
+  if (uniquePlatforms[0]?.startsWith('--platform=$')) {
+    return false;
+  }
+
+  return true;
+};
+
 const patchDockerImages: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
   const [maybeDockerFilesPaths, maybeDockerComposePaths] = await Promise.all([
     fg(['Dockerfile*']),
-    fg(['docker-compose*.yml']),
+    fg(['docker-compose*.y*ml']),
   ]);
 
-  if (!maybeDockerFilesPaths.length || !maybeDockerComposePaths.length) {
+  if (!maybeDockerFilesPaths.length && !maybeDockerComposePaths.length) {
     return {
       result: 'skip',
       reason: 'no Dockerfile or docker-compose files found',
@@ -45,15 +69,14 @@ const patchDockerImages: PatchFunction = async ({
 
   const dockerFilesToPatch = dockerFiles.filter(
     ({ contents }) =>
-      DOCKER_IMAGE_REGEX.exec(contents) ??
-      DOCKER_IMAGE_PLATFORM_REGEX.exec(contents),
+      DOCKER_IMAGE_REGEX.exec(contents) ?? isInvalidPlatformFlagUsage(contents),
   );
 
   const dockerComposeFilesToPatch = dockerComposeFiles.filter(({ contents }) =>
     DOCKER_COMPOSE_IMAGE_REGEX.exec(contents),
   );
 
-  if (!dockerFilesToPatch.length || !dockerComposeFilesToPatch.length) {
+  if (!dockerFilesToPatch.length && !dockerComposeFilesToPatch.length) {
     return {
       result: 'skip',
       reason: 'no Dockerfile or docker-compose files to patch',
@@ -68,9 +91,18 @@ const patchDockerImages: PatchFunction = async ({
 
   const dockerFilePatches = dockerFilesToPatch.map(
     async ({ file, contents }) => {
-      const patchedContents = contents
-        .replace(DOCKER_IMAGE_REGEX, `$1$2${PUBLIC_ECR}$3$4`)
-        .replace(DOCKER_IMAGE_PLATFORM_REGEX, '$1');
+      let patchedContents = contents.replace(
+        DOCKER_IMAGE_REGEX,
+        `$1$2${PUBLIC_ECR}$3$4`,
+      );
+
+      if (isInvalidPlatformFlagUsage(contents)) {
+        patchedContents = patchedContents.replace(
+          DOCKER_IMAGE_PLATFORM_REGEX,
+          '$1',
+        );
+      }
+
       await writeFile(file, patchedContents);
     },
   );
