@@ -320,7 +320,7 @@ importers:
         version: 11.2.2
       skuba:
         specifier: '*'
-        version: 8.2.1(@babel/core@7.25.2)(@jest/transform@29.7.0)(babel-jest@29.7.0(@babel/core@7.25.2))(eslint-plugin-import-x@4.3.0(eslint@8.57.1)(typescript@5.5.4))(skuba-dive@2.0.0)
+        version: 8.2.1(@babel/core@7.25.2)(@jest/transform@29.7.0)(babel-jest@29.7.0(@babel/core@7.25.2))(eslint-plugin-import-x@4.3.0(eslint@9.11.1)(typescript@5.6.2))(skuba-dive@2.0.0)
       supertest:
         specifier: ^7.0.0
         version: 7.0.0
@@ -336,7 +336,7 @@ importers:
         version: 20.16.7
       skuba:
         specifier: '*'
-        version: 8.2.1(@babel/core@7.25.2)(@jest/transform@29.7.0)(babel-jest@29.7.0(@babel/core@7.25.2))(eslint-plugin-import-x@4.3.0(eslint@9.11.1)(typescript@5.6.2))(skuba-dive@2.0.0)
+        version: 8.2.1(@babel/core@7.25.2)(@jest/transform@29.7.0)(babel-jest@29.7.0(@babel/core@7.25.2))(eslint-plugin-import-x@4.3.0(eslint@8.57.1)(typescript@5.5.4))(skuba-dive@2.0.0)
 
   template/koa-rest-api:
     dependencies:
@@ -504,6 +504,12 @@ importers:
       '@seek/logger':
         specifier: ^9.0.0
         version: 9.0.0
+      datadog-lambda-js:
+        specifier: ^8.0.0
+        version: 8.111.0
+      dd-trace:
+        specifier: ^5.0.0
+        version: 5.22.0
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -517,6 +523,9 @@ importers:
       '@types/aws-lambda':
         specifier: ^8.10.82
         version: 8.10.145
+      '@types/chance':
+        specifier: ^1.1.3
+        version: 1.1.6
       '@types/node':
         specifier: ^20.16.5
         version: 20.16.7
@@ -526,9 +535,21 @@ importers:
       aws-cdk-lib:
         specifier: ^2.109.0
         version: 2.160.0(constructs@10.3.0)
+      aws-sdk-client-mock:
+        specifier: ^4.0.0
+        version: 4.0.2
+      aws-sdk-client-mock-jest:
+        specifier: ^4.0.0
+        version: 4.0.2(aws-sdk-client-mock@4.0.2)
+      chance:
+        specifier: ^1.1.8
+        version: 1.1.12
       constructs:
         specifier: ^10.0.17
         version: 10.3.0
+      datadog-cdk-constructs-v2:
+        specifier: ^1.13.0
+        version: 1.16.1(aws-cdk-lib@2.160.0(constructs@10.3.0))(constructs@10.3.0)
       pino-pretty:
         specifier: ^11.0.0
         version: 11.2.2
@@ -3532,6 +3553,18 @@ packages:
   data-view-byte-offset@1.0.0:
     resolution: {integrity: sha512-t/Ygsytq+R995EJ5PZlD4Cu56sWa8InXySaViRzw9apusqsOO2bQP+SbYzAhR0pFKoB+43lYy8rWban9JSuXnA==}
     engines: {node: '>= 0.4'}
+
+  datadog-cdk-constructs-v2@1.16.1:
+    resolution: {integrity: sha512-sa9qvxckyixDzwolXAAVjq7sTtvDSJMFoZXL7aVemSmPgZcQNJ6dhRWQptdOGQURjO85y96lNTynxqb/p2BV9g==}
+    engines: {node: '>= 14.15.0'}
+    peerDependencies:
+      aws-cdk-lib: ^2.134.0
+      constructs: ^10.0.5
+    bundledDependencies:
+      - loglevel
+
+  datadog-lambda-js@8.111.0:
+    resolution: {integrity: sha512-/QLWCZT4LWRiOxL3SZvo/NhNNd5UAXlQei/+ebWK8qI735YrOiRnrm16Z2mdwIjhet+6mgCwlJsgpVQRsteFxw==}
 
   datadog-lambda-js@9.115.0:
     resolution: {integrity: sha512-0MW83owXDwSMpqsWhIoSkk/FjLpVG2ErVcDdayBAa7Dzyap2aJMJBZbwuC9Z1keVyJNJAoleHgdTzW12EEnSiw==}
@@ -7554,6 +7587,10 @@ packages:
         optional: true
       esbuild:
         optional: true
+
+  ts-md5@1.3.1:
+    resolution: {integrity: sha512-DiwiXfwvcTeZ5wCE0z+2A9EseZsztaiZtGrtSaY5JOD7ekPnR/GoIVD5gXZAlK9Na9Kvpo9Waz5rW64WKAWApg==}
+    engines: {node: '>=12'}
 
   ts-node-dev@2.0.0:
     resolution: {integrity: sha512-ywMrhCfH6M75yftYvrvNarLEY+SUXtUvU8/0Z6llrHQVBx12GiFk5sStF8UdfE/yfzk9IAq7O5EEbTQsxlBI8w==}
@@ -12749,6 +12786,20 @@ snapshots:
       call-bind: 1.0.7
       es-errors: 1.3.0
       is-data-view: 1.0.1
+
+  datadog-cdk-constructs-v2@1.16.1(aws-cdk-lib@2.160.0(constructs@10.3.0))(constructs@10.3.0):
+    dependencies:
+      aws-cdk-lib: 2.160.0(constructs@10.3.0)
+      constructs: 10.3.0
+
+  datadog-lambda-js@8.111.0:
+    dependencies:
+      dc-polyfill: 0.1.6
+      hot-shots: 8.5.0
+      promise-retry: 2.0.1
+      serialize-error: 8.1.0
+      shimmer: 1.2.1
+      ts-md5: 1.3.1
 
   datadog-lambda-js@9.115.0:
     dependencies:
@@ -18208,6 +18259,8 @@ snapshots:
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.25.2)
       esbuild: 0.24.0
+
+  ts-md5@1.3.1: {}
 
   ts-node-dev@2.0.0(@types/node@20.16.7)(typescript@5.5.4):
     dependencies:
