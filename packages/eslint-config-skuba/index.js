@@ -180,6 +180,9 @@ module.exports = [
           checksVoidReturn: false,
         },
       ],
+
+      // Allow throwing non errors in tests
+      '@typescript-eslint/only-throw-error': 'off',
     },
   },
   ...eslintPluginYml.configs['flat/prettier'].map((config) => ({
