@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.10
 
-FROM --platform=<%- platformName %> node:20-alpine AS dev-deps
+FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
 
 # Needed for cdk
 RUN apk add --no-cache bash

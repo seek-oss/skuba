@@ -25,6 +25,8 @@ Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you alread
 
 Patch skipped: Remove version field from docker-compose files - no docker-compose files found
 
+Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -105,6 +107,8 @@ Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you alread
 
 Patch skipped: Remove version field from docker-compose files - no docker-compose files found
 
+Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -180,6 +184,8 @@ Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you alread
 
 Patch skipped: Remove version field from docker-compose files - no docker-compose files found
 
+Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -225,6 +231,8 @@ Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite 
 Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
 
 Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
+Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
 
 skuba update complete.
 
