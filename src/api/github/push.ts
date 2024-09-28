@@ -1,10 +1,6 @@
 import path from 'path';
 
-import type {
-  CreateCommitOnBranchInput,
-  FileAddition,
-  FileDeletion,
-} from '@octokit/graphql-schema';
+import type { CreateCommitOnBranchInput } from '@octokit/graphql-schema';
 import fs from 'fs-extra';
 
 import * as Git from '../git';
@@ -100,6 +96,15 @@ export const uploadAllFileChanges = async ({
 
   return commitId;
 };
+
+interface FileAddition {
+  contents: unknown;
+  path: string;
+}
+
+interface FileDeletion {
+  path: string;
+}
 
 export interface FileChanges {
   additions: FileAddition[];

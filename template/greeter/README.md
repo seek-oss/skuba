@@ -12,13 +12,13 @@ Next steps:
 
 2. [ ] Create a new repository in the appropriate GitHub organisation.
 3. [ ] Add the repository to BuildAgency;
-       see [Builds at SEEK] for more information.
+       see our internal [Buildkite Docs] for more information.
 4. [ ] Push local commits to the upstream GitHub branch.
 5. [ ] Configure [GitHub repository settings].
 6. [ ] Delete this checklist 😌.
 
-[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
+[Buildkite Docs]: https://backstage.myseek.xyz/docs/default/component/buildkite-docs
+[GitHub repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 
 ## Design
 

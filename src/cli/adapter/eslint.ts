@@ -1,7 +1,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import { ESLint, type Linter } from 'eslint';
+import { type ESLint, type Linter, loadESLint } from 'eslint';
 
 import { type Logger, pluralise } from '../../utils/logging';
 
@@ -29,25 +29,39 @@ export interface ESLintOutput {
 export const runESLint = async (
   mode: 'format' | 'lint',
   logger: Logger,
+  overrideConfigFile?: string,
 ): Promise<ESLintOutput> => {
   logger.debug('Initialising ESLint...');
 
+  const cwd = process.cwd();
+
+  const ESLint = await loadESLint({ useFlatConfig: true });
   const engine = new ESLint({
     cache: true,
     fix: mode === 'format',
-    reportUnusedDisableDirectives: 'error',
+    overrideConfigFile,
+    overrideConfig: {
+      linterOptions: {
+        reportUnusedDisableDirectives: true,
+      },
+    },
   });
-
-  const cwd = process.cwd();
 
   logger.debug('Processing files...');
 
   const start = process.hrtime.bigint();
 
-  const [formatter, results] = await Promise.all([
+  const [formatter, { type, results }] = await Promise.all([
     engine.loadFormatter(),
-    engine.lintFiles('.'),
+    lintFiles(engine),
   ]);
+
+  if (type === 'no-config') {
+    logger.plain(
+      'skuba could not find an eslint config file. Do you need to run format or configure?',
+    );
+    return { ok: false, fixable: false, errors: [], warnings: [], output: '' };
+  }
 
   const end = process.hrtime.bigint();
 
@@ -89,11 +103,29 @@ export const runESLint = async (
 
   await ESLint.outputFixes(results);
 
-  const output = await formatter.format(results);
+  const output = await formatter.format(
+    results,
+    engine.getRulesMetaForResults(results),
+  );
 
   if (output) {
     logger.plain(output);
   }
 
   return { errors, fixable, ok, output, warnings };
+};
+
+const lintFiles = async (engine: ESLint) => {
+  try {
+    const result = await engine.lintFiles([]);
+    return { type: 'results', results: result } as const;
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === 'Could not find config file.'
+    ) {
+      return { type: 'no-config', results: undefined } as const;
+    }
+    throw error;
+  }
 };

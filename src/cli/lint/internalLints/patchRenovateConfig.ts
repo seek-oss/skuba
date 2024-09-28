@@ -13,16 +13,13 @@ import { formatPrettier } from '../../configure/processing/prettier';
 
 import type { PatchFunction, PatchReturnType } from './upgrade';
 
-const RENOVATE_PRESETS = [
-  'local>seekasia/renovate-config',
-  'local>seek-jobs/renovate-config',
-] as const;
-
 const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;
 
 type RenovateFiletype = 'json' | 'json5';
 
-type RenovatePreset = (typeof RENOVATE_PRESETS)[number];
+type RenovatePreset =
+  | 'local>seekasia/renovate-config'
+  | 'local>seek-jobs/renovate-config';
 
 const renovateConfigSchema = z.object({
   extends: z.array(z.string()),
@@ -155,10 +152,10 @@ const patchRenovateConfig = async (
   return { result: 'apply' };
 };
 
-export const tryPatchRenovateConfig = (async (
-  mode: 'format' | 'lint',
+export const tryPatchRenovateConfig = (async ({
+  mode,
   dir = process.cwd(),
-) => {
+}) => {
   try {
     // In a monorepo we may be invoked within a subdirectory, but we are working
     // with Renovate config that should be relative to the repository root.

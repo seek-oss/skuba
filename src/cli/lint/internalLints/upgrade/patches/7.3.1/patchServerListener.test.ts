@@ -4,6 +4,8 @@ import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
 
+import type { PatchConfig } from '../..';
+
 import { tryPatchServerListener } from './patchServerListener';
 
 jest.mock('fs-extra', () => memfs);
@@ -36,7 +38,9 @@ describe('patchServerListener', () => {
     it('patches a listener with a callback and existing variable reference', async () => {
       vol.fromJSON({ 'src/listen.ts': LISTENER_WITH_CALLBACK });
 
-      await expect(tryPatchServerListener('format')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -64,7 +68,9 @@ describe('patchServerListener', () => {
     it('patches a listener without a callback', async () => {
       vol.fromJSON({ 'src/listen.ts': LISTENER_WITHOUT_CALLBACK });
 
-      await expect(tryPatchServerListener('format')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -84,7 +90,9 @@ describe('patchServerListener', () => {
     });
 
     it('handles a lack of server listener', async () => {
-      await expect(tryPatchServerListener('format')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no listener file found',
       });
@@ -101,7 +109,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('format')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'due to an error',
       });
@@ -126,7 +136,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('format')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'keepAliveTimeout already configured',
       });
@@ -148,7 +160,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('format')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'keepAliveTimeout already configured',
       });
@@ -167,7 +181,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('format')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'keepAliveTimeout already configured',
       });
@@ -182,7 +198,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('format')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no server listener found',
       });
@@ -197,7 +215,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('format')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no listener file found',
       });
@@ -212,7 +232,9 @@ describe('patchServerListener', () => {
     it('patches a listener with a callback and existing variable reference', async () => {
       vol.fromJSON({ 'src/listen.ts': LISTENER_WITH_CALLBACK });
 
-      await expect(tryPatchServerListener('lint')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -222,7 +244,9 @@ describe('patchServerListener', () => {
     it('patches a listener without a callback', async () => {
       vol.fromJSON({ 'src/listen.ts': LISTENER_WITHOUT_CALLBACK });
 
-      await expect(tryPatchServerListener('lint')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -232,7 +256,9 @@ describe('patchServerListener', () => {
     });
 
     it('handles a lack of server listener', async () => {
-      await expect(tryPatchServerListener('lint')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no listener file found',
       });
@@ -252,7 +278,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('lint')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'keepAliveTimeout already configured',
       });
@@ -274,7 +302,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('lint')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'keepAliveTimeout already configured',
       });
@@ -293,7 +323,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('lint')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'keepAliveTimeout already configured',
       });
@@ -308,7 +340,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('lint')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no server listener found',
       });
@@ -323,7 +357,9 @@ describe('patchServerListener', () => {
 
       vol.fromJSON(files);
 
-      await expect(tryPatchServerListener('lint')).resolves.toEqual({
+      await expect(
+        tryPatchServerListener({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'no listener file found',
       });

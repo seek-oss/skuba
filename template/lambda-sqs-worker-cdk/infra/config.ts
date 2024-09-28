@@ -4,7 +4,7 @@ const ENVIRONMENTS = ['dev', 'prod'] as const;
 
 type Environment = (typeof ENVIRONMENTS)[number];
 
-const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
+export const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
 
 interface Config {
   appName: string;

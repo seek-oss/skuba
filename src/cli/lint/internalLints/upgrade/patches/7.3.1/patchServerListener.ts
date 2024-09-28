@@ -60,10 +60,10 @@ const patchServerListener = async (
   return { result: 'apply' };
 };
 
-export const tryPatchServerListener: PatchFunction = async (
-  mode: 'format' | 'lint',
+export const tryPatchServerListener: PatchFunction = async ({
+  mode,
   dir = process.cwd(),
-) => {
+}) => {
   try {
     return await patchServerListener(mode, dir);
   } catch (err) {

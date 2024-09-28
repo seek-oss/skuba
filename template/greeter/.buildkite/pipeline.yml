@@ -38,7 +38,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v5.2.0:
+      - docker-compose#v5.4.0:
           run: app
           environment:
             - GITHUB_API_TOKEN

@@ -57,12 +57,15 @@ it.each(['dev', 'prod'])(
         /workerCurrentVersion([0-9a-zA-Z]+)"/g,
         (_, hash) => `workerCurrentVersion${'x'.repeat(hash.length)}"`,
       )
+      .replaceAll(
+        /"Value":"\d+\.\d+\.\d+-([^"]+)"/g,
+        (_, hash) => `"Value": "x.x.x-${'x'.repeat(hash.length)}"`,
+      )
       .replace(
         /"DD_TAGS":"git.commit.sha:([0-9a-f]+),git.repository_url:([^\"]+)"/g,
         (_, sha, url) =>
           `"DD_TAGS":"git.commit.sha:${'x'.repeat(sha.length)},git.repository_url:${'x'.repeat(url.length)}"`,
       );
-
     expect(JSON.parse(json)).toMatchSnapshot();
   },
 );

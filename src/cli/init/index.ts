@@ -8,6 +8,8 @@ import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { createLogger, log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';
+import { getConsumerManifest } from '../../utils/manifest';
+import { detectPackageManager } from '../../utils/packageManager';
 import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
@@ -53,7 +55,7 @@ export const init = async (args = process.argv.slice(2)) => {
     // prefer template-specific files
     overwrite: false,
     processors,
-    // base template has files like _.eslintrc.js
+    // base template has files like _eslint.config.js
     stripUnderscorePrefix: true,
   });
 
@@ -87,8 +89,22 @@ export const init = async (args = process.argv.slice(2)) => {
   log.newline();
   await initialiseRepo(destinationDir, templateData);
 
+  const [manifest, packageManagerConfig] = await Promise.all([
+    getConsumerManifest(),
+    detectPackageManager(),
+  ]);
+
+  if (!manifest) {
+    throw new Error("Repository doesn't contain a package.json file.");
+  }
+
   // Patch in a baseline Renovate preset based on the configured Git owner.
-  await tryPatchRenovateConfig('format', destinationDir);
+  await tryPatchRenovateConfig({
+    mode: 'format',
+    dir: destinationDir,
+    manifest,
+    packageManager: packageManagerConfig,
+  });
 
   const skubaSlug = `skuba@${skubaVersionInfo.local}`;
 

@@ -4,7 +4,7 @@ import {
   ErrorMiddleware,
   MetricsMiddleware,
   RequestLogging,
-  // SecureHeaders,
+  SecureHeaders,
   VersionMiddleware,
 } from 'seek-koala';
 
@@ -39,10 +39,8 @@ export const createApp = <State, Context>(
   ...middleware: Array<Koa.Middleware<State, Context>>
 ) =>
   new Koa()
-    // TODO: consider using a middleware that adds secure HTTP headers.
-    // https://github.com/seek-oss/koala/tree/master/src/secureHeaders
-    // https://github.com/venables/koa-helmet
-    // .use(SecureHeaders.middleware)
+    // Read: https://github.com/seek-oss/koala/tree/master/src/secureHeaders
+    .use(SecureHeaders.middleware)
     .use(contextMiddleware)
     .use(requestLogging)
     .use(metrics)

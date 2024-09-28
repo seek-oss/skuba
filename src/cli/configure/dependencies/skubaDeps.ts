@@ -5,21 +5,22 @@ const DEV_DEPENDENCIES = [
   '@seek/seek-module-toolkit',
   'eslint-config-seek',
   'nodemon',
-  'tslint',
+  'ts-node-dev',
   'tslint-config-seek',
+  'tslint',
 
   // bundled
   '@types/jest',
   'concurrently',
-  'eslint',
   'eslint-config-skuba',
+  'eslint',
   'jest',
   'prettier',
   'semantic-release',
   'ts-jest',
   'ts-node',
-  'ts-node-dev',
   'tsconfig-seek',
+  'tsx',
   'typescript',
 ] as const;
 

@@ -2,7 +2,6 @@ import { inspect } from 'util';
 
 import simpleGit from 'simple-git';
 
-import * as Buildkite from '../../api/buildkite';
 import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
 import { isCiEnv } from '../../utils/env';
@@ -15,8 +14,6 @@ import { createDestinationFileReader } from '../configure/analysis/project';
 
 import { internalLint } from './internal';
 import type { Input } from './types';
-
-const RENOVATE_DEFAULT_PREFIX = 'renovate';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
@@ -66,21 +63,6 @@ const shouldPush = async ({
     return false;
   }
 
-  if (currentBranch?.startsWith(RENOVATE_DEFAULT_PREFIX)) {
-    try {
-      await GitHub.getPullRequestNumber();
-    } catch (error) {
-      const warning =
-        'An autofix is available, but it was not pushed because an open pull request for this Renovate branch could not be found. If a pull request has since been created, retry the lint step to push the fix.';
-      log.warn(warning);
-      try {
-        await Buildkite.annotate(Buildkite.md.terminal(warning));
-      } catch {}
-
-      return false;
-    }
-  }
-
   let headCommitMessage;
   try {
     headCommitMessage = await Git.getHeadCommitMessage({ dir });
@@ -113,6 +95,8 @@ interface AutofixParameters {
   eslint: boolean;
   prettier: boolean;
   internal: boolean;
+
+  eslintConfigFile?: string;
 }
 
 export const autofix = async (params: AutofixParameters): Promise<void> => {
@@ -151,7 +135,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     }
 
     if (params.eslint) {
-      await runESLint('format', logger);
+      await runESLint('format', logger, params.eslintConfigFile);
     }
 
     // Unconditionally re-run Prettier; reaching here means we have pre-existing

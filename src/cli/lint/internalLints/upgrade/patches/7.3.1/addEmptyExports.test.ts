@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 
+import type { PatchConfig } from '../..';
 import * as packageAnalysis from '../../../../../configure/analysis/package';
 import * as projectAnalysis from '../../../../../configure/analysis/project';
 
@@ -26,7 +27,9 @@ describe('tryAddEmptyExports', () => {
         Promise.resolve(`// ${filename}`),
       );
 
-      await expect(tryAddEmptyExports('format')).resolves.toEqual({
+      await expect(
+        tryAddEmptyExports({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -59,7 +62,9 @@ describe('tryAddEmptyExports', () => {
           }),
       );
 
-      await expect(tryAddEmptyExports('format')).resolves.toEqual({
+      await expect(
+        tryAddEmptyExports({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
       });
 
@@ -71,7 +76,9 @@ describe('tryAddEmptyExports', () => {
         Promise.resolve(undefined),
       );
 
-      await expect(tryAddEmptyExports('format')).resolves.toEqual({
+      await expect(
+        tryAddEmptyExports({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
       });
 
@@ -85,7 +92,9 @@ describe('tryAddEmptyExports', () => {
         throw new Error('Something happened!');
       });
 
-      await expect(tryAddEmptyExports('format')).resolves.toEqual({
+      await expect(
+        tryAddEmptyExports({ mode: 'format' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'due to an error',
       });
@@ -106,7 +115,9 @@ describe('tryAddEmptyExports', () => {
         Promise.resolve(`// ${filename}`),
       );
 
-      await expect(tryAddEmptyExports('lint')).resolves.toEqual({
+      await expect(
+        tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'apply',
       });
 
@@ -128,7 +139,9 @@ describe('tryAddEmptyExports', () => {
           }),
       );
 
-      await expect(tryAddEmptyExports('lint')).resolves.toEqual({
+      await expect(
+        tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
       });
 
@@ -140,7 +153,9 @@ describe('tryAddEmptyExports', () => {
         Promise.resolve(undefined),
       );
 
-      await expect(tryAddEmptyExports('lint')).resolves.toEqual({
+      await expect(
+        tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
       });
 
@@ -154,7 +169,9 @@ describe('tryAddEmptyExports', () => {
         throw new Error('Something happened!');
       });
 
-      await expect(tryAddEmptyExports('lint')).resolves.toEqual({
+      await expect(
+        tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
+      ).resolves.toEqual({
         result: 'skip',
         reason: 'due to an error',
       });

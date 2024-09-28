@@ -31,7 +31,7 @@ import {
 import { type InitConfig, initConfigInputSchema } from './types';
 
 export const runForm = <T = Record<string, string>>(props: {
-  choices: Readonly<Choice[]>;
+  choices: readonly Choice[];
   message: string;
   name: string;
 }) => {
@@ -71,7 +71,7 @@ export const runForm = <T = Record<string, string>>(props: {
   return form.run();
 };
 
-const confirmShouldContinue = async (choices: Readonly<FormChoice[]>) => {
+const confirmShouldContinue = async (choices: readonly FormChoice[]) => {
   const fieldsList = choices.map((choice) => choice.message);
 
   log.newline();
@@ -162,7 +162,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
   const templateConfigPath = path.join(dir, TEMPLATE_CONFIG_FILENAME);
 
   try {
-    /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const templateConfig = require(templateConfigPath) as unknown;
 
     return templateConfigSchema.parse(templateConfig);
@@ -287,7 +287,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   };
 };
 
-const configureFromPipe = async (): Promise<InitConfig> => {
+export const readJSONFromStdIn = async () => {
   let text = '';
 
   await new Promise((resolve) =>
@@ -311,6 +311,12 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     log.err('Invalid JSON from stdin.');
     process.exit(1);
   }
+
+  return value;
+};
+
+const configureFromPipe = async (): Promise<InitConfig> => {
+  const value = await readJSONFromStdIn();
 
   const result = initConfigInputSchema.safeParse(value);
 

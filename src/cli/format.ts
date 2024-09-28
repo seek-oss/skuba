@@ -7,7 +7,10 @@ import { runESLint } from './adapter/eslint';
 import { runPrettier } from './adapter/prettier';
 import { internalLint } from './lint/internal';
 
-export const format = async (args = process.argv.slice(2)): Promise<void> => {
+export const format = async (
+  args = process.argv.slice(2),
+  overrideConfigFile?: string,
+): Promise<void> => {
   const debug = hasDebugFlag(args);
 
   log.plain(chalk.blueBright('skuba lints'));
@@ -18,7 +21,7 @@ export const format = async (args = process.argv.slice(2)): Promise<void> => {
   log.newline();
   log.plain(chalk.magenta('ESLint'));
 
-  const eslint = await runESLint('format', logger);
+  const eslint = await runESLint('format', logger, overrideConfigFile);
 
   log.newline();
   log.plain(chalk.cyan('Prettier'));

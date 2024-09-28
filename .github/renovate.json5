@@ -24,6 +24,7 @@
       matchPackageNames: [
         // Incompatible with read-pkg-up@7
         'type-fest',
+        'serverless',
       ],
       matchUpdateTypes: ['major'],
 
@@ -92,6 +93,16 @@
       schedule: 'before 3:00 am every weekday',
     },
     {
+      matchDepTypes: ['devDependencies'],
+      matchManagers: ['npm'],
+      semanticCommitType: 'devDeps',
+    },
+    {
+      matchDepTypes: ['dependencies', 'peerDependencies'],
+      matchManagers: ['npm'],
+      semanticCommitType: 'deps',
+    },
+    {
       matchPaths: ['template/**'],
 
       branchPrefix: 'renovate-template--',
@@ -101,13 +112,14 @@
   ],
   branchPrefix: 'renovate-',
   commitMessageAction: '',
+  gitIgnoredAuthors: ['34733141+seek-oss-ci@users.noreply.github.com'],
   postUpdateOptions: [],
   prConcurrentLimit: 3,
   prNotPendingHours: 1,
   rangeStrategy: 'replace',
   schedule: 'after 3:00 am and before 6:00 am every weekday',
   semanticCommitScope: '',
-  semanticCommitType: 'deps',
+  semanticCommitType: 'update',
   customManagers: [
     {
       customType: 'regex',
