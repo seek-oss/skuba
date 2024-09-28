@@ -288,8 +288,8 @@ importers:
   template/express-rest-api:
     dependencies:
       '@seek/logger':
-        specifier: ^6.0.0
-        version: 6.2.2
+        specifier: ^9.0.0
+        version: 9.0.0
       express:
         specifier: ^4.17.1
         version: 4.21.0
@@ -298,7 +298,7 @@ importers:
         version: 10.1.1
       seek-datadog-custom-metrics:
         specifier: ^4.6.3
-        version: 4.6.4(datadog-lambda-js@8.111.0)(hot-shots@10.1.1)
+        version: 4.6.4(datadog-lambda-js@9.115.0)(hot-shots@10.1.1)
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -365,8 +365,8 @@ importers:
         specifier: ^0.53.0
         version: 0.53.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
-        specifier: ^6.0.0
-        version: 6.2.2
+        specifier: ^9.0.0
+        version: 9.0.0
       hot-shots:
         specifier: ^10.0.0
         version: 10.1.1
@@ -381,7 +381,7 @@ importers:
         version: 4.1.0
       seek-datadog-custom-metrics:
         specifier: ^4.6.3
-        version: 4.6.4(datadog-lambda-js@8.111.0)(hot-shots@10.1.1)
+        version: 4.6.4(datadog-lambda-js@9.115.0)(hot-shots@10.1.1)
       seek-koala:
         specifier: ^7.0.0
         version: 7.0.4(hot-shots@10.1.1)(koa@2.15.3)
@@ -438,11 +438,11 @@ importers:
         specifier: ^3.363.0
         version: 3.658.0
       '@seek/logger':
-        specifier: ^6.0.0
-        version: 6.2.2
+        specifier: ^9.0.0
+        version: 9.0.0
       datadog-lambda-js:
-        specifier: ^8.0.0
-        version: 8.111.0
+        specifier: ^9.0.0
+        version: 9.115.0
       dd-trace:
         specifier: ^5.0.0
         version: 5.22.0
@@ -502,8 +502,8 @@ importers:
         specifier: ^3.363.0
         version: 3.658.0
       '@seek/logger':
-        specifier: ^6.0.0
-        version: 6.2.2
+        specifier: ^9.0.0
+        version: 9.0.0
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -2012,10 +2012,6 @@ packages:
   '@seek/aws-codedeploy-infra@2.1.2':
     resolution: {integrity: sha512-rGwPtIFMHsc+UuZ/pUc9SnFxbWYVMflrJS0ipjckl3MXNhvj0HD0saSulwBzdmL2fLxRi+8KU68q3IA7aoXloA==}
     engines: {node: '>=18.18'}
-
-  '@seek/logger@6.2.2':
-    resolution: {integrity: sha512-+CUjPnFey3xjsEr0vdo5nCps01+GXW9Ln82rLFEdobgtKTxTcGMHMuh5tQZPHSEslkk5HiesZQBRqavbjVT+PQ==}
-    engines: {node: '>=16.11', npm: '>=5.5.0'}
 
   '@seek/logger@9.0.0':
     resolution: {integrity: sha512-eXxx0ExLD9Nggp3Dj5+KwgtyQLwCX2DcH9x3N2WGgz944Z78Xcbm+1RkCapCzMT5Dd9dbNFCxmiOSqShShUQOw==}
@@ -3537,8 +3533,8 @@ packages:
     resolution: {integrity: sha512-t/Ygsytq+R995EJ5PZlD4Cu56sWa8InXySaViRzw9apusqsOO2bQP+SbYzAhR0pFKoB+43lYy8rWban9JSuXnA==}
     engines: {node: '>= 0.4'}
 
-  datadog-lambda-js@8.111.0:
-    resolution: {integrity: sha512-/QLWCZT4LWRiOxL3SZvo/NhNNd5UAXlQei/+ebWK8qI735YrOiRnrm16Z2mdwIjhet+6mgCwlJsgpVQRsteFxw==}
+  datadog-lambda-js@9.115.0:
+    resolution: {integrity: sha512-0MW83owXDwSMpqsWhIoSkk/FjLpVG2ErVcDdayBAa7Dzyap2aJMJBZbwuC9Z1keVyJNJAoleHgdTzW12EEnSiw==}
 
   datadog-metrics@0.9.3:
     resolution: {integrity: sha512-BVsBX2t+4yA3tHs7DnB5H01cHVNiGJ/bHA8y6JppJDyXG7s2DLm6JaozPGpgsgVGd42Is1CHRG/yMDQpt877Xg==}
@@ -6464,15 +6460,8 @@ packages:
     resolution: {integrity: sha512-2FnyGir8nAJAqD3srROdrF1J5BIcMT4nwj7hHSc60El6Uxlym00UbCCd8pYIterstVBFlMyF1yFV8XdGIPbj4A==}
     hasBin: true
 
-  pino-std-serializers@6.2.2:
-    resolution: {integrity: sha512-cHjPPsE+vhj/tnhCy/wiMh3M3z3h/j15zHQX+S9GkTBgqJuTuJzYJ4gUyACLhDaJ7kk9ba9iRDmbH2tJU03OiA==}
-
   pino-std-serializers@7.0.0:
     resolution: {integrity: sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==}
-
-  pino@8.21.0:
-    resolution: {integrity: sha512-ip4qdzjkAyDDZklUaZkcRFb2iA118H9SgRh8yzTkSQK8HilsOJF7rSY8HoW5+I0M46AZgX/pxbprf2vvzQCE0Q==}
-    hasBin: true
 
   pino@9.4.0:
     resolution: {integrity: sha512-nbkQb5+9YPhQRz/BeQmrWpEknAaqjpAqRK8NwJpmrX/JHu7JuZC5G1CeAwJDJfGes4h+YihC6in3Q2nGb+Y09w==}
@@ -6537,9 +6526,6 @@ packages:
   process-utils@4.0.0:
     resolution: {integrity: sha512-fMyMQbKCxX51YxR7YGCzPjLsU3yDzXFkP4oi1/Mt5Ixnk7GO/7uUTj8mrCHUwuvozWzI+V7QSJR9cZYnwNOZPg==}
     engines: {node: '>=10.0'}
-
-  process-warning@3.0.0:
-    resolution: {integrity: sha512-mqn0kFRl0EoqhnL0GQ0veqFHyIN1yig9RHh/InzORTUiZHFRAur+aMtRkELNwGs9aNwKS6tg/An4NYBPGwvtzQ==}
 
   process-warning@4.0.0:
     resolution: {integrity: sha512-/MyYDxttz7DfGMMHiysAsFE4qF+pQYAA8ziO/3NcRVrQ5fSk+Mns4QZA/oRPFzvcqNoVJXQNWNAsdwBXLUkQKw==}
@@ -7126,9 +7112,6 @@ packages:
     resolution: {integrity: sha512-l5x7VUUWbjVFbafGLxPWkYsHIhEvmF85tbIeFZWc8ZPtoMyybuEhL7Jye/ooC4/d48FgOjSJXgsF/AJPYCW8Zw==}
     engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
-  sonic-boom@3.8.1:
-    resolution: {integrity: sha512-y4Z8LCDBuum+PBP3lSV7RHrXscqksve/bi0as7mhwVnBW+/wUqKT/2Kb7um8yqcFy0duYbbPxzt89Zy2nOCaxg==}
-
   sonic-boom@4.1.0:
     resolution: {integrity: sha512-NGipjjRicyJJ03rPiZCJYjwlsuP2d1/5QUviozRXC7S3WdVWNK5e3Ojieb9CCyfhq2UC+3+SRd9nG3I2lPRvUw==}
 
@@ -7455,9 +7438,6 @@ packages:
     peerDependencies:
       tslib: ^2
 
-  thread-stream@2.7.0:
-    resolution: {integrity: sha512-qQiRWsU/wvNolI6tbbCKd9iKaTnCXsTwVxhhKM6nctPdujTyztjlbUkUTUymidWcMnZ5pWR0ej4a0tjsW021vw==}
-
   thread-stream@3.1.0:
     resolution: {integrity: sha512-OqyPZ9u96VohAyMfJykzmivOrY2wfMSf3C5TtFJVgN+Hm6aj+voFhlK+kZEIv2FBh1X6Xp3DlnCOfEQ3B2J86A==}
 
@@ -7574,10 +7554,6 @@ packages:
         optional: true
       esbuild:
         optional: true
-
-  ts-md5@1.3.1:
-    resolution: {integrity: sha512-DiwiXfwvcTeZ5wCE0z+2A9EseZsztaiZtGrtSaY5JOD7ekPnR/GoIVD5gXZAlK9Na9Kvpo9Waz5rW64WKAWApg==}
-    engines: {node: '>=12'}
 
   ts-node-dev@2.0.0:
     resolution: {integrity: sha512-ywMrhCfH6M75yftYvrvNarLEY+SUXtUvU8/0Z6llrHQVBx12GiFk5sStF8UdfE/yfzk9IAq7O5EEbTQsxlBI8w==}
@@ -10728,13 +10704,6 @@ snapshots:
       skuba-dive: 2.0.0
       zod: 3.23.8
 
-  '@seek/logger@6.2.2':
-    dependencies:
-      dtrim: 1.12.0
-      fast-redact: 3.5.0
-      pino: 8.21.0
-      pino-std-serializers: 6.2.2
-
   '@seek/logger@9.0.0':
     dependencies:
       dtrim: 1.12.0
@@ -12781,14 +12750,14 @@ snapshots:
       es-errors: 1.3.0
       is-data-view: 1.0.1
 
-  datadog-lambda-js@8.111.0:
+  datadog-lambda-js@9.115.0:
     dependencies:
+      '@aws-crypto/sha256-js': 5.2.0
       dc-polyfill: 0.1.6
       hot-shots: 8.5.0
       promise-retry: 2.0.1
       serialize-error: 8.1.0
       shimmer: 1.2.1
-      ts-md5: 1.3.1
 
   datadog-metrics@0.9.3:
     dependencies:
@@ -16627,23 +16596,7 @@ snapshots:
       sonic-boom: 4.1.0
       strip-json-comments: 3.1.1
 
-  pino-std-serializers@6.2.2: {}
-
   pino-std-serializers@7.0.0: {}
-
-  pino@8.21.0:
-    dependencies:
-      atomic-sleep: 1.0.0
-      fast-redact: 3.5.0
-      on-exit-leak-free: 2.1.2
-      pino-abstract-transport: 1.2.0
-      pino-std-serializers: 6.2.2
-      process-warning: 3.0.0
-      quick-format-unescaped: 4.0.4
-      real-require: 0.2.0
-      safe-stable-stringify: 2.5.0
-      sonic-boom: 3.8.1
-      thread-stream: 2.7.0
 
   pino@9.4.0:
     dependencies:
@@ -16705,8 +16658,6 @@ snapshots:
       fs2: 0.3.12
       memoizee: 0.4.17
       type: 2.7.3
-
-  process-warning@3.0.0: {}
 
   process-warning@4.0.0: {}
 
@@ -17251,11 +17202,11 @@ snapshots:
     dependencies:
       commander: 2.20.3
 
-  seek-datadog-custom-metrics@4.6.4(datadog-lambda-js@8.111.0)(hot-shots@10.1.1):
+  seek-datadog-custom-metrics@4.6.4(datadog-lambda-js@9.115.0)(hot-shots@10.1.1):
     dependencies:
       '@types/aws-lambda': 8.10.145
     optionalDependencies:
-      datadog-lambda-js: 8.111.0
+      datadog-lambda-js: 9.115.0
       hot-shots: 10.1.1
 
   seek-koala@7.0.4(hot-shots@10.1.1)(koa@2.15.3):
@@ -17737,10 +17688,6 @@ snapshots:
       ip-address: 9.0.5
       smart-buffer: 4.2.0
 
-  sonic-boom@3.8.1:
-    dependencies:
-      atomic-sleep: 1.0.0
-
   sonic-boom@4.1.0:
     dependencies:
       atomic-sleep: 1.0.0
@@ -18143,10 +18090,6 @@ snapshots:
     dependencies:
       tslib: 2.7.0
 
-  thread-stream@2.7.0:
-    dependencies:
-      real-require: 0.2.0
-
   thread-stream@3.1.0:
     dependencies:
       real-require: 0.2.0
@@ -18265,8 +18208,6 @@ snapshots:
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.25.2)
       esbuild: 0.24.0
-
-  ts-md5@1.3.1: {}
 
   ts-node-dev@2.0.0(@types/node@20.16.7)(typescript@5.5.4):
     dependencies:
