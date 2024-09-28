@@ -203,7 +203,6 @@ describe('createApp', () => {
 
   it('handles null error', async () => {
     middleware.mockImplementation(() => {
-      /* eslint-disable-next-line @typescript-eslint/only-throw-error */
       throw null;
     });
 
