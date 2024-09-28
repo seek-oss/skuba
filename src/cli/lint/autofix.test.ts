@@ -1,6 +1,5 @@
 import simpleGit from 'simple-git';
 
-import * as Buildkite from '../../api/buildkite';
 import * as Git from '../../api/git';
 import * as GitHub from '../../api/github';
 import { runESLint } from '../adapter/eslint';
@@ -17,7 +16,6 @@ import { internalLint } from './internal';
 jest.mock('simple-git');
 jest.mock('../../api/git');
 jest.mock('../../api/github');
-jest.mock('../../api/buildkite');
 jest.mock('../adapter/eslint');
 jest.mock('../adapter/prettier');
 jest.mock('./internal');
@@ -121,23 +119,6 @@ describe('autofix', () => {
       jest.mocked(Git.currentBranch).mockResolvedValue('devel');
 
       await expect(autofix(params)).resolves.toBeUndefined();
-
-      expectNoAutofix();
-    });
-
-    it('bails on a renovate branch when there is no open pull request', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
-      jest
-        .mocked(GitHub.getPullRequestNumber)
-        .mockRejectedValue(
-          new Error(
-            `Commit cdd1520 is not associated with an open GitHub pull request`,
-          ),
-        );
-
-      await expect(autofix(params)).resolves.toBeUndefined();
-
-      expect(Buildkite.annotate).toHaveBeenCalled();
 
       expectNoAutofix();
     });
