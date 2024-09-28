@@ -208,6 +208,72 @@ steps:
       });
     });
 
+    it('should handle comments', async () => {
+      const input = `
+steps:
+- <<: *prod # hi
+  <<: *timeout
+  label: 'My Step'
+  command: echo 'Hello, world!'
+
+- <<: *prod
+  <<: *timeout# hi
+  label: 'My Step'
+  command: echo 'Hello, world!'
+
+- <<: *prod # hello
+  <<: *timeout# world
+  label: 'My Step'
+  command: echo 'Hello, world!'
+
+- label: something
+  <<: *prod # hello
+  <<: *timeout# world
+  command: echo 'Hello, world!'
+`;
+
+      vol.fromJSON({
+        '.buildkite/pipeline.yml': input,
+      });
+
+      await expect(
+        tryCollapseDuplicateMergeKeys({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({ result: 'apply' });
+
+      expect(volToJson()).toEqual({
+        '.buildkite/pipeline.yml':
+          mode === 'lint'
+            ? input
+            : `
+steps:
+  # hi
+- <<: [*prod, *timeout]
+  label: 'My Step'
+  command: echo 'Hello, world!'
+
+  # hi
+- <<: [*prod, *timeout]
+  label: 'My Step'
+  command: echo 'Hello, world!'
+
+  # hello
+  # world
+- <<: [*prod, *timeout]
+  label: 'My Step'
+  command: echo 'Hello, world!'
+
+- label: something
+  # hello
+  # world
+  <<: [*prod, *timeout]
+  command: echo 'Hello, world!'
+`,
+      });
+    });
+
     it('should not bother if the keys are separated by other keys', async () => {
       const input = `steps:
   - <<: *prod

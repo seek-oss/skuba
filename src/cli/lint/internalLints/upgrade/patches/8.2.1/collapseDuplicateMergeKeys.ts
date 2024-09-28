@@ -45,10 +45,18 @@ const collapseDuplicateMergeKeys: PatchFunction = async ({
 const collapseDuplicateMergeKeysInFile = (input: string) =>
   replaceAllUntilStable(
     input,
-    /^([ \-]*)<<: \[?(\*[^\n\]]+)\]?$\n^( *)<<: \[?(\*[^\n\]]+)\]?$/gm,
-    (match, a, b, c, d) => {
-      if (a.length === c.length) {
-        return `${a}<<: [${b}, ${d}]`;
+    /^([ \-]*)<<: \[?(\*[^\n#\]]+)\]?(\s*#.*)?$\n^( *)<<: \[?(\*[^\n#\]]+)\]?(\s*#.*)?$/gm,
+    (match, prefixA, keyA, commentA, prefixB, keyB, commentB) => {
+      if (prefixA.length === prefixB.length) {
+        return [
+          ...(commentA
+            ? [`${' '.repeat(prefixA.length)}${commentA.trim()}`]
+            : []),
+          ...(commentB
+            ? [`${' '.repeat(prefixA.length)}${commentB.trim()}`]
+            : []),
+          `${prefixA}<<: [${keyA.trim()}, ${keyB.trim()}]`,
+        ].join('\n');
       }
       return match;
     },
