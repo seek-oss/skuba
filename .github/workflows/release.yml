@@ -40,7 +40,7 @@ jobs:
           version: pnpm stage
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.SEEK_OSS_CI_NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Deploy to GitHub Pages
         run: pnpm run deploy

@@ -34,4 +34,9 @@ export interface Input {
    * Defaults to `true`.
    */
   workerThreads?: boolean;
+
+  /**
+   * An override to point to a specific ESLint config file.
+   */
+  eslintConfigFile?: string;
 }

@@ -1,8 +1,18 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -e
 
+update_snapshot=false
+
+# Process optional flag
+if [ "$1" == "-u" ]; then
+  update_snapshot=true
+  shift
+fi
+
 template="${1}"
+
+echo "--- testing template ${update_snapshot}, ${template}"
 if [ -z "$template" ]; then
   echo "Usage: pnpm test:template <template_name>"
   exit 1
@@ -15,7 +25,13 @@ echo '--- pnpm build'
 pnpm build
 
 echo '--- pnpm pack'
+# I'm sure there's a better way to do this
+eslint_config_skuba_tar="$(pwd)/packages/eslint-config-skuba/$(cd packages/eslint-config-skuba && pnpm pack | grep -o 'eslint-config-skuba-.*\.tgz')"
+jq ".dependencies[\"eslint-config-skuba\"] = \"file:${eslint_config_skuba_tar}\"" package.json > package.json.tmp
+mv package.json package.json.bak
+mv package.json.tmp package.json
 skuba_tar="$(pwd)/$(pnpm pack | grep -o 'skuba-.*\.tgz')"
+mv package.json.bak package.json
 
 skuba_temp_directory='tmp-skuba'
 
@@ -69,8 +85,9 @@ pnpm exec skuba --version
 set +e
 echo "--- pnpm build ${template}"
 output=$(pnpm build 2>&1)
-echo $output
-if [[ $? -ne 0 && $output != *"Command \"build\" not found"* ]]; then
+result=$?
+echo "$output"
+if [[ $result -ne 0 && $output != *"Command \"build\" not found"* ]]; then
     exit 1
 fi
 set -e
@@ -81,5 +98,12 @@ pnpm lint
 echo "--- pnpm format ${template}"
 pnpm format
 
-echo "--- pnpm test ${template}"
-pnpm test
+if [ "$update_snapshot" = true ]; then
+  echo "--- pnpm test --updateSnapshot ${template}"
+  pnpm test -- --updateSnapshot
+  cd ../../skuba || exit 1
+  bash ./scripts/update-template-snapshot.sh ${skuba_temp_directory} ${template}
+else
+  echo "--- pnpm test ${template}"
+  pnpm test
+fi

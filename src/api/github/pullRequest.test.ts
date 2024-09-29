@@ -1,10 +1,10 @@
-import { Octokit } from '@octokit/rest';
 import git from 'isomorphic-git';
 
+import { createRestClient } from './octokit';
 import { getPullRequestNumber } from './pullRequest';
 
-jest.mock('@octokit/rest');
 jest.mock('isomorphic-git');
+jest.mock('./octokit');
 
 const mockClient = {
   repos: {
@@ -12,7 +12,9 @@ const mockClient = {
   },
 };
 
-beforeEach(() => jest.mocked(Octokit).mockReturnValue(mockClient as never));
+beforeEach(() =>
+  jest.mocked(createRestClient).mockResolvedValue(mockClient as never),
+);
 
 afterEach(jest.resetAllMocks);
 
@@ -22,7 +24,7 @@ describe('getPullRequestNumber', () => {
       getPullRequestNumber({ env: { BUILDKITE_PULL_REQUEST: '123' } }),
     ).resolves.toBe(123);
 
-    expect(Octokit).not.toHaveBeenCalled();
+    expect(createRestClient).not.toHaveBeenCalled();
   });
 
   it('prefers a GitHub Actions environment variable', async () => {
@@ -30,7 +32,7 @@ describe('getPullRequestNumber', () => {
       getPullRequestNumber({ env: { GITHUB_REF: 'refs/pull/456/merge' } }),
     ).resolves.toBe(456);
 
-    expect(Octokit).not.toHaveBeenCalled();
+    expect(createRestClient).not.toHaveBeenCalled();
   });
 
   it('falls back to the most recently updated pull request from the GitHub API', async () => {
@@ -96,7 +98,7 @@ describe('getPullRequestNumber', () => {
       }
     `);
 
-    expect(Octokit).toHaveBeenCalledTimes(1);
+    expect(createRestClient).toHaveBeenCalledTimes(1);
   });
 
   it('throws on an empty response from the GitHub API', async () => {

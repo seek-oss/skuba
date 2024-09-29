@@ -14,7 +14,7 @@ Next steps:
 4. [ ] Configure [GitHub repository settings].
 5. [ ] Delete this checklist 😌.
 
-[github repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
+[GitHub repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings
 [installing on your repository]: https://github.com/SEEK-Jobs/gutenberg#installing-on-your-repository
 
 ## API

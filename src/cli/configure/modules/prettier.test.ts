@@ -18,7 +18,7 @@ describe('prettierModule', () => {
   it('deletes rogue configs', async () => {
     const inputFiles = {
       '.prettierrc': 'this is deprecated!',
-      '.eslintrc.js': undefined,
+      'eslint.config.js': undefined,
       '.prettierrc.toml': undefined,
       'package.json': JSON.stringify({
         $name: 'secret-service',

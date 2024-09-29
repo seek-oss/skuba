@@ -1,0 +1,87 @@
+# Modelled on https://github.com/backstage/backstage/blob/5083c8024deffbdf454983900f02780d14b55a0b/.github/workflows/sync_renovate-changesets.yml#L6
+
+name: Sync Renovate changeset
+on:
+  pull_request_target:
+    paths:
+      - '.github/workflows/renovate-changeset.yml'
+      - 'pnpm-lock.yaml'
+
+jobs:
+  generate-changeset:
+    runs-on: ubuntu-latest
+    if: github.actor == 'renovate[bot]' && github.repository == 'seek-oss/skuba'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
+      - name: Configure Git
+        run: |
+          git config --global user.email 34733141+seek-oss-ci@users.noreply.github.com
+          git config --global user.name 'Github changeset workflow'
+      - name: Generate changeset
+        uses: actions/github-script@v7
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        with:
+          script: |
+            const { promises: fs } = require('fs');
+
+            async function getPackagesNames(files) {
+              const packageJsons = await Promise.all(
+                files.map(async (file) => JSON.parse(await fs.readFile(file, 'utf8'))),
+              );
+
+              return packageJsons.flatMap((d) => (d.private ? [] : [d.name]));
+            }
+
+            async function createChangeset(fileName, message, packages) {
+              const header = packages.map((pkg) => `'${pkg}': patch`).join('\n');
+              const body = `---\n${header}\n---\n\n${message.trim()}\n`;
+              await fs.writeFile(fileName, body);
+            }
+
+            const prTitle = process.env.PR_TITLE;
+            if (!prTitle) {
+              console.log('No PR title found, skipping');
+              return;
+            }
+
+            const prefix = prTitle.split(':')[0];
+            if (prefix !== 'deps' && prefix !== 'template') {
+              console.log('Not a prod/template update PR, skipping');
+              return;
+            }
+
+            const branch = await exec.getExecOutput('git branch --show-current');
+            if (!branch.stdout.startsWith('renovate-')) {
+              console.log('Not a renovate branch, skipping');
+              return;
+            }
+
+            const diffOutput = await exec.getExecOutput('git diff --name-only HEAD~1');
+            const diffFiles = diffOutput.stdout.split('\n');
+            if (diffFiles.find((f) => f.startsWith('.changeset'))) {
+              console.log('Changeset already exists, skipping');
+              return;
+            }
+
+            const files = diffFiles.filter((file) => file.includes('package.json'));
+            const packageNames = await getPackagesNames(files);
+            if (!packageNames.length) {
+              console.log('No package.json changes to published packages, skipping');
+              return;
+            }
+
+            const { stdout: shortHash } = await exec.getExecOutput(
+              'git rev-parse --short HEAD',
+            );
+            const fileName = `.changeset/renovate-${shortHash.trim()}.md`;
+
+            await createChangeset(fileName, prTitle, packageNames);
+            await exec.exec('git', ['add', fileName]);
+            await exec.exec('git commit -C HEAD --amend --no-edit');
+            await exec.exec('git push --force');

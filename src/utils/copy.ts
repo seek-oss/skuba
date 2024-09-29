@@ -82,6 +82,7 @@ export const copyFiles = async (
         ? filename
             .replace(/^_\./, '.')
             .replace(/^_package\.json/, 'package.json')
+            .replace(/^_eslint\.config\.js/, 'eslint.config.js')
         : filename,
     );
 

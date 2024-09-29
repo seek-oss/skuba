@@ -42,7 +42,8 @@ describe('TypeScript', () => {
 
     test('unknown on catch Clause Bindings', () => {
       try {
-      } catch (err: unknown) {}
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_err: unknown) {}
     });
   });
 
@@ -123,7 +124,7 @@ describe('TypeScript', () => {
 
   describe('4.3', () => {
     test('Separate Write Types of Properties', () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-interface
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       interface Thing {
         // get size(): number
         // set size(value: number | string | boolean);

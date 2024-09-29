@@ -19,9 +19,16 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
+
+Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
+Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
+
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -94,9 +101,16 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
+
+Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
+Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
+
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -107,18 +121,16 @@ ESLint
 Initialising ESLint...
 Processing files...
 Processed 2 files in <random>s.
-○ a/a/a.ts
 ○ d.js
+○ a/a/a.ts
 
 Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 11 files.
+Discovered 10 files.
 Formatting files...
 .dockerignore
-  parser: -
-.eslintignore
   parser: -
 .gitignore
   parser: -
@@ -166,9 +178,16 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
+
+Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
+Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
+
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -207,9 +226,16 @@ Patch skipped: Move .npmrc out of the .dockerignore managed section - no .docker
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found
 
+Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found
+
+Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated?
+
+Patch skipped: Remove version field from docker-compose files - no docker-compose files found
+
+Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
+
 skuba update complete.
 
-Refreshed .eslintignore. refresh-config-files
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
 Refreshed .npmrc. refresh-config-files
@@ -222,7 +248,7 @@ Processed 2 files in <random>s.
   8:3  error  Unexpected console statement  no-console
 
 <random>/d.js
-  1:0  error  Parsing error: Unexpected token (1:0)
+  1:1  error  Parsing error: Unexpected token }
 
 ✖ 2 problems (2 errors, 0 warnings)
 

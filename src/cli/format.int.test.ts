@@ -137,7 +137,9 @@ test.each`
 
   const originalFiles = await prepareTempDirectory(baseDir, tempDir);
 
-  await expect(format(args)).resolves.toBeUndefined();
+  await expect(
+    format(args, require.resolve('eslint-config-skuba')),
+  ).resolves.toBeUndefined();
 
   expect(stdout(new RegExp(tempDir, 'g'))).toMatchSnapshot();
 

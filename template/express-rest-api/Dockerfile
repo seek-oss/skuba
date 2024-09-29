@@ -12,7 +12,7 @@ RUN pnpm install --offline --prod
 
 ###
 
-FROM --platform=<%- platformName %> gcr.io/distroless/nodejs20-debian12 AS runtime
+FROM gcr.io/distroless/nodejs20-debian12 AS runtime
 
 WORKDIR /workdir
 
