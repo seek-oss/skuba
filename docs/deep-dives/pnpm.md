@@ -287,7 +287,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     ```diff
       seek-oss/private-npm#v1.2.0:
         env: NPM_READ_TOKEN
-    +   output-path: tmp/
+    +   output-path: /tmp/
     ```
 
     ```diff
@@ -301,7 +301,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +     - pnpm-lock.yaml
         dockerfile: Dockerfile.dev-deps
     -   secrets: id=npm,src=.npmrc
-    +   secrets: id=npm,src=tmp/.npmrc
+    +   secrets: id=npm,src=/tmp/.npmrc
     ```
 
 15. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`

@@ -10,7 +10,7 @@ const collapseDuplicateMergeKeys: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
   const buildkiteFiles = await glob(
-    ['.buildkite/**/*.yml', '.buildkite/**/*.yaml'],
+    ['{apps/*/,packages/*/,./}.buildkite/**/*.y*ml'],
     { onlyFiles: true },
   );
 
