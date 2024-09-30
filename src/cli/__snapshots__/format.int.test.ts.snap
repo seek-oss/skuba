@@ -27,6 +27,8 @@ Patch skipped: Remove version field from docker-compose files - no docker-compos
 
 Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
 
+Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -109,6 +111,8 @@ Patch skipped: Remove version field from docker-compose files - no docker-compos
 
 Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
 
+Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -186,6 +190,8 @@ Patch skipped: Remove version field from docker-compose files - no docker-compos
 
 Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
 
+Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -233,6 +239,8 @@ Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you alread
 Patch skipped: Remove version field from docker-compose files - no docker-compose files found
 
 Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found
+
+Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found
 
 skuba update complete.
 
