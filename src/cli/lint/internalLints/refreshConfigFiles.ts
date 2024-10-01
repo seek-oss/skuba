@@ -52,7 +52,6 @@ const removeRedundantNpmrc = (contents: string) => {
 };
 
 export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
-  { name: '.eslintignore', type: 'ignore' },
   {
     name: '.gitignore',
     type: 'ignore',

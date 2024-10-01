@@ -203,7 +203,6 @@ describe('createApp', () => {
 
   it('handles null error', async () => {
     middleware.mockImplementation(() => {
-      /* eslint-disable-next-line no-throw-literal */
       throw null;
     });
 
@@ -233,6 +232,7 @@ describe('createApp', () => {
     const err = chance.sentence();
 
     middleware.mockImplementation(() => {
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw err;
     });
 

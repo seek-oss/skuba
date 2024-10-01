@@ -77,7 +77,7 @@ then delete the original clusters once complete:
       # ...
 ```
 
-See [Builds at SEEK] and the [Gantry ARM reference] for more information.
+See our internal [Buildkite Docs] and [Gantry ARM reference] for more information.
 
 ---
 
@@ -354,7 +354,7 @@ For a [Serverless] worker, set the `provider.architecture` property in [`serverl
 [`serverless.yml`]: https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml
 [`skuba init`]: ../cli/init.md#interactive-walkthrough
 [AWS CDK]: https://docs.aws.amazon.com/cdk/latest/guide/work-with-cdk-typescript.html
-[Builds at SEEK]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
+[Buildkite Docs]: https://backstage.myseek.xyz/docs/default/component/buildkite-docs
 [CI/CD]: ./buildkite.md
 [Gantry ARM reference]: https://backstage.myseek.xyz/docs/default/component/gantry/v1/reference/using-arm/
 [gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/

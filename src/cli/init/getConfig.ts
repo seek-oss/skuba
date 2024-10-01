@@ -31,7 +31,7 @@ import {
 import { type InitConfig, initConfigInputSchema } from './types';
 
 export const runForm = <T = Record<string, string>>(props: {
-  choices: Readonly<Choice[]>;
+  choices: readonly Choice[];
   message: string;
   name: string;
 }) => {
@@ -71,7 +71,7 @@ export const runForm = <T = Record<string, string>>(props: {
   return form.run();
 };
 
-const confirmShouldContinue = async (choices: Readonly<FormChoice[]>) => {
+const confirmShouldContinue = async (choices: readonly FormChoice[]) => {
   const fieldsList = choices.map((choice) => choice.message);
 
   log.newline();
@@ -162,7 +162,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
   const templateConfigPath = path.join(dir, TEMPLATE_CONFIG_FILENAME);
 
   try {
-    /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const templateConfig = require(templateConfigPath) as unknown;
 
     return templateConfigSchema.parse(templateConfig);

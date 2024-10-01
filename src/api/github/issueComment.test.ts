@@ -1,10 +1,10 @@
-import { Octokit } from '@octokit/rest';
 import git from 'isomorphic-git';
 
 import { putIssueComment } from './issueComment';
+import { createRestClient } from './octokit';
 
-jest.mock('@octokit/rest');
 jest.mock('isomorphic-git');
+jest.mock('./octokit');
 
 const mockClient = {
   issues: {
@@ -27,7 +27,7 @@ beforeEach(() => {
       { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
     ]);
 
-  jest.mocked(Octokit).mockReturnValue(mockClient as never);
+  jest.mocked(createRestClient).mockResolvedValue(mockClient as never);
 });
 
 afterEach(jest.resetAllMocks);
@@ -45,7 +45,7 @@ describe('putIssueComment', () => {
       }),
     ).resolves.toStrictEqual({ id: 789 });
 
-    expect(Octokit).toHaveBeenCalledTimes(1);
+    expect(createRestClient).toHaveBeenCalledTimes(1);
 
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
     expect(mockClient.issues.listComments.mock.calls[0][0])
@@ -110,7 +110,7 @@ describe('putIssueComment', () => {
       }),
     ).resolves.toStrictEqual({ id: 789 });
 
-    expect(Octokit).toHaveBeenCalledTimes(1);
+    expect(createRestClient).toHaveBeenCalledTimes(1);
 
     expect(mockClient.users.getAuthenticated).toHaveBeenCalledTimes(1);
 
@@ -176,7 +176,7 @@ describe('putIssueComment', () => {
       }),
     ).resolves.toStrictEqual({ id: 789 });
 
-    expect(Octokit).toHaveBeenCalledTimes(1);
+    expect(createRestClient).toHaveBeenCalledTimes(1);
 
     expect(mockClient.users.getAuthenticated).toHaveBeenCalledTimes(1);
 
@@ -238,7 +238,7 @@ describe('putIssueComment', () => {
       }),
     ).resolves.toStrictEqual({ id: 789 });
 
-    expect(Octokit).toHaveBeenCalledTimes(1);
+    expect(createRestClient).toHaveBeenCalledTimes(1);
 
     expect(mockClient.users.getAuthenticated).toHaveBeenCalledTimes(1);
 
@@ -301,7 +301,7 @@ describe('putIssueComment', () => {
       }),
     ).resolves.toStrictEqual({ id: 789 });
 
-    expect(Octokit).toHaveBeenCalledTimes(1);
+    expect(createRestClient).toHaveBeenCalledTimes(1);
 
     expect(mockClient.users.getAuthenticated).toHaveBeenCalledTimes(1);
 
@@ -357,7 +357,7 @@ describe('putIssueComment', () => {
       }),
     ).resolves.toStrictEqual({ id: 789 });
 
-    expect(Octokit).toHaveBeenCalledTimes(1);
+    expect(createRestClient).toHaveBeenCalledTimes(1);
 
     // This should be skipped when `userId` is specified.
     expect(mockClient.users.getAuthenticated).not.toHaveBeenCalled();

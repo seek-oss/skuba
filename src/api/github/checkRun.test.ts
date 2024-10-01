@@ -1,16 +1,16 @@
-import { Octokit } from '@octokit/rest';
 import type { Endpoints } from '@octokit/types';
 import git, { type ReadCommitResult } from 'isomorphic-git';
 
 import type * as GitHub from '../github';
 
 import { createCheckRun } from './checkRun';
+import { createRestClient } from './octokit';
 
 type CreateCheckRunResponse =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
 
-jest.mock('@octokit/rest');
 jest.mock('isomorphic-git');
+jest.mock('./octokit');
 
 const mockClient = {
   checks: {
@@ -50,7 +50,7 @@ describe('createCheckRun', () => {
   const title = 'Build #23 failed';
 
   beforeEach(() => {
-    jest.mocked(Octokit).mockReturnValue(mockClient as unknown as Octokit);
+    jest.mocked(createRestClient).mockResolvedValue(mockClient as never);
     jest
       .mocked(git.listRemotes)
       .mockResolvedValue([
@@ -76,7 +76,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(jest.mocked(Octokit)).toHaveBeenCalledWith({
+    expect(jest.mocked(createRestClient)).toHaveBeenCalledWith({
       auth: 'Hello from GITHUB_API_TOKEN',
     });
   });
@@ -93,7 +93,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(jest.mocked(Octokit)).toHaveBeenCalledWith({
+    expect(jest.mocked(createRestClient)).toHaveBeenCalledWith({
       auth: 'Hello from GITHUB_TOKEN',
     });
   });

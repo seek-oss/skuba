@@ -14,12 +14,12 @@ configs:
           - .npmrc
           - package.json#.packageManager
           - pnpm-lock.yaml
-        secrets: id=npm,src=tmp/.npmrc
+        secrets: id=npm,src=/tmp/.npmrc
 
     - &private-npm
       seek-oss/private-npm#v1.2.0:
         env: NPM_READ_TOKEN
-        output-path: tmp/
+        output-path: /tmp/
 
   base-steps:
     - &deploy
@@ -30,13 +30,13 @@ configs:
         - pnpm run deploy
       concurrency: 1
       plugins:
-        - artifacts#v1.9.3:
+        - artifacts#v1.9.4:
             build: ${BUILDKITE_BUILD_ID}
             download: lib/*
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - docker-compose#v5.2.0:
+        - docker-compose#v5.4.0:
             dependencies: false
             run: app
             propagate-environment: true
@@ -67,7 +67,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v5.2.0:
+      - docker-compose#v5.4.0:
           run: app
           environment:
             - GITHUB_API_TOKEN

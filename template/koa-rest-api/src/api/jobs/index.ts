@@ -1,6 +1,6 @@
 import Router from '@koa/router';
 
-import { jsonBodyParser } from 'src/framework/middleware';
+import { jsonBodyParser } from 'src/framework/bodyParser';
 
 import { getJobsHandler } from './getJobs';
 import { postJobHandler } from './postJob';
