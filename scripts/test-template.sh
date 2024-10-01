@@ -43,10 +43,12 @@ mkdir "../${skuba_temp_directory}"
 
 cd "../${skuba_temp_directory}" || exit 1
 
+echo "pnpm init"
+pnpm init
 echo "--- pnpm add --save-dev ${skuba_tar}"
 pnpm add --save-dev ${skuba_tar}
 
-directory="tmp-${template}"
+directory="./tmp-${template}"
 
 echo "--- skuba init ${template}"
 pnpm exec skuba init << EOF
