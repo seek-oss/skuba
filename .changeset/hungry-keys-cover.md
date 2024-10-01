@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-template: Add required tags to `lambda-sqs-worker-cdk` template
+template/lambda-sqs-worker-cdk: Comply with AWS tagging guidance
