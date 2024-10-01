@@ -2,17 +2,25 @@
 'skuba': major
 ---
 
-lint: Migrate to ESLint 9 and `@typescript-eslint` 8.
+deps: ESLint 9 + `typescript-eslint` 8
 
-These changes may affect your project setup if customising your ESLint configuration. See the individual migration guides:
+This major upgrade bundles the following changes:
 
-- https://eslint.org/docs/latest/use/migrate-to-9.0.0
-- https://typescript-eslint.io/blog/announcing-typescript-eslint-v8
+- Migration to flat config format
 
-In addition, through these major upgrades, some lint rules have changed or have been renamed. You will likely need adjust your code after running ESLint.
+  `skuba format` will attempt to migrate your existing `.eslintignore` and `.eslintrc.js` files to a flat `eslint.config.js` file.
 
-Furthermore, `eslint-plugin-import` has been replaced with `eslint-plugin-import-x`. To migrate, any references to `eslint-plugin-import` should be replaced with `eslint-plugin-import-x`, and `import/` rules with `import-x/`.
+  See the [migration guide](https://eslint.org/docs/latest/use/configure/migration-guide) for more information.
 
-As part of this migration, skuba has migrated to using Flat ESLint configuration. Read the migration: https://eslint.org/docs/latest/use/configure/migration-guide.
+- Some lint rules have been changed or renamed
 
-`skuba format` will attempt to migrate to flat configuration for you, where `.eslintignore` and `.eslintrc` are replaced by `eslint.config.js`.
+  You will likely need to manually review and adjust your code after running `skuba lint`.
+
+- `eslint-plugin-import` has been replaced with `eslint-plugin-import-x`
+
+  To migrate, replace references to `eslint-plugin-import` with `eslint-plugin-import-x`, and `import/` rules with `import-x/`.
+
+Wider changes may be necessary if your project has a custom ESLint configuration. Refer to the following resources to get started:
+
+- [ESLint 9](https://eslint.org/docs/latest/use/migrate-to-9.0.0)
+- [`typescript-eslint` 8](https://typescript-eslint.io/blog/announcing-typescript-eslint-v8)

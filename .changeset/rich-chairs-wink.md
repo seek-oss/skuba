@@ -2,19 +2,22 @@
 'skuba': minor
 ---
 
-lint: Replace `.buildkite/` files with duplicated YAML merge keys, for example:
+format, lint: Fix duplicated YAML merge keys in `.buildkite/` pipelines
 
-```yaml
-# Before
-- <<: *deploy
-  <<: *docker
-  label: stuff
-
-# After
-- <<: [*deploy, *docker]
-  label: stuff
+```diff
+- - <<: *deploy
+-   <<: *docker
++ - <<: [*deploy, *docker]
+    label: stuff
 ```
 
-This should have no functional change, and is to support standardised YAML parsing across different tools, including the latest ESLint upgrades.
+This change supports standardised YAML parsing across tools such as ESLint; it should not functionally alter the behaviour of your build pipeline.
 
-This migration will not be capture all cases of this (e.g. if there are keys between the merge keys). If you have other cases, update them following the example above.
+The bundled patch is fairly conservative and will not attempt to migrate more complex scenarios, such as where there are other keys between the merge keys. Take care with preserving the order of merge keys when manually updating other occurrences.
+
+```diff
+- - <<: *deploy
++ - <<: [*deploy, *docker]
+    label: stuff
+-   <<: *docker
+```

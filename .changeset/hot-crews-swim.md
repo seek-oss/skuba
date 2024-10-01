@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-lint: Removes obsolete version field from docker-compose.yml files
+format, lint: Remove obsolete `version` field from `docker-compose.yml` files

@@ -2,15 +2,23 @@
 'eslint-config-skuba': major
 ---
 
-Migrate to ESLint 9, `@typescript-eslint` 8, `eslint-config-seek` 14.
+ESLint 9 + `typescript-eslint` 8 + `eslint-config-seek` 14
 
-These changes may affect your project setup if customising your ESLint configuration. See the individual migration guides:
+This major upgrade bundles the following changes:
 
-- https://eslint.org/docs/latest/use/migrate-to-9.0.0
-- https://typescript-eslint.io/blog/announcing-typescript-eslint-v8
+- Migration to flat config format
 
-Through these major upgrades, some lint rules have changed or have been renamed. You will likely need to adjust your code after running ESLint.
+  See the [migration guide](https://eslint.org/docs/latest/use/configure/migration-guide) for more information.
 
-As part of this migration, this project has migrated to Flat ESLint configuration. Read the migration: https://eslint.org/docs/latest/use/configure/migration-guide.
+- Some lint rules have been changed or renamed
 
-Furthermore, `eslint-plugin-import` has been replaced with `eslint-plugin-import-x`. To migrate, any references to `eslint-plugin-import` should be replaced with `eslint-plugin-import-x`, and `import/` rules with `import-x/`.
+  You will likely need to manually review and adjust your code after running ESLint.
+
+- `eslint-plugin-import` has been replaced with `eslint-plugin-import-x`
+
+  To migrate, replace references to `eslint-plugin-import` with `eslint-plugin-import-x`, and `import/` rules with `import-x/`.
+
+Wider changes may be necessary if your project has a custom ESLint configuration. Refer to the following resources to get started:
+
+- [ESLint 9](https://eslint.org/docs/latest/use/migrate-to-9.0.0)
+- [`typescript-eslint` 8](https://typescript-eslint.io/blog/announcing-typescript-eslint-v8)
