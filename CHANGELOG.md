@@ -1,5 +1,134 @@
 # skuba
 
+## 9.0.0
+
+skuba 9 is a reasonably large release but it shouldn't be too much trouble to upgrade.
+
+The main changes are:
+
+- ESLint 9 and flat config migration (where `skuba format` should handle most of the work)
+- Swapping out `ts-node` for `tsx`
+- Some fixes in Buildkite & Docker files
+
+Read the full changelog:
+
+### Major Changes
+
+- **deps:** ESLint 9 + `typescript-eslint` 8 ([#1537](https://github.com/seek-oss/skuba/pull/1537))
+
+  This major upgrade bundles the following changes:
+
+  - Migration to flat config format
+
+    `skuba format` will attempt to migrate your existing `.eslintignore` and `.eslintrc.js` files to a flat `eslint.config.js` file.
+
+    See the [migration guide](https://eslint.org/docs/latest/use/configure/migration-guide) for more information.
+
+  - Some lint rules have been changed or renamed
+
+    You will likely need to manually review and adjust your code after running `skuba lint`.
+
+  - `eslint-plugin-import` has been replaced with `eslint-plugin-import-x`
+
+    To migrate, replace references to `eslint-plugin-import` with `eslint-plugin-import-x`, and `import/` rules with `import-x/`.
+
+  Wider changes may be necessary if your project has a custom ESLint configuration. Refer to the following resources to get started:
+
+  - [ESLint 9](https://eslint.org/docs/latest/use/migrate-to-9.0.0)
+  - [`typescript-eslint` 8](https://typescript-eslint.io/blog/announcing-typescript-eslint-v8)
+
+- **node, start:** Replace `ts-node` with `tsx` ([#1623](https://github.com/seek-oss/skuba/pull/1623))
+
+  `skuba node` and `skuba start` now use `tsx` instead of `ts-node` to execute TypeScript files.
+
+  `tsx` improves support for ESM features like dynamic [`import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import)s. However, if you use its REPL by running `skuba node` without any arguments, there are a couple regressions to note:
+
+  - Static [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) declarations are no longer supported. Use `require` and `await import()` instead.
+  - Pasting code into the editor may be more finicky by default. Consider using [`.editor`](https://nodejs.org/en/learn/command-line/how-to-use-the-nodejs-repl#dot-commands) mode.
+
+  `skuba node <file>` and `skuba start` should continue to work as expected, but we have marked this as a major upgrade as it is difficult to comprehensively test every scenario. We strongly recommend to manually verify usage of `skuba node` and `skuba start` when you upgrade.
+
+### Minor Changes
+
+- **format, lint:** Point Docker base images to AWS ECR Public and remove constant `--platform` arguments ([#1684](https://github.com/seek-oss/skuba/pull/1684))
+
+  This updates references to `node:` or `python:` Docker images in your Dockerfiles and `docker-compose.yml` files to point to AWS ECR Public to avoid Docker Hub rate limiting. It also removes [constant `--platform` arguments](https://docs.docker.com/reference/build-checks/from-platform-flag-const-disallowed/) from Dockerfiles.
+
+  ```diff
+  - FROM --platform=arm64 node:20-alpine AS dev-deps
+  + FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
+  ```
+
+  Your Dockerfiles may not be set up to build multi-platform images, so keep in mind that building them locally on an Intel x86 laptop may not yield images that can execute on AWS Graviton instances.
+
+- **format, lint:** Remove obsolete `version` field from `docker-compose.yml` files ([#1638](https://github.com/seek-oss/skuba/pull/1638))
+
+- **format, lint, template:** Mount Buildkite `.npmrc` in `/tmp/` rather than `<workdir>/tmp/` ([#1693](https://github.com/seek-oss/skuba/pull/1693))
+
+  This avoids accidental inclusion in Git commits or published artifacts, as per the original intent of this handling.
+
+  ```diff
+  - secrets: id=npm,src=tmp/.npmrc
+  + secrets: id=npm,src=/tmp/.npmrc
+
+  - output-path: tmp/
+  + output-path: /tmp/
+  ```
+
+- **deps:** TypeScript 5.6 ([#1655](https://github.com/seek-oss/skuba/pull/1655))
+
+  This major release includes breaking changes. See the [TypeScript 5.6](https://devblogs.microsoft.com/typescript/announcing-typescript-5-6/) announcement for more information.
+
+- **format, lint:** Fix duplicated YAML merge keys in `.buildkite/` pipelines ([#1537](https://github.com/seek-oss/skuba/pull/1537))
+
+  ```diff
+  - - <<: *deploy
+  -   <<: *docker
+  + - <<: [*deploy, *docker]
+      label: stuff
+  ```
+
+  This change supports standardised YAML parsing across tools such as ESLint; it should not functionally alter the behaviour of your build pipeline.
+
+  The bundled patch is fairly conservative and will not attempt to migrate more complex scenarios, such as where there are other keys between the merge keys. Take care with preserving the order of merge keys when manually updating other occurrences.
+
+  ```diff
+  - - <<: *deploy
+  + - <<: [*deploy, *docker]
+      label: stuff
+  -   <<: *docker
+  ```
+
+- **format, lint:** Remove [logic](https://github.com/seek-oss/skuba/pull/1226) to skip autofixing Renovate branches when there is no open pull request ([#1687](https://github.com/seek-oss/skuba/pull/1687))
+
+  Previously, this was put in place to prevent an issue where a Renovate branch could get stuck in an `Edited/Blocked` state without a pull request being raised.
+
+  skuba's default autofix commits are [now ignored](https://github.com/seek-oss/rynovate/pull/121) in our recommended Renovate configuration.
+
+### Patch Changes
+
+- **template/koa-rest-api:** Switch from `koa-bodyparser` to `@koa/bodyparser` ([#1605](https://github.com/seek-oss/skuba/pull/1605))
+
+- **template/koa-rest-api:** Enable secure headers middleware by default ([#1601](https://github.com/seek-oss/skuba/pull/1601))
+
+  See the [Koala documentation](https://github.com/seek-oss/koala/tree/be565a764ece9ec3802c2b6eeb3272cb77d1a695/src/secureHeaders) for more information.
+
+- **template/lambda-sqs-worker-cdk:** Comply with AWS tagging guidance ([#1643](https://github.com/seek-oss/skuba/pull/1643))
+
+- **api:** Truncate Buildkite annotations over 1 MiB to resolve `buildkite-agent` crash ([#1645](https://github.com/seek-oss/skuba/pull/1645))
+
+- **deps:** validate-npm-package-name ^6.0.0 ([#1682](https://github.com/seek-oss/skuba/pull/1682))
+
+- **deps:** normalize-package-data ^7.0.0 ([#1681](https://github.com/seek-oss/skuba/pull/1681))
+
+- **deps:** esbuild ~0.24.0 ([#1671](https://github.com/seek-oss/skuba/pull/1671))
+
+- **deps:** concurrently ^9.0.0 ([#1666](https://github.com/seek-oss/skuba/pull/1666))
+
+- **template/lambda-sqs-worker-cdk:** Replace custom hooks with `@seek/aws-codedeploy-infra` ([#1644](https://github.com/seek-oss/skuba/pull/1644))
+
+- **template:** Point Docker base images to AWS ECR Public and remove constant `--platform` arguments ([#1684](https://github.com/seek-oss/skuba/pull/1684))
+
 ## 8.2.1
 
 ### Patch Changes
