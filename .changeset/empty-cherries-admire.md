@@ -11,4 +11,4 @@ node, start: Replace `ts-node` with `tsx`
 - Static [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) declarations are no longer supported. Use `require` and `await import()` instead.
 - Pasting code into the editor may be more finicky by default. Consider using [`.editor`](https://nodejs.org/en/learn/command-line/how-to-use-the-nodejs-repl#dot-commands) mode.
 
-`skuba node <file>` and `skuba start` _should_ continue to work as expected, but we have marked this as a major upgrade as it is difficult to comprehensively test every scenario. We strongly recommend to manually verify usage of `skuba node` and `skuba start` when you upgrade.
+`skuba node <file>` and `skuba start` should continue to work as expected, but we have marked this as a major upgrade as it is difficult to comprehensively test every scenario. We strongly recommend to manually verify usage of `skuba node` and `skuba start` when you upgrade.
