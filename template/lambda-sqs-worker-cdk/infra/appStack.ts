@@ -10,7 +10,6 @@ import {
   aws_lambda_nodejs,
   aws_secretsmanager,
   aws_sns,
-  aws_sns_subscriptions,
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
@@ -51,13 +50,17 @@ export class AppStack extends Stack {
       encryptionMasterKey: kmsKey,
     });
 
-    const topic = aws_sns.Topic.fromTopicArn(
-      this,
-      'source-topic',
-      config.sourceSnsTopicArn,
-    );
+    // const topic = aws_sns.Topic.fromTopicArn(
+    //   this,
+    //   'source-topic',
+    //   config.sourceSnsTopicArn,
+    // );
 
-    topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
+    // topic.addSubscription(
+    //   new aws_sns_subscriptions.SqsSubscription(queue, {
+    //     rawMessageDelivery: true, // Remove this property if you require end to end datadog tracing
+    //   }),
+    // );
 
     const snsKey = aws_kms.Alias.fromAliasName(
       this,

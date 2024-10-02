@@ -173,7 +173,7 @@ resources:
     #   Properties:
     #     Endpoint: !GetAtt MessageQueue.Arn
     #     Protocol: sqs
-    #     RawMessageDelivery: true
+    #     RawMessageDelivery: true # Remove this property if you require end to end datadog tracing
     #     TopicArn: 'TODO: sourceSnsTopicArn'
 
     DestinationTopic:
