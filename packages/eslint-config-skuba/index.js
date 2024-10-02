@@ -173,6 +173,7 @@ module.exports = [
 
       // Allow edge-case error handling tests, including from skuba's templates
       '@typescript-eslint/only-throw-error': 'off',
+      '@typescript-eslint/prefer-promise-reject-errors': 'off',
 
       // Allow potential floating promises in tests only for Koa compatibility
       // https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/no-misused-promises.md#checksvoidreturn

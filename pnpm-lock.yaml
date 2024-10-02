@@ -340,6 +340,9 @@ importers:
 
   template/koa-rest-api:
     dependencies:
+      '@koa/bodyparser':
+        specifier: ^5.1.1
+        version: 5.1.1(koa@2.15.3)
       '@koa/router':
         specifier: ^13.0.0
         version: 13.1.0
@@ -373,9 +376,6 @@ importers:
       koa:
         specifier: ^2.13.4
         version: 2.15.3
-      koa-bodyparser:
-        specifier: ^4.3.0
-        version: 4.4.1
       koa-compose:
         specifier: ^4.1.0
         version: 4.1.0
@@ -395,12 +395,12 @@ importers:
       '@types/chance':
         specifier: ^1.1.3
         version: 1.1.6
+      '@types/co-body':
+        specifier: ^6.1.3
+        version: 6.1.3
       '@types/koa':
         specifier: ^2.13.4
         version: 2.15.0
-      '@types/koa-bodyparser':
-        specifier: ^5.0.2
-        version: 5.0.2
       '@types/koa__router':
         specifier: ^12.0.0
         version: 12.0.4
@@ -1637,6 +1637,12 @@ packages:
     peerDependencies:
       tslib: '2'
 
+  '@koa/bodyparser@5.1.1':
+    resolution: {integrity: sha512-ZBF49xqNVxnmJ+8iXegq+fXPQm9RSX8giNl/aXS5rW1VpNct92wnFbGR/47vfoRJVLARGQ4HVL4WaQ0u8IJVoA==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      koa: ^2.14.1
+
   '@koa/router@13.1.0':
     resolution: {integrity: sha512-mNVu1nvkpSd8Q8gMebGbCkDWJ51ODetrFvLKYusej+V0ByD4btqHYnPIzTBLXnQMVUlm/oxVwqmWBY3zQfZilw==}
     engines: {node: '>= 18'}
@@ -2385,6 +2391,9 @@ packages:
   '@types/chance@1.1.6':
     resolution: {integrity: sha512-V+pm3stv1Mvz8fSKJJod6CglNGVqEQ6OyuqitoDkWywEODM/eJd1eSuIp9xt6DrX8BWZ2eDSIzbw1tPCUTvGbQ==}
 
+  '@types/co-body@6.1.3':
+    resolution: {integrity: sha512-UhuhrQ5hclX6UJctv5m4Rfp52AfG9o9+d9/HwjxhVB5NjXxr5t9oKgJxN8xRHgr35oo8meUEHUPFWiKg6y71aA==}
+
   '@types/concat-stream@2.0.3':
     resolution: {integrity: sha512-3qe4oQAPNwVNwK4C9c8u+VJqv9kez+2MR4qJpoPFfXtgxxif1QbFusvXzK0/Wra2VX07smostI2VMmJNSpZjuQ==}
 
@@ -2471,9 +2480,6 @@ packages:
 
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
-
-  '@types/koa-bodyparser@5.0.2':
-    resolution: {integrity: sha512-prJC/gtxnurTTOpYkSwMwzbkiZ6BCW7arIvjmNVbEziauhcndQeCewzsSphmtlI6wnwFnGGAAOznQR1OYrhhgw==}
 
   '@types/koa-compose@3.2.8':
     resolution: {integrity: sha512-4Olc63RY+MKvxMwVknCUDhRQX1pFQoBZ/lXcRLP69PQkEpze/0cr8LNqJQe5NFb/b19DWi2a5bTi2VAlQzhJuA==}
@@ -3475,9 +3481,6 @@ packages:
   cookies@0.9.1:
     resolution: {integrity: sha512-TG2hpqe4ELx54QER/S3HQ9SRVnQnGBtKUz5bLQWtYAQ+o6GpgMs6sYUvaiJjVxb+UXwhRhAEP3m7LbsIZ77Hmw==}
     engines: {node: '>= 0.8'}
-
-  copy-to@2.0.1:
-    resolution: {integrity: sha512-3DdaFaU/Zf1AnpLiFDeNCD4TOWe3Zl2RZaTzUvWiIk5ERzcCodOE20Vqq4fzCbNoHURFHT4/us/Lfq+S2zyY4w==}
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
@@ -5520,10 +5523,6 @@ packages:
   kleur@3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
-
-  koa-bodyparser@4.4.1:
-    resolution: {integrity: sha512-kBH3IYPMb+iAXnrxIhXnW+gXV8OTzCu8VPDqvcDHW9SQrbkHmqPQtiZwrltNmSq6/lpipHnT7k7PsjlVD7kK0w==}
-    engines: {node: '>=8.0.0'}
 
   koa-compose@4.1.0:
     resolution: {integrity: sha512-8ODW8TrDuMYvXRwra/Kh7/rJo9BtOfPc6qO8eAfC80CnCvSjSl0bkRM24X6/XBBEyj0v1nRUQ1LyOy3dbqOWXw==}
@@ -10221,6 +10220,13 @@ snapshots:
     dependencies:
       tslib: 2.7.0
 
+  '@koa/bodyparser@5.1.1(koa@2.15.3)':
+    dependencies:
+      co-body: 6.2.0
+      koa: 2.15.3
+      lodash.merge: 4.6.2
+      type-is: 1.6.18
+
   '@koa/router@13.1.0':
     dependencies:
       http-errors: 2.0.0
@@ -11358,6 +11364,11 @@ snapshots:
 
   '@types/chance@1.1.6': {}
 
+  '@types/co-body@6.1.3':
+    dependencies:
+      '@types/node': 20.16.7
+      '@types/qs': 6.9.16
+
   '@types/concat-stream@2.0.3':
     dependencies:
       '@types/node': 20.16.7
@@ -11459,10 +11470,6 @@ snapshots:
   '@types/keyv@3.1.4':
     dependencies:
       '@types/node': 20.16.7
-
-  '@types/koa-bodyparser@5.0.2':
-    dependencies:
-      '@types/koa': 2.15.0
 
   '@types/koa-compose@3.2.8':
     dependencies:
@@ -12679,8 +12686,6 @@ snapshots:
     dependencies:
       depd: 2.0.0
       keygrip: 1.1.0
-
-  copy-to@2.0.1: {}
 
   core-util-is@1.0.3: {}
 
@@ -15598,12 +15603,6 @@ snapshots:
       is-buffer: 1.1.6
 
   kleur@3.0.3: {}
-
-  koa-bodyparser@4.4.1:
-    dependencies:
-      co-body: 6.2.0
-      copy-to: 2.0.1
-      type-is: 1.6.18
 
   koa-compose@4.1.0: {}
 
