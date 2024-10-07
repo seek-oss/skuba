@@ -98,7 +98,7 @@
     "isomorphic-git": "^1.11.1",
     "jest": "^29.0.1",
     "jest-watch-typeahead": "^2.1.1",
-    "libnpmsearch": "^7.0.0",
+    "libnpmsearch": "^8.0.0",
     "lodash.mergewith": "^4.6.2",
     "minimist": "^1.2.6",
     "normalize-package-data": "^7.0.0",
