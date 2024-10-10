@@ -1,4 +1,5 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
     ':dependencyDashboard',
     ':prHourlyLimit4',
@@ -105,6 +106,7 @@
     {
       matchPaths: ['template/**'],
 
+      excludePackageNames: ['pnpm'],
       branchPrefix: 'renovate-template--',
       rangeStrategy: 'replace',
       semanticCommitType: 'template',
