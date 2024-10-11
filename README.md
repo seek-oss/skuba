@@ -43,14 +43,10 @@ pnpm install
 pnpm exec skuba help
 ```
 
-Global installations are also supported to speed up local development:
+When starting a new project, using the latest version is recommended:
 
 ```shell
-# Install skuba globally.
-pnpm add --global skuba
-
-# Look, no `npx`!
-skuba help
+pnpm dlx skuba init
 ```
 
 If you're new here, jump ahead to the [CLI] section to [create a new project] or [update an existing one].
