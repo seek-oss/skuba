@@ -1,5 +1,15 @@
 # skuba
 
+## 9.1.0
+
+### Minor Changes
+
+- **deps:** Drop `strip-ansi` dependency in lieu of [`util.stripVTControlCharacters`](https://nodejs.org/api/util.html#utilstripvtcontrolcharactersstr) ([#1713](https://github.com/seek-oss/skuba/pull/1713))
+
+### Patch Changes
+
+- **deps:** libnpmsearch ^8.0.0 ([#1698](https://github.com/seek-oss/skuba/pull/1698))
+
 ## 9.0.1
 
 ### Patch Changes
