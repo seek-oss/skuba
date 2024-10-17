@@ -8,11 +8,12 @@ import {
   aws_lambda,
   aws_lambda_event_sources,
   aws_lambda_nodejs,
+  aws_secretsmanager,
   aws_sns,
-  aws_sns_subscriptions,
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
+import { Datadog, getExtensionLayerArn } from 'datadog-cdk-constructs-v2';
 
 import { config } from './config';
 
@@ -49,13 +50,42 @@ export class AppStack extends Stack {
       encryptionMasterKey: kmsKey,
     });
 
-    const topic = aws_sns.Topic.fromTopicArn(
+    // const topic = aws_sns.Topic.fromTopicArn(
+    //   this,
+    //   'source-topic',
+    //   config.sourceSnsTopicArn,
+    // );
+
+    // topic.addSubscription(
+    //   new aws_sns_subscriptions.SqsSubscription(queue, {
+    //     rawMessageDelivery: true, // Remove this property if you require end to end datadog tracing
+    //   }),
+    // );
+
+    const snsKey = aws_kms.Alias.fromAliasName(
       this,
-      'source-topic',
-      config.sourceSnsTopicArn,
+      'alias-aws-sns',
+      'alias/aws/sns',
     );
 
-    topic.addSubscription(new aws_sns_subscriptions.SqsSubscription(queue));
+    const destinationTopic = new aws_sns.Topic(this, 'destination-topic', {
+      masterKey: snsKey,
+      topicName: '<%- serviceName %>',
+    });
+
+    const datadogSecret = aws_secretsmanager.Secret.fromSecretPartialArn(
+      this,
+      'datadog-api-key-secret',
+      config.datadogApiKeySecretArn,
+    );
+
+    const datadog = new Datadog(this, 'datadog', {
+      apiKeySecret: datadogSecret,
+      addLayers: false,
+      enableDatadogLogs: false,
+      flushMetricsToLogs: false,
+      extensionLayerVersion: 58,
+    });
 
     const architecture = '<%- lambdaCdkArchitecture %>';
 
@@ -85,17 +115,33 @@ export class AppStack extends Stack {
       ...defaultWorkerConfig,
       entry: './src/app.ts',
       timeout: Duration.seconds(30),
-      bundling: defaultWorkerBundlingConfig,
+      bundling: {
+        ...defaultWorkerBundlingConfig,
+        nodeModules: ['datadog-lambda-js', 'dd-trace'],
+      },
       functionName: '<%- serviceName %>',
       environment: {
         ...defaultWorkerEnvironment,
         ...config.workerLambda.environment,
+        DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
       },
       // https://github.com/aws/aws-cdk/issues/28237
       // This forces the lambda to be updated on every deployment
       // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
       description: `Updated at ${new Date().toISOString()}`,
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
+      layers: [
+        // Workaround for https://github.com/DataDog/datadog-cdk-constructs/issues/201
+        aws_lambda.LayerVersion.fromLayerVersionArn(
+          this,
+          'datadog-layer',
+          getExtensionLayerArn(
+            this.region,
+            datadog.props.extensionLayerVersion as number,
+            defaultWorkerConfig.architecture === aws_lambda.Architecture.ARM_64,
+          ),
+        ),
+      ],
     });
 
     const workerDeployment = new LambdaDeployment(this, 'workerDeployment', {
