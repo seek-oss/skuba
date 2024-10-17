@@ -103,4 +103,135 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
 `,
     );
   });
+
+  it('should fix Dockerfiles with only the config store line to fix', async () => {
+    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(readFile).mockResolvedValueOnce(
+      `# syntax=docker/dockerfile:1.10
+
+FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
+
+RUN --mount=type=bind,source=package.json,target=package.json \\
+    corepack enable pnpm && corepack install
+
+RUN pnpm config set store-dir /root/.pnpm-store
+` as never,
+    );
+
+    await expect(
+      tryPatchPnpmDockerImages({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      1,
+      'Dockerfile',
+      `# syntax=docker/dockerfile:1.10
+
+FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
+
+RUN --mount=type=bind,source=package.json,target=package.json \\
+    corepack enable pnpm && corepack install
+
+RUN --mount=type=bind,source=package.json,target=package.json \\
+    pnpm config set store-dir /root/.pnpm-store
+`,
+    );
+  });
+
+  it('should fix Dockerfiles with only pnpm fetch to fix', async () => {
+    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(readFile).mockResolvedValueOnce(
+      `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
+    pnpm fetch
+` as never,
+    );
+
+    await expect(
+      tryPatchPnpmDockerImages({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      1,
+      'Dockerfile',
+      `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
+    --mount=type=bind,source=package.json,target=package.json \\
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
+    pnpm fetch
+`,
+    );
+  });
+
+  it('should fix Dockerfiles with an alternative pnpm install syntax', async () => {
+    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(readFile).mockResolvedValueOnce(
+      `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
+    pnpm install
+` as never,
+    );
+
+    await expect(
+      tryPatchPnpmDockerImages({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      1,
+      'Dockerfile',
+      `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
+    --mount=type=bind,source=package.json,target=package.json \\
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
+    pnpm install
+`,
+    );
+  });
+
+  it('should not try to patch already patched Dockerfiles', async () => {
+    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(readFile).mockResolvedValueOnce(
+      `# syntax=docker/dockerfile:1.10
+
+FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
+
+RUN --mount=type=bind,source=package.json,target=package.json \\
+    corepack enable pnpm && corepack install
+
+RUN --mount=type=bind,source=package.json,target=package.json \\
+    pnpm config set store-dir /root/.pnpm-store
+
+WORKDIR /workdir
+
+RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
+    --mount=type=bind,source=package.json,target=package.json \\
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
+    pnpm fetch
+` as never,
+    );
+
+    await expect(
+      tryPatchPnpmDockerImages({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'skip',
+      reason: 'no Dockerfiles to patch',
+    });
+  });
 });

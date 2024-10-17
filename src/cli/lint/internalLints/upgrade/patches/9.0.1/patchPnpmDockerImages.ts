@@ -9,7 +9,7 @@ import { log } from '../../../../../../utils/logging';
 const DOCKER_IMAGE_CONFIG_REGEX =
   /^(RUN )(pnpm config set store-dir \/root\/.pnpm-store)/gm;
 const DOCKER_IMAGE_FETCH_REGEX =
-  /(^RUN --mount=type=bind,source=\.npmrc,target=\.npmrc \\\n)([\s\S]*)(?!--mount=type=bind,source=package\.json,target=package\.json[\s\S]*pnpm fetch)/gm;
+  /^(RUN --mount=type=bind,source=.npmrc,target=.npmrc \\\n)((?:(?!--mount=type=bind,source=package\.json,target=package\.json)[\s\S])*pnpm (fetch|install))/gm;
 
 const PACKAGE_JSON_MOUNT =
   '--mount=type=bind,source=package.json,target=package.json \\\n';
@@ -40,8 +40,10 @@ const patchPnpmDockerImages: PatchFunction = async ({
 
   const dockerFiles = await fetchFiles(maybeDockerFilesPaths);
 
-  const dockerFilesToPatch = dockerFiles.filter(({ contents }) =>
-    DOCKER_IMAGE_CONFIG_REGEX.exec(contents),
+  const dockerFilesToPatch = dockerFiles.filter(
+    ({ contents }) =>
+      DOCKER_IMAGE_CONFIG_REGEX.exec(contents) ??
+      DOCKER_IMAGE_FETCH_REGEX.exec(contents),
   );
 
   if (!dockerFilesToPatch.length) {
