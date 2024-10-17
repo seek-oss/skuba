@@ -104,6 +104,38 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
     );
   });
 
+  it('should patch Dockerfiles with extra mounts', async () => {
+    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(readFile).mockResolvedValueOnce(
+      `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
+    --mount=type=bind,source=patches,target=patches \\
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
+    pnpm fetch
+` as never,
+    );
+
+    await expect(
+      tryPatchPnpmDockerImages({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      1,
+      'Dockerfile',
+      `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
+    --mount=type=bind,source=package.json,target=package.json \\
+    --mount=type=bind,source=patches,target=patches \\
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
+    pnpm fetch
+`,
+    );
+  });
+
   it('should fix Dockerfiles with only the config store line to fix', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     jest.mocked(readFile).mockResolvedValueOnce(
