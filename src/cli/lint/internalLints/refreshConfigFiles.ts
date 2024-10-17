@@ -2,6 +2,7 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { writeFile } from 'fs-extra';
+import { gt } from 'semver';
 import stripAnsi from 'strip-ansi';
 
 import { Git } from '../../..';
@@ -12,6 +13,7 @@ import {
   detectPackageManager,
 } from '../../../utils/packageManager';
 import { readBaseTemplateFile } from '../../../utils/template';
+import { getSkubaVersion, manifestSkubaVersion } from '../../../utils/version';
 import { getDestinationManifest } from '../../configure/analysis/package';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithConfigFile } from '../../configure/processing/configFile';
@@ -73,11 +75,23 @@ export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
 export const refreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
-) => {
-  const [manifest, gitRoot] = await Promise.all([
+): Promise<InternalLintResult> => {
+  const [currentVersion, manifest, gitRoot] = await Promise.all([
+    getSkubaVersion(),
     getDestinationManifest(),
     Git.findRoot({ dir: process.cwd() }),
   ]);
+
+  const manifestVersion = manifestSkubaVersion(manifest);
+
+  // The local version that we're running is older than the version that last
+  // wrote to the manifest; avoid reverting config files back to a prior state.
+  if (gt(manifestVersion, currentVersion)) {
+    return {
+      ok: true,
+      fixable: false,
+    };
+  }
 
   const destinationRoot = path.dirname(manifest.path);
 
