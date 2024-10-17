@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-deps: Drop `strip-ansi` dependency, using [`util.stripVTControlCharacters`](https://nodejs.org/api/util.html#utilstripvtcontrolcharactersstr) instead
+deps: Drop `strip-ansi` dependency in lieu of [`util.stripVTControlCharacters`](https://nodejs.org/api/util.html#utilstripvtcontrolcharactersstr)
