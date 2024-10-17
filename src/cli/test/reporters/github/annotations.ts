@@ -1,7 +1,7 @@
 import path from 'path';
+import { stripVTControlCharacters as stripAnsi } from 'util';
 
 import type { TestResult } from '@jest/test-result';
-import stripAnsi from 'strip-ansi';
 import dedent from 'ts-dedent';
 
 import type * as GitHub from '../../../../api/github';

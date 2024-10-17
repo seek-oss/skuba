@@ -1,8 +1,7 @@
 import path from 'path';
-import { inspect } from 'util';
+import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 
 import { writeFile } from 'fs-extra';
-import stripAnsi from 'strip-ansi';
 
 import { Git } from '../../..';
 import type { Logger } from '../../../utils/logging';
