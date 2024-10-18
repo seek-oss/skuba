@@ -78,39 +78,27 @@ export class AppStack extends Stack {
 
     const architecture = '<%- lambdaCdkArchitecture %>';
 
-    const defaultWorkerConfig: aws_lambda_nodejs.NodejsFunctionProps = {
+    const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
       architecture: aws_lambda.Architecture[architecture],
       runtime: aws_lambda.Runtime.NODEJS_20_X,
       environmentEncryption: kmsKey,
       // aws-sdk-v3 sets this to true by default, so it is not necessary to set the environment variable
       // https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/node-reusing-connections.html
       awsSdkConnectionReuse: false,
-    };
-
-    const defaultWorkerBundlingConfig: aws_lambda_nodejs.BundlingOptions = {
-      sourceMap: true,
-      target: 'node20',
-      // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
-      externalModules: [],
-    };
-
-    const defaultWorkerEnvironment: Record<string, string> = {
-      NODE_ENV: 'production',
-      // https://nodejs.org/api/cli.html#cli_node_options_options
-      NODE_OPTIONS: '--enable-source-maps',
-    };
-
-    const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
-      ...defaultWorkerConfig,
       entry: './src/app.ts',
       timeout: Duration.seconds(30),
       bundling: {
-        ...defaultWorkerBundlingConfig,
+        sourceMap: true,
+        target: 'node20',
+        // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
+        externalModules: [],
         nodeModules: ['datadog-lambda-js', 'dd-trace'],
       },
       functionName: '<%- serviceName %>',
       environment: {
-        ...defaultWorkerEnvironment,
+        NODE_ENV: 'production',
+        // https://nodejs.org/api/cli.html#cli_node_options_options
+        NODE_OPTIONS: '--enable-source-maps',
         ...config.workerLambda.environment,
         DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
       },
