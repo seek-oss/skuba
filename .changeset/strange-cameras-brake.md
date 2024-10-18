@@ -2,6 +2,6 @@
 'skuba': minor
 ---
 
-lint, format, template: Use pinned pnpm version in Dockerfiles
+lint, format, template: Use pinned `pnpm` version in Dockerfiles
 
-This fixes commands run within Dockerfiles using the latest pnpm version instead of the pinned version.
+This fixes an issue where `pnpm` commands in Dockerfiles incorrectly use the latest pnpm version instead of the pinned version.
