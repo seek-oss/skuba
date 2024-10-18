@@ -96,10 +96,10 @@ export class AppStack extends Stack {
       },
       functionName: '<%- serviceName %>',
       environment: {
+        ...config.workerLambda.environment,
         NODE_ENV: 'production',
         // https://nodejs.org/api/cli.html#cli_node_options_options
         NODE_OPTIONS: '--enable-source-maps',
-        ...config.workerLambda.environment,
         DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
       },
       // https://github.com/aws/aws-cdk/issues/28237
