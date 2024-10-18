@@ -1,4 +1,4 @@
-import stripAnsi from 'strip-ansi';
+import { stripVTControlCharacters as stripAnsi } from 'util';
 
 import type * as GitHub from '../../../../api/github';
 import type { StreamInterceptor } from '../../../lint/external';
