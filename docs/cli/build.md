@@ -66,7 +66,7 @@ With esbuild, you can supply the following options:
 
 ## skuba build-package
 
-Compiles your project for compatibility with CommonJS and ES2015 modules.
+Compiles your project for compatibility with CommonJS and ES2022 modules.
 
 This is useful for building isomorphic npm packages.
 
@@ -75,8 +75,8 @@ skuba build-package
 
 # commonjs │ TSFILE: ...
 # commonjs │ tsc exited with code 0
-# es2015   │ TSFILE: ...
-# es2015   │ tsc exited with code 0
+# esm      │ TSFILE: ...
+# esm      │ tsc exited with code 0
 # types    │ TSFILE: ...
 # types    │ tsc exited with code 0
 ```
