@@ -13,9 +13,12 @@ import {
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
-import { Datadog, getExtensionLayerArn } from 'datadog-cdk-constructs-v2';
+import { Datadog } from 'datadog-cdk-constructs-v2';
 
 import { config } from './config';
+
+// Updated by https://github.com/seek-oss/rynovate
+const EXTENSION_LAYER_VERSION = 64;
 
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -73,20 +76,6 @@ export class AppStack extends Stack {
       topicName: '<%- serviceName %>',
     });
 
-    const datadogSecret = aws_secretsmanager.Secret.fromSecretPartialArn(
-      this,
-      'datadog-api-key-secret',
-      config.datadogApiKeySecretArn,
-    );
-
-    const datadog = new Datadog(this, 'datadog', {
-      apiKeySecret: datadogSecret,
-      addLayers: false,
-      enableDatadogLogs: false,
-      flushMetricsToLogs: false,
-      extensionLayerVersion: 58,
-    });
-
     const architecture = '<%- lambdaCdkArchitecture %>';
 
     const defaultWorkerConfig: aws_lambda_nodejs.NodejsFunctionProps = {
@@ -130,19 +119,23 @@ export class AppStack extends Stack {
       // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
       description: `Updated at ${new Date().toISOString()}`,
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
-      layers: [
-        // Workaround for https://github.com/DataDog/datadog-cdk-constructs/issues/201
-        aws_lambda.LayerVersion.fromLayerVersionArn(
-          this,
-          'datadog-layer',
-          getExtensionLayerArn(
-            this.region,
-            datadog.props.extensionLayerVersion as number,
-            defaultWorkerConfig.architecture === aws_lambda.Architecture.ARM_64,
-          ),
-        ),
-      ],
     });
+
+    const datadogSecret = aws_secretsmanager.Secret.fromSecretPartialArn(
+      this,
+      'datadog-api-key-secret',
+      config.datadogApiKeySecretArn,
+    );
+
+    const datadog = new Datadog(this, 'datadog', {
+      apiKeySecret: datadogSecret,
+      addLayers: false,
+      enableDatadogLogs: false,
+      flushMetricsToLogs: false,
+      extensionLayerVersion: EXTENSION_LAYER_VERSION,
+    });
+
+    datadog.addLambdaFunctions([worker]);
 
     const workerDeployment = new LambdaDeployment(this, 'workerDeployment', {
       lambdaFunction: worker,

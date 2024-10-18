@@ -176,6 +176,19 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
+            "DD_API_KEY_SECRET_ARN": {
+              "Ref": "datadogapikeysecret046FEF06",
+            },
+            "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
+            "DD_FLUSH_TO_LOG": "false",
+            "DD_LAMBDA_HANDLER": "index.handler",
+            "DD_LOGS_INJECTION": "false",
+            "DD_MERGE_XRAY_TRACES": "false",
+            "DD_SERVERLESS_APPSEC_ENABLED": "false",
+            "DD_SERVERLESS_LOGS_ENABLED": "false",
+            "DD_SITE": "datadoghq.com",
+            "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
             },
@@ -187,7 +200,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "index.handler",
+        "Handler": "node_modules/datadog-lambda-js/dist/handler.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
@@ -203,7 +216,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Extension-ARM:58",
+                ":464622532012:layer:Datadog-Extension-ARM:64",
               ],
             ],
           },
@@ -220,6 +233,10 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           {
             "Key": "aws-codedeploy-hooks",
             "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          },
+          {
+            "Key": "dd_cdk_construct",
+            "Value": "vx.x.x",
           },
         ],
         "Timeout": 30,
@@ -587,6 +604,16 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "datadogapikeysecret046FEF06",
+              },
+            },
             {
               "Action": [
                 "sqs:ReceiveMessage",
@@ -869,6 +896,19 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
+            "DD_API_KEY_SECRET_ARN": {
+              "Ref": "datadogapikeysecret046FEF06",
+            },
+            "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
+            "DD_FLUSH_TO_LOG": "false",
+            "DD_LAMBDA_HANDLER": "index.handler",
+            "DD_LOGS_INJECTION": "false",
+            "DD_MERGE_XRAY_TRACES": "false",
+            "DD_SERVERLESS_APPSEC_ENABLED": "false",
+            "DD_SERVERLESS_LOGS_ENABLED": "false",
+            "DD_SITE": "datadoghq.com",
+            "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
             },
@@ -880,7 +920,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "index.handler",
+        "Handler": "node_modules/datadog-lambda-js/dist/handler.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
@@ -896,7 +936,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Extension-ARM:58",
+                ":464622532012:layer:Datadog-Extension-ARM:64",
               ],
             ],
           },
@@ -913,6 +953,10 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           {
             "Key": "aws-codedeploy-hooks",
             "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          },
+          {
+            "Key": "dd_cdk_construct",
+            "Value": "vx.x.x",
           },
         ],
         "Timeout": 30,
@@ -1280,6 +1324,16 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "datadogapikeysecret046FEF06",
+              },
+            },
             {
               "Action": [
                 "sqs:ReceiveMessage",
