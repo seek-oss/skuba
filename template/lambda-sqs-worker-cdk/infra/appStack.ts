@@ -18,7 +18,7 @@ import { Datadog } from 'datadog-cdk-constructs-v2';
 import { config } from './config';
 
 // Updated by https://github.com/seek-oss/rynovate
-const EXTENSION_LAYER_VERSION = 64;
+const DATADOG_EXTENSION_LAYER_VERSION = 64;
 
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -132,7 +132,7 @@ export class AppStack extends Stack {
       addLayers: false,
       enableDatadogLogs: false,
       flushMetricsToLogs: false,
-      extensionLayerVersion: EXTENSION_LAYER_VERSION,
+      extensionLayerVersion: DATADOG_EXTENSION_LAYER_VERSION,
     });
 
     datadog.addLambdaFunctions([worker]);
