@@ -216,7 +216,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Extension-ARM:64",
+                ":464622532012:layer:Datadog-Extension-ARM:x",
               ],
             ],
           },
@@ -936,7 +936,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Extension-ARM:64",
+                ":464622532012:layer:Datadog-Extension-ARM:x",
               ],
             ],
           },
