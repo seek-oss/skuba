@@ -25,7 +25,7 @@ describe('patchPnpmDockerImages', () => {
 
   it('should skip if no Dockerfiles to patch', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(readFile).mockResolvedValueOnce('beep' as never);
+    jest.mocked(readFile).mockResolvedValueOnce(`beep` as never);
 
     await expect(
       tryPatchPnpmDockerImages({
@@ -37,18 +37,23 @@ describe('patchPnpmDockerImages', () => {
     });
   });
 
-  it('should skip if mode is lint', async () => {
+  it('should return apply and not modify files if mode is lint', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(readFile).mockResolvedValueOnce('beep' as never);
+    jest
+      .mocked(readFile)
+      .mockResolvedValueOnce(
+        `RUN pnpm config set store-dir /root/.pnpm-store` as never,
+      );
 
     await expect(
       tryPatchPnpmDockerImages({
         mode: 'lint',
       } as PatchConfig),
     ).resolves.toEqual({
-      result: 'skip',
-      reason: 'no Dockerfiles to patch',
+      result: 'apply',
     });
+
+    expect(writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch Dockerfiles', async () => {
