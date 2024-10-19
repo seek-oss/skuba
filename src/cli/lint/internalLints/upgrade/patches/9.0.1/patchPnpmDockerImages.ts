@@ -7,7 +7,7 @@ import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
 
 const DOCKER_IMAGE_CONFIG_REGEX =
-  /^(RUN --mount=type=bind,source=package.json,target=package.json \\\n(\s+)corepack enable pnpm && corepack install(?:.|\n)+?)(RUN )(pnpm config set store-dir \/root\/.pnpm-store)/gm;
+  /^(RUN --mount=type=bind,source=package.json,target=package.json \\\n(\s+)corepack enable pnpm && corepack install(?:.|\n)+?RUN )(pnpm config set store-dir \/root\/.pnpm-store)/gm;
 const DOCKER_IMAGE_FETCH_REGEX =
   /^(RUN --mount=type=bind,source=.npmrc,target=.npmrc \\\n)((?:(?!--mount=type=bind,source=package\.json,target=package\.json)[\s\S])+?\n(\s+)pnpm (fetch|install))/gm;
 
@@ -64,8 +64,8 @@ const patchPnpmDockerImages: PatchFunction = async ({
       const patchedContents = contents
         .replace(
           DOCKER_IMAGE_CONFIG_REGEX,
-          (_, earlyCommands, whitespace, runLine, pnpmSetConfigLine) =>
-            `${earlyCommands}${runLine}${PACKAGE_JSON_MOUNT}${whitespace}${pnpmSetConfigLine}`,
+          (_, earlyCommands, whitespace, pnpmSetConfigLine) =>
+            `${earlyCommands}${PACKAGE_JSON_MOUNT}${whitespace}${pnpmSetConfigLine}`,
         )
         .replace(
           DOCKER_IMAGE_FETCH_REGEX,
