@@ -10,6 +10,40 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
     },
   },
   "Resources": {
+    "datadogapikeysecret046FEF06": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "destinationtopicDCE2E0B8": {
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":kms:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":alias/aws/sns",
+            ],
+          ],
+        },
+        "TopicName": "serviceName",
+      },
+      "Type": "AWS::SNS::Topic",
+    },
     "kmskey49FBC3B3": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -105,17 +139,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
               },
               "Resource": "*",
             },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:GenerateDataKey",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "sns.amazonaws.com",
-              },
-              "Resource": "*",
-            },
           ],
           "Version": "2012-10-17",
         },
@@ -135,9 +158,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::KMS::Alias",
     },
-    "sourcetopic7C3DC892": {
-      "Type": "AWS::SNS::Topic",
-    },
     "worker28EA3E30": {
       "DependsOn": [
         "workerServiceRoleDefaultPolicyBA498553",
@@ -156,6 +176,22 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
+            "DD_API_KEY_SECRET_ARN": {
+              "Ref": "datadogapikeysecret046FEF06",
+            },
+            "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
+            "DD_FLUSH_TO_LOG": "false",
+            "DD_LAMBDA_HANDLER": "index.handler",
+            "DD_LOGS_INJECTION": "false",
+            "DD_MERGE_XRAY_TRACES": "false",
+            "DD_SERVERLESS_APPSEC_ENABLED": "false",
+            "DD_SERVERLESS_LOGS_ENABLED": "false",
+            "DD_SITE": "datadoghq.com",
+            "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "DD_TRACE_ENABLED": "true",
+            "DESTINATION_SNS_TOPIC_ARN": {
+              "Ref": "destinationtopicDCE2E0B8",
+            },
             "ENVIRONMENT": "dev",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
@@ -164,13 +200,27 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "index.handler",
+        "Handler": "node_modules/datadog-lambda-js/dist/handler.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
+        "Layers": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":464622532012:layer:Datadog-Extension-ARM:x",
+              ],
+            ],
+          },
+        ],
         "ReservedConcurrentExecutions": 2,
         "Role": {
           "Fn::GetAtt": [
@@ -183,6 +233,10 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           {
             "Key": "aws-codedeploy-hooks",
             "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          },
+          {
+            "Key": "dd_cdk_construct",
+            "Value": "vx.x.x",
           },
         ],
         "Timeout": 30,
@@ -552,6 +606,16 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           "Statement": [
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "datadogapikeysecret046FEF06",
+              },
+            },
+            {
+              "Action": [
                 "sqs:ReceiveMessage",
                 "sqs:ChangeMessageVisibility",
                 "sqs:GetQueueUrl",
@@ -610,59 +674,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
-    },
-    "workerqueuePolicy97054CB4": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sqs:SendMessage",
-              "Condition": {
-                "ArnEquals": {
-                  "aws:SourceArn": {
-                    "Ref": "sourcetopic7C3DC892",
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "sns.amazonaws.com",
-              },
-              "Resource": {
-                "Fn::GetAtt": [
-                  "workerqueueA05CE5C6",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Queues": [
-          {
-            "Ref": "workerqueueA05CE5C6",
-          },
-        ],
-      },
-      "Type": "AWS::SQS::QueuePolicy",
-    },
-    "workerqueueappStacksourcetopic613C6BDBD2F224F5": {
-      "DependsOn": [
-        "workerqueuePolicy97054CB4",
-      ],
-      "Properties": {
-        "Endpoint": {
-          "Fn::GetAtt": [
-            "workerqueueA05CE5C6",
-            "Arn",
-          ],
-        },
-        "Protocol": "sqs",
-        "TopicArn": {
-          "Ref": "sourcetopic7C3DC892",
-        },
-      },
-      "Type": "AWS::SNS::Subscription",
     },
     "workerqueuedeadletters83F3505C": {
       "DeletionPolicy": "Delete",
@@ -719,6 +730,40 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
     },
   },
   "Resources": {
+    "datadogapikeysecret046FEF06": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "destinationtopicDCE2E0B8": {
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":kms:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":alias/aws/sns",
+            ],
+          ],
+        },
+        "TopicName": "serviceName",
+      },
+      "Type": "AWS::SNS::Topic",
+    },
     "kmskey49FBC3B3": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -814,17 +859,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
               },
               "Resource": "*",
             },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:GenerateDataKey",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "sns.amazonaws.com",
-              },
-              "Resource": "*",
-            },
           ],
           "Version": "2012-10-17",
         },
@@ -844,9 +878,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::KMS::Alias",
     },
-    "sourcetopic7C3DC892": {
-      "Type": "AWS::SNS::Topic",
-    },
     "worker28EA3E30": {
       "DependsOn": [
         "workerServiceRoleDefaultPolicyBA498553",
@@ -865,6 +896,22 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
+            "DD_API_KEY_SECRET_ARN": {
+              "Ref": "datadogapikeysecret046FEF06",
+            },
+            "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
+            "DD_FLUSH_TO_LOG": "false",
+            "DD_LAMBDA_HANDLER": "index.handler",
+            "DD_LOGS_INJECTION": "false",
+            "DD_MERGE_XRAY_TRACES": "false",
+            "DD_SERVERLESS_APPSEC_ENABLED": "false",
+            "DD_SERVERLESS_LOGS_ENABLED": "false",
+            "DD_SITE": "datadoghq.com",
+            "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "DD_TRACE_ENABLED": "true",
+            "DESTINATION_SNS_TOPIC_ARN": {
+              "Ref": "destinationtopicDCE2E0B8",
+            },
             "ENVIRONMENT": "prod",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
@@ -873,13 +920,27 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "index.handler",
+        "Handler": "node_modules/datadog-lambda-js/dist/handler.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
             "Arn",
           ],
         },
+        "Layers": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":464622532012:layer:Datadog-Extension-ARM:x",
+              ],
+            ],
+          },
+        ],
         "ReservedConcurrentExecutions": 20,
         "Role": {
           "Fn::GetAtt": [
@@ -892,6 +953,10 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           {
             "Key": "aws-codedeploy-hooks",
             "Value": "x.x.x-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          },
+          {
+            "Key": "dd_cdk_construct",
+            "Value": "vx.x.x",
           },
         ],
         "Timeout": 30,
@@ -1261,6 +1326,16 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           "Statement": [
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "datadogapikeysecret046FEF06",
+              },
+            },
+            {
+              "Action": [
                 "sqs:ReceiveMessage",
                 "sqs:ChangeMessageVisibility",
                 "sqs:GetQueueUrl",
@@ -1319,59 +1394,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       },
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
-    },
-    "workerqueuePolicy97054CB4": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sqs:SendMessage",
-              "Condition": {
-                "ArnEquals": {
-                  "aws:SourceArn": {
-                    "Ref": "sourcetopic7C3DC892",
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "sns.amazonaws.com",
-              },
-              "Resource": {
-                "Fn::GetAtt": [
-                  "workerqueueA05CE5C6",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Queues": [
-          {
-            "Ref": "workerqueueA05CE5C6",
-          },
-        ],
-      },
-      "Type": "AWS::SQS::QueuePolicy",
-    },
-    "workerqueueappStacksourcetopic613C6BDBD2F224F5": {
-      "DependsOn": [
-        "workerqueuePolicy97054CB4",
-      ],
-      "Properties": {
-        "Endpoint": {
-          "Fn::GetAtt": [
-            "workerqueueA05CE5C6",
-            "Arn",
-          ],
-        },
-        "Protocol": "sqs",
-        "TopicArn": {
-          "Ref": "sourcetopic7C3DC892",
-        },
-      },
-      "Type": "AWS::SNS::Subscription",
     },
     "workerqueuedeadletters83F3505C": {
       "DeletionPolicy": "Delete",
