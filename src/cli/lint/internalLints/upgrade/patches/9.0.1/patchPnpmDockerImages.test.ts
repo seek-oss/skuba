@@ -39,11 +39,12 @@ describe('patchPnpmDockerImages', () => {
 
   it('should return apply and not modify files if mode is lint', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest
-      .mocked(readFile)
-      .mockResolvedValueOnce(
-        `RUN pnpm config set store-dir /root/.pnpm-store` as never,
-      );
+    jest.mocked(readFile).mockResolvedValueOnce(
+      `RUN --mount=type=bind,source=package.json,target=package.json \\
+    corepack enable pnpm && corepack install
+
+RUN pnpm config set store-dir /root/.pnpm-store` as never,
+    );
 
     await expect(
       tryPatchPnpmDockerImages({
@@ -105,6 +106,49 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
     pnpm fetch
+`,
+    );
+  });
+
+  it('should patch Dockerfiles with different indents', async () => {
+    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(readFile).mockResolvedValueOnce(
+      `RUN --mount=type=bind,source=package.json,target=package.json \\
+    corepack enable pnpm && corepack install
+
+RUN pnpm config set store-dir /root/.pnpm-store
+
+RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
+  --mount=type=bind,source=patches,target=patches \\
+  --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+  --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
+  pnpm fetch
+` as never,
+    );
+
+    await expect(
+      tryPatchPnpmDockerImages({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(writeFile).toHaveBeenNthCalledWith(
+      1,
+      'Dockerfile',
+      `RUN --mount=type=bind,source=package.json,target=package.json \\
+    corepack enable pnpm && corepack install
+
+RUN --mount=type=bind,source=package.json,target=package.json \\
+    pnpm config set store-dir /root/.pnpm-store
+
+RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
+  --mount=type=bind,source=package.json,target=package.json \\
+  --mount=type=bind,source=patches,target=patches \\
+  --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+  --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
+  pnpm fetch
 `,
     );
   });
