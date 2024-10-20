@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- **deps:** Drop `strip-ansi` dependency in lieu of [`util.stripVTControlCharacters`](https://nodejs.org/api/util.html#utilstripvtcontrolcharactersstr) ([#1713](https://github.com/seek-oss/skuba/pull/1713))
+- **deps:** Drop `strip-ansi` dependency in favour of [`util.stripVTControlCharacters`](https://nodejs.org/api/util.html#utilstripvtcontrolcharactersstr) ([#1713](https://github.com/seek-oss/skuba/pull/1713))
 
 - **lint, format, template:** Use pinned `pnpm` version in Dockerfiles ([#1714](https://github.com/seek-oss/skuba/pull/1714))
 
