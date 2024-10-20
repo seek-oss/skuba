@@ -2,7 +2,9 @@ import { inspect } from 'util';
 
 import type { Reporter, TestContext } from '@jest/reporters';
 import type { AggregatedResult } from '@jest/test-result';
+import stripAnsi from 'strip-ansi';
 
+import * as Buildkite from '../../../../api/buildkite';
 import * as GitHub from '../../../../api/github';
 import {
   buildNameFromEnvironment,
@@ -10,13 +12,14 @@ import {
 } from '../../../../api/github/environment';
 import { log } from '../../../../utils/logging';
 import { throwOnTimeout } from '../../../../utils/wait';
+import { renderCoverageText } from '../coverage';
 
 import { generateAnnotationEntries } from './annotations';
 
 export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
   async onRunComplete(
     _contexts: Set<TestContext>,
-    { testResults }: AggregatedResult,
+    { coverageMap, testResults }: AggregatedResult,
   ): Promise<void> {
     if (!enabledFromEnvironment()) {
       return;
@@ -27,6 +30,8 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
     let lastCheckRun: CheckRun | undefined;
 
     try {
+      const coverage = renderCoverageText(coverageMap);
+
       const entries = generateAnnotationEntries(testResults);
 
       const build = buildNameFromEnvironment();
@@ -47,6 +52,9 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
           annotations,
           conclusion: isOk ? 'success' : 'failure',
           summary,
+          text: coverage
+            ? Buildkite.md.terminal(stripAnsi(coverage))
+            : undefined,
           title: `${build} ${isOk ? 'passed' : 'failed'}`,
         };
 
