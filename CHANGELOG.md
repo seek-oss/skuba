@@ -1,5 +1,23 @@
 # skuba
 
+## 9.1.0
+
+### Minor Changes
+
+- **deps:** Drop `strip-ansi` dependency in favour of [`util.stripVTControlCharacters`](https://nodejs.org/api/util.html#utilstripvtcontrolcharactersstr) ([#1713](https://github.com/seek-oss/skuba/pull/1713))
+
+- **lint, format, template:** Use pinned `pnpm` version in Dockerfiles ([#1714](https://github.com/seek-oss/skuba/pull/1714))
+
+  This fixes an issue where `pnpm` commands in Dockerfiles incorrectly use the latest pnpm version instead of the pinned version.
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Align template with Serverless template ([#1577](https://github.com/seek-oss/skuba/pull/1577))
+
+  This adds the same boilerplate code available in `lambda-sqs-worker` along with Datadog integration.
+
+- **deps:** libnpmsearch ^8.0.0 ([#1698](https://github.com/seek-oss/skuba/pull/1698))
+
 ## 9.0.1
 
 ### Patch Changes
