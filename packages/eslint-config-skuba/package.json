@@ -29,7 +29,7 @@
     "eslint-config-seek": "^14.0.1",
     "eslint-plugin-tsdoc": "^0.3.0",
     "eslint-plugin-yml": "^1.14.0",
-    "typescript-eslint": "^8.6.0"
+    "typescript-eslint": "^8.12.1"
   },
   "devDependencies": {
     "eslint": "^9.11.1",
