@@ -104,7 +104,7 @@ On a resource-constrained Buildkite agent,
 you can limit this with the `--serial` flag.
 See our [Buildkite guide] for more information.
 
-To bundle additional assets alongside your package, view the [Bundling Assets] section above.
+To bundle additional assets alongside your package, view the [bundling assets](#bundling-assets) section above.
 
 These files will be copied into the corresponding `lib-commonjs` and `lib-es2015` folders.
 
