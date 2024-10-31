@@ -62,7 +62,7 @@ With esbuild, you can supply the following options:
 | `--debug`   | Enable debug console output               |
 | `--project` | Point to a different `tsconfig.json` file |
 
-## Bundling Assets
+## Bundling assets
 
 To bundle additional assets alongside your build, add an `assets` field inside the `skuba` section within your `package.json`.
 
@@ -78,7 +78,7 @@ To bundle additional assets alongside your build, add an `assets` field inside t
 }
 ```
 
-In this example, all `*.vocab/*translations.json` files found within `src` will be copied into the corresponding `lib` folders.
+In this example, all `*.vocab/*translations.json` files found within `src` will be copied into the corresponding `lib` directory.
 
 ---
 
@@ -106,7 +106,7 @@ See our [Buildkite guide] for more information.
 
 To bundle additional assets alongside your package, view the [bundling assets](#bundling-assets) section above.
 
-These files will be copied into the corresponding `lib-commonjs` and `lib-es2015` folders.
+These files will be copied into the corresponding `lib-commonjs` and `lib-es2015` directories.
 
 | Option     | Description                                      |
 | :--------- | :----------------------------------------------- |
