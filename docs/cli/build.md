@@ -73,9 +73,7 @@ To bundle additional assets alongside your build, add an `assets` field inside t
     "template": "koa-rest-api",
     "type": "application",
     "version": "8.1.0",
-    "assets": [
-      "**/*.vocab/*translations.json",
-    ]
+    "assets": ["**/*.vocab/*translations.json"]
   }
 }
 ```
