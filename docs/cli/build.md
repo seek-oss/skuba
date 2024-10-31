@@ -62,6 +62,26 @@ With esbuild, you can supply the following options:
 | `--debug`   | Enable debug console output               |
 | `--project` | Point to a different `tsconfig.json` file |
 
+## Bundling Assets
+
+To bundle additional assets alongside your build, add an `assets` field inside the `skuba` section within your `package.json`.
+
+```json
+{
+  "skuba": {
+    "entryPoint": "src/index.ts",
+    "template": "koa-rest-api",
+    "type": "application",
+    "version": "8.1.0",
+    "assets": [
+      "**/*.vocab/*translations.json",
+    ]
+  }
+}
+```
+
+In this example, all `*.vocab/*translations.json` files found within `src` will be copied into the corresponding `lib` folders.
+
 ---
 
 ## skuba build-package
@@ -85,6 +105,10 @@ skuba build-package
 On a resource-constrained Buildkite agent,
 you can limit this with the `--serial` flag.
 See our [Buildkite guide] for more information.
+
+To bundle additional assets alongside your package, view the [Bundling Assets] section above.
+
+These files will be copied into the corresponding `lib-commonjs` and `lib-es2015` folders.
 
 | Option     | Description                                      |
 | :--------- | :----------------------------------------------- |
