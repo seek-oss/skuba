@@ -66,9 +66,8 @@ it.each(['dev', 'prod'])(
       )
       .replaceAll(/"Value":"v\d+\.\d+\.\d+"/g, (_) => `"Value": "vx.x.x"`)
       .replace(
-        /"DD_TAGS":"git.commit.sha:([0-9a-f]+),git.repository_url:([^\"]+)"/g,
-        (_, sha, url) =>
-          `"DD_TAGS":"git.commit.sha:${'x'.repeat(sha.length)},git.repository_url:${'x'.repeat(url.length)}"`,
+        /"DD_TAGS":"git.commit.sha:([0-9a-f]+),git.repository_url:([^\"]+)",/g,
+        '',
       )
       .replaceAll(
         /(layer:Datadog-Extension-.+?:)\d+/g,
