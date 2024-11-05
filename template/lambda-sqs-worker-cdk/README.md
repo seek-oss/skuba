@@ -14,7 +14,7 @@ Next steps:
 3. [ ] Add the repository to BuildAgency;
        see our internal [Buildkite Docs] for more information.
 4. [ ] Add Datadog extension, deployment bucket configuration and data classification tags to [infra/config.ts](infra/config.ts).
-5. [ ] Configure smoke test `MessageAttributes` in [src/services/pipelineEventSender.ts](src/services/pipelineEventSender.ts) and   `sourceSnsTopicArn` in [infra/config.ts](infra/config.ts).
+5. [ ] Configure smoke test `MessageAttributes` in [src/services/pipelineEventSender.ts](src/services/pipelineEventSender.ts) and `sourceSnsTopicArn` in [infra/config.ts](infra/config.ts).
 6. [ ] Push local commits to the upstream GitHub branch.
 7. [ ] Configure [GitHub repository settings].
 8. [ ] Delete this checklist 😌.
