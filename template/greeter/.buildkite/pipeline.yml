@@ -11,7 +11,7 @@ configs:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.2.0:
+      seek-oss/docker-ecr-cache#v2.2.1:
         cache-on:
           - .npmrc
           - package.json#.packageManager
