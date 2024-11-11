@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.10
+# syntax=docker/dockerfile:1.11
 
 FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
 
