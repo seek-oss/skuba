@@ -14,9 +14,10 @@ Next steps:
 3. [ ] Add the repository to BuildAgency;
        see our internal [Buildkite Docs] for more information.
 4. [ ] Add Datadog extension, deployment bucket configuration and data classification tags to [infra/config.ts](infra/config.ts).
-5. [ ] Push local commits to the upstream GitHub branch.
-6. [ ] Configure [GitHub repository settings].
-7. [ ] Delete this checklist 😌.
+5. [ ] For the smoke test, make sure Lambda has permissions to publish SNS message and configure `sourceSnsTopicArn` in [infra/config.ts](infra/config.ts).
+6. [ ] Push local commits to the upstream GitHub branch.
+7. [ ] Configure [GitHub repository settings].
+8. [ ] Delete this checklist 😌.
 
 [Buildkite Docs]: https://backstage.myseek.xyz/docs/default/component/buildkite-docs
 [GitHub repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings

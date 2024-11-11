@@ -8,6 +8,7 @@
     "deploy:watch": "pnpm --silent deploy:hotswap --watch",
     "format": "skuba format",
     "lint": "skuba lint",
+    "start": "skuba start --port <%- port %>",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
     "test:watch": "skuba test --watch"

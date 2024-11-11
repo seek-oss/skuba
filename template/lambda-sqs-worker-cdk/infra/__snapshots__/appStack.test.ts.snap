@@ -187,7 +187,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
             "DD_SITE": "datadoghq.com",
-            "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
             "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
@@ -605,6 +604,13 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "PolicyDocument": {
           "Statement": [
             {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "destinationtopicDCE2E0B8",
+              },
+            },
+            {
               "Action": [
                 "secretsmanager:GetSecretValue",
                 "secretsmanager:DescribeSecret",
@@ -907,7 +913,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
             "DD_SITE": "datadoghq.com",
-            "DD_TAGS": "git.commit.sha:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,git.repository_url:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
             "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
@@ -1324,6 +1329,13 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "destinationtopicDCE2E0B8",
+              },
+            },
             {
               "Action": [
                 "secretsmanager:GetSecretValue",

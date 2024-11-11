@@ -109,6 +109,8 @@ export class AppStack extends Stack {
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
     });
 
+    destinationTopic.grantPublish(worker);
+
     const datadogSecret = aws_secretsmanager.Secret.fromSecretPartialArn(
       this,
       'datadog-api-key-secret',

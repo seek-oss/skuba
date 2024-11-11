@@ -16,9 +16,11 @@ jest.useFakeTimers({
 });
 
 const originalEnv = process.env.ENVIRONMENT;
+const originalVersion = process.env.VERSION;
 
 afterAll(() => {
   process.env.ENVIRONMENT = originalEnv;
+  process.env.VERSION = originalVersion;
 });
 
 afterEach(() => {
@@ -29,6 +31,7 @@ it.each(['dev', 'prod'])(
   'returns expected CloudFormation stack for %s',
   async (env) => {
     process.env.ENVIRONMENT = env;
+    process.env.VERSION = 'local';
 
     const { AppStack } = await import('./appStack');
 
@@ -63,9 +66,8 @@ it.each(['dev', 'prod'])(
       )
       .replaceAll(/"Value":"v\d+\.\d+\.\d+"/g, (_) => `"Value": "vx.x.x"`)
       .replace(
-        /"DD_TAGS":"git.commit.sha:([0-9a-f]+),git.repository_url:([^\"]+)"/g,
-        (_, sha, url) =>
-          `"DD_TAGS":"git.commit.sha:${'x'.repeat(sha.length)},git.repository_url:${'x'.repeat(url.length)}"`,
+        /"DD_TAGS":"git.commit.sha:([0-9a-f]+),git.repository_url:([^\"]+)",/g,
+        '',
       )
       .replaceAll(
         /(layer:Datadog-Extension-.+?:)\d+/g,
