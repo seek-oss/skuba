@@ -604,6 +604,13 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         "PolicyDocument": {
           "Statement": [
             {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "destinationtopicDCE2E0B8",
+              },
+            },
+            {
               "Action": [
                 "secretsmanager:GetSecretValue",
                 "secretsmanager:DescribeSecret",
@@ -1322,6 +1329,13 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "destinationtopicDCE2E0B8",
+              },
+            },
             {
               "Action": [
                 "secretsmanager:GetSecretValue",
