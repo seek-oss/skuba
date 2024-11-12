@@ -28,7 +28,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker#v5.11.0:
+      - docker#v5.12.0:
           environment:
             - BUILDKITE_AGENT_ACCESS_TOKEN
           propagate-environment: true
