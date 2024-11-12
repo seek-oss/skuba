@@ -19,7 +19,7 @@ configs:
         secrets: id=npm,src=/tmp/.npmrc
 
     - &private-npm
-      seek-oss/private-npm#v1.2.0:
+      seek-oss/private-npm#v1.3.0:
         env: NPM_READ_TOKEN
         output-path: /tmp/
 
