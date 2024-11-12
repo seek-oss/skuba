@@ -287,7 +287,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     We are also using an updated caching syntax on `package.json` which caches only on the `packageManager` key. This requires the [seek-oss/docker-ecr-cache](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin) plugin version to be >= 2.2.0.
 
     ```diff
-      seek-oss/private-npm#v1.2.0:
+      seek-oss/private-npm#v1.3.0:
         env: NPM_READ_TOKEN
     +   output-path: /tmp/
     ```
