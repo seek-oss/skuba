@@ -1,6 +1,12 @@
 import memfs, { vol } from 'memfs';
 
-import { getLatestNode22Types, nodeVersionMigration } from '.';
+import * as getNode22TypesVersionModule from './getNode22TypesVersion';
+
+import { getNode22TypeVersion, nodeVersionMigration } from '.';
+
+jest
+  .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
+  .mockReturnValue('22.9.0');
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
@@ -12,6 +18,8 @@ jest.mock('../../../utils/logging');
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => vol.reset());
+
+afterEach(() => jest.clearAllMocks());
 
 describe('nodeVersionMigration', () => {
   const scenarios: Array<{
@@ -193,19 +201,29 @@ describe('nodeVersionMigration', () => {
   );
 });
 
-describe('getLatestNode22Types', () => {
+describe('getNodeTypesVersion', () => {
   it('finds the latest node22 types version', () => {
-    const { version, err } = getLatestNode22Types();
+    const { version, err } = getNode22TypeVersion();
     expect(version).toBe('22.9.0');
     expect(err).toBeUndefined();
   });
 
+  it('defaults to 22.9.0 if the exec returns an invalid version', () => {
+    jest
+      .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
+      .mockReturnValue('This is not a version');
+    const { version, err } = getNode22TypeVersion();
+    expect(version).toBe('22.9.0');
+    expect(err).toBe('Failed to fetch latest version, using fallback version');
+  });
+
   it('defaults to 22.9.0 if the exec fails', () => {
-    // Mock JSON.parse to throw an error
-    jest.spyOn(JSON, 'parse').mockImplementationOnce(() => {
-      throw new Error('Failed to fetch latest version');
-    });
-    const { version, err } = getLatestNode22Types();
+    jest
+      .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
+      .mockReturnValue(
+        new Error('Failed to fetch latest version') as unknown as string,
+      );
+    const { version, err } = getNode22TypeVersion();
     expect(version).toBe('22.9.0');
     expect(err).toBe('Failed to fetch latest version, using fallback version');
   });

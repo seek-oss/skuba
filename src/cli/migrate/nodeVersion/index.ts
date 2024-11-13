@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 import { inspect } from 'util';
 
 import { glob } from 'fast-glob';
@@ -6,6 +5,8 @@ import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging';
 import { createDestinationFileReader } from '../../configure/analysis/project';
+
+import { getNode22TypesVersion } from './getNode22TypesVersion';
 
 type SubPatch = (
   | { files: string; file?: never }
@@ -20,17 +21,11 @@ type VersionResult = {
   err: string | undefined;
 };
 
-export const getLatestNode22Types = (): VersionResult => {
+export const getNode22TypeVersion = (): VersionResult => {
   const FALLBACK_VERSION = '22.9.0';
   try {
-    const version = (
-      JSON.parse(
-        execSync('npm show @types/node@^22 version --json', {
-          encoding: 'utf8',
-        }),
-      ) as string[]
-    ).pop();
-    if (!version) {
+    const version = getNode22TypesVersion();
+    if (!version || !/^22.\d+\.\d+$/.test(version)) {
       throw new Error('No version found');
     }
     return {
@@ -177,7 +172,7 @@ export const nodeVersionMigration = async (
 ) => {
   log.ok(`Upgrading to Node.js ${version}`);
   try {
-    const { version: nodeTypesVersion, err } = getLatestNode22Types();
+    const { version: nodeTypesVersion, err } = getNode22TypeVersion();
     if (err) {
       log.warn(err);
     }
