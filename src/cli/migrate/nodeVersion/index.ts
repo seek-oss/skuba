@@ -23,7 +23,7 @@ type RegistryResponse = {
   'dist-tags': Record<string, string>;
 };
 
-export const getLatestNodeTypes = async (): Promise<VersionResult> => {
+export const getLatestNode22Types = async (): Promise<VersionResult> => {
   const FALLBACK_VERSION = '22.9.0';
   const url = 'https://registry.npmjs.org/@types/node';
   const headers = {
@@ -34,9 +34,9 @@ export const getLatestNodeTypes = async (): Promise<VersionResult> => {
   try {
     const fetchResponse = await fetch(url, { headers });
     const jsonResponse = (await fetchResponse.json()) as RegistryResponse;
-    const latest = jsonResponse['dist-tags'].latest;
+    const latestNode22 = jsonResponse['dist-tags'].node22;
 
-    return { version: latest ?? FALLBACK_VERSION, err: undefined };
+    return { version: latestNode22 ?? FALLBACK_VERSION, err: undefined };
   } catch {
     return {
       version: FALLBACK_VERSION,
@@ -177,7 +177,7 @@ export const nodeVersionMigration = async (
 ) => {
   log.ok(`Upgrading to Node.js ${version}`);
   try {
-    const { version: nodeTypesVersion, err } = await getLatestNodeTypes();
+    const { version: nodeTypesVersion, err } = await getLatestNode22Types();
     if (err) {
       log.warn(err);
     }

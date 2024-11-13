@@ -1,6 +1,6 @@
 import memfs, { vol } from 'memfs';
 
-import { getLatestNodeTypes, nodeVersionMigration } from '.';
+import { getLatestNode22Types, nodeVersionMigration } from '.';
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
@@ -201,15 +201,15 @@ describe('nodeVersionMigration', () => {
   );
 });
 
-describe('getLatestNodeTypes', () => {
+describe('getLatestNode22Types', () => {
   it('fetches the latest node types version', async () => {
-    const { version, err } = await getLatestNodeTypes();
+    const { version, err } = await getLatestNode22Types();
     expect(version).toBe('22.9.0');
     expect(err).toBeUndefined();
   });
   it('defaults to 22.9.0 if the fetch fails', async () => {
     jest.spyOn(global, 'fetch').mockImplementation(() => Promise.reject());
-    const { version, err } = await getLatestNodeTypes();
+    const { version, err } = await getLatestNode22Types();
 
     expect(version).toBe('22.9.0');
     expect(err).toBe('Failed to fetch latest version, using fallback version');
