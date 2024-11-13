@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { inspect } from 'util';
 
 import { glob } from 'fast-glob';
@@ -19,24 +20,23 @@ type VersionResult = {
   err: string | undefined;
 };
 
-type RegistryResponse = {
-  'dist-tags': Record<string, string>;
-};
-
-export const getLatestNode22Types = async (): Promise<VersionResult> => {
+export const getLatestNode22Types = (): VersionResult => {
   const FALLBACK_VERSION = '22.9.0';
-  const url = 'https://registry.npmjs.org/@types/node';
-  const headers = {
-    accept:
-      'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*',
-  };
-
   try {
-    const fetchResponse = await fetch(url, { headers });
-    const jsonResponse = (await fetchResponse.json()) as RegistryResponse;
-    const latestNode22 = jsonResponse['dist-tags'].node22;
-
-    return { version: latestNode22 ?? FALLBACK_VERSION, err: undefined };
+    const version = (
+      JSON.parse(
+        execSync('npm show @types/node@^22 version --json', {
+          encoding: 'utf8',
+        }),
+      ) as string[]
+    ).pop();
+    if (!version) {
+      throw new Error('No version found');
+    }
+    return {
+      version,
+      err: undefined,
+    };
   } catch {
     return {
       version: FALLBACK_VERSION,
@@ -177,7 +177,7 @@ export const nodeVersionMigration = async (
 ) => {
   log.ok(`Upgrading to Node.js ${version}`);
   try {
-    const { version: nodeTypesVersion, err } = await getLatestNode22Types();
+    const { version: nodeTypesVersion, err } = getLatestNode22Types();
     if (err) {
       log.warn(err);
     }

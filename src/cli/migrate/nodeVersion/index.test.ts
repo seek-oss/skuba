@@ -9,14 +9,6 @@ jest.mock('fast-glob', () => ({
 }));
 jest.mock('../../../utils/logging');
 
-jest
-  .spyOn(global, 'fetch')
-  .mockImplementation(() =>
-    Promise.resolve(
-      new Response(JSON.stringify({ 'dist-tags': { latest: '22.9.0' } })),
-    ),
-  );
-
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => vol.reset());
@@ -202,15 +194,18 @@ describe('nodeVersionMigration', () => {
 });
 
 describe('getLatestNode22Types', () => {
-  it('fetches the latest node types version', async () => {
-    const { version, err } = await getLatestNode22Types();
+  it('finds the latest node22 types version', () => {
+    const { version, err } = getLatestNode22Types();
     expect(version).toBe('22.9.0');
     expect(err).toBeUndefined();
   });
-  it('defaults to 22.9.0 if the fetch fails', async () => {
-    jest.spyOn(global, 'fetch').mockImplementation(() => Promise.reject());
-    const { version, err } = await getLatestNode22Types();
 
+  it('defaults to 22.9.0 if the exec fails', () => {
+    // Mock JSON.parse to throw an error
+    jest.spyOn(JSON, 'parse').mockImplementationOnce(() => {
+      throw new Error('Failed to fetch latest version');
+    });
+    const { version, err } = getLatestNode22Types();
     expect(version).toBe('22.9.0');
     expect(err).toBe('Failed to fetch latest version, using fallback version');
   });
