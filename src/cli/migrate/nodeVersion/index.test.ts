@@ -203,7 +203,7 @@ describe('nodeVersionMigration', () => {
 
 describe('getNodeTypesVersion', () => {
   it('finds the latest node22 types version', () => {
-    const { version, err } = getNode22TypeVersion();
+    const { version, err } = getNode22TypeVersion(22, '22.9.0');
     expect(version).toBe('22.9.0');
     expect(err).toBeUndefined();
   });
@@ -212,7 +212,7 @@ describe('getNodeTypesVersion', () => {
     jest
       .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
       .mockReturnValue('This is not a version');
-    const { version, err } = getNode22TypeVersion();
+    const { version, err } = getNode22TypeVersion(22, '22.9.0');
     expect(version).toBe('22.9.0');
     expect(err).toBe('Failed to fetch latest version, using fallback version');
   });
@@ -223,7 +223,7 @@ describe('getNodeTypesVersion', () => {
       .mockReturnValue(
         new Error('Failed to fetch latest version') as unknown as string,
       );
-    const { version, err } = getNode22TypeVersion();
+    const { version, err } = getNode22TypeVersion(22, '22.9.0');
     expect(version).toBe('22.9.0');
     expect(err).toBe('Failed to fetch latest version, using fallback version');
   });

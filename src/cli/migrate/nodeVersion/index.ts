@@ -8,6 +8,8 @@ import { createDestinationFileReader } from '../../configure/analysis/project';
 
 import { getNode22TypesVersion } from './getNode22TypesVersion';
 
+const DEFAULT_NODE_TYPES = '22.9.0';
+
 type SubPatch = (
   | { files: string; file?: never }
   | { file: string; files?: never }
@@ -21,10 +23,12 @@ type VersionResult = {
   err: string | undefined;
 };
 
-export const getNode22TypeVersion = (): VersionResult => {
-  const FALLBACK_VERSION = '22.9.0';
+export const getNode22TypeVersion = (
+  major: number,
+  defaultVersion: string,
+): VersionResult => {
   try {
-    const version = getNode22TypesVersion();
+    const version = getNode22TypesVersion(major);
     if (!version || !/^22.\d+\.\d+$/.test(version)) {
       throw new Error('No version found');
     }
@@ -34,7 +38,7 @@ export const getNode22TypeVersion = (): VersionResult => {
     };
   } catch {
     return {
-      version: FALLBACK_VERSION,
+      version: defaultVersion,
       err: 'Failed to fetch latest version, using fallback version',
     };
   }
@@ -172,7 +176,10 @@ export const nodeVersionMigration = async (
 ) => {
   log.ok(`Upgrading to Node.js ${version}`);
   try {
-    const { version: nodeTypesVersion, err } = getNode22TypeVersion();
+    const { version: nodeTypesVersion, err } = getNode22TypeVersion(
+      version,
+      DEFAULT_NODE_TYPES,
+    );
     if (err) {
       log.warn(err);
     }

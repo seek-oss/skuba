@@ -3,6 +3,7 @@ import { log } from '../../utils/logging';
 import { nodeVersionMigration } from './nodeVersion';
 
 const migrations: Record<string, () => Promise<void>> = {
+  node20: () => nodeVersionMigration(20),
   node22: () => nodeVersionMigration(22),
 };
 
