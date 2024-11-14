@@ -7,8 +7,18 @@ import { log } from '../../../utils/logging';
 export const auditWorkingTree = async (dir: string) => {
   const filepaths = await crawlDirectory(dir);
 
+  let anyFailed = false;
+
   const statuses = await Promise.all(
-    filepaths.map((filepath) => git.status({ dir, fs, filepath })),
+    filepaths.map(async (filepath) => {
+      try {
+        return await git.status({ dir, fs, filepath });
+      } catch {
+        // TODO: Why does isomorphic-git sometimes just _fail_?
+        anyFailed = true;
+        return 'absent';
+      }
+    }),
   );
 
   if (
@@ -19,5 +29,10 @@ export const auditWorkingTree = async (dir: string) => {
   ) {
     log.newline();
     log.warn('You have dirty/untracked files that may be overwritten.');
+  } else if (anyFailed) {
+    log.newline();
+    log.warn(
+      "Some files failed to be read. Check that you don't have any dirty/untracked files that may be overwritten.",
+    );
   }
 };
