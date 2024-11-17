@@ -10,7 +10,12 @@ export const createPrettierAnnotations = (
         Buildkite.md.terminal(
           prettier.result.errored
             .map(({ err, filepath }) =>
-              [filepath, ...(err ? [String(err)] : [])].join(' '),
+              [
+                filepath,
+                ...(typeof err === 'string' || err instanceof Error
+                  ? [String(err)]
+                  : []),
+              ].join(' '),
             )
             .join('\n'),
         ),
