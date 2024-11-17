@@ -248,7 +248,12 @@ export const runPrettier = async (
   if (result.errored.length) {
     logger.plain(`Flagged ${pluralise(result.errored.length, 'file')}:`);
     for (const { err, filepath } of result.errored) {
-      logger.warn(filepath, ...(err ? [String(err)] : []));
+      logger.warn(
+        filepath,
+        ...(typeof err === 'string' || err instanceof Error
+          ? [String(err)]
+          : []),
+      );
     }
   }
 

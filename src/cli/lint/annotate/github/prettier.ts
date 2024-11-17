@@ -13,7 +13,10 @@ export const createPrettierAnnotations = (
       start_line: 1,
       end_line: 1,
       path: result.filepath,
-      message: message ? String(message) : 'This file has not been formatted.',
+      message:
+        typeof message === 'string' || message instanceof Error
+          ? String(message)
+          : 'This file has not been formatted.',
       title: 'Prettier',
     };
   });
