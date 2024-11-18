@@ -136,6 +136,7 @@
     "@types/module-alias": "2.0.4",
     "@types/npm-which": "3.0.3",
     "@types/picomatch": "3.0.1",
+    "@types/semver": "7.5.8",
     "@types/supertest": "6.0.2",
     "@types/validate-npm-package-name": "4.0.2",
     "enhanced-resolve": "5.17.1",
@@ -159,7 +160,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@9.12.3",
+  "packageManager": "pnpm@9.13.2",
   "engines": {
     "node": ">=18.18.0"
   },
