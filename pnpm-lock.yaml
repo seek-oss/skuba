@@ -530,10 +530,10 @@ importers:
         specifier: ^20.16.5
         version: 20.17.6
       aws-cdk:
-        specifier: ^2.109.0
+        specifier: ^2.167.1
         version: 2.167.1
       aws-cdk-lib:
-        specifier: ^2.109.0
+        specifier: ^2.167.1
         version: 2.167.1(constructs@10.4.2)
       aws-sdk-client-mock:
         specifier: ^4.0.0
