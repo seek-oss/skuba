@@ -5854,8 +5854,8 @@ packages:
     resolution: {integrity: sha512-zLcTg6P4AbcHPq465ZMFNXx7XpKKJh+7kkN699NiQWisR2uWYOWNWqRHAmbnmKiL4e9aLSlmy5U7rEMUXV59+A==}
     hasBin: true
 
-  node-gyp-build@4.8.3:
-    resolution: {integrity: sha512-EMS95CMJzdoSKoIiXo8pxKoL8DYxwIZXYlLmgPb8KUv794abpnLK6ynsCAWNliOjREKruYKdzbh76HHYUHX7nw==}
+  node-gyp-build@4.8.4:
+    resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
     hasBin: true
 
   node-int64@0.4.0:
@@ -9400,7 +9400,7 @@ snapshots:
   '@datadog/native-iast-rewriter@2.5.0':
     dependencies:
       lru-cache: 7.18.3
-      node-gyp-build: 4.8.3
+      node-gyp-build: 4.8.4
 
   '@datadog/native-iast-taint-tracking@3.2.0':
     dependencies:
@@ -15474,7 +15474,7 @@ snapshots:
 
   node-gyp-build@3.9.0: {}
 
-  node-gyp-build@4.8.3: {}
+  node-gyp-build@4.8.4: {}
 
   node-int64@0.4.0: {}
 
