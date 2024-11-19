@@ -129,8 +129,8 @@ ESLint
 Initialising ESLint...
 Processing files...
 Processed 2 files in <random>s.
-○ d.js
 ○ a/a/a.ts
+○ d.js
 
 Prettier
 Initialising Prettier...
