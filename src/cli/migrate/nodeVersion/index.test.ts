@@ -1,12 +1,17 @@
 import memfs, { vol } from 'memfs';
 
 import * as getNode22TypesVersionModule from './getNode22TypesVersion';
+import * as checkServerlessVersion from './packageJsonChecks';
 
 import { getNode22TypeVersion, nodeVersionMigration } from '.';
 
 jest
   .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
   .mockReturnValue('22.9.0');
+
+jest
+  .spyOn(checkServerlessVersion, 'checkServerlessVersion')
+  .mockResolvedValue(undefined);
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({

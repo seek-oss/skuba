@@ -6,9 +6,13 @@ jest.mock('fs-extra');
 
 import { log } from '../../../utils/logging';
 
-import { checkServerlessVersion } from './checkServerlessVersion';
+import { checkServerlessVersion } from './packageJsonChecks';
 
 jest.spyOn(log, 'warn');
+
+afterEach(() => {
+  jest.resetAllMocks();
+});
 
 describe('checkServerlessVersion', () => {
   it('resolves as a noop when serverless version is supported', async () => {

@@ -6,8 +6,8 @@ import fs from 'fs-extra';
 import { log } from '../../../utils/logging';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 
-import { checkServerlessVersion } from './checkServerlessVersion';
 import { getNode22TypesVersion } from './getNode22TypesVersion';
+import { checkServerlessVersion } from './packageJsonChecks';
 
 const DEFAULT_NODE_TYPES = '22.9.0';
 
