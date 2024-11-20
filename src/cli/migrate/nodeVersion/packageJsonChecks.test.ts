@@ -6,7 +6,7 @@ jest.mock('fs-extra');
 
 import { log } from '../../../utils/logging';
 
-import { checkServerlessVersion } from './packageJsonChecks';
+import { checkServerlessVersion, checkSkubaType } from './packageJsonChecks';
 
 jest.spyOn(log, 'warn');
 
@@ -27,8 +27,7 @@ describe('checkServerlessVersion', () => {
           },
         }) as never,
       );
-    await checkServerlessVersion();
-    expect(log.warn).not.toHaveBeenCalled();
+    await expect(checkServerlessVersion()).resolves.toBeUndefined();
   });
   it('throws when the serverless version is below 4', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
@@ -52,13 +51,53 @@ describe('checkServerlessVersion', () => {
       .spyOn(fs, 'readFile')
       .mockImplementation()
       .mockReturnValue(JSON.stringify({}) as never);
-    await checkServerlessVersion();
-    expect(log.warn).not.toHaveBeenCalled();
+    await expect(checkServerlessVersion()).resolves.toBeUndefined();
   });
   it('throws when no package.json is found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce(undefined);
     await expect(checkServerlessVersion()).rejects.toThrow(
       'package.json not found',
     );
+  });
+});
+
+describe('checkSkubaType', () => {
+  it('should return undefined when skuba type is not "package"', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('package.json');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue(
+        JSON.stringify({
+          skuba: {
+            type: 'application',
+          },
+        }) as never,
+      );
+    await expect(checkSkubaType()).resolves.toBeUndefined();
+  });
+  it('should throw when skuba type is "package"', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('package.json');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue(
+        JSON.stringify({
+          skuba: {
+            type: 'package',
+          },
+        }) as never,
+      );
+    await expect(checkSkubaType()).rejects.toThrow(
+      'Skuba type package is not supported, packages should be updated manually to ensure major runtime depreciations are intended',
+    );
+  });
+  it('should return undefined when skuba type is not found', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('package.json');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue(JSON.stringify({}) as never);
+    await expect(checkSkubaType()).resolves.toBeUndefined();
   });
 });

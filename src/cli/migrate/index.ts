@@ -3,8 +3,10 @@ import { log } from '../../utils/logging';
 import { nodeVersionMigration } from './nodeVersion';
 
 const migrations: Record<string, () => Promise<void>> = {
-  node20: () => nodeVersionMigration(20),
-  node22: () => nodeVersionMigration(22),
+  node20: () =>
+    nodeVersionMigration({ nodeVersion: 20, ECMAScriptVersion: 'ES2023' }),
+  node22: () =>
+    nodeVersionMigration({ nodeVersion: 22, ECMAScriptVersion: 'ES2024' }),
 };
 
 const logAvailableMigrations = () => {
