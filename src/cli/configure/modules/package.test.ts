@@ -60,7 +60,7 @@ describe('packageModule', () => {
       ],
       license: 'UNLICENSED',
       main: './lib-commonjs/index.js',
-      module: './lib-es2015/index.js',
+      module: './lib-esm/index.js',
       private: false,
       scripts: {
         build: 'skuba build-package',
@@ -159,7 +159,7 @@ describe('packageModule', () => {
         files: ['lib', 'something-else'],
         license: 'UNLICENSED',
         main: 'lib/commonjs',
-        module: 'lib/es2015',
+        module: 'lib/esm',
         scripts: {
           build: 'smt build',
           commit: 'smt commit',
@@ -197,7 +197,7 @@ describe('packageModule', () => {
       ],
       license: 'UNLICENSED',
       main: './lib-commonjs/index.js',
-      module: './lib-es2015/index.js',
+      module: './lib-esm/index.js',
       private: false,
       scripts: {
         build: 'skuba build-package',
