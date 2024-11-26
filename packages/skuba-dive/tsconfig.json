@@ -9,6 +9,6 @@
     "removeComments": false,
     "target": "ES2020"
   },
-  "exclude": ["lib*/**/*"],
+  "exclude": ["lib*/**/*", "eslint.config.js"],
   "extends": "../../config/tsconfig.json"
 }
