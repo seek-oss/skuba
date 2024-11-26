@@ -11,14 +11,19 @@ import { checkServerlessVersion, checkSkubaType } from './packageJsonChecks';
 
 const DEFAULT_NODE_TYPES = '22.9.0';
 
-type SubPatch = (
-  | { files: string; file?: never }
-  | { file: string; files?: never }
-) & {
-  test?: RegExp;
-  replace: string;
-  id: string;
-};
+type SubPatch =
+  | (({ files: string; file?: never } | { file: string; files?: never }) & {
+      test?: RegExp;
+      replace: string;
+      id: string;
+    })
+  | Array<
+      ({ files: string; file?: never } | { file: string; files?: never }) & {
+        test?: RegExp;
+        replace: string;
+        id: string;
+      }
+    >;
 
 type VersionResult = {
   version: string;
@@ -68,12 +73,20 @@ const subPatches: SubPatch[] = [
     test: /nodejs\d+.x/gm,
     replace: 'nodejs<%- version %>.x',
   },
-  {
-    id: 'cdk',
-    files: 'infra/**/*.ts',
-    test: /NODEJS_\d+_X/g,
-    replace: 'NODEJS_<%- version %>_X',
-  },
+  [
+    {
+      id: 'cdk-1',
+      files: 'infra/**/*.ts',
+      test: /NODEJS_\d+_X/g,
+      replace: 'NODEJS_<%- version %>_X',
+    },
+    {
+      id: 'cdk-2',
+      files: 'infra/**/*.ts',
+      test: /(target:\s*'node)(\d+)(.+)$/gm,
+      replace: '$1<%- version %>$3',
+    },
+  ],
   {
     id: 'buildkite',
     files: '**/.buildkite/*',
@@ -95,7 +108,7 @@ const subPatches: SubPatch[] = [
   {
     id: 'package-json-2',
     files: '**/package.json',
-    test: /("engines":\s*{[^}]*"node":\s*">=)(\d+)("[^}]*})(?![^}]*"skuba":\s*{[^}]*"type":\s*"package")/gm,
+    test: /("engines":\s*{[^}]*"node":\s*">=)(\d+)("[^}]*})/gm,
     replace: '$1<%- version %>$3',
   },
   {
@@ -126,6 +139,16 @@ const runSubPatch = async (
   dir: string,
   patch: SubPatch,
 ) => {
+  if (Array.isArray(patch)) {
+    for (const subPatch of patch) {
+      await runSubPatch(
+        { nodeVersion, nodeTypesVersion, ECMAScriptVersion },
+        dir,
+        subPatch,
+      );
+    }
+    return;
+  }
   const readFile = createDestinationFileReader(dir);
   const paths = patch.file
     ? [patch.file]
@@ -156,6 +179,7 @@ const runSubPatch = async (
         });
       }
       if (patch.id === 'tsconfig') {
+        await checkSkubaType();
         return await writePatchedContents({
           path,
           contents: unPinnedContents,
