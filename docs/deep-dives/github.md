@@ -67,7 +67,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v5.4.1:
+      - docker-compose#v5.5.0:
           environment:
             - GITHUB_API_TOKEN
           propagate-environment: true
