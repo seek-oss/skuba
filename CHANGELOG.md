@@ -1,5 +1,29 @@
 # skuba
 
+## 9.2.0
+
+### Minor Changes
+
+- **deps:** TypeScript 5.7 ([#1750](https://github.com/seek-oss/skuba/pull/1750))
+
+  This major release includes breaking changes. See the [TypeScript 5.7](https://devblogs.microsoft.com/typescript/announcing-typescript-5-7/) announcement for more information.
+
+### Patch Changes
+
+- **configure:** Fix crash during detecting whether the working tree is clean ([#1737](https://github.com/seek-oss/skuba/pull/1737))
+
+- **template/lambda-sqs-worker-cdk:** Upgrade `aws-cdk` and `aws-cdk-lib` to `^2.167.1` ([#1740](https://github.com/seek-oss/skuba/pull/1740))
+
+- **template/lambda-sqs-worker-cdk:** Fix failing unit test and add `start` command ([#1724](https://github.com/seek-oss/skuba/pull/1724))
+
+- **deps:** ignore ^7.0.0 ([#1762](https://github.com/seek-oss/skuba/pull/1762))
+
+- **deps:** prettier ~3.4.0 ([#1751](https://github.com/seek-oss/skuba/pull/1751))
+
+  This change may contain some formatting changes. Review the release notes: https://prettier.io/blog/2024/11/26/3.4.0.html
+
+- **template/express-rest-api, template/koa-rest-api:** Drop support for `failOnScanFindings` for gantry 4 support ([#1759](https://github.com/seek-oss/skuba/pull/1759))
+
 ## 9.1.0
 
 ### Minor Changes
