@@ -129,8 +129,8 @@ importers:
         specifier: ^22.0.12
         version: 22.0.12(typescript@5.7.2)
       serialize-error:
-        specifier: ^8.0.1
-        version: 8.1.0
+        specifier: ^12.0.0
+        version: 12.0.0
       simple-git:
         specifier: ^3.5.0
         version: 3.27.0(supports-color@8.1.1)
@@ -6912,6 +6912,10 @@ packages:
     resolution: {integrity: sha512-dW41u5VfLXu8SJh5bwRmyYUbAoSB3c9uQh6L8h/KtsFREPWpbX1lrljJo186Jc4nmci/sGUZ9a0a0J2zgfq2hw==}
     engines: {node: '>= 0.8.0'}
 
+  serialize-error@12.0.0:
+    resolution: {integrity: sha512-ZYkZLAvKTKQXWuh5XpBw7CdbSzagarX39WyZ2H07CDLC5/KfsRGlIXV8d4+tfqX1M7916mRqR1QfNHSij+c9Pw==}
+    engines: {node: '>=18'}
+
   serialize-error@8.1.0:
     resolution: {integrity: sha512-3NnuWfM6vBYoy5gZFvHiYsVbafvI9vZv/+jlIigFn4oP4zjNPK3LhcY0xSCgeb1a5L8jO71Mit9LlNoi2UfDDQ==}
     engines: {node: '>=10'}
@@ -7588,6 +7592,10 @@ packages:
 
   type-fest@4.27.0:
     resolution: {integrity: sha512-3IMSWgP7C5KSQqmo1wjhKrwsvXAtF33jO3QY+Uy++ia7hqvgSK6iXbbg5PbDBc1P2ZbNEDgejOrN4YooXvhwCw==}
+    engines: {node: '>=16'}
+
+  type-fest@4.31.0:
+    resolution: {integrity: sha512-yCxltHW07Nkhv/1F6wWBr8kz+5BGMfP+RbRSYFnegVb0qV/UMT0G0ElBloPVerqn4M2ZV80Ir1FtCcYv1cT6vQ==}
     engines: {node: '>=16'}
 
   type-is@1.6.18:
@@ -16973,6 +16981,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  serialize-error@12.0.0:
+    dependencies:
+      type-fest: 4.31.0
+
   serialize-error@8.1.0:
     dependencies:
       type-fest: 0.20.2
@@ -17889,6 +17901,8 @@ snapshots:
   type-fest@3.13.1: {}
 
   type-fest@4.27.0: {}
+
+  type-fest@4.31.0: {}
 
   type-is@1.6.18:
     dependencies:
