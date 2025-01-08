@@ -24,11 +24,11 @@
     "@types/node": "^20.16.5",
     "@types/supertest": "^6.0.0",
     "mime": "^4.0.1",
-    "pino-pretty": "^11.0.0",
+    "pino-pretty": "^13.0.0",
     "skuba": "*",
     "supertest": "^7.0.0"
   },
-  "packageManager": "pnpm@9.13.2",
+  "packageManager": "pnpm@9.15.2",
   "engines": {
     "node": ">=20"
   }

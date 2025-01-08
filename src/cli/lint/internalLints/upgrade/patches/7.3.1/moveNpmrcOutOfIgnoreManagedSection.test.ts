@@ -44,7 +44,7 @@ describe('tryMoveNpmrcOutOfIgnoreManagedSection', () => {
           expect(writeFile.mock.calls.map((c) => c[0])).toEqual([
             `~/project/${fileName}`,
           ]);
-          expect(writeFile.mock.calls.map((c) => c[1]).join('\n'))
+          expect((writeFile.mock.calls.map((c) => c[1]) as string[]).join('\n'))
             .toMatchInlineSnapshot(`
             "# managed by skuba
             stuff

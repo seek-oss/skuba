@@ -49,17 +49,8 @@ test('asyncFunctionHandler', async () => {
       .post('/')
       .send([null, {}])
       .expect(500)
-      .expect(({ body }) =>
-        expect(body).toMatchInlineSnapshot(
-          { stack: expect.any(String) },
-          `
-          {
-            "message": "falsy event",
-            "name": "Error",
-            "stack": Any<String>,
-          }
-        `,
-        ),
+      .expect(({ text }) =>
+        expect(text.split('\n')[0]).toBe('Error: falsy event'),
       ),
   ]);
 });
@@ -167,16 +158,9 @@ test('syncFunctionHandler', async () => {
       .post('/')
       .send('Invalid JSON')
       .expect(500)
-      .expect(({ body }) =>
-        expect(body).toMatchInlineSnapshot(
-          { stack: expect.any(String) },
-          `
-          {
-            "message": "Unexpected token 'I', "Invalid JSON" is not valid JSON",
-            "name": "SyntaxError",
-            "stack": Any<String>,
-          }
-        `,
+      .expect(({ text }) =>
+        expect(text.split('\n')[0]).toBe(
+          `SyntaxError: Unexpected token 'I', "Invalid JSON" is not valid JSON`,
         ),
       ),
   ]);

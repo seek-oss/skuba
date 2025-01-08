@@ -1,7 +1,6 @@
 import http from 'http';
 import type { AddressInfo } from 'net';
-
-import { serializeError } from 'serialize-error';
+import util from 'util';
 
 import { log } from '../utils/logging';
 
@@ -14,17 +13,14 @@ import { log } from '../utils/logging';
 export const createRequestListenerFromFunction =
   (fn: (...args: unknown[]) => Promise<unknown>): http.RequestListener =>
   async (req, res) => {
-    const writeJsonResponse = (statusCode: number, jsonResponse: unknown) => {
-      res.writeHead(statusCode, { 'Content-Type': 'application/json' });
-
-      return new Promise<void>((resolve, reject) =>
-        jsonResponse === undefined
+    const writeResponse = (response: unknown) =>
+      new Promise<void>((resolve, reject) =>
+        response === undefined
           ? res.end(resolve)
-          : res.write(JSON.stringify(jsonResponse, null, 2), 'utf8', (err) =>
+          : res.write(response, 'utf8', (err) =>
               err ? reject(err) : res.end(resolve),
             ),
       );
-    };
 
     try {
       const requestBody = await new Promise<string>((resolve, reject) => {
@@ -46,9 +42,13 @@ export const createRequestListenerFromFunction =
 
       const response: unknown = await fn(...args);
 
-      await writeJsonResponse(200, response);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+
+      await writeResponse(JSON.stringify(response, null, 2));
     } catch (err) {
-      await writeJsonResponse(500, serializeError(err));
+      res.writeHead(500);
+
+      await writeResponse(util.inspect(err));
     }
   };
 
