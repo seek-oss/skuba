@@ -1,5 +1,17 @@
 # eslint-config-skuba
 
+## 5.1.0
+
+### Minor Changes
+
+- **deps:** typescript-eslint 8.16 ([#1750](https://github.com/seek-oss/skuba/pull/1750))
+
+  This bumps typescript-eslint to ^8.16.0 to support TypeScript 5.7
+
+### Patch Changes
+
+- **deps:** eslint-plugin-tsdoc ^0.4.0 ([#1749](https://github.com/seek-oss/skuba/pull/1749))
+
 ## 5.0.0
 
 ### Major Changes
