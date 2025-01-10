@@ -1,7 +1,5 @@
 import { inspect } from 'util';
 
-import { Env } from 'skuba-dive';
-
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
 import { nodeVersionMigration } from '../../../../../migrate/nodeVersion';
@@ -9,9 +7,9 @@ import { nodeVersionMigration } from '../../../../../migrate/nodeVersion';
 const upgradeNode: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  if (mode === 'lint' || Env.string('SKIP_NODE_UPGRADE') === 'true') {
+  if (mode === 'lint' || process.env.SKIP_NODE_UPGRADE) {
     return {
-      result: 'apply',
+      result: 'skip',
     };
   }
 

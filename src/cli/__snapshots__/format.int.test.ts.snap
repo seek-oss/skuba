@@ -30,6 +30,11 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
+Upgrading to Node.js 22
+Failed to fetch latest version, using fallback version
+Upgraded to Node.js 22
+
+Patch applied: Upgrades Node.js to version 22
 
 skuba update complete.
 
@@ -116,6 +121,11 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
+Upgrading to Node.js 22
+Failed to fetch latest version, using fallback version
+Upgraded to Node.js 22
+
+Patch applied: Upgrades Node.js to version 22
 
 skuba update complete.
 
@@ -197,6 +207,11 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
+Upgrading to Node.js 22
+Failed to fetch latest version, using fallback version
+Upgraded to Node.js 22
+
+Patch applied: Upgrades Node.js to version 22
 
 skuba update complete.
 
@@ -249,6 +264,11 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
+Upgrading to Node.js 22
+Failed to fetch latest version, using fallback version
+Upgraded to Node.js 22
+
+Patch applied: Upgrades Node.js to version 22
 
 skuba update complete.
 
