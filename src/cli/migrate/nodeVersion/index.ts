@@ -6,44 +6,149 @@ import fs from 'fs-extra';
 import { log } from '../../../utils/logging';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 
-type SubPatch = (
-  | { files: string; file?: never }
-  | { file: string; files?: never }
-) & {
-  test?: RegExp;
-  replace: string;
+import { getNode22TypesVersion } from './getNode22TypesVersion';
+import { checkServerlessVersion, checkSkubaType } from './packageJsonChecks';
+
+const DEFAULT_NODE_TYPES = '22.9.0';
+
+type SubPatch =
+  | (({ files: string; file?: never } | { file: string; files?: never }) & {
+      test?: RegExp;
+      replace: string;
+      id: string;
+    })
+  | Array<
+      ({ files: string; file?: never } | { file: string; files?: never }) & {
+        test?: RegExp;
+        replace: string;
+        id: string;
+      }
+    >;
+
+type VersionResult = {
+  version: string;
+  err: string | undefined;
 };
 
+export const getNode22TypeVersion = (
+  major: number,
+  defaultVersion: string,
+): VersionResult => {
+  try {
+    const version = getNode22TypesVersion(major);
+    if (!version || !/^22.\d+\.\d+$/.test(version)) {
+      throw new Error('No version found');
+    }
+    return {
+      version,
+      err: undefined,
+    };
+  } catch {
+    return {
+      version: defaultVersion,
+      err: 'Failed to fetch latest version, using fallback version',
+    };
+  }
+};
+
+const SHA_REGEX = /(?<=node.*)(@sha256:[a-f0-9]{64})/gm;
+
 const subPatches: SubPatch[] = [
-  { file: '.nvmrc', replace: '<%- version %>\n' },
+  { id: 'nvmrc', file: '.nvmrc', replace: '<%- version %>\n' },
   {
+    id: 'Dockerfile-1',
     files: 'Dockerfile*',
-    test: /^FROM(.*) node:[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
-    replace: 'FROM$1 node:<%- version %>$3$4',
+    test: /^FROM(.*) (public.ecr.aws\/docker\/library\/)?node:[0-9.]+(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
+    replace: 'FROM$1 $2node:<%- version %>$3$5$6',
   },
   {
+    id: 'Dockerfile-2',
     files: 'Dockerfile*',
     test: /^FROM(.*) gcr.io\/distroless\/nodejs\d+-debian(.+)$/gm,
     replace: 'FROM$1 gcr.io/distroless/nodejs<%- version %>-debian$2',
   },
   {
+    id: 'serverless',
     files: 'serverless*.y*ml',
     test: /nodejs\d+.x/gm,
     replace: 'nodejs<%- version %>.x',
   },
+  [
+    {
+      id: 'cdk-1',
+      files: 'infra/**/*.ts',
+      test: /NODEJS_\d+_X/g,
+      replace: 'NODEJS_<%- version %>_X',
+    },
+    {
+      id: 'cdk-2',
+      files: 'infra/**/*.ts',
+      test: /(target:\s*'node)(\d+)(.+)$/gm,
+      replace: '$1<%- version %>$3',
+    },
+  ],
   {
-    files: 'infra/**/*.ts',
-    test: /NODEJS_\d+_X/g,
-    replace: 'NODEJS_<%- version %>_X',
+    id: 'buildkite',
+    files: '**/.buildkite/*',
+    test: /(image: )(public.ecr.aws\/docker\/library\/)?(node:)[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
+    replace: '$1$2$3<%- version %>$5',
   },
   {
-    files: '.buildkite/*',
-    test: /image: node:[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
-    replace: 'image: node:<%- version %>$2',
+    id: 'node-version',
+    files: '.node-version*',
+    test: /(v)?\d+\.\d+\.\d+(.+)?/gm,
+    replace: '$1<%- version %>$2',
+  },
+  {
+    id: 'package-json-1',
+    files: '**/package.json',
+    test: /("@types\/node": ")(\^)?[0-9.]+"/gm,
+    replace: '$1$2<%- version %>"',
+  },
+  {
+    id: 'package-json-2',
+    files: '**/package.json',
+    test: /("engines":\s*{[^}]*"node":\s*">=)(\d+)("[^}]*})(?![^}]*"skuba":\s*{[^}]*"type":\s*"package")/gm,
+    replace: '$1<%- version %>$3',
+  },
+  {
+    id: 'tsconfig',
+    files: '**/tsconfig.json',
+    test: /("target":\s*")(ES?:[0-9]+|Next|[A-Za-z]+[0-9]*)"/gim,
+    replace: '$1<%- version %>"',
+  },
+  {
+    id: 'docker-compose',
+    files: '**/docker-compose*.y*ml',
+    test: /(image: )(public.ecr.aws\/docker\/library\/)?(node:)[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
+    replace: '$1$2$3<%- version %>$5',
   },
 ];
 
-const runSubPatch = async (version: number, dir: string, patch: SubPatch) => {
+const removeNodeShas = (content: string): string =>
+  content.replace(SHA_REGEX, '');
+
+type Versions = {
+  nodeVersion: number;
+  nodeTypesVersion: string;
+  ECMAScriptVersion: string;
+};
+
+const runSubPatch = async (
+  { nodeVersion, nodeTypesVersion, ECMAScriptVersion }: Versions,
+  dir: string,
+  patch: SubPatch,
+) => {
+  if (Array.isArray(patch)) {
+    for (const subPatch of patch) {
+      await runSubPatch(
+        { nodeVersion, nodeTypesVersion, ECMAScriptVersion },
+        dir,
+        subPatch,
+      );
+    }
+    return;
+  }
   const readFile = createDestinationFileReader(dir);
   const paths = patch.file
     ? [patch.file]
@@ -60,33 +165,99 @@ const runSubPatch = async (version: number, dir: string, patch: SubPatch) => {
         return;
       }
 
-      const templated = patch.replace.replaceAll(
-        '<%- version %>',
-        version.toString(),
-      );
+      const unPinnedContents = removeNodeShas(contents);
 
-      await fs.promises.writeFile(
+      if (patch.id === 'package-json-1') {
+        return await writePatchedContents({
+          path,
+          contents: unPinnedContents,
+          templated: patch.replace.replaceAll(
+            '<%- version %>',
+            nodeTypesVersion,
+          ),
+          test: patch.test,
+        });
+      }
+      if (patch.id === 'tsconfig') {
+        await checkSkubaType();
+        return await writePatchedContents({
+          path,
+          contents: unPinnedContents,
+          templated: patch.replace.replaceAll(
+            '<%- version %>',
+            ECMAScriptVersion,
+          ),
+          test: patch.test,
+        });
+      }
+
+      if (patch.id === 'package-json-2') {
+        await checkSkubaType();
+      }
+
+      await writePatchedContents({
         path,
-        patch.test ? contents.replaceAll(patch.test, templated) : templated,
-      );
+        contents: unPinnedContents,
+        templated: patch.replace.replaceAll(
+          '<%- version %>',
+          nodeVersion.toString(),
+        ),
+        test: patch.test,
+      });
     }),
   );
 };
 
-const upgrade = async (version: number, dir: string) => {
+const writePatchedContents = async ({
+  path,
+  contents,
+  templated,
+  test,
+}: {
+  path: string;
+  contents: string;
+  templated: string;
+  test?: RegExp;
+}) =>
+  await fs.promises.writeFile(
+    path,
+    test ? contents.replaceAll(test, templated) : templated,
+  );
+
+const upgrade = async (
+  { nodeVersion, nodeTypesVersion, ECMAScriptVersion }: Versions,
+  dir: string,
+) => {
   await Promise.all(
-    subPatches.map((subPatch) => runSubPatch(version, dir, subPatch)),
+    subPatches.map((subPatch) =>
+      runSubPatch(
+        { nodeVersion, nodeTypesVersion, ECMAScriptVersion },
+        dir,
+        subPatch,
+      ),
+    ),
   );
 };
 
 export const nodeVersionMigration = async (
-  version: number,
+  {
+    nodeVersion,
+    ECMAScriptVersion,
+  }: { nodeVersion: number; ECMAScriptVersion: string },
   dir = process.cwd(),
 ) => {
-  log.ok(`Upgrading to Node.js ${version}`);
+  log.ok(`Upgrading to Node.js ${nodeVersion}`);
   try {
-    await upgrade(version, dir);
-    log.ok('Upgraded to Node.js', version);
+    await checkServerlessVersion();
+    const { version: nodeTypesVersion, err } = getNode22TypeVersion(
+      nodeVersion,
+      DEFAULT_NODE_TYPES,
+    );
+    if (err) {
+      log.warn(err);
+    }
+    await upgrade({ nodeVersion, nodeTypesVersion, ECMAScriptVersion }, dir);
+    log.ok('Upgraded to Node.js', nodeVersion);
   } catch (err) {
     log.err('Failed to upgrade');
     log.subtle(inspect(err));
