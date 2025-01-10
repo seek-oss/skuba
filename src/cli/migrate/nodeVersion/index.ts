@@ -108,7 +108,7 @@ const subPatches: SubPatch[] = [
   {
     id: 'package-json-2',
     files: '**/package.json',
-    test: /("engines":\s*{[^}]*"node":\s*">=)(\d+)("[^}]*})/gm,
+    test: /("engines":\s*{[^}]*"node":\s*">=)(\d+)("[^}]*})(?![^}]*"skuba":\s*{[^}]*"type":\s*"package")/gm,
     replace: '$1<%- version %>$3',
   },
   {
