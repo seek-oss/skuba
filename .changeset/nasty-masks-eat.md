@@ -2,4 +2,4 @@
 'skuba': major
 ---
 
-TODO
+lint: TODO
