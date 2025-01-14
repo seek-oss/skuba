@@ -99,18 +99,20 @@ const subPatches: SubPatch[] = [
     test: /(v)?\d+\.\d+\.\d+(.+)?/gm,
     replace: '$1<%- version %>$2',
   },
-  {
-    id: 'package-json-1',
-    files: '**/package.json',
-    test: /("@types\/node": ")(\^)?[0-9.]+"/gm,
-    replace: '$1$2<%- version %>"',
-  },
-  {
-    id: 'package-json-2',
-    files: '**/package.json',
-    test: /("engines":\s*{[^}]*"node":\s*">=)(\d+)("[^}]*})(?![^}]*"skuba":\s*{[^}]*"type":\s*"package")/gm,
-    replace: '$1<%- version %>$3',
-  },
+  [
+    {
+      id: 'package-json-1',
+      files: '**/package.json',
+      test: /(\\?"@types\/node\\?": \\?")(\^)?[0-9.]+(\\?(",?)\\?n?)/gm,
+      replace: '$1$2<%- version %>$4',
+    },
+    {
+      id: 'package-json-2',
+      files: '**/package.json',
+      test: /(\\?"engines\\?":\s*{\\?n?[^}]*\\?"node\\?":\s*\\?">=)(\d+)\\?("[^}]*})(?![^}]*\\?"skuba\\?":\s*{\\?n?[^}]*\\?"type\\?":\s*\\?"package\\?")/gm,
+      replace: '$1<%- version %>$3',
+    },
+  ],
   {
     id: 'tsconfig',
     files: '**/tsconfig.json',

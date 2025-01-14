@@ -154,14 +154,14 @@ describe('nodeVersionMigration', () => {
     {
       scenario: 'node types',
       filesBefore: {
-        'package.json': '"@types/node": "^14.0.0"',
+        'package.json': '"@types/node": "^14.0.0",',
         '1/package.json': '"@types/node": "18.0.0"',
         '2/package.json': `"engines": {\n"node": ">=18"\n},\n`,
         '3/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}`,
         '4/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "application"\n}`,
       },
       filesAfter: {
-        'package.json': '"@types/node": "^22.9.0"',
+        'package.json': '"@types/node": "^22.9.0",',
         '1/package.json': '"@types/node": "22.9.0"',
         '2/package.json': `"engines": {\n"node": ">=22"\n},\n`,
         '3/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}`,
