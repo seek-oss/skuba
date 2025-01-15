@@ -62,26 +62,26 @@ const subPatches: SubPatch[] = [
   { id: 'nvmrc', file: '.nvmrc', replace: '<%- version %>\n' },
   {
     id: 'Dockerfile-1',
-    files: 'Dockerfile*',
+    files: '**/Dockerfile*',
     test: /^FROM(.*) (public.ecr.aws\/docker\/library\/)?node:[0-9.]+(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
     replace: 'FROM$1 $2node:<%- version %>$3$5$6',
   },
   {
     id: 'Dockerfile-2',
-    files: 'Dockerfile*',
+    files: '**/Dockerfile*',
     test: /^FROM(.*) gcr.io\/distroless\/nodejs\d+-debian(.+)$/gm,
     replace: 'FROM$1 gcr.io/distroless/nodejs<%- version %>-debian$2',
   },
   {
     id: 'serverless',
-    files: 'serverless*.y*ml',
+    files: '**/serverless*.y*ml',
     test: /nodejs\d+.x/gm,
     replace: 'nodejs<%- version %>.x',
   },
   [
     {
       id: 'cdk-1',
-      files: 'infra/**/*.ts',
+      files: '**/infra/**/*.ts',
       test: /NODEJS_\d+_X/g,
       replace: 'NODEJS_<%- version %>_X',
     },
