@@ -42,7 +42,8 @@ export const getNode22TypeVersion = (
     }
     const sanitizedVersion = version
       .replace(versionRegex, '$1')
-      .replace(/"/g, '');
+      .replace(/"/g, '')
+      .trim();
     return {
       version: sanitizedVersion,
       err: undefined,

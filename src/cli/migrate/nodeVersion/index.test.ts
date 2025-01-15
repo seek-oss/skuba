@@ -212,32 +212,39 @@ describe('nodeVersionMigration', () => {
 });
 
 describe('getNodeTypesVersion', () => {
-  it('finds the latest node22 types version', () => {
-    jest
-      .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
-      .mockReturnValue('"22.10.6"');
-    const { version, err } = getNode22TypeVersion(22, '22.9.0');
-    expect(version).toBe('22.10.6');
-    expect(err).toBeUndefined();
-  });
-
-  it('defaults to 22.9.0 if the exec returns an invalid version', () => {
-    jest
-      .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
-      .mockReturnValue('This is not a version');
-    const { version, err } = getNode22TypeVersion(22, '22.9.0');
-    expect(version).toBe('22.9.0');
-    expect(err).toBe('Failed to fetch latest version, using fallback version');
-  });
-
-  it('defaults to 22.9.0 if the exec fails', () => {
-    jest
-      .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
-      .mockReturnValue(
-        new Error('Failed to fetch latest version') as unknown as string,
-      );
-    const { version, err } = getNode22TypeVersion(22, '22.9.0');
-    expect(version).toBe('22.9.0');
-    expect(err).toBe('Failed to fetch latest version, using fallback version');
-  });
+  it.each([
+    {
+      mockReturnValue: `"22.10.6"`,
+      expectedVersion: '22.10.6',
+      expectedError: undefined,
+    },
+    {
+      mockReturnValue: `"22.10.6"
+`,
+      expectedVersion: '22.10.6',
+      expectedError: undefined,
+    },
+    {
+      mockReturnValue: 'This is not a version',
+      expectedVersion: '22.9.0',
+      expectedError: 'Failed to fetch latest version, using fallback version',
+    },
+    {
+      mockReturnValue: new Error(
+        'Failed to fetch latest version',
+      ) as unknown as string,
+      expectedVersion: '22.9.0',
+      expectedError: 'Failed to fetch latest version, using fallback version',
+    },
+  ])(
+    'finds the latest node22 types version with mock return value $mockReturnValue',
+    ({ mockReturnValue, expectedVersion, expectedError }) => {
+      jest
+        .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
+        .mockReturnValue(mockReturnValue);
+      const { version, err } = getNode22TypeVersion(22, '22.9.0');
+      expect(version).toBe(expectedVersion);
+      expect(err).toBe(expectedError);
+    },
+  );
 });
