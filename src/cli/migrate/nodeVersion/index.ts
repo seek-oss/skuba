@@ -36,7 +36,7 @@ export const getNode22TypeVersion = (
 ): VersionResult => {
   try {
     const version = getNode22TypesVersion(major);
-    if (!version || !/^22.\d+\.\d+$/.test(version)) {
+    if (!version || !/22\.\d+\.\d+/.test(version)) {
       throw new Error('No version found');
     }
     return {
@@ -158,6 +158,9 @@ const runSubPatch = async (
 
   await Promise.all(
     paths.map(async (path) => {
+      if (path.includes('node_modules')) {
+        return;
+      }
       const contents = await readFile(path);
       if (!contents) {
         return;
