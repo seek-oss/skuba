@@ -7,6 +7,7 @@ const { js: jsExtensions, ts: tsExtensions } = extensions;
 
 module.exports = [
   {
+    name: 'skuba/ignores',
     ignores: [
       // Gantry resource files support non-standard syntax (Go templating)
       '**/.gantry/**/*.yaml',
@@ -28,6 +29,7 @@ module.exports = [
   },
   ...base,
   {
+    name: 'skuba/javascript',
     rules: {
       'import-x/no-duplicates': 'error',
 
@@ -95,6 +97,7 @@ module.exports = [
     files: [`**/*.{${tsExtensions}}`],
   })),
   {
+    name: 'skuba/typescript',
     files: [`**/*.{${tsExtensions}}`],
 
     languageOptions: {
@@ -136,6 +139,7 @@ module.exports = [
     },
   },
   {
+    name: 'skuba/typescript-tests',
     files: [`**/*.test.{${tsExtensions}}`, `**/testing/**/*.{${tsExtensions}}`],
 
     rules: {
