@@ -100,15 +100,6 @@ module.exports = [
     name: 'skuba/typescript',
     files: [`**/*.{${tsExtensions}}`],
 
-    languageOptions: {
-      ecmaVersion: 5,
-      sourceType: 'script',
-
-      parserOptions: {
-        projectService: true,
-      },
-    },
-
     rules: {
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
