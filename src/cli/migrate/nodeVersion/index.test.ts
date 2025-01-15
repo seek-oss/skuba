@@ -9,11 +9,9 @@ jest
   .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
   .mockReturnValue('22.9.0');
 
-jest
-  .spyOn(packageJsonChecks, 'checkServerlessVersion')
-  .mockResolvedValue(undefined);
+jest.spyOn(packageJsonChecks, 'validServerlessVersion').mockResolvedValue(true);
 
-jest.spyOn(packageJsonChecks, 'checkSkubaType').mockResolvedValue(undefined);
+jest.spyOn(packageJsonChecks, 'validSkubaType').mockResolvedValue(true);
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({

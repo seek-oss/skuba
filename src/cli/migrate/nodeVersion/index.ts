@@ -7,7 +7,7 @@ import { log } from '../../../utils/logging';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 
 import { getNode22TypesVersion } from './getNode22TypesVersion';
-import { checkServerlessVersion, checkSkubaType } from './packageJsonChecks';
+import { validServerlessVersion, validSkubaType } from './packageJsonChecks';
 
 const DEFAULT_NODE_TYPES = '22.9.0';
 
@@ -178,11 +178,15 @@ const runSubPatch = async (
       const unPinnedContents = removeNodeShas(contents);
 
       if (patch.id === 'serverless') {
-        await checkServerlessVersion();
+        if (!(await validServerlessVersion())) {
+          return;
+        }
       }
 
       if (patch.id === 'package-json-1') {
-        await checkServerlessVersion();
+        if (!(await validServerlessVersion())) {
+          return;
+        }
         return await writePatchedContents({
           path,
           contents: unPinnedContents,
@@ -194,8 +198,9 @@ const runSubPatch = async (
         });
       }
       if (patch.id === 'tsconfig') {
-        await checkSkubaType();
-        await checkServerlessVersion();
+        if (!(await validServerlessVersion()) || !(await validSkubaType())) {
+          return;
+        }
         return await writePatchedContents({
           path,
           contents: unPinnedContents,
@@ -208,8 +213,9 @@ const runSubPatch = async (
       }
 
       if (patch.id === 'package-json-2') {
-        await checkSkubaType();
-        await checkServerlessVersion();
+        if (!(await validServerlessVersion()) || !(await validSkubaType())) {
+          return;
+        }
       }
 
       await writePatchedContents({

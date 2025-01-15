@@ -6,7 +6,7 @@ jest.mock('fs-extra');
 
 import { log } from '../../../utils/logging';
 
-import { checkServerlessVersion, checkSkubaType } from './packageJsonChecks';
+import { validServerlessVersion, validSkubaType } from './packageJsonChecks';
 
 jest.spyOn(log, 'warn');
 
@@ -14,7 +14,7 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-describe('checkServerlessVersion', () => {
+describe('validServerlessVersion', () => {
   it('resolves as a noop when serverless version is supported', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
     jest
@@ -27,9 +27,9 @@ describe('checkServerlessVersion', () => {
           },
         }) as never,
       );
-    await expect(checkServerlessVersion()).resolves.toBeUndefined();
+    await expect(validServerlessVersion()).resolves.toBe(true);
   });
-  it('throws when the serverless version is below 4', async () => {
+  it('should return false when the serverless version is below 4', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
     jest
       .spyOn(fs, 'readFile')
@@ -41,28 +41,26 @@ describe('checkServerlessVersion', () => {
           },
         }) as never,
       );
-    await expect(checkServerlessVersion()).rejects.toThrow(
-      'Serverless version not supported, please upgrade to 4.x',
-    );
+    await expect(validServerlessVersion()).resolves.toBe(false);
   });
-  it('resolves as a noop when serverless version is not found', async () => {
+  it('should return true when serverless version is not found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
     jest
       .spyOn(fs, 'readFile')
       .mockImplementation()
       .mockReturnValue(JSON.stringify({}) as never);
-    await expect(checkServerlessVersion()).resolves.toBeUndefined();
+    await expect(validServerlessVersion()).resolves.toBe(true);
   });
   it('throws when no package.json is found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce(undefined);
-    await expect(checkServerlessVersion()).rejects.toThrow(
+    await expect(validServerlessVersion()).rejects.toThrow(
       'package.json not found',
     );
   });
 });
 
-describe('checkSkubaType', () => {
-  it('should return undefined when skuba type is not "package"', async () => {
+describe('validSkubaType', () => {
+  it('should return true when skuba type is not "package"', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
     jest
       .spyOn(fs, 'readFile')
@@ -74,9 +72,9 @@ describe('checkSkubaType', () => {
           },
         }) as never,
       );
-    await expect(checkSkubaType()).resolves.toBeUndefined();
+    await expect(validSkubaType()).resolves.toBe(true);
   });
-  it('should throw when skuba type is "package"', async () => {
+  it('should return false when skuba type is "package"', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
     jest
       .spyOn(fs, 'readFile')
@@ -88,16 +86,14 @@ describe('checkSkubaType', () => {
           },
         }) as never,
       );
-    await expect(checkSkubaType()).rejects.toThrow(
-      'Skuba type package is not supported, packages should be updated manually to ensure major runtime depreciations are intended',
-    );
+    await expect(validSkubaType()).resolves.toBe(false);
   });
-  it('should return undefined when skuba type is not found', async () => {
+  it('should return true when skuba type is not found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
     jest
       .spyOn(fs, 'readFile')
       .mockImplementation()
       .mockReturnValue(JSON.stringify({}) as never);
-    await expect(checkSkubaType()).resolves.toBeUndefined();
+    await expect(validSkubaType()).resolves.toBe(true);
   });
 });
