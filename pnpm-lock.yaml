@@ -255,9 +255,6 @@ importers:
       eslint-config-seek:
         specifier: ^14.0.1
         version: 14.1.0(@typescript-eslint/eslint-plugin@8.16.0(@typescript-eslint/parser@8.16.0(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)(typescript@5.7.2))(@typescript-eslint/parser@8.16.0(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)(jest@29.7.0(@types/node@20.17.6)(ts-node@10.9.2(@types/node@20.17.6)(typescript@5.7.2)))(typescript@5.7.2)
-      eslint-plugin-tsdoc:
-        specifier: ^0.4.0
-        version: 0.4.0
       eslint-plugin-yml:
         specifier: ^1.14.0
         version: 1.15.0(eslint@9.15.0)
@@ -479,7 +476,7 @@ importers:
         version: 0.8.0(serverless@3.39.0(encoding@0.1.13))
       serverless-plugin-datadog:
         specifier: ^5.12.0
-        version: 5.73.0(@aws-sdk/client-sts@3.693.0)(encoding@0.1.13)(serverless@3.39.0(encoding@0.1.13))
+        version: 5.73.0(@aws-sdk/client-sso-oidc@3.693.0(@aws-sdk/client-sts@3.693.0))(@aws-sdk/client-sts@3.693.0)(encoding@0.1.13)(serverless@3.39.0(encoding@0.1.13))
       serverless-prune-plugin:
         specifier: ^2.0.0
         version: 2.1.0(serverless@3.39.0(encoding@0.1.13))
@@ -1614,14 +1611,8 @@ packages:
   '@microsoft/tsdoc-config@0.17.0':
     resolution: {integrity: sha512-v/EYRXnCAIHxOHW+Plb6OWuUoMotxTN0GLatnpOb1xq0KuTNw/WI3pamJx/UbsoJP5k9MCw1QxvvhPcF9pH3Zg==}
 
-  '@microsoft/tsdoc-config@0.17.1':
-    resolution: {integrity: sha512-UtjIFe0C6oYgTnad4q1QP4qXwLhe6tIpNTRStJ2RZEPIkqQPREAwE5spzVxsdn9UaEMUqhh0AqSx3X4nWAKXWw==}
-
   '@microsoft/tsdoc@0.15.0':
     resolution: {integrity: sha512-HZpPoABogPvjeJOdzCOSJsXeL/SMCBgBZMVC3X3d7YYp2gf31MfxhUoYUNwf1ERPJOnQc0wkFn9trqI6ZEdZuA==}
-
-  '@microsoft/tsdoc@0.15.1':
-    resolution: {integrity: sha512-4aErSrCR/On/e5G2hDP0wjooqDdauzEbIq8hIkIe5pXV0rtWJZvdCEKL0ykZxex+IxIwBp0eGeV48hQN07dXtw==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -4029,9 +4020,6 @@ packages:
 
   eslint-plugin-tsdoc@0.3.0:
     resolution: {integrity: sha512-0MuFdBrrJVBjT/gyhkP2BqpD0np1NxNLfQ38xXDlSs/KVVpKI2A6vN7jx2Rve/CyUsvOsMGwp9KKrinv7q9g3A==}
-
-  eslint-plugin-tsdoc@0.4.0:
-    resolution: {integrity: sha512-MT/8b4aKLdDClnS8mP3R/JNjg29i0Oyqd/0ym6NnQf+gfKbJJ4ZcSh2Bs1H0YiUMTBwww5JwXGTWot/RwyJ7aQ==}
 
   eslint-plugin-yml@1.15.0:
     resolution: {integrity: sha512-leC8APYVOsKyWUlvRwVhewytK5wS70BfMqIaUplFstRfzCoVp0YoEroV4cUEvQrBj93tQ3M9LcjO/ewr6D4kjA==}
@@ -8882,7 +8870,7 @@ snapshots:
       '@smithy/types': 3.7.1
       tslib: 2.8.1
 
-  '@aws-sdk/credential-providers@3.693.0':
+  '@aws-sdk/credential-providers@3.693.0(@aws-sdk/client-sso-oidc@3.693.0(@aws-sdk/client-sts@3.693.0))':
     dependencies:
       '@aws-sdk/client-cognito-identity': 3.693.0
       '@aws-sdk/client-sso': 3.693.0
@@ -9418,7 +9406,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@datadog/datadog-ci@2.45.0(@aws-sdk/client-sts@3.693.0)(encoding@0.1.13)':
+  '@datadog/datadog-ci@2.45.0(@aws-sdk/client-sso-oidc@3.693.0(@aws-sdk/client-sts@3.693.0))(@aws-sdk/client-sts@3.693.0)(encoding@0.1.13)':
     dependencies:
       '@aws-sdk/client-cloudwatch-logs': 3.693.0
       '@aws-sdk/client-iam': 3.693.0
@@ -9426,7 +9414,7 @@ snapshots:
       '@aws-sdk/client-sfn': 3.693.0
       '@aws-sdk/core': 3.693.0
       '@aws-sdk/credential-provider-ini': 3.693.0(@aws-sdk/client-sso-oidc@3.693.0(@aws-sdk/client-sts@3.693.0))(@aws-sdk/client-sts@3.693.0)
-      '@aws-sdk/credential-providers': 3.693.0
+      '@aws-sdk/credential-providers': 3.693.0(@aws-sdk/client-sso-oidc@3.693.0(@aws-sdk/client-sts@3.693.0))
       '@google-cloud/logging': 11.2.0(encoding@0.1.13)
       '@google-cloud/run': 1.4.0(encoding@0.1.13)
       '@smithy/property-provider': 2.2.0
@@ -10086,16 +10074,7 @@ snapshots:
       jju: 1.4.0
       resolve: 1.22.8
 
-  '@microsoft/tsdoc-config@0.17.1':
-    dependencies:
-      '@microsoft/tsdoc': 0.15.1
-      ajv: 8.12.0
-      jju: 1.4.0
-      resolve: 1.22.8
-
   '@microsoft/tsdoc@0.15.0': {}
-
-  '@microsoft/tsdoc@0.15.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -13426,11 +13405,6 @@ snapshots:
     dependencies:
       '@microsoft/tsdoc': 0.15.0
       '@microsoft/tsdoc-config': 0.17.0
-
-  eslint-plugin-tsdoc@0.4.0:
-    dependencies:
-      '@microsoft/tsdoc': 0.15.1
-      '@microsoft/tsdoc-config': 0.17.1
 
   eslint-plugin-yml@1.15.0(eslint@9.15.0):
     dependencies:
@@ -16990,9 +16964,9 @@ snapshots:
       omit-empty: 0.4.1
       serverless: 3.39.0(encoding@0.1.13)
 
-  serverless-plugin-datadog@5.73.0(@aws-sdk/client-sts@3.693.0)(encoding@0.1.13)(serverless@3.39.0(encoding@0.1.13)):
+  serverless-plugin-datadog@5.73.0(@aws-sdk/client-sso-oidc@3.693.0(@aws-sdk/client-sts@3.693.0))(@aws-sdk/client-sts@3.693.0)(encoding@0.1.13)(serverless@3.39.0(encoding@0.1.13)):
     dependencies:
-      '@datadog/datadog-ci': 2.45.0(@aws-sdk/client-sts@3.693.0)(encoding@0.1.13)
+      '@datadog/datadog-ci': 2.45.0(@aws-sdk/client-sso-oidc@3.693.0(@aws-sdk/client-sts@3.693.0))(@aws-sdk/client-sts@3.693.0)(encoding@0.1.13)
       node-fetch: 2.7.0(encoding@0.1.13)
       serverless: 3.39.0(encoding@0.1.13)
       simple-git: 3.27.0(supports-color@8.1.1)
