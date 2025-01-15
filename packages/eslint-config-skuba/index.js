@@ -151,6 +151,9 @@ module.exports = [
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
 
+      // Allow e.g. `String(unknown)`
+      '@typescript-eslint/no-base-to-string': 'off',
+
       // Allow ! in tests
       '@typescript-eslint/no-non-null-assertion': 'off',
 
