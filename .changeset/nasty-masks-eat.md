@@ -12,6 +12,8 @@ skuba might not be able to upgrade all projects, so please check your project fo
 possible that skuba will modify a file incorrectly, in which case please
 [open an issue](https://github.com/seek-oss/skuba/issues/new).
 
+If you wish not to upgrade to Node.js 22, you can run set the `SKIP_NODE_UPGRADE=true` environment variable before running `skuba lint` or `skuba format`.
+
 Node.js 22 comes with its own breaking changes, so please read the [Node.js 22 release notes](https://nodejs.org/en/blog/announcements/v22-release-announce) alongside the skuba release notes. In addition,
 
 - For AWS Lambda runtime updates to `nodejs22.x`, consider reading the [release announcement](https://aws.amazon.com/blogs/compute/node-js-22-runtime-now-available-in-aws-lambda/) as there are some breaking changes with this upgrade.
