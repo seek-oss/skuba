@@ -177,6 +177,10 @@ const runSubPatch = async (
 
       const unPinnedContents = removeNodeShas(contents);
 
+      if (patch.id === 'serverless') {
+        await checkServerlessVersion();
+      }
+
       if (patch.id === 'package-json-1') {
         await checkServerlessVersion();
         return await writePatchedContents({
