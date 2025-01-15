@@ -87,7 +87,7 @@ const subPatches: SubPatch[] = [
     },
     {
       id: 'cdk-2',
-      files: 'infra/**/*.ts',
+      files: '**/infra/**/*.ts',
       test: /(target:\s*'node)(\d+)(.+)$/gm,
       replace: '$1<%- version %>$3',
     },
