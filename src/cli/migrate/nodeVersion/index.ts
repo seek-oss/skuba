@@ -40,8 +40,11 @@ export const getNode22TypeVersion = (
     if (!version || !versionRegex.test(version)) {
       throw new Error('No version found');
     }
+    const sanitizedVersion = version
+      .replace(versionRegex, '$1')
+      .replace(/"/g, '');
     return {
-      version: version.replace(versionRegex, '$1'),
+      version: sanitizedVersion,
       err: undefined,
     };
   } catch {

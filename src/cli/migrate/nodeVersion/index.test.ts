@@ -213,8 +213,11 @@ describe('nodeVersionMigration', () => {
 
 describe('getNodeTypesVersion', () => {
   it('finds the latest node22 types version', () => {
+    jest
+      .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
+      .mockReturnValue('"22.10.6"');
     const { version, err } = getNode22TypeVersion(22, '22.9.0');
-    expect(version).toBe('22.9.0');
+    expect(version).toBe('22.10.6');
     expect(err).toBeUndefined();
   });
 
