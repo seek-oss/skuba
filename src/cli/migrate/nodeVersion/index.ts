@@ -36,11 +36,12 @@ export const getNode22TypeVersion = (
 ): VersionResult => {
   try {
     const version = getNode22TypesVersion(major);
-    if (!version || !/22\.\d+\.\d+/.test(version)) {
+    const versionRegex = /(22\.\d+\.\d+)/;
+    if (!version || !versionRegex.test(version)) {
       throw new Error('No version found');
     }
     return {
-      version,
+      version: version.replace(versionRegex, '$1'),
       err: undefined,
     };
   } catch {
