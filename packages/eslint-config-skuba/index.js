@@ -100,15 +100,6 @@ module.exports = [
     name: 'skuba/typescript',
     files: [`**/*.{${tsExtensions}}`],
 
-    languageOptions: {
-      ecmaVersion: 5,
-      sourceType: 'script',
-
-      parserOptions: {
-        projectService: true,
-      },
-    },
-
     rules: {
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
@@ -150,6 +141,9 @@ module.exports = [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+
+      // Allow e.g. `String(unknown)`
+      '@typescript-eslint/no-base-to-string': 'off',
 
       // Allow ! in tests
       '@typescript-eslint/no-non-null-assertion': 'off',
