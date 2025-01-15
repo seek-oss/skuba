@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-deps: express 5
+template/express-rest-api: express 5
