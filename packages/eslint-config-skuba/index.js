@@ -1,8 +1,6 @@
 const base = require('eslint-config-seek/base');
 const extensions = require('eslint-config-seek/extensions');
-const tsdoc = require('eslint-plugin-tsdoc');
 const eslintPluginYml = require('eslint-plugin-yml');
-const tseslint = require('typescript-eslint');
 
 const { js: jsExtensions, ts: tsExtensions } = extensions;
 
@@ -88,13 +86,6 @@ module.exports = [
       ],
     },
   },
-  ...[
-    ...tseslint.configs.recommendedTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked,
-  ].map((config) => ({
-    ...config,
-    files: [`**/*.{${tsExtensions}}`],
-  })),
   {
     files: [`**/*.{${tsExtensions}}`],
 
@@ -134,17 +125,6 @@ module.exports = [
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-    },
-  },
-  {
-    files: [`**/*.{${tsExtensions}}`],
-
-    plugins: {
-      tsdoc,
-    },
-
-    rules: {
-      'tsdoc/syntax': 'error',
     },
   },
   {
