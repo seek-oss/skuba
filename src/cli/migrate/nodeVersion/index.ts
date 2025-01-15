@@ -178,6 +178,7 @@ const runSubPatch = async (
       const unPinnedContents = removeNodeShas(contents);
 
       if (patch.id === 'package-json-1') {
+        await checkServerlessVersion();
         return await writePatchedContents({
           path,
           contents: unPinnedContents,
@@ -190,6 +191,7 @@ const runSubPatch = async (
       }
       if (patch.id === 'tsconfig') {
         await checkSkubaType();
+        await checkServerlessVersion();
         return await writePatchedContents({
           path,
           contents: unPinnedContents,
@@ -203,6 +205,7 @@ const runSubPatch = async (
 
       if (patch.id === 'package-json-2') {
         await checkSkubaType();
+        await checkServerlessVersion();
       }
 
       await writePatchedContents({
@@ -258,7 +261,6 @@ export const nodeVersionMigration = async (
 ) => {
   log.ok(`Upgrading to Node.js ${nodeVersion}`);
   try {
-    await checkServerlessVersion();
     const { version: nodeTypesVersion, err } = getNode22TypeVersion(
       nodeVersion,
       DEFAULT_NODE_TYPES,
