@@ -6,6 +6,7 @@ import git from 'isomorphic-git';
 import { diff } from 'jest-diff';
 
 import { format } from './format';
+import * as getNode22TypesVersionModule from './migrate/nodeVersion/getNode22TypesVersion';
 
 jest.setTimeout(15_000);
 
@@ -14,6 +15,10 @@ const stdoutMock = jest.fn();
 jest
   .spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+
+jest
+  .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
+  .mockReturnValue('22.9.0');
 
 jest
   .spyOn(git, 'listRemotes')
