@@ -1,6 +1,7 @@
 const base = require('eslint-config-seek/base');
 const extensions = require('eslint-config-seek/extensions');
 const eslintPluginYml = require('eslint-plugin-yml');
+const tseslint = require('typescript-eslint');
 
 const { js: jsExtensions, ts: tsExtensions } = extensions;
 
@@ -86,6 +87,13 @@ module.exports = [
       ],
     },
   },
+  ...[
+    ...tseslint.configs.recommendedTypeChecked,
+    ...tseslint.configs.stylisticTypeChecked,
+  ].map(({ plugins, ...config }) => ({
+    ...config,
+    files: [`**/*.{${tsExtensions}}`],
+  })),
   {
     files: [`**/*.{${tsExtensions}}`],
 

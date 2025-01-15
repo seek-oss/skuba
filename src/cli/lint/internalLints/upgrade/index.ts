@@ -61,6 +61,7 @@ const fileExtensions = ['js', 'ts'];
 const resolvePatches = async (version: string): Promise<Patches> => {
   for (const extension of fileExtensions) {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
       return (await import(`./patches/${version}/index.${extension}`)).patches;
     } catch {
       // Ignore
