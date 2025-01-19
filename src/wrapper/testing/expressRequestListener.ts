@@ -2,10 +2,12 @@ import express from 'express';
 
 const app = express().use((req, res) => {
   if (req.path === '/express') {
-    return res.end('Express!');
+    res.end('Express!');
+    return;
   }
 
-  return res.status(404).end();
+  res.status(404).end();
+  return;
 });
 
 Object.assign(app, {
