@@ -528,7 +528,7 @@ importers:
         version: 2.175.1
       aws-cdk-lib:
         specifier: ^2.167.1
-        version: 2.175.1(constructs@10.4.2)
+        version: 2.177.0(constructs@10.4.2)
       aws-sdk-client-mock:
         specifier: ^4.0.0
         version: 4.1.0
@@ -543,7 +543,7 @@ importers:
         version: 10.4.2
       datadog-cdk-constructs-v2:
         specifier: ^1.18.0
-        version: 1.21.0(aws-cdk-lib@2.175.1(constructs@10.4.2))(constructs@10.4.2)
+        version: 1.21.0(aws-cdk-lib@2.177.0(constructs@10.4.2))(constructs@10.4.2)
       pino-pretty:
         specifier: ^13.0.0
         version: 13.0.0
@@ -560,8 +560,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@aws-cdk/asset-awscli-v1@2.2.219':
-    resolution: {integrity: sha512-pwkEucYvK3MjoVShBnCWMLKk8/nAhElEM7OPcen/hSlsYoPRkZeZbPDM2XmTjvfUKWD5TQmobs39iBSrgbb1gg==}
+  '@aws-cdk/asset-awscli-v1@2.2.221':
+    resolution: {integrity: sha512-+Vu2cMvgtkaHwNezrTVng4+FAMAWKJTkC/2ZQlgkbY05k0lHHK/2eWKqBhTeA7EpxVrx9uFN7GdBFz3mcThpxg==}
 
   '@aws-cdk/asset-kubectl-v20@2.1.3':
     resolution: {integrity: sha512-cDG1w3ieM6eOT9mTefRuTypk95+oyD7P5X/wRltwmYxU7nZc3+076YEVS6vrjDKr3ADYbfn0lDKpfB1FBtO9CQ==}
@@ -569,8 +569,8 @@ packages:
   '@aws-cdk/asset-node-proxy-agent-v6@2.1.0':
     resolution: {integrity: sha512-7bY3J8GCVxLupn/kNmpPc5VJz8grx+4RKfnnJiO1LG+uxkZfANZG3RMHhE+qQxxwkyQ9/MfPtTpf748UhR425A==}
 
-  '@aws-cdk/cloud-assembly-schema@39.1.46':
-    resolution: {integrity: sha512-ChqTG6IZX7ya2VYYhM4BkhWXPa+xp3XyfE0++Gt4C5yZnRqVgL4NFjuwVCHwzGup5YHyYLjCXasfJ0hrvwmTzA==}
+  '@aws-cdk/cloud-assembly-schema@39.2.9':
+    resolution: {integrity: sha512-Ao4C8WoM5wgU4yn0aKLvI4gtgiRDa+8bVVwOlhGK9/jHmZlgMZY44UY9muq6qMKsMXTmfQeaB8LS3JLOiEUheA==}
     bundledDependencies:
       - jsonschema
       - semver
@@ -2915,8 +2915,8 @@ packages:
   avvio@9.1.0:
     resolution: {integrity: sha512-fYASnYi600CsH/j9EQov7lECAniYiBFiiAtBNuZYLA2leLe9qOvZzqYHFjtIj6gD2VMoMLP14834LFWvr4IfDw==}
 
-  aws-cdk-lib@2.175.1:
-    resolution: {integrity: sha512-2OiZDUeuAA5nBrWKxQVT0CHrQmLLx7SIpUeqyKRLEdiYPFlj3nCd/0KcVpsy6hPKS+IZp7Qm1kghmGMsV6JGoA==}
+  aws-cdk-lib@2.177.0:
+    resolution: {integrity: sha512-nTnHAwjZaPJ5gfJjtzE/MyK6q0a66nWthoJl7l8srucRb+I30dczhbbXor6QCdVpJaTRAEliMOMq23aglsAQbg==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       constructs: ^10.0.0
@@ -8018,13 +8018,13 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@aws-cdk/asset-awscli-v1@2.2.219': {}
+  '@aws-cdk/asset-awscli-v1@2.2.221': {}
 
   '@aws-cdk/asset-kubectl-v20@2.1.3': {}
 
   '@aws-cdk/asset-node-proxy-agent-v6@2.1.0': {}
 
-  '@aws-cdk/cloud-assembly-schema@39.1.46': {}
+  '@aws-cdk/cloud-assembly-schema@39.2.9': {}
 
   '@aws-crypto/crc32@5.2.0':
     dependencies:
@@ -10648,7 +10648,7 @@ snapshots:
     dependencies:
       '@seek/logger': 9.0.0
       '@types/aws-lambda': 8.10.147
-      aws-cdk-lib: 2.175.1(constructs@10.4.2)
+      aws-cdk-lib: 2.177.0(constructs@10.4.2)
       constructs: 10.4.2
       skuba-dive: 2.0.0
       zod: 3.24.1
@@ -11958,12 +11958,12 @@ snapshots:
       '@fastify/error': 4.0.0
       fastq: 1.18.0
 
-  aws-cdk-lib@2.175.1(constructs@10.4.2):
+  aws-cdk-lib@2.177.0(constructs@10.4.2):
     dependencies:
-      '@aws-cdk/asset-awscli-v1': 2.2.219
+      '@aws-cdk/asset-awscli-v1': 2.2.221
       '@aws-cdk/asset-kubectl-v20': 2.1.3
       '@aws-cdk/asset-node-proxy-agent-v6': 2.1.0
-      '@aws-cdk/cloud-assembly-schema': 39.1.46
+      '@aws-cdk/cloud-assembly-schema': 39.2.9
       constructs: 10.4.2
 
   aws-cdk@2.175.1:
@@ -12616,9 +12616,9 @@ snapshots:
       es-errors: 1.3.0
       is-data-view: 1.0.2
 
-  datadog-cdk-constructs-v2@1.21.0(aws-cdk-lib@2.175.1(constructs@10.4.2))(constructs@10.4.2):
+  datadog-cdk-constructs-v2@1.21.0(aws-cdk-lib@2.177.0(constructs@10.4.2))(constructs@10.4.2):
     dependencies:
-      aws-cdk-lib: 2.175.1(constructs@10.4.2)
+      aws-cdk-lib: 2.177.0(constructs@10.4.2)
       constructs: 10.4.2
 
   datadog-lambda-js@9.118.0:
