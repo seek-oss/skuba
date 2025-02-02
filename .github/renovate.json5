@@ -16,23 +16,33 @@
   packageRules: [
     {
       matchDepTypes: ['peerDependencies'],
+
       rangeStrategy: 'widen',
     },
     {
       matchManagers: ['npm'],
-      matchPackageNames: ['type-fest', 'serverless'],
+      matchPackageNames: [
+        // Incompatible with read-pkg-up@7
+        'type-fest',
+        'serverless',
+      ],
       matchUpdateTypes: ['major'],
+
       enabled: false,
     },
     {
       matchManagers: ['npm'],
-      groupName: 'opentelemetry',
       matchPackageNames: ['/^@opentelemetry//'],
+      groupName: 'opentelemetry',
     },
     {
       matchManagers: ['npm'],
-      matchPackageNames: ['@types/node'],
-      matchFileNames: ['template/**'],
+      matchPackageNames: [
+        // Should be synchronised with AWS Lambda runtimes and Docker images
+        '@types/node',
+      ],
+      matchPaths: ['template/**'],
+
       enabled: false,
     },
     {
@@ -43,17 +53,20 @@
         'npm',
         'nvm',
       ],
+
       commitMessageExtra: '{{newValue}}',
       commitMessageTopic: '{{depName}}',
     },
     {
       matchManagers: ['buildkite'],
+
       additionalBranchPrefix: '',
     },
     {
       matchDepTypes: ['devDependencies'],
       matchManagers: ['npm'],
       matchFileNames: ['*'],
+
       matchUpdateTypes: ['major', 'minor', 'patch'],
       automerge: true,
       commitMessageExtra: '',
@@ -65,17 +78,19 @@
     {
       matchFileNames: ['*'],
       matchUpdateTypes: ['lockFileMaintenance'],
+
       automerge: true,
       prPriority: 99,
       schedule: 'before 3:00 am every 2 weeks on Wednesday',
     },
     {
+      matchPackageNames: ['!@types/node'],
       matchFileNames: ['*'],
       matchUpdateTypes: ['pin'],
+
       automerge: true,
       prPriority: 99,
       schedule: 'before 3:00 am every weekday',
-      matchPackageNames: ['!@types/node'],
     },
     {
       matchDepTypes: ['devDependencies'],
@@ -89,10 +104,11 @@
     },
     {
       matchFileNames: ['template/**'],
+      matchPackageNames: ['!pnpm'],
+
       branchPrefix: 'renovate-template--',
       rangeStrategy: 'replace',
       semanticCommitType: 'template',
-      matchPackageNames: ['!pnpm'],
     },
   ],
   branchPrefix: 'renovate-',
@@ -117,6 +133,7 @@
     {
       customType: 'regex',
       fileMatch: ['docs\\/.*\\.md$'],
+      // (\\s|\\n) allows us to use the non breaking space to prefix plugins in diffs which we don't want Renovate to touch
       matchStrings: [
         '(\\s|\\n)(?<depName>[a-zA-Z0-9\\/_\\.\\-]+)#(?<currentValue>v[^:]+)',
       ],
