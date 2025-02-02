@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 permissions: {}
 
 jobs:
@@ -29,8 +32,6 @@ jobs:
 
       - name: Set up pnpm
         run: npm install --global corepack@0.31.0 && corepack enable pnpm && corepack install
-        env:
-          COREPACK_DEFAULT_TO_LATEST: 0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

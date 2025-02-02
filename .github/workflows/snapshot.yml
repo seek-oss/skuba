@@ -4,6 +4,9 @@ on: workflow_dispatch
 
 permissions: {}
 
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   publish:
     name: Publish Snapshot
@@ -25,8 +28,6 @@ jobs:
 
       - name: Set up pnpm
         run: npm install --global corepack@0.31.0 && corepack enable pnpm && corepack install
-        env:
-          COREPACK_DEFAULT_TO_LATEST: 0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
