@@ -32,7 +32,7 @@
     },
     {
       matchManagers: ['npm'],
-      matchPackagePatterns: ['^@opentelemetry/'],
+      matchPackageNames: ['/^@opentelemetry//'],
       groupName: 'opentelemetry',
     },
     {
@@ -65,18 +65,18 @@
     {
       matchDepTypes: ['devDependencies'],
       matchManagers: ['npm'],
-      matchPaths: ['*'],
-      matchUpdateTypes: ['major', 'minor', 'patch'],
+      matchFileNames: ['*'],
 
+      matchUpdateTypes: ['major', 'minor', 'patch'],
       automerge: true,
       commitMessageExtra: '',
       groupName: 'npm dev dependencies',
       prPriority: 99,
-      recreateClosed: true,
+      recreateWhen: 'always',
       schedule: 'before 3:00 am every 2 weeks on Tuesday',
     },
     {
-      matchPaths: ['*'],
+      matchFileNames: ['*'],
       matchUpdateTypes: ['lockFileMaintenance'],
 
       automerge: true,
@@ -84,8 +84,8 @@
       schedule: 'before 3:00 am every 2 weeks on Wednesday',
     },
     {
-      excludePackageNames: ['@types/node'],
-      matchPaths: ['*'],
+      matchPackageNames: ['!@types/node'],
+      matchFileNames: ['*'],
       matchUpdateTypes: ['pin'],
 
       automerge: true,
@@ -103,8 +103,8 @@
       semanticCommitType: 'deps',
     },
     {
-      matchPaths: ['template/**'],
-      excludePackageNames: ['pnpm'],
+      matchFileNames: ['template/**'],
+      matchPackageNames: ['!pnpm'],
 
       branchPrefix: 'renovate-template--',
       rangeStrategy: 'replace',
