@@ -29,6 +29,8 @@ jobs:
 
       - name: Set up pnpm
         run: corepack enable pnpm && corepack install
+        env:
+          COREPACK_DEFAULT_TO_LATEST: 0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
