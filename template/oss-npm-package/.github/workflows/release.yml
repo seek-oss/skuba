@@ -28,7 +28,7 @@ jobs:
           node-version: 20.x
 
       - name: Set up pnpm
-        run: npm install --global corepack@0.31.0 &&  pnpm && corepack install
+        run: corepack enable pnpm && corepack install
         env:
           COREPACK_DEFAULT_TO_LATEST: 0
 
