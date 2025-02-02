@@ -5,10 +5,10 @@ on:
     branches:
       - main
 
+permissions: {}
+
 env:
   COREPACK_DEFAULT_TO_LATEST: 0
-
-permissions: {}
 
 jobs:
   release:
