@@ -41,7 +41,7 @@
         // Should be synchronised with AWS Lambda runtimes and Docker images
         '@types/node',
       ],
-      matchPaths: ['template/**'],
+      matchFileNames: ['template/**'],
 
       enabled: false,
     },
