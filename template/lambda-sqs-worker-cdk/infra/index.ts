@@ -2,17 +2,15 @@ import { HookStack } from '@seek/aws-codedeploy-infra';
 import { App } from 'aws-cdk-lib';
 
 import { AppStack } from './appStack';
-import { config, environment } from './config';
+import { config } from './config';
 
 const app = new App();
 
 const appStack = new AppStack(app, 'appStack', {
   stackName: config.appName,
   tags: {
-    'seek:env:label': environment,
-    'seek:source:sha': process.env.BUILDKITE_COMMIT ?? 'na',
-    // 'seek:source:url': 'TODO: add source URL',
-    // 'seek:system:name': 'TODO: add system name',
+    'seek:source:url': 'https://github.com/SEEK-Jobs/<%- repoName %>',
+    // 'seek:system:name': 'TODO: https://rfc.skinfra.xyz/RFC051-AWS-Tagging-Standard.html#tagging-schema',
   },
 });
 
