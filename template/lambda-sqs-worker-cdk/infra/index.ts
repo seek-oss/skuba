@@ -2,7 +2,7 @@ import { HookStack } from '@seek/aws-codedeploy-infra';
 import { App } from 'aws-cdk-lib';
 
 import { AppStack } from './appStack';
-import { config, environment } from './config';
+import { config } from './config';
 
 const app = new App();
 
