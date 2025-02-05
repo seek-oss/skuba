@@ -35,18 +35,18 @@ In a `vCurrent` strategy:
   schemaVersion: vCurrent
   clusters:
     - name: cicd # Existing cluster
-      
+
       instanceType: t3.large
       rootVolumeSize: 8
-      
+
       # ...
-+   
++
 +   - name: graviton # New cluster; choose a name you like
-+     
++
 +     cpuArchitecture: arm64
 +     instanceType: t4g.large # Required; g is for Graviton
 +     rootVolumeSize: 8 # Optional
-+     
++
 +     # ...
 ```
 
@@ -164,24 +164,24 @@ modify `cpuArchitecture` property on the `ContainerImage` and `Service` resource
 <!-- prettier-ignore -->
 ```diff
   kind: ContainerImage
-  
+
   schemaVersion: v0.0
-  
+
 - cpuArchitecture: arm64
 + cpuArchitecture: amd64
-  
+
   ...
 ```
 
 <!-- prettier-ignore -->
 ```diff
   kind: Service
-  
+
   schemaVersion: v0.0
-  
+
 - cpuArchitecture: arm64
 + cpuArchitecture: amd64
-  
+
   ...
 ```
 
@@ -270,7 +270,7 @@ As these have no set naming convention, you can look for:
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - seek-jobs/gantry#v3.0.0:
+        - seek-jobs/gantry#v4.0.0:
             command: build
             file: gantry.build.yml # <-- here
             region: ap-southeast-2
@@ -283,22 +283,22 @@ set the `cpuArchitecture` property on the `ContainerImage` and `Service` resourc
 <!-- prettier-ignore -->
 ```diff
   kind: ContainerImage
-  
+
   schemaVersion: v0.0
-  
+
 + cpuArchitecture: arm64
-  
+
   ...
 ```
 
 <!-- prettier-ignore -->
 ```diff
   kind: Service
-  
+
   schemaVersion: v0.0
-  
+
 + cpuArchitecture: arm64
-  
+
   ...
 ```
 
@@ -342,10 +342,10 @@ For a [Serverless] worker, set the `provider.architecture` property in [`serverl
 ```diff
   provider:
     name: aws
-    
+
 +   architecture: arm64
     runtime: nodejs20.x
-    
+
     ...
 ```
 

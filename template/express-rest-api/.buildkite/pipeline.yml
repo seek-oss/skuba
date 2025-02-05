@@ -70,7 +70,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - seek-jobs/gantry#v3.0.0:
+      - seek-jobs/gantry#v4.0.0:
           command: build
           file: gantry.build.yml
           region: <%- region %>
@@ -87,7 +87,7 @@ steps:
     concurrency_group: <%- teamName %>/deploy/gantry/<%- devGantryEnvironmentName %>
     key: deploy-dev
     plugins:
-      - seek-jobs/gantry#v3.0.0:
+      - seek-jobs/gantry#v4.0.0:
           command: apply
           environment: <%- devGantryEnvironmentName %>
           file: gantry.apply.yml
@@ -102,7 +102,7 @@ steps:
     concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
     depends_on: deploy-dev
     plugins:
-      - seek-jobs/gantry#v3.0.0:
+      - seek-jobs/gantry#v4.0.0:
           command: apply
           environment: <%- prodGantryEnvironmentName %>
           file: gantry.apply.yml
