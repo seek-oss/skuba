@@ -270,7 +270,7 @@ As these have no set naming convention, you can look for:
         - *aws-sm
         - *private-npm
         - *docker-ecr-cache
-        - seek-jobs/gantry#v3.0.0:
+        - seek-jobs/gantry#v4.0.0:
             command: build
             file: gantry.build.yml # <-- here
             region: ap-southeast-2
