@@ -16,11 +16,11 @@
     "skuba-dive": "^2.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.9.0",
+    "@types/node": "^22.13.1",
     "skuba": "*"
   },
   "packageManager": "pnpm@9.15.4",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }
