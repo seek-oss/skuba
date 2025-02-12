@@ -53,7 +53,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: 22.14.0
 
       - name: Set up pnpm
         run: corepack enable pnpm && corepack install
@@ -92,7 +92,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: 22.14.0
 
       - name: Set up pnpm
         run: corepack enable pnpm
@@ -133,7 +133,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: 22.14.0
 
       - name: Set up pnpm
         run: corepack enable pnpm && corepack install
