@@ -5,7 +5,7 @@
       // open-telemetry/opentelemetry-js#3580
       "DOM",
 
-      "ES2022"
+      "ES2024"
     ],
     "outDir": "lib",
     "paths": {
