@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+'skuba': major
 ---
 
 migrate: Introduce `skuba migrate node22` to automatically upgrade a project's Node.js version
