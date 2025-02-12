@@ -25,37 +25,6 @@ type SubPatch =
       }
     >;
 
-type VersionResult = {
-  version: string;
-  err: string | undefined;
-};
-
-export const getNode22TypeVersion = (
-  major: number,
-  defaultVersion: string,
-): VersionResult => {
-  try {
-    const version = getNode22TypesVersion(major);
-    const versionRegex = /(22\.\d+\.\d+)/;
-    if (!version || !versionRegex.test(version)) {
-      throw new Error('No version found');
-    }
-    const sanitizedVersion = version
-      .replace(versionRegex, '$1')
-      .replace(/"/g, '')
-      .trim();
-    return {
-      version: sanitizedVersion,
-      err: undefined,
-    };
-  } catch {
-    return {
-      version: defaultVersion,
-      err: 'Failed to fetch latest version, using fallback version',
-    };
-  }
-};
-
 const SHA_REGEX = /(?<=node.*)(@sha256:[a-f0-9]{64})/gm;
 
 const subPatches: SubPatch[] = [
@@ -271,7 +240,7 @@ export const nodeVersionMigration = async (
 ) => {
   log.ok(`Upgrading to Node.js ${nodeVersion}`);
   try {
-    const { version: nodeTypesVersion, err } = getNode22TypeVersion(
+    const { version: nodeTypesVersion, err } = await getNode22TypesVersion(
       nodeVersion,
       DEFAULT_NODE_TYPES,
     );

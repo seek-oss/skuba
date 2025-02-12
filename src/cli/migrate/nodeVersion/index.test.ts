@@ -3,11 +3,11 @@ import memfs, { vol } from 'memfs';
 import * as getNode22TypesVersionModule from './getNode22TypesVersion';
 import * as packageJsonChecks from './packageJsonChecks';
 
-import { getNode22TypeVersion, nodeVersionMigration } from '.';
+import { nodeVersionMigration } from '.';
 
 jest
   .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
-  .mockReturnValue('22.9.0');
+  .mockReturnValue(Promise.resolve({ version: '22.9.0' }));
 
 jest.spyOn(packageJsonChecks, 'validServerlessVersion').mockResolvedValue(true);
 
@@ -205,44 +205,6 @@ describe('nodeVersionMigration', () => {
       });
 
       expect(volToJson()).toEqual(filesAfter ?? filesBefore);
-    },
-  );
-});
-
-describe('getNodeTypesVersion', () => {
-  it.each([
-    {
-      mockReturnValue: `"22.10.6"`,
-      expectedVersion: '22.10.6',
-      expectedError: undefined,
-    },
-    {
-      mockReturnValue: `"22.10.6"
-`,
-      expectedVersion: '22.10.6',
-      expectedError: undefined,
-    },
-    {
-      mockReturnValue: 'This is not a version',
-      expectedVersion: '22.9.0',
-      expectedError: 'Failed to fetch latest version, using fallback version',
-    },
-    {
-      mockReturnValue: new Error(
-        'Failed to fetch latest version',
-      ) as unknown as string,
-      expectedVersion: '22.9.0',
-      expectedError: 'Failed to fetch latest version, using fallback version',
-    },
-  ])(
-    'finds the latest node22 types version with mock return value $mockReturnValue',
-    ({ mockReturnValue, expectedVersion, expectedError }) => {
-      jest
-        .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
-        .mockReturnValue(mockReturnValue);
-      const { version, err } = getNode22TypeVersion(22, '22.9.0');
-      expect(version).toBe(expectedVersion);
-      expect(err).toBe(expectedError);
     },
   );
 });

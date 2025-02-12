@@ -18,7 +18,7 @@ jest
 
 jest
   .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
-  .mockReturnValue('22.9.0');
+  .mockReturnValue(Promise.resolve({ version: '22.9.0' }));
 
 jest
   .spyOn(git, 'listRemotes')
