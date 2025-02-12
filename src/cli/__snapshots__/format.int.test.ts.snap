@@ -33,7 +33,7 @@ Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
 Upgrading to Node.js 22
 Upgraded to Node.js 22
 
-Patch applied: Upgrades Node.js to version 22
+Patch applied: Upgrade Node.js to version 22
 
 skuba update complete.
 
@@ -123,7 +123,7 @@ Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
 Upgrading to Node.js 22
 Upgraded to Node.js 22
 
-Patch applied: Upgrades Node.js to version 22
+Patch applied: Upgrade Node.js to version 22
 
 skuba update complete.
 
@@ -208,7 +208,7 @@ Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
 Upgrading to Node.js 22
 Upgraded to Node.js 22
 
-Patch applied: Upgrades Node.js to version 22
+Patch applied: Upgrade Node.js to version 22
 
 skuba update complete.
 
@@ -264,7 +264,7 @@ Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
 Upgrading to Node.js 22
 Upgraded to Node.js 22
 
-Patch applied: Upgrades Node.js to version 22
+Patch applied: Upgrade Node.js to version 22
 
 skuba update complete.
 

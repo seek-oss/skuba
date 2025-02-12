@@ -53,7 +53,7 @@ describe('nodeVersionMigration', () => {
           'plugins:\n  - docker#v3.0.0:\n      image: node:18.1.2-slim\n',
         '.buildkite/pipeline2.yml':
           'plugins:\n  - docker#v3.0.0:\n      image: node:18\n',
-        '.buildkite/pipline3.yml':
+        '.buildkite/pipeline3.yml':
           'plugins:\n  - docker#v3.0.0:\n      image: public.ecr.aws/docker/library/node:20-alpine\n',
         '.node-version': '18.1.2\n',
         '.node-version2': 'v20.15.0\n',
@@ -73,7 +73,7 @@ describe('nodeVersionMigration', () => {
           'plugins:\n  - docker#v3.0.0:\n      image: node:22-slim\n',
         '.buildkite/pipeline2.yml':
           'plugins:\n  - docker#v3.0.0:\n      image: node:22\n',
-        '.buildkite/pipline3.yml':
+        '.buildkite/pipeline3.yml':
           'plugins:\n  - docker#v3.0.0:\n      image: public.ecr.aws/docker/library/node:22-alpine\n',
         '.node-version': '22\n',
         '.node-version2': 'v22\n',
