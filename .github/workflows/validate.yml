@@ -53,7 +53,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.14.0
+          node-version: ^22.14
 
       - name: Set up pnpm
         run: corepack enable pnpm && corepack install
@@ -92,7 +92,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.14.0
+          node-version: ^22.14
 
       - name: Set up pnpm
         run: corepack enable pnpm
@@ -122,7 +122,6 @@ jobs:
           - express-rest-api
           - greeter
           - koa-rest-api
-          - lambda-sqs-worker
           - lambda-sqs-worker-cdk
           - oss-npm-package
           - private-npm-package
@@ -133,7 +132,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.14.0
+          node-version: ^22.14
 
       - name: Set up pnpm
         run: corepack enable pnpm && corepack install
