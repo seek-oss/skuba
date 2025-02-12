@@ -87,12 +87,20 @@ const subPatches: SubPatch[] = [
       replace: '$1<%- version %>$3',
     },
   ],
-  {
-    id: 'tsconfig',
-    files: '**/tsconfig.json',
-    test: /("target":\s*")(ES?:[0-9]+|Next|[A-Za-z]+[0-9]*)"/gim,
-    replace: '$1<%- version %>"',
-  },
+  [
+    {
+      id: 'tsconfig-target',
+      files: '**/tsconfig.json',
+      test: /("target":\s*")(ES\d+)"/gim,
+      replace: '$1<%- version %>"',
+    },
+    {
+      id: 'tsconfig-lib',
+      files: '**/tsconfig.json',
+      test: /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
+      replace: '$1$2<%- version %>$4$5',
+    },
+  ],
   {
     id: 'docker-compose',
     files: '**/docker-compose*.y*ml',
@@ -166,7 +174,7 @@ const runSubPatch = async (
           test: patch.test,
         });
       }
-      if (patch.id === 'tsconfig') {
+      if (patch.id.includes('tsconfig')) {
         if (!(await validServerlessVersion()) || !(await validSkubaType())) {
           return;
         }

@@ -176,7 +176,22 @@ describe('nodeVersionMigration', () => {
       filesAfter: {
         'tsconfig.json': '"target": "ES2024"',
         '1/tsconfig.json': '"target": "ES2024"',
-        '2/tsconfig.json': '"target": "ES2024"',
+        '2/tsconfig.json': '"target": "ESNext"',
+      },
+    },
+    {
+      scenario: 'tsconfig lib',
+      filesBefore: {
+        'tsconfig.json': '"lib": ["ES2020"]',
+        '1/tsconfig.json': '"lib": ["es2014"]',
+        '2/tsconfig.json': '"lib": ["ESNext"]',
+        '3/tsconfig.json': '"lib": ["ESNext",\n"dom",\n"ES2020", "webworker"]',
+      },
+      filesAfter: {
+        'tsconfig.json': '"lib": ["ES2024"]',
+        '1/tsconfig.json': '"lib": ["ES2024"]',
+        '2/tsconfig.json': '"lib": ["ESNext"]',
+        '3/tsconfig.json': '"lib": ["ESNext",\n"dom",\n"ES2024", "webworker"]',
       },
     },
     {
