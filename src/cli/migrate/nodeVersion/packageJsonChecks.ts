@@ -61,7 +61,7 @@ export const validSkubaType = async () => {
 
     if (type === 'package') {
       log.warn(
-        'Skuba type package is not supported, packages should be updated manually to ensure major runtime depreciations are intended',
+        'skuba type package is not supported, packages should be updated manually to ensure major runtime deprecations are intended',
       );
       return false;
     }

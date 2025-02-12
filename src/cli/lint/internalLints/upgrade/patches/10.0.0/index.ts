@@ -5,6 +5,6 @@ import { tryUpgradeNode } from './upgradeNode';
 export const patches: Patches = [
   {
     apply: tryUpgradeNode,
-    description: 'Upgrades Node.js to version 22',
+    description: 'Upgrade Node.js to version 22',
   },
 ];
