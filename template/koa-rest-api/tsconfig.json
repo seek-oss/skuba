@@ -11,7 +11,7 @@
     "paths": {
       "src": ["src"]
     },
-    "target": "ES2022"
+    "target": "ES2024"
   },
   "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"
