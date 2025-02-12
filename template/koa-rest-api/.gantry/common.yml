@@ -9,6 +9,5 @@ image: '{{values "prodAccountId"}}.dkr.ecr.<%- region %>.amazonaws.com/{{values 
 # datadogSecretId: arn:aws:secretsmanager:<%- region %>:<aws-account-id>:secret:<secret-name>
 
 tags:
-  seek:source:sha: '{{.CommitSHA}}'
   seek:source:url: 'https://github.com/SEEK-Jobs/<%- repoName %>'
-  # seek:system:name: 'TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#required-tags'
+  # seek:system:name: 'TODO: https://rfc.skinfra.xyz/RFC051-AWS-Tagging-Standard.html#tagging-schema'

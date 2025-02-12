@@ -8,6 +8,9 @@ on:
 
 permissions: {}
 
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   release:
     name: Publish & Deploy
@@ -28,7 +31,7 @@ jobs:
           node-version: 22.x
 
       - name: Set up pnpm
-        run: corepack enable pnpm && corepack install
+        run: npm install --global corepack@0.31.0 && corepack enable pnpm && corepack install
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

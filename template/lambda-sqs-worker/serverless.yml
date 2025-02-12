@@ -80,11 +80,8 @@ provider:
           Effect: Allow
           Resource: !Ref DestinationTopic
   stackTags:
-    seek:env:label: ${env:ENVIRONMENT}
-    seek:source:sha: ${env:BUILDKITE_COMMIT, 'na'}
     seek:source:url: 'https://github.com/SEEK-Jobs/<%- repoName %>'
-    seek:system:deployed-by: CFN
-    # seek:system:name: 'TODO: https://rfc.skinfra.xyz/RFC019-AWS-Tagging-Standard.html#required-tags'
+    # seek:system:name: 'TODO: https://rfc.skinfra.xyz/RFC051-AWS-Tagging-Standard.html#tagging-schema'
 
 package:
   patterns:

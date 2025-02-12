@@ -1,9 +1,9 @@
-# syntax=docker/dockerfile:1.12
+# syntax=docker/dockerfile:1.13
 
 FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
 
 # Needed for cdk
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash git
 
 RUN --mount=type=bind,source=package.json,target=package.json \
     corepack enable pnpm && corepack install
