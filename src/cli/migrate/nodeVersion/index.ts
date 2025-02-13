@@ -90,13 +90,13 @@ const subPatches: SubPatch[] = [
   [
     {
       id: 'tsconfig-target',
-      files: '**/tsconfig.json',
+      files: '**/tsconfig*.json',
       test: /("target":\s*")(ES\d+)"/gim,
       replace: '$1<%- version %>"',
     },
     {
       id: 'tsconfig-lib',
-      files: '**/tsconfig.json',
+      files: '**/tsconfig*.json',
       test: /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
       replace: '$1$2<%- version %>$4$5',
     },
