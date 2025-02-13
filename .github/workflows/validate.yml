@@ -17,9 +17,6 @@ on:
 
 permissions: {}
 
-env:
-  COREPACK_DEFAULT_TO_LATEST: 0
-
 jobs:
   core:
     name: Lint & Test
@@ -56,10 +53,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: ^22.14
 
       - name: Set up pnpm
-        run: npm install --global corepack@0.31.0 && corepack enable pnpm && corepack install
+        run: corepack enable pnpm && corepack install
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -95,10 +92,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: ^22.14
 
       - name: Set up pnpm
-        run: npm install --global corepack@0.31.0 && corepack enable pnpm
+        run: corepack enable pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -127,7 +124,6 @@ jobs:
           - express-rest-api
           - greeter
           - koa-rest-api
-          - lambda-sqs-worker
           - lambda-sqs-worker-cdk
           - oss-npm-package
           - private-npm-package
@@ -138,10 +134,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version: ^22.14
 
       - name: Set up pnpm
-        run: npm install --global corepack@0.31.0 && corepack enable pnpm && corepack install
+        run: corepack enable pnpm && corepack install
 
       - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
         name: Test template

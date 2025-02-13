@@ -69,7 +69,7 @@ It does not assume a deployment method or environment.
 For inspiration in this space, check out:
 
 - The `koa-rest-api` template for containerised deployments
-- The `lambda-sqs-worker` template for Lambda deployments
+- The `lambda-sqs-worker-cdk` template for Lambda deployments
 
 ## Support
 

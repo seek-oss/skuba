@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.13
 
-FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
+FROM public.ecr.aws/docker/library/node:22-alpine AS dev-deps
 
 RUN --mount=type=bind,source=package.json,target=package.json \
     corepack enable pnpm && corepack install

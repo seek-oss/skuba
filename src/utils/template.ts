@@ -10,7 +10,6 @@ export const TEMPLATE_NAMES = [
   'express-rest-api',
   'greeter',
   'koa-rest-api',
-  'lambda-sqs-worker',
   'lambda-sqs-worker-cdk',
   'oss-npm-package',
   'private-npm-package',
@@ -51,10 +50,6 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
   'koa-rest-api': {
     added: '3.4.1',
     filename: 'api.md',
-  },
-  'lambda-sqs-worker': {
-    added: '3.4.1',
-    filename: 'worker.md',
   },
   'lambda-sqs-worker-cdk': {
     added: '3.13.0',

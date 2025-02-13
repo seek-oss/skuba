@@ -5,13 +5,13 @@
       // open-telemetry/opentelemetry-js#3580
       "DOM",
 
-      "ES2022"
+      "ES2024"
     ],
     "outDir": "lib",
     "paths": {
       "src": ["src"]
     },
-    "target": "ES2022"
+    "target": "ES2024"
   },
   "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"
