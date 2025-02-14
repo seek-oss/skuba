@@ -1,12 +1,12 @@
 import memfs, { vol } from 'memfs';
 
-import * as getNode22TypesVersionModule from './getNode22TypesVersion';
+import * as getNode22TypesVersionModule from './getNodeTypesVersion';
 import * as packageJsonChecks from './packageJsonChecks';
 
 import { nodeVersionMigration } from '.';
 
 jest
-  .spyOn(getNode22TypesVersionModule, 'getNode22TypesVersion')
+  .spyOn(getNode22TypesVersionModule, 'getNodeTypesVersion')
   .mockReturnValue(Promise.resolve({ version: '22.9.0' }));
 
 jest.spyOn(packageJsonChecks, 'validServerlessVersion').mockResolvedValue(true);

@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import { log } from '../../../utils/logging';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 
-import { getNode22TypesVersion } from './getNode22TypesVersion';
+import { getNodeTypesVersion } from './getNodeTypesVersion';
 import { validServerlessVersion, validSkubaType } from './packageJsonChecks';
 
 const DEFAULT_NODE_TYPES = '22.9.0';
@@ -248,7 +248,7 @@ export const nodeVersionMigration = async (
 ) => {
   log.ok(`Upgrading to Node.js ${nodeVersion}`);
   try {
-    const { version: nodeTypesVersion, err } = await getNode22TypesVersion(
+    const { version: nodeTypesVersion, err } = await getNodeTypesVersion(
       nodeVersion,
       DEFAULT_NODE_TYPES,
     );
