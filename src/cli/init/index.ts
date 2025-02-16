@@ -90,8 +90,8 @@ export const init = async (args = process.argv.slice(2)) => {
   await initialiseRepo(destinationDir, templateData);
 
   const [manifest, packageManagerConfig] = await Promise.all([
-    getConsumerManifest(),
-    detectPackageManager(),
+    getConsumerManifest(destinationDir),
+    detectPackageManager(destinationDir),
   ]);
 
   if (!manifest) {
