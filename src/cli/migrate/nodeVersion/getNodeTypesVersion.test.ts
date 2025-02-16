@@ -51,20 +51,33 @@ describe('getNodeTypesVersion', () => {
       },
     ],
     [
-      'should return the latest matching version',
+      'should return the latest matching version filtering out invalid versions',
       () =>
         Promise.resolve({
           '22.1.0': {
             name: '@types/node',
             version: '22.1.0',
           },
+          'not-a-version': {
+            name: '@types/node',
+            version: 'not-a-version',
+          },
           '22.3.0': {
             name: '@types/node',
             version: '22.3.0',
           },
+          '22.4.0': {
+            name: '@types/node',
+            version: '22.4.0',
+            deprecated: 'Warning this version is deprecated',
+          },
           '22.2.0': {
             name: '@types/node',
             version: '22.2.0',
+          },
+          '32.2.0': {
+            name: '@types/node',
+            version: '32.2.0',
           },
         }),
       {

@@ -12,6 +12,7 @@ const NpmFetchResponse = z.record(
   z.object({
     name: z.string(),
     version: z.string(),
+    deprecated: z.string().optional(),
   }),
 );
 
@@ -33,7 +34,12 @@ export const getNodeTypesVersion = async (
     }
 
     const version = Object.values(parsedVersion.data)
-      .filter((v) => valid(v.version) && satisfies(v.version, `${major}.x.x`))
+      .filter(
+        (v) =>
+          valid(v.version) &&
+          satisfies(v.version, `${major}.x.x`) &&
+          !v.deprecated,
+      )
       .reduce((a, b) => (gt(a.version, b.version) ? a : b)).version;
 
     return {
