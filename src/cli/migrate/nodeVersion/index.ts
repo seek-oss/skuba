@@ -9,8 +9,6 @@ import { createDestinationFileReader } from '../../configure/analysis/project';
 import { getNodeTypesVersion } from './getNodeTypesVersion';
 import { validServerlessVersion, validSkubaType } from './packageJsonChecks';
 
-const DEFAULT_NODE_TYPES = '22.9.0';
-
 type SubPatch =
   | (({ files: string; file?: never } | { file: string; files?: never }) & {
       test?: RegExp;
@@ -243,14 +241,19 @@ export const nodeVersionMigration = async (
   {
     nodeVersion,
     ECMAScriptVersion,
-  }: { nodeVersion: number; ECMAScriptVersion: string },
+    defaultNodeTypesVersion,
+  }: {
+    nodeVersion: number;
+    ECMAScriptVersion: string;
+    defaultNodeTypesVersion: string;
+  },
   dir = process.cwd(),
 ) => {
   log.ok(`Upgrading to Node.js ${nodeVersion}`);
   try {
     const { version: nodeTypesVersion, err } = await getNodeTypesVersion(
       nodeVersion,
-      DEFAULT_NODE_TYPES,
+      defaultNodeTypesVersion,
     );
     if (err) {
       log.warn(err);

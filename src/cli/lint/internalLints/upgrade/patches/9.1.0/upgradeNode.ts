@@ -17,7 +17,11 @@ const upgradeNode: PatchFunction = async ({
     return { result: 'apply' };
   }
 
-  await nodeVersionMigration({ nodeVersion: 22, ECMAScriptVersion: 'ES2024' });
+  await nodeVersionMigration({
+    nodeVersion: 22,
+    ECMAScriptVersion: 'ES2024',
+    defaultNodeTypesVersion: '22.9.0',
+  });
 
   return { result: 'apply' };
 };

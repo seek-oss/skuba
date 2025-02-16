@@ -2,8 +2,6 @@ import npmFetch from 'npm-registry-fetch';
 
 import { getNodeTypesVersion } from './getNodeTypesVersion';
 
-const DEFAULT_VERSION = '22.9.0';
-
 const mockNpmFetch = jest.spyOn(npmFetch, 'json');
 
 describe('getNodeTypesVersion', () => {
@@ -19,7 +17,7 @@ describe('getNodeTypesVersion', () => {
           invalid: 'response',
         }),
       {
-        version: DEFAULT_VERSION,
+        version: '22.9.0',
         err: 'Failed to fetch latest version, using fallback version',
       },
     ],
@@ -27,7 +25,7 @@ describe('getNodeTypesVersion', () => {
       'should return the default version if the response is not ok',
       () => Promise.reject(new Error('Not found')),
       {
-        version: DEFAULT_VERSION,
+        version: '22.9.0',
         err: 'Failed to fetch latest version, using fallback version',
       },
     ],
@@ -35,7 +33,7 @@ describe('getNodeTypesVersion', () => {
       'should return default version if fetch fails',
       () => Promise.reject(new Error('Network error')),
       {
-        version: DEFAULT_VERSION,
+        version: '22.9.0',
         err: 'Failed to fetch latest version, using fallback version',
       },
     ],
@@ -46,7 +44,7 @@ describe('getNodeTypesVersion', () => {
           versions: {},
         }),
       {
-        version: DEFAULT_VERSION,
+        version: '22.9.0',
         err: 'Failed to fetch latest version, using fallback version',
       },
     ],
@@ -87,8 +85,6 @@ describe('getNodeTypesVersion', () => {
   ])('%s', async (_, mockFetch, expected) => {
     mockNpmFetch.mockImplementation(mockFetch);
 
-    await expect(getNodeTypesVersion(22, DEFAULT_VERSION)).resolves.toEqual(
-      expected,
-    );
+    await expect(getNodeTypesVersion(22, '22.9.0')).resolves.toEqual(expected);
   });
 });

@@ -221,6 +221,7 @@ describe('nodeVersionMigration', () => {
       await nodeVersionMigration({
         nodeVersion: 22,
         ECMAScriptVersion: 'ES2024',
+        defaultNodeTypesVersion: '22.9.0',
       });
 
       expect(volToJson()).toEqual(filesAfter ?? filesBefore);
