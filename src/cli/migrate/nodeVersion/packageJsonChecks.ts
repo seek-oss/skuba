@@ -1,5 +1,7 @@
 import findUp from 'find-up';
 import fs from 'fs-extra';
+import { satisfies } from 'semver';
+import { type ZodRawShape, z } from 'zod';
 
 import { log } from '../../../utils/logging';
 
@@ -8,68 +10,78 @@ const getParentPackageJson = async () => {
   if (!packageJsonPath) {
     throw new Error('package.json not found');
   }
-  return fs.readFile(packageJsonPath);
+  return fs.readFile(packageJsonPath, 'utf-8');
 };
 
-const isTypeError = (error: unknown): error is TypeError =>
-  error instanceof TypeError &&
-  error.message.includes('Cannot read properties of undefined');
-
-const isSyntaxError = (error: unknown): error is SyntaxError =>
-  error instanceof SyntaxError && error.message.includes('Unexpected token');
-
-export const validServerlessVersion = async (): Promise<boolean> => {
+export const extractFromParentPackageJson = async <T extends ZodRawShape>(
+  schema: z.ZodObject<T>,
+): Promise<z.infer<typeof schema> | undefined> => {
   const packageJson = await getParentPackageJson();
-
+  let rawJSON;
   try {
-    const serverlessVersion = (
-      JSON.parse(packageJson.toString()) as {
-        devDependencies: Record<string, string>;
-      }
-    ).devDependencies.serverless;
-    if (!serverlessVersion) {
-      return true;
-    }
-
-    if (!serverlessVersion.startsWith('4')) {
-      log.warn(
-        'Serverless version not supported, please upgrade to 4.x to automatically update serverless files',
-      );
-      return false;
-    }
-  } catch (error) {
-    if (isTypeError(error) || isSyntaxError(error)) {
-      return true;
-    }
-    throw error;
+    rawJSON = JSON.parse(packageJson) as unknown;
+  } catch {
+    throw new Error('package.json is not valid JSON');
   }
+  const result = schema.safeParse(rawJSON);
+  if (!result.success) {
+    return undefined;
+  }
+
+  return result.data;
+};
+
+export const isPatchableServerlessVersion = async (): Promise<boolean> => {
+  const serverlessVersion = (
+    await extractFromParentPackageJson(
+      z.object({
+        devDependencies: z.object({
+          serverless: z.string(),
+        }),
+      }),
+    )
+  )?.devDependencies.serverless;
+
+  if (!serverlessVersion) {
+    log.subtle('Serverless version not found, assuming it is not a dependency');
+    return true;
+  }
+
+  if (!satisfies(serverlessVersion, '4.x.x')) {
+    log.warn(
+      'Serverless version not supported, please upgrade to 4.x to automatically update serverless files',
+    );
+    return false;
+  }
+
+  log.ok('Serverless version is supported, proceeding with migration');
   return true;
 };
 
-export const validSkubaType = async () => {
-  const packageJson = await getParentPackageJson();
+export const isPatchableSkubaType = async () => {
+  const type = (
+    await extractFromParentPackageJson(
+      z.object({
+        skuba: z.object({
+          type: z.string(),
+        }),
+      }),
+    )
+  )?.skuba.type;
 
-  try {
-    const type = (
-      JSON.parse(packageJson.toString()) as {
-        skuba: Record<string, string>;
-      }
-    ).skuba.type;
-    if (!type) {
-      return true;
-    }
-
-    if (type === 'package') {
-      log.warn(
-        'skuba type package is not supported, packages should be updated manually to ensure major runtime deprecations are intended',
-      );
-      return false;
-    }
-  } catch (error) {
-    if (isTypeError(error) || isSyntaxError(error)) {
-      return true;
-    }
-    throw error;
+  if (!type) {
+    log.warn(
+      "skuba type couldn't be found, please specify the type of project in the package.json, to ensure the correct migration is applied",
+    );
+    return false;
   }
+  if (type === 'package') {
+    log.warn(
+      'skuba type package is not supported, packages should be updated manually to ensure major runtime deprecations are intended',
+    );
+    return false;
+  }
+
+  log.ok('skuba type supported, proceeding with migration');
   return true;
 };

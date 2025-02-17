@@ -6,7 +6,10 @@ jest.mock('fs-extra');
 
 import { log } from '../../../utils/logging';
 
-import { validServerlessVersion, validSkubaType } from './packageJsonChecks';
+import {
+  isPatchableServerlessVersion,
+  isPatchableSkubaType,
+} from './packageJsonChecks';
 
 jest.spyOn(log, 'warn');
 
@@ -14,7 +17,7 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-describe('validServerlessVersion', () => {
+describe('isPatchableServerlessVersion', () => {
   it('resolves as a noop when serverless version is supported', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
     jest
@@ -27,7 +30,7 @@ describe('validServerlessVersion', () => {
           },
         }) as never,
       );
-    await expect(validServerlessVersion()).resolves.toBe(true);
+    await expect(isPatchableServerlessVersion()).resolves.toBe(true);
   });
   it('should return false when the serverless version is below 4', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
@@ -41,7 +44,7 @@ describe('validServerlessVersion', () => {
           },
         }) as never,
       );
-    await expect(validServerlessVersion()).resolves.toBe(false);
+    await expect(isPatchableServerlessVersion()).resolves.toBe(false);
   });
   it('should return true when serverless version is not found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
@@ -49,12 +52,22 @@ describe('validServerlessVersion', () => {
       .spyOn(fs, 'readFile')
       .mockImplementation()
       .mockReturnValue(JSON.stringify({}) as never);
-    await expect(validServerlessVersion()).resolves.toBe(true);
+    await expect(isPatchableServerlessVersion()).resolves.toBe(true);
   });
   it('throws when no package.json is found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce(undefined);
-    await expect(validServerlessVersion()).rejects.toThrow(
+    await expect(isPatchableServerlessVersion()).rejects.toThrow(
       'package.json not found',
+    );
+  });
+  it('should return an error when the package.json is not valid json', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('package.json');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue('invalid json' as never);
+    await expect(isPatchableServerlessVersion()).rejects.toThrow(
+      'package.json is not valid JSON',
     );
   });
 });
@@ -72,7 +85,7 @@ describe('validSkubaType', () => {
           },
         }) as never,
       );
-    await expect(validSkubaType()).resolves.toBe(true);
+    await expect(isPatchableSkubaType()).resolves.toBe(true);
   });
   it('should return false when skuba type is "package"', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
@@ -86,7 +99,7 @@ describe('validSkubaType', () => {
           },
         }) as never,
       );
-    await expect(validSkubaType()).resolves.toBe(false);
+    await expect(isPatchableSkubaType()).resolves.toBe(false);
   });
   it('should return true when skuba type is not found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
@@ -94,6 +107,6 @@ describe('validSkubaType', () => {
       .spyOn(fs, 'readFile')
       .mockImplementation()
       .mockReturnValue(JSON.stringify({}) as never);
-    await expect(validSkubaType()).resolves.toBe(true);
+    await expect(isPatchableSkubaType()).resolves.toBe(false);
   });
 });
