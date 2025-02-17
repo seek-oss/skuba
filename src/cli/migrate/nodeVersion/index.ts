@@ -26,21 +26,20 @@ type SubPatch =
       }
     >;
 
-const SHA_REGEX = /(?<=node.*)(@sha256:[a-f0-9]{64})/gm;
-
 const subPatches: SubPatch[] = [
   { id: 'nvmrc', file: '.nvmrc', replace: '<%- version %>\n' },
   {
     id: 'Dockerfile-1',
     files: '**/Dockerfile*',
-    test: /^FROM(.*) (public.ecr.aws\/docker\/library\/)?node:[0-9.]+(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
-    replace: 'FROM$1 $2node:<%- version %>$3$5$6',
+
+    test: /^FROM(.*) (public.ecr.aws\/docker\/library\/)?node:([0-9]+(?:\.[0-9]+(?:\.[0-9]+)?)?)(-[a-z0-9]+)?(@sha256:[a-f0-9]{64})?( .*)?$/gm,
+    replace: 'FROM$1 $2node:<%- version %>$4$6',
   },
   {
     id: 'Dockerfile-2',
     files: '**/Dockerfile*',
-    test: /^FROM(.*) gcr.io\/distroless\/nodejs\d+-debian(.+)$/gm,
-    replace: 'FROM$1 gcr.io/distroless/nodejs<%- version %>-debian$2',
+    test: /^FROM(.*) gcr.io\/distroless\/nodejs\d+-debian(\d+)(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
+    replace: 'FROM$1 gcr.io/distroless/nodejs<%- version %>-debian$2$4$5$6',
   },
   {
     id: 'serverless',
@@ -110,8 +109,8 @@ const subPatches: SubPatch[] = [
   },
 ];
 
-const removeNodeShas = (content: string): string =>
-  content.replace(SHA_REGEX, '');
+// const removeNodeShas = (content: string): string =>
+//   content.replace(SHA_REGEX, '');
 
 type Versions = {
   nodeVersion: number;
@@ -153,7 +152,7 @@ const runSubPatch = async (
         return;
       }
 
-      const unPinnedContents = removeNodeShas(contents);
+      // const unPinnedContents = removeNodeShas(contents);
 
       if (patch.id === 'serverless') {
         if (!(await isPatchableServerlessVersion())) {
@@ -167,7 +166,7 @@ const runSubPatch = async (
         }
         return await writePatchedContents({
           path,
-          contents: unPinnedContents,
+          contents,
           templated: patch.replace.replaceAll(
             '<%- version %>',
             nodeTypesVersion,
@@ -184,7 +183,7 @@ const runSubPatch = async (
         }
         return await writePatchedContents({
           path,
-          contents: unPinnedContents,
+          contents,
           templated: patch.replace.replaceAll(
             '<%- version %>',
             ECMAScriptVersion,
@@ -204,7 +203,7 @@ const runSubPatch = async (
 
       await writePatchedContents({
         path,
-        contents: unPinnedContents,
+        contents,
         templated: patch.replace.replaceAll(
           '<%- version %>',
           nodeVersion.toString(),
