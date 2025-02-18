@@ -18,7 +18,7 @@ describe('getNodeTypesVersion', () => {
         }),
       {
         version: '22.9.0',
-        err: 'Failed to fetch latest version, using fallback version',
+        err: 'Failed to fetch latest @types/node version, using fallback version',
       },
     ],
     [
@@ -26,7 +26,7 @@ describe('getNodeTypesVersion', () => {
       () => Promise.reject(new Error('Not found')),
       {
         version: '22.9.0',
-        err: 'Failed to fetch latest version, using fallback version',
+        err: 'Failed to fetch latest @types/node version, using fallback version',
       },
     ],
     [
@@ -34,7 +34,7 @@ describe('getNodeTypesVersion', () => {
       () => Promise.reject(new Error('Network error')),
       {
         version: '22.9.0',
-        err: 'Failed to fetch latest version, using fallback version',
+        err: 'Failed to fetch latest @types/node version, using fallback version',
       },
     ],
     [
@@ -45,7 +45,7 @@ describe('getNodeTypesVersion', () => {
         }),
       {
         version: '22.9.0',
-        err: 'Failed to fetch latest version, using fallback version',
+        err: 'Failed to fetch latest @types/node version, using fallback version',
       },
     ],
     [
