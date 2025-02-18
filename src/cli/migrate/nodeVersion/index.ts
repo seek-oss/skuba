@@ -12,105 +12,103 @@ import {
   isPatchableSkubaType,
 } from './packageJsonChecks';
 
-type SubPatch =
-  | (({ files: string; file?: never } | { file: string; files?: never }) & {
-      test?: RegExp;
-      replace: string;
-      id: string;
-    })
-  | Array<
-      ({ files: string; file?: never } | { file: string; files?: never }) & {
-        test?: RegExp;
-        replace: string;
-        id: string;
-      }
-    >;
+type FileSelector =
+  | { files: string; file?: never }
+  | { file: string; files?: never };
 
-const subPatches: SubPatch[] = [
-  { id: 'nvmrc', file: '.nvmrc', replace: '<%- version %>\n' },
+type SubPatch = FileSelector & {
+  tests?: Array<() => Promise<boolean>>;
+  regex?: RegExp;
+  replace: string;
+};
+
+type SubPatches = SubPatch | SubPatch[];
+
+const subPatches = ({
+  nodeVersion,
+  nodeTypesVersion,
+  ECMAScriptVersion,
+}: Versions): SubPatches[] => [
+  { file: '.nvmrc', replace: `${nodeVersion}\n` },
   {
-    id: 'Dockerfile-1',
     files: '**/Dockerfile*',
 
-    test: /^FROM(.*) (public.ecr.aws\/docker\/library\/)?node:([0-9]+(?:\.[0-9]+(?:\.[0-9]+)?)?)(-[a-z0-9]+)?(@sha256:[a-f0-9]{64})?( .*)?$/gm,
-    replace: 'FROM$1 $2node:<%- version %>$4$6',
+    regex:
+      /^FROM(.*) (public.ecr.aws\/docker\/library\/)?node:([0-9]+(?:\.[0-9]+(?:\.[0-9]+)?)?)(-[a-z0-9]+)?(@sha256:[a-f0-9]{64})?( .*)?$/gm,
+    replace: `FROM$1 $2node:${nodeVersion}$4$6`,
   },
   {
-    id: 'Dockerfile-2',
     files: '**/Dockerfile*',
-    test: /^FROM(.*) gcr.io\/distroless\/nodejs\d+-debian(\d+)(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
-    replace: 'FROM$1 gcr.io/distroless/nodejs<%- version %>-debian$2$4$5$6',
+    regex:
+      /^FROM(.*) gcr.io\/distroless\/nodejs\d+-debian(\d+)(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
+    replace: `FROM$1 gcr.io/distroless/nodejs${nodeVersion}-debian$2$4$5$6`,
   },
   {
-    id: 'serverless',
     files: '**/serverless*.y*ml',
-    test: /nodejs\d+.x/gm,
-    replace: 'nodejs<%- version %>.x',
+    regex: /nodejs\d+.x/gm,
+    tests: [isPatchableServerlessVersion],
+    replace: `nodejs${nodeVersion}.x`,
   },
   [
     {
-      id: 'cdk-1',
       files: '**/infra/**/*.ts',
-      test: /NODEJS_\d+_X/g,
-      replace: 'NODEJS_<%- version %>_X',
+      regex: /NODEJS_\d+_X/g,
+      replace: `NODEJS_${nodeVersion}_X`,
     },
     {
-      id: 'cdk-2',
       files: '**/infra/**/*.ts',
-      test: /(target:\s*'node)(\d+)(.+)$/gm,
-      replace: '$1<%- version %>$3',
+      regex: /(target:\s*'node)(\d+)(.+)$/gm,
+      replace: `$1${nodeVersion}$3`,
     },
   ],
   {
-    id: 'buildkite',
     files: '**/.buildkite/*',
-    test: /(image: )(public.ecr.aws\/docker\/library\/)?(node:)[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
-    replace: '$1$2$3<%- version %>$5',
+    regex:
+      /(image: )(public.ecr.aws\/docker\/library\/)?(node:)[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
+    replace: `$1$2$3${nodeVersion}$5`,
   },
   {
-    id: 'node-version',
     files: '.node-version*',
-    test: /(v)?\d+\.\d+\.\d+(.+)?/gm,
-    replace: '$1<%- version %>$2',
+    regex: /(v)?\d+\.\d+\.\d+(.+)?/gm,
+    replace: `$1${nodeVersion}$2`,
   },
   [
     {
-      id: 'package-json-1',
       files: '**/package.json',
-      test: /(\\?"@types\/node\\?": \\?")(\^)?[0-9.]+(\\?(",?)\\?n?)/gm,
-      replace: '$1$2<%- version %>$4',
+      regex: /(\\?"@types\/node\\?": \\?")(\^)?[0-9.]+(\\?(",?)\\?n?)/gm,
+      tests: [isPatchableServerlessVersion],
+      replace: `$1$2${nodeTypesVersion}$4`,
     },
     {
-      id: 'package-json-2',
       files: '**/package.json',
-      test: /(\\?"engines\\?":\s*{\\?n?[^}]*\\?"node\\?":\s*\\?">=)(\d+)\\?("[^}]*})(?![^}]*\\?"skuba\\?":\s*{\\?n?[^}]*\\?"type\\?":\s*\\?"package\\?")/gm,
-      replace: '$1<%- version %>$3',
+      regex:
+        /(\\?"engines\\?":\s*{\\?n?[^}]*\\?"node\\?":\s*\\?">=)(\d+)\\?("[^}]*})(?![^}]*\\?"skuba\\?":\s*{\\?n?[^}]*\\?"type\\?":\s*\\?"package\\?")/gm,
+      tests: [isPatchableServerlessVersion, isPatchableSkubaType],
+      replace: `$1${nodeVersion}$3`,
     },
   ],
   [
     {
-      id: 'tsconfig-target',
       files: '**/tsconfig*.json',
-      test: /("target":\s*")(ES\d+)"/gim,
-      replace: '$1<%- version %>"',
+      regex: /("target":\s*")(ES\d+)"/gim,
+      tests: [isPatchableServerlessVersion, isPatchableSkubaType],
+      replace: `$1${ECMAScriptVersion}"`,
     },
     {
-      id: 'tsconfig-lib',
       files: '**/tsconfig*.json',
-      test: /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
-      replace: '$1$2<%- version %>$4$5',
+      regex: /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
+      tests: [isPatchableServerlessVersion, isPatchableSkubaType],
+      replace: `$1$2${ECMAScriptVersion}$4$5`,
     },
   ],
   {
-    id: 'docker-compose',
     files: '**/docker-compose*.y*ml',
-    test: /(image: )(public.ecr.aws\/docker\/library\/)?(node:)[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
-    replace: '$1$2$3<%- version %>$5',
+    regex:
+      /(image: )(public.ecr.aws\/docker\/library\/)?(node:)[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
+
+    replace: `$1$2$3${nodeVersion}$5`,
   },
 ];
-
-// const removeNodeShas = (content: string): string =>
-//   content.replace(SHA_REGEX, '');
 
 type Versions = {
   nodeVersion: number;
@@ -118,18 +116,10 @@ type Versions = {
   ECMAScriptVersion: string;
 };
 
-const runSubPatch = async (
-  { nodeVersion, nodeTypesVersion, ECMAScriptVersion }: Versions,
-  dir: string,
-  patch: SubPatch,
-) => {
+const runSubPatch = async (dir: string, patch: SubPatches) => {
   if (Array.isArray(patch)) {
     for (const subPatch of patch) {
-      await runSubPatch(
-        { nodeVersion, nodeTypesVersion, ECMAScriptVersion },
-        dir,
-        subPatch,
-      );
+      await runSubPatch(dir, subPatch);
     }
     return;
   }
@@ -148,55 +138,13 @@ const runSubPatch = async (
         return;
       }
 
-      if (patch.test && !patch.test.test(contents)) {
+      if (patch.regex && !patch.regex.test(contents)) {
         return;
       }
 
-      // const unPinnedContents = removeNodeShas(contents);
-
-      if (patch.id === 'serverless') {
-        if (!(await isPatchableServerlessVersion())) {
-          return;
-        }
-      }
-
-      if (patch.id === 'package-json-1') {
-        if (!(await isPatchableServerlessVersion())) {
-          return;
-        }
-        return await writePatchedContents({
-          path,
-          contents,
-          templated: patch.replace.replaceAll(
-            '<%- version %>',
-            nodeTypesVersion,
-          ),
-          test: patch.test,
-        });
-      }
-      if (patch.id.includes('tsconfig')) {
-        if (
-          !(await isPatchableServerlessVersion()) ||
-          !(await isPatchableSkubaType())
-        ) {
-          return;
-        }
-        return await writePatchedContents({
-          path,
-          contents,
-          templated: patch.replace.replaceAll(
-            '<%- version %>',
-            ECMAScriptVersion,
-          ),
-          test: patch.test,
-        });
-      }
-
-      if (patch.id === 'package-json-2') {
-        if (
-          !(await isPatchableServerlessVersion()) ||
-          !(await isPatchableSkubaType())
-        ) {
+      if (patch.tests) {
+        const results = await Promise.all(patch.tests.map((test) => test()));
+        if (!results.every(Boolean)) {
           return;
         }
       }
@@ -204,11 +152,8 @@ const runSubPatch = async (
       await writePatchedContents({
         path,
         contents,
-        templated: patch.replace.replaceAll(
-          '<%- version %>',
-          nodeVersion.toString(),
-        ),
-        test: patch.test,
+        templated: patch.replace,
+        regex: patch.regex,
       });
     }),
   );
@@ -218,30 +163,21 @@ const writePatchedContents = async ({
   path,
   contents,
   templated,
-  test,
+  regex,
 }: {
   path: string;
   contents: string;
   templated: string;
-  test?: RegExp;
+  regex?: RegExp;
 }) =>
   await fs.promises.writeFile(
     path,
-    test ? contents.replaceAll(test, templated) : templated,
+    regex ? contents.replaceAll(regex, templated) : templated,
   );
 
-const upgrade = async (
-  { nodeVersion, nodeTypesVersion, ECMAScriptVersion }: Versions,
-  dir: string,
-) => {
+const upgrade = async (versions: Versions, dir: string) => {
   await Promise.all(
-    subPatches.map((subPatch) =>
-      runSubPatch(
-        { nodeVersion, nodeTypesVersion, ECMAScriptVersion },
-        dir,
-        subPatch,
-      ),
-    ),
+    subPatches(versions).map((subPatch) => runSubPatch(dir, subPatch)),
   );
 };
 
