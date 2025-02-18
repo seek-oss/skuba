@@ -7,9 +7,10 @@ jest.mock('fs-extra');
 import { log } from '../../../utils/logging';
 
 import {
+  isPatchableNodeVersion,
   isPatchableServerlessVersion,
   isPatchableSkubaType,
-} from './packageJsonChecks';
+} from './checks';
 
 jest.spyOn(log, 'warn');
 
@@ -72,7 +73,7 @@ describe('isPatchableServerlessVersion', () => {
   });
 });
 
-describe('validSkubaType', () => {
+describe('isPatchableSkubaType', () => {
   it('should return true when skuba type is not "package"', async () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
     jest
@@ -108,5 +109,48 @@ describe('validSkubaType', () => {
       .mockImplementation()
       .mockReturnValue(JSON.stringify({}) as never);
     await expect(isPatchableSkubaType()).resolves.toBe(false);
+  });
+});
+
+describe('isPatchableNodeVersion', () => {
+  it('should return true when the node version is supported', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('.nvmrc');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue('20' as never);
+    await expect(isPatchableNodeVersion(22)).resolves.toBe(true);
+  });
+  it('should return false when the node version is greater than the target version', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('.nvmrc');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue('24' as never);
+    await expect(isPatchableNodeVersion(22)).resolves.toBe(false);
+  });
+  it('should return false when the node version is not found', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('.nvmrc');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue(null as never);
+    await expect(isPatchableNodeVersion(22)).resolves.toBe(false);
+  });
+  it('should return false when the current node version is not a number', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('.nvmrc');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue('twenty' as never);
+    await expect(isPatchableNodeVersion(22)).resolves.toBe(false);
+  });
+  it('should return false when the target node version is invalid', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('.nvmrc');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue('20' as never);
+    await expect(isPatchableNodeVersion(-1)).resolves.toBe(false);
   });
 });

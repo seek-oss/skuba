@@ -1,7 +1,7 @@
 import memfs, { vol } from 'memfs';
 
+import * as packageJsonChecks from './checks';
 import * as getNode22TypesVersionModule from './getNodeTypesVersion';
-import * as packageJsonChecks from './packageJsonChecks';
 
 import { nodeVersionMigration } from '.';
 

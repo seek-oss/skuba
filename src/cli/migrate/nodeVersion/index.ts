@@ -6,11 +6,12 @@ import fs from 'fs-extra';
 import { log } from '../../../utils/logging';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 
-import { getNodeTypesVersion } from './getNodeTypesVersion';
 import {
+  isPatchableNodeVersion,
   isPatchableServerlessVersion,
   isPatchableSkubaType,
-} from './packageJsonChecks';
+} from './checks';
+import { getNodeTypesVersion } from './getNodeTypesVersion';
 
 type FileSelector =
   | { files: string; file?: never }
@@ -195,6 +196,10 @@ export const nodeVersionMigration = async (
 ) => {
   log.ok(`Upgrading to Node.js ${nodeVersion}`);
   try {
+    if (!(await isPatchableNodeVersion(nodeVersion))) {
+      throw new Error('Node version is not patchable');
+    }
+
     const { version: nodeTypesVersion, err } = await getNodeTypesVersion(
       nodeVersion,
       defaultNodeTypesVersion,
@@ -204,9 +209,9 @@ export const nodeVersionMigration = async (
     }
     await upgrade({ nodeVersion, nodeTypesVersion, ECMAScriptVersion }, dir);
     log.ok('Upgraded to Node.js', nodeVersion);
-  } catch (err) {
+  } catch (error) {
     log.err('Failed to upgrade');
-    log.subtle(inspect(err));
+    log.subtle(inspect(error));
     process.exitCode = 1;
   }
 };
