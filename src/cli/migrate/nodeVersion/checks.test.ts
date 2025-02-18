@@ -153,4 +153,12 @@ describe('isPatchableNodeVersion', () => {
       .mockReturnValue('20' as never);
     await expect(isPatchableNodeVersion(-1)).resolves.toBe(false);
   });
+  it('should return true when the node version is equal to the target version', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('.nvmrc');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue('22' as never);
+    await expect(isPatchableNodeVersion(22)).resolves.toBe(true);
+  });
 });

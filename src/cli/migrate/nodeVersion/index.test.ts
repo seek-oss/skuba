@@ -1,6 +1,6 @@
 import memfs, { vol } from 'memfs';
 
-import * as packageJsonChecks from './checks';
+import * as checks from './checks';
 import * as getNode22TypesVersionModule from './getNodeTypesVersion';
 
 import { nodeVersionMigration } from '.';
@@ -9,11 +9,11 @@ jest
   .spyOn(getNode22TypesVersionModule, 'getNodeTypesVersion')
   .mockReturnValue(Promise.resolve({ version: '22.9.0' }));
 
-jest
-  .spyOn(packageJsonChecks, 'isPatchableServerlessVersion')
-  .mockResolvedValue(true);
+jest.spyOn(checks, 'isPatchableServerlessVersion').mockResolvedValue(true);
 
-jest.spyOn(packageJsonChecks, 'isPatchableSkubaType').mockResolvedValue(true);
+jest.spyOn(checks, 'isPatchableSkubaType').mockResolvedValue(true);
+
+jest.spyOn(checks, 'isPatchableNodeVersion').mockResolvedValue(true);
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({

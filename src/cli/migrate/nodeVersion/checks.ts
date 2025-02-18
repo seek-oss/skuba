@@ -1,6 +1,6 @@
 import findUp from 'find-up';
 import fs from 'fs-extra';
-import { coerce, lt, satisfies } from 'semver';
+import { coerce, lte, satisfies } from 'semver';
 import { type ZodRawShape, z } from 'zod';
 
 import { log } from '../../../utils/logging';
@@ -97,7 +97,7 @@ export const isPatchableNodeVersion = async (
   const isNodeVersionValid =
     coercedTargetVersion &&
     coercedCurrentVersion &&
-    lt(coercedCurrentVersion, coercedTargetVersion);
+    lte(coercedCurrentVersion, coercedTargetVersion);
 
   if (!isNodeVersionValid) {
     log.warn(
