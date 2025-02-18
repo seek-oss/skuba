@@ -7,14 +7,16 @@ type VersionResult = {
   err?: string;
 };
 
-const NpmFetchResponse = z.record(
-  z.string(),
-  z.object({
-    name: z.string(),
-    version: z.string(),
-    deprecated: z.string().optional(),
-  }),
-);
+const NpmFetchResponse = z.object({
+  versions: z.record(
+    z.string(),
+    z.object({
+      name: z.string(),
+      version: z.string(),
+      deprecated: z.string().optional(),
+    }),
+  ),
+});
 
 export const getNodeTypesVersion = async (
   major: number,
@@ -28,12 +30,12 @@ export const getNodeTypesVersion = async (
       },
     });
 
-    const parsedVersion = NpmFetchResponse.safeParse(response);
-    if (!parsedVersion.success) {
+    const parsedVersions = NpmFetchResponse.safeParse(response);
+    if (!parsedVersions.success) {
       throw new Error('Failed to parse response');
     }
 
-    const version = Object.values(parsedVersion.data)
+    const version = Object.values(parsedVersions.data.versions)
       .filter(
         (v) =>
           valid(v.version) &&
