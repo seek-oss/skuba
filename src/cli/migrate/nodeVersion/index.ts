@@ -44,12 +44,20 @@ const subPatches = ({
       /^FROM(.*) gcr.io\/distroless\/nodejs\d+-debian(\d+)(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
     replace: `FROM$1 gcr.io/distroless/nodejs${nodeVersion}-debian$2$4$5$6`,
   },
-  {
-    files: '**/serverless*.y*ml',
-    regex: /nodejs\d+.x/gm,
-    tests: [isPatchableServerlessVersion],
-    replace: `nodejs${nodeVersion}.x`,
-  },
+  [
+    {
+      files: '**/serverless*.y*ml',
+      regex: /nodejs\d+.x/gm,
+      tests: [isPatchableServerlessVersion],
+      replace: `nodejs${nodeVersion}.x`,
+    },
+    {
+      files: '**/serverless*.y*ml',
+      regex: /node\d+/gm,
+      tests: [isPatchableServerlessVersion],
+      replace: `node${nodeVersion}`,
+    },
+  ],
   [
     {
       files: '**/infra/**/*.ts',
