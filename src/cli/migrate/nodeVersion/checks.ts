@@ -10,13 +10,17 @@ const getParentFile = async (file: string) => {
   if (!path) {
     throw new Error(`${file} not found`);
   }
-  return fs.readFile(path, 'utf-8');
+  return {
+    fileContent: await fs.readFile(path, 'utf-8'),
+    path,
+  };
 };
 
 export const extractFromParentPackageJson = async <T extends ZodRawShape>(
   schema: z.ZodObject<T>,
-): Promise<z.infer<typeof schema> | undefined> => {
-  const packageJson = await getParentFile('package.json');
+) => {
+  const { fileContent: packageJson, path } =
+    await getParentFile('package.json');
   let rawJSON;
   try {
     rawJSON = JSON.parse(packageJson) as unknown;
@@ -25,53 +29,58 @@ export const extractFromParentPackageJson = async <T extends ZodRawShape>(
   }
   const result = schema.safeParse(rawJSON);
   if (!result.success) {
-    return undefined;
+    return { packageJson: undefined, packageJsonRelativePath: path };
   }
 
-  return result.data;
+  return { packageJson: result.data, packageJsonRelativePath: path };
 };
 
 export const isPatchableServerlessVersion = async (): Promise<boolean> => {
-  const serverlessVersion = (
+  const { packageJson, packageJsonRelativePath } =
     await extractFromParentPackageJson(
       z.object({
         devDependencies: z.object({
           serverless: z.string(),
         }),
       }),
-    )
-  )?.devDependencies.serverless;
+    );
+
+  const serverlessVersion = packageJson?.devDependencies.serverless;
 
   if (!serverlessVersion) {
-    log.subtle(`Serverless version not found in ${packageJsonRelativePath}, assuming it is not a dependency`);
+    log.subtle(
+      `Serverless version not found in ${packageJsonRelativePath}, assuming it is not a dependency`,
+    );
     return true;
   }
 
   if (!satisfies(serverlessVersion, '4.x.x')) {
     log.warn(
-      `Serverless version ${serverlessVersion} cannot be migrated; use Serverless 4.x to automatically migrate Serverless files',
+      `Serverless version ${serverlessVersion} cannot be migrated; use Serverless 4.x to automatically migrate Serverless files`,
     );
     return false;
   }
 
-  log.ok(`Proceeding with migration of Serverless version ${serverlessVersion}`);
+  log.ok(
+    `Proceeding with migration of Serverless version ${serverlessVersion}`,
+  );
   return true;
 };
 
 export const isPatchableSkubaType = async (): Promise<boolean> => {
-  const type = (
+  const { packageJson, packageJsonRelativePath } =
     await extractFromParentPackageJson(
       z.object({
         skuba: z.object({
           type: z.string(),
         }),
       }),
-    )
-  )?.skuba.type;
+    );
+  const type = packageJson?.skuba.type;
 
   if (!type) {
     log.warn(
-      "skuba project type not found in ${packageJsonRelativePath}`; add a package.json#/skuba/type to ensure the correct migration can be applied",
+      `skuba project type not found in ${packageJsonRelativePath}; add a package.json#/skuba/type to ensure the correct migration can be applied`,
     );
     return false;
   }
@@ -89,7 +98,7 @@ export const isPatchableSkubaType = async (): Promise<boolean> => {
 export const isPatchableNodeVersion = async (
   targetNodeVersion: number,
 ): Promise<boolean> => {
-  const currentNodeVersion = await getParentFile('.nvmrc');
+  const { fileContent: currentNodeVersion } = await getParentFile('.nvmrc');
 
   const coercedTargetVersion = coerce(targetNodeVersion.toString())?.version;
   const coercedCurrentVersion = coerce(currentNodeVersion)?.version;
@@ -106,6 +115,8 @@ export const isPatchableNodeVersion = async (
     return false;
   }
 
-  log.ok(`Proceeding with migration from Node.js ${coercedCurrentVersion} to ${coercedTargetVersion}`);
+  log.ok(
+    `Proceeding with migration from Node.js ${coercedCurrentVersion} to ${coercedTargetVersion}`,
+  );
   return true;
 };

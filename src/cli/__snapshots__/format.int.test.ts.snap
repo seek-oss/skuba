@@ -31,7 +31,7 @@ Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite 
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
 Upgrading to Node.js 22
-Valid node version found, proceeding with migration
+Proceeding with migration from Node.js 22.0.0 to 22.0.0
 Upgraded to Node.js 22
 
 Patch applied: Upgrade Node.js to version 22
@@ -122,7 +122,7 @@ Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite 
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
 Upgrading to Node.js 22
-Valid node version found, proceeding with migration
+Proceeding with migration from Node.js 22.0.0 to 22.0.0
 Upgraded to Node.js 22
 
 Patch applied: Upgrade Node.js to version 22
@@ -208,7 +208,7 @@ Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite 
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
 Upgrading to Node.js 22
-Valid node version found, proceeding with migration
+Proceeding with migration from Node.js 22.0.0 to 22.0.0
 Upgraded to Node.js 22
 
 Patch applied: Upgrade Node.js to version 22
@@ -265,7 +265,7 @@ Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite 
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found
 Upgrading to Node.js 22
-Valid node version found, proceeding with migration
+Proceeding with migration from Node.js 22.0.0 to 22.0.0
 Upgraded to Node.js 22
 
 Patch applied: Upgrade Node.js to version 22
