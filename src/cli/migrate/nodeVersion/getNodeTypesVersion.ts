@@ -2,6 +2,8 @@ import npmFetch from 'npm-registry-fetch';
 import { gt, satisfies, valid } from 'semver';
 import { z } from 'zod';
 
+import { log } from '../../../utils/logging';
+
 type VersionResult = {
   version: string;
   err?: string;
@@ -47,7 +49,8 @@ export const getNodeTypesVersion = async (
     return {
       version,
     };
-  } catch {
+  } catch (err) {
+    log.warn(err);
     return {
       version: defaultVersion,
       err: 'Failed to fetch latest @types/node version, using fallback version',

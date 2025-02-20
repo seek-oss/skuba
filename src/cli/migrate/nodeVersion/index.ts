@@ -23,13 +23,11 @@ type SubPatch = FileSelector & {
   replace: string;
 };
 
-type SubPatches = SubPatch | SubPatch[];
-
 const subPatches = ({
   nodeVersion,
   nodeTypesVersion,
   ECMAScriptVersion,
-}: Versions): SubPatches[] => [
+}: Versions): SubPatch[] => [
   { file: '.nvmrc', replace: `${nodeVersion}\n` },
   {
     files: '**/Dockerfile*',
@@ -44,32 +42,31 @@ const subPatches = ({
       /^FROM(.*) gcr.io\/distroless\/nodejs\d+-debian(\d+)(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
     replace: `FROM$1 gcr.io/distroless/nodejs${nodeVersion}-debian$2$4$5$6`,
   },
-  [
-    {
-      files: '**/serverless*.y*ml',
-      regex: /nodejs\d+.x/gm,
-      tests: [isPatchableServerlessVersion],
-      replace: `nodejs${nodeVersion}.x`,
-    },
-    {
-      files: '**/serverless*.y*ml',
-      regex: /node\d+/gm,
-      tests: [isPatchableServerlessVersion],
-      replace: `node${nodeVersion}`,
-    },
-  ],
-  [
-    {
-      files: '**/infra/**/*.ts',
-      regex: /NODEJS_\d+_X/g,
-      replace: `NODEJS_${nodeVersion}_X`,
-    },
-    {
-      files: '**/infra/**/*.ts',
-      regex: /(target:\s*'node)(\d+)(.+)$/gm,
-      replace: `$1${nodeVersion}$3`,
-    },
-  ],
+
+  {
+    files: '**/serverless*.y*ml',
+    regex: /nodejs\d+.x/gm,
+    tests: [isPatchableServerlessVersion],
+    replace: `nodejs${nodeVersion}.x`,
+  },
+  {
+    files: '**/serverless*.y*ml',
+    regex: /node\d+/gm,
+    tests: [isPatchableServerlessVersion],
+    replace: `node${nodeVersion}`,
+  },
+
+  {
+    files: '**/infra/**/*.ts',
+    regex: /NODEJS_\d+_X/g,
+    replace: `NODEJS_${nodeVersion}_X`,
+  },
+  {
+    files: '**/infra/**/*.ts',
+    regex: /(target:\s*'node)(\d+)(.+)$/gm,
+    replace: `$1${nodeVersion}$3`,
+  },
+
   {
     files: '**/.buildkite/*',
     regex:
@@ -81,35 +78,34 @@ const subPatches = ({
     regex: /(v)?\d+\.\d+\.\d+(.+)?/gm,
     replace: `$1${nodeVersion}$2`,
   },
-  [
-    {
-      files: '**/package.json',
-      regex: /(\\?"@types\/node\\?": \\?")(\^)?[0-9.]+(\\?(",?)\\?n?)/gm,
-      tests: [isPatchableServerlessVersion],
-      replace: `$1$2${nodeTypesVersion}$4`,
-    },
-    {
-      files: '**/package.json',
-      regex:
-        /(\\?"engines\\?":\s*{\\?n?[^}]*\\?"node\\?":\s*\\?">=)(\d+)\\?("[^}]*})(?![^}]*\\?"skuba\\?":\s*{\\?n?[^}]*\\?"type\\?":\s*\\?"package\\?")/gm,
-      tests: [isPatchableServerlessVersion, isPatchableSkubaType],
-      replace: `$1${nodeVersion}$3`,
-    },
-  ],
-  [
-    {
-      files: '**/tsconfig*.json',
-      regex: /("target":\s*")(ES\d+)"/gim,
-      tests: [isPatchableServerlessVersion, isPatchableSkubaType],
-      replace: `$1${ECMAScriptVersion}"`,
-    },
-    {
-      files: '**/tsconfig*.json',
-      regex: /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
-      tests: [isPatchableServerlessVersion, isPatchableSkubaType],
-      replace: `$1$2${ECMAScriptVersion}$4$5`,
-    },
-  ],
+
+  {
+    files: '**/package.json',
+    regex: /(\\?"@types\/node\\?": \\?")(\^)?[0-9.]+(\\?(",?)\\?n?)/gm,
+    tests: [isPatchableServerlessVersion],
+    replace: `$1$2${nodeTypesVersion}$4`,
+  },
+  {
+    files: '**/package.json',
+    regex:
+      /(\\?"engines\\?":\s*{\\?n?[^}]*\\?"node\\?":\s*\\?">=)(\d+)\\?("[^}]*})(?![^}]*\\?"skuba\\?":\s*{\\?n?[^}]*\\?"type\\?":\s*\\?"package\\?")/gm,
+    tests: [isPatchableServerlessVersion, isPatchableSkubaType],
+    replace: `$1${nodeVersion}$3`,
+  },
+
+  {
+    files: '**/tsconfig*.json',
+    regex: /("target":\s*")(ES\d+)"/gim,
+    tests: [isPatchableServerlessVersion, isPatchableSkubaType],
+    replace: `$1${ECMAScriptVersion}"`,
+  },
+  {
+    files: '**/tsconfig*.json',
+    regex: /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
+    tests: [isPatchableServerlessVersion, isPatchableSkubaType],
+    replace: `$1$2${ECMAScriptVersion}$4$5`,
+  },
+
   {
     files: '**/docker-compose*.y*ml',
     regex:
@@ -125,13 +121,7 @@ type Versions = {
   ECMAScriptVersion: string;
 };
 
-const runSubPatch = async (dir: string, patch: SubPatches) => {
-  if (Array.isArray(patch)) {
-    for (const subPatch of patch) {
-      await runSubPatch(dir, subPatch);
-    }
-    return;
-  }
+const runSubPatch = async (dir: string, patch: SubPatch) => {
   const readFile = createDestinationFileReader(dir);
   const paths = patch.file
     ? [patch.file]
@@ -185,9 +175,9 @@ const writePatchedContents = async ({
   );
 
 const upgrade = async (versions: Versions, dir: string) => {
-  await Promise.all(
-    subPatches(versions).map((subPatch) => runSubPatch(dir, subPatch)),
-  );
+  for (const subPatch of subPatches(versions)) {
+    await runSubPatch(dir, subPatch);
+  }
 };
 
 export const nodeVersionMigration = async (
