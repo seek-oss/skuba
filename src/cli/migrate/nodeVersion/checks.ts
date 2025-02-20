@@ -43,18 +43,18 @@ export const isPatchableServerlessVersion = async (): Promise<boolean> => {
   )?.devDependencies.serverless;
 
   if (!serverlessVersion) {
-    log.subtle('Serverless version not found, assuming it is not a dependency');
+    log.subtle(`Serverless version not found in ${packageJsonRelativePath}, assuming it is not a dependency`);
     return true;
   }
 
   if (!satisfies(serverlessVersion, '4.x.x')) {
     log.warn(
-      'Serverless version not supported, please upgrade to 4.x to automatically update serverless files',
+      `Serverless version ${serverlessVersion} cannot be migrated; use Serverless 4.x to automatically migrate Serverless files',
     );
     return false;
   }
 
-  log.ok('Serverless version is supported, proceeding with migration');
+  log.ok(`Proceeding with migration of Serverless version ${serverlessVersion}`);
   return true;
 };
 
@@ -71,18 +71,18 @@ export const isPatchableSkubaType = async (): Promise<boolean> => {
 
   if (!type) {
     log.warn(
-      "skuba type couldn't be found, please specify the type of project in the package.json, to ensure the correct migration is applied",
+      "skuba project type not found in ${packageJsonRelativePath}`; add a package.json#/skuba/type to ensure the correct migration can be applied",
     );
     return false;
   }
   if (type === 'package') {
     log.warn(
-      'skuba type package is not supported, packages should be updated manually to ensure major runtime deprecations are intended',
+      'Migrations are not supported for packages; update manually to ensure major runtime deprecations are intended',
     );
     return false;
   }
 
-  log.ok('skuba type supported, proceeding with migration');
+  log.ok(`Proceeding with migration of skuba project type ${type}`);
   return true;
 };
 
@@ -101,11 +101,11 @@ export const isPatchableNodeVersion = async (
 
   if (!isNodeVersionValid) {
     log.warn(
-      `Node version in .nvmrc is higher than the target version ${coercedTargetVersion}, please ensure the target version is greater than the current version ${coercedCurrentVersion}`,
+      `Node.js version ${coercedCurrentVersion ?? 'unknown'} cannot be migrated to ${coercedTargetVersion}`,
     );
     return false;
   }
 
-  log.ok('Valid node version found, proceeding with migration');
+  log.ok(`Proceeding with migration from Node.js ${coercedCurrentVersion} to ${coercedTargetVersion}`);
   return true;
 };

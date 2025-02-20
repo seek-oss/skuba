@@ -32,17 +32,17 @@ export const getNodeTypesVersion = async (
 
     const parsedVersions = NpmFetchResponse.safeParse(response);
     if (!parsedVersions.success) {
-      throw new Error('Failed to parse response');
+      throw new Error('Failed to parse @types/node response from npm');
     }
 
-    const version = Object.values(parsedVersions.data.versions)
+    const { version } = Object.values(parsedVersions.data.versions)
       .filter(
         (v) =>
           valid(v.version) &&
           satisfies(v.version, `${major}.x.x`) &&
           !v.deprecated,
       )
-      .reduce((a, b) => (gt(a.version, b.version) ? a : b)).version;
+      .reduce((a, b) => (gt(a.version, b.version) ? a : b));
 
     return {
       version,

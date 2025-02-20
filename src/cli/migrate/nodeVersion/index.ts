@@ -205,7 +205,7 @@ export const nodeVersionMigration = async (
   log.ok(`Upgrading to Node.js ${nodeVersion}`);
   try {
     if (!(await isPatchableNodeVersion(nodeVersion))) {
-      throw new Error('Node version is not patchable');
+      throw new Error('Node.js version is not patchable');
     }
 
     const { version: nodeTypesVersion, err } = await getNodeTypesVersion(
