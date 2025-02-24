@@ -4,6 +4,7 @@ import chalk from 'chalk';
 
 import { type Logger, createLogger } from '../../utils/logging';
 
+import { tryDetectBadCodeowners } from './internalLints/detectBadCodeowners';
 import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs';
 import { tryRefreshConfigFiles } from './internalLints/refreshConfigFiles';
 import { upgradeSkuba } from './internalLints/upgrade';
@@ -26,7 +27,7 @@ const lints: Array<
   >
 > = [
   // Run upgradeSkuba before refreshConfigFiles for npmrc handling
-  [upgradeSkuba],
+  [upgradeSkuba, tryDetectBadCodeowners],
   [noSkubaTemplateJs, tryRefreshConfigFiles],
 ];
 
