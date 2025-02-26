@@ -8,7 +8,7 @@ import { log } from '../../../utils/logging';
 const getParentFile = async (file: string) => {
   const path = await findUp(file, { cwd: process.cwd() });
   if (!path) {
-    throw new Error(`${file} not found`);
+    return undefined;
   }
   return {
     fileContent: await fs.readFile(path, 'utf-8'),
@@ -19,8 +19,11 @@ const getParentFile = async (file: string) => {
 export const extractFromParentPackageJson = async <T extends ZodRawShape>(
   schema: z.ZodObject<T>,
 ) => {
-  const { fileContent: packageJson, path } =
-    await getParentFile('package.json');
+  const file = await getParentFile('package.json');
+  if (!file) {
+    return { packageJson: undefined, packageJsonRelativePath: undefined };
+  }
+  const { fileContent: packageJson, path } = file;
   let rawJSON;
   try {
     rawJSON = JSON.parse(packageJson) as unknown;
@@ -40,10 +43,15 @@ export const isPatchableServerlessVersion = async (): Promise<boolean> => {
     await extractFromParentPackageJson(
       z.object({
         devDependencies: z.object({
-          serverless: z.string(),
+          serverless: z.string().optional(),
         }),
       }),
     );
+  if (!packageJson) {
+    throw new Error(
+      'package.json not found, ensure it is in the correct location',
+    );
+  }
 
   const serverlessVersion = packageJson?.devDependencies.serverless;
 
@@ -72,10 +80,17 @@ export const isPatchableSkubaType = async (): Promise<boolean> => {
     await extractFromParentPackageJson(
       z.object({
         skuba: z.object({
-          type: z.string(),
+          type: z.string().optional(),
         }),
       }),
     );
+
+  if (!packageJson) {
+    throw new Error(
+      'package.json not found, ensure it is in the correct location',
+    );
+  }
+
   const type = packageJson?.skuba.type;
 
   if (!type) {
@@ -98,7 +113,21 @@ export const isPatchableSkubaType = async (): Promise<boolean> => {
 export const isPatchableNodeVersion = async (
   targetNodeVersion: number,
 ): Promise<boolean> => {
-  const { fileContent: currentNodeVersion } = await getParentFile('.nvmrc');
+  const nvmrcFile = await getParentFile('.nvmrc');
+  const nodeVersionFile = await getParentFile('.node-version');
+  const { packageJson } = await extractFromParentPackageJson(
+    z.object({
+      engines: z.object({
+        node: z.string(),
+      }),
+    }),
+  );
+
+  const nvmrcNodeVersion = nvmrcFile?.fileContent;
+  const nodeVersion = nodeVersionFile?.fileContent;
+  const engineVersion = packageJson?.engines.node;
+
+  const currentNodeVersion = nvmrcNodeVersion || nodeVersion || engineVersion;
 
   const coercedTargetVersion = coerce(targetNodeVersion.toString())?.version;
   const coercedCurrentVersion = coerce(currentNodeVersion)?.version;
