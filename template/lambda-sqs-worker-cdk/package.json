@@ -34,7 +34,7 @@
     "aws-sdk-client-mock-jest": "^4.0.0",
     "chance": "^1.1.8",
     "constructs": "^10.0.17",
-    "datadog-cdk-constructs-v2": "^1.18.0",
+    "datadog-cdk-constructs-v2": "^2.0.0",
     "pino-pretty": "^13.0.0",
     "skuba": "*"
   },
