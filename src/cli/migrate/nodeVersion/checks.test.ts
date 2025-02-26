@@ -263,4 +263,24 @@ describe('isPatchableNodeVersion', () => {
       );
     await expect(isPatchableNodeVersion(22)).resolves.toBe(false);
   });
+  it('should return true when the version in .nvmrc and .node-version is invalid but a valid package.json engines version', async () => {
+    jest.mocked(findUp).mockResolvedValueOnce('.nvmrc');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue('invalid' as never);
+    await expect(isPatchableNodeVersion(22)).resolves.toBe(false);
+    jest.mocked(findUp).mockResolvedValueOnce('package.json');
+    jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation()
+      .mockReturnValue(
+        JSON.stringify({
+          engines: {
+            node: '>=20',
+          },
+        }) as never,
+      );
+    await expect(isPatchableNodeVersion(22)).resolves.toBe(true);
+  });
 });
