@@ -45,13 +45,13 @@ const subPatches = ({
 
   {
     files: '**/serverless*.y*ml',
-    regex: /nodejs\d+.x/gm,
+    regex: /\bnodejs\d+.x\b/gm,
     tests: [isPatchableServerlessVersion],
     replace: `nodejs${nodeVersion}.x`,
   },
   {
     files: '**/serverless*.y*ml',
-    regex: /node\d+/gm,
+    regex: /\bnode\d+\b/gm,
     tests: [isPatchableServerlessVersion],
     replace: `node${nodeVersion}`,
   },
@@ -75,8 +75,8 @@ const subPatches = ({
   },
   {
     files: '.node-version*',
-    regex: /(v)?\d+\.\d+\.\d+(.+)?/gm,
-    replace: `$1${nodeVersion}$2`,
+    regex: /(\d+(?:\.\d+)*)/g,
+    replace: `${nodeVersion}`,
   },
 
   {
@@ -88,7 +88,7 @@ const subPatches = ({
   {
     files: '**/package.json',
     regex:
-      /(\\?"engines\\?":\s*{\\?n?[^}]*\\?"node\\?":\s*\\?">=)(\d+)\\?("[^}]*})(?![^}]*\\?"skuba\\?":\s*{\\?n?[^}]*\\?"type\\?":\s*\\?"package\\?")/gm,
+      /(\\?"engines\\?":\s*{\\?n?[^}]*\\?"node\\?":\s*\\?">=)(\d+(?:\.\d+)*)\\?("[^}]*})(?![^}]*\\?"skuba\\?":\s*{\\?n?[^}]*\\?"type\\?":\s*\\?"package\\?")/gm,
     tests: [isPatchableServerlessVersion, isPatchableSkubaType],
     replace: `$1${nodeVersion}$3`,
   },

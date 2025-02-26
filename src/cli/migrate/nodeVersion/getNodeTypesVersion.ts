@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import npmFetch from 'npm-registry-fetch';
 import { gt, satisfies, valid } from 'semver';
 import { z } from 'zod';
