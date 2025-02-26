@@ -28,7 +28,7 @@ export const extractFromParentPackageJson = async <T extends ZodRawShape>(
   try {
     rawJSON = JSON.parse(packageJson) as unknown;
   } catch {
-    throw new Error('package.json is not valid JSON');
+    throw new Error(`${path} is not valid JSON`);
   }
   const result = schema.safeParse(rawJSON);
   if (!result.success) {

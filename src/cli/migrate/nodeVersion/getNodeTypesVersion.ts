@@ -50,10 +50,10 @@ export const getNodeTypesVersion = async (
       version,
     };
   } catch (err) {
-    log.warn(err);
+    log.subtle(inspect(err));
     return {
       version: defaultVersion,
-      err: 'Failed to fetch latest @types/node version, using fallback version',
+      err: `Failed to fetch latest @types/node version, using fallback version ${defaultVersion}`,
     };
   }
 };
