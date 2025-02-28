@@ -81,14 +81,14 @@ const subPatches = ({
 
   {
     files: '**/package.json',
-    regex: /(\\?"@types\/node\\?": \\?")(\^)?[0-9.]+(\\?(",?)\\?n?)/gm,
+    regex: /("@types\/node":\s*")(\^)?(\d+\.\d+\.\d+)(")/gm,
     tests: [isPatchableServerlessVersion],
     replace: `$1$2${nodeTypesVersion}$4`,
   },
   {
     files: '**/package.json',
     regex:
-      /(\\?"engines\\?":\s*{\\?n?[^}]*\\?"node\\?":\s*\\?">=)(\d+(?:\.\d+)*)\\?("[^}]*})(?![^}]*\\?"skuba\\?":\s*{\\?n?[^}]*\\?"type\\?":\s*\\?"package\\?")/gm,
+      /(["']engines["']:\s*{[\s\S]*?["']node["']:\s*["']>=)(\d+(?:\.\d+)*)(['"]\s*})/gm,
     tests: [isPatchableServerlessVersion, isPatchableSkubaType],
     replace: `$1${nodeVersion}$3`,
   },

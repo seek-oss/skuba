@@ -9,12 +9,6 @@ jest
   .spyOn(getNode22TypesVersionModule, 'getNodeTypesVersion')
   .mockReturnValue(Promise.resolve({ version: '22.9.0' }));
 
-jest.spyOn(checks, 'isPatchableServerlessVersion').mockResolvedValue(true);
-
-jest.spyOn(checks, 'isPatchableSkubaType').mockResolvedValue(true);
-
-jest.spyOn(checks, 'isPatchableNodeVersion').mockResolvedValue(true);
-
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
   glob: (pat: any, opts: any) =>
@@ -32,6 +26,9 @@ describe('nodeVersionMigration', () => {
   const scenarios: Array<{
     filesBefore: Record<string, string>;
     filesAfter?: Record<string, string>;
+    isPatchableServerlessVersion?: boolean;
+    isPatchableSkubaType?: boolean;
+    isPatchableNodeVersion?: boolean;
     scenario: string;
   }> = [
     {
@@ -157,16 +154,24 @@ describe('nodeVersionMigration', () => {
         'package.json': '"@types/node": "^14.0.0",',
         '1/package.json': '"@types/node": "18.0.0"',
         '2/package.json': `"engines": {\n"node": ">=18"\n},\n`,
-        '3/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}`,
-        '4/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "application"\n}`,
+        '3/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "application"\n}`,
       },
       filesAfter: {
         'package.json': '"@types/node": "^22.9.0",',
         '1/package.json': '"@types/node": "22.9.0"',
         '2/package.json': `"engines": {\n"node": ">=22"\n},\n`,
-        '3/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}`,
-        '4/package.json': `"engines": {\n"node": ">=22"\n},\n"skuba": {\n"type": "application"\n}`,
+        '3/package.json': `"engines": {\n"node": ">=22"\n},\n"skuba": {\n"type": "application"\n}`,
       },
+    },
+    {
+      scenario: 'not patchable node types',
+      filesBefore: {
+        '1/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}`,
+      },
+      filesAfter: {
+        '1/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}`,
+      },
+      isPatchableServerlessVersion: false,
     },
     {
       scenario: 'tsconfig target',
@@ -217,7 +222,24 @@ describe('nodeVersionMigration', () => {
 
   it.each(scenarios)(
     'handles $scenario',
-    async ({ filesBefore, filesAfter }) => {
+    async ({
+      filesBefore,
+      filesAfter,
+      isPatchableNodeVersion = true,
+      isPatchableServerlessVersion = true,
+      isPatchableSkubaType = true,
+    }) => {
+      jest
+        .spyOn(checks, 'isPatchableServerlessVersion')
+        .mockResolvedValue(isPatchableServerlessVersion);
+
+      jest
+        .spyOn(checks, 'isPatchableSkubaType')
+        .mockResolvedValue(isPatchableSkubaType);
+
+      jest
+        .spyOn(checks, 'isPatchableNodeVersion')
+        .mockResolvedValue(isPatchableNodeVersion);
       vol.fromJSON(filesBefore, process.cwd());
 
       await nodeVersionMigration({
