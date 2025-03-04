@@ -32,16 +32,16 @@ export const commitAllChanges = async ({
   committer,
   ignore,
 }: CommitAllParameters): Promise<string | undefined> => {
-  const changedFiles = await getChangedFiles({ dir, ignore });
-
-  if (!changedFiles.length) {
-    return;
-  }
-
   const gitRoot = await findRoot({ dir });
 
   if (!gitRoot) {
     throw new Error(`Could not find Git root from directory: ${dir}`);
+  }
+
+  const changedFiles = await getChangedFiles({ dir: gitRoot, ignore });
+
+  if (!changedFiles.length) {
+    return;
   }
 
   await Promise.all(
