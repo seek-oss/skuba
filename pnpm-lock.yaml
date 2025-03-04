@@ -107,6 +107,9 @@ importers:
       normalize-package-data:
         specifier: ^7.0.0
         version: 7.0.0
+      npm-registry-fetch:
+        specifier: ^18.0.2
+        version: 18.0.2
       npm-run-path:
         specifier: ^4.0.1
         version: 4.0.1
@@ -198,6 +201,9 @@ importers:
       '@types/module-alias':
         specifier: 2.0.4
         version: 2.0.4
+      '@types/npm-registry-fetch':
+        specifier: 8.0.7
+        version: 8.0.7
       '@types/npm-which':
         specifier: 3.0.3
         version: 3.0.3
@@ -9366,7 +9372,7 @@ snapshots:
 
   '@types/node-fetch@2.6.12':
     dependencies:
-      '@types/node': 20.17.13
+      '@types/node': 22.13.1
       form-data: 4.0.1
 
   '@types/node@12.20.55': {}
@@ -9385,7 +9391,7 @@ snapshots:
 
   '@types/npm-registry-fetch@8.0.7':
     dependencies:
-      '@types/node': 20.17.13
+      '@types/node': 22.13.1
       '@types/node-fetch': 2.6.12
       '@types/npm-package-arg': 6.1.4
       '@types/npmlog': 7.0.0
@@ -9397,7 +9403,7 @@ snapshots:
 
   '@types/npmlog@7.0.0':
     dependencies:
-      '@types/node': 20.17.13
+      '@types/node': 22.13.1
 
   '@types/picomatch@3.0.2': {}
 
@@ -9428,7 +9434,7 @@ snapshots:
 
   '@types/ssri@7.1.5':
     dependencies:
-      '@types/node': 20.17.13
+      '@types/node': 22.13.1
 
   '@types/stack-utils@2.0.3': {}
 
