@@ -69,7 +69,30 @@ you can limit this with the `--serial` flag.
 - [Buildkite annotations] are enabled when Buildkite environment variables and the `buildkite-agent` binary are present.
 - [GitHub annotations] are enabled when CI and GitHub environment variables are present.
 
+---
+
+## Patches
+
+`skuba format` and `skuba lint` include rudimentary support for patching your project.
+These simple codemods are applied the first time that you run a relevant command after upgrading to a new version of **skuba**.
+
+Patches are not guaranteed to work perfectly on all projects.
+Review and test modified code as appropriate before releasing to production,
+and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by a patch.
+
+### Node.js migrations
+
+As of **skuba** 10,
+`skuba format` and `skuba lint` include patches that attempt to automatically migrate your project to the [active LTS version] of Node.js.
+This is intended to minimise effort required to keep up with annual Node.js releases.
+
+You can opt out of these migrations by setting the `SKIP_NODE_UPGRADE` environment variable before running `skuba format` or `skuba lint`.
+
+See [`skuba migrate node`] for more information.
+
 [`skuba format`]: #skuba-format
+[`skuba migrate node`]: ./migrate.md#skuba-migrate-node
+[active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
 [Buildkite annotations]: ../deep-dives/buildkite.md#buildkite-annotations
 [CPU core count]: https://nodejs.org/api/os.html#os_os_cpus
 [eslint deep dive]: ../deep-dives/eslint.md
