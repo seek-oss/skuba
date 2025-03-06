@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-template/lambda-sqs-worker-cdk: Update to datadog-cdk-constructs-v2 2
+template/lambda-sqs-worker-cdk: Upgrade to datadog-cdk-constructs-v2 2
