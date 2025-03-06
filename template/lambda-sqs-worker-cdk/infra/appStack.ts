@@ -13,7 +13,7 @@ import {
   aws_sqs,
 } from 'aws-cdk-lib';
 import type { Construct } from 'constructs';
-import { Datadog } from 'datadog-cdk-constructs-v2';
+import { DatadogLambda } from 'datadog-cdk-constructs-v2';
 
 import { config } from './config';
 
@@ -117,7 +117,7 @@ export class AppStack extends Stack {
       config.datadogApiKeySecretArn,
     );
 
-    const datadog = new Datadog(this, 'datadog', {
+    const datadog = new DatadogLambda(this, 'datadog', {
       apiKeySecret: datadogSecret,
       addLayers: false,
       enableDatadogLogs: false,
