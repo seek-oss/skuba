@@ -28,7 +28,7 @@
   "dependencies": {
     "eslint-config-seek": "^14.0.1",
     "eslint-plugin-yml": "^1.14.0",
-    "typescript-eslint": "^8.16.0"
+    "typescript-eslint": "^8.26.0"
   },
   "devDependencies": {
     "eslint": "^9.11.1",
@@ -38,7 +38,7 @@
     "eslint": ">=9.11.1",
     "typescript": ">=5.5.4"
   },
-  "packageManager": "pnpm@9.15.4",
+  "packageManager": "pnpm@10.5.2",
   "engines": {
     "node": ">=18.18.0"
   },
