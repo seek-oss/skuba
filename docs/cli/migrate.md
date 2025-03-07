@@ -61,10 +61,9 @@ The migration will attempt to proceed if your project specifies:
 - `target` configures the transpilation behaviour of the TypeScript compiler.
 
   Back-end applications typically synchronise `lib` with their Node.js runtime.
-  In these scenarios, there is no need to transpile language features and `target` can match the ECMAScript version in `lib`.
+  In this scenario, there is no need to transpile language features and `target` can match the ECMAScript version in `lib`.
 
-  On the other hand, you may wish to use recent language features in your npm packages,
-  while still retaining support for package consumers that are using an older Node.js runtime.
+  On the other hand, you may wish to use recent language features when authoring your npm packages while retaining support for package consumers on older Node.js runtimes.
   In this scenario, see the note below on transpilation for npm packages.
 
 For npm packages,
