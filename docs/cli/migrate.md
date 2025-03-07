@@ -33,16 +33,86 @@ The following files are scanned:
 - Dockerfiles & Docker Compose files
 - Serverless files
 
-**skuba** may not be able to upgrade all projects;
+**skuba** may not be able to upgrade all projects.
 Check your project for files that may have been missed,
 review and test the modified code as appropriate before releasing to production,
 and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
+Exercise particular caution with monorepos,
+as some may have employed unique configurations that the migration has not accounted for.
+
+The migration will attempt to proceed if your project specifies:
+
+- A Node.js version in `.node-version`, `.nvmrc`, and/or `package.json#/engines/node`
+
+- A project type in `package.json#/skuba/type` that is not `package`
+
+  Well-known project types currently include `application` and `package`.
+  While we intend to improve support for monorepo projects in a future version,
+  you may enable migrations in the interim by setting the project type to `application`.
+
+**skuba** upgrades your `tsconfig.json`s in line with the official [Node Target Mapping] guidance.
+`tsconfig.json`s contain two options that are linked to Node.js versions:
+
+- `lib` configures the language features available to your source code.
+
+  For example, including `ES2024` allows you to use the [`Object.groupBy()` static method].
+  The features available in each new ECMAScript version are summarised on [node.green](https://node.green/).
+
+- `target` configures the transpilation behaviour of the TypeScript compiler.
+
+  Back-end applications typically synchronise `lib` with their Node.js runtime.
+  In these scenarios, there is no need to transpile language features and `target` can match the ECMAScript version in `lib`.
+
+  On the other hand, you may wish to use recent language features in your npm packages,
+  while still retaining support for package consumers that are using an older Node.js runtime.
+  In this scenario, see the note below on transpilation for npm packages.
+
+For npm packages,
+manually review the following configuration options:
+
+- `package.json#/engines/node`
+
+  The `engines` property propagates to your package consumers.
+  For example, if you specify a minimum Node.js version of 22,
+  it will prevent your package from being installed in a Node.js 20 environment:
+
+  ```json
+  {
+    "engines": {
+      "node": ">=22"
+    }
+  }
+  ```
+
+  Take care with the `engines` property of an npm package;
+  modifications typically necessitate a new major release per [semantic versioning].
+
+- `tsconfig.json#/target`
+
+  Refer to the official [Node Target Mapping] guidance and ensure that the transpilation target corresponds to the minimum Node.js version in `engines`.
+
+  For monorepo projects,
+  check whether your npm packages inherit from another `tsconfig.json`.
+  You may need to define explicit overrides for npm packages like so:
+
+  ```diff
+  {
+  + "compilerOptions": {
+  +   "removeComments": false,
+  +   "target": "ES2023" // Continue to support package consumers on Node.js 20
+  + },
+    "extends": "../../tsconfig.json"
+  }
+  ```
 
 As of **skuba** 10,
 `skuba format` and `skuba lint` will automatically run these migrations as [patches].
 
+[`Object.groupBy()` static method]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
 [active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
+[Node Target Mapping]: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping.
 [patches]: ./lint.md#patches
+[semantic versioning]: https://semver.org/
 
 ### skuba migrate node22
 

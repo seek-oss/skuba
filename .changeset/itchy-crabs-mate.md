@@ -10,6 +10,6 @@ This is intended to minimise effort required to keep up with annual Node.js rele
 
 You can opt out of these migrations by setting the `SKIP_NODE_UPGRADE` environment variable before running `skuba format` or `skuba lint`.
 
-See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information.
+See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
 
 [active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
