@@ -5,6 +5,7 @@
 migrate: Introduce `skuba migrate node22`
 
 [`skuba migrate node22`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node22) attempts to automatically upgrade your project to Node.js 22.
+Changes must be manually reviewed by an engineer before committing the migration output.
 See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
 
 **skuba** may not be able to upgrade all projects.
