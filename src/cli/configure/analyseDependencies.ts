@@ -6,7 +6,7 @@ import type { NormalizedReadResult } from 'read-pkg-up';
 import { type TextProcessor, copyFiles } from '../../utils/copy';
 import { log } from '../../utils/logging';
 import type { ProjectType } from '../../utils/manifest';
-import { getSkubaVersion, latestNpmVersion } from '../../utils/version';
+import { getLatestNpmVersion, getSkubaVersion } from '../../utils/version';
 
 import { diffDependencies } from './analysis/package';
 import * as dependencyMutators from './dependencies';
@@ -40,7 +40,11 @@ const pinUnspecifiedVersions = async (
       .map(async ([name]) => {
         const version = await (name === 'skuba'
           ? getSkubaVersion()
-          : latestNpmVersion(name));
+          : getLatestNpmVersion(name));
+
+        if (version === null) {
+          throw new Error(`Failed to fetch latest version of ${name}`);
+        }
 
         return [name, version] as const;
       }),
