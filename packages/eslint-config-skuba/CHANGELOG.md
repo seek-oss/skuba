@@ -1,5 +1,32 @@
 # eslint-config-skuba
 
+## 5.1.0
+
+### Minor Changes
+
+- Disable `@typescript-eslint/no-base-to-string` in tests ([#1765](https://github.com/seek-oss/skuba/pull/1765))
+
+- **deps:** typescript-eslint 8.26 ([#1750](https://github.com/seek-oss/skuba/pull/1750))
+
+  This bumps typescript-eslint to ^8.26.0 to support TypeScript 5.8
+
+- Remove `eslint-plugin-tsdoc` ([#1766](https://github.com/seek-oss/skuba/pull/1766))
+
+  This plugin is [currently incompatible](https://github.com/microsoft/tsdoc/issues/374) with our config.
+
+- Revert to modern JavaScript language option defaults ([#1769](https://github.com/seek-oss/skuba/pull/1769))
+
+  - `ecmaVersion: 5 => latest`
+  - `sourceType: script => module`
+
+  See [JavaScript language options](https://eslint.org/docs/latest/use/configure/language-options#specifying-javascript-options) for more information.
+
+### Patch Changes
+
+- Remove duplicate `@typescript-eslint` definitions ([#1766](https://github.com/seek-oss/skuba/pull/1766))
+
+- **deps:** eslint-plugin-tsdoc ^0.4.0 ([#1749](https://github.com/seek-oss/skuba/pull/1749))
+
 ## 5.0.0
 
 ### Major Changes

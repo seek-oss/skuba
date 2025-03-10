@@ -1,5 +1,86 @@
 # skuba
 
+## 10.0.0
+
+### Major Changes
+
+- **migrate:** Introduce `skuba migrate node22` to automatically upgrade a project's Node.js version ([#1735](https://github.com/seek-oss/skuba/pull/1735))
+
+  `skuba migrate node22` will attempt to automatically upgrade projects to Node.js 22.
+  It will look in the project root for Dockerfiles, `.nvmrc`, `.node-version`, `tsconfig.json`, `package.json` and Serverless files,
+  as well as CDK files in `infra/` and `.buildkite/` files, and try to upgrade them to a Node.js 22 version.
+
+  skuba might not be able to upgrade all projects, so please check your project for any files that skuba missed. It's
+  possible that skuba will modify a file incorrectly, in which case please
+  [open an issue](https://github.com/seek-oss/skuba/issues/new).
+
+  If you wish not to upgrade to Node.js 22, you can run set the `SKIP_NODE_UPGRADE=true` environment variable before running `skuba lint` or `skuba format`.
+
+  Node.js 22 comes with its own breaking changes, so please read the [Node.js 22 release notes](https://nodejs.org/en/blog/announcements/v22-release-announce) alongside the skuba release notes. In addition,
+
+  - For AWS Lambda runtime updates to `nodejs22.x`, consider reading the [release announcement](https://aws.amazon.com/blogs/compute/node-js-22-runtime-now-available-in-aws-lambda/) as there are some breaking changes with this upgrade.
+  - You may need to upgrade your versions of CDK and Serverless as appropriate to support nodejs22.x.
+
+### Minor Changes
+
+- **lint:** Flag CODEOWNERS files that appear to have been incorrectly formatted ([#1796](https://github.com/seek-oss/skuba/pull/1796))
+
+  Some code editors incorrectly detect `CODEOWNERS` files as markdown files and re-format them as such, breaking their syntax. `skuba lint` now attempts to detect this scenario and flags the file as being incorrect.
+
+- **template/\*-rest-api:** Remove `seek:source:url` tag from gantry files ([#1797](https://github.com/seek-oss/skuba/pull/1797))
+
+- **template/lambda-sqs-worker:** Remove template ([#1789](https://github.com/seek-oss/skuba/pull/1789))
+
+  It is recommended to use the `lambda-sqs-worker-cdk` template instead.
+
+- **deps:** TypeScript 5.8 ([#1750](https://github.com/seek-oss/skuba/pull/1750))
+
+  This major release includes breaking changes. See the [TypeScript 5.7](https://devblogs.microsoft.com/typescript/announcing-typescript-5-7/) and [TypeScript 5.8](https://devblogs.microsoft.com/typescript/announcing-typescript-5-8/) announcements for more information.
+
+### Patch Changes
+
+- **configure:** Fix crash during detecting whether the working tree is clean ([#1737](https://github.com/seek-oss/skuba/pull/1737))
+
+- **template/express-rest-api:** express 5 ([#1761](https://github.com/seek-oss/skuba/pull/1761))
+
+- **init:** Skip malformed template files ([#1808](https://github.com/seek-oss/skuba/pull/1808))
+
+  `skuba init` runs templates, either bundled or [BYO](https://seek-oss.github.io/skuba/docs/templates/byo.html), through a series of string templating and processing steps.
+
+  Occasionally, binary files can include substrings that appear to be directives for skuba to translate the file contents, which may then proceed to crash.
+
+  To work around this, `skuba init` now skips templating of a given file when encountering an error.
+
+- **template/lambda-sqs-worker-cdk:** Add `git` to the base Docker image ([#1775](https://github.com/seek-oss/skuba/pull/1775))
+
+- **template/lambda-sqs-worker-cdk:** Upgrade `aws-cdk` and `aws-cdk-lib` to `^2.167.1` ([#1740](https://github.com/seek-oss/skuba/pull/1740))
+
+- **template/lambda-sqs-worker-cdk:** Upgrade to datadog-cdk-constructs-v2 2 ([#1799](https://github.com/seek-oss/skuba/pull/1799))
+
+- **template/lambda-sqs-worker-cdk:** Fix failing unit test and add `start` command ([#1724](https://github.com/seek-oss/skuba/pull/1724))
+
+- **deps:** ignore ^7.0.0 ([#1762](https://github.com/seek-oss/skuba/pull/1762))
+
+- **deps:** prettier ~3.5.0 ([#1788](https://github.com/seek-oss/skuba/pull/1788))
+
+- **deps:** esbuild ~0.25.0 ([#1787](https://github.com/seek-oss/skuba/pull/1787))
+
+- **deps:** prettier ~3.4.0 ([#1751](https://github.com/seek-oss/skuba/pull/1751))
+
+  This change may contain some formatting changes. Review the release notes: https://prettier.io/blog/2024/11/26/3.4.0.html
+
+- **template/\*:** Upgrade to Node 22 ([#1789](https://github.com/seek-oss/skuba/pull/1789))
+
+- **template:** Align with latest AWS tagging guidance ([#1782](https://github.com/seek-oss/skuba/pull/1782))
+
+- **template/express-rest-api, template/koa-rest-api:** Drop support for `failOnScanFindings` for gantry 4 support ([#1759](https://github.com/seek-oss/skuba/pull/1759))
+
+- **deps:** Drop `serialize-error` ([#1763](https://github.com/seek-oss/skuba/pull/1763))
+
+- **template/\*-rest-api:** seek-jobs/gantry v4.0.0 ([#1785](https://github.com/seek-oss/skuba/pull/1785))
+
+- **init:** Fix `pnpm dlx skuba init` usage ([#1793](https://github.com/seek-oss/skuba/pull/1793))
+
 ## 9.1.0
 
 ### Minor Changes
