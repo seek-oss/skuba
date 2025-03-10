@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.13.10",
     "@types/supertest": "^6.0.0",
     "mime": "^4.0.1",
     "pino-pretty": "^13.0.0",
