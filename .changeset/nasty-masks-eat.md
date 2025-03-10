@@ -2,19 +2,24 @@
 'skuba': major
 ---
 
-migrate: Introduce `skuba migrate node22` to automatically upgrade a project's Node.js version
+migrate: Introduce `skuba migrate node22`
 
-`skuba migrate node22` will attempt to automatically upgrade projects to Node.js 22.
-It will look in the project root for Dockerfiles, `.nvmrc`, `.node-version`, `tsconfig.json`, `package.json` and Serverless files,
-as well as CDK files in `infra/` and `.buildkite/` files, and try to upgrade them to a Node.js 22 version.
+[`skuba migrate node22`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node22) attempts to automatically upgrade your project to Node.js 22.
+Changes must be manually reviewed by an engineer before committing the migration output.
+See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
 
-skuba might not be able to upgrade all projects, so please check your project for any files that skuba missed. It's
-possible that skuba will modify a file incorrectly, in which case please
-[open an issue](https://github.com/seek-oss/skuba/issues/new).
+**skuba** may not be able to upgrade all projects.
+Check your project for files that may have been missed,
+review and test the modified code as appropriate before releasing to production,
+and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
 
-If you wish not to upgrade to Node.js 22, you can run set the `SKIP_NODE_UPGRADE=true` environment variable before running `skuba lint` or `skuba format`.
+Node.js 22 includes breaking changes.
+For more information on the upgrade, refer to:
 
-Node.js 22 comes with its own breaking changes, so please read the [Node.js 22 release notes](https://nodejs.org/en/blog/announcements/v22-release-announce) alongside the skuba release notes. In addition,
+- The Node.js [release notes][node-22]
+- The AWS [release announcement][aws-22] for the Lambda `nodejs22.x` runtime update
 
-- For AWS Lambda runtime updates to `nodejs22.x`, consider reading the [release announcement](https://aws.amazon.com/blogs/compute/node-js-22-runtime-now-available-in-aws-lambda/) as there are some breaking changes with this upgrade.
-- You may need to upgrade your versions of CDK and Serverless as appropriate to support nodejs22.x.
+You may need to manually upgrade CDK and Serverless package versions as appropriate to support `nodejs22.x`.
+
+[aws-22]: https://aws.amazon.com/blogs/compute/node-js-22-runtime-now-available-in-aws-lambda/
+[node-22]: https://nodejs.org/en/blog/announcements/v22-release-announce
