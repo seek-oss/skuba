@@ -2,7 +2,7 @@
 'skuba': patch
 ---
 
-init: skip malformed template files
+init: Skip malformed template files
 
 `skuba init` runs templates, either bundled or [BYO](https://seek-oss.github.io/skuba/docs/templates/byo.html), through a series of string templating and processing steps.
 
