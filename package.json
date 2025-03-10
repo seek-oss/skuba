@@ -145,7 +145,7 @@
     "fastify": "5.2.1",
     "jest-diff": "29.7.0",
     "jsonfile": "6.1.0",
-    "koa": "2.15.4",
+    "koa": "2.16.0",
     "memfs": "4.17.0",
     "remark-cli": "12.0.1",
     "remark-preset-lint-recommended": "7.0.1",
