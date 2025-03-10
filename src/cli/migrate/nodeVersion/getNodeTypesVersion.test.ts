@@ -45,7 +45,7 @@ describe('getNodeTypesVersion', () => {
         }),
       {
         version: '22.9.0',
-        err: 'Failed to fetch latest @types/node version, using fallback version 22.9.0',
+        err: 'No matching @types/node versions for Node.js 22',
       },
     ],
     [
