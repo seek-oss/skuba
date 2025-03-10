@@ -1,4 +1,15 @@
 import { createEjsRenderer, createStringReplacer } from './copy';
+import { log } from './logging';
+
+jest.mock('./logging', () => ({
+  log: {
+    err: jest.fn(),
+    subtle: jest.fn(),
+    bold: (text: string) => text,
+  },
+}));
+
+afterEach(() => jest.clearAllMocks());
 
 describe('createEjsRenderer', () => {
   it('renders typical skuba placeholders', () => {
@@ -17,7 +28,7 @@ describe('createEjsRenderer', () => {
 
     const render = createEjsRenderer(templateData);
 
-    const output = render(JSON.stringify(input));
+    const output = render('filename.txt', JSON.stringify(input));
 
     expect(JSON.parse(output)).toEqual({
       name: 'seek-koala',
@@ -25,6 +36,17 @@ describe('createEjsRenderer', () => {
         url: 'git+ssh://git@github.com/seek-oss/koala.git',
       },
     });
+    expect(log.err).not.toHaveBeenCalled();
+  });
+
+  it('does not crash on malformed files', () => {
+    const input = `<% really we should detect if something is textual or binary and skip if binary, but here we are`;
+    const render = createEjsRenderer({});
+
+    const output = render('filename.txt', input);
+
+    expect(output).toEqual(input);
+    expect(log.err).toHaveBeenCalledWith('Failed to render', 'filename.txt');
   });
 });
 
@@ -39,7 +61,7 @@ describe('createStringReplacer', () => {
       },
     ]);
 
-    const output = replace(input);
+    const output = replace('filename.txt', input);
 
     expect(output).toBe('red yellow blue red yellow blue red yellow');
   });
@@ -62,7 +84,7 @@ describe('createStringReplacer', () => {
       },
     ]);
 
-    const output = replace(input);
+    const output = replace('filename.txt', input);
 
     expect(output).toBe('cyan magenta yellow');
   });

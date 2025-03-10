@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import { isErrorWithCode } from './error';
 import { log } from './logging';
 
-export type TextProcessor = (contents: string) => string;
+export type TextProcessor = (sourcePath: string, contents: string) => string;
 
 export const copyFile = async (
   sourcePath: string,
@@ -19,7 +19,7 @@ export const copyFile = async (
   const oldContents = await fs.promises.readFile(sourcePath, 'utf8');
 
   const newContents = processors.reduce(
-    (contents, process) => process(contents),
+    (contents, process) => process(sourcePath, contents),
     oldContents,
   );
 
@@ -52,8 +52,15 @@ interface CopyFilesOptions {
 
 export const createEjsRenderer =
   (templateData: Record<string, unknown>): TextProcessor =>
-  (contents) =>
-    ejs.render(contents, templateData);
+  (sourcePath: string, contents) => {
+    try {
+      return ejs.render(contents, templateData, { strict: false });
+    } catch (err) {
+      log.err('Failed to render', log.bold(sourcePath));
+      log.subtle(err);
+      return contents;
+    }
+  };
 
 export const createStringReplacer =
   (
@@ -62,7 +69,7 @@ export const createStringReplacer =
       output: string;
     }>,
   ): TextProcessor =>
-  (contents) =>
+  (_sourcePath: string, contents) =>
     replacements.reduce(
       (newContents, { input, output }) => newContents.replace(input, output),
       contents,
