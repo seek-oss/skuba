@@ -95,9 +95,6 @@ importers:
       jest-watch-typeahead:
         specifier: ^2.1.1
         version: 2.2.2(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@20.17.23)(typescript@5.8.2)))
-      libnpmsearch:
-        specifier: ^8.0.0
-        version: 8.0.0
       lodash.mergewith:
         specifier: ^4.6.2
         version: 4.6.2
@@ -158,9 +155,6 @@ importers:
       typescript:
         specifier: ~5.8.0
         version: 5.8.2
-      validate-npm-package-name:
-        specifier: ^6.0.0
-        version: 6.0.0
       zod:
         specifier: ^3.22.4
         version: 3.24.2
@@ -189,9 +183,6 @@ importers:
       '@types/koa':
         specifier: 2.15.0
         version: 2.15.0
-      '@types/libnpmsearch':
-        specifier: 2.0.7
-        version: 2.0.7
       '@types/lodash.mergewith':
         specifier: 4.6.9
         version: 4.6.9
@@ -216,9 +207,6 @@ importers:
       '@types/supertest':
         specifier: 6.0.2
         version: 6.0.2
-      '@types/validate-npm-package-name':
-        specifier: 4.0.2
-        version: 4.0.2
       enhanced-resolve:
         specifier: 5.18.1
         version: 5.18.1
@@ -2218,9 +2206,6 @@ packages:
   '@types/koa__router@12.0.4':
     resolution: {integrity: sha512-Y7YBbSmfXZpa/m5UGGzb7XadJIRBRnwNY9cdAojZGp65Cpe5MAP3mOZE7e3bImt8dfKS4UFcR16SLH8L/z7PBw==}
 
-  '@types/libnpmsearch@2.0.7':
-    resolution: {integrity: sha512-veF2pJz2gKwN2qmZZeQY9clT9BhmMNWJTiJaIr2rnTT/8/eDUNGW83sDEHiDp/Te4R2Gu0m03EK67SuPUjQ2OA==}
-
   '@types/lodash.mergewith@4.6.9':
     resolution: {integrity: sha512-fgkoCAOF47K7sxrQ7Mlud2TH023itugZs2bUg8h/KzT+BnZNrR2jAOmaokbLunHNnobXVWOezAeNn/lZqwxkcw==}
 
@@ -2322,9 +2307,6 @@ packages:
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
-
-  '@types/validate-npm-package-name@4.0.2':
-    resolution: {integrity: sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw==}
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -9048,11 +9030,6 @@ snapshots:
     dependencies:
       '@types/koa': 2.15.0
 
-  '@types/libnpmsearch@2.0.7':
-    dependencies:
-      '@types/node': 20.17.23
-      '@types/npm-registry-fetch': 8.0.7
-
   '@types/lodash.mergewith@4.6.9':
     dependencies:
       '@types/lodash': 4.17.16
@@ -9160,8 +9137,6 @@ snapshots:
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
-
-  '@types/validate-npm-package-name@4.0.2': {}
 
   '@types/yargs-parser@21.0.3': {}
 
