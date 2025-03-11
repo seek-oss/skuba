@@ -35,6 +35,6 @@ describe('replacePackageReferences', () => {
       },
     });
 
-    expect(process(input)).toBe(expected);
+    expect(process('filename.txt', input)).toBe(expected);
   });
 });

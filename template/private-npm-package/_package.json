@@ -34,7 +34,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.13.10",
     "commitizen": "^4.2.4",
     "skuba": "*"
   },

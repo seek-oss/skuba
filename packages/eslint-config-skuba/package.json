@@ -32,13 +32,13 @@
   },
   "devDependencies": {
     "eslint": "^9.11.1",
-    "typescript": "~5.7.0"
+    "typescript": "~5.8.0"
   },
   "peerDependencies": {
     "eslint": ">=9.11.1",
     "typescript": ">=5.5.4"
   },
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "pnpm@10.6.1",
   "engines": {
     "node": ">=18.18.0"
   },
