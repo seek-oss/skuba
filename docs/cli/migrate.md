@@ -49,7 +49,7 @@ The migration will attempt to proceed if your project specifies:
 
   Well-known project types currently include `application` and `package`.
   While we intend to improve support for monorepo projects in a future version,
-  you may enable migrations in the interim by setting the project type to `application`.
+  you may enable migrations in the interim by setting your root `/package.json` project type to `root`.
 
 **skuba** upgrades your `tsconfig.json`s in line with the official [Node Target Mapping] guidance.
 `tsconfig.json`s contain two options that are linked to Node.js versions:
