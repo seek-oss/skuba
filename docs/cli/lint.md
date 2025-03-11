@@ -86,7 +86,8 @@ As of **skuba** 10,
 `skuba format` and `skuba lint` include patches that attempt to automatically migrate your project to the [active LTS version] of Node.js.
 This is intended to minimise effort required to keep up with annual Node.js releases.
 
-You can opt out of these migrations by setting the `SKIP_NODE_UPGRADE` environment variable before running `skuba format` or `skuba lint`.
+With each **skuba** upgrade that includes these patches,
+you can locally opt out of the migration by setting the `SKIP_NODE_UPGRADE` environment variable, running `skuba format`, and committing the result.
 
 Changes must be manually reviewed by an engineer before merging the migration output.
 See [`skuba migrate node`] for more information on this feature and how to use it responsibly.
