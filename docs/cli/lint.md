@@ -76,7 +76,8 @@ you can limit this with the `--serial` flag.
 `skuba format` and `skuba lint` include rudimentary support for patching your project.
 These simple codemods are applied the first time that you run a relevant command after upgrading to a new version of **skuba**.
 
-Patches are not guaranteed to work perfectly on all projects.
+Patches are not guaranteed to work perfectly on all projects,
+and typically work best when a project closely matches a built-in [template].
 Review and test modified code as appropriate before releasing to production,
 and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by a patch.
 
@@ -104,4 +105,5 @@ See [`skuba migrate node`] for more information on this feature and how to use i
 [GitHub autofixes]: ../deep-dives/github.md#github-autofixes
 [prescribe ESLint]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346041/#TypeScript
 [Prettier]: https://prettier.io/
+[template]: ../templates/index.md
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

@@ -33,7 +33,8 @@ The following files are scanned:
 - Dockerfiles & Docker Compose files
 - Serverless files
 
-**skuba** may not be able to upgrade all projects.
+**skuba** may not be able to upgrade all projects,
+and typically works best when a project closely matches a built-in [template].
 Check your project for files that may have been missed,
 review and test the modified code as appropriate before releasing to production,
 and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
@@ -112,6 +113,7 @@ As of **skuba** 10,
 [Node Target Mapping]: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping.
 [patches]: ./lint.md#patches
 [semantic versioning]: https://semver.org/
+[template]: ../templates/index.md
 
 ### skuba migrate node22
 
