@@ -1,5 +1,99 @@
 # skuba
 
+## 10.0.0
+
+### Major Changes
+
+- **format, lint:** Migrate projects to Node.js 22 ([#1804](https://github.com/seek-oss/skuba/pull/1804))
+
+  As of **skuba** 10, `skuba format` and `skuba lint` include patches that attempt to automatically migrate your project to the [active LTS version] of Node.js. This is intended to minimise effort required to keep up with annual Node.js releases.
+
+  With each **skuba** upgrade that includes these patches, you can locally opt out of the migration by setting the `SKIP_NODE_UPGRADE` environment variable, running `skuba format`, and committing the result.
+
+  Changes must be manually reviewed by an engineer before merging the migration output. See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
+
+  [active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
+
+- **migrate:** Introduce `skuba migrate node22` ([#1735](https://github.com/seek-oss/skuba/pull/1735))
+
+  [`skuba migrate node22`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node22) attempts to automatically upgrade your project to Node.js 22. Changes must be manually reviewed by an engineer before committing the migration output. See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
+
+  **skuba** may not be able to upgrade all projects. Check your project for files that may have been missed, review and test the modified code as appropriate before releasing to production, and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
+
+  Node.js 22 includes breaking changes. For more information on the upgrade, refer to:
+
+  - The Node.js [release notes][node-22]
+  - The AWS [release announcement][aws-22] for the Lambda `nodejs22.x` runtime update
+
+  You may need to manually upgrade CDK and Serverless package versions as appropriate to support `nodejs22.x`.
+
+  [aws-22]: https://aws.amazon.com/blogs/compute/node-js-22-runtime-now-available-in-aws-lambda/
+  [node-22]: https://nodejs.org/en/blog/announcements/v22-release-announce
+
+### Minor Changes
+
+- **lint:** Flag CODEOWNERS files that appear to have been incorrectly formatted ([#1796](https://github.com/seek-oss/skuba/pull/1796))
+
+  Some code editors incorrectly detect `CODEOWNERS` files as markdown files and re-format them as such, breaking their syntax. `skuba lint` now attempts to detect this scenario and flags the file as being incorrect.
+
+- **deps:** Drop dependencies `validate-npm-package-name` and `libnpmsearch` ([#1809](https://github.com/seek-oss/skuba/pull/1809))
+
+  These dependencies have been removed, replaced by `npm-registry-fetch`.
+
+- **template/\*-rest-api:** Remove `seek:source:url` tag from gantry files ([#1797](https://github.com/seek-oss/skuba/pull/1797))
+
+- **template/lambda-sqs-worker:** Remove template ([#1789](https://github.com/seek-oss/skuba/pull/1789))
+
+  It is recommended to use the `lambda-sqs-worker-cdk` template instead.
+
+- **deps:** TypeScript 5.8 ([#1750](https://github.com/seek-oss/skuba/pull/1750))
+
+  This major release includes breaking changes. See the [TypeScript 5.7](https://devblogs.microsoft.com/typescript/announcing-typescript-5-7/) and [TypeScript 5.8](https://devblogs.microsoft.com/typescript/announcing-typescript-5-8/) announcements for more information.
+
+### Patch Changes
+
+- **configure:** Fix crash during detecting whether the working tree is clean ([#1737](https://github.com/seek-oss/skuba/pull/1737))
+
+- **template/express-rest-api:** express 5 ([#1761](https://github.com/seek-oss/skuba/pull/1761))
+
+- **init:** Skip malformed template files ([#1808](https://github.com/seek-oss/skuba/pull/1808))
+
+  `skuba init` runs templates, either bundled or [BYO](https://seek-oss.github.io/skuba/docs/templates/byo.html), through a series of string templating and processing steps.
+
+  Occasionally, binary files can include substrings that appear to be directives for skuba to translate the file contents, which may then proceed to crash.
+
+  To work around this, `skuba init` now skips templating of a given file when encountering an error.
+
+- **template/lambda-sqs-worker-cdk:** Add `git` to the base Docker image ([#1775](https://github.com/seek-oss/skuba/pull/1775))
+
+- **template/lambda-sqs-worker-cdk:** Upgrade `aws-cdk` and `aws-cdk-lib` to `^2.167.1` ([#1740](https://github.com/seek-oss/skuba/pull/1740))
+
+- **template/lambda-sqs-worker-cdk:** Upgrade to datadog-cdk-constructs-v2 2 ([#1799](https://github.com/seek-oss/skuba/pull/1799))
+
+- **template/lambda-sqs-worker-cdk:** Fix failing unit test and add `start` command ([#1724](https://github.com/seek-oss/skuba/pull/1724))
+
+- **deps:** ignore ^7.0.0 ([#1762](https://github.com/seek-oss/skuba/pull/1762))
+
+- **deps:** prettier ~3.5.0 ([#1788](https://github.com/seek-oss/skuba/pull/1788))
+
+- **deps:** esbuild ~0.25.0 ([#1787](https://github.com/seek-oss/skuba/pull/1787))
+
+- **deps:** prettier ~3.4.0 ([#1751](https://github.com/seek-oss/skuba/pull/1751))
+
+  This change may contain some formatting changes. Review the release notes: https://prettier.io/blog/2024/11/26/3.4.0.html
+
+- **template/\*:** Upgrade to Node 22 ([#1789](https://github.com/seek-oss/skuba/pull/1789))
+
+- **template:** Align with latest AWS tagging guidance ([#1782](https://github.com/seek-oss/skuba/pull/1782))
+
+- **template/express-rest-api, template/koa-rest-api:** Drop support for `failOnScanFindings` for gantry 4 support ([#1759](https://github.com/seek-oss/skuba/pull/1759))
+
+- **deps:** Drop `serialize-error` ([#1763](https://github.com/seek-oss/skuba/pull/1763))
+
+- **template/\*-rest-api:** seek-jobs/gantry v4.0.0 ([#1785](https://github.com/seek-oss/skuba/pull/1785))
+
+- **init:** Fix `pnpm dlx skuba init` usage ([#1793](https://github.com/seek-oss/skuba/pull/1793))
+
 ## 9.1.0
 
 ### Minor Changes
