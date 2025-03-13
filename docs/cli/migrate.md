@@ -9,7 +9,7 @@ nav_order: 7
 
 ## skuba migrate help
 
-Echoes the available **skuba** migrations
+Echoes the available **skuba** migrations.
 
 ```shell
 skuba migrate help
@@ -17,21 +17,138 @@ skuba migrate help
 
 ---
 
-## skuba migrate node20
+## skuba migrate node
 
-`skuba migrate node20` will attempt to automatically upgrade projects to Node.js 20.
-It will look in the project root for Dockerfiles, `.nvmrc`, and Serverless files,
-as well as CDK files in `infra/` and `.buildkite/` files, and try to upgrade them to a Node.js 20 version.
+**skuba** includes migrations to upgrade your project to the [active LTS version] of Node.js.
+This is intended to minimise effort required to keep up with annual Node.js releases.
 
-**skuba** might not be able to upgrade all projects, so please check your project for any files that **skuba** missed. It's
-possible that **skuba** will modify a file incorrectly, in which case please
-[open an issue](https://github.com/seek-oss/skuba/issues/new).
+The following files are scanned:
 
-Node.js 20 comes with its own breaking changes, so please read the [Node.js 20 release notes](https://nodejs.org/en/blog/announcements/v20-release-announce) alongside the skuba release notes. In addition,
+- `.node-version`
+- `.nvmrc`
+- `package.json`s
+- `tsconfig.json`s
+- Buildkite pipelines in `.buildkite/` directories
+- CDK files in `infra/` directories
+- Dockerfiles & Docker Compose files
+- Serverless files
 
-- For AWS Lambda runtime updates to `nodejs20.x`, consider reading the [release announcement](https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/) as there are some breaking changes with this upgrade.
-- You may need to upgrade your versions of CDK and Serverless as appropriate to support nodejs20.x.
+**skuba** may not be able to upgrade all projects,
+and typically works best when a project closely matches a built-in [template].
+Check your project for files that may have been missed,
+review and test the modified code as appropriate before releasing to production,
+and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
+Exercise particular caution with monorepos,
+as some may have employed unique configurations that the migration has not accounted for.
+
+The migration will attempt to proceed if your project specifies:
+
+- A Node.js version in `.node-version`, `.nvmrc`, and/or `package.json#/engines/node`
+
+- A project type in `package.json#/skuba/type` that is not `package`
+
+  Well-known project types currently include `application` and `package`.
+  While we intend to improve support for monorepo projects in a future version,
+  you may enable migrations in the interim by setting your root `/package.json` project type to `root`.
+
+**skuba** upgrades your `tsconfig.json`s in line with the official [Node Target Mapping] guidance.
+`tsconfig.json`s contain two options that are linked to Node.js versions:
+
+- `lib` configures the language features available to your source code.
+
+  For example, including `ES2024` allows you to use the [`Object.groupBy()` static method].
+  The features available in each new ECMAScript version are summarised on [node.green](https://node.green/).
+
+- `target` configures the transpilation behaviour of the TypeScript compiler.
+
+  Back-end applications typically synchronise `lib` with their Node.js runtime.
+  In this scenario, there is no need to transpile language features and `target` can match the ECMAScript version in `lib`.
+
+  On the other hand, you may wish to use recent language features when authoring your npm packages while retaining support for package consumers on older Node.js runtimes.
+  In this scenario, see the note below on transpilation for npm packages.
+
+For npm packages,
+manually review the following configuration options:
+
+- `package.json#/engines/node`
+
+  The `engines` property propagates to your package consumers.
+  For example, if you specify a minimum Node.js version of 22,
+  it will prevent your package from being installed in a Node.js 20 environment:
+
+  ```json
+  {
+    "engines": {
+      "node": ">=22"
+    }
+  }
+  ```
+
+  Take care with the `engines` property of an npm package;
+  modifications typically necessitate a new major release per [semantic versioning].
+
+- `tsconfig.json#/target`
+
+  Refer to the official [Node Target Mapping] guidance and ensure that the transpilation target corresponds to the minimum Node.js version in `engines`.
+
+  For monorepo projects,
+  check whether your npm packages inherit from another `tsconfig.json`.
+  You may need to define explicit overrides for npm packages like so:
+
+  ```diff
+  {
+  + "compilerOptions": {
+  +   "removeComments": false,
+  +   "target": "ES2023" // Continue to support package consumers on Node.js 20
+  + },
+    "extends": "../../tsconfig.json"
+  }
+  ```
+
+As of **skuba** 10,
+`skuba format` and `skuba lint` will automatically run these migrations as [patches].
+
+[`Object.groupBy()` static method]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
+[active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
+[Node Target Mapping]: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping.
+[patches]: ./lint.md#patches
+[semantic versioning]: https://semver.org/
+[template]: ../templates/index.md
+
+### skuba migrate node22
+
+Attempts to automatically upgrade your project to Node.js 22.
+
+```shell
+skuba migrate node22
+```
+
+Node.js 22 includes breaking changes.
+For more information on the upgrade, refer to:
+
+- The Node.js [release notes][node-22]
+- The AWS [release announcement][aws-22] for the Lambda `nodejs22.x` runtime update
+
+You may need to manually upgrade CDK and Serverless package versions as appropriate to support `nodejs22.x`.
+
+[aws-22]: https://aws.amazon.com/blogs/compute/node-js-22-runtime-now-available-in-aws-lambda/
+[node-22]: https://nodejs.org/en/blog/announcements/v22-release-announce
+
+### skuba migrate node20
+
+Attempts to automatically upgrade your project to Node.js 20.
 
 ```shell
 skuba migrate node20
 ```
+
+Node.js 20 includes breaking changes.
+For more information on the upgrade, refer to:
+
+- The Node.js [release notes][node-20]
+- The AWS [release announcement][aws-20] for the Lambda `nodejs20.x` runtime update
+
+You may need to manually upgrade CDK and Serverless package versions as appropriate to support `nodejs20.x`.
+
+[aws-20]: https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/
+[node-20]: https://nodejs.org/en/blog/announcements/v20-release-announce
