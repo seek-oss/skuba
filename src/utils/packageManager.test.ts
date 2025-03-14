@@ -30,10 +30,11 @@ describe('detectPackageManager', () => {
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
         "command": "pnpm",
-        "exec": "pnpm exec",
-        "install": "pnpm install",
-        "runSilent": "pnpm --silent run",
-        "update": "pnpm update",
+        "print": {
+          "exec": "pnpm exec",
+          "runSilent": "pnpm --silent run",
+          "update": "pnpm update",
+        },
       }
     `);
 
@@ -50,10 +51,11 @@ describe('detectPackageManager', () => {
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
         "command": "yarn",
-        "exec": "yarn",
-        "install": "yarn install",
-        "runSilent": "yarn -s",
-        "update": "yarn upgrade",
+        "print": {
+          "exec": "yarn",
+          "runSilent": "yarn -s",
+          "update": "yarn upgrade",
+        },
       }
     `);
 
@@ -72,10 +74,11 @@ describe('detectPackageManager', () => {
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
         "command": "pnpm",
-        "exec": "pnpm exec",
-        "install": "pnpm install",
-        "runSilent": "pnpm --silent run",
-        "update": "pnpm update",
+        "print": {
+          "exec": "pnpm exec",
+          "runSilent": "pnpm --silent run",
+          "update": "pnpm update",
+        },
       }
     `);
 
@@ -90,10 +93,11 @@ describe('detectPackageManager', () => {
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
         "command": "yarn",
-        "exec": "yarn",
-        "install": "yarn install",
-        "runSilent": "yarn -s",
-        "update": "yarn upgrade",
+        "print": {
+          "exec": "yarn",
+          "runSilent": "yarn -s",
+          "update": "yarn upgrade",
+        },
       }
     `);
 
@@ -106,10 +110,11 @@ describe('detectPackageManager', () => {
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
         "command": "yarn",
-        "exec": "yarn",
-        "install": "yarn install",
-        "runSilent": "yarn -s",
-        "update": "yarn upgrade",
+        "print": {
+          "exec": "yarn",
+          "runSilent": "yarn -s",
+          "update": "yarn upgrade",
+        },
       }
     `);
 
@@ -129,10 +134,11 @@ describe('detectPackageManager', () => {
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
         "command": "yarn",
-        "exec": "yarn",
-        "install": "yarn install",
-        "runSilent": "yarn -s",
-        "update": "yarn upgrade",
+        "print": {
+          "exec": "yarn",
+          "runSilent": "yarn -s",
+          "update": "yarn upgrade",
+        },
       }
     `);
 

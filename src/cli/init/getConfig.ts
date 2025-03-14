@@ -131,7 +131,7 @@ const cloneTemplate = async (
     log.warn(
       'You may need to run',
       log.bold(
-        configForPackageManager(templateConfig.packageManager).exec,
+        configForPackageManager(templateConfig.packageManager).print.exec,
         'skuba',
         'configure',
       ),
@@ -269,7 +269,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   log.newline();
   log.warn(
     `Resume this later with ${chalk.bold(
-      configForPackageManager(packageManager).exec,
+      configForPackageManager(packageManager).print.exec,
       'skuba configure',
     )}.`,
   );

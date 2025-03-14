@@ -15,16 +15,18 @@ export type PackageManagerConfig =
 
 const PACKAGE_MANAGERS = {
   pnpm: {
-    exec: 'pnpm exec',
-    install: 'pnpm install',
-    runSilent: 'pnpm --silent run',
-    update: isInstalledGlobally ? 'pnpm update --global' : 'pnpm update',
+    print: {
+      exec: 'pnpm exec',
+      runSilent: 'pnpm --silent run',
+      update: isInstalledGlobally ? 'pnpm update --global' : 'pnpm update',
+    },
   },
   yarn: {
-    exec: 'yarn',
-    install: 'yarn install',
-    runSilent: 'yarn -s',
-    update: isInstalledGlobally ? 'yarn global upgrade' : 'yarn upgrade',
+    print: {
+      exec: 'yarn',
+      runSilent: 'yarn -s',
+      update: isInstalledGlobally ? 'yarn global upgrade' : 'yarn upgrade',
+    },
   },
 };
 
