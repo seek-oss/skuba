@@ -157,7 +157,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@10.6.2",
+  "packageManager": "pnpm@10.6.3",
   "engines": {
     "node": ">=18.18.0"
   },
