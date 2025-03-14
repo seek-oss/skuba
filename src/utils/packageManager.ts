@@ -81,7 +81,16 @@ export const relock = async (cwd?: string) => {
     stdio: 'pipe',
     streamStdio: packageManager.command,
   });
-  await exec(packageManager.command, 'install');
+
+  if (packageManager.command === 'pnpm') {
+    return await exec(
+      packageManager.command,
+      'install',
+      '--frozen-lockfile=false',
+    );
+  }
+
+  return await exec(packageManager.command, 'install');
 };
 
 const findDepth = async (filename: string, cwd?: string) => {

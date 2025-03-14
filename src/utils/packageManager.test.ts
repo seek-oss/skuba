@@ -159,6 +159,10 @@ describe('relock', () => {
     );
     await expect(relock()).resolves.toBeUndefined();
 
-    expect(mockExec).toHaveBeenCalledWith('pnpm', 'install');
+    expect(mockExec).toHaveBeenCalledWith(
+      'pnpm',
+      'install',
+      '--frozen-lockfile=false',
+    );
   });
 });
