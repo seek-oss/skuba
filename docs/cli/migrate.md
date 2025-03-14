@@ -110,7 +110,7 @@ As of **skuba** 10,
 
 [`Object.groupBy()` static method]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
 [active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
-[Node Target Mapping]: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping.
+[Node Target Mapping]: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
 [patches]: ./lint.md#patches
 [semantic versioning]: https://semver.org/
 [template]: ../templates/index.md
