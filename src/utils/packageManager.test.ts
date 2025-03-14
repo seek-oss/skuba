@@ -2,13 +2,18 @@ const findUp = jest.fn();
 
 jest.mock('find-up', () => findUp);
 
-import { detectPackageManager } from './packageManager';
+import * as exec from './exec';
+import { detectPackageManager, relock } from './packageManager';
 
 const stdoutMock = jest.fn();
 
 jest
   .spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+
+const mockExec = jest.fn().mockResolvedValue({});
+
+jest.spyOn(exec, 'createExec').mockReturnValue(mockExec);
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('').trim();
 
@@ -136,5 +141,18 @@ describe('detectPackageManager', () => {
         '\n',
       ),
     );
+  });
+});
+
+describe('relock', () => {
+  it('calls exec with the appropriate package manager', async () => {
+    findUp.mockImplementation((file: string) =>
+      Promise.resolve(
+        file === 'pnpm-lock.yaml' ? '/root/pnpm-lock.yaml' : undefined,
+      ),
+    );
+    await expect(relock()).resolves.toBeUndefined();
+
+    expect(mockExec).toHaveBeenCalledWith('pnpm', 'install');
   });
 });

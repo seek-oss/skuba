@@ -41,11 +41,16 @@ and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your projec
 Exercise particular caution with monorepos,
 as some may have employed unique configurations that the migration has not accounted for.
 
-The migration will attempt to proceed if your project specifies:
+The migration will attempt to proceed if your project:
 
-- A Node.js version in `.node-version`, `.nvmrc`, and/or `package.json#/engines/node`
+- Specifies a Node.js version in `.node-version`, `.nvmrc`, and/or `package.json#/engines/node`
 
-- A project type in `package.json#/skuba/type` that is not `package`
+- Does not include a `package.json#/files` field
+
+  This field implies that your project is an npm package.
+  See below for considerations when manually upgrading npm packages.
+
+- Specifies a project type in `package.json#/skuba/type` that is not `package`
 
   Well-known project types currently include `application` and `package`.
   While we intend to improve support for monorepo projects in a future version,
@@ -96,13 +101,13 @@ manually review the following configuration options:
   You may need to define explicit overrides for npm packages like so:
 
   ```diff
-  {
-  + "compilerOptions": {
-  +   "removeComments": false,
-  +   "target": "ES2023" // Continue to support package consumers on Node.js 20
-  + },
-    "extends": "../../tsconfig.json"
-  }
+    {
+  +   "compilerOptions": {
+  +     "removeComments": false,
+  +     "target": "ES2023" // Continue to support package consumers on Node.js 20
+  +   },
+      "extends": "../../tsconfig.json"
+    }
   ```
 
 As of **skuba** 10,
