@@ -101,13 +101,13 @@ manually review the following configuration options:
   You may need to define explicit overrides for npm packages like so:
 
   ```diff
-  {
-  + "compilerOptions": {
-  +   "removeComments": false,
-  +   "target": "ES2023" // Continue to support package consumers on Node.js 20
-  + },
-    "extends": "../../tsconfig.json"
-  }
+    {
+  +   "compilerOptions": {
+  +     "removeComments": false,
+  +     "target": "ES2023" // Continue to support package consumers on Node.js 20
+  +   },
+      "extends": "../../tsconfig.json"
+    }
   ```
 
 As of **skuba** 10,
