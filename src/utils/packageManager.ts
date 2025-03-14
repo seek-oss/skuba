@@ -2,7 +2,7 @@ import findUp from 'find-up';
 import isInstalledGlobally from 'is-installed-globally';
 import { z } from 'zod';
 
-import { exec } from './exec';
+import { createExec } from './exec';
 import { log } from './logging';
 
 // TODO: consider changing to this to `pnpm` in a future major version.
@@ -75,7 +75,11 @@ export const detectPackageManager = async (
 
 export const relock = async (cwd?: string) => {
   const packageManager = await detectPackageManager(cwd);
-  await exec(packageManager.install);
+  const exec = createExec({
+    stdio: 'pipe',
+    streamStdio: packageManager.command,
+  });
+  await exec(packageManager.command, 'install');
 };
 
 const findDepth = async (filename: string, cwd?: string) => {

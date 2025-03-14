@@ -115,7 +115,7 @@ export const configure = async () => {
 
     log.newline();
     try {
-      await exec(packageManager.install);
+      await exec(packageManager.command, 'install');
     } catch {
       log.newline();
       log.warn(log.bold('✗ Failed to install dependencies. Resume with:'));
