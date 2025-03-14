@@ -41,11 +41,16 @@ and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your projec
 Exercise particular caution with monorepos,
 as some may have employed unique configurations that the migration has not accounted for.
 
-The migration will attempt to proceed if your project specifies:
+The migration will attempt to proceed if your project:
 
-- A Node.js version in `.node-version`, `.nvmrc`, and/or `package.json#/engines/node`
+- Specifies a Node.js version in `.node-version`, `.nvmrc`, and/or `package.json#/engines/node`
 
-- A project type in `package.json#/skuba/type` that is not `package`
+- Does not include a `package.json#/files` field
+
+  This field implies that your project is an npm package.
+  See below for considerations when manually upgrading npm packages.
+
+- Specifies a project type in `package.json#/skuba/type` that is not `package`
 
   Well-known project types currently include `application` and `package`.
   While we intend to improve support for monorepo projects in a future version,
@@ -110,7 +115,7 @@ As of **skuba** 10,
 
 [`Object.groupBy()` static method]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
 [active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
-[Node Target Mapping]: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping.
+[Node Target Mapping]: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
 [patches]: ./lint.md#patches
 [semantic versioning]: https://semver.org/
 [template]: ../templates/index.md
