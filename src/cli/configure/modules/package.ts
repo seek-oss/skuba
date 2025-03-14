@@ -93,7 +93,10 @@ export const packageModule = async ({
             .filter((script): script is string => typeof script === 'string')
             .map((script) =>
               script
-                .replace(/^smt build$/, `${packageManager.runSilent} build`)
+                .replace(
+                  /^smt build$/,
+                  `${packageManager.print.runSilent} build`,
+                )
                 .replace(/^smt /, 'skuba ')
                 .trim(),
             )

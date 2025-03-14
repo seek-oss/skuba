@@ -119,7 +119,7 @@ export const upgradeSkuba = async (
 
     logger.warn(
       `skuba has patches to apply. Run ${logger.bold(
-        packageManager.exec,
+        packageManager.print.exec,
         'skuba',
         'format',
       )} to run them. ${logger.dim('skuba-patches')}`,
@@ -133,7 +133,7 @@ export const upgradeSkuba = async (
           // package.json as likely skuba version has changed
           // TODO: locate the "skuba": {} config in the package.json and annotate on the version property
           path: manifest.path,
-          message: `skuba has patches to apply. Run ${packageManager.exec} skuba format to run them.`,
+          message: `skuba has patches to apply. Run ${packageManager.print.exec} skuba format to run them.`,
         },
       ],
     };
