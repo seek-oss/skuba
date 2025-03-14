@@ -30,7 +30,9 @@ export const showLogoAndVersionInfo = async () => {
     log.warn('Your skuba installation is out of date.');
     log.warn('Consider upgrading:');
     log.newline();
-    log.warn(log.bold(packageManager.update, `skuba@${versionInfo.latest}`));
+    log.warn(
+      log.bold(packageManager.print.update, `skuba@${versionInfo.latest}`),
+    );
     log.newline();
   }
 
