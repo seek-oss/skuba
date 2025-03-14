@@ -11,7 +11,9 @@ jest
   .spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
-jest.spyOn(exec, 'exec').mockResolvedValue({} as any);
+const mockExec = jest.fn().mockResolvedValue({});
+
+jest.spyOn(exec, 'createExec').mockReturnValue(mockExec);
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('').trim();
 
@@ -151,6 +153,6 @@ describe('relock', () => {
     );
     await expect(relock()).resolves.toBeUndefined();
 
-    expect(exec.exec).toHaveBeenCalledWith('pnpm install');
+    expect(mockExec).toHaveBeenCalledWith('pnpm', 'install');
   });
 });
