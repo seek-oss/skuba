@@ -83,11 +83,8 @@ export const relock = async (cwd?: string) => {
   });
 
   if (packageManager.command === 'pnpm') {
-    return await exec(
-      packageManager.command,
-      'install',
-      '--frozen-lockfile=false',
-    );
+    await exec(packageManager.command, 'install', '--frozen-lockfile=false');
+    return;
   }
 
   return await exec(packageManager.command, 'install');
