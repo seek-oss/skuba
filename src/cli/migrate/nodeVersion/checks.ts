@@ -95,7 +95,7 @@ export const isPatchableSkubaType = async (
 
   if (!packageJson) {
     throw new Error(
-      'package.json not found, ensure it is in the correct location',
+      `package.json not found in ${currentPath}, ensure it is in the correct location`,
     );
   }
 
