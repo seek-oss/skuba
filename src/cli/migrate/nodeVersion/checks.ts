@@ -82,6 +82,7 @@ export const isPatchableSkubaType = async (): Promise<boolean> => {
         skuba: z.object({
           type: z.string().optional(),
         }),
+        files: z.string().array().optional(),
       }),
     );
 
@@ -89,6 +90,13 @@ export const isPatchableSkubaType = async (): Promise<boolean> => {
     throw new Error(
       'package.json not found, ensure it is in the correct location',
     );
+  }
+
+  if (packageJson.files) {
+    log.warn(
+      'Migrations are not supported for packages; update manually to ensure major runtime deprecations are intended',
+    );
+    return false;
   }
 
   const type = packageJson?.skuba.type;

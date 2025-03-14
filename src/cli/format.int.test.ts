@@ -5,6 +5,8 @@ import fs, { copy } from 'fs-extra';
 import git from 'isomorphic-git';
 import { diff } from 'jest-diff';
 
+import * as packageManager from '../utils/packageManager';
+
 import { format } from './format';
 import * as getNodeTypesVersionModule from './migrate/nodeVersion/getNodeTypesVersion';
 
@@ -25,6 +27,8 @@ jest
   .mockResolvedValue([
     { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
   ]);
+
+jest.spyOn(packageManager, 'relock').mockResolvedValue(undefined);
 
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 
