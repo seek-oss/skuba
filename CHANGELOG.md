@@ -1,5 +1,13 @@
 # skuba
 
+## 10.0.1
+
+### Patch Changes
+
+- **migrate:** Check nearest `package.json` during Node.js version migrations ([#1818](https://github.com/seek-oss/skuba/pull/1818))
+
+- **migrate:** Update `@types/node` in lock file during Node.js version migrations ([#1814](https://github.com/seek-oss/skuba/pull/1814))
+
 ## 10.0.0
 
 ### Major Changes
