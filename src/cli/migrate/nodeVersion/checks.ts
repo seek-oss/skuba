@@ -5,8 +5,8 @@ import { type ZodRawShape, z } from 'zod';
 
 import { log } from '../../../utils/logging';
 
-const getParentFile = async (file: string) => {
-  const path = await findUp(file, { cwd: process.cwd() });
+const getParentFile = async (file: string, cwd: string = process.cwd()) => {
+  const path = await findUp(file, { cwd });
   if (!path) {
     return undefined;
   }
@@ -18,8 +18,9 @@ const getParentFile = async (file: string) => {
 
 export const extractFromParentPackageJson = async <T extends ZodRawShape>(
   schema: z.ZodObject<T>,
+  currentPath: string,
 ) => {
-  const file = await getParentFile('package.json');
+  const file = await getParentFile('package.json', currentPath);
   if (!file) {
     return { packageJson: undefined, packageJsonRelativePath: undefined };
   }
@@ -38,7 +39,9 @@ export const extractFromParentPackageJson = async <T extends ZodRawShape>(
   return { packageJson: result.data, packageJsonRelativePath: path };
 };
 
-export const isPatchableServerlessVersion = async (): Promise<boolean> => {
+export const isPatchableServerlessVersion = async (
+  currentPath: string,
+): Promise<boolean> => {
   const { packageJson, packageJsonRelativePath } =
     await extractFromParentPackageJson(
       z.object({
@@ -46,6 +49,7 @@ export const isPatchableServerlessVersion = async (): Promise<boolean> => {
           serverless: z.string().optional(),
         }),
       }),
+      currentPath,
     );
   if (!packageJson) {
     throw new Error(
@@ -75,7 +79,9 @@ export const isPatchableServerlessVersion = async (): Promise<boolean> => {
   return true;
 };
 
-export const isPatchableSkubaType = async (): Promise<boolean> => {
+export const isPatchableSkubaType = async (
+  currentPath: string,
+): Promise<boolean> => {
   const { packageJson, packageJsonRelativePath } =
     await extractFromParentPackageJson(
       z.object({
@@ -84,6 +90,7 @@ export const isPatchableSkubaType = async (): Promise<boolean> => {
         }),
         files: z.string().array().optional(),
       }),
+      currentPath,
     );
 
   if (!packageJson) {
@@ -120,6 +127,7 @@ export const isPatchableSkubaType = async (): Promise<boolean> => {
 
 export const isPatchableNodeVersion = async (
   targetNodeVersion: number,
+  currentPath: string,
 ): Promise<boolean> => {
   const nvmrcFile = await getParentFile('.nvmrc');
   const nodeVersionFile = await getParentFile('.node-version');
@@ -129,6 +137,7 @@ export const isPatchableNodeVersion = async (
         node: z.string(),
       }),
     }),
+    currentPath,
   );
 
   const nvmrcNodeVersion = nvmrcFile?.fileContent;

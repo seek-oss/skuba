@@ -19,7 +19,7 @@ type FileSelector =
   | { file: string; files?: never };
 
 type SubPatch = FileSelector & {
-  tests?: Array<() => Promise<boolean>>;
+  tests?: Array<(path: string) => Promise<boolean>>;
   regex?: RegExp;
   replace: string;
 };
@@ -143,7 +143,9 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
       }
 
       if (patch.tests) {
-        const results = await Promise.all(patch.tests.map((test) => test()));
+        const results = await Promise.all(
+          patch.tests.map((test) => test(path)),
+        );
         if (!results.every(Boolean)) {
           return;
         }
@@ -195,7 +197,7 @@ export const nodeVersionMigration = async (
 ) => {
   log.ok(`Upgrading to Node.js ${nodeVersion}`);
   try {
-    if (!(await isPatchableNodeVersion(nodeVersion))) {
+    if (!(await isPatchableNodeVersion(nodeVersion, dir))) {
       throw new Error('Node.js version is not patchable');
     }
 
