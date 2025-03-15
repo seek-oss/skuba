@@ -75,7 +75,7 @@ export const detectPackageManager = async (
   return configForPackageManager(packageManager);
 };
 
-export const relock = async (cwd?: string) => {
+export const relock = async (cwd?: string, nodeTypesVersion?: string) => {
   const packageManager = await detectPackageManager(cwd);
   const exec = createExec({
     stdio: 'pipe',
@@ -83,7 +83,19 @@ export const relock = async (cwd?: string) => {
   });
 
   if (packageManager.command === 'pnpm') {
-    await exec(packageManager.command, 'install', '--lockfile-only');
+    if (nodeTypesVersion) {
+      await exec(
+        packageManager.command,
+        'fetch',
+        `@types/node@${nodeTypesVersion}`,
+      );
+    }
+    await exec(
+      packageManager.command,
+      'install',
+      '--offline',
+      '--lockfile-only',
+    );
     return;
   }
 
