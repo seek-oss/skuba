@@ -75,13 +75,31 @@ export const detectPackageManager = async (
   return configForPackageManager(packageManager);
 };
 
-export const relock = async (cwd?: string) => {
+export const relock = async (cwd?: string, nodeTypesVersion?: string) => {
   const packageManager = await detectPackageManager(cwd);
   const exec = createExec({
     stdio: 'pipe',
     streamStdio: packageManager.command,
   });
-  await exec(packageManager.command, 'install');
+
+  if (packageManager.command === 'pnpm') {
+    if (nodeTypesVersion) {
+      await exec(
+        packageManager.command,
+        'fetch',
+        `@types/node@${nodeTypesVersion}`,
+      );
+    }
+    await exec(
+      packageManager.command,
+      'install',
+      '--offline',
+      '--lockfile-only',
+    );
+    return;
+  }
+
+  return await exec(packageManager.command, 'install');
 };
 
 const findDepth = async (filename: string, cwd?: string) => {

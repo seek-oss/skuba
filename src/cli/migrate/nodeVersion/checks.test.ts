@@ -66,7 +66,7 @@ describe('isPatchableServerlessVersion', () => {
   it('throws when no package.json is found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce(undefined);
     await expect(isPatchableServerlessVersion(cwd)).rejects.toThrow(
-      'package.json not found, ensure it is in the correct location',
+      `package.json not found in ${cwd}, ensure it is in the correct location`,
     );
   });
   it('should return an error when the package.json is not valid json', async () => {
@@ -127,7 +127,7 @@ describe('isPatchableSkubaType', () => {
   it('should throw when no package.json is not found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce(undefined);
     await expect(isPatchableSkubaType(cwd)).rejects.toThrow(
-      'package.json not found, ensure it is in the correct location',
+      `package.json not found in ${cwd}, ensure it is in the correct location`,
     );
   });
 });

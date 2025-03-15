@@ -53,7 +53,7 @@ export const isPatchableServerlessVersion = async (
     );
   if (!packageJson) {
     throw new Error(
-      'package.json not found, ensure it is in the correct location',
+      `package.json not found in ${currentPath}, ensure it is in the correct location`,
     );
   }
 
@@ -85,9 +85,11 @@ export const isPatchableSkubaType = async (
   const { packageJson, packageJsonRelativePath } =
     await extractFromParentPackageJson(
       z.object({
-        skuba: z.object({
-          type: z.string().optional(),
-        }),
+        skuba: z
+          .object({
+            type: z.string().optional(),
+          })
+          .optional(),
         files: z.string().array().optional(),
       }),
       currentPath,
@@ -95,7 +97,7 @@ export const isPatchableSkubaType = async (
 
   if (!packageJson) {
     throw new Error(
-      'package.json not found, ensure it is in the correct location',
+      `package.json not found in ${currentPath}, ensure it is in the correct location`,
     );
   }
 
@@ -106,7 +108,7 @@ export const isPatchableSkubaType = async (
     return false;
   }
 
-  const type = packageJson?.skuba.type;
+  const type = packageJson?.skuba?.type;
 
   if (!type) {
     log.warn(

@@ -209,7 +209,7 @@ export const nodeVersionMigration = async (
       log.warn(err);
     }
     await upgrade({ nodeVersion, nodeTypesVersion, ECMAScriptVersion }, dir);
-    await relock(dir);
+    await relock(dir, nodeTypesVersion);
 
     log.ok('Upgraded to Node.js', nodeVersion);
   } catch (error) {
