@@ -80,10 +80,17 @@ export const relock = async (cwd?: string) => {
   const exec = createExec({
     stdio: 'pipe',
     streamStdio: packageManager.command,
+    cwd,
   });
 
   if (packageManager.command === 'pnpm') {
-    await exec(packageManager.command, 'install', '--lockfile-only');
+    await exec(
+      packageManager.command,
+      'install',
+      '--prefer-offline',
+      '--lockfile-only',
+      '--frozen-lockfile=false',
+    );
     return;
   }
 
