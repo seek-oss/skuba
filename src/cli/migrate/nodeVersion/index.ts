@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, parse } from 'path';
 import { inspect } from 'util';
 
 import { glob } from 'fast-glob';
@@ -144,8 +144,9 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
       }
 
       if (patch.tests) {
+        const directory = parse(join(dir, path)).dir;
         const results = await Promise.all(
-          patch.tests.map((test) => test(join(dir, path))),
+          patch.tests.map((test) => test(directory)),
         );
         if (!results.every(Boolean)) {
           return;
