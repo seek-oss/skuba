@@ -163,6 +163,7 @@ describe('relock', () => {
       'pnpm',
       'install',
       '--frozen-lockfile=false',
+      '--prefer-offline',
     );
   });
 });
