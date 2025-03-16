@@ -4,7 +4,6 @@ import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging';
-import { relock } from '../../../utils/packageManager';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 
 import {
@@ -191,7 +190,6 @@ export const nodeVersionMigration = async (
     }
 
     await upgrade({ nodeVersion, ECMAScriptVersion }, dir);
-    await relock(dir);
 
     log.ok('Upgraded to Node.js', nodeVersion);
   } catch (error) {
