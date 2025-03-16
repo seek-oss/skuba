@@ -49,6 +49,6 @@
     "entryPoint": "index.js",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "8.2.1"
+    "version": "10.0.1"
   }
 }
