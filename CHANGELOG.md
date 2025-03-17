@@ -1,5 +1,11 @@
 # skuba
 
+## 10.0.2
+
+### Patch Changes
+
+- **migrate:** Remove auto upgrading `@types/node` version due to build pipeline constraints ([#1820](https://github.com/seek-oss/skuba/pull/1820))
+
 ## 10.0.1
 
 ### Patch Changes
