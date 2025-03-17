@@ -1,5 +1,11 @@
 # eslint-config-skuba
 
+## 5.1.1
+
+### Patch Changes
+
+- **deps:** eslint-config-seek ^14.3.1 ([#1822](https://github.com/seek-oss/skuba/pull/1822))
+
 ## 5.1.0
 
 ### Minor Changes
