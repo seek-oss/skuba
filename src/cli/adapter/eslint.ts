@@ -120,12 +120,18 @@ export const runESLint = async (
 
   const ok = errors.length === 0;
 
+  logger.debug('Outputting fixes');
+
   await ESLint.outputFixes(results);
+
+  logger.debug('Formatting output...');
 
   const output = await formatter.format(
     results,
     engine.getRulesMetaForResults(results),
   );
+
+  logger.debug('Outputting...');
 
   if (output) {
     logger.plain(output);
