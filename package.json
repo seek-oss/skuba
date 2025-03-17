@@ -164,6 +164,11 @@
   "publishConfig": {
     "provenance": true
   },
+  "pnpm": {
+    "overrides": {
+      "eslint-plugin-import-x": "4.7.0"
+    }
+  },
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",
