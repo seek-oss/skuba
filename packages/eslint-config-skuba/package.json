@@ -21,7 +21,7 @@
     "index.js"
   ],
   "scripts": {
-    "eslint": "eslint --ext .ts,.tsx,.js,.jsx .",
+    "eslint": "eslint --ext .ts,.tsx,.js,.jsx --cache .",
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
     "skuba": "node --experimental-vm-modules ../../lib/skuba"
