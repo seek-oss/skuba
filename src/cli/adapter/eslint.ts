@@ -137,6 +137,8 @@ export const runESLint = async (
     logger.plain(output);
   }
 
+  logger.debug('Done.');
+
   return { errors, fixable, ok, output, warnings };
 };
 
