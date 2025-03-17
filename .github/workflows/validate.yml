@@ -105,9 +105,6 @@ jobs:
 
       - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
         name: Lint package
-        env:
-          SKIP_NODE_UPGRADE: true
-          DEBUG: 'eslint*'
         run: pnpm --filter ${{ matrix.template }} lint
 
       - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
