@@ -1,13 +1,8 @@
 import memfs, { vol } from 'memfs';
 
 import * as checks from './checks';
-import * as getNode22TypesVersionModule from './getNodeTypesVersion';
 
 import { nodeVersionMigration } from '.';
-
-jest
-  .spyOn(getNode22TypesVersionModule, 'getNodeTypesVersion')
-  .mockReturnValue(Promise.resolve({ version: '22.9.0' }));
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
@@ -149,22 +144,7 @@ describe('nodeVersionMigration', () => {
       },
     },
     {
-      scenario: 'node types',
-      filesBefore: {
-        'package.json': '"@types/node": "^14.0.0",',
-        '1/package.json': '"@types/node": "18.0.0"',
-        '2/package.json': `"engines": {\n"node": ">=18"\n},\n`,
-        '3/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "application"\n}`,
-      },
-      filesAfter: {
-        'package.json': '"@types/node": "^22.9.0",',
-        '1/package.json': '"@types/node": "22.9.0"',
-        '2/package.json': `"engines": {\n"node": ">=22"\n},\n`,
-        '3/package.json': `"engines": {\n"node": ">=22"\n},\n"skuba": {\n"type": "application"\n}`,
-      },
-    },
-    {
-      scenario: 'not patchable node types',
+      scenario: 'not patchable engine version',
       filesBefore: {
         '1/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}`,
       },
@@ -245,7 +225,6 @@ describe('nodeVersionMigration', () => {
       await nodeVersionMigration({
         nodeVersion: 22,
         ECMAScriptVersion: 'ES2024',
-        defaultNodeTypesVersion: '22.9.0',
       });
 
       expect(volToJson()).toEqual(filesAfter ?? filesBefore);

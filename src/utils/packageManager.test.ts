@@ -3,7 +3,7 @@ const findUp = jest.fn();
 jest.mock('find-up', () => findUp);
 
 import * as exec from './exec';
-import { detectPackageManager, relock } from './packageManager';
+import { detectPackageManager } from './packageManager';
 
 const stdoutMock = jest.fn();
 
@@ -147,18 +147,5 @@ describe('detectPackageManager', () => {
         '\n',
       ),
     );
-  });
-});
-
-describe('relock', () => {
-  it('calls exec with the appropriate package manager', async () => {
-    findUp.mockImplementation((file: string) =>
-      Promise.resolve(
-        file === 'pnpm-lock.yaml' ? '/root/pnpm-lock.yaml' : undefined,
-      ),
-    );
-    await expect(relock()).resolves.toBeUndefined();
-
-    expect(mockExec).toHaveBeenCalledWith('pnpm', 'install');
   });
 });
