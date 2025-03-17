@@ -52,8 +52,27 @@ export const runESLint = async (
   const start = process.hrtime.bigint();
 
   const [formatter, { type, results }] = await Promise.all([
-    engine.loadFormatter(),
-    lintFiles(engine),
+    engine
+      .loadFormatter()
+      .then((r) => {
+        logger.debug('Loaded formatter.');
+        return r;
+      })
+      .catch((error) => {
+        logger.err('Failed to load formatter.');
+        logger.subtle(error);
+        throw error;
+      }),
+    lintFiles(engine)
+      .then((r) => {
+        logger.debug('Processed files.');
+        return r;
+      })
+      .catch((error) => {
+        logger.err('Failed to process files.');
+        logger.subtle(error);
+        throw error;
+      }),
   ]);
 
   if (type === 'no-config') {
