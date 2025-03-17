@@ -18,6 +18,63 @@ on:
 permissions: {}
 
 jobs:
+  core:
+    name: Lint & Test
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork
+    permissions:
+      checks: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - if: >-
+          github.actor != 'dependabot[bot]' && (
+            github.event_name != 'pull_request' ||
+            github.event.pull_request.head.repo.full_name == github.repository
+          )
+        name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN || github.token }}
+
+      - if: >-
+          github.actor == 'dependabot[bot]' || (
+            github.event_name == 'pull_request' &&
+            github.event.pull_request.head.repo.full_name != github.repository
+          )
+        name: Check out repo
+        uses: actions/checkout@v4
+        # We don't share secrets with Dependabot nor forks.
+
+      - name: Set Git user
+        run: |
+          git config user.name seek-oss-ci
+          git config user.email 34733141+seek-oss-ci@users.noreply.github.com
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ^22.14
+
+      - name: Set up pnpm
+        run: corepack enable pnpm && corepack install
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Test
+        run: pnpm test:ci
+
+      - name: Lint
+        run: pnpm lint
+
+      - if: github.event_name == 'push'
+        name: Dry-run changelog versioning
+        run: pnpm changeset version
+
+      - if: github.event_name == 'push'
+        name: Dry-run site packaging
+        run: pnpm skuba node scripts/package.ts
+
   package:
     name: Lint
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork
@@ -27,6 +84,7 @@ jobs:
       matrix:
         template:
           - eslint-config-skuba
+          - skuba-dive
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -42,10 +100,45 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup Skuba
+        run: pnpm build
+
       - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
         name: Lint package
-        run: pnpm --filter ${{ matrix.template }} eslint
+        env:
+          SKIP_NODE_UPGRADE: true
+        run: pnpm --filter ${{ matrix.template }} lint --debug
 
       - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
         name: Test package
         run: pnpm --filter ${{ matrix.template }} test
+
+  template:
+    name: Integrate
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        template:
+          - express-rest-api
+          - greeter
+          - koa-rest-api
+          - lambda-sqs-worker-cdk
+          - oss-npm-package
+          - private-npm-package
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ^22.14
+
+      - name: Set up pnpm
+        run: corepack enable pnpm && corepack install
+
+      - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
+        name: Test template
+        run: pnpm test:template ${{ matrix.template }}

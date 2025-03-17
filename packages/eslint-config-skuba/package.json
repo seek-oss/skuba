@@ -21,7 +21,6 @@
     "index.js"
   ],
   "scripts": {
-    "eslint": "node runLint.mjs",
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
     "skuba": "node --experimental-vm-modules ../../lib/skuba"
@@ -32,7 +31,7 @@
     "typescript-eslint": "^8.26.0"
   },
   "devDependencies": {
-    "eslint": "^9.21.0",
+    "eslint": "^9.11.1",
     "typescript": "~5.8.0"
   },
   "peerDependencies": {
