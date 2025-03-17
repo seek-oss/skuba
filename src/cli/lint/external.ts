@@ -63,9 +63,16 @@ const lintSerially = async ({ tscOutputStream, ...input }: Input) => {
 };
 
 const lintSeriallyWithoutWorkerThreads = async (input: Input) => {
+  const logger = createLogger(true, 'I am going crazy here too |');
+  logger.debug('ESLint');
   const eslint = await runESLintInCurrentThread(input);
+  logger.debug('ESLint done');
+  logger.debug('prettier');
   const prettier = await runPrettierInCurrentThread(input);
+  logger.debug('prettier done');
+  logger.debug('tsc');
   const tscOk = await runTscInNewProcess(input);
+  logger.debug('tsc done');
 
   return { eslint, prettier, tscOk };
 };

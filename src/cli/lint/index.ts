@@ -15,7 +15,7 @@ import type { Input } from './types';
 export const lint = async (
   args = process.argv.slice(2),
   tscWriteable: Writable | undefined = undefined,
-  workerThreads = true,
+  workerThreads = false,
 ) => {
   const opts: Input = {
     debug: hasDebugFlag(args),
