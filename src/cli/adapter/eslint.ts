@@ -131,7 +131,7 @@ export const runESLint = async (
     engine.getRulesMetaForResults(results),
   );
 
-  logger.debug('Outputting...');
+  logger.debug('Outputting...', typeof output, output.length);
 
   if (output) {
     logger.plain(output);
