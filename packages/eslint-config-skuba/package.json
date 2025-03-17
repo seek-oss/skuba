@@ -26,7 +26,7 @@
     "skuba": "node --experimental-vm-modules ../../lib/skuba"
   },
   "dependencies": {
-    "eslint-config-seek": "^14.3.0",
+    "eslint-config-seek": "0.0.0-ugh-20250317001354",
     "eslint-plugin-yml": "^1.14.0",
     "typescript-eslint": "^8.26.0"
   },
