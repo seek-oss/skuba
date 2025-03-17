@@ -4,7 +4,6 @@ import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging';
-import { relock } from '../../../utils/packageManager';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 
 import {
@@ -12,7 +11,6 @@ import {
   isPatchableServerlessVersion,
   isPatchableSkubaType,
 } from './checks';
-import { getNodeTypesVersion } from './getNodeTypesVersion';
 
 type FileSelector =
   | { files: string; file?: never }
@@ -26,7 +24,6 @@ type SubPatch = FileSelector & {
 
 const subPatches = ({
   nodeVersion,
-  nodeTypesVersion,
   ECMAScriptVersion,
 }: Versions): SubPatch[] => [
   { file: '.nvmrc', replace: `${nodeVersion}\n` },
@@ -82,12 +79,6 @@ const subPatches = ({
 
   {
     files: '**/package.json',
-    regex: /("@types\/node":\s*")(\^)?(\d+\.\d+\.\d+)(")/gm,
-    tests: [isPatchableServerlessVersion],
-    replace: `$1$2${nodeTypesVersion}$4`,
-  },
-  {
-    files: '**/package.json',
     regex:
       /(["']engines["']:\s*{[\s\S]*?["']node["']:\s*["']>=)(\d+(?:\.\d+)*)(['"]\s*})/gm,
     tests: [isPatchableServerlessVersion, isPatchableSkubaType],
@@ -118,7 +109,6 @@ const subPatches = ({
 
 type Versions = {
   nodeVersion: number;
-  nodeTypesVersion: string;
   ECMAScriptVersion: string;
 };
 
@@ -187,11 +177,9 @@ export const nodeVersionMigration = async (
   {
     nodeVersion,
     ECMAScriptVersion,
-    defaultNodeTypesVersion,
   }: {
     nodeVersion: number;
     ECMAScriptVersion: string;
-    defaultNodeTypesVersion: string;
   },
   dir = process.cwd(),
 ) => {
@@ -201,15 +189,7 @@ export const nodeVersionMigration = async (
       throw new Error('Node.js version is not patchable');
     }
 
-    const { version: nodeTypesVersion, err } = await getNodeTypesVersion(
-      nodeVersion,
-      defaultNodeTypesVersion,
-    );
-    if (err) {
-      log.warn(err);
-    }
-    await upgrade({ nodeVersion, nodeTypesVersion, ECMAScriptVersion }, dir);
-    await relock(dir);
+    await upgrade({ nodeVersion, ECMAScriptVersion }, dir);
 
     log.ok('Upgraded to Node.js', nodeVersion);
   } catch (error) {
