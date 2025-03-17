@@ -26,7 +26,7 @@
     "skuba": "node --experimental-vm-modules ../../lib/skuba"
   },
   "dependencies": {
-    "eslint-config-seek": "^14.0.1",
+    "eslint-config-seek": "^14.3.1",
     "eslint-plugin-yml": "^1.14.0",
     "typescript-eslint": "^8.26.0"
   },
@@ -49,6 +49,6 @@
     "entryPoint": "index.js",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "8.2.1"
+    "version": "10.0.1"
   }
 }
