@@ -1,5 +1,7 @@
 import stream from 'stream';
 
+import { createLogger } from '../../utils/logging';
+
 import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint';
 import {
   runPrettierInCurrentThread,
@@ -46,9 +48,16 @@ const lintConcurrently = async ({ tscOutputStream, ...input }: Input) => {
  * thread exit, which isn't as easy with a monolithic main thread.
  */
 const lintSerially = async ({ tscOutputStream, ...input }: Input) => {
+  const logger = createLogger(true, 'I am going crazy |');
+  logger.debug('ESLint');
   const eslint = await runESLintInWorkerThread(input);
+  logger.debug('ESLint done');
+  logger.debug('prettier');
   const prettier = await runPrettierInWorkerThread(input);
+  logger.debug('prettier done');
+  logger.debug('tsc');
   const tscOk = await runTscInNewProcess({ ...input, tscOutputStream });
+  logger.debug('tsc done');
 
   return { eslint, prettier, tscOk };
 };
