@@ -247,8 +247,8 @@ importers:
   packages/eslint-config-skuba:
     dependencies:
       eslint-config-seek:
-        specifier: 0.0.0-try-new-version-20250318131023
-        version: 0.0.0-try-new-version-20250318131023(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2)
+        specifier: 0.0.0-try-new-version-20250318131458
+        version: 0.0.0-try-new-version-20250318131458(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2)
       eslint-plugin-yml:
         specifier: ^1.14.0
         version: 1.17.0(eslint@9.21.0)
@@ -308,7 +308,7 @@ importers:
         version: 13.0.0
       skuba:
         specifier: '*'
-        version: 9.1.0(@babel/core@7.26.9)(@jest/transform@29.7.0)(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(babel-jest@29.7.0(@babel/core@7.26.9))(skuba-dive@2.0.0)
+        version: 9.1.0(@babel/core@7.26.9)(@jest/transform@29.7.0)(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.6.3))(eslint@9.21.0)(typescript@5.6.3))(babel-jest@29.7.0(@babel/core@7.26.9))(skuba-dive@2.0.0)
       supertest:
         specifier: ^7.0.0
         version: 7.0.0
@@ -324,7 +324,7 @@ importers:
         version: 22.13.10
       skuba:
         specifier: '*'
-        version: 9.1.0(@babel/core@7.26.9)(@jest/transform@29.7.0)(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.6.3))(eslint@9.21.0)(typescript@5.6.3))(babel-jest@29.7.0(@babel/core@7.26.9))(skuba-dive@2.0.0)
+        version: 9.1.0(@babel/core@7.26.9)(@jest/transform@29.7.0)(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(babel-jest@29.7.0(@babel/core@7.26.9))(skuba-dive@2.0.0)
 
   template/koa-rest-api:
     dependencies:
@@ -3400,8 +3400,8 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-config-seek@0.0.0-try-new-version-20250318131023:
-    resolution: {integrity: sha512-24FJuN+UcoGfJJDBBeZqjPsIXfbwlBuVClMI8RvEt3BnvwmUNCFW1SdKijifEnvb/TNX3l5SsEa31BXuasDoUQ==}
+  eslint-config-seek@0.0.0-try-new-version-20250318131458:
+    resolution: {integrity: sha512-rc6jq/0zG77g+PU85U5+hjeQrIWEbZi927AF1gz/YA7tIcqlMQMm9uCQwGkK9jF0QQqYK7RqlkcIyISlDscB+w==}
     engines: {node: '>=18.18.0'}
     peerDependencies:
       eslint: '>=9.9.1'
@@ -10631,7 +10631,7 @@ snapshots:
     dependencies:
       eslint: 9.21.0
 
-  eslint-config-seek@0.0.0-try-new-version-20250318131023(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2):
+  eslint-config-seek@0.0.0-try-new-version-20250318131458(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2):
     dependencies:
       eslint: 9.21.0
       eslint-config-prettier: 10.1.1(eslint@9.21.0)
