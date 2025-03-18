@@ -1,5 +1,11 @@
 # skuba
 
+## 10.0.4
+
+### Patch Changes
+
+- **migrate:** Remove throw on not found `package.json` ([#1832](https://github.com/seek-oss/skuba/pull/1832))
+
 ## 10.0.3
 
 ### Patch Changes
