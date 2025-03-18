@@ -52,9 +52,8 @@ export const isPatchableServerlessVersion = async (
       currentPath,
     );
   if (!packageJson) {
-    throw new Error(
-      'package.json not found, ensure it is in the correct location',
-    );
+    log.warn('package.json not found, ensure it is in the correct location');
+    return false;
   }
 
   const serverlessVersion = packageJson?.devDependencies.serverless;
@@ -96,9 +95,8 @@ export const isPatchableSkubaType = async (
     );
 
   if (!packageJson) {
-    throw new Error(
-      'package.json not found, ensure it is in the correct location',
-    );
+    log.warn('package.json not found, ensure it is in the correct location');
+    return false;
   }
 
   if (packageJson.files) {
