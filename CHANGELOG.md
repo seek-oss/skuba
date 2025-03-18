@@ -1,5 +1,13 @@
 # skuba
 
+## 10.0.3
+
+### Patch Changes
+
+- **deps:** eslint-config-seek ^14.3.2 ([#1830](https://github.com/seek-oss/skuba/pull/1830))
+
+  This version pins `eslint-plugin-import-x` to an older version, due to compatibility issues with the **skuba** ecosystem.
+
 ## 10.0.2
 
 ### Patch Changes
