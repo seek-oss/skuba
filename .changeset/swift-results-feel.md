@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-**migrate:** Remove throw on not found `package.json`
+migrate: Remove throw on not found `package.json`
