@@ -247,8 +247,8 @@ importers:
   packages/eslint-config-skuba:
     dependencies:
       eslint-config-seek:
-        specifier: 0.0.0-try-new-version-20250318131458
-        version: 0.0.0-try-new-version-20250318131458(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2)
+        specifier: 0.0.0-unpin-again-20250318235934
+        version: 0.0.0-unpin-again-20250318235934(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2)
       eslint-plugin-yml:
         specifier: ^1.14.0
         version: 1.17.0(eslint@9.21.0)
@@ -3400,8 +3400,8 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-config-seek@0.0.0-try-new-version-20250318131458:
-    resolution: {integrity: sha512-rc6jq/0zG77g+PU85U5+hjeQrIWEbZi927AF1gz/YA7tIcqlMQMm9uCQwGkK9jF0QQqYK7RqlkcIyISlDscB+w==}
+  eslint-config-seek@0.0.0-unpin-again-20250318235934:
+    resolution: {integrity: sha512-kHzsvsOAsd4JB5oDmlQJuRsPtEdXLRdFS5aSJrW1K+c0S+8pfuJTMcWxbEpr6F2lcEA7ZwLPyu/KfQcUu8O9kA==}
     engines: {node: '>=18.18.0'}
     peerDependencies:
       eslint: '>=9.9.1'
@@ -3448,9 +3448,8 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
 
-  eslint-plugin-import-x@https://pkg.pr.new/un-ts/eslint-plugin-import-x@251:
-    resolution: {tarball: https://pkg.pr.new/un-ts/eslint-plugin-import-x@251}
-    version: 4.8.0
+  eslint-plugin-import-x@4.9.0:
+    resolution: {integrity: sha512-qdrsei0heLV8z9QpY2/PHF/r/3fF15w3JeVXqWlLzPMiiwYx0VAwIjxN6SzdaPVuGeIMAbQHHS1Wwdn1/bsCgw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
@@ -10631,13 +10630,13 @@ snapshots:
     dependencies:
       eslint: 9.21.0
 
-  eslint-config-seek@0.0.0-try-new-version-20250318131458(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2):
+  eslint-config-seek@0.0.0-unpin-again-20250318235934(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2):
     dependencies:
       eslint: 9.21.0
       eslint-config-prettier: 10.1.1(eslint@9.21.0)
-      eslint-import-resolver-typescript: 3.8.3(eslint-plugin-import-x@https://pkg.pr.new/un-ts/eslint-plugin-import-x@251(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)
+      eslint-import-resolver-typescript: 3.8.3(eslint-plugin-import-x@4.9.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)
       eslint-plugin-cypress: 4.1.0(eslint@9.21.0)
-      eslint-plugin-import-x: https://pkg.pr.new/un-ts/eslint-plugin-import-x@251(eslint@9.21.0)(typescript@5.8.2)
+      eslint-plugin-import-x: 4.9.0(eslint@9.21.0)(typescript@5.8.2)
       eslint-plugin-jest: 28.11.0(@typescript-eslint/eslint-plugin@8.26.0(@typescript-eslint/parser@8.26.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0)(jest@29.7.0(@types/node@22.13.10)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2)
       eslint-plugin-react: 7.37.4(eslint@9.21.0)
       eslint-plugin-react-hooks: 5.2.0(eslint@9.21.0)
@@ -10739,7 +10738,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.8.3(eslint-plugin-import-x@https://pkg.pr.new/un-ts/eslint-plugin-import-x@251(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0):
+  eslint-import-resolver-typescript@3.8.3(eslint-plugin-import-x@4.9.0(eslint@9.21.0)(typescript@5.8.2))(eslint@9.21.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.0
@@ -10750,7 +10749,7 @@ snapshots:
       stable-hash: 0.0.4
       tinyglobby: 0.2.12
     optionalDependencies:
-      eslint-plugin-import-x: https://pkg.pr.new/un-ts/eslint-plugin-import-x@251(eslint@9.21.0)(typescript@5.8.2)
+      eslint-plugin-import-x: 4.9.0(eslint@9.21.0)(typescript@5.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -10779,7 +10778,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-import-x@https://pkg.pr.new/un-ts/eslint-plugin-import-x@251(eslint@9.21.0)(typescript@5.8.2):
+  eslint-plugin-import-x@4.9.0(eslint@9.21.0)(typescript@5.8.2):
     dependencies:
       '@types/doctrine': 0.0.9
       '@typescript-eslint/utils': 8.26.1(eslint@9.21.0)(typescript@5.8.2)
