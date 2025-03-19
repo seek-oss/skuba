@@ -1,5 +1,23 @@
 # skuba
 
+## 10.1.0
+
+### Minor Changes
+
+- **lint:** Automatically remove yarn `--ignore-optional` flags ([#1834](https://github.com/seek-oss/skuba/pull/1834))
+
+  This flag is no longer templated by **skuba**, having moved to pnpm, but was in the past. The use of this flag has started causing issues with some dependencies which declare optional dependencies for different platforms when using compiled binaries, with each marked as optional (but at least one being required).
+
+  This change uses heuristics, and may not find all use, or may remove false positives; you should review the changes.
+
+### Patch Changes
+
+- **deps:** pin eslint-config-seek to 14.3.2 ([#1834](https://github.com/seek-oss/skuba/pull/1834))
+
+  This change sets **skuba** to use a known-good version of its dependency set that doesn't clash with the use of `yarn --ignore-optional` in **skuba** projects.
+
+  This yarn flag is not recommended by **skuba**. A future version of **skuba** will revert this change, effectively removing support for the flag.
+
 ## 10.0.4
 
 ### Patch Changes
