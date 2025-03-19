@@ -36,6 +36,8 @@ Upgraded to Node.js 22
 
 Patch applied: Upgrade Node.js to version 22
 
+Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -127,6 +129,8 @@ Upgraded to Node.js 22
 
 Patch applied: Upgrade Node.js to version 22
 
+Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -213,6 +217,8 @@ Upgraded to Node.js 22
 
 Patch applied: Upgrade Node.js to version 22
 
+Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found
+
 skuba update complete.
 
 Refreshed .gitignore. refresh-config-files
@@ -269,6 +275,8 @@ Proceeding with migration from Node.js 22.0.0 to 22.0.0
 Upgraded to Node.js 22
 
 Patch applied: Upgrade Node.js to version 22
+
+Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found
 
 skuba update complete.
 
