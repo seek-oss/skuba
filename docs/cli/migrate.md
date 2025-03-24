@@ -134,7 +134,8 @@ For more information on the upgrade, refer to:
 - The Node.js [release notes][node-22]
 - The AWS [release announcement][aws-22] for the Lambda `nodejs22.x` runtime update
 
-You may need to manually upgrade CDK and Serverless package versions as appropriate to support `nodejs22.x`.
+You may need to manually upgrade CDK and Serverless package versions as appropriate to support `nodejs22.x`,
+and `@types/node` to major version `22`.
 
 [aws-22]: https://aws.amazon.com/blogs/compute/node-js-22-runtime-now-available-in-aws-lambda/
 [node-22]: https://nodejs.org/en/blog/announcements/v22-release-announce
@@ -153,7 +154,8 @@ For more information on the upgrade, refer to:
 - The Node.js [release notes][node-20]
 - The AWS [release announcement][aws-20] for the Lambda `nodejs20.x` runtime update
 
-You may need to manually upgrade CDK and Serverless package versions as appropriate to support `nodejs20.x`.
+You may need to manually upgrade CDK and Serverless package versions as appropriate to support `nodejs20.x`,
+and `@types/node` to major version `20`.
 
 [aws-20]: https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/
 [node-20]: https://nodejs.org/en/blog/announcements/v20-release-announce
