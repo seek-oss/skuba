@@ -12,7 +12,7 @@ import type { Input } from './types';
 const LOG_PREFIX = chalk.cyan('Prettier │');
 
 export const runPrettierInCurrentThread = ({ debug }: Input) =>
-  runPrettier('lint', createLogger(debug, LOG_PREFIX));
+  runPrettier('lint', createLogger({ debug, prefixes: [LOG_PREFIX] }));
 
 export const runPrettierInWorkerThread = (input: Input) =>
   execWorkerThread<Input, PrettierOutput>(
@@ -21,5 +21,8 @@ export const runPrettierInWorkerThread = (input: Input) =>
   );
 
 if (!isMainThread) {
-  postWorkerOutput(runPrettierInCurrentThread, createLogger(false, LOG_PREFIX));
+  postWorkerOutput(
+    runPrettierInCurrentThread,
+    createLogger({ debug: false, prefixes: [LOG_PREFIX] }),
+  );
 }

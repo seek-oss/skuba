@@ -17,7 +17,7 @@ export const esbuild = async (
   { debug }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
-  const log = createLogger(debug);
+  const log = createLogger({ debug });
 
   const tscArgs = parseTscArgs(args);
 

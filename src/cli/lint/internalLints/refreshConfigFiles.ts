@@ -161,7 +161,7 @@ export const refreshConfigFiles = async (
   // Log after for reproducible test output ordering
   results.forEach((result) => {
     if (result.msg) {
-      logger.warn(result.msg, logger.dim('refresh-config-files'));
+      logger.warn(result.msg);
     }
   });
 

@@ -12,7 +12,11 @@ import type { Input } from './types';
 const LOG_PREFIX = chalk.magenta('ESLint   │');
 
 export const runESLintInCurrentThread = ({ debug, eslintConfigFile }: Input) =>
-  runESLint('lint', createLogger(debug, LOG_PREFIX), eslintConfigFile);
+  runESLint(
+    'lint',
+    createLogger({ debug, prefixes: [LOG_PREFIX] }),
+    eslintConfigFile,
+  );
 
 export const runESLintInWorkerThread = (input: Input) =>
   execWorkerThread<Input, ESLintOutput>(
@@ -21,5 +25,8 @@ export const runESLintInWorkerThread = (input: Input) =>
   );
 
 if (!isMainThread) {
-  postWorkerOutput(runESLintInCurrentThread, createLogger(false, LOG_PREFIX));
+  postWorkerOutput(
+    runESLintInCurrentThread,
+    createLogger({ debug: false, prefixes: [LOG_PREFIX] }),
+  );
 }

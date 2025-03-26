@@ -119,7 +119,7 @@ describe('refreshConfigFiles', () => {
       });
 
       expect(`\n${stdout()}`).toBe(`
-The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it. refresh-config-files
+The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
 `);
 
       expect(writeFile).not.toHaveBeenCalled();
@@ -146,7 +146,7 @@ The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
       });
 
       expect(`\n${stdout()}`).toBe(`
-The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. refresh-config-files
+The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it.
 `);
 
       expect(writeFile).not.toHaveBeenCalled();
@@ -170,7 +170,7 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
       });
 
       expect(`\n${stdout()}`).toBe(`
-The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. refresh-config-files
+The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it.
 `);
 
       expect(writeFile).not.toHaveBeenCalled();
@@ -249,7 +249,7 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
         annotations: [],
       });
 
-      expect(stdout()).toBe('Refreshed .gitignore. refresh-config-files\n');
+      expect(stdout()).toBe('Refreshed .gitignore.\n');
 
       expect(writeFile).toHaveBeenCalledTimes(1);
       expect(writeFile).toHaveBeenCalledWith(
@@ -272,9 +272,7 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
         annotations: [],
       });
 
-      expect(`\n${stdout()}`).toBe(
-        '\nRefreshed .npmrc. refresh-config-files\n',
-      );
+      expect(`\n${stdout()}`).toBe('\nRefreshed .npmrc.\n');
 
       expect(writeFile).toHaveBeenCalledTimes(1);
       expect(writeFile).toHaveBeenCalledWith(
@@ -295,7 +293,7 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it. ref
       });
 
       expect(`\n${stdout()}`).toBe(`
-Refreshed .npmrc. refresh-config-files
+Refreshed .npmrc.
 `);
 
       expect(writeFile).toHaveBeenCalledTimes(1);

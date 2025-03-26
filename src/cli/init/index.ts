@@ -115,7 +115,11 @@ export const init = async (args = process.argv.slice(2)) => {
 
     // Templating can initially leave certain files in an unformatted state;
     // consider a Markdown table with columns sized based on content length.
-    await runPrettier('format', createLogger(opts.debug), destinationDir);
+    await runPrettier(
+      'format',
+      createLogger({ debug: opts.debug }),
+      destinationDir,
+    );
 
     depsInstalled = true;
   } catch (err) {
