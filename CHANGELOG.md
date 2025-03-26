@@ -1,5 +1,11 @@
 # skuba
 
+## 10.1.1
+
+### Patch Changes
+
+- **lint:** Add a missing log when detecting malformed CODEOWNERS files ([#1839](https://github.com/seek-oss/skuba/pull/1839))
+
 ## 10.1.0
 
 ### Minor Changes
