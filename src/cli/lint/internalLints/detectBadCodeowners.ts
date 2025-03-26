@@ -5,7 +5,9 @@ import type { Logger } from '../../../utils/logging';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 import type { InternalLintResult } from '../internal';
 
-export const detectBadCodeowners = async (): Promise<InternalLintResult> => {
+export const detectBadCodeowners = async (
+  logger: Logger,
+): Promise<InternalLintResult> => {
   const gitRoot = await Git.findRoot({ dir: process.cwd() });
   const reader = createDestinationFileReader(gitRoot ?? process.cwd());
 
@@ -34,6 +36,10 @@ export const detectBadCodeowners = async (): Promise<InternalLintResult> => {
   // TODO: Use `toSorted` once we drop support for Node 18.
   annotations.sort((a, b) => a.path.localeCompare(b.path));
 
+  annotations.forEach(({ path, message }) => {
+    logger.warn(`${path}: ${message}`);
+  });
+
   return {
     ok: annotations.length === 0,
     fixable: false,
@@ -46,7 +52,7 @@ export const tryDetectBadCodeowners = async (
   logger: Logger,
 ): Promise<InternalLintResult> => {
   try {
-    return await detectBadCodeowners();
+    return await detectBadCodeowners(logger);
   } catch (err) {
     logger.warn('Failed to detect bad CODEOWNERS.');
     logger.subtle(inspect(err));

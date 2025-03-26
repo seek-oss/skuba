@@ -16,7 +16,7 @@ export const format = async (
   log.plain(chalk.blueBright('skuba lints'));
   const internal = await internalLint('format', { debug, serial: true });
 
-  const logger = createLogger(debug);
+  const logger = createLogger({ debug });
 
   log.newline();
   log.plain(chalk.magenta('ESLint'));

@@ -122,7 +122,7 @@ export const upgradeSkuba = async (
         packageManager.print.exec,
         'skuba',
         'format',
-      )} to run them. ${logger.dim('skuba-patches')}`,
+      )} to run them.`,
     );
 
     return {

@@ -72,7 +72,7 @@ ESLint   │ Processed 2 files in <random>s.
 Prettier │ Processed 6 files in <random>s.
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
-skuba    │ skuba has patches to apply. Run pnpm exec skuba format to run them. skuba-patches
+skuba    │ skuba has patches to apply. Run pnpm exec skuba format to run them. upgrade-skuba
 skuba    │ Processed skuba lints in <random>s.
 skuba found issues that require triage.
 

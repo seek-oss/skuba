@@ -81,10 +81,10 @@ export const copyAssetsConcurrently = async (configs: CopyAssetsConfig[]) => {
     configs.map(({ outDir, name, prefixColor }) =>
       copyAssets(
         outDir,
-        createLogger(
-          false,
-          chalk[prefixColor](`${name.padEnd(maxNameLength)} │`),
-        ),
+        createLogger({
+          debug: false,
+          prefixes: [chalk[prefixColor](`${name.padEnd(maxNameLength)} │`)],
+        }),
       ),
     ),
   );

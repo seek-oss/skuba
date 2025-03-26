@@ -146,7 +146,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
         .join(', ')})...`,
     );
 
-    const logger = createLogger(params.debug);
+    const logger = createLogger({ debug: params.debug });
 
     if (params.internal) {
       await internalLint('format');

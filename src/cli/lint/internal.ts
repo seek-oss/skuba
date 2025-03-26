@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import chalk from 'chalk';
 
-import { type Logger, createLogger } from '../../utils/logging';
+import { type Logger, childLogger, createLogger } from '../../utils/logging';
 
 import { tryDetectBadCodeowners } from './internalLints/detectBadCodeowners';
 import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs';
@@ -22,20 +22,30 @@ export type InternalLintResult = {
 };
 
 const lints: Array<
-  Array<
-    (mode: 'format' | 'lint', logger: Logger) => Promise<InternalLintResult>
-  >
+  Array<{
+    name: string;
+    lint: (
+      mode: 'format' | 'lint',
+      logger: Logger,
+    ) => Promise<InternalLintResult>;
+  }>
 > = [
-  // Run upgradeSkuba before refreshConfigFiles for npmrc handling
-  [upgradeSkuba, tryDetectBadCodeowners],
-  [noSkubaTemplateJs, tryRefreshConfigFiles],
+  // Run upgradeSkuba first, in particular before refreshConfigFiles, for npmrc handling
+  [{ name: 'upgrade-skuba', lint: upgradeSkuba }],
+  [
+    { name: 'no-skuba-template-js', lint: noSkubaTemplateJs },
+    { name: 'refresh-config-files', lint: tryRefreshConfigFiles },
+    { name: 'detect-bad-codeowners', lint: tryDetectBadCodeowners },
+  ],
 ];
 
 const lintSerially = async (mode: 'format' | 'lint', logger: Logger) => {
   const results: InternalLintResult[] = [];
   for (const lintGroup of lints) {
-    for (const lint of lintGroup) {
-      results.push(await lint(mode, logger));
+    for (const { lint, name } of lintGroup) {
+      results.push(
+        await lint(mode, childLogger(logger, { suffixes: [chalk.dim(name)] })),
+      );
     }
   }
   return results;
@@ -46,7 +56,11 @@ const lintConcurrently = async (mode: 'format' | 'lint', logger: Logger) => {
 
   for (const lintGroup of lints) {
     results.push(
-      ...(await Promise.all(lintGroup.map((lint) => lint(mode, logger)))),
+      ...(await Promise.all(
+        lintGroup.map(({ name, lint }) =>
+          lint(mode, childLogger(logger, { suffixes: [chalk.dim(name)] })),
+        ),
+      )),
     );
   }
 
@@ -63,10 +77,10 @@ export const internalLint = async (
   input?: Input,
 ): Promise<InternalLintResult> => {
   const start = process.hrtime.bigint();
-  const logger = createLogger(
-    input?.debug ?? false,
-    ...(mode === 'lint' ? [chalk.blueBright('skuba    │')] : []),
-  );
+  const logger = createLogger({
+    debug: input?.debug ?? false,
+    prefixes: [...(mode === 'lint' ? [chalk.blueBright('skuba    │')] : [])],
+  });
 
   try {
     const lint = selectLintFunction(input);

@@ -4,6 +4,8 @@ import path from 'path';
 
 import memfs, { vol } from 'memfs';
 
+import type { Logger } from '../../../utils/logging';
+
 import { detectBadCodeowners } from './detectBadCodeowners';
 
 jest.mock('fs-extra', () => memfs);
@@ -19,12 +21,18 @@ const volToJson = () => vol.toJSON('/', undefined, true);
 afterEach(() => vol.reset());
 afterEach(jest.resetAllMocks);
 
+const logger = {
+  bold: jest.fn(),
+  dim: jest.fn(),
+  warn: jest.fn(),
+} as unknown as Logger;
+
 describe('detectBadCodeowners', () => {
   const CODEOWNERS_PATH = '/path/to/git/root/.github/CODEOWNERS';
 
   it('should report ok if no file found', async () => {
     vol.fromJSON({});
-    await expect(detectBadCodeowners()).resolves.toEqual({
+    await expect(detectBadCodeowners(logger)).resolves.toEqual({
       ok: true,
       fixable: false,
       annotations: [],
@@ -38,7 +46,7 @@ describe('detectBadCodeowners', () => {
       'utf8',
     );
     vol.fromJSON({ [CODEOWNERS_PATH]: contents });
-    await expect(detectBadCodeowners()).resolves.toEqual({
+    await expect(detectBadCodeowners(logger)).resolves.toEqual({
       ok: true,
       fixable: false,
       annotations: [],
@@ -52,7 +60,7 @@ describe('detectBadCodeowners', () => {
       'utf8',
     );
     vol.fromJSON({ [CODEOWNERS_PATH]: contents });
-    await expect(detectBadCodeowners()).resolves.toEqual({
+    await expect(detectBadCodeowners(logger)).resolves.toEqual({
       ok: true,
       fixable: false,
       annotations: [],
@@ -65,7 +73,7 @@ describe('detectBadCodeowners', () => {
 - @skuba-team
 `;
     vol.fromJSON({ [CODEOWNERS_PATH]: contents });
-    await expect(detectBadCodeowners()).resolves.toEqual({
+    await expect(detectBadCodeowners(logger)).resolves.toEqual({
       ok: false,
       fixable: false,
       annotations: [
@@ -87,7 +95,7 @@ describe('detectBadCodeowners', () => {
       '/path/to/git/root/CODEOWNERS': contents,
       '/path/to/git/root/docs/CODEOWNERS': contents,
     });
-    await expect(detectBadCodeowners()).resolves.toEqual({
+    await expect(detectBadCodeowners(logger)).resolves.toEqual({
       ok: false,
       fixable: false,
       annotations: [
