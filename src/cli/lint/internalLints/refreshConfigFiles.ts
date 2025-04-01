@@ -5,7 +5,7 @@ import { writeFile } from 'fs-extra';
 
 import { Git } from '../../..';
 import type { Logger } from '../../../utils/logging';
-import { NPMRC_LINES, hasNpmrcSecret } from '../../../utils/npmrc';
+import { NPMRC_LINES } from '../../../utils/npmrc';
 import {
   type PackageManagerConfig,
   detectPackageManager,
@@ -16,15 +16,9 @@ import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithConfigFile } from '../../configure/processing/configFile';
 import type { InternalLintResult } from '../internal';
 
-const ensureNoAuthToken = (fileContents: string) =>
-  fileContents
-    .split('\n')
-    .filter((line) => !hasNpmrcSecret(line))
-    .join('\n');
-
 type RefreshableConfigFile = {
   name: string;
-  type: 'ignore' | 'npmrc';
+  type: 'ignore' | 'workspace';
   additionalMapping?: (
     s: string,
     packageManager: PackageManagerConfig,
@@ -56,9 +50,8 @@ export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   },
   { name: '.prettierignore', type: 'ignore' },
   {
-    name: '.npmrc',
-    type: 'npmrc',
-    additionalMapping: ensureNoAuthToken,
+    name: 'pnpm-workspace.yaml',
+    type: 'workspace',
     if: (packageManager: PackageManagerConfig) =>
       packageManager.command === 'pnpm',
   },
