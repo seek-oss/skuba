@@ -1,0 +1,8 @@
+package-manager-strict-version: true
+public-hoist-pattern:
+  - '@types*'
+  - '*eslint*'
+  - '*prettier*'
+  - 'esbuild'
+  - 'jest'
+  - 'tsconfig-seek'
