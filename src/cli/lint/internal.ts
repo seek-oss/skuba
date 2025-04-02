@@ -27,6 +27,7 @@ const lints: Array<
     lint: (
       mode: 'format' | 'lint',
       logger: Logger,
+      additionalFlags: string[],
     ) => Promise<InternalLintResult>;
   }>
 > = [
@@ -39,26 +40,42 @@ const lints: Array<
   ],
 ];
 
-const lintSerially = async (mode: 'format' | 'lint', logger: Logger) => {
+const lintSerially = async (
+  mode: 'format' | 'lint',
+  logger: Logger,
+  additionalFlags: string[],
+) => {
   const results: InternalLintResult[] = [];
   for (const lintGroup of lints) {
     for (const { lint, name } of lintGroup) {
       results.push(
-        await lint(mode, childLogger(logger, { suffixes: [chalk.dim(name)] })),
+        await lint(
+          mode,
+          childLogger(logger, { suffixes: [chalk.dim(name)] }),
+          additionalFlags,
+        ),
       );
     }
   }
   return results;
 };
 
-const lintConcurrently = async (mode: 'format' | 'lint', logger: Logger) => {
+const lintConcurrently = async (
+  mode: 'format' | 'lint',
+  logger: Logger,
+  additionalFlags: string[],
+) => {
   const results: InternalLintResult[] = [];
 
   for (const lintGroup of lints) {
     results.push(
       ...(await Promise.all(
         lintGroup.map(({ name, lint }) =>
-          lint(mode, childLogger(logger, { suffixes: [chalk.dim(name)] })),
+          lint(
+            mode,
+            childLogger(logger, { suffixes: [chalk.dim(name)] }),
+            additionalFlags,
+          ),
         ),
       )),
     );
@@ -84,7 +101,7 @@ export const internalLint = async (
 
   try {
     const lint = selectLintFunction(input);
-    const results = await lint(mode, logger);
+    const results = await lint(mode, logger, input?.additionalFlags ?? []);
     const result = combineResults(results);
     const end = process.hrtime.bigint();
     logger.plain(`Processed skuba lints in ${logger.timing(start, end)}.`);

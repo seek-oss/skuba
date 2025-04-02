@@ -73,6 +73,7 @@ const resolvePatches = async (version: string): Promise<Patches> => {
 export const upgradeSkuba = async (
   mode: 'lint' | 'format',
   logger: Logger,
+  additionalFlags: string[] = [],
 ): Promise<InternalLintResult> => {
   const [currentVersion, manifest, packageManager] = await Promise.all([
     getSkubaVersion(),
@@ -86,8 +87,9 @@ export const upgradeSkuba = async (
 
   manifest.packageJson.skuba ??= { version: '1.0.0' };
 
-  const manifestVersion = (manifest.packageJson.skuba as SkubaPackageJson)
-    .version;
+  const manifestVersion = additionalFlags.includes('--force-apply-all-patches')
+    ? '1.0.0'
+    : (manifest.packageJson.skuba as SkubaPackageJson).version;
 
   // We are up to date, skip patches
   if (gte(manifestVersion, currentVersion)) {
