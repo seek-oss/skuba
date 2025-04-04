@@ -14,7 +14,14 @@ export const format = async (
   const debug = hasDebugFlag(args);
 
   log.plain(chalk.blueBright('skuba lints'));
-  const internal = await internalLint('format', { debug, serial: true });
+
+  const internal = await internalLint('format', {
+    debug,
+    additionalFlags: args.includes('--force-apply-all-patches')
+      ? ['--force-apply-all-patches']
+      : [],
+    serial: true,
+  });
 
   const logger = createLogger({ debug });
 
