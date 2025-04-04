@@ -91,7 +91,7 @@ describe('mergeWithConfigFile for ignore files', () => {
   );
 
   test.each(cases)('%s', (_, base, provided) =>
-    expect(mergeWithConfigFile(base, 'npmrc')(provided)).toMatchSnapshot(),
+    expect(mergeWithConfigFile(base, 'workspace')(provided)).toMatchSnapshot(),
   );
 
   it('produces stable output over multiple runs', () => {
@@ -150,11 +150,11 @@ describe('mergeWithConfigFile for npmrc files', () => {
   ] as const;
 
   test.each(cases)('%s', (_, base, provided) =>
-    expect(mergeWithConfigFile(base, 'npmrc')(provided)).toMatchSnapshot(),
+    expect(mergeWithConfigFile(base, 'workspace')(provided)).toMatchSnapshot(),
   );
 
   it('produces stable output over multiple runs', () => {
-    const merge = mergeWithConfigFile(baseTemplate, 'npmrc');
+    const merge = mergeWithConfigFile(baseTemplate, 'workspace');
 
     let input = baseTemplate;
 
