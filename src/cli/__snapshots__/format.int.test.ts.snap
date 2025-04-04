@@ -38,6 +38,8 @@ Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -131,6 +133,8 @@ Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -219,6 +223,8 @@ Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -277,6 +283,8 @@ Upgraded to Node.js 22
 Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
+
+Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
