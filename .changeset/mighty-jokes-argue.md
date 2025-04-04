@@ -2,6 +2,6 @@
 'skuba': minor
 ---
 
-lint: Add a **skuba** patch to automatically stop CDK snapshot tests from calling esbuild bundling.
+lint: Patch CDK snapshot tests to skip esbuild bundling
 
-Calling esbuild bundling during unit tests can be slow. This change looks for `new App()` use in `infra` folder test files, and if found, replacing with `new App({ context: { 'aws:cdk:bundling-stacks': [] } })`. This context signals AWS CDK to skip bundling for the test stack.
+Executing esbuild bundling during unit tests can be slow. This patch looks for `new App()` use in `infra` test files, and if found, replaces them with `new App({ context: { 'aws:cdk:bundling-stacks': [] } })`. This context instructs the AWS CDK to skip bundling for the test stack.
