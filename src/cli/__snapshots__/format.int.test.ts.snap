@@ -38,19 +38,21 @@ Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Remove managed section from .npmrc - no .npmrc found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
-Refreshed .npmrc. refresh-config-files
+Refreshed pnpm-workspace.yaml. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 4 files in <random>s.
+Processed 5 files in <random>s.
 
 Prettier
-Processed 8 files in <random>s.
+Processed 9 files in <random>s.
 Formatted 3 files:
 b.md
 c.json
@@ -131,20 +133,23 @@ Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Remove managed section from .npmrc - no .npmrc found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
-Refreshed .npmrc. refresh-config-files
+Refreshed pnpm-workspace.yaml. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
 Initialising ESLint...
 Processing files...
-Processed 2 files in <random>s.
+Processed 3 files in <random>s.
 ○ a/a/a.ts
 ○ d.js
+○ pnpm-workspace.yaml
 
 Prettier
 Initialising Prettier...
@@ -156,8 +161,6 @@ Formatting files...
   parser: -
 .gitignore
   parser: -
-.npmrc
-  parser: -
 .prettierignore
   parser: -
 b.md
@@ -168,11 +171,13 @@ d.js
   parser: babel
 package.json
   parser: json-stringify
+pnpm-workspace.yaml
+  parser: yaml
 tsconfig.json
   parser: json
 a/a/a.ts
   parser: typescript
-Processed 6 files in <random>s.
+Processed 7 files in <random>s.
 "
 `;
 
@@ -219,19 +224,21 @@ Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Remove managed section from .npmrc - no .npmrc found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
-Refreshed .npmrc. refresh-config-files
+Refreshed pnpm-workspace.yaml. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 2 files in <random>s.
+Processed 3 files in <random>s.
 
 Prettier
-Processed 6 files in <random>s.
+Processed 7 files in <random>s.
 "
 `;
 
@@ -278,15 +285,17 @@ Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Remove managed section from .npmrc - no .npmrc found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
-Refreshed .npmrc. refresh-config-files
+Refreshed pnpm-workspace.yaml. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 2 files in <random>s.
+Processed 3 files in <random>s.
 
 <random>/a/a/a.ts
   8:3  error  Unexpected console statement  no-console
@@ -298,7 +307,7 @@ Processed 2 files in <random>s.
 
 
 Prettier
-Processed 6 files in <random>s.
+Processed 7 files in <random>s.
 Formatted 1 file:
 a/a/a.ts
 Flagged 1 file:
