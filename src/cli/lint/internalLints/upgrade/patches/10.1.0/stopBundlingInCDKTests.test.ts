@@ -95,7 +95,7 @@ describe('stopBundlingInCDKTests', () => {
 describe('hasAppImportRegex', () => {
   it.each([
     ['Bare', 'import { App } from "aws-cdk-lib";'],
-    ['Other after', 'import { App, aws_sns } from "aws-cdk-lib";'],
+    ['Others after', 'import { App, aws_sns, aws_sqs } from "aws-cdk-lib";'],
     [
       'Surrounded',
       "import { aws_sns, App, aws_secretsmanager } from 'aws-cdk-lib';",
