@@ -81,6 +81,9 @@ and typically work best when a project closely matches a built-in [template].
 Review and test modified code as appropriate before releasing to production,
 and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by a patch.
 
+`skuba format` can be run with `--force-apply-all-patches` to apply all patches, even if **skuba** does not detect that you are upgrading to a new version.
+This can be useful for backfilling any regressions that previous patches have fixed but have been added to the code later.
+
 ### Node.js migrations
 
 As of **skuba** 10,

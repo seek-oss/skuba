@@ -39,4 +39,9 @@ export interface Input {
    * An override to point to a specific ESLint config file.
    */
   eslintConfigFile?: string;
+
+  /**
+   * Additional CLI flags that are used for skuba's internal lints.
+   */
+  additionalFlags?: string[];
 }

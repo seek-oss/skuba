@@ -45,7 +45,7 @@ it.each(['dev', 'prod'])(
         (scope, id) => new aws_secretsmanager.Secret(scope, id),
       );
 
-    const app = new App();
+    const app = new App({ context: { 'aws:cdk:bundling-stacks': [] } });
 
     const stack = new AppStack(app, 'appStack');
 
