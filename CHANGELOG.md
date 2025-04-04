@@ -1,5 +1,23 @@
 # skuba
 
+## 10.2.0
+
+### Minor Changes
+
+- **lint:** Patch CDK snapshot tests to skip esbuild bundling ([#1844](https://github.com/seek-oss/skuba/pull/1844))
+
+  Executing esbuild bundling during unit tests can be slow. This patch looks for `new App()` use in `infra` test files, and if found, replaces them with `new App({ context: { 'aws:cdk:bundling-stacks': [] } })`. This context instructs the AWS CDK to skip bundling for the test stack.
+
+- **format:** Add `--force-apply-all-patches` flag ([#1847](https://github.com/seek-oss/skuba/pull/1847))
+
+  The new `skuba format --force-apply-all-patches` flag will apply all patches, even if **skuba** does not detect that you are upgrading to a new version. This can be useful for addressing regressions that previous patches would have fixed but were added to the code later.
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Update test to skip esbuild bundling by using the AWS CDK context key `aws:cdk:bundling-stacks` ([#1844](https://github.com/seek-oss/skuba/pull/1844))
+
+- **lint:** Add a missing log when detecting malformed CODEOWNERS files ([#1839](https://github.com/seek-oss/skuba/pull/1839))
+
 ## 10.1.0
 
 ### Minor Changes
