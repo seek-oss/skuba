@@ -58,6 +58,9 @@ jobs:
       - name: Set up pnpm
         run: corepack enable pnpm && corepack install
 
+      - name: Check pnpm version
+        run: pnpm --version
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
