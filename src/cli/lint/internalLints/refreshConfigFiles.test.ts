@@ -125,12 +125,9 @@ The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('should flag an .npmrc containing authToken even if otherwise up to date', async () => {
+    it('should flag creation of an pnpm-workspace.yaml for pnpm projects if missing', async () => {
       setupDestinationFiles({
-        '.gitignore':
-          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n\nstuff afterwards',
-        '.npmrc':
-          '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba\n//registry.npmjs.org/:_authToken=not-a-real-token',
+        'pnpm-workspace.yaml': undefined,
       });
 
       await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
@@ -139,48 +136,24 @@ The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
         annotations: [
           {
             message:
-              'The .npmrc file is out of date. Run `pnpm exec skuba format` to update it.',
-            path: '.npmrc',
+              'The pnpm-workspace.yaml file is out of date. Run `pnpm exec skuba format` to update it.',
+            path: 'pnpm-workspace.yaml',
           },
         ],
       });
 
       expect(`\n${stdout()}`).toBe(`
-The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it.
+The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to update it.
 `);
 
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('should flag creation of an .npmrc for pnpm projects if missing', async () => {
-      setupDestinationFiles({
-        '.npmrc': undefined,
-      });
-
-      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
-        ok: false,
-        fixable: true,
-        annotations: [
-          {
-            message:
-              'The .npmrc file is out of date. Run `pnpm exec skuba format` to update it.',
-            path: '.npmrc',
-          },
-        ],
-      });
-
-      expect(`\n${stdout()}`).toBe(`
-The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it.
-`);
-
-      expect(writeFile).not.toHaveBeenCalled();
-    });
-
-    it('should not flag creation of an .npmrc for yarn projects', async () => {
+    it('should not flag creation of an pnpm-workspace.yaml for yarn projects', async () => {
       givenMockPackageManager('yarn');
 
       setupDestinationFiles({
-        '.npmrc': undefined,
+        'pnpm-workspace.yaml': undefined,
       });
 
       await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
@@ -258,32 +231,9 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it.
       );
     });
 
-    it('should strip an authToken line from an .npmrc file', async () => {
+    it('should create an pnpm-workspace.yaml for pnpm projects if missing', async () => {
       setupDestinationFiles({
-        '.gitignore':
-          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n\nstuff afterwards',
-        '.npmrc':
-          '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba\n//registry.npmjs.org/:_authToken=not-a-real-token',
-      });
-
-      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
-        ok: true,
-        fixable: false,
-        annotations: [],
-      });
-
-      expect(`\n${stdout()}`).toBe('\nRefreshed .npmrc.\n');
-
-      expect(writeFile).toHaveBeenCalledTimes(1);
-      expect(writeFile).toHaveBeenCalledWith(
-        path.join(process.cwd(), '.npmrc'),
-        '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba',
-      );
-    });
-
-    it('should create an .npmrc for pnpm projects if missing', async () => {
-      setupDestinationFiles({
-        '.npmrc': undefined,
+        'pnpm-workspace.yaml': undefined,
       });
 
       await expect(refreshConfigFiles('format', log)).resolves.toEqual({
@@ -293,21 +243,21 @@ The .npmrc file is out of date. Run \`pnpm exec skuba format\` to update it.
       });
 
       expect(`\n${stdout()}`).toBe(`
-Refreshed .npmrc.
+Refreshed pnpm-workspace.yaml.
 `);
 
       expect(writeFile).toHaveBeenCalledTimes(1);
       expect(writeFile).toHaveBeenCalledWith(
-        path.join(process.cwd(), '.npmrc'),
-        '# managed by skuba\nfake content for _.npmrc\n# end managed by skuba',
+        path.join(process.cwd(), 'pnpm-workspace.yaml'),
+        '# managed by skuba\nfake content for _pnpm-workspace.yaml\n# end managed by skuba',
       );
     });
 
-    it('should not create an .npmrc for yarn projects if missing', async () => {
+    it('should not create an pnpm-workspace.yaml for yarn projects if missing', async () => {
       givenMockPackageManager('yarn');
 
       setupDestinationFiles({
-        '.npmrc': undefined,
+        'pnpm-workspace.yaml': undefined,
       });
 
       await expect(refreshConfigFiles('format', log)).resolves.toEqual({
@@ -379,10 +329,10 @@ Refreshed .npmrc.
       );
     });
 
-    it('should not strip !.npmrc if ignored out of the managed file for no good reason', async () => {
+    it('should not strip !pnpm-workspace.yaml if ignored out of the managed file for no good reason', async () => {
       setupDestinationFiles({
         '.gitignore':
-          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n.npmrc\n!.npmrc\n',
+          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\npnpm-workspace.yaml\n!pnpm-workspace.yaml\n',
       });
 
       await expect(refreshConfigFiles('format', log)).resolves.toEqual({

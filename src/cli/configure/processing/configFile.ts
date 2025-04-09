@@ -65,7 +65,7 @@ export const generateNpmrcSimpleVariants = (patterns: string[]) => {
 
 export const mergeWithConfigFile = (
   rawTemplateFile: string,
-  fileType: 'ignore' | 'npmrc' = 'ignore',
+  fileType: 'ignore' | 'workspace' = 'ignore',
 ) => {
   const templateFile = rawTemplateFile.trim();
 
