@@ -80,9 +80,8 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \
 
 1. Remove any references to `private-npm` or `aws-sm` in your pipeline.
    If you are using `aws-sm` for other secrets, you can keep it (but remove any npm token references).
-   
 2. Reconfigure `docker-ecr-cache`'s `secrets` section to include the `npm` and `NPM_TOKEN` secrets.
-   
+
    <!-- prettier-ignore -->
    ```diff
      seek-oss/docker-ecr-cache#v2.2.1:

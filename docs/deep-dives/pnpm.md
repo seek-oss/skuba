@@ -230,7 +230,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
     +     pnpm fetch
     ```
-    
+
     Move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc`,
     and use a [bind mount] in place of `COPY` to mount `pnpm-lock.yaml`.
 
