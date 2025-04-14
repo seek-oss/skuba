@@ -71,9 +71,9 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \
     # Store the .npmrc file out of the working directory
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
     # Mount the NPM_TOKEN environment variable
-    --mount=type=secret,id=NPM_TOKEN,required=true \
+    --mount=type=secret,id=NPM_TOKEN,env=NPM_TOKEN,required=true \
     # This is the only place we need to use the NPM_TOKEN
-    NPM_TOKEN="$(cat /run/secrets/NPM_TOKEN)" pnpm fetch
+    pnpm fetch
 ```
 
 ### Migrating
@@ -96,59 +96,58 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \
    +     - id=npm,src=/var/lib/buildkite-agent/.npmrc
    +     - NPM_TOKEN
    ```
-   
+
 3. Add the `GET_NPM_TOKEN` environment variable to any step which uses `docker-ecr-cache`.
 
    ```diff
      steps:
        - label: Some step
-         plugins: 
+         plugins:
           - *docker-ecr-cache
    +     env:
    +       GET_NPM_TOKEN: please
    ```
-   
+
    🚨 Be wary of any steps which retrieve `env` variables via yaml anchors.
-   
+
    An example of a mistake:
-   
-    ```yaml
-    configs:
-      prod: &prod
-        plugins: [...]
-        env:
-          ENVIRONMENT: production
-    
-    steps:
-      - label: Some step
-        <<: *prod
-        env:  
-          # 🚨🚨🚨 This will override the ENVIRONMENT variable from the prod anchor
-          GET_NPM_TOKEN: please
-    ```
-    
-    In order to avoid this, you could put `GET_NPM_TOKEN` in the `configs` section too, or set `GET_NPM_TOKEN` 
-    as a pipeline-wide environment variable.
-    
-    ```yaml
-    env:
-      GET_NPM_TOKEN: please
-    
-    steps: ...
-    ```
-    
+
+   ```yaml
+   configs:
+     prod: &prod
+       plugins: [...]
+       env:
+         ENVIRONMENT: production
+
+   steps:
+     - label: Some step
+       <<: *prod
+       env:
+         # 🚨🚨🚨 This will override the ENVIRONMENT variable from the prod anchor
+         GET_NPM_TOKEN: please
+   ```
+
+   In order to avoid this, you could put `GET_NPM_TOKEN` in the `configs` section too, or set `GET_NPM_TOKEN`
+   as a pipeline-wide environment variable.
+
+   ```yaml
+   env:
+     GET_NPM_TOKEN: please
+
+   steps: ...
+   ```
+
    4. Update your Dockerfile to use the new secrets.
-   
+
    ```diff
       RUN --mount=type=bind,source=.npmrc,target=.npmrc \
           --mount=type=bind,source=package.json,target=package.json \
           --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
           --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
-    +     --mount=type=secret,id=NPM_TOKEN,required=true \
-    -     pnpm fetch
-    +     NPM_TOKEN="$(cat /run/secrets/NPM_TOKEN)" pnpm fetch
-   ```       
-         
+    +     --mount=type=secret,id=NPM_TOKEN,env=NPM_TOKEN,required=true \
+    +     pnpm fetch
+   ```
+
 ---
 
 ## Other setups
