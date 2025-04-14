@@ -231,6 +231,15 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +     pnpm fetch
     ```
     
+    Move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc`,
+    and use a [bind mount] in place of `COPY` to mount `pnpm-lock.yaml`.
+
+    [`pnpm fetch`] does not require `package.json` to be copied to resolve packages;
+    trivial updates to `package.json` like a change in `scripts` will no longer result in a cache miss.
+    `pnpm fetch` is also optimised for monorepos and does away with the need to copy nested `package.json`s.
+    However, this command only serves to populate a local package store and stops short of installing the packages,
+    the implications of which are covered in the next step.
+    
     If using [the newer `GET_NPM_TOKEN` environment variable](./npm.md), 
     your fetch command should instead look like:
     
@@ -243,15 +252,6 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
         NPM_TOKEN="$(cat /run/secrets/NPM_TOKEN)" pnpm fetch
     ```
     
-    Move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc`,
-    and use a [bind mount] in place of `COPY` to mount `pnpm-lock.yaml`.
-
-    [`pnpm fetch`] does not require `package.json` to be copied to resolve packages;
-    trivial updates to `package.json` like a change in `scripts` will no longer result in a cache miss.
-    `pnpm fetch` is also optimised for monorepos and does away with the need to copy nested `package.json`s.
-    However, this command only serves to populate a local package store and stops short of installing the packages,
-    the implications of which are covered in the next step.
-
     Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
 13. Replace `yarn` with `pnpm` in `Dockerfile`
