@@ -41,6 +41,7 @@ export class AppStack extends Stack {
       {
         queueName: '<%- serviceName %>-dead-letters',
         encryptionMasterKey: kmsKey,
+        retentionPeriod: Duration.days(14),
       },
     );
 
@@ -51,6 +52,7 @@ export class AppStack extends Stack {
         queue: deadLetterQueue,
       },
       encryptionMasterKey: kmsKey,
+      retentionPeriod: Duration.days(14),
     });
 
     // const topic = aws_sns.Topic.fromTopicArn(
