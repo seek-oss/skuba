@@ -152,4 +152,4 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \
 ## Other setups
 
 Other setups are likely to look similar, but are not covered here.
-Review the [internal npm documentation](https://backstage.myseek.xyz/docs/default/component/artifact-management-docs/npm-access/).
+Review the [internal npm documentation](https://backstage.myseek.xyz/docs/default/component/artifact-management-docs/npm/access/).
