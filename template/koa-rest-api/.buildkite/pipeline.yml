@@ -4,7 +4,7 @@ agents:
 configs:
   plugins:
     - &aws-sm
-      seek-oss/aws-sm#v2.3.2:
+      seek-oss/aws-sm#v2.3.3:
         env:
           NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
 
@@ -57,7 +57,7 @@ steps:
       - *aws-sm
       - *private-npm
       - *docker-ecr-cache
-      - docker-compose#v5.6.0:
+      - docker-compose#v5.7.0:
           run: app
           environment:
             - GITHUB_API_TOKEN
