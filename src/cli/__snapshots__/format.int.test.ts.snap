@@ -40,7 +40,7 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
-Patch skipped: Remove managed section from .npmrc - no .npmrc found upgrade-skuba
+Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -137,7 +137,7 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
-Patch skipped: Remove managed section from .npmrc - no .npmrc found upgrade-skuba
+Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -230,7 +230,7 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
-Patch skipped: Remove managed section from .npmrc - no .npmrc found upgrade-skuba
+Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -293,7 +293,7 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
-Patch skipped: Remove managed section from .npmrc - no .npmrc found upgrade-skuba
+Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

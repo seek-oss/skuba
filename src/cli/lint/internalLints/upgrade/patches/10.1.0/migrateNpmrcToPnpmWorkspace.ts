@@ -43,7 +43,7 @@ const checkFileExists = async (filePath: string) => {
   }
 };
 
-const clearNpmrcManagedSection: PatchFunction = async ({
+const migrateNpmrcToPnpmWorkspace: PatchFunction = async ({
   mode,
   packageManager,
 }): Promise<PatchReturnType> => {
@@ -83,9 +83,9 @@ const clearNpmrcManagedSection: PatchFunction = async ({
   return { result: 'apply' };
 };
 
-export const tryClearNpmrcManagedSection: PatchFunction = async (config) => {
+export const tryMigrateNpmrcToPnpmWorkspace: PatchFunction = async (config) => {
   try {
-    return await clearNpmrcManagedSection(config);
+    return await migrateNpmrcToPnpmWorkspace(config);
   } catch (err) {
     log.warn('Failed to clear managed section from .npmrc');
     log.subtle(inspect(err));

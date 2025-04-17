@@ -3,7 +3,7 @@ import memfs, { vol } from 'memfs';
 import type { PatchConfig } from '../..';
 import { configForPackageManager } from '../../../../../../utils/packageManager';
 
-import { tryClearNpmrcManagedSection } from './tryClearNpmrcManagedSection';
+import { tryMigrateNpmrcToPnpmWorkspace } from './migrateNpmrcToPnpmWorkspace';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -21,7 +21,7 @@ afterEach(() => jest.resetAllMocks());
 describe.each(['lint', 'format'] as const)('%s', (mode) => {
   it('should skip if not using pnpm', async () => {
     await expect(
-      tryClearNpmrcManagedSection({
+      tryMigrateNpmrcToPnpmWorkspace({
         ...baseArgs,
         mode,
         packageManager: configForPackageManager('yarn'),
@@ -36,7 +36,7 @@ describe.each(['lint', 'format'] as const)('%s', (mode) => {
 
   it('should skip if npmrc not found', async () => {
     await expect(
-      tryClearNpmrcManagedSection({
+      tryMigrateNpmrcToPnpmWorkspace({
         ...baseArgs,
         mode,
       }),
@@ -58,7 +58,7 @@ describe.each(['lint', 'format'] as const)('%s', (mode) => {
     });
 
     await expect(
-      tryClearNpmrcManagedSection({
+      tryMigrateNpmrcToPnpmWorkspace({
         ...baseArgs,
         mode,
       }),
@@ -89,7 +89,7 @@ public-hoist-pattern[]="tsconfig-seek"
     vol.fromJSON(inputVolume);
 
     await expect(
-      tryClearNpmrcManagedSection({
+      tryMigrateNpmrcToPnpmWorkspace({
         ...baseArgs,
         mode,
       }),

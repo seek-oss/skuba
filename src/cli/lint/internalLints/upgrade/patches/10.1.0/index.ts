@@ -1,7 +1,7 @@
 import type { Patches } from '../..';
 
+import { tryMigrateNpmrcToPnpmWorkspace } from './migrateNpmrcToPnpmWorkspace';
 import { tryStopBundlingInCDKTests } from './stopBundlingInCDKTests';
-import { tryClearNpmrcManagedSection } from './tryClearNpmrcManagedSection';
 
 export const patches: Patches = [
   {
@@ -9,7 +9,7 @@ export const patches: Patches = [
     description: 'Stop bundling inside CDK unit tests',
   },
   {
-    apply: tryClearNpmrcManagedSection,
-    description: 'Remove managed section from .npmrc',
+    apply: tryMigrateNpmrcToPnpmWorkspace,
+    description: 'Move .npmrc config to pnpm-workspace.yaml',
   },
 ];
