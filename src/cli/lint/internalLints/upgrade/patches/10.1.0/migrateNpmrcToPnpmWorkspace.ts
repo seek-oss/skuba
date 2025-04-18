@@ -90,6 +90,34 @@ const fixBuildkitePipelines = async () => {
   );
 };
 
+const forceUpgradeToPnpm10 = async () => {
+  const fileNames = await glob(['**/package.json']);
+
+  await Promise.all(
+    fileNames.map(async (fileName) => {
+      const contents = await fs.readFile(fileName, 'utf8');
+
+      const packageManagerMatch = /"packageManager"\s*:\s*"pnpm@([^"]+)"/.exec(
+        contents,
+      );
+
+      if (!packageManagerMatch) return;
+
+      const currentVersion = packageManagerMatch[1] ?? '';
+      const majorVersion = parseInt(currentVersion.split('.')?.[0] ?? '0', 10);
+
+      if (!isNaN(majorVersion) && majorVersion < 10) {
+        const patched = contents.replace(
+          /"packageManager"(\s*):(\s*)"pnpm@[^"]+"/,
+          '"packageManager"$1:$2"pnpm@10.8.1"',
+        );
+
+        await fs.writeFile(fileName, patched);
+      }
+    }),
+  );
+};
+
 const migrateNpmrcToPnpmWorkspace: PatchFunction = async ({
   mode,
   packageManager,
@@ -119,6 +147,7 @@ const migrateNpmrcToPnpmWorkspace: PatchFunction = async ({
     migrateCustomNpmrcSettings(),
     fixDockerfiles(),
     fixBuildkitePipelines(),
+    forceUpgradeToPnpm10(),
   ]);
 
   await fs.rm(NPMRC);

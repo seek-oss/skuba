@@ -314,4 +314,72 @@ configs:
   `,
     });
   });
+
+  it('should patch package.json files if pnpm@<10', async () => {
+    vol.fromJSON({
+      '.npmrc': '# managed by skuba\nstuff\n# end managed by skuba',
+      'package.json': JSON.stringify({
+        other: 'stuff',
+        packageManager: 'pnpm@9.9.9',
+        more: 'stuff',
+      }),
+      'nested1/package.json': JSON.stringify({
+        packageManager: 'pnpm@10.1.1',
+      }),
+      'nested2/package.json': JSON.stringify(
+        {
+          packageManager: 'pnpm@9.ignoreme',
+        },
+        null,
+        2,
+      ),
+      'nested3/package.json': JSON.stringify({}),
+      'nested4/package.json': JSON.stringify({
+        packageManager: 'pnpm@wot',
+      }),
+      'nested5/package.json': JSON.stringify({
+        packageManager: 'yarn',
+      }),
+      'nested6/package.json': JSON.stringify({
+        packageManager: 'pnpm@11.0.0',
+      }),
+    });
+
+    await expect(
+      tryMigrateNpmrcToPnpmWorkspace({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        other: 'stuff',
+        packageManager: 'pnpm@10.8.1',
+        more: 'stuff',
+      }),
+      'nested1/package.json': JSON.stringify({
+        packageManager: 'pnpm@10.1.1',
+      }),
+      'nested2/package.json': JSON.stringify(
+        {
+          packageManager: 'pnpm@10.8.1',
+        },
+        null,
+        2,
+      ),
+      'nested3/package.json': JSON.stringify({}),
+      'nested4/package.json': JSON.stringify({
+        packageManager: 'pnpm@wot',
+      }),
+      'nested5/package.json': JSON.stringify({
+        packageManager: 'yarn',
+      }),
+      'nested6/package.json': JSON.stringify({
+        packageManager: 'pnpm@11.0.0',
+      }),
+    });
+  });
 });
