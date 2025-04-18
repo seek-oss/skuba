@@ -63,6 +63,9 @@ export const generateNpmrcSimpleVariants = (patterns: string[]) => {
   return set;
 };
 
+export const replaceManagedSection = (input: string, template: string) =>
+  input.replace(/# managed by skuba[\s\S]*# end managed by skuba/, template);
+
 export const mergeWithConfigFile = (
   rawTemplateFile: string,
   fileType: 'ignore' | 'workspace' = 'ignore',
@@ -72,7 +75,8 @@ export const mergeWithConfigFile = (
   const generator =
     fileType === 'ignore'
       ? generateIgnoreFileSimpleVariants
-      : generateNpmrcSimpleVariants;
+      : // TODO: Does this make sense for workspace? Probably not?
+        generateNpmrcSimpleVariants;
 
   const templatePatterns = generator([
     ...OUTDATED_PATTERNS,
@@ -84,9 +88,10 @@ export const mergeWithConfigFile = (
       return `${templateFile}\n`;
     }
 
-    const replacedFile = rawInputFile
-      .replace(/\r?\n/g, '\n')
-      .replace(/# managed by skuba[\s\S]*# end managed by skuba/, templateFile);
+    const replacedFile = replaceManagedSection(
+      rawInputFile.replace(/\r?\n/g, '\n'),
+      templateFile,
+    );
 
     if (replacedFile.includes(templateFile)) {
       return replacedFile;
