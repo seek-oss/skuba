@@ -8,6 +8,10 @@ import { tryMigrateNpmrcToPnpmWorkspace } from './migrateNpmrcToPnpmWorkspace';
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 jest.mock('fs-extra', () => memfs);
+jest.mock('fast-glob', () => ({
+  glob: (pat: any, opts: any) =>
+    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+}));
 
 beforeEach(() => vol.reset());
 
@@ -192,6 +196,122 @@ packages:
 
     expect(volToJson()).toEqual({
       'pnpm-workspace.yaml': 'packages:\n  - "packages/*"\n',
+    });
+  });
+
+  it('should fix Dockerfiles & Buildkite pipelines', async () => {
+    vol.fromJSON({
+      '.npmrc': '# managed by skuba\nstuff\n# end managed by skuba',
+      Dockerfile: `
+RUN --mount=type=bind,source=.npmrc,target=.npmrc,required=true pnpm fetch
+RUN --mount=type=bind,source=.npmrc,target=.npmrc pnpm install --prefer-offline --no-audit --progress=false
+`.trim(),
+      'nested/Dockerfile.different': `
+RUN --mount=type=bind,source=.npmrc,target=.npmrc \
+    --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
+    pnpm fetch
+
+RUN --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \
+    --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
+    pnpm fetch
+`.trim(),
+      '.buildkite/pipeline.yml': `
+configs:
+  plugins:
+    - &docker-ecr-cache
+      seek-oss/docker-ecr-cache#v2.2.1: &docker-ecr-cache-defaults
+        cache-on:
+          - .npmrc
+          - package.json#.packageManager
+          - pnpm-lock.yaml
+        dockerfile: Dockerfile.dev-deps
+        secrets: id=npm,src=/tmp/.npmrc
+    - something_else:
+        - .npmrc
+        - package.json#.packageManager
+        - pnpm-lock.yaml
+  `,
+      'nested/.buildkite/whatever.yaml': `
+configs:
+  plugins:
+    - &docker-ecr-cache
+      seek-oss/docker-ecr-cache#v2.2.1: &docker-ecr-cache-defaults
+        cache-on:
+          # oops a comment
+
+          - package.json#.packageManager
+          - .npmrc
+          - pnpm-lock.yaml
+
+        dockerfile: Dockerfile.dev-deps
+        secrets: id=npm,src=/tmp/.npmrc
+
+  `,
+    });
+
+    await expect(
+      tryMigrateNpmrcToPnpmWorkspace({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      Dockerfile: `
+RUN --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml,required=true pnpm fetch
+RUN --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml pnpm install --prefer-offline --no-audit --progress=false
+`.trim(),
+      'nested/Dockerfile.different': `
+RUN --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \
+    --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
+    pnpm fetch
+
+RUN --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \
+    --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
+    pnpm fetch
+`.trim(),
+      '.buildkite/pipeline.yml': `
+configs:
+  plugins:
+    - &docker-ecr-cache
+      seek-oss/docker-ecr-cache#v2.2.1: &docker-ecr-cache-defaults
+        cache-on:
+          - pnpm-workspace.yaml
+          - package.json#.packageManager
+          - pnpm-lock.yaml
+        dockerfile: Dockerfile.dev-deps
+        secrets: id=npm,src=/tmp/.npmrc
+    - something_else:
+        - .npmrc
+        - package.json#.packageManager
+        - pnpm-lock.yaml
+  `,
+      'nested/.buildkite/whatever.yaml': `
+configs:
+  plugins:
+    - &docker-ecr-cache
+      seek-oss/docker-ecr-cache#v2.2.1: &docker-ecr-cache-defaults
+        cache-on:
+          # oops a comment
+
+          - package.json#.packageManager
+          - pnpm-workspace.yaml
+          - pnpm-lock.yaml
+
+        dockerfile: Dockerfile.dev-deps
+        secrets: id=npm,src=/tmp/.npmrc
+
+  `,
     });
   });
 });
