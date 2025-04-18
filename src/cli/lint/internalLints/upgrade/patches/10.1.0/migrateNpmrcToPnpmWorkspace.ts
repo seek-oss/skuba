@@ -23,7 +23,6 @@ const checkFileExists = async (filePath: string) => {
  * - Monorepos? Do we have setups with multiple .npmrc files? Do some repos skip running skuba lint/format in the root?
  * - Test whether deleting npmrc actually works locally and in CI
  * - Fix up Buildkite pipeline files & Dockerfiles referencing .npmrc
- * - Clean up NPMRC_IGNORE_SECTION (do we also delete that patch?)
  * - Should we force upgrade to pnpm@10?
  */
 const migrateNpmrcToPnpmWorkspace: PatchFunction = async ({

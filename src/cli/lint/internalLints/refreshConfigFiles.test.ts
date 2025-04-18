@@ -293,41 +293,37 @@ Refreshed pnpm-workspace.yaml.
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('should format an extraneous !.npmrc', async () => {
-      setupDestinationFiles({
-        '.gitignore':
-          '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\nstuff\n!.npmrc\n!/.npmrc\nother stuff',
-      });
+    it.each(['.gitignore', '.dockerignore'])(
+      'should remove old skuba warnings in %s',
+      async (file) => {
+        setupDestinationFiles({
+          [file]: `# managed by skuba
+fake content for _${file}
+# end managed by skuba
+stuff
+other stuff
+# Ignore .npmrc. This is no longer managed by skuba as pnpm projects use a managed .npmrc.
+# IMPORTANT: if migrating to pnpm, remove this line and add an .npmrc IN THE SAME COMMIT.
+# You can use \`skuba format\` to generate the file or otherwise commit an empty file.
+# Doing so will conflict with a local .npmrc and make it more difficult to unintentionally commit auth secrets.
+.npmrc
 
-      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
-        ok: true,
-        fixable: false,
-        annotations: [],
-      });
 
-      expect(writeFile).toHaveBeenCalledWith(
-        path.join(process.cwd(), '.gitignore'),
-        '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\nstuff\nother stuff',
-      );
-    });
+`,
+        });
 
-    it('should also manage .dockerignore', async () => {
-      setupDestinationFiles({
-        '.dockerignore':
-          '# managed by skuba\nfake content for _.dockerignore\n# end managed by skuba\nstuff\n!.npmrc\n!/.npmrc\nother stuff',
-      });
+        await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+          ok: true,
+          fixable: false,
+          annotations: [],
+        });
 
-      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
-        ok: true,
-        fixable: false,
-        annotations: [],
-      });
-
-      expect(writeFile).toHaveBeenCalledWith(
-        path.join(process.cwd(), '.dockerignore'),
-        '# managed by skuba\nfake content for _.dockerignore\n# end managed by skuba\nstuff\nother stuff',
-      );
-    });
+        expect(writeFile).toHaveBeenCalledWith(
+          path.join(process.cwd(), file),
+          `# managed by skuba\nfake content for _${file}\n# end managed by skuba\nstuff\nother stuff\n`,
+        );
+      },
+    );
 
     it('should not strip !pnpm-workspace.yaml if ignored out of the managed file for no good reason', async () => {
       setupDestinationFiles({

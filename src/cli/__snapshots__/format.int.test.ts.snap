@@ -13,10 +13,6 @@ Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found upgrade-skuba
 
-Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore file found upgrade-skuba
-
-Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found upgrade-skuba
-
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
@@ -110,10 +106,6 @@ Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found upgrade-skuba
 
-Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore file found upgrade-skuba
-
-Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found upgrade-skuba
-
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
@@ -203,10 +195,6 @@ Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found upgrade-skuba
 
-Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore file found upgrade-skuba
-
-Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found upgrade-skuba
-
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
@@ -265,10 +253,6 @@ Patch skipped: Update Renovate config to support private SEEK packages - owner d
 Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found upgrade-skuba
 
 Patch skipped: Add keepAliveTimeout to server listener - no listener file found upgrade-skuba
-
-Patch skipped: Move .npmrc out of the .gitignore managed section - not ignored upgrade-skuba
-
-Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found upgrade-skuba
 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
 

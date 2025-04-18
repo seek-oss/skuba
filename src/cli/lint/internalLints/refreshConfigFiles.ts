@@ -5,7 +5,6 @@ import { writeFile } from 'fs-extra';
 
 import { Git } from '../../..';
 import type { Logger } from '../../../utils/logging';
-import { NPMRC_LINES } from '../../../utils/npmrc';
 import {
   type PackageManagerConfig,
   detectPackageManager,
@@ -26,27 +25,23 @@ type RefreshableConfigFile = {
   if?: (packageManager: PackageManagerConfig) => boolean;
 };
 
-const removeRedundantNpmrc = (contents: string) => {
-  const npmrcLines = contents
-    .split('\n')
-    .filter((line) => NPMRC_LINES.includes(line.trim()));
+const OLD_IGNORE_WARNING = `# Ignore .npmrc. This is no longer managed by skuba as pnpm projects use a managed .npmrc.
+# IMPORTANT: if migrating to pnpm, remove this line and add an .npmrc IN THE SAME COMMIT.
+# You can use \`skuba format\` to generate the file or otherwise commit an empty file.
+# Doing so will conflict with a local .npmrc and make it more difficult to unintentionally commit auth secrets.
+.npmrc
+`;
 
-  // If we're only left with !.npmrc line we can remove it
-  // TODO: Consider if we should generalise this
-  if (npmrcLines.length > 0 && npmrcLines.every((line) => line.includes('!'))) {
-    return contents
-      .split('\n')
-      .filter((line) => !NPMRC_LINES.includes(line.trim()))
-      .join('\n');
-  }
-  return contents;
-};
+const removeOldWarning = (contents: string) =>
+  contents.includes(OLD_IGNORE_WARNING)
+    ? `${contents.replace(OLD_IGNORE_WARNING, '').trim()}\n`
+    : contents;
 
 export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   {
     name: '.gitignore',
     type: 'ignore',
-    additionalMapping: removeRedundantNpmrc,
+    additionalMapping: removeOldWarning,
   },
   { name: '.prettierignore', type: 'ignore' },
   {
@@ -58,7 +53,7 @@ export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   {
     name: '.dockerignore',
     type: 'ignore',
-    additionalMapping: removeRedundantNpmrc,
+    additionalMapping: removeOldWarning,
   },
 ];
 
