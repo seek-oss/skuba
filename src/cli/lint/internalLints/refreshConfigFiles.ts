@@ -17,7 +17,7 @@ import type { InternalLintResult } from '../internal';
 
 type RefreshableConfigFile = {
   name: string;
-  type: 'ignore' | 'workspace';
+  type: 'ignore' | 'pnpm-workspace';
   additionalMapping?: (
     s: string,
     packageManager: PackageManagerConfig,
@@ -46,7 +46,7 @@ export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   { name: '.prettierignore', type: 'ignore' },
   {
     name: 'pnpm-workspace.yaml',
-    type: 'workspace',
+    type: 'pnpm-workspace',
     if: (packageManager: PackageManagerConfig) =>
       packageManager.command === 'pnpm',
   },

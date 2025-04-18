@@ -41,42 +41,25 @@ export const generateIgnoreFileSimpleVariants = (patterns: string[]) => {
   return set;
 };
 
-export const generateNpmrcSimpleVariants = (patterns: string[]) => {
-  const set = new Set<string>();
-
-  for (const pattern of patterns) {
-    set.add(pattern);
-
-    const match = /^(?<key>[^"=]+)="?(?<value>[^"=]+)"?$/.exec(pattern);
-    if (!match?.groups) {
-      continue;
-    }
-
-    const { key, value } = match.groups;
-
-    set.add(`${key}=${value}`);
-    set.add(`${key}="${value}"`);
-  }
-
-  set.delete('');
-
-  return set;
-};
-
 export const replaceManagedSection = (input: string, template: string) =>
   input.replace(/# managed by skuba[\s\S]*# end managed by skuba/, template);
 
 export const mergeWithConfigFile = (
   rawTemplateFile: string,
-  fileType: 'ignore' | 'workspace' = 'ignore',
+  fileType: 'ignore' | 'pnpm-workspace' = 'ignore',
 ) => {
   const templateFile = rawTemplateFile.trim();
 
-  const generator =
-    fileType === 'ignore'
-      ? generateIgnoreFileSimpleVariants
-      : // TODO: Does this make sense for workspace? Probably not?
-        generateNpmrcSimpleVariants;
+  let generator: (s: string[]) => Set<string>;
+
+  switch (fileType) {
+    case 'ignore':
+      generator = generateIgnoreFileSimpleVariants;
+      break;
+    case 'pnpm-workspace':
+      generator = () => new Set<string>();
+      break;
+  }
 
   const templatePatterns = generator([
     ...OUTDATED_PATTERNS,
