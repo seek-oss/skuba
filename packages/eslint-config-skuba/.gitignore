@@ -8,7 +8,6 @@
 .cdk.staging/
 .serverless/
 cdk.out/
-cdk.context.json
 node_modules*/
 
 /coverage*/

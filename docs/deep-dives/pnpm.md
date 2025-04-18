@@ -139,9 +139,10 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
    This will synthesise managed hoist patterns into `.npmrc`.
 
-7. Include additional hoisting settings in `pnpm-workspace.yaml`
+7. Include additional hoisting settings in `pnpm-workspace.yaml` for Serverless
 
    Skip this step if your project does not use Serverless.
+   It can also be skipped for Serverless projects that use `esbuild` bundling.
 
    ```diff
     # managed by skuba
