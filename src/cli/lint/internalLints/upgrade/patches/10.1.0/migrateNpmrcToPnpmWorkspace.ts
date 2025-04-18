@@ -24,6 +24,7 @@ const checkFileExists = async (filePath: string) => {
  * - Test whether deleting npmrc actually works locally and in CI
  * - Fix up Buildkite pipeline files & Dockerfiles referencing .npmrc
  * - Clean up NPMRC_IGNORE_SECTION (do we also delete that patch?)
+ * - Should we force upgrade to pnpm@10?
  */
 const migrateNpmrcToPnpmWorkspace: PatchFunction = async ({
   mode,
