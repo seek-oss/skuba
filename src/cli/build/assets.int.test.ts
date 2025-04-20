@@ -1,13 +1,16 @@
 import memfs, { vol } from 'memfs';
 
+import { loadSkubaConfig } from '../../config/load';
+
 import { copyAssets, copyAssetsConcurrently } from './assets';
 
 jest.mock('fs', () => memfs);
-jest.mock('fs-extra', () => memfs);
 
 jest
   .spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+
+jest.mock('../../config/load');
 
 const stdoutMock = jest.fn().mockName('[stdout]');
 const getStdOut = () => `${stdoutMock.name}${stdoutMock.mock.calls.join('')}`;
@@ -29,12 +32,7 @@ const justOutDirs = (fs: typeof vol) =>
 beforeEach(() => {
   vol.reset();
   vol.fromJSON({
-    'package.json': JSON.stringify({
-      skuba: {
-        assets: ['**/*.vocab/*translations.json'],
-        entryPoint: 'src/index.ts',
-      },
-    }),
+    'package.json': '{}',
     'src/app.ts': '',
     'src/.vocab/index.ts': '',
     'src/.vocab/translations.json': '',
@@ -44,6 +42,7 @@ beforeEach(() => {
     'src/other.vocab/th.translations.json': '',
   });
   jest.clearAllMocks();
+  jest.mocked(loadSkubaConfig).mockResolvedValue({ entryPoint: 'src/app.ts' });
 });
 
 describe('copyAssets', () => {

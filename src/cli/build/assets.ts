@@ -3,14 +3,12 @@ import path from 'path';
 import chalk, { type Color } from 'chalk';
 import fs from 'fs-extra';
 
+import { loadSkubaConfig } from '../../config/load';
+import { SkubaConfig } from '../../config/types';
 import { copyFile } from '../../utils/copy';
 import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir';
 import { type Logger, createLogger, log } from '../../utils/logging';
-import {
-  getConsumerManifest,
-  getEntryPointFromManifest,
-  getPropFromConsumerManifest,
-} from '../../utils/manifest';
+import { getConsumerManifest } from '../../utils/manifest';
 
 export const copyAssets = async (
   destinationDir: string,
@@ -18,15 +16,20 @@ export const copyAssets = async (
 ) => {
   const manifest = await getConsumerManifest();
   if (!manifest) {
+    logger.err(
+      'Could not find a package.json file in/above the current directory.',
+    );
     return;
   }
 
-  const assets = await getPropFromConsumerManifest<string, string[]>('assets');
-  if (!assets) {
+  const skubaConfig = await loadSkubaConfig();
+
+  const assets = skubaConfig.assets ?? SkubaConfig.assets.default;
+  if (!assets.length) {
     return;
   }
 
-  const entryPoint = await getEntryPointFromManifest();
+  const entryPoint = skubaConfig.entryPoint;
   if (!entryPoint) {
     return;
   }
