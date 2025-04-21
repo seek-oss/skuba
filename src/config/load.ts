@@ -1,56 +1,47 @@
-import path from 'path';
-
-import fs from 'fs-extra';
 import { createJiti } from 'jiti';
+import type { z } from 'zod';
 
+import { locateNearestFile } from '../utils/dir';
 import { log } from '../utils/logging';
 
-import {
-  type LoadedSkubaConfig,
-  skubaConfigDefault,
-  skubaConfigSchema,
-} from './types';
-
-const CONFIG_FILENAME = 'skuba.config.ts';
+import { skubaConfigDefault, skubaConfigSchema } from './types';
 
 const jiti = createJiti(__filename);
 
 const skubaConfigCacheForPath: Record<string, Promise<LoadedSkubaConfig>> = {};
 
-const findSkubaConfig = async (cwd: string): Promise<string | null> => {
-  let currentDir = cwd;
-
-  while (currentDir !== path.dirname(currentDir)) {
-    const filePath = path.join(currentDir, CONFIG_FILENAME);
-    const pathExists = await fs.pathExists(filePath);
-
-    if (pathExists) {
-      return filePath;
-    }
-
-    currentDir = path.dirname(currentDir);
-  }
-
-  return null;
+export type LoadedSkubaConfig = z.output<typeof skubaConfigSchema> & {
+  configPath?: string;
+  lastPatchedVersion?: string;
 };
 
 export const loadSkubaConfig = (
   cwd: string = process.cwd(),
 ): Promise<LoadedSkubaConfig> => {
   const load = async () => {
-    const configPath = await findSkubaConfig(cwd);
+    const configPath = await locateNearestFile({
+      cwd,
+      filename: 'skuba.config.ts',
+    });
     if (!configPath) {
       return skubaConfigDefault;
     }
 
     try {
-      const rawConfig = await jiti.import(configPath);
-      return skubaConfigSchema.parse(rawConfig);
+      const rawConfig: { default: unknown; lastPatchedVersion?: string } =
+        await jiti.import(configPath);
+
+      const base = skubaConfigSchema.parse(rawConfig.default);
+      return {
+        ...base,
+        configPath,
+        lastPatchedVersion: rawConfig.lastPatchedVersion,
+      };
     } catch (err) {
       log.warn(`Failed to load ${log.bold(configPath)}.`);
       log.subtle(err);
 
-      return skubaConfigDefault;
+      return { ...skubaConfigDefault, configPath };
     }
   };
 

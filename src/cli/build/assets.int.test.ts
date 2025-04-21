@@ -43,7 +43,10 @@ beforeEach(() => {
     'src/other.vocab/th.translations.json': '',
   });
   jest.clearAllMocks();
-  jest.mocked(loadSkubaConfig).mockResolvedValue(skubaConfigDefault);
+  jest.mocked(loadSkubaConfig).mockResolvedValue({
+    ...skubaConfigDefault,
+    configPath: 'skuba.config.ts',
+  });
 });
 
 describe('copyAssets', () => {

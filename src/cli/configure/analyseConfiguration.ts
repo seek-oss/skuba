@@ -2,8 +2,8 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
+import type { ProjectType } from '../../config/types';
 import { log } from '../../utils/logging';
-import type { ProjectType } from '../../utils/manifest';
 import type { PackageManagerConfig } from '../../utils/packageManager';
 
 import { diffFiles } from './analysis/project';

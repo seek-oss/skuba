@@ -1,12 +1,8 @@
 import { Select } from 'enquirer';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
+import { ProjectType } from '../../config/types';
 import { log } from '../../utils/logging';
-import {
-  PROJECT_TYPES,
-  type ProjectType,
-  projectTypeSchema,
-} from '../../utils/manifest';
 import type { TemplateConfig } from '../../utils/template';
 import { hasProp } from '../../utils/validation';
 
@@ -19,7 +15,7 @@ export const getProjectType = async ({
   manifest,
   templateConfig,
 }: Props): Promise<ProjectType> => {
-  const projectType = projectTypeSchema.safeParse(
+  const projectType = ProjectType.safeParse(
     hasProp(manifest.packageJson.skuba, 'type')
       ? manifest.packageJson.skuba.type
       : null,
@@ -41,7 +37,7 @@ export const getProjectType = async ({
 
   log.newline();
   const projectTypePrompt = new Select({
-    choices: PROJECT_TYPES,
+    choices: ProjectType.options,
     message: 'Project type:',
     name: 'projectType',
     initial,

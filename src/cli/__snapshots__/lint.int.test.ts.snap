@@ -90,7 +90,7 @@ Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 **skuba**
 
 \`\`\`term
-<random>/package.json skuba has patches to apply. Run pnpm exec skuba format to run them.
+<random>/skuba.config.ts skuba has patches to apply. Run pnpm exec skuba format to run them.
 \`\`\`
 ",
 ]
@@ -104,7 +104,7 @@ ESLint   │ Processed 2 files in <random>s.
 ESLint   │ ○ a/a/a.ts
 ESLint   │ ○ d.js
 Prettier │ Initialising Prettier...
-Prettier │ Detected project root: <random>
+Prettier │ Detected working directory: <random>
 Prettier │ Discovering files...
 Prettier │ Discovered 10 files.
 Prettier │ Linting files...

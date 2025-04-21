@@ -17,7 +17,7 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found upgrade-skuba
 
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - Either dockerfiles or pipelines were not found upgrade-skuba
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
 
@@ -49,14 +49,15 @@ Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 4 files in <random>s.
+Processed 5 files in <random>s.
 
 Prettier
-Processed 8 files in <random>s.
-Formatted 3 files:
+Processed 9 files in <random>s.
+Formatted 4 files:
 b.md
 c.json
 d.js
+package.json
 "
 `;
 
@@ -112,7 +113,7 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found upgrade-skuba
 
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - Either dockerfiles or pipelines were not found upgrade-skuba
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
 
@@ -146,15 +147,16 @@ Processed skuba lints in <random>s.
 ESLint
 Initialising ESLint...
 Processing files...
-Processed 2 files in <random>s.
+Processed 3 files in <random>s.
 ○ a/a/a.ts
 ○ d.js
+○ skuba.config.ts
 
 Prettier
 Initialising Prettier...
-Detected project root: <random>
+Detected working directory: <random>
 Discovering files...
-Discovered 10 files.
+Discovered 11 files.
 Formatting files...
 .dockerignore
   parser: -
@@ -172,11 +174,13 @@ d.js
   parser: babel
 package.json
   parser: json-stringify
+skuba.config.ts
+  parser: typescript
 tsconfig.json
   parser: json
 a/a/a.ts
   parser: typescript
-Processed 6 files in <random>s.
+Processed 7 files in <random>s.
 "
 `;
 
@@ -202,7 +206,7 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - no .gitignore
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found upgrade-skuba
 
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - Either dockerfiles or pipelines were not found upgrade-skuba
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
 
@@ -234,10 +238,10 @@ Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 2 files in <random>s.
+Processed 3 files in <random>s.
 
 Prettier
-Processed 6 files in <random>s.
+Processed 7 files in <random>s.
 "
 `;
 
@@ -263,7 +267,7 @@ Patch skipped: Move .npmrc out of the .gitignore managed section - not ignored u
 
 Patch skipped: Move .npmrc out of the .dockerignore managed section - no .dockerignore file found upgrade-skuba
 
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
+Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - Either dockerfiles or pipelines were not found upgrade-skuba
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
 
@@ -294,7 +298,7 @@ Refreshed .npmrc. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 2 files in <random>s.
+Processed 3 files in <random>s.
 
 <random>/a/a/a.ts
   8:3  error  Unexpected console statement  no-console
@@ -306,7 +310,7 @@ Processed 2 files in <random>s.
 
 
 Prettier
-Processed 6 files in <random>s.
+Processed 7 files in <random>s.
 Formatted 1 file:
 a/a/a.ts
 Flagged 1 file:

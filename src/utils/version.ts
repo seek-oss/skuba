@@ -1,7 +1,8 @@
+import fs from 'fs-extra';
 import npmFetch from 'npm-registry-fetch';
 import { z } from 'zod';
 
-import { getSkubaManifest } from './manifest';
+import { locateNearestFile } from './dir';
 import { withTimeout } from './wait';
 
 const NpmVersions = z.record(
@@ -73,10 +74,24 @@ const latestSkubaVersion = async (): Promise<string | null> => {
   }
 };
 
-export const getSkubaVersion = async (): Promise<string> => {
-  const { version } = await getSkubaManifest();
+let skubaVersion: string | null = null;
 
-  return version;
+export const getSkubaVersion = async (): Promise<string> => {
+  if (skubaVersion) {
+    return skubaVersion;
+  }
+
+  const result = await locateNearestFile({
+    cwd: __dirname,
+    filename: 'package.json',
+  });
+  if (!result) {
+    throw new Error("Couldn't find skuba's package.json");
+  }
+
+  const packageJson = await fs.readFile(result, 'utf-8');
+  const parsedPackageJson = JSON.parse(packageJson) as { version: string };
+  return (skubaVersion = parsedPackageJson.version);
 };
 
 type SkubaVersionInfo =

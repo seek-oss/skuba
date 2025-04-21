@@ -30,24 +30,12 @@ const fetchFiles = async (files: string[]) =>
 
 const patchPnpmPackageManager: PatchFunction = async ({
   mode,
-  manifest,
   packageManager,
 }): Promise<PatchReturnType> => {
   if (packageManager.command !== 'pnpm') {
     return {
       result: 'skip',
       reason: 'not using pnpm',
-    };
-  }
-
-  if (
-    !(
-      manifest.packageJson as { packageManager?: string }
-    ).packageManager?.includes('pnpm')
-  ) {
-    return {
-      result: 'skip',
-      reason: 'no packageManager declaration in package.json found',
     };
   }
 

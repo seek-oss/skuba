@@ -7,30 +7,21 @@ import { loadSkubaConfig } from '../../config/load';
 import { copyFile } from '../../utils/copy';
 import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir';
 import { type Logger, createLogger, log } from '../../utils/logging';
-import { getConsumerManifest } from '../../utils/manifest';
 
 export const copyAssets = async (
   destinationDir: string,
   logger: Logger = log,
 ) => {
-  const manifest = await getConsumerManifest();
-  if (!manifest) {
-    logger.err(
-      'Could not find a package.json file in/above the current directory.',
-    );
-    return;
-  }
-
-  const { entryPoint, assets } = await loadSkubaConfig();
-  if (!assets.length) {
+  const { entryPoint, assets, configPath } = await loadSkubaConfig();
+  if (!assets.length || !configPath) {
     return;
   }
 
   const pathSegments = entryPoint.split(path.sep);
   const srcDir = (pathSegments.length > 1 && pathSegments[0]) || '';
-  const resolvedSrcDir = path.resolve(path.dirname(manifest.path), srcDir);
+  const resolvedSrcDir = path.resolve(path.dirname(configPath), srcDir);
   const resolvedDestinationDir = path.resolve(
-    path.dirname(manifest.path),
+    path.dirname(configPath),
     destinationDir,
   );
 

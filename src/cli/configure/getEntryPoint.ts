@@ -4,8 +4,8 @@ import chalk from 'chalk';
 import { Input } from 'enquirer';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
+import type { ProjectType } from '../../config/types';
 import { log } from '../../utils/logging';
-import type { ProjectType } from '../../utils/manifest';
 import type { TemplateConfig } from '../../utils/template';
 import { hasStringProp } from '../../utils/validation';
 

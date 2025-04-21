@@ -1,5 +1,7 @@
 import * as fsExtra from 'fs-extra';
 
+import { loadSkubaConfig } from '../../../config/load';
+import { skubaConfigDefault } from '../../../config/types';
 import { log } from '../../../utils/logging';
 
 import { noSkubaTemplateJs } from './noSkubaTemplateJs';
@@ -12,10 +14,17 @@ jest.mock('fs-extra', () => ({
   pathExists: jest.fn(),
 }));
 
+jest.mock('../../../config/load');
+
 beforeEach(() => {
   jest
     .spyOn(console, 'log')
     .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+
+  jest.mocked(loadSkubaConfig).mockResolvedValue({
+    ...skubaConfigDefault,
+    configPath: 'skuba.config.ts',
+  });
 });
 
 afterEach(jest.resetAllMocks);

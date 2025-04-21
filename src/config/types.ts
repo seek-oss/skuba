@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+export const ProjectType = z.enum(['application', 'package', 'root']);
+export type ProjectType = z.infer<typeof ProjectType>;
+
 export const SkubaConfig = {
   assets: {
     /**
@@ -13,18 +16,18 @@ export const SkubaConfig = {
     default: ['**/*.vocab/*translations.json'],
   },
 
-  entryPoint: {
-    /**
-     * The default entry point for applications.
-     */
-    default: 'src/app.ts',
-  },
-
   buildTool: {
     /**
      * The default build tool for applications.
      */
     default: 'tsc' as const,
+  },
+
+  entryPoint: {
+    /**
+     * The default entry point for applications.
+     */
+    default: 'src/app.ts',
   },
 };
 
@@ -47,6 +50,20 @@ export const skubaConfigSchema = z.object({
   assets: z.array(z.string()).optional().default(SkubaConfig.assets.default),
 
   /**
+   * The build tool to use for compiling TypeScript code.
+   *
+   * Commands:
+   * - `skuba build`
+   * - `skuba build-package`
+   *
+   * @link https://seek-oss.github.io/skuba/docs/deep-dives/esbuild.html
+   */
+  buildTool: z
+    .enum(['esbuild', 'tsc'])
+    .optional()
+    .default(SkubaConfig.buildTool.default),
+
+  /**
    * The entry point to the package or application. For packages, this is the
    * main file that will be imported when the package is required. For applications,
    * this is the main file that will be executed when the application is run.
@@ -58,19 +75,8 @@ export const skubaConfigSchema = z.object({
    * - `skuba start`
    */
   entryPoint: z.string().optional().default(SkubaConfig.entryPoint.default),
-
-  /**
-   * The build tool to use for compiling TypeScript code.
-   *
-   * @link https://seek-oss.github.io/skuba/docs/deep-dives/esbuild.html
-   */
-  buildTool: z
-    .enum(['esbuild', 'tsc'])
-    .optional()
-    .default(SkubaConfig.buildTool.default),
 });
 
 export type SkubaConfig = z.input<typeof skubaConfigSchema>;
-export type LoadedSkubaConfig = z.output<typeof skubaConfigSchema>;
 
 export const skubaConfigDefault = skubaConfigSchema.parse({});

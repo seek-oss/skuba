@@ -3,9 +3,9 @@ import path from 'path';
 import fs from 'fs-extra';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
+import type { ProjectType } from '../../config/types';
 import { type TextProcessor, copyFiles } from '../../utils/copy';
 import { log } from '../../utils/logging';
-import type { ProjectType } from '../../utils/manifest';
 import { getLatestNpmVersion, getSkubaVersion } from '../../utils/version';
 
 import { diffDependencies } from './analysis/package';

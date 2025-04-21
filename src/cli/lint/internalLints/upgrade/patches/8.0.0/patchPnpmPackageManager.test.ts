@@ -1,6 +1,5 @@
 import fg from 'fast-glob';
 import { readFile, writeFile } from 'fs-extra';
-import type { NormalizedPackageJson } from 'read-pkg-up';
 
 import type { PatchConfig } from '../..';
 import type { PackageManagerConfig } from '../../../../../../utils/packageManager';
@@ -25,26 +24,6 @@ describe('patchPnpmPackageManager', () => {
     });
   });
 
-  it('should skip if packageManager is not declared in package.json', async () => {
-    await expect(
-      tryPatchPnpmPackageManager({
-        mode: 'format',
-        packageManager: { command: 'pnpm' } as PackageManagerConfig,
-        manifest: { packageJson: {} },
-      } as PatchConfig),
-    ).resolves.toEqual({
-      result: 'skip',
-      reason: 'no packageManager declaration in package.json found',
-    });
-  });
-
-  const validManifest = {
-    packageJson: {
-      packageManager: 'pnpm',
-    } as Partial<NormalizedPackageJson> as NormalizedPackageJson,
-    path: '~/project/package.json',
-  } as PatchConfig['manifest'];
-
   it('should skip if no dockerfiles are found', async () => {
     jest
       .mocked(fg)
@@ -54,7 +33,7 @@ describe('patchPnpmPackageManager', () => {
       tryPatchPnpmPackageManager({
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
-        manifest: validManifest,
+        config: {},
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
@@ -71,7 +50,7 @@ describe('patchPnpmPackageManager', () => {
       tryPatchPnpmPackageManager({
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
-        manifest: validManifest,
+        config: {},
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
@@ -93,7 +72,7 @@ describe('patchPnpmPackageManager', () => {
       tryPatchPnpmPackageManager({
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
-        manifest: validManifest,
+        config: {},
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
@@ -124,7 +103,7 @@ describe('patchPnpmPackageManager', () => {
       tryPatchPnpmPackageManager({
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
-        manifest: validManifest,
+        config: {},
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
@@ -173,7 +152,7 @@ describe('patchPnpmPackageManager', () => {
       tryPatchPnpmPackageManager({
         mode: 'lint',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
-        manifest: validManifest,
+        config: {},
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
@@ -209,7 +188,7 @@ describe('patchPnpmPackageManager', () => {
       tryPatchPnpmPackageManager({
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
-        manifest: validManifest,
+        config: {},
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
@@ -254,7 +233,7 @@ describe('patchPnpmPackageManager', () => {
       tryPatchPnpmPackageManager({
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
-        manifest: validManifest,
+        config: {},
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
@@ -296,7 +275,7 @@ describe('patchPnpmPackageManager', () => {
       tryPatchPnpmPackageManager({
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
-        manifest: validManifest,
+        config: {},
       } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
