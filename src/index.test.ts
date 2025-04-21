@@ -40,13 +40,6 @@ describe('skuba', () => {
         "Net": {
           "waitFor": [Function],
         },
-        "SkubaConfig": {
-          "assets": {
-            "default": [
-              "**/*.vocab/*translations.json",
-            ],
-          },
-        },
       }
     `);
   });

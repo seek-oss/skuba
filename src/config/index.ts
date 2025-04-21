@@ -1,0 +1,1 @@
+export { SkubaConfig } from './types';

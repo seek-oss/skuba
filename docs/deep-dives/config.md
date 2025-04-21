@@ -7,7 +7,7 @@ parent: Deep dives
 **skuba** configuration can be specified in an optional `skuba.config.ts` file next to your `package.json`.
 
 ```typescript
-import { SkubaConfig } from 'skuba';
+import { SkubaConfig } from 'skuba/config';
 
 const config: SkubaConfig = {
   assets: [...SkubaConfig.assets.default, '**/*.adoc'],

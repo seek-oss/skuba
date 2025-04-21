@@ -15,7 +15,6 @@ export * as Git from './api/git';
 export * as GitHub from './api/github';
 export * as Jest from './api/jest';
 export * as Net from './api/net';
-export { SkubaConfig } from './config/types';
 
 // evanw/esbuild#2388
 declare global {
