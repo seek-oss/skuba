@@ -1,1 +1,1 @@
-export { SkubaConfig } from '../lib/config';
+export { SkubaConfig } from '../lib/config/types';

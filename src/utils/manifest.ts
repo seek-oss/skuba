@@ -12,8 +12,6 @@ export const projectTypeSchema = z.union([
 
 export const PROJECT_TYPES = ['application', 'package'] as const;
 
-const DEFAULT_ENTRY_POINT = 'src/app.ts';
-
 let skubaManifest: NormalizedPackageJson | undefined;
 
 export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
@@ -51,10 +49,4 @@ export const getStringPropFromConsumerManifest = async <T extends string>(
   const result = await getPropFromConsumerManifest(prop);
 
   return typeof result === 'string' ? result : undefined;
-};
-
-export const getEntryPointFromManifest = async (): Promise<string> => {
-  const entryPoint = await getStringPropFromConsumerManifest('entryPoint');
-
-  return entryPoint ?? DEFAULT_ENTRY_POINT;
 };

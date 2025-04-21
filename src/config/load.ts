@@ -5,13 +5,17 @@ import { createJiti } from 'jiti';
 
 import { log } from '../utils/logging';
 
-import { type SkubaConfig, skubaConfigSchema } from './types';
+import {
+  type LoadedSkubaConfig,
+  skubaConfigDefault,
+  skubaConfigSchema,
+} from './types';
 
 const CONFIG_FILENAME = 'skuba.config.ts';
 
 const jiti = createJiti(__filename);
 
-const skubaConfigCacheForPath: Record<string, Promise<SkubaConfig>> = {};
+const skubaConfigCacheForPath: Record<string, Promise<LoadedSkubaConfig>> = {};
 
 const findSkubaConfig = async (cwd: string): Promise<string | null> => {
   let currentDir = cwd;
@@ -32,11 +36,11 @@ const findSkubaConfig = async (cwd: string): Promise<string | null> => {
 
 export const loadSkubaConfig = (
   cwd: string = process.cwd(),
-): Promise<SkubaConfig> => {
-  const load = async (): Promise<SkubaConfig> => {
+): Promise<LoadedSkubaConfig> => {
+  const load = async () => {
     const configPath = await findSkubaConfig(cwd);
     if (!configPath) {
-      return {};
+      return skubaConfigDefault;
     }
 
     try {
@@ -46,7 +50,7 @@ export const loadSkubaConfig = (
       log.warn(`Failed to load ${log.bold(configPath)}.`);
       log.subtle(err);
 
-      return {};
+      return skubaConfigDefault;
     }
   };
 

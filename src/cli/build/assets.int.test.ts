@@ -1,6 +1,7 @@
 import memfs, { vol } from 'memfs';
 
 import { loadSkubaConfig } from '../../config/load';
+import { skubaConfigDefault } from '../../config/types';
 
 import { copyAssets, copyAssetsConcurrently } from './assets';
 
@@ -42,7 +43,7 @@ beforeEach(() => {
     'src/other.vocab/th.translations.json': '',
   });
   jest.clearAllMocks();
-  jest.mocked(loadSkubaConfig).mockResolvedValue({ entryPoint: 'src/app.ts' });
+  jest.mocked(loadSkubaConfig).mockResolvedValue(skubaConfigDefault);
 });
 
 describe('copyAssets', () => {

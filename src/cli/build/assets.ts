@@ -4,7 +4,6 @@ import chalk, { type Color } from 'chalk';
 import fs from 'fs-extra';
 
 import { loadSkubaConfig } from '../../config/load';
-import { SkubaConfig } from '../../config/types';
 import { copyFile } from '../../utils/copy';
 import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir';
 import { type Logger, createLogger, log } from '../../utils/logging';
@@ -22,15 +21,8 @@ export const copyAssets = async (
     return;
   }
 
-  const skubaConfig = await loadSkubaConfig();
-
-  const assets = skubaConfig.assets ?? SkubaConfig.assets.default;
+  const { entryPoint, assets } = await loadSkubaConfig();
   if (!assets.length) {
-    return;
-  }
-
-  const entryPoint = skubaConfig.entryPoint;
-  if (!entryPoint) {
     return;
   }
 
