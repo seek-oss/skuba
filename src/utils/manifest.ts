@@ -42,11 +42,3 @@ export const getPropFromConsumerManifest = async <
     ? result.packageJson.skuba[prop]
     : undefined;
 };
-
-export const getStringPropFromConsumerManifest = async <T extends string>(
-  prop: T,
-): Promise<string | undefined> => {
-  const result = await getPropFromConsumerManifest(prop);
-
-  return typeof result === 'string' ? result : undefined;
-};

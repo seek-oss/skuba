@@ -19,6 +19,13 @@ export const SkubaConfig = {
      */
     default: 'src/app.ts',
   },
+
+  buildTool: {
+    /**
+     * The default build tool for applications.
+     */
+    default: 'tsc' as const,
+  },
 };
 
 export const skubaConfigSchema = z.object({
@@ -51,6 +58,16 @@ export const skubaConfigSchema = z.object({
    * - `skuba start`
    */
   entryPoint: z.string().optional().default(SkubaConfig.entryPoint.default),
+
+  /**
+   * The build tool to use for compiling TypeScript code.
+   *
+   * @link https://seek-oss.github.io/skuba/docs/deep-dives/esbuild.html
+   */
+  buildTool: z
+    .enum(['esbuild', 'tsc'])
+    .optional()
+    .default(SkubaConfig.buildTool.default),
 });
 
 export type SkubaConfig = z.input<typeof skubaConfigSchema>;
