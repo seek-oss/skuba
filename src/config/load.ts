@@ -1,5 +1,5 @@
 import { createJiti } from 'jiti';
-import type { z } from 'zod';
+import { ZodError, type z } from 'zod';
 
 import { locateNearestFile } from '../utils/dir';
 import { log } from '../utils/logging';
@@ -39,7 +39,11 @@ export const loadSkubaConfig = (
       };
     } catch (err) {
       log.warn(`Failed to load ${log.bold(configPath)}.`);
-      log.subtle(err);
+      log.subtle(
+        err instanceof ZodError
+          ? `Invalid config file: ${err.errors.map((error) => `${error.path.join('.') || 'config'}: ${error.message}`).join(', ')}`
+          : String(err),
+      );
 
       return { ...skubaConfigDefault, configPath };
     }

@@ -1,9 +1,11 @@
+import path from 'node:path';
+
 import fs from 'fs-extra';
 
-const REGEX = /export const lastPatchedVersion = ['"]([^'"]+)['"]/gm;
+const REGEX = /export const lastPatchedVersion\s*=\s*(['"])([^'"]+)(['"])/gm;
 
 export const updateSkubaConfigVersion = async ({
-  path,
+  path: configPath,
   version,
 }: {
   version: string;
@@ -11,34 +13,34 @@ export const updateSkubaConfigVersion = async ({
 }): Promise<void> => {
   let currentContent;
   try {
-    currentContent = await fs.readFile(path, 'utf-8');
+    currentContent = await fs.readFile(configPath, 'utf-8');
   } catch {
     currentContent =
-      'import type { SkubaConfig } from "skuba";\n\nconst config: SkubaConfig = {};\n\nexport default config;\n';
+      "import type { SkubaConfig } from 'skuba';\n\nconst config: SkubaConfig = {};\n\nexport default config;\n";
   }
 
   if (REGEX.test(currentContent)) {
     const updatedConfig = currentContent.replace(
       REGEX,
-      `export const lastPatchedVersion = '${version}'`,
+      `export const lastPatchedVersion = $1${version}$3`,
     );
-    await fs.writeFile(path, updatedConfig, 'utf-8');
+    await fs.writeFile(configPath, updatedConfig, 'utf-8');
   } else {
     const lines = currentContent.split('\n');
-    const lastImportLine = lines.findIndex((line) => line.startsWith('import'));
+    const lineToInsertBefore = lines.findIndex(
+      (line) =>
+        line.startsWith('export default') || line.startsWith('const config'),
+    );
 
-    if (lastImportLine === -1) {
-      lines.unshift(
-        `// This is the version of skuba that patches were last applied at.\n// Skuba will automatically update this version when patches are applied, do not change it manually.\nexport const lastPatchedVersion = '${version}';\n`,
-      );
+    const versionToAdd = `// This is the version of skuba that patches were last applied at.\n// Skuba will automatically update this version when patches are applied, do not change it manually.\nexport const lastPatchedVersion = '${version}';\n`;
+
+    if (lineToInsertBefore === -1) {
+      lines.unshift(versionToAdd);
     } else {
-      lines.splice(
-        lastImportLine + 1,
-        0,
-        `\nexport const lastPatchedVersion = '${version}';`,
-      );
+      lines.splice(lineToInsertBefore, 0, versionToAdd);
     }
 
-    await fs.writeFile(path, lines.join('\n'), 'utf-8');
+    await fs.ensureDir(path.dirname(configPath));
+    await fs.writeFile(configPath, lines.join('\n'), 'utf-8');
   }
 };
