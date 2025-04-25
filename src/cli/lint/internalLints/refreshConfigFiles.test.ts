@@ -59,12 +59,10 @@ beforeEach(() => {
 
   givenMockPackageManager('pnpm');
 
-  jest
-    .mocked(loadSkubaConfig)
-    .mockResolvedValue({
-      ...skubaConfigDefault,
-      configPath: path.join(process.cwd(), 'skuba.config.ts'),
-    });
+  jest.mocked(loadSkubaConfig).mockResolvedValue({
+    ...skubaConfigDefault,
+    configPath: path.join(process.cwd(), 'skuba.config.ts'),
+  });
 });
 
 afterEach(jest.resetAllMocks);
