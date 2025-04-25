@@ -31,10 +31,9 @@ export const detectBadCodeowners = async (
         },
       ),
     )
-  ).flat();
-
-  // TODO: Use `toSorted` once we drop support for Node 18.
-  annotations.sort((a, b) => a.path.localeCompare(b.path));
+  )
+    .flat()
+    .toSorted((a, b) => a.path.localeCompare(b.path));
 
   annotations.forEach(({ path, message }) => {
     logger.warn(`${path}: ${message}`);
