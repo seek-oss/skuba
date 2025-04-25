@@ -23,7 +23,7 @@ configs:
       concurrency: 1
       plugins:
         - *docker-ecr-cache
-        - docker-compose#v5.6.0:
+        - docker-compose#v5.7.0:
             dependencies: false
             run: app
             environment:
@@ -52,7 +52,7 @@ steps:
       GET_GITHUB_TOKEN: please
     plugins:
       - *docker-ecr-cache
-      - docker-compose#v5.6.0:
+      - docker-compose#v5.7.0:
           run: app
           environment:
             - GITHUB_API_TOKEN

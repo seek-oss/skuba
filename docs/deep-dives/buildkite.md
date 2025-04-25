@@ -58,7 +58,7 @@ steps:
   - command: pnpm lint
     plugins:
       - ...
-      - docker-compose#v5.6.0:
+      - docker-compose#v5.7.0:
           environment:
             - BUILDKITE_AGENT_ACCESS_TOKEN
           propagate-environment: true

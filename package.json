@@ -39,7 +39,7 @@
     "prepack": "pnpm --filter './template/**' exec rm -rf node_modules",
     "release": "pnpm --silent build && changeset publish",
     "skuba": "pnpm --silent build && pnpm --silent skuba:exec",
-    "skuba:exec": "node --experimental-vm-modules lib/skuba",
+    "skuba:exec": "node --experimental-vm-modules --no-warnings=ExperimentalWarning lib/skuba",
     "stage": "changeset version && node ./.changeset/inject.js && pnpm format",
     "test": "pnpm --silent skuba test --selectProjects unit --",
     "test:ci": "pnpm --silent skuba test --runInBand",
@@ -140,7 +140,7 @@
     "@types/supertest": "6.0.3",
     "enhanced-resolve": "5.18.1",
     "express": "5.1.0",
-    "fastify": "5.3.0",
+    "fastify": "5.3.2",
     "jest-diff": "29.7.0",
     "jsonfile": "6.1.0",
     "koa": "2.16.1",
@@ -159,7 +159,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@10.7.1",
+  "packageManager": "pnpm@10.9.0",
   "engines": {
     "node": ">=18.18.0"
   },
