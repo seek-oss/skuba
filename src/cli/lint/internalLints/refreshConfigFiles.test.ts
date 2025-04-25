@@ -3,6 +3,8 @@ import path from 'path';
 import * as fsExtra from 'fs-extra';
 
 import { Git } from '../../..';
+import { loadSkubaConfig } from '../../../config/load';
+import { skubaConfigDefault } from '../../../config/types';
 import { log } from '../../../utils/logging';
 import { detectPackageManager } from '../../../utils/packageManager';
 import * as project from '../../configure/analysis/project';
@@ -26,6 +28,8 @@ jest.mock('../../../utils/template', () => ({
       `# managed by skuba\nfake content for ${name}\n# end managed by skuba`,
     ),
 }));
+
+jest.mock('../../../config/load');
 
 jest.mock('../../configure/analysis/project');
 
@@ -54,6 +58,13 @@ beforeEach(() => {
     .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
   givenMockPackageManager('pnpm');
+
+  jest
+    .mocked(loadSkubaConfig)
+    .mockResolvedValue({
+      ...skubaConfigDefault,
+      configPath: path.join(process.cwd(), 'skuba.config.ts'),
+    });
 });
 
 afterEach(jest.resetAllMocks);

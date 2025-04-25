@@ -12,7 +12,6 @@ import {
   detectPackageManager,
 } from '../../../utils/packageManager';
 import { readBaseTemplateFile } from '../../../utils/template';
-import { getDestinationManifest } from '../../configure/analysis/package';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithConfigFile } from '../../configure/processing/configFile';
 import type { InternalLintResult } from '../internal';
