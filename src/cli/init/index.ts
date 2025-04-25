@@ -72,10 +72,12 @@ export const init = async (args = process.argv.slice(2)) => {
       : Promise.resolve(),
 
     writeSkubaConfig({
+      config: {
+        entryPoint,
+        template: templateName,
+        projectType: type,
+      },
       cwd: destinationDir,
-      entryPoint,
-      template: templateName,
-      type,
       version: skubaVersionInfo.local,
     }),
   ]);

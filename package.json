@@ -166,12 +166,5 @@
   },
   "publishConfig": {
     "provenance": true
-  },
-  "skuba": {
-    "build": "esbuild",
-    "entryPoint": "src/index.ts",
-    "template": null,
-    "type": "package",
-    "version": "10.1.0"
   }
 }

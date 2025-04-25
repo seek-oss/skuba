@@ -10,10 +10,12 @@ describe('writeSkubaConfig', () => {
   it('writes a skuba section', async () => {
     await expect(
       writeSkubaConfig({
+        config: {
+          entryPoint: 'src/app.ts',
+          template: 'hello-world',
+          projectType: 'package',
+        },
         cwd: '/',
-        entryPoint: 'src/app.ts',
-        template: 'hello-world',
-        type: 'package',
         version: '0.0.1',
       }),
     ).resolves.toBeUndefined();

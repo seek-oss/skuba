@@ -3,6 +3,9 @@ import { z } from 'zod';
 export const ProjectType = z.enum(['application', 'package', 'root']);
 export type ProjectType = z.infer<typeof ProjectType>;
 
+export const BuildTool = z.enum(['esbuild', 'tsc']);
+export type BuildTool = z.infer<typeof BuildTool>;
+
 export const SkubaConfig = {
   assets: {
     /**
@@ -58,10 +61,7 @@ export const skubaConfigSchema = z.object({
    *
    * @link https://seek-oss.github.io/skuba/docs/deep-dives/esbuild.html
    */
-  buildTool: z
-    .enum(['esbuild', 'tsc'])
-    .optional()
-    .default(SkubaConfig.buildTool.default),
+  buildTool: BuildTool.optional().default(SkubaConfig.buildTool.default),
 
   /**
    * The entry point to the package or application. For packages, this is the

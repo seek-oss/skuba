@@ -45,29 +45,29 @@ describe('runPrettier', () => {
         path.join(__dirname, '../../../integration/base/fixable'),
       ),
     ).resolves.toMatchInlineSnapshot(`
+{
+  "ok": false,
+  "result": {
+    "count": 9,
+    "errored": [
       {
-        "ok": false,
-        "result": {
-          "count": 8,
-          "errored": [
-            {
-              "filepath": "integration/base/fixable/b.md",
-            },
-            {
-              "filepath": "integration/base/fixable/c.json",
-            },
-            {
-              "filepath": "integration/base/fixable/d.js",
-            },
-            {
-              "filepath": "integration/base/fixable/package.json",
-            },
-          ],
-          "touched": [],
-          "unparsed": [],
-        },
-      }
-    `);
+        "filepath": "integration/base/fixable/b.md",
+      },
+      {
+        "filepath": "integration/base/fixable/c.json",
+      },
+      {
+        "filepath": "integration/base/fixable/d.js",
+      },
+      {
+        "filepath": "integration/base/fixable/package.json",
+      },
+    ],
+    "touched": [],
+    "unparsed": [],
+  },
+}
+`);
   });
 
   it('handles a custom directory with a different root', async () => {
@@ -80,28 +80,28 @@ describe('runPrettier', () => {
         path.join(__dirname, '../../../integration/base/fixable'),
       ),
     ).resolves.toMatchInlineSnapshot(`
+{
+  "ok": false,
+  "result": {
+    "count": 9,
+    "errored": [
       {
-        "ok": false,
-        "result": {
-          "count": 8,
-          "errored": [
-            {
-              "filepath": "../../../integration/base/fixable/b.md",
-            },
-            {
-              "filepath": "../../../integration/base/fixable/c.json",
-            },
-            {
-              "filepath": "../../../integration/base/fixable/d.js",
-            },
-            {
-              "filepath": "../../../integration/base/fixable/package.json",
-            },
-          ],
-          "touched": [],
-          "unparsed": [],
-        },
-      }
-    `);
+        "filepath": "../../../integration/base/fixable/b.md",
+      },
+      {
+        "filepath": "../../../integration/base/fixable/c.json",
+      },
+      {
+        "filepath": "../../../integration/base/fixable/d.js",
+      },
+      {
+        "filepath": "../../../integration/base/fixable/package.json",
+      },
+    ],
+    "touched": [],
+    "unparsed": [],
+  },
+}
+`);
   });
 });

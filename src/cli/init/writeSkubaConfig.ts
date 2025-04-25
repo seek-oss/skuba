@@ -2,15 +2,13 @@ import path from 'node:path';
 
 import fs from 'fs-extra';
 
-import type { ProjectType } from '../../config/types';
+import type { SkubaConfig } from '../../config/types';
 import { getSkubaConfigTsVersionLines } from '../../config/update';
 import { formatPrettier } from '../configure/processing/prettier';
 
 interface WriteSkubaConfigProps {
+  config: SkubaConfig;
   cwd: string;
-  entryPoint?: string;
-  template: string;
-  type?: ProjectType;
   version: string;
 }
 
@@ -18,10 +16,8 @@ interface WriteSkubaConfigProps {
  * Write a `skuba` section into the destination `package.json`.
  */
 export const writeSkubaConfig = async ({
+  config,
   cwd,
-  entryPoint,
-  template,
-  type,
   version,
 }: WriteSkubaConfigProps) => {
   const contents = [
@@ -30,9 +26,10 @@ export const writeSkubaConfig = async ({
     getSkubaConfigTsVersionLines(version).trim(),
     '',
     'const config: SkubaConfig = {',
-    ...(entryPoint ? [`  entryPoint: '${entryPoint}',`] : []),
-    ...(type ? [`  projectType: '${type}',`] : []),
-    `  template: '${template}',`,
+    ...Object.entries(config)
+      .filter(([, value]) => value !== undefined)
+      .sort(([key1], [key2]) => key1.localeCompare(key2))
+      .map(([key, value]) => `"${key}": ${JSON.stringify(value)},`),
     '};',
     '',
     'export default config;',
