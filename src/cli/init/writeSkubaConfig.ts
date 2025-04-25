@@ -25,7 +25,7 @@ export const writeSkubaConfig = async ({
   version,
 }: WriteSkubaConfigProps) => {
   const contents = [
-    "import type { SkubaConfig } from 'skuba';",
+    "import type { SkubaConfig } from 'skuba/config';",
     '',
     getSkubaConfigTsVersionLines(version).trim(),
     '',

@@ -22,7 +22,7 @@ export const updateSkubaConfigVersion = async ({
     currentContent = await fs.readFile(configPath, 'utf-8');
   } catch {
     currentContent =
-      "import type { SkubaConfig } from 'skuba';\n\nconst config: SkubaConfig = {};\n\nexport default config;\n";
+      "import type { SkubaConfig } from 'skuba/config';\n\nconst config: SkubaConfig = {};\n\nexport default config;\n";
   }
 
   if (REGEX.test(currentContent)) {
