@@ -2,13 +2,13 @@ import path from 'path';
 
 import { Select } from 'enquirer';
 
+import { loadSkubaConfig } from '../../config/load';
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';
 import { detectPackageManager } from '../../utils/packageManager';
 import { BASE_TEMPLATE_DIR } from '../../utils/template';
-import { hasProp } from '../../utils/validation';
 
 import { analyseConfiguration } from './analyseConfiguration';
 import { analyseDependencies } from './analyseDependencies';
@@ -36,9 +36,10 @@ const shouldApply = async (name: string) => {
 export const configure = async () => {
   await showLogoAndVersionInfo();
 
-  const [manifest, packageManager] = await Promise.all([
+  const [manifest, packageManager, skubaConfig] = await Promise.all([
     getDestinationManifest(),
     detectPackageManager(),
+    loadSkubaConfig(),
   ]);
 
   await ensureCommands(packageManager.command);
@@ -63,13 +64,13 @@ export const configure = async () => {
   });
 
   const type = await getProjectType({
-    manifest,
+    skubaConfig,
     templateConfig,
   });
 
   const entryPoint = await getEntryPoint({
     destinationRoot,
-    manifest,
+    skubaConfig,
     templateConfig,
     type,
   });
@@ -89,7 +90,7 @@ export const configure = async () => {
     }
   }
 
-  const firstRun = hasProp(manifest.packageJson, 'skuba');
+  const firstRun = Boolean(skubaConfig.configPath);
 
   const fixConfiguration = await analyseConfiguration({
     destinationRoot,

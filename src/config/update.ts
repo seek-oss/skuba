@@ -4,6 +4,12 @@ import fs from 'fs-extra';
 
 const REGEX = /export const lastPatchedVersion\s*=\s*(['"])([^'"]+)(['"])/gm;
 
+export const getSkubaConfigTsVersionLines = (version: string) =>
+  `// This is the version of skuba that patches were last applied at.
+// Skuba will automatically update this version when patches are applied, do not change it manually.
+export const lastPatchedVersion = '${version}';
+`;
+
 export const updateSkubaConfigVersion = async ({
   path: configPath,
   version,
@@ -32,12 +38,14 @@ export const updateSkubaConfigVersion = async ({
         line.startsWith('export default') || line.startsWith('const config'),
     );
 
-    const versionToAdd = `// This is the version of skuba that patches were last applied at.\n// Skuba will automatically update this version when patches are applied, do not change it manually.\nexport const lastPatchedVersion = '${version}';\n`;
-
     if (lineToInsertBefore === -1) {
-      lines.unshift(versionToAdd);
+      lines.unshift(getSkubaConfigTsVersionLines(version));
     } else {
-      lines.splice(lineToInsertBefore, 0, versionToAdd);
+      lines.splice(
+        lineToInsertBefore,
+        0,
+        getSkubaConfigTsVersionLines(version),
+      );
     }
 
     await fs.ensureDir(path.dirname(configPath));

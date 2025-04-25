@@ -75,6 +75,17 @@ export const skubaConfigSchema = z.object({
    * - `skuba start`
    */
   entryPoint: z.string().optional().default(SkubaConfig.entryPoint.default),
+
+  /**
+   * The project type.
+   */
+  projectType: ProjectType.optional(),
+
+  /**
+   * The template used in `skuba init`.
+   * This only has documentation value, except for running `skuba configure`.
+   */
+  template: z.string().optional(),
 });
 
 export type SkubaConfig = z.input<typeof skubaConfigSchema>;

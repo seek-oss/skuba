@@ -20,7 +20,7 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
 import type { Input } from './types';
-import { writePackageJson } from './writePackageJson';
+import { writeSkubaConfig } from './writeSkubaConfig';
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {
@@ -71,7 +71,7 @@ export const init = async (args = process.argv.slice(2)) => {
       ? ensureTemplateConfigDeletion(destinationDir)
       : Promise.resolve(),
 
-    writePackageJson({
+    writeSkubaConfig({
       cwd: destinationDir,
       entryPoint,
       template: templateName,

@@ -2,29 +2,28 @@ import path from 'path';
 
 import chalk from 'chalk';
 import { Input } from 'enquirer';
-import type { NormalizedReadResult } from 'read-pkg-up';
 
+import type { LoadedSkubaConfig } from '../../config/load';
 import type { ProjectType } from '../../config/types';
 import { log } from '../../utils/logging';
 import type { TemplateConfig } from '../../utils/template';
-import { hasStringProp } from '../../utils/validation';
 
 import { tsFileExists } from './analysis/files';
 
 interface Props {
   destinationRoot: string;
-  manifest: NormalizedReadResult;
+  skubaConfig: LoadedSkubaConfig;
   templateConfig: TemplateConfig;
   type: ProjectType;
 }
 export const getEntryPoint = ({
   destinationRoot,
-  manifest,
+  skubaConfig,
   templateConfig,
   type,
 }: Props) => {
-  if (hasStringProp(manifest.packageJson.skuba, 'entryPoint')) {
-    return manifest.packageJson.skuba.entryPoint;
+  if (skubaConfig.entryPoint) {
+    return skubaConfig.entryPoint;
   }
 
   if (templateConfig.entryPoint !== undefined) {

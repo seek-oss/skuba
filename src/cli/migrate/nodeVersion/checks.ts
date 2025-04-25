@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import { coerce, lte, satisfies } from 'semver';
 import { type ZodRawShape, z } from 'zod';
 
+import { loadSkubaConfig } from '../../../config/load';
 import { log } from '../../../utils/logging';
 
 const getParentFile = async (file: string, cwd: string = process.cwd()) => {
@@ -81,18 +82,17 @@ export const isPatchableServerlessVersion = async (
 export const isPatchableSkubaType = async (
   currentPath: string,
 ): Promise<boolean> => {
-  const { packageJson, packageJsonRelativePath } =
-    await extractFromParentPackageJson(
-      z.object({
-        skuba: z
-          .object({
-            type: z.string().optional(),
-          })
-          .optional(),
-        files: z.string().array().optional(),
-      }),
-      currentPath,
-    );
+  const { packageJson } = await extractFromParentPackageJson(
+    z.object({
+      skuba: z
+        .object({
+          type: z.string().optional(),
+        })
+        .optional(),
+      files: z.string().array().optional(),
+    }),
+    currentPath,
+  );
 
   if (!packageJson) {
     log.warn('package.json not found, ensure it is in the correct location');
@@ -106,22 +106,31 @@ export const isPatchableSkubaType = async (
     return false;
   }
 
-  const type = packageJson?.skuba?.type;
+  const skubaConfig = await loadSkubaConfig(currentPath);
 
-  if (!type) {
-    log.warn(
-      `skuba project type not found in ${packageJsonRelativePath}; add a package.json#/skuba/type to ensure the correct migration can be applied`,
-    );
+  if (!skubaConfig.projectType) {
+    if (skubaConfig.configPath) {
+      log.warn(
+        `skuba project type not found in ${skubaConfig.configPath}; add a projectType to ensure the correct migration can be applied`,
+      );
+    } else {
+      log.warn(
+        'skuba.config.ts not found; run skuba format to generate a config file',
+      );
+    }
     return false;
   }
-  if (type === 'package') {
+
+  if (skubaConfig.projectType === 'package') {
     log.warn(
       'Migrations are not supported for packages; update manually to ensure major runtime deprecations are intended',
     );
     return false;
   }
 
-  log.ok(`Proceeding with migration of skuba project type ${type}`);
+  log.ok(
+    `Proceeding with migration of skuba project type ${skubaConfig.projectType}`,
+  );
   return true;
 };
 

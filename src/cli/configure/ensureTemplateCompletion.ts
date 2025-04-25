@@ -5,13 +5,13 @@ import fs from 'fs-extra';
 import type { NormalizedReadResult } from 'read-pkg-up';
 import { z } from 'zod';
 
+import { loadSkubaConfig } from '../../config/load';
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { log } from '../../utils/logging';
 import {
   type TemplateConfig,
   ensureTemplateConfigDeletion,
 } from '../../utils/template';
-import { hasStringProp } from '../../utils/validation';
 import {
   getTemplateConfig,
   readJSONFromStdIn,
@@ -59,9 +59,7 @@ export const ensureTemplateCompletion = async ({
     return templateConfig;
   }
 
-  const templateName = hasStringProp(manifest.packageJson.skuba, 'template')
-    ? manifest.packageJson.skuba.template
-    : 'template';
+  const templateName = (await loadSkubaConfig()).template ?? 'template';
 
   log.newline();
   const templateData = process.stdin.isTTY

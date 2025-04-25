@@ -20,12 +20,16 @@ export default Jest.mergePreset({
         '/test\\.ts',
         '\\.int\\.test\\.ts',
       ],
+      // jestjs/jest#14305
+      prettierPath: null,
     },
     {
       displayName: 'integration',
       roots: ['src'],
       setupFiles: ['<rootDir>/jest.setup.ts'],
       testMatch: ['**/*.int.test.ts'],
+      // jestjs/jest#14305
+      prettierPath: null,
     },
   ],
 });
