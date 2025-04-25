@@ -3,7 +3,7 @@
 'skuba': major
 ---
 
-Drop support for Nodejs 18.x
+deps: Drop support for Nodejs 18.x
 
 Node.js 18 reached EOL in April 2025. **skuba**’s minimum supported version is now Node.js 20.9.0.
 
