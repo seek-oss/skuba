@@ -67,10 +67,6 @@ exports[`mergeWithConfigFile for ignore files provided with managed section and 
 node_modules*/
 .DS_Store
 # end managed by skuba
-
-node_modules
-node_modules_bak
-/node_modules
 "
 `;
 
@@ -93,8 +89,6 @@ node_modules*/
 # end managed by skuba
 
 system32
-
-node_modules/
 
 *.zip
 "
@@ -162,73 +156,63 @@ node_modules
 "
 `;
 
-exports[`mergeWithConfigFile for npmrc files empty provided 1`] = `
+exports[`mergeWithConfigFile for workspace files empty provided 1`] = `
 "# managed by skuba
-public-hoist-pattern[]="tsconfig-seek"
-# end managed by skuba
+packageManagerStrictVersion: true
+publicHoistPattern:
+  - '@types*'
+  # end managed by skuba
 "
 `;
 
-exports[`mergeWithConfigFile for npmrc files identical 1`] = `
+exports[`mergeWithConfigFile for workspace files identical 1`] = `
 "# managed by skuba
-public-hoist-pattern[]="tsconfig-seek"
-# end managed by skuba
+packageManagerStrictVersion: true
+publicHoistPattern:
+  - '@types*'
+  # end managed by skuba
 "
 `;
 
-exports[`mergeWithConfigFile for npmrc files provided with managed section and additional lines 1`] = `
-"public-hoist-pattern[]=a
-
+exports[`mergeWithConfigFile for workspace files provided with managed section and additional lines 1`] = `
+"anotherSetting:true
 # managed by skuba
-public-hoist-pattern[]="tsconfig-seek"
-# end managed by skuba
-
-public-hoist-pattern[]=b"
+packageManagerStrictVersion: true
+publicHoistPattern:
+  - '@types*'
+  # end managed by skuba
+  - x"
 `;
 
-exports[`mergeWithConfigFile for npmrc files provided with managed section and fully superseded config 1`] = `
+exports[`mergeWithConfigFile for workspace files provided with no managed section 1`] = `
 "# managed by skuba
-public-hoist-pattern[]="tsconfig-seek"
-public-hoist-pattern[]="jest"
-# end managed by skuba
+packageManagerStrictVersion: true
+publicHoistPattern:
+  - '@types*'
+  # end managed by skuba
+
+packages:
+  - a
 "
 `;
 
-exports[`mergeWithConfigFile for npmrc files provided with managed section and partially superseded config 1`] = `
+exports[`mergeWithConfigFile for workspace files provided with outdated managed section 1`] = `
 "# managed by skuba
-public-hoist-pattern[]="tsconfig-seek"
-public-hoist-pattern[]="jest"
-# end managed by skuba
-
-public-hoist-pattern[]=a
+packageManagerStrictVersion: true
+publicHoistPattern:
+  - '@types*'
+  - '*eslint*'
+  # end managed by skuba
 "
 `;
 
-exports[`mergeWithConfigFile for npmrc files provided with no managed section 1`] = `
-"# managed by skuba
-public-hoist-pattern[]="tsconfig-seek"
-# end managed by skuba
-
-public-hoist-pattern[]="mystuff"
-"
-`;
-
-exports[`mergeWithConfigFile for npmrc files provided with outdated managed section 1`] = `
-"# managed by skuba
-public-hoist-pattern[]="tsconfig-seek"
-public-hoist-pattern[]="jest"
-# end managed by skuba
-"
-`;
-
-exports[`mergeWithConfigFile for npmrc files provided with outdated managed section and additional lines 1`] = `
-"public-hoist-pattern[]=a
-
+exports[`mergeWithConfigFile for workspace files provided with outdated managed section and additional lines 1`] = `
+"anotherSetting:true
 # managed by skuba
-public-hoist-pattern[]="tsconfig-seek"
-public-hoist-pattern[]="jest"
-# end managed by skuba
-
-public-hoist-pattern[]="jest"=b
-"
+packageManagerStrictVersion: true
+publicHoistPattern:
+  - '@types*'
+  - '*eslint*'
+  # end managed by skuba
+  - x"
 `;

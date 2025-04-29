@@ -13,7 +13,7 @@ configs:
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v2.2.1:
         cache-on:
-          - .npmrc
+          - pnpm-workspace.yaml
           - package.json#.packageManager
           - pnpm-lock.yaml
         secrets: id=npm,src=/tmp/.npmrc
