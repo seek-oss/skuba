@@ -55,6 +55,7 @@ steps:
       - docker-compose#v5.6.0:
           run: app
           environment:
+            # Don't pass NPM_TOKEN to the container. It's only needed in docker-ecr-cache.
             - GITHUB_API_TOKEN
           propagate-environment: true
 ```
