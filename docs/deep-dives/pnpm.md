@@ -240,6 +240,18 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     However, this command only serves to populate a local package store and stops short of installing the packages,
     the implications of which are covered in the next step.
 
+    If using [the newer `GET_NPM_TOKEN` environment variable](./npm.md),
+    your fetch command should instead look like:
+
+    ```dockerfile
+    RUN --mount=type=bind,source=.npmrc,target=.npmrc \
+        --mount=type=bind,source=package.json,target=package.json \
+        --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+        --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
+        --mount=type=secret,id=NPM_TOKEN,env=NPM_TOKEN,required=true \
+        pnpm fetch
+    ```
+
     Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
 13. Replace `yarn` with `pnpm` in `Dockerfile`
@@ -287,6 +299,8 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     We are also using an updated caching syntax on `package.json` which caches only on the `packageManager` key. This requires the [seek-oss/docker-ecr-cache](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin) plugin version to be >= 2.2.0.
 
+    If using `private-npm`:
+
     ```diff
       seek-oss/private-npm#v1.3.0:
         env: NPM_READ_TOKEN
@@ -305,6 +319,20 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
         dockerfile: Dockerfile.dev-deps
     -   secrets: id=npm,src=.npmrc
     +   secrets: id=npm,src=/tmp/.npmrc
+    ```
+
+    If using [the newer `GET_NPM_TOKEN` environment variable](./npm.md) to abstract away `aws-sm` / `private-npm`, your pipeline docker-ecr-cache plugin should look like:
+
+    ```yaml
+    - seek-oss/docker-ecr-cache#v2.2.1:
+        cache-on:
+          - .npmrc
+          - package.json#.packageManager
+          - pnpm-lock.yaml
+        dockerfile: Dockerfile.dev-deps
+        secrets:
+          - id=npm,src=/var/lib/buildkite-agent/.npmrc
+          - NPM_TOKEN
     ```
 
 15. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`

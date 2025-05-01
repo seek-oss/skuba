@@ -29,9 +29,7 @@ steps:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
       GET_GITHUB_TOKEN: 'please'
     plugins:
-      - *aws-sm
-      - *private-npm
-      - *docker-ecr-cache
+      - ...
       - docker#v5.12.0:
           # Enable GitHub integrations.
           environment:
@@ -64,9 +62,7 @@ steps:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
       GET_GITHUB_TOKEN: 'please'
     plugins:
-      - *aws-sm
-      - *private-npm
-      - *docker-ecr-cache
+      - ...
       - docker-compose#v5.7.0:
           environment:
             - GITHUB_API_TOKEN
