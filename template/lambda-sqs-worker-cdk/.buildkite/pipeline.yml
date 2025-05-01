@@ -48,8 +48,8 @@ steps:
       - echo '--- pnpm lint'
       - pnpm lint
     env:
-      GET_NPM_TOKEN: please
       GET_GITHUB_TOKEN: please
+      GET_NPM_TOKEN: please
     plugins:
       - *docker-ecr-cache
       - docker-compose#v5.7.0:
@@ -80,16 +80,16 @@ steps:
     agents:
       queue: <%- devBuildkiteQueueName %>
     env:
-      GET_NPM_TOKEN: please
       ENVIRONMENT: dev
+      GET_NPM_TOKEN: please
     label: 🤞 Deploy Dev
     concurrency_group: '<%- repoName %>/deploy/dev'
     key: deploy-dev
 
   - <<: *deploy
     env:
-      GET_NPM_TOKEN: please
       ENVIRONMENT: prod
+      GET_NPM_TOKEN: please
     label: 🚀 Deploy Prod
     branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
     concurrency_group: '<%- repoName %>/deploy/prod'
