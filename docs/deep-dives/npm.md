@@ -127,7 +127,7 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \
          GET_NPM_TOKEN: please
    ```
 
-   In order to avoid this, you could: 
+   In order to avoid this, you could:
 
    - Reduce indirection with the YAML anchors, and put all environment variables inline in the step
    - Put `GET_NPM_TOKEN` in the `configs` section too
