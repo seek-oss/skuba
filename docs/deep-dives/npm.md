@@ -127,15 +127,10 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \
          GET_NPM_TOKEN: please
    ```
 
-   In order to avoid this, you could put `GET_NPM_TOKEN` in the `configs` section too, or set `GET_NPM_TOKEN`
-   as a pipeline-wide environment variable.
+   In order to avoid this, you could: 
 
-   ```yaml
-   env:
-     GET_NPM_TOKEN: please
-
-   steps: ...
-   ```
+   - Reduce indirection with the YAML anchors, and put all environment variables inline in the step
+   - Put `GET_NPM_TOKEN` in the `configs` section too
 
 4. Update your Dockerfile to use the new secrets.
 
