@@ -2,7 +2,7 @@
 'skuba': minor
 ---
 
-template/\*: Update templates to use simplified npm private access
+template/\*: Use simplified npm private access
 
 This change to templates removes [`private-npm`](https://github.com/seek-oss/private-npm-buildkite-plugin/) and [`aws-sm`](https://github.com/seek-oss/aws-sm-buildkite-plugin/) Buildkite plugins, instead using the `GET_NPM_TOKEN` environment variable helper.
 
