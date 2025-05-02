@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "lib": ["ES2022"],
+    "lib": ["ES2023"],
     "outDir": "lib",
     "removeComments": false,
-    "target": "ES2022"
+    "target": "ES2023"
   },
   "exclude": ["integration/**/*", "lib*/**/*", "template/**/*"],
   "extends": "./config/tsconfig.json"
