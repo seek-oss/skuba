@@ -25,9 +25,7 @@ For example, with the [Docker Buildkite plugin]:
 steps:
   - command: pnpm lint
     plugins:
-      - *aws-sm
-      - *private-npm
-      - *docker-ecr-cache
+      - ...
       - docker#v5.12.0:
           environment:
             - BUILDKITE_AGENT_ACCESS_TOKEN
@@ -59,9 +57,7 @@ and the `environment` and `propagate-environment` options in the [Docker Compose
 steps:
   - command: pnpm lint
     plugins:
-      - *aws-sm
-      - *private-npm
-      - *docker-ecr-cache
+      - ...
       - docker-compose#v5.7.0:
           environment:
             - BUILDKITE_AGENT_ACCESS_TOKEN
