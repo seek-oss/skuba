@@ -4,6 +4,10 @@ import { glob } from 'fast-glob';
 import { promises as fs } from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
+import {
+  findCurrentWorkspaceProjectRoot,
+  findWorkspaceRoot,
+} from '../../../../../../utils/dir';
 import { log } from '../../../../../../utils/logging';
 import { hasNpmrcSecret } from '../../../../../../utils/npmrc';
 import { replaceManagedSection } from '../../../../../configure/processing/configFile';
@@ -126,6 +130,18 @@ const migrateNpmrcToPnpmWorkspace: PatchFunction = async ({
     return {
       result: 'skip',
       reason: 'not using pnpm',
+    };
+  }
+
+  const [workspaceRoot, currentWorkspaceProjectRoot] = await Promise.all([
+    findWorkspaceRoot(),
+    findCurrentWorkspaceProjectRoot(),
+  ]);
+
+  if (workspaceRoot !== currentWorkspaceProjectRoot) {
+    return {
+      result: 'skip',
+      reason: 'not running in the workspace root',
     };
   }
 

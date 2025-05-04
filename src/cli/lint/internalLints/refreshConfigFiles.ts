@@ -4,6 +4,10 @@ import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 import { writeFile } from 'fs-extra';
 
 import { Git } from '../../..';
+import {
+  findCurrentWorkspaceProjectRoot,
+  findWorkspaceRoot,
+} from '../../../utils/dir';
 import type { Logger } from '../../../utils/logging';
 import {
   type PackageManagerConfig,
@@ -15,6 +19,11 @@ import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithConfigFile } from '../../configure/processing/configFile';
 import type { InternalLintResult } from '../internal';
 
+type ConditionOptions = {
+  packageManager: PackageManagerConfig;
+  isInWorkspaceRoot: boolean;
+};
+
 type RefreshableConfigFile = {
   name: string;
   type: 'ignore' | 'pnpm-workspace';
@@ -22,7 +31,7 @@ type RefreshableConfigFile = {
     s: string,
     packageManager: PackageManagerConfig,
   ) => string;
-  if?: (packageManager: PackageManagerConfig) => boolean;
+  if?: (options: ConditionOptions) => boolean;
 };
 
 const OLD_IGNORE_WARNING = `# Ignore .npmrc. This is no longer managed by skuba as pnpm projects use a managed .npmrc.
@@ -47,8 +56,8 @@ export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   {
     name: 'pnpm-workspace.yaml',
     type: 'pnpm-workspace',
-    if: (packageManager: PackageManagerConfig) =>
-      packageManager.command === 'pnpm',
+    if: ({ packageManager, isInWorkspaceRoot }) =>
+      isInWorkspaceRoot && packageManager.command === 'pnpm',
   },
   {
     name: '.dockerignore',
@@ -61,10 +70,13 @@ export const refreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
 ) => {
-  const [manifest, gitRoot] = await Promise.all([
-    getDestinationManifest(),
-    Git.findRoot({ dir: process.cwd() }),
-  ]);
+  const [manifest, gitRoot, workspaceRoot, currentWorkspaceProjectRoot] =
+    await Promise.all([
+      getDestinationManifest(),
+      Git.findRoot({ dir: process.cwd() }),
+      findWorkspaceRoot(),
+      findCurrentWorkspaceProjectRoot(),
+    ]);
 
   const destinationRoot = path.dirname(manifest.path);
 
@@ -77,9 +89,9 @@ export const refreshConfigFiles = async (
       additionalMapping = (s) => s,
       if: condition = () => true,
     }: RefreshableConfigFile,
-    packageManager: PackageManagerConfig,
+    conditionOptions: ConditionOptions,
   ) => {
-    if (!condition(packageManager)) {
+    if (!condition(conditionOptions)) {
       return { needsChange: false };
     }
 
@@ -142,7 +154,10 @@ export const refreshConfigFiles = async (
 
   const results = await Promise.all(
     REFRESHABLE_CONFIG_FILES.map((conf) =>
-      refreshConfigFile(conf, packageManager),
+      refreshConfigFile(conf, {
+        packageManager,
+        isInWorkspaceRoot: workspaceRoot === currentWorkspaceProjectRoot,
+      }),
     ),
   );
 

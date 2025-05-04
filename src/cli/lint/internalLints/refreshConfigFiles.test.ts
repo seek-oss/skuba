@@ -20,6 +20,11 @@ jest.mock('fs-extra', () => ({
   writeFile: jest.fn(),
 }));
 
+jest.mock('../../../utils/dir', () => ({
+  findCurrentWorkspaceProjectRoot: () => '/some/workdir',
+  findWorkspaceRoot: () => '/some/workdir',
+}));
+
 jest.mock('../../../utils/template', () => ({
   readBaseTemplateFile: (name: string) =>
     Promise.resolve(
