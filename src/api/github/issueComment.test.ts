@@ -11,6 +11,7 @@ const mockClient = {
     createComment: jest.fn(),
     listComments: jest.fn(),
     updateComment: jest.fn(),
+    deleteComment: jest.fn(),
   },
   repos: {
     listPullRequestsAssociatedWithCommit: jest.fn(),
@@ -388,5 +389,82 @@ describe('putIssueComment', () => {
     expect(
       mockClient.repos.listPullRequestsAssociatedWithCommit,
     ).not.toHaveBeenCalled();
+  });
+
+  it('refuses to delete a comment if internalId is not provided', async () => {
+    await expect(
+      putIssueComment({
+        body: null,
+        env: { BUILDKITE_PULL_REQUEST: '123' },
+      }),
+    ).rejects.toThrow('Cannot remove comment without an internalId');
+  });
+
+  it('returns null when trying to delete a comment that does not exist', async () => {
+    mockClient.issues.listComments.mockResolvedValue({
+      data: [
+        {
+          id: 111,
+          user: { id: 111 },
+          body: 'Commentary! \n\n<!-- the-internal-id -->',
+        },
+        {
+          id: 222,
+          user: { id: 87109344 },
+          body: 'Commentary! \n\n<!-- not-the-internal-id -->',
+        },
+      ],
+    });
+
+    await expect(
+      putIssueComment({
+        body: null,
+        internalId: 'the-internal-id',
+        userId: 'seek-build-agency',
+        env: { BUILDKITE_PULL_REQUEST: '123' },
+      }),
+    ).resolves.toBeNull();
+
+    expect(mockClient.issues.createComment).not.toHaveBeenCalled();
+    expect(mockClient.issues.updateComment).not.toHaveBeenCalled();
+    expect(mockClient.issues.deleteComment).not.toHaveBeenCalled();
+  });
+
+  it('returns null and deletes a comment', async () => {
+    mockClient.issues.listComments.mockResolvedValue({
+      data: [
+        {
+          id: 111,
+          user: { id: 111 },
+          body: 'Commentary! \n\n<!-- the-internal-id -->',
+        },
+        {
+          id: 222,
+          user: { id: 87109344 },
+          body: 'Commentary! \n\n<!-- the-internal-id -->',
+        },
+      ],
+    });
+
+    await expect(
+      putIssueComment({
+        body: null,
+        internalId: 'the-internal-id',
+        userId: 'seek-build-agency',
+        env: { BUILDKITE_PULL_REQUEST: '123' },
+      }),
+    ).resolves.toBeNull();
+
+    expect(mockClient.issues.createComment).not.toHaveBeenCalled();
+    expect(mockClient.issues.updateComment).not.toHaveBeenCalled();
+    expect(mockClient.issues.deleteComment).toHaveBeenCalledTimes(1);
+    expect(mockClient.issues.deleteComment.mock.calls[0][0])
+      .toMatchInlineSnapshot(`
+      {
+        "comment_id": 222,
+        "owner": "seek-oss",
+        "repo": "skuba",
+      }
+    `);
   });
 });
