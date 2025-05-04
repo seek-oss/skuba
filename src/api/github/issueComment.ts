@@ -18,8 +18,10 @@ const getUserId = async (client: Octokit): Promise<number> => {
 interface PutIssueCommentParameters {
   /**
    * The body of the issue comment.
+   *
+   * An explicit `null` value will remove the comment, if `internalId` is provided.
    */
-  body: string;
+  body: string | null;
 
   /**
    * An internal identifier for the issue comment.
@@ -77,7 +79,13 @@ interface IssueComment {
  */
 export const putIssueComment = async (
   params: PutIssueCommentParameters,
-): Promise<IssueComment> => {
+): Promise<IssueComment | null> => {
+  if (params.body === null && !params.internalId) {
+    // It's dangerous to just delete the first comment, as it may not be
+    // from the current flow.
+    throw new Error('Cannot remove comment without an internalId');
+  }
+
   const env = params.env ?? process.env;
 
   const dir = process.cwd();
@@ -112,6 +120,18 @@ export const putIssueComment = async (
         ? comment.body?.endsWith(`\n\n<!-- ${params.internalId} -->`)
         : true),
   )?.id;
+
+  if (params.body === null) {
+    if (commentId) {
+      await client.issues.deleteComment({
+        comment_id: commentId,
+        owner,
+        repo,
+      });
+    }
+
+    return null;
+  }
 
   const body = params.internalId
     ? [params.body.trim(), `<!-- ${params.internalId} -->`].join('\n\n')
