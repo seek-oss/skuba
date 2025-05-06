@@ -3,9 +3,7 @@ import { datadog } from 'datadog-lambda-js';
 import { config } from 'src/config';
 import { logger, loggerContext } from 'src/framework/logging';
 
-interface LambdaContext {
-  awsRequestId: string;
-}
+import type { Context as LambdaContext } from 'aws-lambda';
 
 type Handler<Event, Output> = (
   event: Event,
@@ -24,12 +22,12 @@ const withDatadog = <Event, Output = unknown>(
   config.metrics ? (datadog(fn) as Handler<Event, Output>) : fn;
 
 export const createHandler = <Event, Output = unknown>(
-  fn: (event: Event) => Promise<Output>,
+  fn: (event: Event, ctx: LambdaContext) => Promise<Output>,
 ) =>
-  withDatadog<Event>((event, { awsRequestId }) =>
-    loggerContext.run({ awsRequestId }, async () => {
+  withDatadog<Event>((event, ctx) =>
+    loggerContext.run({ awsRequestId: ctx.awsRequestId }, async () => {
       try {
-        const output = await fn(event);
+        const output = await fn(event, ctx);
 
         logger.debug('Function succeeded');
 

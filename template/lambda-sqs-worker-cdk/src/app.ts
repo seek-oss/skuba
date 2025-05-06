@@ -1,5 +1,7 @@
 import 'skuba-dive/register';
 
+import { isLambdaHook } from '@seek/aws-codedeploy-hooks';
+
 import type { SQSEvent } from 'aws-lambda';
 
 import { createHandler } from 'src/framework/handler';
@@ -17,10 +19,16 @@ const smokeTest = async () => {
   await Promise.all([scoringService.smokeTest(), sendPipelineEvent({}, true)]);
 };
 
-export const handler = createHandler<SQSEvent>(async (event) => {
+export const handler = createHandler<SQSEvent>(async (event, ctx) => {
   // Treat an empty object as our smoke test event.
-  if (!Object.keys(event).length) {
-    logger.debug('Received smoke test request');
+  if (!Object.entries(event).length) {
+    if (process.env.SKIP_SMOKE && isLambdaHook(event, ctx)) {
+      // Expedite deployment even if dependencies are unhealthy.
+      return;
+    }
+
+    // Run dependency checks otherwise.
+    logger.debug('Smoke test event received');
     return smokeTest();
   }
 
