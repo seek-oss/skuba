@@ -1,3 +1,4 @@
+import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
 import { LambdaDeployment } from '@seek/aws-codedeploy-infra';
 import {
   Duration,
@@ -16,7 +17,6 @@ import type { Construct } from 'constructs';
 import { DatadogLambda } from 'datadog-cdk-constructs-v2';
 
 import { config } from './config';
-import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
 
 // Updated by https://github.com/seek-oss/rynovate
 const DATADOG_EXTENSION_LAYER_VERSION = 64;

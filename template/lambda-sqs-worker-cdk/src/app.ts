@@ -1,7 +1,6 @@
 import 'skuba-dive/register';
 
 import { isLambdaHook } from '@seek/aws-codedeploy-hooks';
-
 import type { SQSEvent } from 'aws-lambda';
 
 import { createHandler } from 'src/framework/handler';
