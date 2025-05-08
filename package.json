@@ -123,7 +123,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@changesets/cli": "2.29.2",
+    "@changesets/cli": "2.29.3",
     "@changesets/get-github-info": "0.6.0",
     "@jest/reporters": "29.7.0",
     "@jest/test-result": "29.7.0",
@@ -145,7 +145,7 @@
     "jest-diff": "29.7.0",
     "jsonfile": "6.1.0",
     "koa": "3.0.0",
-    "memfs": "4.17.0",
+    "memfs": "4.17.1",
     "remark-cli": "12.0.1",
     "remark-preset-lint-recommended": "7.0.1",
     "semver": "7.7.1",
