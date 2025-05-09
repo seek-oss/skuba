@@ -1,10 +1,13 @@
+import path from 'path';
 import { inspect } from 'util';
 
 import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { build } from 'esbuild';
 import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
+import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir';
 import { createLogger } from '../../utils/logging';
+import { getEntryPointFromManifest } from '../../utils/manifest';
 
 import { parseTscArgs } from './args';
 import { readTsconfig, tsc } from './tsc';
@@ -35,11 +38,46 @@ export const esbuild = async (
     return;
   }
 
-  const { fileNames: entryPoints, options: compilerOptions } =
-    parsedCommandLine;
+  const { options: compilerOptions } = parsedCommandLine;
 
-  log.debug(log.bold('Files'));
-  entryPoints.forEach((filepath) => log.debug(filepath));
+  const entryPoint = await getEntryPointFromManifest();
+  if (!entryPoint) {
+    return;
+  }
+
+  const pathSegments = entryPoint.split(path.sep);
+  const srcDir = pathSegments.length > 1 ? pathSegments[0] : '';
+  const resolvedSrcDir = path.resolve(tscArgs.dirname, srcDir);
+
+  const allFiles = await crawlDirectory(resolvedSrcDir);
+  // TODO: use extensions from eslint-config-seek
+  const tsExtensions = ['ts', 'tsx', 'cts', 'mts'];
+  const filesByPattern = buildPatternToFilepathMap(
+    [
+      `**/*.@(${tsExtensions.join('|')})`,
+      // Must be explicit about including dotfiles otherwise TypeScript ignores them
+      // https://github.com/microsoft/TypeScript/blob/v5.0.4/src/compiler/utilities.ts#L8828-L8830
+      `**/.*.@(${tsExtensions.join('|')})`,
+      `**/.*/**/*.@(${tsExtensions.join('|')})`,
+      `**/.*/**/.*.@(${tsExtensions.join('|')})`,
+    ],
+    allFiles,
+    {
+      cwd: resolvedSrcDir,
+      dot: true,
+      ignore: [
+        '**/*.d.ts',
+        // TODO: use `exclude` from tsconfig
+        '**/__mocks__/**/*',
+        '**/*.test.ts',
+        'src/testing/**/*',
+      ],
+    },
+  );
+
+  const entryPoints = Array.from(
+    new Set(Object.values(filesByPattern).flat()),
+  ).map((filename) => path.resolve(resolvedSrcDir, filename));
 
   log.debug(log.bold('Compiler options'));
   log.debug(inspect(compilerOptions));
