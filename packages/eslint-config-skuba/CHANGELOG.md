@@ -1,5 +1,19 @@
 # eslint-config-skuba
 
+## 6.0.0
+
+### Major Changes
+
+- **deps:** Drop support for Node.js 18.x ([#1874](https://github.com/seek-oss/skuba/pull/1874))
+
+  Node.js 18 reached EOL in April 2025. **skuba**’s minimum supported version is now Node.js 20.9.0.
+
+  For help upgrading projects to an LTS version of Node.js, reference the [`skuba migrate` document](https://seek-oss.github.io/skuba/docs/cli/migrate.html).
+
+### Patch Changes
+
+- **deps:** eslint-config-seek 14.4.0 ([#1842](https://github.com/seek-oss/skuba/pull/1842))
+
 ## 5.1.3
 
 ### Patch Changes
