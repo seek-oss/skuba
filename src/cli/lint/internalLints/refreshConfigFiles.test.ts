@@ -130,7 +130,7 @@ The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('should flag creation of an pnpm-workspace.yaml for pnpm projects if missing', async () => {
+    it('should flag creation of a pnpm-workspace.yaml for pnpm projects if missing', async () => {
       setupDestinationFiles({
         'pnpm-workspace.yaml': undefined,
       });
@@ -154,7 +154,7 @@ The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to u
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('should not flag creation of an pnpm-workspace.yaml for yarn projects', async () => {
+    it('should not flag creation of a pnpm-workspace.yaml for yarn projects', async () => {
       givenMockPackageManager('yarn');
 
       setupDestinationFiles({
@@ -236,7 +236,7 @@ The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to u
       );
     });
 
-    it('should create an pnpm-workspace.yaml for pnpm projects if missing', async () => {
+    it('should create a pnpm-workspace.yaml for pnpm projects if missing', async () => {
       setupDestinationFiles({
         'pnpm-workspace.yaml': undefined,
       });
@@ -258,7 +258,7 @@ Refreshed pnpm-workspace.yaml.
       );
     });
 
-    it('should not create an pnpm-workspace.yaml for yarn projects if missing', async () => {
+    it('should not create a pnpm-workspace.yaml for yarn projects if missing', async () => {
       givenMockPackageManager('yarn');
 
       setupDestinationFiles({

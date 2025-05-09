@@ -65,7 +65,7 @@ pnpm allows us to specify dependencies to hoist via command line or [`.npmrc`].
 The number of package patterns we need to hoist may fluctuate over time,
 so specifying hoist patterns via command line would be difficult to maintain.
 
-The **skuba**-maintained `pnpm-workspace.yaml` ([Previously `.npmrc`](https://github.com/seek-oss/skuba/issues/1806)) currently instructs pnpm to hoist the following dependencies:
+The **skuba**-maintained `pnpm-workspace.yaml` ([previously `.npmrc`](https://github.com/seek-oss/skuba/issues/1806)) currently instructs pnpm to hoist the following dependencies:
 
 ```yaml
 # managed by skuba
@@ -77,7 +77,7 @@ publicHoistPattern:
   - esbuild
   - jest
   - tsconfig-seek
-# end managed by skuba
+  # end managed by skuba
 ```
 
 From the previous example, this will produce the following `node_modules` layout,
@@ -154,7 +154,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       - esbuild
       - jest
       - tsconfig-seek
-    # end managed by skuba
+      # end managed by skuba
    +
    + # Required for Serverless packaging
    + nodeLinker: hoisted
@@ -204,9 +204,9 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     
     - RUN --mount=type=secret,id=npm,dst=/workdir/.npmrc \
     -     yarn install --frozen-lockfile --ignore-optional --non-interactive
-    + RUN --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \
-    +     --mount=type=bind,source=package.json,target=package.json \
+    + RUN --mount=type=bind,source=package.json,target=package.json \
     +     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    +     --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \
     +     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
     +     pnpm fetch
     ```
@@ -279,9 +279,9 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
         cache-on:
     -     - package.json
     -     - yarn.lock
-    +     - pnpm-workspace.yaml
     +     - package.json#.packageManager
     +     - pnpm-lock.yaml
+    +     - pnpm-workspace.yaml
         dockerfile: Dockerfile.dev-deps
     -   secrets: id=npm,src=.npmrc
     +   secrets: id=npm,src=/tmp/.npmrc

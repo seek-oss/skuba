@@ -11,9 +11,9 @@ configs:
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v2.2.1: &docker-ecr-cache-defaults
         cache-on:
-          - pnpm-workspace.yaml
           - package.json#.packageManager
           - pnpm-lock.yaml
+          - pnpm-workspace.yaml
         secrets: id=npm,src=/tmp/.npmrc
 
     - &private-npm
