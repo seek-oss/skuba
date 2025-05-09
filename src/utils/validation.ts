@@ -24,9 +24,3 @@ export const hasNumberProp = <P extends PropertyKey>(
   prop: P,
 ): value is Record<P, number> =>
   isObject(value) && typeof value[prop] === 'number';
-
-export const hasStringProp = <P extends PropertyKey>(
-  value: unknown,
-  prop: P,
-): value is Record<P, string> =>
-  isObject(value) && typeof value[prop] === 'string';

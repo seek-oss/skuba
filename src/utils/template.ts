@@ -3,7 +3,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import { z } from 'zod';
 
-import { projectTypeSchema } from './manifest';
+import { ProjectType } from '../config/types';
+
 import { packageManagerSchema } from './packageManager';
 
 export const TEMPLATE_NAMES = [
@@ -83,7 +84,7 @@ export const templateConfigSchema = z.object({
   entryPoint: z.string().optional(),
   noSkip: z.boolean().optional(),
   packageManager: packageManagerSchema,
-  type: projectTypeSchema.optional(),
+  type: ProjectType.optional(),
 });
 
 export const TEMPLATE_CONFIG_FILENAME = 'skuba.template.js';

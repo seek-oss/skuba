@@ -3,39 +3,25 @@ import path from 'path';
 import chalk, { type Color } from 'chalk';
 import fs from 'fs-extra';
 
+import { loadSkubaConfig } from '../../config/load';
 import { copyFile } from '../../utils/copy';
 import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir';
 import { type Logger, createLogger, log } from '../../utils/logging';
-import {
-  getConsumerManifest,
-  getEntryPointFromManifest,
-  getPropFromConsumerManifest,
-} from '../../utils/manifest';
 
 export const copyAssets = async (
   destinationDir: string,
   logger: Logger = log,
 ) => {
-  const manifest = await getConsumerManifest();
-  if (!manifest) {
-    return;
-  }
-
-  const assets = await getPropFromConsumerManifest<string, string[]>('assets');
-  if (!assets) {
-    return;
-  }
-
-  const entryPoint = await getEntryPointFromManifest();
-  if (!entryPoint) {
+  const { entryPoint, assets, configPath } = await loadSkubaConfig();
+  if (!assets.length || !configPath) {
     return;
   }
 
   const pathSegments = entryPoint.split(path.sep);
   const srcDir = (pathSegments.length > 1 && pathSegments[0]) || '';
-  const resolvedSrcDir = path.resolve(path.dirname(manifest.path), srcDir);
+  const resolvedSrcDir = path.resolve(path.dirname(configPath), srcDir);
   const resolvedDestinationDir = path.resolve(
-    path.dirname(manifest.path),
+    path.dirname(configPath),
     destinationDir,
   );
 

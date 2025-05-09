@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { projectTypeSchema } from '../../utils/manifest';
+import { ProjectType } from '../../config/types';
 import { packageManagerSchema } from '../../utils/packageManager';
 
 export interface Input {
@@ -54,5 +54,5 @@ const initConfigSchema = initConfigInputSchema
 
     entryPoint: z.string().optional(),
     packageManager: packageManagerSchema,
-    type: projectTypeSchema.optional(),
+    type: ProjectType.optional(),
   });

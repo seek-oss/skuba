@@ -13,7 +13,7 @@ beforeEach(() => vol.reset());
 
 describe('upgradeESLint', () => {
   const baseArgs = {
-    manifest: {} as PatchConfig['manifest'],
+    config: {} as PatchConfig['config'],
     packageManager: configForPackageManager('pnpm'),
   };
 

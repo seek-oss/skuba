@@ -4,6 +4,7 @@ import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 import { writeFile } from 'fs-extra';
 
 import { Git } from '../../..';
+import { loadSkubaConfig } from '../../../config/load';
 import type { Logger } from '../../../utils/logging';
 import { NPMRC_LINES, hasNpmrcSecret } from '../../../utils/npmrc';
 import {
@@ -11,7 +12,6 @@ import {
   detectPackageManager,
 } from '../../../utils/packageManager';
 import { readBaseTemplateFile } from '../../../utils/template';
-import { getDestinationManifest } from '../../configure/analysis/package';
 import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithConfigFile } from '../../configure/processing/configFile';
 import type { InternalLintResult } from '../internal';
@@ -73,12 +73,14 @@ export const refreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
 ) => {
-  const [manifest, gitRoot] = await Promise.all([
-    getDestinationManifest(),
+  const [skubaConfig, gitRoot] = await Promise.all([
+    loadSkubaConfig(),
     Git.findRoot({ dir: process.cwd() }),
   ]);
 
-  const destinationRoot = path.dirname(manifest.path);
+  const destinationRoot = skubaConfig.configPath
+    ? path.dirname(skubaConfig.configPath)
+    : (gitRoot ?? process.cwd());
 
   const readDestinationFile = createDestinationFileReader(destinationRoot);
 

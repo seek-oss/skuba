@@ -2,8 +2,8 @@ import path from 'path';
 
 import { pathExists } from 'fs-extra';
 
+import { loadSkubaConfig } from '../../../config/load';
 import type { Logger } from '../../../utils/logging';
-import { getConsumerManifest } from '../../../utils/manifest';
 import { detectPackageManager } from '../../../utils/packageManager';
 import type { InternalLintResult } from '../internal';
 
@@ -11,18 +11,18 @@ export const noSkubaTemplateJs = async (
   _mode: 'format' | 'lint',
   logger: Logger,
 ): Promise<InternalLintResult> => {
-  const [manifest, packageManager] = await Promise.all([
-    getConsumerManifest(),
+  const [{ configPath }, packageManager] = await Promise.all([
+    loadSkubaConfig(),
     detectPackageManager(),
   ]);
 
-  if (!manifest) {
+  if (!configPath) {
     // This will throw elsewhere
     return { ok: true, fixable: false };
   }
 
   const templateConfigPath = path.join(
-    path.dirname(manifest.path),
+    path.dirname(configPath),
     'skuba.template.js',
   );
 

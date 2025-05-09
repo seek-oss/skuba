@@ -1,6 +1,6 @@
 import type { PackageJson as TypeFestPackageJson } from 'type-fest';
 
-import type { ProjectType } from '../../utils/manifest';
+import type { ProjectType } from '../../config/types';
 import type { PackageManagerConfig } from '../../utils/packageManager';
 
 export type { TsConfigJson } from 'type-fest';

@@ -10,9 +10,9 @@ import {
   resolveConfig,
 } from 'prettier';
 
+import { loadSkubaConfig } from '../../config/load';
 import { crawlDirectory } from '../../utils/dir';
 import { type Logger, pluralise } from '../../utils/logging';
-import { getConsumerManifest } from '../../utils/manifest';
 import { formatPackage, parsePackage } from '../configure/processing/package';
 
 let languages: SupportLanguage[] | undefined;
@@ -161,12 +161,12 @@ export const runPrettier = async (
 
   const start = process.hrtime.bigint();
 
-  const manifest = await getConsumerManifest(cwd);
+  const { configPath } = await loadSkubaConfig(cwd);
 
-  const directory = manifest ? path.dirname(manifest.path) : cwd;
+  const directory = configPath ? path.dirname(configPath) : cwd;
 
   logger.debug(
-    manifest ? 'Detected project root:' : 'Detected working directory:',
+    configPath ? 'Detected project root:' : 'Detected working directory:',
     directory,
   );
 

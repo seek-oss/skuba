@@ -20,7 +20,7 @@ beforeEach(() => vol.reset());
 
 describe('moveNpmrcMounts', () => {
   const baseArgs = {
-    manifest: {} as PatchConfig['manifest'],
+    config: {} as PatchConfig['config'],
     packageManager: configForPackageManager('pnpm'),
   };
 

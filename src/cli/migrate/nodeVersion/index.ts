@@ -116,13 +116,13 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
   const readFile = createDestinationFileReader(dir);
   const paths = patch.file
     ? [patch.file]
-    : await glob(patch.files ?? [], { cwd: dir });
+    : await glob(patch.files ?? [], {
+        cwd: dir,
+        ignore: ['**/node_modules/**'],
+      });
 
   await Promise.all(
     paths.map(async (path) => {
-      if (path.includes('node_modules')) {
-        return;
-      }
       const contents = await readFile(path);
       if (!contents) {
         return;

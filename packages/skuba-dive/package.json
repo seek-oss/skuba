@@ -39,11 +39,5 @@
   },
   "engines": {
     "node": ">=14.18"
-  },
-  "skuba": {
-    "entryPoint": "src/index.ts",
-    "template": "oss-npm-package",
-    "type": "package",
-    "version": "10.1.0"
   }
 }

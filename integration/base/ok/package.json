@@ -3,11 +3,5 @@
   "license": "UNLICENSED",
   "sideEffects": false,
   "dependencies": {},
-  "devDependencies": {},
-  "skuba": {
-    "entryPoint": null,
-    "template": null,
-    "type": "application",
-    "version": "0.0.1"
-  }
+  "devDependencies": {}
 }

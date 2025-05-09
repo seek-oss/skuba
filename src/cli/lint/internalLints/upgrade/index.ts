@@ -1,18 +1,20 @@
 import path from 'path';
 
-import { readdir, writeFile } from 'fs-extra';
-import type readPkgUp from 'read-pkg-up';
+import { readFile, readdir } from 'fs-extra';
 import { gte, sort } from 'semver';
 
+import {
+  type LoadedSkubaConfig,
+  loadSkubaConfig,
+} from '../../../../config/load';
+import { updateSkubaConfigVersion } from '../../../../config/update';
+import { locateNearestFile } from '../../../../utils/dir';
 import type { Logger } from '../../../../utils/logging';
-import { getConsumerManifest } from '../../../../utils/manifest';
 import {
   type PackageManagerConfig,
   detectPackageManager,
 } from '../../../../utils/packageManager';
 import { getSkubaVersion } from '../../../../utils/version';
-import { formatPackage } from '../../../configure/processing/package';
-import type { SkubaPackageJson } from '../../../init/writePackageJson';
 import type { InternalLintResult } from '../../internal';
 
 export type Patches = Patch[];
@@ -26,7 +28,7 @@ export type PatchReturnType =
 
 export type PatchConfig = {
   mode: 'format' | 'lint';
-  manifest: readPkgUp.NormalizedReadResult;
+  config: LoadedSkubaConfig;
   packageManager: PackageManagerConfig;
   dir?: string;
 };
@@ -75,21 +77,44 @@ export const upgradeSkuba = async (
   logger: Logger,
   additionalFlags: string[] = [],
 ): Promise<InternalLintResult> => {
-  const [currentVersion, manifest, packageManager] = await Promise.all([
+  const [
+    currentVersion,
+    originalSkubaConfig,
+    nearestPackageJsonPath,
+    packageManager,
+  ] = await Promise.all([
     getSkubaVersion(),
-    getConsumerManifest(),
+    loadSkubaConfig(),
+    locateNearestFile({ cwd: process.cwd(), filename: 'package.json' }),
     detectPackageManager(),
   ]);
 
-  if (!manifest) {
+  const skubaConfig = { ...originalSkubaConfig };
+
+  if (nearestPackageJsonPath) {
+    skubaConfig.configPath ??= path.join(
+      path.dirname(nearestPackageJsonPath),
+      'skuba.config.ts',
+    );
+  }
+
+  if (!skubaConfig.configPath) {
     throw new Error('Could not find a package json for this project');
   }
 
-  manifest.packageJson.skuba ??= { version: '1.0.0' };
+  const lastPatchedVersion =
+    skubaConfig.lastPatchedVersion ??
+    (nearestPackageJsonPath
+      ? (JSON.parse(await readFile(nearestPackageJsonPath, 'utf-8')) as {
+          skuba?: { version?: string };
+        })
+      : undefined
+    )?.skuba?.version ??
+    '1.0.0';
 
   const manifestVersion = additionalFlags.includes('--force-apply-all-patches')
     ? '1.0.0'
-    : (manifest.packageJson.skuba as SkubaPackageJson).version;
+    : lastPatchedVersion;
 
   // We are up to date, skip patches
   if (gte(manifestVersion, currentVersion)) {
@@ -108,7 +133,7 @@ export const upgradeSkuba = async (
         async ({ apply }) =>
           await apply({
             mode,
-            manifest,
+            config: skubaConfig,
             packageManager,
           }),
       ),
@@ -132,9 +157,9 @@ export const upgradeSkuba = async (
       fixable: true,
       annotations: [
         {
-          // package.json as likely skuba version has changed
-          // TODO: locate the "skuba": {} config in the package.json and annotate on the version property
-          path: manifest.path,
+          // skuba.config.ts as likely skuba version has changed
+          // TODO: locate the lintPatchedVersion variable in the config for a better annotation
+          path: skubaConfig.configPath,
           message: `skuba has patches to apply. Run ${packageManager.print.exec} skuba format to run them.`,
         },
       ],
@@ -147,7 +172,7 @@ export const upgradeSkuba = async (
   for (const { apply, description } of patches) {
     const result = await apply({
       mode,
-      manifest,
+      config: skubaConfig,
       packageManager,
     });
     logger.newline();
@@ -162,11 +187,11 @@ export const upgradeSkuba = async (
     }
   }
 
-  (manifest.packageJson.skuba as SkubaPackageJson).version = currentVersion;
+  await updateSkubaConfigVersion({
+    path: skubaConfig.configPath,
+    version: currentVersion,
+  });
 
-  const updatedPackageJson = await formatPackage(manifest.packageJson);
-
-  await writeFile(manifest.path, updatedPackageJson);
   logger.newline();
   logger.plain('skuba update complete.');
   logger.newline();

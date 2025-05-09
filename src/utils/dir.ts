@@ -119,3 +119,22 @@ async function crawl(
 
   return paths;
 }
+
+export const locateNearestFile = async ({
+  cwd,
+  filename,
+}: {
+  cwd: string;
+  filename: string;
+}) => {
+  let currentDir = cwd;
+  while (currentDir !== path.dirname(currentDir)) {
+    const filePath = path.join(currentDir, filename);
+    if (await fs.pathExists(filePath)) {
+      return filePath;
+    }
+    currentDir = path.dirname(currentDir);
+  }
+
+  return null;
+};

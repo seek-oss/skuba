@@ -2,9 +2,9 @@ import path from 'path';
 
 import getPort from 'get-port';
 
+import { loadSkubaConfig } from '../config/load';
 import { parseRunArgs } from '../utils/args';
 import { createExec } from '../utils/exec';
-import { getEntryPointFromManifest } from '../utils/manifest';
 import { isIpPort } from '../utils/validation';
 
 export const start = async () => {
@@ -13,7 +13,7 @@ export const start = async () => {
     getPort(),
   ]);
 
-  args.entryPoint ??= await getEntryPointFromManifest();
+  args.entryPoint ??= (await loadSkubaConfig()).entryPoint;
 
   const execProcess = createExec({
     env: {

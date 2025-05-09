@@ -3,7 +3,10 @@ import fs from 'fs-extra';
 
 jest.mock('find-up');
 jest.mock('fs-extra');
+jest.mock('../../../config/load');
 
+import { loadSkubaConfig } from '../../../config/load';
+import { skubaConfigDefault } from '../../../config/types';
 import { log } from '../../../utils/logging';
 
 import {
@@ -80,50 +83,38 @@ describe('isPatchableServerlessVersion', () => {
 });
 
 describe('isPatchableSkubaType', () => {
-  it('should return true when skuba type is not "package"', async () => {
+  const mockAnEmptyPackageJson = () => {
     jest.mocked(findUp).mockResolvedValueOnce('package.json');
     jest
       .spyOn(fs, 'readFile')
       .mockImplementation()
-      .mockReturnValue(
-        JSON.stringify({
-          skuba: {
-            type: 'application',
-          },
-        }) as never,
-      );
+      .mockReturnValue(JSON.stringify({}) as never);
+  };
+
+  it('should return true when skuba type is not "package"', async () => {
+    mockAnEmptyPackageJson();
+    jest
+      .mocked(loadSkubaConfig)
+      .mockResolvedValue({ ...skubaConfigDefault, projectType: 'application' });
     await expect(isPatchableSkubaType(cwd)).resolves.toBe(true);
   });
   it('should return false when skuba type is "package"', async () => {
-    jest.mocked(findUp).mockResolvedValueOnce('package.json');
+    mockAnEmptyPackageJson();
     jest
-      .spyOn(fs, 'readFile')
-      .mockImplementation()
-      .mockReturnValue(
-        JSON.stringify({
-          skuba: {
-            type: 'package',
-          },
-        }) as never,
-      );
+      .mocked(loadSkubaConfig)
+      .mockResolvedValue({ ...skubaConfigDefault, projectType: 'package' });
     await expect(isPatchableSkubaType(cwd)).resolves.toBe(false);
   });
   it('should return false when skuba type is not found', async () => {
-    jest.mocked(findUp).mockResolvedValueOnce('package.json');
-    jest
-      .spyOn(fs, 'readFile')
-      .mockImplementation()
-      .mockReturnValue(
-        JSON.stringify({
-          skuba: {
-            not_a_type: 'package',
-          },
-        }) as never,
-      );
+    mockAnEmptyPackageJson();
+    jest.mocked(loadSkubaConfig).mockResolvedValue(skubaConfigDefault);
     await expect(isPatchableSkubaType(cwd)).resolves.toBe(false);
   });
   it('should return false when no package.json is not found', async () => {
     jest.mocked(findUp).mockResolvedValueOnce(undefined);
+    jest
+      .mocked(loadSkubaConfig)
+      .mockResolvedValue({ ...skubaConfigDefault, projectType: 'application' });
     await expect(isPatchableSkubaType(cwd)).resolves.toBe(false);
   });
 });

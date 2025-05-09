@@ -2,13 +2,13 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { commitAllChanges } from '../../api/git';
+import { loadSkubaConfig } from '../../config/load';
 import { hasDebugFlag } from '../../utils/args';
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
 import { createLogger, log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';
-import { getConsumerManifest } from '../../utils/manifest';
 import { detectPackageManager } from '../../utils/packageManager';
 import {
   BASE_TEMPLATE_DIR,
@@ -20,7 +20,7 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 import { getConfig } from './getConfig';
 import { initialiseRepo } from './git';
 import type { Input } from './types';
-import { writePackageJson } from './writePackageJson';
+import { writeSkubaConfig } from './writeSkubaConfig';
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {
@@ -71,11 +71,13 @@ export const init = async (args = process.argv.slice(2)) => {
       ? ensureTemplateConfigDeletion(destinationDir)
       : Promise.resolve(),
 
-    writePackageJson({
+    writeSkubaConfig({
+      config: {
+        entryPoint,
+        template: templateName,
+        projectType: type,
+      },
       cwd: destinationDir,
-      entryPoint,
-      template: templateName,
-      type,
       version: skubaVersionInfo.local,
     }),
   ]);
@@ -89,20 +91,16 @@ export const init = async (args = process.argv.slice(2)) => {
   log.newline();
   await initialiseRepo(destinationDir, templateData);
 
-  const [manifest, packageManagerConfig] = await Promise.all([
-    getConsumerManifest(destinationDir),
+  const [skubaConfig, packageManagerConfig] = await Promise.all([
+    loadSkubaConfig(destinationDir),
     detectPackageManager(destinationDir),
   ]);
-
-  if (!manifest) {
-    throw new Error("Repository doesn't contain a package.json file.");
-  }
 
   // Patch in a baseline Renovate preset based on the configured Git owner.
   await tryPatchRenovateConfig({
     mode: 'format',
+    config: skubaConfig,
     dir: destinationDir,
-    manifest,
     packageManager: packageManagerConfig,
   });
 

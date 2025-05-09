@@ -17,7 +17,7 @@ beforeEach(() => vol.reset());
 
 describe('removeYarnIgnoreOptionalFlags', () => {
   const baseArgs = {
-    manifest: {} as PatchConfig['manifest'],
+    config: {} as PatchConfig['config'],
     packageManager: configForPackageManager('yarn'),
   };
 

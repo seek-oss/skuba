@@ -44,11 +44,5 @@
   },
   "publishConfig": {
     "provenance": true
-  },
-  "skuba": {
-    "entryPoint": "index.js",
-    "template": "oss-npm-package",
-    "type": "package",
-    "version": "10.1.0"
   }
 }
