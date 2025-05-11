@@ -117,6 +117,31 @@ await GitHub.putIssueComment({
 });
 ```
 
+Passing a body of `null` will delete the specified comment.
+For safety, this will only work when `internalId` is specified.
+
+```typescript
+import { GitHub } from 'skuba';
+
+// Creates the comment
+await GitHub.putIssueComment({
+  body: 'some comment',
+  internalId: 'some-unique-id',
+});
+
+// Deletes the comment
+await GitHub.putIssueComment({
+  body: null,
+  internalId: 'some-unique-id',
+});
+
+// Skips, as the comment is already deleted
+await GitHub.putIssueComment({
+  body: null,
+  internalId: 'some-unique-id',
+});
+```
+
 ---
 
 ## readFileChanges

@@ -38,9 +38,9 @@
     "eslint": ">=9.11.1",
     "typescript": ">=5.5.4"
   },
-  "packageManager": "pnpm@10.7.1",
+  "packageManager": "pnpm@10.10.0",
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=20.9.0"
   },
   "publishConfig": {
     "provenance": true

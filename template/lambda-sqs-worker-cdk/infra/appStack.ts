@@ -1,3 +1,4 @@
+import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
 import { LambdaDeployment } from '@seek/aws-codedeploy-infra';
 import {
   Duration,
@@ -103,6 +104,12 @@ export class AppStack extends Stack {
         // https://nodejs.org/api/cli.html#cli_node_options_options
         NODE_OPTIONS: '--enable-source-maps',
         DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
+
+        ...(containsSkipDirective(process.env.BUILDKITE_MESSAGE, 'smoke')
+          ? {
+              SKIP_SMOKE: 'true',
+            }
+          : {}),
       },
       // https://github.com/aws/aws-cdk/issues/28237
       // This forces the lambda to be updated on every deployment

@@ -3,23 +3,15 @@ agents:
 
 configs:
   plugins:
-    - &aws-sm
-      seek-oss/aws-sm#v2.3.3:
-        env:
-          NPM_READ_TOKEN: arn:aws:secretsmanager:ap-southeast-2:987872074697:secret:npm/npm-read-token
-
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v2.2.1: &docker-ecr-cache-defaults
         cache-on:
           - package.json#.packageManager
           - pnpm-lock.yaml
           - pnpm-workspace.yaml
-        secrets: id=npm,src=/tmp/.npmrc
-
-    - &private-npm
-      seek-oss/private-npm#v1.3.0:
-        env: NPM_READ_TOKEN
-        output-path: /tmp/
+        secrets:
+          - id=npm,src=/var/lib/buildkite-agent/.npmrc
+          - NPM_TOKEN
 
   base-steps:
     - &deploy
@@ -30,8 +22,6 @@ configs:
         - pnpm run deploy
       concurrency: 1
       plugins:
-        - *aws-sm
-        - *private-npm
         - *docker-ecr-cache
         - docker-compose#v5.7.0:
             dependencies: false
@@ -59,9 +49,8 @@ steps:
       - pnpm lint
     env:
       GET_GITHUB_TOKEN: please
+      GET_NPM_TOKEN: please
     plugins:
-      - *aws-sm
-      - *private-npm
       - *docker-ecr-cache
       - docker-compose#v5.7.0:
           run: app
@@ -73,11 +62,11 @@ steps:
   - agents:
       queue: <%- devBuildkiteQueueName %>
     branches: '!renovate-*'
+    env:
+      GET_NPM_TOKEN: please
     label: 🧖‍♀️ Warm Dev
     command: ':'
     plugins:
-      - *aws-sm
-      - *private-npm
       - seek-oss/docker-ecr-cache#v2.2.1:
           <<: *docker-ecr-cache-defaults
           skip-pull-from-cache: true
@@ -92,6 +81,7 @@ steps:
       queue: <%- devBuildkiteQueueName %>
     env:
       ENVIRONMENT: dev
+      GET_NPM_TOKEN: please
     label: 🤞 Deploy Dev
     concurrency_group: '<%- repoName %>/deploy/dev'
     key: deploy-dev
@@ -99,6 +89,7 @@ steps:
   - <<: *deploy
     env:
       ENVIRONMENT: prod
+      GET_NPM_TOKEN: please
     label: 🚀 Deploy Prod
     branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
     concurrency_group: '<%- repoName %>/deploy/prod'
