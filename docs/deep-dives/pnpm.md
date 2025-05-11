@@ -102,7 +102,7 @@ node_modules
 
 This migration guide assumes that your project was scaffolded with a **skuba** template.
 
-1. Install **skuba** 7.4.0 or greater
+1. Install **skuba** 11.0.0 or greater.
 
 2. Add a `packageManager` key to `package.json`
 
