@@ -59,9 +59,9 @@ node_modules
             └── other-dep -> <store>/other-dep
 ```
 
-### .npmrc
+### pnpm-workspace.yaml
 
-pnpm allows us to specify dependencies to hoist via command line or [`.npmrc`].
+pnpm allows us to specify dependencies to hoist via command line or [`pnpm-workspace.yaml`].
 The number of package patterns we need to hoist may fluctuate over time,
 so specifying hoist patterns via command line would be difficult to maintain.
 
@@ -118,7 +118,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
    (Check the [install guide] for alternate methods)
 
-4. Create [`pnpm-workspace.yaml`](https://pnpm.io/pnpm-workspace_yaml)
+4. Create [`pnpm-workspace.yaml`]
 
    Skip this step if your project does not use Yarn workspaces.
 
@@ -137,7 +137,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 6. Run `pnpm skuba format`
 
-   This will synthesise managed hoist patterns into `.npmrc`.
+   This will synthesise managed hoist patterns into `pnpm-workspace.yaml`.
 
 7. Include additional hoisting settings in `pnpm-workspace.yaml` for Serverless
 
@@ -183,9 +183,6 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    Run `pnpm install foo` to resolve this error.
 
 10. Modify `Dockerfile` or `Dockerfile.dev-deps`
-
-    Your build pipeline may have previously mounted an ephemeral `.npmrc` with an auth token at `/workdir`.
-    This needs to be mounted elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
 
     <!-- prettier-ignore -->
     ```diff
@@ -272,14 +269,11 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 12. Modify plugins in `.buildkite/pipeline.yml`
 
-    Your build pipeline may have previously output an ephemeral `.npmrc` with an auth token on the build agent.
-    This needs to be output elsewhere to avoid overwriting the new pnpm configuration stored in `.npmrc`.
+    Following the Dockerfile changes, apply the analogous changes to the Buildkite pipeline.
 
-    Swap out caching on `yarn.lock` for `.npmrc` and `pnpm-lock.yaml` at the same time.
+    We are using an updated caching syntax on `package.json` which caches only on the `packageManager` key. This requires the [seek-oss/docker-ecr-cache](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin) plugin version to be >= 2.2.0.
 
-    We are also using an updated caching syntax on `package.json` which caches only on the `packageManager` key. This requires the [seek-oss/docker-ecr-cache](https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin) plugin version to be >= 2.2.0.
-
-    If using `private-npm`:
+    If using the older `private-npm` setup:
 
     ```diff
       seek-oss/private-npm#v1.3.0:
@@ -363,7 +357,7 @@ If you run into an issue that is not documented here,
 please [start a discussion] or [contribute a change] so others can benefit from your findings.
 This page may be [edited on GitHub].
 
-[`.npmrc`]: https://pnpm.io/npmrc
+[`pnpm-workspace.yaml`]: https://pnpm.io/pnpm-workspace_yaml
 [`Dockerfile.dev-deps`]: https://github.com/seek-oss/skuba/blob/main/template/koa-rest-api/Dockerfile.dev-deps
 [`pnpm fetch`]: https://pnpm.io/cli/fetch
 [bind mount]: https://docs.docker.com/engine/reference/builder/#run---mounttypebind
