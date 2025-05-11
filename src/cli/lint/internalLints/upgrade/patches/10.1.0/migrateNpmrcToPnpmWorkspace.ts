@@ -64,7 +64,7 @@ const fixDockerfiles = async () => {
     fileNames.map(async (fileName) => {
       const contents = await fs.readFile(fileName, 'utf8');
       const patched = contents.replaceAll(
-        /--mount=type=bind,source=.npmrc,target=.npmrc/g,
+        '--mount=type=bind,source=.npmrc,target=.npmrc',
         '--mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml',
       );
 
