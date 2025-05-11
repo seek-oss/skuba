@@ -14,5 +14,4 @@ As part of this change:
 
 **skuba** may not be able to correctly migrate all projects. Check your project for changes that may have been missed, review and test the modified code as appropriate before releasing to production, and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
 
-**Important**: Monorepos with setups which do not run `skuba lint` in the workspace root will need manual action for this change.
-Either apply the changes by hand, or run `skuba format` locally in the workspace root to apply the changes.
+**Important**: Monorepos with setups which do not run `skuba lint` in the workspace root will need manual action for this change. Either apply the changes by hand, or run `skuba format` locally in the workspace root to apply the changes.
