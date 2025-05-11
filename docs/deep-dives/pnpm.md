@@ -314,7 +314,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
           - id=npm,src=/var/lib/buildkite-agent/.npmrc
           - NPM_TOKEN
     ```
-    
+
 13. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
