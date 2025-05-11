@@ -32,4 +32,4 @@ yarn-error.log
 /packages/**/*/lib*
 
 # otherwise changesets break:
-/packages/**/.npmrc
+/packages/**/pnpm-workspace.yaml
