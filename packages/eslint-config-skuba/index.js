@@ -30,7 +30,7 @@ module.exports = defineConfig([
   ),
   {
     name: 'skuba/base',
-    
+
     extends: [base],
   },
   {
