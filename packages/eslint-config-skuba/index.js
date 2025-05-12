@@ -1,3 +1,4 @@
+const { defineConfig, globalIgnores } = require('eslint/config');
 const base = require('eslint-config-seek/base');
 const extensions = require('eslint-config-seek/extensions');
 const eslintPluginYml = require('eslint-plugin-yml');
@@ -5,10 +6,9 @@ const tseslint = require('typescript-eslint');
 
 const { js: jsExtensions, ts: tsExtensions } = extensions;
 
-module.exports = [
-  {
-    name: 'skuba/ignores',
-    ignores: [
+module.exports = defineConfig([
+  globalIgnores(
+    [
       // Gantry resource files support non-standard syntax (Go templating)
       '**/.gantry/**/*.yaml',
       '**/.gantry/**/*.yml',
@@ -26,8 +26,13 @@ module.exports = [
       'lib*/',
       'tmp*/',
     ],
+    'skuba/ignores',
+  ),
+  {
+    name: 'skuba/base',
+    
+    extends: [base],
   },
-  ...base,
   {
     name: 'skuba/javascript',
     rules: {
@@ -89,17 +94,14 @@ module.exports = [
       ],
     },
   },
-  ...[
-    ...tseslint.configs.recommendedTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked,
-  ].map(({ plugins, ...config }) => ({
-    ...config,
-    files: [`**/*.{${tsExtensions}}`],
-  })),
   {
     name: 'skuba/typescript',
     files: [`**/*.{${tsExtensions}}`],
 
+    extends: [
+      tseslint.configs.recommendedTypeChecked,
+      tseslint.configs.stylisticTypeChecked,
+    ],
     rules: {
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
@@ -121,6 +123,7 @@ module.exports = [
     },
   },
   {
+    name: 'skuba/javascript-overrides',
     files: [`**/*.{${jsExtensions}}`],
 
     rules: {
@@ -172,8 +175,10 @@ module.exports = [
       ],
     },
   },
-  ...eslintPluginYml.configs['flat/prettier'].map((config) => ({
-    ...config,
+  {
+    name: 'skuba/yaml',
     files: ['**/*.{yaml,yml}'],
-  })),
-];
+
+    extends: [eslintPluginYml.configs['flat/prettier']],
+  },
+]);
