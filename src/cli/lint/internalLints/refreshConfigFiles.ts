@@ -4,8 +4,11 @@ import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 import { writeFile } from 'fs-extra';
 
 import { Git } from '../../..';
+import {
+  findCurrentWorkspaceProjectRoot,
+  findWorkspaceRoot,
+} from '../../../utils/dir';
 import type { Logger } from '../../../utils/logging';
-import { NPMRC_LINES, hasNpmrcSecret } from '../../../utils/npmrc';
 import {
   type PackageManagerConfig,
   detectPackageManager,
@@ -16,56 +19,50 @@ import { createDestinationFileReader } from '../../configure/analysis/project';
 import { mergeWithConfigFile } from '../../configure/processing/configFile';
 import type { InternalLintResult } from '../internal';
 
-const ensureNoAuthToken = (fileContents: string) =>
-  fileContents
-    .split('\n')
-    .filter((line) => !hasNpmrcSecret(line))
-    .join('\n');
+type ConditionOptions = {
+  packageManager: PackageManagerConfig;
+  isInWorkspaceRoot: boolean;
+};
 
 type RefreshableConfigFile = {
   name: string;
-  type: 'ignore' | 'npmrc';
+  type: 'ignore' | 'pnpm-workspace';
   additionalMapping?: (
     s: string,
     packageManager: PackageManagerConfig,
   ) => string;
-  if?: (packageManager: PackageManagerConfig) => boolean;
+  if?: (options: ConditionOptions) => boolean;
 };
 
-const removeRedundantNpmrc = (contents: string) => {
-  const npmrcLines = contents
-    .split('\n')
-    .filter((line) => NPMRC_LINES.includes(line.trim()));
+const OLD_IGNORE_WARNING = `# Ignore .npmrc. This is no longer managed by skuba as pnpm projects use a managed .npmrc.
+# IMPORTANT: if migrating to pnpm, remove this line and add an .npmrc IN THE SAME COMMIT.
+# You can use \`skuba format\` to generate the file or otherwise commit an empty file.
+# Doing so will conflict with a local .npmrc and make it more difficult to unintentionally commit auth secrets.
+.npmrc
+`;
 
-  // If we're only left with !.npmrc line we can remove it
-  // TODO: Consider if we should generalise this
-  if (npmrcLines.length > 0 && npmrcLines.every((line) => line.includes('!'))) {
-    return contents
-      .split('\n')
-      .filter((line) => !NPMRC_LINES.includes(line.trim()))
-      .join('\n');
-  }
-  return contents;
-};
+const removeOldWarning = (contents: string) =>
+  contents.includes(OLD_IGNORE_WARNING)
+    ? `${contents.replace(OLD_IGNORE_WARNING, '').trim()}\n`
+    : contents;
 
 export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   {
     name: '.gitignore',
     type: 'ignore',
-    additionalMapping: removeRedundantNpmrc,
+    additionalMapping: removeOldWarning,
   },
   { name: '.prettierignore', type: 'ignore' },
   {
-    name: '.npmrc',
-    type: 'npmrc',
-    additionalMapping: ensureNoAuthToken,
-    if: (packageManager: PackageManagerConfig) =>
-      packageManager.command === 'pnpm',
+    name: 'pnpm-workspace.yaml',
+    type: 'pnpm-workspace',
+    if: ({ packageManager, isInWorkspaceRoot }) =>
+      isInWorkspaceRoot && packageManager.command === 'pnpm',
   },
   {
     name: '.dockerignore',
     type: 'ignore',
-    additionalMapping: removeRedundantNpmrc,
+    additionalMapping: removeOldWarning,
   },
 ];
 
@@ -73,10 +70,13 @@ export const refreshConfigFiles = async (
   mode: 'format' | 'lint',
   logger: Logger,
 ) => {
-  const [manifest, gitRoot] = await Promise.all([
-    getDestinationManifest(),
-    Git.findRoot({ dir: process.cwd() }),
-  ]);
+  const [manifest, gitRoot, workspaceRoot, currentWorkspaceProjectRoot] =
+    await Promise.all([
+      getDestinationManifest(),
+      Git.findRoot({ dir: process.cwd() }),
+      findWorkspaceRoot(),
+      findCurrentWorkspaceProjectRoot(),
+    ]);
 
   const destinationRoot = path.dirname(manifest.path);
 
@@ -89,9 +89,9 @@ export const refreshConfigFiles = async (
       additionalMapping = (s) => s,
       if: condition = () => true,
     }: RefreshableConfigFile,
-    packageManager: PackageManagerConfig,
+    conditionOptions: ConditionOptions,
   ) => {
-    if (!condition(packageManager)) {
+    if (!condition(conditionOptions)) {
       return { needsChange: false };
     }
 
@@ -154,7 +154,10 @@ export const refreshConfigFiles = async (
 
   const results = await Promise.all(
     REFRESHABLE_CONFIG_FILES.map((conf) =>
-      refreshConfigFile(conf, packageManager),
+      refreshConfigFile(conf, {
+        packageManager,
+        isInWorkspaceRoot: workspaceRoot === currentWorkspaceProjectRoot,
+      }),
     ),
   );
 

@@ -1,4 +1,6 @@
 # managed by skuba
+.npmrc
+
 .idea/*
 .vscode/*
 !.vscode/extensions.json
@@ -28,6 +30,3 @@ yarn-error.log
 /template/**/pnpm-lock.yaml
 /template/**/yarn.lock
 /packages/**/*/lib*
-
-# otherwise changesets break:
-/packages/**/.npmrc

@@ -6,9 +6,9 @@ configs:
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v2.2.1: &docker-ecr-cache-defaults
         cache-on:
-          - .npmrc
           - package.json#.packageManager
           - pnpm-lock.yaml
+          - pnpm-workspace.yaml
         dockerfile: Dockerfile.dev-deps
         secrets:
           - id=npm,src=/var/lib/buildkite-agent/.npmrc
