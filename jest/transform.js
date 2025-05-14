@@ -38,7 +38,11 @@ const tsconfig = BROKEN_MODULE_RESOLUTIONS.has(
   ? { tsconfig: { moduleResolution: 'Node' } }
   : undefined;
 
-// Rewrite `ts-jest` transformations using our resolved `TS_JEST_PATH`.
+/**
+ * Rewrite `ts-jest` transformations using our resolved `TS_JEST_PATH`.
+ *
+ * @type {import ('@jest/types').Config.InitialOptions['transform']}
+ */
 module.exports.transform = Object.fromEntries(
   Object.entries(defaults.transform).map(([key, value]) => {
     if (typeof value === 'string') {
