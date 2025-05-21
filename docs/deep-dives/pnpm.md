@@ -328,6 +328,13 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 14. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
 
+    For example, you may have the lockfile listed in `.github/CODEOWNERS`:
+
+    ```diff
+    - yarn.lock
+    + pnpm-lock.yaml
+    ```
+
 ## FAQ
 
 **Q:** I'm running into `ERR_PNPM_CANNOT_DEPLOY  A deploy is only possible from inside a workspace`
