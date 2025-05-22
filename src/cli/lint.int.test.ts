@@ -4,14 +4,14 @@ import stream from 'stream';
 import { inspect } from 'util';
 
 import fs, { copy } from 'fs-extra';
-import git from 'isomorphic-git';
+import type Git from 'isomorphic-git' with { 'resolution-mode': 'import' };
 
 import { Buildkite } from '..';
 import type { Logger } from '../utils/logging';
 import { getSkubaVersion } from '../utils/version';
 
-import { lint } from './lint';
 import { refreshConfigFiles } from './lint/internalLints/refreshConfigFiles';
+import { lint } from './lint/lint';
 
 jest.setTimeout(30_000);
 
@@ -21,6 +21,7 @@ const buildkiteAnnotate = jest.spyOn(Buildkite, 'annotate').mockResolvedValue();
 
 const stdoutMock = jest.fn();
 
+const git = jest.requireActual<typeof Git>('isomorphic-git');
 jest
   .spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));

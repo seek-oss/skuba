@@ -1,6 +1,7 @@
-import type { FileChanges } from '@octokit/graphql-schema';
+import type { FileChanges } from '@octokit/graphql-schema' with { 'resolution-mode': 'import' };
 import fs from 'fs-extra';
-import git, { type ReadCommitResult } from 'isomorphic-git';
+import type { ReadCommitResult } from 'isomorphic-git' with { 'resolution-mode': 'import' };
+import type Git from 'isomorphic-git' with { 'resolution-mode': 'import' };
 
 import { apiTokenFromEnvironment } from './environment';
 import { graphql } from './octokit';
@@ -14,6 +15,8 @@ jest.mock('./environment');
 jest.mock('./octokit');
 jest.mock('fs-extra');
 jest.mock('isomorphic-git');
+
+const git = jest.requireMock<typeof Git>('isomorphic-git');
 
 beforeAll(() => {
   process.env.BUILDKITE_COMMIT = 'commit-id';

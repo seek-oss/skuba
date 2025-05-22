@@ -1,6 +1,6 @@
 import path from 'path';
 
-import type { CreateCommitOnBranchInput } from '@octokit/graphql-schema';
+import type { CreateCommitOnBranchInput } from '@octokit/graphql-schema' with { 'resolution-mode': 'import' };
 import fs from 'fs-extra';
 
 import * as Git from '../git';

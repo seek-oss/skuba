@@ -1,8 +1,10 @@
-import git from 'isomorphic-git';
+import type Git from 'isomorphic-git' with { 'resolution-mode': 'import' };
 
 import { getHeadCommitId, getHeadCommitMessage } from './log';
 
 jest.mock('isomorphic-git');
+
+const git = jest.requireMock<typeof Git>('isomorphic-git');
 
 const dir = process.cwd();
 

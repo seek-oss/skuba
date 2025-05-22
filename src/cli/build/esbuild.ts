@@ -47,7 +47,7 @@ export const esbuild = async (
   const start = process.hrtime.bigint();
 
   // TODO: support `bundle`, `minify`, `splitting`, `treeShaking`
-  const bundle = false;
+  const bundle = true;
 
   await build({
     bundle,
@@ -57,9 +57,11 @@ export const esbuild = async (
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,
     platform:
-      compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
+      compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs ||
+      compilerOptions.moduleResolution === ModuleResolutionKind.Node16
         ? 'node'
         : undefined,
+    packages: 'external',
     plugins: bundle
       ? []
       : [

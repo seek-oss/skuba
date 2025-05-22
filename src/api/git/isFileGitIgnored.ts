@@ -1,17 +1,18 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
-export const isFileGitIgnored = ({
+export const isFileGitIgnored = async ({
   absolutePath,
   gitRoot,
 }: {
   absolutePath: string;
   gitRoot: string;
-}): Promise<boolean> =>
-  git.isIgnored({
+}): Promise<boolean> => {
+  const git = await import('isomorphic-git');
+  return git.isIgnored({
     dir: gitRoot,
     filepath: path.relative(gitRoot, absolutePath),
     fs,
   });
+};

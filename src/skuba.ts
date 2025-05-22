@@ -14,10 +14,10 @@ import path from 'path';
 
 import { parseProcessArgs } from './utils/args';
 import {
-  COMMAND_DIR,
   COMMAND_SET,
   type Command,
   commandToModule,
+  getCommandDir,
 } from './utils/command';
 import { isCiEnv } from './utils/env';
 import { handleCliError } from './utils/error';
@@ -36,7 +36,7 @@ const skuba = async () => {
 
     /* eslint-disable @typescript-eslint/no-require-imports */
     const commandModule = require(
-      path.join(COMMAND_DIR, moduleName),
+      path.join(getCommandDir(), moduleName, `${moduleName}.js`),
     ) as unknown;
 
     if (!hasProp(commandModule, moduleName)) {

@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
 interface FindRootParameters {
   dir: string;
@@ -12,6 +11,7 @@ interface FindRootParameters {
 export const findRoot = async ({
   dir,
 }: FindRootParameters): Promise<string | null> => {
+  const git = await import('isomorphic-git');
   try {
     return await git.findRoot({ filepath: dir, fs });
   } catch (err) {

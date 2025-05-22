@@ -1,4 +1,3 @@
-import git from 'isomorphic-git';
 import memfs, { fs, vol } from 'memfs';
 
 import newGit from '../../../integration/git/new.json';
@@ -17,6 +16,8 @@ const dir = './';
 const newFileName = 'newFile';
 
 it('should return files which were added to the workdir', async () => {
+  const git = await import('isomorphic-git');
+
   await git.commit({
     fs,
     dir,
@@ -31,6 +32,8 @@ it('should return files which were added to the workdir', async () => {
 });
 
 it('should return files which were modified', async () => {
+  const git = await import('isomorphic-git');
+
   await fs.promises.writeFile(newFileName, '');
   await git.add({ fs, dir, filepath: newFileName });
   await git.commit({
@@ -47,6 +50,8 @@ it('should return files which were modified', async () => {
 });
 
 it('should return files which were deleted', async () => {
+  const git = await import('isomorphic-git');
+
   await fs.promises.writeFile(newFileName, '');
   await git.add({ fs, dir, filepath: newFileName });
   await git.commit({
@@ -63,6 +68,8 @@ it('should return files which were deleted', async () => {
 });
 
 it('should exclude file changes based on ignore parameter', async () => {
+  const git = await import('isomorphic-git');
+
   await Promise.all([
     fs.promises.writeFile('a', '1'),
     fs.promises.writeFile('b', '1'),
@@ -111,6 +118,8 @@ it('should exclude file changes based on ignore parameter', async () => {
 });
 
 it('should return an empty array if no files were changed', async () => {
+  const git = await import('isomorphic-git');
+
   await fs.promises.writeFile(newFileName, '');
   await git.add({ fs, dir, filepath: newFileName });
   await git.commit({

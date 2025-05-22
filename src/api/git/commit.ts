@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
 export interface Identity {
   email?: string;
@@ -21,11 +20,13 @@ export const commit = async ({
   committer = { name: 'skuba' },
   dir,
   message,
-}: CommitParameters): Promise<string> =>
-  git.commit({
+}: CommitParameters): Promise<string> => {
+  const git = await import('isomorphic-git');
+  return git.commit({
     author,
     committer,
     dir,
     fs,
     message,
   });
+};

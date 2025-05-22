@@ -1,10 +1,12 @@
-import git from 'isomorphic-git';
+import type Git from 'isomorphic-git' with { 'resolution-mode': 'import' };
 
 import { createRestClient } from './octokit';
 import { getPullRequestNumber } from './pullRequest';
 
 jest.mock('isomorphic-git');
 jest.mock('./octokit');
+
+const git = jest.requireMock<typeof Git>('isomorphic-git');
 
 const mockClient = {
   repos: {

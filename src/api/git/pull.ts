@@ -1,6 +1,4 @@
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
-import http from 'isomorphic-git/http/node';
 
 import { apiTokenFromEnvironment } from '../github/environment';
 
@@ -58,6 +56,10 @@ export const fastForwardBranch = async ({
     owner,
   )}/${encodeURIComponent(repo)}`;
 
+  const [git, http] = await Promise.all([
+    import('isomorphic-git'),
+    import('isomorphic-git/http/node'),
+  ]);
   return git.fastForward({
     onAuth: () => ({
       username: 'x-access-token',
@@ -65,7 +67,7 @@ export const fastForwardBranch = async ({
     }),
     dir,
     fs,
-    http,
+    http: http.default,
     ref,
     remote,
     remoteRef,

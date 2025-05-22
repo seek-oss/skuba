@@ -1,7 +1,6 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 import simpleGit from 'simple-git';
 
 import * as Git from '../../api/git';
@@ -17,6 +16,7 @@ export const initialiseRepo = async (
   dir: string,
   { orgName, repoName, defaultBranch }: GitHubProject,
 ) => {
+  const git = await import('isomorphic-git');
   await git.init({
     defaultBranch,
     dir,

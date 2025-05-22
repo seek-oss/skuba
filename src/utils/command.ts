@@ -9,7 +9,14 @@ export const COMMAND_ALIASES: Record<string, Command> = {
   '--version': 'version',
 };
 
-export const COMMAND_DIR = path.join(__dirname, '..', 'cli');
+export const getCommandDir = () => {
+  if (__filename.endsWith('.ts')) {
+    return path.join(__filename, '..', '..', 'cli');
+  }
+  return path.join(__filename, '..', 'cli');
+};
+
+path.join(__filename, '..', 'cli');
 
 export const COMMAND_LIST = [
   'build',

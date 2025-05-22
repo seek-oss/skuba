@@ -1,6 +1,5 @@
 import path from 'path';
 
-import git from 'isomorphic-git';
 import memfs, { fs, vol } from 'memfs';
 
 import newGit from '../../../integration/git/new.json';
@@ -20,6 +19,7 @@ const newFileName = 'newFile';
 const newFileName2 = 'newFile2';
 
 it('should stage and commit all the new files in the working directory', async () => {
+  const git = await import('isomorphic-git');
   const expectStatuses = (statuses: string[]) =>
     expect(
       Promise.all([
@@ -49,6 +49,8 @@ it('should stage and commit all the new files in the working directory', async (
 });
 
 it('should stage and commit removed files', async () => {
+  const git = await import('isomorphic-git');
+
   await Promise.all([
     fs.promises.writeFile(newFileName, ''),
     fs.promises.writeFile(newFileName2, ''),
@@ -88,6 +90,8 @@ it('should stage and commit removed files', async () => {
 });
 
 it('should handle a nested working directory', async () => {
+  const git = await import('isomorphic-git');
+
   const nestedDir = path.join(dir, '/packages/package');
 
   await fs.promises.mkdir(nestedDir, { recursive: true });
@@ -124,6 +128,8 @@ it('should handle a nested working directory', async () => {
 });
 
 it('should no-op on clean directory', async () => {
+  const git = await import('isomorphic-git');
+
   await expect(
     commitAllChanges({
       dir,
@@ -141,6 +147,8 @@ it('should no-op on clean directory', async () => {
 });
 
 it('should work in a directory which is not relative with a gitIgnore file', async () => {
+  const git = await import('isomorphic-git');
+
   const gitIgnoreFilename = '.gitignore';
   const gitIgnoreContent = `/${newFileName2}`;
 

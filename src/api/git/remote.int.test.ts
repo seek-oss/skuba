@@ -1,4 +1,3 @@
-import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 
 import { getOwnerAndRepo } from './remote';
@@ -17,6 +16,8 @@ beforeEach(async () => {
   vol.fromJSON({
     '.git': null,
   });
+
+  const git = await import('isomorphic-git');
 
   await git.init({
     dir: '.',
