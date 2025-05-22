@@ -50,7 +50,6 @@ export const esbuild = async (
   const bundle = true;
 
   await build({
-    bundle,
     entryPoints,
     format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
@@ -61,7 +60,6 @@ export const esbuild = async (
       compilerOptions.moduleResolution === ModuleResolutionKind.Node16
         ? 'node'
         : undefined,
-    packages: 'external',
     plugins: bundle
       ? []
       : [
