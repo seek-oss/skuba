@@ -150,10 +150,20 @@ export const readFileChanges = async (
     return path.join(pathDir, filePath);
   };
 
+  const toRootPath = (filePath: string) => {
+    if (!gitRoot) {
+      return filePath;
+    }
+
+    const pathDir = path.resolve(gitRoot, dir);
+
+    return path.join(pathDir, filePath);
+  };
+
   const additions: FileAddition[] = await Promise.all(
     added.map(async (filePath) => ({
       path: toGitHubPath(filePath),
-      contents: await fs.promises.readFile(filePath, {
+      contents: await fs.promises.readFile(toRootPath(filePath), {
         encoding: 'base64',
       }),
     })),
