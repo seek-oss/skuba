@@ -105,7 +105,9 @@ const forceUpgradeToPnpm10 = async () => {
         contents,
       );
 
-      if (!packageManagerMatch) return;
+      if (!packageManagerMatch) {
+        return;
+      }
 
       const currentVersion = packageManagerMatch[1] ?? '';
       const majorVersion = parseInt(currentVersion.split('.')?.[0] ?? '0', 10);
