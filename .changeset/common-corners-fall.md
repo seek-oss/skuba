@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-GitHub: Fix Node16 moduleResolution type compatibility
+GitHub: Fix `Node16` module resolution type compatibility
