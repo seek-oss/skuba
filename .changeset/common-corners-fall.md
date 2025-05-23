@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-lint,test: Fix `Node16` module resolution compatibility
+lint, test: Fix `Node16` module resolution compatibility
