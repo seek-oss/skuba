@@ -45,19 +45,26 @@ export const commitAllChanges = async ({
   }
 
   await Promise.all(
-    changedFiles.map((file) =>
-      file.state === 'deleted'
+    changedFiles.map(async (file) => {
+      const relativePath = path.relative(dir, file.path);
+
+      // Skipping file outside working directory, see https://github.com/seek-oss/skuba/pull/1269#discussion_r1335308704
+      if (relativePath.startsWith('..')) {
+        return;
+      }
+
+      return file.state === 'deleted'
         ? git.remove({
             fs,
             dir: gitRoot,
-            filepath: path.relative(gitRoot, path.join(dir, file.path)),
+            filepath: file.path,
           })
         : git.add({
             fs,
             dir: gitRoot,
-            filepath: path.relative(gitRoot, path.join(dir, file.path)),
-          }),
-    ),
+            filepath: file.path,
+          });
+    }),
   );
 
   return commit({

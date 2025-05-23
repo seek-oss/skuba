@@ -155,9 +155,9 @@ describe('readFileChanges', () => {
     jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
 
     const result = await readFileChanges('/path/to/repo/packages/package', [
-      { path: 'some-path', state: 'added' },
-      { path: 'another-path', state: 'modified' },
-      { path: 'delete-path', state: 'deleted' },
+      { path: 'packages/package/some-path', state: 'added' },
+      { path: 'packages/package/another-path', state: 'modified' },
+      { path: 'packages/package/delete-path', state: 'deleted' },
     ]);
 
     const expectedFileChanges: FileChanges = {
@@ -168,12 +168,18 @@ describe('readFileChanges', () => {
       deletions: [{ path: 'packages/package/delete-path' }],
     };
 
-    expect(fs.promises.readFile).toHaveBeenCalledWith('some-path', {
-      encoding: 'base64',
-    });
-    expect(fs.promises.readFile).toHaveBeenCalledWith('another-path', {
-      encoding: 'base64',
-    });
+    expect(fs.promises.readFile).toHaveBeenCalledWith(
+      '/path/to/repo/packages/package/some-path',
+      {
+        encoding: 'base64',
+      },
+    );
+    expect(fs.promises.readFile).toHaveBeenCalledWith(
+      '/path/to/repo/packages/package/another-path',
+      {
+        encoding: 'base64',
+      },
+    );
     expect(result).toStrictEqual(expectedFileChanges);
   });
 });

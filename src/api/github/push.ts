@@ -140,27 +140,25 @@ export const readFileChanges = async (
 
   const gitRoot = await Git.findRoot({ dir });
 
-  const toGitHubPath = (filePath: string) => {
+  const toRootPath = (filePath: string) => {
     if (!gitRoot) {
       return filePath;
     }
 
-    const pathDir = path.relative(gitRoot, dir);
-
-    return path.join(pathDir, filePath);
+    return path.resolve(gitRoot, filePath);
   };
 
   const additions: FileAddition[] = await Promise.all(
     added.map(async (filePath) => ({
-      path: toGitHubPath(filePath),
-      contents: await fs.promises.readFile(filePath, {
+      path: filePath,
+      contents: await fs.promises.readFile(toRootPath(filePath), {
         encoding: 'base64',
       }),
     })),
   );
 
   const deletions: FileDeletion[] = deleted.map((filePath) => ({
-    path: toGitHubPath(filePath),
+    path: filePath,
   }));
 
   return {
