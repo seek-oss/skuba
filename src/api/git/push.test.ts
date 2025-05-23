@@ -1,8 +1,10 @@
-import git from 'isomorphic-git';
+import type Git from 'isomorphic-git' with { 'resolution-mode': 'import' };
 
 import { push } from './push';
 
 jest.mock('isomorphic-git');
+
+const git = jest.requireMock<typeof Git>('isomorphic-git');
 
 afterEach(jest.resetAllMocks);
 

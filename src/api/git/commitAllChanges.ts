@@ -1,7 +1,6 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
 import { type Identity, commit } from './commit';
 import { findRoot } from './findRoot';
@@ -44,6 +43,7 @@ export const commitAllChanges = async ({
     throw new Error(`Could not find Git root from directory: ${dir}`);
   }
 
+  const git = await import('isomorphic-git');
   await Promise.all(
     changedFiles.map((file) =>
       file.state === 'deleted'

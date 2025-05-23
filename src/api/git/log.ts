@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
 interface GetHeadCommitParameters {
   dir: string;
@@ -24,6 +23,7 @@ export const getHeadCommitId = async ({
     return oidFromEnv;
   }
 
+  const git = await import('isomorphic-git');
   const [headResult] = await git.log({ depth: 1, dir, fs });
 
   if (!headResult) {
@@ -49,6 +49,7 @@ export const getHeadCommitMessage = async ({
     return messageFromEnv;
   }
 
+  const git = await import('isomorphic-git');
   const [headResult] = await git.log({ depth: 1, dir, fs });
 
   if (!headResult) {

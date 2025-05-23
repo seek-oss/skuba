@@ -2,7 +2,8 @@
   "compilerOptions": {
     "incremental": true,
     "isolatedModules": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node16",
+    "module": "Node16",
     "resolveJsonModule": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false

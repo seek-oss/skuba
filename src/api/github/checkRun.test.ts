@@ -1,5 +1,6 @@
 import type { Endpoints } from '@octokit/types';
-import git, { type ReadCommitResult } from 'isomorphic-git';
+import type Git from 'isomorphic-git' with { 'resolution-mode': 'import' };
+import type { ReadCommitResult } from 'isomorphic-git' with { 'resolution-mode': 'import' };
 
 import type * as GitHub from '../github';
 
@@ -11,6 +12,8 @@ type CreateCheckRunResponse =
 
 jest.mock('isomorphic-git');
 jest.mock('./octokit');
+
+const git = jest.requireMock<typeof Git>('isomorphic-git');
 
 const mockClient = {
   checks: {

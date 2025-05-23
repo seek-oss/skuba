@@ -1,7 +1,6 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
 import { FILEPATH, STAGE, UNMODIFIED, WORKDIR } from './statusMatrix';
 
@@ -28,6 +27,7 @@ export const reset = async ({
   );
 
   if (hard) {
+    const git = await import('isomorphic-git');
     const allFiles = await git.statusMatrix({ dir, fs });
     // Get all files which have been modified or staged - does not include new untracked files or deleted files
     const modifiedFiles = allFiles

@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
 import { crawlDirectory } from '../../../utils/dir';
 import { log } from '../../../utils/logging';
@@ -8,6 +7,8 @@ export const auditWorkingTree = async (dir: string) => {
   const filepaths = await crawlDirectory(dir);
 
   let anyFailed = false;
+
+  const git = await import('isomorphic-git');
 
   const statuses = await Promise.all(
     filepaths.map(async (filepath) => {

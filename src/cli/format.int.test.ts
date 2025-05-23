@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import path from 'path';
 
 import fs, { copy } from 'fs-extra';
-import git from 'isomorphic-git';
+import type Git from 'isomorphic-git' with { 'resolution-mode': 'import' };
 import { diff } from 'jest-diff';
 
 import { format } from './format';
@@ -14,6 +14,8 @@ const stdoutMock = jest.fn();
 jest
   .spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+
+const git = jest.requireActual<typeof Git>('isomorphic-git');
 
 jest
   .spyOn(git, 'listRemotes')

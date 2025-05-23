@@ -1,4 +1,3 @@
-import git from 'isomorphic-git';
 import memfs, { fs, vol } from 'memfs';
 
 import newGit from '../../../integration/git/new.json';
@@ -18,6 +17,8 @@ const newFileName = 'newFile';
 
 describe('soft', () => {
   it('should keep the file added in another commit in the working directory', async () => {
+    const git = await import('isomorphic-git');
+
     const initialCommit = await git.commit({
       fs,
       dir,
@@ -51,6 +52,8 @@ describe('soft', () => {
 
 describe('hard', () => {
   it('should remove the file added in another commit from the working directory', async () => {
+    const git = await import('isomorphic-git');
+
     const initialCommit = await git.commit({
       fs,
       dir,
@@ -87,6 +90,8 @@ describe('hard', () => {
   });
 
   it('should keep new files which are not committed in the working directory', async () => {
+    const git = await import('isomorphic-git');
+
     const initialCommit = await git.commit({
       fs,
       dir,
@@ -116,6 +121,8 @@ describe('hard', () => {
   });
 
   it('should remove files which are staged', async () => {
+    const git = await import('isomorphic-git');
+
     const initialCommit = await git.commit({
       fs,
       dir,
@@ -146,6 +153,8 @@ describe('hard', () => {
   });
 
   it('should revert files which were modified', async () => {
+    const git = await import('isomorphic-git');
+
     await fs.promises.writeFile(newFileName, 'hello');
     await git.add({ fs, dir, filepath: newFileName });
     const initialCommit = await git.commit({

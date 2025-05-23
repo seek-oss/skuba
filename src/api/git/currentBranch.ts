@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
 /**
  * Tries to return a Git branch name from CI environment variables.
@@ -30,6 +29,7 @@ export const currentBranch = async ({
     return;
   }
 
+  const git = await import('isomorphic-git');
   const gitRoot = await git.findRoot({ filepath: dir, fs });
 
   const fromRepo = await git.currentBranch({

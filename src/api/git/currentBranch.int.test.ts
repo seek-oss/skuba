@@ -1,4 +1,3 @@
-import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 
 import { currentBranch } from './currentBranch';
@@ -18,6 +17,8 @@ beforeEach(async () => {
   vol.fromJSON({
     '.git': null,
   });
+
+  const git = await import('isomorphic-git');
 
   await git.init({
     dir: '.',

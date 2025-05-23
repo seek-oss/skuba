@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
 /**
  * Matches the owner and repository names in a GitHub repository URL.
@@ -63,6 +62,7 @@ export const getOwnerAndRepo = async ({
     }
   }
 
+  const git = await import('isomorphic-git');
   const gitRoot = await git.findRoot({ filepath: dir, fs });
 
   const remotes = await git.listRemotes({ dir: gitRoot, fs });
