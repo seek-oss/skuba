@@ -51,7 +51,7 @@ export const getChangedFiles = async ({
   ignore = [],
 }: ChangedFilesParameters): Promise<ChangedFile[]> => {
   const gitRoot = await findRoot({ fs, filepath: dir });
-  const allFiles = await git.statusMatrix({ fs, dir: gitRoot || dir });
+  const allFiles = await git.statusMatrix({ fs, dir: gitRoot ?? dir });
   return allFiles
     .filter(
       (row) =>
