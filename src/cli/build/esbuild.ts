@@ -59,7 +59,7 @@ export const esbuild = async (
       compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
         ? 'node'
         : undefined,
-    packages: 'external',
+    packages: bundle ? 'bundle' : 'external',
     sourcemap: compilerOptions.sourceMap,
     // TODO: as of 0.18, the esbuild CLI no longer infers the target property to
     // avoid ambiguity where multiple `tsconfig.json`s are involved in a build.
