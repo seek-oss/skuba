@@ -19,7 +19,6 @@ const isolatedModules = maybeTsConfig?.options.isolatedModules ?? true;
 
 const BROKEN_MODULE_RESOLUTIONS = new Set([
   ModuleResolutionKind.Bundler,
-  ModuleResolutionKind.Node16,
   ModuleResolutionKind.NodeNext,
 ]);
 
