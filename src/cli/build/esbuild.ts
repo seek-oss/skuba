@@ -1,6 +1,5 @@
 import { inspect } from 'util';
 
-import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { build } from 'esbuild';
 import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
@@ -60,14 +59,7 @@ export const esbuild = async (
       compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
         ? 'node'
         : undefined,
-    plugins: bundle
-      ? []
-      : [
-          // evanw/esbuild#394
-          tsconfigPaths({
-            tsconfig: { baseUrl: compilerOptions.baseUrl, compilerOptions },
-          }),
-        ],
+    packages: 'external',
     sourcemap: compilerOptions.sourceMap,
     // TODO: as of 0.18, the esbuild CLI no longer infers the target property to
     // avoid ambiguity where multiple `tsconfig.json`s are involved in a build.
