@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
+import git, { findRoot } from 'isomorphic-git';
 
 import {
   ABSENT,
@@ -50,7 +50,8 @@ export const getChangedFiles = async ({
 
   ignore = [],
 }: ChangedFilesParameters): Promise<ChangedFile[]> => {
-  const allFiles = await git.statusMatrix({ fs, dir });
+  const gitRoot = await findRoot({ fs, filepath: dir });
+  const allFiles = await git.statusMatrix({ fs, dir: gitRoot ?? dir });
   return allFiles
     .filter(
       (row) =>
