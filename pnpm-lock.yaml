@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@esbuild-plugins/tsconfig-paths':
-        specifier: ^0.1.0
-        version: 0.1.2(esbuild@0.25.4)(typescript@5.8.3)
       '@eslint/migrate-config':
         specifier: ~1.3.8
         version: 1.3.8(eslint@9.26.0)
