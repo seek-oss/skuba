@@ -1,5 +1,17 @@
 # skuba
 
+## 11.0.1
+
+### Patch Changes
+
+- **lint, test:** Fix `Node16` module resolution compatibility ([#1894](https://github.com/seek-oss/skuba/pull/1894))
+
+- **deps:** @octokit/graphql ^9.0.0 ([#1896](https://github.com/seek-oss/skuba/pull/1896))
+
+- **deps:** eslint-config-seek 14.5.0 ([#1895](https://github.com/seek-oss/skuba/pull/1895))
+
+- **GitHub.readFileChanges, GitHub.uploadFileChanges:** Allowing reading files from directories which are not the Git root ([#1897](https://github.com/seek-oss/skuba/pull/1897))
+
 ## 11.0.0
 
 This major release of **skuba** has a few breaking changes, all of which should be relatively easy to adapt your codebase to. Read the full release notes for details.
