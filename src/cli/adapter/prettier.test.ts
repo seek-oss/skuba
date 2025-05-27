@@ -104,4 +104,34 @@ describe('runPrettier', () => {
       }
     `);
   });
+
+  it('handles a nested directory with a parent .prettierignore', async () => {
+    const dirname = path.join(
+      __dirname,
+      '../../../integration/base/mono/apps/ignore',
+    );
+
+    process.chdir(dirname);
+
+    // Should exclude `src/ignore.json`
+    await expect(runPrettier('lint', log, dirname)).resolves
+      .toMatchInlineSnapshot(`
+      {
+        "ok": false,
+        "result": {
+          "count": 2,
+          "errored": [
+            {
+              "filepath": "package.json",
+            },
+            {
+              "filepath": "src/bad.json",
+            },
+          ],
+          "touched": [],
+          "unparsed": [],
+        },
+      }
+    `);
+  });
 });
