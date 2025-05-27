@@ -39,14 +39,38 @@ export const crawlDirectory = async (
   root: string,
   ignoreFilenames = ['.gitignore'],
 ) => {
-  const ignoreFileFilter = await createInclusionFilter(
-    ignoreFilenames.map((ignoreFilename) => path.join(root, ignoreFilename)),
+  const ignoreFilenamesByPrefix = Object.groupBy(
+    ignoreFilenames,
+    (filename) => {
+      const prefix = path.relative(
+        path.dirname(path.resolve(root, filename)),
+        root,
+      );
+
+      return prefix;
+    },
+  );
+
+  const ignores = await Promise.all(
+    Object.entries(ignoreFilenamesByPrefix).flatMap(
+      async ([prefix, filenames]) =>
+        ({
+          prefix,
+          filter: await createInclusionFilter(
+            (filenames ?? []).map((filename) => path.join(root, filename)),
+          ),
+        }) as const,
+    ),
   );
 
   const absoluteFilenames = await crawl(root, {
     includeDirName: (dirname) => !['.git', 'node_modules'].includes(dirname),
     includeFilePath: (pathname) =>
-      ignoreFileFilter(path.relative(root, pathname)),
+      ignores.every(({ filter, prefix }) => {
+        const filepath = path.join(prefix, path.relative(root, pathname));
+
+        return filter(filepath);
+      }),
   });
 
   const relativeFilepaths = absoluteFilenames.map((filepath) =>
