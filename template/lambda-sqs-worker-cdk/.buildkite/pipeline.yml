@@ -6,9 +6,9 @@ configs:
     - &docker-ecr-cache
       seek-oss/docker-ecr-cache#v2.2.1: &docker-ecr-cache-defaults
         cache-on:
-          - .npmrc
           - package.json#.packageManager
           - pnpm-lock.yaml
+          - pnpm-workspace.yaml
         secrets:
           - id=npm,src=/var/lib/buildkite-agent/.npmrc
           - NPM_TOKEN
@@ -23,7 +23,7 @@ configs:
       concurrency: 1
       plugins:
         - *docker-ecr-cache
-        - docker-compose#v5.7.0:
+        - docker-compose#v5.9.0:
             dependencies: false
             run: app
             environment:
@@ -52,7 +52,7 @@ steps:
       GET_NPM_TOKEN: please
     plugins:
       - *docker-ecr-cache
-      - docker-compose#v5.7.0:
+      - docker-compose#v5.9.0:
           run: app
           environment:
             - GITHUB_API_TOKEN

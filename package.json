@@ -1,6 +1,6 @@
 {
   "name": "skuba",
-  "version": "10.1.0",
+  "version": "11.0.1",
   "private": false,
   "description": "SEEK development toolkit for backend applications and packages",
   "homepage": "https://github.com/seek-oss/skuba#readme",
@@ -75,7 +75,7 @@
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@eslint/migrate-config": "~1.3.8",
     "@jest/types": "^29.0.0",
-    "@octokit/graphql": "^8.0.0",
+    "@octokit/graphql": "^9.0.0",
     "@octokit/graphql-schema": "^15.3.0",
     "@octokit/rest": "^21.0.0",
     "@octokit/types": "^14.0.0",
@@ -172,6 +172,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "10.1.0"
+    "version": "11.0.0"
   }
 }

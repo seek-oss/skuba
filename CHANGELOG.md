@@ -1,5 +1,98 @@
 # skuba
 
+## 11.0.1
+
+### Patch Changes
+
+- **lint, test:** Fix `Node16` module resolution compatibility ([#1894](https://github.com/seek-oss/skuba/pull/1894))
+
+- **deps:** @octokit/graphql ^9.0.0 ([#1896](https://github.com/seek-oss/skuba/pull/1896))
+
+- **deps:** eslint-config-seek 14.5.0 ([#1895](https://github.com/seek-oss/skuba/pull/1895))
+
+- **GitHub.readFileChanges, GitHub.uploadFileChanges:** Allowing reading files from directories which are not the Git root ([#1897](https://github.com/seek-oss/skuba/pull/1897))
+
+## 11.0.0
+
+This major release of **skuba** has a few breaking changes, all of which should be relatively easy to adapt your codebase to. Read the full release notes for details.
+
+Key changes of this version:
+
+- `.npmrc` settings for pnpm projects will be attempted to be automatically migrated to `pnpm-workspace.yaml`. Particular attention is needed for monorepos; read on.
+- Node.js 18.x is no longer supported.
+- Templates now use [simplified npm private access](https://seek-oss.github.io/skuba/docs/deep-dives/npm.html).
+
+### Major Changes
+
+- **deps:** Drop support for Node.js 18.x ([#1874](https://github.com/seek-oss/skuba/pull/1874))
+
+  Node.js 18 reached EOL in April 2025. **skuba**’s minimum supported version is now Node.js 20.9.0.
+
+  For help upgrading projects to an LTS version of Node.js, reference the [`skuba migrate` document](https://seek-oss.github.io/skuba/docs/cli/migrate.html).
+
+- **api:** Delete comment when `GitHub.putIssueComment` is called with a `null` body ([#1880](https://github.com/seek-oss/skuba/pull/1880))
+
+  This can be used to have comments that are only present when there is useful information to show. This mode will only work when used in conjunction with `internalId`, for safety. See [the documentation](https://seek-oss.github.io/skuba/docs/development-api/github.html#putissuecomment) for more details.
+
+  This change is marked as breaking change because `GitHub.putIssueComment` can now return `null` according to the types. This will only occur when `body` is `null`.
+
+- **format, lint:** Migrate `pnpm` projects to store settings in `pnpm-workspace.yaml` instead of `.npmrc`. ([#1849](https://github.com/seek-oss/skuba/pull/1849))
+
+  This change follows the `pnpm` recommendation in `pnpm` version 10.
+
+  As part of this change:
+
+  - `.npmrc` is back in **skuba**’s managed `.gitignore` section
+  - **skuba** will attempt to delete `.npmrc` and migrate its contents to `pnpm-workspace.yaml`. If any custom settings are found, they will be added but commented out for you to review and fix.
+  - **skuba** will attempt to migrate references to `.npmrc` in Buildkite pipelines and Dockerfiles
+  - **skuba** will attempt to upgrade to pnpm 10, if not already on this major version.
+
+  **skuba** may not be able to correctly migrate all projects. Check your project for changes that may have been missed, review and test the modified code as appropriate before releasing to production, and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
+
+  **Important**: Monorepos with setups which do not run `skuba lint` in the workspace root will need manual action for this change. Either apply the changes by hand, or run `skuba format` locally in the workspace root to apply the changes.
+
+### Minor Changes
+
+- **template/\*:** Use simplified npm private access ([#1858](https://github.com/seek-oss/skuba/pull/1858))
+
+  This change to templates removes [`private-npm`](https://github.com/seek-oss/private-npm-buildkite-plugin/) and [`aws-sm`](https://github.com/seek-oss/aws-sm-buildkite-plugin/) Buildkite plugins, instead using the `GET_NPM_TOKEN` environment variable helper.
+
+  Read more at **skuba**’s new [npm guide](https://seek-oss.github.io/skuba/docs/deep-dives/npm.html).
+
+- **format, lint:** Remove `cdk.context.json` from managed `.gitignore` ([#1851](https://github.com/seek-oss/skuba/pull/1851))
+
+  AWS CDK generates a `cdk.context.json` file when running commands like `cdk synth` or `cdk deploy`. This file is [recommended to be included in source control](https://docs.aws.amazon.com/cdk/v2/guide/context.html#context_construct).
+
+  If this change is incompatible with your project's setup, manually add `cdk.context.json` back to your `.gitignore` file, outside of the **skuba**-managed section.
+
+- **lint:** Patch CDK snapshot tests to skip esbuild bundling ([#1844](https://github.com/seek-oss/skuba/pull/1844))
+
+  Executing esbuild bundling during unit tests can be slow. This patch looks for `new App()` use in `infra` test files, and if found, replaces them with `new App({ context: { 'aws:cdk:bundling-stacks': [] } })`. This context instructs the AWS CDK to skip bundling for the test stack.
+
+- **format:** Add `--force-apply-all-patches` flag ([#1847](https://github.com/seek-oss/skuba/pull/1847))
+
+  The new `skuba format --force-apply-all-patches` flag will apply all patches, even if **skuba** does not detect that you are upgrading to a new version. This can be useful for addressing regressions that previous patches would have fixed but were added to the code later.
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Update SQS queues to have a 14 day retention period ([#1859](https://github.com/seek-oss/skuba/pull/1859))
+
+- **template/koa-rest-api:** opentelemetry dependencies 2.x and 0.200.x ([#1827](https://github.com/seek-oss/skuba/pull/1827))
+
+- **template/lambda-sqs-worker-cdk:** Update test to skip esbuild bundling by using the AWS CDK context key `aws:cdk:bundling-stacks` ([#1844](https://github.com/seek-oss/skuba/pull/1844))
+
+- **deps:** @octokit/types ^14.0.0 ([#1872](https://github.com/seek-oss/skuba/pull/1872))
+
+- **template/lambda-sqs-worker-cdk:** Support expedited deployments ([#1883](https://github.com/seek-oss/skuba/pull/1883))
+
+  This change to **skuba**’s CDK template allows skipping smoke tests when the Buildkite build that deploys the lambda has a `[skip smoke]` directive in the build message. See [`@seek/aws-codedeploy-hooks`](https://github.com/seek-oss/aws-codedeploy-hooks/tree/main/packages/hooks) for more details.
+
+- **test:** Suppress warnings from `ts-jest` about `isolatedModules` ([#1862](https://github.com/seek-oss/skuba/pull/1862))
+
+- **lint:** Add a missing log when detecting malformed CODEOWNERS files ([#1839](https://github.com/seek-oss/skuba/pull/1839))
+
+- **deps:** semantic-release 24 ([#1874](https://github.com/seek-oss/skuba/pull/1874))
+
 ## 10.1.0
 
 ### Minor Changes

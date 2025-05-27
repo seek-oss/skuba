@@ -63,7 +63,7 @@ steps:
       GET_GITHUB_TOKEN: 'please'
     plugins:
       - ...
-      - docker-compose#v5.7.0:
+      - docker-compose#v5.9.0:
           environment:
             - GITHUB_API_TOKEN
           propagate-environment: true

@@ -1,6 +1,5 @@
 import {
   generateIgnoreFileSimpleVariants,
-  generateNpmrcSimpleVariants,
   mergeWithConfigFile,
 } from './configFile';
 
@@ -20,31 +19,6 @@ describe('generateIgnoreFileSimpleVariants', () => {
     expect(generateIgnoreFileSimpleVariants(pattern)).toEqual(
       new Set(expected),
     ),
-  );
-});
-
-describe('generateNpmrcSimpleVariants', () => {
-  it.each([
-    [
-      'quotes added',
-      [`public-hoist-pattern[]="tsconfig-seek"`],
-      [
-        `public-hoist-pattern[]="tsconfig-seek"`,
-        `public-hoist-pattern[]=tsconfig-seek`,
-      ],
-    ],
-    [
-      'quotes removed',
-      [`public-hoist-pattern[]=tsconfig-seek`],
-      [
-        `public-hoist-pattern[]="tsconfig-seek"`,
-        `public-hoist-pattern[]=tsconfig-seek`,
-      ],
-    ],
-    ['weird line is ignored', ['a = b = c'], ['a = b = c']],
-    ['empty string', [''], []],
-  ])('handles %s', (_, pattern, expected) =>
-    expect(generateNpmrcSimpleVariants(pattern)).toEqual(new Set(expected)),
   );
 });
 
@@ -91,7 +65,7 @@ describe('mergeWithConfigFile for ignore files', () => {
   );
 
   test.each(cases)('%s', (_, base, provided) =>
-    expect(mergeWithConfigFile(base, 'npmrc')(provided)).toMatchSnapshot(),
+    expect(mergeWithConfigFile(base)(provided)).toMatchSnapshot(),
   );
 
   it('produces stable output over multiple runs', () => {
@@ -107,30 +81,25 @@ describe('mergeWithConfigFile for ignore files', () => {
   });
 });
 
-describe('mergeWithConfigFile for npmrc files', () => {
-  const baseTemplate =
-    '# managed by skuba\npublic-hoist-pattern[]="tsconfig-seek"\n# end managed by skuba\n';
-  const updatedBaseTemplate =
-    '# managed by skuba\npublic-hoist-pattern[]="tsconfig-seek"\npublic-hoist-pattern[]="jest"\n# end managed by skuba\n';
+describe('mergeWithConfigFile for workspace files', () => {
+  const baseTemplate = `# managed by skuba
+packageManagerStrictVersion: true
+publicHoistPattern:
+  - '@types*'
+  # end managed by skuba
+`;
+  const updatedBaseTemplate = `# managed by skuba
+packageManagerStrictVersion: true
+publicHoistPattern:
+  - '@types*'
+  - '*eslint*'
+  # end managed by skuba
+`;
 
   const cases = [
     ['empty provided', baseTemplate, ''],
 
-    [
-      'provided with no managed section',
-      baseTemplate,
-      'public-hoist-pattern[]="mystuff"',
-    ],
-    [
-      'provided with managed section and partially superseded config',
-      updatedBaseTemplate,
-      'public-hoist-pattern[]=a\npublic-hoist-pattern[]=jest',
-    ],
-    [
-      'provided with managed section and fully superseded config',
-      updatedBaseTemplate,
-      'public-hoist-pattern[]="jest"',
-    ],
+    ['provided with no managed section', baseTemplate, 'packages:\n  - a\n'],
     [
       'provided with outdated managed section',
       updatedBaseTemplate,
@@ -140,21 +109,23 @@ describe('mergeWithConfigFile for npmrc files', () => {
     [
       'provided with managed section and additional lines',
       baseTemplate,
-      `public-hoist-pattern[]=a\n\n${baseTemplate}\npublic-hoist-pattern[]=b`,
+      `anotherSetting:true\n${baseTemplate}  - x`,
     ],
     [
       'provided with outdated managed section and additional lines',
       updatedBaseTemplate,
-      `public-hoist-pattern[]=a\n\n${baseTemplate}\npublic-hoist-pattern[]="jest"=b\n`,
+      `anotherSetting:true\n${baseTemplate}  - x`,
     ],
   ] as const;
 
   test.each(cases)('%s', (_, base, provided) =>
-    expect(mergeWithConfigFile(base, 'npmrc')(provided)).toMatchSnapshot(),
+    expect(
+      mergeWithConfigFile(base, 'pnpm-workspace')(provided),
+    ).toMatchSnapshot(),
   );
 
   it('produces stable output over multiple runs', () => {
-    const merge = mergeWithConfigFile(baseTemplate, 'npmrc');
+    const merge = mergeWithConfigFile(baseTemplate, 'pnpm-workspace');
 
     let input = baseTemplate;
 

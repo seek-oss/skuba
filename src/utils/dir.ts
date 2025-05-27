@@ -4,6 +4,8 @@ import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
 
+import { findRoot as findGitRoot } from '../api/git/findRoot';
+
 import { isErrorWithCode } from './error';
 
 /**
@@ -119,3 +121,91 @@ async function crawl(
 
   return paths;
 }
+
+export const locateNearestFile = async ({
+  cwd,
+  filename,
+}: {
+  cwd: string;
+  filename: string;
+}) => {
+  let currentDir = cwd;
+  while (currentDir !== path.dirname(currentDir)) {
+    const filePath = path.join(currentDir, filename);
+    if (await fs.pathExists(filePath)) {
+      return filePath;
+    }
+    currentDir = path.dirname(currentDir);
+  }
+
+  return null;
+};
+
+export const locateFurthestFile = async ({
+  cwd,
+  filename,
+}: {
+  cwd: string;
+  filename: string;
+}) => {
+  let currentDir = cwd;
+  let furthestFilePath: string | null = null;
+
+  while (currentDir !== path.dirname(currentDir)) {
+    const filePath = path.join(currentDir, filename);
+    if (await fs.pathExists(filePath)) {
+      furthestFilePath = filePath;
+    }
+    currentDir = path.dirname(currentDir);
+  }
+
+  return furthestFilePath;
+};
+
+const workspaceRootCache: Record<string, string | null> = {};
+
+export const findWorkspaceRoot = async (
+  cwd = process.cwd(),
+): Promise<string | null> => {
+  const find = async (): Promise<string | null> => {
+    const [pnpmLock, yarnLock, packageJson, gitRoot] = await Promise.all([
+      locateNearestFile({ cwd, filename: 'pnpm-lock.yaml' }),
+      locateNearestFile({ cwd, filename: 'yarn.lock' }),
+      locateFurthestFile({ cwd, filename: 'package.json' }),
+      findGitRoot({ dir: cwd }),
+    ]);
+
+    const candidates = [
+      pnpmLock ? path.dirname(pnpmLock) : null,
+      yarnLock ? path.dirname(yarnLock) : null,
+      packageJson ? path.dirname(packageJson) : null,
+      gitRoot,
+    ].filter((dir): dir is string => dir !== null);
+
+    if (candidates[0]) {
+      // Pick the longest path. This will be the most specific, which helps guard against someone
+      // having an accidental lockfile in a parent directory by mistake.
+
+      return candidates.reduce((longest, current) => {
+        if (current.split(path.sep).length > longest.split(path.sep).length) {
+          return current;
+        }
+        return longest;
+      }, candidates[0]);
+    }
+
+    return null;
+  };
+
+  return (workspaceRootCache[cwd] ??= await find());
+};
+
+export const findCurrentWorkspaceProjectRoot = async (
+  cwd = process.cwd(),
+): Promise<string | null> => {
+  const packageJson = await locateNearestFile({
+    cwd,
+    filename: 'package.json',
+  });
+  return packageJson ? path.dirname(packageJson) : null;
+};
