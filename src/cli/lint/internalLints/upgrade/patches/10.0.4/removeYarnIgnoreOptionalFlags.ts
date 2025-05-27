@@ -29,7 +29,9 @@ const removeYarnIgnoreFlag = (contents: string) => {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
 
-    if (line.includes('yarn')) isInYarn = true;
+    if (line.includes('yarn')) {
+      isInYarn = true;
+    }
 
     if (isInYarn && regex.test(line)) {
       lines[i] = line.replace(regex, '');
@@ -49,7 +51,9 @@ const removeYarnIgnoreFlag = (contents: string) => {
       isInYarn = false;
     }
 
-    if (!line.endsWith('\\')) isInYarn = false;
+    if (!line.endsWith('\\')) {
+      isInYarn = false;
+    }
   }
 
   return lines.join('\n');

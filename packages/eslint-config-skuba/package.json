@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-skuba",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "private": false,
   "description": "ESLint config for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-config-skuba#readme",
@@ -26,7 +26,7 @@
     "skuba": "node --experimental-vm-modules ../../lib/skuba"
   },
   "dependencies": {
-    "eslint-config-seek": "14.4.0",
+    "eslint-config-seek": "14.5.0",
     "eslint-plugin-yml": "^1.14.0",
     "typescript-eslint": "^8.26.0"
   },
