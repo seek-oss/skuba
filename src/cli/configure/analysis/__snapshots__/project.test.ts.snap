@@ -79,7 +79,14 @@ coverage
     "operation": "A",
   },
   "eslint.config.js": {
-    "data": "module.exports = require('eslint-config-skuba');
+    "data": "const { defineConfig } = require('eslint/config');
+const skuba = require('skuba/config/eslint');
+
+module.exports = defineConfig([
+  {
+    extends: [skuba],
+  },
+]);
 ",
     "operation": "A",
   },
