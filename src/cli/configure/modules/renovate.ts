@@ -24,7 +24,7 @@ export const renovateModule = async ({ type }: Options): Promise<Module> => {
   return {
     ...deleteFiles(...OTHER_CONFIG_FILENAMES),
 
-    '.github/renovate.json5': async (_inputFile, _files, initialFiles) => {
+    '.github/renovate.json5': (_inputFile, _files, initialFiles) => {
       // allow migration from other Renovate config files
       const inputFile = getFirstDefined(initialFiles, [
         '.github/renovate.json5',
