@@ -43,17 +43,7 @@ const tsconfig = BROKEN_MODULE_RESOLUTIONS.has(
 module.exports.transform = Object.fromEntries(
   Object.entries(defaults.transform).map(([key, value]) => {
     if (typeof value === 'string') {
-      return [
-        key,
-        value === TS_JEST_NAME
-          ? [
-              TS_JEST_PATH,
-              {
-                ...tsconfig,
-              },
-            ]
-          : value,
-      ];
+      return [key, value === TS_JEST_NAME ? [TS_JEST_PATH, tsconfig] : value];
     }
 
     return [
