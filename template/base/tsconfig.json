@@ -6,7 +6,8 @@
     "paths": {
       "src": ["src"]
     },
-    "target": "ES2024"
+    "target": "ES2024",
+    "isolatedModules": true
   },
   "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"

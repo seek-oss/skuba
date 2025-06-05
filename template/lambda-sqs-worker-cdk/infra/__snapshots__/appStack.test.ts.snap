@@ -187,6 +187,8 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
             "DD_SITE": "datadoghq.com",
+            "DD_TRACE_CLOUD_REQUEST_PAYLOAD_TAGGING": "$.*",
+            "DD_TRACE_CLOUD_RESPONSE_PAYLOAD_TAGGING": "$.*",
             "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
@@ -915,6 +917,8 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
             "DD_SITE": "datadoghq.com",
+            "DD_TRACE_CLOUD_REQUEST_PAYLOAD_TAGGING": "$.*",
+            "DD_TRACE_CLOUD_RESPONSE_PAYLOAD_TAGGING": "$.*",
             "DD_TRACE_ENABLED": "true",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
