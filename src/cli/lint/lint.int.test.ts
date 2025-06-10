@@ -16,7 +16,7 @@ import { lint } from '.';
 
 jest.setTimeout(30_000);
 
-jest.mock('../utils/version');
+jest.mock('../../utils/version');
 
 const buildkiteAnnotate = jest.spyOn(Buildkite, 'annotate').mockResolvedValue();
 
@@ -34,9 +34,9 @@ jest
 
 const tscOutputStream = new stream.PassThrough().on('data', stdoutMock);
 
-const BASE_PATH = path.join(__dirname, '..', '..', 'integration', 'base');
+const BASE_PATH = path.join(__dirname, '..', '..', '..', 'integration', 'base');
 
-const TEMP_PATH = path.join(__dirname, '..', '..', 'integration', 'lint');
+const TEMP_PATH = path.join(__dirname, '..', '..', '..', 'integration', 'lint');
 
 const stdout = (randomMatcher: RegExp) => {
   const result = stdoutMock.mock.calls

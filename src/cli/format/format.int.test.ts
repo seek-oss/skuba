@@ -23,9 +23,16 @@ jest
 
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 
-const BASE_PATH = path.join(__dirname, '..', '..', 'integration', 'base');
+const BASE_PATH = path.join(__dirname, '..', '..', '..', 'integration', 'base');
 
-const TEMP_PATH = path.join(__dirname, '..', '..', 'integration', 'format');
+const TEMP_PATH = path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'integration',
+  'format',
+);
 
 const stdout = (randomMatcher: RegExp) => {
   const result = stdoutMock.mock.calls
