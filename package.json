@@ -99,7 +99,7 @@
     "ignore": "^7.0.0",
     "is-installed-globally": "^0.4.0",
     "isomorphic-git": "^1.11.1",
-    "jest": "^30.0.0-beta.4",
+    "jest": "^30.0.0",
     "jest-watch-typeahead": "^2.1.1",
     "lodash.mergewith": "^4.6.2",
     "minimist": "^1.2.6",
@@ -150,6 +150,7 @@
     "remark-preset-lint-recommended": "7.0.1",
     "semver": "7.7.1",
     "supertest": "7.1.0",
+    "tsdown": "0.12.7",
     "type-fest": "2.19.0"
   },
   "peerDependencies": {
