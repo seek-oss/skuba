@@ -9,7 +9,7 @@ export const COMMAND_ALIASES: Record<string, Command> = {
   '--version': 'version',
 };
 
-export const COMMAND_DIR = path.join(__dirname, '..', 'cli');
+export const COMMAND_DIR = path.join(__dirname, 'cli');
 
 export const COMMAND_LIST = [
   'build',
