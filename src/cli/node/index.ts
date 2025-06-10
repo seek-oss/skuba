@@ -33,7 +33,7 @@ export const node = async () => {
     return exec(
       'tsx',
       ...commonArgs,
-      path.join(__dirname, '..', 'wrapper'),
+      path.join(__dirname, '..', '..', 'wrapper'),
       ...args.script,
     );
   }
