@@ -6,12 +6,13 @@ import { inspect } from 'util';
 import fs, { copy } from 'fs-extra';
 import git from 'isomorphic-git';
 
-import { Buildkite } from '..';
-import type { Logger } from '../utils/logging';
-import { getSkubaVersion } from '../utils/version';
+import { Buildkite } from '../..';
+import type { Logger } from '../../utils/logging';
+import { getSkubaVersion } from '../../utils/version';
 
-import { lint } from './lint';
-import { refreshConfigFiles } from './lint/internalLints/refreshConfigFiles';
+import { refreshConfigFiles } from './internalLints/refreshConfigFiles';
+
+import { lint } from '.';
 
 jest.setTimeout(30_000);
 

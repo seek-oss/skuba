@@ -5,7 +5,7 @@ import fs, { copy } from 'fs-extra';
 import git from 'isomorphic-git';
 import { diff } from 'jest-diff';
 
-import { format } from './format';
+import { format } from '.';
 
 jest.setTimeout(15_000);
 

@@ -36,7 +36,7 @@ const skuba = async () => {
 
     /* eslint-disable @typescript-eslint/no-require-imports */
     const commandModule = require(
-      path.join(COMMAND_DIR, moduleName),
+      path.join(COMMAND_DIR, moduleName, 'index.js'),
     ) as unknown;
 
     if (!hasProp(commandModule, moduleName)) {
