@@ -8,14 +8,14 @@ export const buildPackage = async (args = process.argv.slice(2)) => {
     [
       {
         command:
-          'tsc --module CommonJS --outDir lib-commonjs --project tsconfig.build.json',
+          'tsc --module Node16 --outDir lib-commonjs --project tsconfig.build.json',
         name: 'commonjs',
         prefixColor: 'green',
       },
       {
         command:
-          'tsc --module ES2015 --outDir lib-es2015 --project tsconfig.build.json',
-        name: 'es2015',
+          'tsc --module ES2022 --outDir lib-esm --project tsconfig.build.json',
+        name: 'esm',
         prefixColor: 'yellow',
       },
       {
@@ -37,8 +37,8 @@ export const buildPackage = async (args = process.argv.slice(2)) => {
       prefixColor: 'green',
     },
     {
-      outDir: 'lib-es2015',
-      name: 'es2015',
+      outDir: 'lib-esm',
+      name: 'esm',
       prefixColor: 'yellow',
     },
   ]);
