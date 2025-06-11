@@ -10,7 +10,7 @@ import {
   resolveConfig,
 } from 'prettier';
 
-import { crawlDirectory } from '../../utils/dir';
+import { crawlDirectory, locateNearestFile } from '../../utils/dir';
 import { type Logger, pluralise } from '../../utils/logging';
 import { getConsumerManifest } from '../../utils/manifest';
 import { formatPackage, parsePackage } from '../configure/processing/package';
@@ -176,10 +176,17 @@ export const runPrettier = async (
   // This avoids exhibiting different behaviour than a Prettier IDE integration,
   // though it may present headaches if `.gitignore` and `.prettierignore` rules
   // conflict.
-  const relativeFilepaths = await crawlDirectory(directory, [
-    '.gitignore',
-    '.prettierignore',
+  // TODO: should these bottom out at the project root?
+  const ignoreFilepaths = await Promise.all([
+    locateNearestFile({ cwd, filename: '.gitignore' }),
+    locateNearestFile({ cwd, filename: '.prettierignore' }),
   ]);
+
+  const ignoreFilenames = ignoreFilepaths.flatMap((filepath) =>
+    filepath ? path.relative(cwd, filepath) : [],
+  );
+
+  const relativeFilepaths = await crawlDirectory(directory, ignoreFilenames);
 
   logger.debug(`Discovered ${pluralise(relativeFilepaths.length, 'file')}.`);
 
