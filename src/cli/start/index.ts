@@ -2,10 +2,10 @@ import path from 'path';
 
 import getPort from 'get-port';
 
-import { parseRunArgs } from '../utils/args';
-import { createExec } from '../utils/exec';
-import { getEntryPointFromManifest } from '../utils/manifest';
-import { isIpPort } from '../utils/validation';
+import { parseRunArgs } from '../../utils/args';
+import { createExec } from '../../utils/exec';
+import { getEntryPointFromManifest } from '../../utils/manifest';
+import { isIpPort } from '../../utils/validation';
 
 export const start = async () => {
   const [args, availablePort] = await Promise.all([
@@ -31,7 +31,7 @@ export const start = async () => {
     'dotenv/config',
     '--require',
     'tsconfig-paths/register',
-    path.join(__dirname, '..', 'wrapper'),
+    path.join(__dirname, '..', '..', 'wrapper', 'index.js'),
     ...args.script,
   );
 };

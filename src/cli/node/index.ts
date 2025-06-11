@@ -3,9 +3,9 @@ import path from 'path';
 import execa from 'execa';
 import getPort from 'get-port';
 
-import { parseRunArgs } from '../utils/args';
-import { createExec } from '../utils/exec';
-import { isIpPort } from '../utils/validation';
+import { parseRunArgs } from '../../utils/args';
+import { createExec } from '../../utils/exec';
+import { isIpPort } from '../../utils/validation';
 
 export const longRunning = true;
 
@@ -33,7 +33,7 @@ export const node = async () => {
     return exec(
       'tsx',
       ...commonArgs,
-      path.join(__dirname, '..', 'wrapper'),
+      path.join(__dirname, '..', '..', 'wrapper', 'index.js'),
       ...args.script,
     );
   }
