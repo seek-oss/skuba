@@ -15,8 +15,6 @@ const TS_JEST_PATH = require.resolve(TS_JEST_NAME);
 
 const maybeTsConfig = tryParseTsConfig();
 
-const isolatedModules = maybeTsConfig?.options.isolatedModules ?? true;
-
 const BROKEN_MODULE_RESOLUTIONS = new Set([
   ModuleResolutionKind.Bundler,
   ModuleResolutionKind.NodeNext,
@@ -45,18 +43,7 @@ const tsconfig = BROKEN_MODULE_RESOLUTIONS.has(
 module.exports.transform = Object.fromEntries(
   Object.entries(defaults.transform).map(([key, value]) => {
     if (typeof value === 'string') {
-      return [
-        key,
-        value === TS_JEST_NAME
-          ? [
-              TS_JEST_PATH,
-              {
-                ...tsconfig,
-                isolatedModules,
-              },
-            ]
-          : value,
-      ];
+      return [key, value === TS_JEST_NAME ? [TS_JEST_PATH, tsconfig] : value];
     }
 
     return [
@@ -67,7 +54,6 @@ module.exports.transform = Object.fromEntries(
             {
               ...value[1],
               ...tsconfig,
-              isolatedModules,
             },
           ]
         : value,
