@@ -91,7 +91,7 @@ export const init = async (args = process.argv.slice(2)) => {
 
   const [manifest, packageManagerConfig] = await Promise.all([
     getConsumerManifest(destinationDir),
-    detectPackageManager(destinationDir),
+    packageManagerFromUserAgent(process.env.npm_config_user_agent),
   ]);
 
   if (!manifest) {
