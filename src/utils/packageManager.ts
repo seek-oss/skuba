@@ -46,6 +46,11 @@ export const packageManagerFromUserAgent = (
   const validpkgManger = packageManagerSchema.safeParse(name);
 
   if (!validpkgManger.success) {
+    log.warn(
+      `Failed to detect package manager; defaulting to ${log.bold(
+        DEFAULT_PACKAGE_MANAGER,
+      )}.`,
+    );
     return configForPackageManager(DEFAULT_PACKAGE_MANAGER);
   }
 
