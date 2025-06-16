@@ -9,7 +9,7 @@ import { createExec, ensureCommands } from '../../utils/exec';
 import { createLogger, log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';
 import { getConsumerManifest } from '../../utils/manifest';
-import { detectPackageManager, packageManagerFromUserAgent } from '../../utils/packageManager';
+import { packageManagerFromUserAgent } from '../../utils/packageManager';
 import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,

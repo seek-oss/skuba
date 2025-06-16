@@ -36,15 +36,21 @@ export const configForPackageManager = (
   command: packageManager,
 });
 
-export const packageManagerFromUserAgent = (userAgent: string | undefined) => {
-  if (!userAgent) return undefined
-  const pkgSpec = userAgent.split(' ')[0]
-  const pkgSpecArr = pkgSpec.split('/')
-  return {
-    name: pkgSpecArr[0],
-    version: pkgSpecArr[1],
+export const packageManagerFromUserAgent = (
+  userAgent: string | undefined,
+): PackageManagerConfig => {
+  const pkgSpecArr = userAgent?.split(' ')[0]?.split('/');
+
+  const name = pkgSpecArr?.[0];
+
+  const validpkgManger = packageManagerSchema.safeParse(name);
+
+  if (!validpkgManger.success) {
+    return configForPackageManager(DEFAULT_PACKAGE_MANAGER);
   }
-}
+
+  return configForPackageManager(validpkgManger.data);
+};
 
 export const detectPackageManager = async (
   cwd?: string,
