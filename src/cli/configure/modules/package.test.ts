@@ -203,7 +203,7 @@ describe('packageModule', () => {
         build: 'skuba build-package',
         format: 'skuba format',
         lint: 'skuba lint',
-        release: 'yarn -s build && skuba release',
+        release: 'pnpm --silent run build && skuba release',
         start: 'my-custom-script',
         test: 'skuba test --coverage',
         'test:watch': 'skuba test --watch',
