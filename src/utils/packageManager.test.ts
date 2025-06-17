@@ -111,9 +111,9 @@ describe('detectPackageManager', () => {
       {
         "command": "pnpm",
         "print": {
-          "exec": "pnpm",
+          "exec": "pnpm exec",
           "runSilent": "pnpm --silent run",
-          "update": "pnpm upgrade",
+          "update": "pnpm update",
         },
       }
     `);
@@ -135,9 +135,9 @@ describe('detectPackageManager', () => {
       {
         "command": "pnpm",
         "print": {
-          "exec": "pnpm",
+          "exec": "pnpm exec",
           "runSilent": "pnpm --silent run",
-          "update": "pnpm upgrade",
+          "update": "pnpm update",
         },
       }
     `);
