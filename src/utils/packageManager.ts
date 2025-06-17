@@ -4,8 +4,7 @@ import { z } from 'zod';
 
 import { log } from './logging';
 
-// TODO: consider changing to this to `pnpm` in a future major version.
-export const DEFAULT_PACKAGE_MANAGER = 'yarn';
+export const DEFAULT_PACKAGE_MANAGER = 'pnpm';
 
 export type PackageManagerConfig =
   (typeof PACKAGE_MANAGERS)[keyof typeof PACKAGE_MANAGERS] & {
