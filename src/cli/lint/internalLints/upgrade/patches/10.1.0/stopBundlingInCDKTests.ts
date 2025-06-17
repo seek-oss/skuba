@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import { glob } from 'fast-glob';
-import { promises as fs } from 'fs-extra';
+import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
@@ -9,7 +9,7 @@ import { log } from '../../../../../../utils/logging';
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, 'utf8');
 
       return {
         file,
@@ -67,7 +67,7 @@ const stopBundlingInCDKTests: PatchFunction = async ({
 
   await Promise.all(
     mapped.map(async ({ file, after }) => {
-      await fs.writeFile(file, after);
+      await fs.promises.writeFile(file, after);
     }),
   );
 

@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import fg from 'fast-glob';
-import { readFile, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 import { lt } from 'semver';
 
 import type { PatchFunction, PatchReturnType } from '../..';
@@ -19,7 +19,7 @@ const ECR_REGEX = /seek-oss\/docker-ecr-cache#v([\d\.]+)/gm;
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await readFile(file, 'utf8');
+      const contents = await fs.readFile(file, 'utf8');
 
       return {
         file,
@@ -96,7 +96,7 @@ const patchPnpmPackageManager: PatchFunction = async ({
           DOCKERFILE_COREPACK_COMMAND,
           PACKAGE_JSON_MOUNT,
         );
-        await writeFile(file, patchedContent);
+        await fs.writeFile(file, patchedContent);
       }),
     );
   }
@@ -119,7 +119,7 @@ const patchPnpmPackageManager: PatchFunction = async ({
           },
         );
 
-        await writeFile(file, patchedEcrContent);
+        await fs.writeFile(file, patchedEcrContent);
       }),
     );
   }

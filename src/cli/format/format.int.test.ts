@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import path from 'path';
 
-import fs, { copy } from 'fs-extra';
+import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { diff } from 'jest-diff';
 
@@ -68,7 +68,7 @@ const gitModifiedAndUnstaged = async (dir: string) => {
 };
 
 const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
-  await copy(baseDir, tempDir);
+  await fs.copy(baseDir, tempDir);
 
   process.chdir(tempDir);
 

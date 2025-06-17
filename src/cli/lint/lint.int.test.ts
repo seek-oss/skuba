@@ -3,7 +3,7 @@ import path from 'path';
 import stream from 'stream';
 import { inspect } from 'util';
 
-import fs, { copy } from 'fs-extra';
+import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
 import { Buildkite } from '../..';
@@ -69,7 +69,7 @@ const stdout = (randomMatcher: RegExp) => {
 };
 
 const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
-  await copy(baseDir, tempDir);
+  await fs.copy(baseDir, tempDir);
   process.chdir(tempDir);
   await git.init({ fs, dir: tempDir });
   const result = await refreshConfigFiles('format', {

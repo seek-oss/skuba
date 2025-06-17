@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import fg from 'fast-glob';
-import { readFile, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
@@ -14,7 +14,7 @@ const PUBLIC_ECR = 'public.ecr.aws/docker/library/';
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await readFile(file, 'utf8');
+      const contents = await fs.readFile(file, 'utf8');
 
       return {
         file,
@@ -103,7 +103,7 @@ const patchDockerImages: PatchFunction = async ({
         );
       }
 
-      await writeFile(file, patchedContents);
+      await fs.writeFile(file, patchedContents);
     },
   );
 
@@ -113,7 +113,7 @@ const patchDockerImages: PatchFunction = async ({
         DOCKER_COMPOSE_IMAGE_REGEX,
         `$1${PUBLIC_ECR}$2$3`,
       );
-      await writeFile(file, patchedContents);
+      await fs.writeFile(file, patchedContents);
     },
   );
 

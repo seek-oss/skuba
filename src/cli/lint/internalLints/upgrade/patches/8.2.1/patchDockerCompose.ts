@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import fg from 'fast-glob';
-import { readFile, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
@@ -11,7 +11,7 @@ const DOCKER_COMPOSE_VERSION_REGEX = /^version: ['"]?\d+(\.\d+)*['"]?\n*/m;
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await readFile(file, 'utf8');
+      const contents = await fs.readFile(file, 'utf8');
 
       return {
         file,
@@ -57,7 +57,7 @@ const patchDockerComposeFiles: PatchFunction = async ({
         DOCKER_COMPOSE_VERSION_REGEX,
         '',
       );
-      await writeFile(file, patchedContents);
+      await fs.writeFile(file, patchedContents);
     }),
   );
 
