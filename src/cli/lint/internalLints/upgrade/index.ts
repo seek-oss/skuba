@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { readdir, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 import type readPkgUp from 'read-pkg-up';
 import { gte, sort } from 'semver';
 
@@ -34,7 +34,7 @@ export type PatchConfig = {
 export type PatchFunction = (config: PatchConfig) => Promise<PatchReturnType>;
 
 const getPatches = async (manifestVersion: string): Promise<Patches> => {
-  const patches = await readdir(path.join(__dirname, 'patches'), {
+  const patches = await fs.readdir(path.join(__dirname, 'patches'), {
     withFileTypes: true,
   });
 
@@ -166,7 +166,7 @@ export const upgradeSkuba = async (
 
   const updatedPackageJson = await formatPackage(manifest.packageJson);
 
-  await writeFile(manifest.path, updatedPackageJson);
+  await fs.writeFile(manifest.path, updatedPackageJson);
   logger.newline();
   logger.plain('skuba update complete.');
   logger.newline();

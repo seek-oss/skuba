@@ -2,7 +2,7 @@
 import { inspect } from 'util';
 
 import { glob } from 'fast-glob';
-import { promises as fs } from 'fs-extra';
+import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';

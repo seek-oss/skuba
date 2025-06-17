@@ -1,7 +1,7 @@
 import path from 'path';
 import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 
-import { writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 
 import { Git } from '../../..';
 import {
@@ -125,7 +125,7 @@ export const refreshConfigFiles = async (
         return { needsChange: false };
       }
 
-      await writeFile(filepath, data);
+      await fs.writeFile(filepath, data);
       return {
         needsChange: false,
         msg: `Refreshed ${logger.bold(filename)}.`,
