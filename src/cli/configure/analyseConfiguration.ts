@@ -2,11 +2,11 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { log } from '../../utils/logging';
-import type { ProjectType } from '../../utils/manifest';
-import type { PackageManagerConfig } from '../../utils/packageManager';
+import { log } from '../../utils/logging.js';
+import type { ProjectType } from '../../utils/manifest.js';
+import type { PackageManagerConfig } from '../../utils/packageManager.js';
 
-import { diffFiles } from './analysis/project';
+import { diffFiles } from './analysis/project.js';
 
 interface Props {
   destinationRoot: string;

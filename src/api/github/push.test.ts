@@ -2,13 +2,13 @@ import type { FileChanges } from '@octokit/graphql-schema';
 import fs from 'fs-extra';
 import git, { type ReadCommitResult } from 'isomorphic-git';
 
-import { apiTokenFromEnvironment } from './environment';
-import { graphql } from './octokit';
+import { apiTokenFromEnvironment } from './environment.js';
+import { graphql } from './octokit.js';
 import {
   readFileChanges,
   uploadAllFileChanges,
   uploadFileChanges,
-} from './push';
+} from './push.js';
 
 jest.mock('./environment');
 jest.mock('./octokit');

@@ -3,7 +3,7 @@ import {
   isGitHubRepo,
   isGitHubTeam,
   isPlatform,
-} from './validation';
+} from './validation.js';
 
 describe('isGitHubOrg', () => {
   test.each([

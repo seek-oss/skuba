@@ -1,4 +1,4 @@
-import { seekKoala } from './seekKoala';
+import { seekKoala } from './seekKoala.js';
 
 describe('seekKoala', () => {
   it('passes through up-to-date dependencies', () => {

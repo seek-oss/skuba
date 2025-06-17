@@ -4,9 +4,9 @@ import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
 
-import { findRoot as findGitRoot } from '../api/git/findRoot';
+import { findRoot as findGitRoot } from '../api/git/findRoot.js';
 
-import { isErrorWithCode } from './error';
+import { isErrorWithCode } from './error.js';
 
 /**
  * Build a map that associates each glob pattern with its matching filepaths.

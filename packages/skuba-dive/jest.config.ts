@@ -1,4 +1,4 @@
-import { Jest } from '../../src';
+import { Jest } from '../../src/index.js';
 
 export default Jest.mergePreset({
   coverageThreshold: {

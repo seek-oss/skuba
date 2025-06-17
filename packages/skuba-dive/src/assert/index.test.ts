@@ -1,4 +1,10 @@
-import { notNullish, nullish, numberProp, object, stringProp } from '.';
+import {
+  notNullish,
+  nullish,
+  numberProp,
+  object,
+  stringProp,
+} from './index.js';
 
 describe('nullish', () => {
   it.each([

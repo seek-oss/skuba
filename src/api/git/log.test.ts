@@ -1,6 +1,6 @@
 import git from 'isomorphic-git';
 
-import { getHeadCommitId, getHeadCommitMessage } from './log';
+import { getHeadCommitId, getHeadCommitMessage } from './log.js';
 
 jest.mock('isomorphic-git');
 

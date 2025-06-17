@@ -1,5 +1,5 @@
-import * as Buildkite from '../../../../api/buildkite';
-import type { InternalLintResult } from '../../internal';
+import * as Buildkite from '../../../../api/buildkite/index.js';
+import type { InternalLintResult } from '../../internal.js';
 
 export const createInternalAnnotations = (
   internal: InternalLintResult,

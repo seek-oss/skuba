@@ -1,4 +1,4 @@
-import { replacePackageReferences } from './module';
+import { replacePackageReferences } from './module.js';
 
 describe('replacePackageReferences', () => {
   it.each([

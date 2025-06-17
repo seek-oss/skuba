@@ -1,4 +1,5 @@
 const tsParser = require('@typescript-eslint/parser');
+const requireExtensions = require('eslint-plugin-require-extensions');
 
 const skuba = require('eslint-config-skuba');
 
@@ -12,6 +13,16 @@ module.exports = [
     ],
   },
   ...skuba,
+  {
+    name: 'skuba/esm',
+    plugins: {
+      'require-extensions': requireExtensions,
+    },
+    rules: {
+      'require-extensions/require-extensions': 'error',
+      'require-extensions/require-index': 'error',
+    },
+  },
   {
     rules: {
       'no-process-exit': 'off',

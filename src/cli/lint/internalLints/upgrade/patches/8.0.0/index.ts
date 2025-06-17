@@ -1,6 +1,6 @@
-import type { Patches } from '../..';
+import type { Patches } from '../../index.js';
 
-import { tryPatchPnpmPackageManager } from './patchPnpmPackageManager';
+import { tryPatchPnpmPackageManager } from './patchPnpmPackageManager.js';
 
 export const patches: Patches = [
   {

@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 
-import { hasDebugFlag } from '../../utils/args';
-import { createLogger, log } from '../../utils/logging';
-import { runESLint } from '../adapter/eslint';
-import { runPrettier } from '../adapter/prettier';
-import { internalLint } from '../lint/internal';
+import { hasDebugFlag } from '../../utils/args.js';
+import { createLogger, log } from '../../utils/logging.js';
+import { runESLint } from '../adapter/eslint.js';
+import { runPrettier } from '../adapter/prettier.js';
+import { internalLint } from '../lint/internal.js';
 
 export const format = async (
   args = process.argv.slice(2),

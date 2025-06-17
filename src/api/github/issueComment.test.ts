@@ -1,7 +1,7 @@
 import git from 'isomorphic-git';
 
-import { putIssueComment } from './issueComment';
-import { createRestClient } from './octokit';
+import { putIssueComment } from './issueComment.js';
+import { createRestClient } from './octokit.js';
 
 jest.mock('isomorphic-git');
 jest.mock('./octokit');

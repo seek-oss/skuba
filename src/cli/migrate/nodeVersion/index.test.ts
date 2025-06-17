@@ -1,8 +1,8 @@
 import memfs, { vol } from 'memfs';
 
-import * as checks from './checks';
+import * as checks from './checks.js';
 
-import { nodeVersionMigration } from '.';
+import { nodeVersionMigration } from './index.js';
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({

@@ -1,6 +1,6 @@
-import { isObject } from '../../../utils/validation';
+import { isObject } from '../../../utils/validation.js';
 
-import { formatPrettier } from './prettier';
+import { formatPrettier } from './prettier.js';
 
 export const formatObject = (
   data: Record<Exclude<PropertyKey, symbol>, unknown>,

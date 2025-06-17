@@ -3,8 +3,8 @@ import { inspect } from 'util';
 import fg from 'fast-glob';
 import { readFile, writeFile } from 'fs-extra';
 
-import type { PatchFunction, PatchReturnType } from '../..';
-import { log } from '../../../../../../utils/logging';
+import { log } from '../../../../../../utils/logging.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const DOCKER_COMPOSE_VERSION_REGEX = /^version: ['"]?\d+(\.\d+)*['"]?\n*/m;
 

@@ -1,10 +1,10 @@
 import type { Endpoints } from '@octokit/types';
 
-import { pluralise } from '../../utils/logging';
-import * as Git from '../git';
+import { pluralise } from '../../utils/logging.js';
+import * as Git from '../git/index.js';
 
-import { apiTokenFromEnvironment } from './environment';
-import { createRestClient } from './octokit';
+import { apiTokenFromEnvironment } from './environment.js';
+import { createRestClient } from './octokit.js';
 
 type Output = NonNullable<
   Endpoints['PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}']['parameters']['output']

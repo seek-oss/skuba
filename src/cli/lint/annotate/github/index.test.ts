@@ -1,14 +1,14 @@
-import * as GitHub from '../../../../api/github';
-import type { ESLintOutput } from '../../../adapter/eslint';
-import type { PrettierOutput } from '../../../adapter/prettier';
-import type { StreamInterceptor } from '../../../lint/external';
-import type { InternalLintResult } from '../../internal';
+import * as GitHub from '../../../../api/github/index.js';
+import type { ESLintOutput } from '../../../adapter/eslint.js';
+import type { PrettierOutput } from '../../../adapter/prettier.js';
+import type { StreamInterceptor } from '../../../lint/external.js';
+import type { InternalLintResult } from '../../internal.js';
 
-import { createEslintAnnotations } from './eslint';
-import { createPrettierAnnotations } from './prettier';
-import { createTscAnnotations } from './tsc';
+import { createEslintAnnotations } from './eslint.js';
+import { createPrettierAnnotations } from './prettier.js';
+import { createTscAnnotations } from './tsc.js';
 
-import { createGitHubAnnotations } from '.';
+import { createGitHubAnnotations } from './index.js';
 
 jest.mock('../../../../utils/logging');
 jest.mock('../../../../api/github');

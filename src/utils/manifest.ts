@@ -1,7 +1,7 @@
 import readPkgUp, { type NormalizedPackageJson } from 'read-pkg-up';
 import { z } from 'zod';
 
-import { hasProp } from './validation';
+import { hasProp } from './validation.js';
 
 export type ProjectType = z.infer<typeof projectTypeSchema>;
 

@@ -1,6 +1,6 @@
-import { defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module.js';
 
-import { serverlessModule } from './serverless';
+import { serverlessModule } from './serverless.js';
 
 describe('serverlessModule', () => {
   it('does not touch empty input', async () => {

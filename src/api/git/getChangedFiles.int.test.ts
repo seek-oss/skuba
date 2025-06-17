@@ -3,7 +3,7 @@ import memfs, { fs, vol } from 'memfs';
 
 import newGit from '../../../integration/git/new.json';
 
-import { getChangedFiles } from './getChangedFiles';
+import { getChangedFiles } from './getChangedFiles.js';
 
 jest.mock('fs-extra', () => memfs);
 

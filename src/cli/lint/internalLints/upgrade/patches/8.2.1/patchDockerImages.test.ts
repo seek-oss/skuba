@@ -1,9 +1,9 @@
 import fg from 'fast-glob';
 import { readFile, writeFile } from 'fs-extra';
 
-import type { PatchConfig } from '../..';
+import type { PatchConfig } from '../../index.js';
 
-import { tryPatchDockerImages } from './patchDockerImages';
+import { tryPatchDockerImages } from './patchDockerImages.js';
 
 jest.mock('fast-glob');
 jest.mock('fs-extra');

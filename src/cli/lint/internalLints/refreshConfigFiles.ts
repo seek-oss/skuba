@@ -3,21 +3,21 @@ import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 
 import { writeFile } from 'fs-extra';
 
-import { Git } from '../../..';
+import { Git } from '../../../index.js';
 import {
   findCurrentWorkspaceProjectRoot,
   findWorkspaceRoot,
-} from '../../../utils/dir';
-import type { Logger } from '../../../utils/logging';
+} from '../../../utils/dir.js';
+import type { Logger } from '../../../utils/logging.js';
 import {
   type PackageManagerConfig,
   detectPackageManager,
-} from '../../../utils/packageManager';
-import { readBaseTemplateFile } from '../../../utils/template';
-import { getDestinationManifest } from '../../configure/analysis/package';
-import { createDestinationFileReader } from '../../configure/analysis/project';
-import { mergeWithConfigFile } from '../../configure/processing/configFile';
-import type { InternalLintResult } from '../internal';
+} from '../../../utils/packageManager.js';
+import { readBaseTemplateFile } from '../../../utils/template.js';
+import { getDestinationManifest } from '../../configure/analysis/package.js';
+import { createDestinationFileReader } from '../../configure/analysis/project.js';
+import { mergeWithConfigFile } from '../../configure/processing/configFile.js';
+import type { InternalLintResult } from '../internal.js';
 
 type ConditionOptions = {
   packageManager: PackageManagerConfig;

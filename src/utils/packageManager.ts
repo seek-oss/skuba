@@ -2,7 +2,7 @@ import findUp from 'find-up';
 import isInstalledGlobally from 'is-installed-globally';
 import { z } from 'zod';
 
-import { log } from './logging';
+import { log } from './logging.js';
 
 // TODO: consider changing to this to `pnpm` in a future major version.
 export const DEFAULT_PACKAGE_MANAGER = 'yarn';
