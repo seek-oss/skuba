@@ -65,14 +65,16 @@ const upgradeESLint: PatchFunction = async ({
     const output = fiddleWithOutput(
       await fsp.readFile(path.join(dir, NEW_CONFIG_FILE_CJS), 'utf-8'),
     );
-    await fs.writeFile(
+    await fs.promises.writeFile(
       NEW_CONFIG_FILE_JS,
       await formatPrettier(output, { filepath: NEW_CONFIG_FILE_JS }),
     );
 
     await Promise.all([
-      ignoreFileContents === undefined ? Promise.resolve() : fs.rm(IGNORE_FILE),
-      fs.rm(OLD_CONFIG_FILE),
+      ignoreFileContents === undefined
+        ? Promise.resolve()
+        : fs.promises.rm(IGNORE_FILE),
+      fs.promises.rm(OLD_CONFIG_FILE),
     ]);
 
     return { result: 'apply' };

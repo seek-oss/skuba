@@ -10,7 +10,7 @@ import { log } from '../../../../../../utils/logging';
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, 'utf8');
 
       return {
         file,
@@ -94,7 +94,7 @@ const removeYarnIgnoreOptionalFlags: PatchFunction = async ({
 
   await Promise.all(
     mapped.map(async ({ file, after }) => {
-      await fs.writeFile(file, after);
+      await fs.promises.writeFile(file, after);
     }),
   );
 

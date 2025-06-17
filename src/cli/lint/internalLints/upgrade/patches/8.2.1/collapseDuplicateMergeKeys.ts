@@ -19,7 +19,7 @@ const collapseDuplicateMergeKeys: PatchFunction = async ({
   }
 
   const input = await Promise.all(
-    buildkiteFiles.map((name) => fs.readFile(name, 'utf-8')),
+    buildkiteFiles.map((name) => fs.promises.readFile(name, 'utf-8')),
   );
 
   const replaced = input.map(collapseDuplicateMergeKeysInFile);
@@ -34,8 +34,10 @@ const collapseDuplicateMergeKeys: PatchFunction = async ({
 
   await Promise.all(
     buildkiteFiles.flatMap((name, i) =>
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      replaced[i] !== input[i] ? [fs.writeFile(name, replaced[i]!)] : [],
+      replaced[i] !== input[i]
+        ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          [fs.promises.writeFile(name, replaced[i]!)]
+        : [],
     ),
   );
 
