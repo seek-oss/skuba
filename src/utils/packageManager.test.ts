@@ -109,18 +109,18 @@ describe('detectPackageManager', () => {
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
-        "command": "yarn",
+        "command": "pnpm",
         "print": {
-          "exec": "yarn",
-          "runSilent": "yarn -s",
-          "update": "yarn upgrade",
+          "exec": "pnpm",
+          "runSilent": "pnpm --silent run",
+          "update": "pnpm upgrade",
         },
       }
     `);
 
     expect(stdout()).toBe(
       [
-        'Failed to detect package manager; defaulting to yarn.',
+        'Failed to detect package manager; defaulting to pnpm.',
         'No package manager lockfile found.',
       ].join('\n'),
     );
@@ -133,17 +133,17 @@ describe('detectPackageManager', () => {
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
-        "command": "yarn",
+        "command": "pnpm",
         "print": {
-          "exec": "yarn",
-          "runSilent": "yarn -s",
-          "update": "yarn upgrade",
+          "exec": "pnpm",
+          "runSilent": "pnpm --silent run",
+          "update": "pnpm upgrade",
         },
       }
     `);
 
     expect(stdout()).toBe(
-      ['Failed to detect package manager; defaulting to yarn.', message].join(
+      ['Failed to detect package manager; defaulting to pnpm.', message].join(
         '\n',
       ),
     );
