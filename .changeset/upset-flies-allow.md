@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Use pnpm by default
+init: Use pnpm by default
