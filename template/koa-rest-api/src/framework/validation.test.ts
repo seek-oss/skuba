@@ -1,12 +1,12 @@
-import { agentFromMiddleware } from 'src/testing/server';
+import { agentFromMiddleware } from 'src/testing/server.js';
 import {
   IdDescriptionSchema,
   chance,
   mockIdDescription,
-} from 'src/testing/types';
+} from 'src/testing/types.js';
 
-import { jsonBodyParser } from './bodyParser';
-import { validate } from './validation';
+import { jsonBodyParser } from './bodyParser.js';
+import { validate } from './validation.js';
 
 const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
   const result = validate({

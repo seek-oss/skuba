@@ -1,7 +1,7 @@
 import createLogger from '@seek/logger';
 import { RequestLogging } from 'seek-koala';
 
-import { config } from 'src/config';
+import { config } from 'src/config.js';
 
 const { createContextMiddleware, mixin } =
   RequestLogging.createContextStorage();

@@ -1,8 +1,8 @@
 import './register';
 
-import app from './app';
-import { config } from './config';
-import { logger } from './framework/logging';
+import app from './app.js';
+import { config } from './config.js';
+import { logger } from './framework/logging.js';
 
 // This implements a minimal version of `koa-cluster`'s interface
 // If your application is deployed with more than 1 vCPU you can delete this
