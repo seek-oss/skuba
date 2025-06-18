@@ -1,4 +1,4 @@
-import './register';
+import './register.js';
 
 import express from 'express';
 
