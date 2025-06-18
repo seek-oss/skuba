@@ -9,10 +9,6 @@ export default Jest.mergePreset({
     '<rootDir>/integration/format/',
     '<rootDir>/integration/lint/',
   ],
-  moduleNameMapper: {
-    // https://github.com/kulshekhar/ts-jest/issues/1057#issuecomment-1482644543
-    '^(\\.\\.?\\/.+)\\.jsx?$': '$1',
-  },
   roots: ['src'],
   projects: [
     {
