@@ -1,8 +1,8 @@
 ---
-'skuba': major
+'eslint-config-skuba': major
 ---
 
-deps: eslint-config-skuba 7
+Add required file extensions lint rule
 
 This enforces that file extensions be added to every import statement. This helps prepare for an eventual migration to ECMAScript Modules (ESM).
 
