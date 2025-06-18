@@ -4,6 +4,15 @@ const { pathsToModuleNameMapper } = require('ts-jest');
 
 const { tryParseTsConfig } = require('./tsConfig');
 
+/**
+ * Strip .js extension from a path if present
+ * @param {string} value - The path to process
+ * @returns {string} The path with .js extension removed
+ */
+const stripJsExtension = (value) => {
+  return value.replace(/\.js$/, '');
+};
+
 module.exports.createModuleNameMapper = (getConfig) => {
   const maybeTsConfig = tryParseTsConfig(getConfig);
 
@@ -14,8 +23,8 @@ module.exports.createModuleNameMapper = (getConfig) => {
         // We trim a trailing slash because TypeScript allows `import 'src'`
         // to be resolved by the alias `src/`, but Jest's mapper does not.
         [
-          key.replace(/\/$/, ''),
-          values.map((value) => value.replace(/\/$/, '')),
+          stripJsExtension(key.replace(/\/$/, '')),
+          values.map((value) => stripJsExtension(value.replace(/\/$/, ''))),
         ],
         // Append a variant of the input path entry.
         // As TypeScript allows both `import 'src'` and `import 'src/nested'`
@@ -25,15 +34,15 @@ module.exports.createModuleNameMapper = (getConfig) => {
           ? [
               [
                 // Given a path `src/*`, seed an extra `src`.
-                key.replace(/\/\*$/, ''),
-                values.map((value) => value.replace(/\/\*$/, '')),
+                stripJsExtension(key.replace(/\/\*$/, '')),
+                values.map((value) => stripJsExtension(value.replace(/\/\*$/, ''))),
               ],
             ]
           : [
               [
                 // Given a path `src`, seed an extra `src/*`.
-                path.join(key, '*'),
-                values.map((value) => path.join(value, '*')),
+                path.join(stripJsExtension(key), '*'),
+                values.map((value) => path.join(stripJsExtension(value), '*')),
               ],
             ]),
       ],
@@ -51,8 +60,8 @@ module.exports.createModuleNameMapper = (getConfig) => {
     Object.entries(moduleNameMapper).map(([key, values]) => [
       key,
       Array.isArray(values)
-        ? values.map((value) => path.normalize(value))
-        : path.normalize(values),
+        ? values.map((value) => stripJsExtension(path.normalize(value)))
+        : stripJsExtension(path.normalize(values)),
     ]),
   );
 };

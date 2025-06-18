@@ -54,6 +54,24 @@ describe('moduleNameMapper', () => {
       }
     `));
 
+  it('strips .js extensions from paths', () =>
+    expect(
+      act({
+        'utils.js': ['src/utils.js'],
+        'helpers.js/*': ['src/helpers.js/*'],
+        'components/': ['src/components.js/'],
+      }),
+    ).toMatchInlineSnapshot(`
+      {
+        "^components$": "<rootDir>/src/components",
+        "^components/(.*)$": "<rootDir>/src/components/$1",
+        "^helpers$": "<rootDir>/src/helpers",
+        "^helpers/(.*)$": "<rootDir>/src/helpers/$1",
+        "^utils$": "<rootDir>/src/utils",
+        "^utils/(.*)$": "<rootDir>/src/utils/$1",
+      }
+    `));
+
   it('respects no paths', () => expect(act({})).toMatchInlineSnapshot(`{}`));
 
   it('defaults to no paths on undefined', () =>
