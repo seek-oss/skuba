@@ -1,26 +1,26 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { commitAllChanges } from '../../api/git';
-import { hasDebugFlag } from '../../utils/args';
-import { copyFiles, createEjsRenderer } from '../../utils/copy';
-import { createInclusionFilter } from '../../utils/dir';
-import { createExec, ensureCommands } from '../../utils/exec';
-import { createLogger, log } from '../../utils/logging';
-import { showLogoAndVersionInfo } from '../../utils/logo';
-import { getConsumerManifest } from '../../utils/manifest';
-import { detectPackageManager } from '../../utils/packageManager';
+import { commitAllChanges } from '../../api/git/index.js';
+import { hasDebugFlag } from '../../utils/args.js';
+import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
+import { createInclusionFilter } from '../../utils/dir.js';
+import { createExec, ensureCommands } from '../../utils/exec.js';
+import { createLogger, log } from '../../utils/logging.js';
+import { showLogoAndVersionInfo } from '../../utils/logo.js';
+import { getConsumerManifest } from '../../utils/manifest.js';
+import { detectPackageManager } from '../../utils/packageManager.js';
 import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
-} from '../../utils/template';
-import { runPrettier } from '../adapter/prettier';
-import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig';
+} from '../../utils/template.js';
+import { runPrettier } from '../adapter/prettier.js';
+import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.js';
 
-import { getConfig } from './getConfig';
-import { initialiseRepo } from './git';
-import type { Input } from './types';
-import { writePackageJson } from './writePackageJson';
+import { getConfig } from './getConfig.js';
+import { initialiseRepo } from './git.js';
+import type { Input } from './types.js';
+import { writePackageJson } from './writePackageJson.js';
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {

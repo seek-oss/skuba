@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { parseTscArgs } from './args';
+import { parseTscArgs } from './args.js';
 
 describe('parseTscArgs', () => {
   const cwd = process.cwd();

@@ -1,11 +1,22 @@
 const base = require('eslint-config-seek/base');
 const extensions = require('eslint-config-seek/extensions');
+const requireExtensions = require('eslint-plugin-require-extensions');
 const eslintPluginYml = require('eslint-plugin-yml');
 const tseslint = require('typescript-eslint');
 
 const { js: jsExtensions, ts: tsExtensions } = extensions;
 
 module.exports = [
+  {
+    name: 'skuba/pre-esm',
+    plugins: {
+      'require-extensions': requireExtensions,
+    },
+    rules: {
+      'require-extensions/require-extensions': 'error',
+      'require-extensions/require-index': 'error',
+    },
+  },
   {
     name: 'skuba/ignores',
     ignores: [

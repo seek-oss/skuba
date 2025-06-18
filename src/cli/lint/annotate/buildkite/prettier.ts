@@ -1,5 +1,5 @@
-import * as Buildkite from '../../../../api/buildkite';
-import type { PrettierOutput } from '../../../adapter/prettier';
+import * as Buildkite from '../../../../api/buildkite/index.js';
+import type { PrettierOutput } from '../../../adapter/prettier.js';
 
 export const createPrettierAnnotations = (
   prettier: PrettierOutput,

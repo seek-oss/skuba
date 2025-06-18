@@ -1,6 +1,6 @@
-import { defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module.js';
 
-import { prettierModule } from './prettier';
+import { prettierModule } from './prettier.js';
 
 describe('prettierModule', () => {
   it('works from scratch', async () => {

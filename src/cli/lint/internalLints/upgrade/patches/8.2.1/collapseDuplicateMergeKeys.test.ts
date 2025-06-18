@@ -3,10 +3,10 @@ import fsp from 'fs/promises';
 
 import memfs, { vol } from 'memfs';
 
-import type { PatchConfig } from '../..';
-import { configForPackageManager } from '../../../../../../utils/packageManager';
+import { configForPackageManager } from '../../../../../../utils/packageManager.js';
+import type { PatchConfig } from '../../index.js';
 
-import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys';
+import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

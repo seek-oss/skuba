@@ -1,4 +1,4 @@
-import { transform } from './transform';
+import { transform } from './transform.js';
 
 test('transform', () =>
   expect(transform).toStrictEqual({

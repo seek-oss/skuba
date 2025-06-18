@@ -1,13 +1,13 @@
-import * as Buildkite from '../../../../api/buildkite';
-import type { ESLintOutput } from '../../../adapter/eslint';
-import type { PrettierOutput } from '../../../adapter/prettier';
-import type { StreamInterceptor } from '../../../lint/external';
-import type { InternalLintResult } from '../../internal';
+import * as Buildkite from '../../../../api/buildkite/index.js';
+import type { ESLintOutput } from '../../../adapter/eslint.js';
+import type { PrettierOutput } from '../../../adapter/prettier.js';
+import type { StreamInterceptor } from '../../../lint/external.js';
+import type { InternalLintResult } from '../../internal.js';
 
-import { createEslintAnnotations } from './eslint';
-import { createInternalAnnotations } from './internal';
-import { createPrettierAnnotations } from './prettier';
-import { createTscAnnotations } from './tsc';
+import { createEslintAnnotations } from './eslint.js';
+import { createInternalAnnotations } from './internal.js';
+import { createPrettierAnnotations } from './prettier.js';
+import { createTscAnnotations } from './tsc.js';
 
 export const createBuildkiteAnnotations = async (
   internal: InternalLintResult,

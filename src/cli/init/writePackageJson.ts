@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 
-import type { ProjectType } from '../../utils/manifest';
-import { getDestinationManifest } from '../configure/analysis/package';
-import { formatPackage } from '../configure/processing/package';
+import type { ProjectType } from '../../utils/manifest.js';
+import { getDestinationManifest } from '../configure/analysis/package.js';
+import { formatPackage } from '../configure/processing/package.js';
 
 interface WritePackageJsonProps {
   cwd: string;

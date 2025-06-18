@@ -34,7 +34,7 @@
     "format": "pnpm --silent skuba format && pnpm format:packages",
     "format:packages": "pnpm --filter '!./template/**' format",
     "lint": "pnpm --silent skuba lint && pnpm --silent lint:md",
-    "lint-all": "pnpm lint && pnpm lint:packages",
+    "lint:all": "pnpm lint && pnpm lint:packages",
     "lint:md": "remark --frail --quiet .",
     "lint:packages": "pnpm --filter '!./template/**' lint",
     "prepack": "pnpm --filter './template/**' exec rm -rf node_modules",

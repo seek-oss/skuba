@@ -1,13 +1,13 @@
-import { readBaseTemplateFile } from '../../../utils/template';
-import { deleteFiles } from '../processing/deleteFiles';
-import { withPackage } from '../processing/package';
+import { readBaseTemplateFile } from '../../../utils/template.js';
+import { deleteFiles } from '../processing/deleteFiles.js';
+import { withPackage } from '../processing/package.js';
 import {
   createPropAppender,
   createPropFilter,
   readModuleExports,
   transformModuleImportsAndExports,
-} from '../processing/typescript';
-import type { Module } from '../types';
+} from '../processing/typescript.js';
+import type { Module } from '../types.js';
 
 const OUTDATED_ISOLATED_MODULES_CONFIG_SNIPPETS = [
   `

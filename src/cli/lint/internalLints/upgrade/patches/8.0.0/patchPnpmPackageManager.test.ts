@@ -2,10 +2,10 @@ import fg from 'fast-glob';
 import fs from 'fs-extra';
 import type { NormalizedPackageJson } from 'read-pkg-up';
 
-import type { PatchConfig } from '../..';
-import type { PackageManagerConfig } from '../../../../../../utils/packageManager';
+import type { PackageManagerConfig } from '../../../../../../utils/packageManager.js';
+import type { PatchConfig } from '../../index.js';
 
-import { tryPatchPnpmPackageManager } from './patchPnpmPackageManager';
+import { tryPatchPnpmPackageManager } from './patchPnpmPackageManager.js';
 
 jest.mock('fast-glob');
 jest.mock('fs-extra');

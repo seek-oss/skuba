@@ -2,10 +2,10 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import type { PatchFunction, PatchReturnType } from '../..';
-import { log } from '../../../../../../utils/logging';
-import { createDestinationFileReader } from '../../../../../configure/analysis/project';
-import { formatPrettier } from '../../../../../configure/processing/prettier';
+import { log } from '../../../../../../utils/logging.js';
+import { createDestinationFileReader } from '../../../../../configure/analysis/project.js';
+import { formatPrettier } from '../../../../../configure/processing/prettier.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const SERVER_LISTENER_FILENAME = 'src/listen.ts';
 
