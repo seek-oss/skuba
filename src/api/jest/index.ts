@@ -31,11 +31,6 @@ type DefaultOptions =
   | 'testTimeout'
   | 'watchPathIgnorePatterns';
 
-export const extensionsModuleMapper = {
-  // https://github.com/kulshekhar/ts-jest/issues/1057#issuecomment-1482644543
-  '^(\\.\\.?\\/.+)\\.jsx?$': '$1',
-};
-
 /**
  * Merge additional Jest options into the **skuba** preset.
  *
@@ -50,12 +45,7 @@ export const mergePreset = <
   Config.InitialOptions,
   AdditionalOptions | DefaultOptions
 >): Config.InitialOptions => {
-  const fixedOptions: Config.InitialOptions = {
-    moduleNameMapper: extensionsModuleMapper,
-  };
-
-  const defaultOptions = mergeRaw(fixedOptions, options);
-  const root = mergeRaw(jestPreset, defaultOptions);
+  const root = mergeRaw(jestPreset, options);
 
   return {
     ...root,

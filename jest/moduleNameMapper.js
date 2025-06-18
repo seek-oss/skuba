@@ -4,15 +4,6 @@ const { pathsToModuleNameMapper } = require('ts-jest');
 
 const { tryParseTsConfig } = require('./tsConfig');
 
-/**
- * Strip .js extension from a path if present
- * @param {string} value - The path to process
- * @returns {string} The path with .js extension removed
- */
-const stripJsExtension = (value) => {
-  return value.replace(/\.js$/, '');
-};
-
 module.exports.createModuleNameMapper = (getConfig) => {
   const maybeTsConfig = tryParseTsConfig(getConfig);
 
@@ -23,8 +14,8 @@ module.exports.createModuleNameMapper = (getConfig) => {
         // We trim a trailing slash because TypeScript allows `import 'src'`
         // to be resolved by the alias `src/`, but Jest's mapper does not.
         [
-          stripJsExtension(key.replace(/\/$/, '')),
-          values.map((value) => stripJsExtension(value.replace(/\/$/, ''))),
+          key.replace(/\/$/, ''),
+          values.map((value) => value.replace(/\/$/, '')),
         ],
         // Append a variant of the input path entry.
         // As TypeScript allows both `import 'src'` and `import 'src/nested'`
@@ -34,15 +25,15 @@ module.exports.createModuleNameMapper = (getConfig) => {
           ? [
               [
                 // Given a path `src/*`, seed an extra `src`.
-                stripJsExtension(key.replace(/\/\*$/, '')),
-                values.map((value) => stripJsExtension(value.replace(/\/\*$/, ''))),
+                key.replace(/\/\*$/, ''),
+                values.map((value) => value.replace(/\/\*$/, '')),
               ],
             ]
           : [
               [
                 // Given a path `src`, seed an extra `src/*`.
-                path.join(stripJsExtension(key), '*'),
-                values.map((value) => path.join(stripJsExtension(value), '*')),
+                path.join(key, '*'),
+                values.map((value) => path.join(value, '*')),
               ],
             ]),
       ],
@@ -51,7 +42,10 @@ module.exports.createModuleNameMapper = (getConfig) => {
 
   const prefix = path.join('<rootDir>', maybeTsConfig?.options.baseUrl ?? '.');
 
-  const moduleNameMapper = pathsToModuleNameMapper(paths, { prefix });
+  const moduleNameMapper = pathsToModuleNameMapper(paths, {
+    prefix,
+    useESM: true,
+  });
 
   // Normalise away any `..`s that may crop up from `baseUrl` usage.
   // For example, a `baseUrl` of `src` and a path of `../cli` will result in
@@ -60,8 +54,8 @@ module.exports.createModuleNameMapper = (getConfig) => {
     Object.entries(moduleNameMapper).map(([key, values]) => [
       key,
       Array.isArray(values)
-        ? values.map((value) => stripJsExtension(path.normalize(value)))
-        : stripJsExtension(path.normalize(values)),
+        ? values.map((value) => path.normalize(value))
+        : path.normalize(values),
     ]),
   );
 };
