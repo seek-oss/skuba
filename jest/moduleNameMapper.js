@@ -35,7 +35,9 @@ module.exports.createModuleNameMapper = (getConfig) => {
               [
                 // Given a path `src/*`, seed an extra `src`.
                 stripJsExtension(key.replace(/\/\*$/, '')),
-                values.map((value) => stripJsExtension(value.replace(/\/\*$/, ''))),
+                values.map((value) =>
+                  stripJsExtension(value.replace(/\/\*$/, '')),
+                ),
               ],
             ]
           : [
