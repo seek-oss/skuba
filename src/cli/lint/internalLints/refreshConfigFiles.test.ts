@@ -1,6 +1,6 @@
 import path from 'path';
 
-import * as fsExtra from 'fs-extra';
+import fs from 'fs-extra';
 
 import { Git } from '../../..';
 import { log } from '../../../utils/logging';
@@ -64,7 +64,7 @@ beforeEach(() => {
 afterEach(jest.resetAllMocks);
 
 describe('refreshConfigFiles', () => {
-  const writeFile = jest.mocked(fsExtra.writeFile);
+  const writeFile = jest.mocked(fs.writeFile);
   const createDestinationFileReader = jest.mocked(
     project.createDestinationFileReader,
   );

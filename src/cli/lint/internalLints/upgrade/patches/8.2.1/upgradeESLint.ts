@@ -3,7 +3,7 @@ import * as fsp from 'fs/promises';
 import path from 'path';
 import { inspect } from 'util';
 
-import { promises as fsExtra } from 'fs-extra';
+import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { createExec } from '../../../../../../utils/exec';
@@ -65,7 +65,7 @@ const upgradeESLint: PatchFunction = async ({
     const output = fiddleWithOutput(
       await fsp.readFile(path.join(dir, NEW_CONFIG_FILE_CJS), 'utf-8'),
     );
-    await fsExtra.writeFile(
+    await fs.promises.writeFile(
       NEW_CONFIG_FILE_JS,
       await formatPrettier(output, { filepath: NEW_CONFIG_FILE_JS }),
     );
@@ -73,8 +73,8 @@ const upgradeESLint: PatchFunction = async ({
     await Promise.all([
       ignoreFileContents === undefined
         ? Promise.resolve()
-        : fsExtra.rm(IGNORE_FILE),
-      fsExtra.rm(OLD_CONFIG_FILE),
+        : fs.promises.rm(IGNORE_FILE),
+      fs.promises.rm(OLD_CONFIG_FILE),
     ]);
 
     return { result: 'apply' };
