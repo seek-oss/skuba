@@ -3,7 +3,7 @@ const extensions = require('eslint-config-seek/extensions');
 const eslintPluginYml = require('eslint-plugin-yml');
 const tseslint = require('typescript-eslint');
 
-const requireExtensionsPlugin = require('./requireExtensions');
+const requireExtensionsPlugin = require('./requireExtensions.js');
 
 const { js: jsExtensions, ts: tsExtensions } = extensions;
 
