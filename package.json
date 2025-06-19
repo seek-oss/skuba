@@ -100,7 +100,7 @@
     "is-installed-globally": "^0.4.0",
     "isomorphic-git": "^1.11.1",
     "jest": "^30.0.0",
-    "jest-watch-typeahead": "^2.1.1",
+    "jest-watch-typeahead": "^3.0.1",
     "lodash.mergewith": "^4.6.2",
     "minimist": "^1.2.6",
     "normalize-package-data": "^7.0.0",
