@@ -16,6 +16,12 @@ const COMMON_TEST_RESULT_FIELDS = {
     runtime: 2646,
     slow: false,
     start: 1636247733986,
+    loadTestEnvironmentEnd: 1683542780245,
+    loadTestEnvironmentStart: 1683542780198,
+    setupAfterEnvEnd: 1683542780312,
+    setupAfterEnvStart: 1683542780247,
+    setupFilesEnd: 1683542780435,
+    setupFilesStart: 1683542780314,
   },
   skipped: false,
   snapshot: {
@@ -27,7 +33,7 @@ const COMMON_TEST_RESULT_FIELDS = {
     unmatched: 0,
     updated: 0,
   },
-};
+} satisfies Partial<TestResult>;
 
 it('should create annotation from Jest test failure', () => {
   const testResult: TestResult = {
