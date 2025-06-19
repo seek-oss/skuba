@@ -1,4 +1,4 @@
-import * as wait from './wait';
+import * as wait from './wait.js';
 
 const delayMicrotask = () =>
   Promise.resolve()

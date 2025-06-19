@@ -2,7 +2,7 @@ import http from 'http';
 import type { AddressInfo } from 'net';
 import util from 'util';
 
-import { log } from '../utils/logging';
+import { log } from '../utils/logging.js';
 
 /**
  * Create an HTTP request listener based on the supplied function.

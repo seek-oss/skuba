@@ -2,7 +2,7 @@ import type { Reporter } from '@jest/reporters';
 import fs from 'fs-extra';
 import { resolveConfig } from 'prettier';
 
-import { formatOrLintFile } from '../../../../cli/adapter/prettier';
+import { formatOrLintFile } from '../../../../cli/adapter/prettier.js';
 
 export default class SnapshotPrettifier
   implements Pick<Reporter, 'onTestFileResult'>

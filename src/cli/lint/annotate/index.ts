@@ -1,10 +1,10 @@
-import type { ESLintOutput } from '../../../cli/adapter/eslint';
-import type { PrettierOutput } from '../../../cli/adapter/prettier';
-import type { StreamInterceptor } from '../external';
-import type { InternalLintResult } from '../internal';
+import type { ESLintOutput } from '../../../cli/adapter/eslint.js';
+import type { PrettierOutput } from '../../../cli/adapter/prettier.js';
+import type { StreamInterceptor } from '../external.js';
+import type { InternalLintResult } from '../internal.js';
 
-import { createBuildkiteAnnotations } from './buildkite';
-import { createGitHubAnnotations } from './github';
+import { createBuildkiteAnnotations } from './buildkite/index.js';
+import { createGitHubAnnotations } from './github/index.js';
 
 export const createAnnotations = async (
   internal: InternalLintResult,

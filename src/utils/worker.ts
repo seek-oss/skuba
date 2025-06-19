@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 import { Worker, parentPort, workerData } from 'worker_threads';
 
-import { log } from './logging';
+import { log } from './logging.js';
 
 /**
  * Executes a script at `filepath` in a Node.js worker thread.

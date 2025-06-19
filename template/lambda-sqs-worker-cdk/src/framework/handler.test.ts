@@ -1,8 +1,8 @@
-import { createCtx } from 'src/testing/handler';
-import { logger } from 'src/testing/logging';
-import { chance } from 'src/testing/types';
+import { createCtx } from 'src/testing/handler.js';
+import { logger } from 'src/testing/logging.js';
+import { chance } from 'src/testing/types.js';
 
-import { createHandler } from './handler';
+import { createHandler } from './handler.js';
 
 describe('createHandler', () => {
   const ctx = createCtx();

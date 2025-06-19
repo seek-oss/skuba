@@ -1,4 +1,4 @@
-import { prependImport, stripImports } from './javascript';
+import { prependImport, stripImports } from './javascript.js';
 
 describe('prependImport', () => {
   it('handles an empty file', () =>

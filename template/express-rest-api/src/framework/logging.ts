@@ -1,6 +1,6 @@
 import createLogger from '@seek/logger';
 
-import { config } from 'src/config';
+import { config } from 'src/config.js';
 
 export const logger = createLogger({
   base: {

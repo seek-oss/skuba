@@ -1,16 +1,16 @@
 import type { Writable } from 'stream';
 import { inspect } from 'util';
 
-import { hasDebugFlag, hasSerialFlag } from '../../utils/args';
-import { log } from '../../utils/logging';
-import { detectPackageManager } from '../../utils/packageManager';
-import { throwOnTimeout } from '../../utils/wait';
+import { hasDebugFlag, hasSerialFlag } from '../../utils/args.js';
+import { log } from '../../utils/logging.js';
+import { detectPackageManager } from '../../utils/packageManager.js';
+import { throwOnTimeout } from '../../utils/wait.js';
 
-import { createAnnotations } from './annotate';
-import { autofix } from './autofix';
-import { externalLint } from './external';
-import { internalLint } from './internal';
-import type { Input } from './types';
+import { createAnnotations } from './annotate/index.js';
+import { autofix } from './autofix.js';
+import { externalLint } from './external.js';
+import { internalLint } from './internal.js';
+import type { Input } from './types.js';
 
 export const lint = async (
   args = process.argv.slice(2),

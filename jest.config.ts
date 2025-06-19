@@ -1,4 +1,4 @@
-import { Jest } from './src';
+import * as Jest from './lib/api/jest/index.js';
 
 export default Jest.mergePreset({
   coveragePathIgnorePatterns: ['<rootDir>/integration/', '<rootDir>/template/'],
@@ -13,7 +13,7 @@ export default Jest.mergePreset({
   projects: [
     {
       displayName: 'unit',
-      roots: ['src'],
+      roots: ['src', 'jest'],
       setupFiles: ['<rootDir>/jest.setup.ts'],
       testPathIgnorePatterns: [
         '<rootDir>/template/',

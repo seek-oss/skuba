@@ -1,4 +1,4 @@
-import { mergePreset } from '.';
+import { mergePreset } from './index.js';
 
 describe('mergePreset', () => {
   it('handles no props', () => {

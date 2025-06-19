@@ -4,8 +4,8 @@ import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { lt } from 'semver';
 
-import type { PatchFunction, PatchReturnType } from '../..';
-import { log } from '../../../../../../utils/logging';
+import { log } from '../../../../../../utils/logging.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const DOCKERFILE_COREPACK_COMMAND = 'RUN corepack enable pnpm';
 const PACKAGE_JSON_MOUNT = `RUN --mount=type=bind,source=package.json,target=package.json \\

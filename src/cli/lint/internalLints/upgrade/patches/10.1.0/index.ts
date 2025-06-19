@@ -1,7 +1,7 @@
-import type { Patches } from '../..';
+import type { Patches } from '../../index.js';
 
-import { tryMigrateNpmrcToPnpmWorkspace } from './migrateNpmrcToPnpmWorkspace';
-import { tryStopBundlingInCDKTests } from './stopBundlingInCDKTests';
+import { tryMigrateNpmrcToPnpmWorkspace } from './migrateNpmrcToPnpmWorkspace.js';
+import { tryStopBundlingInCDKTests } from './stopBundlingInCDKTests.js';
 
 export const patches: Patches = [
   {

@@ -4,10 +4,10 @@ import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
 import { build } from 'esbuild';
 import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
-import { createLogger } from '../../utils/logging';
+import { createLogger } from '../../utils/logging.js';
 
-import { parseTscArgs } from './args';
-import { readTsconfig, tsc } from './tsc';
+import { parseTscArgs } from './args.js';
+import { readTsconfig, tsc } from './tsc.js';
 
 interface EsbuildParameters {
   debug: boolean;

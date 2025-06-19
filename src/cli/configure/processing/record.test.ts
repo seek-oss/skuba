@@ -1,4 +1,4 @@
-import { getFirstDefined, merge, mergeRaw } from './record';
+import { getFirstDefined, merge, mergeRaw } from './record.js';
 
 describe('getFirstDefined', () => {
   it('handles no input', () => expect(getFirstDefined({}, [])).toBeUndefined());

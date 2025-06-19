@@ -1,6 +1,6 @@
 import git from 'isomorphic-git';
 
-import { currentBranch } from './currentBranch';
+import { currentBranch } from './currentBranch.js';
 
 jest.mock('isomorphic-git');
 

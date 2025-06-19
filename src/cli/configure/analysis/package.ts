@@ -1,9 +1,9 @@
 import readPkgUp from 'read-pkg-up';
 
-import { log } from '../../../utils/logging';
-import type { DependencyDiff } from '../types';
+import { log } from '../../../utils/logging.js';
+import type { DependencyDiff } from '../types.js';
 
-import { determineOperation } from './diff';
+import { determineOperation } from './diff.js';
 
 interface GetDestinationManifestProps {
   cwd?: string;

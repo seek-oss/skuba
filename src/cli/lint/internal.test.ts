@@ -1,4 +1,4 @@
-import { internalLint } from './internal';
+import { internalLint } from './internal.js';
 
 describe('internalLint', () => {
   beforeEach(() => {

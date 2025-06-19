@@ -1,5 +1,5 @@
-import { smokeTestJobStorage } from 'src/storage/jobs';
-import type { Middleware } from 'src/types/koa';
+import { smokeTestJobStorage } from 'src/storage/jobs.js';
+import type { Middleware } from 'src/types/koa.js';
 
 /**
  * Tests connectivity to ensure appropriate access and network configuration.

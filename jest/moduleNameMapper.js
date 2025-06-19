@@ -42,7 +42,10 @@ module.exports.createModuleNameMapper = (getConfig) => {
 
   const prefix = path.join('<rootDir>', maybeTsConfig?.options.baseUrl ?? '.');
 
-  const moduleNameMapper = pathsToModuleNameMapper(paths, { prefix });
+  const moduleNameMapper = pathsToModuleNameMapper(paths, {
+    prefix,
+    useESM: true,
+  });
 
   // Normalise away any `..`s that may crop up from `baseUrl` usage.
   // For example, a `baseUrl` of `src` and a path of `../cli` will result in

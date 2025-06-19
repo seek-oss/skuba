@@ -9,7 +9,7 @@ import {
   STAGE,
   UNMODIFIED,
   WORKDIR,
-} from './statusMatrix';
+} from './statusMatrix.js';
 
 type ChangedFileState = 'added' | 'modified' | 'deleted';
 export interface ChangedFile {

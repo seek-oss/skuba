@@ -3,15 +3,15 @@ import path from 'path';
 import fs from 'fs-extra';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
-import { type TextProcessor, copyFiles } from '../../utils/copy';
-import { log } from '../../utils/logging';
-import type { ProjectType } from '../../utils/manifest';
-import { getLatestNpmVersion, getSkubaVersion } from '../../utils/version';
+import { type TextProcessor, copyFiles } from '../../utils/copy.js';
+import { log } from '../../utils/logging.js';
+import type { ProjectType } from '../../utils/manifest.js';
+import { getLatestNpmVersion, getSkubaVersion } from '../../utils/version.js';
 
-import { diffDependencies } from './analysis/package';
-import * as dependencyMutators from './dependencies';
-import { formatPackage } from './processing/package';
-import type { DependencyDiff } from './types';
+import { diffDependencies } from './analysis/package.js';
+import * as dependencyMutators from './dependencies/index.js';
+import { formatPackage } from './processing/package.js';
+import type { DependencyDiff } from './types.js';
 
 const logDiff = (diff: DependencyDiff): boolean => {
   const entries = Object.entries(diff);

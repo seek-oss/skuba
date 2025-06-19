@@ -1,8 +1,8 @@
 import memfs, { vol } from 'memfs';
 
-import type { PatchConfig } from '../..';
+import type { PatchConfig } from '../../index.js';
 
-import { tryPatchDockerfile } from './patchDockerfile';
+import { tryPatchDockerfile } from './patchDockerfile.js';
 
 jest.mock('fs-extra', () => memfs);
 

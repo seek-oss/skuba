@@ -1,12 +1,12 @@
 import stream from 'stream';
 
-import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint';
+import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint.js';
 import {
   runPrettierInCurrentThread,
   runPrettierInWorkerThread,
-} from './prettier';
-import { runTscInNewProcess } from './tsc';
-import type { Input } from './types';
+} from './prettier.js';
+import { runTscInNewProcess } from './tsc.js';
+import type { Input } from './types.js';
 
 const tscPrefixRegex = /^(.*?tsc\s+│.*?\s)/gm;
 

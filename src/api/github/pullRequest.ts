@@ -1,9 +1,9 @@
 import type { Octokit } from '@octokit/rest' with { 'resolution-mode': 'import' };
 
-import * as Git from '../git';
+import * as Git from '../git/index.js';
 
-import { apiTokenFromEnvironment } from './environment';
-import { createRestClient } from './octokit';
+import { apiTokenFromEnvironment } from './environment.js';
+import { createRestClient } from './octokit.js';
 
 interface GetPullRequestParameters {
   /**

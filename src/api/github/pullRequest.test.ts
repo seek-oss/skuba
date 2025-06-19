@@ -1,7 +1,7 @@
 import git from 'isomorphic-git';
 
-import { createRestClient } from './octokit';
-import { getPullRequestNumber } from './pullRequest';
+import { createRestClient } from './octokit.js';
+import { getPullRequestNumber } from './pullRequest.js';
 
 jest.mock('isomorphic-git');
 jest.mock('./octokit');

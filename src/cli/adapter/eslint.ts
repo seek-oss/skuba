@@ -3,7 +3,7 @@ import path from 'path';
 import chalk from 'chalk';
 import { type ESLint, type Linter, loadESLint } from 'eslint';
 
-import { type Logger, pluralise } from '../../utils/logging';
+import { type Logger, pluralise } from '../../utils/logging.js';
 
 const symbolForResult = (result: ESLint.LintResult) => {
   if (result.errorCount) {

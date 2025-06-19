@@ -1,4 +1,4 @@
-import * as presets from './presets';
+import * as presets from './presets.js';
 
 describe('presets', () => {
   test('nonNegativeInteger', () => {

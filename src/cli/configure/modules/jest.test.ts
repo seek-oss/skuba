@@ -1,6 +1,6 @@
-import { defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module.js';
 
-import { jestModule } from './jest';
+import { jestModule } from './jest.js';
 
 describe('jestModule', () => {
   it('works from scratch', async () => {

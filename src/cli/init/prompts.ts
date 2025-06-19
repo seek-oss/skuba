@@ -1,7 +1,7 @@
 import { type FormChoice, Input, Select } from 'enquirer';
 import fs from 'fs-extra';
 
-import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
+import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
 
 import {
   PLATFORM_OPTIONS,
@@ -10,7 +10,7 @@ import {
   isGitHubRepo,
   isGitHubTeam,
   isPlatform,
-} from './validation';
+} from './validation.js';
 
 export type Choice = FormChoice & {
   /**

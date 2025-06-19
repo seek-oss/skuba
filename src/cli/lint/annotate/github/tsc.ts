@@ -1,7 +1,7 @@
 import { stripVTControlCharacters as stripAnsi } from 'util';
 
-import type * as GitHub from '../../../../api/github';
-import type { StreamInterceptor } from '../../../lint/external';
+import type * as GitHub from '../../../../api/github/index.js';
+import type { StreamInterceptor } from '../../../lint/external.js';
 
 type TscLevel = 'error' | 'warning' | 'info';
 

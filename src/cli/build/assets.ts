@@ -3,14 +3,14 @@ import path from 'path';
 import chalk, { type Color } from 'chalk';
 import fs from 'fs-extra';
 
-import { copyFile } from '../../utils/copy';
-import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir';
-import { type Logger, createLogger, log } from '../../utils/logging';
+import { copyFile } from '../../utils/copy.js';
+import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir.js';
+import { type Logger, createLogger, log } from '../../utils/logging.js';
 import {
   getConsumerManifest,
   getEntryPointFromManifest,
   getPropFromConsumerManifest,
-} from '../../utils/manifest';
+} from '../../utils/manifest.js';
 
 export const copyAssets = async (
   destinationDir: string,

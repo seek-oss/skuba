@@ -1,4 +1,4 @@
-import * as skubaDive from '.';
+import * as skubaDive from './index.js';
 
 describe('skuba-dive', () => {
   it('exports a top-level register hook', () =>

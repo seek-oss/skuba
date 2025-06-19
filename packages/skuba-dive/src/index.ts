@@ -1,2 +1,2 @@
-export * as Assert from './assert';
-export * as Env from './env';
+export * as Assert from './assert/index.js';
+export * as Env from './env/index.js';

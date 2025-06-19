@@ -1,4 +1,4 @@
-import { skuba } from './skuba';
+import { skuba } from './skuba.js';
 
 describe('skuba', () => {
   it.each([
