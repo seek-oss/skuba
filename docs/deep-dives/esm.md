@@ -139,7 +139,7 @@ However, this will require us to also update our outdated [moduleResolution] con
 
 1. Switching to Vitest
 
-Finally, we will be switching to [Vitest](https://vitest.dev/) as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition. We will apply a community codemod to help with the transition, but it will still require some manual changes to our tests.
+Finally, we will be switching to [Vitest](https://vitest.dev/) as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition. We will apply a community codemod to help with the transition, but it will still require some manual changes to our tests. Vitest also provides TypeScript support out of the box, which means we won't need to apply any custom workarounds like we do with Jest.
 
 ---
 
