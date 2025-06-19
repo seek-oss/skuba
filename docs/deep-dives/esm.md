@@ -76,7 +76,7 @@ import { module } from 'src/imported-module';
 
 However, `skuba-dive/register` relies on `module-alias` which is not compatible with ESM. This means that we need to find a new way to handle module aliases in ESM.
 
-1. **Jest** Our current setup use Jest for testing, and as of version 30 is still not fully compatible with ESM. This is a significant blocker as switching to ESM would require us to switch to a different testing framework or wait for Jest to become fully compatible with ESM.
+1. **Jest** Our current setup use Jest for testing, and as of version 30 is still [not fully compatible with ESM]. This is a significant blocker as switching to ESM would require us to switch to a different testing framework or wait for Jest to become fully compatible with ESM.
 
 Migrating to ESM with Jest would require significant changes to our codebase, such as updating all imports to to be dynamic imports in order to use mocks, and to change all `jest.mock` calls to use `jest.unstable_mockModule` instead.
 
