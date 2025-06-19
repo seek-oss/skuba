@@ -23,11 +23,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   // jestjs/jest#14305
   prettierPath: null,
-  reporters: [
-    'default',
-    require.resolve('./lib/cli/test/reporters/github'),
-    require.resolve('./lib/cli/test/reporters/prettier'),
-  ],
+  reporters: ['default', require.resolve('./lib/cli/test/reporters/github')],
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/node_modules.*/',
