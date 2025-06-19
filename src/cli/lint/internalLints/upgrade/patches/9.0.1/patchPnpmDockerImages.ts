@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import fg from 'fast-glob';
-import { readFile, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 
 import type { PatchFunction, PatchReturnType } from '../..';
 import { log } from '../../../../../../utils/logging';
@@ -17,7 +17,7 @@ const PACKAGE_JSON_MOUNT =
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await readFile(file, 'utf8');
+      const contents = await fs.readFile(file, 'utf8');
 
       return {
         file,
@@ -73,7 +73,7 @@ const patchPnpmDockerImages: PatchFunction = async ({
             `${npmrcLine}${whitespace}${PACKAGE_JSON_MOUNT}${rest}`,
         );
 
-      await writeFile(file, patchedContents);
+      await fs.writeFile(file, patchedContents);
     }),
   );
 

@@ -1,5 +1,5 @@
 import fg from 'fast-glob';
-import { readFile, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 import type { NormalizedPackageJson } from 'read-pkg-up';
 
 import type { PatchConfig } from '../..';
@@ -85,7 +85,7 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
-      .mocked(readFile)
+      .mocked(fs.readFile)
       .mockResolvedValueOnce('RUN pnpm install' as never)
       .mockResolvedValueOnce('steps:\n  - command: yarn install' as never);
 
@@ -107,7 +107,7 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
-      .mocked(readFile)
+      .mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -130,7 +130,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(writeFile).toHaveBeenNthCalledWith(
+    expect(fs.writeFile).toHaveBeenNthCalledWith(
       1,
       'Dockerfile',
       ('# syntax=docker/dockerfile:1.7\n' +
@@ -139,7 +139,7 @@ describe('patchPnpmPackageManager', () => {
         '  corepack enable pnpm && corepack install\n') as never,
     );
 
-    expect(writeFile).toHaveBeenNthCalledWith(
+    expect(fs.writeFile).toHaveBeenNthCalledWith(
       2,
       '.buildkite/pipeline.yml',
       ('seek-oss/docker-ecr-cache#v2.2.0:\n' +
@@ -156,7 +156,7 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
-      .mocked(readFile)
+      .mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -179,7 +179,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(writeFile).not.toHaveBeenCalled();
+    expect(fs.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch multiple cache entries in pipelines', async () => {
@@ -188,7 +188,7 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
-      .mocked(readFile)
+      .mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -215,7 +215,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(writeFile).toHaveBeenNthCalledWith(
+    expect(fs.writeFile).toHaveBeenNthCalledWith(
       2,
       '.buildkite/pipeline.yml',
       ('seek-oss/docker-ecr-cache#v2.2.0:\n' +
@@ -237,7 +237,7 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
-      .mocked(readFile)
+      .mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -260,7 +260,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(writeFile).toHaveBeenNthCalledWith(
+    expect(fs.writeFile).toHaveBeenNthCalledWith(
       2,
       '.buildkite/pipeline.yml',
       ('seek-oss/docker-ecr-cache#v2.3.0:\n' +
@@ -277,7 +277,7 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
-      .mocked(readFile)
+      .mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -303,6 +303,6 @@ describe('patchPnpmPackageManager', () => {
       reason: 'no pipeline or dockerfiles to patch',
     });
 
-    expect(writeFile).not.toHaveBeenCalled();
+    expect(fs.writeFile).not.toHaveBeenCalled();
   });
 });

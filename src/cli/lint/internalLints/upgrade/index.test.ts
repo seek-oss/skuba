@@ -1,4 +1,4 @@
-import { readdir, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 import type { NormalizedPackageJson } from 'read-pkg-up';
 
 import { log } from '../../../../utils/logging';
@@ -46,7 +46,7 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
 
-    expect(readdir).not.toHaveBeenCalled();
+    expect(fs.readdir).not.toHaveBeenCalled();
   });
 
   it('should apply patches which are equal to or greater than the manifest version', async () => {
@@ -81,7 +81,7 @@ describe('upgradeSkuba in format mode', () => {
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    jest.mocked(readdir).mockResolvedValue([
+    jest.mocked(fs.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '0.9.0' },
       { isDirectory: () => true, name: '1.0.0' },
       { isDirectory: () => true, name: '2.0.0' },
@@ -122,7 +122,7 @@ describe('upgradeSkuba in format mode', () => {
 
     // readdir has overloads and the mocked version doesn't match the string version
     jest
-      .mocked(readdir)
+      .mocked(fs.readdir)
       .mockResolvedValue([{ isDirectory: () => true, name: '2.0.0' }] as never);
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
@@ -130,7 +130,7 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
 
-    expect(writeFile).toHaveBeenCalledWith(
+    expect(fs.writeFile).toHaveBeenCalledWith(
       '/package.json',
       `{
   "name": "some-api",
@@ -167,7 +167,7 @@ describe('upgradeSkuba in format mode', () => {
 
     // readdir has overloads and the mocked version doesn't match the string version
     jest
-      .mocked(readdir)
+      .mocked(fs.readdir)
       .mockResolvedValue([{ isDirectory: () => true, name: '2.0.0' }] as never);
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
@@ -175,7 +175,7 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
 
-    expect(writeFile).toHaveBeenCalledWith(
+    expect(fs.writeFile).toHaveBeenCalledWith(
       '/package.json',
       `{
   "name": "some-api",
@@ -219,7 +219,7 @@ describe('upgradeSkuba in lint mode', () => {
       fixable: false,
     });
 
-    expect(readdir).not.toHaveBeenCalled();
+    expect(fs.readdir).not.toHaveBeenCalled();
   });
 
   it('should return ok: false, fixable: true if there are lints to apply', async () => {
@@ -239,7 +239,7 @@ describe('upgradeSkuba in lint mode', () => {
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    jest.mocked(readdir).mockResolvedValue([
+    jest.mocked(fs.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '0.9.0' },
       { isDirectory: () => true, name: '1.0.0' },
       { isDirectory: () => true, name: '2.0.0' },
@@ -275,7 +275,7 @@ describe('upgradeSkuba in lint mode', () => {
     jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
 
     jest
-      .mocked(readdir)
+      .mocked(fs.readdir)
       .mockResolvedValue([{ isDirectory: () => true, name: '0.9.0' }] as never);
 
     await expect(upgradeSkuba('lint', log)).resolves.toEqual({

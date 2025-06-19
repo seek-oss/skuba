@@ -2,7 +2,7 @@
 
 import path from 'path';
 
-import fs, { copy } from 'fs-extra';
+import fs from 'fs-extra';
 import semver from 'semver';
 
 import {
@@ -235,8 +235,8 @@ const main = async () => {
       path.join('dist-docs', 'CONTRIBUTING.md'),
     ),
     // `fs.promises.cp` is still experimental in Node.js 20.
-    copy('site', 'dist-docs'),
-    copy('docs', path.join('dist-docs', 'docs')),
+    fs.copy('site', 'dist-docs'),
+    fs.copy('docs', path.join('dist-docs', 'docs')),
   ]);
 
   const templateChanges = compileChangesByTemplate(changelog);

@@ -276,8 +276,8 @@ importers:
   template/express-rest-api:
     dependencies:
       '@seek/logger':
-        specifier: ^9.0.0
-        version: 9.1.0
+        specifier: ^10.0.0
+        version: 10.0.0
       express:
         specifier: ^5.0.0
         version: 5.1.0
@@ -356,8 +356,8 @@ importers:
         specifier: ^0.201.0
         version: 0.201.1(@opentelemetry/api@1.9.0)
       '@seek/logger':
-        specifier: ^9.0.0
-        version: 9.1.0
+        specifier: ^10.0.0
+        version: 10.0.0
       hot-shots:
         specifier: ^10.0.0
         version: 10.2.1
@@ -429,8 +429,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       '@seek/logger':
-        specifier: ^9.0.0
-        version: 9.1.0
+        specifier: ^10.0.0
+        version: 10.0.0
       datadog-lambda-js:
         specifier: ^10.0.0
         version: 10.124.0
@@ -1802,6 +1802,10 @@ packages:
   '@seek/aws-codedeploy-infra@2.3.0':
     resolution: {integrity: sha512-mIEuqsdAg19UHNf2E5Vn8YbL4bNR19HhgkGlSrCX5qOmn1e7hmd54FAjbx9EjueX+qSYTmQ8cTEuZn7alT4mWQ==}
     engines: {node: '>=18.18'}
+
+  '@seek/logger@10.0.0':
+    resolution: {integrity: sha512-VLvzLtkiFStd7SOcfZzt8Tfb7OVFOtLTU5qKQixBXCjTY8PIIAsibe2wgk6JhCUa2dnq1zY5TZuHBTNMt+ro1w==}
+    engines: {node: '>=20.9.0'}
 
   '@seek/logger@9.1.0':
     resolution: {integrity: sha512-/aGbLuOpnj1HoiLjRJHO9m3eruxSkkPSeRoXjfCEkJoWBlymAT9HFnelM6ZNF77DeNc/iLUgg9SwxUDDqmishw==}
@@ -9000,6 +9004,13 @@ snapshots:
       constructs: 10.4.2
       skuba-dive: 2.0.0
       zod: 3.25.46
+
+  '@seek/logger@10.0.0':
+    dependencies:
+      dtrim: 1.12.0
+      fast-redact: 3.5.0
+      pino: 9.7.0
+      pino-std-serializers: 7.0.0
 
   '@seek/logger@9.1.0':
     dependencies:
