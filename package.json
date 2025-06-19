@@ -42,7 +42,7 @@
     "skuba": "pnpm --silent build && pnpm --silent skuba:exec",
     "skuba:exec": "node --experimental-vm-modules --no-warnings=ExperimentalWarning lib/skuba",
     "stage": "changeset version && node ./.changeset/inject.js && pnpm format",
-    "test": "pnpm --silent skuba test --selectProjects unit --",
+    "test": "pnpm --silent skuba test --selectProjects unit",
     "test:ci": "pnpm --silent skuba test --runInBand",
     "test:int": "pnpm --silent skuba test --selectProjects integration --runInBand",
     "test:template": "scripts/test-template.sh",
