@@ -3,7 +3,7 @@ import 'skuba-dive/register';
 import { isLambdaHook } from '@seek/aws-codedeploy-hooks';
 import type { SQSEvent } from 'aws-lambda';
 
-import { createHandler } from 'src/framework/handler';
+import { createBatchSQSHandler, createHandler } from 'src/framework/handler';
 import { logger } from 'src/framework/logging';
 import { metricsClient } from 'src/framework/metrics';
 import { validateJson } from 'src/framework/validation';
@@ -27,26 +27,27 @@ export const handler = createHandler<SQSEvent>(async (event, ctx) => {
     }
 
     // Run dependency checks otherwise.
-    logger.debug('Smoke test event received');
+    logger.debug(
+      { awsRequestId: ctx.awsRequestId },
+      'Smoke test event received',
+    );
     return smokeTest();
   }
 
   const count = event.Records.length;
 
-  if (count !== 1) {
-    throw Error(`Received ${count} records`);
+  if (!count) {
+    throw Error('Received 0 records');
   }
+  logger.debug({ awsRequestId: ctx.awsRequestId, count }, 'Received jobs');
 
-  logger.debug({ count }, 'Received jobs');
+  return recordHandler(event, ctx);
+});
 
-  metricsClient.distribution('job.received', event.Records.length);
-
-  const record = event.Records[0];
-  if (!record) {
-    throw new Error('Malformed SQS event with no records');
-  }
-
+const recordHandler = createBatchSQSHandler(async (record, _ctx) => {
   const { body } = record;
+
+  metricsClient.distribution('job.received', 1);
 
   // TODO: this throws an error, which will cause the Lambda function to retry
   // the event and eventually send it to your dead-letter queue. If you don't
