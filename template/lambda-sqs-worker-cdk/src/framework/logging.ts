@@ -6,6 +6,7 @@ import { config } from 'src/config';
 
 interface LoggerContext {
   awsRequestId: string;
+  sqsMessageId: string;
 }
 
 export const loggerContext = new AsyncLocalStorage<LoggerContext>();
