@@ -14,3 +14,4 @@ packages:
   - .
   - packages/*
   - template/*
+nodeOptions: '--experimental-vm-modules --no-warnings=ExperimentalWarning'

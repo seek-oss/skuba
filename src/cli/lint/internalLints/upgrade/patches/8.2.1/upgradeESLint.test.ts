@@ -38,9 +38,11 @@ describe('upgradeESLint', () => {
       const result = await tryUpgradeESLint(args);
       expect(result).toEqual({ result: 'apply' });
 
-      expect(volToJson()).toEqual({
-        '.eslintrc.js': 'module.exports = { extends: ["skuba"] };',
-      });
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          ".eslintrc.js": "module.exports = { extends: ["skuba"] };",
+        }
+      `);
     });
   });
 
@@ -63,9 +65,20 @@ describe('upgradeESLint', () => {
       const result = await tryUpgradeESLint(args);
       expect(result).toEqual({ result: 'apply' });
 
-      expect(volToJson()).toEqual({
-        'eslint.config.js': `module.exports = require('eslint-config-skuba');\n`,
-      });
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "eslint.config.js": "const skuba = require('eslint-config-skuba');
+
+        const { defineConfig } = require('eslint/config');
+
+        module.exports = defineConfig([
+          {
+            extends: skuba,
+          },
+        ]);
+        ",
+        }
+      `);
     });
 
     it('should perform a basic migration with .eslintignore without managed section', async () => {
@@ -77,17 +90,21 @@ describe('upgradeESLint', () => {
       const result = await tryUpgradeESLint(args);
       expect(result).toEqual({ result: 'apply' });
 
-      expect(volToJson()).toEqual({
-        'eslint.config.js': `const skuba = require('eslint-config-skuba');
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "eslint.config.js": "const skuba = require('eslint-config-skuba');
 
-module.exports = [
-  {
-    ignores: ['**/a', '**/b', '!**/c'],
-  },
-  ...skuba,
-];
-`,
-      });
+        const { defineConfig, globalIgnores } = require('eslint/config');
+
+        module.exports = defineConfig([
+          {
+            extends: skuba,
+          },
+          globalIgnores(['**/a', '**/b', '!**/c']),
+        ]);
+        ",
+        }
+      `);
     });
 
     it('should perform a basic migration with .eslintignore with managed section', async () => {
@@ -100,17 +117,21 @@ module.exports = [
       const result = await tryUpgradeESLint(args);
       expect(result).toEqual({ result: 'apply' });
 
-      expect(volToJson()).toEqual({
-        'eslint.config.js': `const skuba = require('eslint-config-skuba');
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "eslint.config.js": "const skuba = require('eslint-config-skuba');
 
-module.exports = [
-  {
-    ignores: ['**/a', '**/b', '!**/c'],
-  },
-  ...skuba,
-];
-`,
-      });
+        const { defineConfig, globalIgnores } = require('eslint/config');
+
+        module.exports = defineConfig([
+          {
+            extends: skuba,
+          },
+          globalIgnores(['**/a', '**/b', '!**/c']),
+        ]);
+        ",
+        }
+      `);
     });
 
     it('should perform a basic migration with .eslintignore that is only a managed section', async () => {
@@ -123,9 +144,20 @@ module.exports = [
       const result = await tryUpgradeESLint(args);
       expect(result).toEqual({ result: 'apply' });
 
-      expect(volToJson()).toEqual({
-        'eslint.config.js': `module.exports = require('eslint-config-skuba');\n`,
-      });
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "eslint.config.js": "const skuba = require('eslint-config-skuba');
+
+        const { defineConfig } = require('eslint/config');
+
+        module.exports = defineConfig([
+          {
+            extends: skuba,
+          },
+        ]);
+        ",
+        }
+      `);
     });
 
     it('should perform a migration with overrides', async () => {
@@ -148,24 +180,28 @@ module.exports = [
       const result = await tryUpgradeESLint(args);
       expect(result).toEqual({ result: 'apply' });
 
-      expect(volToJson()).toEqual({
-        'eslint.config.js': `const skuba = require('eslint-config-skuba');
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "eslint.config.js": "const skuba = require('eslint-config-skuba');
 
-module.exports = [
-  {
-    ignores: ['**/a'],
-  },
-  ...skuba,
-  {
-    files: ['cli/**/*.ts'],
+        const { defineConfig, globalIgnores } = require('eslint/config');
 
-    rules: {
-      'no-console': 'off',
-    },
-  },
-];
-`,
-      });
+        module.exports = defineConfig([
+          {
+            extends: skuba,
+          },
+          {
+            files: ['cli/**/*.ts'],
+
+            rules: {
+              'no-console': 'off',
+            },
+          },
+          globalIgnores(['**/a']),
+        ]);
+        ",
+        }
+      `);
     });
 
     it('should perform a complex migration', async () => {
@@ -199,54 +235,57 @@ module.exports = {
       const result = await tryUpgradeESLint(args);
       expect(result).toEqual({ result: 'apply' });
 
-      expect(volToJson()).toEqual({
-        'eslint.config.js': `const jestFormatting = require('eslint-plugin-jest-formatting');
-const globals = require('globals');
-const js = require('@eslint/js');
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "eslint.config.js": "const { defineConfig, globalIgnores } = require('eslint/config');
 
-const { FlatCompat } = require('@eslint/eslintrc');
+        const globals = require('globals');
+        const jestFormatting = require('eslint-plugin-jest-formatting');
+        const js = require('@eslint/js');
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
+        const { FlatCompat } = require('@eslint/eslintrc');
 
-module.exports = [
-  {
-    ignores: [
-      'src/**/__mocks__*',
-      'src/**/**/__mocks__*',
-      'src/schema/generated/graphql.ts',
-      '**/a',
-    ],
-  },
-  ...compat.extends(
-    'eslint-config-skuba',
-    'plugin:jest-formatting/recommended',
-  ),
-  {
-    plugins: {
-      'jest-formatting': jestFormatting,
-    },
+        const compat = new FlatCompat({
+          baseDirectory: __dirname,
+          recommendedConfig: js.configs.recommended,
+          allConfig: js.configs.all,
+        });
 
-    languageOptions: {
-      globals: {
-        ...globals.node,
-      },
-    },
-  },
-  {
-    files: ['scripts/**/*'],
+        module.exports = defineConfig([
+          {
+            languageOptions: {
+              globals: {
+                ...globals.node,
+              },
+            },
 
-    rules: {
-      'no-console': 'off',
-      'no-sync': 'off',
-    },
-  },
-];
-`,
-      });
+            plugins: {
+              'jest-formatting': jestFormatting,
+            },
+
+            extends: compat.extends(
+              'eslint-config-skuba',
+              'plugin:jest-formatting/recommended',
+            ),
+          },
+          globalIgnores([
+            'src/**/__mocks__*',
+            'src/**/**/__mocks__*',
+            'src/schema/generated/graphql.ts',
+          ]),
+          {
+            files: ['scripts/**/*'],
+
+            rules: {
+              'no-console': 'off',
+              'no-sync': 'off',
+            },
+          },
+          globalIgnores(['**/a']),
+        ]);
+        ",
+        }
+      `);
     });
   });
 });
