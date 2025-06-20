@@ -1,10 +1,11 @@
 import Router from '@koa/router';
 
-import { logger } from 'src/testing/logging';
 import { metricsClient } from 'src/testing/metrics';
 import { agentFromRouter } from 'src/testing/server';
 import { chance } from 'src/testing/types';
 import type { Middleware } from 'src/types/koa';
+
+import { stdoutMock } from './logging';
 
 const middleware = jest.fn<void, Parameters<Middleware>>();
 
@@ -15,10 +16,10 @@ const router = new Router()
 const agent = agentFromRouter(router);
 
 describe('createApp', () => {
-  beforeAll(logger.spy);
-
-  afterEach(metricsClient.clear);
-  afterEach(logger.clear);
+  afterEach(() => {
+    metricsClient.clear();
+    stdoutMock.clear();
+  });
 
   it('handles root route', async () => {
     middleware.mockImplementation((ctx) => (ctx.body = ''));
@@ -29,9 +30,7 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toHaveBeenCalled();
-
-    expect(logger.info).not.toHaveBeenCalled();
+    expect(stdoutMock.calls).toHaveLength(0);
 
     metricsClient.expectTagSubset(['env:test', 'version:test']);
     metricsClient.expectTagSubset([
@@ -51,9 +50,7 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toHaveBeenCalled();
-
-    expect(logger.info).not.toHaveBeenCalled();
+    expect(stdoutMock.calls).toHaveLength(0);
 
     metricsClient.expectTagSubset([
       'http_method:put',
@@ -72,13 +69,22 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toHaveBeenCalled();
-
-    expect(logger.info).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ status: 404 }),
-      'Client error',
-    );
+    expect(stdoutMock.calls).toEqual([
+      {
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+          connection: 'close',
+          host: '-',
+        },
+        latency: '-',
+        level: 30,
+        method: 'GET',
+        msg: 'Client error',
+        status: 404,
+        url: '/unknown',
+        'x-request-id': '-',
+      },
+    ]);
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -102,13 +108,23 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toHaveBeenCalled();
-
-    expect(logger.info).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ status: 400 }),
-      'Client error',
-    );
+    expect(stdoutMock.calls).toEqual([
+      {
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+          connection: 'close',
+          host: '-',
+        },
+        latency: '-',
+        level: 30,
+        method: 'GET',
+        msg: 'Client error',
+        route: '/',
+        status: 400,
+        url: '/',
+        'x-request-id': '-',
+      },
+    ]);
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -129,13 +145,31 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).not.toHaveBeenCalled();
-
-    expect(logger.info).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ err: expect.any(Error), status: 400 }),
-      'Client error',
-    );
+    expect(stdoutMock.calls).toEqual([
+      {
+        err: expect.objectContaining({
+          expose: true,
+          status: 400,
+          statusCode: 400,
+          type: 'BadRequestError',
+          message,
+        }),
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+          connection: 'close',
+          host: '-',
+        },
+        internalErrorString: expect.stringContaining('BadRequestError'),
+        latency: '-',
+        level: 30,
+        method: 'GET',
+        msg: 'Client error',
+        route: '/',
+        status: 400,
+        url: '/',
+        'x-request-id': '-',
+      },
+    ]);
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -156,13 +190,31 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ err: expect.any(Error), status: 500 }),
-      'Server error',
-    );
-
-    expect(logger.info).not.toHaveBeenCalled();
+    expect(stdoutMock.calls).toEqual([
+      {
+        err: expect.objectContaining({
+          expose: false,
+          message,
+          status: 500,
+          statusCode: 500,
+          type: 'InternalServerError',
+        }),
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+          connection: 'close',
+          host: '-',
+        },
+        internalErrorString: expect.stringContaining('InternalServerError'),
+        latency: '-',
+        level: 50,
+        method: 'GET',
+        msg: 'Server error',
+        route: '/',
+        status: 500,
+        url: '/',
+        'x-request-id': '-',
+      },
+    ]);
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -185,13 +237,28 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ err, status: 500 }),
-      'Server error',
-    );
-
-    expect(logger.info).not.toHaveBeenCalled();
+    expect(stdoutMock.calls).toEqual([
+      {
+        err: expect.objectContaining({
+          message: err.message,
+          type: 'Error',
+        }),
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+          connection: 'close',
+          host: '-',
+        },
+        internalErrorString: expect.stringContaining('Error'),
+        latency: '-',
+        level: 50,
+        method: 'GET',
+        msg: 'Server error',
+        route: '/',
+        status: 500,
+        url: '/',
+        'x-request-id': '-',
+      },
+    ]);
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -212,13 +279,25 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ err: null, status: 500 }),
-      'Server error',
-    );
-
-    expect(logger.info).not.toHaveBeenCalled();
+    expect(stdoutMock.calls).toEqual([
+      {
+        err: null,
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+          connection: 'close',
+          host: '-',
+        },
+        internalErrorString: 'null',
+        latency: '-',
+        level: 50,
+        method: 'GET',
+        msg: 'Server error',
+        route: '/',
+        status: 500,
+        url: '/',
+        'x-request-id': '-',
+      },
+    ]);
 
     metricsClient.expectTagSubset([
       'http_method:get',
@@ -241,13 +320,25 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(logger.error).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ err, status: 500 }),
-      'Server error',
-    );
-
-    expect(logger.info).not.toHaveBeenCalled();
+    expect(stdoutMock.calls).toEqual([
+      {
+        err,
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+          connection: 'close',
+          host: '-',
+        },
+        internalErrorString: expect.any(String),
+        latency: '-',
+        level: 50,
+        method: 'GET',
+        msg: 'Server error',
+        route: '/',
+        status: 500,
+        url: '/',
+        'x-request-id': '-',
+      },
+    ]);
 
     metricsClient.expectTagSubset([
       'http_method:get',
