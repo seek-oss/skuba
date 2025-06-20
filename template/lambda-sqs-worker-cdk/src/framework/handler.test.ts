@@ -25,7 +25,6 @@ describe('createHandler', () => {
 
     expect(stdoutMock.calls).toEqual([
       {
-        awsRequestId: '-',
         level: 20,
         msg: 'Handler invoked',
       },
