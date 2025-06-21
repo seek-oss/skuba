@@ -48,7 +48,7 @@ steps:
       GET_NPM_TOKEN: please
     plugins:
       - *docker-ecr-cache
-      - docker-compose#v5.9.0:
+      - docker-compose#v5.10.0:
           run: app
           environment:
             - GITHUB_API_TOKEN
