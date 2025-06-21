@@ -53,7 +53,7 @@ export const createBatchSQSHandler =
       record: SQSRecord,
     ): Promise<SQSBatchItemFailure | undefined> =>
       loggerContext.run(
-        { awsRequestId: ctx.awsRequestId, sqsMessageId: record.messageId },
+        { sqsMessageId: record.messageId },
         async () => {
           try {
             await fn(record, ctx);
