@@ -29,7 +29,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   }),
 
   test: () => ({
-    logLevel: Env.string('LOG_LEVEL', { default: 'silent' }),
+    logLevel: Env.string('LOG_LEVEL', { default: 'debug' }),
     metrics: false,
     name: '<%- serviceName %>',
     version: 'test',
