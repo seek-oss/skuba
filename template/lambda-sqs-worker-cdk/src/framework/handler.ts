@@ -8,7 +8,7 @@ import type {
 import { datadog } from 'datadog-lambda-js';
 
 import { config } from 'src/config';
-import { logger, loggerContext } from 'src/framework/logging';
+import { logger, loggerContext, withRequest } from 'src/framework/logging';
 
 type Handler<Event, Output> = (
   event: Event,
@@ -26,18 +26,19 @@ const withDatadog = <Event, Output = unknown>(
   // istanbul ignore next
   config.metrics ? (datadog(fn) as Handler<Event, Output>) : fn;
 
-export const createHandler = <Event, Output = unknown>(
+export const createHandler = <Event extends SQSEvent, Output = unknown>(
   fn: (event: Event, ctx: LambdaContext) => Promise<Output>,
 ) =>
   withDatadog<Event>(async (event, ctx) => {
     try {
+      withRequest(event, ctx);
       const output = await fn(event, ctx);
 
-      logger.debug({ awsRequestId: ctx.awsRequestId }, 'Function completed');
+      logger.debug('Function completed');
 
       return output;
     } catch (err) {
-      logger.error({ awsRequestId: ctx.awsRequestId, err }, 'Function failed');
+      logger.error({ err }, 'Function failed');
 
       throw new Error('Function failed');
     }
