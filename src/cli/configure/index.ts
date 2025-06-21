@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { Select } from 'enquirer';
+import { select } from '@clack/prompts';
 
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
@@ -18,17 +18,18 @@ import { ensureTemplateCompletion } from './ensureTemplateCompletion';
 import { getEntryPoint } from './getEntryPoint';
 import { getProjectType } from './getProjectType';
 
-const shouldApply = async (name: string) => {
+const shouldApply = async () => {
   if (!process.stdin.isTTY) {
     return 'yes';
   }
-  const prompt = new Select({
-    choices: ['yes', 'no'] as const,
-    message: 'Apply changes?',
-    name,
-  });
 
-  const result = await prompt.run();
+  const result = await select({
+    message: 'Apply changes?',
+    options: [
+      { value: 'yes', label: 'yes' },
+      { value: 'no', label: 'no' },
+    ],
+  });
 
   return result === 'yes';
 };
@@ -84,7 +85,7 @@ export const configure = async () => {
   if (fixDependencies) {
     log.newline();
 
-    if (await shouldApply('fixDependencies')) {
+    if (await shouldApply()) {
       await fixDependencies();
     }
   }
@@ -102,7 +103,7 @@ export const configure = async () => {
   if (fixConfiguration) {
     log.newline();
 
-    if (await shouldApply('fixConfiguration')) {
+    if (await shouldApply()) {
       await fixConfiguration();
     }
   }

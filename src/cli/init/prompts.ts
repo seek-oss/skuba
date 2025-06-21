@@ -1,4 +1,4 @@
-import { type FormChoice, Input, Select } from 'enquirer';
+import { select, text } from '@clack/prompts';
 import { pathExists } from 'fs-extra';
 
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
@@ -12,7 +12,11 @@ import {
   isPlatform,
 } from './validation';
 
-export type Choice = FormChoice & {
+export type Choice = {
+  name: string;
+  message: string;
+  initial?: string;
+  validate?: (value: unknown) => boolean | string | Promise<boolean | string>;
   /**
    * Whether the user is allowed to skip field entry and use the initial value.
    *
@@ -91,21 +95,28 @@ export const BASE_PROMPT_PROPS = {
   name: 'baseAnswers',
 };
 
-export const SHOULD_CONTINUE_PROMPT = new Select({
-  choices: ['yes', 'no'] as const,
-  message: 'Fill this in now?',
-  name: 'shouldContinue',
-});
+export const shouldContinuePrompt = () =>
+  select({
+    message: 'Fill this in now?',
+    options: [
+      { value: 'yes', label: 'yes' },
+      { value: 'no', label: 'no' },
+    ],
+  });
 
-export const GIT_PATH_PROMPT = new Input({
-  message: 'Git path',
-  name: 'gitPath',
-  initial: 'seek-oss/skuba',
-  validate: (value) => /[^/]+\/[^/]+/.test(value) || 'Path is not valid',
-});
+export const gitPathPrompt = () =>
+  text({
+    message: 'Git path',
+    initialValue: 'seek-oss/skuba',
+    validate: (value) =>
+      /[^/]+\/[^/]+/.test(value) ? undefined : 'Path is not valid',
+  });
 
-export const TEMPLATE_PROMPT = new Select({
-  choices: TEMPLATE_NAMES_WITH_BYO,
-  message: 'Select a template:',
-  name: 'templateName',
-});
+export const templateNamePrompt = () =>
+  select({
+    message: 'Select a template:',
+    options: TEMPLATE_NAMES_WITH_BYO.map((name) => ({
+      value: name,
+      label: name,
+    })),
+  });

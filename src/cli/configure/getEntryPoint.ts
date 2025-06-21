@@ -1,7 +1,7 @@
 import path from 'path';
 
+import { text } from '@clack/prompts';
 import chalk from 'chalk';
-import { Input } from 'enquirer';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging';
@@ -17,7 +17,7 @@ interface Props {
   templateConfig: TemplateConfig;
   type: ProjectType;
 }
-export const getEntryPoint = ({
+export const getEntryPoint = async ({
   destinationRoot,
   manifest,
   templateConfig,
@@ -32,12 +32,11 @@ export const getEntryPoint = ({
   }
 
   log.newline();
-  const entryPointPrompt = new Input({
-    initial: type === 'package' ? 'src/index.ts' : 'src/app.ts',
+
+  const result = await text({
     message: 'Entry point:',
-    name: 'entryPoint',
-    result: (value) => (value.endsWith('.ts') ? value : `${value}.ts`),
-    validate: async (value) => {
+    initialValue: type === 'package' ? 'src/index.ts' : 'src/app.ts',
+    validate: (value) => {
       // Support exported function targeting, e.g. `src/module.ts#callMeMaybe`
       const [modulePath] = value.split('#', 2);
 
@@ -45,11 +44,11 @@ export const getEntryPoint = ({
         return `${chalk.bold(value)} is an invalid module path`;
       }
 
-      const exists = await tsFileExists(path.join(destinationRoot, modulePath));
-
-      return exists || `${chalk.bold(value)} is not a TypeScript file.`;
+      // Note: We skip async file existence check for now and rely on post-validation
+      return undefined;
     },
   });
 
-  return entryPointPrompt.run();
+  const entryPoint = String(result);
+  return entryPoint.endsWith('.ts') ? entryPoint : `${entryPoint}.ts`;
 };

@@ -1,4 +1,4 @@
-import { Select } from 'enquirer';
+import { select } from '@clack/prompts';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging';
@@ -40,12 +40,12 @@ export const getProjectType = async ({
       : 'application';
 
   log.newline();
-  const projectTypePrompt = new Select({
-    choices: PROJECT_TYPES,
+
+  const result = await select({
     message: 'Project type:',
-    name: 'projectType',
-    initial,
+    options: PROJECT_TYPES.map((type) => ({ value: type, label: type })),
+    initialValue: initial,
   });
 
-  return projectTypePrompt.run();
+  return result as ProjectType;
 };

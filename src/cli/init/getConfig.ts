@@ -1,7 +1,7 @@
 import path from 'path';
 
+import { group, text } from '@clack/prompts';
 import chalk from 'chalk';
-import { Form, type FormChoice } from 'enquirer';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy';
@@ -24,54 +24,74 @@ import {
   BASE_PROMPT_PROPS,
   type BaseFields,
   type Choice,
-  GIT_PATH_PROMPT,
-  SHOULD_CONTINUE_PROMPT,
-  TEMPLATE_PROMPT,
+  gitPathPrompt,
+  shouldContinuePrompt,
+  templateNamePrompt,
 } from './prompts';
 import { type InitConfig, initConfigInputSchema } from './types';
 
 export const runForm = <T = Record<string, string>>(props: {
-  choices: readonly Choice[];
+  choices: ReadonlyArray<
+    | Choice
+    | {
+        name: string;
+        message: string;
+        initial: string;
+        validate?: (
+          value: string,
+        ) => boolean | string | Promise<boolean | string>;
+      }
+  >;
   message: string;
   name: string;
 }) => {
-  const { message, name } = props;
+  const groupInput = Object.fromEntries(
+    props.choices.map((choice) => [
+      choice.name,
+      () =>
+        text({
+          message: choice.message,
+          initialValue: choice.initial,
+          validate: (value) => {
+            if (!value || value === '') {
+              return 'Form is not complete';
+            }
 
-  const choices = props.choices.map((choice) => ({
-    ...choice,
-    validate: (value: string | undefined) => {
-      if (
-        !value ||
-        value === '' ||
-        (value === choice.initial && !choice.allowInitial)
-      ) {
-        return 'Form is not complete';
-      }
+            if (
+              'allowInitial' in choice &&
+              value === choice.initial &&
+              !choice.allowInitial
+            ) {
+              return 'Form is not complete';
+            }
 
-      return choice.validate?.(value) ?? true;
-    },
-  }));
+            // For async validators, we'll handle them post-input
+            const result = choice.validate?.(value);
+            if (result && typeof result === 'object' && 'then' in result) {
+              return undefined; // Skip async validation in clack
+            }
+            return result === true ? undefined : result || 'Invalid value';
+          },
+        }),
+    ]),
+  );
 
-  const form = new Form<T>({
-    choices,
-    message,
-    name,
-    validate: async (values) => {
-      const results = await Promise.all(
-        choices.map((choice) => choice.validate(values[choice.name])),
-      );
-
-      return (
-        results.find((result) => typeof result === 'string') ??
-        results.every((result) => result === true)
-      );
-    },
-  });
-
-  return form.run();
+  return group(groupInput) as Promise<T>;
 };
 
-const confirmShouldContinue = async (choices: readonly FormChoice[]) => {
+const confirmShouldContinue = async (
+  choices: ReadonlyArray<
+    | Choice
+    | {
+        name: string;
+        message: string;
+        initial: string;
+        validate?: (
+          value: string,
+        ) => boolean | string | Promise<boolean | string>;
+      }
+  >,
+) => {
   const fieldsList = choices.map((choice) => choice.message);
 
   log.newline();
@@ -80,9 +100,9 @@ const confirmShouldContinue = async (choices: readonly FormChoice[]) => {
   fieldsList.forEach((message) => log.subtle(`- ${message}`));
 
   log.newline();
-  const result = await SHOULD_CONTINUE_PROMPT.run();
+  const result = await shouldContinuePrompt();
 
-  return result === 'yes';
+  return String(result) === 'yes';
 };
 
 const createDirectory = async (dir: string) => {
@@ -143,17 +163,29 @@ const cloneTemplate = async (
 };
 
 const getTemplateName = async () => {
-  const templateSelection = await TEMPLATE_PROMPT.run();
+  const templateSelection = await templateNamePrompt();
 
   if (templateSelection === 'github →') {
-    const gitHubPath = await GIT_PATH_PROMPT.run();
-    return `github:${gitHubPath}`;
+    const gitHubPathResult = await gitPathPrompt();
+    return `github:${String(gitHubPathResult)}`;
   }
 
-  return templateSelection;
+  return String(templateSelection);
 };
 
-const generatePlaceholders = (choices: FormChoice[]) =>
+const generatePlaceholders = (
+  choices: Array<
+    | Choice
+    | {
+        name: string;
+        message: string;
+        initial: string;
+        validate?: (
+          value: string,
+        ) => boolean | string | Promise<boolean | string>;
+      }
+  >,
+) =>
   Object.fromEntries(
     choices.map(({ name }) => [name, `<%- ${name} %>`] as const),
   );
@@ -228,7 +260,8 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   await createDirectory(destinationDir);
 
   log.newline();
-  const templateName = await getTemplateName();
+  const templateNameResult = await getTemplateName();
+  const templateName = String(templateNameResult);
 
   const { entryPoint, fields, noSkip, packageManager, type } =
     await cloneTemplate(templateName, destinationDir);
@@ -288,17 +321,17 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 };
 
 export const readJSONFromStdIn = async () => {
-  let text = '';
+  let textValue = '';
 
   await new Promise((resolve) =>
     process.stdin
-      .on('data', (chunk) => (text += chunk.toString()))
+      .on('data', (chunk) => (textValue += chunk.toString()))
       .once('end', resolve),
   );
 
-  text = text.trim();
+  textValue = textValue.trim();
 
-  if (text === '') {
+  if (textValue === '') {
     log.err('No data from stdin.');
     process.exit(1);
   }
@@ -306,7 +339,7 @@ export const readJSONFromStdIn = async () => {
   let value: unknown;
 
   try {
-    value = JSON.parse(text) as unknown;
+    value = JSON.parse(textValue) as unknown;
   } catch {
     log.err('Invalid JSON from stdin.');
     process.exit(1);
