@@ -111,7 +111,7 @@ const confirmShouldContinue = async (
   log.newline();
   const result = await shouldContinuePrompt();
 
-  return String(result) === 'yes';
+  return Boolean(result);
 };
 
 const createDirectory = async (dir: string) => {

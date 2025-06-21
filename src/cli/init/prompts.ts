@@ -1,4 +1,4 @@
-import { cancel, isCancel, select, text } from '@clack/prompts';
+import { cancel, confirm, isCancel, select, text } from '@clack/prompts';
 import { pathExists } from 'fs-extra';
 
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
@@ -96,12 +96,8 @@ export const BASE_PROMPT_PROPS = {
 };
 
 export const shouldContinuePrompt = async () => {
-  const result = await select({
+  const result = await confirm({
     message: 'Fill this in now?',
-    options: [
-      { value: 'yes', label: 'yes' },
-      { value: 'no', label: 'no' },
-    ],
   });
 
   if (isCancel(result)) {
