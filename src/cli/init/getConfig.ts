@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { group, text } from '@clack/prompts';
+import { cancel, group, text } from '@clack/prompts';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 
@@ -30,7 +30,7 @@ import {
 } from './prompts';
 import { type InitConfig, initConfigInputSchema } from './types';
 
-export const runForm = <T = Record<string, string>>(props: {
+export const runForm = async <T = Record<string, string>>(props: {
   choices: ReadonlyArray<
     | Choice
     | {
@@ -44,7 +44,7 @@ export const runForm = <T = Record<string, string>>(props: {
   >;
   message: string;
   name: string;
-}) => {
+}): Promise<T> => {
   const groupInput = Object.fromEntries(
     props.choices.map((choice) => [
       choice.name,
@@ -70,13 +70,22 @@ export const runForm = <T = Record<string, string>>(props: {
             if (result && typeof result === 'object' && 'then' in result) {
               return undefined; // Skip async validation in clack
             }
-            return result === true ? undefined : result || 'Invalid value';
+            return result === true
+              ? undefined
+              : (result as string) || undefined;
           },
         }),
     ]),
   );
 
-  return group(groupInput) as Promise<T>;
+  const result = await group(groupInput, {
+    onCancel: () => {
+      cancel('Operation cancelled.');
+      process.exit(0);
+    },
+  });
+
+  return result as T;
 };
 
 const confirmShouldContinue = async (

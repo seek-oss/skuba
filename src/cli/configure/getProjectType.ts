@@ -1,4 +1,4 @@
-import { select } from '@clack/prompts';
+import { cancel, isCancel, select } from '@clack/prompts';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging';
@@ -47,5 +47,10 @@ export const getProjectType = async ({
     initialValue: initial,
   });
 
-  return result as ProjectType;
+  if (isCancel(result)) {
+    cancel('Operation cancelled.');
+    process.exit(0);
+  }
+
+  return result;
 };

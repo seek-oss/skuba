@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { select } from '@clack/prompts';
+import { cancel, isCancel, select } from '@clack/prompts';
 
 import { createInclusionFilter } from '../../utils/dir';
 import { createExec, ensureCommands } from '../../utils/exec';
@@ -20,7 +20,7 @@ import { getProjectType } from './getProjectType';
 
 const shouldApply = async () => {
   if (!process.stdin.isTTY) {
-    return 'yes';
+    return true;
   }
 
   const result = await select({
@@ -31,7 +31,12 @@ const shouldApply = async () => {
     ],
   });
 
-  return result === 'yes';
+  if (isCancel(result)) {
+    cancel('Operation cancelled.');
+    process.exit(0);
+  }
+
+  return String(result) === 'yes';
 };
 
 export const configure = async () => {

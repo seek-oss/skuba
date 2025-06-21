@@ -1,4 +1,4 @@
-import { select, text } from '@clack/prompts';
+import { cancel, isCancel, select, text } from '@clack/prompts';
 import { pathExists } from 'fs-extra';
 
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template';
@@ -95,8 +95,8 @@ export const BASE_PROMPT_PROPS = {
   name: 'baseAnswers',
 };
 
-export const shouldContinuePrompt = () =>
-  select({
+export const shouldContinuePrompt = async () => {
+  const result = await select({
     message: 'Fill this in now?',
     options: [
       { value: 'yes', label: 'yes' },
@@ -104,19 +104,43 @@ export const shouldContinuePrompt = () =>
     ],
   });
 
-export const gitPathPrompt = () =>
-  text({
+  if (isCancel(result)) {
+    cancel('Operation cancelled.');
+    process.exit(0);
+  }
+
+  return result;
+};
+
+export const gitPathPrompt = async () => {
+  const result = await text({
     message: 'Git path',
     initialValue: 'seek-oss/skuba',
     validate: (value) =>
       /[^/]+\/[^/]+/.test(value) ? undefined : 'Path is not valid',
   });
 
-export const templateNamePrompt = () =>
-  select({
+  if (isCancel(result)) {
+    cancel('Operation cancelled.');
+    process.exit(0);
+  }
+
+  return result;
+};
+
+export const templateNamePrompt = async () => {
+  const result = await select({
     message: 'Select a template:',
     options: TEMPLATE_NAMES_WITH_BYO.map((name) => ({
       value: name,
       label: name,
     })),
   });
+
+  if (isCancel(result)) {
+    cancel('Operation cancelled.');
+    process.exit(0);
+  }
+
+  return result;
+};

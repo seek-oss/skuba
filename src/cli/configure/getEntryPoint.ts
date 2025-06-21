@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { text } from '@clack/prompts';
+import { cancel, isCancel, text } from '@clack/prompts';
 import chalk from 'chalk';
 import type { NormalizedReadResult } from 'read-pkg-up';
 
@@ -44,10 +44,16 @@ export const getEntryPoint = async ({
         return `${chalk.bold(value)} is an invalid module path`;
       }
 
-      // Note: We skip async file existence check for now and rely on post-validation
+      // TODO: async validation
+
       return undefined;
     },
   });
+
+  if (isCancel(result)) {
+    cancel('Operation cancelled.');
+    process.exit(0);
+  }
 
   const entryPoint = String(result);
   return entryPoint.endsWith('.ts') ? entryPoint : `${entryPoint}.ts`;
