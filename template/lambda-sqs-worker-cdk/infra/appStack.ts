@@ -141,7 +141,11 @@ export class AppStack extends Stack {
     });
 
     workerDeployment.alias.addEventSource(
-      new aws_lambda_event_sources.SqsEventSource(queue),
+      new aws_lambda_event_sources.SqsEventSource(queue, {
+        maxConcurrency: config.workerLambda.reservedConcurrency,
+        batchSize: config.workerLambda.batchSize,
+        reportBatchItemFailures: true,
+      }),
     );
   }
 }

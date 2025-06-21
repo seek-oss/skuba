@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`returns expected CloudFormation stack for dev 1`] = `
 {
@@ -332,6 +332,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
     },
     "workerAliasLiveSqsEventSourceappStackworkerqueue8281B9F443B0CF93": {
       "Properties": {
+        "BatchSize": 5,
         "EventSourceArn": {
           "Fn::GetAtt": [
             "workerqueueA05CE5C6",
@@ -359,6 +360,12 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             ],
           ],
         },
+        "FunctionResponseTypes": [
+          "ReportBatchItemFailures",
+        ],
+        "ScalingConfig": {
+          "MaximumConcurrency": 2,
+        },
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
@@ -369,6 +376,9 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
       "Type": "AWS::Lambda::EventSourceMapping",
     },
     "workerCurrentVersionxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": {
+      "Metadata": {
+        "aws:cdk:do-not-refactor": true,
+      },
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -1062,6 +1072,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
     },
     "workerAliasLiveSqsEventSourceappStackworkerqueue8281B9F443B0CF93": {
       "Properties": {
+        "BatchSize": 5,
         "EventSourceArn": {
           "Fn::GetAtt": [
             "workerqueueA05CE5C6",
@@ -1089,6 +1100,12 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             ],
           ],
         },
+        "FunctionResponseTypes": [
+          "ReportBatchItemFailures",
+        ],
+        "ScalingConfig": {
+          "MaximumConcurrency": 20,
+        },
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
@@ -1099,6 +1116,9 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
       "Type": "AWS::Lambda::EventSourceMapping",
     },
     "workerCurrentVersionxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": {
+      "Metadata": {
+        "aws:cdk:do-not-refactor": true,
+      },
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",

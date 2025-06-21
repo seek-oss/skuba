@@ -1,12 +1,18 @@
 import { AsyncLocalStorage } from 'async_hooks';
 
-import createLogger, { createDestination } from '@seek/logger';
+import createLogger, {
+  createDestination,
+  createLambdaContextTracker,
+  lambdaContextStorageProvider,
+} from '@seek/logger';
 
 import { config } from 'src/config';
 
 interface LoggerContext {
-  awsRequestId: string;
+  sqsMessageId: string;
 }
+
+export const withRequest = createLambdaContextTracker();
 
 export const loggerContext = new AsyncLocalStorage<LoggerContext>();
 
@@ -27,7 +33,10 @@ export const logger = createLogger(
 
     level: config.logLevel,
 
-    mixin: () => ({ ...loggerContext.getStore() }),
+    mixin: () => ({
+      ...lambdaContextStorageProvider.getContext(),
+      ...loggerContext.getStore(),
+    }),
 
     name: config.name,
 
