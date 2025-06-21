@@ -52,20 +52,17 @@ export const createBatchSQSHandler =
     const processRecord = (
       record: SQSRecord,
     ): Promise<SQSBatchItemFailure | undefined> =>
-      loggerContext.run(
-        { sqsMessageId: record.messageId },
-        async () => {
-          try {
-            await fn(record, ctx);
-            return;
-          } catch (err) {
-            logger.error({ err }, 'Processing record failed');
-            return {
-              itemIdentifier: record.messageId,
-            };
-          }
-        },
-      );
+      loggerContext.run({ sqsMessageId: record.messageId }, async () => {
+        try {
+          await fn(record, ctx);
+          return;
+        } catch (err) {
+          logger.error({ err }, 'Processing record failed');
+          return {
+            itemIdentifier: record.messageId,
+          };
+        }
+      });
 
     const results = await Promise.all(event.Records.map(processRecord));
 
