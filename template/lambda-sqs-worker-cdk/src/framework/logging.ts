@@ -9,7 +9,6 @@ import createLogger, {
 import { config } from 'src/config';
 
 interface LoggerContext {
-  awsRequestId: string;
   sqsMessageId: string;
 }
 
