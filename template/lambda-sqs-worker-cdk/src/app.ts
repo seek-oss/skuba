@@ -27,10 +27,7 @@ export const handler = createHandler<SQSEvent>(async (event, ctx) => {
     }
 
     // Run dependency checks otherwise.
-    logger.debug(
-      { awsRequestId: ctx.awsRequestId },
-      'Smoke test event received',
-    );
+    logger.debug('Smoke test event received');
     return smokeTest();
   }
 
@@ -39,7 +36,7 @@ export const handler = createHandler<SQSEvent>(async (event, ctx) => {
   if (!count) {
     throw Error('Received 0 records');
   }
-  logger.debug({ awsRequestId: ctx.awsRequestId, count }, 'Received jobs');
+  logger.debug({ count }, 'Received jobs');
 
   return recordHandler(event, ctx);
 });
