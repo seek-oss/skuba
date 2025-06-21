@@ -371,7 +371,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
     "workerCurrentVersionxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": {
       "Metadata": {
         "aws:cdk:do-not-refactor": true,
-      }
+      },
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
@@ -1104,7 +1104,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
     "workerCurrentVersionxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": {
       "Metadata": {
         "aws:cdk:do-not-refactor": true,
-      }
+      },
       "Properties": {
         "FunctionName": {
           "Ref": "worker28EA3E30",
