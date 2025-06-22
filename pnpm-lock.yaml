@@ -445,8 +445,8 @@ importers:
         version: 3.25.46
     devDependencies:
       '@seek/aws-codedeploy-infra':
-        specifier: ^2.1.0
-        version: 2.3.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/aws-lambda':
         specifier: ^8.10.82
         version: 8.10.149
@@ -1853,17 +1853,13 @@ packages:
     resolution: {integrity: sha512-u7hgmrnv83biOwz15D52txHzwpC1ojspubWjYb1sGg/rNKcp6dgeOE6/iA+AoY8OJkosxZdtyEOZBYHlLhP6Qg==}
     engines: {node: '>=18.12'}
 
-  '@seek/aws-codedeploy-infra@2.3.0':
-    resolution: {integrity: sha512-mIEuqsdAg19UHNf2E5Vn8YbL4bNR19HhgkGlSrCX5qOmn1e7hmd54FAjbx9EjueX+qSYTmQ8cTEuZn7alT4mWQ==}
-    engines: {node: '>=18.18'}
+  '@seek/aws-codedeploy-infra@3.0.0':
+    resolution: {integrity: sha512-lntM3YpGwa1GAdKxNV1TtKf9Le6MHUMzIq0VOQqwj2Qb3VRM05JnJ5kmX8ONZBEID9mqD++Nzl6IkUUz41zbfw==}
+    engines: {node: '>=20.9.0'}
 
   '@seek/logger@10.0.0':
     resolution: {integrity: sha512-VLvzLtkiFStd7SOcfZzt8Tfb7OVFOtLTU5qKQixBXCjTY8PIIAsibe2wgk6JhCUa2dnq1zY5TZuHBTNMt+ro1w==}
     engines: {node: '>=20.9.0'}
-
-  '@seek/logger@9.1.0':
-    resolution: {integrity: sha512-/aGbLuOpnj1HoiLjRJHO9m3eruxSkkPSeRoXjfCEkJoWBlymAT9HFnelM6ZNF77DeNc/iLUgg9SwxUDDqmishw==}
-    engines: {node: '>=18.18', npm: '>=5.5.0'}
 
   '@semantic-release/commit-analyzer@13.0.1':
     resolution: {integrity: sha512-wdnBPHKkr9HhNhXOhZD5a2LNl91+hs8CC2vsAVYxtZH3y0dV3wKn+uZSN61rdJQZ8EGxzWB3inWocBHV9+u/CQ==}
@@ -9115,9 +9111,9 @@ snapshots:
 
   '@seek/aws-codedeploy-hooks@1.2.0': {}
 
-  '@seek/aws-codedeploy-infra@2.3.0':
+  '@seek/aws-codedeploy-infra@3.0.0':
     dependencies:
-      '@seek/logger': 9.1.0
+      '@seek/logger': 10.0.0
       '@types/aws-lambda': 8.10.149
       aws-cdk-lib: 2.199.0(constructs@10.4.2)
       constructs: 10.4.2
@@ -9125,13 +9121,6 @@ snapshots:
       zod: 3.25.46
 
   '@seek/logger@10.0.0':
-    dependencies:
-      dtrim: 1.12.0
-      fast-redact: 3.5.0
-      pino: 9.7.0
-      pino-std-serializers: 7.0.0
-
-  '@seek/logger@9.1.0':
     dependencies:
       dtrim: 1.12.0
       fast-redact: 3.5.0
