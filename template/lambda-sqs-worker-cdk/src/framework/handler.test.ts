@@ -1,16 +1,14 @@
 import { createCtx } from 'src/testing/handler';
-import { logger } from 'src/testing/logging';
 import { chance } from 'src/testing/types';
 
 import { createHandler } from './handler';
+import { logger, stdoutMock } from './logging';
 
 describe('createHandler', () => {
   const ctx = createCtx();
   const input = chance.paragraph();
 
-  beforeAll(logger.spy);
-
-  afterEach(logger.clear);
+  afterEach(stdoutMock.clear);
 
   it('handles happy path', async () => {
     const output = chance.paragraph();
@@ -25,11 +23,17 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).resolves.toBe(output);
 
-    expect(logger.error).not.toHaveBeenCalled();
-
-    expect(logger.debug.mock.calls).toEqual([
-      ['Handler invoked'],
-      ['Function succeeded'],
+    expect(stdoutMock.calls).toEqual([
+      {
+        awsRequestId: '-',
+        level: 20,
+        msg: 'Handler invoked',
+      },
+      {
+        awsRequestId: '-',
+        level: 20,
+        msg: 'Function succeeded',
+      },
     ]);
   });
 
@@ -40,9 +44,17 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
-
-    expect(logger.debug).not.toHaveBeenCalled();
+    expect(stdoutMock.calls).toEqual([
+      {
+        awsRequestId: '-',
+        err: expect.objectContaining({
+          message: err.message,
+          type: 'Error',
+        }),
+        level: 50,
+        msg: 'Function failed',
+      },
+    ]);
   });
 
   it('handles sync error', async () => {
@@ -54,8 +66,16 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(logger.error).toHaveBeenCalledWith({ err }, 'Function failed');
-
-    expect(logger.debug).not.toHaveBeenCalled();
+    expect(stdoutMock.calls).toEqual([
+      {
+        awsRequestId: '-',
+        err: expect.objectContaining({
+          message: err.message,
+          type: 'Error',
+        }),
+        level: 50,
+        msg: 'Function failed',
+      },
+    ]);
   });
 });
