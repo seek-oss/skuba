@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export type JobScorerInput = z.infer<typeof JobScorerInputSchema>;
 
