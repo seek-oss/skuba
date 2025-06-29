@@ -43,15 +43,14 @@ describe('validate', () => {
       .expect(422)
       .expect(({ body }) =>
         expect(body).toMatchInlineSnapshot(`
-{
-  "invalidFields": {
-    "~union0/id": "Expected string, received null",
-    "~union1/id": "Expected number, received null",
-    "~union1/summary": "Required",
-  },
-  "message": "Input validation failed",
-}
-`),
+          {
+            "invalidFields": {
+              "/id": "Invalid input: expected number, received null",
+              "/summary": "Invalid input: expected string, received undefined",
+            },
+            "message": "Input validation failed",
+          }
+        `),
       );
   });
 
@@ -62,17 +61,15 @@ describe('validate', () => {
       .expect(422)
       .expect(({ body }) =>
         expect(body).toMatchInlineSnapshot(`
-{
-  "invalidFields": {
-    "~union0/description~union0": "Required",
-    "~union0/description~union1": "Required",
-    "~union0/id": "Required",
-    "~union1/id": "Required",
-    "~union1/summary": "Required",
-  },
-  "message": "Input validation failed",
-}
-`),
+          {
+            "invalidFields": {
+              "": "Invalid input: expected object, received undefined",
+              "/id": "Invalid input: expected number, received undefined",
+              "/summary": "Invalid input: expected string, received undefined",
+            },
+            "message": "Input validation failed",
+          }
+        `),
       ));
 
   it('blocks invalid nested union prop', () => {
@@ -89,17 +86,16 @@ describe('validate', () => {
       .expect(422)
       .expect(({ body }) =>
         expect(body).toMatchInlineSnapshot(`
-{
-  "invalidFields": {
-    "~union0/description~union0": "Expected string, received object",
-    "~union0/description~union1/content": "Required",
-    "~union0/id": "Expected string, received null",
-    "~union1/id": "Expected number, received null",
-    "~union1/summary": "Required",
-  },
-  "message": "Input validation failed",
-}
-`),
+          {
+            "invalidFields": {
+              "": "Invalid input: expected string, received object",
+              "/content": "Invalid input: expected string, received undefined",
+              "/id": "Invalid input: expected number, received null",
+              "/summary": "Invalid input: expected string, received undefined",
+            },
+            "message": "Input validation failed",
+          }
+        `),
       );
   });
 });
