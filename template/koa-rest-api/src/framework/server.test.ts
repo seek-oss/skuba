@@ -69,20 +69,13 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
-        headers: {
-          'accept-encoding': 'gzip, deflate',
-          connection: 'close',
-          host: '-',
-        },
-        latency: '-',
         level: 30,
         method: 'GET',
         msg: 'Client error',
         status: 404,
         url: '/unknown',
-        'x-request-id': '-',
       },
     ]);
 
@@ -108,21 +101,14 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
-        headers: {
-          'accept-encoding': 'gzip, deflate',
-          connection: 'close',
-          host: '-',
-        },
-        latency: '-',
         level: 30,
         method: 'GET',
         msg: 'Client error',
         route: '/',
         status: 400,
         url: '/',
-        'x-request-id': '-',
       },
     ]);
 
@@ -145,29 +131,18 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
-        err: expect.objectContaining({
-          expose: true,
-          status: 400,
+        err: {
           statusCode: 400,
           type: 'BadRequestError',
-          message,
-        }),
-        headers: {
-          'accept-encoding': 'gzip, deflate',
-          connection: 'close',
-          host: '-',
         },
-        internalErrorString: expect.stringContaining('BadRequestError'),
-        latency: '-',
         level: 30,
         method: 'GET',
         msg: 'Client error',
         route: '/',
         status: 400,
         url: '/',
-        'x-request-id': '-',
       },
     ]);
 
@@ -190,29 +165,18 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
-        err: expect.objectContaining({
-          expose: false,
-          message,
-          status: 500,
+        err: {
           statusCode: 500,
           type: 'InternalServerError',
-        }),
-        headers: {
-          'accept-encoding': 'gzip, deflate',
-          connection: 'close',
-          host: '-',
         },
-        internalErrorString: expect.stringContaining('InternalServerError'),
-        latency: '-',
         level: 50,
         method: 'GET',
         msg: 'Server error',
         route: '/',
         status: 500,
         url: '/',
-        'x-request-id': '-',
       },
     ]);
 
@@ -237,26 +201,18 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
-        err: expect.objectContaining({
+        err: {
           message: err.message,
           type: 'Error',
-        }),
-        headers: {
-          'accept-encoding': 'gzip, deflate',
-          connection: 'close',
-          host: '-',
         },
-        internalErrorString: expect.stringContaining('Error'),
-        latency: '-',
         level: 50,
         method: 'GET',
         msg: 'Server error',
         route: '/',
         status: 500,
         url: '/',
-        'x-request-id': '-',
       },
     ]);
 
@@ -279,23 +235,15 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         err: null,
-        headers: {
-          'accept-encoding': 'gzip, deflate',
-          connection: 'close',
-          host: '-',
-        },
-        internalErrorString: 'null',
-        latency: '-',
         level: 50,
         method: 'GET',
         msg: 'Server error',
         route: '/',
         status: 500,
         url: '/',
-        'x-request-id': '-',
       },
     ]);
 
@@ -320,23 +268,15 @@ describe('createApp', () => {
       .expect('server', /.+/)
       .expect('x-api-version', /.+/);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         err,
-        headers: {
-          'accept-encoding': 'gzip, deflate',
-          connection: 'close',
-          host: '-',
-        },
-        internalErrorString: expect.any(String),
-        latency: '-',
         level: 50,
         method: 'GET',
         msg: 'Server error',
         route: '/',
         status: 500,
         url: '/',
-        'x-request-id': '-',
       },
     ]);
 

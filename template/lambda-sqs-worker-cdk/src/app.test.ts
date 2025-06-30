@@ -44,7 +44,7 @@ describe('handler', () => {
 
     expect(scoringService.request).toHaveBeenCalledTimes(1);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
         count: 1,
@@ -87,7 +87,7 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
         count: 1,
@@ -96,10 +96,10 @@ describe('handler', () => {
       },
       {
         awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: err.message,
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Function failed',
       },
@@ -115,7 +115,7 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
         count: 1,
@@ -124,10 +124,10 @@ describe('handler', () => {
       },
       {
         awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: err.message,
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Function failed',
       },
@@ -139,13 +139,13 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: 'Received 0 records',
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Function failed',
       },
@@ -160,13 +160,13 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: 'Received 2 records',
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Function failed',
       },

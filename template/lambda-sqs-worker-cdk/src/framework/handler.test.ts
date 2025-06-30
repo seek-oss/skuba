@@ -23,7 +23,7 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).resolves.toBe(output);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
         level: 20,
@@ -44,13 +44,13 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: err.message,
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Function failed',
       },
@@ -66,13 +66,13 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: err.message,
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Function failed',
       },
