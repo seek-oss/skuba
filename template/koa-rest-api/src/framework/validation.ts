@@ -35,16 +35,14 @@ type InvalidFields = Record<string, string>;
  * @see [union error example](./validation.test.ts)
  */
 const parseInvalidFieldsFromError = (err: z.ZodError): InvalidFields =>
-  Object.fromEntries(parseTuples(err));
+  Object.fromEntries(parseTuples(err.issues));
 
-const parseTuples = ({
-  issues,
-}: {
-  issues: core.$ZodIssue[];
-}): Array<readonly [string, string]> =>
+const parseTuples = (
+  issues: core.$ZodIssue[],
+): Array<readonly [string, string]> =>
   issues.flatMap((issue) => {
     if (issue.code === 'invalid_union') {
-      return parseTuples({ issues: issue.errors.flatMap((err) => err) });
+      return parseTuples(issue.errors.flat());
     }
     const path = ['', ...issue.path].join('/');
 
