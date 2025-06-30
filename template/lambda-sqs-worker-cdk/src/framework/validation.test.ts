@@ -32,13 +32,12 @@ describe('validateJson', () => {
       .toThrowErrorMatchingInlineSnapshot(`
       "[
         {
-          "code": "invalid_type",
           "expected": "string",
-          "received": "null",
+          "code": "invalid_type",
           "path": [
             "id"
           ],
-          "message": "Expected string, received null"
+          "message": "Invalid input: expected string, received null"
         }
       ]"
     `);
@@ -51,22 +50,20 @@ describe('validateJson', () => {
       .toThrowErrorMatchingInlineSnapshot(`
       "[
         {
-          "code": "invalid_type",
           "expected": "string",
-          "received": "undefined",
+          "code": "invalid_type",
           "path": [
             "id"
           ],
-          "message": "Required"
+          "message": "Invalid input: expected string, received undefined"
         },
         {
-          "code": "invalid_type",
           "expected": "string",
-          "received": "undefined",
+          "code": "invalid_type",
           "path": [
             "description"
           ],
-          "message": "Required"
+          "message": "Invalid input: expected string, received undefined"
         }
       ]"
     `);
