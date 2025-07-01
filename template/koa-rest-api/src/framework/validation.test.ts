@@ -45,8 +45,9 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
           {
             "invalidFields": {
-              "/id": "Invalid input: expected number, received null",
-              "/summary": "Invalid input: expected string, received undefined",
+              "~union0/id": "Invalid input: expected string, received null",
+              "~union1/id": "Invalid input: expected number, received null",
+              "~union1/summary": "Invalid input: expected string, received undefined",
             },
             "message": "Input validation failed",
           }
@@ -63,9 +64,10 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
           {
             "invalidFields": {
-              "": "Invalid input: expected object, received undefined",
-              "/id": "Invalid input: expected number, received undefined",
-              "/summary": "Invalid input: expected string, received undefined",
+              "~union0": "Invalid input: expected object, received undefined",
+              "~union0/id": "Invalid input: expected string, received undefined",
+              "~union1/id": "Invalid input: expected number, received undefined",
+              "~union1/summary": "Invalid input: expected string, received undefined",
             },
             "message": "Input validation failed",
           }
@@ -88,10 +90,11 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
           {
             "invalidFields": {
-              "": "Invalid input: expected string, received object",
-              "/content": "Invalid input: expected string, received undefined",
-              "/id": "Invalid input: expected number, received null",
-              "/summary": "Invalid input: expected string, received undefined",
+              "~union0": "Invalid input: expected string, received object",
+              "~union0/content~union1": "Invalid input: expected string, received undefined",
+              "~union0/id": "Invalid input: expected string, received null",
+              "~union1/id": "Invalid input: expected number, received null",
+              "~union1/summary": "Invalid input: expected string, received undefined",
             },
             "message": "Input validation failed",
           }
