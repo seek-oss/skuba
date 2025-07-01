@@ -1,7 +1,6 @@
 import { agentFromMiddleware } from 'src/testing/server';
 import {
   IdDescriptionSchema,
-  NestedObjectSchema,
   chance,
   mockIdDescription,
 } from 'src/testing/types';
