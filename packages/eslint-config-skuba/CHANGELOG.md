@@ -59,7 +59,6 @@
   This plugin is [currently incompatible](https://github.com/microsoft/tsdoc/issues/374) with our config.
 
 - Revert to modern JavaScript language option defaults ([#1769](https://github.com/seek-oss/skuba/pull/1769))
-
   - `ecmaVersion: 5 => latest`
   - `sourceType: script => module`
 
@@ -78,7 +77,6 @@
 - ESLint 9 + `typescript-eslint` 8 + `eslint-config-seek` 14 ([#1537](https://github.com/seek-oss/skuba/pull/1537))
 
   This major upgrade bundles the following changes:
-
   - Migration to flat config format
 
     See the [migration guide](https://eslint.org/docs/latest/use/configure/migration-guide) for more information.
@@ -92,7 +90,6 @@
     To migrate, replace references to `eslint-plugin-import` with `eslint-plugin-import-x`, and `import/` rules with `import-x/`.
 
   Wider changes may be necessary if your project has a custom ESLint configuration. Refer to the following resources to get started:
-
   - [ESLint 9](https://eslint.org/docs/latest/use/migrate-to-9.0.0)
   - [`typescript-eslint` 8](https://typescript-eslint.io/blog/announcing-typescript-eslint-v8)
 
@@ -119,7 +116,6 @@
 - **deps:** eslint-config-seek 13 + typescript-eslint ^7.2.0 ([#1487](https://github.com/seek-oss/skuba/pull/1487))
 
   These major upgrades bump our minimum requirements:
-
   - Node.js >=18.18.0
   - ESLint >=8.56.0
   - TypeScript >=4.7.5
