@@ -1,11 +1,11 @@
 import fs from 'fs-extra';
 import type { NormalizedPackageJson } from 'read-pkg-up';
 
-import { log } from '../../../../utils/logging';
-import { getConsumerManifest } from '../../../../utils/manifest';
-import { getSkubaVersion } from '../../../../utils/version';
+import { log } from '../../../../utils/logging.js';
+import { getConsumerManifest } from '../../../../utils/manifest.js';
+import { getSkubaVersion } from '../../../../utils/version.js';
 
-import { upgradeSkuba } from '.';
+import { upgradeSkuba } from './index.js';
 
 jest.mock('../../../../utils/manifest');
 jest.mock('../../../../utils/version');
@@ -29,7 +29,7 @@ describe('upgradeSkuba in format mode', () => {
     jest.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         skuba: {
-          version: '2.0.0',
+          version: '8.2.1',
         },
         _id: 'test',
         name: 'some-api',
@@ -39,7 +39,7 @@ describe('upgradeSkuba in format mode', () => {
       path: '/package.json',
     });
 
-    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+    jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
@@ -55,20 +55,14 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    jest.mock(`./patches/0.9.0/index.js`, () => ({ patches: [mockUpgrade] }), {
-      virtual: true,
-    });
-    jest.mock(`./patches/1.0.0/index.js`, () => ({ patches: [mockUpgrade] }), {
-      virtual: true,
-    });
-    jest.mock(`./patches/2.0.0/index.js`, () => ({ patches: [mockUpgrade] }), {
-      virtual: true,
-    });
+    jest.mock(`./patches/7.3.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    jest.mock(`./patches/8.0.0/index.js`, () => ({ patches: [mockUpgrade] }));
+    jest.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
     jest.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         skuba: {
-          version: '1.0.0',
+          version: '8.0.0',
         },
         _id: 'test',
         name: 'some-api',
@@ -78,13 +72,13 @@ describe('upgradeSkuba in format mode', () => {
       path: '/package.json',
     });
 
-    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+    jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
     jest.mocked(fs.readdir).mockResolvedValue([
-      { isDirectory: () => true, name: '0.9.0' },
-      { isDirectory: () => true, name: '1.0.0' },
-      { isDirectory: () => true, name: '2.0.0' },
+      { isDirectory: () => true, name: '7.3.1' },
+      { isDirectory: () => true, name: '8.0.0' },
+      { isDirectory: () => true, name: '8.2.1' },
       { isDirectory: () => false, name: 'index.d.ts' },
     ] as never);
 
@@ -101,14 +95,12 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    jest.mock(`./patches/2.0.0/index.js`, () => ({ patches: [mockUpgrade] }), {
-      virtual: true,
-    });
+    jest.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
     jest.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         skuba: {
-          version: '1.0.0',
+          version: '8.0.0',
         },
         _id: 'test',
         name: 'some-api',
@@ -118,12 +110,12 @@ describe('upgradeSkuba in format mode', () => {
       path: '/package.json',
     });
 
-    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+    jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
     jest
       .mocked(fs.readdir)
-      .mockResolvedValue([{ isDirectory: () => true, name: '2.0.0' }] as never);
+      .mockResolvedValue([{ isDirectory: () => true, name: '8.2.1' }] as never);
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
@@ -136,7 +128,7 @@ describe('upgradeSkuba in format mode', () => {
   "name": "some-api",
   "version": "1.0.0",
   "skuba": {
-    "version": "2.0.0"
+    "version": "8.2.1"
   }
 }
 `,
@@ -149,9 +141,7 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    jest.mock(`./patches/2.0.0/index.js`, () => ({ patches: [mockUpgrade] }), {
-      virtual: true,
-    });
+    jest.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
     jest.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
@@ -163,12 +153,12 @@ describe('upgradeSkuba in format mode', () => {
       path: '/package.json',
     });
 
-    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+    jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
     jest
       .mocked(fs.readdir)
-      .mockResolvedValue([{ isDirectory: () => true, name: '2.0.0' }] as never);
+      .mockResolvedValue([{ isDirectory: () => true, name: '8.2.1' }] as never);
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
@@ -181,7 +171,7 @@ describe('upgradeSkuba in format mode', () => {
   "name": "some-api",
   "version": "1.0.0",
   "skuba": {
-    "version": "2.0.0"
+    "version": "8.2.1"
   }
 }
 `,
@@ -202,7 +192,7 @@ describe('upgradeSkuba in lint mode', () => {
     jest.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         skuba: {
-          version: '2.0.0',
+          version: '8.2.1',
         },
         _id: 'test',
         name: 'some-api',
@@ -212,7 +202,7 @@ describe('upgradeSkuba in lint mode', () => {
       path: '/package.json',
     });
 
-    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+    jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     await expect(upgradeSkuba('lint', log)).resolves.toEqual({
       ok: true,
@@ -236,13 +226,13 @@ describe('upgradeSkuba in lint mode', () => {
       path: '/package.json',
     });
 
-    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+    jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
     jest.mocked(fs.readdir).mockResolvedValue([
-      { isDirectory: () => true, name: '0.9.0' },
-      { isDirectory: () => true, name: '1.0.0' },
-      { isDirectory: () => true, name: '2.0.0' },
+      { isDirectory: () => true, name: '7.3.1' },
+      { isDirectory: () => true, name: '8.0.0' },
+      { isDirectory: () => true, name: '8.2.1' },
     ] as never);
 
     await expect(upgradeSkuba('lint', log)).resolves.toEqual({
@@ -262,7 +252,7 @@ describe('upgradeSkuba in lint mode', () => {
     jest.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         skuba: {
-          version: '1.0.0',
+          version: '8.0.0',
         },
         _id: 'test',
         name: 'some-api',
@@ -272,11 +262,11 @@ describe('upgradeSkuba in lint mode', () => {
       path: '/package.json',
     });
 
-    jest.mocked(getSkubaVersion).mockResolvedValue('2.0.0');
+    jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     jest
       .mocked(fs.readdir)
-      .mockResolvedValue([{ isDirectory: () => true, name: '0.9.0' }] as never);
+      .mockResolvedValue([{ isDirectory: () => true, name: '7.3.1' }] as never);
 
     await expect(upgradeSkuba('lint', log)).resolves.toEqual({
       ok: true,
