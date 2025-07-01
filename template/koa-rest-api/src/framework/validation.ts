@@ -39,19 +39,20 @@ const parseInvalidFieldsFromError = (err: z.ZodError): InvalidFields =>
 
 const parseTuples = (
   errors: core.$ZodIssue[],
+  basePath: Array<string | number | symbol> = [],
   unions: Record<number, number[]> = {},
 ): Array<readonly [string, string]> =>
   errors.flatMap((issue) => {
     if (issue.code === 'invalid_union') {
       return issue.errors.flatMap((err, idx) =>
-        parseTuples(err, {
+        parseTuples(err, issue.path, {
           ...unions,
           [issue.path.length]: [...(unions[issue.path.length] ?? []), idx],
         }),
       );
     }
 
-    const path = ['', ...issue.path]
+    const path = ['', ...basePath, ...issue.path]
       .map((prop, idx) => [prop, ...(unions[idx] ?? [])].join('~union'))
       .join('/');
 
