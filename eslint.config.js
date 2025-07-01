@@ -9,6 +9,7 @@ module.exports = [
       'integration/format/',
       'template/',
       'packages/**/*/lib*/',
+      'packages/eslint-config-skuba/',
     ],
   },
   ...skuba,
