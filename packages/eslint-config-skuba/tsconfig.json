@@ -4,10 +4,16 @@
     "outDir": "lib",
     "target": "ES2021",
     "paths": {
-      "src/*": ["./test/src/*"],
+      "src/*": ["./test/src/*"]
     }
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
-  "include": ["eslint.config.js", "index.d.ts", "index.js", "test/**/*", "requireExtensions.test.ts"]
+  "include": [
+    "eslint.config.js",
+    "index.d.ts",
+    "index.js",
+    "test/**/*",
+    "requireExtensions.test.ts"
+  ]
 }
