@@ -14,7 +14,6 @@ import { formatPrettier } from '../../../../../configure/processing/prettier';
 
 const IGNORE_FILE = '.eslintignore';
 const OLD_CONFIG_FILE = '.eslintrc.js';
-const NEW_CONFIG_FILE_CJS = 'eslint.config.cjs';
 const NEW_CONFIG_FILE_JS = 'eslint.config.js';
 
 const upgradeESLint: PatchFunction = async ({
@@ -63,7 +62,7 @@ const upgradeESLint: PatchFunction = async ({
     );
 
     const output = fiddleWithOutput(
-      await fsp.readFile(path.join(dir, NEW_CONFIG_FILE_CJS), 'utf-8'),
+      await fsp.readFile(path.join(dir, NEW_CONFIG_FILE_JS), 'utf-8'),
     );
     await fs.promises.writeFile(
       NEW_CONFIG_FILE_JS,
