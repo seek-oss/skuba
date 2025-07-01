@@ -27,7 +27,7 @@ describe('postJobHandler', () => {
       .expect(422)
       .expect(({ text }) =>
         expect(text).toMatchInlineSnapshot(
-          `"{"message":"Input validation failed","invalidFields":{"/hirer":"Required"}}"`,
+          `"{"message":"Input validation failed","invalidFields":{"/hirer":"Invalid input: expected object, received undefined"}}"`,
         ),
       );
   });
