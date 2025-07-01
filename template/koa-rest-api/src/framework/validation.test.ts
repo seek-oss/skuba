@@ -1,6 +1,7 @@
 import { agentFromMiddleware } from 'src/testing/server';
 import {
   IdDescriptionSchema,
+  NestedObjectSchema,
   chance,
   mockIdDescription,
 } from 'src/testing/types';
@@ -64,8 +65,7 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
           {
             "invalidFields": {
-              "~union0/description~union0": "Invalid input: expected string, received undefined",
-              "~union0/description~union1": "Invalid input: expected object, received undefined",
+              "~union0": "Invalid input: expected object, received undefined",
               "~union0/id": "Invalid input: expected string, received undefined",
               "~union1/id": "Invalid input: expected number, received undefined",
               "~union1/summary": "Invalid input: expected string, received undefined",
@@ -91,8 +91,8 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
           {
             "invalidFields": {
-              "~union0/description~union0": "Invalid input: expected string, received object",
-              "~union0/description~union1/content": "Invalid input: expected string, received undefined",
+              "~union0": "Invalid input: expected string, received object",
+              "~union0/content~union1": "Invalid input: expected string, received undefined",
               "~union0/id": "Invalid input: expected string, received null",
               "~union1/id": "Invalid input: expected number, received null",
               "~union1/summary": "Invalid input: expected string, received undefined",
@@ -120,8 +120,7 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
           {
             "invalidFields": {
-              "~union0/description~union0": "Invalid input: expected string, received undefined",
-              "~union0/description~union1": "Invalid input: expected object, received undefined",
+              "~union0": "Invalid input: expected object, received undefined",
               "~union0/id": "Invalid input: expected string, received undefined",
               "~union1/id": "Invalid input: expected number, received undefined",
               "~union1/summary": "Invalid input: expected string, received undefined",
