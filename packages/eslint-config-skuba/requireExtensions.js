@@ -1,5 +1,5 @@
 const { existsSync, lstatSync } = require('fs');
-const { dirname, resolve } = require('path');
+const { dirname, resolve, join } = require('path');
 
 // Helper function to create rule listeners
 function createRuleListener(context, check) {
@@ -10,23 +10,6 @@ function createRuleListener(context, check) {
     ExportNamedDeclaration: (node) => processNode(node, context, check),
     ImportDeclaration: (node) => processNode(node, context, check),
   };
-}
-
-function extractPaths(inputPath) {
-  // Find all matches of '/src/' and their positions
-  const matches = [...inputPath.matchAll(/\/src\//g)];
-
-  if (matches.length === 0) {
-    return [process.cwd()]; // No '/src/' found in path, fallback to process.cwd()
-  }
-
-  const firstIndex = matches[0].index;
-  const lastIndex = matches[matches.length - 1].index;
-
-  return [
-    inputPath.substring(0, firstIndex + 1),
-    inputPath.substring(0, lastIndex + 1),
-  ];
 }
 
 function processNode(node, context, check) {
@@ -46,10 +29,8 @@ function processNode(node, context, check) {
 
   if (value.startsWith('src')) {
     const file = dirname(context.getFilename());
-    const paths = extractPaths(file);
-    paths.forEach((path) => {
-      check(context, node, resolve(path, value));
-    });
+    const leadingPathToSrc = file.split('/src/')[0];
+    return check(context, node, join(leadingPathToSrc, value));
   }
 }
 
