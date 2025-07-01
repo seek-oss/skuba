@@ -64,8 +64,8 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
           {
             "invalidFields": {
-              "~union0/description/~union0": "Invalid input: expected string, received undefined",
-              "~union0/description/~union1": "Invalid input: expected object, received undefined",
+              "~union0/description~union0": "Invalid input: expected string, received undefined",
+              "~union0/description~union1": "Invalid input: expected object, received undefined",
               "~union0/id": "Invalid input: expected string, received undefined",
               "~union1/id": "Invalid input: expected number, received undefined",
               "~union1/summary": "Invalid input: expected string, received undefined",
@@ -91,10 +91,39 @@ describe('validate', () => {
         expect(body).toMatchInlineSnapshot(`
           {
             "invalidFields": {
-              "~union0/description/~union0": "Invalid input: expected string, received object",
-              "~union0/description/~union1/content": "Invalid input: expected string, received undefined",
+              "~union0/description~union0": "Invalid input: expected string, received object",
+              "~union0/description~union1/content": "Invalid input: expected string, received undefined",
               "~union0/id": "Invalid input: expected string, received null",
               "~union1/id": "Invalid input: expected number, received null",
+              "~union1/summary": "Invalid input: expected string, received undefined",
+            },
+            "message": "Input validation failed",
+          }
+        `),
+      );
+  });
+
+  it('blocks an invalid deeply nested object', () => {
+    const nestedObject = {
+      nestedObject: {
+        deeplyNested: {
+          id: chance.integer(), // Should be a string
+        },
+      },
+    };
+
+    return agent
+      .post('/')
+      .send(nestedObject)
+      .expect(422)
+      .expect(({ body }) =>
+        expect(body).toMatchInlineSnapshot(`
+          {
+            "invalidFields": {
+              "~union0/description~union0": "Invalid input: expected string, received undefined",
+              "~union0/description~union1": "Invalid input: expected object, received undefined",
+              "~union0/id": "Invalid input: expected string, received undefined",
+              "~union1/id": "Invalid input: expected number, received undefined",
               "~union1/summary": "Invalid input: expected string, received undefined",
             },
             "message": "Input validation failed",

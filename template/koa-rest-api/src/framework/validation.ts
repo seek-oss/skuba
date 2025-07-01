@@ -43,9 +43,14 @@ const parseTuples = (
 ): Array<readonly [string, string]> =>
   issues.flatMap((issue) => {
     if (issue.code === 'invalid_union') {
-      return issue.errors.flatMap((err, idx) =>
-        parseTuples(err, [...basePath, ...issue.path, `~union${idx}`]),
-      );
+      return issue.errors.flatMap((err, idx) => {
+        const unionPath = `${String(issue.path.at(-1) ?? '')}~union${idx}`;
+        return parseTuples(err, [
+          ...basePath,
+          ...issue.path.slice(0, issue.path.length - 1),
+          unionPath,
+        ]);
+      });
     }
     const path = [
       ...(basePath.length ? basePath : ['']),
