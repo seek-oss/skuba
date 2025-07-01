@@ -9,7 +9,7 @@ import { createExec, ensureCommands } from '../../utils/exec';
 import { createLogger, log } from '../../utils/logging';
 import { showLogoAndVersionInfo } from '../../utils/logo';
 import { getConsumerManifest } from '../../utils/manifest';
-import { detectPackageManager } from '../../utils/packageManager';
+import { packageManagerFromUserAgent } from '../../utils/packageManager';
 import {
   BASE_TEMPLATE_DIR,
   ensureTemplateConfigDeletion,
@@ -91,7 +91,7 @@ export const init = async (args = process.argv.slice(2)) => {
 
   const [manifest, packageManagerConfig] = await Promise.all([
     getConsumerManifest(destinationDir),
-    detectPackageManager(destinationDir),
+    packageManagerFromUserAgent(process.env.npm_config_user_agent),
   ]);
 
   if (!manifest) {
