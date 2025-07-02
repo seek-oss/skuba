@@ -1,5 +1,5 @@
 import { ErrorMiddleware } from 'seek-koala';
-import { ZodIssueCode, type z } from 'zod';
+import type { core, z } from 'zod/v4';
 
 import type { Context } from 'src/types/koa';
 
@@ -35,41 +35,38 @@ type InvalidFields = Record<string, string>;
  * @see [union error example](./validation.test.ts)
  */
 const parseInvalidFieldsFromError = (err: z.ZodError): InvalidFields =>
-  Object.fromEntries(parseTuples(err, {}));
+  Object.fromEntries(parseTuples(err.issues));
 
 const parseTuples = (
-  { errors }: z.ZodError,
-  unions: Record<number, number[]>,
+  errors: core.$ZodIssue[],
+  basePath: Array<string | number | symbol> = [],
+  unions: Record<number, number[]> = {},
 ): Array<readonly [string, string]> =>
   errors.flatMap((issue) => {
-    if (issue.code === ZodIssueCode.invalid_union) {
-      return issue.unionErrors.flatMap((err, idx) =>
-        parseTuples(err, {
+    if (issue.code === 'invalid_union') {
+      return issue.errors.flatMap((err, idx) =>
+        parseTuples(err, issue.path, {
           ...unions,
           [issue.path.length]: [...(unions[issue.path.length] ?? []), idx],
         }),
       );
     }
 
-    const path = ['', ...issue.path]
+    const path = ['', ...basePath, ...issue.path]
       .map((prop, idx) => [prop, ...(unions[idx] ?? [])].join('~union'))
       .join('/');
 
     return [[path, issue.message]] as const;
   });
 
-export const validate = <
-  Output,
-  Def extends z.ZodTypeDef = z.ZodTypeDef,
-  Input = Output,
->({
+export const validate = <Output, Input = Output>({
   ctx,
   input,
   schema,
 }: {
   ctx: Context;
   input: unknown;
-  schema: z.ZodSchema<Output, Def, Input>;
+  schema: z.ZodSchema<Output, Input>;
 }): Output => {
   const parseResult = schema.safeParse(input);
   if (parseResult.success === false) {
@@ -85,15 +82,11 @@ export const validate = <
   return parseResult.data;
 };
 
-export const validateRequestBody = <
-  Output,
-  Def extends z.ZodTypeDef = z.ZodTypeDef,
-  Input = Output,
->(
+export const validateRequestBody = <Output, Input = Output>(
   ctx: Context,
-  schema: z.ZodSchema<Output, Def, Input>,
+  schema: z.ZodSchema<Output, Input>,
 ): Output =>
-  validate<Output, Def, Input>({
+  validate<Output, Input>({
     ctx,
     input: ctx.request.body as unknown,
     schema,
