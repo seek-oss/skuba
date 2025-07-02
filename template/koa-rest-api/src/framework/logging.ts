@@ -1,4 +1,4 @@
-import createLogger from '@seek/logger';
+import createLogger, { createDestination } from '@seek/logger';
 import { RequestLogging } from 'seek-koala';
 
 import { config } from 'src/config';
@@ -8,18 +8,27 @@ const { createContextMiddleware, mixin } =
 
 export const contextMiddleware = createContextMiddleware();
 
-export const logger = createLogger({
-  base: {
-    environment: config.environment,
-    version: config.version,
-  },
-
-  mixin,
-
-  level: config.logLevel,
-
-  name: config.name,
-
-  transport:
-    config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
+const { destination, stdoutMock } = createDestination({
+  mock: config.environment === 'test',
 });
+
+export { stdoutMock };
+
+export const logger = createLogger(
+  {
+    base: {
+      environment: config.environment,
+      version: config.version,
+    },
+
+    mixin,
+
+    level: config.logLevel,
+
+    name: config.name,
+
+    transport:
+      config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
+  },
+  destination,
+);
