@@ -1,5 +1,47 @@
 # skuba
 
+## 11.1.0
+
+### Minor Changes
+
+- **deps:** Jest 30 ([#1905](https://github.com/seek-oss/skuba/pull/1905))
+
+  This major release includes breaking changes. See the [Jest 30](https://jestjs.io/blog/2025/06/04/jest-30) announcement for more information.
+
+  Notable changes that may affect your tests:
+  - **Updated expect aliases**: Expect aliases have been removed which may affect your test assertions. Please run `skuba format` to update your test files automatically.
+  - **Updated snapshot printing**: Jest have updated the way snapshots are printed, which may require you to update your snapshot tests. Some snapshots may remain poorly indented, and be updated over time when regenerated. You may opt to remove all snapshots (e.g. replace `toMatchInlineSnapshot(...)` with `toMatchInlineSnapshot()` and re-run the tests with `-u`).
+
+  In this release, we have enabled the [global cleanup](https://jestjs.io/blog/2025/06/04/jest-30#globals-cleanup-between-test-files) feature by default. This automatically cleans up global state between test files, helping to prevent memory leaks and ensure test isolation.
+
+  If you need to revert to the previous behavior, you can configure the `globalsCleanup` option in your `jest.config.ts` file:
+
+  ```ts
+  export default Jest.mergePreset({
+    testEnvironmentOptions: {
+      globalsCleanup: 'soft', // Jest default or `'off'` to disable completely
+    },
+  });
+  ```
+
+- **deps:** prettier ~3.6.0 ([#1935](https://github.com/seek-oss/skuba/pull/1935))
+
+### Patch Changes
+
+- **template/\*:** Migrate to Zod 4 ([#1930](https://github.com/seek-oss/skuba/pull/1930))
+
+- **migrate:** Improve performance when scanning the filesystem ([#1928](https://github.com/seek-oss/skuba/pull/1928))
+
+- **migrate:** Fix a bug which was resulting in some missed changes in `skuba migrate` ([#1929](https://github.com/seek-oss/skuba/pull/1929))
+
+- **deps:** eslint-config-skuba 6.1.1 ([#1916](https://github.com/seek-oss/skuba/pull/1916))
+
+- **template/\*:** Replace logger spies with [`@seek/logger` destination mocks](https://github.com/seek-oss/logger/blob/master/docs/testing.md) ([#1923](https://github.com/seek-oss/skuba/pull/1923))
+
+- **deps:** @octokit/rest ^22.0.0 ([#1919](https://github.com/seek-oss/skuba/pull/1919))
+
+- **init:** Use pnpm by default ([#1910](https://github.com/seek-oss/skuba/pull/1910))
+
 ## 11.0.1
 
 ### Patch Changes
