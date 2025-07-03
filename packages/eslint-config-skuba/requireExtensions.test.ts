@@ -17,4 +17,4 @@ import { test as srcTest } from 'src/file';
 import { test as validSrcTest } from 'src/file.js';
 
 // eslint-disable-next-line require-extensions/require-extensions, require-extensions/require-index
-import { test as srcTest2 } from './test/both';
+import { test as bothTest } from './test/both';
