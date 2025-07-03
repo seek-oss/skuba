@@ -50,17 +50,17 @@ describe('tryPatchDockerfile', () => {
       });
 
       expect(volToJson()).toMatchInlineSnapshot(`
-    {
-      "Dockerfile": "
-    ARG BASE_IMAGE
-    ARG BASE_TAG
+        {
+          "Dockerfile": "
+        ARG BASE_IMAGE
+        ARG BASE_TAG
 
-    FROM --platform=\${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs18-debian12 AS runtime
+        FROM --platform=\${BUILDPLATFORM:-<%- platformName %>} gcr.io/distroless/nodejs18-debian12 AS runtime
 
-    WORKDIR /workdir
-    ",
-    }
-    `);
+        WORKDIR /workdir
+        ",
+        }
+      `);
     });
 
     it('patches a Dockerfile with nodejs18-debian11', async () => {
@@ -73,17 +73,17 @@ describe('tryPatchDockerfile', () => {
       });
 
       expect(volToJson()).toMatchInlineSnapshot(`
-    {
-      "Dockerfile": "
-    ARG BASE_IMAGE
-    ARG BASE_TAG
+        {
+          "Dockerfile": "
+        ARG BASE_IMAGE
+        ARG BASE_TAG
 
-    FROM --platform=<%- platformName %> gcr.io/distroless/nodejs20-debian12 AS runtime
+        FROM --platform=<%- platformName %> gcr.io/distroless/nodejs20-debian12 AS runtime
 
-    WORKDIR /workdir
-    ",
-    }
-    `);
+        WORKDIR /workdir
+        ",
+        }
+      `);
     });
 
     it('ignores when a Dockerfile is missing', async () => {
