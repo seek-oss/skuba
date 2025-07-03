@@ -44,7 +44,7 @@ const requireExtensionsPlugin = {
       },
       create(context) {
         return createRuleListener(context, (ctx, node, path) => {
-          if (!existsSync(path)) {
+          if (existsSync(`${path}.ts`) || !existsSync(path)) {
             let fix;
             if (!node.source.value.includes('?')) {
               fix = (fixer) => {

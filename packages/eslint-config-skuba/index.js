@@ -10,7 +10,10 @@ const { js: jsExtensions, ts: tsExtensions } = extensions;
 module.exports = [
   {
     ...requireExtensionsPlugin.configs.recommended[0],
-    files: ['./requireExtensions.test.ts'], // TODO: remove when we release
+    files: [
+      './requireExtensions.test.ts',
+      'packages/eslint-config-skuba/requireExtensions.test.ts',
+    ], // TODO: remove when we release
   },
   {
     name: 'skuba/ignores',
