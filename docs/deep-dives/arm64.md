@@ -254,7 +254,6 @@ For a [Gantry] service, first locate your Gantry resource files.
 As these have no set naming convention, you can look for:
 
 - YAML files that match the following common patterns:
-
   - `.gantry/**/*.{yaml,yml}`
   - `gantry.{yaml,yml}`
   - `gantry.apply.yml`

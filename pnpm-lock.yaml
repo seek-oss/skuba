@@ -117,11 +117,11 @@ importers:
         specifier: ^4.0.0
         version: 4.0.2
       prettier:
-        specifier: ~3.5.0
-        version: 3.5.3
+        specifier: ~3.6.0
+        version: 3.6.2
       prettier-plugin-packagejson:
         specifier: ^2.4.10
-        version: 2.5.15(prettier@3.5.3)
+        version: 2.5.15(prettier@3.6.2)
       read-pkg-up:
         specifier: ^7.0.1
         version: 7.0.1
@@ -156,8 +156,8 @@ importers:
         specifier: ~5.8.0
         version: 5.8.3
       zod:
-        specifier: ^3.22.4
-        version: 3.25.46
+        specifier: ^3.25.67
+        version: 3.25.67
     devDependencies:
       '@changesets/cli':
         specifier: 2.29.5
@@ -377,8 +377,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       zod:
-        specifier: ^3.19.1
-        version: 3.25.46
+        specifier: ^3.25.67
+        version: 3.25.67
     devDependencies:
       '@types/chance':
         specifier: ^1.1.3
@@ -441,8 +441,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       zod:
-        specifier: ^3.19.1
-        version: 3.25.46
+        specifier: ^3.25.67
+        version: 3.25.67
     devDependencies:
       '@seek/aws-codedeploy-infra':
         specifier: ^3.0.0
@@ -1412,6 +1412,7 @@ packages:
   '@koa/router@13.1.0':
     resolution: {integrity: sha512-mNVu1nvkpSd8Q8gMebGbCkDWJ51ODetrFvLKYusej+V0ByD4btqHYnPIzTBLXnQMVUlm/oxVwqmWBY3zQfZilw==}
     engines: {node: '>= 18'}
+    deprecated: Please upgrade to v13.1.1+ per <https://github.com/koajs/router/pull/181>
 
   '@kwsites/file-exists@1.1.1':
     resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
@@ -5711,6 +5712,11 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
+  prettier@3.6.2:
+    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+    engines: {node: '>=14'}
+    hasBin: true
+
   pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -6984,8 +6990,8 @@ packages:
     resolution: {integrity: sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==}
     engines: {node: '>=18'}
 
-  zod@3.25.46:
-    resolution: {integrity: sha512-IqRxcHEIjqLd4LNS/zKffB3Jzg3NwqJxQQ0Ns7pdrvgGkwQsEBdEQcOHaBVqvvZArShRzI39+aMST3FBGmTrLQ==}
+  zod@3.25.67:
+    resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -9119,7 +9125,7 @@ snapshots:
       aws-cdk-lib: 2.199.0(constructs@10.4.2)
       constructs: 10.4.2
       skuba-dive: 2.0.0
-      zod: 3.25.46
+      zod: 3.25.67
 
   '@seek/logger@10.0.0':
     dependencies:
@@ -13913,9 +13919,18 @@ snapshots:
     optionalDependencies:
       prettier: 3.5.3
 
+  prettier-plugin-packagejson@2.5.15(prettier@3.6.2):
+    dependencies:
+      sort-package-json: 3.2.1
+      synckit: 0.11.8
+    optionalDependencies:
+      prettier: 3.6.2
+
   prettier@2.8.8: {}
 
   prettier@3.5.3: {}
+
+  prettier@3.6.2: {}
 
   pretty-format@29.7.0:
     dependencies:
@@ -14669,7 +14684,7 @@ snapshots:
       tsconfig-seek: 2.0.0
       tsx: 4.19.4
       typescript: 5.8.3
-      zod: 3.25.46
+      zod: 3.25.67
     optionalDependencies:
       skuba-dive: 2.0.0
     transitivePeerDependencies:
@@ -15618,6 +15633,6 @@ snapshots:
 
   yoctocolors@2.1.1: {}
 
-  zod@3.25.46: {}
+  zod@3.25.67: {}
 
   zwitch@2.0.4: {}
