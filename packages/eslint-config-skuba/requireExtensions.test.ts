@@ -12,7 +12,8 @@ import { test as validSimpleTest } from './test/simple.js';
 import { test as indexFileTest } from './test/indexFile';
 import { test as validIndexFileTest } from './test/indexFile/index.js';
 
-import { test as srcTest } from 'src/file.js';
+// eslint-disable-next-line require-extensions/require-extensions
+import { test as srcTest } from 'src/file';
 import { test as validSrcTest } from 'src/file.js';
 
 // eslint-disable-next-line require-extensions/require-extensions, require-extensions/require-index
