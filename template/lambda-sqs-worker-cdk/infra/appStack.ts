@@ -16,7 +16,7 @@ import {
 import type { Construct } from 'constructs';
 import { DatadogLambda } from 'datadog-cdk-constructs-v2';
 
-import { config } from './config';
+import { config } from './config.js';
 
 // Updated by https://github.com/seek-oss/rynovate
 const DATADOG_EXTENSION_LAYER_VERSION = 64;
