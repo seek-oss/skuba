@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import { coerce, lte, satisfies } from 'semver';
 import { type ZodRawShape, z } from 'zod';
 
-import { log } from '../../../utils/logging';
+import { log } from '../../../utils/logging.js';
 
 const getParentFile = async (file: string, cwd: string = process.cwd()) => {
   const path = await findUp(file, { cwd });

@@ -1,6 +1,6 @@
-import type { Patches } from '../..';
+import type { Patches } from '../../index.js';
 
-import { tryPatchPnpmDockerImages } from './patchPnpmDockerImages';
+import { tryPatchPnpmDockerImages } from './patchPnpmDockerImages.js';
 
 export const patches: Patches = [
   {

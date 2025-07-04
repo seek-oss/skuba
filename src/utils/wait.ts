@@ -1,5 +1,5 @@
-import { createTerseError } from './error';
-import { pluralise } from './logging';
+import { createTerseError } from './error.js';
+import { pluralise } from './logging.js';
 
 interface Timeout extends PromiseLike<void> {
   clear?: () => void;

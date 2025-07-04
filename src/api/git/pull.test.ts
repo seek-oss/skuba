@@ -1,6 +1,6 @@
 import git from 'isomorphic-git';
 
-import { fastForwardBranch } from './pull';
+import { fastForwardBranch } from './pull.js';
 
 jest.mock('isomorphic-git');
 

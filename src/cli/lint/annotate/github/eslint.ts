@@ -1,5 +1,5 @@
-import type * as GitHub from '../../../../api/github';
-import type { ESLintOutput } from '../../../adapter/eslint';
+import type * as GitHub from '../../../../api/github/index.js';
+import type { ESLintOutput } from '../../../adapter/eslint.js';
 
 export const createEslintAnnotations = (
   eslint: ESLintOutput,

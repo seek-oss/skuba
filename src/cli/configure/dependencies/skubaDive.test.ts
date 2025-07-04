@@ -1,4 +1,4 @@
-import { skubaDive } from './skubaDive';
+import { skubaDive } from './skubaDive.js';
 
 describe('skubaDive', () => {
   it('passes through up-to-date dependencies', () => {

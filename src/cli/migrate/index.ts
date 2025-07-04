@@ -1,6 +1,6 @@
-import { log } from '../../utils/logging';
+import { log } from '../../utils/logging.js';
 
-import { nodeVersionMigration } from './nodeVersion';
+import { nodeVersionMigration } from './nodeVersion/index.js';
 
 const migrations: Record<string, () => Promise<void>> = {
   node20: () =>

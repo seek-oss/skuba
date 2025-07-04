@@ -1,5 +1,5 @@
-import { create } from './create';
-import * as parsers from './parsers';
+import { create } from './create.js';
+import * as parsers from './parsers.js';
 
 /**
  * Read an environment variable as a non-negative integer.

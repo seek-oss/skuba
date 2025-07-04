@@ -1,18 +1,18 @@
 import simpleGit from 'simple-git';
 
-import * as Buildkite from '../../api/buildkite';
-import * as Git from '../../api/git';
-import * as GitHub from '../../api/github';
-import { runESLint } from '../adapter/eslint';
-import { runPrettier } from '../adapter/prettier';
-import { createDestinationFileReader } from '../configure/analysis/project';
+import * as Buildkite from '../../api/buildkite/index.js';
+import * as Git from '../../api/git/index.js';
+import * as GitHub from '../../api/github/index.js';
+import { runESLint } from '../adapter/eslint.js';
+import { runPrettier } from '../adapter/prettier.js';
+import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import {
   AUTOFIX_IGNORE_FILES_BASE,
   AUTOFIX_IGNORE_FILES_NPMRC,
   autofix,
-} from './autofix';
-import { internalLint } from './internal';
+} from './autofix.js';
+import { internalLint } from './internal.js';
 
 jest.mock('simple-git');
 jest.mock('../../api/git');

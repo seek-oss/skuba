@@ -1,4 +1,4 @@
-import * as parsers from './parsers';
+import * as parsers from './parsers.js';
 
 describe('nonNegativeInteger', () => {
   const happyCases = [

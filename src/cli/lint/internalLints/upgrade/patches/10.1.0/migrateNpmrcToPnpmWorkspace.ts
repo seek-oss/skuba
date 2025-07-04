@@ -3,14 +3,14 @@ import { inspect } from 'util';
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
-import type { PatchFunction, PatchReturnType } from '../..';
 import {
   findCurrentWorkspaceProjectRoot,
   findWorkspaceRoot,
-} from '../../../../../../utils/dir';
-import { log } from '../../../../../../utils/logging';
-import { hasNpmrcSecret } from '../../../../../../utils/npmrc';
-import { replaceManagedSection } from '../../../../../configure/processing/configFile';
+} from '../../../../../../utils/dir.js';
+import { log } from '../../../../../../utils/logging.js';
+import { hasNpmrcSecret } from '../../../../../../utils/npmrc.js';
+import { replaceManagedSection } from '../../../../../configure/processing/configFile.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const NPMRC = '.npmrc';
 

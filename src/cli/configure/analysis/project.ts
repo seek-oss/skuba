@@ -2,12 +2,15 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { buildPatternToFilepathMap, crawlDirectory } from '../../../utils/dir';
-import { isErrorWithCode } from '../../../utils/error';
-import { loadModules } from '../modules';
-import type { FileDiff, Files, Module, Options } from '../types';
+import {
+  buildPatternToFilepathMap,
+  crawlDirectory,
+} from '../../../utils/dir.js';
+import { isErrorWithCode } from '../../../utils/error.js';
+import { loadModules } from '../modules/index.js';
+import type { FileDiff, Files, Module, Options } from '../types.js';
 
-import { determineOperation } from './diff';
+import { determineOperation } from './diff.js';
 
 export const createDestinationFileReader =
   (root: string) =>

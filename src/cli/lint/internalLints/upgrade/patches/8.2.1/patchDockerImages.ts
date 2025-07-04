@@ -3,8 +3,8 @@ import { inspect } from 'util';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import type { PatchFunction, PatchReturnType } from '../..';
-import { log } from '../../../../../../utils/logging';
+import { log } from '../../../../../../utils/logging.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const DOCKER_IMAGE_REGEX = /^(FROM\s?.*)(\s)(node|python)(:.*)/gm;
 const DOCKER_IMAGE_PLATFORM_REGEX = /^(FROM\s?.*)(--platform=[^\s]+) /gm;
