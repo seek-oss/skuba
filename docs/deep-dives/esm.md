@@ -60,7 +60,7 @@ In the same filesystem, we would need to import the `index.js` file like this:
 import { module } from './imported-module/index.js';
 ```
 
-1. `skuba-dive/register`: Our current setup uses `skuba-dive/register` to allow us to simplify our import statements and avoid needing to use deep relative paths.
+2. `skuba-dive/register`: Our current setup uses `skuba-dive/register` to allow us to simplify our import statements and avoid needing to use deep relative paths.
 
 Instead of importing a module like this:
 
@@ -76,7 +76,7 @@ import { module } from 'src/imported-module';
 
 However, `skuba-dive/register` relies on `module-alias` which is not compatible with ESM. This means that we need to find a new way to handle module aliases in ESM.
 
-1. **Jest** Our current setup use Jest for testing, and as of version 30 is still [not fully compatible with ESM]. This is a significant blocker as switching to ESM would require us to switch to a different testing framework or wait for Jest to become fully compatible with ESM.
+3. **Jest** Our current setup use Jest for testing, and as of version 30 is still [not fully compatible with ESM]. This is a significant blocker as switching to ESM would require us to switch to a different testing framework or wait for Jest to become fully compatible with ESM.
 
 Migrating to ESM with Jest would require significant changes to our codebase, such as updating all imports to to be dynamic imports in order to use mocks, and to change all `jest.mock` calls to use `jest.unstable_mockModule` instead.
 
@@ -94,7 +94,7 @@ As Jest does not support file extensions in import statements, we will be applyi
 
 This shouldn't cause any issues but out of caution we will be doing this as a breaking release.
 
-1. Replacing `skuba-dive/register` with subpath imports
+2. Replacing `skuba-dive/register` with subpath imports
 
 We will be replacing `skuba-dive/register` with subpath imports which is a native solution supported by both [TypeScript] and [Node.js].
 
@@ -115,7 +115,27 @@ package.json:
 }
 ```
 
-This will require us to make some changes to our `tsconfig.json` files to ensure that TypeScript understands these paths.
+This will require some changes to the base skuba `tsconfig.json` and your local `tsconfig.json` files.
+
+We will be updating our outdated [moduleResolution] configuration to `node16` and our [module] to `node18` in our `tsconfig.json` files where previously we were using the `node` resolution strategy.
+
+```diff
+{
+  "compilerOptions": {
+    "incremental": true,
+    "isolatedModules": true,
+-   "moduleResolution": "node",
++   "moduleResolution": "node16",
++   "module": "node18",
+    "resolveJsonModule": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "extends": "tsconfig-seek"
+}
+```
+
+In your local `tsconfig.json` file, we will also need to add a `baseUrl` and `rootDir` to help TypeScript resolve the subpath imports correctly:
 
 ```diff
 {
@@ -125,7 +145,8 @@ This will require us to make some changes to our `tsconfig.json` files to ensure
 -   "paths": {
 -     "#src/*": ["src/*"]
 -    }
-  }
+  },
+  "extends": "skuba/config/tsconfig.json"
 }
 ```
 
@@ -135,11 +156,11 @@ This allows us to import modules like this:
 import { module } from '#src/imported-module';
 ```
 
-However, this will require us to also update our outdated [moduleResolution] configuration to `node16` and our [module] to `node18` in our `tsconfig.json` files where previously we were using the `node` resolution strategy.
-
 1. Switching to Vitest
 
-Finally, we will be switching to [Vitest](https://vitest.dev/) as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition. We will apply a community codemod to help with the transition, but it will still require some manual changes to our tests. Vitest also provides TypeScript support out of the box, which means we won't need to apply any custom workarounds like we do with Jest.
+Finally, we will be switching to [Vitest](https://vitest.dev/) as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition.
+
+We will apply a community codemod to help with the transition, but it will likely require some manual changes to our tests. Vitest also provides TypeScript support out of the box, which means we won't need to apply any custom workarounds like we do with Jest.
 
 ---
 
