@@ -1,5 +1,11 @@
 # skuba
 
+## 11.2.0
+
+### Minor Changes
+
+- **test:** Add support for imports using file extensions ([#1933](https://github.com/seek-oss/skuba/pull/1933))
+
 ## 11.1.0
 
 ### Minor Changes
