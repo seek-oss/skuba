@@ -141,7 +141,7 @@ In your local `tsconfig.json` file, we will also need to add a `baseUrl` and `ro
 {
   "compilerOptions": {
     "baseUrl": ".",
-+   "rootDir": "."
++   "rootDir": ".",
 -   "paths": {
 -     "#src/*": ["src/*"]
 -    }
