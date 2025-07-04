@@ -1,8 +1,8 @@
-import './register';
+import './register.js';
 
-import app from './app';
-import { config } from './config';
-import { logger } from './framework/logging';
+import app from './app.js';
+import { config } from './config.js';
+import { logger } from './framework/logging.js';
 
 // If your application is deployed with more than 1 vCPU you can delete this
 // file and use a clustering utility to run `lib/app`.
