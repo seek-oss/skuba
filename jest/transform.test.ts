@@ -6,8 +6,6 @@ test('transform', () =>
       expect.stringMatching(
         /\/skuba\/node_modules\/.*\/?ts-jest\/dist\/index\.js$/,
       ),
-      {
-        isolatedModules: true,
-      },
+      {},
     ],
   }));

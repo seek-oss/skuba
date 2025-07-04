@@ -19,7 +19,7 @@
     "@types/node": "^22.13.10",
     "skuba": "*"
   },
-  "packageManager": "pnpm@10.12.1",
+  "packageManager": "pnpm@10.12.4",
   "engines": {
     "node": ">=22"
   }

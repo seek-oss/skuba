@@ -34,17 +34,17 @@ describe('tryAddEmptyExports', () => {
       });
 
       expect(writeFile.mock.calls.flat().join('\n')).toMatchInlineSnapshot(`
-      "~/project/jest.setup.ts
-      // jest.setup.ts
+        "~/project/jest.setup.ts
+        // jest.setup.ts
 
-      export {};
+        export {};
 
-      ~/project/jest.setup.int.ts
-      // jest.setup.int.ts
+        ~/project/jest.setup.int.ts
+        // jest.setup.int.ts
 
-      export {};
-      "
-    `);
+        export {};
+        "
+      `);
     });
 
     it('no-ops compliant Jest setup files', async () => {
