@@ -32,7 +32,7 @@ ESM:
 import { module } from './imported-module.js';
 ```
 
-While this is a simple change, it requires us to update all our import statements across the codebase. It also forbids us from using the `index.js` convention, which is commonly used in CJS.
+While this is a simple change, it requires us to update all our import statements across the codebase. It also forbids us from using the `index.js` import convention, which is commonly used in CJS.
 
 eg.
 
