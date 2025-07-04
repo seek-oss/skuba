@@ -1,6 +1,6 @@
-import type { Patches } from '../..';
+import type { Patches } from '../../index.js';
 
-import { tryRemoveYarnIgnoreOptionalFlags } from './removeYarnIgnoreOptionalFlags';
+import { tryRemoveYarnIgnoreOptionalFlags } from './removeYarnIgnoreOptionalFlags.js';
 
 export const patches: Patches = [
   {

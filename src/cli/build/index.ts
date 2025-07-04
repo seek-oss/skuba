@@ -1,12 +1,12 @@
 import chalk from 'chalk';
 
-import { hasDebugFlag } from '../../utils/args';
-import { log } from '../../utils/logging';
-import { getStringPropFromConsumerManifest } from '../../utils/manifest';
+import { hasDebugFlag } from '../../utils/args.js';
+import { log } from '../../utils/logging.js';
+import { getStringPropFromConsumerManifest } from '../../utils/manifest.js';
 
-import { copyAssets } from './assets';
-import { esbuild } from './esbuild';
-import { readTsconfig, tsc } from './tsc';
+import { copyAssets } from './assets.js';
+import { esbuild } from './esbuild.js';
+import { readTsconfig, tsc } from './tsc.js';
 
 export const build = async (args = process.argv.slice(2)) => {
   // TODO: define a unified `package.json#/skuba` schema and parser so we don't

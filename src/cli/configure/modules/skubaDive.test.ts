@@ -1,12 +1,12 @@
-import { parsePackage } from '../processing/package';
+import { parsePackage } from '../processing/package.js';
 import {
   assertDefined,
   defaultOpts,
   defaultPackageOpts,
   executeModule,
-} from '../testing/module';
+} from '../testing/module.js';
 
-import { skubaDiveModule } from './skubaDive';
+import { skubaDiveModule } from './skubaDive.js';
 
 describe('skubaDiveModule', () => {
   const SKUBA_DIVE_PACKAGE_JSON = JSON.stringify({

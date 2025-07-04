@@ -3,10 +3,10 @@ import fsp from 'fs/promises';
 
 import memfs, { vol } from 'memfs';
 
-import type { PatchConfig } from '../..';
-import { configForPackageManager } from '../../../../../../utils/packageManager';
+import { configForPackageManager } from '../../../../../../utils/packageManager.js';
+import type { PatchConfig } from '../../index.js';
 
-import { tryMoveNpmrcMounts } from './moveNpmrcMounts';
+import { tryMoveNpmrcMounts } from './moveNpmrcMounts.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

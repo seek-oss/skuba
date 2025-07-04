@@ -1,10 +1,10 @@
 import path from 'path';
 
-import { SKUBA_DIVE_HOOKS } from '../dependencies/skubaDive';
-import { prependImport, stripImports } from '../processing/javascript';
-import { loadFiles } from '../processing/loadFiles';
-import { parsePackage } from '../processing/package';
-import type { Module, Options } from '../types';
+import { SKUBA_DIVE_HOOKS } from '../dependencies/skubaDive.js';
+import { prependImport, stripImports } from '../processing/javascript.js';
+import { loadFiles } from '../processing/loadFiles.js';
+import { parsePackage } from '../processing/package.js';
+import type { Module, Options } from '../types.js';
 
 const DEFAULT_FILENAME = 'src/register.ts';
 

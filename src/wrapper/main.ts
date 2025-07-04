@@ -1,7 +1,7 @@
 import path from 'path';
 
-import { runFunctionHandler } from './functionHandler';
-import { runRequestListener } from './requestListener';
+import { runFunctionHandler } from './functionHandler.js';
+import { runRequestListener } from './requestListener.js';
 
 export const main = async (rawEntryPoint: string, rawPort: string) => {
   const availablePort = Number(rawPort) || undefined;

@@ -1,6 +1,6 @@
 import type prettier from 'prettier';
 
-import prettierConfig from '../../../../config/prettier';
+import prettierConfig from '../../../../config/prettier.js';
 
 type Options = Pick<prettier.Options, 'filepath' | 'parser'>;
 

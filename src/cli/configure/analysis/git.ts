@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
-import { crawlDirectory } from '../../../utils/dir';
-import { log } from '../../../utils/logging';
+import { crawlDirectory } from '../../../utils/dir.js';
+import { log } from '../../../utils/logging.js';
 
 export const auditWorkingTree = async (dir: string) => {
   const filepaths = await crawlDirectory(dir);

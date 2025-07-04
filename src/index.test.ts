@@ -1,4 +1,4 @@
-import * as skuba from '.';
+import * as skuba from './index.js';
 
 describe('skuba', () => {
   it('exports', () => {

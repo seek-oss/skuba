@@ -3,10 +3,10 @@ import path from 'path';
 import type { CreateCommitOnBranchInput } from '@octokit/graphql-schema';
 import fs from 'fs-extra';
 
-import * as Git from '../git';
+import * as Git from '../git/index.js';
 
-import { apiTokenFromEnvironment } from './environment';
-import { graphql } from './octokit';
+import { apiTokenFromEnvironment } from './environment.js';
+import { graphql } from './octokit.js';
 
 interface CreateCommitResult {
   createCommitOnBranch: {

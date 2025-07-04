@@ -5,7 +5,7 @@ import memfs, { fs, vol } from 'memfs';
 
 import newGit from '../../../integration/git/new.json';
 
-import { commitAllChanges } from './commitAllChanges';
+import { commitAllChanges } from './commitAllChanges.js';
 
 jest.mock('fs-extra', () => memfs);
 

@@ -2,10 +2,10 @@ import path from 'path';
 
 import getPort from 'get-port';
 
-import { parseRunArgs } from '../../utils/args';
-import { createExec } from '../../utils/exec';
-import { getEntryPointFromManifest } from '../../utils/manifest';
-import { isIpPort } from '../../utils/validation';
+import { parseRunArgs } from '../../utils/args.js';
+import { createExec } from '../../utils/exec.js';
+import { getEntryPointFromManifest } from '../../utils/manifest.js';
+import { isIpPort } from '../../utils/validation.js';
 
 export const start = async () => {
   const [args, availablePort] = await Promise.all([

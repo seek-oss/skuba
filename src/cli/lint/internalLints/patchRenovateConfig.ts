@@ -5,13 +5,13 @@ import fs from 'fs-extra';
 import * as fleece from 'golden-fleece';
 import { z } from 'zod';
 
-import * as Git from '../../../api/git';
-import { log } from '../../../utils/logging';
-import { createDestinationFileReader } from '../../configure/analysis/project';
-import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate';
-import { formatPrettier } from '../../configure/processing/prettier';
+import * as Git from '../../../api/git/index.js';
+import { log } from '../../../utils/logging.js';
+import { createDestinationFileReader } from '../../configure/analysis/project.js';
+import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate.js';
+import { formatPrettier } from '../../configure/processing/prettier.js';
 
-import type { PatchFunction, PatchReturnType } from './upgrade';
+import type { PatchFunction, PatchReturnType } from './upgrade/index.js';
 
 const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;
 

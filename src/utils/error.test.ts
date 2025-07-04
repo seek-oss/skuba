@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { createTerseError } from './error';
+import { createTerseError } from './error.js';
 
 describe('createTerseError', () => {
   it('creates a terse error for `util.inspect`', () => {

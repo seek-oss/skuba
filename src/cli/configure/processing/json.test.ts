@@ -1,4 +1,4 @@
-import { formatObject, parseObject } from './json';
+import { formatObject, parseObject } from './json.js';
 
 describe('formatObject', () => {
   it('sorts and formats', async () =>

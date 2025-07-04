@@ -1,4 +1,4 @@
-import type { Module, Options } from '../types';
+import type { Module, Options } from '../types.js';
 
 export const serverlessModule = ({}: Options): Module => ({
   '**/serverless*.yml': (inputFile, _files, _initialFiles) => {

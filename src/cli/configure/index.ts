@@ -2,21 +2,21 @@ import path from 'path';
 
 import { Select } from 'enquirer';
 
-import { createInclusionFilter } from '../../utils/dir';
-import { createExec, ensureCommands } from '../../utils/exec';
-import { log } from '../../utils/logging';
-import { showLogoAndVersionInfo } from '../../utils/logo';
-import { detectPackageManager } from '../../utils/packageManager';
-import { BASE_TEMPLATE_DIR } from '../../utils/template';
-import { hasProp } from '../../utils/validation';
+import { createInclusionFilter } from '../../utils/dir.js';
+import { createExec, ensureCommands } from '../../utils/exec.js';
+import { log } from '../../utils/logging.js';
+import { showLogoAndVersionInfo } from '../../utils/logo.js';
+import { detectPackageManager } from '../../utils/packageManager.js';
+import { BASE_TEMPLATE_DIR } from '../../utils/template.js';
+import { hasProp } from '../../utils/validation.js';
 
-import { analyseConfiguration } from './analyseConfiguration';
-import { analyseDependencies } from './analyseDependencies';
-import { auditWorkingTree } from './analysis/git';
-import { getDestinationManifest } from './analysis/package';
-import { ensureTemplateCompletion } from './ensureTemplateCompletion';
-import { getEntryPoint } from './getEntryPoint';
-import { getProjectType } from './getProjectType';
+import { analyseConfiguration } from './analyseConfiguration.js';
+import { analyseDependencies } from './analyseDependencies.js';
+import { auditWorkingTree } from './analysis/git.js';
+import { getDestinationManifest } from './analysis/package.js';
+import { ensureTemplateCompletion } from './ensureTemplateCompletion.js';
+import { getEntryPoint } from './getEntryPoint.js';
+import { getProjectType } from './getProjectType.js';
 
 const shouldApply = async (name: string) => {
   if (!process.stdin.isTTY) {

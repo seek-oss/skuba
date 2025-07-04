@@ -1,5 +1,5 @@
-import { COMMAND_LIST } from './command';
-import { log } from './logging';
+import { COMMAND_LIST } from './command.js';
+import { log } from './logging.js';
 
 export const showHelp = () => {
   log.plain(log.bold('Available commands:'));
