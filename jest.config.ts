@@ -13,7 +13,7 @@ export default Jest.mergePreset({
   projects: [
     {
       displayName: 'unit',
-      roots: ['src'],
+      roots: ['src', 'jest'],
       setupFiles: ['<rootDir>/jest.setup.ts'],
       testPathIgnorePatterns: [
         '<rootDir>/template/',

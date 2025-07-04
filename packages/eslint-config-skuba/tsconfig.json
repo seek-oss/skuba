@@ -2,9 +2,18 @@
   "compilerOptions": {
     "lib": ["ES2021"],
     "outDir": "lib",
-    "target": "ES2021"
+    "target": "ES2021",
+    "paths": {
+      "src/*": ["./test/src/*"]
+    }
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
-  "include": ["eslint.config.js", "index.d.ts", "index.js"]
+  "include": [
+    "eslint.config.js",
+    "index.d.ts",
+    "index.js",
+    "test/**/*",
+    "requireExtensions.test.ts"
+  ]
 }

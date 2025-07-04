@@ -6,6 +6,11 @@
     "removeComments": false,
     "target": "ES2023"
   },
-  "exclude": ["integration/**/*", "lib*/**/*", "template/**/*"],
+  "exclude": [
+    "integration/**/*",
+    "lib*/**/*",
+    "template/**/*",
+    "packages/eslint-config-skuba"
+  ],
   "extends": "./config/tsconfig.json"
 }

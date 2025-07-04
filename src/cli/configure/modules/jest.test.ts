@@ -48,7 +48,7 @@ describe('jestModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles).not.toContain('jest.config.js');
+    expect(outputFiles['jest.config.js']).toBeUndefined();
     expect(outputFiles['jest.config.ts']).toContain('skuba');
     expect(outputFiles['jest.config.ts']).not.toContain('skydive');
     expect(outputFiles['jest.setup.ts']).toBe(inputFiles['jest.setup.ts']);
@@ -70,7 +70,7 @@ describe('jestModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles).not.toContain('jest.config.js');
+    expect(outputFiles['jest.config.js']).toBeUndefined();
     expect(outputFiles['jest.config.ts']).toContain('skuba');
     expect(outputFiles['jest.config.ts']).toContain('coverageThreshold');
     expect(outputFiles['jest.config.ts']).toContain(
@@ -99,7 +99,7 @@ describe('jestModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles).not.toContain('jest.config.js');
+    expect(outputFiles['jest.config.js']).toBeUndefined();
     expect(outputFiles['jest.config.ts']).toMatchInlineSnapshot(`
       "import { Jest } from 'skuba';
 
@@ -126,7 +126,7 @@ describe('jestModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles).not.toContain('jest.config.js');
+    expect(outputFiles['jest.config.js']).toBeUndefined();
     expect(outputFiles['jest.config.ts']).toMatchInlineSnapshot(`
       "export default {
         ...require('skuba/config/jest'),
@@ -150,7 +150,7 @@ describe('jestModule', () => {
       defaultOpts,
     );
 
-    expect(outputFiles).not.toContain('jest.config.js');
+    expect(outputFiles['jest.config.js']).toBeUndefined();
     expect(outputFiles['jest.config.ts']).toMatchInlineSnapshot(`
       "export default {
         globalSetup: '<rootDir>/jest.setup.int.ts',
@@ -242,14 +242,14 @@ export default Jest.mergePreset({
       );
 
       expect(outputFiles['jest.config.ts']).toMatchInlineSnapshot(`
-      "
-      import { Jest } from 'skuba';
+        "
+        import { Jest } from 'skuba';
 
-      export default Jest.mergePreset({
-        // Rest of config
-      });
-      "
-    `);
+        export default Jest.mergePreset({
+          // Rest of config
+        });
+        "
+      `);
       expect(outputFiles['jest.setup.ts']).toBeUndefined();
     },
   );

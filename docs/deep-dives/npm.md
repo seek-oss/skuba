@@ -52,7 +52,7 @@ steps:
       GET_NPM_TOKEN: please
     plugins:
       - *docker-ecr-cache
-      - docker-compose#v5.9.0:
+      - docker-compose#v5.10.0:
           run: app
           environment:
             # Don't pass NPM_TOKEN to the container. It's only needed in docker-ecr-cache.
@@ -128,7 +128,6 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \
    ```
 
    In order to avoid this, you could:
-
    - Reduce indirection with the YAML anchors, and put all environment variables inline in the step
    - Put `GET_NPM_TOKEN` in the `configs` section too
 

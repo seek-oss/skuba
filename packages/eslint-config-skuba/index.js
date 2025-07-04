@@ -3,9 +3,18 @@ const extensions = require('eslint-config-seek/extensions');
 const eslintPluginYml = require('eslint-plugin-yml');
 const tseslint = require('typescript-eslint');
 
+const requireExtensionsPlugin = require('./requireExtensions.js');
+
 const { js: jsExtensions, ts: tsExtensions } = extensions;
 
 module.exports = [
+  {
+    ...requireExtensionsPlugin.configs.recommended[0],
+    files: [
+      './requireExtensions.test.ts',
+      'packages/eslint-config-skuba/requireExtensions.test.ts',
+    ], // TODO: remove when we release
+  },
   {
     name: 'skuba/ignores',
     ignores: [
