@@ -1,1 +1,0 @@
-import 'skuba-dive/register';

@@ -1,9 +1,9 @@
 import { StatsD } from 'hot-shots';
 import { createStatsDClient } from 'seek-datadog-custom-metrics';
 
-import { config } from 'src/config.js';
-
 import { logger } from './logging.js';
+
+import { config } from '#src/config.js';
 
 /* istanbul ignore next: StatsD client is not our responsibility */
 export const metricsClient = createStatsDClient(StatsD, config, (err) =>

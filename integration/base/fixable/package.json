@@ -1,6 +1,13 @@
 {
   "dependencies": {},
   "devDependencies": {},
+    "imports": {
+    "#src/*": {
+      "types": "./src/*",
+      "import": "./lib/*",
+      "require": "./lib/*"
+    }
+  },
   "license": "UNLICENSED",
   "private": true,
   "sideEffects": false,

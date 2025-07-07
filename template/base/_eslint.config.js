@@ -1,1 +1,1 @@
-module.exports = require('eslint-config-skuba');
+export { default } from 'eslint-config-skuba';

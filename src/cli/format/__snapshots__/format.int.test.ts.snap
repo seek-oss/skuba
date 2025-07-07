@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`fixable 1`] = `
 "
@@ -37,6 +37,8 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -131,6 +133,8 @@ Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upg
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -220,6 +224,8 @@ Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upg
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -278,6 +284,8 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

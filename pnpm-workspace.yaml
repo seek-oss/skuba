@@ -1,4 +1,5 @@
 # managed by skuba
+nodeOptions: '${NODE_OPTIONS:- }  --experimental-vm-modules'
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@types*'
@@ -7,6 +8,7 @@ publicHoistPattern:
   - esbuild
   - jest
   - tsconfig-seek
+
   # end managed by skuba
   - 'remark-lint-*'
 packages:

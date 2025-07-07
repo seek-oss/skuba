@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "moduleResolution": "node",
+    "module": "node18",
+    "moduleResolution": "node16",
     "outDir": "lib",
+    "rootDir": ".",
     "skipLibCheck": true
   },
   "extends": "tsconfig-seek"

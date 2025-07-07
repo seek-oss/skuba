@@ -2,10 +2,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "lib": ["ES2024"],
+    "moduleResolution": "node16",
+    "module": "node18",
     "outDir": "lib",
-    "paths": {
-      "src": ["src"]
-    },
+    "rootDir": ".",
     "target": "ES2024"
   },
   "exclude": ["lib*/**/*"],
