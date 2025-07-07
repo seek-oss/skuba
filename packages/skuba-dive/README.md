@@ -66,27 +66,65 @@ Each function will throw if its environment variable is not set and `opts.defaul
 
 ### Register
 
-Runtime hook for import paths relative to `/src`.
+As of July 2025, `skuba-dive/register` is replaced with native subpath imports supported by both [TypeScript](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports) and [Node.js](https://nodejs.org/api/packages.html#subpath-imports) as a part of ESM migration. This is because previously, `skuba-dive/register` relies on `module-alias` which is not compatible with ESM.
 
-Make a side-effectful import at the top of your entry point(s):
+THe subpath imports feature allows us to define custom paths in our `package.json` file, enabling us to import modules using simplified paths without needing to use deep relative paths.
 
-```typescript
-// /src/register.ts
+package.json:
 
-import 'skuba-dive/register';
+```diff
+{
+  "name": "my-package",
++ "imports": {
++   "#src/*": {
++    "types": "./src/*", // This helps our local IDE to resolve the types
++    "import": "./lib/*",
++    "require": "./lib/*"
++   }
++ }
+}
 ```
 
-```typescript
-// /src/app.ts
+This will require some changes to the base skuba `tsconfig.json` and your local `tsconfig.json` files.
 
-import './register';
+We will be updating our outdated [moduleResolution] configuration to `node16` and our [module] to `node18` in our `tsconfig.json` files where previously we were using the `node` resolution strategy.
 
-import { config } from 'src/config';
-
-export = new Koa();
+```diff
+{
+  "compilerOptions": {
+    "incremental": true,
+    "isolatedModules": true,
+-   "moduleResolution": "node",
++   "moduleResolution": "node16",
++   "module": "node18",
+    "resolveJsonModule": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "extends": "tsconfig-seek"
+}
 ```
 
-The hook must be imported from a module that sits directly under `/src` for module resolution to work correctly.
+In your local `tsconfig.json` file, we will also need to add a `baseUrl` and `rootDir` to help TypeScript resolve the subpath imports correctly:
+
+```diff
+{
+  "compilerOptions": {
+    "baseUrl": ".",
++   "rootDir": ".",
+-   "paths": {
+-     "#src/*": ["src/*"]
+-    }
+  },
+  "extends": "skuba/config/tsconfig.json"
+}
+```
+
+This allows us to import modules like this:
+
+```ts
+import { module } from '#src/imported-module';
+```
 
 ## Design
 
