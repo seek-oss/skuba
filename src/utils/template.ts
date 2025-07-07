@@ -2,11 +2,6 @@ import path from 'path';
 
 import fs from 'fs-extra';
 import * as z from 'zod/v4';
-import type {
-  $InferInnerFunctionType,
-  $ZodFunctionArgs,
-  $ZodFunctionOut,
-} from 'zod/v4/core';
 
 import { projectTypeSchema } from './manifest';
 import { packageManagerSchema } from './packageManager';
@@ -73,12 +68,15 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
 export type TemplateConfig = z.infer<typeof templateConfigSchema>;
 
 // https://github.com/colinhacks/zod/issues/4143#issuecomment-2845134912
+// https://github.com/colinhacks/zod/issues/4143#issuecomment-2931729793
 const functionSchema = <T extends z.core.$ZodFunction>(schema: T) =>
-  z.custom<Parameters<T['implement']>[0]>((fn) =>
-    schema.implement(
-      fn as $InferInnerFunctionType<$ZodFunctionArgs, $ZodFunctionOut>,
-    ),
-  );
+  z.custom<Parameters<T['implement']>[0]>().transform((arg, ctx) => {
+    if (typeof arg !== 'function') {
+      ctx.addIssue('Must be function');
+      return z.NEVER;
+    }
+    return schema.implement(arg);
+  });
 
 export const templateConfigSchema = z.object({
   fields: z.array(
