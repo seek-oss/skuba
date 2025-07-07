@@ -1,5 +1,12 @@
 {
   "private": true,
+  "imports": {
+    "#src/*": {
+      "types": "./src/*",
+      "import": "./lib/*",
+      "require": "./lib/*"
+    }
+  },
   "license": "UNLICENSED",
   "sideEffects": false,
   "dependencies": {},

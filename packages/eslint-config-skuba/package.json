@@ -13,6 +13,13 @@
   },
   "license": "MIT",
   "sideEffects": false,
+  "imports": {
+    "#src/*": {
+      "types": "./src/*",
+      "import": "./lib/*",
+      "require": "./lib/*"
+    }
+  },
   "main": "./index.js",
   "module": "./index.js",
   "types": "./index.d.ts",

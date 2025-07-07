@@ -1,12 +1,12 @@
 import { PublishCommand } from '@aws-sdk/client-sns';
 
-import { metricsClient } from 'src/framework/metrics.js';
-import { createCtx, createSqsEvent } from 'src/testing/handler.js';
-import { scoringService, sns } from 'src/testing/services.js';
-import { chance, mockJobPublishedEvent } from 'src/testing/types.js';
-
 import * as app from './app.js';
 import { stdoutMock } from './framework/logging.js';
+
+import { metricsClient } from '#src/framework/metrics.js';
+import { createCtx, createSqsEvent } from '#src/testing/handler.js';
+import { scoringService, sns } from '#src/testing/services.js';
+import { chance, mockJobPublishedEvent } from '#src/testing/types.js';
 
 describe('app', () => {
   it('exports a handler', () => expect(app).toHaveProperty('handler'));

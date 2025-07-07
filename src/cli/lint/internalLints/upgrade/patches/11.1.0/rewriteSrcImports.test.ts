@@ -1,14 +1,14 @@
 import memfs, { vol } from 'memfs';
 
-import type { PatchConfig } from '../..';
-import { configForPackageManager } from '../../../../../../utils/packageManager';
+import { configForPackageManager } from '../../../../../../utils/packageManager.js';
+import type { PatchConfig } from '../../index.js';
 
 import {
   hasSkubaDiveRegisterImportRegex,
   hasSrcImportRegex,
   replaceSrcImport,
   tryRewriteSrcImports,
-} from './rewriteSrcImports';
+} from './rewriteSrcImports.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

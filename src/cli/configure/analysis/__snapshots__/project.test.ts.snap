@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`diffFiles works from scratch 1`] = `
 {
@@ -74,19 +74,28 @@ coverage
     "operation": "A",
   },
   ".prettierrc.js": {
-    "data": "module.exports = require('skuba/config/prettier');
+    "data": "export { default } from 'skuba/config/prettier.js';
 ",
     "operation": "A",
   },
   "eslint.config.js": {
-    "data": "module.exports = require('eslint-config-skuba');
+    "data": "export { default } from 'eslint-config-skuba';
 ",
     "operation": "A",
   },
   "jest.config.ts": {
-    "data": "import { Jest } from 'skuba';
+    "data": "import { readFileSync } from 'fs';
 
-export default Jest.mergePreset({
+const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
+  type?: string;
+};
+const isESM = packageJson.type === 'module';
+
+export default {
+  preset: 'skuba',
+  ...(isESM && {
+    extensionsToTreatAsEsm: ['.ts', '.tsx'],
+  }),
   coveragePathIgnorePatterns: ['src/testing'],
   coverageThreshold: {
     global: {
@@ -96,16 +105,19 @@ export default Jest.mergePreset({
       statements: 0,
     },
   },
+  moduleNameMapper: {
+    '^#src$': '<rootDir>/src',
+    '^#src\\/(.*)\\\\.js$': '<rootDir>/src/$1',
+    '^#src\\/(.*)$': '<rootDir>/src/$1',
+  },
   setupFiles: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/test\\\\.ts'],
-});
+};
 ",
     "operation": "A",
   },
   "jest.setup.ts": {
     "data": "process.env.ENVIRONMENT = 'test';
-
-export {};
 ",
     "operation": "A",
   },

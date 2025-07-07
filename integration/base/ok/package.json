@@ -1,6 +1,13 @@
 {
   "private": true,
   "license": "UNLICENSED",
+  "imports": {
+    "#src/*": {
+      "types": "./src/*",
+      "import": "./lib/*",
+      "require": "./lib/*"
+    }
+  },
   "sideEffects": false,
   "dependencies": {},
   "devDependencies": {},

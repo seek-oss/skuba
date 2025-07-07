@@ -1,16 +1,17 @@
-import {
-  jobPublishedEventToScorerInput,
-  jobScorerOutputToScoredEvent,
-} from 'src/mapping/jobScorer.js';
-import {
-  type JobScorerInput,
-  type JobScorerOutput,
-  JobScorerOutputSchema,
-} from 'src/types/jobScorer.js';
 import type {
   JobPublishedEvent,
   JobScoredEvent,
 } from 'src/types/pipelineEvents.js';
+
+import {
+  jobPublishedEventToScorerInput,
+  jobScorerOutputToScoredEvent,
+} from '#src/mapping/jobScorer.js';
+import {
+  type JobScorerInput,
+  type JobScorerOutput,
+  JobScorerOutputSchema,
+} from '#src/types/jobScorer.js';
 
 /* istanbul ignore next: simulation of an external service */
 export const scoringService = {
