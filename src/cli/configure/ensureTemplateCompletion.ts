@@ -3,7 +3,7 @@ import path from 'path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import type { NormalizedReadResult } from 'read-pkg-up';
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy';
 import { log } from '../../utils/logging';

@@ -1,7 +1,7 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
 import { projectTypeSchema } from './manifest';
 import { packageManagerSchema } from './packageManager';

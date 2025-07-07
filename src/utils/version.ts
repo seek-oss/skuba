@@ -1,5 +1,5 @@
 import npmFetch from 'npm-registry-fetch';
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
 import { getSkubaManifest } from './manifest';
 import { withTimeout } from './wait';
