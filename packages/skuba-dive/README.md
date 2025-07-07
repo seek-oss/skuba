@@ -66,7 +66,7 @@ Each function will throw if its environment variable is not set and `opts.defaul
 
 ### Register
 
-As of July 2025, `skuba-dive/register` is replaced with native subpath imports supported by both [TypeScript](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports) and [Node.js](https://nodejs.org/api/packages.html#subpath-imports) as a part of ESM migration. This is because previously, `skuba-dive/register` relies on `module-alias` which is not compatible with ESM.
+As of July 2025, `skuba-dive/register` is replaced with native subpath imports supported by both [TypeScript] and [Node.js] as a part of ESM migration. This is because previously, `skuba-dive/register` relies on `module-alias` which is not compatible with ESM.
 
 THe subpath imports feature allows us to define custom paths in our `package.json` file, enabling us to import modules using simplified paths without needing to use deep relative paths.
 
@@ -125,6 +125,11 @@ This allows us to import modules like this:
 ```ts
 import { module } from '#src/imported-module';
 ```
+
+[Typescript]: https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports
+[Node.js]: https://nodejs.org/api/packages.html#subpath-imports
+[moduleresolution]: https://www.typescriptlang.org/tsconfig#moduleResolution
+[module]: https://www.typescriptlang.org/tsconfig#module
 
 ## Design
 

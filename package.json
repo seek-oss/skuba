@@ -13,6 +13,13 @@
   },
   "license": "MIT",
   "sideEffects": false,
+  "imports": {
+    "#src/*": {
+      "types": "./src/*",
+      "import": "./lib/*",
+      "require": "./lib/*"
+    }
+  },
   "main": "lib/index.js",
   "types": "./lib/index.d.ts",
   "bin": {
@@ -172,6 +179,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "11.0.0"
+    "version": "11.1.0"
   }
 }

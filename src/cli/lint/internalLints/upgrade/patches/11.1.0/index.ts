@@ -1,6 +1,6 @@
-import type { Patches } from '../..';
+import type { Patches } from '../../index.js';
 
-import { rewriteSrcImports } from './rewriteSrcImports';
+import { rewriteSrcImports } from './rewriteSrcImports.js';
 
 export const patches: Patches = [
   {
