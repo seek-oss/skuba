@@ -2,6 +2,11 @@ import path from 'path';
 
 import fs from 'fs-extra';
 import * as z from 'zod/v4';
+import type {
+  $InferInnerFunctionType,
+  $ZodFunctionArgs,
+  $ZodFunctionOut,
+} from 'zod/v4/core';
 
 import { projectTypeSchema } from './manifest';
 import { packageManagerSchema } from './packageManager';
@@ -67,17 +72,26 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
 
 export type TemplateConfig = z.infer<typeof templateConfigSchema>;
 
+// https://github.com/colinhacks/zod/issues/4143#issuecomment-2845134912
+const functionSchema = <T extends z.core.$ZodFunction>(schema: T) =>
+  z.custom<Parameters<T['implement']>[0]>((fn) =>
+    schema.implement(
+      fn as $InferInnerFunctionType<$ZodFunctionArgs, $ZodFunctionOut>,
+    ),
+  );
+
 export const templateConfigSchema = z.object({
   fields: z.array(
     z.object({
       name: z.string(),
       message: z.string(),
       initial: z.string(),
-      validate: z
-        .function()
-        .args(z.string())
-        .returns(z.union([z.boolean(), z.string()]))
-        .optional(),
+      validate: functionSchema(
+        z.function({
+          input: [z.string()],
+          output: z.union([z.boolean(), z.string()]),
+        }),
+      ).optional(),
     }),
   ),
   entryPoint: z.string().optional(),
