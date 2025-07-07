@@ -1,6 +1,6 @@
 import findUp from 'find-up';
 import isInstalledGlobally from 'is-installed-globally';
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
 import { log } from './logging';
 

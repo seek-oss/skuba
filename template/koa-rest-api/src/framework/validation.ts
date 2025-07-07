@@ -1,5 +1,6 @@
 import { ErrorMiddleware } from 'seek-koala';
-import type { core, z } from 'zod/v4';
+import type * as z from 'zod/v4';
+import type * as core from 'zod/v4/core';
 
 import type { Context } from 'src/types/koa';
 
@@ -59,15 +60,15 @@ const parseTuples = (
     return [[path, issue.message]] as const;
   });
 
-export const validate = <Output, Input = Output>({
+export const validate = <T extends z.ZodType>({
   ctx,
   input,
   schema,
 }: {
   ctx: Context;
   input: unknown;
-  schema: z.ZodSchema<Output, Input>;
-}): Output => {
+  schema: T;
+}): z.infer<T> => {
   const parseResult = schema.safeParse(input);
   if (parseResult.success === false) {
     const invalidFields = parseInvalidFieldsFromError(parseResult.error);
@@ -82,11 +83,11 @@ export const validate = <Output, Input = Output>({
   return parseResult.data;
 };
 
-export const validateRequestBody = <Output, Input = Output>(
+export const validateRequestBody = <T extends z.ZodType>(
   ctx: Context,
-  schema: z.ZodSchema<Output, Input>,
-): Output =>
-  validate<Output, Input>({
+  schema: T,
+): z.infer<T> =>
+  validate({
     ctx,
     input: ctx.request.body as unknown,
     schema,
