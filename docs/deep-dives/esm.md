@@ -10,57 +10,47 @@ ESM (ECMAScript Modules) is the official standard module system for JavaScript. 
 
 One key challenge is that CJS and ESM are not directly compatible with each other, which makes transitioning to ESM increasingly important. The good news is that ESM provides compatibility with CJS, allowing you to use CJS modules within ESM code. Unfortunately, the reverse is not possible and you cannot use ESM modules in CJS code.
 
-You will mostly be already familiar with the ESM syntax if you have used `import` and `export` statements in your code. At the moment our current setup instructs TypeScript converts these imports and exports into `require` and `module.exports` statements.
+You will mostly be already familiar with the ESM syntax if you have used `import` and `export` statements in your code. At the moment our current setup instructs TypeScript to convert these ESM-style imports and exports into CJS `require` and `module.exports` statements.
 
-## Transitioning to ESM
+## Existing challenges
 
-There are currently three key factors blocking us from transitioning to ESM:
+There are currently three key factors that complicate a transition to ESM:
 
-1. **File Extensions**: ESM requires explicit file extensions in import statements, which is not the case with CJS. This means that we need to update all our import statements to include the correct file extensions. It may look a little unusual especially in a TypeScript codebase, but it is a requirement of ESM.
+### 1. File extensions
 
-eg.
-
-CJS:
+ESM requires explicit file extensions in import statements, which is not the case with CJS. This means that we need to update all our import statements to include the correct file extensions. It may look a little unusual especially in a TypeScript codebase, but it is a requirement of ESM.
 
 ```ts
+// CJS
 import { module } from './imported-module';
-```
 
-ESM:
-
-```ts
+// ESM
 import { module } from './imported-module.js';
 ```
 
 While this is a simple change, it requires us to update all our import statements across the codebase. It also forbids us from using the `index.js` import convention, which is commonly used in CJS.
 
-eg.
+For example, in a directory structure like this:
 
-CJS:
-
-In a filesystem like this:
-
-```
+```text
 imported-module/
-  ├── index.js
-  └── other-file.js
+├── index.js
+└── other-file.js
 ```
 
-We could typically import the `index.js` file like this:
+We can no longer rely on implicit `index.js` resolution:
 
 ```ts
+// CJS
 import { module } from './imported-module';
-```
 
-ESM:
-
-In the same filesystem, we would need to import the `index.js` file like this:
-
-```ts
+// ESM
 import { module } from './imported-module/index.js';
 ```
 
-2. `skuba-dive/register`: Our current setup uses `skuba-dive/register` to allow us to simplify our import statements and avoid needing to use deep relative paths.
+### 2. `skuba-dive/register`
+
+Our current setup uses `skuba-dive/register` to allow us to simplify our import statements and avoid needing to use deep relative paths.
 
 Instead of importing a module like this:
 
@@ -76,29 +66,31 @@ import { module } from 'src/imported-module';
 
 However, `skuba-dive/register` relies on `module-alias` which is not compatible with ESM. This means that we need to find a new way to handle module aliases in ESM.
 
-3. **Jest** Our current setup use Jest for testing, and as of version 30 is still [not fully compatible with ESM]. This is a significant blocker as switching to ESM would require us to switch to a different testing framework or wait for Jest to become fully compatible with ESM.
+### 3. Jest
+
+Our current setup use Jest for testing, which is still [not fully compatible with ESM] as of version 30. This is a significant blocker as switching to ESM would require us to switch to a different testing framework or wait for Jest to become fully compatible with ESM.
 
 Migrating to ESM with Jest would require significant changes to our codebase, such as updating all imports to to be dynamic imports in order to use mocks, and to change all `jest.mock` calls to use `jest.unstable_mockModule` instead.
 
 Jest has always been a pain point for us, as we currently apply a number of custom workarounds to make it work nicely with TypeScript.
 
-## Plan to transition to ESM
+## Transitioning to ESM
 
-We will be transitioning to ESM over a few breaking releases, starting with the following steps:
+We will transition to ESM over several major versions, starting with the following steps:
 
-1. Adding file extensions to all import statements in our codebase through lint rules.
+### 1. Add file extensions to import statements via lint rules
 
-This will replace all your existing import statements to include the `.js` file extension which will still work with our current CJS setup. This will mean there will be less changes required when we switch to ESM, as all our import statements will already include the file extensions.
+We will replace existing import statements to include the `.js` file extension upfront. This still works with CJS and will reduce the number of changes required when we eventually switch to ESM.
 
-As Jest does not support file extensions in import statements, we will be applying a custom [moduleNameMapper] which strips the file extensions when running tests.
+As Jest does not support file extensions in import statements, we will apply a custom [`moduleNameMapper`] which strips the file extensions when running tests.
 
-This shouldn't cause any issues but out of caution we will be doing this as a breaking release.
+This shouldn't cause any issues, but out of caution, we will release this as a new major version.
 
-2. Replacing `skuba-dive/register` with subpath imports
+### 2. Replace `skuba-dive/register` with subpath imports
 
-We will be replacing `skuba-dive/register` with subpath imports which is a native solution supported by both [TypeScript] and [Node.js].
+We will replace `skuba-dive/register` with subpath imports, a native solution supported by both [TypeScript] and [Node.js].
 
-THe subpath imports feature allows us to define custom paths in our `package.json` file, enabling us to import modules using simplified paths without needing to use deep relative paths.
+The subpath imports feature allows us to define custom paths in `package.json`, enabling us to import modules using simplified paths without needing to use deep relative paths.
 
 package.json:
 
@@ -115,9 +107,9 @@ package.json:
 }
 ```
 
-This will require some changes to the base skuba `tsconfig.json` and your local `tsconfig.json` files.
+This will require some changes to our base `skuba/config/tsconfig.json` and your local `tsconfig.json` files.
 
-We will be updating our outdated [moduleResolution] configuration to `node16` and our [module] to `node18` in our `tsconfig.json` files where previously we were using the `node` resolution strategy.
+Our base `skuba/config/tsconfig.json` will update [`moduleResolution`] from `node` to `node16` and [`module`] from `commonjs` to `node18`:
 
 ```diff
 {
@@ -135,7 +127,7 @@ We will be updating our outdated [moduleResolution] configuration to `node16` an
 }
 ```
 
-In your local `tsconfig.json` file, we will also need to add a `baseUrl` and `rootDir` to help TypeScript resolve the subpath imports correctly:
+Your local `tsconfig.json` files will require a `baseUrl` and `rootDir` to help TypeScript resolve the subpath imports correctly:
 
 ```diff
 {
@@ -156,17 +148,18 @@ This allows us to import modules like this:
 import { module } from '#src/imported-module';
 ```
 
-1. Switching to Vitest
+### 3. Switch to Vitest
 
-Finally, we will be switching to [Vitest](https://vitest.dev/) as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition.
+Finally, we will switch to [Vitest] as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition.
 
 We will apply a community codemod to help with the transition, but it will likely require some manual changes to our tests. Vitest also provides TypeScript support out of the box, which means we won't need to apply any custom workarounds like we do with Jest.
 
 ---
 
-[module]: https://www.typescriptlang.org/tsconfig#module
-[moduleNameMapper]: https://jestjs.io/docs/configuration#modulenamemapper-objectstring-string--arraystring
-[moduleresolution]: https://www.typescriptlang.org/tsconfig#moduleResolution
-[node.js]: https://nodejs.org/api/packages.html#subpath-imports
+[`module`]: https://www.typescriptlang.org/tsconfig#module
+[`moduleNameMapper`]: https://jestjs.io/docs/configuration#modulenamemapper-objectstring-string--arraystring
+[`moduleResolution`]: https://www.typescriptlang.org/tsconfig#moduleResolution
+[Node.js]: https://nodejs.org/api/packages.html#subpath-imports
 [not fully compatible with ESM]: https://jestjs.io/docs/ecmascript-modules
-[typescript]: https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports
+[TypeScript]: https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports
+[Vitest]: https://vitest.dev/
