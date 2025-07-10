@@ -8,7 +8,7 @@ const isESM = packageJson.type === 'module';
 export default {
   preset: 'skuba',
   ...(isESM && {
-    extensionsToTreatAsEsm: ['.ts', '.tsx'],
+    extensionsToTreatAsEsm: ['.ts'],
   }),
   coveragePathIgnorePatterns: ['src/testing'],
   coverageThreshold: {

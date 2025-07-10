@@ -53,7 +53,7 @@ describe('tryAddEmptyExports', () => {
           new Promise((resolve, reject) => {
             switch (filename) {
               case 'jest.setup.ts':
-                return resolve('');
+                return resolve("import './register';");
               case 'jest.setup.int.ts':
                 return resolve('export const foo = true;');
               default:
@@ -130,7 +130,7 @@ describe('tryAddEmptyExports', () => {
           new Promise((resolve, reject) => {
             switch (filename) {
               case 'jest.setup.ts':
-                return resolve('');
+                return resolve("import './register';");
               case 'jest.setup.int.ts':
                 return resolve('export const foo = true;');
               default:

@@ -121,9 +121,30 @@ describe('hasSrcImportRegex and replaceSrcImport', () => {
       "import logger from '#src/utils/logger.js';",
     ],
     [
-      'Mixed imports',
+      'types import',
+      "import type { User } from 'src/types/user.js';",
+      "import type { User } from '#src/types/user.js';",
+    ],
+    [
+      'Multi-line types import',
+      `import type {
+          ZodOpenApiOperationObject,
+          ZodOpenApiResponseObject,
+        } from 'src/zod-openapi';`,
+      `import type {
+          ZodOpenApiOperationObject,
+          ZodOpenApiResponseObject,
+        } from '#src/zod-openapi';`,
+    ],
+    [
+      'Mixed named and namespace imports',
       "import defaultExport, { namedExport } from 'src/utils/helpers.js';",
       "import defaultExport, { namedExport } from '#src/utils/helpers.js';",
+    ],
+    [
+      'Mixed named and type imports',
+      "import { type PrettierOutput, runPrettier } from 'src/adapter/prettier.js';",
+      "import { type PrettierOutput, runPrettier } from '#src/adapter/prettier.js';",
     ],
     [
       'Multi-line import',
