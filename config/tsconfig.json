@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node16",
     "incremental": true,
     "isolatedModules": true,
     "module": "node18",
+    "moduleResolution": "node16",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "resolveJsonModule": true

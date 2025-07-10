@@ -1,7 +1,7 @@
 {
   "dependencies": {},
   "devDependencies": {},
-    "imports": {
+  "imports": {
     "#src/*": {
       "types": "./src/*",
       "import": "./lib/*",

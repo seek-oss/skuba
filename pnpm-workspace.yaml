@@ -8,7 +8,6 @@ publicHoistPattern:
   - esbuild
   - jest
   - tsconfig-seek
-
   # end managed by skuba
   - 'remark-lint-*'
 packages:

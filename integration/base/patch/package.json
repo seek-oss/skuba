@@ -8,9 +8,9 @@
     }
   },
   "license": "UNLICENSED",
-  "sideEffects": false,
   "dependencies": {},
   "devDependencies": {},
+  "sideEffects": false,
   "skuba": {
     "entryPoint": null,
     "template": null,

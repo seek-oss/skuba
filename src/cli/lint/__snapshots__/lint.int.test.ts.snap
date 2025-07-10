@@ -138,8 +138,6 @@ Prettier │   parser: json
 Prettier │ a/a/a.ts
 Prettier │   parser: typescript
 Prettier │ Processed 7 files in <random>s.
-Prettier │ Flagged 1 file:
-Prettier │ package.json
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ Files: <random>
 tsc      │ Lines of Library: <random>
@@ -171,58 +169,22 @@ tsc      │ Emit time: <random>s
 tsc      │ Total time: <random>s
 tsc      │ tsc --extendedDiagnostics --noEmit exited with code 0
 skuba    │ Processed skuba lints in <random>s.
-Prettier found issues that require triage.
-
-Try running pnpm exec skuba format to fix them.
 "
 `;
 
-exports[`ok --debug 2`] = `
-[
-  "
-Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
-
-\`skuba lint\` found issues that require triage:
-
-**Prettier**
-
-\`\`\`term
-package.json
-\`\`\`
-",
-]
-`;
+exports[`ok --debug 2`] = `[]`;
 
 exports[`ok 1`] = `
 "
 ESLint   │ Processed 3 files in <random>s.
 Prettier │ Processed 7 files in <random>s.
-Prettier │ Flagged 1 file:
-Prettier │ package.json
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
 skuba    │ Processed skuba lints in <random>s.
-Prettier found issues that require triage.
-
-Try running pnpm exec skuba format to fix them.
 "
 `;
 
-exports[`ok 2`] = `
-[
-  "
-Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
-
-\`skuba lint\` found issues that require triage:
-
-**Prettier**
-
-\`\`\`term
-package.json
-\`\`\`
-",
-]
-`;
+exports[`ok 2`] = `[]`;
 
 exports[`unfixable 1`] = `
 "
@@ -239,12 +201,11 @@ ESLint   │
   1 error and 0 warnings potentially fixable with the \`--fix\` option.
 
 Prettier │ Processed 7 files in <random>s.
-Prettier │ Flagged 3 files:
+Prettier │ Flagged 2 files:
 Prettier │ d.js SyntaxError: Unexpected token (1:1)
 > 1 | }
     | ^
   2 |
-Prettier │ package.json
 Prettier │ a/a/a.ts
 tsc      │ d.js(1,1): error TS1128: Declaration or statement expected.
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
@@ -284,7 +245,6 @@ d.js SyntaxError: Unexpected token (1:1)
 > 1 | }
     | ^
   2 |
-package.json
 a/a/a.ts
 \`\`\`
 
