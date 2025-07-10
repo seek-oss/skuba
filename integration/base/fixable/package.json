@@ -1,7 +1,8 @@
 {
   "dependencies": {},
   "devDependencies": {},
-    "imports": {
+  "sideEffects": false,
+  "imports": {
     "#src/*": {
       "types": "./src/*",
       "import": "./lib/*",
@@ -10,7 +11,6 @@
   },
   "license": "UNLICENSED",
   "private": true,
-  "sideEffects": false,
   "skuba": {
     "entryPoint": null,
     "template": null,

@@ -22,7 +22,7 @@ export const hasSkubaDiveRegisterImportRegex =
   /import\s+['"](?:skuba-dive\/register|\.\.?\/.*?register)(?:\.js)?['"];?\s*/gm;
 
 export const hasSrcImportRegex =
-  /import\s+(?:\{[^}]*\}|\*\s+as\s+\w+|\w+(?:\s*,\s*\{[^}]*\})?)\s+from\s+['"]src\/[^'"]*['"]/gm;
+  /import\s+(?:type\s+\{[^}]*\}|\{[^}]*\}|\*\s+as\s+\w+|\w+(?:\s*,\s*\{[^}]*\})?)\s+from\s+['"]src\/[^'"]*['"]/gm;
 
 export const replaceSrcImport = (contents: string) =>
   contents.replace(hasSrcImportRegex, (match) =>

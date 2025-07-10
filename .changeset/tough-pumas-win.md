@@ -1,6 +1,5 @@
 ---
-'skuba': minor
-'skuba-dive': minor
+'skuba': major
 ---
 
 lint: Replace `skuba-dive/register` imports and migrate `src/` path aliases to TypeScript subpath imports

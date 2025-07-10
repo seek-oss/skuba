@@ -1,6 +1,7 @@
 {
   "private": true,
   "license": "UNLICENSED",
+  "sideEffects": false,
   "imports": {
     "#src/*": {
       "types": "./src/*",
@@ -8,7 +9,6 @@
       "require": "./lib/*"
     }
   },
-  "sideEffects": false,
   "dependencies": {},
   "devDependencies": {},
   "skuba": {
