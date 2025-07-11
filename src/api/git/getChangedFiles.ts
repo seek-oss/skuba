@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
+import ignoreFilter from 'ignore';
 import git, { findRoot } from 'isomorphic-git';
-import picomatch from 'picomatch';
 
 import {
   ABSENT,
@@ -52,9 +52,9 @@ export const getChangedFiles = async ({
   ignore = [],
 }: ChangedFilesParameters): Promise<ChangedFile[]> => {
   const gitRoot = await findRoot({ fs, filepath: dir });
-  const [allFiles, lfsPatterns] = await Promise.all([
+  const [allFiles, isLfs] = await Promise.all([
     git.statusMatrix({ fs, dir: gitRoot ?? dir }),
-    getLfsPatterns(gitRoot),
+    createIsLfsFilter(gitRoot),
   ]);
 
   return allFiles
@@ -69,35 +69,30 @@ export const getChangedFiles = async ({
       (changedFile) =>
         !ignore.some(
           (i) => i.path === changedFile.path && i.state === changedFile.state,
-        ) && !lfsPatterns.some((pattern) => pattern(changedFile.path)),
+        ) && !isLfs(changedFile.path),
     );
 };
 
-const getLfsPatterns = async (
+const createIsLfsFilter = async (
   gitRoot: string | null,
-): Promise<picomatch.Matcher[]> => {
+): Promise<(pathname: string) => boolean> => {
   if (!gitRoot) {
-    return [];
+    return () => false;
   }
 
   const lfsFile = `${gitRoot}/.gitattributes`;
   if (!(await fs.pathExists(lfsFile))) {
-    return [];
+    return () => false;
   }
 
-  const content = await fs.readFile(lfsFile, 'utf8');
+  const filter = ignoreFilter().add(
+    (await fs.readFile(lfsFile, 'utf8'))
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => !l.startsWith('#') && l.includes('filter=lfs'))
+      .map((l) => l.split(/\s+/)[0])
+      .flatMap((l) => (l ? [l] : [])),
+  );
 
-  const lfsPatterns: picomatch.Matcher[] = [];
-
-  for (const line of content.split('\n')) {
-    const trimmed = line.trim();
-    if (trimmed && !trimmed.startsWith('#')) {
-      const parts = trimmed.split(/\s+/);
-      if (parts.length >= 2 && parts.includes('filter=lfs') && parts[0]) {
-        lfsPatterns.push(picomatch(parts[0]));
-      }
-    }
-  }
-
-  return lfsPatterns;
+  return (pathname) => filter.ignores(pathname);
 };

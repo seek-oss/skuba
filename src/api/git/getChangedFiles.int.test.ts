@@ -135,6 +135,8 @@ it('should ignore git-lfs files', async () => {
 
   await fs.promises.writeFile('file.pdf', 'content');
   await fs.promises.writeFile('file.not-pdf', 'content');
+  await fs.promises.mkdir('nested');
+  await fs.promises.writeFile('nested/file.pdf', 'content');
 
   const files = await getChangedFiles({
     dir,
