@@ -1,6 +1,83 @@
 const { existsSync, lstatSync } = require('fs');
 const { dirname, resolve, join } = require('path');
 
+// Per-ESLint instance caches using WeakMaps keyed by context
+const pathCaches = new WeakMap();
+const fsCaches = new WeakMap();
+const lstatCaches = new WeakMap();
+
+// Cache size limits to prevent memory leaks in long-lived contexts (e.g., VSCode ESLint extension)
+const CACHE_SIZE_LIMIT = 1000;
+
+// Helper function to get or create cache for a context
+function getCache(cacheMap, context) {
+  if (!cacheMap.has(context)) {
+    cacheMap.set(context, new Map());
+  }
+  return cacheMap.get(context);
+}
+
+// Helper function to manage cache size
+function manageCacheSize(cache) {
+  if (cache.size > CACHE_SIZE_LIMIT) {
+    // Clear oldest half of entries
+    const entries = Array.from(cache.entries());
+    cache.clear();
+    entries.slice(Math.floor(entries.length / 2)).forEach(([key, value]) => {
+      cache.set(key, value);
+    });
+  }
+}
+
+// Helper function to resolve paths with caching
+function resolvePath(context, basePath, relativePath) {
+  const pathCache = getCache(pathCaches, context);
+  const key = `${basePath}:${relativePath}`;
+
+  if (pathCache.has(key)) {
+    return pathCache.get(key);
+  }
+
+  const resolved = resolve(basePath, relativePath);
+  pathCache.set(key, resolved);
+  manageCacheSize(pathCache);
+  return resolved;
+}
+
+// Helper function for cached filesystem checks
+function cachedExistsSync(context, path) {
+  const fsCache = getCache(fsCaches, context);
+
+  if (fsCache.has(path)) {
+    return fsCache.get(path);
+  }
+
+  const exists = existsSync(path);
+  fsCache.set(path, exists);
+  manageCacheSize(fsCache);
+  return exists;
+}
+
+// Helper function for cached lstat checks
+function cachedLstatSync(context, path) {
+  const lstatCache = getCache(lstatCaches, context);
+
+  if (lstatCache.has(path)) {
+    return lstatCache.get(path);
+  }
+
+  try {
+    const stats = lstatSync(path);
+    lstatCache.set(path, stats);
+    manageCacheSize(lstatCache);
+    return stats;
+  } catch {
+    lstatCache.set(path, null);
+    manageCacheSize(lstatCache);
+    return null;
+  }
+}
+
 // Helper function to create rule listeners
 function createRuleListener(context, check) {
   return {
@@ -31,7 +108,11 @@ function processNode(node, context, check) {
 
   if (value.startsWith('.')) {
     // Relative import, check if it ends with .js
-    return check(context, node, resolve(dirname(context.getFilename()), value));
+    return check(
+      context,
+      node,
+      resolvePath(context, dirname(context.getFilename()), value),
+    );
   }
 
   if (value.startsWith('src')) {
@@ -51,7 +132,10 @@ const requireExtensionsPlugin = {
       },
       create(context) {
         return createRuleListener(context, (ctx, node, path) => {
-          if (existsSync(`${path}.ts`) || !existsSync(path)) {
+          if (
+            cachedExistsSync(ctx, `${path}.ts`) ||
+            !cachedExistsSync(ctx, path)
+          ) {
             let fix;
             if (!node.source.value.includes('?')) {
               fix = (fixer) => {
@@ -77,7 +161,7 @@ const requireExtensionsPlugin = {
       },
       create(context) {
         return createRuleListener(context, (ctx, node, path) => {
-          if (existsSync(path) && lstatSync(path).isDirectory()) {
+          if (cachedLstatSync(ctx, path)?.isDirectory()) {
             ctx.report({
               node,
               message: 'Directory paths must end with index.js',
