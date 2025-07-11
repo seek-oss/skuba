@@ -8,7 +8,7 @@ import type { Logger } from '../../../utils/logging';
 
 import { detectBadCodeowners } from './detectBadCodeowners';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 jest.mock('../../..', () => ({
   Git: {

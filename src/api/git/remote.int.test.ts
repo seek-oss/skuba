@@ -3,7 +3,7 @@ import memfs, { vol } from 'memfs';
 
 import { getOwnerAndRepo } from './remote';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 // eslint-disable-next-line import-x/order
 import fs from 'fs-extra';

@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import git, { findRoot } from 'isomorphic-git';
+import picomatch from 'picomatch';
 
 import {
   ABSENT,
@@ -51,7 +52,11 @@ export const getChangedFiles = async ({
   ignore = [],
 }: ChangedFilesParameters): Promise<ChangedFile[]> => {
   const gitRoot = await findRoot({ fs, filepath: dir });
-  const allFiles = await git.statusMatrix({ fs, dir: gitRoot ?? dir });
+  const [allFiles, lfsPatterns] = await Promise.all([
+    git.statusMatrix({ fs, dir: gitRoot ?? dir }),
+    getLfsPatterns(gitRoot),
+  ]);
+
   return allFiles
     .filter(
       (row) =>
@@ -64,6 +69,35 @@ export const getChangedFiles = async ({
       (changedFile) =>
         !ignore.some(
           (i) => i.path === changedFile.path && i.state === changedFile.state,
-        ),
+        ) && !lfsPatterns.some((pattern) => pattern(changedFile.path)),
     );
+};
+
+const getLfsPatterns = async (
+  gitRoot: string | null,
+): Promise<picomatch.Matcher[]> => {
+  if (!gitRoot) {
+    return [];
+  }
+
+  const lfsFile = `${gitRoot}/.gitattributes`;
+  if (!(await fs.pathExists(lfsFile))) {
+    return [];
+  }
+
+  const content = await fs.readFile(lfsFile, 'utf8');
+
+  const lfsPatterns: picomatch.Matcher[] = [];
+
+  for (const line of content.split('\n')) {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#')) {
+      const parts = trimmed.split(/\s+/);
+      if (parts.length >= 2 && parts.includes('filter=lfs') && parts[0]) {
+        lfsPatterns.push(picomatch(parts[0]));
+      }
+    }
+  }
+
+  return lfsPatterns;
 };

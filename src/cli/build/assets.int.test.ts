@@ -3,7 +3,7 @@ import memfs, { vol } from 'memfs';
 import { copyAssets, copyAssetsConcurrently } from './assets';
 
 jest.mock('fs', () => memfs);
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 jest
   .spyOn(console, 'log')

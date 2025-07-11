@@ -7,7 +7,7 @@ import { tryUpgradeESLint } from './upgradeESLint';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 beforeEach(() => vol.reset());
 
