@@ -4,7 +4,7 @@ import type { PatchConfig } from '../..';
 
 import { tryPatchDockerfile } from './patchDockerfile';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

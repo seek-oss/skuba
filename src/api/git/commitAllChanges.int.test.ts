@@ -7,7 +7,7 @@ import newGit from '../../../integration/git/new.json';
 
 import { commitAllChanges } from './commitAllChanges';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 beforeEach(() => {
   vol.reset();

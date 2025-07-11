@@ -7,7 +7,7 @@ import * as Git from '../../../api/git';
 import { tryPatchRenovateConfig } from './patchRenovateConfig';
 import type { PatchConfig } from './upgrade';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 const JSON = `
 {
