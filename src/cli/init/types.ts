@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
 import { projectTypeSchema } from '../../utils/manifest.js';
 import { packageManagerSchema } from '../../utils/packageManager.js';

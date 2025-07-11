@@ -3,7 +3,7 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 import * as fleece from 'golden-fleece';
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
 import * as Git from '../../../api/git/index.js';
 import { log } from '../../../utils/logging.js';

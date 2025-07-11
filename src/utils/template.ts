@@ -1,7 +1,7 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
 import { projectTypeSchema } from './manifest.js';
 import { packageManagerSchema } from './packageManager.js';
@@ -67,17 +67,29 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
 
 export type TemplateConfig = z.infer<typeof templateConfigSchema>;
 
+// https://github.com/colinhacks/zod/issues/4143#issuecomment-2845134912
+// https://github.com/colinhacks/zod/issues/4143#issuecomment-2931729793
+const functionSchema = <T extends z.core.$ZodFunction>(schema: T) =>
+  z.custom<Parameters<T['implement']>[0]>().transform((arg, ctx) => {
+    if (typeof arg !== 'function') {
+      ctx.addIssue('Must be function');
+      return z.NEVER;
+    }
+    return schema.implement(arg);
+  });
+
 export const templateConfigSchema = z.object({
   fields: z.array(
     z.object({
       name: z.string(),
       message: z.string(),
       initial: z.string(),
-      validate: z
-        .function()
-        .args(z.string())
-        .returns(z.union([z.boolean(), z.string()]))
-        .optional(),
+      validate: functionSchema(
+        z.function({
+          input: [z.string()],
+          output: z.union([z.boolean(), z.string()]),
+        }),
+      ).optional(),
     }),
   ),
   entryPoint: z.string().optional(),

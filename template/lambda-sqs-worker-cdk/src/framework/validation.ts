@@ -1,6 +1,6 @@
-import type { z } from 'zod/v4';
+import type * as z from 'zod/v4';
 
-export const validateJson = <Output, Input>(
+export const validateJson = <T extends z.ZodType>(
   input: string,
-  schema: z.ZodSchema<Output, Input>,
-): Output => schema.parse(JSON.parse(input));
+  schema: T,
+): z.infer<T> => schema.parse(JSON.parse(input));

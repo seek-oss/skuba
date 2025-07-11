@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import type { ExecaError } from 'execa';
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
 import { log } from './logging.js';
 import { hasNumberProp, hasProp } from './validation.js';
