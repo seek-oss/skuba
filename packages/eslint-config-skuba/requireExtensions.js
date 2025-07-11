@@ -9,6 +9,7 @@ function createRuleListener(context, check) {
     ExportAllDeclaration: (node) => processNode(node, context, check),
     ExportNamedDeclaration: (node) => processNode(node, context, check),
     ImportDeclaration: (node) => processNode(node, context, check),
+    ImportExpression: (node) => processNode(node, context, check),
   };
 }
 
@@ -17,6 +18,12 @@ function processNode(node, context, check) {
   if (!source) {
     return;
   }
+
+  // For dynamic imports, ensure the source is a literal
+  if (node.type === 'ImportExpression' && source.type !== 'Literal') {
+    return;
+  }
+
   const value = source.value.replace(/\?.*$/, '');
   if (!value || value.endsWith('.js')) {
     return;
