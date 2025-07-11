@@ -1,21 +1,13 @@
 const { existsSync, lstatSync } = require('fs');
 const { dirname, resolve, join } = require('path');
 
-// Per-ESLint instance caches using WeakMaps keyed by context
-const pathCaches = new WeakMap();
-const fsCaches = new WeakMap();
-const lstatCaches = new WeakMap();
+// Simple caches keyed by filename since ESLint contexts are created fresh
+const pathCache = new Map();
+const fsCache = new Map();
+const lstatCache = new Map();
 
 // Cache size limits to prevent memory leaks in long-lived contexts (e.g., VSCode ESLint extension)
 const CACHE_SIZE_LIMIT = 1000;
-
-// Helper function to get or create cache for a context
-function getCache(cacheMap, context) {
-  if (!cacheMap.has(context)) {
-    cacheMap.set(context, new Map());
-  }
-  return cacheMap.get(context);
-}
 
 // Helper function to manage cache size
 function manageCacheSize(cache) {
@@ -30,8 +22,7 @@ function manageCacheSize(cache) {
 }
 
 // Helper function to resolve paths with caching
-function resolvePath(context, basePath, relativePath) {
-  const pathCache = getCache(pathCaches, context);
+function resolvePath(basePath, relativePath) {
   const key = `${basePath}:${relativePath}`;
 
   if (pathCache.has(key)) {
@@ -45,9 +36,7 @@ function resolvePath(context, basePath, relativePath) {
 }
 
 // Helper function for cached filesystem checks
-function cachedExistsSync(context, path) {
-  const fsCache = getCache(fsCaches, context);
-
+function cachedExistsSync(path) {
   if (fsCache.has(path)) {
     return fsCache.get(path);
   }
@@ -59,9 +48,7 @@ function cachedExistsSync(context, path) {
 }
 
 // Helper function for cached lstat checks
-function cachedLstatSync(context, path) {
-  const lstatCache = getCache(lstatCaches, context);
-
+function cachedLstatSync(path) {
   if (lstatCache.has(path)) {
     return lstatCache.get(path);
   }
@@ -111,7 +98,7 @@ function processNode(node, context, check) {
     return check(
       context,
       node,
-      resolvePath(context, dirname(context.getFilename()), value),
+      resolvePath(dirname(context.getFilename()), value),
     );
   }
 
@@ -132,10 +119,7 @@ const requireExtensionsPlugin = {
       },
       create(context) {
         return createRuleListener(context, (ctx, node, path) => {
-          if (
-            cachedExistsSync(ctx, `${path}.ts`) ||
-            !cachedExistsSync(ctx, path)
-          ) {
+          if (cachedExistsSync(`${path}.ts`) || !cachedExistsSync(path)) {
             let fix;
             if (!node.source.value.includes('?')) {
               fix = (fixer) => {
@@ -161,7 +145,10 @@ const requireExtensionsPlugin = {
       },
       create(context) {
         return createRuleListener(context, (ctx, node, path) => {
-          if (cachedLstatSync(ctx, path)?.isDirectory()) {
+          if (
+            !cachedExistsSync(`${path}.ts`) &&
+            cachedLstatSync(path)?.isDirectory()
+          ) {
             ctx.report({
               node,
               message: 'Directory paths must end with index.js',
