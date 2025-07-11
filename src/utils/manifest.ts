@@ -1,5 +1,5 @@
 import readPkgUp, { type NormalizedPackageJson } from 'read-pkg-up';
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
 import { hasProp } from './validation';
 

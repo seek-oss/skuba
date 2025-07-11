@@ -1,5 +1,5 @@
 import { Chance } from 'chance';
-import { z } from 'zod/v4';
+import * as z from 'zod/v4';
 
 import type { JobPublishedEvent } from 'src/types/pipelineEvents';
 

@@ -300,7 +300,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     ```yaml
     - seek-oss/docker-ecr-cache#v2.2.1:
         cache-on:
-          - .npmrc
+          - pnpm-workspace.yaml
           - package.json#.packageManager
           - pnpm-lock.yaml
         dockerfile: Dockerfile.dev-deps
