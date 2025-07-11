@@ -9,7 +9,7 @@ function createRuleListener(context, check) {
     ExportAllDeclaration: (node) => processNode(node, context, check),
     ExportNamedDeclaration: (node) => processNode(node, context, check),
     ImportDeclaration: (node) => processNode(node, context, check),
-    ImportExpression: (node) => processDynamicImport(node, context, check),
+    ImportExpression: (node) => processNode(node, context, check),
   };
 }
 
@@ -18,28 +18,12 @@ function processNode(node, context, check) {
   if (!source) {
     return;
   }
-  const value = source.value.replace(/\?.*$/, '');
-  if (!value || value.endsWith('.js')) {
+
+  // For dynamic imports, ensure the source is a literal
+  if (node.type === 'ImportExpression' && source.type !== 'Literal') {
     return;
   }
 
-  if (value.startsWith('.')) {
-    // Relative import, check if it ends with .js
-    return check(context, node, resolve(dirname(context.getFilename()), value));
-  }
-
-  if (value.startsWith('src')) {
-    const file = dirname(context.getFilename());
-    const leadingPathToSrc = file.split('/src/')[0];
-    return check(context, node, join(leadingPathToSrc, value));
-  }
-}
-
-function processDynamicImport(node, context, check) {
-  const source = node.source;
-  if (!source || source.type !== 'Literal') {
-    return;
-  }
   const value = source.value.replace(/\?.*$/, '');
   if (!value || value.endsWith('.js')) {
     return;
