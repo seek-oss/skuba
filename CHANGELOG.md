@@ -1,5 +1,19 @@
 # skuba
 
+## 11.2.0
+
+### Minor Changes
+
+- **test:** Add support for imports using file extensions ([#1933](https://github.com/seek-oss/skuba/pull/1933))
+
+### Patch Changes
+
+- **lint:** Avoid committing unchanged git-lfs files ([#1943](https://github.com/seek-oss/skuba/pull/1943))
+
+  [Autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) on repositories using git-lfs can result in committing unchanged files, reverting lfs-tracked files to "normal" files. This is because of an underlying support for git-lfs in skuba's git library.
+
+  This change treats all git-lfs files as unchanged, and so will never be committed.
+
 ## 11.1.0
 
 ### Minor Changes
