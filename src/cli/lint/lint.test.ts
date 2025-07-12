@@ -1,7 +1,7 @@
 // Uncomment the following line when there's an intentionally skipped test.
 // /* eslint-disable jest/no-disabled-tests */
 
-import '.';
+import './index.js';
 
 /**
  * Ensure compatibility between our lint command and new syntax features.

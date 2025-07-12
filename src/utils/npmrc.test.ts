@@ -2,7 +2,7 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { hasNpmrcSecret } from './npmrc';
+import { hasNpmrcSecret } from './npmrc.js';
 
 describe('hasNpmrcSecret', () => {
   // eslint-disable-next-line no-sync

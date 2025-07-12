@@ -2,10 +2,10 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import type { Logger } from '../../../utils/logging';
-import { getConsumerManifest } from '../../../utils/manifest';
-import { detectPackageManager } from '../../../utils/packageManager';
-import type { InternalLintResult } from '../internal';
+import type { Logger } from '../../../utils/logging.js';
+import { getConsumerManifest } from '../../../utils/manifest.js';
+import { detectPackageManager } from '../../../utils/packageManager.js';
+import type { InternalLintResult } from '../internal.js';
 
 export const noSkubaTemplateJs = async (
   _mode: 'format' | 'lint',

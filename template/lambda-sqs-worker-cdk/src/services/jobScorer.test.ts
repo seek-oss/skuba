@@ -1,7 +1,7 @@
-import { scoringService } from 'src/testing/services';
-import { chance, mockJobPublishedEvent } from 'src/testing/types';
+import { scoringService } from 'src/testing/services.js';
+import { chance, mockJobPublishedEvent } from 'src/testing/types.js';
 
-import * as jobScorer from './jobScorer';
+import * as jobScorer from './jobScorer.js';
 
 describe('scoreJobPublishedEvent', () => {
   beforeAll(scoringService.spy);

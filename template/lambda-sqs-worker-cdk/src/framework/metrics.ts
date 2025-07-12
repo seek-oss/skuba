@@ -1,6 +1,6 @@
 import { sendDistributionMetric } from 'datadog-lambda-js';
 
-import { config } from 'src/config';
+import { config } from 'src/config.js';
 
 const prefix = `${config.name}.`;
 

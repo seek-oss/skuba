@@ -3,11 +3,11 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import type { PatchFunction } from '../..';
-import { log } from '../../../../../../utils/logging';
-import { getDestinationManifest } from '../../../../../configure/analysis/package';
-import { createDestinationFileReader } from '../../../../../configure/analysis/project';
-import { formatPrettier } from '../../../../../configure/processing/prettier';
+import { log } from '../../../../../../utils/logging.js';
+import { getDestinationManifest } from '../../../../../configure/analysis/package.js';
+import { createDestinationFileReader } from '../../../../../configure/analysis/project.js';
+import { formatPrettier } from '../../../../../configure/processing/prettier.js';
+import type { PatchFunction } from '../../index.js';
 
 const JEST_SETUP_FILES = ['jest.setup.ts', 'jest.setup.int.ts'];
 

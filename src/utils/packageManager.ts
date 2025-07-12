@@ -2,7 +2,7 @@ import findUp from 'find-up';
 import isInstalledGlobally from 'is-installed-globally';
 import * as z from 'zod/v4';
 
-import { log } from './logging';
+import { log } from './logging.js';
 
 export const DEFAULT_PACKAGE_MANAGER = 'pnpm';
 

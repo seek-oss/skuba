@@ -1,6 +1,6 @@
 import git from 'isomorphic-git';
 
-import { commit } from './commit';
+import { commit } from './commit.js';
 
 jest.mock('isomorphic-git');
 

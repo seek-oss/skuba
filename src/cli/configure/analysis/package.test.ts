@@ -1,4 +1,4 @@
-import { diffDependencies } from './package';
+import { diffDependencies } from './package.js';
 
 describe('diffDependencies', () => {
   test.each([

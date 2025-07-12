@@ -3,8 +3,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import * as z from 'zod/v4';
 
-import { projectTypeSchema } from './manifest';
-import { packageManagerSchema } from './packageManager';
+import { projectTypeSchema } from './manifest.js';
+import { packageManagerSchema } from './packageManager.js';
 
 export const TEMPLATE_NAMES = [
   'express-rest-api',

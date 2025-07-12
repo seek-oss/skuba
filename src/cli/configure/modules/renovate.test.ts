@@ -2,9 +2,9 @@ import {
   defaultOpts,
   defaultPackageOpts,
   executeModule,
-} from '../testing/module';
+} from '../testing/module.js';
 
-import { renovateModule } from './renovate';
+import { renovateModule } from './renovate.js';
 
 describe('renovateModule', () => {
   it('works from scratch', async () => {

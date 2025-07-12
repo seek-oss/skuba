@@ -1,9 +1,9 @@
 import normalizeData from 'normalize-package-data';
 
-import type { PackageJson } from '../types';
+import type { PackageJson } from '../types.js';
 
-import { parseObject } from './json';
-import { formatPrettier } from './prettier';
+import { parseObject } from './json.js';
+import { formatPrettier } from './prettier.js';
 
 export const formatPackage = async (rawData: PackageJson) => {
   normalizeData(rawData);

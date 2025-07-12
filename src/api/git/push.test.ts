@@ -1,6 +1,6 @@
 import git from 'isomorphic-git';
 
-import { push } from './push';
+import { push } from './push.js';
 
 jest.mock('isomorphic-git');
 

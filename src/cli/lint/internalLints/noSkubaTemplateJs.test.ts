@@ -1,8 +1,8 @@
 import * as fsExtra from 'fs-extra';
 
-import { log } from '../../../utils/logging';
+import { log } from '../../../utils/logging.js';
 
-import { noSkubaTemplateJs } from './noSkubaTemplateJs';
+import { noSkubaTemplateJs } from './noSkubaTemplateJs.js';
 
 const stdoutMock = jest.fn();
 

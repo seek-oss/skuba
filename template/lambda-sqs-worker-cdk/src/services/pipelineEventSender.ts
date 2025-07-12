@@ -1,8 +1,8 @@
 import { PublishCommand } from '@aws-sdk/client-sns';
 
-import { config } from 'src/config';
+import { config } from 'src/config.js';
 
-import { sns } from './aws';
+import { sns } from './aws.js';
 
 export const sendPipelineEvent = async (
   event: unknown,

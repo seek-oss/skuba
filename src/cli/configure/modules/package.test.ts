@@ -1,12 +1,12 @@
-import { parsePackage } from '../processing/package';
+import { parsePackage } from '../processing/package.js';
 import {
   assertDefined,
   defaultOpts,
   defaultPackageOpts,
   executeModule,
-} from '../testing/module';
+} from '../testing/module.js';
 
-import { packageModule } from './package';
+import { packageModule } from './package.js';
 
 describe('packageModule', () => {
   it('works from scratch', async () => {

@@ -2,9 +2,9 @@
 
 import path from 'path';
 
-import { log } from '../../utils/logging';
+import { log } from '../../utils/logging.js';
 
-import { inferParser, runPrettier } from './prettier';
+import { inferParser, runPrettier } from './prettier.js';
 
 describe('inferParser', () => {
   test.each`

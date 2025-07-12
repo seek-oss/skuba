@@ -1,6 +1,6 @@
 import type { SerializableError, TestResult } from '@jest/test-result';
 
-import { createAnnotations } from './annotations';
+import { createAnnotations } from './annotations.js';
 
 jest.spyOn(process, 'cwd').mockReturnValue('/workdir/skuba');
 

@@ -1,4 +1,4 @@
-import { skubaDeps } from './skubaDeps';
+import { skubaDeps } from './skubaDeps.js';
 
 describe('skubaDeps', () => {
   it('strips bundled dev dependencies', () => {

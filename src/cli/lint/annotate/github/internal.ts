@@ -1,5 +1,5 @@
-import type * as GitHub from '../../../../api/github';
-import type { InternalLintResult } from '../../internal';
+import type * as GitHub from '../../../../api/github/index.js';
+import type { InternalLintResult } from '../../internal.js';
 
 export const createInternalAnnotations = (
   internal: InternalLintResult,

@@ -3,8 +3,8 @@ import picomatch from 'picomatch';
 import {
   DEFAULT_PACKAGE_MANAGER,
   configForPackageManager,
-} from '../../../utils/packageManager';
-import type { Files, Module, Options } from '../types';
+} from '../../../utils/packageManager.js';
+import type { Files, Module, Options } from '../types.js';
 
 export function assertDefined<T>(value?: T): asserts value is T {
   expect(value).toBeDefined();

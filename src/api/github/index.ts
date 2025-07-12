@@ -1,11 +1,11 @@
-export type { Annotation } from './checkRun';
-export { buildNameFromEnvironment } from './environment';
-export { createCheckRun } from './checkRun';
-export { enabledFromEnvironment } from './environment';
-export { getPullRequestNumber } from './pullRequest';
-export { putIssueComment } from './issueComment';
+export type { Annotation } from './checkRun.js';
+export { buildNameFromEnvironment } from './environment.js';
+export { createCheckRun } from './checkRun.js';
+export { enabledFromEnvironment } from './environment.js';
+export { getPullRequestNumber } from './pullRequest.js';
+export { putIssueComment } from './issueComment.js';
 export {
   readFileChanges,
   uploadAllFileChanges,
   uploadFileChanges,
-} from './push';
+} from './push.js';

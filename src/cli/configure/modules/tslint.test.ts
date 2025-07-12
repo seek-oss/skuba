@@ -1,6 +1,6 @@
-import { defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module.js';
 
-import { tslintModule } from './tslint';
+import { tslintModule } from './tslint.js';
 
 describe('tslintModule', () => {
   it('works from scratch', async () => {

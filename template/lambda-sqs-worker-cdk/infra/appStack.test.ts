@@ -33,7 +33,7 @@ it.each(['dev', 'prod'])(
     process.env.ENVIRONMENT = env;
     process.env.VERSION = 'local';
 
-    const { AppStack } = await import('./appStack');
+    const { AppStack } = await import('./appStack.js');
 
     jest
       .spyOn(aws_sns.Topic, 'fromTopicArn')

@@ -1,8 +1,8 @@
 import { inspect } from 'util';
 
-import type { PatchFunction, PatchReturnType } from '../..';
-import { log } from '../../../../../../utils/logging';
-import { nodeVersionMigration } from '../../../../../migrate/nodeVersion';
+import { log } from '../../../../../../utils/logging.js';
+import { nodeVersionMigration } from '../../../../../migrate/nodeVersion/index.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const upgradeNode: PatchFunction = async ({
   mode,

@@ -1,7 +1,7 @@
-import type * as GitHub from '../../../../api/github';
-import type { StreamInterceptor } from '../../../lint/external';
+import type * as GitHub from '../../../../api/github/index.js';
+import type { StreamInterceptor } from '../../../lint/external.js';
 
-import { createTscAnnotations } from './tsc';
+import { createTscAnnotations } from './tsc.js';
 
 const mockOutput = jest.fn<string, any>();
 

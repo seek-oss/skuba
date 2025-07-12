@@ -1,4 +1,4 @@
-import { createModuleNameMapper } from './moduleNameMapper';
+import { createModuleNameMapper } from './moduleNameMapper.js';
 
 describe('moduleNameMapper', () => {
   const act = (paths?: unknown, baseUrl?: string) =>

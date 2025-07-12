@@ -1,9 +1,9 @@
-import * as dir from '../../../utils/dir';
-import { getSkubaVersion } from '../../../utils/version';
-import { defaultOpts } from '../testing/module';
+import * as dir from '../../../utils/dir.js';
+import { getSkubaVersion } from '../../../utils/version.js';
+import { defaultOpts } from '../testing/module.js';
 
-import * as project from './project';
-import { diffFiles } from './project';
+import * as project from './project.js';
+import { diffFiles } from './project.js';
 
 describe('diffFiles', () => {
   it('works from scratch', async () => {

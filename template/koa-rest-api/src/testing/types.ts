@@ -1,7 +1,7 @@
 import { Chance } from 'chance';
 import * as z from 'zod/v4';
 
-import type { JobInput } from 'src/types/jobs';
+import type { JobInput } from 'src/types/jobs.js';
 
 export type IdDescription = z.infer<typeof IdDescriptionSchema>;
 

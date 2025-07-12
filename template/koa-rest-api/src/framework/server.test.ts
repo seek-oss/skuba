@@ -1,11 +1,11 @@
 import Router from '@koa/router';
 
-import { metricsClient } from 'src/testing/metrics';
-import { agentFromRouter } from 'src/testing/server';
-import { chance } from 'src/testing/types';
-import type { Middleware } from 'src/types/koa';
+import { metricsClient } from 'src/testing/metrics.js';
+import { agentFromRouter } from 'src/testing/server.js';
+import { chance } from 'src/testing/types.js';
+import type { Middleware } from 'src/types/koa.js';
 
-import { stdoutMock } from './logging';
+import { stdoutMock } from './logging.js';
 
 const middleware = jest.fn<void, Parameters<Middleware>>();
 
