@@ -57,6 +57,7 @@ steps:
           environment:
             # Don't pass NPM_TOKEN to the container. It's only needed in docker-ecr-cache.
             - GITHUB_API_TOKEN
+          mount-buildkite-agent: true
           propagate-environment: true
 ```
 

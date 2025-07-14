@@ -34,6 +34,7 @@ steps:
           # Enable GitHub integrations.
           environment:
             - GITHUB_API_TOKEN
+          mount-buildkite-agent: true
           propagate-environment: true
           volumes:
             # Mount cached dependencies.
@@ -51,7 +52,7 @@ services:
       - /workdir/node_modules
 ```
 
-and the `environment` and `propagate-environment` options in the [Docker Compose Buildkite plugin]:
+and the `environment`, `mount-buildkite-agent`, `propagate-environment` options in the [Docker Compose Buildkite plugin]:
 
 ```yaml
 steps:
@@ -66,6 +67,7 @@ steps:
       - docker-compose#v5.10.0:
           environment:
             - GITHUB_API_TOKEN
+          mount-buildkite-agent: true
           propagate-environment: true
           run: app
 ```
