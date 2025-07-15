@@ -108,7 +108,7 @@ function processNode(node, context, check) {
     const valueWithoutSrc = value.split('src/')[1];
     const finalPath = leadingPathToSrc.includes('/src')
       ? join(leadingPathToSrc, valueWithoutSrc)
-      : join(leadingPathToSrc, 'src', valueWithoutSrc);
+      : join(process.cwd(), 'src', valueWithoutSrc);
     return check(context, node, finalPath);
   }
 }
