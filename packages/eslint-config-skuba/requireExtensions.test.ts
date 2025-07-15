@@ -28,8 +28,8 @@ const asyncFunction = async () => {
   const dynamicImportTest = await import('./src/simple');
   const validDynamicImportTest = await import('./src/simple.js');
 
-  // eslint-disable-next-line require-extensions/require-extensions
-  const indexFileDynamicImportTest = await import('./src/indexFile/index');
+  // eslint-disable-next-line require-extensions/require-index
+  const indexFileDynamicImportTest = await import('./src/indexFile');
   const validIndexFileDynamicImportTest = await import(
     './src/indexFile/index.js'
   );
