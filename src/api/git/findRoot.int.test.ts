@@ -2,7 +2,7 @@ import memfs, { vol } from 'memfs';
 
 import { findRoot } from './findRoot.js';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 beforeEach(() => vol.reset());
 
