@@ -133,7 +133,7 @@ Your local `tsconfig.json` files will require a `baseUrl`, `rootDir` and `custom
   "compilerOptions": {
     "baseUrl": ".",
 +   "rootDir": ".",
-+   "customConditions": ["my-package/source"],
++   "customConditions": ["my-repo/source"],
 -   "paths": {
 -     "#src/*": ["src/*"]
 -    }
