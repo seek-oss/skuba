@@ -3,8 +3,9 @@
     "lib": ["ES2021"],
     "outDir": "lib",
     "target": "ES2021",
+    "baseUrl": ".",
     "paths": {
-      "src/*": ["./test/src/*"]
+      "src/*": ["src/*"]
     }
   },
   "exclude": ["lib*/**/*"],
@@ -13,7 +14,7 @@
     "eslint.config.js",
     "index.d.ts",
     "index.js",
-    "test/**/*",
+    "src/**/*",
     "requireExtensions.test.ts"
   ]
 }

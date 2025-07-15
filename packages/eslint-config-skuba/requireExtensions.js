@@ -106,7 +106,10 @@ function processNode(node, context, check) {
     const file = dirname(context.getFilename());
     const leadingPathToSrc = file.split('/src/')[0];
     const valueWithoutSrc = value.split('src/')[1];
-    return check(context, node, join(leadingPathToSrc, valueWithoutSrc));
+    const finalPath = leadingPathToSrc.includes('/src')
+      ? join(leadingPathToSrc, valueWithoutSrc)
+      : join(leadingPathToSrc, 'src', valueWithoutSrc);
+    return check(context, node, finalPath);
   }
 }
 
