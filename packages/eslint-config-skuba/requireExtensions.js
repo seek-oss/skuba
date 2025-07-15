@@ -65,6 +65,23 @@ function cachedLstatSync(path) {
   }
 }
 
+function findSrc(path) {
+  const cwd = process.cwd();
+  let currentPath = path;
+  while (true) {
+    if (currentPath === cwd) {
+      return currentPath;
+    }
+    const srcPath = join(currentPath, 'src');
+    if (cachedExistsSync(srcPath)) {
+      return currentPath;
+    }
+
+    // go up one level
+    currentPath = dirname(path);
+  }
+}
+
 // Helper function to create rule listeners
 function createRuleListener(context, check) {
   return {
@@ -108,7 +125,7 @@ function processNode(node, context, check) {
     const valueWithoutSrc = value.split('src/')[1];
     const finalPath = leadingPathToSrc.includes('/src')
       ? join(leadingPathToSrc, valueWithoutSrc)
-      : join(process.cwd(), 'src', valueWithoutSrc);
+      : join(findSrc(leadingPathToSrc), 'src', valueWithoutSrc);
     return check(context, node, finalPath);
   }
 }
