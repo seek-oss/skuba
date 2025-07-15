@@ -88,7 +88,7 @@ This shouldn't cause any issues, but out of caution, we will release this as a n
 
 ### 2. Replace `skuba-dive/register` with subpath imports
 
-We will replace `skuba-dive/register` with subpath imports, a native solution supported by both [TypeScript] and [Node.js].
+We will replace `skuba-dive/register` with subpath imports and custom conditions, a native solution supported by both [TypeScript] and [Node.js].
 
 The subpath imports feature allows us to define custom paths in `package.json`, enabling us to import modules using simplified paths without needing to use deep relative paths.
 
@@ -99,9 +99,8 @@ package.json:
   "name": "my-package",
 + "imports": {
 +   "#src/*": {
-+    "types": "./src/*", // This helps our local IDE to resolve the types
-+    "import": "./lib/*",
-+    "require": "./lib/*"
++    "my-package-dev": "./src/*",
++    "default": "./lib/*",
 +   }
 + }
 }
@@ -127,13 +126,14 @@ Our base `skuba/config/tsconfig.json` will update [`moduleResolution`] from `nod
 }
 ```
 
-Your local `tsconfig.json` files will require a `baseUrl` and `rootDir` to help TypeScript resolve the subpath imports correctly:
+Your local `tsconfig.json` files will require a `baseUrl`, `rootDir` and `customConditions` to help TypeScript resolve the subpath imports correctly:
 
 ```diff
 {
   "compilerOptions": {
     "baseUrl": ".",
 +   "rootDir": ".",
++   "customConditions": ["my-package-dev"],
 -   "paths": {
 -     "#src/*": ["src/*"]
 -    }
@@ -145,8 +145,10 @@ Your local `tsconfig.json` files will require a `baseUrl` and `rootDir` to help 
 This allows us to import modules like this:
 
 ```ts
-import { module } from '#src/imported-module';
+import { module } from '#src/imported-module.js';
 ```
+
+Custom conditions allow us to point our tooling to the correct directory for development without needing to rely on extra configuration to rewrite the package.json imports and exports when deploying or publishing. If you are currently developing within a monorepo, you may already be doing this via pnpm's `publishConfig` feature. Read [Live types in a TypeScript monorepo] for more information.
 
 ### 3. Switch to Vitest
 
@@ -161,5 +163,6 @@ We will apply a community codemod to help with the transition, but it will likel
 [`moduleResolution`]: https://www.typescriptlang.org/tsconfig#moduleResolution
 [Node.js]: https://nodejs.org/api/packages.html#subpath-imports
 [not fully compatible with ESM]: https://jestjs.io/docs/ecmascript-modules
+[Live types in a TypeScript monorepo]: https://colinhacks.com/essays/live-types-typescript-monorepo
 [TypeScript]: https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports
 [Vitest]: https://vitest.dev/
