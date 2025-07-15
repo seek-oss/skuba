@@ -148,7 +148,7 @@ This allows us to import modules like this:
 import { module } from '#src/imported-module.js';
 ```
 
-Custom conditions allow us to point our tooling to the correct directory for development without needing to rely on extra configuration to rewrite the package.json imports and exports when deploying or publishing. If you are currently developing within a monorepo, you may already be doing this via pnpm's `publishConfig` feature. Read [Live types in a TypeScript monorepo] for more information.
+Custom conditions allow us to point our tooling to TypeScript source files for development without needing to rely on extra configuration to rewrite the package.json imports and exports when deploying or publishing. If you are currently developing within a monorepo, you may already be doing this via pnpm's `publishConfig` feature. Read [Live types in a TypeScript monorepo] for more information.
 
 ### 3. Switch to Vitest
 
