@@ -99,7 +99,7 @@ package.json:
   "name": "my-repo",
 + "imports": {
 +   "#src/*": {
-+    "my-repo-dev": "./src/*",
++    "my-repo/source": "./src/*",
 +    "default": "./lib/*",
 +   }
 + }
@@ -133,7 +133,7 @@ Your local `tsconfig.json` files will require a `baseUrl`, `rootDir` and `custom
   "compilerOptions": {
     "baseUrl": ".",
 +   "rootDir": ".",
-+   "customConditions": ["my-package-dev"],
++   "customConditions": ["my-package/source"],
 -   "paths": {
 -     "#src/*": ["src/*"]
 -    }
