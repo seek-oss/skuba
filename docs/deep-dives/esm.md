@@ -148,7 +148,9 @@ This allows us to import modules like this:
 import { module } from '#src/imported-module.js';
 ```
 
-Custom conditions allow us to point our tooling to TypeScript source files for development without needing to rely on extra configuration to rewrite the package.json imports and exports when deploying or publishing. If you are currently developing within a monorepo, you may already be doing this via pnpm's `publishConfig` feature. Read [Live types in a TypeScript monorepo] for more information.
+[Custom conditions] enable tooling to use TypeScript source files during development while automatically switching to the correct compiled outputs for deployment or publishing. This is done without additional configuration to modify package.json imports and exports. Monorepo users may already be familiar with this concept through pnpm's `publishConfig` feature. For more details, see [Live types in a TypeScript monorepo].
+
+Unfortunately, Jest does not support custom import conditions so we will need to apply a custom [`moduleNameMapper`] to help with the transition.
 
 ### 3. Switch to Vitest
 
@@ -158,6 +160,7 @@ We will apply a community codemod to help with the transition, but it will likel
 
 ---
 
+[Custom conditions]: https://www.typescriptlang.org/tsconfig/#customConditions
 [`module`]: https://www.typescriptlang.org/tsconfig#module
 [`moduleNameMapper`]: https://jestjs.io/docs/configuration#modulenamemapper-objectstring-string--arraystring
 [`moduleResolution`]: https://www.typescriptlang.org/tsconfig#moduleResolution
