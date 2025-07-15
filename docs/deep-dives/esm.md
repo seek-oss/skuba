@@ -96,10 +96,10 @@ package.json:
 
 ```diff
 {
-  "name": "my-package",
+  "name": "my-repo",
 + "imports": {
 +   "#src/*": {
-+    "my-package-dev": "./src/*",
++    "my-repo-dev": "./src/*",
 +    "default": "./lib/*",
 +   }
 + }
