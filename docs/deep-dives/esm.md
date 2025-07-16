@@ -108,7 +108,7 @@ package.json:
 
 This will require some changes to our base `skuba/config/tsconfig.json` and your local `tsconfig.json` files.
 
-Our base `skuba/config/tsconfig.json` will update [`moduleResolution`] from `node` to `node16` and [`module`] from `commonjs` to `node18`:
+Our base `skuba/config/tsconfig.json` will update [`moduleResolution`] from `node` to `node16` and [`module`] from `commonjs` to `node20`:
 
 ```diff
 {
@@ -117,7 +117,7 @@ Our base `skuba/config/tsconfig.json` will update [`moduleResolution`] from `nod
     "isolatedModules": true,
 -   "moduleResolution": "node",
 +   "moduleResolution": "node16",
-+   "module": "node18",
++   "module": "node20",
     "resolveJsonModule": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false

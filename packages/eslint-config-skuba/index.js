@@ -11,7 +11,9 @@ module.exports = [
   {
     ...requireExtensionsPlugin.configs.recommended[0],
     files: [
+      './src/requireExtensions.test.ts',
       './requireExtensions.test.ts',
+      'packages/eslint-config-skuba/src/requireExtensions.test.ts',
       'packages/eslint-config-skuba/requireExtensions.test.ts',
     ], // TODO: remove when we release
   },
