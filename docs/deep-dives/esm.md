@@ -96,10 +96,10 @@ package.json:
 
 ```diff
 {
-  "name": "my-repo",
+  "name": "@seek/my-repo",
 + "imports": {
 +   "#src/*": {
-+    "my-repo/source": "./src/*",
++    "@seek/my-repo/source": "./src/*",
 +    "default": "./lib/*",
 +   }
 + }
@@ -133,7 +133,7 @@ Your local `tsconfig.json` files will require a `baseUrl`, `rootDir` and `custom
   "compilerOptions": {
     "baseUrl": ".",
 +   "rootDir": ".",
-+   "customConditions": ["my-repo/source"],
++   "customConditions": ["@seek/my-repo/source"],
 -   "paths": {
 -     "#src/*": ["src/*"]
 -    }
