@@ -88,7 +88,7 @@ This shouldn't cause any issues, but out of caution, we will release this as a n
 
 ### 2. Replace `skuba-dive/register` with subpath imports
 
-We will replace `skuba-dive/register` with subpath imports, a native solution supported by both [TypeScript] and [Node.js].
+We will replace `skuba-dive/register` with subpath imports and custom conditions, a native solution supported by both [TypeScript] and [Node.js].
 
 The subpath imports feature allows us to define custom paths in `package.json`, enabling us to import modules using simplified paths without needing to use deep relative paths.
 
@@ -96,12 +96,11 @@ package.json:
 
 ```diff
 {
-  "name": "my-package",
+  "name": "@seek/my-repo",
 + "imports": {
 +   "#src/*": {
-+    "types": "./src/*", // This helps our local IDE to resolve the types
-+    "import": "./lib/*",
-+    "require": "./lib/*"
++    "@seek/my-repo/source": "./src/*",
++    "default": "./lib/*",
 +   }
 + }
 }
@@ -127,13 +126,14 @@ Our base `skuba/config/tsconfig.json` will update [`moduleResolution`] from `nod
 }
 ```
 
-Your local `tsconfig.json` files will require a `baseUrl` and `rootDir` to help TypeScript resolve the subpath imports correctly:
+Your local `tsconfig.json` files will require a `baseUrl`, `rootDir` and `customConditions` to help TypeScript resolve the subpath imports correctly:
 
 ```diff
 {
   "compilerOptions": {
     "baseUrl": ".",
 +   "rootDir": ".",
++   "customConditions": ["@seek/my-repo/source"],
 -   "paths": {
 -     "#src/*": ["src/*"]
 -    }
@@ -145,8 +145,12 @@ Your local `tsconfig.json` files will require a `baseUrl` and `rootDir` to help 
 This allows us to import modules like this:
 
 ```ts
-import { module } from '#src/imported-module';
+import { module } from '#src/imported-module.js';
 ```
+
+[Custom conditions] enable tooling to use TypeScript source files during development while automatically switching to the correct compiled outputs for deployment or publishing. This is done without additional configuration to modify package.json imports and exports. Monorepo users may already be familiar with this concept through pnpm's `publishConfig` feature. For more details, see [Live types in a TypeScript monorepo].
+
+Unfortunately, Jest does not support custom import conditions so we will need to apply a custom [`moduleNameMapper`] to help with the transition.
 
 ### 3. Switch to Vitest
 
@@ -156,10 +160,12 @@ We will apply a community codemod to help with the transition, but it will likel
 
 ---
 
+[Custom conditions]: https://www.typescriptlang.org/tsconfig/#customConditions
 [`module`]: https://www.typescriptlang.org/tsconfig#module
 [`moduleNameMapper`]: https://jestjs.io/docs/configuration#modulenamemapper-objectstring-string--arraystring
 [`moduleResolution`]: https://www.typescriptlang.org/tsconfig#moduleResolution
 [Node.js]: https://nodejs.org/api/packages.html#subpath-imports
 [not fully compatible with ESM]: https://jestjs.io/docs/ecmascript-modules
+[Live types in a TypeScript monorepo]: https://colinhacks.com/essays/live-types-typescript-monorepo
 [TypeScript]: https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports
 [Vitest]: https://vitest.dev/
