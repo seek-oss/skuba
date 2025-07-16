@@ -35,6 +35,27 @@ export const configForPackageManager = (
   command: packageManager,
 });
 
+export const packageManagerFromUserAgent = (
+  userAgent: string | undefined,
+): PackageManagerConfig => {
+  const pkgSpecArr = userAgent?.split(' ')[0]?.split('/');
+
+  const name = pkgSpecArr?.[0];
+
+  const validpkgManger = packageManagerSchema.safeParse(name);
+
+  if (!validpkgManger.success) {
+    log.warn(
+      `Failed to detect package manager; defaulting to ${log.bold(
+        DEFAULT_PACKAGE_MANAGER,
+      )}.`,
+    );
+    return configForPackageManager(DEFAULT_PACKAGE_MANAGER);
+  }
+
+  return configForPackageManager(validpkgManger.data);
+};
+
 export const detectPackageManager = async (
   cwd?: string,
 ): Promise<PackageManagerConfig> => {
