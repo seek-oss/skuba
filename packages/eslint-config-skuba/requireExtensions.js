@@ -5,6 +5,7 @@ const { dirname, resolve, join } = require('path');
 const pathCache = new Map();
 const fsCache = new Map();
 const lstatCache = new Map();
+const srcCache = new Map();
 
 // Cache size limits to prevent memory leaks in long-lived contexts (e.g., VSCode ESLint extension)
 const CACHE_SIZE_LIMIT = 1000;
@@ -65,20 +66,36 @@ function cachedLstatSync(path) {
   }
 }
 
+// Walks up the directory tree until it finds a src directory or reaches the root
 function findSrc(path) {
+  if (srcCache.has(path)) {
+    return srcCache.get(path);
+  }
+
   const cwd = process.cwd();
+  const pathsVisited = [];
   let currentPath = path;
+
   while (true) {
     if (currentPath === cwd) {
-      return currentPath;
-    }
-    const srcPath = join(currentPath, 'src');
-    if (cachedExistsSync(srcPath)) {
+      for (const visitedPath of pathsVisited) {
+        srcCache.set(visitedPath, currentPath);
+        manageCacheSize(srcCache);
+      }
       return currentPath;
     }
 
-    // go up one level
-    currentPath = dirname(path);
+    const srcPath = join(currentPath, 'src');
+    if (cachedExistsSync(srcPath)) {
+      for (const visitedPath of pathsVisited) {
+        srcCache.set(visitedPath, currentPath);
+        manageCacheSize(srcCache);
+      }
+      return currentPath;
+    }
+
+    pathsVisited.push(currentPath);
+    currentPath = dirname(currentPath);
   }
 }
 
