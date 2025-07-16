@@ -123,7 +123,9 @@ function processNode(node, context, check) {
   }
 
   const value = source.value.replace(/\?.*$/, '');
-  if (!value || value.endsWith('.js')) {
+
+  // Already contains a file extension
+  if (!value || /\.[^/]+$/.test(value)) {
     return;
   }
 
