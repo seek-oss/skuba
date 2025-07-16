@@ -8,7 +8,7 @@ This enforces that file extensions be added to every import statement. This help
 
 > **Note**: This rule may not catch all cases when using TypeScript path aliases except for 'src' aliases
 
-To disable this behavior, add the following to your `eslint.config.js`:
+To opt out of the new rules, add the following to your `eslint.config.js`:
 
 ```js
 {
