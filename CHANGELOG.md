@@ -1,5 +1,111 @@
 # skuba
 
+## 12.0.0
+
+### Major Changes
+
+- **deps:** eslint-config-skuba 7 ([#1937](https://github.com/seek-oss/skuba/pull/1937))
+
+  This enforces that file extensions be added to every import statement. This helps prepare for an eventual migration to ECMAScript Modules (ESM). You can read more about this in our [deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html).
+
+  > **Warning**: The initial lint after upgrading may take longer than usual to complete as the new rules need to analyze all import statements in your codebase.
+
+  > **Note**: This rule may not catch all cases when using TypeScript path aliases except for 'src' aliases
+
+  To opt out of the new rules, add the following to your `eslint.config.js`:
+
+  ```js
+  {
+    rules: {
+      'require-extensions/require-extensions': 'off',
+      'require-extensions/require-index': 'off',
+    },
+  }
+  ```
+
+  If you are applying a custom `moduleNameMapper` to your Jest config, you may need to add the following to it for it to recognise imports with extensions.
+
+  ```ts
+    moduleNameMapper: {
+      '^(\\.{1,2}/.*)\\.js$': '$1',
+    },
+  ```
+
+### Minor Changes
+
+- **test:** Add support for imports using file extensions ([#1933](https://github.com/seek-oss/skuba/pull/1933))
+
+### Patch Changes
+
+- **template:** Use `mount-buildkite-agent` for Docker Buildkite plugins ([#1944](https://github.com/seek-oss/skuba/pull/1944))
+
+  Previously, our templated Buildkite pipelines directly mounted `/usr/bin/buildkite-agent` for [Buildkite annotations](https://seek-oss.github.io/skuba/docs/deep-dives/buildkite.html#buildkite-annotations). This sidestepped a SEEK-specific [`buildkite-signed-pipeline`](https://github.com/buildkite/buildkite-signed-pipeline) wrapper that was not compatible with the default BusyBox Ash shell on Alpine Linux. Projects can now revert to the `mount-buildkite-agent` option with [signed pipelines](https://buildkite.com/docs/agent/v3/signed-pipelines) built in to the Buildkite agent.
+
+  For the [Docker Buildkite plugin](https://github.com/buildkite-plugins/docker-buildkite-plugin/blob/v5.13.0/README.md#mount-buildkite-agent-optional-boolean):
+
+  ```diff
+  # .buildkite/pipeline.yml
+  steps:
+    - commands:
+        - pnpm test
+        - pnpm lint
+      plugins:
+        - *docker-ecr-cache
+        - docker#v5.13.0:
+            environment:
+  -           - BUILDKITE_AGENT_ACCESS_TOKEN
+              - GITHUB_API_TOKEN
+  +         mount-buildkite-agent: true
+            propagate-environment: true
+            volumes:
+  -           # Mount agent for Buildkite annotations.
+  -           - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+              # Mount cached dependencies.
+              - /workdir/node_modules
+
+  ```
+
+  For the [Docker Compose Buildkite plugin](https://github.com/buildkite-plugins/docker-compose-buildkite-plugin/blob/v5.10.0/README.md#mount-buildkite-agent-run-only-boolean):
+
+  ```diff
+  # docker-compose.yml
+  services:
+    app:
+  -   environment:
+  -     - BUILDKITE_AGENT_ACCESS_TOKEN
+  -     - GITHUB_API_TOKEN
+      image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}
+      init: true
+      volumes:
+        - ./:/workdir
+  -     # Mount agent for Buildkite annotations.
+  -     - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+        # Mount cached dependencies.
+        - /workdir/node_modules
+  ```
+
+  ```diff
+  # .buildkite/pipeline.yml
+  steps:
+    - commands:
+        - pnpm test
+        - pnpm lint
+      plugins:
+        - *docker-ecr-cache
+        - docker-compose#v5.10.0:
+  +         environment:
+  +           - GITHUB_API_TOKEN
+  +         mount-buildkite-agent: true
+            propagate-environment: true
+            run: app
+  ```
+
+- **lint:** Avoid committing unchanged git-lfs files ([#1943](https://github.com/seek-oss/skuba/pull/1943))
+
+  [Autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) on repositories using git-lfs can result in committing unchanged files, reverting lfs-tracked files to "normal" files. This is because of an underlying support for git-lfs in skuba's git library.
+
+  This change treats all git-lfs files as unchanged, and so will never be committed.
+
 ## 11.1.0
 
 ### Minor Changes
