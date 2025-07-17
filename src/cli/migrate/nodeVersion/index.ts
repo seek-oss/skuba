@@ -3,14 +3,14 @@ import { inspect } from 'util';
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
-import { log } from '../../../utils/logging';
-import { createDestinationFileReader } from '../../configure/analysis/project';
+import { log } from '../../../utils/logging.js';
+import { createDestinationFileReader } from '../../configure/analysis/project.js';
 
 import {
   isPatchableNodeVersion,
   isPatchableServerlessVersion,
   isPatchableSkubaType,
-} from './checks';
+} from './checks.js';
 
 type FileSelector =
   | { files: string; file?: never }

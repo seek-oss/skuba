@@ -1,7 +1,7 @@
 import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 
-import { currentBranch } from './currentBranch';
+import { currentBranch } from './currentBranch.js';
 
 jest.mock('fs', () => memfs);
 

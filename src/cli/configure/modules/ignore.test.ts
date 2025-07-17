@@ -1,6 +1,6 @@
-import { defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module.js';
 
-import { ignoreModule } from './ignore';
+import { ignoreModule } from './ignore.js';
 
 describe('ignoreModule', () => {
   it('works from scratch', async () => {

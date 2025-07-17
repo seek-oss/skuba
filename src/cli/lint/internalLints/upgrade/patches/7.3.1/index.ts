@@ -1,9 +1,9 @@
-import type { Patches } from '../..';
-import { tryPatchRenovateConfig } from '../../../patchRenovateConfig';
+import { tryPatchRenovateConfig } from '../../../patchRenovateConfig.js';
+import type { Patches } from '../../index.js';
 
-import { tryAddEmptyExports } from './addEmptyExports';
-import { tryPatchDockerfile } from './patchDockerfile';
-import { tryPatchServerListener } from './patchServerListener';
+import { tryAddEmptyExports } from './addEmptyExports.js';
+import { tryPatchDockerfile } from './patchDockerfile.js';
+import { tryPatchServerListener } from './patchServerListener.js';
 
 export const patches: Patches = [
   {

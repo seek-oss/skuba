@@ -4,9 +4,9 @@ import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
 
-import type { PatchConfig } from '../..';
+import type { PatchConfig } from '../../index.js';
 
-import { tryPatchServerListener } from './patchServerListener';
+import { tryPatchServerListener } from './patchServerListener.js';
 
 jest.mock('fs-extra', () => memfs);
 

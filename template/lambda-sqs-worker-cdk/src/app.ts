@@ -3,13 +3,16 @@ import 'skuba-dive/register';
 import { isLambdaHook } from '@seek/aws-codedeploy-hooks';
 import type { SQSEvent } from 'aws-lambda';
 
-import { createHandler } from 'src/framework/handler';
-import { logger } from 'src/framework/logging';
-import { metricsClient } from 'src/framework/metrics';
-import { validateJson } from 'src/framework/validation';
-import { scoreJobPublishedEvent, scoringService } from 'src/services/jobScorer';
-import { sendPipelineEvent } from 'src/services/pipelineEventSender';
-import { JobPublishedEventSchema } from 'src/types/pipelineEvents';
+import { createHandler } from 'src/framework/handler.js';
+import { logger } from 'src/framework/logging.js';
+import { metricsClient } from 'src/framework/metrics.js';
+import { validateJson } from 'src/framework/validation.js';
+import {
+  scoreJobPublishedEvent,
+  scoringService,
+} from 'src/services/jobScorer.js';
+import { sendPipelineEvent } from 'src/services/pipelineEventSender.js';
+import { JobPublishedEventSchema } from 'src/types/pipelineEvents.js';
 
 /**
  * Tests connectivity to ensure appropriate access and network configuration.

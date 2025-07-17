@@ -5,12 +5,12 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import type { PatchFunction, PatchReturnType } from '../..';
-import { createExec } from '../../../../../../utils/exec';
-import { log } from '../../../../../../utils/logging';
-import { createDestinationFileReader } from '../../../../../configure/analysis/project';
-import { mergeWithConfigFile } from '../../../../../configure/processing/configFile';
-import { formatPrettier } from '../../../../../configure/processing/prettier';
+import { createExec } from '../../../../../../utils/exec.js';
+import { log } from '../../../../../../utils/logging.js';
+import { createDestinationFileReader } from '../../../../../configure/analysis/project.js';
+import { mergeWithConfigFile } from '../../../../../configure/processing/configFile.js';
+import { formatPrettier } from '../../../../../configure/processing/prettier.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const IGNORE_FILE = '.eslintignore';
 const OLD_CONFIG_FILE = '.eslintrc.js';

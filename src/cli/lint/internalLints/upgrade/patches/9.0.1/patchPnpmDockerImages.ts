@@ -3,8 +3,8 @@ import { inspect } from 'util';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import type { PatchFunction, PatchReturnType } from '../..';
-import { log } from '../../../../../../utils/logging';
+import { log } from '../../../../../../utils/logging.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const DOCKER_IMAGE_CONFIG_REGEX =
   /^(RUN --mount=type=bind,source=package.json,target=package.json \\\n(\s+)corepack enable pnpm && corepack install(?:.|\n)+?RUN )(pnpm config set store-dir \/root\/.pnpm-store)/gm;

@@ -5,6 +5,7 @@ const { dirname, resolve, join } = require('path');
 const pathCache = new Map();
 const fsCache = new Map();
 const lstatCache = new Map();
+const srcCache = new Map();
 
 // Cache size limits to prevent memory leaks in long-lived contexts (e.g., VSCode ESLint extension)
 const CACHE_SIZE_LIMIT = 1000;
@@ -65,6 +66,39 @@ function cachedLstatSync(path) {
   }
 }
 
+// Walks up the directory tree until it finds a src directory or reaches the root
+function findSrc(path) {
+  if (srcCache.has(path)) {
+    return srcCache.get(path);
+  }
+
+  const cwd = process.cwd();
+  const pathsVisited = [];
+  let currentPath = path;
+
+  while (true) {
+    if (currentPath === cwd) {
+      for (const visitedPath of pathsVisited) {
+        srcCache.set(visitedPath, currentPath);
+        manageCacheSize(srcCache);
+      }
+      return currentPath;
+    }
+
+    const srcPath = join(currentPath, 'src');
+    if (cachedExistsSync(srcPath)) {
+      for (const visitedPath of pathsVisited) {
+        srcCache.set(visitedPath, currentPath);
+        manageCacheSize(srcCache);
+      }
+      return currentPath;
+    }
+
+    pathsVisited.push(currentPath);
+    currentPath = dirname(currentPath);
+  }
+}
+
 // Helper function to create rule listeners
 function createRuleListener(context, check) {
   return {
@@ -89,7 +123,9 @@ function processNode(node, context, check) {
   }
 
   const value = source.value.replace(/\?.*$/, '');
-  if (!value || value.endsWith('.js')) {
+
+  // Already contains a file extension
+  if (!value || /\.[^/]+$/.test(value)) {
     return;
   }
 
@@ -108,7 +144,7 @@ function processNode(node, context, check) {
     const valueWithoutSrc = value.split('src/')[1];
     const finalPath = leadingPathToSrc.includes('/src')
       ? join(leadingPathToSrc, valueWithoutSrc)
-      : join(leadingPathToSrc, 'src', valueWithoutSrc);
+      : join(findSrc(leadingPathToSrc), 'src', valueWithoutSrc);
     return check(context, node, finalPath);
   }
 }

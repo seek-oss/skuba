@@ -1,7 +1,7 @@
 import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 
-import { getOwnerAndRepo } from './remote';
+import { getOwnerAndRepo } from './remote.js';
 
 jest.mock('fs', () => memfs);
 

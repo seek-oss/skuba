@@ -1,4 +1,4 @@
-import { md } from './md';
+import { md } from './md.js';
 
 describe('terminal', () => {
   it.each`

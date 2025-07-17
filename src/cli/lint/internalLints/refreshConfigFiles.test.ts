@@ -2,15 +2,15 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { Git } from '../../..';
-import { log } from '../../../utils/logging';
-import { detectPackageManager } from '../../../utils/packageManager';
-import * as project from '../../configure/analysis/project';
+import { Git } from '../../../index.js';
+import { log } from '../../../utils/logging.js';
+import { detectPackageManager } from '../../../utils/packageManager.js';
+import * as project from '../../configure/analysis/project.js';
 
 import {
   REFRESHABLE_CONFIG_FILES,
   refreshConfigFiles,
-} from './refreshConfigFiles';
+} from './refreshConfigFiles.js';
 
 const stdoutMock = jest.fn();
 

@@ -1,10 +1,10 @@
-import type { Patches } from '../..';
+import type { Patches } from '../../index.js';
 
-import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys';
-import { tryMoveNpmrcMounts } from './moveNpmrcMounts';
-import { tryPatchDockerComposeFiles } from './patchDockerCompose';
-import { tryPatchDockerImages } from './patchDockerImages';
-import { tryUpgradeESLint } from './upgradeESLint';
+import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys.js';
+import { tryMoveNpmrcMounts } from './moveNpmrcMounts.js';
+import { tryPatchDockerComposeFiles } from './patchDockerCompose.js';
+import { tryPatchDockerImages } from './patchDockerImages.js';
+import { tryUpgradeESLint } from './upgradeESLint.js';
 
 export const patches: Patches = [
   {

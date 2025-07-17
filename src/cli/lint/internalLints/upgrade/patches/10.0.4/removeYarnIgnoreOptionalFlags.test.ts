@@ -1,9 +1,9 @@
 import memfs, { vol } from 'memfs';
 
-import type { PatchConfig } from '../..';
-import { configForPackageManager } from '../../../../../../utils/packageManager';
+import { configForPackageManager } from '../../../../../../utils/packageManager.js';
+import type { PatchConfig } from '../../index.js';
 
-import { tryRemoveYarnIgnoreOptionalFlags } from './removeYarnIgnoreOptionalFlags';
+import { tryRemoveYarnIgnoreOptionalFlags } from './removeYarnIgnoreOptionalFlags.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

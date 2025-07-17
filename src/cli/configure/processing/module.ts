@@ -1,4 +1,4 @@
-import { createStringReplacer } from '../../../utils/copy';
+import { createStringReplacer } from '../../../utils/copy.js';
 
 export const replacePackageReferences = (props: {
   old: {

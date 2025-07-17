@@ -1,1 +1,1 @@
-export { waitFor } from './waitFor';
+export { waitFor } from './waitFor.js';

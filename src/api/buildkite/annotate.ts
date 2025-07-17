@@ -1,5 +1,5 @@
-import { exec, hasCommand } from '../../utils/exec';
-import { log } from '../../utils/logging';
+import { exec, hasCommand } from '../../utils/exec.js';
+import { log } from '../../utils/logging.js';
 
 export type AnnotationStyle = 'success' | 'info' | 'warning' | 'error';
 

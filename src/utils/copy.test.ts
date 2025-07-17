@@ -1,5 +1,5 @@
-import { createEjsRenderer, createStringReplacer } from './copy';
-import { log } from './logging';
+import { createEjsRenderer, createStringReplacer } from './copy.js';
+import { log } from './logging.js';
 
 jest.mock('./logging', () => ({
   log: {
