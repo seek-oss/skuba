@@ -25,6 +25,6 @@ If you are depending on `eslint-config-skuba` without using skuba, you may need 
 
 ```ts
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^(\\.{1,2}/.*)\\.js$$': '$$1',
   },
 ```

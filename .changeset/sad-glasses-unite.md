@@ -25,6 +25,6 @@ If you are applying a custom `moduleNameMapper` to your Jest config, you may nee
 
 ```ts
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^(\\.{1,2}/.*)\\.js$$': '$$1',
   },
 ```
