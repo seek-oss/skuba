@@ -12,6 +12,10 @@ import { test as validSimpleTest } from './src/simple.js';
 import { test as indexFileTest } from './src/indexFile';
 import { test as validIndexFileTest } from './src/indexFile/index.js';
 
+// eslint-disable-next-line require-extensions/require-index
+import { test as indexFileTest2 } from './src/indexFile/';
+import { test as validIndexFileTest2 } from './src/indexFile/index.js';
+
 // eslint-disable-next-line require-extensions/require-extensions
 import { test as srcTest } from './src/file';
 import { test as validSrcTest } from './src/file.js';
