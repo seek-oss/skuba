@@ -195,7 +195,9 @@ const requireExtensionsPlugin = {
               fix(fixer) {
                 return fixer.replaceText(
                   node.source,
-                  `'${node.source.value}/index.js'`,
+                  node.source.value.endsWith('/')
+                    ? `'${node.source.value}index.js'`
+                    : `'${node.source.value}/index.js'`,
                 );
               },
             });

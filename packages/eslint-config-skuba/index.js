@@ -11,6 +11,11 @@ module.exports = [
   ...requireExtensionsPlugin.configs.recommended.map((config) => ({
     ...config,
     files: [`**/*.{${tsExtensions}}`],
+    ignores: [
+      // Jest configuration files
+      '**/jest.config*',
+      '**/jest.setup*',
+    ],
   })),
   {
     name: 'skuba/ignores',
