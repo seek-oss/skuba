@@ -23,6 +23,14 @@ import { test as validSrcIndexFileTest } from 'src/indexFile/index.js';
 // eslint-disable-next-line require-extensions/require-extensions
 import { test as bothTest } from './both';
 
+// eslint-disable-next-line require-extensions/require-index
+import '..';
+import '../index.js';
+
+// eslint-disable-next-line require-extensions/require-index
+import '../';
+import '../index.js';
+
 const asyncFunction = async () => {
   // eslint-disable-next-line require-extensions/require-extensions
   const dynamicImportTest = await import('./simple');

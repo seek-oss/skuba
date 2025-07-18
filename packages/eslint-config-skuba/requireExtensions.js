@@ -125,7 +125,7 @@ function processNode(node, context, check) {
   const value = source.value.replace(/\?.*$/, '');
 
   // Already contains a file extension
-  if (!value || /\.[^/]+$/.test(value)) {
+  if (!value || /\.[a-zA-Z0-9]+$/.test(value)) {
     return;
   }
 
