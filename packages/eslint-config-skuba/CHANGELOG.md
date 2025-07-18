@@ -1,5 +1,11 @@
 # eslint-config-skuba
 
+## 7.0.2
+
+### Patch Changes
+
+- **lint:** Add file extensions to relative index imports ([#1955](https://github.com/seek-oss/skuba/pull/1955))
+
 ## 7.0.1
 
 ### Patch Changes
