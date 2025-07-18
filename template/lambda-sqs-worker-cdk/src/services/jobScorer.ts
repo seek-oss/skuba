@@ -1,8 +1,3 @@
-import type {
-  JobPublishedEvent,
-  JobScoredEvent,
-} from 'src/types/pipelineEvents.js';
-
 import {
   jobPublishedEventToScorerInput,
   jobScorerOutputToScoredEvent,
@@ -12,6 +7,10 @@ import {
   type JobScorerOutput,
   JobScorerOutputSchema,
 } from '#src/types/jobScorer.js';
+import type {
+  JobPublishedEvent,
+  JobScoredEvent,
+} from '#src/types/pipelineEvents.js';
 
 /* istanbul ignore next: simulation of an external service */
 export const scoringService = {
