@@ -1,5 +1,11 @@
 # eslint-config-skuba
 
+## 7.0.1
+
+### Patch Changes
+
+- **lint:** Prevent Jest config and setup files from being linted with extensions ([#1953](https://github.com/seek-oss/skuba/pull/1953))
+
 ## 7.0.0
 
 ### Major Changes
