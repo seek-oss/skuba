@@ -24,6 +24,10 @@ import { test as validSrcIndexFileTest } from 'src/indexFile/index.js';
 import { test as bothTest } from './both';
 
 // eslint-disable-next-line require-extensions/require-index
+import '.';
+import './index.js';
+
+// eslint-disable-next-line require-extensions/require-index
 import '..';
 import '../index.js';
 
