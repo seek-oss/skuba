@@ -2,9 +2,8 @@
   "private": true,
   "imports": {
     "#src/*": {
-      "types": "./src/*",
-      "import": "./lib/*",
-      "require": "./lib/*"
+      "@seek/<%- serviceName %>/source": "./src/*",
+      "default": "./lib/*"
     }
   },
   "license": "UNLICENSED",

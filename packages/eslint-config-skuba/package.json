@@ -15,9 +15,8 @@
   "sideEffects": false,
   "imports": {
     "#src/*": {
-      "types": "./src/*",
-      "import": "./lib/*",
-      "require": "./lib/*"
+      "@seek/<%- serviceName %>/source": "./src/*",
+      "default": "./lib/*"
     }
   },
   "main": "./index.js",

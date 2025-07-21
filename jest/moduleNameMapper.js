@@ -47,10 +47,16 @@ module.exports.createModuleNameMapper = (getConfig) => {
     useESM: true,
   });
 
+  const subpathAliasMappings = {
+    '^#src$': '<rootDir>/src',
+    '^#src/(.*)\\.js$': '<rootDir>/src/$1',
+    '^#src/(.*)$': '<rootDir>/src/$1',
+  };
+
   // Normalise away any `..`s that may crop up from `baseUrl` usage.
   // For example, a `baseUrl` of `src` and a path of `../cli` will result in
   // `<rootDir>/src/../cli`, which can be normalised to `<rootDir>/cli`.
-  return Object.fromEntries(
+  const normalizedMapper = Object.fromEntries(
     Object.entries(moduleNameMapper).map(([key, values]) => [
       key,
       Array.isArray(values)
@@ -58,4 +64,9 @@ module.exports.createModuleNameMapper = (getConfig) => {
         : path.normalize(values),
     ]),
   );
+
+  return {
+    ...normalizedMapper,
+    ...subpathAliasMappings,
+  };
 };

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "customConditions": ["@seek/<%- serviceName %>/source"],
     "incremental": true,
     "module": "node18",
     "moduleResolution": "node16",

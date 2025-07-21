@@ -19,11 +19,6 @@ export default {
       statements: 0,
     },
   },
-  moduleNameMapper: {
-    '^#src$': '<rootDir>/src',
-    '^#src\/(.*)\\.js$': '<rootDir>/src/$1',
-    '^#src\/(.*)$': '<rootDir>/src/$1',
-  },
   setupFiles: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/test\\.ts'],
 };

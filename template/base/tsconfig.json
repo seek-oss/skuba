@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "customConditions": ["@seek/<%- serviceName %>/source"],
     "lib": ["ES2024"],
     "outDir": "lib",
     "rootDir": ".",

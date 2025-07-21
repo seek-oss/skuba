@@ -13,6 +13,9 @@ describe('moduleNameMapper', () => {
     expect(act({ 'src/*': ['src/*'], 'lib/wip/*': ['lib/wip/*'] }))
       .toMatchInlineSnapshot(`
       {
+        "^#src$": "<rootDir>/src",
+        "^#src/(.*)$": "<rootDir>/src/$1",
+        "^#src/(.*)\\.js$": "<rootDir>/src/$1",
         "^(\\.{1,2}/.*)\\.js$": "$1",
         "^lib/wip$": "<rootDir>/lib/wip",
         "^lib/wip/(.*)$": "<rootDir>/lib/wip/$1",
@@ -26,6 +29,9 @@ describe('moduleNameMapper', () => {
   it('expands non-wildcard paths', () =>
     expect(act({ cli: ['cli'], 'src/': ['src/'] })).toMatchInlineSnapshot(`
       {
+        "^#src$": "<rootDir>/src",
+        "^#src/(.*)$": "<rootDir>/src/$1",
+        "^#src/(.*)\\.js$": "<rootDir>/src/$1",
         "^(\\.{1,2}/.*)\\.js$": "$1",
         "^cli$": "<rootDir>/cli",
         "^cli/(.*)$": "<rootDir>/cli/$1",
@@ -44,6 +50,9 @@ describe('moduleNameMapper', () => {
       }),
     ).toMatchInlineSnapshot(`
       {
+        "^#src$": "<rootDir>/src",
+        "^#src/(.*)$": "<rootDir>/src/$1",
+        "^#src/(.*)\\.js$": "<rootDir>/src/$1",
         "^(\\.{1,2}/.*)\\.js$": "$1",
         "^jquery$": "<rootDir>/node_modules/jquery/dist/jquery",
         "^jquery/(.*)$": "<rootDir>/node_modules/jquery/dist/jquery/$1",
@@ -55,6 +64,9 @@ describe('moduleNameMapper', () => {
     expect(act({ cli: ['../cli'], 'app/*': ['app/*'] }, 'src'))
       .toMatchInlineSnapshot(`
       {
+        "^#src$": "<rootDir>/src",
+        "^#src/(.*)$": "<rootDir>/src/$1",
+        "^#src/(.*)\\.js$": "<rootDir>/src/$1",
         "^(\\.{1,2}/.*)\\.js$": "$1",
         "^app$": "<rootDir>/src/app",
         "^app/(.*)$": "<rootDir>/src/app/$1",
@@ -68,6 +80,9 @@ describe('moduleNameMapper', () => {
   it('respects no paths', () =>
     expect(act({})).toMatchInlineSnapshot(`
       {
+        "^#src$": "<rootDir>/src",
+        "^#src/(.*)$": "<rootDir>/src/$1",
+        "^#src/(.*)\\.js$": "<rootDir>/src/$1",
         "^(\\.{1,2}/.*)\\.js$": "$1",
       }
     `));
@@ -75,6 +90,9 @@ describe('moduleNameMapper', () => {
   it('defaults to a single path on undefined', () =>
     expect(act(undefined)).toMatchInlineSnapshot(`
       {
+        "^#src$": "<rootDir>/src",
+        "^#src/(.*)$": "<rootDir>/src/$1",
+        "^#src/(.*)\\.js$": "<rootDir>/src/$1",
         "^(\\.{1,2}/.*)\\.js$": "$1",
       }
     `));
@@ -82,6 +100,9 @@ describe('moduleNameMapper', () => {
   it('defaults to a single path on invalid config', () =>
     expect(act('INVALID')).toMatchInlineSnapshot(`
       {
+        "^#src$": "<rootDir>/src",
+        "^#src/(.*)$": "<rootDir>/src/$1",
+        "^#src/(.*)\\.js$": "<rootDir>/src/$1",
         "^(\\.{1,2}/.*)\\.js$": "$1",
       }
     `));
