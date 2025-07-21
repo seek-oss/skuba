@@ -28,16 +28,20 @@ import { test as validSrcIndexFileTest } from 'src/indexFile/index.js';
 import { test as bothTest } from './src/both';
 
 const asyncFunction = async () => {
-  const dynamicImportTest = await import('./src/simple.js');
+  // eslint-disable-next-line require-extensions/require-extensions
+  const dynamicImportTest = await import('./src/simple');
   const validDynamicImportTest = await import('./src/simple.js');
 
-  const indexFileDynamicImportTest = await import('./src/indexFile/index.js');
+  // eslint-disable-next-line require-extensions/require-index
+  const indexFileDynamicImportTest = await import('./src/indexFile');
   const validIndexFileDynamicImportTest = await import(
     './src/indexFile/index.js'
   );
 
-  const srcDynamicImportTest = await import('src/file.js');
+  // eslint-disable-next-line require-extensions/require-extensions
+  const srcDynamicImportTest = await import('src/file');
   const validSrcDynamicImportTest = await import('src/file.js');
 
-  const bothDynamicImportTest = await import('./src/both/index.js');
+  // eslint-disable-next-line require-extensions/require-extensions
+  const bothDynamicImportTest = await import('./src/both');
 };

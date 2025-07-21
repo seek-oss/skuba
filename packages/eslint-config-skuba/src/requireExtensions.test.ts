@@ -36,14 +36,18 @@ import '../';
 import '../index.js';
 
 const asyncFunction = async () => {
-  const dynamicImportTest = await import('./simple.js');
+  // eslint-disable-next-line require-extensions/require-extensions
+  const dynamicImportTest = await import('./simple');
   const validDynamicImportTest = await import('./simple.js');
 
-  const indexFileDynamicImportTest = await import('./indexFile/index.js');
+  // eslint-disable-next-line require-extensions/require-index
+  const indexFileDynamicImportTest = await import('./indexFile');
   const validIndexFileDynamicImportTest = await import('./indexFile/index.js');
 
-  const srcDynamicImportTest = await import('src/file.js');
+  // eslint-disable-next-line require-extensions/require-extensions
+  const srcDynamicImportTest = await import('src/file');
   const validSrcDynamicImportTest = await import('src/file.js');
 
-  const bothDynamicImportTest = await import('./both/index.js');
+  // eslint-disable-next-line require-extensions/require-extensions
+  const bothDynamicImportTest = await import('./both');
 };
