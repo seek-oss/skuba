@@ -2,7 +2,6 @@
   "name": "<%- moduleName %>",
   "version": "0.0.0-semantically-released",
   "description": "<%- description %>",
-  "type": "module",
   "imports": {
     "#src/*": {
       "types": "./src/*",
