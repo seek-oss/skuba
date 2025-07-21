@@ -2,7 +2,7 @@
 'skuba': major
 ---
 
-Replace `skuba-dive/register` imports and migrate `src/` path aliases to TypeScript subpath imports as part of the ECMAScript Modules (ESM) migration:
+**lint:** Replace `skuba-dive/register` imports and migrate `src/` path aliases to TypeScript subpath imports as part of the ECMAScript Modules (ESM) migration:
 
 1. **Removes `skuba-dive/register` imports**: Eliminates absolute and relative register imports (e.g., `./register`, `../register`)
 2. **Converts src/ aliases to subpath imports**: Transforms `import 'src/*'` statements to `import '#src/*'` using TypeScript's native subpath import mapping
