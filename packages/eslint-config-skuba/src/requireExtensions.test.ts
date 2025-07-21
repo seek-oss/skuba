@@ -36,18 +36,18 @@ import '../';
 import '../index.js';
 
 const asyncFunction = async () => {
-  // eslint-disable-next-line require-extensions/require-extensions
-  const dynamicImportTest = await import('./simple');
+  // @ts-expect-error - testing ESLint rule, intentionally missing extension
+  const dynamicImportTest = await import('./simple'); // eslint-disable-line require-extensions/require-extensions
   const validDynamicImportTest = await import('./simple.js');
 
-  // eslint-disable-next-line require-extensions/require-index
-  const indexFileDynamicImportTest = await import('./indexFile');
+  // @ts-expect-error - testing ESLint rule, intentionally missing extension
+  const indexFileDynamicImportTest = await import('./indexFile'); // eslint-disable-line require-extensions/require-index
   const validIndexFileDynamicImportTest = await import('./indexFile/index.js');
 
-  // eslint-disable-next-line require-extensions/require-extensions
-  const srcDynamicImportTest = await import('src/file');
+  // @ts-expect-error - testing ESLint rule, intentionally missing extension
+  const srcDynamicImportTest = await import('src/file'); // eslint-disable-line require-extensions/require-extensions
   const validSrcDynamicImportTest = await import('src/file.js');
 
-  // eslint-disable-next-line require-extensions/require-extensions
-  const bothDynamicImportTest = await import('./both');
+  // @ts-expect-error - testing ESLint rule, intentionally missing extension
+  const bothDynamicImportTest = await import('./both'); // eslint-disable-line require-extensions/require-extensions
 };
