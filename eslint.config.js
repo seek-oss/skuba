@@ -4,15 +4,6 @@ const skuba = require('eslint-config-skuba');
 
 module.exports = [
   {
-    files: ['**/*.ts'],
-    languageOptions: {
-      parserOptions: {
-        project: './tsconfig.json',
-        tsconfigRootDir: __dirname,
-      },
-    },
-  },
-  {
     ignores: [
       'integration/base/',
       'integration/format/',
