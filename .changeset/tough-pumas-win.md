@@ -2,10 +2,9 @@
 'skuba': major
 ---
 
-**lint:** Replace `skuba-dive/register` imports and migrate `src/` path aliases to TypeScript subpath imports as part of the ECMAScript Modules (ESM) migration:
+**lint:** Update Typescript configuration, replace `skuba-dive/register` imports and migrate `src/` path aliases to TypeScript subpath imports as part of the ECMAScript Modules (ESM) [migration](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html):
 
-1. **Removes `skuba-dive/register` imports**: Eliminates absolute and relative register imports (e.g., `./register`, `../register`)
-2. **Converts src/ aliases to subpath imports**: Transforms `import 'src/*'` statements to `import '#src/*'` using TypeScript's native subpath import mapping
+1. **Removes `skuba-dive/register` imports**: Handled by installing the latest skuba package and running `pnpm format` in your repo. This eliminates absolute and relative register imports (e.g., `./register`, `../register`), and enables `import '#src/*'` native TypeScript subpath imports.
 
    ```typescript
    // Before
@@ -16,31 +15,11 @@
    import accounts, { getAccountInfo } from '#src/services/accounts';
    ```
 
-3. **TypeScript configuration updates**: Uses `node16` module resolution for ESM import handling. Outputs ESM modules following `node18` standards, and configures workspace root directory for subpath aliasing:
+2. **TypeScript configuration updates**: Requires manual configuration for `package.json` and `tsconfig.json` following the [deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html#transitioning-to-esm). The base `skuba/config/tsconfig.json` is now using `node16` module resolution, and `node18` module.
 
-   ```diff
-   {
-     "compilerOptions": {
-   +   "customConditions": ["<%- serviceName %>/source"],
-       "incremental": true,
-       "isolatedModules": true,
-   -   "moduleResolution": "node",
-   +   "moduleResolution": "node16",
-   +   "module": "node18",
-       "resolveJsonModule": true,
-   +   "root": ".",
-       "noUnusedLocals": false,
-       "noUnusedParameters": false
-     },
-     "extends": "tsconfig-seek"
-   }
-   ```
+3. **bonus monorepo manual configuration:** Update `jest.config.ts` to tell Jest how to resolve `#src` imports to the actual file paths in your `src/` directory using `moduleNameMapper`.
 
-4. **package.json**: Follow the [guide](https://github.com/seek-oss/skuba/blob/main/docs/deep-dives/esm.md#2-replace-skuba-diveregister-with-subpath-imports) to update `package.json ` import paths
-
-5. **monorepo** Update `jest.config.ts` to handle the new subpath imports by adding appropriate `moduleNameMapper` entries. These mappings tell Jest how to resolve `#src` imports to the actual file paths in your `src/` directory.
-
-   Monorepo example:
+   Monorepo example with 2 projects `api` and `worker`:
 
    ```
      moduleNameMapper: {
