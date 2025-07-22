@@ -330,7 +330,7 @@ importers:
     dependencies:
       '@koa/bodyparser':
         specifier: ^6.0.0
-        version: 6.0.0(koa@2.16.1)
+        version: 6.0.0(koa@3.0.0)
       '@koa/router':
         specifier: ^13.0.0
         version: 13.1.1
@@ -362,8 +362,8 @@ importers:
         specifier: ^10.0.0
         version: 10.2.1
       koa:
-        specifier: ^2.16.1
-        version: 2.16.1
+        specifier: ^3.0.0
+        version: 3.0.0
       koa-compose:
         specifier: ^4.1.0
         version: 4.1.0
@@ -372,7 +372,7 @@ importers:
         version: 4.6.5(datadog-lambda-js@10.124.0)(hot-shots@10.2.1)
       seek-koala:
         specifier: ^7.0.0
-        version: 7.0.6(hot-shots@10.2.1)(koa@2.16.1)
+        version: 7.0.6(hot-shots@10.2.1)(koa@3.0.0)
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -3157,10 +3157,6 @@ packages:
   emojilib@2.4.0:
     resolution: {integrity: sha512-5U0rVMU5Y2n2+ykNLQqMoqklN9ICBT/KsvC1Gz6vqHbz2AXXGkG+Pm5rMWk/8Vjrr/mY9985Hi8DYzn1F09Nyw==}
 
-  encodeurl@1.0.2:
-    resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
-    engines: {node: '>= 0.8'}
-
   encodeurl@2.0.0:
     resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
     engines: {node: '>= 0.8'}
@@ -4422,14 +4418,6 @@ packages:
   koa-compose@4.1.0:
     resolution: {integrity: sha512-8ODW8TrDuMYvXRwra/Kh7/rJo9BtOfPc6qO8eAfC80CnCvSjSl0bkRM24X6/XBBEyj0v1nRUQ1LyOy3dbqOWXw==}
 
-  koa-convert@2.0.0:
-    resolution: {integrity: sha512-asOvN6bFlSnxewce2e/DK3p4tltyfC4VM7ZwuTuepI7dEQVcvpyFuBcEARu1+Hxg8DIwytce2n7jrZtRlPrARA==}
-    engines: {node: '>= 10'}
-
-  koa@2.16.1:
-    resolution: {integrity: sha512-umfX9d3iuSxTQP4pnzLOz0HKnPg0FaUUIKcye2lOiz3KPu1Y3M3xlz76dISdFPQs37P9eJz1wUpcTS6KDPn9fA==}
-    engines: {node: ^4.8.4 || ^6.10.1 || ^7.10.1 || >= 8.1.4}
-
   koa@3.0.0:
     resolution: {integrity: sha512-Usyqf1o+XN618R3Jzq4S4YWbKsRtPcGpgyHXD4APdGYQQyqQ59X+Oyc7fXHS2429stzLsBiDjj6zqqYe8kknfw==}
     engines: {node: '>= 18'}
@@ -5059,9 +5047,6 @@ packages:
   onetime@6.0.0:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
-
-  only@0.0.2:
-    resolution: {integrity: sha512-Fvw+Jemq5fjjyWz6CpKx6w9s7xxqo3+JCyM0WXWeCSOboZ8ABkyvP8ID4CZuChA/wxSx+XSJmdOm8rGVyJ1hdQ==}
 
   opentracing@0.14.7:
     resolution: {integrity: sha512-vz9iS7MJ5+Bp1URw8Khvdyw1H/hGvzHWlKQ7eRrQojSCDL1/SrWfrY9QebLw97n2deyRtzHRC3MkQfVNUCo91Q==}
@@ -7883,11 +7868,11 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@koa/bodyparser@6.0.0(koa@2.16.1)':
+  '@koa/bodyparser@6.0.0(koa@3.0.0)':
     dependencies:
       '@types/co-body': 6.1.3
       co-body: 6.2.0
-      koa: 2.16.1
+      koa: 3.0.0
       lodash.merge: 4.6.2
       type-is: 2.0.1
 
@@ -10070,8 +10055,6 @@ snapshots:
 
   emojilib@2.4.0: {}
 
-  encodeurl@1.0.2: {}
-
   encodeurl@2.0.0: {}
 
   encoding@0.1.13:
@@ -11745,39 +11728,6 @@ snapshots:
 
   koa-compose@4.1.0: {}
 
-  koa-convert@2.0.0:
-    dependencies:
-      co: 4.6.0
-      koa-compose: 4.1.0
-
-  koa@2.16.1:
-    dependencies:
-      accepts: 1.3.8
-      cache-content-type: 1.0.1
-      content-disposition: 0.5.4
-      content-type: 1.0.5
-      cookies: 0.9.1
-      debug: 4.4.1
-      delegates: 1.0.0
-      depd: 2.0.0
-      destroy: 1.2.0
-      encodeurl: 1.0.2
-      escape-html: 1.0.3
-      fresh: 0.5.2
-      http-assert: 1.5.0
-      http-errors: 1.8.1
-      is-generator-function: 1.1.0
-      koa-compose: 4.1.0
-      koa-convert: 2.0.0
-      on-finished: 2.4.1
-      only: 0.0.2
-      parseurl: 1.3.3
-      statuses: 1.5.0
-      type-is: 1.6.18
-      vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
-
   koa@3.0.0:
     dependencies:
       accepts: 1.3.8
@@ -12457,8 +12407,6 @@ snapshots:
   onetime@6.0.0:
     dependencies:
       mimic-fn: 4.0.0
-
-  only@0.0.2: {}
 
   opentracing@0.14.7: {}
 
@@ -13176,10 +13124,10 @@ snapshots:
       datadog-lambda-js: 10.124.0
       hot-shots: 10.2.1
 
-  seek-koala@7.0.6(hot-shots@10.2.1)(koa@2.16.1):
+  seek-koala@7.0.6(hot-shots@10.2.1)(koa@3.0.0):
     dependencies:
       http-errors: 1.8.1
-      koa: 2.16.1
+      koa: 3.0.0
     optionalDependencies:
       hot-shots: 10.2.1
 
