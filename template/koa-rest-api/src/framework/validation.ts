@@ -2,7 +2,7 @@ import { ErrorMiddleware } from 'seek-koala';
 import type * as z from 'zod/v4';
 import type * as core from 'zod/v4/core';
 
-import type { Context } from 'src/types/koa.js';
+import type { Context } from '#src/types/koa.js';
 
 type InvalidFields = Record<string, string>;
 

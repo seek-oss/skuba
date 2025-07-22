@@ -55,7 +55,7 @@ export const ensureTemplateCompletion = async ({
   include,
   manifest,
 }: Props): Promise<TemplateConfig> => {
-  const templateConfig = getTemplateConfig(destinationRoot);
+  const templateConfig = await getTemplateConfig(destinationRoot);
 
   if (templateConfig.fields.length === 0) {
     return templateConfig;
