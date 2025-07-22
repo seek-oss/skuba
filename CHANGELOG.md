@@ -1,5 +1,11 @@
 # skuba
 
+## 12.1.0
+
+### Minor Changes
+
+- **lint:** Narrow `publicHoistPattern` list in `pnpm-workspace.yaml` ([#1959](https://github.com/seek-oss/skuba/pull/1959))
+
 ## 12.0.2
 
 ### Patch Changes
