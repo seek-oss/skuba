@@ -41,9 +41,6 @@ importers:
       concurrently:
         specifier: ^9.0.0
         version: 9.2.0
-      dotenv:
-        specifier: ^16.0.0
-        version: 16.6.1
       ejs:
         specifier: ^3.1.6
         version: 3.1.10
