@@ -8,7 +8,7 @@ import type {
 import { datadog } from 'datadog-lambda-js';
 
 import { config } from 'src/config';
-import { logger, loggerContext, withRequest } from 'src/framework/logging';
+import { logger, lambdaContext, recordContext } from 'src/framework/logging';
 
 type Handler<Event, Output> = (
   event: Event,
@@ -30,18 +30,19 @@ export const createHandler = <Event extends SQSEvent, Output = unknown>(
   fn: (event: Event, ctx: LambdaContext) => Promise<Output>,
 ) =>
   withDatadog<Event>(async (event, ctx) => {
-    try {
-      withRequest(event, ctx);
-      const output = await fn(event, ctx);
+    lambdaContext.run({ awsRequestId: ctx.awsRequestId }, async () => {
+      try {
+        const output = await fn(event, ctx);
 
-      logger.debug('Function completed');
+        logger.debug('Function completed');
 
-      return output;
-    } catch (err) {
-      logger.error({ err }, 'Function failed');
+        return output;
+      } catch (err) {
+        logger.error({ err }, 'Function failed');
 
-      throw new Error('Function failed');
-    }
+        throw new Error('Function failed');
+      }
+    });
   });
 
 export const createBatchSQSHandler =
@@ -52,7 +53,7 @@ export const createBatchSQSHandler =
     const processRecord = (
       record: SQSRecord,
     ): Promise<SQSBatchItemFailure | undefined> =>
-      loggerContext.run({ sqsMessageId: record.messageId }, async () => {
+      recordContext.run({ sqsMessageId: record.messageId }, async () => {
         try {
           await fn(record, ctx);
           return;

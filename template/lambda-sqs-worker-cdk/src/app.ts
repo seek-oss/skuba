@@ -38,13 +38,13 @@ export const handler = createHandler<SQSEvent>(async (event, ctx) => {
   }
   logger.debug({ count }, 'Received jobs');
 
+  metricsClient.distribution('job.received', count);
+
   return recordHandler(event, ctx);
 });
 
 const recordHandler = createBatchSQSHandler(async (record, _ctx) => {
   const { body } = record;
-
-  metricsClient.distribution('job.received', 1);
 
   // TODO: this throws an error, which will cause the Lambda function to retry
   // the event and eventually send it to your dead-letter queue. If you don't
