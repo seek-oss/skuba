@@ -3,8 +3,8 @@ import 'aws-sdk-client-mock-jest';
 import { PublishCommand } from '@aws-sdk/client-sns';
 import { mockClient } from 'aws-sdk-client-mock';
 
-import { sns as snsClient } from 'src/services/aws';
-import * as jobScorer from 'src/services/jobScorer';
+import { sns as snsClient } from 'src/services/aws.js';
+import * as jobScorer from 'src/services/jobScorer.js';
 
 export const scoringService = {
   request: jest.fn(),

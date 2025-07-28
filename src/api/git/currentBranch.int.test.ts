@@ -1,9 +1,9 @@
 import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 
-import { currentBranch } from './currentBranch';
+import { currentBranch } from './currentBranch.js';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 // eslint-disable-next-line import-x/order
 import fs from 'fs-extra';

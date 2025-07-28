@@ -10,10 +10,13 @@ import {
   resolveConfig,
 } from 'prettier';
 
-import { crawlDirectory } from '../../utils/dir';
-import { type Logger, pluralise } from '../../utils/logging';
-import { getConsumerManifest } from '../../utils/manifest';
-import { formatPackage, parsePackage } from '../configure/processing/package';
+import { crawlDirectory } from '../../utils/dir.js';
+import { type Logger, pluralise } from '../../utils/logging.js';
+import { getConsumerManifest } from '../../utils/manifest.js';
+import {
+  formatPackage,
+  parsePackage,
+} from '../configure/processing/package.js';
 
 let languages: SupportLanguage[] | undefined;
 

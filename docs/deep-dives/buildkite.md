@@ -26,13 +26,13 @@ steps:
   - command: pnpm lint
     plugins:
       - ...
-      - docker#v5.12.0:
+      - docker#v5.13.0:
+          # Enable GitHub integrations.
           environment:
-            - BUILDKITE_AGENT_ACCESS_TOKEN
+            - GITHUB_API_TOKEN
+          mount-buildkite-agent: true
           propagate-environment: true
           volumes:
-            # Mount agent for Buildkite annotations.
-            - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
             # Mount cached dependencies.
             - /workdir/node_modules
 ```
@@ -45,8 +45,6 @@ services:
   app:
     volumes:
       - ./:/workdir
-      # Mount agent for Buildkite annotations.
-      - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
       # Mount cached dependencies.
       - /workdir/node_modules
 ```
@@ -59,8 +57,7 @@ steps:
     plugins:
       - ...
       - docker-compose#v5.10.0:
-          environment:
-            - BUILDKITE_AGENT_ACCESS_TOKEN
+          mount-buildkite-agent: true
           propagate-environment: true
           run: app
 ```

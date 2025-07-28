@@ -1,6 +1,6 @@
 import git from 'isomorphic-git';
 
-import { getOwnerAndRepo } from './remote';
+import { getOwnerAndRepo } from './remote.js';
 
 jest.mock('isomorphic-git');
 

@@ -4,7 +4,7 @@ import { stripVTControlCharacters as stripAnsi } from 'util';
 import type { TestResult } from '@jest/test-result';
 import dedent from 'ts-dedent';
 
-import type * as GitHub from '../../../../api/github';
+import type * as GitHub from '../../../../api/github/index.js';
 
 /**
  * Matches the first stack trace location in a Jest failure message.

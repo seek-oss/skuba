@@ -1,8 +1,8 @@
 import Router from '@koa/router';
 
-import { healthCheckHandler } from './healthCheck';
-import { jobRouter } from './jobs';
-import { smokeTestHandler } from './smokeTest';
+import { healthCheckHandler } from './healthCheck.js';
+import { jobRouter } from './jobs/index.js';
+import { smokeTestHandler } from './smokeTest.js';
 
 export const router = new Router()
   .get('/health', healthCheckHandler)

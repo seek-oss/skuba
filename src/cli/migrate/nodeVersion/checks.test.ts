@@ -4,13 +4,13 @@ import fs from 'fs-extra';
 jest.mock('find-up');
 jest.mock('fs-extra');
 
-import { log } from '../../../utils/logging';
+import { log } from '../../../utils/logging.js';
 
 import {
   isPatchableNodeVersion,
   isPatchableServerlessVersion,
   isPatchableSkubaType,
-} from './checks';
+} from './checks.js';
 
 jest.spyOn(log, 'warn');
 

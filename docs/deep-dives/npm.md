@@ -57,6 +57,7 @@ steps:
           environment:
             # Don't pass NPM_TOKEN to the container. It's only needed in docker-ecr-cache.
             - GITHUB_API_TOKEN
+          mount-buildkite-agent: true
           propagate-environment: true
 ```
 
@@ -128,7 +129,6 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \
    ```
 
    In order to avoid this, you could:
-
    - Reduce indirection with the YAML anchors, and put all environment variables inline in the step
    - Put `GET_NPM_TOKEN` in the `configs` section too
 

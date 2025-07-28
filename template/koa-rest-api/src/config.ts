@@ -32,7 +32,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   }),
 
   test: () => ({
-    logLevel: Env.string('LOG_LEVEL', { default: 'debug' }),
+    logLevel: 'debug',
     name: '<%- serviceName %>',
     version: 'test',
 

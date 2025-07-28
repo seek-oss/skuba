@@ -1,13 +1,13 @@
 import { PublishCommand } from '@aws-sdk/client-sns';
 import type { SQSBatchResponse } from 'aws-lambda';
 
-import { metricsClient } from 'src/framework/metrics';
-import { createCtx, createSqsEvent } from 'src/testing/handler';
-import { scoringService, sns } from 'src/testing/services';
-import { chance, mockJobPublishedEvent } from 'src/testing/types';
+import { metricsClient } from 'src/framework/metrics.js';
+import { createCtx, createSqsEvent } from 'src/testing/handler.js';
+import { scoringService, sns } from 'src/testing/services.js';
+import { chance, mockJobPublishedEvent } from 'src/testing/types.js';
 
-import * as app from './app';
-import { stdoutMock } from './framework/logging';
+import * as app from './app.js';
+import { stdoutMock } from './framework/logging.js';
 
 describe('app', () => {
   it('exports a handler', () => expect(app).toHaveProperty('handler'));
@@ -47,25 +47,15 @@ describe('handler', () => {
 
     expect(scoringService.request).toHaveBeenCalledTimes(1);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
+      { count: 1, level: 20, msg: 'Received jobs' },
       {
-        awsRequestId: '-',
-        count: 1,
-        level: 20,
-        msg: 'Received jobs',
-      },
-      {
-        awsRequestId: '-',
         level: 20,
         msg: 'Scored job',
         snsMessageId: expect.any(String),
         sqsMessageId: event.Records[0]!.messageId,
       },
-      {
-        awsRequestId: '-',
-        level: 20,
-        msg: 'Function completed',
-      },
+      { level: 20, msg: 'Function succeeded' },
     ]);
 
     expect(distribution.mock.calls).toEqual([
@@ -87,31 +77,20 @@ describe('handler', () => {
     });
 
     expect(stdoutMock.calls).toEqual([
+      { count: 2, level: 20, msg: 'Received jobs' },
       {
-        awsRequestId: '-',
-        count: 2,
-        level: 20,
-        msg: 'Received jobs',
-      },
-      {
-        awsRequestId: '-',
         level: 20,
         msg: 'Scored job',
         snsMessageId: expect.any(String),
         sqsMessageId: event.Records[0]!.messageId,
       },
       {
-        awsRequestId: '-',
         level: 20,
         msg: 'Scored job',
         snsMessageId: expect.any(String),
         sqsMessageId: event.Records[1]!.messageId,
       },
-      {
-        awsRequestId: '-',
-        level: 20,
-        msg: 'Function completed',
-      },
+      { level: 20, msg: 'Function completed' },
     ]);
   });
 
@@ -126,34 +105,23 @@ describe('handler', () => {
     });
 
     expect(stdoutMock.calls).toEqual([
+      { count: 2, level: 20, msg: 'Received jobs' },
       {
-        awsRequestId: '-',
-        count: 2,
-        level: 20,
-        msg: 'Received jobs',
-      },
-      {
-        awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           name: 'ZodError',
           type: 'ZodError',
-        }),
+        },
         level: 50,
         msg: 'Processing record failed',
         sqsMessageId: event.Records[0]!.messageId,
       },
       {
-        awsRequestId: '-',
         level: 20,
         msg: 'Scored job',
         snsMessageId: expect.any(String),
         sqsMessageId: event.Records[1]!.messageId,
       },
-      {
-        awsRequestId: '-',
-        level: 20,
-        msg: 'Function completed',
-      },
+      { level: 20, msg: 'Function completed' },
     ]);
   });
 
@@ -180,28 +148,18 @@ describe('handler', () => {
       batchItemFailures: [{ itemIdentifier: event.Records[0]!.messageId }],
     });
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
+      { count: 1, level: 20, msg: 'Received jobs' },
       {
-        awsRequestId: '-',
-        count: 1,
-        level: 20,
-        msg: 'Received jobs',
-      },
-      {
-        awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: err.message,
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Processing record failed',
         sqsMessageId: event.Records[0]!.messageId,
       },
-      {
-        awsRequestId: '-',
-        level: 20,
-        msg: 'Function completed',
-      },
+      { level: 20, msg: 'Function completed' },
     ]);
   });
 
@@ -216,25 +174,22 @@ describe('handler', () => {
       batchItemFailures: [{ itemIdentifier: event.Records[0]!.messageId }],
     });
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
-        awsRequestId: '-',
         count: 1,
         level: 20,
         msg: 'Received jobs',
       },
       {
-        awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: err.message,
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Processing record failed',
         sqsMessageId: event.Records[0]!.messageId,
       },
       {
-        awsRequestId: '-',
         level: 20,
         msg: 'Function completed',
       },
@@ -246,13 +201,32 @@ describe('handler', () => {
 
     await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
-        awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: 'Received 0 records',
           type: 'Error',
-        }),
+        },
+        level: 50,
+        msg: 'Function failed',
+      },
+    ]);
+  });
+
+  it('throws on multiple records', async () => {
+    const event = createSqsEvent([
+      JSON.stringify(jobPublished),
+      JSON.stringify(jobPublished),
+    ]);
+
+    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
+
+    expect(stdoutMock.calls).toMatchObject([
+      {
+        err: {
+          message: 'Received 2 records',
+          type: 'Error',
+        },
         level: 50,
         msg: 'Function failed',
       },

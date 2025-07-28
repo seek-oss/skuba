@@ -1,13 +1,13 @@
 import memfs, { vol } from 'memfs';
 
-import type { PatchConfig } from '../..';
-import { configForPackageManager } from '../../../../../../utils/packageManager';
+import { configForPackageManager } from '../../../../../../utils/packageManager.js';
+import type { PatchConfig } from '../../index.js';
 
-import { tryUpgradeESLint } from './upgradeESLint';
+import { tryUpgradeESLint } from './upgradeESLint.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 beforeEach(() => vol.reset());
 

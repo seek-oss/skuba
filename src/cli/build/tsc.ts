@@ -1,9 +1,9 @@
 import ts from 'typescript';
 
-import { exec } from '../../utils/exec';
-import type { Logger } from '../../utils/logging';
+import { exec } from '../../utils/exec.js';
+import type { Logger } from '../../utils/logging.js';
 
-import { parseTscArgs } from './args';
+import { parseTscArgs } from './args.js';
 
 const DEFAULT_ARGS = ['--project', 'tsconfig.build.json'] as const;
 

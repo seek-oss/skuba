@@ -1,4 +1,5 @@
 import fs from 'fs-extra';
+import ignoreFilter from 'ignore';
 import git, { findRoot } from 'isomorphic-git';
 
 import {
@@ -9,7 +10,7 @@ import {
   STAGE,
   UNMODIFIED,
   WORKDIR,
-} from './statusMatrix';
+} from './statusMatrix.js';
 
 type ChangedFileState = 'added' | 'modified' | 'deleted';
 export interface ChangedFile {
@@ -51,7 +52,11 @@ export const getChangedFiles = async ({
   ignore = [],
 }: ChangedFilesParameters): Promise<ChangedFile[]> => {
   const gitRoot = await findRoot({ fs, filepath: dir });
-  const allFiles = await git.statusMatrix({ fs, dir: gitRoot ?? dir });
+  const [allFiles, isLfs] = await Promise.all([
+    git.statusMatrix({ fs, dir: gitRoot ?? dir }),
+    createIsLfsFilter(gitRoot),
+  ]);
+
   return allFiles
     .filter(
       (row) =>
@@ -64,6 +69,30 @@ export const getChangedFiles = async ({
       (changedFile) =>
         !ignore.some(
           (i) => i.path === changedFile.path && i.state === changedFile.state,
-        ),
+        ) && !isLfs(changedFile.path),
     );
+};
+
+const createIsLfsFilter = async (
+  gitRoot: string | null,
+): Promise<(pathname: string) => boolean> => {
+  if (!gitRoot) {
+    return () => false;
+  }
+
+  const lfsFile = `${gitRoot}/.gitattributes`;
+  if (!(await fs.pathExists(lfsFile))) {
+    return () => false;
+  }
+
+  const filter = ignoreFilter().add(
+    (await fs.readFile(lfsFile, 'utf8'))
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => !l.startsWith('#') && l.includes('filter=lfs'))
+      .map((l) => l.split(/\s+/)[0])
+      .flatMap((l) => (l ? [l] : [])),
+  );
+
+  return (pathname) => filter.ignores(pathname);
 };

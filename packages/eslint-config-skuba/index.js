@@ -3,9 +3,20 @@ const extensions = require('eslint-config-seek/extensions');
 const eslintPluginYml = require('eslint-plugin-yml');
 const tseslint = require('typescript-eslint');
 
+const requireExtensionsPlugin = require('./requireExtensions.js');
+
 const { js: jsExtensions, ts: tsExtensions } = extensions;
 
 module.exports = [
+  ...requireExtensionsPlugin.configs.recommended.map((config) => ({
+    ...config,
+    files: [`**/*.{${tsExtensions}}`],
+    ignores: [
+      // Jest configuration files
+      '**/jest.config*',
+      '**/jest.setup*',
+    ],
+  })),
   {
     name: 'skuba/ignores',
     ignores: [

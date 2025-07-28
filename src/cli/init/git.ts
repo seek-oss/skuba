@@ -4,8 +4,8 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import simpleGit from 'simple-git';
 
-import * as Git from '../../api/git';
-import { log } from '../../utils/logging';
+import * as Git from '../../api/git/index.js';
+import { log } from '../../utils/logging.js';
 
 interface GitHubProject {
   orgName: string;

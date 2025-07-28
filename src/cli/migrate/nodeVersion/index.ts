@@ -3,14 +3,14 @@ import { inspect } from 'util';
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
-import { log } from '../../../utils/logging';
-import { createDestinationFileReader } from '../../configure/analysis/project';
+import { log } from '../../../utils/logging.js';
+import { createDestinationFileReader } from '../../configure/analysis/project.js';
 
 import {
   isPatchableNodeVersion,
   isPatchableServerlessVersion,
   isPatchableSkubaType,
-} from './checks';
+} from './checks.js';
 
 type FileSelector =
   | { files: string; file?: never }
@@ -18,7 +18,7 @@ type FileSelector =
 
 type SubPatch = FileSelector & {
   tests?: Array<(path: string) => Promise<boolean>>;
-  regex?: RegExp;
+  regex?: () => RegExp;
   replace: string;
 };
 
@@ -30,56 +30,56 @@ const subPatches = ({
   {
     files: '**/Dockerfile*',
 
-    regex:
+    regex: () =>
       /^FROM(.*) (public.ecr.aws\/docker\/library\/)?node:([0-9]+(?:\.[0-9]+(?:\.[0-9]+)?)?)(-[a-z0-9]+)?(@sha256:[a-f0-9]{64})?( .*)?$/gm,
     replace: `FROM$1 $2node:${nodeVersion}$4$6`,
   },
   {
     files: '**/Dockerfile*',
-    regex:
+    regex: () =>
       /^FROM(.*) gcr.io\/distroless\/nodejs\d+-debian(\d+)(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
     replace: `FROM$1 gcr.io/distroless/nodejs${nodeVersion}-debian$2$4$5$6`,
   },
 
   {
     files: '**/serverless*.y*ml',
-    regex: /\bnodejs\d+.x\b/gm,
+    regex: () => /\bnodejs\d+.x\b/gm,
     tests: [isPatchableServerlessVersion],
     replace: `nodejs${nodeVersion}.x`,
   },
   {
     files: '**/serverless*.y*ml',
-    regex: /\bnode\d+\b/gm,
+    regex: () => /\bnode\d+\b/gm,
     tests: [isPatchableServerlessVersion],
     replace: `node${nodeVersion}`,
   },
 
   {
     files: '**/infra/**/*.ts',
-    regex: /NODEJS_\d+_X/g,
+    regex: () => /NODEJS_\d+_X/g,
     replace: `NODEJS_${nodeVersion}_X`,
   },
   {
     files: '**/infra/**/*.ts',
-    regex: /(target:\s*'node)(\d+)(.+)$/gm,
+    regex: () => /(target:\s*'node)(\d+)(.+)$/gm,
     replace: `$1${nodeVersion}$3`,
   },
 
   {
     files: '**/.buildkite/*',
-    regex:
+    regex: () =>
       /(image: )(public.ecr.aws\/docker\/library\/)?(node:)[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
     replace: `$1$2$3${nodeVersion}$5`,
   },
   {
     files: '.node-version*',
-    regex: /(\d+(?:\.\d+)*)/g,
+    regex: () => /(\d+(?:\.\d+)*)/g,
     replace: `${nodeVersion}`,
   },
 
   {
     files: '**/package.json',
-    regex:
+    regex: () =>
       /(["']engines["']:\s*{[\s\S]*?["']node["']:\s*["']>=)(\d+(?:\.\d+)*)(['"]\s*})/gm,
     tests: [isPatchableServerlessVersion, isPatchableSkubaType],
     replace: `$1${nodeVersion}$3`,
@@ -87,20 +87,20 @@ const subPatches = ({
 
   {
     files: '**/tsconfig*.json',
-    regex: /("target":\s*")(ES\d+)"/gim,
+    regex: () => /("target":\s*")(ES\d+)"/gim,
     tests: [isPatchableServerlessVersion, isPatchableSkubaType],
     replace: `$1${ECMAScriptVersion}"`,
   },
   {
     files: '**/tsconfig*.json',
-    regex: /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
+    regex: () => /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
     tests: [isPatchableServerlessVersion, isPatchableSkubaType],
     replace: `$1$2${ECMAScriptVersion}$4$5`,
   },
 
   {
     files: '**/docker-compose*.y*ml',
-    regex:
+    regex: () =>
       /(image: )(public.ecr.aws\/docker\/library\/)?(node:)[0-9.]+(\.[^- \n]+)?(-[^ \n]+)?$/gm,
 
     replace: `$1$2$3${nodeVersion}$5`,
@@ -116,19 +116,19 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
   const readFile = createDestinationFileReader(dir);
   const paths = patch.file
     ? [patch.file]
-    : await glob(patch.files ?? [], { cwd: dir });
+    : await glob(patch.files ?? [], {
+        cwd: dir,
+        ignore: ['**/node_modules/**'],
+      });
 
   await Promise.all(
     paths.map(async (path) => {
-      if (path.includes('node_modules')) {
-        return;
-      }
       const contents = await readFile(path);
       if (!contents) {
         return;
       }
 
-      if (patch.regex && !patch.regex.test(contents)) {
+      if (patch.regex && !patch.regex().test(contents)) {
         return;
       }
 
@@ -160,11 +160,11 @@ const writePatchedContents = async ({
   path: string;
   contents: string;
   templated: string;
-  regex?: RegExp;
+  regex?: () => RegExp;
 }) =>
   await fs.promises.writeFile(
     path,
-    regex ? contents.replaceAll(regex, templated) : templated,
+    regex ? contents.replaceAll(regex(), templated) : templated,
   );
 
 const upgrade = async (versions: Versions, dir: string) => {

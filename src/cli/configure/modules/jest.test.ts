@@ -1,6 +1,6 @@
-import { defaultOpts, executeModule } from '../testing/module';
+import { defaultOpts, executeModule } from '../testing/module.js';
 
-import { jestModule } from './jest';
+import { jestModule } from './jest.js';
 
 describe('jestModule', () => {
   it('works from scratch', async () => {
@@ -242,14 +242,14 @@ export default Jest.mergePreset({
       );
 
       expect(outputFiles['jest.config.ts']).toMatchInlineSnapshot(`
-      "
-      import { Jest } from 'skuba';
+        "
+        import { Jest } from 'skuba';
 
-      export default Jest.mergePreset({
-        // Rest of config
-      });
-      "
-    `);
+        export default Jest.mergePreset({
+          // Rest of config
+        });
+        "
+      `);
       expect(outputFiles['jest.setup.ts']).toBeUndefined();
     },
   );

@@ -1,10 +1,10 @@
 import fs from 'fs-extra';
 
-import type { PatchConfig } from '../..';
-import * as packageAnalysis from '../../../../../configure/analysis/package';
-import * as projectAnalysis from '../../../../../configure/analysis/project';
+import * as packageAnalysis from '../../../../../configure/analysis/package.js';
+import * as projectAnalysis from '../../../../../configure/analysis/project.js';
+import type { PatchConfig } from '../../index.js';
 
-import { tryAddEmptyExports } from './addEmptyExports';
+import { tryAddEmptyExports } from './addEmptyExports.js';
 
 jest
   .spyOn(packageAnalysis, 'getDestinationManifest')
@@ -34,17 +34,17 @@ describe('tryAddEmptyExports', () => {
       });
 
       expect(writeFile.mock.calls.flat().join('\n')).toMatchInlineSnapshot(`
-      "~/project/jest.setup.ts
-      // jest.setup.ts
+        "~/project/jest.setup.ts
+        // jest.setup.ts
 
-      export {};
+        export {};
 
-      ~/project/jest.setup.int.ts
-      // jest.setup.int.ts
+        ~/project/jest.setup.int.ts
+        // jest.setup.int.ts
 
-      export {};
-      "
-    `);
+        export {};
+        "
+      `);
     });
 
     it('no-ops compliant Jest setup files', async () => {

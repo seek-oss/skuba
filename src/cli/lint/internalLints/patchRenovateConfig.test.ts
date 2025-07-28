@@ -2,12 +2,12 @@ import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
 
-import * as Git from '../../../api/git';
+import * as Git from '../../../api/git/index.js';
 
-import { tryPatchRenovateConfig } from './patchRenovateConfig';
-import type { PatchConfig } from './upgrade';
+import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
+import type { PatchConfig } from './upgrade/index.js';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 const JSON = `
 {

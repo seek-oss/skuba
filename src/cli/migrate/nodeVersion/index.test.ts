@@ -1,10 +1,10 @@
 import memfs, { vol } from 'memfs';
 
-import * as checks from './checks';
+import * as checks from './checks.js';
 
-import { nodeVersionMigration } from '.';
+import { nodeVersionMigration } from './index.js';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 jest.mock('fast-glob', () => ({
   glob: (pat: any, opts: any) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),

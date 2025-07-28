@@ -1,6 +1,6 @@
-import type { Patches } from '../..';
+import type { Patches } from '../../index.js';
 
-import { tryUpgradeNode } from './upgradeNode';
+import { tryUpgradeNode } from './upgradeNode.js';
 
 export const patches: Patches = [
   {

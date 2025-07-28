@@ -3,9 +3,9 @@ import memfs, { fs, vol } from 'memfs';
 
 import newGit from '../../../integration/git/new.json';
 
-import { getChangedFiles } from './getChangedFiles';
+import { getChangedFiles } from './getChangedFiles.js';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 beforeEach(() => {
   vol.reset();
@@ -123,4 +123,25 @@ it('should return an empty array if no files were changed', async () => {
   const files = await getChangedFiles({ dir });
 
   expect(files).toStrictEqual([]);
+});
+
+it('should ignore git-lfs files', async () => {
+  await fs.promises.writeFile(
+    '.gitattributes',
+    '*.pdf filter=lfs diff=lfs merge=lfs -text',
+  );
+  await git.add({ fs, dir, filepath: '.gitattributes' });
+  await git.commit({ fs, dir, message: 'initial commit', author });
+
+  await fs.promises.writeFile('file.pdf', 'content');
+  await fs.promises.writeFile('file.not-pdf', 'content');
+  await fs.promises.mkdir('nested');
+  await fs.promises.writeFile('nested/file.pdf', 'content');
+
+  const files = await getChangedFiles({
+    dir,
+    ignore: [],
+  });
+
+  expect(files).toStrictEqual([{ path: 'file.not-pdf', state: 'added' }]);
 });

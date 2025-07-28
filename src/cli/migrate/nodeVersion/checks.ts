@@ -1,9 +1,9 @@
 import findUp from 'find-up';
 import fs from 'fs-extra';
 import { coerce, lte, satisfies } from 'semver';
-import { type ZodRawShape, z } from 'zod';
+import * as z from 'zod/v4';
 
-import { log } from '../../../utils/logging';
+import { log } from '../../../utils/logging.js';
 
 const getParentFile = async (file: string, cwd: string = process.cwd()) => {
   const path = await findUp(file, { cwd });
@@ -16,7 +16,7 @@ const getParentFile = async (file: string, cwd: string = process.cwd()) => {
   };
 };
 
-export const extractFromParentPackageJson = async <T extends ZodRawShape>(
+export const extractFromParentPackageJson = async <T extends z.ZodRawShape>(
   schema: z.ZodObject<T>,
   currentPath: string,
 ) => {

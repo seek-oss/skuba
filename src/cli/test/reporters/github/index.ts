@@ -3,15 +3,15 @@ import { inspect } from 'util';
 import type { Reporter, TestContext } from '@jest/reporters';
 import type { AggregatedResult } from '@jest/test-result';
 
-import * as GitHub from '../../../../api/github';
 import {
   buildNameFromEnvironment,
   enabledFromEnvironment,
-} from '../../../../api/github/environment';
-import { log } from '../../../../utils/logging';
-import { throwOnTimeout } from '../../../../utils/wait';
+} from '../../../../api/github/environment.js';
+import * as GitHub from '../../../../api/github/index.js';
+import { log } from '../../../../utils/logging.js';
+import { throwOnTimeout } from '../../../../utils/wait.js';
 
-import { generateAnnotationEntries } from './annotations';
+import { generateAnnotationEntries } from './annotations.js';
 
 export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
   async onRunComplete(

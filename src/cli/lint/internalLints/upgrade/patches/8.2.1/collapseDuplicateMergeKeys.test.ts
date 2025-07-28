@@ -3,14 +3,14 @@ import fsp from 'fs/promises';
 
 import memfs, { vol } from 'memfs';
 
-import type { PatchConfig } from '../..';
-import { configForPackageManager } from '../../../../../../utils/packageManager';
+import { configForPackageManager } from '../../../../../../utils/packageManager.js';
+import type { PatchConfig } from '../../index.js';
 
-import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys';
+import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 jest.mock('fast-glob', () => ({
   glob: (pat: any, opts: any) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),

@@ -1,8 +1,8 @@
-import type { JobScorerInput, JobScorerOutput } from 'src/types/jobScorer';
+import type { JobScorerInput, JobScorerOutput } from 'src/types/jobScorer.js';
 import type {
   JobPublishedEvent,
   JobScoredEvent,
-} from 'src/types/pipelineEvents';
+} from 'src/types/pipelineEvents.js';
 
 export const jobPublishedEventToScorerInput = (
   record: JobPublishedEvent,

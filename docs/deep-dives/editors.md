@@ -13,7 +13,6 @@ parent: Deep dives
 ## Visual Studio Code
 
 1. Install the following community extensions:
-
    1. [ESLint (`dbaeumer.vscode-eslint`)](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
    1. [Prettier (`esbenp.prettier-vscode`)](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 

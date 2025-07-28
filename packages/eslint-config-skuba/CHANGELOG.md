@@ -1,5 +1,54 @@
 # eslint-config-skuba
 
+## 7.0.2
+
+### Patch Changes
+
+- **lint:** Add file extensions to relative index imports ([#1955](https://github.com/seek-oss/skuba/pull/1955))
+
+## 7.0.1
+
+### Patch Changes
+
+- **lint:** Prevent Jest config and setup files from being linted with extensions ([#1953](https://github.com/seek-oss/skuba/pull/1953))
+
+## 7.0.0
+
+### Major Changes
+
+- Enforce file extensions in imports ([#1937](https://github.com/seek-oss/skuba/pull/1937))
+
+  This enforces that file extensions be added to every import statement. This helps prepare for an eventual migration to ECMAScript Modules (ESM). You can read more about this in our [deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html).
+
+  > **Warning**: The initial lint after upgrading may take longer than usual to complete as the new rules need to analyze all import statements in your codebase.
+
+  > **Note**: This rule may not catch all cases when using TypeScript path aliases except for 'src' aliases
+
+  To opt out of the new rules, add the following to your `eslint.config.js`:
+
+  ```js
+  {
+    rules: {
+      'require-extensions/require-extensions': 'off',
+      'require-extensions/require-index': 'off',
+    },
+  }
+  ```
+
+  If you are depending on `eslint-config-skuba` without using skuba, you may need to add the following config to `jest.config.ts` for it to recognise imports with extensions.
+
+  ```ts
+    moduleNameMapper: {
+      '^(\\.{1,2}/.*)\\.js$': '$1',
+    },
+  ```
+
+## 6.1.1
+
+### Patch Changes
+
+- **deps:** eslint-config-seek 14.5.3 ([#1916](https://github.com/seek-oss/skuba/pull/1916))
+
 ## 6.1.0
 
 ### Minor Changes
@@ -59,7 +108,6 @@
   This plugin is [currently incompatible](https://github.com/microsoft/tsdoc/issues/374) with our config.
 
 - Revert to modern JavaScript language option defaults ([#1769](https://github.com/seek-oss/skuba/pull/1769))
-
   - `ecmaVersion: 5 => latest`
   - `sourceType: script => module`
 
@@ -78,7 +126,6 @@
 - ESLint 9 + `typescript-eslint` 8 + `eslint-config-seek` 14 ([#1537](https://github.com/seek-oss/skuba/pull/1537))
 
   This major upgrade bundles the following changes:
-
   - Migration to flat config format
 
     See the [migration guide](https://eslint.org/docs/latest/use/configure/migration-guide) for more information.
@@ -92,7 +139,6 @@
     To migrate, replace references to `eslint-plugin-import` with `eslint-plugin-import-x`, and `import/` rules with `import-x/`.
 
   Wider changes may be necessary if your project has a custom ESLint configuration. Refer to the following resources to get started:
-
   - [ESLint 9](https://eslint.org/docs/latest/use/migrate-to-9.0.0)
   - [`typescript-eslint` 8](https://typescript-eslint.io/blog/announcing-typescript-eslint-v8)
 
@@ -119,7 +165,6 @@
 - **deps:** eslint-config-seek 13 + typescript-eslint ^7.2.0 ([#1487](https://github.com/seek-oss/skuba/pull/1487))
 
   These major upgrades bump our minimum requirements:
-
   - Node.js >=18.18.0
   - ESLint >=8.56.0
   - TypeScript >=4.7.5

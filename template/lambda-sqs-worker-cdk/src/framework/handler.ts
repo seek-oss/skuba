@@ -7,8 +7,8 @@ import type {
 } from 'aws-lambda';
 import { datadog } from 'datadog-lambda-js';
 
-import { config } from 'src/config';
-import { logger, lambdaContext, recordContext } from 'src/framework/logging';
+import { config } from 'src/config.js';
+import { logger, lambdaContext, recordContext } from 'src/framework/logging.js';
 
 type Handler<Event, Output> = (
   event: Event,

@@ -4,11 +4,11 @@ import path from 'path';
 
 import memfs, { vol } from 'memfs';
 
-import type { Logger } from '../../../utils/logging';
+import type { Logger } from '../../../utils/logging.js';
 
-import { detectBadCodeowners } from './detectBadCodeowners';
+import { detectBadCodeowners } from './detectBadCodeowners.js';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 jest.mock('../../..', () => ({
   Git: {

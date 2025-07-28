@@ -1,9 +1,9 @@
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import type { PatchConfig } from '../..';
+import type { PatchConfig } from '../../index.js';
 
-import { tryPatchPnpmDockerImages } from './patchPnpmDockerImages';
+import { tryPatchPnpmDockerImages } from './patchPnpmDockerImages.js';
 
 jest.mock('fast-glob');
 jest.mock('fs-extra');

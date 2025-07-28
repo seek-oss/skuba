@@ -1,7 +1,7 @@
-import { agentFromRouter } from 'src/testing/server';
-import { mockJobInput } from 'src/testing/types';
+import { agentFromRouter } from 'src/testing/server.js';
+import { mockJobInput } from 'src/testing/types.js';
 
-import { jobRouter } from '.';
+import { jobRouter } from './index.js';
 
 const agent = agentFromRouter(jobRouter);
 
@@ -27,7 +27,7 @@ describe('postJobHandler', () => {
       .expect(422)
       .expect(({ text }) =>
         expect(text).toMatchInlineSnapshot(
-          `"{"message":"Input validation failed","invalidFields":{"/hirer":"Required"}}"`,
+          `"{"message":"Input validation failed","invalidFields":{"/hirer":"Invalid input: expected object, received undefined"}}"`,
         ),
       );
   });

@@ -1,10 +1,10 @@
 import type { SQSEvent } from 'aws-lambda';
 
-import { createCtx } from 'src/testing/handler';
-import { chance } from 'src/testing/types';
+import { createCtx } from 'src/testing/handler.js';
+import { chance } from 'src/testing/types.js';
 
-import { createHandler } from './handler';
-import { logger, stdoutMock } from './logging';
+import { createHandler } from './handler.js';
+import { logger, stdoutMock } from './logging.js';
 
 describe('createHandler', () => {
   const ctx = createCtx();
@@ -27,7 +27,7 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).resolves.toBe(output);
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
         level: 20,
@@ -36,7 +36,7 @@ describe('createHandler', () => {
       {
         awsRequestId: '-',
         level: 20,
-        msg: 'Function completed',
+        msg: 'Function succeeded',
       },
     ]);
   });
@@ -48,13 +48,13 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: err.message,
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Function failed',
       },
@@ -70,13 +70,13 @@ describe('createHandler', () => {
 
     await expect(handler(input, ctx)).rejects.toThrow('Function failed');
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
-        err: expect.objectContaining({
+        err: {
           message: err.message,
           type: 'Error',
-        }),
+        },
         level: 50,
         msg: 'Function failed',
       },

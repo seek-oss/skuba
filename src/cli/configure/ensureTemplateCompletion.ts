@@ -3,22 +3,22 @@ import path from 'path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import type { NormalizedReadResult } from 'read-pkg-up';
-import { z } from 'zod';
+import * as z from 'zod/v4';
 
-import { copyFiles, createEjsRenderer } from '../../utils/copy';
-import { log } from '../../utils/logging';
+import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
+import { log } from '../../utils/logging.js';
 import {
   type TemplateConfig,
   ensureTemplateConfigDeletion,
-} from '../../utils/template';
-import { hasStringProp } from '../../utils/validation';
+} from '../../utils/template.js';
+import { hasStringProp } from '../../utils/validation.js';
 import {
   getTemplateConfig,
   readJSONFromStdIn,
   runForm,
-} from '../init/getConfig';
+} from '../init/getConfig.js';
 
-import { formatPackage } from './processing/package';
+import { formatPackage } from './processing/package.js';
 
 interface Props {
   destinationRoot: string;
@@ -26,7 +26,9 @@ interface Props {
   manifest: NormalizedReadResult;
 }
 
-const templateDataSchema = z.object({ templateData: z.record(z.string()) });
+const templateDataSchema = z.object({
+  templateData: z.record(z.string(), z.string()),
+});
 
 const getTemplateDataFromStdIn = async (
   templateConfig: TemplateConfig,

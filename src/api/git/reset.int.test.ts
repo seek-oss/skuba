@@ -3,9 +3,9 @@ import memfs, { fs, vol } from 'memfs';
 
 import newGit from '../../../integration/git/new.json';
 
-import { reset } from './reset';
+import { reset } from './reset.js';
 
-jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
 beforeEach(() => {
   vol.reset();

@@ -1,5 +1,165 @@
 # skuba
 
+## 12.0.2
+
+### Patch Changes
+
+- **lint:** Add file extensions to relative index imports ([#1955](https://github.com/seek-oss/skuba/pull/1955))
+
+## 12.0.1
+
+### Patch Changes
+
+- **lint:** Prevent Jest config and setup files from being linted with extensions ([#1953](https://github.com/seek-oss/skuba/pull/1953))
+
+## 12.0.0
+
+### Major Changes
+
+- **deps:** eslint-config-skuba 7 ([#1937](https://github.com/seek-oss/skuba/pull/1937))
+
+  This enforces that file extensions be added to every import statement. This helps prepare for an eventual migration to ECMAScript Modules (ESM). You can read more about this in our [deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html).
+
+  > **Warning**: The initial lint after upgrading may take longer than usual to complete as the new rules need to analyze all import statements in your codebase.
+
+  > **Note**: This rule may not catch all cases when using TypeScript path aliases except for 'src' aliases
+
+  To opt out of the new rules, add the following to your `eslint.config.js`:
+
+  ```js
+  {
+    rules: {
+      'require-extensions/require-extensions': 'off',
+      'require-extensions/require-index': 'off',
+    },
+  }
+  ```
+
+  If you are applying a custom `moduleNameMapper` to your Jest config, you may need to add the following to it for it to recognise imports with extensions.
+
+  ```ts
+    moduleNameMapper: {
+      '^(\\.{1,2}/.*)\\.js$': '$1',
+    },
+  ```
+
+### Minor Changes
+
+- **test:** Add support for imports using file extensions ([#1933](https://github.com/seek-oss/skuba/pull/1933))
+
+### Patch Changes
+
+- **template:** Use `mount-buildkite-agent` for Docker Buildkite plugins ([#1944](https://github.com/seek-oss/skuba/pull/1944))
+
+  Previously, our templated Buildkite pipelines directly mounted `/usr/bin/buildkite-agent` for [Buildkite annotations](https://seek-oss.github.io/skuba/docs/deep-dives/buildkite.html#buildkite-annotations). This sidestepped a SEEK-specific [`buildkite-signed-pipeline`](https://github.com/buildkite/buildkite-signed-pipeline) wrapper that was not compatible with the default BusyBox Ash shell on Alpine Linux. Projects can now revert to the `mount-buildkite-agent` option with [signed pipelines](https://buildkite.com/docs/agent/v3/signed-pipelines) built in to the Buildkite agent.
+
+  For the [Docker Buildkite plugin](https://github.com/buildkite-plugins/docker-buildkite-plugin/blob/v5.13.0/README.md#mount-buildkite-agent-optional-boolean):
+
+  ```diff
+  # .buildkite/pipeline.yml
+  steps:
+    - commands:
+        - pnpm test
+        - pnpm lint
+      plugins:
+        - *docker-ecr-cache
+        - docker#v5.13.0:
+            environment:
+  -           - BUILDKITE_AGENT_ACCESS_TOKEN
+              - GITHUB_API_TOKEN
+  +         mount-buildkite-agent: true
+            propagate-environment: true
+            volumes:
+  -           # Mount agent for Buildkite annotations.
+  -           - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+              # Mount cached dependencies.
+              - /workdir/node_modules
+
+  ```
+
+  For the [Docker Compose Buildkite plugin](https://github.com/buildkite-plugins/docker-compose-buildkite-plugin/blob/v5.10.0/README.md#mount-buildkite-agent-run-only-boolean):
+
+  ```diff
+  # docker-compose.yml
+  services:
+    app:
+  -   environment:
+  -     - BUILDKITE_AGENT_ACCESS_TOKEN
+  -     - GITHUB_API_TOKEN
+      image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}
+      init: true
+      volumes:
+        - ./:/workdir
+  -     # Mount agent for Buildkite annotations.
+  -     - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+        # Mount cached dependencies.
+        - /workdir/node_modules
+  ```
+
+  ```diff
+  # .buildkite/pipeline.yml
+  steps:
+    - commands:
+        - pnpm test
+        - pnpm lint
+      plugins:
+        - *docker-ecr-cache
+        - docker-compose#v5.10.0:
+  +         environment:
+  +           - GITHUB_API_TOKEN
+  +         mount-buildkite-agent: true
+            propagate-environment: true
+            run: app
+  ```
+
+- **lint:** Avoid committing unchanged git-lfs files ([#1943](https://github.com/seek-oss/skuba/pull/1943))
+
+  [Autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) on repositories using git-lfs can result in committing unchanged files, reverting lfs-tracked files to "normal" files. This is because of an underlying support for git-lfs in skuba's git library.
+
+  This change treats all git-lfs files as unchanged, and so will never be committed.
+
+## 11.1.0
+
+### Minor Changes
+
+- **deps:** Jest 30 ([#1905](https://github.com/seek-oss/skuba/pull/1905))
+
+  This major release includes breaking changes. See the [Jest 30](https://jestjs.io/blog/2025/06/04/jest-30) announcement for more information.
+
+  Notable changes that may affect your tests:
+  - **Updated expect aliases**: Expect aliases have been removed which may affect your test assertions. Please run `skuba format` to update your test files automatically.
+  - **Updated snapshot printing**: Jest have updated the way snapshots are printed, which may require you to update your snapshot tests. Some snapshots may remain poorly indented, and be updated over time when regenerated. You may opt to remove all snapshots (e.g. replace `toMatchInlineSnapshot(...)` with `toMatchInlineSnapshot()` and re-run the tests with `-u`).
+
+  In this release, we have enabled the [global cleanup](https://jestjs.io/blog/2025/06/04/jest-30#globals-cleanup-between-test-files) feature by default. This automatically cleans up global state between test files, helping to prevent memory leaks and ensure test isolation.
+
+  If you need to revert to the previous behavior, you can configure the `globalsCleanup` option in your `jest.config.ts` file:
+
+  ```ts
+  export default Jest.mergePreset({
+    testEnvironmentOptions: {
+      globalsCleanup: 'soft', // Jest default or `'off'` to disable completely
+    },
+  });
+  ```
+
+- **deps:** prettier ~3.6.0 ([#1935](https://github.com/seek-oss/skuba/pull/1935))
+
+### Patch Changes
+
+- **template/\*:** Migrate to Zod 4 ([#1930](https://github.com/seek-oss/skuba/pull/1930))
+
+- **migrate:** Improve performance when scanning the filesystem ([#1928](https://github.com/seek-oss/skuba/pull/1928))
+
+- **migrate:** Fix a bug which was resulting in some missed changes in `skuba migrate` ([#1929](https://github.com/seek-oss/skuba/pull/1929))
+
+- **deps:** eslint-config-skuba 6.1.1 ([#1916](https://github.com/seek-oss/skuba/pull/1916))
+
+- **template/\*:** Replace logger spies with [`@seek/logger` destination mocks](https://github.com/seek-oss/logger/blob/master/docs/testing.md) ([#1923](https://github.com/seek-oss/skuba/pull/1923))
+
+- **deps:** @octokit/rest ^22.0.0 ([#1919](https://github.com/seek-oss/skuba/pull/1919))
+
+- **init:** Use pnpm by default ([#1910](https://github.com/seek-oss/skuba/pull/1910))
+
 ## 11.0.1
 
 ### Patch Changes
@@ -41,7 +201,6 @@ Key changes of this version:
   This change follows the `pnpm` recommendation in `pnpm` version 10.
 
   As part of this change:
-
   - `.npmrc` is back in **skuba**’s managed `.gitignore` section
   - **skuba** will attempt to delete `.npmrc` and migrate its contents to `pnpm-workspace.yaml`. If any custom settings are found, they will be added but commented out for you to review and fix.
   - **skuba** will attempt to migrate references to `.npmrc` in Buildkite pipelines and Dockerfiles
@@ -160,7 +319,6 @@ Key changes of this version:
   **skuba** may not be able to upgrade all projects. Check your project for files that may have been missed, review and test the modified code as appropriate before releasing to production, and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
 
   Node.js 22 includes breaking changes. For more information on the upgrade, refer to:
-
   - The Node.js [release notes][node-22]
   - The AWS [release announcement][aws-22] for the Lambda `nodejs22.x` runtime update
 
@@ -278,7 +436,6 @@ Read the full changelog:
 - **deps:** ESLint 9 + `typescript-eslint` 8 ([#1537](https://github.com/seek-oss/skuba/pull/1537))
 
   This major upgrade bundles the following changes:
-
   - Migration to flat config format
 
     `skuba format` will attempt to migrate your existing `.eslintignore` and `.eslintrc.js` files to a flat `eslint.config.js` file.
@@ -294,7 +451,6 @@ Read the full changelog:
     To migrate, replace references to `eslint-plugin-import` with `eslint-plugin-import-x`, and `import/` rules with `import-x/`.
 
   Wider changes may be necessary if your project has a custom ESLint configuration. Refer to the following resources to get started:
-
   - [ESLint 9](https://eslint.org/docs/latest/use/migrate-to-9.0.0)
   - [`typescript-eslint` 8](https://typescript-eslint.io/blog/announcing-typescript-eslint-v8)
 
@@ -303,7 +459,6 @@ Read the full changelog:
   `skuba node` and `skuba start` now use `tsx` instead of `ts-node` to execute TypeScript files.
 
   `tsx` improves support for ESM features like dynamic [`import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import)s. However, if you use its REPL by running `skuba node` without any arguments, there are a couple regressions to note:
-
   - Static [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) declarations are no longer supported. Use `require` and `await import()` instead.
   - Pasting code into the editor may be more finicky by default. Consider using [`.editor`](https://nodejs.org/en/learn/command-line/how-to-use-the-nodejs-repl#dot-commands) mode.
 
@@ -473,7 +628,6 @@ Read the full changelog:
   https://github.com/compose-spec/compose-spec/blob/master/04-version-and-name.md
 
 - **template/\*-rest-api:** Clean up templated environment variables ([#1562](https://github.com/seek-oss/skuba/pull/1562))
-
   - `AWS_NODEJS_CONNECTION_REUSE_ENABLED` is no longer required with AWS SDK V3.
   - The `env` boilerplate in Gantry values files was largely unnecessary and confusing.
 
@@ -672,7 +826,6 @@ In the spirit of upgrades, we recently refreshed our [ARM64 migration guide](htt
   skuba might not be able to upgrade all projects, so please check your project for any files that skuba missed. It's possible that skuba will modify a file incorrectly, in which case please [open an issue](https://github.com/seek-oss/skuba/issues/new).
 
   Node.js 20 comes with its own breaking changes, so please read the [Node.js 20 release notes](https://nodejs.org/en/blog/announcements/v20-release-announce) alongside the skuba release notes. In addition,
-
   - For AWS Lambda runtime updates to `nodejs20.x`, consider reading the [release announcement](https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/) as there are some breaking changes with this upgrade.
   - You may need to upgrade your versions of CDK and Serverless as appropriate to support nodejs20.x.
 
@@ -882,7 +1035,6 @@ Continue reading for more details on these changes and other improvements in thi
 - **template:** Update to Node 20 ([#1317](https://github.com/seek-oss/skuba/pull/1317))
 
   Consider upgrading the Node.js version for your project across:
-
   - `.nvmrc`
   - `package.json#/engines/node`
   - `serverless.yml`
@@ -1176,7 +1328,6 @@ Continue reading for more details on these changes and other improvements in thi
   Node.js 16 will reach end of life by September 2023. We have aligned our version support with [sku 12](https://github.com/seek-oss/sku/releases/tag/sku%4012.0.0).
 
   Consider upgrading the Node.js version for your project across:
-
   - `.nvmrc`
   - `package.json#/engines/node`
   - `@types/node` package version
@@ -1245,7 +1396,6 @@ Continue reading for more details on these changes and other improvements in thi
   ```
 
   This will instruct skuba to copy the files matching the list of globs to the output directory/ies, preserving the directory structure from the source:
-
   - for `skuba build-package` it will copy them to `lib-commonjs` and `lib-es2015`
   - for `skuba build` it will copy them to `tsconfig.json#/compilerOptions.outDir` (`lib` by default)
 
@@ -1339,7 +1489,6 @@ Continue reading for more details on these changes and other improvements in thi
   Node.js 14 will reach end of life by April 2023.
 
   Consider upgrading the Node.js version for your project across:
-
   - `.nvmrc`
   - `package.json#/engines/node`
   - CI/CD configuration (`.buildkite/pipeline.yml`, `Dockerfile`, etc.)
@@ -1390,7 +1539,6 @@ Continue reading for more details on these changes and other improvements in thi
   ```
 
   A more detailed explanation can be found in the below links:
-
   1. <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout>
   2. <https://nodejs.org/docs/latest-v18.x/api/http.html#serverkeepalivetimeout>
 
@@ -1445,7 +1593,6 @@ Continue reading for more details on these changes and other improvements in thi
 - **lint:** Exclude internal files from autofix commits ([#1074](https://github.com/seek-oss/skuba/pull/1074))
 
   `skuba lint` now avoids committing the following internal files in a [GitHub autofix](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes):
-
   - `.npmrc`
   - `Dockerfile-incunabulum`
 
@@ -2129,7 +2276,6 @@ Continue reading for more details on these changes and other improvements in thi
   Node.js 12 will reach end of life by April 2022. The `semantic-release` package and stable `--enable-source-maps` flag necessitate this new minimum version.
 
   Consider upgrading the Node.js version for your project across:
-
   - `.nvmrc`
   - `package.json#/engines/node`
   - CI/CD configuration (`.buildkite/pipeline.yml`, `Dockerfile`, etc.)
@@ -2403,7 +2549,6 @@ Continue reading for more details on these changes and other improvements in thi
 - **deps:** eslint-config-skuba 1.0.12 ([#623](https://github.com/seek-oss/skuba/pull/623))
 
   This adds a couple new linting rules:
-
   - [jest/prefer-expect-resolves](https://github.com/jest-community/eslint-plugin-jest/blob/v25.2.2/docs/rules/prefer-expect-resolves.md)
   - [jest/prefer-to-be](https://github.com/jest-community/eslint-plugin-jest/blob/v25.2.2/docs/rules/prefer-to-be.md)
 
@@ -2851,7 +2996,6 @@ Continue reading for more details on these changes and other improvements in thi
 - **node:** Add command ([#298](https://github.com/seek-oss/skuba/pull/298))
 
   `skuba node` lets you run a TypeScript source file, or open a REPL if none is provided:
-
   - `skuba node src/some-cli-script.ts`
   - `skuba node`
 
@@ -3272,7 +3416,6 @@ Continue reading for more details on these changes and other improvements in thi
 - **configure:** Replace relocated dependencies ([#54](https://github.com/seek-oss/skuba/pull/54))
 
   `skuba configure` now replaces the following dependencies and updates their import paths via naive find-and-replace:
-
   - `@seek/koala → seek-koala`
   - `@seek/node-datadog-custom-metrics → seek-datadog-custom-metrics`
   - `@seek/skuba → skuba`
@@ -3358,7 +3501,6 @@ Continue reading for more details on these changes and other improvements in thi
   This upgrade introduces stricter rules around `any` and `object` usage for type safety.
 
   Consider the following alternatives:
-
   - Use `unknown` for a value whose type is truly unknown. This is a type-safe alternative to `any` that the TypeScript ecosystem is moving towards.
 
     ```diff

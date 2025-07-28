@@ -1,7 +1,7 @@
-import * as execModule from '../../utils/exec';
-import { log } from '../../utils/logging';
+import * as execModule from '../../utils/exec.js';
+import { log } from '../../utils/logging.js';
 
-import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate';
+import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate.js';
 
 const exec = jest.spyOn(execModule, 'exec');
 const hasCommand = jest.spyOn(execModule, 'hasCommand');

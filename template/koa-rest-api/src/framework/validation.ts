@@ -1,7 +1,8 @@
 import { ErrorMiddleware } from 'seek-koala';
-import { ZodIssueCode, type z } from 'zod';
+import type * as z from 'zod/v4';
+import type * as core from 'zod/v4/core';
 
-import type { Context } from 'src/types/koa';
+import type { Context } from 'src/types/koa.js';
 
 type InvalidFields = Record<string, string>;
 
@@ -35,42 +36,39 @@ type InvalidFields = Record<string, string>;
  * @see [union error example](./validation.test.ts)
  */
 const parseInvalidFieldsFromError = (err: z.ZodError): InvalidFields =>
-  Object.fromEntries(parseTuples(err, {}));
+  Object.fromEntries(parseTuples(err.issues));
 
 const parseTuples = (
-  { errors }: z.ZodError,
-  unions: Record<number, number[]>,
+  errors: core.$ZodIssue[],
+  basePath: Array<string | number | symbol> = [],
+  unions: Record<number, number[]> = {},
 ): Array<readonly [string, string]> =>
   errors.flatMap((issue) => {
-    if (issue.code === ZodIssueCode.invalid_union) {
-      return issue.unionErrors.flatMap((err, idx) =>
-        parseTuples(err, {
+    if (issue.code === 'invalid_union') {
+      return issue.errors.flatMap((err, idx) =>
+        parseTuples(err, issue.path, {
           ...unions,
           [issue.path.length]: [...(unions[issue.path.length] ?? []), idx],
         }),
       );
     }
 
-    const path = ['', ...issue.path]
+    const path = ['', ...basePath, ...issue.path]
       .map((prop, idx) => [prop, ...(unions[idx] ?? [])].join('~union'))
       .join('/');
 
     return [[path, issue.message]] as const;
   });
 
-export const validate = <
-  Output,
-  Def extends z.ZodTypeDef = z.ZodTypeDef,
-  Input = Output,
->({
+export const validate = <T extends z.ZodType>({
   ctx,
   input,
   schema,
 }: {
   ctx: Context;
   input: unknown;
-  schema: z.ZodSchema<Output, Def, Input>;
-}): Output => {
+  schema: T;
+}): z.infer<T> => {
   const parseResult = schema.safeParse(input);
   if (parseResult.success === false) {
     const invalidFields = parseInvalidFieldsFromError(parseResult.error);
@@ -85,15 +83,11 @@ export const validate = <
   return parseResult.data;
 };
 
-export const validateRequestBody = <
-  Output,
-  Def extends z.ZodTypeDef = z.ZodTypeDef,
-  Input = Output,
->(
+export const validateRequestBody = <T extends z.ZodType>(
   ctx: Context,
-  schema: z.ZodSchema<Output, Def, Input>,
-): Output =>
-  validate<Output, Def, Input>({
+  schema: T,
+): z.infer<T> =>
+  validate({
     ctx,
     input: ctx.request.body as unknown,
     schema,

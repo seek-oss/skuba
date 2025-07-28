@@ -2,7 +2,7 @@ import {
   apiTokenFromEnvironment,
   buildNameFromEnvironment,
   enabledFromEnvironment,
-} from './environment';
+} from './environment.js';
 
 describe('buildNameFromEnvironment', () => {
   it.each`
