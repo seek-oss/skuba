@@ -83,7 +83,6 @@
     "@types/node": "^22.0.0",
     "chalk": "^4.1.0",
     "concurrently": "^9.0.0",
-    "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "enquirer": "^2.3.6",
     "esbuild": "~0.25.0",

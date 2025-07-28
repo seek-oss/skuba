@@ -16,8 +16,8 @@ export const node = async () => {
 
   const commonArgs = [
     ...args.node,
-    '--require',
-    require.resolve('dotenv/config'),
+    '--env-file-if-exists',
+    '.env',
     '--require',
     require.resolve('tsconfig-paths/register'),
   ];
