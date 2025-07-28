@@ -8,7 +8,7 @@ import type {
 import { datadog } from 'datadog-lambda-js';
 
 import { config } from 'src/config.js';
-import { logger, lambdaContext, recordContext } from 'src/framework/logging.js';
+import { lambdaContext, logger, recordContext } from 'src/framework/logging.js';
 
 type Handler<Event, Output> = (
   event: Event,

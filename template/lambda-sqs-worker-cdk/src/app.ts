@@ -3,7 +3,7 @@ import 'skuba-dive/register';
 import { isLambdaHook } from '@seek/aws-codedeploy-hooks';
 import type { SQSEvent } from 'aws-lambda';
 
-import { createHandler, createBatchSQSHandler } from 'src/framework/handler.js';
+import { createBatchSQSHandler, createHandler } from 'src/framework/handler.js';
 import { logger } from 'src/framework/logging.js';
 import { metricsClient } from 'src/framework/metrics.js';
 import { validateJson } from 'src/framework/validation.js';
