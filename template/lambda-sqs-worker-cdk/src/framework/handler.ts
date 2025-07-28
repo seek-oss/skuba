@@ -34,7 +34,7 @@ export const createHandler = <Event extends SQSEvent, Output = unknown>(
       try {
         const output = await fn(event, ctx);
 
-        logger.debug('Function completed');
+        logger.debug({ output }, 'Function completed');
 
         return output;
       } catch (err) {
