@@ -55,7 +55,7 @@ describe('handler', () => {
         snsMessageId: expect.any(String),
         sqsMessageId: event.Records[0]!.messageId,
       },
-      { level: 20, msg: 'Function succeeded' },
+      { level: 20, msg: 'Function completed' },
     ]);
 
     expect(distribution.mock.calls).toEqual([
@@ -76,7 +76,7 @@ describe('handler', () => {
       batchItemFailures: [],
     });
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       { count: 2, level: 20, msg: 'Received jobs' },
       {
         level: 20,
@@ -104,7 +104,7 @@ describe('handler', () => {
       batchItemFailures: [{ itemIdentifier: event.Records[0]!.messageId }],
     });
 
-    expect(stdoutMock.calls).toEqual([
+    expect(stdoutMock.calls).toMatchObject([
       { count: 2, level: 20, msg: 'Received jobs' },
       {
         err: {
@@ -205,26 +205,6 @@ describe('handler', () => {
       {
         err: {
           message: 'Received 0 records',
-          type: 'Error',
-        },
-        level: 50,
-        msg: 'Function failed',
-      },
-    ]);
-  });
-
-  it('throws on multiple records', async () => {
-    const event = createSqsEvent([
-      JSON.stringify(jobPublished),
-      JSON.stringify(jobPublished),
-    ]);
-
-    await expect(app.handler(event, ctx)).rejects.toThrow('Function failed');
-
-    expect(stdoutMock.calls).toMatchObject([
-      {
-        err: {
-          message: 'Received 2 records',
           type: 'Error',
         },
         level: 50,

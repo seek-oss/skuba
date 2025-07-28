@@ -36,7 +36,7 @@ describe('createHandler', () => {
       {
         awsRequestId: '-',
         level: 20,
-        msg: 'Function succeeded',
+        msg: 'Function completed',
       },
     ]);
   });
