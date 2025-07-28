@@ -1,15 +1,6 @@
-import { readFileSync } from 'fs';
+import { Jest } from 'skuba';
 
-const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
-  type?: string;
-};
-const isESM = packageJson.type === 'module';
-
-export default {
-  preset: 'skuba',
-  ...(isESM && {
-    extensionsToTreatAsEsm: ['.ts'],
-  }),
+export default Jest.mergePreset({
   coveragePathIgnorePatterns: ['src/testing'],
   coverageThreshold: {
     global: {
@@ -21,4 +12,4 @@ export default {
   },
   setupFiles: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/test\\.ts'],
-};
+});

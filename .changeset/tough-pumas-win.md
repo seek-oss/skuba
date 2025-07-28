@@ -9,13 +9,13 @@
    ```typescript
    // Before
    import 'skuba-dive/register';
-   import accounts, { getAccountInfo } from 'src/services/accounts';
+   import { getAccountInfo } from 'src/services/accounts.js';
 
    // After
-   import accounts, { getAccountInfo } from '#src/services/accounts';
+   import { getAccountInfo } from '#src/services/accounts.js';
    ```
 
-2. **TypeScript configuration updates**: Requires manual configuration for `package.json` and `tsconfig.json` following the [deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html#transitioning-to-esm). The base `skuba/config/tsconfig.json` is now using `node16` module resolution, and `node18` module.
+2. **TypeScript configuration updates**: Requires manual configuration for `package.json` and `tsconfig.json` following the [deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html#transitioning-to-esm). The base `skuba/config/tsconfig.json` is now using `node16` module resolution for import resolution.
 
 3. **bonus monorepo manual configuration:** Update `jest.config.ts` to tell Jest how to resolve `#src` imports to the actual file paths in your `src/` directory using `moduleNameMapper`.
 
