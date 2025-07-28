@@ -29,7 +29,7 @@ const withDatadog = <Event, Output = unknown>(
 export const createHandler = <Event extends SQSEvent, Output = unknown>(
   fn: (event: Event, ctx: LambdaContext) => Promise<Output>,
 ) =>
-  withDatadog<Event>(async (event, ctx) =>
+  withDatadog<Event>((event, ctx) =>
     lambdaContext.run({ awsRequestId: ctx.awsRequestId }, async () => {
       try {
         const output = await fn(event, ctx);
