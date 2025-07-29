@@ -118,7 +118,8 @@ const evil = (() => {
 }) satisfies () => Promise<void>;
 ```
 
-Use of the `async` keyword can help to ensure the whole function evaluation is deferred.
+Use of the `async` keyword can help to ensure the whole function evaluation is deferred,
+and can be enforced with the [`@typescript-eslint/promise-function-async`] rule.
 It comes with performance implications,
 but you are unlikely to need to micro-optimise to this degree.
 
@@ -135,6 +136,7 @@ const good = (async () => {
 Other options like [`Promise.try()`] may be explored in future.
 
 [`--unhandled-rejections` CLI mode]: https://nodejs.org/api/cli.html#--unhandled-rejectionsmode
+[`@typescript-eslint/promise-function-async`]: https://typescript-eslint.io/rules/promise-function-async/
 [`process.on('unhandledRejections')` event handler]: https://nodejs.org/api/process.html#event-unhandledrejection
 [`Promise.try()`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/try
 [asynchronous programming in JavaScript]: https://nodejs.org/en/learn/asynchronous-work/asynchronous-flow-control
