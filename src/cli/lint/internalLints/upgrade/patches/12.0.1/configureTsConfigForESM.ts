@@ -151,7 +151,13 @@ export const replaceTsconfig = (
   isMonoRepo: boolean,
 ) => {
   try {
-    const parseResult = tsConfigSchema.safeParse(JSON.parse(contents));
+    const jsonWithNoComments = contents
+      .replace(/\/\/.*|\/\*[\s\S]*?\*\//g, '')
+      .trim();
+
+    const parseResult = tsConfigSchema.safeParse(
+      JSON.parse(jsonWithNoComments),
+    );
 
     if (!parseResult.success) {
       log.warn(`Failed to parse tsconfig.json: ${parseResult.error.message}`);

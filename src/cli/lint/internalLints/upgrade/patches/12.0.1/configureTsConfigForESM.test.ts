@@ -311,6 +311,48 @@ describe('tryConfigureTsConfigForESM', () => {
         ]);
       });
 
+      it('should handle tsconfig.json with comments', async () => {
+        const tsconfigContent = `{
+          "compilerOptions": {
+            "lib": [
+              // apollographql/apollo-client#6376
+              "DOM",
+              "ES2024"
+            ],
+            "paths": {
+              "src": ["src"]
+            }
+          },
+          "extends": "skuba/config/tsconfig.json"
+        }`;
+
+        vol.fromJSON({
+          'tsconfig.json': tsconfigContent,
+        });
+
+        await expect(
+          tryConfigureTsConfigForESM({
+            ...baseArgs,
+            mode: 'format',
+          }),
+        ).resolves.toEqual({
+          result: 'apply',
+        });
+
+        const files = volToJson();
+        if (!files['tsconfig.json']) {
+          throw new Error('tsconfig.json not found');
+        }
+
+        const updatedTsconfig = JSON.parse(files['tsconfig.json']);
+
+        expect(updatedTsconfig.compilerOptions.customConditions).toEqual([
+          '@seek/my-awesome-repo/source',
+        ]);
+        expect(updatedTsconfig.compilerOptions.rootDir).toBe('.');
+        expect(updatedTsconfig.compilerOptions.paths).toBeUndefined();
+      });
+
       it('should handle nested package.json and tsconfig.json files', async () => {
         vol.fromJSON({
           'package.json': JSON.stringify({ name: 'root' }, null, 2),
