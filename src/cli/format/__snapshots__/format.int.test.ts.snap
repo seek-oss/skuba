@@ -39,6 +39,9 @@ Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upg
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+Skipping tsconfig.json that does not extend skuba/config/tsconfig.json
+
+Patch applied: Configure \`tsconfig.json\` and \`package.json\` for ESM upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -134,6 +137,9 @@ Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upg
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+Skipping tsconfig.json that does not extend skuba/config/tsconfig.json
+
+Patch applied: Configure \`tsconfig.json\` and \`package.json\` for ESM upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -225,6 +231,9 @@ Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upg
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+Skipping tsconfig.json that does not extend skuba/config/tsconfig.json
+
+Patch applied: Configure \`tsconfig.json\` and \`package.json\` for ESM upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -286,6 +295,9 @@ Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upg
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+Skipping tsconfig.json that does not extend skuba/config/tsconfig.json
+
+Patch applied: Configure \`tsconfig.json\` and \`package.json\` for ESM upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

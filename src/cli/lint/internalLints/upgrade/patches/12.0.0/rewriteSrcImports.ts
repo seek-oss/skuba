@@ -38,7 +38,10 @@ const replaceAllImports = (contents: string) =>
 export const tryRewriteSrcImports: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsFileNames = await glob(['**/*.ts', '**/*.test.ts']);
+  const allTsFileNames = await glob(['**/*.ts', '**/*.test.ts']);
+  const tsFileNames = allTsFileNames.filter(
+    (file) => !file.includes('src/cli/lint/internalLints/upgrade/patches/'),
+  );
 
   if (!tsFileNames.length) {
     return {

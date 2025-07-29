@@ -1,10 +1,10 @@
 import type { Patches } from '../../index.js';
 
-import { rewriteSrcImports } from './rewriteSrcImports.js';
+import { configureTsConfigForESM } from './configureTsConfigForESM.js';
 
 export const patches: Patches = [
   {
-    apply: rewriteSrcImports,
-    description: "Rewrite all 'src' imports to be '#src'",
+    apply: configureTsConfigForESM,
+    description: 'Configure `tsconfig.json` and `package.json` for ESM',
   },
 ];
