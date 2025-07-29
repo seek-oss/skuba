@@ -19,6 +19,6 @@
     "src/**/*",
     "requireExtensions.test.ts",
     "no-sync-in-promise-iterable.ts",
-    "no-sync-in-promise-iterable.test.ts",
+    "no-sync-in-promise-iterable.test.ts"
   ]
 }
