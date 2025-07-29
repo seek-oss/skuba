@@ -37,11 +37,11 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
-
-Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 Skipping tsconfig.json that does not extend skuba/config/tsconfig.json
 
-Patch applied: Configure \`tsconfig.json\` and \`package.json\` for ESM upgrade-skuba
+Patch applied: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` for ESM upgrade-skuba
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -135,11 +135,11 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
-
-Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 Skipping tsconfig.json that does not extend skuba/config/tsconfig.json
 
-Patch applied: Configure \`tsconfig.json\` and \`package.json\` for ESM upgrade-skuba
+Patch applied: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` for ESM upgrade-skuba
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -229,11 +229,11 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
-
-Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 Skipping tsconfig.json that does not extend skuba/config/tsconfig.json
 
-Patch applied: Configure \`tsconfig.json\` and \`package.json\` for ESM upgrade-skuba
+Patch applied: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` for ESM upgrade-skuba
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -293,11 +293,11 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
-
-Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 Skipping tsconfig.json that does not extend skuba/config/tsconfig.json
 
-Patch applied: Configure \`tsconfig.json\` and \`package.json\` for ESM upgrade-skuba
+Patch applied: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` for ESM upgrade-skuba
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

@@ -96,12 +96,10 @@ export const addJestModuleNameMapper = (
     '^#src\/(.*)$': formattedNamesWithPath,
   };
 
-  // Handle TypeScript Jest configs
   if (isTypeScriptJestConfig(contents)) {
     return addModuleNameMapperToTypeScript(contents, moduleNameMapper);
   }
 
-  // Handle JSON Jest configs
   try {
     const parseResult = packageJsonSchema.safeParse(JSON.parse(contents));
 
