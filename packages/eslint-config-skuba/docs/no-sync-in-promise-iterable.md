@@ -17,6 +17,7 @@ the former will result in an unhandled promise rejection.
 By default, this will cause the Node.js process to exit (!).
 
 The resilience of back-end applications can be improved by changing the [`--unhandled-rejections` CLI mode] or adding a [`process.on('unhandledRejections')` event handler] to avoid this terminal state.
+Addressing the underlying issue is still useful to avoid dispatching unnecessary promises which may degrade performance or trigger unanticipated partial failure states.
 
 If the above example felt contrived,
 consider that the issue is not limited to synchronous functions that are directly passed as an iterable element to a static `Promise` method.
@@ -103,7 +104,7 @@ We recommend restructuring your code regardless to avoid this class of issue in 
 ### Synchronous errors from asynchronous functions
 
 TypeScript's type system does not capture error handling,
-so this rule assumes that a given `asyncX()` function will only throw asynchronous errors if its return type is a [thenable].
+so this rule assumes that a given `asyncX()` function with a [thenable] return type will only throw asynchronous errors.
 
 The assumption is not strictly correct. Consider the following:
 
@@ -117,7 +118,7 @@ const evil = (() => {
 }) satisfies () => Promise<void>;
 ```
 
-Use of the `async` keyword ensures the whole function evaluation is deferred.
+Use of the `async` keyword can help to ensure the whole function evaluation is deferred.
 It comes with performance implications,
 but you are unlikely to need to micro-optimise to this degree.
 
