@@ -99,7 +99,7 @@ describe('tryConfigureTsConfigForESM', () => {
     });
 
     describe('format mode', () => {
-      it.only('should configure package.json with imports field', async () => {
+      it('should configure package.json with imports field', async () => {
         vol.fromJSON({
           'package.json': JSON.stringify({
             name: 'test-package',
