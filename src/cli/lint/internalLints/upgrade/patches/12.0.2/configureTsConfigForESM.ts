@@ -132,7 +132,6 @@ export const replacePackageJson = (contents: string, repoName: string) => {
     const packageJson = parseResult.data;
 
     packageJson.imports = {
-      ...(packageJson.imports ?? {}),
       '#src/*': {
         [`@seek/${repoName}/source`]: './src/*',
         default: './lib/*',
