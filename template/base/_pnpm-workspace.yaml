@@ -1,5 +1,4 @@
 # managed by skuba
-nodeOptions: '${NODE_OPTIONS:- }  --experimental-vm-modules'
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@types*'
