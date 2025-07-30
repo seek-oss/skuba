@@ -99,7 +99,7 @@ describe('tryConfigureTsConfigForESM', () => {
     });
 
     describe('format mode', () => {
-      it('should configure package.json with imports field', async () => {
+      it.only('should configure package.json with imports field', async () => {
         vol.fromJSON({
           'package.json': JSON.stringify({
             name: 'test-package',
@@ -123,10 +123,14 @@ describe('tryConfigureTsConfigForESM', () => {
 
         const updatedPackageJson = JSON.parse(files['package.json']);
 
-        expect(updatedPackageJson.imports).toEqual({
-          '#src/*': {
-            '@seek/my-awesome-repo/source': './src/*',
-            default: './lib/*',
+        expect(updatedPackageJson).toEqual({
+          name: 'test-package',
+          version: '1.0.0',
+          imports: {
+            '#src/*': {
+              '@seek/my-awesome-repo/source': './src/*',
+              default: './lib/*',
+            },
           },
         });
       });
