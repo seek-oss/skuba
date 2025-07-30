@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`diffFiles works from scratch 1`] = `
 {
@@ -74,12 +74,12 @@ coverage
     "operation": "A",
   },
   ".prettierrc.js": {
-    "data": "module.exports = require('skuba/config/prettier');
+    "data": "export { default } from 'skuba/config/prettier.js';
 ",
     "operation": "A",
   },
   "eslint.config.js": {
-    "data": "module.exports = require('eslint-config-skuba');
+    "data": "export { default } from 'eslint-config-skuba';
 ",
     "operation": "A",
   },

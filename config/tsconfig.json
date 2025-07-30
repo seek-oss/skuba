@@ -2,10 +2,11 @@
   "compilerOptions": {
     "incremental": true,
     "isolatedModules": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "module": "node18",
+    "moduleResolution": "node16",
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "resolveJsonModule": true
   },
   "extends": "tsconfig-seek"
 }
