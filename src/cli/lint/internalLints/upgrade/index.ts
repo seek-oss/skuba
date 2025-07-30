@@ -162,11 +162,17 @@ export const upgradeSkuba = async (
     }
   }
 
-  (manifest.packageJson.skuba as SkubaPackageJson).version = currentVersion;
+  const updatedManifest = await getConsumerManifest();
+  if (!updatedManifest) {
+    throw new Error('Could not find a package json for this project');
+  }
 
-  const updatedPackageJson = await formatPackage(manifest.packageJson);
+  (updatedManifest.packageJson.skuba as SkubaPackageJson).version =
+    currentVersion;
 
-  await fs.writeFile(manifest.path, updatedPackageJson);
+  const updatedPackageJson = await formatPackage(updatedManifest.packageJson);
+
+  await fs.writeFile(updatedManifest.path, updatedPackageJson);
   logger.newline();
   logger.plain('skuba update complete.');
   logger.newline();
