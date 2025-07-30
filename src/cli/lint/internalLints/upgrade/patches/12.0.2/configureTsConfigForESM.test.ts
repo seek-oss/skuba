@@ -239,42 +239,6 @@ describe('tryConfigureTsConfigForESM', () => {
         );
       });
 
-      it('should remove paths from tsconfig.json if not a monorepo', async () => {
-        const tsconfigContent = {
-          compilerOptions: {
-            target: 'es2019',
-            paths: {
-              'src/*': ['./src/*'],
-              '@/*': ['./src/*'],
-            },
-          },
-        };
-
-        vol.fromJSON({
-          'tsconfig.json': JSON.stringify(tsconfigContent, null, 2),
-        });
-
-        await expect(
-          tryConfigureTsConfigForESM({
-            ...baseArgs,
-            mode: 'format',
-          }),
-        ).resolves.toEqual({
-          result: 'apply',
-        });
-
-        const files = volToJson();
-        if (!files['tsconfig.json']) {
-          throw new Error('tsconfig.json not found');
-        }
-        const updatedTsconfig = JSON.parse(files['tsconfig.json']);
-
-        expect(updatedTsconfig.compilerOptions.paths).toBeUndefined();
-        expect(updatedTsconfig.compilerOptions.customConditions).toEqual([
-          '@seek/my-awesome-repo/source',
-        ]);
-      });
-
       it('should not remove paths from tsconfig.json if a monorepo', async () => {
         const tsconfigContent = {
           compilerOptions: {

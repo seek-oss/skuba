@@ -145,11 +145,7 @@ export const replacePackageJson = (contents: string, repoName: string) => {
   }
 };
 
-export const replaceTsconfig = (
-  contents: string,
-  repoName: string,
-  isMonoRepo: boolean,
-) => {
+export const replaceTsconfig = (contents: string, repoName: string) => {
   try {
     const jsonWithNoComments = contents
       .replace(/\/\/.*|\/\*[\s\S]*?\*\//g, '')
@@ -185,7 +181,7 @@ export const replaceTsconfig = (
 
     const compilerOptions = tsconfigJson.compilerOptions;
 
-    if (compilerOptions.paths !== undefined && !isMonoRepo) {
+    if (compilerOptions.paths !== undefined) {
       delete compilerOptions.paths;
     }
 
@@ -248,7 +244,7 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
     ({ file, contents }) => ({
       file,
       before: contents,
-      after: replaceTsconfig(contents, repoName, subfolderPaths.length > 0),
+      after: replaceTsconfig(contents, repoName),
     }),
   );
 
