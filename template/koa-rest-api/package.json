@@ -27,7 +27,7 @@
     "koa": "^3.0.1",
     "koa-compose": "^4.1.0",
     "seek-datadog-custom-metrics": "^4.6.3",
-    "seek-koala": "^7.0.0",
+    "seek-koala": "^7.1.0",
     "skuba-dive": "^2.0.0",
     "zod": "^3.25.67"
   },

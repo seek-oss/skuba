@@ -368,8 +368,8 @@ importers:
         specifier: ^4.6.3
         version: 4.6.5(datadog-lambda-js@10.124.0)(hot-shots@10.2.1)
       seek-koala:
-        specifier: ^7.0.0
-        version: 7.0.6(hot-shots@10.2.1)(koa@3.0.1)
+        specifier: ^7.1.0
+        version: 7.1.0(hot-shots@10.2.1)(koa@3.0.1)
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -5673,12 +5673,12 @@ packages:
       hot-shots:
         optional: true
 
-  seek-koala@7.0.6:
-    resolution: {integrity: sha512-dyslkB17cz2qrKvb1P/GrO6f8iniY4P+5wz1Fec5U46vjnzfporA5SR15YUvhddZyp28rEPBTFpBtMUPZiyDxw==}
+  seek-koala@7.1.0:
+    resolution: {integrity: sha512-AuXtHA+Edhdv3sZm1QpsMaZVy4EOyVfM4SkyLiM1GgRYDsEY5he0/mqgHVKqk2TZ5Ulmfie7VBN8s7PQL3b4AQ==}
     engines: {node: '>=14.17'}
     peerDependencies:
       hot-shots: 5.x || 6.x || 7.x || 8.x || 9.x || 10.x || 11.x
-      koa: '2'
+      koa: 2 || 3
     peerDependenciesMeta:
       hot-shots:
         optional: true
@@ -13286,7 +13286,7 @@ snapshots:
       datadog-lambda-js: 10.124.0
       hot-shots: 10.2.1
 
-  seek-koala@7.0.6(hot-shots@10.2.1)(koa@3.0.1):
+  seek-koala@7.1.0(hot-shots@10.2.1)(koa@3.0.1):
     dependencies:
       http-errors: 1.8.1
       koa: 3.0.1
