@@ -135,7 +135,7 @@
     "@types/ejs": "3.1.5",
     "@types/express": "5.0.3",
     "@types/fs-extra": "11.0.4",
-    "@types/koa": "2.15.0",
+    "@types/koa": "3.0.0",
     "@types/lodash.mergewith": "4.6.9",
     "@types/minimist": "1.2.5",
     "@types/module-alias": "2.0.4",

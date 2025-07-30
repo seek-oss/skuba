@@ -178,8 +178,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       '@types/koa':
-        specifier: 2.15.0
-        version: 2.15.0
+        specifier: 3.0.0
+        version: 3.0.0
       '@types/lodash.mergewith':
         specifier: 4.6.9
         version: 4.6.9
@@ -327,7 +327,7 @@ importers:
     dependencies:
       '@koa/bodyparser':
         specifier: ^6.0.0
-        version: 6.0.0(koa@2.16.1)
+        version: 6.0.0(koa@3.0.1)
       '@koa/router':
         specifier: ^13.0.0
         version: 13.1.1
@@ -359,8 +359,8 @@ importers:
         specifier: ^10.0.0
         version: 10.2.1
       koa:
-        specifier: ^2.16.1
-        version: 2.16.1
+        specifier: ^3.0.1
+        version: 3.0.1
       koa-compose:
         specifier: ^4.1.0
         version: 4.1.0
@@ -368,8 +368,8 @@ importers:
         specifier: ^4.6.3
         version: 4.6.5(datadog-lambda-js@10.124.0)(hot-shots@10.2.1)
       seek-koala:
-        specifier: ^7.0.0
-        version: 7.0.6(hot-shots@10.2.1)(koa@2.16.1)
+        specifier: ^7.1.0
+        version: 7.1.0(hot-shots@10.2.1)(koa@3.0.1)
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -384,8 +384,8 @@ importers:
         specifier: ^6.1.3
         version: 6.1.3
       '@types/koa':
-        specifier: ^2.13.4
-        version: 2.15.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/koa__router':
         specifier: ^12.0.0
         version: 12.0.4
@@ -2118,8 +2118,8 @@ packages:
   '@types/koa-compose@3.2.8':
     resolution: {integrity: sha512-4Olc63RY+MKvxMwVknCUDhRQX1pFQoBZ/lXcRLP69PQkEpze/0cr8LNqJQe5NFb/b19DWi2a5bTi2VAlQzhJuA==}
 
-  '@types/koa@2.15.0':
-    resolution: {integrity: sha512-7QFsywoE5URbuVnG3loe03QXuGajrnotr3gQkXcEBShORai23MePfFYdhz90FEtBBpkyIYQbVD+evKtloCgX3g==}
+  '@types/koa@3.0.0':
+    resolution: {integrity: sha512-MOcVYdVYmkSutVHZZPh8j3+dAjLyR5Tl59CN0eKgpkE1h/LBSmPAsQQuWs+bKu7WtGNn+hKfJH9Gzml+PulmDg==}
 
   '@types/koa__router@12.0.4':
     resolution: {integrity: sha512-Y7YBbSmfXZpa/m5UGGzb7XadJIRBRnwNY9cdAojZGp65Cpe5MAP3mOZE7e3bImt8dfKS4UFcR16SLH8L/z7PBw==}
@@ -2699,10 +2699,6 @@ packages:
     resolution: {integrity: sha512-hdsUxulXCi5STId78vRVYEtDAjq99ICAUktLTeTYsLoTE6Z8dS0c8pWNCxwdrk9YfJeobDZc2Y186hD/5ZQgFQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  cache-content-type@1.0.1:
-    resolution: {integrity: sha512-IKufZ1o4Ut42YUrZSo8+qnMTrFuKkvyoLXUywKz9GJ5BrhOFGhLdkx9sG4KAnVvbY6kEcSFjLQul+DVmBm2bgA==}
-    engines: {node: '>= 6.0.0'}
-
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
     engines: {node: '>= 0.4'}
@@ -3182,10 +3178,6 @@ packages:
 
   emojilib@2.4.0:
     resolution: {integrity: sha512-5U0rVMU5Y2n2+ykNLQqMoqklN9ICBT/KsvC1Gz6vqHbz2AXXGkG+Pm5rMWk/8Vjrr/mY9985Hi8DYzn1F09Nyw==}
-
-  encodeurl@1.0.2:
-    resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
-    engines: {node: '>= 0.8'}
 
   encodeurl@2.0.0:
     resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
@@ -4468,14 +4460,6 @@ packages:
   koa-compose@4.1.0:
     resolution: {integrity: sha512-8ODW8TrDuMYvXRwra/Kh7/rJo9BtOfPc6qO8eAfC80CnCvSjSl0bkRM24X6/XBBEyj0v1nRUQ1LyOy3dbqOWXw==}
 
-  koa-convert@2.0.0:
-    resolution: {integrity: sha512-asOvN6bFlSnxewce2e/DK3p4tltyfC4VM7ZwuTuepI7dEQVcvpyFuBcEARu1+Hxg8DIwytce2n7jrZtRlPrARA==}
-    engines: {node: '>= 10'}
-
-  koa@2.16.1:
-    resolution: {integrity: sha512-umfX9d3iuSxTQP4pnzLOz0HKnPg0FaUUIKcye2lOiz3KPu1Y3M3xlz76dISdFPQs37P9eJz1wUpcTS6KDPn9fA==}
-    engines: {node: ^4.8.4 || ^6.10.1 || ^7.10.1 || >= 8.1.4}
-
   koa@3.0.1:
     resolution: {integrity: sha512-oDxVkRwPOHhGlxKIDiDB2h+/l05QPtefD7nSqRgDfZt8P+QVYFWjfeK8jANf5O2YXjk8egd7KntvXKYx82wOag==}
     engines: {node: '>= 18'}
@@ -5102,9 +5086,6 @@ packages:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
 
-  only@0.0.2:
-    resolution: {integrity: sha512-Fvw+Jemq5fjjyWz6CpKx6w9s7xxqo3+JCyM0WXWeCSOboZ8ABkyvP8ID4CZuChA/wxSx+XSJmdOm8rGVyJ1hdQ==}
-
   opentracing@0.14.7:
     resolution: {integrity: sha512-vz9iS7MJ5+Bp1URw8Khvdyw1H/hGvzHWlKQ7eRrQojSCDL1/SrWfrY9QebLw97n2deyRtzHRC3MkQfVNUCo91Q==}
     engines: {node: '>=0.10'}
@@ -5692,12 +5673,12 @@ packages:
       hot-shots:
         optional: true
 
-  seek-koala@7.0.6:
-    resolution: {integrity: sha512-dyslkB17cz2qrKvb1P/GrO6f8iniY4P+5wz1Fec5U46vjnzfporA5SR15YUvhddZyp28rEPBTFpBtMUPZiyDxw==}
+  seek-koala@7.1.0:
+    resolution: {integrity: sha512-AuXtHA+Edhdv3sZm1QpsMaZVy4EOyVfM4SkyLiM1GgRYDsEY5he0/mqgHVKqk2TZ5Ulmfie7VBN8s7PQL3b4AQ==}
     engines: {node: '>=14.17'}
     peerDependencies:
       hot-shots: 5.x || 6.x || 7.x || 8.x || 9.x || 10.x || 11.x
-      koa: '2'
+      koa: 2 || 3
     peerDependenciesMeta:
       hot-shots:
         optional: true
@@ -6596,10 +6577,6 @@ packages:
   yargs@17.7.2:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
     engines: {node: '>=12'}
-
-  ylru@1.4.0:
-    resolution: {integrity: sha512-2OQsPNEmBCvXuFlIni/a+Rn+R2pHW9INm0BxXJ4hVDA8TirqMj+J/Rp9ItLatT/5pZqWwefVrTQcHpixsxnVlA==}
-    engines: {node: '>= 4.0.0'}
 
   yn@3.1.1:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
@@ -8007,11 +7984,11 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@koa/bodyparser@6.0.0(koa@2.16.1)':
+  '@koa/bodyparser@6.0.0(koa@3.0.1)':
     dependencies:
       '@types/co-body': 6.1.3
       co-body: 6.2.0
-      koa: 2.16.1
+      koa: 3.0.1
       lodash.merge: 4.6.2
       type-is: 2.0.1
 
@@ -9086,9 +9063,9 @@ snapshots:
 
   '@types/koa-compose@3.2.8':
     dependencies:
-      '@types/koa': 2.15.0
+      '@types/koa': 3.0.0
 
-  '@types/koa@2.15.0':
+  '@types/koa@3.0.0':
     dependencies:
       '@types/accepts': 1.3.7
       '@types/content-disposition': 0.5.9
@@ -9101,7 +9078,7 @@ snapshots:
 
   '@types/koa__router@12.0.4':
     dependencies:
-      '@types/koa': 2.15.0
+      '@types/koa': 3.0.0
 
   '@types/lodash.mergewith@4.6.9':
     dependencies:
@@ -9731,11 +9708,6 @@ snapshots:
       tar: 7.4.3
       unique-filename: 4.0.0
 
-  cache-content-type@1.0.1:
-    dependencies:
-      mime-types: 2.1.35
-      ylru: 1.4.0
-
   call-bind-apply-helpers@1.0.2:
     dependencies:
       es-errors: 1.3.0
@@ -10192,8 +10164,6 @@ snapshots:
   emoji-regex@9.2.2: {}
 
   emojilib@2.4.0: {}
-
-  encodeurl@1.0.2: {}
 
   encodeurl@2.0.0: {}
 
@@ -11919,39 +11889,6 @@ snapshots:
 
   koa-compose@4.1.0: {}
 
-  koa-convert@2.0.0:
-    dependencies:
-      co: 4.6.0
-      koa-compose: 4.1.0
-
-  koa@2.16.1:
-    dependencies:
-      accepts: 1.3.8
-      cache-content-type: 1.0.1
-      content-disposition: 0.5.4
-      content-type: 1.0.5
-      cookies: 0.9.1
-      debug: 4.4.1
-      delegates: 1.0.0
-      depd: 2.0.0
-      destroy: 1.2.0
-      encodeurl: 1.0.2
-      escape-html: 1.0.3
-      fresh: 0.5.2
-      http-assert: 1.5.0
-      http-errors: 1.8.1
-      is-generator-function: 1.1.0
-      koa-compose: 4.1.0
-      koa-convert: 2.0.0
-      on-finished: 2.4.1
-      only: 0.0.2
-      parseurl: 1.3.3
-      statuses: 1.5.0
-      type-is: 1.6.18
-      vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
-
   koa@3.0.1:
     dependencies:
       accepts: 1.3.8
@@ -12626,8 +12563,6 @@ snapshots:
   onetime@6.0.0:
     dependencies:
       mimic-fn: 4.0.0
-
-  only@0.0.2: {}
 
   opentracing@0.14.7: {}
 
@@ -13351,10 +13286,10 @@ snapshots:
       datadog-lambda-js: 10.124.0
       hot-shots: 10.2.1
 
-  seek-koala@7.0.6(hot-shots@10.2.1)(koa@2.16.1):
+  seek-koala@7.1.0(hot-shots@10.2.1)(koa@3.0.1):
     dependencies:
       http-errors: 1.8.1
-      koa: 2.16.1
+      koa: 3.0.1
     optionalDependencies:
       hot-shots: 10.2.1
 
@@ -14497,8 +14432,6 @@ snapshots:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.1.1
-
-  ylru@1.4.0: {}
 
   yn@3.1.1: {}
 
