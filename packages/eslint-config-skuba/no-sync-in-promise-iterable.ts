@@ -384,7 +384,7 @@ export interface PluginDocs {
 // eslint-disable-next-line new-cap
 export const createRule = ESLintUtils.RuleCreator<PluginDocs>(
   (name) =>
-    `https://github.com/seek-oss/skuba/tree/main/packages/eslint-config-skuba/docs/${name}.md`,
+    `https://github.com/seek-oss/skuba/tree/main/docs/eslint-plugin/${name}.md`,
 );
 
 type MessageId = 'mayThrowSyncError';

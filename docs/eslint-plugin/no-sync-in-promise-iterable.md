@@ -1,3 +1,7 @@
+---
+parent: ESLint plugin
+---
+
 # no-sync-in-promise-iterable
 
 Heuristically flags synchronous logic in the iterable argument of [static `Promise` methods] that could leave preceding promises dangling.
