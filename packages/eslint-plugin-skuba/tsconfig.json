@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "module": "es2020",
+    "moduleResolution": "bundler",
+    "lib": ["ES2021"],
+    "outDir": "lib",
+    "removeComments": false,
+    "target": "ES2021"
+  },
+  "exclude": ["lib*/**/*"],
+  "extends": "../../config/tsconfig.json"
+}

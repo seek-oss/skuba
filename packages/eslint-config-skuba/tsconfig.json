@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "module": "es2022",
-    "moduleResolution": "bundler",
     "lib": ["ES2021"],
     "outDir": "lib",
     "target": "ES2021",
@@ -17,8 +15,6 @@
     "index.d.ts",
     "index.js",
     "src/**/*",
-    "requireExtensions.test.ts",
-    "no-sync-in-promise-iterable.ts",
-    "no-sync-in-promise-iterable.test.ts"
+    "requireExtensions.test.ts"
   ]
 }
