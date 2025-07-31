@@ -1,5 +1,12 @@
 import { ESLintUtils, type TSESLint, TSESTree } from '@typescript-eslint/utils';
-import type { Type, TypeChecker } from 'typescript';
+
+type TypeChecker = ReturnType<
+  NonNullable<
+    ReturnType<typeof ESLintUtils.getParserServices>['program']
+  >['getTypeChecker']
+>;
+
+type Type = ReturnType<TypeChecker['getTypeOfSymbolAtLocation']>;
 
 /**
  * Whether a TypeScript type is a Promise-like "thenable".
