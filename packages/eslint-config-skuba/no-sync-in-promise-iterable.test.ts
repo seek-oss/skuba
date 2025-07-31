@@ -129,60 +129,24 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     },
     {
       code: `Promise.${method}([1, array[index], 3])`,
-      errors: [
-        {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'array[index]' },
-        },
-      ],
     },
     // Binary and logical expressions
     {
       code: `Promise.${method}([1, a + b, 3])`,
-      errors: [
-        {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'a + b' },
-        },
-      ],
     },
     {
       code: `Promise.${method}([1, a && b, 3])`,
-      errors: [
-        {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'a && b' },
-        },
-      ],
     },
     {
       code: `Promise.${method}([1, a || b, 3])`,
-      errors: [
-        {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'a || b' },
-        },
-      ],
     },
     // Update expression
     {
       code: `Promise.${method}([1, ++counter, 3])`,
-      errors: [
-        {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: '++counter' },
-        },
-      ],
     },
     // Unary expression
     {
       code: `Promise.${method}([1, !someValue, 3])`,
-      errors: [
-        {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: '!someValue' },
-        },
-      ],
     },
   ]),
   invalid: methods.flatMap((method) => [
