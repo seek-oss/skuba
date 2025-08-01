@@ -23,7 +23,6 @@ pnpm install --frozen-lockfile
 
 echo '--- pnpm build'
 pnpm build
-pnpm --filter eslint-plugin-skuba build
 
 echo '--- pnpm pack'
 # Aaron Moat is sure there's a better way to do this

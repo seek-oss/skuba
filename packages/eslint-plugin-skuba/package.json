@@ -33,7 +33,7 @@
     "build": "tsdown",
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
-    "prepack": "pnpm skuba build",
+    "prepack": "tsdown",
     "skuba": "node --experimental-vm-modules ../../lib/skuba",
     "test": "node --experimental-strip-types --test",
     "test:ci": "node --experimental-strip-types --test"
