@@ -12,7 +12,7 @@ describe('createHandler', () => {
     Records: [],
   };
 
-  afterEach(stdoutMock.clear);
+  beforeEach(stdoutMock.clear);
 
   it('handles happy path', async () => {
     const output = chance.paragraph();
