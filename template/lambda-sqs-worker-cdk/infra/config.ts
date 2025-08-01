@@ -9,6 +9,7 @@ const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
 interface Config {
   appName: string;
   workerLambda: {
+    batchSize: number;
     reservedConcurrency: number;
     environment: {
       ENVIRONMENT: Environment;
@@ -24,6 +25,7 @@ const configs: Record<Environment, Config> = {
   dev: {
     appName: '<%- serviceName %>',
     workerLambda: {
+      batchSize: 10,
       reservedConcurrency: 2,
       environment: {
         ENVIRONMENT: 'dev',
@@ -37,6 +39,7 @@ const configs: Record<Environment, Config> = {
   prod: {
     appName: '<%- serviceName %>',
     workerLambda: {
+      batchSize: 10,
       reservedConcurrency: 20,
       environment: {
         ENVIRONMENT: 'prod',

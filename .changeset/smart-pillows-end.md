@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-template/\*-rest-api: Handle `unhandledRejections`
+template/\*-rest-api: Handle `unhandledRejection`s
