@@ -23,10 +23,17 @@ pnpm install --frozen-lockfile
 
 echo '--- pnpm build'
 pnpm build
+pnpm --filter eslint-plugin-skuba build
 
 echo '--- pnpm pack'
-# I'm sure there's a better way to do this
+# Aaron Moat is sure there's a better way to do this
+eslint_plugin_skuba_tar="$(pwd)/packages/eslint-plugin-skuba/$(cd packages/eslint-plugin-skuba && pnpm pack | grep -o 'eslint-plugin-skuba-.*\.tgz')"
+jq ".dependencies[\"eslint-plugin-skuba\"] = \"file:${eslint_plugin_skuba_tar}\"" packages/eslint-config-skuba/package.json > packages/eslint-config-skuba/package.json.tmp
+mv packages/eslint-config-skuba/package.json packages/eslint-config-skuba/package.json.bak
+mv packages/eslint-config-skuba/package.json.tmp packages/eslint-config-skuba/package.json
 eslint_config_skuba_tar="$(pwd)/packages/eslint-config-skuba/$(cd packages/eslint-config-skuba && pnpm pack | grep -o 'eslint-config-skuba-.*\.tgz')"
+mv packages/eslint-config-skuba/package.json.bak packages/eslint-config-skuba/package.json
+
 jq ".dependencies[\"eslint-config-skuba\"] = \"file:${eslint_config_skuba_tar}\"" package.json > package.json.tmp
 mv package.json package.json.bak
 mv package.json.tmp package.json
