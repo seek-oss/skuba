@@ -20,7 +20,7 @@ if both `asyncX()` and `syncY()` throw errors,
 the former will result in an unhandled promise rejection.
 By default, this will cause the Node.js process to exit (!).
 
-The resilience of back-end applications can be improved by changing the [`--unhandled-rejections` CLI mode] or adding a [`process.on('unhandledRejections')` event handler] to avoid this terminal state.
+The resilience of back-end applications can be improved by changing the [`--unhandled-rejections` CLI mode] or adding a [`process.on('unhandledRejection')` event handler] to avoid this terminal state.
 Addressing the underlying issue is still useful to avoid dispatching unnecessary promises which may degrade performance or trigger unanticipated partial failure states.
 
 If the above example felt contrived,
@@ -141,7 +141,7 @@ Other options like [`Promise.try()`] may be explored in future.
 
 [`--unhandled-rejections` CLI mode]: https://nodejs.org/api/cli.html#--unhandled-rejectionsmode
 [`@typescript-eslint/promise-function-async`]: https://typescript-eslint.io/rules/promise-function-async/
-[`process.on('unhandledRejections')` event handler]: https://nodejs.org/api/process.html#event-unhandledrejection
+[`process.on('unhandledRejection')` event handler]: https://nodejs.org/api/process.html#event-unhandledrejection
 [`Promise.try()`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/try
 [asynchronous programming in JavaScript]: https://nodejs.org/en/learn/asynchronous-work/asynchronous-flow-control
 [static `Promise` methods]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#static_methods
