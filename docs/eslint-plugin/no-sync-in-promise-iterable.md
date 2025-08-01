@@ -4,6 +4,12 @@ parent: ESLint plugin
 
 # no-sync-in-promise-iterable
 
+```json5
+{
+  'skuba/no-sync-in-promise-iterable': 'warn',
+}
+```
+
 Heuristically flags synchronous logic in the iterable argument of [static `Promise` methods] that could leave preceding promises dangling.
 
 ```typescript
@@ -101,16 +107,28 @@ This rule requires type checking.
 ### False positives
 
 TypeScript's type system does not capture error handling,
-so this rule assumes that a given `syncY()` function _may_ throw.
+so this rule assumes that a given `syncY()` function _may_ throw and should be evaluated before constructing the iterable argument.
 
-We recommend restructuring your code regardless to avoid this class of issue in future.
+```typescript
+// Never throws, but is still flagged
+const syncY = () => undefined;
+
+const [x, y] = await Promise.allSettled([asyncX(), syncY()]);
+//                                                 ~~~~~~~
+// syncY() may synchronously throw an error and leave preceding promises dangling.
+// Evaluate synchronous expressions before constructing the iterable argument to Promise.allSettled.
+```
+
+We recommend restructuring your code regardless to avoid this class of issue;
+consider that you may change the implementation of `syncY()` to throw an error in future.
 
 ### Synchronous errors from asynchronous functions
 
 TypeScript's type system does not capture error handling,
 so this rule assumes that a given `asyncX()` function with a [thenable] return type will only throw asynchronous errors.
 
-The assumption is not strictly correct. Consider the following:
+The assumption is not strictly correct.
+Consider the following:
 
 ```typescript
 const evil = (() => {
@@ -139,10 +157,68 @@ const good = (async () => {
 
 Other options like [`Promise.try()`] may be explored in future.
 
+### Getters and setters
+
+TypeScript's type system does not capture error handling,
+so this rule assumes that property access and assignment is safe.
+
+The assumption is not strictly correct.
+Custom [`get`]ters and [`set`]ters can throw errors:
+
+```typescript
+const obj = {
+  get prop() {
+    throw new Error('Badness!');
+  },
+};
+
+obj.prop;
+// Uncaught Error: Badness!
+```
+
+The [`no-restricted-syntax`] rule can flag custom getters and setters:
+
+```javascript
+module.exports = [
+  rules: {
+
+  'no-restricted-syntax': [
+    ERROR,
+    {
+      selector: 'MethodDefinition[kind = "get"]',
+      message:
+        'Custom getters can cause confusion, particularly if they throw errors. Remove the `get` syntax to specify a regular method instead.',
+    },
+    {
+      selector: 'MethodDefinition[kind = "set"]',
+      message:
+        'Custom setters can cause confusion, particularly if they throw errors. Remove the `set` syntax to specify a regular method instead.',
+    },
+    {
+      selector: 'Property[kind = "get"]',
+      message:
+        'Custom getters can cause confusion, particularly if they throw errors. Remove the `get` syntax to specify a regular property instead.',
+    },
+    {
+      selector: 'Property[kind = "set"]',
+      message:
+        'Custom setters can cause confusion, particularly if they throw errors. Remove the `set` syntax to specify a regular property instead.',
+    },],
+  }
+];
+```
+
+This configuration is baked in to [`eslint-config-seek`] and [`eslint-config-skuba`].
+
 [`--unhandled-rejections` CLI mode]: https://nodejs.org/api/cli.html#--unhandled-rejectionsmode
 [`@typescript-eslint/promise-function-async`]: https://typescript-eslint.io/rules/promise-function-async/
+[`eslint-config-seek`]: https://github.com/seek-oss/eslint-config-seek
+[`eslint-config-skuba`]: https://github.com/seek-oss/skuba/main/packages/eslint-config-skuba
+[`get`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get
+[`no-restricted-syntax`]: https://eslint.org/docs/latest/rules/no-restricted-syntax
 [`process.on('unhandledRejection')` event handler]: https://nodejs.org/api/process.html#event-unhandledrejection
 [`Promise.try()`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/try
+[`set`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set
 [asynchronous programming in JavaScript]: https://nodejs.org/en/learn/asynchronous-work/asynchronous-flow-control
 [static `Promise` methods]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#static_methods
 [thenable]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#thenables
