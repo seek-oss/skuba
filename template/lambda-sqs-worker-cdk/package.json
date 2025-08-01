@@ -39,7 +39,7 @@
     "pino-pretty": "^13.0.0",
     "skuba": "*"
   },
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "engines": {
     "node": ">=22"
   }
