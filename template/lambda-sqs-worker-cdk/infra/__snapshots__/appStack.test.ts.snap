@@ -332,7 +332,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
     },
     "workerAliasLiveSqsEventSourceappStackworkerqueue8281B9F443B0CF93": {
       "Properties": {
-        "BatchSize": 5,
+        "BatchSize": 10,
         "EventSourceArn": {
           "Fn::GetAtt": [
             "workerqueueA05CE5C6",
@@ -1072,7 +1072,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
     },
     "workerAliasLiveSqsEventSourceappStackworkerqueue8281B9F443B0CF93": {
       "Properties": {
-        "BatchSize": 5,
+        "BatchSize": 10,
         "EventSourceArn": {
           "Fn::GetAtt": [
             "workerqueueA05CE5C6",
