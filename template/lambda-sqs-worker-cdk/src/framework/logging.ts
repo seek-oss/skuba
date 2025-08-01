@@ -4,11 +4,16 @@ import createLogger, { createDestination } from '@seek/logger';
 
 import { config } from 'src/config.js';
 
-interface LoggerContext {
+interface LambdaContext {
   awsRequestId: string;
 }
 
-export const loggerContext = new AsyncLocalStorage<LoggerContext>();
+interface RecordContext {
+  sqsMessageId: string;
+}
+
+export const lambdaContext = new AsyncLocalStorage<LambdaContext>();
+export const recordContext = new AsyncLocalStorage<RecordContext>();
 
 const { destination, stdoutMock } = createDestination({
   mock: config.environment === 'test' && {
@@ -27,7 +32,10 @@ export const logger = createLogger(
 
     level: config.logLevel,
 
-    mixin: () => ({ ...loggerContext.getStore() }),
+    mixin: () => ({
+      ...lambdaContext.getStore(),
+      ...recordContext.getStore(),
+    }),
 
     name: config.name,
 

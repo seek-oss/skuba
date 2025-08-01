@@ -1,3 +1,5 @@
+import type { SQSEvent } from 'aws-lambda';
+
 import { createCtx } from 'src/testing/handler.js';
 import { chance } from 'src/testing/types.js';
 
@@ -6,9 +8,11 @@ import { logger, stdoutMock } from './logging.js';
 
 describe('createHandler', () => {
   const ctx = createCtx();
-  const input = chance.paragraph();
+  const input: SQSEvent = {
+    Records: [],
+  };
 
-  afterEach(stdoutMock.clear);
+  beforeEach(stdoutMock.clear);
 
   it('handles happy path', async () => {
     const output = chance.paragraph();
@@ -32,7 +36,8 @@ describe('createHandler', () => {
       {
         awsRequestId: '-',
         level: 20,
-        msg: 'Function succeeded',
+        output,
+        msg: 'Function completed',
       },
     ]);
   });
