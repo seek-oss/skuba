@@ -35,14 +35,16 @@
     "lint": "pnpm --silent skuba lint",
     "prepack": "tsdown",
     "skuba": "node --experimental-vm-modules ../../lib/skuba",
-    "test": "node --experimental-strip-types --test",
-    "test:ci": "node --experimental-strip-types --test"
+    "test": "node --import tsx --test 'src/**/*.test.ts'",
+    "test:ci": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
+    "test:watch": "node --import tsx --test --watch 'src/**/*.test.ts'"
   },
   "dependencies": {},
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.26.0",
     "eslint": "^9.11.1",
-    "tsdown": "0.13.0",
+    "tsdown": "0.13.1",
+    "tsx": "^4.16.2",
     "typescript-eslint": "^8.26.0"
   },
   "peerDependencies": {
