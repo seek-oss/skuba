@@ -2,7 +2,7 @@ import type { TSESLint } from '@typescript-eslint/utils';
 
 import noSyncInPromiseIterable from './rules/no-sync-in-promise-iterable.js';
 
-const plugin = {
+const skuba = {
   meta: {
     name: 'skuba',
     version: '1.0.0',
@@ -13,11 +13,11 @@ const plugin = {
   configs: {},
 } satisfies TSESLint.FlatConfig.Plugin;
 
-plugin.configs = {
+skuba.configs = {
   recommended: [
     {
       plugins: {
-        skuba: plugin,
+        skuba,
       },
       rules: {
         'skuba/no-sync-in-promise-iterable': 'warn',
@@ -26,4 +26,4 @@ plugin.configs = {
   ],
 } satisfies TSESLint.FlatConfig.Plugin['configs'];
 
-export default plugin;
+export default skuba;

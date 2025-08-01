@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "module": "es2020",
-    "moduleResolution": "bundler",
     "lib": ["ES2021"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "outDir": "lib",
     "removeComments": false,
     "target": "ES2021"
