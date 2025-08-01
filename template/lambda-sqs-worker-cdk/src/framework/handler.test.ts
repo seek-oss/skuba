@@ -12,10 +12,10 @@ describe('createHandler', () => {
     Records: [],
   };
 
-  beforeEach(stdoutMock.clear);
+  afterEach(stdoutMock.clear);
 
   it('handles happy path', async () => {
-    const output = chance.paragraph();
+    const output = chance.sentence();
 
     const handler = createHandler((event) => {
       expect(event).toBe(input);
