@@ -170,7 +170,7 @@ Unfortunately, not all of our tooling is compatible with this feature yet. For e
 
 ### Steps to migrate
 
-Once tooling support improves, we would need to update our `.js` imports to be `.ts` imports. Importing `.ts` files directly would be far more intuitive and represents a significant improvement.
+Once tooling support improves, we would need to update our `.js` imports to be `.ts` imports. Importing `.ts` files directly would be far more intuitive.
 
 ```diff
 - import { module } from './imported-module.js';
