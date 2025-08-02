@@ -84,6 +84,7 @@ jobs:
       matrix:
         template:
           - eslint-config-skuba
+          - eslint-plugin-skuba
           - skuba-dive
     steps:
       - name: Check out repo
@@ -111,7 +112,7 @@ jobs:
 
       - if: github.head_ref != 'changeset-release/main' && github.ref_name != 'changeset-release/main'
         name: Test package
-        run: pnpm --filter ${{ matrix.template }} test
+        run: pnpm --filter ${{ matrix.template }} test:ci
 
   template:
     name: Integrate
