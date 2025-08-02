@@ -6,6 +6,7 @@
     "moduleResolution": "bundler",
     "outDir": "lib",
     "removeComments": false,
+    "skipLibCheck": true, // tsdown has optional peer deps
     "target": "ES2021"
   },
   "exclude": ["lib*/**/*"],
