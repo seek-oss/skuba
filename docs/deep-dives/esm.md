@@ -197,7 +197,7 @@ We would also need to rewrite our `'#src/'` imports:
 + import { module } from '#src/imported-module';
 ```
 
-If support for importing alternate extensions from `'#src/'` is required (e.g., for `.json` files), we can update our `package.json` imports to be more specific:
+For additional file types like `.json` files, we can add more specific import mappings to `package.json`:
 
 ```diff
   "imports": {
