@@ -160,12 +160,64 @@ We will apply a community codemod to help with the transition, but it will likel
 
 ---
 
+## Future considerations
+
+TypeScript 5.7 introduced [`rewriteRelativeImportExtensions`], which allows us to rewrite relative import paths to include the `.js` file extension. When combined with [`allowImportingTsExtensions`], this would allow us to import `.ts` files directly.
+
+Node.js also recently added [native type stripping support], which means we could start using Node.js to run TypeScript code directly without compilation.
+
+Unfortunately, not all of our tooling is compatible with this feature yet. For example, `esbuild`, which powers our bundling and CDK deployment, is [incompatible] with this approach. We may need to wait for broader tooling support before adopting this feature.
+
+### Steps to migrate
+
+Once tooling support improves, we would need to update our `.js` imports to be `.ts` imports. Importing `.ts` files directly would be far more intuitive and represents a significant improvement.
+
+```diff
+- import { module } from './imported-module.js';
++ import { module } from './imported-module.ts';
+```
+
+Imports beginning with `'#src/'` will need to be rewritten without extensions, as the `rewriteRelativeImportExtensions` feature only works for relative imports. This means we would need to update our `package.json` imports:
+
+```diff
+  "imports": {
+    "#src/*": {
+-    "@seek/my-repo/source": "./src/*",
++    "@seek/my-repo/source/*": "./src/*.js",
+-    "default": "./lib/*",
++    "default": "./lib/*.js",
+    }
+  }
+```
+
+We would also need to rewrite our `'#src/'` imports:
+
+```diff
+- import { module } from '#src/imported-module.js';
++ import { module } from '#src/imported-module';
+```
+
+If support for importing alternate extensions from `'#src/'` is required (e.g., for `.json` files), we can update our `package.json` imports to be more specific:
+
+```diff
+  "imports": {
++   "#src/*.json": {
++     "@seek/my-repo/source": "./src/*.json",
++     "default": "./lib/*.json",
++   }
+  }
+```
+
+[`allowImportingTsExtensions`]: https://www.typescriptlang.org/tsconfig#allowImportingTsExtensions
 [Custom conditions]: https://www.typescriptlang.org/tsconfig/#customConditions
 [`module`]: https://www.typescriptlang.org/tsconfig#module
 [`moduleNameMapper`]: https://jestjs.io/docs/configuration#modulenamemapper-objectstring-string--arraystring
 [`moduleResolution`]: https://www.typescriptlang.org/tsconfig#moduleResolution
+[`rewriteRelativeImportExtensions`]: https://www.typescriptlang.org/tsconfig#rewriteRelativeImportExtensions
+[incompatible]: https://github.com/evanw/esbuild/issues/2435#issuecomment-2587786458
 [Node.js]: https://nodejs.org/api/packages.html#subpath-imports
 [not fully compatible with ESM]: https://jestjs.io/docs/ecmascript-modules
 [Live types in a TypeScript monorepo]: https://colinhacks.com/essays/live-types-typescript-monorepo
 [TypeScript]: https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports
+[native type stripping support]: https://github.com/nodejs/node/releases/tag/v22.18.0
 [Vitest]: https://vitest.dev/
