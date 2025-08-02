@@ -210,14 +210,14 @@ If support for importing alternate extensions from `'#src/'` is required (e.g., 
 
 [`allowImportingTsExtensions`]: https://www.typescriptlang.org/tsconfig#allowImportingTsExtensions
 [Custom conditions]: https://www.typescriptlang.org/tsconfig/#customConditions
+[incompatible]: https://github.com/evanw/esbuild/issues/2435#issuecomment-2587786458
+[Live types in a TypeScript monorepo]: https://colinhacks.com/essays/live-types-typescript-monorepo
 [`module`]: https://www.typescriptlang.org/tsconfig#module
 [`moduleNameMapper`]: https://jestjs.io/docs/configuration#modulenamemapper-objectstring-string--arraystring
 [`moduleResolution`]: https://www.typescriptlang.org/tsconfig#moduleResolution
-[`rewriteRelativeImportExtensions`]: https://www.typescriptlang.org/tsconfig#rewriteRelativeImportExtensions
-[incompatible]: https://github.com/evanw/esbuild/issues/2435#issuecomment-2587786458
+[native type stripping support]: https://github.com/nodejs/node/releases/tag/v22.18.0
 [Node.js]: https://nodejs.org/api/packages.html#subpath-imports
 [not fully compatible with ESM]: https://jestjs.io/docs/ecmascript-modules
-[Live types in a TypeScript monorepo]: https://colinhacks.com/essays/live-types-typescript-monorepo
+[`rewriteRelativeImportExtensions`]: https://www.typescriptlang.org/tsconfig#rewriteRelativeImportExtensions
 [TypeScript]: https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports
-[native type stripping support]: https://github.com/nodejs/node/releases/tag/v22.18.0
 [Vitest]: https://vitest.dev/
