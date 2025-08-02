@@ -1,5 +1,61 @@
 # skuba
 
+## 12.1.0
+
+### Minor Changes
+
+- **lint:** Narrow `publicHoistPattern` list in `pnpm-workspace.yaml` ([#1959](https://github.com/seek-oss/skuba/pull/1959))
+
+- **lint:** Add `skuba/no-sync-in-promise-iterable` rule ([#1969](https://github.com/seek-oss/skuba/pull/1969))
+
+  [`skuba/no-sync-in-promise-iterable`](https://seek-oss.github.io/skuba/docs/eslint-plugin/no-sync-in-promise-iterable.html) heuristically flags synchronous logic in the iterable argument of [static `Promise` methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#static_methods) that could leave preceding promises dangling.
+
+  ```typescript
+  await Promise.allSettled([
+    promiseReject() /* This will result in an unhandled rejection */,
+    promiseResolve(syncFn() /* If this throws an error synchronously  */),
+    //             ~~~~~~~~
+    // syncFn() may synchronously throw an error and leave preceding promises dangling.
+    // Evaluate synchronous expressions before constructing the iterable argument to Promise.allSettled.
+  ]);
+  ```
+
+  A [Promise](https://nodejs.org/en/learn/asynchronous-work/discover-promises-in-nodejs) that is not awaited and later moves to a rejected state is referred to as an unhandled rejection. When an unhandled rejection is encountered, a Node.js application that does not use process clustering will default to crashing out.
+
+  This new rule defaults to the [`warn` severity](https://eslint.org/docs/latest/use/configure/rules#rule-severities) while we monitor feedback. Please share examples of false positives if you regularly run into them.
+
+- **format, lint:** Patch `src/listen.ts` entry points to handle `unhandledRejection`s ([#1978](https://github.com/seek-oss/skuba/pull/1978))
+
+  A [Promise](https://nodejs.org/en/learn/asynchronous-work/discover-promises-in-nodejs) that is not awaited and later moves to a rejected state is referred to as an unhandled rejection. When an unhandled rejection is encountered, a Node.js application that does not use process clustering will default to crashing out.
+
+  This patch adds a [`process.on('unhandledRejection')`](https://nodejs.org/api/process.html#event-unhandledrejection) listener to `src/listen.ts` server entry points to log rather than crash on such rejections. If your application uses a different entry point, consider adding code similar to the following sample to improve resilience:
+
+  ```typescript
+  // If you want to gracefully handle this scenario in AWS Lambda,
+  // remove the default AWS Lambda listener which throws an error.
+  // process.removeAllListeners('unhandledRejection');
+
+  // Report unhandled rejections instead of crashing the process
+  // Make sure to monitor these reports and alert as appropriate
+  process.on('unhandledRejection', (err) =>
+    logger.error(err, 'Unhandled promise rejection'),
+  );
+  ```
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Add partial batch failure handling ([#1924](https://github.com/seek-oss/skuba/pull/1924))
+
+- **deps:** zod ^4.0.0 ([#1977](https://github.com/seek-oss/skuba/pull/1977))
+
+- **node, start:** Replace `--require dotenv/config` with `--env-file-if-exists .env` ([#1968](https://github.com/seek-oss/skuba/pull/1968))
+
+  This drops a third-party dependency for the [built-in Node.js option](https://nodejs.org/dist/latest-v22.x/docs/api/cli.html#--env-file-if-existsconfig).
+
+- **template/\*-rest-api:** Handle `unhandledRejection`s ([#1978](https://github.com/seek-oss/skuba/pull/1978))
+
+- **template/koa-rest-api:** koa 3.x ([#1974](https://github.com/seek-oss/skuba/pull/1974))
+
 ## 12.0.2
 
 ### Patch Changes
