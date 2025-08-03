@@ -38,6 +38,21 @@ const isThenableType = (type: Type, checker: TypeChecker): boolean => {
   return false;
 };
 
+/**
+ * Whether a node represents a Promise-like "thenable".
+ */
+const isThenableNode = (
+  node: TSESTree.Node,
+  esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
+  checker: TypeChecker,
+) => {
+  const tsNode = esTreeNodeToTSNodeMap.get(node);
+
+  const type = checker.getTypeAtLocation(tsNode);
+
+  return isThenableType(type, checker);
+};
+
 const isIterableType = (type: Type, checker: TypeChecker): boolean => {
   if (checker.isArrayLikeType(type)) {
     return true;
@@ -66,9 +81,6 @@ const isChainedPromise = (
   }
 
   const parent = esTreeNodeToTSNodeMap.get(node.callee.object);
-  if (!parent) {
-    return false;
-  }
 
   const parentType = checker.getTypeAtLocation(parent);
 
@@ -194,10 +206,6 @@ const isSafeIshIterableMethod = (
 
   const tsNode = esTreeNodeToTSNodeMap.get(node.callee.object);
 
-  if (!tsNode) {
-    return false;
-  }
-
   const type = checker.getTypeAtLocation(tsNode);
 
   return isIterableType(type, checker);
@@ -309,7 +317,10 @@ const possibleNodesWithSyncError = (
         );
       }
 
-      if (isSafeIshIterableMethod(node, esTreeNodeToTSNodeMap, checker)) {
+      if (
+        isSafeIshIterableMethod(node, esTreeNodeToTSNodeMap, checker) ||
+        isThenableNode(node, esTreeNodeToTSNodeMap, checker)
+      ) {
         return node.arguments.flatMap((arg) =>
           possibleNodesWithSyncError(
             arg,
