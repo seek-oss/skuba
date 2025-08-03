@@ -17,6 +17,7 @@ const [x, y] = await Promise.allSettled([asyncX(), syncY()]);
 //                                                 ~~~~~~~
 // syncY() may synchronously throw an error and leave preceding promises dangling.
 // Evaluate synchronous expressions before constructing the iterable argument to Promise.allSettled.
+// Use the async keyword to denote asynchronous functions.
 ```
 
 ## Problem
@@ -94,50 +95,70 @@ const x = await promiseX;
 
 Avoid invoking synchronous logic between an async function being dispatched (`asyncX()`) and its promise being handled (by a static `Promise` method, `await`, etc).
 
-```typescript
-const param = syncParam(); // It's okay to throw before we make any promises
+```diff
++ const param = syncParam(); // It's okay to throw before we make any promises
 
-await Promise.all([asyncX(), asyncY(param)]);
+  await Promise.all([
+    asyncX(),
+-   asyncY(syncParam()),
++   asyncY(param),
+  ]);
+```
+
+Use the `async` keyword to denote asynchronous functions for safety;
+see the [relevant section](#asynchronous-functions) below for more information.
+
+```diff
+- const asyncX = () => {
++ const asyncX = async () => {
+    // ...
+  };
+
+  await Promise.all([asyncX(), asyncX()]);
 ```
 
 ## Limitations
 
-This rule requires type checking.
+This rule requires type checking and is heuristical.
+It may exit early without reporting issues in scenarios it has not accounted for.
 
-### False positives
+Treat it as a helper to reduce the number of async issues in your codebase,
+not as a guarantee to flag all problematic occurrences.
+
+### Synchronous functions
 
 TypeScript's type system does not capture error handling,
 so this rule assumes that a given `syncY()` function _may_ throw and should be evaluated before constructing the iterable argument.
 
 ```typescript
 // Never throws, but is still flagged
-const syncY = () => undefined;
+const syncParam = () => undefined;
 
-const [x, y] = await Promise.allSettled([asyncX(), syncY()]);
-//                                                 ~~~~~~~
-// syncY() may synchronously throw an error and leave preceding promises dangling.
-// Evaluate synchronous expressions before constructing the iterable argument to Promise.allSettled.
+const [x, y] = await Promise.all([asyncX(), asyncY(syncParam())]);
+//                                                 ~~~~~~~~~~~
+// syncParam() may synchronously throw an error and leave preceding promises dangling.
+// Evaluate synchronous expressions before constructing the iterable argument to Promise.all.
+// Use the async keyword to denote asynchronous functions.
 ```
 
 We recommend restructuring your code regardless to avoid this class of issue;
 consider that you may change the implementation of `syncY()` to throw an error in future.
 
-### Synchronous errors from asynchronous functions
+### Asynchronous functions
 
 TypeScript's type system does not capture error handling,
-so this rule assumes that a given `asyncX()` function with a [thenable] return type will only throw asynchronous errors.
+so this rule assumes that a given `asyncX()` function with a [thenable] return type _may_ still throw synchronous errors.
 
-The assumption is not strictly correct.
-Consider the following:
+The following example demonstrates the risk being managed:
 
 ```typescript
 const evil = (() => {
   if (condition) {
-    throw new Error('Synchronous error');
+    throw new Error('Synchronous error'); // Throws synchronous error
   }
 
   return Promise.resolve();
-}) satisfies () => Promise<void>;
+}) satisfies () => Promise<void>; // While appearing asynchronous
 ```
 
 Use of the `async` keyword can help to ensure the whole function evaluation is deferred,

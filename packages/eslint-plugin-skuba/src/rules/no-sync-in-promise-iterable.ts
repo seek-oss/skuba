@@ -38,19 +38,41 @@ const isThenableType = (type: Type, checker: TypeChecker): boolean => {
   return false;
 };
 
-/**
- * Whether a node represents a Promise-like "thenable".
- */
-const isThenableNode = (
-  node: TSESTree.Node,
+const isIterableType = (type: Type, checker: TypeChecker): boolean => {
+  if (checker.isArrayLikeType(type)) {
+    return true;
+  }
+
+  const symbol = type.getSymbol();
+
+  return symbol?.escapedName.toString().endsWith('Iterator') ?? false;
+};
+
+const PROMISE_INSTANCE_METHODS = new Set(['catch', 'then', 'finally']);
+
+const isChainedPromise = (
+  node: TSESTree.CallExpression,
   esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
   checker: TypeChecker,
 ) => {
-  const tsNode = esTreeNodeToTSNodeMap.get(node);
+  if (
+    !(
+      node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+      node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
+      PROMISE_INSTANCE_METHODS.has(node.callee.property.name)
+    )
+  ) {
+    return false;
+  }
 
-  const type = checker.getTypeAtLocation(tsNode);
+  const parent = esTreeNodeToTSNodeMap.get(node.callee.object);
+  if (!parent) {
+    return false;
+  }
 
-  return isThenableType(type, checker);
+  const parentType = checker.getTypeAtLocation(parent);
+
+  return isThenableType(parentType, checker);
 };
 
 const SAFE_ISH_FUNCTIONS = new Set([
@@ -67,6 +89,7 @@ const SAFE_ISH_FUNCTIONS = new Set([
 const SAFE_ISH_STATIC_METHODS: Record<string, Set<string>> = {
   Array: new Set(['isArray']),
   Date: new Set(['now', 'parse', 'UTC']),
+  Iterator: new Set(['from']),
   Number: new Set([
     'isFinite',
     'isInteger',
@@ -84,6 +107,7 @@ const SAFE_ISH_STATIC_METHODS: Record<string, Set<string>> = {
     'keys',
     'values',
   ]),
+  Promise: new Set(['reject', 'resolve', 'try', 'withResolvers']),
 };
 
 /**
@@ -108,6 +132,75 @@ const isSafeIshBuiltIn = (node: TSESTree.CallExpression): boolean => {
   }
 
   return false;
+};
+
+const SAFE_ISH_ITERABLE_INSTANCE_METHODS = new Set([
+  'concat',
+  'copyWithin',
+  'difference',
+  'drop',
+  'entries',
+  'every',
+  'fill',
+  'filter',
+  'find',
+  'findIndex',
+  'findLast',
+  'findLastIndex',
+  'flat',
+  'flatMap', // Note that this can throw a `TypeError`
+  'has',
+  'includes',
+  'indexOf',
+  'intersection',
+  'keys',
+  'lastIndexOf',
+  'map',
+  'reduce', // Note that this can throw a `TypeError`
+  'reduceRight',
+  'reverse',
+  'slice',
+  'some',
+  'splice',
+  'symmetricDifference',
+  'toArray',
+  'toReversed',
+  'toSorted',
+  'toSorted',
+  'toSpliced',
+  'union',
+  'values',
+  'with',
+]);
+
+/**
+ * Whether a call expression represents a method on an iterable object that is
+ * unlikely to internally throw a synchronous error.
+ */
+const isSafeIshIterableMethod = (
+  node: TSESTree.CallExpression,
+  esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
+  checker: TypeChecker,
+): boolean => {
+  if (
+    !(
+      node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+      node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
+      SAFE_ISH_ITERABLE_INSTANCE_METHODS.has(node.callee.property.name)
+    )
+  ) {
+    return false;
+  }
+
+  const tsNode = esTreeNodeToTSNodeMap.get(node.callee.object);
+
+  if (!tsNode) {
+    return false;
+  }
+
+  const type = checker.getTypeAtLocation(tsNode);
+
+  return isIterableType(type, checker);
 };
 
 /**
@@ -136,6 +229,16 @@ const possibleNodesWithSyncError = (
           : [],
       );
 
+    case TSESTree.AST_NODE_TYPES.ArrowFunctionExpression:
+    case TSESTree.AST_NODE_TYPES.FunctionExpression:
+    case TSESTree.AST_NODE_TYPES.FunctionDeclaration:
+      if (node.async) {
+        return [];
+      }
+
+      // Assume functions lacking `async` keyword may synchronously throw
+      return [node.parent];
+
     case TSESTree.AST_NODE_TYPES.AssignmentExpression:
       // Traverse `a = fn()` assuming only the right-hand side may throw
       return possibleNodesWithSyncError(
@@ -161,10 +264,52 @@ const possibleNodesWithSyncError = (
 
     case TSESTree.AST_NODE_TYPES.CallExpression:
       // Allow common safe-ish built-ins and Promise-like return types
+      if (isSafeIshBuiltIn(node)) {
+        return node.arguments.flatMap((arg) =>
+          possibleNodesWithSyncError(
+            arg,
+            esTreeNodeToTSNodeMap,
+            checker,
+            sourceCode,
+            visited,
+          ),
+        );
+      }
+
+      const expression =
+        node.callee.type === TSESTree.AST_NODE_TYPES.Identifier
+          ? findExpression(node.callee, sourceCode, visited)
+          : node.callee;
+
       if (
-        isSafeIshBuiltIn(node) ||
-        isThenableNode(node, esTreeNodeToTSNodeMap, checker)
+        expression?.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression ||
+        expression?.type === TSESTree.AST_NODE_TYPES.FunctionExpression
       ) {
+        return possibleNodesWithSyncError(
+          expression,
+          esTreeNodeToTSNodeMap,
+          checker,
+          sourceCode,
+          visited,
+        );
+      }
+
+      if (isChainedPromise(node, esTreeNodeToTSNodeMap, checker)) {
+        return node.arguments.flatMap((arg) =>
+          arg.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression ||
+          arg.type === TSESTree.AST_NODE_TYPES.FunctionExpression
+            ? []
+            : possibleNodesWithSyncError(
+                arg,
+                esTreeNodeToTSNodeMap,
+                checker,
+                sourceCode,
+                visited,
+              ),
+        );
+      }
+
+      if (isSafeIshIterableMethod(node, esTreeNodeToTSNodeMap, checker)) {
         return node.arguments.flatMap((arg) =>
           possibleNodesWithSyncError(
             arg,
@@ -201,20 +346,32 @@ const possibleNodesWithSyncError = (
         ),
       );
 
-    case TSESTree.AST_NODE_TYPES.Identifier:
+    case TSESTree.AST_NODE_TYPES.Identifier: {
       const expression = findExpression(node, sourceCode, visited);
 
-      return expression
-        ? possibleNodesWithSyncError(
-            expression,
-            esTreeNodeToTSNodeMap,
-            checker,
-            sourceCode,
-            visited,
-          )
-        : [];
+      if (expression) {
+        return possibleNodesWithSyncError(
+          expression,
+          esTreeNodeToTSNodeMap,
+          checker,
+          sourceCode,
+          visited,
+        );
+      }
+
+      return [];
+    }
 
     case TSESTree.AST_NODE_TYPES.Literal:
+      return [];
+
+    case TSESTree.AST_NODE_TYPES.MemberExpression:
+      if (node.object.type === TSESTree.AST_NODE_TYPES.CallExpression) {
+        return [node.object];
+      }
+
+      // Allow property access
+      // Assume we will flag custom getters separately to prevent such errors
       return [];
 
     case TSESTree.AST_NODE_TYPES.NewExpression:
@@ -266,34 +423,19 @@ const possibleNodesWithSyncError = (
           visited,
         ),
       );
-
-    // Commented out to allow property access
-    // Assume we will flag custom getters separately to prevent such errors
-    // case TSESTree.AST_NODE_TYPES.MemberExpression:
-    //   return isThenableNode(node, esTreeNodeToTSNodeMap, checker) ? [] : [node];
   }
 
   return [];
 };
 
 const checkIterableForSyncErrors = (
-  elements: Array<ArrayElement | null>,
+  elements: Array<ArrayElement>,
   method: string,
   context: Context,
   esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
   checker: TypeChecker,
-): void =>
-  elements.forEach((element, index) => {
-    // Skip sparse elements like `[,,]` as they are harmless
-    if (!element) {
-      return;
-    }
-
-    // Skip the first element as it doesn't leave any previous promises dangling
-    if (index === 0 && element.type !== TSESTree.AST_NODE_TYPES.SpreadElement) {
-      return;
-    }
-
+): void => {
+  for (const element of elements) {
     const nodes = possibleNodesWithSyncError(
       element,
       esTreeNodeToTSNodeMap,
@@ -308,11 +450,12 @@ const checkIterableForSyncErrors = (
         messageId: 'mayThrowSyncError',
         data: {
           method,
-          value: context.sourceCode.getText(element),
+          value: context.sourceCode.getText(node),
         },
       });
     }
-  });
+  }
+};
 
 const findExpression = (
   node: TSESTree.Identifier,
@@ -340,11 +483,7 @@ const findExpression = (
 
     if (
       definition.node.type === TSESTree.AST_NODE_TYPES.VariableDeclarator &&
-      definition.node.init &&
-      [
-        TSESTree.AST_NODE_TYPES.ArrayExpression,
-        TSESTree.AST_NODE_TYPES.Identifier,
-      ].includes(definition.node.init.type)
+      definition.node.init
     ) {
       return definition.node.init;
     }
@@ -357,19 +496,47 @@ const resolveArrayElements = (
   node: TSESTree.CallExpressionArgument,
   sourceCode: Readonly<TSESLint.SourceCode>,
   visited = new Set<string>(),
-): Array<ArrayElement | null> => {
-  // Handle direct array expressions like `Promise.all([1, 2])`
-  if (node.type === TSESTree.AST_NODE_TYPES.ArrayExpression) {
-    return node.elements;
-  }
+): Array<ArrayElement> => {
+  switch (node.type) {
+    // Handle direct array expressions like `Promise.all([1, 2])`
+    case TSESTree.AST_NODE_TYPES.ArrayExpression:
+      return node.elements.flatMap((element, index) => {
+        // Skip sparse elements like `[,,]` as they are harmless
+        if (!element) {
+          return [];
+        }
 
-  // Handle indirection like `const promises = [1, 2]; Promise.all(promises)`
-  if (node.type === TSESTree.AST_NODE_TYPES.Identifier) {
-    const expression = findExpression(node, sourceCode, visited);
+        // Skip unevaluated functions as they are harmless
+        if (
+          element.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression ||
+          element.type === TSESTree.AST_NODE_TYPES.FunctionExpression
+        ) {
+          return [];
+        }
 
-    if (expression) {
+        // Skip first element as it doesn't leave preceding promises dangling
+        if (
+          index === 0 &&
+          element.type !== TSESTree.AST_NODE_TYPES.SpreadElement
+        ) {
+          return [];
+        }
+
+        return element;
+      });
+
+    // Pass through calls like `Promise.all(promises.map(fn))`
+    case TSESTree.AST_NODE_TYPES.CallExpression:
+      return [node];
+
+    // Handle indirection like `const promises = [1, 2]; Promise.all(promises)`
+    case TSESTree.AST_NODE_TYPES.Identifier:
+      const expression = findExpression(node, sourceCode, visited);
+      if (!expression) {
+        return [];
+      }
+
       return resolveArrayElements(expression, sourceCode, visited);
-    }
   }
 
   return [];
@@ -411,7 +578,7 @@ export default createRule({
     schema: [],
     messages: {
       mayThrowSyncError:
-        '{{value}} may synchronously throw an error and leave preceding promises dangling. Evaluate synchronous expressions before constructing the iterable argument to Promise.{{method}}.',
+        '{{value}} may synchronously throw an error and leave preceding promises dangling. Evaluate synchronous expressions before constructing the iterable argument to Promise.{{method}}. Use the async keyword to denote asynchronous functions.',
     },
   },
   create: (context) => {

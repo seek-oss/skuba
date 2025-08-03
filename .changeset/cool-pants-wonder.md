@@ -15,6 +15,7 @@ await Promise.allSettled([
   //             ~~~~~~~~
   // syncFn() may synchronously throw an error and leave preceding promises dangling.
   // Evaluate synchronous expressions before constructing the iterable argument to Promise.allSettled.
+  // Use the async keyword to denote asynchronous functions.
 ]);
 ```
 

@@ -82,8 +82,10 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     // Complex thenable expression
     {
       code: `
-        const getPromise = () => Promise.resolve();
-        Promise.${method}([1, getPromise().then(() => 2), 3]);
+        const p1 = async () => Promise.resolve();
+        const p2 = p1;
+        const p3 = p2;
+        Promise.${method}([1, p3().then(() => 2), 3]);
       `,
     },
     // Await expression in async context
@@ -148,21 +150,34 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `Promise.${method}([1, !someValue, 3])`,
     },
+    // Array instance methods
+    {
+      code: `const fn = (xs: string[]) => Promise.${method}(xs.map(async () => undefined));`,
+    },
+    {
+      code: `Promise.${method}([1, Array.from(iterable).map(async () => undefined), 3])`,
+    },
+    {
+      code: `
+        const set = new Set([1, 2, 3]);
+        Promise.${method}([1, ...set.entries().map(async () => undefined), 3]);
+      `,
+    },
+    // IIFE
+    {
+      code: `Promise.${method}([1, (async () => undefined)()]);`,
+    },
   ]),
   invalid: methods.flatMap((method) => [
     {
       code: `
         const syncFn = () => undefined;
-        
         Promise.${method}([1, 2, Boolean() ? syncFn() : Promise.resolve()]);
       `,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: {
-            method,
-            value: 'Boolean() ? syncFn() : Promise.resolve()',
-          },
+          data: { method, value: 'syncFn = () => undefined' },
         },
       ],
     },
@@ -178,7 +193,6 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `
         const path = { to: { syncFn: () => undefined } };
-
         Promise.${method}([1, path.to?.syncFn(), 3]);
       `,
       errors: [
@@ -202,14 +216,13 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'Promise.resolve(syncFn())' },
+          data: { method, value: 'syncFn()' },
         },
       ],
     },
     {
       code: `
         const promises = [1, syncFn(), 3];
-
         Promise.${method}(promises);
       `,
       errors: [
@@ -221,18 +234,16 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     },
     {
       code: `
+        const syncFn = () => Promise.resolve();
         const p1 = [1, syncFn(), 3];
-
         const p2 = p1;
-
         const p3 = p2;
-
         Promise.${method}(p3);
       `,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn()' },
+          data: { method, value: 'syncFn = () => Promise.resolve()' },
         },
       ],
     },
@@ -261,7 +272,7 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: '[syncFn(), 2]' },
+          data: { method, value: 'syncFn()' },
         },
       ],
     },
@@ -292,7 +303,6 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
         const level2 = level1;
         const level3 = level2;
         const level4 = level3;
-        
         Promise.${method}(level4);
       `,
       errors: [
@@ -311,7 +321,7 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: '...problematic' },
+          data: { method, value: 'syncFn()' },
         },
       ],
     },
@@ -321,7 +331,39 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: '`result: ${syncFn()}`' },
+          data: { method, value: 'syncFn()' },
+        },
+      ],
+    },
+    // Array instance method
+    {
+      code: `
+        const set = new Set([1, 2, 3]);
+        Promise.${method}(set.entries().map(() => undefined));
+      `,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: { method, value: 'set.entries().map(() => undefined)' },
+        },
+      ],
+    },
+    {
+      code: `const fn = (xs: string[]) => Promise.${method}(xs.map(() => undefined))`,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: { method, value: 'xs.map(() => undefined)' },
+        },
+      ],
+    },
+    // IIFE
+    {
+      code: `Promise.${method}([1, (() => undefined)()]);`,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: { method, value: '(() => undefined)()' },
         },
       ],
     },
