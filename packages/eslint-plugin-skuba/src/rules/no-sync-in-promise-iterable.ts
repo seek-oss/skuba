@@ -262,7 +262,7 @@ const possibleNodesWithSyncError = (
         ),
       );
 
-    case TSESTree.AST_NODE_TYPES.CallExpression:
+    case TSESTree.AST_NODE_TYPES.CallExpression: {
       // Allow common safe-ish built-ins and Promise-like return types
       if (isSafeIshBuiltIn(node)) {
         return node.arguments.flatMap((arg) =>
@@ -323,6 +323,7 @@ const possibleNodesWithSyncError = (
 
       // Assume other synchronous calls may throw
       return [node];
+    }
 
     case TSESTree.AST_NODE_TYPES.ChainExpression:
       // Traverse the optional chaining
