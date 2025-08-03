@@ -147,9 +147,9 @@ consider that you may change the implementation of `syncY()` to throw an error i
 ### Asynchronous functions
 
 TypeScript's type system does not capture error handling,
-so this rule assumes that a given `asyncX()` function with a [thenable] return type _may_ still throw synchronous errors.
+so this rule cannot exhaustively prove whether a [thenable] `asyncX()` function still throws synchronous errors.
 
-The following example demonstrates the risk being managed:
+The following example demonstrates the issue:
 
 ```typescript
 const evil = (() => {
