@@ -367,10 +367,6 @@ const possibleNodesWithSyncError = (
       return [];
 
     case TSESTree.AST_NODE_TYPES.MemberExpression:
-      if (node.object.type === TSESTree.AST_NODE_TYPES.CallExpression) {
-        return [node.object];
-      }
-
       // Allow property access
       // Assume we will flag custom getters separately to prevent such errors
       return [];
