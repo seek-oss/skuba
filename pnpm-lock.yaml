@@ -303,8 +303,8 @@ importers:
         specifier: ^10.0.0
         version: 10.2.1
       seek-datadog-custom-metrics:
-        specifier: ^4.6.3
-        version: 4.6.5(datadog-lambda-js@10.124.0)(hot-shots@10.2.1)
+        specifier: ^5.0.0
+        version: 5.0.0(datadog-lambda-js@10.124.0)(hot-shots@10.2.1)
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -386,8 +386,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       seek-datadog-custom-metrics:
-        specifier: ^4.6.3
-        version: 4.6.5(datadog-lambda-js@10.124.0)(hot-shots@10.2.1)
+        specifier: ^5.0.0
+        version: 5.0.0(datadog-lambda-js@10.124.0)(hot-shots@10.2.1)
       seek-koala:
         specifier: ^7.1.0
         version: 7.1.0(hot-shots@10.2.1)(koa@3.0.1)
@@ -5851,8 +5851,8 @@ packages:
   secure-json-parse@4.0.0:
     resolution: {integrity: sha512-dxtLJO6sc35jWidmLxo7ij+Eg48PM/kleBsxpC8QJE0qJICe+KawkDQmvCMZUr9u7WKVHgMW6vy3fQ7zMiFZMA==}
 
-  seek-datadog-custom-metrics@4.6.5:
-    resolution: {integrity: sha512-4ef1bYnSDJa8erDfwE9GTN2Jdq6EWeeYCEpnqGWQCVF6UO/SX28BTkb//rf8baCt1pccbf+cxVkceldT6Gz/4g==}
+  seek-datadog-custom-metrics@5.0.0:
+    resolution: {integrity: sha512-cdv7Bo3YY2fFxIabCERK6ghSeqFgfgaUB1dmwmsbU4+IWBP4KVrX7Q2AkN1MeIsXBBsE4gFEGp6igObWUgfYZg==}
     peerDependencies:
       datadog-lambda-js: 6.x || 7.x || 8.x || 9.x || 10.x
       hot-shots: 6.x || 7.x || 8.x || 9.x || 10.x
@@ -13593,7 +13593,7 @@ snapshots:
 
   secure-json-parse@4.0.0: {}
 
-  seek-datadog-custom-metrics@4.6.5(datadog-lambda-js@10.124.0)(hot-shots@10.2.1):
+  seek-datadog-custom-metrics@5.0.0(datadog-lambda-js@10.124.0)(hot-shots@10.2.1):
     dependencies:
       '@types/aws-lambda': 8.10.152
     optionalDependencies:
