@@ -359,18 +359,6 @@ const possibleNodesWithSyncError = (
       );
 
     case TSESTree.AST_NODE_TYPES.Identifier: {
-      const expression = findExpression(node, sourceCode, visited);
-
-      if (expression) {
-        return possibleNodesWithSyncError(
-          expression,
-          esTreeNodeToTSNodeMap,
-          checker,
-          sourceCode,
-          visited,
-        );
-      }
-
       return [];
     }
 
@@ -406,15 +394,24 @@ const possibleNodesWithSyncError = (
         ),
       );
 
-    case TSESTree.AST_NODE_TYPES.SpreadElement:
+    case TSESTree.AST_NODE_TYPES.SpreadElement: {
+      let expression: TSESTree.Expression | undefined;
+
+      if (node.argument.type === TSESTree.AST_NODE_TYPES.Identifier) {
+        expression = findExpression(node.argument, sourceCode, visited);
+      }
+
+      expression ??= node.argument;
+
       // Traverse spread element
       return possibleNodesWithSyncError(
-        node.argument,
+        expression,
         esTreeNodeToTSNodeMap,
         checker,
         sourceCode,
         visited,
       );
+    }
 
     case TSESTree.AST_NODE_TYPES.TaggedTemplateExpression:
       // Assume the tag function may throw

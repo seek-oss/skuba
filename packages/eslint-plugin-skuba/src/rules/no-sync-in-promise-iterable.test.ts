@@ -57,6 +57,14 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `Promise.${method}([1, new Promise(resolve => resolve(2)), 3])`,
     },
+    // Avoid traversal outside of iterable argument scope
+    {
+      code: `
+        const fn = (xs: string[]) => xs.join(', ');
+        const value = fn(['a', 'b', 'c']);
+        Promise.${method}([1, value]);
+      `,
+    },
     // Untagged template literal
     {
       code: `Promise.${method}([1, \`template\${2}\`, 3])`,
