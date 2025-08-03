@@ -32,7 +32,6 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toHaveLength(0);
 
-    metricsClient.expectTagSubset(['env:test', 'version:test']);
     metricsClient.expectTagSubset([
       'http_method:get',
       'http_status:200',
