@@ -50,7 +50,9 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     },
     {
       code: `
-        const asyncFn = async () => undefined;
+        const asyncFn = async () => {
+          return 2;
+        };
         Promise.${method}([1, asyncFn(), 3]);
       `,
     },
@@ -90,7 +92,7 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     // Complex thenable expression
     {
       code: `
-        const p1 = async () => Promise.resolve();
+        const p1 = () => Promise.resolve();
         const p2 = p1;
         const p3 = p2;
         Promise.${method}([1, p3().then(() => 2), 3]);
@@ -173,34 +175,42 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     },
     // IIFE
     {
-      code: `Promise.${method}([1, (async () => undefined)()]);`,
+      code: `Promise.${method}([1, (async () => fail())()]);`,
+    },
+    // Simple function expression
+    {
+      code: `
+        const xs = [1, 2, 3];
+        const fn = (x: number) => x * 2;
+        Promise.${method}([1, xs.map(() => fn(x)), 3]);
+      `,
     },
   ]),
   invalid: methods.flatMap((method) => [
     {
       code: `
-        const syncFn = () => undefined;
+        const syncFn = () => fail();
         Promise.${method}([1, 2, Boolean() ? syncFn() : Promise.resolve()]);
       `,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn = () => undefined' },
+          data: { method, value: 'fail()' },
         },
       ],
     },
     {
-      code: `Promise.${method}([1, syncFn(), 3])`,
+      code: `Promise.${method}([1, fail(), 3])`,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn()' },
+          data: { method, value: 'fail()' },
         },
       ],
     },
     {
       code: `
-        const path = { to: { syncFn: () => undefined } };
+        const path = { to: { syncFn: () => fail() } };
         Promise.${method}([1, path.to?.syncFn(), 3]);
       `,
       errors: [
@@ -242,7 +252,7 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     },
     {
       code: `
-        const syncFn = () => Promise.resolve();
+        const syncFn = () => fail();
         const p1 = [1, syncFn(), 3];
         const p2 = p1;
         const p3 = p2;
@@ -251,7 +261,7 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn = () => Promise.resolve()' },
+          data: { method, value: 'fail()' },
         },
       ],
     },
@@ -347,31 +357,49 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `
         const set = new Set([1, 2, 3]);
-        Promise.${method}(set.entries().map(() => undefined));
+        Promise.${method}(set.entries().map(() => fail()));
       `,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'set.entries().map(() => undefined)' },
+          data: { method, value: 'fail()' },
         },
       ],
     },
     {
-      code: `const fn = (xs: string[]) => Promise.${method}(xs.map(() => undefined))`,
+      code: `const fn = (xs: string[]) => Promise.${method}(xs.map(() => fail()))`,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'xs.map(() => undefined)' },
+          data: { method, value: 'fail()' },
         },
       ],
     },
     // IIFE
     {
-      code: `Promise.${method}([1, (() => undefined)()]);`,
+      code: `Promise.${method}([1, (() => fail())()]);`,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: '(() => undefined)()' },
+          data: { method, value: 'fail()' },
+        },
+      ],
+    },
+    // Simple function expression with blocky argument
+    {
+      code: `
+        const xs = [1, 2, 3];
+        const fn = (x: number) => x * 2;
+        const param = (x: number) => { /* block! */ return x }
+        Promise.${method}([1, xs.map(() => fn(param(x))), 3]);
+      `,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: {
+            method,
+            value: 'param = (x: number) => { /* block! */ return x }',
+          },
         },
       ],
     },

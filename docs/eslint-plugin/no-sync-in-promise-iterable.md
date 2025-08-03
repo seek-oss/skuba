@@ -16,7 +16,7 @@ Heuristically flags synchronous logic in the iterable argument of [static `Promi
 const [x, y] = await Promise.allSettled([asyncX(), syncY()]);
 //                                                 ~~~~~~~
 // syncY() may synchronously throw an error and leave preceding promises dangling.
-// Evaluate synchronous expressions before constructing the iterable argument to Promise.allSettled.
+// Evaluate synchronous expressions outside of the iterable argument to Promise.allSettled.
 // Use the async keyword to denote asynchronous functions.
 ```
 
@@ -128,7 +128,7 @@ not as a guarantee to flag all problematic occurrences.
 ### Synchronous functions
 
 TypeScript's type system does not capture error handling,
-so this rule assumes that a given `syncY()` function _may_ throw and should be evaluated before constructing the iterable argument.
+so this rule assumes that a given `syncY()` function _may_ throw and should be evaluated outside of the iterable argument.
 
 ```typescript
 // Never throws, but is still flagged
@@ -137,7 +137,7 @@ const syncParam = () => undefined;
 const [x, y] = await Promise.all([asyncX(), asyncY(syncParam())]);
 //                                                 ~~~~~~~~~~~
 // syncParam() may synchronously throw an error and leave preceding promises dangling.
-// Evaluate synchronous expressions before constructing the iterable argument to Promise.all.
+// Evaluate synchronous expressions outside of the iterable argument to Promise.all.
 // Use the async keyword to denote asynchronous functions.
 ```
 

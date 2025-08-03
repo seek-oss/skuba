@@ -244,8 +244,19 @@ const possibleNodesWithSyncError = (
         return [];
       }
 
-      // Assume functions lacking `async` keyword may synchronously throw
-      return [node.parent];
+      // Assume block lacking `async` keyword may synchronously throw
+      if (node.body.type === TSESTree.AST_NODE_TYPES.BlockStatement) {
+        return [node.parent];
+      }
+
+      // Traverse simple function expressions like `(param) => call(param)`
+      return possibleNodesWithSyncError(
+        node.body,
+        esTreeNodeToTSNodeMap,
+        checker,
+        sourceCode,
+        visited,
+      );
 
     case TSESTree.AST_NODE_TYPES.AssignmentExpression:
       // Traverse `a = fn()` assuming only the right-hand side may throw
@@ -293,12 +304,14 @@ const possibleNodesWithSyncError = (
         expression?.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression ||
         expression?.type === TSESTree.AST_NODE_TYPES.FunctionExpression
       ) {
-        return possibleNodesWithSyncError(
-          expression,
-          esTreeNodeToTSNodeMap,
-          checker,
-          sourceCode,
-          visited,
+        return [expression, ...node.arguments].flatMap((arg) =>
+          possibleNodesWithSyncError(
+            arg,
+            esTreeNodeToTSNodeMap,
+            checker,
+            sourceCode,
+            visited,
+          ),
         );
       }
 
@@ -583,7 +596,7 @@ export default createRule({
     schema: [],
     messages: {
       mayThrowSyncError:
-        '{{value}} may synchronously throw an error and leave preceding promises dangling. Evaluate synchronous expressions before constructing the iterable argument to Promise.{{method}}. Use the async keyword to denote asynchronous functions.',
+        '{{value}} may synchronously throw an error and leave preceding promises dangling. Evaluate synchronous expressions outside of the iterable argument to Promise.{{method}}. Use the async keyword to denote asynchronous functions.',
     },
   },
   create: (context) => {
