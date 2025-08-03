@@ -132,7 +132,9 @@ so this rule assumes that a given `syncY()` function _may_ throw and should be e
 
 ```typescript
 // Never throws, but is still flagged
-const syncParam = () => undefined;
+const syncParam = () => {
+  // ...
+};
 
 const [x, y] = await Promise.all([asyncX(), asyncY(syncParam())]);
 //                                                 ~~~~~~~~~~~
