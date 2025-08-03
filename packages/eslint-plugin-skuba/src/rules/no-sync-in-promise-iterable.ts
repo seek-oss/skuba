@@ -429,7 +429,7 @@ const possibleNodesWithSyncError = (
 };
 
 const checkIterableForSyncErrors = (
-  elements: Array<ArrayElement>,
+  elements: ArrayElement[],
   method: string,
   context: Context,
   esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
@@ -496,7 +496,7 @@ const resolveArrayElements = (
   node: TSESTree.CallExpressionArgument,
   sourceCode: Readonly<TSESLint.SourceCode>,
   visited = new Set<string>(),
-): Array<ArrayElement> => {
+): ArrayElement[] => {
   switch (node.type) {
     // Handle direct array expressions like `Promise.all([1, 2])`
     case TSESTree.AST_NODE_TYPES.ArrayExpression:
