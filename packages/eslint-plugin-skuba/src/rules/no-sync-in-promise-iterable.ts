@@ -189,7 +189,6 @@ const SAFE_ISH_ITERABLE_INSTANCE_METHODS = new Set([
   'toArray',
   'toReversed',
   'toSorted',
-  'toSorted',
   'toSpliced',
   'union',
   'values',
