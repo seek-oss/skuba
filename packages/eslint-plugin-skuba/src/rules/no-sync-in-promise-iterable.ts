@@ -122,6 +122,14 @@ const SAFE_ISH_STATIC_METHODS: Record<string, Set<string>> = {
   Promise: new Set(['reject', 'resolve', 'try', 'withResolvers']),
 };
 
+const SAFE_ISH_INSTANCE_METHODS = new Set([
+  'apply',
+  'bind',
+  'call',
+  'toLocaleString',
+  'toString',
+]);
+
 /**
  * Whether a call expression represents a safe-ish built-in.
  *
@@ -139,7 +147,10 @@ const isSafeIshBuiltIn = (node: TSESTree.CallExpression): boolean => {
       object.type === TSESTree.AST_NODE_TYPES.Identifier &&
       property.type === TSESTree.AST_NODE_TYPES.Identifier
     ) {
-      return SAFE_ISH_STATIC_METHODS[object.name]?.has(property.name) ?? false;
+      return (
+        SAFE_ISH_STATIC_METHODS[object.name]?.has(property.name) ??
+        SAFE_ISH_INSTANCE_METHODS.has(property.name)
+      );
     }
   }
 

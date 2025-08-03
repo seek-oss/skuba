@@ -185,6 +185,22 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
         Promise.${method}([1, xs.map(() => fn(x)), 3]);
       `,
     },
+    // Object/function instance method
+    {
+      code: `Promise.${method}([1, [1, 2].map(x => x.toString())]);`,
+    },
+    {
+      code: `Promise.${method}([1, [1, 2].map(x => x.toLocaleString())]);`,
+    },
+    {
+      code: `const fn = () => undefined; Promise.${method}([1, fn.call()]);`,
+    },
+    {
+      code: `const fn = () => undefined; Promise.${method}([1, fn.bind()]);`,
+    },
+    {
+      code: `const fn = () => undefined; Promise.${method}([1, fn.apply()]);`,
+    },
   ]),
   invalid: methods.flatMap((method) => [
     {
@@ -400,6 +416,25 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
             method,
             value: 'param = (x: number) => { /* block! */ return x }',
           },
+        },
+      ],
+    },
+    // Object/function instance method with problematic argument
+    {
+      code: `Promise.${method}([1, [1, 2].map(x => x.toLocaleString(fail()))]);`,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: { method, value: 'fail()' },
+        },
+      ],
+    },
+    {
+      code: `const fn = () => undefined; Promise.${method}([1, fn.call(fail())]);`,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: { method, value: 'fail()' },
         },
       ],
     },
