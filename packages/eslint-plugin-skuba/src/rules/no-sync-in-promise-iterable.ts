@@ -58,9 +58,9 @@ const isIterableType = (type: Type, checker: TypeChecker): boolean => {
     return true;
   }
 
-  const symbol = type.getSymbol();
-
-  return symbol?.escapedName.toString().endsWith('Iterator') ?? false;
+  return type
+    .getProperties()
+    .some((property) => property.name.startsWith('__@iterator'));
 };
 
 const PROMISE_INSTANCE_METHODS = new Set(['catch', 'then', 'finally']);
