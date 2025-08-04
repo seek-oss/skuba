@@ -166,6 +166,8 @@ TypeScript 5.7 introduced [`rewriteRelativeImportExtensions`], which allows us t
 
 Node.js also recently added [native type stripping support], which means we could start using Node.js to run TypeScript code directly without compilation.
 
+> **Note:** This is not intended as a goal for production applications. However, it would significantly simplify local development, REPL usage, and scripting workflows.
+
 Unfortunately, not all of our tooling is compatible with this feature yet. For example, `esbuild`, which powers our bundling and CDK deployment, is [incompatible] with this approach. We may need to wait for broader tooling support before adopting this feature.
 
 ### Steps to migrate
