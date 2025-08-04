@@ -148,6 +148,13 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `Promise.${method}([1, !someValue, 3])`,
     },
+    // Safe-ish builders
+    {
+      code: `Promise.${method}([1, knex('schema.table').delete()])`,
+    },
+    {
+      code: `Promise.${method}([1, knex('schema.table').select('*').where('id', 1)])`,
+    },
   ]),
   invalid: methods.flatMap((method) => [
     {
