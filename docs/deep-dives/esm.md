@@ -185,7 +185,7 @@ Imports beginning with `'#src/'` will need to be rewritten without extensions, a
   "imports": {
     "#src/*": {
 -    "@seek/my-repo/source": "./src/*",
-+    "@seek/my-repo/source/*": "./src/*.js",
++    "@seek/my-repo/source/*": "./src/*.ts",
 -    "default": "./lib/*",
 +    "default": "./lib/*.js",
     }
