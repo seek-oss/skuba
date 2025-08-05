@@ -16,6 +16,7 @@ import type { PatchConfig } from '../../index.js';
 
 import {
   IMPORT_REGEX,
+  NAMED_EXPORT_REGEX,
   tryPatchUnhandledRejections,
 } from './unhandledRejections.js';
 
@@ -83,7 +84,7 @@ describe('IMPORT_REGEX', () => {
     },
     {
       identifier: 'rootLogger',
-      statement: 'import rootLogger from "../logger.js"',
+      statement: 'import rootLogger from "../logger.ts"',
     },
 
     {
@@ -95,6 +96,14 @@ describe('IMPORT_REGEX', () => {
       statement:
         "import   {   logger   as   baseLogger   }   from   'src/logging';",
     },
+    {
+      identifier: 'logger',
+      statement: "import   { logger }   from   'src/logging/index';",
+    },
+    {
+      identifier: 'logger',
+      statement: "import   { logger }   from   'src/logging/index.ts';",
+    },
   ])(
     'extracts `$identifier` from `$statement`',
     ({ identifier, statement }) => {
@@ -105,13 +114,64 @@ describe('IMPORT_REGEX', () => {
   );
 
   test.each([
+    '',
     `import {logger} from 'src/logging.json';`,
     `import rootLogger from 'src/dunno';`,
     `import contextStorage    from 'src/framework/logger';`,
     `import { logger as contextStorage } from './logging.js';`,
     `import { contextStorage as logger } from './logging.js';`,
+    `import { somethingElse, logger } from './logging.js';`,
   ])('does not match `%s`', (statement) =>
     expect(IMPORT_REGEX.test(statement)).toBe(false),
+  );
+});
+
+describe('NAMED_EXPORT_REGEX', () => {
+  test.each([
+    {
+      identifier: 'logger',
+      statement: 'export { logger }',
+    },
+    {
+      identifier: 'logger',
+      statement: `
+        export {
+          a,
+          b,
+          logger,
+          c
+        }
+      `,
+    },
+    {
+      identifier: 'rootLoggerLogger',
+      statement: 'export { somethingElse, lolo, rootLoggerLogger }',
+    },
+    {
+      identifier: 'logger',
+      statement: 'export const logger = createLogger()',
+    },
+    {
+      identifier: 'baseLogger',
+      statement: 'export const baseLogger = createLogger()',
+    },
+  ])(
+    'extracts `$identifier` from `$statement`',
+    ({ identifier, statement }) => {
+      const result = NAMED_EXPORT_REGEX.exec(statement);
+
+      expect(result?.[1]).toBe(identifier);
+    },
+  );
+
+  test.each([
+    '',
+    `export {}`,
+    `export { no, matches, here }`,
+    `export const random = true;`,
+    `export function logger() {}`,
+  ])('does not match `%s`', (statement) =>
+    expect(NAMED_EXPORT_REGEX.test(statement)).toBe(false),
   );
 });
 

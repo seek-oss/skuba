@@ -224,19 +224,18 @@ const main = async () => {
   const siteChangelog = processChangelogHeader(changelog);
   const siteReadme = processReadmeHeader(readme);
 
+  const siteChangelogPath = path.join('dist-docs', 'CHANGELOG.md');
+  const siteReadmePath = path.join('dist-docs', 'index.md');
+  const contributingPath = path.join('dist-docs', 'CONTRIBUTING.md');
+  const docPath = path.join('dist-docs', 'docs');
+
   await Promise.all([
-    fs.promises.writeFile(
-      path.join('dist-docs', 'CHANGELOG.md'),
-      siteChangelog,
-    ),
-    fs.promises.writeFile(path.join('dist-docs', 'index.md'), siteReadme),
-    fs.promises.copyFile(
-      'CONTRIBUTING.md',
-      path.join('dist-docs', 'CONTRIBUTING.md'),
-    ),
+    fs.promises.writeFile(siteChangelogPath, siteChangelog),
+    fs.promises.writeFile(siteReadmePath, siteReadme),
+    fs.promises.copyFile('CONTRIBUTING.md', contributingPath),
     // `fs.promises.cp` is still experimental in Node.js 20.
     fs.copy('site', 'dist-docs'),
-    fs.copy('docs', path.join('dist-docs', 'docs')),
+    fs.copy('docs', docPath),
   ]);
 
   const templateChanges = compileChangesByTemplate(changelog);

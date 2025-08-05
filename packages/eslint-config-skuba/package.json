@@ -28,18 +28,19 @@
   },
   "dependencies": {
     "eslint-config-seek": "14.5.3",
+    "eslint-plugin-skuba": "workspace:*",
     "eslint-plugin-yml": "^1.14.0",
     "typescript-eslint": "^8.39.0"
   },
   "devDependencies": {
     "eslint": "^9.11.1",
-    "typescript": "~5.8.0"
+    "typescript": "~5.9.0"
   },
   "peerDependencies": {
     "eslint": ">=9.11.1",
     "typescript": ">=5.5.4"
   },
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "engines": {
     "node": ">=20.9.0"
   },

@@ -39,7 +39,7 @@ const tryReadFilesSequentially = async (
 };
 
 export const IMPORT_REGEX =
-  /import\s+(?:\{\s*(\w*[Ll]ogger)(?:\s+as\s+(\w*[Ll]ogger))?\s*\}|(\w*[Ll]ogger))\s+from\s+['"][^'"]+\/(?:logger|logging)(?:\.js)?['"]/u;
+  /import\s+(?:\{\s*(\w*[Ll]ogger)(?:\s+as\s+(\w*[Ll]ogger))?\s*\}|(\w*[Ll]ogger))\s+from\s+['"][^'"]+\/(?:logger|logging)(?:\/index)?(?:\.[jt]s)?['"]/u;
 
 export const NAMED_EXPORT_REGEX =
   /export\s+(?:const\s+|\{[^{}]*)\b(\w*[Ll]ogger)\b/u;

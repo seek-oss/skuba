@@ -3,7 +3,7 @@ import 'skuba-dive/register';
 import { isLambdaHook } from '@seek/aws-codedeploy-hooks';
 import type { SQSEvent } from 'aws-lambda';
 
-import { createHandler } from 'src/framework/handler.js';
+import { createBatchSQSHandler, createHandler } from 'src/framework/handler.js';
 import { logger } from 'src/framework/logging.js';
 import { metricsClient } from 'src/framework/metrics.js';
 import { validateJson } from 'src/framework/validation.js';
@@ -36,19 +36,17 @@ export const handler = createHandler<SQSEvent>(async (event, ctx) => {
 
   const count = event.Records.length;
 
-  if (count !== 1) {
-    throw Error(`Received ${count} records`);
+  if (!count) {
+    throw Error('Received 0 records');
   }
-
   logger.debug({ count }, 'Received jobs');
 
-  metricsClient.distribution('job.received', event.Records.length);
+  metricsClient.distribution('job.received', count);
 
-  const record = event.Records[0];
-  if (!record) {
-    throw new Error('Malformed SQS event with no records');
-  }
+  return recordHandler(event, ctx);
+});
 
+const recordHandler = createBatchSQSHandler(async (record, _ctx) => {
   const { body } = record;
 
   // TODO: this throws an error, which will cause the Lambda function to retry

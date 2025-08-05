@@ -1,0 +1,67 @@
+{
+  "name": "eslint-plugin-skuba",
+  "version": "0.0.1",
+  "private": false,
+  "description": "ESLint plugin for skuba",
+  "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-plugin-skuba#readme",
+  "bugs": {
+    "url": "https://github.com/seek-oss/skuba/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seek-oss/skuba.git"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib*/**/*.d.ts",
+    "lib*/**/*.js",
+    "lib*/**/*.js.map",
+    "lib*/**/*.mjs"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "format": "pnpm --silent skuba format",
+    "lint": "pnpm --silent skuba lint",
+    "prepack": "tsdown",
+    "skuba": "node --experimental-vm-modules ../../lib/skuba",
+    "test": "node --import tsx --test 'src/**/*.test.ts'",
+    "test:ci": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
+    "test:watch": "node --import tsx --test --watch 'src/**/*.test.ts'"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@typescript-eslint/rule-tester": "^8.26.0",
+    "eslint": "^9.11.1",
+    "tsdown": "0.13.2",
+    "tsx": "^4.16.2",
+    "typescript-eslint": "^8.39.0"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.11.1",
+    "typescript-eslint": ">=8.39.0"
+  },
+  "packageManager": "pnpm@10.14.0",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "publishConfig": {
+    "provenance": true
+  },
+  "skuba": {
+    "entryPoint": "src/index.ts",
+    "template": "oss-npm-package",
+    "type": "package",
+    "version": "12.0.2"
+  }
+}
