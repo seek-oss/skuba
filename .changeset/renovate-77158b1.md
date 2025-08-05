@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+'skuba': minor
 ---
 
 deps: TypeScript 5.9
