@@ -45,11 +45,11 @@
     "eslint": "^9.11.1",
     "tsdown": "0.13.2",
     "tsx": "^4.16.2",
-    "typescript-eslint": "^8.26.0"
+    "typescript-eslint": "^8.39.0"
   },
   "peerDependencies": {
     "eslint": ">=9.11.1",
-    "typescript-eslint": ">=8.26.0"
+    "typescript-eslint": ">=8.39.0"
   },
   "packageManager": "pnpm@10.14.0",
   "engines": {
