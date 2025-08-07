@@ -1104,7 +1104,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           "ReportBatchItemFailures",
         ],
         "ScalingConfig": {
-          "MaximumConcurrency": 20,
+          "MaximumConcurrency": 19,
         },
         "Tags": [
           {
