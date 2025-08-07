@@ -16,7 +16,6 @@
 
 [aws cdk]: https://docs.aws.amazon.com/cdk/latest/guide/work-with-cdk-typescript.html
 [gantry]: https://backstage.myseek.xyz/docs/default/component/gantry/
-[serverless]: https://serverless.com/
 
 It provides you with:
 
