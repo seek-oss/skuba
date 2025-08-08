@@ -9,6 +9,10 @@ export const test = async () => {
   // https://github.com/seek-oss/skuba/issues/1841
   process.env.TS_JEST_LOG ??= 'stdout:error';
 
+  if (!process.env.NODE_OPTIONS?.includes('--experimental-vm-modules')) {
+    process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS ?? ''} --experimental-vm-modules`;
+  }
+
   const argv = process.argv.slice(2);
 
   return run(argv);

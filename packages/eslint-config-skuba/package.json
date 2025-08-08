@@ -24,7 +24,7 @@
   "scripts": {
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
-    "skuba": "node --experimental-vm-modules ../../lib/skuba"
+    "skuba": "node ../../lib/skuba"
   },
   "dependencies": {
     "eslint-config-seek": "14.5.3",
