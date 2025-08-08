@@ -13,7 +13,7 @@
     "test:watch": "skuba test --watch"
   },
   "dependencies": {
-    "@seek/logger": "^10.0.0",
+    "@seek/logger": "master",
     "express": "^5.0.0",
     "hot-shots": "^11.0.0",
     "seek-datadog-custom-metrics": "^5.0.0",
