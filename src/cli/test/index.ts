@@ -1,19 +1,28 @@
-import { run } from 'jest';
+import { createExec } from '../../utils/exec.js';
 
 export const test = async () => {
-  // This is usually set in `jest-cli`'s binary wrapper
-  process.env.NODE_ENV ??= 'test';
-
-  // ts-jest is logging a warning about `isolatedModules`.
-  // This is a workaround until we can remove the `isolatedModules` option.
-  // https://github.com/seek-oss/skuba/issues/1841
-  process.env.TS_JEST_LOG ??= 'stdout:error';
-
-  if (!process.env.NODE_OPTIONS?.includes('--experimental-vm-modules')) {
-    process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS ?? ''} --experimental-vm-modules`;
-  }
-
   const argv = process.argv.slice(2);
 
-  return run(argv);
+  // Prepare environment variables for Jest
+  const nodeOptions = process.env.NODE_OPTIONS || '';
+
+  const execWithEnv = createExec({
+    env: {
+      // This is usually set in `jest-cli`'s binary wrapper
+      NODE_ENV: process.env.NODE_ENV ?? 'test',
+
+      // ts-jest is logging a warning about `isolatedModules`.
+      // This is a workaround until we can remove the `isolatedModules` option.
+      // https://github.com/seek-oss/skuba/issues/1841
+      TS_JEST_LOG: process.env.TS_JEST_LOG ?? 'stdout:error',
+
+      // Add experimental VM modules support if not already present
+      NODE_OPTIONS: !nodeOptions.includes('--experimental-vm-modules')
+        ? `${nodeOptions} --experimental-vm-modules`
+        : nodeOptions,
+    },
+  });
+
+  // Run Jest in a child process with proper environment
+  return execWithEnv(require.resolve('jest/bin/jest'), ...argv);
 };
