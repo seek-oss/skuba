@@ -3,9 +3,10 @@
     "incremental": true,
     "isolatedModules": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "noUncheckedSideEffectImports": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "resolveJsonModule": true
   },
   "extends": "tsconfig-seek"
 }

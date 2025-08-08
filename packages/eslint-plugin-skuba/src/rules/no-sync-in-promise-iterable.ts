@@ -222,6 +222,29 @@ const isSafeIshIterableMethod = (
 };
 
 /**
+ * Whether a call expression represents a safe-ish builder.
+ *
+ * This is currently overfitted to `knex`.
+ */
+const isSafeIshBuilder = (node: TSESTree.CallExpression): boolean => {
+  if (
+    node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+    node.callee.object.type === TSESTree.AST_NODE_TYPES.CallExpression
+  ) {
+    return isSafeIshBuilder(node.callee.object);
+  }
+
+  if (
+    node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
+    node.callee.name === 'knex'
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
  * The nodes traversable from the current AST position containing logic with a
  * reasonable chance of throwing a synchronous error.
  */
@@ -292,6 +315,10 @@ const possibleNodesWithSyncError = (
       );
 
     case TSESTree.AST_NODE_TYPES.CallExpression: {
+      if (isSafeIshBuilder(node)) {
+        return [];
+      }
+
       // Allow common safe-ish built-ins and Promise-like return types
       if (isSafeIshBuiltIn(node)) {
         return node.arguments.flatMap((arg) =>
