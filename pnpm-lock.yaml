@@ -350,8 +350,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(koa@3.0.1)
       '@koa/router':
-        specifier: ^13.0.0
-        version: 13.1.1
+        specifier: ^14.0.0
+        version: 14.0.0
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -1360,9 +1360,9 @@ packages:
     peerDependencies:
       koa: '>=2'
 
-  '@koa/router@13.1.1':
-    resolution: {integrity: sha512-JQEuMANYRVHs7lm7KY9PCIjkgJk73h4m4J+g2mkw2Vo1ugPZ17UJVqEH8F+HeAdjKz5do1OaLe7ArDz+z308gw==}
-    engines: {node: '>= 18'}
+  '@koa/router@14.0.0':
+    resolution: {integrity: sha512-LBSu5K0qAaaQcXX/0WIB9PGDevyCxxpnc1uq13vV/CgObaVxuis5hKl3Eboq/8gcb6ebnkAStW9NB/Em2eYyFA==}
+    engines: {node: '>= 20'}
 
   '@kwsites/file-exists@1.1.1':
     resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
@@ -5457,9 +5457,6 @@ packages:
   path-to-regexp@0.1.12:
     resolution: {integrity: sha512-RA1GjUVMnvYFxuqovrEqZoxxW5NUZqbwKtYz/Tt7nXerk0LbLblQmrsgdeOxV5SFHf0UDggjS/bSeOZwt1pmEQ==}
 
-  path-to-regexp@6.3.0:
-    resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
-
   path-to-regexp@8.2.0:
     resolution: {integrity: sha512-TdrF7fW9Rphjq4RjrW0Kp2AW0Ahwu9sRGTkS6bvDi0SCwZlEZYmcfDbEsTz8RVk0EHIS/Vd1bv3JhG+1xZuAyQ==}
     engines: {node: '>=16'}
@@ -8239,12 +8236,12 @@ snapshots:
       lodash.merge: 4.6.2
       type-is: 2.0.1
 
-  '@koa/router@13.1.1':
+  '@koa/router@14.0.0':
     dependencies:
       debug: 4.4.1
       http-errors: 2.0.0
       koa-compose: 4.1.0
-      path-to-regexp: 6.3.0
+      path-to-regexp: 8.2.0
     transitivePeerDependencies:
       - supports-color
 
@@ -13310,8 +13307,6 @@ snapshots:
       minipass: 7.1.2
 
   path-to-regexp@0.1.12: {}
-
-  path-to-regexp@6.3.0: {}
 
   path-to-regexp@8.2.0: {}
 
