@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-lint: Narrow `publicHoistPattern` list in `pnpm-workspace.yaml`
+lint: Update `publicHoistPattern` list in `pnpm-workspace.yaml`
