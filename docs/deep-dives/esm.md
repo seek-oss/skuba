@@ -135,7 +135,7 @@ Your local `tsconfig.json` files will require a `rootDir` and `customConditions`
 +   "rootDir": ".",
 +   "customConditions": ["@seek/my-repo/source"],
 -   "paths": {
--     "#src/*": ["src/*"]
+-     "src/*": ["src/*"]
 -   }
   },
   "extends": "skuba/config/tsconfig.json"
