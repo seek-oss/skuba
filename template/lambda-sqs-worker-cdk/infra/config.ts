@@ -26,7 +26,7 @@ const configs: Record<Environment, Config> = {
     appName: '<%- serviceName %>',
     workerLambda: {
       batchSize: 10,
-      reservedConcurrency: 2,
+      reservedConcurrency: 3,
       environment: {
         ENVIRONMENT: 'dev',
         SERVICE: '<%- serviceName %>',
