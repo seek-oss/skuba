@@ -4,7 +4,7 @@ export const test = async () => {
   const argv = process.argv.slice(2);
 
   // Prepare environment variables for Jest
-  const nodeOptions = process.env.NODE_OPTIONS || '';
+  const nodeOptions = process.env.NODE_OPTIONS;
 
   const execWithEnv = createExec({
     env: {
@@ -17,7 +17,7 @@ export const test = async () => {
       TS_JEST_LOG: process.env.TS_JEST_LOG ?? 'stdout:error',
 
       // Add experimental VM modules support if not already present
-      NODE_OPTIONS: !nodeOptions.includes('--experimental-vm-modules')
+      NODE_OPTIONS: !nodeOptions?.includes('--experimental-vm-modules')
         ? `${nodeOptions} --experimental-vm-modules`
         : nodeOptions,
     },
