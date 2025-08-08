@@ -7,7 +7,7 @@ export const test = async () => {
 
   const execWithEnv = createExec({
     env: {
-      NODE_OPTIONS: !nodeOptions?.includes('--experimental-vm-modules')
+      NODE_OPTIONS: !nodeOptions.includes('--experimental-vm-modules')
         ? `${nodeOptions} --experimental-vm-modules`
         : nodeOptions,
     },
