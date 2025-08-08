@@ -4,7 +4,7 @@ export const test = async () => {
   const argv = process.argv.slice(2);
 
   // Prepare environment variables for Jest
-  const nodeOptions = process.env.NODE_OPTIONS;
+  const nodeOptions = process.env.NODE_OPTIONS ?? '';
 
   const execWithEnv = createExec({
     env: {
