@@ -294,8 +294,8 @@ importers:
   template/express-rest-api:
     dependencies:
       '@seek/logger':
-        specifier: ^10.0.0
-        version: 10.0.0
+        specifier: master
+        version: 0.0.0-master-20250808072312
       express:
         specifier: ^5.0.0
         version: 5.1.0
@@ -374,8 +374,8 @@ importers:
         specifier: ^0.203.0
         version: 0.203.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
-        specifier: ^10.0.0
-        version: 10.0.0
+        specifier: master
+        version: 0.0.0-master-20250808072312
       hot-shots:
         specifier: ^11.0.0
         version: 11.1.0
@@ -447,8 +447,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@seek/logger':
-        specifier: ^10.0.0
-        version: 10.0.0
+        specifier: master
+        version: 0.0.0-master-20250808072312
       datadog-lambda-js:
         specifier: ^12.0.0
         version: 12.127.0
@@ -1841,6 +1841,10 @@ packages:
 
   '@seek/aws-codedeploy-infra@3.0.0':
     resolution: {integrity: sha512-lntM3YpGwa1GAdKxNV1TtKf9Le6MHUMzIq0VOQqwj2Qb3VRM05JnJ5kmX8ONZBEID9mqD++Nzl6IkUUz41zbfw==}
+    engines: {node: '>=20.9.0'}
+
+  '@seek/logger@0.0.0-master-20250808072312':
+    resolution: {integrity: sha512-HZubQAlCOYlskzStaSzwOjUMomBAgPchfO20nh1IXrhkRfN54Xn55Kn0BACTwg6ScoyQs8YyuVEgxXAOh6E+Gw==}
     engines: {node: '>=20.9.0'}
 
   '@seek/logger@10.0.0':
@@ -5509,6 +5513,10 @@ packages:
     resolution: {integrity: sha512-vnMCM6xZTb1WDmLvtG2lE/2p+t9hDEIvTWJsu6FejkE62vB7gDhvzrpFR4Cw2to+9JNQxVnkAKVPA1KPB98vWg==}
     hasBin: true
 
+  pino@9.8.0:
+    resolution: {integrity: sha512-L5+rV1wL7vGAcxXP7sPpN5lrJ07Piruka6ArXr7EWBXxdVWjJshGVX8suFsiusJVcGKDGUFfbgbnKdg+VAC+0g==}
+    hasBin: true
+
   pirates@4.0.7:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
     engines: {node: '>= 6'}
@@ -5615,6 +5623,9 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  pure-parse@1.0.1:
+    resolution: {integrity: sha512-UsgFso+aJp//oxsf0nKiSb+dV+/Vf+BC+0kongb650F5iz6cyVjGe8ZSF2iTjSJPqSFAr5MErEOzhQd2YiosAA==}
 
   pure-rand@7.0.1:
     resolution: {integrity: sha512-oTUZM/NAZS8p7ANR3SHh30kXB+zK2r2BPcEn/awJIbOvq82WoMN4p62AWWp3Hhw50G0xMsw1mhIBLqHw64EcNQ==}
@@ -8815,6 +8826,14 @@ snapshots:
       constructs: 10.4.2
       skuba-dive: 2.0.0
       zod: 3.25.76
+
+  '@seek/logger@0.0.0-master-20250808072312':
+    dependencies:
+      dtrim: 1.12.0
+      fast-redact: 3.5.0
+      pino: 9.8.0
+      pino-std-serializers: 7.0.0
+      pure-parse: 1.0.1
 
   '@seek/logger@10.0.0':
     dependencies:
@@ -13364,6 +13383,20 @@ snapshots:
       sonic-boom: 4.2.0
       thread-stream: 3.1.0
 
+  pino@9.8.0:
+    dependencies:
+      atomic-sleep: 1.0.0
+      fast-redact: 3.5.0
+      on-exit-leak-free: 2.1.2
+      pino-abstract-transport: 2.0.0
+      pino-std-serializers: 7.0.0
+      process-warning: 5.0.0
+      quick-format-unescaped: 4.0.4
+      real-require: 0.2.0
+      safe-stable-stringify: 2.5.0
+      sonic-boom: 4.2.0
+      thread-stream: 3.1.0
+
   pirates@4.0.7: {}
 
   pkg-conf@2.1.0:
@@ -13461,6 +13494,8 @@ snapshots:
       once: 1.4.0
 
   punycode@2.3.1: {}
+
+  pure-parse@1.0.1: {}
 
   pure-rand@7.0.1: {}
 
