@@ -142,7 +142,7 @@ export class AppStack extends Stack {
 
     workerDeployment.alias.addEventSource(
       new aws_lambda_event_sources.SqsEventSource(queue, {
-        maxConcurrency: config.workerLambda.reservedConcurrency,
+        maxConcurrency: config.workerLambda.reservedConcurrency - 1, // Ensure we have capacity reserved for our blue/green deployment
         batchSize: config.workerLambda.batchSize,
         reportBatchItemFailures: true,
       }),
