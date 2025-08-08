@@ -16,7 +16,6 @@ export const test = async () => {
       // https://github.com/seek-oss/skuba/issues/1841
       TS_JEST_LOG: process.env.TS_JEST_LOG ?? 'stdout:error',
 
-      // Add experimental VM modules support if not already present
       NODE_OPTIONS: !nodeOptions?.includes('--experimental-vm-modules')
         ? `${nodeOptions} --experimental-vm-modules`
         : nodeOptions,
