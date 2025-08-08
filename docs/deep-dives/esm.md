@@ -131,7 +131,7 @@ Your local `tsconfig.json` files will require a `rootDir` and `customConditions`
 ```diff
 {
   "compilerOptions": {
--   "baseUrl": ".",
+    "baseUrl": ".",
 +   "rootDir": ".",
 +   "customConditions": ["@seek/my-repo/source"],
 -   "paths": {
