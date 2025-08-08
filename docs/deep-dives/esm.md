@@ -131,12 +131,12 @@ Your local `tsconfig.json` files will require a `rootDir` and `customConditions`
 ```diff
 {
   "compilerOptions": {
-    "baseUrl": ".",
+-   "baseUrl": ".",
 +   "rootDir": ".",
 +   "customConditions": ["@seek/my-repo/source"],
 -   "paths": {
--     "src/*": ["src/*"]
--    }
+-     "#src/*": ["src/*"]
+-   }
   },
   "extends": "skuba/config/tsconfig.json"
 }
@@ -148,7 +148,7 @@ This allows us to import modules like this:
 import { module } from '#src/imported-module.js';
 ```
 
-You'll also need to update your `tsconfig.build.json` to specify `"rootDir": "src"` to ensure builds continue to work correctly:
+To ensure your builds still work like before, we will need to also modify `tsconfig.build.json` to set the `rootDir` to point to `src`. This value differs from `tsconfig.json` so that files like `scripts/script.ts` can still use `#src/` imports without being included in the build.
 
 ```diff
 {
