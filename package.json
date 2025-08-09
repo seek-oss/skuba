@@ -40,7 +40,7 @@
     "prepack": "pnpm --filter './template/**' exec rm -rf node_modules",
     "release": "pnpm --silent build && changeset publish",
     "skuba": "pnpm --silent build && pnpm --silent skuba:exec",
-    "skuba:exec": "node --experimental-vm-modules --no-warnings=ExperimentalWarning lib/skuba",
+    "skuba:exec": "node lib/skuba",
     "stage": "changeset version && node ./.changeset/inject.js && pnpm format",
     "test": "pnpm --silent skuba test --selectProjects unit",
     "test:ci": "pnpm --silent skuba test --runInBand",
