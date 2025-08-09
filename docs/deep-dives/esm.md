@@ -148,7 +148,12 @@ This allows us to import modules like this:
 import { module } from '#src/imported-module.js';
 ```
 
-To ensure your builds still work like before, we will need to also modify `tsconfig.build.json` to set the `rootDir` to point to `src`. This value differs from `tsconfig.json` so that files like `scripts/script.ts` can still use `#src/` imports without being included in the build.
+We will also need to set different `rootDir` values for our local development and builds:
+
+- **`tsconfig.json`** uses `"rootDir": "."` to ensure all TypeScript files (including `scripts/script.ts` and root-level files) can use `#src/` imports and are subject to type checking.
+- **`tsconfig.build.json`** uses `"rootDir": "src"` to ensure that only source files are included in the build output.
+
+tsconfig.build.json:
 
 ```diff
 {
