@@ -5,8 +5,8 @@ import getPort from 'get-port';
 
 import { parseRunArgs } from '../../utils/args.js';
 import { createExec } from '../../utils/exec.js';
-import { getCustomConditions } from '../../utils/tsconfig.js';
 import { isIpPort } from '../../utils/validation.js';
+import { getCustomConditions } from '../build/tsc.js';
 
 export const longRunning = true;
 
