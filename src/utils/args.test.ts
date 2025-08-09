@@ -109,30 +109,32 @@ describe('parseRunArgs', () => {
   }
 
   test.each`
-    input                                                | entryPoint     | port         | node                      | script
-    ${''}                                                | ${undefined}   | ${undefined} | ${[]}                     | ${[]}
-    ${'--inspect'}                                       | ${undefined}   | ${undefined} | ${['--inspect']}          | ${[]}
-    ${'--inspect=1234'}                                  | ${undefined}   | ${undefined} | ${['--inspect=1234']}     | ${[]}
-    ${'--inspect 1234'}                                  | ${undefined}   | ${undefined} | ${['--inspect=1234']}     | ${[]}
-    ${'--inspect 1234 listen.ts'}                        | ${'listen.ts'} | ${undefined} | ${['--inspect=1234']}     | ${[]}
-    ${'--inspect 1234 listen.ts --inspect 1234'}         | ${'listen.ts'} | ${undefined} | ${['--inspect=1234']}     | ${['--inspect', '1234']}
-    ${'--inspect listen.ts'}                             | ${'listen.ts'} | ${undefined} | ${['--inspect']}          | ${[]}
-    ${'--inspect-brk'}                                   | ${undefined}   | ${undefined} | ${['--inspect-brk']}      | ${[]}
-    ${'--inspect-brk=1234'}                              | ${undefined}   | ${undefined} | ${['--inspect-brk=1234']} | ${[]}
-    ${'--inspect-brk 1234'}                              | ${undefined}   | ${undefined} | ${['--inspect-brk=1234']} | ${[]}
-    ${'--inspect-brk 1234 listen.ts'}                    | ${'listen.ts'} | ${undefined} | ${['--inspect-brk=1234']} | ${[]}
-    ${'--inspect-brk 1234 listen.ts --inspect-brk 1234'} | ${'listen.ts'} | ${undefined} | ${['--inspect-brk=1234']} | ${['--inspect-brk', '1234']}
-    ${'--inspect-brk listen.ts'}                         | ${'listen.ts'} | ${undefined} | ${['--inspect-brk']}      | ${[]}
-    ${'--port'}                                          | ${undefined}   | ${undefined} | ${[]}                     | ${[]}
-    ${'--port=1234'}                                     | ${undefined}   | ${1234}      | ${[]}                     | ${[]}
-    ${'--port 1234'}                                     | ${undefined}   | ${1234}      | ${[]}                     | ${[]}
-    ${'--port 1234 listen.ts'}                           | ${'listen.ts'} | ${1234}      | ${[]}                     | ${[]}
-    ${'--port 1234 listen.ts --port 5678'}               | ${'listen.ts'} | ${1234}      | ${[]}                     | ${['--port', '5678']}
-    ${'--port listen.ts'}                                | ${'listen.ts'} | ${undefined} | ${[]}                     | ${[]}
-    ${'listen.ts'}                                       | ${'listen.ts'} | ${undefined} | ${[]}                     | ${[]}
-    ${'listen.ts --inspect'}                             | ${'listen.ts'} | ${undefined} | ${[]}                     | ${['--inspect']}
-    ${'listen.ts --inspect-brk'}                         | ${'listen.ts'} | ${undefined} | ${[]}                     | ${['--inspect-brk']}
-    ${'listen.ts --port 1234'}                           | ${'listen.ts'} | ${undefined} | ${[]}                     | ${['--port', '1234']}
+    input                                                | entryPoint     | port         | node                      | script                       | conditions
+    ${''}                                                | ${undefined}   | ${undefined} | ${[]}                     | ${[]}                        | ${undefined}
+    ${'--inspect'}                                       | ${undefined}   | ${undefined} | ${['--inspect']}          | ${[]}                        | ${undefined}
+    ${'--inspect=1234'}                                  | ${undefined}   | ${undefined} | ${['--inspect=1234']}     | ${[]}                        | ${undefined}
+    ${'--inspect 1234'}                                  | ${undefined}   | ${undefined} | ${['--inspect=1234']}     | ${[]}                        | ${undefined}
+    ${'--inspect 1234 listen.ts'}                        | ${'listen.ts'} | ${undefined} | ${['--inspect=1234']}     | ${[]}                        | ${undefined}
+    ${'--inspect 1234 listen.ts --inspect 1234'}         | ${'listen.ts'} | ${undefined} | ${['--inspect=1234']}     | ${['--inspect', '1234']}     | ${undefined}
+    ${'--inspect listen.ts'}                             | ${'listen.ts'} | ${undefined} | ${['--inspect']}          | ${[]}                        | ${undefined}
+    ${'--inspect-brk'}                                   | ${undefined}   | ${undefined} | ${['--inspect-brk']}      | ${[]}                        | ${undefined}
+    ${'--inspect-brk=1234'}                              | ${undefined}   | ${undefined} | ${['--inspect-brk=1234']} | ${[]}                        | ${undefined}
+    ${'--inspect-brk 1234'}                              | ${undefined}   | ${undefined} | ${['--inspect-brk=1234']} | ${[]}                        | ${undefined}
+    ${'--inspect-brk 1234 listen.ts'}                    | ${'listen.ts'} | ${undefined} | ${['--inspect-brk=1234']} | ${[]}                        | ${undefined}
+    ${'--inspect-brk 1234 listen.ts --inspect-brk 1234'} | ${'listen.ts'} | ${undefined} | ${['--inspect-brk=1234']} | ${['--inspect-brk', '1234']} | ${undefined}
+    ${'--inspect-brk listen.ts'}                         | ${'listen.ts'} | ${undefined} | ${['--inspect-brk']}      | ${[]}                        | ${undefined}
+    ${'--port'}                                          | ${undefined}   | ${undefined} | ${[]}                     | ${[]}                        | ${undefined}
+    ${'--port=1234'}                                     | ${undefined}   | ${1234}      | ${[]}                     | ${[]}                        | ${undefined}
+    ${'--port 1234'}                                     | ${undefined}   | ${1234}      | ${[]}                     | ${[]}                        | ${undefined}
+    ${'--port 1234 listen.ts'}                           | ${'listen.ts'} | ${1234}      | ${[]}                     | ${[]}                        | ${undefined}
+    ${'--port 1234 listen.ts --port 5678'}               | ${'listen.ts'} | ${1234}      | ${[]}                     | ${['--port', '5678']}        | ${undefined}
+    ${'--port listen.ts'}                                | ${'listen.ts'} | ${undefined} | ${[]}                     | ${[]}                        | ${undefined}
+    ${'listen.ts'}                                       | ${'listen.ts'} | ${undefined} | ${[]}                     | ${[]}                        | ${undefined}
+    ${'listen.ts --inspect'}                             | ${'listen.ts'} | ${undefined} | ${[]}                     | ${['--inspect']}             | ${undefined}
+    ${'listen.ts --inspect-brk'}                         | ${'listen.ts'} | ${undefined} | ${[]}                     | ${['--inspect-brk']}         | ${undefined}
+    ${'listen.ts --port 1234'}                           | ${'listen.ts'} | ${undefined} | ${[]}                     | ${['--port', '1234']}        | ${undefined}
+    ${'--conditions=test'}                               | ${undefined}   | ${undefined} | ${[]}                     | ${[]}                        | ${['test']}
+    ${'--conditions=test --conditions=test2'}            | ${undefined}   | ${undefined} | ${[]}                     | ${[]}                        | ${['test', 'test2']}
   `('$input', ({ input, ...expected }: TestCase) =>
     expect(parseRunArgs(input.split(' '))).toEqual(expected),
   );
