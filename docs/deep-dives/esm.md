@@ -126,7 +126,7 @@ Our base `skuba/config/tsconfig.json` will update [`moduleResolution`] from `nod
 }
 ```
 
-Your local `tsconfig.json` files will require a `baseUrl`, `rootDir` and `customConditions` to help TypeScript resolve the subpath imports correctly:
+Your local `tsconfig.json` files will require a `rootDir` and `customConditions` to help TypeScript resolve the subpath imports correctly:
 
 ```diff
 {
@@ -135,8 +135,8 @@ Your local `tsconfig.json` files will require a `baseUrl`, `rootDir` and `custom
 +   "rootDir": ".",
 +   "customConditions": ["@seek/my-repo/source"],
 -   "paths": {
--     "#src/*": ["src/*"]
--    }
+-     "src/*": ["src/*"]
+-   }
   },
   "extends": "skuba/config/tsconfig.json"
 }
@@ -146,6 +146,24 @@ This allows us to import modules like this:
 
 ```ts
 import { module } from '#src/imported-module.js';
+```
+
+We will also need to set different `rootDir` values for our local development and builds:
+
+- **`tsconfig.json`** uses `"rootDir": "."` to ensure all TypeScript files (including `scripts/script.ts` and root-level files) can use `#src/` imports and are subject to type checking.
+- **`tsconfig.build.json`** uses `"rootDir": "src"` to ensure that only source files are included in the build output.
+
+tsconfig.build.json:
+
+```diff
+{
++ "compilerOptions": {
++   "rootDir": "src"
++ },
+  "exclude": ["**/__mocks__/**/*", "**/*.test.ts", "src/testing/**/*"],
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*"]
+}
 ```
 
 [Custom conditions] enable tooling to use TypeScript source files during development while automatically switching to the correct compiled outputs for deployment or publishing. This is done without additional configuration to modify package.json imports and exports. Monorepo users may already be familiar with this concept through pnpm's `publishConfig` feature. For more details, see [Live types in a TypeScript monorepo].
