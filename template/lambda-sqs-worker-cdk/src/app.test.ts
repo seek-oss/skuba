@@ -107,7 +107,7 @@ describe('handler', () => {
     expect(stdoutMock.calls).toMatchObject([
       { count: 2, level: 20, msg: 'Received jobs' },
       {
-        err: {
+        error: {
           name: 'ZodError',
           type: 'ZodError',
         },
@@ -151,7 +151,7 @@ describe('handler', () => {
     expect(stdoutMock.calls).toMatchObject([
       { count: 1, level: 20, msg: 'Received jobs' },
       {
-        err: {
+        error: {
           message: err.message,
           type: 'Error',
         },
@@ -181,7 +181,7 @@ describe('handler', () => {
         msg: 'Received jobs',
       },
       {
-        err: {
+        error: {
           message: err.message,
           type: 'Error',
         },
@@ -203,7 +203,7 @@ describe('handler', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        err: {
+        error: {
           message: 'Received 0 records',
           type: 'Error',
         },
