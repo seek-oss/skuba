@@ -27,6 +27,7 @@ datadogSecretId: '{{values "datadogSecretId"}}'
 # The eeeoh log forwarder bypasses Amazon CloudWatch for cost savings
 # logSink:
 #   forwarder: eeeoh
+#   splunkIndex: '{{values "logSink.splunkIndex"}}'
 
 openTelemetry:
   datadogEnvironmentName: '{{values "env"}}'
