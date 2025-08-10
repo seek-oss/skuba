@@ -5,8 +5,7 @@ interface Config {
 
   logLevel: string;
   metrics: boolean;
-  name: string;
-  version: string;
+  service: string;
 
   destinationSnsTopicArn: string;
 }
@@ -22,8 +21,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   local: () => ({
     logLevel: 'debug',
     metrics: false,
-    name: '<%- serviceName %>',
-    version: 'local',
+    service: '<%- serviceName %>',
 
     destinationSnsTopicArn: 'arn:aws:sns:us-east-2:123456789012:destination',
   }),
@@ -31,8 +29,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   test: () => ({
     logLevel: Env.string('LOG_LEVEL', { default: 'debug' }),
     metrics: false,
-    name: '<%- serviceName %>',
-    version: 'test',
+    service: '<%- serviceName %>',
 
     destinationSnsTopicArn: 'arn:aws:sns:us-east-2:123456789012:destination',
   }),
@@ -40,8 +37,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   dev: () => ({
     logLevel: 'debug',
     metrics: true,
-    name: Env.string('SERVICE'),
-    version: Env.string('VERSION'),
+    service: Env.string('DD_SERVICE'),
 
     destinationSnsTopicArn: Env.string('DESTINATION_SNS_TOPIC_ARN'),
   }),
@@ -49,8 +45,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   prod: () => ({
     logLevel: 'info',
     metrics: true,
-    name: Env.string('SERVICE'),
-    version: Env.string('VERSION'),
+    service: Env.string('DD_SERVICE'),
 
     destinationSnsTopicArn: Env.string('DESTINATION_SNS_TOPIC_ARN'),
   }),

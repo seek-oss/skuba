@@ -7,46 +7,55 @@ type Environment = (typeof ENVIRONMENTS)[number];
 const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
 
 interface Config {
-  appName: string;
+  env: 'development' | 'production';
+  service: string;
+  version: string;
+
   workerLambda: {
     batchSize: number;
     reservedConcurrency: number;
     environment: {
       ENVIRONMENT: Environment;
-      SERVICE: string;
-      VERSION: string;
     };
   };
+
   datadogApiKeySecretArn: string;
   sourceSnsTopicArn: string;
 }
 
+const service = '<%- serviceName %>';
+const version = Env.string('VERSION');
+
 const configs: Record<Environment, Config> = {
   dev: {
-    appName: '<%- serviceName %>',
+    env: 'development',
+    service,
+    version,
+
     workerLambda: {
       batchSize: 10,
       reservedConcurrency: 3,
       environment: {
         ENVIRONMENT: 'dev',
-        SERVICE: '<%- serviceName %>',
-        VERSION: Env.string('VERSION', { default: 'local' }),
       },
     },
+
     datadogApiKeySecretArn: 'TODO: datadogApiKeySecretArn',
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
   prod: {
-    appName: '<%- serviceName %>',
+    env: 'production',
+    service,
+    version,
+
     workerLambda: {
       batchSize: 10,
       reservedConcurrency: 20,
       environment: {
         ENVIRONMENT: 'prod',
-        SERVICE: '<%- serviceName %>',
-        VERSION: Env.string('VERSION', { default: 'local' }),
       },
     },
+
     datadogApiKeySecretArn: 'TODO: datadogApiKeySecretArn',
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
