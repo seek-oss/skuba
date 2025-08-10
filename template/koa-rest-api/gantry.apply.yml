@@ -23,6 +23,11 @@ cloudwatchDashboardDisabled: {{values "cloudwatchDashboardDisabled"}}
 datadogSecretId: '{{values "datadogSecretId"}}'
 {{end}}
 
+# Uncomment if the `tin` tier is acceptable for your SEEK Auth Sidecar logs
+# The eeeoh log forwarder bypasses Amazon CloudWatch for cost savings
+# logSink:
+#   forwarder: eeeoh
+
 openTelemetry:
   datadogEnvironmentName: '{{values "env"}}'
   enabled: {{values "openTelemetry.enabled"}}
