@@ -1,4 +1,4 @@
-import createLogger, { createDestination } from '@seek/logger';
+import { createDestination, createLogger } from '@seek/logger';
 import { RequestLogging } from 'seek-koala';
 
 import { config } from 'src/config.js';
@@ -16,16 +16,20 @@ export { stdoutMock };
 
 export const logger = createLogger(
   {
-    base: {
-      environment: config.environment,
-      version: config.version,
+    eeeoh: {
+      /**
+       * TODO: choose an appropriate Datadog log tier.
+       *
+       * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#datadog-log-tiers
+       */
+      datadog: 'tin',
+      team: '<%- teamName %>',
+      use: 'environment',
     },
 
     mixin,
 
     level: config.logLevel,
-
-    name: config.name,
 
     transport:
       config.environment === 'local' ? { target: 'pino-pretty' } : undefined,

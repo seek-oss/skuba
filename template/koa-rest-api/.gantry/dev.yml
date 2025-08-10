@@ -1,4 +1,5 @@
-environment: dev
+deployment: dev
+env: development
 
 maxInstanceCount: 1
 minInstanceCount: 1
@@ -7,5 +8,4 @@ minInstanceCount: 1
 cloudwatchDashboardDisabled: true
 
 openTelemetry:
-  datadogEnvironmentName: development
-  enabled: false
+  enabled: true

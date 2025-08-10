@@ -1,7 +1,11 @@
-environment: dev
+deployment: dev
+env: development
 
 maxInstanceCount: 1
 minInstanceCount: 1
 
 # Disable dashboard for cost savings
 cloudwatchDashboardDisabled: true
+
+openTelemetry:
+  enabled: true

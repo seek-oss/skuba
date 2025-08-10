@@ -42,7 +42,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
 
   [dev]: () => ({
     logLevel: 'debug',
-    name: Env.string('SERVICE'),
+    name: Env.string('DD_SERVICE'),
     version: Env.string('VERSION'),
 
     metricsServer: 'localhost',
@@ -51,7 +51,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
 
   [prod]: () => ({
     logLevel: 'info',
-    name: Env.string('SERVICE'),
+    name: Env.string('DD_SERVICE'),
     version: Env.string('VERSION'),
 
     metricsServer: 'localhost',

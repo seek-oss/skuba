@@ -9,8 +9,11 @@ owner: '{{values "owner"}}'
 image: '{{values "image"}}'
 
 env:
-  ENVIRONMENT: '{{values "environment"}}'
-  SERVICE: '{{values "service"}}'
+  DD_ENV: '{{values "env"}}'
+  DD_SERVICE: '{{values "service"}}'
+
+  ENVIRONMENT: '{{values "deployment"}}'
+  OPENTELEMETRY_ENABLED: '{{values "openTelemetry.enabled"}}'
 
 {{if .Values.cloudwatchDashboardDisabled}}
 cloudwatchDashboardDisabled: {{values "cloudwatchDashboardDisabled"}}
@@ -19,6 +22,11 @@ cloudwatchDashboardDisabled: {{values "cloudwatchDashboardDisabled"}}
 {{if .Values.datadogSecretId}}
 datadogSecretId: '{{values "datadogSecretId"}}'
 {{end}}
+
+openTelemetry:
+  datadogEnvironmentName: '{{values "env"}}'
+  enabled: {{values "openTelemetry.enabled"}}
+  useGantryServiceName: true
 
 {{if .Values.pagerDutyEndpoint}}
 pagerDutyEndpoint: '{{values "pagerDutyEndpoint"}}'

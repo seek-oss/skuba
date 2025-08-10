@@ -81,6 +81,8 @@ steps:
     agents:
       queue: <%- devBuildkiteQueueName %>
     env:
+      DD_DEPLOYMENT_ENVIRONMENT: development
+      DD_DEPLOYMENT_SERVICE: <%- serviceName %>
       ENVIRONMENT: dev
       GET_NPM_TOKEN: please
     label: 🤞 Deploy Dev
@@ -89,6 +91,8 @@ steps:
 
   - <<: *deploy
     env:
+      DD_DEPLOYMENT_ENVIRONMENT: production
+      DD_DEPLOYMENT_SERVICE: <%- serviceName %>
       ENVIRONMENT: prod
       GET_NPM_TOKEN: please
     label: 🚀 Deploy Prod

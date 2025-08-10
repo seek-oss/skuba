@@ -293,6 +293,27 @@ importers:
 
   template/express-rest-api:
     dependencies:
+      '@opentelemetry/api':
+        specifier: ^1.9.0
+        version: 1.9.0
+      '@opentelemetry/core':
+        specifier: ^2.0.0
+        version: 2.0.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/exporter-trace-otlp-grpc':
+        specifier: ^0.203.0
+        version: 0.203.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-aws-sdk':
+        specifier: ^0.56.0
+        version: 0.56.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-http':
+        specifier: ^0.203.0
+        version: 0.203.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/propagator-b3':
+        specifier: ^2.0.0
+        version: 2.0.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-node':
+        specifier: ^0.203.0
+        version: 0.203.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
         specifier: master
         version: 0.0.0-master-20250808072312
@@ -304,7 +325,7 @@ importers:
         version: 11.1.0
       seek-datadog-custom-metrics:
         specifier: ^5.0.0
-        version: 5.0.0(datadog-lambda-js@10.124.0)(hot-shots@11.1.0)
+        version: 5.0.0(hot-shots@11.1.0)
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -318,9 +339,6 @@ importers:
       '@types/supertest':
         specifier: ^6.0.0
         version: 6.0.3
-      mime:
-        specifier: ^4.0.1
-        version: 4.0.7
       pino-pretty:
         specifier: ^13.0.0
         version: 13.0.0
@@ -387,7 +405,7 @@ importers:
         version: 4.1.0
       seek-datadog-custom-metrics:
         specifier: ^5.0.0
-        version: 5.0.0(datadog-lambda-js@10.124.0)(hot-shots@11.1.0)
+        version: 5.0.0(hot-shots@11.1.0)
       seek-koala:
         specifier: ^7.1.0
         version: 7.1.0(hot-shots@11.1.0)(koa@3.0.1)
@@ -419,9 +437,6 @@ importers:
       chance:
         specifier: ^1.1.8
         version: 1.1.13
-      mime:
-        specifier: ^4.0.1
-        version: 4.0.7
       pino-pretty:
         specifier: ^13.0.0
         version: 13.0.0
@@ -3168,9 +3183,6 @@ packages:
     bundledDependencies:
       - loglevel
 
-  datadog-lambda-js@10.124.0:
-    resolution: {integrity: sha512-2CyiaoQxXdTWv1XfYHeRSAXdW+I/PzVtuPn9imomzv91BsHu8xF4PZuNuV75oMDvyOHv4iEYCFw9qDM+27M+1A==}
-
   datadog-lambda-js@12.127.0:
     resolution: {integrity: sha512-I0fduqn4HLkT1Cvm8QYhJX1jVNgcL3EyaOp9AUXcKBFGpDsZuFk07a+MdWzRiDh/lpbX8utfCwpqnXfMnuDjzg==}
 
@@ -4037,10 +4049,6 @@ packages:
   hot-shots@11.1.0:
     resolution: {integrity: sha512-D4iAs/145g7EJ/wIzBLVANEpysTPthUy/K+4EUIw02YJQTqvzD1vUpYiM3vwR0qPAQj4FhQpQz8wBpY8KDcM0g==}
     engines: {node: '>=10.0.0'}
-
-  hot-shots@8.5.0:
-    resolution: {integrity: sha512-GNXtNSxa9qibcPhi3gndyN5g14iBJS+/DDlu7hjSPfXYJy9/fcO13DgSyfPUVWrD/aIyPY36z7MksHvDe05zYg==}
-    engines: {node: '>=6.0.0'}
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -10542,16 +10550,6 @@ snapshots:
       aws-cdk-lib: 2.206.0(constructs@10.4.2)
       constructs: 10.4.2
 
-  datadog-lambda-js@10.124.0:
-    dependencies:
-      '@aws-crypto/sha256-js': 5.2.0
-      dc-polyfill: 0.1.9
-      hot-shots: 8.5.0
-      promise-retry: 2.0.1
-      serialize-error: 8.1.0
-      shimmer: 1.2.1
-    optional: true
-
   datadog-lambda-js@12.127.0:
     dependencies:
       '@aws-crypto/sha256-js': 5.2.0
@@ -11662,11 +11660,6 @@ snapshots:
   hot-shots@11.1.0:
     optionalDependencies:
       unix-dgram: 2.0.6
-
-  hot-shots@8.5.0:
-    optionalDependencies:
-      unix-dgram: 2.0.6
-    optional: true
 
   html-escaper@2.0.2: {}
 
@@ -13951,11 +13944,10 @@ snapshots:
 
   secure-json-parse@4.0.0: {}
 
-  seek-datadog-custom-metrics@5.0.0(datadog-lambda-js@10.124.0)(hot-shots@11.1.0):
+  seek-datadog-custom-metrics@5.0.0(hot-shots@11.1.0):
     dependencies:
       '@types/aws-lambda': 8.10.152
     optionalDependencies:
-      datadog-lambda-js: 10.124.0
       hot-shots: 11.1.0
 
   seek-koala@7.1.0(hot-shots@11.1.0)(koa@3.0.1):
