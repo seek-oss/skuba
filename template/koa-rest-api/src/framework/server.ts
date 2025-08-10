@@ -31,7 +31,7 @@ const requestLogging = RequestLogging.createMiddleware((ctx, fields, err) => {
 });
 
 const version = VersionMiddleware.create({
-  name: config.name,
+  name: config.service,
   version: config.version,
 });
 

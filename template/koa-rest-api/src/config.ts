@@ -4,7 +4,7 @@ interface Config {
   environment: Environment;
 
   logLevel: string;
-  name: string;
+  service: string;
   version: string;
 
   metricsServer: string | null;
@@ -24,7 +24,7 @@ const environment = Env.oneOf(environments)('ENVIRONMENT');
 const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
   local: () => ({
     logLevel: 'debug',
-    name: '<%- serviceName %>',
+    service: '<%- serviceName %>',
     version: 'local',
 
     metricsServer: null,
@@ -33,7 +33,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
 
   test: () => ({
     logLevel: 'debug',
-    name: '<%- serviceName %>',
+    service: '<%- serviceName %>',
     version: 'test',
 
     metricsServer: null,
@@ -44,7 +44,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
     ...configs[prod](),
 
     logLevel: 'debug',
-    name: Env.string('DD_SERVICE'),
+    service: Env.string('DD_SERVICE'),
     version: Env.string('VERSION'),
 
     metricsServer: 'localhost',
@@ -53,7 +53,7 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
 
   [prod]: () => ({
     logLevel: 'info',
-    name: Env.string('DD_SERVICE'),
+    service: Env.string('DD_SERVICE'),
     version: Env.string('VERSION'),
 
     metricsServer: 'localhost',
