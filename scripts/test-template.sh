@@ -108,7 +108,7 @@ pnpm format
 
 if [ "$update_snapshot" = true ]; then
   echo "--- pnpm test --updateSnapshot ${template}"
-  pnpm test -- --updateSnapshot
+  pnpm test --updateSnapshot
   cd ../../skuba || exit 1
   bash ./scripts/update-template-snapshot.sh ${skuba_temp_directory} ${template}
 else
