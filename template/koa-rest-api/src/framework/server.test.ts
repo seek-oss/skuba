@@ -132,7 +132,7 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        err: {
+        error: {
           statusCode: 400,
           type: 'BadRequestError',
         },
@@ -166,7 +166,7 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        err: {
+        error: {
           statusCode: 500,
           type: 'InternalServerError',
         },
@@ -202,7 +202,7 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        err: {
+        error: {
           message: err.message,
           type: 'Error',
         },
