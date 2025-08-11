@@ -140,5 +140,15 @@
       packageNameTemplate: "{{#if (containsString depName '/')}}{{depName}}-buildkite-plugin{{else}}buildkite-plugins/{{depName}}-buildkite-plugin{{/if}}",
       datasourceTemplate: 'github-tags',
     },
+    {
+      "customType": "regex",
+      "fileMatch": ["(^|/)infra/.*\\.ts$"],
+      "matchStrings": [
+        "const DATADOG_EXTENSION_LAYER_VERSION = (?<currentValue>\\d+)"
+      ],
+      "packageNameTemplate": "DataDog/datadog-lambda-extension",
+      "depNameTemplate": "datadog lambda extension layer",
+      "datasourceTemplate": "github-releases"
+    },
   ],
 }
