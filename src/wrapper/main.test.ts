@@ -45,7 +45,7 @@ test('asyncFunctionHandler', async () => {
         `),
       ),
 
-    Promise.try(() =>
+    Promise.resolve().then(() =>
       agent
         .post('/')
         .send([null, {}])
@@ -156,7 +156,7 @@ test('syncFunctionHandler', async () => {
       .expect(200)
       .expect(({ body }) => expect(body).toMatchInlineSnapshot(`"aaa"`)),
 
-    Promise.try(() =>
+    Promise.resolve().then(() =>
       agent
         .post('/')
         .send('Invalid JSON')
