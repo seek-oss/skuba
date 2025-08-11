@@ -21,6 +21,9 @@ import { config } from './config.js';
 // Updated by https://github.com/seek-oss/rynovate
 const DATADOG_EXTENSION_LAYER_VERSION = 84;
 
+// Updated by https://github.com/seek-oss/rynovate
+const DATADOG_NODE_LAYER_VERSION = 126;
+
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -95,7 +98,6 @@ export class AppStack extends Stack {
         target: 'node22',
         // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
         externalModules: [],
-        nodeModules: ['datadog-lambda-js', 'dd-trace'],
       },
       functionName: '<%- serviceName %>',
       environment: {
@@ -127,11 +129,12 @@ export class AppStack extends Stack {
     );
 
     const datadog = new DatadogLambda(this, 'datadog', {
+      addLayers: true,
       apiKeySecret: datadogSecret,
-      addLayers: false,
       enableDatadogLogs: false,
-      flushMetricsToLogs: false,
       extensionLayerVersion: DATADOG_EXTENSION_LAYER_VERSION,
+      nodeLayerVersion: DATADOG_NODE_LAYER_VERSION,
+      flushMetricsToLogs: false,
     });
 
     datadog.addLambdaFunctions([worker]);
