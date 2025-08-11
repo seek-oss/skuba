@@ -133,8 +133,8 @@ export class AppStack extends Stack {
       apiKeySecret: datadogSecret,
       enableDatadogLogs: false,
       extensionLayerVersion: DATADOG_EXTENSION_LAYER_VERSION,
-      nodeLayerVersion: DATADOG_NODE_LAYER_VERSION,
       flushMetricsToLogs: false,
+      nodeLayerVersion: DATADOG_NODE_LAYER_VERSION,
     });
 
     datadog.addLambdaFunctions([worker]);
