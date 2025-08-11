@@ -27,10 +27,7 @@ if both `asyncX()` and `syncY()` throw errors,
 the former will result in an unhandled promise rejection.
 By default, this will cause the Node.js process to exit (!).
 
-The resilience of back-end applications can be improved by changing the [`--unhandled-rejections` CLI mode] or adding a [`process.on('unhandledRejection')` event handler] to avoid this terminal state.
-Addressing the underlying issue is still useful to avoid dispatching unnecessary promises which may degrade performance or trigger unanticipated partial failure states.
-
-If the above example felt contrived,
+If the example felt contrived,
 consider that the issue is not limited to synchronous functions that are directly passed as an iterable element to a static `Promise` method.
 You may have an argument or condition that implicates synchronous evaluation:
 
@@ -116,6 +113,10 @@ see the [relevant section](#asynchronous-functions) below for more information.
 
   await Promise.all([asyncX(), asyncX()]);
 ```
+
+By default, an unhandled promise rejection will cause the Node.js process to exit (!).
+The resilience of back-end applications can be improved by changing the [`--unhandled-rejections` CLI mode] or adding a [`process.on('unhandledRejection')` event handler] to avoid this terminal state.
+Addressing the underlying issue is still useful to avoid dispatching unnecessary promises which may degrade performance or trigger unanticipated partial failure states.
 
 ## Limitations
 
