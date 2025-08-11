@@ -30,10 +30,7 @@ const requestLogging = RequestLogging.createMiddleware((ctx, fields, err) => {
     : logger.error(fields, 'Server error');
 });
 
-const version = VersionMiddleware.create({
-  name: config.service,
-  version: config.version,
-});
+const version = VersionMiddleware.create(config);
 
 export const createApp = <State, Context>(
   ...middleware: Array<Koa.Middleware<State, Context>>

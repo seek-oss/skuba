@@ -2,7 +2,7 @@ import { sendDistributionMetric } from 'datadog-lambda-js';
 
 import { config } from 'src/config.js';
 
-const prefix = `${config.service}.`;
+const prefix = `${config.name}.`;
 
 export const metricsClient = {
   distribution: (
