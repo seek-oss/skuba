@@ -1,7 +1,7 @@
 import { Env } from 'skuba-dive';
 
 interface Config {
-  environment: Environment;
+  deployment: Deployment;
 
   logLevel: string;
   metrics: boolean;
@@ -11,14 +11,14 @@ interface Config {
   destinationSnsTopicArn: string;
 }
 
-type Environment = (typeof environments)[number];
+type Deployment = (typeof deployments)[number];
 
-const environments = ['local', 'test', 'dev', 'prod'] as const;
+const deployments = ['local', 'test', 'dev', 'prod'] as const;
 
-const environment = Env.oneOf(environments)('ENVIRONMENT');
+const deployment = Env.oneOf(deployments)('DEPLOYMENT');
 
 /* istanbul ignore next: config verification makes more sense in a smoke test */
-const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
+const configs: Record<Deployment, () => Omit<Config, 'deployment'>> = {
   local: () => ({
     logLevel: 'debug',
     metrics: false,
@@ -57,6 +57,6 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
 };
 
 export const config: Config = {
-  ...configs[environment](),
-  environment,
+  ...configs[deployment](),
+  deployment,
 };

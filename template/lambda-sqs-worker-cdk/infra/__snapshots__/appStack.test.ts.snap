@@ -193,10 +193,10 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "DD_TRACE_CLOUD_RESPONSE_PAYLOAD_TAGGING": "$.*",
             "DD_TRACE_ENABLED": "true",
             "DD_VERSION": "local",
+            "DEPLOYMENT": "dev",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
             },
-            "ENVIRONMENT": "dev",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
           },
@@ -934,10 +934,10 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "DD_TRACE_CLOUD_RESPONSE_PAYLOAD_TAGGING": "$.*",
             "DD_TRACE_ENABLED": "true",
             "DD_VERSION": "local",
+            "DEPLOYMENT": "prod",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
             },
-            "ENVIRONMENT": "prod",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
           },

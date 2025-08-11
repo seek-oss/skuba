@@ -9,7 +9,7 @@ const { createContextMiddleware, mixin } =
 export const contextMiddleware = createContextMiddleware();
 
 const { destination, stdoutMock } = createDestination({
-  mock: config.environment === 'test',
+  mock: config.deployment === 'test',
 });
 
 export { stdoutMock };
@@ -32,7 +32,7 @@ export const logger = createLogger(
     level: config.logLevel,
 
     transport:
-      config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
+      config.deployment === 'local' ? { target: 'pino-pretty' } : undefined,
   },
   destination,
 );

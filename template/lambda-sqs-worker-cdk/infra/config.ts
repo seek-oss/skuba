@@ -1,10 +1,10 @@
 import { Env } from 'skuba-dive';
 
-const ENVIRONMENTS = ['dev', 'prod'] as const;
+type Deployment = (typeof deployments)[number];
 
-type Environment = (typeof ENVIRONMENTS)[number];
+const deployments = ['dev', 'prod'] as const;
 
-const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
+const deployment = Env.oneOf(deployments)('DEPLOYMENT');
 
 interface Config {
   env: 'development' | 'production';
@@ -15,7 +15,7 @@ interface Config {
     batchSize: number;
     reservedConcurrency: number;
     environment: {
-      ENVIRONMENT: Environment;
+      DEPLOYMENT: Deployment;
     };
   };
 
@@ -26,7 +26,7 @@ interface Config {
 const service = '<%- serviceName %>';
 const version = Env.string('VERSION');
 
-const configs: Record<Environment, Config> = {
+const configs: Record<Deployment, Config> = {
   dev: {
     env: 'development',
     service,
@@ -36,7 +36,7 @@ const configs: Record<Environment, Config> = {
       batchSize: 10,
       reservedConcurrency: 3,
       environment: {
-        ENVIRONMENT: 'dev',
+        DEPLOYMENT: 'dev',
       },
     },
 
@@ -52,7 +52,7 @@ const configs: Record<Environment, Config> = {
       batchSize: 10,
       reservedConcurrency: 20,
       environment: {
-        ENVIRONMENT: 'prod',
+        DEPLOYMENT: 'prod',
       },
     },
 
@@ -61,4 +61,4 @@ const configs: Record<Environment, Config> = {
   },
 };
 
-export const config: Config = configs[environment];
+export const config: Config = configs[deployment];

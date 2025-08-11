@@ -9,7 +9,7 @@ owner: '{{values "owner"}}'
 image: '{{values "image"}}'
 
 env:
-  ENVIRONMENT: '{{values "deployment"}}'
+  DEPLOYMENT: '{{values "deployment"}}'
   SERVICE: '{{values "service"}}'
 
   DD_ENV: '{{values "env"}}'

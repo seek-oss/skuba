@@ -17,5 +17,5 @@ export const logger = createLogger({
   level: config.logLevel,
 
   transport:
-    config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
+    config.deployment === 'local' ? { target: 'pino-pretty' } : undefined,
 });

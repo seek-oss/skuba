@@ -16,7 +16,7 @@ export const lambdaContext = new AsyncLocalStorage<LambdaContext>();
 export const recordContext = new AsyncLocalStorage<RecordContext>();
 
 const { destination, stdoutMock } = createDestination({
-  mock: config.environment === 'test' && {
+  mock: config.deployment === 'test' && {
     redact: ['awsRequestId'],
   },
 });
@@ -44,7 +44,7 @@ export const logger = createLogger(
     }),
 
     transport:
-      config.environment === 'local' ? { target: 'pino-pretty' } : undefined,
+      config.deployment === 'local' ? { target: 'pino-pretty' } : undefined,
   },
   destination,
 );

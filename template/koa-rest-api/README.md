@@ -29,7 +29,7 @@ It uses the [Koa] middleware framework and common SEEK packages.
 Resource APIs enable synchronous interactions and serve as the backbone of SEEK's general service architecture.
 
 The `koa-rest-api` template is modelled after a hypothetical service for posting and retrieving job advertisements.
-It's stubbed out with in-memory [storage](src/storage) which can observed by standing up an environment with multiple instances.
+It's stubbed out with in-memory [storage](src/storage) which can observed by standing up a deployment with multiple instances.
 Storage is local to each instance, so load balancing across the instances may render a read inconsistent with a previous write.
 This would be replaced with an external data store in production.
 
@@ -75,19 +75,19 @@ pnpm start:debug
 
 This project is deployed through a [Buildkite pipeline](.buildkite/pipeline.yml).
 
-- Commits to a feature branch can be deployed to the dev environment by unblocking a step in the Buildkite UI
-- Commits to the default branch are automatically deployed to the dev and prod environments in sequence
+- Commits to a feature branch can be deployed to the development environment by unblocking a step in the Buildkite UI
+- Commits to the default branch are automatically deployed to the development and production environments in sequence
 
 To rapidly roll back a change,
 retry an individual deployment step from the previous build in Buildkite.
-Note that this will introduce drift between the head of the default Git branch and the live environment;
+Note that this will introduce drift between the head of the default Git branch and the live deployment;
 use with caution and always follow up with a proper revert or fix in Git history.
 
 ## Support
 
 ### Dev
 
-TODO: add support links for the dev environment.
+TODO: add support links for the dev deployment.
 
 <!--
 - CloudWatch dashboard
@@ -97,7 +97,7 @@ TODO: add support links for the dev environment.
 
 ### Prod
 
-TODO: add support links for the prod environment.
+TODO: add support links for the prod deployment.
 
 <!--
 - CloudWatch dashboard
