@@ -9,10 +9,12 @@ owner: '{{values "owner"}}'
 image: '{{values "image"}}'
 
 env:
+  ENVIRONMENT: '{{values "deployment"}}'
+  SERVICE: '{{values "service"}}'
+
   DD_ENV: '{{values "env"}}'
   DD_SERVICE: '{{values "service"}}'
 
-  ENVIRONMENT: '{{values "deployment"}}'
   OPENTELEMETRY_ENABLED: '{{values "openTelemetry.enabled"}}'
 
 {{if .Values.cloudwatchDashboardDisabled}}
