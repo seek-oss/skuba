@@ -87,7 +87,7 @@ const writeTemporaryFiles = async (contents: Record<string, string>) => {
   const dir = await fsp.mkdtemp('eslint-migrate-config');
 
   await Promise.all(
-    Object.entries(contents).map(([file, content]) =>
+    Object.entries(contents).map(async ([file, content]) =>
       fsp.writeFile(path.join(dir, file), content),
     ),
   );
