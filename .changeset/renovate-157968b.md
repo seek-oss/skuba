@@ -1,5 +1,6 @@
 ---
 'eslint-config-skuba': minor
+'skuba': minor
 ---
 
 lint: Error on custom getters and setters
