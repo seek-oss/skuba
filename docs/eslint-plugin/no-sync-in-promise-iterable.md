@@ -16,8 +16,8 @@ Heuristically flags synchronous logic in the iterable argument of [static `Promi
 const [x, y] = await Promise.allSettled([asyncX(), syncY()]);
 //                                                 ~~~~~~~
 // syncY() may synchronously throw an error and leave preceding promises dangling.
-// Evaluate synchronous expressions outside of the iterable argument to Promise.allSettled.
-// Use the async keyword to denote asynchronous functions.
+// Evaluate synchronous expressions outside of the iterable argument to Promise.allSettled,
+// or safely wrap with the async keyword, Promise.try(), or Promise.resolve().then().
 ```
 
 ## Problem
@@ -27,10 +27,7 @@ if both `asyncX()` and `syncY()` throw errors,
 the former will result in an unhandled promise rejection.
 By default, this will cause the Node.js process to exit (!).
 
-The resilience of back-end applications can be improved by changing the [`--unhandled-rejections` CLI mode] or adding a [`process.on('unhandledRejection')` event handler] to avoid this terminal state.
-Addressing the underlying issue is still useful to avoid dispatching unnecessary promises which may degrade performance or trigger unanticipated partial failure states.
-
-If the above example felt contrived,
+If the example felt contrived,
 consider that the issue is not limited to synchronous functions that are directly passed as an iterable element to a static `Promise` method.
 You may have an argument or condition that implicates synchronous evaluation:
 
@@ -117,6 +114,21 @@ see the [relevant section](#asynchronous-functions) below for more information.
   await Promise.all([asyncX(), asyncX()]);
 ```
 
+You can alternatively wrap the function invocation with [`Promise.try()`] or the slower `Promise.resolve().then()`:
+
+```diff
+  Promise.all([
+    asyncX(),
+-   syncY(),
++   Promise.try(() => syncY()), // Node.js >=24
++   Promise.resolve().then(() => syncY()), // Node.js <=22
+  ]);
+```
+
+By default, an unhandled promise rejection will cause the Node.js process to exit (!).
+The resilience of back-end applications can be improved by changing the [`--unhandled-rejections` CLI mode] or adding a [`process.on('unhandledRejection')` event handler] to avoid this terminal state.
+Addressing the underlying issue is still useful to avoid dispatching unnecessary promises which may degrade performance or trigger unanticipated partial failure states.
+
 ## Limitations
 
 This rule requires type checking and is heuristical.
@@ -139,8 +151,8 @@ const syncParam = () => {
 const [x, y] = await Promise.all([asyncX(), asyncY(syncParam())]);
 //                                                 ~~~~~~~~~~~
 // syncParam() may synchronously throw an error and leave preceding promises dangling.
-// Evaluate synchronous expressions outside of the iterable argument to Promise.all.
-// Use the async keyword to denote asynchronous functions.
+// Evaluate synchronous expressions outside of the iterable argument to Promise.all,
+// or safely wrap with the async keyword, Promise.try(), or Promise.resolve().then().
 ```
 
 We recommend restructuring your code regardless to avoid this class of issue;
@@ -178,7 +190,15 @@ const good = (async () => {
 }) satisfies () => Promise<void>;
 ```
 
-Other options like [`Promise.try()`] may be explored in future.
+You can also consider wrapping the function invocation with [`Promise.try()`] or the slower `Promise.resolve().then()`:
+
+```typescript
+// Node.js >=24
+Promise.all([asyncX(), Promise.try(() => syncY())]);
+
+// Node.js <=22
+Promise.all([asyncX(), Promise.resolve().then(() => syncY())]);
+```
 
 ### Getters and setters
 

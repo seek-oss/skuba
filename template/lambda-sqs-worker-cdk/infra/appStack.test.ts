@@ -69,10 +69,7 @@ it.each(['dev', 'prod'])(
         /"DD_TAGS":"git.commit.sha:([0-9a-f]+),git.repository_url:([^\"]+)",/g,
         '',
       )
-      .replaceAll(
-        /(layer:Datadog-Extension-.+?:)\d+/g,
-        (_, layer) => `${layer}x`,
-      );
+      .replaceAll(/(layer:Datadog-[^-]+-.+?:)\d+/g, (_, layer) => `${layer}x`);
     expect(JSON.parse(json)).toMatchSnapshot();
   },
 );

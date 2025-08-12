@@ -5,9 +5,7 @@ import type {
   SQSEvent,
   SQSRecord,
 } from 'aws-lambda';
-import { datadog } from 'datadog-lambda-js';
 
-import { config } from 'src/config.js';
 import { lambdaContext, logger, recordContext } from 'src/framework/logging.js';
 
 type Handler<Event, Output> = (
@@ -15,21 +13,11 @@ type Handler<Event, Output> = (
   ctx: LambdaContext,
 ) => Promise<Output>;
 
-/**
- * Conditionally applies the Datadog wrapper to a Lambda handler.
- *
- * This also "fixes" its broken type definitions.
- */
-const withDatadog = <Event, Output = unknown>(
-  fn: Handler<Event, Output>,
-): Handler<Event, Output> =>
-  // istanbul ignore next
-  config.metrics ? (datadog(fn) as Handler<Event, Output>) : fn;
-
-export const createHandler = <Event extends SQSEvent, Output = unknown>(
-  fn: (event: Event, ctx: LambdaContext) => Promise<Output>,
-) =>
-  withDatadog<Event>((event, ctx) =>
+export const createHandler =
+  <Event extends SQSEvent, Output = unknown>(
+    fn: (event: Event, ctx: LambdaContext) => Promise<Output>,
+  ): Handler<Event, Output> =>
+  async (event, ctx) =>
     lambdaContext.run({ awsRequestId: ctx.awsRequestId }, async () => {
       try {
         const output = await fn(event, ctx);
@@ -42,8 +30,7 @@ export const createHandler = <Event extends SQSEvent, Output = unknown>(
 
         throw new Error('Function failed');
       }
-    }),
-  );
+    });
 
 export const createBatchSQSHandler =
   (

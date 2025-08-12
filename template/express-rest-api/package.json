@@ -23,7 +23,7 @@
     "@seek/logger": "master",
     "express": "^5.0.0",
     "hot-shots": "^11.0.0",
-    "seek-datadog-custom-metrics": "^5.0.0",
+    "seek-datadog-custom-metrics": "^6.0.0",
     "skuba-dive": "^2.0.0"
   },
   "devDependencies": {

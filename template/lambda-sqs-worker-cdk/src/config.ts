@@ -4,7 +4,6 @@ interface Config {
   deployment: Deployment;
 
   logLevel: string;
-  metrics: boolean;
   name: string;
   version: string;
 
@@ -21,7 +20,6 @@ const deployment = Env.oneOf(deployments)('DEPLOYMENT');
 const configs: Record<Deployment, () => Omit<Config, 'deployment'>> = {
   local: () => ({
     logLevel: 'debug',
-    metrics: false,
     name: '<%- serviceName %>',
     version: 'local',
 
@@ -30,7 +28,6 @@ const configs: Record<Deployment, () => Omit<Config, 'deployment'>> = {
 
   test: () => ({
     logLevel: Env.string('LOG_LEVEL', { default: 'debug' }),
-    metrics: false,
     name: '<%- serviceName %>',
     version: 'test',
 
@@ -39,7 +36,6 @@ const configs: Record<Deployment, () => Omit<Config, 'deployment'>> = {
 
   dev: () => ({
     logLevel: 'debug',
-    metrics: true,
     name: Env.string('DD_SERVICE'),
     version: Env.string('DD_VERSION'),
 
@@ -48,7 +44,6 @@ const configs: Record<Deployment, () => Omit<Config, 'deployment'>> = {
 
   prod: () => ({
     logLevel: 'info',
-    metrics: true,
     name: Env.string('DD_SERVICE'),
     version: Env.string('DD_VERSION'),
 
