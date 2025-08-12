@@ -129,7 +129,6 @@ export class AppStack extends Stack {
     );
 
     const datadog = new DatadogLambda(this, 'datadog', {
-      addLayers: true,
       apiKeySecret: datadogSecret,
       enableDatadogLogs: false,
       extensionLayerVersion: DATADOG_EXTENSION_LAYER_VERSION,
