@@ -217,7 +217,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Node22-x:126",
+                ":464622532012:layer:Datadog-Node22-x:x",
               ],
             ],
           },
@@ -969,7 +969,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Node22-x:126",
+                ":464622532012:layer:Datadog-Node22-x:x",
               ],
             ],
           },
