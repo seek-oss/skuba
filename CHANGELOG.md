@@ -1,5 +1,136 @@
 # skuba
 
+## 12.1.0
+
+### Minor Changes
+
+- **lint:** Update `publicHoistPattern` list in `pnpm-workspace.yaml` ([#1959](https://github.com/seek-oss/skuba/pull/1959))
+
+- **lint:** Add `skuba/no-sync-in-promise-iterable` rule ([#1969](https://github.com/seek-oss/skuba/pull/1969))
+
+  [`skuba/no-sync-in-promise-iterable`](https://seek-oss.github.io/skuba/docs/eslint-plugin/no-sync-in-promise-iterable.html) heuristically flags synchronous logic in the iterable argument of [static `Promise` methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#static_methods) that could leave preceding promises dangling.
+
+  ```typescript
+  await Promise.allSettled([
+    promiseReject() /* This will result in an unhandled rejection */,
+    promiseResolve(syncFn() /* If this throws an error synchronously  */),
+    //             ~~~~~~~~
+    // syncFn() may synchronously throw an error and leave preceding promises dangling.
+    // Evaluate synchronous expressions outside of the iterable argument to Promise.allSettled,
+    // or safely wrap with the async keyword, Promise.try(), or Promise.resolve().then().
+  ]);
+  ```
+
+  A [Promise](https://nodejs.org/en/learn/asynchronous-work/discover-promises-in-nodejs) that is not awaited and later moves to a rejected state is referred to as an unhandled rejection. When an unhandled rejection is encountered, a Node.js application that does not use process clustering will default to crashing out.
+
+  This new rule defaults to the [`warn` severity](https://eslint.org/docs/latest/use/configure/rules#rule-severities) while we monitor feedback. Please share examples of false positives if you regularly run into them.
+
+- **lint:** Enable stricter import validation with [`noUncheckedSideEffectImports`](https://www.typescriptlang.org/tsconfig/#noUncheckedSideEffectImports) ([#1982](https://github.com/seek-oss/skuba/pull/1982))
+
+  Previously, TypeScript would not check side-effect imports:
+
+  ```typescript
+  import './made-up-module.js';
+  ```
+
+  Validation of these imports is now enabled by default in `skuba/config/tsconfig.json`. If you have a complex build process that produces assets that aren't known to TypeScript at time of linting, you may override the compiler option in your local `tsconfig.json` or include inline `// @ts-expect-error`s in your code.
+
+- **format, lint:** Patch `src/listen.ts` entry points to handle `unhandledRejection`s ([#1978](https://github.com/seek-oss/skuba/pull/1978))
+
+  A [Promise](https://nodejs.org/en/learn/asynchronous-work/discover-promises-in-nodejs) that is not awaited and later moves to a rejected state is referred to as an unhandled rejection. When an unhandled rejection is encountered, a Node.js application that does not use process clustering will default to crashing out.
+
+  This patch adds a [`process.on('unhandledRejection')`](https://nodejs.org/api/process.html#event-unhandledrejection) listener to `src/listen.ts` server entry points to log rather than crash on such rejections. If your application uses a different entry point, consider adding code similar to the following sample to improve resilience:
+
+  ```typescript
+  // If you want to gracefully handle this scenario in AWS Lambda,
+  // remove the default AWS Lambda listener which throws an error.
+  // process.removeAllListeners('unhandledRejection');
+
+  // Report unhandled rejections instead of crashing the process
+  // Make sure to monitor these reports and alert as appropriate
+  process.on('unhandledRejection', (err) =>
+    logger.error(err, 'Unhandled promise rejection'),
+  );
+  ```
+
+- **test:** Enable `--experimental-vm-modules` by default ([#1997](https://github.com/seek-oss/skuba/pull/1997))
+
+- **lint:** Error on custom getters and setters ([#2010](https://github.com/seek-oss/skuba/pull/2010))
+
+  In [`eslint-config-seek@14.6.0`](https://github.com/seek-oss/eslint-config-seek/releases/tag/v14.6.0), the [`no-restricted-syntax`](https://eslint.org/docs/latest/rules/no-restricted-syntax) rule is now preconfigured to ban custom getters and setters. Engineers typically expect property access to be a safer operation than method or function invocation. Throwing an error from a getter can cause confusion and unhandled promise rejections, which can lead to a crash on the server side if [not appropriately configured](https://nodejs.org/api/process.html#event-unhandledrejection). See the [PR](https://github.com/seek-oss/eslint-config-seek/pull/227) for more information.
+
+  ```diff
+  const obj = {
+  - get prop() {
+  + prop() {
+      throw new Error('Badness!');
+    },
+  };
+  ```
+
+  A custom getter may be occasionally prescribed as the recommended approach to achieve desired behaviour. For example, this syntax can define a [recursive object in Zod](https://zod.dev/v4#recursive-objects). In these rare scenarios, add an inline ignore and ensure that you do not throw an error within the getter.
+
+  ```typescript
+  import * as z from 'zod';
+
+  const Category = z.object({
+    name: z.string(),
+    // eslint-disable-next-line no-restricted-syntax -- Zod recursive type
+    get subcategories() {
+      return z.array(Category);
+    },
+  });
+  ```
+
+- **deps:** TypeScript 5.9 ([#1982](https://github.com/seek-oss/skuba/pull/1982))
+
+  This major release includes breaking changes. See the [TypeScript 5.9](https://devblogs.microsoft.com/typescript/announcing-typescript-5-9/) announcement for more information.
+
+- **node, start:** Forward custom conditions to `tsx` ([#1996](https://github.com/seek-oss/skuba/pull/1996))
+
+  The `skuba node` and `skuba start` commands now automatically pass custom conditions from `tsconfig.json` ([`customConditions`](https://www.typescriptlang.org/tsconfig/customConditions.html)) and command-line arguments ([`--conditions`](https://nodejs.org/api/cli.html#-c-condition---conditionscondition)) to the `tsx` runtime.
+
+### Patch Changes
+
+- **template/oss-npm-package:** actions/checkout v5 ([#2016](https://github.com/seek-oss/skuba/pull/2016))
+
+- **template/\*-rest-api:** Uplift observability patterns ([#2001](https://github.com/seek-oss/skuba/pull/2001))
+
+  Our Gantry templates have been revised to better support [Datadog logging](https://backstage.myseek.xyz/docs/default/component/sig-backend-tooling/guidance/logging/) and DORA metrics.
+
+- **template/lambda-sqs-worker-cdk:** Use Datadog runtime layer ([#2018](https://github.com/seek-oss/skuba/pull/2018))
+
+  This template historically configured the Datadog CDK Construct to exclude the Node.js Lambda layer with [`addLayers: false`](https://docs.datadoghq.com/serverless/libraries_integrations/cdk/#configuration). This ensured that the `datadog-lambda-js` and `dd-trace` dependency versions declared in `package.json` were the ones running in your deployed Lambda function.
+
+  We are now recommending use of the Node.js Lambda layer to align with ecosystem defaults and simplify our build process. Renovate can be configured to keep versioning of the Node.js Lambda layer and `datadog-lambda-js` in sync, but the `dd-trace` version may drift over time. See the [`seek-oss/rynovate` PR](https://github.com/seek-oss/rynovate/pull/185) for implementation details.
+
+- **template/lambda-sqs-worker-cdk:** Uplift observability patterns ([#2001](https://github.com/seek-oss/skuba/pull/2001))
+
+  Our Lambda template has been revised to better support [Datadog logging](https://backstage.myseek.xyz/docs/default/component/sig-backend-tooling/guidance/logging/) and DORA metrics.
+
+- **template/\*-rest-api:** seek-datadog-custom-metrics ^6.0.0 ([#2009](https://github.com/seek-oss/skuba/pull/2009))
+
+- **template/lambda-sqs-worker-cdk:** Add partial batch failure handling ([#1924](https://github.com/seek-oss/skuba/pull/1924))
+
+- **deps:** zod ^4.0.0 ([#1977](https://github.com/seek-oss/skuba/pull/1977))
+
+- **node, start:** Replace `--require dotenv/config` with `--env-file-if-exists .env` ([#1968](https://github.com/seek-oss/skuba/pull/1968))
+
+  This drops a third-party dependency for the [built-in Node.js option](https://nodejs.org/dist/latest-v22.x/docs/api/cli.html#--env-file-if-existsconfig).
+
+- **template/\*-rest-api:** Handle `unhandledRejection`s ([#1978](https://github.com/seek-oss/skuba/pull/1978))
+
+- **init:** Fix `normalize-package-data` error ([#2020](https://github.com/seek-oss/skuba/pull/2020))
+
+  This fixes an error that previously occurred if you skipped the input prompt on our built-in Gantry & Lambda templates:
+
+  ```console
+  Error: Invalid name: "@seek/<%- serviceName %>"
+      at ensureValidName
+  ```
+
+- **template/koa-rest-api:** koa 3.x ([#1974](https://github.com/seek-oss/skuba/pull/1974))
+
 ## 12.0.2
 
 ### Patch Changes
