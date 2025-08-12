@@ -315,8 +315,8 @@ importers:
         specifier: ^0.203.0
         version: 0.203.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
-        specifier: master
-        version: 0.0.0-master-20250808072312
+        specifier: 11.0.0
+        version: 11.0.0
       express:
         specifier: ^5.0.0
         version: 5.1.0
@@ -344,7 +344,7 @@ importers:
         version: 13.1.1
       skuba:
         specifier: '*'
-        version: 12.0.2(@babel/core@7.28.0)(@jest/transform@30.0.5)(@typescript-eslint/eslint-plugin@8.39.0(@typescript-eslint/parser@8.39.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(@typescript-eslint/utils@8.39.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(babel-jest@30.0.5(@babel/core@7.28.0))(jest-util@30.0.5)(jiti@2.5.1)(skuba-dive@2.0.0)
+        version: 12.0.2(@babel/core@7.28.0)(@jest/transform@30.0.5)(@typescript-eslint/eslint-plugin@8.39.0(@typescript-eslint/parser@8.39.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(@typescript-eslint/utils@8.39.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(babel-jest@30.0.5(@babel/core@7.28.0))(jest-util@30.0.5)(jiti@2.5.1)(skuba-dive@2.0.0)
       supertest:
         specifier: ^7.0.0
         version: 7.1.4
@@ -360,7 +360,7 @@ importers:
         version: 22.17.1
       skuba:
         specifier: '*'
-        version: 12.0.2(@babel/core@7.28.0)(@jest/transform@30.0.5)(@typescript-eslint/eslint-plugin@8.39.0(@typescript-eslint/parser@8.39.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(@typescript-eslint/utils@8.39.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.9.2))(babel-jest@30.0.5(@babel/core@7.28.0))(jest-util@30.0.5)(jiti@2.5.1)(skuba-dive@2.0.0)
+        version: 12.0.2(@babel/core@7.28.0)(@jest/transform@30.0.5)(@typescript-eslint/eslint-plugin@8.39.0(@typescript-eslint/parser@8.39.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(@typescript-eslint/utils@8.39.0(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(babel-jest@30.0.5(@babel/core@7.28.0))(jest-util@30.0.5)(jiti@2.5.1)(skuba-dive@2.0.0)
 
   template/koa-rest-api:
     dependencies:
@@ -392,8 +392,8 @@ importers:
         specifier: ^0.203.0
         version: 0.203.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
-        specifier: master
-        version: 0.0.0-master-20250808072312
+        specifier: 11.0.0
+        version: 11.0.0
       hot-shots:
         specifier: ^11.0.0
         version: 11.1.1
@@ -462,8 +462,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@seek/logger':
-        specifier: master
-        version: 0.0.0-master-20250808072312
+        specifier: 11.0.0
+        version: 11.0.0
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -1855,12 +1855,12 @@ packages:
     resolution: {integrity: sha512-P1QGvwfmGK7JCxdE4jxiY6vDjUlnFKC7TxbPpLPG6/KMZ4dPo0y9nGSeRbJOnVHivM/J72qRdkTR65RTHqx8gg==}
     engines: {node: '>=20.9.0'}
 
-  '@seek/logger@0.0.0-master-20250808072312':
-    resolution: {integrity: sha512-HZubQAlCOYlskzStaSzwOjUMomBAgPchfO20nh1IXrhkRfN54Xn55Kn0BACTwg6ScoyQs8YyuVEgxXAOh6E+Gw==}
-    engines: {node: '>=20.9.0'}
-
   '@seek/logger@10.0.0':
     resolution: {integrity: sha512-VLvzLtkiFStd7SOcfZzt8Tfb7OVFOtLTU5qKQixBXCjTY8PIIAsibe2wgk6JhCUa2dnq1zY5TZuHBTNMt+ro1w==}
+    engines: {node: '>=20.9.0'}
+
+  '@seek/logger@11.0.0':
+    resolution: {integrity: sha512-AbULWAtrkjXvz3EKCTzpVdFhO0Y1fJujYKW4YwlJ94oBVtSqIbOCfbwcdknivn/X9FoC6/7xvWvc5wZ74IA0lA==}
     engines: {node: '>=20.9.0'}
 
   '@semantic-release/commit-analyzer@13.0.1':
@@ -8735,20 +8735,20 @@ snapshots:
       skuba-dive: 2.0.0
       zod: 4.0.17
 
-  '@seek/logger@0.0.0-master-20250808072312':
-    dependencies:
-      dtrim: 1.12.0
-      fast-redact: 3.5.0
-      pino: 9.8.0
-      pino-std-serializers: 7.0.0
-      pure-parse: 1.0.1
-
   '@seek/logger@10.0.0':
     dependencies:
       dtrim: 1.12.0
       fast-redact: 3.5.0
       pino: 9.8.0
       pino-std-serializers: 7.0.0
+
+  '@seek/logger@11.0.0':
+    dependencies:
+      dtrim: 1.12.0
+      fast-redact: 3.5.0
+      pino: 9.8.0
+      pino-std-serializers: 7.0.0
+      pure-parse: 1.0.1
 
   '@semantic-release/commit-analyzer@13.0.1(semantic-release@24.2.7(typescript@5.9.2))':
     dependencies:
