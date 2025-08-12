@@ -208,6 +208,18 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `Promise.${method}([1, knex('schema.table').select('*').where('id', 1)])`,
     },
+    // Safe Promise wrappers
+    {
+      code: `
+        const createFail = () => () => fail();
+        Promise.${method}([,Promise.try(createFail())]);
+      `,
+    },
+    { code: `Promise.${method}([,Promise.try(() => fail())])` },
+    { code: `Promise.${method}([,Promise.resolve().then(() => fail())])` },
+    {
+      code: `Promise.${method}([,Promise.resolve().then(() => fail(), 2, 3, 4)])`,
+    },
   ]),
   invalid: methods.flatMap((method) => [
     {
@@ -438,6 +450,34 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     },
     {
       code: `const fn = () => undefined; Promise.${method}([1, fn.call(fail())]);`,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: { method, value: 'fail()' },
+        },
+      ],
+    },
+    // Safe Promise wrappers with unsafe arguments
+    {
+      code: `Promise.${method}([,Promise.try(fail())])`,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: { method, value: 'fail()' },
+        },
+      ],
+    },
+    {
+      code: `Promise.${method}([,Promise.try(() => fail(), 2, 3,fail())])`,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: { method, value: 'fail()' },
+        },
+      ],
+    },
+    {
+      code: `Promise.${method}([,Promise.resolve().then(fail())])`,
       errors: [
         {
           messageId: 'mayThrowSyncError',

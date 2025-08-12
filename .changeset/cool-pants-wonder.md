@@ -14,8 +14,8 @@ await Promise.allSettled([
   promiseResolve(syncFn() /* If this throws an error synchronously  */),
   //             ~~~~~~~~
   // syncFn() may synchronously throw an error and leave preceding promises dangling.
-  // Evaluate synchronous expressions outside of the iterable argument to Promise.allSettled.
-  // Use the async keyword to denote asynchronous functions.
+  // Evaluate synchronous expressions outside of the iterable argument to Promise.allSettled,
+  // or safely wrap with the async keyword, Promise.try(), or Promise.resolve().then().
 ]);
 ```
 
