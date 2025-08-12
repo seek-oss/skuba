@@ -608,14 +608,6 @@ const resolveArrayElements = (
           return [];
         }
 
-        // Skip unevaluated functions as they are harmless
-        if (
-          element.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression ||
-          element.type === TSESTree.AST_NODE_TYPES.FunctionExpression
-        ) {
-          return [];
-        }
-
         // Skip first element as it doesn't leave preceding promises dangling
         if (
           index === 0 &&
