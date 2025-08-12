@@ -130,6 +130,13 @@ const SAFE_ISH_INSTANCE_METHODS = new Set([
   'toString',
 ]);
 
+const isPromiseTry = (node: TSESTree.CallExpression) =>
+  node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+  node.callee.object.type === TSESTree.AST_NODE_TYPES.Identifier &&
+  node.callee.object.name === 'Promise' &&
+  node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
+  node.callee.property.name === 'try';
+
 /**
  * Whether a call expression represents a safe-ish built-in.
  *
@@ -254,6 +261,7 @@ const possibleNodesWithSyncError = (
   checker: TypeChecker,
   sourceCode: Readonly<TSESLint.SourceCode>,
   visited: Set<string>,
+  calls: number,
 ): TSESTree.Node[] => {
   switch (node.type) {
     case TSESTree.AST_NODE_TYPES.ArrayExpression:
@@ -266,6 +274,7 @@ const possibleNodesWithSyncError = (
               checker,
               sourceCode,
               visited,
+              calls,
             )
           : [],
       );
@@ -273,6 +282,11 @@ const possibleNodesWithSyncError = (
     case TSESTree.AST_NODE_TYPES.ArrowFunctionExpression:
     case TSESTree.AST_NODE_TYPES.FunctionExpression:
     case TSESTree.AST_NODE_TYPES.FunctionDeclaration:
+      // Allow a function that doesn't appear to be invoked
+      if (calls === 0) {
+        return [];
+      }
+
       if (node.async) {
         return [];
       }
@@ -289,6 +303,7 @@ const possibleNodesWithSyncError = (
         checker,
         sourceCode,
         visited,
+        calls - 1,
       );
 
     case TSESTree.AST_NODE_TYPES.AssignmentExpression:
@@ -299,6 +314,7 @@ const possibleNodesWithSyncError = (
         checker,
         sourceCode,
         visited,
+        calls,
       );
 
     case TSESTree.AST_NODE_TYPES.BinaryExpression:
@@ -311,12 +327,31 @@ const possibleNodesWithSyncError = (
           checker,
           sourceCode,
           visited,
+          calls,
         ),
       );
 
     case TSESTree.AST_NODE_TYPES.CallExpression: {
       if (isSafeIshBuilder(node)) {
         return [];
+      }
+
+      if (isPromiseTry(node)) {
+        return node.arguments.flatMap((arg, index) =>
+          possibleNodesWithSyncError(
+            arg,
+            esTreeNodeToTSNodeMap,
+            checker,
+            sourceCode,
+            visited,
+            // We generally increment the call count to indicate that we expect
+            // that a callback argument may be invoked by the parent function.
+            // However, we know that `Promise.try()` will safely wrap its `func`
+            // callback so we don't need to simulate invoking it.
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/try#parameters
+            index === 0 ? calls : calls + 1,
+          ),
+        );
       }
 
       // Allow common safe-ish built-ins and Promise-like return types
@@ -328,6 +363,7 @@ const possibleNodesWithSyncError = (
             checker,
             sourceCode,
             visited,
+            calls + 1,
           ),
         );
       }
@@ -348,22 +384,26 @@ const possibleNodesWithSyncError = (
             checker,
             sourceCode,
             visited,
+            calls + 1,
           ),
         );
       }
 
       if (isChainedPromise(node, esTreeNodeToTSNodeMap, checker)) {
         return node.arguments.flatMap((arg) =>
-          arg.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression ||
-          arg.type === TSESTree.AST_NODE_TYPES.FunctionExpression
-            ? []
-            : possibleNodesWithSyncError(
-                arg,
-                esTreeNodeToTSNodeMap,
-                checker,
-                sourceCode,
-                visited,
-              ),
+          possibleNodesWithSyncError(
+            arg,
+            esTreeNodeToTSNodeMap,
+            checker,
+            sourceCode,
+            visited,
+            // We generally increment the call count to indicate that we expect
+            // that a callback argument may be invoked by the parent function.
+            // However, we assume that `.catch()`, `.finally()`, `.then()` will
+            // will safely wrap their callbacks so we don't need to simulate
+            // invoking them.
+            calls,
+          ),
         );
       }
 
@@ -378,6 +418,7 @@ const possibleNodesWithSyncError = (
             checker,
             sourceCode,
             visited,
+            calls + 1,
           ),
         );
       }
@@ -394,6 +435,7 @@ const possibleNodesWithSyncError = (
         checker,
         sourceCode,
         visited,
+        calls,
       );
 
     case TSESTree.AST_NODE_TYPES.ConditionalExpression:
@@ -405,6 +447,7 @@ const possibleNodesWithSyncError = (
           checker,
           sourceCode,
           visited,
+          calls,
         ),
       );
 
@@ -441,6 +484,7 @@ const possibleNodesWithSyncError = (
           checker,
           sourceCode,
           visited,
+          calls,
         ),
       );
 
@@ -460,6 +504,7 @@ const possibleNodesWithSyncError = (
         checker,
         sourceCode,
         visited,
+        calls,
       );
     }
 
@@ -476,6 +521,7 @@ const possibleNodesWithSyncError = (
           checker,
           sourceCode,
           visited,
+          calls,
         ),
       );
   }
@@ -497,6 +543,7 @@ const checkIterableForSyncErrors = (
       checker,
       context.sourceCode,
       new Set<string>(),
+      0,
     );
 
     for (const node of nodes) {
@@ -558,14 +605,6 @@ const resolveArrayElements = (
       return node.elements.flatMap((element, index) => {
         // Skip sparse elements like `[,,]` as they are harmless
         if (!element) {
-          return [];
-        }
-
-        // Skip unevaluated functions as they are harmless
-        if (
-          element.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression ||
-          element.type === TSESTree.AST_NODE_TYPES.FunctionExpression
-        ) {
           return [];
         }
 
@@ -633,7 +672,7 @@ export default createRule({
     schema: [],
     messages: {
       mayThrowSyncError:
-        '{{value}} may synchronously throw an error and leave preceding promises dangling. Evaluate synchronous expressions outside of the iterable argument to Promise.{{method}}. Use the async keyword to denote asynchronous functions.',
+        '{{value}} may synchronously throw an error and leave preceding promises dangling. Evaluate synchronous expressions outside of the iterable argument to Promise.{{method}}, or safely wrap with the async keyword, Promise.try(), or Promise.resolve().then().',
     },
   },
   create: (context) => {

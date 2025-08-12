@@ -70,7 +70,7 @@ const lintConcurrently = async (
   for (const lintGroup of lints) {
     results.push(
       ...(await Promise.all(
-        lintGroup.map(({ name, lint }) =>
+        lintGroup.map(async ({ name, lint }) =>
           lint(
             mode,
             childLogger(logger, { suffixes: [chalk.dim(name)] }),

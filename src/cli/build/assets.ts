@@ -78,7 +78,7 @@ export const copyAssetsConcurrently = async (configs: CopyAssetsConfig[]) => {
   );
 
   await Promise.all(
-    configs.map(({ outDir, name, prefixColor }) =>
+    configs.map(async ({ outDir, name, prefixColor }) =>
       copyAssets(
         outDir,
         createLogger({
