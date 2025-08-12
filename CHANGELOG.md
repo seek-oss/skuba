@@ -1,5 +1,11 @@
 # skuba
 
+## 12.1.1
+
+### Patch Changes
+
+- **node, start:** Revert forwarding custom conditions to tsx ([#2021](https://github.com/seek-oss/skuba/pull/2021))
+
 ## 12.1.0
 
 ### Minor Changes
