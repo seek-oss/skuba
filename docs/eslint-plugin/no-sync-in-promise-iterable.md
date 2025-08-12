@@ -114,6 +114,17 @@ see the [relevant section](#asynchronous-functions) below for more information.
   await Promise.all([asyncX(), asyncX()]);
 ```
 
+You can alternatively wrap the function invocation with [`Promise.try()`] or the slower `Promise.resolve().then()`:
+
+```diff
+  Promise.all([
+    asyncX(),
+-   syncY(),
++   Promise.try(() => syncY()), // Node.js >=24
++   Promise.resolve().then(() => syncY()), // Node.js <=22
+  ]);
+```
+
 By default, an unhandled promise rejection will cause the Node.js process to exit (!).
 The resilience of back-end applications can be improved by changing the [`--unhandled-rejections` CLI mode] or adding a [`process.on('unhandledRejection')` event handler] to avoid this terminal state.
 Addressing the underlying issue is still useful to avoid dispatching unnecessary promises which may degrade performance or trigger unanticipated partial failure states.
