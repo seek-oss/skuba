@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import type { NormalizedPackageJson } from 'read-pkg-up';
+import type { PackageJson } from 'read-pkg-up';
 
 import { log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
@@ -35,7 +35,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as NormalizedPackageJson,
+      } as PackageJson,
       path: '/package.json',
     });
 
@@ -68,7 +68,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as NormalizedPackageJson,
+      } as PackageJson,
       path: '/package.json',
     });
 
@@ -106,7 +106,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as NormalizedPackageJson,
+      } as PackageJson,
       path: '/package.json',
     });
 
@@ -149,7 +149,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as NormalizedPackageJson,
+      } as PackageJson,
       path: '/package.json',
     });
 
@@ -198,7 +198,7 @@ describe('upgradeSkuba in lint mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as NormalizedPackageJson,
+      } as PackageJson,
       path: '/package.json',
     });
 
@@ -222,7 +222,7 @@ describe('upgradeSkuba in lint mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as NormalizedPackageJson,
+      } as PackageJson,
       path: '/package.json',
     });
 
@@ -258,7 +258,7 @@ describe('upgradeSkuba in lint mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as NormalizedPackageJson,
+      } as PackageJson,
       path: '/package.json',
     });
 
