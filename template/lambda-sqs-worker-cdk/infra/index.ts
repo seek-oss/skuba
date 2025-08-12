@@ -7,7 +7,7 @@ import { config } from './config.js';
 const app = new App();
 
 const appStack = new AppStack(app, 'appStack', {
-  stackName: config.appName,
+  stackName: config.service,
   tags: {
     'seek:source:url': 'https://github.com/SEEK-Jobs/<%- repoName %>',
     // 'seek:system:name': 'TODO: https://rfc.skinfra.xyz/RFC051-AWS-Tagging-Standard.html#tagging-schema',

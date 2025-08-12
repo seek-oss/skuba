@@ -15,11 +15,11 @@ jest.useFakeTimers({
   now: new Date(currentDate),
 });
 
-const originalEnv = process.env.ENVIRONMENT;
+const originalDeployment = process.env.DEPLOYMENT;
 const originalVersion = process.env.VERSION;
 
 afterAll(() => {
-  process.env.ENVIRONMENT = originalEnv;
+  process.env.DEPLOYMENT = originalDeployment;
   process.env.VERSION = originalVersion;
 });
 
@@ -29,8 +29,8 @@ afterEach(() => {
 
 it.each(['dev', 'prod'])(
   'returns expected CloudFormation stack for %s',
-  async (env) => {
-    process.env.ENVIRONMENT = env;
+  async (deployment) => {
+    process.env.DEPLOYMENT = deployment;
     process.env.VERSION = 'local';
 
     const { AppStack } = await import('./appStack.js');

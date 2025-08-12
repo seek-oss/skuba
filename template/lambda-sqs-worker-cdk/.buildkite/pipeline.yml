@@ -81,7 +81,9 @@ steps:
     agents:
       queue: <%- devBuildkiteQueueName %>
     env:
-      ENVIRONMENT: dev
+      DD_DEPLOYMENT_ENVIRONMENT: development
+      DD_DEPLOYMENT_SERVICE: <%- serviceName %>
+      DEPLOYMENT: dev
       GET_NPM_TOKEN: please
     label: 🤞 Deploy Dev
     concurrency_group: '<%- repoName %>/deploy/dev'
@@ -89,7 +91,9 @@ steps:
 
   - <<: *deploy
     env:
-      ENVIRONMENT: prod
+      DD_DEPLOYMENT_ENVIRONMENT: production
+      DD_DEPLOYMENT_SERVICE: <%- serviceName %>
+      DEPLOYMENT: prod
       GET_NPM_TOKEN: please
     label: 🚀 Deploy Prod
     branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}

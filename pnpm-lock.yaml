@@ -293,6 +293,27 @@ importers:
 
   template/express-rest-api:
     dependencies:
+      '@opentelemetry/api':
+        specifier: ^1.9.0
+        version: 1.9.0
+      '@opentelemetry/core':
+        specifier: ^2.0.0
+        version: 2.0.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/exporter-trace-otlp-grpc':
+        specifier: ^0.203.0
+        version: 0.203.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-aws-sdk':
+        specifier: ^0.56.0
+        version: 0.56.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-http':
+        specifier: ^0.203.0
+        version: 0.203.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/propagator-b3':
+        specifier: ^2.0.0
+        version: 2.0.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-node':
+        specifier: ^0.203.0
+        version: 0.203.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
         specifier: 11.0.0
         version: 11.0.0
@@ -318,9 +339,6 @@ importers:
       '@types/supertest':
         specifier: ^6.0.0
         version: 6.0.3
-      mime:
-        specifier: ^4.0.1
-        version: 4.0.7
       pino-pretty:
         specifier: ^13.0.0
         version: 13.1.1
@@ -419,9 +437,6 @@ importers:
       chance:
         specifier: ^1.1.8
         version: 1.1.13
-      mime:
-        specifier: ^4.0.1
-        version: 4.0.7
       pino-pretty:
         specifier: ^13.0.0
         version: 13.1.1

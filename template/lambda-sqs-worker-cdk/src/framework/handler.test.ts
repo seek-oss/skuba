@@ -52,7 +52,7 @@ describe('createHandler', () => {
     expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
-        err: {
+        error: {
           message: err.message,
           type: 'Error',
         },
@@ -74,7 +74,7 @@ describe('createHandler', () => {
     expect(stdoutMock.calls).toMatchObject([
       {
         awsRequestId: '-',
-        err: {
+        error: {
           message: err.message,
           type: 'Error',
         },

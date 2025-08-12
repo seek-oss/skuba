@@ -26,7 +26,7 @@ export const createHandler =
 
         return output;
       } catch (err) {
-        logger.error({ err }, 'Function failed');
+        logger.error(err, 'Function failed');
 
         throw new Error('Function failed');
       }
@@ -45,7 +45,7 @@ export const createBatchSQSHandler =
           await fn(record, ctx);
           return;
         } catch (err) {
-          logger.error({ err }, 'Processing record failed');
+          logger.error(err, 'Processing record failed');
           return {
             itemIdentifier: record.messageId,
           };

@@ -1,55 +1,64 @@
 import { Env } from 'skuba-dive';
 
-const ENVIRONMENTS = ['dev', 'prod'] as const;
+type Deployment = (typeof deployments)[number];
 
-type Environment = (typeof ENVIRONMENTS)[number];
+const deployments = ['dev', 'prod'] as const;
 
-const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
+const deployment = Env.oneOf(deployments)('DEPLOYMENT');
 
 interface Config {
-  appName: string;
+  env: 'development' | 'production';
+  service: string;
+  version: string;
+
   workerLambda: {
     batchSize: number;
     reservedConcurrency: number;
     environment: {
-      ENVIRONMENT: Environment;
-      SERVICE: string;
-      VERSION: string;
+      DEPLOYMENT: Deployment;
     };
   };
+
   datadogApiKeySecretArn: string;
   sourceSnsTopicArn: string;
 }
 
-const configs: Record<Environment, Config> = {
+const service = '<%- serviceName %>';
+const version = Env.string('VERSION');
+
+const configs: Record<Deployment, Config> = {
   dev: {
-    appName: '<%- serviceName %>',
+    env: 'development',
+    service,
+    version,
+
     workerLambda: {
       batchSize: 10,
       reservedConcurrency: 3,
       environment: {
-        ENVIRONMENT: 'dev',
-        SERVICE: '<%- serviceName %>',
-        VERSION: Env.string('VERSION', { default: 'local' }),
+        DEPLOYMENT: 'dev',
       },
     },
+
     datadogApiKeySecretArn: 'TODO: datadogApiKeySecretArn',
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
   prod: {
-    appName: '<%- serviceName %>',
+    env: 'production',
+    service,
+    version,
+
     workerLambda: {
       batchSize: 10,
       reservedConcurrency: 20,
       environment: {
-        ENVIRONMENT: 'prod',
-        SERVICE: '<%- serviceName %>',
-        VERSION: Env.string('VERSION', { default: 'local' }),
+        DEPLOYMENT: 'prod',
       },
     },
+
     datadogApiKeySecretArn: 'TODO: datadogApiKeySecretArn',
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
 };
 
-export const config: Config = configs[environment];
+export const config: Config = configs[deployment];

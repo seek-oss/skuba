@@ -1,7 +1,7 @@
 import { Env } from 'skuba-dive';
 
 interface Config {
-  environment: Environment;
+  deployment: Deployment;
 
   logLevel: string;
   name: string;
@@ -10,14 +10,14 @@ interface Config {
   destinationSnsTopicArn: string;
 }
 
-type Environment = (typeof environments)[number];
+type Deployment = (typeof deployments)[number];
 
-const environments = ['local', 'test', 'dev', 'prod'] as const;
+const deployments = ['local', 'test', 'dev', 'prod'] as const;
 
-const environment = Env.oneOf(environments)('ENVIRONMENT');
+const deployment = Env.oneOf(deployments)('DEPLOYMENT');
 
 /* istanbul ignore next: config verification makes more sense in a smoke test */
-const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
+const configs: Record<Deployment, () => Omit<Config, 'deployment'>> = {
   local: () => ({
     logLevel: 'debug',
     name: '<%- serviceName %>',
@@ -36,22 +36,22 @@ const configs: Record<Environment, () => Omit<Config, 'environment'>> = {
 
   dev: () => ({
     logLevel: 'debug',
-    name: Env.string('SERVICE'),
-    version: Env.string('VERSION'),
+    name: Env.string('DD_SERVICE'),
+    version: Env.string('DD_VERSION'),
 
     destinationSnsTopicArn: Env.string('DESTINATION_SNS_TOPIC_ARN'),
   }),
 
   prod: () => ({
     logLevel: 'info',
-    name: Env.string('SERVICE'),
-    version: Env.string('VERSION'),
+    name: Env.string('DD_SERVICE'),
+    version: Env.string('DD_VERSION'),
 
     destinationSnsTopicArn: Env.string('DESTINATION_SNS_TOPIC_ARN'),
   }),
 };
 
 export const config: Config = {
-  ...configs[environment](),
-  environment,
+  ...configs[deployment](),
+  deployment,
 };
