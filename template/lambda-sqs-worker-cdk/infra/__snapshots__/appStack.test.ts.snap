@@ -201,7 +201,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "node_modules/datadog-lambda-js/dist/handler.handler",
+        "Handler": "/opt/nodejs/node_modules/datadog-lambda-js/handler.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
@@ -209,6 +209,18 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           ],
         },
         "Layers": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":464622532012:layer:Datadog-Node22-x:x",
+              ],
+            ],
+          },
           {
             "Fn::Join": [
               "",
@@ -941,7 +953,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "node_modules/datadog-lambda-js/dist/handler.handler",
+        "Handler": "/opt/nodejs/node_modules/datadog-lambda-js/handler.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
@@ -949,6 +961,18 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           ],
         },
         "Layers": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":464622532012:layer:Datadog-Node22-x:x",
+              ],
+            ],
+          },
           {
             "Fn::Join": [
               "",

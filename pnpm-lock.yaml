@@ -449,12 +449,6 @@ importers:
       '@seek/logger':
         specifier: master
         version: 0.0.0-master-20250808072312
-      datadog-lambda-js:
-        specifier: ^12.0.0
-        version: 12.127.0
-      dd-trace:
-        specifier: ^5.0.0
-        version: 5.62.0
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -495,6 +489,12 @@ importers:
       datadog-cdk-constructs-v2:
         specifier: ^3.0.0
         version: 3.2.0(aws-cdk-lib@2.210.0(constructs@10.4.2))(constructs@10.4.2)
+      datadog-lambda-js:
+        specifier: ^12.0.0
+        version: 12.127.0
+      dd-trace:
+        specifier: ^5.0.0
+        version: 5.62.0
       pino-pretty:
         specifier: ^13.0.0
         version: 13.1.1
