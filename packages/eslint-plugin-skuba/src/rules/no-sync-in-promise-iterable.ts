@@ -242,8 +242,11 @@ const isSafeIshBuilder = (node: TSESTree.CallExpression): boolean => {
   }
 
   if (
-    node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
-    node.callee.name === 'knex'
+    (node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
+      node.callee.name === 'knex') ||
+    (node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+      node.callee.object.type === TSESTree.AST_NODE_TYPES.Identifier &&
+      node.callee.object.name === 'knex')
   ) {
     return true;
   }

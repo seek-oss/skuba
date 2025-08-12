@@ -208,6 +208,9 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `Promise.${method}([1, knex('schema.table').select('*').where('id', 1)])`,
     },
+    {
+      code: `Promise.${method}([1, knex.delete().from('schema.table')`,
+    },
     // Safe Promise wrappers
     {
       code: `
