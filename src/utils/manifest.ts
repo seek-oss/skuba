@@ -30,7 +30,8 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
   return (skubaManifest = result.packageJson);
 };
 
-export const getConsumerManifest = (cwd?: string) => readPkgUp({ cwd });
+export const getConsumerManifest = (cwd?: string) =>
+  readPkgUp({ cwd, normalize: false });
 
 export const getPropFromConsumerManifest = async <
   T extends string,
