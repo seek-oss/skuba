@@ -1,7 +1,7 @@
 import ts from 'typescript';
 
 import { exec } from '../../utils/exec.js';
-import type { Logger } from '../../utils/logging.js';
+import { type Logger, log as logger } from '../../utils/logging.js';
 
 import { parseTscArgs } from './args.js';
 
@@ -25,56 +25,105 @@ export const tsc = async (args = process.argv.slice(2)) => {
   return exec('tsc', ...defaultArgs, ...args);
 };
 
-export const readTsconfig = (args = process.argv.slice(2), log: Logger) => {
+export const readTsBuildConfig = (
+  args = process.argv.slice(2),
+  log: Logger,
+) => {
   const tscArgs = parseTscArgs(args);
 
-  let parsedCommandLine = tsconfigCache.get(computeCacheKey(args));
+  log.debug(
+    log.bold(
+      'tsconfig',
+      ...(tscArgs.project ? ['--project', tscArgs.project] : []),
+    ),
+  );
+  log.debug(tscArgs.pathname);
 
-  if (!parsedCommandLine) {
-    log.debug(
-      log.bold(
-        'tsconfig',
-        ...(tscArgs.project ? ['--project', tscArgs.project] : []),
-      ),
-    );
-    log.debug(tscArgs.pathname);
+  const parsedCommandLine = readTsConfig({
+    dir: tscArgs.dirname,
+    fileName: tscArgs.basename,
+    log,
+  });
 
-    const tsconfigFile = ts.findConfigFile(
-      tscArgs.dirname,
-      ts.sys.fileExists.bind(undefined),
-      tscArgs.basename,
-    );
-    if (!tsconfigFile) {
-      log.err(`Could not find ${tscArgs.pathname}.`);
-      process.exitCode = 1;
-      return;
-    }
+  return parsedCommandLine;
+};
 
-    const readConfigFile = ts.readConfigFile(
-      tsconfigFile,
-      ts.sys.readFile.bind(undefined),
-    );
-    if (readConfigFile.error) {
-      log.err(`Could not read ${tscArgs.pathname}.`);
-      log.subtle(ts.formatDiagnostic(readConfigFile.error, formatHost));
-      process.exitCode = 1;
-      return;
-    }
+export const readTsConfig = ({
+  dir,
+  fileName,
+  log,
+  silentlyFail = false,
+}: {
+  dir: string;
+  fileName: string;
+  log: Logger;
+  silentlyFail?: boolean;
+}) => {
+  const cacheKey = computeCacheKey([dir, fileName]);
 
-    parsedCommandLine = ts.parseJsonConfigFileContent(
-      readConfigFile.config,
-      ts.sys,
-      tscArgs.dirname,
-    );
-    tsconfigCache.set(computeCacheKey(args), parsedCommandLine);
+  const cachedConfig = tsconfigCache.get(cacheKey);
+
+  if (cachedConfig) {
+    return cachedConfig;
   }
 
-  if (parsedCommandLine.errors.length) {
-    log.err(`Could not parse ${tscArgs.pathname}.`);
-    log.subtle(ts.formatDiagnostics(parsedCommandLine.errors, formatHost));
-    process.exitCode = 1;
+  const tsconfigFile = ts.findConfigFile(
+    dir,
+    ts.sys.fileExists.bind(undefined),
+    fileName,
+  );
+  if (!tsconfigFile) {
+    if (!silentlyFail) {
+      log.err(`Could not find ${fileName}.`);
+      process.exitCode = 1;
+    }
     return;
   }
 
-  return parsedCommandLine;
+  const readConfigFile = ts.readConfigFile(
+    tsconfigFile,
+    ts.sys.readFile.bind(undefined),
+  );
+  if (readConfigFile.error) {
+    if (!silentlyFail) {
+      log.err(`Could not read ${fileName}.`);
+      log.subtle(ts.formatDiagnostic(readConfigFile.error, formatHost));
+      process.exitCode = 1;
+    }
+    return;
+  }
+
+  const parsedConfig = ts.parseJsonConfigFileContent(
+    readConfigFile.config,
+    ts.sys,
+    dir,
+  );
+
+  if (parsedConfig.errors.length) {
+    if (!silentlyFail) {
+      log.err(`Could not parse ${fileName}.`);
+      log.subtle(ts.formatDiagnostics(parsedConfig.errors, formatHost));
+      process.exitCode = 1;
+    }
+    return;
+  }
+
+  tsconfigCache.set(cacheKey, parsedConfig);
+
+  return parsedConfig;
+};
+
+export const getCustomConditions = () => {
+  const parsedConfig = readTsConfig({
+    dir: process.cwd(),
+    fileName: 'tsconfig.json',
+    log: logger,
+    silentlyFail: true,
+  });
+
+  if (!parsedConfig) {
+    return [];
+  }
+
+  return parsedConfig.options.customConditions ?? [];
 };
