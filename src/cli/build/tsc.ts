@@ -1,7 +1,7 @@
 import ts from 'typescript';
 
 import { exec } from '../../utils/exec.js';
-import { type Logger, log as logger } from '../../utils/logging.js';
+import type { Logger } from '../../utils/logging.js';
 
 import { parseTscArgs } from './args.js';
 
@@ -77,17 +77,4 @@ export const readTsconfig = (args = process.argv.slice(2), log: Logger) => {
   }
 
   return parsedCommandLine;
-};
-
-/**
- * Extract custom conditions from tsconfig that should be passed to tsx
- */
-export const getCustomConditions = (): string[] => {
-  try {
-    const parsedConfig = readTsconfig([], logger);
-    const customConditions = parsedConfig?.options.customConditions;
-    return Array.isArray(customConditions) ? customConditions : [];
-  } catch {
-    return [];
-  }
 };

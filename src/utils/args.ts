@@ -48,9 +48,6 @@ export const parseProcessArgs = (args = process.argv) => {
 };
 
 interface RunArgs {
-  /** The conditions to pass to the entry point script. */
-  conditions?: string[];
-
   /** The path to the entry point script. */
   entryPoint?: string;
 
@@ -136,12 +133,6 @@ const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
     }
 
     // Invalid port argument; eat it.
-    return args.slice(1);
-  }
-
-  if (arg1.startsWith('--conditions=')) {
-    state.conditions ??= [];
-    state.conditions.push(arg1.slice(13));
     return args.slice(1);
   }
 
