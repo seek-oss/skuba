@@ -211,8 +211,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
       fastify:
-        specifier: 5.4.0
-        version: 5.4.0
+        specifier: 5.5.0
+        version: 5.5.0
       jest-diff:
         specifier: 30.0.5
         version: 30.0.5
@@ -272,8 +272,8 @@ importers:
         specifier: ^9.11.1
         version: 9.33.0(jiti@2.5.1)
       tsdown:
-        specifier: 0.14.0
-        version: 0.14.0(typescript@5.9.2)
+        specifier: 0.14.1
+        version: 0.14.1(typescript@5.9.2)
       tsx:
         specifier: ^4.16.2
         version: 4.20.3
@@ -449,12 +449,6 @@ importers:
       '@seek/logger':
         specifier: master
         version: 0.0.0-master-20250808072312
-      datadog-lambda-js:
-        specifier: ^12.0.0
-        version: 12.127.0
-      dd-trace:
-        specifier: ^5.0.0
-        version: 5.62.0
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -495,6 +489,12 @@ importers:
       datadog-cdk-constructs-v2:
         specifier: ^3.0.0
         version: 3.2.0(aws-cdk-lib@2.210.0(constructs@10.4.2))(constructs@10.4.2)
+      datadog-lambda-js:
+        specifier: ^12.0.0
+        version: 12.127.0
+      dd-trace:
+        specifier: ^5.0.0
+        version: 5.62.0
       pino-pretty:
         specifier: ^13.0.0
         version: 13.1.1
@@ -3657,8 +3657,8 @@ packages:
     resolution: {integrity: sha512-pfX9uG9Ki0yekDHx2SiuRIyFdyAr1kMIMitPvb0YBo8SUfKvia7w7FIyd/l6av85pFYRhZscS75MwMnbvY+hcQ==}
     hasBin: true
 
-  fastify@5.4.0:
-    resolution: {integrity: sha512-I4dVlUe+WNQAhKSyv15w+dwUh2EPiEl4X2lGYMmNSgF83WzTMAPKGdWEv5tPsCQOb+SOZwz8Vlta2vF+OeDgRw==}
+  fastify@5.5.0:
+    resolution: {integrity: sha512-ZWSWlzj3K/DcULCnCjEiC2zn2FBPdlZsSA/pnPa/dbUfLvxkD/Nqmb0XXMXLrWkeM4uQPUvjdJpwtXmTfriXqw==}
 
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
@@ -6387,8 +6387,8 @@ packages:
   tsconfig-seek@2.0.0:
     resolution: {integrity: sha512-pcKqW1I+CxGS6LI2QcNSdHGkJUWIP4VzcRzYAFH/LcQOlCBtD2q5w7RXZrIQxSANtcdN2RIT+o5pYEIPd81vRQ==}
 
-  tsdown@0.14.0:
-    resolution: {integrity: sha512-3zBEDUC1XPnVE5rwfsm1y8REh58CJsDT319hkRwBgIpN9eMClE30dqF4HkK8zPKoczNNqFrQ2cKGrjE50WprIw==}
+  tsdown@0.14.1:
+    resolution: {integrity: sha512-/nBuFDKZeYln9hAxwWG5Cm55/823sNIVI693iVi0xRFHzf9OVUq4b/lx9PH1TErFr/IQ0kd2hutFbJIPM0XQWA==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -11149,7 +11149,7 @@ snapshots:
     dependencies:
       strnum: 2.1.1
 
-  fastify@5.4.0:
+  fastify@5.5.0:
     dependencies:
       '@fastify/ajv-compiler': 4.0.2
       '@fastify/error': 4.2.0
@@ -14565,7 +14565,7 @@ snapshots:
 
   tsconfig-seek@2.0.0: {}
 
-  tsdown@0.14.0(typescript@5.9.2):
+  tsdown@0.14.1(typescript@5.9.2):
     dependencies:
       ansis: 4.1.0
       cac: 6.7.14
