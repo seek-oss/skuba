@@ -4,8 +4,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "deploy": "cdk deploy appStack --require-approval never",
-    "deploy:hotswap": "pnpm --silent run deploy --hotswap",
-    "deploy:watch": "pnpm --silent deploy:hotswap --watch",
     "format": "skuba format",
     "lint": "skuba lint",
     "start": "skuba start --port <%- port %>",

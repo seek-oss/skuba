@@ -173,7 +173,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
             "DD_API_KEY_SECRET_ARN": {
@@ -926,7 +925,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
             "DD_API_KEY_SECRET_ARN": {
