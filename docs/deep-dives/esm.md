@@ -126,7 +126,7 @@ Our base `skuba/config/tsconfig.json` will update [`moduleResolution`] from `nod
 }
 ```
 
-Your local `tsconfig.json` files will require a `baseUrl`, `rootDir` and `customConditions` to help TypeScript resolve the subpath imports correctly:
+Your local `tsconfig.json` files will require a `rootDir` and `customConditions` to help TypeScript resolve the subpath imports correctly:
 
 ```diff
 {
@@ -135,8 +135,8 @@ Your local `tsconfig.json` files will require a `baseUrl`, `rootDir` and `custom
 +   "rootDir": ".",
 +   "customConditions": ["@seek/my-repo/source"],
 -   "paths": {
--     "#src/*": ["src/*"]
--    }
+-     "src/*": ["src/*"]
+-   }
   },
   "extends": "skuba/config/tsconfig.json"
 }
@@ -146,6 +146,24 @@ This allows us to import modules like this:
 
 ```ts
 import { module } from '#src/imported-module.js';
+```
+
+We will also need to set different `rootDir` values for our local development and builds:
+
+- **`tsconfig.json`** uses `"rootDir": "."` to ensure all TypeScript files (including `scripts/script.ts` and root-level files) can use `#src/` imports and are subject to type checking.
+- **`tsconfig.build.json`** uses `"rootDir": "src"` to ensure that only source files are included in the build output.
+
+tsconfig.build.json:
+
+```diff
+{
++ "compilerOptions": {
++   "rootDir": "src"
++ },
+  "exclude": ["**/__mocks__/**/*", "**/*.test.ts", "src/testing/**/*"],
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*"]
+}
 ```
 
 [Custom conditions] enable tooling to use TypeScript source files during development while automatically switching to the correct compiled outputs for deployment or publishing. This is done without additional configuration to modify package.json imports and exports. Monorepo users may already be familiar with this concept through pnpm's `publishConfig` feature. For more details, see [Live types in a TypeScript monorepo].
@@ -160,12 +178,66 @@ We will apply a community codemod to help with the transition, but it will likel
 
 ---
 
+## Future considerations
+
+TypeScript 5.7 introduced [`rewriteRelativeImportExtensions`], which allows us to rewrite relative import paths to include the `.js` file extension. When combined with [`allowImportingTsExtensions`], this would allow us to import `.ts` files directly.
+
+Node.js also recently added [native type stripping support], which means we could start using Node.js to run TypeScript code directly without compilation.
+
+> **Note:** This is not intended as a goal for production applications. However, it would significantly simplify local development, REPL usage, and scripting workflows.
+
+Unfortunately, not all of our tooling is compatible with this feature yet. For example, `esbuild`, which powers our bundling and CDK deployment, is [incompatible] with this approach. We may need to wait for broader tooling support before adopting this feature.
+
+### Steps to migrate
+
+Once tooling support improves, we would need to update our `.js` imports to be `.ts` imports. Importing `.ts` files directly would be far more intuitive.
+
+```diff
+- import { module } from './imported-module.js';
++ import { module } from './imported-module.ts';
+```
+
+Imports beginning with `'#src/'` will need to be rewritten without extensions, as the `rewriteRelativeImportExtensions` feature only works for relative imports. This means we would need to update our `package.json` imports:
+
+```diff
+  "imports": {
+    "#src/*": {
+-    "@seek/my-repo/source": "./src/*",
++    "@seek/my-repo/source/*": "./src/*.ts",
+-    "default": "./lib/*",
++    "default": "./lib/*.js",
+    }
+  }
+```
+
+We would also need to rewrite our `'#src/'` imports:
+
+```diff
+- import { module } from '#src/imported-module.js';
++ import { module } from '#src/imported-module';
+```
+
+For additional file types like `.json` files, we can add more specific import mappings to `package.json`:
+
+```diff
+  "imports": {
++   "#src/*.json": {
++     "@seek/my-repo/source": "./src/*.json",
++     "default": "./lib/*.json",
++   }
+  }
+```
+
+[`allowImportingTsExtensions`]: https://www.typescriptlang.org/tsconfig#allowImportingTsExtensions
 [Custom conditions]: https://www.typescriptlang.org/tsconfig/#customConditions
+[incompatible]: https://github.com/evanw/esbuild/issues/2435#issuecomment-2587786458
+[Live types in a TypeScript monorepo]: https://colinhacks.com/essays/live-types-typescript-monorepo
 [`module`]: https://www.typescriptlang.org/tsconfig#module
 [`moduleNameMapper`]: https://jestjs.io/docs/configuration#modulenamemapper-objectstring-string--arraystring
 [`moduleResolution`]: https://www.typescriptlang.org/tsconfig#moduleResolution
+[native type stripping support]: https://github.com/nodejs/node/releases/tag/v22.18.0
 [Node.js]: https://nodejs.org/api/packages.html#subpath-imports
 [not fully compatible with ESM]: https://jestjs.io/docs/ecmascript-modules
-[Live types in a TypeScript monorepo]: https://colinhacks.com/essays/live-types-typescript-monorepo
+[`rewriteRelativeImportExtensions`]: https://www.typescriptlang.org/tsconfig#rewriteRelativeImportExtensions
 [TypeScript]: https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports
 [Vitest]: https://vitest.dev/

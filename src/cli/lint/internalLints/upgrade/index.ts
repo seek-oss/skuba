@@ -1,7 +1,7 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import type readPkgUp from 'read-pkg-up';
+import type { ReadResult } from 'read-pkg-up';
 import { gte, sort } from 'semver';
 
 import type { Logger } from '../../../../utils/logging.js';
@@ -26,7 +26,7 @@ export type PatchReturnType =
 
 export type PatchConfig = {
   mode: 'format' | 'lint';
-  manifest: readPkgUp.NormalizedReadResult;
+  manifest: ReadResult;
   packageManager: PackageManagerConfig;
   dir?: string;
 };

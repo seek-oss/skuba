@@ -2,7 +2,7 @@ import path from 'path';
 
 import chalk from 'chalk';
 import { Input } from 'enquirer';
-import type { NormalizedReadResult } from 'read-pkg-up';
+import type { ReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging.js';
 import type { ProjectType } from '../../utils/manifest.js';
@@ -13,7 +13,7 @@ import { tsFileExists } from './analysis/files.js';
 
 interface Props {
   destinationRoot: string;
-  manifest: NormalizedReadResult;
+  manifest: ReadResult;
   templateConfig: TemplateConfig;
   type: ProjectType;
 }

@@ -59,7 +59,7 @@ export const runForm = <T = Record<string, string>>(props: {
     name,
     validate: async (values) => {
       const results = await Promise.all(
-        choices.map((choice) => choice.validate(values[choice.name])),
+        choices.map(async (choice) => choice.validate(values[choice.name])),
       );
 
       return (

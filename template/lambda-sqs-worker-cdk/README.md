@@ -54,7 +54,7 @@ pnpm test
 awsauth
 
 # Run smoke test against deployed application
-ENVIRONMENT=dev pnpm smoke
+DEPLOYMENT=dev pnpm smoke
 ```
 
 ### Lint
@@ -88,8 +88,8 @@ curl --data '[{}, {"awsRequestId": "local"}]' --include localhost:<%- port %>
 
 This project is deployed through a [Buildkite pipeline](.buildkite/pipeline.yml).
 
-- Commits to a feature branch can be deployed to the dev environment by unblocking a step in the Buildkite UI
-- Commits to the default branch are automatically deployed to the dev and prod environments in sequence
+- Commits to a feature branch can be deployed to the development environment by unblocking a step in the Buildkite UI
+- Commits to the default branch are automatically deployed to the development and production environments in sequence
 
 To deploy locally:
 
@@ -97,7 +97,7 @@ To deploy locally:
 # Authenticate to dev account
 awsauth
 
-ENVIRONMENT=dev pnpm run deploy
+DEPLOYMENT=dev pnpm run deploy
 ```
 
 A hotswap deploy enables faster deployment but come with caveats such as requiring a Lambda to be rebuilt with every build.
@@ -108,19 +108,19 @@ To deploy a [hotswap]:
 # Authenticate to dev account
 awsauth
 
-ENVIRONMENT=dev pnpm run deploy:hotswap
+DEPLOYMENT=dev pnpm run deploy:hotswap
 ```
 
 To rapidly roll back a change,
 retry an individual deployment step from the previous build in Buildkite.
-Note that this will introduce drift between the head of the default Git branch and the live environment;
+Note that this will introduce drift between the head of the default Git branch and the live deployment;
 use with caution and always follow up with a proper revert or fix in Git history.
 
 ## Support
 
 ### Dev
 
-TODO: add support links for the dev environment.
+TODO: add support links for the dev deployment.
 
 <!--
 - CloudWatch dashboard
@@ -130,7 +130,7 @@ TODO: add support links for the dev environment.
 
 ### Prod
 
-TODO: add support links for the prod environment.
+TODO: add support links for the prod deployment.
 
 <!--
 - CloudWatch dashboard

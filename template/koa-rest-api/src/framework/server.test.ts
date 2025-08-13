@@ -32,7 +32,6 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toHaveLength(0);
 
-    metricsClient.expectTagSubset(['env:test', 'version:test']);
     metricsClient.expectTagSubset([
       'http_method:get',
       'http_status:200',
@@ -133,7 +132,7 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        err: {
+        error: {
           statusCode: 400,
           type: 'BadRequestError',
         },
@@ -167,7 +166,7 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        err: {
+        error: {
           statusCode: 500,
           type: 'InternalServerError',
         },
@@ -203,7 +202,7 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        err: {
+        error: {
           message: err.message,
           type: 'Error',
         },
@@ -237,7 +236,7 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        err: null,
+        error: null,
         level: 50,
         method: 'GET',
         msg: 'Server error',
@@ -256,10 +255,10 @@ describe('createApp', () => {
   });
 
   it('handles string error', async () => {
-    const err = chance.sentence();
+    const error = chance.sentence();
 
     middleware.mockImplementation(() => {
-      throw err;
+      throw error;
     });
 
     await agent
@@ -270,7 +269,7 @@ describe('createApp', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        err,
+        error,
         level: 50,
         method: 'GET',
         msg: 'Server error',

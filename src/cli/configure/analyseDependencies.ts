@@ -1,7 +1,7 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import type { NormalizedReadResult } from 'read-pkg-up';
+import type { ReadResult } from 'read-pkg-up';
 
 import { type TextProcessor, copyFiles } from '../../utils/copy.js';
 import { log } from '../../utils/logging.js';
@@ -58,7 +58,7 @@ const pinUnspecifiedVersions = async (
 interface Props {
   destinationRoot: string;
   include: (pathname: string) => boolean;
-  manifest: NormalizedReadResult;
+  manifest: ReadResult;
   type: ProjectType;
 }
 

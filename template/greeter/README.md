@@ -75,7 +75,7 @@ For inspiration in this space, check out:
 
 ### Dev
 
-TODO: add support links for the dev environment.
+TODO: add support links for the dev deployment.
 
 <!--
 - CloudWatch dashboard
@@ -85,7 +85,7 @@ TODO: add support links for the dev environment.
 
 ### Prod
 
-TODO: add support links for the prod environment.
+TODO: add support links for the prod deployment.
 
 <!--
 - CloudWatch dashboard

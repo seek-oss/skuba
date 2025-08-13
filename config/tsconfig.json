@@ -4,6 +4,7 @@
     "isolatedModules": true,
     "module": "node18",
     "moduleResolution": "node16",
+    "noUncheckedSideEffectImports": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "resolveJsonModule": true

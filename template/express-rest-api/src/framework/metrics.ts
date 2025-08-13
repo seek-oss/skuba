@@ -7,5 +7,5 @@ import { config } from '#src/config.js';
 
 /* istanbul ignore next: StatsD client is not our responsibility */
 export const metricsClient = createStatsDClient(StatsD, config, (err) =>
-  logger.error({ err }, 'StatsD error'),
+  logger.error(err, 'StatsD error'),
 );

@@ -1,4 +1,8 @@
-environment: prod
+deployment: prod
+env: production
 
 maxInstanceCount: 10
 minInstanceCount: 3
+
+openTelemetry:
+  enabled: true

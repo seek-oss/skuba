@@ -27,7 +27,7 @@
     "format": "pnpm skuba format",
     "lint": "pnpm skuba lint",
     "prepack": "pnpm skuba build",
-    "skuba": "node --experimental-vm-modules ../../lib/skuba",
+    "skuba": "node ../../lib/skuba",
     "test": "pnpm skuba test",
     "test:ci": "pnpm skuba test --coverage"
   },
@@ -44,6 +44,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "12.0.2"
+    "version": "12.1.0"
   }
 }

@@ -163,7 +163,7 @@ describe('TypeScript', () => {
           return 1;
         }
 
-        // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+        // eslint-disable-next-line @typescript-eslint/class-literal-property-style, no-restricted-syntax
         get #someValue() {
           return null;
         }

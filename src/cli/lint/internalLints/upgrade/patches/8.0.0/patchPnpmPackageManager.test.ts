@@ -1,6 +1,6 @@
 import fg from 'fast-glob';
 import fs from 'fs-extra';
-import type { NormalizedPackageJson } from 'read-pkg-up';
+import type { PackageJson } from 'read-pkg-up';
 
 import type { PackageManagerConfig } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';
@@ -41,7 +41,7 @@ describe('patchPnpmPackageManager', () => {
   const validManifest = {
     packageJson: {
       packageManager: 'pnpm',
-    } as Partial<NormalizedPackageJson> as NormalizedPackageJson,
+    } as Partial<PackageJson> as PackageJson,
     path: '~/project/package.json',
   } as PatchConfig['manifest'];
 

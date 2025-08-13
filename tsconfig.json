@@ -12,7 +12,8 @@
     "integration/**/*",
     "lib*/**/*",
     "template/**/*",
-    "packages/eslint-config-skuba"
+    "packages/eslint-config-skuba",
+    "packages/eslint-plugin-skuba"
   ],
   "extends": "./config/tsconfig.json"
 }

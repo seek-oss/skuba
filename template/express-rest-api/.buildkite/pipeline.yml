@@ -77,6 +77,9 @@ steps:
       queue: <%- devBuildkiteQueueName %>
     label: 🤞 Deploy Dev
     concurrency_group: <%- teamName %>/deploy/gantry/<%- devGantryEnvironmentName %>
+    env:
+      DD_DEPLOYMENT_ENVIRONMENT: development
+      DD_DEPLOYMENT_SERVICE: <%- serviceName %>
     key: deploy-dev
     plugins:
       - seek-jobs/gantry#v4.0.0:
@@ -93,6 +96,9 @@ steps:
     branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
     concurrency_group: <%- teamName %>/deploy/gantry/<%- prodGantryEnvironmentName %>
     depends_on: deploy-dev
+    env:
+      DD_DEPLOYMENT_ENVIRONMENT: production
+      DD_DEPLOYMENT_SERVICE: <%- serviceName %>
     plugins:
       - seek-jobs/gantry#v4.0.0:
           command: apply

@@ -1,0 +1,26 @@
+# managed by skuba
+.npmrc
+
+.idea/*
+.vscode/*
+!.vscode/extensions.json
+
+.cdk.staging/
+.serverless/
+cdk.out/
+node_modules*/
+
+/coverage*/
+/dist*/
+/lib*/
+/tmp*/
+
+.DS_Store
+.eslintcache
+.pnpm-debug.log
+*.tgz
+*.tsbuildinfo
+npm-debug.log
+package-lock.json
+yarn-error.log
+# end managed by skuba

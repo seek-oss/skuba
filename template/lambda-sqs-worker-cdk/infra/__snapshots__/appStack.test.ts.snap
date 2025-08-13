@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`returns expected CloudFormation stack for dev 1`] = `
 {
@@ -173,35 +173,35 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
             "DD_API_KEY_SECRET_ARN": {
               "Ref": "datadogapikeysecret046FEF06",
             },
             "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
+            "DD_ENV": "development",
             "DD_FLUSH_TO_LOG": "false",
             "DD_LAMBDA_HANDLER": "index.handler",
             "DD_LOGS_INJECTION": "false",
             "DD_MERGE_XRAY_TRACES": "false",
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
+            "DD_SERVICE": "serviceName",
             "DD_SITE": "datadoghq.com",
             "DD_TRACE_CLOUD_REQUEST_PAYLOAD_TAGGING": "$.*",
             "DD_TRACE_CLOUD_RESPONSE_PAYLOAD_TAGGING": "$.*",
             "DD_TRACE_ENABLED": "true",
+            "DD_VERSION": "local",
+            "DEPLOYMENT": "dev",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
             },
-            "ENVIRONMENT": "dev",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "SERVICE": "serviceName",
-            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "node_modules/datadog-lambda-js/dist/handler.handler",
+        "Handler": "/opt/nodejs/node_modules/datadog-lambda-js/handler.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
@@ -217,12 +217,25 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
+                ":464622532012:layer:Datadog-Node22-x:x",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region",
+                },
                 ":464622532012:layer:Datadog-Extension-ARM:x",
               ],
             ],
           },
         ],
-        "ReservedConcurrentExecutions": 2,
+        "MemorySize": 512,
+        "ReservedConcurrentExecutions": 3,
         "Role": {
           "Fn::GetAtt": [
             "workerServiceRole2130CC7F",
@@ -332,6 +345,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
     },
     "workerAliasLiveSqsEventSourceappStackworkerqueue8281B9F443B0CF93": {
       "Properties": {
+        "BatchSize": 10,
         "EventSourceArn": {
           "Fn::GetAtt": [
             "workerqueueA05CE5C6",
@@ -358,6 +372,12 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
               ":Live",
             ],
           ],
+        },
+        "FunctionResponseTypes": [
+          "ReportBatchItemFailures",
+        ],
+        "ScalingConfig": {
+          "MaximumConcurrency": 2,
         },
         "Tags": [
           {
@@ -906,35 +926,35 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
           },
           "S3Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.zip",
         },
-        "Description": "Updated at 1212-12-12T12:12:12.121Z",
         "Environment": {
           "Variables": {
             "DD_API_KEY_SECRET_ARN": {
               "Ref": "datadogapikeysecret046FEF06",
             },
             "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
+            "DD_ENV": "production",
             "DD_FLUSH_TO_LOG": "false",
             "DD_LAMBDA_HANDLER": "index.handler",
             "DD_LOGS_INJECTION": "false",
             "DD_MERGE_XRAY_TRACES": "false",
             "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
+            "DD_SERVICE": "serviceName",
             "DD_SITE": "datadoghq.com",
             "DD_TRACE_CLOUD_REQUEST_PAYLOAD_TAGGING": "$.*",
             "DD_TRACE_CLOUD_RESPONSE_PAYLOAD_TAGGING": "$.*",
             "DD_TRACE_ENABLED": "true",
+            "DD_VERSION": "local",
+            "DEPLOYMENT": "prod",
             "DESTINATION_SNS_TOPIC_ARN": {
               "Ref": "destinationtopicDCE2E0B8",
             },
-            "ENVIRONMENT": "prod",
             "NODE_ENV": "production",
             "NODE_OPTIONS": "--enable-source-maps",
-            "SERVICE": "serviceName",
-            "VERSION": "local",
           },
         },
         "FunctionName": "serviceName",
-        "Handler": "node_modules/datadog-lambda-js/dist/handler.handler",
+        "Handler": "/opt/nodejs/node_modules/datadog-lambda-js/handler.handler",
         "KmsKeyArn": {
           "Fn::GetAtt": [
             "kmskey49FBC3B3",
@@ -950,11 +970,24 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
+                ":464622532012:layer:Datadog-Node22-x:x",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:lambda:",
+                {
+                  "Ref": "AWS::Region",
+                },
                 ":464622532012:layer:Datadog-Extension-ARM:x",
               ],
             ],
           },
         ],
+        "MemorySize": 512,
         "ReservedConcurrentExecutions": 20,
         "Role": {
           "Fn::GetAtt": [
@@ -1065,6 +1098,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
     },
     "workerAliasLiveSqsEventSourceappStackworkerqueue8281B9F443B0CF93": {
       "Properties": {
+        "BatchSize": 10,
         "EventSourceArn": {
           "Fn::GetAtt": [
             "workerqueueA05CE5C6",
@@ -1091,6 +1125,12 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
               ":Live",
             ],
           ],
+        },
+        "FunctionResponseTypes": [
+          "ReportBatchItemFailures",
+        ],
+        "ScalingConfig": {
+          "MaximumConcurrency": 19,
         },
         "Tags": [
           {
