@@ -87,6 +87,7 @@ export class AppStack extends Stack {
     const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
       architecture: aws_lambda.Architecture[architecture],
       runtime: aws_lambda.Runtime.NODEJS_22_X,
+      memorySize: 512,
       environmentEncryption: kmsKey,
       // aws-sdk-v3 sets this to true by default, so it is not necessary to set the environment variable
       // https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/node-reusing-connections.html

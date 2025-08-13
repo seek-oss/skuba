@@ -234,6 +234,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             ],
           },
         ],
+        "MemorySize": 512,
         "ReservedConcurrentExecutions": 3,
         "Role": {
           "Fn::GetAtt": [
@@ -986,6 +987,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             ],
           },
         ],
+        "MemorySize": 512,
         "ReservedConcurrentExecutions": 20,
         "Role": {
           "Fn::GetAtt": [
