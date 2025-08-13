@@ -113,10 +113,6 @@ export class AppStack extends Stack {
             }
           : {}),
       },
-      // https://github.com/aws/aws-cdk/issues/28237
-      // This forces the lambda to be updated on every deployment
-      // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
-      description: `Updated at ${new Date().toISOString()}`,
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
     });
 
