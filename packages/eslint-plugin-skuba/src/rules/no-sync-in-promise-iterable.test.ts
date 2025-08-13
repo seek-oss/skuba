@@ -241,13 +241,7 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       ],
     },
     {
-      code: `
-        Promise.${method}([
-          1,
-          fail(),
-          3,
-        ]);
-      `,
+      code: `Promise.${method}([1, fail(), 3])`,
       errors: [
         {
           messageId: 'mayThrowSyncError',
