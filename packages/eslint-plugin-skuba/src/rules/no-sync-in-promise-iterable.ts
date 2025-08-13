@@ -87,6 +87,37 @@ const isChainedPromise = (
   return isThenableType(parentType, checker);
 };
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+ */
+const SAFE_ISH_CONSTRUCTORS = new Set([
+  'AggregateError',
+  'AsyncDisposableStack',
+  'Boolean',
+  'Date',
+  'DisposableStack',
+  'Error',
+  'EvalError',
+  'FinalizationRegistry',
+  'Map',
+  'Number',
+  'Object',
+  'Proxy',
+  'RangeError',
+  'ReferenceError',
+  'Set',
+  'SharedArrayBuffer',
+  'String',
+  'SuppressedError',
+  'Symbol',
+  'SyntaxError',
+  'TypeError',
+  'URIError',
+  'WeakMap',
+  'WeakRef',
+  'WeakSet',
+]);
+
 const SAFE_ISH_FUNCTIONS = new Set([
   'Boolean',
   'isFinite',
@@ -467,12 +498,20 @@ const possibleNodesWithSyncError = (
       return [];
 
     case TSESTree.AST_NODE_TYPES.NewExpression:
-      // Allow `new Promise`
       if (
         node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
-        node.callee.name === 'Promise'
+        SAFE_ISH_CONSTRUCTORS.has(node.callee.name)
       ) {
-        return [];
+        return node.arguments.flatMap((arg) =>
+          possibleNodesWithSyncError(
+            arg,
+            esTreeNodeToTSNodeMap,
+            checker,
+            sourceCode,
+            visited,
+            calls + 1,
+          ),
+        );
       }
 
       // Assume other constructors may throw

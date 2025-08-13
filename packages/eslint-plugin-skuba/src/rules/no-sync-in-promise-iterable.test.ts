@@ -56,8 +56,18 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
         Promise.${method}([1, asyncFn(), 3]);
       `,
     },
+    // New expressions (constructors)
     {
-      code: `Promise.${method}([1, new Promise(resolve => resolve(2)), 3])`,
+      code: `Promise.${method}([, new Boolean()])`,
+    },
+    {
+      code: `Promise.${method}([, new Date('Construct Invalid Date')])`,
+    },
+    {
+      code: `Promise.${method}([, new Error('Badness!')])`,
+    },
+    {
+      code: `Promise.${method}([, new Number('Construct NaN')])`,
     },
     // Avoid traversal outside of iterable argument scope
     {
@@ -305,20 +315,20 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     },
     // New expressions (constructors)
     {
-      code: `Promise.${method}([1, new Error("test"), 3])`,
+      code: `Promise.${method}([1, new Promise(resolve => resolve(2))])`,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'new Error("test")' },
+          data: { method, value: 'new Promise(resolve => resolve(2))' },
         },
       ],
     },
     {
-      code: `Promise.${method}([1, new Map(), 3])`,
+      code: `Promise.${method}([1, new Set(xs.map(() => {})), 3])`,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'new Map()' },
+          data: { method, value: 'xs.map(() => {})' },
         },
       ],
     },
