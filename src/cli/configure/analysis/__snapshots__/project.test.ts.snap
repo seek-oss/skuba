@@ -103,7 +103,7 @@ export default Jest.mergePreset({
     "operation": "A",
   },
   "jest.setup.ts": {
-    "data": "process.env.ENVIRONMENT = 'test';
+    "data": "process.env.DEPLOYMENT = 'test';
 
 export {};
 ",

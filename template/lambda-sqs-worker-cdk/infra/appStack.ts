@@ -19,7 +19,10 @@ import { DatadogLambda } from 'datadog-cdk-constructs-v2';
 import { config } from './config.js';
 
 // Updated by https://github.com/seek-oss/rynovate
-const DATADOG_EXTENSION_LAYER_VERSION = 64;
+const DATADOG_EXTENSION_LAYER_VERSION = 84;
+
+// Updated by https://github.com/seek-oss/rynovate
+const DATADOG_NODE_LAYER_VERSION = 126;
 
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -84,6 +87,7 @@ export class AppStack extends Stack {
     const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
       architecture: aws_lambda.Architecture[architecture],
       runtime: aws_lambda.Runtime.NODEJS_22_X,
+      memorySize: 512,
       environmentEncryption: kmsKey,
       // aws-sdk-v3 sets this to true by default, so it is not necessary to set the environment variable
       // https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/node-reusing-connections.html
@@ -95,7 +99,6 @@ export class AppStack extends Stack {
         target: 'node22',
         // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
         externalModules: [],
-        nodeModules: ['datadog-lambda-js', 'dd-trace'],
       },
       functionName: '<%- serviceName %>',
       environment: {
@@ -111,10 +114,6 @@ export class AppStack extends Stack {
             }
           : {}),
       },
-      // https://github.com/aws/aws-cdk/issues/28237
-      // This forces the lambda to be updated on every deployment
-      // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
-      description: `Updated at ${new Date().toISOString()}`,
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
     });
 
@@ -127,11 +126,15 @@ export class AppStack extends Stack {
     );
 
     const datadog = new DatadogLambda(this, 'datadog', {
+      env: config.env,
+      service: config.service,
+      version: config.version,
+
       apiKeySecret: datadogSecret,
-      addLayers: false,
       enableDatadogLogs: false,
-      flushMetricsToLogs: false,
       extensionLayerVersion: DATADOG_EXTENSION_LAYER_VERSION,
+      flushMetricsToLogs: false,
+      nodeLayerVersion: DATADOG_NODE_LAYER_VERSION,
     });
 
     datadog.addLambdaFunctions([worker]);
@@ -141,7 +144,11 @@ export class AppStack extends Stack {
     });
 
     workerDeployment.alias.addEventSource(
-      new aws_lambda_event_sources.SqsEventSource(queue),
+      new aws_lambda_event_sources.SqsEventSource(queue, {
+        batchSize: config.workerLambda.batchSize,
+        maxConcurrency: config.workerLambda.reservedConcurrency - 1, // Ensure we have capacity reserved for our blue/green deployment
+        reportBatchItemFailures: true,
+      }),
     );
   }
 }

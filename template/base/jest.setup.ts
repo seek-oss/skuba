@@ -1,3 +1,3 @@
-process.env.ENVIRONMENT = 'test';
+process.env.DEPLOYMENT = 'test';
 
 export {};

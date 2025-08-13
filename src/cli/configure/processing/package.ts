@@ -5,8 +5,17 @@ import type { PackageJson } from '../types.js';
 import { parseObject } from './json.js';
 import { formatPrettier } from './prettier.js';
 
+const normalizeDataWithoutThrowing = (rawData: PackageJson) => {
+  try {
+    normalizeData(rawData);
+  } catch {
+    // `normalize-package-data` can be picky about e.g. the `name` being valid.
+    // This creates issues for partially-init-ed projects.
+  }
+};
+
 export const formatPackage = async (rawData: PackageJson) => {
-  normalizeData(rawData);
+  normalizeDataWithoutThrowing(rawData);
 
   // normalize-package-data fields that aren't useful for applications
 
@@ -38,7 +47,7 @@ export const parsePackage = (
     return;
   }
 
-  normalizeData(data);
+  normalizeDataWithoutThrowing(data);
 
   return data;
 };

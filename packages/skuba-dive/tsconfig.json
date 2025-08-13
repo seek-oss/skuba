@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "incremental": true,
     "lib": ["ES2020"],
     "module": "CommonJS",
     "moduleResolution": "node",

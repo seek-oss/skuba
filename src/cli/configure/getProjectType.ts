@@ -1,5 +1,5 @@
 import { Select } from 'enquirer';
-import type { NormalizedReadResult } from 'read-pkg-up';
+import type { ReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging.js';
 import {
@@ -11,7 +11,7 @@ import type { TemplateConfig } from '../../utils/template.js';
 import { hasProp } from '../../utils/validation.js';
 
 interface Props {
-  manifest: NormalizedReadResult;
+  manifest: ReadResult;
   templateConfig: TemplateConfig;
 }
 

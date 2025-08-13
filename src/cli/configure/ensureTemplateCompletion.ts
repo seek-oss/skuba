@@ -2,7 +2,7 @@ import path from 'path';
 
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import type { NormalizedReadResult } from 'read-pkg-up';
+import type { ReadResult } from 'read-pkg-up';
 import * as z from 'zod/v4';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
@@ -23,7 +23,7 @@ import { formatPackage } from './processing/package.js';
 interface Props {
   destinationRoot: string;
   include: (pathname: string) => boolean;
-  manifest: NormalizedReadResult;
+  manifest: ReadResult;
 }
 
 const templateDataSchema = z.object({

@@ -12,7 +12,7 @@ interface GetDestinationManifestProps {
 export const getDestinationManifest = async (
   props?: GetDestinationManifestProps,
 ) => {
-  const result = await readPkgUp(props);
+  const result = await readPkgUp({ ...props, normalize: false });
 
   if (result === undefined) {
     log.err(

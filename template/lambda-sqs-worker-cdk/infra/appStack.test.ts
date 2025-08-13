@@ -1,25 +1,11 @@
 import { App, aws_secretsmanager, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
-const currentDate = '1212-12-12T12:12:12.121Z';
-
-jest.useFakeTimers({
-  legacyFakeTimers: false,
-  doNotFake: [
-    'nextTick',
-    'setInterval',
-    'clearInterval',
-    'setTimeout',
-    'clearTimeout',
-  ],
-  now: new Date(currentDate),
-});
-
-const originalEnv = process.env.ENVIRONMENT;
+const originalDeployment = process.env.DEPLOYMENT;
 const originalVersion = process.env.VERSION;
 
 afterAll(() => {
-  process.env.ENVIRONMENT = originalEnv;
+  process.env.DEPLOYMENT = originalDeployment;
   process.env.VERSION = originalVersion;
 });
 
@@ -29,8 +15,8 @@ afterEach(() => {
 
 it.each(['dev', 'prod'])(
   'returns expected CloudFormation stack for %s',
-  async (env) => {
-    process.env.ENVIRONMENT = env;
+  async (deployment) => {
+    process.env.DEPLOYMENT = deployment;
     process.env.VERSION = 'local';
 
     const { AppStack } = await import('./appStack.js');
@@ -69,10 +55,7 @@ it.each(['dev', 'prod'])(
         /"DD_TAGS":"git.commit.sha:([0-9a-f]+),git.repository_url:([^\"]+)",/g,
         '',
       )
-      .replaceAll(
-        /(layer:Datadog-Extension-.+?:)\d+/g,
-        (_, layer) => `${layer}x`,
-      );
+      .replaceAll(/(layer:Datadog-[^-]+-.+?:)\d+/g, (_, layer) => `${layer}x`);
     expect(JSON.parse(json)).toMatchSnapshot();
   },
 );

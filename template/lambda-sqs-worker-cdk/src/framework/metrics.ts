@@ -7,8 +7,5 @@ const prefix = `${config.name}.`;
 export const metricsClient = {
   distribution: (
     ...[name, ...rest]: Parameters<typeof sendDistributionMetric>
-  ) =>
-    config.metrics
-      ? sendDistributionMetric(`${prefix}${name}`, ...rest)
-      : undefined,
+  ) => sendDistributionMetric(`${prefix}${name}`, ...rest),
 };

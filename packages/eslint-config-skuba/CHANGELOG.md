@@ -1,5 +1,57 @@
 # eslint-config-skuba
 
+## 7.1.0
+
+### Minor Changes
+
+- **deps:** typescript-eslint ^8.39.0 ([#1982](https://github.com/seek-oss/skuba/pull/1982))
+
+- **lint:** Add `skuba/no-sync-in-promise-iterable` rule ([#1969](https://github.com/seek-oss/skuba/pull/1969))
+
+  [`skuba/no-sync-in-promise-iterable`](https://seek-oss.github.io/skuba/docs/eslint-plugin/no-sync-in-promise-iterable.html) heuristically flags synchronous logic in the iterable argument of [static `Promise` methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#static_methods) that could leave preceding promises dangling.
+
+  ```typescript
+  await Promise.allSettled([
+    promiseReject() /* This will result in an unhandled rejection */,
+    promiseResolve(syncFn() /* If this throws an error synchronously  */),
+    //             ~~~~~~~~
+    // syncFn() may synchronously throw an error and leave preceding promises dangling.
+    // Evaluate synchronous expressions outside of the iterable argument to Promise.allSettled,
+    // or safely wrap with the async keyword, Promise.try(), or Promise.resolve().then().
+  ]);
+  ```
+
+  A [Promise](https://nodejs.org/en/learn/asynchronous-work/discover-promises-in-nodejs) that is not awaited and later moves to a rejected state is referred to as an unhandled rejection. When an unhandled rejection is encountered, a Node.js application that does not use process clustering will default to crashing out.
+
+  This new rule defaults to the [`warn` severity](https://eslint.org/docs/latest/use/configure/rules#rule-severities) while we monitor feedback. Please share examples of false positives if you regularly run into them.
+
+- **lint:** Error on custom getters and setters ([#2010](https://github.com/seek-oss/skuba/pull/2010))
+
+  In [`eslint-config-seek@14.6.0`](https://github.com/seek-oss/eslint-config-seek/releases/tag/v14.6.0), the [`no-restricted-syntax`](https://eslint.org/docs/latest/rules/no-restricted-syntax) rule is now preconfigured to ban custom getters and setters. Engineers typically expect property access to be a safer operation than method or function invocation. Throwing an error from a getter can cause confusion and unhandled promise rejections, which can lead to a crash on the server side if [not appropriately configured](https://nodejs.org/api/process.html#event-unhandledrejection). See the [PR](https://github.com/seek-oss/eslint-config-seek/pull/227) for more information.
+
+  ```diff
+  const obj = {
+  - get prop() {
+  + prop() {
+      throw new Error('Badness!');
+    },
+  };
+  ```
+
+  A custom getter may be occasionally prescribed as the recommended approach to achieve desired behaviour. For example, this syntax can define a [recursive object in Zod](https://zod.dev/v4#recursive-objects). In these rare scenarios, add an inline ignore and ensure that you do not throw an error within the getter.
+
+  ```typescript
+  import * as z from 'zod';
+
+  const Category = z.object({
+    name: z.string(),
+    // eslint-disable-next-line no-restricted-syntax -- Zod recursive type
+    get subcategories() {
+      return z.array(Category);
+    },
+  });
+  ```
+
 ## 7.0.2
 
 ### Patch Changes

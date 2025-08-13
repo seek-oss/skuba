@@ -1,5 +1,6 @@
 const base = require('eslint-config-seek/base');
 const extensions = require('eslint-config-seek/extensions');
+const skuba = require('eslint-plugin-skuba');
 const eslintPluginYml = require('eslint-plugin-yml');
 const tseslint = require('typescript-eslint');
 
@@ -104,6 +105,10 @@ module.exports = [
     ...tseslint.configs.recommendedTypeChecked,
     ...tseslint.configs.stylisticTypeChecked,
   ].map(({ plugins, ...config }) => ({
+    ...config,
+    files: [`**/*.{${tsExtensions}}`],
+  })),
+  ...skuba.configs.recommended.map((config) => ({
     ...config,
     files: [`**/*.{${tsExtensions}}`],
   })),

@@ -1,10 +1,11 @@
 import type { Patches } from '../../index.js';
 
-import { rewriteSrcImports } from './rewriteSrcImports.js';
+import { tryPatchUnhandledRejections } from './unhandledRejections.js';
 
 export const patches: Patches = [
   {
-    apply: rewriteSrcImports,
-    description: "Rewrite all 'src' imports to be '#src'",
+    apply: tryPatchUnhandledRejections,
+    description:
+      'Add event handler to log unhandled promise rejections instead of crashing the process',
   },
 ];

@@ -19,3 +19,9 @@ const listener = app.listen(config.port, () => {
 // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout
 // AWS recommends setting an application timeout larger than the load balancer
 listener.keepAliveTimeout = 31000;
+
+// Report unhandled rejections instead of crashing the process
+// Make sure to monitor these reports and alert as appropriate
+process.on('unhandledRejection', (err) =>
+  logger.error(err, 'Unhandled promise rejection'),
+);

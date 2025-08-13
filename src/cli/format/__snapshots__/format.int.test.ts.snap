@@ -38,6 +38,8 @@ Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upg
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
+Patch skipped: Add event handler to log unhandled promise rejections instead of crashing the process - no applicable src/listen.ts entry points found upgrade-skuba
+
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -133,6 +135,8 @@ Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upg
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
+Patch skipped: Add event handler to log unhandled promise rejections instead of crashing the process - no applicable src/listen.ts entry points found upgrade-skuba
+
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -224,6 +228,8 @@ Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upg
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
+Patch skipped: Add event handler to log unhandled promise rejections instead of crashing the process - no applicable src/listen.ts entry points found upgrade-skuba
+
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -284,6 +290,8 @@ Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfil
 Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
 
 Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
+
+Patch skipped: Add event handler to log unhandled promise rejections instead of crashing the process - no applicable src/listen.ts entry points found upgrade-skuba
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
