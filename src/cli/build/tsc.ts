@@ -1,3 +1,5 @@
+import path from 'path';
+
 import ts from 'typescript';
 
 import { exec } from '../../utils/exec.js';
@@ -14,7 +16,6 @@ const formatHost: ts.FormatDiagnosticsHost = {
 };
 
 const tsconfigCache = new Map<string, ts.ParsedCommandLine>();
-const computeCacheKey = (args: string[]) => Array.from(args).sort().toString();
 
 export const tsc = async (args = process.argv.slice(2)) => {
   const tscArgs = parseTscArgs(args);
@@ -66,9 +67,9 @@ export const readTsConfig = ({
   log: Logger;
   silentlyFail?: boolean;
 }) => {
-  const cacheKey = computeCacheKey([dir, fileName]);
+  const pathName = path.join(dir, fileName);
 
-  const cachedConfig = tsconfigCache.get(cacheKey);
+  const cachedConfig = tsconfigCache.get(pathName);
 
   if (cachedConfig) {
     return cachedConfig;
@@ -81,7 +82,7 @@ export const readTsConfig = ({
   );
   if (!tsconfigFile) {
     if (!silentlyFail) {
-      log.err(`Could not find ${fileName}.`);
+      log.err(`Could not find ${pathName}.`);
       process.exitCode = 1;
     }
     return;
@@ -93,7 +94,7 @@ export const readTsConfig = ({
   );
   if (readConfigFile.error) {
     if (!silentlyFail) {
-      log.err(`Could not read ${fileName}.`);
+      log.err(`Could not read ${pathName}.`);
       log.subtle(ts.formatDiagnostic(readConfigFile.error, formatHost));
       process.exitCode = 1;
     }
@@ -106,7 +107,7 @@ export const readTsConfig = ({
     dir,
   );
 
-  tsconfigCache.set(cacheKey, parsedConfig);
+  tsconfigCache.set(pathName, parsedConfig);
 
   return parsedConfig;
 };
