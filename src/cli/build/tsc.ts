@@ -39,13 +39,20 @@ export const readTsBuildConfig = (
   );
   log.debug(tscArgs.pathname);
 
-  const parsedCommandLine = readTsConfig({
+  const parsedConfig = readTsConfig({
     dir: tscArgs.dirname,
     fileName: tscArgs.basename,
     log,
   });
 
-  return parsedCommandLine;
+  if (parsedConfig?.errors.length) {
+    log.err(`Could not parse ${tscArgs.basename}.`);
+    log.subtle(ts.formatDiagnostics(parsedConfig.errors, formatHost));
+    process.exitCode = 1;
+    return;
+  }
+
+  return parsedConfig;
 };
 
 export const readTsConfig = ({
@@ -98,15 +105,6 @@ export const readTsConfig = ({
     ts.sys,
     dir,
   );
-
-  if (parsedConfig.errors.length) {
-    if (!silentlyFail) {
-      log.err(`Could not parse ${fileName}.`);
-      log.subtle(ts.formatDiagnostics(parsedConfig.errors, formatHost));
-      process.exitCode = 1;
-    }
-    return;
-  }
 
   tsconfigCache.set(cacheKey, parsedConfig);
 
