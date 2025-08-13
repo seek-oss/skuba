@@ -1,20 +1,6 @@
 import { App, aws_secretsmanager, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
-const currentDate = '1212-12-12T12:12:12.121Z';
-
-jest.useFakeTimers({
-  legacyFakeTimers: false,
-  doNotFake: [
-    'nextTick',
-    'setInterval',
-    'clearInterval',
-    'setTimeout',
-    'clearTimeout',
-  ],
-  now: new Date(currentDate),
-});
-
 const originalDeployment = process.env.DEPLOYMENT;
 const originalVersion = process.env.VERSION;
 

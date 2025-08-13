@@ -87,6 +87,7 @@ export class AppStack extends Stack {
     const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
       architecture: aws_lambda.Architecture[architecture],
       runtime: aws_lambda.Runtime.NODEJS_22_X,
+      memorySize: 512,
       environmentEncryption: kmsKey,
       // aws-sdk-v3 sets this to true by default, so it is not necessary to set the environment variable
       // https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/node-reusing-connections.html
@@ -113,10 +114,6 @@ export class AppStack extends Stack {
             }
           : {}),
       },
-      // https://github.com/aws/aws-cdk/issues/28237
-      // This forces the lambda to be updated on every deployment
-      // If you do not wish to use hotswap, you can remove the new Date().toISOString() from the description
-      description: `Updated at ${new Date().toISOString()}`,
       reservedConcurrentExecutions: config.workerLambda.reservedConcurrency,
     });
 
