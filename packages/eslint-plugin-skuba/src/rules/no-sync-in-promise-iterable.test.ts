@@ -229,13 +229,25 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'Boolean() ? syncFn() : Promise.resolve()',
+            underlying: 'fail()',
+            line: 2,
+            column: 29,
+          },
         },
       ],
     },
     {
-      code: `Promise.${method}([1, fail(), 3])`,
+      code: `
+        Promise.${method}([
+          1,
+          fail(),
+          3,
+        ]);
+      `,
       errors: [
         {
           messageId: 'mayThrowSyncError',
@@ -256,7 +268,13 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       ],
     },
     {
-      code: `Promise.${method}([1, Namespace.method(), 3])`,
+      code: `
+        Promise.${method}([
+          1,
+          Namespace.method(),
+          3,
+        ]);
+      `,
       errors: [
         {
           messageId: 'mayThrowSyncError',
@@ -265,11 +283,23 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       ],
     },
     {
-      code: `Promise.${method}([1, Promise.resolve(syncFn()), 3])`,
+      code: `
+        Promise.${method}([
+          1,
+          Promise.resolve(syncFn()),
+          3,
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'Promise.resolve(syncFn())',
+            underlying: 'syncFn()',
+            line: 4,
+            column: 26,
+          },
         },
       ],
     },
@@ -280,8 +310,14 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'promises',
+            underlying: 'syncFn()',
+            line: 2,
+            column: 29,
+          },
         },
       ],
     },
@@ -295,8 +331,14 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'p3',
+            underlying: 'fail()',
+            line: 2,
+            column: 29,
+          },
         },
       ],
     },
@@ -321,11 +363,23 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     },
     // Nested arrays
     {
-      code: `Promise.${method}([1, [syncFn(), 2], 3])`,
+      code: `
+        Promise.${method}([
+          1,
+          [syncFn(), 2],
+          3,
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: '[syncFn(), 2]',
+            underlying: 'syncFn()',
+            line: 4,
+            column: 11,
+          },
         },
       ],
     },
@@ -360,8 +414,14 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'level4',
+            underlying: 'syncFn()',
+            line: 2,
+            column: 27,
+          },
         },
       ],
     },
@@ -373,18 +433,36 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: '...problematic',
+            underlying: 'syncFn()',
+            line: 2,
+            column: 32,
+          },
         },
       ],
     },
     // Template literal with expression
     {
-      code: `Promise.${method}([1, \`result: \${syncFn()}\`, 3])`,
+      code: `
+        Promise.${method}([
+          1,
+          \`result: \${syncFn()}\`,
+          3
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: '`result: ${syncFn()}`',
+            underlying: 'syncFn()',
+            line: 4,
+            column: 21,
+          },
         },
       ],
     },
@@ -392,31 +470,60 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `
         const set = new Set([1, 2, 3]);
-        Promise.${method}(set.entries().map(() => fail()));
+        Promise.${method}(
+          set.entries().map(() => fail()),
+        );
       `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'set.entries().map(() => fail())',
+            underlying: 'fail()',
+            line: 4,
+            column: 34,
+          },
         },
       ],
     },
     {
-      code: `const fn = (xs: string[]) => Promise.${method}(xs.map(() => fail()))`,
+      code: `
+        const fn = (xs: string[]) => Promise.${method}(
+          xs.map(() => fail()),
+        );
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'xs.map(() => fail())',
+            underlying: 'fail()',
+            line: 3,
+            column: 23,
+          },
         },
       ],
     },
     // IIFE
     {
-      code: `Promise.${method}([1, (() => fail())()]);`,
+      code: `
+        Promise.${method}([
+          1,
+          (() => fail())(),
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: '(() => fail())()',
+            underlying: 'fail()',
+            line: 4,
+            column: 17,
+          },
         },
       ],
     },
@@ -430,58 +537,117 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
+          messageId: 'mayLeadToSyncError',
           data: {
             method,
-            value: 'param = (x: number) => { /* block! */ return x }',
+            value: 'xs.map(() => fn(param(x)))',
+            underlying: 'param = (x: number) => { /* block! */ return x }',
+            line: 4,
+            column: 14,
           },
         },
       ],
     },
     // Object/function instance method with problematic argument
     {
-      code: `Promise.${method}([1, [1, 2].map(x => x.toLocaleString(fail()))]);`,
+      code: `
+        Promise.${method}([
+          1,
+          [1, 2].map(x => x.toLocaleString(fail())),
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: '[1, 2].map(x => x.toLocaleString(fail()))',
+            underlying: 'fail()',
+            line: 4,
+            column: 43,
+          },
         },
       ],
     },
     {
-      code: `const fn = () => undefined; Promise.${method}([1, fn.call(fail())]);`,
+      code: `
+        const fn = () => undefined;
+        Promise.${method}([
+          1,
+          fn.call(fail()),
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'fn.call(fail())',
+            underlying: 'fail()',
+            line: 5,
+            column: 18,
+          },
         },
       ],
     },
     // Safe Promise wrappers with unsafe arguments
     {
-      code: `Promise.${method}([,Promise.try(fail())])`,
+      code: `
+        Promise.${method}([
+          ,
+          Promise.try(fail()),
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'Promise.try(fail())',
+            underlying: 'fail()',
+            line: 4,
+            column: 22,
+          },
         },
       ],
     },
     {
-      code: `Promise.${method}([,Promise.try(() => fail(), 2, 3,fail())])`,
+      code: `
+        Promise.${method}([
+          ,
+          Promise.try(() => fail(), 2, 3, fail()),
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'Promise.try(() => fail(), 2, 3, fail())',
+            underlying: 'fail()',
+            line: 4,
+            column: 42,
+          },
         },
       ],
     },
     {
-      code: `Promise.${method}([,Promise.resolve().then(fail())])`,
+      code: `
+        Promise.${method}([
+          ,
+          Promise.resolve().then(fail()),
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'Promise.resolve().then(fail())',
+            underlying: 'fail()',
+            line: 4,
+            column: 33,
+          },
         },
       ],
     },
