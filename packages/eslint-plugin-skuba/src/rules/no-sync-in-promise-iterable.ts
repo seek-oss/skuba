@@ -317,7 +317,7 @@ const possibleNodesWithSyncError = (
     case TSESTree.AST_NODE_TYPES.FunctionExpression:
     case TSESTree.AST_NODE_TYPES.FunctionDeclaration:
       // Allow a function that doesn't appear to be invoked
-      if (calls === 0) {
+      if (calls < 1) {
         return [];
       }
 
@@ -485,9 +485,8 @@ const possibleNodesWithSyncError = (
         ),
       );
 
-    case TSESTree.AST_NODE_TYPES.Identifier: {
+    case TSESTree.AST_NODE_TYPES.Identifier:
       return [];
-    }
 
     case TSESTree.AST_NODE_TYPES.Literal:
       return [];
