@@ -2,8 +2,12 @@
 'skuba': patch
 ---
 
-lint: Accommodate more common patterns in `no-sync-in-promise-iterable`
+lint: Reduce noise from `skuba/no-sync-in-promise-iterable`
 
-```typescript
-knex.builder().methods();
-```
+- Rule has been disabled on test files (in a `/testing/` subdirectory or named `.test.ts`)
+
+- Knex builders are exempted:
+
+  ```typescript
+  knex.builder().methods();
+  ```

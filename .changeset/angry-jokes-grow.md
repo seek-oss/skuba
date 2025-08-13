@@ -3,8 +3,12 @@
 'eslint-config-skuba': patch
 ---
 
-no-sync-in-promise-iterable: Accommodate more common patterns
+skuba/no-sync-in-promise-iterable: Reduce noise
 
-```typescript
-knex.builder().methods();
-```
+- Rule has been disabled on test files (in a `/testing/` subdirectory or named `.test.ts`)
+
+- Knex builders are exempted:
+
+  ```typescript
+  knex.builder().methods();
+  ```
