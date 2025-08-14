@@ -530,17 +530,9 @@ const possibleNodesWithSyncError = (
       );
 
     case TSESTree.AST_NODE_TYPES.SpreadElement: {
-      let expression: TSESTree.Expression | undefined;
-
-      if (node.argument.type === TSESTree.AST_NODE_TYPES.Identifier) {
-        expression = findExpression(node.argument, sourceCode, visited);
-      }
-
-      expression ??= node.argument;
-
       // Traverse spread element
       return possibleNodesWithSyncError(
-        expression,
+        node.argument,
         esTreeNodeToTSNodeMap,
         checker,
         sourceCode,
@@ -649,11 +641,12 @@ const resolveArrayElements = (
           return [];
         }
 
+        if (element.type === TSESTree.AST_NODE_TYPES.SpreadElement) {
+          return resolveArrayElements(element.argument, sourceCode, visited);
+        }
+
         // Skip first element as it doesn't leave preceding promises dangling
-        if (
-          index === 0 &&
-          element.type !== TSESTree.AST_NODE_TYPES.SpreadElement
-        ) {
+        if (index === 0) {
           return [];
         }
 
@@ -665,13 +658,17 @@ const resolveArrayElements = (
       return [node];
 
     // Handle indirection like `const promises = [1, 2]; Promise.all(promises)`
-    case TSESTree.AST_NODE_TYPES.Identifier:
+    case TSESTree.AST_NODE_TYPES.Identifier: {
       const expression = findExpression(node, sourceCode, visited);
       if (!expression) {
         return [];
       }
 
       return resolveArrayElements(expression, sourceCode, visited);
+    }
+
+    case TSESTree.AST_NODE_TYPES.SpreadElement:
+      return resolveArrayElements(node.argument, sourceCode, visited);
   }
 
   return [];

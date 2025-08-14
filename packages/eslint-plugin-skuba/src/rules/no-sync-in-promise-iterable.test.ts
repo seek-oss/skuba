@@ -233,6 +233,21 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `Promise.${method}([,Promise.resolve().then(() => fail(), 2, 3, 4)])`,
     },
+    // Identifier in arguments
+    {
+      code: `
+        const iterable = fail();
+        const fn = async (args: unknown[]) => undefined;
+          Promise.${method}([, fn(iterable)])
+        `,
+    },
+    {
+      code: `
+        const iterable = fail();
+        const fn = async (...args: unknown[]) => undefined;
+          Promise.${method}([, fn(...iterable)])
+        `,
+    },
   ]),
   invalid: methods.flatMap((method) => [
     {
@@ -379,6 +394,18 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       ],
     },
     // Spread with problematic elements
+    {
+      code: `
+        const problematic = [1, syncFn(), 3];
+        Promise.${method}(...problematic);
+      `,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: { method, value: 'syncFn()' },
+        },
+      ],
+    },
     {
       code: `
         const problematic = [1, syncFn(), 3];
