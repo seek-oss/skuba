@@ -580,12 +580,19 @@ const checkIterableForSyncErrors = (
     );
 
     for (const node of nodes) {
+      const text = context.sourceCode.getText(node);
+      const lines = text.split('\n');
+      const value =
+        lines.length <= 2
+          ? text
+          : `${lines[0]?.trimEnd()}...${lines[lines.length - 1]?.trimStart()}`;
+
       context.report({
         node,
         messageId: 'mayThrowSyncError',
         data: {
           method,
-          value: context.sourceCode.getText(node),
+          value,
         },
       });
     }

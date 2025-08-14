@@ -7,7 +7,7 @@ import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 import { createLogger } from '../../utils/logging.js';
 
 import { parseTscArgs } from './args.js';
-import { readTsconfig, tsc } from './tsc.js';
+import { readTsBuildConfig, tsc } from './tsc.js';
 
 interface EsbuildParameters {
   debug: boolean;
@@ -29,7 +29,7 @@ export const esbuild = async (
     return;
   }
 
-  const parsedCommandLine = readTsconfig(args, log);
+  const parsedCommandLine = readTsBuildConfig(args, log);
 
   if (!parsedCommandLine || process.exitCode) {
     return;

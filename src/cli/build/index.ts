@@ -6,7 +6,7 @@ import { getStringPropFromConsumerManifest } from '../../utils/manifest.js';
 
 import { copyAssets } from './assets.js';
 import { esbuild } from './esbuild.js';
-import { readTsconfig, tsc } from './tsc.js';
+import { readTsBuildConfig, tsc } from './tsc.js';
 
 export const build = async (args = process.argv.slice(2)) => {
   // TODO: define a unified `package.json#/skuba` schema and parser so we don't
@@ -42,7 +42,7 @@ export const build = async (args = process.argv.slice(2)) => {
     }
   }
 
-  const parsedCommandLine = readTsconfig(args, log);
+  const parsedCommandLine = readTsBuildConfig(args, log);
 
   if (!parsedCommandLine || process.exitCode) {
     return;
