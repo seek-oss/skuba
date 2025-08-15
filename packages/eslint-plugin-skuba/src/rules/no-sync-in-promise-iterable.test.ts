@@ -56,8 +56,18 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
         Promise.${method}([1, asyncFn(), 3]);
       `,
     },
+    // New expressions (constructors)
     {
-      code: `Promise.${method}([1, new Promise(resolve => resolve(2)), 3])`,
+      code: `Promise.${method}([, new Boolean()])`,
+    },
+    {
+      code: `Promise.${method}([, new Date('Construct Invalid Date')])`,
+    },
+    {
+      code: `Promise.${method}([, new Error('Badness!')])`,
+    },
+    {
+      code: `Promise.${method}([, new Number('Construct NaN')])`,
     },
     // Avoid traversal outside of iterable argument scope
     {
@@ -208,6 +218,9 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `Promise.${method}([1, knex('schema.table').select('*').where('id', 1)])`,
     },
+    {
+      code: `Promise.${method}([1, knex.delete().from('schema.table')])`,
+    },
     // Safe Promise wrappers
     {
       code: `
@@ -219,6 +232,21 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     { code: `Promise.${method}([,Promise.resolve().then(() => fail())])` },
     {
       code: `Promise.${method}([,Promise.resolve().then(() => fail(), 2, 3, 4)])`,
+    },
+    // Identifier in arguments
+    {
+      code: `
+        const iterable = fail();
+        const fn = async (args: unknown[]) => undefined;
+          Promise.${method}([, fn(iterable)])
+        `,
+    },
+    {
+      code: `
+        const iterable = fail();
+        const fn = async (...args: unknown[]) => undefined;
+          Promise.${method}([, fn(...iterable)])
+        `,
     },
   ]),
   invalid: methods.flatMap((method) => [
@@ -332,20 +360,32 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     },
     // New expressions (constructors)
     {
-      code: `Promise.${method}([1, new Error("test"), 3])`,
+      code: `Promise.${method}([1, new Promise(resolve => resolve(2))])`,
       errors: [
         {
           messageId: 'mayThrowSyncError',
-          data: { method, value: 'new Error("test")' },
+          data: { method, value: 'new Promise(resolve => resolve(2))' },
         },
       ],
     },
     {
-      code: `Promise.${method}([1, new Map(), 3])`,
+      code: `
+        Promise.${method}([
+          1,
+          new Set(xs.map(() => {})),
+          3,
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'new Map()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'new Set(xs.map(() => {}))',
+            underlying: 'xs.map(() => {})',
+            line: 4,
+            column: 18,
+          },
         },
       ],
     },
@@ -414,6 +454,24 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       ],
     },
     // Spread with problematic elements
+    {
+      code: `
+        const problematic = [1, syncFn(), 3];
+        Promise.${method}(...problematic);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: '...problematic',
+            underlying: 'syncFn()',
+            line: 2,
+            column: 32,
+          },
+        },
+      ],
+    },
     {
       code: `
         const problematic = [1, syncFn(), 3];

@@ -87,6 +87,37 @@ const isChainedPromise = (
   return isThenableType(parentType, checker);
 };
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+ */
+const SAFE_ISH_CONSTRUCTORS = new Set([
+  'AggregateError',
+  'AsyncDisposableStack',
+  'Boolean',
+  'Date',
+  'DisposableStack',
+  'Error',
+  'EvalError',
+  'FinalizationRegistry',
+  'Map',
+  'Number',
+  'Object',
+  'Proxy',
+  'RangeError',
+  'ReferenceError',
+  'Set',
+  'SharedArrayBuffer',
+  'String',
+  'SuppressedError',
+  'Symbol',
+  'SyntaxError',
+  'TypeError',
+  'URIError',
+  'WeakMap',
+  'WeakRef',
+  'WeakSet',
+]);
+
 const SAFE_ISH_FUNCTIONS = new Set([
   'Boolean',
   'isFinite',
@@ -242,8 +273,11 @@ const isSafeIshBuilder = (node: TSESTree.CallExpression): boolean => {
   }
 
   if (
-    node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
-    node.callee.name === 'knex'
+    (node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
+      node.callee.name === 'knex') ||
+    (node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+      node.callee.object.type === TSESTree.AST_NODE_TYPES.Identifier &&
+      node.callee.object.name === 'knex')
   ) {
     return true;
   }
@@ -283,7 +317,7 @@ const possibleNodesWithSyncError = (
     case TSESTree.AST_NODE_TYPES.FunctionExpression:
     case TSESTree.AST_NODE_TYPES.FunctionDeclaration:
       // Allow a function that doesn't appear to be invoked
-      if (calls === 0) {
+      if (calls < 1) {
         return [];
       }
 
@@ -451,9 +485,8 @@ const possibleNodesWithSyncError = (
         ),
       );
 
-    case TSESTree.AST_NODE_TYPES.Identifier: {
+    case TSESTree.AST_NODE_TYPES.Identifier:
       return [];
-    }
 
     case TSESTree.AST_NODE_TYPES.Literal:
       return [];
@@ -464,12 +497,20 @@ const possibleNodesWithSyncError = (
       return [];
 
     case TSESTree.AST_NODE_TYPES.NewExpression:
-      // Allow `new Promise`
       if (
         node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
-        node.callee.name === 'Promise'
+        SAFE_ISH_CONSTRUCTORS.has(node.callee.name)
       ) {
-        return [];
+        return node.arguments.flatMap((arg) =>
+          possibleNodesWithSyncError(
+            arg,
+            esTreeNodeToTSNodeMap,
+            checker,
+            sourceCode,
+            visited,
+            calls + 1,
+          ),
+        );
       }
 
       // Assume other constructors may throw
@@ -489,17 +530,9 @@ const possibleNodesWithSyncError = (
       );
 
     case TSESTree.AST_NODE_TYPES.SpreadElement: {
-      let expression: TSESTree.Expression | undefined;
-
-      if (node.argument.type === TSESTree.AST_NODE_TYPES.Identifier) {
-        expression = findExpression(node.argument, sourceCode, visited);
-      }
-
-      expression ??= node.argument;
-
       // Traverse spread element
       return possibleNodesWithSyncError(
-        expression,
+        node.argument,
         esTreeNodeToTSNodeMap,
         checker,
         sourceCode,
@@ -541,7 +574,10 @@ const getSourceCodeExcerpt = (
 };
 
 const checkIterableForSyncErrors = (
-  elements: Array<{ element: ArrayElement; reference?: TSESTree.Expression }>,
+  elements: Array<{
+    element: ArrayElement;
+    reference?: TSESTree.Expression | TSESTree.SpreadElement;
+  }>,
   method: string,
   context: Context,
   esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
@@ -631,8 +667,11 @@ const resolveArrayElements = (
   node: TSESTree.CallExpressionArgument,
   sourceCode: Readonly<TSESLint.SourceCode>,
   visited = new Set<string>(),
-  reference?: TSESTree.Expression,
-): Array<{ element: ArrayElement; reference?: TSESTree.Expression }> => {
+  reference?: TSESTree.Expression | TSESTree.SpreadElement,
+): Array<{
+  element: ArrayElement;
+  reference?: TSESTree.Expression | TSESTree.SpreadElement;
+}> => {
   switch (node.type) {
     // Handle direct array expressions like `Promise.all([1, 2])`
     case TSESTree.AST_NODE_TYPES.ArrayExpression:
@@ -642,11 +681,17 @@ const resolveArrayElements = (
           return [];
         }
 
+        if (element.type === TSESTree.AST_NODE_TYPES.SpreadElement) {
+          return resolveArrayElements(
+            element.argument,
+            sourceCode,
+            visited,
+            reference ?? element,
+          );
+        }
+
         // Skip first element as it doesn't leave preceding promises dangling
-        if (
-          index === 0 &&
-          element.type !== TSESTree.AST_NODE_TYPES.SpreadElement
-        ) {
+        if (index === 0) {
           return [];
         }
 
@@ -658,7 +703,7 @@ const resolveArrayElements = (
       return [{ element: node, reference }];
 
     // Handle indirection like `const promises = [1, 2]; Promise.all(promises)`
-    case TSESTree.AST_NODE_TYPES.Identifier:
+    case TSESTree.AST_NODE_TYPES.Identifier: {
       const expression = findExpression(node, sourceCode, visited);
       if (!expression) {
         return [];
@@ -666,6 +711,15 @@ const resolveArrayElements = (
 
       return resolveArrayElements(
         expression,
+        sourceCode,
+        visited,
+        reference ?? node,
+      );
+    }
+
+    case TSESTree.AST_NODE_TYPES.SpreadElement:
+      return resolveArrayElements(
+        node.argument,
         sourceCode,
         visited,
         reference ?? node,
