@@ -369,11 +369,23 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       ],
     },
     {
-      code: `Promise.${method}([1, new Set(xs.map(() => {})), 3])`,
+      code: `
+        Promise.${method}([
+          1,
+          new Set(xs.map(() => {})),
+          3,
+        ]);
+      `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'xs.map(() => {})' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'new Set(xs.map(() => {}))',
+            underlying: 'xs.map(() => {})',
+            line: 4,
+            column: 18,
+          },
         },
       ],
     },
@@ -449,8 +461,14 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'syncFn()' },
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: '...problematic',
+            underlying: 'syncFn()',
+            line: 2,
+            column: 32,
+          },
         },
       ],
     },

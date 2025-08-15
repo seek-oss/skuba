@@ -574,7 +574,10 @@ const getSourceCodeExcerpt = (
 };
 
 const checkIterableForSyncErrors = (
-  elements: Array<{ element: ArrayElement; reference?: TSESTree.Expression }>,
+  elements: Array<{
+    element: ArrayElement;
+    reference?: TSESTree.Expression | TSESTree.SpreadElement;
+  }>,
   method: string,
   context: Context,
   esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
@@ -664,8 +667,11 @@ const resolveArrayElements = (
   node: TSESTree.CallExpressionArgument,
   sourceCode: Readonly<TSESLint.SourceCode>,
   visited = new Set<string>(),
-  reference?: TSESTree.Expression,
-): Array<{ element: ArrayElement; reference?: TSESTree.Expression }> => {
+  reference?: TSESTree.Expression | TSESTree.SpreadElement,
+): Array<{
+  element: ArrayElement;
+  reference?: TSESTree.Expression | TSESTree.SpreadElement;
+}> => {
   switch (node.type) {
     // Handle direct array expressions like `Promise.all([1, 2])`
     case TSESTree.AST_NODE_TYPES.ArrayExpression:
@@ -680,7 +686,7 @@ const resolveArrayElements = (
             element.argument,
             sourceCode,
             visited,
-            reference ?? node,
+            reference ?? element,
           );
         }
 
@@ -716,7 +722,7 @@ const resolveArrayElements = (
         node.argument,
         sourceCode,
         visited,
-        reference ?? node.argument,
+        reference ?? node,
       );
   }
 
