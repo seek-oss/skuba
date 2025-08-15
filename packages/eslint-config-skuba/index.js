@@ -186,6 +186,8 @@ module.exports = [
           checksVoidReturn: false,
         },
       ],
+
+      'skuba/no-sync-in-promise-iterable': 'off',
     },
   },
   ...eslintPluginYml.configs['flat/prettier'].map((config) => ({
