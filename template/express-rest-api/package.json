@@ -16,7 +16,7 @@
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/core": "^2.0.0",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.203.0",
-    "@opentelemetry/instrumentation-aws-sdk": "^0.56.0",
+    "@opentelemetry/instrumentation-aws-sdk": "^0.57.0",
     "@opentelemetry/instrumentation-http": "^0.203.0",
     "@opentelemetry/propagator-b3": "^2.0.0",
     "@opentelemetry/sdk-node": "^0.203.0",
