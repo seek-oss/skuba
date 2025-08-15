@@ -1,10 +1,10 @@
 import type { SQSEvent } from 'aws-lambda';
 
-import { createCtx } from 'src/testing/handler.js';
-import { chance } from 'src/testing/types.js';
-
 import { createHandler } from './handler.js';
 import { logger, stdoutMock } from './logging.js';
+
+import { createCtx } from '#src/testing/handler.js';
+import { chance } from '#src/testing/types.js';
 
 describe('createHandler', () => {
   const ctx = createCtx();
