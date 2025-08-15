@@ -87,6 +87,37 @@ const isChainedPromise = (
   return isThenableType(parentType, checker);
 };
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+ */
+const SAFE_ISH_CONSTRUCTORS = new Set([
+  'AggregateError',
+  'AsyncDisposableStack',
+  'Boolean',
+  'Date',
+  'DisposableStack',
+  'Error',
+  'EvalError',
+  'FinalizationRegistry',
+  'Map',
+  'Number',
+  'Object',
+  'Proxy',
+  'RangeError',
+  'ReferenceError',
+  'Set',
+  'SharedArrayBuffer',
+  'String',
+  'SuppressedError',
+  'Symbol',
+  'SyntaxError',
+  'TypeError',
+  'URIError',
+  'WeakMap',
+  'WeakRef',
+  'WeakSet',
+]);
+
 const SAFE_ISH_FUNCTIONS = new Set([
   'Boolean',
   'isFinite',
@@ -242,8 +273,11 @@ const isSafeIshBuilder = (node: TSESTree.CallExpression): boolean => {
   }
 
   if (
-    node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
-    node.callee.name === 'knex'
+    (node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
+      node.callee.name === 'knex') ||
+    (node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+      node.callee.object.type === TSESTree.AST_NODE_TYPES.Identifier &&
+      node.callee.object.name === 'knex')
   ) {
     return true;
   }
@@ -283,7 +317,7 @@ const possibleNodesWithSyncError = (
     case TSESTree.AST_NODE_TYPES.FunctionExpression:
     case TSESTree.AST_NODE_TYPES.FunctionDeclaration:
       // Allow a function that doesn't appear to be invoked
-      if (calls === 0) {
+      if (calls < 1) {
         return [];
       }
 
@@ -451,9 +485,8 @@ const possibleNodesWithSyncError = (
         ),
       );
 
-    case TSESTree.AST_NODE_TYPES.Identifier: {
+    case TSESTree.AST_NODE_TYPES.Identifier:
       return [];
-    }
 
     case TSESTree.AST_NODE_TYPES.Literal:
       return [];
@@ -464,12 +497,20 @@ const possibleNodesWithSyncError = (
       return [];
 
     case TSESTree.AST_NODE_TYPES.NewExpression:
-      // Allow `new Promise`
       if (
         node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
-        node.callee.name === 'Promise'
+        SAFE_ISH_CONSTRUCTORS.has(node.callee.name)
       ) {
-        return [];
+        return node.arguments.flatMap((arg) =>
+          possibleNodesWithSyncError(
+            arg,
+            esTreeNodeToTSNodeMap,
+            checker,
+            sourceCode,
+            visited,
+            calls + 1,
+          ),
+        );
       }
 
       // Assume other constructors may throw
@@ -489,17 +530,9 @@ const possibleNodesWithSyncError = (
       );
 
     case TSESTree.AST_NODE_TYPES.SpreadElement: {
-      let expression: TSESTree.Expression | undefined;
-
-      if (node.argument.type === TSESTree.AST_NODE_TYPES.Identifier) {
-        expression = findExpression(node.argument, sourceCode, visited);
-      }
-
-      expression ??= node.argument;
-
       // Traverse spread element
       return possibleNodesWithSyncError(
-        expression,
+        node.argument,
         esTreeNodeToTSNodeMap,
         checker,
         sourceCode,
@@ -529,14 +562,28 @@ const possibleNodesWithSyncError = (
   return [];
 };
 
+const getSourceCodeExcerpt = (
+  node: TSESTree.Node,
+  sourceCode: Readonly<TSESLint.SourceCode>,
+): string => {
+  const text = sourceCode.getText(node);
+  const lines = text.split('\n');
+  return lines.length <= 2
+    ? text
+    : `${lines[0]?.trimEnd()}...${lines[lines.length - 1]?.trimStart()}`;
+};
+
 const checkIterableForSyncErrors = (
-  elements: ArrayElement[],
+  elements: Array<{
+    element: ArrayElement;
+    reference?: TSESTree.Expression | TSESTree.SpreadElement;
+  }>,
   method: string,
   context: Context,
   esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
   checker: TypeChecker,
 ): void => {
-  for (const element of elements) {
+  for (const { element, reference } of elements) {
     const nodes = possibleNodesWithSyncError(
       element,
       esTreeNodeToTSNodeMap,
@@ -547,21 +594,36 @@ const checkIterableForSyncErrors = (
     );
 
     for (const node of nodes) {
-      const text = context.sourceCode.getText(node);
-      const lines = text.split('\n');
-      const value =
-        lines.length <= 2
-          ? text
-          : `${lines[0]?.trimEnd()}...${lines[lines.length - 1]?.trimStart()}`;
+      const root = reference ?? element;
 
-      context.report({
-        node,
-        messageId: 'mayThrowSyncError',
-        data: {
-          method,
-          value,
-        },
-      });
+      const value = getSourceCodeExcerpt(root, context.sourceCode);
+
+      if (
+        root.loc.start.column === node.loc.start.column &&
+        root.loc.start.line === node.loc.start.line
+      ) {
+        context.report({
+          node,
+          messageId: 'mayThrowSyncError',
+          data: {
+            value,
+            method,
+          },
+        });
+      } else {
+        context.report({
+          node,
+          messageId: 'mayLeadToSyncError',
+          data: {
+            value,
+            method,
+
+            underlying: getSourceCodeExcerpt(node, context.sourceCode),
+            line: node.loc.start.line.toString(),
+            column: node.loc.start.column.toString(),
+          },
+        });
+      }
     }
   }
 };
@@ -605,7 +667,11 @@ const resolveArrayElements = (
   node: TSESTree.CallExpressionArgument,
   sourceCode: Readonly<TSESLint.SourceCode>,
   visited = new Set<string>(),
-): ArrayElement[] => {
+  reference?: TSESTree.Expression | TSESTree.SpreadElement,
+): Array<{
+  element: ArrayElement;
+  reference?: TSESTree.Expression | TSESTree.SpreadElement;
+}> => {
   switch (node.type) {
     // Handle direct array expressions like `Promise.all([1, 2])`
     case TSESTree.AST_NODE_TYPES.ArrayExpression:
@@ -615,29 +681,49 @@ const resolveArrayElements = (
           return [];
         }
 
+        if (element.type === TSESTree.AST_NODE_TYPES.SpreadElement) {
+          return resolveArrayElements(
+            element.argument,
+            sourceCode,
+            visited,
+            reference ?? element,
+          );
+        }
+
         // Skip first element as it doesn't leave preceding promises dangling
-        if (
-          index === 0 &&
-          element.type !== TSESTree.AST_NODE_TYPES.SpreadElement
-        ) {
+        if (index === 0) {
           return [];
         }
 
-        return element;
+        return { element, reference };
       });
 
     // Pass through calls like `Promise.all(promises.map(fn))`
     case TSESTree.AST_NODE_TYPES.CallExpression:
-      return [node];
+      return [{ element: node, reference }];
 
     // Handle indirection like `const promises = [1, 2]; Promise.all(promises)`
-    case TSESTree.AST_NODE_TYPES.Identifier:
+    case TSESTree.AST_NODE_TYPES.Identifier: {
       const expression = findExpression(node, sourceCode, visited);
       if (!expression) {
         return [];
       }
 
-      return resolveArrayElements(expression, sourceCode, visited);
+      return resolveArrayElements(
+        expression,
+        sourceCode,
+        visited,
+        reference ?? node,
+      );
+    }
+
+    case TSESTree.AST_NODE_TYPES.SpreadElement:
+      return resolveArrayElements(
+        node.argument,
+        sourceCode,
+        visited,
+        reference ?? node,
+      );
   }
 
   return [];
@@ -655,7 +741,7 @@ export const createRule = ESLintUtils.RuleCreator<PluginDocs>(
     `https://github.com/seek-oss/skuba/tree/main/docs/eslint-plugin/${name}.md`,
 );
 
-type MessageId = 'mayThrowSyncError';
+type MessageId = 'mayLeadToSyncError' | 'mayThrowSyncError';
 
 type Context = TSESLint.RuleContext<MessageId, []>;
 
@@ -678,6 +764,8 @@ export default createRule({
     },
     schema: [],
     messages: {
+      mayLeadToSyncError:
+        '{{value}} leads to {{underlying}} at {{line}}:{{column}} which may synchronously throw an error and leave preceding promises dangling. Evaluate synchronous expressions outside of the iterable argument to Promise.{{method}}, or safely wrap with the async keyword, Promise.try(), or Promise.resolve().then().',
       mayThrowSyncError:
         '{{value}} may synchronously throw an error and leave preceding promises dangling. Evaluate synchronous expressions outside of the iterable argument to Promise.{{method}}, or safely wrap with the async keyword, Promise.try(), or Promise.resolve().then().',
     },
