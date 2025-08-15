@@ -10,7 +10,7 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const packageJsonSchema = z
   .object({
-    imports: z.record(z.record(z.string())).optional(),
+    imports: z.record(z.string(), z.record(z.string(), z.string())).optional(),
   })
   .passthrough();
 
@@ -20,7 +20,7 @@ const tsConfigSchema = z
       .object({
         customConditions: z.array(z.string()).optional(),
         rootDir: z.string().optional(),
-        paths: z.record(z.unknown()).optional(),
+        paths: z.record(z.string(), z.unknown()).optional(),
       })
       .passthrough()
       .optional(),
