@@ -1,12 +1,6 @@
-owner: '<%- teamName %>'
-prodAccountId: '<%- prodAwsAccountId %>'
 service: '<%- serviceName %>'
 
-image: '{{values "prodAccountId"}}.dkr.ecr.<%- region %>.amazonaws.com/{{values "service"}}:{{.BuildID}}'
-
+image: '<%- prodAwsAccountId %>.dkr.ecr.<%- region %>.amazonaws.com/<%- serviceName %>:{{.BuildID}}'
 # TODO: enable Datadog agent
 # https://backstage.myseek.xyz/docs/default/component/gantry/v1/reference/resources/service/#datadogSecretId
 # datadogSecretId: arn:aws:secretsmanager:<%- region %>:<aws-account-id>:secret:<secret-name>
-
-tags:
-  # seek:system:name: 'TODO: https://rfc.skinfra.xyz/RFC051-AWS-Tagging-Standard.html#tagging-schema'
