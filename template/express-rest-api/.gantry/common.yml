@@ -1,4 +1,0 @@
-image: '<%- prodAwsAccountId %>.dkr.ecr.<%- region %>.amazonaws.com/{{values "service"}}:{{.BuildID}}'
-# TODO: enable Datadog agent
-# https://backstage.myseek.xyz/docs/default/component/gantry/v1/reference/resources/service/#datadogSecretId
-# datadogSecretId: arn:aws:secretsmanager:<%- region %>:<aws-account-id>:secret:<secret-name>

@@ -6,11 +6,11 @@ name: '<%- serviceName %>'
 
 owner: '<%- teamName %>'
 
-image: '{{values "image"}}'
+image: '<%- prodAwsAccountId %>.dkr.ecr.<%- region %>.amazonaws.com/<%- serviceName %>:{{.BuildID}}'
 
 env:
   DEPLOYMENT: '{{values "deployment"}}'
-  SERVICE: '{{values "service"}}'
+  SERVICE: '<%- serviceName %>'
 
   DD_ENV: '{{values "env"}}'
   DD_SERVICE: '<%- serviceName %>'
