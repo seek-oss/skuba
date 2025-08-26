@@ -1,7 +1,8 @@
 import type { Config } from '@jest/types';
+import mergeWith from 'lodash.mergewith';
 
 import jestPreset from '../../../jest-preset.js';
-import { mergeRaw } from '../../cli/configure/processing/record.js';
+import { isArray, mergeRaw } from '../../cli/configure/processing/record.js';
 
 // Avoid TS4082 in Jest configuration files:
 // Default export of the module has or is using private name `ConfigGlobals`.
@@ -30,6 +31,31 @@ type DefaultOptions =
   | 'testPathIgnorePatterns'
   | 'testTimeout'
   | 'watchPathIgnorePatterns';
+
+/**
+ * Like `merge`, but arrays are not deduped or sorted to preserve order.
+ */
+export const mergeJestConfig = <A, B>(obj: A, src: B) =>
+  mergeWith(
+    {},
+    obj,
+    src,
+    (objValue: unknown, srcValue: unknown, key: string) => {
+      if (
+        key === 'moduleNameMapper' &&
+        (typeof srcValue === 'object' || typeof srcValue === 'undefined') &&
+        (typeof objValue === 'object' || typeof objValue === 'undefined')
+      ) {
+        return {
+          ...srcValue,
+          ...objValue,
+        };
+      }
+      return isArray(objValue) && isArray(srcValue)
+        ? objValue.concat(srcValue)
+        : undefined;
+    },
+  );
 
 /**
  * Merge additional Jest options into the **skuba** preset.
