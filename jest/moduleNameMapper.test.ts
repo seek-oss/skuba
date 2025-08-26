@@ -14,8 +14,8 @@ describe('moduleNameMapper', () => {
       .toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
-          "$1",
           "$1.js",
+          "$1",
         ],
         "^lib/wip$": "<rootDir>/lib/wip",
         "^lib/wip/(.*)$": "<rootDir>/lib/wip/$1",
@@ -30,8 +30,8 @@ describe('moduleNameMapper', () => {
     expect(act({ cli: ['cli'], 'src/': ['src/'] })).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
-          "$1",
           "$1.js",
+          "$1",
         ],
         "^cli$": "<rootDir>/cli",
         "^cli/(.*)$": "<rootDir>/cli/$1",
@@ -51,8 +51,8 @@ describe('moduleNameMapper', () => {
     ).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
-          "$1",
           "$1.js",
+          "$1",
         ],
         "^jquery$": "<rootDir>/node_modules/jquery/dist/jquery",
         "^jquery/(.*)$": "<rootDir>/node_modules/jquery/dist/jquery/$1",
@@ -65,8 +65,8 @@ describe('moduleNameMapper', () => {
       .toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
-          "$1",
           "$1.js",
+          "$1",
         ],
         "^app$": "<rootDir>/src/app",
         "^app/(.*)$": "<rootDir>/src/app/$1",
@@ -81,8 +81,8 @@ describe('moduleNameMapper', () => {
     expect(act({})).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
-          "$1",
           "$1.js",
+          "$1",
         ],
       }
     `));
@@ -91,8 +91,8 @@ describe('moduleNameMapper', () => {
     expect(act(undefined)).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
-          "$1",
           "$1.js",
+          "$1",
         ],
       }
     `));
@@ -101,8 +101,8 @@ describe('moduleNameMapper', () => {
     expect(act('INVALID')).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
-          "$1",
           "$1.js",
+          "$1",
         ],
       }
     `));
