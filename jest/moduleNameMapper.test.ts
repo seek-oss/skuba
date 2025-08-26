@@ -13,7 +13,10 @@ describe('moduleNameMapper', () => {
     expect(act({ 'src/*': ['src/*'], 'lib/wip/*': ['lib/wip/*'] }))
       .toMatchInlineSnapshot(`
       {
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1",
+          "$1.js",
+        ],
         "^lib/wip$": "<rootDir>/lib/wip",
         "^lib/wip/(.*)$": "<rootDir>/lib/wip/$1",
         "^lib/wip/(.*)\\.js$": "<rootDir>/lib/wip/$1",
@@ -26,7 +29,10 @@ describe('moduleNameMapper', () => {
   it('expands non-wildcard paths', () =>
     expect(act({ cli: ['cli'], 'src/': ['src/'] })).toMatchInlineSnapshot(`
       {
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1",
+          "$1.js",
+        ],
         "^cli$": "<rootDir>/cli",
         "^cli/(.*)$": "<rootDir>/cli/$1",
         "^cli/(.*)\\.js$": "<rootDir>/cli/$1",
@@ -44,7 +50,10 @@ describe('moduleNameMapper', () => {
       }),
     ).toMatchInlineSnapshot(`
       {
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1",
+          "$1.js",
+        ],
         "^jquery$": "<rootDir>/node_modules/jquery/dist/jquery",
         "^jquery/(.*)$": "<rootDir>/node_modules/jquery/dist/jquery/$1",
         "^jquery/(.*)\\.js$": "<rootDir>/node_modules/jquery/dist/jquery/$1",
@@ -55,7 +64,10 @@ describe('moduleNameMapper', () => {
     expect(act({ cli: ['../cli'], 'app/*': ['app/*'] }, 'src'))
       .toMatchInlineSnapshot(`
       {
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1",
+          "$1.js",
+        ],
         "^app$": "<rootDir>/src/app",
         "^app/(.*)$": "<rootDir>/src/app/$1",
         "^app/(.*)\\.js$": "<rootDir>/src/app/$1",
@@ -68,21 +80,30 @@ describe('moduleNameMapper', () => {
   it('respects no paths', () =>
     expect(act({})).toMatchInlineSnapshot(`
       {
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1",
+          "$1.js",
+        ],
       }
     `));
 
   it('defaults to a single path on undefined', () =>
     expect(act(undefined)).toMatchInlineSnapshot(`
       {
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1",
+          "$1.js",
+        ],
       }
     `));
 
   it('defaults to a single path on invalid config', () =>
     expect(act('INVALID')).toMatchInlineSnapshot(`
       {
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1",
+          "$1.js",
+        ],
       }
     `));
 });

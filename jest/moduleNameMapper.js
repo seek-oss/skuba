@@ -47,6 +47,9 @@ module.exports.createModuleNameMapper = (getConfig) => {
     useESM: true,
   });
 
+  // Always try finding the file with extension before trying without
+  moduleNameMapper['^(\\.{1,2}/.*)\\.js$'] = ['$1.js', '$1'];
+
   // Normalise away any `..`s that may crop up from `baseUrl` usage.
   // For example, a `baseUrl` of `src` and a path of `../cli` will result in
   // `<rootDir>/src/../cli`, which can be normalised to `<rootDir>/cli`.
