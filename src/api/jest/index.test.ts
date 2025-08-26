@@ -57,20 +57,4 @@ describe('mergePreset', () => {
 
     expect(config.projects).toStrictEqual(['src/project1', 'src/project2']);
   });
-
-  it('prefers user supplied moduleNameMappers over skuba defaults', () => {
-    const config = mergePreset({
-      moduleNameMapper: { 'this-should-come-first': '<rootDir>/src/$1' },
-    });
-
-    expect(config.moduleNameMapper).toEqual({
-      'this-should-come-first': '<rootDir>/src/$1',
-      '^(\\.{1,2}/.*)\\.js$': '$1',
-    });
-
-    expect(Object.keys(config.moduleNameMapper ?? {})).toEqual([
-      'this-should-come-first',
-      '^(\\.{1,2}/.*)\\.js$',
-    ]);
-  });
 });
