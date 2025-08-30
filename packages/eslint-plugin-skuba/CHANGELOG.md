@@ -1,5 +1,19 @@
 # eslint-plugin-skuba
 
+## 1.0.1
+
+### Patch Changes
+
+- **skuba/no-sync-in-promise-iterable:** Exempt more scenarios ([#2024](https://github.com/seek-oss/skuba/pull/2024))
+  - Files in a `/testing/` subdirectory or named `.test.ts`
+  - Global object constructors like `new Map()` and `new Set()` (`new Promise(executor)` has been reclassified as unsafe)
+  - Knex builders like `knex.builder().method()`
+  - Nested spread identifiers like `fn(...iterable)`
+
+- **skuba/no-sync-in-promise-iterable:** Improve warning location ([#2029](https://github.com/seek-oss/skuba/pull/2029))
+
+  Previously, each warning was anchored to the underlying expression that may have thrown a synchronous error, which could be confusing to triage. The rule now emits each warning against the root argument to the static `Promise` method, and includes details about the underlying expression in its message.
+
 ## 1.0.0
 
 ### Major Changes
