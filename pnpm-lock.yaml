@@ -315,8 +315,8 @@ importers:
         specifier: ^0.203.0
         version: 0.203.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
-        specifier: 11.0.0
-        version: 11.0.0
+        specifier: 11.1.0
+        version: 11.1.0
       express:
         specifier: ^5.0.0
         version: 5.1.0
@@ -392,8 +392,8 @@ importers:
         specifier: ^0.203.0
         version: 0.203.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
-        specifier: 11.0.0
-        version: 11.0.0
+        specifier: 11.1.0
+        version: 11.1.0
       hot-shots:
         specifier: ^11.0.0
         version: 11.1.1
@@ -462,8 +462,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@seek/logger':
-        specifier: 11.0.0
-        version: 11.0.0
+        specifier: 11.1.0
+        version: 11.1.0
       skuba-dive:
         specifier: ^2.0.0
         version: 2.0.0
@@ -1868,8 +1868,8 @@ packages:
     resolution: {integrity: sha512-VLvzLtkiFStd7SOcfZzt8Tfb7OVFOtLTU5qKQixBXCjTY8PIIAsibe2wgk6JhCUa2dnq1zY5TZuHBTNMt+ro1w==}
     engines: {node: '>=20.9.0'}
 
-  '@seek/logger@11.0.0':
-    resolution: {integrity: sha512-AbULWAtrkjXvz3EKCTzpVdFhO0Y1fJujYKW4YwlJ94oBVtSqIbOCfbwcdknivn/X9FoC6/7xvWvc5wZ74IA0lA==}
+  '@seek/logger@11.1.0':
+    resolution: {integrity: sha512-Vove1ye3OXL1atpifZk2qjGjbrD35TMUjt6o+ROlfShrSYXI2lqAgovVTZWj12BGLHP24MeAZ8AAdLtiVuCbcg==}
     engines: {node: '>=20.9.0'}
 
   '@semantic-release/commit-analyzer@13.0.1':
@@ -8727,7 +8727,7 @@ snapshots:
       pino: 9.9.0
       pino-std-serializers: 7.0.0
 
-  '@seek/logger@11.0.0':
+  '@seek/logger@11.1.0':
     dependencies:
       dtrim: 1.12.0
       fast-redact: 3.5.0
