@@ -44,9 +44,6 @@
   "engines": {
     "node": ">=20.9.0"
   },
-  "publishConfig": {
-    "provenance": true
-  },
   "skuba": {
     "entryPoint": "index.js",
     "template": "oss-npm-package",
