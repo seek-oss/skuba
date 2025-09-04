@@ -163,9 +163,6 @@
   "engines": {
     "node": ">=20.9.0"
   },
-  "publishConfig": {
-    "provenance": true
-  },
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",
