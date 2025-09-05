@@ -13,7 +13,11 @@ export const patchJestSnapshots = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
   const testFilePaths = await fg(['**/*.test.ts', '**/*.test.ts.snap'], {
-    ignore: ['**/.git', '**/node_modules'],
+    ignore: [
+      '**/.git',
+      '**/node_modules',
+      'src/cli/lint/internalLints/upgrade/patches/12.1.1/patchJestSnapshots.test.ts',
+    ],
   });
 
   if (testFilePaths.length === 0) {
