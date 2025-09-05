@@ -8,7 +8,6 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "resolveJsonModule": true,
-    "skipLibCheck": true
   },
   "extends": "tsconfig-seek"
 }
