@@ -50,13 +50,13 @@ jobs:
           git config user.name seek-oss-ci
           git config user.email 34733141+seek-oss-ci@users.noreply.github.com
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
           node-version: ^22.14
-
-      - name: Set up pnpm
-        run: corepack enable pnpm && corepack install
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

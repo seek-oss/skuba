@@ -24,13 +24,13 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
           node-version: ^22.14
-
-      - name: Set up pnpm
-        run: corepack enable pnpm && corepack install
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -65,13 +65,13 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
           node-version: ^22.14
-
-      - name: Set up pnpm
-        run: corepack enable pnpm && corepack install
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
