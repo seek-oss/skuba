@@ -12,7 +12,7 @@ const JEST_SNAPSHOT_NEW_URL = 'https://jestjs.io/docs/snapshot-testing';
 export const patchJestSnapshots = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
-  const testFilePaths = await fg(['*.test.ts', '*.test.ts.snap'], {
+  const testFilePaths = await fg(['**/*.test.ts', '**/*.test.ts.snap'], {
     ignore: ['**/.git', '**/node_modules'],
   });
 
