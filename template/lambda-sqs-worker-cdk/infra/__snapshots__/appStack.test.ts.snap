@@ -763,14 +763,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
     },
   },
   "Resources": {
-    "datadogapikeysecret046FEF06": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "GenerateSecretString": {},
-      },
-      "Type": "AWS::SecretsManager::Secret",
-      "UpdateReplacePolicy": "Delete",
-    },
     "destinationtopicDCE2E0B8": {
       "Properties": {
         "KmsMasterKeyId": {
@@ -928,9 +920,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "Environment": {
           "Variables": {
-            "DD_API_KEY_SECRET_ARN": {
-              "Ref": "datadogapikeysecret046FEF06",
-            },
+            "DD_API_KEY_SECRET_ARN": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:TODO_SECRET_NAME",
             "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
             "DD_ENV": "production",
             "DD_FLUSH_TO_LOG": "false",
@@ -1394,9 +1384,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 "secretsmanager:DescribeSecret",
               ],
               "Effect": "Allow",
-              "Resource": {
-                "Ref": "datadogapikeysecret046FEF06",
-              },
+              "Resource": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:TODO_SECRET_NAME-??????",
             },
             {
               "Action": [
