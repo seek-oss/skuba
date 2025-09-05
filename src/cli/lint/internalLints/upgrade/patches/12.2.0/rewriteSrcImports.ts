@@ -38,7 +38,9 @@ const replaceAllImports = (contents: string) =>
 export const tryRewriteSrcImports: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsFileNames = await glob(['**/*.ts', '**/*.test.ts']);
+  const tsFileNames = await glob(['**/*.ts', '**/*.test.ts'], {
+    ignore: ['**/.git', '**/node_modules'],
+  });
 
   if (!tsFileNames.length) {
     return {
