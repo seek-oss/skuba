@@ -11,6 +11,7 @@ publicHoistPattern:
   - typescript
   # end managed by skuba
   - 'remark-lint-*'
+
 packages:
   # https://github.com/changesets/changesets/issues/1133#issuecomment-1594844204
   - .

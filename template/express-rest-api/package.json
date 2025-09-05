@@ -2,6 +2,12 @@
   "name": "@seek/<%- serviceName %>",
   "private": true,
   "license": "UNLICENSED",
+  "imports": {
+    "#src/*": {
+      "@seek/<%- serviceName %>/source": "./src/*",
+      "default": "./lib/*"
+    }
+  },
   "scripts": {
     "build": "skuba build",
     "format": "skuba format",
