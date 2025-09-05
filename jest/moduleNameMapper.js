@@ -23,19 +23,19 @@ module.exports.createModuleNameMapper = (getConfig) => {
         // we need to seed two Jest mappings per path.
         ...(key.endsWith('/*')
           ? [
-              [
-                // Given a path `src/*`, seed an extra `src`.
-                key.replace(/\/\*$/, ''),
-                values.map((value) => value.replace(/\/\*$/, '')),
-              ],
-            ]
+            [
+              // Given a path `src/*`, seed an extra `src`.
+              key.replace(/\/\*$/, ''),
+              values.map((value) => value.replace(/\/\*$/, '')),
+            ],
+          ]
           : [
-              [
-                // Given a path `src`, seed an extra `src/*`.
-                path.join(key, '*'),
-                values.map((value) => path.join(value, '*')),
-              ],
-            ]),
+            [
+              // Given a path `src`, seed an extra `src/*`.
+              path.join(key, '*'),
+              values.map((value) => path.join(value, '*')),
+            ],
+          ]),
       ],
     ),
   );
@@ -52,6 +52,9 @@ module.exports.createModuleNameMapper = (getConfig) => {
     '^#src/(.*)\\.js$': '<rootDir>/src/$1',
     '^#src/(.*)$': '<rootDir>/src/$1',
   };
+
+  // Always try finding the file with extension before trying without
+  moduleNameMapper['^(\\.{1,2}/.*)\\.js$'] = ['$1.js', '$1'];
 
   // Normalise away any `..`s that may crop up from `baseUrl` usage.
   // For example, a `baseUrl` of `src` and a path of `../cli` will result in

@@ -16,7 +16,10 @@ describe('moduleNameMapper', () => {
         "^#src$": "<rootDir>/src",
         "^#src/(.*)$": "<rootDir>/src/$1",
         "^#src/(.*)\\.js$": "<rootDir>/src/$1",
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1.js",
+          "$1",
+        ],
         "^lib/wip$": "<rootDir>/lib/wip",
         "^lib/wip/(.*)$": "<rootDir>/lib/wip/$1",
         "^lib/wip/(.*)\\.js$": "<rootDir>/lib/wip/$1",
@@ -32,7 +35,10 @@ describe('moduleNameMapper', () => {
         "^#src$": "<rootDir>/src",
         "^#src/(.*)$": "<rootDir>/src/$1",
         "^#src/(.*)\\.js$": "<rootDir>/src/$1",
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1.js",
+          "$1",
+        ],
         "^cli$": "<rootDir>/cli",
         "^cli/(.*)$": "<rootDir>/cli/$1",
         "^cli/(.*)\\.js$": "<rootDir>/cli/$1",
@@ -53,7 +59,10 @@ describe('moduleNameMapper', () => {
         "^#src$": "<rootDir>/src",
         "^#src/(.*)$": "<rootDir>/src/$1",
         "^#src/(.*)\\.js$": "<rootDir>/src/$1",
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1.js",
+          "$1",
+        ],
         "^jquery$": "<rootDir>/node_modules/jquery/dist/jquery",
         "^jquery/(.*)$": "<rootDir>/node_modules/jquery/dist/jquery/$1",
         "^jquery/(.*)\\.js$": "<rootDir>/node_modules/jquery/dist/jquery/$1",
@@ -67,7 +76,10 @@ describe('moduleNameMapper', () => {
         "^#src$": "<rootDir>/src",
         "^#src/(.*)$": "<rootDir>/src/$1",
         "^#src/(.*)\\.js$": "<rootDir>/src/$1",
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1.js",
+          "$1",
+        ],
         "^app$": "<rootDir>/src/app",
         "^app/(.*)$": "<rootDir>/src/app/$1",
         "^app/(.*)\\.js$": "<rootDir>/src/app/$1",
@@ -83,7 +95,10 @@ describe('moduleNameMapper', () => {
         "^#src$": "<rootDir>/src",
         "^#src/(.*)$": "<rootDir>/src/$1",
         "^#src/(.*)\\.js$": "<rootDir>/src/$1",
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1.js",
+          "$1",
+        ],
       }
     `));
 
@@ -93,7 +108,10 @@ describe('moduleNameMapper', () => {
         "^#src$": "<rootDir>/src",
         "^#src/(.*)$": "<rootDir>/src/$1",
         "^#src/(.*)\\.js$": "<rootDir>/src/$1",
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1.js",
+          "$1",
+        ],
       }
     `));
 
@@ -103,7 +121,10 @@ describe('moduleNameMapper', () => {
         "^#src$": "<rootDir>/src",
         "^#src/(.*)$": "<rootDir>/src/$1",
         "^#src/(.*)\\.js$": "<rootDir>/src/$1",
-        "^(\\.{1,2}/.*)\\.js$": "$1",
+        "^(\\.{1,2}/.*)\\.js$": [
+          "$1.js",
+          "$1",
+        ],
       }
     `));
 });

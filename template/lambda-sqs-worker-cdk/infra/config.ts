@@ -40,7 +40,8 @@ const configs: Record<Deployment, Config> = {
       },
     },
 
-    datadogApiKeySecretArn: 'TODO: datadogApiKeySecretArn',
+    datadogApiKeySecretArn:
+      'arn:aws:secretsmanager:<Region>:<AccountId>:secret:TODO_SECRET_NAME',
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
   prod: {
@@ -56,7 +57,8 @@ const configs: Record<Deployment, Config> = {
       },
     },
 
-    datadogApiKeySecretArn: 'TODO: datadogApiKeySecretArn',
+    datadogApiKeySecretArn:
+      'arn:aws:secretsmanager:<Region>:<AccountId>:secret:TODO_SECRET_NAME',
     sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
   },
 };
