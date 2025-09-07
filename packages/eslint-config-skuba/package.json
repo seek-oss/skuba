@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-skuba",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "private": false,
   "description": "ESLint config for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-config-skuba#readme",
@@ -40,17 +40,14 @@
     "eslint": ">=9.11.1",
     "typescript": ">=5.5.4"
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.1",
   "engines": {
     "node": ">=20.9.0"
-  },
-  "publishConfig": {
-    "provenance": true
   },
   "skuba": {
     "entryPoint": "index.js",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "12.1.0"
+    "version": "12.2.0"
   }
 }

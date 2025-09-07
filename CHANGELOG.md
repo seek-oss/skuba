@@ -1,5 +1,33 @@
 # skuba
 
+## 12.2.0
+
+### Minor Changes
+
+- **lint:** Update Jest snapshot URLs ([#2049](https://github.com/seek-oss/skuba/pull/2049))
+
+- **node, start:** Forward custom conditions to `tsx` ([#2023](https://github.com/seek-oss/skuba/pull/2023))
+
+  The `skuba node` and `skuba start` commands now automatically pass custom conditions from `tsconfig.json` ([`customConditions`](https://www.typescriptlang.org/tsconfig/customConditions.html)) and command-line arguments ([`--conditions`](https://nodejs.org/api/cli.html#-c-condition---conditionscondition)) to the `tsx` runtime.
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Remove --hotswap functionality ([#2026](https://github.com/seek-oss/skuba/pull/2026))
+
+- **template/oss-npm-package:** Switch to pnpm/action-setup in workflows ([#2055](https://github.com/seek-oss/skuba/pull/2055))
+
+- **template/lambda-sqs-worker-cdk:** Set worker memory to 512mb by default ([#2027](https://github.com/seek-oss/skuba/pull/2027))
+
+- **lint:** Exempt more `skuba/no-sync-in-promise-iterable` scenarios ([#2024](https://github.com/seek-oss/skuba/pull/2024))
+  - Files in a `/testing/` subdirectory or named `.test.ts`
+  - Global object constructors like `new Map()` and `new Set()` (`new Promise(executor)` has been reclassified as unsafe)
+  - Knex builders like `knex.builder().method()`
+  - Nested spread identifiers like `fn(...iterable)`
+
+- **lint:** Improve location of `skuba/no-sync-in-promise-iterable` warnings ([#2029](https://github.com/seek-oss/skuba/pull/2029))
+
+- **test:** Prioritize file extensions in Jest `moduleNameMapper` resolution ([#2041](https://github.com/seek-oss/skuba/pull/2041))
+
 ## 12.1.1
 
 ### Patch Changes
