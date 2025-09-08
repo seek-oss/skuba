@@ -85,7 +85,6 @@ export const addJestModuleNameMapper = (
   const formattedNamesWithPath = formattedNames.map((name) => `${name}/$1`);
 
   const moduleNameMapper = {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
     '^#src$': formattedNames,
     '^#src/(.*)\\.js$': formattedNamesWithPath,
     '^#src\/(.*)$': formattedNamesWithPath,

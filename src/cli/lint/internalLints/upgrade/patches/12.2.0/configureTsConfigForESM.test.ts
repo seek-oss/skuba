@@ -451,7 +451,6 @@ describe('tryConfigureTsConfigForESM', () => {
         expect(updatedJestConfig.testEnvironment).toBe('node');
         expect(updatedJestConfig.preset).toBe('ts-jest');
         expect(updatedJestConfig.moduleNameMapper).toEqual({
-          '^(\\.{1,2}/.*)\\.js$': '$1',
           '^#src$': ['<rootDir>/apps/api/src', '<rootDir>/apps/worker/src'],
           '^#src/(.*)\\.js$': [
             '<rootDir>/apps/api/src/$1',
