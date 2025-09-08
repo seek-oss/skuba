@@ -188,7 +188,7 @@ export const replaceTsconfig = (contents: string, repoName: string) => {
       return contents;
     }
 
-    compilerOptions.customConditions = [`@seek/${repoName}/source`];
+    compilerOptions.customConditions.push(`@seek/${repoName}/source`);
 
     compilerOptions.rootDir ??= '.';
 
