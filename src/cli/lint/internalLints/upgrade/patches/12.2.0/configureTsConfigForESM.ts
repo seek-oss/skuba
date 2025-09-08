@@ -22,8 +22,12 @@ const tsConfigSchema = z.looseObject({
     .optional(),
 });
 
-const fetchFiles = async (files: string[]) =>
-  Promise.all(
+const fetchFiles = async (patterns: string[]) => {
+  const files = await glob(patterns, {
+    ignore: ['**/.git', '**/node_modules', '**/tsconfig.build.json'],
+  });
+
+  return Promise.all(
     files.map(async (file) => {
       const contents = await fs.promises.readFile(file, 'utf8');
 
@@ -33,6 +37,7 @@ const fetchFiles = async (files: string[]) =>
       };
     }),
   );
+};
 
 const formatModuleNameMapper = (subfolderPaths: string[]) =>
   subfolderPaths.map((subfolderPath) => `<rootDir>/${subfolderPath}/src`);
@@ -194,15 +199,11 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
   const tsconfigJsonPatterns = ['**/tsconfig.*json'];
   const jestConfigPatterns = ['**/jest.config.*ts'];
 
-  const globOptions = {
-    ignore: ['**/node_modules/**', '**/tsconfig.build.json'],
-  };
-
   const [packageJsonFiles, tsconfigJsonFiles, jestConfigFiles] =
     await Promise.all([
-      fetchFiles(await glob(packageJsonPatterns, globOptions)),
-      fetchFiles(await glob(tsconfigJsonPatterns, globOptions)),
-      fetchFiles(await glob(jestConfigPatterns, globOptions)),
+      fetchFiles(packageJsonPatterns),
+      fetchFiles(tsconfigJsonPatterns),
+      fetchFiles(jestConfigPatterns),
     ]);
 
   const subfolderPaths = packageJsonFiles
