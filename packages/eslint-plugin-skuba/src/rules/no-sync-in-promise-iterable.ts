@@ -102,6 +102,7 @@ const SAFE_ISH_CONSTRUCTORS = new Set([
   'Map',
   'Number',
   'Object',
+  'Promise',
   'Proxy',
   'RangeError',
   'ReferenceError',

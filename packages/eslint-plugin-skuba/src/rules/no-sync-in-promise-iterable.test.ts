@@ -69,6 +69,9 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
     {
       code: `Promise.${method}([, new Number('Construct NaN')])`,
     },
+    {
+      code: `Promise.${method}([1, new Promise(() => { throw new Error('') })])`,
+    },
     // Avoid traversal outside of iterable argument scope
     {
       code: `
@@ -359,15 +362,6 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       ],
     },
     // New expressions (constructors)
-    {
-      code: `Promise.${method}([1, new Promise(resolve => resolve(2))])`,
-      errors: [
-        {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'new Promise(resolve => resolve(2))' },
-        },
-      ],
-    },
     {
       code: `
         Promise.${method}([
