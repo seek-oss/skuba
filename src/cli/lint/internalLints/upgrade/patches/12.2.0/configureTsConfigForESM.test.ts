@@ -544,7 +544,6 @@ describe('tryConfigureTsConfigForESM', () => {
       const updatedJestConfig = files['jest.config.ts'];
 
       expect(updatedJestConfig).toContain(`moduleNameMapper: {
-    \"^(\\\\.{1,2}/.*)\\\\.js$\": \"$1\",
     \"^#src$\": [
       \"<rootDir>/apps/api/src\",
       \"<rootDir>/apps/web/src\"
