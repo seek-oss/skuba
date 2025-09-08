@@ -8,24 +8,19 @@ import { Git } from '../../../../../../index.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const packageJsonSchema = z
-  .object({
-    imports: z.record(z.string(), z.record(z.string(), z.string())).optional(),
-  })
-  .passthrough();
+const packageJsonSchema = z.looseObject({
+  imports: z.record(z.string(), z.record(z.string(), z.string())).optional(),
+});
 
-const tsConfigSchema = z
-  .object({
-    compilerOptions: z
-      .object({
-        customConditions: z.array(z.string()).optional(),
-        rootDir: z.string().optional(),
-        paths: z.record(z.string(), z.unknown()).optional(),
-      })
-      .passthrough()
-      .optional(),
-  })
-  .passthrough();
+const tsConfigSchema = z.looseObject({
+  compilerOptions: z
+    .looseObject({
+      customConditions: z.array(z.string()).optional(),
+      rootDir: z.string().optional(),
+      paths: z.record(z.string(), z.unknown()).optional(),
+    })
+    .optional(),
+});
 
 const getRepoName = async (): Promise<string | undefined> => {
   try {
