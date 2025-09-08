@@ -22,18 +22,6 @@ const tsConfigSchema = z.looseObject({
     .optional(),
 });
 
-const getRepoName = async (): Promise<string | undefined> => {
-  try {
-    const dir = process.cwd();
-    const { repo } = await Git.getOwnerAndRepo({ dir });
-
-    return repo;
-  } catch (error) {
-    log.warn(`Error getting repository information: ${String(error)}`);
-    throw error;
-  }
-};
-
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
@@ -221,8 +209,8 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
     .map(({ file }) => file.split('/').slice(0, -1).join('/'))
     .filter((path) => path !== '');
 
-  const repoName = await getRepoName();
-  if (!repoName) {
+  const { repo } = await Git.getOwnerAndRepo({ dir: process.cwd() });
+  if (!repo) {
     return { result: 'skip', reason: 'no repository name found' };
   }
 
@@ -230,7 +218,7 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
     ({ file, contents }) => ({
       file,
       before: contents,
-      after: replacePackageJson(contents, repoName),
+      after: replacePackageJson(contents, repo),
     }),
   );
 
@@ -238,7 +226,7 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
     ({ file, contents }) => ({
       file,
       before: contents,
-      after: replaceTsconfig(contents, repoName),
+      after: replaceTsconfig(contents, repo),
     }),
   );
 
