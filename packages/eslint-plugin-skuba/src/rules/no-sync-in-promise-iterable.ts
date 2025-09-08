@@ -502,6 +502,23 @@ const possibleNodesWithSyncError = (
         node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
         SAFE_ISH_CONSTRUCTORS.has(node.callee.name)
       ) {
+        // `new Promise(executor)` captures synchronous errors internally
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/Promise#executor
+        if (node.callee.name === 'Promise') {
+          return node.arguments.flatMap((arg, index) =>
+            index === 0
+              ? []
+              : possibleNodesWithSyncError(
+                  arg,
+                  esTreeNodeToTSNodeMap,
+                  checker,
+                  sourceCode,
+                  visited,
+                  calls + 1,
+                ),
+          );
+        }
+
         return node.arguments.flatMap((arg) =>
           possibleNodesWithSyncError(
             arg,
