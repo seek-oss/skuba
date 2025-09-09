@@ -1,5 +1,13 @@
 # skuba
 
+## 12.2.1
+
+### Patch Changes
+
+- **lint:** Reclassify `new Promise(executor)` as safe in `skuba/no-sync-in-promise-iterable` ([#2058](https://github.com/seek-oss/skuba/pull/2058))
+
+- **lint:** Support static `Array.from()`, `Array.fromAsync()`, `Array.of()` methods in `skuba/no-sync-in-promise-iterable` ([#2060](https://github.com/seek-oss/skuba/pull/2060))
+
 ## 12.2.0
 
 ### Minor Changes
