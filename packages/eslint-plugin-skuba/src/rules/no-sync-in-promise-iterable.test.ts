@@ -135,7 +135,19 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       code: `Promise.${method}([1, String(value), 3])`,
     },
     {
+      code: `Promise.${method}([1, Array.from('foo'), 3])`,
+    },
+    {
+      code: `Promise.${method}([1, Array.fromAsync('foo', async () => { throw new Error() }), 3])`,
+    },
+    {
+      code: `Promise.${method}([1, Array.fromAsync('foo', () => { throw new Error() }), 3])`,
+    },
+    {
       code: `Promise.${method}([1, Array.isArray(value), 3])`,
+    },
+    {
+      code: `Promise.${method}([1, Array.of('foo', 0, false), 3])`,
     },
     {
       code: `Promise.${method}([1, Number.isInteger(value), 3])`,
@@ -379,6 +391,19 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
             underlying: 'xs.map(() => {})',
             line: 4,
             column: 18,
+          },
+        },
+      ],
+    },
+    // Safe-ish Array functions with unsafe arguments
+    {
+      code: `Promise.${method}([1, Array.from('foo', () => { throw new Error() }), 3])`,
+      errors: [
+        {
+          messageId: 'mayThrowSyncError',
+          data: {
+            method,
+            value: "Array.from('foo', () => { throw new Error() })",
           },
         },
       ],

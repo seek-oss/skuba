@@ -131,7 +131,7 @@ const SAFE_ISH_FUNCTIONS = new Set([
 ]);
 
 const SAFE_ISH_STATIC_METHODS: Record<string, Set<string>> = {
-  Array: new Set(['isArray']),
+  Array: new Set(['from', 'isArray', 'of']),
   Date: new Set(['now', 'parse', 'UTC']),
   Iterator: new Set(['from']),
   Number: new Set([
@@ -161,6 +161,13 @@ const SAFE_ISH_INSTANCE_METHODS = new Set([
   'toLocaleString',
   'toString',
 ]);
+
+const isArrayFromAsync = (node: TSESTree.CallExpression) =>
+  node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+  node.callee.object.type === TSESTree.AST_NODE_TYPES.Identifier &&
+  node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
+  node.callee.object.name === 'Array' &&
+  node.callee.property.name === 'fromAsync';
 
 const isPromiseTry = (node: TSESTree.CallExpression) =>
   node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
@@ -389,6 +396,24 @@ const possibleNodesWithSyncError = (
         );
       }
 
+      if (isArrayFromAsync(node)) {
+        return node.arguments.flatMap((arg, index) =>
+          possibleNodesWithSyncError(
+            arg,
+            esTreeNodeToTSNodeMap,
+            checker,
+            sourceCode,
+            visited,
+            // We generally increment the call count to indicate that we expect
+            // that a callback argument may be invoked by the parent function.
+            // However, we know that `Array.fromAsync()` will safely wrap its
+            // `mapFn` callback so we don't need to simulate invoking it.
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fromAsync#mapfn
+            index === 1 ? calls : calls + 1,
+          ),
+        );
+      }
+
       // Allow common safe-ish built-ins and Promise-like return types
       if (isSafeIshBuiltIn(node)) {
         return node.arguments.flatMap((arg) =>
@@ -500,25 +525,29 @@ const possibleNodesWithSyncError = (
     case TSESTree.AST_NODE_TYPES.NewExpression:
       if (
         node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
+        node.callee.name === 'Promise'
+      ) {
+        return node.arguments.flatMap((arg, index) =>
+          possibleNodesWithSyncError(
+            arg,
+            esTreeNodeToTSNodeMap,
+            checker,
+            sourceCode,
+            visited,
+            // We generally increment the call count to indicate that we expect
+            // that a callback argument may be invoked by the parent function.
+            // However, we know that `new Promise()` will safely wrap its
+            // `executor` callback so we don't need to simulate invoking it.
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/Promise#executor
+            index === 0 ? calls : calls + 1,
+          ),
+        );
+      }
+
+      if (
+        node.callee.type === TSESTree.AST_NODE_TYPES.Identifier &&
         SAFE_ISH_CONSTRUCTORS.has(node.callee.name)
       ) {
-        // `new Promise(executor)` captures synchronous errors internally
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/Promise#executor
-        if (node.callee.name === 'Promise') {
-          return node.arguments.flatMap((arg, index) =>
-            index === 0
-              ? []
-              : possibleNodesWithSyncError(
-                  arg,
-                  esTreeNodeToTSNodeMap,
-                  checker,
-                  sourceCode,
-                  visited,
-                  calls + 1,
-                ),
-          );
-        }
-
         return node.arguments.flatMap((arg) =>
           possibleNodesWithSyncError(
             arg,
