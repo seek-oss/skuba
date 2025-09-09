@@ -2,7 +2,7 @@
  * Run `skuba configure` to finish templating and remove this file.
  */
 
-module.exports = {
+odule.exports = {
   entryPoint: 'src/index.ts',
   fields: [
     {
