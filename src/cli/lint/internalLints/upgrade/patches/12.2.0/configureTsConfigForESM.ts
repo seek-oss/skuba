@@ -1,8 +1,9 @@
+import path from 'path';
 import { inspect } from 'util';
 
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
-import { z } from 'zod';
+import * as z from 'zod';
 
 import { Git } from '../../../../../../index.js';
 import { log } from '../../../../../../utils/logging.js';
@@ -12,19 +13,25 @@ const packageJsonSchema = z.looseObject({
   imports: z.record(z.string(), z.record(z.string(), z.string())).optional(),
 });
 
+type PackageJson = z.infer<typeof packageJsonSchema>;
+
 const tsConfigSchema = z.looseObject({
   compilerOptions: z
     .looseObject({
       customConditions: z.array(z.string()).optional(),
       rootDir: z.string().optional(),
-      paths: z.record(z.string(), z.unknown()).optional(),
+      paths: z
+        .record(z.string(), z.union([z.array(z.string()), z.null()]))
+        .optional(),
     })
     .optional(),
 });
 
+type TsConfig = z.infer<typeof tsConfigSchema>;
+
 const fetchFiles = async (patterns: string[]) => {
   const files = await glob(patterns, {
-    ignore: ['**/.git', '**/node_modules', '**/tsconfig.build.json'],
+    ignore: ['**/.git', '**/node_modules'],
   });
 
   return Promise.all(
@@ -107,154 +114,256 @@ export const addJestModuleNameMapper = (
   }
 };
 
-export const replacePackageJson = (contents: string, repoName: string) => {
+export const parsePackageJson = (
+  contents: string,
+): {
+  original: PackageJson;
+  parsed: PackageJson;
+} | null => {
   try {
-    const parseResult = packageJsonSchema.safeParse(JSON.parse(contents));
-
-    if (!parseResult.success) {
-      log.warn(`Failed to parse package.json: ${parseResult.error.message}`);
-      return contents;
-    }
-
-    const packageJson = parseResult.data;
-
-    packageJson.imports = {
-      '#src/*': {
-        [`@seek/${repoName}/source`]: './src/*',
-        default: './lib/*',
-      },
+    const parsedJson: unknown = JSON.parse(contents);
+    return {
+      original: parsedJson as PackageJson,
+      parsed: packageJsonSchema.parse(parsedJson),
     };
-
-    return JSON.stringify(packageJson, null, 2);
   } catch (error) {
     log.warn(`Failed to parse package.json as JSON: ${String(error)}`);
-    return contents;
+    return null;
   }
 };
 
-export const replaceTsconfig = (contents: string, repoName: string) => {
+export const updatePackageJson = ({
+  parsed,
+  customCondition,
+}: {
+  parsed: PackageJson;
+  customCondition: string;
+}) => {
+  parsed.imports ??= {};
+  parsed.imports[customCondition] ??= {
+    types: './src/*',
+    default: './lib/*',
+  };
+
+  return {
+    parsed,
+  };
+};
+
+const parseTsconfig = (
+  contents: string,
+): {
+  original: TsConfig;
+  parsed: TsConfig;
+} | null => {
   try {
-    const jsonWithNoComments = contents
-      .replace(/\/\/.*|\/\*[\s\S]*?\*\//g, '')
-      .trim();
+    const parsedJson: unknown = JSON.parse(contents);
+    const tsconfig = tsConfigSchema.parse(parsedJson);
 
-    const parseResult = tsConfigSchema.safeParse(
-      JSON.parse(jsonWithNoComments),
-    );
-
-    if (!parseResult.success) {
-      log.warn(`Failed to parse tsconfig.json: ${parseResult.error.message}`);
-      return contents;
-    }
-
-    const tsconfigJson = parseResult.data;
-
-    if (
-      typeof tsconfigJson.extends === 'string' &&
-      !tsconfigJson.extends.startsWith('skuba/')
-    ) {
-      log.subtle(
-        'Skipping tsconfig.json that does not extend skuba/config/tsconfig.json',
-      );
-      return contents;
-    }
-
-    if (
-      !tsconfigJson.compilerOptions ||
-      typeof tsconfigJson.compilerOptions !== 'object'
-    ) {
-      tsconfigJson.compilerOptions = {};
-    }
-
-    const compilerOptions = tsconfigJson.compilerOptions;
-
-    if (compilerOptions.paths !== undefined) {
-      delete compilerOptions.paths;
-    }
-
-    compilerOptions.customConditions ??= [];
-
-    if (compilerOptions.customConditions.includes(`@seek/${repoName}/source`)) {
-      log.subtle(
-        'Custom condition mapping already exists in tsconfig.json, skipping',
-      );
-      return contents;
-    }
-
-    compilerOptions.customConditions.push(`@seek/${repoName}/source`);
-
-    compilerOptions.rootDir ??= '.';
-
-    return JSON.stringify(tsconfigJson, null, 2);
+    return {
+      original: parsedJson as TsConfig,
+      parsed: tsconfig,
+    };
   } catch (error) {
-    log.warn(`Failed to parse tsconfig.json as JSON: ${String(error)}`);
-    return contents;
+    log.warn(`Failed to parse root tsconfig.json as JSON: ${String(error)}`);
+    return null;
   }
+};
+
+const updateTsConfig = ({
+  parsed,
+  customCondition,
+  file,
+}: {
+  parsed: TsConfig;
+  customCondition: string;
+  file: string;
+}) => {
+  if (file === 'tsconfig.json') {
+    parsed.compilerOptions ??= {};
+    parsed.compilerOptions.customConditions ??= [];
+
+    if (!parsed.compilerOptions.customConditions.includes(customCondition)) {
+      parsed.compilerOptions.customConditions.push(customCondition);
+    }
+  }
+
+  let srcPaths: string[] = [];
+  ['./src/*', 'src/*', 'src'].forEach((key) => {
+    if (parsed.compilerOptions?.paths?.[key]) {
+      srcPaths = parsed.compilerOptions.paths[key];
+      delete parsed.compilerOptions.paths[key];
+    }
+  });
+
+  if (
+    parsed.compilerOptions?.paths &&
+    Object.keys(parsed.compilerOptions.paths).length === 0
+  ) {
+    delete parsed.compilerOptions.paths;
+  }
+
+  return {
+    parsed,
+    srcPaths,
+  };
 };
 
 export const tryConfigureTsConfigForESM: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const packageJsonPatterns = ['**/package.*json'];
-  const tsconfigJsonPatterns = ['**/tsconfig.*json'];
-  const jestConfigPatterns = ['**/jest.config.*ts'];
-
-  const [packageJsonFiles, tsconfigJsonFiles, jestConfigFiles] =
-    await Promise.all([
-      fetchFiles(packageJsonPatterns),
-      fetchFiles(tsconfigJsonPatterns),
-      fetchFiles(jestConfigPatterns),
-    ]);
-
-  const subfolderPaths = packageJsonFiles
-    .map(({ file }) => file.split('/').slice(0, -1).join('/'))
-    .filter((path) => path !== '');
-
-  const { repo } = await Git.getOwnerAndRepo({ dir: process.cwd() });
-  if (!repo) {
+  let customCondition: string;
+  try {
+    const { repo } = await Git.getOwnerAndRepo({ dir: process.cwd() });
+    customCondition = `@seek/${repo}/source`;
+  } catch {
     return { result: 'skip', reason: 'no repository name found' };
   }
 
-  const replacedPackageJsonFiles = packageJsonFiles.map(
-    ({ file, contents }) => ({
+  const tsconfigJsonPatterns = ['**/tsconfig.json'];
+  const tsconfigBuildJsonPatterns = ['**/tsconfig.build.json'];
+  const tsconfigJsonFiles = await fetchFiles(tsconfigJsonPatterns);
+  const tsconfigBuildJsonFiles = await fetchFiles(tsconfigBuildJsonPatterns);
+
+  const parsedTsconfigFiles = tsconfigJsonFiles.flatMap(
+    ({ file, contents }) => {
+      const parsed = parseTsconfig(contents);
+      return parsed ? [{ file, ...parsed }] : [];
+    },
+  );
+
+  const parsedTsconfigBuildFiles = tsconfigBuildJsonFiles.flatMap(
+    ({ file, contents }) => {
+      const parsed = parseTsconfig(contents);
+      return parsed ? [{ file, ...parsed }] : [];
+    },
+  );
+
+  if (parsedTsconfigFiles.length === 0) {
+    return { result: 'skip', reason: 'no valid tsconfig.json files found' };
+  }
+
+  const updatedTsconfigFiles = parsedTsconfigFiles.map(
+    ({ file, parsed, original }) => ({
       file,
-      before: contents,
-      after: replacePackageJson(contents, repo),
+      original,
+      ...updateTsConfig({ parsed, customCondition, file }),
     }),
   );
 
-  const replacedTsconfigJsonFiles = tsconfigJsonFiles.map(
-    ({ file, contents }) => ({
-      file,
-      before: contents,
-      after: replaceTsconfig(contents, repo),
-    }),
+  const allSrcPaths = [
+    ...new Set(
+      updatedTsconfigFiles.flatMap(({ srcPaths, file }) =>
+        srcPaths.flatMap((p) => {
+          const regex = /(.*)src\/?\*?$/;
+          const match = regex.exec(p);
+          if (match?.[1] !== undefined) {
+            return [path.join(path.dirname(file), match[1])];
+          }
+
+          log.warn(
+            `Unexpected src path format in ${file}: ${p}. Expected format like "apps/api/src/*"`,
+          );
+          return [];
+        }),
+      ),
+    ),
+  ];
+
+  // Fetch all package.json paths which may be in allSrcPaths
+  const packageJsonPatterns = allSrcPaths.map((srcPath) =>
+    path.join(srcPath, 'package.json'),
   );
 
-  const replacedJestConfigFiles =
-    subfolderPaths.length > 0
-      ? jestConfigFiles.map(({ file, contents }) => ({
-          file,
-          before: contents,
-          after: addJestModuleNameMapper(contents, subfolderPaths),
-        }))
-      : [];
+  const packageJsonFiles = await fetchFiles(packageJsonPatterns);
 
-  if (mode === 'lint') {
-    return {
-      result: 'apply',
-    };
+  const parsedPackageJsonFiles = packageJsonFiles.flatMap(
+    ({ file, contents }) => {
+      const parsed = parsePackageJson(contents);
+      return parsed ? [{ file, ...parsed }] : [];
+    },
+  );
+
+  parsedPackageJsonFiles.forEach(({ parsed, file }) => {
+    updatePackageJson({ parsed, customCondition });
+
+    const relativeTsconfigPath = path.join(path.dirname(file), 'tsconfig.json');
+
+    const relativeTsconfig = updatedTsconfigFiles.find(
+      (tsconfig) => tsconfig.file === relativeTsconfigPath,
+    );
+
+    if (relativeTsconfig) {
+      relativeTsconfig.parsed.compilerOptions ??= {};
+      relativeTsconfig.parsed.compilerOptions.rootDir ??= '.';
+    } else {
+      log.warn(
+        `No corresponding tsconfig.json found for package.json at ${file}. Expected at ${relativeTsconfigPath}`,
+      );
+    }
+
+    const relativeTsconfigBuildPath = path.join(
+      path.dirname(file),
+      'tsconfig.build.json',
+    );
+
+    const relativeTsconfigBuild = parsedTsconfigBuildFiles.find(
+      (tsconfig) => tsconfig.file === relativeTsconfigBuildPath,
+    );
+
+    if (relativeTsconfigBuild) {
+      relativeTsconfigBuild.parsed.compilerOptions ??= {};
+      relativeTsconfigBuild.parsed.compilerOptions.rootDir ??= 'src';
+    } else {
+      log.warn(
+        `No corresponding tsconfig.build.json found for package.json at ${file}. Expected at ${relativeTsconfigBuildPath}`,
+      );
+    }
+  });
+
+  const hasRelativeTsconfigBuildsChanged = parsedTsconfigBuildFiles.some(
+    ({ original, parsed }) =>
+      JSON.stringify(original) !== JSON.stringify(parsed),
+  );
+
+  const hasPackageJsonsChanged = parsedPackageJsonFiles.some(
+    ({ original, parsed }) =>
+      JSON.stringify(original) !== JSON.stringify(parsed),
+  );
+
+  const hasRootTsconfigChanged = updatedTsconfigFiles.some(
+    ({ original, parsed }) =>
+      JSON.stringify(original) !== JSON.stringify(parsed),
+  );
+
+  if (
+    mode === 'lint' &&
+    (hasRootTsconfigChanged ||
+      hasPackageJsonsChanged ||
+      hasRelativeTsconfigBuildsChanged)
+  ) {
+    return { result: 'apply' };
+  }
+
+  if (
+    !hasRootTsconfigChanged &&
+    !hasPackageJsonsChanged &&
+    !hasRelativeTsconfigBuildsChanged
+  ) {
+    return { result: 'skip', reason: 'no changes required' };
   }
 
   await Promise.all(
     [
-      ...replacedPackageJsonFiles,
-      ...replacedTsconfigJsonFiles.filter(
-        ({ after }) => typeof after === 'string',
-      ),
-      ...replacedJestConfigFiles,
-    ].map(async ({ file, after }) => {
-      await fs.promises.writeFile(file, after);
+      ...updatedTsconfigFiles,
+      ...parsedTsconfigBuildFiles,
+      ...parsedPackageJsonFiles,
+    ].map(async ({ file, parsed, original }) => {
+      if (JSON.stringify(original) === JSON.stringify(parsed)) {
+        return;
+      }
+      const updatedContents = JSON.stringify(parsed, null, 2);
+      await fs.promises.writeFile(file, updatedContents);
     }),
   );
 
