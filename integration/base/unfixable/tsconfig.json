@@ -3,7 +3,7 @@
     "customConditions": ["@seek/<%- serviceName %>/source"],
     "moduleResolution": "node16",
     "incremental": true,
-    "module": "node18",
+    "module": "node20",
     "outDir": "lib",
     "rootDir": ".",
     "skipLibCheck": true
