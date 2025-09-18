@@ -4,6 +4,7 @@ import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
 import {
+  checkFileExists,
   findCurrentWorkspaceProjectRoot,
   findWorkspaceRoot,
 } from '../../../../../../utils/dir.js';
@@ -13,15 +14,6 @@ import { replaceManagedSection } from '../../../../../configure/processing/confi
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const NPMRC = '.npmrc';
-
-const checkFileExists = async (filePath: string) => {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-};
 
 const migrateCustomNpmrcSettings = async () => {
   const contents = await fs.readFile(NPMRC, 'utf-8');

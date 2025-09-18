@@ -42,6 +42,8 @@ Patch skipped: Add event handler to log unhandled promise rejections instead of 
 
 Patch skipped: Update Jest snapshot URLs to the new documentation site - no test files found upgrade-skuba
 
+Patch applied: Update \`pnpm-workspace.yaml\` to include \`minimumReleaseAge\` field upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -139,6 +141,8 @@ Patch skipped: Add event handler to log unhandled promise rejections instead of 
 
 Patch skipped: Update Jest snapshot URLs to the new documentation site - no test files found upgrade-skuba
 
+Patch applied: Update \`pnpm-workspace.yaml\` to include \`minimumReleaseAge\` field upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -232,6 +236,8 @@ Patch skipped: Add event handler to log unhandled promise rejections instead of 
 
 Patch skipped: Update Jest snapshot URLs to the new documentation site - no test files found upgrade-skuba
 
+Patch applied: Update \`pnpm-workspace.yaml\` to include \`minimumReleaseAge\` field upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -294,6 +300,8 @@ Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgra
 Patch skipped: Add event handler to log unhandled promise rejections instead of crashing the process - no applicable src/listen.ts entry points found upgrade-skuba
 
 Patch skipped: Update Jest snapshot URLs to the new documentation site - no test files found upgrade-skuba
+
+Patch applied: Update \`pnpm-workspace.yaml\` to include \`minimumReleaseAge\` field upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

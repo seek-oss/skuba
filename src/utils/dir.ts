@@ -209,3 +209,12 @@ export const findCurrentWorkspaceProjectRoot = async (
   });
   return packageJson ? path.dirname(packageJson) : null;
 };
+
+export const checkFileExists = async (filePath: string) => {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+};
