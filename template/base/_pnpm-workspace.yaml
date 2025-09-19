@@ -1,5 +1,6 @@
 # managed by skuba
 packageManagerStrictVersion: true
+ignorePatchFailures: false
 publicHoistPattern:
   - '@types*'
   - eslint
