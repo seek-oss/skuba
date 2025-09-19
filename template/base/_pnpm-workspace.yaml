@@ -1,4 +1,9 @@
 # managed by skuba
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - '@seek/*'
+  - '*skuba*'
+  - '*seek*'
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@types*'

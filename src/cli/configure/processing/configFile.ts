@@ -1,3 +1,5 @@
+import z from 'zod/v4';
+
 /**
  * Patterns that are superseded by skuba's bundled ignore file patterns and are
  * non-trivial to derive using e.g. `generateSimpleVariants`.
@@ -41,16 +43,61 @@ export const generateIgnoreFileSimpleVariants = (patterns: string[]) => {
   return set;
 };
 
+const ammendPnpmWorkspaceTemplate = (
+  templateFile: string,
+  packageJson?: string,
+) => {
+  const lines = templateFile.split('\n');
+  const result: string[] = [];
+  for (const line of lines) {
+    result.push(line);
+    if (!packageJson || !line.startsWith('minimumReleaseAgeExclude:')) {
+      continue;
+    }
+
+    let rawJSON;
+    try {
+      rawJSON = JSON.parse(packageJson) as unknown;
+    } catch {
+      throw new Error('package.json is not valid JSON');
+    }
+    const parsed = z
+      .object({
+        minimumReleaseAgeExcludeOverload: z.array(z.string()).optional(),
+      })
+      .safeParse(rawJSON);
+
+    const excludes = parsed.data?.minimumReleaseAgeExcludeOverload;
+
+    if (
+      !excludes ||
+      Array.isArray(excludes) === false ||
+      excludes.some((e) => typeof e !== 'string')
+    ) {
+      continue;
+    }
+    for (const exclude of excludes) {
+      result.push(`  - '${exclude}'`);
+    }
+  }
+
+  return result.join('\n');
+};
+
 export const replaceManagedSection = (input: string, template: string) =>
   input.replace(/# managed by skuba[\s\S]*# end managed by skuba/, template);
 
 export const mergeWithConfigFile = (
   rawTemplateFile: string,
   fileType: 'ignore' | 'pnpm-workspace' = 'ignore',
+  packageJson?: string,
 ) => {
-  const templateFile = rawTemplateFile.trim();
+  const templateFile =
+    fileType === 'pnpm-workspace'
+      ? ammendPnpmWorkspaceTemplate(rawTemplateFile.trim(), packageJson)
+      : rawTemplateFile.trim();
 
-  let generator: (s: string[]) => Set<string>;
+  let generator: (s: string[], packageJson?: string) => Set<string>;
 
   switch (fileType) {
     case 'ignore':
@@ -61,10 +108,13 @@ export const mergeWithConfigFile = (
       break;
   }
 
-  const templatePatterns = generator([
-    ...OUTDATED_PATTERNS,
-    ...templateFile.split('\n').map((line) => line.trim()),
-  ]);
+  const templatePatterns = generator(
+    [
+      ...OUTDATED_PATTERNS,
+      ...templateFile.split('\n').map((line) => line.trim()),
+    ],
+    packageJson,
+  );
 
   return (rawInputFile?: string) => {
     if (rawInputFile === undefined) {
