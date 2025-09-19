@@ -47,41 +47,42 @@ const ammendPnpmWorkspaceTemplate = (
   templateFile: string,
   packageJson?: string,
 ) => {
-  const lines = templateFile.split('\n');
-  const result: string[] = [];
-  for (const line of lines) {
-    result.push(line);
-    if (!packageJson || !line.startsWith('minimumReleaseAgeExclude:')) {
-      continue;
-    }
+  if (!packageJson) {
+    return templateFile;
+  }
+  let rawJSON;
+  try {
+    rawJSON = JSON.parse(packageJson) as unknown;
+  } catch {
+    throw new Error('package.json is not valid JSON');
+  }
+  const parsed = z
+    .object({
+      minimumReleaseAgeExcludeOverload: z.array(z.string()).optional(),
+    })
+    .safeParse(rawJSON);
 
-    let rawJSON;
-    try {
-      rawJSON = JSON.parse(packageJson) as unknown;
-    } catch {
-      throw new Error('package.json is not valid JSON');
-    }
-    const parsed = z
-      .object({
-        minimumReleaseAgeExcludeOverload: z.array(z.string()).optional(),
-      })
-      .safeParse(rawJSON);
-
-    const excludes = parsed.data?.minimumReleaseAgeExcludeOverload;
-
-    if (
-      !excludes ||
-      Array.isArray(excludes) === false ||
-      excludes.some((e) => typeof e !== 'string')
-    ) {
-      continue;
-    }
-    for (const exclude of excludes) {
-      result.push(`  - '${exclude}'`);
-    }
+  const excludes = parsed.data?.minimumReleaseAgeExcludeOverload;
+  if (
+    !excludes ||
+    Array.isArray(excludes) === false ||
+    excludes.some((e) => typeof e !== 'string')
+  ) {
+    return templateFile;
   }
 
-  return result.join('\n');
+  const targetKey = 'minimumReleaseAgeExclude:';
+  const index = templateFile.indexOf(targetKey);
+
+  if (index === -1) {
+    return templateFile;
+  }
+
+  const beforeKey = templateFile.substring(0, index);
+  const afterKey = templateFile.substring(index + targetKey.length);
+  const excludeLines = excludes.map((exclude) => `  - '${exclude}'`).join('\n');
+
+  return `${beforeKey + targetKey}\n${excludeLines}${afterKey}`;
 };
 
 export const replaceManagedSection = (input: string, template: string) =>
