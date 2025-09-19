@@ -136,3 +136,160 @@ publicHoistPattern:
     }
   });
 });
+
+describe('mergeWithConfigFile for workspace files with minimumReleaseAgeExcludeOverload', () => {
+  const baseTemplate = `# managed by skuba
+minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - 'default-exclude'
+packageManagerStrictVersion: true
+  # end managed by skuba`;
+
+  const validPackageJson = JSON.stringify({
+    name: 'test-package',
+    minimumReleaseAgeExcludeOverload: ['test-package', 'another-package/*'],
+  });
+
+  const packageJsonWithEmptyArray = JSON.stringify({
+    name: 'test-package',
+    minimumReleaseAgeExcludeOverload: [],
+  });
+
+  const packageJsonWithInvalidField = JSON.stringify({
+    name: 'test-package',
+    minimumReleaseAgeExcludeOverload: 'not-an-array',
+  });
+
+  const packageJsonWithMixedTypes = JSON.stringify({
+    name: 'test-package',
+    minimumReleaseAgeExcludeOverload: ['valid-string', 123, 'another-string'],
+  });
+
+  const packageJsonWithoutField = JSON.stringify({
+    name: 'test-package',
+  });
+
+  it('adds minimumReleaseAgeExcludeOverload items to template', () => {
+    const merge = mergeWithConfigFile(
+      baseTemplate,
+      'pnpm-workspace',
+      validPackageJson,
+    );
+    const result = merge('');
+
+    expect(result).toContain("  - 'test-package'");
+    expect(result).toContain("  - 'another-package/*'");
+    expect(result).toContain("  - 'default-exclude'");
+  });
+
+  it('handles empty minimumReleaseAgeExcludeOverload array', () => {
+    const merge = mergeWithConfigFile(
+      baseTemplate,
+      'pnpm-workspace',
+      packageJsonWithEmptyArray,
+    );
+    const result = merge('');
+
+    expect(result).toContain("  - 'default-exclude'");
+    expect(result).not.toContain("  - 'test-package'");
+  });
+
+  it('ignores invalid minimumReleaseAgeExcludeOverload field type', () => {
+    const merge = mergeWithConfigFile(
+      baseTemplate,
+      'pnpm-workspace',
+      packageJsonWithInvalidField,
+    );
+    const result = merge('');
+
+    expect(result).toContain("  - 'default-exclude'");
+    expect(result).not.toContain('not-an-array');
+  });
+
+  it('ignores array with mixed types in minimumReleaseAgeExcludeOverload', () => {
+    const merge = mergeWithConfigFile(
+      baseTemplate,
+      'pnpm-workspace',
+      packageJsonWithMixedTypes,
+    );
+    const result = merge('');
+
+    expect(result).toContain("  - 'default-exclude'");
+    expect(result).not.toContain("  - 'valid-string'");
+    expect(result).not.toContain('123');
+  });
+
+  it('works when minimumReleaseAgeExcludeOverload field is missing', () => {
+    const merge = mergeWithConfigFile(
+      baseTemplate,
+      'pnpm-workspace',
+      packageJsonWithoutField,
+    );
+    const result = merge('');
+
+    expect(result).toContain("  - 'default-exclude'");
+  });
+
+  it('handles invalid JSON in package.json', () => {
+    const invalidJson = '{ "name": "test", invalid json }';
+
+    expect(() => {
+      mergeWithConfigFile(baseTemplate, 'pnpm-workspace', invalidJson);
+    }).toThrow('package.json is not valid JSON');
+  });
+
+  it('works without package.json parameter', () => {
+    const merge = mergeWithConfigFile(baseTemplate, 'pnpm-workspace');
+    const result = merge('');
+
+    expect(result).toContain("  - 'default-exclude'");
+  });
+
+  it('preserves existing file content when merging with overloads', () => {
+    const existingFile = `custom-setting: true
+anotherSetting: false
+
+${baseTemplate}
+
+packages:
+  - custom-package`;
+
+    const merge = mergeWithConfigFile(
+      baseTemplate,
+      'pnpm-workspace',
+      validPackageJson,
+    );
+    const result = merge(existingFile);
+
+    expect(result).toContain('custom-setting: true');
+    expect(result).toContain('anotherSetting: false');
+    expect(result).toContain('packages:');
+    expect(result).toContain('  - custom-package');
+    expect(result).toContain("  - 'test-package'");
+    expect(result).toContain("  - 'another-package/*'");
+  });
+
+  it('handles multiple minimumReleaseAgeExclude sections correctly', () => {
+    const templateWithMultipleSections = `# managed by skuba
+minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - 'first-exclude'
+someOtherSetting: true
+minimumReleaseAgeExclude:
+  - 'should-not-modify'
+  # end managed by skuba`;
+
+    const merge = mergeWithConfigFile(
+      templateWithMultipleSections,
+      'pnpm-workspace',
+      validPackageJson,
+    );
+    const result = merge('');
+
+    // Should only modify the first occurrence within managed section
+    expect(result).toContain("  - 'first-exclude'");
+    expect(result).toContain("  - 'test-package'");
+    expect(result).toContain("  - 'another-package/*'");
+    expect(result).toContain("  - 'should-not-modify'");
+  });
+});
