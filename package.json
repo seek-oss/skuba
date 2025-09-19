@@ -163,11 +163,6 @@
   "engines": {
     "node": ">=20.9.0"
   },
-  "minimumReleaseAgeExcludeOverload": [
-    "test",
-    "SomeOtherPackage/*",
-    "AnotherPackage/*"
-  ],
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",

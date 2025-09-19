@@ -1,9 +1,6 @@
 # managed by skuba
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
-  - 'test'
-  - 'SomeOtherPackage/*'
-  - 'AnotherPackage/*'
   - '@seek/*'
   - '*skuba*'
   - '*seek*'
