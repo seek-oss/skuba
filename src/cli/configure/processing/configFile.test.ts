@@ -139,7 +139,7 @@ publicHoistPattern:
 
 describe('mergeWithConfigFile for workspace files with minimumReleaseAgeExcludeOverload', () => {
   const baseTemplate = `# managed by skuba
-minimumReleaseAge: 1440
+minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - 'default-exclude'
 packageManagerStrictVersion: true
@@ -271,7 +271,7 @@ packages:
 
   it('handles multiple minimumReleaseAgeExclude sections correctly', () => {
     const templateWithMultipleSections = `# managed by skuba
-minimumReleaseAge: 1440
+minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - 'first-exclude'
 someOtherSetting: true
