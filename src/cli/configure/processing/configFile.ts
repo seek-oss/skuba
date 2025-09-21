@@ -1,4 +1,4 @@
-import z from 'zod/v4';
+import * as z from 'zod';
 
 /**
  * Patterns that are superseded by skuba's bundled ignore file patterns and are
@@ -43,7 +43,7 @@ export const generateIgnoreFileSimpleVariants = (patterns: string[]) => {
   return set;
 };
 
-const ammendPnpmWorkspaceTemplate = (
+const amendPnpmWorkspaceTemplate = (
   templateFile: string,
   packageJson?: string,
 ) => {
@@ -95,7 +95,7 @@ export const mergeWithConfigFile = (
 ) => {
   const templateFile =
     fileType === 'pnpm-workspace'
-      ? ammendPnpmWorkspaceTemplate(rawTemplateFile.trim(), packageJson)
+      ? amendPnpmWorkspaceTemplate(rawTemplateFile.trim(), packageJson)
       : rawTemplateFile.trim();
 
   let generator: (s: string[], packageJson?: string) => Set<string>;
