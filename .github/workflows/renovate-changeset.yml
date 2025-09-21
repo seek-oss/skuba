@@ -10,7 +10,7 @@ on:
 jobs:
   generate-changeset:
     runs-on: ubuntu-latest
-    if: github.actor == 'renovate[bot]' && github.repository == 'seek-oss/skuba'
+    if: github.actor_id == 29139614 && github.repository == 'seek-oss/skuba'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
