@@ -1,4 +1,5 @@
 # managed by skuba
+ignorePatchFailures: false
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@types*'
