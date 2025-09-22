@@ -1,12 +1,17 @@
 // @ts-check
 module.exports = {
   hooks: {
-    /** @param {import("@pnpm/types").PnpmSettings} config */
+
+    /** @param {import("@pnpm/types").PnpmSettings & {
+     * publicHoistPattern?: (string | RegExp)[],
+     * ignorePatchFailures?: boolean,
+     * packageManagerStrictVersion?: boolean,
+     * minimumReleaseAge?: number,
+     * minimumReleaseAgeExclude?: string[],
+     *
+    }} config */
     updateConfig(config) {
-      // @ts-expect-error Property isn't in PnpmSettings for some reason
-      config.publicHoistPattern ??= [];
-      // @ts-expect-error Property isn't in PnpmSettings for some reason
-      config.publicHoistPattern.push(
+      config.publicHoistPattern ??= [
         '@types*',
         'eslint',
         'eslint-config-skuba',
@@ -15,18 +20,13 @@ module.exports = {
         'jest',
         'tsconfig-seek',
         'typescript',
-      );
+      ];
 
-      config.ignorePatchFailures = false;
-      // @ts-expect-error Property isn't in PnpmSettings for some reason
-      config.packageManagerStrictVersion = true;
+      config.ignorePatchFailures ??= false;
+      config.packageManagerStrictVersion ??= true;
 
-      // @ts-expect-error Property isn't in PnpmSettings for some reason
-      config.minimumReleaseAge = 4320 // 3 days
-      // @ts-expect-error Property isn't in PnpmSettings for some reason
-      config.minimumReleaseAgeExclude ??= []
-      // @ts-expect-error Property isn't in PnpmSettings for some reason
-      config.minimumReleaseAgeExclude.push('@seek/*')
+      config.minimumReleaseAge ??= 4320 // 3 days
+      config.minimumReleaseAgeExclude ??= ['@seek/*']
 
       return config;
     },

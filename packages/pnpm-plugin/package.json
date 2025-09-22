@@ -20,5 +20,8 @@
   ],
   "devDependencies": {
     "@pnpm/types": "^1000.8.0"
+  },
+  "peerDependencies": {
+    "pnpm": "<10.13.0"
   }
 }
