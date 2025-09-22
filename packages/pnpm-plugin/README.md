@@ -1,6 +1,6 @@
 # `pnpm-plugin-skuba`
 
-[PNPM config dependency] for `skuba` that configures recommended PNPM settings.
+[pnpm config dependency] for `skuba` that configures recommended pnpm settings.
 
 ## Usage
 
@@ -13,5 +13,5 @@ pnpm add --config pnpm-plugin-skuba
 pnpm install
 ```
 
-[PNPM config dependency]: https://pnpm.io/config-dependencies
+[pnpm config dependency]: https://pnpm.io/config-dependencies
 [10.13]: https://github.com/pnpm/pnpm/releases/tag/v10.13.0
