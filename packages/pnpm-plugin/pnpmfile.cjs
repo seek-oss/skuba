@@ -3,7 +3,7 @@ module.exports = {
   hooks: {
 
     /** @param {import("@pnpm/types").PnpmSettings & {
-     * publicHoistPattern?: (string | RegExp)[],
+     * publicHoistPattern?: string[],
      * ignorePatchFailures?: boolean,
      * packageManagerStrictVersion?: boolean,
      * minimumReleaseAge?: number,
