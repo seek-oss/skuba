@@ -1,4 +1,5 @@
 # managed by skuba
+ignorePatchFailures: false
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - '@seek/*'
