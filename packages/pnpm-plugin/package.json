@@ -1,7 +1,7 @@
 {
   "name": "pnpm-plugin-skuba",
   "version": "0.0.1",
-  "description": "PNPM config dependency for skuba that configures recommended PNPM settings",
+  "description": "pnpm config dependency for skuba that configures recommended pnpm settings",
   "homepage": "https://github.com/seek-oss/skuba#readme",
   "bugs": {
     "url": "https://github.com/seek-oss/skuba/issues"
@@ -12,7 +12,9 @@
     "directory": "packages/pnpm-plugin"
   },
   "license": "MIT",
-  "author": "SEEK",
+  "author": {
+    "name": "SEEK"
+  },
   "type": "module",
   "main": "pnpmfile.cjs",
   "files": [
