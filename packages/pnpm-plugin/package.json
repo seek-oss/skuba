@@ -12,7 +12,9 @@
     "directory": "packages/pnpm-plugin"
   },
   "license": "MIT",
-  "author": "SEEK",
+  "author": {
+    "name": "SEEK"
+  },
   "type": "module",
   "main": "pnpmfile.cjs",
   "files": [

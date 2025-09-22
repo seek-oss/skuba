@@ -22,11 +22,11 @@ module.exports = {
       config.packageManagerStrictVersion = true;
 
       // @ts-expect-error Property isn't in PnpmSettings for some reason
-      config.minimumReleaseAge = 4320 // 3 days
+      config.minimumReleaseAge = 4320; // 3 days
       // @ts-expect-error Property isn't in PnpmSettings for some reason
-      config.minimumReleaseAgeExclude ??= []
+      config.minimumReleaseAgeExclude ??= [];
       // @ts-expect-error Property isn't in PnpmSettings for some reason
-      config.minimumReleaseAgeExclude.push('@seek/*')
+      config.minimumReleaseAgeExclude.push('@seek/*');
 
       return config;
     },
