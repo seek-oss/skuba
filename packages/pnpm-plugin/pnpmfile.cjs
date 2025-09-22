@@ -1,7 +1,6 @@
 // @ts-check
 module.exports = {
   hooks: {
-
     /** @param {import("@pnpm/types").PnpmSettings & {
      * publicHoistPattern?: string[],
      * ignorePatchFailures?: boolean,
@@ -25,8 +24,8 @@ module.exports = {
       config.ignorePatchFailures ??= false;
       config.packageManagerStrictVersion ??= true;
 
-      config.minimumReleaseAge ??= 4320 // 3 days
-      config.minimumReleaseAgeExclude ??= ['@seek/*']
+      config.minimumReleaseAge ??= 4320; // 3 days
+      config.minimumReleaseAgeExclude ??= ['@seek/*'];
 
       return config;
     },
