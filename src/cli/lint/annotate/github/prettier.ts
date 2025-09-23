@@ -1,5 +1,6 @@
-import type * as GitHub from '../../../../api/github/index.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
+
+import type { GitHub } from '@skuba-lib/api';
 
 export const createPrettierAnnotations = (
   prettier: PrettierOutput,

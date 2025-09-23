@@ -2,10 +2,10 @@ import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
 
-import * as Git from '../../../api/git/index.js';
-
 import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
 import type { PatchConfig } from './upgrade/index.js';
+
+import { Git } from '@skuba-lib/api';
 
 jest.mock('fs', () => memfs);
 

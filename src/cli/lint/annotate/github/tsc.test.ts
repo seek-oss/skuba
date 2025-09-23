@@ -1,7 +1,8 @@
-import type * as GitHub from '../../../../api/github/index.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
 
 import { createTscAnnotations } from './tsc.js';
+
+import type { GitHub } from '@skuba-lib/api';
 
 const mockOutput = jest.fn<string, any>();
 

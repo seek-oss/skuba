@@ -1,8 +1,5 @@
 import simpleGit from 'simple-git';
 
-import * as Buildkite from '../../api/buildkite/index.js';
-import * as Git from '../../api/git/index.js';
-import * as GitHub from '../../api/github/index.js';
 import { runESLint } from '../adapter/eslint.js';
 import { runPrettier } from '../adapter/prettier.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
@@ -13,6 +10,8 @@ import {
   autofix,
 } from './autofix.js';
 import { internalLint } from './internal.js';
+
+import { Buildkite, Git, GitHub } from '@skuba-lib/api';
 
 jest.mock('simple-git');
 jest.mock('../../api/git');

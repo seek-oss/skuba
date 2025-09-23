@@ -1,5 +1,6 @@
-import type * as GitHub from '../../../../api/github/index.js';
 import type { ESLintOutput } from '../../../adapter/eslint.js';
+
+import type { GitHub } from '@skuba-lib/api';
 
 export const createEslintAnnotations = (
   eslint: ESLintOutput,

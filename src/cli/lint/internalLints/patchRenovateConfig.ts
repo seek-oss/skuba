@@ -5,13 +5,14 @@ import fs from 'fs-extra';
 import * as fleece from 'golden-fleece';
 import * as z from 'zod/v4';
 
-import * as Git from '../../../api/git/index.js';
 import { log } from '../../../utils/logging.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
 import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate.js';
 import { formatPrettier } from '../../configure/processing/prettier.js';
 
 import type { PatchFunction, PatchReturnType } from './upgrade/index.js';
+
+import { Git } from '@skuba-lib/api';
 
 const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;
 

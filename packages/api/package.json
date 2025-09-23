@@ -1,0 +1,33 @@
+{
+  "name": "@skuba-lib/api",
+  "version": "0.0.1",
+  "description": "Shared utilities for skuba",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./src/index.ts",
+  "module": "./lib/index.mjs",
+  "types": "./src/index.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsdown"
+  },
+  "dependencies": {
+    "fs-extra": "^11.0.0",
+    "ignore": "^7.0.0",
+    "isomorphic-git": "^1.11.1"
+  },
+  "devDependencies": {
+    "tsdown": "^0.15.4"
+  },
+  "publishConfig": {
+    "main": "./lib/index.js",
+    "types": "./lib/index.d.ts"
+  }
+}

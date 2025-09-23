@@ -1,5 +1,6 @@
-import * as Buildkite from '../../../../api/buildkite/index.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
+
+import { Buildkite } from '@skuba-lib/api';
 
 export const createPrettierAnnotations = (
   prettier: PrettierOutput,

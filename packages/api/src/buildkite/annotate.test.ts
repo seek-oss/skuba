@@ -1,5 +1,5 @@
-import * as execModule from '../../utils/exec.js';
-import { log } from '../../utils/logging.js';
+import * as execModule from '../../../../src/utils/exec.js';
+import { log } from '../../../../src/utils/logging.js';
 
 import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate.js';
 

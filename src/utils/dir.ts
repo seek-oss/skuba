@@ -4,9 +4,9 @@ import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
 
-import { findRoot as findGitRoot } from '../api/git/findRoot.js';
-
 import { isErrorWithCode } from './error.js';
+
+import { Git } from '@skuba-lib/api';
 
 /**
  * Build a map that associates each glob pattern with its matching filepaths.
@@ -172,7 +172,7 @@ export const findWorkspaceRoot = async (
       locateNearestFile({ cwd, filename: 'pnpm-lock.yaml' }),
       locateNearestFile({ cwd, filename: 'yarn.lock' }),
       locateFurthestFile({ cwd, filename: 'package.json' }),
-      findGitRoot({ dir: cwd }),
+      Git.findRoot({ dir: cwd }),
     ]);
 
     const candidates = [

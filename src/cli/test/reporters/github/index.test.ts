@@ -1,9 +1,10 @@
 import type { AggregatedResult, TestContext } from '@jest/reporters';
 
-import * as GitHub from '../../../../api/github/index.js';
 import { log } from '../../../../utils/logging.js';
 
 import GitHubReporter from './index.js';
+
+import { GitHub } from '@skuba-lib/api';
 
 const reporter = new GitHubReporter();
 
