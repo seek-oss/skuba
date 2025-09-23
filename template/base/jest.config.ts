@@ -12,4 +12,8 @@ export default Jest.mergePreset({
   },
   setupFiles: ['<rootDir>/jest.setup.ts'],
   testPathIgnorePatterns: ['/test\\.ts'],
+  moduleNameMapper: {
+    '^#src/(.*)\\.js$': ['<rootDir>/src/$1'],
+    '^#src/(.*)$': ['<rootDir>/src/$1'],
+  },
 });
