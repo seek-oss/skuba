@@ -76,7 +76,7 @@ export const addJestModuleNameMapper = (
     const newContents = `${contents.slice(
       0,
       match.index,
-    )}moduleNameMapper: {${existingModuleMappers},${newModuleNameMapper}}${contents.slice(
+    )}moduleNameMapper: {${existingModuleMappers}${newModuleNameMapper}}${contents.slice(
       match.index + match[0].length,
     )}`;
 
@@ -256,7 +256,9 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
           const regex = /(.*)src\/?\*?$/;
           const match = regex.exec(p);
           if (match?.[1] !== undefined) {
-            return [path.join(path.dirname(file), match[1])];
+            return [
+              path.join(path.dirname(file), match[1].replace(/\/?$/, '')),
+            ];
           }
 
           log.warn(
