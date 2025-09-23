@@ -53,7 +53,7 @@ module.exports.createModuleNameMapper = (getConfig) => {
   // Normalise away any `..`s that may crop up from `baseUrl` usage.
   // For example, a `baseUrl` of `src` and a path of `../cli` will result in
   // `<rootDir>/src/../cli`, which can be normalised to `<rootDir>/cli`.
-  const normalizedMapper = Object.fromEntries(
+  return Object.fromEntries(
     Object.entries(moduleNameMapper).map(([key, values]) => [
       key,
       Array.isArray(values)
@@ -61,6 +61,4 @@ module.exports.createModuleNameMapper = (getConfig) => {
         : path.normalize(values),
     ]),
   );
-
-  return normalizedMapper;
 };

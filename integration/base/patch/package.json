@@ -1,11 +1,5 @@
 {
   "private": true,
-  "imports": {
-    "#src/*": {
-      "@seek/<%- serviceName %>/source": "./src/*",
-      "default": "./lib/*"
-    }
-  },
   "license": "UNLICENSED",
   "dependencies": {},
   "devDependencies": {},
