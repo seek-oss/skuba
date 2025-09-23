@@ -23,11 +23,11 @@
     "@koa/router": "^14.0.0",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/core": "^2.0.0",
-    "@opentelemetry/exporter-trace-otlp-grpc": "^0.204.0",
-    "@opentelemetry/instrumentation-aws-sdk": "^0.58.0",
-    "@opentelemetry/instrumentation-http": "^0.204.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.205.0",
+    "@opentelemetry/instrumentation-aws-sdk": "^0.60.0",
+    "@opentelemetry/instrumentation-http": "^0.205.0",
     "@opentelemetry/propagator-b3": "^2.0.0",
-    "@opentelemetry/sdk-node": "^0.204.0",
+    "@opentelemetry/sdk-node": "^0.205.0",
     "@seek/logger": "^11.1.0",
     "hot-shots": "^11.0.0",
     "koa": "^3.0.1",
@@ -49,7 +49,7 @@
     "skuba": "*",
     "supertest": "^7.0.0"
   },
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.17.0",
   "engines": {
     "node": ">=22"
   }
