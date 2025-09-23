@@ -132,8 +132,8 @@ export const updatePackageJson = ({
   customCondition: string;
 }) => {
   parsed.imports ??= {};
-  parsed.imports[customCondition] ??= {
-    types: './src/*',
+  parsed.imports['#src/*'] ??= {
+    [customCondition]: './src/*',
     default: './lib/*',
   };
 

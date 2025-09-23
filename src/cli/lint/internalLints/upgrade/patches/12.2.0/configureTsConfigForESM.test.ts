@@ -366,8 +366,8 @@ describe('tryConfigureTsConfigForESM', () => {
         "name": "others-pkg",
         "version": "1.0.0",
         "imports": {
-          "@seek/test-repo/source": {
-            "types": "./src/*",
+          "#src/*": {
+            "@seek/test-repo/source": "./src/*",
             "default": "./lib/*"
           }
         }
@@ -387,8 +387,8 @@ describe('tryConfigureTsConfigForESM', () => {
         "name": "root-pkg",
         "version": "1.0.0",
         "imports": {
-          "@seek/test-repo/source": {
-            "types": "./src/*",
+          "#src/*": {
+            "@seek/test-repo/source": "./src/*",
             "default": "./lib/*"
           }
         }
@@ -407,8 +407,8 @@ describe('tryConfigureTsConfigForESM', () => {
         "name": "variant1-pkg",
         "version": "1.0.0",
         "imports": {
-          "@seek/test-repo/source": {
-            "types": "./src/*",
+          "#src/*": {
+            "@seek/test-repo/source": "./src/*",
             "default": "./lib/*"
           }
         }
@@ -424,8 +424,8 @@ describe('tryConfigureTsConfigForESM', () => {
         "name": "variant2-pkg",
         "version": "1.0.0",
         "imports": {
-          "@seek/test-repo/source": {
-            "types": "./src/*",
+          "#src/*": {
+            "@seek/test-repo/source": "./src/*",
             "default": "./lib/*"
           }
         }
@@ -441,8 +441,8 @@ describe('tryConfigureTsConfigForESM', () => {
         "name": "variant3-apps-pkg",
         "version": "1.0.0",
         "imports": {
-          "@seek/test-repo/source": {
-            "types": "./src/*",
+          "#src/*": {
+            "@seek/test-repo/source": "./src/*",
             "default": "./lib/*"
           }
         }
@@ -452,8 +452,8 @@ describe('tryConfigureTsConfigForESM', () => {
         "name": "variant3-packages-pkg",
         "version": "1.0.0",
         "imports": {
-          "@seek/test-repo/source": {
-            "types": "./src/*",
+          "#src/*": {
+            "@seek/test-repo/source": "./src/*",
             "default": "./lib/*"
           }
         }
