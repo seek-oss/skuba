@@ -73,10 +73,11 @@ export const addJestModuleNameMapper = (
     // insert srcModuleMappers into existing moduleNameMapper
     const existingModuleMappers = match[1];
 
+    const optionalComma = !/[,\s]*$/.test(existingModuleMappers) ? '' : ',';
     const newContents = `${contents.slice(
       0,
       match.index,
-    )}moduleNameMapper: {${existingModuleMappers}${newModuleNameMapper}}${contents.slice(
+    )}moduleNameMapper: {${existingModuleMappers}${optionalComma}${newModuleNameMapper}}${contents.slice(
       match.index + match[0].length,
     )}`;
 
