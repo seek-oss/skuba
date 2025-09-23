@@ -15,6 +15,12 @@ jest.mock('fast-glob', () => ({
 }));
 
 const getOwnerAndRepo = jest.spyOn(Git, 'getOwnerAndRepo');
+jest.spyOn(console, 'warn').mockImplementation(() => {
+  /* do nothing */
+});
+jest.spyOn(console, 'info').mockImplementation(() => {
+  /* do nothing */
+});
 
 beforeEach(() => {
   vol.reset();
@@ -456,6 +462,89 @@ describe('tryConfigureTsConfigForESM', () => {
         "variant3/tsconfig.json": "{
         "compilerOptions": {
           "module": "ESNext"
+        }
+      }",
+      }
+    `);
+  });
+
+  it('should add a moduleNameMapper to jest.config.ts files', async () => {
+    vol.fromJSON({
+      'tsconfig.json': JSON.stringify({
+        compilerOptions: {
+          module: 'ESNext',
+          paths: {
+            src: ['src'],
+          },
+        },
+      }),
+      'nested/tsconfig.json': JSON.stringify({
+        compilerOptions: {
+          module: 'ESNext',
+          paths: {
+            src: ['src'],
+          },
+        },
+      }),
+      'jest.config.ts': `import { Jest } from 'skuba';
+
+export default Jest.mergePreset({
+  coveragePathIgnorePatterns: ['src/testing'],
+  coverageThreshold: {
+    global: {
+      branches: 0,
+      functions: 0,
+      lines: 0,
+      statements: 0,
+    },
+  },
+  setupFiles: ['<rootDir>/jest.setup.ts'],
+  testPathIgnorePatterns: ['/test\\.ts'],
+});
+`,
+      'modified/jest.config.ts': `import { Jest } from 'skuba';
+
+export default Jest.mergePreset({
+  coveragePathIgnorePatterns: ['src/testing'],
+  coverageThreshold: {
+    global: {
+      branches: 0,
+      functions: 0,
+      lines: 0,
+      statements: 0,
+    },
+  },
+  moduleNameMapper: {'someMapper': ['<rootDir>/src/someMapper']},
+  setupFiles: ['<rootDir>/jest.setup.ts'],
+  testPathIgnorePatterns: ['/test\\.ts'],
+});
+`,
+    });
+
+    await expect(
+      tryConfigureTsConfigForESM({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "jest.config.ts": ""import { Jest } from 'skuba';\\n\\nexport default Jest.mergePreset({\\n  moduleNameMapper: {\\"^#src/(.*)\\\\\\\\.js$\\":[\\"<rootDir>/src/$1\\",\\"<rootDir>/nested/src/$1\\"],\\"^#src/(.*)$\\":[\\"<rootDir>/src/$1\\",\\"<rootDir>/nested/src/$1\\"]},\\n  coveragePathIgnorePatterns: ['src/testing'],\\n  coverageThreshold: {\\n    global: {\\n      branches: 0,\\n      functions: 0,\\n      lines: 0,\\n      statements: 0,\\n    },\\n  },\\n  setupFiles: ['<rootDir>/jest.setup.ts'],\\n  testPathIgnorePatterns: ['/test\\\\.ts'],\\n});\\n"",
+        "modified/jest.config.ts": ""import { Jest } from 'skuba';\\n\\nexport default Jest.mergePreset({\\n  coveragePathIgnorePatterns: ['src/testing'],\\n  coverageThreshold: {\\n    global: {\\n      branches: 0,\\n      functions: 0,\\n      lines: 0,\\n      statements: 0,\\n    },\\n  },\\n  moduleNameMapper: {'someMapper': ['<rootDir>/src/someMapper'],\\"^#src/(.*)\\\\\\\\.js$\\":[\\"<rootDir>/src/$1\\",\\"<rootDir>/nested/src/$1\\"],\\"^#src/(.*)$\\":[\\"<rootDir>/src/$1\\",\\"<rootDir>/nested/src/$1\\"]},\\n  setupFiles: ['<rootDir>/jest.setup.ts'],\\n  testPathIgnorePatterns: ['/test\\\\.ts'],\\n});\\n"",
+        "nested/tsconfig.json": "{
+        "compilerOptions": {
+          "module": "ESNext"
+        }
+      }",
+        "tsconfig.json": "{
+        "compilerOptions": {
+          "module": "ESNext",
+          "customConditions": [
+            "@seek/test-repo/source"
+          ]
         }
       }",
       }

@@ -46,72 +46,64 @@ const fetchFiles = async (patterns: string[]) => {
   );
 };
 
-const formatModuleNameMapper = (subfolderPaths: string[]) =>
-  subfolderPaths.map((subfolderPath) => `<rootDir>/${subfolderPath}/src`);
-
-const isTypeScriptJestConfig = (contents: string): boolean =>
-  contents.includes('Jest.mergePreset') ||
-  contents.includes('export default') ||
-  contents.includes('import');
-
-const addModuleNameMapperToTypeScript = (
-  contents: string,
-  moduleNameMapper: Record<string, unknown>,
-): string => {
-  const moduleNameMapperStr = JSON.stringify(moduleNameMapper, null, 2)
-    .split('\n')
-    .map((line, index) => (index === 0 ? line : `  ${line}`))
-    .join('\n');
-
-  const mergePresetRegex = /(Jest\.mergePreset\(\s*\{)/;
-  const match = mergePresetRegex.exec(contents);
-
-  if (match?.index !== undefined) {
-    const insertIndex = match.index + match[0].length;
-    const before = contents.slice(0, insertIndex);
-    const after = contents.slice(insertIndex);
-
-    return `${before}\n  moduleNameMapper: ${moduleNameMapperStr},${after}`;
-  }
-
-  return contents;
-};
-
 export const addJestModuleNameMapper = (
   contents: string,
-  subfolderPaths: string[],
+  srcPaths: string[],
 ) => {
-  const formattedNames = formatModuleNameMapper(subfolderPaths);
-  const formattedNamesWithPath = formattedNames.map((name) => `${name}/$1`);
+  const moduleNameRegex = /moduleNameMapper:\s*\{([\s\S]*?)\}/;
+  const match = moduleNameRegex.exec(contents);
 
-  const moduleNameMapper = {
-    '^#src$': formattedNames,
-    '^#src/(.*)\\.js$': formattedNamesWithPath,
-    '^#src\/(.*)$': formattedNamesWithPath,
-  };
+  const srcPathArray = srcPaths.map((subfolderPath) =>
+    subfolderPath === '.' || subfolderPath === './'
+      ? '<rootDir>/src/$1'
+      : `<rootDir>/${subfolderPath}/src/$1`,
+  );
 
-  if (isTypeScriptJestConfig(contents)) {
-    return addModuleNameMapperToTypeScript(contents, moduleNameMapper);
+  const srcModuleMappers = JSON.stringify({
+    '^#src/(.*)\\.js$': srcPathArray,
+    '^#src/(.*)$': srcPathArray,
+  });
+
+  // strip the surrounding { } from the JSON stringify result
+  const newModuleNameMapper = srcModuleMappers
+    .replace(/^{/, '')
+    .replace(/}$/, '');
+
+  if (match?.[1] !== undefined) {
+    // insert srcModuleMappers into existing moduleNameMapper
+    const existingModuleMappers = match[1];
+
+    const newContents = `${contents.slice(
+      0,
+      match.index,
+    )}moduleNameMapper: {${existingModuleMappers},${newModuleNameMapper}}${contents.slice(
+      match.index + match[0].length,
+    )}`;
+
+    return newContents;
   }
 
-  try {
-    const parseResult = packageJsonSchema.safeParse(JSON.parse(contents));
+  // Add moduleNameMapper if not present
 
-    if (!parseResult.success) {
-      log.warn(
-        `Failed to parse Jest config as JSON: ${parseResult.error.message}`,
-      );
-      return contents;
-    }
+  const insertionPointRegex = /(\b(jest|export\s+default)\b[\s\S]*?{)/;
+  const insertionMatch = insertionPointRegex.exec(contents);
 
-    const jestConfig = parseResult.data;
-    jestConfig.moduleNameMapper = moduleNameMapper;
+  if (insertionMatch?.[1] !== undefined) {
+    const insertionIndex = insertionMatch.index + insertionMatch[0].length;
+    const moduleNameMapperString = `\n  moduleNameMapper: {${newModuleNameMapper}},`;
 
-    return JSON.stringify(jestConfig, null, 2);
-  } catch (error) {
-    log.warn(`Failed to parse Jest config: ${String(error)}`);
-    return contents;
+    const newContents =
+      contents.slice(0, insertionIndex) +
+      moduleNameMapperString +
+      contents.slice(insertionIndex);
+
+    return newContents;
   }
+
+  log.warn(
+    'Could not find a suitable place to insert moduleNameMapper in jest config',
+  );
+  return contents;
 };
 
 export const parsePackageJson = (
@@ -222,8 +214,14 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
 
   const tsconfigJsonPatterns = ['**/tsconfig.json'];
   const tsconfigBuildJsonPatterns = ['**/tsconfig.build.json'];
-  const tsconfigJsonFiles = await fetchFiles(tsconfigJsonPatterns);
-  const tsconfigBuildJsonFiles = await fetchFiles(tsconfigBuildJsonPatterns);
+  const jestConfigPatterns = ['**/jest.config.ts', '**/jest.config.*.ts'];
+
+  const [tsconfigJsonFiles, tsconfigBuildJsonFiles, jestConfigFiles] =
+    await Promise.all([
+      fetchFiles(tsconfigJsonPatterns),
+      fetchFiles(tsconfigBuildJsonPatterns),
+      fetchFiles(jestConfigPatterns),
+    ]);
 
   const parsedTsconfigFiles = tsconfigJsonFiles.flatMap(
     ({ file, contents }) => {
@@ -321,6 +319,15 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
     }
   });
 
+  const updatedJestConfigFiles = jestConfigFiles.map(({ file, contents }) => {
+    const parsed = addJestModuleNameMapper(contents, allSrcPaths);
+    return { file, original: contents, parsed };
+  });
+
+  const hasJestConfigsChanged = updatedJestConfigFiles.some(
+    ({ parsed, original }) => original !== parsed,
+  );
+
   const hasRelativeTsconfigBuildsChanged = parsedTsconfigBuildFiles.some(
     ({ original, parsed }) =>
       JSON.stringify(original) !== JSON.stringify(parsed),
@@ -340,7 +347,8 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
     mode === 'lint' &&
     (hasRootTsconfigChanged ||
       hasPackageJsonsChanged ||
-      hasRelativeTsconfigBuildsChanged)
+      hasRelativeTsconfigBuildsChanged ||
+      hasJestConfigsChanged)
   ) {
     return { result: 'apply' };
   }
@@ -348,7 +356,8 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
   if (
     !hasRootTsconfigChanged &&
     !hasPackageJsonsChanged &&
-    !hasRelativeTsconfigBuildsChanged
+    !hasRelativeTsconfigBuildsChanged &&
+    !hasJestConfigsChanged
   ) {
     return { result: 'skip', reason: 'no changes required' };
   }
@@ -358,6 +367,7 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
       ...updatedTsconfigFiles,
       ...parsedTsconfigBuildFiles,
       ...parsedPackageJsonFiles,
+      ...updatedJestConfigFiles,
     ].map(async ({ file, parsed, original }) => {
       if (JSON.stringify(original) === JSON.stringify(parsed)) {
         return;
