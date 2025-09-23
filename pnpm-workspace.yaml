@@ -3,10 +3,11 @@ ignorePatchFailures: false
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - '@seek/*'
-  - 'eslint-config-skuba'
-  - 'eslint-plugin-skuba'
-  - 'skuba'
-  - 'skuba-dive'
+  - eslint-config-seek
+  - eslint-config-skuba
+  - eslint-plugin-skuba
+  - skuba
+  - tsconfig-seek
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@types*'
