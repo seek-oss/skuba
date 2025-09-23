@@ -362,12 +362,11 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
     return { result: 'skip', reason: 'no changes required' };
   }
 
-  await Promise.all(
+  const jsonFilePromises = Promise.all(
     [
       ...updatedTsconfigFiles,
       ...parsedTsconfigBuildFiles,
       ...parsedPackageJsonFiles,
-      ...updatedJestConfigFiles,
     ].map(async ({ file, parsed, original }) => {
       if (JSON.stringify(original) === JSON.stringify(parsed)) {
         return;
@@ -376,6 +375,17 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
       await fs.promises.writeFile(file, updatedContents);
     }),
   );
+
+  const otherFilePromises = Promise.all(
+    updatedJestConfigFiles.map(async ({ file, parsed, original }) => {
+      if (original === parsed) {
+        return;
+      }
+      await fs.promises.writeFile(file, parsed);
+    }),
+  );
+
+  await Promise.all([jsonFilePromises, otherFilePromises]);
 
   return { result: 'apply' };
 };
