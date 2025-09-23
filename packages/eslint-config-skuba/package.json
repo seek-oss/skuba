@@ -13,12 +13,6 @@
   },
   "license": "MIT",
   "sideEffects": false,
-  "imports": {
-    "#src/*": {
-      "@seek/<%- serviceName %>/source": "./src/*",
-      "default": "./lib/*"
-    }
-  },
   "main": "./index.js",
   "module": "./index.js",
   "types": "./index.d.ts",
@@ -46,7 +40,7 @@
     "eslint": ">=9.11.1",
     "typescript": ">=5.5.4"
   },
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.17.0",
   "engines": {
     "node": ">=20.9.0"
   },

@@ -95,16 +95,23 @@ export const refreshConfigFiles = async (
       return { needsChange: false };
     }
 
-    const [inputFile, templateFile, isGitIgnored] = await Promise.all([
-      readDestinationFile(filename),
-      readBaseTemplateFile(`_${filename}`),
-      gitRoot
-        ? Git.isFileGitIgnored({
-            gitRoot,
-            absolutePath: path.join(destinationRoot, filename),
-          })
-        : false,
-    ]);
+    const maybeReadPackageJson = async (type: RefreshableConfigFile['type']) =>
+      type === 'pnpm-workspace'
+        ? await readDestinationFile('package.json')
+        : undefined;
+
+    const [inputFile, templateFile, isGitIgnored, packageJson] =
+      await Promise.all([
+        readDestinationFile(filename),
+        readBaseTemplateFile(`_${filename}`),
+        gitRoot
+          ? Git.isFileGitIgnored({
+              gitRoot,
+              absolutePath: path.join(destinationRoot, filename),
+            })
+          : false,
+        maybeReadPackageJson(fileType),
+      ]);
 
     // If the file is gitignored and doesn't exist, don't make it
     if (inputFile === undefined && isGitIgnored) {
@@ -113,7 +120,7 @@ export const refreshConfigFiles = async (
 
     const data = additionalMapping(
       inputFile
-        ? mergeWithConfigFile(templateFile, fileType)(inputFile)
+        ? mergeWithConfigFile(templateFile, fileType, packageJson)(inputFile)
         : templateFile,
       packageManager,
     );

@@ -1,15 +1,9 @@
 {
   "private": true,
-  "imports": {
-    "#src/*": {
-      "@seek/<%- serviceName %>/source": "./src/*",
-      "default": "./lib/*"
-    }
-  },
   "license": "UNLICENSED",
+  "sideEffects": false,
   "dependencies": {},
   "devDependencies": {},
-  "sideEffects": false,
   "skuba": {
     "entryPoint": null,
     "template": null,

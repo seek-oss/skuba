@@ -2,7 +2,7 @@
  * Run `skuba configure` to finish templating and remove this file.
  */
 
-export default {
+module.exports = {
   entryPoint: 'src/app.ts',
   fields: [
     {

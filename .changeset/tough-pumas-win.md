@@ -2,36 +2,9 @@
 'skuba': major
 ---
 
-**lint:** Update Typescript configuration, replace `skuba-dive/register` imports and migrate `src/` path aliases to TypeScript subpath imports as part of the ECMAScript Modules (ESM) [migration](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html):
+**build/lint:** Update `skuba/config/tsconfig.json` [`moduleResolution`] from `node` to `node16` and [`module`] from `commonjs` to `node20`
 
-1. **Removes `skuba-dive/register` imports**: Handled by installing the latest skuba package and running `pnpm format` in your repo. This eliminates absolute and relative register imports (e.g., `./register`, `../register`), and enables `import '#src/*'` native TypeScript subpath imports.
+You may notice some incompatibility issues with existing libraries. This is typically because some libraries do not offer compatible CJS types. To resolve this you can either:
 
-   ```typescript
-   // Before
-   import 'skuba-dive/register';
-   import { getAccountInfo } from 'src/services/accounts.js';
-
-   // After
-   import { getAccountInfo } from '#src/services/accounts.js';
-   ```
-
-2. **TypeScript configuration updates**: Requires manual configuration for `package.json` and `tsconfig.json` following the [deep dive](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html#transitioning-to-esm). The base `skuba/config/tsconfig.json` is now using `node16` module resolution for import resolution.
-
-3. **bonus monorepo manual configuration:** Update `jest.config.ts` to tell Jest how to resolve `#src` imports to the actual file paths in your `src/` directory using `moduleNameMapper`.
-
-   Monorepo example with 2 projects `api` and `worker`:
-
-   ```
-     moduleNameMapper: {
-       '^(\\.{1,2}/.*)\\.js$': '$1',
-       '^#src$': ['<rootDir>/apps/api/src', '<rootDir>/apps/worker/src'],
-       '^#src/(.*)\\.js$': [
-         '<rootDir>/apps/api/src/$1',
-         '<rootDir>/apps/worker/src/$1',
-       ],
-       '^#src\/(.*)$': [
-         '<rootDir>/apps/api/src/$1',
-         '<rootDir>/apps/worker/src/$1',
-       ],
-     },
-   ```
+1. Add a `// @ts-ignore` comment above the import statement. (These can be removed once we have fully migrated to ESM).
+2. Add `skipLibCheck: true` to your `tsconfig.json` compiler options.
