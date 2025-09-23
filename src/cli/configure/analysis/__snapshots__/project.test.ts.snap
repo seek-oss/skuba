@@ -74,12 +74,12 @@ coverage
     "operation": "A",
   },
   ".prettierrc.js": {
-    "data": "export { default } from 'skuba/config/prettier.js';
+    "data": "module.exports = require('skuba/config/prettier');
 ",
     "operation": "A",
   },
   "eslint.config.js": {
-    "data": "export { default } from 'eslint-config-skuba';
+    "data": "module.exports = require('eslint-config-skuba');
 ",
     "operation": "A",
   },
