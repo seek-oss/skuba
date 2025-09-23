@@ -4,7 +4,7 @@
 
 ## Usage
 
-> [!IMPORTANT]
+> !IMPORTANT
 > This package is intended to be used with `pnpm` version [10.13] or later.
 > It will _not_ be automatically loaded in `pnpm` versions prior to 10.13.
 

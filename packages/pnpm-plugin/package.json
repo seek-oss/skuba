@@ -1,6 +1,6 @@
 {
   "name": "pnpm-plugin-skuba",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "pnpm config dependency for skuba that configures recommended pnpm settings",
   "homepage": "https://github.com/seek-oss/skuba#readme",
   "bugs": {
