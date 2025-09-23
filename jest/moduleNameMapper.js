@@ -23,19 +23,19 @@ module.exports.createModuleNameMapper = (getConfig) => {
         // we need to seed two Jest mappings per path.
         ...(key.endsWith('/*')
           ? [
-            [
-              // Given a path `src/*`, seed an extra `src`.
-              key.replace(/\/\*$/, ''),
-              values.map((value) => value.replace(/\/\*$/, '')),
-            ],
-          ]
+              [
+                // Given a path `src/*`, seed an extra `src`.
+                key.replace(/\/\*$/, ''),
+                values.map((value) => value.replace(/\/\*$/, '')),
+              ],
+            ]
           : [
-            [
-              // Given a path `src`, seed an extra `src/*`.
-              path.join(key, '*'),
-              values.map((value) => path.join(value, '*')),
-            ],
-          ]),
+              [
+                // Given a path `src`, seed an extra `src/*`.
+                path.join(key, '*'),
+                values.map((value) => path.join(value, '*')),
+              ],
+            ]),
       ],
     ),
   );
