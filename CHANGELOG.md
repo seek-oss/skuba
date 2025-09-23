@@ -1,5 +1,27 @@
 # skuba
 
+## 12.3.0
+
+### Minor Changes
+
+- **lint:** Add `minimumReleaseAge` and `minimumReleaseAgeExclude` to `pnpm-workspace.yaml` ([#2065](https://github.com/seek-oss/skuba/pull/2065))
+
+  These security-focused settings were introduced in [pnpm v10.16](https://github.com/pnpm/pnpm/releases/tag/v10.16.0) to reduce the risk of installing compromised packages. They work by delaying installation of newly released dependencies, giving time for malicious versions to be discovered and removed from the registry.
+
+  `minimumReleaseAge` specifies the number of minutes that must pass after a version is published before pnpm will install it. `minimumReleaseAgeExclude` allows you to bypass this restriction for trusted packages, and supports patterns as of [pnpm v10.17.0](https://github.com/pnpm/pnpm/releases/tag/v10.17.0).
+
+  **Note:** You must be using pnpm v10.16 or later for `minimumReleaseAge` to work, and pnpm v10.17 or later for `minimumReleaseAgeExclude` patterns to work properly. With earlier versions of pnpm, these features will not function and pnpm will install any version without applying the minimum release age restrictions.
+
+- **lint:** Set `ignorePatchFailures: false` to ensure pnpm patches don't fail silently ([#2067](https://github.com/seek-oss/skuba/pull/2067))
+
+### Patch Changes
+
+- **lint:** Reclassify `new Promise(executor)` as safe in `skuba/no-sync-in-promise-iterable` ([#2058](https://github.com/seek-oss/skuba/pull/2058))
+
+- **lint:** Support static `Array.from()`, `Array.fromAsync()`, `Array.of()` methods in `skuba/no-sync-in-promise-iterable` ([#2060](https://github.com/seek-oss/skuba/pull/2060))
+
+- **deps:** @octokit/types ^15.0.0 ([#2064](https://github.com/seek-oss/skuba/pull/2064))
+
 ## 12.2.0
 
 ### Minor Changes
