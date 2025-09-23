@@ -30,7 +30,7 @@ importers:
         specifier: ^15.0.0
         version: 15.0.0
       '@skuba-lib/api':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/api
       '@types/jest':
         specifier: ^30.0.0
