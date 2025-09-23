@@ -74,7 +74,6 @@ Prettier │ Flagged 1 file:
 Prettier │ package.json
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
 tsc      │ tsc --noEmit exited with code 0
-Skipping tsconfig.json that does not extend skuba/config/tsconfig.json
 skuba    │ skuba has patches to apply. Run pnpm exec skuba format to run them. upgrade-skuba
 skuba    │ Processed skuba lints in <random>s.
 skuba, Prettier found issues that require triage.

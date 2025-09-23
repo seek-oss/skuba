@@ -84,6 +84,26 @@ export const addJestModuleNameMapper = (
     return newContents;
   }
 
+  // match against function calls
+
+  // Match function calls like moduleNameMapper: getMapper()
+  const moduleNameMapperFunctionRegex =
+    /moduleNameMapper:\s*([a-zA-Z_$][\w$]*(?:\([^)]*\))?)/;
+  const functionMatch = moduleNameMapperFunctionRegex.exec(contents);
+
+  if (functionMatch?.[1] !== undefined) {
+    const functionBody = functionMatch[1];
+    const optionalComma = !/[,\s]*$/.test(functionBody) ? '' : ',';
+    const newContents = `${contents.slice(
+      0,
+      functionMatch.index,
+    )}moduleNameMapper: {...${functionBody}${optionalComma}${newModuleNameMapper}}${contents.slice(
+      functionMatch.index + functionMatch[0].length,
+    )}}`;
+
+    return newContents;
+  }
+
   // Add moduleNameMapper if not present
 
   const insertionPointRegex = /(\b(jest|export\s+default)\b[\s\S]*?{)/;

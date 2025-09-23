@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "customConditions": ["@seek/<%- serviceName %>/source"],
+    "customConditions": ["@seek/skuba/source"],
     "moduleResolution": "node16",
     "incremental": true,
     "module": "node20",
     "outDir": "lib",
-    "rootDir": ".",
     "skipLibCheck": true
   },
   "extends": "tsconfig-seek"

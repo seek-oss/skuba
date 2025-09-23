@@ -519,6 +519,23 @@ export default Jest.mergePreset({
   testPathIgnorePatterns: ['/test\\.ts'],
 });
 `,
+      'function/jest.config.ts': `import { Jest } from 'skuba';
+
+export default Jest.mergePreset({
+  coveragePathIgnorePatterns: ['src/testing'],
+  coverageThreshold: {
+    global: {
+      branches: 0,
+      functions: 0,
+      lines: 0,
+      statements: 0,
+    },
+  },
+  moduleNameMapper: getMapper(),
+  setupFiles: ['<rootDir>/jest.setup.ts'],
+  testPathIgnorePatterns: ['/test\\.ts'],
+});
+`,
     });
 
     await expect(
@@ -532,6 +549,23 @@ export default Jest.mergePreset({
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
+        "function/jest.config.ts": "import { Jest } from 'skuba';
+
+      export default Jest.mergePreset({
+        coveragePathIgnorePatterns: ['src/testing'],
+        coverageThreshold: {
+          global: {
+            branches: 0,
+            functions: 0,
+            lines: 0,
+            statements: 0,
+          },
+        },
+        moduleNameMapper: {...getMapper(),"^#src/(.*)\\\\.js$":["<rootDir>/src/$1","<rootDir>/nested/src/$1"],"^#src/(.*)$":["<rootDir>/src/$1","<rootDir>/nested/src/$1"]},
+        setupFiles: ['<rootDir>/jest.setup.ts'],
+        testPathIgnorePatterns: ['/test\\.ts'],
+      });
+      }",
         "jest.config.ts": "import { Jest } from 'skuba';
 
       export default Jest.mergePreset({
