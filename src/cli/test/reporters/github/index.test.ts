@@ -8,7 +8,7 @@ import { GitHub } from '@skuba-lib/api';
 
 const reporter = new GitHubReporter();
 
-jest.mock('../../../../api/github');
+jest.mock('@skuba-lib/api');
 jest.mock('../../../../utils/logging');
 
 beforeEach(() => {

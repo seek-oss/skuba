@@ -7,11 +7,27 @@
       "import": "./lib/index.mjs",
       "require": "./lib/index.js"
     },
+    "./buildkite": {
+      "import": "./lib/buildkite/index.mjs",
+      "require": "./lib/buildkite/index.js"
+    },
+    "./git": {
+      "import": "./lib/git/index.mjs",
+      "require": "./lib/git/index.js"
+    },
+    "./github": {
+      "import": "./lib/github/index.mjs",
+      "require": "./lib/github/index.js"
+    },
+    "./net": {
+      "import": "./lib/net/index.mjs",
+      "require": "./lib/net/index.js"
+    },
     "./package.json": "./package.json"
   },
-  "main": "./src/index.ts",
+  "main": "./lib/index.js",
   "module": "./lib/index.mjs",
-  "types": "./src/index.ts",
+  "types": "./lib/index.d.ts",
   "files": [
     "lib"
   ],
