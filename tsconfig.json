@@ -12,7 +12,7 @@
     "template/**/*",
     "packages/eslint-config-skuba",
     "packages/eslint-plugin-skuba",
-    "packages/sk/lib"
+    "packages/api/lib"
   ],
   "extends": "./config/tsconfig.json"
 }
