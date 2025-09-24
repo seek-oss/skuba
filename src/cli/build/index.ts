@@ -11,14 +11,14 @@ import { readTsBuildConfig, tsc } from './tsc.js';
 export const build = async (args = process.argv.slice(2)) => {
   // TODO: define a unified `package.json#/skuba` schema and parser so we don't
   // need all these messy lookups.
-  const { skubaProp: tool, type } = await getManifestProperties('build');
+  const manifest = await getManifestProperties('build');
 
-  switch (tool) {
+  switch (manifest?.value) {
     case 'esbuild': {
       const debug = hasDebugFlag(args);
 
       log.plain(chalk.yellow('esbuild'));
-      await esbuild({ debug, type }, args);
+      await esbuild({ debug, type: manifest.type }, args);
       break;
     }
 
@@ -36,7 +36,11 @@ export const build = async (args = process.argv.slice(2)) => {
         log.bold('package.json'),
         'yet:',
       );
-      log.err(log.subtle(JSON.stringify({ skuba: { build: tool } }, null, 2)));
+      log.err(
+        log.subtle(
+          JSON.stringify({ skuba: { build: manifest?.value } }, null, 2),
+        ),
+      );
       process.exitCode = 1;
       return;
     }

@@ -33,42 +33,44 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
 export const getConsumerManifest = (cwd?: string) =>
   readPkgUp({ cwd, normalize: false });
 
-export const getManifestProperties = async <T extends string>(
-  skubaProp: T,
-): Promise<{
-  skubaProp: string | undefined;
-  type: string | undefined;
-}> => {
-  const result = await getConsumerManifest();
+export const getManifestProperties = async <T extends string, V = unknown>(
+  prop: T,
+): Promise<
+  | {
+      value: V | undefined;
+      type: string | undefined;
+      path: string;
+    }
+  | undefined
+> => {
+  const manifest = await getConsumerManifest();
 
-  if (result === undefined) {
-    return {
-      skubaProp: undefined,
-      type: undefined,
-    };
+  if (!manifest) {
+    return undefined;
   }
 
-  const skubaPropValue = hasProp<T, string>(result.packageJson.skuba, skubaProp)
-    ? result.packageJson.skuba[skubaProp]
+  const value = hasProp<T, V>(manifest.packageJson.skuba, prop)
+    ? manifest.packageJson.skuba[prop]
     : undefined;
 
-  const typeValue =
-    typeof result.packageJson.type === 'string'
-      ? result.packageJson.type
+  const type =
+    typeof manifest.packageJson.type === 'string'
+      ? manifest.packageJson.type
       : undefined;
 
   return {
-    skubaProp: skubaPropValue,
-    type: typeValue,
+    value,
+    type,
+    path: manifest.path,
   };
 };
 
 export const getStringPropFromConsumerManifest = async <T extends string>(
   prop: T,
 ): Promise<string | undefined> => {
-  const { skubaProp } = await getManifestProperties(prop);
+  const manifest = await getManifestProperties(prop);
 
-  return typeof skubaProp === 'string' ? skubaProp : undefined;
+  return typeof manifest?.value === 'string' ? manifest.value : undefined;
 };
 
 export const getEntryPointFromManifest = async (): Promise<string> => {
