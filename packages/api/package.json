@@ -2,6 +2,10 @@
   "name": "@skuba-lib/api",
   "version": "0.0.1",
   "description": "Shared utilities for skuba",
+  "homepage": "https://github.com/seek-oss/skuba#readme",
+  "bugs": {
+    "url": "https://github.com/seek-oss/skuba/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/seek-oss/skuba.git",
