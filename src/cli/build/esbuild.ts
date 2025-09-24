@@ -11,10 +11,11 @@ import { readTsBuildConfig, tsc } from './tsc.js';
 
 interface EsbuildParameters {
   debug: boolean;
+  type: string | undefined;
 }
 
 export const esbuild = async (
-  { debug }: EsbuildParameters,
+  { debug, type }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
   const log = createLogger({ debug });
@@ -49,15 +50,22 @@ export const esbuild = async (
   // TODO: support `bundle`, `minify`, `splitting`, `treeShaking`
   const bundle = false;
 
+  const isEsm =
+    compilerOptions.module !== ModuleKind.CommonJS && type === 'module';
+
   await build({
     bundle,
     entryPoints,
-    format: compilerOptions.module === ModuleKind.CommonJS ? 'cjs' : undefined,
+    format:
+      compilerOptions.module === ModuleKind.CommonJS || !isEsm
+        ? 'cjs'
+        : undefined,
     outdir: compilerOptions.outDir,
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,
     platform:
-      compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs
+      compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs ||
+      compilerOptions.moduleResolution === ModuleResolutionKind.Node16
         ? 'node'
         : undefined,
     plugins: bundle

@@ -13,22 +13,27 @@
   },
   "exports": {
     ".": {
+      "@seek/skuba/source": "./src/index.ts",
       "import": "./lib/index.mjs",
       "require": "./lib/index.js"
     },
     "./buildkite": {
+      "@seek/skuba/source": "./src/buildkite/index.ts",
       "import": "./lib/buildkite/index.mjs",
       "require": "./lib/buildkite/index.js"
     },
     "./git": {
+      "@seek/skuba/source": "./src/git/index.ts",
       "import": "./lib/git/index.mjs",
       "require": "./lib/git/index.js"
     },
     "./github": {
+      "@seek/skuba/source": "./src/github/index.ts",
       "import": "./lib/github/index.mjs",
       "require": "./lib/github/index.js"
     },
     "./net": {
+      "@seek/skuba/source": "./src/net/index.ts",
       "import": "./lib/net/index.mjs",
       "require": "./lib/net/index.js"
     },
@@ -54,5 +59,30 @@
   },
   "devDependencies": {
     "tsdown": "^0.15.4"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.js"
+      },
+      "./buildkite": {
+        "import": "./lib/buildkite/index.mjs",
+        "require": "./lib/buildkite/index.js"
+      },
+      "./git": {
+        "import": "./lib/git/index.mjs",
+        "require": "./lib/git/index.js"
+      },
+      "./github": {
+        "import": "./lib/github/index.mjs",
+        "require": "./lib/github/index.js"
+      },
+      "./net": {
+        "import": "./lib/net/index.mjs",
+        "require": "./lib/net/index.js"
+      },
+      "./package.json": "./package.json"
+    }
   }
 }

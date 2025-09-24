@@ -33,25 +33,42 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
 export const getConsumerManifest = (cwd?: string) =>
   readPkgUp({ cwd, normalize: false });
 
-export const getPropFromConsumerManifest = async <
-  T extends string,
-  V = unknown,
->(
-  prop: T,
-): Promise<V | undefined> => {
+export const getManifestProperties = async <T extends string>(
+  skubaProp: T,
+): Promise<{
+  skubaProp: string | undefined;
+  type: string | undefined;
+}> => {
   const result = await getConsumerManifest();
 
-  return result !== undefined && hasProp<T, V>(result.packageJson.skuba, prop)
-    ? result.packageJson.skuba[prop]
+  if (result === undefined) {
+    return {
+      skubaProp: undefined,
+      type: undefined,
+    };
+  }
+
+  const skubaPropValue = hasProp<T, string>(result.packageJson.skuba, skubaProp)
+    ? result.packageJson.skuba[skubaProp]
     : undefined;
+
+  const typeValue =
+    typeof result.packageJson.type === 'string'
+      ? result.packageJson.type
+      : undefined;
+
+  return {
+    skubaProp: skubaPropValue,
+    type: typeValue,
+  };
 };
 
 export const getStringPropFromConsumerManifest = async <T extends string>(
   prop: T,
 ): Promise<string | undefined> => {
-  const result = await getPropFromConsumerManifest(prop);
+  const { skubaProp } = await getManifestProperties(prop);
 
-  return typeof result === 'string' ? result : undefined;
+  return typeof skubaProp === 'string' ? skubaProp : undefined;
 };
 
 export const getEntryPointFromManifest = async (): Promise<string> => {

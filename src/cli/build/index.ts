@@ -2,7 +2,7 @@ import chalk from 'chalk';
 
 import { hasDebugFlag } from '../../utils/args.js';
 import { log } from '../../utils/logging.js';
-import { getStringPropFromConsumerManifest } from '../../utils/manifest.js';
+import { getManifestProperties } from '../../utils/manifest.js';
 
 import { copyAssets } from './assets.js';
 import { esbuild } from './esbuild.js';
@@ -11,14 +11,14 @@ import { readTsBuildConfig, tsc } from './tsc.js';
 export const build = async (args = process.argv.slice(2)) => {
   // TODO: define a unified `package.json#/skuba` schema and parser so we don't
   // need all these messy lookups.
-  const tool = await getStringPropFromConsumerManifest('build');
+  const { skubaProp: tool, type } = await getManifestProperties('build');
 
   switch (tool) {
     case 'esbuild': {
       const debug = hasDebugFlag(args);
 
       log.plain(chalk.yellow('esbuild'));
-      await esbuild({ debug }, args);
+      await esbuild({ debug, type }, args);
       break;
     }
 
