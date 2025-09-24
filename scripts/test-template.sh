@@ -26,6 +26,7 @@ pnpm build
 
 echo '--- pnpm pack'
 # Aaron Moat is sure there's a better way to do this
+skuba_lib_api_tar="$(pwd)/packages/api/$(cd packages/api && pnpm pack | grep -o 'skuba-lib-api-.*\.tgz')"
 eslint_plugin_skuba_tar="$(pwd)/packages/eslint-plugin-skuba/$(cd packages/eslint-plugin-skuba && pnpm pack | grep -o 'eslint-plugin-skuba-.*\.tgz')"
 jq ".dependencies[\"eslint-plugin-skuba\"] = \"file:${eslint_plugin_skuba_tar}\"" packages/eslint-config-skuba/package.json > packages/eslint-config-skuba/package.json.tmp
 mv packages/eslint-config-skuba/package.json packages/eslint-config-skuba/package.json.bak
@@ -33,7 +34,7 @@ mv packages/eslint-config-skuba/package.json.tmp packages/eslint-config-skuba/pa
 eslint_config_skuba_tar="$(pwd)/packages/eslint-config-skuba/$(cd packages/eslint-config-skuba && pnpm pack | grep -o 'eslint-config-skuba-.*\.tgz')"
 mv packages/eslint-config-skuba/package.json.bak packages/eslint-config-skuba/package.json
 
-jq ".dependencies[\"eslint-config-skuba\"] = \"file:${eslint_config_skuba_tar}\"" package.json > package.json.tmp
+jq ".dependencies[\"eslint-config-skuba\"] = \"file:${eslint_config_skuba_tar}\" | .dependencies[\"@skuba-lib/api\"] = \"file:${skuba_lib_api_tar}\"" package.json > package.json.tmp
 mv package.json package.json.bak
 mv package.json.tmp package.json
 skuba_tar="$(pwd)/$(pnpm pack | grep -o 'skuba-.*\.tgz')"
