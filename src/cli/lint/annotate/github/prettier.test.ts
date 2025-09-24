@@ -2,7 +2,7 @@ import type { PrettierOutput } from '../../../adapter/prettier.js';
 
 import { createPrettierAnnotations } from './prettier.js';
 
-import type { GitHub } from '@skuba-lib/api';
+import type * as GitHub from '@skuba-lib/api/github';
 
 it('should create annotations from Prettier errors', () => {
   const prettierOutput: PrettierOutput = {

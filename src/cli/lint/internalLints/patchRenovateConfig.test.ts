@@ -5,7 +5,7 @@ import memfs, { vol } from 'memfs';
 import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
 import type { PatchConfig } from './upgrade/index.js';
 
-import { Git } from '@skuba-lib/api';
+import * as Git from '@skuba-lib/api/git';
 
 jest.mock('fs', () => memfs);
 

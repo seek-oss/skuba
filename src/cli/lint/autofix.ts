@@ -13,7 +13,9 @@ import { createDestinationFileReader } from '../configure/analysis/project.js';
 import { internalLint } from './internal.js';
 import type { Input } from './types.js';
 
-import { Buildkite, Git, GitHub } from '@skuba-lib/api';
+import * as Buildkite from '@skuba-lib/api/buildkite';
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 
 const RENOVATE_DEFAULT_PREFIX = 'renovate';
 

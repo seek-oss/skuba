@@ -8,8 +8,7 @@ import { createInternalAnnotations } from './internal.js';
 import { createPrettierAnnotations } from './prettier.js';
 import { createTscAnnotations } from './tsc.js';
 
-import { Buildkite } from '@skuba-lib/api';
-
+import * as Buildkite from '@skuba-lib/api/buildkite';
 export const createBuildkiteAnnotations = async (
   internal: InternalLintResult,
   eslint: ESLintOutput,

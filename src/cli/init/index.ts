@@ -21,7 +21,7 @@ import { initialiseRepo } from './git.js';
 import type { Input } from './types.js';
 import { writePackageJson } from './writePackageJson.js';
 
-import { Git } from '@skuba-lib/api';
+import * as Git from '@skuba-lib/api/git';
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {

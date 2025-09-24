@@ -8,7 +8,7 @@ import { createInternalAnnotations } from './internal.js';
 import { createPrettierAnnotations } from './prettier.js';
 import { createTscAnnotations } from './tsc.js';
 
-import { GitHub } from '@skuba-lib/api';
+import * as GitHub from '@skuba-lib/api/github';
 
 export const createGitHubAnnotations = async (
   internal: InternalLintResult,

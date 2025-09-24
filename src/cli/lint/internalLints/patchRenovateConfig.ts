@@ -12,7 +12,7 @@ import { formatPrettier } from '../../configure/processing/prettier.js';
 
 import type { PatchFunction, PatchReturnType } from './upgrade/index.js';
 
-import { Git } from '@skuba-lib/api';
+import * as Git from '@skuba-lib/api/git';
 
 const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;
 

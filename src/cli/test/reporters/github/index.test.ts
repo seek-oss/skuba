@@ -4,11 +4,11 @@ import { log } from '../../../../utils/logging.js';
 
 import GitHubReporter from './index.js';
 
-import { GitHub } from '@skuba-lib/api';
+import * as GitHub from '@skuba-lib/api/github';
 
 const reporter = new GitHubReporter();
 
-jest.mock('@skuba-lib/api');
+jest.mock('@skuba-lib/api/github');
 jest.mock('../../../../utils/logging');
 
 beforeEach(() => {

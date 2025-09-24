@@ -1,7 +1,6 @@
 import type { InternalLintResult } from '../../internal.js';
 
-import { Buildkite } from '@skuba-lib/api';
-
+import * as Buildkite from '@skuba-lib/api/buildkite';
 export const createInternalAnnotations = (
   internal: InternalLintResult,
 ): string[] =>

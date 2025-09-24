@@ -6,7 +6,7 @@ import picomatch from 'picomatch';
 
 import { isErrorWithCode } from './error.js';
 
-import { Git } from '@skuba-lib/api';
+import * as Git from '@skuba-lib/api/git';
 
 /**
  * Build a map that associates each glob pattern with its matching filepaths.

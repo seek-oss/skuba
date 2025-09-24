@@ -8,7 +8,7 @@ import { throwOnTimeout } from '../../../../utils/wait.js';
 
 import { generateAnnotationEntries } from './annotations.js';
 
-import { GitHub } from '@skuba-lib/api';
+import * as GitHub from '@skuba-lib/api/github';
 
 export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
   async onRunComplete(

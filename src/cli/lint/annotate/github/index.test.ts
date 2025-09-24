@@ -9,10 +9,10 @@ import { createTscAnnotations } from './tsc.js';
 
 import { createGitHubAnnotations } from './index.js';
 
-import { GitHub } from '@skuba-lib/api';
+import * as GitHub from '@skuba-lib/api/github';
 
 jest.mock('../../../../utils/logging');
-jest.mock('../../../../api/github');
+jest.mock('@skuba-lib/api/github');
 
 jest.mock('./eslint');
 jest.mock('./prettier');

@@ -6,7 +6,7 @@ import simpleGit from 'simple-git';
 
 import { log } from '../../utils/logging.js';
 
-import { Git } from '@skuba-lib/api';
+import * as Git from '@skuba-lib/api/git';
 
 interface GitHubProject {
   orgName: string;
