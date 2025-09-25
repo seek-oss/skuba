@@ -1,4 +1,3 @@
-import * as Buildkite from '../../../../api/buildkite/index.js';
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
@@ -9,6 +8,7 @@ import { createInternalAnnotations } from './internal.js';
 import { createPrettierAnnotations } from './prettier.js';
 import { createTscAnnotations } from './tsc.js';
 
+import * as Buildkite from '@skuba-lib/api/buildkite';
 export const createBuildkiteAnnotations = async (
   internal: InternalLintResult,
   eslint: ESLintOutput,
