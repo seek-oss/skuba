@@ -1,5 +1,5 @@
 ---
-'@skuba-lib/api': minor
+'@skuba-lib/api': major
 'skuba': minor
 ---
 
