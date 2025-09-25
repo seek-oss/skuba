@@ -261,7 +261,7 @@ The changesets are used to infer the next semantic version and to update the [ch
 
 This PR may be left open to collate multiple changes into the next version.
 A maintainer will merge it once ready,
-and our [release workflow](https://github.com/seek-oss/skuba/blob/main/.github/workflows/release.yml) will publish the associated GitHub release and npm package version.
+and our [release workflow] will publish the associated GitHub release and npm package version.
 
 ### Publishing a prerelease
 
