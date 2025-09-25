@@ -263,9 +263,9 @@ This PR may be left open to collate multiple changes into the next version.
 A maintainer will merge it once ready,
 and our [release workflow](https://github.com/seek-oss/skuba/blob/main/.github/workflows/release.yml) will publish the associated GitHub release and npm package version.
 
-### Publishing a snapshot
+### Publishing a prerelease
 
-Snapshots can be created on demand via [seek-oss/changesets-snapshot].
+Prereleases can be created on demand via [seek-oss/changesets-snapshot].
 
 Manually run the [release workflow] on any branch in GitHub Actions to publish a new snapshot version to npm.
 
