@@ -15,8 +15,8 @@
     "packages/api/lib",
     "packages/eslint-config-skuba",
     "packages/eslint-plugin-skuba",
-    "**/*/tsdown.config.mts",
-    "template/**/*"
+    "template/**/*",
+    "**/*/tsdown.config.mts"
   ],
   "extends": "./config/tsconfig.json"
 }

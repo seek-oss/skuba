@@ -1,7 +1,7 @@
 {
   "name": "@skuba-lib/api",
   "version": "0.0.1",
-  "description": "Shared apis for skuba",
+  "description": "Node.js development API for skuba",
   "homepage": "https://github.com/seek-oss/skuba#readme",
   "bugs": {
     "url": "https://github.com/seek-oss/skuba/issues"
