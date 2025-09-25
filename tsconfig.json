@@ -9,9 +9,10 @@
   "exclude": [
     "integration/**/*",
     "lib*/**/*",
-    "template/**/*",
+    "packages/api/lib",
     "packages/eslint-config-skuba",
-    "packages/eslint-plugin-skuba"
+    "packages/eslint-plugin-skuba",
+    "template/**/*"
   ],
   "extends": "./config/tsconfig.json"
 }

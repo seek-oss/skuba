@@ -2,9 +2,6 @@ import { inspect } from 'util';
 
 import simpleGit from 'simple-git';
 
-import * as Buildkite from '../../api/buildkite/index.js';
-import * as Git from '../../api/git/index.js';
-import * as GitHub from '../../api/github/index.js';
 import { isCiEnv } from '../../utils/env.js';
 import { createLogger, log } from '../../utils/logging.js';
 import { hasNpmrcSecret } from '../../utils/npmrc.js';
@@ -15,6 +12,10 @@ import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import { internalLint } from './internal.js';
 import type { Input } from './types.js';
+
+import * as Buildkite from '@skuba-lib/api/buildkite';
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 
 const RENOVATE_DEFAULT_PREFIX = 'renovate';
 

@@ -1,7 +1,6 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { commitAllChanges } from '../../api/git/index.js';
 import { hasDebugFlag } from '../../utils/args.js';
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
 import { createInclusionFilter } from '../../utils/dir.js';
@@ -21,6 +20,8 @@ import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
 import type { Input } from './types.js';
 import { writePackageJson } from './writePackageJson.js';
+
+import * as Git from '@skuba-lib/api/git';
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {
@@ -126,7 +127,7 @@ export const init = async (args = process.argv.slice(2)) => {
     log.warn(inspect(err));
   }
 
-  await commitAllChanges({
+  await Git.commitAllChanges({
     dir: destinationDir,
     message: `Clone ${templateName}`,
   });

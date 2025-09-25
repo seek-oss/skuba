@@ -2,6 +2,8 @@
 
 set -e
 
+pnpm --filter @skuba-lib/api build
+
 tsx src/skuba build "${@}"
 
 chmod +x 'lib/skuba.js'

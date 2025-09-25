@@ -6,7 +6,6 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
-import { Buildkite } from '../../index.js';
 import type { Logger } from '../../utils/logging.js';
 import { getSkubaVersion } from '../../utils/version.js';
 
@@ -14,11 +13,17 @@ import { refreshConfigFiles } from './internalLints/refreshConfigFiles.js';
 
 import { lint } from './index.js';
 
+import * as Buildkite from '@skuba-lib/api/buildkite';
+
 jest.setTimeout(30_000);
 
 jest.mock('../../utils/version');
+jest.mock('@skuba-lib/api/buildkite', () => ({
+  ...jest.requireActual('@skuba-lib/api/buildkite'),
+  annotate: jest.fn(),
+}));
 
-const buildkiteAnnotate = jest.spyOn(Buildkite, 'annotate').mockResolvedValue();
+const buildkiteAnnotate = jest.mocked(Buildkite.annotate).mockResolvedValue();
 
 const stdoutMock = jest.fn();
 
