@@ -2,10 +2,10 @@
 
 set -e
 
-pnpm --filter @skuba-lib/api build
-
-tsx src/skuba build "${@}"
+tsx --conditions @seek/skuba/source src/skuba build "${@}"
 
 chmod +x 'lib/skuba.js'
+
+pnpm --filter @skuba-lib/api build
 
 pnpm --filter eslint-plugin-skuba build

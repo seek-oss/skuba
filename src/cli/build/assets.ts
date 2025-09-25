@@ -7,22 +7,17 @@ import { copyFile } from '../../utils/copy.js';
 import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir.js';
 import { type Logger, createLogger, log } from '../../utils/logging.js';
 import {
-  getConsumerManifest,
   getEntryPointFromManifest,
-  getPropFromConsumerManifest,
+  getManifestProperties,
 } from '../../utils/manifest.js';
 
 export const copyAssets = async (
   destinationDir: string,
   logger: Logger = log,
 ) => {
-  const manifest = await getConsumerManifest();
-  if (!manifest) {
-    return;
-  }
+  const manifest = await getManifestProperties<string, string[]>('assets');
 
-  const assets = await getPropFromConsumerManifest<string, string[]>('assets');
-  if (!assets) {
+  if (!manifest?.value) {
     return;
   }
 
@@ -40,7 +35,7 @@ export const copyAssets = async (
   );
 
   const allFiles = await crawlDirectory(resolvedSrcDir);
-  const filesByPattern = buildPatternToFilepathMap(assets, allFiles, {
+  const filesByPattern = buildPatternToFilepathMap(manifest.value, allFiles, {
     cwd: resolvedSrcDir,
     dot: true,
   });
