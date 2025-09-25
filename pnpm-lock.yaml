@@ -246,6 +246,15 @@ importers:
 
   packages/api:
     dependencies:
+      '@octokit/graphql':
+        specifier: ^9.0.0
+        version: 9.0.1
+      '@octokit/rest':
+        specifier: ^22.0.0
+        version: 22.0.0
+      '@octokit/types':
+        specifier: ^15.0.0
+        version: 15.0.0
       fs-extra:
         specifier: ^11.0.0
         version: 11.3.1

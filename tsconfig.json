@@ -12,11 +12,11 @@
   "exclude": [
     "integration/**/*",
     "lib*/**/*",
-    "template/**/*",
+    "packages/api/lib",
     "packages/eslint-config-skuba",
     "packages/eslint-plugin-skuba",
-    "packages/api/lib",
-    "**/*/tsdown.config.mts"
+    "**/*/tsdown.config.mts",
+    "template/**/*"
   ],
   "extends": "./config/tsconfig.json"
 }
