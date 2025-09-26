@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1.18
-
 FROM public.ecr.aws/docker/library/node:22-alpine AS dev-deps
 
 # Needed for cdk
