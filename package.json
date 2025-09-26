@@ -79,6 +79,7 @@
     "@octokit/graphql-schema": "^15.3.0",
     "@octokit/rest": "^22.0.0",
     "@octokit/types": "^15.0.0",
+    "@skuba-lib/api": "workspace:^",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
     "chalk": "^4.1.0",

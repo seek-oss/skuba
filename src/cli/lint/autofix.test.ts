@@ -1,8 +1,5 @@
 import simpleGit from 'simple-git';
 
-import * as Buildkite from '../../api/buildkite/index.js';
-import * as Git from '../../api/git/index.js';
-import * as GitHub from '../../api/github/index.js';
 import { runESLint } from '../adapter/eslint.js';
 import { runPrettier } from '../adapter/prettier.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
@@ -14,10 +11,14 @@ import {
 } from './autofix.js';
 import { internalLint } from './internal.js';
 
+import * as Buildkite from '@skuba-lib/api/buildkite';
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
+
 jest.mock('simple-git');
-jest.mock('../../api/git');
-jest.mock('../../api/github');
-jest.mock('../../api/buildkite');
+jest.mock('@skuba-lib/api/buildkite');
+jest.mock('@skuba-lib/api/git');
+jest.mock('@skuba-lib/api/github');
 jest.mock('../adapter/eslint');
 jest.mock('../adapter/prettier');
 jest.mock('./internal');
@@ -46,7 +47,7 @@ beforeEach(() => {
     .spyOn(console, 'log')
     .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
-  jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([]);
+  jest.mocked(Git.getChangedFiles).mockResolvedValue([]);
 
   jest
     .mocked(createDestinationFileReader)
@@ -276,7 +277,7 @@ describe('autofix', () => {
     });
 
     it('handles internal changes only', async () => {
-      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+      jest.mocked(Git.getChangedFiles).mockResolvedValue([
         {
           path: '.gitignore',
           state: 'modified',
@@ -352,7 +353,7 @@ describe('autofix', () => {
     });
 
     it('will ignore .npmrc if it has auth secrets', async () => {
-      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+      jest.mocked(Git.getChangedFiles).mockResolvedValue([
         {
           path: '.npmrc',
           state: 'modified',
@@ -546,7 +547,7 @@ describe('autofix', () => {
     });
 
     it('handles internal changes only', async () => {
-      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+      jest.mocked(Git.getChangedFiles).mockResolvedValue([
         {
           path: '.gitignore',
           state: 'modified',
@@ -620,7 +621,7 @@ describe('autofix', () => {
     });
 
     it('will ignore .npmrc if it has auth secrets', async () => {
-      jest.spyOn(Git, 'getChangedFiles').mockResolvedValue([
+      jest.mocked(Git.getChangedFiles).mockResolvedValue([
         {
           path: '.npmrc',
           state: 'modified',

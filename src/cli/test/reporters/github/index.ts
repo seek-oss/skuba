@@ -3,22 +3,19 @@ import { inspect } from 'util';
 import type { Reporter, TestContext } from '@jest/reporters';
 import type { AggregatedResult } from '@jest/test-result';
 
-import {
-  buildNameFromEnvironment,
-  enabledFromEnvironment,
-} from '../../../../api/github/environment.js';
-import * as GitHub from '../../../../api/github/index.js';
 import { log } from '../../../../utils/logging.js';
 import { throwOnTimeout } from '../../../../utils/wait.js';
 
 import { generateAnnotationEntries } from './annotations.js';
+
+import * as GitHub from '@skuba-lib/api/github';
 
 export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
   async onRunComplete(
     _contexts: Set<TestContext>,
     { testResults }: AggregatedResult,
   ): Promise<void> {
-    if (!enabledFromEnvironment()) {
+    if (!GitHub.enabledFromEnvironment()) {
       return;
     }
 
@@ -29,7 +26,7 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
     try {
       const entries = generateAnnotationEntries(testResults);
 
-      const build = buildNameFromEnvironment();
+      const build = GitHub.buildNameFromEnvironment();
 
       // Create a check run per display name.
       // Run in series to reduce the likelihood of exceeding GitHub rate limits.
