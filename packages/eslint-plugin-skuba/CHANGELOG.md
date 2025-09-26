@@ -1,5 +1,13 @@
 # eslint-plugin-skuba
 
+## 1.0.2
+
+### Patch Changes
+
+- **skuba/no-sync-in-promise-iterable:** Reclassify `new Promise(executor)` as safe ([#2058](https://github.com/seek-oss/skuba/pull/2058))
+
+- **skuba/no-sync-in-promise-iterable:** Support static `Array.from()`, `Array.fromAsync()`, `Array.of()` methods ([#2060](https://github.com/seek-oss/skuba/pull/2060))
+
 ## 1.0.1
 
 ### Patch Changes

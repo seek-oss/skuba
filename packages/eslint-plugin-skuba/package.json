@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-skuba",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "description": "ESLint plugin for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-plugin-skuba#readme",
@@ -15,6 +15,7 @@
   "sideEffects": false,
   "exports": {
     ".": {
+      "@seek/skuba/source": "./src/index.ts",
       "import": "./lib/index.mjs",
       "require": "./lib/index.js"
     },
@@ -54,6 +55,15 @@
   "packageManager": "pnpm@10.17.0",
   "engines": {
     "node": ">=20.9.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.js"
+      },
+      "./package.json": "./package.json"
+    }
   },
   "skuba": {
     "entryPoint": "src/index.ts",
