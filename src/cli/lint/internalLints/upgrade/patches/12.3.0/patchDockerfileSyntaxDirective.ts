@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const dockerSyntaxRegex = /^#\s*syntax=\s*docker\/dockerfile:\S+\n/;
+const dockerSyntaxRegex = /^#\s*syntax=\s*docker\/dockerfile:\S+\n+/;
 
 export const patchDockerfileSyntaxDirective = async (
   mode: 'lint' | 'format',
