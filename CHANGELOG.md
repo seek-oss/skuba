@@ -1,5 +1,29 @@
 # skuba
 
+## 12.4.0
+
+### Minor Changes
+
+- **build:** Default esbuild output to CJS format ([#2074](https://github.com/seek-oss/skuba/pull/2074))
+
+  **Note:** This only applies when `package.json#/skuba/build` is set to `"esbuild"`.
+
+  `skuba build` now defaults to CJS output when using the esbuild configuration. ESM output is only used when the following conditions are met:
+  - `"type": "module"` is set in `package.json`
+  - The `module` field in `tsconfig.json` is not set to `"commonjs"`
+
+- **lint:** Remove Dockerfile syntax directives ([#2075](https://github.com/seek-oss/skuba/pull/2075))
+
+- **api:** Publish standalone `@skuba-lib/api` package ([#2072](https://github.com/seek-oss/skuba/pull/2072))
+
+  Our [development API](https://seek-oss.github.io/skuba/docs/development-api/) is now available in a standalone package. Its namespaces are available through the root `@skuba-lib/api` import, or individual submodule imports such as `@skuba-lib/api/buildkite`.
+
+  The `@skuba-lib/api` package may be useful for projects that include:
+  - A devtool/package that makes use of the development API. The package can now replace the larger `skuba` toolkit with `@skuba-lib/api` in `dependencies`.
+  - A back-end application that makes use of the development API but has its own tooling to build and test code. The application can now replace the larger `skuba` toolkit with `@skuba-lib/api` in `devDependencies` .
+
+  The `skuba` package retains its re-exports of these API namespaces for convenience.
+
 ## 12.3.0
 
 ### Minor Changes
