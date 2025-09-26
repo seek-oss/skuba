@@ -1,10 +1,10 @@
+import { validateJson } from './validation.js';
+
 import {
   IdDescriptionSchema,
   chance,
   mockIdDescription,
-} from 'src/testing/types.js';
-
-import { validateJson } from './validation.js';
+} from '#src/testing/types.js';
 
 describe('validateJson', () => {
   const idDescription = mockIdDescription();

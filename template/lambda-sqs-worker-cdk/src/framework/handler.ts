@@ -6,7 +6,11 @@ import type {
   SQSRecord,
 } from 'aws-lambda';
 
-import { lambdaContext, logger, recordContext } from 'src/framework/logging.js';
+import {
+  lambdaContext,
+  logger,
+  recordContext,
+} from '#src/framework/logging.js';
 
 type Handler<Event, Output> = (
   event: Event,
