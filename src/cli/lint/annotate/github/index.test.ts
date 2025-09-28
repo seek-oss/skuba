@@ -1,4 +1,3 @@
-import * as GitHub from '../../../../api/github/index.js';
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
@@ -10,8 +9,13 @@ import { createTscAnnotations } from './tsc.js';
 
 import { createGitHubAnnotations } from './index.js';
 
+import * as GitHub from '@skuba-lib/api/github';
+
 jest.mock('../../../../utils/logging');
-jest.mock('../../../../api/github');
+jest.mock('@skuba-lib/api/github', () => ({
+  ...jest.requireActual('@skuba-lib/api/github'),
+  createCheckRun: jest.fn(),
+}));
 
 jest.mock('./eslint');
 jest.mock('./prettier');

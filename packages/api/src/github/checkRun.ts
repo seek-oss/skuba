@@ -1,6 +1,6 @@
 import type { Endpoints } from '@octokit/types';
 
-import { pluralise } from '../../utils/logging.js';
+import { pluralise } from '../../../../src/utils/logging.js';
 import * as Git from '../git/index.js';
 
 import { apiTokenFromEnvironment } from './environment.js';
