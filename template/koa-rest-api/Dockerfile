@@ -4,13 +4,11 @@ ARG BASE_IMAGE
 
 FROM ${BASE_IMAGE} AS build
 
-ENV CI=true
-
 COPY . .
 
 RUN pnpm install --offline
 RUN pnpm build
-RUN pnpm install --offline --prod
+RUN CI=true pnpm install --offline --prod
 
 ###
 
