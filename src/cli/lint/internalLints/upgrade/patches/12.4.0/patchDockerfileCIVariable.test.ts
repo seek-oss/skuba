@@ -183,4 +183,87 @@ CMD ["npm", "start"]`;
       'utf8',
     );
   });
+
+  it('should patch dockerfiles with BASE_TAG variant', async () => {
+    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest
+      .mocked(fs.readFile)
+      .mockResolvedValueOnce(
+        'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN npm install' as never,
+      );
+
+    await expect(
+      tryPatchDockerfileCIVariable({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(fs.writeFile).toHaveBeenCalledWith(
+      'Dockerfile',
+      'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\n\nENV CI=true\n\nRUN npm install',
+      'utf8',
+    );
+    expect(fs.writeFile).toHaveBeenCalledTimes(1);
+  });
+
+  it('should detect BASE_TAG variant in lint mode', async () => {
+    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest
+      .mocked(fs.readFile)
+      .mockResolvedValueOnce(
+        'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN echo "test"' as never,
+      );
+
+    await expect(
+      tryPatchDockerfileCIVariable({
+        mode: 'lint',
+      } as PatchConfig),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(fs.writeFile).not.toHaveBeenCalled();
+  });
+
+  it('should handle mixed variants in multiple dockerfiles', async () => {
+    jest
+      .mocked(fg)
+      .mockResolvedValueOnce(['Dockerfile', 'Dockerfile.prod']);
+
+    // First dockerfile has the original variant
+    jest
+      .mocked(fs.readFile)
+      .mockResolvedValueOnce(
+        'FROM ${BASE_IMAGE} AS build\nRUN npm ci' as never,
+      );
+
+    // Second dockerfile has the BASE_TAG variant
+    jest
+      .mocked(fs.readFile)
+      .mockResolvedValueOnce(
+        'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nCOPY . .' as never,
+      );
+
+    await expect(
+      tryPatchDockerfileCIVariable({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(fs.writeFile).toHaveBeenCalledWith(
+      'Dockerfile',
+      'FROM ${BASE_IMAGE} AS build\n\nENV CI=true\n\nRUN npm ci',
+      'utf8',
+    );
+    expect(fs.writeFile).toHaveBeenCalledWith(
+      'Dockerfile.prod',
+      'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\n\nENV CI=true\n\nCOPY . .',
+      'utf8',
+    );
+    expect(fs.writeFile).toHaveBeenCalledTimes(2);
+  });
 });

@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const dockerRegex = /FROM \$\{BASE_IMAGE\} AS build/;
+const dockerRegex = /FROM \$\{BASE_IMAGE\}(?::\$\{BASE_TAG\})? AS build/;
 
 export const patchDockerfileCIVariable = async (
   mode: 'lint' | 'format',
@@ -34,7 +34,8 @@ export const patchDockerfileCIVariable = async (
   );
 
   const dockerfilesToPatch = dockerfiles.filter(({ contents }) =>
-    contents.includes('FROM ${BASE_IMAGE} AS build'),
+    contents.includes('FROM ${BASE_IMAGE} AS build') ||
+    contents.includes('FROM ${BASE_IMAGE}:${BASE_TAG} AS build'),
   );
 
   if (dockerfilesToPatch.length === 0) {
@@ -54,7 +55,7 @@ export const patchDockerfileCIVariable = async (
     dockerfilesToPatch.map(async ({ file, contents }) => {
       const updatedContents = contents.replace(
         dockerRegex,
-        'FROM ${BASE_IMAGE} AS build\n\nENV CI=true\n',
+        (match) => `${match}\n\nENV CI=true\n`,
       );
       await fs.writeFile(file, updatedContents, 'utf8');
     }),
