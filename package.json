@@ -91,7 +91,7 @@
     "eslint-config-skuba": "workspace:*",
     "execa": "^5.0.0",
     "fast-glob": "^3.3.2",
-    "find-up": "^5.0.0",
+    "find-up": "^8.0.0",
     "fs-extra": "^11.0.0",
     "function-arguments": "^1.0.9",
     "get-port": "^5.1.1",
