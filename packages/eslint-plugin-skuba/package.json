@@ -52,7 +52,7 @@
     "eslint": ">=9.11.1",
     "typescript-eslint": ">=8.39.0"
   },
-  "packageManager": "pnpm@10.17.0",
+  "packageManager": "pnpm@10.17.1",
   "engines": {
     "node": ">=20.9.0"
   },
@@ -69,6 +69,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "12.3.0"
+    "version": "12.4.0"
   }
 }

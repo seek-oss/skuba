@@ -1,7 +1,7 @@
 import type { Patches } from '../../index.js';
 
+import { tryPatchApiTokenFromEnvironment } from './patchApiTokenFromEnvironment.js';
 import { tryPatchDockerfileSyntaxDirective } from './patchDockerfileSyntaxDirective.js';
-import { rewriteSrcImports } from './rewriteSrcImports.js';
 
 export const patches: Patches = [
   {
@@ -9,7 +9,7 @@ export const patches: Patches = [
     description: 'Remove Dockerfile syntax directives',
   },
   {
-    apply: rewriteSrcImports,
-    description: "Rewrite all 'src' imports to be '#src'",
+    apply: tryPatchApiTokenFromEnvironment,
+    description: 'Update import for `apiTokenFromEnvironment`',
   },
 ];
