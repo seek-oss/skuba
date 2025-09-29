@@ -33,9 +33,10 @@ export const patchDockerfileCIVariable = async (
     }),
   );
 
-  const dockerfilesToPatch = dockerfiles.filter(({ contents }) =>
-    contents.includes('FROM ${BASE_IMAGE} AS build') ||
-    contents.includes('FROM ${BASE_IMAGE}:${BASE_TAG} AS build'),
+  const dockerfilesToPatch = dockerfiles.filter(
+    ({ contents }) =>
+      contents.includes('FROM ${BASE_IMAGE} AS build') ||
+      contents.includes('FROM ${BASE_IMAGE}:${BASE_TAG} AS build'),
   );
 
   if (dockerfilesToPatch.length === 0) {

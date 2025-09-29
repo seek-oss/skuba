@@ -228,9 +228,7 @@ CMD ["npm", "start"]`;
   });
 
   it('should handle mixed variants in multiple dockerfiles', async () => {
-    jest
-      .mocked(fg)
-      .mockResolvedValueOnce(['Dockerfile', 'Dockerfile.prod']);
+    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.prod']);
 
     // First dockerfile has the original variant
     jest
