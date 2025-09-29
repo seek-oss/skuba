@@ -44,6 +44,8 @@ Patch skipped: Update Jest snapshot URLs to the new documentation site - no test
 
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
 
+Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -143,6 +145,8 @@ Patch skipped: Update Jest snapshot URLs to the new documentation site - no test
 
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
 
+Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -238,6 +242,8 @@ Patch skipped: Update Jest snapshot URLs to the new documentation site - no test
 
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
 
+Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -302,6 +308,8 @@ Patch skipped: Add event handler to log unhandled promise rejections instead of 
 Patch skipped: Update Jest snapshot URLs to the new documentation site - no test files found upgrade-skuba
 
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
+
+Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
