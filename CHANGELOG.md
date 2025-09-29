@@ -1,5 +1,55 @@
 # skuba
 
+## 12.4.0
+
+### Minor Changes
+
+- **build:** Default esbuild output to CJS format ([#2074](https://github.com/seek-oss/skuba/pull/2074))
+
+  **Note:** This only affects projects that have manually set `package.json#/skuba/build` to `"esbuild"`. There are [less than 10 of these](https://github.com/search?q=skuba+%2F%22build%22%3A+%22esbuild%22%2F+language%3AJSON+NOT+is%3Aarchived+NOT+is%3Afork&type=code) at time of writing.
+
+  `skuba build` now defaults to CJS output when using the esbuild configuration. ESM output is only used when the following conditions are met:
+  - `"type": "module"` is set in `package.json`
+  - The `module` field in `tsconfig.json` is not set to `"commonjs"`
+
+- **lint:** Remove Dockerfile `syntax` parser directive ([#2075](https://github.com/seek-oss/skuba/pull/2075))
+
+  Our [containerisation guidance](https://seek-oss.github.io/skuba/docs/deep-dives/npm.html) mounts the `NPM_TOKEN` environment variable as a build secret. This requires [Dockerfile frontend version 1.10+](https://docs.docker.com/build/buildkit/dockerfile-release-notes/#1100), and we previously recommended adding a [`syntax` parser directive](https://docs.docker.com/reference/dockerfile/#syntax) to ensure availability of the feature in your build context.
+
+  ```dockerfile
+  # syntax=docker/dockerfile:1.10.0
+
+  FROM ...
+  ```
+
+  However, the directive introduces an online dependency on Docker services at build time. As SEEK-standard local & CI environments now include frontend version 1.18+ in their Docker toolchains, we recommend removing the directive and relying on the bundled version to reduce manual upkeep of the frontend version and to improve resilience.
+
+  We will try to apply a one-time [patch](https://seek-oss.github.io/skuba/docs/cli/lint.html#patches) to your project to remove the directive. If your build breaks after the patch, your Dockerfile(s) may use other newer syntax features, and you can try manually restoring the directive.
+
+- **api:** Export `apiTokenFromEnvironment` from `GitHub` namespace ([#2079](https://github.com/seek-oss/skuba/pull/2079))
+
+  The `apiTokenFromEnvironment` function is now available as `GitHub.apiTokenFromEnvironment()`.
+
+  If you were importing this function directly from an internal path, update your imports:
+
+  ```diff
+  -import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';
+  +import { GitHub } from 'skuba';
+
+  -const apiToken = apiTokenFromEnvironment();
+  +const apiToken = GitHub.apiTokenFromEnvironment();
+  ```
+
+- **api:** Publish standalone `@skuba-lib/api` package ([#2072](https://github.com/seek-oss/skuba/pull/2072))
+
+  Our [development API](https://seek-oss.github.io/skuba/docs/development-api/) is now available in a standalone package. Its namespaces are available through the root `@skuba-lib/api` import, or individual submodule imports such as `@skuba-lib/api/buildkite`.
+
+  The `@skuba-lib/api` package may be useful for projects that include:
+  - A dev tool/package that makes use of the development API. The package can now replace the larger `skuba` toolkit with `@skuba-lib/api` in `dependencies`.
+  - A back-end application that makes use of the development API but has its own tooling to build and test code. The application can now replace the larger `skuba` toolkit with `@skuba-lib/api` in `devDependencies` .
+
+  The `skuba` package retains its re-exports of these API namespaces for convenience.
+
 ## 12.3.0
 
 ### Minor Changes
