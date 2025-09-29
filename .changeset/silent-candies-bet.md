@@ -2,7 +2,7 @@
 'skuba': minor
 ---
 
-**api**: Export `apiTokenFromEnvironment` from `GitHub` namespace
+api: Export `apiTokenFromEnvironment` from `GitHub` namespace
 
 The `apiTokenFromEnvironment` function is now available as `GitHub.apiTokenFromEnvironment()`.
 
