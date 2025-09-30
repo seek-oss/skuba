@@ -1,64 +1,16 @@
+import type { Endpoints } from '@octokit/types';
+
 import { pluralise } from '../../../../src/utils/logging.js';
 import * as Git from '../git/index.js';
 
 import { apiTokenFromEnvironment } from './environment.js';
 import { createRestClient } from './octokit.js';
 
-/**
- * GitHub check run annotation object
- *
- * @see https://docs.github.com/en/rest/checks/runs?apiVersion=2022-11-28#list-check-run-annotations--code-samples
- */
-export interface Annotation {
-  /**
-   * The path of the file to add an annotation to.
-   */
-  path: string;
+type Output = NonNullable<
+  Endpoints['PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}']['parameters']['output']
+>;
 
-  /**
-   * The start line of the annotation.
-   */
-  start_line: number;
-
-  /**
-   * The end line of the annotation.
-   */
-  end_line: number;
-
-  /**
-   * The start column of the annotation. Annotations only support
-   * start_column and end_column on the same line. Omit this parameter
-   * if start_line and end_line have different values.
-   */
-  start_column?: number;
-
-  /**
-   * The end column of the annotation. Annotations only support
-   * start_column and end_column on the same line. Omit this parameter
-   * if start_line and end_line have different values.
-   */
-  end_column?: number;
-
-  /**
-   * The level of the annotation.
-   */
-  annotation_level: 'notice' | 'warning' | 'failure';
-
-  /**
-   * A short description of the feedback for these lines of code.
-   */
-  message: string;
-
-  /**
-   * The title that represents the annotation.
-   */
-  title?: string;
-
-  /**
-   * Details about this annotation.
-   */
-  raw_details?: string;
-}
+export type Annotation = NonNullable<Output['annotations']>[number];
 
 const GITHUB_MAX_ANNOTATIONS = 50;
 
