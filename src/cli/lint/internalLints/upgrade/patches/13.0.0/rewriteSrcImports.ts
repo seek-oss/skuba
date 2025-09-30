@@ -24,16 +24,41 @@ export const hasSkubaDiveRegisterImportRegex =
 export const hasSrcImportRegex =
   /import\s+(?:type\s+\{[^}]*\}|\{[^}]*\}|\*\s+as\s+\w+|\w+(?:\s*,\s*\{[^}]*\})?)\s+from\s+['"]src\/[^'"]*['"]/gm;
 
-export const replaceSrcImport = (contents: string) =>
-  contents.replace(hasSrcImportRegex, (match) =>
-    match.replace(/(['"])src\//g, '$1#src/'),
-  );
+export const hasImportRegex = /import\(\s*["']src\/[^'"]*["']\s*\)/gm;
+
+export const hasJestMockRegex = /jest\.mock\(\s*["']src\/[^'"]*["']\s*\)/gm;
+
+const multiLineCommentRegex = /\/\*[\s\S]*?\*\//g;
+
+const singleLineCommentRegex = /\/\/.*$/gm;
+
+const whitespaceRegex = /\s/g;
 
 const removeSkubaDiveRegisterImport = (contents: string) =>
   contents.replace(hasSkubaDiveRegisterImportRegex, '');
 
-const replaceAllImports = (contents: string) =>
-  removeSkubaDiveRegisterImport(replaceSrcImport(contents));
+export const isFileEmpty = (contents: string): boolean =>
+  contents
+    .replace(multiLineCommentRegex, '')
+    .replace(singleLineCommentRegex, '')
+    .replace(whitespaceRegex, '').length === 0;
+
+export const replaceSrcImport = (contents: string) => {
+  const combinedSrcRegex = new RegExp(
+    [
+      hasSrcImportRegex.source,
+      hasImportRegex.source,
+      hasJestMockRegex.source,
+    ].join('|'),
+    'gm',
+  );
+
+  const withReplacedSrcImports = contents.replace(combinedSrcRegex, (match) =>
+    match.replace(/(['"])src\//g, '$1#src/'),
+  );
+
+  return removeSkubaDiveRegisterImport(withReplacedSrcImports);
+};
 
 export const tryRewriteSrcImports: PatchFunction = async ({
   mode,
@@ -54,7 +79,7 @@ export const tryRewriteSrcImports: PatchFunction = async ({
   const mapped = tsFiles.map(({ file, contents }) => ({
     file,
     before: contents,
-    after: replaceAllImports(contents),
+    after: replaceSrcImport(contents),
   }));
 
   if (mode === 'lint') {
@@ -65,6 +90,11 @@ export const tryRewriteSrcImports: PatchFunction = async ({
 
   await Promise.all(
     mapped.map(async ({ file, after }) => {
+      if (isFileEmpty(after)) {
+        await fs.promises.unlink(file);
+        return;
+      }
+
       await fs.promises.writeFile(file, after);
     }),
   );

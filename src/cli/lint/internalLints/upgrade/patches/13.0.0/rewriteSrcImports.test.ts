@@ -4,8 +4,11 @@ import { configForPackageManager } from '../../../../../../utils/packageManager.
 import type { PatchConfig } from '../../index.js';
 
 import {
+  hasImportRegex,
+  hasJestMockRegex,
   hasSkubaDiveRegisterImportRegex,
   hasSrcImportRegex,
+  isFileEmpty,
   replaceSrcImport,
   tryRewriteSrcImports,
 } from './rewriteSrcImports.js';
@@ -69,8 +72,160 @@ describe('tryRewriteSrcImports', () => {
             },
       );
     });
+
+    it('should delete file if it only contains skuba-dive/register import', async () => {
+      const input = `import "skuba-dive/register";`;
+
+      const inputVolume = {
+        'apps/api/register.ts': input,
+      };
+
+      vol.fromJSON(inputVolume);
+
+      await expect(
+        tryRewriteSrcImports({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual(
+        mode === 'lint'
+          ? inputVolume
+          : {
+              'apps/api': null,
+            },
+      );
+    });
+
+    it('should delete file if it only contains whitespace and comments after processing', async () => {
+      const input = `import "skuba-dive/register";
+      // This is a comment
+      /* Multi-line
+         comment */
+
+      `;
+
+      const inputVolume = {
+        'apps/api/empty-after-processing.ts': input,
+      };
+
+      vol.fromJSON(inputVolume);
+
+      await expect(
+        tryRewriteSrcImports({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual(
+        mode === 'lint'
+          ? inputVolume
+          : {
+              'apps/api': null,
+            },
+      );
+    });
+
+    it('should not delete file if it contains meaningful content after processing', async () => {
+      const input = `import "skuba-dive/register";
+import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
+
+export const someFunction = () => {
+  return 'meaningful content';
+};`;
+
+      const inputVolume = {
+        'apps/api/meaningful-content.ts': input,
+      };
+
+      vol.fromJSON(inputVolume);
+
+      await expect(
+        tryRewriteSrcImports({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual(
+        mode === 'lint'
+          ? inputVolume
+          : {
+              'apps/api/meaningful-content.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+
+export const someFunction = () => {
+  return 'meaningful content';
+};`,
+            },
+      );
+    });
   });
 });
+
+describe('isFileEmpty', () => {
+  it.each([
+    ['Empty string', ''],
+    ['Only whitespace', '   \n\t  \r\n  '],
+    ['Only single-line comment', '// This is a comment'],
+    ['Only multi-line comment', '/* This is a comment */'],
+    [
+      'Mixed whitespace and comments',
+      '  \n// Comment\n  /* Another comment */  \n',
+    ],
+    [
+      'Multiple single-line comments',
+      '// Comment 1\n// Comment 2\n// Comment 3',
+    ],
+    ['Multiple multi-line comments', '/* Comment 1 */ /* Comment 2 */'],
+    [
+      'Complex whitespace and comments',
+      `
+      // Header comment
+      
+      /* 
+       * Multi-line comment
+       * with multiple lines
+       */
+      // Footer comment
+      
+    `,
+    ],
+  ])('should return true for %s', (_, input: string) => {
+    expect(isFileEmpty(input)).toBe(true);
+  });
+
+  it.each([
+    ['Simple code', 'const x = 1;'],
+    ['Import statement', "import { test } from 'test';"],
+    ['Export statement', 'export const test = 1;'],
+    ['Function declaration', 'function test() {}'],
+    ['Class declaration', 'class Test {}'],
+    ['Type declaration', 'type Test = string;'],
+    ['Interface declaration', 'interface Test {}'],
+    ['Code with comments', 'const x = 1; // Comment'],
+    ['Code with multi-line comment', 'const x = 1; /* Comment */'],
+    [
+      'Mixed code and comments',
+      '// Comment\nconst x = 1;\n/* Another comment */',
+    ],
+    ['String containing comment-like text', "const str = '// not a comment';"],
+    [
+      'Template literal with comment-like text',
+      'const str = `/* not a comment */`;',
+    ],
+  ])('should return false for %s', (_, input: string) => {
+    expect(isFileEmpty(input)).toBe(false);
+  });
+});
+
 describe('hasSkubaDiveRegisterImportRegex', () => {
   it.each([
     ['Bare import', 'import "skuba-dive/register";'],
@@ -177,5 +332,66 @@ describe('hasSrcImportRegex and replaceSrcImport', () => {
     ],
   ])('should not match %s', (_, input: string) => {
     expect(input).not.toMatch(hasSrcImportRegex);
+  });
+});
+
+describe('hasImportRegex', () => {
+  it.each([
+    ['Basic dynamic import', "import('src/utils/helper.js')"],
+    ['Dynamic import with spaces', "import( 'src/utils/helper.js' )"],
+    ['Dynamic import with double quotes', 'import("src/utils/helper.js")'],
+    [
+      'Dynamic import with spaces and double quotes',
+      'import( "src/utils/helper.js" )',
+    ],
+    ['Dynamic import without extension', "import('src/utils/helper')"],
+    ['Dynamic import with extra spaces', "import(  'src/utils/helper.js'  )"],
+  ])('should match %s', (_, input: string) => {
+    expect(input).toMatch(hasImportRegex);
+  });
+
+  it.each([
+    [
+      'Regular import statement',
+      "import { helper } from 'src/utils/helper.js'",
+    ],
+    ['Dynamic import without src prefix', "import('utils/helper.js')"],
+    ['Dynamic import with different prefix', "import('lib/utils/helper.js')"],
+    ['Dynamic import with src in middle', "import('utils/src/helper.js')"],
+    ['String containing src but not import', "'src/utils/helper.js'"],
+    ['Import with src in quotes but not path', "import('other-src/helper.js')"],
+  ])('should not match %s', (_, input: string) => {
+    expect(input).not.toMatch(hasImportRegex);
+  });
+});
+
+describe('hasJestMockRegex', () => {
+  it.each([
+    ['Basic jest.mock', "jest.mock('src/utils/helper.js')"],
+    ['Jest mock with spaces', "jest.mock( 'src/utils/helper.js' )"],
+    ['Jest mock with double quotes', 'jest.mock("src/utils/helper.js")'],
+    [
+      'Jest mock with spaces and double quotes',
+      'jest.mock( "src/utils/helper.js" )',
+    ],
+    ['Jest mock without extension', "jest.mock('src/utils/helper')"],
+    ['Jest mock with extra spaces', "jest.mock(  'src/utils/helper.js'  )"],
+  ])('should match %s', (_, input: string) => {
+    expect(input).toMatch(hasJestMockRegex);
+  });
+
+  it.each([
+    ['Jest mock without src prefix', "jest.mock('utils/helper.js')"],
+    ['Jest mock with different prefix', "jest.mock('lib/utils/helper.js')"],
+    ['Jest mock with src in middle', "jest.mock('utils/src/helper.js')"],
+    ['String containing src but not jest.mock', "'src/utils/helper.js'"],
+    [
+      'Jest mock with src in quotes but not path',
+      "jest.mock('other-src/helper.js')",
+    ],
+    ['Other jest method', "jest.fn('src/utils/helper.js')"],
+    ['Mock without jest prefix', "mock('src/utils/helper.js')"],
+  ])('should not match %s', (_, input: string) => {
+    expect(input).not.toMatch(hasJestMockRegex);
   });
 });
