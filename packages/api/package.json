@@ -50,7 +50,7 @@
     "net"
   ],
   "scripts": {
-    "build": "tsdown"
+    "build": "tsdown && ./scripts/fix-types.sh"
   },
   "dependencies": {
     "@octokit/graphql": "^9.0.0",
@@ -61,7 +61,7 @@
     "isomorphic-git": "^1.11.1"
   },
   "devDependencies": {
-    "tsdown": "^0.15.4"
+    "tsdown": "^0.15.5"
   },
   "publishConfig": {
     "exports": {
