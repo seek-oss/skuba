@@ -46,8 +46,9 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found upgrade-skuba
 
-Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -150,12 +151,9 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found upgrade-skuba
 
-<<<<<<< HEAD
-Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
-||||||| 218404c7
-=======
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
->>>>>>> main
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -254,12 +252,9 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found upgrade-skuba
 
-<<<<<<< HEAD
-Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
-||||||| 218404c7
-=======
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
->>>>>>> main
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -328,12 +323,9 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found upgrade-skuba
 
-<<<<<<< HEAD
-Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
-||||||| 218404c7
-=======
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
->>>>>>> main
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
