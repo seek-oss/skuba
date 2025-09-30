@@ -1,4 +1,4 @@
-import type { Octokit } from '@octokit/rest';
+import type { Octokit } from '@octokit/rest' with { 'resolution-mode': 'import' };
 import type { RequestParameters } from '@octokit/types';
 
 export const createRestClient = async (options: {
