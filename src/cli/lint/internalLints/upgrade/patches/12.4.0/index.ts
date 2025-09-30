@@ -1,10 +1,10 @@
 import type { Patches } from '../../index.js';
 
-import { rewriteSrcImports } from './rewriteSrcImports.js';
+import { tryPatchDockerfileCIVariable } from './patchDockerfileCIVariable.js';
 
 export const patches: Patches = [
   {
-    apply: rewriteSrcImports,
-    description: "Rewrite all 'src' imports to be '#src'",
+    apply: tryPatchDockerfileCIVariable,
+    description: 'Remove Dockerfile syntax directives',
   },
 ];
