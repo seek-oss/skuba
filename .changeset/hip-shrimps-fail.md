@@ -2,4 +2,4 @@
 '@skuba-lib/api': patch
 ---
 
-types: Fix node16 moduleResolution compatibility
+types: Fix `Node16` module resolution compatibility
