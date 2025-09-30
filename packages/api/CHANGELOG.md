@@ -1,5 +1,11 @@
 # @skuba-lib/api
 
+## 1.0.1
+
+### Patch Changes
+
+- **types:** Fix `Node16` module resolution compatibility ([#2086](https://github.com/seek-oss/skuba/pull/2086))
+
 ## 1.0.0
 
 ### Major Changes
