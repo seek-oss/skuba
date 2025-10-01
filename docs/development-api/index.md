@@ -28,9 +28,9 @@ you can use its convenient re-exports:
 ```
 
 ```typescript
-import { GitHub } from '@skuba';
+import { GitHub } from 'skuba';
 
-GitHub.putIssueComment(/* ... */);
+await GitHub.putIssueComment(/* ... */);
 ```
 
 If your project uses the development API in code that is executed at runtime or included in an npm package,
@@ -51,5 +51,5 @@ This is good hygiene to avoid a runtime dependency on the larger `skuba` toolkit
 ```typescript
 import * as GitHub from '@skuba-lib/api/github';
 
-GitHub.putIssueComment(/* ... */);
+await GitHub.putIssueComment(/* ... */);
 ```
