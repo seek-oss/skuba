@@ -6,6 +6,7 @@ import type { PatchConfig } from '../../index.js';
 import {
   hasImportRegex,
   hasJestMockRegex,
+  hasRelativeRegisterImportRegex,
   hasSkubaDiveRegisterImportRegex,
   hasSrcImportRegex,
   isFileEmpty,
@@ -102,11 +103,11 @@ describe('tryRewriteSrcImports', () => {
 
     it('should delete file if it only contains whitespace and comments after processing', async () => {
       const input = `import "skuba-dive/register";
-      // This is a comment
-      /* Multi-line
-         comment */
+        // This is a comment
+        /* Multi-line
+           comment */
 
-      `;
+        `;
 
       const inputVolume = {
         'apps/api/empty-after-processing.ts': input,
@@ -134,11 +135,11 @@ describe('tryRewriteSrcImports', () => {
 
     it('should not delete file if it contains meaningful content after processing', async () => {
       const input = `import "skuba-dive/register";
-import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
+        import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
 
-export const someFunction = () => {
-  return 'meaningful content';
-};`;
+        export const someFunction = () => {
+          return 'meaningful content';
+        };`;
 
       const inputVolume = {
         'apps/api/meaningful-content.ts': input,
@@ -160,6 +161,153 @@ export const someFunction = () => {
           ? inputVolume
           : {
               'apps/api/meaningful-content.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+
+              export const someFunction = () => {
+                return 'meaningful content';
+              };`,
+            },
+      );
+    });
+
+    it('should handle relative register imports correctly when target file will be deleted', async () => {
+      const inputVolume = {
+        'src/register.ts': `import "skuba-dive/register";`,
+        'src/app.ts': `import "./register";
+          import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
+
+          export const someFunction = () => {
+            return 'meaningful content';
+          };`,
+      };
+
+      vol.fromJSON(inputVolume);
+
+      await expect(
+        tryRewriteSrcImports({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual(
+        mode === 'lint'
+          ? inputVolume
+          : {
+              'src/app.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+
+              export const someFunction = () => {
+                return 'meaningful content';
+              };`,
+            },
+      );
+    });
+
+    it('should keep relative register imports when target file will not be deleted', async () => {
+      const inputVolume = {
+        'src/register.ts': `import "skuba-dive/register";
+          export const config = { test: true };`,
+        'src/app.ts': `import "./register";
+          import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
+
+          export const someFunction = () => {
+            return 'meaningful content';
+          };`,
+      };
+
+      vol.fromJSON(inputVolume);
+
+      await expect(
+        tryRewriteSrcImports({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual(
+        mode === 'lint'
+          ? inputVolume
+          : {
+              'src/register.ts': `export const config = { test: true };`,
+              'src/app.ts': `import "./register";
+import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+
+export const someFunction = () => {
+  return 'meaningful content';
+};`,
+            },
+      );
+    });
+
+    it('should handle nested relative register imports correctly', async () => {
+      const inputVolume = {
+        'src/register.ts': `import "skuba-dive/register";`,
+        'src/nested/app.ts': `import "../register";
+          import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
+
+          export const someFunction = () => {
+            return 'meaningful content';
+          };`,
+      };
+
+      vol.fromJSON(inputVolume);
+
+      await expect(
+        tryRewriteSrcImports({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual(
+        mode === 'lint'
+          ? inputVolume
+          : {
+              'src/nested/app.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+              export const someFunction = () => {
+                return 'meaningful content';
+              };`,
+            },
+      );
+    });
+
+    it('should handle mixed scenarios with some files being deleted and others not', async () => {
+      const inputVolume = {
+        'src/register.ts': `import "skuba-dive/register";`,
+        'src/config.ts': `import "skuba-dive/register";
+          export const config = { test: true };`,
+        'src/app.ts': `import "./register";
+          import "./config";
+          import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
+
+          export const someFunction = () => {
+            return 'meaningful content';
+          };`,
+      };
+
+      vol.fromJSON(inputVolume);
+
+      await expect(
+        tryRewriteSrcImports({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual(
+        mode === 'lint'
+          ? inputVolume
+          : {
+              'src/config.ts': `export const config = { test: true };`,
+              'src/app.ts': `import "./config";
+import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
 export const someFunction = () => {
   return 'meaningful content';
@@ -188,15 +336,15 @@ describe('isFileEmpty', () => {
     [
       'Complex whitespace and comments',
       `
-      // Header comment
-      
-      /* 
-       * Multi-line comment
-       * with multiple lines
-       */
-      // Footer comment
-      
-    `,
+        // Header comment
+        
+        /* 
+         * Multi-line comment
+         * with multiple lines
+         */
+        // Footer comment
+        
+      `,
     ],
   ])('should return true for %s', (_, input: string) => {
     expect(isFileEmpty(input)).toBe(true);
@@ -230,6 +378,13 @@ describe('hasSkubaDiveRegisterImportRegex', () => {
   it.each([
     ['Bare import', 'import "skuba-dive/register";'],
     ['Bare import with .js', 'import "skuba-dive/register.js";'],
+  ])('should match %s', (_, input: string) => {
+    expect(input).toMatch(hasSkubaDiveRegisterImportRegex);
+  });
+
+  it.each([
+    ['No register', 'import "'],
+    ['Other import', 'import "source-map-support/register";'],
     ['Root import', 'import "./register";'],
     ['Root import with .js', 'import "./register.js";'],
     ['Relative import', 'import "../register";'],
@@ -238,13 +393,6 @@ describe('hasSkubaDiveRegisterImportRegex', () => {
     ['Relative import with src and .js', 'import "../src/register.js";'],
     ['Nested import', 'import "../../src/register";'],
     ['Nested import with .js', 'import "../../src/register.js";'],
-  ])('should match %s', (_, input: string) => {
-    expect(input).toMatch(hasSkubaDiveRegisterImportRegex);
-  });
-
-  it.each([
-    ['No register', 'import "'],
-    ['Other import', 'import "source-map-support/register";'],
     [
       'Other lib namespace import',
       'import * as map from "source-map-support/register";',
@@ -255,6 +403,39 @@ describe('hasSkubaDiveRegisterImportRegex', () => {
     ],
   ])('should not match %s', (_, input: string) => {
     expect(input).not.toMatch(hasSkubaDiveRegisterImportRegex);
+  });
+});
+
+describe('hasRelativeRegisterImportRegex', () => {
+  it.each([
+    ['Root import', 'import "./register";'],
+    ['Root import with .js', 'import "./register.js";'],
+    ['Relative import', 'import "../register";'],
+    ['Relative import with .js', 'import "../register.js";'],
+    ['Relative import with src', 'import "../src/register";'],
+    ['Relative import with src and .js', 'import "../src/register.js";'],
+    ['Nested import', 'import "../../src/register";'],
+    ['Nested import with .js', 'import "../../src/register.js";'],
+  ])('should match %s', (_, input: string) => {
+    expect(input).toMatch(hasRelativeRegisterImportRegex);
+  });
+
+  it.each([
+    ['No register', 'import "'],
+    ['Bare skuba-dive import', 'import "skuba-dive/register";'],
+    ['Bare skuba-dive import with .js', 'import "skuba-dive/register.js";'],
+    ['Other import', 'import "source-map-support/register";'],
+    ['Absolute import', 'import "src/register";'],
+    [
+      'Other lib namespace import',
+      'import * as map from "source-map-support/register";',
+    ],
+    [
+      'Other lib named import',
+      'import { Register } from "source-map-support/register";',
+    ],
+  ])('should not match %s', (_, input: string) => {
+    expect(input).not.toMatch(hasRelativeRegisterImportRegex);
   });
 });
 
@@ -283,13 +464,13 @@ describe('hasSrcImportRegex and replaceSrcImport', () => {
     [
       'Multi-line types import',
       `import type {
-          ZodOpenApiOperationObject,
-          ZodOpenApiResponseObject,
-        } from 'src/zod-openapi';`,
+        ZodOpenApiOperationObject,
+        ZodOpenApiResponseObject,
+      } from 'src/zod-openapi';`,
       `import type {
-          ZodOpenApiOperationObject,
-          ZodOpenApiResponseObject,
-        } from '#src/zod-openapi';`,
+        ZodOpenApiOperationObject,
+        ZodOpenApiResponseObject,
+      } from '#src/zod-openapi';`,
     ],
     [
       'Mixed named and namespace imports',
@@ -304,13 +485,13 @@ describe('hasSrcImportRegex and replaceSrcImport', () => {
     [
       'Multi-line import',
       `import {
-      getAccountInfo,
-      getCooked,
-    } from 'src/services/accounts/getAccountInfo.js';`,
+        getAccountInfo,
+        getCooked,
+      } from 'src/services/accounts/getAccountInfo.js';`,
       `import {
-      getAccountInfo,
-      getCooked,
-    } from '#src/services/accounts/getAccountInfo.js';`,
+        getAccountInfo,
+        getCooked,
+      } from '#src/services/accounts/getAccountInfo.js';`,
     ],
   ])('should replace %s', (_, input: string, expected: string) => {
     expect(replaceSrcImport(input)).toBe(expected);

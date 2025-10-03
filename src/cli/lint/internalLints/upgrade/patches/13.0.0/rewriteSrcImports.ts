@@ -1,3 +1,4 @@
+import path from 'path';
 import { inspect } from 'util';
 
 import { glob } from 'fast-glob';
@@ -19,7 +20,13 @@ const fetchFiles = async (files: string[]) =>
   );
 
 export const hasSkubaDiveRegisterImportRegex =
-  /import\s+['"](?:skuba-dive\/register|\.\.?\/.*?register)(?:\.js)?['"];?\s*/gm;
+  /import\s+['"](?:skuba-dive\/register)(?:\.js)?['"];?\s*/gm;
+
+export const hasRelativeRegisterImportRegex =
+  /import\s+['"](\.\.?\/.*?register)(?:\.js)?['"];?\s*/gm;
+
+export const hasRelativeImportRegex =
+  /import\s+['"](\.\.?\/[^'"]*?)(?:\.js)?['"];?\s*/gm;
 
 export const hasSrcImportRegex =
   /import\s+(?:type\s+\{[^}]*\}|\{[^}]*\}|\*\s+as\s+\w+|\w+(?:\s*,\s*\{[^}]*\})?)\s+from\s+['"]src\/[^'"]*['"]/gm;
@@ -36,6 +43,34 @@ const whitespaceRegex = /\s/g;
 
 const removeSkubaDiveRegisterImport = (contents: string) =>
   contents.replace(hasSkubaDiveRegisterImportRegex, '');
+
+const removeRelativeRegisterImport = (contents: string) =>
+  contents.replace(hasRelativeRegisterImportRegex, '');
+
+const removeSelectiveRelativeImports = (
+  contents: string,
+  file: string,
+  deletionSet: Set<string>,
+): string =>
+  contents.replace(hasRelativeImportRegex, (match, relativePath: string) => {
+    if (!relativePath) {
+      return match;
+    }
+
+    const fileDir = path.dirname(file);
+    const resolvedPath = path.resolve(fileDir, relativePath);
+
+    if (path.extname(relativePath)) {
+      return deletionSet.has(resolvedPath) ? '' : match;
+    }
+
+    const possiblePaths = [`${resolvedPath}.ts`, `${resolvedPath}.js`];
+    const shouldRemove = possiblePaths.some((possiblePath) =>
+      deletionSet.has(possiblePath),
+    );
+
+    return shouldRemove ? '' : match;
+  });
 
 export const isFileEmpty = (contents: string): boolean =>
   contents
@@ -60,6 +95,57 @@ export const replaceSrcImport = (contents: string) => {
   return removeSkubaDiveRegisterImport(withReplacedSrcImports);
 };
 
+export const replaceSrcImportWithConditionalRegisterRemoval = (
+  contents: string,
+  shouldRemoveRelativeRegister: boolean,
+) => {
+  const combinedSrcRegex = new RegExp(
+    [
+      hasSrcImportRegex.source,
+      hasImportRegex.source,
+      hasJestMockRegex.source,
+    ].join('|'),
+    'gm',
+  );
+
+  const withReplacedSrcImports = contents.replace(combinedSrcRegex, (match) =>
+    match.replace(/(['"])src\//g, '$1#src/'),
+  );
+
+  const withoutSkubaDive = removeSkubaDiveRegisterImport(
+    withReplacedSrcImports,
+  );
+
+  return shouldRemoveRelativeRegister
+    ? removeRelativeRegisterImport(withoutSkubaDive)
+    : withoutSkubaDive;
+};
+
+export const replaceSrcImportWithSelectiveRegisterRemoval = (
+  contents: string,
+  file: string,
+  deletionSet: Set<string>,
+) => {
+  const combinedSrcRegex = new RegExp(
+    [
+      hasSrcImportRegex.source,
+      hasImportRegex.source,
+      hasJestMockRegex.source,
+    ].join('|'),
+    'gm',
+  );
+
+  const withReplacedSrcImports = contents.replace(combinedSrcRegex, (match) =>
+    match.replace(/(['"])src\//g, '$1#src/'),
+  );
+
+  const withoutSkubaDive = removeSkubaDiveRegisterImport(
+    withReplacedSrcImports,
+  );
+
+  return removeSelectiveRelativeImports(withoutSkubaDive, file, deletionSet);
+};
+
 export const tryRewriteSrcImports: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
@@ -76,10 +162,38 @@ export const tryRewriteSrcImports: PatchFunction = async ({
 
   const tsFiles = await fetchFiles(tsFileNames);
 
+  const filesWithSkubaDiveRemoved = tsFiles.map(({ file, contents }) => ({
+    file,
+    before: contents,
+    afterSkubaDiveRemoval: removeSkubaDiveRegisterImport(
+      contents.replace(
+        new RegExp(
+          [
+            hasSrcImportRegex.source,
+            hasImportRegex.source,
+            hasJestMockRegex.source,
+          ].join('|'),
+          'gm',
+        ),
+        (match) => match.replace(/(['"])src\//g, '$1#src/'),
+      ),
+    ),
+  }));
+
+  const filesToDelete = new Set(
+    filesWithSkubaDiveRemoved
+      .filter(({ afterSkubaDiveRemoval }) => isFileEmpty(afterSkubaDiveRemoval))
+      .map(({ file }) => path.resolve(file)),
+  );
+
   const mapped = tsFiles.map(({ file, contents }) => ({
     file,
     before: contents,
-    after: replaceSrcImport(contents),
+    after: replaceSrcImportWithSelectiveRegisterRemoval(
+      contents,
+      file,
+      filesToDelete,
+    ),
   }));
 
   if (mode === 'lint') {
@@ -89,13 +203,15 @@ export const tryRewriteSrcImports: PatchFunction = async ({
   }
 
   await Promise.all(
-    mapped.map(async ({ file, after }) => {
+    mapped.map(async ({ file, before, after }) => {
       if (isFileEmpty(after)) {
         await fs.promises.unlink(file);
         return;
       }
 
-      await fs.promises.writeFile(file, after);
+      if (before !== after) {
+        await fs.promises.writeFile(file, after);
+      }
     }),
   );
 
