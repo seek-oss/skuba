@@ -1,7 +1,8 @@
-import type * as GitHub from '../../../../api/github/index.js';
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 
 import { createEslintAnnotations } from './eslint.js';
+
+import type * as GitHub from '@skuba-lib/api/github';
 
 it('should create failure annotations for ESLint errors', () => {
   const eslintOutput: ESLintOutput = {

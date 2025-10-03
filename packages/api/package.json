@@ -1,0 +1,91 @@
+{
+  "name": "@skuba-lib/api",
+  "version": "1.0.1",
+  "description": "Node.js development API for skuba",
+  "homepage": "https://github.com/seek-oss/skuba#readme",
+  "bugs": {
+    "url": "https://github.com/seek-oss/skuba/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/seek-oss/skuba.git",
+    "directory": "packages/api"
+  },
+  "exports": {
+    ".": {
+      "@seek/skuba/source": "./src/index.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./buildkite": {
+      "@seek/skuba/source": "./src/buildkite/index.ts",
+      "import": "./lib/buildkite/index.mjs",
+      "require": "./lib/buildkite/index.js"
+    },
+    "./git": {
+      "@seek/skuba/source": "./src/git/index.ts",
+      "import": "./lib/git/index.mjs",
+      "require": "./lib/git/index.js"
+    },
+    "./github": {
+      "@seek/skuba/source": "./src/github/index.ts",
+      "import": "./lib/github/index.mjs",
+      "require": "./lib/github/index.js"
+    },
+    "./net": {
+      "@seek/skuba/source": "./src/net/index.ts",
+      "import": "./lib/net/index.mjs",
+      "require": "./lib/net/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib",
+    "buildkite",
+    "git",
+    "github",
+    "net"
+  ],
+  "scripts": {
+    "build": "tsdown && ./scripts/fix-types.sh"
+  },
+  "dependencies": {
+    "@octokit/graphql": "^9.0.0",
+    "@octokit/rest": "^22.0.0",
+    "@octokit/types": "^15.0.0",
+    "fs-extra": "^11.0.0",
+    "ignore": "^7.0.0",
+    "isomorphic-git": "^1.11.1"
+  },
+  "devDependencies": {
+    "tsdown": "^0.15.5"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.js"
+      },
+      "./buildkite": {
+        "import": "./lib/buildkite/index.mjs",
+        "require": "./lib/buildkite/index.js"
+      },
+      "./git": {
+        "import": "./lib/git/index.mjs",
+        "require": "./lib/git/index.js"
+      },
+      "./github": {
+        "import": "./lib/github/index.mjs",
+        "require": "./lib/github/index.js"
+      },
+      "./net": {
+        "import": "./lib/net/index.mjs",
+        "require": "./lib/net/index.js"
+      },
+      "./package.json": "./package.json"
+    }
+  }
+}

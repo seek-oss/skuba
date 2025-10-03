@@ -15,6 +15,34 @@ import { getAccountInfo } from 'src/services/accounts.js';
 import { getAccountInfo } from '#src/services/accounts.js';
 ```
 
-As part of this migration, this will also update your `tsconfig.json`, `tsconfig.build.json`, `package.json` and `jest.config.ts` files to support these new imports.
+As part of this migration, this will also update your `tsconfig.json`, `tsconfig.build.json`, `package.json` and `jest.config.ts`/`jest.config.*.ts` files to support these new imports.
+
+If your Jest configuration has differed from the standard `skuba` configuration, you may need to manually update your `moduleNameMapper` to support these new imports:
+
+```typescript
+  moduleNameMapper: {
+    '^#src/(.*)\\.js$': [
+      '<rootDir>/src/$1',
+    ],
+    '^#src/(.*)$': [
+      '<rootDir>/src/$1',
+    ],
+  },
+```
+
+If you are working in a monorepo:
+
+```typescript
+  moduleNameMapper: {
+    '^#src/(.*)\\.js$': [
+      '<rootDir>/apps/api/src/$1',
+      '<rootDir>/apps/worker/src/$1',
+    ],
+    '^#src/(.*)$': [
+      '<rootDir>/apps/api/src/$1',
+      '<rootDir>/apps/worker/src/$1',
+    ],
+  },
+```
 
 Please manually verify that your `skuba build` and `skuba test` commands still work as expected as there may be some edge cases that need to be manually resolved.

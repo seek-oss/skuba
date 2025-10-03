@@ -82,7 +82,7 @@ on:
   push:
     branches:
       # add others as necessary
-      - $default-branch
+      - main
       - beta
       # - alpha
 ```

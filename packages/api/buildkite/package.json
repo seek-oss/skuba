@@ -1,0 +1,5 @@
+{
+  "main": "../lib/buildkite/index.js",
+  "module": "../lib/buildkite/index.mjs",
+  "types": "../lib/buildkite/index.d.ts"
+}

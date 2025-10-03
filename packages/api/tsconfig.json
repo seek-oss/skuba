@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "lib": ["ES2021"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "outDir": "lib",
+    "removeComments": false,
+    "skipLibCheck": true, // tsdown has optional peer deps
+    "target": "ES2021"
+  },
+  "exclude": ["lib*/**/*"],
+  "extends": "../../config/tsconfig.json"
+}

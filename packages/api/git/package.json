@@ -1,0 +1,5 @@
+{
+  "main": "../lib/git/index.js",
+  "module": "../lib/git/index.mjs",
+  "types": "../lib/git/index.d.ts"
+}

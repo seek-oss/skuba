@@ -2,12 +2,16 @@ import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
 
-import * as Git from '../../../api/git/index.js';
-
 import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
 import type { PatchConfig } from './upgrade/index.js';
 
+import * as Git from '@skuba-lib/api/git';
+
 jest.mock('fs', () => memfs);
+jest.mock('@skuba-lib/api/git', () => ({
+  ...jest.requireActual<object>('@skuba-lib/api/git'),
+  getOwnerAndRepo: jest.fn(),
+}));
 
 const JSON = `
 {
@@ -31,7 +35,7 @@ const JSON5_CONFIGURED = `{extends: ['github>seek-oss/rynovate', local>seek-jobs
 
 const JSON5_EXTENDED = `{extends: ['github>seek-jobs/custom-config']}`;
 
-const getOwnerAndRepo = jest.spyOn(Git, 'getOwnerAndRepo');
+const getOwnerAndRepo = jest.mocked(Git.getOwnerAndRepo);
 
 const consoleLog = jest.spyOn(console, 'log').mockImplementation();
 

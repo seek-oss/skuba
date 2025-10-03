@@ -2,18 +2,21 @@
   "compilerOptions": {
     "declaration": true,
     "lib": ["ES2023"],
-    "module": "commonjs",
-    "moduleResolution": "node",
     "outDir": "lib",
     "removeComments": false,
-    "target": "ES2023"
+    "target": "ES2023",
+    "moduleResolution": "Node16",
+    "module": "node20",
+    "customConditions": ["@seek/skuba/source"]
   },
   "exclude": [
     "integration/**/*",
     "lib*/**/*",
-    "template/**/*",
+    "packages/api/lib",
     "packages/eslint-config-skuba",
-    "packages/eslint-plugin-skuba"
+    "packages/eslint-plugin-skuba",
+    "template/**/*",
+    "**/*/tsdown.config.mts"
   ],
   "extends": "./config/tsconfig.json"
 }

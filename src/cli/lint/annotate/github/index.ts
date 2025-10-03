@@ -1,8 +1,3 @@
-import {
-  buildNameFromEnvironment,
-  enabledFromEnvironment,
-} from '../../../../api/github/environment.js';
-import * as GitHub from '../../../../api/github/index.js';
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
@@ -13,6 +8,8 @@ import { createInternalAnnotations } from './internal.js';
 import { createPrettierAnnotations } from './prettier.js';
 import { createTscAnnotations } from './tsc.js';
 
+import * as GitHub from '@skuba-lib/api/github';
+
 export const createGitHubAnnotations = async (
   internal: InternalLintResult,
   eslint: ESLintOutput,
@@ -20,7 +17,7 @@ export const createGitHubAnnotations = async (
   tscOk: boolean,
   tscOutputStream: StreamInterceptor,
 ) => {
-  if (!enabledFromEnvironment()) {
+  if (!GitHub.enabledFromEnvironment()) {
     return;
   }
 
@@ -37,7 +34,7 @@ export const createGitHubAnnotations = async (
     ? '`skuba lint` passed.'
     : '`skuba lint` found issues that require triage.';
 
-  const build = buildNameFromEnvironment();
+  const build = GitHub.buildNameFromEnvironment();
 
   await GitHub.createCheckRun({
     name: 'skuba/lint',
