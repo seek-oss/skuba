@@ -584,6 +584,11 @@ describe('hasJestMockRegex', () => {
     ],
     ['Jest mock without extension', "jest.mock('src/utils/helper')"],
     ['Jest mock with extra spaces', "jest.mock(  'src/utils/helper.js'  )"],
+    ['Jest mock with callback', "jest.mock('src/config', () => ({"],
+    [
+      'Jest mock with factory function',
+      "jest.mock('src/utils/helper.js', () => jest.fn())",
+    ],
   ])('should match %s', (_, input: string) => {
     expect(input).toMatch(hasJestMockRegex);
   });

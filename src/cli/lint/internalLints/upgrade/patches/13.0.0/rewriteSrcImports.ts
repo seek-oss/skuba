@@ -33,7 +33,7 @@ export const hasSrcImportRegex =
 
 export const hasImportRegex = /import\(\s*["']src\/[^'"]*["']\s*\)/gm;
 
-export const hasJestMockRegex = /jest\.mock\(\s*["']src\/[^'"]*["']\s*\)/gm;
+export const hasJestMockRegex = /jest\.mock\(\s*["']src\/[^'"]*["']/gm;
 
 const multiLineCommentRegex = /\/\*[\s\S]*?\*\//g;
 
