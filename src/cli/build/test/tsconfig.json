@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "customConditions": ["condition1", "condition2"],
-    "module": "node16",
+    "module": "node20",
     "moduleResolution": "node16",
     "strictNullChecks": true
   }

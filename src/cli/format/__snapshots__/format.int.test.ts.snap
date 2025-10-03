@@ -50,6 +50,8 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
+Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` for ESM - no changes required upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -155,6 +157,8 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
+Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` for ESM - no changes required upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -256,6 +260,8 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
+Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` for ESM - no changes required upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -326,6 +332,8 @@ Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found 
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+
+Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` for ESM - no changes required upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
