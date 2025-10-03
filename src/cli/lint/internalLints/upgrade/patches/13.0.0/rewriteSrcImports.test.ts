@@ -1,4 +1,5 @@
 import memfs, { vol } from 'memfs';
+import dedent from 'ts-dedent';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';
@@ -102,12 +103,13 @@ describe('tryRewriteSrcImports', () => {
     });
 
     it('should delete file if it only contains whitespace and comments after processing', async () => {
-      const input = `import "skuba-dive/register";
+      const input = dedent`
+        import "skuba-dive/register";
         // This is a comment
         /* Multi-line
            comment */
 
-        `;
+      `;
 
       const inputVolume = {
         'apps/api/empty-after-processing.ts': input,
@@ -134,12 +136,14 @@ describe('tryRewriteSrcImports', () => {
     });
 
     it('should not delete file if it contains meaningful content after processing', async () => {
-      const input = `import "skuba-dive/register";
+      const input = dedent`
+        import "skuba-dive/register";
         import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
 
         export const someFunction = () => {
           return 'meaningful content';
-        };`;
+        };
+      `;
 
       const inputVolume = {
         'apps/api/meaningful-content.ts': input,
@@ -160,11 +164,13 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-              'apps/api/meaningful-content.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+              'apps/api/meaningful-content.ts': dedent`
+                import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
-              export const someFunction = () => {
-                return 'meaningful content';
-              };`,
+                export const someFunction = () => {
+                  return 'meaningful content';
+                };
+              `,
             },
       );
     });
@@ -172,12 +178,14 @@ describe('tryRewriteSrcImports', () => {
     it('should handle relative register imports correctly when target file will be deleted', async () => {
       const inputVolume = {
         'src/register.ts': `import "skuba-dive/register";`,
-        'src/app.ts': `import "./register";
+        'src/app.ts': dedent`
+          import "./register";
           import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
 
           export const someFunction = () => {
             return 'meaningful content';
-          };`,
+          };
+        `,
       };
 
       vol.fromJSON(inputVolume);
@@ -195,25 +203,31 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-              'src/app.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+              'src/app.ts': dedent`
+                import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
-              export const someFunction = () => {
-                return 'meaningful content';
-              };`,
+                export const someFunction = () => {
+                  return 'meaningful content';
+                };
+              `,
             },
       );
     });
 
     it('should keep relative register imports when target file will not be deleted', async () => {
       const inputVolume = {
-        'src/register.ts': `import "skuba-dive/register";
-          export const config = { test: true };`,
-        'src/app.ts': `import "./register";
+        'src/register.ts': dedent`
+          import "skuba-dive/register";
+          export const config = { test: true };
+        `,
+        'src/app.ts': dedent`
+          import "./register";
           import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
 
           export const someFunction = () => {
             return 'meaningful content';
-          };`,
+          };
+        `,
       };
 
       vol.fromJSON(inputVolume);
@@ -232,12 +246,14 @@ describe('tryRewriteSrcImports', () => {
           ? inputVolume
           : {
               'src/register.ts': `export const config = { test: true };`,
-              'src/app.ts': `import "./register";
-import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+              'src/app.ts': dedent`
+                import "./register";
+                import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
-export const someFunction = () => {
-  return 'meaningful content';
-};`,
+                export const someFunction = () => {
+                  return 'meaningful content';
+                };
+              `,
             },
       );
     });
@@ -245,12 +261,14 @@ export const someFunction = () => {
     it('should handle nested relative register imports correctly', async () => {
       const inputVolume = {
         'src/register.ts': `import "skuba-dive/register";`,
-        'src/nested/app.ts': `import "../register";
+        'src/nested/app.ts': dedent`
+          import "../register";
           import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
 
           export const someFunction = () => {
             return 'meaningful content';
-          };`,
+          };
+        `,
       };
 
       vol.fromJSON(inputVolume);
@@ -268,10 +286,13 @@ export const someFunction = () => {
         mode === 'lint'
           ? inputVolume
           : {
-              'src/nested/app.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
-              export const someFunction = () => {
-                return 'meaningful content';
-              };`,
+              'src/nested/app.ts': dedent`
+                import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+
+                export const someFunction = () => {
+                  return 'meaningful content';
+                };
+              `,
             },
       );
     });
@@ -279,15 +300,19 @@ export const someFunction = () => {
     it('should handle mixed scenarios with some files being deleted and others not', async () => {
       const inputVolume = {
         'src/register.ts': `import "skuba-dive/register";`,
-        'src/config.ts': `import "skuba-dive/register";
-          export const config = { test: true };`,
-        'src/app.ts': `import "./register";
+        'src/config.ts': dedent`
+          import "skuba-dive/register";
+          export const config = { test: true };
+        `,
+        'src/app.ts': dedent`
+          import "./register";
           import "./config";
           import { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';
 
           export const someFunction = () => {
             return 'meaningful content';
-          };`,
+          };
+        `,
       };
 
       vol.fromJSON(inputVolume);
@@ -306,12 +331,14 @@ export const someFunction = () => {
           ? inputVolume
           : {
               'src/config.ts': `export const config = { test: true };`,
-              'src/app.ts': `import "./config";
-import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
+              'src/app.ts': dedent`
+                import "./config";
+                import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
-export const someFunction = () => {
-  return 'meaningful content';
-};`,
+                export const someFunction = () => {
+                  return 'meaningful content';
+                };
+              `,
             },
       );
     });
