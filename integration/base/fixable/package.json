@@ -1,9 +1,9 @@
 {
   "dependencies": {},
   "devDependencies": {},
+  "sideEffects": false,
   "license": "UNLICENSED",
   "private": true,
-  "sideEffects": false,
   "skuba": {
     "entryPoint": null,
     "template": null,

@@ -1,5 +1,3 @@
-import './register.js';
-
 import app from './app.js';
 import { config } from './config.js';
 import { logger } from './framework/logging.js';
