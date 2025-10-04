@@ -170,6 +170,80 @@ tsconfig.build.json:
 
 Unfortunately, Jest does not support custom import conditions so we will need to apply a custom [`moduleNameMapper`] to help with the transition.
 
+#### Runtime Considerations
+
+For regular APIs and packages, Node.js will automatically resolve the correct files based on the `imports` field in `package.json`. Simply ensure that `package.json` is included in your deployment or published package.
+
+If you are bundling your code (e.g., for AWS Lambda or CDK), ensure that your bundler supports the `imports` field in `package.json`. Most modern bundlers like esbuild, webpack, and Rollup support this feature but may require additional configuration.
+
+##### AWS CDK
+
+For AWS CDK projects, add the following `esbuildArgs` to your `NodejsFunction`:
+
+```ts
+const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+  architecture: aws_lambda.Architecture[architecture],
+  runtime: aws_lambda.Runtime.NODEJS_22_X,
+  memorySize: 512,
+  entry: './src/app.ts',
+  bundling: {
+    sourceMap: true,
+    target: 'node22',
+    externalModules: [],
+    esbuildArgs: {
+      // Ensure esbuild respects the "imports" field in package.json
+      '--conditions': '@seek/my-repo/source',
+    },
+  },
+});
+```
+
+##### Serverless Framework
+
+For Serverless projects **not** using bundling, include `package.json` containing the subpath imports in the package patterns:
+
+```yml
+package:
+  patterns:
+    - '!**'
+    - 'lib/**'
+    - 'package.json'
+```
+
+For Serverless projects using the native `esbuild` option, declare the conditions within the `build.esbuild` options in your `serverless.yml`:
+
+```yml
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    conditions:
+      - '@seek/my-repo/source'
+```
+
+For Serverless projects using `serverless-esbuild`, declare the conditions within the `custom.esbuild` options in your `serverless.yml`:
+
+```yml
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    conditions:
+      - '@seek/my-repo/source'
+```
+
+For Serverless projects using `serverless-webpack`, add the following to your `webpack.config.js`:
+
+```js
+module.exports = {
+  resolve: {
+    conditionNames: ['@seek/my-repo/source', '...'],
+  },
+};
+```
+
+> **Note:** The `'...'` syntax ensures that the default condition names resolution logic is preserved.
+
 ### 3. Switch to Vitest
 
 Finally, we will switch to [Vitest] as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition.
