@@ -191,7 +191,6 @@ const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
     target: 'node22',
     externalModules: [],
     esbuildArgs: {
-      // Ensure esbuild respects the "imports" field in package.json
       '--conditions': '@seek/my-repo/source',
     },
   },
