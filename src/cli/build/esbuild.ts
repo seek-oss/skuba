@@ -7,7 +7,7 @@ import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 import { createLogger } from '../../utils/logging.js';
 
 import { parseTscArgs } from './args.js';
-import { readTsBuildConfig, tsc } from './tsc.js';
+import { getCustomConditions, readTsBuildConfig, tsc } from './tsc.js';
 
 interface EsbuildParameters {
   debug: boolean;
@@ -21,6 +21,8 @@ export const esbuild = async (
   const log = createLogger({ debug });
 
   const tscArgs = parseTscArgs(args);
+
+  const customConditions = getCustomConditions();
 
   if (tscArgs.build) {
     log.err(
@@ -82,6 +84,7 @@ export const esbuild = async (
       ? ScriptTarget[compilerOptions.target].toLocaleLowerCase()
       : undefined,
     tsconfig: tscArgs.pathname,
+    conditions: customConditions?.length ? customConditions : undefined,
   });
 
   const end = process.hrtime.bigint();
