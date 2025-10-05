@@ -170,11 +170,11 @@ tsconfig.build.json:
 
 Unfortunately, Jest does not support custom import conditions so we will need to apply a custom [`moduleNameMapper`] to help with the transition.
 
-#### Runtime Considerations
+#### Runtime considerations
 
-For regular APIs and packages, Node.js will automatically resolve the correct files based on the `imports` field in `package.json`. Simply ensure that `package.json` is included in your deployment or published package.
+For typical packages and back-end applications, Node.js will automatically resolve the correct files based on the `imports` field in `package.json`. Simply ensure that `package.json` is included in your deployment or published package.
 
-If you are bundling your code (e.g., for AWS Lambda or CDK), ensure that your bundler supports the `imports` field in `package.json`. Most modern bundlers like esbuild, webpack, and Rollup support this feature but may require additional configuration.
+If you are bundling your code (e.g. for AWS Lambda), ensure that your bundler supports the `imports` field in `package.json`. Most modern bundlers like esbuild, webpack, and Rollup support this feature but may require additional configuration.
 
 ##### AWS CDK
 
@@ -199,7 +199,7 @@ const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
 
 ##### Serverless Framework
 
-For Serverless projects **not** using bundling, include `package.json` containing the subpath imports in the package patterns:
+For Serverless projects **not** using bundling, include the `package.json` containing subpath imports within the package patterns in your `serverless.yml`:
 
 ```yml
 package:
@@ -241,7 +241,9 @@ module.exports = {
 };
 ```
 
-> **Note:** The `'...'` syntax ensures that the default condition names resolution logic is preserved.
+> **Note:** The [`'...'` syntax] preserves the default Webpack condition names.
+
+[`'...'` syntax]: https://webpack.js.org/configuration/resolve/#resolveconditionnames
 
 ### 3. Switch to Vitest
 
