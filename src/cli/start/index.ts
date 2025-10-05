@@ -10,10 +10,8 @@ import { getCustomConditions } from '../build/tsc.js';
 
 export const start = async () => {
   const customConditions = getCustomConditions();
-  const [args, availablePort] = await Promise.all([
-    parseRunArgs(process.argv.slice(2)),
-    getPort(),
-  ]);
+  const args = parseRunArgs(process.argv.slice(2));
+  const availablePort = await getPort();
 
   const uniqueConditions = [
     ...new Set([...(args.conditions ?? []), ...customConditions]),
