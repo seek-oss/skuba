@@ -80,7 +80,7 @@ TODO: add support links for the dev deployment.
 <!--
 - CloudWatch dashboard
 - Datadog dashboard
-- Splunk logs
+- Datadog logs
 -->
 
 ### Prod
@@ -90,7 +90,7 @@ TODO: add support links for the prod deployment.
 <!--
 - CloudWatch dashboard
 - Datadog dashboard
-- Splunk logs
+- Datadog logs
 -->
 
 [Technical Guidelines]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346017/
