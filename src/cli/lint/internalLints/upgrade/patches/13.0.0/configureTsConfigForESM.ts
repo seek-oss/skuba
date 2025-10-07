@@ -3,6 +3,7 @@ import { inspect } from 'util';
 
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
+import ts from 'typescript';
 import * as z from 'zod';
 
 import { Git } from '../../../../../../index.js';
@@ -164,18 +165,22 @@ export const updatePackageJson = ({
 };
 
 const parseTsconfig = (
+  file: string,
   contents: string,
 ): {
   original: TsConfig;
   parsed: TsConfig;
+  srcPaths: string[];
 } | null => {
   try {
-    const parsedJson: unknown = JSON.parse(contents);
-    const tsconfig = tsConfigSchema.parse(parsedJson);
+    const parsedJson = ts.parseConfigFileTextToJson(file, contents);
+    const tsconfig = tsConfigSchema.parse(parsedJson.config);
+    console.log('tsconfig', tsconfig);
 
     return {
-      original: parsedJson as TsConfig,
+      original: parsedJson.config as TsConfig,
       parsed: tsconfig,
+      srcPaths: tsconfig.compilerOptions?.paths?.['./src/*'] ?? [],
     };
   } catch (error) {
     log.warn(`Failed to parse root tsconfig.json as JSON: ${String(error)}`);
@@ -246,14 +251,14 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
 
   const parsedTsconfigFiles = tsconfigJsonFiles.flatMap(
     ({ file, contents }) => {
-      const parsed = parseTsconfig(contents);
+      const parsed = parseTsconfig(file, contents);
       return parsed ? [{ file, ...parsed }] : [];
     },
   );
 
   const parsedTsconfigBuildFiles = tsconfigBuildJsonFiles.flatMap(
     ({ file, contents }) => {
-      const parsed = parseTsconfig(contents);
+      const parsed = parseTsconfig(file, contents);
       return parsed ? [{ file, ...parsed }] : [];
     },
   );
