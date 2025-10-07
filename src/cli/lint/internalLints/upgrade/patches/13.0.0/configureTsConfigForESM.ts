@@ -175,7 +175,6 @@ const parseTsconfig = (
   try {
     const parsedJson = ts.parseConfigFileTextToJson(file, contents);
     const tsconfig = tsConfigSchema.parse(parsedJson.config);
-    console.log('tsconfig', tsconfig);
 
     return {
       original: parsedJson.config as TsConfig,
