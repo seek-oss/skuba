@@ -2,7 +2,7 @@ kind: ContainerImage
 
 schemaVersion: v0.0
 
-image: '{{values "image"}}'
+image: '<%- prodAwsAccountId %>.dkr.ecr.<%- region %>.amazonaws.com/<%- serviceName %>:{{.BuildID}}'
 
 buildArgs:
   # https://github.com/seek-oss/docker-ecr-cache-buildkite-plugin#building-on-the-resulting-image
