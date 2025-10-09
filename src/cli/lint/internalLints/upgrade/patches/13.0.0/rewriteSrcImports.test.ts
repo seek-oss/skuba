@@ -589,6 +589,14 @@ describe('hasJestMockRegex', () => {
       'Jest mock with factory function',
       "jest.mock('src/utils/helper.js', () => jest.fn())",
     ],
+    ['Basic jest.doMock', "jest.doMock('src/utils/helper.js')"],
+    ['Jest doMock with double quotes', 'jest.doMock("src/utils/helper.js")'],
+    ['Jest doMock without extension', "jest.doMock('src/utils/helper')"],
+    ['Jest doMock with callback', "jest.doMock('src/config', () => ({"],
+    [
+      'Jest doMock with factory function',
+      "jest.doMock('src/utils/helper.js', () => jest.fn())",
+    ],
   ])('should match %s', (_, input: string) => {
     expect(input).toMatch(hasJestMockRegex);
   });
@@ -604,6 +612,9 @@ describe('hasJestMockRegex', () => {
     ],
     ['Other jest method', "jest.fn('src/utils/helper.js')"],
     ['Mock without jest prefix', "mock('src/utils/helper.js')"],
+    ['Jest doMock without src prefix', "jest.doMock('utils/helper.js')"],
+    ['Jest doMock with src in middle', "jest.doMock('utils/src/helper.js')"],
+    ['doMock without jest prefix', "doMock('src/utils/helper.js')"],
   ])('should not match %s', (_, input: string) => {
     expect(input).not.toMatch(hasJestMockRegex);
   });
