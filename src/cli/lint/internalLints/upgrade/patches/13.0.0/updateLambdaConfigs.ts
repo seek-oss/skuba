@@ -239,7 +239,7 @@ const patchWebpackConfigFile = ({
 
     // Add conditionNames property to resolve block
     const modifiedResolveContent = resolveContent.trimStart();
-    const newResolveContent = `\n    conditionNames: ['${customCondition}'],\n    ${modifiedResolveContent}`;
+    const newResolveContent = `\n    conditionNames: ['${customCondition}', '...'],\n    ${modifiedResolveContent}`;
 
     const modifiedExportsContent = `${exportsContent.slice(0, resolveBlock.matchIndex)}resolve: {${newResolveContent}}${exportsContent.slice(resolveBlock.endIndex)}`;
 
@@ -253,7 +253,7 @@ const patchWebpackConfigFile = ({
 
   // Add resolve property with conditionNames to module.exports
   const modifiedExportsContent = exportsContent.trimStart();
-  const newExportsContent = `\n  resolve: {\n    conditionNames: ['${customCondition}'],\n  },\n  ${modifiedExportsContent}`;
+  const newExportsContent = `\n  resolve: {\n    conditionNames: ['${customCondition}', '...'],\n  },\n  ${modifiedExportsContent}`;
 
   const modified = `${contents.slice(0, exportsBlock.startIndex)}${newExportsContent}${contents.slice(exportsBlock.endIndex)}`;
 

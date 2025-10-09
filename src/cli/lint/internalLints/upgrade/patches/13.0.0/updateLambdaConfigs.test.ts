@@ -210,7 +210,7 @@ module.exports = {
 
       module.exports = {
         resolve: {
-          conditionNames: ['@seek/test-repo/source'],
+          conditionNames: ['@seek/test-repo/source', '...'],
         },
         entry: './src/index.ts',
         target: 'node22',
@@ -242,7 +242,7 @@ module.exports = {
           ],
         },
         resolve: {
-          conditionNames: ['@seek/test-repo/source'],
+          conditionNames: ['@seek/test-repo/source', '...'],
           extensions: ['.ts', '.js', '.json'],
           alias: {
             '@': path.resolve(__dirname, 'src'),
