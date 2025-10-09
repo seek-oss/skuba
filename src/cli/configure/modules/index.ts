@@ -24,5 +24,5 @@ export const loadModules = (opts: Options): Promise<Module[]> =>
       serverlessModule,
       skubaDiveModule,
       tslintModule,
-    ].map((createModule) => createModule(opts)),
+    ].map(async (createModule) => createModule(opts)),
   );
