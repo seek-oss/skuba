@@ -18,6 +18,7 @@ WORKDIR /workdir
 
 COPY --from=build /workdir/lib lib
 COPY --from=build /workdir/node_modules node_modules
+COPY --from=build /workdir/package.json package.json
 
 ENV NODE_ENV=production
 
