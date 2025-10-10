@@ -8,7 +8,11 @@ import type { Module, Options } from '../types.js';
 
 const DEFAULT_FILENAME = 'src/register.ts';
 
-export const skubaDiveModule = ({ entryPoint, type }: Options): Module => {
+export const skubaDiveModule = async ({
+  entryPoint,
+  type,
+  // eslint-disable-next-line @typescript-eslint/require-await
+}: Options): Promise<Module> => {
   // skuba-dive is a runtime component; it's not appropriate for packages
   if (type === 'package') {
     return {};

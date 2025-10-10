@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "customConditions": ["@seek/skuba/source"],
+    "moduleResolution": "node16",
     "incremental": true,
-    "moduleResolution": "node",
+    "module": "node20",
     "outDir": "lib",
     "skipLibCheck": true
   },
