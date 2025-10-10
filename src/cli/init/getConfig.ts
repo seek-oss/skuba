@@ -1,7 +1,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import { Form, type FormChoice } from 'enquirer';
+import enquirer from 'enquirer';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy.js';
@@ -36,6 +36,7 @@ export const runForm = <T = Record<string, string>>(props: {
   name: string;
 }) => {
   const { message, name } = props;
+  const { Form } = enquirer;
 
   const choices = props.choices.map((choice) => ({
     ...choice,
@@ -71,7 +72,9 @@ export const runForm = <T = Record<string, string>>(props: {
   return form.run();
 };
 
-const confirmShouldContinue = async (choices: readonly FormChoice[]) => {
+const confirmShouldContinue = async (
+  choices: readonly enquirer.FormChoice[],
+) => {
   const fieldsList = choices.map((choice) => choice.message);
 
   log.newline();
@@ -122,7 +125,7 @@ const cloneTemplate = async (
     });
   }
 
-  const templateConfig = getTemplateConfig(
+  const templateConfig = await getTemplateConfig(
     path.join(process.cwd(), destinationDir),
   );
 
@@ -153,17 +156,22 @@ const getTemplateName = async () => {
   return templateSelection;
 };
 
-const generatePlaceholders = (choices: FormChoice[]) =>
+const generatePlaceholders = (choices: enquirer.FormChoice[]) =>
   Object.fromEntries(
     choices.map(({ name }) => [name, `<%- ${name} %>`] as const),
   );
 
-export const getTemplateConfig = (dir: string): TemplateConfig => {
+export const getTemplateConfig = async (
+  dir: string,
+): Promise<TemplateConfig> => {
   const templateConfigPath = path.join(dir, TEMPLATE_CONFIG_FILENAME);
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const templateConfig = require(templateConfigPath) as unknown;
+    const templateConfigModule = (await import(templateConfigPath)) as {
+      default?: unknown;
+      [key: string]: unknown;
+    };
+    const templateConfig = templateConfigModule.default ?? templateConfigModule;
 
     return templateConfigSchema.parse(templateConfig);
   } catch (err) {

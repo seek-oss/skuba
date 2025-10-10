@@ -48,6 +48,8 @@ Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found 
 
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
 
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -151,6 +153,8 @@ Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found 
 
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
 
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -250,6 +254,8 @@ Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found 
 
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
 
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -318,6 +324,8 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 Patch skipped: Update import for \`apiTokenFromEnvironment\` - no scripts found upgrade-skuba
 
 Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrade-skuba
+
+Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
