@@ -124,7 +124,7 @@ function processNode(node, context, check) {
 
   const value = source.value.replace(/\?.*$/, '');
 
-  // Already contains a file extension (allowlisted common TypeScript extensions)
+  // Already contains a valid extension or is empty
   if (!value || /\.(js|mjs|cjs|json|node|ts|tsx|jsx|mts|cts)$/.test(value)) {
     return;
   }
