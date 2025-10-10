@@ -1,5 +1,6 @@
 ---
 'eslint-config-skuba': minor
+'skuba': minor
 ---
 
 lint: Update file extension detection logic
