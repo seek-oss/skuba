@@ -19,11 +19,6 @@ const fetchFiles = async (files: string[]) =>
   );
 
 const applyDockerfilePatch = (contents: string) => {
-  if (contents.includes('pnpm deploy')) {
-    // Assume pnpm is going to bring in the package.json file
-    return undefined;
-  }
-
   const cmdLineRegex = /CMD\s+\[.*?\]/ms;
   const cmdLineMatch = cmdLineRegex.exec(contents);
   const cmdLine = cmdLineMatch?.[0];
