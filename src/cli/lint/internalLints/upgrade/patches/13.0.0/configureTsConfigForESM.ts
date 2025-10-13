@@ -200,6 +200,10 @@ const updateTsConfig = ({
     parsed.compilerOptions ??= {};
     parsed.compilerOptions.customConditions ??= [];
 
+    if (parsed.compilerOptions.customConditions.includes(customCondition)) {
+      throw new Error('Custom condition already exists in tsconfig.json');
+    }
+
     if (!parsed.compilerOptions.customConditions.includes(customCondition)) {
       parsed.compilerOptions.customConditions.push(customCondition);
     }
