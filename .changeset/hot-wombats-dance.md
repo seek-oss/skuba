@@ -15,7 +15,7 @@ import { getAccountInfo } from 'src/services/accounts.js';
 import { getAccountInfo } from '#src/services/accounts.js';
 ```
 
-As part of this migration, this will also update your `tsconfig.json`, `tsconfig.build.json`, `package.json` and `jest.config.ts`/`jest.config.*.ts` files to support these new imports.
+As part of this migration, this will also update your `tsconfig*.json`, `package.json`, `jest.config*.ts`, `serverless*.yml`, `Dockerfile*` and CDK infra files to support these new imports.
 
 If your Jest configuration has differed from the standard `skuba` configuration, you may need to manually update your `moduleNameMapper` to support these new imports:
 
@@ -45,4 +45,4 @@ If you are working in a monorepo:
   },
 ```
 
-Please manually verify that your `skuba build` and `skuba test` commands still work as expected as there may be some edge cases that need to be manually resolved.
+Please manually verify that your deployments (e.g. Serverless Framework, CDK, Docker) are correctly handling these new imports as there may be some edge cases that need manual intervention.
