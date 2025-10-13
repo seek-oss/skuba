@@ -1,6 +1,7 @@
 import type { Patches } from '../../index.js';
 
 import { configureTsConfigForESM } from './configureTsConfigForESM.js';
+import { patchApiDockerfiles } from './patchApiDockerfiles.js';
 import { rewriteSrcImports } from './rewriteSrcImports.js';
 import { updateLambdaConfigs } from './updateLambdaConfigs.js';
 
@@ -18,5 +19,9 @@ export const patches: Patches = [
     apply: updateLambdaConfigs,
     description:
       'Update lambda function configurations to support custom conditions',
+  },
+  {
+    apply: patchApiDockerfiles,
+    description: 'Patch Dockerfiles to copy `package.json`',
   },
 ];
