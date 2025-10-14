@@ -62,7 +62,14 @@ moduleNameMapper: {
 
 ### TypeScript errors with `pure-parse` types
 
-If you encounter TypeScript errors related to `pure-parse` types, upgrade `@seek/logger` to version 11.2.1 or later.
+If you encounter TypeScript errors related to `pure-parse` types:
+
+```bash
+tsc      │ node_modules/@seek/logger/lib-types/eeeoh/eeeoh.d.ts(2,15): error TS2305: Module '"pure-parse"' has no exported member 'Infer'.
+tsc.     | node_modules/pure-parse/dist/index.d.ts(1,15): error TS2834: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path.
+```
+
+Upgrade `@seek/logger` to version 11.2.1 or later.
 
 ### Custom conditions error
 
