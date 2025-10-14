@@ -255,8 +255,7 @@ module.exports = {
 
   it('should update Serverless files with esbuild configuration', async () => {
     vol.fromJSON({
-      'serverless.yml': `
-service: my-lambda-service
+      'serverless.yml': `service: my-lambda-service
 
 plugins:
   - serverless-esbuild
@@ -272,20 +271,19 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-      'serverless.yaml': `
-      service: my-lambda-service
-      
-      build:
-        esbuild:
-          bundle: true
-          minify: false
-          sourcemap: true
-          target: node22
-      
-      functions:
-        myFunction:
-          handler: src/handler.main
-            `,
+      'serverless.yaml': `service: my-lambda-service
+
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    target: node22
+
+functions:
+  myFunction:
+    handler: src/handler.main
+      `,
       'serverless.other.yml': `service: my-lambda-service
 
 plugins:
@@ -339,22 +337,22 @@ functions:
         myFunction:
           handler: src/handler.main
             ",
-        "serverless.yaml": "
-            service: my-lambda-service
-            
-            build:
-              esbuild:
-                bundle: true
-                minify: false
-                sourcemap: true
-                target: node22
-            
-            functions:
-              myFunction:
-                handler: src/handler.main
-                  ",
-        "serverless.yml": "
-      service: my-lambda-service
+        "serverless.yaml": "service: my-lambda-service
+
+      build:
+        esbuild:
+          conditions:
+            - '@seek/test-repo/source'
+          bundle: true
+          minify: false
+          sourcemap: true
+          target: node22
+
+      functions:
+        myFunction:
+          handler: src/handler.main
+            ",
+        "serverless.yml": "service: my-lambda-service
 
       plugins:
         - serverless-esbuild
