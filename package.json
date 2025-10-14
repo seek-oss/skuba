@@ -15,7 +15,7 @@
   "sideEffects": false,
   "imports": {
     "#src/*": {
-      "@seek/<%- serviceName %>/source": "./src/*",
+      "@seek/skuba/source": "./src/*",
       "default": "./lib/*"
     }
   },
