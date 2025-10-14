@@ -176,16 +176,6 @@ For typical packages and back-end applications, Node.js will automatically resol
 
 If you are bundling your code (e.g. for AWS Lambda), ensure that your bundler supports the `imports` field in `package.json`. Most modern bundlers like esbuild, webpack, and Rollup support this feature but may require additional configuration.
 
-##### APIs
-
-For typical API deployments using Gantry, simply ensure that `package.json` is included in your Docker image:
-
-```diff
- COPY --from=build /workdir/lib lib
- COPY --from=build /workdir/node_modules node_modules
-+COPY --from=build /workdir/package.json package.json
-```
-
 ##### AWS CDK
 
 For AWS CDK projects, add the following `esbuildArgs` to your `NodejsFunction`:
@@ -205,6 +195,16 @@ const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
     },
   },
 });
+```
+
+##### Containerised workloads
+
+For typical API workloads hosted on Automat or Gantry, simply ensure that `package.json` is included in your container image:
+
+```diff
+ COPY --from=build /workdir/lib lib
+ COPY --from=build /workdir/node_modules node_modules
++COPY --from=build /workdir/package.json package.json
 ```
 
 ##### Serverless Framework
