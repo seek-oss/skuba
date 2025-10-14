@@ -29,7 +29,7 @@ export const hasRelativeImportRegex =
   /import\s+['"](\.\.?\/[^'"]*?)(?:\.js)?['"];?\s*/gm;
 
 export const hasSrcImportRegex =
-  /import\s+(?:type\s+\{[^}]*\}|\{[^}]*\}|\*\s+as\s+\w+|\w+(?:\s*,\s*\{[^}]*\})?)\s+from\s+['"]src\/[^'"]*['"]/gm;
+  /import\s+(?:type\s+(?:\{[^}]*\}|\*\s+as\s+\w+)|\{[^}]*\}|\*\s+as\s+\w+|\w+(?:\s*,\s*\{[^}]*\})?)\s+from\s+['"]src\/[^'"]*['"]/gm;
 
 export const hasImportRegex = /import\(\s*["']src\/[^'"]*["']\s*\)/gm;
 
