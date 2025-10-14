@@ -1,4 +1,4 @@
-import enquirer from 'enquirer';
+import { type FormChoice, Input, Select } from 'enquirer';
 import fs from 'fs-extra';
 
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
@@ -12,7 +12,7 @@ import {
   isPlatform,
 } from './validation.js';
 
-export type Choice = enquirer.FormChoice & {
+export type Choice = FormChoice & {
   /**
    * Whether the user is allowed to skip field entry and use the initial value.
    *
@@ -27,8 +27,6 @@ export type BaseFields = Record<
 > & {
   platformName: Platform;
 };
-
-const { Input, Select } = enquirer;
 
 const BASE_CHOICES = [
   {
