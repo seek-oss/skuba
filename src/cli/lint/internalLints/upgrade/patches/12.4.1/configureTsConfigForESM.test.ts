@@ -94,10 +94,9 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no changes required',
-    });
+    ).rejects.toThrow(
+      'Custom condition @seek/test-repo/source already exists in tsconfig.json',
+    );
   });
 
   it('should create a new customConditions field in the root tsConfig', async () => {
