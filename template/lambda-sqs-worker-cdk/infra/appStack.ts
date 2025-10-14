@@ -99,6 +99,9 @@ export class AppStack extends Stack {
         target: 'node22',
         // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
         externalModules: [],
+        esbuildArgs: {
+          '--conditions': '@seek/<%- serviceName %>/source',
+        },
       },
       functionName: '<%- serviceName %>',
       environment: {
