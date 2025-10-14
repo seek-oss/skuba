@@ -474,6 +474,11 @@ describe('hasSrcImportRegex and replaceSrcImport', () => {
       "import { getAccountInfo, getCooked } from '#src/services/accounts/getAccountInfo.js';",
     ],
     [
+      'Type import with namespace',
+      'import type * as SeekApi from "src/modules/schema.js";',
+      'import type * as SeekApi from "#src/modules/schema.js";',
+    ],
+    [
       'Namespace import',
       "import * as s2s from 'src/framework/http.js';",
       "import * as s2s from '#src/framework/http.js';",
