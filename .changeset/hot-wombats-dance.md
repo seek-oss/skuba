@@ -4,7 +4,7 @@
 
 **lint/test:** Update `src` imports to use native TypeScript subpath imports
 
-This removes all `skuba-dive/register` imports and replaces them with native TypeScript subpath imports using `#src/*` and
+This removes all `skuba-dive/register` imports and replaces them with native TypeScript subpath imports using `#src/*` and [custom conditions](https://www.typescriptlang.org/tsconfig/#customConditions).
 
 ```typescript
 // Before
