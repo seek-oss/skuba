@@ -150,7 +150,11 @@ export const tryRewriteSrcImports: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
   const tsFileNames = await glob(['**/*.ts', '**/*.test.ts'], {
-    ignore: ['**/.git', '**/node_modules'],
+    ignore: [
+      '**/.git',
+      '**/node_modules',
+      'src/cli/lint/internalLints/upgrade/patches/**/*',
+    ],
   });
 
   if (!tsFileNames.length) {
