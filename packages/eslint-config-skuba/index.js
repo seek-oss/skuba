@@ -15,7 +15,6 @@ module.exports = [
     ignores: [
       // Jest configuration files
       '**/jest.config*',
-      '**/jest.setup*',
     ],
   })),
   {

@@ -7,13 +7,13 @@ export const buildPackage = async (args = process.argv.slice(2)) => {
     [
       {
         command:
-          'tsc --module CommonJS --outDir lib-commonjs --project tsconfig.build.json',
+          'tsc --module CommonJS --outDir lib-commonjs --project tsconfig.build.json --moduleResolution node',
         name: 'commonjs',
         prefixColor: 'green',
       },
       {
         command:
-          'tsc --module ES2015 --outDir lib-es2015 --project tsconfig.build.json',
+          'tsc --module ES2015 --outDir lib-es2015 --project tsconfig.build.json --moduleResolution node',
         name: 'es2015',
         prefixColor: 'yellow',
       },

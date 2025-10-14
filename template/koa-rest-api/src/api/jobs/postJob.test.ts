@@ -1,7 +1,7 @@
-import { agentFromRouter } from 'src/testing/server.js';
-import { mockJobInput } from 'src/testing/types.js';
-
 import { jobRouter } from './index.js';
+
+import { agentFromRouter } from '#src/testing/server.js';
+import { mockJobInput } from '#src/testing/types.js';
 
 const agent = agentFromRouter(jobRouter);
 

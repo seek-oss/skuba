@@ -2,6 +2,12 @@
   "name": "<%- moduleName %>",
   "version": "0.0.0-semantically-released",
   "description": "<%- description %>",
+  "imports": {
+    "#src/*": {
+      "@seek/<%- serviceName %>/source": "./src/*",
+      "default": "./lib/*"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/<%- orgName %>/<%- repoName %>.git"

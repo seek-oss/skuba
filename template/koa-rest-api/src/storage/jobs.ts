@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 
-import type { Job, JobInput } from 'src/types/jobs.js';
+import type { Job, JobInput } from '#src/types/jobs.js';
 
 const jobStore: Record<string, Job> = {};
 

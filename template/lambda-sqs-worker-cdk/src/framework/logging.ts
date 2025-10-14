@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 
 import { createDestination, createLogger } from '@seek/logger';
 
-import { config } from 'src/config.js';
+import { config } from '#src/config.js';
 
 interface LambdaContext {
   awsRequestId: string;
