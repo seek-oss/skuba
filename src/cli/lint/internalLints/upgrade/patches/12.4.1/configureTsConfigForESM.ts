@@ -51,6 +51,9 @@ export const addJestModuleNameMapper = (
   contents: string,
   srcPaths: string[],
 ) => {
+  if (!srcPaths.length) {
+    return contents;
+  }
   const moduleNameRegex = /moduleNameMapper:\s*\{([\s\S]*?)\}/;
   const match = moduleNameRegex.exec(contents);
 
