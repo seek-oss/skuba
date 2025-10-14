@@ -27,3 +27,6 @@ packages:
   - .
   - packages/*
   - template/*
+
+overrides:
+  'skuba': 'workspace:*'
