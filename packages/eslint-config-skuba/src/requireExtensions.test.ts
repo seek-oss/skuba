@@ -45,8 +45,8 @@ const asyncFunction = async () => {
   const validIndexFileDynamicImportTest = await import('./indexFile/index.js');
 
   // @ts-expect-error - testing ESLint rule, intentionally missing extension
-  const srcDynamicImportTest = await import('#src/file'); // eslint-disable-line require-extensions/require-extensions
-  const validSrcDynamicImportTest = await import('#src/file.js');
+  const srcDynamicImportTest = await import('src/file'); // eslint-disable-line require-extensions/require-extensions
+  const validSrcDynamicImportTest = await import('src/file.js');
 
   // @ts-expect-error - testing ESLint rule, intentionally missing extension
   const bothDynamicImportTest = await import('./both'); // eslint-disable-line require-extensions/require-extensions
