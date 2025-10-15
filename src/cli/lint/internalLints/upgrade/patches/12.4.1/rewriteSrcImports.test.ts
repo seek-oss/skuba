@@ -10,6 +10,7 @@ import {
   hasRelativeRegisterImportRegex,
   hasSkubaDiveRegisterImportRegex,
   hasSrcImportRegex,
+  hasSrcSideEffectImportRegex,
   isFileEmpty,
   replaceSrcImport,
   tryRewriteSrcImports,
@@ -71,6 +72,33 @@ describe('tryRewriteSrcImports', () => {
           ? inputVolume
           : {
               'apps/api/app.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js;'`,
+            },
+      );
+    });
+
+    it('should patch side-effect imports from src', async () => {
+      const input = `import 'src/integrationTests/testing/hooks.js';\nimport { getAccountInfo } from 'src/services/accounts/getAccountInfo.js';`;
+
+      const inputVolume = {
+        'apps/api/app.ts': input,
+      };
+
+      vol.fromJSON(inputVolume);
+
+      await expect(
+        tryRewriteSrcImports({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual(
+        mode === 'lint'
+          ? inputVolume
+          : {
+              'apps/api/app.ts': `import '#src/integrationTests/testing/hooks.js';\nimport { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';`,
             },
       );
     });
@@ -466,6 +494,50 @@ describe('hasRelativeRegisterImportRegex', () => {
   });
 });
 
+describe('hasSrcSideEffectImportRegex', () => {
+  it.each([
+    [
+      'Side-effect import with single quotes',
+      "import 'src/integrationTests/testing/hooks.js';",
+    ],
+    ['Side-effect import with double quotes', 'import "src/utils/setup.js";'],
+    ['Side-effect import without extension', "import 'src/polyfills';"],
+    ['Side-effect import with semicolon', "import 'src/config/env.js';"],
+    ['Side-effect import without semicolon', "import 'src/config/env.js'"],
+    ['Side-effect import with spaces', "import  'src/setup.js'  ;"],
+    [
+      'Side-effect import nested path',
+      "import 'src/deep/nested/path/file.js';",
+    ],
+  ])('should match %s', (_, input: string) => {
+    expect(input).toMatch(hasSrcSideEffectImportRegex);
+  });
+
+  it.each([
+    ['Named import from src', "import { helper } from 'src/utils/helper.js';"],
+    ['Default import from src', "import helper from 'src/utils/helper.js';"],
+    [
+      'Namespace import from src',
+      "import * as helper from 'src/utils/helper.js';",
+    ],
+    [
+      'Type import from src',
+      "import type { Helper } from 'src/utils/helper.js';",
+    ],
+    ['Side-effect import without src prefix', "import 'utils/helper.js';"],
+    [
+      'Side-effect import with different prefix',
+      "import 'lib/utils/helper.js';",
+    ],
+    ['Side-effect import with src in middle', "import 'utils/src/helper.js';"],
+    ['Relative import', "import './src/helper.js';"],
+    ['Absolute import with src-like name', "import 'source-maps/register';"],
+    ['String containing src but not import', "'src/utils/helper.js'"],
+  ])('should not match %s', (_, input: string) => {
+    expect(input).not.toMatch(hasSrcSideEffectImportRegex);
+  });
+});
+
 describe('hasSrcImportRegex and replaceSrcImport', () => {
   it.each([
     [
@@ -524,6 +596,26 @@ describe('hasSrcImportRegex and replaceSrcImport', () => {
         getAccountInfo,
         getCooked,
       } from '#src/services/accounts/getAccountInfo.js';`,
+    ],
+    [
+      'Side-effect import with single quotes',
+      "import 'src/integrationTests/testing/hooks.js';",
+      "import '#src/integrationTests/testing/hooks.js';",
+    ],
+    [
+      'Side-effect import with double quotes',
+      'import "src/utils/setup.js";',
+      'import "#src/utils/setup.js";',
+    ],
+    [
+      'Side-effect import without extension',
+      "import 'src/polyfills';",
+      "import '#src/polyfills';",
+    ],
+    [
+      'Side-effect import without semicolon',
+      "import 'src/config/env.js'",
+      "import '#src/config/env.js'",
     ],
   ])('should replace %s', (_, input: string, expected: string) => {
     expect(replaceSrcImport(input)).toBe(expected);

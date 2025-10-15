@@ -365,9 +365,8 @@ const patchServerlessFile = ({
     return undefined;
   }
 
-  // Match package: blocks with patterns: arrays
-  const packageBlockRegex =
-    /^(\s*)(package:)\s*\n(\s+)(patterns:)\s*\n((?:\3\s+-\s+.+\n)*)/gm;
+  // Match package: blocks with patterns: arrays (allow other properties in between)
+  const packageBlockRegex = /^(\s*)(patterns:)\s*\n((?:\1\s+-\s+.+\n)*)/gm;
 
   let match;
   let modified = contents;
@@ -377,14 +376,7 @@ const patchServerlessFile = ({
   packageBlockRegex.lastIndex = 0;
 
   while ((match = packageBlockRegex.exec(contents)) !== null) {
-    const [
-      fullMatch,
-      baseIndent,
-      packageLabel,
-      patternsIndent,
-      patternsLabel,
-      patternsContent,
-    ] = match;
+    const [fullMatch, patternsIndent, patternsLabel, patternsContent] = match;
 
     // Check if package.json already exists in this block
     if (patternsContent?.includes('package.json')) {
@@ -393,10 +385,34 @@ const patchServerlessFile = ({
 
     // Add package.json to the patterns list
     const arrayItemIndent = `${patternsIndent}  `;
-    const newPackageBlock = `${baseIndent}${packageLabel}\n${patternsIndent}${patternsLabel}\n${patternsContent}${arrayItemIndent}- 'package.json'\n`;
+    const newPatternsBlock = `${patternsIndent}${patternsLabel}\n${patternsContent}${arrayItemIndent}- 'package.json'\n`;
 
     // Replace in the modified content
-    modified = modified.replace(fullMatch, newPackageBlock);
+    modified = modified.replace(fullMatch, newPatternsBlock);
+    hasChanges = true;
+  }
+
+  // Also match package: blocks with include: arrays (allow other properties in between)
+  const packageIncludeBlockRegex =
+    /^(\s*)(include:)\s*\n((?:\1\s+-\s+.+\n)*)/gm;
+
+  // Reset regex lastIndex for multiple matches
+  packageIncludeBlockRegex.lastIndex = 0;
+
+  while ((match = packageIncludeBlockRegex.exec(contents)) !== null) {
+    const [fullMatch, includeIndent, includeLabel, includeContent] = match;
+
+    // Check if package.json already exists in this block
+    if (includeContent?.includes('package.json')) {
+      continue;
+    }
+
+    // Add package.json to the include list
+    const arrayItemIndent = `${includeIndent}  `;
+    const newIncludeBlock = `${includeIndent}${includeLabel}\n${includeContent}${arrayItemIndent}- 'package.json'\n`;
+
+    // Replace in the modified content
+    modified = modified.replace(fullMatch, newIncludeBlock);
     hasChanges = true;
   }
 

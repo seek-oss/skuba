@@ -21,8 +21,8 @@ import { test as srcTest } from './src/file';
 import { test as validSrcTest } from './src/file.js';
 
 // eslint-disable-next-line require-extensions/require-index
-import { test as srcIndexFileTest } from '#src/indexFile';
-import { test as validSrcIndexFileTest } from '#src/indexFile/index.js';
+import { test as srcIndexFileTest } from 'src/indexFile';
+import { test as validSrcIndexFileTest } from 'src/indexFile/index.js';
 
 // eslint-disable-next-line require-extensions/require-extensions
 import { test as bothTest } from './src/both';
@@ -39,8 +39,8 @@ const asyncFunction = async () => {
   );
 
   // @ts-expect-error - testing ESLint rule, intentionally missing extension
-  const srcDynamicImportTest = await import('#src/file'); // eslint-disable-line require-extensions/require-extensions
-  const validSrcDynamicImportTest = await import('#src/file.js');
+  const srcDynamicImportTest = await import('src/file'); // eslint-disable-line require-extensions/require-extensions
+  const validSrcDynamicImportTest = await import('src/file.js');
 
   // @ts-expect-error - testing ESLint rule, intentionally missing extension
   const bothDynamicImportTest = await import('./src/both'); // eslint-disable-line require-extensions/require-extensions

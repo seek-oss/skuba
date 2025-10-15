@@ -307,6 +307,10 @@ export const tryConfigureTsConfigForESM: PatchFunction = async ({
     ),
   ];
 
+  if (!allSrcPaths.length) {
+    return { result: 'skip', reason: 'no src paths found' };
+  }
+
   // Fetch all package.json paths which may be in allSrcPaths
   const packageJsonPatterns = allSrcPaths.map((srcPath) =>
     path.join(srcPath, 'package.json'),

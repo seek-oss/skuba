@@ -50,7 +50,7 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
-Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` to support custom conditions - no changes required upgrade-skuba
+Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` to support custom conditions - no src paths found upgrade-skuba
 
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
@@ -161,7 +161,7 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
-Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` to support custom conditions - no changes required upgrade-skuba
+Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` to support custom conditions - no src paths found upgrade-skuba
 
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
@@ -268,7 +268,7 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
-Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` to support custom conditions - no changes required upgrade-skuba
+Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` to support custom conditions - no src paths found upgrade-skuba
 
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
@@ -345,7 +345,7 @@ Patch skipped: Remove Dockerfile syntax directives - no dockerfiles found upgrad
 
 Patch applied: Rewrite all 'src' imports to be '#src' upgrade-skuba
 
-Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` to support custom conditions - no changes required upgrade-skuba
+Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.ts\` to support custom conditions - no src paths found upgrade-skuba
 
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
