@@ -8,7 +8,6 @@ import { packageModule } from './package.js';
 import { prettierModule } from './prettier.js';
 import { renovateModule } from './renovate.js';
 import { serverlessModule } from './serverless.js';
-import { skubaDiveModule } from './skubaDive.js';
 import { tslintModule } from './tslint.js';
 
 export const loadModules = (opts: Options): Promise<Module[]> =>
@@ -22,7 +21,6 @@ export const loadModules = (opts: Options): Promise<Module[]> =>
       prettierModule,
       renovateModule,
       serverlessModule,
-      skubaDiveModule,
       tslintModule,
     ].map(async (createModule) => createModule(opts)),
   );
