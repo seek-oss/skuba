@@ -399,6 +399,8 @@ functions:
     handler: src/handler.main
 
 package:
+  exclude:
+    - node_modules/**
   patterns:
     - '!**'
     - 'lib/**'
@@ -424,6 +426,8 @@ package:
           handler: src/handler.main
 
       package:
+        exclude:
+          - node_modules/**
         patterns:
           - '!**'
           - 'lib/**'
@@ -445,6 +449,75 @@ package:
             patterns:
               - excluded-by-default.json
               - 'package.json'
+            ",
+      }
+    `);
+  });
+
+  it('should handle Serverless with package include', async () => {
+    vol.fromJSON({
+      'serverless.yml': `
+service: my-lambda-service
+
+package:
+  include:
+    - lib/**
+
+functions:
+  myFunction:
+    handler: src/handler.main
+      `,
+      'serverless.yaml': `
+service: my-lambda-service
+
+package:
+  exclude:
+    - node_modules/**
+  include:
+    - lib/**
+
+functions:
+  myFunction:
+    handler: src/handler.main
+      `,
+    });
+
+    await expect(
+      tryUpdateLambdaConfigs({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "serverless.yaml": "
+      service: my-lambda-service
+
+      package:
+        exclude:
+          - node_modules/**
+        include:
+          - lib/**
+          - 'package.json'
+
+      functions:
+        myFunction:
+          handler: src/handler.main
+            ",
+        "serverless.yml": "
+      service: my-lambda-service
+
+      package:
+        include:
+          - lib/**
+          - 'package.json'
+
+      functions:
+        myFunction:
+          handler: src/handler.main
             ",
       }
     `);
