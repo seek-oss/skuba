@@ -13,12 +13,6 @@
   },
   "license": "MIT",
   "sideEffects": false,
-  "imports": {
-    "#src/*": {
-      "@seek/skuba/source": "./src/*",
-      "default": "./lib/*"
-    }
-  },
   "main": "./index.js",
   "module": "./index.js",
   "types": "./index.d.ts",
