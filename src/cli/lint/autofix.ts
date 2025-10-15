@@ -139,8 +139,8 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
     log.warn(
       `Attempting to autofix issues (${[
-        params.eslint ? 'ESLint' : undefined,
         params.internal ? 'skuba' : undefined,
+        params.eslint || params.internal ? 'ESLint' : undefined,
         'Prettier', // Prettier is always run
       ]
         .filter((s) => s !== undefined)
@@ -153,7 +153,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
       await internalLint('format');
     }
 
-    if (params.eslint) {
+    if (params.internal || params.eslint) {
       await runESLint('format', logger, params.eslintConfigFile);
     }
 
