@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-lint: Address Serverless patch edge cases
+lint: Handle additional Serverless configurations in custom conditions patch
