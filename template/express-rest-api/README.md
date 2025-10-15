@@ -87,7 +87,7 @@ TODO: add support links for the dev deployment.
 <!--
 - CloudWatch dashboard
 - Datadog dashboard
-- Splunk logs
+- Datadog logs
 -->
 
 ### Prod
@@ -97,7 +97,7 @@ TODO: add support links for the prod deployment.
 <!--
 - CloudWatch dashboard
 - Datadog dashboard
-- Splunk logs
+- Datadog logs
 -->
 
 [CodeDeploy]: https://docs.aws.amazon.com/codedeploy
