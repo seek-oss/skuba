@@ -18,7 +18,7 @@ Our base TypeScript configuration file in `skuba/config/tsconfig.json` has been 
   }
 ```
 
-## Troubleshooting
+#### Troubleshooting
 
 Your project may depend on third-party packages with TypeScript types that are not strictly compatible with CommonJS. This may cause `skuba build` and `skuba lint` to fail type checking:
 
