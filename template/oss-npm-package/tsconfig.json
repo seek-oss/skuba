@@ -3,6 +3,7 @@
     "lib": ["ES2022"],
     "outDir": "lib",
     "removeComments": false,
+    "rootDir": ".",
     "target": "ES2022"
   },
   "exclude": ["lib*/**/*"],

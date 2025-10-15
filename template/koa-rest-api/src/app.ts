@@ -1,5 +1,3 @@
-import './register.js';
-
 import { router } from './api/index.js';
 import { createApp } from './framework/server.js';
 

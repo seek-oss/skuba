@@ -1,9 +1,9 @@
 import { PublishCommand } from '@aws-sdk/client-sns';
 
-import { sns } from 'src/testing/services.js';
-import { chance } from 'src/testing/types.js';
-
 import { sendPipelineEvent } from './pipelineEventSender.js';
+
+import { sns } from '#src/testing/services.js';
+import { chance } from '#src/testing/types.js';
 
 describe('sendPipelineEvent', () => {
   afterEach(() => {

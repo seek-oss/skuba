@@ -8,9 +8,9 @@ import {
   VersionMiddleware,
 } from 'seek-koala';
 
-import { config } from 'src/config.js';
-import { contextMiddleware, logger } from 'src/framework/logging.js';
-import { metricsClient } from 'src/framework/metrics.js';
+import { config } from '#src/config.js';
+import { contextMiddleware, logger } from '#src/framework/logging.js';
+import { metricsClient } from '#src/framework/metrics.js';
 
 const metrics = MetricsMiddleware.create(
   metricsClient,

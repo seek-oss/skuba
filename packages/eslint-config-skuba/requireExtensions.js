@@ -124,8 +124,8 @@ function processNode(node, context, check) {
 
   const value = source.value.replace(/\?.*$/, '');
 
-  // Already contains a file extension
-  if (!value || /\.[a-zA-Z0-9]+$/.test(value)) {
+  // Already contains a valid extension or is empty
+  if (!value || /\.(js|mjs|cjs|json|node|ts|tsx|jsx|mts|cts)$/.test(value)) {
     return;
   }
 
@@ -138,10 +138,12 @@ function processNode(node, context, check) {
     );
   }
 
-  if (value.startsWith('src')) {
+  if (value.startsWith('src') || value.startsWith('#src')) {
     const file = dirname(context.getFilename());
     const leadingPathToSrc = file.split('/src/')[0];
-    const valueWithoutSrc = value.split('src/')[1];
+    const valueWithoutSrc = value.startsWith('#src')
+      ? value.split('#src/')[1]
+      : value.split('src/')[1];
     const finalPath = leadingPathToSrc.includes('/src')
       ? join(leadingPathToSrc, valueWithoutSrc)
       : join(findSrc(leadingPathToSrc), 'src', valueWithoutSrc);

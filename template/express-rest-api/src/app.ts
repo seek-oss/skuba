@@ -1,5 +1,3 @@
-import './register.js';
-
 import express from 'express';
 
 import { healthCheckHandler } from './api/healthCheck.js';
