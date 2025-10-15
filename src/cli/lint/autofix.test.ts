@@ -73,7 +73,7 @@ describe('autofix', () => {
         internal: true,
       },
     ) => {
-      expect(runESLint).toHaveBeenCalledTimes(eslint ? 1 : 0);
+      expect(runESLint).toHaveBeenCalledTimes(internal || eslint ? 1 : 0);
       expect(runPrettier).toHaveBeenCalledTimes(1);
       expect(internalLint).toHaveBeenCalledTimes(internal ? 1 : 0);
       expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
@@ -192,7 +192,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         No autofixes detected.
         "
       `);
@@ -219,7 +219,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -241,7 +241,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -305,7 +305,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -327,7 +327,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -344,7 +344,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Failed to push fix commit.
         Does your CI environment have write access to your Git repository?
         Error: Badness!
@@ -382,7 +382,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -396,7 +396,7 @@ describe('autofix', () => {
         internal: true,
       },
     ) => {
-      expect(runESLint).toHaveBeenCalledTimes(eslint ? 1 : 0);
+      expect(runESLint).toHaveBeenCalledTimes(internal || eslint ? 1 : 0);
       expect(runPrettier).toHaveBeenCalledTimes(1);
       expect(internalLint).toHaveBeenCalledTimes(internal ? 1 : 0);
       expect(GitHub.uploadAllFileChanges).toHaveBeenCalledTimes(1);
@@ -484,7 +484,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         No autofixes detected.
         "
       `);
@@ -512,7 +512,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -574,7 +574,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -592,7 +592,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Could not determine the current branch.
         Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.
         "
@@ -612,7 +612,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Failed to push fix commit.
         Does your CI environment have write access to your Git repository?
         Error: Badness!
@@ -649,7 +649,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (ESLint, skuba, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
         Pushed fix commit commit-sha.
         "
       `);
