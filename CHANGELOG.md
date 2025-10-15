@@ -1,5 +1,15 @@
 # skuba
 
+## 13.0.1
+
+### Patch Changes
+
+- **lint:** Handle additional Serverless configurations in custom conditions patch ([#2108](https://github.com/seek-oss/skuba/pull/2108))
+
+- **lint:** Handle side effect imports in subpath patch ([#2108](https://github.com/seek-oss/skuba/pull/2108))
+
+- **lint:** Avoid adding custom conditions to `tsconfig.json` when there are no paths ([#2108](https://github.com/seek-oss/skuba/pull/2108))
+
 ## 13.0.0
 
 This major release includes [patches](https://seek-oss.github.io/skuba/docs/cli/lint.html#patches) and configuration changes to migrate TypeScript projects onto modern module patterns. It partially automates [Step 2 of our transition to ECMAScript modules](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html#2-replace-skuba-diveregister-with-subpath-imports).
