@@ -24,9 +24,9 @@ The following files will be updated to support the new subpath pattern:
 - `Dockerfile*`
 - CDK infrastructure files
 
-## Troubleshooting
+#### Troubleshooting
 
-### Jest configuration
+##### Jest configuration
 
 If your Jest configuration differs from the standard `skuba` configuration, you may need to manually update your `moduleNameMapper`:
 
@@ -56,7 +56,7 @@ moduleNameMapper: {
 },
 ```
 
-### TypeScript errors with `pure-parse` types
+##### TypeScript errors with `pure-parse` types
 
 If you encounter TypeScript errors related to `pure-parse` types:
 
@@ -71,7 +71,7 @@ Upgrade `@seek/logger` to version 11.2.1 or later:
 pnpm update --latest @seek/logger
 ```
 
-### Custom conditions error
+##### Custom conditions error
 
 If you see the error:
 
