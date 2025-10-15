@@ -21,8 +21,8 @@ import { test as srcTest } from './src/file';
 import { test as validSrcTest } from './src/file.js';
 
 // eslint-disable-next-line require-extensions/require-index
-import { test as srcIndexFileTest } from '#src/indexFile';
-import { test as validSrcIndexFileTest } from '#src/indexFile/index.js';
+import { test as srcIndexFileTest } from 'src/indexFile';
+import { test as validSrcIndexFileTest } from 'src/indexFile/index.js';
 
 // eslint-disable-next-line require-extensions/require-extensions
 import { test as bothTest } from './src/both';
