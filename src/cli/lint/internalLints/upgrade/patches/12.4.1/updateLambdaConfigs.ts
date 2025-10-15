@@ -280,8 +280,12 @@ const patchServerlessEsbuildFile = ({
     return undefined;
   }
 
-  // Check for serverless-esbuild plugin
-  if (!contents.includes('serverless-esbuild')) {
+  // Check for serverless-esbuild plugin or build.esbuild or custom.esbuild configuration
+  if (
+    !contents.includes('serverless-esbuild') &&
+    !contents.includes('build:') &&
+    !contents.includes('custom:')
+  ) {
     return undefined;
   }
 
