@@ -125,7 +125,7 @@ TODO: add support links for the dev deployment.
 <!--
 - CloudWatch dashboard
 - Datadog dashboard
-- Splunk logs
+- Datadog logs
 -->
 
 ### Prod
@@ -135,7 +135,7 @@ TODO: add support links for the prod deployment.
 <!--
 - CloudWatch dashboard
 - Datadog dashboard
-- Splunk logs
+- Datadog logs
 -->
 
 [@seek/aws-codedeploy-hooks]: https://github.com/seek-oss/aws-codedeploy-hooks
