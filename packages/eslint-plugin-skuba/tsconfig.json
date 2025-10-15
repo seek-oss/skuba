@@ -8,7 +8,6 @@
     "removeComments": false,
     "skipLibCheck": true,
     "target": "ES2021",
-    "customConditions": ["@seek/skuba/source"]
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json"

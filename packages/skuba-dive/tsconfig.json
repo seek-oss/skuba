@@ -7,7 +7,6 @@
     "outDir": "lib",
     "removeComments": false,
     "target": "ES2020",
-    "customConditions": ["@seek/skuba/source"]
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json"
