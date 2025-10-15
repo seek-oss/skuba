@@ -1,5 +1,11 @@
 # skuba
 
+## 13.0.2
+
+### Patch Changes
+
+- **lint:** Always run ESLint after internal patches ([#2110](https://github.com/seek-oss/skuba/pull/2110))
+
 ## 13.0.1
 
 ### Patch Changes
