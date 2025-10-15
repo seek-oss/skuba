@@ -73,7 +73,7 @@ describe('autofix', () => {
         internal: true,
       },
     ) => {
-      expect(runESLint).toHaveBeenCalledTimes(eslint || internal ? 1 : 0);
+      expect(runESLint).toHaveBeenCalledTimes(internal || eslint ? 1 : 0);
       expect(runPrettier).toHaveBeenCalledTimes(1);
       expect(internalLint).toHaveBeenCalledTimes(internal ? 1 : 0);
       expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
@@ -396,7 +396,7 @@ describe('autofix', () => {
         internal: true,
       },
     ) => {
-      expect(runESLint).toHaveBeenCalledTimes(eslint || internal ? 1 : 0);
+      expect(runESLint).toHaveBeenCalledTimes(internal || eslint ? 1 : 0);
       expect(runPrettier).toHaveBeenCalledTimes(1);
       expect(internalLint).toHaveBeenCalledTimes(internal ? 1 : 0);
       expect(GitHub.uploadAllFileChanges).toHaveBeenCalledTimes(1);

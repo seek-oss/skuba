@@ -140,7 +140,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     log.warn(
       `Attempting to autofix issues (${[
         params.internal ? 'skuba' : undefined,
-        params.eslint || params.internal ? 'ESLint' : undefined,
+        params.internal || params.eslint ? 'ESLint' : undefined,
         'Prettier', // Prettier is always run
       ]
         .filter((s) => s !== undefined)
