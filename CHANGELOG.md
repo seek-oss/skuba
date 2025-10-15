@@ -1,5 +1,206 @@
 # skuba
 
+## 13.0.0
+
+This major release includes [patches](https://seek-oss.github.io/skuba/docs/cli/lint.html#patches) and configuration changes to migrate TypeScript projects onto modern module patterns. It partially automates [Step 2 of our transition to ECMAScript modules](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html#2-replace-skuba-diveregister-with-subpath-imports).
+
+> [!NOTE]
+>
+> **If you are migrating from an earlier skuba version, we recommend upgrading to version 12 first before migrating to version 13.** This ensures a smoother migration path with incremental changes.
+
+Changing the module patterns of your project may result in Jest and/or TypeScript errors that require manual triage. Refer to the below troubleshooting sections to begin with, and reach out in `#skuba-support` if you're stuck.
+
+> [!CAUTION]
+>
+> **Test the changes in a non-production environment before deploying to production.** The automated migration cannot account for all custom deployment configurations.
+
+If your project is not configured for [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) in CI, `skuba lint` will not be able to push the patch commit.
+
+```console
+Failed to push fix commit.
+Does your CI environment have write access to your Git repository?
+```
+
+You can either set up [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) in CI, or run `skuba format` then commit and push locally.
+
+### Major Changes
+
+- **build, lint, test:** Replace `src` aliases with `#src` subpath imports ([#1958](https://github.com/seek-oss/skuba/pull/1958))
+
+  This patch rewrites `src` module aliases dependent on CommonJS monkeypatching via `skuba-dive/register`. The new, ESM-compatible `#src` approach is enabled by Node.js [subpath imports](https://nodejs.org/api/packages.html#subpath-imports) and TypeScript [custom conditions](https://www.typescriptlang.org/tsconfig/#customConditions).
+
+  ```typescript
+  // Before
+  import 'skuba-dive/register';
+  import { getAccountInfo } from 'src/services/accounts.js';
+
+  // After
+  import { getAccountInfo } from '#src/services/accounts.js';
+  ```
+
+  The following files will be updated to support the new subpath pattern:
+  - `tsconfig*.json`
+  - `package.json`
+  - `jest.config*.ts`
+  - `serverless*.yml`
+  - `Dockerfile*`
+  - CDK infrastructure files
+
+  #### Troubleshooting
+
+  ##### Jest configuration
+
+  If your Jest configuration differs from the standard `skuba` configuration, you may need to manually update your `moduleNameMapper`:
+
+  **Standard projects:**
+
+  ```typescript
+  moduleNameMapper: {
+    '^#src/(.*)\\.js$': ['<rootDir>/src/$1'],
+    '^#src/(.*)$': ['<rootDir>/src/$1'],
+  },
+  ```
+
+  **Monorepo projects:**
+
+  ```typescript
+  moduleNameMapper: {
+    '^#src/(.*)\\.js$': [
+      '<rootDir>/apps/api/src/$1',
+      '<rootDir>/apps/worker/src/$1',
+      // ...
+    ],
+    '^#src/(.*)$': [
+      '<rootDir>/apps/api/src/$1',
+      '<rootDir>/apps/worker/src/$1',
+      // ...
+    ],
+  },
+  ```
+
+  ##### TypeScript errors with `pure-parse` types
+
+  If you encounter TypeScript errors related to `pure-parse` types:
+
+  ```bash
+  tsc      │ node_modules/@seek/logger/lib-types/eeeoh/eeeoh.d.ts(2,15): error TS2305: Module '"pure-parse"' has no exported member 'Infer'.
+  tsc      | node_modules/pure-parse/dist/index.d.ts(1,15): error TS2834: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path.
+  ```
+
+  Upgrade `@seek/logger` to version 11.2.1 or later:
+
+  ```bash
+  pnpm update --latest @seek/logger
+  ```
+
+  ##### Custom conditions error
+
+  If you see the error:
+
+  ```bash
+  Option 'customConditions' can only be used when 'moduleResolution' is set to 'node16', 'nodenext', or 'bundler'
+  ```
+
+  Packages should not publish with `node16` module resolution until their consumers have migrated themselves. We recommend the following workaround in the interim:
+
+  Create a separate `tsconfig.base.json` that `tsconfig.json` extends. This allows you to apply `customConditions` selectively:
+
+  **`tsconfig.base.json`:**
+
+  ```json
+  {
+    "extends": "skuba/config/tsconfig.json",
+    "compilerOptions": {
+      "baseUrl": ".",
+      "target": "ES2024",
+      "lib": ["ES2024"]
+    }
+  }
+  ```
+
+  **`tsconfig.json`:**
+
+  ```json
+  {
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+      "customConditions": ["@seek/YOUR_REPO/source"]
+    }
+  }
+  ```
+
+  **`tsconfig.build.json`:**
+
+  ```json
+  {
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+      "outDir": "lib",
+      "rootDir": "src"
+    },
+    "include": ["src"]
+  }
+  ```
+
+- **build, lint:** Update default module and module resolution ([#1958](https://github.com/seek-oss/skuba/pull/1958))
+
+  Our base TypeScript configuration file in `skuba/config/tsconfig.json` has been updated with modern options for module [output format](https://www.typescriptlang.org/docs/handbook/modules/reference.html#the-module-compiler-option) and [resolution](https://www.typescriptlang.org/docs/handbook/modules/reference.html#the-moduleresolution-compiler-option):
+
+  ```diff
+    {
+      "compilerOptions": {
+  -     "module": "commonjs",
+  -     "moduleResolution": "node",
+  +     "module": "node20",
+  +     "moduleResolution": "node16",
+        // ...
+      }
+    }
+  ```
+
+  #### Troubleshooting
+
+  Your project may depend on third-party packages with TypeScript types that are not strictly compatible with CommonJS. This may cause `skuba build` and `skuba lint` to fail type checking:
+
+  ```bash
+  node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/addDays.d.cts:1:46 - error TS1541: Type-only import of an ECMAScript module from a CommonJS module must have a 'resolution-mode' attribute.
+  ```
+
+  To work around such errors, you can either:
+  1. Add a `// @ts-ignore` comment above the import statement. (These can be removed once we have fully migrated to ESM).
+
+     ```diff
+     + // @ts-ignore - date-fns does not support Node16 module resolution, remove this when we move to ESM.
+       import { addDays } from 'date-fns';
+     ```
+
+  2. Add `skipLibCheck: true` to your `tsconfig.json` compiler options.
+
+     ```diff
+       {
+         "compilerOptions": {
+     +     "skipLibCheck": true,
+           // ...
+         }
+       }
+     ```
+
+### Minor Changes
+
+- **lint:** Update file extension detection logic ([#2099](https://github.com/seek-oss/skuba/pull/2099))
+
+  This resolves an issue where file extensions were not being appended to imports with multiple dots in their path, such as `.vocab` files.
+
+- **build:** Forward custom conditions to esbuild ([#2092](https://github.com/seek-oss/skuba/pull/2092))
+
+  **Note:** This only affects projects that have manually set `package.json#/skuba/build` to `"esbuild"`. There are [less than 10 of these](https://github.com/search?q=skuba+%2F%22build%22%3A+%22esbuild%22%2F+language%3AJSON+NOT+is%3Aarchived+NOT+is%3Afork&type=code) at time of writing.
+
+  When using esbuild as the bundler, any custom conditions specified in `tsconfig.json` will now be forwarded to esbuild via the [`conditions` option](https://esbuild.github.io/api/#conditions).
+
+### Patch Changes
+
+- **template:** Remove Splunk references ([#2096](https://github.com/seek-oss/skuba/pull/2096))
+
 ## 12.4.1
 
 ### Patch Changes

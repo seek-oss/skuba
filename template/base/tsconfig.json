@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "customConditions": ["@seek/<%- serviceName %>/source"],
+    "rootDir": ".",
     "lib": ["ES2024"],
     "outDir": "lib",
-    "rootDir": ".",
     "target": "ES2024"
   },
   "exclude": ["lib*/**/*"],

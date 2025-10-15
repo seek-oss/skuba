@@ -1,5 +1,13 @@
 # eslint-config-skuba
 
+## 7.2.0
+
+### Minor Changes
+
+- **lint:** Update file extension detection logic ([#2099](https://github.com/seek-oss/skuba/pull/2099))
+
+  This resolves an issue where file extensions were not being appended to imports with multiple dots in their path, such as `.vocab` files.
+
 ## 7.1.2
 
 ### Patch Changes
