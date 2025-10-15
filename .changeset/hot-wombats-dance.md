@@ -2,9 +2,9 @@
 'skuba': major
 ---
 
-**lint/test:** Update `src` imports to use native TypeScript subpath imports
+build, lint, test: Replace `src` aliases with `#src` subpath imports
 
-This upgrade removes all `skuba-dive/register` imports and replaces them with native TypeScript subpath imports using `#src/*` with [custom conditions](https://www.typescriptlang.org/tsconfig/#customConditions).
+This patch rewrites `src` module aliases dependent on CommonJS monkeypatching via `skuba-dive/register`. The new, ESM-compatible `#src` approach is enabled by Node.js [subpath imports](https://nodejs.org/api/packages.html#subpath-imports) and TypeScript [custom conditions](https://www.typescriptlang.org/tsconfig/#customConditions).
 
 ```typescript
 // Before
@@ -15,7 +15,7 @@ import { getAccountInfo } from 'src/services/accounts.js';
 import { getAccountInfo } from '#src/services/accounts.js';
 ```
 
-This migration will automatically update the following files to support the new import pattern:
+The following files will be updated to support the new subpath pattern:
 
 - `tsconfig*.json`
 - `package.json`
@@ -23,12 +23,6 @@ This migration will automatically update the following files to support the new 
 - `serverless*.yml`
 - `Dockerfile*`
 - CDK infrastructure files
-
-### ⚠️ Important: Runtime testing
-
-**You must manually verify that your deployments correctly handle the new `#src/*` imports.** The migration updates build-time configurations, but runtime environments may require additional changes.
-
-> **Critical:** Please test your deployment pipeline in a non-production environment before deploying to production. The automated migration cannot account for all custom deployment configurations.
 
 ## Troubleshooting
 
@@ -52,10 +46,12 @@ moduleNameMapper: {
   '^#src/(.*)\\.js$': [
     '<rootDir>/apps/api/src/$1',
     '<rootDir>/apps/worker/src/$1',
+    // ...
   ],
   '^#src/(.*)$': [
     '<rootDir>/apps/api/src/$1',
     '<rootDir>/apps/worker/src/$1',
+    // ...
   ],
 },
 ```
@@ -66,10 +62,14 @@ If you encounter TypeScript errors related to `pure-parse` types:
 
 ```bash
 tsc      │ node_modules/@seek/logger/lib-types/eeeoh/eeeoh.d.ts(2,15): error TS2305: Module '"pure-parse"' has no exported member 'Infer'.
-tsc.     | node_modules/pure-parse/dist/index.d.ts(1,15): error TS2834: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path.
+tsc      | node_modules/pure-parse/dist/index.d.ts(1,15): error TS2834: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path.
 ```
 
-Upgrade `@seek/logger` to version 11.2.1 or later.
+Upgrade `@seek/logger` to version 11.2.1 or later:
+
+```bash
+pnpm update --latest @seek/logger
+```
 
 ### Custom conditions error
 
@@ -79,7 +79,7 @@ If you see the error:
 Option 'customConditions' can only be used when 'moduleResolution' is set to 'node16', 'nodenext', or 'bundler'
 ```
 
-Our packages cannot publish with the `node16` module resolution yet as the bulk of our repositories have not migrated yet, so we recommend the following workaround:
+Packages should not publish with `node16` module resolution until their consumers have migrated themselves. We recommend the following workaround in the interim:
 
 Create a separate `tsconfig.base.json` that `tsconfig.json` extends. This allows you to apply `customConditions` selectively:
 
