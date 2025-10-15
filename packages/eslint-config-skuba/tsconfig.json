@@ -4,7 +4,7 @@
     "outDir": "lib",
     "target": "ES2021",
     "baseUrl": ".",
-    "customConditions": ["@seek/skuba/source"]
+    "customConditions": ["@seek/skuba/source"],
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
