@@ -7,7 +7,7 @@
     "outDir": "lib",
     "removeComments": false,
     "skipLibCheck": true,
-    "target": "ES2021",
+    "target": "ES2021"
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json"

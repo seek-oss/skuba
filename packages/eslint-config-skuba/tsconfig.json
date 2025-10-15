@@ -3,7 +3,7 @@
     "lib": ["ES2021"],
     "outDir": "lib",
     "target": "ES2021",
-    "baseUrl": ".",
+    "baseUrl": "."
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
