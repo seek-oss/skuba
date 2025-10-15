@@ -13,12 +13,12 @@ import { test as indexFileTest } from './indexFile';
 import { test as validIndexFileTest } from './indexFile/index.js';
 
 // eslint-disable-next-line require-extensions/require-extensions
-import { test as srcTest } from '#src/file';
-import { test as validSrcTest } from '#src/file.js';
+import { test as srcTest } from 'src/file';
+import { test as validSrcTest } from 'src/file.js';
 
 // eslint-disable-next-line require-extensions/require-index
-import { test as srcIndexFileTest } from '#src/indexFile';
-import { test as validSrcIndexFileTest } from '#src/indexFile/index.js';
+import { test as srcIndexFileTest } from 'src/indexFile';
+import { test as validSrcIndexFileTest } from 'src/indexFile/index.js';
 
 // eslint-disable-next-line require-extensions/require-extensions
 import { test as bothTest } from './both';
