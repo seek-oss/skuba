@@ -31,6 +31,9 @@ export const hasRelativeImportRegex =
 export const hasSrcImportRegex =
   /import\s+(?:type\s+(?:\{[^}]*\}|\*\s+as\s+\w+)|\{[^}]*\}|\*\s+as\s+\w+|\w+(?:\s*,\s*\{[^}]*\})?)\s+from\s+['"]src\/[^'"]*['"]/gm;
 
+export const hasSrcSideEffectImportRegex =
+  /import\s+['"]src\/[^'"]*['"];?\s*/gm;
+
 export const hasImportRegex = /import\(\s*["']src\/[^'"]*["']\s*\)/gm;
 
 export const hasJestMockRegex = /jest\.(mock|doMock)\(\s*["']src\/[^'"]*["']/gm;
@@ -82,6 +85,7 @@ export const replaceSrcImport = (contents: string) => {
   const combinedSrcRegex = new RegExp(
     [
       hasSrcImportRegex.source,
+      hasSrcSideEffectImportRegex.source,
       hasImportRegex.source,
       hasJestMockRegex.source,
     ].join('|'),
@@ -102,6 +106,7 @@ export const replaceSrcImportWithConditionalRegisterRemoval = (
   const combinedSrcRegex = new RegExp(
     [
       hasSrcImportRegex.source,
+      hasSrcSideEffectImportRegex.source,
       hasImportRegex.source,
       hasJestMockRegex.source,
     ].join('|'),
@@ -129,6 +134,7 @@ export const replaceSrcImportWithSelectiveRegisterRemoval = (
   const combinedSrcRegex = new RegExp(
     [
       hasSrcImportRegex.source,
+      hasSrcSideEffectImportRegex.source,
       hasImportRegex.source,
       hasJestMockRegex.source,
     ].join('|'),
@@ -174,6 +180,7 @@ export const tryRewriteSrcImports: PatchFunction = async ({
         new RegExp(
           [
             hasSrcImportRegex.source,
+            hasSrcSideEffectImportRegex.source,
             hasImportRegex.source,
             hasJestMockRegex.source,
           ].join('|'),
