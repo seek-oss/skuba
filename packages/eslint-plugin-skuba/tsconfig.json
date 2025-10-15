@@ -6,8 +6,9 @@
     "moduleResolution": "bundler",
     "outDir": "lib",
     "removeComments": false,
-    "skipLibCheck": true, // tsdown has optional peer deps
-    "target": "ES2021"
+    "skipLibCheck": true,
+    "target": "ES2021",
+    "customConditions": ["@seek/skuba/source"]
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json"

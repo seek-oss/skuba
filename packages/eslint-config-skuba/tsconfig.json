@@ -3,7 +3,8 @@
     "lib": ["ES2021"],
     "outDir": "lib",
     "target": "ES2021",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "customConditions": ["@seek/skuba/source"]
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
