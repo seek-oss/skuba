@@ -104,6 +104,9 @@ describe('tryConfigureTsConfigForESM', () => {
       'tsconfig.json': JSON.stringify({
         compilerOptions: {
           module: 'ESNext',
+          paths: {
+            src: ['./src'],
+          },
         },
       }),
     });
@@ -137,6 +140,9 @@ describe('tryConfigureTsConfigForESM', () => {
         compilerOptions: {
           module: 'ESNext',
           customConditions: ['other'],
+          paths: {
+            src: ['./src'],
+          },
         },
       }),
     });
