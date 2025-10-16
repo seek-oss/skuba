@@ -138,7 +138,10 @@ const patchCdkTsFile = ({
       modified: string;
     }
   | undefined => {
-  if (!contents.includes('aws_lambda_nodejs.NodejsFunction')) {
+  if (
+    !contents.includes('aws_lambda_nodejs.NodejsFunction') &&
+    !contents.includes('NodejsFunction')
+  ) {
     return undefined;
   }
 
