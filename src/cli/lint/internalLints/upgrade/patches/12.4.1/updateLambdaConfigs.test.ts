@@ -150,6 +150,56 @@ const another = new aws_lambda_nodejs.NodejsFunction(this, 'another', {
     `);
   });
 
+  it('should update lambda configs with new NodejsFunction syntax', async () => {
+    vol.fromJSON({
+      'lambda.ts': `
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+
+const worker = new NodejsFunction(this, 'worker', {
+  architecture: aws_lambda.Architecture[architecture],
+  runtime: aws_lambda.Runtime.NODEJS_22_X,
+  memorySize: 512,
+  entry: './src/app.ts',
+  bundling: {
+    sourceMap: true,
+    target: 'node22',
+    externalModules: [],
+  },
+});
+      `,
+    });
+
+    await expect(
+      tryUpdateLambdaConfigs({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "lambda.ts": "
+      import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+
+      const worker = new NodejsFunction(this, 'worker', {
+        architecture: aws_lambda.Architecture[architecture],
+        runtime: aws_lambda.Runtime.NODEJS_22_X,
+        memorySize: 512,
+        entry: './src/app.ts',
+        bundling: {
+          esbuildArgs: { '--conditions': '@seek/test-repo/source' },
+          sourceMap: true,
+          target: 'node22',
+          externalModules: [],
+        },
+      });
+            ",
+      }
+    `);
+  });
+
   it('should update lambda configs in webpack config files', async () => {
     vol.fromJSON({
       'webpack.config.js': `
@@ -365,6 +415,71 @@ functions:
           minify: false
           sourcemap: true
           target: node22
+
+      functions:
+        myFunction:
+          handler: src/handler.main
+            ",
+      }
+    `);
+  });
+
+  it('should update Serverless files with esbuild nested under custom with other properties', async () => {
+    vol.fromJSON({
+      'serverless.yml': `service: interactions-enricher
+
+plugins:
+  - serverless-prune-plugin
+  - serverless-esbuild
+
+custom:
+  description: talentsearch-interactions-enricher
+  prune:
+    automatic: true
+    number: 3
+  stage: \${opt:stage, 'dev'}
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+  env: \${self:custom.\${self:custom.stage}}
+
+functions:
+  myFunction:
+    handler: src/handler.main
+      `,
+    });
+
+    await expect(
+      tryUpdateLambdaConfigs({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "serverless.yml": "service: interactions-enricher
+
+      plugins:
+        - serverless-prune-plugin
+        - serverless-esbuild
+
+      custom:
+        description: talentsearch-interactions-enricher
+        prune:
+          automatic: true
+          number: 3
+        stage: \${opt:stage, 'dev'}
+        esbuild:
+          conditions:
+            - '@seek/test-repo/source'
+          bundle: true
+          minify: false
+          sourcemap: true
+        env: \${self:custom.\${self:custom.stage}}
 
       functions:
         myFunction:
