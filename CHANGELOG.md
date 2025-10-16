@@ -1,5 +1,11 @@
 # skuba
 
+## 13.0.3
+
+### Patch Changes
+
+- **lint:** Improve detection of CDK functions and Serverless esbuild configurations for custom conditions patch ([#2112](https://github.com/seek-oss/skuba/pull/2112))
+
 ## 13.0.2
 
 ### Patch Changes
