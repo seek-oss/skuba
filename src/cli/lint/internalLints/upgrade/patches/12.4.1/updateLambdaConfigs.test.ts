@@ -424,6 +424,71 @@ functions:
     `);
   });
 
+  it('should update Serverless files with esbuild nested under custom with other properties', async () => {
+    vol.fromJSON({
+      'serverless.yml': `service: interactions-enricher
+
+plugins:
+  - serverless-prune-plugin
+  - serverless-esbuild
+
+custom:
+  description: talentsearch-interactions-enricher
+  prune:
+    automatic: true
+    number: 3
+  stage: \${opt:stage, 'dev'}
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+  env: \${self:custom.\${self:custom.stage}}
+
+functions:
+  myFunction:
+    handler: src/handler.main
+      `,
+    });
+
+    await expect(
+      tryUpdateLambdaConfigs({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "serverless.yml": "service: interactions-enricher
+
+      plugins:
+        - serverless-prune-plugin
+        - serverless-esbuild
+
+      custom:
+        description: talentsearch-interactions-enricher
+        prune:
+          automatic: true
+          number: 3
+        stage: \${opt:stage, 'dev'}
+        esbuild:
+          conditions:
+            - '@seek/test-repo/source'
+          bundle: true
+          minify: false
+          sourcemap: true
+        env: \${self:custom.\${self:custom.stage}}
+
+      functions:
+        myFunction:
+          handler: src/handler.main
+            ",
+      }
+    `);
+  });
+
   it('should update Serverless files with package patterns', async () => {
     vol.fromJSON({
       'serverless.yml': `

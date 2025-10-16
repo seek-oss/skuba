@@ -292,10 +292,9 @@ const patchServerlessEsbuildFile = ({
     return undefined;
   }
 
-  // Match either build: or custom: followed by esbuild: with nested configuration
-  // This regex only matches multi-line esbuild blocks, not inline "esbuild: false"
-  const esbuildBlockRegex =
-    /^((?:build|custom):)\s*\n(\s+)(esbuild:)\s*\n((?:\2\s+.+\n)*)/gm;
+  // Match esbuild: blocks with nested configuration (not inline "esbuild: false")
+  // This matches any level of indentation, not just directly under build/custom
+  const esbuildBlockRegex = /^(\s*)(esbuild:)\s*\n((?:\1\s+.+\n)+)/gm;
 
   let match;
   let modified = contents;
@@ -305,8 +304,7 @@ const patchServerlessEsbuildFile = ({
   esbuildBlockRegex.lastIndex = 0;
 
   while ((match = esbuildBlockRegex.exec(contents)) !== null) {
-    const [fullMatch, blockType, baseIndent, esbuildLabel, esbuildContent] =
-      match;
+    const [fullMatch, baseIndent, esbuildLabel, esbuildContent] = match;
 
     // Check if esbuild is disabled (esbuild: false)
     if (/esbuild:\s*false/.exec(fullMatch)) {
@@ -323,7 +321,7 @@ const patchServerlessEsbuildFile = ({
     const arrayItemIndent = `${conditionsIndent}  `;
 
     // Build the new esbuild block with conditions added
-    const newEsbuildBlock = `${blockType}\n${baseIndent}${esbuildLabel}\n${conditionsIndent}conditions:\n${arrayItemIndent}- '${customCondition}'\n${esbuildContent}`;
+    const newEsbuildBlock = `${baseIndent}${esbuildLabel}\n${conditionsIndent}conditions:\n${arrayItemIndent}- '${customCondition}'\n${esbuildContent}`;
 
     // Replace in the modified content
     modified = modified.replace(fullMatch, newEsbuildBlock);
