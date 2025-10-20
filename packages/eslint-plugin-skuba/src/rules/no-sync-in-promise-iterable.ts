@@ -13,7 +13,7 @@ type Type = ReturnType<TypeChecker['getTypeOfSymbolAtLocation']>;
  */
 const isThenableType = (type: Type, checker: TypeChecker): boolean => {
   // Return early if the type appears to be a Promise
-  if (type.symbol && type.symbol.name === 'Promise') {
+  if (type.symbol?.name === 'Promise') {
     return true;
   }
 
