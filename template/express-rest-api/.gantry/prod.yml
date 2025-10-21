@@ -1,4 +1,4 @@
-deployment: prod
+deployment: <%- prodGantryEnvironmentName %>
 env: production
 
 maxInstanceCount: 10

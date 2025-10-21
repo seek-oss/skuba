@@ -1,8 +1,8 @@
-deployment: prod
+deployment: <%- prodGantryEnvironmentName %>
 env: production
 
-maxInstanceCount: 10
 minInstanceCount: 3
+maxInstanceCount: 10
 
 openTelemetry:
   enabled: true
