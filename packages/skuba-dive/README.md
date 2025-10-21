@@ -66,31 +66,7 @@ Each function will throw if its environment variable is not set and `opts.defaul
 
 ### Register
 
-As of July 2025, `skuba-dive/register` is replaced with native subpath imports supported by both [TypeScript](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports) and [Node.js](https://nodejs.org/api/packages.html#subpath-imports) as a part of ESM migration. This is because previously, `skuba-dive/register` relies on `module-alias` which is not compatible with ESM. Check out [ESM migration guide].
-
-Runtime hook for import paths relative to `/src`.
-
-Make a side-effectful import at the top of your entry point(s):
-
-```typescript
-// /src/register.ts
-
-import 'skuba-dive/register';
-```
-
-```typescript
-// /src/app.ts
-
-import './register';
-
-import { config } from 'src/config';
-
-export = new Koa();
-```
-
-The hook must be imported from a module that sits directly under `/src` for module resolution to work correctly.
-
-[ESM migration guide]: https://github.com/seek-oss/skuba/blob/main/docs/deep-dives/esm.md#2-replace-skuba-diveregister-with-subpath-imports
+As of July 2025, `skuba-dive/register` is replaced with native subpath imports supported by both [TypeScript](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-imports-and-self-name-imports) and [Node.js](https://nodejs.org/api/packages.html#subpath-imports) as a part of our ESM migration. Please upgrade `skuba` to version 13 or later to take advantage of this.
 
 ## Design
 
