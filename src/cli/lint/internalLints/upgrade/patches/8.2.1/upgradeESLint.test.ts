@@ -207,7 +207,7 @@ const js = require('@eslint/js');
 const { FlatCompat } = require('@eslint/eslintrc');
 
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
+  baseDirectory: import.meta.dirname,
   recommendedConfig: js.configs.recommended,
   allConfig: js.configs.all,
 });

@@ -93,12 +93,12 @@ interface ExecConcurrentlyOptions {
 type ExecOptions = execa.Options & { streamStdio?: true | PackageManager };
 
 const envWithPath = {
-  PATH: npmRunPath({ cwd: __dirname }),
+  PATH: npmRunPath({ cwd: import.meta.dirname }),
 };
 
 const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
   const subprocess = execa(command, args, {
-    localDir: __dirname,
+    localDir: import.meta.dirname,
     preferLocal: true,
     stdio: 'inherit',
     ...opts,
@@ -125,7 +125,7 @@ const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
   return subprocess;
 };
 
-const whichCallback = npmWhich(__dirname);
+const whichCallback = npmWhich(import.meta.dirname);
 
 const which = util.promisify<string, string>(whichCallback);
 

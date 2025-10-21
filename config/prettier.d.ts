@@ -1,4 +1,7 @@
-export const singleQuote: boolean;
-export const tabWidth: number;
-export const trailingComma: 'all';
-export const plugins: ['prettier-plugin-packagejson'];
+export default config;
+declare namespace config {
+  let singleQuote: true;
+  let tabWidth: number;
+  let trailingComma: 'all';
+  let plugins: string[];
+}

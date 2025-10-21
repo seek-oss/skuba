@@ -221,7 +221,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js', '.json'],
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(import.meta.dirname, 'src'),
     },
   },
 });`,
@@ -295,7 +295,7 @@ module.exports = {
           conditionNames: ['@seek/test-repo/source', '...'],
           extensions: ['.ts', '.js', '.json'],
           alias: {
-            '@': path.resolve(__dirname, 'src'),
+            '@': path.resolve(import.meta.dirname, 'src'),
           },
         },
       );",

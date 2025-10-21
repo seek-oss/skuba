@@ -2,7 +2,7 @@ import path from 'path';
 import { stripVTControlCharacters as stripAnsi } from 'util';
 
 import type { TestResult } from '@jest/test-result';
-import dedent from 'ts-dedent';
+import { dedent } from 'ts-dedent';
 
 import type * as GitHub from '@skuba-lib/api/github';
 

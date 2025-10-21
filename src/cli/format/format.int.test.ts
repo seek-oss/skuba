@@ -23,10 +23,17 @@ jest
 
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 
-const BASE_PATH = path.join(__dirname, '..', '..', '..', 'integration', 'base');
+const BASE_PATH = path.join(
+  import.meta.dirname,
+  '..',
+  '..',
+  '..',
+  'integration',
+  'base',
+);
 
 const TEMP_PATH = path.join(
-  __dirname,
+  import.meta.dirname,
   '..',
   '..',
   '..',

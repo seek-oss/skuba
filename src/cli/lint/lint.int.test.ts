@@ -39,9 +39,23 @@ jest
 
 const tscOutputStream = new stream.PassThrough().on('data', stdoutMock);
 
-const BASE_PATH = path.join(__dirname, '..', '..', '..', 'integration', 'base');
+const BASE_PATH = path.join(
+  import.meta.dirname,
+  '..',
+  '..',
+  '..',
+  'integration',
+  'base',
+);
 
-const TEMP_PATH = path.join(__dirname, '..', '..', '..', 'integration', 'lint');
+const TEMP_PATH = path.join(
+  import.meta.dirname,
+  '..',
+  '..',
+  '..',
+  'integration',
+  'lint',
+);
 
 const stdout = (randomMatcher: RegExp) => {
   const result = stdoutMock.mock.calls

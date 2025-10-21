@@ -7,7 +7,7 @@ import { hasNpmrcSecret } from './npmrc.js';
 describe('hasNpmrcSecret', () => {
   // eslint-disable-next-line no-sync
   const legacyTemplateNpmrc = fs.readFileSync(
-    path.join(__dirname, 'legacyNpmrcForTest.npmrc'),
+    path.join(import.meta.dirname, 'legacyNpmrcForTest.npmrc'),
     'utf-8',
   );
 

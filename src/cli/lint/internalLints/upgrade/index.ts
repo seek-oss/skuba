@@ -34,7 +34,7 @@ export type PatchConfig = {
 export type PatchFunction = (config: PatchConfig) => Promise<PatchReturnType>;
 
 const getPatches = async (manifestVersion: string): Promise<Patches> => {
-  const patches = await fs.readdir(path.join(__dirname, 'patches'), {
+  const patches = await fs.readdir(path.join(import.meta.dirname, 'patches'), {
     withFileTypes: true,
   });
 

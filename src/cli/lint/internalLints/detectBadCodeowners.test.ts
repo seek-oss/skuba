@@ -42,7 +42,7 @@ describe('detectBadCodeowners', () => {
 
   it("should report ok on skuba's file", async () => {
     const contents = await realFs.readFile(
-      path.resolve(__dirname, '../../../../.github/CODEOWNERS'),
+      path.resolve(import.meta.dirname, '../../../../.github/CODEOWNERS'),
       'utf8',
     );
     vol.fromJSON({ [CODEOWNERS_PATH]: contents });
@@ -56,7 +56,10 @@ describe('detectBadCodeowners', () => {
 
   it('should report ok on skuba templated files', async () => {
     const contents = await realFs.readFile(
-      path.resolve(__dirname, '../../../../template/base/.github/CODEOWNERS'),
+      path.resolve(
+        import.meta.dirname,
+        '../../../../template/base/.github/CODEOWNERS',
+      ),
       'utf8',
     );
     vol.fromJSON({ [CODEOWNERS_PATH]: contents });

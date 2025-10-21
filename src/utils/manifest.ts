@@ -21,7 +21,7 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
     return skubaManifest;
   }
 
-  const result = await readPkgUp({ cwd: __dirname });
+  const result = await readPkgUp({ cwd: import.meta.dirname });
 
   if (result === undefined) {
     throw Error('skuba could not find its own manifest');
