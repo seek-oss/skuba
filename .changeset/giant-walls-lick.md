@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-Replace the gantry environment in the yaml template
+template/*-rest-api: Template Gantry environment names in values files
