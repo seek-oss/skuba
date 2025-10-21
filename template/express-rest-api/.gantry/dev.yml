@@ -1,8 +1,8 @@
-deployment: dev
+deployment: <%- devGantryEnvironmentName %>
 env: development
 
-maxInstanceCount: 1
 minInstanceCount: 1
+maxInstanceCount: 1
 
 # Disable dashboard for cost savings
 cloudwatchDashboardDisabled: true
