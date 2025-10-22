@@ -15,4 +15,5 @@ Object.assign(app, {
   port: 12345,
 });
 
+// @ts-expect-error for testing purposes
 export = app;
