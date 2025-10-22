@@ -71,7 +71,7 @@ const internalOutput: InternalLintResult = {
 };
 
 const tscOk = false;
-const mockOutput = vi.fn<string, any>();
+const mockOutput = vi.fn<() => string>();
 
 const tscOutputStream = {
   output: mockOutput,

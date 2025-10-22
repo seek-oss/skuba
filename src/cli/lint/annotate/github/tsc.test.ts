@@ -6,7 +6,7 @@ import { createTscAnnotations } from './tsc.js';
 
 import type * as GitHub from '@skuba-lib/api/github';
 
-const mockOutput = vi.fn<string, any>();
+const mockOutput = vi.fn<() => string>();
 
 const tscOutputStream = {
   output: mockOutput,
