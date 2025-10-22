@@ -1,7 +1,16 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FileChanges } from '@octokit/graphql-schema';
 import fs from 'fs-extra';
 import git, { type ReadCommitResult } from 'isomorphic-git';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { apiTokenFromEnvironment } from './environment.js';
 import { graphql } from './octokit.js';
@@ -29,12 +38,12 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  vi.mocked(git.listRemotes)
-    .mockResolvedValue([
-      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-    ]);
-  vi.mocked(git.log)
-    .mockResolvedValue([{ oid: 'commit-id' } as ReadCommitResult]);
+  vi.mocked(git.listRemotes).mockResolvedValue([
+    { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+  ]);
+  vi.mocked(git.log).mockResolvedValue([
+    { oid: 'commit-id' } as ReadCommitResult,
+  ]);
 });
 
 describe('uploadFileChanges', () => {
@@ -186,8 +195,9 @@ describe('readFileChanges', () => {
 describe('uploadAllFileChanges', () => {
   it('should return undefined if there are no file changes to commit', async () => {
     vi.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
-    vi.mocked(git.statusMatrix)
-      .mockResolvedValue([['unchanged-file', 1, 1, 1]]);
+    vi.mocked(git.statusMatrix).mockResolvedValue([
+      ['unchanged-file', 1, 1, 1],
+    ]);
 
     const result = await uploadAllFileChanges({
       dir: './',

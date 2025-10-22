@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import git from 'isomorphic-git';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getOwnerAndRepo } from './remote.js';
 
@@ -36,10 +36,9 @@ describe('getOwnerAndRepo', () => {
   });
 
   it('extracts an owner and repo from an HTTP GitHub remote', async () => {
-    vi.mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     await expect(
       getOwnerAndRepo({

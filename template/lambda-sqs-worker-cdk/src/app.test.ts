@@ -1,4 +1,12 @@
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 import { PublishCommand } from '@aws-sdk/client-sns';
 import type { SQSBatchResponse } from 'aws-lambda';
 
@@ -21,7 +29,8 @@ describe('handler', () => {
 
   const score = chance.floating({ max: 1, min: 0 });
 
-  const distribution = vi.spyOn(metricsClient, 'distribution')
+  const distribution = vi
+    .spyOn(metricsClient, 'distribution')
     .mockReturnValue();
 
   beforeAll(scoringService.spy);

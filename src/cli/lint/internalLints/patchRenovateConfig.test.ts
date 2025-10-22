@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
 import type { PatchConfig } from './upgrade/index.js';
@@ -10,7 +10,7 @@ import * as Git from '@skuba-lib/api/git';
 
 vi.mock('fs', () => memfs);
 vi.mock('@skuba-lib/api/git', async () => ({
-  ...await vi.importActual<object>('@skuba-lib/api/git'),
+  ...(await vi.importActual<object>('@skuba-lib/api/git')),
   getOwnerAndRepo: vi.fn(),
 }));
 

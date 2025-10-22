@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig } from '../../index.js';
 

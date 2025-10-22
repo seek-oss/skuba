@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as fsExtra from 'fs-extra';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { log } from '../../../utils/logging.js';
 
@@ -14,8 +14,9 @@ vi.mock('fs-extra', () => ({
 }));
 
 beforeEach(() => {
-  vi.spyOn(console, 'log')
-    .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+  vi.spyOn(console, 'log').mockImplementation((...args) =>
+    stdoutMock(`${args.join(' ')}\n`),
+  );
 });
 
 afterEach(vi.resetAllMocks);

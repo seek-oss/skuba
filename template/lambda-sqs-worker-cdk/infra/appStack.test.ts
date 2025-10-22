@@ -22,13 +22,16 @@ it.each(['dev', 'prod'])(
 
     const { AppStack } = await import('./appStack.js');
 
-    vi.spyOn(aws_sns.Topic, 'fromTopicArn')
-      .mockImplementation((scope, id) => new aws_sns.Topic(scope, id));
+    vi.spyOn(aws_sns.Topic, 'fromTopicArn').mockImplementation(
+      (scope, id) => new aws_sns.Topic(scope, id),
+    );
 
-    vi.spyOn(aws_secretsmanager.Secret, 'fromSecretPartialArn')
-      .mockImplementation(
-        (scope, id) => new aws_secretsmanager.Secret(scope, id),
-      );
+    vi.spyOn(
+      aws_secretsmanager.Secret,
+      'fromSecretPartialArn',
+    ).mockImplementation(
+      (scope, id) => new aws_secretsmanager.Secret(scope, id),
+    );
 
     const app = new App({ context: { 'aws:cdk:bundling-stacks': [] } });
 

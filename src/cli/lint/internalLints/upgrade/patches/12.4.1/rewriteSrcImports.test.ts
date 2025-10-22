@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import memfs, { vol } from 'memfs';
-import dedent from 'ts-dedent';
+import { dedent } from 'ts-dedent';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';
@@ -20,7 +20,7 @@ import {
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => memfs);
-vi.mock('fast-glob', async () => ({
+vi.mock('fast-glob', () => ({
   glob: async (pat: any, opts: any) => {
     const actualFastGlob =
       await vi.importActual<typeof import('fast-glob')>('fast-glob');

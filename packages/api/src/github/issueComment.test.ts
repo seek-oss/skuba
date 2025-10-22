@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import git from 'isomorphic-git';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { putIssueComment } from './issueComment.js';
 import { createRestClient } from './octokit.js';
@@ -23,10 +23,9 @@ const mockClient = {
 };
 
 beforeEach(() => {
-  vi.mocked(git.listRemotes)
-    .mockResolvedValue([
-      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-    ]);
+  vi.mocked(git.listRemotes).mockResolvedValue([
+    { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+  ]);
 
   vi.mocked(createRestClient).mockResolvedValue(mockClient as never);
 });
@@ -49,7 +48,7 @@ describe('putIssueComment', () => {
     expect(createRestClient).toHaveBeenCalledTimes(1);
 
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.listComments.mock.calls[0][0])
+    expect(mockClient.issues.listComments.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "issue_number": 123,
@@ -59,7 +58,7 @@ describe('putIssueComment', () => {
     `);
 
     expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.createComment.mock.calls[0][0])
+    expect(mockClient.issues.createComment.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "body": "Commentary!",
@@ -97,10 +96,9 @@ describe('putIssueComment', () => {
     });
 
     vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    vi.mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     await expect(
       putIssueComment({
@@ -118,7 +116,7 @@ describe('putIssueComment', () => {
       mockClient.repos.listPullRequestsAssociatedWithCommit,
     ).toHaveBeenCalledTimes(1);
     expect(
-      mockClient.repos.listPullRequestsAssociatedWithCommit.mock.calls[0][0],
+      mockClient.repos.listPullRequestsAssociatedWithCommit.mock.calls[0]![0],
     ).toMatchInlineSnapshot(`
       {
         "commit_sha": "commit-id",
@@ -128,7 +126,7 @@ describe('putIssueComment', () => {
     `);
 
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.listComments.mock.calls[0][0])
+    expect(mockClient.issues.listComments.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "issue_number": 123,
@@ -138,7 +136,7 @@ describe('putIssueComment', () => {
     `);
 
     expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.createComment.mock.calls[0][0])
+    expect(mockClient.issues.createComment.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "body": "Commentary!",
@@ -161,10 +159,9 @@ describe('putIssueComment', () => {
     });
 
     vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    vi.mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     await expect(
       putIssueComment({
@@ -180,7 +177,7 @@ describe('putIssueComment', () => {
     expect(mockClient.users.getAuthenticated).toHaveBeenCalledTimes(1);
 
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.listComments.mock.calls[0][0])
+    expect(mockClient.issues.listComments.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "issue_number": 123,
@@ -190,7 +187,7 @@ describe('putIssueComment', () => {
     `);
 
     expect(mockClient.issues.createComment).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.createComment.mock.calls[0][0])
+    expect(mockClient.issues.createComment.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "body": "Commentary!
@@ -223,10 +220,9 @@ describe('putIssueComment', () => {
     });
 
     vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    vi.mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     await expect(
       putIssueComment({
@@ -241,7 +237,7 @@ describe('putIssueComment', () => {
     expect(mockClient.users.getAuthenticated).toHaveBeenCalledTimes(1);
 
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.listComments.mock.calls[0][0])
+    expect(mockClient.issues.listComments.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "issue_number": 123,
@@ -251,7 +247,7 @@ describe('putIssueComment', () => {
     `);
 
     expect(mockClient.issues.updateComment).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.updateComment.mock.calls[0][0])
+    expect(mockClient.issues.updateComment.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "body": "Commentary!",
@@ -284,10 +280,9 @@ describe('putIssueComment', () => {
     });
 
     vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    vi.mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     await expect(
       putIssueComment({
@@ -303,7 +298,7 @@ describe('putIssueComment', () => {
     expect(mockClient.users.getAuthenticated).toHaveBeenCalledTimes(1);
 
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.listComments.mock.calls[0][0])
+    expect(mockClient.issues.listComments.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "issue_number": 123,
@@ -313,7 +308,7 @@ describe('putIssueComment', () => {
     `);
 
     expect(mockClient.issues.updateComment).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.updateComment.mock.calls[0][0])
+    expect(mockClient.issues.updateComment.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "body": "Commentary!
@@ -339,10 +334,9 @@ describe('putIssueComment', () => {
     });
 
     vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    vi.mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     await expect(
       putIssueComment({
@@ -359,7 +353,7 @@ describe('putIssueComment', () => {
     expect(mockClient.users.getAuthenticated).not.toHaveBeenCalled();
 
     expect(mockClient.issues.listComments).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.listComments.mock.calls[0][0])
+    expect(mockClient.issues.listComments.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "issue_number": 123,
@@ -369,7 +363,7 @@ describe('putIssueComment', () => {
     `);
 
     expect(mockClient.issues.updateComment).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.updateComment.mock.calls[0][0])
+    expect(mockClient.issues.updateComment.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "body": "Commentary!",
@@ -453,7 +447,7 @@ describe('putIssueComment', () => {
     expect(mockClient.issues.createComment).not.toHaveBeenCalled();
     expect(mockClient.issues.updateComment).not.toHaveBeenCalled();
     expect(mockClient.issues.deleteComment).toHaveBeenCalledTimes(1);
-    expect(mockClient.issues.deleteComment.mock.calls[0][0])
+    expect(mockClient.issues.deleteComment.mock.calls[0]![0])
       .toMatchInlineSnapshot(`
       {
         "comment_id": 222,

@@ -1,7 +1,7 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import type { PackageJson } from 'read-pkg-up';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PackageManagerConfig } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';

@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -26,8 +26,9 @@ describe('patchDockerfileCIVariable', () => {
 
   it('should skip if dockerfiles do not contain pnpm install --prod commands', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce('FROM node:18\nRUN npm install' as never);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM node:18\nRUN npm install' as never,
+    );
     await expect(
       tryPatchDockerfileCIVariable({
         mode: 'format',
@@ -40,10 +41,9 @@ describe('patchDockerfileCIVariable', () => {
 
   it('should return apply and not modify files if mode is lint', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
+    );
 
     await expect(
       tryPatchDockerfileCIVariable({
@@ -58,10 +58,9 @@ describe('patchDockerfileCIVariable', () => {
 
   it('should patch dockerfiles with CI variable if mode is format', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
+    );
 
     await expect(
       tryPatchDockerfileCIVariable({
@@ -80,28 +79,26 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should patch multiple dockerfiles containing pnpm install --prod commands', async () => {
-    vi.mocked(fg)
-      .mockResolvedValueOnce([
-        'Dockerfile',
-        'Dockerfile.dev',
-        'Dockerfile.prod',
-      ]);
+    vi.mocked(fg).mockResolvedValueOnce([
+      'Dockerfile',
+      'Dockerfile.dev',
+      'Dockerfile.prod',
+    ]);
 
     // First dockerfile has the target command
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
+    );
 
     // Second dockerfile doesn't have the target command
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce('FROM node:18\nRUN echo "dev"' as never);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM node:18\nRUN echo "dev"' as never,
+    );
 
     // Third dockerfile has the target command
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --offline --prod\nCOPY . .' as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --offline --prod\nCOPY . .' as never,
+    );
 
     await expect(
       tryPatchDockerfileCIVariable({
@@ -179,10 +176,9 @@ CMD ["npm", "start"]`;
 
   it('should patch dockerfiles with pnpm install --prod commands', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --prod' as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --prod' as never,
+    );
 
     await expect(
       tryPatchDockerfileCIVariable({
@@ -202,10 +198,9 @@ CMD ["npm", "start"]`;
 
   it('should detect pnpm install --prod commands in lint mode', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --prod' as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --prod' as never,
+    );
 
     await expect(
       tryPatchDockerfileCIVariable({
@@ -222,16 +217,14 @@ CMD ["npm", "start"]`;
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.prod']);
 
     // First dockerfile has basic pnpm install --prod
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
+    );
 
     // Second dockerfile has pnpm install with additional flags including --prod
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --offline --prod' as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --offline --prod' as never,
+    );
 
     await expect(
       tryPatchDockerfileCIVariable({

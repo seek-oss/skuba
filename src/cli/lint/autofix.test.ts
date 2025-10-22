@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import simpleGit from 'simple-git';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { runESLint } from '../adapter/eslint.js';
 import { runPrettier } from '../adapter/prettier.js';
@@ -44,13 +44,15 @@ beforeEach(() => {
 
   process.env.CI = 'true';
 
-  vi.spyOn(console, 'log')
-    .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+  vi.spyOn(console, 'log').mockImplementation((...args) =>
+    stdoutMock(`${args.join(' ')}\n`),
+  );
 
   vi.mocked(Git.getChangedFiles).mockResolvedValue([]);
 
-  vi.mocked(createDestinationFileReader)
-    .mockReturnValue(vi.fn().mockResolvedValue(null));
+  vi.mocked(createDestinationFileReader).mockReturnValue(
+    vi.fn().mockResolvedValue(null),
+  );
 });
 
 afterEach(vi.resetAllMocks);
@@ -127,12 +129,11 @@ describe('autofix', () => {
 
     it('bails on a renovate branch when there is no open pull request', async () => {
       vi.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
-      vi.mocked(GitHub.getPullRequestNumber)
-        .mockRejectedValue(
-          new Error(
-            `Commit cdd1520 is not associated with an open GitHub pull request`,
-          ),
-        );
+      vi.mocked(GitHub.getPullRequestNumber).mockRejectedValue(
+        new Error(
+          `Commit cdd1520 is not associated with an open GitHub pull request`,
+        ),
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -162,8 +163,9 @@ describe('autofix', () => {
 
     it('bails on an autofix head commit', async () => {
       vi.mocked(Git.currentBranch).mockResolvedValue('feature');
-      vi.mocked(Git.getHeadCommitMessage)
-        .mockResolvedValue('Run `skuba format`\n');
+      vi.mocked(Git.getHeadCommitMessage).mockResolvedValue(
+        'Run `skuba format`\n',
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -359,8 +361,9 @@ describe('autofix', () => {
 
       vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
       vi.mocked(Git.currentBranch).mockResolvedValue('dev');
-      vi.mocked(createDestinationFileReader)
-        .mockReturnValue(vi.fn().mockResolvedValue('_authToken'));
+      vi.mocked(createDestinationFileReader).mockReturnValue(
+        vi.fn().mockResolvedValue('_authToken'),
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -451,8 +454,9 @@ describe('autofix', () => {
 
     it('bails on an autofix head commit', async () => {
       vi.mocked(Git.currentBranch).mockResolvedValue('feature');
-      vi.mocked(Git.getHeadCommitMessage)
-        .mockResolvedValue('Run `skuba format`');
+      vi.mocked(Git.getHeadCommitMessage).mockResolvedValue(
+        'Run `skuba format`',
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -625,8 +629,9 @@ describe('autofix', () => {
 
       vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
       vi.mocked(Git.currentBranch).mockResolvedValue('dev');
-      vi.mocked(createDestinationFileReader)
-        .mockReturnValue(vi.fn().mockResolvedValue('_authToken'));
+      vi.mocked(createDestinationFileReader).mockReturnValue(
+        vi.fn().mockResolvedValue('_authToken'),
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 

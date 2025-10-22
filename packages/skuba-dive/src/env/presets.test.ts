@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import * as presets from './presets.js';
 
 describe('presets', () => {

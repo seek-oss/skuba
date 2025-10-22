@@ -1,8 +1,8 @@
-import { afterEach, expect, test, vi } from 'vitest';
 import nodeHttp from 'http';
 import path from 'path';
 
 import request from 'supertest';
+import { afterEach, expect, test, vi } from 'vitest';
 
 import * as http from './http.js';
 import { main } from './main.js';
@@ -14,7 +14,8 @@ const initWrapper = (entryPoint: string) =>
 
 let agent: ReturnType<(typeof request)['agent']>;
 
-const startServer = vi.spyOn(http, 'startServer')
+const startServer = vi
+  .spyOn(http, 'startServer')
   .mockImplementation((server) => {
     agent = request.agent(server);
     return Promise.resolve();

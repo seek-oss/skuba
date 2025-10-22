@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 // eslint-disable-next-line no-restricted-imports -- fs-extra is mocked
 import fsp from 'fs/promises';
 
 import memfs, { vol } from 'memfs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';
@@ -15,7 +15,7 @@ vi.mock('fs-extra', () => ({
   ...memfs.fs,
   default: memfs.fs,
 }));
-vi.mock('fast-glob', async () => ({
+vi.mock('fast-glob', () => ({
   glob: async (pat: any, opts: any) => {
     const actualFastGlob =
       await vi.importActual<typeof import('fast-glob')>('fast-glob');

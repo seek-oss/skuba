@@ -1,12 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { copyAssets, copyAssetsConcurrently } from './assets.js';
 
 vi.mock('fs', () => memfs);
 
-vi.spyOn(console, 'log')
-  .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+vi.spyOn(console, 'log').mockImplementation((...args) =>
+  stdoutMock(`${args.join(' ')}\n`),
+);
 
 const stdoutMock = vi.fn().mockName('[stdout]');
 const getStdOut = () => `${stdoutMock.name}${stdoutMock.mock.calls.join('')}`;

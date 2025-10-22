@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig } from '../../index.js';
 
@@ -68,11 +68,10 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
-          'FROM --platform=amd64 public.ecr.aws/docker/library/node:18\n') as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
+        'FROM --platform=amd64 public.ecr.aws/docker/library/node:18\n') as never,
+    );
 
     await expect(
       tryPatchDockerImages({
@@ -88,10 +87,9 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/node:18\n' as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/node:18\n' as never,
+    );
 
     await expect(
       tryPatchDockerImages({
@@ -135,11 +133,10 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
-          'FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n') as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
+        'FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n') as never,
+    );
 
     await expect(
       tryPatchDockerImages({

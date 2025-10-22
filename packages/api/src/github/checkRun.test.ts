@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Endpoints } from '@octokit/types';
 import git, { type ReadCommitResult } from 'isomorphic-git';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createCheckRun } from './checkRun.js';
 import { createRestClient } from './octokit.js';
@@ -52,14 +52,12 @@ describe('createCheckRun', () => {
 
   beforeEach(() => {
     vi.mocked(createRestClient).mockResolvedValue(mockClient as never);
-    vi.mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
-    vi.mocked(git.log)
-      .mockResolvedValue([
-        { oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad' } as ReadCommitResult,
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
+    vi.mocked(git.log).mockResolvedValue([
+      { oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad' } as ReadCommitResult,
+    ]);
     mockClient.checks.create.mockReturnValue(createResponse);
   });
 

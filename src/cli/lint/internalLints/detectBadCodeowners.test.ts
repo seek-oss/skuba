@@ -1,9 +1,9 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 // eslint-disable-next-line no-restricted-imports -- want to access unmocked fs in the tests itself
 import * as realFs from 'fs/promises';
 import path from 'path';
 
 import memfs, { vol } from 'memfs';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { Logger } from '../../../utils/logging.js';
 

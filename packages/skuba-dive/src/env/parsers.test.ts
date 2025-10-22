@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import * as parsers from './parsers.js';
 
 describe('nonNegativeInteger', () => {

@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -26,8 +26,9 @@ describe('patchDockerfileSyntaxDirective', () => {
 
   it('should skip if dockerfiles do not contain the Dockerfile syntax directive', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce('No Dockerfile syntax directive here' as never);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'No Dockerfile syntax directive here' as never,
+    );
     await expect(
       tryPatchDockerfileSyntaxDirective({
         mode: 'format',
@@ -40,8 +41,9 @@ describe('patchDockerfileSyntaxDirective', () => {
 
   it('should return apply and not modify files if mode is lint', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce('# syntax=docker/dockerfile:1.18\n' as never);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      '# syntax=docker/dockerfile:1.18\n' as never,
+    );
 
     await expect(
       tryPatchDockerfileSyntaxDirective({
@@ -55,20 +57,17 @@ describe('patchDockerfileSyntaxDirective', () => {
   });
 
   it('should patch dockerfiles if mode is format', async () => {
-    vi.mocked(fg)
-      .mockResolvedValueOnce([
-        'Dockerfile',
-        'Dockerfile.dev-deps',
-        'Dockerfile.build',
-      ]);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        '# syntax=docker/dockerfile:1.18\nFROM node:22' as never,
-      );
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        '# syntax=docker/dockerfile:1.18\nFROM python:3.9' as never,
-      );
+    vi.mocked(fg).mockResolvedValueOnce([
+      'Dockerfile',
+      'Dockerfile.dev-deps',
+      'Dockerfile.build',
+    ]);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      '# syntax=docker/dockerfile:1.18\nFROM node:22' as never,
+    );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      '# syntax=docker/dockerfile:1.18\nFROM python:3.9' as never,
+    );
     vi.mocked(fs.readFile).mockResolvedValueOnce('FROM python:3.9' as never);
 
     await expect(

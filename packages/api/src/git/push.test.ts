@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import git from 'isomorphic-git';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { push } from './push.js';
 
@@ -9,10 +9,9 @@ afterEach(vi.resetAllMocks);
 
 describe('push', () => {
   it('propagates props to isomorphic-git', async () => {
-    vi.mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     vi.mocked(git.push).mockResolvedValue({
       ok: true,

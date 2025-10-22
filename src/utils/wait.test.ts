@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import * as wait from './wait.js';
 
 const delayMicrotask = () =>

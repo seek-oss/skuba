@@ -1,5 +1,5 @@
-import { beforeEach, expect, it, vi } from 'vitest';
 import memfs, { vol } from 'memfs';
+import { beforeEach, expect, it, vi } from 'vitest';
 
 import { findRoot } from './findRoot.js';
 

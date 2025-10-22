@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { replacePackageReferences } from './module.js';
 
 describe('replacePackageReferences', () => {

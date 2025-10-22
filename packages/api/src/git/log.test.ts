@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import git from 'isomorphic-git';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getHeadCommitId, getHeadCommitMessage } from './log.js';
 
@@ -59,8 +59,9 @@ describe('getHeadCommitMessage', () => {
   });
 
   it('falls back to a commit ID from the Git log', async () => {
-    vi.mocked(git.log)
-      .mockResolvedValue([{ commit: { message: 'Do work' } } as any]);
+    vi.mocked(git.log).mockResolvedValue([
+      { commit: { message: 'Do work' } } as any,
+    ]);
 
     await expect(getHeadCommitMessage({ dir, env: {} })).resolves.toBe(
       'Do work',

@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig } from '../../index.js';
 
@@ -31,8 +31,9 @@ describe('patchDockerComposeFile', () => {
   });
   it('should patch docker-compose files with version field', async () => {
     vi.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(mockPatchableDockerComposeContents as never);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      mockPatchableDockerComposeContents as never,
+    );
     await expect(
       tryPatchDockerComposeFiles({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
@@ -49,8 +50,9 @@ describe('patchDockerComposeFile', () => {
   });
   it('should skip if no docker-compose files contain a version field', async () => {
     vi.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(mockDockerComposeContents as never);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      mockDockerComposeContents as never,
+    );
     await expect(
       tryPatchDockerComposeFiles({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
@@ -60,10 +62,9 @@ describe('patchDockerComposeFile', () => {
   });
   it('should not remove intended version in docker compose file', async () => {
     vi.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        `${mockPatchableDockerComposeContents}\n     version: 7\nversion: 0.2` as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      `${mockPatchableDockerComposeContents}\n     version: 7\nversion: 0.2` as never,
+    );
     await expect(
       tryPatchDockerComposeFiles({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({

@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
 import path from 'path';
 
 import fs from 'fs-extra';
+import { describe, expect, it } from 'vitest';
 
 import { hasNpmrcSecret } from './npmrc.js';
 

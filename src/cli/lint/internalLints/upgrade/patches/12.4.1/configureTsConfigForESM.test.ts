@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../../../../index.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
@@ -16,7 +16,7 @@ vi.mock('../../../../../../index.js', () => ({
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => memfs);
-vi.mock('fast-glob', async () => ({
+vi.mock('fast-glob', () => ({
   glob: async (pat: string, opts: { ignore: string[] }) =>
     await vi.importActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
@@ -31,8 +31,10 @@ vi.spyOn(console, 'log').mockImplementation(() => {
 beforeEach(() => {
   vol.reset();
   vi.clearAllMocks();
-  vi.mocked(Git.getOwnerAndRepo)
-    .mockResolvedValue({ repo: 'test-repo', owner: 'seek' });
+  vi.mocked(Git.getOwnerAndRepo).mockResolvedValue({
+    repo: 'test-repo',
+    owner: 'seek',
+  });
 });
 
 const baseArgs: PatchConfig = {
@@ -51,8 +53,9 @@ const baseArgs: PatchConfig = {
 
 describe('tryConfigureTsConfigForESM', () => {
   it('should skip if repository name cannot be determined', async () => {
-    vi.mocked(Git.getOwnerAndRepo)
-      .mockRejectedValue(new Error('no repo found'));
+    vi.mocked(Git.getOwnerAndRepo).mockRejectedValue(
+      new Error('no repo found'),
+    );
 
     await expect(
       tryConfigureTsConfigForESM({

@@ -1,6 +1,6 @@
-import { beforeEach, expect, it, vi } from 'vitest';
 import git from 'isomorphic-git';
 import memfs, { fs, vol } from 'memfs';
+import { beforeEach, expect, it, vi } from 'vitest';
 
 import newGit from '../../../../integration/git/new.json';
 

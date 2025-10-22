@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import git from 'isomorphic-git';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fastForwardBranch } from './pull.js';
 
@@ -9,10 +9,9 @@ afterEach(vi.resetAllMocks);
 
 describe('fastForwardBranch', () => {
   it('propagates props to isomorphic-git', async () => {
-    vi.mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     await fastForwardBranch({
       auth: { token: 'abc', type: 'gitHubApp' },
@@ -22,9 +21,7 @@ describe('fastForwardBranch', () => {
     });
 
     expect(git.fastForward).toHaveBeenCalledTimes(1);
-    expect(
-      vi.mocked(git.fastForward).mock.calls[0]![0],
-    ).toMatchInlineSnapshot(
+    expect(vi.mocked(git.fastForward).mock.calls[0]![0]).toMatchInlineSnapshot(
       { http: expect.any(Object), fs: expect.any(Object) },
       `
       {

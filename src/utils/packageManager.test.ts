@@ -8,8 +8,9 @@ import { detectPackageManager } from './packageManager.js';
 
 const stdoutMock = vi.fn();
 
-vi.spyOn(console, 'log')
-  .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+vi.spyOn(console, 'log').mockImplementation((...args) =>
+  stdoutMock(`${args.join(' ')}\n`),
+);
 
 const mockExec = vi.fn().mockResolvedValue({});
 

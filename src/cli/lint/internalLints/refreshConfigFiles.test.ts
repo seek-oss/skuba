@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import path from 'path';
 
 import fs from 'fs-extra';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../index.js';
 import { log } from '../../../utils/logging.js';
@@ -43,18 +43,19 @@ vi.mock('../../..', () => ({
 }));
 
 const givenMockPackageManager = async (command: 'pnpm' | 'yarn') => {
-  vi.mocked(detectPackageManager)
-    .mockResolvedValue(
-      await vi.importActual('../../../utils/packageManager')
-        .configForPackageManager(command),
-    );
+  vi.mocked(detectPackageManager).mockResolvedValue(
+    await vi
+      .importActual('../../../utils/packageManager')
+      .configForPackageManager(command),
+  );
 };
 
 vi.mock('../../../utils/packageManager');
 
 beforeEach(() => {
-  vi.spyOn(console, 'log')
-    .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+  vi.spyOn(console, 'log').mockImplementation((...args) =>
+    stdoutMock(`${args.join(' ')}\n`),
+  );
 
   givenMockPackageManager('pnpm');
 });
@@ -171,10 +172,9 @@ The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to u
     });
 
     it('should not flag creation of files that are `.gitignore`d', async () => {
-      vi.mocked(Git.isFileGitIgnored)
-        .mockImplementation(({ absolutePath }) =>
-          Promise.resolve(absolutePath.endsWith('.dockerignore')),
-        );
+      vi.mocked(Git.isFileGitIgnored).mockImplementation(({ absolutePath }) =>
+        Promise.resolve(absolutePath.endsWith('.dockerignore')),
+      );
 
       setupDestinationFiles({
         '.dockerignore': undefined,
@@ -274,10 +274,9 @@ Refreshed pnpm-workspace.yaml.
     });
 
     it('should not create files that are `.gitignore`d', async () => {
-      vi.mocked(Git.isFileGitIgnored)
-        .mockImplementation(({ absolutePath }) =>
-          Promise.resolve(absolutePath.endsWith('.dockerignore')),
-        );
+      vi.mocked(Git.isFileGitIgnored).mockImplementation(({ absolutePath }) =>
+        Promise.resolve(absolutePath.endsWith('.dockerignore')),
+      );
 
       setupDestinationFiles({
         '.dockerignore': undefined,

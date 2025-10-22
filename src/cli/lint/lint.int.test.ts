@@ -1,4 +1,3 @@
-import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import crypto from 'crypto';
 import path from 'path';
 import stream from 'stream';
@@ -6,6 +5,7 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
+import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import type { Logger } from '../../utils/logging.js';
 import { getSkubaVersion } from '../../utils/version.js';
@@ -16,11 +16,13 @@ import { lint } from './index.js';
 
 import * as Buildkite from '@skuba-lib/api/buildkite';
 
-vi.setTimeout(30_000);
+vi.setConfig({
+  testTimeout: 30_000,
+});
 
 vi.mock('../../utils/version');
 vi.mock('@skuba-lib/api/buildkite', async () => ({
-  ...await vi.importActual('@skuba-lib/api/buildkite'),
+  ...(await vi.importActual('@skuba-lib/api/buildkite')),
   annotate: vi.fn(),
 }));
 
@@ -28,13 +30,13 @@ const buildkiteAnnotate = vi.mocked(Buildkite.annotate).mockResolvedValue();
 
 const stdoutMock = vi.fn();
 
-vi.spyOn(console, 'log')
-  .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+vi.spyOn(console, 'log').mockImplementation((...args) =>
+  stdoutMock(`${args.join(' ')}\n`),
+);
 
-vi.spyOn(git, 'listRemotes')
-  .mockResolvedValue([
-    { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-  ]);
+vi.spyOn(git, 'listRemotes').mockResolvedValue([
+  { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+]);
 
 const tscOutputStream = new stream.PassThrough().on('data', stdoutMock);
 

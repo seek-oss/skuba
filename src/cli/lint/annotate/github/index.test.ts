@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
@@ -14,7 +15,7 @@ import * as GitHub from '@skuba-lib/api/github';
 
 vi.mock('../../../../utils/logging');
 vi.mock('@skuba-lib/api/github', async () => ({
-  ...await vi.importActual('@skuba-lib/api/github'),
+  ...(await vi.importActual('@skuba-lib/api/github')),
   createCheckRun: vi.fn(),
 }));
 
@@ -131,8 +132,7 @@ beforeEach(() => {
   process.env.GITHUB_WORKFLOW = 'Test';
 
   vi.mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
-  vi.mocked(createPrettierAnnotations)
-    .mockReturnValue(mockPrettierAnnotations);
+  vi.mocked(createPrettierAnnotations).mockReturnValue(mockPrettierAnnotations);
   vi.mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
 });
 

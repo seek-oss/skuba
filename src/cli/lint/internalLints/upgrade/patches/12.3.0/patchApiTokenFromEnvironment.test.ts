@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -39,10 +39,9 @@ describe('patchApiTokenFromEnvironment', () => {
 
   it('should return apply and not modify files if mode is lint', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        "import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n" as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      "import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n" as never,
+    );
 
     await expect(
       tryPatchApiTokenFromEnvironment({
@@ -57,11 +56,10 @@ describe('patchApiTokenFromEnvironment', () => {
 
   it('should patch scripts if mode is format', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
-    vi.mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        ("import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n\n" +
-          'const client = new Octokit({ auth: apiTokenFromEnvironment() });') as never,
-      );
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      ("import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n\n" +
+        'const client = new Octokit({ auth: apiTokenFromEnvironment() });') as never,
+    );
 
     await expect(
       tryPatchApiTokenFromEnvironment({

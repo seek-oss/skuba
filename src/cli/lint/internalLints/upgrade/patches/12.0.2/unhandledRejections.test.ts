@@ -1,12 +1,12 @@
-import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => memfs);
-vi.mock('fast-glob', async () => ({
+vi.mock('fast-glob', () => ({
   glob: async (pat: any, opts: any) => {
     const actualFastGlob =
       await vi.importActual<typeof import('fast-glob')>('fast-glob');

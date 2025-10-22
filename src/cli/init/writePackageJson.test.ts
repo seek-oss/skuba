@@ -1,20 +1,20 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import path from 'path';
 
 import fs from 'fs-extra';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as packageAnalysis from '../configure/analysis/package.js';
 
 import { writePackageJson } from './writePackageJson.js';
 
 describe('writePackageJson', () => {
-  vi.spyOn(packageAnalysis, 'getDestinationManifest')
-    .mockImplementation((props) =>
+  vi.spyOn(packageAnalysis, 'getDestinationManifest').mockImplementation(
+    (props) =>
       Promise.resolve({
         packageJson: {} as any,
         path: path.join(props?.cwd ?? '/', 'package.json'),
       }),
-    );
+  );
 
   const writeFile = vi.spyOn(fs.promises, 'writeFile').mockResolvedValue();
 

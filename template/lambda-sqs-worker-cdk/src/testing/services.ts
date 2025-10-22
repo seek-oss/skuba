@@ -13,7 +13,8 @@ export const scoringService = {
   clear: () => scoringService.request.mockClear(),
 
   spy: () =>
-    vi.spyOn(jobScorer.scoringService, 'request')
+    vi
+      .spyOn(jobScorer.scoringService, 'request')
       .mockImplementation(scoringService.request),
 };
 

@@ -1,5 +1,6 @@
-import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import path from 'path';
+
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getCustomConditions } from './tsc.js';
 
@@ -21,8 +22,9 @@ describe('getCustomConditions', () => {
   });
 
   it('should return an empty array when failing to read from tsconfig.json', () => {
-    vi.spyOn(process, 'cwd')
-      .mockReturnValue(path.join(import.meta.dirname, 'non-existent'));
+    vi.spyOn(process, 'cwd').mockReturnValue(
+      path.join(import.meta.dirname, 'non-existent'),
+    );
 
     const conditions = getCustomConditions();
     expect(conditions).toEqual(expect.arrayContaining([]));

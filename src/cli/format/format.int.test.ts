@@ -1,10 +1,10 @@
-import { afterAll, beforeEach, expect, test, vi } from 'vitest';
 import crypto from 'crypto';
 import path from 'path';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { diff } from 'jest-diff';
+import { afterAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { format } from './index.js';
 
@@ -12,13 +12,13 @@ vi.setTimeout(15_000);
 
 const stdoutMock = vi.fn();
 
-vi.spyOn(console, 'log')
-  .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+vi.spyOn(console, 'log').mockImplementation((...args) =>
+  stdoutMock(`${args.join(' ')}\n`),
+);
 
-vi.spyOn(git, 'listRemotes')
-  .mockResolvedValue([
-    { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-  ]);
+vi.spyOn(git, 'listRemotes').mockResolvedValue([
+  { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+]);
 
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 

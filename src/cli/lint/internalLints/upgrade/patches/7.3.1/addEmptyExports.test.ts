@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import fs from 'fs-extra';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as packageAnalysis from '../../../../../configure/analysis/package.js';
 import * as projectAnalysis from '../../../../../configure/analysis/project.js';
@@ -7,10 +7,12 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryAddEmptyExports } from './addEmptyExports.js';
 
-vi.spyOn(packageAnalysis, 'getDestinationManifest')
-  .mockResolvedValue({ path: '~/project/package.json' } as any);
+vi.spyOn(packageAnalysis, 'getDestinationManifest').mockResolvedValue({
+  path: '~/project/package.json',
+} as any);
 
-const createDestinationFileReader = vi.spyOn(projectAnalysis, 'createDestinationFileReader')
+const createDestinationFileReader = vi
+  .spyOn(projectAnalysis, 'createDestinationFileReader')
   .mockReturnValue(() => {
     throw new Error('Not implemented!');
   });
