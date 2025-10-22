@@ -7,8 +7,11 @@ import { nodeVersionMigration } from './index.js';
 
 vi.mock('fs', () => memfs);
 vi.mock('fast-glob', async () => ({
-  glob: async (pat: any, opts: any) =>
-    await vi.importActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+  glob: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 vi.mock('../../../utils/logging');
 
@@ -210,14 +213,17 @@ describe('nodeVersionMigration', () => {
       isPatchableServerlessVersion = true,
       isPatchableSkubaType = true,
     }) => {
-      vi.spyOn(checks, 'isPatchableServerlessVersion')
-        .mockResolvedValue(isPatchableServerlessVersion);
+      vi.spyOn(checks, 'isPatchableServerlessVersion').mockResolvedValue(
+        isPatchableServerlessVersion,
+      );
 
-      vi.spyOn(checks, 'isPatchableSkubaType')
-        .mockResolvedValue(isPatchableSkubaType);
+      vi.spyOn(checks, 'isPatchableSkubaType').mockResolvedValue(
+        isPatchableSkubaType,
+      );
 
-      vi.spyOn(checks, 'isPatchableNodeVersion')
-        .mockResolvedValue(isPatchableNodeVersion);
+      vi.spyOn(checks, 'isPatchableNodeVersion').mockResolvedValue(
+        isPatchableNodeVersion,
+      );
       vol.fromJSON(filesBefore, process.cwd());
 
       await nodeVersionMigration({

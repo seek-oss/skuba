@@ -7,8 +7,11 @@ const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => memfs);
 vi.mock('fast-glob', async () => ({
-  glob: async (pat: any, opts: any) =>
-    await vi.importActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+  glob: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 
 beforeEach(() => vol.reset());
