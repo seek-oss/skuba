@@ -5,7 +5,10 @@ import * as checks from './checks.js';
 
 import { nodeVersionMigration } from './index.js';
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 vi.mock('fast-glob', async () => ({
   glob: async (pat: any, opts: any) => {
     const actualFastGlob =

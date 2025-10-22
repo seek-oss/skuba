@@ -8,7 +8,10 @@ import { tryMigrateNpmrcToPnpmWorkspace } from './migrateNpmrcToPnpmWorkspace.js
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 vi.mock('fast-glob', async () => ({
   glob: async (pat: any, opts: any) => {
     const actualFastGlob =
