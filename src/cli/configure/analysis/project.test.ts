@@ -1,3 +1,4 @@
+import { describe, expect, it, vi } from 'vitest';
 import * as dir from '../../../utils/dir.js';
 import { getSkubaVersion } from '../../../utils/version.js';
 import { defaultOpts } from '../testing/module.js';
@@ -7,11 +8,10 @@ import { diffFiles } from './project.js';
 
 describe('diffFiles', () => {
   it('works from scratch', async () => {
-    jest
-      .spyOn(project, 'createDestinationFileReader')
+    vi.spyOn(project, 'createDestinationFileReader')
       .mockReturnValue(() => Promise.resolve(undefined));
 
-    jest.spyOn(dir, 'crawlDirectory').mockResolvedValue([]);
+    vi.spyOn(dir, 'crawlDirectory').mockResolvedValue([]);
 
     const [outputFiles, version] = await Promise.all([
       diffFiles(defaultOpts),

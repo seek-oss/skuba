@@ -1,17 +1,18 @@
+import { afterEach, expect, it, vi } from 'vitest';
 import type { StreamInterceptor } from '../../../lint/external.js';
 
 import { createTscAnnotations } from './tsc.js';
 
 import type * as GitHub from '@skuba-lib/api/github';
 
-const mockOutput = jest.fn<string, any>();
+const mockOutput = vi.fn<string, any>();
 
 const tscOutputStream = {
   output: mockOutput,
 } as unknown as StreamInterceptor;
 
 afterEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 });
 
 it('should create annotations from single-line tsc output', () => {

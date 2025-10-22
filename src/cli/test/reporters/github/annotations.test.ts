@@ -1,8 +1,9 @@
+import { expect, it, vi } from 'vitest';
 import type { SerializableError, TestResult } from '@jest/test-result';
 
 import { createAnnotations } from './annotations.js';
 
-jest.spyOn(process, 'cwd').mockReturnValue('/workdir/skuba');
+vi.spyOn(process, 'cwd').mockReturnValue('/workdir/skuba');
 
 const COMMON_TEST_RESULT_FIELDS = {
   leaks: false,

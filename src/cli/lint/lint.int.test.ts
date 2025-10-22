@@ -1,3 +1,4 @@
+import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import crypto from 'crypto';
 import path from 'path';
 import stream from 'stream';
@@ -15,24 +16,22 @@ import { lint } from './index.js';
 
 import * as Buildkite from '@skuba-lib/api/buildkite';
 
-jest.setTimeout(30_000);
+vi.setTimeout(30_000);
 
-jest.mock('../../utils/version');
-jest.mock('@skuba-lib/api/buildkite', () => ({
-  ...jest.requireActual('@skuba-lib/api/buildkite'),
-  annotate: jest.fn(),
+vi.mock('../../utils/version');
+vi.mock('@skuba-lib/api/buildkite', async () => ({
+  ...await vi.importActual('@skuba-lib/api/buildkite'),
+  annotate: vi.fn(),
 }));
 
-const buildkiteAnnotate = jest.mocked(Buildkite.annotate).mockResolvedValue();
+const buildkiteAnnotate = vi.mocked(Buildkite.annotate).mockResolvedValue();
 
-const stdoutMock = jest.fn();
+const stdoutMock = vi.fn();
 
-jest
-  .spyOn(console, 'log')
+vi.spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
-jest
-  .spyOn(git, 'listRemotes')
+vi.spyOn(git, 'listRemotes')
   .mockResolvedValue([
     { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
   ]);
@@ -92,9 +91,9 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
   process.chdir(tempDir);
   await git.init({ fs, dir: tempDir });
   const result = await refreshConfigFiles('format', {
-    bold: jest.fn(),
-    dim: jest.fn(),
-    warn: jest.fn(),
+    bold: vi.fn(),
+    dim: vi.fn(),
+    warn: vi.fn(),
   } as unknown as Logger);
   expect(result.ok).toBe(true);
 };
@@ -108,7 +107,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   process.exitCode = undefined;
 });
@@ -143,7 +142,7 @@ test.each`
   ${'unfixable'}     | ${[]}          | ${'unfixable'} | ${'0.0.0'}   | ${1}
   ${'needs patches'} | ${[]}          | ${'patch'}     | ${'1.0.0'}   | ${1}
 `('$description', async ({ args, base, skubaVersion, exitCode }: Args) => {
-  jest.mocked(getSkubaVersion).mockResolvedValue(skubaVersion);
+  vi.mocked(getSkubaVersion).mockResolvedValue(skubaVersion);
 
   const baseDir = path.join(BASE_PATH, base);
 

@@ -1,14 +1,15 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { internalLint } from './internal.js';
 
 describe('internalLint', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'log').mockImplementation(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => {
       /* no-op */
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('passes on skuba itself', () =>

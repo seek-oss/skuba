@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -5,14 +6,14 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryPatchDockerImages } from './patchDockerImages.js';
 
-jest.mock('fast-glob');
-jest.mock('fs-extra');
+vi.mock('fast-glob');
+vi.mock('fs-extra');
 
 describe('patchDockerImages', () => {
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => vi.resetAllMocks());
 
   it('should skip if no Dockerfile or docker-compose files are found', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+    vi.mocked(fg).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
     await expect(
       tryPatchDockerImages({
         mode: 'format',
@@ -24,12 +25,10 @@ describe('patchDockerImages', () => {
   });
 
   it('should skip if no Dockerfile or docker-compose files need to be patched', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce('beep' as never)
       .mockResolvedValueOnce('boop' as never);
 
@@ -44,12 +43,10 @@ describe('patchDockerImages', () => {
   });
 
   it('should skip already patched Dockerfile and docker-compose files', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         'FROM public.ecr.aws/docker/library/node:18\n' as never,
       )
@@ -68,12 +65,10 @@ describe('patchDockerImages', () => {
   });
 
   it('should skip a Dockerfile with multiple platforms', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
           'FROM --platform=amd64 public.ecr.aws/docker/library/node:18\n') as never,
@@ -90,12 +85,10 @@ describe('patchDockerImages', () => {
   });
 
   it('should skip a Dockerfile with a build arg platform', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         'FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/node:18\n' as never,
       );
@@ -111,12 +104,10 @@ describe('patchDockerImages', () => {
   });
 
   it('should patch a simple Dockerfile and docker-compose file', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce('FROM --platform=arm64 node:18\n' as never)
       .mockResolvedValueOnce('    image: node:14\n' as never);
 
@@ -141,12 +132,10 @@ describe('patchDockerImages', () => {
   });
 
   it('should patch a Dockerfile with invalid platform usage and already patched base images', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
           'FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n') as never,
@@ -169,12 +158,10 @@ describe('patchDockerImages', () => {
   });
 
   it('should patch multiple lines in Dockerfile and docker-compose files with the same platform', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.10\n' +
           '\n' +
@@ -239,12 +226,10 @@ describe('patchDockerImages', () => {
   });
 
   it('should patch multiple lines in Dockerfile and docker-compose files with multiple platforms', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.10\n' +
           '\n' +

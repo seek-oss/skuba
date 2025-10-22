@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PublishCommand } from '@aws-sdk/client-sns';
 
 import { sendPipelineEvent } from './pipelineEventSender.js';
@@ -7,7 +8,7 @@ import { chance } from '#src/testing/types.js';
 
 describe('sendPipelineEvent', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('handles happy path', async () => {

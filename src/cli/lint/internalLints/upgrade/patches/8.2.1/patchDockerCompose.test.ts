@@ -1,14 +1,15 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import type { PatchConfig } from '../../index.js';
 
 import { tryPatchDockerComposeFiles } from './patchDockerCompose.js';
-jest.mock('fast-glob');
-jest.mock('fs-extra');
+vi.mock('fast-glob');
+vi.mock('fs-extra');
 
 describe('patchDockerComposeFile', () => {
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => vi.resetAllMocks());
 
   const mockDockerComposeFile = 'docker-compose.yml';
   const mockDockerComposeContents =
@@ -20,7 +21,7 @@ describe('patchDockerComposeFile', () => {
   const mockPatchableDockerComposeContents = `version: '3.8'\n${mockDockerComposeContents}`;
 
   it('should skip if no Dockerfile is found', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([]);
+    vi.mocked(fg).mockResolvedValueOnce([]);
     await expect(
       tryPatchDockerComposeFiles({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
@@ -29,9 +30,8 @@ describe('patchDockerComposeFile', () => {
     });
   });
   it('should patch docker-compose files with version field', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(mockPatchableDockerComposeContents as never);
     await expect(
       tryPatchDockerComposeFiles({ mode: 'format' } as PatchConfig),
@@ -48,9 +48,8 @@ describe('patchDockerComposeFile', () => {
     );
   });
   it('should skip if no docker-compose files contain a version field', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(mockDockerComposeContents as never);
     await expect(
       tryPatchDockerComposeFiles({ mode: 'format' } as PatchConfig),
@@ -60,9 +59,8 @@ describe('patchDockerComposeFile', () => {
     });
   });
   it('should not remove intended version in docker compose file', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         `${mockPatchableDockerComposeContents}\n     version: 7\nversion: 0.2` as never,
       );

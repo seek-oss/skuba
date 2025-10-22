@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 // eslint-disable-next-line no-restricted-imports -- fs-extra is mocked
 import fs from 'fs';
 import { inspect } from 'util';
@@ -8,7 +9,7 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryPatchServerListener } from './patchServerListener.js';
 
-jest.mock('fs-extra', () => memfs);
+vi.mock('fs-extra', () => memfs);
 
 const LISTENER_WITH_CALLBACK = `
 app.listen(config.port, () => {
@@ -24,13 +25,13 @@ const LISTENER_WITHOUT_CALLBACK = `
 app.listen(config.port);
 `;
 
-const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+const consoleLog = vi.spyOn(console, 'log').mockImplementation();
 
-const writeFile = jest.spyOn(memfs.fs.promises, 'writeFile');
+const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-beforeEach(jest.clearAllMocks);
+beforeEach(vi.clearAllMocks);
 beforeEach(() => vol.reset());
 
 describe('patchServerListener', () => {

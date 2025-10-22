@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { skuba } from './skuba.js';
 
 describe('skuba', () => {

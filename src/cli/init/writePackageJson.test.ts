@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import path from 'path';
 
 import fs from 'fs-extra';
@@ -7,8 +8,7 @@ import * as packageAnalysis from '../configure/analysis/package.js';
 import { writePackageJson } from './writePackageJson.js';
 
 describe('writePackageJson', () => {
-  jest
-    .spyOn(packageAnalysis, 'getDestinationManifest')
+  vi.spyOn(packageAnalysis, 'getDestinationManifest')
     .mockImplementation((props) =>
       Promise.resolve({
         packageJson: {} as any,
@@ -16,7 +16,7 @@ describe('writePackageJson', () => {
       }),
     );
 
-  const writeFile = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+  const writeFile = vi.spyOn(fs.promises, 'writeFile').mockResolvedValue();
 
   afterEach(() => writeFile.mockClear());
 

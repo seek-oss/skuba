@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import fs from 'fs-extra';
 
 import * as packageAnalysis from '../../../../../configure/analysis/package.js';
@@ -6,19 +7,17 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryAddEmptyExports } from './addEmptyExports.js';
 
-jest
-  .spyOn(packageAnalysis, 'getDestinationManifest')
+vi.spyOn(packageAnalysis, 'getDestinationManifest')
   .mockResolvedValue({ path: '~/project/package.json' } as any);
 
-const createDestinationFileReader = jest
-  .spyOn(projectAnalysis, 'createDestinationFileReader')
+const createDestinationFileReader = vi.spyOn(projectAnalysis, 'createDestinationFileReader')
   .mockReturnValue(() => {
     throw new Error('Not implemented!');
   });
 
-const writeFile = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+const writeFile = vi.spyOn(fs.promises, 'writeFile').mockResolvedValue();
 
-beforeEach(jest.clearAllMocks);
+beforeEach(vi.clearAllMocks);
 
 describe('tryAddEmptyExports', () => {
   describe('format mode', () => {
@@ -86,7 +85,7 @@ describe('tryAddEmptyExports', () => {
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+      const consoleLog = vi.spyOn(console, 'log').mockImplementation();
 
       createDestinationFileReader.mockReturnValue(() => {
         throw new Error('Something happened!');
@@ -163,7 +162,7 @@ describe('tryAddEmptyExports', () => {
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+      const consoleLog = vi.spyOn(console, 'log').mockImplementation();
 
       createDestinationFileReader.mockReturnValue(() => {
         throw new Error('Something happened!');

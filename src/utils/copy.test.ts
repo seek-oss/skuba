@@ -1,15 +1,16 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createEjsRenderer, createStringReplacer } from './copy.js';
 import { log } from './logging.js';
 
-jest.mock('./logging', () => ({
+vi.mock('./logging', () => ({
   log: {
-    err: jest.fn(),
-    subtle: jest.fn(),
+    err: vi.fn(),
+    subtle: vi.fn(),
     bold: (text: string) => text,
   },
 }));
 
-afterEach(() => jest.clearAllMocks());
+afterEach(() => vi.clearAllMocks());
 
 describe('createEjsRenderer', () => {
   it('renders typical skuba placeholders', () => {

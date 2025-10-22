@@ -1,3 +1,4 @@
+import { afterAll, afterEach, expect, it, vi } from 'vitest';
 import { App, aws_secretsmanager, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 
@@ -10,7 +11,7 @@ afterAll(() => {
 });
 
 afterEach(() => {
-  jest.resetModules();
+  vi.resetModules();
 });
 
 it.each(['dev', 'prod'])(
@@ -21,12 +22,10 @@ it.each(['dev', 'prod'])(
 
     const { AppStack } = await import('./appStack.js');
 
-    jest
-      .spyOn(aws_sns.Topic, 'fromTopicArn')
+    vi.spyOn(aws_sns.Topic, 'fromTopicArn')
       .mockImplementation((scope, id) => new aws_sns.Topic(scope, id));
 
-    jest
-      .spyOn(aws_secretsmanager.Secret, 'fromSecretPartialArn')
+    vi.spyOn(aws_secretsmanager.Secret, 'fromSecretPartialArn')
       .mockImplementation(
         (scope, id) => new aws_secretsmanager.Secret(scope, id),
       );

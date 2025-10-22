@@ -1,37 +1,37 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import git from 'isomorphic-git';
 
 import { putIssueComment } from './issueComment.js';
 import { createRestClient } from './octokit.js';
 
-jest.mock('isomorphic-git');
-jest.mock('./octokit');
+vi.mock('isomorphic-git');
+vi.mock('./octokit');
 
 const mockClient = {
   issues: {
-    createComment: jest.fn(),
-    listComments: jest.fn(),
-    updateComment: jest.fn(),
-    deleteComment: jest.fn(),
+    createComment: vi.fn(),
+    listComments: vi.fn(),
+    updateComment: vi.fn(),
+    deleteComment: vi.fn(),
   },
   repos: {
-    listPullRequestsAssociatedWithCommit: jest.fn(),
+    listPullRequestsAssociatedWithCommit: vi.fn(),
   },
   users: {
-    getAuthenticated: jest.fn(),
+    getAuthenticated: vi.fn(),
   },
 };
 
 beforeEach(() => {
-  jest
-    .mocked(git.listRemotes)
+  vi.mocked(git.listRemotes)
     .mockResolvedValue([
       { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
     ]);
 
-  jest.mocked(createRestClient).mockResolvedValue(mockClient as never);
+  vi.mocked(createRestClient).mockResolvedValue(mockClient as never);
 });
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('putIssueComment', () => {
   it('handles explicit issue and user IDs', async () => {
@@ -96,9 +96,8 @@ describe('putIssueComment', () => {
       data: { id: 111 },
     });
 
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    jest
-      .mocked(git.listRemotes)
+    vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    vi.mocked(git.listRemotes)
       .mockResolvedValue([
         { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
       ]);
@@ -161,9 +160,8 @@ describe('putIssueComment', () => {
       data: { id: 111 },
     });
 
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    jest
-      .mocked(git.listRemotes)
+    vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    vi.mocked(git.listRemotes)
       .mockResolvedValue([
         { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
       ]);
@@ -224,9 +222,8 @@ describe('putIssueComment', () => {
       data: { id: 111 },
     });
 
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    jest
-      .mocked(git.listRemotes)
+    vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    vi.mocked(git.listRemotes)
       .mockResolvedValue([
         { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
       ]);
@@ -286,9 +283,8 @@ describe('putIssueComment', () => {
       data: { id: 111 },
     });
 
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    jest
-      .mocked(git.listRemotes)
+    vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    vi.mocked(git.listRemotes)
       .mockResolvedValue([
         { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
       ]);
@@ -342,9 +338,8 @@ describe('putIssueComment', () => {
       data: [{ id: 111, user: { id: 87109344 } }],
     });
 
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    jest
-      .mocked(git.listRemotes)
+    vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    vi.mocked(git.listRemotes)
       .mockResolvedValue([
         { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
       ]);

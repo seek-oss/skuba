@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { inspect } from 'util';
 
 import { createTerseError } from './error.js';

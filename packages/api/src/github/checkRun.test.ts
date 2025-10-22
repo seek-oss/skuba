@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Endpoints } from '@octokit/types';
 import git, { type ReadCommitResult } from 'isomorphic-git';
 
@@ -9,13 +10,13 @@ import type * as GitHub from './index.js';
 type CreateCheckRunResponse =
   Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
 
-jest.mock('isomorphic-git');
-jest.mock('./octokit');
+vi.mock('isomorphic-git');
+vi.mock('./octokit');
 
 const mockClient = {
   checks: {
-    create: jest.fn(),
-    update: jest.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
   },
 };
 
@@ -25,7 +26,7 @@ beforeEach(() => {
   delete process.env.GITHUB_TOKEN;
 });
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 const annotation: GitHub.Annotation = {
   annotation_level: 'failure',
@@ -50,14 +51,12 @@ describe('createCheckRun', () => {
   const title = 'Build #23 failed';
 
   beforeEach(() => {
-    jest.mocked(createRestClient).mockResolvedValue(mockClient as never);
-    jest
-      .mocked(git.listRemotes)
+    vi.mocked(createRestClient).mockResolvedValue(mockClient as never);
+    vi.mocked(git.listRemotes)
       .mockResolvedValue([
         { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
       ]);
-    jest
-      .mocked(git.log)
+    vi.mocked(git.log)
       .mockResolvedValue([
         { oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad' } as ReadCommitResult,
       ]);
@@ -76,7 +75,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(jest.mocked(createRestClient)).toHaveBeenCalledWith({
+    expect(vi.mocked(createRestClient)).toHaveBeenCalledWith({
       auth: 'Hello from GITHUB_API_TOKEN',
     });
   });
@@ -93,7 +92,7 @@ describe('createCheckRun', () => {
       title,
     });
 
-    expect(jest.mocked(createRestClient)).toHaveBeenCalledWith({
+    expect(vi.mocked(createRestClient)).toHaveBeenCalledWith({
       auth: 'Hello from GITHUB_TOKEN',
     });
   });

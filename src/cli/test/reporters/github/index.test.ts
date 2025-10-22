@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { AggregatedResult, TestContext } from '@jest/reporters';
 
 import { log } from '../../../../utils/logging.js';
@@ -8,14 +9,14 @@ import * as GitHub from '@skuba-lib/api/github';
 
 const reporter = new GitHubReporter();
 
-jest.mock('@skuba-lib/api/github', () => ({
-  ...jest.requireActual('@skuba-lib/api/github'),
-  createCheckRun: jest.fn(),
+vi.mock('@skuba-lib/api/github', async () => ({
+  ...await vi.importActual('@skuba-lib/api/github'),
+  createCheckRun: vi.fn(),
 }));
-jest.mock('../../../../utils/logging');
+vi.mock('../../../../utils/logging');
 
 beforeEach(() => {
-  jest.spyOn(process, 'cwd').mockReturnValue('/workdir/skuba');
+  vi.spyOn(process, 'cwd').mockReturnValue('/workdir/skuba');
 
   process.env.CI = 'true';
   process.env.GITHUB_ACTIONS = 'true';
@@ -24,7 +25,7 @@ beforeEach(() => {
   process.env.GITHUB_WORKFLOW = 'Test';
 });
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 const context = new Set<TestContext>();
 
@@ -398,18 +399,17 @@ it('should create an annotated check run per display name', async () => {
 it('should log a warning when it fails to create annotations', async () => {
   const err = new Error('Badness!');
 
-  jest.mocked(GitHub.createCheckRun).mockRejectedValue(err);
+  vi.mocked(GitHub.createCheckRun).mockRejectedValue(err);
 
   await reporter.onRunComplete(context, failResults);
 
   const logs = [
     null,
-    jest.mocked(log.warn).mock.calls,
-    jest
-      .mocked(log.subtle)
+    vi.mocked(log.warn).mock.calls,
+    vi.mocked(log.subtle)
       .mock.calls[0]?.join('\n')
       .replace(/(at Object\.\<anonymous\>)[\s\S]+$/, '$1...'),
-    jest.mocked(log.subtle).mock.calls.slice(1),
+    vi.mocked(log.subtle).mock.calls.slice(1),
     null,
   ]
     .flat()

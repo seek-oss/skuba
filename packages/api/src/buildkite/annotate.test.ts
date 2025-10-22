@@ -1,14 +1,15 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as execModule from '../../../../src/utils/exec.js';
 import { log } from '../../../../src/utils/logging.js';
 
 import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate.js';
 
-const exec = jest.spyOn(execModule, 'exec');
-const hasCommand = jest.spyOn(execModule, 'hasCommand');
-const mockWarn = jest.spyOn(log, 'warn').mockImplementation(() => undefined);
+const exec = vi.spyOn(execModule, 'exec');
+const hasCommand = vi.spyOn(execModule, 'hasCommand');
+const mockWarn = vi.spyOn(log, 'warn').mockImplementation(() => undefined);
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   exec.mockResolvedValue(undefined as any);
   hasCommand.mockResolvedValue(true);

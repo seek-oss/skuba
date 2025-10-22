@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { defaultOpts, executeModule } from '../testing/module.js';
 
 import { jestModule } from './jest.js';

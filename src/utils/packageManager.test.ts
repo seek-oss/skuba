@@ -1,19 +1,19 @@
-const findUp = jest.fn();
+import { afterEach, describe, expect, it, vi } from 'vitest';
+const findUp = vi.fn();
 
-jest.mock('find-up', () => findUp);
+vi.mock('find-up', () => findUp);
 
 import * as exec from './exec.js';
 import { detectPackageManager } from './packageManager.js';
 
-const stdoutMock = jest.fn();
+const stdoutMock = vi.fn();
 
-jest
-  .spyOn(console, 'log')
+vi.spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
-const mockExec = jest.fn().mockResolvedValue({});
+const mockExec = vi.fn().mockResolvedValue({});
 
-jest.spyOn(exec, 'createExec').mockReturnValue(mockExec);
+vi.spyOn(exec, 'createExec').mockReturnValue(mockExec);
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('').trim();
 

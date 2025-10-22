@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import path from 'path';
 
 import fs from 'fs-extra';
@@ -12,60 +13,57 @@ import {
   refreshConfigFiles,
 } from './refreshConfigFiles.js';
 
-const stdoutMock = jest.fn();
+const stdoutMock = vi.fn();
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('');
 
-jest.mock('fs-extra', () => ({
-  writeFile: jest.fn(),
+vi.mock('fs-extra', () => ({
+  writeFile: vi.fn(),
 }));
 
-jest.mock('../../../utils/dir', () => ({
+vi.mock('../../../utils/dir', () => ({
   findCurrentWorkspaceProjectRoot: () => '/some/workdir',
   findWorkspaceRoot: () => '/some/workdir',
 }));
 
-jest.mock('../../../utils/template', () => ({
+vi.mock('../../../utils/template', () => ({
   readBaseTemplateFile: (name: string) =>
     Promise.resolve(
       `# managed by skuba\nfake content for ${name}\n# end managed by skuba`,
     ),
 }));
 
-jest.mock('../../configure/analysis/project');
+vi.mock('../../configure/analysis/project');
 
-jest.mock('../../..', () => ({
+vi.mock('../../..', () => ({
   Git: {
-    isFileGitIgnored: jest.fn(),
+    isFileGitIgnored: vi.fn(),
     findRoot: () => Promise.resolve('/path/to/git/root'),
   },
 }));
 
-const givenMockPackageManager = (command: 'pnpm' | 'yarn') => {
-  jest
-    .mocked(detectPackageManager)
+const givenMockPackageManager = async (command: 'pnpm' | 'yarn') => {
+  vi.mocked(detectPackageManager)
     .mockResolvedValue(
-      jest
-        .requireActual('../../../utils/packageManager')
+      await vi.importActual('../../../utils/packageManager')
         .configForPackageManager(command),
     );
 };
 
-jest.mock('../../../utils/packageManager');
+vi.mock('../../../utils/packageManager');
 
 beforeEach(() => {
-  jest
-    .spyOn(console, 'log')
+  vi.spyOn(console, 'log')
     .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
   givenMockPackageManager('pnpm');
 });
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('refreshConfigFiles', () => {
-  const writeFile = jest.mocked(fs.writeFile);
-  const createDestinationFileReader = jest.mocked(
+  const writeFile = vi.mocked(fs.writeFile);
+  const createDestinationFileReader = vi.mocked(
     project.createDestinationFileReader,
   );
 
@@ -173,8 +171,7 @@ The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to u
     });
 
     it('should not flag creation of files that are `.gitignore`d', async () => {
-      jest
-        .mocked(Git.isFileGitIgnored)
+      vi.mocked(Git.isFileGitIgnored)
         .mockImplementation(({ absolutePath }) =>
           Promise.resolve(absolutePath.endsWith('.dockerignore')),
         );
@@ -277,8 +274,7 @@ Refreshed pnpm-workspace.yaml.
     });
 
     it('should not create files that are `.gitignore`d', async () => {
-      jest
-        .mocked(Git.isFileGitIgnored)
+      vi.mocked(Git.isFileGitIgnored)
         .mockImplementation(({ absolutePath }) =>
           Promise.resolve(absolutePath.endsWith('.dockerignore')),
         );

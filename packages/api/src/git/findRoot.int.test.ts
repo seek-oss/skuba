@@ -1,8 +1,9 @@
+import { beforeEach, expect, it, vi } from 'vitest';
 import memfs, { vol } from 'memfs';
 
 import { findRoot } from './findRoot.js';
 
-jest.mock('fs', () => memfs);
+vi.mock('fs', () => memfs);
 
 beforeEach(() => vol.reset());
 

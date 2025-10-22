@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import memfs, { vol } from 'memfs';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
@@ -7,7 +8,7 @@ import { tryUpgradeESLint } from './upgradeESLint.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs', () => memfs);
+vi.mock('fs', () => memfs);
 
 beforeEach(() => vol.reset());
 
@@ -17,7 +18,7 @@ describe('upgradeESLint', () => {
     packageManager: configForPackageManager('pnpm'),
   };
 
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => vi.resetAllMocks());
 
   describe('lint', () => {
     const args = { ...baseArgs, mode: 'lint' } as const;

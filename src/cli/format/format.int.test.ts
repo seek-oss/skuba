@@ -1,3 +1,4 @@
+import { afterAll, beforeEach, expect, test, vi } from 'vitest';
 import crypto from 'crypto';
 import path from 'path';
 
@@ -7,16 +8,14 @@ import { diff } from 'jest-diff';
 
 import { format } from './index.js';
 
-jest.setTimeout(15_000);
+vi.setTimeout(15_000);
 
-const stdoutMock = jest.fn();
+const stdoutMock = vi.fn();
 
-jest
-  .spyOn(console, 'log')
+vi.spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
-jest
-  .spyOn(git, 'listRemotes')
+vi.spyOn(git, 'listRemotes')
   .mockResolvedValue([
     { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
   ]);
@@ -108,7 +107,7 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
 const originalCwd = process.cwd();
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   process.exitCode = undefined;
 });

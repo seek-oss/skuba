@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import memfs, { vol } from 'memfs';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
@@ -10,10 +11,10 @@ import {
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs', () => memfs);
+vi.mock('fast-glob', async () => ({
+  glob: async (pat: any, opts: any) =>
+    await vi.importActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
 
 beforeEach(() => vol.reset());
@@ -24,7 +25,7 @@ describe('stopBundlingInCDKTests', () => {
     packageManager: configForPackageManager('yarn'),
   };
 
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => vi.resetAllMocks());
 
   describe.each(['lint', 'format'] as const)('%s', (mode) => {
     it('should skip if no CDK test files are found', async () => {

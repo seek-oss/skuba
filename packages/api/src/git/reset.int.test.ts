@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import git from 'isomorphic-git';
 import memfs, { fs, vol } from 'memfs';
 
@@ -5,7 +6,7 @@ import newGit from '../../../../integration/git/new.json';
 
 import { reset } from './reset.js';
 
-jest.mock('fs', () => memfs);
+vi.mock('fs', () => memfs);
 
 beforeEach(() => {
   vol.reset();

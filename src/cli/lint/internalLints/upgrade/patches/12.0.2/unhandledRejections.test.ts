@@ -1,13 +1,14 @@
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => memfs);
+vi.mock('fast-glob', async () => ({
+  glob: async (pat: any, opts: any) =>
+    await vi.importActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
 
 beforeEach(() => vol.reset());
@@ -61,11 +62,11 @@ import { createLogger } from '@seek/logger';
 export default createLogger();
 `;
 
-const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+const consoleLog = vi.spyOn(console, 'log').mockImplementation();
 
-const writeFile = jest.spyOn(memfs.fs.promises, 'writeFile');
+const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 
-afterEach(() => jest.clearAllMocks());
+afterEach(() => vi.clearAllMocks());
 
 describe('IMPORT_REGEX', () => {
   test.each([

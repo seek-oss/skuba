@@ -1,20 +1,20 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import git from 'isomorphic-git';
 
 import { push } from './push.js';
 
-jest.mock('isomorphic-git');
+vi.mock('isomorphic-git');
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('push', () => {
   it('propagates props to isomorphic-git', async () => {
-    jest
-      .mocked(git.listRemotes)
+    vi.mocked(git.listRemotes)
       .mockResolvedValue([
         { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
       ]);
 
-    jest.mocked(git.push).mockResolvedValue({
+    vi.mocked(git.push).mockResolvedValue({
       ok: true,
       error: null,
       refs: {},
@@ -34,7 +34,7 @@ describe('push', () => {
     });
 
     expect(git.push).toHaveBeenCalledTimes(1);
-    expect(jest.mocked(git.push).mock.calls[0]![0]).toMatchInlineSnapshot(
+    expect(vi.mocked(git.push).mock.calls[0]![0]).toMatchInlineSnapshot(
       { http: expect.any(Object), fs: expect.any(Object) },
       `
       {

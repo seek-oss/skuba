@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { prependImport, stripImports } from './javascript.js';
 
 describe('prependImport', () => {

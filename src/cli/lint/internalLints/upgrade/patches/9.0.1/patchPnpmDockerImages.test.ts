@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -5,14 +6,14 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryPatchPnpmDockerImages } from './patchPnpmDockerImages.js';
 
-jest.mock('fast-glob');
-jest.mock('fs-extra');
+vi.mock('fast-glob');
+vi.mock('fs-extra');
 
 describe('patchPnpmDockerImages', () => {
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => vi.resetAllMocks());
 
   it('should skip if no Dockerfiles found', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([]);
+    vi.mocked(fg).mockResolvedValueOnce([]);
     await expect(
       tryPatchPnpmDockerImages({
         mode: 'format',
@@ -24,8 +25,8 @@ describe('patchPnpmDockerImages', () => {
   });
 
   it('should skip if no Dockerfiles to patch', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce(`beep` as never);
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(`beep` as never);
 
     await expect(
       tryPatchPnpmDockerImages({
@@ -38,8 +39,8 @@ describe('patchPnpmDockerImages', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
       `RUN --mount=type=bind,source=package.json,target=package.json \\
     corepack enable pnpm && corepack install
 
@@ -58,8 +59,8 @@ RUN pnpm config set store-dir /root/.pnpm-store` as never,
   });
 
   it('should patch Dockerfiles', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
       `# syntax=docker/dockerfile:1.10
 
 FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
@@ -111,8 +112,8 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
   });
 
   it('should patch Dockerfiles with different indents', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
       `RUN --mount=type=bind,source=package.json,target=package.json \\
     corepack enable pnpm && corepack install
 
@@ -154,8 +155,8 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
   });
 
   it('should patch Dockerfiles with extra mounts', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
       `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
     --mount=type=bind,source=patches,target=patches \\
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
@@ -186,8 +187,8 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
   });
 
   it('should fix Dockerfiles with only the config store line to fix', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
       `# syntax=docker/dockerfile:1.10
 
 FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps
@@ -224,8 +225,8 @@ RUN --mount=type=bind,source=package.json,target=package.json \\
   });
 
   it('should fix Dockerfiles with only pnpm fetch to fix', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
       `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
@@ -254,8 +255,8 @@ RUN --mount=type=bind,source=package.json,target=package.json \\
   });
 
   it('should fix Dockerfiles with an alternative pnpm install syntax', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
       `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
@@ -284,8 +285,8 @@ RUN --mount=type=bind,source=package.json,target=package.json \\
   });
 
   it('should not try to patch already patched Dockerfiles', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
       `# syntax=docker/dockerfile:1.10
 
 FROM public.ecr.aws/docker/library/node:20-alpine AS dev-deps

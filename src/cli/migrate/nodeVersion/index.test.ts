@@ -1,21 +1,22 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import memfs, { vol } from 'memfs';
 
 import * as checks from './checks.js';
 
 import { nodeVersionMigration } from './index.js';
 
-jest.mock('fs', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs', () => memfs);
+vi.mock('fast-glob', async () => ({
+  glob: async (pat: any, opts: any) =>
+    await vi.importActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
-jest.mock('../../../utils/logging');
+vi.mock('../../../utils/logging');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => vol.reset());
 
-afterEach(() => jest.clearAllMocks());
+afterEach(() => vi.clearAllMocks());
 
 describe('nodeVersionMigration', () => {
   const scenarios: Array<{
@@ -209,16 +210,13 @@ describe('nodeVersionMigration', () => {
       isPatchableServerlessVersion = true,
       isPatchableSkubaType = true,
     }) => {
-      jest
-        .spyOn(checks, 'isPatchableServerlessVersion')
+      vi.spyOn(checks, 'isPatchableServerlessVersion')
         .mockResolvedValue(isPatchableServerlessVersion);
 
-      jest
-        .spyOn(checks, 'isPatchableSkubaType')
+      vi.spyOn(checks, 'isPatchableSkubaType')
         .mockResolvedValue(isPatchableSkubaType);
 
-      jest
-        .spyOn(checks, 'isPatchableNodeVersion')
+      vi.spyOn(checks, 'isPatchableNodeVersion')
         .mockResolvedValue(isPatchableNodeVersion);
       vol.fromJSON(filesBefore, process.cwd());
 

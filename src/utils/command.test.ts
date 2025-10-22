@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { commandToModule } from './command.js';
 
 describe('commandToModule', () => {

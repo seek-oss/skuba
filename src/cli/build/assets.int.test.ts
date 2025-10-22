@@ -1,14 +1,14 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import memfs, { vol } from 'memfs';
 
 import { copyAssets, copyAssetsConcurrently } from './assets.js';
 
-jest.mock('fs', () => memfs);
+vi.mock('fs', () => memfs);
 
-jest
-  .spyOn(console, 'log')
+vi.spyOn(console, 'log')
   .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
 
-const stdoutMock = jest.fn().mockName('[stdout]');
+const stdoutMock = vi.fn().mockName('[stdout]');
 const getStdOut = () => `${stdoutMock.name}${stdoutMock.mock.calls.join('')}`;
 
 // a snapshot serializer to remove quotes around stdout
@@ -42,7 +42,7 @@ beforeEach(() => {
     'src/other.vocab/translations.json': '',
     'src/other.vocab/th.translations.json': '',
   });
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 describe('copyAssets', () => {
