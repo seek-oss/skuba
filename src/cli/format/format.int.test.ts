@@ -8,7 +8,7 @@ import { afterAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { format } from './index.js';
 
-vi.setTimeout(15_000);
+vi.setConfig({ testTimeout: 15_000 });
 
 const stdoutMock = vi.fn();
 

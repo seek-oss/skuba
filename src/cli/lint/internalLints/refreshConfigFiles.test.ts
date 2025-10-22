@@ -43,21 +43,23 @@ vi.mock('../../..', () => ({
 }));
 
 const givenMockPackageManager = async (command: 'pnpm' | 'yarn') => {
+  const actualPackageManager = await vi.importActual<
+    typeof import('../../../utils/packageManager.js')
+  >('../../../utils/packageManager.js');
+
   vi.mocked(detectPackageManager).mockResolvedValue(
-    await vi
-      .importActual('../../../utils/packageManager')
-      .configForPackageManager(command),
+    actualPackageManager.configForPackageManager(command),
   );
 };
 
 vi.mock('../../../utils/packageManager');
 
-beforeEach(() => {
+beforeEach(async () => {
   vi.spyOn(console, 'log').mockImplementation((...args) =>
     stdoutMock(`${args.join(' ')}\n`),
   );
 
-  givenMockPackageManager('pnpm');
+  await givenMockPackageManager('pnpm');
 });
 
 afterEach(vi.resetAllMocks);
@@ -154,7 +156,7 @@ The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to u
     });
 
     it('should not flag creation of a pnpm-workspace.yaml for yarn projects', async () => {
-      givenMockPackageManager('yarn');
+      await givenMockPackageManager('yarn');
 
       setupDestinationFiles({
         'pnpm-workspace.yaml': undefined,
@@ -256,7 +258,7 @@ Refreshed pnpm-workspace.yaml.
     });
 
     it('should not create a pnpm-workspace.yaml for yarn projects if missing', async () => {
-      givenMockPackageManager('yarn');
+      await givenMockPackageManager('yarn');
 
       setupDestinationFiles({
         'pnpm-workspace.yaml': undefined,

@@ -38,7 +38,7 @@ const JSON5_EXTENDED = `{extends: ['github>seek-jobs/custom-config']}`;
 
 const getOwnerAndRepo = vi.mocked(Git.getOwnerAndRepo);
 
-const consoleLog = vi.spyOn(console, 'log').mockImplementation();
+const consoleLog = vi.spyOn(console, 'log');
 
 const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 

@@ -65,7 +65,7 @@ import { createLogger } from '@seek/logger';
 export default createLogger();
 `;
 
-const consoleLog = vi.spyOn(console, 'log').mockImplementation();
+const consoleLog = vi.spyOn(console, 'log');
 
 const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 

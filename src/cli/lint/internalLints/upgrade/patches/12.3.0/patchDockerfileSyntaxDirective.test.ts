@@ -18,10 +18,10 @@ describe('patchDockerfileSyntaxDirective', () => {
       tryPatchDockerfileSyntaxDirective({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no dockerfiles found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if dockerfiles do not contain the Dockerfile syntax directive', async () => {
@@ -33,10 +33,10 @@ describe('patchDockerfileSyntaxDirective', () => {
       tryPatchDockerfileSyntaxDirective({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no dockerfiles to patch',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
@@ -49,9 +49,9 @@ describe('patchDockerfileSyntaxDirective', () => {
       tryPatchDockerfileSyntaxDirective({
         mode: 'lint',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).not.toHaveBeenCalled();
   });
@@ -74,9 +74,9 @@ describe('patchDockerfileSyntaxDirective', () => {
       tryPatchDockerfileSyntaxDirective({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       'Dockerfile',

@@ -18,10 +18,10 @@ describe('patchApiTokenFromEnvironment', () => {
       tryPatchApiTokenFromEnvironment({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no scripts found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if scripts do not contain the apiTokenFromEnvironment usage', async () => {
@@ -31,10 +31,10 @@ describe('patchApiTokenFromEnvironment', () => {
       tryPatchApiTokenFromEnvironment({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no scripts to patch',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
@@ -47,9 +47,9 @@ describe('patchApiTokenFromEnvironment', () => {
       tryPatchApiTokenFromEnvironment({
         mode: 'lint',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).not.toHaveBeenCalled();
   });
@@ -65,9 +65,9 @@ describe('patchApiTokenFromEnvironment', () => {
       tryPatchApiTokenFromEnvironment({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       'scripts/test.ts',

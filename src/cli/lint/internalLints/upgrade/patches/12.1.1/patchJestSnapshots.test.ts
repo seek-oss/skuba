@@ -18,10 +18,10 @@ describe('patchJestSnapshots', () => {
       tryPatchJestSnapshots({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no test files found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if test files do not contain the old URL', async () => {
@@ -33,10 +33,10 @@ describe('patchJestSnapshots', () => {
       tryPatchJestSnapshots({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no test files to patch',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
@@ -49,9 +49,9 @@ describe('patchJestSnapshots', () => {
       tryPatchJestSnapshots({
         mode: 'lint',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).not.toHaveBeenCalled();
   });
@@ -73,9 +73,9 @@ describe('patchJestSnapshots', () => {
       tryPatchJestSnapshots({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       'test1.test.ts',

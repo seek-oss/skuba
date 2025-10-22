@@ -30,7 +30,7 @@ describe('noSkubaTemplateJs', () => {
     ${'lint'}
   `('$mode mode', ({ mode }) => {
     it('should report ok if skuba.template.js does not exist, and output nothing', async () => {
-      vi.mocked(pathExists).mockResolvedValueOnce(false);
+      vi.mocked(pathExists).mockResolvedValueOnce(false as never);
 
       await expect(noSkubaTemplateJs(mode, log)).resolves.toEqual({
         ok: true,
@@ -43,7 +43,7 @@ describe('noSkubaTemplateJs', () => {
     });
 
     it('should report not ok + not fixable if skuba.template.js exists, and output a message', async () => {
-      vi.mocked(pathExists).mockResolvedValueOnce(true);
+      vi.mocked(pathExists).mockResolvedValueOnce(true as never);
 
       await expect(noSkubaTemplateJs(mode, log)).resolves.toEqual({
         ok: false,

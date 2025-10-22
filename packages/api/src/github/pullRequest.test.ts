@@ -88,7 +88,7 @@ describe('getPullRequestNumber', () => {
       mockClient.repos.listPullRequestsAssociatedWithCommit,
     ).toHaveBeenCalledTimes(1);
     expect(
-      mockClient.repos.listPullRequestsAssociatedWithCommit.mock.calls[0][0],
+      mockClient.repos.listPullRequestsAssociatedWithCommit.mock.calls[0]![0],
     ).toMatchInlineSnapshot(`
       {
         "commit_sha": "commit-id",

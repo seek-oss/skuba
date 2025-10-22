@@ -18,10 +18,10 @@ describe('patchDockerfileCIVariable', () => {
       tryPatchDockerfileCIVariable({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no dockerfiles found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if dockerfiles do not contain pnpm install --prod commands', async () => {
@@ -33,10 +33,10 @@ describe('patchDockerfileCIVariable', () => {
       tryPatchDockerfileCIVariable({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no dockerfiles to patch',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
@@ -49,9 +49,9 @@ describe('patchDockerfileCIVariable', () => {
       tryPatchDockerfileCIVariable({
         mode: 'lint',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).not.toHaveBeenCalled();
   });
@@ -66,9 +66,9 @@ describe('patchDockerfileCIVariable', () => {
       tryPatchDockerfileCIVariable({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
@@ -104,9 +104,9 @@ describe('patchDockerfileCIVariable', () => {
       tryPatchDockerfileCIVariable({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
@@ -146,9 +146,9 @@ CMD ["npm", "start"]`;
       tryPatchDockerfileCIVariable({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const expectedContent = `# Multi-stage build
 FROM node:18 AS deps
@@ -184,9 +184,9 @@ CMD ["npm", "start"]`;
       tryPatchDockerfileCIVariable({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
@@ -206,9 +206,9 @@ CMD ["npm", "start"]`;
       tryPatchDockerfileCIVariable({
         mode: 'lint',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).not.toHaveBeenCalled();
   });
@@ -230,9 +230,9 @@ CMD ["npm", "start"]`;
       tryPatchDockerfileCIVariable({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       'Dockerfile',

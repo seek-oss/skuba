@@ -17,8 +17,11 @@ const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => memfs);
 vi.mock('fast-glob', () => ({
-  glob: async (pat: string, opts: { ignore: string[] }) =>
-    await vi.importActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+  glob: async (pat: string, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs.fs });
+  },
 }));
 
 vi.spyOn(console, 'warn').mockImplementation(() => {
@@ -62,10 +65,10 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no repository name found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if no tsconfig files are found', async () => {
@@ -76,10 +79,10 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no valid tsconfig.json files found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if the root tsconfig is already configured and contains no paths', async () => {
@@ -118,9 +121,9 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -154,9 +157,9 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -223,9 +226,9 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -372,9 +375,9 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -559,9 +562,9 @@ export default Jest.mergePreset({
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {

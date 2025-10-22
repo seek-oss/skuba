@@ -25,7 +25,7 @@ const LISTENER_WITHOUT_CALLBACK = `
 app.listen(config.port);
 `;
 
-const consoleLog = vi.spyOn(console, 'log').mockImplementation();
+const consoleLog = vi.spyOn(console, 'log');
 
 const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 

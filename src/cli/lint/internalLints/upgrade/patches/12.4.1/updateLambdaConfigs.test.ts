@@ -17,8 +17,11 @@ const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => memfs);
 vi.mock('fast-glob', () => ({
-  glob: async (pat: string, opts: { ignore: string[] }) =>
-    await vi.importActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+  glob: async (pat: string, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 
 vi.spyOn(console, 'warn').mockImplementation(() => {
@@ -62,10 +65,10 @@ describe('tryUpdateLambdaConfigs', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no repository name found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if no ts, yml or js files are found', async () => {
@@ -76,10 +79,10 @@ describe('tryUpdateLambdaConfigs', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no .ts or webpack config files or .yml files found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should update lambda configs in .ts files', async () => {
@@ -116,9 +119,9 @@ const another = new aws_lambda_nodejs.NodejsFunction(this, 'another', {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -176,9 +179,9 @@ const worker = new NodejsFunction(this, 'worker', {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -251,9 +254,9 @@ module.exports = {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -362,9 +365,9 @@ functions:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -457,9 +460,9 @@ functions:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -529,9 +532,9 @@ package:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -604,9 +607,9 @@ functions:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {

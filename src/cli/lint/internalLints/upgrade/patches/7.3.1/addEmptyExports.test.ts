@@ -87,7 +87,7 @@ describe('tryAddEmptyExports', () => {
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = vi.spyOn(console, 'log').mockImplementation();
+      const consoleLog = vi.spyOn(console, 'log');
 
       createDestinationFileReader.mockReturnValue(() => {
         throw new Error('Something happened!');
@@ -164,7 +164,7 @@ describe('tryAddEmptyExports', () => {
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = vi.spyOn(console, 'log').mockImplementation();
+      const consoleLog = vi.spyOn(console, 'log');
 
       createDestinationFileReader.mockReturnValue(() => {
         throw new Error('Something happened!');
