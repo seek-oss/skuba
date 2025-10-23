@@ -312,15 +312,7 @@ importers:
         specifier: ^8.39.0
         version: 8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
 
-  packages/skuba-dive:
-    dependencies:
-      module-alias:
-        specifier: ^2.2.2
-        version: 2.2.3
-    devDependencies:
-      '@types/module-alias':
-        specifier: 2.0.4
-        version: 2.0.4
+  packages/skuba-dive: {}
 
   template/express-rest-api:
     dependencies:
