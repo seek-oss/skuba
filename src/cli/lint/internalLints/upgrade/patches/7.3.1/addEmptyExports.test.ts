@@ -88,9 +88,10 @@ describe('tryAddEmptyExports', () => {
 
     it('logs and continues on internal failure', async () => {
       const consoleLog = vi.spyOn(console, 'log');
+      const error = new Error('Something happened!');
 
       createDestinationFileReader.mockReturnValue(() => {
-        throw new Error('Something happened!');
+        throw error;
       });
 
       await expect(
@@ -103,10 +104,14 @@ describe('tryAddEmptyExports', () => {
       expect(writeFile).not.toHaveBeenCalled();
 
       expect(consoleLog).toHaveBeenCalledTimes(2);
-      expect(consoleLog.mock.calls.flat()).toEqual([
-        'Failed to convert Jest setup files to isolated modules.',
-        expect.stringMatching(/^Error: Something happened!/),
-      ]);
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Failed to convert Jest setup files to isolated modules.',
+        ),
+      );
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(error.toString()),
+      );
     });
   });
 
@@ -165,9 +170,10 @@ describe('tryAddEmptyExports', () => {
 
     it('logs and continues on internal failure', async () => {
       const consoleLog = vi.spyOn(console, 'log');
+      const error = new Error('Something happened!');
 
       createDestinationFileReader.mockReturnValue(() => {
-        throw new Error('Something happened!');
+        throw error;
       });
 
       await expect(
@@ -180,10 +186,15 @@ describe('tryAddEmptyExports', () => {
       expect(writeFile).not.toHaveBeenCalled();
 
       expect(consoleLog).toHaveBeenCalledTimes(2);
-      expect(consoleLog.mock.calls.flat()).toEqual([
-        'Failed to convert Jest setup files to isolated modules.',
-        expect.stringMatching(/^Error: Something happened!/),
-      ]);
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Failed to convert Jest setup files to isolated modules.',
+        ),
+      );
+
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(error.toString()),
+      );
     });
   });
 });

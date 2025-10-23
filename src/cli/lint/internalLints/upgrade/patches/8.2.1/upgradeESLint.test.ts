@@ -8,7 +8,10 @@ import { tryUpgradeESLint } from './upgradeESLint.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 beforeEach(() => vol.reset());
 

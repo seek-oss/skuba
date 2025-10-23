@@ -5,7 +5,10 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryPatchDockerfile } from './patchDockerfile.js';
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

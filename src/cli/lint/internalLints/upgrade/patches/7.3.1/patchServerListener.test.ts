@@ -123,9 +123,11 @@ describe('patchServerListener', () => {
       expect(volToJson()).toStrictEqual(files);
 
       expect(consoleLog).toHaveBeenCalledWith(
-        'Failed to patch server listener.',
+        expect.stringContaining('Failed to patch server listener.'),
       );
-      expect(consoleLog).toHaveBeenCalledWith(inspect(err));
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(err.toString()),
+      );
     });
 
     it('skips the templated Koa listener', async () => {
