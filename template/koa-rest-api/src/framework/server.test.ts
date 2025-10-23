@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import Router from '@koa/router';
 
 import { stdoutMock } from './logging.js';
@@ -7,7 +8,7 @@ import { agentFromRouter } from '#src/testing/server.js';
 import { chance } from '#src/testing/types.js';
 import type { Middleware } from '#src/types/koa.js';
 
-const middleware = jest.fn<void, Parameters<Middleware>>();
+const middleware = vi.fn<void, Parameters<Middleware>>();
 
 const router = new Router()
   .use('/nested', new Router().put('/:param', middleware).routes())

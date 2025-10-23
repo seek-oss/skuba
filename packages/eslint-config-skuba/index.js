@@ -187,6 +187,15 @@ module.exports = [
       ],
 
       'skuba/no-sync-in-promise-iterable': 'off',
+
+      // Allow type imports for vi.importActual
+      // https://github.com/vitest-dev/vitest/blob/1a290f80912f8aa492ddc056b5e85bfad0a4193a/packages/vitest/src/integrations/vi.ts#L245
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          disallowTypeAnnotations: false,
+        },
+      ],
     },
   },
   ...eslintPluginYml.configs['flat/prettier'].map((config) => ({

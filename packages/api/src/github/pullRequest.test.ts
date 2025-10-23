@@ -1,22 +1,23 @@
 import git from 'isomorphic-git';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createRestClient } from './octokit.js';
 import { getPullRequestNumber } from './pullRequest.js';
 
-jest.mock('isomorphic-git');
-jest.mock('./octokit');
+vi.mock('isomorphic-git');
+vi.mock('./octokit');
 
 const mockClient = {
   repos: {
-    listPullRequestsAssociatedWithCommit: jest.fn(),
+    listPullRequestsAssociatedWithCommit: vi.fn(),
   },
 };
 
 beforeEach(() =>
-  jest.mocked(createRestClient).mockResolvedValue(mockClient as never),
+  vi.mocked(createRestClient).mockResolvedValue(mockClient as never),
 );
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('getPullRequestNumber', () => {
   it('prefers a Buildkite environment variable', async () => {
@@ -36,12 +37,10 @@ describe('getPullRequestNumber', () => {
   });
 
   it('falls back to the most recently updated pull request from the GitHub API', async () => {
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    jest
-      .mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     mockClient.repos.listPullRequestsAssociatedWithCommit.mockResolvedValue({
       data: [
@@ -89,7 +88,7 @@ describe('getPullRequestNumber', () => {
       mockClient.repos.listPullRequestsAssociatedWithCommit,
     ).toHaveBeenCalledTimes(1);
     expect(
-      mockClient.repos.listPullRequestsAssociatedWithCommit.mock.calls[0][0],
+      mockClient.repos.listPullRequestsAssociatedWithCommit.mock.calls[0]![0],
     ).toMatchInlineSnapshot(`
       {
         "commit_sha": "commit-id",
@@ -102,12 +101,10 @@ describe('getPullRequestNumber', () => {
   });
 
   it('throws on an empty response from the GitHub API', async () => {
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
-    jest
-      .mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.log).mockResolvedValue([{ oid: 'commit-id' }] as never);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     mockClient.repos.listPullRequestsAssociatedWithCommit.mockResolvedValue({
       data: [],

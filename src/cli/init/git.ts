@@ -2,7 +2,7 @@ import path from 'path';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 
 import { log } from '../../utils/logging.js';
 

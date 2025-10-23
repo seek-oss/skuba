@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import tsconfigPaths from '@esbuild-plugins/tsconfig-paths';
+import { TsconfigPathsPlugin } from '@esbuild-plugins/tsconfig-paths';
 import { build } from 'esbuild';
 import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
@@ -71,7 +71,8 @@ export const esbuild = async (
       ? []
       : [
           // evanw/esbuild#394
-          tsconfigPaths({
+          // eslint-disable-next-line new-cap
+          TsconfigPathsPlugin({
             tsconfig: { baseUrl: compilerOptions.baseUrl, compilerOptions },
           }),
         ],

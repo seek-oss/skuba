@@ -1,4 +1,5 @@
 import fs from 'fs-extra';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as packageAnalysis from '../../../../../configure/analysis/package.js';
 import * as projectAnalysis from '../../../../../configure/analysis/project.js';
@@ -6,19 +7,19 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryAddEmptyExports } from './addEmptyExports.js';
 
-jest
-  .spyOn(packageAnalysis, 'getDestinationManifest')
-  .mockResolvedValue({ path: '~/project/package.json' } as any);
+vi.spyOn(packageAnalysis, 'getDestinationManifest').mockResolvedValue({
+  path: '~/project/package.json',
+} as any);
 
-const createDestinationFileReader = jest
+const createDestinationFileReader = vi
   .spyOn(projectAnalysis, 'createDestinationFileReader')
   .mockReturnValue(() => {
     throw new Error('Not implemented!');
   });
 
-const writeFile = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+const writeFile = vi.spyOn(fs.promises, 'writeFile').mockResolvedValue();
 
-beforeEach(jest.clearAllMocks);
+beforeEach(vi.clearAllMocks);
 
 describe('tryAddEmptyExports', () => {
   describe('format mode', () => {
@@ -86,10 +87,11 @@ describe('tryAddEmptyExports', () => {
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+      const consoleLog = vi.spyOn(console, 'log');
+      const error = new Error('Something happened!');
 
       createDestinationFileReader.mockReturnValue(() => {
-        throw new Error('Something happened!');
+        throw error;
       });
 
       await expect(
@@ -102,10 +104,14 @@ describe('tryAddEmptyExports', () => {
       expect(writeFile).not.toHaveBeenCalled();
 
       expect(consoleLog).toHaveBeenCalledTimes(2);
-      expect(consoleLog.mock.calls.flat()).toEqual([
-        'Failed to convert Jest setup files to isolated modules.',
-        expect.stringMatching(/^Error: Something happened!/),
-      ]);
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Failed to convert Jest setup files to isolated modules.',
+        ),
+      );
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(error.toString()),
+      );
     });
   });
 
@@ -163,10 +169,11 @@ describe('tryAddEmptyExports', () => {
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+      const consoleLog = vi.spyOn(console, 'log');
+      const error = new Error('Something happened!');
 
       createDestinationFileReader.mockReturnValue(() => {
-        throw new Error('Something happened!');
+        throw error;
       });
 
       await expect(
@@ -179,10 +186,15 @@ describe('tryAddEmptyExports', () => {
       expect(writeFile).not.toHaveBeenCalled();
 
       expect(consoleLog).toHaveBeenCalledTimes(2);
-      expect(consoleLog.mock.calls.flat()).toEqual([
-        'Failed to convert Jest setup files to isolated modules.',
-        expect.stringMatching(/^Error: Something happened!/),
-      ]);
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Failed to convert Jest setup files to isolated modules.',
+        ),
+      );
+
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(error.toString()),
+      );
     });
   });
 });

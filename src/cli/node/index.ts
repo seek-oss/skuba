@@ -25,8 +25,8 @@ export const node = async () => {
     ...uniqueConditions.map((condition) => `--conditions=${condition}`),
     '--env-file-if-exists',
     '.env',
-    '--require',
-    require.resolve('tsconfig-paths/register'),
+    '--import',
+    new URL(import.meta.resolve('tsconfig-paths/register')).pathname,
   ];
 
   if (args.entryPoint) {
@@ -40,19 +40,19 @@ export const node = async () => {
     return exec(
       'tsx',
       ...commonArgs,
-      path.join(__dirname, '..', '..', 'wrapper', 'index.js'),
+      path.join(import.meta.dirname, '..', '..', 'wrapper', 'index.js'),
       ...args.script,
     );
   }
 
   return execa(
-    require.resolve('tsx/cli'),
+    new URL(import.meta.resolve('tsx/cli')).pathname,
     [
       ...commonArgs,
-      '--require',
+      '--import',
       // Unsure if bug or feature that this is needed, but tsx appears to not do anything typescript in the REPL without this!
       // Doesn't occur when just running the tsx binary directly 🧐
-      require.resolve('tsx/patch-repl'),
+      new URL(import.meta.resolve('tsx/repl')).pathname,
     ],
     {
       stdio: 'inherit',

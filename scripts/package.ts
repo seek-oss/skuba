@@ -208,7 +208,7 @@ const compileChangesByTemplate = (changelog: string) => {
 };
 
 const main = async () => {
-  const root = path.join(__dirname, '..');
+  const root = path.join(import.meta.dirname, '..');
 
   await ensureTemplateConsistency(root);
 

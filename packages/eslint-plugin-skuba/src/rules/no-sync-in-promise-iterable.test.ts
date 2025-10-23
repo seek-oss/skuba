@@ -15,7 +15,7 @@ const ruleTester = new RuleTester({
       projectService: {
         allowDefaultProject: ['*.ts*'],
       },
-      tsconfigRootDir: __dirname,
+      tsconfigRootDir: import.meta.dirname,
     },
   },
 });

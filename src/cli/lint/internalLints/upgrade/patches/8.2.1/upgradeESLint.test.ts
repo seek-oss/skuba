@@ -1,4 +1,5 @@
 import memfs, { vol } from 'memfs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';
@@ -7,7 +8,10 @@ import { tryUpgradeESLint } from './upgradeESLint.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 beforeEach(() => vol.reset());
 
@@ -17,7 +21,7 @@ describe('upgradeESLint', () => {
     packageManager: configForPackageManager('pnpm'),
   };
 
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => vi.resetAllMocks());
 
   describe('lint', () => {
     const args = { ...baseArgs, mode: 'lint' } as const;
@@ -207,7 +211,7 @@ const js = require('@eslint/js');
 const { FlatCompat } = require('@eslint/eslintrc');
 
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
+  baseDirectory: import.meta.dirname,
   recommendedConfig: js.configs.recommended,
   allConfig: js.configs.all,
 });

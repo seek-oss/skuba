@@ -1,29 +1,28 @@
 import * as fsExtra from 'fs-extra';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { log } from '../../../utils/logging.js';
 
 import { noSkubaTemplateJs } from './noSkubaTemplateJs.js';
 
-const stdoutMock = jest.fn();
+const stdoutMock = vi.fn();
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('');
 
-jest.mock('fs-extra', () => ({
-  pathExists: jest.fn(),
+vi.mock('fs-extra', () => ({
+  pathExists: vi.fn(),
 }));
 
 beforeEach(() => {
-  jest
-    .spyOn(console, 'log')
-    .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+  vi.spyOn(console, 'log').mockImplementation((...args) =>
+    stdoutMock(`${args.join(' ')}\n`),
+  );
 });
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('noSkubaTemplateJs', () => {
-  const pathExists = fsExtra.pathExists as jest.MockedFunction<
-    (path: string) => Promise<boolean>
-  >;
+  const pathExists = vi.mocked(fsExtra.pathExists);
 
   describe.each`
     mode
@@ -31,7 +30,7 @@ describe('noSkubaTemplateJs', () => {
     ${'lint'}
   `('$mode mode', ({ mode }) => {
     it('should report ok if skuba.template.js does not exist, and output nothing', async () => {
-      jest.mocked(pathExists).mockResolvedValueOnce(false);
+      vi.mocked(pathExists).mockResolvedValueOnce(false as never);
 
       await expect(noSkubaTemplateJs(mode, log)).resolves.toEqual({
         ok: true,
@@ -44,7 +43,7 @@ describe('noSkubaTemplateJs', () => {
     });
 
     it('should report not ok + not fixable if skuba.template.js exists, and output a message', async () => {
-      jest.mocked(pathExists).mockResolvedValueOnce(true);
+      vi.mocked(pathExists).mockResolvedValueOnce(true as never);
 
       await expect(noSkubaTemplateJs(mode, log)).resolves.toEqual({
         ok: false,

@@ -1,11 +1,12 @@
 import git from 'isomorphic-git';
 import memfs, { fs, vol } from 'memfs';
+import { beforeEach, expect, it, vi } from 'vitest';
 
-import newGit from '../../../../integration/git/new.json';
+import newGit from '../../../../integration/git/new.json' with { type: 'json' };
 
 import { getChangedFiles } from './getChangedFiles.js';
 
-jest.mock('fs', () => memfs);
+vi.mock('fs', () => memfs);
 
 beforeEach(() => {
   vol.reset();

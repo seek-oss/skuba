@@ -1,3 +1,4 @@
+import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import * as jobScorer from './jobScorer.js';
 
 import { scoringService } from '#src/testing/services.js';

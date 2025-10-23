@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import * as app from './app.js';
 
 describe('app', () => {

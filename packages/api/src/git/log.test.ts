@@ -1,12 +1,13 @@
 import git from 'isomorphic-git';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getHeadCommitId, getHeadCommitMessage } from './log.js';
 
-jest.mock('isomorphic-git');
+vi.mock('isomorphic-git');
 
 const dir = process.cwd();
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('getHeadCommitId', () => {
   it('prefers a commit ID from a Buildkite environment', async () => {
@@ -26,7 +27,7 @@ describe('getHeadCommitId', () => {
   });
 
   it('falls back to a commit ID from the Git log', async () => {
-    jest.mocked(git.log).mockResolvedValue([{ oid: 'a'.repeat(40) } as any]);
+    vi.mocked(git.log).mockResolvedValue([{ oid: 'a'.repeat(40) } as any]);
 
     await expect(getHeadCommitId({ dir, env: {} })).resolves.toBe(
       'a'.repeat(40),
@@ -36,7 +37,7 @@ describe('getHeadCommitId', () => {
   });
 
   it('throws on an empty Git log', async () => {
-    jest.mocked(git.log).mockResolvedValue([]);
+    vi.mocked(git.log).mockResolvedValue([]);
 
     await expect(
       getHeadCommitId({ dir, env: {} }),
@@ -58,9 +59,9 @@ describe('getHeadCommitMessage', () => {
   });
 
   it('falls back to a commit ID from the Git log', async () => {
-    jest
-      .mocked(git.log)
-      .mockResolvedValue([{ commit: { message: 'Do work' } } as any]);
+    vi.mocked(git.log).mockResolvedValue([
+      { commit: { message: 'Do work' } } as any,
+    ]);
 
     await expect(getHeadCommitMessage({ dir, env: {} })).resolves.toBe(
       'Do work',
@@ -70,7 +71,7 @@ describe('getHeadCommitMessage', () => {
   });
 
   it('throws on an empty Git log', async () => {
-    jest.mocked(git.log).mockResolvedValue([]);
+    vi.mocked(git.log).mockResolvedValue([]);
 
     await expect(
       getHeadCommitMessage({ dir, env: {} }),

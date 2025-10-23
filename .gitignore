@@ -30,3 +30,4 @@ yarn-error.log
 /template/**/pnpm-lock.yaml
 /template/**/yarn.lock
 /packages/**/*/lib*
+config/prettier.d.ts

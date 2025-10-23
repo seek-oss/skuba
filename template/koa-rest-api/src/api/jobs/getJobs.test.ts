@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest';
 import { jobRouter } from './index.js';
 
 import { agentFromRouter } from '#src/testing/server.js';
