@@ -1,7 +1,7 @@
+/* eslint-disable no-console */
 import path from 'path';
 
 import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
-/* eslint-disable no-console */
 
 import { log } from '../../utils/logging.js';
 
