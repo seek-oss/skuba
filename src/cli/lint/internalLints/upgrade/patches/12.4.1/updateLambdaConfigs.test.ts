@@ -15,7 +15,10 @@ vi.mock('../../../../../../index.js', () => ({
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-vi.mock('fs-extra', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 vi.mock('fast-glob', () => ({
   glob: async (pat: string, opts: any) => {
     const actualFastGlob =

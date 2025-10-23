@@ -9,7 +9,10 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryPatchServerListener } from './patchServerListener.js';
 
-vi.mock('fs-extra', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 const LISTENER_WITH_CALLBACK = `
 app.listen(config.port, () => {

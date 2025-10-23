@@ -5,7 +5,10 @@ import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-vi.mock('fs-extra', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 vi.mock('fast-glob', () => ({
   glob: async (pat: any, opts: any) => {
     const actualFastGlob =
