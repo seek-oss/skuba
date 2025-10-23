@@ -1,5 +1,11 @@
 # skuba
 
+## 13.0.4
+
+### Patch Changes
+
+- **template/\*-rest-api:** Template Gantry environment names in values files ([#2120](https://github.com/seek-oss/skuba/pull/2120))
+
 ## 13.0.3
 
 ### Patch Changes
