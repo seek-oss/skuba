@@ -33,7 +33,7 @@ const stdout = () => {
   const result = stdoutMock.mock.calls
     .flat(1)
     .join('')
-    .replace(/(at Object\.\<anonymous\>)[\s\S]+$/, '$1...');
+    .replace(/(Error: Badness!)[\s\S]+$/, '$1\n...');
   return `\n${result}`;
 };
 
@@ -191,8 +191,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        No autofixes detected.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mNo autofixes detected.[39m
         "
       `);
     });
@@ -218,8 +218,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
@@ -240,8 +240,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
@@ -269,8 +269,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
@@ -304,8 +304,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
@@ -326,8 +326,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
@@ -343,11 +343,11 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Failed to push fix commit.
-        Does your CI environment have write access to your Git repository?
-        Error: Badness!
-            at Object.<anonymous>..."
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33m[1mFailed to push fix commit.[22m[39m
+        [33m[1mDoes your CI environment have write access to your Git repository?[22m[39m
+        [90mError: Badness!
+        ..."
       `);
     });
 
@@ -381,8 +381,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
@@ -483,8 +483,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        No autofixes detected.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mNo autofixes detected.[39m
         "
       `);
     });
@@ -511,8 +511,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
@@ -539,8 +539,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
@@ -573,8 +573,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
@@ -591,9 +591,9 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Could not determine the current branch.
-        Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mCould not determine the current branch.[39m
+        [33mPlease propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.[39m
         "
       `);
     });
@@ -611,11 +611,11 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Failed to push fix commit.
-        Does your CI environment have write access to your Git repository?
-        Error: Badness!
-            at Object.<anonymous>..."
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33m[1mFailed to push fix commit.[22m[39m
+        [33m[1mDoes your CI environment have write access to your Git repository?[22m[39m
+        [90mError: Badness!
+        ..."
       `);
     });
 
@@ -648,8 +648,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
-        Pushed fix commit commit-sha.
+        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
+        [33mPushed fix commit commit-sha.[39m
         "
       `);
     });
