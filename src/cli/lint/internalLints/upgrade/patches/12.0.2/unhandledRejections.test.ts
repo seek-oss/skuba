@@ -1,5 +1,3 @@
-import { inspect } from 'util';
-
 import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
@@ -390,9 +388,13 @@ describe('unhandledRejections', () => {
     expect(volToJson()).toStrictEqual(files);
 
     expect(consoleLog).toHaveBeenCalledWith(
-      'Failed to patch listeners for unhandled promise rejections',
+      expect.stringContaining(
+        'Failed to patch listeners for unhandled promise rejections',
+      ),
     );
-    expect(consoleLog).toHaveBeenCalledWith(inspect(err));
+    expect(consoleLog).toHaveBeenCalledWith(
+      expect.stringContaining(err.toString()),
+    );
   });
 
   it('skips files that already contain unhandledRejection', async () => {
