@@ -312,6 +312,16 @@ importers:
         specifier: ^8.39.0
         version: 8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
 
+  packages/pnpm-plugin:
+    dependencies:
+      pnpm:
+        specifier: <10.13.0
+        version: 10.12.4
+    devDependencies:
+      '@pnpm/types':
+        specifier: ^1000.8.0
+        version: 1000.8.0
+
   packages/skuba-dive:
     dependencies:
       module-alias:
@@ -1799,6 +1809,10 @@ packages:
   '@pnpm/npm-conf@2.3.1':
     resolution: {integrity: sha512-c83qWb22rNRuB0UaVCI0uRPNRr8Z0FWnEIvT47jiHAmOIUHbBOg5XvV7pM5x+rKn9HRpjxquDbXYSXr3fAKFcw==}
     engines: {node: '>=12'}
+
+  '@pnpm/types@1000.8.0':
+    resolution: {integrity: sha512-yx86CGHHquWAI0GgKIuV/RnYewcf5fVFZemC45C/K2cX0uV8GB8TUP541ZrokWola2fZx5sn1vL7xzbceRZfoQ==}
+    engines: {node: '>=18.12'}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -5519,6 +5533,11 @@ packages:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
 
+  pnpm@10.12.4:
+    resolution: {integrity: sha512-Xqiw3u2U7WhpHJutTJVUknBcXuuKh++GvGLHSiawN7CP+VcPEIsuTb0d0akYb+qSXlJ/FBxkjoWvRWMQdGgBhA==}
+    engines: {node: '>=18.12'}
+    hasBin: true
+
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
     engines: {node: '>= 0.4'}
@@ -8700,6 +8719,8 @@ snapshots:
       '@pnpm/config.env-replace': 1.1.0
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
+
+  '@pnpm/types@1000.8.0': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -13030,6 +13051,8 @@ snapshots:
       find-up: 4.1.0
 
   pluralize@8.0.0: {}
+
+  pnpm@10.12.4: {}
 
   possible-typed-array-names@1.1.0: {}
 
