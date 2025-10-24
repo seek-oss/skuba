@@ -282,6 +282,20 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
         Promise.${method}([, items.map((item) => obj.fn('safe')(item))]);
       `,
     },
+    // Chained promises with safe curried functions
+    {
+      code: `Promise.${method}([, Promise.resolve('safe').then((x) => curried(x)(item))])`,
+    },
+    {
+      code: `Promise.${method}([, Promise.resolve().then(() => curried('safe')(item))])`,
+    },
+    // Regular call expressions with safe curried functions
+    {
+      code: `
+        const getPromise = (x: string) => async (item: any) => item;
+        Promise.${method}([, getPromise('safe')(item)]);
+      `,
+    },
   ]),
   invalid: methods.flatMap((method) => [
     {
@@ -808,6 +822,45 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
             underlying: 'fail()',
             line: 3,
             column: { all: 55, allSettled: 62, any: 55, race: 56 }[method],
+          },
+        },
+      ],
+    },
+    // Regular call expressions with curried functions (tests fallback branch)
+    {
+      code: `
+        const getPromise = (x: string) => async (item: any) => item;
+        Promise.${method}([, getPromise(fail())(item)]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'getPromise(fail())(item)',
+            underlying: 'fail()',
+            line: 3,
+            column: { all: 34, allSettled: 41, any: 34, race: 35 }[method],
+          },
+        },
+      ],
+    },
+    {
+      code: `
+        Promise.${method}([
+          ,
+          someFunction(fail())('arg'),
+        ]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: "someFunction(fail())('arg')",
+            underlying: 'fail()',
+            line: 4,
+            column: { all: 23, allSettled: 23, any: 23, race: 23 }[method],
           },
         },
       ],

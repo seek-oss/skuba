@@ -294,54 +294,6 @@ const isSafeIshBuilder = (node: TSESTree.CallExpression): boolean => {
 };
 
 /**
- * Recursively collects argument errors from a call expression chain.
- * For curried functions like `fn(fail())(item)`, this traverses the entire
- * chain and checks arguments at each level.
- */
-const collectCalleeArgumentErrors = (
-  callExpr: TSESTree.CallExpression,
-  esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
-  checker: TypeChecker,
-  sourceCode: Readonly<TSESLint.SourceCode>,
-  visited: Set<string>,
-  calls: number,
-  possibleNodesWithSyncError: (
-    node: TSESTree.Node,
-    esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
-    checker: TypeChecker,
-    sourceCode: Readonly<TSESLint.SourceCode>,
-    visited: Set<string>,
-    calls: number,
-  ) => TSESTree.Node[],
-): TSESTree.Node[] => {
-  const argErrors = callExpr.arguments.flatMap((arg) =>
-    possibleNodesWithSyncError(
-      arg,
-      esTreeNodeToTSNodeMap,
-      checker,
-      sourceCode,
-      visited,
-      calls,
-    ),
-  );
-
-  const calleeErrors =
-    callExpr.callee.type === TSESTree.AST_NODE_TYPES.CallExpression
-      ? collectCalleeArgumentErrors(
-          callExpr.callee,
-          esTreeNodeToTSNodeMap,
-          checker,
-          sourceCode,
-          visited,
-          calls,
-          possibleNodesWithSyncError,
-        )
-      : [];
-
-  return argErrors.concat(calleeErrors);
-};
-
-/**
  * The nodes traversable from the current AST position containing logic with a
  * reasonable chance of throwing a synchronous error.
  */
@@ -476,6 +428,37 @@ const possibleNodesWithSyncError = (
         );
       }
 
+      // For curried functions like `curriedFn(fail())(item)` or
+      // `triple(fail())('b')(item)`, we need to recursively check the callee chain
+      // for errors in the arguments at each level.
+      const collectCalleeArgumentErrors = (
+        callee: TSESTree.Node,
+      ): TSESTree.Node[] => {
+        if (callee.type === TSESTree.AST_NODE_TYPES.CallExpression) {
+          // Recursively collect errors from nested callee
+          const nestedErrors = collectCalleeArgumentErrors(callee.callee);
+          // Also check arguments at this level
+          const argErrors = callee.arguments.flatMap((arg) =>
+            possibleNodesWithSyncError(
+              arg,
+              esTreeNodeToTSNodeMap,
+              checker,
+              sourceCode,
+              visited,
+              calls + 1,
+            ),
+          );
+          return [...nestedErrors, ...argErrors];
+        }
+        return [];
+      };
+
+      // Only check callee errors if the callee is itself a call expression (curried pattern)
+      const calleeErrors =
+        node.callee.type === TSESTree.AST_NODE_TYPES.CallExpression
+          ? collectCalleeArgumentErrors(node.callee)
+          : [];
+
       const expression =
         node.callee.type === TSESTree.AST_NODE_TYPES.Identifier
           ? findExpression(node.callee, sourceCode, visited)
@@ -498,54 +481,60 @@ const possibleNodesWithSyncError = (
       }
 
       if (isChainedPromise(node, esTreeNodeToTSNodeMap, checker)) {
-        return node.arguments.flatMap((arg) =>
-          possibleNodesWithSyncError(
-            arg,
-            esTreeNodeToTSNodeMap,
-            checker,
-            sourceCode,
-            visited,
-            // We generally increment the call count to indicate that we expect
-            // that a callback argument may be invoked by the parent function.
-            // However, we assume that `.catch()`, `.finally()`, `.then()` will
-            // will safely wrap their callbacks so we don't need to simulate
-            // invoking them.
-            calls,
+        return [
+          ...calleeErrors,
+          ...node.arguments.flatMap((arg) =>
+            possibleNodesWithSyncError(
+              arg,
+              esTreeNodeToTSNodeMap,
+              checker,
+              sourceCode,
+              visited,
+              // We generally increment the call count to indicate that we expect
+              // that a callback argument may be invoked by the parent function.
+              // However, we assume that `.catch()`, `.finally()`, `.then()` will
+              // will safely wrap their callbacks so we don't need to simulate
+              // invoking them.
+              calls,
+            ),
           ),
-        );
+        ];
       }
 
       if (
         isSafeIshIterableMethod(node, esTreeNodeToTSNodeMap, checker) ||
         isThenableNode(node, esTreeNodeToTSNodeMap, checker)
       ) {
-        // For curried functions like `fn(fail())(item)` or `fn(a)(fail())(item)`,
-        // we need to check for sync errors in all arguments across the entire call chain.
-        const calleeArgumentErrors =
-          node.callee.type === TSESTree.AST_NODE_TYPES.CallExpression
-            ? collectCalleeArgumentErrors(
-                node.callee,
-                esTreeNodeToTSNodeMap,
-                checker,
-                sourceCode,
-                visited,
-                calls,
-                possibleNodesWithSyncError,
-              )
-            : [];
-
-        const argumentErrors = node.arguments.flatMap((arg) =>
-          possibleNodesWithSyncError(
-            arg,
-            esTreeNodeToTSNodeMap,
-            checker,
-            sourceCode,
-            visited,
-            calls + 1,
+        return [
+          ...calleeErrors,
+          ...node.arguments.flatMap((arg) =>
+            possibleNodesWithSyncError(
+              arg,
+              esTreeNodeToTSNodeMap,
+              checker,
+              sourceCode,
+              visited,
+              calls + 1,
+            ),
           ),
-        );
+        ];
+      }
 
-        return calleeArgumentErrors.concat(argumentErrors);
+      // Check arguments for errors
+      const argumentErrors = node.arguments.flatMap((arg) =>
+        possibleNodesWithSyncError(
+          arg,
+          esTreeNodeToTSNodeMap,
+          checker,
+          sourceCode,
+          visited,
+          calls + 1,
+        ),
+      );
+
+      // If we found errors in the callee or arguments, return those
+      if (calleeErrors.length > 0 || argumentErrors.length > 0) {
+        return [...calleeErrors, ...argumentErrors];
       }
 
       // Assume other synchronous calls may throw
