@@ -294,6 +294,54 @@ const isSafeIshBuilder = (node: TSESTree.CallExpression): boolean => {
 };
 
 /**
+ * Recursively collects argument errors from a call expression chain.
+ * For curried functions like `fn(fail())(item)`, this traverses the entire
+ * chain and checks arguments at each level.
+ */
+const collectCalleeArgumentErrors = (
+  callExpr: TSESTree.CallExpression,
+  esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
+  checker: TypeChecker,
+  sourceCode: Readonly<TSESLint.SourceCode>,
+  visited: Set<string>,
+  calls: number,
+  possibleNodesWithSyncError: (
+    node: TSESTree.Node,
+    esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
+    checker: TypeChecker,
+    sourceCode: Readonly<TSESLint.SourceCode>,
+    visited: Set<string>,
+    calls: number,
+  ) => TSESTree.Node[],
+): TSESTree.Node[] => {
+  const argErrors = callExpr.arguments.flatMap((arg) =>
+    possibleNodesWithSyncError(
+      arg,
+      esTreeNodeToTSNodeMap,
+      checker,
+      sourceCode,
+      visited,
+      calls,
+    ),
+  );
+
+  const calleeErrors =
+    callExpr.callee.type === TSESTree.AST_NODE_TYPES.CallExpression
+      ? collectCalleeArgumentErrors(
+          callExpr.callee,
+          esTreeNodeToTSNodeMap,
+          checker,
+          sourceCode,
+          visited,
+          calls,
+          possibleNodesWithSyncError,
+        )
+      : [];
+
+  return argErrors.concat(calleeErrors);
+};
+
+/**
  * The nodes traversable from the current AST position containing logic with a
  * reasonable chance of throwing a synchronous error.
  */
@@ -471,7 +519,22 @@ const possibleNodesWithSyncError = (
         isSafeIshIterableMethod(node, esTreeNodeToTSNodeMap, checker) ||
         isThenableNode(node, esTreeNodeToTSNodeMap, checker)
       ) {
-        return node.arguments.flatMap((arg) =>
+        // For curried functions like `fn(fail())(item)` or `fn(a)(fail())(item)`,
+        // we need to check for sync errors in all arguments across the entire call chain.
+        const calleeArgumentErrors =
+          node.callee.type === TSESTree.AST_NODE_TYPES.CallExpression
+            ? collectCalleeArgumentErrors(
+                node.callee,
+                esTreeNodeToTSNodeMap,
+                checker,
+                sourceCode,
+                visited,
+                calls,
+                possibleNodesWithSyncError,
+              )
+            : [];
+
+        const argumentErrors = node.arguments.flatMap((arg) =>
           possibleNodesWithSyncError(
             arg,
             esTreeNodeToTSNodeMap,
@@ -481,6 +544,8 @@ const possibleNodesWithSyncError = (
             calls + 1,
           ),
         );
+
+        return calleeArgumentErrors.concat(argumentErrors);
       }
 
       // Assume other synchronous calls may throw
