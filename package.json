@@ -113,7 +113,7 @@
     "picomatch": "^4.0.0",
     "prettier": "~3.6.0",
     "prettier-plugin-packagejson": "^2.4.10",
-    "read-pkg-up": "^7.0.1",
+    "read-package-up": "^11.0.0",
     "semantic-release": "^24.2.3",
     "simple-git": "^3.5.0",
     "ts-dedent": "^2.2.0",

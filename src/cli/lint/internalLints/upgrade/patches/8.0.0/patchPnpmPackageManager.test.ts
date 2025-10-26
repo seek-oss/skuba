@@ -1,9 +1,9 @@
 import fg from 'fast-glob';
 import fs from 'fs-extra';
-import type { PackageJson } from 'read-pkg-up';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PackageManagerConfig } from '../../../../../../utils/packageManager.js';
+import type { PackageJson } from '../../../../../configure/types.js';
 import type { PatchConfig } from '../../index.js';
 
 import { tryPatchPnpmPackageManager } from './patchPnpmPackageManager.js';
@@ -42,7 +42,7 @@ describe('patchPnpmPackageManager', () => {
   const validManifest = {
     packageJson: {
       packageManager: 'pnpm',
-    } as Partial<PackageJson> as PackageJson,
+    } as Partial<PackageJson>,
     path: '~/project/package.json',
   } as PatchConfig['manifest'];
 

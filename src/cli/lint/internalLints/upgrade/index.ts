@@ -1,7 +1,6 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import type { ReadResult } from 'read-pkg-up';
 import { gte, sort } from 'semver';
 
 import type { Logger } from '../../../../utils/logging.js';
@@ -12,6 +11,7 @@ import {
 } from '../../../../utils/packageManager.js';
 import { getSkubaVersion } from '../../../../utils/version.js';
 import { formatPackage } from '../../../configure/processing/package.js';
+import type { ReadResult } from '../../../configure/types.js';
 import type { SkubaPackageJson } from '../../../init/writePackageJson.js';
 import type { InternalLintResult } from '../../internal.js';
 
@@ -167,8 +167,8 @@ export const upgradeSkuba = async (
     throw new Error('Could not find a package json for this project');
   }
 
-  (updatedManifest.packageJson.skuba as SkubaPackageJson).version =
-    currentVersion;
+  updatedManifest.packageJson.skuba ??= { version: currentVersion };
+  updatedManifest.packageJson.skuba.version = currentVersion;
 
   const updatedPackageJson = await formatPackage(updatedManifest.packageJson);
 

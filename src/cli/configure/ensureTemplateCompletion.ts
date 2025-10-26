@@ -2,7 +2,6 @@ import path from 'path';
 
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import type { ReadResult } from 'read-pkg-up';
 import * as z from 'zod/v4';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
@@ -19,6 +18,7 @@ import {
 } from '../init/getConfig.js';
 
 import { formatPackage } from './processing/package.js';
+import type { ReadResult } from './types.js';
 
 interface Props {
   destinationRoot: string;

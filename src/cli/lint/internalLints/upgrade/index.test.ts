@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import type { PackageJson } from 'read-pkg-up';
+import type { PackageJson } from 'read-package-up';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { log } from '../../../../utils/logging.js';
