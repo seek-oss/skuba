@@ -25,8 +25,6 @@ export const node = async () => {
     ...uniqueConditions.map((condition) => `--conditions=${condition}`),
     '--env-file-if-exists',
     '.env',
-    '--import',
-    new URL(import.meta.resolve('tsconfig-paths/register')).pathname,
   ];
 
   if (args.entryPoint) {
@@ -52,7 +50,7 @@ export const node = async () => {
       '--import',
       // Unsure if bug or feature that this is needed, but tsx appears to not do anything typescript in the REPL without this!
       // Doesn't occur when just running the tsx binary directly 🧐
-      new URL(import.meta.resolve('tsx/repl')).pathname,
+      new URL(import.meta.resolve('tsx/patch-repl')).pathname,
     ],
     {
       stdio: 'inherit',
