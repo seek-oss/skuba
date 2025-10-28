@@ -7,6 +7,9 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryAddEmptyExports } from './addEmptyExports.js';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+vi.spyOn(console, 'log').mockImplementation(() => {});
+
 vi.spyOn(packageAnalysis, 'getDestinationManifest').mockResolvedValue({
   path: '~/project/package.json',
 } as any);

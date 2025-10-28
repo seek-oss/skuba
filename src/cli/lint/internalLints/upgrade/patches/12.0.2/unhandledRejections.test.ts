@@ -15,6 +15,9 @@ vi.mock('fast-glob', () => ({
   },
 }));
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+vi.spyOn(console, 'log').mockImplementation(() => {});
+
 beforeEach(() => vol.reset());
 
 import type { PatchConfig } from '../../index.js';
