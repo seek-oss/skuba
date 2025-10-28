@@ -1,7 +1,6 @@
 import path from 'path';
 
-import fs from 'fs-extra';
-
+import { pathExists } from '../../../utils/dir.js';
 import type { Logger } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';
@@ -26,7 +25,7 @@ export const noSkubaTemplateJs = async (
     'skuba.template.js',
   );
 
-  if (await fs.pathExists(templateConfigPath)) {
+  if (await pathExists(templateConfigPath)) {
     logger.err(
       `Template is incomplete; run ${logger.bold(
         packageManager.print.exec,

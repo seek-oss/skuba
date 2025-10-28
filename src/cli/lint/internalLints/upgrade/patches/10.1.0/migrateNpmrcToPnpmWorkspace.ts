@@ -6,6 +6,7 @@ import fs from 'fs-extra';
 import {
   findCurrentWorkspaceProjectRoot,
   findWorkspaceRoot,
+  pathExists,
 } from '../../../../../../utils/dir.js';
 import { log } from '../../../../../../utils/logging.js';
 import { hasNpmrcSecret } from '../../../../../../utils/npmrc.js';
@@ -14,17 +15,8 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const NPMRC = '.npmrc';
 
-const checkFileExists = async (filePath: string) => {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
 const migrateCustomNpmrcSettings = async () => {
-  const contents = await fs.readFile(NPMRC, 'utf-8');
+  const contents = await fs.promises.readFile(NPMRC, 'utf-8');
 
   const remainderLines = replaceManagedSection(contents, '')
     .split('\n')
@@ -38,13 +30,16 @@ const migrateCustomNpmrcSettings = async () => {
   }
 
   const pnpmWorkspaceFile = 'pnpm-workspace.yaml';
-  const pnpmWorkspaceExists = await checkFileExists(pnpmWorkspaceFile);
+  const pnpmWorkspaceExists = await pathExists(pnpmWorkspaceFile);
   if (!pnpmWorkspaceExists) {
-    await fs.writeFile(pnpmWorkspaceFile, '');
+    await fs.promises.writeFile(pnpmWorkspaceFile, '');
   }
 
   // prepend the lines to the pnpm-workspace.yaml file, but commented out
-  const pnpmWorkspaceContents = await fs.readFile(pnpmWorkspaceFile, 'utf-8');
+  const pnpmWorkspaceContents = await fs.promises.readFile(
+    pnpmWorkspaceFile,
+    'utf-8',
+  );
   const commentedLines = remainderLines.map((line) => `# ${line}`).join('\n');
   const newContents = `# TODO: Translate these settings to the required format for pnpm-workspace.yaml.
 # skuba moved these from .npmrc, but doesn't know what they mean.
@@ -54,7 +49,7 @@ ${commentedLines}
 
 ${pnpmWorkspaceContents}`;
 
-  await fs.writeFile(pnpmWorkspaceFile, newContents);
+  await fs.promises.writeFile(pnpmWorkspaceFile, newContents);
 };
 
 const fixDockerfiles = async () => {
@@ -62,14 +57,14 @@ const fixDockerfiles = async () => {
 
   await Promise.all(
     fileNames.map(async (fileName) => {
-      const contents = await fs.readFile(fileName, 'utf8');
+      const contents = await fs.promises.readFile(fileName, 'utf8');
       const patched = contents.replaceAll(
         '--mount=type=bind,source=.npmrc,target=.npmrc',
         '--mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml',
       );
 
       if (patched !== contents) {
-        await fs.writeFile(fileName, patched);
+        await fs.promises.writeFile(fileName, patched);
       }
     }),
   );
@@ -80,7 +75,7 @@ const fixBuildkitePipelines = async () => {
 
   await Promise.all(
     fileNames.map(async (fileName) => {
-      const contents = await fs.readFile(fileName, 'utf8');
+      const contents = await fs.promises.readFile(fileName, 'utf8');
       const patched = contents.replace(
         /(cache-on:[\s\S]*?)([ \t]+-[ \t]+\.npmrc)([\s\S]*?)(?=\n[ \t]*\S|$)/g,
         (_, before: string, npmrcLine: string, after: string) =>
@@ -88,7 +83,7 @@ const fixBuildkitePipelines = async () => {
       );
 
       if (patched !== contents) {
-        await fs.writeFile(fileName, patched);
+        await fs.promises.writeFile(fileName, patched);
       }
     }),
   );
@@ -99,7 +94,7 @@ const forceUpgradeToPnpm10 = async () => {
 
   await Promise.all(
     fileNames.map(async (fileName) => {
-      const contents = await fs.readFile(fileName, 'utf8');
+      const contents = await fs.promises.readFile(fileName, 'utf8');
 
       const packageManagerMatch = /"packageManager"\s*:\s*"pnpm@([^"]+)"/.exec(
         contents,
@@ -118,7 +113,7 @@ const forceUpgradeToPnpm10 = async () => {
           '"packageManager"$1:$2"pnpm@10.8.1"',
         );
 
-        await fs.writeFile(fileName, patched);
+        await fs.promises.writeFile(fileName, patched);
       }
     }),
   );
@@ -147,7 +142,7 @@ const migrateNpmrcToPnpmWorkspace: PatchFunction = async ({
     };
   }
 
-  const npmrcExists = await checkFileExists(NPMRC);
+  const npmrcExists = await pathExists(NPMRC);
   if (!npmrcExists) {
     return {
       result: 'skip',
@@ -168,7 +163,7 @@ const migrateNpmrcToPnpmWorkspace: PatchFunction = async ({
     forceUpgradeToPnpm10(),
   ]);
 
-  await fs.rm(NPMRC);
+  await fs.promises.rm(NPMRC);
 
   return { result: 'apply' };
 };

@@ -1,5 +1,8 @@
 import { defineConfig } from 'vitest/config';
 
+// We need to inline read-package-up and its dependencies to allow for mocking fs in tests
+const readPackageUpFsDeps = ['read-package-up', 'find-up-simple', 'read-pkg'];
+
 export default defineConfig({
   ssr: {
     resolve: {
@@ -7,6 +10,11 @@ export default defineConfig({
     },
   },
   test: {
+    server: {
+      deps: {
+        inline: [...readPackageUpFsDeps],
+      },
+    },
     env: {
       ENVIRONMENT: 'test',
     },

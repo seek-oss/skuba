@@ -122,6 +122,19 @@ async function crawl(
   return paths;
 }
 
+export const pathExists = async (filePath: string): Promise<boolean> => {
+  try {
+    await fs.promises.access(filePath);
+
+    return true; // Path exists and is accessible
+  } catch (error) {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+      return false; // Path does not exist
+    }
+    throw error; // Other errors (include permission issues)
+  }
+};
+
 export const locateNearestFile = async ({
   cwd,
   filename,
@@ -132,7 +145,7 @@ export const locateNearestFile = async ({
   let currentDir = cwd;
   while (currentDir !== path.dirname(currentDir)) {
     const filePath = path.join(currentDir, filename);
-    if (await fs.pathExists(filePath)) {
+    if (await pathExists(filePath)) {
       return filePath;
     }
     currentDir = path.dirname(currentDir);
@@ -153,7 +166,7 @@ export const locateFurthestFile = async ({
 
   while (currentDir !== path.dirname(currentDir)) {
     const filePath = path.join(currentDir, filename);
-    if (await fs.pathExists(filePath)) {
+    if (await pathExists(filePath)) {
       furthestFilePath = filePath;
     }
     currentDir = path.dirname(currentDir);
