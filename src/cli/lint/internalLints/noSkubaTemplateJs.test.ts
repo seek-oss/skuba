@@ -1,15 +1,16 @@
-import * as fsExtra from 'fs-extra';
+import stripAnsi from 'strip-ansi';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { pathExists } from '../../../utils/dir.js';
 import { log } from '../../../utils/logging.js';
 
 import { noSkubaTemplateJs } from './noSkubaTemplateJs.js';
 
 const stdoutMock = vi.fn();
 
-const stdout = () => stdoutMock.mock.calls.flat(1).join('');
+const stdout = () => stripAnsi(stdoutMock.mock.calls.flat(1).join(''));
 
-vi.mock('fs-extra', () => ({
+vi.mock('../../../utils/dir.js', () => ({
   pathExists: vi.fn(),
 }));
 
@@ -22,8 +23,6 @@ beforeEach(() => {
 afterEach(vi.resetAllMocks);
 
 describe('noSkubaTemplateJs', () => {
-  const pathExists = vi.mocked(fsExtra.pathExists);
-
   describe.each`
     mode
     ${'format'}
