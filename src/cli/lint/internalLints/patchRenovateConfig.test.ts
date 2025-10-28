@@ -1,5 +1,3 @@
-import { inspect } from 'util';
-
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -8,7 +6,10 @@ import type { PatchConfig } from './upgrade/index.js';
 
 import * as Git from '@skuba-lib/api/git';
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 vi.mock('@skuba-lib/api/git', async () => ({
   ...(await vi.importActual<object>('@skuba-lib/api/git')),
   getOwnerAndRepo: vi.fn(),
@@ -38,7 +39,8 @@ const JSON5_EXTENDED = `{extends: ['github>seek-jobs/custom-config']}`;
 
 const getOwnerAndRepo = vi.mocked(Git.getOwnerAndRepo);
 
-const consoleLog = vi.spyOn(console, 'log');
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
 
 const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 
@@ -183,9 +185,11 @@ describe('patchRenovateConfig', () => {
       expect(volToJson()).toStrictEqual(files);
 
       expect(consoleLog).toHaveBeenCalledWith(
-        'Failed to patch Renovate config.',
+        expect.stringContaining('Failed to patch Renovate config.'),
       );
-      expect(consoleLog).toHaveBeenCalledWith(inspect(err));
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(err.toString()),
+      );
     });
 
     it('handles a non-Git directory', async () => {
