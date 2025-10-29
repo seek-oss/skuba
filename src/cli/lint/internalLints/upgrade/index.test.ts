@@ -56,9 +56,9 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    vi.mock(`./patches/7.3.1/index.js`, () => ({ patches: [mockUpgrade] }));
-    vi.mock(`./patches/8.0.0/index.js`, () => ({ patches: [mockUpgrade] }));
-    vi.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/7.3.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/8.0.0/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
@@ -96,7 +96,7 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    vi.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
