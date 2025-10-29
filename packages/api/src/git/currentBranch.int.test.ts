@@ -4,7 +4,10 @@ import { beforeEach, expect, it, vi } from 'vitest';
 
 import { currentBranch } from './currentBranch.js';
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 // eslint-disable-next-line import-x/order
 import fs from 'fs-extra';
