@@ -2,15 +2,29 @@ import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { copyAssets, copyAssetsConcurrently } from './assets.js';
+import stripAnsi from 'strip-ansi';
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+
+vi.mock('node:fs', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('node:fs/promises', () => ({
+  default: memfs.fs.promises,
+  ...memfs.fs.promises,
+}));
 
 vi.spyOn(console, 'log').mockImplementation((...args) =>
   stdoutMock(`${args.join(' ')}\n`),
 );
 
 const stdoutMock = vi.fn().mockName('[stdout]');
-const getStdOut = () => `${stdoutMock.name}${stdoutMock.mock.calls.join('')}`;
+const getStdOut = () =>
+  stripAnsi(`${stdoutMock.name}${stdoutMock.mock.calls.join('')}`);
 
 // a snapshot serializer to remove quotes around stdout
 expect.addSnapshotSerializer({
