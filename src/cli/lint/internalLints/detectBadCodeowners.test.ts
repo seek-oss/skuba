@@ -9,7 +9,10 @@ import type { Logger } from '../../../utils/logging.js';
 
 import { detectBadCodeowners } from './detectBadCodeowners.js';
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 vi.mock('../../..', () => ({
   Git: {

@@ -1,6 +1,7 @@
 import path from 'path';
 
 import fs from 'fs-extra';
+import stripAnsi from 'strip-ansi';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../index.js';
@@ -15,10 +16,10 @@ import {
 
 const stdoutMock = vi.fn();
 
-const stdout = () => stdoutMock.mock.calls.flat(1).join('');
+const stdout = () => stripAnsi(stdoutMock.mock.calls.flat(1).join(''));
 
 vi.mock('fs-extra', () => ({
-  writeFile: vi.fn(),
+  default: { writeFile: vi.fn() },
 }));
 
 vi.mock('../../../utils/dir', () => ({
