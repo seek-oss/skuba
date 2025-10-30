@@ -7,6 +7,7 @@ import {
   findCurrentWorkspaceProjectRoot,
   findWorkspaceRoot,
 } from '../../../../../../utils/dir.js';
+import { pathExists } from '../../../../../../utils/fs.js';
 import { log } from '../../../../../../utils/logging.js';
 import { hasNpmrcSecret } from '../../../../../../utils/npmrc.js';
 import { replaceManagedSection } from '../../../../../configure/processing/configFile.js';

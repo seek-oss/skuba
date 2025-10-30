@@ -15,6 +15,8 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 vi.spyOn(log, 'warn').mockImplementation(() => {});
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+vi.spyOn(console, 'log').mockImplementation(() => {});
 
 afterEach(() => {
   vi.clearAllMocks();

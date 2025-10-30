@@ -3,6 +3,8 @@ import ignoreFilter from 'ignore';
 import git, { findRoot } from 'isomorphic-git';
 import { pathExists } from '../../../../src/utils/fs.js';
 
+import { pathExists } from '../../../../src/utils/fs.js';
+
 import {
   ABSENT,
   FILEPATH,

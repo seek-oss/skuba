@@ -20,8 +20,7 @@
   "files": [
     "lib/**/*.d.ts",
     "lib/**/*.js",
-    "lib/**/*.js.map",
-    "register.js"
+    "lib/**/*.js.map"
   ],
   "scripts": {
     "build": "pnpm skuba build",
@@ -32,14 +31,8 @@
     "test": "pnpm skuba test",
     "test:ci": "pnpm skuba test --coverage"
   },
-  "dependencies": {
-    "module-alias": "^2.2.2"
-  },
-  "devDependencies": {
-    "@types/module-alias": "2.0.4"
-  },
   "engines": {
-    "node": ">=14.18"
+    "node": ">=20.9.0"
   },
   "skuba": {
     "entryPoint": "src/index.ts",
