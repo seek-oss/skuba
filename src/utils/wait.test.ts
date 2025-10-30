@@ -2,13 +2,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as wait from './wait.js';
 
+import * as sleepModule from './sleep.js';
+
 const delayMicrotask = () =>
   Promise.resolve()
     .then(() => undefined)
     .then(() => undefined)
     .then(() => undefined);
 
-const sleep = vi.spyOn(wait, 'sleep');
+const sleep = vi.spyOn(sleepModule, 'sleep');
 
 beforeEach(vi.clearAllMocks);
 
@@ -45,7 +47,7 @@ describe('throwOnTimeout', () => {
 
     await expect(
       wait.throwOnTimeout(promise(), { s: 1 }),
-    ).rejects.toThrowErrorMatchingInlineSnapshot(`"Timed out after 1 second"`);
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: Timed out after 1 second]`);
 
     expect(sleep).toHaveBeenCalledTimes(1);
     expect(sleep).toHaveBeenNthCalledWith(1, 1_000);
