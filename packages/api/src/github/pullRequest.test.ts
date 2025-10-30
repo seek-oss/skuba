@@ -13,11 +13,10 @@ const mockClient = {
   },
 };
 
-beforeEach(() =>
-  vi.mocked(createRestClient).mockResolvedValue(mockClient as never),
-);
-
-afterEach(vi.resetAllMocks);
+beforeEach(() => {
+  vi.resetAllMocks();
+  vi.mocked(createRestClient).mockResolvedValue(mockClient as never);
+});
 
 describe('getPullRequestNumber', () => {
   it('prefers a Buildkite environment variable', async () => {
