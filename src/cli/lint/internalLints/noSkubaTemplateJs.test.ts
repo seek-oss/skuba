@@ -1,5 +1,4 @@
-import * as fsExtra from 'fs-extra';
-
+import { pathExists } from '../../../utils/fs.js';
 import { log } from '../../../utils/logging.js';
 
 import { noSkubaTemplateJs } from './noSkubaTemplateJs.js';
@@ -8,7 +7,7 @@ const stdoutMock = jest.fn();
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('');
 
-jest.mock('fs-extra', () => ({
+jest.mock('../../../utils/fs.js', () => ({
   pathExists: jest.fn(),
 }));
 
@@ -21,10 +20,6 @@ beforeEach(() => {
 afterEach(jest.resetAllMocks);
 
 describe('noSkubaTemplateJs', () => {
-  const pathExists = fsExtra.pathExists as jest.MockedFunction<
-    (path: string) => Promise<boolean>
-  >;
-
   describe.each`
     mode
     ${'format'}
