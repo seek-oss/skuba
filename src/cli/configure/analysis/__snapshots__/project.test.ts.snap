@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`diffFiles works from scratch 1`] = `
+exports[`diffFiles > works from scratch 1`] = `
 {
   ".dockerignore": {
     "data": "# managed by skuba
@@ -80,36 +80,6 @@ coverage
   },
   "eslint.config.js": {
     "data": "module.exports = require('eslint-config-skuba');
-",
-    "operation": "A",
-  },
-  "jest.config.ts": {
-    "data": "import { Jest } from 'skuba';
-
-export default Jest.mergePreset({
-  coveragePathIgnorePatterns: ['src/testing'],
-  coverageThreshold: {
-    global: {
-      branches: 0,
-      functions: 0,
-      lines: 0,
-      statements: 0,
-    },
-  },
-  setupFiles: ['<rootDir>/jest.setup.ts'],
-  testPathIgnorePatterns: ['/test\\\\.ts'],
-  moduleNameMapper: {
-    '^#src/(.*)\\\\.js$': ['<rootDir>/src/$1'],
-    '^#src/(.*)$': ['<rootDir>/src/$1'],
-  },
-});
-",
-    "operation": "A",
-  },
-  "jest.setup.ts": {
-    "data": "process.env.DEPLOYMENT = 'test';
-
-export {};
 ",
     "operation": "A",
   },
