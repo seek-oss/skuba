@@ -1,6 +1,6 @@
 import { type FormChoice, Input, Select } from 'enquirer';
 
-import { pathExists } from '../../utils/dir.js';
+import { pathExists } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
 
 import {

@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { pathExists } from '../../../utils/dir.js';
+import { pathExists } from '../../../utils/fs.js';
 import type { Logger } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';

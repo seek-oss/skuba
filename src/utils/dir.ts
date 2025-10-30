@@ -7,6 +7,7 @@ import picomatch from 'picomatch';
 import { isErrorWithCode } from './error.js';
 
 import * as Git from '@skuba-lib/api/git';
+import { pathExists } from './fs.js';
 
 /**
  * Build a map that associates each glob pattern with its matching filepaths.
@@ -121,19 +122,6 @@ async function crawl(
 
   return paths;
 }
-
-export const pathExists = async (filePath: string): Promise<boolean> => {
-  try {
-    await fs.promises.access(filePath);
-
-    return true; // Path exists and is accessible
-  } catch (error) {
-    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      return false; // Path does not exist
-    }
-    throw error; // Other errors (include permission issues)
-  }
-};
 
 export const locateNearestFile = async ({
   cwd,

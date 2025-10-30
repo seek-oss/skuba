@@ -6,12 +6,12 @@ import fs from 'fs-extra';
 import {
   findCurrentWorkspaceProjectRoot,
   findWorkspaceRoot,
-  pathExists,
 } from '../../../../../../utils/dir.js';
 import { log } from '../../../../../../utils/logging.js';
 import { hasNpmrcSecret } from '../../../../../../utils/npmrc.js';
 import { replaceManagedSection } from '../../../../../configure/processing/configFile.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { pathExists } from '../../../../../../utils/fs.js';
 
 const NPMRC = '.npmrc';
 
