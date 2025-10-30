@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 
 import { isErrorWithCode } from './error.js';
+
 export const pathExists = async (filePath: string): Promise<boolean> => {
   try {
     await fs.access(filePath);
