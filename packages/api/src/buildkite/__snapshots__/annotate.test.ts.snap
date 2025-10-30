@@ -1,4 +1,64 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`annotate > with 'all options' > annotates when environment variables are set 1`] = `
+"
+buildkite-agent
+annotate
+--context
+step-id|skuba-build
+--style
+warning
+**Message**
+"
+`;
+
+exports[`annotate > with 'context and style options' > annotates when environment variables are set 1`] = `
+"
+buildkite-agent
+annotate
+--context
+skuba-test
+--style
+error
+**Message**
+"
+`;
+
+exports[`annotate > with 'context option' > annotates when environment variables are set 1`] = `
+"
+buildkite-agent
+annotate
+--context
+skuba-lint
+**Message**
+"
+`;
+
+exports[`annotate > with 'empty options' > annotates when environment variables are set 1`] = `
+"
+buildkite-agent
+annotate
+**Message**
+"
+`;
+
+exports[`annotate > with 'style option' > annotates when environment variables are set 1`] = `
+"
+buildkite-agent
+annotate
+--style
+info
+**Message**
+"
+`;
+
+exports[`annotate > with 'undefined options' > annotates when environment variables are set 1`] = `
+"
+buildkite-agent
+annotate
+**Message**
+"
+`;
 
 exports[`annotate with all options annotates when environment variables are set 1`] = `
 "
