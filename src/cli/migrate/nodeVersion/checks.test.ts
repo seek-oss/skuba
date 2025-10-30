@@ -13,7 +13,8 @@ import {
   isPatchableSkubaType,
 } from './checks.js';
 
-vi.spyOn(log, 'warn');
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+vi.spyOn(log, 'warn').mockImplementation(() => {});
 
 afterEach(() => {
   vi.clearAllMocks();

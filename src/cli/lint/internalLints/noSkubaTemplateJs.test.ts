@@ -9,7 +9,7 @@ const stdoutMock = vi.fn();
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('');
 
-vi.mock('../../../utils/dir.js', () => ({
+vi.mock('../../../utils/fs.js', () => ({
   pathExists: vi.fn(),
 }));
 
