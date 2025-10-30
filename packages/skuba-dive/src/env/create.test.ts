@@ -20,7 +20,7 @@ describe('create', () => {
       expect(() =>
         create(parse)(VAR, { default: undefined }),
       ).toThrowErrorMatchingInlineSnapshot(
-        `"Unexpected token '}', "}" is not valid JSON"`,
+        `[SyntaxError: Unexpected token '}', "}" is not valid JSON]`,
       );
     });
 
@@ -37,13 +37,13 @@ describe('create', () => {
     it('throws on parsing error', () => {
       process.env[VAR] = '}';
       expect(() => create(parse)(VAR)).toThrowErrorMatchingInlineSnapshot(
-        `"Unexpected token '}', "}" is not valid JSON"`,
+        `[SyntaxError: Unexpected token '}', "}" is not valid JSON]`,
       );
     });
 
     it('throws on unset environment variable', () =>
       expect(() => create(parse)(VAR)).toThrowErrorMatchingInlineSnapshot(
-        `"process.env.ABC_123_DEF_456 is not set"`,
+        `[Error: process.env.ABC_123_DEF_456 is not set]`,
       ));
   });
 });
