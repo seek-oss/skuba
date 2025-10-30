@@ -4,10 +4,12 @@ import { beforeEach, expect, it, vi } from 'vitest';
 
 import { getOwnerAndRepo } from './remote.js';
 
-vi.mock('fs', () => memfs);
-
-// eslint-disable-next-line import-x/order
 import fs from 'fs-extra';
+
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 beforeEach(async () => {
   delete process.env.BUILDKITE_REPO;
