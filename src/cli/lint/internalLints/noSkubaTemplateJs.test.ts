@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { pathExists } from '../../../utils/dir.js';
+import { pathExists } from '../../../utils/fs.js';
 import { log } from '../../../utils/logging.js';
 
 import { noSkubaTemplateJs } from './noSkubaTemplateJs.js';
