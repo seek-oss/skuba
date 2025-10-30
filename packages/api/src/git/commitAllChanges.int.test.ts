@@ -8,7 +8,10 @@ import newGit from '../../../../integration/git/new.json' with { type: 'json' };
 
 import { commitAllChanges } from './commitAllChanges.js';
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 beforeEach(() => {
   vol.reset();
