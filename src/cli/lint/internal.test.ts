@@ -2,9 +2,9 @@ import { internalLint } from './internal.js';
 
 describe('internalLint', () => {
   beforeEach(() => {
-    // jest.spyOn(console, 'log').mockImplementation(() => {
-    //   /* no-op */
-    // });
+    jest.spyOn(console, 'log').mockImplementation(() => {
+      /* no-op */
+    });
   });
 
   afterEach(() => {
