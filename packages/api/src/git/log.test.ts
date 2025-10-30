@@ -42,7 +42,7 @@ describe('getHeadCommitId', () => {
     await expect(
       getHeadCommitId({ dir, env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Git log does not contain any commits"`,
+      `[Error: Git log does not contain any commits]`,
     );
 
     expect(git.log).toHaveBeenCalledTimes(1);
@@ -76,7 +76,7 @@ describe('getHeadCommitMessage', () => {
     await expect(
       getHeadCommitMessage({ dir, env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Git log does not contain any commits"`,
+      `[Error: Git log does not contain any commits]`,
     );
 
     expect(git.log).toHaveBeenCalledTimes(1);

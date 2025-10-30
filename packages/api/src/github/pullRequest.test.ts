@@ -113,7 +113,7 @@ describe('getPullRequestNumber', () => {
     await expect(
       getPullRequestNumber({ env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Commit commit-id is not associated with an open GitHub pull request"`,
+      `[Error: Commit commit-id is not associated with an open GitHub pull request]`,
     );
   });
 });

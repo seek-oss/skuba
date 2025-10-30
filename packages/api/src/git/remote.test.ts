@@ -79,7 +79,7 @@ describe('getOwnerAndRepo', () => {
     await expect(
       getOwnerAndRepo({ dir, env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Could not find a GitHub remote"`,
+      `[Error: Could not find a GitHub remote]`,
     );
 
     expect(git.listRemotes).toHaveBeenCalledTimes(1);
@@ -97,7 +97,7 @@ describe('getOwnerAndRepo', () => {
     await expect(
       getOwnerAndRepo({ dir, env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Could not find a GitHub remote"`,
+      `[Error: Could not find a GitHub remote]`,
     );
 
     expect(git.listRemotes).toHaveBeenCalledTimes(1);

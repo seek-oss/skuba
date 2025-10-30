@@ -60,7 +60,7 @@ describe('uploadFileChanges', () => {
         messageBody: 'commit body',
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Could not read a GitHub API token from the environment. Please set GITHUB_API_TOKEN or GITHUB_TOKEN."`,
+      `[Error: Could not read a GitHub API token from the environment. Please set GITHUB_API_TOKEN or GITHUB_TOKEN.]`,
     );
   });
 
