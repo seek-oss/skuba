@@ -191,8 +191,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mNo autofixes detected.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        No autofixes detected.
         "
       `);
     });
@@ -218,8 +218,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
@@ -240,8 +240,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
@@ -269,8 +269,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
@@ -304,8 +304,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
@@ -326,8 +326,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
@@ -343,10 +343,10 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33m[1mFailed to push fix commit.[22m[39m
-        [33m[1mDoes your CI environment have write access to your Git repository?[22m[39m
-        [90mError: Badness!
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Failed to push fix commit.
+        Does your CI environment have write access to your Git repository?
+        Error: Badness!
         ..."
       `);
     });
@@ -381,8 +381,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
@@ -483,8 +483,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mNo autofixes detected.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        No autofixes detected.
         "
       `);
     });
@@ -511,8 +511,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
@@ -539,8 +539,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
@@ -573,8 +573,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
@@ -591,9 +591,9 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mCould not determine the current branch.[39m
-        [33mPlease propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Could not determine the current branch.
+        Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.
         "
       `);
     });
@@ -611,10 +611,10 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33m[1mFailed to push fix commit.[22m[39m
-        [33m[1mDoes your CI environment have write access to your Git repository?[22m[39m
-        [90mError: Badness!
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Failed to push fix commit.
+        Does your CI environment have write access to your Git repository?
+        Error: Badness!
         ..."
       `);
     });
@@ -648,8 +648,8 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        [33mAttempting to autofix issues (skuba, ESLint, Prettier)...[39m
-        [33mPushed fix commit commit-sha.[39m
+        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Pushed fix commit commit-sha.
         "
       `);
     });
