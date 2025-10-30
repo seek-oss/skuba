@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 
 import { isCiEnv } from '../../utils/env.js';
 import { createLogger, log } from '../../utils/logging.js';

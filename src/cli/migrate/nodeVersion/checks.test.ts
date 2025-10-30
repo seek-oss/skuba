@@ -12,7 +12,10 @@ import {
   isPatchableSkubaType,
 } from './checks.js';
 
-jest.spyOn(log, 'warn');
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+jest.spyOn(log, 'warn').mockImplementation(() => {});
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+jest.spyOn(console, 'log').mockImplementation(() => {});
 
 afterEach(() => {
   jest.clearAllMocks();

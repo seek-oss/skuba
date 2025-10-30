@@ -7,21 +7,13 @@ import {
   findCurrentWorkspaceProjectRoot,
   findWorkspaceRoot,
 } from '../../../../../../utils/dir.js';
+import { pathExists } from '../../../../../../utils/fs.js';
 import { log } from '../../../../../../utils/logging.js';
 import { hasNpmrcSecret } from '../../../../../../utils/npmrc.js';
 import { replaceManagedSection } from '../../../../../configure/processing/configFile.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const NPMRC = '.npmrc';
-
-const checkFileExists = async (filePath: string) => {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-};
 
 const migrateCustomNpmrcSettings = async () => {
   const contents = await fs.readFile(NPMRC, 'utf-8');
@@ -38,7 +30,7 @@ const migrateCustomNpmrcSettings = async () => {
   }
 
   const pnpmWorkspaceFile = 'pnpm-workspace.yaml';
-  const pnpmWorkspaceExists = await checkFileExists(pnpmWorkspaceFile);
+  const pnpmWorkspaceExists = await pathExists(pnpmWorkspaceFile);
   if (!pnpmWorkspaceExists) {
     await fs.writeFile(pnpmWorkspaceFile, '');
   }
@@ -147,7 +139,7 @@ const migrateNpmrcToPnpmWorkspace: PatchFunction = async ({
     };
   }
 
-  const npmrcExists = await checkFileExists(NPMRC);
+  const npmrcExists = await pathExists(NPMRC);
   if (!npmrcExists) {
     return {
       result: 'skip',

@@ -1,6 +1,6 @@
 import { type FormChoice, Input, Select } from 'enquirer';
-import fs from 'fs-extra';
 
+import { pathExists } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
 
 import {
@@ -62,7 +62,7 @@ const BASE_CHOICES = [
         return 'fails GitHub validation';
       }
 
-      const exists = await fs.pathExists(value);
+      const exists = await pathExists(value);
 
       return !exists || `'${value}' is an existing directory`;
     },

@@ -2,6 +2,8 @@ import fs from 'fs-extra';
 import ignoreFilter from 'ignore';
 import git, { findRoot } from 'isomorphic-git';
 
+import { pathExists } from '../../../../src/utils/fs.js';
+
 import {
   ABSENT,
   FILEPATH,
@@ -81,7 +83,7 @@ const createIsLfsFilter = async (
   }
 
   const lfsFile = `${gitRoot}/.gitattributes`;
-  if (!(await fs.pathExists(lfsFile))) {
+  if (!(await pathExists(lfsFile))) {
     return () => false;
   }
 
