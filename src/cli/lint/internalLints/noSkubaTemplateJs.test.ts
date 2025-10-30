@@ -1,4 +1,3 @@
-import stripAnsi from 'strip-ansi';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { pathExists } from '../../../utils/dir.js';
@@ -8,7 +7,7 @@ import { noSkubaTemplateJs } from './noSkubaTemplateJs.js';
 
 const stdoutMock = vi.fn();
 
-const stdout = () => stripAnsi(stdoutMock.mock.calls.flat(1).join(''));
+const stdout = () => stdoutMock.mock.calls.flat(1).join('');
 
 vi.mock('../../../utils/dir.js', () => ({
   pathExists: vi.fn(),

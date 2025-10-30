@@ -5,7 +5,7 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
-import stripAnsi from 'strip-ansi';
+
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import type { Logger } from '../../utils/logging.js';
@@ -60,13 +60,9 @@ const TEMP_PATH = path.join(
 );
 
 const stdout = (randomMatcher: RegExp) => {
-  // Strip actual ANSI codes and also pseudo-ANSI codes (like [0m, [31m, etc.) FIRST
-  const cleanedResult = stripAnsi(
-    stdoutMock.mock.calls.flat(1).join(''),
-  ).replace(/\[\d+m/g, '');
-
-  // Then apply replacements to the cleaned output
-  const result = cleanedResult
+  const result = stdoutMock.mock.calls
+    .flat(1)
+    .join('')
     .replace(/ in [\d\.]+s\./g, ' in <random>s.')
     .replace(
       /tsc      │ Lines of ([^:]+):[ ]+\d+/g,
@@ -170,12 +166,13 @@ test.each`
   expect(stdout(tempDirRegex)).toMatchSnapshot();
 
   expect(
-    buildkiteAnnotate.mock.calls.map(([markdown, opts]) => {
-      const cleaned = stripAnsi(
-        markdown.replace(tempDirRegex, '<random>'),
-      ).replace(/\[\d+m/g, '');
-      return `\nOptions: ${inspect(opts)}\n\n${cleaned}\n`;
-    }),
+    buildkiteAnnotate.mock.calls.map(
+      ([markdown, opts]) =>
+        `\nOptions: ${inspect(opts)}\n\n${markdown.replace(
+          tempDirRegex,
+          '<random>',
+        )}\n`,
+    ),
   ).toMatchSnapshot();
 
   expect(process.exitCode).toBe(exitCode);

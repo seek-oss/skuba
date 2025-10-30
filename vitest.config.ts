@@ -17,6 +17,7 @@ export default defineConfig({
     },
     env: {
       ENVIRONMENT: 'test',
+      FORCE_COLOR: '0',
     },
     coverage: {
       thresholds: {
