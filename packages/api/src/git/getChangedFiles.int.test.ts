@@ -6,7 +6,10 @@ import newGit from '../../../../integration/git/new.json' with { type: 'json' };
 
 import { getChangedFiles } from './getChangedFiles.js';
 
-vi.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 beforeEach(() => {
   vol.reset();
