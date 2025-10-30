@@ -52,7 +52,7 @@ describe('oneOf', () => {
     expect(() =>
       parse('dev', 'ENVIRONMENT'),
     ).toThrowErrorMatchingInlineSnapshot(
-      `"process.env.ENVIRONMENT is not a supported choice: 'dev'. Expected one of: ['local', 'prod']"`,
+      `[Error: process.env.ENVIRONMENT is not a supported choice: 'dev'. Expected one of: ['local', 'prod']]`,
     ));
 });
 
