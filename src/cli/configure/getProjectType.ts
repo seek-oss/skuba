@@ -1,4 +1,4 @@
-import { Select } from 'enquirer';
+import { select } from '@inquirer/prompts';
 import type { ReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging.js';
@@ -40,12 +40,10 @@ export const getProjectType = async ({
       : 'application';
 
   log.newline();
-  const projectTypePrompt = new Select({
-    choices: PROJECT_TYPES,
-    message: 'Project type:',
-    name: 'projectType',
-    initial,
-  });
 
-  return projectTypePrompt.run();
+  return select({
+    message: 'Project type:',
+    choices: PROJECT_TYPES.map((type) => ({ name: type, value: type })),
+    default: initial,
+  });
 };
