@@ -1,10 +1,9 @@
+import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 import { beforeEach, expect, it, vi } from 'vitest';
 
 import { getOwnerAndRepo } from './remote.js';
-
-import fs from 'fs-extra';
 
 vi.mock('fs-extra', () => ({
   ...memfs.fs,

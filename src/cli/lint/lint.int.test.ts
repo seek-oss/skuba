@@ -5,7 +5,6 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
-
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import type { Logger } from '../../utils/logging.js';

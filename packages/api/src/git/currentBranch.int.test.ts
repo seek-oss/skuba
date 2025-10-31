@@ -1,7 +1,7 @@
+import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 import { beforeEach, expect, it, vi } from 'vitest';
-import fs from 'fs-extra';
 
 import { currentBranch } from './currentBranch.js';
 
