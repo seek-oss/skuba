@@ -1,5 +1,5 @@
-import { describe, it } from 'vitest';
 import request from 'supertest';
+import { describe, it } from 'vitest';
 
 import app from './app.js';
 
