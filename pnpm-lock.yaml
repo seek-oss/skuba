@@ -501,11 +501,11 @@ importers:
         specifier: ^2.190.0
         version: 2.220.0(constructs@10.4.2)
       aws-sdk-client-mock:
-        specifier: ^4.0.0
+        specifier: ^4.1.0
         version: 4.1.0
-      aws-sdk-client-mock-jest:
-        specifier: ^4.0.0
-        version: 4.1.0(aws-sdk-client-mock@4.1.0)(vitest@4.0.5)
+      aws-sdk-client-mock-vitest:
+        specifier: ^6.2.1
+        version: 6.2.1(@smithy/types@4.8.0)(aws-sdk-client-mock@4.1.0)
       chance:
         specifier: ^1.1.8
         version: 1.1.13
@@ -2948,14 +2948,11 @@ packages:
     engines: {node: '>= 18.0.0'}
     hasBin: true
 
-  aws-sdk-client-mock-jest@4.1.0:
-    resolution: {integrity: sha512-+g4a5Hp+MmPqqNnvwfLitByggrqf+xSbk1pm6fBYHNcon6+aQjL5iB+3YB6HuGPemY+/mUKN34iP62S14R61bA==}
+  aws-sdk-client-mock-vitest@6.2.1:
+    resolution: {integrity: sha512-sFfMbrkkl01dkXkObWm8hfS6JSyKcDc7R+nKf3/cunfP+z4tpg1XQSegjlNk/cu1KeB2BqUFpZY3SnHmi7LWDA==}
     peerDependencies:
-      aws-sdk-client-mock: 4.1.0
-      vitest: '>1.6.0'
-    peerDependenciesMeta:
-      vitest:
-        optional: true
+      '@smithy/types': '>=3.5.0'
+      aws-sdk-client-mock: '>=2.2.0'
 
   aws-sdk-client-mock@4.1.0:
     resolution: {integrity: sha512-h/tOYTkXEsAcV3//6C1/7U4ifSpKyJvb6auveAepqqNJl6TdZaPFEtKjBQNf8UxQdDP850knB2i/whq4zlsxJw==}
@@ -8251,7 +8248,8 @@ snapshots:
       - ts-node
     optional: true
 
-  '@jest/diff-sequences@30.0.1': {}
+  '@jest/diff-sequences@30.0.1':
+    optional: true
 
   '@jest/environment@30.2.0':
     dependencies:
@@ -8264,6 +8262,7 @@ snapshots:
   '@jest/expect-utils@30.2.0':
     dependencies:
       '@jest/get-type': 30.1.0
+    optional: true
 
   '@jest/expect@30.2.0':
     dependencies:
@@ -8283,7 +8282,8 @@ snapshots:
       jest-util: 30.2.0
     optional: true
 
-  '@jest/get-type@30.1.0': {}
+  '@jest/get-type@30.1.0':
+    optional: true
 
   '@jest/globals@30.2.0':
     dependencies:
@@ -8299,6 +8299,7 @@ snapshots:
     dependencies:
       '@types/node': 22.18.10
       jest-regex-util: 30.0.1
+    optional: true
 
   '@jest/reporters@30.2.0':
     dependencies:
@@ -8332,6 +8333,7 @@ snapshots:
   '@jest/schemas@30.0.5':
     dependencies:
       '@sinclair/typebox': 0.34.41
+    optional: true
 
   '@jest/snapshot-utils@30.2.0':
     dependencies:
@@ -8394,6 +8396,7 @@ snapshots:
       '@types/node': 22.18.10
       '@types/yargs': 17.0.33
       chalk: 4.1.2
+    optional: true
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -9217,7 +9220,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sinclair/typebox@0.34.41': {}
+  '@sinclair/typebox@0.34.41':
+    optional: true
 
   '@sindresorhus/is@4.6.0': {}
 
@@ -9674,15 +9678,18 @@ snapshots:
 
   '@types/is-empty@1.2.3': {}
 
-  '@types/istanbul-lib-coverage@2.0.6': {}
+  '@types/istanbul-lib-coverage@2.0.6':
+    optional: true
 
   '@types/istanbul-lib-report@3.0.3':
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.6
+    optional: true
 
   '@types/istanbul-reports@3.0.4':
     dependencies:
       '@types/istanbul-lib-report': 3.0.3
+    optional: true
 
   '@types/json-schema@7.0.15': {}
 
@@ -9795,7 +9802,8 @@ snapshots:
     dependencies:
       '@types/node': 22.18.10
 
-  '@types/stack-utils@2.0.3': {}
+  '@types/stack-utils@2.0.3':
+    optional: true
 
   '@types/superagent@8.1.9':
     dependencies:
@@ -9817,11 +9825,13 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@types/yargs-parser@21.0.3': {}
+  '@types/yargs-parser@21.0.3':
+    optional: true
 
   '@types/yargs@17.0.33':
     dependencies:
       '@types/yargs-parser': 21.0.3
+    optional: true
 
   '@typescript-eslint/eslint-plugin@8.46.1(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
@@ -10157,7 +10167,8 @@ snapshots:
     dependencies:
       color-convert: 2.0.1
 
-  ansi-styles@5.2.0: {}
+  ansi-styles@5.2.0:
+    optional: true
 
   ansi-styles@6.2.3: {}
 
@@ -10290,14 +10301,11 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.2
 
-  aws-sdk-client-mock-jest@4.1.0(aws-sdk-client-mock@4.1.0)(vitest@4.0.5):
+  aws-sdk-client-mock-vitest@6.2.1(@smithy/types@4.8.0)(aws-sdk-client-mock@4.1.0):
     dependencies:
+      '@smithy/types': 4.8.0
       '@vitest/expect': 3.2.4
       aws-sdk-client-mock: 4.1.0
-      expect: 30.2.0
-      tslib: 2.8.1
-    optionalDependencies:
-      vitest: 4.0.5(@types/debug@4.1.12)(@types/node@22.18.10)(@vitest/ui@4.0.5)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
 
   aws-sdk-client-mock@4.1.0:
     dependencies:
@@ -11109,7 +11117,8 @@ snapshots:
 
   escape-string-regexp@1.0.5: {}
 
-  escape-string-regexp@2.0.0: {}
+  escape-string-regexp@2.0.0:
+    optional: true
 
   escape-string-regexp@4.0.0: {}
 
@@ -11367,6 +11376,7 @@ snapshots:
       jest-message-util: 30.2.0
       jest-mock: 30.2.0
       jest-util: 30.2.0
+    optional: true
 
   express@5.1.0:
     dependencies:
@@ -12298,6 +12308,7 @@ snapshots:
       '@jest/get-type': 30.1.0
       chalk: 4.1.2
       pretty-format: 30.2.0
+    optional: true
 
   jest-docblock@29.7.0:
     dependencies:
@@ -12356,6 +12367,7 @@ snapshots:
       chalk: 4.1.2
       jest-diff: 30.2.0
       pretty-format: 30.2.0
+    optional: true
 
   jest-message-util@30.2.0:
     dependencies:
@@ -12368,19 +12380,22 @@ snapshots:
       pretty-format: 30.2.0
       slash: 3.0.0
       stack-utils: 2.0.6
+    optional: true
 
   jest-mock@30.2.0:
     dependencies:
       '@jest/types': 30.2.0
       '@types/node': 22.18.10
       jest-util: 30.2.0
+    optional: true
 
   jest-pnp-resolver@1.2.3(jest-resolve@30.2.0):
     optionalDependencies:
       jest-resolve: 30.2.0
     optional: true
 
-  jest-regex-util@30.0.1: {}
+  jest-regex-util@30.0.1:
+    optional: true
 
   jest-resolve-dependencies@30.2.0:
     dependencies:
@@ -12493,6 +12508,7 @@ snapshots:
       ci-info: 4.3.1
       graceful-fs: 4.2.11
       picomatch: 4.0.3
+    optional: true
 
   jest-validate@30.2.0:
     dependencies:
@@ -13542,6 +13558,7 @@ snapshots:
       '@jest/schemas': 30.0.5
       ansi-styles: 5.2.0
       react-is: 18.3.1
+    optional: true
 
   pretty-ms@9.3.0:
     dependencies:
@@ -13639,7 +13656,8 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-is@18.3.1: {}
+  react-is@18.3.1:
+    optional: true
 
   read-package-json-fast@3.0.2:
     dependencies:
@@ -14360,6 +14378,7 @@ snapshots:
   stack-utils@2.0.6:
     dependencies:
       escape-string-regexp: 2.0.0
+    optional: true
 
   stackback@0.0.2: {}
 

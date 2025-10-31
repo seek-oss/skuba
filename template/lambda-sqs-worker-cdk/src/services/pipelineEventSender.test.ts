@@ -35,7 +35,7 @@ describe('sendPipelineEvent', () => {
     return expect(
       sendPipelineEvent({}),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"SNS did not return a message ID"`,
+      `[Error: SNS did not return a message ID]`,
     );
   });
 });

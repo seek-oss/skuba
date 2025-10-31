@@ -32,17 +32,17 @@ describe('validateJson', () => {
 
     expect(() => validateJson(input, IdDescriptionSchema))
       .toThrowErrorMatchingInlineSnapshot(`
-      "[
-        {
-          "expected": "string",
-          "code": "invalid_type",
-          "path": [
-            "id"
-          ],
-          "message": "Invalid input: expected string, received null"
-        }
-      ]"
-    `);
+        [ZodError: [
+          {
+            "expected": "string",
+            "code": "invalid_type",
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input: expected string, received null"
+          }
+        ]]
+      `);
   });
 
   it('blocks missing prop', () => {
@@ -50,25 +50,25 @@ describe('validateJson', () => {
 
     expect(() => validateJson(input, IdDescriptionSchema))
       .toThrowErrorMatchingInlineSnapshot(`
-      "[
-        {
-          "expected": "string",
-          "code": "invalid_type",
-          "path": [
-            "id"
-          ],
-          "message": "Invalid input: expected string, received undefined"
-        },
-        {
-          "expected": "string",
-          "code": "invalid_type",
-          "path": [
-            "description"
-          ],
-          "message": "Invalid input: expected string, received undefined"
-        }
-      ]"
-    `);
+        [ZodError: [
+          {
+            "expected": "string",
+            "code": "invalid_type",
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input: expected string, received undefined"
+          },
+          {
+            "expected": "string",
+            "code": "invalid_type",
+            "path": [
+              "description"
+            ],
+            "message": "Invalid input: expected string, received undefined"
+          }
+        ]]
+      `);
   });
 
   it('blocks invalid JSON', () => {
@@ -77,7 +77,7 @@ describe('validateJson', () => {
     expect(() =>
       validateJson(input, IdDescriptionSchema),
     ).toThrowErrorMatchingInlineSnapshot(
-      `"Unexpected token '}', "}" is not valid JSON"`,
+      `[SyntaxError: Unexpected token '}', "}" is not valid JSON]`,
     );
   });
 });

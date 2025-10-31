@@ -6,9 +6,13 @@ import { scoringService } from '#src/testing/services.js';
 import { chance, mockJobPublishedEvent } from '#src/testing/types.js';
 
 describe('scoreJobPublishedEvent', () => {
-  beforeAll(scoringService.spy);
+  beforeAll(() => {
+    scoringService.spy();
+  });
 
-  afterEach(scoringService.clear);
+  afterEach(() => {
+    scoringService.clear();
+  });
 
   it('scores an event', async () => {
     const score = chance.floating({ max: 1, min: 0 });
