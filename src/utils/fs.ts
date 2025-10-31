@@ -4,7 +4,7 @@ import { isErrorWithCode } from './error.js';
 
 export const pathExists = async (filePath: string): Promise<boolean> => {
   try {
-    await fs.access(filePath);
+    await fs.promises.access(filePath);
 
     return true; // Path exists and is accessible
   } catch (error: unknown) {
