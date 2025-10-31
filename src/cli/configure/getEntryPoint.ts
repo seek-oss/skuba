@@ -1,7 +1,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import { Input } from 'enquirer';
+import enquirer from 'enquirer';
 
 import { log } from '../../utils/logging.js';
 import type { ProjectType } from '../../utils/manifest.js';
@@ -32,7 +32,7 @@ export const getEntryPoint = ({
   }
 
   log.newline();
-  const entryPointPrompt = new Input({
+  const entryPointPrompt = new enquirer.Input({
     initial: type === 'package' ? 'src/index.ts' : 'src/app.ts',
     message: 'Entry point:',
     name: 'entryPoint',

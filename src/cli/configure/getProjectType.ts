@@ -1,4 +1,4 @@
-import { Select } from 'enquirer';
+import enquirer from 'enquirer';
 
 import { log } from '../../utils/logging.js';
 import {
@@ -41,7 +41,7 @@ export const getProjectType = async ({
       : 'application';
 
   log.newline();
-  const projectTypePrompt = new Select({
+  const projectTypePrompt = new enquirer.Select({
     choices: PROJECT_TYPES,
     message: 'Project type:',
     name: 'projectType',
