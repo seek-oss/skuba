@@ -3,8 +3,8 @@ import path from 'path';
 
 import request from 'supertest';
 
-import * as serverModule from './server.js';
 import { main } from './main.js';
+import * as serverModule from './server.js';
 
 jest.mock('../utils/logging');
 
