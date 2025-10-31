@@ -116,8 +116,6 @@
     "read-package-up": "^11.0.0",
     "semantic-release": "^24.2.3",
     "simple-git": "^3.5.0",
-    "ts-dedent": "^2.2.0",
-    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "2.0.0",
     "tsx": "^4.16.2",
@@ -150,6 +148,7 @@
     "remark-preset-lint-recommended": "7.0.1",
     "semver": "7.7.3",
     "supertest": "7.1.4",
+    "ts-dedent": "^2.2.0",
     "type-fest": "2.19.0"
   },
   "peerDependencies": {
