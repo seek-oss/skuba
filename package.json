@@ -40,7 +40,7 @@
     "release": "pnpm --silent build && changeset publish",
     "skuba": "pnpm --silent build && pnpm --silent skuba:exec",
     "skuba:exec": "node lib/skuba",
-    "stage": "changeset version && node ./.changeset/inject.js && pnpm format",
+    "stage": "changeset version && node ./.changeset/inject.cjs && pnpm format",
     "test": "pnpm --silent skuba test run",
     "test:ci": "pnpm --silent skuba test run",
     "test:int": "pnpm --silent skuba test run",
