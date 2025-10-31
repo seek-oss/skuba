@@ -8,7 +8,6 @@ import { isErrorWithCode } from './error.js';
 import { pathExists } from './fs.js';
 
 import * as Git from '@skuba-lib/api/git';
-import { pathExists } from './fs.js';
 
 /**
  * Build a map that associates each glob pattern with its matching filepaths.
