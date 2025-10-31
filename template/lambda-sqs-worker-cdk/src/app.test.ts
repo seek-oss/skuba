@@ -1,3 +1,5 @@
+import { PublishCommand } from '@aws-sdk/client-sns';
+import type { SQSBatchResponse } from 'aws-lambda';
 import {
   afterEach,
   beforeAll,
@@ -7,8 +9,6 @@ import {
   it,
   vi,
 } from 'vitest';
-import { PublishCommand } from '@aws-sdk/client-sns';
-import type { SQSBatchResponse } from 'aws-lambda';
 
 import * as app from './app.js';
 import { stdoutMock } from './framework/logging.js';

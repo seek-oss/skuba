@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PublishCommand } from '@aws-sdk/client-sns';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { sendPipelineEvent } from './pipelineEventSender.js';
 

@@ -12,11 +12,12 @@ minimumReleaseAgeExclude:
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@types*'
+  - '@vitest/*'
   - eslint
   - eslint-config-skuba
   - prettier
   - esbuild
-  - jest
   - tsconfig-seek
   - typescript
+  - vitest
   # end managed by skuba

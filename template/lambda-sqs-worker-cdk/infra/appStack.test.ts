@@ -1,6 +1,6 @@
-import { afterAll, afterEach, expect, it, vi } from 'vitest';
 import { App, aws_secretsmanager, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
+import { afterAll, afterEach, expect, it, vi } from 'vitest';
 
 const originalDeployment = process.env.DEPLOYMENT;
 const originalVersion = process.env.VERSION;
