@@ -17,8 +17,6 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
 
-Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated? upgrade-skuba
-
 Patch skipped: Remove version field from docker-compose files - no docker-compose files found upgrade-skuba
 
 Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found upgrade-skuba
@@ -128,8 +126,6 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
 
-Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated? upgrade-skuba
-
 Patch skipped: Remove version field from docker-compose files - no docker-compose files found upgrade-skuba
 
 Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found upgrade-skuba
@@ -235,8 +231,6 @@ Patch skipped: Ensure the pnpm package manager version specified in package.json
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
 
-Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated? upgrade-skuba
-
 Patch skipped: Remove version field from docker-compose files - no docker-compose files found upgrade-skuba
 
 Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found upgrade-skuba
@@ -311,8 +305,6 @@ Patch skipped: Add keepAliveTimeout to server listener - no listener file found 
 Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
 
 Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
-
-Patch skipped: Upgrade to ESLint flat config - no .eslintrc.js - have you already migrated? upgrade-skuba
 
 Patch skipped: Remove version field from docker-compose files - no docker-compose files found upgrade-skuba
 

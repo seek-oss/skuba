@@ -3,8 +3,8 @@ import path from 'path';
 
 import request from 'supertest';
 
-import * as http from './http.js';
 import { main } from './main.js';
+import * as serverModule from './server.js';
 
 jest.mock('../utils/logging');
 
@@ -14,7 +14,7 @@ const initWrapper = (entryPoint: string) =>
 let agent: ReturnType<(typeof request)['agent']>;
 
 const startServer = jest
-  .spyOn(http, 'startServer')
+  .spyOn(serverModule, 'startServer')
   .mockImplementation((server) => {
     agent = request.agent(server);
     return Promise.resolve();
