@@ -24,7 +24,7 @@ import { handleCliError } from './utils/error.js';
 import { showHelp } from './utils/help.js';
 import { log } from './utils/logging.js';
 import { showLogoAndVersionInfo } from './utils/logo.js';
-import { hasProp } from './utils/validation.js';
+import { isObject } from './utils/validation.js';
 
 const THIRTY_MINUTES = 30 * 60 * 1000;
 
@@ -34,12 +34,11 @@ const skuba = async () => {
   if (COMMAND_SET.has(commandName)) {
     const moduleName = commandToModule(commandName as Command);
 
-    /* eslint-disable @typescript-eslint/no-require-imports */
-    const commandModule = require(
-      path.join(COMMAND_DIR, moduleName, 'index.js'),
-    ) as unknown;
+    const commandModule = (await import(
+      path.join(COMMAND_DIR, moduleName, 'index.js')
+    )) as unknown;
 
-    if (!hasProp(commandModule, moduleName)) {
+    if (!isObject(commandModule) || !(moduleName in commandModule)) {
       log.err(log.bold(commandName), "couldn't run! Please submit an issue.");
       process.exitCode = 1;
       return;

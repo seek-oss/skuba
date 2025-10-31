@@ -1,72 +1,68 @@
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryPatchJestSnapshots } from './patchJestSnapshots.js';
 
-jest.mock('fast-glob');
-jest.mock('fs-extra');
+vi.mock('fast-glob');
+vi.mock('fs-extra');
 
 describe('patchJestSnapshots', () => {
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => vi.resetAllMocks());
 
   it('should skip if no test files found', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([]);
+    vi.mocked(fg).mockResolvedValueOnce([]);
     await expect(
       tryPatchJestSnapshots({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no test files found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if test files do not contain the old URL', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
-    jest
-      .mocked(fs.readFile)
-      .mockResolvedValueOnce('No snapshot URL here' as never);
+    vi.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'No snapshot URL here' as never,
+    );
     await expect(
       tryPatchJestSnapshots({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no test files to patch',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
-    jest
-      .mocked(fs.readFile)
-      .mockResolvedValueOnce(
-        'Some content with https://goo.gl/fbAQLP' as never,
-      );
+    vi.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      'Some content with https://goo.gl/fbAQLP' as never,
+    );
 
     await expect(
       tryPatchJestSnapshots({
         mode: 'lint',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch test files', async () => {
-    jest
-      .mocked(fg)
-      .mockResolvedValueOnce([
-        'test1.test.ts',
-        'test2.test.ts',
-        'test3.test.ts.snap',
-      ]);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fg).mockResolvedValueOnce([
+      'test1.test.ts',
+      'test2.test.ts',
+      'test3.test.ts.snap',
+    ]);
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce('Some content with https://goo.gl/fbAQLP' as never)
       .mockResolvedValueOnce('No snapshot URL here' as never)
       .mockResolvedValueOnce(
@@ -77,9 +73,9 @@ describe('patchJestSnapshots', () => {
       tryPatchJestSnapshots({
         mode: 'format',
       } as PatchConfig),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(fs.writeFile).toHaveBeenCalledWith(
       'test1.test.ts',

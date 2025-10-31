@@ -1,8 +1,7 @@
 import path from 'path';
 
 import chalk from 'chalk';
-import { Input } from 'enquirer';
-import type { ReadResult } from 'read-pkg-up';
+import enquirer from 'enquirer';
 
 import { log } from '../../utils/logging.js';
 import type { ProjectType } from '../../utils/manifest.js';
@@ -10,6 +9,7 @@ import type { TemplateConfig } from '../../utils/template.js';
 import { hasStringProp } from '../../utils/validation.js';
 
 import { tsFileExists } from './analysis/files.js';
+import type { ReadResult } from './types.js';
 
 interface Props {
   destinationRoot: string;
@@ -32,7 +32,7 @@ export const getEntryPoint = ({
   }
 
   log.newline();
-  const entryPointPrompt = new Input({
+  const entryPointPrompt = new enquirer.Input({
     initial: type === 'package' ? 'src/index.ts' : 'src/app.ts',
     message: 'Entry point:',
     name: 'entryPoint',

@@ -41,7 +41,7 @@ export const formatPackage = async (rawData: PackageJson) => {
 export const parsePackage = (
   input: string | undefined,
 ): PackageJson | undefined => {
-  const data = parseObject(input);
+  const data = parseObject(input) as PackageJson | undefined;
 
   if (data === undefined) {
     return;
@@ -58,12 +58,13 @@ export const createDependencyFilter = (
 ) => {
   const set = new Set(names);
 
-  return (data: PackageJson) => ({
-    ...data,
-    [type]: Object.fromEntries(
-      Object.entries(data[type] ?? {}).filter(([name]) => !set.has(name)),
-    ),
-  });
+  return (data: PackageJson) =>
+    ({
+      ...data,
+      [type]: Object.fromEntries(
+        Object.entries(data[type] ?? {}).filter(([name]) => !set.has(name)),
+      ),
+    }) as PackageJson;
 };
 
 export const withPackage =

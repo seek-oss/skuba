@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { Select } from 'enquirer';
+import enquirer from 'enquirer';
 
 import { createInclusionFilter } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
@@ -22,7 +22,7 @@ const shouldApply = async (name: string) => {
   if (!process.stdin.isTTY) {
     return 'yes';
   }
-  const prompt = new Select({
+  const prompt = new enquirer.Select({
     choices: ['yes', 'no'] as const,
     message: 'Apply changes?',
     name,

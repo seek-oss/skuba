@@ -1,14 +1,17 @@
 // eslint-disable-next-line no-restricted-imports -- fs-extra is mocked
 import fs from 'fs';
-import { inspect } from 'util';
 
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig } from '../../index.js';
 
 import { tryPatchServerListener } from './patchServerListener.js';
 
-jest.mock('fs-extra', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 const LISTENER_WITH_CALLBACK = `
 app.listen(config.port, () => {
@@ -24,13 +27,14 @@ const LISTENER_WITHOUT_CALLBACK = `
 app.listen(config.port);
 `;
 
-const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-const writeFile = jest.spyOn(memfs.fs.promises, 'writeFile');
+const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-beforeEach(jest.clearAllMocks);
+beforeEach(vi.clearAllMocks);
 beforeEach(() => vol.reset());
 
 describe('patchServerListener', () => {
@@ -119,9 +123,11 @@ describe('patchServerListener', () => {
       expect(volToJson()).toStrictEqual(files);
 
       expect(consoleLog).toHaveBeenCalledWith(
-        'Failed to patch server listener.',
+        expect.stringContaining('Failed to patch server listener.'),
       );
-      expect(consoleLog).toHaveBeenCalledWith(inspect(err));
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(err.toString()),
+      );
     });
 
     it('skips the templated Koa listener', async () => {

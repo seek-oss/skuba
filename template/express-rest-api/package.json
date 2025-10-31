@@ -2,6 +2,7 @@
   "name": "@seek/<%- serviceName %>",
   "private": true,
   "license": "UNLICENSED",
+  "type": "module",
   "imports": {
     "#src/*": {
       "@seek/<%- serviceName %>/source": "./src/*",

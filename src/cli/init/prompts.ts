@@ -1,4 +1,4 @@
-import { type FormChoice, Input, Select } from 'enquirer';
+import enquirer, { type FormChoice } from 'enquirer';
 
 import { pathExists } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
@@ -91,20 +91,20 @@ export const BASE_PROMPT_PROPS = {
   name: 'baseAnswers',
 };
 
-export const SHOULD_CONTINUE_PROMPT = new Select({
+export const SHOULD_CONTINUE_PROMPT = new enquirer.Select({
   choices: ['yes', 'no'] as const,
   message: 'Fill this in now?',
   name: 'shouldContinue',
 });
 
-export const GIT_PATH_PROMPT = new Input({
+export const GIT_PATH_PROMPT = new enquirer.Input({
   message: 'Git path',
   name: 'gitPath',
   initial: 'seek-oss/skuba',
   validate: (value) => /[^/]+\/[^/]+/.test(value) || 'Path is not valid',
 });
 
-export const TEMPLATE_PROMPT = new Select({
+export const TEMPLATE_PROMPT = new enquirer.Select({
   choices: TEMPLATE_NAMES_WITH_BYO,
   message: 'Select a template:',
   name: 'templateName',

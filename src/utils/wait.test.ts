@@ -1,3 +1,5 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import * as sleepModule from './sleep.js';
 import * as wait from './wait.js';
 
@@ -7,16 +9,16 @@ const delayMicrotask = () =>
     .then(() => undefined)
     .then(() => undefined);
 
-const sleep = jest.spyOn(sleepModule, 'sleep');
+const sleep = vi.spyOn(sleepModule, 'sleep');
 
-beforeEach(jest.clearAllMocks);
+beforeEach(vi.clearAllMocks);
 
 describe('throwOnTimeout', () => {
   it('propagates a fulfilled promise within the timeout', async () => {
     sleep.mockImplementation(delayMicrotask);
 
     const value = 123;
-    const promise = jest.fn().mockResolvedValue(value);
+    const promise = vi.fn().mockResolvedValue(value);
 
     await expect(wait.throwOnTimeout(promise(), { s: 3 })).resolves.toBe(value);
 
@@ -29,7 +31,7 @@ describe('throwOnTimeout', () => {
 
     const err = new Error('Badness!');
 
-    const promise = jest.fn().mockRejectedValue(err);
+    const promise = vi.fn().mockRejectedValue(err);
 
     await expect(wait.throwOnTimeout(promise(), { s: 2 })).rejects.toThrow(err);
 
@@ -40,11 +42,13 @@ describe('throwOnTimeout', () => {
   it('enforces the timeout', async () => {
     sleep.mockResolvedValue();
 
-    const promise = jest.fn().mockImplementation(delayMicrotask);
+    const promise = vi.fn().mockImplementation(delayMicrotask);
 
     await expect(
       wait.throwOnTimeout(promise(), { s: 1 }),
-    ).rejects.toThrowErrorMatchingInlineSnapshot(`"Timed out after 1 second"`);
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
+      `[Error: Timed out after 1 second]`,
+    );
 
     expect(sleep).toHaveBeenCalledTimes(1);
     expect(sleep).toHaveBeenNthCalledWith(1, 1_000);
@@ -70,7 +74,7 @@ describe('withTimeout', () => {
     sleep.mockImplementation(delayMicrotask);
 
     const value = 123;
-    const promise = jest.fn().mockResolvedValue(value);
+    const promise = vi.fn().mockResolvedValue(value);
 
     await expect(wait.withTimeout(promise(), { s: 1 })).resolves.toStrictEqual({
       ok: true,
@@ -86,7 +90,7 @@ describe('withTimeout', () => {
 
     const err = new Error('Badness!');
 
-    const promise = jest.fn().mockRejectedValue(err);
+    const promise = vi.fn().mockRejectedValue(err);
 
     await expect(wait.withTimeout(promise(), { s: 2 })).rejects.toThrow(err);
 
@@ -97,7 +101,7 @@ describe('withTimeout', () => {
   it('enforces the timeout', async () => {
     sleep.mockResolvedValue();
 
-    const promise = jest.fn().mockImplementation(delayMicrotask);
+    const promise = vi.fn().mockImplementation(delayMicrotask);
 
     await expect(wait.withTimeout(promise(), { s: 3 })).resolves.toStrictEqual({
       ok: false,

@@ -2,19 +2,20 @@ import nodeHttp from 'http';
 import path from 'path';
 
 import request from 'supertest';
+import { afterEach, expect, test, vi } from 'vitest';
 
-import * as http from './http.js';
 import { main } from './main.js';
+import * as httpServer from './server.js';
 
-jest.mock('../utils/logging');
+vi.mock('../utils/logging');
 
 const initWrapper = (entryPoint: string) =>
   main(path.join('src', 'wrapper', 'testing', entryPoint), '8080');
 
 let agent: ReturnType<(typeof request)['agent']>;
 
-const startServer = jest
-  .spyOn(http, 'startServer')
+const startServer = vi
+  .spyOn(httpServer, 'startServer')
   .mockImplementation((server) => {
     agent = request.agent(server);
     return Promise.resolve();

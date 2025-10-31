@@ -1,4 +1,5 @@
 import { PublishCommand } from '@aws-sdk/client-sns';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { sendPipelineEvent } from './pipelineEventSender.js';
 
@@ -7,7 +8,7 @@ import { chance } from '#src/testing/types.js';
 
 describe('sendPipelineEvent', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('handles happy path', async () => {
@@ -34,7 +35,7 @@ describe('sendPipelineEvent', () => {
     return expect(
       sendPipelineEvent({}),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"SNS did not return a message ID"`,
+      `[Error: SNS did not return a message ID]`,
     );
   });
 });

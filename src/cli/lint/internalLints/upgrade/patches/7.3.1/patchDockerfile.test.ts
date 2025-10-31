@@ -1,14 +1,18 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig } from '../../index.js';
 
 import { tryPatchDockerfile } from './patchDockerfile.js';
 
-jest.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-beforeEach(jest.clearAllMocks);
+beforeEach(vi.clearAllMocks);
 beforeEach(() => vol.reset());
 
 const dockerfile = `

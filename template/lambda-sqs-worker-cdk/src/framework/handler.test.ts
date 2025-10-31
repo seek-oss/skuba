@@ -1,4 +1,5 @@
 import type { SQSEvent } from 'aws-lambda';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { createHandler } from './handler.js';
 import { logger, stdoutMock } from './logging.js';

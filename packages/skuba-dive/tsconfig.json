@@ -2,8 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     "lib": ["ES2020"],
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "outDir": "lib",
     "removeComments": false,
     "target": "ES2020"

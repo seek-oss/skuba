@@ -1,6 +1,7 @@
 import path from 'path';
 
 import fs from 'fs-extra';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../index.js';
 import { log } from '../../../utils/logging.js';
@@ -12,60 +13,60 @@ import {
   refreshConfigFiles,
 } from './refreshConfigFiles.js';
 
-const stdoutMock = jest.fn();
+const stdoutMock = vi.fn();
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('');
 
-jest.mock('fs-extra', () => ({
-  writeFile: jest.fn(),
+vi.mock('fs-extra', () => ({
+  default: { writeFile: vi.fn() },
 }));
 
-jest.mock('../../../utils/dir', () => ({
+vi.mock('../../../utils/dir', () => ({
   findCurrentWorkspaceProjectRoot: () => '/some/workdir',
   findWorkspaceRoot: () => '/some/workdir',
 }));
 
-jest.mock('../../../utils/template', () => ({
+vi.mock('../../../utils/template', () => ({
   readBaseTemplateFile: (name: string) =>
     Promise.resolve(
       `# managed by skuba\nfake content for ${name}\n# end managed by skuba`,
     ),
 }));
 
-jest.mock('../../configure/analysis/project');
+vi.mock('../../configure/analysis/project');
 
-jest.mock('../../..', () => ({
+vi.mock('../../..', () => ({
   Git: {
-    isFileGitIgnored: jest.fn(),
+    isFileGitIgnored: vi.fn(),
     findRoot: () => Promise.resolve('/path/to/git/root'),
   },
 }));
 
-const givenMockPackageManager = (command: 'pnpm' | 'yarn') => {
-  jest
-    .mocked(detectPackageManager)
-    .mockResolvedValue(
-      jest
-        .requireActual('../../../utils/packageManager')
-        .configForPackageManager(command),
-    );
+const givenMockPackageManager = async (command: 'pnpm' | 'yarn') => {
+  const actualPackageManager = await vi.importActual<
+    typeof import('../../../utils/packageManager.js')
+  >('../../../utils/packageManager.js');
+
+  vi.mocked(detectPackageManager).mockResolvedValue(
+    actualPackageManager.configForPackageManager(command),
+  );
 };
 
-jest.mock('../../../utils/packageManager');
+vi.mock('../../../utils/packageManager');
 
-beforeEach(() => {
-  jest
-    .spyOn(console, 'log')
-    .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+beforeEach(async () => {
+  vi.spyOn(console, 'log').mockImplementation((...args) =>
+    stdoutMock(`${args.join(' ')}\n`),
+  );
 
-  givenMockPackageManager('pnpm');
+  await givenMockPackageManager('pnpm');
 });
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('refreshConfigFiles', () => {
-  const writeFile = jest.mocked(fs.writeFile);
-  const createDestinationFileReader = jest.mocked(
+  const writeFile = vi.mocked(fs.writeFile);
+  const createDestinationFileReader = vi.mocked(
     project.createDestinationFileReader,
   );
 
@@ -155,7 +156,7 @@ The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to u
     });
 
     it('should not flag creation of a pnpm-workspace.yaml for yarn projects', async () => {
-      givenMockPackageManager('yarn');
+      await givenMockPackageManager('yarn');
 
       setupDestinationFiles({
         'pnpm-workspace.yaml': undefined,
@@ -173,11 +174,9 @@ The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to u
     });
 
     it('should not flag creation of files that are `.gitignore`d', async () => {
-      jest
-        .mocked(Git.isFileGitIgnored)
-        .mockImplementation(({ absolutePath }) =>
-          Promise.resolve(absolutePath.endsWith('.dockerignore')),
-        );
+      vi.mocked(Git.isFileGitIgnored).mockImplementation(({ absolutePath }) =>
+        Promise.resolve(absolutePath.endsWith('.dockerignore')),
+      );
 
       setupDestinationFiles({
         '.dockerignore': undefined,
@@ -259,7 +258,7 @@ Refreshed pnpm-workspace.yaml.
     });
 
     it('should not create a pnpm-workspace.yaml for yarn projects if missing', async () => {
-      givenMockPackageManager('yarn');
+      await givenMockPackageManager('yarn');
 
       setupDestinationFiles({
         'pnpm-workspace.yaml': undefined,
@@ -277,11 +276,9 @@ Refreshed pnpm-workspace.yaml.
     });
 
     it('should not create files that are `.gitignore`d', async () => {
-      jest
-        .mocked(Git.isFileGitIgnored)
-        .mockImplementation(({ absolutePath }) =>
-          Promise.resolve(absolutePath.endsWith('.dockerignore')),
-        );
+      vi.mocked(Git.isFileGitIgnored).mockImplementation(({ absolutePath }) =>
+        Promise.resolve(absolutePath.endsWith('.dockerignore')),
+      );
 
       setupDestinationFiles({
         '.dockerignore': undefined,

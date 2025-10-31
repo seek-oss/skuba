@@ -1,12 +1,13 @@
 import git from 'isomorphic-git';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getOwnerAndRepo } from './remote.js';
 
-jest.mock('isomorphic-git');
+vi.mock('isomorphic-git');
 
 const dir = process.cwd();
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('getOwnerAndRepo', () => {
   it('short circuits on BUILDKITE_REPO', async () => {
@@ -35,11 +36,9 @@ describe('getOwnerAndRepo', () => {
   });
 
   it('extracts an owner and repo from an HTTP GitHub remote', async () => {
-    jest
-      .mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+    vi.mocked(git.listRemotes).mockResolvedValue([
+      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+    ]);
 
     await expect(
       getOwnerAndRepo({
@@ -59,7 +58,7 @@ describe('getOwnerAndRepo', () => {
   });
 
   it('extracts an owner and repo from an SSH GitHub remote', async () => {
-    jest.mocked(git.listRemotes).mockResolvedValue([
+    vi.mocked(git.listRemotes).mockResolvedValue([
       {
         remote: 'origin',
         url: 'git@github.com:SEEK-Jobs/secret-codebase.git',
@@ -75,19 +74,19 @@ describe('getOwnerAndRepo', () => {
   });
 
   it('throws on zero remotes', async () => {
-    jest.mocked(git.listRemotes).mockResolvedValue([]);
+    vi.mocked(git.listRemotes).mockResolvedValue([]);
 
     await expect(
       getOwnerAndRepo({ dir, env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Could not find a GitHub remote"`,
+      `[Error: Could not find a GitHub remote]`,
     );
 
     expect(git.listRemotes).toHaveBeenCalledTimes(1);
   });
 
   it('throws on unrecognised remotes', async () => {
-    jest.mocked(git.listRemotes).mockResolvedValue([
+    vi.mocked(git.listRemotes).mockResolvedValue([
       { remote: 'public', url: 'git@gitlab.com:seek-oss/skuba.git' },
       {
         remote: 'private',
@@ -98,7 +97,7 @@ describe('getOwnerAndRepo', () => {
     await expect(
       getOwnerAndRepo({ dir, env: {} }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Could not find a GitHub remote"`,
+      `[Error: Could not find a GitHub remote]`,
     );
 
     expect(git.listRemotes).toHaveBeenCalledTimes(1);

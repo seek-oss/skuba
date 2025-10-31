@@ -1,7 +1,6 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import type { ReadResult } from 'read-pkg-up';
 
 import { type TextProcessor, copyFiles } from '../../utils/copy.js';
 import { log } from '../../utils/logging.js';
@@ -11,7 +10,7 @@ import { getLatestNpmVersion, getSkubaVersion } from '../../utils/version.js';
 import { diffDependencies } from './analysis/package.js';
 import * as dependencyMutators from './dependencies/index.js';
 import { formatPackage } from './processing/package.js';
-import type { DependencyDiff } from './types.js';
+import type { DependencyDiff, PackageJson, ReadResult } from './types.js';
 
 const logDiff = (diff: DependencyDiff): boolean => {
   const entries = Object.entries(diff);
@@ -32,7 +31,7 @@ const logDiff = (diff: DependencyDiff): boolean => {
 };
 
 const pinUnspecifiedVersions = async (
-  dependencies: Record<string, string>,
+  dependencies: Record<string, string | undefined>,
 ): Promise<void> => {
   const updates = await Promise.all(
     Object.entries(dependencies)
@@ -127,7 +126,7 @@ export const analyseDependencies = async ({
       ...packageJson,
       dependencies: output.dependencies,
       devDependencies: output.devDependencies,
-    });
+    } as PackageJson);
 
     await fs.promises.writeFile(packageJsonFilepath, updatedPackageJson);
 
