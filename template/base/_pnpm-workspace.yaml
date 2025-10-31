@@ -4,11 +4,13 @@ minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - '@seek/*'
   - '@skuba-lib/*'
+  - '@vitest/*'
   - eslint-config-seek
   - eslint-config-skuba
   - eslint-plugin-skuba
   - skuba
   - tsconfig-seek
+  - vitest
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@types*'
