@@ -1,4 +1,4 @@
-import { type FormChoice, Input, Select } from 'enquirer';
+import { input, select } from '@inquirer/prompts';
 
 import { pathExists } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
@@ -12,14 +12,18 @@ import {
   isPlatform,
 } from './validation.js';
 
-export type Choice = FormChoice & {
+export interface Choice {
+  name: string;
+  message: string;
+  initial?: string;
+  validate?: (value: string) => boolean | string | Promise<boolean | string>;
   /**
    * Whether the user is allowed to skip field entry and use the initial value.
    *
    * Defaults to `false`.
    */
   allowInitial?: boolean;
-};
+}
 
 export type BaseFields = Record<
   (typeof BASE_CHOICES)[number]['name'],
@@ -91,21 +95,25 @@ export const BASE_PROMPT_PROPS = {
   name: 'baseAnswers',
 };
 
-export const SHOULD_CONTINUE_PROMPT = new Select({
-  choices: ['yes', 'no'] as const,
-  message: 'Fill this in now?',
-  name: 'shouldContinue',
-});
+export const shouldContinue = async () =>
+  select({
+    message: 'Fill this in now?',
+    choices: [
+      { name: 'Yes', value: 'yes' },
+      { name: 'No', value: 'no' },
+    ],
+  });
 
-export const GIT_PATH_PROMPT = new Input({
-  message: 'Git path',
-  name: 'gitPath',
-  initial: 'seek-oss/skuba',
-  validate: (value) => /[^/]+\/[^/]+/.test(value) || 'Path is not valid',
-});
+export const getGitPath = async () =>
+  input({
+    message: 'Git path',
+    default: 'seek-oss/skuba',
+    validate: (value: string) =>
+      /[^/]+\/[^/]+/.test(value) || 'Path is not valid',
+  });
 
-export const TEMPLATE_PROMPT = new Select({
-  choices: TEMPLATE_NAMES_WITH_BYO,
-  message: 'Select a template:',
-  name: 'templateName',
-});
+export const getTemplateName = async () =>
+  select({
+    message: 'Select a template:',
+    choices: TEMPLATE_NAMES_WITH_BYO.map((name) => ({ name, value: name })),
+  });
