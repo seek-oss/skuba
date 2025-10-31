@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import app from './app.js';
 
 import { agentFromApp } from '#src/testing/server.js';
