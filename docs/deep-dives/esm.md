@@ -269,7 +269,7 @@ Set the `type` field to `module` to enable native ESM support:
 
 ```diff
  {
-   "name": "skuba",
+   "name": "@seek/my-repo",
    "version": "13.0.2",
    "private": false,
 +  "type": "module",
@@ -353,16 +353,21 @@ vitest.config.ts:
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  ssr: {
+    resolve: {
+      conditions: ['@seek/my-repo/source'],
+    },
+  },
   test: {
     env: {
       ENVIRONMENT: 'test',
     },
     coverage: {
       thresholds: {
-        branches: 0,
-        functions: 0,
-        lines: 0,
-        statements: 0,
+        branches: 100,
+        functions: 100,
+        lines: 100,
+        statements: 100,
       },
       include: ['src'],
       exclude: ['src/testing'],
