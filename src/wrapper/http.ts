@@ -1,8 +1,7 @@
 import http from 'http';
-import type { AddressInfo } from 'net';
 import util from 'util';
 
-import { log } from '../utils/logging.js';
+import { startServer } from './server.js';
 
 /**
  * Create an HTTP request listener based on the supplied function.
@@ -64,21 +63,3 @@ export const serveRequestListener = (
   const server = http.createServer(requestListener);
   return startServer(server, port);
 };
-
-/**
- * Returns a HTTP server wrapped in a promise
- *
- * This function resolves when the server is closed.
- */
-export const startServer = (server: http.Server, port?: number) =>
-  new Promise<void>((resolve, reject) =>
-    server
-      .listen(port)
-      .on('close', resolve)
-      .on('error', reject)
-      .on('listening', () => {
-        const address = server.address() as AddressInfo;
-
-        log.ok('listening on port', log.bold(address.port));
-      }),
-  );

@@ -4,16 +4,11 @@ import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys.js';
 import { tryMoveNpmrcMounts } from './moveNpmrcMounts.js';
 import { tryPatchDockerComposeFiles } from './patchDockerCompose.js';
 import { tryPatchDockerImages } from './patchDockerImages.js';
-import { tryUpgradeESLint } from './upgradeESLint.js';
 
 export const patches: Patches = [
   {
     apply: tryCollapseDuplicateMergeKeys,
     description: 'Collapse duplicate merge keys in .buildkite files',
-  },
-  {
-    apply: tryUpgradeESLint,
-    description: 'Upgrade to ESLint flat config',
   },
   {
     apply: tryPatchDockerComposeFiles,
