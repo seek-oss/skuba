@@ -58,7 +58,7 @@ export const esbuild = async (
   await build({
     bundle,
     entryPoints,
-    format: !isEsm ? 'cjs' : undefined,
+    format: isEsm ? 'esm' : 'cjs',
     outdir: compilerOptions.outDir,
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,
