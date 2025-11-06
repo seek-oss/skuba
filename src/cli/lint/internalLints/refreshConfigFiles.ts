@@ -146,9 +146,7 @@ export const refreshConfigFiles = async (
         msg: `The ${logger.bold(
           filename,
         )} file is out of date. Run \`${logger.bold(
-          packageManager.print.exec,
-          'skuba',
-          'format',
+          `${packageManager.print.exec} skuba format`,
         )}\` to update it.`,
         filename,
       };

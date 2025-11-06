@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 
 import { type Logger, childLogger, createLogger } from '../../utils/logging.js';
 
@@ -51,7 +51,7 @@ const lintSerially = async (
       results.push(
         await lint(
           mode,
-          childLogger(logger, { suffixes: [chalk.dim(name)] }),
+          childLogger(logger, { suffixes: [styleText('dim', name)] }),
           additionalFlags,
         ),
       );
@@ -73,7 +73,7 @@ const lintConcurrently = async (
         lintGroup.map(async ({ name, lint }) =>
           lint(
             mode,
-            childLogger(logger, { suffixes: [chalk.dim(name)] }),
+            childLogger(logger, { suffixes: [styleText('dim', name)] }),
             additionalFlags,
           ),
         ),
@@ -96,7 +96,7 @@ export const internalLint = async (
   const start = process.hrtime.bigint();
   const logger = createLogger({
     debug: input?.debug ?? false,
-    prefixes: [...(mode === 'lint' ? [chalk.blueBright('skuba    │')] : [])],
+    prefixes: [...(mode === 'lint' ? [styleText('blueBright', 'skuba    │')] : [])],
   });
 
   try {

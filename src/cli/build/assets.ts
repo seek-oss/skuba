@@ -1,6 +1,6 @@
 import path from 'path';
 
-import chalk, { type Color } from 'chalk';
+import { styleText } from 'node:util';
 import fs from 'fs-extra';
 
 import { copyFile } from '../../utils/copy.js';
@@ -10,6 +10,8 @@ import {
   getEntryPointFromManifest,
   getManifestProperties,
 } from '../../utils/manifest.js';
+
+type StyleColor = Parameters<typeof styleText>[0];
 
 export const copyAssets = async (
   destinationDir: string,
@@ -63,7 +65,7 @@ export const copyAssets = async (
 interface CopyAssetsConfig {
   outDir: string;
   name: string;
-  prefixColor: typeof Color;
+  prefixColor: StyleColor;
 }
 
 export const copyAssetsConcurrently = async (configs: CopyAssetsConfig[]) => {
@@ -78,7 +80,7 @@ export const copyAssetsConcurrently = async (configs: CopyAssetsConfig[]) => {
         outDir,
         createLogger({
           debug: false,
-          prefixes: [chalk[prefixColor](`${name.padEnd(maxNameLength)} │`)],
+          prefixes: [styleText(prefixColor, `${name.padEnd(maxNameLength)} │`)],
         }),
       ),
     ),

@@ -1,12 +1,12 @@
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 
 export const determineOperation = (
   oldData?: string,
   newData?: string,
 ): string => {
   if (oldData === undefined) {
-    return chalk.green('A');
+    return styleText('green', 'A');
   }
 
-  return newData === undefined ? chalk.red('D') : chalk.yellow('M');
+  return newData === undefined ? styleText('red', 'D') : styleText('yellow', 'M');
 };

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 
 export type Logger = typeof log;
 
@@ -22,21 +22,21 @@ export const createLogger = ({
   return {
     settings: { debug, prefixes, suffixes },
 
-    bold: chalk.bold,
-    dim: chalk.dim,
-    formatSubtle: chalk.grey,
+    bold: (text: string) => styleText('bold', text),
+    dim: (text: string) => styleText('dim', text),
+    formatSubtle: (text: string) => styleText('gray', text),
 
     timing: (start: bigint, end: bigint) =>
       `${Number((end - start) / BigInt(10_000_000)) / 100}s`,
 
     debug: (...message: unknown[]) =>
-      debug ? log(chalk.grey(...message)) : undefined,
-    subtle: (...message: unknown[]) => log(chalk.grey(...message)),
-    err: (...message: unknown[]) => log(chalk.red(...message)),
+      debug ? log(...message.map((m) => styleText('gray', String(m)))) : undefined,
+    subtle: (...message: unknown[]) => log(...message.map((m) => styleText('gray', String(m)))),
+    err: (...message: unknown[]) => log(...message.map((m) => styleText('red', String(m)))),
     newline: () => logWithoutSuffixes(),
-    ok: (...message: unknown[]) => log(chalk.green(...message)),
+    ok: (...message: unknown[]) => log(...message.map((m) => styleText('green', String(m)))),
     plain: (...message: unknown[]) => log(...message),
-    warn: (...message: unknown[]) => log(chalk.yellow(...message)),
+    warn: (...message: unknown[]) => log(...message.map((m) => styleText('yellow', String(m)))),
   };
 };
 
