@@ -2,6 +2,7 @@ import type http from 'http';
 import type { AddressInfo } from 'net';
 
 import { log } from '../utils/logging.js';
+
 /**
  * Returns a HTTP server wrapped in a promise
  *
