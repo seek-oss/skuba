@@ -1,7 +1,7 @@
 import path from 'path';
 
+import { input } from '@inquirer/prompts';
 import chalk from 'chalk';
-import { Form, type FormChoice } from 'enquirer';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy.js';
@@ -24,54 +24,46 @@ import {
   BASE_PROMPT_PROPS,
   type BaseFields,
   type Choice,
-  GIT_PATH_PROMPT,
-  SHOULD_CONTINUE_PROMPT,
-  TEMPLATE_PROMPT,
+  getGitPath,
+  getTemplateName,
+  shouldContinue,
 } from './prompts.js';
 import { type InitConfig, initConfigInputSchema } from './types.js';
 
-export const runForm = <T = Record<string, string>>(props: {
+export const runForm = async <T = Record<string, string>>(props: {
   choices: readonly Choice[];
   message: string;
   name: string;
-}) => {
-  const { message, name } = props;
+}): Promise<T> => {
+  const { message } = props;
+  log.plain(message);
 
-  const choices = props.choices.map((choice) => ({
-    ...choice,
-    validate: (value: string | undefined) => {
-      if (
-        !value ||
-        value === '' ||
-        (value === choice.initial && !choice.allowInitial)
-      ) {
-        return 'Form is not complete';
-      }
+  const result: Record<string, string> = {};
 
-      return choice.validate?.(value) ?? true;
-    },
-  }));
+  for (const choice of props.choices) {
+    const inputValue = await input({
+      message: choice.message,
+      default: choice.initial,
+      validate: async (inputText: string) => {
+        if (
+          !inputText ||
+          inputText === '' ||
+          (inputText === choice.initial && !choice.allowInitial)
+        ) {
+          return 'Form is not complete';
+        }
 
-  const form = new Form<T>({
-    choices,
-    message,
-    name,
-    validate: async (values) => {
-      const results = await Promise.all(
-        choices.map(async (choice) => choice.validate(values[choice.name])),
-      );
+        return choice.validate?.(inputText) ?? true;
+      },
+    });
 
-      return (
-        results.find((result) => typeof result === 'string') ??
-        results.every((result) => result === true)
-      );
-    },
-  });
+    result[choice.name] = inputValue;
+  }
 
-  return form.run();
+  return result as T;
 };
 
-const confirmShouldContinue = async (choices: readonly FormChoice[]) => {
+const confirmShouldContinue = async (choices: readonly Choice[]) => {
   const fieldsList = choices.map((choice) => choice.message);
 
   log.newline();
@@ -80,7 +72,7 @@ const confirmShouldContinue = async (choices: readonly FormChoice[]) => {
   fieldsList.forEach((message) => log.subtle(`- ${message}`));
 
   log.newline();
-  const result = await SHOULD_CONTINUE_PROMPT.run();
+  const result = await shouldContinue();
 
   return result === 'yes';
 };
@@ -142,18 +134,18 @@ const cloneTemplate = async (
   return templateConfig;
 };
 
-const getTemplateName = async () => {
-  const templateSelection = await TEMPLATE_PROMPT.run();
+const selectTemplateName = async () => {
+  const templateSelection = await getTemplateName();
 
   if (templateSelection === 'github →') {
-    const gitHubPath = await GIT_PATH_PROMPT.run();
+    const gitHubPath = await getGitPath();
     return `github:${gitHubPath}`;
   }
 
   return templateSelection;
 };
 
-const generatePlaceholders = (choices: FormChoice[]) =>
+const generatePlaceholders = (choices: Choice[]) =>
   Object.fromEntries(
     choices.map(({ name }) => [name, `<%- ${name} %>`] as const),
   );
@@ -228,7 +220,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   await createDirectory(destinationDir);
 
   log.newline();
-  const templateName = await getTemplateName();
+  const templateName = await selectTemplateName();
 
   const { entryPoint, fields, noSkip, packageManager, type } =
     await cloneTemplate(templateName, destinationDir);
@@ -245,9 +237,11 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     };
   }
 
-  const shouldContinue = noSkip ? true : await confirmShouldContinue(fields);
+  const shouldContinueWithTemplate = noSkip
+    ? true
+    : await confirmShouldContinue(fields);
 
-  if (shouldContinue) {
+  if (shouldContinueWithTemplate) {
     log.newline();
     const customAnswers = await runForm({
       choices: fields,
