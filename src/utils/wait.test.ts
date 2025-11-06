@@ -1,3 +1,4 @@
+import * as sleepModule from './sleep.js';
 import * as wait from './wait.js';
 
 const delayMicrotask = () =>
@@ -6,7 +7,7 @@ const delayMicrotask = () =>
     .then(() => undefined)
     .then(() => undefined);
 
-const sleep = jest.spyOn(wait, 'sleep');
+const sleep = jest.spyOn(sleepModule, 'sleep');
 
 beforeEach(jest.clearAllMocks);
 

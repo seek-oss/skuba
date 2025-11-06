@@ -5,6 +5,7 @@ import ignore from 'ignore';
 import picomatch from 'picomatch';
 
 import { isErrorWithCode } from './error.js';
+import { pathExists } from './fs.js';
 
 import * as Git from '@skuba-lib/api/git';
 
@@ -132,7 +133,7 @@ export const locateNearestFile = async ({
   let currentDir = cwd;
   while (currentDir !== path.dirname(currentDir)) {
     const filePath = path.join(currentDir, filename);
-    if (await fs.pathExists(filePath)) {
+    if (await pathExists(filePath)) {
       return filePath;
     }
     currentDir = path.dirname(currentDir);
@@ -153,7 +154,7 @@ export const locateFurthestFile = async ({
 
   while (currentDir !== path.dirname(currentDir)) {
     const filePath = path.join(currentDir, filename);
-    if (await fs.pathExists(filePath)) {
+    if (await pathExists(filePath)) {
       furthestFilePath = filePath;
     }
     currentDir = path.dirname(currentDir);
