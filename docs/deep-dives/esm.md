@@ -255,11 +255,127 @@ module.exports = {
 
 [`'...'` syntax]: https://webpack.js.org/configuration/resolve/#resolveconditionnames
 
-### 3. Switch to Vitest
+### 3. Switch to Vitest and ESM
 
 Finally, we will switch to [Vitest] as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition.
 
-We will apply a community codemod to help with the transition, but it will likely require some manual changes to our tests. Vitest also provides TypeScript support out of the box, which means we won't need to apply any custom workarounds like we do with Jest.
+We will apply the `@sku/lib/codemod` to help with the transition, but manual changes to tests will likely be required. Vitest provides TypeScript support out of the box, eliminating the need for the custom workarounds currently required with Jest.
+
+Since Vitest is not compatible with CJS, we will switch to ESM at the same time.
+
+#### Update package.json
+
+Set the `type` field to `module` to enable native ESM support:
+
+```diff
+ {
+   "name": "@seek/my-repo",
+   "version": "13.0.2",
+   "private": false,
++  "type": "module",
+ }
+```
+
+#### Migrate globals
+
+Replace CommonJS globals with ESM-compatible equivalents:
+
+```diff
+-const currentDir = __dirname;
+-const currentFile = __filename;
++const currentDir = import.meta.dirname;
++const currentFile = import.meta.filename;
+```
+
+#### Migrate module syntax
+
+Convert CommonJS-style imports and exports to ESM:
+
+```diff
+-const { module } = require('./imported-module.js');
++import { module } from './imported-module.js';
+
+ const main = async () => {
+-  const otherModule = require(`./imported-module.js`);
++  const otherModule = await import(`./imported-module.js`);
+ }
+
+-module.exports = { myFunction };
++export { myFunction };
+```
+
+#### Handle legacy CommonJS files
+
+When `"type": "module"` is set in `package.json`, Node.js treats `.js` files as ESM modules and `.cjs` files as CommonJS modules.
+
+If you have JavaScript files that must remain as CommonJS (e.g., configuration files for tools without ESM support), rename them with a `.cjs` extension:
+
+```diff
+-webpack.config.js
++webpack.config.cjs
+```
+
+#### Handle CommonJS named imports
+
+Importing named exports from CommonJS dependencies may result in errors like:
+
+```bash
+tsc      │ src/framework/logging.ts(31,23): error TS2349: This expression is not callable.
+tsc      │   Type 'typeof import("/workdir/indie-hirer-posting-preferences-api/node_modules/.pnpm/@seek+logger@10.0.0/node_modules/@seek/logger/lib-types/index")' has no call signatures.
+```
+
+To resolve this, convert default imports to named imports where possible:
+
+```diff
+- import createLogger from '@seek/logger';
++ import { createLogger } from '@seek/logger';
+```
+
+For other libraries, you may need to find ESM-compatible versions of the dependencies you're using.
+
+#### Migrate to Vitest
+
+Globals such as `it`, `describe`, and `expect`, which Jest makes available automatically, are not enabled by default in Vitest.
+
+You will need to import these explicitly:
+
+```diff
++import { describe, expect, it } from 'vitest';
+```
+
+For more details, see the [Vitest migration guide](https://vitest.dev/guide/migration.html#jest).
+
+As a starting point, we will migrate your Jest imports and provide a base Vitest configuration file. However, additional manual migration will be required to get everything working.
+
+vitest.config.ts:
+
+```ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  ssr: {
+    resolve: {
+      conditions: ['@seek/my-repo/source'],
+    },
+  },
+  test: {
+    env: {
+      ENVIRONMENT: 'test',
+    },
+    coverage: {
+      thresholds: {
+        branches: 100,
+        functions: 100,
+        lines: 100,
+        statements: 100,
+      },
+      include: ['src'],
+      exclude: ['src/testing'],
+    },
+    include: ['**/*.test.ts'],
+  },
+});
+```
 
 ---
 
