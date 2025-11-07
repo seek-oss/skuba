@@ -1,7 +1,6 @@
+import { styleText } from 'node:util';
 import path from 'path';
 import { isMainThread } from 'worker_threads';
-
-import { styleText } from 'node:util';
 
 import { createLogger } from '../../utils/logging.js';
 import { execWorkerThread, postWorkerOutput } from '../../utils/worker.js';

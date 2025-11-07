@@ -1,7 +1,7 @@
+import { styleText } from 'node:util';
 import path from 'path';
 
 import { input } from '@inquirer/prompts';
-import { styleText } from 'node:util';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy.js';
@@ -243,7 +243,10 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     log.newline();
     const customAnswers = await runForm({
       choices: fields,
-      message: styleText('bold', `Complete ${styleText('cyan', templateName)}:`),
+      message: styleText(
+        'bold',
+        `Complete ${styleText('cyan', templateName)}:`,
+      ),
       name: 'customAnswers',
     });
 

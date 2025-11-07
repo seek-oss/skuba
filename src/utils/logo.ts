@@ -4,12 +4,15 @@ import { log } from './logging.js';
 import { detectPackageManager } from './packageManager.js';
 import { getSkubaVersionInfo } from './version.js';
 
-const LOGO = styleText('blueBright', `
+const LOGO = styleText(
+  'blueBright',
+  `
     ╭─╮ ${styleText('magentaBright', '    ')}╭─╮
 ╭───│ ╰─${styleText('magentaBright', '╭─┬─╮')} ╰─╮───╮
 │_ ─┤  <${styleText('magentaBright', '│ ╵ │')} • │ • │
 ╰───╰─┴─${styleText('magentaBright', '╰───╯')}───╯── ╰
-`);
+`,
+);
 
 export const showLogoAndVersionInfo = async () => {
   const [versionInfo, packageManager] = await Promise.all([

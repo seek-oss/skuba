@@ -1,6 +1,6 @@
+import { styleText } from 'node:util';
 import path from 'path';
 
-import { styleText } from 'node:util';
 import fs from 'fs-extra';
 
 import { copyFile } from '../../utils/copy.js';

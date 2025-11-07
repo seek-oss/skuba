@@ -8,5 +8,7 @@ export const determineOperation = (
     return styleText('green', 'A');
   }
 
-  return newData === undefined ? styleText('red', 'D') : styleText('yellow', 'M');
+  return newData === undefined
+    ? styleText('red', 'D')
+    : styleText('yellow', 'M');
 };

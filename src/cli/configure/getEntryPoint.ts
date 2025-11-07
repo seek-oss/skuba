@@ -1,7 +1,7 @@
+import { styleText } from 'node:util';
 import path from 'path';
 
 import { input } from '@inquirer/prompts';
-import { styleText } from 'node:util';
 import type { ReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging.js';

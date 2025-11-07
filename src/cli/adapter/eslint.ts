@@ -1,6 +1,6 @@
+import { styleText } from 'node:util';
 import path from 'path';
 
-import { styleText } from 'node:util';
 import { type ESLint, type Linter, loadESLint } from 'eslint';
 
 import { type Logger, pluralise } from '../../utils/logging.js';
@@ -10,7 +10,9 @@ const symbolForResult = (result: ESLint.LintResult) => {
     return styleText('red', '○');
   }
 
-  return result.warningCount ? styleText('yellow', '◍') : styleText('green', '○');
+  return result.warningCount
+    ? styleText('yellow', '◍')
+    : styleText('green', '○');
 };
 
 export interface ESLintResult {

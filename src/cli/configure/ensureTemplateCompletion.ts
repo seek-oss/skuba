@@ -1,6 +1,6 @@
+import { styleText } from 'node:util';
 import path from 'path';
 
-import { styleText } from 'node:util';
 import fs from 'fs-extra';
 import type { ReadResult } from 'read-pkg-up';
 import * as z from 'zod/v4';
@@ -69,7 +69,10 @@ export const ensureTemplateCompletion = async ({
   const templateData = process.stdin.isTTY
     ? await runForm({
         choices: templateConfig.fields,
-        message: styleText('bold', `Complete ${styleText('cyan', templateName)}:`),
+        message: styleText(
+          'bold',
+          `Complete ${styleText('cyan', templateName)}:`,
+        ),
         name: 'customAnswers',
       })
     : await getTemplateDataFromStdIn(templateConfig);

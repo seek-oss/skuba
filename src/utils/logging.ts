@@ -30,13 +30,19 @@ export const createLogger = ({
       `${Number((end - start) / BigInt(10_000_000)) / 100}s`,
 
     debug: (...message: unknown[]) =>
-      debug ? log(...message.map((m) => styleText('gray', String(m)))) : undefined,
-    subtle: (...message: unknown[]) => log(...message.map((m) => styleText('gray', String(m)))),
-    err: (...message: unknown[]) => log(...message.map((m) => styleText('red', String(m)))),
+      debug
+        ? log(...message.map((m) => styleText('gray', String(m))))
+        : undefined,
+    subtle: (...message: unknown[]) =>
+      log(...message.map((m) => styleText('gray', String(m)))),
+    err: (...message: unknown[]) =>
+      log(...message.map((m) => styleText('red', String(m)))),
     newline: () => logWithoutSuffixes(),
-    ok: (...message: unknown[]) => log(...message.map((m) => styleText('green', String(m)))),
+    ok: (...message: unknown[]) =>
+      log(...message.map((m) => styleText('green', String(m)))),
     plain: (...message: unknown[]) => log(...message),
-    warn: (...message: unknown[]) => log(...message.map((m) => styleText('yellow', String(m)))),
+    warn: (...message: unknown[]) =>
+      log(...message.map((m) => styleText('yellow', String(m)))),
   };
 };
 

@@ -1,6 +1,5 @@
-import { inspect } from 'util';
-
 import { styleText } from 'node:util';
+import { inspect } from 'util';
 
 import { type Logger, childLogger, createLogger } from '../../utils/logging.js';
 
@@ -96,7 +95,9 @@ export const internalLint = async (
   const start = process.hrtime.bigint();
   const logger = createLogger({
     debug: input?.debug ?? false,
-    prefixes: [...(mode === 'lint' ? [styleText('blueBright', 'skuba    │')] : [])],
+    prefixes: [
+      ...(mode === 'lint' ? [styleText('blueBright', 'skuba    │')] : []),
+    ],
   });
 
   try {

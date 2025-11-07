@@ -1,7 +1,7 @@
+import type { styleText } from 'node:util';
 import { cpus } from 'os';
 import stream from 'stream';
 import util from 'util';
-import { styleText } from 'node:util';
 
 import concurrently from 'concurrently';
 import execa, { type ExecaChildProcess } from 'execa';
