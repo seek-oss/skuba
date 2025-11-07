@@ -155,7 +155,7 @@ export const execConcurrently = async (
         command,
         env: envWithPath,
         name: name.padEnd(maxNameLength),
-        prefixColor: prefixColor as string,
+        prefixColor: Array.isArray(prefixColor) ? prefixColor[0] : prefixColor,
       })),
       {
         maxProcesses: maxProcesses ?? cpus().length,
