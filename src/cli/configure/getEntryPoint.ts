@@ -1,7 +1,7 @@
 import path from 'path';
 
+import { input } from '@inquirer/prompts';
 import { styleText } from 'node:util';
-import { Input } from 'enquirer';
 import type { ReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging.js';
@@ -17,7 +17,7 @@ interface Props {
   templateConfig: TemplateConfig;
   type: ProjectType;
 }
-export const getEntryPoint = ({
+export const getEntryPoint = async ({
   destinationRoot,
   manifest,
   templateConfig,
@@ -32,11 +32,10 @@ export const getEntryPoint = ({
   }
 
   log.newline();
-  const entryPointPrompt = new Input({
-    initial: type === 'package' ? 'src/index.ts' : 'src/app.ts',
+
+  const result = await input({
     message: 'Entry point:',
-    name: 'entryPoint',
-    result: (value) => (value.endsWith('.ts') ? value : `${value}.ts`),
+    default: type === 'package' ? 'src/index.ts' : 'src/app.ts',
     validate: async (value) => {
       // Support exported function targeting, e.g. `src/module.ts#callMeMaybe`
       const [modulePath] = value.split('#', 2);
@@ -51,5 +50,5 @@ export const getEntryPoint = ({
     },
   });
 
-  return entryPointPrompt.run();
+  return result.endsWith('.ts') ? result : `${result}.ts`;
 };
