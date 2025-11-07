@@ -1,7 +1,7 @@
+import { styleText } from 'node:util';
 import path from 'path';
 
 import { input } from '@inquirer/prompts';
-import chalk from 'chalk';
 import type { ReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging.js';
@@ -41,12 +41,12 @@ export const getEntryPoint = async ({
       const [modulePath] = value.split('#', 2);
 
       if (!modulePath) {
-        return `${chalk.bold(value)} is an invalid module path`;
+        return `${styleText('bold', value)} is an invalid module path`;
       }
 
       const exists = await tsFileExists(path.join(destinationRoot, modulePath));
 
-      return exists || `${chalk.bold(value)} is not a TypeScript file.`;
+      return exists || `${styleText('bold', value)} is not a TypeScript file.`;
     },
   });
 

@@ -121,9 +121,7 @@ export const upgradeSkuba = async (
 
     logger.warn(
       `skuba has patches to apply. Run ${logger.bold(
-        packageManager.print.exec,
-        'skuba',
-        'format',
+        `${packageManager.print.exec} skuba format`,
       )} to run them.`,
     );
 

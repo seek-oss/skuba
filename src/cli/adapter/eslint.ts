@@ -1,16 +1,18 @@
+import { styleText } from 'node:util';
 import path from 'path';
 
-import chalk from 'chalk';
 import { type ESLint, type Linter, loadESLint } from 'eslint';
 
 import { type Logger, pluralise } from '../../utils/logging.js';
 
 const symbolForResult = (result: ESLint.LintResult) => {
   if (result.errorCount) {
-    return chalk.red('○');
+    return styleText('red', '○');
   }
 
-  return result.warningCount ? chalk.yellow('◍') : chalk.green('○');
+  return result.warningCount
+    ? styleText('yellow', '◍')
+    : styleText('green', '○');
 };
 
 export interface ESLintResult {
