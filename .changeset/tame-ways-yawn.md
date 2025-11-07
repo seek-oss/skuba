@@ -2,4 +2,6 @@
 'skuba': minor
 ---
 
-Migrate from chalk to util.styleText
+deps: Replace chalk with util.styleText
+
+This internal change only affects the styling of the skuba CLI
