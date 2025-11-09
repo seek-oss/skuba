@@ -1,4 +1,4 @@
-import { glob as fg } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import type { PatchConfig } from '../../index.js';
@@ -12,7 +12,7 @@ describe('patchDockerImages', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('should skip if no Dockerfile or docker-compose files are found', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+    jest.mocked(glob).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
     await expect(
       tryPatchDockerImages({
         mode: 'format',
@@ -25,7 +25,7 @@ describe('patchDockerImages', () => {
 
   it('should skip if no Dockerfile or docker-compose files need to be patched', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
     jest
@@ -45,7 +45,7 @@ describe('patchDockerImages', () => {
 
   it('should skip already patched Dockerfile and docker-compose files', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
     jest
@@ -69,7 +69,7 @@ describe('patchDockerImages', () => {
 
   it('should skip a Dockerfile with multiple platforms', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
     jest
@@ -91,7 +91,7 @@ describe('patchDockerImages', () => {
 
   it('should skip a Dockerfile with a build arg platform', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
     jest
@@ -112,7 +112,7 @@ describe('patchDockerImages', () => {
 
   it('should patch a simple Dockerfile and docker-compose file', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
     jest
@@ -142,7 +142,7 @@ describe('patchDockerImages', () => {
 
   it('should patch a Dockerfile with invalid platform usage and already patched base images', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
     jest
@@ -170,7 +170,7 @@ describe('patchDockerImages', () => {
 
   it('should patch multiple lines in Dockerfile and docker-compose files with the same platform', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
     jest
@@ -240,7 +240,7 @@ describe('patchDockerImages', () => {
 
   it('should patch multiple lines in Dockerfile and docker-compose files with multiple platforms', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
     jest

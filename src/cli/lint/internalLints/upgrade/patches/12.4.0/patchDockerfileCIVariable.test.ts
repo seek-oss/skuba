@@ -1,4 +1,4 @@
-import { glob as fg } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
@@ -12,7 +12,7 @@ describe('patchDockerfileCIVariable', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('should skip if no dockerfiles found', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([]);
+    jest.mocked(glob).mockResolvedValueOnce([]);
     await expect(
       tryPatchDockerfileCIVariable({
         mode: 'format',
@@ -24,7 +24,7 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should skip if dockerfiles do not contain pnpm install --prod commands', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(glob).mockResolvedValueOnce(['Dockerfile']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce('FROM node:18\nRUN npm install' as never);
@@ -39,7 +39,7 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(glob).mockResolvedValueOnce(['Dockerfile']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce(
@@ -58,7 +58,7 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should patch dockerfiles with CI variable if mode is format', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(glob).mockResolvedValueOnce(['Dockerfile']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce(
@@ -83,7 +83,7 @@ describe('patchDockerfileCIVariable', () => {
 
   it('should patch multiple dockerfiles containing pnpm install --prod commands', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce([
         'Dockerfile',
         'Dockerfile.dev',
@@ -131,7 +131,7 @@ describe('patchDockerfileCIVariable', () => {
   });
 
   it('should handle dockerfiles with complex content', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(glob).mockResolvedValueOnce(['Dockerfile']);
     const complexDockerfile = `# Multi-stage build
 FROM node:18 AS deps
 WORKDIR /app
@@ -184,7 +184,7 @@ CMD ["npm", "start"]`;
   });
 
   it('should patch dockerfiles with pnpm install --prod commands', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(glob).mockResolvedValueOnce(['Dockerfile']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce(
@@ -208,7 +208,7 @@ CMD ["npm", "start"]`;
   });
 
   it('should detect pnpm install --prod commands in lint mode', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(glob).mockResolvedValueOnce(['Dockerfile']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce(
@@ -227,7 +227,7 @@ CMD ["npm", "start"]`;
   });
 
   it('should handle mixed variants in multiple dockerfiles', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.prod']);
+    jest.mocked(glob).mockResolvedValueOnce(['Dockerfile', 'Dockerfile.prod']);
 
     // First dockerfile has basic pnpm install --prod
     jest

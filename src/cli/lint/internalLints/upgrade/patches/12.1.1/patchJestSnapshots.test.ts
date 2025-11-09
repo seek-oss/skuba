@@ -1,4 +1,4 @@
-import { glob as fg } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
@@ -12,7 +12,7 @@ describe('patchJestSnapshots', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('should skip if no test files found', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([]);
+    jest.mocked(glob).mockResolvedValueOnce([]);
     await expect(
       tryPatchJestSnapshots({
         mode: 'format',
@@ -24,7 +24,7 @@ describe('patchJestSnapshots', () => {
   });
 
   it('should skip if test files do not contain the old URL', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
+    jest.mocked(glob).mockResolvedValueOnce(['test1.test.ts']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce('No snapshot URL here' as never);
@@ -39,7 +39,7 @@ describe('patchJestSnapshots', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
+    jest.mocked(glob).mockResolvedValueOnce(['test1.test.ts']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce(
@@ -59,7 +59,7 @@ describe('patchJestSnapshots', () => {
 
   it('should patch test files', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce([
         'test1.test.ts',
         'test2.test.ts',

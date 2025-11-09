@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob as fg } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -24,7 +24,7 @@ const patchDockerComposeFiles: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
   const maybeDockerComposeFiles = await Array.fromAsync(
-    fg('docker-compose*.yml'),
+    glob('docker-compose*.yml'),
   );
 
   if (!maybeDockerComposeFiles.length) {

@@ -1,4 +1,4 @@
-import { glob as fg } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
@@ -12,7 +12,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('should skip if no dockerfiles found', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([]);
+    jest.mocked(glob).mockResolvedValueOnce([]);
     await expect(
       tryPatchDockerfileSyntaxDirective({
         mode: 'format',
@@ -24,7 +24,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   });
 
   it('should skip if dockerfiles do not contain the Dockerfile syntax directive', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(glob).mockResolvedValueOnce(['Dockerfile']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce('No Dockerfile syntax directive here' as never);
@@ -39,7 +39,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    jest.mocked(glob).mockResolvedValueOnce(['Dockerfile']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce('# syntax=docker/dockerfile:1.18\n' as never);
@@ -57,7 +57,7 @@ describe('patchDockerfileSyntaxDirective', () => {
 
   it('should patch dockerfiles if mode is format', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce([
         'Dockerfile',
         'Dockerfile.dev-deps',

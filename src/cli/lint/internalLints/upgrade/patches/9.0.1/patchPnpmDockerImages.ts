@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob as fg } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -29,7 +29,7 @@ const fetchFiles = async (files: string[]) =>
 const patchPnpmDockerImages: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const maybeDockerFilesPaths = await Array.fromAsync(fg('Dockerfile*'));
+  const maybeDockerFilesPaths = await Array.fromAsync(glob('Dockerfile*'));
 
   if (!maybeDockerFilesPaths.length) {
     return {

@@ -1,4 +1,4 @@
-import { glob as fg } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
@@ -12,7 +12,7 @@ describe('patchApiTokenFromEnvironment', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('should skip if no scripts found', async () => {
-    jest.mocked(fg).mockResolvedValueOnce([]);
+    jest.mocked(glob).mockResolvedValueOnce([]);
     await expect(
       tryPatchApiTokenFromEnvironment({
         mode: 'format',
@@ -24,7 +24,7 @@ describe('patchApiTokenFromEnvironment', () => {
   });
 
   it('should skip if scripts do not contain the apiTokenFromEnvironment usage', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
+    jest.mocked(glob).mockResolvedValueOnce(['scripts/test.ts']);
     jest.mocked(fs.readFile).mockResolvedValueOnce('No usage here' as never);
     await expect(
       tryPatchApiTokenFromEnvironment({
@@ -37,7 +37,7 @@ describe('patchApiTokenFromEnvironment', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
+    jest.mocked(glob).mockResolvedValueOnce(['scripts/test.ts']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce(
@@ -56,7 +56,7 @@ describe('patchApiTokenFromEnvironment', () => {
   });
 
   it('should patch scripts if mode is format', async () => {
-    jest.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
+    jest.mocked(glob).mockResolvedValueOnce(['scripts/test.ts']);
     jest
       .mocked(fs.readFile)
       .mockResolvedValueOnce(

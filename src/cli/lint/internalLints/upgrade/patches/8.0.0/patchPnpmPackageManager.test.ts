@@ -1,4 +1,4 @@
-import { glob as fg } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 import type { PackageJson } from 'read-pkg-up';
 
@@ -47,7 +47,7 @@ describe('patchPnpmPackageManager', () => {
 
   it('should skip if no dockerfiles are found', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce(['.buldkite/pipeline.yml']);
     await expect(
@@ -64,7 +64,7 @@ describe('patchPnpmPackageManager', () => {
 
   it('should skip if no buildkite pipelines are found', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
     await expect(
@@ -81,7 +81,7 @@ describe('patchPnpmPackageManager', () => {
 
   it('should skip if dockerfiles and buildkite pipelines do not contain patchable content', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
@@ -103,7 +103,7 @@ describe('patchPnpmPackageManager', () => {
 
   it('should patch both dockerfiles and pipelines', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
@@ -152,7 +152,7 @@ describe('patchPnpmPackageManager', () => {
 
   it('should not patch in lint mode', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
@@ -184,7 +184,7 @@ describe('patchPnpmPackageManager', () => {
 
   it('should patch multiple cache entries in pipelines', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
@@ -233,7 +233,7 @@ describe('patchPnpmPackageManager', () => {
 
   it('should avoid patching the docker ecr cache plugin version if it is greater than 2.2.0', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
@@ -273,7 +273,7 @@ describe('patchPnpmPackageManager', () => {
 
   it('should skip patching if it is already up to date', async () => {
     jest
-      .mocked(fg)
+      .mocked(glob)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     jest
