@@ -1,11 +1,11 @@
-import fg from 'fast-glob';
+import { glob as fg } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import type { PatchConfig } from '../../index.js';
 
 import { tryPatchPnpmDockerImages } from './patchPnpmDockerImages.js';
 
-jest.mock('fast-glob');
+jest.mock('node:fs/promises');
 jest.mock('fs-extra');
 
 describe('patchPnpmDockerImages', () => {

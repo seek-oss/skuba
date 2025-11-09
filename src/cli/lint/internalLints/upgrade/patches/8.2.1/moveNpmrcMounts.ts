@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -9,9 +9,8 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 const moveNpmrcMounts: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const buildkiteFiles = await glob(
-    ['{apps/*/,packages/*/,./}.buildkite/**/*.y*ml'],
-    { onlyFiles: true },
+  const buildkiteFiles = await Array.fromAsync(
+    glob('{apps/*/,packages/*/,./}.buildkite/**/*.y*ml'),
   );
 
   if (buildkiteFiles.length === 0) {

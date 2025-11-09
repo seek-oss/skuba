@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
+import { glob as fg } from 'node:fs/promises';
 import fs from 'fs-extra';
 import { lt } from 'semver';
 
@@ -52,8 +52,8 @@ const patchPnpmPackageManager: PatchFunction = async ({
   }
 
   const [maybeDockerfiles, maybePipelines] = await Promise.all([
-    fg(['Dockerfile*']),
-    fg(['.buildkite/*.yml']),
+    Array.fromAsync(fg('Dockerfile*')),
+    Array.fromAsync(fg('.buildkite/*.yml')),
   ]);
 
   if (!maybeDockerfiles.length || !maybePipelines.length) {

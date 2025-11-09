@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
+import { glob as fg } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -51,8 +51,8 @@ const patchDockerImages: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
   const [maybeDockerFilesPaths, maybeDockerComposePaths] = await Promise.all([
-    fg(['Dockerfile*']),
-    fg(['docker-compose*.y*ml']),
+    Array.fromAsync(fg('Dockerfile*')),
+    Array.fromAsync(fg('docker-compose*.y*ml')),
   ]);
 
   if (!maybeDockerFilesPaths.length && !maybeDockerComposePaths.length) {

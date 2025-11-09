@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import fg from 'fast-glob';
+import { glob as fg } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -13,9 +13,11 @@ const usageRegex = /apiTokenFromEnvironment\(\)/;
 export const patchApiTokenFromEnvironment = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
-  const scriptPaths = await fg(['scripts/**/*.ts'], {
-    ignore: ['**/.git', '**/node_modules'],
-  });
+  const scriptPaths = await Array.fromAsync(
+    fg('scripts/**/*.ts', {
+      exclude: ['**/.git', '**/node_modules'],
+    }),
+  );
 
   if (scriptPaths.length === 0) {
     return {

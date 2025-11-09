@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -62,7 +62,7 @@ const removeYarnIgnoreFlag = (contents: string) => {
 const removeYarnIgnoreOptionalFlags: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const maybeDockerFilesPaths = await glob(['Dockerfile*']);
+  const maybeDockerFilesPaths = await Array.fromAsync(glob('Dockerfile*'));
 
   if (!maybeDockerFilesPaths.length) {
     return {

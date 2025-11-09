@@ -1,7 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 import ts from 'typescript';
 import * as z from 'zod';
@@ -31,9 +31,9 @@ const tsConfigSchema = z.looseObject({
 type TsConfig = z.infer<typeof tsConfigSchema>;
 
 const fetchFiles = async (patterns: string[]) => {
-  const files = await glob(patterns, {
-    ignore: ['**/.git', '**/node_modules'],
-  });
+  const files = await Array.fromAsync(
+    glob(patterns[0]!, { exclude: ['**/.git', '**/node_modules'] }),
+  );
 
   return Promise.all(
     files.map(async (file) => {

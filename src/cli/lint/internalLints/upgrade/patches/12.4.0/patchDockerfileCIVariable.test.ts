@@ -1,11 +1,11 @@
-import fg from 'fast-glob';
+import { glob as fg } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryPatchDockerfileCIVariable } from './patchDockerfileCIVariable.js';
 
-jest.mock('fast-glob');
+jest.mock('node:fs/promises');
 jest.mock('fs-extra');
 
 describe('patchDockerfileCIVariable', () => {

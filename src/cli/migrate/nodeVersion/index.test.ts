@@ -5,9 +5,12 @@ import * as checks from './checks.js';
 import { nodeVersionMigration } from './index.js';
 
 jest.mock('fs', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+jest.mock('node:fs/promises', () => ({
+  ...jest.requireActual('node:fs/promises'),
+  glob: async function* (pat: string, opts?: any) {
+    const actualGlob = jest.requireActual('node:fs/promises').glob;
+    yield* actualGlob(pat, { ...opts, fs: memfs as any });
+  },
 }));
 jest.mock('../../../utils/logging');
 

@@ -1,4 +1,4 @@
-import fg from 'fast-glob';
+import { glob as fg } from 'node:fs/promises';
 import fs from 'fs-extra';
 import type { PackageJson } from 'read-pkg-up';
 
@@ -7,7 +7,7 @@ import type { PatchConfig } from '../../index.js';
 
 import { tryPatchPnpmPackageManager } from './patchPnpmPackageManager.js';
 
-jest.mock('fast-glob');
+jest.mock('node:fs/promises');
 jest.mock('fs-extra');
 
 describe('patchPnpmPackageManager', () => {

@@ -1,7 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -155,13 +155,15 @@ export const replaceSrcImportWithSelectiveRegisterRemoval = (
 export const tryRewriteSrcImports: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsFileNames = await glob(['**/*.ts', '**/*.test.ts'], {
-    ignore: [
-      '**/.git',
-      '**/node_modules',
-      'src/cli/lint/internalLints/upgrade/patches/**/*',
-    ],
-  });
+  const tsFileNames = await Array.fromAsync(
+    glob('**/*.ts', {
+      exclude: [
+        '**/.git',
+        '**/node_modules',
+        'src/cli/lint/internalLints/upgrade/patches/**/*',
+      ],
+    }),
+  );
 
   if (!tsFileNames.length) {
     return {

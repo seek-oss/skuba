@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { Git } from '../../../../../../index.js';
@@ -440,19 +440,25 @@ export const tryUpdateLambdaConfigs: PatchFunction = async ({
 
   const [tsFileNames, webpackFileNames, serverlessFileNames] =
     await Promise.all([
-      glob('**/*.ts', {
-        ignore: [
-          '**/.git',
-          '**/node_modules',
-          'src/cli/lint/internalLints/upgrade/patches/**/*',
-        ],
-      }),
-      glob('**/*webpack.config.js', {
-        ignore: ['**/.git', '**/node_modules'],
-      }),
-      glob('**/serverless*.y*ml', {
-        ignore: ['**/.git', '**/node_modules'],
-      }),
+      Array.fromAsync(
+        glob('**/*.ts', {
+          exclude: [
+            '**/.git',
+            '**/node_modules',
+            'src/cli/lint/internalLints/upgrade/patches/**/*',
+          ],
+        }),
+      ),
+      Array.fromAsync(
+        glob('**/*webpack.config.js', {
+          exclude: ['**/.git', '**/node_modules'],
+        }),
+      ),
+      Array.fromAsync(
+        glob('**/serverless*.y*ml', {
+          exclude: ['**/.git', '**/node_modules'],
+        }),
+      ),
     ]);
 
   if (

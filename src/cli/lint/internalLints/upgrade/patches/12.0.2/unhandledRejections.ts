@@ -1,7 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { isErrorWithCode } from '../../../../../../utils/error.js';
@@ -62,10 +62,12 @@ const findLogger = async ({
     }
   }
 
-  const loggerPaths = await glob('**/{logger,logging}.ts', {
-    cwd: root,
-    ignore: ['**/.git', '**/node_modules'],
-  });
+  const loggerPaths = await Array.fromAsync(
+    glob('**/{logger,logging}.ts', {
+      cwd: root,
+      exclude: ['**/.git', '**/node_modules'],
+    }),
+  );
 
   const loggingModule = await tryReadFilesSequentially(loggerPaths);
 
@@ -101,9 +103,11 @@ const findLogger = async ({
 const patchUnhandledRejections = async (
   mode: 'format' | 'lint',
 ): Promise<PatchReturnType> => {
-  const filepaths = await glob('**/src/listen.ts', {
-    ignore: ['**/.git', '**/node_modules'],
-  });
+  const filepaths = await Array.fromAsync(
+    glob('**/src/listen.ts', {
+      exclude: ['**/.git', '**/node_modules'],
+    }),
+  );
 
   let hasPatched = false;
 

@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import { glob } from 'node:fs/promises';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging.js';
@@ -116,10 +116,12 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
   const readFile = createDestinationFileReader(dir);
   const paths = patch.file
     ? [patch.file]
-    : await glob(patch.files ?? [], {
-        cwd: dir,
-        ignore: ['**/node_modules/**'],
-      });
+    : await Array.fromAsync(
+        glob(patch.files ?? '', {
+          cwd: dir,
+          exclude: ['**/node_modules/**'],
+        }),
+      );
 
   await Promise.all(
     paths.map(async (path) => {
