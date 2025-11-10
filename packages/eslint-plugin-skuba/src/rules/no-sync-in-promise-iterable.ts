@@ -516,21 +516,9 @@ const possibleNodesWithSyncError = (
         ];
       }
 
-      // Check arguments for errors
-      const argumentErrors = node.arguments.flatMap((arg) =>
-        possibleNodesWithSyncError(
-          arg,
-          esTreeNodeToTSNodeMap,
-          checker,
-          sourceCode,
-          visited,
-          calls + 1,
-        ),
-      );
-
       // If we found errors in the callee or arguments, return those
-      if (calleeErrors.length + argumentErrors.length) {
-        return [...calleeErrors, ...argumentErrors];
+      if (calleeErrors.length) {
+        return calleeErrors;
       }
 
       // Assume other synchronous calls may throw
