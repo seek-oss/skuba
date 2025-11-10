@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 
 import { hasDebugFlag } from '../../utils/args.js';
 import { log } from '../../utils/logging.js';
@@ -17,7 +17,7 @@ export const build = async (args = process.argv.slice(2)) => {
     case 'esbuild': {
       const debug = hasDebugFlag(args);
 
-      log.plain(chalk.yellow('esbuild'));
+      log.plain(styleText('yellow', 'esbuild'));
       await esbuild({ debug, type: manifest.type }, args);
       break;
     }
@@ -25,7 +25,7 @@ export const build = async (args = process.argv.slice(2)) => {
     // TODO: flip the default case over to `esbuild` in skuba vNext.
     case undefined:
     case 'tsc': {
-      log.plain(chalk.blue('tsc'));
+      log.plain(styleText('blue', 'tsc'));
       await tsc(args);
       break;
     }

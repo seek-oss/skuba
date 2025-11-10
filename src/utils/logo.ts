@@ -1,15 +1,18 @@
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 
 import { log } from './logging.js';
 import { detectPackageManager } from './packageManager.js';
 import { getSkubaVersionInfo } from './version.js';
 
-const LOGO = chalk.blueBright(`
-    ╭─╮ ${chalk.magentaBright('    ')}╭─╮
-╭───│ ╰─${chalk.magentaBright('╭─┬─╮')} ╰─╮───╮
-│_ ─┤  <${chalk.magentaBright('│ ╵ │')} • │ • │
-╰───╰─┴─${chalk.magentaBright('╰───╯')}───╯── ╰
-`);
+const LOGO = styleText(
+  'blueBright',
+  `
+    ╭─╮ ${styleText('magentaBright', '    ')}╭─╮
+╭───│ ╰─${styleText('magentaBright', '╭─┬─╮')} ╰─╮───╮
+│_ ─┤  <${styleText('magentaBright', '│ ╵ │')} • │ • │
+╰───╰─┴─${styleText('magentaBright', '╰───╯')}───╯── ╰
+`,
+);
 
 export const showLogoAndVersionInfo = async () => {
   const [versionInfo, packageManager] = await Promise.all([
@@ -31,7 +34,7 @@ export const showLogoAndVersionInfo = async () => {
     log.warn('Consider upgrading:');
     log.newline();
     log.warn(
-      log.bold(packageManager.print.update, `skuba@${versionInfo.latest}`),
+      log.bold(`${packageManager.print.update} skuba@${versionInfo.latest}`),
     );
     log.newline();
   }

@@ -1,7 +1,7 @@
+import { styleText } from 'node:util';
 import path from 'path';
 
 import { input } from '@inquirer/prompts';
-import chalk from 'chalk';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy.js';
@@ -123,9 +123,7 @@ const cloneTemplate = async (
     log.warn(
       'You may need to run',
       log.bold(
-        configForPackageManager(templateConfig.packageManager).print.exec,
-        'skuba',
-        'configure',
+        `${configForPackageManager(templateConfig.packageManager).print.exec} skuba configure`,
       ),
       'once this is done.',
     );
@@ -206,7 +204,7 @@ const baseToTemplateData = async ({
 export const configureFromPrompt = async (): Promise<InitConfig> => {
   const { ownerName, platformName, repoName, defaultBranch } =
     await runForm<BaseFields>(BASE_PROMPT_PROPS);
-  log.plain(chalk.cyan(repoName), 'by', chalk.cyan(ownerName));
+  log.plain(styleText('cyan', repoName), 'by', styleText('cyan', ownerName));
 
   const templateData = await baseToTemplateData({
     ownerName,
@@ -245,7 +243,10 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     log.newline();
     const customAnswers = await runForm({
       choices: fields,
-      message: chalk.bold(`Complete ${chalk.cyan(templateName)}:`),
+      message: styleText(
+        'bold',
+        `Complete ${styleText('cyan', templateName)}:`,
+      ),
       name: 'customAnswers',
     });
 
@@ -262,10 +263,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 
   log.newline();
   log.warn(
-    `Resume this later with ${chalk.bold(
-      configForPackageManager(packageManager).print.exec,
-      'skuba configure',
-    )}.`,
+    `Resume this later with ${styleText('bold', `${configForPackageManager(packageManager).print.exec} skuba configure`)}.`,
   );
 
   const customAnswers = generatePlaceholders(fields);

@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 
 import { hasDebugFlag } from '../../utils/args.js';
 import { createLogger, log } from '../../utils/logging.js';
@@ -12,7 +12,7 @@ export const format = async (
 ): Promise<void> => {
   const debug = hasDebugFlag(args);
 
-  log.plain(chalk.blueBright('skuba lints'));
+  log.plain(styleText('blueBright', 'skuba lints'));
 
   const internal = await internalLint('format', {
     debug,
@@ -25,12 +25,12 @@ export const format = async (
   const logger = createLogger({ debug });
 
   log.newline();
-  log.plain(chalk.magenta('ESLint'));
+  log.plain(styleText('magenta', 'ESLint'));
 
   const eslint = await runESLint('format', logger, overrideConfigFile);
 
   log.newline();
-  log.plain(chalk.cyan('Prettier'));
+  log.plain(styleText('cyan', 'Prettier'));
 
   const prettier = await runPrettier('format', logger);
 

@@ -34,8 +34,7 @@ export const readTsBuildConfig = (
 
   log.debug(
     log.bold(
-      'tsconfig',
-      ...(tscArgs.project ? ['--project', tscArgs.project] : []),
+      `tsconfig${tscArgs.project ? ` --project ${tscArgs.project}` : ''}`,
     ),
   );
   log.debug(tscArgs.pathname);

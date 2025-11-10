@@ -88,7 +88,6 @@
     "@skuba-lib/api": "workspace:^",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
-    "chalk": "^4.1.0",
     "concurrently": "^9.0.0",
     "ejs": "^3.1.6",
     "esbuild": "~0.25.0",
@@ -165,7 +164,7 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@10.19.0",
+  "packageManager": "pnpm@10.20.0",
   "engines": {
     "node": ">=20.9.0"
   },
