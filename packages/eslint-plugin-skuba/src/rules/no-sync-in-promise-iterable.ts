@@ -453,12 +453,6 @@ const possibleNodesWithSyncError = (
         return [];
       };
 
-      // Only check callee errors if the callee is itself a call expression (curried pattern)
-      const calleeErrors =
-        node.callee.type === TSESTree.AST_NODE_TYPES.CallExpression
-          ? collectCalleeArgumentErrors(node.callee)
-          : [];
-
       const expression =
         node.callee.type === TSESTree.AST_NODE_TYPES.Identifier
           ? findExpression(node.callee, sourceCode, visited)
@@ -479,6 +473,8 @@ const possibleNodesWithSyncError = (
           ),
         );
       }
+
+      const calleeErrors = collectCalleeArgumentErrors(node.callee);
 
       if (isChainedPromise(node, esTreeNodeToTSNodeMap, checker)) {
         return [
@@ -533,7 +529,7 @@ const possibleNodesWithSyncError = (
       );
 
       // If we found errors in the callee or arguments, return those
-      if (calleeErrors.length > 0 || argumentErrors.length > 0) {
+      if (calleeErrors.length + argumentErrors.length) {
         return [...calleeErrors, ...argumentErrors];
       }
 
