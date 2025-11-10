@@ -556,9 +556,17 @@ const possibleNodesWithSyncError = (
       return [];
 
     case TSESTree.AST_NODE_TYPES.MemberExpression:
-      // Allow property access
+      // Allow `property` access
       // Assume we will flag custom getters separately to prevent such errors
-      return [];
+      // We still check the `object` for scenarios like `object().property`
+      return possibleNodesWithSyncError(
+        node.object,
+        esTreeNodeToTSNodeMap,
+        checker,
+        sourceCode,
+        visited,
+        calls,
+      );
 
     case TSESTree.AST_NODE_TYPES.NewExpression:
       if (

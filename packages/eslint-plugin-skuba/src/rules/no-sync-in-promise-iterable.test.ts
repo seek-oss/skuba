@@ -296,6 +296,14 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
         Promise.${method}([, getPromise('safe')(item)]);
       `,
     },
+
+    // Member expressions with safe object
+    {
+      code: `
+        const obj = () => ({ prop: 123 });
+        Promise.${method}([, obj().prop, 3]);
+      `,
+    },
   ]),
   invalid: methods.flatMap((method) => [
     {
@@ -861,6 +869,25 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
             underlying: 'fail()',
             line: 4,
             column: { all: 23, allSettled: 23, any: 23, race: 23 }[method],
+          },
+        },
+      ],
+    },
+    // Member expressions with unsafe object
+    {
+      code: `
+        const obj = () => { return { prop: 123 }; };
+        Promise.${method}([, obj().prop, 3]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'obj().prop',
+            underlying: 'obj = () => { return { prop: 123 }; }',
+            line: 2,
+            column: 14,
           },
         },
       ],
