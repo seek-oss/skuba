@@ -428,6 +428,31 @@ const possibleNodesWithSyncError = (
         );
       }
 
+      // For curried functions like `curriedFn(fail())(item)` or
+      // `triple(fail())('b')(item)`, we need to recursively check the callee chain
+      // for errors in the arguments at each level.
+      const collectCalleeArgumentErrors = (
+        callee: TSESTree.Node,
+      ): TSESTree.Node[] => {
+        if (callee.type === TSESTree.AST_NODE_TYPES.CallExpression) {
+          // Recursively collect errors from nested callee
+          const nestedErrors = collectCalleeArgumentErrors(callee.callee);
+          // Also check arguments at this level
+          const argErrors = callee.arguments.flatMap((arg) =>
+            possibleNodesWithSyncError(
+              arg,
+              esTreeNodeToTSNodeMap,
+              checker,
+              sourceCode,
+              visited,
+              calls + 1,
+            ),
+          );
+          return [...nestedErrors, ...argErrors];
+        }
+        return [];
+      };
+
       const expression =
         node.callee.type === TSESTree.AST_NODE_TYPES.Identifier
           ? findExpression(node.callee, sourceCode, visited)
@@ -449,38 +474,51 @@ const possibleNodesWithSyncError = (
         );
       }
 
+      const calleeErrors = collectCalleeArgumentErrors(node.callee);
+
       if (isChainedPromise(node, esTreeNodeToTSNodeMap, checker)) {
-        return node.arguments.flatMap((arg) =>
-          possibleNodesWithSyncError(
-            arg,
-            esTreeNodeToTSNodeMap,
-            checker,
-            sourceCode,
-            visited,
-            // We generally increment the call count to indicate that we expect
-            // that a callback argument may be invoked by the parent function.
-            // However, we assume that `.catch()`, `.finally()`, `.then()` will
-            // will safely wrap their callbacks so we don't need to simulate
-            // invoking them.
-            calls,
+        return [
+          ...calleeErrors,
+          ...node.arguments.flatMap((arg) =>
+            possibleNodesWithSyncError(
+              arg,
+              esTreeNodeToTSNodeMap,
+              checker,
+              sourceCode,
+              visited,
+              // We generally increment the call count to indicate that we expect
+              // that a callback argument may be invoked by the parent function.
+              // However, we assume that `.catch()`, `.finally()`, `.then()` will
+              // will safely wrap their callbacks so we don't need to simulate
+              // invoking them.
+              calls,
+            ),
           ),
-        );
+        ];
       }
 
       if (
         isSafeIshIterableMethod(node, esTreeNodeToTSNodeMap, checker) ||
         isThenableNode(node, esTreeNodeToTSNodeMap, checker)
       ) {
-        return node.arguments.flatMap((arg) =>
-          possibleNodesWithSyncError(
-            arg,
-            esTreeNodeToTSNodeMap,
-            checker,
-            sourceCode,
-            visited,
-            calls + 1,
+        return [
+          ...calleeErrors,
+          ...node.arguments.flatMap((arg) =>
+            possibleNodesWithSyncError(
+              arg,
+              esTreeNodeToTSNodeMap,
+              checker,
+              sourceCode,
+              visited,
+              calls + 1,
+            ),
           ),
-        );
+        ];
+      }
+
+      // If we found errors in the callee or arguments, return those
+      if (calleeErrors.length) {
+        return calleeErrors;
       }
 
       // Assume other synchronous calls may throw
@@ -518,9 +556,17 @@ const possibleNodesWithSyncError = (
       return [];
 
     case TSESTree.AST_NODE_TYPES.MemberExpression:
-      // Allow property access
+      // Allow `property` access
       // Assume we will flag custom getters separately to prevent such errors
-      return [];
+      // We still check the `object` for scenarios like `object().property`
+      return possibleNodesWithSyncError(
+        node.object,
+        esTreeNodeToTSNodeMap,
+        checker,
+        sourceCode,
+        visited,
+        calls,
+      );
 
     case TSESTree.AST_NODE_TYPES.NewExpression:
       if (
