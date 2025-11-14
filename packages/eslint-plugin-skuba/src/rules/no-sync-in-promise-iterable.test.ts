@@ -263,6 +263,47 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
           Promise.${method}([, fn(...iterable)])
         `,
     },
+    // Safe curried functions (no sync errors)
+    {
+      code: `
+        const curriedFn = (x: string) => async (item: any) => item;
+        Promise.${method}([, items.map((item) => curriedFn('safe')(item))]);
+      `,
+    },
+    {
+      code: `
+        const triple = (a: string) => (b: string) => async (item: any) => item;
+        Promise.${method}([, items.map((item) => triple('a')('b')(item))]);
+      `,
+    },
+    {
+      code: `
+        const obj = { fn: (x: string) => async (item: any) => item };
+        Promise.${method}([, items.map((item) => obj.fn('safe')(item))]);
+      `,
+    },
+    // Chained promises with safe curried functions
+    {
+      code: `Promise.${method}([, Promise.resolve('safe').then((x) => curried(x)(item))])`,
+    },
+    {
+      code: `Promise.${method}([, Promise.resolve().then(() => curried('safe')(item))])`,
+    },
+    // Regular call expressions with safe curried functions
+    {
+      code: `
+        const getPromise = (x: string) => async (item: any) => item;
+        Promise.${method}([, getPromise('safe')(item)]);
+      `,
+    },
+
+    // Member expressions with safe object
+    {
+      code: `
+        const obj = () => ({ prop: 123 });
+        Promise.${method}([, obj().prop, 3]);
+      `,
+    },
   ]),
   invalid: methods.flatMap((method) => [
     {
@@ -712,6 +753,141 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
             underlying: 'fail()',
             line: 4,
             column: 33,
+          },
+        },
+      ],
+    },
+    // Curried functions - base case
+    {
+      code: `
+        const curriedFn = (x: string) => async (item: any) => item;
+        Promise.${method}([, items.map((item) => curriedFn(fail())(item))]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'items.map((item) => curriedFn(fail())(item))',
+            underlying: 'fail()',
+            line: 3,
+            // Column varies because method name is on the same line as fail()
+            column: { all: 53, allSettled: 60, any: 53, race: 54 }[method],
+          },
+        },
+      ],
+    },
+    // Curried functions - triple currying
+    {
+      code: `
+        const triple = (a: string) => (b: string) => async (item: any) => item;
+        Promise.${method}([, items.map((item) => triple(fail())('b')(item))]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: "items.map((item) => triple(fail())('b')(item))",
+            underlying: 'fail()',
+            line: 3,
+            column: { all: 50, allSettled: 57, any: 50, race: 51 }[method],
+          },
+        },
+      ],
+    },
+    // Curried functions - member expression
+    {
+      code: `
+        const obj = { fn: (x: string) => async (item: any) => item };
+        Promise.${method}([, items.map((item) => obj.fn(fail())(item))]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'items.map((item) => obj.fn(fail())(item))',
+            underlying: 'fail()',
+            line: 3,
+            column: { all: 50, allSettled: 57, any: 50, race: 51 }[method],
+          },
+        },
+      ],
+    },
+    // Curried functions - error in middle of chain
+    {
+      code: `
+        const triple = (a: string) => (b: string) => async (item: any) => item;
+        Promise.${method}([, items.map((item) => triple('a')(fail())(item))]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: "items.map((item) => triple('a')(fail())(item))",
+            underlying: 'fail()',
+            line: 3,
+            column: { all: 55, allSettled: 62, any: 55, race: 56 }[method],
+          },
+        },
+      ],
+    },
+    // Regular call expressions with curried functions (tests fallback branch)
+    {
+      code: `
+        const getPromise = (x: string) => async (item: any) => item;
+        Promise.${method}([, getPromise(fail())(item)]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'getPromise(fail())(item)',
+            underlying: 'fail()',
+            line: 3,
+            column: { all: 34, allSettled: 41, any: 34, race: 35 }[method],
+          },
+        },
+      ],
+    },
+    {
+      code: `
+        Promise.${method}([
+          ,
+          someFunction(fail())('arg'),
+        ]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: "someFunction(fail())('arg')",
+            underlying: 'fail()',
+            line: 4,
+            column: { all: 23, allSettled: 23, any: 23, race: 23 }[method],
+          },
+        },
+      ],
+    },
+    // Member expressions with unsafe object
+    {
+      code: `
+        const obj = () => { return { prop: 123 }; };
+        Promise.${method}([, obj().prop, 3]);
+      `,
+      errors: [
+        {
+          messageId: 'mayLeadToSyncError',
+          data: {
+            method,
+            value: 'obj().prop',
+            underlying: 'obj = () => { return { prop: 123 }; }',
+            line: 2,
+            column: 14,
           },
         },
       ],

@@ -1,8 +1,8 @@
+import type { styleText } from 'node:util';
 import { cpus } from 'os';
 import stream from 'stream';
 import util from 'util';
 
-import type { Color } from 'chalk';
 import concurrently from 'concurrently';
 import execa, { type ExecaChildProcess } from 'execa';
 import npmRunPath from 'npm-run-path';
@@ -11,6 +11,8 @@ import npmWhich from 'npm-which';
 import { concurrentlyErrorsSchema, isErrorWithCode } from './error.js';
 import { log } from './logging.js';
 import type { PackageManager } from './packageManager.js';
+
+type StyleColor = Parameters<typeof styleText>[0];
 
 class YarnSpamFilter extends stream.Transform {
   silenced = false;
@@ -64,7 +66,7 @@ export type Exec = (
 interface ExecConcurrentlyCommand {
   command: string;
   name: string;
-  prefixColor?: typeof Color;
+  prefixColor?: StyleColor;
 }
 
 interface ExecConcurrentlyOptions {
@@ -153,7 +155,7 @@ export const execConcurrently = async (
         command,
         env: envWithPath,
         name: name.padEnd(maxNameLength),
-        prefixColor,
+        prefixColor: Array.isArray(prefixColor) ? prefixColor[0] : prefixColor,
       })),
       {
         maxProcesses: maxProcesses ?? cpus().length,

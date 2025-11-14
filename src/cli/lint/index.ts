@@ -54,9 +54,7 @@ export const lint = async (
       log.newline();
       log.warn(
         `Try running ${log.bold(
-          packageManager.print.exec,
-          'skuba',
-          'format',
+          `${packageManager.print.exec} skuba format`,
         )} to fix them.`,
       );
     }

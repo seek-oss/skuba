@@ -28,9 +28,7 @@ export const noSkubaTemplateJs = async (
   if (await pathExists(templateConfigPath)) {
     logger.err(
       `Template is incomplete; run ${logger.bold(
-        packageManager.print.exec,
-        'skuba',
-        'configure',
+        `${packageManager.print.exec} skuba configure`,
       )}. ${logger.dim('no-skuba-template-js')}`,
     );
 

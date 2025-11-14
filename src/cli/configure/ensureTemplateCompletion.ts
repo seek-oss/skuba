@@ -1,6 +1,6 @@
+import { styleText } from 'node:util';
 import path from 'path';
 
-import chalk from 'chalk';
 import fs from 'fs-extra';
 import * as z from 'zod/v4';
 
@@ -69,7 +69,10 @@ export const ensureTemplateCompletion = async ({
   const templateData = process.stdin.isTTY
     ? await runForm({
         choices: templateConfig.fields,
-        message: chalk.bold(`Complete ${chalk.cyan(templateName)}:`),
+        message: styleText(
+          'bold',
+          `Complete ${styleText('cyan', templateName)}:`,
+        ),
         name: 'customAnswers',
       })
     : await getTemplateDataFromStdIn(templateConfig);

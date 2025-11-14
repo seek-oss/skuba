@@ -17,6 +17,6 @@ export const startServer = (server: http.Server, port?: number) =>
       .on('listening', () => {
         const address = server.address() as AddressInfo;
 
-        log.ok('listening on port', log.bold(address.port));
+        log.ok('listening on port', log.bold(String(address.port)));
       }),
   );
