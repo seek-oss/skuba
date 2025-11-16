@@ -1,5 +1,35 @@
 # skuba
 
+## 14.0.0
+
+### Minor Changes
+
+- **deps:** Replace `enquirer` with `@inquirer/prompts` ([#2131](https://github.com/seek-oss/skuba/pull/2131))
+
+  This internal change only affects the `skuba init` and `skuba configure` interactive prompts.
+
+- **deps:** Replace `chalk` with `util.styleText` ([#2134](https://github.com/seek-oss/skuba/pull/2134))
+
+  This internal change only affects the styling of the skuba CLI.
+
+### Patch Changes
+
+- **lint:** Check member expressions in `skuba/no-sync-in-promise-iterable` ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
+  This looks for synchronous calls in expressions like `fn().prop`.
+
+- **template/\*-rest-api:** Template Gantry environment names in values files ([#2120](https://github.com/seek-oss/skuba/pull/2120))
+
+- **lint:** Check curried functions in `skuba/no-sync-in-promise-iterable` ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
+  This looks for synchronous calls in expressions like `fn()()()`.
+
+- **lint:** Remove ESLint migrate patch ([#2132](https://github.com/seek-oss/skuba/pull/2132))
+
+  The ESLint migration patch is no longer applied during `skuba configure` or `skuba lint`.
+
+  If you are upgrading from skuba 7 or earlier, upgrade through each major version up to 13 first to apply the migration patch before upgrading to this version.
+
 ## 13.0.3
 
 ### Patch Changes
