@@ -1,5 +1,7 @@
 import path from 'path';
 
+import { describe, expect, it } from 'vitest';
+
 import { parseTscArgs } from './args.js';
 
 describe('parseTscArgs', () => {

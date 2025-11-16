@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`annotate with all options annotates when environment variables are set 1`] = `
+exports[`annotate > with 'all options' > annotates when environment variables are set 1`] = `
 "
 buildkite-agent
 annotate
@@ -12,7 +12,7 @@ warning
 "
 `;
 
-exports[`annotate with context and style options annotates when environment variables are set 1`] = `
+exports[`annotate > with 'context and style options' > annotates when environment variables are set 1`] = `
 "
 buildkite-agent
 annotate
@@ -24,7 +24,7 @@ error
 "
 `;
 
-exports[`annotate with context option annotates when environment variables are set 1`] = `
+exports[`annotate > with 'context option' > annotates when environment variables are set 1`] = `
 "
 buildkite-agent
 annotate
@@ -34,7 +34,7 @@ skuba-lint
 "
 `;
 
-exports[`annotate with empty options annotates when environment variables are set 1`] = `
+exports[`annotate > with 'empty options' > annotates when environment variables are set 1`] = `
 "
 buildkite-agent
 annotate
@@ -42,7 +42,7 @@ annotate
 "
 `;
 
-exports[`annotate with style option annotates when environment variables are set 1`] = `
+exports[`annotate > with 'style option' > annotates when environment variables are set 1`] = `
 "
 buildkite-agent
 annotate
@@ -52,7 +52,7 @@ info
 "
 `;
 
-exports[`annotate with undefined options annotates when environment variables are set 1`] = `
+exports[`annotate > with 'undefined options' > annotates when environment variables are set 1`] = `
 "
 buildkite-agent
 annotate

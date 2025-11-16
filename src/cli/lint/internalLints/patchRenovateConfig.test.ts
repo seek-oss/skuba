@@ -1,16 +1,18 @@
-import { inspect } from 'util';
-
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
 import type { PatchConfig } from './upgrade/index.js';
 
 import * as Git from '@skuba-lib/api/git';
 
-jest.mock('fs', () => memfs);
-jest.mock('@skuba-lib/api/git', () => ({
-  ...jest.requireActual<object>('@skuba-lib/api/git'),
-  getOwnerAndRepo: jest.fn(),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
+vi.mock('@skuba-lib/api/git', async () => ({
+  ...(await vi.importActual<object>('@skuba-lib/api/git')),
+  getOwnerAndRepo: vi.fn(),
 }));
 
 const JSON = `
@@ -35,15 +37,16 @@ const JSON5_CONFIGURED = `{extends: ['github>seek-oss/rynovate', local>seek-jobs
 
 const JSON5_EXTENDED = `{extends: ['github>seek-jobs/custom-config']}`;
 
-const getOwnerAndRepo = jest.mocked(Git.getOwnerAndRepo);
+const getOwnerAndRepo = vi.mocked(Git.getOwnerAndRepo);
 
-const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-const writeFile = jest.spyOn(memfs.fs.promises, 'writeFile');
+const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-beforeEach(jest.clearAllMocks);
+beforeEach(vi.clearAllMocks);
 beforeEach(() => vol.reset());
 
 describe('patchRenovateConfig', () => {
@@ -182,9 +185,11 @@ describe('patchRenovateConfig', () => {
       expect(volToJson()).toStrictEqual(files);
 
       expect(consoleLog).toHaveBeenCalledWith(
-        'Failed to patch Renovate config.',
+        expect.stringContaining('Failed to patch Renovate config.'),
       );
-      expect(consoleLog).toHaveBeenCalledWith(inspect(err));
+      expect(consoleLog).toHaveBeenCalledWith(
+        expect.stringContaining(err.toString()),
+      );
     });
 
     it('handles a non-Git directory', async () => {

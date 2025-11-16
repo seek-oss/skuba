@@ -1,24 +1,24 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`terminal handles 1 backtick 1`] = `
+exports[`terminal > handles '1 backtick' 1`] = `
 "\`\`\`term
 \`echo foo\`
 \`\`\`"
 `;
 
-exports[`terminal handles 3 backticks 1`] = `
+exports[`terminal > handles '3 backticks' 1`] = `
 "\`\`\`term
 \\\`\\\`\\\`echo foo\\\`\\\`\\\`
 \`\`\`"
 `;
 
-exports[`terminal handles 6 backticks 1`] = `
+exports[`terminal > handles '6 backticks' 1`] = `
 "\`\`\`term
 \\\`\\\`\\\`\\\`\\\`\\\`
 \`\`\`"
 `;
 
-exports[`terminal handles harmless code 1`] = `
+exports[`terminal > handles 'harmless code' 1`] = `
 "\`\`\`term
 echo foo
 \`\`\`"

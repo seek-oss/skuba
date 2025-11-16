@@ -3,14 +3,18 @@ import * as realFs from 'fs/promises';
 import path from 'path';
 
 import memfs, { vol } from 'memfs';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { Logger } from '../../../utils/logging.js';
 
 import { detectBadCodeowners } from './detectBadCodeowners.js';
 
-jest.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
-jest.mock('../../..', () => ({
+vi.mock('../../..', () => ({
   Git: {
     findRoot: () => Promise.resolve('/path/to/git/root'),
   },
@@ -19,12 +23,12 @@ jest.mock('../../..', () => ({
 const volToJson = () => vol.toJSON('/', undefined, true);
 
 afterEach(() => vol.reset());
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 const logger = {
-  bold: jest.fn(),
-  dim: jest.fn(),
-  warn: jest.fn(),
+  bold: vi.fn(),
+  dim: vi.fn(),
+  warn: vi.fn(),
 } as unknown as Logger;
 
 describe('detectBadCodeowners', () => {
@@ -42,7 +46,7 @@ describe('detectBadCodeowners', () => {
 
   it("should report ok on skuba's file", async () => {
     const contents = await realFs.readFile(
-      path.resolve(__dirname, '../../../../.github/CODEOWNERS'),
+      path.resolve(import.meta.dirname, '../../../../.github/CODEOWNERS'),
       'utf8',
     );
     vol.fromJSON({ [CODEOWNERS_PATH]: contents });
@@ -56,7 +60,10 @@ describe('detectBadCodeowners', () => {
 
   it('should report ok on skuba templated files', async () => {
     const contents = await realFs.readFile(
-      path.resolve(__dirname, '../../../../template/base/.github/CODEOWNERS'),
+      path.resolve(
+        import.meta.dirname,
+        '../../../../template/base/.github/CODEOWNERS',
+      ),
       'utf8',
     );
     vol.fromJSON({ [CODEOWNERS_PATH]: contents });

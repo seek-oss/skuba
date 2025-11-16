@@ -1,14 +1,15 @@
 import git from 'isomorphic-git';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { commit } from './commit.js';
 
-jest.mock('isomorphic-git');
+vi.mock('isomorphic-git');
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('commit', () => {
   it('propagates props to isomorphic-git', async () => {
-    jest.mocked(git.commit).mockResolvedValue('b'.repeat(40));
+    vi.mocked(git.commit).mockResolvedValue('b'.repeat(40));
 
     await expect(
       commit({
@@ -18,7 +19,7 @@ describe('commit', () => {
     ).resolves.toBe('b'.repeat(40));
 
     expect(git.commit).toHaveBeenCalledTimes(1);
-    expect(jest.mocked(git.commit).mock.calls[0]![0]).toMatchInlineSnapshot(
+    expect(vi.mocked(git.commit).mock.calls[0]![0]).toMatchInlineSnapshot(
       { fs: expect.any(Object) },
       `
       {

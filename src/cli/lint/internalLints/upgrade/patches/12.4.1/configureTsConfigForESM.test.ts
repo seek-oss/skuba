@@ -1,4 +1,5 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../../../../index.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
@@ -6,33 +7,40 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryConfigureTsConfigForESM } from './configureTsConfigForESM.js';
 
-jest.mock('../../../../../../index.js', () => ({
+vi.mock('../../../../../../index.js', () => ({
   Git: {
-    getOwnerAndRepo: jest.fn(),
+    getOwnerAndRepo: vi.fn(),
   },
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
+vi.mock('fast-glob', () => ({
+  glob: async (pat: string, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs.fs });
+  },
 }));
 
-jest.spyOn(console, 'warn').mockImplementation(() => {
+vi.spyOn(console, 'warn').mockImplementation(() => {
   /* do nothing */
 });
-jest.spyOn(console, 'log').mockImplementation(() => {
+vi.spyOn(console, 'log').mockImplementation(() => {
   /* do nothing */
 });
 
 beforeEach(() => {
   vol.reset();
-  jest.clearAllMocks();
-  jest
-    .mocked(Git.getOwnerAndRepo)
-    .mockResolvedValue({ repo: 'test-repo', owner: 'seek' });
+  vi.clearAllMocks();
+  vi.mocked(Git.getOwnerAndRepo).mockResolvedValue({
+    repo: 'test-repo',
+    owner: 'seek',
+  });
 });
 
 const baseArgs: PatchConfig = {
@@ -51,19 +59,19 @@ const baseArgs: PatchConfig = {
 
 describe('tryConfigureTsConfigForESM', () => {
   it('should skip if repository name cannot be determined', async () => {
-    jest
-      .mocked(Git.getOwnerAndRepo)
-      .mockRejectedValue(new Error('no repo found'));
+    vi.mocked(Git.getOwnerAndRepo).mockRejectedValue(
+      new Error('no repo found'),
+    );
 
     await expect(
       tryConfigureTsConfigForESM({
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no repository name found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if no tsconfig files are found', async () => {
@@ -74,10 +82,10 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no valid tsconfig.json files found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if the root tsconfig is already configured and contains no paths', async () => {
@@ -116,9 +124,9 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -152,9 +160,9 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -221,9 +229,9 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -370,9 +378,9 @@ describe('tryConfigureTsConfigForESM', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -557,9 +565,9 @@ export default Jest.mergePreset({
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {

@@ -1,14 +1,22 @@
-import { inspect } from 'util';
-
 import memfs, { vol } from 'memfs';
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
 }));
+vi.mock('fast-glob', () => ({
+  glob: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+vi.spyOn(console, 'log').mockImplementation(() => {});
 
 beforeEach(() => vol.reset());
 
@@ -61,11 +69,11 @@ import { createLogger } from '@seek/logger';
 export default createLogger();
 `;
 
-const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+const consoleLog = vi.spyOn(console, 'log');
 
-const writeFile = jest.spyOn(memfs.fs.promises, 'writeFile');
+const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 
-afterEach(() => jest.clearAllMocks());
+afterEach(() => vi.clearAllMocks());
 
 describe('IMPORT_REGEX', () => {
   test.each([
@@ -383,9 +391,13 @@ describe('unhandledRejections', () => {
     expect(volToJson()).toStrictEqual(files);
 
     expect(consoleLog).toHaveBeenCalledWith(
-      'Failed to patch listeners for unhandled promise rejections',
+      expect.stringContaining(
+        'Failed to patch listeners for unhandled promise rejections',
+      ),
     );
-    expect(consoleLog).toHaveBeenCalledWith(inspect(err));
+    expect(consoleLog).toHaveBeenCalledWith(
+      expect.stringContaining(err.toString()),
+    );
   });
 
   it('skips files that already contain unhandledRejection', async () => {

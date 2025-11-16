@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
@@ -11,15 +13,15 @@ import { createGitHubAnnotations } from './index.js';
 
 import * as GitHub from '@skuba-lib/api/github';
 
-jest.mock('../../../../utils/logging');
-jest.mock('@skuba-lib/api/github', () => ({
-  ...jest.requireActual('@skuba-lib/api/github'),
-  createCheckRun: jest.fn(),
+vi.mock('../../../../utils/logging');
+vi.mock('@skuba-lib/api/github', async () => ({
+  ...(await vi.importActual('@skuba-lib/api/github')),
+  createCheckRun: vi.fn(),
 }));
 
-jest.mock('./eslint');
-jest.mock('./prettier');
-jest.mock('./tsc');
+vi.mock('./eslint');
+vi.mock('./prettier');
+vi.mock('./tsc');
 
 const eslintOutput: ESLintOutput = {
   errors: [
@@ -69,7 +71,7 @@ const internalOutput: InternalLintResult = {
 };
 
 const tscOk = false;
-const mockOutput = jest.fn<string, any>();
+const mockOutput = vi.fn<() => string>();
 
 const tscOutputStream = {
   output: mockOutput,
@@ -129,11 +131,9 @@ beforeEach(() => {
   process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
   process.env.GITHUB_WORKFLOW = 'Test';
 
-  jest.mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
-  jest
-    .mocked(createPrettierAnnotations)
-    .mockReturnValue(mockPrettierAnnotations);
-  jest.mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
+  vi.mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
+  vi.mocked(createPrettierAnnotations).mockReturnValue(mockPrettierAnnotations);
+  vi.mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
 });
 
 afterEach(() => {
@@ -143,7 +143,7 @@ afterEach(() => {
   delete process.env.GITHUB_TOKEN;
   delete process.env.GITHUB_WORKFLOW;
 
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 });
 
 it('should return immediately if the required environment variables are not set', async () => {

@@ -1,6 +1,6 @@
 # managed by skuba
 ignorePatchFailures: false
-minimumReleaseAge: 4320 # 3 days
+# minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - '@seek/*'
   - '@skuba-lib/*'
@@ -12,11 +12,12 @@ minimumReleaseAgeExclude:
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@types*'
+  - '@vitest/*'
   - eslint
   - eslint-config-skuba
   - prettier
   - esbuild
-  - jest
   - tsconfig-seek
   - typescript
+  - vitest
   # end managed by skuba

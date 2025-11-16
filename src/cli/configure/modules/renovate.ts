@@ -3,7 +3,7 @@ import { deleteFiles } from '../processing/deleteFiles.js';
 import { withPackage } from '../processing/package.js';
 import { formatPrettier } from '../processing/prettier.js';
 import { getFirstDefined } from '../processing/record.js';
-import type { Module, Options } from '../types.js';
+import type { Module, Options, PackageJson } from '../types.js';
 
 const OTHER_CONFIG_FILENAMES = [
   '.github/renovate.json',
@@ -43,9 +43,12 @@ export const renovateModule = async ({ type }: Options): Promise<Module> => {
      * @see {@link https://docs.renovatebot.com/configuration-options/#rangestrategy }
      * @see {@link https://github.com/renovatebot/renovate/blob/8c361082842bb157d85ca39ecf4f6075730e74bb/lib/manager/npm/extract/type.ts#L3 }
      */
-    'package.json': withPackage(({ private: _, renovate, ...data }) => ({
-      ...data,
-      private: type !== 'package',
-    })),
+    'package.json': withPackage(
+      ({ private: _, renovate, ...data }) =>
+        ({
+          ...data,
+          private: type !== 'package',
+        }) as PackageJson,
+    ),
   };
 };

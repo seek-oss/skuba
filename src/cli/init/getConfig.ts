@@ -114,7 +114,7 @@ const cloneTemplate = async (
     });
   }
 
-  const templateConfig = getTemplateConfig(
+  const templateConfig = await getTemplateConfig(
     path.join(process.cwd(), destinationDir),
   );
 
@@ -148,14 +148,17 @@ const generatePlaceholders = (choices: Choice[]) =>
     choices.map(({ name }) => [name, `<%- ${name} %>`] as const),
   );
 
-export const getTemplateConfig = (dir: string): TemplateConfig => {
+export const getTemplateConfig = async (
+  dir: string,
+): Promise<TemplateConfig> => {
   const templateConfigPath = path.join(dir, TEMPLATE_CONFIG_FILENAME);
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const templateConfig = require(templateConfigPath) as unknown;
+    const templateModule = (await import(templateConfigPath)) as {
+      default: unknown;
+    };
 
-    return templateConfigSchema.parse(templateConfig);
+    return templateConfigSchema.parse(templateModule.default);
   } catch (err) {
     if (isErrorWithCode(err, 'MODULE_NOT_FOUND')) {
       return {

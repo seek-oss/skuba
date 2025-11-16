@@ -1,18 +1,19 @@
-import 'aws-sdk-client-mock-jest';
+import 'aws-sdk-client-mock-vitest/extend';
 
 import { PublishCommand } from '@aws-sdk/client-sns';
 import { mockClient } from 'aws-sdk-client-mock';
+import { vi } from 'vitest';
 
 import { sns as snsClient } from '#src/services/aws.js';
 import * as jobScorer from '#src/services/jobScorer.js';
 
 export const scoringService = {
-  request: jest.fn(),
+  request: vi.fn(),
 
   clear: () => scoringService.request.mockClear(),
 
   spy: () =>
-    jest
+    vi
       .spyOn(jobScorer.scoringService, 'request')
       .mockImplementation(scoringService.request),
 };

@@ -1,32 +1,38 @@
 import crypto from 'crypto';
 import path from 'path';
 
+import { diff } from '@vitest/utils/diff';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
-import { diff } from 'jest-diff';
+import { afterAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { format } from './index.js';
 
-jest.setTimeout(15_000);
+vi.setConfig({ testTimeout: 15_000 });
 
-const stdoutMock = jest.fn();
+const stdoutMock = vi.fn();
 
-jest
-  .spyOn(console, 'log')
-  .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+vi.spyOn(console, 'log').mockImplementation((...args) =>
+  stdoutMock(`${args.join(' ')}\n`),
+);
 
-jest
-  .spyOn(git, 'listRemotes')
-  .mockResolvedValue([
-    { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-  ]);
+vi.spyOn(git, 'listRemotes').mockResolvedValue([
+  { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+]);
 
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 
-const BASE_PATH = path.join(__dirname, '..', '..', '..', 'integration', 'base');
+const BASE_PATH = path.join(
+  import.meta.dirname,
+  '..',
+  '..',
+  '..',
+  'integration',
+  'base',
+);
 
 const TEMP_PATH = path.join(
-  __dirname,
+  import.meta.dirname,
   '..',
   '..',
   '..',
@@ -101,7 +107,7 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
 const originalCwd = process.cwd();
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   process.exitCode = undefined;
 });

@@ -100,7 +100,12 @@ export const templateConfigSchema = z.object({
 
 export const TEMPLATE_CONFIG_FILENAME = 'skuba.template.js';
 
-export const TEMPLATE_DIR = path.join(__dirname, '..', '..', 'template');
+export const TEMPLATE_DIR = path.join(
+  import.meta.dirname,
+  '..',
+  '..',
+  'template',
+);
 
 export const BASE_TEMPLATE_DIR = path.join(TEMPLATE_DIR, 'base');
 

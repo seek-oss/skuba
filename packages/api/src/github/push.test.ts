@@ -1,6 +1,16 @@
 import type { FileChanges } from '@octokit/graphql-schema';
 import fs from 'fs-extra';
 import git, { type ReadCommitResult } from 'isomorphic-git';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { apiTokenFromEnvironment } from './environment.js';
 import { graphql } from './octokit.js';
@@ -10,10 +20,10 @@ import {
   uploadFileChanges,
 } from './push.js';
 
-jest.mock('./environment');
-jest.mock('./octokit');
-jest.mock('fs-extra');
-jest.mock('isomorphic-git');
+vi.mock('./environment');
+vi.mock('./octokit');
+vi.mock('fs-extra');
+vi.mock('isomorphic-git');
 
 beforeAll(() => {
   process.env.BUILDKITE_COMMIT = 'commit-id';
@@ -24,18 +34,16 @@ afterAll(() => {
 });
 
 afterEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 });
 
 beforeEach(() => {
-  jest
-    .mocked(git.listRemotes)
-    .mockResolvedValue([
-      { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-    ]);
-  jest
-    .mocked(git.log)
-    .mockResolvedValue([{ oid: 'commit-id' } as ReadCommitResult]);
+  vi.mocked(git.listRemotes).mockResolvedValue([
+    { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
+  ]);
+  vi.mocked(git.log).mockResolvedValue([
+    { oid: 'commit-id' } as ReadCommitResult,
+  ]);
 });
 
 describe('uploadFileChanges', () => {
@@ -52,13 +60,13 @@ describe('uploadFileChanges', () => {
         messageBody: 'commit body',
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Could not read a GitHub API token from the environment. Please set GITHUB_API_TOKEN or GITHUB_TOKEN."`,
+      `[Error: Could not read a GitHub API token from the environment. Please set GITHUB_API_TOKEN or GITHUB_TOKEN.]`,
     );
   });
 
   it('should return a commit ID', async () => {
-    jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
-    jest.mocked(graphql).mockResolvedValue({
+    vi.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
+    vi.mocked(graphql).mockResolvedValue({
       createCommitOnBranch: {
         commit: {
           oid: 'upstream-id',
@@ -77,7 +85,7 @@ describe('uploadFileChanges', () => {
       messageBody: 'commit body',
     });
 
-    expect(jest.mocked(graphql).mock.calls[0]).toMatchInlineSnapshot(`
+    expect(vi.mocked(graphql).mock.calls[0]).toMatchInlineSnapshot(`
       [
         "
             mutation Mutation($input: CreateCommitOnBranchInput!) {
@@ -126,7 +134,7 @@ describe('uploadFileChanges', () => {
 
 describe('readFileChanges', () => {
   it('should read modified and added files from the file system', async () => {
-    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
+    vi.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
     const result = await readFileChanges('.', [
       { path: 'some-path', state: 'added' },
       { path: 'another-path', state: 'modified' },
@@ -151,8 +159,8 @@ describe('readFileChanges', () => {
   });
 
   it('should support a nested directory', async () => {
-    jest.mocked(git.findRoot).mockResolvedValue('/path/to/repo');
-    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
+    vi.mocked(git.findRoot).mockResolvedValue('/path/to/repo');
+    vi.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
 
     const result = await readFileChanges('/path/to/repo/packages/package', [
       { path: 'packages/package/some-path', state: 'added' },
@@ -186,10 +194,10 @@ describe('readFileChanges', () => {
 
 describe('uploadAllFileChanges', () => {
   it('should return undefined if there are no file changes to commit', async () => {
-    jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
-    jest
-      .mocked(git.statusMatrix)
-      .mockResolvedValue([['unchanged-file', 1, 1, 1]]);
+    vi.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
+    vi.mocked(git.statusMatrix).mockResolvedValue([
+      ['unchanged-file', 1, 1, 1],
+    ]);
 
     const result = await uploadAllFileChanges({
       dir: './',
@@ -202,14 +210,14 @@ describe('uploadAllFileChanges', () => {
   });
 
   it('should get all modified files and call the GraphQL client with the changed files', async () => {
-    jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
-    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
-    jest.mocked(git.statusMatrix).mockResolvedValue([
+    vi.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
+    vi.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
+    vi.mocked(git.statusMatrix).mockResolvedValue([
       ['modified-file', 1, 2, 1],
       ['new-file', 0, 2, 0],
       ['deleted-file', 1, 0, 1],
     ]);
-    jest.mocked(graphql).mockResolvedValue({
+    vi.mocked(graphql).mockResolvedValue({
       createCommitOnBranch: {
         commit: {
           id: 'upstream-id',
@@ -224,7 +232,7 @@ describe('uploadAllFileChanges', () => {
       messageBody: 'commit body',
     });
 
-    expect(jest.mocked(graphql).mock.calls[0]).toMatchInlineSnapshot(`
+    expect(vi.mocked(graphql).mock.calls[0]).toMatchInlineSnapshot(`
       [
         "
             mutation Mutation($input: CreateCommitOnBranchInput!) {
@@ -274,14 +282,14 @@ describe('uploadAllFileChanges', () => {
   });
 
   it('should update the local Git repository with changes from upstream when updateLocal is set', async () => {
-    jest.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
-    jest.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
-    jest.mocked(git.statusMatrix).mockResolvedValue([
+    vi.mocked(apiTokenFromEnvironment).mockReturnValue('api-token');
+    vi.mocked(fs.promises.readFile).mockResolvedValue('base64-contents');
+    vi.mocked(git.statusMatrix).mockResolvedValue([
       ['modified-file', 1, 2, 1],
       ['new-file', 0, 2, 0],
       ['deleted-file', 1, 0, 1],
     ]);
-    jest.mocked(graphql).mockResolvedValue({
+    vi.mocked(graphql).mockResolvedValue({
       createCommitOnBranch: {
         commit: {
           id: 'upstream-id',

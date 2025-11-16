@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { defaultOpts, executeModule } from '../testing/module.js';
 
 import { prettierModule } from './prettier.js';

@@ -1,19 +1,28 @@
-const findUp = jest.fn();
+import findUp, { type Options } from 'find-up';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-jest.mock('find-up', () => findUp);
+vi.mock('find-up');
 
 import * as exec from './exec.js';
 import { detectPackageManager } from './packageManager.js';
 
-const stdoutMock = jest.fn();
+type FindUpStringOverload = Extract<
+  typeof findUp,
+  (
+    name: string | readonly string[],
+    options?: Options,
+  ) => Promise<string | undefined>
+>;
 
-jest
-  .spyOn(console, 'log')
-  .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+const stdoutMock = vi.fn();
 
-const mockExec = jest.fn().mockResolvedValue({});
+vi.spyOn(console, 'log').mockImplementation((...args) =>
+  stdoutMock(`${args.join(' ')}\n`),
+);
 
-jest.spyOn(exec, 'createExec').mockReturnValue(mockExec);
+const mockExec = vi.fn().mockResolvedValue({});
+
+vi.spyOn(exec, 'createExec').mockReturnValue(mockExec);
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('').trim();
 
@@ -21,11 +30,10 @@ afterEach(stdoutMock.mockReset);
 
 describe('detectPackageManager', () => {
   it('detects pnpm', async () => {
-    findUp.mockImplementation((file: string) =>
+    vi.mocked(findUp).mockImplementation(((file: string) =>
       Promise.resolve(
         file === 'pnpm-lock.yaml' ? '/root/pnpm-lock.yaml' : undefined,
-      ),
-    );
+      )) as FindUpStringOverload);
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
@@ -42,11 +50,10 @@ describe('detectPackageManager', () => {
   });
 
   it('preferences yarn on confusing project setups with sibling lockfiles', async () => {
-    findUp.mockImplementation((file: string) =>
+    vi.mocked(findUp).mockImplementation(((file: string) =>
       Promise.resolve(
         file === 'pnpm-lock.yaml' ? '/root/pnpm-lock.yaml' : '/root/yarn.lock',
-      ),
-    );
+      )) as FindUpStringOverload);
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
@@ -63,13 +70,12 @@ describe('detectPackageManager', () => {
   });
 
   it('preferences the closest lockfile if at different levels', async () => {
-    findUp.mockImplementation((file: string) =>
+    vi.mocked(findUp).mockImplementation(((file: string) =>
       Promise.resolve(
         file === 'pnpm-lock.yaml'
           ? '/root/a/b/c/pnpm-lock.yaml'
           : '/root/yarn.lock',
-      ),
-    );
+      )) as FindUpStringOverload);
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
@@ -86,9 +92,10 @@ describe('detectPackageManager', () => {
   });
 
   it('detects yarn', async () => {
-    findUp.mockImplementation((file: string) =>
-      Promise.resolve(file === 'yarn.lock' ? '/root/yarn.lock' : undefined),
-    );
+    vi.mocked(findUp).mockImplementation(((file: string) =>
+      Promise.resolve(
+        file === 'yarn.lock' ? '/root/yarn.lock' : undefined,
+      )) as FindUpStringOverload);
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
@@ -105,7 +112,7 @@ describe('detectPackageManager', () => {
   });
 
   it('defaults on unrecognised package manager', async () => {
-    findUp.mockResolvedValue(undefined);
+    vi.mocked(findUp).mockResolvedValue(undefined);
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {
@@ -129,7 +136,7 @@ describe('detectPackageManager', () => {
   it('defaults on detection failure', async () => {
     const message = 'Badness!';
 
-    findUp.mockRejectedValue(new Error(message));
+    vi.mocked(findUp).mockRejectedValue(new Error(message));
 
     await expect(detectPackageManager()).resolves.toMatchInlineSnapshot(`
       {

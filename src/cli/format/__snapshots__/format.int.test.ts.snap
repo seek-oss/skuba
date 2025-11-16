@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`fixable 1`] = `
+exports[`'fixable' 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
@@ -74,42 +74,42 @@ d.js
 "
 `;
 
-exports[`fixable 2`] = `
+exports[`'fixable' 2`] = `
 "
 a/a/a.ts
 --------
-@@ -1,4 +1,4 @@
-  // Imports out-of-order
-- import path from 'path';
-  import fs from 'fs';
-+ import path from 'path';
+[33m@@ -1,4 +1,4 @@[39m
+[2m  // Imports out-of-order[22m
+[32m- import path from 'path';[39m
+[2m  import fs from 'fs';[22m
+[31m+ import path from 'path';[39m
 
 
 b.md
 ----
-@@ -2,3 +2,3 @@
+[33m@@ -2,3 +2,3 @@[39m
 
-- Trailing space 
-+ Trailing space
+[32m- Trailing space [39m
+[31m+ Trailing space[39m
 
 
 c.json
 ------
-@@ -2,3 +2,3 @@
-    "key": "value"
--   }
-+ }
+[33m@@ -2,3 +2,3 @@[39m
+[2m    "key": "value"[22m
+[32m-   }[39m
+[31m+ }[39m
 
 
 d.js
 ----
-  // eslint-disable-next-line no-console
--     console.log(process.argv);
-+ console.log(process.argv);
+[2m  // eslint-disable-next-line no-console[22m
+[32m-     console.log(process.argv);[39m
+[31m+ console.log(process.argv);[39m
 "
 `;
 
-exports[`ok --debug 1`] = `
+exports[`'ok --debug' 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
@@ -209,12 +209,12 @@ Processed 7 files in <random>s.
 "
 `;
 
-exports[`ok --debug 2`] = `
+exports[`'ok --debug' 2`] = `
 "
 "
 `;
 
-exports[`ok 1`] = `
+exports[`'ok' 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
@@ -284,12 +284,12 @@ Processed 7 files in <random>s.
 "
 `;
 
-exports[`ok 2`] = `
+exports[`'ok' 2`] = `
 "
 "
 `;
 
-exports[`unfixable 1`] = `
+exports[`'unfixable' 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
@@ -376,19 +376,19 @@ ESLint, Prettier found issues that require triage.
 "
 `;
 
-exports[`unfixable 2`] = `
+exports[`'unfixable' 2`] = `
 "
 a/a/a.ts
 --------
-@@ -1,4 +1,4 @@
-  // Imports out-of-order
-- import path from 'path';
-  import fs from 'fs';
-+ import path from 'path';
+[33m@@ -1,4 +1,4 @@[39m
+[2m  // Imports out-of-order[22m
+[32m- import path from 'path';[39m
+[2m  import fs from 'fs';[22m
+[31m+ import path from 'path';[39m
 
-@@ -7,3 +7,3 @@
+[33m@@ -7,3 +7,3 @@[39m
 
--   console.log('I forgot to remove this')
-+   console.log('I forgot to remove this');
-  };"
+[32m-   console.log('I forgot to remove this')[39m
+[31m+   console.log('I forgot to remove this');[39m
+[2m  };[22m"
 `;

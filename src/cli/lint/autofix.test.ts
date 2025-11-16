@@ -1,4 +1,5 @@
 import { simpleGit } from 'simple-git';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { runESLint } from '../adapter/eslint.js';
 import { runPrettier } from '../adapter/prettier.js';
@@ -15,24 +16,24 @@ import * as Buildkite from '@skuba-lib/api/buildkite';
 import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
 
-jest.mock('simple-git');
-jest.mock('@skuba-lib/api/buildkite');
-jest.mock('@skuba-lib/api/git');
-jest.mock('@skuba-lib/api/github');
-jest.mock('../adapter/eslint');
-jest.mock('../adapter/prettier');
-jest.mock('./internal');
-jest.mock('../configure/analysis/project');
+vi.mock('simple-git');
+vi.mock('@skuba-lib/api/buildkite');
+vi.mock('@skuba-lib/api/git');
+vi.mock('@skuba-lib/api/github');
+vi.mock('../adapter/eslint');
+vi.mock('../adapter/prettier');
+vi.mock('./internal');
+vi.mock('../configure/analysis/project');
 
 const MOCK_ERROR = new Error('Badness!');
 
-const stdoutMock = jest.fn();
+const stdoutMock = vi.fn();
 
 const stdout = () => {
   const result = stdoutMock.mock.calls
     .flat(1)
     .join('')
-    .replace(/(at Object\.\<anonymous\>)[\s\S]+$/, '$1...');
+    .replace(/(Error: Badness!)[\s\S]+$/, '$1\n...');
   return `\n${result}`;
 };
 
@@ -43,18 +44,18 @@ beforeEach(() => {
 
   process.env.CI = 'true';
 
-  jest
-    .spyOn(console, 'log')
-    .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+  vi.spyOn(console, 'log').mockImplementation((...args) =>
+    stdoutMock(`${args.join(' ')}\n`),
+  );
 
-  jest.mocked(Git.getChangedFiles).mockResolvedValue([]);
+  vi.mocked(Git.getChangedFiles).mockResolvedValue([]);
 
-  jest
-    .mocked(createDestinationFileReader)
-    .mockReturnValue(jest.fn().mockResolvedValue(null));
+  vi.mocked(createDestinationFileReader).mockReturnValue(
+    vi.fn().mockResolvedValue(null),
+  );
 });
 
-afterEach(jest.resetAllMocks);
+afterEach(vi.resetAllMocks);
 
 describe('autofix', () => {
   const params = {
@@ -65,7 +66,7 @@ describe('autofix', () => {
   };
 
   describe('GitHub Actions', () => {
-    const push = jest.fn();
+    const push = vi.fn();
 
     const expectAutofixCommit = (
       { eslint, internal }: Record<'eslint' | 'internal', boolean> = {
@@ -88,7 +89,7 @@ describe('autofix', () => {
 
     beforeEach(() => {
       process.env.GITHUB_ACTIONS = 'true';
-      jest.mocked(simpleGit).mockReturnValue({ push } as any);
+      vi.mocked(simpleGit).mockReturnValue({ push } as any);
     });
 
     it('bails on a non-CI environment', async () => {
@@ -101,7 +102,7 @@ describe('autofix', () => {
     });
 
     it('bails on the master branch', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('master');
+      vi.mocked(Git.currentBranch).mockResolvedValue('master');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -109,7 +110,7 @@ describe('autofix', () => {
     });
 
     it('bails on the main branch', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('main');
+      vi.mocked(Git.currentBranch).mockResolvedValue('main');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -119,7 +120,7 @@ describe('autofix', () => {
     it('bails on the Buildkite default branch', async () => {
       process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH = 'devel';
 
-      jest.mocked(Git.currentBranch).mockResolvedValue('devel');
+      vi.mocked(Git.currentBranch).mockResolvedValue('devel');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -127,14 +128,12 @@ describe('autofix', () => {
     });
 
     it('bails on a renovate branch when there is no open pull request', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
-      jest
-        .mocked(GitHub.getPullRequestNumber)
-        .mockRejectedValue(
-          new Error(
-            `Commit cdd1520 is not associated with an open GitHub pull request`,
-          ),
-        );
+      vi.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
+      vi.mocked(GitHub.getPullRequestNumber).mockRejectedValue(
+        new Error(
+          `Commit cdd1520 is not associated with an open GitHub pull request`,
+        ),
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -144,8 +143,8 @@ describe('autofix', () => {
     });
 
     it('suceeds on a renovate branch when there is an open pull request associated with the commit', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
-      jest.mocked(GitHub.getPullRequestNumber).mockResolvedValue(6);
+      vi.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
+      vi.mocked(GitHub.getPullRequestNumber).mockResolvedValue(6);
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -155,7 +154,7 @@ describe('autofix', () => {
     it('bails on a GitHub protected branch', async () => {
       process.env.GITHUB_REF_PROTECTED = 'true';
 
-      jest.mocked(Git.currentBranch).mockResolvedValue('beta');
+      vi.mocked(Git.currentBranch).mockResolvedValue('beta');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -163,10 +162,10 @@ describe('autofix', () => {
     });
 
     it('bails on an autofix head commit', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('feature');
-      jest
-        .mocked(Git.getHeadCommitMessage)
-        .mockResolvedValue('Run `skuba format`\n');
+      vi.mocked(Git.currentBranch).mockResolvedValue('feature');
+      vi.mocked(Git.getHeadCommitMessage).mockResolvedValue(
+        'Run `skuba format`\n',
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -182,7 +181,7 @@ describe('autofix', () => {
     });
 
     it('skips push on empty commit', async () => {
-      jest.mocked(Git.commitAllChanges).mockResolvedValue(undefined);
+      vi.mocked(Git.commitAllChanges).mockResolvedValue(undefined);
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -201,7 +200,7 @@ describe('autofix', () => {
     it('uses Git CLI in GitHub Actions', async () => {
       process.env.GITHUB_ACTIONS = 'true';
 
-      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -226,8 +225,8 @@ describe('autofix', () => {
     });
 
     it('handles fixable issues from ESLint only', async () => {
-      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
 
       await expect(
         autofix({ ...params, eslint: true, prettier: false }),
@@ -248,8 +247,8 @@ describe('autofix', () => {
     });
 
     it('handles fixable issues from Prettier only', async () => {
-      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
 
       await expect(
         autofix({ ...params, eslint: false, internal: false, prettier: true }),
@@ -277,15 +276,15 @@ describe('autofix', () => {
     });
 
     it('handles internal changes only', async () => {
-      jest.mocked(Git.getChangedFiles).mockResolvedValue([
+      vi.mocked(Git.getChangedFiles).mockResolvedValue([
         {
           path: '.gitignore',
           state: 'modified',
         },
       ]);
 
-      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
 
       await expect(
         autofix({ ...params, eslint: false, prettier: false, internal: true }),
@@ -314,10 +313,10 @@ describe('autofix', () => {
     it('tolerates guard errors', async () => {
       const ERROR = new Error('badness!');
 
-      jest.mocked(Git.currentBranch).mockRejectedValue(ERROR);
-      jest.mocked(Git.getHeadCommitMessage).mockRejectedValue(ERROR);
+      vi.mocked(Git.currentBranch).mockRejectedValue(ERROR);
+      vi.mocked(Git.getHeadCommitMessage).mockRejectedValue(ERROR);
 
-      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -334,7 +333,7 @@ describe('autofix', () => {
     });
 
     it('bails on commit error', async () => {
-      jest.mocked(Git.commitAllChanges).mockRejectedValue(MOCK_ERROR);
+      vi.mocked(Git.commitAllChanges).mockRejectedValue(MOCK_ERROR);
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -348,23 +347,23 @@ describe('autofix', () => {
         Failed to push fix commit.
         Does your CI environment have write access to your Git repository?
         Error: Badness!
-            at Object.<anonymous>..."
+        ..."
       `);
     });
 
     it('will ignore .npmrc if it has auth secrets', async () => {
-      jest.mocked(Git.getChangedFiles).mockResolvedValue([
+      vi.mocked(Git.getChangedFiles).mockResolvedValue([
         {
           path: '.npmrc',
           state: 'modified',
         },
       ]);
 
-      jest.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
-      jest
-        .mocked(createDestinationFileReader)
-        .mockReturnValue(jest.fn().mockResolvedValue('_authToken'));
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      vi.mocked(createDestinationFileReader).mockReturnValue(
+        vi.fn().mockResolvedValue('_authToken'),
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -418,7 +417,7 @@ describe('autofix', () => {
     });
 
     it('bails on the master branch', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('master');
+      vi.mocked(Git.currentBranch).mockResolvedValue('master');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -426,7 +425,7 @@ describe('autofix', () => {
     });
 
     it('bails on the main branch', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('main');
+      vi.mocked(Git.currentBranch).mockResolvedValue('main');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -436,7 +435,7 @@ describe('autofix', () => {
     it('bails on the Buildkite default branch', async () => {
       process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH = 'devel';
 
-      jest.mocked(Git.currentBranch).mockResolvedValue('devel');
+      vi.mocked(Git.currentBranch).mockResolvedValue('devel');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -446,7 +445,7 @@ describe('autofix', () => {
     it('bails on a GitHub protected branch', async () => {
       process.env.GITHUB_REF_PROTECTED = 'true';
 
-      jest.mocked(Git.currentBranch).mockResolvedValue('beta');
+      vi.mocked(Git.currentBranch).mockResolvedValue('beta');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -454,10 +453,10 @@ describe('autofix', () => {
     });
 
     it('bails on an autofix head commit', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('feature');
-      jest
-        .mocked(Git.getHeadCommitMessage)
-        .mockResolvedValue('Run `skuba format`');
+      vi.mocked(Git.currentBranch).mockResolvedValue('feature');
+      vi.mocked(Git.getHeadCommitMessage).mockResolvedValue(
+        'Run `skuba format`',
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -465,7 +464,7 @@ describe('autofix', () => {
     });
 
     it('bails on no fixable issues', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('feature');
+      vi.mocked(Git.currentBranch).mockResolvedValue('feature');
 
       await expect(
         autofix({ ...params, eslint: false, prettier: false, internal: false }),
@@ -475,7 +474,7 @@ describe('autofix', () => {
     });
 
     it('skips push when there are no changes', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('feature');
+      vi.mocked(Git.currentBranch).mockResolvedValue('feature');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -491,8 +490,8 @@ describe('autofix', () => {
     });
 
     it('handles fixable issues from ESLint only', async () => {
-      jest.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
-      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
 
       await expect(
         autofix({ ...params, eslint: true, prettier: false }),
@@ -519,8 +518,8 @@ describe('autofix', () => {
     });
 
     it('handles fixable issues from Prettier only', async () => {
-      jest.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
-      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
 
       await expect(
         autofix({ ...params, eslint: false, internal: false, prettier: true }),
@@ -547,15 +546,15 @@ describe('autofix', () => {
     });
 
     it('handles internal changes only', async () => {
-      jest.mocked(Git.getChangedFiles).mockResolvedValue([
+      vi.mocked(Git.getChangedFiles).mockResolvedValue([
         {
           path: '.gitignore',
           state: 'modified',
         },
       ]);
 
-      jest.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
-      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
 
       await expect(
         autofix({ ...params, eslint: false, prettier: false }),
@@ -581,9 +580,9 @@ describe('autofix', () => {
     });
 
     it('logs a warning when the current branch cannot be determined', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue(undefined);
+      vi.mocked(Git.currentBranch).mockResolvedValue(undefined);
 
-      jest.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -600,9 +599,9 @@ describe('autofix', () => {
     });
 
     it('bails on commit error', async () => {
-      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
+      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
 
-      jest.mocked(GitHub.uploadAllFileChanges).mockRejectedValue(MOCK_ERROR);
+      vi.mocked(GitHub.uploadAllFileChanges).mockRejectedValue(MOCK_ERROR);
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -616,23 +615,23 @@ describe('autofix', () => {
         Failed to push fix commit.
         Does your CI environment have write access to your Git repository?
         Error: Badness!
-            at Object.<anonymous>..."
+        ..."
       `);
     });
 
     it('will ignore .npmrc if it has auth secrets', async () => {
-      jest.mocked(Git.getChangedFiles).mockResolvedValue([
+      vi.mocked(Git.getChangedFiles).mockResolvedValue([
         {
           path: '.npmrc',
           state: 'modified',
         },
       ]);
 
-      jest.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
-      jest.mocked(Git.currentBranch).mockResolvedValue('dev');
-      jest
-        .mocked(createDestinationFileReader)
-        .mockReturnValue(jest.fn().mockResolvedValue('_authToken'));
+      vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      vi.mocked(createDestinationFileReader).mockReturnValue(
+        vi.fn().mockResolvedValue('_authToken'),
+      );
 
       await expect(autofix(params)).resolves.toBeUndefined();
 

@@ -1,5 +1,4 @@
 import { select } from '@inquirer/prompts';
-import type { ReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging.js';
 import {
@@ -9,6 +8,8 @@ import {
 } from '../../utils/manifest.js';
 import type { TemplateConfig } from '../../utils/template.js';
 import { hasProp } from '../../utils/validation.js';
+
+import type { ReadResult } from './types.js';
 
 interface Props {
   manifest: ReadResult;
