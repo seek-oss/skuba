@@ -54,6 +54,8 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -163,6 +165,8 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -268,6 +272,8 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -342,6 +348,8 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
+
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
