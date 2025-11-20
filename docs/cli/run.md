@@ -38,7 +38,7 @@ skuba node src/some-cli-script.ts
 some-cli-script.ts:
 
 ```typescript
-import { logger } '#src/framework/logging';
+import { logger } '#src/framework/logging.js';
 ```
 
 tsconfig.json:
