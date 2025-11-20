@@ -33,18 +33,40 @@ skuba node src/some-cli-script.ts
 >
 ```
 
-`skuba node` automatically registers your `tsconfig.json` paths as module aliases for ease of local development.
-If you use these aliases in your production code,
-your entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`] or [`tsconfig-paths`].
-For example, your `src/app.ts` may look like:
+`skuba node` automatically registers any `customConditions` from your root `tsconfig.json` during local development. This directs `tsx` to your source files rather than built files when resolving module aliases.
+
+some-cli-script.ts:
 
 ```typescript
-// This must be imported directly within the `src` directory.
-import 'skuba-dive/register';
-
-// You can use the `src` module alias after registration.
-import { logger } 'src/framework/logging';
+import { logger } '#src/framework/logging';
 ```
+
+tsconfig.json:
+
+```json
+{
+  "compilerOptions": {
+    "customConditions": ["@seek/YOUR_REPO/source"]
+  }
+}
+```
+
+package.json:
+
+```json
+{
+  "imports": {
+    "#src/*": {
+      "@seek/YOUR_REPO/source": "./src/*",
+      "default": "./lib/*"
+    }
+  }
+}
+```
+
+In this example, the `#src` module alias resolves to `./src/*` during local development and `./lib/*` in production builds.
+
+When using these aliases in production code, ensure the `package.json` file is included in your deployment. If bundling your code, configure your bundler to recognize the custom conditions. See our [ESM deep dive] for more details.
 
 ---
 
@@ -62,18 +84,7 @@ The entry point is chosen from:
 1. Manifest configuration: `package.json#/skuba/entryPoint`
 1. Default: `src/app.ts`
 
-`skuba start` automatically registers your `tsconfig.json` paths as module aliases for ease of local development.
-If you use these aliases in your production code,
-your entry point(s) will need to import a runtime module alias resolver like [`skuba-dive/register`] or [`tsconfig-paths`].
-For example, your `src/app.ts` may look like:
-
-```typescript
-// This must be imported directly within the `src` directory.
-import 'skuba-dive/register';
-
-// You can use the `src` module alias after registration.
-import { logger } 'src/framework/logging';
-```
+`skuba start` also automatically registers any `customConditions` from your root `tsconfig.json` during local development, similar to [`skuba node`](#skuba-node).
 
 ### Start an executable script
 
@@ -215,10 +226,9 @@ curl --include localhost:<port>/health
 Execution should pause on the breakpoint until we hit `F5` or the `▶️` button.
 
 [`skuba build`]: ./build.md
-[`skuba-dive/register`]: https://github.com/seek-oss/skuba-dive#register
-[`tsconfig-paths`]: https://github.com/dividab/tsconfig-paths
 [`tsx`]: https://github.com/privatenumber/tsx
 [express]: https://expressjs.com/
+[ESM deep dive]: ../deep-dives//esm.md#2-replace-skuba-diveregister-with-subpath-imports
 [fastify]: https://www.fastify.io/
 [http server]: https://nodejs.org/docs/latest-v20.x/api/http.html#class-httpserver
 [koa]: https://koajs.com/
