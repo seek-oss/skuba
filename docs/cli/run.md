@@ -228,7 +228,7 @@ Execution should pause on the breakpoint until we hit `F5` or the `▶️` butto
 [`skuba build`]: ./build.md
 [`tsx`]: https://github.com/privatenumber/tsx
 [express]: https://expressjs.com/
-[ESM deep dive]: ../deep-dives//esm.md#2-replace-skuba-diveregister-with-subpath-imports
+[esm deep dive]: ../deep-dives//esm.md#2-replace-skuba-diveregister-with-subpath-imports
 [fastify]: https://www.fastify.io/
 [http server]: https://nodejs.org/docs/latest-v20.x/api/http.html#class-httpserver
 [koa]: https://koajs.com/
