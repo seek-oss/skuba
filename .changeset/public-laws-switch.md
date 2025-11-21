@@ -2,7 +2,7 @@
 'skuba': minor
 ---
 
-Migrate CommonJS global variables to ES modules and enable module type in package.json
+**lint:** Migrate CommonJS global variables to ES modules and enable module type in package.json
 
 **Global variable replacements:**
 
