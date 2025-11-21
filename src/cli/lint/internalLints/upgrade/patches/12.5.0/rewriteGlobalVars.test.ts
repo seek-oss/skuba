@@ -6,7 +6,9 @@ import type { PatchConfig } from '../../index.js';
 
 import {
   hasDirNameRegex,
+  hasDirNameVariableRegex,
   hasFileNameRegex,
+  hasFileNameVariableRegex,
   tryRewriteGlobalVars,
 } from './rewriteGlobalVars.js';
 
@@ -122,5 +124,23 @@ describe('hasFileNameRegex', () => {
     ['local filename variable', 'const filename = import.meta.filename;'],
   ])('should not match %s', (_, input: string) => {
     expect(input).not.toMatch(hasFileNameRegex);
+  });
+});
+
+describe('hasDirNameVariableRegex', () => {
+  it('should match const __dirname =', () => {
+    expect('const __dirname =').toMatch(hasDirNameVariableRegex);
+  });
+  it('should not match __dirname =', () => {
+    expect('projectRoot: __dirname').not.toMatch(hasDirNameVariableRegex);
+  });
+});
+
+describe('hasFileNameVariableRegex', () => {
+  it('should match const __filename =', () => {
+    expect('const __filename =').toMatch(hasFileNameVariableRegex);
+  });
+  it('should not match __filename =', () => {
+    expect('projectRoot: __filename').not.toMatch(hasFileNameVariableRegex);
   });
 });

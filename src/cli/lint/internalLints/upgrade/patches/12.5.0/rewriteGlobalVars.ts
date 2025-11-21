@@ -8,32 +8,20 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 import { fetchFiles } from '../12.4.1/rewriteSrcImports.js';
 
 export const hasDirNameRegex = /__dirname\b/;
+export const hasDirNameVariableRegex = /const __dirname =/g;
 export const hasFileNameRegex = /__filename\b/;
+export const hasFileNameVariableRegex = /const __filename =/g;
 
-// TODO: leave a comment doesn't work for this but it's our repos anyways so should be ok
-// const __dirname = fileURLToPath(new URL('.', import.meta.url));
-// const root = path.resolve(__dirname, '..', '..');
-
-// TODO: is this efficient?
 const removeGlobalVars = (contents: string) =>
   contents
     .replace(hasDirNameRegex, 'import.meta.dirname')
-    .replace(hasFileNameRegex, 'import.meta.filename');
-
-// TODO: explain why we need these fallbacks
-// export function dirname(importMeta: ImportMeta) {
-//   const file = filename(importMeta);
-//   return file !== '' ? pathDirname(file) : '';
-// }
-
-// export function filename(importMeta: ImportMeta) {
-//   return importMeta.url ? fileURLToPath(importMeta.url) : '';
-// }
+    .replace(hasFileNameRegex, 'import.meta.filename')
+    .replace(hasDirNameVariableRegex, '')
+    .replace(hasFileNameVariableRegex, '');
 
 export const tryRewriteGlobalVars: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  // Todo: can this be reused from rewriteSrcImports?
   const fileNames = await glob(
     ['**/*.ts', '**/*.test.ts', '**/*.js', '**/*.test.js'],
     {
@@ -52,9 +40,9 @@ export const tryRewriteGlobalVars: PatchFunction = async ({
     };
   }
 
-  const tsFiles = await fetchFiles(fileNames);
+  const files = await fetchFiles(fileNames);
 
-  const filesWithGlobalVarsRemoved = tsFiles.map(({ file, contents }) => ({
+  const filesWithGlobalVarsRemoved = files.map(({ file, contents }) => ({
     file,
     before: contents,
     after: removeGlobalVars(contents),
