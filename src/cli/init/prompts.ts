@@ -39,17 +39,19 @@ const BASE_CHOICES = [
     initial: 'SEEK-Jobs/my-team',
     validate: (value: unknown) => {
       if (typeof value !== 'string') {
-        return 'required';
+        return 'Required';
       }
 
       const [org, team] = value.split('/');
 
       if (!org || !isGitHubOrg(org)) {
-        return 'fails GitHub validation';
+        return 'Must contain a valid GitHub org name';
       }
 
       return (
-        team === undefined || isGitHubTeam(team) || 'fails GitHub validation'
+        team === undefined ||
+        isGitHubTeam(team) ||
+        'Must contain a valid GitHub team name'
       );
     },
   },
@@ -59,11 +61,11 @@ const BASE_CHOICES = [
     initial: 'my-repo',
     validate: async (value: unknown) => {
       if (typeof value !== 'string') {
-        return 'required';
+        return 'Required';
       }
 
       if (!isGitHubRepo(value)) {
-        return 'fails GitHub validation';
+        return 'Must be a valid GitHub repo name';
       }
 
       const exists = await pathExists(value);
@@ -77,7 +79,7 @@ const BASE_CHOICES = [
     initial: 'arm64',
     allowInitial: true,
     validate: (value: unknown) =>
-      isPlatform(value) || `must be ${PLATFORM_OPTIONS}`,
+      isPlatform(value) || `Must be ${PLATFORM_OPTIONS}`,
   },
   {
     name: 'defaultBranch',
@@ -85,7 +87,7 @@ const BASE_CHOICES = [
     initial: 'main',
     allowInitial: true,
     validate: (value: unknown) =>
-      typeof value === 'string' && value.length > 0 ? true : 'required',
+      typeof value === 'string' && value.length > 0 ? true : 'Required',
   },
 ] as const;
 
@@ -109,7 +111,7 @@ export const getGitPath = async () =>
     message: 'Git path',
     default: 'seek-oss/skuba',
     validate: (value: string) =>
-      /[^/]+\/[^/]+/.test(value) || 'Path is not valid',
+      /[^/]+\/[^/]+/.test(value) || 'Must be a valid path',
   });
 
 export const getTemplateName = async () =>
