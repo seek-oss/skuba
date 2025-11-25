@@ -1,5 +1,13 @@
 # eslint-plugin-skuba
 
+## 1.0.3
+
+### Patch Changes
+
+- **skuba/no-sync-in-promise-iterable:** Check curried functions ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
+- **skuba/no-sync-in-promise-iterable:** Check member expressions ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
 ## 1.0.2
 
 ### Patch Changes
