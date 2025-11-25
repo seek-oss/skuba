@@ -22,6 +22,18 @@ module.exports = {
       initial: 'my-team-aws-account-prod:cicd',
       validate: (value) => /^.+:.+$/.test(value),
     },
+    {
+      name: 'devDataDogApiKeySecretArn',
+      message: 'Dev DataDog API Key Secret ARN',
+      initial:
+        'arn:aws:secretsmanager:<Region>:<AccountId>:secret:<SecretName>',
+    },
+    {
+      name: 'prodDataDogApiKeySecretArn',
+      message: 'Prod DataDog API Key Secret ARN',
+      initial:
+        'arn:aws:secretsmanager:<Region>:<AccountId>:secret:<SecretName>',
+    },
   ],
   packageManager: 'pnpm',
   type: 'application',
