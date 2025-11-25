@@ -920,7 +920,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "Environment": {
           "Variables": {
-            "DD_API_KEY_SECRET_ARN": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:TODO_SECRET_NAME",
+            "DD_API_KEY_SECRET_ARN": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:<SecretName>",
             "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
             "DD_ENV": "production",
             "DD_FLUSH_TO_LOG": "false",
@@ -1384,7 +1384,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 "secretsmanager:DescribeSecret",
               ],
               "Effect": "Allow",
-              "Resource": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:TODO_SECRET_NAME-??????",
+              "Resource": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:<SecretName>-??????",
             },
             {
               "Action": [
