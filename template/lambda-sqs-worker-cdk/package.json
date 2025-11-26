@@ -20,6 +20,7 @@
   "dependencies": {
     "@aws-sdk/client-codedeploy": "^3.363.0",
     "@aws-sdk/client-lambda": "^3.363.0",
+    "@aws-sdk/client-secrets-manager": "^3.363.0",
     "@aws-sdk/client-sns": "^3.363.0",
     "@seek/aws-codedeploy-hooks": "^2.0.0",
     "@seek/logger": "^11.1.0",
