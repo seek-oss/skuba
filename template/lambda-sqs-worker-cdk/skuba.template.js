@@ -26,13 +26,13 @@ module.exports = {
       name: 'devDataDogApiKeySecretArn',
       message: 'Dev DataDog API Key Secret ARN',
       initial:
-        'arn:aws:secretsmanager:<Region>:<AccountId>:secret:<SecretName>',
+        'arn:aws:secretsmanager:<Region>:<AccountId>:secret:datadog-api-key',
     },
     {
       name: 'prodDataDogApiKeySecretArn',
       message: 'Prod DataDog API Key Secret ARN',
       initial:
-        'arn:aws:secretsmanager:<Region>:<AccountId>:secret:<SecretName>',
+        'arn:aws:secretsmanager:<Region>:<AccountId>:secret:datadog-api-key',
     },
   ],
   packageManager: 'pnpm',

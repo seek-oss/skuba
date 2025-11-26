@@ -76,8 +76,8 @@ pnpm exec skuba init << EOF
     "serviceName": "serviceName",
     "region": "ap-southeast-2",
     "defaultBranch": "main",
-    "devDataDogApiKeySecretArn": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:<SecretName>",
-    "prodDataDogApiKeySecretArn": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:<SecretName>"
+    "devDataDogApiKeySecretArn": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:datadog-api-key",
+    "prodDataDogApiKeySecretArn": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:datadog-api-key"
   },
   "templateName": "${template}"
 }
