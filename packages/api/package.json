@@ -15,33 +15,33 @@
     ".": {
       "@seek/skuba/source": "./src/index.ts",
       "import": "./lib/index.mjs",
-      "require": "./lib/index.js"
+      "require": "./lib/index.cjs"
     },
     "./buildkite": {
       "@seek/skuba/source": "./src/buildkite/index.ts",
       "import": "./lib/buildkite/index.mjs",
-      "require": "./lib/buildkite/index.js"
+      "require": "./lib/buildkite/index.cjs"
     },
     "./git": {
       "@seek/skuba/source": "./src/git/index.ts",
       "import": "./lib/git/index.mjs",
-      "require": "./lib/git/index.js"
+      "require": "./lib/git/index.cjs"
     },
     "./github": {
       "@seek/skuba/source": "./src/github/index.ts",
       "import": "./lib/github/index.mjs",
-      "require": "./lib/github/index.js"
+      "require": "./lib/github/index.cjs"
     },
     "./net": {
       "@seek/skuba/source": "./src/net/index.ts",
       "import": "./lib/net/index.mjs",
-      "require": "./lib/net/index.js"
+      "require": "./lib/net/index.cjs"
     },
     "./package.json": "./package.json"
   },
-  "main": "./lib/index.js",
+  "main": "./lib/index.cjs",
   "module": "./lib/index.mjs",
-  "types": "./lib/index.d.ts",
+  "types": "./lib/index.d.cts",
   "files": [
     "lib",
     "buildkite",
@@ -67,23 +67,23 @@
     "exports": {
       ".": {
         "import": "./lib/index.mjs",
-        "require": "./lib/index.js"
+        "require": "./lib/index.cjs"
       },
       "./buildkite": {
         "import": "./lib/buildkite/index.mjs",
-        "require": "./lib/buildkite/index.js"
+        "require": "./lib/buildkite/index.cjs"
       },
       "./git": {
         "import": "./lib/git/index.mjs",
-        "require": "./lib/git/index.js"
+        "require": "./lib/git/index.cjs"
       },
       "./github": {
         "import": "./lib/github/index.mjs",
-        "require": "./lib/github/index.js"
+        "require": "./lib/github/index.cjs"
       },
       "./net": {
         "import": "./lib/net/index.mjs",
-        "require": "./lib/net/index.js"
+        "require": "./lib/net/index.cjs"
       },
       "./package.json": "./package.json"
     }

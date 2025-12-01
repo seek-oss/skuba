@@ -17,13 +17,13 @@
     ".": {
       "@seek/skuba/source": "./src/index.ts",
       "import": "./lib/index.mjs",
-      "require": "./lib/index.js"
+      "require": "./lib/index.cjs"
     },
     "./package.json": "./package.json"
   },
-  "main": "./lib/index.js",
+  "main": "./lib/index.cjs",
   "module": "./lib/index.mjs",
-  "types": "./lib/index.d.ts",
+  "types": "./lib/index.d.cts",
   "files": [
     "lib*/**/*.d.ts",
     "lib*/**/*.js",
@@ -59,7 +59,7 @@
     "exports": {
       ".": {
         "import": "./lib/index.mjs",
-        "require": "./lib/index.js"
+        "require": "./lib/index.cjs"
       },
       "./package.json": "./package.json"
     }
