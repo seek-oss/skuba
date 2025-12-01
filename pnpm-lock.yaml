@@ -117,11 +117,11 @@ importers:
         specifier: ^4.0.0
         version: 4.0.3
       prettier:
-        specifier: ~3.6.0
-        version: 3.6.2
+        specifier: ~3.7.0
+        version: 3.7.2
       prettier-plugin-packagejson:
         specifier: ^2.4.10
-        version: 2.5.19(prettier@3.6.2)
+        version: 2.5.19(prettier@3.7.2)
       read-pkg-up:
         specifier: ^7.0.1
         version: 7.0.1
@@ -6122,8 +6122,8 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  prettier@3.6.2:
-    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+  prettier@3.7.2:
+    resolution: {integrity: sha512-n3HV2J6QhItCXndGa3oMWvWFAgN1ibnS7R9mt6iokScBOC0Ul9/iZORmU2IWUMcyAQaMPjTlY3uT34TqocUxMA==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -14474,16 +14474,16 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-packagejson@2.5.19(prettier@3.6.2):
+  prettier-plugin-packagejson@2.5.19(prettier@3.7.2):
     dependencies:
       sort-package-json: 3.4.0
       synckit: 0.11.11
     optionalDependencies:
-      prettier: 3.6.2
+      prettier: 3.7.2
 
   prettier@2.8.8: {}
 
-  prettier@3.6.2: {}
+  prettier@3.7.2: {}
 
   pretty-format@30.2.0:
     dependencies:
