@@ -61,7 +61,7 @@
     "isomorphic-git": "^1.11.1"
   },
   "devDependencies": {
-    "tsdown": "^0.15.12"
+    "tsdown": "^0.16.0"
   },
   "publishConfig": {
     "exports": {
