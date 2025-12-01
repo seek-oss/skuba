@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-deps: eslint 9.39.1
+deps: eslint ^9.39.1
