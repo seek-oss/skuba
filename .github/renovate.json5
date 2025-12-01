@@ -112,6 +112,7 @@
     },
   ],
   branchPrefix: 'renovate-',
+  minimumReleaseAge: '3 days',
   commitMessageAction: '',
   gitIgnoredAuthors: ['34733141+seek-oss-ci@users.noreply.github.com'],
   postUpdateOptions: [],
