@@ -17,13 +17,13 @@
     ".": {
       "@seek/skuba/source": "./src/index.ts",
       "import": "./lib/index.mjs",
-      "require": "./lib/index.js"
+      "require": "./lib/index.cjs"
     },
     "./package.json": "./package.json"
   },
-  "main": "./lib/index.js",
+  "main": "./lib/index.cjs",
   "module": "./lib/index.mjs",
-  "types": "./lib/index.d.ts",
+  "types": "./lib/index.d.cts",
   "files": [
     "lib*/**/*.d.ts",
     "lib*/**/*.js",
@@ -43,7 +43,7 @@
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.26.0",
     "eslint": "^9.39.1",
-    "tsdown": "^0.15.12",
+    "tsdown": "^0.16.0",
     "tsx": "^4.16.2",
     "typescript-eslint": "^8.39.0"
   },
@@ -59,7 +59,7 @@
     "exports": {
       ".": {
         "import": "./lib/index.mjs",
-        "require": "./lib/index.js"
+        "require": "./lib/index.cjs"
       },
       "./package.json": "./package.json"
     }
