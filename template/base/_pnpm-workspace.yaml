@@ -12,6 +12,7 @@ minimumReleaseAgeExclude:
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@types*'
+  - '@eslint/*'
   - eslint
   - eslint-config-skuba
   - prettier

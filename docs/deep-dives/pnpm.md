@@ -71,6 +71,7 @@ The **skuba**-maintained `pnpm-workspace.yaml` ([previously `.npmrc`](https://gi
 # managed by skuba
 packageManagerStrictVersion: true
 publicHoistPattern:
+  - '@eslint/*'
   - '@types*'
   - '*eslint*'
   - '*prettier*'
@@ -148,6 +149,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     # managed by skuba
     packageManagerStrictVersion: true
     publicHoistPattern:
+      - '@eslint/*'
       - '@types*'
       - '*eslint*'
       - '*prettier*'
