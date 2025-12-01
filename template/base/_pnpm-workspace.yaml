@@ -11,6 +11,7 @@ minimumReleaseAgeExclude:
   - tsconfig-seek
 packageManagerStrictVersion: true
 publicHoistPattern:
+  - '@eslint/*'
   - '@types*'
   - eslint
   - eslint-config-skuba
