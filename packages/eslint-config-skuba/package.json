@@ -33,7 +33,7 @@
     "typescript-eslint": "^8.39.0"
   },
   "devDependencies": {
-    "eslint": "^9.11.1",
+    "eslint": "^9.39.1",
     "typescript": "~5.9.0"
   },
   "peerDependencies": {

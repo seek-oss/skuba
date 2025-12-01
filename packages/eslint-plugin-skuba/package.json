@@ -40,10 +40,9 @@
     "test:ci": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
     "test:watch": "node --import tsx --test --watch 'src/**/*.test.ts'"
   },
-  "dependencies": {},
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.26.0",
-    "eslint": "^9.11.1",
+    "eslint": "^9.39.1",
     "tsdown": "^0.15.12",
     "tsx": "^4.16.2",
     "typescript-eslint": "^8.39.0"
