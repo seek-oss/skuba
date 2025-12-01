@@ -55,7 +55,7 @@
   "dependencies": {
     "@octokit/graphql": "^9.0.0",
     "@octokit/rest": "^22.0.0",
-    "@octokit/types": "^15.0.0",
+    "@octokit/types": "^16.0.0",
     "fs-extra": "^11.0.0",
     "ignore": "^7.0.0",
     "isomorphic-git": "^1.11.1"
