@@ -35,13 +35,13 @@ skuba node src/some-cli-script.ts
 
 `skuba node` automatically registers any `customConditions` from your root `tsconfig.json` during local development. This directs `tsx` to your source files rather than built files when resolving module aliases.
 
-some-cli-script.ts:
+`some-cli-script.ts`:
 
 ```typescript
 import { logger } '#src/framework/logging.js';
 ```
 
-tsconfig.json:
+`tsconfig.json`:
 
 ```json
 {
@@ -51,7 +51,7 @@ tsconfig.json:
 }
 ```
 
-package.json:
+`package.json`:
 
 ```json
 {
@@ -66,7 +66,9 @@ package.json:
 
 In this example, the `#src` module alias resolves to `./src/*` during local development and `./lib/*` in production builds.
 
-When using these aliases in production code, ensure the `package.json` file is included in your deployment. If bundling your code, configure your bundler to recognize the custom conditions. See our [ESM deep dive] for more details.
+When using these aliases in production code, ensure the `package.json` file is included in your deployment.
+If bundling your code, configure your bundler to recognize the custom conditions.
+See our [ESM deep dive] for more details.
 
 ---
 
