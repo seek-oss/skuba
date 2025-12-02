@@ -1,5 +1,15 @@
 # eslint-config-skuba
 
+## 7.2.1
+
+### Patch Changes
+
+- **skuba/no-sync-in-promise-iterable:** Check curried functions ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
+- **skuba/no-sync-in-promise-iterable:** Check member expressions ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
+- **deps:** eslint-config-seek 14.7.0 ([#2143](https://github.com/seek-oss/skuba/pull/2143))
+
 ## 7.2.0
 
 ### Minor Changes
