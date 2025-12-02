@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-deps: Remove peer dependency on skuba-dive
+deps: Remove peer dependency on `skuba-dive`
