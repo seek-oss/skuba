@@ -1,6 +1,6 @@
 {
   "name": "skuba",
-  "version": "14.0.0",
+  "version": "13.1.0",
   "private": false,
   "description": "SEEK development toolkit for backend applications and packages",
   "homepage": "https://github.com/seek-oss/skuba#readme",
@@ -156,7 +156,7 @@
     "type-fest": "2.19.0"
   },
   "peerDependencies": {
-    "skuba-dive": "3.0.0"
+    "skuba-dive": "1 || 2 || 3"
   },
   "peerDependenciesMeta": {
     "skuba-dive": {
