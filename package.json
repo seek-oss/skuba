@@ -143,7 +143,7 @@
     "@types/semver": "7.7.1",
     "@types/supertest": "6.0.3",
     "enhanced-resolve": "5.18.3",
-    "express": "5.1.0",
+    "express": "5.2.0",
     "fastify": "5.6.2",
     "jest-diff": "30.2.0",
     "jsonfile": "6.2.0",
