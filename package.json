@@ -155,14 +155,6 @@
     "supertest": "7.1.4",
     "type-fest": "2.19.0"
   },
-  "peerDependencies": {
-    "skuba-dive": "1 || 2 || 3"
-  },
-  "peerDependenciesMeta": {
-    "skuba-dive": {
-      "optional": true
-    }
-  },
   "packageManager": "pnpm@10.24.0",
   "engines": {
     "node": ">=20.9.0"

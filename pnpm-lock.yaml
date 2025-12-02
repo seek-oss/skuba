@@ -129,9 +129,6 @@ importers:
       simple-git:
         specifier: ^3.5.0
         version: 3.28.0
-      skuba-dive:
-        specifier: workspace:*
-        version: link:packages/skuba-dive
       ts-dedent:
         specifier: ^2.2.0
         version: 2.2.0
