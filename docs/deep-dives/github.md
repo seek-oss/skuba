@@ -64,7 +64,7 @@ steps:
       GET_GITHUB_TOKEN: 'please'
     plugins:
       - ...
-      - docker-compose#v5.11.0:
+      - docker-compose#v5.12.1:
           environment:
             - GITHUB_API_TOKEN
           mount-buildkite-agent: true
