@@ -8,6 +8,7 @@ minimumReleaseAgeExclude:
   - eslint-config-skuba
   - eslint-plugin-skuba
   - skuba
+  - skuba-dive
   - tsconfig-seek
 packageManagerStrictVersion: true
 publicHoistPattern:
