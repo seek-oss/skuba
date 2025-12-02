@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-skuba",
-  "version": "7.2.0",
+  "version": "7.2.1",
   "private": false,
   "description": "ESLint config for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-config-skuba#readme",

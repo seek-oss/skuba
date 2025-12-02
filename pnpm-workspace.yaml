@@ -31,3 +31,4 @@ packages:
 
 overrides:
   'skuba': 'workspace:*'
+  'skuba-dive': 'workspace:*'

@@ -1,5 +1,47 @@
 # skuba
 
+## 13.1.0
+
+### Minor Changes
+
+- **deps:** Replace `enquirer` with `@inquirer/prompts` ([#2131](https://github.com/seek-oss/skuba/pull/2131))
+
+  This internal change only affects the `skuba init` and `skuba configure` interactive prompts.
+
+- **deps:** prettier ~3.7.0 ([#2146](https://github.com/seek-oss/skuba/pull/2146))
+
+  This change contains some formatting changes. Please read the [release notes](https://prettier.io/blog/2025/11/27/3.7.0) for more information.
+
+- **deps:** Replace `chalk` with `util.styleText` ([#2134](https://github.com/seek-oss/skuba/pull/2134))
+
+  This internal change only affects the styling of the skuba CLI.
+
+### Patch Changes
+
+- **deps:** @octokit/types ^16.0.0 ([#2149](https://github.com/seek-oss/skuba/pull/2149))
+
+- **lint:** Check member expressions in `skuba/no-sync-in-promise-iterable` ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
+  This looks for synchronous calls in expressions like `fn().prop`.
+
+- **deps:** eslint ^9.39.1 ([#2143](https://github.com/seek-oss/skuba/pull/2143))
+
+- **template/\*-rest-api:** Template Gantry environment names in values files ([#2120](https://github.com/seek-oss/skuba/pull/2120))
+
+- **deps:** esbuild ~0.27.0 ([#2137](https://github.com/seek-oss/skuba/pull/2137))
+
+- **deps:** eslint-config-seek 14.7.0 ([#2143](https://github.com/seek-oss/skuba/pull/2143))
+
+- **lint:** Check curried functions in `skuba/no-sync-in-promise-iterable` ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
+  This looks for synchronous calls in expressions like `fn()()()`.
+
+- **lint:** Remove ESLint migrate patch ([#2132](https://github.com/seek-oss/skuba/pull/2132))
+
+  The ESLint migration patch is no longer applied during `skuba configure` or `skuba lint`.
+
+  If you are upgrading from skuba 7 or earlier, upgrade through each major version up to 13 first to apply the migration patch before upgrading to this version.
+
 ## 13.0.3
 
 ### Patch Changes
