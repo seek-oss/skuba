@@ -1,5 +1,11 @@
 # skuba
 
+## 13.1.1
+
+### Patch Changes
+
+- **deps:** Remove peer dependency on `skuba-dive` ([#2160](https://github.com/seek-oss/skuba/pull/2160))
+
 ## 13.1.0
 
 ### Minor Changes
