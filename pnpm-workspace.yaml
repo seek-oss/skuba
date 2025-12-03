@@ -10,6 +10,9 @@ minimumReleaseAgeExclude:
   - skuba
   - skuba-dive
   - tsconfig-seek
+  # TODO: Remove
+  - '@typescript-eslint/*'
+  - typescript-eslint
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@eslint/*'
