@@ -10,6 +10,7 @@ minimumReleaseAgeExclude:
   - skuba
   - skuba-dive
   - tsconfig-seek
+  - vitest-koa-mocks
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@eslint/*'

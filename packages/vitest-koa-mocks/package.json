@@ -1,5 +1,5 @@
 {
-  "name": "vitest-koa-mocks",
+  "name": "@skuba-lib/vitest-koa-mocks",
   "version": "3.0.0",
   "private": false,
   "description": "Vitest mocks for Koa",
