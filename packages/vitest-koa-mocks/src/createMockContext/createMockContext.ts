@@ -70,16 +70,28 @@ export default function createContext<
     state,
   };
 
+  // In Koa 3, ctx.origin reflects the Origin header rather than being computed from protocol + host.
+  // Set it automatically when host is provided and no explicit Origin header is given.
+  const protocol = encrypted ? 'https' : 'http';
+  const requestHeaders: Record<string, string> = {
+    // Koa determines protocol based on the `Host` header.
+    Host: host,
+    ...headers,
+  };
+
+  // Only set Origin if not explicitly provided (case-insensitive check)
+  const hasOriginHeader =
+    'Origin' in requestHeaders || 'origin' in requestHeaders;
+  if (!hasOriginHeader) {
+    requestHeaders.Origin = `${protocol}://${host}`;
+  }
+
   const req = httpMocks.createRequest({
     url,
     method,
     statusCode,
     session,
-    headers: {
-      // Koa determines protocol based on the `Host` header.
-      Host: host,
-      ...headers,
-    },
+    headers: requestHeaders,
   });
 
   // Some functions we call in the implementations will perform checks for `req.encrypted`, which delegates to the socket.

@@ -1,0 +1,17 @@
+# managed by skuba
+.gantry/
+.git/
+.idea/
+.serverless/
+.vscode/
+node_modules*/
+
+/coverage*/
+/dist*/
+/lib*/
+/tmp*/
+
+.DS_Store
+npm-debug.log
+yarn-error.log
+# end managed by skuba
