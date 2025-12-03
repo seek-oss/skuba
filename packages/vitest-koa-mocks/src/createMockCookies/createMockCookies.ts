@@ -9,25 +9,21 @@ export interface MockCookies extends Cookies {
 }
 
 export default function createMockCookies(
-  cookies = {},
+  cookies: Record<string, string> = {},
   secure = true,
 ): MockCookies {
   const cookieEntries = Object.keys(cookies).map(
-    (key) => [key, cookies[key as keyof typeof cookies]] as [string, string],
+    (key) => [key, cookies[key]] as [string, string],
   );
 
   const requestStore = new Map<string, string>(cookieEntries);
   const responseStore = new Map<string, string>(cookieEntries);
 
   return {
-    set: vi.fn((key, value) => {
-      return responseStore.set(key, value);
-    }),
-    get: vi.fn((key) => {
-      return requestStore.get(key);
-    }),
+    set: vi.fn((key: string, value: string) => responseStore.set(key, value)),
+    get: vi.fn((key: string) => requestStore.get(key)),
     requestStore,
     responseStore,
     secure,
-  } as any;
+  } as unknown as MockCookies;
 }

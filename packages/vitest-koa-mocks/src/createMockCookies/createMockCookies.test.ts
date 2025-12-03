@@ -1,5 +1,6 @@
-import createMockCookies from './createMockCookies';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
+import createMockCookies from './createMockCookies.js';
 
 describe('create-mock-cookies', () => {
   it('includes maps for response and request cookie stores', () => {

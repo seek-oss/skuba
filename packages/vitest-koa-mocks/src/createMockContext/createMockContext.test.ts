@@ -1,8 +1,7 @@
 import type { Context } from 'koa';
+import { describe, expect, it, vi } from 'vitest';
 
-import createContext from './createMockContext';
-import { describe, it, expect } from 'vitest';
-import { vi } from 'vitest';
+import createContext from './createMockContext.js';
 
 const STORE_URL = '/admin?id=1';
 const STORE_HOST = 'mystore.com';
@@ -187,7 +186,7 @@ describe('create-mock-context', () => {
   });
 });
 
-function helloWorldMiddleware(ctx: Context, next: Function) {
+function helloWorldMiddleware(ctx: Context, next: () => Promise<any>) {
   ctx.body = 'hello world';
   return next();
 }

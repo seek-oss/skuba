@@ -1,24 +1,19 @@
 import stream from 'stream';
 
-import type { RequestMethod } from 'node-mocks-http';
-import httpMocks from 'node-mocks-http';
-import type { Context } from 'koa';
-import Koa from 'koa';
-
+import Koa, { type Context } from 'koa';
+import httpMocks, { type RequestMethod } from 'node-mocks-http';
 import { vi } from 'vitest';
 
-import type { MockCookies } from '../createMockCookies/createMockCookies';
-import createMockCookies from '../createMockCookies/createMockCookies';
-export interface Dictionary<T> {
-  [key: string]: T;
-}
+import createMockCookies, {
+  type MockCookies,
+} from '../createMockCookies/createMockCookies.js';
 
 export interface MockContext extends Context {
   cookies: MockCookies;
   request: Context['request'] & {
-    body?: any;
+    body?: unknown;
     rawBody?: string;
-    session?: any;
+    session?: Record<string, unknown>;
   };
 }
 
@@ -29,16 +24,18 @@ export interface Options<
   url?: string;
   method?: RequestMethod;
   statusCode?: number;
-  session?: Dictionary<any>;
-  headers?: Dictionary<string>;
-  cookies?: Dictionary<string>;
-  state?: Dictionary<any>;
+  session?: Record<string, unknown>;
+  headers?: Record<string, string>;
+  cookies?: Record<string, string>;
+  state?: Record<string, unknown>;
   encrypted?: boolean;
   host?: string;
   requestBody?: RequestBody;
   rawBody?: string;
-  throw?: Function;
-  redirect?: Function;
+  throw?:
+    | ((status: number, message?: string) => never)
+    | ReturnType<typeof vi.fn>;
+  redirect?: ((url: string) => void) | ReturnType<typeof vi.fn>;
   customProperties?: CustomProperties;
 }
 
@@ -87,6 +84,7 @@ export default function createContext<
 
   // Some functions we call in the implementations will perform checks for `req.encrypted`, which delegates to the socket.
   // MockRequest doesn't set a fake socket itself, so we create one here.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
   req.socket = new stream.Duplex() as any;
   Object.defineProperty(req.socket, 'encrypted', {
     writable: false,
@@ -101,9 +99,10 @@ export default function createContext<
 
   // This is to get around an odd behavior in the `cookies` library, where if `res.set` is defined, it will use an internal
   // node function to set headers, which results in them being set in the wrong place.
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
   res.set = undefined as any;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
   const context = app.createContext(req, res as any) as MockContext &
     CustomProperties;
   Object.assign(context, extensions);
