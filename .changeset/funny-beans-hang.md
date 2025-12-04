@@ -4,7 +4,7 @@
 
 migrate: Add `skuba migrate node24`
 
-`skuba migrate node24` will attempt to automatically upgrade projects to Node.js 24 and packages to Node.js 20.
+`skuba migrate node24` will attempt to automatically upgrade projects to Node.js 24 and package targets to Node.js 20.
 
 This marks a change from the previous Node.js 20 migration, where applications were upgraded to Node.js 20 and packages were left as is.
 

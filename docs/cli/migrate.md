@@ -130,7 +130,7 @@ As of **skuba** 14,
 
 ### skuba migrate node24
 
-Attempts to automatically upgrade your project to Node.js 24 and your packages to Node.js 20.
+Attempts to automatically upgrade your project to Node.js 24 and your package targets to Node.js 20.
 
 ```shell
 skuba migrate node24
