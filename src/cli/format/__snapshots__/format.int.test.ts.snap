@@ -48,10 +48,10 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 24
-Upgraded to Node.js 24
+Upgrading project to Node.js 24 and package targets to Node.js 20
+Upgraded project to Node.js 24 and package targets to Node.js 20
 
-Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -156,10 +156,10 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 24
-Upgraded to Node.js 24
+Upgrading project to Node.js 24 and package targets to Node.js 20
+Upgraded project to Node.js 24 and package targets to Node.js 20
 
-Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -260,10 +260,10 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 24
-Upgraded to Node.js 24
+Upgrading project to Node.js 24 and package targets to Node.js 20
+Upgraded project to Node.js 24 and package targets to Node.js 20
 
-Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -334,10 +334,10 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 24
-Upgraded to Node.js 24
+Upgrading project to Node.js 24 and package targets to Node.js 20
+Upgraded project to Node.js 24 and package targets to Node.js 20
 
-Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

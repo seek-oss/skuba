@@ -72,7 +72,7 @@ The migration will attempt to proceed if your project:
   On the other hand, you may wish to use recent language features when authoring your npm packages while retaining support for package consumers on older Node.js runtimes.
   In this scenario, see the note below on transpilation for npm packages.
 
-As of **skuba** 14, for npm packages, we will attempt to upgrade the following fields to be 2 major versions behind the project Node.js version.
+As of **skuba** 14, for npm packages, we will attempt to upgrade your targets to be 2 major versions behind the current LTS Node.js version.
 
 For example, when upgrading a project to Node.js 24, we will upgrade npm packages to target Node.js 20.
 
