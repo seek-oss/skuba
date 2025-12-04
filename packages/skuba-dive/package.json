@@ -31,7 +31,7 @@
     "test:ci": "pnpm skuba test --coverage"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.11.0"
   },
   "skuba": {
     "entryPoint": "src/index.ts",
