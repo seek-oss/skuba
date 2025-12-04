@@ -4,4 +4,4 @@
 'skuba-dive': major
 ---
 
-Require Node.js 22.11.0+
+deps: Require Node.js 22.14.0+
