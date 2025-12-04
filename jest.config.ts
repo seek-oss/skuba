@@ -1,5 +1,7 @@
 import * as Jest from './lib/api/jest/index.js';
 
+process.env.FORCE_COLOR = 'false';
+
 export default Jest.mergePreset({
   coveragePathIgnorePatterns: ['<rootDir>/integration/', '<rootDir>/template/'],
   displayName: 'unit',
