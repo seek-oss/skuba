@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "declaration": true,
     "lib": ["ES2021"],
     "outDir": "lib",
     "target": "ES2021",
