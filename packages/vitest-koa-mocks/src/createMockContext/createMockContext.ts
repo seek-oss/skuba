@@ -4,8 +4,9 @@ import Koa, { type Context } from 'koa';
 import httpMocks, { type RequestMethod } from 'node-mocks-http';
 import { vi } from 'vitest';
 
-import createMockCookies, {
+import {
   type MockCookies,
+  createMockCookies,
 } from '../createMockCookies/createMockCookies.js';
 
 export interface MockContext extends Context {
@@ -39,10 +40,12 @@ export interface Options<
   customProperties?: CustomProperties;
 }
 
-export default function createContext<
+export const createMockContext = <
   CustomProperties extends object,
   RequestBody = undefined,
->(options: Options<CustomProperties, RequestBody> = {}) {
+>(
+  options: Options<CustomProperties, RequestBody> = {},
+) => {
   const app = new Koa();
 
   const {
@@ -125,4 +128,4 @@ export default function createContext<
   context.request.rawBody = rawBody;
 
   return context as MockContext;
-}
+};

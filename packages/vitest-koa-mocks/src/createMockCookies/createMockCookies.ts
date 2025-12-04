@@ -8,10 +8,10 @@ export interface MockCookies extends Cookies {
   responseStore: Map<string, string>;
 }
 
-export default function createMockCookies(
+export const createMockCookies = (
   cookies: Record<string, string> = {},
   secure = true,
-): MockCookies {
+): MockCookies => {
   const cookieEntries = Object.keys(cookies).map(
     (key) => [key, cookies[key]] as [string, string],
   );
@@ -26,4 +26,4 @@ export default function createMockCookies(
     responseStore,
     secure,
   } as unknown as MockCookies;
-}
+};

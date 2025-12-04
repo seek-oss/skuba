@@ -1,7 +1,7 @@
 import type { Context } from 'koa';
 import { describe, expect, it, vi } from 'vitest';
 
-import createContext from './createMockContext.js';
+import { createMockContext } from './createMockContext.js';
 
 const STORE_URL = '/admin?id=1';
 const STORE_HOST = 'mystore.com';
@@ -9,58 +9,58 @@ const STORE_HOST = 'mystore.com';
 describe('create-mock-context', () => {
   it('includes custom method and url', () => {
     const method = 'PUT';
-    const context = createContext({ method, url: STORE_URL });
+    const context = createMockContext({ method, url: STORE_URL });
 
     expect(context.method).toBe(method);
     expect(context.url).toBe(STORE_URL);
   });
 
   it('defaults status to 404', () => {
-    const context = createContext();
+    const context = createMockContext();
 
     expect(context.status).toBe(404);
   });
 
   it('includes requestBody on ctx.request', () => {
     const requestBody = 'Hello I am a body';
-    const context = createContext({ requestBody });
+    const context = createMockContext({ requestBody });
 
-    expect((context.request as any).body).toBe(requestBody);
+    expect(context.request.body).toBe(requestBody);
   });
 
   it('includes rawBody on ctx.request', () => {
     const rawBody = 'Hello I am a body';
-    const context = createContext({ rawBody });
+    const context = createMockContext({ rawBody });
 
-    expect((context.request as any).rawBody).toBe(rawBody);
+    expect(context.request.rawBody).toBe(rawBody);
   });
 
   it('supports setting throw and redirect', () => {
     const throwFn = vi.fn();
     const redirect = vi.fn();
 
-    const context = createContext({ throw: throwFn, redirect });
+    const context = createMockContext({ throw: throwFn, redirect });
 
     expect(context.throw).toBe(throwFn);
     expect(context.redirect).toBe(redirect);
   });
 
   it('defaults throw to a vi fn', () => {
-    const context = createContext();
+    const context = createMockContext();
     context.throw();
 
     expect(context.throw).toHaveBeenCalled();
   });
 
   it('defaults redirect to a vi fn', () => {
-    const context = createContext();
+    const context = createMockContext();
     context.redirect('');
 
     expect(context.redirect).toHaveBeenCalled();
   });
 
   it('sets url segment aliases', () => {
-    const context = createContext({
+    const context = createMockContext({
       url: STORE_URL,
       host: STORE_HOST,
     });
@@ -75,7 +75,7 @@ describe('create-mock-context', () => {
   });
 
   it('defaults url segments when no origin is given', () => {
-    const context = createContext({ url: STORE_URL, host: STORE_HOST });
+    const context = createMockContext({ url: STORE_URL, host: STORE_HOST });
 
     const { url, originalUrl, host, origin, path, protocol } = context;
     expect(url).toBe(STORE_URL);
@@ -87,7 +87,7 @@ describe('create-mock-context', () => {
   });
 
   it('determines protocol based on `encrypted`', () => {
-    const { protocol } = createContext({
+    const { protocol } = createMockContext({
       encrypted: true,
       url: '/foo',
     });
@@ -100,14 +100,12 @@ describe('create-mock-context', () => {
       test: '1',
     };
 
-    const context = createContext({
+    const context = createMockContext({
       url: STORE_URL,
       cookies,
     });
 
-    expect((context.cookies as any).requestStore.get('test')).toBe(
-      cookies.test,
-    );
+    expect(context.cookies.requestStore.get('test')).toBe(cookies.test);
   });
 
   it('includes custom session data', () => {
@@ -115,7 +113,7 @@ describe('create-mock-context', () => {
       shop: 'shop1',
     };
 
-    const context = createContext({
+    const context = createMockContext({
       url: STORE_URL,
       session,
     });
@@ -128,7 +126,7 @@ describe('create-mock-context', () => {
       referrer: 'shop1',
     };
 
-    const context = createContext({
+    const context = createMockContext({
       url: STORE_URL,
       headers,
     });
@@ -137,12 +135,12 @@ describe('create-mock-context', () => {
   });
 
   it('returns custom headers when requested through ctx.get', () => {
-    const context = createContext({ headers: { test: 'value' } });
+    const context = createMockContext({ headers: { test: 'value' } });
     expect(context.get('test')).toBe('value');
   });
 
   it('sets response headers through ctx.set', () => {
-    const context = createContext();
+    const context = createMockContext();
     context.set('test', 'value');
     expect(context.response.headers.test).toBe('value');
   });
@@ -152,7 +150,7 @@ describe('create-mock-context', () => {
       productName: 'Fabulous robot',
     };
 
-    const context = createContext({
+    const context = createMockContext({
       url: STORE_URL,
       state,
     });
@@ -162,7 +160,7 @@ describe('create-mock-context', () => {
 
   it('supports arbitrary custom properties', () => {
     const totallyNotARegularProperty = '👌✨';
-    const context = createContext({
+    const context = createMockContext({
       url: STORE_URL,
       customProperties: { totallyNotARegularProperty },
     });
@@ -172,7 +170,7 @@ describe('create-mock-context', () => {
 
   it('works in koa middlewares even when passing arbitrary properties', async () => {
     const foo = 'bar';
-    const context = createContext({
+    const context = createMockContext({
       url: STORE_URL,
       customProperties: { foo },
     });
@@ -183,6 +181,12 @@ describe('create-mock-context', () => {
     expect(next).toHaveBeenCalled();
     expect(context.body).toBe('hello world');
     expect(context.foo).toBe(foo);
+  });
+
+  it('can be imported as default export from package index', () => {
+    expect(typeof createMockContext).toBe('function');
+    const context = createMockContext();
+    expect(context.status).toBe(404);
   });
 });
 
