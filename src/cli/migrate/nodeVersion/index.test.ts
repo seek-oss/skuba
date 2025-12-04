@@ -7,7 +7,7 @@ jest.mock('fast-glob', () => ({
   glob: (pat: any, opts: any) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
-// jest.mock('../../../utils/logging');
+jest.mock('../../../utils/logging');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

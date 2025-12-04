@@ -49,7 +49,6 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 Upgrading to Node.js 24
-Proceeding with migration from Node.js 24.0.0 to 24.0.0
 Upgraded to Node.js 24
 
 Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
@@ -158,7 +157,6 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 Upgrading to Node.js 24
-Proceeding with migration from Node.js 24.0.0 to 24.0.0
 Upgraded to Node.js 24
 
 Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
@@ -263,7 +261,6 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 Upgrading to Node.js 24
-Proceeding with migration from Node.js 24.0.0 to 24.0.0
 Upgraded to Node.js 24
 
 Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
@@ -338,7 +335,6 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 Upgrading to Node.js 24
-Proceeding with migration from Node.js 24.0.0 to 24.0.0
 Upgraded to Node.js 24
 
 Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
