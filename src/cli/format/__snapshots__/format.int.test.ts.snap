@@ -24,11 +24,6 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 22
-Proceeding with migration from Node.js 22.0.0 to 22.0.0
-Upgraded to Node.js 22
-
-Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
@@ -53,6 +48,11 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
+Upgrading to Node.js 24
+Proceeding with migration from Node.js 24.0.0 to 24.0.0
+Upgraded to Node.js 24
+
+Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -133,11 +133,6 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 22
-Proceeding with migration from Node.js 22.0.0 to 22.0.0
-Upgraded to Node.js 22
-
-Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
@@ -162,6 +157,11 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
+Upgrading to Node.js 24
+Proceeding with migration from Node.js 24.0.0 to 24.0.0
+Upgraded to Node.js 24
+
+Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -238,11 +238,6 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 22
-Proceeding with migration from Node.js 22.0.0 to 22.0.0
-Upgraded to Node.js 22
-
-Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
@@ -267,6 +262,11 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
+Upgrading to Node.js 24
+Proceeding with migration from Node.js 24.0.0 to 24.0.0
+Upgraded to Node.js 24
+
+Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -313,11 +313,6 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 22
-Proceeding with migration from Node.js 22.0.0 to 22.0.0
-Upgraded to Node.js 22
-
-Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
@@ -342,6 +337,11 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
+Upgrading to Node.js 24
+Proceeding with migration from Node.js 24.0.0 to 24.0.0
+Upgraded to Node.js 24
+
+Patch applied: Upgrade Node.js version to 24 and ECMAScript version to ES2025 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

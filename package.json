@@ -157,7 +157,7 @@
   },
   "packageManager": "pnpm@10.24.0",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.11.0"
   },
   "skuba": {
     "build": "esbuild",

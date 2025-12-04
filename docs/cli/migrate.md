@@ -72,8 +72,13 @@ The migration will attempt to proceed if your project:
   On the other hand, you may wish to use recent language features when authoring your npm packages while retaining support for package consumers on older Node.js runtimes.
   In this scenario, see the note below on transpilation for npm packages.
 
-For npm packages,
-manually review the following configuration options:
+As of **skuba** 14, for npm packages, we will attempt to upgrade the following fields to be 2 major versions behind the project Node.js version.
+
+For example, when upgrading a project to Node.js 24, we will upgrade npm packages to target Node.js 20.
+
+To ensure accurate detection of npm packages, set the `skuba.type` field in your `package.json` to `package` for npm packages and `application` for applications.
+
+The following fields are modified for npm packages:
 
 - `package.json#/engines/node`
 
@@ -110,8 +115,11 @@ manually review the following configuration options:
     }
   ```
 
-As of **skuba** 10,
 `skuba format` and `skuba lint` will automatically run these migrations as [patches].
+
+As of **skuba** 14,
+
+- `skuba migrate node24` will attempt to update underlying infrastructure packages to versions that support Node.js 24. These include `aws-cdk-lib`, `serverless`, `osls` and `@types/node`.
 
 [`Object.groupBy()` static method]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
 [active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
@@ -119,6 +127,23 @@ As of **skuba** 10,
 [patches]: ./lint.md#patches
 [semantic versioning]: https://semver.org/
 [template]: ../templates/index.md
+
+### skuba migrate node24
+
+Attempts to automatically upgrade your project to Node.js 24 and your packages to Node.js 20.
+
+```shell
+skuba migrate node24
+```
+
+Node.js 24 includes breaking changes.
+For more information on the upgrade, refer to:
+
+- The Node.js [release notes][node-24]
+- The AWS [release announcement][aws-24] for the Lambda `nodejs24.x` runtime update
+
+[aws-24]: https://aws.amazon.com/blogs/compute/node-js-24-runtime-now-available-in-aws-lambda/
+[node-24]: https://nodejs.org/en/blog/release/v24.0.0
 
 ### skuba migrate node22
 
