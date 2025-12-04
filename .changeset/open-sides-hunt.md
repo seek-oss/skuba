@@ -1,5 +1,5 @@
 ---
-'vitest-koa-mocks': major
+'@skuba-lib/vitest-koa-mocks': major
 ---
 
 Initial release of vitest-koa-mocks, providing Vitest-compatible mocks for Koa applications.

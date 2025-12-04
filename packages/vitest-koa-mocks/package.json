@@ -1,6 +1,6 @@
 {
   "name": "@skuba-lib/vitest-koa-mocks",
-  "version": "3.0.0",
+  "version": "1.0.0",
   "private": false,
   "description": "Vitest mocks for Koa",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/vitest-koa-mocks#readme",
