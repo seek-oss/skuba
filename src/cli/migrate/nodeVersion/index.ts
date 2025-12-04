@@ -340,7 +340,9 @@ export const nodeVersionMigration = async (
   },
   dir = process.cwd(),
 ) => {
-  log.ok(`Upgrading to Node.js ${nodeVersion}`);
+  log.ok(
+    `Upgrading project to Node.js ${nodeVersion} and package targets to Node.js ${packageNodeVersion}`,
+  );
   try {
     await upgradeInfraPackages('format', infraPackages);
     await upgrade(
@@ -353,7 +355,9 @@ export const nodeVersionMigration = async (
       dir,
     );
 
-    log.ok('Upgraded to Node.js', nodeVersion);
+    log.ok(
+      `Upgraded project to Node.js ${nodeVersion} and package targets to Node.js ${packageNodeVersion}`,
+    );
   } catch (error) {
     log.err('Failed to upgrade');
     log.subtle(inspect(error));
