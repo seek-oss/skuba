@@ -8,7 +8,7 @@ import { log } from '../../../utils/logging.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
 
 import { isLikelyPackage } from './checks.js';
-import { upgradeInfraPackages } from './upgrade.js';
+import { tryUpgradeInfraPackages } from './upgrade.js';
 
 type FileSelector =
   | { files: string; file?: never }
@@ -345,13 +345,7 @@ export const nodeVersionMigration = async (
   );
 
   try {
-    await upgradeInfraPackages('format', infraPackages);
-  } catch (err) {
-    log.err('Failed to upgrade infrastructure packages');
-    log.subtle(inspect(err));
-  }
-
-  try {
+    await tryUpgradeInfraPackages('format', infraPackages);
     await upgrade(
       {
         nodeVersion,
