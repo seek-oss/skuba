@@ -31,24 +31,24 @@ export const migrations = {
           version: '2.224.0',
         },
         {
-          name: 'serverless',
-          version: '4.25.0',
+          name: 'datadog-cdk-constructs-v2',
+          version: '3.4.0',
         },
         {
           name: 'osls',
           version: '3.61.0',
         },
         {
-          name: '@types/node',
-          version: '24.10.1',
-        },
-        {
-          name: 'datadog-cdk-constructs-v2',
-          version: '3.4.0',
+          name: 'serverless',
+          version: '4.25.0',
         },
         {
           name: 'serverless-plugin-datadog',
           version: '5.114.0',
+        },
+        {
+          name: '@types/node',
+          version: '24.10.1',
         },
       ],
     }),
