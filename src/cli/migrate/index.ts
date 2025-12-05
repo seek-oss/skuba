@@ -42,6 +42,14 @@ export const migrations = {
           name: '@types/node',
           version: '24.10.1',
         },
+        {
+          name: 'datadog-cdk-constructs-v2',
+          version: '3.4.0',
+        },
+        {
+          name: 'serverless-plugin-datadog',
+          version: '5.114.0',
+        },
       ],
     }),
 } satisfies Record<string, () => Promise<void>>;

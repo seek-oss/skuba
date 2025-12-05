@@ -119,7 +119,7 @@ The following fields are modified for npm packages:
 
 As of **skuba** 14,
 
-- `skuba migrate node24` will attempt to update underlying infrastructure packages to versions that support Node.js 24. These include `aws-cdk-lib`, `serverless`, `osls` and `@types/node`.
+- `skuba migrate node24` will attempt to update underlying infrastructure packages to versions that support Node.js 24. These include `aws-cdk-lib`, `datadog-cdk-constructs-v2`, `osls`, `serverless`, `serverless-plugin-datadog` and `@types/node`.
 
 [`Object.groupBy()` static method]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy
 [active LTS version]: https://nodejs.org/en/about/previous-releases#nodejs-releases
