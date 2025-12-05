@@ -343,8 +343,15 @@ export const nodeVersionMigration = async (
   log.ok(
     `Upgrading project to Node.js ${nodeVersion} and package targets to Node.js ${packageNodeVersion}`,
   );
+
   try {
     await upgradeInfraPackages('format', infraPackages);
+  } catch (err) {
+    log.err('Failed to upgrade infrastructure packages');
+    log.subtle(inspect(err));
+  }
+
+  try {
     await upgrade(
       {
         nodeVersion,
