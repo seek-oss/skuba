@@ -1,3 +1,5 @@
+import { inspect } from 'node:util';
+
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 import { lt } from 'semver';
@@ -149,7 +151,7 @@ export const tryUpgradeInfraPackages = async (
     return await upgradeInfraPackages(mode, packages);
   } catch (err) {
     log.err('Failed to upgrade infrastructure packages');
-    log.err(err);
+    log.subtle(inspect(err));
     return { result: 'skip', reason: 'due to an error' };
   }
 };
