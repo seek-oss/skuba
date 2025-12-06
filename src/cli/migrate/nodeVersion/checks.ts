@@ -39,6 +39,10 @@ export const isLikelyPackage = async (
     return true;
   }
 
+  if (packageJson.publishConfig) {
+    return true;
+  }
+
   if (typeof packageJson.types === 'string') {
     return true;
   }

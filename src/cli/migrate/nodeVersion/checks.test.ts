@@ -20,6 +20,7 @@ describe('isLikelyPackage', () => {
     ${{ types: 'index.d.ts' }}                                         | ${true}
     ${{ module: 'index.mjs' }}                                         | ${true}
     ${{ private: true }}                                               | ${false}
+    ${{ publishConfig: {} }}                                           | ${true}
     ${{}}                                                              | ${false}
   `(
     'should return $expected when package.json contains $packageJsonFields',
