@@ -39,6 +39,13 @@ export const isLikelyPackage = async (
     return true;
   }
 
+  // private true would imply this is either an internal package or application
+  // either way internal packages would normally be not published or bundled in by an application within the repo
+  // so we can safely assume it is a package for migration purposes
+  if (packageJson.private === true) {
+    return false;
+  }
+
   if (packageJson.publishConfig) {
     return true;
   }
@@ -49,13 +56,6 @@ export const isLikelyPackage = async (
 
   if (typeof packageJson.module === 'string') {
     return true;
-  }
-
-  // private true would imply this is either an internal package or application
-  // either way internal packages would normally be not published or bundled in by an application within the repo
-  // so we can safely assume it is a package for migration purposes
-  if (packageJson.private === true) {
-    return false;
   }
 
   return false;
