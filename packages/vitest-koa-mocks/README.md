@@ -60,32 +60,6 @@ describe('createServiceAuthClient', () => {
 
 - HTTP details such as **`method`**, **`url`**, **`statusCode`**, **`headers`**, **`host`**, and whether the request is **`encrypted`**
 - Koa-specific behaviour such as **`state`**, **`session`**, **`cookies`**, and **`throw`** / **`redirect`** handlers
-
-ctx.throw and ctx.redirect are defaulted to vi.fn()s, allowing you to easily test that a request has redirected or thrown in your middleware.
-
-```
-import passwordValidator from '../password-validator';
-import {createMockContext} from '@shopify/jest-koa-mocks';
-
-describe('password-validator', () => {
-  it('throws if no password query parameter is present', async () => {
-    const ctx = createMockContext({url: '/validate'});
-
-    await passwordValidator(ctx);
-
-    expect(ctx.throw).toBeCalledWith(400);
-  });
-
-  it('redirects to /user if the password is correct', async () => {
-    const ctx = createMockContext({url: '/validate?password=correct'});
-
-    await passwordValidator(ctx);
-
-    expect(ctx.redirect).toBeCalledWith('/user');
-  });
-});
-```
-
 - arbitrary **`customProperties`** that are merged onto the returned context
 
 The returned context type is `MockContext`, which extends Koa's `Context` with:

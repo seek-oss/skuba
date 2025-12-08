@@ -33,12 +33,12 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "koa": "3.1.1",
-    "node-mocks-http": "1.17.2"
+    "node-mocks-http": "^1.17.2"
   },
-  "devDependencies": {
-    "@types/koa": "3.0.1",
-    "vitest": "4.0.14"
+  "peerDependencies": {
+    "@types/koa": "^3.0.1",
+    "koa": "^3.1.1",
+    "vitest": "^4.0.14"
   },
   "engines": {
     "node": ">=20.9.0"
