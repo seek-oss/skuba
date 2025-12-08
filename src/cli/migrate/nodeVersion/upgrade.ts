@@ -147,7 +147,7 @@ export const upgradeInfraPackages = async (
 
   const packageManager = await detectPackageManager();
 
-  await exec(packageManager.command, 'install', '--no-frozen-lockfile');
+  await exec(packageManager.command, 'install', '--frozen-lockfile=false');
 
   return {
     result: 'apply',
