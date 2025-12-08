@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-update tsx for new esbuild version
+deps: tsx ^4.21.0
