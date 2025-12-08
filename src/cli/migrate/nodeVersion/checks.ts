@@ -40,8 +40,6 @@ export const isLikelyPackage = async (
   }
 
   // private true would imply this is either an internal package or application
-  // either way internal packages would normally be not published or bundled in by an application within the repo
-  // so we can safely assume it is a package for migration purposes
   if (packageJson.private === true) {
     return false;
   }
