@@ -24,7 +24,7 @@ export const upgradeInfraPackages = async (
   mode: 'lint' | 'format',
   packages: PackageInfo[],
 ): Promise<PatchReturnType> => {
-  const [packageJsonPaths, pnpmWorkSpacePaths] = await Promise.all([
+  const [packageJsonPaths, pnpmWorkspacePaths] = await Promise.all([
     glob(['**/package.json'], {
       ignore: ['**/.git', '**/node_modules'],
     }),
@@ -33,7 +33,7 @@ export const upgradeInfraPackages = async (
     }),
   ]);
 
-  if (packageJsonPaths.length === 0 && pnpmWorkSpacePaths.length === 0) {
+  if (packageJsonPaths.length === 0 && pnpmWorkspacePaths.length === 0) {
     return {
       result: 'skip',
       reason: 'no package.json files found',
@@ -52,7 +52,7 @@ export const upgradeInfraPackages = async (
       }),
     ),
     Promise.all(
-      pnpmWorkSpacePaths.map(async (file) => {
+      pnpmWorkspacePaths.map(async (file) => {
         const contents = await fs.readFile(file, 'utf8');
 
         return {
