@@ -36,7 +36,7 @@ export const upgradeInfraPackages = async (
   if (packageJsonPaths.length === 0 && pnpmWorkspacePaths.length === 0) {
     return {
       result: 'skip',
-      reason: 'no package.json files found',
+      reason: 'no package.json or pnpm-workspace.yaml files found',
     };
   }
 
