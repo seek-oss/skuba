@@ -10,10 +10,10 @@ import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
 
 const packageVersionRegex = (packageName: string) =>
-  new RegExp(`"${packageName}"\\s*:\\s*"([^"]+)"`, 'g');
+  new RegExp(`"\\b${packageName}\\b"\\s*:\\s*"([^"]+)"`, 'g');
 
 const yamlPackageVersionRegex = (packageName: string) =>
-  new RegExp(`${packageName}:\\s*([^\\s]+)`, 'g');
+  new RegExp(`\\b${packageName}\\b:\\s*([^\\s]+)`, 'g');
 
 type PackageInfo = {
   name: string;
