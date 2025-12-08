@@ -21,7 +21,7 @@ type ReplaceOptions = {
 };
 
 type SubPatch = FileSelector & {
-  type: 'nodejs' | 'emcascript';
+  type: 'nodejs' | 'ecmascript';
   regex: () => RegExp;
   replace: {
     package?: ReplaceOptions;
@@ -32,7 +32,7 @@ type SubPatch = FileSelector & {
 const subPatches = ({
   nodeVersion,
   ECMAScriptVersion,
-  packageEMCAScriptVersion,
+  packageECMAScriptVersion,
   packageNodeVersion,
 }: Versions): SubPatch[] => [
   {
@@ -184,13 +184,13 @@ const subPatches = ({
     },
   },
   {
-    type: 'emcascript',
+    type: 'ecmascript',
     files: '**/tsconfig*.json',
     regex: () => /("target":\s*")(ES\d+)"/gim,
     replace: {
       package: {
-        string: `$1${packageEMCAScriptVersion}"`,
-        version: packageEMCAScriptVersion,
+        string: `$1${packageECMAScriptVersion}"`,
+        version: packageECMAScriptVersion,
         captureGroup: 2,
       },
       default: {
@@ -201,13 +201,13 @@ const subPatches = ({
     },
   },
   {
-    type: 'emcascript',
+    type: 'ecmascript',
     files: '**/tsconfig*.json',
     regex: () => /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
     replace: {
       package: {
-        string: `$1$2${packageEMCAScriptVersion}$4$5`,
-        version: packageEMCAScriptVersion,
+        string: `$1$2${packageECMAScriptVersion}$4$5`,
+        version: packageECMAScriptVersion,
         captureGroup: 3,
       },
       default: {
@@ -223,7 +223,7 @@ type Versions = {
   nodeVersion: string;
   ECMAScriptVersion: string;
   packageNodeVersion: string;
-  packageEMCAScriptVersion: string;
+  packageECMAScriptVersion: string;
 };
 
 const getTemplatedReplace = async (
@@ -329,13 +329,13 @@ export const nodeVersionMigration = async (
     nodeVersion,
     ECMAScriptVersion,
     packageNodeVersion,
-    packageEMCAScriptVersion,
+    packageECMAScriptVersion,
     infraPackages,
   }: {
     nodeVersion: string;
     ECMAScriptVersion: string;
     packageNodeVersion: string;
-    packageEMCAScriptVersion: string;
+    packageECMAScriptVersion: string;
     infraPackages: Array<{ name: string; version: string }>;
   },
   dir = process.cwd(),
@@ -351,7 +351,7 @@ export const nodeVersionMigration = async (
         nodeVersion,
         ECMAScriptVersion,
         packageNodeVersion,
-        packageEMCAScriptVersion,
+        packageECMAScriptVersion,
       },
       dir,
     );

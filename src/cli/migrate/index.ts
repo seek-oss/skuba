@@ -8,7 +8,7 @@ export const migrations = {
       nodeVersion: '20',
       ECMAScriptVersion: 'ES2023',
       packageNodeVersion: '16',
-      packageEMCAScriptVersion: 'ES2021',
+      packageECMAScriptVersion: 'ES2021',
       infraPackages: [],
     }),
   node22: () =>
@@ -16,7 +16,7 @@ export const migrations = {
       nodeVersion: '22',
       ECMAScriptVersion: 'ES2024',
       packageNodeVersion: '18',
-      packageEMCAScriptVersion: 'ES2022',
+      packageECMAScriptVersion: 'ES2022',
       infraPackages: [],
     }),
   node24: () =>
@@ -24,7 +24,7 @@ export const migrations = {
       nodeVersion: '24',
       ECMAScriptVersion: 'ES2024',
       packageNodeVersion: '20',
-      packageEMCAScriptVersion: 'ES2023',
+      packageECMAScriptVersion: 'ES2023',
       infraPackages: [
         {
           name: 'aws-cdk-lib',

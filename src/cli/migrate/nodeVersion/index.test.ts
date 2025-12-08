@@ -253,7 +253,7 @@ describe('nodeVersionMigration', () => {
         nodeVersion: '24',
         ECMAScriptVersion: 'ES2024',
         packageNodeVersion: '20',
-        packageEMCAScriptVersion: 'ES2023',
+        packageECMAScriptVersion: 'ES2023',
         infraPackages: [],
       });
 
