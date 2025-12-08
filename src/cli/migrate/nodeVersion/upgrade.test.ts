@@ -276,6 +276,117 @@ catalogs:
     });
   });
 
+  it('should update ^ and ~ ranges even when they already satisfy the version', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '^3.0.0',
+          serverless: '~4.0.0',
+        },
+      }),
+    });
+
+    await expect(
+      upgradeInfraPackages('format', [
+        {
+          name: 'aws-cdk-lib',
+          version: '3.1.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.0.5',
+        },
+      ]),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '^3.1.0',
+          serverless: '~4.0.5',
+        },
+      }),
+    });
+  });
+
+  it('should convert x ranges to caret ranges', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '2.x',
+          serverless: '4.2.x',
+          osls: '3.X.X',
+        },
+      }),
+    });
+
+    await expect(
+      upgradeInfraPackages('format', [
+        {
+          name: 'aws-cdk-lib',
+          version: '2.224.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.25.0',
+        },
+        {
+          name: 'osls',
+          version: '3.61.0',
+        },
+      ]),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '^2.224.0',
+          serverless: '^4.25.0',
+          osls: '^3.61.0',
+        },
+      }),
+    });
+  });
+
+  it('should convert hyphen ranges to caret ranges', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '2.0.0 - 2.999.0',
+          serverless: '4.0.0 - 5.0.0',
+        },
+      }),
+    });
+
+    await expect(
+      upgradeInfraPackages('format', [
+        {
+          name: 'aws-cdk-lib',
+          version: '2.224.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.25.0',
+        },
+      ]),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '^2.224.0',
+          serverless: '^4.25.0',
+        },
+      }),
+    });
+  });
+
   it.each([
     ['*'],
     ['workspace:*'],

@@ -2,7 +2,7 @@ import { inspect } from 'node:util';
 
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
-import { lt } from 'semver';
+import { coerce, lt, satisfies } from 'semver';
 
 import { exec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
@@ -14,6 +14,36 @@ const packageVersionRegex = (packageName: string) =>
 
 const yamlPackageVersionRegex = (packageName: string) =>
   new RegExp(`\\b${packageName}\\b:\\s*([^\\s]+)`, 'g');
+
+const normalizeVersionRange = (
+  currentVersion: string,
+  newVersion: string,
+): string => {
+  if (currentVersion.startsWith('^')) {
+    return `^${newVersion}`;
+  }
+
+  if (currentVersion.startsWith('~')) {
+    return `~${newVersion}`;
+  }
+
+  // 1.x, 1.2.x, 1.x.x
+  if (currentVersion.includes('x') || currentVersion.includes('X')) {
+    return `^${newVersion}`;
+  }
+
+  // 1.0.0 - 2.0.0
+  if (currentVersion.includes(' - ')) {
+    return `^${newVersion}`;
+  }
+
+  const coercedCurrent = coerce(currentVersion);
+  if (coercedCurrent && lt(coercedCurrent, newVersion)) {
+    return newVersion;
+  }
+
+  return currentVersion;
+};
 
 type PackageInfo = {
   name: string;
@@ -78,17 +108,14 @@ export const upgradeInfraPackages = async (
             return match;
           }
 
-          const versionPrefix = ['^', '~'].includes(currentVersion[0] as string)
-            ? currentVersion[0]
-            : '';
+          const newVersion = normalizeVersionRange(
+            currentVersion,
+            packageName.version,
+          );
 
-          const prefixLessCurrentVersion = versionPrefix
-            ? currentVersion.slice(1)
-            : currentVersion;
-
-          return lt(prefixLessCurrentVersion, packageName.version)
-            ? `"${packageName.name}":"${versionPrefix}${packageName.version}"`
-            : match;
+          return newVersion === currentVersion
+            ? match
+            : `"${packageName.name}":"${newVersion}"`;
         });
       }, file.contents);
 
@@ -104,16 +131,14 @@ export const upgradeInfraPackages = async (
       const updated = packages.reduce((contents, packageName) => {
         const regex = yamlPackageVersionRegex(packageName.name);
         return contents.replace(regex, (match, currentVersion: string) => {
-          const versionPrefix = ['^', '~'].includes(currentVersion[0] as string)
-            ? currentVersion[0]
-            : '';
-          const prefixLessCurrentVersion = versionPrefix
-            ? currentVersion.slice(1)
-            : currentVersion;
+          const newVersion = normalizeVersionRange(
+            currentVersion,
+            packageName.version,
+          );
 
-          return lt(prefixLessCurrentVersion, packageName.version)
-            ? `${packageName.name}: ${versionPrefix}${packageName.version}`
-            : match;
+          return newVersion === currentVersion
+            ? match
+            : `${packageName.name}: ${newVersion}`;
         });
       }, file.contents);
 
