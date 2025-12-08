@@ -68,9 +68,20 @@ export const upgradeInfraPackages = async (
       const updated = packages.reduce((contents, packageName) => {
         const regex = packageVersionRegex(packageName.name);
         return contents.replaceAll(regex, (match, currentVersion: string) => {
+          if (
+            currentVersion.startsWith('*') ||
+            currentVersion.startsWith('workspace:') ||
+            currentVersion.startsWith('link:') ||
+            currentVersion.startsWith('file:') ||
+            currentVersion.startsWith('catalog:')
+          ) {
+            return match;
+          }
+
           const versionPrefix = ['^', '~'].includes(currentVersion[0] as string)
             ? currentVersion[0]
             : '';
+
           const prefixLessCurrentVersion = versionPrefix
             ? currentVersion.slice(1)
             : currentVersion;

@@ -275,4 +275,50 @@ catalogs:
       }),
     });
   });
+
+  it.each([
+    ['*'],
+    ['workspace:*'],
+    ['workspace:^'],
+    ['link:./local-package'],
+    ['file:./local-package'],
+    ['catalog:'],
+    ['catalog:default'],
+  ])(
+    'should not update packages with special version specifier: %s',
+    async (currentVersion) => {
+      vol.fromJSON({
+        'package.json': JSON.stringify({
+          dependencies: {
+            'aws-cdk-lib': currentVersion,
+            serverless: '4.0.0',
+          },
+        }),
+      });
+
+      await expect(
+        upgradeInfraPackages('format', [
+          {
+            name: 'aws-cdk-lib',
+            version: '2.224.0',
+          },
+          {
+            name: 'serverless',
+            version: '4.25.0',
+          },
+        ]),
+      ).resolves.toEqual<PatchReturnType>({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual({
+        'package.json': JSON.stringify({
+          dependencies: {
+            'aws-cdk-lib': currentVersion,
+            serverless: '4.25.0',
+          },
+        }),
+      });
+    },
+  );
 });
