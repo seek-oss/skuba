@@ -1,5 +1,11 @@
 # eslint-plugin-skuba
 
+## 1.0.4
+
+### Patch Changes
+
+- **deps:** Add missing dependency on `@typescript-eslint/utils` ([#2171](https://github.com/seek-oss/skuba/pull/2171))
+
 ## 1.0.3
 
 ### Patch Changes
