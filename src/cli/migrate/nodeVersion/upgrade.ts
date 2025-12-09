@@ -27,6 +27,16 @@ const normalizeVersionRange = (
     return `~${newVersion}`;
   }
 
+  // >=1.2.3, >1.2.3, <=1.2.3, <1.2.3
+  if (
+    currentVersion.startsWith('>=') ||
+    currentVersion.startsWith('>') ||
+    currentVersion.startsWith('<=') ||
+    currentVersion.startsWith('<')
+  ) {
+    return `^${newVersion}`;
+  }
+
   // 1.x, 1.2.x, 1.x.x
   if (currentVersion.includes('x') || currentVersion.includes('X')) {
     return `^${newVersion}`;

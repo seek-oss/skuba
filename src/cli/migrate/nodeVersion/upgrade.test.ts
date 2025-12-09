@@ -387,6 +387,47 @@ catalogs:
     });
   });
 
+  it('should convert comparison ranges to caret ranges', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '>=2.0.0',
+          serverless: '>3.0.0',
+          osls: '<5.0.0',
+        },
+      }),
+    });
+
+    await expect(
+      upgradeInfraPackages('format', [
+        {
+          name: 'aws-cdk-lib',
+          version: '2.224.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.25.0',
+        },
+        {
+          name: 'osls',
+          version: '3.61.0',
+        },
+      ]),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '^2.224.0',
+          serverless: '^4.25.0',
+          osls: '^3.61.0',
+        },
+      }),
+    });
+  });
+
   it.each([
     ['*'],
     ['workspace:*'],
