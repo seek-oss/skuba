@@ -2,7 +2,7 @@ import { inspect } from 'node:util';
 
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
-import { coerce, lt, satisfies } from 'semver';
+import { coerce, lt } from 'semver';
 
 import { exec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
