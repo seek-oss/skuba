@@ -9,11 +9,5 @@
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
-  "include": [
-    "eslint.config.js",
-    "index.d.ts",
-    "index.js",
-    "src/**/*",
-    "requireExtensions.test.ts"
-  ]
+  "include": ["src/**/*"]
 }

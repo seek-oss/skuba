@@ -9,10 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seek-oss/skuba.git"
+    "url": "git+https://github.com/seek-oss/skuba.git",
+    "directory": "packages/vitest-koa-mocks"
   },
   "license": "MIT",
-  "sideEffects": true,
   "type": "module",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
