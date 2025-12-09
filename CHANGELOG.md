@@ -1,5 +1,11 @@
 # skuba
 
+## 13.1.2
+
+### Patch Changes
+
+- **deps:** tsx ^4.21.0 ([#2169](https://github.com/seek-oss/skuba/pull/2169))
+
 ## 13.1.1
 
 ### Patch Changes
