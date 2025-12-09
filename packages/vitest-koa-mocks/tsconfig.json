@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "lib": ["ES2021"],
+    "outDir": "lib",
+    "target": "ES2021",
+    "baseUrl": ".",
+    "skipLibCheck": true
+  },
+  "exclude": ["lib*/**/*"],
+  "extends": "../../config/tsconfig.json",
+  "include": ["src/**/*"]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "@skuba-lib/vitest-koa-mocks",
+  "version": "0.0.0",
+  "private": false,
+  "description": "Vitest mocks for Koa",
+  "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/vitest-koa-mocks#readme",
+  "bugs": {
+    "url": "https://github.com/seek-oss/skuba/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seek-oss/skuba.git",
+    "directory": "packages/vitest-koa-mocks"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/**/*.d.ts",
+    "lib/**/*.js",
+    "lib/**/*.js.map"
+  ],
+  "scripts": {
+    "build": "pnpm skuba build",
+    "format": "pnpm skuba format",
+    "lint": "pnpm skuba lint",
+    "prepack": "pnpm skuba build",
+    "skuba": "node ../../lib/skuba",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "node-mocks-http": "^1.17.2"
+  },
+  "peerDependencies": {
+    "@types/koa": "^3.0.1",
+    "koa": "^3.1.1",
+    "vitest": "^4.0.14"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "skuba": {
+    "entryPoint": "src/index.ts",
+    "template": "oss-npm-package",
+    "type": "package",
+    "version": "13.0.0"
+  }
+}
