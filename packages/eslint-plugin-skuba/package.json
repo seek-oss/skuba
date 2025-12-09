@@ -9,7 +9,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seek-oss/skuba.git"
+    "url": "git+https://github.com/seek-oss/skuba.git",
+    "directory": "packages/eslint-plugin-skuba"
   },
   "license": "MIT",
   "sideEffects": false,
@@ -39,6 +40,9 @@
     "test": "node --import tsx --test 'src/**/*.test.ts'",
     "test:ci": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
     "test:watch": "node --import tsx --test --watch 'src/**/*.test.ts'"
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "^8.39.0"
   },
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.26.0",
