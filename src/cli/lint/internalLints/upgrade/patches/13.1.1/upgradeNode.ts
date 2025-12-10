@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import { log } from '../../../../../../utils/logging.js';
-import { nodeVersionMigration } from '../../../../../migrate/nodeVersion/index.js';
+import { migrations } from '../../../../../migrate/index.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const upgradeNode: PatchFunction = async ({
@@ -17,10 +17,7 @@ const upgradeNode: PatchFunction = async ({
     return { result: 'apply' };
   }
 
-  await nodeVersionMigration({
-    nodeVersion: 22,
-    ECMAScriptVersion: 'ES2024',
-  });
+  await migrations.node24();
 
   return { result: 'apply' };
 };
