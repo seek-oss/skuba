@@ -5,7 +5,8 @@
     "outDir": "lib",
     "target": "ES2021",
     "baseUrl": ".",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "rootDir": "."
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
