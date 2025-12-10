@@ -39,7 +39,7 @@ export const AUTOFIX_IGNORE_FILES_NPMRC: Git.ChangedFile[] = [
   },
 ];
 
-export const shouldPush = async ({
+const shouldPush = async ({
   currentBranch,
   dir,
 }: {
