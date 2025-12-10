@@ -9,10 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seek-oss/skuba.git"
+    "url": "git+https://github.com/seek-oss/skuba.git",
+    "directory": "packages/skuba-dive"
   },
   "license": "MIT",
-  "sideEffects": true,
+  "sideEffects": false,
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
