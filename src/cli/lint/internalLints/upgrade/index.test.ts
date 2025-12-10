@@ -165,6 +165,7 @@ describe('upgradeSkuba in format mode', () => {
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
       fixable: false,
+      upgraded: true,
     });
 
     expect(fs.writeFile).toHaveBeenCalledWith(
