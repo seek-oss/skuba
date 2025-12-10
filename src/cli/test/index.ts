@@ -1,10 +1,11 @@
+import { inspect, styleText } from 'util';
+
+import { hasDebugFlag } from '../../utils/args.js';
 import { isCiEnv } from '../../utils/env.js';
 import { createExec } from '../../utils/exec.js';
-import { upgradeSkuba } from '../lint/internalLints/upgrade/index.js';
 import { childLogger, createLogger } from '../../utils/logging.js';
-import { inspect, styleText } from 'util';
-import { hasDebugFlag } from '../../utils/args.js';
 import { lint } from '../lint/index.js';
+import { upgradeSkuba } from '../lint/internalLints/upgrade/index.js';
 
 export const test = async () => {
   const argv = process.argv.slice(2);
