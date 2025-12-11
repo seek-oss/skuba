@@ -54,7 +54,7 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
-Patch applied: Add 'rootDir' to root tsconfig.json compilerOptions upgrade-skuba
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -165,7 +165,7 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
-Patch applied: Add 'rootDir' to root tsconfig.json compilerOptions upgrade-skuba
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -272,7 +272,7 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
-Patch applied: Add 'rootDir' to root tsconfig.json compilerOptions upgrade-skuba
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -349,7 +349,7 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
-Patch applied: Add 'rootDir' to root tsconfig.json compilerOptions upgrade-skuba
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
