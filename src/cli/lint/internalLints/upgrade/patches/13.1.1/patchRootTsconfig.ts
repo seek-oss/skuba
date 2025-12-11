@@ -42,7 +42,6 @@ export const patchRootConfig: PatchFunction = async ({
       };
     }
 
-    // add compilerOptions if missing
     const edit = startingBracket.replace(
       `{
   "compilerOptions": {
@@ -65,7 +64,6 @@ export const patchRootConfig: PatchFunction = async ({
     };
   }
 
-  // Check if rootDir already exists
   const rootDirOption = compilerOptionsObj.find({
     rule: { pattern: '"rootDir"' },
   });
@@ -77,7 +75,6 @@ export const patchRootConfig: PatchFunction = async ({
     };
   }
 
-  // add rootDir option to the start of compilerOptions
   const compilerOptionsStart = compilerOptionsObj.find({
     rule: { pattern: '{' },
   });
