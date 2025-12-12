@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "customConditions": ["@seek/skuba/source"],
     "incremental": true,
     "module": "node20",
