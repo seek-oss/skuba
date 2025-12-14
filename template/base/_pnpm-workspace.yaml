@@ -3,6 +3,8 @@ ignorePatchFailures: false
 minimumReleaseAge: 4320 # 3 days
 strictDepBuilds: true
 trustPolicy: no-downgrade
+trustPolicyExclude:
+  - undici-types@6.21.0 # https://github.com/nodejs/undici/issues/4666
 minimumReleaseAgeExclude:
   - '@seek/*'
   - '@skuba-lib/*'
