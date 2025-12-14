@@ -53,6 +53,11 @@ cd "../${skuba_temp_directory}" || exit 1
 
 echo "pnpm init"
 pnpm init
+echo "--- creating pnpm-workspace.yaml with trustPolicyExclude ---"
+cat > pnpm-workspace.yaml << 'WORKSPACE_EOF'
+trustPolicy: off
+strictDepBuilds: false
+WORKSPACE_EOF
 echo "--- pnpm add --save-dev ${skuba_tar}"
 pnpm add --save-dev ${skuba_tar}
 
