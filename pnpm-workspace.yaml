@@ -1,6 +1,8 @@
 # managed by skuba
 ignorePatchFailures: false
 minimumReleaseAge: 4320 # 3 days
+strictDepBuilds: true
+trustPolicy: no-downgrade
 minimumReleaseAgeExclude:
   - '@seek/*'
   - '@skuba-lib/*'
@@ -33,3 +35,12 @@ packages:
 overrides:
   'skuba': 'workspace:*'
   'skuba-dive': 'workspace:*'
+
+onlyBuiltDependencies:
+  - '@ast-grep/lang-json'
+  - '@datadog/native-appsec'
+  - '@datadog/pprof'
+  - dd-trace
+  - esbuild
+  - protobufjs
+  - unix-dgram
