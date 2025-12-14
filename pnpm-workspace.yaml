@@ -15,8 +15,9 @@ onlyBuiltDependencies:
   - unrs-resolver
 trustPolicy: no-downgrade
 trustPolicyExclude:
-  - 'undici-types@6.21.0' # https://github.com/nodejs/undici/issues/4666
+  - 'pino@9.14.0'
   - 'semver@5.7.2 || 6.3.1'
+  - 'undici-types@6.21.0' # https://github.com/nodejs/undici/issues/4666
 minimumReleaseAgeExclude:
   - '@seek/*'
   - '@skuba-lib/*'
