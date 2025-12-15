@@ -137,17 +137,34 @@ publicHoistPattern:
   });
 });
 
-describe('mergeWithConfigFile for workspace files with minimumReleaseAgeExcludeOverload', () => {
+describe('mergeWithConfigFile for workspace files with overload fields', () => {
   const baseTemplate = `# managed by skuba
 minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - 'default-exclude'
+onlyBuiltDependencies:
+  - 'esbuild'
+  - 'protobufjs'
+trustPolicyExclude:
+  - 'pino@9.14.0'
 packageManagerStrictVersion: true
   # end managed by skuba`;
 
   const validPackageJson = JSON.stringify({
     name: 'test-package',
     minimumReleaseAgeExcludeOverload: ['test-package', 'another-package/*'],
+  });
+
+  const packageJsonWithAllOverloads = JSON.stringify({
+    name: 'test-package',
+    minimumReleaseAgeExcludeOverload: ['custom-exclude-1', 'custom-exclude-2'],
+    onlyBuiltDependenciesOverload: ['custom-built-1', 'custom-built-2'],
+    trustPolicyExcludeOverload: ['custom-trust-1', 'custom-trust-2'],
+  });
+
+  const packageJsonWithPartialOverloads = JSON.stringify({
+    name: 'test-package',
+    onlyBuiltDependenciesOverload: ['only-this-field'],
   });
 
   const packageJsonWithEmptyArray = JSON.stringify({
@@ -179,7 +196,48 @@ packageManagerStrictVersion: true
 
     expect(result).toContain("  - 'test-package'");
     expect(result).toContain("  - 'another-package/*'");
+    expect(result).not.toContain("  - 'default-exclude'");
+    expect(result).toContain("  - 'esbuild'");
+    expect(result).toContain("  - 'protobufjs'");
+    expect(result).toContain("  - 'pino@9.14.0'");
+  });
+
+  it('handles all three overload fields simultaneously', () => {
+    const merge = mergeWithConfigFile(
+      baseTemplate,
+      'pnpm-workspace',
+      packageJsonWithAllOverloads,
+    );
+    const result = merge('');
+
+    expect(result).toContain("  - 'custom-exclude-1'");
+    expect(result).toContain("  - 'custom-exclude-2'");
+    expect(result).not.toContain("  - 'default-exclude'");
+
+    expect(result).toContain("  - 'custom-built-1'");
+    expect(result).toContain("  - 'custom-built-2'");
+    expect(result).not.toContain("  - 'esbuild'");
+    expect(result).not.toContain("  - 'protobufjs'");
+
+    expect(result).toContain("  - 'custom-trust-1'");
+    expect(result).toContain("  - 'custom-trust-2'");
+    expect(result).not.toContain("  - 'pino@9.14.0'");
+  });
+
+  it('handles partial overloads (only one field)', () => {
+    const merge = mergeWithConfigFile(
+      baseTemplate,
+      'pnpm-workspace',
+      packageJsonWithPartialOverloads,
+    );
+    const result = merge('');
+
+    expect(result).toContain("  - 'only-this-field'");
+    expect(result).not.toContain("  - 'esbuild'");
+    expect(result).not.toContain("  - 'protobufjs'");
+
     expect(result).toContain("  - 'default-exclude'");
+    expect(result).toContain("  - 'pino@9.14.0'");
   });
 
   it('handles empty minimumReleaseAgeExcludeOverload array', () => {
@@ -219,7 +277,7 @@ packageManagerStrictVersion: true
     expect(result).not.toContain('123');
   });
 
-  it('works when minimumReleaseAgeExcludeOverload field is missing', () => {
+  it('works when overload fields are missing', () => {
     const merge = mergeWithConfigFile(
       baseTemplate,
       'pnpm-workspace',
@@ -228,6 +286,8 @@ packageManagerStrictVersion: true
     const result = merge('');
 
     expect(result).toContain("  - 'default-exclude'");
+    expect(result).toContain("  - 'esbuild'");
+    expect(result).toContain("  - 'pino@9.14.0'");
   });
 
   it('handles invalid JSON in package.json', () => {
@@ -243,6 +303,8 @@ packageManagerStrictVersion: true
     const result = merge('');
 
     expect(result).toContain("  - 'default-exclude'");
+    expect(result).toContain("  - 'esbuild'");
+    expect(result).toContain("  - 'pino@9.14.0'");
   });
 
   it('preserves existing file content when merging with overloads', () => {
@@ -286,10 +348,53 @@ minimumReleaseAgeExclude:
     );
     const result = merge('');
 
-    // Should only modify the first occurrence within managed section
-    expect(result).toContain("  - 'first-exclude'");
     expect(result).toContain("  - 'test-package'");
     expect(result).toContain("  - 'another-package/*'");
+    expect(result).not.toContain("  - 'first-exclude'");
     expect(result).toContain("  - 'should-not-modify'");
+  });
+
+  it('correctly replaces values when list ends with another key', () => {
+    const templateWithAdjacentKeys = `# managed by skuba
+minimumReleaseAgeExclude:
+  - 'old-value-1'
+  - 'old-value-2'
+packageManagerStrictVersion: true
+  # end managed by skuba`;
+
+    const packageJsonWithOverload = JSON.stringify({
+      minimumReleaseAgeExcludeOverload: ['new-value'],
+    });
+
+    const merge = mergeWithConfigFile(
+      templateWithAdjacentKeys,
+      'pnpm-workspace',
+      packageJsonWithOverload,
+    );
+    const result = merge('');
+
+    expect(result).toContain("  - 'new-value'");
+    expect(result).not.toContain("  - 'old-value-1'");
+    expect(result).not.toContain("  - 'old-value-2'");
+    expect(result).toContain('packageManagerStrictVersion: true');
+  });
+
+  it('handles empty overload arrays for all fields', () => {
+    const packageJsonWithEmptyOverloads = JSON.stringify({
+      minimumReleaseAgeExcludeOverload: [],
+      onlyBuiltDependenciesOverload: [],
+      trustPolicyExcludeOverload: [],
+    });
+
+    const merge = mergeWithConfigFile(
+      baseTemplate,
+      'pnpm-workspace',
+      packageJsonWithEmptyOverloads,
+    );
+    const result = merge('');
+
+    expect(result).toContain("  - 'default-exclude'");
+    expect(result).toContain("  - 'esbuild'");
+    expect(result).toContain("  - 'pino@9.14.0'");
   });
 });
