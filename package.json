@@ -77,6 +77,8 @@
     ]
   },
   "dependencies": {
+    "@ast-grep/lang-json": "^0.0.5",
+    "@ast-grep/napi": "^0.40.0",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@inquirer/prompts": "^7.9.0",
     "@jest/types": "^30.0.0",
@@ -155,7 +157,7 @@
     "supertest": "7.1.4",
     "type-fest": "2.19.0"
   },
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@10.25.0",
   "engines": {
     "node": ">=20.9.0"
   },
