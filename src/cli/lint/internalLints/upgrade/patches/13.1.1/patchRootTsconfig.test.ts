@@ -10,9 +10,6 @@ jest.mock('fast-glob', () => ({
   glob: (pat: string, opts: { ignore: string[] }) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
-jest.spyOn(console, 'debug').mockImplementation(() => {
-  /* empty */
-});
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

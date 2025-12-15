@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import json from '@ast-grep/lang-json';
-import { parse, registerDynamicLanguage } from '@ast-grep/napi';
+import { parseAsync, registerDynamicLanguage } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -21,7 +21,8 @@ export const patchRootConfig: PatchFunction = async ({
   }
 
   registerDynamicLanguage({ json });
-  const ast = parse('json', tsconfigFile).root();
+  const tsconfig = await parseAsync('json', tsconfigFile);
+  const ast = tsconfig.root();
 
   const compilerOptionsObj = ast.find({
     rule: {
