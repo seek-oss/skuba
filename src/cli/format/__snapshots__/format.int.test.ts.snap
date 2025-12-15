@@ -53,6 +53,8 @@ Upgraded project to Node.js 24 and package targets to Node.js 20
 
 Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
 
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -161,6 +163,8 @@ Upgraded project to Node.js 24 and package targets to Node.js 20
 
 Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
 
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -265,6 +269,8 @@ Upgraded project to Node.js 24 and package targets to Node.js 20
 
 Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
 
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
@@ -338,6 +344,8 @@ Upgrading project to Node.js 24 and package targets to Node.js 20
 Upgraded project to Node.js 24 and package targets to Node.js 20
 
 Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
+
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
