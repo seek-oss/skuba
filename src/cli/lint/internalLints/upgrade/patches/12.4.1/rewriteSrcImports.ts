@@ -7,7 +7,7 @@ import fs from 'fs-extra';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const fetchFiles = async (files: string[]) =>
+export const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
       const contents = await fs.promises.readFile(file, 'utf8');
