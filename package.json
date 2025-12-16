@@ -88,7 +88,7 @@
     "@octokit/types": "^16.0.0",
     "@skuba-lib/api": "workspace:^",
     "@types/jest": "^30.0.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.10.2",
     "concurrently": "^9.0.0",
     "ejs": "^3.1.6",
     "esbuild": "~0.27.0",
@@ -159,13 +159,13 @@
   },
   "packageManager": "pnpm@10.25.0",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.14.0"
   },
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "13.0.0"
+    "version": "13.1.1"
   }
 }
