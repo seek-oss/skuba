@@ -66,7 +66,11 @@ import { module } from 'src/imported-module';
 
 However, `skuba-dive/register` relies on `module-alias` which is not compatible with ESM. This means that we need to find a new way to handle module aliases in ESM.
 
-### 3. Jest
+### 3. Publishing packages
+
+We need to ensure our consumers have time to migrate to ESM before we begin releasing ESM only packages. Our current `build-package` command wraps the TypeScript compiler which does not support this [natively](https://github.com/microsoft/TypeScript/issues/54593).
+
+### 4. Jest
 
 Our current setup use Jest for testing, which is still [not fully compatible with ESM] as of version 30. This is a significant blocker as switching to ESM would require us to switch to a different testing framework or wait for Jest to become fully compatible with ESM.
 
@@ -255,7 +259,52 @@ module.exports = {
 
 [`'...'` syntax]: https://webpack.js.org/configuration/resolve/#resolveconditionnames
 
-### 3. Switch to Vitest and ESM
+### 3. Switch to tsdown
+
+`skuba build-package` will switch to calling [`tsdown`](https://tsdown.dev/) instead of wrapping the TypeScript compiler directly. This will allow us to continue publishing both CJS and ESM after we've migrated to ESM.
+
+#### Create tsdown.config.mjs
+
+```javascript
+import { defineConfig } from 'tsdown/config';
+
+export default defineConfig({
+  entry: ['src/index.ts'],
+  format: ['esm', 'cjs'],
+  exports: {
+    devExports: '@seek/my-repo/source',
+  },
+  // TODO: Consider removing this if your package can be bundled
+  unbundle: true,
+});
+```
+
+#### Migrate `assets` usage
+
+Skuba currently supports copying additional asset files during the `build-package` command via `skuba.assets` within `package.json`. As `tsdown` does not support this field, we will need to migrate these assets to use the `copy` field in `tsdown.config.mjs` instead.
+
+```json
+{
+  "skuba": {
+    "assets": ["**/*.vocab/*translations.json"]
+  }
+}
+```
+
+```diff
+export default defineConfig({
+  entry: ['src/index.ts'],
+  format: ['esm', 'cjs'],
+  exports: {
+    devExports: '@seek/my-repo/source',
+  },
+  // TODO: Consider removing this if your package can be bundled
+  unbundle: true,
++ copy: ['**/*.vocab/*translations.json']
+});
+```
+
+### 4. Switch to Vitest and ESM
 
 Finally, we will switch to [Vitest] as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition.
 
