@@ -61,7 +61,7 @@
     "isomorphic-git": "^1.11.1"
   },
   "devDependencies": {
-    "tsdown": "^0.17.0"
+    "tsdown": "^0.17.2"
   },
   "engines": {
     "node": ">=22.14.0"
