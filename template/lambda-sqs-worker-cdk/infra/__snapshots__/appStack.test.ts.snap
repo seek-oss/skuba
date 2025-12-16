@@ -216,7 +216,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Node22-x:x",
+                ":464622532012:layer:Datadog-Node24-x:x",
               ],
             ],
           },
@@ -241,7 +241,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
@@ -958,7 +958,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Node22-x:x",
+                ":464622532012:layer:Datadog-Node24-x:x",
               ],
             ],
           },
@@ -983,7 +983,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",

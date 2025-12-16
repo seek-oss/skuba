@@ -2,12 +2,12 @@
   "compilerOptions": {
     "rootDir": ".",
     "declaration": true,
-    "lib": ["ES2020"],
+    "lib": ["ES2023"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "lib",
     "removeComments": false,
-    "target": "ES2020"
+    "target": "ES2023"
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json"

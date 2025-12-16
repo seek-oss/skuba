@@ -86,7 +86,7 @@ export class AppStack extends Stack {
 
     const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
       architecture: aws_lambda.Architecture[architecture],
-      runtime: aws_lambda.Runtime.NODEJS_22_X,
+      runtime: aws_lambda.Runtime.NODEJS_24_X,
       memorySize: 512,
       environmentEncryption: kmsKey,
       // aws-sdk-v3 sets this to true by default, so it is not necessary to set the environment variable
@@ -96,7 +96,7 @@ export class AppStack extends Stack {
       timeout: Duration.seconds(30),
       bundling: {
         sourceMap: true,
-        target: 'node22',
+        target: 'node24',
         // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
         externalModules: [],
         esbuildArgs: {
