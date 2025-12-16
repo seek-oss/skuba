@@ -273,8 +273,8 @@ importers:
   packages/eslint-config-skuba:
     dependencies:
       eslint-config-seek:
-        specifier: 14.7.0
-        version: 14.7.0(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@22.19.1)(ts-node@10.9.2(@types/node@22.19.1)(typescript@5.9.3)))(typescript@5.9.3)
+        specifier: 15.0.1
+        version: 15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@22.19.1)(ts-node@10.9.2(@types/node@22.19.1)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(tsx@4.21.0)(yaml@2.8.1))
       eslint-plugin-skuba:
         specifier: workspace:*
         version: link:../eslint-plugin-skuba
@@ -408,7 +408,7 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(koa@3.1.1)
       '@koa/router':
-        specifier: ^15.0.0
+        specifier: 15.0.0
         version: 15.0.0
       '@opentelemetry/api':
         specifier: ^1.9.0
@@ -465,9 +465,6 @@ importers:
       '@types/koa':
         specifier: ^3.0.0
         version: 3.0.1
-      '@types/koa__router':
-        specifier: ^12.0.0
-        version: 12.0.5
       '@types/node':
         specifier: ^22.13.10
         version: 22.19.1
@@ -2800,9 +2797,6 @@ packages:
   '@types/koa@3.0.1':
     resolution: {integrity: sha512-VkB6WJUQSe0zBpR+Q7/YIUESGp5wPHcaXr0xueU5W0EOUWtlSbblsl+Kl31lyRQ63nIILh0e/7gXjQ09JXJIHw==}
 
-  '@types/koa__router@12.0.5':
-    resolution: {integrity: sha512-1HeLxuDn4n5it1yZYCSyOYXo++73zT0ffoviXnPxbwbxLbvDFEvWD9ZzpRiIpK4oKR0pi+K+Mk/ZjyROjW3HSw==}
-
   '@types/lodash.mergewith@4.6.9':
     resolution: {integrity: sha512-fgkoCAOF47K7sxrQ7Mlud2TH023itugZs2bUg8h/KzT+BnZNrR2jAOmaokbLunHNnobXVWOezAeNn/lZqwxkcw==}
 
@@ -3116,6 +3110,19 @@ packages:
     resolution: {integrity: sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g==}
     cpu: [x64]
     os: [win32]
+
+  '@vitest/eslint-plugin@1.5.2':
+    resolution: {integrity: sha512-2t1F2iecXB/b1Ox4U137lhD3chihEE3dRVtu3qMD35tc6UqUjg1VGRJoS1AkFKwpT8zv8OQInzPQO06hrRkeqw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      eslint: '>=8.57.0'
+      typescript: '>=5.0.0'
+      vitest: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      vitest:
+        optional: true
 
   '@vitest/expect@4.0.14':
     resolution: {integrity: sha512-RHk63V3zvRiYOWAV0rGEBRO820ce17hz7cI2kDmEdfQsBjT2luEKB5tCOc91u1oSQoUOZkSv3ZyzkdkSLD7lKw==}
@@ -4088,11 +4095,11 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-config-seek@14.7.0:
-    resolution: {integrity: sha512-1Pvhewrng/td/0msFdEk51GXG/e2pVVM4pVZIXOB7Cpz5bkiRXMkQoLc8ZwOyrVdSHEBJRCYjidWrwrcIy/TdQ==}
-    engines: {node: '>=18.18.0'}
+  eslint-config-seek@15.0.1:
+    resolution: {integrity: sha512-VNABEF8zoLC20zJ42lsWdaQww40HoE0n4JQxKxOV1Y/OWVBxhYDCk3XBobQi4Uqy25iinv9HtjrJep7HQnYQFg==}
+    engines: {node: '>=22.21.1'}
     peerDependencies:
-      eslint: '>=9.9.1'
+      eslint: '>=9.22.0'
       typescript: '>=5.5.4'
 
   eslint-import-context@0.1.9:
@@ -10468,10 +10475,6 @@ snapshots:
       '@types/koa-compose': 3.2.9
       '@types/node': 22.19.1
 
-  '@types/koa__router@12.0.5':
-    dependencies:
-      '@types/koa': 3.0.1
-
   '@types/lodash.mergewith@4.6.9':
     dependencies:
       '@types/lodash': 4.17.21
@@ -10806,6 +10809,17 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
+
+  '@vitest/eslint-plugin@1.5.2(eslint@9.39.1)(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(tsx@4.21.0)(yaml@2.8.1))':
+    dependencies:
+      '@typescript-eslint/scope-manager': 8.48.0
+      '@typescript-eslint/utils': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
+      eslint: 9.39.1
+    optionalDependencies:
+      typescript: 5.9.3
+      vitest: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(tsx@4.21.0)(yaml@2.8.1)
+    transitivePeerDependencies:
+      - supports-color
 
   '@vitest/expect@4.0.14':
     dependencies:
@@ -11902,8 +11916,9 @@ snapshots:
     dependencies:
       eslint: 9.39.1
 
-  eslint-config-seek@14.7.0(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@22.19.1)(ts-node@10.9.2(@types/node@22.19.1)(typescript@5.9.3)))(typescript@5.9.3):
+  eslint-config-seek@15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@22.19.1)(ts-node@10.9.2(@types/node@22.19.1)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(tsx@4.21.0)(yaml@2.8.1)):
     dependencies:
+      '@vitest/eslint-plugin': 1.5.2(eslint@9.39.1)(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(tsx@4.21.0)(yaml@2.8.1))
       eslint: 9.39.1
       eslint-config-prettier: 10.1.8(eslint@9.39.1)
       eslint-import-resolver-typescript: 4.4.4(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1))(eslint@9.39.1)
@@ -11923,6 +11938,7 @@ snapshots:
       - eslint-plugin-import
       - jest
       - supports-color
+      - vitest
 
   eslint-import-context@0.1.9(unrs-resolver@1.11.1):
     dependencies:

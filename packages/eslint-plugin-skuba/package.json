@@ -52,7 +52,7 @@
     "typescript-eslint": "^8.39.0"
   },
   "peerDependencies": {
-    "eslint": ">=9.11.1",
+    "eslint": ">=9.22.0",
     "typescript-eslint": ">=8.39.0"
   },
   "packageManager": "pnpm@10.25.0",
