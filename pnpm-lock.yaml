@@ -408,7 +408,7 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(koa@3.1.1)
       '@koa/router':
-        specifier: ^15.0.0
+        specifier: 15.0.0
         version: 15.0.0
       '@opentelemetry/api':
         specifier: ^1.9.0
