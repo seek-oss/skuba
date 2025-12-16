@@ -408,7 +408,7 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(koa@3.1.1)
       '@koa/router':
-        specifier: ^15.0.0
+        specifier: 15.0.0
         version: 15.0.0
       '@opentelemetry/api':
         specifier: ^1.9.0
@@ -465,9 +465,6 @@ importers:
       '@types/koa':
         specifier: ^3.0.0
         version: 3.0.1
-      '@types/koa__router':
-        specifier: ^12.0.0
-        version: 12.0.5
       '@types/node':
         specifier: ^22.13.10
         version: 22.19.1
@@ -2799,9 +2796,6 @@ packages:
 
   '@types/koa@3.0.1':
     resolution: {integrity: sha512-VkB6WJUQSe0zBpR+Q7/YIUESGp5wPHcaXr0xueU5W0EOUWtlSbblsl+Kl31lyRQ63nIILh0e/7gXjQ09JXJIHw==}
-
-  '@types/koa__router@12.0.5':
-    resolution: {integrity: sha512-1HeLxuDn4n5it1yZYCSyOYXo++73zT0ffoviXnPxbwbxLbvDFEvWD9ZzpRiIpK4oKR0pi+K+Mk/ZjyROjW3HSw==}
 
   '@types/lodash.mergewith@4.6.9':
     resolution: {integrity: sha512-fgkoCAOF47K7sxrQ7Mlud2TH023itugZs2bUg8h/KzT+BnZNrR2jAOmaokbLunHNnobXVWOezAeNn/lZqwxkcw==}
@@ -10480,10 +10474,6 @@ snapshots:
       '@types/keygrip': 1.0.6
       '@types/koa-compose': 3.2.9
       '@types/node': 22.19.1
-
-  '@types/koa__router@12.0.5':
-    dependencies:
-      '@types/koa': 3.0.1
 
   '@types/lodash.mergewith@4.6.9':
     dependencies:
