@@ -281,7 +281,7 @@ export default defineConfig({
 
 #### Migrate `assets` usage
 
-Skuba currently supports copying additional asset files during the `build-package` command via the `assets` field in `skuba.assets` within `package.json`. As `tsdown` does not support this field, we will need to migrate these assets to use the `copy` field in `tsdown.config.mjs` instead.
+Skuba currently supports copying additional asset files during the `build-package` command via `skuba.assets` within `package.json`. As `tsdown` does not support this field, we will need to migrate these assets to use the `copy` field in `tsdown.config.mjs` instead.
 
 ```json
 {
