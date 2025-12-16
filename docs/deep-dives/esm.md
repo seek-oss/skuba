@@ -261,7 +261,7 @@ module.exports = {
 
 ### 3. Switch to tsdown
 
-Within `build-package` we will switch to calling [`tsdown`](https://tsdown.dev/) instead of wrapping the TypeScript compiler directly. This will allow us to continue publishing both CJS and ESM after we've migrated to ESM.
+`skuba build-package` will switch to calling [`tsdown`](https://tsdown.dev/) instead of wrapping the TypeScript compiler directly. This will allow us to continue publishing both CJS and ESM after we've migrated to ESM.
 
 #### Create tsdown.config.mjs
 
