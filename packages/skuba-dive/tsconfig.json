@@ -3,12 +3,13 @@
     "rootDir": ".",
     "declaration": true,
     "lib": ["ES2023"],
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "outDir": "lib",
     "removeComments": false,
-    "target": "ES2023"
+    "skipLibCheck": true, // tsdown has optional peer deps
+    "target": "ES2023",
   },
   "exclude": ["lib*/**/*"],
-  "extends": "../../config/tsconfig.json"
+  "extends": "../../config/tsconfig.json",
 }
