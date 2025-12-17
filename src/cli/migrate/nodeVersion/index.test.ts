@@ -1,7 +1,5 @@
 import memfs, { vol } from 'memfs';
 
-import * as checks from './checks.js';
-
 import { nodeVersionMigration } from './index.js';
 
 jest.mock('fs', () => memfs);
@@ -53,24 +51,24 @@ describe('nodeVersionMigration', () => {
         '.node-version2': 'v20.15.0\n',
       },
       filesAfter: {
-        '.nvmrc': '22\n',
-        Dockerfile: 'FROM node:22\nRUN echo "hello"',
+        '.nvmrc': '24\n',
+        Dockerfile: 'FROM node:24\nRUN echo "hello"',
         'Dockerfile.dev-deps':
-          'FROM --platform=linux/amd64 node:22-slim AS dev-deps\nRUN echo "hello"',
+          'FROM --platform=linux/amd64 node:24-slim AS dev-deps\nRUN echo "hello"',
         'serverless.yml':
-          'provider:\n  logRetentionInDays: 30\n  runtime: nodejs22.x\n  region: ap-southeast-2',
+          'provider:\n  logRetentionInDays: 30\n  runtime: nodejs24.x\n  region: ap-southeast-2',
         'serverless.melb.yaml':
-          "provider:\n  logRetentionInDays: 7\n  runtime: nodejs22.x\n  region: ap-southeast-4\n  target: 'node22'",
-        'infra/myCoolStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_22_X,\n}`,
-        'infra/myCoolFolder/evenCoolerStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_22_X,\n}`,
+          "provider:\n  logRetentionInDays: 7\n  runtime: nodejs24.x\n  region: ap-southeast-4\n  target: 'node24'",
+        'infra/myCoolStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_24_X,\n}`,
+        'infra/myCoolFolder/evenCoolerStack.ts': `const worker = new aws_lambda.Function(this, 'worker', {\n  architecture: aws_lambda.Architecture[architecture],\n  code: new aws_lambda.AssetCode('./lib'),\n  runtime: aws_lambda.Runtime.NODEJS_24_X,\n}`,
         '.buildkite/pipeline.yml':
-          'plugins:\n  - docker#v3.0.0:\n      image: node:22-slim\n',
+          'plugins:\n  - docker#v3.0.0:\n      image: node:24-slim\n',
         '.buildkite/pipeline2.yml':
-          'plugins:\n  - docker#v3.0.0:\n      image: node:22\n',
+          'plugins:\n  - docker#v3.0.0:\n      image: node:24\n',
         '.buildkite/pipeline3.yml':
-          'plugins:\n  - docker#v3.0.0:\n      image: public.ecr.aws/docker/library/node:22-alpine\n',
-        '.node-version': '22\n',
-        '.node-version2': 'v22\n',
+          'plugins:\n  - docker#v3.0.0:\n      image: public.ecr.aws/docker/library/node:24-alpine\n',
+        '.node-version': '24\n',
+        '.node-version2': 'v24\n',
       },
     },
     {
@@ -101,40 +99,40 @@ describe('nodeVersionMigration', () => {
           'FROM public.ecr.aws/docker/library/node:20-alpine@sha256:c13b26e7e602ef2f1074aef304ce6e9b7dd284c419b35d89fcf3cc8e44a8def9 AS runtime',
       },
       filesAfter: {
-        '.nvmrc': '22\n',
-        'Dockerfile.1': 'FROM node:22\nRUN echo "hello"',
-        'Dockerfile.2': 'FROM node:22\nRUN echo "hello"',
-        'Dockerfile.3': 'FROM node:22-slim\nRUN echo "hello"',
-        'Dockerfile.4': 'FROM node:22-slim\nRUN echo "hello"',
+        '.nvmrc': '24\n',
+        'Dockerfile.1': 'FROM node:24\nRUN echo "hello"',
+        'Dockerfile.2': 'FROM node:24\nRUN echo "hello"',
+        'Dockerfile.3': 'FROM node:24-slim\nRUN echo "hello"',
+        'Dockerfile.4': 'FROM node:24-slim\nRUN echo "hello"',
         'Dockerfile.5':
-          'FROM --platform=linux/amd64 node:22 AS dev-deps\nRUN echo "hello"',
+          'FROM --platform=linux/amd64 node:24 AS dev-deps\nRUN echo "hello"',
         'Dockerfile.6':
-          'FROM --platform=linux/amd64 node:22 AS dev-deps\nRUN echo "hello"',
+          'FROM --platform=linux/amd64 node:24 AS dev-deps\nRUN echo "hello"',
         'Dockerfile.7':
-          'FROM --platform=linux/amd64 node:22-slim AS dev-deps\nRUN echo "hello"',
+          'FROM --platform=linux/amd64 node:24-slim AS dev-deps\nRUN echo "hello"',
         'Dockerfile.8':
-          'FROM --platform=linux/amd64 node:22-slim AS dev-deps\nRUN echo "hello"',
+          'FROM --platform=linux/amd64 node:24-slim AS dev-deps\nRUN echo "hello"',
         'Dockerfile.9':
-          'FROM gcr.io/distroless/nodejs22-debian12\nRUN echo "hello"',
+          'FROM gcr.io/distroless/nodejs24-debian12\nRUN echo "hello"',
         'Dockerfile.10':
-          'FROM --platform=linux/amd64 gcr.io/distroless/nodejs22-debian12 AS dev-deps\nRUN echo "hello"',
+          'FROM --platform=linux/amd64 gcr.io/distroless/nodejs24-debian12 AS dev-deps\nRUN echo "hello"',
         'Dockerfile.11':
-          'FROM --platform=${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs22-debian12 AS runtime',
+          'FROM --platform=${BUILDPLATFORM:-arm64} gcr.io/distroless/nodejs24-debian12 AS runtime',
         'Dockerfile.12':
-          '# syntax=docker/dockerfile:1.10@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5\nFROM --platform=arm64 node:22 AS dev-deps',
+          '# syntax=docker/dockerfile:1.10@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5\nFROM --platform=arm64 node:24 AS dev-deps',
         'Dockerfile.13':
-          'FROM public.ecr.aws/docker/library/node:22-alpine AS runtime',
+          'FROM public.ecr.aws/docker/library/node:24-alpine AS runtime',
       },
     },
     {
-      scenario: 'already node 22',
+      scenario: 'already node 24',
       filesBefore: {
-        '.nvmrc': '22\n',
-        Dockerfile: 'FROM node:22\nRUN echo "hello"',
+        '.nvmrc': '24\n',
+        Dockerfile: 'FROM node:24\nRUN echo "hello"',
         'Dockerfile.dev-deps':
-          'FROM --platform=linux/amd64 node:22-slim AS dev-deps\nRUN echo "hello"',
+          'FROM --platform=linux/amd64 node:24-slim AS dev-deps\nRUN echo "hello"',
         'serverless.yml':
-          'provider:\n  logRetentionInDays: 30\n  runtime: nodejs22.x\n  region: ap-southeast-2',
+          'provider:\n  logRetentionInDays: 30\n  runtime: nodejs24.x\n  region: ap-southeast-2',
       },
     },
     {
@@ -144,14 +142,13 @@ describe('nodeVersionMigration', () => {
       },
     },
     {
-      scenario: 'not patchable engine version',
+      scenario: 'outdated engine version',
       filesBefore: {
-        '1/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}`,
+        '1/package.json': `{"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}}`,
       },
       filesAfter: {
-        '1/package.json': `"engines": {\n"node": ">=18"\n},\n"skuba": {\n"type": "package"\n}`,
+        '1/package.json': `{"engines": {\n"node": ">=20"\n},\n"skuba": {\n"type": "package"\n}}`,
       },
-      isPatchableServerlessVersion: false,
     },
     {
       scenario: 'tsconfig target',
@@ -193,38 +190,71 @@ describe('nodeVersionMigration', () => {
         'docker-compose.prod.yml': 'image: node:18-slim\n',
       },
       filesAfter: {
-        'docker-compose.yml': 'image: node:22\n',
-        'docker-compose.dev.yml': 'image: node:22\n',
-        'docker-compose.prod.yml': 'image: node:22-slim\n',
+        'docker-compose.yml': 'image: node:24\n',
+        'docker-compose.dev.yml': 'image: node:24\n',
+        'docker-compose.prod.yml': 'image: node:24-slim\n',
+      },
+    },
+    {
+      scenario: 'monorepo with api and package',
+      filesBefore: {
+        'package.json': JSON.stringify({
+          private: true,
+          workspaces: ['packages/*'],
+          engines: {
+            node: '>=18',
+          },
+        }),
+        'packages/api/package.json': JSON.stringify({
+          skuba: { type: 'application' },
+        }),
+        'packages/api/Dockerfile': 'FROM node:18.1.2\nRUN echo "hello"',
+        'packages/api/serverless.yml':
+          'provider:\n  logRetentionInDays: 30\n  runtime: nodejs18.x\n  region: ap-southeast-2',
+        'packages/package/package.json': JSON.stringify({
+          skuba: { type: 'package' },
+          engines: {
+            node: '>=16',
+          },
+        }),
+        'packages/package/Dockerfile': 'FROM node:18.1.2\nRUN echo "hello"',
+      },
+      filesAfter: {
+        'package.json': JSON.stringify({
+          private: true,
+          workspaces: ['packages/*'],
+          engines: {
+            node: '>=24',
+          },
+        }),
+        'packages/api/package.json': JSON.stringify({
+          skuba: { type: 'application' },
+        }),
+        'packages/api/Dockerfile': 'FROM node:24\nRUN echo "hello"',
+        'packages/api/serverless.yml':
+          'provider:\n  logRetentionInDays: 30\n  runtime: nodejs24.x\n  region: ap-southeast-2',
+        'packages/package/package.json': JSON.stringify({
+          skuba: { type: 'package' },
+          engines: {
+            node: '>=20',
+          },
+        }),
+        'packages/package/Dockerfile': 'FROM node:24\nRUN echo "hello"',
       },
     },
   ];
 
   it.each(scenarios)(
     'handles $scenario',
-    async ({
-      filesBefore,
-      filesAfter,
-      isPatchableNodeVersion = true,
-      isPatchableServerlessVersion = true,
-      isPatchableSkubaType = true,
-    }) => {
-      jest
-        .spyOn(checks, 'isPatchableServerlessVersion')
-        .mockResolvedValue(isPatchableServerlessVersion);
-
-      jest
-        .spyOn(checks, 'isPatchableSkubaType')
-        .mockResolvedValue(isPatchableSkubaType);
-
-      jest
-        .spyOn(checks, 'isPatchableNodeVersion')
-        .mockResolvedValue(isPatchableNodeVersion);
+    async ({ filesBefore, filesAfter }) => {
       vol.fromJSON(filesBefore, process.cwd());
 
       await nodeVersionMigration({
-        nodeVersion: 22,
+        nodeVersion: '24',
         ECMAScriptVersion: 'ES2024',
+        packageNodeVersion: '20',
+        packageECMAScriptVersion: 'ES2023',
+        infraPackages: [],
       });
 
       expect(volToJson()).toEqual(filesAfter ?? filesBefore);

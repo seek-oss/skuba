@@ -47,15 +47,15 @@
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.26.0",
     "eslint": "^9.39.1",
-    "tsdown": "^0.16.0",
+    "tsdown": "^0.17.0",
     "tsx": "^4.16.2",
     "typescript-eslint": "^8.39.0"
   },
   "peerDependencies": {
-    "eslint": ">=9.11.1",
+    "eslint": ">=9.22.0",
     "typescript-eslint": ">=8.39.0"
   },
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@10.25.0",
   "engines": {
     "node": ">=20.9.0"
   },

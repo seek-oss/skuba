@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "customConditions": ["@seek/skuba/source"],
     "declaration": true,
     "lib": ["ES2023"],
