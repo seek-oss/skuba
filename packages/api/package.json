@@ -14,28 +14,28 @@
   "exports": {
     ".": {
       "@seek/skuba/source": "./src/index.ts",
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
     },
     "./buildkite": {
       "@seek/skuba/source": "./src/buildkite/index.ts",
-      "import": "./lib/buildkite/index.mjs",
-      "require": "./lib/buildkite/index.cjs"
+      "require": "./lib/buildkite/index.cjs",
+      "import": "./lib/buildkite/index.mjs"
     },
     "./git": {
       "@seek/skuba/source": "./src/git/index.ts",
-      "import": "./lib/git/index.mjs",
-      "require": "./lib/git/index.cjs"
+      "require": "./lib/git/index.cjs",
+      "import": "./lib/git/index.mjs"
     },
     "./github": {
       "@seek/skuba/source": "./src/github/index.ts",
-      "import": "./lib/github/index.mjs",
-      "require": "./lib/github/index.cjs"
+      "require": "./lib/github/index.cjs",
+      "import": "./lib/github/index.mjs"
     },
     "./net": {
       "@seek/skuba/source": "./src/net/index.ts",
-      "import": "./lib/net/index.mjs",
-      "require": "./lib/net/index.cjs"
+      "require": "./lib/net/index.cjs",
+      "import": "./lib/net/index.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -69,24 +69,24 @@
   "publishConfig": {
     "exports": {
       ".": {
-        "import": "./lib/index.mjs",
-        "require": "./lib/index.cjs"
+        "require": "./lib/index.cjs",
+        "import": "./lib/index.mjs"
       },
       "./buildkite": {
-        "import": "./lib/buildkite/index.mjs",
-        "require": "./lib/buildkite/index.cjs"
+        "require": "./lib/buildkite/index.cjs",
+        "import": "./lib/buildkite/index.mjs"
       },
       "./git": {
-        "import": "./lib/git/index.mjs",
-        "require": "./lib/git/index.cjs"
+        "require": "./lib/git/index.cjs",
+        "import": "./lib/git/index.mjs"
       },
       "./github": {
-        "import": "./lib/github/index.mjs",
-        "require": "./lib/github/index.cjs"
+        "require": "./lib/github/index.cjs",
+        "import": "./lib/github/index.mjs"
       },
       "./net": {
-        "import": "./lib/net/index.mjs",
-        "require": "./lib/net/index.cjs"
+        "require": "./lib/net/index.cjs",
+        "import": "./lib/net/index.mjs"
       },
       "./package.json": "./package.json"
     }
