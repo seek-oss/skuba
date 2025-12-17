@@ -14,19 +14,26 @@
   },
   "license": "MIT",
   "type": "module",
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "@seek/skuba/source": "./src/index.ts",
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "files": [
     "lib/**/*.d.ts",
     "lib/**/*.js",
     "lib/**/*.js.map"
   ],
   "scripts": {
-    "build": "pnpm skuba build",
+    "build": "tsdown",
     "format": "pnpm skuba format",
     "lint": "pnpm skuba lint",
-    "prepack": "pnpm skuba build",
     "skuba": "node ../../lib/skuba",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
@@ -35,6 +42,9 @@
   "dependencies": {
     "node-mocks-http": "^1.17.2"
   },
+  "devDependencies": {
+    "tsdown": "^0.17.0"
+  },
   "peerDependencies": {
     "@types/koa": "^3.0.1",
     "koa": "^3.1.1",
@@ -42,6 +52,15 @@
   },
   "engines": {
     "node": ">=20.9.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "require": "./lib/index.cjs",
+        "import": "./lib/index.mjs"
+      },
+      "./package.json": "./package.json"
+    }
   },
   "skuba": {
     "entryPoint": "src/index.ts",
