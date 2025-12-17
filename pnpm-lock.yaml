@@ -274,7 +274,7 @@ importers:
     dependencies:
       eslint-config-seek:
         specifier: 15.0.1
-        version: 15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1))
+        version: 15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1))
       eslint-plugin-skuba:
         specifier: workspace:*
         version: link:../eslint-plugin-skuba
@@ -408,8 +408,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(koa@3.1.1)
       '@koa/router':
-        specifier: 15.0.0
-        version: 15.0.0
+        specifier: 15.1.0
+        version: 15.1.0(koa@3.1.1)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -1780,9 +1780,11 @@ packages:
     peerDependencies:
       koa: '>=2'
 
-  '@koa/router@15.0.0':
-    resolution: {integrity: sha512-qAoA07CndM5XuBZbTbsnvUj1RNVZtwOvO9xGz7CCE/t4nSopI+xEiFGHyJS1UuSDCt8cJZ9vfCvqbAFga+0y7w==}
+  '@koa/router@15.1.0':
+    resolution: {integrity: sha512-0zCmuapmgBHrfVSFjBfCdgnkBnXwRGcG5qHnxVs8ZoTNEJiwSSspgJ5+2NugiqLJS/S0d96KMeNntLqTNWaioQ==}
     engines: {node: '>= 20'}
+    peerDependencies:
+      koa: ^2.0.0 || ^3.0.0
 
   '@kwsites/file-exists@1.1.1':
     resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
@@ -9238,10 +9240,11 @@ snapshots:
       lodash.merge: 4.6.2
       type-is: 2.0.1
 
-  '@koa/router@15.0.0':
+  '@koa/router@15.1.0(koa@3.1.1)':
     dependencies:
       debug: 4.4.3
       http-errors: 2.0.1
+      koa: 3.1.1
       koa-compose: 4.1.0
       path-to-regexp: 8.3.0
     transitivePeerDependencies:
@@ -10606,24 +10609,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)':
-    dependencies:
-      '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
-      '@typescript-eslint/scope-manager': 8.47.0
-      '@typescript-eslint/type-utils': 8.47.0(eslint@9.39.1)(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.47.0(eslint@9.39.1)(typescript@5.9.3)
-      '@typescript-eslint/visitor-keys': 8.47.0
-      eslint: 9.39.1
-      graphemer: 1.4.0
-      ignore: 7.0.5
-      natural-compare: 1.4.0
-      ts-api-utils: 2.1.0(typescript@5.9.3)
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - supports-color
-    optional: true
-
   '@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.47.0
@@ -11953,7 +11938,7 @@ snapshots:
     dependencies:
       eslint: 9.39.1
 
-  eslint-config-seek@15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1)):
+  eslint-config-seek@15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1)):
     dependencies:
       '@vitest/eslint-plugin': 1.5.2(eslint@9.39.1)(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1))
       eslint: 9.39.1
@@ -11962,7 +11947,7 @@ snapshots:
       eslint-plugin-cypress: 5.2.0(eslint@9.39.1)
       eslint-plugin-import-x: 4.16.1(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
       eslint-plugin-import-zod: 1.2.1(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
-      eslint-plugin-jest: 29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)
+      eslint-plugin-jest: 29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)
       eslint-plugin-react: 7.37.5(eslint@9.39.1)
       eslint-plugin-react-hooks: 5.2.0(eslint@9.39.1)
       globals: 16.5.0
@@ -12026,12 +12011,12 @@ snapshots:
       '@typescript-eslint/utils': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
       eslint: 9.39.1
 
-  eslint-plugin-jest@29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3):
+  eslint-plugin-jest@29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/utils': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
       eslint: 9.39.1
     optionalDependencies:
-      '@typescript-eslint/eslint-plugin': 8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
+      '@typescript-eslint/eslint-plugin': 8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
       jest: 30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3))
     transitivePeerDependencies:
       - supports-color
