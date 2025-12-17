@@ -14,15 +14,24 @@
   },
   "license": "MIT",
   "sideEffects": false,
-  "main": "./index.js",
-  "module": "./index.js",
-  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "@seek/skuba/source": "./index.js",
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "files": [
     "index.d.ts",
     "index.js",
     "requireExtensions.js"
   ],
   "scripts": {
+    "build": "tsdown",
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
     "skuba": "node ../../lib/skuba"
@@ -35,6 +44,7 @@
   },
   "devDependencies": {
     "eslint": "^9.39.1",
+    "tsdown": "^0.17.0",
     "typescript": "~5.9.0"
   },
   "peerDependencies": {
@@ -44,6 +54,15 @@
   "packageManager": "pnpm@10.25.0",
   "engines": {
     "node": ">=20.9.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "require": "./lib/index.cjs",
+        "import": "./lib/index.mjs"
+      },
+      "./package.json": "./package.json"
+    }
   },
   "skuba": {
     "entryPoint": "index.js",
