@@ -59,30 +59,77 @@ const amendPnpmWorkspaceTemplate = (
   const parsed = z
     .object({
       minimumReleaseAgeExcludeOverload: z.array(z.string()).optional(),
+      onlyBuiltDependenciesOverload: z.array(z.string()).optional(),
+      trustPolicyExcludeOverload: z.array(z.string()).optional(),
     })
     .safeParse(rawJSON);
 
-  const excludes = parsed.data?.minimumReleaseAgeExcludeOverload;
+  if (!parsed.success || !parsed.data) {
+    return templateFile;
+  }
+
+  const {
+    minimumReleaseAgeExcludeOverload,
+    onlyBuiltDependenciesOverload,
+    trustPolicyExcludeOverload,
+  } = parsed.data;
+
+  const replaceFieldValues = (
+    template: string,
+    targetKey: string,
+    values: string[],
+  ): string => {
+    const index = template.indexOf(targetKey);
+
+    if (index === -1) {
+      return template;
+    }
+
+    const beforeKey = template.substring(0, index + targetKey.length);
+    const afterKey = template.substring(index + targetKey.length);
+
+    const nextKeyMatch = /\n[a-zA-Z]/m.exec(afterKey);
+    const endOfList = nextKeyMatch ? nextKeyMatch.index : afterKey.length;
+
+    const afterList = afterKey.substring(endOfList);
+    const valueLines = values.map((value) => `  - '${value}'`).join('\n');
+
+    return `${beforeKey}\n${valueLines}${afterList}`;
+  };
+
+  let result = templateFile;
+
   if (
-    !excludes ||
-    Array.isArray(excludes) === false ||
-    excludes.some((e) => typeof e !== 'string')
+    minimumReleaseAgeExcludeOverload &&
+    minimumReleaseAgeExcludeOverload.length > 0
   ) {
-    return templateFile;
+    result = replaceFieldValues(
+      result,
+      'minimumReleaseAgeExclude:',
+      minimumReleaseAgeExcludeOverload,
+    );
   }
 
-  const targetKey = 'minimumReleaseAgeExclude:';
-  const index = templateFile.indexOf(targetKey);
-
-  if (index === -1) {
-    return templateFile;
+  if (
+    onlyBuiltDependenciesOverload &&
+    onlyBuiltDependenciesOverload.length > 0
+  ) {
+    result = replaceFieldValues(
+      result,
+      'onlyBuiltDependencies:',
+      onlyBuiltDependenciesOverload,
+    );
   }
 
-  const beforeKey = templateFile.substring(0, index);
-  const afterKey = templateFile.substring(index + targetKey.length);
-  const excludeLines = excludes.map((exclude) => `  - '${exclude}'`).join('\n');
+  if (trustPolicyExcludeOverload && trustPolicyExcludeOverload.length > 0) {
+    result = replaceFieldValues(
+      result,
+      'trustPolicyExclude:',
+      trustPolicyExcludeOverload,
+    );
+  }
 
-  return `${beforeKey + targetKey}\n${excludeLines}${afterKey}`;
+  return result;
 };
 
 export const replaceManagedSection = (input: string, template: string) =>
