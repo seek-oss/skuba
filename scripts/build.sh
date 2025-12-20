@@ -2,9 +2,7 @@
 
 set -e
 
-tsx --conditions @seek/skuba/source src/skuba build "${@}"
-
-chmod +x 'lib/skuba.js'
+tsdown
 
 pnpm --filter @skuba-lib/api build
 

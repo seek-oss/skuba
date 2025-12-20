@@ -4,6 +4,8 @@ minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - '@seek/*'
   - '@skuba-lib/*'
+  - datadog-lambda-js
+  - dd-trace
   - eslint-config-seek
   - eslint-config-skuba
   - eslint-plugin-skuba

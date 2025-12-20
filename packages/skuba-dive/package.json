@@ -34,7 +34,7 @@
     "build": "tsdown",
     "format": "pnpm skuba format",
     "lint": "pnpm skuba lint",
-    "skuba": "node ../../lib/skuba",
+    "skuba": "node ../../lib/skuba.cjs",
     "test": "pnpm skuba test",
     "test:ci": "pnpm skuba test --coverage"
   },

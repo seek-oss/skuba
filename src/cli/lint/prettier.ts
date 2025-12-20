@@ -1,5 +1,4 @@
 import { styleText } from 'node:util';
-import path from 'path';
 import { isMainThread } from 'worker_threads';
 
 import { createLogger } from '../../utils/logging.js';
@@ -14,10 +13,7 @@ export const runPrettierInCurrentThread = ({ debug }: Input) =>
   runPrettier('lint', createLogger({ debug, prefixes: [LOG_PREFIX] }));
 
 export const runPrettierInWorkerThread = (input: Input) =>
-  execWorkerThread<Input, PrettierOutput>(
-    path.posix.join(__dirname, 'prettier.js'),
-    input,
-  );
+  execWorkerThread<Input, PrettierOutput>(__filename, input);
 
 if (!isMainThread) {
   postWorkerOutput(

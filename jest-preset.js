@@ -21,7 +21,7 @@ module.exports = {
     '!<rootDir>/jest.*.ts',
   ],
   coverageDirectory: 'coverage',
-  reporters: ['default', require.resolve('./lib/cli/test/reporters/github')],
+  reporters: ['default', require.resolve('skuba/cli/test/reporters/github')],
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/node_modules.*/',
