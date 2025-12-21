@@ -1,6 +1,6 @@
-import { Jest } from 'skuba';
+const { Jest } = require('skuba');
 
-export default Jest.mergePreset({
+module.exports = Jest.mergePreset({
   coverageThreshold: {
     global: {
       branches: 100,
