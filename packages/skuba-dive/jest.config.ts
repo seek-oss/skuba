@@ -1,4 +1,4 @@
-import * as Jest from '../../lib/api/jest/index.js';
+import { Jest } from 'skuba';
 
 export default Jest.mergePreset({
   coverageThreshold: {

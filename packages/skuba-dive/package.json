@@ -39,7 +39,8 @@
     "test:ci": "pnpm skuba test --coverage"
   },
   "devDependencies": {
-    "tsdown": "^0.17.0"
+    "skuba": "13.1.1",
+    "tsdown": "0.17.0"
   },
   "engines": {
     "node": ">=22.14.0"
