@@ -245,8 +245,8 @@ importers:
         specifier: 7.1.4
         version: 7.1.4
       tsdown:
-        specifier: 0.17.0
-        version: 0.17.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
+        specifier: 0.18.0
+        version: 0.18.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
       type-fest:
         specifier: 2.19.0
         version: 2.19.0
@@ -273,8 +273,8 @@ importers:
         version: 1.35.1
     devDependencies:
       tsdown:
-        specifier: ^0.17.0
-        version: 0.17.2(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
+        specifier: 0.18.0
+        version: 0.18.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
 
   packages/eslint-config-skuba:
     dependencies:
@@ -295,8 +295,8 @@ importers:
         specifier: ^9.39.1
         version: 9.39.1
       tsdown:
-        specifier: ^0.17.0
-        version: 0.17.2(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
+        specifier: 0.18.0
+        version: 0.18.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
       typescript:
         specifier: ~5.9.0
         version: 5.9.3
@@ -314,8 +314,8 @@ importers:
         specifier: ^9.39.1
         version: 9.39.1
       tsdown:
-        specifier: ^0.17.0
-        version: 0.17.2(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
+        specifier: 0.18.0
+        version: 0.18.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
       tsx:
         specifier: ^4.16.2
         version: 4.21.0
@@ -329,8 +329,8 @@ importers:
         specifier: workspace:*
         version: link:../..
       tsdown:
-        specifier: 0.17.0
-        version: 0.17.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
+        specifier: 0.18.0
+        version: 0.18.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
 
   packages/vitest-koa-mocks:
     dependencies:
@@ -348,8 +348,8 @@ importers:
         version: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1)
     devDependencies:
       tsdown:
-        specifier: ^0.17.0
-        version: 0.17.2(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
+        specifier: 0.18.0
+        version: 0.18.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3)
 
   template/express-rest-api:
     dependencies:
@@ -3886,6 +3886,9 @@ packages:
     resolution: {integrity: sha512-8QmQKqEASLd5nx0U1B1okLElbUuuttJ/AnYmRXbbbGDWh6uS208EjD4Xqq/I9wK7u0v6O08XhTWnt5XtEbR6Dg==}
     engines: {node: '>= 0.4'}
 
+  defu@6.1.4:
+    resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
+
   delay@5.0.0:
     resolution: {integrity: sha512-ReEBKkIfe4ya47wlPYf/gu5ib6yUG0/Aez0JQZQz94kiWtRQvZIQbTiehsnwHvLSWJnQdhVeqYue7Id1dKr0qw==}
     engines: {node: '>=10'}
@@ -7131,33 +7134,8 @@ packages:
   tsconfig-seek@2.0.0:
     resolution: {integrity: sha512-pcKqW1I+CxGS6LI2QcNSdHGkJUWIP4VzcRzYAFH/LcQOlCBtD2q5w7RXZrIQxSANtcdN2RIT+o5pYEIPd81vRQ==}
 
-  tsdown@0.17.0:
-    resolution: {integrity: sha512-NPZRrlC51X9Bb55ZTDwrWges8Dm1niCvNA5AYw7aix6pfnDnB4WR0neG5RPq75xIodg3hqlQUzzyrX7n4dmnJg==}
-    engines: {node: '>=20.19.0'}
-    hasBin: true
-    peerDependencies:
-      '@arethetypeswrong/core': ^0.18.1
-      '@vitejs/devtools': ^0.0.0-alpha.18
-      publint: ^0.3.0
-      typescript: ^5.0.0
-      unplugin-lightningcss: ^0.4.0
-      unplugin-unused: ^0.5.0
-    peerDependenciesMeta:
-      '@arethetypeswrong/core':
-        optional: true
-      '@vitejs/devtools':
-        optional: true
-      publint:
-        optional: true
-      typescript:
-        optional: true
-      unplugin-lightningcss:
-        optional: true
-      unplugin-unused:
-        optional: true
-
-  tsdown@0.17.2:
-    resolution: {integrity: sha512-SuU+0CWm/95KfXqojHTVuwcouIsdn7HpYcwDyOdKktJi285NxKwysjFUaxYLxpCNqqPvcFvokXLO4dZThRwzkw==}
+  tsdown@0.18.0:
+    resolution: {integrity: sha512-Yotdh3NzizysnqR96xfpHFYtEntk1cZvSRHz8A+Pn3ZHNdTQa4fBQxh6HHzWZwfjdQv47xb7GCv6vEWMtxBirw==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -11719,6 +11697,8 @@ snapshots:
       has-property-descriptors: 1.0.2
       object-keys: 1.1.1
 
+  defu@6.1.4: {}
+
   delay@5.0.0: {}
 
   delayed-stream@1.0.0: {}
@@ -15664,36 +15644,11 @@ snapshots:
 
   tsconfig-seek@2.0.0: {}
 
-  tsdown@0.17.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3):
+  tsdown@0.18.0(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
-      empathic: 2.0.0
-      hookable: 5.5.3
-      import-without-cache: 0.2.3
-      obug: 2.1.1
-      rolldown: 1.0.0-beta.53
-      rolldown-plugin-dts: 0.18.3(rolldown@1.0.0-beta.53)(typescript@5.9.3)
-      semver: 7.7.3
-      tinyexec: 1.0.2
-      tinyglobby: 0.2.15
-      tree-kill: 1.2.2
-      unconfig-core: 7.4.2
-      unrun: 0.2.19(synckit@0.11.11)
-    optionalDependencies:
-      '@arethetypeswrong/core': 0.18.2
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - '@ts-macro/tsc'
-      - '@typescript/native-preview'
-      - oxc-resolver
-      - synckit
-      - vue-tsc
-
-  tsdown@0.17.2(@arethetypeswrong/core@0.18.2)(synckit@0.11.11)(typescript@5.9.3):
-    dependencies:
-      ansis: 4.2.0
-      cac: 6.7.14
+      defu: 6.1.4
       empathic: 2.0.0
       hookable: 5.5.3
       import-without-cache: 0.2.3

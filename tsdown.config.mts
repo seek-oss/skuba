@@ -16,5 +16,5 @@ export default defineConfig({
   attw: true,
   failOnWarn: false,
   unbundle: true,
-  copy: ['jest-preset.js', 'jest-preset.d.ts'],
+  copy: ['jest-preset.js', 'jest-preset.d.ts', 'config'],
 });
