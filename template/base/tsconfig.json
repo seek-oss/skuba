@@ -4,8 +4,8 @@
     "rootDir": ".",
     "lib": ["ES2024"],
     "outDir": "lib",
-    "target": "ES2024",
+    "target": "ES2024"
   },
   "exclude": ["lib*/**/*"],
-  "extends": "skuba/config/tsconfig.json",
+  "extends": "skuba/config/tsconfig.json"
 }
