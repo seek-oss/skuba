@@ -90,6 +90,7 @@ export const copyFiles = async (
             .replace(/^_\./, '.')
             .replace(/^_package\.json/, 'package.json')
             .replace(/^_eslint\.config\.js/, 'eslint.config.js')
+            .replace(/^_pnpm-workspace\.yaml/, 'pnpm-workspace.yaml')
         : filename,
     );
 
