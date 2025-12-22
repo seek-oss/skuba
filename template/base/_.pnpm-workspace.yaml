@@ -1,0 +1,2 @@
+configDependencies:
+  '@skuba-lib/pnpm-config-skuba': '1.0.0-zac-pls-fix'
