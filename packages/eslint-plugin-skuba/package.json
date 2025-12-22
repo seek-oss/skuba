@@ -36,7 +36,7 @@
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
     "prepack": "tsdown",
-    "skuba": "node ../../lib/skuba",
+    "skuba": "node ../../lib/skuba.cjs",
     "test": "node --import tsx --test 'src/**/*.test.ts'",
     "test:ci": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
     "test:watch": "node --import tsx --test --watch 'src/**/*.test.ts'"
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.26.0",
     "eslint": "^9.39.1",
-    "tsdown": "^0.17.0",
+    "tsdown": "0.18.0",
     "tsx": "^4.16.2",
     "typescript-eslint": "^8.39.0"
   },
@@ -72,6 +72,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "13.0.0"
+    "version": "13.1.1"
   }
 }

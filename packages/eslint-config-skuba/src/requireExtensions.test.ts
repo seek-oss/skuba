@@ -36,18 +36,14 @@ import '../';
 import '../index.js';
 
 const asyncFunction = async () => {
-  // @ts-expect-error - testing ESLint rule, intentionally missing extension
   const dynamicImportTest = await import('./simple'); // eslint-disable-line require-extensions/require-extensions
   const validDynamicImportTest = await import('./simple.js');
 
-  // @ts-expect-error - testing ESLint rule, intentionally missing extension
   const indexFileDynamicImportTest = await import('./indexFile'); // eslint-disable-line require-extensions/require-index
   const validIndexFileDynamicImportTest = await import('./indexFile/index.js');
 
-  // @ts-expect-error - testing ESLint rule, intentionally missing extension
   const srcDynamicImportTest = await import('src/file'); // eslint-disable-line require-extensions/require-extensions
   const validSrcDynamicImportTest = await import('src/file.js');
 
-  // @ts-expect-error - testing ESLint rule, intentionally missing extension
   const bothDynamicImportTest = await import('./both'); // eslint-disable-line require-extensions/require-extensions
 };

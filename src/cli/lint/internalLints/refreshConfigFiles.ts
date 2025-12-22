@@ -3,7 +3,6 @@ import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 
 import fs from 'fs-extra';
 
-import { Git } from '../../../index.js';
 import {
   findCurrentWorkspaceProjectRoot,
   findWorkspaceRoot,
@@ -18,6 +17,8 @@ import { getDestinationManifest } from '../../configure/analysis/package.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
 import { mergeWithConfigFile } from '../../configure/processing/configFile.js';
 import type { InternalLintResult } from '../internal.js';
+
+import { Git } from '@skuba-lib/api';
 
 type ConditionOptions = {
   packageManager: PackageManagerConfig;

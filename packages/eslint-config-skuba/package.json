@@ -14,18 +14,27 @@
   },
   "license": "MIT",
   "sideEffects": false,
-  "main": "./index.js",
-  "module": "./index.js",
-  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "@seek/skuba/source": "./index.js",
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "files": [
     "index.d.ts",
     "index.js",
     "requireExtensions.js"
   ],
   "scripts": {
+    "build": "tsdown",
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
-    "skuba": "node ../../lib/skuba"
+    "skuba": "node ../../lib/skuba.cjs"
   },
   "dependencies": {
     "eslint-config-seek": "15.0.1",
@@ -35,6 +44,7 @@
   },
   "devDependencies": {
     "eslint": "^9.39.1",
+    "tsdown": "0.18.0",
     "typescript": "~5.9.0"
   },
   "peerDependencies": {
@@ -45,10 +55,19 @@
   "engines": {
     "node": ">=20.9.0"
   },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "require": "./lib/index.cjs",
+        "import": "./lib/index.mjs"
+      },
+      "./package.json": "./package.json"
+    }
+  },
   "skuba": {
     "entryPoint": "index.js",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "13.0.0"
+    "version": "13.1.1"
   }
 }

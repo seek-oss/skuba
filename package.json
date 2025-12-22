@@ -13,16 +13,104 @@
   },
   "license": "MIT",
   "sideEffects": false,
-  "main": "lib/index.js",
-  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "@seek/skuba/source": "./src/index.ts",
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
+    },
+    "./cli/build": {
+      "@seek/skuba/source": "./src/cli/build/index.ts",
+      "require": "./lib/cli/build/index.cjs",
+      "import": "./lib/cli/build/index.mjs"
+    },
+    "./cli/buildPackage": {
+      "@seek/skuba/source": "./src/cli/buildPackage/index.ts",
+      "require": "./lib/cli/buildPackage/index.cjs",
+      "import": "./lib/cli/buildPackage/index.mjs"
+    },
+    "./cli/configure": {
+      "@seek/skuba/source": "./src/cli/configure/index.ts",
+      "require": "./lib/cli/configure/index.cjs",
+      "import": "./lib/cli/configure/index.mjs"
+    },
+    "./cli/format": {
+      "@seek/skuba/source": "./src/cli/format/index.ts",
+      "require": "./lib/cli/format/index.cjs",
+      "import": "./lib/cli/format/index.mjs"
+    },
+    "./cli/help": {
+      "@seek/skuba/source": "./src/cli/help/index.ts",
+      "require": "./lib/cli/help/index.cjs",
+      "import": "./lib/cli/help/index.mjs"
+    },
+    "./cli/init": {
+      "@seek/skuba/source": "./src/cli/init/index.ts",
+      "require": "./lib/cli/init/index.cjs",
+      "import": "./lib/cli/init/index.mjs"
+    },
+    "./cli/lint": {
+      "@seek/skuba/source": "./src/cli/lint/index.ts",
+      "require": "./lib/cli/lint/index.cjs",
+      "import": "./lib/cli/lint/index.mjs"
+    },
+    "./cli/migrate": {
+      "@seek/skuba/source": "./src/cli/migrate/index.ts",
+      "require": "./lib/cli/migrate/index.cjs",
+      "import": "./lib/cli/migrate/index.mjs"
+    },
+    "./cli/node": {
+      "@seek/skuba/source": "./src/cli/node/index.ts",
+      "require": "./lib/cli/node/index.cjs",
+      "import": "./lib/cli/node/index.mjs"
+    },
+    "./cli/release": {
+      "@seek/skuba/source": "./src/cli/release/index.ts",
+      "require": "./lib/cli/release/index.cjs",
+      "import": "./lib/cli/release/index.mjs"
+    },
+    "./cli/start": {
+      "@seek/skuba/source": "./src/cli/start/index.ts",
+      "require": "./lib/cli/start/index.cjs",
+      "import": "./lib/cli/start/index.mjs"
+    },
+    "./cli/test": {
+      "@seek/skuba/source": "./src/cli/test/index.ts",
+      "require": "./lib/cli/test/index.cjs",
+      "import": "./lib/cli/test/index.mjs"
+    },
+    "./cli/test/reporters/github": {
+      "@seek/skuba/source": "./src/cli/test/reporters/github/index.ts",
+      "require": "./lib/cli/test/reporters/github/index.cjs",
+      "import": "./lib/cli/test/reporters/github/index.mjs"
+    },
+    "./cli/version": {
+      "@seek/skuba/source": "./src/cli/version/index.ts",
+      "require": "./lib/cli/version/index.cjs",
+      "import": "./lib/cli/version/index.mjs"
+    },
+    "./skuba": {
+      "@seek/skuba/source": "./src/skuba.ts",
+      "require": "./lib/skuba.cjs",
+      "import": "./lib/skuba.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "bin": {
-    "skuba": "lib/skuba.js"
+    "skuba": "lib/skuba.cjs"
   },
   "files": [
     "config/**/*",
     "jest/**/*.js",
     "lib*/**/*.d.ts",
+    "lib*/**/*.d.cts",
+    "lib*/**/*.d.mts",
     "lib*/**/*.js",
+    "lib*/**/*.cjs",
+    "lib*/**/*.mjs",
     "lib*/**/*.js.map",
     "template/**/*",
     "jest-preset.js"
@@ -40,7 +128,7 @@
     "prepack": "pnpm --filter './template/**' exec rm -rf node_modules",
     "release": "pnpm --silent build && changeset publish",
     "skuba": "pnpm --silent build && pnpm --silent skuba:exec",
-    "skuba:exec": "node lib/skuba",
+    "skuba:exec": "node lib/skuba.cjs",
     "stage": "changeset version && node ./.changeset/inject.js && pnpm format",
     "test": "pnpm --silent skuba test --selectProjects unit",
     "test:ci": "pnpm --silent skuba test --runInBand",
@@ -128,6 +216,7 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "0.18.2",
     "@changesets/cli": "2.29.8",
     "@changesets/get-github-info": "0.7.0",
     "@jest/reporters": "30.2.0",
@@ -155,11 +244,81 @@
     "remark-preset-lint-recommended": "7.0.1",
     "semver": "7.7.3",
     "supertest": "7.1.4",
+    "tsdown": "0.18.0",
     "type-fest": "2.19.0"
   },
   "packageManager": "pnpm@10.25.0",
   "engines": {
     "node": ">=22.14.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "require": "./lib/index.cjs",
+        "import": "./lib/index.mjs"
+      },
+      "./cli/build": {
+        "require": "./lib/cli/build/index.cjs",
+        "import": "./lib/cli/build/index.mjs"
+      },
+      "./cli/buildPackage": {
+        "require": "./lib/cli/buildPackage/index.cjs",
+        "import": "./lib/cli/buildPackage/index.mjs"
+      },
+      "./cli/configure": {
+        "require": "./lib/cli/configure/index.cjs",
+        "import": "./lib/cli/configure/index.mjs"
+      },
+      "./cli/format": {
+        "require": "./lib/cli/format/index.cjs",
+        "import": "./lib/cli/format/index.mjs"
+      },
+      "./cli/help": {
+        "require": "./lib/cli/help/index.cjs",
+        "import": "./lib/cli/help/index.mjs"
+      },
+      "./cli/init": {
+        "require": "./lib/cli/init/index.cjs",
+        "import": "./lib/cli/init/index.mjs"
+      },
+      "./cli/lint": {
+        "require": "./lib/cli/lint/index.cjs",
+        "import": "./lib/cli/lint/index.mjs"
+      },
+      "./cli/migrate": {
+        "require": "./lib/cli/migrate/index.cjs",
+        "import": "./lib/cli/migrate/index.mjs"
+      },
+      "./cli/node": {
+        "require": "./lib/cli/node/index.cjs",
+        "import": "./lib/cli/node/index.mjs"
+      },
+      "./cli/release": {
+        "require": "./lib/cli/release/index.cjs",
+        "import": "./lib/cli/release/index.mjs"
+      },
+      "./cli/start": {
+        "require": "./lib/cli/start/index.cjs",
+        "import": "./lib/cli/start/index.mjs"
+      },
+      "./cli/test": {
+        "require": "./lib/cli/test/index.cjs",
+        "import": "./lib/cli/test/index.mjs"
+      },
+      "./cli/test/reporters/github": {
+        "require": "./lib/cli/test/reporters/github/index.cjs",
+        "import": "./lib/cli/test/reporters/github/index.mjs"
+      },
+      "./cli/version": {
+        "require": "./lib/cli/version/index.cjs",
+        "import": "./lib/cli/version/index.mjs"
+      },
+      "./skuba": {
+        "require": "./lib/skuba.cjs",
+        "import": "./lib/skuba.mjs"
+      },
+      "./package.json": "./package.json"
+    }
   },
   "skuba": {
     "build": "esbuild",

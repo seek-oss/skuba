@@ -2,7 +2,6 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { Git } from '../../../index.js';
 import { log } from '../../../utils/logging.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';
 import * as project from '../../configure/analysis/project.js';
@@ -11,6 +10,8 @@ import {
   REFRESHABLE_CONFIG_FILES,
   refreshConfigFiles,
 } from './refreshConfigFiles.js';
+
+import { Git } from '@skuba-lib/api';
 
 const stdoutMock = jest.fn();
 
@@ -34,7 +35,7 @@ jest.mock('../../../utils/template', () => ({
 
 jest.mock('../../configure/analysis/project');
 
-jest.mock('../../..', () => ({
+jest.mock('@skuba-lib/api', () => ({
   Git: {
     isFileGitIgnored: jest.fn(),
     findRoot: () => Promise.resolve('/path/to/git/root'),
