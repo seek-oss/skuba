@@ -274,7 +274,7 @@ importers:
     dependencies:
       eslint-config-seek:
         specifier: 15.0.1
-        version: 15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1))
+        version: 15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1))
       eslint-plugin-skuba:
         specifier: workspace:*
         version: link:../eslint-plugin-skuba
@@ -361,11 +361,11 @@ importers:
         specifier: ^5.0.0
         version: 5.1.0
       hot-shots:
-        specifier: ^11.0.0
-        version: 11.2.0
+        specifier: ^12.0.0
+        version: 12.0.0
       seek-datadog-custom-metrics:
         specifier: ^6.0.0
-        version: 6.0.3(datadog-lambda-js@12.130.0)(hot-shots@11.2.0)
+        version: 6.0.3(datadog-lambda-js@12.130.0)(hot-shots@12.0.0)
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -435,8 +435,8 @@ importers:
         specifier: ^11.1.0
         version: 11.3.0
       hot-shots:
-        specifier: ^11.0.0
-        version: 11.2.0
+        specifier: ^12.0.0
+        version: 12.0.0
       koa:
         specifier: ^3.0.1
         version: 3.1.1
@@ -445,10 +445,10 @@ importers:
         version: 4.1.0
       seek-datadog-custom-metrics:
         specifier: ^6.0.0
-        version: 6.0.3(datadog-lambda-js@12.130.0)(hot-shots@11.2.0)
+        version: 6.0.3(datadog-lambda-js@12.130.0)(hot-shots@12.0.0)
       seek-koala:
         specifier: ^7.1.0
-        version: 7.1.1(hot-shots@11.2.0)(koa@3.1.1)
+        version: 7.1.1(hot-shots@12.0.0)(koa@3.1.1)
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -4668,8 +4668,8 @@ packages:
     resolution: {integrity: sha512-Rw/B2DNQaPBICNXEm8balFz9a6WpZrkCGpcWFpy7nCj+NyhSdqXipmfvtmWt9xGfp0wZnBxB+iVpLmQMYt47Tw==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  hot-shots@11.2.0:
-    resolution: {integrity: sha512-cGiFSgTZtVODx0yMW67gPICgref3XuxkTMrXP0h5cSd1HHG3OG7L2C6+aW70MAtlUNl+9+DOq/xXyJUVKDyeUg==}
+  hot-shots@12.0.0:
+    resolution: {integrity: sha512-VdEXhNX4FYOY/Qx8sPcdR8+y/jXgwGlQdhk77dgFvJsVx+uS9WwiHEc+NKJqEQmd+0FTwy2/5FOtqe4cZ/JV5g==}
     engines: {node: '>=16.0.0'}
 
   html-escaper@2.0.2:
@@ -10606,24 +10606,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)':
-    dependencies:
-      '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
-      '@typescript-eslint/scope-manager': 8.47.0
-      '@typescript-eslint/type-utils': 8.47.0(eslint@9.39.1)(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.47.0(eslint@9.39.1)(typescript@5.9.3)
-      '@typescript-eslint/visitor-keys': 8.47.0
-      eslint: 9.39.1
-      graphemer: 1.4.0
-      ignore: 7.0.5
-      natural-compare: 1.4.0
-      ts-api-utils: 2.1.0(typescript@5.9.3)
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - supports-color
-    optional: true
-
   '@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.47.0
@@ -11953,7 +11935,7 @@ snapshots:
     dependencies:
       eslint: 9.39.1
 
-  eslint-config-seek@15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1)):
+  eslint-config-seek@15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1)):
     dependencies:
       '@vitest/eslint-plugin': 1.5.2(eslint@9.39.1)(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1))
       eslint: 9.39.1
@@ -11962,7 +11944,7 @@ snapshots:
       eslint-plugin-cypress: 5.2.0(eslint@9.39.1)
       eslint-plugin-import-x: 4.16.1(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
       eslint-plugin-import-zod: 1.2.1(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
-      eslint-plugin-jest: 29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)
+      eslint-plugin-jest: 29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)
       eslint-plugin-react: 7.37.5(eslint@9.39.1)
       eslint-plugin-react-hooks: 5.2.0(eslint@9.39.1)
       globals: 16.5.0
@@ -12026,12 +12008,12 @@ snapshots:
       '@typescript-eslint/utils': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
       eslint: 9.39.1
 
-  eslint-plugin-jest@29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3):
+  eslint-plugin-jest@29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/utils': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
       eslint: 9.39.1
     optionalDependencies:
-      '@typescript-eslint/eslint-plugin': 8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
+      '@typescript-eslint/eslint-plugin': 8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
       jest: 30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3))
     transitivePeerDependencies:
       - supports-color
@@ -12680,7 +12662,7 @@ snapshots:
     dependencies:
       lru-cache: 10.4.3
 
-  hot-shots@11.2.0:
+  hot-shots@12.0.0:
     optionalDependencies:
       unix-dgram: 2.0.7
 
@@ -14969,19 +14951,19 @@ snapshots:
 
   secure-json-parse@4.1.0: {}
 
-  seek-datadog-custom-metrics@6.0.3(datadog-lambda-js@12.130.0)(hot-shots@11.2.0):
+  seek-datadog-custom-metrics@6.0.3(datadog-lambda-js@12.130.0)(hot-shots@12.0.0):
     dependencies:
       '@types/aws-lambda': 8.10.159
     optionalDependencies:
       datadog-lambda-js: 12.130.0
-      hot-shots: 11.2.0
+      hot-shots: 12.0.0
 
-  seek-koala@7.1.1(hot-shots@11.2.0)(koa@3.1.1):
+  seek-koala@7.1.1(hot-shots@12.0.0)(koa@3.1.1):
     dependencies:
       http-errors: 1.8.1
       koa: 3.1.1
     optionalDependencies:
-      hot-shots: 11.2.0
+      hot-shots: 12.0.0
 
   semantic-release@24.2.9(typescript@5.9.3):
     dependencies:
