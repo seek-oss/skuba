@@ -5,8 +5,8 @@
     "outDir": "lib",
     "removeComments": false,
     "target": "ES2022",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "exclude": ["lib*/**/*"],
-  "extends": "skuba/config/tsconfig.json",
+  "extends": "skuba/config/tsconfig.json"
 }
