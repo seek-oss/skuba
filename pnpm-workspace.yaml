@@ -1,9 +1,12 @@
+configDependencies:
+  '@skuba-lib/pnpm-config-skuba': '1.0.0-zac-pls-fix@sha256-FrvBU3hR7bX6hYz+LOg+J6CJu91yHvOsWugPUJimAvk='
+
 packages:
-  # https://github.com/changesets/changesets/issues/1133#issuecomment-1594844204
-  - .
   - packages/*
   - template/*
 
 overrides:
   'skuba': 'workspace:*'
   'skuba-dive': 'workspace:*'
+
+  linkWorkspacePackages: deep

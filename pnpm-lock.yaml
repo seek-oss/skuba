@@ -46,7 +46,7 @@ importers:
         version: link:packages/api
       '@skuba-lib/pnpm-config-skuba':
         specifier: workspace:^
-        version: link:packages/pnpm-plugin-skuba
+        version: link:packages/pnpm-config-skuba
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -319,14 +319,14 @@ importers:
         specifier: ^8.39.0
         version: 8.47.0(eslint@9.39.1)(typescript@5.9.3)
 
-  packages/pnpm-plugin-skuba:
+  packages/pnpm-config-skuba:
     devDependencies:
       '@pnpm/config':
-        specifier: ^1004.8.0
+        specifier: 1004.8.0
         version: 1004.8.0(@pnpm/logger@1001.0.1)
       tsdown:
-        specifier: ^0.17.0
-        version: 0.17.2(synckit@0.11.11)(typescript@5.9.3)
+        specifier: 0.17.0
+        version: 0.17.0(synckit@0.11.11)(typescript@5.9.3)
 
   packages/skuba-dive: {}
 
@@ -7317,6 +7317,31 @@ packages:
 
   tsconfig-seek@2.0.0:
     resolution: {integrity: sha512-pcKqW1I+CxGS6LI2QcNSdHGkJUWIP4VzcRzYAFH/LcQOlCBtD2q5w7RXZrIQxSANtcdN2RIT+o5pYEIPd81vRQ==}
+
+  tsdown@0.17.0:
+    resolution: {integrity: sha512-NPZRrlC51X9Bb55ZTDwrWges8Dm1niCvNA5AYw7aix6pfnDnB4WR0neG5RPq75xIodg3hqlQUzzyrX7n4dmnJg==}
+    engines: {node: '>=20.19.0'}
+    hasBin: true
+    peerDependencies:
+      '@arethetypeswrong/core': ^0.18.1
+      '@vitejs/devtools': ^0.0.0-alpha.18
+      publint: ^0.3.0
+      typescript: ^5.0.0
+      unplugin-lightningcss: ^0.4.0
+      unplugin-unused: ^0.5.0
+    peerDependenciesMeta:
+      '@arethetypeswrong/core':
+        optional: true
+      '@vitejs/devtools':
+        optional: true
+      publint:
+        optional: true
+      typescript:
+        optional: true
+      unplugin-lightningcss:
+        optional: true
+      unplugin-unused:
+        optional: true
 
   tsdown@0.17.2:
     resolution: {integrity: sha512-SuU+0CWm/95KfXqojHTVuwcouIsdn7HpYcwDyOdKktJi285NxKwysjFUaxYLxpCNqqPvcFvokXLO4dZThRwzkw==}
@@ -16052,6 +16077,31 @@ snapshots:
       strip-bom: 3.0.0
 
   tsconfig-seek@2.0.0: {}
+
+  tsdown@0.17.0(synckit@0.11.11)(typescript@5.9.3):
+    dependencies:
+      ansis: 4.2.0
+      cac: 6.7.14
+      empathic: 2.0.0
+      hookable: 5.5.3
+      import-without-cache: 0.2.3
+      obug: 2.1.1
+      rolldown: 1.0.0-beta.53
+      rolldown-plugin-dts: 0.18.3(rolldown@1.0.0-beta.53)(typescript@5.9.3)
+      semver: 7.7.3
+      tinyexec: 1.0.2
+      tinyglobby: 0.2.15
+      tree-kill: 1.2.2
+      unconfig-core: 7.4.2
+      unrun: 0.2.19(synckit@0.11.11)
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@ts-macro/tsc'
+      - '@typescript/native-preview'
+      - oxc-resolver
+      - synckit
+      - vue-tsc
 
   tsdown@0.17.2(synckit@0.11.11)(typescript@5.9.3):
     dependencies:
