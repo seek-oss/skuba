@@ -2,7 +2,7 @@
 'skuba': minor
 ---
 
-**upgrade**: Add automated migration from `skuba build-package` to `tsdown`
+lint: Add automated migration from `skuba build-package` to `tsdown`
 
 Introduces a new upgrade patch for version 13.1.1 that automatically replaces `skuba build-package` commands with `tsdown` in package.json scripts. This patch:
 
