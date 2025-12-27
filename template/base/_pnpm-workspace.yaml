@@ -10,8 +10,6 @@ minimumReleaseAgeExclude:
   - skuba
   - skuba-dive
   - tsconfig-seek
-onlyBuiltDependencies:
-  - '@ast-grep/lang-json'
 packageManagerStrictVersion: true
 publicHoistPattern:
   - '@eslint/*'
