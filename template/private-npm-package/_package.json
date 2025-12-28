@@ -31,7 +31,7 @@
     "lib*/**/*.json"
   ],
   "scripts": {
-    "build": "tsdown",
+    "build": "skuba build-package",
     "commit": "cz",
     "format": "skuba format",
     "lint": "skuba lint",
@@ -49,8 +49,7 @@
   "devDependencies": {
     "@types/node": "^22.13.10",
     "commitizen": "^4.2.4",
-    "skuba": "*",
-    "tsdown": "^0.18.0"
+    "skuba": "*"
   },
   "packageManager": "pnpm@10.7.0",
   "engines": {
