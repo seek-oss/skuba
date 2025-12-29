@@ -1,6 +1,6 @@
 import type { Patches } from '../../index.js';
 
-import { tryPatchBuildPackage } from './patchBuildPackage.js';
+import { tryPatchPackageBuilds } from './patchPackageBuilds.js';
 import { tryPatchRootTsConfig } from './patchRootTsconfig.js';
 import { tryUpgradeNode } from './upgradeNode.js';
 
@@ -15,7 +15,7 @@ export const patches: Patches = [
     description: "Add 'rootDir' to root tsconfig.json compilerOptions",
   },
   {
-    apply: tryPatchBuildPackage,
-    description: 'Replace packages build script with tsdown',
+    apply: tryPatchPackageBuilds,
+    description: 'Migrate packages build script to use tsdown',
   },
 ];

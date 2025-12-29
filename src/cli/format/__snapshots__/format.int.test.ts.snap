@@ -55,7 +55,7 @@ Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 u
 
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
-Patch skipped: Replace packages build script with tsdown - no skuba build-package command found upgrade-skuba
+Patch skipped: Migrate packages build script to use tsdown - no skuba build-package command found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -167,7 +167,7 @@ Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 u
 
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
-Patch skipped: Replace packages build script with tsdown - no skuba build-package command found upgrade-skuba
+Patch skipped: Migrate packages build script to use tsdown - no skuba build-package command found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -275,7 +275,7 @@ Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 u
 
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
-Patch skipped: Replace packages build script with tsdown - no skuba build-package command found upgrade-skuba
+Patch skipped: Migrate packages build script to use tsdown - no skuba build-package command found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -353,7 +353,7 @@ Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 u
 
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
-Patch skipped: Replace packages build script with tsdown - no skuba build-package command found upgrade-skuba
+Patch skipped: Migrate packages build script to use tsdown - no skuba build-package command found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
