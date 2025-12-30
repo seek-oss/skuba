@@ -1,5 +1,15 @@
 # eslint-plugin-skuba
 
+## 2.0.0
+
+### Major Changes
+
+- **deps:** Update eslint peer dependency requirement to ^9.22.0 ([#2179](https://github.com/seek-oss/skuba/pull/2179))
+
+### Patch Changes
+
+- **deps:** Add missing dependency on `@typescript-eslint/utils` ([#2171](https://github.com/seek-oss/skuba/pull/2171))
+
 ## 1.0.3
 
 ### Patch Changes

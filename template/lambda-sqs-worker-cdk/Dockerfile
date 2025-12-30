@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/node:22-alpine AS dev-deps
+FROM public.ecr.aws/docker/library/node:24-alpine AS dev-deps
 
 # Needed for cdk
 RUN apk add --no-cache bash git
