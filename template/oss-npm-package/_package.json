@@ -14,6 +14,13 @@
   },
   "license": "MIT",
   "sideEffects": false,
+  "exports": {
+    ".": {
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
   "main": "./lib-commonjs/index.js",
   "module": "./lib-es2015/index.js",
   "types": "./lib-types/index.d.ts",

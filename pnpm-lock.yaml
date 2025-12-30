@@ -150,6 +150,9 @@ importers:
       tsconfig-seek:
         specifier: 2.0.0
         version: 2.0.0
+      tsdown:
+        specifier: ~0.18.0
+        version: 0.18.3(synckit@0.11.11)(typescript@5.9.3)
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
