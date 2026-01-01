@@ -69,7 +69,7 @@ export const esbuild = async (
 
   if (splitting && !canSplit) {
     throw new Error(
-      'Code splitting requires bundle to be enabled, ESM output format, and outDir to be configured',
+      'Splitting requires bundling to be enabled, ESM output format, and outDir to be configured',
     );
   }
 
