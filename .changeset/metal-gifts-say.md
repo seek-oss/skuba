@@ -19,7 +19,8 @@ To opt in, configure `esbuildConfig` in your `package.json`:
 +     "treeShaking": true,
 +     "external": ["aws-sdk"]
 +   },
-    "template": null
+  "template": "koa-rest-api",
+  "type": "application",
   }
 }
 ```
