@@ -27,7 +27,7 @@ export const esbuild = async (
     minify = false,
     bundle = false,
     splitting = false,
-    treeShaking = false,
+    treeShaking = true,
   }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
@@ -74,7 +74,7 @@ export const esbuild = async (
     treeShaking: bundle ? treeShaking : false,
     external,
     entryPoints,
-    format: !isEsm ? 'cjs' : undefined,
+    format: isEsm ? 'esm' : 'cjs',
     outdir: compilerOptions.outDir,
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,

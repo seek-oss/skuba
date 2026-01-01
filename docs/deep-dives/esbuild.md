@@ -90,11 +90,12 @@ At the same time, esbuild presents potential benefits for **skuba**:
      "skuba": {
        "build": "esbuild",
        "esbuildConfig": {
-         "bundle": true, // optional
-         "minify": true, // optional requires "bundle": true
-         "splitting": false, // optional, requires "bundle": true, only for ESM output and an outDir to be specified in tsconfig.json
-         "treeShaking": true, // optional, requires "bundle": true
-         "external": ["aws-sdk"], // adjust as needed
+         "bundle": true, // Enable bundling (required for minify, splitting, and treeShaking)
+         "minify": true, // Minify the generated output (only applies when bundling)
+         "splitting": false, // Enable code splitting (requires bundling and ESM output; emits multiple files so an output directory is needed)
+         "treeShaking": true, // Remove unused code during bundling, defaults to true when bundling is enabled
+         "external": ["aws-sdk"], // Treat these imports as external (they won't be included in the bundle)
+       },
      },
    }
    ```
