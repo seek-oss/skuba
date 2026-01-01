@@ -32,7 +32,7 @@ export const build = async (args = process.argv.slice(2)) => {
         {
           debug,
           type: manifest.type,
-          external: esbuildConfig?.value?.external,
+          ...esbuildConfig?.value,
         },
         args,
       );
