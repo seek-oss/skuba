@@ -16,9 +16,26 @@ export const build = async (args = process.argv.slice(2)) => {
   switch (manifest?.value) {
     case 'esbuild': {
       const debug = hasDebugFlag(args);
+      const esbuildConfig = await getManifestProperties<
+        'esbuildConfig',
+        {
+          external: string[];
+          bundle: boolean;
+          minify: boolean;
+          splitting: boolean;
+          treeShaking: boolean;
+        }
+      >('esbuildConfig');
 
       log.plain(styleText('yellow', 'esbuild'));
-      await esbuild({ debug, type: manifest.type }, args);
+      await esbuild(
+        {
+          debug,
+          type: manifest.type,
+          external: esbuildConfig?.value?.external,
+        },
+        args,
+      );
       break;
     }
 

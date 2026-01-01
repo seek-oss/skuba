@@ -12,10 +12,23 @@ import { getCustomConditions, readTsBuildConfig, tsc } from './tsc.js';
 interface EsbuildParameters {
   debug: boolean;
   type: string | undefined;
+  external?: string[];
+  minify?: boolean;
+  bundle?: boolean;
+  splitting?: boolean;
+  treeShaking?: boolean;
 }
 
 export const esbuild = async (
-  { debug, type }: EsbuildParameters,
+  {
+    debug,
+    type,
+    external,
+    minify = false,
+    bundle = false,
+    splitting = false,
+    treeShaking = false,
+  }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
   const log = createLogger({ debug });
@@ -49,14 +62,17 @@ export const esbuild = async (
 
   const start = process.hrtime.bigint();
 
-  // TODO: support `bundle`, `minify`, `splitting`, `treeShaking`
-  const bundle = false;
-
   const isEsm =
     compilerOptions.module !== ModuleKind.CommonJS && type === 'module';
 
+  const canSplit = bundle && splitting && isEsm && compilerOptions.outDir;
+
   await build({
     bundle,
+    minify: bundle ? minify : false,
+    splitting: canSplit ? splitting : false,
+    treeShaking: bundle ? treeShaking : false,
+    external,
     entryPoints,
     format: !isEsm ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,

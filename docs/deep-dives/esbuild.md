@@ -89,6 +89,12 @@ At the same time, esbuild presents potential benefits for **skuba**:
    {
      "skuba": {
        "build": "esbuild",
+       "esbuildConfig": {
+         "bundle": true, // optional
+         "minify": true, // optional requires "bundle": true
+         "splitting": false, // optional, requires "bundle": true, only for ESM output and an outDir to be specified in tsconfig.json
+         "treeShaking": true, // optional, requires "bundle": true
+         "external": ["aws-sdk"], // adjust as needed
      },
    }
    ```
@@ -123,8 +129,6 @@ This integration is still experimental and only includes the bare minimum to sup
    See esbuild's [TypeScript caveats] for more information.
 
 2. esbuild is not wired up to [`skuba build-package`], [`skuba node`] nor [`skuba start`].
-
-3. Bundling and minification are not supported.
 
 [**skuba** v5.0.0]: https://github.com/seek-oss/skuba/releases/tag/v5.0.0
 [`skuba build`]: ../cli/build.md#skuba-build
