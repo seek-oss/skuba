@@ -67,6 +67,12 @@ export const esbuild = async (
 
   const canSplit = bundle && isEsm && Boolean(compilerOptions.outDir);
 
+  if (splitting && !canSplit) {
+    throw new Error(
+      'Code splitting requires bundle to be enabled, ESM output format, and outDir to be configured',
+    );
+  }
+
   await build({
     bundle,
     minify: bundle && minify,
@@ -74,7 +80,7 @@ export const esbuild = async (
     treeShaking: bundle && treeShaking,
     external,
     entryPoints,
-    format: isEsm ? 'esm' : 'cjs',
+    format: !isEsm ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,
