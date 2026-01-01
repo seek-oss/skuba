@@ -5,7 +5,7 @@ import { log } from '../../utils/logging.js';
 import { getManifestProperties } from '../../utils/manifest.js';
 
 import { copyAssets } from './assets.js';
-import { esbuild } from './esbuild.js';
+import { type EsbuildConfig, esbuild } from './esbuild.js';
 import { readTsBuildConfig, tsc } from './tsc.js';
 
 export const build = async (args = process.argv.slice(2)) => {
@@ -18,13 +18,7 @@ export const build = async (args = process.argv.slice(2)) => {
       const debug = hasDebugFlag(args);
       const esbuildConfig = await getManifestProperties<
         'esbuildConfig',
-        {
-          external: string[];
-          bundle: boolean;
-          minify: boolean;
-          splitting: boolean;
-          treeShaking: boolean;
-        }
+        EsbuildConfig
       >('esbuildConfig');
 
       log.plain(styleText('yellow', 'esbuild'));

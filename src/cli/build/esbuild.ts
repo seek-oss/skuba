@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import { TsconfigPathsPlugin } from '@esbuild-plugins/tsconfig-paths';
-import { build } from 'esbuild';
+import { type BuildOptions, build } from 'esbuild';
 import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
 import { createLogger } from '../../utils/logging.js';
@@ -9,14 +9,14 @@ import { createLogger } from '../../utils/logging.js';
 import { parseTscArgs } from './args.js';
 import { getCustomConditions, readTsBuildConfig, tsc } from './tsc.js';
 
-interface EsbuildParameters {
+export type EsbuildConfig = Pick<
+  BuildOptions,
+  'external' | 'minify' | 'bundle' | 'splitting' | 'treeShaking'
+>;
+
+interface EsbuildParameters extends EsbuildConfig {
   debug: boolean;
   type: string | undefined;
-  external?: string[];
-  minify?: boolean;
-  bundle?: boolean;
-  splitting?: boolean;
-  treeShaking?: boolean;
 }
 
 export const esbuild = async (
