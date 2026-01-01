@@ -24,10 +24,10 @@ export const esbuild = async (
     debug,
     type,
     external,
-    minify = false,
-    bundle = false,
-    splitting = false,
-    treeShaking = true,
+    bundle,
+    minify,
+    splitting,
+    treeShaking,
   }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
@@ -65,13 +65,13 @@ export const esbuild = async (
   const isEsm =
     compilerOptions.module !== ModuleKind.CommonJS && type === 'module';
 
-  const canSplit = bundle && splitting && isEsm && compilerOptions.outDir;
+  const canSplit = bundle && isEsm && Boolean(compilerOptions.outDir);
 
   await build({
     bundle,
-    minify: bundle ? minify : false,
-    splitting: canSplit ? splitting : false,
-    treeShaking: bundle ? treeShaking : false,
+    minify: bundle && minify,
+    splitting: canSplit && splitting,
+    treeShaking: bundle && treeShaking,
     external,
     entryPoints,
     format: isEsm ? 'esm' : 'cjs',
