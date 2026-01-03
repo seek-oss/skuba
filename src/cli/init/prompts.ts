@@ -122,7 +122,7 @@ export const getTemplateName = async () =>
 
 export const getPrivateTemplateName = async () =>
   input({
-    message: 'Private template name',
+    message: 'Private SEEK template name',
     validate: (value: string) =>
       value.length > 0 || 'Must be a valid template name',
   });

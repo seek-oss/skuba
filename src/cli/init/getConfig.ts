@@ -96,15 +96,15 @@ const cloneTemplate = async (
   destinationDir: string,
 ): Promise<TemplateConfig> => {
   const isGitHubTemplate = templateName.startsWith('github:');
-  const isPrivateTemplate = templateName.startsWith('private:');
-  const isCustomTemplate = isGitHubTemplate || isPrivateTemplate;
+  const isPrivateSeekTemplate = templateName.startsWith('seek:');
+  const isCustomTemplate = isGitHubTemplate || isPrivateSeekTemplate;
 
   if (isGitHubTemplate) {
     const gitHubPath = templateName.slice('github:'.length);
 
     await downloadGitHubTemplate(gitHubPath, destinationDir);
-  } else if (isPrivateTemplate) {
-    const privateName = templateName.slice('private:'.length);
+  } else if (isPrivateSeekTemplate) {
+    const privateName = templateName.slice('seek:'.length);
 
     await downloadPrivateTemplate(privateName, destinationDir);
   } else {
@@ -147,9 +147,9 @@ const selectTemplateName = async () => {
     return `github:${gitHubPath}`;
   }
 
-  if (templateSelection === 'private →') {
+  if (templateSelection === 'seek →') {
     const privateName = await getPrivateTemplateName();
-    return `private:${privateName}`;
+    return `seek:${privateName}`;
   }
 
   return templateSelection;

@@ -20,7 +20,7 @@ export type TemplateName = (typeof TEMPLATE_NAMES)[number];
 export const TEMPLATE_NAMES_WITH_BYO = [
   ...TEMPLATE_NAMES,
   'github →',
-  'private →',
+  'seek →',
 ] as const;
 
 interface TemplateDocumentationConfig {
