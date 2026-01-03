@@ -1,4 +1,6 @@
+import { exec } from 'child_process';
 import path from 'path';
+import { promisify } from 'util';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
@@ -53,4 +55,48 @@ export const downloadGitHubTemplate = async (
     force: true,
     recursive: true,
   });
+};
+
+const execAsync = promisify(exec);
+
+export const downloadPrivateTemplate = async (
+  templateName: string,
+  destinationDir: string,
+) => {
+  log.newline();
+  log.plain(
+    'Downloading',
+    log.bold(templateName),
+    'from SEEK-Jobs/skuba-templates',
+  );
+
+  const repoUrl = 'git@github.com:SEEK-Jobs/skuba-templates.git';
+  const folderPath = `templates/${templateName}`;
+  const tempDir = `${destinationDir}_temp`;
+
+  try {
+    await execAsync(`
+      git init ${tempDir} &&
+      git -C ${tempDir} config core.sparseCheckout true &&
+      echo "${folderPath}/*" >> ${tempDir}/.git/info/sparse-checkout &&
+      git -C ${tempDir} remote add origin ${repoUrl} &&
+      git -C ${tempDir} pull origin main --depth 1 --quiet
+    `);
+
+    const templatePath = path.join(tempDir, folderPath);
+
+    try {
+      await fs.promises.access(templatePath);
+    } catch {
+      throw new Error(`Template "${templateName}" not found in repository`);
+    }
+
+    await fs.ensureDir(destinationDir);
+    await fs.copy(templatePath, destinationDir);
+
+    await fs.promises.rm(tempDir, { force: true, recursive: true });
+  } catch (error) {
+    await fs.promises.rm(tempDir, { force: true, recursive: true });
+    throw error;
+  }
 };
