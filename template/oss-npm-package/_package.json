@@ -21,15 +21,10 @@
     },
     "./package.json": "./package.json"
   },
-  "main": "./lib-commonjs/index.js",
-  "module": "./lib-es2015/index.js",
-  "types": "./lib-types/index.d.ts",
-  "files": [
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map",
-    "lib*/**/*.json"
-  ],
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": ["lib"],
   "scripts": {
     "build": "skuba build-package",
     "commit": "cz",
