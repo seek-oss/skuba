@@ -191,7 +191,7 @@ export const upgradeSkuba = async (
       // Only commit changes here, each version should have a separate commit and they should all be pushed together at the end
       const ref = await Git.commitAllChanges({
         dir,
-        message: `Run \`skuba format\` for ${version}`,
+        message: `Apply skuba ${version} patches`,
 
         ignore: await getIgnores(dir),
       });
