@@ -15,12 +15,8 @@
   "files": [
     "pnpmfile.cjs"
   ],
-  "scripts": {
-    "build": "tsdown"
-  },
   "devDependencies": {
-    "@pnpm/config": "^1004.8.0",
-    "tsdown": "^0.17.0"
+    "@pnpm/config": "^1004.8.0"
   },
   "engines": {
     "node": ">=22.14.0"
