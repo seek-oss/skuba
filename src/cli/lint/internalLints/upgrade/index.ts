@@ -56,14 +56,14 @@ const getPatches = async (
     ),
   );
 
-  const patchMap = new Map<string, Patches>();
-
-  for (const version of patchesForVersion) {
-    const resolvedPatches = await resolvePatches(version);
-    patchMap.set(version, resolvedPatches);
-  }
-
-  return patchMap;
+  return new Map<string, Patches>(
+    await Promise.all(
+      patchesForVersion.map(async (version) => {
+        const resolved = await resolvePatches(version);
+        return [version, resolved] as const;
+      }),
+    ),
+  );
 };
 
 const fileExtensions = ['js', 'ts'];
