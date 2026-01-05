@@ -153,7 +153,7 @@ describe('upgradeSkuba in format mode', () => {
     expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
     expect(Git.commitAllChanges).toHaveBeenCalledWith({
       dir: expect.any(String),
-      message: 'Run `skuba format` for 8.2.1',
+      message: 'Apply skuba 8.2.1 patches',
       ignore: [],
     });
   });
