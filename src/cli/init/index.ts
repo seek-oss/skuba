@@ -108,7 +108,7 @@ export const init = async (args = process.argv.slice(2)) => {
   if (packageManager === 'pnpm') {
     if (process.env.SKUBA_INTEGRATION_TEST === 'true') {
       await fs.promises.symlink(
-        path.resolve('../skuba/packages/pnpm-plugin-skuba/.pnpmfile.cjs'),
+        path.resolve('../skuba/packages/pnpm-plugin-skuba/pnpmfile.cjs'),
         path.join(destinationDir, '.pnpmfile.cjs'),
       );
     } else {

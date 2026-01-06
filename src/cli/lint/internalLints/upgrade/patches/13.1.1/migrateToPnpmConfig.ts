@@ -82,9 +82,9 @@ export const migrateToPnpmConfig: PatchFunction = async ({
 
     if (
       typeof cleanVersion === 'string' &&
-      lt(new SemVer(cleanVersion), new SemVer('10.13.0'))
+      lt(new SemVer(cleanVersion), new SemVer('10.26.2'))
     ) {
-      packageJson.packageJson.packageManager = 'pnpm@10.13.0';
+      packageJson.packageJson.packageManager = 'pnpm@10.26.2';
     }
   }
 

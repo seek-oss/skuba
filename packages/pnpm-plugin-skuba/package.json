@@ -14,9 +14,9 @@
   },
   "license": "MIT",
   "sideEffects": false,
-  "main": ".pnpmfile.cjs",
+  "main": "pnpmfile.cjs",
   "files": [
-    ".pnpmfile.cjs"
+    "pnpmfile.cjs"
   ],
   "devDependencies": {
     "@pnpm/config": "^1004.9.0"

@@ -1,1 +1,1 @@
-packages/pnpm-plugin-skuba/.pnpmfile.cjs
+packages/pnpm-plugin-skuba/pnpmfile.cjs

@@ -348,7 +348,7 @@ minimumReleaseAgeExclude:
     });
   });
 
-  it('should upgrade packageManager version if less than 10.13.0', async () => {
+  it('should upgrade packageManager version if less than 10.26.2', async () => {
     vol.fromJSON({
       'src/utils/package.json': `{
       "devDependencies": {
@@ -394,7 +394,7 @@ packages:
       'package.json': `{
   "name": "test",
   "version": "1.0.0",
-  "packageManager": "pnpm@10.13.0"
+  "packageManager": "pnpm@10.26.2"
 }
 `,
     });
