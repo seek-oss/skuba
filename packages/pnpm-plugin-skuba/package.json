@@ -18,16 +18,6 @@
   "files": [
     ".pnpmfile.cjs"
   ],
-  "scripts": {
-    "build": "tsdown",
-    "format": "pnpm --silent skuba format",
-    "lint": "pnpm --silent skuba lint",
-    "prepack": "tsdown",
-    "skuba": "node ../../lib/skuba",
-    "test": "node --import tsx --test 'src/**/*.test.ts'",
-    "test:ci": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
-    "test:watch": "node --import tsx --test --watch 'src/**/*.test.ts'"
-  },
   "devDependencies": {
     "@pnpm/config": "^1004.9.0"
   },
