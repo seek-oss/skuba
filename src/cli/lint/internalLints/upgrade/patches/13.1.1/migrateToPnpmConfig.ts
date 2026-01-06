@@ -75,7 +75,7 @@ export const migrateToPnpmConfig: PatchFunction = async ({
     packageJson?.packageJson.minimumReleaseAgeExcludeOverload &&
     Array.isArray(packageJson.packageJson.minimumReleaseAgeExcludeOverload)
   ) {
-    modifiedPnpmWorkspace += `\nminimumReleaseAgeExclude:\n${packageJson.packageJson.minimumReleaseAgeExcludeOverload.map((item) => `  - ${item}`).join('\n')}\n`;
+    modifiedPnpmWorkspace += `\nminimumReleaseAgeExclude:\n${packageJson.packageJson.minimumReleaseAgeExcludeOverload.map((item) => `  - '${item}'`).join('\n')}\n`;
     delete packageJson.packageJson.minimumReleaseAgeExcludeOverload;
   }
 

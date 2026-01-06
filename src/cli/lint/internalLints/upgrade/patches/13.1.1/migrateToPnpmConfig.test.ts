@@ -402,8 +402,8 @@ packages:
   - template/*
 
 minimumReleaseAgeExclude:
-  - package-a
-  - package-b
+  - 'package-a'
+  - 'package-b'
 `,
       'package.json': `{
   "name": "test",
