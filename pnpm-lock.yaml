@@ -8,7 +8,7 @@ overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
 
-pnpmfileChecksum: sha256-FrvBU3hR7bX6hYz+LOg+J6CJu91yHvOsWugPUJimAvk=
+pnpmfileChecksum: sha256-S/0At+wdjV0iiqz1wNm9SL0qX7gM4FAaR5kyGvHj2UU=
 
 importers:
 
@@ -41,12 +41,12 @@ importers:
       '@octokit/types':
         specifier: ^16.0.0
         version: 16.0.0
+      '@pnpm/config':
+        specifier: ^1004.9.0
+        version: 1004.9.0(@pnpm/logger@1001.0.1)
       '@skuba-lib/api':
         specifier: workspace:^
         version: link:packages/api
-      '@skuba-lib/pnpm-config-skuba':
-        specifier: workspace:^
-        version: link:packages/pnpm-config-skuba
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -318,12 +318,6 @@ importers:
       typescript-eslint:
         specifier: ^8.39.0
         version: 8.47.0(eslint@9.39.1)(typescript@5.9.3)
-
-  packages/pnpm-config-skuba:
-    devDependencies:
-      '@pnpm/config':
-        specifier: ^1004.8.0
-        version: 1004.8.0(@pnpm/logger@1001.0.1)
 
   packages/skuba-dive: {}
 
@@ -2180,8 +2174,8 @@ packages:
     resolution: {integrity: sha512-GD6nKLyKF+ev15Tj3pS8y6cTVPIuAqTyhPrUFMfmodFvhEDdYKN/gdGimkc9GJLfHVC/SuCVFg49YNJyoW7niA==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/config@1004.8.0':
-    resolution: {integrity: sha512-K8rBo8CLfRc1ggg8Fwt1cpCVwzjL5eELkS9Y+a4Sogl8yu4v76czKdsFXXmeXt208F6WbDARzmiAlwnCqPQ3jg==}
+  '@pnpm/config@1004.9.0':
+    resolution: {integrity: sha512-0bHMJxNR7sfODi184KFgDbjAlupymdJZRyJqefqXTPvZkMEUPR/I2bqtfmg194Ob6JfsBdnOo/mAKkqZraq2uA==}
     engines: {node: '>=18.12'}
     peerDependencies:
       '@pnpm/logger': '>=1001.0.0 <1002.0.0'
@@ -2208,8 +2202,8 @@ packages:
     resolution: {integrity: sha512-GjH0TPjbVNrPnl/BAGoFuBLJ2sFfXNKbS33lll/Ehe9yw0fyc8Kdw7kO9if37yQqn6vaa4dAHKkPllum7f/IPQ==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/fetcher-base@1001.1.0':
-    resolution: {integrity: sha512-Irddj8O6eBPEdzqTsHdNumDKRd4rizSWzAxxunSKulposl2m5mLRtpoKxIHp3tQDntpmd9Xvq1HyZg0z3lx2+g==}
+  '@pnpm/fetcher-base@1001.2.1':
+    resolution: {integrity: sha512-AsXF6xUj80sMv2RozX/XbhCXIPXBaQMfLJPAnZp7slXmLdlXKZsmc8e4tVFUilkdM/4Cdukf4VUFMLhX1CxFaQ==}
     engines: {node: '>=18.12'}
 
   '@pnpm/git-utils@1000.0.0':
@@ -2220,12 +2214,12 @@ packages:
     resolution: {integrity: sha512-JnzaAVFJIEgwTcB55eww8N3h5B6qJdZqDA2wYkSK+OcTvvMSQb9c2STMhBP6GfkWygG1fs3w8D7JRx9SPZnxJg==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/hooks.types@1001.0.17':
-    resolution: {integrity: sha512-EMS0zGjZ/dvOU+lm/ZhCSRoYb/uutSB+bA8ftKhuGd7oysrzAdfHfq0NlUEd+/LRaXtWZAvZER6A/zFMhD+GHQ==}
+  '@pnpm/hooks.types@1001.0.18':
+    resolution: {integrity: sha512-9GQm7A2goHnjQBQRLoD6nKTs/nRNFAHcxDfeCA5fzGFawwIlnVFm/oA0BjqX8ufOENWef07DRSq9Wql5L9kvNw==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/lockfile.types@1002.0.7':
-    resolution: {integrity: sha512-4KT+rlDtHaGIDUVX0KJ6dG26hJyMEV9LCW0e29zYb9L/9libYdLzuyY2cCIbBI/9NlpCfiy82NcqFg7A3HASaw==}
+  '@pnpm/lockfile.types@1002.0.8':
+    resolution: {integrity: sha512-dNoCS0Wqd4an1Wn4XYkTSiNj7HD/IQaTLaCGbeMwlEmQ/0sNoeZ/cl5CBVFyBhzuliqTImAZxqRxZLEeVyo8GQ==}
     engines: {node: '>=18.12'}
 
   '@pnpm/logger@1001.0.1':
@@ -2250,16 +2244,16 @@ packages:
     resolution: {integrity: sha512-c83qWb22rNRuB0UaVCI0uRPNRr8Z0FWnEIvT47jiHAmOIUHbBOg5XvV7pM5x+rKn9HRpjxquDbXYSXr3fAKFcw==}
     engines: {node: '>=12'}
 
-  '@pnpm/npm-conf@3.0.1':
-    resolution: {integrity: sha512-Y3yZmbs0OqZcb2lB6eq7mFEtwvGG0xeMnhQeI+rkAUH0RHkoS69iXAIb2Q+DgsaFEryQH6hrcc+HFPsLzS/yIg==}
+  '@pnpm/npm-conf@3.0.2':
+    resolution: {integrity: sha512-h104Kh26rR8tm+a3Qkc5S4VLYint3FE48as7+/5oCEcKR2idC/pF1G6AhIXKI+eHPJa/3J9i5z0Al47IeGHPkA==}
     engines: {node: '>=12'}
 
   '@pnpm/patching.types@1000.1.0':
     resolution: {integrity: sha512-Zib2ysLctRnWM4KXXlljR44qSKwyEqYmLk+8VPBDBEK3l5Gp5mT3N4ix9E4qjYynvFqahumsxzOfxOYQhUGMGw==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/pnpmfile@1002.1.8':
-    resolution: {integrity: sha512-ypeIyX8afntQGD/ELK/O6Y9l8Ah4yjHdl7HqI4DXFeRlhmW7X7809Zbcg6SEJg6L9EQMtq2zi1Hkjzk8oEu27g==}
+  '@pnpm/pnpmfile@1002.1.10':
+    resolution: {integrity: sha512-GpXOdfvK+mH6OU2ei6/EGAaRdZVRBRC2AtyeAf6nWZph40G99SUWS77UJnEW48ZiClyMtxr0fT2wvpnt4zf0Pg==}
     engines: {node: '>=18.12'}
     peerDependencies:
       '@pnpm/logger': '>=1001.0.0 <1002.0.0'
@@ -2273,12 +2267,12 @@ packages:
     peerDependencies:
       '@pnpm/logger': '>=1001.0.0 <1002.0.0'
 
-  '@pnpm/resolver-base@1005.3.3':
-    resolution: {integrity: sha512-mwh5nHZXP1iORD6bQLYAYp9WWma9kwHsK9tLWICLvrWPxw+RqRthKsp0NxYPR7nV1Yd1cEgAi1lWxgWNxjJ8wA==}
+  '@pnpm/resolver-base@1005.4.0':
+    resolution: {integrity: sha512-hGttP7Kz3NLcXu70NKlPZcmxjcMt7oxXk4+tnXQ9lmmg4F2kbz+z2No4qld/aGlMsFlWgYk4Bxno2S7NsAHcBQ==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/store-controller-types@1004.4.0':
-    resolution: {integrity: sha512-hFsfUpZbrVSY25BPBLNDRetT2a6e0aUM8wryfmZSvtOV/oJJMWfGcVDbi0jBYA8/Ur1iE2zoMEeesDHehO6+tw==}
+  '@pnpm/store-controller-types@1004.5.0':
+    resolution: {integrity: sha512-SoGf5AuLmhppjMS4mA0WUbslpOuhxKwPVzqyj+jTzZcoruiISh4yCv6fRfqx/wzsgmNHLMv4KFXwFAREUo6jMA==}
     engines: {node: '>=18.12'}
 
   '@pnpm/text.comments-parser@1000.0.0':
@@ -9980,7 +9974,7 @@ snapshots:
 
   '@pnpm/config.env-replace@3.0.2': {}
 
-  '@pnpm/config@1004.8.0(@pnpm/logger@1001.0.1)':
+  '@pnpm/config@1004.9.0(@pnpm/logger@1001.0.1)':
     dependencies:
       '@pnpm/catalogs.config': 1000.0.5
       '@pnpm/catalogs.types': 1000.0.0
@@ -9990,8 +9984,8 @@ snapshots:
       '@pnpm/git-utils': 1000.0.0
       '@pnpm/logger': 1001.0.1
       '@pnpm/matcher': 1000.1.0
-      '@pnpm/npm-conf': 3.0.1
-      '@pnpm/pnpmfile': 1002.1.8(@pnpm/logger@1001.0.1)
+      '@pnpm/npm-conf': 3.0.2
+      '@pnpm/pnpmfile': 1002.1.10(@pnpm/logger@1001.0.1)
       '@pnpm/read-project-manifest': 1001.2.3(@pnpm/logger@1001.0.1)
       '@pnpm/types': 1001.2.0
       '@pnpm/workspace.read-manifest': 1000.2.9
@@ -10030,9 +10024,9 @@ snapshots:
     dependencies:
       '@pnpm/constants': 1001.3.1
 
-  '@pnpm/fetcher-base@1001.1.0':
+  '@pnpm/fetcher-base@1001.2.1':
     dependencies:
-      '@pnpm/resolver-base': 1005.3.3
+      '@pnpm/resolver-base': 1005.4.0
       '@pnpm/types': 1001.2.0
       '@types/ssri': 7.1.5
 
@@ -10044,15 +10038,15 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
 
-  '@pnpm/hooks.types@1001.0.17':
+  '@pnpm/hooks.types@1001.0.18':
     dependencies:
-      '@pnpm/lockfile.types': 1002.0.7
+      '@pnpm/lockfile.types': 1002.0.8
       '@pnpm/types': 1001.2.0
 
-  '@pnpm/lockfile.types@1002.0.7':
+  '@pnpm/lockfile.types@1002.0.8':
     dependencies:
       '@pnpm/patching.types': 1000.1.0
-      '@pnpm/resolver-base': 1005.3.3
+      '@pnpm/resolver-base': 1005.4.0
       '@pnpm/types': 1001.2.0
 
   '@pnpm/logger@1001.0.1':
@@ -10081,7 +10075,7 @@ snapshots:
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
 
-  '@pnpm/npm-conf@3.0.1':
+  '@pnpm/npm-conf@3.0.2':
     dependencies:
       '@pnpm/config.env-replace': 1.1.0
       '@pnpm/network.ca-file': 1.0.2
@@ -10089,15 +10083,15 @@ snapshots:
 
   '@pnpm/patching.types@1000.1.0': {}
 
-  '@pnpm/pnpmfile@1002.1.8(@pnpm/logger@1001.0.1)':
+  '@pnpm/pnpmfile@1002.1.10(@pnpm/logger@1001.0.1)':
     dependencies:
       '@pnpm/core-loggers': 1001.0.8(@pnpm/logger@1001.0.1)
       '@pnpm/crypto.hash': 1000.2.1
       '@pnpm/error': 1000.0.5
-      '@pnpm/hooks.types': 1001.0.17
-      '@pnpm/lockfile.types': 1002.0.7
+      '@pnpm/hooks.types': 1001.0.18
+      '@pnpm/lockfile.types': 1002.0.8
       '@pnpm/logger': 1001.0.1
-      '@pnpm/store-controller-types': 1004.4.0
+      '@pnpm/store-controller-types': 1004.5.0
       '@pnpm/types': 1001.2.0
       chalk: 4.1.2
       path-absolute: 1.0.1
@@ -10121,14 +10115,14 @@ snapshots:
       read-yaml-file: 2.1.0
       strip-bom: 4.0.0
 
-  '@pnpm/resolver-base@1005.3.3':
+  '@pnpm/resolver-base@1005.4.0':
     dependencies:
       '@pnpm/types': 1001.2.0
 
-  '@pnpm/store-controller-types@1004.4.0':
+  '@pnpm/store-controller-types@1004.5.0':
     dependencies:
-      '@pnpm/fetcher-base': 1001.1.0
-      '@pnpm/resolver-base': 1005.3.3
+      '@pnpm/fetcher-base': 1001.2.1
+      '@pnpm/resolver-base': 1005.4.0
       '@pnpm/types': 1001.2.0
 
   '@pnpm/text.comments-parser@1000.0.0':

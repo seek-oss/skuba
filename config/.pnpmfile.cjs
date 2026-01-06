@@ -1,3 +1,4 @@
+// @ts-check
 const MINIMUM_RELEASE_AGE_EXCLUDE = [
   '@seek/*',
   '@skuba-lib/*',
@@ -11,6 +12,7 @@ const MINIMUM_RELEASE_AGE_EXCLUDE = [
 
 const PUBLIC_HOIST_PATTERN = [
   '@eslint/*',
+  '@pnpm/config',
   '@types*',
   'eslint',
   'eslint-config-skuba',
@@ -23,7 +25,6 @@ const PUBLIC_HOIST_PATTERN = [
 
 const ONLY_BUILT_DEPENDENCIES = ['@ast-grep/lang-json'];
 
-// @ts-check
 module.exports = {
   hooks: {
     /** @param {import("@pnpm/config").Config} config */
