@@ -19,7 +19,7 @@ import { DatadogLambda } from 'datadog-cdk-constructs-v2';
 import { config } from './config.js';
 
 // Updated by https://github.com/seek-oss/rynovate
-const DATADOG_EXTENSION_LAYER_VERSION = 90;
+const DATADOG_EXTENSION_LAYER_VERSION = 91;
 
 // Updated by https://github.com/seek-oss/rynovate
 const DATADOG_NODE_LAYER_VERSION = 126;
