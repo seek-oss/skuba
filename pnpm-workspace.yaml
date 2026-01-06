@@ -6,3 +6,6 @@ packages:
 overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
+
+publicHoistPattern:
+  - 'remark-lint-*'
