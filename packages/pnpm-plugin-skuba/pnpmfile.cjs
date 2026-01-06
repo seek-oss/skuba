@@ -12,7 +12,6 @@ const MINIMUM_RELEASE_AGE_EXCLUDE = [
 
 const PUBLIC_HOIST_PATTERN = [
   '@eslint/*',
-  '@pnpm/config',
   '@types*',
   'eslint',
   'eslint-config-skuba',
