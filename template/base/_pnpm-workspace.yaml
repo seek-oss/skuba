@@ -1,2 +1,0 @@
-configDependencies:
-  '@skuba-lib/pnpm-config-skuba': '1.0.0+sha512-8ad254e4cbefc5cc443ec7e3bee023b30155c1eccda17f811a25f832affca8e961b6d8ba2f37be27b254a853d77b83d6601a329f70c9dccbc04e0b5f7bcd60f4'

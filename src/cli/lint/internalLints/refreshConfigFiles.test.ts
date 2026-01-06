@@ -130,30 +130,6 @@ The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('should flag creation of a pnpm-workspace.yaml for pnpm projects if missing', async () => {
-      setupDestinationFiles({
-        'pnpm-workspace.yaml': undefined,
-      });
-
-      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
-        ok: false,
-        fixable: true,
-        annotations: [
-          {
-            message:
-              'The pnpm-workspace.yaml file is out of date. Run `pnpm exec skuba format` to update it.',
-            path: 'pnpm-workspace.yaml',
-          },
-        ],
-      });
-
-      expect(`\n${stdout()}`).toBe(`
-The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to update it.
-`);
-
-      expect(writeFile).not.toHaveBeenCalled();
-    });
-
     it('should not flag creation of a pnpm-workspace.yaml for yarn projects', async () => {
       givenMockPackageManager('yarn');
 
@@ -233,28 +209,6 @@ The pnpm-workspace.yaml file is out of date. Run \`pnpm exec skuba format\` to u
       expect(writeFile).toHaveBeenCalledWith(
         path.join(process.cwd(), '.gitignore'),
         '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n\nstuff afterwards',
-      );
-    });
-
-    it('should create a pnpm-workspace.yaml for pnpm projects if missing', async () => {
-      setupDestinationFiles({
-        'pnpm-workspace.yaml': undefined,
-      });
-
-      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
-        ok: true,
-        fixable: false,
-        annotations: [],
-      });
-
-      expect(`\n${stdout()}`).toBe(`
-Refreshed pnpm-workspace.yaml.
-`);
-
-      expect(writeFile).toHaveBeenCalledTimes(1);
-      expect(writeFile).toHaveBeenCalledWith(
-        path.join(process.cwd(), 'pnpm-workspace.yaml'),
-        '# managed by skuba\nfake content for _pnpm-workspace.yaml\n# end managed by skuba',
       );
     });
 
