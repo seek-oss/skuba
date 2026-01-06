@@ -8,7 +8,7 @@ overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
 
-pnpmfileChecksum: sha256-S/0At+wdjV0iiqz1wNm9SL0qX7gM4FAaR5kyGvHj2UU=
+pnpmfileChecksum: sha256-6HtMCWYFYqKEUt3PVPH4+TzOZK0VUi6JbAfBffiQC14=
 
 importers:
 
@@ -41,9 +41,6 @@ importers:
       '@octokit/types':
         specifier: ^16.0.0
         version: 16.0.0
-      '@pnpm/config':
-        specifier: ^1004.9.0
-        version: 1004.9.0(@pnpm/logger@1001.0.1)
       '@skuba-lib/api':
         specifier: workspace:^
         version: link:packages/api
@@ -234,6 +231,9 @@ importers:
       memfs:
         specifier: 4.51.1
         version: 4.51.1
+      pnpm-plugin-skuba:
+        specifier: workspace:*
+        version: link:packages/pnpm-plugin-skuba
       remark-cli:
         specifier: 12.0.1
         version: 12.0.1
@@ -318,6 +318,12 @@ importers:
       typescript-eslint:
         specifier: ^8.39.0
         version: 8.47.0(eslint@9.39.1)(typescript@5.9.3)
+
+  packages/pnpm-plugin-skuba:
+    devDependencies:
+      '@pnpm/config':
+        specifier: ^1004.9.0
+        version: 1004.9.0(@pnpm/logger@1001.0.1)
 
   packages/skuba-dive: {}
 

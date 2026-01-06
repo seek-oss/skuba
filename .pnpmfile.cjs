@@ -1,1 +1,1 @@
-module.exports = require('./config/.pnpmfile.cjs');
+packages/pnpm-plugin-skuba/.pnpmfile.cjs

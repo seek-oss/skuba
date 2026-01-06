@@ -1,13 +1,15 @@
 import path from 'path';
 import { inspect } from 'util';
 
+import fs from 'fs-extra';
+
 import { hasDebugFlag } from '../../utils/args.js';
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
 import { createInclusionFilter } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
 import { createLogger, log } from '../../utils/logging.js';
 import { showLogoAndVersionInfo } from '../../utils/logo.js';
-import { getConsumerManifest } from '../../utils/manifest.js';
+import { getConsumerManifest, getSkubaManifest } from '../../utils/manifest.js';
 import { detectPackageManager } from '../../utils/packageManager.js';
 import {
   BASE_TEMPLATE_DIR,
@@ -90,13 +92,33 @@ export const init = async (args = process.argv.slice(2)) => {
   log.newline();
   await initialiseRepo(destinationDir, templateData);
 
-  const [manifest, packageManagerConfig] = await Promise.all([
+  const [manifest, packageManagerConfig, skubaManifest] = await Promise.all([
     getConsumerManifest(destinationDir),
     detectPackageManager(destinationDir),
+    getSkubaManifest(),
   ]);
 
   if (!manifest) {
     throw new Error("Repository doesn't contain a package.json file.");
+  }
+
+  const pnpmPluginSkubaVersion =
+    skubaManifest.devDependencies?.['pnpm-plugin-skuba'] || 'latest';
+
+  if (packageManager === 'pnpm') {
+    if (process.env.SKUBA_INTEGRATION_TEST === 'true') {
+      await fs.promises.symlink(
+        path.resolve('../skuba/packages/pnpm-plugin-skuba/.pnpmfile.cjs'),
+        path.join(destinationDir, '.pnpmfile.cjs'),
+      );
+    } else {
+      await exec(
+        packageManager,
+        'add',
+        '--config',
+        `pnpm-plugin-skuba@${pnpmPluginSkubaVersion}`,
+      );
+    }
   }
 
   // Patch in a baseline Renovate preset based on the configured Git owner.
