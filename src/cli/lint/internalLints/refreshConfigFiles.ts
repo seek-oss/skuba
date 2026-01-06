@@ -26,7 +26,7 @@ type ConditionOptions = {
 
 type RefreshableConfigFile = {
   name: string;
-  type: 'ignore' | 'pnpm-workspace';
+  type: 'ignore';
   additionalMapping?: (
     s: string,
     packageManager: PackageManagerConfig,
@@ -79,7 +79,6 @@ export const refreshConfigFiles = async (
   const refreshConfigFile = async (
     {
       name: filename,
-      type: fileType,
       additionalMapping = (s) => s,
       if: condition = () => true,
     }: RefreshableConfigFile,
@@ -106,9 +105,7 @@ export const refreshConfigFiles = async (
     }
 
     const data = additionalMapping(
-      inputFile
-        ? mergeWithConfigFile(templateFile, fileType)(inputFile)
-        : templateFile,
+      inputFile ? mergeWithConfigFile(templateFile)(inputFile) : templateFile,
       packageManager,
     );
 

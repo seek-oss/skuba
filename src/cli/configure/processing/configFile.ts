@@ -46,7 +46,7 @@ export const replaceManagedSection = (input: string, template: string) =>
 
 export const mergeWithConfigFile = (
   rawTemplateFile: string,
-  fileType: 'ignore' | 'pnpm-workspace' = 'ignore',
+  fileType: 'ignore' = 'ignore',
 ) => {
   const templateFile = rawTemplateFile.trim();
 
@@ -55,9 +55,6 @@ export const mergeWithConfigFile = (
   switch (fileType) {
     case 'ignore':
       generator = generateIgnoreFileSimpleVariants;
-      break;
-    case 'pnpm-workspace':
-      generator = () => new Set<string>();
       break;
   }
 

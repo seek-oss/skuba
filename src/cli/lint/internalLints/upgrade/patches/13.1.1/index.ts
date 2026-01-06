@@ -1,9 +1,14 @@
 import type { Patches } from '../../index.js';
 
+import { tryMigrateToPnpmFile } from './migrateToPnpmFile.js';
 import { tryPatchRootTsConfig } from './patchRootTsconfig.js';
 import { tryUpgradeNode } from './upgradeNode.js';
 
 export const patches: Patches = [
+  {
+    apply: tryMigrateToPnpmFile,
+    description: 'Migrate pnpm workspace to .pnpmfile.cjs',
+  },
   {
     apply: tryUpgradeNode,
     description:
