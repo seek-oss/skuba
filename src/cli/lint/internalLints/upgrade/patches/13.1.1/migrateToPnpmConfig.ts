@@ -50,8 +50,15 @@ export const migrateToPnpmConfig: PatchFunction = async ({
     pnpmWorkSpaceFile.slice(0, startingIndex) + endSection;
 
   // Check if consumers have extended the publicHoistPattern section
-  const brokenYamlPatternRegex = /^  -\s+[^#]/m;
-  if (brokenYamlPatternRegex.exec(endSection)) {
+  // Only match if the first non-empty, non-comment line is a list item without a preceding key
+  const brokenYamlPatternRegex = /^\s*-\s+[^#]/;
+  const firstNonEmptyNonCommentLine = endSection
+    .split('\n')
+    .find((line) => line.trim() && !line.trim().startsWith('#'));
+  if (
+    firstNonEmptyNonCommentLine &&
+    brokenYamlPatternRegex.exec(firstNonEmptyNonCommentLine)
+  ) {
     modifiedPnpmWorkspace = modifiedPnpmWorkspace.replace(
       endSection,
       `publicHoistPattern:\n${endSection}`,

@@ -290,6 +290,71 @@ publicHoistPattern:
     });
   });
 
+  it('should not add publicHoistPattern if the next section has its own key', async () => {
+    vol.fromJSON({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
+      'pnpm-workspace.yaml': `# managed by skuba
+ignorePatchFailures: false
+minimumReleaseAge: 4320 # 3 days
+minimumReleaseAgeExclude:
+  - '@seek/*'
+  - '@skuba-lib/*'
+  - eslint-config-seek
+  - eslint-config-skuba
+  - eslint-plugin-skuba
+  - skuba
+  - skuba-dive
+  - tsconfig-seek
+packageManagerStrictVersion: true
+publicHoistPattern:
+  - '@eslint/*'
+  - '@types*'
+  - eslint
+  - eslint-config-skuba
+  - prettier
+  - esbuild
+  - jest
+  - tsconfig-seek
+  - typescript
+  # end managed by skuba
+
+packages:
+  - 'apps/*'
+injectWorkspacePackages: true
+
+nodeOptions: '\${NODE_OPTIONS:- } --max-old-space-size=8192'
+`,
+    });
+
+    await expect(
+      migrateToPnpmConfig({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
+      'pnpm-workspace.yaml': `
+packages:
+  - 'apps/*'
+injectWorkspacePackages: true
+
+nodeOptions: '\${NODE_OPTIONS:- } --max-old-space-size=8192'
+`,
+    });
+  });
+
   it('should migrate minimumReleaseAgeExcludeOverload from package.json to pnpm-workspace.yaml', async () => {
     vol.fromJSON({
       'src/utils/package.json': `{
