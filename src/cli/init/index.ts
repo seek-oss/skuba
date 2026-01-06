@@ -117,7 +117,6 @@ export const init = async (args = process.argv.slice(2)) => {
         'add',
         '--config',
         `pnpm-plugin-skuba@${pnpmPluginSkubaVersion}`,
-        '--workspace',
       );
     }
   }

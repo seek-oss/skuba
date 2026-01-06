@@ -125,7 +125,6 @@ export const migrateToPnpmConfig: PatchFunction = async ({
     'add',
     '--config',
     `pnpm-plugin-skuba@${pnpmPluginSkubaVersion}`,
-    '--workspace',
   );
 
   await exec('pnpm', 'install', '--offline');
