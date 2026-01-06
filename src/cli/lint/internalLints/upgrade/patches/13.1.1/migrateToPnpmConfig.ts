@@ -102,14 +102,11 @@ export const migrateToPnpmConfig: PatchFunction = async ({
   }
 
   const stringifiedPackageJson =
-    packageJson && modifiedPnpmWorkspace.includes('minimumReleaseAgeExclude')
-      ? `${JSON.stringify(packageJson.packageJson, null, 2)}\n`
-      : null;
+    packageJson && `${JSON.stringify(packageJson.packageJson, null, 2)}\n`;
 
   await Promise.all([
     fs.promises.writeFile('pnpm-workspace.yaml', modifiedPnpmWorkspace, 'utf8'),
     stringifiedPackageJson &&
-      packageJson &&
       fs.promises.writeFile(packageJson.path, stringifiedPackageJson, 'utf8'),
   ]);
 

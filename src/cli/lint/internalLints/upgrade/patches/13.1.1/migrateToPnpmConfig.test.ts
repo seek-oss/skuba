@@ -5,6 +5,7 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { migrateToPnpmConfig } from './migrateToPnpmConfig.js';
 
+jest.mock('../../../../../../utils/exec.js');
 jest.mock('fs', () => memfs);
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
@@ -70,6 +71,11 @@ packages:
 
   it('should not write changes if the mode is lint', async () => {
     vol.fromJSON({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -91,6 +97,11 @@ packages:
     });
 
     expect(volToJson()).toEqual({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -103,8 +114,13 @@ packages:
     });
   });
 
-  it('should remove a managed by skuba block and create `.pnpmfile.cjs`', async () => {
+  it('should remove a managed by skuba block', async () => {
     vol.fromJSON({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -125,6 +141,11 @@ packages:
     });
 
     expect(volToJson()).toEqual({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -135,6 +156,11 @@ packages:
 
   it('should add publicHoistPattern if orphan dash items are found', async () => {
     vol.fromJSON({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -157,6 +183,11 @@ publicHoistPattern:
     });
 
     expect(volToJson()).toEqual({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -169,6 +200,11 @@ publicHoistPattern:
 
   it('should add publicHoistPattern if orphan dash items are found after comments', async () => {
     vol.fromJSON({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -192,6 +228,11 @@ publicHoistPattern:
     });
 
     expect(volToJson()).toEqual({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -205,6 +246,11 @@ publicHoistPattern:
 
   it('should add publicHoistPattern if orphan dash items are found after empty paragraphs', async () => {
     vol.fromJSON({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -228,6 +274,11 @@ publicHoistPattern:
     });
 
     expect(volToJson()).toEqual({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -241,6 +292,11 @@ publicHoistPattern:
 
   it('should migrate minimumReleaseAgeExcludeOverload from package.json to pnpm-workspace.yaml', async () => {
     vol.fromJSON({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -270,6 +326,11 @@ packages:
     });
 
     expect(volToJson()).toEqual({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -289,6 +350,11 @@ minimumReleaseAgeExclude:
 
   it('should upgrade packageManager version if less than 10.13.0', async () => {
     vol.fromJSON({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*
@@ -315,6 +381,11 @@ packages:
     });
 
     expect(volToJson()).toEqual({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
       'pnpm-workspace.yaml': `
 packages:
   - packages/*

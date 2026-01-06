@@ -11,6 +11,8 @@ jest.mock('fast-glob', () => ({
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
 
+jest.mock('../../../utils/exec.js');
+
 jest.spyOn(console, 'error').mockImplementation(() => {
   /* empty */
 });
