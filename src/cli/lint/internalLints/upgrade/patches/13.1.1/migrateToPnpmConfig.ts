@@ -84,12 +84,9 @@ export const migrateToPnpmConfig: PatchFunction = async ({
       .split('@')?.[1] // strip name
       ?.split('+')?.[0]; // strip sha
 
-    // strip sha
-    const cleanVersion = version?.split('+')?.[0];
-
     if (
-      typeof cleanVersion === 'string' &&
-      lt(new SemVer(cleanVersion), new SemVer('10.26.2'))
+      typeof version === 'string' &&
+      lt(new SemVer(version), new SemVer('10.26.2'))
     ) {
       packageJson.packageJson.packageManager = 'pnpm@10.26.2';
     }
@@ -127,6 +124,8 @@ export const migrateToPnpmConfig: PatchFunction = async ({
     `pnpm-plugin-skuba@${pnpmPluginSkubaVersion}`,
   );
 
+  // Running install to ensure that our new pnpm config is applied
+  // e.g. hoisting and enabling post build scripts
   await exec('pnpm', 'install', '--offline');
 
   return {
