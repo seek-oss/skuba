@@ -14,6 +14,7 @@ WORKDIR /workdir
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
     --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \
+    --mount=type=bind,source=.pnpmfile.cjs,target=.pnpmfile.cjs \
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
     --mount=type=secret,id=NPM_TOKEN,env=NPM_TOKEN,required=true \
     pnpm fetch

@@ -296,4 +296,49 @@ minimumReleaseAgeExclude:
 `,
     });
   });
+
+  it('should fix Dockerfiles to mount .pnpmfile.cjs', async () => {
+    vol.fromJSON({
+      'pnpm-workspace.yaml': `
+packages:
+  - packages/*
+  - template/*
+# managed by skuba
+  something
+# end managed by skuba
+`,
+      Dockerfile: `
+RUN --mount=type=bind,source=package.json,target=package.json \\
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+    --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \\
+    pnpm install
+`,
+    });
+
+    await expect(
+      migrateToPnpmFile({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'pnpm-workspace.yaml': `
+packages:
+  - packages/*
+  - template/*
+`,
+      '.pnpmfile.cjs': `module.exports = require("skuba/config/.pnpmfile.cjs");
+`,
+      Dockerfile: `
+RUN --mount=type=bind,source=package.json,target=package.json \\
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
+    --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \\
+    --mount=type=bind,source=.pnpmfile.cjs,target=.pnpmfile.cjs \\
+    pnpm install
+`,
+    });
+  });
 });

@@ -1,11 +1,30 @@
 import { inspect } from 'util';
 
+import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
 import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../../../utils/manifest.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
+
+const fixDockerfiles = async () => {
+  const fileNames = await glob(['**/Dockerfile*']);
+
+  await Promise.all(
+    fileNames.map(async (fileName) => {
+      const contents = await fs.promises.readFile(fileName, 'utf8');
+      const patched = contents.replace(
+        /^(\s*)--mount=type=bind,source=pnpm-workspace\.yaml,target=pnpm-workspace\.yaml/gm,
+        '$1--mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \\\n$1--mount=type=bind,source=.pnpmfile.cjs,target=.pnpmfile.cjs',
+      );
+
+      if (patched !== contents) {
+        await fs.promises.writeFile(fileName, patched);
+      }
+    }),
+  );
+};
 
 export const migrateToPnpmFile: PatchFunction = async ({
   mode,
@@ -95,6 +114,7 @@ export const migrateToPnpmFile: PatchFunction = async ({
     stringifiedPackageJson &&
       packageJson &&
       fs.promises.writeFile(packageJson.path, stringifiedPackageJson, 'utf8'),
+    fixDockerfiles(),
   ]);
 
   await exec('pnpm', 'install', '--offline');
