@@ -3,7 +3,7 @@ import memfs, { vol } from 'memfs';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
-import { migrateToPnpmFile } from './migrateToPnpmFile.js';
+import { migrateToPnpmConfig } from './migrateToPnpmConfig.js';
 
 jest.mock('fs', () => memfs);
 jest.mock('fs-extra', () => memfs);
@@ -33,12 +33,12 @@ const baseArgs: PatchConfig = {
   mode: 'format',
 };
 
-describe('migrateToPnpmFile', () => {
+describe('migrateToPnpmConfig', () => {
   it('should skip if no pnpm-workspace.yaml is found', async () => {
     vol.fromJSON({});
 
     await expect(
-      migrateToPnpmFile({
+      migrateToPnpmConfig({
         ...baseArgs,
         mode: 'lint',
       }),
@@ -58,7 +58,7 @@ packages:
     });
 
     await expect(
-      migrateToPnpmFile({
+      migrateToPnpmConfig({
         ...baseArgs,
         mode: 'lint',
       }),
@@ -82,7 +82,7 @@ packages:
     });
 
     await expect(
-      migrateToPnpmFile({
+      migrateToPnpmConfig({
         ...baseArgs,
         mode: 'lint',
       }),
@@ -116,7 +116,7 @@ packages:
     });
 
     await expect(
-      migrateToPnpmFile({
+      migrateToPnpmConfig({
         ...baseArgs,
         mode: 'format',
       }),
@@ -129,8 +129,6 @@ packages:
 packages:
   - packages/*
   - template/*
-`,
-      '.pnpmfile.cjs': `module.exports = require("skuba/config/.pnpmfile.cjs");
 `,
     });
   });
@@ -150,7 +148,7 @@ publicHoistPattern:
     });
 
     await expect(
-      migrateToPnpmFile({
+      migrateToPnpmConfig({
         ...baseArgs,
         mode: 'format',
       }),
@@ -165,8 +163,6 @@ packages:
   - template/*
 publicHoistPattern:
   - orphan
-`,
-      '.pnpmfile.cjs': `module.exports = require("skuba/config/.pnpmfile.cjs");
 `,
     });
   });
@@ -187,7 +183,7 @@ publicHoistPattern:
     });
 
     await expect(
-      migrateToPnpmFile({
+      migrateToPnpmConfig({
         ...baseArgs,
         mode: 'format',
       }),
@@ -203,8 +199,6 @@ packages:
 publicHoistPattern:
   # some comment describing why
   - orphan
-`,
-      '.pnpmfile.cjs': `module.exports = require("skuba/config/.pnpmfile.cjs");
 `,
     });
   });
@@ -225,7 +219,7 @@ publicHoistPattern:
     });
 
     await expect(
-      migrateToPnpmFile({
+      migrateToPnpmConfig({
         ...baseArgs,
         mode: 'format',
       }),
@@ -241,8 +235,6 @@ packages:
 publicHoistPattern:
 
   - orphan
-`,
-      '.pnpmfile.cjs': `module.exports = require("skuba/config/.pnpmfile.cjs");
 `,
     });
   });
@@ -269,7 +261,7 @@ packages:
     });
 
     await expect(
-      migrateToPnpmFile({
+      migrateToPnpmConfig({
         ...baseArgs,
         mode: 'format',
       }),
@@ -287,8 +279,6 @@ minimumReleaseAgeExclude:
   - package-a
   - package-b
 `,
-      '.pnpmfile.cjs': `module.exports = require("skuba/config/.pnpmfile.cjs");
-`,
       'package.json': `{
   "name": "test",
   "version": "1.0.0"
@@ -297,7 +287,7 @@ minimumReleaseAgeExclude:
     });
   });
 
-  it('should fix Dockerfiles to mount .pnpmfile.cjs', async () => {
+  it('should upgrade packageManager version if less than 10.13.0', async () => {
     vol.fromJSON({
       'pnpm-workspace.yaml': `
 packages:
@@ -307,16 +297,16 @@ packages:
   something
 # end managed by skuba
 `,
-      Dockerfile: `
-RUN --mount=type=bind,source=package.json,target=package.json \\
-    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
-    --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \\
-    pnpm install
+      'package.json': `{
+  "name": "test",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.7.0+sha123456"
+}
 `,
     });
 
     await expect(
-      migrateToPnpmFile({
+      migrateToPnpmConfig({
         ...baseArgs,
         mode: 'format',
       }),
@@ -330,14 +320,11 @@ packages:
   - packages/*
   - template/*
 `,
-      '.pnpmfile.cjs': `module.exports = require("skuba/config/.pnpmfile.cjs");
-`,
-      Dockerfile: `
-RUN --mount=type=bind,source=package.json,target=package.json \\
-    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
-    --mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \\
-    --mount=type=bind,source=.pnpmfile.cjs,target=.pnpmfile.cjs \\
-    pnpm install
+      'package.json': `{
+  "name": "test",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.13.0"
+}
 `,
     });
   });

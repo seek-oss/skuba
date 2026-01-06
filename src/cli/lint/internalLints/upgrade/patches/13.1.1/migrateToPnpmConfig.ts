@@ -1,32 +1,17 @@
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
 import fs from 'fs-extra';
+import { SemVer, lt } from 'semver';
 
 import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
-import { getConsumerManifest } from '../../../../../../utils/manifest.js';
+import {
+  getConsumerManifest,
+  getSkubaManifest,
+} from '../../../../../../utils/manifest.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const fixDockerfiles = async () => {
-  const fileNames = await glob(['**/Dockerfile*']);
-
-  await Promise.all(
-    fileNames.map(async (fileName) => {
-      const contents = await fs.promises.readFile(fileName, 'utf8');
-      const patched = contents.replace(
-        /^(\s*)--mount=type=bind,source=pnpm-workspace\.yaml,target=pnpm-workspace\.yaml/gm,
-        '$1--mount=type=bind,source=pnpm-workspace.yaml,target=pnpm-workspace.yaml \\\n$1--mount=type=bind,source=.pnpmfile.cjs,target=.pnpmfile.cjs',
-      );
-
-      if (patched !== contents) {
-        await fs.promises.writeFile(fileName, patched);
-      }
-    }),
-  );
-};
-
-export const migrateToPnpmFile: PatchFunction = async ({
+export const migrateToPnpmConfig: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
   let pnpmWorkSpaceFile: string;
@@ -74,7 +59,10 @@ export const migrateToPnpmFile: PatchFunction = async ({
   }
 
   // Migrate minimumReleaseAgeExcludeOverload
-  const packageJson = await getConsumerManifest();
+  const [packageJson, skubaPackageJson] = await Promise.all([
+    getConsumerManifest(),
+    getSkubaManifest(),
+  ]);
 
   if (
     packageJson?.packageJson.minimumReleaseAgeExcludeOverload &&
@@ -82,6 +70,22 @@ export const migrateToPnpmFile: PatchFunction = async ({
   ) {
     modifiedPnpmWorkspace += `\nminimumReleaseAgeExclude:\n${packageJson.packageJson.minimumReleaseAgeExcludeOverload.map((item) => `  - ${item}`).join('\n')}\n`;
     delete packageJson.packageJson.minimumReleaseAgeExcludeOverload;
+  }
+
+  if (typeof packageJson?.packageJson.packageManager === 'string') {
+    const version = packageJson.packageJson.packageManager
+      .split('@')?.[1] // strip name
+      ?.split('+')?.[0]; // strip sha
+
+    // strip sha
+    const cleanVersion = version?.split('+')?.[0];
+
+    if (
+      typeof cleanVersion === 'string' &&
+      lt(new SemVer(cleanVersion), new SemVer('10.13.0'))
+    ) {
+      packageJson.packageJson.packageManager = 'pnpm@10.13.0';
+    }
   }
 
   if (modifiedPnpmWorkspace === pnpmWorkSpaceFile) {
@@ -97,8 +101,6 @@ export const migrateToPnpmFile: PatchFunction = async ({
     };
   }
 
-  const pnpmFilePath = '.pnpmfile.cjs';
-
   const stringifiedPackageJson =
     packageJson && modifiedPnpmWorkspace.includes('minimumReleaseAgeExclude')
       ? `${JSON.stringify(packageJson.packageJson, null, 2)}\n`
@@ -106,16 +108,20 @@ export const migrateToPnpmFile: PatchFunction = async ({
 
   await Promise.all([
     fs.promises.writeFile('pnpm-workspace.yaml', modifiedPnpmWorkspace, 'utf8'),
-    fs.promises.writeFile(
-      pnpmFilePath,
-      'module.exports = require("skuba/config/.pnpmfile.cjs");\n',
-      'utf8',
-    ),
     stringifiedPackageJson &&
       packageJson &&
       fs.promises.writeFile(packageJson.path, stringifiedPackageJson, 'utf8'),
-    fixDockerfiles(),
   ]);
+
+  const pnpmPluginSkubaVersion =
+    skubaPackageJson.devDependencies?.['pnpm-plugin-skuba'] || 'latest';
+
+  await exec(
+    'pnpm',
+    'add',
+    '--config',
+    `pnpm-plugin-skuba@${pnpmPluginSkubaVersion}`,
+  );
 
   await exec('pnpm', 'install', '--offline');
 
@@ -124,11 +130,11 @@ export const migrateToPnpmFile: PatchFunction = async ({
   };
 };
 
-export const tryMigrateToPnpmFile: PatchFunction = async (config) => {
+export const tryMigrateToPnpmConfig: PatchFunction = async (config) => {
   try {
-    return await migrateToPnpmFile(config);
+    return await migrateToPnpmConfig(config);
   } catch (err) {
-    log.warn('Failed to migrate to `.pnpmfile.cjs`');
+    log.warn('Failed to migrate to pnpm-plugin-skuba');
     log.subtle(inspect(err));
     return { result: 'skip', reason: 'due to an error' };
   }

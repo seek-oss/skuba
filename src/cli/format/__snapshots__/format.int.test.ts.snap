@@ -49,7 +49,7 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
-Patch skipped: Migrate pnpm workspace to .pnpmfile.cjs - no pnpm-workspace.yaml found upgrade-skuba
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Upgrading project to Node.js 24 and package targets to Node.js 20
 Upgraded project to Node.js 24 and package targets to Node.js 20
 
@@ -160,7 +160,7 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
-Patch skipped: Migrate pnpm workspace to .pnpmfile.cjs - no pnpm-workspace.yaml found upgrade-skuba
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Upgrading project to Node.js 24 and package targets to Node.js 20
 Upgraded project to Node.js 24 and package targets to Node.js 20
 
@@ -264,7 +264,7 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
-Patch skipped: Migrate pnpm workspace to .pnpmfile.cjs - no pnpm-workspace.yaml found upgrade-skuba
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Upgrading project to Node.js 24 and package targets to Node.js 20
 Upgraded project to Node.js 24 and package targets to Node.js 20
 
@@ -341,7 +341,7 @@ Patch skipped: Update lambda function configurations to support custom condition
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
 
-Patch skipped: Migrate pnpm workspace to .pnpmfile.cjs - no pnpm-workspace.yaml found upgrade-skuba
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Upgrading project to Node.js 24 and package targets to Node.js 20
 Upgraded project to Node.js 24 and package targets to Node.js 20
 

@@ -1,13 +1,13 @@
 import type { Patches } from '../../index.js';
 
-import { tryMigrateToPnpmFile } from './migrateToPnpmFile.js';
+import { tryMigrateToPnpmConfig } from './migrateToPnpmConfig.js';
 import { tryPatchRootTsConfig } from './patchRootTsconfig.js';
 import { tryUpgradeNode } from './upgradeNode.js';
 
 export const patches: Patches = [
   {
-    apply: tryMigrateToPnpmFile,
-    description: 'Migrate pnpm workspace to .pnpmfile.cjs',
+    apply: tryMigrateToPnpmConfig,
+    description: 'Migrate pnpm workspace to pnpm-plugin-skuba',
   },
   {
     apply: tryUpgradeNode,
