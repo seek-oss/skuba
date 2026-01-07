@@ -10,18 +10,6 @@ const MINIMUM_RELEASE_AGE_EXCLUDE = [
   'tsconfig-seek',
 ];
 
-const PUBLIC_HOIST_PATTERN = [
-  '@eslint/*',
-  '@types*',
-  'eslint',
-  'eslint-config-skuba',
-  'prettier',
-  'esbuild',
-  'jest',
-  'tsconfig-seek',
-  'typescript',
-];
-
 const ONLY_BUILT_DEPENDENCIES = [
   '@ast-grep/lang-json',
   '@datadog/native-appsec',
@@ -33,6 +21,18 @@ const ONLY_BUILT_DEPENDENCIES = [
   'protobufjs',
   'unix-dgram',
   'unrs-resolver',
+];
+
+const PUBLIC_HOIST_PATTERN = [
+  '@eslint/*',
+  '@types*',
+  'eslint',
+  'eslint-config-skuba',
+  'prettier',
+  'esbuild',
+  'jest',
+  'tsconfig-seek',
+  'typescript',
 ];
 
 const TRUST_POLICY_EXCLUDE = [
