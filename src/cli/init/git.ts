@@ -1,6 +1,4 @@
-import { exec } from 'child_process';
 import path from 'path';
-import { promisify } from 'util';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
@@ -57,8 +55,6 @@ export const downloadGitHubTemplate = async (
   });
 };
 
-const execAsync = promisify(exec);
-
 export const downloadPrivateTemplate = async (
   templateName: string,
   destinationDir: string,
@@ -75,13 +71,19 @@ export const downloadPrivateTemplate = async (
   const tempDir = `${destinationDir}_temp`;
 
   try {
-    await execAsync(`
-      git init ${tempDir} &&
-      git -C ${tempDir} config core.sparseCheckout true &&
-      echo "${folderPath}/*" >> ${tempDir}/.git/info/sparse-checkout &&
-      git -C ${tempDir} remote add origin ${repoUrl} &&
-      git -C ${tempDir} pull origin main --depth 1 --quiet
-    `);
+    const sparseCheckoutPath = path.join(
+      tempDir,
+      '.git',
+      'info',
+      'sparse-checkout',
+    );
+    await fs.promises.writeFile(sparseCheckoutPath, `${folderPath}/*\n`);
+    await simpleGit().raw(['init', tempDir]);
+
+    await simpleGit(tempDir)
+      .raw(['config', 'core.sparseCheckout', 'true'])
+      .addRemote('origin', repoUrl)
+      .raw(['pull', 'origin', 'main', '--depth', '1', '--quiet']);
 
     const templatePath = path.join(tempDir, folderPath);
 
