@@ -2,4 +2,4 @@
 'skuba': minor
 ---
 
-templates: Swap `oss-npm-package` & `private-npm-package` templates build command from `tsc` via `skuba build-package` to use `tsdown`.
+template/\*-npm-package: Migrate to `tsdown` for bundling
