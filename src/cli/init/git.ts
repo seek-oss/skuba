@@ -71,6 +71,8 @@ export const downloadPrivateTemplate = async (
   const tempDir = `${destinationDir}_temp`;
 
   try {
+    await simpleGit().raw(['init', tempDir]);
+
     const sparseCheckoutPath = path.join(
       tempDir,
       '.git',
@@ -78,7 +80,6 @@ export const downloadPrivateTemplate = async (
       'sparse-checkout',
     );
     await fs.promises.writeFile(sparseCheckoutPath, `${folderPath}/*\n`);
-    await simpleGit().raw(['init', tempDir]);
 
     await simpleGit(tempDir)
       .raw(['config', 'core.sparseCheckout', 'true'])
