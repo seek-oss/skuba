@@ -11,5 +11,5 @@ export const installPnpmPlugin = async (
   await exec('pnpm', 'add', '--config', `pnpm-plugin-skuba@${version}`);
 
   // Run install to ensure that the pnpmfileChecksum gets written
-  await exec('pnpm', 'install', '--lockfile-only', '--offline');
+  await exec('pnpm', 'install', '--lockfile-only');
 };
