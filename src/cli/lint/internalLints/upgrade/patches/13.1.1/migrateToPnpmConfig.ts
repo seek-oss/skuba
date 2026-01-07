@@ -9,6 +9,7 @@ import {
   getConsumerManifest,
   getSkubaManifest,
 } from '../../../../../../utils/manifest.js';
+import { installPnpmPlugin } from '../../../../../init/installPnpmPlugin.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 export const migrateToPnpmConfig: PatchFunction = async ({
@@ -114,15 +115,7 @@ export const migrateToPnpmConfig: PatchFunction = async ({
       fs.promises.writeFile(packageJson.path, stringifiedPackageJson, 'utf8'),
   ]);
 
-  const pnpmPluginSkubaVersion =
-    skubaPackageJson.devDependencies?.['pnpm-plugin-skuba'] || 'latest';
-
-  await exec(
-    'pnpm',
-    'add',
-    '--config',
-    `pnpm-plugin-skuba@${pnpmPluginSkubaVersion}`,
-  );
+  await installPnpmPlugin(skubaPackageJson);
 
   // Running install to ensure that our new pnpm config is applied
   // e.g. hoisting and enabling post build scripts

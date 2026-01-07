@@ -20,6 +20,7 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 
 import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
+import { installPnpmPlugin } from './installPnpmPlugin.js';
 import type { Input } from './types.js';
 import { writePackageJson } from './writePackageJson.js';
 
@@ -102,9 +103,6 @@ export const init = async (args = process.argv.slice(2)) => {
     throw new Error("Repository doesn't contain a package.json file.");
   }
 
-  const pnpmPluginSkubaVersion =
-    skubaManifest.devDependencies?.['pnpm-plugin-skuba'] || 'latest';
-
   if (packageManager === 'pnpm') {
     if (process.env.SKUBA_INTEGRATION_TEST === 'true') {
       await fs.promises.symlink(
@@ -112,12 +110,7 @@ export const init = async (args = process.argv.slice(2)) => {
         path.join(destinationDir, '.pnpmfile.cjs'),
       );
     } else {
-      await exec(
-        packageManager,
-        'add',
-        '--config',
-        `pnpm-plugin-skuba@${pnpmPluginSkubaVersion}`,
-      );
+      await installPnpmPlugin(skubaManifest);
     }
   }
 
