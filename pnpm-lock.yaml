@@ -8,7 +8,7 @@ overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
 
-pnpmfileChecksum: sha256-4TiivafybulWbM8fixxM3dod1F14I5yKZLnXOVwJy6E=
+pnpmfileChecksum: sha256-RIxnajg+TcuM2T8XFufcoEyePjEtQDPR4ogxDeGpceM=
 
 importers:
 
