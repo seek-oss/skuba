@@ -87,9 +87,9 @@ export const migrateToPnpmConfig: PatchFunction = async ({
 
     if (
       typeof version === 'string' &&
-      lt(new SemVer(version), new SemVer('10.26.2'))
+      lt(new SemVer(version), new SemVer('10.26.1'))
     ) {
-      packageJson.packageJson.packageManager = 'pnpm@10.26.2';
+      packageJson.packageJson.packageManager = 'pnpm@10.26.1';
     }
   }
 
@@ -112,7 +112,7 @@ export const migrateToPnpmConfig: PatchFunction = async ({
   await Promise.all([
     fs.promises.writeFile('pnpm-workspace.yaml', modifiedPnpmWorkspace, 'utf8'),
     stringifiedPackageJson &&
-      fs.promises.writeFile(packageJson.path, stringifiedPackageJson, 'utf8'),
+    fs.promises.writeFile(packageJson.path, stringifiedPackageJson, 'utf8'),
   ]);
 
   await installPnpmPlugin(skubaPackageJson);
