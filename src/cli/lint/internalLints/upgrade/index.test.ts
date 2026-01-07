@@ -99,6 +99,7 @@ describe('upgradeSkuba in format mode', () => {
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
       fixable: false,
+      upgraded: true,
     });
     expect(mockUpgrade.apply).toHaveBeenCalledTimes(2);
     expect(Git.commitAllChanges).toHaveBeenCalledTimes(2);
@@ -235,6 +236,7 @@ describe('upgradeSkuba in format mode', () => {
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
       fixable: false,
+      upgraded: true,
     });
 
     expect(Git.commitAllChanges).not.toHaveBeenCalled();
@@ -282,6 +284,7 @@ describe('upgradeSkuba in format mode', () => {
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
       ok: true,
       fixable: false,
+      upgraded: true,
     });
 
     expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);

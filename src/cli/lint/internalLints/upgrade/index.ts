@@ -82,11 +82,15 @@ const resolvePatches = async (version: string): Promise<Patches> => {
   throw new Error(`Could not resolve patches for ${version}`);
 };
 
+type UpgradeSkubaResult = InternalLintResult & {
+  upgraded?: boolean;
+};
+
 export const upgradeSkuba = async (
   mode: 'lint' | 'format',
   logger: Logger,
   additionalFlags: string[] = [],
-): Promise<InternalLintResult> => {
+): Promise<UpgradeSkubaResult> => {
   const [currentVersion, manifest, packageManager] = await Promise.all([
     getSkubaVersion(),
     getConsumerManifest(),
@@ -221,5 +225,6 @@ export const upgradeSkuba = async (
   return {
     ok: true,
     fixable: false,
+    upgraded: true,
   };
 };
