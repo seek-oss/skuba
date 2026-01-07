@@ -3,7 +3,6 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 import { SemVer, lt } from 'semver';
 
-import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import {
   getConsumerManifest,
@@ -116,10 +115,6 @@ export const migrateToPnpmConfig: PatchFunction = async ({
   ]);
 
   await installPnpmPlugin(skubaPackageJson);
-
-  // Running install to ensure that our new pnpm config is applied
-  // e.g. hoisting and enabling post build scripts
-  await exec('pnpm', 'install', '--offline');
 
   return {
     result: 'apply',
