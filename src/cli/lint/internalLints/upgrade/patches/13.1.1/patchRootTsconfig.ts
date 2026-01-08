@@ -1,9 +1,13 @@
+
+import path from 'path';
 import { inspect } from 'util';
 
 import json from '@ast-grep/lang-json';
 import { parseAsync, registerDynamicLanguage } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
+
+import { createExec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
@@ -18,6 +22,21 @@ export const patchRootConfig: PatchFunction = async ({
       result: 'skip',
       reason: 'no root tsconfig.json found',
     };
+  }
+
+  // @ast-grep/json requires a postinstall step to build the native bindings
+  // which may not have run in alpine due to pnpm not trusting scripts by default
+  try {
+    const astGrepJsonDir = path.dirname(
+      require.resolve('@ast-grep/lang-json/package.json'),
+    );
+    const exec = createExec({
+      cwd: astGrepJsonDir,
+    })
+    await exec('npm', 'run', 'postinstall');
+  } catch (err) {
+    log.warn('Failed to run @ast-grep/lang-json postinstall step, AST parsing may fail');
+    log.subtle(inspect(err));
   }
 
   registerDynamicLanguage({ json });
