@@ -1,11 +1,9 @@
-
 import path from 'path';
 import { inspect } from 'util';
 
 import json from '@ast-grep/lang-json';
 import { parseAsync, registerDynamicLanguage } from '@ast-grep/napi';
 import fs from 'fs-extra';
-
 
 import { createExec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
@@ -32,10 +30,12 @@ export const patchRootConfig: PatchFunction = async ({
     );
     const exec = createExec({
       cwd: astGrepJsonDir,
-    })
+    });
     await exec('npm', 'run', 'postinstall');
   } catch (err) {
-    log.warn('Failed to run @ast-grep/lang-json postinstall step, AST parsing may fail');
+    log.warn(
+      'Failed to run @ast-grep/lang-json postinstall step, AST parsing may fail',
+    );
     log.subtle(inspect(err));
   }
 
