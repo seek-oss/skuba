@@ -14,7 +14,7 @@ importers:
     dependencies:
       '@ast-grep/lang-json':
         specifier: ^0.0.5
-        version: 0.0.5
+        version: 0.0.5(tree-sitter-cli@0.26.3)
       '@ast-grep/napi':
         specifier: ^0.40.0
         version: 0.40.0
@@ -135,6 +135,9 @@ importers:
       simple-git:
         specifier: ^3.5.0
         version: 3.30.0
+      tree-sitter-cli:
+        specifier: ^0.26.3
+        version: 0.26.3
       ts-dedent:
         specifier: ^2.2.0
         version: 2.2.0
@@ -274,7 +277,7 @@ importers:
     dependencies:
       eslint-config-seek:
         specifier: 15.0.1
-        version: 15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1))
+        version: 15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1))
       eslint-plugin-skuba:
         specifier: workspace:*
         version: link:../eslint-plugin-skuba
@@ -7035,6 +7038,11 @@ packages:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
 
+  tree-sitter-cli@0.26.3:
+    resolution: {integrity: sha512-1VHpmjnTsYJk03HDqzLGn9dmJaLsJ7YeGsnnSudC6XOZu5oasz0GEVOIVCTe6hA01YZJgHd1XGO6XJZe0Sj7tw==}
+    engines: {node: '>=12.0.0'}
+    hasBin: true
+
   trough@2.2.0:
     resolution: {integrity: sha512-tmMpK00BjZiUyVyvrBK7knerNgmgvcV/KLVyuma/SC+TQN167GrMRciANTz09+k3zW8L8t60jWO1GpfkZdjTaw==}
 
@@ -7599,9 +7607,11 @@ packages:
 
 snapshots:
 
-  '@ast-grep/lang-json@0.0.5':
+  '@ast-grep/lang-json@0.0.5(tree-sitter-cli@0.26.3)':
     dependencies:
       '@ast-grep/setup-lang': 0.0.5
+    optionalDependencies:
+      tree-sitter-cli: 0.26.3
 
   '@ast-grep/napi-darwin-arm64@0.40.0':
     optional: true
@@ -10612,6 +10622,24 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)':
+    dependencies:
+      '@eslint-community/regexpp': 4.12.2
+      '@typescript-eslint/parser': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
+      '@typescript-eslint/scope-manager': 8.47.0
+      '@typescript-eslint/type-utils': 8.47.0(eslint@9.39.1)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.47.0(eslint@9.39.1)(typescript@5.9.3)
+      '@typescript-eslint/visitor-keys': 8.47.0
+      eslint: 9.39.1
+      graphemer: 1.4.0
+      ignore: 7.0.5
+      natural-compare: 1.4.0
+      ts-api-utils: 2.1.0(typescript@5.9.3)
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - supports-color
+    optional: true
+
   '@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.47.0
@@ -11943,7 +11971,7 @@ snapshots:
     dependencies:
       eslint: 9.39.1
 
-  eslint-config-seek@15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1)):
+  eslint-config-seek@15.0.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1)):
     dependencies:
       '@vitest/eslint-plugin': 1.5.2(eslint@9.39.1)(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(tsx@4.21.0)(yaml@2.8.1))
       eslint: 9.39.1
@@ -11952,7 +11980,7 @@ snapshots:
       eslint-plugin-cypress: 5.2.0(eslint@9.39.1)
       eslint-plugin-import-x: 4.16.1(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
       eslint-plugin-import-zod: 1.2.1(@typescript-eslint/utils@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
-      eslint-plugin-jest: 29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)
+      eslint-plugin-jest: 29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)
       eslint-plugin-react: 7.37.5(eslint@9.39.1)
       eslint-plugin-react-hooks: 5.2.0(eslint@9.39.1)
       globals: 16.5.0
@@ -12016,12 +12044,12 @@ snapshots:
       '@typescript-eslint/utils': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
       eslint: 9.39.1
 
-  eslint-plugin-jest@29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3):
+  eslint-plugin-jest@29.2.1(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/utils': 8.48.0(eslint@9.39.1)(typescript@5.9.3)
       eslint: 9.39.1
     optionalDependencies:
-      '@typescript-eslint/eslint-plugin': 8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
+      '@typescript-eslint/eslint-plugin': 8.47.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
       jest: 30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3))
     transitivePeerDependencies:
       - supports-color
@@ -15522,6 +15550,8 @@ snapshots:
       tslib: 2.8.1
 
   tree-kill@1.2.2: {}
+
+  tree-sitter-cli@0.26.3: {}
 
   trough@2.2.0: {}
 
