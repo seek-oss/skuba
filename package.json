@@ -118,7 +118,7 @@
     "read-pkg-up": "^7.0.1",
     "semantic-release": "^24.2.3",
     "simple-git": "^3.5.0",
-    "tree-sitter-cli": "^0.26.3",
+    "tree-sitter-cli": "0.25.8",
     "ts-dedent": "^2.2.0",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
