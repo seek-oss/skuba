@@ -74,7 +74,9 @@ const latestSkubaVersion = async (): Promise<string | null> => {
 };
 
 export const getSkubaVersion = async (): Promise<string> => {
-  const { version } = await getSkubaManifest();
+  const {
+    packageJson: { version },
+  } = await getSkubaManifest();
 
   return version;
 };

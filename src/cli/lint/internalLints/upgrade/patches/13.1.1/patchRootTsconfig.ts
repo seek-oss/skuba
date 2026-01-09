@@ -7,6 +7,7 @@ import fs from 'fs-extra';
 
 import { createExec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
+import { getSkubaManifest } from '../../../../../../utils/manifest.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 export const patchRootConfig: PatchFunction = async ({
@@ -25,13 +26,11 @@ export const patchRootConfig: PatchFunction = async ({
   // @ast-grep/json requires a postinstall step to build the native bindings
   // which may not have run in alpine due to pnpm not trusting scripts by default
   try {
-    const astGrepJsonDir = path.dirname(
-      require.resolve('@ast-grep/lang-json/package.json'),
-    );
+    const skubaManifest = await getSkubaManifest();
     const exec = createExec({
-      cwd: astGrepJsonDir,
+      cwd: path.dirname(skubaManifest.path),
     });
-    await exec('npm', 'run', 'postinstall');
+    await exec('node', 'node_modules/@ast-grep/lang-json/postinstall.js');
   } catch (err) {
     log.warn(
       'Failed to run @ast-grep/lang-json postinstall step, AST parsing may fail',
