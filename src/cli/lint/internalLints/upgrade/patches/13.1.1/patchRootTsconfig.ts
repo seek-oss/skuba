@@ -1,13 +1,11 @@
-import path from 'path';
 import { inspect } from 'util';
 
-import json from '@ast-grep/lang-json';
-import { parseAsync, registerDynamicLanguage } from '@ast-grep/napi';
+import { parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
-import { createExec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { installAstGrepJson } from '../../utils/astGrepJson.js';
 
 export const patchRootConfig: PatchFunction = async ({
   mode,
@@ -22,33 +20,9 @@ export const patchRootConfig: PatchFunction = async ({
     };
   }
 
-  // @ast-grep/json requires a postinstall step to build the native bindings
-  // which may not have run in alpine due to pnpm not trusting scripts by default
-  try {
-    const treeSitterCliDir = path.dirname(
-      require.resolve('tree-sitter-cli/package.json'),
-    );
-    const treeSitterExec = createExec({
-      cwd: treeSitterCliDir,
-    });
-    await treeSitterExec('npm', 'run', 'install');
-
-    const astGrepJsonDir = path.dirname(
-      require.resolve('@ast-grep/lang-json/package.json'),
-    );
-    const astGrepExec = createExec({
-      cwd: astGrepJsonDir,
-    });
-    await astGrepExec('npm', 'run', 'postinstall');
-  } catch (err) {
-    log.warn(
-      'Failed to run @ast-grep/lang-json postinstall step, AST parsing may fail',
-    );
-    log.subtle(inspect(err));
-  }
-
-  registerDynamicLanguage({ json });
+  await installAstGrepJson();
   const tsconfig = await parseAsync('json', tsconfigFile);
+
   const ast = tsconfig.root();
 
   const compilerOptionsObj = ast.find({
