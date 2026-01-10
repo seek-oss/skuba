@@ -31,7 +31,7 @@ export const patchRootConfig: PatchFunction = async ({
     const treeSitterExec = createExec({
       cwd: treeSitterCliDir,
     });
-    await treeSitterExec('node', 'run', 'install');
+    await treeSitterExec('npm', 'run', 'install');
 
     const astGrepJsonDir = path.dirname(
       require.resolve('@ast-grep/lang-json/package.json'),
@@ -39,7 +39,7 @@ export const patchRootConfig: PatchFunction = async ({
     const astGrepExec = createExec({
       cwd: astGrepJsonDir,
     });
-    await astGrepExec('node', 'run', 'postinstall');
+    await astGrepExec('npm', 'run', 'postinstall');
   } catch (err) {
     log.warn(
       'Failed to run @ast-grep/lang-json postinstall step, AST parsing may fail',
