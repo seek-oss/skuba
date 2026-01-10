@@ -1,7 +1,6 @@
 import { inspect } from 'util';
 
-import json from '@ast-grep/lang-json';
-import { parseAsync, registerDynamicLanguage } from '@ast-grep/napi';
+import { Lang, parse } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -20,11 +19,10 @@ export const patchRootConfig: PatchFunction = async ({
     };
   }
 
-  registerDynamicLanguage({ json });
-  const tsconfig = await parseAsync('json', tsconfigFile);
-  const ast = tsconfig.root();
+  const ast = parse(Lang.JavaScript, tsconfigFile);
+  const root = ast.root();
 
-  const compilerOptionsObj = ast.find({
+  const compilerOptionsObj = root.find({
     rule: {
       pattern: {
         context: '{"compilerOptions":}',
@@ -34,7 +32,7 @@ export const patchRootConfig: PatchFunction = async ({
   });
 
   if (!compilerOptionsObj) {
-    const startingBracket = ast.find({ rule: { pattern: '{' } });
+    const startingBracket = root.find({ rule: { pattern: '{' } });
 
     if (!startingBracket) {
       return {
@@ -50,7 +48,7 @@ export const patchRootConfig: PatchFunction = async ({
   },`,
     );
 
-    const newSource = ast.commitEdits([edit]);
+    const newSource = root.commitEdits([edit]);
 
     if (mode === 'lint') {
       return {
@@ -90,7 +88,7 @@ export const patchRootConfig: PatchFunction = async ({
   const edit = compilerOptionsStart.replace(`{
     "rootDir": ".",`);
 
-  const newSource = ast.commitEdits([edit]);
+  const newSource = root.commitEdits([edit]);
 
   if (mode === 'lint') {
     return {
