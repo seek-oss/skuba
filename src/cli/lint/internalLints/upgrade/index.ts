@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import type { ReadResult } from 'read-pkg-up';
 import { gte, sort } from 'semver';
 
-import type { Logger } from '../../../../utils/logging.js';
+import { type Logger, log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
 import {
   type PackageManagerConfig,
@@ -13,7 +13,10 @@ import {
 import { getSkubaVersion } from '../../../../utils/version.js';
 import { formatPackage } from '../../../configure/processing/package.js';
 import type { SkubaPackageJson } from '../../../init/writePackageJson.js';
+import { getIgnores, shouldCommit } from '../../autofix.js';
 import type { InternalLintResult } from '../../internal.js';
+
+import { Git } from '@skuba-lib/api';
 
 export type Patches = Patch[];
 export type Patch = {
@@ -33,7 +36,9 @@ export type PatchConfig = {
 
 export type PatchFunction = (config: PatchConfig) => Promise<PatchReturnType>;
 
-const getPatches = async (manifestVersion: string): Promise<Patches> => {
+const getPatches = async (
+  manifestVersion: string,
+): Promise<Map<string, Patches>> => {
   const patches = await fs.readdir(path.join(__dirname, 'patches'), {
     withFileTypes: true,
   });
@@ -51,7 +56,14 @@ const getPatches = async (manifestVersion: string): Promise<Patches> => {
     ),
   );
 
-  return (await Promise.all(patchesForVersion.map(resolvePatches))).flat();
+  return new Map<string, Patches>(
+    await Promise.all(
+      patchesForVersion.map(async (version) => {
+        const resolved = await resolvePatches(version);
+        return [version, resolved] as const;
+      }),
+    ),
+  );
 };
 
 const fileExtensions = ['js', 'ts'];
@@ -98,13 +110,14 @@ export const upgradeSkuba = async (
 
   const patches = await getPatches(manifestVersion);
   // No patches to apply even if version out of date. Early exit to avoid unnecessary commits.
-  if (patches.length === 0) {
+  if (patches.size === 0) {
     return { ok: true, fixable: false };
   }
 
   if (mode === 'lint') {
+    const allPatches = Array.from(patches.values()).flat();
     const results = await Promise.all(
-      patches.map(
+      allPatches.map(
         async ({ apply }) =>
           await apply({
             mode,
@@ -141,22 +154,52 @@ export const upgradeSkuba = async (
 
   logger.plain('Updating skuba...');
 
+  const dir = process.cwd();
+  let currentBranch;
+  try {
+    currentBranch = await Git.currentBranch({ dir });
+  } catch {}
+
+  const shouldCommitChanges = await shouldCommit({ currentBranch, dir });
+
   // Run these in series in case a subsequent patch relies on a previous patch
-  for (const { apply, description } of patches) {
-    const result = await apply({
-      mode,
-      manifest,
-      packageManager,
-    });
-    logger.newline();
-    if (result.result === 'skip') {
-      logger.plain(
-        `Patch skipped: ${description}${
-          result.reason ? ` - ${result.reason}` : ''
-        }`,
-      );
-    } else {
-      logger.plain(`Patch applied: ${description}`);
+  for (const version of patches.keys()) {
+    const patchesForVersion = patches.get(version);
+    if (!patchesForVersion) {
+      continue;
+    }
+
+    for (const { apply, description } of patchesForVersion) {
+      const result = await apply({
+        mode,
+        manifest,
+        packageManager,
+      });
+      logger.newline();
+      if (result.result === 'skip') {
+        logger.plain(
+          `Patch skipped: ${description}${
+            result.reason ? ` - ${result.reason}` : ''
+          }`,
+        );
+      } else {
+        logger.plain(`Patch applied: ${description}`);
+      }
+    }
+
+    if (shouldCommitChanges) {
+      // Only commit changes here, each version should have a separate commit and they should all be pushed together at the end
+      const ref = await Git.commitAllChanges({
+        dir,
+        message: `Apply skuba ${version} patches`,
+
+        ignore: await getIgnores(dir),
+      });
+
+      if (!ref) {
+        log.warn('No autofixes detected.');
+        return { ok: true, fixable: false };
+      }
     }
   }
 

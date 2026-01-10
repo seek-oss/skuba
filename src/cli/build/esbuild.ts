@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import { TsconfigPathsPlugin } from '@esbuild-plugins/tsconfig-paths';
-import { build } from 'esbuild';
+import { type BuildOptions, build } from 'esbuild';
 import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
 
 import { createLogger } from '../../utils/logging.js';
@@ -9,13 +9,26 @@ import { createLogger } from '../../utils/logging.js';
 import { parseTscArgs } from './args.js';
 import { getCustomConditions, readTsBuildConfig, tsc } from './tsc.js';
 
-interface EsbuildParameters {
+export type EsbuildConfig = Pick<
+  BuildOptions,
+  'external' | 'minify' | 'bundle' | 'splitting' | 'treeShaking'
+>;
+
+interface EsbuildParameters extends EsbuildConfig {
   debug: boolean;
   type: string | undefined;
 }
 
 export const esbuild = async (
-  { debug, type }: EsbuildParameters,
+  {
+    debug,
+    type,
+    external,
+    bundle,
+    minify,
+    splitting,
+    treeShaking,
+  }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
   const log = createLogger({ debug });
@@ -49,14 +62,23 @@ export const esbuild = async (
 
   const start = process.hrtime.bigint();
 
-  // TODO: support `bundle`, `minify`, `splitting`, `treeShaking`
-  const bundle = false;
-
   const isEsm =
     compilerOptions.module !== ModuleKind.CommonJS && type === 'module';
 
+  const canSplit = bundle && isEsm && Boolean(compilerOptions.outDir);
+
+  if (splitting && !canSplit) {
+    throw new Error(
+      'Splitting requires bundling to be enabled, ESM output format, and outDir to be configured',
+    );
+  }
+
   await build({
     bundle,
+    minify: bundle && minify,
+    splitting: canSplit && splitting,
+    treeShaking: bundle && treeShaking,
+    external,
     entryPoints,
     format: !isEsm ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
