@@ -408,8 +408,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(koa@3.1.1)
       '@koa/router':
-        specifier: 15.0.0
-        version: 15.0.0
+        specifier: 15.2.0
+        version: 15.2.0(koa@3.1.1)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -1780,9 +1780,11 @@ packages:
     peerDependencies:
       koa: '>=2'
 
-  '@koa/router@15.0.0':
-    resolution: {integrity: sha512-qAoA07CndM5XuBZbTbsnvUj1RNVZtwOvO9xGz7CCE/t4nSopI+xEiFGHyJS1UuSDCt8cJZ9vfCvqbAFga+0y7w==}
+  '@koa/router@15.2.0':
+    resolution: {integrity: sha512-7YUhq4W83cybfNa4E7JqJpWzoCTSvbnFltkvRaUaUX1ybFzlUoLNY1SqT8XmIAO6nGbFrev+FvJHw4mL+4WhuQ==}
     engines: {node: '>= 20'}
+    peerDependencies:
+      koa: ^2.0.0 || ^3.0.0
 
   '@kwsites/file-exists@1.1.1':
     resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
@@ -9241,10 +9243,11 @@ snapshots:
       lodash.merge: 4.6.2
       type-is: 2.0.1
 
-  '@koa/router@15.0.0':
+  '@koa/router@15.2.0(koa@3.1.1)':
     dependencies:
       debug: 4.4.3
       http-errors: 2.0.1
+      koa: 3.1.1
       koa-compose: 4.1.0
       path-to-regexp: 8.3.0
     transitivePeerDependencies:
