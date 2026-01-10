@@ -1,17 +1,14 @@
-import { styleText } from 'node:util';
 import path from 'path';
 
 import fs from 'fs-extra';
 
 import { copyFile } from '../../utils/copy.js';
 import { buildPatternToFilepathMap, crawlDirectory } from '../../utils/dir.js';
-import { type Logger, createLogger, log } from '../../utils/logging.js';
+import { type Logger, log } from '../../utils/logging.js';
 import {
   getEntryPointFromManifest,
   getManifestProperties,
 } from '../../utils/manifest.js';
-
-type StyleColor = Parameters<typeof styleText>[0];
 
 export const copyAssets = async (
   destinationDir: string,
@@ -59,30 +56,5 @@ export const copyAssets = async (
         { processors: [] },
       );
     }),
-  );
-};
-
-interface CopyAssetsConfig {
-  outDir: string;
-  name: string;
-  prefixColor: StyleColor;
-}
-
-export const copyAssetsConcurrently = async (configs: CopyAssetsConfig[]) => {
-  const maxNameLength = configs.reduce(
-    (length, command) => Math.max(length, command.name.length),
-    0,
-  );
-
-  await Promise.all(
-    configs.map(async ({ outDir, name, prefixColor }) =>
-      copyAssets(
-        outDir,
-        createLogger({
-          debug: false,
-          prefixes: [styleText(prefixColor, `${name.padEnd(maxNameLength)} │`)],
-        }),
-      ),
-    ),
   );
 };
