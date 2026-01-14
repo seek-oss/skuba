@@ -20,7 +20,11 @@
     },
     {
       matchManagers: ['npm'],
-      matchPackageNames: ['type-fest', 'serverless'],
+      matchPackageNames: [
+        // Incompatible with read-pkg-up@7
+        'type-fest',
+        'serverless'
+      ],
       matchUpdateTypes: ['major'],
       enabled: false,
     },
@@ -31,6 +35,7 @@
     },
     {
       matchManagers: ['npm'],
+      // Should be synchronised with AWS Lambda runtimes and Docker images
       matchPackageNames: ['@types/node'],
       matchFileNames: ['template/**'],
       enabled: false,
@@ -118,6 +123,7 @@
     {
       customType: 'regex',
       managerFilePatterns: ['/docs\\/.*\\.md$/'],
+      // (\\s|\\n) allows us to use the non breaking space to prefix plugins in diffs which we don't want Renovate to touch
       matchStrings: [
         '(\\s|\\n)(?<depName>[a-zA-Z0-9\\/_\\.\\-]+)#(?<currentValue>v[^:]+)',
       ],
