@@ -196,6 +196,21 @@ describe('nodeVersionMigration', () => {
       },
     },
     {
+      scenario: 'snapshot files with runtime',
+      filesBefore: {
+        'infra/__snapshots__/appStack.test.ts.snap':
+          'exports[`test 1`] = `\n{\n  "Resources": {\n    "worker28EA3E30": {\n      "Properties": {\n        "Runtime": "nodejs18.x",\n        "Handler": "index.handler"\n      }\n    }\n  }\n}\n`;',
+        'src/__snapshots__/lambda.test.ts.snap':
+          '// Jest Snapshot v1\n\nexports[`lambda config 1`] = `\n{\n  "Runtime": "nodejs20.x",\n  "MemorySize": 512\n}\n`;',
+      },
+      filesAfter: {
+        'infra/__snapshots__/appStack.test.ts.snap':
+          'exports[`test 1`] = `\n{\n  "Resources": {\n    "worker28EA3E30": {\n      "Properties": {\n        "Runtime": "nodejs24.x",\n        "Handler": "index.handler"\n      }\n    }\n  }\n}\n`;',
+        'src/__snapshots__/lambda.test.ts.snap':
+          '// Jest Snapshot v1\n\nexports[`lambda config 1`] = `\n{\n  "Runtime": "nodejs24.x",\n  "MemorySize": 512\n}\n`;',
+      },
+    },
+    {
       scenario: 'monorepo with api and package',
       filesBefore: {
         'package.json': JSON.stringify({
