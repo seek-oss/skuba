@@ -72,9 +72,9 @@ The migration will attempt to proceed if your project:
   On the other hand, you may wish to use recent language features when authoring your npm packages while retaining support for package consumers on older Node.js runtimes.
   In this scenario, see the note below on transpilation for npm packages.
 
-As of **skuba** 14, for npm packages, we will attempt to upgrade your targets to be 2 major versions behind the current LTS Node.js version.
+As of **skuba** 14, for npm packages, we will attempt to upgrade your targets to be 1 major version behind the current LTS Node.js version.
 
-For example, when upgrading a project to Node.js 24, we will upgrade npm packages to target Node.js 20.
+For example, when upgrading a project to Node.js 24, we will upgrade npm packages to target Node.js 22.
 
 To ensure accurate detection of npm packages, set the `skuba.type` field in your `package.json` to `package` for npm packages and `application` for applications.
 
@@ -128,7 +128,7 @@ As of **skuba** 14, `skuba migrate` attempts to upgrade underlying infrastructur
 
 ### skuba migrate node24
 
-Attempts to automatically upgrade your project to Node.js 24 and your package targets to Node.js 20.
+Attempts to automatically upgrade your project to Node.js 24 and your package targets to Node.js 22.14.0+.
 
 ```shell
 skuba migrate node24
