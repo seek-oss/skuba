@@ -23,7 +23,7 @@ export const migrations = {
     nodeVersionMigration({
       nodeVersion: '24',
       ECMAScriptVersion: 'ES2024',
-      packageNodeVersion: '20',
+      packageNodeVersion: '22.14.0',
       packageECMAScriptVersion: 'ES2023',
       infraPackages: [
         {
