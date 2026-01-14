@@ -78,7 +78,7 @@
   },
   "dependencies": {
     "@ast-grep/lang-json": "^0.0.6",
-    "@ast-grep/napi": "^0.40.0",
+    "@ast-grep/napi": "^0.40.5",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@inquirer/prompts": "^7.9.0",
     "@jest/types": "^30.0.0",
