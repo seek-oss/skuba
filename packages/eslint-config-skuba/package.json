@@ -28,7 +28,7 @@
     "skuba": "node ../../lib/skuba"
   },
   "dependencies": {
-    "eslint-config-seek": "15.0.1",
+    "eslint-config-seek": "15.0.4",
     "eslint-plugin-skuba": "workspace:*",
     "eslint-plugin-yml": "^1.14.0",
     "typescript-eslint": "^8.39.0"
