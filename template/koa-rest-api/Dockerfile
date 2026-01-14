@@ -12,7 +12,7 @@ RUN CI=true pnpm install --offline --prod
 
 ###
 
-FROM gcr.io/distroless/nodejs24-debian12 AS runtime
+FROM gcr.io/distroless/nodejs24-debian13 AS runtime
 
 WORKDIR /workdir
 
