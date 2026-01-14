@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@ast-grep/lang-json':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: ^0.0.6
+        version: 0.0.6
       '@ast-grep/napi':
         specifier: ^0.40.0
         version: 0.40.0
@@ -559,8 +559,8 @@ importers:
 
 packages:
 
-  '@ast-grep/lang-json@0.0.5':
-    resolution: {integrity: sha512-pA+QNncxNFIGzL1VIqZCYTkOIcdNInOr+z37/ch31qvFjxyOsvkQkgjeQLKHkYfN+1bF7m5AZS6aE1CvG2dZjw==}
+  '@ast-grep/lang-json@0.0.6':
+    resolution: {integrity: sha512-xb4OXtyuyY9RqUs5Af4Jb5hAJcBD0hGD1rJSQm1chJqdWOjhM6G7V2vHLx6B8M9uXuTBnaNs4U4OccMp+e95JQ==}
     peerDependencies:
       tree-sitter-cli: 0.25.8
     peerDependenciesMeta:
@@ -629,8 +629,8 @@ packages:
     resolution: {integrity: sha512-tq6nO/8KwUF/mHuk1ECaAOSOlz2OB/PmygnvprJzyAHGRVzdcffblaOOWe90M9sGz5MAasXoF+PTcayQj9TKKA==}
     engines: {node: '>= 10'}
 
-  '@ast-grep/setup-lang@0.0.5':
-    resolution: {integrity: sha512-DQdS6xaNtkqbrw6vblY2vOzfYCIj12261IE0e9pG3lx5ll+hFaXH+01UXXPkhMVHX6AGMrwVCzawEmFmko/DIQ==}
+  '@ast-grep/setup-lang@0.0.6':
+    resolution: {integrity: sha512-aSYZNF5nGQMxnwiA3Lcc8zi0AtpGlug47ADgqCgP/2n7p922FbnW7vo1rbW4kKjW72B/3mDdN7uvYidv8JnPnw==}
 
   '@aws-cdk/asset-awscli-v1@2.2.242':
     resolution: {integrity: sha512-4c1bAy2ISzcdKXYS1k4HYZsNrgiwbiDzj36ybwFVxEWZXVAP0dimQTCaB9fxu7sWzEjw3d+eaw6Fon+QTfTIpQ==}
@@ -7599,9 +7599,9 @@ packages:
 
 snapshots:
 
-  '@ast-grep/lang-json@0.0.5':
+  '@ast-grep/lang-json@0.0.6':
     dependencies:
-      '@ast-grep/setup-lang': 0.0.5
+      '@ast-grep/setup-lang': 0.0.6
 
   '@ast-grep/napi-darwin-arm64@0.40.0':
     optional: true
@@ -7642,7 +7642,7 @@ snapshots:
       '@ast-grep/napi-win32-ia32-msvc': 0.40.0
       '@ast-grep/napi-win32-x64-msvc': 0.40.0
 
-  '@ast-grep/setup-lang@0.0.5': {}
+  '@ast-grep/setup-lang@0.0.6': {}
 
   '@aws-cdk/asset-awscli-v1@2.2.242': {}
 
