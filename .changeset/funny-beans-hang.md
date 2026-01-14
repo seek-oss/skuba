@@ -14,7 +14,7 @@ Changes must be manually reviewed by an engineer before committing the migration
 
 **skuba** may not be able to upgrade all projects. Check your project for files that may have been missed, review and test the modified code as appropriate before releasing to production, and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
 
-Node.js 22 includes breaking changes. For more information on the upgrade, refer to:
+Node.js 24 includes breaking changes. For more information on the upgrade, refer to:
 
 - The [Node.js release notes](https://nodejs.org/en/blog/release/v24.0.0)
 - The AWS [release announcement](https://aws.amazon.com/blogs/compute/node-js-24-runtime-now-available-in-aws-lambda/) for the Lambda `nodejs24.x` runtime update
