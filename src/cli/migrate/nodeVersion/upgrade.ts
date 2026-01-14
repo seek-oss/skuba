@@ -20,11 +20,19 @@ const normalizeVersionRange = (
   newVersion: string,
 ): string => {
   if (currentVersion.startsWith('^')) {
-    return `^${newVersion}`;
+    const coercedCurrent = coerce(currentVersion);
+    if (coercedCurrent && lt(coercedCurrent, newVersion)) {
+      return `^${newVersion}`;
+    }
+    return currentVersion;
   }
 
   if (currentVersion.startsWith('~')) {
-    return `~${newVersion}`;
+    const coercedCurrent = coerce(currentVersion);
+    if (coercedCurrent && lt(coercedCurrent, newVersion)) {
+      return `~${newVersion}`;
+    }
+    return currentVersion;
   }
 
   // >=1.2.3, >1.2.3, <=1.2.3, <1.2.3

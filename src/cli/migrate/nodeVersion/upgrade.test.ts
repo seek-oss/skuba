@@ -235,6 +235,47 @@ catalogs:
     });
   });
 
+  it('should avoid updating packages with ^ and ~ versions which are up to date', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '^2.232.1',
+          serverless: '~4.26.0',
+          osls: '3.0.0',
+        },
+      }),
+    });
+
+    await expect(
+      upgradeInfraPackages('format', [
+        {
+          name: 'aws-cdk-lib',
+          version: '2.224.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.25.0',
+        },
+        {
+          name: 'osls',
+          version: '3.61.0',
+        },
+      ]),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '^2.232.1',
+          serverless: '~4.26.0',
+          osls: '3.61.0',
+        },
+      }),
+    });
+  });
+
   it('should handle ^ and ~ prefixes when updating versions', async () => {
     vol.fromJSON({
       'package.json': JSON.stringify({
