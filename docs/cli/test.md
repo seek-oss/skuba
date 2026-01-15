@@ -35,17 +35,8 @@ for example, the display name `integration` will result in the title `skuba/test
 
 See our [Jest guide] for a more detailed configuration breakdown.
 
-### Automatic upgrades
-
-When running in CI environments, `skuba test` will automatically attempt to upgrade skuba itself before running tests.
-This ensures that the latest [patches] are applied to your codebase without requiring manual intervention.
-
-Ensure sure you have [GitHub autofixes] enabled to automatically commit and push these changes.
-
 [buildkite annotations]: ../deep-dives/buildkite.md#buildkite-annotations
 [displayname]: https://jestjs.io/docs/configuration#displayname-string-object
 [github annotations]: ../deep-dives/github.md#github-annotations
-[github autofixes]: ../deep-dives/github.md#github-autofixes
 [jest]: https://jestjs.io
 [jest guide]: ../deep-dives/jest.md
-[patches]: lint.md#patches
