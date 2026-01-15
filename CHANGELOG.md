@@ -1,5 +1,11 @@
 # skuba
 
+## 14.0.1
+
+### Patch Changes
+
+- **test:** Revert upgrade skuba in CI environments ([#2208](https://github.com/seek-oss/skuba/pull/2208))
+
 ## 14.0.0
 
 ### Major Changes
