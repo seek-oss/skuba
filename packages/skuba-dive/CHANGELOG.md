@@ -1,5 +1,11 @@
 # skuba-dive
 
+## 4.0.1
+
+### Patch Changes
+
+- Fix build output ([#2210](https://github.com/seek-oss/skuba/pull/2210))
+
 ## 4.0.0
 
 ### Major Changes
