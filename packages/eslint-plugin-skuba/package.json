@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-skuba",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "private": false,
   "description": "ESLint plugin for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-plugin-skuba#readme",
@@ -72,6 +72,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "13.0.0"
+    "version": "14.0.0"
   }
 }

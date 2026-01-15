@@ -1,5 +1,11 @@
 # @skuba-lib/api
 
+## 2.0.0
+
+### Major Changes
+
+- **deps:** Require Node.js 22.14.0+ ([#2165](https://github.com/seek-oss/skuba/pull/2165))
+
 ## 1.0.1
 
 ### Patch Changes
