@@ -24,7 +24,7 @@
     "@aws-sdk/client-sns": "^3.363.0",
     "@seek/aws-codedeploy-hooks": "^2.0.0",
     "@seek/logger": "^11.1.0",
-    "skuba-dive": "^3.0.0",
+    "skuba-dive": "^4.0.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {
