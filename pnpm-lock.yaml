@@ -12,6 +12,9 @@ importers:
 
   .:
     dependencies:
+      '@arethetypeswrong/core':
+        specifier: ^0.18.1
+        version: 0.18.1
       '@ast-grep/lang-json':
         specifier: ^0.0.6
         version: 0.0.6
@@ -48,6 +51,9 @@ importers:
       '@types/node':
         specifier: ^24.10.2
         version: 24.10.3
+      '@vitejs/devtools':
+        specifier: 0.0.0-alpha.24
+        version: 0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))
       concurrently:
         specifier: ^9.0.0
         version: 9.2.1
@@ -126,6 +132,9 @@ importers:
       prettier-plugin-packagejson:
         specifier: ^2.4.10
         version: 2.5.20(prettier@3.7.3)
+      publint:
+        specifier: ^0.3.0
+        version: 0.3.16
       read-pkg-up:
         specifier: ^7.0.1
         version: 7.0.1
@@ -152,20 +161,23 @@ importers:
         version: 2.0.0
       tsdown:
         specifier: ~0.18.0
-        version: 0.18.4(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.0)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0)
+        version: 0.18.4(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.16)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0)
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
       typescript:
-        specifier: ~5.9.0
+        specifier: ^5.0.0
         version: 5.9.3
+      unplugin-lightningcss:
+        specifier: ^0.4.0
+        version: 0.4.0
+      unplugin-unused:
+        specifier: ^0.5.0
+        version: 0.5.0
       zod:
         specifier: ^4.0.0
         version: 4.1.13
     devDependencies:
-      '@arethetypeswrong/core':
-        specifier: 0.18.1
-        version: 0.18.1
       '@changesets/cli':
         specifier: 2.29.8
         version: 2.29.8(@types/node@24.10.3)
@@ -214,9 +226,6 @@ importers:
       '@types/supertest':
         specifier: 6.0.3
         version: 6.0.3
-      '@vitejs/devtools':
-        specifier: 0.0.0-alpha.24
-        version: 0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))
       enhanced-resolve:
         specifier: 5.18.4
         version: 5.18.4
@@ -238,9 +247,6 @@ importers:
       memfs:
         specifier: 4.51.1
         version: 4.51.1
-      publint:
-        specifier: 0.3.0
-        version: 0.3.0
       remark-cli:
         specifier: 12.0.1
         version: 12.0.1
@@ -256,12 +262,6 @@ importers:
       type-fest:
         specifier: 2.19.0
         version: 2.19.0
-      unplugin-lightningcss:
-        specifier: 0.4.0
-        version: 0.4.0
-      unplugin-unused:
-        specifier: 0.5.0
-        version: 0.5.0
 
   packages/api:
     dependencies:
@@ -286,13 +286,13 @@ importers:
     devDependencies:
       tsdown:
         specifier: ^0.19.0
-        version: 0.19.0(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.16)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0)
+        version: 0.19.0(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.16)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0)
 
   packages/eslint-config-skuba:
     dependencies:
       eslint-config-seek:
         specifier: 15.0.4
-        version: 15.0.4(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))
+        version: 15.0.4(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))
       eslint-plugin-skuba:
         specifier: workspace:*
         version: link:../eslint-plugin-skuba
@@ -324,7 +324,7 @@ importers:
         version: 9.39.1(jiti@2.6.1)
       tsdown:
         specifier: ^0.19.0
-        version: 0.19.0(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.16)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0)
+        version: 0.19.0(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.16)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0)
       tsx:
         specifier: ^4.16.2
         version: 4.21.0
@@ -347,7 +347,7 @@ importers:
         version: 1.17.2(@types/express@5.0.6)(@types/node@24.10.3)
       vitest:
         specifier: ^4.0.14
-        version: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
 
   template/express-rest-api:
     dependencies:
@@ -552,7 +552,7 @@ importers:
         version: 4.1.0
       aws-sdk-client-mock-jest:
         specifier: ^4.0.0
-        version: 4.1.0(aws-sdk-client-mock@4.1.0)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))
+        version: 4.1.0(aws-sdk-client-mock@4.1.0)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))
       chance:
         specifier: ^1.1.8
         version: 1.1.13
@@ -1766,6 +1766,9 @@ packages:
   '@jridgewell/resolve-uri@3.1.2':
     resolution: {integrity: sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==}
     engines: {node: '>=6.0.0'}
+
+  '@jridgewell/source-map@0.3.11':
+    resolution: {integrity: sha512-ZMp1V8ZFcPG5dIWnQLr3NSI1MiCU7UETdS/A0G8V/XWHvJv3ZsFqutJn1Y5RPmAPX6F3BiE397OqveU/9NCuIA==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -6743,11 +6746,6 @@ packages:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
 
-  publint@0.3.0:
-    resolution: {integrity: sha512-B7efom03c86OGqN1Jp2mDduiamb5apEuolvlbUeHaa14geCzJKz35oPIiKoXPMvM3tGABEZ1oLfY6xJNvOh69g==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   publint@0.3.16:
     resolution: {integrity: sha512-MFqyfRLAExPVZdTQFwkAQELzA8idyXzROVOytg6nEJ/GEypXBUmMGrVaID8cTuzRS1U5L8yTOdOJtMXgFUJAeA==}
     engines: {node: '>=18'}
@@ -7270,6 +7268,9 @@ packages:
   source-map-support@0.5.13:
     resolution: {integrity: sha512-SHSKFHadjVA5oR4PPqhtAVdcBWwRYVd6g6cAXnIbRiIwc2EhPrTuKUBdSLvlEKyIP3GCf89fltvcZiP9MMFA1w==}
 
+  source-map-support@0.5.21:
+    resolution: {integrity: sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==}
+
   source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
@@ -7513,6 +7514,11 @@ packages:
   term-size@2.2.1:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
     engines: {node: '>=8'}
+
+  terser@5.44.1:
+    resolution: {integrity: sha512-t/R3R/n0MSwnnazuPpPNVO60LX0SKL45pyl9YlvxIdkH0Of7D5qM2EVe+yASRIlY5pZ73nclYJfNANGWPwFDZw==}
+    engines: {node: '>=10'}
+    hasBin: true
 
   test-exclude@6.0.0:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
@@ -9973,6 +9979,12 @@ snapshots:
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
+  '@jridgewell/source-map@0.3.11':
+    dependencies:
+      '@jridgewell/gen-mapping': 0.3.13
+      '@jridgewell/trace-mapping': 0.3.31
+    optional: true
+
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
   '@jridgewell/trace-mapping@0.3.31':
@@ -11727,13 +11739,13 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@vitejs/devtools-kit@0.0.0-alpha.24(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(ws@8.19.0)':
+  '@vitejs/devtools-kit@0.0.0-alpha.24(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(ws@8.19.0)':
     dependencies:
       '@vitejs/devtools-rpc': 0.0.0-alpha.24(ws@8.19.0)
       birpc: 4.0.0
       birpc-x: 0.0.6
       immer: 11.1.3
-      vite: 7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
+      vite: 7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
     transitivePeerDependencies:
       - ws
 
@@ -11744,12 +11756,12 @@ snapshots:
     optionalDependencies:
       ws: 8.19.0
 
-  '@vitejs/devtools-vite@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))':
+  '@vitejs/devtools-vite@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))':
     dependencies:
       '@floating-ui/dom': 1.7.4
       '@pnpm/read-project-manifest': 1001.2.3(@pnpm/logger@1001.0.1)
       '@rolldown/debug': 1.0.0-beta.9-commit.d91dfb5
-      '@vitejs/devtools-kit': 0.0.0-alpha.24(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(ws@8.19.0)
+      '@vitejs/devtools-kit': 0.0.0-alpha.24(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(ws@8.19.0)
       '@vitejs/devtools-rpc': 0.0.0-alpha.24(ws@8.19.0)
       ansis: 4.2.0
       birpc: 4.0.0
@@ -11798,11 +11810,11 @@ snapshots:
       - vite
       - vue
 
-  '@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))':
+  '@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))':
     dependencies:
-      '@vitejs/devtools-kit': 0.0.0-alpha.24(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(ws@8.19.0)
+      '@vitejs/devtools-kit': 0.0.0-alpha.24(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(ws@8.19.0)
       '@vitejs/devtools-rpc': 0.0.0-alpha.24(ws@8.19.0)
-      '@vitejs/devtools-vite': 0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))
+      '@vitejs/devtools-vite': 0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))
       birpc: 4.0.0
       birpc-x: 0.0.6
       cac: 6.7.14
@@ -11815,7 +11827,7 @@ snapshots:
       perfect-debounce: 2.0.0
       sirv: 3.0.2
       tinyexec: 1.0.2
-      vite: 7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
+      vite: 7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
       ws: 8.19.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -11842,14 +11854,14 @@ snapshots:
       - utf-8-validate
       - vue
 
-  '@vitest/eslint-plugin@1.5.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))':
+  '@vitest/eslint-plugin@1.5.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))':
     dependencies:
       '@typescript-eslint/scope-manager': 8.48.0
       '@typescript-eslint/utils': 8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.1(jiti@2.6.1)
     optionalDependencies:
       typescript: 5.9.3
-      vitest: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
+      vitest: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -11871,13 +11883,13 @@ snapshots:
       chai: 6.2.1
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.15(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))':
+  '@vitest/mocker@4.0.15(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))':
     dependencies:
       '@vitest/spy': 4.0.15
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
+      vite: 7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
 
   '@vitest/pretty-format@4.0.14':
     dependencies:
@@ -12168,14 +12180,14 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.2
 
-  aws-sdk-client-mock-jest@4.1.0(aws-sdk-client-mock@4.1.0)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)):
+  aws-sdk-client-mock-jest@4.1.0(aws-sdk-client-mock@4.1.0)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)):
     dependencies:
       '@vitest/expect': 4.0.14
       aws-sdk-client-mock: 4.1.0
       expect: 30.2.0
       tslib: 2.8.1
     optionalDependencies:
-      vitest: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
+      vitest: 4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
 
   aws-sdk-client-mock@4.1.0:
     dependencies:
@@ -13061,9 +13073,9 @@ snapshots:
     dependencies:
       eslint: 9.39.1(jiti@2.6.1)
 
-  eslint-config-seek@15.0.4(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)):
+  eslint-config-seek@15.0.4(@typescript-eslint/eslint-plugin@8.47.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(jest@30.2.0(@types/node@24.10.3)(ts-node@10.9.2(@types/node@24.10.3)(typescript@5.9.3)))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)):
     dependencies:
-      '@vitest/eslint-plugin': 1.5.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))
+      '@vitest/eslint-plugin': 1.5.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))
       eslint: 9.39.1(jiti@2.6.1)
       eslint-config-prettier: 10.1.8(eslint@9.39.1(jiti@2.6.1))
       eslint-import-resolver-typescript: 4.4.4(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))
@@ -15763,13 +15775,6 @@ snapshots:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
 
-  publint@0.3.0:
-    dependencies:
-      '@publint/pack': 0.1.2
-      package-manager-detector: 0.2.11
-      picocolors: 1.1.1
-      sade: 1.8.1
-
   publint@0.3.16:
     dependencies:
       '@publint/pack': 0.1.2
@@ -16578,6 +16583,12 @@ snapshots:
       buffer-from: 1.1.2
       source-map: 0.6.1
 
+  source-map-support@0.5.21:
+    dependencies:
+      buffer-from: 1.1.2
+      source-map: 0.6.1
+    optional: true
+
   source-map@0.6.1: {}
 
   source-map@0.7.6: {}
@@ -16852,6 +16863,14 @@ snapshots:
 
   term-size@2.2.1: {}
 
+  terser@5.44.1:
+    dependencies:
+      '@jridgewell/source-map': 0.3.11
+      acorn: 8.15.0
+      commander: 2.20.3
+      source-map-support: 0.5.21
+    optional: true
+
   test-exclude@6.0.0:
     dependencies:
       '@istanbuljs/schema': 0.1.3
@@ -16981,7 +17000,7 @@ snapshots:
 
   tsconfig-seek@2.0.0: {}
 
-  tsdown@0.18.4(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.0)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0):
+  tsdown@0.18.4(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.16)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -17001,8 +17020,8 @@ snapshots:
       unrun: 0.2.24(synckit@0.11.11)
     optionalDependencies:
       '@arethetypeswrong/core': 0.18.1
-      '@vitejs/devtools': 0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))
-      publint: 0.3.0
+      '@vitejs/devtools': 0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))
+      publint: 0.3.16
       typescript: 5.9.3
       unplugin-lightningcss: 0.4.0
       unplugin-unused: 0.5.0
@@ -17013,7 +17032,7 @@ snapshots:
       - synckit
       - vue-tsc
 
-  tsdown@0.19.0(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.16)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0):
+  tsdown@0.19.0(@arethetypeswrong/core@0.18.1)(@vitejs/devtools@0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3)))(publint@0.3.16)(synckit@0.11.11)(typescript@5.9.3)(unplugin-lightningcss@0.4.0)(unplugin-unused@0.5.0):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -17033,7 +17052,7 @@ snapshots:
       unrun: 0.2.24(synckit@0.11.11)
     optionalDependencies:
       '@arethetypeswrong/core': 0.18.1
-      '@vitejs/devtools': 0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))
+      '@vitejs/devtools': 0.0.0-alpha.24(@pnpm/logger@1001.0.1)(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.26(typescript@5.9.3))
       publint: 0.3.16
       typescript: 5.9.3
       unplugin-lightningcss: 0.4.0
@@ -17447,7 +17466,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@7.2.6(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1):
+  vite@7.2.6(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
@@ -17460,11 +17479,12 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.2
+      terser: 5.44.1
       tsx: 4.21.0
       yaml: 2.8.1
     optional: true
 
-  vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1):
+  vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
@@ -17477,13 +17497,14 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.2
+      terser: 5.44.1
       tsx: 4.21.0
       yaml: 2.8.1
 
-  vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1):
+  vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.15
-      '@vitest/mocker': 4.0.15(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))
+      '@vitest/mocker': 4.0.15(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))
       '@vitest/pretty-format': 4.0.15
       '@vitest/runner': 4.0.15
       '@vitest/snapshot': 4.0.15
@@ -17500,7 +17521,7 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.2.6(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
+      vite: 7.2.6(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
@@ -17519,10 +17540,10 @@ snapshots:
       - yaml
     optional: true
 
-  vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1):
+  vitest@4.0.15(@opentelemetry/api@1.9.0)(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.15
-      '@vitest/mocker': 4.0.15(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))
+      '@vitest/mocker': 4.0.15(vite@7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))
       '@vitest/pretty-format': 4.0.15
       '@vitest/runner': 4.0.15
       '@vitest/snapshot': 4.0.15
@@ -17539,7 +17560,7 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
+      vite: 7.2.6(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
