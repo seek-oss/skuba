@@ -6,4 +6,5 @@ export default defineConfig({
   exports: true,
   outDir: 'lib',
   dts: true,
+  failOnWarn: false,
 });
