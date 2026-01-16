@@ -1,5 +1,17 @@
 # eslint-config-skuba
 
+## 8.0.0
+
+### Major Changes
+
+- **deps:** Update eslint peer dependency requirement to ^9.22.0 ([#2179](https://github.com/seek-oss/skuba/pull/2179))
+
+- **deps:** Require Node.js 22.14.0+ ([#2165](https://github.com/seek-oss/skuba/pull/2165))
+
+### Minor Changes
+
+- **deps:** eslint-config-seek 15.0.4 ([#2179](https://github.com/seek-oss/skuba/pull/2179))
+
 ## 7.2.1
 
 ### Patch Changes

@@ -20,31 +20,51 @@ const normalizeVersionRange = (
   newVersion: string,
 ): string => {
   if (currentVersion.startsWith('^')) {
-    return `^${newVersion}`;
+    const coercedCurrent = coerce(currentVersion);
+    if (coercedCurrent && lt(coercedCurrent, newVersion)) {
+      return `^${newVersion}`;
+    }
+    return currentVersion;
   }
 
   if (currentVersion.startsWith('~')) {
-    return `~${newVersion}`;
+    const coercedCurrent = coerce(currentVersion);
+    if (coercedCurrent && lt(coercedCurrent, newVersion)) {
+      return `~${newVersion}`;
+    }
+    return currentVersion;
   }
 
-  // >=1.2.3, >1.2.3, <=1.2.3, <1.2.3
-  if (
-    currentVersion.startsWith('>=') ||
-    currentVersion.startsWith('>') ||
-    currentVersion.startsWith('<=') ||
-    currentVersion.startsWith('<')
-  ) {
+  // >=1.2.3, >1.2.3
+  if (currentVersion.startsWith('>=') || currentVersion.startsWith('>')) {
+    const coercedCurrent = coerce(currentVersion);
+    if (coercedCurrent && lt(coercedCurrent, newVersion)) {
+      return `^${newVersion}`;
+    }
+    return currentVersion;
+  }
+
+  // <=1.2.3, <1.2.3 - always convert since they don't guarantee target version
+  if (currentVersion.startsWith('<=') || currentVersion.startsWith('<')) {
     return `^${newVersion}`;
   }
 
   // 1.x, 1.2.x, 1.x.x
   if (currentVersion.includes('x') || currentVersion.includes('X')) {
-    return `^${newVersion}`;
+    const coercedCurrent = coerce(currentVersion);
+    if (coercedCurrent && lt(coercedCurrent, newVersion)) {
+      return `^${newVersion}`;
+    }
+    return currentVersion;
   }
 
   // 1.0.0 - 2.0.0
   if (currentVersion.includes(' - ')) {
-    return `^${newVersion}`;
+    const coercedCurrent = coerce(currentVersion);
+    if (coercedCurrent && lt(coercedCurrent, newVersion)) {
+      return `^${newVersion}`;
+    }
+    return currentVersion;
   }
 
   const coercedCurrent = coerce(currentVersion);
