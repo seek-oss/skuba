@@ -5,6 +5,8 @@
     "outDir": "lib",
     "removeComments": false,
     "target": "ES2023"
+    "skipLibCheck": true,
+    "types": ["node", "jest", "skuba"]
   },
   "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"

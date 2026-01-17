@@ -77,7 +77,6 @@
     ]
   },
   "dependencies": {
-    "@arethetypeswrong/core": "^0.18.1",
     "@ast-grep/lang-json": "^0.0.6",
     "@ast-grep/napi": "^0.40.5",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
@@ -90,7 +89,6 @@
     "@skuba-lib/api": "workspace:^",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.2",
-    "@vitejs/devtools": "0.0.0-alpha.24",
     "concurrently": "^9.0.0",
     "ejs": "^3.1.6",
     "esbuild": "~0.27.0",
@@ -128,9 +126,7 @@
     "tsconfig-seek": "2.0.0",
     "tsdown": "~0.18.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.0.0",
-    "unplugin-lightningcss": "^0.4.0",
-    "unplugin-unused": "^0.5.0",
+    "typescript": "~5.9.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {
