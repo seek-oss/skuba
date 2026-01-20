@@ -68,7 +68,7 @@ export const patchBuildConfig: PatchFunction = async ({
         const edit = startingBracket.replace(
           `{
   "compilerOptions": {
-    "rootDir": "src"
+    "rootDir": "./src"
   },`,
         );
 
@@ -97,7 +97,7 @@ export const patchBuildConfig: PatchFunction = async ({
       }
 
       const edit = compilerOptionsStart.replace(`{
-    "rootDir": "src",`);
+    "rootDir": "./src",`);
 
       const newSource = ast.commitEdits([edit]);
 

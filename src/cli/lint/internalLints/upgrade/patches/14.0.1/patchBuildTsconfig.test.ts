@@ -99,7 +99,7 @@ describe('patchBuildTsconfig', () => {
     expect(volToJson()).toEqual({
       'tsconfig.build.json': `{
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": "./src",
     "outDir": "dist",
     "target": "ES2020"
   }
@@ -107,7 +107,7 @@ describe('patchBuildTsconfig', () => {
 `,
       'packages/api/tsconfig.build.json': `{
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": "./src",
     "outDir": "dist",
     "target": "ES2020"
   }
@@ -136,7 +136,7 @@ describe('patchBuildTsconfig', () => {
     expect(volToJson()).toEqual({
       'tsconfig.build.json': `{
   "compilerOptions": {
-    "rootDir": "src"
+    "rootDir": "./src"
   },
   "extends": "./tsconfig.json",
   "include": ["src"],
