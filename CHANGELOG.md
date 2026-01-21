@@ -1,5 +1,23 @@
 # skuba
 
+## 14.1.0
+
+### Minor Changes
+
+- **lint:** Add `rootDir: './src'` to tsconfig.build.json files ([#2217](https://github.com/seek-oss/skuba/pull/2217))
+
+### Patch Changes
+
+- **deps:** prettier ~3.8.0 ([#2213](https://github.com/seek-oss/skuba/pull/2213))
+
+- **deps:** ejs ^4.0.0 ([#2215](https://github.com/seek-oss/skuba/pull/2215))
+
+- **deps:** zod ^4.3.5 ([#2218](https://github.com/seek-oss/skuba/pull/2218))
+
+  This resolves errors such as "ID X already exists in the registry" caused by multiple Zod versions.
+
+  If your package declares a dependency on Zod, ensure you use unpinned versioning (e.g. `"zod": "^4.3.5"` instead of `"zod": "4.3.5"`) to avoid installing multiple versions.
+
 ## 14.0.1
 
 ### Patch Changes
