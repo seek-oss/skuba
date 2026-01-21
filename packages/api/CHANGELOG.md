@@ -1,5 +1,15 @@
 # @skuba-lib/api
 
+## 2.0.1
+
+### Patch Changes
+
+- **deps:** zod ^4.3.5 ([#2218](https://github.com/seek-oss/skuba/pull/2218))
+
+  This resolves errors such as "ID X already exists in the registry" caused by multiple Zod versions.
+
+  If your package declares a dependency on Zod, ensure you use unpinned versioning (e.g. `"zod": "^4.3.5"` instead of `"zod": "4.3.5"`) to avoid installing multiple versions.
+
 ## 2.0.0
 
 ### Major Changes
