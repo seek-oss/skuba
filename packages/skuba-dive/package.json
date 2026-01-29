@@ -1,6 +1,6 @@
 {
   "name": "skuba-dive",
-  "version": "3.0.0",
+  "version": "4.0.1",
   "private": false,
   "description": "Minimal runtime for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/skuba-dive#readme",
@@ -38,6 +38,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "13.0.0"
+    "version": "14.1.0"
   }
 }

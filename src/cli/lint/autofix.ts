@@ -39,7 +39,7 @@ export const AUTOFIX_IGNORE_FILES_NPMRC: Git.ChangedFile[] = [
   },
 ];
 
-const shouldPush = async ({
+export const shouldCommit = async ({
   currentBranch,
   dir,
 }: {
@@ -97,7 +97,7 @@ const shouldPush = async ({
   return true;
 };
 
-const getIgnores = async (dir: string): Promise<Git.ChangedFile[]> => {
+export const getIgnores = async (dir: string): Promise<Git.ChangedFile[]> => {
   const contents = await createDestinationFileReader(dir)('.npmrc');
 
   // If an .npmrc has secrets, we need to ignore it
@@ -130,7 +130,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     currentBranch = await Git.currentBranch({ dir });
   } catch {}
 
-  if (!(await shouldPush({ currentBranch, dir }))) {
+  if (!(await shouldCommit({ currentBranch, dir }))) {
     return;
   }
 
