@@ -459,7 +459,7 @@ packages:
       'package.json': `{
   "name": "test",
   "version": "1.0.0",
-  "packageManager": "pnpm@10.26.2"
+  "packageManager": "pnpm@10.26.1"
 }
 `,
     });

@@ -112,7 +112,7 @@ export const migrateToPnpmConfig: PatchFunction = async ({
   await Promise.all([
     fs.promises.writeFile('pnpm-workspace.yaml', modifiedPnpmWorkspace, 'utf8'),
     stringifiedPackageJson &&
-    fs.promises.writeFile(packageJson.path, stringifiedPackageJson, 'utf8'),
+      fs.promises.writeFile(packageJson.path, stringifiedPackageJson, 'utf8'),
   ]);
 
   await installPnpmPlugin(skubaPackageJson);
