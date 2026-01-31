@@ -108,7 +108,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 2. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@10.26.2",
+   "packageManager": "pnpm@10.28.0",
    ```
 
 3. Install pnpm

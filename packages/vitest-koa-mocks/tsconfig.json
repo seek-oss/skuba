@@ -2,9 +2,9 @@
   "compilerOptions": {
     "rootDir": ".",
     "declaration": true,
-    "lib": ["ES2021"],
+    "lib": ["ES2023"],
     "outDir": "lib",
-    "target": "ES2021",
+    "target": "ES2023",
     "baseUrl": ".",
     "skipLibCheck": true
   },

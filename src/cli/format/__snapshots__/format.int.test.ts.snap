@@ -48,12 +48,14 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
-Upgrading project to Node.js 24 and package targets to Node.js 20
-Upgraded project to Node.js 24 and package targets to Node.js 20
+Upgrading project to Node.js 24 and package targets to Node.js 22.14.0
+Upgraded project to Node.js 24 and package targets to Node.js 22.14.0
 
-Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.14.0+ upgrade-skuba
 
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
+Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -158,12 +160,14 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
-Upgrading project to Node.js 24 and package targets to Node.js 20
-Upgraded project to Node.js 24 and package targets to Node.js 20
+Upgrading project to Node.js 24 and package targets to Node.js 22.14.0
+Upgraded project to Node.js 24 and package targets to Node.js 22.14.0
 
-Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.14.0+ upgrade-skuba
 
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
+Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -264,12 +268,14 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
-Upgrading project to Node.js 24 and package targets to Node.js 20
-Upgraded project to Node.js 24 and package targets to Node.js 20
+Upgrading project to Node.js 24 and package targets to Node.js 22.14.0
+Upgraded project to Node.js 24 and package targets to Node.js 22.14.0
 
-Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.14.0+ upgrade-skuba
 
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
+Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -340,12 +346,14 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
-Upgrading project to Node.js 24 and package targets to Node.js 20
-Upgraded project to Node.js 24 and package targets to Node.js 20
+Upgrading project to Node.js 24 and package targets to Node.js 22.14.0
+Upgraded project to Node.js 24 and package targets to Node.js 22.14.0
 
-Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 20 upgrade-skuba
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.14.0+ upgrade-skuba
 
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
+Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

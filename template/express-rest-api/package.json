@@ -20,17 +20,17 @@
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
-    "@opentelemetry/core": "^2.0.0",
-    "@opentelemetry/exporter-trace-otlp-grpc": "^0.208.0",
-    "@opentelemetry/instrumentation-aws-sdk": "^0.64.0",
-    "@opentelemetry/instrumentation-http": "^0.208.0",
+    "@opentelemetry/core": "~2.4.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "~0.210.0",
+    "@opentelemetry/instrumentation-aws-sdk": "^0.65.0",
+    "@opentelemetry/instrumentation-http": "~0.210.0",
     "@opentelemetry/propagator-b3": "^2.0.0",
-    "@opentelemetry/sdk-node": "^0.208.0",
+    "@opentelemetry/sdk-node": "~0.210.0",
     "@seek/logger": "^11.1.0",
     "express": "^5.0.0",
     "hot-shots": "^12.0.0",
     "seek-datadog-custom-metrics": "^6.0.0",
-    "skuba-dive": "^3.0.0"
+    "skuba-dive": "^4.0.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
@@ -40,7 +40,7 @@
     "skuba": "*",
     "supertest": "^7.0.0"
   },
-  "packageManager": "pnpm@10.26.2",
+  "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=24"
   }

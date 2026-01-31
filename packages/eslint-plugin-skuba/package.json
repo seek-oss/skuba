@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-skuba",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "private": false,
   "description": "ESLint plugin for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-plugin-skuba#readme",
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.26.0",
     "eslint": "^9.39.1",
-    "tsdown": "^0.18.0",
+    "tsdown": "^0.19.0",
     "tsx": "^4.16.2",
     "typescript-eslint": "^8.39.0"
   },
@@ -55,9 +55,9 @@
     "eslint": ">=9.22.0",
     "typescript-eslint": ">=8.39.0"
   },
-  "packageManager": "pnpm@10.26.2",
+  "packageManager": "pnpm@10.28.0",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.14.0"
   },
   "publishConfig": {
     "exports": {
@@ -72,6 +72,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "13.0.0"
+    "version": "14.1.0"
   }
 }
