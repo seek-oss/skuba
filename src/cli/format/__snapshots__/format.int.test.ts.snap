@@ -57,19 +57,20 @@ Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir alr
 
 Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
 
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
-Refreshed pnpm-workspace.yaml. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 5 files in <random>s.
+Processed 4 files in <random>s.
 
 Prettier
-Processed 9 files in <random>s.
+Processed 8 files in <random>s.
 Formatted 3 files:
 b.md
 c.json
@@ -169,27 +170,27 @@ Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir alr
 
 Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
 
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
-Refreshed pnpm-workspace.yaml. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
 Initialising ESLint...
 Processing files...
-Processed 3 files in <random>s.
+Processed 2 files in <random>s.
 ○ a/a/a.ts
 ○ d.js
-○ pnpm-workspace.yaml
 
 Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 10 files.
+Discovered 9 files.
 Formatting files...
 .dockerignore
   parser: -
@@ -205,13 +206,11 @@ d.js
   parser: babel
 package.json
   parser: json-stringify
-pnpm-workspace.yaml
-  parser: yaml
 tsconfig.json
   parser: json
 a/a/a.ts
   parser: typescript
-Processed 7 files in <random>s.
+Processed 6 files in <random>s.
 "
 `;
 
@@ -277,19 +276,20 @@ Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir alr
 
 Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
 
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
-Refreshed pnpm-workspace.yaml. refresh-config-files
 Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 3 files in <random>s.
+Processed 2 files in <random>s.
 
 Prettier
-Processed 7 files in <random>s.
+Processed 6 files in <random>s.
 "
 `;
 
@@ -355,15 +355,16 @@ Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir alr
 
 Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
 
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Refreshed .gitignore. refresh-config-files
 Refreshed .prettierignore. refresh-config-files
-Refreshed pnpm-workspace.yaml. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 3 files in <random>s.
+Processed 2 files in <random>s.
 
 <random>/a/a/a.ts
   8:3  error  Unexpected console statement  no-console
@@ -375,7 +376,7 @@ Processed 3 files in <random>s.
 
 
 Prettier
-Processed 7 files in <random>s.
+Processed 6 files in <random>s.
 Formatted 1 file:
 a/a/a.ts
 Flagged 1 file:
