@@ -502,8 +502,8 @@ importers:
         specifier: ^3.363.0
         version: 3.940.0
       '@seek/aws-codedeploy-hooks':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@seek/logger':
         specifier: ^11.1.0
         version: 11.3.0
@@ -2446,9 +2446,9 @@ packages:
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
 
-  '@seek/aws-codedeploy-hooks@2.0.0':
-    resolution: {integrity: sha512-S8f/iUylxJuumBX9uwp2lfjzqEIbS+PmAU11kkWn/Wuur5Ag4X6c+/EkdLppVfxsc3N4RaD4jycbYMXPLYTAZQ==}
-    engines: {node: '>=20.9.0'}
+  '@seek/aws-codedeploy-hooks@3.0.0':
+    resolution: {integrity: sha512-pkIlYScWo4zR0i/LSbhWZNvEqmBFSgto5Nc+Z+cu148LvmW92S3FN7OeLUpjEPFs0PEcNv+MdsMNlWqSLwdVpA==}
+    engines: {node: '>=22.14.0'}
 
   '@seek/aws-codedeploy-infra@4.0.0':
     resolution: {integrity: sha512-zCNZ80z7TYrLP3L7TZYEP7MjRYSwhp8tR0Y9HSnt1rRJ6LVv5uUS5I6vMcss6IGfWyvcYmw5rCkh/RSWDt4JXg==}
@@ -10033,7 +10033,7 @@ snapshots:
 
   '@sec-ant/readable-stream@0.4.1': {}
 
-  '@seek/aws-codedeploy-hooks@2.0.0': {}
+  '@seek/aws-codedeploy-hooks@3.0.0': {}
 
   '@seek/aws-codedeploy-infra@4.0.0':
     dependencies:
