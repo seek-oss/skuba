@@ -515,8 +515,8 @@ importers:
         version: 4.3.5
     devDependencies:
       '@seek/aws-codedeploy-infra':
-        specifier: ^3.0.0
-        version: 3.1.0
+        specifier: ^4.0.0
+        version: 4.0.0
       '@types/aws-lambda':
         specifier: ^8.10.82
         version: 8.10.159
@@ -2450,13 +2450,9 @@ packages:
     resolution: {integrity: sha512-S8f/iUylxJuumBX9uwp2lfjzqEIbS+PmAU11kkWn/Wuur5Ag4X6c+/EkdLppVfxsc3N4RaD4jycbYMXPLYTAZQ==}
     engines: {node: '>=20.9.0'}
 
-  '@seek/aws-codedeploy-infra@3.1.0':
-    resolution: {integrity: sha512-P1QGvwfmGK7JCxdE4jxiY6vDjUlnFKC7TxbPpLPG6/KMZ4dPo0y9nGSeRbJOnVHivM/J72qRdkTR65RTHqx8gg==}
-    engines: {node: '>=20.9.0'}
-
-  '@seek/logger@10.0.0':
-    resolution: {integrity: sha512-VLvzLtkiFStd7SOcfZzt8Tfb7OVFOtLTU5qKQixBXCjTY8PIIAsibe2wgk6JhCUa2dnq1zY5TZuHBTNMt+ro1w==}
-    engines: {node: '>=20.9.0'}
+  '@seek/aws-codedeploy-infra@4.0.0':
+    resolution: {integrity: sha512-zCNZ80z7TYrLP3L7TZYEP7MjRYSwhp8tR0Y9HSnt1rRJ6LVv5uUS5I6vMcss6IGfWyvcYmw5rCkh/RSWDt4JXg==}
+    engines: {node: '>=22.14.0'}
 
   '@seek/logger@11.3.0':
     resolution: {integrity: sha512-hMohjrTyD/OCT4ijzJofQj/g890WtovW1T34LUZDc1Eixx651irWamokr4JsZSwiRkOOPYA9ht6T1rl+a7gj5w==}
@@ -4368,10 +4364,6 @@ packages:
   fast-querystring@1.1.2:
     resolution: {integrity: sha512-g6KuKWmFXc0fID8WWH0jit4g0AGBoJhCkJMb1RmbsSEUNvQ+ZC8D6CUZ+GtF8nMzSPXnhiePyyqqipzNNEnHjg==}
 
-  fast-redact@3.5.0:
-    resolution: {integrity: sha512-dwsoQlS7h9hMeYUq1W++23NDcBLV4KqONnITDV9DjfS3q1SgDGVrBdvvTLUotWtPSD7asWDV9/CmsZPy8Hf70A==}
-    engines: {node: '>=6'}
-
   fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
 
@@ -6205,10 +6197,6 @@ packages:
 
   pino@10.1.0:
     resolution: {integrity: sha512-0zZC2ygfdqvqK8zJIr1e+wT1T/L+LF6qvqvbzEQ6tiMAoTqEVK9a1K3YRu8HEUvGEvNqZyPJTtb2sNIoTkB83w==}
-    hasBin: true
-
-  pino@9.14.0:
-    resolution: {integrity: sha512-8OEwKp5juEvb/MjpIc4hjqfgCNysrS94RIOMXYvpYCdm/jglrKEiAYmiumbmGhCvs+IcInsphYDFwqrjr7398w==}
     hasBin: true
 
   pirates@4.0.7:
@@ -10047,21 +10035,14 @@ snapshots:
 
   '@seek/aws-codedeploy-hooks@2.0.0': {}
 
-  '@seek/aws-codedeploy-infra@3.1.0':
+  '@seek/aws-codedeploy-infra@4.0.0':
     dependencies:
-      '@seek/logger': 10.0.0
+      '@seek/logger': 11.3.0
       '@types/aws-lambda': 8.10.159
       aws-cdk-lib: 2.232.2(constructs@10.4.3)
       constructs: 10.4.3
       skuba-dive: link:packages/skuba-dive
       zod: 4.3.5
-
-  '@seek/logger@10.0.0':
-    dependencies:
-      dtrim: 1.13.1
-      fast-redact: 3.5.0
-      pino: 9.14.0
-      pino-std-serializers: 7.0.0
 
   '@seek/logger@11.3.0':
     dependencies:
@@ -12462,8 +12443,6 @@ snapshots:
     dependencies:
       fast-decode-uri-component: 1.0.1
 
-  fast-redact@3.5.0: {}
-
   fast-safe-stringify@2.1.1: {}
 
   fast-uri@3.1.0: {}
@@ -14536,20 +14515,6 @@ snapshots:
   pino-std-serializers@7.0.0: {}
 
   pino@10.1.0:
-    dependencies:
-      '@pinojs/redact': 0.4.0
-      atomic-sleep: 1.0.0
-      on-exit-leak-free: 2.1.2
-      pino-abstract-transport: 2.0.0
-      pino-std-serializers: 7.0.0
-      process-warning: 5.0.0
-      quick-format-unescaped: 4.0.4
-      real-require: 0.2.0
-      safe-stable-stringify: 2.5.0
-      sonic-boom: 4.2.0
-      thread-stream: 3.1.0
-
-  pino@9.14.0:
     dependencies:
       '@pinojs/redact': 0.4.0
       atomic-sleep: 1.0.0
