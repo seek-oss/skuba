@@ -146,7 +146,7 @@
     "@types/supertest": "6.0.3",
     "enhanced-resolve": "5.18.4",
     "express": "5.2.1",
-    "fastify": "5.6.2",
+    "fastify": "5.7.2",
     "jest-diff": "30.2.0",
     "jsonfile": "6.2.0",
     "koa": "3.1.1",
