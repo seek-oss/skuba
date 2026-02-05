@@ -1,5 +1,11 @@
 # skuba
 
+## 14.1.1
+
+### Patch Changes
+
+- **deps:** prettier-plugin-packagejson ^3.0.0 ([#2223](https://github.com/seek-oss/skuba/pull/2223))
+
 ## 14.1.0
 
 ### Minor Changes
