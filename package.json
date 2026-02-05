@@ -32,7 +32,7 @@
     "changeset": "changeset",
     "deploy": "scripts/deploy.sh",
     "format": "pnpm --silent skuba format && pnpm format:packages",
-    "format:packages": "pnpm --filter '!./template/**' format",
+    "format:packages": "pnpm --filter '!./template/**' --filter '!.' format",
     "lint": "pnpm --silent skuba lint && pnpm --silent lint:md",
     "lint:md": "remark --frail --quiet .",
     "lint:packages": "pnpm --filter '!./template/**' lint",
