@@ -55,7 +55,7 @@ describe('createApp', () => {
       'http_method:put',
       'http_status:200',
       'http_status_family:2xx',
-      'route:/nested/:param',
+      'route:/nested/_param',
     ]);
   });
 
