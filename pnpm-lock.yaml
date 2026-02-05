@@ -364,11 +364,11 @@ importers:
         specifier: ^5.0.0
         version: 5.1.0
       hot-shots:
-        specifier: ^12.0.0
-        version: 12.0.0
+        specifier: ^13.0.0
+        version: 13.2.0
       seek-datadog-custom-metrics:
         specifier: ^6.0.0
-        version: 6.0.3(datadog-lambda-js@12.130.0)(hot-shots@12.0.0)
+        version: 6.0.3(datadog-lambda-js@12.130.0)(hot-shots@13.2.0)
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -438,8 +438,8 @@ importers:
         specifier: ^11.1.0
         version: 11.3.0
       hot-shots:
-        specifier: ^12.0.0
-        version: 12.0.0
+        specifier: ^13.0.0
+        version: 13.2.0
       koa:
         specifier: ^3.0.1
         version: 3.1.1
@@ -448,10 +448,10 @@ importers:
         version: 4.1.0
       seek-datadog-custom-metrics:
         specifier: ^6.0.0
-        version: 6.0.3(datadog-lambda-js@12.130.0)(hot-shots@12.0.0)
+        version: 6.0.3(datadog-lambda-js@12.130.0)(hot-shots@13.2.0)
       seek-koala:
         specifier: ^7.1.0
-        version: 7.1.1(hot-shots@12.0.0)(koa@3.1.1)
+        version: 7.1.1(hot-shots@13.2.0)(koa@3.1.1)
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -4606,6 +4606,7 @@ packages:
 
   glob@10.5.0:
     resolution: {integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@13.0.0:
@@ -4614,7 +4615,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   global-dirs@3.0.1:
     resolution: {integrity: sha512-NBcGGFbBA9s1VzD41QXDG+3++t9Mn5t1FpLdhESY6oKY4gYTFpX4wO3sqGUa0Srjtbfj3szX0RnemmrVRUdULA==}
@@ -4726,8 +4727,8 @@ packages:
     resolution: {integrity: sha512-M422h7o/BR3rmCQ8UHi7cyyMqKltdP9Uo+J2fXK+RSAY+wTcKOIRyhTuKv4qn+DJf3g+PL890AzId5KZpX+CBg==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  hot-shots@12.0.0:
-    resolution: {integrity: sha512-VdEXhNX4FYOY/Qx8sPcdR8+y/jXgwGlQdhk77dgFvJsVx+uS9WwiHEc+NKJqEQmd+0FTwy2/5FOtqe4cZ/JV5g==}
+  hot-shots@13.2.0:
+    resolution: {integrity: sha512-suQR8U8P2CNcAedwLIaQTQ5OEWhU2rusOmo3gY+H8H1h6bKTBI/xHbq3D9xF6EGgFFjpfLAuB1p2Psc/CYyvOw==}
     engines: {node: '>=16.0.0'}
 
   html-escaper@2.0.2:
@@ -12822,7 +12823,7 @@ snapshots:
     dependencies:
       lru-cache: 11.2.4
 
-  hot-shots@12.0.0:
+  hot-shots@13.2.0:
     optionalDependencies:
       unix-dgram: 2.0.7
 
@@ -15138,19 +15139,19 @@ snapshots:
 
   secure-json-parse@4.1.0: {}
 
-  seek-datadog-custom-metrics@6.0.3(datadog-lambda-js@12.130.0)(hot-shots@12.0.0):
+  seek-datadog-custom-metrics@6.0.3(datadog-lambda-js@12.130.0)(hot-shots@13.2.0):
     dependencies:
       '@types/aws-lambda': 8.10.159
     optionalDependencies:
       datadog-lambda-js: 12.130.0
-      hot-shots: 12.0.0
+      hot-shots: 13.2.0
 
-  seek-koala@7.1.1(hot-shots@12.0.0)(koa@3.1.1):
+  seek-koala@7.1.1(hot-shots@13.2.0)(koa@3.1.1):
     dependencies:
       http-errors: 1.8.1
       koa: 3.1.1
     optionalDependencies:
-      hot-shots: 12.0.0
+      hot-shots: 13.2.0
 
   semantic-release@25.0.2(typescript@5.9.3):
     dependencies:
