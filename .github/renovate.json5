@@ -16,7 +16,6 @@
   packageRules: [
     {
       matchDepTypes: ['peerDependencies'],
-
       rangeStrategy: 'widen',
     },
     {
@@ -27,7 +26,6 @@
         'serverless',
       ],
       matchUpdateTypes: ['major'],
-
       enabled: false,
     },
     {
@@ -37,12 +35,9 @@
     },
     {
       matchManagers: ['npm'],
-      matchPackageNames: [
-        // Should be synchronised with AWS Lambda runtimes and Docker images
-        '@types/node',
-      ],
+      // Should be synchronised with AWS Lambda runtimes and Docker images
+      matchPackageNames: ['@types/node'],
       matchFileNames: ['template/**'],
-
       enabled: false,
     },
     {
@@ -53,20 +48,17 @@
         'npm',
         'nvm',
       ],
-
       commitMessageExtra: '{{newValue}}',
       commitMessageTopic: '{{depName}}',
     },
     {
       matchManagers: ['buildkite'],
-
       additionalBranchPrefix: '',
     },
     {
       matchDepTypes: ['devDependencies'],
       matchManagers: ['npm'],
       matchFileNames: ['*'],
-
       matchUpdateTypes: ['major', 'minor', 'patch'],
       automerge: true,
       commitMessageExtra: '',
@@ -78,7 +70,6 @@
     {
       matchFileNames: ['*'],
       matchUpdateTypes: ['lockFileMaintenance'],
-
       automerge: true,
       prPriority: 99,
       schedule: 'before 3:00 am every 2 weeks on Wednesday',
@@ -87,7 +78,6 @@
       matchPackageNames: ['!@types/node'],
       matchFileNames: ['*'],
       matchUpdateTypes: ['pin'],
-
       automerge: true,
       prPriority: 99,
       schedule: 'before 3:00 am every weekday',
@@ -105,7 +95,6 @@
     {
       matchFileNames: ['template/**'],
       matchPackageNames: ['!pnpm'],
-
       branchPrefix: 'renovate-template--',
       rangeStrategy: 'replace',
       semanticCommitType: 'template',
@@ -125,7 +114,7 @@
   customManagers: [
     {
       customType: 'regex',
-      fileMatch: ['pnpm.md$'],
+      managerFilePatterns: ['/pnpm.md$/'],
       matchStrings: [
         '"packageManager": "(?<depName>.*?)@(?<currentValue>.*?)",',
       ],
@@ -133,7 +122,7 @@
     },
     {
       customType: 'regex',
-      fileMatch: ['docs\\/.*\\.md$'],
+      managerFilePatterns: ['/docs\\/.*\\.md$/'],
       // (\\s|\\n) allows us to use the non breaking space to prefix plugins in diffs which we don't want Renovate to touch
       matchStrings: [
         '(\\s|\\n)(?<depName>[a-zA-Z0-9\\/_\\.\\-]+)#(?<currentValue>v[^:]+)',
@@ -143,7 +132,7 @@
     },
     {
       customType: 'regex',
-      fileMatch: ['(^|/)infra/.*\\.ts$'],
+      managerFilePatterns: ['/(^|/)infra/.*\\.ts$/'],
       matchStrings: [
         'const DATADOG_EXTENSION_LAYER_VERSION = (?<currentValue>\\d+)',
       ],

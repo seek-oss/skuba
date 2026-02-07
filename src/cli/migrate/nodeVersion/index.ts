@@ -99,7 +99,18 @@ const subPatches = ({
       },
     },
   },
-
+  {
+    type: 'nodejs',
+    files: '**/__snapshots__/**/*.snap',
+    regex: () => /"Runtime":\s*"nodejs(\d+).x"/gm,
+    replace: {
+      default: {
+        captureGroup: 1,
+        string: `"Runtime": "nodejs${nodeVersion}.x"`,
+        version: nodeVersion,
+      },
+    },
+  },
   {
     type: 'nodejs',
     files: '**/infra/**/*.ts',

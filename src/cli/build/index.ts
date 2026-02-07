@@ -5,7 +5,7 @@ import { log } from '../../utils/logging.js';
 import { getManifestProperties } from '../../utils/manifest.js';
 
 import { copyAssets } from './assets.js';
-import { esbuild } from './esbuild.js';
+import { type EsbuildConfig, esbuild } from './esbuild.js';
 import { readTsBuildConfig, tsc } from './tsc.js';
 
 export const build = async (args = process.argv.slice(2)) => {
@@ -16,9 +16,20 @@ export const build = async (args = process.argv.slice(2)) => {
   switch (manifest?.value) {
     case 'esbuild': {
       const debug = hasDebugFlag(args);
+      const esbuildConfig = await getManifestProperties<
+        'esbuildConfig',
+        EsbuildConfig
+      >('esbuildConfig');
 
       log.plain(styleText('yellow', 'esbuild'));
-      await esbuild({ debug, type: manifest.type }, args);
+      await esbuild(
+        {
+          debug,
+          type: manifest.type,
+          ...esbuildConfig?.value,
+        },
+        args,
+      );
       break;
     }
 
