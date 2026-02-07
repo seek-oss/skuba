@@ -10,6 +10,19 @@ const MINIMUM_RELEASE_AGE_EXCLUDE = [
   'tsconfig-seek',
 ];
 
+const ONLY_BUILT_DEPENDENCIES = [
+  '@ast-grep/lang-json',
+  '@datadog/native-appsec',
+  '@datadog/native-iast-taint-tracking',
+  '@datadog/native-metrics',
+  '@datadog/pprof',
+  'dd-trace',
+  'esbuild',
+  'protobufjs',
+  'unix-dgram',
+  'unrs-resolver',
+];
+
 const PUBLIC_HOIST_PATTERN = [
   '@eslint/*',
   '@types*',
@@ -22,7 +35,10 @@ const PUBLIC_HOIST_PATTERN = [
   'typescript',
 ];
 
-const ONLY_BUILT_DEPENDENCIES = ['@ast-grep/lang-json'];
+const TRUST_POLICY_EXCLUDE = [
+  'semver@5.7.2 || 6.3.1',
+  'undici-types@6.21.0', // https://github.com/nodejs/undici/issues/4666, required until our templates move to @types/node@24
+];
 
 module.exports = {
   hooks: {
@@ -31,18 +47,23 @@ module.exports = {
       if (typeof config.publicHoistPattern === 'string') {
         config.publicHoistPattern = [config.publicHoistPattern];
       }
-      config.publicHoistPattern ??= [];
-      config.publicHoistPattern.push(...PUBLIC_HOIST_PATTERN);
-
       config.minimumReleaseAgeExclude ??= [];
       config.minimumReleaseAgeExclude.push(...MINIMUM_RELEASE_AGE_EXCLUDE);
 
       config.onlyBuiltDependencies ??= [];
       config.onlyBuiltDependencies.push(...ONLY_BUILT_DEPENDENCIES);
 
-      config.packageManagerStrictVersion ??= true;
-      config.minimumReleaseAge ??= 4320;
+      config.publicHoistPattern ??= [];
+      config.publicHoistPattern.push(...PUBLIC_HOIST_PATTERN);
+
+      config.trustPolicyExclude ??= [];
+      config.trustPolicyExclude.push(...TRUST_POLICY_EXCLUDE);
+
       config.ignorePatchFailures ??= false;
+      config.minimumReleaseAge ??= 4320;
+      config.packageManagerStrictVersion ??= true;
+      config.strictDepBuilds ??= true;
+      config.trustPolicy ??= 'no-downgrade';
 
       return config;
     },
