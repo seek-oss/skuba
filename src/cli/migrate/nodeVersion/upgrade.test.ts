@@ -237,6 +237,47 @@ catalogs:
     });
   });
 
+  it('should avoid updating packages with ^ and ~ versions which are up to date', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '^2.232.1',
+          serverless: '~4.26.0',
+          osls: '3.0.0',
+        },
+      }),
+    });
+
+    await expect(
+      upgradeInfraPackages('format', [
+        {
+          name: 'aws-cdk-lib',
+          version: '2.224.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.25.0',
+        },
+        {
+          name: 'osls',
+          version: '3.61.0',
+        },
+      ]),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '^2.232.1',
+          serverless: '~4.26.0',
+          osls: '3.61.0',
+        },
+      }),
+    });
+  });
+
   it('should handle ^ and ~ prefixes when updating versions', async () => {
     vol.fromJSON({
       'package.json': JSON.stringify({
@@ -424,6 +465,129 @@ catalogs:
         dependencies: {
           'aws-cdk-lib': '^2.224.0',
           serverless: '^4.25.0',
+          osls: '^3.61.0',
+        },
+      }),
+    });
+  });
+
+  it('should avoid converting comparison ranges that already meet the target version', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '>=2.250.0',
+          serverless: '>4.30.0',
+          osls: '>=3.0.0',
+        },
+      }),
+    });
+
+    await expect(
+      upgradeInfraPackages('format', [
+        {
+          name: 'aws-cdk-lib',
+          version: '2.224.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.25.0',
+        },
+        {
+          name: 'osls',
+          version: '3.61.0',
+        },
+      ]),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '>=2.250.0',
+          serverless: '>4.30.0',
+          osls: '^3.61.0',
+        },
+      }),
+    });
+  });
+
+  it('should avoid downgrading x ranges that are already newer', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '2.250.x',
+          serverless: '4.30.X',
+          osls: '3.0.x',
+        },
+      }),
+    });
+
+    await expect(
+      upgradeInfraPackages('format', [
+        {
+          name: 'aws-cdk-lib',
+          version: '2.224.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.25.0',
+        },
+        {
+          name: 'osls',
+          version: '3.61.0',
+        },
+      ]),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '2.250.x',
+          serverless: '4.30.X',
+          osls: '^3.61.0',
+        },
+      }),
+    });
+  });
+
+  it('should avoid downgrading hyphen ranges that are already newer', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '2.250.0 - 3.0.0',
+          serverless: '4.30.0 - 5.0.0',
+          osls: '3.0.0 - 4.0.0',
+        },
+      }),
+    });
+
+    await expect(
+      upgradeInfraPackages('format', [
+        {
+          name: 'aws-cdk-lib',
+          version: '2.224.0',
+        },
+        {
+          name: 'serverless',
+          version: '4.25.0',
+        },
+        {
+          name: 'osls',
+          version: '3.61.0',
+        },
+      ]),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'package.json': JSON.stringify({
+        dependencies: {
+          'aws-cdk-lib': '2.250.0 - 3.0.0',
+          serverless: '4.30.0 - 5.0.0',
           osls: '^3.61.0',
         },
       }),

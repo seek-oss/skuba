@@ -1,5 +1,109 @@
 # skuba
 
+## 14.1.0
+
+### Minor Changes
+
+- **lint:** Add `rootDir: './src'` to tsconfig.build.json files ([#2217](https://github.com/seek-oss/skuba/pull/2217))
+
+### Patch Changes
+
+- **deps:** prettier ~3.8.0 ([#2213](https://github.com/seek-oss/skuba/pull/2213))
+
+- **deps:** ejs ^4.0.0 ([#2215](https://github.com/seek-oss/skuba/pull/2215))
+
+- **deps:** zod ^4.3.5 ([#2218](https://github.com/seek-oss/skuba/pull/2218))
+
+  This resolves errors such as "ID X already exists in the registry" caused by multiple Zod versions.
+
+  If your package declares a dependency on Zod, ensure you use unpinned versioning (e.g. `"zod": "^4.3.5"` instead of `"zod": "4.3.5"`) to avoid installing multiple versions.
+
+## 14.0.1
+
+### Patch Changes
+
+- **test:** Revert upgrade skuba in CI environments ([#2208](https://github.com/seek-oss/skuba/pull/2208))
+
+## 14.0.0
+
+### Major Changes
+
+- **migrate:** Introduce `skuba migrate node24` ([#2165](https://github.com/seek-oss/skuba/pull/2165))
+
+  `skuba migrate node24` attempts to automatically upgrade your:
+  - Project to Node.js 24
+  - Package targets to Node.js 22.14.0+
+  - `aws-cdk-lib`, `datadog-cdk-constructs-v2`, `osls`, `serverless`, `serverless-plugin-datadog`, and `@types/node` dependencies to versions that support Node.js 24
+
+  Changes must be manually reviewed by an engineer before committing the migration output. If you have an npm package that previously supported Node.js ≤18 and was upgraded to target Node.js 22.14.0+, follow semantic versioning and publish the change as a new major version. See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
+
+  **skuba** may not be able to upgrade all projects. Check your project for files that may have been missed, review and test the modified code as appropriate before releasing to production, and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
+
+  Node.js 24 includes breaking changes. For more information on the upgrade, refer to:
+  - The [Node.js release notes](https://nodejs.org/en/blog/release/v24.0.0)
+  - The AWS [release announcement](https://aws.amazon.com/blogs/compute/node-js-24-runtime-now-available-in-aws-lambda/) for the Lambda `nodejs24.x` runtime update
+
+- **deps:** Require Node.js 22.14.0+ ([#2165](https://github.com/seek-oss/skuba/pull/2165))
+
+- **format, lint:** Migrate projects to Node.js 24 and package targets to Node.js 22.14+ ([#2165](https://github.com/seek-oss/skuba/pull/2165))
+
+  You can locally opt out of the migration by setting the `SKIP_NODE_UPGRADE` environment variable, running `skuba format`, and committing the result.
+
+  Changes must be manually reviewed by an engineer before merging the migration output. If you have an npm package that previously supported Node.js ≤18 and was upgraded to target Node.js 22.14.0+, follow semantic versioning and publish the change as a new major version. See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
+
+### Minor Changes
+
+- **test:** Upgrade skuba in CI environments ([#2173](https://github.com/seek-oss/skuba/pull/2173))
+
+  When running in CI environments, `skuba test` will now automatically attempt to upgrade skuba itself before running tests. This ensures that the latest [patches](https://seek-oss.github.io/skuba/docs/cli/lint.html#patches) are applied to your codebase without requiring manual intervention.
+
+  Ensure sure you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled to automatically commit and push these changes.
+
+- **lint:** Add `rootDir` to root tsconfig.json compilerOptions ([#2176](https://github.com/seek-oss/skuba/pull/2176))
+
+  This should resolve issues such as `error TS2210: The project root is ambiguous, but is required to resolve import map entry 'some-file.js' in file '/workdir/package.json'. Supply the `rootDir` compiler option to disambiguate.` appearing in some monorepo setups.
+
+  Ensure you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled to automatically commit and push these changes.
+
+- **deps:** semantic-release 25.0.2 ([#2207](https://github.com/seek-oss/skuba/pull/2207))
+
+- **build:** Add esbuild bundling support ([#2197](https://github.com/seek-oss/skuba/pull/2197))
+
+  You can now optionally enable esbuild bundling when using the experimental `esbuild` build mode. This allows you to bundle your output and, when bundling is enabled, also opt into minification, code splitting (ESM + `outDir` required), and tree shaking. You can also mark certain dependencies as external to keep them out of the bundle.
+
+  To opt in, configure `esbuildConfig` in your `package.json`:
+
+  ```diff
+  {
+    "skuba": {
+      "build": "esbuild",
+  +   "esbuildConfig": {
+  +     "bundle": true,
+  +     "minify": true,
+  +     "splitting": false,
+  +     "treeShaking": true,
+  +     "external": ["aws-sdk"]
+  +   },
+    "template": "koa-rest-api",
+    "type": "application",
+    }
+  }
+  ```
+
+- **deps:** eslint-config-seek 15.0.4 ([#2179](https://github.com/seek-oss/skuba/pull/2179))
+
+- **format:** Commit each version's patches separately during `skuba format` ([#2196](https://github.com/seek-oss/skuba/pull/2196))
+
+  When running `skuba format`, patches are now committed individually per version rather than all at once. This provides better granularity in the git history and makes it easier to track which changes were applied by each version's patches.
+
+### Patch Changes
+
+- **deps:** npm-registry-fetch 19.1.1 ([#2207](https://github.com/seek-oss/skuba/pull/2207))
+
+- **deps:** normalize-package-data 8.0.0 ([#2207](https://github.com/seek-oss/skuba/pull/2207))
+
+- **deps:** tsx ^4.21.0 ([#2169](https://github.com/seek-oss/skuba/pull/2169))
+
 ## 13.1.1
 
 ### Patch Changes

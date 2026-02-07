@@ -3,7 +3,6 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 import { SemVer, lt } from 'semver';
 
-import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import {
   getConsumerManifest,
@@ -87,9 +86,9 @@ export const migrateToPnpmConfig: PatchFunction = async ({
 
     if (
       typeof version === 'string' &&
-      lt(new SemVer(version), new SemVer('10.26.2'))
+      lt(new SemVer(version), new SemVer('10.26.1'))
     ) {
-      packageJson.packageJson.packageManager = 'pnpm@10.26.2';
+      packageJson.packageJson.packageManager = 'pnpm@10.26.1';
     }
   }
 
@@ -116,9 +115,6 @@ export const migrateToPnpmConfig: PatchFunction = async ({
   ]);
 
   await installPnpmPlugin(skubaPackageJson);
-
-  // Run pnpm install to ensure hoisting/build scripts are run
-  await exec('pnpm', 'install', '--offline');
 
   return {
     result: 'apply',

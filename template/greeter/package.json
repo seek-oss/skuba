@@ -19,13 +19,13 @@
     "test:watch": "skuba test --watch"
   },
   "dependencies": {
-    "skuba-dive": "^3.0.0"
+    "skuba-dive": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
     "skuba": "*"
   },
-  "packageManager": "pnpm@10.27.0",
+  "packageManager": "pnpm@10.28.2",
   "engines": {
     "node": ">=24"
   }
