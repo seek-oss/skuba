@@ -3,7 +3,6 @@ import { inspect } from 'util';
 import fs from 'fs-extra';
 import { SemVer, lt } from 'semver';
 
-import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import {
   getConsumerManifest,
