@@ -5,8 +5,7 @@
     "outDir": "lib",
     "removeComments": false,
     "target": "ES2023",
-    "skipLibCheck": true,
-    "types": ["node", "jest"]
+    "skipLibCheck": true, // tsdown has optional peer deps
   },
   "exclude": ["lib*/**/*"],
   "extends": "skuba/config/tsconfig.json"
