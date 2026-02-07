@@ -36,7 +36,6 @@ const PUBLIC_HOIST_PATTERN = [
 ];
 
 const TRUST_POLICY_EXCLUDE = [
-  'pino@9.14.0', // https://github.com/seek-oss/skuba/pull/2180#discussion_r2618371672
   'semver@5.7.2 || 6.3.1',
   'undici-types@6.21.0', // https://github.com/nodejs/undici/issues/4666, required until our templates move to @types/node@24
 ];
