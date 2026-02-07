@@ -117,9 +117,6 @@ export const migrateToPnpmConfig: PatchFunction = async ({
 
   await installPnpmPlugin(skubaPackageJson);
 
-  // Run pnpm install to ensure hoisting/build scripts are run
-  await exec('pnpm', 'install', '--offline');
-
   return {
     result: 'apply',
   };
