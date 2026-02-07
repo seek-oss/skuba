@@ -20,5 +20,6 @@ publicHoistPattern:
   - esbuild
   - jest
   - tsconfig-seek
+  - tsdown
   - typescript
   # end managed by skuba
