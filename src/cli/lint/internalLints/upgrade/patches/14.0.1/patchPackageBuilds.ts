@@ -49,63 +49,61 @@ export const patchPackageBuilds: PatchFunction = async ({
 
   registerDynamicLanguage({ json });
 
-  let foundMatch = false;
+  const results = await Promise.all(
+    likelyPackagePaths.map(async (packageJsonPath) => {
+      const directory = path.dirname(packageJsonPath);
 
-  for (const packageJsonPath of likelyPackagePaths) {
-    const directory = path.dirname(packageJsonPath);
+      const files = await fs.promises.readdir(directory);
 
-    const files = await fs.promises.readdir(directory);
+      const existingTsdownConfig = files.find((file) =>
+        file.startsWith('tsdown.config'),
+      );
+      if (existingTsdownConfig) {
+        return null;
+      }
 
-    const existingTsdownConfig = files.find((file) =>
-      file.startsWith('tsdown.config'),
-    );
-    if (existingTsdownConfig) {
-      continue;
-    }
+      let packageJsonContent: string;
+      try {
+        packageJsonContent = await fs.promises.readFile(
+          packageJsonPath,
+          'utf8',
+        );
+      } catch {
+        throw new Error(`unable to read package.json at ${packageJsonPath}`);
+      }
 
-    foundMatch = true;
-    let packageJsonContent: string;
-    try {
-      packageJsonContent = await fs.promises.readFile(packageJsonPath, 'utf8');
-    } catch {
-      return {
-        result: 'skip',
-        reason: `unable to read package.json at ${packageJsonPath}`,
-      };
-    }
+      const packageJson = await parseAsync('json', packageJsonContent);
+      const ast = packageJson.root();
 
-    const packageJson = await parseAsync('json', packageJsonContent);
-    const ast = packageJson.root();
-
-    const assetsArray = ast.find({
-      rule: {
-        kind: 'array',
-        inside: {
-          kind: 'pair',
-          has: {
-            field: 'key',
-            regex: '^"assets"$',
+      const assetsArray = ast.find({
+        rule: {
+          kind: 'array',
+          inside: {
+            kind: 'pair',
+            has: {
+              field: 'key',
+              regex: '^"assets"$',
+            },
           },
         },
-      },
-    });
+      });
 
-    let assetsData;
+      let assetsData;
 
-    if (assetsArray) {
-      assetsData = JSON.parse(assetsArray?.text()) as unknown;
+      if (assetsArray) {
+        assetsData = JSON.parse(assetsArray?.text()) as unknown;
 
-      if (!Array.isArray(assetsData)) {
-        throw new Error('skuba.assets must be an array');
+        if (!Array.isArray(assetsData)) {
+          throw new Error('skuba.assets must be an array');
+        }
+
+        if (!assetsData.every((item) => typeof item === 'string')) {
+          throw new Error('skuba.assets must be an array of strings');
+        }
       }
 
-      if (!assetsData.every((item) => typeof item === 'string')) {
-        throw new Error('skuba.assets must be an array of strings');
-      }
-    }
-
-    const tsdownConfigPath = path.join(directory, 'tsdown.config.ts');
-    const defaultTsdownConfig = `import { defineConfig } from 'tsdown';
+      const tsdownConfigPath = path.join(directory, 'tsdown.config.ts');
+      const defaultTsdownConfig = `import { defineConfig } from 'tsdown';
 
     export default defineConfig({
       entry: ['src/index.ts'],
@@ -116,15 +114,24 @@ export const patchPackageBuilds: PatchFunction = async ({
     });
     `;
 
-    if (mode === 'lint') {
-      continue;
-    }
+      if (mode === 'lint') {
+        return { processed: true };
+      }
 
-    await fs.promises.writeFile(tsdownConfigPath, defaultTsdownConfig, 'utf8');
+      await fs.promises.writeFile(
+        tsdownConfigPath,
+        defaultTsdownConfig,
+        'utf8',
+      );
 
-    const packageManager = await detectPackageManager();
-    await exec(packageManager.command, 'tsdown');
-  }
+      const packageManager = await detectPackageManager();
+      await exec(packageManager.command, 'tsdown');
+
+      return { processed: true };
+    }),
+  );
+
+  const foundMatch = results.some((result) => result !== null);
 
   if (foundMatch) {
     return {
