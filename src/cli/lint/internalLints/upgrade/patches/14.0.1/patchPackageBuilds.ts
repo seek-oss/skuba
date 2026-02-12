@@ -40,9 +40,7 @@ export const patchPackageBuilds: PatchFunction = async ({
         (await isLikelyPackage(packageJsonPath)) ? packageJsonPath : null,
       ),
     )
-  ).filter(
-    (packageJsonPath) => packageJsonPath !== null,
-  );
+  ).filter((packageJsonPath) => packageJsonPath !== null);
 
   registerDynamicLanguage({ json });
 
