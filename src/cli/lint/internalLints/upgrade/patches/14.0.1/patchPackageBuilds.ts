@@ -75,23 +75,44 @@ export const patchPackageBuilds: PatchFunction = async ({
       const packageJson = await parseAsync('json', packageJsonContent);
       const ast = packageJson.root();
 
-      const assetsArray = ast.find({
+      const skubaObject = ast.find({
         rule: {
-          kind: 'array',
+          kind: 'object',
           inside: {
             kind: 'pair',
             has: {
               field: 'key',
-              regex: '^"assets"$',
+              regex: '^"skuba"$',
             },
           },
         },
       });
 
-      let assetsData;
+      const assetsPair = skubaObject?.find({
+        rule: {
+          kind: 'pair',
+          has: {
+            field: 'key',
+            regex: '^"assets"$',
+          },
+        },
+      });
 
-      if (assetsArray) {
-        assetsData = JSON.parse(assetsArray?.text()) as unknown;
+      let assetsData;
+      let updatedPackageJsonContent = packageJsonContent;
+
+      if (assetsPair) {
+        const assetsArray = assetsPair.find({
+          rule: {
+            kind: 'array',
+          },
+        });
+
+        if (!assetsArray) {
+          throw new Error('assets array not found in package.json');
+        }
+
+        assetsData = JSON.parse(assetsArray.text()) as unknown;
 
         if (!Array.isArray(assetsData)) {
           throw new Error('skuba.assets must be an array');
@@ -100,6 +121,15 @@ export const patchPackageBuilds: PatchFunction = async ({
         if (!assetsData.every((item) => typeof item === 'string')) {
           throw new Error('skuba.assets must be an array of strings');
         }
+
+        const maybeCommaAfterAssets = assetsPair?.next();
+        const edits = [assetsPair.replace('')];
+
+        if (maybeCommaAfterAssets?.text().trim() === ',') {
+          edits.push(maybeCommaAfterAssets.replace(''));
+        }
+
+        updatedPackageJsonContent = ast.commitEdits(edits);
       }
 
       const tsdownConfigPath = path.join(directory, 'tsdown.config.ts');
@@ -123,6 +153,14 @@ export const patchPackageBuilds: PatchFunction = async ({
         defaultTsdownConfig,
         'utf8',
       );
+
+      if (assetsPair) {
+        await fs.promises.writeFile(
+          packageJsonPath,
+          updatedPackageJsonContent,
+          'utf8',
+        );
+      }
 
       const packageManager = await detectPackageManager();
       await exec(packageManager.command, 'tsdown');

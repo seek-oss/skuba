@@ -340,12 +340,34 @@ describe('patchPackageBuilds', () => {
     expect(exec).toHaveBeenCalledWith('pnpm', 'tsdown');
   });
 
-  it('should not modify original package.json files', async () => {
+  it('should remove the assests field from the original package.json file', async () => {
     const originalPackageJson = {
       name: 'test',
       version: '1.0.0',
       description: 'A test package',
-      skuba: { type: 'package', assets: ['src/**/*.txt'] },
+      skuba: {
+        type: 'package',
+        assets: ['src/**/*.txt'],
+        template: 'koa-rest-api',
+      },
+      scripts: {
+        build: 'skuba build-package',
+        test: 'jest',
+        lint: 'eslint',
+      },
+      dependencies: {
+        react: '^18.0.0',
+      },
+      devDependencies: {
+        jest: '^29.0.0',
+      },
+    };
+
+    const newPackageJson = {
+      name: 'test',
+      version: '1.0.0',
+      description: 'A test package',
+      skuba: { type: 'package', template: 'koa-rest-api' },
       scripts: {
         build: 'skuba build-package',
         test: 'jest',
@@ -375,7 +397,7 @@ describe('patchPackageBuilds', () => {
     const result = volToJson();
     const packageJson = JSON.parse(result['package.json']!);
 
-    expect(packageJson).toEqual(originalPackageJson);
+    expect(packageJson).toEqual(newPackageJson);
   });
 
   it('should only process likely packages', async () => {
