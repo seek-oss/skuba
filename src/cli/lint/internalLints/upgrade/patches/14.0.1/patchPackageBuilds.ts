@@ -17,12 +17,9 @@ export const patchPackageBuilds: PatchFunction = async ({
 }): Promise<PatchReturnType> => {
   let packageJsonPaths: string[];
   try {
-    packageJsonPaths = await glob(
-      [**/package.json'],
-      {
-        ignore: ['**/.git', '**/node_modules'],
-      },
-    );
+    packageJsonPaths = await glob(['**/package.json'], {
+      ignore: ['**/.git', '**/node_modules'],
+    });
   } catch {
     return {
       result: 'skip',
