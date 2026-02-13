@@ -17,8 +17,8 @@
   "exports": {
     ".": {
       "@seek/skuba/source": "./src/index.ts",
-      "require": "./lib/index.cjs",
-      "import": "./lib/index.mjs"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
     },
     "./package.json": "./package.json"
   },
@@ -62,8 +62,8 @@
   "publishConfig": {
     "exports": {
       ".": {
-        "require": "./lib/index.cjs",
-        "import": "./lib/index.mjs"
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.cjs"
       },
       "./package.json": "./package.json"
     }
