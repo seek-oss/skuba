@@ -123,6 +123,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "2.0.0",
+    "tsdown": "~0.20.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.0",
     "zod": "^4.3.5"
