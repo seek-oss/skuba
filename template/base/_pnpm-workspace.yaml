@@ -1,6 +1,23 @@
 # managed by skuba
 ignorePatchFailures: false
 minimumReleaseAge: 4320 # 3 days
+strictDepBuilds: true
+onlyBuiltDependencies:
+  - '@ast-grep/lang-json'
+  - '@datadog/native-appsec'
+  - '@datadog/native-iast-taint-tracking'
+  - '@datadog/native-metrics'
+  - '@datadog/pprof'
+  - dd-trace
+  - esbuild
+  - protobufjs
+  - unix-dgram
+  - unrs-resolver
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - 'pino@9.14.0'
+  - 'semver@5.7.2 || 6.3.1'
+  - 'undici-types@6.21.0' # https://github.com/nodejs/undici/issues/4666
 minimumReleaseAgeExclude:
   - '@seek/*'
   - '@skuba-lib/*'
