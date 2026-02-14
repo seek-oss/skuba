@@ -1,5 +1,11 @@
 # @skuba-lib/api
 
+## 2.0.2
+
+### Patch Changes
+
+- Fix `moduleResolution` `node` types ([#2233](https://github.com/seek-oss/skuba/pull/2233))
+
 ## 2.0.1
 
 ### Patch Changes
