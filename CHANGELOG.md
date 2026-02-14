@@ -1,5 +1,11 @@
 # skuba
 
+## 14.2.0
+
+### Minor Changes
+
+- **template/\*-npm-package:** Migrate to `tsdown` for bundling ([#2193](https://github.com/seek-oss/skuba/pull/2193))
+
 ## 14.1.1
 
 ### Patch Changes
