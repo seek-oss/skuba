@@ -13,10 +13,6 @@ jest.mock('fast-glob', () => ({
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
 
-jest
-  .spyOn(checks, 'isLikelyPackage')
-  .mockImplementation(() => Promise.resolve(true));
-
 const exec = jest.spyOn(execModule, 'exec');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
@@ -25,6 +21,7 @@ beforeEach(() => {
   vol.reset();
   jest.clearAllMocks();
   exec.mockResolvedValue(undefined as any);
+  jest.spyOn(checks, 'isLikelyPackage').mockResolvedValueOnce(true);
 });
 
 const baseArgs: PatchConfig = {
@@ -340,11 +337,20 @@ describe('patchPackageBuilds', () => {
     expect(exec).toHaveBeenCalledWith('pnpm', 'tsdown');
   });
 
-  it('should remove the assests field from the original package.json file', async () => {
+  it('should replace fields from the original package.json file', async () => {
     const originalPackageJson = {
       name: 'test',
       version: '1.0.0',
       description: 'A test package',
+      main: './lib-commonjs/index.js',
+      module: './lib-es2015/index.js',
+      types: './lib-types/index.d.ts',
+      files: [
+        'lib*/**/*.d.ts',
+        'lib*/**/*.js',
+        'lib*/**/*.js.map',
+        'lib*/**/*.json',
+      ],
       skuba: {
         type: 'package',
         assets: ['src/**/*.txt'],
@@ -367,6 +373,17 @@ describe('patchPackageBuilds', () => {
       name: 'test',
       version: '1.0.0',
       description: 'A test package',
+      exports: {
+        '.': {
+          require: './lib/index.cjs',
+          import: './lib/index.mjs',
+        },
+        './package.json': './package.json',
+      },
+      main: './lib/index.cjs',
+      module: './lib/index.mjs',
+      types: './lib/index.d.cts',
+      files: ['lib'],
       skuba: { type: 'package', template: 'koa-rest-api' },
       scripts: {
         build: 'skuba build-package',
@@ -420,9 +437,10 @@ describe('patchPackageBuilds', () => {
       'packages/not-a-package/package.json': JSON.stringify(
         {
           name: 'not-a-package',
-          private: true,
+          version: '1.0.0',
+          skuba: { type: 'application' },
           scripts: {
-            build: 'skuba build-package',
+            test: 'jest',
           },
         },
         null,
@@ -444,7 +462,7 @@ describe('patchPackageBuilds', () => {
     expect(result['packages/not-a-package/tsdown.config.ts']).toBeUndefined();
   });
 
-  it('should skip packages that already have tsdown config variants', async () => {
+  it('should update package.json fields in monorepo packages', async () => {
     jest
       .spyOn(checks, 'isLikelyPackage')
       .mockImplementation((path) => Promise.resolve(path !== 'package.json'));
@@ -463,16 +481,24 @@ describe('patchPackageBuilds', () => {
         {
           name: 'package-a',
           version: '1.0.0',
+          main: './lib-commonjs/index.js',
+          module: './lib-es2015/index.js',
+          types: './lib-types/index.d.ts',
+          files: ['lib*/**/*.js'],
           skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
         },
         null,
         2,
       ),
-      'packages/package-a/tsdown.config.js': 'module.exports = {};',
       'packages/package-b/package.json': JSON.stringify(
         {
           name: 'package-b',
           version: '1.0.0',
+          main: './lib-commonjs/index.js',
+          module: './lib-es2015/index.js',
           skuba: { type: 'package' },
           scripts: {
             build: 'skuba build-package',
@@ -493,8 +519,55 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.ts']).toBeUndefined();
-    expect(result['packages/package-a/tsdown.config.ts']).toBeUndefined();
-    expect(result['packages/package-b/tsdown.config.ts']).toBeDefined();
+    const packageAJson = JSON.parse(result['packages/package-a/package.json']!);
+    const packageBJson = JSON.parse(result['packages/package-b/package.json']!);
+
+    expect(packageAJson).toMatchInlineSnapshot(`
+      {
+        "exports": {
+          ".": {
+            "import": "./lib/index.mjs",
+            "require": "./lib/index.cjs",
+          },
+          "./package.json": "./package.json",
+        },
+        "files": [
+          "lib",
+        ],
+        "main": "./lib/index.cjs",
+        "module": "./lib/index.mjs",
+        "name": "package-a",
+        "scripts": {
+          "build": "skuba build-package",
+        },
+        "skuba": {
+          "type": "package",
+        },
+        "types": "./lib/index.d.cts",
+        "version": "1.0.0",
+      }
+    `);
+
+    expect(packageBJson).toMatchInlineSnapshot(`
+      {
+        "exports": {
+          ".": {
+            "import": "./lib/index.mjs",
+            "require": "./lib/index.cjs",
+          },
+          "./package.json": "./package.json",
+        },
+        "main": "./lib/index.cjs",
+        "module": "./lib/index.mjs",
+        "name": "package-b",
+        "scripts": {
+          "build": "skuba build-package",
+        },
+        "skuba": {
+          "type": "package",
+        },
+        "version": "1.0.0",
+      }
+    `);
   });
 });
