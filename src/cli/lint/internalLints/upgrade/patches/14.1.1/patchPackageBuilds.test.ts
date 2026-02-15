@@ -184,6 +184,27 @@ describe('patchPackageBuilds', () => {
     expect(result['tsdown.config.ts']).toContain(
       'copy: ["src/**/*.graphql","src/**/*.json"]',
     );
+    const packageJson = JSON.parse(result['package.json']!);
+
+    expect(packageJson).toMatchInlineSnapshot(`
+      {
+        "exports": {
+          ".": {
+            "import": "./lib/index.mjs",
+            "require": "./lib/index.cjs",
+          },
+          "./package.json": "./package.json",
+        },
+        "name": "test",
+        "scripts": {
+          "build": "skuba build-package",
+        },
+        "skuba": {
+          "type": "package",
+        },
+        "version": "1.0.0",
+      }
+    `);
   });
 
   it('should create tsdown.config.ts without copy when no assets are present', async () => {

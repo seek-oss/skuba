@@ -154,12 +154,19 @@ const replaceAssetsField = (
     throw new Error('skuba.assets must be an array of strings');
   }
 
-  const maybeCommaAfterAssets = assetsPair?.next();
   const edits = [assetsPair.replace('')];
 
-  if (maybeCommaAfterAssets?.text().trim() === ',') {
-    edits.push(maybeCommaAfterAssets.replace(''));
+  // Remove the trailing comma of the assets pair or the preceding comma if it exists to avoid leaving a dangling comma
+  const maybeCommaAfter = assetsPair?.next();
+  if (maybeCommaAfter?.text().trim() === ',') {
+    edits.push(maybeCommaAfter.replace(''));
+  } else {
+    const maybeCommaBefore = assetsPair?.prev();
+    if (maybeCommaBefore?.text().trim() === ',') {
+      edits.push(maybeCommaBefore.replace(''));
+    }
   }
+
   return { edits, assetsData };
 };
 
