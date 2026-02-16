@@ -17,93 +17,6 @@ import { detectPackageManager } from '../../../../../../utils/packageManager.js'
 import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const replaceField = (
-  ast: SgNode,
-  fieldName: string,
-  fieldValue: string | string[],
-): Edit[] => {
-  const pair = ast.find({
-    rule: {
-      kind: 'pair',
-      has: {
-        field: 'key',
-        regex: `^"${fieldName}"$`,
-      },
-    },
-  });
-
-  if (!pair) {
-    return [];
-  }
-
-  const valueNode = pair.child(1);
-  if (!valueNode) {
-    return [];
-  }
-
-  const formattedValue = Array.isArray(fieldValue)
-    ? `[${fieldValue.join(', ')}]`
-    : `"${fieldValue}"`;
-
-  const edits: Edit[] = [pair.replace(`"${fieldName}": ${formattedValue}`)];
-  return edits;
-};
-
-const addExportsField = (ast: SgNode): Edit[] => {
-  const existingExports = ast.find({
-    rule: {
-      kind: 'pair',
-      has: {
-        field: 'key',
-        regex: '^"exports"$',
-      },
-    },
-  });
-
-  if (existingExports) {
-    return [];
-  }
-
-  const exportsValue = `{
-    ".": {
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
-    },
-    "./package.json": "./package.json"
-  }`;
-
-  const rootObject = ast.find({
-    rule: {
-      kind: 'object',
-    },
-  });
-
-  if (!rootObject) {
-    return [];
-  }
-
-  const firstPair = rootObject.find({
-    rule: {
-      kind: 'pair',
-    },
-  });
-
-  if (!firstPair) {
-    return [
-      rootObject.replace(`{
-  "exports": ${exportsValue}
-}`),
-    ];
-  }
-
-  const edits: Edit[] = [
-    firstPair.replace(`"exports": ${exportsValue},
-  ${firstPair.text()}`),
-  ];
-
-  return edits;
-};
-
 const replaceAssetsField = (
   ast: SgNode,
 ): { edits: Edit[]; assetsData: string[] | null } => {
@@ -228,22 +141,7 @@ export const patchPackageBuilds: PatchFunction = async ({
       const packageJson = await parseAsync('json', packageJsonContent);
       const ast = packageJson.root();
 
-      const fieldsToReplace = [
-        { field: 'main', replacementValue: './lib/index.cjs' },
-        { field: 'module', replacementValue: './lib/index.mjs' },
-        { field: 'types', replacementValue: './lib/index.d.cts' },
-        { field: 'files', replacementValue: ['"lib"'] },
-      ];
-
-      const edits = fieldsToReplace.flatMap(({ field, replacementValue }) =>
-        replaceField(ast, field, replacementValue),
-      );
-
-      edits.push(...addExportsField(ast));
-
-      const { edits: assetsEdits, assetsData } = replaceAssetsField(ast);
-
-      edits.push(...assetsEdits);
+      const { edits, assetsData } = replaceAssetsField(ast);
 
       let updatedPackageJsonContent = packageJsonContent;
 

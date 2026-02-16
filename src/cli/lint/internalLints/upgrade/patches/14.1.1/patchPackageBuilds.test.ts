@@ -188,13 +188,6 @@ describe('patchPackageBuilds', () => {
 
     expect(packageJson).toMatchInlineSnapshot(`
       {
-        "exports": {
-          ".": {
-            "import": "./lib/index.mjs",
-            "require": "./lib/index.cjs",
-          },
-          "./package.json": "./package.json",
-        },
         "name": "test",
         "scripts": {
           "build": "skuba build-package",
@@ -394,17 +387,15 @@ describe('patchPackageBuilds', () => {
       name: 'test',
       version: '1.0.0',
       description: 'A test package',
-      exports: {
-        '.': {
-          require: './lib/index.cjs',
-          import: './lib/index.mjs',
-        },
-        './package.json': './package.json',
-      },
-      main: './lib/index.cjs',
-      module: './lib/index.mjs',
-      types: './lib/index.d.cts',
-      files: ['lib'],
+      main: './lib-commonjs/index.js',
+      module: './lib-es2015/index.js',
+      types: './lib-types/index.d.ts',
+      files: [
+        'lib*/**/*.d.ts',
+        'lib*/**/*.js',
+        'lib*/**/*.js.map',
+        'lib*/**/*.json',
+      ],
       skuba: { type: 'package', template: 'koa-rest-api' },
       scripts: {
         build: 'skuba build-package',
@@ -545,18 +536,11 @@ describe('patchPackageBuilds', () => {
 
     expect(packageAJson).toMatchInlineSnapshot(`
       {
-        "exports": {
-          ".": {
-            "import": "./lib/index.mjs",
-            "require": "./lib/index.cjs",
-          },
-          "./package.json": "./package.json",
-        },
         "files": [
-          "lib",
+          "lib*/**/*.js",
         ],
-        "main": "./lib/index.cjs",
-        "module": "./lib/index.mjs",
+        "main": "./lib-commonjs/index.js",
+        "module": "./lib-es2015/index.js",
         "name": "package-a",
         "scripts": {
           "build": "skuba build-package",
@@ -564,22 +548,15 @@ describe('patchPackageBuilds', () => {
         "skuba": {
           "type": "package",
         },
-        "types": "./lib/index.d.cts",
+        "types": "./lib-types/index.d.ts",
         "version": "1.0.0",
       }
     `);
 
     expect(packageBJson).toMatchInlineSnapshot(`
       {
-        "exports": {
-          ".": {
-            "import": "./lib/index.mjs",
-            "require": "./lib/index.cjs",
-          },
-          "./package.json": "./package.json",
-        },
-        "main": "./lib/index.cjs",
-        "module": "./lib/index.mjs",
+        "main": "./lib-commonjs/index.js",
+        "module": "./lib-es2015/index.js",
         "name": "package-b",
         "scripts": {
           "build": "skuba build-package",
