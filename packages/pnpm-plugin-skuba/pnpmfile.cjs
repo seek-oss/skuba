@@ -32,6 +32,7 @@ const PUBLIC_HOIST_PATTERN = [
   'esbuild',
   'jest',
   'tsconfig-seek',
+  'tsdown',
   'typescript',
 ];
 

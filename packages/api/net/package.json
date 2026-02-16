@@ -1,5 +1,5 @@
 {
   "main": "../lib/net/index.cjs",
   "module": "../lib/net/index.mjs",
-  "types": "../lib/net/index.d.ts"
+  "types": "../lib/net/index.d.cts"
 }
