@@ -1,6 +1,6 @@
 {
   "name": "@skuba-lib/api",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Node.js development API for skuba",
   "homepage": "https://github.com/seek-oss/skuba#readme",
   "bugs": {
@@ -14,28 +14,28 @@
   "exports": {
     ".": {
       "@seek/skuba/source": "./src/index.ts",
-      "require": "./lib/index.cjs",
-      "import": "./lib/index.mjs"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
     },
     "./buildkite": {
       "@seek/skuba/source": "./src/buildkite/index.ts",
-      "require": "./lib/buildkite/index.cjs",
-      "import": "./lib/buildkite/index.mjs"
+      "import": "./lib/buildkite/index.mjs",
+      "require": "./lib/buildkite/index.cjs"
     },
     "./git": {
       "@seek/skuba/source": "./src/git/index.ts",
-      "require": "./lib/git/index.cjs",
-      "import": "./lib/git/index.mjs"
+      "import": "./lib/git/index.mjs",
+      "require": "./lib/git/index.cjs"
     },
     "./github": {
       "@seek/skuba/source": "./src/github/index.ts",
-      "require": "./lib/github/index.cjs",
-      "import": "./lib/github/index.mjs"
+      "import": "./lib/github/index.mjs",
+      "require": "./lib/github/index.cjs"
     },
     "./net": {
       "@seek/skuba/source": "./src/net/index.ts",
-      "require": "./lib/net/index.cjs",
-      "import": "./lib/net/index.mjs"
+      "import": "./lib/net/index.mjs",
+      "require": "./lib/net/index.cjs"
     },
     "./package.json": "./package.json"
   },
@@ -62,7 +62,7 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
-    "tsdown": "^0.19.0"
+    "tsdown": "^0.20.0"
   },
   "engines": {
     "node": ">=22.14.0"
@@ -70,24 +70,24 @@
   "publishConfig": {
     "exports": {
       ".": {
-        "require": "./lib/index.cjs",
-        "import": "./lib/index.mjs"
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.cjs"
       },
       "./buildkite": {
-        "require": "./lib/buildkite/index.cjs",
-        "import": "./lib/buildkite/index.mjs"
+        "import": "./lib/buildkite/index.mjs",
+        "require": "./lib/buildkite/index.cjs"
       },
       "./git": {
-        "require": "./lib/git/index.cjs",
-        "import": "./lib/git/index.mjs"
+        "import": "./lib/git/index.mjs",
+        "require": "./lib/git/index.cjs"
       },
       "./github": {
-        "require": "./lib/github/index.cjs",
-        "import": "./lib/github/index.mjs"
+        "import": "./lib/github/index.mjs",
+        "require": "./lib/github/index.cjs"
       },
       "./net": {
-        "require": "./lib/net/index.cjs",
-        "import": "./lib/net/index.mjs"
+        "import": "./lib/net/index.mjs",
+        "require": "./lib/net/index.cjs"
       },
       "./package.json": "./package.json"
     }
