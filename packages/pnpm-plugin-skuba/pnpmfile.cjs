@@ -10,18 +10,18 @@ const MINIMUM_RELEASE_AGE_EXCLUDE = [
   'tsconfig-seek',
 ];
 
-const ONLY_BUILT_DEPENDENCIES = [
-  '@ast-grep/lang-json',
-  '@datadog/native-appsec',
-  '@datadog/native-iast-taint-tracking',
-  '@datadog/native-metrics',
-  '@datadog/pprof',
-  'dd-trace',
-  'esbuild',
-  'protobufjs',
-  'unix-dgram',
-  'unrs-resolver',
-];
+const ALLOWED_BUILDS = {
+  '@ast-grep/lang-json': true,
+  '@datadog/native-appsec': true,
+  '@datadog/native-iast-taint-tracking': true,
+  '@datadog/native-metrics': true,
+  '@datadog/pprof': true,
+  'dd-trace': true,
+  esbuild: true,
+  protobufjs: true,
+  'unix-dgram': true,
+  'unrs-resolver': true,
+};
 
 const PUBLIC_HOIST_PATTERN = [
   '@eslint/*',
@@ -50,8 +50,8 @@ module.exports = {
       config.minimumReleaseAgeExclude ??= [];
       config.minimumReleaseAgeExclude.push(...MINIMUM_RELEASE_AGE_EXCLUDE);
 
-      config.onlyBuiltDependencies ??= [];
-      config.onlyBuiltDependencies.push(...ONLY_BUILT_DEPENDENCIES);
+      config.allowBuilds ??= {};
+      Object.assign(config.allowBuilds, ALLOWED_BUILDS);
 
       config.publicHoistPattern ??= [];
       config.publicHoistPattern.push(...PUBLIC_HOIST_PATTERN);
