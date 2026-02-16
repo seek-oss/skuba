@@ -1,36 +1,11 @@
-# managed by skuba
-ignorePatchFailures: false
-minimumReleaseAge: 4320 # 3 days
-minimumReleaseAgeExclude:
-  - '@seek/*'
-  - '@skuba-lib/*'
-  - eslint-config-seek
-  - eslint-config-skuba
-  - eslint-plugin-skuba
-  - skuba
-  - skuba-dive
-  - tsconfig-seek
-packageManagerStrictVersion: true
-publicHoistPattern:
-  - '@eslint/*'
-  - '@types*'
-  - eslint
-  - eslint-config-skuba
-  - prettier
-  - esbuild
-  - jest
-  - tsconfig-seek
-  - tsdown
-  - typescript
-  # end managed by skuba
-  - 'remark-lint-*'
-
 packages:
-  # https://github.com/changesets/changesets/issues/1133#issuecomment-1594844204
   - .
   - packages/*
   - template/*
 
 overrides:
-  'skuba': 'workspace:*'
-  'skuba-dive': 'workspace:*'
+  skuba: workspace:*
+  skuba-dive: workspace:*
+
+publicHoistPattern:
+  - remark-lint-*

@@ -46,7 +46,7 @@
     "commitizen": "^4.2.4",
     "skuba": "*"
   },
-  "packageManager": "pnpm@10.7.0",
+  "packageManager": "pnpm@10.27.0",
   "engines": {
     "node": ">=22.14.0"
   }

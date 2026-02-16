@@ -1,0 +1,27 @@
+{
+  "name": "pnpm-plugin-skuba",
+  "version": "1.0.0",
+  "private": false,
+  "description": "Pnpm plugin for skuba",
+  "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/pnpm-plugin-skuba#readme",
+  "bugs": {
+    "url": "https://github.com/seek-oss/skuba/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seek-oss/skuba.git",
+    "directory": "packages/pnpm-plugin-skuba"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "pnpmfile.cjs",
+  "files": [
+    "pnpmfile.cjs"
+  ],
+  "devDependencies": {
+    "@pnpm/config": "^1004.9.0"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}
