@@ -11,7 +11,7 @@ import {
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
-import { exec } from '../../../../../../utils/exec.js';
+import { createExec, exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import { detectPackageManager } from '../../../../../../utils/packageManager.js';
 import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
@@ -183,7 +183,9 @@ export const patchPackageBuilds: PatchFunction = async ({
         '--frozen-lockfile=false',
         '--prefer-offline',
       );
-      await exec(packageManager.command, 'tsdown');
+
+      const execInPackageDir = createExec({ cwd: directory });
+      await execInPackageDir(packageManager.command, 'tsdown');
 
       return { processed: true };
     }),
