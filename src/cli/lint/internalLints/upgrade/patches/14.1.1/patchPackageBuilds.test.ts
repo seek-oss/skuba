@@ -14,6 +14,7 @@ jest.mock('fast-glob', () => ({
 }));
 
 const exec = jest.spyOn(execModule, 'exec');
+const createExec = jest.spyOn(execModule, 'createExec');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -21,6 +22,9 @@ beforeEach(() => {
   vol.reset();
   jest.clearAllMocks();
   exec.mockResolvedValue(undefined as any);
+  createExec.mockImplementation(
+    () => jest.fn().mockResolvedValue(undefined as any) as any,
+  );
   jest.spyOn(checks, 'isLikelyPackage').mockResolvedValueOnce(true);
 });
 
@@ -144,7 +148,18 @@ describe('patchPackageBuilds', () => {
     expect(result['tsdown.config.ts']).toContain("format: ['cjs', 'esm']");
     expect(result['tsdown.config.ts']).toContain("outDir: 'lib'");
     expect(result['tsdown.config.ts']).toContain('dts: true');
-    expect(exec).toHaveBeenCalledWith('pnpm', 'tsdown');
+
+    expect(exec).toHaveBeenCalledWith(
+      'pnpm',
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+    );
+
+    expect(createExec).toHaveBeenCalledWith({ cwd: expect.any(String) });
+
+    const mockExecFn = createExec.mock.results[0]?.value;
+    expect(mockExecFn).toHaveBeenCalledWith('pnpm', 'tsdown');
   });
 
   it('should extract and include assets in tsdown.config.ts', async () => {
@@ -348,7 +363,18 @@ describe('patchPackageBuilds', () => {
     expect(result['tsdown.config.ts']).toBeDefined();
     expect(result['packages/package-a/tsdown.config.ts']).toBeDefined();
     expect(result['packages/package-b/tsdown.config.ts']).toBeDefined();
-    expect(exec).toHaveBeenCalledWith('pnpm', 'tsdown');
+    expect(exec).toHaveBeenCalledTimes(3);
+    expect(exec).toHaveBeenCalledWith(
+      'pnpm',
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+    );
+    expect(createExec).toHaveBeenCalledTimes(3);
+    createExec.mock.results.forEach((res) => {
+      const mockExecFn = res.value;
+      expect(mockExecFn).toHaveBeenCalledWith('pnpm', 'tsdown');
+    });
   });
 
   it('should replace fields from the original package.json file', async () => {
