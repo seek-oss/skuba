@@ -15,6 +15,7 @@ import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import { detectPackageManager } from '../../../../../../utils/packageManager.js';
 import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
+import { tryRefreshConfigFiles } from '../../../refreshConfigFiles.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const replaceAssetsField = (
@@ -204,6 +205,7 @@ export const patchPackageBuilds: PatchFunction = async ({
 
 export const tryPatchPackageBuilds: PatchFunction = async (config) => {
   try {
+    await tryRefreshConfigFiles(config.mode, log);
     return await patchPackageBuilds(config);
   } catch (err) {
     log.warn('Failed to patch package builds');
