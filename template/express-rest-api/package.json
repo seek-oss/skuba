@@ -28,7 +28,7 @@
     "@opentelemetry/sdk-node": "~0.212.0",
     "@seek/logger": "^11.1.0",
     "express": "^5.0.0",
-    "hot-shots": "^13.0.0",
+    "hot-shots": "^14.0.0",
     "seek-datadog-custom-metrics": "^6.0.0",
     "skuba-dive": "^4.0.1"
   },
