@@ -1,6 +1,8 @@
 # Modelled on https://github.com/backstage/backstage/blob/5083c8024deffbdf454983900f02780d14b55a0b/.github/workflows/sync_renovate-changesets.yml#L6
 
 name: Sync Renovate changeset
+permissions:
+  contents: write
 on:
   pull_request_target:
     paths:

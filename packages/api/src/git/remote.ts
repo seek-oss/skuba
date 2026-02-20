@@ -16,7 +16,7 @@ import git from 'isomorphic-git';
  * 1. seek-oss
  * 2. skuba
  */
-const ownerRepoRegex = /github.com(?::|\/)(.+)\/(.+).git$/;
+const ownerRepoRegex = /github\.com(?::|\/)([^/]+)\/([^/]+)\.git$/;
 
 const ownerAndRepoFromUrl = (url: string) => {
   const match = ownerRepoRegex.exec(url);
