@@ -119,3 +119,10 @@ export const getTemplateName = async () =>
     message: 'Select a template:',
     choices: TEMPLATE_NAMES_WITH_BYO.map((name) => ({ name, value: name })),
   });
+
+export const getPrivateTemplateName = async () =>
+  input({
+    message: 'Private SEEK template name',
+    validate: (value: string) =>
+      value.length > 0 || 'Must be a valid template name',
+  });
