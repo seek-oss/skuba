@@ -17,8 +17,8 @@
   "exports": {
     ".": {
       "@seek/skuba/source": "./src/index.ts",
-      "require": "./lib/index.cjs",
-      "import": "./lib/index.mjs"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
     },
     "./package.json": "./package.json"
   },
@@ -55,15 +55,15 @@
     "eslint": ">=9.22.0",
     "typescript-eslint": ">=8.39.0"
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.29.3",
   "engines": {
     "node": ">=22.14.0"
   },
   "publishConfig": {
     "exports": {
       ".": {
-        "require": "./lib/index.cjs",
-        "import": "./lib/index.mjs"
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.cjs"
       },
       "./package.json": "./package.json"
     }

@@ -1,6 +1,6 @@
 {
   "name": "skuba",
-  "version": "14.1.0",
+  "version": "14.1.1",
   "private": false,
   "description": "SEEK development toolkit for backend applications and packages",
   "homepage": "https://github.com/seek-oss/skuba#readme",
@@ -123,6 +123,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "2.0.0",
+    "tsdown": "~0.20.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.0",
     "zod": "^4.3.5"
@@ -157,7 +158,7 @@
     "supertest": "7.2.2",
     "type-fest": "2.19.0"
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.29.3",
   "engines": {
     "node": ">=22.14.0"
   },

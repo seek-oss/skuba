@@ -1,6 +1,6 @@
 import memfs, { vol } from 'memfs';
 
-import { copyAssets, copyAssetsConcurrently } from './assets.js';
+import { copyAssets } from './assets.js';
 
 jest.mock('fs', () => memfs);
 
@@ -62,46 +62,6 @@ describe('copyAssets', () => {
       Copying .vocab/translations.json
       Copying other.vocab/th.translations.json
       Copying other.vocab/translations.json
-    `);
-  });
-});
-
-describe('copyAssetsConcurrently', () => {
-  it('should copy the assets specified in skuba config to the destination directories', async () => {
-    await copyAssetsConcurrently([
-      {
-        outDir: 'lib-commonjs',
-        name: 'commonjs',
-        prefixColor: 'green',
-      },
-      {
-        outDir: 'lib-es2015',
-        name: 'es2015',
-        prefixColor: 'yellow',
-      },
-    ]);
-
-    expect(justOutDirs(vol)).toMatchInlineSnapshot(`
-      {
-        "lib-commonjs/.vocab/th.translations.json": "",
-        "lib-commonjs/.vocab/translations.json": "",
-        "lib-commonjs/other.vocab/th.translations.json": "",
-        "lib-commonjs/other.vocab/translations.json": "",
-        "lib-es2015/.vocab/th.translations.json": "",
-        "lib-es2015/.vocab/translations.json": "",
-        "lib-es2015/other.vocab/th.translations.json": "",
-        "lib-es2015/other.vocab/translations.json": "",
-      }
-    `);
-    expect(getStdOut()).toMatchInlineSnapshot(`
-      commonjs │ Copying .vocab/th.translations.json
-      commonjs │ Copying .vocab/translations.json
-      commonjs │ Copying other.vocab/th.translations.json
-      commonjs │ Copying other.vocab/translations.json
-      es2015   │ Copying .vocab/th.translations.json
-      es2015   │ Copying .vocab/translations.json
-      es2015   │ Copying other.vocab/th.translations.json
-      es2015   │ Copying other.vocab/translations.json
     `);
   });
 });
