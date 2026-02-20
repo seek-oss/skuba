@@ -548,7 +548,7 @@ importers:
         specifier: ^10.0.17
         version: 10.4.5
       datadog-cdk-constructs-v2:
-        specifier: ^3.4.0
+        specifier: ^3.6.0
         version: 3.9.0(aws-cdk-lib@2.238.0(constructs@10.4.5))(constructs@10.4.5)
       datadog-lambda-js:
         specifier: ^12.0.0
