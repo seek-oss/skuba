@@ -43,6 +43,12 @@ const baseArgs: PatchConfig = {
 };
 
 describe('patchPackageBuilds', () => {
+  const stdoutMock = jest.fn();
+
+  jest
+    .spyOn(console, 'log')
+    .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+
   it('should skip if no package.json files found', async () => {
     vol.fromJSON({});
 
@@ -593,5 +599,228 @@ describe('patchPackageBuilds', () => {
         "version": "1.0.0",
       }
     `);
+  });
+});
+describe('patchPackageBuilds - skipLibCheck', () => {
+  it('should add skipLibCheck to tsconfig.json when compilerOptions does not exist', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify({}, null, 2),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    const tsconfigContent = result['tsconfig.json']!;
+    expect(tsconfigContent).toContain('"compilerOptions"');
+    expect(tsconfigContent).toContain('"skipLibCheck": true');
+  });
+
+  it('should add skipLibCheck to tsconfig.json when compilerOptions exists but skipLibCheck does not', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            target: 'ES2020',
+            module: 'commonjs',
+          },
+        },
+        null,
+        2,
+      ),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    const tsconfigContent = result['tsconfig.json']!;
+    expect(tsconfigContent).toContain('"skipLibCheck": true');
+    expect(tsconfigContent).toContain('"target": "ES2020"');
+    expect(tsconfigContent).toContain('"module": "commonjs"');
+  });
+
+  it('should not modify tsconfig.json when skipLibCheck already exists', async () => {
+    const originalTsconfig = {
+      compilerOptions: {
+        target: 'ES2020',
+        skipLibCheck: false,
+        module: 'commonjs',
+      },
+    };
+
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(originalTsconfig, null, 2),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    const tsconfig = JSON.parse(result['tsconfig.json']!);
+    expect(tsconfig.compilerOptions.skipLibCheck).toBe(false);
+    expect(tsconfig).toEqual(originalTsconfig);
+  });
+
+  it('should add skipLibCheck to tsconfig.json in monorepo packages', async () => {
+    jest
+      .spyOn(checks, 'isLikelyPackage')
+      .mockImplementation((path) => Promise.resolve(path !== 'package.json'));
+
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'root',
+          version: '1.0.0',
+          private: true,
+        },
+        null,
+        2,
+      ),
+      'packages/package-a/package.json': JSON.stringify(
+        {
+          name: 'package-a',
+          version: '1.0.0',
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'packages/package-a/tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            target: 'ES2020',
+          },
+        },
+        null,
+        2,
+      ),
+      'packages/package-b/package.json': JSON.stringify(
+        {
+          name: 'package-b',
+          version: '1.0.0',
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'packages/package-b/tsconfig.json': JSON.stringify({}, null, 2),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    const tsconfigAContent = result['packages/package-a/tsconfig.json']!;
+    const tsconfigBContent = result['packages/package-b/tsconfig.json']!;
+
+    expect(tsconfigAContent).toContain('"skipLibCheck": true');
+    expect(tsconfigAContent).toContain('"target": "ES2020"');
+    expect(tsconfigBContent).toContain('"skipLibCheck": true');
+  });
+
+  it('should preserve tsconfig.json comment when adding skipLibCheck', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': `{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "target": "ES2020" // some comment about target
+    }
+  }
+`,
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    const tsconfigContent = result['tsconfig.json']!;
+    expect(tsconfigContent).toContain('// tsdown has optional peer deps');
+    expect(tsconfigContent).toContain('// some comment about target');
   });
 });

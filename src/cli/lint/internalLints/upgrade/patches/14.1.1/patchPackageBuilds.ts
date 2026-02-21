@@ -84,6 +84,52 @@ const replaceAssetsField = (
   return { edits, assetsData };
 };
 
+const addSkipLibCheckToTsConfig = (ast: SgNode): Edit[] => {
+  const compilerOptionsObj = ast.find({
+    rule: {
+      pattern: {
+        context: '{"compilerOptions":}',
+        selector: 'pair',
+      },
+    },
+  });
+
+  if (!compilerOptionsObj) {
+    const startingBracket = ast.find({ rule: { pattern: '{' } });
+    if (!startingBracket) {
+      return [];
+    }
+
+    const edit = startingBracket.replace(
+      `{
+  "compilerOptions": {
+    "skipLibCheck": true // tsdown has optional peer deps
+  },`,
+    );
+    return [edit];
+  }
+
+  const skipLibCheckOption = compilerOptionsObj.find({
+    rule: { pattern: '"skipLibCheck"' },
+  });
+
+  if (skipLibCheckOption) {
+    return [];
+  }
+
+  const compilerOptionsStart = compilerOptionsObj.find({
+    rule: { pattern: '{' },
+  });
+
+  if (!compilerOptionsStart) {
+    return [];
+  }
+
+  const edit = compilerOptionsStart.replace(`{
+    "skipLibCheck": true, // tsdown has optional peer deps`);
+  return [edit];
+};
+
 export const patchPackageBuilds: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
@@ -139,14 +185,37 @@ export const patchPackageBuilds: PatchFunction = async ({
         throw new Error(`unable to read package.json at ${packageJsonPath}`);
       }
 
-      const packageJson = await parseAsync('json', packageJsonContent);
-      const ast = packageJson.root();
+      // If a tsconfig.json exists, add skipLibCheck: true to avoid type errors from tsdown's optional peer dependencies.
+      // If it doesn't exist, do nothing and let the fix be added manually if it's required
+      let tsConfigContent: string;
+      const tsConfigPath = path.join(directory, 'tsconfig.json');
+      try {
+        tsConfigContent = await fs.promises.readFile(tsConfigPath, 'utf8');
 
-      const { edits, assetsData } = replaceAssetsField(ast);
+        const tsConfigAst = (await parseAsync('json', tsConfigContent)).root();
 
-      let updatedPackageJsonContent = packageJsonContent;
+        const tsConfigEdits = addSkipLibCheckToTsConfig(tsConfigAst);
+        const updatedTsConfigJsonContent =
+          tsConfigAst.commitEdits(tsConfigEdits);
 
-      updatedPackageJsonContent = ast.commitEdits(edits);
+        await fs.promises.writeFile(
+          tsConfigPath,
+          updatedTsConfigJsonContent,
+          'utf8',
+        );
+      } catch {
+        log.subtle(
+          `unable to find or read tsconfig.json at ${tsConfigPath}, skipping tsconfig updates for ${packageJsonPath}`,
+        );
+      }
+
+      const packageJsonAst = (
+        await parseAsync('json', packageJsonContent)
+      ).root();
+
+      const { edits, assetsData } = replaceAssetsField(packageJsonAst);
+
+      const updatedPackageJsonContent = packageJsonAst.commitEdits(edits);
 
       const tsdownConfigPath = path.join(directory, 'tsdown.config.ts');
       const defaultTsdownConfig = `import { defineConfig } from 'tsdown';
@@ -164,17 +233,14 @@ export const patchPackageBuilds: PatchFunction = async ({
         return { processed: true };
       }
 
-      await fs.promises.writeFile(
-        tsdownConfigPath,
-        defaultTsdownConfig,
-        'utf8',
-      );
-
-      await fs.promises.writeFile(
-        packageJsonPath,
-        updatedPackageJsonContent,
-        'utf8',
-      );
+      await Promise.all([
+        fs.promises.writeFile(tsdownConfigPath, defaultTsdownConfig, 'utf8'),
+        fs.promises.writeFile(
+          packageJsonPath,
+          updatedPackageJsonContent,
+          'utf8',
+        ),
+      ]);
 
       const packageManager = await detectPackageManager();
       await exec(
