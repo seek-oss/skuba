@@ -247,7 +247,7 @@ export const patchPackageBuilds: PatchFunction = async ({
         packageManager.command,
         'install',
         '--frozen-lockfile=false',
-        '--prefer-offline',
+        '--offline',
       );
 
       const execInPackageDir = createExec({ cwd: directory });

@@ -159,7 +159,7 @@ describe('patchPackageBuilds', () => {
       'pnpm',
       'install',
       '--frozen-lockfile=false',
-      '--prefer-offline',
+      '--offline',
     );
 
     expect(createExec).toHaveBeenCalledWith({ cwd: expect.any(String) });
@@ -374,7 +374,7 @@ describe('patchPackageBuilds', () => {
       'pnpm',
       'install',
       '--frozen-lockfile=false',
-      '--prefer-offline',
+      '--offline',
     );
     expect(createExec).toHaveBeenCalledTimes(3);
     createExec.mock.results.forEach((res) => {
