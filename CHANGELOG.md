@@ -1,5 +1,15 @@
 # skuba
 
+## 14.2.0
+
+### Minor Changes
+
+- **template/\*-npm-package:** Migrate to `tsdown` for bundling ([#2193](https://github.com/seek-oss/skuba/pull/2193))
+
+### Patch Changes
+
+- **template/lambda-sqs-worker-cdk:** Update Datadog secret configuration to support custom KMS keys ([#2239](https://github.com/seek-oss/skuba/pull/2239))
+
 ## 14.1.1
 
 ### Patch Changes
