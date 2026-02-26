@@ -54,9 +54,6 @@ importers:
       '@vitejs/devtools':
         specifier: 0.0.0-alpha.32
         version: 0.0.0-alpha.32(@pnpm/logger@1001.0.1)(typescript@5.9.3)(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
-      cli-commands:
-        specifier: link:@vitejs/devtools/cli-commands
-        version: link:@vitejs/devtools/cli-commands
       concurrently:
         specifier: ^9.0.0
         version: 9.2.1
