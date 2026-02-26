@@ -329,7 +329,7 @@ importers:
         version: 3.0.1
       koa:
         specifier: ^3.1.1
-        version: 3.1.1
+        version: 3.1.2
       node-mocks-http:
         specifier: ^1.17.2
         version: 1.17.2(@types/express@5.0.6)(@types/node@24.10.13)
@@ -412,10 +412,10 @@ importers:
     dependencies:
       '@koa/bodyparser':
         specifier: ^6.0.0
-        version: 6.1.0(koa@3.1.1)
+        version: 6.1.0(koa@3.1.2)
       '@koa/router':
         specifier: 15.3.0
-        version: 15.3.0(koa@3.1.1)
+        version: 15.3.0(koa@3.1.2)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -445,7 +445,7 @@ importers:
         version: 13.2.0
       koa:
         specifier: ^3.0.1
-        version: 3.1.1
+        version: 3.1.2
       koa-compose:
         specifier: ^4.1.0
         version: 4.1.0
@@ -454,7 +454,7 @@ importers:
         version: 6.0.3(datadog-lambda-js@12.134.0)(hot-shots@13.2.0)
       seek-koala:
         specifier: ^7.1.0
-        version: 7.1.1(hot-shots@13.2.0)(koa@3.1.1)
+        version: 7.1.1(hot-shots@13.2.0)(koa@3.1.2)
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -5139,10 +5139,6 @@ packages:
   koa-compose@4.1.0:
     resolution: {integrity: sha512-8ODW8TrDuMYvXRwra/Kh7/rJo9BtOfPc6qO8eAfC80CnCvSjSl0bkRM24X6/XBBEyj0v1nRUQ1LyOy3dbqOWXw==}
 
-  koa@3.1.1:
-    resolution: {integrity: sha512-KDDuvpfqSK0ZKEO2gCPedNjl5wYpfj+HNiuVRlbhd1A88S3M0ySkdf2V/EJ4NWt5dwh5PXCdcenrKK2IQJAxsg==}
-    engines: {node: '>= 18'}
-
   koa@3.1.2:
     resolution: {integrity: sha512-2LOQnFKu3m0VxpE+5sb5+BRTSKrXmNxGgxVRiKwD9s5KQB1zID/FRXhtzeV7RT1L2GVpdEEAfVuclFOMGl1ikA==}
     engines: {node: '>= 18'}
@@ -9134,19 +9130,19 @@ snapshots:
       '@jsonjoy.com/codegen': 17.67.0(tslib@2.8.1)
       tslib: 2.8.1
 
-  '@koa/bodyparser@6.1.0(koa@3.1.1)':
+  '@koa/bodyparser@6.1.0(koa@3.1.2)':
     dependencies:
       '@types/co-body': 6.1.3
       co-body: 6.2.0
-      koa: 3.1.1
+      koa: 3.1.2
       lodash.merge: 4.6.2
       type-is: 2.0.1
 
-  '@koa/router@15.3.0(koa@3.1.1)':
+  '@koa/router@15.3.0(koa@3.1.2)':
     dependencies:
       debug: 4.4.3
       http-errors: 2.0.1
-      koa: 3.1.1
+      koa: 3.1.2
       koa-compose: 4.1.0
       path-to-regexp: 8.3.0
     transitivePeerDependencies:
@@ -10276,7 +10272,7 @@ snapshots:
 
   '@types/co-body@6.1.3':
     dependencies:
-      '@types/node': 22.19.11
+      '@types/node': 24.10.13
       '@types/qs': 6.14.0
 
   '@types/concat-stream@2.0.3':
@@ -13162,27 +13158,6 @@ snapshots:
 
   koa-compose@4.1.0: {}
 
-  koa@3.1.1:
-    dependencies:
-      accepts: 1.3.8
-      content-disposition: 0.5.4
-      content-type: 1.0.5
-      cookies: 0.9.1
-      delegates: 1.0.0
-      destroy: 1.2.0
-      encodeurl: 2.0.0
-      escape-html: 1.0.3
-      fresh: 0.5.2
-      http-assert: 1.5.0
-      http-errors: 2.0.1
-      koa-compose: 4.1.0
-      mime-types: 3.0.2
-      on-finished: 2.4.1
-      parseurl: 1.3.3
-      statuses: 2.0.2
-      type-is: 2.0.1
-      vary: 1.1.2
-
   koa@3.1.2:
     dependencies:
       accepts: 1.3.8
@@ -14181,7 +14156,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.19.11
+      '@types/node': 24.10.13
       long: 5.3.2
 
   protobufjs@8.0.0:
@@ -14196,7 +14171,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.19.11
+      '@types/node': 24.10.13
       long: 5.3.2
 
   proxy-addr@2.0.7:
@@ -14710,10 +14685,10 @@ snapshots:
       datadog-lambda-js: 12.134.0
       hot-shots: 13.2.0
 
-  seek-koala@7.1.1(hot-shots@13.2.0)(koa@3.1.1):
+  seek-koala@7.1.1(hot-shots@13.2.0)(koa@3.1.2):
     dependencies:
       http-errors: 1.8.1
-      koa: 3.1.1
+      koa: 3.1.2
     optionalDependencies:
       hot-shots: 13.2.0
 
