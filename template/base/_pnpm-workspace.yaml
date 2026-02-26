@@ -12,14 +12,18 @@ minimumReleaseAgeExclude:
   - tsconfig-seek
 packageManagerStrictVersion: true
 publicHoistPattern:
+  - '@arethetypeswrong/core'
   - '@eslint/*'
   - '@types*'
+  - '@vitejs/devtools'
   - eslint
   - eslint-config-skuba
   - prettier
+  - publint
   - esbuild
   - jest
   - tsconfig-seek
   - tsdown
   - typescript
+  - unplugin-unused
   # end managed by skuba
