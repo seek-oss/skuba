@@ -243,12 +243,7 @@ export const patchPackageBuilds: PatchFunction = async ({
       ]);
 
       const packageManager = await detectPackageManager();
-      await exec(
-        packageManager.command,
-        'install',
-        '--frozen-lockfile=false',
-        '--offline',
-      );
+      await exec(packageManager.command, 'install', '--offline');
 
       const execInPackageDir = createExec({ cwd: directory });
       await execInPackageDir(packageManager.command, 'tsdown');

@@ -71,6 +71,8 @@ export const uploadAllFileChanges = async ({
   }
 
   const fileChanges = await readFileChanges(dir, changedFiles);
+  // eslint-disable-next-line no-console
+  console.dir(fileChanges, { depth: null });
 
   const commitId = await uploadFileChanges({
     dir,
