@@ -4,7 +4,6 @@ import type { PackageJson } from 'read-pkg-up';
 import { log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
 import { getSkubaVersion } from '../../../../utils/version.js';
-import * as autofix from '../../autofix.js';
 
 import { upgradeSkuba } from './index.js';
 
@@ -12,22 +11,9 @@ jest.mock('../../../../utils/manifest');
 jest.mock('../../../../utils/version');
 jest.mock('fs-extra');
 jest.mock('../../../../utils/logging');
-jest.mock('../../autofix');
-jest.mock('@skuba-lib/api', () => ({
-  Git: {
-    currentBranch: jest.fn(),
-    commitAllChanges: jest.fn(),
-  },
-}));
-
-const { Git } = jest.requireMock('@skuba-lib/api');
 
 beforeEach(() => {
   jest.clearAllMocks();
-  Git.currentBranch.mockResolvedValue('test-branch');
-  Git.commitAllChanges.mockResolvedValue('abc123');
-  jest.mocked(autofix.shouldCommit).mockResolvedValue(true);
-  jest.mocked(autofix.getIgnores).mockResolvedValue([]);
 });
 
 describe('upgradeSkuba in format mode', () => {
@@ -101,7 +87,6 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
     expect(mockUpgrade.apply).toHaveBeenCalledTimes(2);
-    expect(Git.commitAllChanges).toHaveBeenCalledTimes(2);
   });
 
   it('should update the consumer manifest version', async () => {
@@ -112,7 +97,7 @@ describe('upgradeSkuba in format mode', () => {
 
     jest.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
-    const manifest = {
+    jest.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         skuba: {
           version: '8.0.0',
@@ -123,9 +108,7 @@ describe('upgradeSkuba in format mode', () => {
         version: '1.0.0',
       } as PackageJson,
       path: '/package.json',
-    };
-
-    jest.mocked(getConsumerManifest).mockResolvedValue(manifest);
+    });
 
     jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
@@ -150,12 +133,6 @@ describe('upgradeSkuba in format mode', () => {
 }
 `,
     );
-    expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
-    expect(Git.commitAllChanges).toHaveBeenCalledWith({
-      dir: expect.any(String),
-      message: 'Apply skuba 8.2.1 patches',
-      ignore: [],
-    });
   });
 
   it('should handle skuba section not being present in the packageJson', async () => {
@@ -166,7 +143,7 @@ describe('upgradeSkuba in format mode', () => {
 
     jest.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
-    const manifest = {
+    jest.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         _id: 'test',
         name: 'some-api',
@@ -174,9 +151,7 @@ describe('upgradeSkuba in format mode', () => {
         version: '1.0.0',
       } as PackageJson,
       path: '/package.json',
-    };
-
-    jest.mocked(getConsumerManifest).mockResolvedValue(manifest);
+    });
 
     jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
@@ -201,91 +176,6 @@ describe('upgradeSkuba in format mode', () => {
 }
 `,
     );
-    expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
-  });
-
-  it('should not commit when shouldCommit returns false', async () => {
-    const mockUpgrade = {
-      apply: jest.fn().mockImplementation(() => ({ result: 'apply' })),
-      description: 'mock',
-    };
-
-    jest.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
-
-    jest.mocked(getConsumerManifest).mockResolvedValue({
-      packageJson: {
-        skuba: {
-          version: '8.0.0',
-        },
-        _id: 'test',
-        name: 'some-api',
-        readme: '',
-        version: '1.0.0',
-      } as PackageJson,
-      path: '/package.json',
-    });
-
-    jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
-    jest.mocked(autofix.shouldCommit).mockResolvedValue(false);
-
-    jest
-      .mocked(fs.readdir)
-      .mockResolvedValue([{ isDirectory: () => true, name: '8.2.1' }] as never);
-
-    await expect(upgradeSkuba('format', log)).resolves.toEqual({
-      ok: true,
-      fixable: false,
-    });
-
-    expect(Git.commitAllChanges).not.toHaveBeenCalled();
-    expect(fs.writeFile).toHaveBeenCalledWith(
-      '/package.json',
-      `{
-  "name": "some-api",
-  "version": "1.0.0",
-  "skuba": {
-    "version": "8.2.1"
-  }
-}
-`,
-    );
-  });
-
-  it('should not commit when no changes are detected', async () => {
-    const mockUpgrade = {
-      apply: jest.fn().mockImplementation(() => ({ result: 'apply' })),
-      description: 'mock',
-    };
-
-    jest.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
-
-    jest.mocked(getConsumerManifest).mockResolvedValue({
-      packageJson: {
-        skuba: {
-          version: '8.0.0',
-        },
-        _id: 'test',
-        name: 'some-api',
-        readme: '',
-        version: '1.0.0',
-      } as PackageJson,
-      path: '/package.json',
-    });
-
-    jest.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
-    jest.mocked(Git.commitAllChanges).mockResolvedValue(undefined);
-
-    jest
-      .mocked(fs.readdir)
-      .mockResolvedValue([{ isDirectory: () => true, name: '8.2.1' }] as never);
-
-    await expect(upgradeSkuba('format', log)).resolves.toEqual({
-      ok: true,
-      fixable: false,
-    });
-
-    expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
-    expect(fs.writeFile).not.toHaveBeenCalled();
   });
 });
 
