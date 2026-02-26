@@ -17,7 +17,11 @@ export const TEMPLATE_NAMES = [
 
 export type TemplateName = (typeof TEMPLATE_NAMES)[number];
 
-export const TEMPLATE_NAMES_WITH_BYO = [...TEMPLATE_NAMES, 'github →'] as const;
+export const TEMPLATE_NAMES_WITH_BYO = [
+  ...TEMPLATE_NAMES,
+  'github →',
+  'seek →',
+] as const;
 
 interface TemplateDocumentationConfig {
   /**
