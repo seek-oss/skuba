@@ -225,6 +225,7 @@ export const patchPackageBuilds: PatchFunction = async ({
       format: ['cjs', 'esm'],
       outDir: 'lib',
       dts: true,
+      exports: true,
       ${assetsData ? `copy: ${JSON.stringify(assetsData)},` : ''}
     });
     `;

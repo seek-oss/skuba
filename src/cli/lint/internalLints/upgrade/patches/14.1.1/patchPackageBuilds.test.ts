@@ -202,6 +202,7 @@ describe('patchPackageBuilds', () => {
     expect(result['tsdown.config.ts']).toContain("format: ['cjs', 'esm']");
     expect(result['tsdown.config.ts']).toContain("outDir: 'lib'");
     expect(result['tsdown.config.ts']).toContain('dts: true');
+    expect(result['tsdown.config.ts']).toContain('exports: true');
     expect(result['tsdown.config.ts']).toContain(
       'copy: ["src/**/*.graphql","src/**/*.json"]',
     );
