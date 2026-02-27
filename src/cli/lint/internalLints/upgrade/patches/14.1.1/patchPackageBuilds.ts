@@ -122,6 +122,7 @@ const editFilesField = (ast: SgNode): Edit[] => {
         'lib-commonjs',
         'lib-es2015',
         'lib-types',
+        'lib-types/**/*.d.ts',
         'lib*/**/*.d.ts',
         'lib*/**/*.js',
         'lib*/**/*.js.map',
@@ -251,6 +252,43 @@ const findCustomCondition = (ast: SgNode): string | undefined => {
   return firstCustomCondition.text().slice(1, -1);
 };
 
+const findOrAddCustomConditionInRepo = async (
+  mode: 'lint' | 'format',
+): Promise<string> => {
+  try {
+    const rootTsConfigPath = path.join(process.cwd(), 'tsconfig.json');
+    const tsConfigContent = await fs.promises.readFile(
+      rootTsConfigPath,
+      'utf8',
+    );
+    const tsConfigAst = (await parseAsync('json', tsConfigContent)).root();
+    const condition = findCustomCondition(tsConfigAst);
+
+    if (!condition) {
+      const { edits, customCondition } =
+        await addCustomConditionsToTsConfig(tsConfigAst);
+      const updatedTsConfigContent = tsConfigAst.commitEdits(edits);
+
+      if (mode === 'lint') {
+        return customCondition;
+      }
+      await fs.promises.writeFile(
+        rootTsConfigPath,
+        updatedTsConfigContent,
+        'utf8',
+      );
+      return customCondition;
+    }
+
+    return condition;
+  } catch {
+    log.warn(
+      'unable to find or read root tsconfig.json, skipping adding custom condition to exports',
+    );
+    return '';
+  }
+};
+
 const addCustomConditionsToTsConfig = async (
   ast: SgNode,
 ): Promise<{ edits: Edit[]; customCondition: string }> => {
@@ -334,7 +372,16 @@ export const patchPackageBuilds: PatchFunction = async ({
     )
   ).filter((packageJsonPath) => packageJsonPath !== null);
 
+  if (likelyPackagePaths.length === 0) {
+    return {
+      result: 'skip',
+      reason: 'no skuba build-package command found',
+    };
+  }
+
   registerDynamicLanguage({ json });
+
+  const customCondition = await findOrAddCustomConditionInRepo(mode);
 
   const updatedFiles = await Promise.all(
     likelyPackagePaths.map(async (packageJsonPath) => {
@@ -367,7 +414,6 @@ export const patchPackageBuilds: PatchFunction = async ({
       // If a tsconfig.json exists, add skipLibCheck: true to avoid type errors from tsdown's optional peer dependencies.
       // If it doesn't exist, do nothing and let the fix be added manually if it's required
       let tsConfigContent: string;
-      let customCondition: string | undefined;
 
       const tsConfigPath = path.join(directory, 'tsconfig.json');
       try {
@@ -379,30 +425,10 @@ export const patchPackageBuilds: PatchFunction = async ({
         const updatedTsConfigJsonContent =
           tsConfigAst.commitEdits(tsConfigEdits);
 
-        customCondition = findCustomCondition(tsConfigAst);
-
-        if (!customCondition) {
-          const updatedTsConfigAst = (
-            await parseAsync('json', updatedTsConfigJsonContent)
-          ).root();
-
-          const { edits, customCondition: newCustomCondition } =
-            await addCustomConditionsToTsConfig(updatedTsConfigAst);
-          const updatedTsConfigJsonContentWithCustomCondition =
-            updatedTsConfigAst.commitEdits(edits);
-
-          updated.push({
-            file: tsConfigPath,
-            contents: updatedTsConfigJsonContentWithCustomCondition,
-          });
-
-          customCondition = newCustomCondition;
-        } else {
-          updated.push({
-            file: tsConfigPath,
-            contents: updatedTsConfigJsonContent,
-          });
-        }
+        updated.push({
+          file: tsConfigPath,
+          contents: updatedTsConfigJsonContent,
+        });
       } catch {
         log.subtle(
           `unable to find or read tsconfig.json at ${tsConfigPath}, skipping tsconfig updates for ${packageJsonPath}`,
