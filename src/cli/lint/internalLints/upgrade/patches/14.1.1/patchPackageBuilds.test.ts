@@ -7,11 +7,14 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchPackageBuilds } from './patchPackageBuilds.js';
 
+import { getOwnerAndRepo } from '@skuba-lib/api/git';
+
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
   glob: (pat: string | string[], opts: { ignore: string[] }) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
+jest.mock('@skuba-lib/api/git');
 
 const exec = jest.spyOn(execModule, 'exec');
 const createExec = jest.spyOn(execModule, 'createExec');
@@ -26,6 +29,10 @@ beforeEach(() => {
     () => jest.fn().mockResolvedValue(undefined as any) as any,
   );
   jest.spyOn(checks, 'isLikelyPackage').mockResolvedValueOnce(true);
+  jest.mocked(getOwnerAndRepo).mockResolvedValue({
+    owner: 'seek-oss',
+    repo: 'test-repo',
+  });
 });
 
 const baseArgs: PatchConfig = {
@@ -298,6 +305,100 @@ describe('patchPackageBuilds', () => {
       "exports: { devExports: 'seek-dev' }",
     );
     expect(result['tsdown.config.mts']).not.toContain('exports: true');
+  });
+
+  it('should use only the first custom condition when multiple are defined', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          skuba: {
+            type: 'package',
+          },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            customConditions: ['seek-dev', 'another-condition', 'third'],
+          },
+        },
+        null,
+        2,
+      ),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    expect(result['tsdown.config.mts']).toBeDefined();
+    expect(result['tsdown.config.mts']).toContain(
+      "exports: { devExports: 'seek-dev' }",
+    );
+    expect(result['tsdown.config.mts']).not.toContain('another-condition');
+    expect(result['tsdown.config.mts']).not.toContain('third');
+  });
+
+  it('should add customConditions to tsconfig when none exist', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          skuba: {
+            type: 'package',
+          },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            target: 'ES2020',
+            module: 'commonjs',
+          },
+        },
+        null,
+        2,
+      ),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    expect(result['tsdown.config.mts']).toBeDefined();
+    expect(result['tsdown.config.mts']).toContain(
+      "exports: { devExports: '@seek/test-repo/source' }",
+    );
+    expect(result['tsdown.config.mts']).not.toContain('exports: true');
+
+    expect(result['tsconfig.json']).toContain(
+      '"customConditions": ["@seek/test-repo/source"]',
+    );
   });
 
   it('should extract assets from monorepo packages', async () => {
@@ -750,7 +851,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
     const result = volToJson();
     const tsconfig = JSON.parse(result['tsconfig.json']!);
     expect(tsconfig.compilerOptions.skipLibCheck).toBe(false);
-    expect(tsconfig).toEqual(originalTsconfig);
+    expect(tsconfig.compilerOptions.customConditions).toEqual([
+      '@seek/test-repo/source',
+    ]);
   });
 
   it('should add skipLibCheck to tsconfig.json in monorepo packages', async () => {

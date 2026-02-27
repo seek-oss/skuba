@@ -18,6 +18,8 @@ import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
 import { tryRefreshConfigFiles } from '../../../refreshConfigFiles.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
+import { getOwnerAndRepo } from '@skuba-lib/api/git';
+
 const replaceAssetsField = (
   ast: SgNode,
 ): { edits: Edit[]; assetsData: string[] | null } => {
@@ -218,6 +220,59 @@ const findCustomCondition = (ast: SgNode): string | undefined => {
   return firstCustomCondition.text().slice(1, -1);
 };
 
+const addCustomConditionsToTsConfig = async (
+  ast: SgNode,
+): Promise<{ edits: Edit[]; customCondition: string }> => {
+  const ownerAndRepo = await getOwnerAndRepo({
+    dir: process.cwd(),
+  });
+
+  const customCondition = `@seek/${ownerAndRepo.repo}/source`;
+
+  const compilerOptionsObj = ast.find({
+    rule: {
+      pattern: {
+        context: '{"compilerOptions":}',
+        selector: 'pair',
+      },
+    },
+  });
+
+  if (!compilerOptionsObj) {
+    const startingBracket = ast.find({ rule: { pattern: '{' } });
+    if (!startingBracket) {
+      throw new Error('invalid tsconfig.json');
+    }
+
+    const edit = startingBracket.replace(
+      `{
+  "compilerOptions": {
+    "customConditions": ["${customCondition}"]
+  },`,
+    );
+    return {
+      edits: [edit],
+      customCondition,
+    };
+  }
+
+  const compilerOptionsStart = compilerOptionsObj.find({
+    rule: { pattern: '{' },
+  });
+
+  if (!compilerOptionsStart) {
+    throw new Error('invalid tsconfig.json');
+  }
+
+  const edit = compilerOptionsStart.replace(`{
+     "customConditions": ["@seek/${ownerAndRepo.repo}/source"],`);
+
+  return {
+    edits: [edit],
+    customCondition,
+  };
+};
+
 export const patchPackageBuilds: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
@@ -295,10 +350,28 @@ export const patchPackageBuilds: PatchFunction = async ({
 
         customCondition = findCustomCondition(tsConfigAst);
 
-        updated.push({
-          file: tsConfigPath,
-          contents: updatedTsConfigJsonContent,
-        });
+        if (!customCondition) {
+          const updatedTsConfigAst = (
+            await parseAsync('json', updatedTsConfigJsonContent)
+          ).root();
+
+          const { edits, customCondition: newCustomCondition } =
+            await addCustomConditionsToTsConfig(updatedTsConfigAst);
+          const updatedTsConfigJsonContentWithCustomCondition =
+            updatedTsConfigAst.commitEdits(edits);
+
+          updated.push({
+            file: tsConfigPath,
+            contents: updatedTsConfigJsonContentWithCustomCondition,
+          });
+
+          customCondition = newCustomCondition;
+        } else {
+          updated.push({
+            file: tsConfigPath,
+            contents: updatedTsConfigJsonContent,
+          });
+        }
       } catch {
         log.subtle(
           `unable to find or read tsconfig.json at ${tsConfigPath}, skipping tsconfig updates for ${packageJsonPath}`,
