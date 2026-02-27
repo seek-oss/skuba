@@ -318,7 +318,7 @@ export const patchPackageBuilds: PatchFunction = async ({
         ...filesEdits,
       ]);
 
-      const tsdownConfigPath = path.join(directory, 'tsdown.config.ts');
+      const tsdownConfigPath = path.join(directory, 'tsdown.config.mts');
       const defaultTsdownConfig = `import { defineConfig } from 'tsdown';
 
     export default defineConfig({
@@ -347,6 +347,12 @@ export const patchPackageBuilds: PatchFunction = async ({
         return updated;
       }
 
+      await Promise.all(
+        updated.map(({ file, contents }) =>
+          fs.promises.writeFile(file, contents, 'utf8'),
+        ),
+      );
+
       const packageManager = await detectPackageManager();
       await exec(packageManager.command, 'install', '--offline');
 
@@ -373,12 +379,6 @@ export const patchPackageBuilds: PatchFunction = async ({
       result: 'apply',
     };
   }
-
-  await Promise.all(
-    flattenedUpdatedFiles.map(({ file, contents }) =>
-      fs.promises.writeFile(file, contents, 'utf8'),
-    ),
-  );
 
   return {
     result: 'apply',

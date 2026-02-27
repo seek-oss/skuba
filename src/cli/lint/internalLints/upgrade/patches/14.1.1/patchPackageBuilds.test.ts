@@ -77,7 +77,7 @@ describe('patchPackageBuilds', () => {
         null,
         2,
       ),
-      'tsdown.config.ts': 'export default {};',
+      'tsdown.config.mts': 'export default {};',
     });
 
     await expect(
@@ -119,10 +119,10 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.ts']).toBeUndefined();
+    expect(result['tsdown.config.mts']).toBeUndefined();
   });
 
-  it('should create tsdown.config.ts with default config in format mode', async () => {
+  it('should create tsdown.config.mts with default config in format mode', async () => {
     vol.fromJSON({
       'package.json': JSON.stringify(
         {
@@ -149,11 +149,11 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.ts']).toBeDefined();
-    expect(result['tsdown.config.ts']).toContain("entry: ['src/index.ts']");
-    expect(result['tsdown.config.ts']).toContain("format: ['cjs', 'esm']");
-    expect(result['tsdown.config.ts']).toContain("outDir: 'lib'");
-    expect(result['tsdown.config.ts']).toContain('dts: true');
+    expect(result['tsdown.config.mts']).toBeDefined();
+    expect(result['tsdown.config.mts']).toContain("entry: ['src/index.ts']");
+    expect(result['tsdown.config.mts']).toContain("format: ['cjs', 'esm']");
+    expect(result['tsdown.config.mts']).toContain("outDir: 'lib'");
+    expect(result['tsdown.config.mts']).toContain('dts: true');
 
     expect(exec).toHaveBeenCalledWith('pnpm', 'install', '--offline');
 
@@ -163,7 +163,7 @@ describe('patchPackageBuilds', () => {
     expect(mockExecFn).toHaveBeenCalledWith('pnpm', 'tsdown');
   });
 
-  it('should extract and include assets in tsdown.config.ts', async () => {
+  it('should extract and include assets in tsdown.config.mts', async () => {
     vol.fromJSON({
       'package.json': JSON.stringify(
         {
@@ -192,16 +192,16 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.ts']).toBeDefined();
-    expect(result['tsdown.config.ts']).toContain("entry: ['src/index.ts']");
-    expect(result['tsdown.config.ts']).toContain("format: ['cjs', 'esm']");
-    expect(result['tsdown.config.ts']).toContain("outDir: 'lib'");
-    expect(result['tsdown.config.ts']).toContain('dts: true');
-    expect(result['tsdown.config.ts']).toContain('exports: true');
-    expect(result['tsdown.config.ts']).toContain(
+    expect(result['tsdown.config.mts']).toBeDefined();
+    expect(result['tsdown.config.mts']).toContain("entry: ['src/index.ts']");
+    expect(result['tsdown.config.mts']).toContain("format: ['cjs', 'esm']");
+    expect(result['tsdown.config.mts']).toContain("outDir: 'lib'");
+    expect(result['tsdown.config.mts']).toContain('dts: true');
+    expect(result['tsdown.config.mts']).toContain('exports: true');
+    expect(result['tsdown.config.mts']).toContain(
       '      checks: {\n        legacyCjs: false,\n      },',
     );
-    expect(result['tsdown.config.ts']).toContain(
+    expect(result['tsdown.config.mts']).toContain(
       'copy: ["src/**/*.graphql","src/**/*.json"]',
     );
     const packageJson = JSON.parse(result['package.json']!);
@@ -220,7 +220,7 @@ describe('patchPackageBuilds', () => {
     `);
   });
 
-  it('should create tsdown.config.ts without copy when no assets are present', async () => {
+  it('should create tsdown.config.mts without copy when no assets are present', async () => {
     vol.fromJSON({
       'package.json': JSON.stringify(
         {
@@ -248,8 +248,8 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.ts']).toBeDefined();
-    expect(result['tsdown.config.ts']).not.toContain('copy:');
+    expect(result['tsdown.config.mts']).toBeDefined();
+    expect(result['tsdown.config.mts']).not.toContain('copy:');
   });
 
   it('should use custom condition from tsconfig.json in exports field', async () => {
@@ -289,15 +289,15 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.ts']).toBeDefined();
-    expect(result['tsdown.config.ts']).toContain("entry: ['src/index.ts']");
-    expect(result['tsdown.config.ts']).toContain("format: ['cjs', 'esm']");
-    expect(result['tsdown.config.ts']).toContain("outDir: 'lib'");
-    expect(result['tsdown.config.ts']).toContain('dts: true');
-    expect(result['tsdown.config.ts']).toContain(
+    expect(result['tsdown.config.mts']).toBeDefined();
+    expect(result['tsdown.config.mts']).toContain("entry: ['src/index.ts']");
+    expect(result['tsdown.config.mts']).toContain("format: ['cjs', 'esm']");
+    expect(result['tsdown.config.mts']).toContain("outDir: 'lib'");
+    expect(result['tsdown.config.mts']).toContain('dts: true');
+    expect(result['tsdown.config.mts']).toContain(
       "exports: { devExports: 'seek-dev' }",
     );
-    expect(result['tsdown.config.ts']).not.toContain('exports: true');
+    expect(result['tsdown.config.mts']).not.toContain('exports: true');
   });
 
   it('should extract assets from monorepo packages', async () => {
@@ -353,12 +353,12 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['packages/package-a/tsdown.config.ts']).toBeDefined();
-    expect(result['packages/package-a/tsdown.config.ts']).toContain(
+    expect(result['packages/package-a/tsdown.config.mts']).toBeDefined();
+    expect(result['packages/package-a/tsdown.config.mts']).toContain(
       'copy: ["src/**/*.txt"]',
     );
-    expect(result['packages/package-b/tsdown.config.ts']).toBeDefined();
-    expect(result['packages/package-b/tsdown.config.ts']).toContain(
+    expect(result['packages/package-b/tsdown.config.mts']).toBeDefined();
+    expect(result['packages/package-b/tsdown.config.mts']).toContain(
       'copy: ["src/**/*.yml","src/**/*.yaml"]',
     );
   });
@@ -413,9 +413,9 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.ts']).toBeDefined();
-    expect(result['packages/package-a/tsdown.config.ts']).toBeDefined();
-    expect(result['packages/package-b/tsdown.config.ts']).toBeDefined();
+    expect(result['tsdown.config.mts']).toBeDefined();
+    expect(result['packages/package-a/tsdown.config.mts']).toBeDefined();
+    expect(result['packages/package-b/tsdown.config.mts']).toBeDefined();
     expect(exec).toHaveBeenCalledTimes(3);
     expect(exec).toHaveBeenCalledWith('pnpm', 'install', '--offline');
     expect(createExec).toHaveBeenCalledTimes(3);
@@ -539,8 +539,8 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.ts']).toBeDefined();
-    expect(result['packages/not-a-package/tsdown.config.ts']).toBeUndefined();
+    expect(result['tsdown.config.mts']).toBeDefined();
+    expect(result['packages/not-a-package/tsdown.config.mts']).toBeUndefined();
   });
 
   it('should update package.json fields in monorepo packages', async () => {
