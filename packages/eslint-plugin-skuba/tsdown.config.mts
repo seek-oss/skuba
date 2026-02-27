@@ -7,5 +7,7 @@ export default defineConfig({
   },
   format: ['cjs', 'esm'],
   outDir: 'lib',
-  failOnWarn: false,
+  checks: {
+    legacyCjs: false,
+  },
 });
