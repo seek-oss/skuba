@@ -155,12 +155,7 @@ describe('patchPackageBuilds', () => {
     expect(result['tsdown.config.ts']).toContain("outDir: 'lib'");
     expect(result['tsdown.config.ts']).toContain('dts: true');
 
-    expect(exec).toHaveBeenCalledWith(
-      'pnpm',
-      'install',
-      '--frozen-lockfile=false',
-      '--offline',
-    );
+    expect(exec).toHaveBeenCalledWith('pnpm', 'install', '--offline');
 
     expect(createExec).toHaveBeenCalledWith({ cwd: expect.any(String) });
 
@@ -203,6 +198,9 @@ describe('patchPackageBuilds', () => {
     expect(result['tsdown.config.ts']).toContain("outDir: 'lib'");
     expect(result['tsdown.config.ts']).toContain('dts: true');
     expect(result['tsdown.config.ts']).toContain('exports: true');
+    expect(result['tsdown.config.ts']).toContain(
+      '      checks: {\n        legacyCjs: false,\n      },',
+    );
     expect(result['tsdown.config.ts']).toContain(
       'copy: ["src/**/*.graphql","src/**/*.json"]',
     );
@@ -252,6 +250,54 @@ describe('patchPackageBuilds', () => {
     const result = volToJson();
     expect(result['tsdown.config.ts']).toBeDefined();
     expect(result['tsdown.config.ts']).not.toContain('copy:');
+  });
+
+  it('should use custom condition from tsconfig.json in exports field', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          skuba: {
+            type: 'package',
+          },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'tsconfig.json': JSON.stringify(
+        {
+          compilerOptions: {
+            customConditions: ['seek-dev'],
+          },
+        },
+        null,
+        2,
+      ),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    expect(result['tsdown.config.ts']).toBeDefined();
+    expect(result['tsdown.config.ts']).toContain("entry: ['src/index.ts']");
+    expect(result['tsdown.config.ts']).toContain("format: ['cjs', 'esm']");
+    expect(result['tsdown.config.ts']).toContain("outDir: 'lib'");
+    expect(result['tsdown.config.ts']).toContain('dts: true');
+    expect(result['tsdown.config.ts']).toContain(
+      "exports: { devExports: 'seek-dev' }",
+    );
+    expect(result['tsdown.config.ts']).not.toContain('exports: true');
   });
 
   it('should extract assets from monorepo packages', async () => {
@@ -371,12 +417,7 @@ describe('patchPackageBuilds', () => {
     expect(result['packages/package-a/tsdown.config.ts']).toBeDefined();
     expect(result['packages/package-b/tsdown.config.ts']).toBeDefined();
     expect(exec).toHaveBeenCalledTimes(3);
-    expect(exec).toHaveBeenCalledWith(
-      'pnpm',
-      'install',
-      '--frozen-lockfile=false',
-      '--offline',
-    );
+    expect(exec).toHaveBeenCalledWith('pnpm', 'install', '--offline');
     expect(createExec).toHaveBeenCalledTimes(3);
     createExec.mock.results.forEach((res) => {
       const mockExecFn = res.value;
@@ -423,12 +464,7 @@ describe('patchPackageBuilds', () => {
       main: './lib-commonjs/index.js',
       module: './lib-es2015/index.js',
       types: './lib-types/index.d.ts',
-      files: [
-        'lib*/**/*.d.ts',
-        'lib*/**/*.js',
-        'lib*/**/*.js.map',
-        'lib*/**/*.json',
-      ],
+      files: ['lib'],
       skuba: { type: 'package', template: 'koa-rest-api' },
       scripts: {
         build: 'skuba build-package',
@@ -570,7 +606,7 @@ describe('patchPackageBuilds', () => {
     expect(packageAJson).toMatchInlineSnapshot(`
       {
         "files": [
-          "lib*/**/*.js",
+          "lib",
         ],
         "main": "./lib-commonjs/index.js",
         "module": "./lib-es2015/index.js",

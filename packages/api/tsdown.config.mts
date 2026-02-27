@@ -8,5 +8,7 @@ export default defineConfig({
   exports: {
     devExports: '@seek/skuba/source',
   },
-  failOnWarn: false,
+  checks: {
+    legacyCjs: false,
+  },
 });

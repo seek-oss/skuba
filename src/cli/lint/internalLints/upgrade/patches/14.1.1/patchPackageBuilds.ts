@@ -84,6 +84,56 @@ const replaceAssetsField = (
   return { edits, assetsData };
 };
 
+const editFilesField = (ast: SgNode): Edit[] => {
+  const filesPair = ast.find({
+    rule: {
+      kind: 'pair',
+      has: {
+        field: 'key',
+        regex: '^"files"$',
+      },
+    },
+  });
+
+  if (!filesPair) {
+    return [];
+  }
+  const filesArray = filesPair.find({
+    rule: {
+      kind: 'array',
+    },
+  });
+
+  if (!filesArray) {
+    throw new Error('files array not found in package.json');
+  }
+
+  const existingFiles = JSON.parse(filesArray.text()) as unknown;
+
+  if (!Array.isArray(existingFiles)) {
+    throw new Error('files field must be an array');
+  }
+
+  const newFiles = existingFiles.filter(
+    (file: string) =>
+      ![
+        'lib-commonjs',
+        'lib-es2015',
+        'lib-types',
+        'lib*/**/*.d.ts',
+        'lib*/**/*.js',
+        'lib*/**/*.js.map',
+        'lib*/**/*.json',
+      ].includes(file),
+  );
+
+  newFiles.push('lib');
+
+  const edits = [filesArray.replace(JSON.stringify(newFiles))];
+
+  return edits;
+};
+
 const addSkipLibCheckToTsConfig = (ast: SgNode): Edit[] => {
   const compilerOptionsObj = ast.find({
     rule: {
@@ -130,6 +180,44 @@ const addSkipLibCheckToTsConfig = (ast: SgNode): Edit[] => {
   return [edit];
 };
 
+const findCustomCondition = (ast: SgNode): string | undefined => {
+  const customConditionPair = ast.find({
+    rule: {
+      kind: 'pair',
+      has: {
+        field: 'key',
+        regex: '^"customConditions"$',
+      },
+    },
+  });
+
+  if (!customConditionPair) {
+    return undefined;
+  }
+
+  const customConditionsArray = customConditionPair.find({
+    rule: {
+      kind: 'array',
+    },
+  });
+
+  if (!customConditionsArray) {
+    return undefined;
+  }
+
+  const firstCustomCondition = customConditionsArray.find({
+    rule: {
+      kind: 'string',
+    },
+  });
+
+  if (!firstCustomCondition) {
+    return undefined;
+  }
+
+  return firstCustomCondition.text().slice(1, -1);
+};
+
 export const patchPackageBuilds: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
@@ -162,8 +250,13 @@ export const patchPackageBuilds: PatchFunction = async ({
 
   registerDynamicLanguage({ json });
 
-  const results = await Promise.all(
+  const updatedFiles = await Promise.all(
     likelyPackagePaths.map(async (packageJsonPath) => {
+      const updated: Array<{
+        file: string;
+        contents: string;
+      }> = [];
+
       const directory = path.dirname(packageJsonPath);
 
       const files = await fs.promises.readdir(directory);
@@ -188,6 +281,8 @@ export const patchPackageBuilds: PatchFunction = async ({
       // If a tsconfig.json exists, add skipLibCheck: true to avoid type errors from tsdown's optional peer dependencies.
       // If it doesn't exist, do nothing and let the fix be added manually if it's required
       let tsConfigContent: string;
+      let customCondition: string | undefined;
+
       const tsConfigPath = path.join(directory, 'tsconfig.json');
       try {
         tsConfigContent = await fs.promises.readFile(tsConfigPath, 'utf8');
@@ -198,11 +293,12 @@ export const patchPackageBuilds: PatchFunction = async ({
         const updatedTsConfigJsonContent =
           tsConfigAst.commitEdits(tsConfigEdits);
 
-        await fs.promises.writeFile(
-          tsConfigPath,
-          updatedTsConfigJsonContent,
-          'utf8',
-        );
+        customCondition = findCustomCondition(tsConfigAst);
+
+        updated.push({
+          file: tsConfigPath,
+          contents: updatedTsConfigJsonContent,
+        });
       } catch {
         log.subtle(
           `unable to find or read tsconfig.json at ${tsConfigPath}, skipping tsconfig updates for ${packageJsonPath}`,
@@ -215,7 +311,12 @@ export const patchPackageBuilds: PatchFunction = async ({
 
       const { edits, assetsData } = replaceAssetsField(packageJsonAst);
 
-      const updatedPackageJsonContent = packageJsonAst.commitEdits(edits);
+      const filesEdits = editFilesField(packageJsonAst);
+
+      const updatedPackageJsonContent = packageJsonAst.commitEdits([
+        ...edits,
+        ...filesEdits,
+      ]);
 
       const tsdownConfigPath = path.join(directory, 'tsdown.config.ts');
       const defaultTsdownConfig = `import { defineConfig } from 'tsdown';
@@ -225,50 +326,62 @@ export const patchPackageBuilds: PatchFunction = async ({
       format: ['cjs', 'esm'],
       outDir: 'lib',
       dts: true,
-      exports: true,
+      checks: {
+        legacyCjs: false,
+      },
+      ${customCondition ? `exports: { devExports: '${customCondition}' },` : 'exports: true,'}
       ${assetsData ? `copy: ${JSON.stringify(assetsData)},` : ''}
     });
     `;
 
+      updated.push({
+        file: tsdownConfigPath,
+        contents: defaultTsdownConfig,
+      });
+      updated.push({
+        file: packageJsonPath,
+        contents: updatedPackageJsonContent,
+      });
+
       if (mode === 'lint') {
-        return { processed: true };
+        return updated;
       }
 
-      await Promise.all([
-        fs.promises.writeFile(tsdownConfigPath, defaultTsdownConfig, 'utf8'),
-        fs.promises.writeFile(
-          packageJsonPath,
-          updatedPackageJsonContent,
-          'utf8',
-        ),
-      ]);
-
       const packageManager = await detectPackageManager();
-      await exec(
-        packageManager.command,
-        'install',
-        '--frozen-lockfile=false',
-        '--offline',
-      );
+      await exec(packageManager.command, 'install', '--offline');
 
       const execInPackageDir = createExec({ cwd: directory });
       await execInPackageDir(packageManager.command, 'tsdown');
 
-      return { processed: true };
+      return updated;
     }),
   );
 
-  const foundMatch = results.some((result) => result !== null);
+  const flattenedUpdatedFiles = updatedFiles
+    .flat()
+    .filter((file) => file !== null);
 
-  if (foundMatch) {
+  if (flattenedUpdatedFiles.length === 0) {
+    return {
+      result: 'skip',
+      reason: 'no skuba build-package command found',
+    };
+  }
+
+  if (mode === 'lint') {
     return {
       result: 'apply',
     };
   }
 
+  await Promise.all(
+    flattenedUpdatedFiles.map(({ file, contents }) =>
+      fs.promises.writeFile(file, contents, 'utf8'),
+    ),
+  );
+
   return {
-    result: 'skip',
-    reason: 'no skuba build-package command found',
+    result: 'apply',
   };
 };
 
