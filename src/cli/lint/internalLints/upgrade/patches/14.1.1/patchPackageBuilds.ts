@@ -136,6 +136,37 @@ const editFilesField = (ast: SgNode): Edit[] => {
   return edits;
 };
 
+const removePublishConfig = (ast: SgNode): Edit[] => {
+  const publishConfigPair = ast.find({
+    rule: {
+      kind: 'pair',
+      has: {
+        field: 'key',
+        regex: '^"publishConfig"$',
+      },
+    },
+  });
+
+  if (!publishConfigPair) {
+    return [];
+  }
+
+  const edits = [publishConfigPair.replace('')];
+
+  // Remove the trailing comma of the publishConfig pair or the preceding comma if it exists to avoid leaving a dangling comma
+  const maybeCommaAfter = publishConfigPair?.next();
+  if (maybeCommaAfter?.text().trim() === ',') {
+    edits.push(maybeCommaAfter.replace(''));
+  } else {
+    const maybeCommaBefore = publishConfigPair?.prev();
+    if (maybeCommaBefore?.text().trim() === ',') {
+      edits.push(maybeCommaBefore.replace(''));
+    }
+  }
+
+  return edits;
+};
+
 const addSkipLibCheckToTsConfig = (ast: SgNode): Edit[] => {
   const compilerOptionsObj = ast.find({
     rule: {
@@ -386,9 +417,12 @@ export const patchPackageBuilds: PatchFunction = async ({
 
       const filesEdits = editFilesField(packageJsonAst);
 
+      const publishConfigEdits = removePublishConfig(packageJsonAst);
+
       const updatedPackageJsonContent = packageJsonAst.commitEdits([
         ...edits,
         ...filesEdits,
+        ...publishConfigEdits,
       ]);
 
       const tsdownConfigPath = path.join(directory, 'tsdown.config.mts');

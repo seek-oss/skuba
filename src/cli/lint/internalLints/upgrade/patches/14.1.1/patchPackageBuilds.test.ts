@@ -738,6 +738,52 @@ describe('patchPackageBuilds', () => {
       }
     `);
   });
+
+  it('should remove publishConfig from package.json', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+          publishConfig: {
+            main: 'lib-commonjs/index.js',
+          },
+        },
+        null,
+        2,
+      ),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    const packageJson = JSON.parse(result['package.json']!);
+
+    expect(packageJson).toMatchInlineSnapshot(`
+      {
+        "name": "test",
+        "scripts": {
+          "build": "skuba build-package",
+        },
+        "skuba": {
+          "type": "package",
+        },
+        "version": "1.0.0",
+      }
+    `);
+    expect(packageJson.publishConfig).toBeUndefined();
+  });
 });
 describe('patchPackageBuilds - skipLibCheck', () => {
   it('should add skipLibCheck to tsconfig.json when compilerOptions does not exist', async () => {
