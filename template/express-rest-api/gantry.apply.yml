@@ -2,18 +2,18 @@ kind: Service
 
 schemaVersion: v0.0
 
-name: '{{values "service"}}'
+name: '<%- serviceName %>'
 
-owner: '{{values "owner"}}'
+owner: '<%- teamName %>'
 
-image: '{{values "image"}}'
+image: '<%- prodAwsAccountId %>.dkr.ecr.<%- region %>.amazonaws.com/<%- serviceName %>:{{.BuildID}}'
 
 env:
   DEPLOYMENT: '{{values "deployment"}}'
-  SERVICE: '{{values "service"}}'
+  SERVICE: '<%- serviceName %>'
 
   DD_ENV: '{{values "env"}}'
-  DD_SERVICE: '{{values "service"}}'
+  DD_SERVICE: '<%- serviceName %>'
 
   OPENTELEMETRY_ENABLED: '{{values "openTelemetry.enabled"}}'
 
@@ -128,9 +128,7 @@ deployment:
     useExternalDns: true
 
 tags:
-  {{range $key, $value := .Values.tags}}
-  {{$key}}: '{{$value}}'
-  {{end}}
+  # seek:system:name: 'TODO: https://rfc.skinfra.xyz/RFC051-AWS-Tagging-Standard.html#tagging-schema'
 
 cpuArchitecture: <%- platformName %>
 readOnlyRootFilesystem: true
