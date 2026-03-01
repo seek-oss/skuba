@@ -481,11 +481,21 @@ export const patchPackageBuilds: PatchFunction = async ({
         return updated;
       }
 
-      await Promise.all(
-        updated.map(({ file, contents }) =>
+      const tsConfigBuildPath = path.join(directory, 'tsconfig.build.json');
+
+      let tsconfigBuildFileExists = false;
+
+      try {
+        await fs.promises.access(tsConfigBuildPath, fs.constants.F_OK);
+        tsconfigBuildFileExists = true;
+      } catch {}
+
+      await Promise.all([
+        ...updated.map(({ file, contents }) =>
           fs.promises.writeFile(file, contents, 'utf8'),
         ),
-      );
+        ...(tsconfigBuildFileExists ? [fs.promises.rm(tsConfigBuildPath)] : []),
+      ]);
 
       const packageManager = await detectPackageManager();
       await exec(packageManager.command, 'install', '--offline');

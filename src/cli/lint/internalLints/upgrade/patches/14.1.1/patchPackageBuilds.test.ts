@@ -1009,4 +1009,42 @@ describe('patchPackageBuilds - skipLibCheck', () => {
     expect(tsconfigContent).toContain('// tsdown has optional peer deps');
     expect(tsconfigContent).toContain('// some comment about target');
   });
+
+  it('should remove tsconfig.build.json if it exists', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+      'tsconfig.build.json': JSON.stringify(
+        {
+          compilerOptions: {
+            target: 'ES2020',
+          },
+        },
+        null,
+        2,
+      ),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    expect(result['tsconfig.build.json']).toBeUndefined();
+  });
 });
