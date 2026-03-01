@@ -361,8 +361,8 @@ importers:
         specifier: ~0.212.0
         version: 0.212.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
-        specifier: ^11.1.0
-        version: 11.3.0
+        specifier: ^12.0.0
+        version: 12.0.0
       express:
         specifier: ^5.0.0
         version: 5.2.1
@@ -438,8 +438,8 @@ importers:
         specifier: ~0.212.0
         version: 0.212.0(@opentelemetry/api@1.9.0)
       '@seek/logger':
-        specifier: ^11.1.0
-        version: 11.3.0
+        specifier: ^12.0.0
+        version: 12.0.0
       hot-shots:
         specifier: ^14.0.0
         version: 14.0.0
@@ -508,8 +508,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       '@seek/logger':
-        specifier: ^11.1.0
-        version: 11.3.0
+        specifier: ^12.0.0
+        version: 12.0.0
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -2338,6 +2338,10 @@ packages:
   '@seek/logger@11.3.0':
     resolution: {integrity: sha512-hMohjrTyD/OCT4ijzJofQj/g890WtovW1T34LUZDc1Eixx651irWamokr4JsZSwiRkOOPYA9ht6T1rl+a7gj5w==}
     engines: {node: '>=20.9.0'}
+
+  '@seek/logger@12.0.0':
+    resolution: {integrity: sha512-Kpab1zm4c0Hg8Y6GDT1XCU/+D6bG9ln5iS3ZloaQ2mb8ulX6eBNLnhHW18KJ5nC2xJXjjHr12nhFQH4Be4z8zg==}
+    engines: {node: '>=22.14.0'}
 
   '@semantic-release/commit-analyzer@13.0.1':
     resolution: {integrity: sha512-wdnBPHKkr9HhNhXOhZD5a2LNl91+hs8CC2vsAVYxtZH3y0dV3wKn+uZSN61rdJQZ8EGxzWB3inWocBHV9+u/CQ==}
@@ -9778,6 +9782,13 @@ snapshots:
       zod: 4.3.6
 
   '@seek/logger@11.3.0':
+    dependencies:
+      '@pinojs/redact': 0.4.0
+      dtrim: 1.13.3
+      pino: 10.3.1
+      pino-std-serializers: 7.1.0
+
+  '@seek/logger@12.0.0':
     dependencies:
       '@pinojs/redact': 0.4.0
       dtrim: 1.13.3
