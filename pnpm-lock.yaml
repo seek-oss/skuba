@@ -367,11 +367,11 @@ importers:
         specifier: ^5.0.0
         version: 5.2.1
       hot-shots:
-        specifier: ^13.0.0
-        version: 13.2.0
+        specifier: ^14.0.0
+        version: 14.0.0
       seek-datadog-custom-metrics:
         specifier: ^6.0.0
-        version: 6.0.3(datadog-lambda-js@12.134.0)(hot-shots@13.2.0)
+        version: 6.0.3(datadog-lambda-js@12.134.0)(hot-shots@14.0.0)
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -441,8 +441,8 @@ importers:
         specifier: ^11.1.0
         version: 11.3.0
       hot-shots:
-        specifier: ^13.0.0
-        version: 13.2.0
+        specifier: ^14.0.0
+        version: 14.0.0
       koa:
         specifier: ^3.0.1
         version: 3.1.2
@@ -451,10 +451,10 @@ importers:
         version: 4.1.0
       seek-datadog-custom-metrics:
         specifier: ^6.0.0
-        version: 6.0.3(datadog-lambda-js@12.134.0)(hot-shots@13.2.0)
+        version: 6.0.3(datadog-lambda-js@12.134.0)(hot-shots@14.0.0)
       seek-koala:
         specifier: ^7.1.0
-        version: 7.1.1(hot-shots@13.2.0)(koa@3.1.2)
+        version: 7.1.1(hot-shots@14.0.0)(koa@3.1.2)
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -4541,8 +4541,8 @@ packages:
     resolution: {integrity: sha512-M422h7o/BR3rmCQ8UHi7cyyMqKltdP9Uo+J2fXK+RSAY+wTcKOIRyhTuKv4qn+DJf3g+PL890AzId5KZpX+CBg==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  hot-shots@13.2.0:
-    resolution: {integrity: sha512-suQR8U8P2CNcAedwLIaQTQ5OEWhU2rusOmo3gY+H8H1h6bKTBI/xHbq3D9xF6EGgFFjpfLAuB1p2Psc/CYyvOw==}
+  hot-shots@14.0.0:
+    resolution: {integrity: sha512-dUTE7VXybInO/xLaExWjpnA60ugkRZ0DdKk1gx4xGRfYX2/jzbn8VfVqEz8OWwmfJcluGjYq8ES2ZSNeyq5ZLQ==}
     engines: {node: '>=16.0.0'}
 
   html-escaper@2.0.2:
@@ -12386,7 +12386,7 @@ snapshots:
     dependencies:
       lru-cache: 11.2.6
 
-  hot-shots@13.2.0:
+  hot-shots@14.0.0:
     optionalDependencies:
       unix-dgram: 2.0.7
 
@@ -14678,19 +14678,19 @@ snapshots:
 
   secure-json-parse@4.1.0: {}
 
-  seek-datadog-custom-metrics@6.0.3(datadog-lambda-js@12.134.0)(hot-shots@13.2.0):
+  seek-datadog-custom-metrics@6.0.3(datadog-lambda-js@12.134.0)(hot-shots@14.0.0):
     dependencies:
       '@types/aws-lambda': 8.10.160
     optionalDependencies:
       datadog-lambda-js: 12.134.0
-      hot-shots: 13.2.0
+      hot-shots: 14.0.0
 
-  seek-koala@7.1.1(hot-shots@13.2.0)(koa@3.1.2):
+  seek-koala@7.1.1(hot-shots@14.0.0)(koa@3.1.2):
     dependencies:
       http-errors: 1.8.1
       koa: 3.1.2
     optionalDependencies:
-      hot-shots: 13.2.0
+      hot-shots: 14.0.0
 
   semantic-release@25.0.3(typescript@5.9.3):
     dependencies:
