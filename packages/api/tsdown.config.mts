@@ -12,4 +12,6 @@ export default defineConfig({
   checks: {
     legacyCjs: false,
   },
+  attw: true,
+  publint: true,
 });
