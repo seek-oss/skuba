@@ -5,6 +5,6 @@ import { tryPatchPackageBuilds } from './patchPackageBuilds.js';
 export const patches: Patches = [
   {
     apply: tryPatchPackageBuilds,
-    description: 'Migrate packages build script to use tsdown',
+    description: 'Migrate npm package builds to tsdown',
   },
 ];
