@@ -99,8 +99,20 @@ skuba build-package
 # ℹ [ESM] lib/index.d.mts
 ```
 
+Assets can be bundled by configuring the [copy] field in the `tsdown.config.mts` file. Depending on your how your application interprets asset paths, the `unbundle` option may need to be set to `true`.
+
+```ts
+import { defineConfig } from 'tsdown/config';
+
+export default defineConfig({
+  unbundle: true,
+  copy: ['**/*.vocab/*translations.json'],
+});
+```
+
 [`skuba configure`]: ./configure.md#skuba-configure
 [compiler option]: https://www.typescriptlang.org/docs/handbook/compiler-options.html#compiler-options
+[copy]: https://tsdown.dev/reference/api/Interface.UserConfig#copy
 [esbuild]: ../deep-dives/esbuild.md
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html
 [tsdown]: https://tsdown.dev/
