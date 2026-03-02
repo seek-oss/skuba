@@ -1,31 +1,27 @@
-import fs from 'fs-extra';
+import memfs, { vol } from 'memfs';
 
-import * as packageAnalysis from '../../../../../configure/analysis/package.js';
-import * as projectAnalysis from '../../../../../configure/analysis/project.js';
 import type { PatchConfig } from '../../index.js';
 
 import { tryAddEmptyExports } from './addEmptyExports.js';
 
-jest
-  .spyOn(packageAnalysis, 'getDestinationManifest')
-  .mockResolvedValue({ path: '~/project/package.json' } as any);
+jest.mock('fs-extra', () => memfs);
+jest.mock('fs', () => memfs);
 
-const createDestinationFileReader = jest
-  .spyOn(projectAnalysis, 'createDestinationFileReader')
-  .mockReturnValue(() => {
-    throw new Error('Not implemented!');
-  });
+const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-const writeFile = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+const consoleLog = jest.spyOn(console, 'log').mockImplementation();
 
 beforeEach(jest.clearAllMocks);
+beforeEach(() => vol.reset());
 
 describe('tryAddEmptyExports', () => {
   describe('format mode', () => {
     it('converts non-compliant Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue((filename) =>
-        Promise.resolve(`// ${filename}`),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+        'jest.setup.ts': '// jest.setup.ts',
+        'jest.setup.int.ts': '// jest.setup.int.ts',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'format' } as PatchConfig),
@@ -33,34 +29,27 @@ describe('tryAddEmptyExports', () => {
         result: 'apply',
       });
 
-      expect(writeFile.mock.calls.flat().join('\n')).toMatchInlineSnapshot(`
-        "~/project/jest.setup.ts
-        // jest.setup.ts
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "jest.setup.int.ts": "// jest.setup.int.ts
 
         export {};
-
-        ~/project/jest.setup.int.ts
-        // jest.setup.int.ts
+        ",
+          "jest.setup.ts": "// jest.setup.ts
 
         export {};
-        "
+        ",
+          "package.json": "{}",
+        }
       `);
     });
 
     it('no-ops compliant Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue(
-        (filename) =>
-          new Promise((resolve, reject) => {
-            switch (filename) {
-              case 'jest.setup.ts':
-                return resolve("import './register';");
-              case 'jest.setup.int.ts':
-                return resolve('export const foo = true;');
-              default:
-                return reject(new Error(`Not implemented: ${filename}`));
-            }
-          }),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+        'jest.setup.ts': "import './register';",
+        'jest.setup.int.ts': 'export const foo = true;',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'format' } as PatchConfig),
@@ -68,13 +57,19 @@ describe('tryAddEmptyExports', () => {
         result: 'skip',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "jest.setup.int.ts": "export const foo = true;",
+          "jest.setup.ts": "import './register';",
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('no-ops non-existent Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue(() =>
-        Promise.resolve(undefined),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'format' } as PatchConfig),
@@ -82,14 +77,17 @@ describe('tryAddEmptyExports', () => {
         result: 'skip',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = jest.spyOn(console, 'log').mockImplementation();
-
-      createDestinationFileReader.mockReturnValue(() => {
-        throw new Error('Something happened!');
+      vol.fromJSON({
+        'jest.setup.ts': '// jest.setup.ts',
+        'package.json': 'invalid',
       });
 
       await expect(
@@ -99,21 +97,21 @@ describe('tryAddEmptyExports', () => {
         reason: 'due to an error',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
-
       expect(consoleLog).toHaveBeenCalledTimes(2);
       expect(consoleLog.mock.calls.flat()).toEqual([
         'Failed to convert Jest setup files to isolated modules.',
-        expect.stringMatching(/^Error: Something happened!/),
+        expect.stringMatching(/JSONError/),
       ]);
     });
   });
 
   describe('lint mode', () => {
     it('converts non-compliant Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue((filename) =>
-        Promise.resolve(`// ${filename}`),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+        'jest.setup.ts': '// jest.setup.ts',
+        'jest.setup.int.ts': '// jest.setup.int.ts',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
@@ -121,23 +119,21 @@ describe('tryAddEmptyExports', () => {
         result: 'apply',
       });
 
-      expect(writeFile.mock.calls).toHaveLength(0);
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "jest.setup.int.ts": "// jest.setup.int.ts",
+          "jest.setup.ts": "// jest.setup.ts",
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('no-ops compliant Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue(
-        (filename) =>
-          new Promise((resolve, reject) => {
-            switch (filename) {
-              case 'jest.setup.ts':
-                return resolve("import './register';");
-              case 'jest.setup.int.ts':
-                return resolve('export const foo = true;');
-              default:
-                return reject(new Error(`Not implemented: ${filename}`));
-            }
-          }),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+        'jest.setup.ts': "import './register';",
+        'jest.setup.int.ts': 'export const foo = true;',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
@@ -145,13 +141,19 @@ describe('tryAddEmptyExports', () => {
         result: 'skip',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "jest.setup.int.ts": "export const foo = true;",
+          "jest.setup.ts": "import './register';",
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('no-ops non-existent Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue(() =>
-        Promise.resolve(undefined),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
@@ -159,14 +161,17 @@ describe('tryAddEmptyExports', () => {
         result: 'skip',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = jest.spyOn(console, 'log').mockImplementation();
-
-      createDestinationFileReader.mockReturnValue(() => {
-        throw new Error('Something happened!');
+      vol.fromJSON({
+        'package.json': 'invalid',
+        'jest.setup.ts': '// jest.setup.ts',
       });
 
       await expect(
@@ -176,12 +181,10 @@ describe('tryAddEmptyExports', () => {
         reason: 'due to an error',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
-
       expect(consoleLog).toHaveBeenCalledTimes(2);
       expect(consoleLog.mock.calls.flat()).toEqual([
         'Failed to convert Jest setup files to isolated modules.',
-        expect.stringMatching(/^Error: Something happened!/),
+        expect.stringMatching(/JSONError/),
       ]);
     });
   });
