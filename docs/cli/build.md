@@ -62,55 +62,24 @@ With esbuild, you can supply the following options:
 | `--debug`   | Enable debug console output               |
 | `--project` | Point to a different `tsconfig.json` file |
 
-## Bundling assets
-
-To bundle additional assets alongside your build, add an `assets` field inside the `skuba` section within your `package.json`.
-
-```json
-{
-  "skuba": {
-    "entryPoint": "src/index.ts",
-    "template": "koa-rest-api",
-    "type": "application",
-    "version": "8.1.0",
-    "assets": ["**/*.vocab/*translations.json"]
-  }
-}
-```
-
-In this example, all `*.vocab/*translations.json` files found within `src` will be copied into the corresponding `lib` directory.
-
 ---
 
 ## skuba build-package
 
-Compiles your project for compatibility with CommonJS and ES2015 modules.
+Compiles your project with [tsdown] to produce CJS, ESM, and type declaration outputs.
 
 This is useful for building isomorphic npm packages.
 
 ```shell
 skuba build-package
 
-# commonjs │ TSFILE: ...
-# commonjs │ tsc exited with code 0
-# es2015   │ TSFILE: ...
-# es2015   │ tsc exited with code 0
-# types    │ TSFILE: ...
-# types    │ tsc exited with code 0
+# ℹ entry: src/index.ts
+# ℹ target: node22.14.0
+# ℹ [CJS] lib/index.cjs
+# ℹ [CJS] lib/index.d.cts
+# ℹ [ESM] lib/index.mjs
+# ℹ [ESM] lib/index.d.mts
 ```
-
-`skuba build-package` runs operations concurrently up to your [CPU core count].
-On a resource-constrained Buildkite agent,
-you can limit this with the `--serial` flag.
-See our [Buildkite guide] for more information.
-
-To bundle additional assets alongside your package, view the [bundling assets](#bundling-assets) section above.
-
-These files will be copied into the corresponding `lib-commonjs` and `lib-es2015` directories.
-
-| Option     | Description                                      |
-| :--------- | :----------------------------------------------- |
-| `--serial` | Force serial execution of compilation operations |
 
 [`skuba configure`]: ./configure.md#skuba-configure
 [buildkite guide]: ../deep-dives/buildkite.md
@@ -118,3 +87,4 @@ These files will be copied into the corresponding `lib-commonjs` and `lib-es2015
 [cpu core count]: https://nodejs.org/api/os.html#os_os_cpus
 [esbuild]: ../deep-dives/esbuild.md
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html
+[tsdown]: https://tsdown.dev/
