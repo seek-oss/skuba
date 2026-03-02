@@ -26,10 +26,7 @@
   "module": "./lib/index.mjs",
   "types": "./lib/index.d.cts",
   "files": [
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map",
-    "lib*/**/*.mjs"
+    "lib"
   ],
   "scripts": {
     "build": "tsdown",

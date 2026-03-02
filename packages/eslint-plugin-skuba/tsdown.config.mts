@@ -1,6 +1,7 @@
 import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
+  dts: true,
   entry: ['src/index.ts'],
   exports: {
     devExports: '@seek/skuba/source',
@@ -10,4 +11,6 @@ export default defineConfig({
   checks: {
     legacyCjs: false,
   },
+  publint: true,
+  attw: true,
 });
