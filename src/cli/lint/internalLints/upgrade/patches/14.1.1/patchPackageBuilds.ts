@@ -342,6 +342,29 @@ const addCustomConditionsToTsConfig = async (
   };
 };
 
+const projectContainsReferences = async (): Promise<boolean> => {
+  const allTsconfigBuildPaths = await glob(['**/tsconfig.build.json'], {
+    cwd: process.cwd(),
+    ignore: ['**/node_modules/**', '**/.git/**'],
+  });
+
+  const allTsconfigBuildFiles = await Promise.all(
+    allTsconfigBuildPaths.map(async (tsconfigBuildPath) => {
+      const fullPath = path.join(process.cwd(), tsconfigBuildPath);
+      return fs.promises.readFile(fullPath, 'utf8');
+    }),
+  );
+
+  if (allTsconfigBuildFiles.some((content) => content.includes('references'))) {
+    log.subtle(
+      'Found tsconfig.build.json with project references, skipping removal of tsconfig.build.json',
+    );
+    return true;
+  }
+
+  return false;
+};
+
 export const patchPackageBuilds: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
@@ -381,7 +404,10 @@ export const patchPackageBuilds: PatchFunction = async ({
 
   registerDynamicLanguage({ json });
 
-  const customCondition = await findOrAddCustomConditionInRepo(mode);
+  const [customCondition, containsReferences] = await Promise.all([
+    findOrAddCustomConditionInRepo(mode),
+    projectContainsReferences(),
+  ]);
 
   const updatedFiles = await Promise.all(
     likelyPackagePaths.map(async (packageJsonPath) => {
@@ -494,7 +520,9 @@ export const patchPackageBuilds: PatchFunction = async ({
         ...updated.map(({ file, contents }) =>
           fs.promises.writeFile(file, contents, 'utf8'),
         ),
-        ...(tsconfigBuildFileExists ? [fs.promises.rm(tsConfigBuildPath)] : []),
+        ...(!containsReferences && tsconfigBuildFileExists
+          ? [fs.promises.rm(tsConfigBuildPath)]
+          : []),
       ]);
 
       const packageManager = await detectPackageManager();
