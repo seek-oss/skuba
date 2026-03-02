@@ -82,9 +82,7 @@ skuba build-package
 ```
 
 [`skuba configure`]: ./configure.md#skuba-configure
-[buildkite guide]: ../deep-dives/buildkite.md
 [compiler option]: https://www.typescriptlang.org/docs/handbook/compiler-options.html#compiler-options
-[cpu core count]: https://nodejs.org/api/os.html#os_os_cpus
 [esbuild]: ../deep-dives/esbuild.md
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html
 [tsdown]: https://tsdown.dev/
