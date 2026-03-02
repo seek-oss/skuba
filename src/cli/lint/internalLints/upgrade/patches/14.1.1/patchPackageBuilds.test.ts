@@ -238,6 +238,9 @@ describe('patchPackageBuilds', () => {
 
     expect(packageJson).toMatchInlineSnapshot(`
       {
+        "engines": {
+          "node": ">=22.14.0",
+        },
         "name": "test",
         "scripts": {
           "build": "skuba build-package",
@@ -594,6 +597,9 @@ describe('patchPackageBuilds', () => {
     };
 
     const newPackageJson = {
+      engines: {
+        node: '>=22.14.0',
+      },
       name: 'test',
       version: '1.0.0',
       description: 'A test package',
@@ -741,6 +747,9 @@ describe('patchPackageBuilds', () => {
 
     expect(packageAJson).toMatchInlineSnapshot(`
       {
+        "engines": {
+          "node": ">=22.14.0",
+        },
         "files": [
           "lib",
         ],
@@ -760,6 +769,9 @@ describe('patchPackageBuilds', () => {
 
     expect(packageBJson).toMatchInlineSnapshot(`
       {
+        "engines": {
+          "node": ">=22.14.0",
+        },
         "main": "./lib-commonjs/index.js",
         "module": "./lib-es2015/index.js",
         "name": "package-b",
@@ -807,6 +819,9 @@ describe('patchPackageBuilds', () => {
 
     expect(packageJson).toMatchInlineSnapshot(`
       {
+        "engines": {
+          "node": ">=22.14.0",
+        },
         "name": "test",
         "scripts": {
           "build": "skuba build-package",
@@ -1129,5 +1144,73 @@ describe('patchPackageBuilds - skipLibCheck', () => {
 
     const result = volToJson();
     expect(result['tsconfig.build.json']).toBeDefined();
+  });
+
+  it('should not override an existing node engine field in package.json', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          engines: {
+            node: '>=18.0.0',
+          },
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    const packageJson = JSON.parse(result['package.json']!);
+
+    expect(packageJson.engines.node).toBe('>=18.0.0');
+  });
+
+  it('should add a node section to an existing engines field in package.json', async () => {
+    vol.fromJSON({
+      'package.json': JSON.stringify(
+        {
+          name: 'test',
+          version: '1.0.0',
+          engines: {
+            npm: '>=8.0.0',
+          },
+          skuba: { type: 'package' },
+          scripts: {
+            build: 'skuba build-package',
+          },
+        },
+        null,
+        2,
+      ),
+    });
+
+    await expect(
+      patchPackageBuilds({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    const result = volToJson();
+    const packageJson = JSON.parse(result['package.json']!);
+
+    expect(packageJson.engines.node).toBe('>=22.14.0');
   });
 });

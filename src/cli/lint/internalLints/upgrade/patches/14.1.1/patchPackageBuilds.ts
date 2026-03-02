@@ -137,6 +137,61 @@ const editFilesField = (ast: SgNode): Edit[] => {
   return edits;
 };
 
+const addEngine = (ast: SgNode): Edit[] => {
+  const enginesPair = ast.find({
+    rule: {
+      kind: 'pair',
+      has: {
+        field: 'key',
+        regex: '^"engines"$',
+      },
+    },
+  });
+
+  if (enginesPair) {
+    const nodeEnginePair = enginesPair.find({
+      rule: {
+        kind: 'pair',
+        has: {
+          field: 'key',
+          regex: '^"node"$',
+        },
+      },
+    });
+
+    if (nodeEnginePair) {
+      return [];
+    }
+
+    const enginesObject = enginesPair.find({
+      rule: { pattern: '{' },
+    });
+
+    if (!enginesObject) {
+      throw new Error('invalid engines field in package.json');
+    }
+
+    const edit = enginesObject.replace(`{
+    "node": ">=22.14.0",`);
+
+    return [edit];
+  }
+
+  const startingBracket = ast.find({ rule: { pattern: '{' } });
+  if (!startingBracket) {
+    throw new Error('invalid package.json');
+  }
+
+  const edit = startingBracket.replace(
+    `{
+  "engines": {
+    "node": ">=22.14.0"
+  },`,
+  );
+
+  return [edit];
+};
+
 const removePublishConfig = (ast: SgNode): Edit[] => {
   const publishConfigPair = ast.find({
     rule: {
@@ -467,12 +522,15 @@ export const patchPackageBuilds: PatchFunction = async ({
 
       const { edits, assetsData } = replaceAssetsField(packageJsonAst);
 
+      const enginesEdits = addEngine(packageJsonAst);
+
       const filesEdits = editFilesField(packageJsonAst);
 
       const publishConfigEdits = removePublishConfig(packageJsonAst);
 
       const updatedPackageJsonContent = packageJsonAst.commitEdits([
         ...edits,
+        ...enginesEdits,
         ...filesEdits,
         ...publishConfigEdits,
       ]);
