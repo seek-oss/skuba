@@ -488,9 +488,10 @@ export const patchPackageBuilds: PatchFunction = async ({
       checks: {
         legacyCjs: false,
       },
+      publint: true,
+      attw: true,
       unbundle: true, // TODO: determine if your project can be bundled
-      ${customCondition ? `exports: { devExports: '${customCondition}' },` : 'exports: true,'}
-      ${assetsData ? `copy: ${JSON.stringify(assetsData)},` : ''}
+      ${customCondition ? `exports: { devExports: '${customCondition}' },` : 'exports: true,'}${assetsData ? `\n      copy: ${JSON.stringify(assetsData)},` : ''}
     });
     `;
 

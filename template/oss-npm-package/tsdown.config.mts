@@ -11,4 +11,6 @@ export default defineConfig({
   exports: {
     devExports: '@seek/<%- moduleName %>/source',
   },
+  publint: true,
+  attw: true,
 });

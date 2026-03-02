@@ -156,11 +156,25 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.mts']).toBeDefined();
-    expect(result['tsdown.config.mts']).toContain("entry: ['src/index.ts']");
-    expect(result['tsdown.config.mts']).toContain("format: ['cjs', 'esm']");
-    expect(result['tsdown.config.mts']).toContain("outDir: 'lib'");
-    expect(result['tsdown.config.mts']).toContain('dts: true');
+
+    expect(result['tsdown.config.mts']).toMatchInlineSnapshot(`
+      "import { defineConfig } from 'tsdown';
+
+          export default defineConfig({
+            entry: ['src/index.ts'],
+            format: ['cjs', 'esm'],
+            outDir: 'lib',
+            dts: true,
+            checks: {
+              legacyCjs: false,
+            },
+            publint: true,
+            attw: true,
+            unbundle: true, // TODO: determine if your project can be bundled
+            exports: true,
+          });
+          "
+    `);
 
     expect(exec).toHaveBeenCalledWith('pnpm', 'install', '--offline');
 
@@ -199,18 +213,27 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.mts']).toBeDefined();
-    expect(result['tsdown.config.mts']).toContain("entry: ['src/index.ts']");
-    expect(result['tsdown.config.mts']).toContain("format: ['cjs', 'esm']");
-    expect(result['tsdown.config.mts']).toContain("outDir: 'lib'");
-    expect(result['tsdown.config.mts']).toContain('dts: true');
-    expect(result['tsdown.config.mts']).toContain('exports: true');
-    expect(result['tsdown.config.mts']).toContain(
-      '      checks: {\n        legacyCjs: false,\n      },',
-    );
-    expect(result['tsdown.config.mts']).toContain(
-      'copy: ["src/**/*.graphql","src/**/*.json"]',
-    );
+
+    expect(result['tsdown.config.mts']).toMatchInlineSnapshot(`
+      "import { defineConfig } from 'tsdown';
+
+          export default defineConfig({
+            entry: ['src/index.ts'],
+            format: ['cjs', 'esm'],
+            outDir: 'lib',
+            dts: true,
+            checks: {
+              legacyCjs: false,
+            },
+            publint: true,
+            attw: true,
+            unbundle: true, // TODO: determine if your project can be bundled
+            exports: true,
+            copy: ["src/**/*.graphql","src/**/*.json"],
+          });
+          "
+    `);
+
     const packageJson = JSON.parse(result['package.json']!);
 
     expect(packageJson).toMatchInlineSnapshot(`
@@ -296,14 +319,26 @@ describe('patchPackageBuilds', () => {
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.mts']).toBeDefined();
-    expect(result['tsdown.config.mts']).toContain("entry: ['src/index.ts']");
-    expect(result['tsdown.config.mts']).toContain("format: ['cjs', 'esm']");
-    expect(result['tsdown.config.mts']).toContain("outDir: 'lib'");
-    expect(result['tsdown.config.mts']).toContain('dts: true');
-    expect(result['tsdown.config.mts']).toContain(
-      "exports: { devExports: 'seek-dev' }",
-    );
+
+    expect(result['tsdown.config.mts']).toMatchInlineSnapshot(`
+      "import { defineConfig } from 'tsdown';
+
+          export default defineConfig({
+            entry: ['src/index.ts'],
+            format: ['cjs', 'esm'],
+            outDir: 'lib',
+            dts: true,
+            checks: {
+              legacyCjs: false,
+            },
+            publint: true,
+            attw: true,
+            unbundle: true, // TODO: determine if your project can be bundled
+            exports: { devExports: 'seek-dev' },
+          });
+          "
+    `);
+
     expect(result['tsdown.config.mts']).not.toContain('exports: true');
   });
 
