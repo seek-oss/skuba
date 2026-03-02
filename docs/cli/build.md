@@ -88,6 +88,8 @@ Compiles your project with [tsdown] to produce CJS, ESM, and type declaration ou
 
 This is useful for building isomorphic npm packages.
 
+`tsdown` selects what ECMAScript target version to build for based on the `engines.node` field in your `package.json`.
+
 ```shell
 skuba build-package
 
