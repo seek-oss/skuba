@@ -122,10 +122,13 @@ export class AppStack extends Stack {
 
     destinationTopic.grantPublish(worker);
 
-    const datadogSecret = aws_secretsmanager.Secret.fromSecretPartialArn(
+    const datadogSecret = aws_secretsmanager.Secret.fromSecretAttributes(
       this,
       'datadog-api-key-secret',
-      config.datadogApiKeySecretArn,
+      {
+        secretPartialArn: config.datadogApiKeySecretArn,
+        // encryptionKey: kmsKey, // Specify a KMS key if the secret is encrypted with one
+      },
     );
 
     const datadog = new DatadogLambda(this, 'datadog', {
