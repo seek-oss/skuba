@@ -54,7 +54,7 @@ Update npm package build outputs
 This release changes published build output paths. If you were previously importing from nested paths within the build output you will need to update imports to use the package entry point (for example, `@seek/my-package`).
 
 ```diff
--import type { SomeType } from '@seek/my-package/lib-types';
+-import type { SomeType } from '@seek/my-package/lib-types/...';
 +import type { SomeType } from '@seek/my-package';
 ```
 ````
