@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "customConditions": ["@seek/skuba/source"],
     "rootDir": ".",
     "declaration": true,
     "lib": ["ES2023"],
@@ -10,5 +11,5 @@
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "tsdown.config.mts"]
 }
