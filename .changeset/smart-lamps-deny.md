@@ -12,7 +12,7 @@ This patch will attempt to do a best effort migration of your `skuba build-packa
 4. Updating your package `package.json` files to point to the new build outputs
 5. Removing redundant `tsconfig.build.json` files
 
-## File changes
+#### File changes
 
 The output between what `skuba build-package` generates before and after this change will be different, so you may need to update any references to the output files in your project.
 
@@ -36,7 +36,7 @@ If needed, export those references from your package entry point to help consume
 
 Note: if you choose to remove the `unbundle: true` option from `tsdown.config.mts`, tsdown may emit bundled/chunked outputs and internal `lib/...` file paths can change between builds. Consumers should avoid importing from build output files directly, and instead import from the package entry point (or explicitly exported sub paths)
 
-## Format changes
+#### Format changes
 
 `tsdown` selects what ECMAScript target version to build for based on the `engines.node` field in your `package.json`.
 
@@ -59,7 +59,7 @@ This release changes published build output paths. If you were previously import
 ```
 ````
 
-## Debugging
+#### Debugging
 
 If your project utilises a `main` field which points to a `.ts` file within a monorepo setup, eg.
 
