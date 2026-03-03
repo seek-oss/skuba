@@ -26,10 +26,7 @@
   "module": "./lib/index.mjs",
   "types": "./lib/index.d.cts",
   "files": [
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map",
-    "lib*/**/*.mjs"
+    "lib"
   ],
   "scripts": {
     "build": "tsdown",
@@ -72,6 +69,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "14.1.0"
+    "version": "14.1.1"
   }
 }

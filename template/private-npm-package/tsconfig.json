@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "customConditions": ["@seek/<%- moduleName %>/source"],
     "rootDir": ".",
     "lib": ["ES2023"],
     "outDir": "lib",
