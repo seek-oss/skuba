@@ -9,3 +9,6 @@ overrides:
 
 publicHoistPattern:
   - remark-lint-*
+
+trustPolicyExclude:
+  - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13

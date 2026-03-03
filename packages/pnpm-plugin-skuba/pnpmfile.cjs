@@ -24,22 +24,21 @@ const ALLOWED_BUILDS = {
 };
 
 const PUBLIC_HOIST_PATTERN = [
+  '@arethetypeswrong/core',
   '@eslint/*',
   '@types*',
   'eslint',
   'eslint-config-skuba',
-  'prettier',
   'esbuild',
   'jest',
+  'prettier',
+  'publint',
   'tsconfig-seek',
   'tsdown',
   'typescript',
 ];
 
-const TRUST_POLICY_EXCLUDE = [
-  'semver@5.7.2 || 6.3.1',
-  'undici-types@6.21.0', // https://github.com/nodejs/undici/issues/4666, required until our templates move to @types/node@24
-];
+const TRUST_POLICY_EXCLUDE = ['semver@5.7.2 || 6.3.1'];
 
 module.exports = {
   hooks: {

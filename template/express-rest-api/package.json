@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "@types/node": "^22.13.10",
+    "@types/node": "^24.10.2",
     "@types/supertest": "^6.0.0",
     "pino-pretty": "^13.0.0",
     "skuba": "*",
