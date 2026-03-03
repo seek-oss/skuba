@@ -8,5 +8,10 @@ export default defineConfig({
   exports: {
     devExports: '@seek/skuba/source',
   },
-  failOnWarn: false,
+  inlineOnly: false,
+  checks: {
+    legacyCjs: false,
+  },
+  attw: true,
+  publint: true,
 });

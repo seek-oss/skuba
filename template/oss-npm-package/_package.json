@@ -2,12 +2,6 @@
   "name": "<%- moduleName %>",
   "version": "0.0.0-semantically-released",
   "description": "<%- description %>",
-  "imports": {
-    "#src/*": {
-      "@seek/<%- serviceName %>/source": "./src/*",
-      "default": "./lib/*"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/<%- orgName %>/<%- repoName %>.git"
@@ -16,6 +10,7 @@
   "sideEffects": false,
   "exports": {
     ".": {
+      "@seek/<%- moduleName %>/source": "./src/index.ts",
       "require": "./lib/index.cjs",
       "import": "./lib/index.mjs"
     },
@@ -49,5 +44,14 @@
   "packageManager": "pnpm@10.7.0",
   "engines": {
     "node": ">=22.14.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.cjs"
+      },
+      "./package.json": "./package.json"
+    }
   }
 }

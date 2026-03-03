@@ -84,37 +84,37 @@ In this example, all `*.vocab/*translations.json` files found within `src` will 
 
 ## skuba build-package
 
-Compiles your project for compatibility with CommonJS and ES2015 modules.
+Compiles your project with [tsdown] to produce CJS, ESM, and type declaration outputs.
 
 This is useful for building isomorphic npm packages.
+
+`tsdown` selects what ECMAScript target version to build for based on the `engines.node` field in your `package.json`.
 
 ```shell
 skuba build-package
 
-# commonjs │ TSFILE: ...
-# commonjs │ tsc exited with code 0
-# es2015   │ TSFILE: ...
-# es2015   │ tsc exited with code 0
-# types    │ TSFILE: ...
-# types    │ tsc exited with code 0
+# ℹ entry: src/index.ts
+# ℹ target: node22.14.0
+# ℹ [CJS] lib/index.cjs
+# ℹ [CJS] lib/index.d.cts
+# ℹ [ESM] lib/index.mjs
+# ℹ [ESM] lib/index.d.mts
 ```
 
-`skuba build-package` runs operations concurrently up to your [CPU core count].
-On a resource-constrained Buildkite agent,
-you can limit this with the `--serial` flag.
-See our [Buildkite guide] for more information.
+Assets can be bundled by configuring the [copy] field in the `tsdown.config.mts` file. Depending on your how your application interprets asset paths, the `unbundle` option may need to be set to `true`.
 
-To bundle additional assets alongside your package, view the [bundling assets](#bundling-assets) section above.
+```ts
+import { defineConfig } from 'tsdown/config';
 
-These files will be copied into the corresponding `lib-commonjs` and `lib-es2015` directories.
-
-| Option     | Description                                      |
-| :--------- | :----------------------------------------------- |
-| `--serial` | Force serial execution of compilation operations |
+export default defineConfig({
+  unbundle: true,
+  copy: ['**/*.vocab/*translations.json'],
+});
+```
 
 [`skuba configure`]: ./configure.md#skuba-configure
-[buildkite guide]: ../deep-dives/buildkite.md
 [compiler option]: https://www.typescriptlang.org/docs/handbook/compiler-options.html#compiler-options
-[cpu core count]: https://nodejs.org/api/os.html#os_os_cpus
+[copy]: https://tsdown.dev/reference/api/Interface.UserConfig#copy
 [esbuild]: ../deep-dives/esbuild.md
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html
+[tsdown]: https://tsdown.dev/

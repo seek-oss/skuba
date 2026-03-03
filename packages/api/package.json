@@ -11,6 +11,7 @@
     "url": "git+ssh://git@github.com/seek-oss/skuba.git",
     "directory": "packages/api"
   },
+  "license": "MIT",
   "exports": {
     ".": {
       "@seek/skuba/source": "./src/index.ts",
