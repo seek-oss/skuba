@@ -56,20 +56,16 @@ Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.1
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
 Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
+
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
 Refreshed .prettierignore.
-Refreshed pnpm-workspace.yaml.
 Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
-
 skuba update complete. upgrade-skuba
 
-Refreshed .gitignore. refresh-config-files
-Refreshed .prettierignore. refresh-config-files
-Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
@@ -175,20 +171,16 @@ Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.1
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
 Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
+
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
 Refreshed .prettierignore.
-Refreshed pnpm-workspace.yaml.
 Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
-
 skuba update complete. upgrade-skuba
 
-Refreshed .gitignore. refresh-config-files
-Refreshed .prettierignore. refresh-config-files
-Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
@@ -287,20 +279,16 @@ Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.1
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
 Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
+
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
 Refreshed .prettierignore.
-Refreshed pnpm-workspace.yaml.
 Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
-
 skuba update complete. upgrade-skuba
 
-Refreshed .gitignore. refresh-config-files
-Refreshed .prettierignore. refresh-config-files
-Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
@@ -372,18 +360,15 @@ Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.1
 Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
 
 Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
+
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
 Refreshed .prettierignore.
-Refreshed pnpm-workspace.yaml.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
-
 skuba update complete. upgrade-skuba
 
-Refreshed .gitignore. refresh-config-files
-Refreshed .prettierignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
