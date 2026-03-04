@@ -44,26 +44,30 @@ module.exports = {
   hooks: {
     /** @param {import("@pnpm/config").Config} config */
     updateConfig(config) {
-      if (typeof config.publicHoistPattern === 'string') {
-        config.publicHoistPattern = [config.publicHoistPattern];
-      }
-      config.minimumReleaseAgeExclude ??= [];
-      config.minimumReleaseAgeExclude.push(...MINIMUM_RELEASE_AGE_EXCLUDE);
-
       config.allowBuilds ??= {};
       Object.assign(config.allowBuilds, ALLOWED_BUILDS);
 
+      config.blockExoticSubdeps ??= true;
+
+      config.ignorePatchFailures ??= false;
+
+      config.packageManagerStrictVersion ??= true;
+
+      if (typeof config.publicHoistPattern === 'string') {
+        config.publicHoistPattern = [config.publicHoistPattern];
+      }
       config.publicHoistPattern ??= [];
       config.publicHoistPattern.push(...PUBLIC_HOIST_PATTERN);
 
+      config.minimumReleaseAge ??= 4320;
+      config.minimumReleaseAgeExclude ??= [];
+      config.minimumReleaseAgeExclude.push(...MINIMUM_RELEASE_AGE_EXCLUDE);
+
+      config.strictDepBuilds ??= true;
+
+      config.trustPolicy ??= 'no-downgrade';
       config.trustPolicyExclude ??= [];
       config.trustPolicyExclude.push(...TRUST_POLICY_EXCLUDE);
-
-      config.ignorePatchFailures ??= false;
-      config.minimumReleaseAge ??= 4320;
-      config.packageManagerStrictVersion ??= true;
-      config.strictDepBuilds ??= true;
-      config.trustPolicy ??= 'no-downgrade';
 
       return config;
     },
