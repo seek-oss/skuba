@@ -13,6 +13,8 @@ This patch will attempt to do a best effort migration of your `skuba build-packa
 5. Migrating package.json `assets` usage to use `tsdown` `copy` configuration
 6. Removing redundant `tsconfig.build.json` files
 
+Please note that this migration does not automatically handle any additional entrypoints, so you may need to add additional entries to the tsdown config.
+
 #### File changes
 
 The output between what `skuba build-package` generates before and after this change will be different, so you may need to update any references to the output files in your project.
