@@ -2,7 +2,7 @@
 'skuba': major
 ---
 
-lint: Enable [`allowBuilds`](https://pnpm.io/settings#allowbuilds), [`trustPolicy`](https://pnpm.io/settings#trustpolicy) and [`ignorePatchFailures`](https://pnpm.io/cli/patch#ignorepatchfailures) in `pnpm-plugin-skuba`
+lint: Enable [`allowBuilds`](https://pnpm.io/settings#allowbuilds), [`trustPolicy`](https://pnpm.io/settings#trustpolicy), [`blockExoticSubdeps`](https://pnpm.io/settings#blockexoticsubdeps) and [`ignorePatchFailures`](https://pnpm.io/cli/patch#ignorepatchfailures) in `pnpm-plugin-skuba`
 
 In light of recent security vulnerabilities plaguing the JavaScript ecosystem, we are enabling some additional pnpm features to help mitigate the risk of supply chain attacks.
 

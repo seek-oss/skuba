@@ -4,7 +4,7 @@
 
 lint: Migrate `pnpm-workspace.yaml` skuba configuration to `pnpm-plugin-skuba`
 
-This change replaces the managed skuba section in `pnpm-workspace.yaml` with a pnpm configuration plugin.
+This change replaces the managed skuba section in `pnpm-workspace.yaml` with a [pnpm configuration plugin](https://pnpm.io/config-dependencies).
 
 The migration includes removing the `minimumReleaseAgeExcludeOverload` settings from `package.json` and migrating them to `pnpm-workspace.yaml`
 

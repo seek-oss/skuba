@@ -10,7 +10,8 @@ This patch will attempt to do a best effort migration of your `skuba build-packa
 2. Adding a `customConditions` entry to your root `tsconfig.json` file
 3. Adding `skipLibCheck` to your package `tsconfig.json` files to work around issues with type checking against `tsdown`.
 4. Updating your package `package.json` files to point to the new build outputs
-5. Removing redundant `tsconfig.build.json` files
+5. Migrating package.json `assets` usage to use `tsdown` `copy` configuration
+6. Removing redundant `tsconfig.build.json` files
 
 #### File changes
 
@@ -52,6 +53,8 @@ An example changeset you may want to include for a package:
 Update npm package build outputs
 
 This release changes published build output paths. If you were previously importing from nested paths within the build output you will need to update imports to use the package entry point (for example, `@seek/my-package`).
+
+Please note that this usage is generally not recommended as it can lead to breakages when build outputs change.
 
 ```diff
 -import type { SomeType } from '@seek/my-package/lib-types/...';
