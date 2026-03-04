@@ -22,7 +22,7 @@
     "skuba-dive": "^4.0.1"
   },
   "devDependencies": {
-    "@types/node": "^22.13.10",
+    "@types/node": "^24.10.2",
     "skuba": "*"
   },
   "packageManager": "pnpm@10.30.3",
