@@ -1,15 +1,4 @@
 // @ts-check
-const MINIMUM_RELEASE_AGE_EXCLUDE = [
-  '@seek/*',
-  '@skuba-lib/*',
-  'eslint-config-seek',
-  'eslint-config-skuba',
-  'eslint-plugin-skuba',
-  'skuba',
-  'skuba-dive',
-  'tsconfig-seek',
-];
-
 const ALLOWED_BUILDS = {
   '@ast-grep/lang-json': true,
   '@datadog/native-appsec': true,
@@ -22,6 +11,17 @@ const ALLOWED_BUILDS = {
   'unix-dgram': true,
   'unrs-resolver': true,
 };
+
+const MINIMUM_RELEASE_AGE_EXCLUDE = [
+  '@seek/*',
+  '@skuba-lib/*',
+  'eslint-config-seek',
+  'eslint-config-skuba',
+  'eslint-plugin-skuba',
+  'skuba',
+  'skuba-dive',
+  'tsconfig-seek',
+];
 
 const PUBLIC_HOIST_PATTERN = [
   '@arethetypeswrong/core',
