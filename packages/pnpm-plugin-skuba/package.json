@@ -23,5 +23,11 @@
   },
   "engines": {
     "node": ">=20.9.0"
+  },
+  "skuba": {
+    "entryPoint": "pnpmfile.cjs",
+    "template": "oss-npm-package",
+    "type": "package",
+    "version": "14.1.2"
   }
 }
