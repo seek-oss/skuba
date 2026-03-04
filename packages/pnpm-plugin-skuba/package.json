@@ -22,7 +22,7 @@
     "@pnpm/config": "^1004.9.0"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.14.0"
   },
   "skuba": {
     "entryPoint": "pnpmfile.cjs",
