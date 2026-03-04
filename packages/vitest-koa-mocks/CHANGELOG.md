@@ -1,5 +1,11 @@
 # @skuba-lib/vitest-koa-mocks
 
+## 1.0.1
+
+### Patch Changes
+
+- **build:** Update npm package build outputs ([#2252](https://github.com/seek-oss/skuba/pull/2252))
+
 ## 1.0.0
 
 ### Major Changes
