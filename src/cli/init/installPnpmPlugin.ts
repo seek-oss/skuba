@@ -11,5 +11,11 @@ export const installPnpmPlugin = async (
   await exec('pnpm', 'add', '--config', `pnpm-plugin-skuba@${version}`);
 
   // Run install to ensure that the pnpmfileChecksum gets written
-  await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
+  await exec(
+    'pnpm',
+    'install',
+    '--no-frozen-lockfile',
+    '--prefer-offline',
+    '--force', // force is required for pnpm to apply any additional hoisting rules from the plugin on install
+  );
 };
