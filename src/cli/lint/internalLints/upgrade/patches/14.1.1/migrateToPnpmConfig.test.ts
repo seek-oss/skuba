@@ -464,4 +464,56 @@ packages:
 `,
     });
   });
+
+  it('should not upgrade packageManager version if already at 10.26.2 or above', async () => {
+    vol.fromJSON({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
+      'pnpm-workspace.yaml': `
+packages:
+  - packages/*
+  - template/*
+# managed by skuba
+  something
+# end managed by skuba
+`,
+      'package.json': `{
+  "name": "test",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.26.2"
+}
+`,
+    });
+
+    await expect(
+      migrateToPnpmConfig({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toEqual({
+      'src/utils/package.json': `{
+      "devDependencies": {
+        "pnpm-plugin-skuba": "1.0.0"
+      }
+    }`,
+      'pnpm-workspace.yaml': `
+packages:
+  - packages/*
+  - template/*
+`,
+      'package.json': `{
+  "name": "test",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.26.2"
+}
+`,
+    });
+  });
 });

@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import fs from 'fs-extra';
-import { SemVer, lt } from 'semver';
+import { SemVer, coerce, lt, valid } from 'semver';
 
 import { log } from '../../../../../../utils/logging.js';
 import {
@@ -80,10 +80,9 @@ export const migrateToPnpmConfig: PatchFunction = async ({
   }
 
   if (typeof packageJson?.packageJson.packageManager === 'string') {
-    const version = packageJson.packageJson.packageManager
-      .split('@')?.[1] // strip name
-      ?.split('+')?.[0]; // strip sha
+    const version = valid(coerce(packageJson.packageJson.packageManager));
 
+    // pnpm 10.26 introduced allowBuilds
     if (
       typeof version === 'string' &&
       lt(new SemVer(version), new SemVer('10.26.1'))
