@@ -4,7 +4,7 @@
 
 lint: Migrate `skuba build-package` usage to use [tsdown](https://tsdown.dev/) for building packages
 
-This patch will attempt to do a best effort migration of your `skuba build-package` usage to use [tsdown](https://tsdown.dev/) for building packages. This includes:
+This patch will attempt to do a best effort migration of your `skuba build-package` usage to use [tsdown](https://tsdown.dev/) for building packages. It is highly recommended that you manually review and test the changes. This includes:
 
 1. Adding a `tsdown.config.mts` file to your package directories with a basic configuration
 2. Adding a `customConditions` entry to your root `tsconfig.json` file
