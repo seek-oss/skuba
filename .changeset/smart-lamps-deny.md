@@ -13,8 +13,6 @@ This patch will attempt to do a best effort migration of your `skuba build-packa
 5. Migrating package.json `assets` usage to use `tsdown` `copy` configuration
 6. Removing redundant `tsconfig.build.json` files
 
-Please note that this migration does not automatically handle any additional entrypoints, so you may need to add additional entries to the tsdown config.
-
 #### File changes
 
 The output between what `skuba build-package` generates before and after this change will be different, so you may need to update any references to the output files in your project.
@@ -65,6 +63,72 @@ Please note that this usage is generally not recommended as it can lead to break
 ````
 
 #### Debugging
+
+##### Additional Entrypoints
+
+If your package has additional entry points, for example:
+
+```ts
+import { SomeFunction } from '@seek/my-package/subpath';
+```
+
+You will need to add them as additional entry points in your `tsdown.config.mts` file, for example:
+
+```ts
+import { defineConfig } from 'tsdown/config';
+
+export default defineConfig({
+  entries: ['src/index.ts', 'src/subpath/index.ts'],
+});
+```
+
+This must be followed by a run of `skuba build-package` which will update your `package.json` exports field.
+
+##### attw (Are the types wrong?)
+
+If you run into the following error:
+
+```bash
+❌ No resolution (node10) at @seek/my-package/subpath
+```
+
+You have a couple different options to resolve this:
+
+1. Update your `tsdown.config.mts` and update the `attw` configuration to use a `node16` profile. This tells the attw tool to ignore the `node`/`node10` module resolution. Projects using skuba 13 or above will be compatible with this by default.
+
+```diff
+import { defineConfig } from 'tsdown/config';
+
+export default defineConfig({
+  entries: ['src/index.ts', 'src/subpath/index.ts'],
+-  attw: true,
++  attw: {
++    profile: 'node16',
++  },
+});
+```
+
+1. Create an additional `package.json` file
+
+For an entrypoint such as `@seek/my-package/foo`, create a folder called `foo` with an additional `package.json` file with the following content.
+
+```json
+{
+  "main": "../lib/foo/index.cjs",
+  "module": "../lib/foo/index.mjs",
+  "types": "../lib/foo/index.d.cts"
+}
+```
+
+and ensure that the folder is exported in your `files` array in your root `package.json` file.
+
+```json
+{
+  "files": ["lib", "foo"]
+}
+```
+
+##### Jest
 
 If your project utilises a `main` field which points to a `.ts` file within a monorepo setup, eg.
 
