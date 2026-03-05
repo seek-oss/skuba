@@ -110,6 +110,11 @@ export const init = async (args = process.argv.slice(2)) => {
         path.join(destinationDir, '.pnpmfile.cjs'),
       );
     } else {
+      await fs.promises.writeFile(
+        path.join(destinationDir, 'pnpm-workspace.yaml'),
+        '',
+        'utf8',
+      );
       await installPnpmPlugin(skubaManifest, exec);
     }
   }
