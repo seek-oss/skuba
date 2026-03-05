@@ -1,12 +1,17 @@
 import type { NormalizedPackageJson } from 'read-pkg-up';
 
-import { exec } from '../../utils/exec.js';
+import { createExec } from '../../utils/exec.js';
 
 export const installPnpmPlugin = async (
   skubaManifest: NormalizedPackageJson,
+  dir = process.cwd(),
 ): Promise<void> => {
   const version =
     skubaManifest.devDependencies?.['pnpm-plugin-skuba'] || 'latest';
+
+  const exec = createExec({
+    cwd: dir,
+  });
 
   await exec('pnpm', 'add', '--config', `pnpm-plugin-skuba@${version}`);
 

@@ -110,7 +110,7 @@ export const init = async (args = process.argv.slice(2)) => {
         path.join(destinationDir, '.pnpmfile.cjs'),
       );
     } else {
-      await installPnpmPlugin(skubaManifest);
+      await installPnpmPlugin(skubaManifest, destinationDir);
     }
   }
 
