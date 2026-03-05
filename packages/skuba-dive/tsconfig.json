@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true, // tsdown has optional peer deps
+    "customConditions": ["@seek/skuba/source"],
     "rootDir": ".",
     "declaration": true,
     "lib": ["ES2023"],

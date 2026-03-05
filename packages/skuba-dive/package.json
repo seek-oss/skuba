@@ -14,16 +14,22 @@
   },
   "license": "MIT",
   "sideEffects": false,
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "@seek/skuba/source": "./src/index.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "files": [
-    "lib/**/*.d.ts",
-    "lib/**/*.js",
-    "lib/**/*.js.map"
+    "lib"
   ],
   "scripts": {
-    "build": "pnpm skuba build",
+    "build": "pnpm skuba build-package",
     "format": "pnpm skuba format",
     "lint": "pnpm skuba lint",
     "prepack": "pnpm skuba build",
@@ -34,10 +40,19 @@
   "engines": {
     "node": ">=22.14.0"
   },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.cjs"
+      },
+      "./package.json": "./package.json"
+    }
+  },
   "skuba": {
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "14.1.1"
+    "version": "15.0.0"
   }
 }

@@ -1,5 +1,11 @@
 # eslint-config-skuba
 
+## 8.1.0
+
+### Minor Changes
+
+- **lint:** Ignore `coverage`, `dist`, `lib` and `tmp` folders at any depth ([#2256](https://github.com/seek-oss/skuba/pull/2256))
+
 ## 8.0.0
 
 ### Major Changes

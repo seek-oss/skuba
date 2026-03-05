@@ -1,5 +1,11 @@
 # eslint-plugin-skuba
 
+## 2.0.1
+
+### Patch Changes
+
+- **build:** Export type declarations ([#2194](https://github.com/seek-oss/skuba/pull/2194))
+
 ## 2.0.0
 
 ### Major Changes
