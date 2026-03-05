@@ -10,7 +10,7 @@ export default {
       message: 'Module name',
       initial: '@seek/my-first-module',
       validate: (value) =>
-        /^@seek\/.+$/.test(value) || 'must start with an @seek/ scope',
+        /^@seek\/.+$/.test(value) || 'Must start with @seek/ scope',
     },
     {
       name: 'description',

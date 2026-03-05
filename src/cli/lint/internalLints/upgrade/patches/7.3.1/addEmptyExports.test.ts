@@ -1,35 +1,27 @@
-import fs from 'fs-extra';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import memfs, { vol } from 'memfs';
 
-import * as packageAnalysis from '../../../../../configure/analysis/package.js';
-import * as projectAnalysis from '../../../../../configure/analysis/project.js';
 import type { PatchConfig } from '../../index.js';
 
 import { tryAddEmptyExports } from './addEmptyExports.js';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-vi.spyOn(console, 'log').mockImplementation(() => {});
+vi.mock('fs-extra', () => memfs);
+vi.mock('fs', () => memfs);
 
-vi.spyOn(packageAnalysis, 'getDestinationManifest').mockResolvedValue({
-  path: '~/project/package.json',
-} as any);
+const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-const createDestinationFileReader = vi
-  .spyOn(projectAnalysis, 'createDestinationFileReader')
-  .mockReturnValue(() => {
-    throw new Error('Not implemented!');
-  });
-
-const writeFile = vi.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+const consoleLog = vi.spyOn(console, 'log').mockImplementation();
 
 beforeEach(vi.clearAllMocks);
+beforeEach(() => vol.reset());
 
 describe('tryAddEmptyExports', () => {
   describe('format mode', () => {
     it('converts non-compliant Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue((filename) =>
-        Promise.resolve(`// ${filename}`),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+        'jest.setup.ts': '// jest.setup.ts',
+        'jest.setup.int.ts': '// jest.setup.int.ts',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'format' } as PatchConfig),
@@ -37,34 +29,27 @@ describe('tryAddEmptyExports', () => {
         result: 'apply',
       });
 
-      expect(writeFile.mock.calls.flat().join('\n')).toMatchInlineSnapshot(`
-        "~/project/jest.setup.ts
-        // jest.setup.ts
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "jest.setup.int.ts": "// jest.setup.int.ts
 
         export {};
-
-        ~/project/jest.setup.int.ts
-        // jest.setup.int.ts
+        ",
+          "jest.setup.ts": "// jest.setup.ts
 
         export {};
-        "
+        ",
+          "package.json": "{}",
+        }
       `);
     });
 
     it('no-ops compliant Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue(
-        (filename) =>
-          new Promise((resolve, reject) => {
-            switch (filename) {
-              case 'jest.setup.ts':
-                return resolve("import './register';");
-              case 'jest.setup.int.ts':
-                return resolve('export const foo = true;');
-              default:
-                return reject(new Error(`Not implemented: ${filename}`));
-            }
-          }),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+        'jest.setup.ts': "import './register';",
+        'jest.setup.int.ts': 'export const foo = true;',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'format' } as PatchConfig),
@@ -72,13 +57,19 @@ describe('tryAddEmptyExports', () => {
         result: 'skip',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "jest.setup.int.ts": "export const foo = true;",
+          "jest.setup.ts": "import './register';",
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('no-ops non-existent Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue(() =>
-        Promise.resolve(undefined),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'format' } as PatchConfig),
@@ -86,15 +77,17 @@ describe('tryAddEmptyExports', () => {
         result: 'skip',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = vi.spyOn(console, 'log');
-      const error = new Error('Something happened!');
-
-      createDestinationFileReader.mockReturnValue(() => {
-        throw error;
+      vol.fromJSON({
+        'jest.setup.ts': '// jest.setup.ts',
+        'package.json': 'invalid',
       });
 
       await expect(
@@ -104,25 +97,21 @@ describe('tryAddEmptyExports', () => {
         reason: 'due to an error',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
-
       expect(consoleLog).toHaveBeenCalledTimes(2);
-      expect(consoleLog).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Failed to convert Jest setup files to isolated modules.',
-        ),
-      );
-      expect(consoleLog).toHaveBeenCalledWith(
-        expect.stringContaining(error.toString()),
-      );
+      expect(consoleLog.mock.calls.flat()).toEqual([
+        'Failed to convert Jest setup files to isolated modules.',
+        expect.stringMatching(/JSONError/),
+      ]);
     });
   });
 
   describe('lint mode', () => {
     it('converts non-compliant Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue((filename) =>
-        Promise.resolve(`// ${filename}`),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+        'jest.setup.ts': '// jest.setup.ts',
+        'jest.setup.int.ts': '// jest.setup.int.ts',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
@@ -130,23 +119,21 @@ describe('tryAddEmptyExports', () => {
         result: 'apply',
       });
 
-      expect(writeFile.mock.calls).toHaveLength(0);
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "jest.setup.int.ts": "// jest.setup.int.ts",
+          "jest.setup.ts": "// jest.setup.ts",
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('no-ops compliant Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue(
-        (filename) =>
-          new Promise((resolve, reject) => {
-            switch (filename) {
-              case 'jest.setup.ts':
-                return resolve("import './register';");
-              case 'jest.setup.int.ts':
-                return resolve('export const foo = true;');
-              default:
-                return reject(new Error(`Not implemented: ${filename}`));
-            }
-          }),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+        'jest.setup.ts': "import './register';",
+        'jest.setup.int.ts': 'export const foo = true;',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
@@ -154,13 +141,19 @@ describe('tryAddEmptyExports', () => {
         result: 'skip',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "jest.setup.int.ts": "export const foo = true;",
+          "jest.setup.ts": "import './register';",
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('no-ops non-existent Jest setup files', async () => {
-      createDestinationFileReader.mockReturnValue(() =>
-        Promise.resolve(undefined),
-      );
+      vol.fromJSON({
+        'package.json': '{}',
+      });
 
       await expect(
         tryAddEmptyExports({ mode: 'lint' } as PatchConfig),
@@ -168,15 +161,17 @@ describe('tryAddEmptyExports', () => {
         result: 'skip',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
+      expect(volToJson()).toMatchInlineSnapshot(`
+        {
+          "package.json": "{}",
+        }
+      `);
     });
 
     it('logs and continues on internal failure', async () => {
-      const consoleLog = vi.spyOn(console, 'log');
-      const error = new Error('Something happened!');
-
-      createDestinationFileReader.mockReturnValue(() => {
-        throw error;
+      vol.fromJSON({
+        'package.json': 'invalid',
+        'jest.setup.ts': '// jest.setup.ts',
       });
 
       await expect(
@@ -186,18 +181,11 @@ describe('tryAddEmptyExports', () => {
         reason: 'due to an error',
       });
 
-      expect(writeFile).not.toHaveBeenCalled();
-
       expect(consoleLog).toHaveBeenCalledTimes(2);
-      expect(consoleLog).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Failed to convert Jest setup files to isolated modules.',
-        ),
-      );
-
-      expect(consoleLog).toHaveBeenCalledWith(
-        expect.stringContaining(error.toString()),
-      );
+      expect(consoleLog.mock.calls.flat()).toEqual([
+        'Failed to convert Jest setup files to isolated modules.',
+        expect.stringMatching(/JSONError/),
+      ]);
     });
   });
 });

@@ -24,11 +24,6 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 22
-Proceeding with migration from Node.js 22.0.0 to 22.0.0
-Upgraded to Node.js 22
-
-Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
@@ -53,20 +48,31 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
+Upgrading project to Node.js 24 and package targets to Node.js 22.14.0
+Upgraded project to Node.js 24 and package targets to Node.js 22.14.0
+
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.14.0+ upgrade-skuba
+
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
+Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
+
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
+Refreshed .gitignore.
+Refreshed .prettierignore.
+Refreshed .dockerignore.
+
+Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
-Refreshed .gitignore. refresh-config-files
-Refreshed .prettierignore. refresh-config-files
-Refreshed pnpm-workspace.yaml. refresh-config-files
-Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 5 files in <random>s.
+Processed 4 files in <random>s.
 
 Prettier
-Processed 9 files in <random>s.
+Processed 8 files in <random>s.
 Formatted 3 files:
 b.md
 c.json
@@ -133,11 +139,6 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 22
-Proceeding with migration from Node.js 22.0.0 to 22.0.0
-Upgraded to Node.js 22
-
-Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
@@ -162,28 +163,38 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
+Upgrading project to Node.js 24 and package targets to Node.js 22.14.0
+Upgraded project to Node.js 24 and package targets to Node.js 22.14.0
+
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.14.0+ upgrade-skuba
+
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
+Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
+
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
+Refreshed .gitignore.
+Refreshed .prettierignore.
+Refreshed .dockerignore.
+
+Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
-Refreshed .gitignore. refresh-config-files
-Refreshed .prettierignore. refresh-config-files
-Refreshed pnpm-workspace.yaml. refresh-config-files
-Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
 Initialising ESLint...
 Processing files...
-Processed 3 files in <random>s.
+Processed 2 files in <random>s.
 ○ a/a/a.ts
 ○ d.js
-○ pnpm-workspace.yaml
 
 Prettier
 Initialising Prettier...
 Detected project root: <random>
 Discovering files...
-Discovered 10 files.
+Discovered 9 files.
 Formatting files...
 .dockerignore
   parser: -
@@ -199,13 +210,11 @@ d.js
   parser: babel
 package.json
   parser: json-stringify
-pnpm-workspace.yaml
-  parser: yaml
 tsconfig.json
   parser: json
 a/a/a.ts
   parser: typescript
-Processed 7 files in <random>s.
+Processed 6 files in <random>s.
 "
 `;
 
@@ -238,11 +247,6 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 22
-Proceeding with migration from Node.js 22.0.0 to 22.0.0
-Upgraded to Node.js 22
-
-Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
@@ -267,20 +271,31 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
+Upgrading project to Node.js 24 and package targets to Node.js 22.14.0
+Upgraded project to Node.js 24 and package targets to Node.js 22.14.0
+
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.14.0+ upgrade-skuba
+
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
+Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
+
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
+Refreshed .gitignore.
+Refreshed .prettierignore.
+Refreshed .dockerignore.
+
+Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
-Refreshed .gitignore. refresh-config-files
-Refreshed .prettierignore. refresh-config-files
-Refreshed pnpm-workspace.yaml. refresh-config-files
-Refreshed .dockerignore. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 3 files in <random>s.
+Processed 2 files in <random>s.
 
 Prettier
-Processed 7 files in <random>s.
+Processed 6 files in <random>s.
 "
 `;
 
@@ -313,11 +328,6 @@ Patch skipped: Update docker image references to use public.ecr.aws and remove -
 Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
 
 Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-Upgrading to Node.js 22
-Proceeding with migration from Node.js 22.0.0 to 22.0.0
-Upgraded to Node.js 22
-
-Patch applied: Upgrade Node.js to version 22 upgrade-skuba
 
 Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
 
@@ -342,16 +352,27 @@ Patch skipped: Configure \`tsconfig.json\`, \`package.json\` and \`jest.config.t
 Patch skipped: Update lambda function configurations to support custom conditions - no lambda configurations to patch upgrade-skuba
 
 Patch skipped: Patch Dockerfiles to copy \`package.json\` - no Dockerfiles found upgrade-skuba
+Upgrading project to Node.js 24 and package targets to Node.js 22.14.0
+Upgraded project to Node.js 24 and package targets to Node.js 22.14.0
+
+Patch applied: Upgrade Node.js version to 24 and package targets to Node.js 22.14.0+ upgrade-skuba
+
+Patch skipped: Add 'rootDir' to root tsconfig.json compilerOptions - rootDir already set in tsconfig.json upgrade-skuba
+
+Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfig.build.json files found upgrade-skuba
+
+Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
+Refreshed .gitignore.
+Refreshed .prettierignore.
+
+Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
-Refreshed .gitignore. refresh-config-files
-Refreshed .prettierignore. refresh-config-files
-Refreshed pnpm-workspace.yaml. refresh-config-files
 Processed skuba lints in <random>s.
 
 ESLint
-Processed 3 files in <random>s.
+Processed 2 files in <random>s.
 
 <random>/a/a/a.ts
   8:3  error  Unexpected console statement  no-console
@@ -363,7 +384,7 @@ Processed 3 files in <random>s.
 
 
 Prettier
-Processed 7 files in <random>s.
+Processed 6 files in <random>s.
 Formatted 1 file:
 a/a/a.ts
 Flagged 1 file:

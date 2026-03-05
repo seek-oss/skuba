@@ -2,12 +2,6 @@
   "name": "<%- moduleName %>",
   "version": "0.0.0-semantically-released",
   "description": "<%- description %>",
-  "imports": {
-    "#src/*": {
-      "@seek/<%- serviceName %>/source": "./src/*",
-      "default": "./lib/*"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/<%- orgName %>/<%- repoName %>.git"
@@ -15,15 +9,18 @@
   "license": "UNLICENSED",
   "sideEffects": false,
   "type": "module",
-  "main": "./lib-commonjs/index.js",
-  "module": "./lib-es2015/index.js",
-  "types": "./lib-types/index.d.ts",
-  "files": [
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map",
-    "lib*/**/*.json"
-  ],
+  "exports": {
+    ".": {
+      "@seek/<%- moduleName %>/source": "./src/index.ts",
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
+  "files": ["lib"],
   "scripts": {
     "build": "skuba build-package",
     "commit": "cz",
@@ -41,12 +38,21 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^22.13.10",
+    "@types/node": "^24.10.2",
     "commitizen": "^4.2.4",
     "skuba": "*"
   },
-  "packageManager": "pnpm@10.7.0",
+  "packageManager": "pnpm@10.27.0",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.14.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.cjs"
+      },
+      "./package.json": "./package.json"
+    }
   }
 }

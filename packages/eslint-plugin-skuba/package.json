@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-skuba",
-  "version": "1.0.2",
+  "version": "2.0.1",
   "private": false,
   "description": "ESLint plugin for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-plugin-skuba#readme",
@@ -9,25 +9,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seek-oss/skuba.git"
+    "url": "git+https://github.com/seek-oss/skuba.git",
+    "directory": "packages/eslint-plugin-skuba"
   },
   "license": "MIT",
   "sideEffects": false,
   "exports": {
     ".": {
       "import": "./lib/index.mjs",
-      "require": "./lib/index.js"
+      "require": "./lib/index.cjs"
     },
     "./package.json": "./package.json"
   },
-  "main": "./lib/index.js",
+  "main": "./lib/index.cjs",
   "module": "./lib/index.mjs",
-  "types": "./lib/index.d.ts",
+  "types": "./lib/index.d.cts",
   "files": [
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map",
-    "lib*/**/*.mjs"
+    "lib"
   ],
   "scripts": {
     "build": "tsdown",
@@ -39,27 +37,29 @@
     "test:ci": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
     "test:watch": "node --import tsx --test --watch 'src/**/*.test.ts'"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@typescript-eslint/utils": "^8.39.0"
+  },
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.26.0",
-    "eslint": "^9.11.1",
-    "tsdown": "^0.15.12",
+    "eslint": "^9.39.1",
+    "tsdown": "^0.20.0",
     "tsx": "^4.16.2",
     "typescript-eslint": "^8.39.0"
   },
   "peerDependencies": {
-    "eslint": ">=9.11.1",
+    "eslint": ">=9.22.0",
     "typescript-eslint": ">=8.39.0"
   },
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.30.3",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.14.0"
   },
   "publishConfig": {
     "exports": {
       ".": {
         "import": "./lib/index.mjs",
-        "require": "./lib/index.js"
+        "require": "./lib/index.cjs"
       },
       "./package.json": "./package.json"
     }
@@ -68,6 +68,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "13.0.0"
+    "version": "15.0.0"
   }
 }

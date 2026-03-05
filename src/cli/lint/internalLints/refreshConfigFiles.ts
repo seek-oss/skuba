@@ -26,7 +26,7 @@ type ConditionOptions = {
 
 type RefreshableConfigFile = {
   name: string;
-  type: 'ignore' | 'pnpm-workspace';
+  type: 'ignore';
   additionalMapping?: (
     s: string,
     packageManager: PackageManagerConfig,
@@ -54,12 +54,6 @@ export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   },
   { name: '.prettierignore', type: 'ignore' },
   {
-    name: 'pnpm-workspace.yaml',
-    type: 'pnpm-workspace',
-    if: ({ packageManager, isInWorkspaceRoot }) =>
-      isInWorkspaceRoot && packageManager.command === 'pnpm',
-  },
-  {
     name: '.dockerignore',
     type: 'ignore',
     additionalMapping: removeOldWarning,
@@ -85,7 +79,6 @@ export const refreshConfigFiles = async (
   const refreshConfigFile = async (
     {
       name: filename,
-      type: fileType,
       additionalMapping = (s) => s,
       if: condition = () => true,
     }: RefreshableConfigFile,
@@ -95,23 +88,16 @@ export const refreshConfigFiles = async (
       return { needsChange: false };
     }
 
-    const maybeReadPackageJson = async (type: RefreshableConfigFile['type']) =>
-      type === 'pnpm-workspace'
-        ? await readDestinationFile('package.json')
-        : undefined;
-
-    const [inputFile, templateFile, isGitIgnored, packageJson] =
-      await Promise.all([
-        readDestinationFile(filename),
-        readBaseTemplateFile(`_${filename}`),
-        gitRoot
-          ? Git.isFileGitIgnored({
-              gitRoot,
-              absolutePath: path.join(destinationRoot, filename),
-            })
-          : false,
-        maybeReadPackageJson(fileType),
-      ]);
+    const [inputFile, templateFile, isGitIgnored] = await Promise.all([
+      readDestinationFile(filename),
+      readBaseTemplateFile(`_${filename}`),
+      gitRoot
+        ? Git.isFileGitIgnored({
+            gitRoot,
+            absolutePath: path.join(destinationRoot, filename),
+          })
+        : false,
+    ]);
 
     // If the file is gitignored and doesn't exist, don't make it
     if (inputFile === undefined && isGitIgnored) {
@@ -119,9 +105,7 @@ export const refreshConfigFiles = async (
     }
 
     const data = additionalMapping(
-      inputFile
-        ? mergeWithConfigFile(templateFile, fileType, packageJson)(inputFile)
-        : templateFile,
+      inputFile ? mergeWithConfigFile(templateFile)(inputFile) : templateFile,
       packageManager,
     );
 

@@ -1,5 +1,376 @@
 # skuba
 
+## 15.0.0
+
+### Major Changes
+
+- **build-package:** Migrate to tsdown ([#2194](https://github.com/seek-oss/skuba/pull/2194))
+
+  As part of our [migration to ESM](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html), we are updating our package build process to support generating both CJS and ESM outputs, regardless of whether projects use CJS or ESM. Since our current tsc-based build does not support this, we are switching to [tsdown](https://tsdown.dev/) for package builds.
+
+- **lint:** Enable [`allowBuilds`](https://pnpm.io/settings#allowbuilds), [`trustPolicy`](https://pnpm.io/settings#trustpolicy), [`blockExoticSubdeps`](https://pnpm.io/settings#blockexoticsubdeps) and [`ignorePatchFailures`](https://pnpm.io/cli/patch#ignorepatchfailures) in `pnpm-plugin-skuba` ([#2188](https://github.com/seek-oss/skuba/pull/2188))
+
+  In light of recent security vulnerabilities plaguing the JavaScript ecosystem, we are enabling some additional pnpm features to help mitigate the risk of supply chain attacks.
+
+  We have allowlisted a set of known packages as our default but you may need to update your `pnpm-workspace.yaml` configuration to add any additional packages you use that are not included in the default allowlist.
+
+  Example:
+
+  ```yaml
+  allowBuilds:
+    some-package: true
+    some-other-package@1.0.0: true
+
+  trustPolicyExclude:
+    - some-package@1.2.3
+  ```
+
+- **lint:** Migrate `pnpm-workspace.yaml` skuba configuration to `pnpm-plugin-skuba` ([#2188](https://github.com/seek-oss/skuba/pull/2188))
+
+  This change replaces the managed skuba section in `pnpm-workspace.yaml` with a [pnpm configuration plugin](https://pnpm.io/config-dependencies).
+
+  The migration includes removing the `minimumReleaseAgeExcludeOverload` settings from `package.json` and migrating them to `pnpm-workspace.yaml`
+
+  This simplifies the managed configuration `skuba` provides, allowing you to override and extend previously un-configurable settings such as `minimumReleaseAge` from your `pnpm-workspace.yaml` file.
+
+  Example:
+
+  ```yaml
+  minimumReleaseAge: 1440 # 1 day
+  minimumReleaseAgeExclude:
+    - some-package
+  ```
+
+- **lint:** Migrate `skuba build-package` usage to use [tsdown](https://tsdown.dev/) for building packages ([#2194](https://github.com/seek-oss/skuba/pull/2194))
+
+  This patch will attempt to do a best effort migration of your `skuba build-package` usage to use [tsdown](https://tsdown.dev/) for building packages. It is highly recommended that you manually review and test the changes. This includes:
+  1. Adding a `tsdown.config.mts` file to your package directories with a basic configuration
+  2. Adding a `customConditions` entry to your root `tsconfig.json` file
+  3. Adding `skipLibCheck` to your package `tsconfig.json` files to work around issues with type checking against `tsdown`.
+  4. Updating your package `package.json` files to point to the new build outputs
+  5. Migrating package.json `assets` usage to use `tsdown` `copy` configuration
+  6. Removing redundant `tsconfig.build.json` files
+
+  #### File changes
+
+  The output between what `skuba build-package` generates before and after this change will be different, so you may need to update any references to the output files in your project.
+
+  For example the output for a simple `src/index.ts` file produces the following outputs:
+
+  ```diff
+  -lib-commonjs/index.js
+  -lib-es2015/index.js
+  -lib-types/index.d.ts
+  +lib/index.cjs
+  +lib/index.mjs
+  +lib/index.d.cts
+  +lib/index.d.mts
+  ```
+
+  This change may break consumers who directly access these output paths.
+
+  To check if your consumers are affected, search GitHub with: `org:SEEK-Jobs content:"@seek/MY_PACKAGE/"`
+
+  If needed, export those references from your package entry point to help consumers migrate to the new build outputs.
+
+  Note: if you choose to remove the `unbundle: true` option from `tsdown.config.mts`, tsdown may emit bundled/chunked outputs and internal `lib/...` file paths can change between builds. Consumers should avoid importing from build output files directly, and instead import from the package entry point (or explicitly exported sub paths)
+
+  #### Format changes
+
+  `tsdown` selects what ECMAScript target version to build for based on the `engines.node` field in your `package.json`.
+
+  This means that for consumers previously relying on the `lib-es2015` output may need to update their runtime to match your package's `engines.node` field.
+
+  An example changeset you may want to include for a package:
+
+  ````md
+  ---
+  'my-package': major
+  ---
+
+  Update npm package build outputs
+
+  This release changes published build output paths. If you were previously importing from nested paths within the build output you will need to update imports to use the package entry point (for example, `@seek/my-package`).
+
+  Please note that this usage is generally not recommended as it can lead to breakages when build outputs change.
+
+  ```diff
+  -import type { SomeType } from '@seek/my-package/lib-types/...';
+  +import type { SomeType } from '@seek/my-package';
+  ```
+  ````
+
+  #### Debugging
+
+  ##### Additional Entrypoints
+
+  If your package has additional entry points, for example:
+
+  ```ts
+  import { SomeFunction } from '@seek/my-package/subpath';
+  ```
+
+  You will need to add them as additional entry points in your `tsdown.config.mts` file, for example:
+
+  ```ts
+  import { defineConfig } from 'tsdown/config';
+
+  export default defineConfig({
+    entries: ['src/index.ts', 'src/subpath/index.ts'],
+  });
+  ```
+
+  This must be followed by a run of `skuba build-package` which will update your `package.json` exports field.
+
+  ##### attw (Are the types wrong?)
+
+  If you run into the following error:
+
+  ```bash
+  ❌ No resolution (node10) at @seek/my-package/subpath
+  ```
+
+  You have a couple different options to resolve this:
+  1. Update your `tsdown.config.mts` and update the `attw` configuration to use a `node16` profile. This tells the attw tool to ignore the `node`/`node10` module resolution. Projects using skuba 13 or above will be compatible with this by default.
+
+  ```diff
+  import { defineConfig } from 'tsdown/config';
+
+  export default defineConfig({
+    entries: ['src/index.ts', 'src/subpath/index.ts'],
+  -  attw: true,
+  +  attw: {
+  +    profile: 'node16',
+  +  },
+  });
+  ```
+
+  1. Create an additional `package.json` file
+
+  For an entrypoint such as `@seek/my-package/foo`, create a folder called `foo` with an additional `package.json` file with the following content.
+
+  ```json
+  {
+    "main": "../lib/foo/index.cjs",
+    "module": "../lib/foo/index.mjs",
+    "types": "../lib/foo/index.d.cts"
+  }
+  ```
+
+  and ensure that the folder is exported in your `files` array in your root `package.json` file.
+
+  ```json
+  {
+    "files": ["lib", "foo"]
+  }
+  ```
+
+  ##### Jest
+
+  If your project utilises a `main` field which points to a `.ts` file within a monorepo setup, eg.
+
+  ```json
+   "main": "src/index.ts",
+  ```
+
+  You may need to create a `moduleNameMapper` entry in your Jest config files to point to the source file, eg.
+
+  ```json
+  {
+    "moduleNameMapper": {
+      "^@seek/my-package": "<rootDir>/packages/my-package/src/index.ts"
+    }
+  }
+  ```
+
+  This will work natively with custom conditions when we migrate to `vitest` in the future, but is required for Jest to continue working with the new build outputs.
+
+  ```ts
+  import { defineConfig } from 'vitest/config';
+
+  export default defineConfig({
+    ssr: {
+      resolve: {
+        conditions: ['@seek/my-repo/source'],
+      },
+    },
+  });
+  ```
+
+### Minor Changes
+
+- **init:** Add support for private SEEK templates ([#2198](https://github.com/seek-oss/skuba/pull/2198))
+
+  Adds support for downloading templates from the private SEEK-Jobs/skuba-templates repository. Users can now select "seek →" from the template list and specify a private template name, which will be downloaded using sparse checkout via SSH.
+
+- **template/\*-npm-package:** Migrate to `tsdown` for bundling ([#2193](https://github.com/seek-oss/skuba/pull/2193))
+
+- **lint:** Ignore `coverage`, `dist`, `lib` and `tmp` folders at any depth ([#2256](https://github.com/seek-oss/skuba/pull/2256))
+
+### Patch Changes
+
+- **deps:** @ast-grep/napi ^0.41.0 ([#2245](https://github.com/seek-oss/skuba/pull/2245))
+
+- **template/lambda-sqs-worker-cdk:** Update Datadog secret configuration to support custom KMS keys ([#2239](https://github.com/seek-oss/skuba/pull/2239))
+
+## 14.1.1
+
+### Patch Changes
+
+- **deps:** prettier-plugin-packagejson ^3.0.0 ([#2223](https://github.com/seek-oss/skuba/pull/2223))
+
+## 14.1.0
+
+### Minor Changes
+
+- **lint:** Add `rootDir: './src'` to tsconfig.build.json files ([#2217](https://github.com/seek-oss/skuba/pull/2217))
+
+### Patch Changes
+
+- **deps:** prettier ~3.8.0 ([#2213](https://github.com/seek-oss/skuba/pull/2213))
+
+- **deps:** ejs ^4.0.0 ([#2215](https://github.com/seek-oss/skuba/pull/2215))
+
+- **deps:** zod ^4.3.5 ([#2218](https://github.com/seek-oss/skuba/pull/2218))
+
+  This resolves errors such as "ID X already exists in the registry" caused by multiple Zod versions.
+
+  If your package declares a dependency on Zod, ensure you use unpinned versioning (e.g. `"zod": "^4.3.5"` instead of `"zod": "4.3.5"`) to avoid installing multiple versions.
+
+## 14.0.1
+
+### Patch Changes
+
+- **test:** Revert upgrade skuba in CI environments ([#2208](https://github.com/seek-oss/skuba/pull/2208))
+
+## 14.0.0
+
+### Major Changes
+
+- **migrate:** Introduce `skuba migrate node24` ([#2165](https://github.com/seek-oss/skuba/pull/2165))
+
+  `skuba migrate node24` attempts to automatically upgrade your:
+  - Project to Node.js 24
+  - Package targets to Node.js 22.14.0+
+  - `aws-cdk-lib`, `datadog-cdk-constructs-v2`, `osls`, `serverless`, `serverless-plugin-datadog`, and `@types/node` dependencies to versions that support Node.js 24
+
+  Changes must be manually reviewed by an engineer before committing the migration output. If you have an npm package that previously supported Node.js ≤18 and was upgraded to target Node.js 22.14.0+, follow semantic versioning and publish the change as a new major version. See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
+
+  **skuba** may not be able to upgrade all projects. Check your project for files that may have been missed, review and test the modified code as appropriate before releasing to production, and [open an issue](https://github.com/seek-oss/skuba/issues/new) if your project files were corrupted by the migration.
+
+  Node.js 24 includes breaking changes. For more information on the upgrade, refer to:
+  - The [Node.js release notes](https://nodejs.org/en/blog/release/v24.0.0)
+  - The AWS [release announcement](https://aws.amazon.com/blogs/compute/node-js-24-runtime-now-available-in-aws-lambda/) for the Lambda `nodejs24.x` runtime update
+
+- **deps:** Require Node.js 22.14.0+ ([#2165](https://github.com/seek-oss/skuba/pull/2165))
+
+- **format, lint:** Migrate projects to Node.js 24 and package targets to Node.js 22.14+ ([#2165](https://github.com/seek-oss/skuba/pull/2165))
+
+  You can locally opt out of the migration by setting the `SKIP_NODE_UPGRADE` environment variable, running `skuba format`, and committing the result.
+
+  Changes must be manually reviewed by an engineer before merging the migration output. If you have an npm package that previously supported Node.js ≤18 and was upgraded to target Node.js 22.14.0+, follow semantic versioning and publish the change as a new major version. See [`skuba migrate node`](https://seek-oss.github.io/skuba/docs/cli/migrate.html#skuba-migrate-node) for more information on this feature and how to use it responsibly.
+
+### Minor Changes
+
+- **test:** Upgrade skuba in CI environments ([#2173](https://github.com/seek-oss/skuba/pull/2173))
+
+  When running in CI environments, `skuba test` will now automatically attempt to upgrade skuba itself before running tests. This ensures that the latest [patches](https://seek-oss.github.io/skuba/docs/cli/lint.html#patches) are applied to your codebase without requiring manual intervention.
+
+  Ensure sure you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled to automatically commit and push these changes.
+
+- **lint:** Add `rootDir` to root tsconfig.json compilerOptions ([#2176](https://github.com/seek-oss/skuba/pull/2176))
+
+  This should resolve issues such as `error TS2210: The project root is ambiguous, but is required to resolve import map entry 'some-file.js' in file '/workdir/package.json'. Supply the `rootDir` compiler option to disambiguate.` appearing in some monorepo setups.
+
+  Ensure you have [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) enabled to automatically commit and push these changes.
+
+- **deps:** semantic-release 25.0.2 ([#2207](https://github.com/seek-oss/skuba/pull/2207))
+
+- **build:** Add esbuild bundling support ([#2197](https://github.com/seek-oss/skuba/pull/2197))
+
+  You can now optionally enable esbuild bundling when using the experimental `esbuild` build mode. This allows you to bundle your output and, when bundling is enabled, also opt into minification, code splitting (ESM + `outDir` required), and tree shaking. You can also mark certain dependencies as external to keep them out of the bundle.
+
+  To opt in, configure `esbuildConfig` in your `package.json`:
+
+  ```diff
+  {
+    "skuba": {
+      "build": "esbuild",
+  +   "esbuildConfig": {
+  +     "bundle": true,
+  +     "minify": true,
+  +     "splitting": false,
+  +     "treeShaking": true,
+  +     "external": ["aws-sdk"]
+  +   },
+    "template": "koa-rest-api",
+    "type": "application",
+    }
+  }
+  ```
+
+- **deps:** eslint-config-seek 15.0.4 ([#2179](https://github.com/seek-oss/skuba/pull/2179))
+
+- **format:** Commit each version's patches separately during `skuba format` ([#2196](https://github.com/seek-oss/skuba/pull/2196))
+
+  When running `skuba format`, patches are now committed individually per version rather than all at once. This provides better granularity in the git history and makes it easier to track which changes were applied by each version's patches.
+
+### Patch Changes
+
+- **deps:** npm-registry-fetch 19.1.1 ([#2207](https://github.com/seek-oss/skuba/pull/2207))
+
+- **deps:** normalize-package-data 8.0.0 ([#2207](https://github.com/seek-oss/skuba/pull/2207))
+
+- **deps:** tsx ^4.21.0 ([#2169](https://github.com/seek-oss/skuba/pull/2169))
+
+## 13.1.1
+
+### Patch Changes
+
+- **deps:** Remove peer dependency on `skuba-dive` ([#2160](https://github.com/seek-oss/skuba/pull/2160))
+
+## 13.1.0
+
+### Minor Changes
+
+- **deps:** Replace `enquirer` with `@inquirer/prompts` ([#2131](https://github.com/seek-oss/skuba/pull/2131))
+
+  This internal change only affects the `skuba init` and `skuba configure` interactive prompts.
+
+- **deps:** prettier ~3.7.0 ([#2146](https://github.com/seek-oss/skuba/pull/2146))
+
+  This change contains some formatting changes. Please read the [release notes](https://prettier.io/blog/2025/11/27/3.7.0) for more information.
+
+- **deps:** Replace `chalk` with `util.styleText` ([#2134](https://github.com/seek-oss/skuba/pull/2134))
+
+  This internal change only affects the styling of the skuba CLI.
+
+### Patch Changes
+
+- **deps:** @octokit/types ^16.0.0 ([#2149](https://github.com/seek-oss/skuba/pull/2149))
+
+- **lint:** Check member expressions in `skuba/no-sync-in-promise-iterable` ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
+  This looks for synchronous calls in expressions like `fn().prop`.
+
+- **deps:** eslint ^9.39.1 ([#2143](https://github.com/seek-oss/skuba/pull/2143))
+
+- **template/\*-rest-api:** Template Gantry environment names in values files ([#2120](https://github.com/seek-oss/skuba/pull/2120))
+
+- **deps:** esbuild ~0.27.0 ([#2137](https://github.com/seek-oss/skuba/pull/2137))
+
+- **deps:** eslint-config-seek 14.7.0 ([#2143](https://github.com/seek-oss/skuba/pull/2143))
+
+- **lint:** Check curried functions in `skuba/no-sync-in-promise-iterable` ([#2127](https://github.com/seek-oss/skuba/pull/2127))
+
+  This looks for synchronous calls in expressions like `fn()()()`.
+
+- **lint:** Remove ESLint migrate patch ([#2132](https://github.com/seek-oss/skuba/pull/2132))
+
+  The ESLint migration patch is no longer applied during `skuba configure` or `skuba lint`.
+
+  If you are upgrading from skuba 7 or earlier, upgrade through each major version up to 13 first to apply the migration patch before upgrading to this version.
+
 ## 13.0.3
 
 ### Patch Changes

@@ -1,28 +1,3 @@
-# managed by skuba
-ignorePatchFailures: false
-# minimumReleaseAge: 4320 # 3 days
-minimumReleaseAgeExclude:
-  - '@seek/*'
-  - '@skuba-lib/*'
-  - eslint-config-seek
-  - eslint-config-skuba
-  - eslint-plugin-skuba
-  - skuba
-  - tsconfig-seek
-packageManagerStrictVersion: true
-publicHoistPattern:
-  - '@types*'
-  - '@vitest/*'
-  - eslint
-  - eslint-config-skuba
-  - prettier
-  - esbuild
-  - tsconfig-seek
-  - typescript
-  - vitest
-  # end managed by skuba
-  - 'remark-lint-*'
-
 packages:
   # https://github.com/changesets/changesets/issues/1133#issuecomment-1594844204
   - .
@@ -30,4 +5,11 @@ packages:
   - template/*
 
 overrides:
-  'skuba': 'workspace:*'
+  skuba: workspace:*
+  skuba-dive: workspace:*
+
+publicHoistPattern:
+  - remark-lint-*
+
+trustPolicyExclude:
+  - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13

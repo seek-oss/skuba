@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "lib": ["ES2021"],
+    "rootDir": ".",
+    "lib": ["ES2023"],
     "outDir": "lib",
-    "target": "ES2021",
+    "target": "ES2023",
     "baseUrl": "."
   },
   "exclude": ["lib*/**/*"],

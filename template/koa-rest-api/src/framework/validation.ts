@@ -89,6 +89,6 @@ export const validateRequestBody = <T extends z.ZodType>(
 ): z.infer<T> =>
   validate({
     ctx,
-    input: ctx.request.body as unknown,
+    input: ctx.request.body,
     schema,
   });

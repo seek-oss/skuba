@@ -19,12 +19,13 @@ import {
   templateConfigSchema,
 } from '../../utils/template.js';
 
-import { downloadGitHubTemplate } from './git.js';
+import { downloadGitHubTemplate, downloadPrivateTemplate } from './git.js';
 import {
   BASE_PROMPT_PROPS,
   type BaseFields,
   type Choice,
   getGitPath,
+  getPrivateTemplateName,
   getTemplateName,
   shouldContinue,
 } from './prompts.js';
@@ -94,12 +95,18 @@ const cloneTemplate = async (
   templateName: string,
   destinationDir: string,
 ): Promise<TemplateConfig> => {
-  const isCustomTemplate = templateName.startsWith('github:');
+  const isGitHubTemplate = templateName.startsWith('github:');
+  const isPrivateSeekTemplate = templateName.startsWith('seek:');
+  const isCustomTemplate = isGitHubTemplate || isPrivateSeekTemplate;
 
-  if (isCustomTemplate) {
+  if (isGitHubTemplate) {
     const gitHubPath = templateName.slice('github:'.length);
 
     await downloadGitHubTemplate(gitHubPath, destinationDir);
+  } else if (isPrivateSeekTemplate) {
+    const privateName = templateName.slice('seek:'.length);
+
+    await downloadPrivateTemplate(privateName, destinationDir);
   } else {
     const templateDir = path.join(TEMPLATE_DIR, templateName);
 
@@ -138,6 +145,11 @@ const selectTemplateName = async () => {
   if (templateSelection === 'github →') {
     const gitHubPath = await getGitPath();
     return `github:${gitHubPath}`;
+  }
+
+  if (templateSelection === 'seek →') {
+    const privateName = await getPrivateTemplateName();
+    return `seek:${privateName}`;
   }
 
   return templateSelection;

@@ -1,6 +1,6 @@
 {
   "name": "@skuba-lib/api",
-  "version": "1.0.1",
+  "version": "2.0.2",
   "description": "Node.js development API for skuba",
   "homepage": "https://github.com/seek-oss/skuba#readme",
   "bugs": {
@@ -56,13 +56,17 @@
   "dependencies": {
     "@octokit/graphql": "^9.0.0",
     "@octokit/rest": "^22.0.0",
-    "@octokit/types": "^15.0.0",
+    "@octokit/types": "^16.0.0",
     "fs-extra": "^11.0.0",
     "ignore": "^7.0.0",
-    "isomorphic-git": "^1.11.1"
+    "isomorphic-git": "^1.11.1",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
-    "tsdown": "^0.15.12"
+    "tsdown": "^0.20.0"
+  },
+  "engines": {
+    "node": ">=22.14.0"
   },
   "publishConfig": {
     "exports": {

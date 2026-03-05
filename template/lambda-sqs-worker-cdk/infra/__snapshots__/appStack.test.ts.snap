@@ -10,14 +10,6 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
     },
   },
   "Resources": {
-    "datadogapikeysecret046FEF06": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "GenerateSecretString": {},
-      },
-      "Type": "AWS::SecretsManager::Secret",
-      "UpdateReplacePolicy": "Delete",
-    },
     "destinationtopicDCE2E0B8": {
       "Properties": {
         "KmsMasterKeyId": {
@@ -175,16 +167,13 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
         },
         "Environment": {
           "Variables": {
-            "DD_API_KEY_SECRET_ARN": {
-              "Ref": "datadogapikeysecret046FEF06",
-            },
+            "DD_API_KEY_SECRET_ARN": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:datadog-api-key",
             "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
             "DD_ENV": "development",
             "DD_FLUSH_TO_LOG": "false",
             "DD_LAMBDA_HANDLER": "index.handler",
             "DD_LOGS_INJECTION": "false",
             "DD_MERGE_XRAY_TRACES": "false",
-            "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
             "DD_SERVICE": "serviceName",
             "DD_SITE": "datadoghq.com",
@@ -217,7 +206,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Node22-x:x",
+                ":464622532012:layer:Datadog-Node24-x:x",
               ],
             ],
           },
@@ -242,7 +231,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
@@ -641,9 +630,7 @@ exports[`returns expected CloudFormation stack for dev 1`] = `
                 "secretsmanager:DescribeSecret",
               ],
               "Effect": "Allow",
-              "Resource": {
-                "Ref": "datadogapikeysecret046FEF06",
-              },
+              "Resource": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:datadog-api-key-??????",
             },
             {
               "Action": [
@@ -928,16 +915,13 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
         },
         "Environment": {
           "Variables": {
-            "DD_API_KEY_SECRET_ARN": {
-              "Ref": "datadogapikeysecret046FEF06",
-            },
+            "DD_API_KEY_SECRET_ARN": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:datadog-api-key",
             "DD_CAPTURE_LAMBDA_PAYLOAD": "false",
             "DD_ENV": "production",
             "DD_FLUSH_TO_LOG": "false",
             "DD_LAMBDA_HANDLER": "index.handler",
             "DD_LOGS_INJECTION": "false",
             "DD_MERGE_XRAY_TRACES": "false",
-            "DD_SERVERLESS_APPSEC_ENABLED": "false",
             "DD_SERVERLESS_LOGS_ENABLED": "false",
             "DD_SERVICE": "serviceName",
             "DD_SITE": "datadoghq.com",
@@ -970,7 +954,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 {
                   "Ref": "AWS::Region",
                 },
-                ":464622532012:layer:Datadog-Node22-x:x",
+                ":464622532012:layer:Datadog-Node24-x:x",
               ],
             ],
           },
@@ -995,7 +979,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "aws-codedeploy-hooks",
@@ -1394,9 +1378,7 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
                 "secretsmanager:DescribeSecret",
               ],
               "Effect": "Allow",
-              "Resource": {
-                "Ref": "datadogapikeysecret046FEF06",
-              },
+              "Resource": "arn:aws:secretsmanager:<Region>:<AccountId>:secret:datadog-api-key-??????",
             },
             {
               "Action": [

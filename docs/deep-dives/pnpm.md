@@ -71,6 +71,7 @@ The **skuba**-maintained `pnpm-workspace.yaml` ([previously `.npmrc`](https://gi
 # managed by skuba
 packageManagerStrictVersion: true
 publicHoistPattern:
+  - '@eslint/*'
   - '@types*'
   - '*eslint*'
   - '*prettier*'
@@ -107,7 +108,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 2. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@10.20.0",
+   "packageManager": "pnpm@10.30.3",
    ```
 
 3. Install pnpm
@@ -148,6 +149,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     # managed by skuba
     packageManagerStrictVersion: true
     publicHoistPattern:
+      - '@eslint/*'
       - '@types*'
       - '*eslint*'
       - '*prettier*'

@@ -132,9 +132,7 @@ describe('patchServerListener', () => {
 
     it('skips the templated Koa listener', async () => {
       const listener = await fs.promises.readFile(
-        require.resolve(
-          '../../../../../../../template/koa-rest-api/src/listen.ts',
-        ),
+        require.resolve('../../../../../../../template/koa-rest-api/src/listen.ts'),
         'utf-8',
       );
 
@@ -156,9 +154,7 @@ describe('patchServerListener', () => {
 
     it('skips the templated Express listener', async () => {
       const listener = await fs.promises.readFile(
-        require.resolve(
-          '../../../../../../../template/express-rest-api/src/listen.ts',
-        ),
+        require.resolve('../../../../../../../template/express-rest-api/src/listen.ts'),
         'utf-8',
       );
 
@@ -274,9 +270,7 @@ describe('patchServerListener', () => {
 
     it('skips the templated Koa listener', async () => {
       const listener = await fs.promises.readFile(
-        require.resolve(
-          '../../../../../../../template/koa-rest-api/src/listen.ts',
-        ),
+        require.resolve('../../../../../../../template/koa-rest-api/src/listen.ts'),
         'utf-8',
       );
 
@@ -298,9 +292,7 @@ describe('patchServerListener', () => {
 
     it('skips the templated Express listener', async () => {
       const listener = await fs.promises.readFile(
-        require.resolve(
-          '../../../../../../../template/express-rest-api/src/listen.ts',
-        ),
+        require.resolve('../../../../../../../template/express-rest-api/src/listen.ts'),
         'utf-8',
       );
 

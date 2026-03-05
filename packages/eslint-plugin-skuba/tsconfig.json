@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
+    "customConditions": ["@seek/skuba/source"],
+    "rootDir": ".",
     "declaration": true,
-    "lib": ["ES2021"],
+    "lib": ["ES2023"],
     "module": "preserve",
     "moduleResolution": "bundler",
     "outDir": "lib",
     "removeComments": false,
     "skipLibCheck": true,
-    "target": "ES2021"
+    "target": "ES2023"
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json"

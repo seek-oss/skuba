@@ -1,6 +1,6 @@
 {
   "name": "skuba-dive",
-  "version": "2.0.0",
+  "version": "4.0.1",
   "private": false,
   "description": "Minimal runtime for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/skuba-dive#readme",
@@ -9,21 +9,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seek-oss/skuba.git"
+    "url": "git+https://github.com/seek-oss/skuba.git",
+    "directory": "packages/skuba-dive"
   },
   "license": "MIT",
-  "sideEffects": true,
+  "sideEffects": false,
   "type": "module",
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "@seek/skuba/source": "./src/index.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "files": [
-    "lib/**/*.d.ts",
-    "lib/**/*.js",
-    "lib/**/*.js.map"
+    "lib"
   ],
   "scripts": {
-    "build": "pnpm skuba build",
+    "build": "pnpm skuba build-package",
     "format": "pnpm skuba format",
     "lint": "pnpm skuba lint",
     "prepack": "pnpm skuba build",
@@ -32,12 +39,21 @@
     "test:ci": "pnpm skuba test --coverage"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.14.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./lib/index.mjs",
+        "require": "./lib/index.cjs"
+      },
+      "./package.json": "./package.json"
+    }
   },
   "skuba": {
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "13.0.0"
+    "version": "15.0.0"
   }
 }

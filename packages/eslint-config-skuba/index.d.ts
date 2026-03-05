@@ -1,5 +1,5 @@
-import type { Linter } from 'eslint';
+import type { Config } from 'eslint/config';
 
-declare const config: Linter.Config;
+declare const config: Config[];
 
 export = config;

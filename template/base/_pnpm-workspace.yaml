@@ -8,16 +8,21 @@ minimumReleaseAgeExclude:
   - eslint-config-skuba
   - eslint-plugin-skuba
   - skuba
+  - skuba-dive
   - tsconfig-seek
 packageManagerStrictVersion: true
 publicHoistPattern:
+  - '@arethetypeswrong/core'
+  - '@eslint/*'
   - '@types*'
-  - '@vitest/*'
+  - esbuild
   - eslint
   - eslint-config-skuba
+  - jest
   - prettier
-  - esbuild
+  - publint
   - tsconfig-seek
+  - tsdown
   - typescript
   - vitest
   # end managed by skuba

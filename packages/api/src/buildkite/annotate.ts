@@ -6,9 +6,9 @@ export type AnnotationStyle = 'success' | 'info' | 'warning' | 'error';
 const isAnnotationEnabled = async () =>
   Boolean(
     process.env.BUILDKITE &&
-      process.env.BUILDKITE_AGENT_ACCESS_TOKEN &&
-      process.env.BUILDKITE_JOB_ID &&
-      (await hasCommand('buildkite-agent')),
+    process.env.BUILDKITE_AGENT_ACCESS_TOKEN &&
+    process.env.BUILDKITE_JOB_ID &&
+    (await hasCommand('buildkite-agent')),
   );
 
 interface AnnotationOptions {

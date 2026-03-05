@@ -1,4 +1,6 @@
-import type { Octokit } from '@octokit/rest' with { 'resolution-mode': 'import' };
+import type { Octokit } from '@octokit/rest' with {
+  'resolution-mode': 'import',
+};
 
 import * as Git from '../git/index.js';
 
