@@ -123,12 +123,22 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
    This converts `yarn.lock` to `pnpm-lock.yaml`.
 
-5. Run `pnpm add --config pnpm-skuba-config`
+5. 4. Create [`pnpm-workspace.yaml`]
+
+   Skip this step if your project does not use Yarn workspaces.
+
+   ```yaml
+   packages:
+     # all packages in direct subdirectories of packages/
+     - 'packages/*'
+   ```
 
    (Optional) If your sub-package `package.json`s reference one another using the syntax `foo: *`,
    you can replace these references with the [workspace protocol] using the syntax `foo: workspace:*`.
 
-6. Include additional hoisting settings in `pnpm-workspace.yaml` for Serverless
+6. Run `pnpm add --config pnpm-skuba-config`
+
+7. Include additional hoisting settings in `pnpm-workspace.yaml` for Serverless
 
    Skip this step if your project does not use Serverless.
    It can also be skipped for Serverless projects that use `esbuild` bundling.
@@ -142,13 +152,13 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    + shamefullyHoist: true
    ```
 
-7. Run `rm -rf node_modules && pnpm install`
+8. Run `rm -rf node_modules && pnpm install`
 
    This will ensure your local workspace will not have any lingering hoisted dependencies from `yarn`.
 
    If you have a monorepo, delete all sub-package `node_modules` directories.
 
-8. Run `pnpm skuba lint`
+9. Run `pnpm skuba lint`
 
    After running `pnpm install`,
    you may notice that some module imports no longer work.
@@ -163,10 +173,10 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
    Run `pnpm install foo` to resolve this error.
 
-9. Modify `Dockerfile` or `Dockerfile.dev-deps`
+10. Modify `Dockerfile` or `Dockerfile.dev-deps`
 
-   <!-- prettier-ignore -->
-   ```diff
+    <!-- prettier-ignore -->
+    ```diff
       FROM --platform=arm64 node:20-alpine AS dev-deps
     
     + RUN --mount=type=bind,source=package.json,target=package.json \
@@ -189,30 +199,30 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +     pnpm fetch
     ```
 
-   Move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc`,
-   and use a [bind mount] in place of `COPY` to mount `pnpm-lock.yaml`.
+    Move the `dst` of the ephemeral `.npmrc` from `/workdir/.npmrc` to `/root/.npmrc`,
+    and use a [bind mount] in place of `COPY` to mount `pnpm-lock.yaml`.
 
-   [`pnpm fetch`] does not require `package.json` to be copied to resolve packages;
-   trivial updates to `package.json` like a change in `scripts` will no longer result in a cache miss.
-   `pnpm fetch` is also optimised for monorepos and does away with the need to copy nested `package.json`s.
-   However, this command only serves to populate a local package store and stops short of installing the packages,
-   the implications of which are covered in the next step.
+    [`pnpm fetch`] does not require `package.json` to be copied to resolve packages;
+    trivial updates to `package.json` like a change in `scripts` will no longer result in a cache miss.
+    `pnpm fetch` is also optimised for monorepos and does away with the need to copy nested `package.json`s.
+    However, this command only serves to populate a local package store and stops short of installing the packages,
+    the implications of which are covered in the next step.
 
-   If using [the newer `GET_NPM_TOKEN` environment variable](./npm.md),
-   your fetch command should instead look like:
+    If using [the newer `GET_NPM_TOKEN` environment variable](./npm.md),
+    your fetch command should instead look like:
 
-   ```dockerfile
-   RUN --mount=type=bind,source=.npmrc,target=.npmrc \
-       --mount=type=bind,source=package.json,target=package.json \
-       --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
-       --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
-       --mount=type=secret,id=NPM_TOKEN,env=NPM_TOKEN,required=true \
-       pnpm fetch
-   ```
+    ```dockerfile
+    RUN --mount=type=bind,source=.npmrc,target=.npmrc \
+        --mount=type=bind,source=package.json,target=package.json \
+        --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+        --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \
+        --mount=type=secret,id=NPM_TOKEN,env=NPM_TOKEN,required=true \
+        pnpm fetch
+    ```
 
-   Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
+    Review [`Dockerfile.dev-deps`] from the new `koa-rest-api` template as a reference point.
 
-10. Replace `yarn` with `pnpm` in `Dockerfile`
+11. Replace `yarn` with `pnpm` in `Dockerfile`
 
     As `pnpm fetch` does not actually install packages,
     run a subsequent `pnpm install --offline` before any command which may reference a dependency.
@@ -248,7 +258,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
       ENV NODE_ENV=production
     ```
 
-11. Modify plugins in `.buildkite/pipeline.yml`
+12. Modify plugins in `.buildkite/pipeline.yml`
 
     Following the Dockerfile changes, apply the analogous changes to the Buildkite pipeline.
 
@@ -290,7 +300,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
           - NPM_TOKEN
     ```
 
-12. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
+13. Run `pnpm install --offline` and replace `yarn` with `pnpm` in `.buildkite/pipeline.yml`
 
     ```diff
      - label: 🧪 Test & Lint
@@ -307,7 +317,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     +    - pnpm lint
     ```
 
-13. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
+14. Search for other references to `yarn` in your project. Replace these with `pnpm` where necessary.
 
     For example, you may have the lockfile listed in `.github/CODEOWNERS`:
 
