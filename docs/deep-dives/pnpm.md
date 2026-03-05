@@ -119,11 +119,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
    (Check the [install guide] for alternate methods)
 
-4. Run `pnpm import && rm yarn.lock`
-
-   This converts `yarn.lock` to `pnpm-lock.yaml`.
-
-5. 4. Create [`pnpm-workspace.yaml`]
+4. Create [`pnpm-workspace.yaml`]
 
    Skip this step if your project does not use Yarn workspaces.
 
@@ -136,7 +132,11 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    (Optional) If your sub-package `package.json`s reference one another using the syntax `foo: *`,
    you can replace these references with the [workspace protocol] using the syntax `foo: workspace:*`.
 
-6. Run `pnpm add --config pnpm-skuba-config`
+5. Run `pnpm add --config pnpm-skuba-config`
+
+6. Run `pnpm import && rm yarn.lock`
+
+   This converts `yarn.lock` to `pnpm-lock.yaml`.
 
 7. Include additional hoisting settings in `pnpm-workspace.yaml` for Serverless
 
@@ -160,18 +160,18 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
 9. Run `pnpm skuba lint`
 
-   After running `pnpm install`,
-   you may notice that some module imports no longer work.
-   This is intended behaviour as these packages are no longer hoisted by default.
-   Explicitly declare these as `dependencies` or `devDependencies` in `package.json`.
+After running `pnpm install`,
+you may notice that some module imports no longer work.
+This is intended behaviour as these packages are no longer hoisted by default.
+Explicitly declare these as `dependencies` or `devDependencies` in `package.json`.
 
-   For example:
+For example:
 
-   ```shell
-   Cannot find module 'foo'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option? ts(2792)
-   ```
+```shell
+Cannot find module 'foo'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option? ts(2792)
+```
 
-   Run `pnpm install foo` to resolve this error.
+Run `pnpm install foo` to resolve this error.
 
 10. Modify `Dockerfile` or `Dockerfile.dev-deps`
 
