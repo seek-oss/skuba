@@ -110,7 +110,15 @@ export const init = async (args = process.argv.slice(2)) => {
         path.join(destinationDir, '.pnpmfile.cjs'),
       );
     } else {
-      await installPnpmPlugin(skubaManifest);
+      // If a pnpm-workspace.yaml exists in parent directories of your current working directory,
+      // pnpm will choose to use it instead of creating a new one in the destination directory
+      // To avoid this, we create an empty pnpm-workspace.yaml in the destination directory before installing the plugin
+      await fs.promises.writeFile(
+        path.join(destinationDir, 'pnpm-workspace.yaml'),
+        '',
+        'utf8',
+      );
+      await installPnpmPlugin(skubaManifest, exec);
     }
   }
 
