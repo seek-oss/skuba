@@ -5,7 +5,9 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { migrateToPnpmConfig } from './migrateToPnpmConfig.js';
 
-jest.mock('../../../../../../utils/exec.js');
+jest.mock('../../../../../../utils/exec.js', () => ({
+  createExec: () => jest.fn(),
+}));
 jest.mock('fs', () => memfs);
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
