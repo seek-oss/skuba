@@ -132,7 +132,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    (Optional) If your sub-package `package.json`s reference one another using the syntax `foo: *`,
    you can replace these references with the [workspace protocol] using the syntax `foo: workspace:*`.
 
-5. Run `pnpm add --config pnpm-skuba-config`
+5. Run `pnpm add --config pnpm-plugin-skuba`
 
 6. Run `pnpm import && rm yarn.lock`
 
