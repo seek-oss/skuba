@@ -118,16 +118,11 @@ const editFilesField = (ast: SgNode): Edit[] => {
 
   const newFiles = existingFiles.filter(
     (file: string) =>
-      ![
-        'lib-commonjs',
-        'lib-es2015',
-        'lib-types',
-        'lib-types/**/*.d.ts',
-        'lib*/**/*.d.ts',
-        'lib*/**/*.js',
-        'lib*/**/*.js.map',
-        'lib*/**/*.json',
-      ].includes(file),
+      !(
+        file.startsWith('lib*') ||
+        file.startsWith('lib/') ||
+        file.startsWith('lib-')
+      ),
   );
 
   newFiles.push('lib');
