@@ -750,14 +750,6 @@ exports[`returns expected CloudFormation stack for prod 1`] = `
     },
   },
   "Resources": {
-    "datadogapikeysecret046FEF06": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "GenerateSecretString": {},
-      },
-      "Type": "AWS::SecretsManager::Secret",
-      "UpdateReplacePolicy": "Delete",
-    },
     "destinationtopicDCE2E0B8": {
       "Properties": {
         "KmsMasterKeyId": {
