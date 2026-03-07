@@ -124,7 +124,7 @@
     "tsdown": "~0.20.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.0",
-    "vitest": "^4.0.5",
+    "vitest": "^4.0.18",
     "zod": "^4.3.5"
   },
   "devDependencies": {
