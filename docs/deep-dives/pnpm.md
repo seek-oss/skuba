@@ -132,13 +132,11 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    (Optional) If your sub-package `package.json`s reference one another using the syntax `foo: *`,
    you can replace these references with the [workspace protocol] using the syntax `foo: workspace:*`.
 
-5. Run `pnpm import && rm yarn.lock`
+5. Run `pnpm add --config pnpm-plugin-skuba`
+
+6. Run `pnpm import && rm yarn.lock`
 
    This converts `yarn.lock` to `pnpm-lock.yaml`.
-
-6. Run `pnpm skuba format`
-
-   This will synthesise managed hoist patterns into `pnpm-workspace.yaml`.
 
 7. Include additional hoisting settings in `pnpm-workspace.yaml` for Serverless
 
@@ -146,17 +144,8 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    It can also be skipped for Serverless projects that use `esbuild` bundling.
 
    ```diff
-    # managed by skuba
-    packageManagerStrictVersion: true
-    publicHoistPattern:
-      - '@eslint/*'
-      - '@types*'
-      - '*eslint*'
-      - '*prettier*'
-      - esbuild
-      - jest
-      - tsconfig-seek
-      # end managed by skuba
+     configDependencies:
+       pnpm-plugin-skuba: 2.0.0+sha512-nhxd9TdhOOXJ1bcQaqtDiI02gbxhJ8lTw3ZzSHDJPqIbbtnABQT7nLKqLX2zKi7tbfRI8+QSgL3eR2d/QFOLew==
    +
    + # Required for Serverless packaging
    + nodeLinker: hoisted

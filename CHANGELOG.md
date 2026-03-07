@@ -1,5 +1,11 @@
 # skuba
 
+## 15.0.1
+
+### Patch Changes
+
+- **init:** Fix pnpm config dependency installation ([#2258](https://github.com/seek-oss/skuba/pull/2258))
+
 ## 15.0.0
 
 ### Major Changes
