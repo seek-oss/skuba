@@ -34,7 +34,9 @@ const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-beforeEach(() => { vi.clearAllMocks() });
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 beforeEach(() => vol.reset());
 
 describe('patchServerListener', () => {

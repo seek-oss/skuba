@@ -26,7 +26,9 @@ vi.spyOn(exec, 'createExec').mockReturnValue(mockExec);
 
 const stdout = () => stdoutMock.mock.calls.flat(1).join('').trim();
 
-afterEach(() => { stdoutMock.mockReset() });
+afterEach(() => {
+  stdoutMock.mockReset();
+});
 
 describe('detectPackageManager', () => {
   it('detects pnpm', async () => {

@@ -23,7 +23,9 @@ vi.mock('../../..', () => ({
 const volToJson = () => vol.toJSON('/', undefined, true);
 
 afterEach(() => vol.reset());
-afterEach(() => { vi.resetAllMocks() });
+afterEach(() => {
+  vi.resetAllMocks();
+});
 
 const logger = {
   bold: vi.fn(),

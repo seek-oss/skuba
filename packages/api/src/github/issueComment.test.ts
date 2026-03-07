@@ -30,7 +30,9 @@ beforeEach(() => {
   vi.mocked(createRestClient).mockResolvedValue(mockClient as never);
 });
 
-afterEach(() => { vi.resetAllMocks() });
+afterEach(() => {
+  vi.resetAllMocks();
+});
 
 describe('putIssueComment', () => {
   it('handles explicit issue and user IDs', async () => {

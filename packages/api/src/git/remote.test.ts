@@ -7,7 +7,9 @@ vi.mock('isomorphic-git');
 
 const dir = process.cwd();
 
-afterEach(() => { vi.resetAllMocks() });
+afterEach(() => {
+  vi.resetAllMocks();
+});
 
 describe('getOwnerAndRepo', () => {
   it('short circuits on BUILDKITE_REPO', async () => {
