@@ -14,6 +14,14 @@ vi.mock('fast-glob', () => ({
     return actualFastGlob.glob(pat, { ...opts, fs: memfs });
   },
 }));
+vi.mock('node:fs', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('node:fs/promises', () => ({
+  default: memfs.fs.promises,
+  ...memfs.fs.promises,
+}));
 vi.mock('../../../utils/logging');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
