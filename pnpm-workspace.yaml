@@ -8,6 +8,9 @@ overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
 
+patchedDependencies:
+  '@ast-grep/lang-json@0.0.6': patches/@ast-grep__lang-json@0.0.6.patch
+
 publicHoistPattern:
   - remark-lint-*
 

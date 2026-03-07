@@ -10,6 +10,11 @@ overrides:
 
 pnpmfileChecksum: sha256-36XNvjpOkAy31UcR1kEV4BLjae5TgEVUF+KVZEpCEYI=
 
+patchedDependencies:
+  '@ast-grep/lang-json@0.0.6':
+    hash: ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5
+    path: patches/@ast-grep__lang-json@0.0.6.patch
+
 importers:
 
   .:
@@ -19,7 +24,7 @@ importers:
         version: 0.18.2
       '@ast-grep/lang-json':
         specifier: ^0.0.6
-        version: 0.0.6
+        version: 0.0.6(patch_hash=ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5)
       '@ast-grep/napi':
         specifier: ^0.41.0
         version: 0.41.0
@@ -7833,7 +7838,7 @@ snapshots:
       typescript: 5.6.1-rc
       validate-npm-package-name: 5.0.1
 
-  '@ast-grep/lang-json@0.0.6':
+  '@ast-grep/lang-json@0.0.6(patch_hash=ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5)':
     dependencies:
       '@ast-grep/setup-lang': 0.0.6
 
