@@ -1,4 +1,4 @@
-import type { NormalizedPackageJson } from 'read-pkg-up';
+import type { NormalizedPackageJson } from 'read-package-up';
 
 import { exec as defaultExec } from '../../utils/exec.js';
 

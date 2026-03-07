@@ -2,6 +2,7 @@
 import fsp from 'fs/promises';
 
 import memfs, { vol } from 'memfs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';
@@ -10,10 +11,16 @@ import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
+vi.mock('fast-glob', () => ({
+  glob: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 
 beforeEach(() => vol.reset());
@@ -24,7 +31,7 @@ describe('collapseDuplicateMergeKeys', () => {
     packageManager: configForPackageManager('pnpm'),
   };
 
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => vi.resetAllMocks());
 
   describe.each(['lint', 'format'] as const)('%s', (mode) => {
     it('should not need to modify any of the template pipelines', async () => {

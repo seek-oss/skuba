@@ -16,7 +16,6 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "@seek/skuba/source": "./src/index.ts",
       "import": "./lib/index.mjs",
       "require": "./lib/index.cjs"
     },

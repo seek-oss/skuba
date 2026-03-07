@@ -2,6 +2,7 @@
   "name": "@seek/greeter",
   "private": true,
   "license": "UNLICENSED",
+  "type": "module",
   "imports": {
     "#src/*": {
       "@seek/<%- serviceName %>/source": "./src/*",

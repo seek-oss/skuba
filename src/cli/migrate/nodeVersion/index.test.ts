@@ -1,19 +1,34 @@
 import memfs, { vol } from 'memfs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { nodeVersionMigration } from './index.js';
 
-jest.mock('fs', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
 }));
-jest.mock('../../../utils/logging');
+vi.mock('fast-glob', () => ({
+  glob: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
+}));
+vi.mock('node:fs', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('node:fs/promises', () => ({
+  default: memfs.fs.promises,
+  ...memfs.fs.promises,
+}));
+vi.mock('../../../utils/logging');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => vol.reset());
 
-afterEach(() => jest.clearAllMocks());
+afterEach(() => vi.clearAllMocks());
 
 describe('nodeVersionMigration', () => {
   const scenarios: Array<{

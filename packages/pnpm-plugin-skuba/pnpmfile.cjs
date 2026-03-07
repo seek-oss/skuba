@@ -27,15 +27,16 @@ const PUBLIC_HOIST_PATTERN = [
   '@arethetypeswrong/core',
   '@eslint/*',
   '@types*',
+  '@vitest/*',
   'esbuild',
   'eslint',
   'eslint-config-skuba',
-  'jest',
   'prettier',
   'publint',
   'tsconfig-seek',
   'tsdown',
   'typescript',
+  'vitest',
 ];
 
 const TRUST_POLICY_EXCLUDE = ['semver@5.7.2 || 6.3.1'];

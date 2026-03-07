@@ -1,4 +1,5 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../../../../index.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
@@ -6,33 +7,40 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchApiDockerfiles } from './patchApiDockerfiles.js';
 
-jest.mock('../../../../../../index.js', () => ({
+vi.mock('../../../../../../index.js', () => ({
   Git: {
-    getOwnerAndRepo: jest.fn(),
+    getOwnerAndRepo: vi.fn(),
   },
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
+vi.mock('fast-glob', () => ({
+  glob: async (pat: string, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 
-jest.spyOn(console, 'warn').mockImplementation(() => {
+vi.spyOn(console, 'warn').mockImplementation(() => {
   /* do nothing */
 });
-jest.spyOn(console, 'log').mockImplementation(() => {
+vi.spyOn(console, 'log').mockImplementation(() => {
   /* do nothing */
 });
 
 beforeEach(() => {
   vol.reset();
-  jest.clearAllMocks();
-  jest
-    .mocked(Git.getOwnerAndRepo)
-    .mockResolvedValue({ repo: 'test-repo', owner: 'seek' });
+  vi.clearAllMocks();
+  vi.mocked(Git.getOwnerAndRepo).mockResolvedValue({
+    repo: 'test-repo',
+    owner: 'seek',
+  });
 });
 
 const baseArgs: PatchConfig = {
@@ -58,10 +66,10 @@ describe('tryPatchApiDockerfiles', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if no patchable Dockerfiles are found', async () => {
@@ -77,10 +85,10 @@ RUN yarn install
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles to patch',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
 {
@@ -116,10 +124,10 @@ CMD ["node", "lib/listen.js"]
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles to patch',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
 {
@@ -165,9 +173,9 @@ CMD ["node", "lib/listen.js"]
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
 {
@@ -213,9 +221,9 @@ CMD ["node", "lib/listen.js"]
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
 {
@@ -261,9 +269,9 @@ CMD ["node", "apps/api/lib/listen.js"]
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
 {
@@ -313,9 +321,9 @@ CMD ["node", "lib/listen.js"]
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
 {
@@ -365,10 +373,10 @@ CMD ["node", "lib/listen.js"]
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles to patch',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should add package.json when COPY does not have --from parameter', async () => {
@@ -387,9 +395,9 @@ CMD ["node", "lib/listen.js"]
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
 {

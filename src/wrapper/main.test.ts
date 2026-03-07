@@ -2,25 +2,28 @@ import nodeHttp from 'http';
 import path from 'path';
 
 import request from 'supertest';
+import { afterEach, expect, test, vi } from 'vitest';
 
 import { main } from './main.js';
 import * as serverModule from './server.js';
 
-jest.mock('../utils/logging');
+vi.mock('../utils/logging');
 
 const initWrapper = (entryPoint: string) =>
   main(path.join('src', 'wrapper', 'testing', entryPoint), '8080');
 
 let agent: ReturnType<(typeof request)['agent']>;
 
-const startServer = jest
+const startServer = vi
   .spyOn(serverModule, 'startServer')
   .mockImplementation((server) => {
     agent = request.agent(server);
     return Promise.resolve();
   });
 
-afterEach(startServer.mockClear);
+afterEach(() => {
+  startServer.mockClear();
+});
 
 test('asyncFunctionHandler', async () => {
   // Without `.ts`

@@ -1,17 +1,18 @@
 import fg from 'fast-glob';
 import fs from 'fs-extra';
-import type { PackageJson } from 'read-pkg-up';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PackageManagerConfig } from '../../../../../../utils/packageManager.js';
+import type { PackageJson } from '../../../../../configure/types.js';
 import type { PatchConfig } from '../../index.js';
 
 import { tryPatchPnpmPackageManager } from './patchPnpmPackageManager.js';
 
-jest.mock('fast-glob');
-jest.mock('fs-extra');
+vi.mock('fast-glob');
+vi.mock('fs-extra');
 
 describe('patchPnpmPackageManager', () => {
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => vi.resetAllMocks());
 
   it('should skip if pnpm is not used', async () => {
     await expect(
@@ -41,13 +42,12 @@ describe('patchPnpmPackageManager', () => {
   const validManifest = {
     packageJson: {
       packageManager: 'pnpm',
-    } as Partial<PackageJson> as PackageJson,
+    } as Partial<PackageJson>,
     path: '~/project/package.json',
   } as PatchConfig['manifest'];
 
   it('should skip if no dockerfiles are found', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce(['.buldkite/pipeline.yml']);
     await expect(
@@ -63,8 +63,7 @@ describe('patchPnpmPackageManager', () => {
   });
 
   it('should skip if no buildkite pipelines are found', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
     await expect(
@@ -80,12 +79,10 @@ describe('patchPnpmPackageManager', () => {
   });
 
   it('should skip if dockerfiles and buildkite pipelines do not contain patchable content', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce('RUN pnpm install' as never)
       .mockResolvedValueOnce('steps:\n  - command: yarn install' as never);
 
@@ -102,12 +99,10 @@ describe('patchPnpmPackageManager', () => {
   });
 
   it('should patch both dockerfiles and pipelines', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -151,12 +146,10 @@ describe('patchPnpmPackageManager', () => {
   });
 
   it('should not patch in lint mode', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -183,12 +176,10 @@ describe('patchPnpmPackageManager', () => {
   });
 
   it('should patch multiple cache entries in pipelines', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -232,12 +223,10 @@ describe('patchPnpmPackageManager', () => {
   });
 
   it('should avoid patching the docker ecr cache plugin version if it is greater than 2.2.0', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -272,12 +261,10 @@ describe('patchPnpmPackageManager', () => {
   });
 
   it('should skip patching if it is already up to date', async () => {
-    jest
-      .mocked(fg)
+    vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    jest
-      .mocked(fs.readFile)
+    vi.mocked(fs.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +

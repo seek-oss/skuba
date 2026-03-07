@@ -80,7 +80,7 @@ export const esbuild = async (
     treeShaking: bundle && treeShaking,
     external,
     entryPoints,
-    format: !isEsm ? 'cjs' : undefined,
+    format: isEsm ? 'esm' : 'cjs',
     outdir: compilerOptions.outDir,
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,

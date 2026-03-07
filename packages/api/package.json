@@ -12,6 +12,7 @@
     "directory": "packages/api"
   },
   "license": "MIT",
+  "type": "module",
   "exports": {
     ".": {
       "@seek/skuba/source": "./src/index.ts",

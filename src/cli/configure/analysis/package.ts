@@ -1,7 +1,7 @@
-import readPkgUp from 'read-pkg-up';
+import { readPackageUp } from 'read-package-up';
 
 import { log } from '../../../utils/logging.js';
-import type { DependencyDiff } from '../types.js';
+import type { DependencyDiff, ReadResult } from '../types.js';
 
 import { determineOperation } from './diff.js';
 
@@ -11,8 +11,8 @@ interface GetDestinationManifestProps {
 
 export const getDestinationManifest = async (
   props?: GetDestinationManifestProps,
-) => {
-  const result = await readPkgUp({ ...props, normalize: false });
+): Promise<ReadResult> => {
+  const result = await readPackageUp({ ...props, normalize: false });
 
   if (result === undefined) {
     log.err(
