@@ -7,7 +7,7 @@ vi.mock('isomorphic-git');
 
 const dir = process.cwd();
 
-afterEach(vi.resetAllMocks);
+afterEach(() => { vi.resetAllMocks() });
 
 describe('getHeadCommitId', () => {
   it('prefers a commit ID from a Buildkite environment', async () => {

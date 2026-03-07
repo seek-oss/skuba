@@ -11,7 +11,7 @@ const delayMicrotask = () =>
 
 const sleep = vi.spyOn(sleepModule, 'sleep');
 
-beforeEach(vi.clearAllMocks);
+beforeEach(() => { vi.clearAllMocks() });
 
 describe('throwOnTimeout', () => {
   it('propagates a fulfilled promise within the timeout', async () => {

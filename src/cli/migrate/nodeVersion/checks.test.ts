@@ -1,8 +1,16 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isLikelyPackage } from './checks.js';
 
-vi.mock('fs', () => memfs);
+vi.mock('node:fs', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('node:fs/promises', () => ({
+  default: memfs.fs.promises,
+  ...memfs.fs.promises,
+}));
 
 beforeEach(() => {
   vol.reset();

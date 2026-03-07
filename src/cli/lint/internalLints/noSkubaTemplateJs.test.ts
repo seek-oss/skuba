@@ -19,7 +19,7 @@ beforeEach(() => {
   );
 });
 
-afterEach(vi.resetAllMocks);
+afterEach(() => { vi.resetAllMocks() });
 
 describe('noSkubaTemplateJs', () => {
   describe.each`

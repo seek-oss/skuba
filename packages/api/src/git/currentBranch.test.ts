@@ -5,7 +5,7 @@ import { currentBranch } from './currentBranch.js';
 
 vi.mock('isomorphic-git');
 
-afterEach(vi.clearAllMocks);
+afterEach(() => { vi.clearAllMocks() });
 
 describe('currentBranch', () => {
   const dir = process.cwd();

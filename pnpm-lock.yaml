@@ -8,7 +8,7 @@ overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
 
-pnpmfileChecksum: sha256-Lm6ExyR/sVwWz6s69ll3XYsSqfm1pkz1HY+5UqsNOZc=
+pnpmfileChecksum: sha256-36XNvjpOkAy31UcR1kEV4BLjae5TgEVUF+KVZEpCEYI=
 
 importers:
 
@@ -140,6 +140,9 @@ importers:
       simple-git:
         specifier: ^3.5.0
         version: 3.32.3
+      ts-dedent:
+        specifier: ^2.2.0
+        version: 2.2.0
       tsconfig-paths:
         specifier: ^4.0.0
         version: 4.2.0
@@ -7242,6 +7245,10 @@ packages:
     engines: {node: '>=18.12'}
     peerDependencies:
       typescript: '>=4.8.4'
+
+  ts-dedent@2.2.0:
+    resolution: {integrity: sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ==}
+    engines: {node: '>=6.10'}
 
   ts-node@10.9.2:
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
@@ -16054,6 +16061,8 @@ snapshots:
   ts-api-utils@2.4.0(typescript@5.9.3):
     dependencies:
       typescript: 5.9.3
+
+  ts-dedent@2.2.0: {}
 
   ts-node@10.9.2(@types/node@24.10.15)(typescript@5.9.3):
     dependencies:

@@ -1,23 +1,37 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { migrateToPnpmConfig } from './migrateToPnpmConfig.js';
 
-jest.mock('../../../../../../utils/exec.js');
-jest.mock('fs', () => memfs);
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('../../../../../../utils/exec.js');
+vi.mock('node:fs', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('node:fs/promises', () => ({
+  default: memfs.fs.promises,
+  ...memfs.fs.promises,
+}));
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
+vi.mock('fast-glob', () => ({
+  glob: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => {
   vol.reset();
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 const baseArgs: PatchConfig = {
@@ -43,10 +57,10 @@ describe('migrateToPnpmConfig', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no pnpm-workspace.yaml found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if pnpm-workspace.yaml has no managed by skuba block', async () => {
@@ -63,10 +77,10 @@ packages:
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no managed by skuba comment block found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should not write changes if the mode is lint', async () => {
@@ -92,9 +106,9 @@ packages:
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'src/utils/package.json': `{
@@ -136,9 +150,9 @@ packages:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'src/utils/package.json': `{
@@ -178,9 +192,9 @@ publicHoistPattern:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'src/utils/package.json': `{
@@ -223,9 +237,9 @@ publicHoistPattern:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'src/utils/package.json': `{
@@ -269,9 +283,9 @@ publicHoistPattern:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'src/utils/package.json': `{
@@ -335,9 +349,9 @@ nodeOptions: '\${NODE_OPTIONS:- } --max-old-space-size=8192'
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'src/utils/package.json': `{
@@ -386,9 +400,9 @@ packages:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'src/utils/package.json': `{
@@ -441,9 +455,9 @@ packages:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'src/utils/package.json': `{
@@ -493,9 +507,9 @@ packages:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'src/utils/package.json': `{

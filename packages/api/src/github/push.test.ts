@@ -1,16 +1,7 @@
 import type { FileChanges } from '@octokit/graphql-schema';
 import fs from 'fs-extra';
 import git, { type ReadCommitResult } from 'isomorphic-git';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { apiTokenFromEnvironment } from './environment.js';
 import { graphql } from './octokit.js';

@@ -62,7 +62,7 @@ beforeEach(async () => {
   await givenMockPackageManager('pnpm');
 });
 
-afterEach(vi.resetAllMocks);
+afterEach(() => { vi.resetAllMocks() });
 
 describe('refreshConfigFiles', () => {
   const writeFile = vi.mocked(fs.writeFile);

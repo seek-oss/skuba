@@ -31,7 +31,6 @@ const PUBLIC_HOIST_PATTERN = [
   'esbuild',
   'eslint',
   'eslint-config-skuba',
-  'jest',
   'prettier',
   'publint',
   'tsconfig-seek',

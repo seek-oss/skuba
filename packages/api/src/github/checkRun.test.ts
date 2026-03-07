@@ -26,7 +26,7 @@ beforeEach(() => {
   delete process.env.GITHUB_TOKEN;
 });
 
-afterEach(vi.resetAllMocks);
+afterEach(() => { vi.resetAllMocks() });
 
 const annotation: GitHub.Annotation = {
   annotation_level: 'failure',

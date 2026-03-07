@@ -5,7 +5,7 @@ import { commit } from './commit.js';
 
 vi.mock('isomorphic-git');
 
-afterEach(vi.resetAllMocks);
+afterEach(() => { vi.resetAllMocks() });
 
 describe('commit', () => {
   it('propagates props to isomorphic-git', async () => {

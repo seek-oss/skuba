@@ -21,7 +21,9 @@ const startServer = vi
     return Promise.resolve();
   });
 
-afterEach(startServer.mockClear);
+afterEach(() => {
+  startServer.mockClear();
+});
 
 test('asyncFunctionHandler', async () => {
   // Without `.ts`
