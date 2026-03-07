@@ -5,7 +5,9 @@ import { push } from './push.js';
 
 vi.mock('isomorphic-git');
 
-afterEach(() => { vi.resetAllMocks() });
+afterEach(() => {
+  vi.resetAllMocks();
+});
 
 describe('push', () => {
   it('propagates props to isomorphic-git', async () => {

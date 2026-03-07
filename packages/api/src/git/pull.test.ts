@@ -5,7 +5,9 @@ import { fastForwardBranch } from './pull.js';
 
 vi.mock('isomorphic-git');
 
-afterEach(() => { vi.resetAllMocks() });
+afterEach(() => {
+  vi.resetAllMocks();
+});
 
 describe('fastForwardBranch', () => {
   it('propagates props to isomorphic-git', async () => {

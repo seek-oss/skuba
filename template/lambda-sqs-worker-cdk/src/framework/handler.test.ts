@@ -13,7 +13,9 @@ describe('createHandler', () => {
     Records: [],
   };
 
-  afterEach(() => { stdoutMock.clear() });
+  afterEach(() => {
+    stdoutMock.clear();
+  });
 
   it('handles happy path', async () => {
     const output = chance.sentence();

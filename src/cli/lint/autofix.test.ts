@@ -55,7 +55,9 @@ beforeEach(() => {
   );
 });
 
-afterEach(() => { vi.resetAllMocks() });
+afterEach(() => {
+  vi.resetAllMocks();
+});
 
 describe('autofix', () => {
   const params = {

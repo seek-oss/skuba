@@ -12,7 +12,9 @@ vi.mock('fs-extra', () => ({
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-beforeEach(() => { vi.clearAllMocks() });
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 beforeEach(() => vol.reset());
 
 const dockerfile = `
