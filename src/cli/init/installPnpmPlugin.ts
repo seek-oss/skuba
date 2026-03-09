@@ -6,8 +6,7 @@ export const installPnpmPlugin = async (
   skubaManifest: NormalizedPackageJson,
   exec = defaultExec,
 ): Promise<void> => {
-  const version =
-    skubaManifest.devDependencies?.['pnpm-plugin-skuba'] || 'latest';
+  const version = skubaManifest.dependencies?.['pnpm-plugin-skuba'] || 'latest';
 
   await exec('pnpm', 'add', '--config', `pnpm-plugin-skuba@${version}`);
 

@@ -8,54 +8,7 @@ import type { InternalLintResult } from '../internal.js';
 
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 
-const defaultConfig = {
-  allowBuilds: {
-    '@ast-grep/lang-json': true,
-    '@ast-grep/lang-yaml': true,
-    '@datadog/native-appsec': true,
-    '@datadog/native-iast-taint-tracking': true,
-    '@datadog/native-metrics': true,
-    '@datadog/pprof': true,
-    'dd-trace': true,
-    esbuild: true,
-    protobufjs: true,
-    'unix-dgram': true,
-    'unrs-resolver': true,
-  },
-  blockExoticSubdeps: true,
-  ignorePatchFailures: false,
-
-  minimumReleaseAge: 4320,
-  minimumReleaseAgeExclude: [
-    '@seek/*',
-    '@skuba-lib/*',
-    'eslint-config-seek',
-    'eslint-config-skuba',
-    'eslint-plugin-skuba',
-    'skuba',
-    'skuba-dive',
-    'tsconfig-seek',
-  ],
-
-  packageManagerStrictVersion: true,
-  publicHoistPattern: [
-    '@arethetypeswrong/core',
-    '@eslint/*',
-    '@types*',
-    'esbuild',
-    'eslint',
-    'eslint-config-skuba',
-    'jest',
-    'prettier',
-    'publint',
-    'tsconfig-seek',
-    'tsdown',
-    'typescript',
-  ],
-  strictDepBuilds: true,
-  trustPolicy: 'no-downgrade',
-  trustPolicyExclude: ['semver@5.7.2 || 6.3.1'],
-};
+import { defaultConfig } from 'pnpm-plugin-skuba';
 
 const isSimpleValue = (value: unknown) =>
   typeof value === 'boolean' ||

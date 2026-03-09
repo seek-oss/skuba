@@ -19,6 +19,7 @@
     "pnpmfile.cjs"
   ],
   "devDependencies": {
+    "@pnpm/cafs-types": "1000.1.0",
     "@pnpm/config": "^1004.9.0"
   },
   "engines": {
