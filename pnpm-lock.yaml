@@ -8,7 +8,7 @@ overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
 
-pnpmfileChecksum: sha256-e2wSmHpUST1b8brCNLxtxz0qInzR2F4bW06i6V0e7p8=
+pnpmfileChecksum: sha256-dlZHDWt/dfPPemI6npNockSn4yAtSmpAQdreBQjqx8E=
 
 importers:
 
@@ -20,6 +20,9 @@ importers:
       '@ast-grep/lang-json':
         specifier: ^0.0.6
         version: 0.0.6
+      '@ast-grep/lang-yaml':
+        specifier: ^0.0.5
+        version: 0.0.5
       '@ast-grep/napi':
         specifier: ^0.41.0
         version: 0.41.0
@@ -183,6 +186,9 @@ importers:
       '@jest/test-result':
         specifier: 30.2.0
         version: 30.2.0
+      '@pnpm/config':
+        specifier: ^1004.9.0
+        version: 1004.10.2(@pnpm/logger@1001.0.1)
       '@types/ejs':
         specifier: 3.1.5
         version: 3.1.5
@@ -603,6 +609,14 @@ packages:
 
   '@ast-grep/lang-json@0.0.6':
     resolution: {integrity: sha512-xb4OXtyuyY9RqUs5Af4Jb5hAJcBD0hGD1rJSQm1chJqdWOjhM6G7V2vHLx6B8M9uXuTBnaNs4U4OccMp+e95JQ==}
+    peerDependencies:
+      tree-sitter-cli: 0.25.8
+    peerDependenciesMeta:
+      tree-sitter-cli:
+        optional: true
+
+  '@ast-grep/lang-yaml@0.0.5':
+    resolution: {integrity: sha512-IpApEjdDQ/bdZZQGwq+PIT9LwvPS+wSVmaA0v78StKbPN18JWE4fHGJyZgytKMmFGt4ihxEiDYZSdFAr5BjBTQ==}
     peerDependencies:
       tree-sitter-cli: 0.25.8
     peerDependenciesMeta:
@@ -7859,6 +7873,10 @@ snapshots:
       validate-npm-package-name: 5.0.1
 
   '@ast-grep/lang-json@0.0.6':
+    dependencies:
+      '@ast-grep/setup-lang': 0.0.6
+
+  '@ast-grep/lang-yaml@0.0.5':
     dependencies:
       '@ast-grep/setup-lang': 0.0.6
 

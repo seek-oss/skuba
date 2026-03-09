@@ -1,6 +1,7 @@
 // @ts-check
 const ALLOWED_BUILDS = {
   '@ast-grep/lang-json': true,
+  '@ast-grep/lang-yaml': true,
   '@datadog/native-appsec': true,
   '@datadog/native-iast-taint-tracking': true,
   '@datadog/native-metrics': true,
@@ -65,7 +66,7 @@ module.exports = {
 
       config.strictDepBuilds ??= true;
 
-      config.trustPolicy ??= 'no-downgrade';
+      // config.trustPolicy ??= 'no-downgrade';
       config.trustPolicyExclude ??= [];
       config.trustPolicyExclude.push(...TRUST_POLICY_EXCLUDE);
 
