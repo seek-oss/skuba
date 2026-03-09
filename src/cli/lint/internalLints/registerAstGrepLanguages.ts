@@ -1,3 +1,9 @@
+import json from '@ast-grep/lang-json';
+import yaml from '@ast-grep/lang-yaml';
+import { registerDynamicLanguage } from '@ast-grep/napi';
+
+let registered = false;
+
 /**
  * Register all ast-grep dynamic languages used across internalLints.
  *
@@ -6,13 +12,6 @@
  *
  * This means we need to register them all together
  */
-
-import json from '@ast-grep/lang-json';
-import yaml from '@ast-grep/lang-yaml';
-import { registerDynamicLanguage } from '@ast-grep/napi';
-
-let registered = false;
-
 export const registerAstGrepLanguages = () => {
   if (registered) {
     return;
