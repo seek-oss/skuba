@@ -78,9 +78,6 @@ export const patchPnpmWorkspace = async (
   registerAstGrepLanguages();
 
   const ast = parse('yaml', pnpmWorkspaceFile);
-
-  // if blockExoticSubdeps is not set to true, add an edit
-
   const edits: Edit[] = [];
 
   Object.entries(defaultConfig).forEach(([key, value]) => {
@@ -105,7 +102,6 @@ export const patchPnpmWorkspace = async (
         typeof value === 'string' ? quoteYamlStringValue(value) : value;
       const managedText = `${key}: ${yamlValue} # Managed by skuba`;
       // The comment is a sibling node, not part of the block_mapping_pair.
-      // Use its end index as the boundary; fall back to the node's own end.
       const nextSib = node.next();
       const commentNode = nextSib?.kind() === 'comment' ? nextSib : null;
       const endIdx = commentNode?.range().end.index ?? node.range().end.index;
