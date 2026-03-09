@@ -66,7 +66,7 @@ module.exports = {
 
       config.strictDepBuilds ??= true;
 
-      // config.trustPolicy ??= 'no-downgrade';
+      config.trustPolicy ??= 'no-downgrade';
       config.trustPolicyExclude ??= [];
       config.trustPolicyExclude.push(...TRUST_POLICY_EXCLUDE);
 
