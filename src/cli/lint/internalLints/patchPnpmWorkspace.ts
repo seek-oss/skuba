@@ -1,3 +1,4 @@
+import path from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parse } from '@ast-grep/napi';
@@ -58,11 +59,12 @@ const getLastNode = (node: SgNode): SgNode => {
 
 export const patchPnpmWorkspace = async (
   mode: 'format' | 'lint',
+  cwd: string = process.cwd(),
 ): Promise<InternalLintResult> => {
   let pnpmWorkspaceFile: string;
   try {
     pnpmWorkspaceFile = await fs.promises.readFile(
-      'pnpm-workspace.yaml',
+      path.join(cwd, 'pnpm-workspace.yaml'),
       'utf8',
     );
   } catch {
@@ -260,7 +262,11 @@ export const patchPnpmWorkspace = async (
 
   const newSource = ast.root().commitEdits(edits);
 
-  await fs.promises.writeFile('pnpm-workspace.yaml', newSource, 'utf8');
+  await fs.promises.writeFile(
+    path.join(cwd, 'pnpm-workspace.yaml'),
+    newSource,
+    'utf8',
+  );
 
   return {
     ok: true,
