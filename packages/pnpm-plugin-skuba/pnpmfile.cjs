@@ -57,7 +57,7 @@ module.exports = {
   hooks: {
     /** @param {import("@pnpm/config").Config} config */
     updateConfig(config) {
-      Object.entries(config).forEach(([key, value]) => {
+      Object.entries(defaultConfig).forEach(([key, value]) => {
         if (
           typeof value === 'string' ||
           typeof value === 'number' ||
