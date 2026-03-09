@@ -5,7 +5,7 @@ import request from 'supertest';
 import { afterEach, expect, test, vi } from 'vitest';
 
 import { main } from './main.js';
-import * as serverModule from './server.js';
+import * as httpServer from './server.js';
 
 vi.mock('../utils/logging');
 
@@ -15,15 +15,13 @@ const initWrapper = (entryPoint: string) =>
 let agent: ReturnType<(typeof request)['agent']>;
 
 const startServer = vi
-  .spyOn(serverModule, 'startServer')
+  .spyOn(httpServer, 'startServer')
   .mockImplementation((server) => {
     agent = request.agent(server);
     return Promise.resolve();
   });
 
-afterEach(() => {
-  startServer.mockClear();
-});
+afterEach(startServer.mockClear);
 
 test('asyncFunctionHandler', async () => {
   // Without `.ts`

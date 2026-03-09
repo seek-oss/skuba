@@ -1,10 +1,11 @@
+import path from 'path';
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
-import { fs } from 'memfs';
+import fg from 'fast-glob';
+import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import type { PatchFunction } from '../../index.js';
 import { fetchFiles } from '../12.4.1/rewriteSrcImports.js';
 
 export const hasDirNameRegex = /__dirname\b/;
@@ -19,15 +20,18 @@ const removeGlobalVars = (contents: string) =>
     .replace(hasDirNameVariableRegex, '')
     .replace(hasFileNameVariableRegex, '');
 
-export const tryRewriteGlobalVars: PatchFunction = async ({
-  mode,
-}): Promise<PatchReturnType> => {
-  const fileNames = await glob(
+export const tryRewriteGlobalVars: PatchFunction = async (config) => {
+  const { mode, manifest } = config;
+  const cwd = path.dirname(manifest.path);
+
+  const fileNames = await fg(
     ['**/*.ts', '**/*.test.ts', '**/*.js', '**/*.test.js'],
     {
+      cwd,
       ignore: [
         '**/.git',
         '**/node_modules',
+        '**/lib/**',
         'src/cli/lint/internalLints/upgrade/patches/**/*',
       ],
     },
@@ -40,7 +44,7 @@ export const tryRewriteGlobalVars: PatchFunction = async ({
     };
   }
 
-  const files = await fetchFiles(fileNames);
+  const files = await fetchFiles(fileNames.map((file) => path.join(cwd, file)));
 
   const filesWithGlobalVarsRemoved = files.map(({ file, contents }) => ({
     file,

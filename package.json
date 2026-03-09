@@ -164,6 +164,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "14.1.2"
+    "version": "15.0.1"
   }
 }

@@ -44,8 +44,8 @@ const getPatches = async (manifestVersion: string): Promise<Patches> => {
     patches.flatMap((patch) =>
       // Is a directory rather than a JavaScript source file
       patch.isDirectory() &&
-      // Has been added since the last patch run on the project
-      gte(patch.name, manifestVersion)
+        // Has been added since the last patch run on the project
+        gte(patch.name, manifestVersion)
         ? patch.name
         : [],
     ),
@@ -54,20 +54,26 @@ const getPatches = async (manifestVersion: string): Promise<Patches> => {
   return (await Promise.all(patchesForVersion.map(resolvePatches))).flat();
 };
 
-const fileExtensions = ['js', 'ts'];
+// When running from lib/ (compiled), only .js exists. When running from src/
+// (e.g. tests with tsx), try .ts first. Avoid trying .ts from lib/ since it
+// doesn't exist there.
+const fileExtensions = import.meta.dirname.includes(`${path.sep}src${path.sep}`)
+  ? (['ts', 'js'] as const)
+  : (['js'] as const);
 
-// Hack to allow our Jest environment/transform to resolve the patches
-// In normal scenarios this will resolve immediately after the .js import
 const resolvePatches = async (version: string): Promise<Patches> => {
+  let lastError: unknown;
   for (const extension of fileExtensions) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
       return (await import(`./patches/${version}/index.${extension}`)).patches;
-    } catch {
-      // Ignore
+    } catch (err) {
+      lastError = err;
     }
   }
-  throw new Error(`Could not resolve patches for ${version}`);
+  const message =
+    lastError instanceof Error ? lastError.message : String(lastError);
+  throw new Error(`Could not resolve patches for ${version}: ${message}`);
 };
 
 export const upgradeSkuba = async (
@@ -96,7 +102,9 @@ export const upgradeSkuba = async (
     return { ok: true, fixable: false };
   }
 
+  process.stderr.write(`[DEBUG] loading patches for ${manifestVersion}\n`);
   const patches = await getPatches(manifestVersion);
+  process.stderr.write(`[DEBUG] loaded ${patches.length} patches\n`);
   // No patches to apply even if version out of date. Early exit to avoid unnecessary commits.
   if (patches.length === 0) {
     return { ok: true, fixable: false };
@@ -143,6 +151,7 @@ export const upgradeSkuba = async (
 
   // Run these in series in case a subsequent patch relies on a previous patch
   for (const { apply, description } of patches) {
+    process.stderr.write(`[DEBUG] patch start: ${description}\n`);
     const result = await apply({
       mode,
       manifest,
@@ -151,8 +160,7 @@ export const upgradeSkuba = async (
     logger.newline();
     if (result.result === 'skip') {
       logger.plain(
-        `Patch skipped: ${description}${
-          result.reason ? ` - ${result.reason}` : ''
+        `Patch skipped: ${description}${result.reason ? ` - ${result.reason}` : ''
         }`,
       );
     } else {

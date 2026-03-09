@@ -1,6 +1,7 @@
+import path from 'path';
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { readPackageUp } from 'read-package-up';
 
@@ -38,10 +39,21 @@ const fetchFiles = async (files: string[]) =>
     }),
   );
 
-export const tryAddTypeModuleToPackageJson: PatchFunction = async ({
-  mode,
-}): Promise<PatchReturnType> => {
-  const fileNames = await glob(['**/*package.json']);
+export const tryAddTypeModuleToPackageJson: PatchFunction = async (
+  config,
+): Promise<PatchReturnType> => {
+  process.stderr.write('[DEBUG] addTypeModuleToPackageJson start\n');
+  const { mode, manifest } = config;
+  process.stderr.write(
+    `[DEBUG] addTypeModuleToPackageJson manifest: ${manifest.path}\n`,
+  );
+  const fileNames: string[] = await fg(['**/*package.json'], {
+    cwd: path.dirname(manifest.path),
+    ignore: ['**/node_modules/**', '**/.git/**'],
+  });
+  process.stderr.write(
+    `[DEBUG] addTypeModuleToPackageJson glob done: ${fileNames.length}\n`,
+  );
 
   if (!fileNames.length) {
     return {
