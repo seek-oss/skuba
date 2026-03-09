@@ -1,16 +1,12 @@
 import { inspect } from 'util';
 
-import yaml from '@ast-grep/lang-yaml';
-import {
-  type Edit,
-  type SgNode,
-  parse,
-  registerDynamicLanguage,
-} from '@ast-grep/napi';
+import { type Edit, type SgNode, parse } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging.js';
 import type { InternalLintResult } from '../internal.js';
+
+import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 
 const defaultConfig = {
   allowBuilds: {
@@ -124,7 +120,7 @@ export const patchPnpmWorkspace = async (
     };
   }
 
-  registerDynamicLanguage({ yaml });
+  registerAstGrepLanguages();
 
   const ast = parse('yaml', pnpmWorkspaceFile);
 

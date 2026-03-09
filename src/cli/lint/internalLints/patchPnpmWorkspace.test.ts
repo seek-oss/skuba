@@ -29,8 +29,8 @@ describe('patchPnpmWorkspace', () => {
     const result = await patchPnpmWorkspace('format');
 
     expect(result).toEqual({
-      ok: false,
-      fixable: true,
+      ok: true,
+      fixable: false,
       annotations: [],
     });
 
@@ -88,8 +88,8 @@ describe('patchPnpmWorkspace', () => {
 
     const firstResult = await patchPnpmWorkspace('format');
     expect(firstResult).toEqual({
-      ok: false,
-      fixable: true,
+      ok: true,
+      fixable: false,
       annotations: [],
     });
     const result1 = volToJson()['pnpm-workspace.yaml'];
@@ -124,8 +124,8 @@ trustPolicyExclude:
     const result = await patchPnpmWorkspace('format');
 
     expect(result).toEqual({
-      ok: false,
-      fixable: true,
+      ok: true,
+      fixable: false,
       annotations: [],
     });
 
@@ -220,8 +220,8 @@ trustPolicyExclude:
     const result = await patchPnpmWorkspace('format');
 
     expect(result).toEqual({
-      ok: false,
-      fixable: true,
+      ok: true,
+      fixable: false,
       annotations: [],
     });
 
@@ -286,8 +286,8 @@ packageManagerStrictVersion: false`,
     const result = await patchPnpmWorkspace('format');
 
     expect(result).toEqual({
-      ok: false,
-      fixable: true,
+      ok: true,
+      fixable: false,
       annotations: [],
     });
 

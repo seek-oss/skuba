@@ -1,11 +1,11 @@
 import { inspect } from 'util';
 
-import json from '@ast-grep/lang-json';
-import { parseAsync, registerDynamicLanguage } from '@ast-grep/napi';
+import { parseAsync } from '@ast-grep/napi';
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
+import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const fetchFiles = async (files: string[]) =>
@@ -33,7 +33,8 @@ export const patchBuildConfig: PatchFunction = async ({
       reason: 'no tsconfig.build.json files found',
     };
   }
-  registerDynamicLanguage({ json });
+
+  registerAstGrepLanguages();
 
   const tsconfigFiles = await fetchFiles(tsconfigBuildPaths);
 
