@@ -286,6 +286,23 @@ export const patchPnpmWorkspace = async (
     }
   });
 
+  const node = ast.root().find({
+    rule: {
+      pattern: {
+        context: 'configDependencies:',
+        selector: 'block_mapping_pair',
+      },
+    },
+  });
+
+  if (node) {
+    edits.push({
+      startPos: node.range().start.index,
+      endPos: node.range().end.index,
+      insertedText: '',
+    });
+  }
+
   if (edits.length === 0) {
     return {
       ok: true,
