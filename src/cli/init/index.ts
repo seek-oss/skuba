@@ -111,12 +111,7 @@ export const init = async (args = process.argv.slice(2)) => {
       'utf8',
     );
     await patchPnpmWorkspace('format', destinationDir);
-    if (process.env.SKUBA_INTEGRATION_TEST === 'true') {
-      await fs.promises.symlink(
-        path.resolve('../skuba/packages/pnpm-plugin-skuba/pnpmfile.cjs'),
-        path.join(destinationDir, '.pnpmfile.cjs'),
-      );
-    } else {
+    if (process.env.SKUBA_INTEGRATION_TEST !== 'true') {
       await installPnpmPlugin(skubaManifest, exec);
     }
   }
