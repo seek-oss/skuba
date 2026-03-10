@@ -64,7 +64,7 @@ Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch applied: Migrate pnpm workspace to pnpm-plugin-skuba upgrade-skuba
+Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -181,7 +181,7 @@ Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch applied: Migrate pnpm workspace to pnpm-plugin-skuba upgrade-skuba
+Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -291,7 +291,7 @@ Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch applied: Migrate pnpm workspace to pnpm-plugin-skuba upgrade-skuba
+Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -373,7 +373,7 @@ Refreshed .prettierignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch applied: Migrate pnpm workspace to pnpm-plugin-skuba upgrade-skuba
+Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

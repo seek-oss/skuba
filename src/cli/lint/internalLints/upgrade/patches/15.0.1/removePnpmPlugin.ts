@@ -34,8 +34,11 @@ export const removePnpmPlugin: PatchFunction = async ({
       path.join('pnpm-workspace.yaml'),
       'utf8',
     );
-  } catch (err) {
-    throw err;
+  } catch {
+    return {
+      result: 'skip',
+      reason: 'pnpm-workspace.yaml not found',
+    };
   }
 
   registerAstGrepLanguages();

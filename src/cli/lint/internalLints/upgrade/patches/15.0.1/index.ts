@@ -5,6 +5,6 @@ import { tryRemovePnpmPlugin } from './removePnpmPlugin.js';
 export const patches: Patches = [
   {
     apply: tryRemovePnpmPlugin,
-    description: 'Migrate pnpm workspace to pnpm-plugin-skuba',
+    description: 'Remove pnpm-plugin-skuba',
   },
 ];
