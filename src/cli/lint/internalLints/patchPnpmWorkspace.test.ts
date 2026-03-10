@@ -57,6 +57,7 @@ describe('patchPnpmWorkspace', () => {
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -173,6 +174,7 @@ trustPolicyExclude:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -264,6 +266,7 @@ trustPolicyExclude:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -315,6 +318,7 @@ packageManagerStrictVersion: false`,
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba

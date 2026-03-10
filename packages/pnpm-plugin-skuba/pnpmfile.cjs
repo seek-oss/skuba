@@ -27,6 +27,7 @@ const defaultConfig = {
     'eslint-config-seek',
     'eslint-config-skuba',
     'eslint-plugin-skuba',
+    'pnpm-plugin-skuba',
     'skuba',
     'skuba-dive',
     'tsconfig-seek',
@@ -53,7 +54,6 @@ const defaultConfig = {
 };
 
 module.exports = {
-  defaultConfig,
   hooks: {
     /** @param {import("@pnpm/config").Config} config */
     updateConfig(config) {

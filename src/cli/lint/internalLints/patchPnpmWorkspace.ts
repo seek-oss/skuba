@@ -2,6 +2,7 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parse } from '@ast-grep/napi';
+import type { Config } from '@pnpm/config';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging.js';
@@ -9,7 +10,58 @@ import type { InternalLintResult } from '../internal.js';
 
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 
-import { defaultConfig } from 'pnpm-plugin-skuba';
+/**
+ *  Keep in sync with packages/pnpm-plugin-skuba/pnpmfile.cjs
+ */
+const defaultConfig = {
+  allowBuilds: {
+    '@ast-grep/lang-json': true,
+    '@ast-grep/lang-yaml': true,
+    '@datadog/native-appsec': true,
+    '@datadog/native-iast-taint-tracking': true,
+    '@datadog/native-metrics': true,
+    '@datadog/pprof': true,
+    'dd-trace': true,
+    esbuild: true,
+    protobufjs: true,
+    'unix-dgram': true,
+    'unrs-resolver': true,
+  },
+  blockExoticSubdeps: true,
+  ignorePatchFailures: false,
+
+  minimumReleaseAge: 4320,
+  minimumReleaseAgeExclude: [
+    '@seek/*',
+    '@skuba-lib/*',
+    'eslint-config-seek',
+    'eslint-config-skuba',
+    'eslint-plugin-skuba',
+    'pnpm-plugin-skuba',
+    'skuba',
+    'skuba-dive',
+    'tsconfig-seek',
+  ],
+
+  packageManagerStrictVersion: true,
+  publicHoistPattern: [
+    '@arethetypeswrong/core',
+    '@eslint/*',
+    '@types*',
+    'esbuild',
+    'eslint',
+    'eslint-config-skuba',
+    'jest',
+    'prettier',
+    'publint',
+    'tsconfig-seek',
+    'tsdown',
+    'typescript',
+  ],
+  strictDepBuilds: true,
+  trustPolicy: 'no-downgrade',
+  trustPolicyExclude: ['semver@5.7.2 || 6.3.1'],
+} satisfies Partial<Config>;
 
 const isSimpleValue = (value: unknown) =>
   typeof value === 'boolean' ||
