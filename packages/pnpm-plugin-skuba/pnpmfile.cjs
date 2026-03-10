@@ -54,6 +54,7 @@ const defaultConfig = {
 };
 
 module.exports = {
+  defaultConfig,
   hooks: {
     /** @param {import("@pnpm/config").Config} config */
     updateConfig(config) {
