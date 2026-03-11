@@ -34,7 +34,7 @@ const baseArgs: PatchConfig = {
 };
 
 describe('removePnpmPlugin', () => {
-  it('should skip if no pnpm-workspace.yaml is up to date', async () => {
+  it('should skip if pnpm-workspace.yaml is up to date', async () => {
     vol.fromJSON({
       'pnpm-workspace.yaml': `publicHoistPattern:
   - '@arethetypeswrong/core' # Managed by skuba
