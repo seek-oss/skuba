@@ -435,7 +435,9 @@ export const patchPackageBuilds: PatchFunction = async ({
   const likelyPackagePaths = (
     await Promise.all(
       packageJsonPaths.map(async (packageJsonPath) =>
-        (await isLikelyPackage(packageJsonPath)) ? packageJsonPath : null,
+        (await isLikelyPackage(packageJsonPath, false))
+          ? packageJsonPath
+          : null,
       ),
     )
   ).filter((packageJsonPath) => packageJsonPath !== null);
