@@ -92,10 +92,9 @@ export const removePnpmPlugin: PatchFunction = async ({
         updated,
         'utf8',
       );
+      await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
     }
   }
-
-  await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
 
   return {
     result: 'apply',
