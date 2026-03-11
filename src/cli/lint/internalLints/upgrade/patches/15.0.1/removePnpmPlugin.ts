@@ -10,6 +10,8 @@ import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
+import { Git } from '@skuba-lib/api';
+
 export const removePnpmPlugin: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
@@ -30,8 +32,10 @@ export const removePnpmPlugin: PatchFunction = async ({
 
   let pnpmWorkspaceFile: string;
   try {
+    const cwd = process.cwd();
+    const root = await Git.findRoot({ dir: cwd });
     pnpmWorkspaceFile = await fs.promises.readFile(
-      path.join('pnpm-workspace.yaml'),
+      path.join(root ?? cwd, 'pnpm-workspace.yaml'),
       'utf8',
     );
   } catch {

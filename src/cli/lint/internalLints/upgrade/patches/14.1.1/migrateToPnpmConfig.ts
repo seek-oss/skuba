@@ -1,3 +1,4 @@
+import path from 'path';
 import { inspect } from 'util';
 
 import fs from 'fs-extra';
@@ -11,13 +12,17 @@ import {
 import { installPnpmPlugin } from '../../../../../init/installPnpmPlugin.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
+import { Git } from '@skuba-lib/api';
+
 export const migrateToPnpmConfig: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
   let pnpmWorkSpaceFile: string;
   try {
+    const cwd = process.cwd();
+    const root = await Git.findRoot({ dir: cwd });
     pnpmWorkSpaceFile = await fs.promises.readFile(
-      'pnpm-workspace.yaml',
+      path.join(root ?? cwd, 'pnpm-workspace.yaml'),
       'utf8',
     );
   } catch {
