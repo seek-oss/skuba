@@ -64,7 +64,7 @@ Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch applied: Add module type to package.json to support ESM upgrade-skuba
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
 Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
 
@@ -183,7 +183,7 @@ Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch applied: Add module type to package.json to support ESM upgrade-skuba
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
 Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
 
@@ -295,7 +295,7 @@ Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch applied: Add module type to package.json to support ESM upgrade-skuba
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
 Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
 
@@ -379,7 +379,7 @@ Refreshed .prettierignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
-Patch applied: Add module type to package.json to support ESM upgrade-skuba
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
 Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
 

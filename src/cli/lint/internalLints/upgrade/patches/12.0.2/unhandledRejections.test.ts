@@ -7,16 +7,20 @@ vi.mock('fs-extra', () => ({
   ...memfs.fs,
   default: memfs.fs,
 }));
-vi.mock('fast-glob', () => ({
-  glob: async (pat: any, opts: any) => {
-    const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
-    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
-  },
-}));
+vi.mock('fast-glob', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('fast-glob')>();
+  const globWithMemfs = (pat: string, opts: Record<string, unknown>) =>
+    actual.glob(pat, { ...opts, fs: memfs } as Parameters<typeof actual.glob>[1]);
+  return {
+    ...actual,
+    default: globWithMemfs,
+    glob: globWithMemfs,
+  };
+});
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-vi.spyOn(console, 'log').mockImplementation(() => {});
+vi.spyOn(console, 'log').mockImplementation(() => { });
 
 beforeEach(() => vol.reset());
 
