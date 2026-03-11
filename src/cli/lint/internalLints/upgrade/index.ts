@@ -44,8 +44,8 @@ const getPatches = async (manifestVersion: string): Promise<Patches> => {
     patches.flatMap((patch) =>
       // Is a directory rather than a JavaScript source file
       patch.isDirectory() &&
-        // Has been added since the last patch run on the project
-        gte(patch.name, manifestVersion)
+      // Has been added since the last patch run on the project
+      gte(patch.name, manifestVersion)
         ? patch.name
         : [],
     ),
@@ -160,7 +160,8 @@ export const upgradeSkuba = async (
     logger.newline();
     if (result.result === 'skip') {
       logger.plain(
-        `Patch skipped: ${description}${result.reason ? ` - ${result.reason}` : ''
+        `Patch skipped: ${description}${
+          result.reason ? ` - ${result.reason}` : ''
         }`,
       );
     } else {

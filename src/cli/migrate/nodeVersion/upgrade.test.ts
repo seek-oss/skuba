@@ -11,10 +11,11 @@ vi.mock('fs-extra', () => ({
 }));
 
 vi.mock('fast-glob', async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import('fast-glob')>();
+  const actual = await importOriginal<typeof import('fast-glob')>();
   const globWithMemfs = (pat: string, opts: Record<string, unknown>) =>
-    actual.glob(pat, { ...opts, fs: memfs } as Parameters<typeof actual.glob>[1]);
+    actual.glob(pat, { ...opts, fs: memfs } as Parameters<
+      typeof actual.glob
+    >[1]);
   return {
     ...actual,
     default: globWithMemfs,

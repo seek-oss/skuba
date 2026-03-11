@@ -16,10 +16,11 @@ vi.mock('fs-extra', () => ({
   default: memfs.fs,
 }));
 vi.mock('fast-glob', async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import('fast-glob')>();
+  const actual = await importOriginal<typeof import('fast-glob')>();
   const globWithMemfs = (pat: string, opts: Record<string, unknown>) =>
-    actual.glob(pat, { ...opts, fs: memfs } as Parameters<typeof actual.glob>[1]);
+    actual.glob(pat, { ...opts, fs: memfs } as Parameters<
+      typeof actual.glob
+    >[1]);
   return {
     ...actual,
     default: globWithMemfs,
@@ -96,8 +97,8 @@ describe('stopBundlingInCDKTests', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'infra/myWorkerStack.test.ts': `import { App } from "aws-cdk-lib";\nconst app = new App({ context: { 'aws:cdk:bundling-stacks': [] } });\n\nother stuff\n\nconst secondApp = new App({ context: { 'aws:cdk:bundling-stacks': [] } });`,
-          },
+              'infra/myWorkerStack.test.ts': `import { App } from "aws-cdk-lib";\nconst app = new App({ context: { 'aws:cdk:bundling-stacks': [] } });\n\nother stuff\n\nconst secondApp = new App({ context: { 'aws:cdk:bundling-stacks': [] } });`,
+            },
       );
     });
   });

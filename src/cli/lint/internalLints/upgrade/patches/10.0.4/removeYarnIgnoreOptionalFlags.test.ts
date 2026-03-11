@@ -13,10 +13,11 @@ vi.mock('fs-extra', () => ({
   default: memfs.fs,
 }));
 vi.mock('fast-glob', async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import('fast-glob')>();
+  const actual = await importOriginal<typeof import('fast-glob')>();
   const globWithMemfs = (pat: string, opts: Record<string, unknown>) =>
-    actual.glob(pat, { ...opts, fs: memfs } as Parameters<typeof actual.glob>[1]);
+    actual.glob(pat, { ...opts, fs: memfs } as Parameters<
+      typeof actual.glob
+    >[1]);
   return {
     ...actual,
     default: globWithMemfs,
@@ -107,18 +108,18 @@ RUN pnpm install
         mode === 'lint'
           ? inputVolume
           : {
-            'Dockerfile.no':
-              'yarn\nRUN stuff --ignore-optional\n RUN other-stuff \\\n --ignore-optional\n',
-            'Dockerfile.oneline':
-              '# stuff\nRUN yarn install\n# other-stuff\n',
-            'Dockerfile.other-args':
-              'RUN yarn install --frozen-lockfile --other-arg\n',
-            'Dockerfile.newline': 'RUN yarn install\n',
-            'Dockerfile.newline-with-more-after':
-              'RUN yarn install \\\n --other-arg\n',
-            'Dockerfile.newline-multiple-args':
-              'RUN yarn install \\\n --other-arg\n',
-          },
+              'Dockerfile.no':
+                'yarn\nRUN stuff --ignore-optional\n RUN other-stuff \\\n --ignore-optional\n',
+              'Dockerfile.oneline':
+                '# stuff\nRUN yarn install\n# other-stuff\n',
+              'Dockerfile.other-args':
+                'RUN yarn install --frozen-lockfile --other-arg\n',
+              'Dockerfile.newline': 'RUN yarn install\n',
+              'Dockerfile.newline-with-more-after':
+                'RUN yarn install \\\n --other-arg\n',
+              'Dockerfile.newline-multiple-args':
+                'RUN yarn install \\\n --other-arg\n',
+            },
       );
     });
   });

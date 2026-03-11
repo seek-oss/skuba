@@ -24,10 +24,11 @@ vi.mock('fs-extra', () => ({
   default: memfs.fs,
 }));
 vi.mock('fast-glob', async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import('fast-glob')>();
+  const actual = await importOriginal<typeof import('fast-glob')>();
   const globWithMemfs = (pat: string, opts: Record<string, unknown>) =>
-    actual.glob(pat, { ...opts, fs: memfs } as Parameters<typeof actual.glob>[1]);
+    actual.glob(pat, { ...opts, fs: memfs } as Parameters<
+      typeof actual.glob
+    >[1]);
   return {
     ...actual,
     default: globWithMemfs,
@@ -82,8 +83,8 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'apps/api/app.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js;'`,
-          },
+              'apps/api/app.ts': `import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js;'`,
+            },
       );
     });
 
@@ -109,8 +110,8 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'apps/api/app.ts': `import '#src/integrationTests/testing/hooks.js';\nimport { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';`,
-          },
+              'apps/api/app.ts': `import '#src/integrationTests/testing/hooks.js';\nimport { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';`,
+            },
       );
     });
 
@@ -136,8 +137,8 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'apps/api': null,
-          },
+              'apps/api': null,
+            },
       );
     });
 
@@ -169,8 +170,8 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'apps/api': null,
-          },
+              'apps/api': null,
+            },
       );
     });
 
@@ -203,14 +204,14 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'apps/api/meaningful-content.ts': dedent`
+              'apps/api/meaningful-content.ts': dedent`
                 import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
                 export const someFunction = () => {
                   return 'meaningful content';
                 };
               `,
-          },
+            },
       );
     });
 
@@ -242,14 +243,14 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'src/app.ts': dedent`
+              'src/app.ts': dedent`
                 import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
                 export const someFunction = () => {
                   return 'meaningful content';
                 };
               `,
-          },
+            },
       );
     });
 
@@ -284,8 +285,8 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'src/register.ts': `export const config = { test: true };`,
-            'src/app.ts': dedent`
+              'src/register.ts': `export const config = { test: true };`,
+              'src/app.ts': dedent`
                 import "./register";
                 import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
@@ -293,7 +294,7 @@ describe('tryRewriteSrcImports', () => {
                   return 'meaningful content';
                 };
               `,
-          },
+            },
       );
     });
 
@@ -325,14 +326,14 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'src/nested/app.ts': dedent`
+              'src/nested/app.ts': dedent`
                 import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
                 export const someFunction = () => {
                   return 'meaningful content';
                 };
               `,
-          },
+            },
       );
     });
 
@@ -369,8 +370,8 @@ describe('tryRewriteSrcImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'src/config.ts': `export const config = { test: true };`,
-            'src/app.ts': dedent`
+              'src/config.ts': `export const config = { test: true };`,
+              'src/app.ts': dedent`
                 import "./config";
                 import { getAccountInfo } from '#src/services/accounts/getAccountInfo.js';
 
@@ -378,7 +379,7 @@ describe('tryRewriteSrcImports', () => {
                   return 'meaningful content';
                 };
               `,
-          },
+            },
       );
     });
   });
