@@ -185,9 +185,10 @@ trustPolicy: no-downgrade # Managed by skuba
 
   it('should remove only pnpm-plugin-skuba if there are other configDependencies', async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': `configDependencies:
+      'pnpm-workspace.yaml': `packages:
+  - .
+configDependencies:
   pnpm-plugin-skuba: 2.0.0+sha512-nhxd9TdhOOXJ1bcQaqtDiI02gbxhJ8lTw3ZzSHDJPqIbbtnABQT7nLKqLX2zKi7tbfRI8+QSgL3eR2d/QFOLew==
-  pnpm-plugin-sku: 1.0.0+sha512-nhxd9TdhOOXJ1bcQaqtDiI02gbxhJ8lTw3ZzSHDJPqIbbtnABQT7nLKqLX2zKi7tbfRI8+QSgL3eR2d/QFOLew==
 `,
     });
 
@@ -202,9 +203,9 @@ trustPolicy: no-downgrade # Managed by skuba
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "pnpm-workspace.yaml": "configDependencies:
-        
-        pnpm-plugin-sku: 1.0.0+sha512-nhxd9TdhOOXJ1bcQaqtDiI02gbxhJ8lTw3ZzSHDJPqIbbtnABQT7nLKqLX2zKi7tbfRI8+QSgL3eR2d/QFOLew==
+        "pnpm-workspace.yaml": "packages:
+        - .
+
 
       allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba

@@ -10,6 +10,8 @@ import type { InternalLintResult } from '../internal.js';
 
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 
+import { Git } from '@skuba-lib/api';
+
 /**
  *  Keep in sync with packages/pnpm-plugin-skuba/pnpmfile.cjs
  */
@@ -115,8 +117,9 @@ export const patchPnpmWorkspace = async (
 ): Promise<InternalLintResult> => {
   let pnpmWorkspaceFile: string;
   try {
+    const root = await Git.findRoot({ dir: cwd });
     pnpmWorkspaceFile = await fs.promises.readFile(
-      path.join(cwd, 'pnpm-workspace.yaml'),
+      path.join(root ?? cwd, 'pnpm-workspace.yaml'),
       'utf8',
     );
   } catch {
