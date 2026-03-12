@@ -5,6 +5,7 @@ import { type Logger, childLogger, createLogger } from '../../utils/logging.js';
 
 import { tryDetectBadCodeowners } from './internalLints/detectBadCodeowners.js';
 import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs.js';
+import { tryPatchPnpmWorkspace } from './internalLints/patchPnpmWorkspace.js';
 import { tryRefreshConfigFiles } from './internalLints/refreshConfigFiles.js';
 import { upgradeSkuba } from './internalLints/upgrade/index.js';
 import type { Input } from './types.js';
@@ -34,6 +35,7 @@ const lints: Array<
   [{ name: 'upgrade-skuba', lint: upgradeSkuba }],
   [
     { name: 'no-skuba-template-js', lint: noSkubaTemplateJs },
+    { name: 'patch-pnpm-workspace', lint: tryPatchPnpmWorkspace },
     { name: 'refresh-config-files', lint: tryRefreshConfigFiles },
     { name: 'detect-bad-codeowners', lint: tryDetectBadCodeowners },
   ],

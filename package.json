@@ -79,6 +79,7 @@
   "dependencies": {
     "@arethetypeswrong/core": "~0.18.1",
     "@ast-grep/lang-json": "^0.0.6",
+    "@ast-grep/lang-yaml": "^0.0.5",
     "@ast-grep/napi": "^0.41.0",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@inquirer/prompts": "^7.9.0",
@@ -135,6 +136,8 @@
     "@changesets/get-github-info": "0.7.0",
     "@jest/reporters": "30.2.0",
     "@jest/test-result": "30.2.0",
+    "@pnpm/cafs-types": "1000.1.0",
+    "@pnpm/config": "^1004.9.0",
     "@types/ejs": "3.1.5",
     "@types/express": "5.0.6",
     "@types/fs-extra": "11.0.4",
@@ -170,6 +173,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "14.1.2"
+    "version": "15.0.1"
   }
 }
