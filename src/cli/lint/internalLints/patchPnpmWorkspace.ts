@@ -70,6 +70,9 @@ const isSimpleValue = (value: unknown) =>
   typeof value === 'number' ||
   typeof value === 'string';
 
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 // Quote strings that begin with YAML reserved indicator characters (@ and `)
 const quoteYamlStringValue = (value: string): string => {
   if (/^[@`]/.test(value)) {
@@ -179,11 +182,10 @@ export const patchPnpmWorkspace = async (
       const missingValues = value
         .map((v) => {
           const quotedV = quoteYamlStringValue(v);
-          const escapedV = v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
           const seqItem = seqItems.find((item) =>
-            new RegExp(
-              `^- (?:'${escapedV}'|"${escapedV}"|${escapedV})(?:\\s|$)`,
-            ).test(item.text()),
+            new RegExp(`^- ${escapeRegExp(quotedV)}(?:\\s|$)`).test(
+              item.text(),
+            ),
           );
 
           if (!seqItem) {
@@ -234,14 +236,9 @@ export const patchPnpmWorkspace = async (
       const missingKeys = Object.entries(value)
         .map(([subKey, subValue]) => {
           const quotedSubKey = quoteYamlStringValue(subKey);
-          const mappingItem = mappingItems.find((item) => {
-            const text = item.text();
-            return (
-              text.startsWith(`${subKey}:`) ||
-              text.startsWith(`'${subKey}':`) ||
-              text.startsWith(`"${subKey}":`)
-            );
-          });
+          const mappingItem = mappingItems.find((item) =>
+            new RegExp(`^${escapeRegExp(quotedSubKey)}:`).test(item.text()),
+          );
 
           if (!mappingItem) {
             return [subKey, subValue] as const;
