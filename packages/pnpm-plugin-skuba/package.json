@@ -20,7 +20,7 @@
   ],
   "devDependencies": {
     "@pnpm/cafs-types": "^1000.1.0",
-    "@pnpm/config": "^1004.9.0"
+    "@pnpm/config": "^1004.10.3"
   },
   "engines": {
     "node": ">=22.14.0"
