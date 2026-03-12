@@ -347,7 +347,7 @@ packageManagerStrictVersion: false`,
 publicHoistPattern:
   - some-package
   - esbuild
-  - eslint # Managed by skuba
+  - eslint-config-skuba # Managed by skuba
   - jest
 trustPolicyExclude:
   - some-package@1.0.0
@@ -366,12 +366,12 @@ trustPolicyExclude:
       "publicHoistPattern:
         - some-package
         - esbuild # Managed by skuba
-        - eslint # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
         - jest # Managed by skuba
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
+        - eslint # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - tsconfig-seek # Managed by skuba
