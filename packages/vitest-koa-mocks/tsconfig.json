@@ -11,5 +11,5 @@
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
-  "include": ["src/**/*", "tsdown.config.mts", "vitest.config.ts"]
+  "include": ["src/**/*", "tsdown.config.mts"]
 }
