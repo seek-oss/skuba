@@ -329,7 +329,7 @@ export const tryPatchPnpmWorkspace = async (
   try {
     return await patchPnpmWorkspace(mode);
   } catch (err) {
-    log.warn('Failed to patch Renovate config.');
+    log.warn('Failed to patch pnpm workspace.');
     log.subtle(inspect(err));
     return { ok: false, fixable: false, annotations: [] };
   }
