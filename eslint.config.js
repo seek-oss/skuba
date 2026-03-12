@@ -1,6 +1,6 @@
 import tsParser from '@typescript-eslint/parser';
 
-import skuba from 'eslint-config-skuba';
+import config from 'eslint-config-skuba';
 
 export default [
   {
@@ -11,7 +11,7 @@ export default [
       'packages/**/*/lib*/',
     ],
   },
-  ...skuba,
+  ...config,
   {
     rules: {
       'no-process-exit': 'off',
@@ -28,6 +28,26 @@ export default [
       parserOptions: {
         allowAutomaticSingleRunInference: false,
       },
+    },
+  },
+  {
+    files: ['packages/eslint-config-skuba/**/*.{ts,cts,mts,tsx}'],
+
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
+    files: [
+      'packages/eslint-config-skuba/requireExtensions.test.ts',
+      'packages/eslint-config-skuba/src/requireExtensions.test.ts',
+    ],
+
+    rules: {
+      'require-extensions/require-extensions': 'off',
+      'require-extensions/require-index': 'off',
     },
   },
   {

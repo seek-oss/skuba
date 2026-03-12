@@ -4,12 +4,13 @@
     "lib": ["ES2023"],
     "outDir": "lib",
     "target": "ES2023",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": { "src/*": ["./src/*"] }
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",
   "include": [
-    "eslint.config.js",
+    "eslint.config.mjs",
     "index.d.ts",
     "index.js",
     "src/**/*",

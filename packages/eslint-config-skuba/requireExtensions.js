@@ -1,5 +1,5 @@
-const { existsSync, lstatSync } = require('fs');
-const { dirname, resolve, join } = require('path');
+import { existsSync, lstatSync } from 'fs';
+import { dirname, join, resolve } from 'path';
 
 // Simple caches keyed by filename since ESLint contexts are created fresh
 const pathCache = new Map();
@@ -211,7 +211,7 @@ const requireExtensionsPlugin = {
 };
 
 // Config export with flat config format
-module.exports = {
+export default {
   plugin: requireExtensionsPlugin,
   configs: {
     recommended: [

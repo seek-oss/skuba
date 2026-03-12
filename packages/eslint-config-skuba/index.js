@@ -1,14 +1,15 @@
-const base = require('eslint-config-seek/base');
-const extensions = require('eslint-config-seek/extensions');
-const skuba = require('eslint-plugin-skuba');
-const eslintPluginYml = require('eslint-plugin-yml');
-const tseslint = require('typescript-eslint');
+import base from 'eslint-config-seek/base';
+import {
+  js as jsExtensions,
+  ts as tsExtensions,
+} from 'eslint-config-seek/extensions';
+import skuba from 'eslint-plugin-skuba';
+import eslintPluginYml from 'eslint-plugin-yml';
+import * as tseslint from 'typescript-eslint';
 
-const requireExtensionsPlugin = require('./requireExtensions.js');
+import requireExtensionsPlugin from './requireExtensions.js';
 
-const { js: jsExtensions, ts: tsExtensions } = extensions;
-
-module.exports = [
+export default [
   ...requireExtensionsPlugin.configs.recommended.map((config) => ({
     ...config,
     files: [`**/*.{${tsExtensions}}`],
