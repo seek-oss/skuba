@@ -340,4 +340,74 @@ packageManagerStrictVersion: false`,
         - semver@5.7.2 || 6.3.1 # Managed by skuba"
     `);
   });
+
+  it('should handle missing items in arrays in pnpm-workspace.yaml', async () => {
+    vol.fromJSON({
+      'pnpm-workspace.yaml': `
+publicHoistPattern:
+  - some-package
+  - esbuild
+  - eslint # Managed by skuba
+  - jest
+trustPolicyExclude:
+  - some-package@1.0.0
+  - semver@5.7.2 || 6.3.1`,
+    });
+
+    const result = await patchPnpmWorkspace('format');
+
+    expect(result).toEqual({
+      ok: true,
+      fixable: false,
+      annotations: [],
+    });
+
+    expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
+      "publicHoistPattern:
+        - some-package
+        - esbuild # Managed by skuba
+        - eslint # Managed by skuba
+        - jest # Managed by skuba
+        - '@arethetypeswrong/core' # Managed by skuba
+        - '@eslint/*' # Managed by skuba
+        - '@types*' # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
+        - prettier # Managed by skuba
+        - publint # Managed by skuba
+        - tsconfig-seek # Managed by skuba
+        - tsdown # Managed by skuba
+        - typescript # Managed by skuba
+      trustPolicyExclude:
+        - some-package@1.0.0
+        - semver@5.7.2 || 6.3.1 # Managed by skuba
+      allowBuilds:
+        '@ast-grep/lang-json': true # Managed by skuba
+        '@ast-grep/lang-yaml': true # Managed by skuba
+        '@datadog/native-appsec': true # Managed by skuba
+        '@datadog/native-iast-taint-tracking': true # Managed by skuba
+        '@datadog/native-metrics': true # Managed by skuba
+        '@datadog/pprof': true # Managed by skuba
+        dd-trace: true # Managed by skuba
+        esbuild: true # Managed by skuba
+        protobufjs: true # Managed by skuba
+        unix-dgram: true # Managed by skuba
+        unrs-resolver: true # Managed by skuba
+      blockExoticSubdeps: true # Managed by skuba
+      ignorePatchFailures: false # Managed by skuba
+      minimumReleaseAge: 4320 # Managed by skuba
+      minimumReleaseAgeExclude:
+        - '@seek/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
+        - eslint-config-seek # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
+        - eslint-plugin-skuba # Managed by skuba
+        - pnpm-plugin-skuba # Managed by skuba
+        - skuba # Managed by skuba
+        - skuba-dive # Managed by skuba
+        - tsconfig-seek # Managed by skuba
+      packageManagerStrictVersion: true # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba"
+    `);
+  });
 });

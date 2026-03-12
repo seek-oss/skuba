@@ -30,12 +30,14 @@ export const removePnpmPlugin: PatchFunction = async ({
     };
   }
 
+  const cwd = process.cwd();
+  const root = await Git.findRoot({ dir: cwd });
+  const dir = root ?? cwd;
+
   let pnpmWorkspaceFile: string;
   try {
-    const cwd = process.cwd();
-    const root = await Git.findRoot({ dir: cwd });
     pnpmWorkspaceFile = await fs.promises.readFile(
-      path.join(root ?? cwd, 'pnpm-workspace.yaml'),
+      path.join(dir, 'pnpm-workspace.yaml'),
       'utf8',
     );
   } catch {
@@ -88,7 +90,7 @@ export const removePnpmPlugin: PatchFunction = async ({
       const updated = ast.root().commitEdits(edits);
 
       await fs.promises.writeFile(
-        path.join('pnpm-workspace.yaml'),
+        path.join(dir, 'pnpm-workspace.yaml'),
         updated,
         'utf8',
       );

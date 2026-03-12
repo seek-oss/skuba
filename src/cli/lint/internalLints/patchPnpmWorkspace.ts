@@ -115,11 +115,13 @@ export const patchPnpmWorkspace = async (
   mode: 'format' | 'lint',
   cwd: string = process.cwd(),
 ): Promise<InternalLintResult> => {
+  const root = await Git.findRoot({ dir: cwd });
+  const dir = root ?? cwd;
+
   let pnpmWorkspaceFile: string;
   try {
-    const root = await Git.findRoot({ dir: cwd });
     pnpmWorkspaceFile = await fs.promises.readFile(
-      path.join(root ?? cwd, 'pnpm-workspace.yaml'),
+      path.join(dir, 'pnpm-workspace.yaml'),
       'utf8',
     );
   } catch {
@@ -177,14 +179,12 @@ export const patchPnpmWorkspace = async (
       const missingValues = value
         .map((v) => {
           const quotedV = quoteYamlStringValue(v);
-          const seqItem = seqItems.find((item) => {
-            const text = item.text();
-            return (
-              text.startsWith(`- ${v}`) ||
-              text.startsWith(`- '${v}'`) ||
-              text.startsWith(`- "${v}"`)
-            );
-          });
+          const escapedV = v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const seqItem = seqItems.find((item) =>
+            new RegExp(
+              `^- (?:'${escapedV}'|"${escapedV}"|${escapedV})(?:\\s|$)`,
+            ).test(item.text()),
+          );
 
           if (!seqItem) {
             return v;
@@ -314,7 +314,7 @@ export const patchPnpmWorkspace = async (
   const newSource = ast.root().commitEdits(edits);
 
   await fs.promises.writeFile(
-    path.join(cwd, 'pnpm-workspace.yaml'),
+    path.join(dir, 'pnpm-workspace.yaml'),
     newSource,
     'utf8',
   );
