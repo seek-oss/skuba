@@ -189,7 +189,7 @@ importers:
         version: 1000.1.0
       '@pnpm/config':
         specifier: ^1004.9.0
-        version: 1004.10.2(@pnpm/logger@1001.0.1)
+        version: 1004.10.3(@pnpm/logger@1001.0.1)
       '@types/ejs':
         specifier: 3.1.5
         version: 3.1.5
