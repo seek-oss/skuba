@@ -1,13 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import json from '@ast-grep/lang-json';
-import {
-  type Edit,
-  type SgNode,
-  parseAsync,
-  registerDynamicLanguage,
-} from '@ast-grep/napi';
+import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -16,6 +10,7 @@ import { log } from '../../../../../../utils/logging.js';
 import { detectPackageManager } from '../../../../../../utils/packageManager.js';
 import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
 import { tryRefreshConfigFiles } from '../../../refreshConfigFiles.js';
+import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 import { getOwnerAndRepo } from '@skuba-lib/api/git';
@@ -440,7 +435,9 @@ export const patchPackageBuilds: PatchFunction = async ({
   const likelyPackagePaths = (
     await Promise.all(
       packageJsonPaths.map(async (packageJsonPath) =>
-        (await isLikelyPackage(packageJsonPath)) ? packageJsonPath : null,
+        (await isLikelyPackage(packageJsonPath, false))
+          ? packageJsonPath
+          : null,
       ),
     )
   ).filter((packageJsonPath) => packageJsonPath !== null);
@@ -452,7 +449,7 @@ export const patchPackageBuilds: PatchFunction = async ({
     };
   }
 
-  registerDynamicLanguage({ json });
+  registerAstGrepLanguages();
 
   const [customCondition, containsReferences] = await Promise.all([
     findOrAddCustomConditionInRepo(mode),

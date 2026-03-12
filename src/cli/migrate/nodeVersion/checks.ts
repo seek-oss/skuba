@@ -4,6 +4,7 @@ import type { SkubaPackageJson } from '../../init/writePackageJson.js';
 
 export const isLikelyPackage = async (
   currentPath: string,
+  considerPrivate = true,
 ): Promise<boolean> => {
   const nearestPackageJsonResult = await getConsumerManifest(currentPath);
   if (!nearestPackageJsonResult) {
@@ -40,7 +41,7 @@ export const isLikelyPackage = async (
   }
 
   // private true would imply this is either an internal package or application
-  if (packageJson.private === true) {
+  if (considerPrivate && packageJson.private === true) {
     return false;
   }
 

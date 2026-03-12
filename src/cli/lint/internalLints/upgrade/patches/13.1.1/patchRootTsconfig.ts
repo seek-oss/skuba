@@ -1,10 +1,10 @@
 import { inspect } from 'util';
 
-import json from '@ast-grep/lang-json';
-import { parseAsync, registerDynamicLanguage } from '@ast-grep/napi';
+import { parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
+import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 export const patchRootConfig: PatchFunction = async ({
@@ -20,7 +20,8 @@ export const patchRootConfig: PatchFunction = async ({
     };
   }
 
-  registerDynamicLanguage({ json });
+  registerAstGrepLanguages();
+
   const tsconfig = await parseAsync('json', tsconfigFile);
   const ast = tsconfig.root();
 
