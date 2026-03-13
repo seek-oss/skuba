@@ -114,7 +114,7 @@
   customManagers: [
     {
       customType: 'regex',
-      managerFilePatterns: ['/pnpm.md$/', '/(^|/)_package\\.json$/'],,
+      managerFilePatterns: ['/pnpm.md$/', '/(^|/)_package\\.json$/'],
       matchStrings: [
         '"packageManager": "(?<depName>.*?)@(?<currentValue>.*?)",',
       ],
