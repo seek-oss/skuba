@@ -397,8 +397,8 @@ importers:
         specifier: ^14.0.0
         version: 14.0.0
       seek-datadog-custom-metrics:
-        specifier: ^6.0.0
-        version: 6.0.3(datadog-lambda-js@12.135.0)(hot-shots@14.0.0)
+        specifier: ^7.0.0
+        version: 7.0.0(datadog-lambda-js@12.135.0)(hot-shots@14.0.0)
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -477,8 +477,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       seek-datadog-custom-metrics:
-        specifier: ^6.0.0
-        version: 6.0.3(datadog-lambda-js@12.135.0)(hot-shots@14.0.0)
+        specifier: ^7.0.0
+        version: 7.0.0(datadog-lambda-js@12.135.0)(hot-shots@14.0.0)
       seek-koala:
         specifier: ^8.0.0
         version: 8.0.0(hot-shots@14.0.0)(koa@3.1.2)
@@ -6769,11 +6769,12 @@ packages:
   secure-json-parse@4.1.0:
     resolution: {integrity: sha512-l4KnYfEyqYJxDwlNVyRfO2E4NTHfMKAWdUuA8J0yve2Dz/E/PdBepY03RvyJpssIpRFwJoCD55wA+mEDs6ByWA==}
 
-  seek-datadog-custom-metrics@6.0.3:
-    resolution: {integrity: sha512-N9ei6hroM0eOwXxC3sWqMhk46+4L+YK5CqGvR8Z70Eg7cSw05DbEzU3eDctUaJLNSsI/R/kgoI95uzpMJRIGcw==}
+  seek-datadog-custom-metrics@7.0.0:
+    resolution: {integrity: sha512-tju/pueBBedKJbOXxL722fadJGzDi1YAe7E2I6VyXRsOTcSw1g2Eh+EcLaV4TBPpTiAcCP9YIDuMK2+6yxtSdQ==}
+    engines: {node: '>=22.14.0'}
     peerDependencies:
-      datadog-lambda-js: 6.x || 7.x || 8.x || 9.x || 10.x || 12.x
-      hot-shots: 6.x || 7.x || 8.x || 9.x || 10.x || 11.x
+      datadog-lambda-js: 6.x || 7.x || 8.x || 9.x || 10.x || 11.x || 12.x
+      hot-shots: 6.x || 7.x || 8.x || 9.x || 10.x || 11.x || 12.x || 13.x || 14.x
     peerDependenciesMeta:
       datadog-lambda-js:
         optional: true
@@ -15387,7 +15388,7 @@ snapshots:
 
   secure-json-parse@4.1.0: {}
 
-  seek-datadog-custom-metrics@6.0.3(datadog-lambda-js@12.135.0)(hot-shots@14.0.0):
+  seek-datadog-custom-metrics@7.0.0(datadog-lambda-js@12.135.0)(hot-shots@14.0.0):
     dependencies:
       '@types/aws-lambda': 8.10.161
     optionalDependencies:
