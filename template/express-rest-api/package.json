@@ -29,7 +29,7 @@
     "@seek/logger": "^12.0.0",
     "express": "^5.0.0",
     "hot-shots": "^14.0.0",
-    "seek-datadog-custom-metrics": "^7.0.0",
+    "seek-datadog-custom-metrics": "^8.0.0",
     "skuba-dive": "^4.0.1"
   },
   "devDependencies": {
