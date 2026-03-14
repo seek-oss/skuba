@@ -56,6 +56,7 @@ const defaultConfig = {
     'jest',
     'prettier',
     'publint',
+    'rolldown',
     'tsconfig-seek',
     'tsdown',
     'typescript',
