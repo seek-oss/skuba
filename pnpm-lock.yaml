@@ -12,6 +12,9 @@ patchedDependencies:
   '@ast-grep/lang-json@0.0.6':
     hash: ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5
     path: patches/@ast-grep__lang-json@0.0.6.patch
+  '@ast-grep/lang-yaml@0.0.5':
+    hash: ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5
+    path: patches/@ast-grep__lang-yaml@0.0.5.patch
 
 importers:
 
@@ -25,7 +28,7 @@ importers:
         version: 0.0.6(patch_hash=ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5)
       '@ast-grep/lang-yaml':
         specifier: ^0.0.5
-        version: 0.0.5
+        version: 0.0.5(patch_hash=ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5)
       '@ast-grep/napi':
         specifier: ^0.41.0
         version: 0.41.0
@@ -7866,7 +7869,7 @@ snapshots:
     dependencies:
       '@ast-grep/setup-lang': 0.0.6
 
-  '@ast-grep/lang-yaml@0.0.5':
+  '@ast-grep/lang-yaml@0.0.5(patch_hash=ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5)':
     dependencies:
       '@ast-grep/setup-lang': 0.0.6
 
