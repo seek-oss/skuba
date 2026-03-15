@@ -1,6 +1,14 @@
 import { PublishCommand } from '@aws-sdk/client-sns';
 import type { SQSBatchResponse } from 'aws-lambda';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import * as app from './app.js';
 import { stdoutMock } from './framework/logging.js';
