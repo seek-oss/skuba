@@ -16,6 +16,7 @@ import {
   ensureTemplateConfigDeletion,
 } from '../../utils/template.js';
 import { runPrettier } from '../adapter/prettier.js';
+import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.js';
 import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.js';
 
 import { getConfig } from './getConfig.js';
@@ -104,20 +105,13 @@ export const init = async (args = process.argv.slice(2)) => {
   }
 
   if (packageManager === 'pnpm') {
-    if (process.env.SKUBA_INTEGRATION_TEST === 'true') {
-      await fs.promises.symlink(
-        path.resolve('../skuba/packages/pnpm-plugin-skuba/pnpmfile.cjs'),
-        path.join(destinationDir, '.pnpmfile.cjs'),
-      );
-    } else {
-      // If a pnpm-workspace.yaml exists in parent directories of your current working directory,
-      // pnpm will choose to use it instead of creating a new one in the destination directory
-      // To avoid this, we create an empty pnpm-workspace.yaml in the destination directory before installing the plugin
-      await fs.promises.writeFile(
-        path.join(destinationDir, 'pnpm-workspace.yaml'),
-        '',
-        'utf8',
-      );
+    await fs.promises.writeFile(
+      path.join(destinationDir, 'pnpm-workspace.yaml'),
+      '',
+      'utf8',
+    );
+    await patchPnpmWorkspace('format', destinationDir);
+    if (process.env.SKUBA_INTEGRATION_TEST !== 'true') {
       await installPnpmPlugin(skubaManifest, exec);
     }
   }

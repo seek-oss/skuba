@@ -1,6 +1,6 @@
 {
   "name": "pnpm-plugin-skuba",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": false,
   "description": "Pnpm plugin for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/pnpm-plugin-skuba#readme",
@@ -19,7 +19,8 @@
     "pnpmfile.cjs"
   ],
   "devDependencies": {
-    "@pnpm/config": "^1004.9.0"
+    "@pnpm/cafs-types": "^1000.1.0",
+    "@pnpm/config": "^1004.10.3"
   },
   "engines": {
     "node": ">=22.14.0"
