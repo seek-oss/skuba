@@ -1,13 +1,13 @@
-import { inspect } from "util";
+import { inspect } from 'util';
 
-import fs from "fs-extra";
+import fs from 'fs-extra';
 
-import { log } from "../../../../../../utils/logging.js";
-import { createDestinationFileReader } from "../../../../../configure/analysis/project.js";
-import { formatOxfmt } from "../../../../../configure/processing/oxfmt.js";
-import type { PatchFunction, PatchReturnType } from "../../index.js";
+import { log } from '../../../../../../utils/logging.js';
+import { createDestinationFileReader } from '../../../../../configure/analysis/project.js';
+import { formatOxfmt } from '../../../../../configure/processing/oxfmt.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const SERVER_LISTENER_FILENAME = "src/listen.ts";
+const SERVER_LISTENER_FILENAME = 'src/listen.ts';
 
 const KEEP_ALIVE_CODE = `
 // Gantry ALB default idle timeout is 30 seconds
@@ -19,30 +19,33 @@ listener.keepAliveTimeout = 31000;
 `;
 
 const patchServerListener = async (
-  mode: "format" | "lint",
+  mode: 'format' | 'lint',
   dir: string,
 ): Promise<PatchReturnType> => {
   const readFile = createDestinationFileReader(dir);
 
   let listener = await readFile(SERVER_LISTENER_FILENAME);
   if (!listener) {
-    return { result: "skip", reason: "no listener file found" };
+    return { result: 'skip', reason: 'no listener file found' };
   }
 
-  if (listener.includes("keepAliveTimeout")) {
-    return { result: "skip", reason: "keepAliveTimeout already configured" };
+  if (listener.includes('keepAliveTimeout')) {
+    return { result: 'skip', reason: 'keepAliveTimeout already configured' };
   }
 
-  if (listener.includes("\napp.listen(")) {
-    listener = listener.replace("\napp.listen(", "\nconst listener = app.listen(");
+  if (listener.includes('\napp.listen(')) {
+    listener = listener.replace(
+      '\napp.listen(',
+      '\nconst listener = app.listen(',
+    );
   }
 
-  if (!listener.includes("\nconst listener = app.listen(")) {
-    return { result: "skip", reason: "no server listener found" };
+  if (!listener.includes('\nconst listener = app.listen(')) {
+    return { result: 'skip', reason: 'no server listener found' };
   }
 
-  if (mode === "lint") {
-    return { result: "apply" };
+  if (mode === 'lint') {
+    return { result: 'apply' };
   }
 
   listener = `${listener}${KEEP_ALIVE_CODE}`;
@@ -52,15 +55,18 @@ const patchServerListener = async (
     await formatOxfmt(SERVER_LISTENER_FILENAME, listener),
   );
 
-  return { result: "apply" };
+  return { result: 'apply' };
 };
 
-export const tryPatchServerListener: PatchFunction = async ({ mode, dir = process.cwd() }) => {
+export const tryPatchServerListener: PatchFunction = async ({
+  mode,
+  dir = process.cwd(),
+}) => {
   try {
     return await patchServerListener(mode, dir);
   } catch (err) {
-    log.warn("Failed to patch server listener.");
+    log.warn('Failed to patch server listener.');
     log.subtle(inspect(err));
-    return { result: "skip", reason: "due to an error" };
+    return { result: 'skip', reason: 'due to an error' };
   }
 };

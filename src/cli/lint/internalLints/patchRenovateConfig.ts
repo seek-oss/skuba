@@ -1,24 +1,26 @@
-import path from "path";
-import { inspect } from "util";
+import path from 'path';
+import { inspect } from 'util';
 
-import fs from "fs-extra";
-import * as fleece from "golden-fleece";
-import * as z from "zod/v4";
+import fs from 'fs-extra';
+import * as fleece from 'golden-fleece';
+import * as z from 'zod/v4';
 
-import { log } from "../../../utils/logging.js";
-import { createDestinationFileReader } from "../../configure/analysis/project.js";
-import { RENOVATE_CONFIG_FILENAMES } from "../../configure/modules/renovate.js";
-import { formatOxfmt } from "../../configure/processing/oxfmt.js";
+import { log } from '../../../utils/logging.js';
+import { createDestinationFileReader } from '../../configure/analysis/project.js';
+import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate.js';
+import { formatOxfmt } from '../../configure/processing/oxfmt.js';
 
-import type { PatchFunction, PatchReturnType } from "./upgrade/index.js";
+import type { PatchFunction, PatchReturnType } from './upgrade/index.js';
 
-import * as Git from "@skuba-lib/api/git";
+import * as Git from '@skuba-lib/api/git';
 
 const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;
 
-type RenovateFiletype = "json" | "json5";
+type RenovateFiletype = 'json' | 'json5';
 
-type RenovatePreset = "local>seekasia/renovate-config" | "local>seek-jobs/renovate-config";
+type RenovatePreset =
+  | 'local>seekasia/renovate-config'
+  | 'local>seek-jobs/renovate-config';
 
 const renovateConfigSchema = z.object({
   extends: z.array(z.string()),
@@ -28,11 +30,11 @@ const ownerToRenovatePreset = (owner: string): RenovatePreset | undefined => {
   const lowercaseOwner = owner.toLowerCase();
 
   switch (lowercaseOwner) {
-    case "seekasia":
-      return "local>seekasia/renovate-config";
+    case 'seekasia':
+      return 'local>seekasia/renovate-config';
 
-    case "seek-jobs":
-      return "local>seek-jobs/renovate-config";
+    case 'seek-jobs':
+      return 'local>seek-jobs/renovate-config';
 
     default:
       return;
@@ -56,7 +58,10 @@ const patchJson: PatchFile = async ({ filepath, input, presetToAdd }) => {
 
   config.data.extends.unshift(presetToAdd);
 
-  await fs.promises.writeFile(filepath, await formatOxfmt(filepath, JSON.stringify(config.data)));
+  await fs.promises.writeFile(
+    filepath,
+    await formatOxfmt(filepath, JSON.stringify(config.data)),
+  );
 
   return;
 };
@@ -86,7 +91,7 @@ const patchByFiletype: Record<RenovateFiletype, PatchFile> = {
 };
 
 const patchRenovateConfig = async (
-  mode: "format" | "lint",
+  mode: 'format' | 'lint',
   dir: string,
 ): Promise<PatchReturnType> => {
   const readFile = createDestinationFileReader(dir);
@@ -97,8 +102,8 @@ const patchRenovateConfig = async (
 
   if (!presetToAdd) {
     return {
-      result: "skip",
-      reason: "owner does not map to a SEEK preset",
+      result: 'skip',
+      reason: 'owner does not map to a SEEK preset',
     };
   }
 
@@ -111,7 +116,7 @@ const patchRenovateConfig = async (
 
   const config = maybeConfigs.find((maybeConfig) => Boolean(maybeConfig.input));
   if (!config?.input) {
-    return { result: "skip", reason: "no config found" };
+    return { result: 'skip', reason: 'no config found' };
   }
 
   if (
@@ -122,18 +127,20 @@ const patchRenovateConfig = async (
     EXISTING_REPO_PRESET_REGEX.exec(config.input)
   ) {
     return {
-      result: "skip",
-      reason: "config already has a SEEK preset",
+      result: 'skip',
+      reason: 'config already has a SEEK preset',
     };
   }
 
-  if (mode === "lint") {
-    return { result: "apply" };
+  if (mode === 'lint') {
+    return { result: 'apply' };
   }
 
-  const filetype: RenovateFiletype = config.filepath.toLowerCase().endsWith(".json5")
-    ? "json5"
-    : "json";
+  const filetype: RenovateFiletype = config.filepath
+    .toLowerCase()
+    .endsWith('.json5')
+    ? 'json5'
+    : 'json';
 
   const patchFile = patchByFiletype[filetype];
 
@@ -143,22 +150,25 @@ const patchRenovateConfig = async (
     presetToAdd,
   });
 
-  return { result: "apply" };
+  return { result: 'apply' };
 };
 
-export const tryPatchRenovateConfig = (async ({ mode, dir = process.cwd() }) => {
+export const tryPatchRenovateConfig = (async ({
+  mode,
+  dir = process.cwd(),
+}) => {
   try {
     // In a monorepo we may be invoked within a subdirectory, but we are working
     // with Renovate config that should be relative to the repository root.
     const gitRoot = await Git.findRoot({ dir });
     if (!gitRoot) {
-      return { result: "skip", reason: "no Git root found" };
+      return { result: 'skip', reason: 'no Git root found' };
     }
 
     return await patchRenovateConfig(mode, gitRoot);
   } catch (err) {
-    log.warn("Failed to patch Renovate config.");
+    log.warn('Failed to patch Renovate config.');
     log.subtle(inspect(err));
-    return { result: "skip", reason: "due to an error" };
+    return { result: 'skip', reason: 'due to an error' };
   }
 }) satisfies PatchFunction;

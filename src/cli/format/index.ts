@@ -1,10 +1,10 @@
-import { styleText } from "node:util";
+import { styleText } from 'node:util';
 
-import { hasDebugFlag } from "../../utils/args.js";
-import { createLogger, log } from "../../utils/logging.js";
-import { runESLint } from "../adapter/eslint.js";
-import { runOxfmt } from "../adapter/oxfmt.js";
-import { internalLint } from "../lint/internal.js";
+import { hasDebugFlag } from '../../utils/args.js';
+import { createLogger, log } from '../../utils/logging.js';
+import { runESLint } from '../adapter/eslint.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
+import { internalLint } from '../lint/internal.js';
 
 export const format = async (
   args = process.argv.slice(2),
@@ -12,12 +12,12 @@ export const format = async (
 ): Promise<void> => {
   const debug = hasDebugFlag(args);
 
-  log.plain(styleText("blueBright", "skuba lints"));
+  log.plain(styleText('blueBright', 'skuba lints'));
 
-  const internal = await internalLint("format", {
+  const internal = await internalLint('format', {
     debug,
-    additionalFlags: args.includes("--force-apply-all-patches")
-      ? ["--force-apply-all-patches"]
+    additionalFlags: args.includes('--force-apply-all-patches')
+      ? ['--force-apply-all-patches']
       : [],
     serial: true,
   });
@@ -25,27 +25,27 @@ export const format = async (
   const logger = createLogger({ debug });
 
   log.newline();
-  log.plain(styleText("magenta", "ESLint"));
+  log.plain(styleText('magenta', 'ESLint'));
 
-  const eslint = await runESLint("format", logger, overrideConfigFile);
+  const eslint = await runESLint('format', logger, overrideConfigFile);
 
   log.newline();
-  log.plain(styleText("cyan", "Oxfmt"));
+  log.plain(styleText('cyan', 'Oxfmt'));
 
-  const oxfmt = await runOxfmt("format", logger);
+  const oxfmt = await runOxfmt('format', logger);
 
   if (eslint.ok && oxfmt.ok && internal.ok) {
     return;
   }
 
   const tools = [
-    ...(eslint.ok ? [] : ["ESLint"]),
-    ...(oxfmt.ok ? [] : ["Oxfmt"]),
-    ...(internal.ok ? [] : ["skuba"]),
+    ...(eslint.ok ? [] : ['ESLint']),
+    ...(oxfmt.ok ? [] : ['Oxfmt']),
+    ...(internal.ok ? [] : ['skuba']),
   ];
 
   log.newline();
-  log.err(tools.join(", "), "found issues that require triage.");
+  log.err(tools.join(', '), 'found issues that require triage.');
 
   process.exitCode = 1;
 };

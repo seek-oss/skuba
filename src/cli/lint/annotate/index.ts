@@ -1,10 +1,10 @@
-import type { ESLintOutput } from "../../../cli/adapter/eslint.js";
-import type { OxfmtOutput } from "../../../cli/adapter/oxfmt.js";
-import type { StreamInterceptor } from "../external.js";
-import type { InternalLintResult } from "../internal.js";
+import type { ESLintOutput } from '../../../cli/adapter/eslint.js';
+import type { OxfmtOutput } from '../../../cli/adapter/oxfmt.js';
+import type { StreamInterceptor } from '../external.js';
+import type { InternalLintResult } from '../internal.js';
 
-import { createBuildkiteAnnotations } from "./buildkite/index.js";
-import { createGitHubAnnotations } from "./github/index.js";
+import { createBuildkiteAnnotations } from './buildkite/index.js';
+import { createGitHubAnnotations } from './github/index.js';
 
 export const createAnnotations = async (
   internal: InternalLintResult,

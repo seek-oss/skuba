@@ -1,10 +1,10 @@
-import path from "path";
+import path from 'path';
 
-import fs from "fs-extra";
+import fs from 'fs-extra';
 
-import { crawlDirectory } from "../../utils/dir.js";
-import { type Logger, pluralise } from "../../utils/logging.js";
-import { getConsumerManifest } from "../../utils/manifest.js";
+import { crawlDirectory } from '../../utils/dir.js';
+import { type Logger, pluralise } from '../../utils/logging.js';
+import { getConsumerManifest } from '../../utils/manifest.js';
 
 interface Result {
   count: number;
@@ -22,30 +22,33 @@ export interface OxfmtOutput {
  * Formats/lints files with Oxfmt.
  */
 export const runOxfmt = async (
-  mode: "format" | "lint",
+  mode: 'format' | 'lint',
   logger: Logger,
   cwd = process.cwd(),
 ): Promise<OxfmtOutput> => {
-  logger.debug("Initialising Oxfmt...");
+  logger.debug('Initialising Oxfmt...');
 
-  const { format } = await import("oxfmt");
+  const { format } = await import('oxfmt');
   const start = process.hrtime.bigint();
 
   const manifest = await getConsumerManifest(cwd);
 
   const directory = manifest ? path.dirname(manifest.path) : cwd;
 
-  logger.debug(manifest ? "Detected project root:" : "Detected working directory:", directory);
+  logger.debug(
+    manifest ? 'Detected project root:' : 'Detected working directory:',
+    directory,
+  );
 
-  logger.debug("Discovering files...");
+  logger.debug('Discovering files...');
 
   const relativeFilepaths = await crawlDirectory(directory, [
-    ".gitignore",
-    ".prettierignore",
-    ".oxfmtignore",
+    '.gitignore',
+    '.prettierignore',
+    '.oxfmtignore',
   ]);
 
-  logger.debug(`Discovered ${pluralise(relativeFilepaths.length, "file")}.`);
+  logger.debug(`Discovered ${pluralise(relativeFilepaths.length, 'file')}.`);
 
   const result: Result = {
     count: relativeFilepaths.length,
@@ -54,16 +57,19 @@ export const runOxfmt = async (
     unparsed: [],
   };
 
-  logger.debug(mode === "format" ? "Formatting" : "Linting", "files...");
+  logger.debug(mode === 'format' ? 'Formatting' : 'Linting', 'files...');
 
   for (const relativeFilepath of relativeFilepaths) {
-    const filepath = path.relative(process.cwd(), path.join(directory, relativeFilepath));
+    const filepath = path.relative(
+      process.cwd(),
+      path.join(directory, relativeFilepath),
+    );
 
     logger.debug(filepath);
 
     let data: string;
     try {
-      data = await fs.promises.readFile(filepath, "utf-8");
+      data = await fs.promises.readFile(filepath, 'utf-8');
     } catch (err) {
       result.errored.push({ err, filepath });
       continue;
@@ -76,17 +82,19 @@ export const runOxfmt = async (
       hasErrors = formatResult.errors.length > 0;
 
       const isUnsupported = formatResult.errors.some((e) =>
-        e.message.startsWith("Unsupported file type"),
+        e.message.startsWith('Unsupported file type'),
       );
 
       if (isUnsupported) {
-        logger.debug("  unsupported, skipping");
+        logger.debug('  unsupported, skipping');
         result.unparsed.push(filepath);
         continue;
       }
 
       if (hasErrors) {
-        const errorMessages = formatResult.errors.map((e) => e.message).join("; ");
+        const errorMessages = formatResult.errors
+          .map((e) => e.message)
+          .join('; ');
         result.errored.push({
           err: new Error(errorMessages),
           filepath,
@@ -100,7 +108,7 @@ export const runOxfmt = async (
       continue;
     }
 
-    if (mode === "lint") {
+    if (mode === 'lint') {
       if (formatted !== data) {
         result.errored.push({ filepath });
       }
@@ -120,23 +128,25 @@ export const runOxfmt = async (
   logger.plain(
     `Processed ${pluralise(
       result.count - result.unparsed.length,
-      "file",
+      'file',
     )} in ${logger.timing(start, end)}.`,
   );
 
   if (result.touched.length) {
-    logger.plain(`Formatted ${pluralise(result.touched.length, "file")}:`);
+    logger.plain(`Formatted ${pluralise(result.touched.length, 'file')}:`);
     for (const filepath of result.touched) {
       logger.warn(filepath);
     }
   }
 
   if (result.errored.length) {
-    logger.plain(`Flagged ${pluralise(result.errored.length, "file")}:`);
+    logger.plain(`Flagged ${pluralise(result.errored.length, 'file')}:`);
     for (const { err, filepath } of result.errored) {
       logger.warn(
         filepath,
-        ...(typeof err === "string" || err instanceof Error ? [String(err)] : []),
+        ...(typeof err === 'string' || err instanceof Error
+          ? [String(err)]
+          : []),
       );
     }
   }

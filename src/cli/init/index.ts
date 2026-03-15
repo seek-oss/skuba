@@ -1,28 +1,31 @@
-import path from "path";
-import { inspect } from "util";
+import path from 'path';
+import { inspect } from 'util';
 
-import fs from "fs-extra";
+import fs from 'fs-extra';
 
-import { hasDebugFlag } from "../../utils/args.js";
-import { copyFiles, createEjsRenderer } from "../../utils/copy.js";
-import { createInclusionFilter } from "../../utils/dir.js";
-import { createExec, ensureCommands } from "../../utils/exec.js";
-import { createLogger, log } from "../../utils/logging.js";
-import { showLogoAndVersionInfo } from "../../utils/logo.js";
-import { getConsumerManifest, getSkubaManifest } from "../../utils/manifest.js";
-import { detectPackageManager } from "../../utils/packageManager.js";
-import { BASE_TEMPLATE_DIR, ensureTemplateConfigDeletion } from "../../utils/template.js";
-import { runOxfmt } from "../adapter/oxfmt.js";
-import { patchPnpmWorkspace } from "../lint/internalLints/patchPnpmWorkspace.js";
-import { tryPatchRenovateConfig } from "../lint/internalLints/patchRenovateConfig.js";
+import { hasDebugFlag } from '../../utils/args.js';
+import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
+import { createInclusionFilter } from '../../utils/dir.js';
+import { createExec, ensureCommands } from '../../utils/exec.js';
+import { createLogger, log } from '../../utils/logging.js';
+import { showLogoAndVersionInfo } from '../../utils/logo.js';
+import { getConsumerManifest, getSkubaManifest } from '../../utils/manifest.js';
+import { detectPackageManager } from '../../utils/packageManager.js';
+import {
+  BASE_TEMPLATE_DIR,
+  ensureTemplateConfigDeletion,
+} from '../../utils/template.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
+import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.js';
+import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.js';
 
-import { getConfig } from "./getConfig.js";
-import { initialiseRepo } from "./git.js";
-import { installPnpmPlugin } from "./installPnpmPlugin.js";
-import type { Input } from "./types.js";
-import { writePackageJson } from "./writePackageJson.js";
+import { getConfig } from './getConfig.js';
+import { initialiseRepo } from './git.js';
+import { installPnpmPlugin } from './installPnpmPlugin.js';
+import type { Input } from './types.js';
+import { writePackageJson } from './writePackageJson.js';
 
-import * as Git from "@skuba-lib/api/git";
+import * as Git from '@skuba-lib/api/git';
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {
@@ -44,8 +47,8 @@ export const init = async (args = process.argv.slice(2)) => {
   await ensureCommands(packageManager);
 
   const include = await createInclusionFilter([
-    path.join(destinationDir, ".gitignore"),
-    path.join(BASE_TEMPLATE_DIR, "_.gitignore"),
+    path.join(destinationDir, '.gitignore'),
+    path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
   ]);
 
   const processors = [createEjsRenderer(templateData)];
@@ -69,7 +72,9 @@ export const init = async (args = process.argv.slice(2)) => {
   });
 
   await Promise.all([
-    templateComplete ? ensureTemplateConfigDeletion(destinationDir) : Promise.resolve(),
+    templateComplete
+      ? ensureTemplateConfigDeletion(destinationDir)
+      : Promise.resolve(),
 
     writePackageJson({
       cwd: destinationDir,
@@ -82,7 +87,7 @@ export const init = async (args = process.argv.slice(2)) => {
 
   const exec = createExec({
     cwd: destinationDir,
-    stdio: "pipe",
+    stdio: 'pipe',
     streamStdio: packageManager,
   });
 
@@ -99,17 +104,21 @@ export const init = async (args = process.argv.slice(2)) => {
     throw new Error("Repository doesn't contain a package.json file.");
   }
 
-  if (packageManager === "pnpm") {
-    await fs.promises.writeFile(path.join(destinationDir, "pnpm-workspace.yaml"), "", "utf8");
-    await patchPnpmWorkspace("format", destinationDir);
-    if (process.env.SKUBA_INTEGRATION_TEST !== "true") {
+  if (packageManager === 'pnpm') {
+    await fs.promises.writeFile(
+      path.join(destinationDir, 'pnpm-workspace.yaml'),
+      '',
+      'utf8',
+    );
+    await patchPnpmWorkspace('format', destinationDir);
+    if (process.env.SKUBA_INTEGRATION_TEST !== 'true') {
       await installPnpmPlugin(skubaManifest, exec);
     }
   }
 
   // Patch in a baseline Renovate preset based on the configured Git owner.
   await tryPatchRenovateConfig({
-    mode: "format",
+    mode: 'format',
     dir: destinationDir,
     manifest,
     packageManager: packageManagerConfig,
@@ -120,11 +129,15 @@ export const init = async (args = process.argv.slice(2)) => {
   let depsInstalled = false;
   try {
     // The `-D` shorthand is portable across our package managers.
-    await exec(packageManager, "add", "-D", skubaSlug);
+    await exec(packageManager, 'add', '-D', skubaSlug);
 
     // Templating can initially leave certain files in an unformatted state;
     // consider a Markdown table with columns sized based on content length.
-    await runOxfmt("format", createLogger({ debug: opts.debug }), destinationDir);
+    await runOxfmt(
+      'format',
+      createLogger({ debug: opts.debug }),
+      destinationDir,
+    );
 
     depsInstalled = true;
   } catch (err) {
@@ -138,28 +151,28 @@ export const init = async (args = process.argv.slice(2)) => {
 
   const logGitHubRepoCreation = () => {
     log.plain(
-      "Next, create an empty",
+      'Next, create an empty',
       log.bold(`${templateData.orgName}/${templateData.repoName}`),
-      "repository:",
+      'repository:',
     );
-    log.ok("https://github.com/new");
+    log.ok('https://github.com/new');
   };
 
   if (!depsInstalled) {
     log.newline();
-    log.warn(log.bold("✗ Failed to install dependencies."));
+    log.warn(log.bold('✗ Failed to install dependencies.'));
 
     log.newline();
     logGitHubRepoCreation();
 
     log.newline();
-    log.plain("Then, resume initialisation:");
-    log.ok("cd", destinationDir);
+    log.plain('Then, resume initialisation:');
+    log.ok('cd', destinationDir);
     // The `-D` shorthand is portable across our package managers.
-    log.ok(packageManager, "add", "-D", skubaSlug);
-    log.ok(packageManager, "run", "format");
-    log.ok("git add --all");
-    log.ok("git commit --message", `'Pin ${skubaSlug}'`);
+    log.ok(packageManager, 'add', '-D', skubaSlug);
+    log.ok(packageManager, 'run', 'format');
+    log.ok('git add --all');
+    log.ok('git commit --message', `'Pin ${skubaSlug}'`);
     log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
 
     log.newline();
@@ -168,14 +181,14 @@ export const init = async (args = process.argv.slice(2)) => {
   }
 
   log.newline();
-  log.ok(log.bold("✔ Project initialised!"));
+  log.ok(log.bold('✔ Project initialised!'));
 
   log.newline();
   logGitHubRepoCreation();
 
   log.newline();
-  log.plain("Then, push your local changes:");
-  log.ok("cd", destinationDir);
+  log.plain('Then, push your local changes:');
+  log.ok('cd', destinationDir);
   log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
 
   log.newline();

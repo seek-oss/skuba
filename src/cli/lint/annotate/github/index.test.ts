@@ -1,39 +1,40 @@
-import type { ESLintOutput } from "../../../adapter/eslint.js";
-import type { OxfmtOutput } from "../../../adapter/oxfmt.js";
-import type { StreamInterceptor } from "../../../lint/external.js";
-import type { InternalLintResult } from "../../internal.js";
+import type { ESLintOutput } from '../../../adapter/eslint.js';
+import type { OxfmtOutput } from '../../../adapter/oxfmt.js';
+import type { StreamInterceptor } from '../../../lint/external.js';
+import type { InternalLintResult } from '../../internal.js';
 
-import { createEslintAnnotations } from "./eslint.js";
-import { createOxfmtAnnotations } from "./oxfmt.js";
-import { createTscAnnotations } from "./tsc.js";
+import { createEslintAnnotations } from './eslint.js';
+import { createOxfmtAnnotations } from './oxfmt.js';
+import { createTscAnnotations } from './tsc.js';
 
-import { createGitHubAnnotations } from "./index.js";
+import { createGitHubAnnotations } from './index.js';
 
-import * as GitHub from "@skuba-lib/api/github";
+import * as GitHub from '@skuba-lib/api/github';
 
-jest.mock("../../../../utils/logging");
-jest.mock("@skuba-lib/api/github", () => ({
-  ...jest.requireActual("@skuba-lib/api/github"),
+jest.mock('../../../../utils/logging');
+jest.mock('@skuba-lib/api/github', () => ({
+  ...jest.requireActual('@skuba-lib/api/github'),
   createCheckRun: jest.fn(),
 }));
 
-jest.mock("./eslint");
-jest.mock("./oxfmt");
-jest.mock("./tsc");
+jest.mock('./eslint');
+jest.mock('./oxfmt');
+jest.mock('./tsc');
 
 const eslintOutput: ESLintOutput = {
   errors: [
     {
-      filePath: "/skuba/src/index.ts",
+      filePath: '/skuba/src/index.ts',
       messages: [
         {
-          ruleId: "@typescript-eslint/no-unused-vars",
+          ruleId: '@typescript-eslint/no-unused-vars',
           severity: 2,
-          message: "'unused' is defined but never used. Allowed unused args must match /^_/u.",
+          message:
+            "'unused' is defined but never used. Allowed unused args must match /^_/u.",
           line: 4,
           column: 3,
-          nodeType: "Identifier",
-          messageId: "unusedVar",
+          nodeType: 'Identifier',
+          messageId: 'unusedVar',
           endLine: 4,
           endColumn: 15,
         },
@@ -42,14 +43,14 @@ const eslintOutput: ESLintOutput = {
   ],
   fixable: false,
   ok: false,
-  output: "",
+  output: '',
   warnings: [],
 };
 
 const oxfmtOutput: OxfmtOutput = {
   ok: false,
   result: {
-    errored: [{ filepath: "src/index.ts" }],
+    errored: [{ filepath: 'src/index.ts' }],
     count: 1,
     touched: [],
     unparsed: [],
@@ -61,8 +62,8 @@ const internalOutput: InternalLintResult = {
   fixable: false,
   annotations: [
     {
-      path: "src/index.ts",
-      message: "something is wrong about this",
+      path: 'src/index.ts',
+      message: 'something is wrong about this',
     },
   ],
 };
@@ -76,42 +77,43 @@ const tscOutputStream = {
 
 const mockInternalAnnotations: GitHub.Annotation[] = [
   {
-    annotation_level: "failure",
+    annotation_level: 'failure',
     end_line: 1,
-    message: "something is wrong about this",
-    path: "src/index.ts",
+    message: 'something is wrong about this',
+    path: 'src/index.ts',
     start_line: 1,
-    title: "skuba lint",
+    title: 'skuba lint',
   },
 ];
 
 const mockEslintAnnotations: GitHub.Annotation[] = [
   {
-    annotation_level: "failure",
+    annotation_level: 'failure',
     end_column: 15,
     end_line: 4,
-    message: "'unused' is defined but never used. Allowed unused args must match /^_/u.",
-    path: "/skuba/src/index.ts",
+    message:
+      "'unused' is defined but never used. Allowed unused args must match /^_/u.",
+    path: '/skuba/src/index.ts',
     start_column: 3,
     start_line: 4,
-    title: "@typescript-eslint/no-unused-vars",
+    title: '@typescript-eslint/no-unused-vars',
   },
 ];
 
 const mockOxfmtAnnotations: GitHub.Annotation[] = [
   {
-    annotation_level: "failure",
+    annotation_level: 'failure',
     start_line: 0,
     end_line: 0,
-    path: "src/index.ts",
-    message: "Oxfmt found an issue with this file",
+    path: 'src/index.ts',
+    message: 'Oxfmt found an issue with this file',
   },
 ];
 
 const mockTscAnnotations: GitHub.Annotation[] = [
   {
-    annotation_level: "failure",
-    path: "src/index.ts",
+    annotation_level: 'failure',
+    path: 'src/index.ts',
     start_line: 1,
     end_line: 1,
     start_column: 1,
@@ -121,11 +123,11 @@ const mockTscAnnotations: GitHub.Annotation[] = [
 ];
 
 beforeEach(() => {
-  process.env.CI = "true";
-  process.env.GITHUB_ACTIONS = "true";
-  process.env.GITHUB_RUN_NUMBER = "123";
-  process.env.GITHUB_TOKEN = "Hello from GITHUB_TOKEN";
-  process.env.GITHUB_WORKFLOW = "Test";
+  process.env.CI = 'true';
+  process.env.GITHUB_ACTIONS = 'true';
+  process.env.GITHUB_RUN_NUMBER = '123';
+  process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
+  process.env.GITHUB_WORKFLOW = 'Test';
 
   jest.mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
   jest.mocked(createOxfmtAnnotations).mockReturnValue(mockOxfmtAnnotations);
@@ -142,34 +144,58 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-it("should return immediately if the required environment variables are not set", async () => {
+it('should return immediately if the required environment variables are not set', async () => {
   delete process.env.CI;
   delete process.env.GITHUB_ACTIONS;
 
-  await createGitHubAnnotations(internalOutput, eslintOutput, oxfmtOutput, tscOk, tscOutputStream);
+  await createGitHubAnnotations(
+    internalOutput,
+    eslintOutput,
+    oxfmtOutput,
+    tscOk,
+    tscOutputStream,
+  );
 
   expect(GitHub.createCheckRun).not.toHaveBeenCalled();
 });
 
-it("should call createEslintAnnotations with the ESLint output", async () => {
-  await createGitHubAnnotations(internalOutput, eslintOutput, oxfmtOutput, tscOk, tscOutputStream);
+it('should call createEslintAnnotations with the ESLint output', async () => {
+  await createGitHubAnnotations(
+    internalOutput,
+    eslintOutput,
+    oxfmtOutput,
+    tscOk,
+    tscOutputStream,
+  );
 
   expect(createEslintAnnotations).toHaveBeenCalledWith(eslintOutput);
 });
 
-it("should call createOxfmtAnnotations with the Oxfmt output", async () => {
-  await createGitHubAnnotations(internalOutput, eslintOutput, oxfmtOutput, tscOk, tscOutputStream);
+it('should call createOxfmtAnnotations with the Oxfmt output', async () => {
+  await createGitHubAnnotations(
+    internalOutput,
+    eslintOutput,
+    oxfmtOutput,
+    tscOk,
+    tscOutputStream,
+  );
 
   expect(createOxfmtAnnotations).toHaveBeenCalledWith(oxfmtOutput);
 });
 
-it("should call createTscAnnotations with tscOk and tscOutputStream", async () => {
-  await createGitHubAnnotations(internalOutput, eslintOutput, oxfmtOutput, tscOk, tscOutputStream);
+it('should call createTscAnnotations with tscOk and tscOutputStream', async () => {
+  await createGitHubAnnotations(
+    internalOutput,
+    eslintOutput,
+    oxfmtOutput,
+    tscOk,
+    tscOutputStream,
+  );
 
   expect(createTscAnnotations).toHaveBeenCalledWith(tscOk, tscOutputStream);
 });
 
-it("should combine all the annotations into an array for the check run", async () => {
+it('should combine all the annotations into an array for the check run', async () => {
   const expectedAnnotations: GitHub.Annotation[] = [
     ...mockInternalAnnotations,
     ...mockEslintAnnotations,
@@ -177,18 +203,24 @@ it("should combine all the annotations into an array for the check run", async (
     ...mockTscAnnotations,
   ];
 
-  await createGitHubAnnotations(internalOutput, eslintOutput, oxfmtOutput, tscOk, tscOutputStream);
+  await createGitHubAnnotations(
+    internalOutput,
+    eslintOutput,
+    oxfmtOutput,
+    tscOk,
+    tscOutputStream,
+  );
 
   expect(GitHub.createCheckRun).toHaveBeenCalledWith({
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expectedAnnotations,
     conclusion: expect.any(String),
-    title: "Test #123 failed",
+    title: 'Test #123 failed',
   });
 });
 
-it("should set the conclusion to failure if any output is not ok", async () => {
+it('should set the conclusion to failure if any output is not ok', async () => {
   await createGitHubAnnotations(
     { ...internalOutput, ok: true },
     { ...eslintOutput, ok: false },
@@ -201,12 +233,12 @@ it("should set the conclusion to failure if any output is not ok", async () => {
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expect.any(Array),
-    conclusion: "failure",
-    title: "Test #123 failed",
+    conclusion: 'failure',
+    title: 'Test #123 failed',
   });
 });
 
-it("should set the conclusion to success if all outputs are ok", async () => {
+it('should set the conclusion to success if all outputs are ok', async () => {
   await createGitHubAnnotations(
     { ...internalOutput, ok: true },
     { ...eslintOutput, ok: true },
@@ -219,13 +251,13 @@ it("should set the conclusion to success if all outputs are ok", async () => {
     name: expect.any(String),
     summary: expect.any(String),
     annotations: expect.any(Array),
-    conclusion: "success",
-    title: "Test #123 passed",
+    conclusion: 'success',
+    title: 'Test #123 passed',
   });
 });
 
-it("should report that skuba lint failed if the output is not ok", async () => {
-  const expectedSummary = "`skuba lint` found issues that require triage.";
+it('should report that skuba lint failed if the output is not ok', async () => {
+  const expectedSummary = '`skuba lint` found issues that require triage.';
 
   await createGitHubAnnotations(
     internalOutput,
@@ -244,8 +276,8 @@ it("should report that skuba lint failed if the output is not ok", async () => {
   });
 });
 
-it("should set the summary to `Lint passed` if all outputs are ok", async () => {
-  const expectedSummary = "`skuba lint` passed.";
+it('should set the summary to `Lint passed` if all outputs are ok', async () => {
+  const expectedSummary = '`skuba lint` passed.';
 
   await createGitHubAnnotations(
     { ...internalOutput, ok: true },

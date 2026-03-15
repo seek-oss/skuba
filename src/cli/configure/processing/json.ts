@@ -1,18 +1,20 @@
-import { isObject } from "../../../utils/validation.js";
+import { isObject } from '../../../utils/validation.js';
 
-import { formatOxfmt } from "./oxfmt.js";
+import { formatOxfmt } from './oxfmt.js';
 
 export const formatObject = (
   data: Record<Exclude<PropertyKey, symbol>, unknown>,
   filepath?: string,
 ) => {
   const sortedData = Object.fromEntries(
-    Object.entries(data).sort(([keyA], [keyB]) => String(keyA).localeCompare(String(keyB))),
+    Object.entries(data).sort(([keyA], [keyB]) =>
+      String(keyA).localeCompare(String(keyB)),
+    ),
   );
 
   const output = JSON.stringify(sortedData, null, 2);
 
-  return formatOxfmt(filepath ?? "file.json", output);
+  return formatOxfmt(filepath ?? 'file.json', output);
 };
 
 export const parseObject = (

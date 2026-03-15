@@ -1,9 +1,9 @@
-import stream from "stream";
+import stream from 'stream';
 
-import { runESLintInCurrentThread, runESLintInWorkerThread } from "./eslint.js";
-import { runOxfmtInCurrentThread, runOxfmtInWorkerThread } from "./oxfmt.js";
-import { runTscInNewProcess } from "./tsc.js";
-import type { Input } from "./types.js";
+import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint.js';
+import { runOxfmtInCurrentThread, runOxfmtInWorkerThread } from './oxfmt.js';
+import { runTscInNewProcess } from './tsc.js';
+import type { Input } from './types.js';
 
 const tscPrefixRegex = /^(.*?tsc\s+│.*?\s)/gm;
 
@@ -11,10 +11,14 @@ export class StreamInterceptor extends stream.Transform {
   private chunks: Uint8Array[] = [];
 
   public output() {
-    return Buffer.concat(this.chunks).toString().replace(tscPrefixRegex, "");
+    return Buffer.concat(this.chunks).toString().replace(tscPrefixRegex, '');
   }
 
-  _transform(chunk: Uint8Array, _encoding: BufferEncoding, callback: stream.TransformCallback) {
+  _transform(
+    chunk: Uint8Array,
+    _encoding: BufferEncoding,
+    callback: stream.TransformCallback,
+  ) {
     this.chunks.push(chunk);
 
     callback(null, chunk);

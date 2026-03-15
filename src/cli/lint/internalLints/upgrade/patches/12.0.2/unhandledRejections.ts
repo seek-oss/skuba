@@ -1,13 +1,13 @@
-import path from "path";
-import { inspect } from "util";
+import path from 'path';
+import { inspect } from 'util';
 
-import { glob } from "fast-glob";
-import fs from "fs-extra";
+import { glob } from 'fast-glob';
+import fs from 'fs-extra';
 
-import { isErrorWithCode } from "../../../../../../utils/error.js";
-import { log } from "../../../../../../utils/logging.js";
-import { formatOxfmt } from "../../../../../configure/processing/oxfmt.js";
-import type { PatchFunction, PatchReturnType } from "../../index.js";
+import { isErrorWithCode } from '../../../../../../utils/error.js';
+import { log } from '../../../../../../utils/logging.js';
+import { formatOxfmt } from '../../../../../configure/processing/oxfmt.js';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const addListener = (identifier: string) =>
   `
@@ -23,11 +23,11 @@ const tryReadFilesSequentially = async (
 ): Promise<{ contents: string; filepath: string } | undefined> => {
   for (const filepath of filepaths) {
     try {
-      const contents = await fs.promises.readFile(filepath, "utf8");
+      const contents = await fs.promises.readFile(filepath, 'utf8');
 
       return { contents, filepath };
     } catch (err) {
-      if (isErrorWithCode(err, "ENOENT")) {
+      if (isErrorWithCode(err, 'ENOENT')) {
         continue;
       }
 
@@ -41,7 +41,8 @@ const tryReadFilesSequentially = async (
 export const IMPORT_REGEX =
   /import\s+(?:\{\s*(\w*[Ll]ogger)(?:\s+as\s+(\w*[Ll]ogger))?\s*\}|(\w*[Ll]ogger))\s+from\s+['"][^'"]+\/(?:logger|logging)(?:\/index)?(?:\.[jt]s)?['"]/u;
 
-export const NAMED_EXPORT_REGEX = /export\s+(?:const\s+|\{[^{}]*)\b(\w*[Ll]ogger)\b/u;
+export const NAMED_EXPORT_REGEX =
+  /export\s+(?:const\s+|\{[^{}]*)\b(\w*[Ll]ogger)\b/u;
 
 const findLogger = async ({
   contents,
@@ -53,22 +54,23 @@ const findLogger = async ({
   const importResult = IMPORT_REGEX.exec(contents);
 
   {
-    const identifier = importResult?.[3] ?? importResult?.[2] ?? importResult?.[1];
+    const identifier =
+      importResult?.[3] ?? importResult?.[2] ?? importResult?.[1];
 
     if (identifier) {
       return { identifier };
     }
   }
 
-  const loggerPaths = await glob("**/{logger,logging}.ts", {
+  const loggerPaths = await glob('**/{logger,logging}.ts', {
     cwd: root,
-    ignore: ["**/.git", "**/node_modules"],
+    ignore: ['**/.git', '**/node_modules'],
   });
 
   const loggingModule = await tryReadFilesSequentially(loggerPaths);
 
   if (!loggingModule) {
-    return { identifier: "console" };
+    return { identifier: 'console' };
   }
 
   const parsedPath = path.parse(path.relative(root, loggingModule.filepath));
@@ -86,29 +88,31 @@ const findLogger = async ({
     };
   }
 
-  if (loggingModule.contents.includes("export default")) {
+  if (loggingModule.contents.includes('export default')) {
     return {
-      identifier: "logger",
+      identifier: 'logger',
       import: `import logger from '${importPath}';`,
     };
   }
 
-  return { identifier: "console" };
+  return { identifier: 'console' };
 };
 
-const patchUnhandledRejections = async (mode: "format" | "lint"): Promise<PatchReturnType> => {
-  const filepaths = await glob("**/src/listen.ts", {
-    ignore: ["**/.git", "**/node_modules"],
+const patchUnhandledRejections = async (
+  mode: 'format' | 'lint',
+): Promise<PatchReturnType> => {
+  const filepaths = await glob('**/src/listen.ts', {
+    ignore: ['**/.git', '**/node_modules'],
   });
 
   let hasPatched = false;
 
   for (const filepath of filepaths) {
-    const contents = await fs.promises.readFile(filepath, "utf8");
+    const contents = await fs.promises.readFile(filepath, 'utf8');
 
-    if (contents.includes("unhandledRejection")) {
+    if (contents.includes('unhandledRejection')) {
       log.subtle(
-        "Skipping entry point that appears to have an unhandled rejection listener:",
+        'Skipping entry point that appears to have an unhandled rejection listener:',
         filepath,
       );
       continue;
@@ -118,7 +122,12 @@ const patchUnhandledRejections = async (mode: "format" | "lint"): Promise<PatchR
 
     const logger = await findLogger({ contents, root });
 
-    log.subtle("Logging unhandled rejections to", logger.identifier, "in file:", filepath);
+    log.subtle(
+      'Logging unhandled rejections to',
+      logger.identifier,
+      'in file:',
+      filepath,
+    );
 
     const patched = [
       contents,
@@ -126,12 +135,12 @@ const patchUnhandledRejections = async (mode: "format" | "lint"): Promise<PatchR
       ...[logger.import ? [logger.import] : []],
 
       addListener(logger.identifier),
-    ].join("\n\n");
+    ].join('\n\n');
 
     const newContents = await formatOxfmt(filepath, patched);
 
-    if (mode === "lint") {
-      return { result: "apply" };
+    if (mode === 'lint') {
+      return { result: 'apply' };
     }
 
     await fs.promises.writeFile(filepath, newContents);
@@ -140,12 +149,12 @@ const patchUnhandledRejections = async (mode: "format" | "lint"): Promise<PatchR
   }
 
   if (hasPatched) {
-    return { result: "apply" };
+    return { result: 'apply' };
   }
 
   return {
-    result: "skip",
-    reason: "no applicable src/listen.ts entry points found",
+    result: 'skip',
+    reason: 'no applicable src/listen.ts entry points found',
   };
 };
 
@@ -155,8 +164,8 @@ export const tryPatchUnhandledRejections: PatchFunction = async ({
   try {
     return await patchUnhandledRejections(mode);
   } catch (err) {
-    log.warn("Failed to patch listeners for unhandled promise rejections");
+    log.warn('Failed to patch listeners for unhandled promise rejections');
     log.subtle(inspect(err));
-    return { result: "skip", reason: "due to an error" };
+    return { result: 'skip', reason: 'due to an error' };
   }
 };

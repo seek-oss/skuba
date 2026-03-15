@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 
-import path from "path";
+import path from 'path';
 
-import { log } from "../../utils/logging.js";
+import { log } from '../../utils/logging.js';
 
-import { runOxfmt } from "./oxfmt.js";
+import { runOxfmt } from './oxfmt.js';
 
-describe("runOxfmt", () => {
+describe('runOxfmt', () => {
   const originalCwd = process.cwd();
 
   afterAll(() =>
@@ -19,27 +19,29 @@ describe("runOxfmt", () => {
   beforeAll(() => (console.log = () => undefined));
   afterAll(() => (console.log = originalConsoleLog));
 
-  it("flags files that need formatting in lint mode", async () => {
-    process.chdir(path.join(__dirname, "../../.."));
+  it('flags files that need formatting in lint mode', async () => {
+    process.chdir(path.join(__dirname, '../../..'));
 
     const result = await runOxfmt(
-      "lint",
+      'lint',
       log,
-      path.join(__dirname, "../../../integration/base/fixable"),
+      path.join(__dirname, '../../../integration/base/fixable'),
     );
 
     expect(result.ok).toBe(false);
     expect(result.result.errored.length).toBeGreaterThan(0);
-    expect(result.result.errored.map((e) => e.filepath)).toContain("integration/base/fixable/d.js");
+    expect(result.result.errored.map((e) => e.filepath)).toContain(
+      'integration/base/fixable/d.js',
+    );
   });
 
-  it("handles a custom directory with a different root", async () => {
+  it('handles a custom directory with a different root', async () => {
     process.chdir(__dirname);
 
     const result = await runOxfmt(
-      "lint",
+      'lint',
       log,
-      path.join(__dirname, "../../../integration/base/fixable"),
+      path.join(__dirname, '../../../integration/base/fixable'),
     );
 
     expect(result.ok).toBe(false);

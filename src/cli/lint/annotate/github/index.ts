@@ -1,14 +1,14 @@
-import type { ESLintOutput } from "../../../adapter/eslint.js";
-import type { OxfmtOutput } from "../../../adapter/oxfmt.js";
-import type { StreamInterceptor } from "../../../lint/external.js";
-import type { InternalLintResult } from "../../internal.js";
+import type { ESLintOutput } from '../../../adapter/eslint.js';
+import type { OxfmtOutput } from '../../../adapter/oxfmt.js';
+import type { StreamInterceptor } from '../../../lint/external.js';
+import type { InternalLintResult } from '../../internal.js';
 
-import { createEslintAnnotations } from "./eslint.js";
-import { createInternalAnnotations } from "./internal.js";
-import { createOxfmtAnnotations } from "./oxfmt.js";
-import { createTscAnnotations } from "./tsc.js";
+import { createEslintAnnotations } from './eslint.js';
+import { createInternalAnnotations } from './internal.js';
+import { createOxfmtAnnotations } from './oxfmt.js';
+import { createTscAnnotations } from './tsc.js';
 
-import * as GitHub from "@skuba-lib/api/github";
+import * as GitHub from '@skuba-lib/api/github';
 
 export const createGitHubAnnotations = async (
   internal: InternalLintResult,
@@ -30,15 +30,17 @@ export const createGitHubAnnotations = async (
 
   const isOk = eslint.ok && oxfmt.ok && internal.ok && tscOk;
 
-  const summary = isOk ? "`skuba lint` passed." : "`skuba lint` found issues that require triage.";
+  const summary = isOk
+    ? '`skuba lint` passed.'
+    : '`skuba lint` found issues that require triage.';
 
   const build = GitHub.buildNameFromEnvironment();
 
   await GitHub.createCheckRun({
-    name: "skuba/lint",
+    name: 'skuba/lint',
     summary,
     annotations,
-    conclusion: isOk ? "success" : "failure",
-    title: `${build} ${isOk ? "passed" : "failed"}`,
+    conclusion: isOk ? 'success' : 'failure',
+    title: `${build} ${isOk ? 'passed' : 'failed'}`,
   });
 };
