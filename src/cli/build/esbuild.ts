@@ -1,17 +1,17 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import { TsconfigPathsPlugin } from '@esbuild-plugins/tsconfig-paths';
-import { type BuildOptions, build } from 'esbuild';
-import { ModuleKind, ModuleResolutionKind, ScriptTarget } from 'typescript';
+import { TsconfigPathsPlugin } from "@esbuild-plugins/tsconfig-paths";
+import { type BuildOptions, build } from "esbuild";
+import { ModuleKind, ModuleResolutionKind, ScriptTarget } from "typescript";
 
-import { createLogger } from '../../utils/logging.js';
+import { createLogger } from "../../utils/logging.js";
 
-import { parseTscArgs } from './args.js';
-import { getCustomConditions, readTsBuildConfig, tsc } from './tsc.js';
+import { parseTscArgs } from "./args.js";
+import { getCustomConditions, readTsBuildConfig, tsc } from "./tsc.js";
 
 export type EsbuildConfig = Pick<
   BuildOptions,
-  'external' | 'minify' | 'bundle' | 'splitting' | 'treeShaking'
+  "external" | "minify" | "bundle" | "splitting" | "treeShaking"
 >;
 
 interface EsbuildParameters extends EsbuildConfig {
@@ -20,15 +20,7 @@ interface EsbuildParameters extends EsbuildConfig {
 }
 
 export const esbuild = async (
-  {
-    debug,
-    type,
-    external,
-    bundle,
-    minify,
-    splitting,
-    treeShaking,
-  }: EsbuildParameters,
+  { debug, type, external, bundle, minify, splitting, treeShaking }: EsbuildParameters,
   args = process.argv.slice(2),
 ) => {
   const log = createLogger({ debug });
@@ -38,9 +30,7 @@ export const esbuild = async (
   const customConditions = getCustomConditions();
 
   if (tscArgs.build) {
-    log.err(
-      'skuba does not currently support the tsc --build flag with esbuild',
-    );
+    log.err("skuba does not currently support the tsc --build flag with esbuild");
     process.exitCode = 1;
     return;
   }
@@ -51,25 +41,23 @@ export const esbuild = async (
     return;
   }
 
-  const { fileNames: entryPoints, options: compilerOptions } =
-    parsedCommandLine;
+  const { fileNames: entryPoints, options: compilerOptions } = parsedCommandLine;
 
-  log.debug(log.bold('Files'));
+  log.debug(log.bold("Files"));
   entryPoints.forEach((filepath) => log.debug(filepath));
 
-  log.debug(log.bold('Compiler options'));
+  log.debug(log.bold("Compiler options"));
   log.debug(inspect(compilerOptions));
 
   const start = process.hrtime.bigint();
 
-  const isEsm =
-    compilerOptions.module !== ModuleKind.CommonJS && type === 'module';
+  const isEsm = compilerOptions.module !== ModuleKind.CommonJS && type === "module";
 
   const canSplit = bundle && isEsm && Boolean(compilerOptions.outDir);
 
   if (splitting && !canSplit) {
     throw new Error(
-      'Splitting requires bundling to be enabled, ESM output format, and outDir to be configured',
+      "Splitting requires bundling to be enabled, ESM output format, and outDir to be configured",
     );
   }
 
@@ -80,14 +68,14 @@ export const esbuild = async (
     treeShaking: bundle && treeShaking,
     external,
     entryPoints,
-    format: !isEsm ? 'cjs' : undefined,
+    format: !isEsm ? "cjs" : undefined,
     outdir: compilerOptions.outDir,
-    logLevel: debug ? 'debug' : 'info',
+    logLevel: debug ? "debug" : "info",
     logLimit: 0,
     platform:
       compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs ||
       compilerOptions.moduleResolution === ModuleResolutionKind.Node16
-        ? 'node'
+        ? "node"
         : undefined,
     plugins: bundle
       ? []
@@ -116,9 +104,9 @@ export const esbuild = async (
 
   if (compilerOptions.declaration) {
     await tsc([
-      '--declaration',
-      '--emitDeclarationOnly',
-      ...(tscArgs.project ? ['--project', tscArgs.project] : []),
+      "--declaration",
+      "--emitDeclarationOnly",
+      ...(tscArgs.project ? ["--project", tscArgs.project] : []),
     ]);
   }
 };

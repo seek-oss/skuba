@@ -14,43 +14,41 @@ Inspired by [Shopify's jest-koa-mocks](https://github.com/Shopify/quilt/tree/mai
 Create a fully-typed mock [`Koa` `Context`](https://koajs.com) for testing middleware and request handlers.
 
 ```typescript
-describe('createServiceAuthClient', () => {
+describe("createServiceAuthClient", () => {
   const serviceAuthClient = createServiceAuthClient({
-    audience: 'upstream-service',
+    audience: "upstream-service",
     baseUrl,
   });
 
-  it('attaches expected headers', async () => {
+  it("attaches expected headers", async () => {
     nock(baseUrl)
-      .get('/mocked')
+      .get("/mocked")
       // ensures authorization is passed through
-      .matchHeader('authorization', MOCK_SERVICE_AUTH_HEADER)
+      .matchHeader("authorization", MOCK_SERVICE_AUTH_HEADER)
       // ensures data tags are passed through
-      .matchHeader('seek-tag-record-expiry', '0000-01-01T00:00:00.000Z')
-      .matchHeader('seek-tag-test-record', 'true')
+      .matchHeader("seek-tag-record-expiry", "0000-01-01T00:00:00.000Z")
+      .matchHeader("seek-tag-test-record", "true")
       // ensures tracing headers are passed through
-      .matchHeader('x-request-id', 'abc')
-      .matchHeader('x-session-id', 'cba')
+      .matchHeader("x-request-id", "abc")
+      .matchHeader("x-session-id", "cba")
       .reply(200);
 
     const ctx = createMockContext({
       headers: {
-        'seek-tag-record-expiry': '0000-01-01T00:00:00.000Z',
-        'seek-tag-test-record': 'true',
-        'x-request-id': 'abc',
-        'x-seek-jwt-issuer': 'requesting-service',
-        'x-session-id': 'cba',
+        "seek-tag-record-expiry": "0000-01-01T00:00:00.000Z",
+        "seek-tag-test-record": "true",
+        "x-request-id": "abc",
+        "x-seek-jwt-issuer": "requesting-service",
+        "x-session-id": "cba",
       },
     });
 
     contextStorage.enterWith(ctx);
 
-    await Middleware.seekTagMiddleware(
-      { ...ctx, headers: { ...ctx.headers } },
-      () =>
-        serviceAuthClient.request({
-          url: '/mocked',
-        }),
+    await Middleware.seekTagMiddleware({ ...ctx, headers: { ...ctx.headers } }, () =>
+      serviceAuthClient.request({
+        url: "/mocked",
+      }),
     );
   });
 });
@@ -72,21 +70,21 @@ The returned context type is `MockContext`, which extends Koa's `Context` with:
 Create a standalone mock cookies implementation for Koa-style code.
 
 ```typescript
-import { createMockCookies } from '@skuba-lib/vitest-koa-mocks';
-import { expect, it } from 'vitest';
+import { createMockCookies } from "@skuba-lib/vitest-koa-mocks";
+import { expect, it } from "vitest";
 
-it('tracks request and response cookies', () => {
-  const cookies = createMockCookies({ session: 'abc' });
+it("tracks request and response cookies", () => {
+  const cookies = createMockCookies({ session: "abc" });
 
-  expect(cookies.get('session')).toBe('abc');
+  expect(cookies.get("session")).toBe("abc");
 
-  cookies.set('session', 'def');
+  cookies.set("session", "def");
 
   // requestStore reflects initial inbound cookies
-  expect(cookies.requestStore.get('session')).toBe('abc');
+  expect(cookies.requestStore.get("session")).toBe("abc");
 
   // responseStore reflects cookies set during the test
-  expect(cookies.responseStore.get('session')).toBe('def');
+  expect(cookies.responseStore.get("session")).toBe("def");
 });
 ```
 

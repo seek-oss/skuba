@@ -1,16 +1,16 @@
-import path from 'path';
-import { inspect } from 'util';
+import path from "path";
+import { inspect } from "util";
 
-import { glob } from 'fast-glob';
-import fs from 'fs-extra';
+import { glob } from "fast-glob";
+import fs from "fs-extra";
 
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { log } from "../../../../../../utils/logging.js";
+import type { PatchFunction, PatchReturnType } from "../../index.js";
 
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.promises.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, "utf8");
 
       return {
         file,
@@ -25,14 +25,12 @@ export const hasSkubaDiveRegisterImportRegex =
 export const hasRelativeRegisterImportRegex =
   /import\s+['"](\.\.?\/.*?register)(?:\.js)?['"];?\s*/gm;
 
-export const hasRelativeImportRegex =
-  /import\s+['"](\.\.?\/[^'"]*?)(?:\.js)?['"];?\s*/gm;
+export const hasRelativeImportRegex = /import\s+['"](\.\.?\/[^'"]*?)(?:\.js)?['"];?\s*/gm;
 
 export const hasSrcImportRegex =
   /import\s+(?:type\s+(?:\{[^}]*\}|\*\s+as\s+\w+)|\{[^}]*\}|\*\s+as\s+\w+|\w+(?:\s*,\s*\{[^}]*\})?)\s+from\s+['"]src\/[^'"]*['"]/gm;
 
-export const hasSrcSideEffectImportRegex =
-  /import\s+['"]src\/[^'"]*['"];?\s*/gm;
+export const hasSrcSideEffectImportRegex = /import\s+['"]src\/[^'"]*['"];?\s*/gm;
 
 export const hasImportRegex = /import\(\s*["']src\/[^'"]*["']\s*\)/gm;
 
@@ -45,10 +43,10 @@ const singleLineCommentRegex = /\/\/.*$/gm;
 const whitespaceRegex = /\s/g;
 
 const removeSkubaDiveRegisterImport = (contents: string) =>
-  contents.replace(hasSkubaDiveRegisterImportRegex, '');
+  contents.replace(hasSkubaDiveRegisterImportRegex, "");
 
 const removeRelativeRegisterImport = (contents: string) =>
-  contents.replace(hasRelativeRegisterImportRegex, '');
+  contents.replace(hasRelativeRegisterImportRegex, "");
 
 const removeSelectiveRelativeImports = (
   contents: string,
@@ -64,22 +62,20 @@ const removeSelectiveRelativeImports = (
     const resolvedPath = path.resolve(fileDir, relativePath);
 
     if (path.extname(relativePath)) {
-      return deletionSet.has(resolvedPath) ? '' : match;
+      return deletionSet.has(resolvedPath) ? "" : match;
     }
 
     const possiblePaths = [`${resolvedPath}.ts`, `${resolvedPath}.js`];
-    const shouldRemove = possiblePaths.some((possiblePath) =>
-      deletionSet.has(possiblePath),
-    );
+    const shouldRemove = possiblePaths.some((possiblePath) => deletionSet.has(possiblePath));
 
-    return shouldRemove ? '' : match;
+    return shouldRemove ? "" : match;
   });
 
 export const isFileEmpty = (contents: string): boolean =>
   contents
-    .replace(multiLineCommentRegex, '')
-    .replace(singleLineCommentRegex, '')
-    .replace(whitespaceRegex, '').length === 0;
+    .replace(multiLineCommentRegex, "")
+    .replace(singleLineCommentRegex, "")
+    .replace(whitespaceRegex, "").length === 0;
 
 export const replaceSrcImport = (contents: string) => {
   const combinedSrcRegex = new RegExp(
@@ -88,12 +84,12 @@ export const replaceSrcImport = (contents: string) => {
       hasSrcSideEffectImportRegex.source,
       hasImportRegex.source,
       hasJestMockRegex.source,
-    ].join('|'),
-    'gm',
+    ].join("|"),
+    "gm",
   );
 
   const withReplacedSrcImports = contents.replace(combinedSrcRegex, (match) =>
-    match.replace(/(['"])src\//g, '$1#src/'),
+    match.replace(/(['"])src\//g, "$1#src/"),
   );
 
   return removeSkubaDiveRegisterImport(withReplacedSrcImports);
@@ -109,17 +105,15 @@ export const replaceSrcImportWithConditionalRegisterRemoval = (
       hasSrcSideEffectImportRegex.source,
       hasImportRegex.source,
       hasJestMockRegex.source,
-    ].join('|'),
-    'gm',
+    ].join("|"),
+    "gm",
   );
 
   const withReplacedSrcImports = contents.replace(combinedSrcRegex, (match) =>
-    match.replace(/(['"])src\//g, '$1#src/'),
+    match.replace(/(['"])src\//g, "$1#src/"),
   );
 
-  const withoutSkubaDive = removeSkubaDiveRegisterImport(
-    withReplacedSrcImports,
-  );
+  const withoutSkubaDive = removeSkubaDiveRegisterImport(withReplacedSrcImports);
 
   return shouldRemoveRelativeRegister
     ? removeRelativeRegisterImport(withoutSkubaDive)
@@ -137,36 +131,28 @@ export const replaceSrcImportWithSelectiveRegisterRemoval = (
       hasSrcSideEffectImportRegex.source,
       hasImportRegex.source,
       hasJestMockRegex.source,
-    ].join('|'),
-    'gm',
+    ].join("|"),
+    "gm",
   );
 
   const withReplacedSrcImports = contents.replace(combinedSrcRegex, (match) =>
-    match.replace(/(['"])src\//g, '$1#src/'),
+    match.replace(/(['"])src\//g, "$1#src/"),
   );
 
-  const withoutSkubaDive = removeSkubaDiveRegisterImport(
-    withReplacedSrcImports,
-  );
+  const withoutSkubaDive = removeSkubaDiveRegisterImport(withReplacedSrcImports);
 
   return removeSelectiveRelativeImports(withoutSkubaDive, file, deletionSet);
 };
 
-export const tryRewriteSrcImports: PatchFunction = async ({
-  mode,
-}): Promise<PatchReturnType> => {
-  const tsFileNames = await glob(['**/*.ts', '**/*.test.ts'], {
-    ignore: [
-      '**/.git',
-      '**/node_modules',
-      'src/cli/lint/internalLints/upgrade/patches/**/*',
-    ],
+export const tryRewriteSrcImports: PatchFunction = async ({ mode }): Promise<PatchReturnType> => {
+  const tsFileNames = await glob(["**/*.ts", "**/*.test.ts"], {
+    ignore: ["**/.git", "**/node_modules", "src/cli/lint/internalLints/upgrade/patches/**/*"],
   });
 
   if (!tsFileNames.length) {
     return {
-      result: 'skip',
-      reason: 'no .ts or test.ts files found',
+      result: "skip",
+      reason: "no .ts or test.ts files found",
     };
   }
 
@@ -183,10 +169,10 @@ export const tryRewriteSrcImports: PatchFunction = async ({
             hasSrcSideEffectImportRegex.source,
             hasImportRegex.source,
             hasJestMockRegex.source,
-          ].join('|'),
-          'gm',
+          ].join("|"),
+          "gm",
         ),
-        (match) => match.replace(/(['"])src\//g, '$1#src/'),
+        (match) => match.replace(/(['"])src\//g, "$1#src/"),
       ),
     ),
   }));
@@ -200,16 +186,12 @@ export const tryRewriteSrcImports: PatchFunction = async ({
   const mapped = tsFiles.map(({ file, contents }) => ({
     file,
     before: contents,
-    after: replaceSrcImportWithSelectiveRegisterRemoval(
-      contents,
-      file,
-      filesToDelete,
-    ),
+    after: replaceSrcImportWithSelectiveRegisterRemoval(contents, file, filesToDelete),
   }));
 
-  if (mode === 'lint') {
+  if (mode === "lint") {
     return {
-      result: 'apply',
+      result: "apply",
     };
   }
 
@@ -226,15 +208,15 @@ export const tryRewriteSrcImports: PatchFunction = async ({
     }),
   );
 
-  return { result: 'apply' };
+  return { result: "apply" };
 };
 
 export const rewriteSrcImports: PatchFunction = async (config) => {
   try {
     return await tryRewriteSrcImports(config);
   } catch (err) {
-    log.warn('Failed to rewrite src imports to #src');
+    log.warn("Failed to rewrite src imports to #src");
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    return { result: "skip", reason: "due to an error" };
   }
 };

@@ -1,30 +1,28 @@
-import path from 'path';
-import { inspect } from 'util';
+import path from "path";
+import { inspect } from "util";
 
-import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
-import { glob } from 'fast-glob';
-import fs from 'fs-extra';
+import { type Edit, type SgNode, parseAsync } from "@ast-grep/napi";
+import { glob } from "fast-glob";
+import fs from "fs-extra";
 
-import { createExec, exec } from '../../../../../../utils/exec.js';
-import { log } from '../../../../../../utils/logging.js';
-import { detectPackageManager } from '../../../../../../utils/packageManager.js';
-import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
-import { tryRefreshConfigFiles } from '../../../refreshConfigFiles.js';
-import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { createExec, exec } from "../../../../../../utils/exec.js";
+import { log } from "../../../../../../utils/logging.js";
+import { detectPackageManager } from "../../../../../../utils/packageManager.js";
+import { isLikelyPackage } from "../../../../../migrate/nodeVersion/checks.js";
+import { tryRefreshConfigFiles } from "../../../refreshConfigFiles.js";
+import { registerAstGrepLanguages } from "../../../registerAstGrepLanguages.js";
+import type { PatchFunction, PatchReturnType } from "../../index.js";
 
-import { getOwnerAndRepo } from '@skuba-lib/api/git';
+import { getOwnerAndRepo } from "@skuba-lib/api/git";
 
-const replaceAssetsField = (
-  ast: SgNode,
-): { edits: Edit[]; assetsData: string[] | null } => {
+const replaceAssetsField = (ast: SgNode): { edits: Edit[]; assetsData: string[] | null } => {
   const skubaObject = ast.find({
     rule: {
-      kind: 'object',
+      kind: "object",
       inside: {
-        kind: 'pair',
+        kind: "pair",
         has: {
-          field: 'key',
+          field: "key",
           regex: '^"skuba"$',
         },
       },
@@ -33,9 +31,9 @@ const replaceAssetsField = (
 
   const assetsPair = skubaObject?.find({
     rule: {
-      kind: 'pair',
+      kind: "pair",
       has: {
-        field: 'key',
+        field: "key",
         regex: '^"assets"$',
       },
     },
@@ -47,34 +45,34 @@ const replaceAssetsField = (
 
   const assetsArray = assetsPair.find({
     rule: {
-      kind: 'array',
+      kind: "array",
     },
   });
 
   if (!assetsArray) {
-    throw new Error('assets array not found in package.json');
+    throw new Error("assets array not found in package.json");
   }
 
   const assetsData = JSON.parse(assetsArray.text()) as unknown;
 
   if (!Array.isArray(assetsData)) {
-    throw new Error('skuba.assets must be an array');
+    throw new Error("skuba.assets must be an array");
   }
 
-  if (!assetsData.every((item) => typeof item === 'string')) {
-    throw new Error('skuba.assets must be an array of strings');
+  if (!assetsData.every((item) => typeof item === "string")) {
+    throw new Error("skuba.assets must be an array of strings");
   }
 
-  const edits = [assetsPair.replace('')];
+  const edits = [assetsPair.replace("")];
 
   // Remove the trailing comma of the assets pair or the preceding comma if it exists to avoid leaving a dangling comma
   const maybeCommaAfter = assetsPair?.next();
-  if (maybeCommaAfter?.text().trim() === ',') {
-    edits.push(maybeCommaAfter.replace(''));
+  if (maybeCommaAfter?.text().trim() === ",") {
+    edits.push(maybeCommaAfter.replace(""));
   } else {
     const maybeCommaBefore = assetsPair?.prev();
-    if (maybeCommaBefore?.text().trim() === ',') {
-      edits.push(maybeCommaBefore.replace(''));
+    if (maybeCommaBefore?.text().trim() === ",") {
+      edits.push(maybeCommaBefore.replace(""));
     }
   }
 
@@ -84,9 +82,9 @@ const replaceAssetsField = (
 const editFilesField = (ast: SgNode): Edit[] => {
   const filesPair = ast.find({
     rule: {
-      kind: 'pair',
+      kind: "pair",
       has: {
-        field: 'key',
+        field: "key",
         regex: '^"files"$',
       },
     },
@@ -97,30 +95,26 @@ const editFilesField = (ast: SgNode): Edit[] => {
   }
   const filesArray = filesPair.find({
     rule: {
-      kind: 'array',
+      kind: "array",
     },
   });
 
   if (!filesArray) {
-    throw new Error('files array not found in package.json');
+    throw new Error("files array not found in package.json");
   }
 
   const existingFiles = JSON.parse(filesArray.text()) as unknown;
 
   if (!Array.isArray(existingFiles)) {
-    throw new Error('files field must be an array');
+    throw new Error("files field must be an array");
   }
 
   const newFiles = existingFiles.filter(
     (file: string) =>
-      !(
-        file.startsWith('lib*') ||
-        file.startsWith('lib/') ||
-        file.startsWith('lib-')
-      ),
+      !(file.startsWith("lib*") || file.startsWith("lib/") || file.startsWith("lib-")),
   );
 
-  newFiles.push('lib');
+  newFiles.push("lib");
 
   const edits = [filesArray.replace(JSON.stringify(newFiles))];
 
@@ -130,9 +124,9 @@ const editFilesField = (ast: SgNode): Edit[] => {
 const addEngine = (ast: SgNode): Edit[] => {
   const enginesPair = ast.find({
     rule: {
-      kind: 'pair',
+      kind: "pair",
       has: {
-        field: 'key',
+        field: "key",
         regex: '^"engines"$',
       },
     },
@@ -141,9 +135,9 @@ const addEngine = (ast: SgNode): Edit[] => {
   if (enginesPair) {
     const nodeEnginePair = enginesPair.find({
       rule: {
-        kind: 'pair',
+        kind: "pair",
         has: {
-          field: 'key',
+          field: "key",
           regex: '^"node"$',
         },
       },
@@ -154,11 +148,11 @@ const addEngine = (ast: SgNode): Edit[] => {
     }
 
     const enginesObject = enginesPair.find({
-      rule: { pattern: '{' },
+      rule: { pattern: "{" },
     });
 
     if (!enginesObject) {
-      throw new Error('invalid engines field in package.json');
+      throw new Error("invalid engines field in package.json");
     }
 
     const edit = enginesObject.replace(`{
@@ -167,9 +161,9 @@ const addEngine = (ast: SgNode): Edit[] => {
     return [edit];
   }
 
-  const startingBracket = ast.find({ rule: { pattern: '{' } });
+  const startingBracket = ast.find({ rule: { pattern: "{" } });
   if (!startingBracket) {
-    throw new Error('invalid package.json');
+    throw new Error("invalid package.json");
   }
 
   const edit = startingBracket.replace(
@@ -185,9 +179,9 @@ const addEngine = (ast: SgNode): Edit[] => {
 const removePublishConfig = (ast: SgNode): Edit[] => {
   const publishConfigPair = ast.find({
     rule: {
-      kind: 'pair',
+      kind: "pair",
       has: {
-        field: 'key',
+        field: "key",
         regex: '^"publishConfig"$',
       },
     },
@@ -197,16 +191,16 @@ const removePublishConfig = (ast: SgNode): Edit[] => {
     return [];
   }
 
-  const edits = [publishConfigPair.replace('')];
+  const edits = [publishConfigPair.replace("")];
 
   // Remove the trailing comma of the publishConfig pair or the preceding comma if it exists to avoid leaving a dangling comma
   const maybeCommaAfter = publishConfigPair?.next();
-  if (maybeCommaAfter?.text().trim() === ',') {
-    edits.push(maybeCommaAfter.replace(''));
+  if (maybeCommaAfter?.text().trim() === ",") {
+    edits.push(maybeCommaAfter.replace(""));
   } else {
     const maybeCommaBefore = publishConfigPair?.prev();
-    if (maybeCommaBefore?.text().trim() === ',') {
-      edits.push(maybeCommaBefore.replace(''));
+    if (maybeCommaBefore?.text().trim() === ",") {
+      edits.push(maybeCommaBefore.replace(""));
     }
   }
 
@@ -218,13 +212,13 @@ const addSkipLibCheckToTsConfig = (ast: SgNode): Edit[] => {
     rule: {
       pattern: {
         context: '{"compilerOptions":}',
-        selector: 'pair',
+        selector: "pair",
       },
     },
   });
 
   if (!compilerOptionsObj) {
-    const startingBracket = ast.find({ rule: { pattern: '{' } });
+    const startingBracket = ast.find({ rule: { pattern: "{" } });
     if (!startingBracket) {
       return [];
     }
@@ -247,7 +241,7 @@ const addSkipLibCheckToTsConfig = (ast: SgNode): Edit[] => {
   }
 
   const compilerOptionsStart = compilerOptionsObj.find({
-    rule: { pattern: '{' },
+    rule: { pattern: "{" },
   });
 
   if (!compilerOptionsStart) {
@@ -262,9 +256,9 @@ const addSkipLibCheckToTsConfig = (ast: SgNode): Edit[] => {
 const findCustomCondition = (ast: SgNode): string | undefined => {
   const customConditionPair = ast.find({
     rule: {
-      kind: 'pair',
+      kind: "pair",
       has: {
-        field: 'key',
+        field: "key",
         regex: '^"customConditions"$',
       },
     },
@@ -276,7 +270,7 @@ const findCustomCondition = (ast: SgNode): string | undefined => {
 
   const customConditionsArray = customConditionPair.find({
     rule: {
-      kind: 'array',
+      kind: "array",
     },
   });
 
@@ -286,7 +280,7 @@ const findCustomCondition = (ast: SgNode): string | undefined => {
 
   const firstCustomCondition = customConditionsArray.find({
     rule: {
-      kind: 'string',
+      kind: "string",
     },
   });
 
@@ -297,40 +291,30 @@ const findCustomCondition = (ast: SgNode): string | undefined => {
   return firstCustomCondition.text().slice(1, -1);
 };
 
-const findOrAddCustomConditionInRepo = async (
-  mode: 'lint' | 'format',
-): Promise<string> => {
+const findOrAddCustomConditionInRepo = async (mode: "lint" | "format"): Promise<string> => {
   try {
-    const rootTsConfigPath = path.join(process.cwd(), 'tsconfig.json');
-    const tsConfigContent = await fs.promises.readFile(
-      rootTsConfigPath,
-      'utf8',
-    );
-    const tsConfigAst = (await parseAsync('json', tsConfigContent)).root();
+    const rootTsConfigPath = path.join(process.cwd(), "tsconfig.json");
+    const tsConfigContent = await fs.promises.readFile(rootTsConfigPath, "utf8");
+    const tsConfigAst = (await parseAsync("json", tsConfigContent)).root();
     const condition = findCustomCondition(tsConfigAst);
 
     if (!condition) {
-      const { edits, customCondition } =
-        await addCustomConditionsToTsConfig(tsConfigAst);
+      const { edits, customCondition } = await addCustomConditionsToTsConfig(tsConfigAst);
       const updatedTsConfigContent = tsConfigAst.commitEdits(edits);
 
-      if (mode === 'lint') {
+      if (mode === "lint") {
         return customCondition;
       }
-      await fs.promises.writeFile(
-        rootTsConfigPath,
-        updatedTsConfigContent,
-        'utf8',
-      );
+      await fs.promises.writeFile(rootTsConfigPath, updatedTsConfigContent, "utf8");
       return customCondition;
     }
 
     return condition;
   } catch {
     log.warn(
-      'unable to find or read root tsconfig.json, skipping adding custom condition to exports',
+      "unable to find or read root tsconfig.json, skipping adding custom condition to exports",
     );
-    return '';
+    return "";
   }
 };
 
@@ -347,15 +331,15 @@ const addCustomConditionsToTsConfig = async (
     rule: {
       pattern: {
         context: '{"compilerOptions":}',
-        selector: 'pair',
+        selector: "pair",
       },
     },
   });
 
   if (!compilerOptionsObj) {
-    const startingBracket = ast.find({ rule: { pattern: '{' } });
+    const startingBracket = ast.find({ rule: { pattern: "{" } });
     if (!startingBracket) {
-      throw new Error('invalid tsconfig.json');
+      throw new Error("invalid tsconfig.json");
     }
 
     const edit = startingBracket.replace(
@@ -371,11 +355,11 @@ const addCustomConditionsToTsConfig = async (
   }
 
   const compilerOptionsStart = compilerOptionsObj.find({
-    rule: { pattern: '{' },
+    rule: { pattern: "{" },
   });
 
   if (!compilerOptionsStart) {
-    throw new Error('invalid tsconfig.json');
+    throw new Error("invalid tsconfig.json");
   }
 
   const edit = compilerOptionsStart.replace(`{
@@ -388,21 +372,21 @@ const addCustomConditionsToTsConfig = async (
 };
 
 const projectContainsReferences = async (): Promise<boolean> => {
-  const allTsconfigBuildPaths = await glob(['**/tsconfig.build.json'], {
+  const allTsconfigBuildPaths = await glob(["**/tsconfig.build.json"], {
     cwd: process.cwd(),
-    ignore: ['**/node_modules/**', '**/.git/**'],
+    ignore: ["**/node_modules/**", "**/.git/**"],
   });
 
   const allTsconfigBuildFiles = await Promise.all(
     allTsconfigBuildPaths.map(async (tsconfigBuildPath) => {
       const fullPath = path.join(process.cwd(), tsconfigBuildPath);
-      return fs.promises.readFile(fullPath, 'utf8');
+      return fs.promises.readFile(fullPath, "utf8");
     }),
   );
 
-  if (allTsconfigBuildFiles.some((content) => content.includes('references'))) {
+  if (allTsconfigBuildFiles.some((content) => content.includes("references"))) {
     log.subtle(
-      'Found tsconfig.build.json with project references, skipping removal of tsconfig.build.json',
+      "Found tsconfig.build.json with project references, skipping removal of tsconfig.build.json",
     );
     return true;
   }
@@ -410,42 +394,38 @@ const projectContainsReferences = async (): Promise<boolean> => {
   return false;
 };
 
-export const patchPackageBuilds: PatchFunction = async ({
-  mode,
-}): Promise<PatchReturnType> => {
+export const patchPackageBuilds: PatchFunction = async ({ mode }): Promise<PatchReturnType> => {
   let packageJsonPaths: string[];
   try {
-    packageJsonPaths = await glob(['**/package.json'], {
-      ignore: ['**/.git', '**/node_modules'],
+    packageJsonPaths = await glob(["**/package.json"], {
+      ignore: ["**/.git", "**/node_modules"],
     });
   } catch {
     return {
-      result: 'skip',
-      reason: 'unable to find package.json files',
+      result: "skip",
+      reason: "unable to find package.json files",
     };
   }
 
   if (packageJsonPaths.length === 0) {
     return {
-      result: 'skip',
-      reason: 'unable to find package.json files',
+      result: "skip",
+      reason: "unable to find package.json files",
     };
   }
 
   const likelyPackagePaths = (
     await Promise.all(
       packageJsonPaths.map(async (packageJsonPath) =>
-        (await isLikelyPackage(packageJsonPath, false))
-          ? packageJsonPath
-          : null,
+        (await isLikelyPackage(packageJsonPath, false)) ? packageJsonPath : null,
       ),
     )
   ).filter((packageJsonPath) => packageJsonPath !== null);
 
   if (likelyPackagePaths.length === 0) {
     return {
-      result: 'skip',
-      reason: 'no skuba build-package command found',
+      result: "skip",
+      reason: "no skuba build-package command found",
     };
   }
 
@@ -467,19 +447,14 @@ export const patchPackageBuilds: PatchFunction = async ({
 
       const files = await fs.promises.readdir(directory);
 
-      const existingTsdownConfig = files.find((file) =>
-        file.startsWith('tsdown.config'),
-      );
+      const existingTsdownConfig = files.find((file) => file.startsWith("tsdown.config"));
       if (existingTsdownConfig) {
         return null;
       }
 
       let packageJsonContent: string;
       try {
-        packageJsonContent = await fs.promises.readFile(
-          packageJsonPath,
-          'utf8',
-        );
+        packageJsonContent = await fs.promises.readFile(packageJsonPath, "utf8");
       } catch {
         throw new Error(`unable to read package.json at ${packageJsonPath}`);
       }
@@ -488,15 +463,14 @@ export const patchPackageBuilds: PatchFunction = async ({
       // If it doesn't exist, do nothing and let the fix be added manually if it's required
       let tsConfigContent: string;
 
-      const tsConfigPath = path.join(directory, 'tsconfig.json');
+      const tsConfigPath = path.join(directory, "tsconfig.json");
       try {
-        tsConfigContent = await fs.promises.readFile(tsConfigPath, 'utf8');
+        tsConfigContent = await fs.promises.readFile(tsConfigPath, "utf8");
 
-        const tsConfigAst = (await parseAsync('json', tsConfigContent)).root();
+        const tsConfigAst = (await parseAsync("json", tsConfigContent)).root();
 
         const tsConfigEdits = addSkipLibCheckToTsConfig(tsConfigAst);
-        const updatedTsConfigJsonContent =
-          tsConfigAst.commitEdits(tsConfigEdits);
+        const updatedTsConfigJsonContent = tsConfigAst.commitEdits(tsConfigEdits);
 
         updated.push({
           file: tsConfigPath,
@@ -508,9 +482,7 @@ export const patchPackageBuilds: PatchFunction = async ({
         );
       }
 
-      const packageJsonAst = (
-        await parseAsync('json', packageJsonContent)
-      ).root();
+      const packageJsonAst = (await parseAsync("json", packageJsonContent)).root();
 
       const { edits, assetsData } = replaceAssetsField(packageJsonAst);
 
@@ -527,7 +499,7 @@ export const patchPackageBuilds: PatchFunction = async ({
         ...publishConfigEdits,
       ]);
 
-      const tsdownConfigPath = path.join(directory, 'tsdown.config.mts');
+      const tsdownConfigPath = path.join(directory, "tsdown.config.mts");
       const defaultTsdownConfig = `import { defineConfig } from 'tsdown';
 
     export default defineConfig({
@@ -541,7 +513,7 @@ export const patchPackageBuilds: PatchFunction = async ({
       publint: true,
       attw: true,
       unbundle: true, // TODO: determine if your project can be bundled
-      ${customCondition ? `exports: { devExports: '${customCondition}' },` : 'exports: true,'}${assetsData ? `\n      copy: ${JSON.stringify(assetsData)},` : ''}
+      ${customCondition ? `exports: { devExports: '${customCondition}' },` : "exports: true,"}${assetsData ? `\n      copy: ${JSON.stringify(assetsData)},` : ""}
     });
     `;
 
@@ -554,11 +526,11 @@ export const patchPackageBuilds: PatchFunction = async ({
         contents: updatedPackageJsonContent,
       });
 
-      if (mode === 'lint') {
+      if (mode === "lint") {
         return updated;
       }
 
-      const tsConfigBuildPath = path.join(directory, 'tsconfig.build.json');
+      const tsConfigBuildPath = path.join(directory, "tsconfig.build.json");
 
       let tsconfigBuildFileExists = false;
 
@@ -568,43 +540,39 @@ export const patchPackageBuilds: PatchFunction = async ({
       } catch {}
 
       await Promise.all([
-        ...updated.map(({ file, contents }) =>
-          fs.promises.writeFile(file, contents, 'utf8'),
-        ),
+        ...updated.map(({ file, contents }) => fs.promises.writeFile(file, contents, "utf8")),
         ...(!containsReferences && tsconfigBuildFileExists
           ? [fs.promises.rm(tsConfigBuildPath)]
           : []),
       ]);
 
       const packageManager = await detectPackageManager();
-      await exec(packageManager.command, 'install', '--offline');
+      await exec(packageManager.command, "install", "--offline");
 
       const execInPackageDir = createExec({ cwd: directory });
-      await execInPackageDir(packageManager.command, 'tsdown');
+      await execInPackageDir(packageManager.command, "tsdown");
 
       return updated;
     }),
   );
 
-  const flattenedUpdatedFiles = updatedFiles
-    .flat()
-    .filter((file) => file !== null);
+  const flattenedUpdatedFiles = updatedFiles.flat().filter((file) => file !== null);
 
   if (flattenedUpdatedFiles.length === 0) {
     return {
-      result: 'skip',
-      reason: 'no skuba build-package command found',
+      result: "skip",
+      reason: "no skuba build-package command found",
     };
   }
 
-  if (mode === 'lint') {
+  if (mode === "lint") {
     return {
-      result: 'apply',
+      result: "apply",
     };
   }
 
   return {
-    result: 'apply',
+    result: "apply",
   };
 };
 
@@ -613,8 +581,8 @@ export const tryPatchPackageBuilds: PatchFunction = async (config) => {
     await tryRefreshConfigFiles(config.mode, log);
     return await patchPackageBuilds(config);
   } catch (err) {
-    log.warn('Failed to patch package builds');
+    log.warn("Failed to patch package builds");
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to package.json error' };
+    return { result: "skip", reason: "due to package.json error" };
   }
 };

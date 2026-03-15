@@ -1,40 +1,40 @@
-import git from 'isomorphic-git';
-import memfs, { fs, vol } from 'memfs';
+import git from "isomorphic-git";
+import memfs, { fs, vol } from "memfs";
 
-import newGit from '../../../../integration/git/new.json';
+import newGit from "../../../../integration/git/new.json";
 
-import { reset } from './reset.js';
+import { reset } from "./reset.js";
 
-jest.mock('fs', () => memfs);
+jest.mock("fs", () => memfs);
 
 beforeEach(() => {
   vol.reset();
   vol.fromJSON(newGit);
 });
 
-const author = { name: 'user', email: 'user@email.com' };
-const dir = './';
-const newFileName = 'newFile';
+const author = { name: "user", email: "user@email.com" };
+const dir = "./";
+const newFileName = "newFile";
 
-describe('soft', () => {
-  it('should keep the file added in another commit in the working directory', async () => {
+describe("soft", () => {
+  it("should keep the file added in another commit in the working directory", async () => {
     const initialCommit = await git.commit({
       fs,
       dir,
-      message: 'initial commit',
+      message: "initial commit",
       author,
     });
 
-    await fs.promises.writeFile(newFileName, '');
+    await fs.promises.writeFile(newFileName, "");
     await git.add({ fs, dir, filepath: newFileName });
     await git.commit({
       fs,
       dir,
-      message: 'new commit',
+      message: "new commit",
       author,
     });
 
-    await reset({ dir, branch: 'main', commitId: initialCommit });
+    await reset({ dir, branch: "main", commitId: initialCommit });
 
     const commits = await git.log({
       fs,
@@ -49,27 +49,27 @@ describe('soft', () => {
   });
 });
 
-describe('hard', () => {
-  it('should remove the file added in another commit from the working directory', async () => {
+describe("hard", () => {
+  it("should remove the file added in another commit from the working directory", async () => {
     const initialCommit = await git.commit({
       fs,
       dir,
-      message: 'initial commit',
+      message: "initial commit",
       author,
     });
 
-    await fs.promises.writeFile(newFileName, '');
+    await fs.promises.writeFile(newFileName, "");
     await git.add({ fs, dir, filepath: newFileName });
     await git.commit({
       fs,
       dir,
-      message: 'new commit',
+      message: "new commit",
       author,
     });
 
     await reset({
       dir,
-      branch: 'main',
+      branch: "main",
       commitId: initialCommit,
       hard: true,
     });
@@ -86,19 +86,19 @@ describe('hard', () => {
     expect(directory).not.toContain(newFileName);
   });
 
-  it('should keep new files which are not committed in the working directory', async () => {
+  it("should keep new files which are not committed in the working directory", async () => {
     const initialCommit = await git.commit({
       fs,
       dir,
-      message: 'initial commit',
+      message: "initial commit",
       author,
     });
 
-    await fs.promises.writeFile(newFileName, '');
+    await fs.promises.writeFile(newFileName, "");
 
     await reset({
       dir,
-      branch: 'main',
+      branch: "main",
       commitId: initialCommit,
       hard: true,
     });
@@ -115,20 +115,20 @@ describe('hard', () => {
     expect(directory).toContain(newFileName);
   });
 
-  it('should remove files which are staged', async () => {
+  it("should remove files which are staged", async () => {
     const initialCommit = await git.commit({
       fs,
       dir,
-      message: 'initial commit',
+      message: "initial commit",
       author,
     });
 
-    await fs.promises.writeFile(newFileName, '');
+    await fs.promises.writeFile(newFileName, "");
     await git.add({ fs, dir, filepath: newFileName });
 
     await reset({
       dir,
-      branch: 'main',
+      branch: "main",
       commitId: initialCommit,
       hard: true,
     });
@@ -145,28 +145,28 @@ describe('hard', () => {
     expect(directory).not.toContain(newFileName);
   });
 
-  it('should revert files which were modified', async () => {
-    await fs.promises.writeFile(newFileName, 'hello');
+  it("should revert files which were modified", async () => {
+    await fs.promises.writeFile(newFileName, "hello");
     await git.add({ fs, dir, filepath: newFileName });
     const initialCommit = await git.commit({
       fs,
       dir,
-      message: 'initial commit',
+      message: "initial commit",
       author,
     });
 
-    await fs.promises.writeFile(newFileName, 'hello world');
+    await fs.promises.writeFile(newFileName, "hello world");
     await git.add({ fs, dir, filepath: newFileName });
     await git.commit({
       fs,
       dir,
-      message: 'new commit',
+      message: "new commit",
       author,
     });
 
     await reset({
       dir,
-      branch: 'main',
+      branch: "main",
       commitId: initialCommit,
       hard: true,
     });
@@ -177,9 +177,9 @@ describe('hard', () => {
       depth: 1,
     });
 
-    const file = await fs.promises.readFile(newFileName, 'utf-8');
+    const file = await fs.promises.readFile(newFileName, "utf-8");
 
     expect(commits[0]?.oid).toEqual(initialCommit);
-    expect(file).toBe('hello');
+    expect(file).toBe("hello");
   });
 });

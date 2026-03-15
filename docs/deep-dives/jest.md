@@ -32,21 +32,21 @@ For example, if you set the following display names:
 
 ```typescript
 // jest.config.ts
-import { Jest } from 'skuba';
+import { Jest } from "skuba";
 
 export default Jest.mergePreset({
-  displayName: 'unit',
-  testPathIgnorePatterns: ['\\.int\\.test\\.ts'],
+  displayName: "unit",
+  testPathIgnorePatterns: ["\\.int\\.test\\.ts"],
 });
 ```
 
 ```typescript
 // jest.config.int.ts
-import { Jest } from 'skuba';
+import { Jest } from "skuba";
 
 export default Jest.mergePreset({
-  displayName: 'integration',
-  testPathIgnorePatterns: ['\\.unit\\.test\\.ts'],
+  displayName: "integration",
+  testPathIgnorePatterns: ["\\.unit\\.test\\.ts"],
 });
 ```
 
@@ -56,17 +56,17 @@ Alternatively, you can declare multiple [projects] in a single config file:
 
 ```typescript
 // jest.config.ts
-import { Jest } from 'skuba';
+import { Jest } from "skuba";
 
 export default Jest.mergePreset({
   projects: [
     Jest.mergePreset({
-      displayName: 'unit',
-      testPathIgnorePatterns: ['\\.int\\.test\\.ts'],
+      displayName: "unit",
+      testPathIgnorePatterns: ["\\.int\\.test\\.ts"],
     }),
     Jest.mergePreset({
-      displayName: 'integration',
-      testPathIgnorePatterns: ['\\.unit\\.test\\.ts'],
+      displayName: "integration",
+      testPathIgnorePatterns: ["\\.unit\\.test\\.ts"],
     }),
   ],
 });

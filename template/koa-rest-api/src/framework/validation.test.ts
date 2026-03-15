@@ -1,12 +1,8 @@
-import { jsonBodyParser } from './bodyParser.js';
-import { validate } from './validation.js';
+import { jsonBodyParser } from "./bodyParser.js";
+import { validate } from "./validation.js";
 
-import { agentFromMiddleware } from '#src/testing/server.js';
-import {
-  IdDescriptionSchema,
-  chance,
-  mockIdDescription,
-} from '#src/testing/types.js';
+import { agentFromMiddleware } from "#src/testing/server.js";
+import { IdDescriptionSchema, chance, mockIdDescription } from "#src/testing/types.js";
 
 const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
   const result = validate({
@@ -18,27 +14,27 @@ const agent = agentFromMiddleware(jsonBodyParser, (ctx) => {
   ctx.body = result;
 });
 
-describe('validate', () => {
-  it('permits valid input', () => {
+describe("validate", () => {
+  it("permits valid input", () => {
     const idDescription = mockIdDescription();
 
-    return agent.post('/').send(idDescription).expect(200, idDescription);
+    return agent.post("/").send(idDescription).expect(200, idDescription);
   });
 
-  it('filters additional properties', () => {
+  it("filters additional properties", () => {
     const idDescription = mockIdDescription();
 
     return agent
-      .post('/')
+      .post("/")
       .send({ ...idDescription, hacker: chance.name() })
       .expect(200, idDescription);
   });
 
-  it('blocks mistyped prop', () => {
+  it("blocks mistyped prop", () => {
     const idDescription = mockIdDescription();
 
     return agent
-      .post('/')
+      .post("/")
       .send({ ...idDescription, id: null })
       .expect(422)
       .expect(({ body }) =>
@@ -55,9 +51,9 @@ describe('validate', () => {
       );
   });
 
-  it('blocks missing props', () =>
+  it("blocks missing props", () =>
     agent
-      .post('/')
+      .post("/")
       .send({})
       .expect(422)
       .expect(({ body }) =>
@@ -75,7 +71,7 @@ describe('validate', () => {
         `),
       ));
 
-  it('blocks invalid nested union prop', () => {
+  it("blocks invalid nested union prop", () => {
     const idDescription = {
       ...mockIdDescription(),
       description: {
@@ -84,7 +80,7 @@ describe('validate', () => {
     };
 
     return agent
-      .post('/')
+      .post("/")
       .send({ ...idDescription, id: null })
       .expect(422)
       .expect(({ body }) =>

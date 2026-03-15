@@ -1,5 +1,5 @@
-import type Koa from 'koa';
-import type { RequestLogging } from 'seek-koala';
+import type Koa from "koa";
+import type { RequestLogging } from "seek-koala";
 
 export type Context = Koa.ParameterizedContext<State>;
 

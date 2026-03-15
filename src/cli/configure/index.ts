@@ -1,37 +1,37 @@
-import path from 'path';
+import path from "path";
 
-import { select } from '@inquirer/prompts';
+import { select } from "@inquirer/prompts";
 
-import { createInclusionFilter } from '../../utils/dir.js';
-import { createExec, ensureCommands } from '../../utils/exec.js';
-import { log } from '../../utils/logging.js';
-import { showLogoAndVersionInfo } from '../../utils/logo.js';
-import { detectPackageManager } from '../../utils/packageManager.js';
-import { BASE_TEMPLATE_DIR } from '../../utils/template.js';
-import { hasProp } from '../../utils/validation.js';
+import { createInclusionFilter } from "../../utils/dir.js";
+import { createExec, ensureCommands } from "../../utils/exec.js";
+import { log } from "../../utils/logging.js";
+import { showLogoAndVersionInfo } from "../../utils/logo.js";
+import { detectPackageManager } from "../../utils/packageManager.js";
+import { BASE_TEMPLATE_DIR } from "../../utils/template.js";
+import { hasProp } from "../../utils/validation.js";
 
-import { analyseConfiguration } from './analyseConfiguration.js';
-import { analyseDependencies } from './analyseDependencies.js';
-import { auditWorkingTree } from './analysis/git.js';
-import { getDestinationManifest } from './analysis/package.js';
-import { ensureTemplateCompletion } from './ensureTemplateCompletion.js';
-import { getEntryPoint } from './getEntryPoint.js';
-import { getProjectType } from './getProjectType.js';
+import { analyseConfiguration } from "./analyseConfiguration.js";
+import { analyseDependencies } from "./analyseDependencies.js";
+import { auditWorkingTree } from "./analysis/git.js";
+import { getDestinationManifest } from "./analysis/package.js";
+import { ensureTemplateCompletion } from "./ensureTemplateCompletion.js";
+import { getEntryPoint } from "./getEntryPoint.js";
+import { getProjectType } from "./getProjectType.js";
 
 const shouldApply = async () => {
   if (!process.stdin.isTTY) {
-    return 'yes';
+    return "yes";
   }
 
   const result = await select({
-    message: 'Apply changes?',
+    message: "Apply changes?",
     choices: [
-      { name: 'Yes', value: 'yes' },
-      { name: 'No', value: 'no' },
+      { name: "Yes", value: "yes" },
+      { name: "No", value: "no" },
     ],
   });
 
-  return result === 'yes';
+  return result === "yes";
 };
 
 export const configure = async () => {
@@ -46,12 +46,12 @@ export const configure = async () => {
 
   const destinationRoot = path.dirname(manifest.path);
 
-  log.plain('Detected project root:', log.bold(destinationRoot));
+  log.plain("Detected project root:", log.bold(destinationRoot));
 
   const [include] = await Promise.all([
     createInclusionFilter([
-      path.join(destinationRoot, '.gitignore'),
-      path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
+      path.join(destinationRoot, ".gitignore"),
+      path.join(BASE_TEMPLATE_DIR, "_.gitignore"),
     ]),
 
     auditWorkingTree(destinationRoot),
@@ -90,7 +90,7 @@ export const configure = async () => {
     }
   }
 
-  const firstRun = hasProp(manifest.packageJson, 'skuba');
+  const firstRun = hasProp(manifest.packageJson, "skuba");
 
   const fixConfiguration = await analyseConfiguration({
     destinationRoot,
@@ -110,16 +110,16 @@ export const configure = async () => {
 
   if (fixDependencies) {
     const exec = createExec({
-      stdio: 'pipe',
+      stdio: "pipe",
       streamStdio: packageManager.command,
     });
 
     log.newline();
     try {
-      await exec(packageManager.command, 'install');
+      await exec(packageManager.command, "install");
     } catch {
       log.newline();
-      log.warn(log.bold('✗ Failed to install dependencies. Resume with:'));
+      log.warn(log.bold("✗ Failed to install dependencies. Resume with:"));
 
       log.newline();
       log.plain(log.bold(`${packageManager.command} install`));
@@ -133,7 +133,7 @@ export const configure = async () => {
 
   if (fixConfiguration ?? fixDependencies) {
     log.newline();
-    log.ok(log.bold('✔ All done! Try running:'));
+    log.ok(log.bold("✔ All done! Try running:"));
 
     log.newline();
     log.plain(log.bold(`${packageManager.command} format`));

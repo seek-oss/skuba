@@ -71,10 +71,10 @@ The **skuba**-maintained `pnpm-workspace.yaml` ([previously `.npmrc`](https://gi
 # managed by skuba
 packageManagerStrictVersion: true
 publicHoistPattern:
-  - '@eslint/*'
-  - '@types*'
-  - '*eslint*'
-  - '*prettier*'
+  - "@eslint/*"
+  - "@types*"
+  - "*eslint*"
+  - "*prettier*"
   - esbuild
   - jest
   - tsconfig-seek
@@ -126,7 +126,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
    ```yaml
    packages:
      # all packages in direct subdirectories of packages/
-     - 'packages/*'
+     - "packages/*"
    ```
 
    (Optional) If your sub-package `package.json`s reference one another using the syntax `foo: *`,

@@ -1,16 +1,16 @@
-import { PublishCommand } from '@aws-sdk/client-sns';
+import { PublishCommand } from "@aws-sdk/client-sns";
 
-import { sendPipelineEvent } from './pipelineEventSender.js';
+import { sendPipelineEvent } from "./pipelineEventSender.js";
 
-import { sns } from '#src/testing/services.js';
-import { chance } from '#src/testing/types.js';
+import { sns } from "#src/testing/services.js";
+import { chance } from "#src/testing/types.js";
 
-describe('sendPipelineEvent', () => {
+describe("sendPipelineEvent", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('handles happy path', async () => {
+  it("handles happy path", async () => {
     const messageId = chance.guid({ version: 4 });
 
     sns.publish.resolves({ MessageId: messageId });
@@ -20,7 +20,7 @@ describe('sendPipelineEvent', () => {
     expect(sns.client).toReceiveCommandTimes(PublishCommand, 1);
   });
 
-  it('bubbles up SNS error', () => {
+  it("bubbles up SNS error", () => {
     const err = Error(chance.sentence());
 
     sns.publish.rejects(err);
@@ -28,12 +28,10 @@ describe('sendPipelineEvent', () => {
     return expect(sendPipelineEvent({})).rejects.toThrow(err);
   });
 
-  it('throws on missing message ID', () => {
+  it("throws on missing message ID", () => {
     sns.publish.resolves({});
 
-    return expect(
-      sendPipelineEvent({}),
-    ).rejects.toThrowErrorMatchingInlineSnapshot(
+    return expect(sendPipelineEvent({})).rejects.toThrowErrorMatchingInlineSnapshot(
       `"SNS did not return a message ID"`,
     );
   });

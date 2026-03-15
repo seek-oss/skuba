@@ -1,33 +1,31 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
+import fs from "fs-extra";
 
-import * as packageAnalysis from '../configure/analysis/package.js';
+import * as packageAnalysis from "../configure/analysis/package.js";
 
-import { writePackageJson } from './writePackageJson.js';
+import { writePackageJson } from "./writePackageJson.js";
 
-describe('writePackageJson', () => {
-  jest
-    .spyOn(packageAnalysis, 'getDestinationManifest')
-    .mockImplementation((props) =>
-      Promise.resolve({
-        packageJson: {} as any,
-        path: path.join(props?.cwd ?? '/', 'package.json'),
-      }),
-    );
+describe("writePackageJson", () => {
+  jest.spyOn(packageAnalysis, "getDestinationManifest").mockImplementation((props) =>
+    Promise.resolve({
+      packageJson: {} as any,
+      path: path.join(props?.cwd ?? "/", "package.json"),
+    }),
+  );
 
-  const writeFile = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+  const writeFile = jest.spyOn(fs.promises, "writeFile").mockResolvedValue();
 
   afterEach(() => writeFile.mockClear());
 
-  it('writes a skuba section', async () => {
+  it("writes a skuba section", async () => {
     await expect(
       writePackageJson({
-        cwd: '/',
-        entryPoint: 'src/app.ts',
-        template: 'hello-world',
-        type: 'package',
-        version: '0.0.1',
+        cwd: "/",
+        entryPoint: "src/app.ts",
+        template: "hello-world",
+        type: "package",
+        version: "0.0.1",
       }),
     ).resolves.toBeUndefined();
 

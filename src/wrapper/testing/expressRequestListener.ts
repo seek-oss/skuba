@@ -1,8 +1,8 @@
-import express, { type Application } from 'express';
+import express, { type Application } from "express";
 
 const app: Application = express().use((req, res) => {
-  if (req.path === '/express') {
-    res.end('Express!');
+  if (req.path === "/express") {
+    res.end("Express!");
     return;
   }
 

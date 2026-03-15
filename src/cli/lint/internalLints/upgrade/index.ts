@@ -1,31 +1,29 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
-import type { ReadResult } from 'read-pkg-up';
-import { gte, sort } from 'semver';
+import fs from "fs-extra";
+import type { ReadResult } from "read-pkg-up";
+import { gte, sort } from "semver";
 
-import type { Logger } from '../../../../utils/logging.js';
-import { getConsumerManifest } from '../../../../utils/manifest.js';
+import type { Logger } from "../../../../utils/logging.js";
+import { getConsumerManifest } from "../../../../utils/manifest.js";
 import {
   type PackageManagerConfig,
   detectPackageManager,
-} from '../../../../utils/packageManager.js';
-import { getSkubaVersion } from '../../../../utils/version.js';
-import { formatPackage } from '../../../configure/processing/package.js';
-import type { SkubaPackageJson } from '../../../init/writePackageJson.js';
-import type { InternalLintResult } from '../../internal.js';
+} from "../../../../utils/packageManager.js";
+import { getSkubaVersion } from "../../../../utils/version.js";
+import { formatPackage } from "../../../configure/processing/package.js";
+import type { SkubaPackageJson } from "../../../init/writePackageJson.js";
+import type { InternalLintResult } from "../../internal.js";
 
 export type Patches = Patch[];
 export type Patch = {
   apply: PatchFunction;
   description: string;
 };
-export type PatchReturnType =
-  | { result: 'apply' }
-  | { result: 'skip'; reason?: string };
+export type PatchReturnType = { result: "apply" } | { result: "skip"; reason?: string };
 
 export type PatchConfig = {
-  mode: 'format' | 'lint';
+  mode: "format" | "lint";
   manifest: ReadResult;
   packageManager: PackageManagerConfig;
   dir?: string;
@@ -34,7 +32,7 @@ export type PatchConfig = {
 export type PatchFunction = (config: PatchConfig) => Promise<PatchReturnType>;
 
 const getPatches = async (manifestVersion: string): Promise<Patches> => {
-  const patches = await fs.readdir(path.join(__dirname, 'patches'), {
+  const patches = await fs.readdir(path.join(__dirname, "patches"), {
     withFileTypes: true,
   });
 
@@ -54,7 +52,7 @@ const getPatches = async (manifestVersion: string): Promise<Patches> => {
   return (await Promise.all(patchesForVersion.map(resolvePatches))).flat();
 };
 
-const fileExtensions = ['js', 'ts'];
+const fileExtensions = ["js", "ts"];
 
 // Hack to allow our Jest environment/transform to resolve the patches
 // In normal scenarios this will resolve immediately after the .js import
@@ -71,7 +69,7 @@ const resolvePatches = async (version: string): Promise<Patches> => {
 };
 
 export const upgradeSkuba = async (
-  mode: 'lint' | 'format',
+  mode: "lint" | "format",
   logger: Logger,
   additionalFlags: string[] = [],
 ): Promise<InternalLintResult> => {
@@ -82,13 +80,13 @@ export const upgradeSkuba = async (
   ]);
 
   if (!manifest) {
-    throw new Error('Could not find a package json for this project');
+    throw new Error("Could not find a package json for this project");
   }
 
-  manifest.packageJson.skuba ??= { version: '1.0.0' };
+  manifest.packageJson.skuba ??= { version: "1.0.0" };
 
-  const manifestVersion = additionalFlags.includes('--force-apply-all-patches')
-    ? '1.0.0'
+  const manifestVersion = additionalFlags.includes("--force-apply-all-patches")
+    ? "1.0.0"
     : (manifest.packageJson.skuba as SkubaPackageJson).version;
 
   // We are up to date, skip patches
@@ -102,7 +100,7 @@ export const upgradeSkuba = async (
     return { ok: true, fixable: false };
   }
 
-  if (mode === 'lint') {
+  if (mode === "lint") {
     const results = await Promise.all(
       patches.map(
         async ({ apply }) =>
@@ -115,7 +113,7 @@ export const upgradeSkuba = async (
     );
 
     // No patches are applicable. Early exit to avoid unnecessary commits.
-    if (results.every(({ result }) => result === 'skip')) {
+    if (results.every(({ result }) => result === "skip")) {
       return { ok: true, fixable: false };
     }
 
@@ -139,7 +137,7 @@ export const upgradeSkuba = async (
     };
   }
 
-  logger.plain('Updating skuba...');
+  logger.plain("Updating skuba...");
 
   // Run these in series in case a subsequent patch relies on a previous patch
   for (const { apply, description } of patches) {
@@ -149,12 +147,8 @@ export const upgradeSkuba = async (
       packageManager,
     });
     logger.newline();
-    if (result.result === 'skip') {
-      logger.plain(
-        `Patch skipped: ${description}${
-          result.reason ? ` - ${result.reason}` : ''
-        }`,
-      );
+    if (result.result === "skip") {
+      logger.plain(`Patch skipped: ${description}${result.reason ? ` - ${result.reason}` : ""}`);
     } else {
       logger.plain(`Patch applied: ${description}`);
     }
@@ -162,17 +156,16 @@ export const upgradeSkuba = async (
 
   const updatedManifest = await getConsumerManifest();
   if (!updatedManifest) {
-    throw new Error('Could not find a package json for this project');
+    throw new Error("Could not find a package json for this project");
   }
 
-  (updatedManifest.packageJson.skuba as SkubaPackageJson).version =
-    currentVersion;
+  (updatedManifest.packageJson.skuba as SkubaPackageJson).version = currentVersion;
 
   const updatedPackageJson = await formatPackage(updatedManifest.packageJson);
 
   await fs.writeFile(updatedManifest.path, updatedPackageJson);
   logger.newline();
-  logger.plain('skuba update complete.');
+  logger.plain("skuba update complete.");
   logger.newline();
 
   return {

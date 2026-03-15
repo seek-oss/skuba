@@ -1,17 +1,13 @@
-import { defaultOpts, executeModule } from '../testing/module.js';
+import { defaultOpts, executeModule } from "../testing/module.js";
 
-import { nodemonModule } from './nodemon.js';
+import { nodemonModule } from "./nodemon.js";
 
-describe('nodemonModule', () => {
-  it('works from scratch', async () => {
+describe("nodemonModule", () => {
+  it("works from scratch", async () => {
     const inputFiles = {};
 
-    const outputFiles = await executeModule(
-      nodemonModule,
-      inputFiles,
-      defaultOpts,
-    );
+    const outputFiles = await executeModule(nodemonModule, inputFiles, defaultOpts);
 
-    expect(outputFiles['nodemon.json']).toBeUndefined();
+    expect(outputFiles["nodemon.json"]).toBeUndefined();
   });
 });

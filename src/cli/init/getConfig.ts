@@ -1,25 +1,22 @@
-import { styleText } from 'node:util';
-import path from 'path';
+import { styleText } from "node:util";
+import path from "path";
 
-import { input } from '@inquirer/prompts';
-import fs from 'fs-extra';
+import { input } from "@inquirer/prompts";
+import fs from "fs-extra";
 
-import { copyFiles } from '../../utils/copy.js';
-import { isErrorWithCode } from '../../utils/error.js';
-import { log } from '../../utils/logging.js';
-import {
-  DEFAULT_PACKAGE_MANAGER,
-  configForPackageManager,
-} from '../../utils/packageManager.js';
-import { getRandomPort } from '../../utils/port.js';
+import { copyFiles } from "../../utils/copy.js";
+import { isErrorWithCode } from "../../utils/error.js";
+import { log } from "../../utils/logging.js";
+import { DEFAULT_PACKAGE_MANAGER, configForPackageManager } from "../../utils/packageManager.js";
+import { getRandomPort } from "../../utils/port.js";
 import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
   type TemplateConfig,
   templateConfigSchema,
-} from '../../utils/template.js';
+} from "../../utils/template.js";
 
-import { downloadGitHubTemplate, downloadPrivateTemplate } from './git.js';
+import { downloadGitHubTemplate, downloadPrivateTemplate } from "./git.js";
 import {
   BASE_PROMPT_PROPS,
   type BaseFields,
@@ -28,8 +25,8 @@ import {
   getPrivateTemplateName,
   getTemplateName,
   shouldContinue,
-} from './prompts.js';
-import { type InitConfig, initConfigInputSchema } from './types.js';
+} from "./prompts.js";
+import { type InitConfig, initConfigInputSchema } from "./types.js";
 
 export const runForm = async <T = Record<string, string>>(props: {
   choices: readonly Choice[];
@@ -48,10 +45,10 @@ export const runForm = async <T = Record<string, string>>(props: {
       validate: async (inputText: string) => {
         if (
           !inputText ||
-          inputText === '' ||
+          inputText === "" ||
           (inputText === choice.initial && !choice.allowInitial)
         ) {
-          return 'Form is not complete';
+          return "Form is not complete";
         }
 
         return choice.validate?.(inputText) ?? true;
@@ -68,21 +65,21 @@ const confirmShouldContinue = async (choices: readonly Choice[]) => {
   const fieldsList = choices.map((choice) => choice.message);
 
   log.newline();
-  log.plain('This template uses the following information:');
+  log.plain("This template uses the following information:");
   log.newline();
   fieldsList.forEach((message) => log.subtle(`- ${message}`));
 
   log.newline();
   const result = await shouldContinue();
 
-  return result === 'yes';
+  return result === "yes";
 };
 
 const createDirectory = async (dir: string) => {
   try {
     await fs.promises.mkdir(dir);
   } catch (err) {
-    if (isErrorWithCode(err, 'EEXIST')) {
+    if (isErrorWithCode(err, "EEXIST")) {
       log.err(`The directory '${dir}' already exists.`);
       process.exit(1);
     }
@@ -95,16 +92,16 @@ const cloneTemplate = async (
   templateName: string,
   destinationDir: string,
 ): Promise<TemplateConfig> => {
-  const isGitHubTemplate = templateName.startsWith('github:');
-  const isPrivateSeekTemplate = templateName.startsWith('seek:');
+  const isGitHubTemplate = templateName.startsWith("github:");
+  const isPrivateSeekTemplate = templateName.startsWith("seek:");
   const isCustomTemplate = isGitHubTemplate || isPrivateSeekTemplate;
 
   if (isGitHubTemplate) {
-    const gitHubPath = templateName.slice('github:'.length);
+    const gitHubPath = templateName.slice("github:".length);
 
     await downloadGitHubTemplate(gitHubPath, destinationDir);
   } else if (isPrivateSeekTemplate) {
-    const privateName = templateName.slice('seek:'.length);
+    const privateName = templateName.slice("seek:".length);
 
     await downloadPrivateTemplate(privateName, destinationDir);
   } else {
@@ -121,18 +118,16 @@ const cloneTemplate = async (
     });
   }
 
-  const templateConfig = getTemplateConfig(
-    path.join(process.cwd(), destinationDir),
-  );
+  const templateConfig = getTemplateConfig(path.join(process.cwd(), destinationDir));
 
   if (isCustomTemplate) {
     log.newline();
     log.warn(
-      'You may need to run',
+      "You may need to run",
       log.bold(
         `${configForPackageManager(templateConfig.packageManager).print.exec} skuba configure`,
       ),
-      'once this is done.',
+      "once this is done.",
     );
   }
 
@@ -142,12 +137,12 @@ const cloneTemplate = async (
 const selectTemplateName = async () => {
   const templateSelection = await getTemplateName();
 
-  if (templateSelection === 'github →') {
+  if (templateSelection === "github →") {
     const gitHubPath = await getGitPath();
     return `github:${gitHubPath}`;
   }
 
-  if (templateSelection === 'seek →') {
+  if (templateSelection === "seek →") {
     const privateName = await getPrivateTemplateName();
     return `seek:${privateName}`;
   }
@@ -156,9 +151,7 @@ const selectTemplateName = async () => {
 };
 
 const generatePlaceholders = (choices: Choice[]) =>
-  Object.fromEntries(
-    choices.map(({ name }) => [name, `<%- ${name} %>`] as const),
-  );
+  Object.fromEntries(choices.map(({ name }) => [name, `<%- ${name} %>`] as const));
 
 export const getTemplateConfig = (dir: string): TemplateConfig => {
   const templateConfigPath = path.join(dir, TEMPLATE_CONFIG_FILENAME);
@@ -169,7 +162,7 @@ export const getTemplateConfig = (dir: string): TemplateConfig => {
 
     return templateConfigSchema.parse(templateConfig);
   } catch (err) {
-    if (isErrorWithCode(err, 'MODULE_NOT_FOUND')) {
+    if (isErrorWithCode(err, "MODULE_NOT_FOUND")) {
       return {
         entryPoint: undefined,
         fields: [],
@@ -188,7 +181,7 @@ const baseToTemplateData = async ({
   repoName,
   defaultBranch,
 }: BaseFields) => {
-  const [orgName, teamName] = ownerName.split('/');
+  const [orgName, teamName] = ownerName.split("/");
 
   const port = String(await getRandomPort());
 
@@ -207,16 +200,15 @@ const baseToTemplateData = async ({
     port,
 
     platformName,
-    lambdaCdkArchitecture: platformName === 'amd64' ? 'X86_64' : 'ARM_64',
-    lambdaServerlessArchitecture:
-      platformName === 'amd64' ? 'x86_64' : platformName,
+    lambdaCdkArchitecture: platformName === "amd64" ? "X86_64" : "ARM_64",
+    lambdaServerlessArchitecture: platformName === "amd64" ? "x86_64" : platformName,
   };
 };
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
   const { ownerName, platformName, repoName, defaultBranch } =
     await runForm<BaseFields>(BASE_PROMPT_PROPS);
-  log.plain(styleText('cyan', repoName), 'by', styleText('cyan', ownerName));
+  log.plain(styleText("cyan", repoName), "by", styleText("cyan", ownerName));
 
   const templateData = await baseToTemplateData({
     ownerName,
@@ -232,8 +224,10 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   log.newline();
   const templateName = await selectTemplateName();
 
-  const { entryPoint, fields, noSkip, packageManager, type } =
-    await cloneTemplate(templateName, destinationDir);
+  const { entryPoint, fields, noSkip, packageManager, type } = await cloneTemplate(
+    templateName,
+    destinationDir,
+  );
 
   if (fields.length === 0) {
     return {
@@ -247,19 +241,14 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     };
   }
 
-  const shouldContinueWithTemplate = noSkip
-    ? true
-    : await confirmShouldContinue(fields);
+  const shouldContinueWithTemplate = noSkip ? true : await confirmShouldContinue(fields);
 
   if (shouldContinueWithTemplate) {
     log.newline();
     const customAnswers = await runForm({
       choices: fields,
-      message: styleText(
-        'bold',
-        `Complete ${styleText('cyan', templateName)}:`,
-      ),
-      name: 'customAnswers',
+      message: styleText("bold", `Complete ${styleText("cyan", templateName)}:`),
+      name: "customAnswers",
     });
 
     return {
@@ -275,7 +264,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 
   log.newline();
   log.warn(
-    `Resume this later with ${styleText('bold', `${configForPackageManager(packageManager).print.exec} skuba configure`)}.`,
+    `Resume this later with ${styleText("bold", `${configForPackageManager(packageManager).print.exec} skuba configure`)}.`,
   );
 
   const customAnswers = generatePlaceholders(fields);
@@ -292,18 +281,16 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 };
 
 export const readJSONFromStdIn = async () => {
-  let text = '';
+  let text = "";
 
   await new Promise((resolve) =>
-    process.stdin
-      .on('data', (chunk) => (text += chunk.toString()))
-      .once('end', resolve),
+    process.stdin.on("data", (chunk) => (text += chunk.toString())).once("end", resolve),
   );
 
   text = text.trim();
 
-  if (text === '') {
-    log.err('No data from stdin.');
+  if (text === "") {
+    log.err("No data from stdin.");
     process.exit(1);
   }
 
@@ -312,7 +299,7 @@ export const readJSONFromStdIn = async () => {
   try {
     value = JSON.parse(text) as unknown;
   } catch {
-    log.err('Invalid JSON from stdin.');
+    log.err("Invalid JSON from stdin.");
     process.exit(1);
   }
 
@@ -325,7 +312,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   const result = initConfigInputSchema.safeParse(value);
 
   if (!result.success) {
-    log.err('Invalid data from stdin:');
+    log.err("Invalid data from stdin:");
     log.err(result.error);
     process.exit(1);
   }
@@ -339,12 +326,14 @@ const configureFromPipe = async (): Promise<InitConfig> => {
 
   await createDirectory(destinationDir);
 
-  const { entryPoint, fields, noSkip, packageManager, type } =
-    await cloneTemplate(templateName, destinationDir);
+  const { entryPoint, fields, noSkip, packageManager, type } = await cloneTemplate(
+    templateName,
+    destinationDir,
+  );
 
   if (!templateComplete) {
     if (noSkip) {
-      log.err('Templating for', log.bold(templateName), 'cannot be skipped.');
+      log.err("Templating for", log.bold(templateName), "cannot be skipped.");
       process.exit(1);
     }
 
@@ -367,7 +356,7 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   const missing = required.filter((name) => !provided.has(name));
 
   if (missing.length > 0) {
-    log.err('This template uses the following information:');
+    log.err("This template uses the following information:");
     log.newline();
     missing.forEach((name) => log.err(`- ${name}`));
     process.exit(1);
@@ -382,5 +371,4 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   };
 };
 
-export const getConfig = () =>
-  process.stdin.isTTY ? configureFromPrompt() : configureFromPipe();
+export const getConfig = () => (process.stdin.isTTY ? configureFromPrompt() : configureFromPipe());

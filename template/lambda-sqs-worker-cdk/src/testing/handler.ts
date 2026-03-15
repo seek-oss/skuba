@@ -1,6 +1,6 @@
-import type { Context, SQSEvent } from 'aws-lambda';
+import type { Context, SQSEvent } from "aws-lambda";
 
-import { chance } from './types.js';
+import { chance } from "./types.js";
 
 export const createCtx = () =>
   ({

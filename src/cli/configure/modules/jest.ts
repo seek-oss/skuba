@@ -1,13 +1,13 @@
-import { readBaseTemplateFile } from '../../../utils/template.js';
-import { deleteFiles } from '../processing/deleteFiles.js';
-import { withPackage } from '../processing/package.js';
+import { readBaseTemplateFile } from "../../../utils/template.js";
+import { deleteFiles } from "../processing/deleteFiles.js";
+import { withPackage } from "../processing/package.js";
 import {
   createPropAppender,
   createPropFilter,
   readModuleExports,
   transformModuleImportsAndExports,
-} from '../processing/typescript.js';
-import type { Module } from '../types.js';
+} from "../processing/typescript.js";
+import type { Module } from "../types.js";
 
 const OUTDATED_ISOLATED_MODULES_CONFIG_SNIPPETS = [
   `
@@ -27,48 +27,44 @@ const OUTDATED_ISOLATED_MODULES_CONFIG_SNIPPETS = [
 
 // Jest options to preserve during migration
 const filterProps = createPropFilter([
-  'collectCoverageFrom',
-  'coverageThreshold',
-  'globalSetup',
-  'globalTeardown',
-  'setupFiles',
-  'setupFilesAfterEnv',
+  "collectCoverageFrom",
+  "coverageThreshold",
+  "globalSetup",
+  "globalTeardown",
+  "setupFiles",
+  "setupFilesAfterEnv",
 ]);
 
 export const jestModule = async (): Promise<Module> => {
   const [configFile, setupFile] = await Promise.all([
-    readBaseTemplateFile('jest.config.ts'),
-    readBaseTemplateFile('jest.setup.ts'),
+    readBaseTemplateFile("jest.config.ts"),
+    readBaseTemplateFile("jest.setup.ts"),
   ]);
 
   return {
-    ...deleteFiles('jest.config.js', 'jest.setup.js'),
+    ...deleteFiles("jest.config.js", "jest.setup.js"),
 
-    'jest.config.ts': async (tsFile, currentFiles, initialFiles) => {
+    "jest.config.ts": async (tsFile, currentFiles, initialFiles) => {
       // Allow customised TS Jest config that extends skuba
-      if (tsFile?.includes('skuba')) {
+      if (tsFile?.includes("skuba")) {
         return OUTDATED_ISOLATED_MODULES_CONFIG_SNIPPETS.reduce(
-          (acc, snippet) => acc.replace(snippet, ''),
+          (acc, snippet) => acc.replace(snippet, ""),
           tsFile,
         );
       }
 
-      const jsFile = initialFiles['jest.config.js'];
+      const jsFile = initialFiles["jest.config.js"];
 
       // Migrate a JS config that extends skuba, retaining all existing props
-      if (jsFile?.includes('skuba')) {
+      if (jsFile?.includes("skuba")) {
         return transformModuleImportsAndExports(jsFile, (_, p) => p);
       }
 
-      currentFiles['jest.setup.ts'] ??=
-        initialFiles['jest.setup.js'] ?? setupFile;
+      currentFiles["jest.setup.ts"] ??= initialFiles["jest.setup.js"] ?? setupFile;
 
       const inputFile = tsFile ?? jsFile;
 
-      const props =
-        inputFile === undefined
-          ? undefined
-          : await readModuleExports(inputFile);
+      const props = inputFile === undefined ? undefined : await readModuleExports(inputFile);
 
       if (props === undefined) {
         return configFile;
@@ -82,6 +78,6 @@ export const jestModule = async (): Promise<Module> => {
       return transformModuleImportsAndExports(configFile, appendProps);
     },
 
-    'package.json': withPackage(({ jest, ...data }) => data),
+    "package.json": withPackage(({ jest, ...data }) => data),
   };
 };

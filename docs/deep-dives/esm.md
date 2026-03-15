@@ -22,10 +22,10 @@ ESM requires explicit file extensions in import statements, which is not the cas
 
 ```ts
 // CJS
-import { module } from './imported-module';
+import { module } from "./imported-module";
 
 // ESM
-import { module } from './imported-module.js';
+import { module } from "./imported-module.js";
 ```
 
 While this is a simple change, it requires us to update all our import statements across the codebase. It also forbids us from using the `index.js` import convention, which is commonly used in CJS.
@@ -42,10 +42,10 @@ We can no longer rely on implicit `index.js` resolution:
 
 ```ts
 // CJS
-import { module } from './imported-module';
+import { module } from "./imported-module";
 
 // ESM
-import { module } from './imported-module/index.js';
+import { module } from "./imported-module/index.js";
 ```
 
 ### 2. `skuba-dive/register`
@@ -55,13 +55,13 @@ Our current setup uses `skuba-dive/register` to allow us to simplify our import 
 Instead of importing a module like this:
 
 ```ts
-import { module } from '../../imported-module';
+import { module } from "../../imported-module";
 ```
 
 We can import it like this:
 
 ```ts
-import { module } from 'src/imported-module';
+import { module } from "src/imported-module";
 ```
 
 However, `skuba-dive/register` relies on `module-alias` which is not compatible with ESM. This means that we need to find a new way to handle module aliases in ESM.
@@ -149,7 +149,7 @@ Your local `tsconfig.json` files will require a `rootDir` and `customConditions`
 This allows us to import modules like this:
 
 ```ts
-import { module } from '#src/imported-module.js';
+import { module } from "#src/imported-module.js";
 ```
 
 We will also need to set different `rootDir` values for our local development and builds:
@@ -185,17 +185,17 @@ If you are bundling your code (e.g. for AWS Lambda), ensure that your bundler su
 For AWS CDK projects, add the following `esbuildArgs` to your `NodejsFunction`:
 
 ```ts
-const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+const worker = new aws_lambda_nodejs.NodejsFunction(this, "worker", {
   architecture: aws_lambda.Architecture[architecture],
   runtime: aws_lambda.Runtime.NODEJS_22_X,
   memorySize: 512,
-  entry: './src/app.ts',
+  entry: "./src/app.ts",
   bundling: {
     sourceMap: true,
-    target: 'node22',
+    target: "node22",
     externalModules: [],
     esbuildArgs: {
-      '--conditions': '@seek/my-repo/source',
+      "--conditions": "@seek/my-repo/source",
     },
   },
 });
@@ -218,9 +218,9 @@ For Serverless projects **not** using bundling, include the `package.json` conta
 ```yml
 package:
   patterns:
-    - '!**'
-    - 'lib/**'
-    - 'package.json'
+    - "!**"
+    - "lib/**"
+    - "package.json"
 ```
 
 For Serverless projects using the native `esbuild` option, declare the conditions within the `build.esbuild` options in your `serverless.yml`:
@@ -231,7 +231,7 @@ build:
     bundle: true
     minify: false
     conditions:
-      - '@seek/my-repo/source'
+      - "@seek/my-repo/source"
 ```
 
 For Serverless projects using `serverless-esbuild`, declare the conditions within the `custom.esbuild` options in your `serverless.yml`:
@@ -242,7 +242,7 @@ custom:
     bundle: true
     minify: false
     conditions:
-      - '@seek/my-repo/source'
+      - "@seek/my-repo/source"
 ```
 
 For Serverless projects using `serverless-webpack`, add the following to your `webpack.config.js`:
@@ -250,7 +250,7 @@ For Serverless projects using `serverless-webpack`, add the following to your `w
 ```js
 module.exports = {
   resolve: {
-    conditionNames: ['@seek/my-repo/source', '...'],
+    conditionNames: ["@seek/my-repo/source", "..."],
   },
 };
 ```
@@ -266,13 +266,13 @@ module.exports = {
 #### Create tsdown.config.mjs
 
 ```javascript
-import { defineConfig } from 'tsdown/config';
+import { defineConfig } from "tsdown/config";
 
 export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['esm', 'cjs'],
+  entry: ["src/index.ts"],
+  format: ["esm", "cjs"],
   exports: {
-    devExports: '@seek/my-repo/source',
+    devExports: "@seek/my-repo/source",
   },
   // TODO: Consider removing this if your package can be bundled
   unbundle: true,
@@ -399,17 +399,17 @@ As a starting point, we will migrate your Jest imports and provide a base Vitest
 vitest.config.ts:
 
 ```ts
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   ssr: {
     resolve: {
-      conditions: ['@seek/my-repo/source'],
+      conditions: ["@seek/my-repo/source"],
     },
   },
   test: {
     env: {
-      ENVIRONMENT: 'test',
+      ENVIRONMENT: "test",
     },
     coverage: {
       thresholds: {
@@ -418,10 +418,10 @@ export default defineConfig({
         lines: 100,
         statements: 100,
       },
-      include: ['src'],
-      exclude: ['src/testing'],
+      include: ["src"],
+      exclude: ["src/testing"],
     },
-    include: ['**/*.test.ts'],
+    include: ["**/*.test.ts"],
   },
 });
 ```

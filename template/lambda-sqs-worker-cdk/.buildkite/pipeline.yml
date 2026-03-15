@@ -62,11 +62,11 @@ steps:
 
   - agents:
       queue: <%- devBuildkiteQueueName %>
-    branches: '!renovate-*'
+    branches: "!renovate-*"
     env:
       GET_NPM_TOKEN: please
     label: 🧖‍♀️ Warm Dev
-    command: ':'
+    command: ":"
     plugins:
       - seek-oss/docker-ecr-cache#v2.2.1:
           <<: *docker-ecr-cache-defaults
@@ -75,7 +75,7 @@ steps:
   - wait
 
   - block: 🙋🏻‍♀️ Deploy Dev
-    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
+    branches: "!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}"
 
   - <<: *deploy
     agents:
@@ -86,7 +86,7 @@ steps:
       DEPLOYMENT: dev
       GET_NPM_TOKEN: please
     label: 🤞 Deploy Dev
-    concurrency_group: '<%- repoName %>/deploy/dev'
+    concurrency_group: "<%- repoName %>/deploy/dev"
     key: deploy-dev
 
   - <<: *deploy
@@ -97,5 +97,5 @@ steps:
       GET_NPM_TOKEN: please
     label: 🚀 Deploy Prod
     branches: ${BUILDKITE_PIPELINE_DEFAULT_BRANCH}
-    concurrency_group: '<%- repoName %>/deploy/prod'
+    concurrency_group: "<%- repoName %>/deploy/prod"
     depends_on: deploy-dev

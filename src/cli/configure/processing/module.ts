@@ -1,4 +1,4 @@
-import { createStringReplacer } from '../../../utils/copy.js';
+import { createStringReplacer } from "../../../utils/copy.js";
 
 export const replacePackageReferences = (props: {
   old: {
@@ -12,11 +12,11 @@ export const replacePackageReferences = (props: {
 }) =>
   createStringReplacer([
     {
-      input: new RegExp(`(['"])${props.old.packageName}(['"/])`, 'g'),
+      input: new RegExp(`(['"])${props.old.packageName}(['"/])`, "g"),
       output: `$1${props.new.packageName}$2`,
     },
     {
-      input: new RegExp(props.old.repoSlug, 'ig'),
+      input: new RegExp(props.old.repoSlug, "ig"),
       output: props.new.repoSlug,
     },
   ]);

@@ -1,12 +1,12 @@
-import type { Octokit } from '@octokit/rest' with {
-  'resolution-mode': 'import',
+import type { Octokit } from "@octokit/rest" with {
+  "resolution-mode": "import",
 };
 
-import * as Git from '../git/index.js';
+import * as Git from "../git/index.js";
 
-import { apiTokenFromEnvironment } from './environment.js';
-import { createRestClient } from './octokit.js';
-import { getPullRequestNumber } from './pullRequest.js';
+import { apiTokenFromEnvironment } from "./environment.js";
+import { createRestClient } from "./octokit.js";
+import { getPullRequestNumber } from "./pullRequest.js";
 
 const getUserId = async (client: Octokit): Promise<number> => {
   const { data } = await client.users.getAuthenticated();
@@ -61,7 +61,7 @@ interface PutIssueCommentParameters {
    *
    * https://api.github.com/users/buildagencygitapitoken[bot]
    */
-  userId?: number | 'seek-build-agency';
+  userId?: number | "seek-build-agency";
 }
 
 interface IssueComment {
@@ -85,7 +85,7 @@ export const putIssueComment = async (
   if (params.body === null && !params.internalId) {
     // It's dangerous to just delete the first comment, as it may not be
     // from the current flow.
-    throw new Error('Cannot remove comment without an internalId');
+    throw new Error("Cannot remove comment without an internalId");
   }
 
   const env = params.env ?? process.env;
@@ -96,11 +96,10 @@ export const putIssueComment = async (
 
   const client = await createRestClient({ auth: apiTokenFromEnvironment() });
 
-  const issueNumber =
-    params.issueNumber ?? (await getPullRequestNumber({ client, env }));
+  const issueNumber = params.issueNumber ?? (await getPullRequestNumber({ client, env }));
 
   if (!issueNumber) {
-    throw new Error('Failed to infer an issue number');
+    throw new Error("Failed to infer an issue number");
   }
 
   const comments = await client.issues.listComments({
@@ -110,7 +109,7 @@ export const putIssueComment = async (
   });
 
   const userId: number =
-    params.userId === 'seek-build-agency'
+    params.userId === "seek-build-agency"
       ? // https://api.github.com/users/buildagencygitapitoken[bot]
         87109344
       : (params.userId ?? (await getUserId(client)));
@@ -118,9 +117,7 @@ export const putIssueComment = async (
   const commentId = comments.data.find(
     (comment) =>
       comment.user?.id === userId &&
-      (params.internalId
-        ? comment.body?.endsWith(`\n\n<!-- ${params.internalId} -->`)
-        : true),
+      (params.internalId ? comment.body?.endsWith(`\n\n<!-- ${params.internalId} -->`) : true),
   )?.id;
 
   if (params.body === null) {
@@ -136,7 +133,7 @@ export const putIssueComment = async (
   }
 
   const body = params.internalId
-    ? [params.body.trim(), `<!-- ${params.internalId} -->`].join('\n\n')
+    ? [params.body.trim(), `<!-- ${params.internalId} -->`].join("\n\n")
     : params.body.trim();
 
   const response = await (commentId

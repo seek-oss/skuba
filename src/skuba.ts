@@ -10,21 +10,16 @@
  * ```
  */
 
-import path from 'path';
+import path from "path";
 
-import { parseProcessArgs } from './utils/args.js';
-import {
-  COMMAND_DIR,
-  COMMAND_SET,
-  type Command,
-  commandToModule,
-} from './utils/command.js';
-import { isCiEnv } from './utils/env.js';
-import { handleCliError } from './utils/error.js';
-import { showHelp } from './utils/help.js';
-import { log } from './utils/logging.js';
-import { showLogoAndVersionInfo } from './utils/logo.js';
-import { hasProp } from './utils/validation.js';
+import { parseProcessArgs } from "./utils/args.js";
+import { COMMAND_DIR, COMMAND_SET, type Command, commandToModule } from "./utils/command.js";
+import { isCiEnv } from "./utils/env.js";
+import { handleCliError } from "./utils/error.js";
+import { showHelp } from "./utils/help.js";
+import { log } from "./utils/logging.js";
+import { showLogoAndVersionInfo } from "./utils/logo.js";
+import { hasProp } from "./utils/validation.js";
 
 const THIRTY_MINUTES = 30 * 60 * 1000;
 
@@ -35,9 +30,7 @@ const skuba = async () => {
     const moduleName = commandToModule(commandName as Command);
 
     /* eslint-disable @typescript-eslint/no-require-imports */
-    const commandModule = require(
-      path.join(COMMAND_DIR, moduleName, 'index.js'),
-    ) as unknown;
+    const commandModule = require(path.join(COMMAND_DIR, moduleName, "index.js")) as unknown;
 
     if (!hasProp(commandModule, moduleName)) {
       log.err(log.bold(commandName), "couldn't run! Please submit an issue.");
@@ -55,7 +48,7 @@ const skuba = async () => {
     // If we're not in a CI environment, we don't need to worry about timeouts, which are primarily to prevent
     // builds running "forever" in CI without our knowledge.
     // Local commands may run for a long time, e.g. `skuba start` or `skuba test --watch`, which are unlikely to be used in CI.
-    if (!isCiEnv() || process.env.SKUBA_NO_TIMEOUT === 'true') {
+    if (!isCiEnv() || process.env.SKUBA_NO_TIMEOUT === "true") {
       return run();
     }
 
@@ -63,21 +56,19 @@ const skuba = async () => {
       () => {
         log.err(
           log.bold(commandName),
-          'timed out. This may indicate a process hanging - please file an issue.',
+          "timed out. This may indicate a process hanging - please file an issue.",
         );
 
         // Need to force exit because promises may be hanging so node won't exit on its own.
         process.exit(1);
       },
-      process.env.SKUBA_TIMEOUT_MS
-        ? parseInt(process.env.SKUBA_TIMEOUT_MS, 10)
-        : THIRTY_MINUTES,
+      process.env.SKUBA_TIMEOUT_MS ? parseInt(process.env.SKUBA_TIMEOUT_MS, 10) : THIRTY_MINUTES,
     );
 
     return run().finally(() => clearTimeout(timeoutId));
   }
 
-  log.err(log.bold(commandName), 'is not recognised as a command.');
+  log.err(log.bold(commandName), "is not recognised as a command.");
   await showLogoAndVersionInfo();
   showHelp();
 

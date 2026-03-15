@@ -1,23 +1,20 @@
 import {
   jobPublishedEventToScorerInput,
   jobScorerOutputToScoredEvent,
-} from '#src/mapping/jobScorer.js';
+} from "#src/mapping/jobScorer.js";
 import {
   type JobScorerInput,
   type JobScorerOutput,
   JobScorerOutputSchema,
-} from '#src/types/jobScorer.js';
-import type {
-  JobPublishedEvent,
-  JobScoredEvent,
-} from '#src/types/pipelineEvents.js';
+} from "#src/types/jobScorer.js";
+import type { JobPublishedEvent, JobScoredEvent } from "#src/types/pipelineEvents.js";
 
 /* istanbul ignore next: simulation of an external service */
 export const scoringService = {
   request: (details: string): Promise<unknown> => {
     // Networking woes
     if (Math.random() < 0.05) {
-      const err = Error('could not reach scoring service');
+      const err = Error("could not reach scoring service");
 
       return Promise.reject(err);
     }
@@ -36,10 +33,7 @@ export const scoringService = {
   },
 };
 
-const scoreJob = async ({
-  details,
-  id,
-}: JobScorerInput): Promise<JobScorerOutput> => {
+const scoreJob = async ({ details, id }: JobScorerInput): Promise<JobScorerOutput> => {
   const score = await scoringService.request(details);
 
   return JobScorerOutputSchema.parse({

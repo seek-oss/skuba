@@ -1,4 +1,4 @@
-import type { Middleware } from '#src/types/koa.js';
+import type { Middleware } from "#src/types/koa.js";
 
 /**
  * Signifies that the API is available to serve requests.
@@ -9,5 +9,5 @@ import type { Middleware } from '#src/types/koa.js';
 export const healthCheckHandler: Middleware = (ctx) => {
   ctx.state.skipRequestLogging = true;
 
-  ctx.body = '';
+  ctx.body = "";
 };

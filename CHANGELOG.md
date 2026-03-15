@@ -91,7 +91,7 @@
 
   ````md
   ---
-  'my-package': major
+  "my-package": major
   ---
 
   Update npm package build outputs
@@ -113,16 +113,16 @@
   If your package has additional entry points, for example:
 
   ```ts
-  import { SomeFunction } from '@seek/my-package/subpath';
+  import { SomeFunction } from "@seek/my-package/subpath";
   ```
 
   You will need to add them as additional entry points in your `tsdown.config.mts` file, for example:
 
   ```ts
-  import { defineConfig } from 'tsdown/config';
+  import { defineConfig } from "tsdown/config";
 
   export default defineConfig({
-    entries: ['src/index.ts', 'src/subpath/index.ts'],
+    entries: ["src/index.ts", "src/subpath/index.ts"],
   });
   ```
 
@@ -192,12 +192,12 @@
   This will work natively with custom conditions when we migrate to `vitest` in the future, but is required for Jest to continue working with the new build outputs.
 
   ```ts
-  import { defineConfig } from 'vitest/config';
+  import { defineConfig } from "vitest/config";
 
   export default defineConfig({
     ssr: {
       resolve: {
-        conditions: ['@seek/my-repo/source'],
+        conditions: ["@seek/my-repo/source"],
       },
     },
   });
@@ -430,11 +430,11 @@ You can either set up [GitHub autofixes](https://seek-oss.github.io/skuba/docs/d
 
   ```typescript
   // Before
-  import 'skuba-dive/register';
-  import { getAccountInfo } from 'src/services/accounts.js';
+  import "skuba-dive/register";
+  import { getAccountInfo } from "src/services/accounts.js";
 
   // After
-  import { getAccountInfo } from '#src/services/accounts.js';
+  import { getAccountInfo } from "#src/services/accounts.js";
   ```
 
   The following files will be updated to support the new subpath pattern:
@@ -758,7 +758,7 @@ You can either set up [GitHub autofixes](https://seek-oss.github.io/skuba/docs/d
   Previously, TypeScript would not check side-effect imports:
 
   ```typescript
-  import './made-up-module.js';
+  import "./made-up-module.js";
   ```
 
   Validation of these imports is now enabled by default in `skuba/config/tsconfig.json`. If you have a complex build process that produces assets that aren't known to TypeScript at time of linting, you may override the compiler option in your local `tsconfig.json` or include inline `// @ts-expect-error`s in your code.
@@ -776,9 +776,7 @@ You can either set up [GitHub autofixes](https://seek-oss.github.io/skuba/docs/d
 
   // Report unhandled rejections instead of crashing the process
   // Make sure to monitor these reports and alert as appropriate
-  process.on('unhandledRejection', (err) =>
-    logger.error(err, 'Unhandled promise rejection'),
-  );
+  process.on("unhandledRejection", (err) => logger.error(err, "Unhandled promise rejection"));
   ```
 
 - **test:** Enable `--experimental-vm-modules` by default ([#1997](https://github.com/seek-oss/skuba/pull/1997))
@@ -799,7 +797,7 @@ You can either set up [GitHub autofixes](https://seek-oss.github.io/skuba/docs/d
   A custom getter may be occasionally prescribed as the recommended approach to achieve desired behaviour. For example, this syntax can define a [recursive object in Zod](https://zod.dev/v4#recursive-objects). In these rare scenarios, add an inline ignore and ensure that you do not throw an error within the getter.
 
   ```typescript
-  import * as z from 'zod';
+  import * as z from "zod";
 
   const Category = z.object({
     name: z.string(),
@@ -996,7 +994,7 @@ You can either set up [GitHub autofixes](https://seek-oss.github.io/skuba/docs/d
   ```ts
   export default Jest.mergePreset({
     testEnvironmentOptions: {
-      globalsCleanup: 'soft', // Jest default or `'off'` to disable completely
+      globalsCleanup: "soft", // Jest default or `'off'` to disable completely
     },
   });
   ```
@@ -1922,15 +1920,15 @@ Continue reading for more details on these changes and other improvements in thi
     projects: [
       {
         ...baseConfig,
-        displayName: 'unit',
-        setupFiles: ['<rootDir>/jest.setup.ts'],
-        testPathIgnorePatterns: ['\\.int\\.test\\.ts'],
+        displayName: "unit",
+        setupFiles: ["<rootDir>/jest.setup.ts"],
+        testPathIgnorePatterns: ["\\.int\\.test\\.ts"],
       },
       {
         ...baseConfig,
-        displayName: 'integration',
-        setupFiles: ['<rootDir>/jest.setup.ts'],
-        testMatch: ['**/*.int.test.ts'],
+        displayName: "integration",
+        setupFiles: ["<rootDir>/jest.setup.ts"],
+        testMatch: ["**/*.int.test.ts"],
       },
     ],
   };
@@ -1943,14 +1941,14 @@ Continue reading for more details on these changes and other improvements in thi
     // ...
     projects: [
       {
-        displayName: 'unit',
-        setupFiles: ['<rootDir>/jest.setup.ts'],
-        testPathIgnorePatterns: ['\\.int\\.test\\.ts'],
+        displayName: "unit",
+        setupFiles: ["<rootDir>/jest.setup.ts"],
+        testPathIgnorePatterns: ["\\.int\\.test\\.ts"],
       },
       {
-        displayName: 'integration',
-        setupFiles: ['<rootDir>/jest.setup.ts'],
-        testMatch: ['**/*.int.test.ts'],
+        displayName: "integration",
+        setupFiles: ["<rootDir>/jest.setup.ts"],
+        testMatch: ["**/*.int.test.ts"],
       },
     ],
   });
@@ -2168,7 +2166,7 @@ Continue reading for more details on these changes and other improvements in thi
 
   ```ts
   const a: string[] = [];
-  a[1000] = 'foo';
+  a[1000] = "foo";
   console.log(a.length); // 1001
   ```
 
@@ -2539,7 +2537,7 @@ Continue reading for more details on these changes and other improvements in thi
   This is not expected to affect most projects. If yours makes use of the `src` alias and its tests are now failing on imports like the following:
 
   ```typescript
-  import { app } from 'src/app.ts';
+  import { app } from "src/app.ts";
   ```
 
   Ensure that you declare this path in a `tsconfig.json` located in your project root:
@@ -2848,38 +2846,36 @@ Continue reading for more details on these changes and other improvements in thi
   Before:
 
   ```typescript
-  import createLogger from '@seek/logger';
-  import Koa, { Context } from 'koa';
-  import { RequestLogging } from 'seek-koala';
+  import createLogger from "@seek/logger";
+  import Koa, { Context } from "koa";
+  import { RequestLogging } from "seek-koala";
 
   const rootLogger = createLogger();
 
-  const contextLogger = (ctx: Context) =>
-    rootLogger.child(RequestLogging.contextFields(ctx));
+  const contextLogger = (ctx: Context) => rootLogger.child(RequestLogging.contextFields(ctx));
 
   const app = new Koa().use((ctx) => {
-    rootLogger.info('Has no context');
+    rootLogger.info("Has no context");
 
-    contextLogger(ctx).info('Has context');
+    contextLogger(ctx).info("Has context");
   });
   ```
 
   After:
 
   ```typescript
-  import createLogger from '@seek/logger';
-  import Koa from 'koa';
-  import { RequestLogging } from 'seek-koala';
+  import createLogger from "@seek/logger";
+  import Koa from "koa";
+  import { RequestLogging } from "seek-koala";
 
-  const { createContextMiddleware, mixin } =
-    RequestLogging.createContextStorage();
+  const { createContextMiddleware, mixin } = RequestLogging.createContextStorage();
 
   const contextMiddleware = createContextMiddleware();
 
   const logger = createLogger({ mixin });
 
   const app = new Koa().use(contextMiddleware).use((ctx) => {
-    logger.info('Has context');
+    logger.info("Has context");
   });
   ```
 
@@ -2890,28 +2886,27 @@ Continue reading for more details on these changes and other improvements in thi
   Before:
 
   ```typescript
-  import createLogger from '@seek/logger';
-  import { Context } from 'aws-lambda';
+  import createLogger from "@seek/logger";
+  import { Context } from "aws-lambda";
 
   const rootLogger = createLogger();
 
-  const contextLogger = ({ awsRequestId }: Context) =>
-    rootLogger.child({ awsRequestId });
+  const contextLogger = ({ awsRequestId }: Context) => rootLogger.child({ awsRequestId });
 
   const handler = async (_event: unknown, ctx: Context) => {
-    rootLogger.info('Has no context');
+    rootLogger.info("Has no context");
 
-    contextLogger(ctx).info('Has context');
+    contextLogger(ctx).info("Has context");
   };
   ```
 
   After:
 
   ```typescript
-  import { AsyncLocalStorage } from 'async_hooks';
+  import { AsyncLocalStorage } from "async_hooks";
 
-  import createLogger from '@seek/logger';
-  import { Context } from 'aws-lambda';
+  import createLogger from "@seek/logger";
+  import { Context } from "aws-lambda";
 
   const loggerContext = new AsyncLocalStorage<{ awsRequestId: string }>();
 
@@ -2921,7 +2916,7 @@ Continue reading for more details on these changes and other improvements in thi
 
   const handler = (_event: unknown, { awsRequestId }: Context) =>
     loggerContext.run({ awsRequestId }, async () => {
-      logger.info('Has context');
+      logger.info("Has context");
     });
   ```
 
@@ -2969,10 +2964,10 @@ Continue reading for more details on these changes and other improvements in thi
 
   ```javascript
   module.exports = {
-    extends: ['skuba'],
+    extends: ["skuba"],
     rules: {
       // Demote new TypeScript ESLint rule from 'error' to 'warn'.
-      '@typescript-eslint/no-unsafe-argument': 'warn',
+      "@typescript-eslint/no-unsafe-argument": "warn",
     },
   };
   ```
@@ -3064,7 +3059,7 @@ Continue reading for more details on these changes and other improvements in thi
   ```typescript
   export default Jest.mergePreset({
     globals: {
-      'ts-jest': {
+      "ts-jest": {
         // seek-oss/skuba#626
         isolatedModules: true,
       },
@@ -3500,7 +3495,7 @@ Continue reading for more details on these changes and other improvements in thi
 
   ```ts
   export default Jest.mergePreset({
-    testEnvironment: 'jsdom',
+    testEnvironment: "jsdom",
   });
   ```
 
@@ -3862,7 +3857,7 @@ Continue reading for more details on these changes and other improvements in thi
 
   ```typescript
   // This `src` module alias just works under `skuba node` and `skuba start`
-  import { rootLogger } from 'src/framework/logging';
+  import { rootLogger } from "src/framework/logging";
   ```
 
   ```bash
@@ -4246,7 +4241,7 @@ Continue reading for more details on these changes and other improvements in thi
 
   module.exports = {
     // This can be used in place of require.resolve('skuba/config/eslint')
-    extends: ['skuba'],
+    extends: ["skuba"],
   };
   ```
 
@@ -4261,14 +4256,14 @@ Continue reading for more details on these changes and other improvements in thi
   ```javascript
   // jest.config.js
 
-  const { testPathIgnorePatterns } = require('skuba/config/jest');
+  const { testPathIgnorePatterns } = require("skuba/config/jest");
 
   module.exports = {
     // This can be used in place of ...require('skuba/config/jest')
-    preset: 'skuba',
+    preset: "skuba",
 
     // This is still necessary as Jest doesn't deep-merge presets
-    testPathIgnorePatterns: [...testPathIgnorePatterns, '/test\\.ts'],
+    testPathIgnorePatterns: [...testPathIgnorePatterns, "/test\\.ts"],
   };
   ```
 

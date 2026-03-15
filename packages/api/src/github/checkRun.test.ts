@@ -1,16 +1,15 @@
-import type { Endpoints } from '@octokit/types';
-import git, { type ReadCommitResult } from 'isomorphic-git';
+import type { Endpoints } from "@octokit/types";
+import git, { type ReadCommitResult } from "isomorphic-git";
 
-import { createCheckRun } from './checkRun.js';
-import { createRestClient } from './octokit.js';
+import { createCheckRun } from "./checkRun.js";
+import { createRestClient } from "./octokit.js";
 
-import type * as GitHub from './index.js';
+import type * as GitHub from "./index.js";
 
-type CreateCheckRunResponse =
-  Endpoints['POST /repos/{owner}/{repo}/check-runs']['response'];
+type CreateCheckRunResponse = Endpoints["POST /repos/{owner}/{repo}/check-runs"]["response"];
 
-jest.mock('isomorphic-git');
-jest.mock('./octokit');
+jest.mock("isomorphic-git");
+jest.mock("./octokit");
 
 const mockClient = {
   checks: {
@@ -28,12 +27,11 @@ beforeEach(() => {
 afterEach(jest.resetAllMocks);
 
 const annotation: GitHub.Annotation = {
-  annotation_level: 'failure',
+  annotation_level: "failure",
   start_line: 0,
   end_line: 0,
-  message:
-    "'unused' is defined but never used. Allowed unused args must match /^_/u.",
-  path: 'src/skuba.ts',
+  message: "'unused' is defined but never used. Allowed unused args must match /^_/u.",
+  path: "src/skuba.ts",
 };
 
 const createResponse = {
@@ -42,31 +40,27 @@ const createResponse = {
   },
 } as CreateCheckRunResponse;
 
-describe('createCheckRun', () => {
-  const name = 'skuba/lint';
-  const summary = 'ESLint, Prettier, Tsc found issues that require triage';
+describe("createCheckRun", () => {
+  const name = "skuba/lint";
+  const summary = "ESLint, Prettier, Tsc found issues that require triage";
   const annotations = [annotation];
-  const conclusion = 'failure';
-  const title = 'Build #23 failed';
+  const conclusion = "failure";
+  const title = "Build #23 failed";
 
   beforeEach(() => {
     jest.mocked(createRestClient).mockResolvedValue(mockClient as never);
     jest
       .mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+      .mockResolvedValue([{ remote: "origin", url: "git@github.com:seek-oss/skuba.git" }]);
     jest
       .mocked(git.log)
-      .mockResolvedValue([
-        { oid: 'cdd335a418c3dc6804be1c642b19bb63437e2cad' } as ReadCommitResult,
-      ]);
+      .mockResolvedValue([{ oid: "cdd335a418c3dc6804be1c642b19bb63437e2cad" } as ReadCommitResult]);
     mockClient.checks.create.mockReturnValue(createResponse);
   });
 
-  it('should create an Octokit client with the GITHUB_API_TOKEN environment variable', async () => {
+  it("should create an Octokit client with the GITHUB_API_TOKEN environment variable", async () => {
     delete process.env.GITHUB_TOKEN;
-    process.env.GITHUB_API_TOKEN = 'Hello from GITHUB_API_TOKEN';
+    process.env.GITHUB_API_TOKEN = "Hello from GITHUB_API_TOKEN";
 
     await createCheckRun({
       name,
@@ -77,13 +71,13 @@ describe('createCheckRun', () => {
     });
 
     expect(jest.mocked(createRestClient)).toHaveBeenCalledWith({
-      auth: 'Hello from GITHUB_API_TOKEN',
+      auth: "Hello from GITHUB_API_TOKEN",
     });
   });
 
-  it('should create an Octokit client with the GITHUB_TOKEN environment variable', async () => {
+  it("should create an Octokit client with the GITHUB_TOKEN environment variable", async () => {
     delete process.env.GITHUB_API_TOKEN;
-    process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
+    process.env.GITHUB_TOKEN = "Hello from GITHUB_TOKEN";
 
     await createCheckRun({
       name,
@@ -94,11 +88,11 @@ describe('createCheckRun', () => {
     });
 
     expect(jest.mocked(createRestClient)).toHaveBeenCalledWith({
-      auth: 'Hello from GITHUB_TOKEN',
+      auth: "Hello from GITHUB_TOKEN",
     });
   });
 
-  it('should extract a GitHub owner and repo from Git remotes', async () => {
+  it("should extract a GitHub owner and repo from Git remotes", async () => {
     await createCheckRun({
       name,
       summary,
@@ -108,11 +102,11 @@ describe('createCheckRun', () => {
     });
 
     expect(mockClient.checks.create).toHaveBeenCalledWith(
-      expect.objectContaining({ owner: 'seek-oss', repo: 'skuba' }),
+      expect.objectContaining({ owner: "seek-oss", repo: "skuba" }),
     );
   });
 
-  it('should use the current Git commit as the `head_sha`', async () => {
+  it("should use the current Git commit as the `head_sha`", async () => {
     await createCheckRun({
       name,
       summary,
@@ -123,13 +117,13 @@ describe('createCheckRun', () => {
 
     expect(mockClient.checks.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        head_sha: 'cdd335a418c3dc6804be1c642b19bb63437e2cad',
+        head_sha: "cdd335a418c3dc6804be1c642b19bb63437e2cad",
       }),
     );
   });
 
-  it('should pass the conclusion, name and text directly to create check run', async () => {
-    const text = 'Something happened.';
+  it("should pass the conclusion, name and text directly to create check run", async () => {
+    const text = "Something happened.";
 
     await createCheckRun({
       name,
@@ -149,15 +143,15 @@ describe('createCheckRun', () => {
     );
   });
 
-  it('should suffix a title', async () => {
-    const expectedTitle = 'Build #23 passed (1 annotation added)';
+  it("should suffix a title", async () => {
+    const expectedTitle = "Build #23 passed (1 annotation added)";
 
     await createCheckRun({
       name,
       summary,
       annotations,
-      conclusion: 'success',
-      title: 'Build #23 passed',
+      conclusion: "success",
+      title: "Build #23 passed",
     });
 
     expect(mockClient.checks.create).toHaveBeenCalledWith(
@@ -171,12 +165,9 @@ describe('createCheckRun', () => {
     );
   });
 
-  it('should limit the number of annotations to GITHUB_MAX_ANNOTATIONS in the title', async () => {
-    const manyAnnotations: GitHub.Annotation[] = Array.from(
-      { length: 51 },
-      (_) => annotation,
-    );
-    const expectedTitle = 'Build #23 failed (50 annotations added)';
+  it("should limit the number of annotations to GITHUB_MAX_ANNOTATIONS in the title", async () => {
+    const manyAnnotations: GitHub.Annotation[] = Array.from({ length: 51 }, (_) => annotation);
+    const expectedTitle = "Build #23 failed (50 annotations added)";
 
     await createCheckRun({
       name,
@@ -197,7 +188,7 @@ describe('createCheckRun', () => {
     );
   });
 
-  it('should leave the summary untouched when the number of annotations < GITHUB_MAX_ANNOTATIONS', async () => {
+  it("should leave the summary untouched when the number of annotations < GITHUB_MAX_ANNOTATIONS", async () => {
     await createCheckRun({
       name,
       summary,
@@ -217,11 +208,8 @@ describe('createCheckRun', () => {
     );
   });
 
-  it('should add a warning to the summary when the number of annotations > GITHUB_MAX_ANNOTATIONS', async () => {
-    const manyAnnotations: GitHub.Annotation[] = Array.from(
-      { length: 51 },
-      (_) => annotation,
-    );
+  it("should add a warning to the summary when the number of annotations > GITHUB_MAX_ANNOTATIONS", async () => {
+    const manyAnnotations: GitHub.Annotation[] = Array.from({ length: 51 }, (_) => annotation);
     const expectedSummary = `${summary}\n\n51 annotations were provided, but only the first 50 are visible in GitHub.`;
 
     await createCheckRun({
@@ -243,11 +231,8 @@ describe('createCheckRun', () => {
     );
   });
 
-  it('should limit the number of annotations to GITHUB_MAX_ANNOTATIONS in the check run', async () => {
-    const manyAnnotations: GitHub.Annotation[] = Array.from(
-      { length: 51 },
-      (_) => annotation,
-    );
+  it("should limit the number of annotations to GITHUB_MAX_ANNOTATIONS in the check run", async () => {
+    const manyAnnotations: GitHub.Annotation[] = Array.from({ length: 51 }, (_) => annotation);
 
     await createCheckRun({
       name,

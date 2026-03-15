@@ -1,12 +1,12 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
-import { simpleGit } from 'simple-git';
+import fs from "fs-extra";
+import git from "isomorphic-git";
+import { simpleGit } from "simple-git";
 
-import { log } from '../../utils/logging.js';
+import { log } from "../../utils/logging.js";
 
-import * as Git from '@skuba-lib/api/git';
+import * as Git from "@skuba-lib/api/git";
 
 interface GitHubProject {
   orgName: string;
@@ -26,65 +26,50 @@ export const initialiseRepo = async (
 
   await Git.commit({
     dir,
-    message: 'Initial commit',
+    message: "Initial commit",
   });
 
   await git.addRemote({
     dir,
     fs,
-    remote: 'origin',
+    remote: "origin",
     url: `git@github.com:${orgName}/${repoName}.git`,
   });
 };
 
-export const downloadGitHubTemplate = async (
-  gitHubPath: string,
-  destinationDir: string,
-) => {
+export const downloadGitHubTemplate = async (gitHubPath: string, destinationDir: string) => {
   log.newline();
-  log.plain('Downloading', log.bold(gitHubPath), 'from GitHub...');
+  log.plain("Downloading", log.bold(gitHubPath), "from GitHub...");
 
   await simpleGit().clone(`git@github.com:${gitHubPath}.git`, destinationDir, [
-    '--depth=1',
-    '--quiet',
+    "--depth=1",
+    "--quiet",
   ]);
 
-  await fs.promises.rm(path.join(destinationDir, '.git'), {
+  await fs.promises.rm(path.join(destinationDir, ".git"), {
     force: true,
     recursive: true,
   });
 };
 
-export const downloadPrivateTemplate = async (
-  templateName: string,
-  destinationDir: string,
-) => {
+export const downloadPrivateTemplate = async (templateName: string, destinationDir: string) => {
   log.newline();
-  log.plain(
-    'Downloading',
-    log.bold(templateName),
-    'from SEEK-Jobs/skuba-templates',
-  );
+  log.plain("Downloading", log.bold(templateName), "from SEEK-Jobs/skuba-templates");
 
-  const repoUrl = 'git@github.com:SEEK-Jobs/skuba-templates.git';
+  const repoUrl = "git@github.com:SEEK-Jobs/skuba-templates.git";
   const folderPath = `templates/${templateName}`;
   const tempDir = `${destinationDir}_temp`;
 
   try {
-    await simpleGit().raw(['init', tempDir]);
+    await simpleGit().raw(["init", tempDir]);
 
-    const sparseCheckoutPath = path.join(
-      tempDir,
-      '.git',
-      'info',
-      'sparse-checkout',
-    );
+    const sparseCheckoutPath = path.join(tempDir, ".git", "info", "sparse-checkout");
     await fs.promises.writeFile(sparseCheckoutPath, `${folderPath}/*\n`);
 
     await simpleGit(tempDir)
-      .raw(['config', 'core.sparseCheckout', 'true'])
-      .addRemote('origin', repoUrl)
-      .raw(['pull', 'origin', 'main', '--depth', '1', '--quiet']);
+      .raw(["config", "core.sparseCheckout", "true"])
+      .addRemote("origin", repoUrl)
+      .raw(["pull", "origin", "main", "--depth", "1", "--quiet"]);
 
     const templatePath = path.join(tempDir, folderPath);
 

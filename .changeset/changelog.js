@@ -1,7 +1,4 @@
-const {
-  getInfo,
-  getInfoFromPullRequest,
-} = require('@changesets/get-github-info');
+const { getInfo, getInfoFromPullRequest } = require("@changesets/get-github-info");
 
 /**
  * Bold the scope of the changelog entry.
@@ -10,7 +7,7 @@ const {
  *
  * @param {string} firstLine
  */
-const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, '**$1:** ');
+const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, "**$1:** ");
 
 /**
  * Adapted from `@changesets/cli`.
@@ -21,20 +18,18 @@ const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, '**$1:** ');
  */
 const defaultChangelogFunctions = {
   getDependencyReleaseLine: async (_changesets, _dependenciesUpdated) => {
-    return '';
+    return "";
   },
   getReleaseLine: async (changeset) => {
-    const [firstLine, ...futureLines] = changeset.summary
-      .split('\n')
-      .map((l) => l.trimRight());
+    const [firstLine, ...futureLines] = changeset.summary.split("\n").map((l) => l.trimRight());
 
     const formattedFirstLine = boldScope(firstLine);
 
     const suffix = changeset.commit;
 
     return `\n\n- ${formattedFirstLine}${
-      suffix ? ` (${suffix})` : ''
-    }\n${futureLines.map((l) => `  ${l}`).join('\n')}`;
+      suffix ? ` (${suffix})` : ""
+    }\n${futureLines.map((l) => `  ${l}`).join("\n")}`;
   },
 };
 
@@ -46,12 +41,8 @@ const defaultChangelogFunctions = {
  * @type import('@changesets/types').ChangelogFunctions
  */
 const gitHubChangelogFunctions = {
-  getDependencyReleaseLine: async (
-    _changesets,
-    _dependenciesUpdated,
-    _options,
-  ) => {
-    return '';
+  getDependencyReleaseLine: async (_changesets, _dependenciesUpdated, _options) => {
+    return "";
   },
   getReleaseLine: async (changeset, _type, options) => {
     if (!options || !options.repo) {
@@ -71,20 +62,18 @@ const gitHubChangelogFunctions = {
         if (!isNaN(num)) {
           prFromSummary = num;
         }
-        return '';
+        return "";
       })
       .replace(/^\s*commit:\s*([^\s]+)/im, (_, commit) => {
         commitFromSummary = commit;
-        return '';
+        return "";
       })
       .replace(/^\s*(?:author|user):\s*@?([^\s]+)/gim, () => {
-        return '';
+        return "";
       })
       .trim();
 
-    const [firstLine, ...futureLines] = replacedChangelog
-      .split('\n')
-      .map((l) => l.trimRight());
+    const [firstLine, ...futureLines] = replacedChangelog.split("\n").map((l) => l.trimRight());
 
     const links = await (async () => {
       if (prFromSummary !== undefined) {
@@ -122,9 +111,9 @@ const gitHubChangelogFunctions = {
     const suffix = links.pull ?? links.commit;
 
     return [
-      `\n- ${formattedFirstLine}${suffix ? ` (${suffix})` : ''}`,
+      `\n- ${formattedFirstLine}${suffix ? ` (${suffix})` : ""}`,
       ...futureLines.map((l) => `  ${l}`),
-    ].join('\n');
+    ].join("\n");
   },
 };
 

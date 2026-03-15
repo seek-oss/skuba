@@ -1,21 +1,19 @@
-import path from 'path';
+import path from "path";
 
-import getPort from 'get-port';
+import getPort from "get-port";
 
-import { parseRunArgs } from '../../utils/args.js';
-import { createExec } from '../../utils/exec.js';
-import { getEntryPointFromManifest } from '../../utils/manifest.js';
-import { isIpPort } from '../../utils/validation.js';
-import { getCustomConditions } from '../build/tsc.js';
+import { parseRunArgs } from "../../utils/args.js";
+import { createExec } from "../../utils/exec.js";
+import { getEntryPointFromManifest } from "../../utils/manifest.js";
+import { isIpPort } from "../../utils/validation.js";
+import { getCustomConditions } from "../build/tsc.js";
 
 export const start = async () => {
   const customConditions = getCustomConditions();
   const args = parseRunArgs(process.argv.slice(2));
   const availablePort = await getPort();
 
-  const uniqueConditions = [
-    ...new Set([...(args.conditions ?? []), ...customConditions]),
-  ];
+  const uniqueConditions = [...new Set([...(args.conditions ?? []), ...customConditions])];
 
   args.entryPoint ??= await getEntryPointFromManifest();
 
@@ -27,16 +25,16 @@ export const start = async () => {
   });
 
   return execProcess(
-    'tsx',
-    'watch',
-    '--clear-screen=false',
+    "tsx",
+    "watch",
+    "--clear-screen=false",
     ...args.node,
     ...uniqueConditions.map((condition) => `--conditions=${condition}`),
-    '--env-file-if-exists',
-    '.env',
-    '--require',
-    'tsconfig-paths/register',
-    path.join(__dirname, '..', '..', 'wrapper', 'index.js'),
+    "--env-file-if-exists",
+    ".env",
+    "--require",
+    "tsconfig-paths/register",
+    path.join(__dirname, "..", "..", "wrapper", "index.js"),
     ...args.script,
   );
 };

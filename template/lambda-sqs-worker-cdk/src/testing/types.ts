@@ -1,7 +1,7 @@
-import { Chance } from 'chance';
-import * as z from 'zod/v4';
+import { Chance } from "chance";
+import * as z from "zod/v4";
 
-import type { JobPublishedEvent } from '#src/types/pipelineEvents.js';
+import type { JobPublishedEvent } from "#src/types/pipelineEvents.js";
 
 export type IdDescription = z.infer<typeof IdDescriptionSchema>;
 
@@ -17,17 +17,12 @@ export const mockIdDescription = (): IdDescription => ({
   description: chance.sentence(),
 });
 
-export const mockIdDescriptionJson = (): string =>
-  JSON.stringify(mockIdDescription());
+export const mockIdDescriptionJson = (): string => JSON.stringify(mockIdDescription());
 
-export const mockJobPublishedEvent = ({
-  entityId,
-}: {
-  entityId: string;
-}): JobPublishedEvent => ({
+export const mockJobPublishedEvent = ({ entityId }: { entityId: string }): JobPublishedEvent => ({
   data: {
     details: chance.paragraph(),
   },
   entityId,
-  eventType: 'JobPublished',
+  eventType: "JobPublished",
 });

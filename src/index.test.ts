@@ -1,7 +1,7 @@
-import * as skuba from './index.js';
+import * as skuba from "./index.js";
 
-describe('skuba', () => {
-  it('exports', () => {
-    expect(skuba).toHaveProperty('Net');
+describe("skuba", () => {
+  it("exports", () => {
+    expect(skuba).toHaveProperty("Net");
   });
 });

@@ -1,18 +1,18 @@
-import memfs, { vol } from 'memfs';
+import memfs, { vol } from "memfs";
 
-import { patchPnpmWorkspace } from './patchPnpmWorkspace.js';
+import { patchPnpmWorkspace } from "./patchPnpmWorkspace.js";
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
+jest.mock("fs-extra", () => memfs);
 
 beforeEach(() => {
   vol.reset();
 });
 
-describe('patchPnpmWorkspace', () => {
-  it('should skip if pnpm-workspace.yaml is not found', async () => {
-    const result = await patchPnpmWorkspace('format');
+describe("patchPnpmWorkspace", () => {
+  it("should skip if pnpm-workspace.yaml is not found", async () => {
+    const result = await patchPnpmWorkspace("format");
 
     expect(result).toEqual({
       ok: true,
@@ -21,12 +21,12 @@ describe('patchPnpmWorkspace', () => {
     });
   });
 
-  it('should apply defaults to an empty pnpm-workspace.yaml', async () => {
+  it("should apply defaults to an empty pnpm-workspace.yaml", async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': '',
+      "pnpm-workspace.yaml": "",
     });
 
-    const result = await patchPnpmWorkspace('format');
+    const result = await patchPnpmWorkspace("format");
 
     expect(result).toEqual({
       ok: true,
@@ -34,7 +34,7 @@ describe('patchPnpmWorkspace', () => {
       annotations: [],
     });
 
-    expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
+    expect(volToJson()["pnpm-workspace.yaml"]).toMatchInlineSnapshot(`
       "
       allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
@@ -82,34 +82,34 @@ describe('patchPnpmWorkspace', () => {
     `);
   });
 
-  it('should be idempotent', async () => {
+  it("should be idempotent", async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': '',
+      "pnpm-workspace.yaml": "",
     });
 
-    const firstResult = await patchPnpmWorkspace('format');
+    const firstResult = await patchPnpmWorkspace("format");
     expect(firstResult).toEqual({
       ok: true,
       fixable: false,
       annotations: [],
     });
-    const result1 = volToJson()['pnpm-workspace.yaml'];
+    const result1 = volToJson()["pnpm-workspace.yaml"];
 
-    const secondResult = await patchPnpmWorkspace('format');
+    const secondResult = await patchPnpmWorkspace("format");
     expect(secondResult).toEqual({
       ok: true,
       fixable: false,
       annotations: [],
     });
 
-    const result2 = volToJson()['pnpm-workspace.yaml'];
+    const result2 = volToJson()["pnpm-workspace.yaml"];
 
     expect(result1).toBe(result2);
   });
 
-  it('should handle regular comments in pnpm-workspace.yaml', async () => {
+  it("should handle regular comments in pnpm-workspace.yaml", async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': `
+      "pnpm-workspace.yaml": `
 # This is a comment
 allowBuilds:
   some-package: false # Inline comment
@@ -122,7 +122,7 @@ trustPolicyExclude:
 `,
     });
 
-    const result = await patchPnpmWorkspace('format');
+    const result = await patchPnpmWorkspace("format");
 
     expect(result).toEqual({
       ok: true,
@@ -130,7 +130,7 @@ trustPolicyExclude:
       annotations: [],
     });
 
-    expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
+    expect(volToJson()["pnpm-workspace.yaml"]).toMatchInlineSnapshot(`
       "# This is a comment
       allowBuilds:
         some-package: false # Inline comment
@@ -184,32 +184,31 @@ trustPolicyExclude:
     `);
   });
 
-  it('should skip saving if the mode is lint', async () => {
+  it("should skip saving if the mode is lint", async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': '',
+      "pnpm-workspace.yaml": "",
     });
 
-    const result = await patchPnpmWorkspace('lint');
+    const result = await patchPnpmWorkspace("lint");
 
     expect(result).toEqual({
       ok: false,
       fixable: true,
       annotations: [
         {
-          message:
-            'pnpm-workspace.yaml is out of date. Run `pnpm skuba format` to update it.',
-          path: 'pnpm-workspace.yaml',
+          message: "pnpm-workspace.yaml is out of date. Run `pnpm skuba format` to update it.",
+          path: "pnpm-workspace.yaml",
         },
       ],
     });
 
     // Should not save changes in lint mode
-    expect(volToJson()['pnpm-workspace.yaml']).toBe('');
+    expect(volToJson()["pnpm-workspace.yaml"]).toBe("");
   });
 
-  it('should preserve existing values in pnpm-workspace.yaml', async () => {
+  it("should preserve existing values in pnpm-workspace.yaml", async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': `
+      "pnpm-workspace.yaml": `
 blockExoticSubdeps: false
 publicHoistPattern:
   - some-package
@@ -219,7 +218,7 @@ trustPolicyExclude:
   - some-package@1.0.0`,
     });
 
-    const result = await patchPnpmWorkspace('format');
+    const result = await patchPnpmWorkspace("format");
 
     expect(result).toEqual({
       ok: true,
@@ -227,7 +226,7 @@ trustPolicyExclude:
       annotations: [],
     });
 
-    expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
+    expect(volToJson()["pnpm-workspace.yaml"]).toMatchInlineSnapshot(`
       "blockExoticSubdeps: true # Managed by skuba
       publicHoistPattern:
         - some-package
@@ -277,16 +276,16 @@ trustPolicyExclude:
     `);
   });
 
-  it('should fix flipped boolean values in pnpm-workspace.yaml', async () => {
+  it("should fix flipped boolean values in pnpm-workspace.yaml", async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': `
+      "pnpm-workspace.yaml": `
 blockExoticSubdeps: false
 ignorePatchFailures: true
 strictDepBuilds: false
 packageManagerStrictVersion: false`,
     });
 
-    const result = await patchPnpmWorkspace('format');
+    const result = await patchPnpmWorkspace("format");
 
     expect(result).toEqual({
       ok: true,
@@ -294,7 +293,7 @@ packageManagerStrictVersion: false`,
       annotations: [],
     });
 
-    expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
+    expect(volToJson()["pnpm-workspace.yaml"]).toMatchInlineSnapshot(`
       "blockExoticSubdeps: true # Managed by skuba
       ignorePatchFailures: false # Managed by skuba
       strictDepBuilds: true # Managed by skuba
@@ -341,9 +340,9 @@ packageManagerStrictVersion: false`,
     `);
   });
 
-  it('should handle missing items in arrays in pnpm-workspace.yaml', async () => {
+  it("should handle missing items in arrays in pnpm-workspace.yaml", async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': `
+      "pnpm-workspace.yaml": `
 publicHoistPattern:
   - some-package
   - esbuild
@@ -354,7 +353,7 @@ trustPolicyExclude:
   - semver@5.7.2 || 6.3.1`,
     });
 
-    const result = await patchPnpmWorkspace('format');
+    const result = await patchPnpmWorkspace("format");
 
     expect(result).toEqual({
       ok: true,
@@ -362,7 +361,7 @@ trustPolicyExclude:
       annotations: [],
     });
 
-    expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
+    expect(volToJson()["pnpm-workspace.yaml"]).toMatchInlineSnapshot(`
       "publicHoistPattern:
         - some-package
         - esbuild # Managed by skuba

@@ -1,15 +1,15 @@
-import path from 'path';
+import path from "path";
 
-import minimist from 'minimist';
+import minimist from "minimist";
 
 export const parseTscArgs = (args: string[]) => {
   const argv = minimist<{
     build: boolean | undefined;
     project: string | undefined;
   }>(args, {
-    alias: { b: 'build', p: 'project' },
-    boolean: 'build',
-    string: 'project',
+    alias: { b: "build", p: "project" },
+    boolean: "build",
+    string: "project",
   });
 
   const { basename, dirname } = parseTscProject(argv.project);
@@ -27,12 +27,12 @@ export const parseTscArgs = (args: string[]) => {
 const parseTscProject = (project: string | undefined) => {
   if (!project) {
     return {
-      basename: 'tsconfig.build.json',
+      basename: "tsconfig.build.json",
       dirname: process.cwd(),
     };
   }
 
-  if (project.toLocaleLowerCase().endsWith('.json')) {
+  if (project.toLocaleLowerCase().endsWith(".json")) {
     return {
       basename: path.basename(project),
       dirname: path.dirname(project),
@@ -40,7 +40,7 @@ const parseTscProject = (project: string | undefined) => {
   }
 
   return {
-    basename: 'tsconfig.json',
+    basename: "tsconfig.json",
     dirname: project,
   };
 };

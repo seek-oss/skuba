@@ -1,5 +1,5 @@
-import { log } from './index.js';
+import { log } from "./index.js";
 
-describe('app', () => {
-  it('defines a log function', () => expect(log).toBeDefined());
+describe("app", () => {
+  it("defines a log function", () => expect(log).toBeDefined());
 });

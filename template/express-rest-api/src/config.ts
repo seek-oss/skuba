@@ -1,4 +1,4 @@
-import { Env } from 'skuba-dive';
+import { Env } from "skuba-dive";
 
 interface Config {
   deployment: Deployment;
@@ -13,49 +13,49 @@ interface Config {
 
 type Deployment = (typeof deployments)[number];
 
-const dev = '<%- devGantryEnvironmentName %>';
-const prod = '<%- prodGantryEnvironmentName %>';
+const dev = "<%- devGantryEnvironmentName %>";
+const prod = "<%- prodGantryEnvironmentName %>";
 
-const deployments = ['local', 'test', dev, prod] as const;
+const deployments = ["local", "test", dev, prod] as const;
 
-const deployment = Env.oneOf(deployments)('DEPLOYMENT');
+const deployment = Env.oneOf(deployments)("DEPLOYMENT");
 
 /* istanbul ignore next: config verification makes more sense in a smoke test */
-const configs: Record<Deployment, () => Omit<Config, 'deployment'>> = {
+const configs: Record<Deployment, () => Omit<Config, "deployment">> = {
   local: () => ({
-    logLevel: 'debug',
-    name: '<%- serviceName %>',
-    version: 'local',
+    logLevel: "debug",
+    name: "<%- serviceName %>",
+    version: "local",
 
     metricsServer: null,
     port: null,
   }),
 
   test: () => ({
-    logLevel: Env.string('LOG_LEVEL', { default: 'silent' }),
-    name: '<%- serviceName %>',
-    version: 'test',
+    logLevel: Env.string("LOG_LEVEL", { default: "silent" }),
+    name: "<%- serviceName %>",
+    version: "test",
 
     metricsServer: null,
     port: null,
   }),
 
   [dev]: () => ({
-    logLevel: 'debug',
-    name: Env.string('SERVICE'),
-    version: Env.string('VERSION'),
+    logLevel: "debug",
+    name: Env.string("SERVICE"),
+    version: Env.string("VERSION"),
 
-    metricsServer: 'localhost',
-    port: Env.nonNegativeInteger('PORT'),
+    metricsServer: "localhost",
+    port: Env.nonNegativeInteger("PORT"),
   }),
 
   [prod]: () => ({
-    logLevel: 'info',
-    name: Env.string('SERVICE'),
-    version: Env.string('VERSION'),
+    logLevel: "info",
+    name: Env.string("SERVICE"),
+    version: Env.string("VERSION"),
 
-    metricsServer: 'localhost',
-    port: Env.nonNegativeInteger('PORT'),
+    metricsServer: "localhost",
+    port: Env.nonNegativeInteger("PORT"),
   }),
 };
 

@@ -1,12 +1,12 @@
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
+import fs from "fs-extra";
+import git from "isomorphic-git";
 
 interface GetHeadCommitParameters {
   dir: string;
   env?: Record<string, string | undefined>;
 }
 
-const EMPTY_GIT_LOG_ERROR = new Error('Git log does not contain any commits');
+const EMPTY_GIT_LOG_ERROR = new Error("Git log does not contain any commits");
 
 /**
  * Gets the object ID of the head commit.
@@ -14,10 +14,7 @@ const EMPTY_GIT_LOG_ERROR = new Error('Git log does not contain any commits');
  * This tries to extract the commit ID from common CI environment variables,
  * and falls back to the local Git repository log.
  */
-export const getHeadCommitId = async ({
-  dir,
-  env = process.env,
-}: GetHeadCommitParameters) => {
+export const getHeadCommitId = async ({ dir, env = process.env }: GetHeadCommitParameters) => {
   const oidFromEnv = env.BUILDKITE_COMMIT ?? env.GITHUB_SHA;
 
   if (oidFromEnv) {
@@ -39,10 +36,7 @@ export const getHeadCommitId = async ({
  * This tries to extract the message from common CI environment variables,
  * and falls back to the local Git repository log.
  */
-export const getHeadCommitMessage = async ({
-  dir,
-  env = process.env,
-}: GetHeadCommitParameters) => {
+export const getHeadCommitMessage = async ({ dir, env = process.env }: GetHeadCommitParameters) => {
   const messageFromEnv = env.BUILDKITE_MESSAGE;
 
   if (messageFromEnv) {

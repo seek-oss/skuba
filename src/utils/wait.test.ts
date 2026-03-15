@@ -1,5 +1,5 @@
-import * as sleepModule from './sleep.js';
-import * as wait from './wait.js';
+import * as sleepModule from "./sleep.js";
+import * as wait from "./wait.js";
 
 const delayMicrotask = () =>
   Promise.resolve()
@@ -7,12 +7,12 @@ const delayMicrotask = () =>
     .then(() => undefined)
     .then(() => undefined);
 
-const sleep = jest.spyOn(sleepModule, 'sleep');
+const sleep = jest.spyOn(sleepModule, "sleep");
 
 beforeEach(jest.clearAllMocks);
 
-describe('throwOnTimeout', () => {
-  it('propagates a fulfilled promise within the timeout', async () => {
+describe("throwOnTimeout", () => {
+  it("propagates a fulfilled promise within the timeout", async () => {
     sleep.mockImplementation(delayMicrotask);
 
     const value = 123;
@@ -24,10 +24,10 @@ describe('throwOnTimeout', () => {
     expect(sleep).toHaveBeenNthCalledWith(1, 3_000);
   });
 
-  it('propagates a rejected promise within the timeout', async () => {
+  it("propagates a rejected promise within the timeout", async () => {
     sleep.mockImplementation(delayMicrotask);
 
-    const err = new Error('Badness!');
+    const err = new Error("Badness!");
 
     const promise = jest.fn().mockRejectedValue(err);
 
@@ -37,7 +37,7 @@ describe('throwOnTimeout', () => {
     expect(sleep).toHaveBeenNthCalledWith(1, 2_000);
   });
 
-  it('enforces the timeout', async () => {
+  it("enforces the timeout", async () => {
     sleep.mockResolvedValue();
 
     const promise = jest.fn().mockImplementation(delayMicrotask);
@@ -51,8 +51,8 @@ describe('throwOnTimeout', () => {
   });
 });
 
-describe('withTimeout', () => {
-  it('propagates a static value for easier `jest.mock`ing', async () => {
+describe("withTimeout", () => {
+  it("propagates a static value for easier `jest.mock`ing", async () => {
     sleep.mockImplementation(delayMicrotask);
 
     const value = 123;
@@ -66,7 +66,7 @@ describe('withTimeout', () => {
     expect(sleep).toHaveBeenNthCalledWith(1, 1_000);
   });
 
-  it('propagates a fulfilled promise within the timeout', async () => {
+  it("propagates a fulfilled promise within the timeout", async () => {
     sleep.mockImplementation(delayMicrotask);
 
     const value = 123;
@@ -81,10 +81,10 @@ describe('withTimeout', () => {
     expect(sleep).toHaveBeenNthCalledWith(1, 1_000);
   });
 
-  it('propagates a rejected promise within the timeout', async () => {
+  it("propagates a rejected promise within the timeout", async () => {
     sleep.mockImplementation(delayMicrotask);
 
-    const err = new Error('Badness!');
+    const err = new Error("Badness!");
 
     const promise = jest.fn().mockRejectedValue(err);
 
@@ -94,7 +94,7 @@ describe('withTimeout', () => {
     expect(sleep).toHaveBeenNthCalledWith(1, 2_000);
   });
 
-  it('enforces the timeout', async () => {
+  it("enforces the timeout", async () => {
     sleep.mockResolvedValue();
 
     const promise = jest.fn().mockImplementation(delayMicrotask);

@@ -19,7 +19,7 @@ Discussion continues in the [esbuild](./esbuild.md) deep dive.
 
    ```js
    module.exports = {
-     presets: [require.resolve('skuba/config/babel')],
+     presets: [require.resolve("skuba/config/babel")],
    };
    ```
 
@@ -72,13 +72,13 @@ Discussion continues in the [esbuild](./esbuild.md) deep dive.
    it does not support interactive TypeScript nor modern JavaScript syntax:
 
    ```typescript
-   import { someExport } from 'src/someModule';
+   import { someExport } from "src/someModule";
    // Thrown: [...] Modules aren't supported in the REPL
 
-   const { someExport } = require('src/someModule');
+   const { someExport } = require("src/someModule");
    // Thrown: [...] Only `var` variables are supported in the REPL
 
-   var { someExport } = require('src/someModule');
+   var { someExport } = require("src/someModule");
    // undefined
 
    var v: undefined;

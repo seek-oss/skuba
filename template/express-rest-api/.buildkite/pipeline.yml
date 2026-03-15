@@ -25,7 +25,7 @@ configs:
 
 steps:
   - label: 🧖‍♀️ Warm Prod
-    command: ':'
+    command: ":"
     env:
       GET_NPM_TOKEN: please
     key: warm-prod
@@ -70,7 +70,7 @@ steps:
 
   - wait
   - block: 🙋🏻‍♀️ Deploy Dev
-    branches: '!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}'
+    branches: "!${BUILDKITE_PIPELINE_DEFAULT_BRANCH}"
 
   - <<: *deploy
     agents:

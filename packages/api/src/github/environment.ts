@@ -1,4 +1,4 @@
-import { isCiEnv } from '../../../../src/utils/env.js';
+import { isCiEnv } from "../../../../src/utils/env.js";
 
 /**
  * Returns the name of the build as seen in GitHub status checks.
@@ -11,10 +11,10 @@ export const buildNameFromEnvironment = (env = process.env): string => {
   }
 
   if (env.GITHUB_RUN_NUMBER) {
-    return `${env.GITHUB_WORKFLOW ?? 'Build'} #${env.GITHUB_RUN_NUMBER}`;
+    return `${env.GITHUB_WORKFLOW ?? "Build"} #${env.GITHUB_RUN_NUMBER}`;
   }
 
-  return 'Build';
+  return "Build";
 };
 
 /**
@@ -32,6 +32,5 @@ export const enabledFromEnvironment = (env = process.env): boolean =>
 /**
  * Tries to return a GitHub API token from the environment.
  */
-export const apiTokenFromEnvironment = (
-  env = process.env,
-): string | undefined => env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN;
+export const apiTokenFromEnvironment = (env = process.env): string | undefined =>
+  env.GITHUB_API_TOKEN ?? env.GITHUB_TOKEN;

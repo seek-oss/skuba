@@ -1,6 +1,6 @@
-import { log } from '../../../utils/logging.js';
-import { getConsumerManifest } from '../../../utils/manifest.js';
-import type { SkubaPackageJson } from '../../init/writePackageJson.js';
+import { log } from "../../../utils/logging.js";
+import { getConsumerManifest } from "../../../utils/manifest.js";
+import type { SkubaPackageJson } from "../../init/writePackageJson.js";
 
 export const isLikelyPackage = async (
   currentPath: string,
@@ -8,7 +8,7 @@ export const isLikelyPackage = async (
 ): Promise<boolean> => {
   const nearestPackageJsonResult = await getConsumerManifest(currentPath);
   if (!nearestPackageJsonResult) {
-    log.warn('package.json not found');
+    log.warn("package.json not found");
     return false;
   }
 
@@ -16,27 +16,27 @@ export const isLikelyPackage = async (
 
   const type = (packageJson.skuba as SkubaPackageJson)?.type;
 
-  if (type === 'application') {
+  if (type === "application") {
     return false;
   }
 
-  if (type === 'package') {
+  if (type === "package") {
     return true;
   }
 
-  if (typeof packageJson.sideEffects === 'boolean') {
+  if (typeof packageJson.sideEffects === "boolean") {
     return true;
   }
 
   if (
-    typeof packageJson.types === 'string' &&
-    typeof packageJson.module === 'string' &&
-    typeof packageJson.main === 'string'
+    typeof packageJson.types === "string" &&
+    typeof packageJson.module === "string" &&
+    typeof packageJson.main === "string"
   ) {
     return true;
   }
 
-  if (typeof packageJson.exports === 'object') {
+  if (typeof packageJson.exports === "object") {
     return true;
   }
 
@@ -49,11 +49,11 @@ export const isLikelyPackage = async (
     return true;
   }
 
-  if (typeof packageJson.types === 'string') {
+  if (typeof packageJson.types === "string") {
     return true;
   }
 
-  if (typeof packageJson.module === 'string') {
+  if (typeof packageJson.module === "string") {
     return true;
   }
 

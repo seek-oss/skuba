@@ -93,7 +93,7 @@ The entry point is chosen from:
 Your entry point can be a simple module that runs on load:
 
 ```typescript
-console.log('Hello world!');
+console.log("Hello world!");
 ```
 
 ### Start a Lambda function handler

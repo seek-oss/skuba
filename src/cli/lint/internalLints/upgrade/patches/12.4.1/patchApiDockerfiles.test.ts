@@ -1,12 +1,12 @@
-import memfs, { vol } from 'memfs';
+import memfs, { vol } from "memfs";
 
-import { Git } from '../../../../../../index.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import { Git } from "../../../../../../index.js";
+import { configForPackageManager } from "../../../../../../utils/packageManager.js";
+import type { PatchConfig, PatchReturnType } from "../../index.js";
 
-import { patchApiDockerfiles } from './patchApiDockerfiles.js';
+import { patchApiDockerfiles } from "./patchApiDockerfiles.js";
 
-jest.mock('../../../../../../index.js', () => ({
+jest.mock("../../../../../../index.js", () => ({
   Git: {
     getOwnerAndRepo: jest.fn(),
   },
@@ -14,57 +14,55 @@ jest.mock('../../../../../../index.js', () => ({
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
+jest.mock("fs-extra", () => memfs);
+jest.mock("fast-glob", () => ({
   glob: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+    jest.requireActual("fast-glob").glob(pat, { ...opts, fs: memfs }),
 }));
 
-jest.spyOn(console, 'warn').mockImplementation(() => {
+jest.spyOn(console, "warn").mockImplementation(() => {
   /* do nothing */
 });
-jest.spyOn(console, 'log').mockImplementation(() => {
+jest.spyOn(console, "log").mockImplementation(() => {
   /* do nothing */
 });
 
 beforeEach(() => {
   vol.reset();
   jest.clearAllMocks();
-  jest
-    .mocked(Git.getOwnerAndRepo)
-    .mockResolvedValue({ repo: 'test-repo', owner: 'seek' });
+  jest.mocked(Git.getOwnerAndRepo).mockResolvedValue({ repo: "test-repo", owner: "seek" });
 });
 
 const baseArgs: PatchConfig = {
   manifest: {
     packageJson: {
-      name: 'test',
-      version: '1.0.0',
-      readme: 'README.md',
-      _id: 'test',
+      name: "test",
+      version: "1.0.0",
+      readme: "README.md",
+      _id: "test",
     },
-    path: 'package.json',
+    path: "package.json",
   },
-  packageManager: configForPackageManager('yarn'),
-  mode: 'format',
+  packageManager: configForPackageManager("yarn"),
+  mode: "format",
 };
 
-describe('tryPatchApiDockerfiles', () => {
-  it('should skip if no Dockerfiles are found', async () => {
+describe("tryPatchApiDockerfiles", () => {
+  it("should skip if no Dockerfiles are found", async () => {
     vol.fromJSON({});
 
     await expect(
       patchApiDockerfiles({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no Dockerfiles found',
+      result: "skip",
+      reason: "no Dockerfiles found",
     });
   });
 
-  it('should skip if no patchable Dockerfiles are found', async () => {
+  it("should skip if no patchable Dockerfiles are found", async () => {
     vol.fromJSON({
       Dockerfile: `
 FROM node:18-alpine AS build
@@ -75,11 +73,11 @@ RUN yarn install
     await expect(
       patchApiDockerfiles({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no Dockerfiles to patch',
+      result: "skip",
+      reason: "no Dockerfiles to patch",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -92,7 +90,7 @@ RUN yarn install
 `);
   });
 
-  it('should skip if package.json is already copied from the same --from source', async () => {
+  it("should skip if package.json is already copied from the same --from source", async () => {
     vol.fromJSON({
       Dockerfile: `
 FROM node:18-alpine AS build
@@ -114,11 +112,11 @@ CMD ["node", "lib/listen.js"]
     await expect(
       patchApiDockerfiles({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no Dockerfiles to patch',
+      result: "skip",
+      reason: "no Dockerfiles to patch",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -142,7 +140,7 @@ CMD ["node", "lib/listen.js"]
 `);
   });
 
-  it('should add package.json COPY when missing for root directory', async () => {
+  it("should add package.json COPY when missing for root directory", async () => {
     vol.fromJSON({
       Dockerfile: `
 FROM node:18-alpine AS build
@@ -163,10 +161,10 @@ CMD ["node", "lib/listen.js"]
     await expect(
       patchApiDockerfiles({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -190,7 +188,7 @@ CMD ["node", "lib/listen.js"]
 `);
   });
 
-  it('should work with different --from source name', async () => {
+  it("should work with different --from source name", async () => {
     vol.fromJSON({
       Dockerfile: `
 FROM node:18-alpine AS builder
@@ -211,10 +209,10 @@ CMD ["node", "lib/listen.js"]
     await expect(
       patchApiDockerfiles({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -238,7 +236,7 @@ CMD ["node", "lib/listen.js"]
 `);
   });
 
-  it('should add package.json COPY for nested path', async () => {
+  it("should add package.json COPY for nested path", async () => {
     vol.fromJSON({
       Dockerfile: `
 FROM node:18-alpine AS build
@@ -259,10 +257,10 @@ CMD ["node", "apps/api/lib/listen.js"]
     await expect(
       patchApiDockerfiles({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -286,7 +284,7 @@ CMD ["node", "apps/api/lib/listen.js"]
 `);
   });
 
-  it('should not add package.json if copied from different --from source', async () => {
+  it("should not add package.json if copied from different --from source", async () => {
     vol.fromJSON({
       Dockerfile: `
 FROM node:18-alpine AS build
@@ -311,10 +309,10 @@ CMD ["node", "lib/listen.js"]
     await expect(
       patchApiDockerfiles({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -342,7 +340,7 @@ CMD ["node", "lib/listen.js"]
 `);
   });
 
-  it('should skip if using pnpm deploy', async () => {
+  it("should skip if using pnpm deploy", async () => {
     vol.fromJSON({
       Dockerfile: `
 FROM node:18-alpine AS build
@@ -363,15 +361,15 @@ CMD ["node", "lib/listen.js"]
     await expect(
       patchApiDockerfiles({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no Dockerfiles to patch',
+      result: "skip",
+      reason: "no Dockerfiles to patch",
     });
   });
 
-  it('should add package.json when COPY does not have --from parameter', async () => {
+  it("should add package.json when COPY does not have --from parameter", async () => {
     vol.fromJSON({
       Dockerfile: `
 FROM node:18-alpine
@@ -385,10 +383,10 @@ CMD ["node", "lib/listen.js"]
     await expect(
       patchApiDockerfiles({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`

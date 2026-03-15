@@ -1,5 +1,5 @@
-import { create } from './create.js';
-import * as parsers from './parsers.js';
+import { create } from "./create.js";
+import * as parsers from "./parsers.js";
 
 /**
  * Read an environment variable as a non-negative integer.
@@ -12,8 +12,7 @@ export const nonNegativeInteger = create(parsers.nonNegativeInteger);
  * Create a function that reads an environment variable and validates it against
  * the provided array of choices.
  */
-export const oneOf = <T>(choices: readonly T[]) =>
-  create(parsers.oneOf(choices));
+export const oneOf = <T>(choices: readonly T[]) => create(parsers.oneOf(choices));
 
 /**
  * Read an environment variable as a string.

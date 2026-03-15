@@ -1,9 +1,8 @@
-import { commandToModule } from './command.js';
+import { commandToModule } from "./command.js";
 
-describe('commandToModule', () => {
-  it('handles one-word command', () =>
-    expect(commandToModule('build')).toBe('build'));
+describe("commandToModule", () => {
+  it("handles one-word command", () => expect(commandToModule("build")).toBe("build"));
 
-  it('handles hyphened command', () =>
-    expect(commandToModule('build-package')).toBe('buildPackage'));
+  it("handles hyphened command", () =>
+    expect(commandToModule("build-package")).toBe("buildPackage"));
 });

@@ -1,13 +1,13 @@
-import { Env } from 'skuba-dive';
+import { Env } from "skuba-dive";
 
 type Deployment = (typeof deployments)[number];
 
-const deployments = ['dev', 'prod'] as const;
+const deployments = ["dev", "prod"] as const;
 
-const deployment = Env.oneOf(deployments)('DEPLOYMENT');
+const deployment = Env.oneOf(deployments)("DEPLOYMENT");
 
 interface Config {
-  env: 'development' | 'production';
+  env: "development" | "production";
   service: string;
   version: string;
 
@@ -23,12 +23,12 @@ interface Config {
   sourceSnsTopicArn: string;
 }
 
-const service = '<%- serviceName %>';
-const version = Env.string('VERSION');
+const service = "<%- serviceName %>";
+const version = Env.string("VERSION");
 
 const configs: Record<Deployment, Config> = {
   dev: {
-    env: 'development',
+    env: "development",
     service,
     version,
 
@@ -36,15 +36,15 @@ const configs: Record<Deployment, Config> = {
       batchSize: 10,
       reservedConcurrency: 3,
       environment: {
-        DEPLOYMENT: 'dev',
+        DEPLOYMENT: "dev",
       },
     },
 
-    datadogApiKeySecretArn: '<%- devDataDogApiKeySecretArn %>',
-    sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
+    datadogApiKeySecretArn: "<%- devDataDogApiKeySecretArn %>",
+    sourceSnsTopicArn: "TODO: sourceSnsTopicArn",
   },
   prod: {
-    env: 'production',
+    env: "production",
     service,
     version,
 
@@ -52,12 +52,12 @@ const configs: Record<Deployment, Config> = {
       batchSize: 10,
       reservedConcurrency: 20,
       environment: {
-        DEPLOYMENT: 'prod',
+        DEPLOYMENT: "prod",
       },
     },
 
-    datadogApiKeySecretArn: '<%- prodDataDogApiKeySecretArn %>',
-    sourceSnsTopicArn: 'TODO: sourceSnsTopicArn',
+    datadogApiKeySecretArn: "<%- prodDataDogApiKeySecretArn %>",
+    sourceSnsTopicArn: "TODO: sourceSnsTopicArn",
   },
 };
 

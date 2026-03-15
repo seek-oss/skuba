@@ -1,4 +1,4 @@
-import mergeWith from 'lodash.mergewith';
+import mergeWith from "lodash.mergewith";
 
 const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
 
@@ -35,7 +35,5 @@ export const merge = <A, B>(obj: A, src: B) =>
  */
 export const mergeRaw = <A, B>(obj: A, src: B) =>
   mergeWith({}, obj, src, (objValue: unknown, srcValue: unknown) =>
-    isArray(objValue) && isArray(srcValue)
-      ? objValue.concat(srcValue)
-      : undefined,
+    isArray(objValue) && isArray(srcValue) ? objValue.concat(srcValue) : undefined,
   );

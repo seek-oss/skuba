@@ -1,5 +1,5 @@
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
+import fs from "fs-extra";
+import git from "isomorphic-git";
 
 /**
  * Tries to return a Git branch name from CI environment variables.

@@ -1,18 +1,15 @@
-import readPkgUp, { type NormalizedPackageJson } from 'read-pkg-up';
-import * as z from 'zod/v4';
+import readPkgUp, { type NormalizedPackageJson } from "read-pkg-up";
+import * as z from "zod/v4";
 
-import { hasProp } from './validation.js';
+import { hasProp } from "./validation.js";
 
 export type ProjectType = z.infer<typeof projectTypeSchema>;
 
-export const projectTypeSchema = z.union([
-  z.literal('application'),
-  z.literal('package'),
-]);
+export const projectTypeSchema = z.union([z.literal("application"), z.literal("package")]);
 
-export const PROJECT_TYPES = ['application', 'package'] as const;
+export const PROJECT_TYPES = ["application", "package"] as const;
 
-const DEFAULT_ENTRY_POINT = 'src/app.ts';
+const DEFAULT_ENTRY_POINT = "src/app.ts";
 
 let skubaManifest: NormalizedPackageJson | undefined;
 
@@ -24,14 +21,13 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
   const result = await readPkgUp({ cwd: __dirname });
 
   if (result === undefined) {
-    throw Error('skuba could not find its own manifest');
+    throw Error("skuba could not find its own manifest");
   }
 
   return (skubaManifest = result.packageJson);
 };
 
-export const getConsumerManifest = (cwd?: string) =>
-  readPkgUp({ cwd, normalize: false });
+export const getConsumerManifest = (cwd?: string) => readPkgUp({ cwd, normalize: false });
 
 export const getManifestProperties = async <T extends string, V = unknown>(
   prop: T,
@@ -54,9 +50,7 @@ export const getManifestProperties = async <T extends string, V = unknown>(
     : undefined;
 
   const type =
-    typeof manifest.packageJson.type === 'string'
-      ? manifest.packageJson.type
-      : undefined;
+    typeof manifest.packageJson.type === "string" ? manifest.packageJson.type : undefined;
 
   return {
     value,
@@ -70,11 +64,11 @@ export const getStringPropFromConsumerManifest = async <T extends string>(
 ): Promise<string | undefined> => {
   const manifest = await getManifestProperties(prop);
 
-  return typeof manifest?.value === 'string' ? manifest.value : undefined;
+  return typeof manifest?.value === "string" ? manifest.value : undefined;
 };
 
 export const getEntryPointFromManifest = async (): Promise<string> => {
-  const entryPoint = await getStringPropFromConsumerManifest('entryPoint');
+  const entryPoint = await getStringPropFromConsumerManifest("entryPoint");
 
   return entryPoint ?? DEFAULT_ENTRY_POINT;
 };

@@ -1,28 +1,19 @@
-import { select } from '@inquirer/prompts';
-import type { ReadResult } from 'read-pkg-up';
+import { select } from "@inquirer/prompts";
+import type { ReadResult } from "read-pkg-up";
 
-import { log } from '../../utils/logging.js';
-import {
-  PROJECT_TYPES,
-  type ProjectType,
-  projectTypeSchema,
-} from '../../utils/manifest.js';
-import type { TemplateConfig } from '../../utils/template.js';
-import { hasProp } from '../../utils/validation.js';
+import { log } from "../../utils/logging.js";
+import { PROJECT_TYPES, type ProjectType, projectTypeSchema } from "../../utils/manifest.js";
+import type { TemplateConfig } from "../../utils/template.js";
+import { hasProp } from "../../utils/validation.js";
 
 interface Props {
   manifest: ReadResult;
   templateConfig: TemplateConfig;
 }
 
-export const getProjectType = async ({
-  manifest,
-  templateConfig,
-}: Props): Promise<ProjectType> => {
+export const getProjectType = async ({ manifest, templateConfig }: Props): Promise<ProjectType> => {
   const projectType = projectTypeSchema.safeParse(
-    hasProp(manifest.packageJson.skuba, 'type')
-      ? manifest.packageJson.skuba.type
-      : null,
+    hasProp(manifest.packageJson.skuba, "type") ? manifest.packageJson.skuba.type : null,
   );
 
   if (projectType.success) {
@@ -34,15 +25,15 @@ export const getProjectType = async ({
   }
 
   const initial: ProjectType =
-    manifest.packageJson.devDependencies?.['@seek/seek-module-toolkit'] ||
+    manifest.packageJson.devDependencies?.["@seek/seek-module-toolkit"] ||
     manifest.packageJson.files
-      ? 'package'
-      : 'application';
+      ? "package"
+      : "application";
 
   log.newline();
 
   return select({
-    message: 'Project type:',
+    message: "Project type:",
     choices: PROJECT_TYPES.map((type) => ({ name: type, value: type })),
     default: initial,
   });

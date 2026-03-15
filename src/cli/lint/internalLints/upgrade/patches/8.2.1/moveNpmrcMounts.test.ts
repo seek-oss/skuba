@@ -1,34 +1,33 @@
 // eslint-disable-next-line no-restricted-imports -- fs-extra is mocked
-import fsp from 'fs/promises';
+import fsp from "fs/promises";
 
-import memfs, { vol } from 'memfs';
+import memfs, { vol } from "memfs";
 
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig } from '../../index.js';
+import { configForPackageManager } from "../../../../../../utils/packageManager.js";
+import type { PatchConfig } from "../../index.js";
 
-import { tryMoveNpmrcMounts } from './moveNpmrcMounts.js';
+import { tryMoveNpmrcMounts } from "./moveNpmrcMounts.js";
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+jest.mock("fs", () => memfs);
+jest.mock("fast-glob", () => ({
+  glob: (pat: any, opts: any) => jest.requireActual("fast-glob").glob(pat, { ...opts, fs: memfs }),
 }));
 
 beforeEach(() => vol.reset());
 
-describe('moveNpmrcMounts', () => {
+describe("moveNpmrcMounts", () => {
   const baseArgs = {
-    manifest: {} as PatchConfig['manifest'],
-    packageManager: configForPackageManager('pnpm'),
+    manifest: {} as PatchConfig["manifest"],
+    packageManager: configForPackageManager("pnpm"),
   };
 
   afterEach(() => jest.resetAllMocks());
 
-  describe.each(['lint', 'format'] as const)('%s', (mode) => {
-    it('should not need to modify any of the template pipelines', async () => {
-      for (const template of await fsp.readdir('template')) {
+  describe.each(["lint", "format"] as const)("%s", (mode) => {
+    it("should not need to modify any of the template pipelines", async () => {
+      for (const template of await fsp.readdir("template")) {
         const pipelineFile = `template/${template}/.buildkite/pipeline.yml`;
         try {
           await fsp.stat(pipelineFile);
@@ -36,10 +35,10 @@ describe('moveNpmrcMounts', () => {
           continue;
         }
 
-        const contents = await fsp.readFile(pipelineFile, 'utf-8');
+        const contents = await fsp.readFile(pipelineFile, "utf-8");
 
         vol.fromJSON({
-          '.buildkite/pipeline.yml': contents,
+          ".buildkite/pipeline.yml": contents,
         });
 
         await expect(
@@ -48,38 +47,38 @@ describe('moveNpmrcMounts', () => {
             mode,
           }),
         ).resolves.toEqual({
-          result: 'skip',
-          reason: 'no .npmrc mounts found need to be updated',
+          result: "skip",
+          reason: "no .npmrc mounts found need to be updated",
         });
 
         expect(volToJson()).toEqual({
-          '.buildkite/pipeline.yml': contents,
+          ".buildkite/pipeline.yml": contents,
         });
       }
     });
 
-    it('should skip if no Buildkite files are found', async () => {
+    it("should skip if no Buildkite files are found", async () => {
       await expect(
         tryMoveNpmrcMounts({
           ...baseArgs,
           mode,
         }),
       ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no Buildkite files found',
+        result: "skip",
+        reason: "no Buildkite files found",
       });
 
       expect(volToJson()).toEqual({});
     });
 
-    it('should skip on a pipeline without mounts', async () => {
+    it("should skip on a pipeline without mounts", async () => {
       const input = `steps:
   - label: 'My Step'
     command: echo 'Hello, world!'
 `;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -88,16 +87,16 @@ describe('moveNpmrcMounts', () => {
           mode,
         }),
       ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no .npmrc mounts found need to be updated',
+        result: "skip",
+        reason: "no .npmrc mounts found need to be updated",
       });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
     });
 
-    it('should fix an incorrect mount', async () => {
+    it("should fix an incorrect mount", async () => {
       const input = `configs:
   plugins:
     - &docker-ecr-cache
@@ -118,7 +117,7 @@ describe('moveNpmrcMounts', () => {
 steps: []`;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -126,11 +125,11 @@ steps: []`;
           ...baseArgs,
           mode,
         }),
-      ).resolves.toEqual({ result: 'apply' });
+      ).resolves.toEqual({ result: "apply" });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml':
-          mode === 'lint'
+        ".buildkite/pipeline.yml":
+          mode === "lint"
             ? input
             : `configs:
   plugins:
@@ -153,7 +152,7 @@ steps: []`,
       });
     });
 
-    it('should fix an incorrect mount with comments', async () => {
+    it("should fix an incorrect mount with comments", async () => {
       const input = `configs:
   plugins:
     - &docker-ecr-cache
@@ -174,7 +173,7 @@ steps: []`,
 steps: []`;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -182,11 +181,11 @@ steps: []`;
           ...baseArgs,
           mode,
         }),
-      ).resolves.toEqual({ result: 'apply' });
+      ).resolves.toEqual({ result: "apply" });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml':
-          mode === 'lint'
+        ".buildkite/pipeline.yml":
+          mode === "lint"
             ? input
             : `configs:
   plugins:
@@ -209,7 +208,7 @@ steps: []`,
       });
     });
 
-    it('should skip a mount without tmp', async () => {
+    it("should skip a mount without tmp", async () => {
       const input = `configs:
   plugins:
     - &docker-ecr-cache
@@ -229,7 +228,7 @@ steps: []`,
 steps: []`;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -238,16 +237,16 @@ steps: []`;
           mode,
         }),
       ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no .npmrc mounts found need to be updated',
+        result: "skip",
+        reason: "no .npmrc mounts found need to be updated",
       });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
     });
 
-    it('should skip a /tmp/ mount', async () => {
+    it("should skip a /tmp/ mount", async () => {
       const input = `configs:
   plugins:
     - &docker-ecr-cache
@@ -268,7 +267,7 @@ steps: []`;
 steps: []`;
 
       vol.fromJSON({
-        'packages/stuff/.buildkite/pipeline.yaml': input,
+        "packages/stuff/.buildkite/pipeline.yaml": input,
       });
 
       await expect(
@@ -277,12 +276,12 @@ steps: []`;
           mode,
         }),
       ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no .npmrc mounts found need to be updated',
+        result: "skip",
+        reason: "no .npmrc mounts found need to be updated",
       });
 
       expect(volToJson()).toEqual({
-        'packages/stuff/.buildkite/pipeline.yaml': input,
+        "packages/stuff/.buildkite/pipeline.yaml": input,
       });
     });
   });

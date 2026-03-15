@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+"skuba": minor
 ---
 
 lint: Restore managed `pnpm-workspace.yaml` sections

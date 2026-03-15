@@ -2,9 +2,7 @@ export const nonNegativeInteger = (input: string, name: string): number => {
   const int = parseInt(input, 10);
 
   if (int < 0 || !Number.isSafeInteger(int) || input !== String(int)) {
-    throw Error(
-      `process.env.${name} is not a non-negative integer: '${input}'`,
-    );
+    throw Error(`process.env.${name} is not a non-negative integer: '${input}'`);
   }
 
   return int;
@@ -21,9 +19,7 @@ export const oneOf = <T>(choices: readonly T[]) => {
       throw Error(
         `process.env.${name} is not a supported choice: '${String(
           input,
-        )}'. Expected one of: [${choices
-          .map((choice) => `'${String(choice)}'`)
-          .join(', ')}]`,
+        )}'. Expected one of: [${choices.map((choice) => `'${String(choice)}'`).join(", ")}]`,
       );
     }
 
@@ -31,7 +27,7 @@ export const oneOf = <T>(choices: readonly T[]) => {
   };
 };
 
-const falseys = ['false', 'off', 'no', 'n', '0'];
+const falseys = ["false", "off", "no", "n", "0"];
 
 export const boolean = (input: string): boolean =>
   falseys.includes(input.toLowerCase()) ? false : Boolean(input);

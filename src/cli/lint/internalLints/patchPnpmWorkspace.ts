@@ -1,77 +1,74 @@
-import path from 'path';
-import { inspect } from 'util';
+import path from "path";
+import { inspect } from "util";
 
-import { type Edit, type SgNode, parse } from '@ast-grep/napi';
-import type { Config } from '@pnpm/config';
-import fs from 'fs-extra';
+import { type Edit, type SgNode, parse } from "@ast-grep/napi";
+import type { Config } from "@pnpm/config";
+import fs from "fs-extra";
 
-import { log } from '../../../utils/logging.js';
-import type { InternalLintResult } from '../internal.js';
+import { log } from "../../../utils/logging.js";
+import type { InternalLintResult } from "../internal.js";
 
-import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
+import { registerAstGrepLanguages } from "./registerAstGrepLanguages.js";
 
-import { Git } from '@skuba-lib/api';
+import { Git } from "@skuba-lib/api";
 
 /**
  *  Keep in sync with packages/pnpm-plugin-skuba/pnpmfile.cjs
  */
 const defaultConfig = {
   allowBuilds: {
-    '@ast-grep/lang-json': true,
-    '@ast-grep/lang-yaml': true,
-    '@datadog/native-appsec': true,
-    '@datadog/native-iast-taint-tracking': true,
-    '@datadog/native-metrics': true,
-    '@datadog/pprof': true,
-    'dd-trace': true,
+    "@ast-grep/lang-json": true,
+    "@ast-grep/lang-yaml": true,
+    "@datadog/native-appsec": true,
+    "@datadog/native-iast-taint-tracking": true,
+    "@datadog/native-metrics": true,
+    "@datadog/pprof": true,
+    "dd-trace": true,
     esbuild: true,
     protobufjs: true,
-    'unix-dgram': true,
-    'unrs-resolver': true,
+    "unix-dgram": true,
+    "unrs-resolver": true,
   },
   blockExoticSubdeps: true,
   ignorePatchFailures: false,
 
   minimumReleaseAge: 4320,
   minimumReleaseAgeExclude: [
-    '@seek/*',
-    '@skuba-lib/*',
-    'eslint-config-seek',
-    'eslint-config-skuba',
-    'eslint-plugin-skuba',
-    'pnpm-plugin-skuba',
-    'skuba',
-    'skuba-dive',
-    'tsconfig-seek',
+    "@seek/*",
+    "@skuba-lib/*",
+    "eslint-config-seek",
+    "eslint-config-skuba",
+    "eslint-plugin-skuba",
+    "pnpm-plugin-skuba",
+    "skuba",
+    "skuba-dive",
+    "tsconfig-seek",
   ],
 
   packageManagerStrictVersion: true,
   publicHoistPattern: [
-    '@arethetypeswrong/core',
-    '@eslint/*',
-    '@types*',
-    'esbuild',
-    'eslint',
-    'eslint-config-skuba',
-    'jest',
-    'prettier',
-    'publint',
-    'tsconfig-seek',
-    'tsdown',
-    'typescript',
+    "@arethetypeswrong/core",
+    "@eslint/*",
+    "@types*",
+    "esbuild",
+    "eslint",
+    "eslint-config-skuba",
+    "jest",
+    "prettier",
+    "publint",
+    "tsconfig-seek",
+    "tsdown",
+    "typescript",
   ],
   strictDepBuilds: true,
-  trustPolicy: 'no-downgrade',
-  trustPolicyExclude: ['semver@5.7.2 || 6.3.1'],
+  trustPolicy: "no-downgrade",
+  trustPolicyExclude: ["semver@5.7.2 || 6.3.1"],
 } satisfies Partial<Config>;
 
 const isSimpleValue = (value: unknown) =>
-  typeof value === 'boolean' ||
-  typeof value === 'number' ||
-  typeof value === 'string';
+  typeof value === "boolean" || typeof value === "number" || typeof value === "string";
 
-const escapeRegExp = (value: string) =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // Quote strings that begin with YAML reserved indicator characters (@ and `)
 const quoteYamlStringValue = (value: string): string => {
@@ -86,21 +83,19 @@ const mapConfigToYamlValue = (
   value: (typeof defaultConfig)[keyof typeof defaultConfig],
 ): string => {
   if (isSimpleValue(value)) {
-    const yamlValue =
-      typeof value === 'string' ? quoteYamlStringValue(value) : value;
+    const yamlValue = typeof value === "string" ? quoteYamlStringValue(value) : value;
     return `${key}: ${yamlValue} # Managed by skuba`;
   }
 
   if (Array.isArray(value)) {
-    return `${key}:\n${value.map((item) => `  - ${quoteYamlStringValue(item)} # Managed by skuba`).join('\n')}`;
+    return `${key}:\n${value.map((item) => `  - ${quoteYamlStringValue(item)} # Managed by skuba`).join("\n")}`;
   }
 
   return `${key}:\n${Object.entries(value)
     .map(
-      ([subKey, subValue]) =>
-        `  ${quoteYamlStringValue(subKey)}: ${subValue} # Managed by skuba`,
+      ([subKey, subValue]) => `  ${quoteYamlStringValue(subKey)}: ${subValue} # Managed by skuba`,
     )
-    .join('\n')}`;
+    .join("\n")}`;
 };
 
 const getLastNode = (node: SgNode): SgNode => {
@@ -115,7 +110,7 @@ const getLastNode = (node: SgNode): SgNode => {
 };
 
 export const patchPnpmWorkspace = async (
-  mode: 'format' | 'lint',
+  mode: "format" | "lint",
   cwd: string = process.cwd(),
 ): Promise<InternalLintResult> => {
   const root = await Git.findRoot({ dir: cwd });
@@ -123,10 +118,7 @@ export const patchPnpmWorkspace = async (
 
   let pnpmWorkspaceFile: string;
   try {
-    pnpmWorkspaceFile = await fs.promises.readFile(
-      path.join(dir, 'pnpm-workspace.yaml'),
-      'utf8',
-    );
+    pnpmWorkspaceFile = await fs.promises.readFile(path.join(dir, "pnpm-workspace.yaml"), "utf8");
   } catch {
     return {
       ok: true,
@@ -137,7 +129,7 @@ export const patchPnpmWorkspace = async (
 
   registerAstGrepLanguages();
 
-  const ast = parse('yaml', pnpmWorkspaceFile);
+  const ast = parse("yaml", pnpmWorkspaceFile);
   const edits: Edit[] = [];
 
   Object.entries(defaultConfig).forEach(([key, value]) => {
@@ -145,7 +137,7 @@ export const patchPnpmWorkspace = async (
       rule: {
         pattern: {
           context: `${key}:`,
-          selector: 'block_mapping_pair',
+          selector: "block_mapping_pair",
         },
       },
     });
@@ -158,17 +150,13 @@ export const patchPnpmWorkspace = async (
         insertedText: `\n${mapConfigToYamlValue(key, value)}`,
       });
     } else if (isSimpleValue(value)) {
-      const yamlValue =
-        typeof value === 'string' ? quoteYamlStringValue(value) : value;
+      const yamlValue = typeof value === "string" ? quoteYamlStringValue(value) : value;
       const managedText = `${key}: ${yamlValue} # Managed by skuba`;
       // The comment is a sibling node, not part of the block_mapping_pair.
       const nextSib = node.next();
-      const commentNode = nextSib?.kind() === 'comment' ? nextSib : null;
+      const commentNode = nextSib?.kind() === "comment" ? nextSib : null;
       const endIdx = commentNode?.range().end.index ?? node.range().end.index;
-      const lineText = pnpmWorkspaceFile.substring(
-        node.range().start.index,
-        endIdx,
-      );
+      const lineText = pnpmWorkspaceFile.substring(node.range().start.index, endIdx);
       if (lineText !== managedText) {
         edits.push({
           startPos: node.range().start.index,
@@ -177,15 +165,13 @@ export const patchPnpmWorkspace = async (
         });
       }
     } else if (Array.isArray(value)) {
-      const seqItems = node.findAll({ rule: { kind: 'block_sequence_item' } });
+      const seqItems = node.findAll({ rule: { kind: "block_sequence_item" } });
 
       const missingValues = value
         .map((v) => {
           const quotedV = quoteYamlStringValue(v);
           const seqItem = seqItems.find((item) =>
-            new RegExp(`^- ${escapeRegExp(quotedV)}(?:\\s|$)`).test(
-              item.text(),
-            ),
+            new RegExp(`^- ${escapeRegExp(quotedV)}(?:\\s|$)`).test(item.text()),
           );
 
           if (!seqItem) {
@@ -193,13 +179,9 @@ export const patchPnpmWorkspace = async (
           }
 
           const nextSib = seqItem.next();
-          const commentNode = nextSib?.kind() === 'comment' ? nextSib : null;
-          const endIdx =
-            commentNode?.range().end.index ?? seqItem.range().end.index;
-          const lineText = pnpmWorkspaceFile.substring(
-            seqItem.range().start.index,
-            endIdx,
-          );
+          const commentNode = nextSib?.kind() === "comment" ? nextSib : null;
+          const endIdx = commentNode?.range().end.index ?? seqItem.range().end.index;
+          const lineText = pnpmWorkspaceFile.substring(seqItem.range().start.index, endIdx);
 
           const expectedLineText = `- ${quotedV} # Managed by skuba`;
           if (lineText !== expectedLineText) {
@@ -215,7 +197,7 @@ export const patchPnpmWorkspace = async (
 
       const itemsToAdd = missingValues
         .map((v) => `  - ${quoteYamlStringValue(v)} # Managed by skuba`)
-        .join('\n');
+        .join("\n");
 
       const lastItem = seqItems[seqItems.length - 1];
 
@@ -230,7 +212,7 @@ export const patchPnpmWorkspace = async (
       }
     } else {
       const mappingItems = node.findAll({
-        rule: { kind: 'block_mapping_pair' },
+        rule: { kind: "block_mapping_pair" },
       });
 
       const missingKeys = Object.entries(value)
@@ -247,9 +229,8 @@ export const patchPnpmWorkspace = async (
           const expectedText = `${quotedSubKey}: ${subValue} # Managed by skuba`;
 
           const nextSib = mappingItem.next();
-          const commentNode = nextSib?.kind() === 'comment' ? nextSib : null;
-          const itemEndIdx =
-            commentNode?.range().end.index ?? mappingItem.range().end.index;
+          const commentNode = nextSib?.kind() === "comment" ? nextSib : null;
+          const itemEndIdx = commentNode?.range().end.index ?? mappingItem.range().end.index;
           const itemLineText = pnpmWorkspaceFile.substring(
             mappingItem.range().start.index,
             itemEndIdx,
@@ -270,7 +251,7 @@ export const patchPnpmWorkspace = async (
           ([subKey, subValue]) =>
             `  ${quoteYamlStringValue(subKey)}: ${subValue} # Managed by skuba`,
         )
-        .join('\n');
+        .join("\n");
 
       const lastItem = mappingItems[mappingItems.length - 1];
 
@@ -294,15 +275,14 @@ export const patchPnpmWorkspace = async (
     };
   }
 
-  if (mode === 'lint') {
+  if (mode === "lint") {
     return {
       ok: false,
       fixable: true,
       annotations: [
         {
-          message:
-            'pnpm-workspace.yaml is out of date. Run `pnpm skuba format` to update it.',
-          path: 'pnpm-workspace.yaml',
+          message: "pnpm-workspace.yaml is out of date. Run `pnpm skuba format` to update it.",
+          path: "pnpm-workspace.yaml",
         },
       ],
     };
@@ -310,11 +290,7 @@ export const patchPnpmWorkspace = async (
 
   const newSource = ast.root().commitEdits(edits);
 
-  await fs.promises.writeFile(
-    path.join(dir, 'pnpm-workspace.yaml'),
-    newSource,
-    'utf8',
-  );
+  await fs.promises.writeFile(path.join(dir, "pnpm-workspace.yaml"), newSource, "utf8");
 
   return {
     ok: true,
@@ -324,12 +300,12 @@ export const patchPnpmWorkspace = async (
 };
 
 export const tryPatchPnpmWorkspace = async (
-  mode: 'format' | 'lint',
+  mode: "format" | "lint",
 ): Promise<InternalLintResult> => {
   try {
     return await patchPnpmWorkspace(mode);
   } catch (err) {
-    log.warn('Failed to patch pnpm workspace.');
+    log.warn("Failed to patch pnpm workspace.");
     log.subtle(inspect(err));
     return { ok: false, fixable: false, annotations: [] };
   }

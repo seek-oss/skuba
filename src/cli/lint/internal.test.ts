@@ -1,8 +1,8 @@
-import { internalLint } from './internal.js';
+import { internalLint } from "./internal.js";
 
-describe('internalLint', () => {
+describe("internalLint", () => {
   beforeEach(() => {
-    jest.spyOn(console, 'log').mockImplementation(() => {
+    jest.spyOn(console, "log").mockImplementation(() => {
       /* no-op */
     });
   });
@@ -11,8 +11,8 @@ describe('internalLint', () => {
     jest.clearAllMocks();
   });
 
-  it('passes on skuba itself', () =>
-    expect(internalLint('lint')).resolves.toEqual({
+  it("passes on skuba itself", () =>
+    expect(internalLint("lint")).resolves.toEqual({
       ok: true,
       fixable: false,
       annotations: [],

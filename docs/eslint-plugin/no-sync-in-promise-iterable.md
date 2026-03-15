@@ -6,7 +6,7 @@ parent: ESLint plugin
 
 ```json5
 {
-  'skuba/no-sync-in-promise-iterable': 'warn',
+  "skuba/no-sync-in-promise-iterable": "warn",
 }
 ```
 
@@ -168,7 +168,7 @@ The following example demonstrates the issue:
 ```typescript
 const evil = (() => {
   if (condition) {
-    throw new Error('Synchronous error'); // Throws synchronous error
+    throw new Error("Synchronous error"); // Throws synchronous error
   }
 
   return Promise.resolve();
@@ -183,7 +183,7 @@ but you are unlikely to need to micro-optimise to this degree.
 ```typescript
 const good = (async () => {
   if (something) {
-    throw new Error('Asynchronous error');
+    throw new Error("Asynchronous error");
   }
 
   return;
@@ -211,7 +211,7 @@ Custom [`get`]ters and [`set`]ters can throw errors:
 ```typescript
 const obj = {
   get prop() {
-    throw new Error('Badness!');
+    throw new Error("Badness!");
   },
 };
 

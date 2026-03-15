@@ -1,4 +1,4 @@
-import type { Config } from 'eslint/config';
+import type { Config } from "eslint/config";
 
 declare const config: Config[];
 

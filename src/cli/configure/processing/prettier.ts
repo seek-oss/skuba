@@ -1,11 +1,11 @@
-import type prettier from 'prettier';
+import type prettier from "prettier";
 
-import prettierConfig from '../../../../config/prettier.js';
+import prettierConfig from "../../../../config/prettier.js";
 
-type Options = Pick<prettier.Options, 'filepath' | 'parser'>;
+type Options = Pick<prettier.Options, "filepath" | "parser">;
 
 export const formatPrettier = async (source: string, options: Options) => {
-  const prettier = await import('prettier');
+  const prettier = await import("prettier");
   return prettier.format(source, {
     ...options,
     ...prettierConfig,

@@ -1,9 +1,9 @@
-import http from 'http';
+import http from "http";
 
-import { isFunction, isIpPort, isObject } from '../utils/validation.js';
+import { isFunction, isIpPort, isObject } from "../utils/validation.js";
 
-import { serveRequestListener } from './http.js';
-import { startServer } from './server.js';
+import { serveRequestListener } from "./http.js";
+import { startServer } from "./server.js";
 
 // Express compatibility
 interface FunctionConfig extends http.RequestListener {
@@ -23,9 +23,7 @@ interface ObjectConfig {
   port?: unknown;
 }
 
-const isConfig = (
-  data: unknown,
-): data is Promise<FunctionConfig> | Promise<ObjectConfig> =>
+const isConfig = (data: unknown): data is Promise<FunctionConfig> | Promise<ObjectConfig> =>
   isFunction(data) || isObject(data);
 
 interface Args {
@@ -38,10 +36,7 @@ interface Args {
  *
  * This supports Express and Koa applications out of the box.
  */
-export const runRequestListener = async ({
-  availablePort,
-  entryPoint,
-}: Args): Promise<void> => {
+export const runRequestListener = async ({ availablePort, entryPoint }: Args): Promise<void> => {
   if (!isConfig(entryPoint)) {
     // Assume an executable script with weird exports
     return;
@@ -49,7 +44,7 @@ export const runRequestListener = async ({
 
   let config: FunctionConfig | ObjectConfig = await entryPoint;
 
-  if (typeof config === 'object' && isConfig(config.default)) {
+  if (typeof config === "object" && isConfig(config.default)) {
     // Prefer `export default` over `export =`
     config = await config.default;
   }
@@ -62,25 +57,19 @@ export const runRequestListener = async ({
   const port = isIpPort(config.port) ? config.port : availablePort;
 
   // http.Server support
-  if (typeof config !== 'function' && config instanceof http.Server) {
+  if (typeof config !== "function" && config instanceof http.Server) {
     return startServer(config, port);
   }
 
   // Fastify workaround
-  if (
-    typeof config !== 'function' &&
-    config.server &&
-    config.server instanceof http.Server
-  ) {
+  if (typeof config !== "function" && config.server && config.server instanceof http.Server) {
     return startServer(config.server, port);
   }
 
   const requestListener =
-    typeof config === 'function'
-      ? config
-      : (config.requestListener ?? config.callback?.());
+    typeof config === "function" ? config : (config.requestListener ?? config.callback?.());
 
-  if (typeof requestListener !== 'function') {
+  if (typeof requestListener !== "function") {
     // Assume an executable script with non-request listener exports
     return;
   }

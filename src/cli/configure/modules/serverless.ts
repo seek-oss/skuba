@@ -1,7 +1,7 @@
-import type { Module, Options } from '../types.js';
+import type { Module, Options } from "../types.js";
 
 export const serverlessModule = ({}: Options): Module => ({
-  '**/serverless*.yml': (inputFile, _files, _initialFiles) => {
+  "**/serverless*.yml": (inputFile, _files, _initialFiles) => {
     if (!inputFile) {
       // Only configure files that exist.
       return;
@@ -10,9 +10,9 @@ export const serverlessModule = ({}: Options): Module => ({
     return (
       inputFile
         // Rewire packaging patterns.
-        .replace(/- (\.?\/)?dist\//g, '- lib/')
+        .replace(/- (\.?\/)?dist\//g, "- lib/")
         // Rewire handler paths.
-        .replace(/handler: (\.?\/)?dist\//g, 'handler: lib/')
+        .replace(/handler: (\.?\/)?dist\//g, "handler: lib/")
     );
   },
 });

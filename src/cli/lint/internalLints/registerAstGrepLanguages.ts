@@ -1,6 +1,6 @@
-import json from '@ast-grep/lang-json';
-import yaml from '@ast-grep/lang-yaml';
-import { registerDynamicLanguage } from '@ast-grep/napi';
+import json from "@ast-grep/lang-json";
+import yaml from "@ast-grep/lang-yaml";
+import { registerDynamicLanguage } from "@ast-grep/napi";
 
 let registered = false;
 

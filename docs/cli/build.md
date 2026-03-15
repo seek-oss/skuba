@@ -104,11 +104,11 @@ skuba build-package
 Assets can be bundled by configuring the [copy] field in the `tsdown.config.mts` file. Depending on your how your application interprets asset paths, the `unbundle` option may need to be set to `true`.
 
 ```ts
-import { defineConfig } from 'tsdown/config';
+import { defineConfig } from "tsdown/config";
 
 export default defineConfig({
   unbundle: true,
-  copy: ['**/*.vocab/*translations.json'],
+  copy: ["**/*.vocab/*translations.json"],
 });
 ```
 

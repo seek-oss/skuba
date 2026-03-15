@@ -1,1 +1,1 @@
-module.exports = require('../jest-preset');
+module.exports = require("../jest-preset");

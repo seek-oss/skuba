@@ -16,7 +16,7 @@ pnpm install --dev eslint-plugin-skuba
 ```
 
 ```typescript
-const skuba = require('eslint-plugin-skuba');
+const skuba = require("eslint-plugin-skuba");
 
 module.exports = [
   ...skuba.configs.recommended.map((config) => ({

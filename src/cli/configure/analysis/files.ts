@@ -1,24 +1,22 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
+import fs from "fs-extra";
 
-import { isErrorWithCode } from '../../../utils/error.js';
+import { isErrorWithCode } from "../../../utils/error.js";
 
 export const tsFileExists = async (filePath: string) => {
   const ext = path.extname(filePath);
 
-  if (ext !== '' && ext !== '.ts') {
+  if (ext !== "" && ext !== ".ts") {
     return false;
   }
 
   try {
-    const stats = await fs.promises.lstat(
-      ext === '' ? `${filePath}.ts` : filePath,
-    );
+    const stats = await fs.promises.lstat(ext === "" ? `${filePath}.ts` : filePath);
 
     return stats.isFile();
   } catch (err) {
-    if (isErrorWithCode(err, 'ENOENT')) {
+    if (isErrorWithCode(err, "ENOENT")) {
       return false;
     }
 

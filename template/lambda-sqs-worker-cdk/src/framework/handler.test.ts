@@ -1,12 +1,12 @@
-import type { SQSEvent } from 'aws-lambda';
+import type { SQSEvent } from "aws-lambda";
 
-import { createHandler } from './handler.js';
-import { logger, stdoutMock } from './logging.js';
+import { createHandler } from "./handler.js";
+import { logger, stdoutMock } from "./logging.js";
 
-import { createCtx } from '#src/testing/handler.js';
-import { chance } from '#src/testing/types.js';
+import { createCtx } from "#src/testing/handler.js";
+import { chance } from "#src/testing/types.js";
 
-describe('createHandler', () => {
+describe("createHandler", () => {
   const ctx = createCtx();
   const input: SQSEvent = {
     Records: [],
@@ -14,13 +14,13 @@ describe('createHandler', () => {
 
   afterEach(stdoutMock.clear);
 
-  it('handles happy path', async () => {
+  it("handles happy path", async () => {
     const output = chance.sentence();
 
     const handler = createHandler((event) => {
       expect(event).toBe(input);
 
-      logger.debug('Handler invoked');
+      logger.debug("Handler invoked");
 
       return Promise.resolve(output);
     });
@@ -29,57 +29,57 @@ describe('createHandler', () => {
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        awsRequestId: '-',
+        awsRequestId: "-",
         level: 20,
-        msg: 'Handler invoked',
+        msg: "Handler invoked",
       },
       {
-        awsRequestId: '-',
+        awsRequestId: "-",
         level: 20,
         output,
-        msg: 'Function completed',
+        msg: "Function completed",
       },
     ]);
   });
 
-  it('handles async error', async () => {
+  it("handles async error", async () => {
     const err = Error(chance.sentence());
 
     const handler = createHandler(() => Promise.reject(err));
 
-    await expect(handler(input, ctx)).rejects.toThrow('Function failed');
+    await expect(handler(input, ctx)).rejects.toThrow("Function failed");
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        awsRequestId: '-',
+        awsRequestId: "-",
         error: {
           message: err.message,
-          type: 'Error',
+          type: "Error",
         },
         level: 50,
-        msg: 'Function failed',
+        msg: "Function failed",
       },
     ]);
   });
 
-  it('handles sync error', async () => {
+  it("handles sync error", async () => {
     const err = Error(chance.sentence());
 
     const handler = createHandler(() => {
       throw err;
     });
 
-    await expect(handler(input, ctx)).rejects.toThrow('Function failed');
+    await expect(handler(input, ctx)).rejects.toThrow("Function failed");
 
     expect(stdoutMock.calls).toMatchObject([
       {
-        awsRequestId: '-',
+        awsRequestId: "-",
         error: {
           message: err.message,
-          type: 'Error',
+          type: "Error",
         },
         level: 50,
-        msg: 'Function failed',
+        msg: "Function failed",
       },
     ]);
   });

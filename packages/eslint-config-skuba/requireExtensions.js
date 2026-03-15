@@ -1,5 +1,5 @@
-const { existsSync, lstatSync } = require('fs');
-const { dirname, resolve, join } = require('path');
+const { existsSync, lstatSync } = require("fs");
+const { dirname, resolve, join } = require("path");
 
 // Simple caches keyed by filename since ESLint contexts are created fresh
 const pathCache = new Map();
@@ -85,7 +85,7 @@ function findSrc(path) {
       return currentPath;
     }
 
-    const srcPath = join(currentPath, 'src');
+    const srcPath = join(currentPath, "src");
     if (cachedExistsSync(srcPath)) {
       for (const visitedPath of pathsVisited) {
         srcCache.set(visitedPath, currentPath);
@@ -118,44 +118,40 @@ function processNode(node, context, check) {
   }
 
   // For dynamic imports, ensure the source is a literal
-  if (node.type === 'ImportExpression' && source.type !== 'Literal') {
+  if (node.type === "ImportExpression" && source.type !== "Literal") {
     return;
   }
 
-  const value = source.value.replace(/\?.*$/, '');
+  const value = source.value.replace(/\?.*$/, "");
 
   // Already contains a valid extension or is empty
   if (!value || /\.(js|mjs|cjs|json|node|ts|tsx|jsx|mts|cts)$/.test(value)) {
     return;
   }
 
-  if (value.startsWith('.')) {
+  if (value.startsWith(".")) {
     // Relative import, check if it ends with .js
-    return check(
-      context,
-      node,
-      resolvePath(dirname(context.getFilename()), value),
-    );
+    return check(context, node, resolvePath(dirname(context.getFilename()), value));
   }
 
-  if (value.startsWith('src') || value.startsWith('#src')) {
+  if (value.startsWith("src") || value.startsWith("#src")) {
     const file = dirname(context.getFilename());
-    const leadingPathToSrc = file.split('/src/')[0];
-    const valueWithoutSrc = value.startsWith('#src')
-      ? value.split('#src/')[1]
-      : value.split('src/')[1];
-    const finalPath = leadingPathToSrc.includes('/src')
+    const leadingPathToSrc = file.split("/src/")[0];
+    const valueWithoutSrc = value.startsWith("#src")
+      ? value.split("#src/")[1]
+      : value.split("src/")[1];
+    const finalPath = leadingPathToSrc.includes("/src")
       ? join(leadingPathToSrc, valueWithoutSrc)
-      : join(findSrc(leadingPathToSrc), 'src', valueWithoutSrc);
+      : join(findSrc(leadingPathToSrc), "src", valueWithoutSrc);
     return check(context, node, finalPath);
   }
 }
 
 // Define the plugin with flat config format
 const requireExtensionsPlugin = {
-  name: 'require-extensions',
+  name: "require-extensions",
   rules: {
-    'require-extensions': {
+    "require-extensions": {
       meta: {
         fixable: true,
       },
@@ -163,41 +159,35 @@ const requireExtensionsPlugin = {
         return createRuleListener(context, (ctx, node, path) => {
           if (cachedExistsSync(`${path}.ts`) || !cachedExistsSync(path)) {
             let fix;
-            if (!node.source.value.includes('?')) {
+            if (!node.source.value.includes("?")) {
               fix = (fixer) => {
-                return fixer.replaceText(
-                  node.source,
-                  `'${node.source.value}.js'`,
-                );
+                return fixer.replaceText(node.source, `'${node.source.value}.js'`);
               };
             }
 
             ctx.report({
               node,
-              message: 'Relative imports and exports must end with .js',
+              message: "Relative imports and exports must end with .js",
               fix,
             });
           }
         });
       },
     },
-    'require-index': {
+    "require-index": {
       meta: {
         fixable: true,
       },
       create(context) {
         return createRuleListener(context, (ctx, node, path) => {
-          if (
-            !cachedExistsSync(`${path}.ts`) &&
-            cachedLstatSync(path)?.isDirectory()
-          ) {
+          if (!cachedExistsSync(`${path}.ts`) && cachedLstatSync(path)?.isDirectory()) {
             ctx.report({
               node,
-              message: 'Directory paths must end with index.js',
+              message: "Directory paths must end with index.js",
               fix(fixer) {
                 return fixer.replaceText(
                   node.source,
-                  node.source.value.endsWith('/')
+                  node.source.value.endsWith("/")
                     ? `'${node.source.value}index.js'`
                     : `'${node.source.value}/index.js'`,
                 );
@@ -217,11 +207,11 @@ module.exports = {
     recommended: [
       {
         plugins: {
-          'require-extensions': requireExtensionsPlugin,
+          "require-extensions": requireExtensionsPlugin,
         },
         rules: {
-          'require-extensions/require-extensions': 'error',
-          'require-extensions/require-index': 'error',
+          "require-extensions/require-extensions": "error",
+          "require-extensions/require-index": "error",
         },
       },
     ],

@@ -1,5 +1,5 @@
-import { exec } from '../../utils/exec.js';
+import { exec } from "../../utils/exec.js";
 
 export const buildPackage = async (args = process.argv.slice(2)) => {
-  await exec('tsdown', ...args);
+  await exec("tsdown", ...args);
 };

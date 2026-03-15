@@ -1,4 +1,4 @@
-import * as metrics from '#src/framework/metrics.js';
+import * as metrics from "#src/framework/metrics.js";
 
 function assertDefined<T>(value: T | undefined): asserts value is T {
   expect(value).toBeDefined();
@@ -20,10 +20,10 @@ export const metricsClient = {
 
     assertDefined(line);
 
-    const [, tagString] = line.split('#', 2);
+    const [, tagString] = line.split("#", 2);
 
     assertDefined(tagString);
 
-    return tagString.split(',');
+    return tagString.split(",");
   },
 };

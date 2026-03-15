@@ -1,5 +1,5 @@
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
+import fs from "fs-extra";
+import git from "isomorphic-git";
 
 /**
  * Matches the owner and repository names in a GitHub repository URL.
@@ -16,8 +16,7 @@ import git from 'isomorphic-git';
  * 1. seek-oss
  * 2. skuba
  */
-const ownerRepoRegex =
-  /github\.com(?::|\/)([a-zA-Z0-9._-]+)\/([a-zA-Z0-9._-]+)\.git$/;
+const ownerRepoRegex = /github\.com(?::|\/)([a-zA-Z0-9._-]+)\/([a-zA-Z0-9._-]+)\.git$/;
 
 const ownerAndRepoFromUrl = (url: string) => {
   const match = ownerRepoRegex.exec(url);
@@ -49,7 +48,7 @@ export const getOwnerAndRepo = async ({
   env = process.env,
 }: GetOwnerAndRepoParameters): Promise<{ owner: string; repo: string }> => {
   if (env.GITHUB_REPOSITORY) {
-    const [owner, repo] = env.GITHUB_REPOSITORY.split('/');
+    const [owner, repo] = env.GITHUB_REPOSITORY.split("/");
 
     if (owner && repo) {
       return { owner, repo };
@@ -76,5 +75,5 @@ export const getOwnerAndRepo = async ({
     }
   }
 
-  throw new Error('Could not find a GitHub remote');
+  throw new Error("Could not find a GitHub remote");
 };

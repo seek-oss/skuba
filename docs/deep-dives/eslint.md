@@ -28,7 +28,7 @@ you can [extend] your `eslint.config.js`:
 
 ```javascript
 module.exports = [
-  ...require('eslint-config-skuba'),
+  ...require("eslint-config-skuba"),
   {
     rules: {
       // Your custom rules here

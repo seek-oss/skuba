@@ -1,11 +1,11 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
+import fs from "fs-extra";
+import git from "isomorphic-git";
 
-import { type Identity, commit } from './commit.js';
-import { findRoot } from './findRoot.js';
-import { type ChangedFile, getChangedFiles } from './getChangedFiles.js';
+import { type Identity, commit } from "./commit.js";
+import { findRoot } from "./findRoot.js";
+import { type ChangedFile, getChangedFiles } from "./getChangedFiles.js";
 
 interface CommitAllParameters {
   dir: string;
@@ -49,11 +49,11 @@ export const commitAllChanges = async ({
       const relativePath = path.relative(dir, file.path);
 
       // Skipping file outside working directory, see https://github.com/seek-oss/skuba/pull/1269#discussion_r1335308704
-      if (relativePath.startsWith('..')) {
+      if (relativePath.startsWith("..")) {
         return;
       }
 
-      return file.state === 'deleted'
+      return file.state === "deleted"
         ? git.remove({
             fs,
             dir: gitRoot,

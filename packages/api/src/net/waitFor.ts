@@ -1,5 +1,5 @@
-import { resolveComposeAddress } from './compose.js';
-import { type SocketAddress, pollSocket } from './socket.js';
+import { resolveComposeAddress } from "./compose.js";
+import { type SocketAddress, pollSocket } from "./socket.js";
 
 /**
  * Wait for a resource to start listening on a socket address.
@@ -8,7 +8,7 @@ import { type SocketAddress, pollSocket } from './socket.js';
  * `timeout` is reached.
  */
 export const waitFor = async ({
-  host = 'localhost',
+  host = "localhost",
   port,
   resolveCompose = false,
   timeout = 15_000,
@@ -30,9 +30,7 @@ export const waitFor = async ({
 
   timeout?: number;
 }): Promise<SocketAddress> => {
-  const resolvedAddress = resolveCompose
-    ? await resolveComposeAddress(host, port)
-    : { host, port };
+  const resolvedAddress = resolveCompose ? await resolveComposeAddress(host, port) : { host, port };
 
   await pollSocket(resolvedAddress.host, resolvedAddress.port, timeout);
 

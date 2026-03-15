@@ -1,7 +1,7 @@
-import * as z from 'zod/v4';
+import * as z from "zod/v4";
 
-import { projectTypeSchema } from '../../utils/manifest.js';
-import { packageManagerSchema } from '../../utils/packageManager.js';
+import { projectTypeSchema } from "../../utils/manifest.js";
+import { packageManagerSchema } from "../../utils/packageManager.js";
 
 export interface Input {
   /**
@@ -21,7 +21,7 @@ export const initConfigInputSchema = z.object({
     .object({
       ownerName: z.string(),
       repoName: z.string(),
-      platformName: z.union([z.literal('amd64'), z.literal('arm64')]),
+      platformName: z.union([z.literal("amd64"), z.literal("arm64")]),
       defaultBranch: z.string(),
     })
     .catchall(z.string()),

@@ -1,34 +1,33 @@
 // eslint-disable-next-line no-restricted-imports -- fs-extra is mocked
-import fsp from 'fs/promises';
+import fsp from "fs/promises";
 
-import memfs, { vol } from 'memfs';
+import memfs, { vol } from "memfs";
 
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig } from '../../index.js';
+import { configForPackageManager } from "../../../../../../utils/packageManager.js";
+import type { PatchConfig } from "../../index.js";
 
-import { tryCollapseDuplicateMergeKeys } from './collapseDuplicateMergeKeys.js';
+import { tryCollapseDuplicateMergeKeys } from "./collapseDuplicateMergeKeys.js";
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs', () => memfs);
-jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+jest.mock("fs", () => memfs);
+jest.mock("fast-glob", () => ({
+  glob: (pat: any, opts: any) => jest.requireActual("fast-glob").glob(pat, { ...opts, fs: memfs }),
 }));
 
 beforeEach(() => vol.reset());
 
-describe('collapseDuplicateMergeKeys', () => {
+describe("collapseDuplicateMergeKeys", () => {
   const baseArgs = {
-    manifest: {} as PatchConfig['manifest'],
-    packageManager: configForPackageManager('pnpm'),
+    manifest: {} as PatchConfig["manifest"],
+    packageManager: configForPackageManager("pnpm"),
   };
 
   afterEach(() => jest.resetAllMocks());
 
-  describe.each(['lint', 'format'] as const)('%s', (mode) => {
-    it('should not need to modify any of the template pipelines', async () => {
-      for (const template of await fsp.readdir('template')) {
+  describe.each(["lint", "format"] as const)("%s", (mode) => {
+    it("should not need to modify any of the template pipelines", async () => {
+      for (const template of await fsp.readdir("template")) {
         const pipelineFile = `template/${template}/.buildkite/pipeline.yml`;
         try {
           await fsp.stat(pipelineFile);
@@ -36,10 +35,10 @@ describe('collapseDuplicateMergeKeys', () => {
           continue;
         }
 
-        const contents = await fsp.readFile(pipelineFile, 'utf-8');
+        const contents = await fsp.readFile(pipelineFile, "utf-8");
 
         vol.fromJSON({
-          '.buildkite/pipeline.yml': contents,
+          ".buildkite/pipeline.yml": contents,
         });
 
         await expect(
@@ -48,31 +47,31 @@ describe('collapseDuplicateMergeKeys', () => {
             mode,
           }),
         ).resolves.toEqual({
-          result: 'skip',
-          reason: 'no duplicate merge keys found',
+          result: "skip",
+          reason: "no duplicate merge keys found",
         });
 
         expect(volToJson()).toEqual({
-          '.buildkite/pipeline.yml': contents,
+          ".buildkite/pipeline.yml": contents,
         });
       }
     });
 
-    it('should skip if no Buildkite files are found', async () => {
+    it("should skip if no Buildkite files are found", async () => {
       await expect(
         tryCollapseDuplicateMergeKeys({
           ...baseArgs,
           mode,
         }),
       ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no Buildkite files found',
+        result: "skip",
+        reason: "no Buildkite files found",
       });
 
       expect(volToJson()).toEqual({});
     });
 
-    it('should skip if no duplicate merge keys are found', async () => {
+    it("should skip if no duplicate merge keys are found", async () => {
       const input = `
 configs:
   environments:
@@ -87,7 +86,7 @@ steps:
 `;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -96,16 +95,16 @@ steps:
           mode,
         }),
       ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no duplicate merge keys found',
+        result: "skip",
+        reason: "no duplicate merge keys found",
       });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
     });
 
-    it('should process 2 duplicate merge keys', async () => {
+    it("should process 2 duplicate merge keys", async () => {
       const input = `
 configs:
   environments:
@@ -124,7 +123,7 @@ steps:
 `;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -132,11 +131,11 @@ steps:
           ...baseArgs,
           mode,
         }),
-      ).resolves.toEqual({ result: 'apply' });
+      ).resolves.toEqual({ result: "apply" });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml':
-          mode === 'lint'
+        ".buildkite/pipeline.yml":
+          mode === "lint"
             ? input
             : `
 configs:
@@ -156,7 +155,7 @@ steps:
       });
     });
 
-    it('should process multiple duplicate merge keys', async () => {
+    it("should process multiple duplicate merge keys", async () => {
       const input = `
 configs:
   environments:
@@ -176,7 +175,7 @@ steps:
 `;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -184,11 +183,11 @@ steps:
           ...baseArgs,
           mode,
         }),
-      ).resolves.toEqual({ result: 'apply' });
+      ).resolves.toEqual({ result: "apply" });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml':
-          mode === 'lint'
+        ".buildkite/pipeline.yml":
+          mode === "lint"
             ? input
             : `
 configs:
@@ -208,7 +207,7 @@ steps:
       });
     });
 
-    it('should handle comments', async () => {
+    it("should handle comments", async () => {
       const input = `
 steps:
 - <<: *prod # hi
@@ -233,7 +232,7 @@ steps:
 `;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -241,11 +240,11 @@ steps:
           ...baseArgs,
           mode,
         }),
-      ).resolves.toEqual({ result: 'apply' });
+      ).resolves.toEqual({ result: "apply" });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml':
-          mode === 'lint'
+        ".buildkite/pipeline.yml":
+          mode === "lint"
             ? input
             : `
 steps:
@@ -274,7 +273,7 @@ steps:
       });
     });
 
-    it('should not bother if the keys are separated by other keys', async () => {
+    it("should not bother if the keys are separated by other keys", async () => {
       const input = `steps:
   - <<: *prod
     label: 'My Step'
@@ -283,7 +282,7 @@ steps:
 `;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -292,16 +291,16 @@ steps:
           mode,
         }),
       ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no duplicate merge keys found',
+        result: "skip",
+        reason: "no duplicate merge keys found",
       });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
     });
 
-    it('should not merge when not at the same level', async () => {
+    it("should not merge when not at the same level", async () => {
       const input = `steps:
   - plugins:
       <<: *plugins
@@ -310,7 +309,7 @@ steps:
 `;
 
       vol.fromJSON({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
 
       await expect(
@@ -319,12 +318,12 @@ steps:
           mode,
         }),
       ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no duplicate merge keys found',
+        result: "skip",
+        reason: "no duplicate merge keys found",
       });
 
       expect(volToJson()).toEqual({
-        '.buildkite/pipeline.yml': input,
+        ".buildkite/pipeline.yml": input,
       });
     });
   });

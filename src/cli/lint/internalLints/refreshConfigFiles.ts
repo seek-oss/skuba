@@ -1,23 +1,17 @@
-import path from 'path';
-import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
+import path from "path";
+import { inspect, stripVTControlCharacters as stripAnsi } from "util";
 
-import fs from 'fs-extra';
+import fs from "fs-extra";
 
-import { Git } from '../../../index.js';
-import {
-  findCurrentWorkspaceProjectRoot,
-  findWorkspaceRoot,
-} from '../../../utils/dir.js';
-import type { Logger } from '../../../utils/logging.js';
-import {
-  type PackageManagerConfig,
-  detectPackageManager,
-} from '../../../utils/packageManager.js';
-import { readBaseTemplateFile } from '../../../utils/template.js';
-import { getDestinationManifest } from '../../configure/analysis/package.js';
-import { createDestinationFileReader } from '../../configure/analysis/project.js';
-import { mergeWithConfigFile } from '../../configure/processing/configFile.js';
-import type { InternalLintResult } from '../internal.js';
+import { Git } from "../../../index.js";
+import { findCurrentWorkspaceProjectRoot, findWorkspaceRoot } from "../../../utils/dir.js";
+import type { Logger } from "../../../utils/logging.js";
+import { type PackageManagerConfig, detectPackageManager } from "../../../utils/packageManager.js";
+import { readBaseTemplateFile } from "../../../utils/template.js";
+import { getDestinationManifest } from "../../configure/analysis/package.js";
+import { createDestinationFileReader } from "../../configure/analysis/project.js";
+import { mergeWithConfigFile } from "../../configure/processing/configFile.js";
+import type { InternalLintResult } from "../internal.js";
 
 type ConditionOptions = {
   packageManager: PackageManagerConfig;
@@ -26,11 +20,8 @@ type ConditionOptions = {
 
 type RefreshableConfigFile = {
   name: string;
-  type: 'ignore';
-  additionalMapping?: (
-    s: string,
-    packageManager: PackageManagerConfig,
-  ) => string;
+  type: "ignore";
+  additionalMapping?: (s: string, packageManager: PackageManagerConfig) => string;
   if?: (options: ConditionOptions) => boolean;
 };
 
@@ -43,34 +34,30 @@ const OLD_IGNORE_WARNING = `# Ignore .npmrc. This is no longer managed by skuba 
 
 const removeOldWarning = (contents: string) =>
   contents.includes(OLD_IGNORE_WARNING)
-    ? `${contents.replace(OLD_IGNORE_WARNING, '').trim()}\n`
+    ? `${contents.replace(OLD_IGNORE_WARNING, "").trim()}\n`
     : contents;
 
 export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   {
-    name: '.gitignore',
-    type: 'ignore',
+    name: ".gitignore",
+    type: "ignore",
     additionalMapping: removeOldWarning,
   },
-  { name: '.prettierignore', type: 'ignore' },
+  { name: ".prettierignore", type: "ignore" },
   {
-    name: '.dockerignore',
-    type: 'ignore',
+    name: ".dockerignore",
+    type: "ignore",
     additionalMapping: removeOldWarning,
   },
 ];
 
-export const refreshConfigFiles = async (
-  mode: 'format' | 'lint',
-  logger: Logger,
-) => {
-  const [manifest, gitRoot, workspaceRoot, currentWorkspaceProjectRoot] =
-    await Promise.all([
-      getDestinationManifest(),
-      Git.findRoot({ dir: process.cwd() }),
-      findWorkspaceRoot(),
-      findCurrentWorkspaceProjectRoot(),
-    ]);
+export const refreshConfigFiles = async (mode: "format" | "lint", logger: Logger) => {
+  const [manifest, gitRoot, workspaceRoot, currentWorkspaceProjectRoot] = await Promise.all([
+    getDestinationManifest(),
+    Git.findRoot({ dir: process.cwd() }),
+    findWorkspaceRoot(),
+    findCurrentWorkspaceProjectRoot(),
+  ]);
 
   const destinationRoot = path.dirname(manifest.path);
 
@@ -111,7 +98,7 @@ export const refreshConfigFiles = async (
 
     const filepath = path.join(destinationRoot, filename);
 
-    if (mode === 'format') {
+    if (mode === "format") {
       if (data === inputFile) {
         return { needsChange: false };
       }
@@ -127,9 +114,7 @@ export const refreshConfigFiles = async (
     if (data !== inputFile) {
       return {
         needsChange: true,
-        msg: `The ${logger.bold(
-          filename,
-        )} file is out of date. Run \`${logger.bold(
+        msg: `The ${logger.bold(filename)} file is out of date. Run \`${logger.bold(
           `${packageManager.print.exec} skuba format`,
         )}\` to update it.`,
         filename,
@@ -176,13 +161,13 @@ export const refreshConfigFiles = async (
 };
 
 export const tryRefreshConfigFiles = async (
-  mode: 'format' | 'lint',
+  mode: "format" | "lint",
   logger: Logger,
 ): Promise<InternalLintResult> => {
   try {
     return await refreshConfigFiles(mode, logger);
   } catch (err) {
-    logger.warn('Failed to refresh config files.');
+    logger.warn("Failed to refresh config files.");
     logger.subtle(inspect(err));
 
     return {

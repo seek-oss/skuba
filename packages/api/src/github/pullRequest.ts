@@ -1,11 +1,11 @@
-import type { Octokit } from '@octokit/rest' with {
-  'resolution-mode': 'import',
+import type { Octokit } from "@octokit/rest" with {
+  "resolution-mode": "import",
 };
 
-import * as Git from '../git/index.js';
+import * as Git from "../git/index.js";
 
-import { apiTokenFromEnvironment } from './environment.js';
-import { createRestClient } from './octokit.js';
+import { apiTokenFromEnvironment } from "./environment.js";
+import { createRestClient } from "./octokit.js";
 
 interface GetPullRequestParameters {
   /**
@@ -35,17 +35,14 @@ export const getPullRequestNumber = async (
   const dir = process.cwd();
 
   const number = Number(
-    env.BUILDKITE_PULL_REQUEST ??
-      env.GITHUB_REF?.replace(/^refs\/pull\/(\d+)/, '$1'),
+    env.BUILDKITE_PULL_REQUEST ?? env.GITHUB_REF?.replace(/^refs\/pull\/(\d+)/, "$1"),
   );
 
   if (Number.isSafeInteger(number)) {
     return number;
   }
 
-  const client =
-    params.client ??
-    (await createRestClient({ auth: apiTokenFromEnvironment() }));
+  const client = params.client ?? (await createRestClient({ auth: apiTokenFromEnvironment() }));
 
   const [commitId, { owner, repo }] = await Promise.all([
     Git.getHeadCommitId({ dir, env }),
@@ -59,14 +56,12 @@ export const getPullRequestNumber = async (
   });
 
   const data = response.data
-    .filter((pr) => pr.state === 'open' && !pr.locked)
+    .filter((pr) => pr.state === "open" && !pr.locked)
     .sort((a, b) => b.updated_at.localeCompare(a.updated_at));
 
   const pullRequestData = data[0];
   if (!pullRequestData) {
-    throw new Error(
-      `Commit ${commitId} is not associated with an open GitHub pull request`,
-    );
+    throw new Error(`Commit ${commitId} is not associated with an open GitHub pull request`);
   }
 
   return pullRequestData.number;

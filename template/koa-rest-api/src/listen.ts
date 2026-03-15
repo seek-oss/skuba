@@ -1,6 +1,6 @@
-import app from './app.js';
-import { config } from './config.js';
-import { logger } from './framework/logging.js';
+import app from "./app.js";
+import { config } from "./config.js";
+import { logger } from "./framework/logging.js";
 
 // This implements a minimal version of `koa-cluster`'s interface
 // If your application is deployed with more than 1 vCPU you can delete this
@@ -9,7 +9,7 @@ import { logger } from './framework/logging.js';
 const listener = app.listen(config.port, () => {
   const address = listener.address();
 
-  if (typeof address === 'object' && address) {
+  if (typeof address === "object" && address) {
     logger.debug(`listening on port ${address.port}`);
   }
 });
@@ -23,6 +23,4 @@ listener.keepAliveTimeout = 31000;
 
 // Report unhandled rejections instead of crashing the process
 // Make sure to monitor these reports and alert as appropriate
-process.on('unhandledRejection', (err) =>
-  logger.error(err, 'Unhandled promise rejection'),
-);
+process.on("unhandledRejection", (err) => logger.error(err, "Unhandled promise rejection"));

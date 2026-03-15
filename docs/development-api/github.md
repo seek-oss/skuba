@@ -13,7 +13,7 @@ Returns the name of the build as seen in GitHub status checks.
 This is driven off of environment variables and falls back to `Build`.
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 const buildName = GitHub.buildNameFromEnvironment();
 ```
@@ -29,17 +29,17 @@ The first 50 `annotations` are written in full to GitHub.
 A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with the `checks:write` permission must be present on the environment.
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 const main = async () => {
   const annotations = await createAnnotations();
 
   await GitHub.createCheckRun({
     annotations,
-    conclusion: 'failure',
-    name: 'skuba/lint',
-    summary: '`skuba/lint` found issues that require triage.',
-    title: 'Build #123 failed',
+    conclusion: "failure",
+    name: "skuba/lint",
+    summary: "`skuba/lint` found issues that require triage.",
+    title: "Build #123 failed",
   });
 };
 ```
@@ -56,7 +56,7 @@ This checks environment variables to see if the code is executing in a CI
 environment and has access to a GitHub API token.
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 const enabled = GitHub.enabledFromEnvironment();
 
@@ -76,7 +76,7 @@ and falls back to querying the GitHub Repos API for the latest pull request asso
 An error is thrown if there are no associated pull requests, or if they are all closed or locked.
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 const pullRequestNumber = await GitHub.getPullRequestNumber();
 ```
@@ -93,9 +93,9 @@ enabling use cases like a persistent bot comment at the top of the pull request 
 A `GITHUB_API_TOKEN` or `GITHUB_TOKEN` with write permissions must be present on the environment.
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
-await GitHub.putIssueComment({ body: '😌 This change looks fine!' });
+await GitHub.putIssueComment({ body: "😌 This change looks fine!" });
 ```
 
 You can specify an internal identifier to scope the `put` to a particular comment,
@@ -103,17 +103,17 @@ preventing it from clobbering other comments from the same bot or user.
 The identifier is embedded as hidden content in the comment body.
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 await GitHub.putIssueComment({
-  body: 'Lint passed!',
-  internalId: 'lint-a8d9178b-822c-49ac-b456-93653662f685',
+  body: "Lint passed!",
+  internalId: "lint-a8d9178b-822c-49ac-b456-93653662f685",
 });
 
 // This posts a distinct comment from the prior call.
 await GitHub.putIssueComment({
-  body: 'Test passed!',
-  internalId: 'test-bdc9db38-cc4a-45c3-a7bb-8ebbb3c746a4',
+  body: "Test passed!",
+  internalId: "test-bdc9db38-cc4a-45c3-a7bb-8ebbb3c746a4",
 });
 ```
 
@@ -121,24 +121,24 @@ Passing a body of `null` will delete the specified comment.
 For safety, this will only work when `internalId` is specified.
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 // Creates the comment
 await GitHub.putIssueComment({
-  body: 'some comment',
-  internalId: 'some-unique-id',
+  body: "some comment",
+  internalId: "some-unique-id",
 });
 
 // Deletes the comment
 await GitHub.putIssueComment({
   body: null,
-  internalId: 'some-unique-id',
+  internalId: "some-unique-id",
 });
 
 // Skips, as the comment is already deleted
 await GitHub.putIssueComment({
   body: null,
-  internalId: 'some-unique-id',
+  internalId: "some-unique-id",
 });
 ```
 
@@ -151,12 +151,12 @@ reads them from the file system,
 and maps them to GitHub GraphQL [FileChanges].
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 const fileChanges = await GitHub.readFileChanges(dir, [
-  { path: 'added-path', state: 'added' },
-  { path: 'modified-path', state: 'modified' },
-  { path: 'delete-path', state: 'deleted' },
+  { path: "added-path", state: "added" },
+  { path: "modified-path", state: "modified" },
+  { path: "delete-path", state: "deleted" },
 ]);
 ```
 
@@ -174,13 +174,13 @@ The file changes will appear as verified commits on GitHub.
 This will not update the local Git repository unless `updateLocal` is specified.
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 const maybeCommitId = await GitHub.uploadAllFileChanges({
-  dir: './',
-  branch: 'some-branch',
-  messageHeadline: 'some-commit',
-  messageBody: 'extra-body',
+  dir: "./",
+  branch: "some-branch",
+  messageHeadline: "some-commit",
+  messageBody: "extra-body",
   updateLocal: true, // Updates the local Git repository to match the new remote branch state
 });
 ```
@@ -196,17 +196,17 @@ The file changes will appear as verified commits on GitHub.
 This will not update the local Git repository.
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 const commitId = await GitHub.uploadFileChanges({
-  dir: './',
-  branch: 'some-branch',
+  dir: "./",
+  branch: "some-branch",
   fileChanges: {
-    additions: [{ contents: '', path: 'another-path' }],
-    deletions: [{ path: 'some-path' }],
+    additions: [{ contents: "", path: "another-path" }],
+    deletions: [{ path: "some-path" }],
   },
-  messageHeadline: 'some-commit',
-  messageBody: 'extra-body',
+  messageHeadline: "some-commit",
+  messageBody: "extra-body",
 });
 ```
 

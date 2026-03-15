@@ -1,23 +1,23 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
-import type { ReadResult } from 'read-pkg-up';
+import fs from "fs-extra";
+import type { ReadResult } from "read-pkg-up";
 
-import { type TextProcessor, copyFiles } from '../../utils/copy.js';
-import { log } from '../../utils/logging.js';
-import type { ProjectType } from '../../utils/manifest.js';
-import { getLatestNpmVersion, getSkubaVersion } from '../../utils/version.js';
+import { type TextProcessor, copyFiles } from "../../utils/copy.js";
+import { log } from "../../utils/logging.js";
+import type { ProjectType } from "../../utils/manifest.js";
+import { getLatestNpmVersion, getSkubaVersion } from "../../utils/version.js";
 
-import { diffDependencies } from './analysis/package.js';
-import * as dependencyMutators from './dependencies/index.js';
-import { formatPackage } from './processing/package.js';
-import type { DependencyDiff } from './types.js';
+import { diffDependencies } from "./analysis/package.js";
+import * as dependencyMutators from "./dependencies/index.js";
+import { formatPackage } from "./processing/package.js";
+import type { DependencyDiff } from "./types.js";
 
 const logDiff = (diff: DependencyDiff): boolean => {
   const entries = Object.entries(diff);
 
   if (entries.length === 0) {
-    log.ok('✔ No changes');
+    log.ok("✔ No changes");
 
     return false;
   }
@@ -31,16 +31,12 @@ const logDiff = (diff: DependencyDiff): boolean => {
   return true;
 };
 
-const pinUnspecifiedVersions = async (
-  dependencies: Record<string, string>,
-): Promise<void> => {
+const pinUnspecifiedVersions = async (dependencies: Record<string, string>): Promise<void> => {
   const updates = await Promise.all(
     Object.entries(dependencies)
-      .filter(([, version]) => version === '*')
+      .filter(([, version]) => version === "*")
       .map(async ([name]) => {
-        const version = await (name === 'skuba'
-          ? getSkubaVersion()
-          : getLatestNpmVersion(name));
+        const version = await (name === "skuba" ? getSkubaVersion() : getLatestNpmVersion(name));
 
         if (version === null) {
           throw new Error(`Failed to fetch latest version of ${name}`);
@@ -80,14 +76,11 @@ export const analyseDependencies = async ({
     type,
   };
 
-  const processors = Object.values(dependencyMutators).reduce<TextProcessor[]>(
-    (acc, mutate) => {
-      const newProcessors = mutate(output);
-      acc.push(...newProcessors);
-      return acc;
-    },
-    [],
-  );
+  const processors = Object.values(dependencyMutators).reduce<TextProcessor[]>((acc, mutate) => {
+    const newProcessors = mutate(output);
+    acc.push(...newProcessors);
+    return acc;
+  }, []);
 
   await Promise.all([
     pinUnspecifiedVersions(output.dependencies),
@@ -100,7 +93,7 @@ export const analyseDependencies = async ({
   });
 
   log.newline();
-  log.plain(log.bold('Dependencies:'));
+  log.plain(log.bold("Dependencies:"));
 
   log.newline();
   const hasDependencyDiff = logDiff(dependencyDiff);
@@ -111,12 +104,12 @@ export const analyseDependencies = async ({
   });
 
   log.newline();
-  log.plain(log.bold('Dev dependencies:'));
+  log.plain(log.bold("Dev dependencies:"));
 
   log.newline();
   const hasDevDependencyDiff = logDiff(devDependencyDiff);
 
-  const packageJsonFilepath = path.join(destinationRoot, 'package.json');
+  const packageJsonFilepath = path.join(destinationRoot, "package.json");
 
   if (!hasDependencyDiff && !hasDevDependencyDiff) {
     return;

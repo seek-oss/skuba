@@ -1,14 +1,14 @@
-import { exec, hasCommand } from '../../../../src/utils/exec.js';
-import { log } from '../../../../src/utils/logging.js';
+import { exec, hasCommand } from "../../../../src/utils/exec.js";
+import { log } from "../../../../src/utils/logging.js";
 
-export type AnnotationStyle = 'success' | 'info' | 'warning' | 'error';
+export type AnnotationStyle = "success" | "info" | "warning" | "error";
 
 const isAnnotationEnabled = async () =>
   Boolean(
     process.env.BUILDKITE &&
     process.env.BUILDKITE_AGENT_ACCESS_TOKEN &&
     process.env.BUILDKITE_JOB_ID &&
-    (await hasCommand('buildkite-agent')),
+    (await hasCommand("buildkite-agent")),
   );
 
 interface AnnotationOptions {
@@ -27,7 +27,7 @@ interface AnnotationOptions {
 
 // Buildkite annotation currently only supports 1MiB of data
 export const MAX_SIZE = 1024 * 1024; // 1MiB in bytes
-export const TRUNCATION_WARNING = '... [Truncated due to size limit]';
+export const TRUNCATION_WARNING = "... [Truncated due to size limit]";
 
 /**
  * Asynchronously uploads a Buildkite annotation.
@@ -41,10 +41,7 @@ export const TRUNCATION_WARNING = '... [Truncated due to size limit]';
  *
  * The `buildkite-agent` binary must also be on your `PATH`.
  */
-export const annotate = async (
-  markdown: string,
-  opts: AnnotationOptions = {},
-): Promise<void> => {
+export const annotate = async (markdown: string, opts: AnnotationOptions = {}): Promise<void> => {
   if (!(await isAnnotationEnabled())) {
     return;
   }
@@ -60,20 +57,17 @@ export const annotate = async (
   }
 
   // Always scope to the current Buildkite step.
-  const context = [
-    opts.scopeContextToStep && process.env.BUILDKITE_STEP_ID,
-    opts.context,
-  ]
+  const context = [opts.scopeContextToStep && process.env.BUILDKITE_STEP_ID, opts.context]
     .filter(Boolean)
-    .join('|');
+    .join("|");
 
   const { style } = opts;
 
   await exec(
-    'buildkite-agent',
-    'annotate',
-    ...(context ? ['--context', context] : []),
-    ...(style ? ['--style', style] : []),
+    "buildkite-agent",
+    "annotate",
+    ...(context ? ["--context", context] : []),
+    ...(style ? ["--style", style] : []),
     truncatedMarkdown,
   );
 };

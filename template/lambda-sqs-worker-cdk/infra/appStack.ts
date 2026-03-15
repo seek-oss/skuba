@@ -1,5 +1,5 @@
-import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
-import { LambdaDeployment } from '@seek/aws-codedeploy-infra';
+import { containsSkipDirective } from "@seek/aws-codedeploy-hooks";
+import { LambdaDeployment } from "@seek/aws-codedeploy-infra";
 import {
   Duration,
   Stack,
@@ -12,11 +12,11 @@ import {
   aws_secretsmanager,
   aws_sns,
   aws_sqs,
-} from 'aws-cdk-lib';
-import type { Construct } from 'constructs';
-import { DatadogLambda } from 'datadog-cdk-constructs-v2';
+} from "aws-cdk-lib";
+import type { Construct } from "constructs";
+import { DatadogLambda } from "datadog-cdk-constructs-v2";
 
-import { config } from './config.js';
+import { config } from "./config.js";
 
 // Updated by https://github.com/seek-oss/rynovate
 const DATADOG_EXTENSION_LAYER_VERSION = 93;
@@ -30,27 +30,23 @@ export class AppStack extends Stack {
 
     const accountPrincipal = new aws_iam.AccountPrincipal(this.account);
 
-    const kmsKey = new aws_kms.Key(this, 'kms-key', {
-      description: '<%- serviceName %>',
+    const kmsKey = new aws_kms.Key(this, "kms-key", {
+      description: "<%- serviceName %>",
       enableKeyRotation: true,
       admins: [accountPrincipal],
-      alias: 'seek/self/<%- serviceName %>',
+      alias: "seek/self/<%- serviceName %>",
     });
 
     kmsKey.grantEncrypt(accountPrincipal);
 
-    const deadLetterQueue = new aws_sqs.Queue(
-      this,
-      'worker-queue-dead-letters',
-      {
-        queueName: '<%- serviceName %>-dead-letters',
-        encryptionMasterKey: kmsKey,
-        retentionPeriod: Duration.days(14),
-      },
-    );
+    const deadLetterQueue = new aws_sqs.Queue(this, "worker-queue-dead-letters", {
+      queueName: "<%- serviceName %>-dead-letters",
+      encryptionMasterKey: kmsKey,
+      retentionPeriod: Duration.days(14),
+    });
 
-    const queue = new aws_sqs.Queue(this, 'worker-queue', {
-      queueName: '<%- serviceName %>',
+    const queue = new aws_sqs.Queue(this, "worker-queue", {
+      queueName: "<%- serviceName %>",
       deadLetterQueue: {
         maxReceiveCount: 3,
         queue: deadLetterQueue,
@@ -71,20 +67,16 @@ export class AppStack extends Stack {
     //   }),
     // );
 
-    const snsKey = aws_kms.Alias.fromAliasName(
-      this,
-      'alias-aws-sns',
-      'alias/aws/sns',
-    );
+    const snsKey = aws_kms.Alias.fromAliasName(this, "alias-aws-sns", "alias/aws/sns");
 
-    const destinationTopic = new aws_sns.Topic(this, 'destination-topic', {
+    const destinationTopic = new aws_sns.Topic(this, "destination-topic", {
       masterKey: snsKey,
-      topicName: '<%- serviceName %>',
+      topicName: "<%- serviceName %>",
     });
 
-    const architecture = '<%- lambdaCdkArchitecture %>';
+    const architecture = "<%- lambdaCdkArchitecture %>";
 
-    const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+    const worker = new aws_lambda_nodejs.NodejsFunction(this, "worker", {
       architecture: aws_lambda.Architecture[architecture],
       runtime: aws_lambda.Runtime.NODEJS_24_X,
       memorySize: 512,
@@ -92,28 +84,28 @@ export class AppStack extends Stack {
       // aws-sdk-v3 sets this to true by default, so it is not necessary to set the environment variable
       // https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/node-reusing-connections.html
       awsSdkConnectionReuse: false,
-      entry: './src/app.ts',
+      entry: "./src/app.ts",
       timeout: Duration.seconds(30),
       bundling: {
         sourceMap: true,
-        target: 'node24',
+        target: "node24",
         // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
         externalModules: [],
         esbuildArgs: {
-          '--conditions': '@seek/<%- serviceName %>/source',
+          "--conditions": "@seek/<%- serviceName %>/source",
         },
       },
-      functionName: '<%- serviceName %>',
+      functionName: "<%- serviceName %>",
       environment: {
         ...config.workerLambda.environment,
-        NODE_ENV: 'production',
+        NODE_ENV: "production",
         // https://nodejs.org/api/cli.html#cli_node_options_options
-        NODE_OPTIONS: '--enable-source-maps',
+        NODE_OPTIONS: "--enable-source-maps",
         DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
 
-        ...(containsSkipDirective(process.env.BUILDKITE_MESSAGE, 'smoke')
+        ...(containsSkipDirective(process.env.BUILDKITE_MESSAGE, "smoke")
           ? {
-              SKIP_SMOKE: 'true',
+              SKIP_SMOKE: "true",
             }
           : {}),
       },
@@ -124,14 +116,14 @@ export class AppStack extends Stack {
 
     const datadogSecret = aws_secretsmanager.Secret.fromSecretAttributes(
       this,
-      'datadog-api-key-secret',
+      "datadog-api-key-secret",
       {
         secretPartialArn: config.datadogApiKeySecretArn,
         // encryptionKey: kmsKey, // Specify a KMS key if the secret is encrypted with one
       },
     );
 
-    const datadog = new DatadogLambda(this, 'datadog', {
+    const datadog = new DatadogLambda(this, "datadog", {
       env: config.env,
       service: config.service,
       version: config.version,
@@ -145,7 +137,7 @@ export class AppStack extends Stack {
 
     datadog.addLambdaFunctions([worker]);
 
-    const workerDeployment = new LambdaDeployment(this, 'workerDeployment', {
+    const workerDeployment = new LambdaDeployment(this, "workerDeployment", {
       lambdaFunction: worker,
     });
 

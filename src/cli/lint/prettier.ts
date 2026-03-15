@@ -1,23 +1,20 @@
-import { styleText } from 'node:util';
-import path from 'path';
-import { isMainThread } from 'worker_threads';
+import { styleText } from "node:util";
+import path from "path";
+import { isMainThread } from "worker_threads";
 
-import { createLogger } from '../../utils/logging.js';
-import { execWorkerThread, postWorkerOutput } from '../../utils/worker.js';
-import { type PrettierOutput, runPrettier } from '../adapter/prettier.js';
+import { createLogger } from "../../utils/logging.js";
+import { execWorkerThread, postWorkerOutput } from "../../utils/worker.js";
+import { type PrettierOutput, runPrettier } from "../adapter/prettier.js";
 
-import type { Input } from './types.js';
+import type { Input } from "./types.js";
 
-const LOG_PREFIX = styleText('cyan', 'Prettier │');
+const LOG_PREFIX = styleText("cyan", "Prettier │");
 
 export const runPrettierInCurrentThread = ({ debug }: Input) =>
-  runPrettier('lint', createLogger({ debug, prefixes: [LOG_PREFIX] }));
+  runPrettier("lint", createLogger({ debug, prefixes: [LOG_PREFIX] }));
 
 export const runPrettierInWorkerThread = (input: Input) =>
-  execWorkerThread<Input, PrettierOutput>(
-    path.posix.join(__dirname, 'prettier.js'),
-    input,
-  );
+  execWorkerThread<Input, PrettierOutput>(path.posix.join(__dirname, "prettier.js"), input);
 
 if (!isMainThread) {
   postWorkerOutput(

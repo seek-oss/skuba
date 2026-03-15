@@ -25,7 +25,7 @@ Writes the module name to stdout.
 Thrilling stuff.
 
 ```typescript
-import { log } from '<%- moduleName %>';
+import { log } from "<%- moduleName %>";
 
 log();
 ```

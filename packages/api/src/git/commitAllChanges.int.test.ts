@@ -1,25 +1,25 @@
-import path from 'path';
+import path from "path";
 
-import git from 'isomorphic-git';
-import memfs, { fs, vol } from 'memfs';
+import git from "isomorphic-git";
+import memfs, { fs, vol } from "memfs";
 
-import newGit from '../../../../integration/git/new.json';
+import newGit from "../../../../integration/git/new.json";
 
-import { commitAllChanges } from './commitAllChanges.js';
+import { commitAllChanges } from "./commitAllChanges.js";
 
-jest.mock('fs', () => memfs);
+jest.mock("fs", () => memfs);
 
 beforeEach(() => {
   vol.reset();
   vol.fromJSON(newGit);
 });
 
-const author = { name: 'user', email: 'user@email.com' };
-const dir = './';
-const newFileName = 'newFile';
-const newFileName2 = 'newFile2';
+const author = { name: "user", email: "user@email.com" };
+const dir = "./";
+const newFileName = "newFile";
+const newFileName2 = "newFile2";
 
-it('should stage and commit all the new files in the working directory', async () => {
+it("should stage and commit all the new files in the working directory", async () => {
   const expectStatuses = (statuses: string[]) =>
     expect(
       Promise.all([
@@ -28,30 +28,30 @@ it('should stage and commit all the new files in the working directory', async (
       ]),
     ).resolves.toStrictEqual(statuses);
 
-  await expectStatuses(['absent', 'absent']);
+  await expectStatuses(["absent", "absent"]);
 
   await Promise.all([
-    fs.promises.writeFile(newFileName, ''),
-    fs.promises.writeFile(newFileName2, ''),
+    fs.promises.writeFile(newFileName, ""),
+    fs.promises.writeFile(newFileName2, ""),
   ]);
 
-  await expectStatuses(['*added', '*added']);
+  await expectStatuses(["*added", "*added"]);
 
   await expect(
     commitAllChanges({
       dir,
-      message: 'initial commit',
+      message: "initial commit",
       author,
     }),
   ).resolves.toMatch(/^[0-9a-f]{40}$/);
 
-  await expectStatuses(['unmodified', 'unmodified']);
+  await expectStatuses(["unmodified", "unmodified"]);
 });
 
-it('should stage and commit removed files', async () => {
+it("should stage and commit removed files", async () => {
   await Promise.all([
-    fs.promises.writeFile(newFileName, ''),
-    fs.promises.writeFile(newFileName2, ''),
+    fs.promises.writeFile(newFileName, ""),
+    fs.promises.writeFile(newFileName2, ""),
   ]);
 
   await Promise.all([
@@ -62,19 +62,16 @@ it('should stage and commit removed files', async () => {
   await git.commit({
     fs,
     dir,
-    message: 'initial commit',
+    message: "initial commit",
     author,
   });
 
-  await Promise.all([
-    fs.promises.rm(newFileName),
-    fs.promises.rm(newFileName2),
-  ]);
+  await Promise.all([fs.promises.rm(newFileName), fs.promises.rm(newFileName2)]);
 
   await expect(
     commitAllChanges({
       dir,
-      message: 'remove commit',
+      message: "remove commit",
       author,
     }),
   ).resolves.toMatch(/^[0-9a-f]{40}$/);
@@ -84,30 +81,30 @@ it('should stage and commit removed files', async () => {
     git.status({ fs, dir, filepath: newFileName2 }),
   ]);
 
-  expect(statuses).toStrictEqual(['absent', 'absent']);
+  expect(statuses).toStrictEqual(["absent", "absent"]);
 });
 
-it('should handle a nested working directory', async () => {
-  const nestedDir = path.join(dir, '/packages/package');
+it("should handle a nested working directory", async () => {
+  const nestedDir = path.join(dir, "/packages/package");
 
   await fs.promises.mkdir(nestedDir, { recursive: true });
 
   await Promise.all([
-    fs.promises.writeFile(path.join(nestedDir, newFileName), ''),
+    fs.promises.writeFile(path.join(nestedDir, newFileName), ""),
     // Not in our `nestedDir`!
-    fs.promises.writeFile(newFileName2, ''),
+    fs.promises.writeFile(newFileName2, ""),
   ]);
 
   await commitAllChanges({
     dir: nestedDir,
-    message: 'initial commit',
+    message: "initial commit",
     author,
   });
 
   await expect(
     commitAllChanges({
       dir: nestedDir,
-      message: 'initial commit',
+      message: "initial commit",
       author,
     }),
   ).resolves.toMatch(/^[0-9a-f]{40}$/);
@@ -120,14 +117,14 @@ it('should handle a nested working directory', async () => {
   ]);
 
   // The file outside of our `nestedDir` remains uncommitted.
-  expect(statuses).toStrictEqual(['absent', '*added', 'unmodified', 'absent']);
+  expect(statuses).toStrictEqual(["absent", "*added", "unmodified", "absent"]);
 });
 
-it('should no-op on clean directory', async () => {
+it("should no-op on clean directory", async () => {
   await expect(
     commitAllChanges({
       dir,
-      message: 'remove commit',
+      message: "remove commit",
       author,
     }),
   ).resolves.toBeUndefined();
@@ -137,17 +134,17 @@ it('should no-op on clean directory', async () => {
     git.status({ fs, dir, filepath: newFileName2 }),
   ]);
 
-  expect(statuses).toStrictEqual(['absent', 'absent']);
+  expect(statuses).toStrictEqual(["absent", "absent"]);
 });
 
-it('should work in a directory which is not relative with a gitIgnore file', async () => {
-  const gitIgnoreFilename = '.gitignore';
+it("should work in a directory which is not relative with a gitIgnore file", async () => {
+  const gitIgnoreFilename = ".gitignore";
   const gitIgnoreContent = `/${newFileName2}`;
 
   await Promise.all([
     fs.promises.writeFile(gitIgnoreFilename, gitIgnoreContent),
-    fs.promises.writeFile(newFileName, ''),
-    fs.promises.writeFile(newFileName2, ''),
+    fs.promises.writeFile(newFileName, ""),
+    fs.promises.writeFile(newFileName2, ""),
   ]);
 
   await Promise.all([
@@ -159,7 +156,7 @@ it('should work in a directory which is not relative with a gitIgnore file', asy
   await expect(
     commitAllChanges({
       dir: process.cwd(),
-      message: 'remove commit',
+      message: "remove commit",
       author,
     }),
   ).resolves.toMatch(/^[0-9a-f]{40}$/);
@@ -169,5 +166,5 @@ it('should work in a directory which is not relative with a gitIgnore file', asy
     git.status({ fs, dir, filepath: newFileName2 }),
   ]);
 
-  expect(statuses).toStrictEqual(['unmodified', 'ignored']);
+  expect(statuses).toStrictEqual(["unmodified", "ignored"]);
 });

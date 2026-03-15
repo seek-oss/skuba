@@ -1,8 +1,8 @@
-import { PublishCommand } from '@aws-sdk/client-sns';
+import { PublishCommand } from "@aws-sdk/client-sns";
 
-import { sns } from './aws.js';
+import { sns } from "./aws.js";
 
-import { config } from '#src/config.js';
+import { config } from "#src/config.js";
 
 export const sendPipelineEvent = async (
   event: unknown,
@@ -16,8 +16,8 @@ export const sendPipelineEvent = async (
           // Used for connectivity tests.
           // Subscribers should filter out messages containing this attribute.
           SmokeTest: {
-            DataType: 'String',
-            StringValue: 'true',
+            DataType: "String",
+            StringValue: "true",
           },
         },
       }),
@@ -26,7 +26,7 @@ export const sendPipelineEvent = async (
   );
 
   if (snsResponse.MessageId === undefined) {
-    throw Error('SNS did not return a message ID');
+    throw Error("SNS did not return a message ID");
   }
 
   return snsResponse.MessageId;

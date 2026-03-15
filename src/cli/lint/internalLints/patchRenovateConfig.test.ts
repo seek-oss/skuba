@@ -1,15 +1,15 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import memfs, { vol } from 'memfs';
+import memfs, { vol } from "memfs";
 
-import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
-import type { PatchConfig } from './upgrade/index.js';
+import { tryPatchRenovateConfig } from "./patchRenovateConfig.js";
+import type { PatchConfig } from "./upgrade/index.js";
 
-import * as Git from '@skuba-lib/api/git';
+import * as Git from "@skuba-lib/api/git";
 
-jest.mock('fs', () => memfs);
-jest.mock('@skuba-lib/api/git', () => ({
-  ...jest.requireActual<object>('@skuba-lib/api/git'),
+jest.mock("fs", () => memfs);
+jest.mock("@skuba-lib/api/git", () => ({
+  ...jest.requireActual<object>("@skuba-lib/api/git"),
   getOwnerAndRepo: jest.fn(),
 }));
 
@@ -37,29 +37,27 @@ const JSON5_EXTENDED = `{extends: ['github>seek-jobs/custom-config']}`;
 
 const getOwnerAndRepo = jest.mocked(Git.getOwnerAndRepo);
 
-const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+const consoleLog = jest.spyOn(console, "log").mockImplementation();
 
-const writeFile = jest.spyOn(memfs.fs.promises, 'writeFile');
+const writeFile = jest.spyOn(memfs.fs.promises, "writeFile");
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(jest.clearAllMocks);
 beforeEach(() => vol.reset());
 
-describe('patchRenovateConfig', () => {
-  describe('format mode', () => {
-    it('patches a JSON config for a SEEK-Jobs project', async () => {
+describe("patchRenovateConfig", () => {
+  describe("format mode", () => {
+    it("patches a JSON config for a SEEK-Jobs project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'VersionNet',
+        owner: "SEEK-Jobs",
+        repo: "VersionNet",
       });
 
-      vol.fromJSON({ '.git': null, 'renovate.json': JSON });
+      vol.fromJSON({ ".git": null, "renovate.json": JSON });
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'apply',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "apply",
       });
 
       expect(volToJson()).toMatchInlineSnapshot(`
@@ -76,18 +74,18 @@ describe('patchRenovateConfig', () => {
       `);
     });
 
-    it('patches a JSON config for a new SEEK-Jobs project', async () => {
+    it("patches a JSON config for a new SEEK-Jobs project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'VersionNet',
+        owner: "SEEK-Jobs",
+        repo: "VersionNet",
       });
 
-      vol.fromJSON({ 'foo/.git': null, 'foo/renovate.json': JSON });
+      vol.fromJSON({ "foo/.git": null, "foo/renovate.json": JSON });
 
       await expect(
-        tryPatchRenovateConfig({ mode: 'format', dir: 'foo' } as PatchConfig),
+        tryPatchRenovateConfig({ mode: "format", dir: "foo" } as PatchConfig),
       ).resolves.toEqual({
-        result: 'apply',
+        result: "apply",
       });
 
       expect(volToJson()).toMatchInlineSnapshot(`
@@ -104,18 +102,16 @@ describe('patchRenovateConfig', () => {
       `);
     });
 
-    it('patches a JSON5 config for a seekasia project', async () => {
+    it("patches a JSON5 config for a seekasia project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'sEEkAsIa',
-        repo: 'VersionCobol',
+        owner: "sEEkAsIa",
+        repo: "VersionCobol",
       });
 
-      vol.fromJSON({ '.git': null, '.github/renovate.json5': JSON5 });
+      vol.fromJSON({ ".git": null, ".github/renovate.json5": JSON5 });
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'apply',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "apply",
       });
 
       // Note that `golden-fleece` can't do any better than this imperfect output,
@@ -138,57 +134,51 @@ describe('patchRenovateConfig', () => {
       `);
     });
 
-    it('handles a lack of Renovate config', async () => {
+    it("handles a lack of Renovate config", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'monolith',
+        owner: "SEEK-Jobs",
+        repo: "monolith",
       });
 
-      const files = { '.git': null };
+      const files = { ".git": null };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no config found',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "no config found",
       });
 
       expect(volToJson()).toStrictEqual(files);
     });
 
-    it('handles a filesystem error', async () => {
-      const err = new Error('Badness!');
+    it("handles a filesystem error", async () => {
+      const err = new Error("Badness!");
 
       writeFile.mockRejectedValueOnce(err);
 
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'VersionNet',
+        owner: "SEEK-Jobs",
+        repo: "VersionNet",
       });
 
-      const files = { '.git': null, 'renovate.json5': JSON5 };
+      const files = { ".git": null, "renovate.json5": JSON5 };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'due to an error',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "due to an error",
       });
 
       expect(volToJson()).toStrictEqual(files);
 
-      expect(consoleLog).toHaveBeenCalledWith(
-        'Failed to patch Renovate config.',
-      );
+      expect(consoleLog).toHaveBeenCalledWith("Failed to patch Renovate config.");
       expect(consoleLog).toHaveBeenCalledWith(inspect(err));
     });
 
-    it('handles a non-Git directory', async () => {
-      const err = new Error('Badness!');
+    it("handles a non-Git directory", async () => {
+      const err = new Error("Badness!");
 
       getOwnerAndRepo.mockRejectedValue(err);
 
@@ -196,11 +186,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no Git root found',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "no Git root found",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -208,18 +196,16 @@ describe('patchRenovateConfig', () => {
       expect(consoleLog).not.toHaveBeenCalled();
     });
 
-    it('skips a seek-oss project', async () => {
-      getOwnerAndRepo.mockResolvedValue({ owner: 'seek-oss', repo: 'skuba' });
+    it("skips a seek-oss project", async () => {
+      getOwnerAndRepo.mockResolvedValue({ owner: "seek-oss", repo: "skuba" });
 
-      const files = { '.git': null, 'renovate.json5': JSON5 };
+      const files = { ".git": null, "renovate.json5": JSON5 };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'owner does not map to a SEEK preset',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "owner does not map to a SEEK preset",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -227,21 +213,19 @@ describe('patchRenovateConfig', () => {
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('skips a personal project', async () => {
+    it("skips a personal project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'Seekie1337',
-        repo: 'fizz-buzz',
+        owner: "Seekie1337",
+        repo: "fizz-buzz",
       });
 
-      const files = { '.git': null, '.renovaterc': JSON };
+      const files = { ".git": null, ".renovaterc": JSON };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'owner does not map to a SEEK preset',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "owner does not map to a SEEK preset",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -249,20 +233,18 @@ describe('patchRenovateConfig', () => {
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('skips a strange config without `extends`', async () => {
+    it("skips a strange config without `extends`", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'monolith',
+        owner: "SEEK-Jobs",
+        repo: "monolith",
       });
 
-      const files = { '.git': null, '.github/renovate.json5': '{}' };
+      const files = { ".git": null, ".github/renovate.json5": "{}" };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'apply',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "apply",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -270,24 +252,22 @@ describe('patchRenovateConfig', () => {
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('skips a configured SEEK-Jobs project', async () => {
+    it("skips a configured SEEK-Jobs project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'monolith',
+        owner: "SEEK-Jobs",
+        repo: "monolith",
       });
 
       const files = {
-        '.git': null,
-        '.github/renovate.json5': JSON5_CONFIGURED,
+        ".git": null,
+        ".github/renovate.json5": JSON5_CONFIGURED,
       };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'config already has a SEEK preset',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "config already has a SEEK preset",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -295,21 +275,19 @@ describe('patchRenovateConfig', () => {
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('skips a SEEK-Jobs project which already extends a config', async () => {
+    it("skips a SEEK-Jobs project which already extends a config", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'monolith',
+        owner: "SEEK-Jobs",
+        repo: "monolith",
       });
 
-      const files = { '.git': null, '.github/renovate.json5': JSON5_EXTENDED };
+      const files = { ".git": null, ".github/renovate.json5": JSON5_EXTENDED };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'config already has a SEEK preset',
+      await expect(tryPatchRenovateConfig({ mode: "format" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "config already has a SEEK preset",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -318,87 +296,81 @@ describe('patchRenovateConfig', () => {
     });
   });
 
-  describe('lint mode', () => {
-    it('patches a JSON config for a SEEK-Jobs project', async () => {
+  describe("lint mode", () => {
+    it("patches a JSON config for a SEEK-Jobs project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'VersionNet',
+        owner: "SEEK-Jobs",
+        repo: "VersionNet",
       });
 
-      vol.fromJSON({ '.git': null, 'renovate.json': JSON });
+      vol.fromJSON({ ".git": null, "renovate.json": JSON });
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'apply',
+      await expect(tryPatchRenovateConfig({ mode: "lint" } as PatchConfig)).resolves.toEqual({
+        result: "apply",
       });
 
-      expect(volToJson()).toEqual({ '.git': null, 'renovate.json': JSON });
+      expect(volToJson()).toEqual({ ".git": null, "renovate.json": JSON });
     });
 
-    it('patches a JSON config for a new SEEK-Jobs project', async () => {
+    it("patches a JSON config for a new SEEK-Jobs project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'VersionNet',
+        owner: "SEEK-Jobs",
+        repo: "VersionNet",
       });
 
-      vol.fromJSON({ 'foo/.git': null, 'foo/renovate.json': JSON });
+      vol.fromJSON({ "foo/.git": null, "foo/renovate.json": JSON });
 
       await expect(
-        tryPatchRenovateConfig({ mode: 'lint', dir: 'foo' } as PatchConfig),
+        tryPatchRenovateConfig({ mode: "lint", dir: "foo" } as PatchConfig),
       ).resolves.toEqual({
-        result: 'apply',
+        result: "apply",
       });
 
       expect(volToJson()).toEqual({
-        'foo/.git': null,
-        'foo/renovate.json': JSON,
+        "foo/.git": null,
+        "foo/renovate.json": JSON,
       });
     });
 
-    it('patches a JSON5 config for a seekasia project', async () => {
+    it("patches a JSON5 config for a seekasia project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'sEEkAsIa',
-        repo: 'VersionCobol',
+        owner: "sEEkAsIa",
+        repo: "VersionCobol",
       });
 
-      vol.fromJSON({ '.git': null, '.github/renovate.json5': JSON5 });
+      vol.fromJSON({ ".git": null, ".github/renovate.json5": JSON5 });
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'apply',
+      await expect(tryPatchRenovateConfig({ mode: "lint" } as PatchConfig)).resolves.toEqual({
+        result: "apply",
       });
 
       // unchanged
       expect(volToJson()).toEqual({
-        '.git': null,
-        '.github/renovate.json5': JSON5,
+        ".git": null,
+        ".github/renovate.json5": JSON5,
       });
     });
 
-    it('handles a lack of Renovate config', async () => {
+    it("handles a lack of Renovate config", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'monolith',
+        owner: "SEEK-Jobs",
+        repo: "monolith",
       });
 
-      const files = { '.git': null };
+      const files = { ".git": null };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no config found',
+      await expect(tryPatchRenovateConfig({ mode: "lint" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "no config found",
       });
 
       expect(volToJson()).toStrictEqual(files);
     });
 
-    it('handles a non-Git directory', async () => {
-      const err = new Error('Badness!');
+    it("handles a non-Git directory", async () => {
+      const err = new Error("Badness!");
 
       getOwnerAndRepo.mockRejectedValue(err);
 
@@ -406,11 +378,9 @@ describe('patchRenovateConfig', () => {
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'no Git root found',
+      await expect(tryPatchRenovateConfig({ mode: "lint" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "no Git root found",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -418,18 +388,16 @@ describe('patchRenovateConfig', () => {
       expect(consoleLog).not.toHaveBeenCalled();
     });
 
-    it('skips a seek-oss project', async () => {
-      getOwnerAndRepo.mockResolvedValue({ owner: 'seek-oss', repo: 'skuba' });
+    it("skips a seek-oss project", async () => {
+      getOwnerAndRepo.mockResolvedValue({ owner: "seek-oss", repo: "skuba" });
 
-      const files = { '.git': null, 'renovate.json5': JSON5 };
+      const files = { ".git": null, "renovate.json5": JSON5 };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'owner does not map to a SEEK preset',
+      await expect(tryPatchRenovateConfig({ mode: "lint" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "owner does not map to a SEEK preset",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -437,21 +405,19 @@ describe('patchRenovateConfig', () => {
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('skips a personal project', async () => {
+    it("skips a personal project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'Seekie1337',
-        repo: 'fizz-buzz',
+        owner: "Seekie1337",
+        repo: "fizz-buzz",
       });
 
-      const files = { '.git': null, '.renovaterc': JSON };
+      const files = { ".git": null, ".renovaterc": JSON };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'owner does not map to a SEEK preset',
+      await expect(tryPatchRenovateConfig({ mode: "lint" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "owner does not map to a SEEK preset",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -459,20 +425,18 @@ describe('patchRenovateConfig', () => {
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('skips a strange config without `extends`', async () => {
+    it("skips a strange config without `extends`", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'monolith',
+        owner: "SEEK-Jobs",
+        repo: "monolith",
       });
 
-      const files = { '.git': null, '.github/renovate.json5': '{}' };
+      const files = { ".git": null, ".github/renovate.json5": "{}" };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'apply',
+      await expect(tryPatchRenovateConfig({ mode: "lint" } as PatchConfig)).resolves.toEqual({
+        result: "apply",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -480,24 +444,22 @@ describe('patchRenovateConfig', () => {
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('skips a configured SEEK-Jobs project', async () => {
+    it("skips a configured SEEK-Jobs project", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'monolith',
+        owner: "SEEK-Jobs",
+        repo: "monolith",
       });
 
       const files = {
-        '.git': null,
-        '.github/renovate.json5': JSON5_CONFIGURED,
+        ".git": null,
+        ".github/renovate.json5": JSON5_CONFIGURED,
       };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'config already has a SEEK preset',
+      await expect(tryPatchRenovateConfig({ mode: "lint" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "config already has a SEEK preset",
       });
 
       expect(volToJson()).toStrictEqual(files);
@@ -505,21 +467,19 @@ describe('patchRenovateConfig', () => {
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('skips a SEEK-Jobs project which already extends a config', async () => {
+    it("skips a SEEK-Jobs project which already extends a config", async () => {
       getOwnerAndRepo.mockResolvedValue({
-        owner: 'SEEK-Jobs',
-        repo: 'monolith',
+        owner: "SEEK-Jobs",
+        repo: "monolith",
       });
 
-      const files = { '.git': null, '.github/renovate.json5': JSON5_EXTENDED };
+      const files = { ".git": null, ".github/renovate.json5": JSON5_EXTENDED };
 
       vol.fromJSON(files);
 
-      await expect(
-        tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
-      ).resolves.toEqual({
-        result: 'skip',
-        reason: 'config already has a SEEK preset',
+      await expect(tryPatchRenovateConfig({ mode: "lint" } as PatchConfig)).resolves.toEqual({
+        result: "skip",
+        reason: "config already has a SEEK preset",
       });
 
       expect(volToJson()).toStrictEqual(files);

@@ -1,4 +1,4 @@
-import type { Handler } from 'express';
+import type { Handler } from "express";
 
 /**
  * Signifies that the API is available to serve requests.
@@ -7,5 +7,5 @@ import type { Handler } from 'express';
  * is unhealthy and needs to be recycled.
  */
 export const healthCheckHandler: Handler = (_req, res) => {
-  res.send('');
+  res.send("");
 };

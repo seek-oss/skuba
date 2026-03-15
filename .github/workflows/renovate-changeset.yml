@@ -6,8 +6,8 @@ permissions:
 on:
   pull_request_target:
     paths:
-      - '.github/workflows/renovate-changeset.yml'
-      - 'pnpm-lock.yaml'
+      - ".github/workflows/renovate-changeset.yml"
+      - "pnpm-lock.yaml"
 
 jobs:
   generate-changeset:

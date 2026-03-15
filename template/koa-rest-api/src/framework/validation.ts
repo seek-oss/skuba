@@ -1,8 +1,8 @@
-import { ErrorMiddleware } from 'seek-koala';
-import type * as z from 'zod/v4';
-import type * as core from 'zod/v4/core';
+import { ErrorMiddleware } from "seek-koala";
+import type * as z from "zod/v4";
+import type * as core from "zod/v4/core";
 
-import type { Context } from '#src/types/koa.js';
+import type { Context } from "#src/types/koa.js";
 
 type InvalidFields = Record<string, string>;
 
@@ -44,7 +44,7 @@ const parseTuples = (
   unions: Record<number, number[]> = {},
 ): Array<readonly [string, string]> =>
   errors.flatMap((issue) => {
-    if (issue.code === 'invalid_union') {
+    if (issue.code === "invalid_union") {
       return issue.errors.flatMap((err, idx) =>
         parseTuples(err, issue.path, {
           ...unions,
@@ -53,9 +53,9 @@ const parseTuples = (
       );
     }
 
-    const path = ['', ...basePath, ...issue.path]
-      .map((prop, idx) => [prop, ...(unions[idx] ?? [])].join('~union'))
-      .join('/');
+    const path = ["", ...basePath, ...issue.path]
+      .map((prop, idx) => [prop, ...(unions[idx] ?? [])].join("~union"))
+      .join("/");
 
     return [[path, issue.message]] as const;
   });
@@ -74,8 +74,8 @@ export const validate = <T extends z.ZodType>({
     const invalidFields = parseInvalidFieldsFromError(parseResult.error);
     return ctx.throw(
       422,
-      new ErrorMiddleware.JsonResponse('Input validation failed', {
-        message: 'Input validation failed',
+      new ErrorMiddleware.JsonResponse("Input validation failed", {
+        message: "Input validation failed",
         invalidFields,
       }),
     );
@@ -83,10 +83,7 @@ export const validate = <T extends z.ZodType>({
   return parseResult.data;
 };
 
-export const validateRequestBody = <T extends z.ZodType>(
-  ctx: Context,
-  schema: T,
-): z.infer<T> =>
+export const validateRequestBody = <T extends z.ZodType>(ctx: Context, schema: T): z.infer<T> =>
   validate({
     ctx,
     input: ctx.request.body,

@@ -4,18 +4,11 @@ import type {
   SQSBatchResponse,
   SQSEvent,
   SQSRecord,
-} from 'aws-lambda';
+} from "aws-lambda";
 
-import {
-  lambdaContext,
-  logger,
-  recordContext,
-} from '#src/framework/logging.js';
+import { lambdaContext, logger, recordContext } from "#src/framework/logging.js";
 
-type Handler<Event, Output> = (
-  event: Event,
-  ctx: LambdaContext,
-) => Promise<Output>;
+type Handler<Event, Output> = (event: Event, ctx: LambdaContext) => Promise<Output>;
 
 export const createHandler =
   <Event extends SQSEvent, Output = unknown>(
@@ -26,13 +19,13 @@ export const createHandler =
       try {
         const output = await fn(event, ctx);
 
-        logger.debug({ output }, 'Function completed');
+        logger.debug({ output }, "Function completed");
 
         return output;
       } catch (err) {
-        logger.error(err, 'Function failed');
+        logger.error(err, "Function failed");
 
-        throw new Error('Function failed');
+        throw new Error("Function failed");
       }
     });
 
@@ -41,15 +34,13 @@ export const createBatchSQSHandler =
     fn: (record: SQSRecord, ctx: LambdaContext) => Promise<unknown>,
   ): Handler<SQSEvent, SQSBatchResponse> =>
   async (event, ctx) => {
-    const processRecord = (
-      record: SQSRecord,
-    ): Promise<SQSBatchItemFailure | undefined> =>
+    const processRecord = (record: SQSRecord): Promise<SQSBatchItemFailure | undefined> =>
       recordContext.run({ sqsMessageId: record.messageId }, async () => {
         try {
           await fn(record, ctx);
           return;
         } catch (err) {
-          logger.error(err, 'Processing record failed');
+          logger.error(err, "Processing record failed");
           return {
             itemIdentifier: record.messageId,
           };

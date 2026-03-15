@@ -1,8 +1,8 @@
-import { AsyncLocalStorage } from 'async_hooks';
+import { AsyncLocalStorage } from "async_hooks";
 
-import { createDestination, createLogger } from '@seek/logger';
+import { createDestination, createLogger } from "@seek/logger";
 
-import { config } from '#src/config.js';
+import { config } from "#src/config.js";
 
 interface LambdaContext {
   awsRequestId: string;
@@ -16,8 +16,8 @@ export const lambdaContext = new AsyncLocalStorage<LambdaContext>();
 export const recordContext = new AsyncLocalStorage<RecordContext>();
 
 const { destination, stdoutMock } = createDestination({
-  mock: config.deployment === 'test' && {
-    redact: ['awsRequestId'],
+  mock: config.deployment === "test" && {
+    redact: ["awsRequestId"],
   },
 });
 
@@ -31,9 +31,9 @@ export const logger = createLogger(
        *
        * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#datadog-log-tiers
        */
-      datadog: 'tin',
-      team: '<%- teamName %>',
-      use: 'environment',
+      datadog: "tin",
+      team: "<%- teamName %>",
+      use: "environment",
     },
 
     level: config.logLevel,
@@ -43,8 +43,7 @@ export const logger = createLogger(
       ...recordContext.getStore(),
     }),
 
-    transport:
-      config.deployment === 'local' ? { target: 'pino-pretty' } : undefined,
+    transport: config.deployment === "local" ? { target: "pino-pretty" } : undefined,
   },
   destination,
 );

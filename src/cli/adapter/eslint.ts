@@ -1,18 +1,16 @@
-import { styleText } from 'node:util';
-import path from 'path';
+import { styleText } from "node:util";
+import path from "path";
 
-import { type ESLint, type Linter, loadESLint } from 'eslint';
+import { type ESLint, type Linter, loadESLint } from "eslint";
 
-import { type Logger, pluralise } from '../../utils/logging.js';
+import { type Logger, pluralise } from "../../utils/logging.js";
 
 const symbolForResult = (result: ESLint.LintResult) => {
   if (result.errorCount) {
-    return styleText('red', '○');
+    return styleText("red", "○");
   }
 
-  return result.warningCount
-    ? styleText('yellow', '◍')
-    : styleText('green', '○');
+  return result.warningCount ? styleText("yellow", "◍") : styleText("green", "○");
 };
 
 export interface ESLintResult {
@@ -29,18 +27,18 @@ export interface ESLintOutput {
 }
 
 export const runESLint = async (
-  mode: 'format' | 'lint',
+  mode: "format" | "lint",
   logger: Logger,
   overrideConfigFile?: string,
 ): Promise<ESLintOutput> => {
-  logger.debug('Initialising ESLint...');
+  logger.debug("Initialising ESLint...");
 
   const cwd = process.cwd();
 
   const ESLint = await loadESLint({ useFlatConfig: true });
   const engine = new ESLint({
     cache: true,
-    fix: mode === 'format',
+    fix: mode === "format",
     overrideConfigFile,
     overrideConfig: {
       linterOptions: {
@@ -49,7 +47,7 @@ export const runESLint = async (
     },
   });
 
-  logger.debug('Processing files...');
+  logger.debug("Processing files...");
 
   const start = process.hrtime.bigint();
 
@@ -58,21 +56,16 @@ export const runESLint = async (
     lintFiles(engine),
   ]);
 
-  if (type === 'no-config') {
+  if (type === "no-config") {
     logger.plain(
-      'skuba could not find an eslint config file. Do you need to run format or configure?',
+      "skuba could not find an eslint config file. Do you need to run format or configure?",
     );
-    return { ok: false, fixable: false, errors: [], warnings: [], output: '' };
+    return { ok: false, fixable: false, errors: [], warnings: [], output: "" };
   }
 
   const end = process.hrtime.bigint();
 
-  logger.plain(
-    `Processed ${pluralise(results.length, 'file')} in ${logger.timing(
-      start,
-      end,
-    )}.`,
-  );
+  logger.plain(`Processed ${pluralise(results.length, "file")} in ${logger.timing(start, end)}.`);
 
   const errors: ESLintResult[] = [];
   const warnings: ESLintResult[] = [];
@@ -105,10 +98,7 @@ export const runESLint = async (
 
   await ESLint.outputFixes(results);
 
-  const output = await formatter.format(
-    results,
-    engine.getRulesMetaForResults(results),
-  );
+  const output = await formatter.format(results, engine.getRulesMetaForResults(results));
 
   if (output) {
     logger.plain(output);
@@ -120,13 +110,10 @@ export const runESLint = async (
 const lintFiles = async (engine: ESLint) => {
   try {
     const result = await engine.lintFiles([]);
-    return { type: 'results', results: result } as const;
+    return { type: "results", results: result } as const;
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message === 'Could not find config file.'
-    ) {
-      return { type: 'no-config', results: undefined } as const;
+    if (error instanceof Error && error.message === "Could not find config file.") {
+      return { type: "no-config", results: undefined } as const;
     }
     throw error;
   }

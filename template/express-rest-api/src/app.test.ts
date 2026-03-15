@@ -1,9 +1,9 @@
-import request from 'supertest';
+import request from "supertest";
 
-import app from './app.js';
+import app from "./app.js";
 
 const agent = request.agent(app);
 
-describe('app', () => {
-  it('has a happy health check', () => agent.get('/health').expect(200, ''));
+describe("app", () => {
+  it("has a happy health check", () => agent.get("/health").expect(200, ""));
 });

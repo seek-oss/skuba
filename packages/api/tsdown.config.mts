@@ -1,12 +1,12 @@
-import { defineConfig } from 'tsdown/config';
+import { defineConfig } from "tsdown/config";
 
 export default defineConfig({
-  entry: ['src/index.ts', 'src/*/index.ts'],
+  entry: ["src/index.ts", "src/*/index.ts"],
   dts: true,
-  format: ['cjs', 'esm'],
-  outDir: 'lib',
+  format: ["cjs", "esm"],
+  outDir: "lib",
   exports: {
-    devExports: '@seek/skuba/source',
+    devExports: "@seek/skuba/source",
   },
   inlineOnly: false,
   checks: {

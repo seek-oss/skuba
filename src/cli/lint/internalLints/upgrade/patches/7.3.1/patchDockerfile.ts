@@ -1,27 +1,24 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import fs from 'fs-extra';
+import fs from "fs-extra";
 
-import { log } from '../../../../../../utils/logging.js';
-import { createDestinationFileReader } from '../../../../../configure/analysis/project.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { log } from "../../../../../../utils/logging.js";
+import { createDestinationFileReader } from "../../../../../configure/analysis/project.js";
+import type { PatchFunction, PatchReturnType } from "../../index.js";
 
-const DOCKERFILE_FILENAME = 'Dockerfile';
+const DOCKERFILE_FILENAME = "Dockerfile";
 
 const NON_DEBIAN_REGEX = /gcr.io\/distroless\/nodejs:(18|20)/g;
 const DEBIAN_REGEX = /gcr.io\/distroless\/nodejs(18|20)-debian11/g;
-const VERSION_DEBIAN_REPLACE = 'gcr.io/distroless/nodejs$1-debian12';
+const VERSION_DEBIAN_REPLACE = "gcr.io/distroless/nodejs$1-debian12";
 
-const patchDockerfile = async (
-  mode: 'format' | 'lint',
-  dir: string,
-): Promise<PatchReturnType> => {
+const patchDockerfile = async (mode: "format" | "lint", dir: string): Promise<PatchReturnType> => {
   const readFile = createDestinationFileReader(dir);
 
   const maybeDockerfile = await readFile(DOCKERFILE_FILENAME);
 
   if (!maybeDockerfile) {
-    return { result: 'skip', reason: 'no Dockerfile found' };
+    return { result: "skip", reason: "no Dockerfile found" };
   }
 
   const patched = maybeDockerfile
@@ -29,27 +26,24 @@ const patchDockerfile = async (
     .replaceAll(DEBIAN_REGEX, VERSION_DEBIAN_REPLACE);
 
   if (patched === maybeDockerfile) {
-    return { result: 'skip' };
+    return { result: "skip" };
   }
 
-  if (mode === 'lint') {
-    return { result: 'apply' };
+  if (mode === "lint") {
+    return { result: "apply" };
   }
 
   await fs.promises.writeFile(DOCKERFILE_FILENAME, patched);
 
-  return { result: 'apply' };
+  return { result: "apply" };
 };
 
-export const tryPatchDockerfile: PatchFunction = async ({
-  mode,
-  dir = process.cwd(),
-}) => {
+export const tryPatchDockerfile: PatchFunction = async ({ mode, dir = process.cwd() }) => {
   try {
     return await patchDockerfile(mode, dir);
   } catch (err) {
-    log.warn('Failed to patch Dockerfile.');
+    log.warn("Failed to patch Dockerfile.");
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    return { result: "skip", reason: "due to an error" };
   }
 };

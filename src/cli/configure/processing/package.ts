@@ -1,9 +1,9 @@
-import normalizeData from 'normalize-package-data';
+import normalizeData from "normalize-package-data";
 
-import type { PackageJson } from '../types.js';
+import type { PackageJson } from "../types.js";
 
-import { parseObject } from './json.js';
-import { formatPrettier } from './prettier.js';
+import { parseObject } from "./json.js";
+import { formatOxfmt } from "./oxfmt.js";
 
 const normalizeDataWithoutThrowing = (rawData: PackageJson) => {
   try {
@@ -21,26 +21,22 @@ export const formatPackage = async (rawData: PackageJson) => {
 
   delete rawData._id;
 
-  if (rawData.name === '') {
+  if (rawData.name === "") {
     delete rawData.name;
   }
 
-  if (rawData.readme === 'ERROR: No README data found!') {
+  if (rawData.readme === "ERROR: No README data found!") {
     delete rawData.readme;
   }
 
-  if (rawData.version === '') {
+  if (rawData.version === "") {
     delete rawData.version;
   }
 
-  return formatPrettier(JSON.stringify(rawData), {
-    filepath: 'package.json',
-  });
+  return formatOxfmt("package.json", JSON.stringify(rawData));
 };
 
-export const parsePackage = (
-  input: string | undefined,
-): PackageJson | undefined => {
+export const parsePackage = (input: string | undefined): PackageJson | undefined => {
   const data = parseObject(input);
 
   if (data === undefined) {
@@ -54,15 +50,13 @@ export const parsePackage = (
 
 export const createDependencyFilter = (
   names: readonly string[],
-  type: 'dependencies' | 'devDependencies',
+  type: "dependencies" | "devDependencies",
 ) => {
   const set = new Set(names);
 
   return (data: PackageJson) => ({
     ...data,
-    [type]: Object.fromEntries(
-      Object.entries(data[type] ?? {}).filter(([name]) => !set.has(name)),
-    ),
+    [type]: Object.fromEntries(Object.entries(data[type] ?? {}).filter(([name]) => !set.has(name))),
   });
 };
 

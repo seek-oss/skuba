@@ -1,28 +1,27 @@
 /* eslint-disable no-console */
 
-import path from 'path';
+import path from "path";
 
-import { log } from '../../utils/logging.js';
+import { log } from "../../utils/logging.js";
 
-import { inferParser, runPrettier } from './prettier.js';
+import { inferParser, runPrettier } from "./prettier.js";
 
-describe('inferParser', () => {
+describe("inferParser", () => {
   test.each`
     filepath                            | parser
-    ${'/usr/local/bin/secret.json'}     | ${'json'}
-    ${'C:\\Users\\Devloper\\My CV.yml'} | ${'yaml'}
-    ${'CODEOWNERS'}                     | ${undefined}
-    ${'client.tsx'}                     | ${'typescript'}
-    ${'server.ts'}                      | ${'typescript'}
-    ${'vanilla.js'}                     | ${'babel'}
+    ${"/usr/local/bin/secret.json"}     | ${"json"}
+    ${"C:\\Users\\Devloper\\My CV.yml"} | ${"yaml"}
+    ${"CODEOWNERS"}                     | ${undefined}
+    ${"client.tsx"}                     | ${"typescript"}
+    ${"server.ts"}                      | ${"typescript"}
+    ${"vanilla.js"}                     | ${"babel"}
   `(
-    'inferParser($filepath) === $parser',
-    async ({ filepath, parser }) =>
-      await expect(inferParser(filepath)).resolves.toBe(parser),
+    "inferParser($filepath) === $parser",
+    async ({ filepath, parser }) => await expect(inferParser(filepath)).resolves.toBe(parser),
   );
 });
 
-describe('runPrettier', () => {
+describe("runPrettier", () => {
   const originalCwd = process.cwd();
 
   afterAll(() =>
@@ -35,15 +34,11 @@ describe('runPrettier', () => {
   beforeAll(() => (console.log = () => undefined));
   afterAll(() => (console.log = originalConsoleLog));
 
-  it('handles a custom directory with a common root', async () => {
-    process.chdir(path.join(__dirname, '../../..'));
+  it("handles a custom directory with a common root", async () => {
+    process.chdir(path.join(__dirname, "../../.."));
 
     await expect(
-      runPrettier(
-        'lint',
-        log,
-        path.join(__dirname, '../../../integration/base/fixable'),
-      ),
+      runPrettier("lint", log, path.join(__dirname, "../../../integration/base/fixable")),
     ).resolves.toMatchInlineSnapshot(`
       {
         "ok": false,
@@ -70,15 +65,11 @@ describe('runPrettier', () => {
     `);
   });
 
-  it('handles a custom directory with a different root', async () => {
+  it("handles a custom directory with a different root", async () => {
     process.chdir(__dirname);
 
     await expect(
-      runPrettier(
-        'lint',
-        log,
-        path.join(__dirname, '../../../integration/base/fixable'),
-      ),
+      runPrettier("lint", log, path.join(__dirname, "../../../integration/base/fixable")),
     ).resolves.toMatchInlineSnapshot(`
       {
         "ok": false,

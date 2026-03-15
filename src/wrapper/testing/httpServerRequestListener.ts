@@ -1,10 +1,10 @@
-import http from 'http';
+import http from "http";
 
-import Koa from 'koa';
+import Koa from "koa";
 
 const app = new Koa().use((ctx) => {
-  if (ctx.request.path === '/httpServer') {
-    ctx.body = 'Http Server!';
+  if (ctx.request.path === "/httpServer") {
+    ctx.body = "Http Server!";
   }
 });
 

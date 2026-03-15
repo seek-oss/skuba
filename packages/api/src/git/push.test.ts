@@ -1,18 +1,16 @@
-import git from 'isomorphic-git';
+import git from "isomorphic-git";
 
-import { push } from './push.js';
+import { push } from "./push.js";
 
-jest.mock('isomorphic-git');
+jest.mock("isomorphic-git");
 
 afterEach(jest.resetAllMocks);
 
-describe('push', () => {
-  it('propagates props to isomorphic-git', async () => {
+describe("push", () => {
+  it("propagates props to isomorphic-git", async () => {
     jest
       .mocked(git.listRemotes)
-      .mockResolvedValue([
-        { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-      ]);
+      .mockResolvedValue([{ remote: "origin", url: "git@github.com:seek-oss/skuba.git" }]);
 
     jest.mocked(git.push).mockResolvedValue({
       ok: true,
@@ -22,10 +20,10 @@ describe('push', () => {
 
     await expect(
       push({
-        auth: { token: 'abc', type: 'gitHubApp' },
-        dir: '/workdir/skuba',
-        ref: 'c'.repeat(40),
-        remoteRef: 'feature-a',
+        auth: { token: "abc", type: "gitHubApp" },
+        dir: "/workdir/skuba",
+        ref: "c".repeat(40),
+        remoteRef: "feature-a",
       }),
     ).resolves.toStrictEqual({
       error: null,

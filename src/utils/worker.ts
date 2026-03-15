@@ -6,15 +6,13 @@ import { log } from './logging.js';
 /**
  * Executes a script at `filepath` in a Node.js worker thread.
  */
-export const execWorkerThread = async <Input, Output>(
-  filepath: string,
-  input: Input,
-) => {
+export const execWorkerThread = async <Input, Output>(filepath: string, input: Input, argv: string[] = []) => {
   let output: Output;
   let messageReceived = false;
 
   return new Promise<Output>((resolve, reject) =>
     new Worker(filepath, {
+      argv,
       workerData: input,
     })
       .on('error', reject)

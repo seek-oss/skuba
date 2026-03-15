@@ -20,12 +20,12 @@ the function will silently return without attempting to annotate:
 The `buildkite-agent` binary must also be on your `PATH`.
 
 ```typescript
-import { Buildkite } from 'skuba';
+import { Buildkite } from "skuba";
 
 const main = async () => {
   const resultMarkdown = await doWork();
 
-  console.log('Received result:', resultMarkdown);
+  console.log("Received result:", resultMarkdown);
 
   await Buildkite.annotate(resultMarkdown);
 };

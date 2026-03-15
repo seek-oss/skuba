@@ -1,24 +1,17 @@
-import { styleText } from 'node:util';
-import path from 'path';
+import { styleText } from "node:util";
+import path from "path";
 
-import fs from 'fs-extra';
-import type { ReadResult } from 'read-pkg-up';
-import * as z from 'zod/v4';
+import fs from "fs-extra";
+import type { ReadResult } from "read-pkg-up";
+import * as z from "zod/v4";
 
-import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
-import { log } from '../../utils/logging.js';
-import {
-  type TemplateConfig,
-  ensureTemplateConfigDeletion,
-} from '../../utils/template.js';
-import { hasStringProp } from '../../utils/validation.js';
-import {
-  getTemplateConfig,
-  readJSONFromStdIn,
-  runForm,
-} from '../init/getConfig.js';
+import { copyFiles, createEjsRenderer } from "../../utils/copy.js";
+import { log } from "../../utils/logging.js";
+import { type TemplateConfig, ensureTemplateConfigDeletion } from "../../utils/template.js";
+import { hasStringProp } from "../../utils/validation.js";
+import { getTemplateConfig, readJSONFromStdIn, runForm } from "../init/getConfig.js";
 
-import { formatPackage } from './processing/package.js';
+import { formatPackage } from "./processing/package.js";
 
 interface Props {
   destinationRoot: string;
@@ -61,24 +54,21 @@ export const ensureTemplateCompletion = async ({
     return templateConfig;
   }
 
-  const templateName = hasStringProp(manifest.packageJson.skuba, 'template')
+  const templateName = hasStringProp(manifest.packageJson.skuba, "template")
     ? manifest.packageJson.skuba.template
-    : 'template';
+    : "template";
 
   log.newline();
   const templateData = process.stdin.isTTY
     ? await runForm({
         choices: templateConfig.fields,
-        message: styleText(
-          'bold',
-          `Complete ${styleText('cyan', templateName)}:`,
-        ),
-        name: 'customAnswers',
+        message: styleText("bold", `Complete ${styleText("cyan", templateName)}:`),
+        name: "customAnswers",
       })
     : await getTemplateDataFromStdIn(templateConfig);
 
   const updatedPackageJson = await formatPackage(manifest.packageJson);
-  const packageJsonFilepath = path.join(destinationRoot, 'package.json');
+  const packageJsonFilepath = path.join(destinationRoot, "package.json");
   await fs.promises.writeFile(packageJsonFilepath, updatedPackageJson);
 
   await copyFiles({
@@ -91,7 +81,7 @@ export const ensureTemplateCompletion = async ({
   await ensureTemplateConfigDeletion(destinationRoot);
 
   log.newline();
-  log.ok('Templating complete!');
+  log.ok("Templating complete!");
 
   return templateConfig;
 };

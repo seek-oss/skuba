@@ -1,27 +1,21 @@
-import stream from 'stream';
+import stream from "stream";
 
-import Koa, { type Context } from 'koa';
-import httpMocks, { type RequestMethod } from 'node-mocks-http';
-import { vi } from 'vitest';
+import Koa, { type Context } from "koa";
+import httpMocks, { type RequestMethod } from "node-mocks-http";
+import { vi } from "vitest";
 
-import {
-  type MockCookies,
-  createMockCookies,
-} from '../createMockCookies/createMockCookies.js';
+import { type MockCookies, createMockCookies } from "../createMockCookies/createMockCookies.js";
 
 export interface MockContext extends Context {
   cookies: MockCookies;
-  request: Context['request'] & {
+  request: Context["request"] & {
     body?: unknown;
     rawBody?: string;
     session?: Record<string, unknown>;
   };
 }
 
-export interface Options<
-  CustomProperties extends object,
-  RequestBody = undefined,
-> {
+export interface Options<CustomProperties extends object, RequestBody = undefined> {
   url?: string;
   method?: RequestMethod;
   statusCode?: number;
@@ -33,17 +27,12 @@ export interface Options<
   host?: string;
   requestBody?: RequestBody;
   rawBody?: string;
-  throw?:
-    | ((status: number, message?: string) => never)
-    | ReturnType<typeof vi.fn>;
+  throw?: ((status: number, message?: string) => never) | ReturnType<typeof vi.fn>;
   redirect?: ((url: string) => void) | ReturnType<typeof vi.fn>;
   customProperties?: CustomProperties;
 }
 
-export const createMockContext = <
-  CustomProperties extends object,
-  RequestBody = undefined,
->(
+export const createMockContext = <CustomProperties extends object, RequestBody = undefined>(
   options: Options<CustomProperties, RequestBody> = {},
 ) => {
   const app = new Koa();
@@ -54,9 +43,9 @@ export const createMockContext = <
     statusCode,
     session,
     requestBody,
-    rawBody = '',
-    url = '/',
-    host = 'test.com',
+    rawBody = "",
+    url = "/",
+    host = "test.com",
     encrypted = false,
     throw: throwFn = vi.fn(),
     redirect = vi.fn(),
@@ -75,7 +64,7 @@ export const createMockContext = <
 
   // In Koa 3, ctx.origin reflects the Origin header rather than being computed from protocol + host.
   // Set it automatically when host is provided and no explicit Origin header is given.
-  const protocol = encrypted ? 'https' : 'http';
+  const protocol = encrypted ? "https" : "http";
   const requestHeaders: Record<string, string> = {
     // Koa determines protocol based on the `Host` header.
     Host: host,
@@ -83,8 +72,7 @@ export const createMockContext = <
   };
 
   // Only set Origin if not explicitly provided (case-insensitive check)
-  const hasOriginHeader =
-    'Origin' in requestHeaders || 'origin' in requestHeaders;
+  const hasOriginHeader = "Origin" in requestHeaders || "origin" in requestHeaders;
   if (!hasOriginHeader) {
     requestHeaders.Origin = `${protocol}://${host}`;
   }
@@ -101,7 +89,7 @@ export const createMockContext = <
   // MockRequest doesn't set a fake socket itself, so we create one here.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
   req.socket = new stream.Duplex() as any;
-  Object.defineProperty(req.socket, 'encrypted', {
+  Object.defineProperty(req.socket, "encrypted", {
     writable: false,
     value: encrypted,
   });
@@ -118,8 +106,7 @@ export const createMockContext = <
   res.set = undefined as any;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
-  const context = app.createContext(req, res as any) as MockContext &
-    CustomProperties;
+  const context = app.createContext(req, res as any) as MockContext & CustomProperties;
   Object.assign(context, extensions);
   context.cookies = createMockCookies(cookies);
 

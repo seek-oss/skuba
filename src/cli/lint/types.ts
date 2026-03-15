@@ -1,4 +1,4 @@
-import type { Writable } from 'stream';
+import type { Writable } from "stream";
 
 export interface Input {
   /**

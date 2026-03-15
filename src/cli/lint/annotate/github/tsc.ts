@@ -1,10 +1,10 @@
-import { stripVTControlCharacters as stripAnsi } from 'util';
+import { stripVTControlCharacters as stripAnsi } from "util";
 
-import type { StreamInterceptor } from '../../../lint/external.js';
+import type { StreamInterceptor } from "../../../lint/external.js";
 
-import type * as GitHub from '@skuba-lib/api/github';
+import type * as GitHub from "@skuba-lib/api/github";
 
-type TscLevel = 'error' | 'warning' | 'info';
+type TscLevel = "error" | "warning" | "info";
 
 /**
  * Matches the `tsc │` prefix on each `tsc` log.
@@ -36,13 +36,10 @@ type TscLevel = 'error' | 'warning' | 'info';
 const tscOutputRegex =
   /([^\s].*)[\(:](\d+)[,:](\d+)(?:\):\s+|\s+-\s+)(error|warning|info)\s+TS(\d+)\s*:\s*([\s\S]*?)(?=\n\S)(?=\n\D)/g;
 
-const annotationLevelMap: Record<
-  TscLevel,
-  GitHub.Annotation['annotation_level']
-> = {
-  error: 'failure',
-  warning: 'warning',
-  info: 'notice',
+const annotationLevelMap: Record<TscLevel, GitHub.Annotation["annotation_level"]> = {
+  error: "failure",
+  warning: "warning",
+  info: "notice",
 };
 
 export const createTscAnnotations = (

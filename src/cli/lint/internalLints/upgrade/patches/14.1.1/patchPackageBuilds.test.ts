@@ -1,23 +1,23 @@
-import memfs, { vol } from 'memfs';
+import memfs, { vol } from "memfs";
 
-import * as execModule from '../../../../../../utils/exec.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import * as checks from '../../../../../migrate/nodeVersion/checks.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import * as execModule from "../../../../../../utils/exec.js";
+import { configForPackageManager } from "../../../../../../utils/packageManager.js";
+import * as checks from "../../../../../migrate/nodeVersion/checks.js";
+import type { PatchConfig, PatchReturnType } from "../../index.js";
 
-import { patchPackageBuilds } from './patchPackageBuilds.js';
+import { patchPackageBuilds } from "./patchPackageBuilds.js";
 
-import { getOwnerAndRepo } from '@skuba-lib/api/git';
+import { getOwnerAndRepo } from "@skuba-lib/api/git";
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
+jest.mock("fs-extra", () => memfs);
+jest.mock("fast-glob", () => ({
   glob: (pat: string | string[], opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+    jest.requireActual("fast-glob").glob(pat, { ...opts, fs: memfs }),
 }));
-jest.mock('@skuba-lib/api/git');
+jest.mock("@skuba-lib/api/git");
 
-const exec = jest.spyOn(execModule, 'exec');
-const createExec = jest.spyOn(execModule, 'createExec');
+const exec = jest.spyOn(execModule, "exec");
+const createExec = jest.spyOn(execModule, "createExec");
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -25,90 +25,86 @@ beforeEach(() => {
   vol.reset();
   jest.clearAllMocks();
   exec.mockResolvedValue(undefined as any);
-  createExec.mockImplementation(
-    () => jest.fn().mockResolvedValue(undefined as any) as any,
-  );
-  jest.spyOn(checks, 'isLikelyPackage').mockResolvedValueOnce(true);
+  createExec.mockImplementation(() => jest.fn().mockResolvedValue(undefined as any) as any);
+  jest.spyOn(checks, "isLikelyPackage").mockResolvedValueOnce(true);
   jest.mocked(getOwnerAndRepo).mockResolvedValue({
-    owner: 'seek-oss',
-    repo: 'test-repo',
+    owner: "seek-oss",
+    repo: "test-repo",
   });
 });
 
 const baseArgs: PatchConfig = {
   manifest: {
     packageJson: {
-      name: 'test',
-      version: '1.0.0',
-      readme: 'README.md',
-      _id: 'test',
+      name: "test",
+      version: "1.0.0",
+      readme: "README.md",
+      _id: "test",
     },
-    path: 'package.json',
+    path: "package.json",
   },
-  packageManager: configForPackageManager('pnpm'),
-  mode: 'format',
+  packageManager: configForPackageManager("pnpm"),
+  mode: "format",
 };
 
-describe('patchPackageBuilds', () => {
+describe("patchPackageBuilds", () => {
   const stdoutMock = jest.fn();
 
-  jest
-    .spyOn(console, 'log')
-    .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+  jest.spyOn(console, "log").mockImplementation((...args) => stdoutMock(`${args.join(" ")}\n`));
 
-  it('should skip if no package.json files found', async () => {
+  it("should skip if no package.json files found", async () => {
     vol.fromJSON({});
 
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'unable to find package.json files',
+      result: "skip",
+      reason: "unable to find package.json files",
     });
   });
 
-  it('should skip if tsdown.config already exists', async () => {
+  it("should skip if tsdown.config already exists", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsdown.config.mts': 'export default {};',
+      "tsdown.config.mts": "export default {};",
     });
 
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no skuba build-package command found',
+      result: "skip",
+      reason: "no skuba build-package command found",
     });
 
     expect(exec).not.toHaveBeenCalled();
   });
 
-  it('should return apply in lint mode when package.json is found', async () => {
+  it("should return apply in lint mode when package.json is found", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
@@ -119,26 +115,26 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.mts']).toBeUndefined();
+    expect(result["tsdown.config.mts"]).toBeUndefined();
   });
 
-  it('should create tsdown.config.mts with default config in format mode', async () => {
+  it("should create tsdown.config.mts with default config in format mode", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
-            test: 'jest',
+            build: "skuba build-package",
+            test: "jest",
           },
         },
         null,
@@ -149,15 +145,15 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
 
-    expect(result['tsdown.config.mts']).toMatchInlineSnapshot(`
+    expect(result["tsdown.config.mts"]).toMatchInlineSnapshot(`
       "import { defineConfig } from 'tsdown';
 
           export default defineConfig({
@@ -176,26 +172,26 @@ describe('patchPackageBuilds', () => {
           "
     `);
 
-    expect(exec).toHaveBeenCalledWith('pnpm', 'install', '--offline');
+    expect(exec).toHaveBeenCalledWith("pnpm", "install", "--offline");
 
     expect(createExec).toHaveBeenCalledWith({ cwd: expect.any(String) });
 
     const mockExecFn = createExec.mock.results[0]?.value;
-    expect(mockExecFn).toHaveBeenCalledWith('pnpm', 'tsdown');
+    expect(mockExecFn).toHaveBeenCalledWith("pnpm", "tsdown");
   });
 
-  it('should extract and include assets in tsdown.config.mts', async () => {
+  it("should extract and include assets in tsdown.config.mts", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
+          name: "test",
+          version: "1.0.0",
           skuba: {
-            type: 'package',
-            assets: ['src/**/*.graphql', 'src/**/*.json'],
+            type: "package",
+            assets: ["src/**/*.graphql", "src/**/*.json"],
           },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
@@ -206,15 +202,15 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
 
-    expect(result['tsdown.config.mts']).toMatchInlineSnapshot(`
+    expect(result["tsdown.config.mts"]).toMatchInlineSnapshot(`
       "import { defineConfig } from 'tsdown';
 
           export default defineConfig({
@@ -234,7 +230,7 @@ describe('patchPackageBuilds', () => {
           "
     `);
 
-    const packageJson = JSON.parse(result['package.json']!);
+    const packageJson = JSON.parse(result["package.json"]!);
 
     expect(packageJson).toMatchInlineSnapshot(`
       {
@@ -253,17 +249,17 @@ describe('patchPackageBuilds', () => {
     `);
   });
 
-  it('should create tsdown.config.mts without copy when no assets are present', async () => {
+  it("should create tsdown.config.mts without copy when no assets are present", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
+          name: "test",
+          version: "1.0.0",
           skuba: {
-            type: 'package',
+            type: "package",
           },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
@@ -274,37 +270,37 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.mts']).toBeDefined();
-    expect(result['tsdown.config.mts']).not.toContain('copy:');
+    expect(result["tsdown.config.mts"]).toBeDefined();
+    expect(result["tsdown.config.mts"]).not.toContain("copy:");
   });
 
-  it('should use custom condition from tsconfig.json in exports field', async () => {
+  it("should use custom condition from tsconfig.json in exports field", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
+          name: "test",
+          version: "1.0.0",
           skuba: {
-            type: 'package',
+            type: "package",
           },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsconfig.json': JSON.stringify(
+      "tsconfig.json": JSON.stringify(
         {
           compilerOptions: {
-            customConditions: ['seek-dev'],
+            customConditions: ["seek-dev"],
           },
         },
         null,
@@ -315,15 +311,15 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
 
-    expect(result['tsdown.config.mts']).toMatchInlineSnapshot(`
+    expect(result["tsdown.config.mts"]).toMatchInlineSnapshot(`
       "import { defineConfig } from 'tsdown';
 
           export default defineConfig({
@@ -342,29 +338,29 @@ describe('patchPackageBuilds', () => {
           "
     `);
 
-    expect(result['tsdown.config.mts']).not.toContain('exports: true');
+    expect(result["tsdown.config.mts"]).not.toContain("exports: true");
   });
 
-  it('should use only the first custom condition when multiple are defined', async () => {
+  it("should use only the first custom condition when multiple are defined", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
+          name: "test",
+          version: "1.0.0",
           skuba: {
-            type: 'package',
+            type: "package",
           },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsconfig.json': JSON.stringify(
+      "tsconfig.json": JSON.stringify(
         {
           compilerOptions: {
-            customConditions: ['seek-dev', 'another-condition', 'third'],
+            customConditions: ["seek-dev", "another-condition", "third"],
           },
         },
         null,
@@ -375,42 +371,40 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.mts']).toBeDefined();
-    expect(result['tsdown.config.mts']).toContain(
-      "exports: { devExports: 'seek-dev' }",
-    );
-    expect(result['tsdown.config.mts']).not.toContain('another-condition');
-    expect(result['tsdown.config.mts']).not.toContain('third');
+    expect(result["tsdown.config.mts"]).toBeDefined();
+    expect(result["tsdown.config.mts"]).toContain("exports: { devExports: 'seek-dev' }");
+    expect(result["tsdown.config.mts"]).not.toContain("another-condition");
+    expect(result["tsdown.config.mts"]).not.toContain("third");
   });
 
-  it('should add customConditions to tsconfig when none exist', async () => {
+  it("should add customConditions to tsconfig when none exist", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
+          name: "test",
+          version: "1.0.0",
           skuba: {
-            type: 'package',
+            type: "package",
           },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsconfig.json': JSON.stringify(
+      "tsconfig.json": JSON.stringify(
         {
           compilerOptions: {
-            target: 'ES2020',
-            module: 'commonjs',
+            target: "ES2020",
+            module: "commonjs",
           },
         },
         null,
@@ -421,60 +415,58 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.mts']).toBeDefined();
-    expect(result['tsdown.config.mts']).toContain(
+    expect(result["tsdown.config.mts"]).toBeDefined();
+    expect(result["tsdown.config.mts"]).toContain(
       "exports: { devExports: '@seek/test-repo/source' }",
     );
-    expect(result['tsdown.config.mts']).not.toContain('exports: true');
+    expect(result["tsdown.config.mts"]).not.toContain("exports: true");
 
-    expect(result['tsconfig.json']).toContain(
-      '"customConditions": ["@seek/test-repo/source"]',
-    );
+    expect(result["tsconfig.json"]).toContain('"customConditions": ["@seek/test-repo/source"]');
   });
 
-  it('should extract assets from monorepo packages', async () => {
+  it("should extract assets from monorepo packages", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'root',
-          version: '1.0.0',
+          name: "root",
+          version: "1.0.0",
           private: true,
         },
         null,
         2,
       ),
-      'packages/package-a/package.json': JSON.stringify(
+      "packages/package-a/package.json": JSON.stringify(
         {
-          name: 'package-a',
-          version: '1.0.0',
+          name: "package-a",
+          version: "1.0.0",
           skuba: {
-            type: 'package',
-            assets: ['src/**/*.txt'],
+            type: "package",
+            assets: ["src/**/*.txt"],
           },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'packages/package-b/package.json': JSON.stringify(
+      "packages/package-b/package.json": JSON.stringify(
         {
-          name: 'package-b',
-          version: '1.0.0',
+          name: "package-b",
+          version: "1.0.0",
           skuba: {
-            type: 'package',
-            assets: ['src/**/*.yml', 'src/**/*.yaml'],
+            type: "package",
+            assets: ["src/**/*.yml", "src/**/*.yaml"],
           },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
@@ -485,56 +477,54 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    expect(result['packages/package-a/tsdown.config.mts']).toBeDefined();
-    expect(result['packages/package-a/tsdown.config.mts']).toContain(
-      'copy: ["src/**/*.txt"]',
-    );
-    expect(result['packages/package-b/tsdown.config.mts']).toBeDefined();
-    expect(result['packages/package-b/tsdown.config.mts']).toContain(
+    expect(result["packages/package-a/tsdown.config.mts"]).toBeDefined();
+    expect(result["packages/package-a/tsdown.config.mts"]).toContain('copy: ["src/**/*.txt"]');
+    expect(result["packages/package-b/tsdown.config.mts"]).toBeDefined();
+    expect(result["packages/package-b/tsdown.config.mts"]).toContain(
       'copy: ["src/**/*.yml","src/**/*.yaml"]',
     );
   });
 
-  it('should handle monorepo with multiple package.json files', async () => {
+  it("should handle monorepo with multiple package.json files", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'root',
-          version: '1.0.0',
+          name: "root",
+          version: "1.0.0",
           private: true,
           scripts: {
-            build: 'yarn workspaces run build',
+            build: "yarn workspaces run build",
           },
         },
         null,
         2,
       ),
-      'packages/package-a/package.json': JSON.stringify(
+      "packages/package-a/package.json": JSON.stringify(
         {
-          name: 'package-a',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "package-a",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'packages/package-b/package.json': JSON.stringify(
+      "packages/package-b/package.json": JSON.stringify(
         {
-          name: 'package-b',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "package-b",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
@@ -545,125 +535,120 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.mts']).toBeDefined();
-    expect(result['packages/package-a/tsdown.config.mts']).toBeDefined();
-    expect(result['packages/package-b/tsdown.config.mts']).toBeDefined();
+    expect(result["tsdown.config.mts"]).toBeDefined();
+    expect(result["packages/package-a/tsdown.config.mts"]).toBeDefined();
+    expect(result["packages/package-b/tsdown.config.mts"]).toBeDefined();
     expect(exec).toHaveBeenCalledTimes(3);
-    expect(exec).toHaveBeenCalledWith('pnpm', 'install', '--offline');
+    expect(exec).toHaveBeenCalledWith("pnpm", "install", "--offline");
     expect(createExec).toHaveBeenCalledTimes(3);
     createExec.mock.results.forEach((res) => {
       const mockExecFn = res.value;
-      expect(mockExecFn).toHaveBeenCalledWith('pnpm', 'tsdown');
+      expect(mockExecFn).toHaveBeenCalledWith("pnpm", "tsdown");
     });
   });
 
-  it('should replace fields from the original package.json file', async () => {
+  it("should replace fields from the original package.json file", async () => {
     const originalPackageJson = {
-      name: 'test',
-      version: '1.0.0',
-      description: 'A test package',
-      main: './lib-commonjs/index.js',
-      module: './lib-es2015/index.js',
-      types: './lib-types/index.d.ts',
-      files: [
-        'lib*/**/*.d.ts',
-        'lib*/**/*.js',
-        'lib*/**/*.js.map',
-        'lib*/**/*.json',
-      ],
+      name: "test",
+      version: "1.0.0",
+      description: "A test package",
+      main: "./lib-commonjs/index.js",
+      module: "./lib-es2015/index.js",
+      types: "./lib-types/index.d.ts",
+      files: ["lib*/**/*.d.ts", "lib*/**/*.js", "lib*/**/*.js.map", "lib*/**/*.json"],
       skuba: {
-        type: 'package',
-        assets: ['src/**/*.txt'],
-        template: 'koa-rest-api',
+        type: "package",
+        assets: ["src/**/*.txt"],
+        template: "koa-rest-api",
       },
       scripts: {
-        build: 'skuba build-package',
-        test: 'jest',
-        lint: 'eslint',
+        build: "skuba build-package",
+        test: "jest",
+        lint: "eslint",
       },
       dependencies: {
-        react: '^18.0.0',
+        react: "^18.0.0",
       },
       devDependencies: {
-        jest: '^29.0.0',
+        jest: "^29.0.0",
       },
     };
 
     const newPackageJson = {
       engines: {
-        node: '>=22.14.0',
+        node: ">=22.14.0",
       },
-      name: 'test',
-      version: '1.0.0',
-      description: 'A test package',
-      main: './lib-commonjs/index.js',
-      module: './lib-es2015/index.js',
-      types: './lib-types/index.d.ts',
-      files: ['lib'],
-      skuba: { type: 'package', template: 'koa-rest-api' },
+      name: "test",
+      version: "1.0.0",
+      description: "A test package",
+      main: "./lib-commonjs/index.js",
+      module: "./lib-es2015/index.js",
+      types: "./lib-types/index.d.ts",
+      files: ["lib"],
+      skuba: { type: "package", template: "koa-rest-api" },
       scripts: {
-        build: 'skuba build-package',
-        test: 'jest',
-        lint: 'eslint',
+        build: "skuba build-package",
+        test: "jest",
+        lint: "eslint",
       },
       dependencies: {
-        react: '^18.0.0',
+        react: "^18.0.0",
       },
       devDependencies: {
-        jest: '^29.0.0',
+        jest: "^29.0.0",
       },
     };
 
     vol.fromJSON({
-      'package.json': JSON.stringify(originalPackageJson, null, 2),
+      "package.json": JSON.stringify(originalPackageJson, null, 2),
     });
 
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const packageJson = JSON.parse(result['package.json']!);
+    const packageJson = JSON.parse(result["package.json"]!);
 
     expect(packageJson).toEqual(newPackageJson);
   });
 
-  it('should only process likely packages', async () => {
+  it("should only process likely packages", async () => {
     jest
-      .spyOn(checks, 'isLikelyPackage')
-      .mockImplementation((path) => Promise.resolve(path === 'package.json'));
+      .spyOn(checks, "isLikelyPackage")
+      .mockImplementation((path) => Promise.resolve(path === "package.json"));
 
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          skuba: { type: 'package' },
+          name: "test",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'packages/not-a-package/package.json': JSON.stringify(
+      "packages/not-a-package/package.json": JSON.stringify(
         {
-          name: 'not-a-package',
-          version: '1.0.0',
-          skuba: { type: 'application' },
+          name: "not-a-package",
+          version: "1.0.0",
+          skuba: { type: "application" },
           scripts: {
-            test: 'jest',
+            test: "jest",
           },
         },
         null,
@@ -674,57 +659,57 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    expect(result['tsdown.config.mts']).toBeDefined();
-    expect(result['packages/not-a-package/tsdown.config.mts']).toBeUndefined();
+    expect(result["tsdown.config.mts"]).toBeDefined();
+    expect(result["packages/not-a-package/tsdown.config.mts"]).toBeUndefined();
   });
 
-  it('should update package.json fields in monorepo packages', async () => {
+  it("should update package.json fields in monorepo packages", async () => {
     jest
-      .spyOn(checks, 'isLikelyPackage')
-      .mockImplementation((path) => Promise.resolve(path !== 'package.json'));
+      .spyOn(checks, "isLikelyPackage")
+      .mockImplementation((path) => Promise.resolve(path !== "package.json"));
 
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'root',
-          version: '1.0.0',
+          name: "root",
+          version: "1.0.0",
           private: true,
         },
         null,
         2,
       ),
-      'packages/package-a/package.json': JSON.stringify(
+      "packages/package-a/package.json": JSON.stringify(
         {
-          name: 'package-a',
-          version: '1.0.0',
-          main: './lib-commonjs/index.js',
-          module: './lib-es2015/index.js',
-          types: './lib-types/index.d.ts',
-          files: ['lib*/**/*.js'],
-          skuba: { type: 'package' },
+          name: "package-a",
+          version: "1.0.0",
+          main: "./lib-commonjs/index.js",
+          module: "./lib-es2015/index.js",
+          types: "./lib-types/index.d.ts",
+          files: ["lib*/**/*.js"],
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'packages/package-b/package.json': JSON.stringify(
+      "packages/package-b/package.json": JSON.stringify(
         {
-          name: 'package-b',
-          version: '1.0.0',
-          main: './lib-commonjs/index.js',
-          module: './lib-es2015/index.js',
-          skuba: { type: 'package' },
+          name: "package-b",
+          version: "1.0.0",
+          main: "./lib-commonjs/index.js",
+          module: "./lib-es2015/index.js",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
@@ -735,15 +720,15 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const packageAJson = JSON.parse(result['packages/package-a/package.json']!);
-    const packageBJson = JSON.parse(result['packages/package-b/package.json']!);
+    const packageAJson = JSON.parse(result["packages/package-a/package.json"]!);
+    const packageBJson = JSON.parse(result["packages/package-b/package.json"]!);
 
     expect(packageAJson).toMatchInlineSnapshot(`
       {
@@ -786,18 +771,18 @@ describe('patchPackageBuilds', () => {
     `);
   });
 
-  it('should remove publishConfig from package.json', async () => {
+  it("should remove publishConfig from package.json", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
           publishConfig: {
-            main: 'lib-commonjs/index.js',
+            main: "lib-commonjs/index.js",
           },
         },
         null,
@@ -808,14 +793,14 @@ describe('patchPackageBuilds', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const packageJson = JSON.parse(result['package.json']!);
+    const packageJson = JSON.parse(result["package.json"]!);
 
     expect(packageJson).toMatchInlineSnapshot(`
       {
@@ -835,58 +820,58 @@ describe('patchPackageBuilds', () => {
     expect(packageJson.publishConfig).toBeUndefined();
   });
 });
-describe('patchPackageBuilds - skipLibCheck', () => {
-  it('should add skipLibCheck to tsconfig.json when compilerOptions does not exist', async () => {
+describe("patchPackageBuilds - skipLibCheck", () => {
+  it("should add skipLibCheck to tsconfig.json when compilerOptions does not exist", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsconfig.json': JSON.stringify({}, null, 2),
+      "tsconfig.json": JSON.stringify({}, null, 2),
     });
 
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const tsconfigContent = result['tsconfig.json']!;
+    const tsconfigContent = result["tsconfig.json"]!;
     expect(tsconfigContent).toContain('"compilerOptions"');
     expect(tsconfigContent).toContain('"skipLibCheck": true');
   });
 
-  it('should add skipLibCheck to tsconfig.json when compilerOptions exists but skipLibCheck does not', async () => {
+  it("should add skipLibCheck to tsconfig.json when compilerOptions exists but skipLibCheck does not", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsconfig.json': JSON.stringify(
+      "tsconfig.json": JSON.stringify(
         {
           compilerOptions: {
-            target: 'ES2020',
-            module: 'commonjs',
+            target: "ES2020",
+            module: "commonjs",
           },
         },
         null,
@@ -897,145 +882,143 @@ describe('patchPackageBuilds - skipLibCheck', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const tsconfigContent = result['tsconfig.json']!;
+    const tsconfigContent = result["tsconfig.json"]!;
     expect(tsconfigContent).toContain('"skipLibCheck": true');
     expect(tsconfigContent).toContain('"target": "ES2020"');
     expect(tsconfigContent).toContain('"module": "commonjs"');
   });
 
-  it('should not modify tsconfig.json when skipLibCheck already exists', async () => {
+  it("should not modify tsconfig.json when skipLibCheck already exists", async () => {
     const originalTsconfig = {
       compilerOptions: {
-        target: 'ES2020',
+        target: "ES2020",
         skipLibCheck: false,
-        module: 'commonjs',
+        module: "commonjs",
       },
     };
 
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsconfig.json': JSON.stringify(originalTsconfig, null, 2),
+      "tsconfig.json": JSON.stringify(originalTsconfig, null, 2),
     });
 
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const tsconfig = JSON.parse(result['tsconfig.json']!);
+    const tsconfig = JSON.parse(result["tsconfig.json"]!);
     expect(tsconfig.compilerOptions.skipLibCheck).toBe(false);
-    expect(tsconfig.compilerOptions.customConditions).toEqual([
-      '@seek/test-repo/source',
-    ]);
+    expect(tsconfig.compilerOptions.customConditions).toEqual(["@seek/test-repo/source"]);
   });
 
-  it('should add skipLibCheck to tsconfig.json in monorepo packages', async () => {
+  it("should add skipLibCheck to tsconfig.json in monorepo packages", async () => {
     jest
-      .spyOn(checks, 'isLikelyPackage')
-      .mockImplementation((path) => Promise.resolve(path !== 'package.json'));
+      .spyOn(checks, "isLikelyPackage")
+      .mockImplementation((path) => Promise.resolve(path !== "package.json"));
 
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'root',
-          version: '1.0.0',
+          name: "root",
+          version: "1.0.0",
           private: true,
         },
         null,
         2,
       ),
-      'packages/package-a/package.json': JSON.stringify(
+      "packages/package-a/package.json": JSON.stringify(
         {
-          name: 'package-a',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "package-a",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'packages/package-a/tsconfig.json': JSON.stringify(
+      "packages/package-a/tsconfig.json": JSON.stringify(
         {
           compilerOptions: {
-            target: 'ES2020',
+            target: "ES2020",
           },
         },
         null,
         2,
       ),
-      'packages/package-b/package.json': JSON.stringify(
+      "packages/package-b/package.json": JSON.stringify(
         {
-          name: 'package-b',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "package-b",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'packages/package-b/tsconfig.json': JSON.stringify({}, null, 2),
+      "packages/package-b/tsconfig.json": JSON.stringify({}, null, 2),
     });
 
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const tsconfigAContent = result['packages/package-a/tsconfig.json']!;
-    const tsconfigBContent = result['packages/package-b/tsconfig.json']!;
+    const tsconfigAContent = result["packages/package-a/tsconfig.json"]!;
+    const tsconfigBContent = result["packages/package-b/tsconfig.json"]!;
 
     expect(tsconfigAContent).toContain('"skipLibCheck": true');
     expect(tsconfigAContent).toContain('"target": "ES2020"');
     expect(tsconfigBContent).toContain('"skipLibCheck": true');
   });
 
-  it('should preserve tsconfig.json comment when adding skipLibCheck', async () => {
+  it("should preserve tsconfig.json comment when adding skipLibCheck", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsconfig.json': `{
+      "tsconfig.json": `{
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -1048,36 +1031,36 @@ describe('patchPackageBuilds - skipLibCheck', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const tsconfigContent = result['tsconfig.json']!;
-    expect(tsconfigContent).toContain('// tsdown has optional peer deps');
-    expect(tsconfigContent).toContain('// some comment about target');
+    const tsconfigContent = result["tsconfig.json"]!;
+    expect(tsconfigContent).toContain("// tsdown has optional peer deps");
+    expect(tsconfigContent).toContain("// some comment about target");
   });
 
-  it('should remove tsconfig.build.json if it exists', async () => {
+  it("should remove tsconfig.build.json if it exists", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsconfig.build.json': JSON.stringify(
+      "tsconfig.build.json": JSON.stringify(
         {
           compilerOptions: {
-            target: 'ES2020',
+            target: "ES2020",
           },
         },
         null,
@@ -1088,44 +1071,44 @@ describe('patchPackageBuilds - skipLibCheck', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    expect(result['tsconfig.build.json']).toBeUndefined();
+    expect(result["tsconfig.build.json"]).toBeUndefined();
   });
 
-  it('should not remove tsconfig.build.json if it contains references', async () => {
+  it("should not remove tsconfig.build.json if it contains references", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
-          skuba: { type: 'package' },
+          name: "test",
+          version: "1.0.0",
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
         2,
       ),
-      'tsconfig.build.json': JSON.stringify(
+      "tsconfig.build.json": JSON.stringify(
         {
           compilerOptions: {
-            target: 'ES2020',
+            target: "ES2020",
           },
-          references: [{ path: './nested/tsconfig.build.json' }],
+          references: [{ path: "./nested/tsconfig.build.json" }],
         },
         null,
         2,
       ),
-      'nested/tsconfig.build.json': JSON.stringify(
+      "nested/tsconfig.build.json": JSON.stringify(
         {
           compilerOptions: {
-            target: 'ES2020',
+            target: "ES2020",
           },
         },
         null,
@@ -1136,28 +1119,28 @@ describe('patchPackageBuilds - skipLibCheck', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    expect(result['tsconfig.build.json']).toBeDefined();
+    expect(result["tsconfig.build.json"]).toBeDefined();
   });
 
-  it('should not override an existing node engine field in package.json', async () => {
+  it("should not override an existing node engine field in package.json", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
+          name: "test",
+          version: "1.0.0",
           engines: {
-            node: '>=18.0.0',
+            node: ">=18.0.0",
           },
-          skuba: { type: 'package' },
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
@@ -1168,30 +1151,30 @@ describe('patchPackageBuilds - skipLibCheck', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const packageJson = JSON.parse(result['package.json']!);
+    const packageJson = JSON.parse(result["package.json"]!);
 
-    expect(packageJson.engines.node).toBe('>=18.0.0');
+    expect(packageJson.engines.node).toBe(">=18.0.0");
   });
 
-  it('should add a node section to an existing engines field in package.json', async () => {
+  it("should add a node section to an existing engines field in package.json", async () => {
     vol.fromJSON({
-      'package.json': JSON.stringify(
+      "package.json": JSON.stringify(
         {
-          name: 'test',
-          version: '1.0.0',
+          name: "test",
+          version: "1.0.0",
           engines: {
-            npm: '>=8.0.0',
+            npm: ">=8.0.0",
           },
-          skuba: { type: 'package' },
+          skuba: { type: "package" },
           scripts: {
-            build: 'skuba build-package',
+            build: "skuba build-package",
           },
         },
         null,
@@ -1202,15 +1185,15 @@ describe('patchPackageBuilds - skipLibCheck', () => {
     await expect(
       patchPackageBuilds({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     const result = volToJson();
-    const packageJson = JSON.parse(result['package.json']!);
+    const packageJson = JSON.parse(result["package.json"]!);
 
-    expect(packageJson.engines.node).toBe('>=22.14.0');
+    expect(packageJson.engines.node).toBe(">=22.14.0");
   });
 });

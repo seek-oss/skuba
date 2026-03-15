@@ -1,27 +1,27 @@
-import type { DependencySet } from '../types.js';
+import type { DependencySet } from "../types.js";
 
 const DEV_DEPENDENCIES = [
   // replaced
-  '@seek/seek-module-toolkit',
-  'eslint-config-seek',
-  'nodemon',
-  'ts-node-dev',
-  'tslint-config-seek',
-  'tslint',
+  "@seek/seek-module-toolkit",
+  "eslint-config-seek",
+  "nodemon",
+  "ts-node-dev",
+  "tslint-config-seek",
+  "tslint",
 
   // bundled
-  '@types/jest',
-  'concurrently',
-  'eslint-config-skuba',
-  'eslint',
-  'jest',
-  'prettier',
-  'semantic-release',
-  'ts-jest',
-  'ts-node',
-  'tsconfig-seek',
-  'tsx',
-  'typescript',
+  "@types/jest",
+  "concurrently",
+  "eslint-config-skuba",
+  "eslint",
+  "jest",
+  "prettier",
+  "semantic-release",
+  "ts-jest",
+  "ts-node",
+  "tsconfig-seek",
+  "tsx",
+  "typescript",
 ] as const;
 
 export const skubaDeps = ({ dependencies, devDependencies }: DependencySet) => {

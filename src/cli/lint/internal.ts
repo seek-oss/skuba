@@ -1,14 +1,14 @@
-import { styleText } from 'node:util';
-import { inspect } from 'util';
+import { styleText } from "node:util";
+import { inspect } from "util";
 
-import { type Logger, childLogger, createLogger } from '../../utils/logging.js';
+import { type Logger, childLogger, createLogger } from "../../utils/logging.js";
 
-import { tryDetectBadCodeowners } from './internalLints/detectBadCodeowners.js';
-import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs.js';
-import { tryPatchPnpmWorkspace } from './internalLints/patchPnpmWorkspace.js';
-import { tryRefreshConfigFiles } from './internalLints/refreshConfigFiles.js';
-import { upgradeSkuba } from './internalLints/upgrade/index.js';
-import type { Input } from './types.js';
+import { tryDetectBadCodeowners } from "./internalLints/detectBadCodeowners.js";
+import { noSkubaTemplateJs } from "./internalLints/noSkubaTemplateJs.js";
+import { tryPatchPnpmWorkspace } from "./internalLints/patchPnpmWorkspace.js";
+import { tryRefreshConfigFiles } from "./internalLints/refreshConfigFiles.js";
+import { upgradeSkuba } from "./internalLints/upgrade/index.js";
+import type { Input } from "./types.js";
 
 export type InternalLintResult = {
   ok: boolean;
@@ -25,34 +25,30 @@ const lints: Array<
   Array<{
     name: string;
     lint: (
-      mode: 'format' | 'lint',
+      mode: "format" | "lint",
       logger: Logger,
       additionalFlags: string[],
     ) => Promise<InternalLintResult>;
   }>
 > = [
   // Run upgradeSkuba first, in particular before refreshConfigFiles, for npmrc handling
-  [{ name: 'upgrade-skuba', lint: upgradeSkuba }],
+  [{ name: "upgrade-skuba", lint: upgradeSkuba }],
   [
-    { name: 'no-skuba-template-js', lint: noSkubaTemplateJs },
-    { name: 'patch-pnpm-workspace', lint: tryPatchPnpmWorkspace },
-    { name: 'refresh-config-files', lint: tryRefreshConfigFiles },
-    { name: 'detect-bad-codeowners', lint: tryDetectBadCodeowners },
+    { name: "no-skuba-template-js", lint: noSkubaTemplateJs },
+    { name: "patch-pnpm-workspace", lint: tryPatchPnpmWorkspace },
+    { name: "refresh-config-files", lint: tryRefreshConfigFiles },
+    { name: "detect-bad-codeowners", lint: tryDetectBadCodeowners },
   ],
 ];
 
-const lintSerially = async (
-  mode: 'format' | 'lint',
-  logger: Logger,
-  additionalFlags: string[],
-) => {
+const lintSerially = async (mode: "format" | "lint", logger: Logger, additionalFlags: string[]) => {
   const results: InternalLintResult[] = [];
   for (const lintGroup of lints) {
     for (const { lint, name } of lintGroup) {
       results.push(
         await lint(
           mode,
-          childLogger(logger, { suffixes: [styleText('dim', name)] }),
+          childLogger(logger, { suffixes: [styleText("dim", name)] }),
           additionalFlags,
         ),
       );
@@ -62,7 +58,7 @@ const lintSerially = async (
 };
 
 const lintConcurrently = async (
-  mode: 'format' | 'lint',
+  mode: "format" | "lint",
   logger: Logger,
   additionalFlags: string[],
 ) => {
@@ -72,11 +68,7 @@ const lintConcurrently = async (
     results.push(
       ...(await Promise.all(
         lintGroup.map(async ({ name, lint }) =>
-          lint(
-            mode,
-            childLogger(logger, { suffixes: [styleText('dim', name)] }),
-            additionalFlags,
-          ),
+          lint(mode, childLogger(logger, { suffixes: [styleText("dim", name)] }), additionalFlags),
         ),
       )),
     );
@@ -91,15 +83,13 @@ const selectLintFunction = (input?: Input) => {
 };
 
 export const internalLint = async (
-  mode: 'format' | 'lint',
+  mode: "format" | "lint",
   input?: Input,
 ): Promise<InternalLintResult> => {
   const start = process.hrtime.bigint();
   const logger = createLogger({
     debug: input?.debug ?? false,
-    prefixes: [
-      ...(mode === 'lint' ? [styleText('blueBright', 'skuba    │')] : []),
-    ],
+    prefixes: [...(mode === "lint" ? [styleText("blueBright", "skuba    │")] : [])],
   });
 
   try {
@@ -110,7 +100,7 @@ export const internalLint = async (
     logger.plain(`Processed skuba lints in ${logger.timing(start, end)}.`);
     return result;
   } catch (err) {
-    logger.err(logger.bold('Failed to run skuba lints.'));
+    logger.err(logger.bold("Failed to run skuba lints."));
     logger.subtle(inspect(err));
 
     process.exitCode = 1;

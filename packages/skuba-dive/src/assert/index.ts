@@ -1,12 +1,10 @@
-import assert from 'assert';
+import assert from "assert";
 
 /**
  * Assert that a value is either `null` or `undefined`.
  */
-export function nullish<T>(
-  value: T | null | undefined,
-): asserts value is null | undefined {
-  assert.strictEqual(typeof value === 'undefined' || value === null, true);
+export function nullish<T>(value: T | null | undefined): asserts value is null | undefined {
+  assert.strictEqual(typeof value === "undefined" || value === null, true);
 }
 
 /**
@@ -14,16 +12,14 @@ export function nullish<T>(
  */
 export function notNullish<T>(value: T | null | undefined): asserts value is T {
   assert.notStrictEqual(value, null);
-  assert.notStrictEqual(typeof value, 'undefined');
+  assert.notStrictEqual(typeof value, "undefined");
 }
 
 /**
  * Assert that a value is an object.
  */
-export function object(
-  value: unknown,
-): asserts value is Record<PropertyKey, unknown> {
-  assert.strictEqual(typeof value, 'object');
+export function object(value: unknown): asserts value is Record<PropertyKey, unknown> {
+  assert.strictEqual(typeof value, "object");
   assert.notStrictEqual(value, null);
 }
 
@@ -35,7 +31,7 @@ export function numberProp<P extends PropertyKey>(
   prop: P,
 ): asserts value is Record<P, string> {
   object(value);
-  assert.strictEqual(typeof value[prop], 'number');
+  assert.strictEqual(typeof value[prop], "number");
 }
 
 /**
@@ -46,5 +42,5 @@ export function stringProp<P extends PropertyKey>(
   prop: P,
 ): asserts value is Record<P, string> {
   object(value);
-  assert.strictEqual(typeof value[prop], 'string');
+  assert.strictEqual(typeof value[prop], "string");
 }

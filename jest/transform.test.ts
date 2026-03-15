@@ -1,11 +1,9 @@
-import { transform } from './transform.js';
+import { transform } from "./transform.js";
 
-test('transform', () =>
+test("transform", () =>
   expect(transform).toStrictEqual({
-    '^.+\\.tsx?$': [
-      expect.stringMatching(
-        /\/skuba\/node_modules\/.*\/?ts-jest\/dist\/index\.js$/,
-      ),
+    "^.+\\.tsx?$": [
+      expect.stringMatching(/\/skuba\/node_modules\/.*\/?ts-jest\/dist\/index\.js$/),
       {},
     ],
   }));

@@ -1,6 +1,6 @@
-import type { StreamInterceptor } from '../../../lint/external.js';
+import type { StreamInterceptor } from "../../../lint/external.js";
 
-import * as Buildkite from '@skuba-lib/api/buildkite';
+import * as Buildkite from "@skuba-lib/api/buildkite";
 
 export const createTscAnnotations = (
   tscOk: boolean,
@@ -8,14 +8,14 @@ export const createTscAnnotations = (
 ): string[] =>
   !tscOk
     ? [
-        '**tsc**',
+        "**tsc**",
         Buildkite.md.terminal(
           tscOutputStream
             .output()
-            .split('\n')
+            .split("\n")
             .filter(Boolean)
-            .filter((line) => !line.startsWith('TSFILE: '))
-            .join('\n')
+            .filter((line) => !line.startsWith("TSFILE: "))
+            .join("\n")
             .trim(),
         ),
       ]

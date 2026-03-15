@@ -7,14 +7,11 @@
   "bugs": {
     "url": "https://github.com/seek-oss/skuba/issues"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/seek-oss/skuba.git"
   },
-  "license": "MIT",
-  "sideEffects": false,
-  "main": "lib/index.js",
-  "types": "./lib/index.d.ts",
   "bin": {
     "skuba": "lib/skuba.js"
   },
@@ -27,6 +24,9 @@
     "template/**/*",
     "jest-preset.js"
   ],
+  "sideEffects": false,
+  "main": "lib/index.js",
+  "types": "./lib/index.d.ts",
   "scripts": {
     "build": "scripts/build.sh",
     "changeset": "changeset",
@@ -48,33 +48,6 @@
     "test:template": "scripts/test-template.sh",
     "test:template:updateSnapshot": "scripts/test-template.sh -u",
     "test:watch": "pnpm --silent skuba test --runInBand --watch"
-  },
-  "remarkConfig": {
-    "plugins": [
-      "remark-preset-lint-recommended",
-      [
-        "remark-lint-list-item-indent",
-        false
-      ],
-      [
-        "remark-lint-no-shortcut-reference-link",
-        false
-      ],
-      [
-        "remark-lint-no-undefined-references",
-        {
-          "allow": [
-            "!CAUTION",
-            "!IMPORTANT",
-            "!NOTE",
-            "!TIP",
-            "!WARNING",
-            " ",
-            "x"
-          ]
-        }
-      ]
-    ]
   },
   "dependencies": {
     "@arethetypeswrong/core": "~0.18.1",
@@ -114,6 +87,7 @@
     "npm-registry-fetch": "^19.1.1",
     "npm-run-path": "^4.0.1",
     "npm-which": "^3.0.1",
+    "oxfmt": "^0.40.0",
     "picomatch": "^4.0.0",
     "prettier": "~3.8.0",
     "prettier-plugin-packagejson": "^3.0.0",
@@ -164,10 +138,37 @@
     "supertest": "7.2.2",
     "type-fest": "2.19.0"
   },
-  "packageManager": "pnpm@10.32.0",
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-recommended",
+      [
+        "remark-lint-list-item-indent",
+        false
+      ],
+      [
+        "remark-lint-no-shortcut-reference-link",
+        false
+      ],
+      [
+        "remark-lint-no-undefined-references",
+        {
+          "allow": [
+            "!CAUTION",
+            "!IMPORTANT",
+            "!NOTE",
+            "!TIP",
+            "!WARNING",
+            " ",
+            "x"
+          ]
+        }
+      ]
+    ]
+  },
   "engines": {
     "node": ">=22.14.0"
   },
+  "packageManager": "pnpm@10.32.0",
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",

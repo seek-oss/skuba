@@ -7,17 +7,17 @@
   "bugs": {
     "url": "https://github.com/seek-oss/skuba/issues"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/seek-oss/skuba.git",
     "directory": "packages/pnpm-plugin-skuba"
   },
-  "license": "MIT",
-  "sideEffects": false,
-  "main": "pnpmfile.cjs",
   "files": [
     "pnpmfile.cjs"
   ],
+  "sideEffects": false,
+  "main": "pnpmfile.cjs",
   "devDependencies": {
     "@pnpm/cafs-types": "^1000.1.0",
     "@pnpm/config": "^1004.10.3"

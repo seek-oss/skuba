@@ -1,9 +1,9 @@
-import { defineConfig } from 'tsdown';
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['cjs', 'esm'],
-  outDir: 'lib',
+  entry: ["src/index.ts"],
+  format: ["cjs", "esm"],
+  outDir: "lib",
   dts: true,
   checks: {
     legacyCjs: false,
@@ -11,5 +11,5 @@ export default defineConfig({
   publint: true,
   attw: true,
   unbundle: true, // TODO: determine if your project can be bundled
-  exports: { devExports: '@seek/skuba/source' },
+  exports: { devExports: "@seek/skuba/source" },
 });

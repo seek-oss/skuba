@@ -1,26 +1,19 @@
 /* eslint-disable no-console */
 
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
-import semver from 'semver';
+import fs from "fs-extra";
+import semver from "semver";
 
-import {
-  TEMPLATE_DOCUMENTATION_CONFIG,
-  TEMPLATE_NAMES,
-} from '../src/utils/template.js';
+import { TEMPLATE_DOCUMENTATION_CONFIG, TEMPLATE_NAMES } from "../src/utils/template.js";
 
 const SCOPE_REGEX = /\*\*([^:]+):\*\* /;
 
 const commitLink = (commit: string) =>
-  `[\`${commit}\`](https://github.com/seek-oss/skuba/commit/${encodeURIComponent(
-    commit,
-  )})`;
+  `[\`${commit}\`](https://github.com/seek-oss/skuba/commit/${encodeURIComponent(commit)})`;
 
 const versionLink = (version: string) =>
-  `[${version}](https://github.com/seek-oss/skuba/releases/tag/v${encodeURIComponent(
-    version,
-  )})`;
+  `[${version}](https://github.com/seek-oss/skuba/releases/tag/v${encodeURIComponent(version)})`;
 
 /**
  * Ensures that our template constant matches the `/template` directory.
@@ -29,40 +22,28 @@ const ensureTemplateConsistency = async (root: string) => {
   const templatesInCode = TEMPLATE_NAMES;
   const templateSetInCode = new Set<string>(templatesInCode);
 
-  const templatesOnDisk = (
-    await fs.promises.readdir(path.join(root, 'template'))
-  ).filter((filename) => filename !== 'base');
+  const templatesOnDisk = (await fs.promises.readdir(path.join(root, "template"))).filter(
+    (filename) => filename !== "base",
+  );
   const templateSetOnDisk = new Set(templatesOnDisk);
 
   for (const templateName of TEMPLATE_NAMES) {
     if (!templateSetOnDisk.has(templateName)) {
-      console.error(
-        'Template',
-        templateName,
-        'is defined in code but missing on disk.',
-      );
+      console.error("Template", templateName, "is defined in code but missing on disk.");
       process.exitCode = 1;
     }
   }
 
   for (const templateName of templatesInCode) {
     if (!templateSetOnDisk.has(templateName)) {
-      console.error(
-        'Template',
-        templateName,
-        'is defined in code but missing on disk.',
-      );
+      console.error("Template", templateName, "is defined in code but missing on disk.");
       process.exitCode = 1;
     }
   }
 
   for (const templateName of templatesOnDisk) {
     if (!templateSetInCode.has(templateName)) {
-      console.error(
-        'Template',
-        templateName,
-        'is defined on disk but missing in code.',
-      );
+      console.error("Template", templateName, "is defined on disk but missing in code.");
       process.exitCode = 1;
     }
   }
@@ -102,7 +83,7 @@ title: 🤿
 ---
 `.trim(),
     readme,
-  ].join('\n\n');
+  ].join("\n\n");
 
 /**
  * Compiles changelog entries for each template for rendering on our
@@ -115,29 +96,27 @@ const compileChangesByTemplate = (changelog: string) => {
 
   const sections = changelog
     // Split by version, which is denoted by a `h2`.
-    .split('\n## ')
+    .split("\n## ")
     // Skip the `h1` in the first section.
     .slice(1);
 
   for (const section of sections) {
-    const split = section.indexOf('\n');
+    const split = section.indexOf("\n");
 
     const version = section.slice(0, split);
 
-    const linesAfterVersion = section.slice(split).split('\n');
+    const linesAfterVersion = section.slice(split).split("\n");
 
     // We may have a preamble that summarises the version.
     // After this, h3s should exist to denote major/minor/patch changes.
-    const postPreambleIndex = linesAfterVersion.findIndex((line) =>
-      line.startsWith('### '),
-    );
+    const postPreambleIndex = linesAfterVersion.findIndex((line) => line.startsWith("### "));
 
     const entries = linesAfterVersion
       .slice(postPreambleIndex)
       // Filter out headings, such as those denoting major/minor/patch.
       // Our templates aren't semantically versioned so these don't matter.
-      .filter((line) => !line.startsWith('#'))
-      .join('\n')
+      .filter((line) => !line.startsWith("#"))
+      .join("\n")
       // Split by list item prefix, which denotes a new changelog entry.
       .split(/\n[\*-] /)
       .map((entry) => entry.trim())
@@ -148,12 +127,12 @@ const compileChangesByTemplate = (changelog: string) => {
 
       if (!scope) {
         // Changelog entry is bad. Consider fixing this at the source.
-        console.error('Changelog entry is missing a scope:', entry);
+        console.error("Changelog entry is missing a scope:", entry);
         process.exitCode = 1;
         continue;
       }
 
-      if (!scope.startsWith('template')) {
+      if (!scope.startsWith("template")) {
         // Changelog entry relates to something other than a template.
         continue;
       }
@@ -163,13 +142,13 @@ const compileChangesByTemplate = (changelog: string) => {
           .replace(
             // Strip out the template prefix.
             /^template\/?/,
-            '',
+            "",
           )
           .replace(
             // Handle scopes like `*-npm-package` and `lambda-sqs-worker*`.
             // Note that this is a subset matcher so the latter is redundant.
             /\\\*/g,
-            '.*',
+            ".*",
           ),
       );
 
@@ -179,25 +158,15 @@ const compileChangesByTemplate = (changelog: string) => {
 
         // Note that the changeset entry applies to the template if it existed
         // as of this version and the scope is a match.
-        if (
-          semver.gt(version, added) &&
-          templateMatcher.test(templateName) &&
-          changes
-        ) {
+        if (semver.gt(version, added) && templateMatcher.test(templateName) && changes) {
           changes.push(
             `- ${versionLink(version)}: ${entry
               // Strip out the scope as it is needlessly repetitive here.
-              .replace(SCOPE_REGEX, '')
+              .replace(SCOPE_REGEX, "")
               // Auto-link a short commit hash like `1234567: ` to GitHub.
-              .replace(
-                /^([0-9a-f]{7,}): /,
-                (_, commit: string) => `${commitLink(commit)}: `,
-              )
+              .replace(/^([0-9a-f]{7,}): /, (_, commit: string) => `${commitLink(commit)}: `)
               // Auto-link a short commit hash like `(1234567)` to GitHub.
-              .replace(
-                /\(([0-9a-f]{7,})\)/,
-                (_, commit: string) => `(${commitLink(commit)})`,
-              )}`,
+              .replace(/\(([0-9a-f]{7,})\)/, (_, commit: string) => `(${commitLink(commit)})`)}`,
           );
         }
       }
@@ -208,34 +177,34 @@ const compileChangesByTemplate = (changelog: string) => {
 };
 
 const main = async () => {
-  const root = path.join(__dirname, '..');
+  const root = path.join(__dirname, "..");
 
   await ensureTemplateConsistency(root);
 
   process.chdir(root);
 
-  await fs.promises.rm('dist-docs', { force: true, recursive: true });
+  await fs.promises.rm("dist-docs", { force: true, recursive: true });
 
-  await fs.promises.mkdir('dist-docs', { recursive: true });
+  await fs.promises.mkdir("dist-docs", { recursive: true });
 
-  const changelog = await fs.promises.readFile('CHANGELOG.md', 'utf8');
-  const readme = await fs.promises.readFile('README.md', 'utf8');
+  const changelog = await fs.promises.readFile("CHANGELOG.md", "utf8");
+  const readme = await fs.promises.readFile("README.md", "utf8");
 
   const siteChangelog = processChangelogHeader(changelog);
   const siteReadme = processReadmeHeader(readme);
 
-  const siteChangelogPath = path.join('dist-docs', 'CHANGELOG.md');
-  const siteReadmePath = path.join('dist-docs', 'index.md');
-  const contributingPath = path.join('dist-docs', 'CONTRIBUTING.md');
-  const docPath = path.join('dist-docs', 'docs');
+  const siteChangelogPath = path.join("dist-docs", "CHANGELOG.md");
+  const siteReadmePath = path.join("dist-docs", "index.md");
+  const contributingPath = path.join("dist-docs", "CONTRIBUTING.md");
+  const docPath = path.join("dist-docs", "docs");
 
   await Promise.all([
     fs.promises.writeFile(siteChangelogPath, siteChangelog),
     fs.promises.writeFile(siteReadmePath, siteReadme),
-    fs.promises.copyFile('CONTRIBUTING.md', contributingPath),
+    fs.promises.copyFile("CONTRIBUTING.md", contributingPath),
     // `fs.promises.cp` is still experimental in Node.js 20.
-    fs.copy('site', 'dist-docs'),
-    fs.copy('docs', docPath),
+    fs.copy("site", "dist-docs"),
+    fs.copy("docs", docPath),
   ]);
 
   const templateChanges = compileChangesByTemplate(changelog);
@@ -255,14 +224,9 @@ const main = async () => {
 
     const config = TEMPLATE_DOCUMENTATION_CONFIG[templateName];
 
-    const filepath = path.join(
-      'dist-docs',
-      'docs',
-      'templates',
-      config.filename,
-    );
+    const filepath = path.join("dist-docs", "docs", "templates", config.filename);
 
-    const input = await fs.promises.readFile(filepath, 'utf8');
+    const input = await fs.promises.readFile(filepath, "utf8");
 
     const templateHeading = `## ${templateName}`;
 
@@ -276,10 +240,7 @@ const main = async () => {
     }
 
     // Find the end of the section as denoted by a `View on GitHub` link.
-    const viewOnGitHubIndex = input.indexOf(
-      'View on GitHub',
-      templateHeadingIndex,
-    );
+    const viewOnGitHubIndex = input.indexOf("View on GitHub", templateHeadingIndex);
 
     if (viewOnGitHubIndex === -1) {
       console.error(
@@ -291,7 +252,7 @@ const main = async () => {
     }
 
     // Find the line after the `View on GitHub` link.
-    const changelogIndex = 1 + input.indexOf('\n', viewOnGitHubIndex);
+    const changelogIndex = 1 + input.indexOf("\n", viewOnGitHubIndex);
 
     // Insert the changelog inside of a collapsed `details` element.
     const output = `
@@ -305,7 +266,7 @@ Added in ${versionLink(config.added)}
   </summary>
   {: .text-delta }
 
-${changes.join('\n\n')}
+${changes.join("\n\n")}
 
 </details>
 

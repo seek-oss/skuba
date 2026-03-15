@@ -1,4 +1,4 @@
-import getPort from 'get-port';
+import getPort from "get-port";
 
 /* Smallest 5-digit port; these are less common than 4-digit ports. */
 const MIN_PORT = 10000;
@@ -12,9 +12,7 @@ export const randomIntBetween = (min: number, max: number) =>
 export const getRandomPort = () => {
   // Seed some random ports to use, if available.
   // get-port falls back to the private port range.
-  const preferredPorts = new Array(10)
-    .fill(null)
-    .map(() => randomIntBetween(MIN_PORT, MAX_PORT));
+  const preferredPorts = new Array(10).fill(null).map(() => randomIntBetween(MIN_PORT, MAX_PORT));
 
   return getPort({ port: preferredPorts });
 };

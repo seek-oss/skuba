@@ -1,23 +1,20 @@
-import Koa from 'koa';
-import compose from 'koa-compose';
+import Koa from "koa";
+import compose from "koa-compose";
 import {
   ErrorMiddleware,
   MetricsMiddleware,
   RequestLogging,
   SecureHeaders,
   VersionMiddleware,
-} from 'seek-koala';
+} from "seek-koala";
 
-import { config } from '#src/config.js';
-import { contextMiddleware, logger } from '#src/framework/logging.js';
-import { metricsClient } from '#src/framework/metrics.js';
+import { config } from "#src/config.js";
+import { contextMiddleware, logger } from "#src/framework/logging.js";
+import { metricsClient } from "#src/framework/metrics.js";
 
-const metrics = MetricsMiddleware.create(
-  metricsClient,
-  ({ _matchedRoute }) => ({
-    route: typeof _matchedRoute === 'string' ? _matchedRoute : 'unspecified',
-  }),
-);
+const metrics = MetricsMiddleware.create(metricsClient, ({ _matchedRoute }) => ({
+  route: typeof _matchedRoute === "string" ? _matchedRoute : "unspecified",
+}));
 
 const requestLogging = RequestLogging.createMiddleware((ctx, fields, err) => {
   if (ctx.status < 400 && err === undefined) {
@@ -26,15 +23,13 @@ const requestLogging = RequestLogging.createMiddleware((ctx, fields, err) => {
   }
 
   return ctx.status < 500
-    ? logger.info(fields, 'Client error')
-    : logger.error(fields, 'Server error');
+    ? logger.info(fields, "Client error")
+    : logger.error(fields, "Server error");
 });
 
 const version = VersionMiddleware.create(config);
 
-export const createApp = <State, Context>(
-  ...middleware: Array<Koa.Middleware<State, Context>>
-) =>
+export const createApp = <State, Context>(...middleware: Array<Koa.Middleware<State, Context>>) =>
   new Koa()
     // Read: https://github.com/seek-oss/koala/tree/master/src/secureHeaders
     .use(SecureHeaders.middleware)

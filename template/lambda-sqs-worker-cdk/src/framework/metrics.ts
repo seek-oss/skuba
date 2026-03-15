@@ -1,11 +1,10 @@
-import { sendDistributionMetric } from 'datadog-lambda-js';
+import { sendDistributionMetric } from "datadog-lambda-js";
 
-import { config } from '#src/config.js';
+import { config } from "#src/config.js";
 
 const prefix = `${config.name}.`;
 
 export const metricsClient = {
-  distribution: (
-    ...[name, ...rest]: Parameters<typeof sendDistributionMetric>
-  ) => sendDistributionMetric(`${prefix}${name}`, ...rest),
+  distribution: (...[name, ...rest]: Parameters<typeof sendDistributionMetric>) =>
+    sendDistributionMetric(`${prefix}${name}`, ...rest),
 };

@@ -1,21 +1,17 @@
-import { defaultOpts, executeModule } from '../testing/module.js';
+import { defaultOpts, executeModule } from "../testing/module.js";
 
-import { serverlessModule } from './serverless.js';
+import { serverlessModule } from "./serverless.js";
 
-describe('serverlessModule', () => {
-  it('does not touch empty input', async () => {
+describe("serverlessModule", () => {
+  it("does not touch empty input", async () => {
     const inputFiles = {};
 
-    const outputFiles = await executeModule(
-      serverlessModule,
-      inputFiles,
-      defaultOpts,
-    );
+    const outputFiles = await executeModule(serverlessModule, inputFiles, defaultOpts);
 
     expect(outputFiles).toEqual({});
   });
 
-  it('rewires a variety of patterns', async () => {
+  it("rewires a variety of patterns", async () => {
     const INPUT_SERVERLESS_YAML = `
       service: unrelated-dist-reference
 
@@ -65,21 +61,17 @@ describe('serverlessModule', () => {
     `;
 
     const inputFiles = {
-      'serverless.yml': INPUT_SERVERLESS_YAML,
+      "serverless.yml": INPUT_SERVERLESS_YAML,
     };
 
-    const outputFiles = await executeModule(
-      serverlessModule,
-      inputFiles,
-      defaultOpts,
-    );
+    const outputFiles = await executeModule(serverlessModule, inputFiles, defaultOpts);
 
     expect(outputFiles).toEqual({
-      'serverless.yml': EXPECTED_SERVERLESS_YAML,
+      "serverless.yml": EXPECTED_SERVERLESS_YAML,
     });
   });
 
-  it('rewires a variety of Serverless files', async () => {
+  it("rewires a variety of Serverless files", async () => {
     const INPUT_SERVERLESS_YAML = `
       package:
         include:
@@ -101,23 +93,19 @@ describe('serverlessModule', () => {
     `;
 
     const inputFiles = {
-      'serverless.yml': INPUT_SERVERLESS_YAML,
-      'serverless.service.yml': INPUT_SERVERLESS_YAML,
-      'service/serverless.yml': INPUT_SERVERLESS_YAML,
-      'unrelated.txt': 'dist',
+      "serverless.yml": INPUT_SERVERLESS_YAML,
+      "serverless.service.yml": INPUT_SERVERLESS_YAML,
+      "service/serverless.yml": INPUT_SERVERLESS_YAML,
+      "unrelated.txt": "dist",
     };
 
-    const outputFiles = await executeModule(
-      serverlessModule,
-      inputFiles,
-      defaultOpts,
-    );
+    const outputFiles = await executeModule(serverlessModule, inputFiles, defaultOpts);
 
     expect(outputFiles).toEqual({
-      'serverless.yml': EXPECTED_SERVERLESS_YAML,
-      'serverless.service.yml': EXPECTED_SERVERLESS_YAML,
-      'service/serverless.yml': EXPECTED_SERVERLESS_YAML,
-      'unrelated.txt': 'dist',
+      "serverless.yml": EXPECTED_SERVERLESS_YAML,
+      "serverless.service.yml": EXPECTED_SERVERLESS_YAML,
+      "service/serverless.yml": EXPECTED_SERVERLESS_YAML,
+      "unrelated.txt": "dist",
     });
   });
 });

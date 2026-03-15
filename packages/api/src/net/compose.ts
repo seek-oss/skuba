@@ -1,4 +1,4 @@
-import { createExec } from '../../../../src/utils/exec.js';
+import { createExec } from "../../../../src/utils/exec.js";
 
 const portStringToNumber = (portString: string) => {
   const port = Number(portString);
@@ -10,21 +10,12 @@ const portStringToNumber = (portString: string) => {
   return port;
 };
 
-export const resolveComposeAddress = async (
-  privateHost: string,
-  privatePort: number,
-) => {
-  const exec = createExec({ stdio: 'pipe' });
+export const resolveComposeAddress = async (privateHost: string, privatePort: number) => {
+  const exec = createExec({ stdio: "pipe" });
 
-  const { stdout } = await exec(
-    'docker',
-    'compose',
-    'port',
-    privateHost,
-    String(privatePort),
-  );
+  const { stdout } = await exec("docker", "compose", "port", privateHost, String(privatePort));
 
-  const [host, portString] = stdout.trim().split(':');
+  const [host, portString] = stdout.trim().split(":");
 
   if (!host || !portString) {
     throw Error(`Docker Compose returned unrecognised address: '${stdout}'`);

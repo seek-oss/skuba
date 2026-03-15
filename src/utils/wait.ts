@@ -1,6 +1,6 @@
-import { createTerseError } from './error.js';
-import { pluralise } from './logging.js';
-import { sleep } from './sleep.js';
+import { createTerseError } from "./error.js";
+import { pluralise } from "./logging.js";
+import { sleep } from "./sleep.js";
 
 export const throwOnTimeout = async <T>(
   promise: PromiseLike<T>,
@@ -9,7 +9,7 @@ export const throwOnTimeout = async <T>(
   const result = await withTimeout(promise, { s });
 
   if (!result.ok) {
-    throw createTerseError(`Timed out after ${pluralise(s, 'second')}`);
+    throw createTerseError(`Timed out after ${pluralise(s, "second")}`);
   }
 
   return result.value;

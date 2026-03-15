@@ -1,17 +1,17 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import fg from 'fast-glob';
-import fs from 'fs-extra';
+import fg from "fast-glob";
+import fs from "fs-extra";
 
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { log } from "../../../../../../utils/logging.js";
+import type { PatchFunction, PatchReturnType } from "../../index.js";
 
 const DOCKER_COMPOSE_VERSION_REGEX = /^version: ['"]?\d+(\.\d+)*['"]?\n*/m;
 
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.readFile(file, "utf8");
 
       return {
         file,
@@ -20,15 +20,13 @@ const fetchFiles = async (files: string[]) =>
     }),
   );
 
-const patchDockerComposeFiles: PatchFunction = async ({
-  mode,
-}): Promise<PatchReturnType> => {
-  const maybeDockerComposeFiles = await fg(['docker-compose*.yml']);
+const patchDockerComposeFiles: PatchFunction = async ({ mode }): Promise<PatchReturnType> => {
+  const maybeDockerComposeFiles = await fg(["docker-compose*.yml"]);
 
   if (!maybeDockerComposeFiles.length) {
     return {
-      result: 'skip',
-      reason: 'no docker-compose files found',
+      result: "skip",
+      reason: "no docker-compose files found",
     };
   }
 
@@ -40,36 +38,33 @@ const patchDockerComposeFiles: PatchFunction = async ({
 
   if (!dockerComposeFilesToPatch.length) {
     return {
-      result: 'skip',
-      reason: 'no docker-compose files to patch',
+      result: "skip",
+      reason: "no docker-compose files to patch",
     };
   }
 
-  if (mode === 'lint') {
+  if (mode === "lint") {
     return {
-      result: 'apply',
+      result: "apply",
     };
   }
 
   await Promise.all(
     dockerComposeFilesToPatch.map(async ({ file, contents }) => {
-      const patchedContents = contents.replace(
-        DOCKER_COMPOSE_VERSION_REGEX,
-        '',
-      );
+      const patchedContents = contents.replace(DOCKER_COMPOSE_VERSION_REGEX, "");
       await fs.writeFile(file, patchedContents);
     }),
   );
 
-  return { result: 'apply' };
+  return { result: "apply" };
 };
 
 export const tryPatchDockerComposeFiles: PatchFunction = async (config) => {
   try {
     return await patchDockerComposeFiles(config);
   } catch (err) {
-    log.warn('Failed to patch pnpm packageManager CI configuration.');
+    log.warn("Failed to patch pnpm packageManager CI configuration.");
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    return { result: "skip", reason: "due to an error" };
   }
 };

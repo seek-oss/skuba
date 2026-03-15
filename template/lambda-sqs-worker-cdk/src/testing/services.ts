@@ -1,10 +1,10 @@
-import 'aws-sdk-client-mock-jest';
+import "aws-sdk-client-mock-jest";
 
-import { PublishCommand } from '@aws-sdk/client-sns';
-import { mockClient } from 'aws-sdk-client-mock';
+import { PublishCommand } from "@aws-sdk/client-sns";
+import { mockClient } from "aws-sdk-client-mock";
 
-import { sns as snsClient } from '#src/services/aws.js';
-import * as jobScorer from '#src/services/jobScorer.js';
+import { sns as snsClient } from "#src/services/aws.js";
+import * as jobScorer from "#src/services/jobScorer.js";
 
 export const scoringService = {
   request: jest.fn(),
@@ -12,9 +12,7 @@ export const scoringService = {
   clear: () => scoringService.request.mockClear(),
 
   spy: () =>
-    jest
-      .spyOn(jobScorer.scoringService, 'request')
-      .mockImplementation(scoringService.request),
+    jest.spyOn(jobScorer.scoringService, "request").mockImplementation(scoringService.request),
 };
 
 const snsMock = mockClient(snsClient);

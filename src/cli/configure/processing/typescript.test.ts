@@ -1,13 +1,13 @@
-import ts from 'typescript';
+import ts from "typescript";
 
-import { assertDefined } from '../testing/module.js';
+import { assertDefined } from "../testing/module.js";
 
 import {
   createPropAppender,
   createPropFilter,
   readModuleExports,
   transformModuleImportsAndExports,
-} from './typescript.js';
+} from "./typescript.js";
 
 const JEST_CONFIG = `export default {
   collectCoverage: true,
@@ -24,10 +24,10 @@ const JEST_CONFIG = `export default {
 };
 `;
 
-describe('transformModuleImportsAndExports', () => {
+describe("transformModuleImportsAndExports", () => {
   const factory = ts.factory;
 
-  it('converts imports', async () => {
+  it("converts imports", async () => {
     await expect(
       transformModuleImportsAndExports("const abc = require('abc');\n", () =>
         factory.createNodeArray(),
@@ -47,9 +47,8 @@ describe('transformModuleImportsAndExports', () => {
     `);
 
     await expect(
-      transformModuleImportsAndExports(
-        "const { a, b, c } = require('abc');\n",
-        () => factory.createNodeArray(),
+      transformModuleImportsAndExports("const { a, b, c } = require('abc');\n", () =>
+        factory.createNodeArray(),
       ),
     ).resolves.toMatchInlineSnapshot(`
       "import { a, b, c } from 'abc';
@@ -57,20 +56,17 @@ describe('transformModuleImportsAndExports', () => {
     `);
 
     await expect(
-      transformModuleImportsAndExports("import abc from 'abc';\n", () =>
-        factory.createNodeArray(),
-      ),
+      transformModuleImportsAndExports("import abc from 'abc';\n", () => factory.createNodeArray()),
     ).resolves.toMatchInlineSnapshot(`
       "import abc from 'abc';
       "
     `);
   });
 
-  it('detects an object literal export', async () => {
+  it("detects an object literal export", async () => {
     await expect(
-      transformModuleImportsAndExports(
-        "module.exports = { key: 'value' };\n",
-        () => factory.createNodeArray(),
+      transformModuleImportsAndExports("module.exports = { key: 'value' };\n", () =>
+        factory.createNodeArray(),
       ),
     ).resolves.toMatchInlineSnapshot(`
       "export default {};
@@ -78,9 +74,8 @@ describe('transformModuleImportsAndExports', () => {
     `);
 
     await expect(
-      transformModuleImportsAndExports(
-        "export default { key: 'value' };\n",
-        () => factory.createNodeArray(),
+      transformModuleImportsAndExports("export default { key: 'value' };\n", () =>
+        factory.createNodeArray(),
       ),
     ).resolves.toMatchInlineSnapshot(`
       "export default {};
@@ -88,11 +83,10 @@ describe('transformModuleImportsAndExports', () => {
     `);
   });
 
-  it('detects a single-arg call expression export', async () => {
+  it("detects a single-arg call expression export", async () => {
     await expect(
-      transformModuleImportsAndExports(
-        "export default Jest.mergePreset({ key: 'value' });\n",
-        () => factory.createNodeArray(),
+      transformModuleImportsAndExports("export default Jest.mergePreset({ key: 'value' });\n", () =>
+        factory.createNodeArray(),
       ),
     ).resolves.toMatchInlineSnapshot(`
       "export default Jest.mergePreset({});
@@ -110,7 +104,7 @@ describe('transformModuleImportsAndExports', () => {
     `);
   });
 
-  it('does not transform props of a multi-arg call expression export', async () => {
+  it("does not transform props of a multi-arg call expression export", async () => {
     await expect(
       transformModuleImportsAndExports(
         "export default Jest.mergePreset({ key: 'value' }, null, 2);\n",
@@ -132,11 +126,10 @@ describe('transformModuleImportsAndExports', () => {
     `);
   });
 
-  it('does not transform props of a function export', async () => {
+  it("does not transform props of a function export", async () => {
     await expect(
-      transformModuleImportsAndExports(
-        'export default () => undefined;\n',
-        () => factory.createNodeArray(),
+      transformModuleImportsAndExports("export default () => undefined;\n", () =>
+        factory.createNodeArray(),
       ),
     ).resolves.toMatchInlineSnapshot(`
       "export default () => undefined;
@@ -144,9 +137,8 @@ describe('transformModuleImportsAndExports', () => {
     `);
 
     await expect(
-      transformModuleImportsAndExports(
-        'module.exports = () => undefined;\n',
-        () => factory.createNodeArray(),
+      transformModuleImportsAndExports("module.exports = () => undefined;\n", () =>
+        factory.createNodeArray(),
       ),
     ).resolves.toMatchInlineSnapshot(`
       "export default () => undefined;
@@ -154,36 +146,32 @@ describe('transformModuleImportsAndExports', () => {
     `);
   });
 
-  it('ignores a named export', async () =>
+  it("ignores a named export", async () =>
     await expect(
-      transformModuleImportsAndExports(
-        'export const fn = () => undefined;\n',
-        () => factory.createNodeArray(),
+      transformModuleImportsAndExports("export const fn = () => undefined;\n", () =>
+        factory.createNodeArray(),
       ),
     ).resolves.toMatchInlineSnapshot(`
       "export const fn = () => undefined;
       "
     `));
 
-  it('works with a no-op transformer', async () => {
-    const result = await transformModuleImportsAndExports(
-      JEST_CONFIG,
-      (_, props) => props,
-    );
+  it("works with a no-op transformer", async () => {
+    const result = await transformModuleImportsAndExports(JEST_CONFIG, (_, props) => props);
 
     expect(result).toBe(JEST_CONFIG);
   });
 
-  it('works with a prop appender', async () => {
+  it("works with a prop appender", async () => {
     const append = createPropAppender(
       factory.createNodeArray([
         factory.createPropertyAssignment(
-          factory.createIdentifier('globalSetup'),
-          factory.createStringLiteral('I should not take precedence'),
+          factory.createIdentifier("globalSetup"),
+          factory.createStringLiteral("I should not take precedence"),
         ),
         factory.createPropertyAssignment(
-          factory.createIdentifier('a'),
-          factory.createStringLiteral('b'),
+          factory.createIdentifier("a"),
+          factory.createStringLiteral("b"),
         ),
       ]),
     );
@@ -209,12 +197,8 @@ describe('transformModuleImportsAndExports', () => {
     `);
   });
 
-  it('works with a prop filter', async () => {
-    const filter = createPropFilter([
-      'coverageThreshold',
-      'setupFilesAfterEnv',
-      'globalSetup',
-    ]);
+  it("works with a prop filter", async () => {
+    const filter = createPropFilter(["coverageThreshold", "setupFilesAfterEnv", "globalSetup"]);
 
     const result = await transformModuleImportsAndExports(JEST_CONFIG, filter);
 
@@ -235,8 +219,8 @@ describe('transformModuleImportsAndExports', () => {
   });
 });
 
-describe('readModuleExports', () => {
-  it('extracts props from a module.exports expression', async () => {
+describe("readModuleExports", () => {
+  it("extracts props from a module.exports expression", async () => {
     const result = await readModuleExports(JEST_CONFIG);
 
     assertDefined(result);

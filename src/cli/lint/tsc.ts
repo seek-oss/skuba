@@ -1,16 +1,9 @@
-import { execConcurrently } from '../../utils/exec.js';
+import { execConcurrently } from "../../utils/exec.js";
 
-import type { Input } from './types.js';
+import type { Input } from "./types.js";
 
-export const runTscInNewProcess = async ({
-  debug,
-  tscOutputStream,
-}: Input): Promise<boolean> => {
-  const command = [
-    'tsc',
-    ...(debug ? ['--extendedDiagnostics'] : []),
-    '--noEmit',
-  ].join(' ');
+export const runTscInNewProcess = async ({ debug, tscOutputStream }: Input): Promise<boolean> => {
+  const command = ["tsc", ...(debug ? ["--extendedDiagnostics"] : []), "--noEmit"].join(" ");
 
   try {
     // Misappropriate `concurrently` as a stdio prefixer.
@@ -21,13 +14,13 @@ export const runTscInNewProcess = async ({
       [
         {
           command,
-          name: 'tsc',
-          prefixColor: 'blue',
+          name: "tsc",
+          prefixColor: "blue",
         },
       ],
       {
         maxProcesses: 1,
-        nameLength: 'Prettier'.length,
+        nameLength: "Prettier".length,
         outputStream: tscOutputStream,
       },
     );

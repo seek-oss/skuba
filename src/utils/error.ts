@@ -1,10 +1,10 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import type { ExecaError } from 'execa';
-import * as z from 'zod/v4';
+import type { ExecaError } from "execa";
+import * as z from "zod/v4";
 
-import { log } from './logging.js';
-import { hasNumberProp, hasProp } from './validation.js';
+import { log } from "./logging.js";
+import { hasNumberProp, hasProp } from "./validation.js";
 
 export type ConcurrentlyErrors = z.infer<typeof concurrentlyErrorsSchema>;
 
@@ -33,8 +33,7 @@ export const createTerseError = (message?: string) =>
     [inspect.custom]: () => message,
   });
 
-const isExecaError = (err: unknown): err is ExecaError =>
-  hasNumberProp(err, 'exitCode');
+const isExecaError = (err: unknown): err is ExecaError => hasNumberProp(err, "exitCode");
 
 export const handleCliError = (err: unknown) => {
   if (isExecaError(err)) {
@@ -50,5 +49,4 @@ export const handleCliError = (err: unknown) => {
 export const isErrorWithCode = <T>(
   err: unknown,
   code: T,
-): err is Record<PropertyKey, unknown> & { code: T } =>
-  hasProp(err, 'code') && err.code === code;
+): err is Record<PropertyKey, unknown> & { code: T } => hasProp(err, "code") && err.code === code;

@@ -1,22 +1,22 @@
-import { createDependencyFilter, withPackage } from './package.js';
+import { createDependencyFilter, withPackage } from "./package.js";
 
-describe('createDependencyFilter', () => {
-  it('can filter dependencies', () =>
+describe("createDependencyFilter", () => {
+  it("can filter dependencies", () =>
     expect(
       createDependencyFilter(
-        ['c', 'a'],
-        'devDependencies',
+        ["c", "a"],
+        "devDependencies",
       )({
         dependencies: {
-          a: '0.0.1',
-          b: '0.0.1',
-          c: '0.0.1',
+          a: "0.0.1",
+          b: "0.0.1",
+          c: "0.0.1",
         },
 
         devDependencies: {
-          a: '0.0.1',
-          b: '0.0.1',
-          c: '0.0.1',
+          a: "0.0.1",
+          b: "0.0.1",
+          c: "0.0.1",
         },
       }),
     ).toMatchInlineSnapshot(`
@@ -32,22 +32,22 @@ describe('createDependencyFilter', () => {
       }
     `));
 
-  it('can filter dev dependencies', () =>
+  it("can filter dev dependencies", () =>
     expect(
       createDependencyFilter(
-        ['b'],
-        'dependencies',
+        ["b"],
+        "dependencies",
       )({
         dependencies: {
-          a: '0.0.1',
-          b: '0.0.1',
-          c: '0.0.1',
+          a: "0.0.1",
+          b: "0.0.1",
+          c: "0.0.1",
         },
 
         devDependencies: {
-          a: '0.0.1',
-          b: '0.0.1',
-          c: '0.0.1',
+          a: "0.0.1",
+          b: "0.0.1",
+          c: "0.0.1",
         },
       }),
     ).toMatchInlineSnapshot(`
@@ -65,14 +65,14 @@ describe('createDependencyFilter', () => {
     `));
 });
 
-describe('withPackage', () => {
-  it('applies function', async () =>
+describe("withPackage", () => {
+  it("applies function", async () =>
     await expect(
       withPackage((data) => {
-        data.$name = 'unit-test';
+        data.$name = "unit-test";
 
         return data;
-      })('{}'),
+      })("{}"),
     ).resolves.toMatchInlineSnapshot(`
       "{
         "$name": "unit-test"
@@ -80,18 +80,18 @@ describe('withPackage', () => {
       "
     `));
 
-  it('preserves legitimate fields', async () =>
+  it("preserves legitimate fields", async () =>
     await expect(
       withPackage((data) => {
-        data.$name = 'unit-test';
+        data.$name = "unit-test";
 
         return data;
       })(
         JSON.stringify({
-          description: 'My Package',
-          readme: 'https://github.com/my-org/my-package#readme',
-          version: '0.1.0',
-          name: 'my-package',
+          description: "My Package",
+          readme: "https://github.com/my-org/my-package#readme",
+          version: "0.1.0",
+          name: "my-package",
         }),
       ),
     ).resolves.toMatchInlineSnapshot(`
@@ -105,37 +105,37 @@ describe('withPackage', () => {
       "
     `));
 
-  it('sorts fields', async () =>
+  it("sorts fields", async () =>
     await expect(
       withPackage((data) => data)(
         JSON.stringify({
           devDependencies: {
-            c: '3',
-            e: '5',
-            d: '4',
-            '@types/koa-bodyparser': '^5.0.2',
-            '@types/koa__router': '^8.0.8',
-            '@types/koa': '^2.13.4',
+            c: "3",
+            e: "5",
+            d: "4",
+            "@types/koa-bodyparser": "^5.0.2",
+            "@types/koa__router": "^8.0.8",
+            "@types/koa": "^2.13.4",
           },
 
           dependencies: {
-            b: '2',
-            a: '1',
+            b: "2",
+            a: "1",
           },
 
           scripts: {
-            lint: 'echo Linting',
-            prelint: 'echo Prepare for lint-off',
-            prebuild: 'rm -rf system32',
-            build: 'npm install freebsd',
+            lint: "echo Linting",
+            prelint: "echo Prepare for lint-off",
+            prebuild: "rm -rf system32",
+            build: "npm install freebsd",
           },
 
           skuba: {
-            version: '1.0.0',
-            type: 'application',
+            version: "1.0.0",
+            type: "application",
           },
 
-          files: ['b', 'a'],
+          files: ["b", "a"],
         }),
       ),
     ).resolves.toMatchInlineSnapshot(`
@@ -170,13 +170,13 @@ describe('withPackage', () => {
       "
     `));
 
-  it('handles bad JSON gracefully', async () =>
+  it("handles bad JSON gracefully", async () =>
     await expect(
       withPackage((data) => {
-        data.$name = 'unit-test';
+        data.$name = "unit-test";
 
         return data;
-      })('}'),
+      })("}"),
     ).resolves.toMatchInlineSnapshot(`
       "{
         "$name": "unit-test"

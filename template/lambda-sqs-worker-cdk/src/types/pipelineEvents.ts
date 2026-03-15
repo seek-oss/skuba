@@ -1,4 +1,4 @@
-import * as z from 'zod/v4';
+import * as z from "zod/v4";
 
 export type JobPublishedEvent = z.infer<typeof JobPublishedEventSchema>;
 
@@ -7,7 +7,7 @@ export const JobPublishedEventSchema = z.object({
     details: z.string(),
   }),
   entityId: z.string(),
-  eventType: z.literal('JobPublished'),
+  eventType: z.literal("JobPublished"),
 });
 
 export type JobScoredEvent = z.infer<typeof JobScoredEventSchema>;
@@ -17,5 +17,5 @@ export const JobScoredEventSchema = z.object({
     score: z.number(),
   }),
   entityId: z.string(),
-  eventType: z.literal('JobScored'),
+  eventType: z.literal("JobScored"),
 });

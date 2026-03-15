@@ -1,25 +1,25 @@
-import crypto from 'crypto';
-import path from 'path';
-import stream from 'stream';
-import { inspect } from 'util';
+import crypto from "crypto";
+import path from "path";
+import stream from "stream";
+import { inspect } from "util";
 
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
+import fs from "fs-extra";
+import git from "isomorphic-git";
 
-import type { Logger } from '../../utils/logging.js';
-import { getSkubaVersion } from '../../utils/version.js';
+import type { Logger } from "../../utils/logging.js";
+import { getSkubaVersion } from "../../utils/version.js";
 
-import { refreshConfigFiles } from './internalLints/refreshConfigFiles.js';
+import { refreshConfigFiles } from "./internalLints/refreshConfigFiles.js";
 
-import { lint } from './index.js';
+import { lint } from "./index.js";
 
-import * as Buildkite from '@skuba-lib/api/buildkite';
+import * as Buildkite from "@skuba-lib/api/buildkite";
 
 jest.setTimeout(30_000);
 
-jest.mock('../../utils/version');
-jest.mock('@skuba-lib/api/buildkite', () => ({
-  ...jest.requireActual('@skuba-lib/api/buildkite'),
+jest.mock("../../utils/version");
+jest.mock("@skuba-lib/api/buildkite", () => ({
+  ...jest.requireActual("@skuba-lib/api/buildkite"),
   annotate: jest.fn(),
 }));
 
@@ -27,48 +27,32 @@ const buildkiteAnnotate = jest.mocked(Buildkite.annotate).mockResolvedValue();
 
 const stdoutMock = jest.fn();
 
-jest
-  .spyOn(console, 'log')
-  .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+jest.spyOn(console, "log").mockImplementation((...args) => stdoutMock(`${args.join(" ")}\n`));
 
 jest
-  .spyOn(git, 'listRemotes')
-  .mockResolvedValue([
-    { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
-  ]);
+  .spyOn(git, "listRemotes")
+  .mockResolvedValue([{ remote: "origin", url: "git@github.com:seek-oss/skuba.git" }]);
 
-const tscOutputStream = new stream.PassThrough().on('data', stdoutMock);
+const tscOutputStream = new stream.PassThrough().on("data", stdoutMock);
 
-const BASE_PATH = path.join(__dirname, '..', '..', '..', 'integration', 'base');
+const BASE_PATH = path.join(__dirname, "..", "..", "..", "integration", "base");
 
-const TEMP_PATH = path.join(__dirname, '..', '..', '..', 'integration', 'lint');
+const TEMP_PATH = path.join(__dirname, "..", "..", "..", "integration", "lint");
 
 const stdout = (randomMatcher: RegExp) => {
   const result = stdoutMock.mock.calls
     .flat(1)
-    .join('')
-    .replace(/ in [\d\.]+s\./g, ' in <random>s.')
-    .replace(
-      /tsc      │ Lines of ([^:]+):[ ]+\d+/g,
-      'tsc      │ Lines of $1: <random>',
-    )
-    .replace(
-      /tsc      │ Nodes of ([^:]+):[ ]+\d+/g,
-      'tsc      │ Nodes of $1: <random>',
-    )
+    .join("")
+    .replace(/ in [\d\.]+s\./g, " in <random>s.")
+    .replace(/tsc      │ Lines of ([^:]+):[ ]+\d+/g, "tsc      │ Lines of $1: <random>")
+    .replace(/tsc      │ Nodes of ([^:]+):[ ]+\d+/g, "tsc      │ Nodes of $1: <random>")
     .replace(
       /tsc      │ (Files|Identifiers|Symbols|Types|Instantiations|Memory used):[ ]+\d+/g,
-      'tsc      │ $1: <random>',
+      "tsc      │ $1: <random>",
     )
-    .replace(
-      /tsc      │ (.+) cache size:[ ]+\d+/g,
-      'tsc      │ $1 cache size: <random>',
-    )
-    .replace(
-      /tsc      │ (.+) time:[ ]+[\d\.]+s/g,
-      'tsc      │ $1 time: <random>s',
-    )
-    .replace(randomMatcher, '<random>');
+    .replace(/tsc      │ (.+) cache size:[ ]+\d+/g, "tsc      │ $1 cache size: <random>")
+    .replace(/tsc      │ (.+) time:[ ]+[\d\.]+s/g, "tsc      │ $1 time: <random>s")
+    .replace(randomMatcher, "<random>");
 
   return `\n${result}`;
 };
@@ -77,7 +61,7 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
   await fs.copy(baseDir, tempDir);
   process.chdir(tempDir);
   await git.init({ fs, dir: tempDir });
-  const result = await refreshConfigFiles('format', {
+  const result = await refreshConfigFiles("format", {
     bold: jest.fn(),
     dim: jest.fn(),
     warn: jest.fn(),
@@ -123,20 +107,17 @@ interface Args {
 
 test.each`
   description        | args           | base           | skubaVersion | exitCode
-  ${'fixable'}       | ${[]}          | ${'fixable'}   | ${'0.0.0'}   | ${1}
-  ${'ok'}            | ${[]}          | ${'ok'}        | ${'0.0.0'}   | ${undefined}
-  ${'ok --debug'}    | ${['--debug']} | ${'ok'}        | ${'0.0.0'}   | ${undefined}
-  ${'unfixable'}     | ${[]}          | ${'unfixable'} | ${'0.0.0'}   | ${1}
-  ${'needs patches'} | ${[]}          | ${'patch'}     | ${'1.0.0'}   | ${1}
-`('$description', async ({ args, base, skubaVersion, exitCode }: Args) => {
+  ${"fixable"}       | ${[]}          | ${"fixable"}   | ${"0.0.0"}   | ${1}
+  ${"ok"}            | ${[]}          | ${"ok"}        | ${"0.0.0"}   | ${undefined}
+  ${"ok --debug"}    | ${["--debug"]} | ${"ok"}        | ${"0.0.0"}   | ${undefined}
+  ${"unfixable"}     | ${[]}          | ${"unfixable"} | ${"0.0.0"}   | ${1}
+  ${"needs patches"} | ${[]}          | ${"patch"}     | ${"1.0.0"}   | ${1}
+`("$description", async ({ args, base, skubaVersion, exitCode }: Args) => {
   jest.mocked(getSkubaVersion).mockResolvedValue(skubaVersion);
 
   const baseDir = path.join(BASE_PATH, base);
 
-  const tempDir = path.join(
-    TEMP_PATH,
-    `${base}-${crypto.randomBytes(32).toString('hex')}`,
-  );
+  const tempDir = path.join(TEMP_PATH, `${base}-${crypto.randomBytes(32).toString("hex")}`);
 
   await prepareTempDirectory(baseDir, tempDir);
 
@@ -145,17 +126,14 @@ test.each`
     lint(args, tscOutputStream, false),
   ).resolves.toBeUndefined();
 
-  const tempDirRegex = new RegExp(tempDir, 'g');
+  const tempDirRegex = new RegExp(tempDir, "g");
 
   expect(stdout(tempDirRegex)).toMatchSnapshot();
 
   expect(
     buildkiteAnnotate.mock.calls.map(
       ([markdown, opts]) =>
-        `\nOptions: ${inspect(opts)}\n\n${markdown.replace(
-          tempDirRegex,
-          '<random>',
-        )}\n`,
+        `\nOptions: ${inspect(opts)}\n\n${markdown.replace(tempDirRegex, "<random>")}\n`,
     ),
   ).toMatchSnapshot();
 

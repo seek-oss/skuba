@@ -10,13 +10,13 @@
  *   it will spin up a local HTTP server based on the request listener.
  */
 
-import { handleCliError } from '../utils/error.js';
-import { log } from '../utils/logging.js';
+import { handleCliError } from "../utils/error.js";
+import { log } from "../utils/logging.js";
 
-import { main } from './main.js';
+import { main } from "./main.js";
 
-const ENTRY_POINT_VAR = '__SKUBA_ENTRY_POINT';
-const PORT_VAR = '__SKUBA_PORT';
+const ENTRY_POINT_VAR = "__SKUBA_ENTRY_POINT";
+const PORT_VAR = "__SKUBA_PORT";
 
 const rawEntryPoint = process.env[ENTRY_POINT_VAR];
 if (!rawEntryPoint) {

@@ -27,7 +27,7 @@ steps:
       - pnpm test
     env:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
-      GET_GITHUB_TOKEN: 'please'
+      GET_GITHUB_TOKEN: "please"
     plugins:
       - ...
       - docker#v5.13.0:
@@ -61,7 +61,7 @@ steps:
       - pnpm test
     env:
       # At SEEK, this instructs the build agent to populate the GITHUB_API_TOKEN environment variable for this step.
-      GET_GITHUB_TOKEN: 'please'
+      GET_GITHUB_TOKEN: "please"
     plugins:
       - ...
       - docker-compose#v5.12.1:

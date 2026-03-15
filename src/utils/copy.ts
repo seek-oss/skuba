@@ -1,22 +1,19 @@
-import path from 'path';
+import path from "path";
 
-import ejs from 'ejs';
-import fs from 'fs-extra';
+import ejs from "ejs";
+import fs from "fs-extra";
 
-import { isErrorWithCode } from './error.js';
-import { log } from './logging.js';
+import { isErrorWithCode } from "./error.js";
+import { log } from "./logging.js";
 
 export type TextProcessor = (sourcePath: string, contents: string) => string;
 
 export const copyFile = async (
   sourcePath: string,
   destinationPath: string,
-  {
-    overwrite = true,
-    processors,
-  }: Pick<CopyFilesOptions, 'overwrite' | 'processors'>,
+  { overwrite = true, processors }: Pick<CopyFilesOptions, "overwrite" | "processors">,
 ) => {
-  const oldContents = await fs.promises.readFile(sourcePath, 'utf8');
+  const oldContents = await fs.promises.readFile(sourcePath, "utf8");
 
   const newContents = processors.reduce(
     (contents, process) => process(sourcePath, contents),
@@ -29,10 +26,10 @@ export const copyFile = async (
 
   try {
     await fs.promises.writeFile(destinationPath, newContents, {
-      flag: overwrite ? 'w' : 'wx',
+      flag: overwrite ? "w" : "wx",
     });
   } catch (err) {
-    if (isErrorWithCode(err, 'EEXIST')) {
+    if (isErrorWithCode(err, "EEXIST")) {
       return;
     }
 
@@ -56,7 +53,7 @@ export const createEjsRenderer =
     try {
       return ejs.render(contents, templateData, { strict: false });
     } catch (err) {
-      log.err('Failed to render', log.bold(sourcePath));
+      log.err("Failed to render", log.bold(sourcePath));
       log.subtle(err);
       return contents;
     }
@@ -87,17 +84,15 @@ export const copyFiles = async (
       currentDestinationDir,
       opts.stripUnderscorePrefix
         ? filename
-            .replace(/^_\./, '.')
-            .replace(/^_package\.json/, 'package.json')
-            .replace(/^_eslint\.config\.js/, 'eslint.config.js')
-            .replace(/^_pnpm-workspace\.yaml/, 'pnpm-workspace.yaml')
+            .replace(/^_\./, ".")
+            .replace(/^_package\.json/, "package.json")
+            .replace(/^_eslint\.config\.js/, "eslint.config.js")
+            .replace(/^_pnpm-workspace\.yaml/, "pnpm-workspace.yaml")
         : filename,
     );
 
   const filteredFilenames = filenames.filter((filename) =>
-    opts.include(
-      path.relative(opts.destinationRoot, toDestinationPath(filename)),
-    ),
+    opts.include(path.relative(opts.destinationRoot, toDestinationPath(filename))),
   );
 
   await Promise.all(
@@ -108,12 +103,12 @@ export const copyFiles = async (
       try {
         await copyFile(sourcePath, destinationPath, opts);
       } catch (err) {
-        if (isErrorWithCode(err, 'EISDIR')) {
+        if (isErrorWithCode(err, "EISDIR")) {
           await fs.promises.mkdir(destinationPath, { recursive: true });
           return copyFiles(opts, sourcePath, destinationPath);
         }
 
-        log.err('Failed to render', log.bold(sourcePath));
+        log.err("Failed to render", log.bold(sourcePath));
 
         throw err;
       }

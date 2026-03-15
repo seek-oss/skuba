@@ -1,27 +1,27 @@
-import type { AggregatedResult, TestContext } from '@jest/reporters';
+import type { AggregatedResult, TestContext } from "@jest/reporters";
 
-import { log } from '../../../../utils/logging.js';
+import { log } from "../../../../utils/logging.js";
 
-import GitHubReporter from './index.js';
+import GitHubReporter from "./index.js";
 
-import * as GitHub from '@skuba-lib/api/github';
+import * as GitHub from "@skuba-lib/api/github";
 
 const reporter = new GitHubReporter();
 
-jest.mock('@skuba-lib/api/github', () => ({
-  ...jest.requireActual('@skuba-lib/api/github'),
+jest.mock("@skuba-lib/api/github", () => ({
+  ...jest.requireActual("@skuba-lib/api/github"),
   createCheckRun: jest.fn(),
 }));
-jest.mock('../../../../utils/logging');
+jest.mock("../../../../utils/logging");
 
 beforeEach(() => {
-  jest.spyOn(process, 'cwd').mockReturnValue('/workdir/skuba');
+  jest.spyOn(process, "cwd").mockReturnValue("/workdir/skuba");
 
-  process.env.CI = 'true';
-  process.env.GITHUB_ACTIONS = 'true';
-  process.env.GITHUB_RUN_NUMBER = '123';
-  process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
-  process.env.GITHUB_WORKFLOW = 'Test';
+  process.env.CI = "true";
+  process.env.GITHUB_ACTIONS = "true";
+  process.env.GITHUB_RUN_NUMBER = "123";
+  process.env.GITHUB_TOKEN = "Hello from GITHUB_TOKEN";
+  process.env.GITHUB_WORKFLOW = "Test";
 });
 
 afterEach(jest.resetAllMocks);
@@ -88,7 +88,7 @@ const failResults: AggregatedResult = {
         unmatched: 0,
         updated: 0,
       },
-      testFilePath: '/workdir/skuba/src/test.test.ts',
+      testFilePath: "/workdir/skuba/src/test.test.ts",
       testResults: [
         {
           ancestorTitles: [],
@@ -96,11 +96,11 @@ const failResults: AggregatedResult = {
           failureDetails: [
             {
               matcherResult: {
-                actual: 'b',
-                expected: 'a',
+                actual: "b",
+                expected: "a",
                 message:
                   '\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m',
-                name: 'toBe',
+                name: "toBe",
                 pass: false,
               },
             },
@@ -108,12 +108,12 @@ const failResults: AggregatedResult = {
           failureMessages: [
             'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)\n    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
           ],
-          fullName: 'should output a',
+          fullName: "should output a",
           invocations: 1,
           location: null,
           numPassingAsserts: 0,
-          status: 'failed',
-          title: 'should output a',
+          status: "failed",
+          title: "should output a",
         },
       ],
       failureMessage:
@@ -202,7 +202,7 @@ const failResultsDisplayNames: AggregatedResult = {
         unmatched: 0,
         updated: 0,
       },
-      testFilePath: '/workdir/skuba/src/test.test.ts',
+      testFilePath: "/workdir/skuba/src/test.test.ts",
       testResults: [
         {
           ancestorTitles: [],
@@ -210,11 +210,11 @@ const failResultsDisplayNames: AggregatedResult = {
           failureDetails: [
             {
               matcherResult: {
-                actual: 'b',
-                expected: 'a',
+                actual: "b",
+                expected: "a",
                 message:
                   '\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m',
-                name: 'toBe',
+                name: "toBe",
                 pass: false,
               },
             },
@@ -222,12 +222,12 @@ const failResultsDisplayNames: AggregatedResult = {
           failureMessages: [
             'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workdir/skuba/src/test.test.ts:2:15)\n    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
           ],
-          fullName: 'should output a',
+          fullName: "should output a",
           invocations: 1,
           location: null,
           numPassingAsserts: 0,
-          status: 'failed',
-          title: 'should output a',
+          status: "failed",
+          title: "should output a",
         },
       ],
       failureMessage:
@@ -235,8 +235,8 @@ const failResultsDisplayNames: AggregatedResult = {
     },
     {
       displayName: {
-        color: 'blue',
-        name: 'integration',
+        color: "blue",
+        name: "integration",
       },
       leaks: false,
       numFailingTests: 1,
@@ -266,7 +266,7 @@ const failResultsDisplayNames: AggregatedResult = {
         unmatched: 0,
         updated: 0,
       },
-      testFilePath: '/workdir/skuba/src/index.test.ts',
+      testFilePath: "/workdir/skuba/src/index.test.ts",
       testResults: [
         {
           ancestorTitles: [],
@@ -274,11 +274,11 @@ const failResultsDisplayNames: AggregatedResult = {
           failureDetails: [
             {
               matcherResult: {
-                actual: 'b',
-                expected: 'a',
+                actual: "b",
+                expected: "a",
                 message:
                   '\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m',
-                name: 'toBe',
+                name: "toBe",
                 pass: false,
               },
             },
@@ -286,12 +286,12 @@ const failResultsDisplayNames: AggregatedResult = {
           failureMessages: [
             'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m"a"\u001b[39m\nReceived: \u001b[31m"b"\u001b[39m\n    at Object.<anonymous> (/workdir/skuba/src/index.test.ts:2:15)\n    at Promise.then.completed (/workdir/skuba/node_modules/jest-circus/build/utils.js:390:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/workdir/skuba/node_modules/jest-circus/build/utils.js:315:10)\n    at _callCircusTest (/workdir/skuba/node_modules/jest-circus/build/run.js:218:40)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at _runTest (/workdir/skuba/node_modules/jest-circus/build/run.js:155:3)\n    at _runTestsForDescribeBlock (/workdir/skuba/node_modules/jest-circus/build/run.js:66:9)\n    at run (/workdir/skuba/node_modules/jest-circus/build/run.js:25:3)\n    at runAndTransformResultsToJestFormat (/workdir/skuba/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:167:21)',
           ],
-          fullName: 'should output a',
+          fullName: "should output a",
           invocations: 1,
           location: null,
           numPassingAsserts: 0,
-          status: 'failed',
-          title: 'should output a',
+          status: "failed",
+          title: "should output a",
         },
       ],
       failureMessage:
@@ -301,13 +301,13 @@ const failResultsDisplayNames: AggregatedResult = {
   wasInterrupted: false,
 };
 
-it('should create check runs if the correct environment variables are set', async () => {
+it("should create check runs if the correct environment variables are set", async () => {
   await reporter.onRunComplete(context, failResults);
 
   expect(GitHub.createCheckRun).toHaveBeenCalled();
 });
 
-it('should not create check runs if the correct environment variables are not set', async () => {
+it("should not create check runs if the correct environment variables are not set", async () => {
   delete process.env.CI;
   delete process.env.GITHUB_ACTIONS;
 
@@ -316,87 +316,87 @@ it('should not create check runs if the correct environment variables are not se
   expect(GitHub.createCheckRun).not.toHaveBeenCalled();
 });
 
-it('should create a successful check run when there are no annotations', async () => {
+it("should create a successful check run when there are no annotations", async () => {
   await reporter.onRunComplete(context, successResults);
 
   expect(GitHub.createCheckRun).toHaveBeenCalledTimes(1);
   expect(GitHub.createCheckRun).toHaveBeenCalledWith({
-    name: 'skuba/test',
+    name: "skuba/test",
     annotations: [],
-    conclusion: 'success',
-    summary: '`skuba test` passed.',
-    title: 'Test #123 passed',
+    conclusion: "success",
+    summary: "`skuba test` passed.",
+    title: "Test #123 passed",
   });
 });
 
-it('should create one annotated check run when there are no display names', async () => {
+it("should create one annotated check run when there are no display names", async () => {
   await reporter.onRunComplete(context, failResults);
 
   expect(GitHub.createCheckRun).toHaveBeenCalledTimes(1);
   expect(GitHub.createCheckRun).toHaveBeenCalledWith({
-    name: 'skuba/test',
+    name: "skuba/test",
     annotations: [
       {
-        annotation_level: 'failure',
-        path: 'src/test.test.ts',
+        annotation_level: "failure",
+        path: "src/test.test.ts",
         start_line: 2,
         end_line: 2,
         start_column: 15,
         end_column: 15,
         message: expect.any(String),
-        title: 'Jest',
+        title: "Jest",
       },
     ],
-    conclusion: 'failure',
-    summary: '`skuba test` found issues that require triage.',
-    title: 'Test #123 failed',
+    conclusion: "failure",
+    summary: "`skuba test` found issues that require triage.",
+    title: "Test #123 failed",
   });
 });
 
-it('should create an annotated check run per display name', async () => {
+it("should create an annotated check run per display name", async () => {
   await reporter.onRunComplete(context, failResultsDisplayNames);
 
   expect(GitHub.createCheckRun).toHaveBeenCalledTimes(2);
   expect(GitHub.createCheckRun).toHaveBeenCalledWith({
-    name: 'skuba/test',
+    name: "skuba/test",
     annotations: [
       {
-        annotation_level: 'failure',
-        path: 'src/test.test.ts',
+        annotation_level: "failure",
+        path: "src/test.test.ts",
         start_line: 2,
         end_line: 2,
         start_column: 15,
         end_column: 15,
         message: expect.any(String),
-        title: 'Jest',
+        title: "Jest",
       },
     ],
-    conclusion: 'failure',
-    summary: '`skuba test` found issues that require triage.',
-    title: 'Test #123 failed',
+    conclusion: "failure",
+    summary: "`skuba test` found issues that require triage.",
+    title: "Test #123 failed",
   });
   expect(GitHub.createCheckRun).toHaveBeenCalledWith({
-    name: 'skuba/test (integration)',
+    name: "skuba/test (integration)",
     annotations: [
       {
-        annotation_level: 'failure',
-        path: 'src/index.test.ts',
+        annotation_level: "failure",
+        path: "src/index.test.ts",
         start_line: 2,
         end_line: 2,
         start_column: 15,
         end_column: 15,
         message: expect.any(String),
-        title: 'Jest',
+        title: "Jest",
       },
     ],
-    conclusion: 'failure',
-    summary: '`skuba test` found issues that require triage.',
-    title: 'Test #123 failed',
+    conclusion: "failure",
+    summary: "`skuba test` found issues that require triage.",
+    title: "Test #123 failed",
   });
 });
 
-it('should log a warning when it fails to create annotations', async () => {
-  const err = new Error('Badness!');
+it("should log a warning when it fails to create annotations", async () => {
+  const err = new Error("Badness!");
 
   jest.mocked(GitHub.createCheckRun).mockRejectedValue(err);
 
@@ -407,13 +407,13 @@ it('should log a warning when it fails to create annotations', async () => {
     jest.mocked(log.warn).mock.calls,
     jest
       .mocked(log.subtle)
-      .mock.calls[0]?.join('\n')
-      .replace(/(at Object\.\<anonymous\>)[\s\S]+$/, '$1...'),
+      .mock.calls[0]?.join("\n")
+      .replace(/(at Object\.\<anonymous\>)[\s\S]+$/, "$1..."),
     jest.mocked(log.subtle).mock.calls.slice(1),
     null,
   ]
     .flat()
-    .join('\n');
+    .join("\n");
 
   expect(logs).toMatchInlineSnapshot(`
     "

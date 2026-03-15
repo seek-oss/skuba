@@ -1,18 +1,16 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import { glob } from 'fast-glob';
-import fs from 'fs-extra';
-import { coerce, lt } from 'semver';
+import { glob } from "fast-glob";
+import fs from "fs-extra";
+import { coerce, lt } from "semver";
 
-import { log } from '../../../utils/logging.js';
-import { createDestinationFileReader } from '../../configure/analysis/project.js';
+import { log } from "../../../utils/logging.js";
+import { createDestinationFileReader } from "../../configure/analysis/project.js";
 
-import { isLikelyPackage } from './checks.js';
-import { tryUpgradeInfraPackages } from './upgrade.js';
+import { isLikelyPackage } from "./checks.js";
+import { tryUpgradeInfraPackages } from "./upgrade.js";
 
-type FileSelector =
-  | { files: string; file?: never }
-  | { file: string; files?: never };
+type FileSelector = { files: string; file?: never } | { file: string; files?: never };
 
 type ReplaceOptions = {
   version: string;
@@ -21,7 +19,7 @@ type ReplaceOptions = {
 };
 
 type SubPatch = FileSelector & {
-  type: 'nodejs' | 'ecmascript';
+  type: "nodejs" | "ecmascript";
   regex: () => RegExp;
   replace: {
     package?: ReplaceOptions;
@@ -36,8 +34,8 @@ const subPatches = ({
   packageNodeVersion,
 }: Versions): SubPatch[] => [
   {
-    type: 'nodejs',
-    file: '.nvmrc',
+    type: "nodejs",
+    file: ".nvmrc",
     regex: () => /.*([0-9.]+).*/gm,
     replace: {
       default: {
@@ -48,8 +46,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'nodejs',
-    files: '**/Dockerfile*',
+    type: "nodejs",
+    files: "**/Dockerfile*",
 
     regex: () =>
       /^FROM(.*) (public.ecr.aws\/docker\/library\/)?node:([0-9]+(?:\.[0-9]+(?:\.[0-9]+)?)?)(-[a-z0-9]+)?(@sha256:[a-f0-9]{64})?( .*)?$/gm,
@@ -62,8 +60,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'nodejs',
-    files: '**/Dockerfile*',
+    type: "nodejs",
+    files: "**/Dockerfile*",
     regex: () =>
       /^FROM(.*) gcr.io\/distroless\/nodejs(\d+)-debian(\d+)(@sha256:[a-f0-9]{64})?(\.[^- \n]+)?(-[^ \n]+)?( .+|)$/gm,
     replace: {
@@ -76,8 +74,8 @@ const subPatches = ({
   },
 
   {
-    type: 'nodejs',
-    files: '**/serverless*.y*ml',
+    type: "nodejs",
+    files: "**/serverless*.y*ml",
     regex: () => /\bnodejs(\d+).x\b/gm,
     replace: {
       default: {
@@ -88,8 +86,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'nodejs',
-    files: '**/serverless*.y*ml',
+    type: "nodejs",
+    files: "**/serverless*.y*ml",
     regex: () => /\bnode(\d+)\b/gm,
     replace: {
       default: {
@@ -100,8 +98,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'nodejs',
-    files: '**/__snapshots__/**/*.snap',
+    type: "nodejs",
+    files: "**/__snapshots__/**/*.snap",
     regex: () => /"Runtime":\s*"nodejs(\d+).x"/gm,
     replace: {
       default: {
@@ -112,8 +110,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'nodejs',
-    files: '**/infra/**/*.ts',
+    type: "nodejs",
+    files: "**/infra/**/*.ts",
     regex: () => /NODEJS_(\d+)_X/g,
     replace: {
       default: {
@@ -124,8 +122,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'nodejs',
-    files: '**/infra/**/*.ts',
+    type: "nodejs",
+    files: "**/infra/**/*.ts",
     regex: () => /(target:\s*'node)(\d+)(.+)$/gm,
     replace: {
       default: {
@@ -137,8 +135,8 @@ const subPatches = ({
   },
 
   {
-    type: 'nodejs',
-    files: '**/.buildkite/*',
+    type: "nodejs",
+    files: "**/.buildkite/*",
     regex: () =>
       /(image: )(public.ecr.aws\/docker\/library\/)?(node:)([0-9.]+)(\.[^- \n]+)?(-[^ \n]+)?$/gm,
     replace: {
@@ -150,8 +148,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'nodejs',
-    files: '.node-version*',
+    type: "nodejs",
+    files: ".node-version*",
     regex: () => /(\d+(?:\.\d+)*)/g,
     replace: {
       default: {
@@ -163,10 +161,9 @@ const subPatches = ({
   },
 
   {
-    type: 'nodejs',
-    files: '**/package.json',
-    regex: () =>
-      /(["']engines["']:\s*{[\s\S]*?["']node["']:\s*["']>=)(\d+(?:\.\d+)*)(['"]\s*})/gm,
+    type: "nodejs",
+    files: "**/package.json",
+    regex: () => /(["']engines["']:\s*{[\s\S]*?["']node["']:\s*["']>=)(\d+(?:\.\d+)*)(['"]\s*})/gm,
     replace: {
       package: {
         string: `$1${packageNodeVersion}$3`,
@@ -181,8 +178,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'nodejs',
-    files: '**/docker-compose*.y*ml',
+    type: "nodejs",
+    files: "**/docker-compose*.y*ml",
     regex: () =>
       /(image: )(public.ecr.aws\/docker\/library\/)?(node:)([0-9.]+)(\.[^- \n]+)?(-[^ \n]+)?$/gm,
 
@@ -195,8 +192,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'ecmascript',
-    files: '**/tsconfig*.json',
+    type: "ecmascript",
+    files: "**/tsconfig*.json",
     regex: () => /("target":\s*")(ES\d+)"/gim,
     replace: {
       package: {
@@ -212,8 +209,8 @@ const subPatches = ({
     },
   },
   {
-    type: 'ecmascript',
-    files: '**/tsconfig*.json',
+    type: "ecmascript",
+    files: "**/tsconfig*.json",
     regex: () => /("lib":\s*\[)([\S\s]*?)(ES\d+)([\S\s]*?)(\])/gim,
     replace: {
       package: {
@@ -239,7 +236,7 @@ type Versions = {
 
 const getTemplatedReplace = async (
   path: string,
-  replace: SubPatch['replace'],
+  replace: SubPatch["replace"],
 ): Promise<ReplaceOptions> => {
   if (!replace.package) {
     return replace.default;
@@ -260,7 +257,7 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
     ? [patch.file]
     : await glob(patch.files ?? [], {
         cwd: dir,
-        ignore: ['**/node_modules/**'],
+        ignore: ["**/node_modules/**"],
       });
 
   await Promise.all(
@@ -278,12 +275,7 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
 
       const templateReplace = await getTemplatedReplace(path, patch.replace);
 
-      if (
-        !lessThan(
-          regexResult[templateReplace.captureGroup] as string,
-          templateReplace.version,
-        )
-      ) {
+      if (!lessThan(regexResult[templateReplace.captureGroup] as string, templateReplace.version)) {
         return;
       }
 
@@ -298,7 +290,7 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
 };
 
 const lessThan = (versionA: string, versionB: string) => {
-  if (versionA.toLowerCase().startsWith('es')) {
+  if (versionA.toLowerCase().startsWith("es")) {
     return Number(versionA.slice(2)) < Number(versionB.slice(2));
   }
 
@@ -306,9 +298,7 @@ const lessThan = (versionA: string, versionB: string) => {
   const coersedB = coerce(versionB);
 
   if (!coersedA || !coersedB) {
-    throw new Error(
-      `Unable to coerce versions for comparison: "${versionA}" and "${versionB}"`,
-    );
+    throw new Error(`Unable to coerce versions for comparison: "${versionA}" and "${versionB}"`);
   }
 
   return lt(coersedA, coersedB);
@@ -356,7 +346,7 @@ export const nodeVersionMigration = async (
   );
 
   try {
-    await tryUpgradeInfraPackages('format', infraPackages);
+    await tryUpgradeInfraPackages("format", infraPackages);
     await upgrade(
       {
         nodeVersion,
@@ -371,7 +361,7 @@ export const nodeVersionMigration = async (
       `Upgraded project to Node.js ${nodeVersion} and package targets to Node.js ${packageNodeVersion}`,
     );
   } catch (error) {
-    log.err('Failed to upgrade');
+    log.err("Failed to upgrade");
     log.subtle(inspect(error));
     process.exitCode = 1;
   }

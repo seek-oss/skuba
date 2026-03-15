@@ -7,11 +7,11 @@ export const create =
   <U = T>(name: string, opts?: Readonly<{ default: U }>): T | U => {
     const value = process.env[name];
 
-    if (typeof value !== 'undefined') {
+    if (typeof value !== "undefined") {
       return parse(value, name);
     }
 
-    if (typeof opts !== 'undefined') {
+    if (typeof opts !== "undefined") {
       return opts.default;
     }
 

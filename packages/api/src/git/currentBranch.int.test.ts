@@ -1,12 +1,12 @@
-import git from 'isomorphic-git';
-import memfs, { vol } from 'memfs';
+import git from "isomorphic-git";
+import memfs, { vol } from "memfs";
 
-import { currentBranch } from './currentBranch.js';
+import { currentBranch } from "./currentBranch.js";
 
-jest.mock('fs', () => memfs);
+jest.mock("fs", () => memfs);
 
 // eslint-disable-next-line import-x/order
-import fs from 'fs-extra';
+import fs from "fs-extra";
 
 beforeEach(async () => {
   delete process.env.BUILDKITE_BRANCH;
@@ -16,30 +16,26 @@ beforeEach(async () => {
   vol.reset();
 
   vol.fromJSON({
-    '.git': null,
+    ".git": null,
   });
 
   await git.init({
-    dir: '.',
+    dir: ".",
     fs,
   });
 
   await git.branch({
     checkout: true,
-    dir: '.',
+    dir: ".",
     fs,
-    ref: 'develop',
+    ref: "develop",
   });
 });
 
-it('handles a Git root dir', async () => {
-  await expect(currentBranch({ dir: '.' })).resolves.toMatchInlineSnapshot(
-    `"develop"`,
-  );
+it("handles a Git root dir", async () => {
+  await expect(currentBranch({ dir: "." })).resolves.toMatchInlineSnapshot(`"develop"`);
 });
 
-it('handles a nested dir', async () => {
-  await expect(currentBranch({ dir: 'c/d' })).resolves.toMatchInlineSnapshot(
-    `"develop"`,
-  );
+it("handles a nested dir", async () => {
+  await expect(currentBranch({ dir: "c/d" })).resolves.toMatchInlineSnapshot(`"develop"`);
 });

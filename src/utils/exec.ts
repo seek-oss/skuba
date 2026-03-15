@@ -1,38 +1,34 @@
-import type { styleText } from 'node:util';
-import { cpus } from 'os';
-import stream from 'stream';
-import util from 'util';
+import type { styleText } from "node:util";
+import { cpus } from "os";
+import stream from "stream";
+import util from "util";
 
-import concurrently from 'concurrently';
-import execa, { type ExecaChildProcess } from 'execa';
-import npmRunPath from 'npm-run-path';
-import npmWhich from 'npm-which';
+import concurrently from "concurrently";
+import execa, { type ExecaChildProcess } from "execa";
+import npmRunPath from "npm-run-path";
+import npmWhich from "npm-which";
 
-import { concurrentlyErrorsSchema, isErrorWithCode } from './error.js';
-import { log } from './logging.js';
-import type { PackageManager } from './packageManager.js';
+import { concurrentlyErrorsSchema, isErrorWithCode } from "./error.js";
+import { log } from "./logging.js";
+import type { PackageManager } from "./packageManager.js";
 
 type StyleColor = Parameters<typeof styleText>[0];
 
 class YarnSpamFilter extends stream.Transform {
   silenced = false;
 
-  _transform(
-    chunk: Uint8Array,
-    _encoding: BufferEncoding,
-    callback: stream.TransformCallback,
-  ) {
+  _transform(chunk: Uint8Array, _encoding: BufferEncoding, callback: stream.TransformCallback) {
     const str = Buffer.from(chunk).toString();
 
     // Yarn spews the entire installed dependency tree after this message
-    if (str.startsWith('info Direct dependencies')) {
+    if (str.startsWith("info Direct dependencies")) {
       this.silenced = true;
     }
 
     if (
       !this.silenced &&
       // This isn't very useful given the command generates a lockfile
-      !str.startsWith('info No lockfile found')
+      !str.startsWith("info No lockfile found")
     ) {
       this.push(chunk);
     }
@@ -42,15 +38,11 @@ class YarnSpamFilter extends stream.Transform {
 }
 
 class YarnWarningFilter extends stream.Transform {
-  _transform(
-    chunk: Uint8Array,
-    _encoding: BufferEncoding,
-    callback: stream.TransformCallback,
-  ) {
+  _transform(chunk: Uint8Array, _encoding: BufferEncoding, callback: stream.TransformCallback) {
     const str = Buffer.from(chunk).toString();
 
     // Filter out annoying deprecation warnings that users can do little about
-    if (!str.startsWith('warning skuba >')) {
+    if (!str.startsWith("warning skuba >")) {
       this.push(chunk);
     }
 
@@ -58,10 +50,7 @@ class YarnWarningFilter extends stream.Transform {
   }
 }
 
-export type Exec = (
-  command: string,
-  ...args: string[]
-) => ExecaChildProcess<string>;
+export type Exec = (command: string, ...args: string[]) => ExecaChildProcess<string>;
 
 interface ExecConcurrentlyCommand {
   command: string;
@@ -102,12 +91,12 @@ const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
   const subprocess = execa(command, args, {
     localDir: __dirname,
     preferLocal: true,
-    stdio: 'inherit',
+    stdio: "inherit",
     ...opts,
   });
 
   switch (opts?.streamStdio) {
-    case 'yarn':
+    case "yarn":
       const stderrFilter = new YarnWarningFilter();
       const stdoutFilter = new YarnSpamFilter();
 
@@ -116,7 +105,7 @@ const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
 
       break;
 
-    case 'pnpm':
+    case "pnpm":
     case true:
       subprocess.stderr?.pipe(process.stderr);
       subprocess.stdout?.pipe(process.stdout);
@@ -143,11 +132,7 @@ export const execConcurrently = async (
   { maxProcesses, nameLength, outputStream }: ExecConcurrentlyOptions = {},
 ) => {
   const maxNameLength =
-    nameLength ??
-    commands.reduce(
-      (length, command) => Math.max(length, command.name.length),
-      0,
-    );
+    nameLength ?? commands.reduce((length, command) => Math.max(length, command.name.length), 0);
 
   try {
     await concurrently(
@@ -163,7 +148,7 @@ export const execConcurrently = async (
         outputStream,
 
         // Use a minimalist logging prefix.
-        prefix: '{name} │',
+        prefix: "{name} │",
       },
     ).result;
   } catch (err) {
@@ -178,11 +163,7 @@ export const execConcurrently = async (
       .sort(({ index: indexA }, { index: indexB }) => indexA - indexB)
       .map((subprocess) => subprocess.command.name);
 
-    throw Error(
-      `${failed.join(', ')} subprocess${
-        failed.length === 1 ? '' : 'es'
-      } failed.`,
-    );
+    throw Error(`${failed.join(", ")} subprocess${failed.length === 1 ? "" : "es"} failed.`);
   }
 };
 
@@ -196,7 +177,7 @@ export const ensureCommands = async (...names: string[]) => {
       if (!result) {
         success = false;
 
-        log.err(log.bold(name), 'needs to be installed.');
+        log.err(log.bold(name), "needs to be installed.");
       }
     }),
   );
@@ -212,7 +193,7 @@ export const hasCommand = async (name: string) => {
 
     return true;
   } catch (err) {
-    if (isErrorWithCode(err, 'ENOENT')) {
+    if (isErrorWithCode(err, "ENOENT")) {
       return false;
     }
 

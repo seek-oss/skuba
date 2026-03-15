@@ -1,14 +1,14 @@
-import memfs, { vol } from 'memfs';
+import memfs, { vol } from "memfs";
 
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import { configForPackageManager } from "../../../../../../utils/packageManager.js";
+import type { PatchConfig, PatchReturnType } from "../../index.js";
 
-import { patchBuildConfig } from './patchBuildTsconfig.js';
+import { patchBuildConfig } from "./patchBuildTsconfig.js";
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
+jest.mock("fs-extra", () => memfs);
+jest.mock("fast-glob", () => ({
   glob: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+    jest.requireActual("fast-glob").glob(pat, { ...opts, fs: memfs }),
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
@@ -21,31 +21,31 @@ beforeEach(() => {
 const baseArgs: PatchConfig = {
   manifest: {
     packageJson: {
-      name: 'test',
-      version: '1.0.0',
-      readme: 'README.md',
-      _id: 'test',
+      name: "test",
+      version: "1.0.0",
+      readme: "README.md",
+      _id: "test",
     },
-    path: 'package.json',
+    path: "package.json",
   },
-  packageManager: configForPackageManager('yarn'),
-  mode: 'format',
+  packageManager: configForPackageManager("yarn"),
+  mode: "format",
 };
 
-describe('patchBuildTsconfig', () => {
-  it('skips if no tsconfig.build.json files are found', async () => {
+describe("patchBuildTsconfig", () => {
+  it("skips if no tsconfig.build.json files are found", async () => {
     const result = await patchBuildConfig(baseArgs);
 
     expect(result).toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no tsconfig.build.json files found',
+      result: "skip",
+      reason: "no tsconfig.build.json files found",
     });
   });
 
-  it('skips if tsconfig.build.json files already have rootDir', async () => {
+  it("skips if tsconfig.build.json files already have rootDir", async () => {
     vol.fromJSON(
       {
-        'tsconfig.build.json': `{
+        "tsconfig.build.json": `{
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -53,7 +53,7 @@ describe('patchBuildTsconfig', () => {
   }
 }
 `,
-        'packages/api/tsconfig.build.json': `{
+        "packages/api/tsconfig.build.json": `{
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -66,22 +66,22 @@ describe('patchBuildTsconfig', () => {
     const result = await patchBuildConfig(baseArgs);
 
     expect(result).toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no tsconfig.build.json files to patch',
+      result: "skip",
+      reason: "no tsconfig.build.json files to patch",
     });
   });
 
   it("adds 'rootDir' to tsconfig.build.json compilerOptions", async () => {
     vol.fromJSON(
       {
-        'tsconfig.build.json': `{
+        "tsconfig.build.json": `{
   "compilerOptions": {
     "outDir": "dist",
     "target": "ES2020"
   }
 }
 `,
-        'packages/api/tsconfig.build.json': `{
+        "packages/api/tsconfig.build.json": `{
   "compilerOptions": {
     "outDir": "dist",
     "target": "ES2020"
@@ -93,11 +93,11 @@ describe('patchBuildTsconfig', () => {
     const result = await patchBuildConfig(baseArgs);
 
     expect(result).toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toEqual({
-      'tsconfig.build.json': `{
+      "tsconfig.build.json": `{
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "dist",
@@ -105,7 +105,7 @@ describe('patchBuildTsconfig', () => {
   }
 }
 `,
-      'packages/api/tsconfig.build.json': `{
+      "packages/api/tsconfig.build.json": `{
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "dist",
@@ -115,10 +115,10 @@ describe('patchBuildTsconfig', () => {
     });
   });
 
-  it('handles tsconfig.build.json with no compilerOptions', async () => {
+  it("handles tsconfig.build.json with no compilerOptions", async () => {
     vol.fromJSON(
       {
-        'tsconfig.build.json': `{
+        "tsconfig.build.json": `{
   "extends": "./tsconfig.json",
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
@@ -130,11 +130,11 @@ describe('patchBuildTsconfig', () => {
     const result = await patchBuildConfig(baseArgs);
 
     expect(result).toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toEqual({
-      'tsconfig.build.json': `{
+      "tsconfig.build.json": `{
   "compilerOptions": {
     "rootDir": "./src"
   },

@@ -1,18 +1,14 @@
-import { defaultOpts, executeModule } from '../testing/module.js';
+import { defaultOpts, executeModule } from "../testing/module.js";
 
-import { tslintModule } from './tslint.js';
+import { tslintModule } from "./tslint.js";
 
-describe('tslintModule', () => {
-  it('works from scratch', async () => {
+describe("tslintModule", () => {
+  it("works from scratch", async () => {
     const inputFiles = {};
 
-    const outputFiles = await executeModule(
-      tslintModule,
-      inputFiles,
-      defaultOpts,
-    );
+    const outputFiles = await executeModule(tslintModule, inputFiles, defaultOpts);
 
-    expect(outputFiles['tslint.json']).toBeUndefined();
-    expect(outputFiles['tslint.yaml']).toBeUndefined();
+    expect(outputFiles["tslint.json"]).toBeUndefined();
+    expect(outputFiles["tslint.yaml"]).toBeUndefined();
   });
 });

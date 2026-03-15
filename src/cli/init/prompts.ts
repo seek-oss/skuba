@@ -1,7 +1,7 @@
-import { input, select } from '@inquirer/prompts';
+import { input, select } from "@inquirer/prompts";
 
-import { pathExists } from '../../utils/fs.js';
-import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
+import { pathExists } from "../../utils/fs.js";
+import { TEMPLATE_NAMES_WITH_BYO } from "../../utils/template.js";
 
 import {
   PLATFORM_OPTIONS,
@@ -10,7 +10,7 @@ import {
   isGitHubRepo,
   isGitHubTeam,
   isPlatform,
-} from './validation.js';
+} from "./validation.js";
 
 export interface Choice {
   name: string;
@@ -25,47 +25,40 @@ export interface Choice {
   allowInitial?: boolean;
 }
 
-export type BaseFields = Record<
-  (typeof BASE_CHOICES)[number]['name'],
-  string
-> & {
+export type BaseFields = Record<(typeof BASE_CHOICES)[number]["name"], string> & {
   platformName: Platform;
 };
 
 const BASE_CHOICES = [
   {
-    name: 'ownerName',
-    message: 'Owner',
-    initial: 'SEEK-Jobs/my-team',
+    name: "ownerName",
+    message: "Owner",
+    initial: "SEEK-Jobs/my-team",
     validate: (value: unknown) => {
-      if (typeof value !== 'string') {
-        return 'Required';
+      if (typeof value !== "string") {
+        return "Required";
       }
 
-      const [org, team] = value.split('/');
+      const [org, team] = value.split("/");
 
       if (!org || !isGitHubOrg(org)) {
-        return 'Must contain a valid GitHub org name';
+        return "Must contain a valid GitHub org name";
       }
 
-      return (
-        team === undefined ||
-        isGitHubTeam(team) ||
-        'Must contain a valid GitHub team name'
-      );
+      return team === undefined || isGitHubTeam(team) || "Must contain a valid GitHub team name";
     },
   },
   {
-    name: 'repoName',
-    message: 'Repo',
-    initial: 'my-repo',
+    name: "repoName",
+    message: "Repo",
+    initial: "my-repo",
     validate: async (value: unknown) => {
-      if (typeof value !== 'string') {
-        return 'Required';
+      if (typeof value !== "string") {
+        return "Required";
       }
 
       if (!isGitHubRepo(value)) {
-        return 'Must be a valid GitHub repo name';
+        return "Must be a valid GitHub repo name";
       }
 
       const exists = await pathExists(value);
@@ -74,55 +67,52 @@ const BASE_CHOICES = [
     },
   },
   {
-    name: 'platformName',
-    message: 'Platform',
-    initial: 'arm64',
+    name: "platformName",
+    message: "Platform",
+    initial: "arm64",
     allowInitial: true,
-    validate: (value: unknown) =>
-      isPlatform(value) || `Must be ${PLATFORM_OPTIONS}`,
+    validate: (value: unknown) => isPlatform(value) || `Must be ${PLATFORM_OPTIONS}`,
   },
   {
-    name: 'defaultBranch',
-    message: 'Default Branch',
-    initial: 'main',
+    name: "defaultBranch",
+    message: "Default Branch",
+    initial: "main",
     allowInitial: true,
     validate: (value: unknown) =>
-      typeof value === 'string' && value.length > 0 ? true : 'Required',
+      typeof value === "string" && value.length > 0 ? true : "Required",
   },
 ] as const;
 
 export const BASE_PROMPT_PROPS = {
   choices: BASE_CHOICES,
-  message: 'For starters, some project details:',
-  name: 'baseAnswers',
+  message: "For starters, some project details:",
+  name: "baseAnswers",
 };
 
 export const shouldContinue = async () =>
   select({
-    message: 'Fill this in now?',
+    message: "Fill this in now?",
     choices: [
-      { name: 'Yes', value: 'yes' },
-      { name: 'No', value: 'no' },
+      { name: "Yes", value: "yes" },
+      { name: "No", value: "no" },
     ],
   });
 
 export const getGitPath = async () =>
   input({
-    message: 'Git path',
-    default: 'seek-oss/skuba',
-    validate: (value: string) =>
-      /[^/]+\/[^/]+/.test(value) || 'Must be a valid path',
+    message: "Git path",
+    default: "seek-oss/skuba",
+    validate: (value: string) => /[^/]+\/[^/]+/.test(value) || "Must be a valid path",
   });
 
 export const getTemplateName = async () =>
   select({
-    message: 'Select a template:',
+    message: "Select a template:",
     choices: TEMPLATE_NAMES_WITH_BYO.map((name) => ({ name, value: name })),
   });
 
 export const getPrivateTemplateName = async () =>
   input({
-    message: 'Private SEEK template name',
-    validate: (value: string) =>
-      value.length > 0 || 'Must be a valid template name',
+    message: "Private SEEK template name",
+    validate: (value: string) => value.length > 0 || "Must be a valid template name",
   });

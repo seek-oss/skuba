@@ -25,9 +25,9 @@ but consider a proper validation library with richer error handling and reportin
 [typescript assertion functions]: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
 
 ```typescript
-import { Assert } from 'skuba-dive';
+import { Assert } from "skuba-dive";
 
-it('should think of a good test case name', () => {
+it("should think of a good test case name", () => {
   const result = numberOrNull();
   // result is number | null
 
@@ -43,22 +43,22 @@ Functions for reading values out of environment variables.
 For example, in your `/src/config.ts`:
 
 ```typescript
-import { Env } from 'skuba-dive';
+import { Env } from "skuba-dive";
 
-const ENVIRONMENTS = ['dev', 'prod'] as const;
+const ENVIRONMENTS = ["dev", "prod"] as const;
 
 export type Environment = (typeof ENVIRONMENTS)[number];
 
-export const environment = Env.oneOf(ENVIRONMENTS)('ENVIRONMENT');
+export const environment = Env.oneOf(ENVIRONMENTS)("ENVIRONMENT");
 // 'dev' | 'prod'
 
-export const port = Env.nonNegativeInteger('PORT', { default: undefined });
+export const port = Env.nonNegativeInteger("PORT", { default: undefined });
 // number | undefined
 
-export const version = Env.string('VERSION', { default: 'local' });
+export const version = Env.string("VERSION", { default: "local" });
 // string | 'local'
 
-export const flag = Env.boolean('FLAG');
+export const flag = Env.boolean("FLAG");
 // boolean
 ```
 

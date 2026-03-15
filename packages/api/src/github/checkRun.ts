@@ -1,16 +1,16 @@
-import type { Endpoints } from '@octokit/types';
+import type { Endpoints } from "@octokit/types";
 
-import { pluralise } from '../../../../src/utils/logging.js';
-import * as Git from '../git/index.js';
+import { pluralise } from "../../../../src/utils/logging.js";
+import * as Git from "../git/index.js";
 
-import { apiTokenFromEnvironment } from './environment.js';
-import { createRestClient } from './octokit.js';
+import { apiTokenFromEnvironment } from "./environment.js";
+import { createRestClient } from "./octokit.js";
 
 type Output = NonNullable<
-  Endpoints['PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}']['parameters']['output']
+  Endpoints["PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}"]["parameters"]["output"]
 >;
 
-export type Annotation = NonNullable<Output['annotations']>[number];
+export type Annotation = NonNullable<Output["annotations"]>[number];
 
 const GITHUB_MAX_ANNOTATIONS = 50;
 
@@ -23,20 +23,15 @@ const GITHUB_MAX_ANNOTATIONS = 50;
  */
 const suffixTitle = (title: string, inputAnnotations: number): string => {
   const addedAnnotations =
-    inputAnnotations > GITHUB_MAX_ANNOTATIONS
-      ? GITHUB_MAX_ANNOTATIONS
-      : inputAnnotations;
+    inputAnnotations > GITHUB_MAX_ANNOTATIONS ? GITHUB_MAX_ANNOTATIONS : inputAnnotations;
 
-  return `${title} (${pluralise(addedAnnotations, 'annotation')} added)`;
+  return `${title} (${pluralise(addedAnnotations, "annotation")} added)`;
 };
 
 /**
  * Enriches the summary with more context about the check run.
  */
-const createEnrichedSummary = (
-  summary: string,
-  inputAnnotations: number,
-): string =>
+const createEnrichedSummary = (summary: string, inputAnnotations: number): string =>
   [
     summary,
     ...(inputAnnotations > GITHUB_MAX_ANNOTATIONS
@@ -44,7 +39,7 @@ const createEnrichedSummary = (
           `${inputAnnotations} annotations were provided, but only the first ${GITHUB_MAX_ANNOTATIONS} are visible in GitHub.`,
         ]
       : []),
-  ].join('\n\n');
+  ].join("\n\n");
 
 /**
  * {@link https://docs.github.com/en/rest/reference/checks#create-a-check-run}
@@ -60,7 +55,7 @@ interface CreateCheckRunParameters {
   /**
    * The final conclusion of the check.
    */
-  conclusion: 'failure' | 'success';
+  conclusion: "failure" | "success";
 
   /**
    * The name of the check. For example, "code-coverage".

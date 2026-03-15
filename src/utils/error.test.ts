@@ -1,10 +1,10 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import { createTerseError } from './error.js';
+import { createTerseError } from "./error.js";
 
-describe('createTerseError', () => {
-  it('creates a terse error for `util.inspect`', () => {
-    const message = 'Badness!';
+describe("createTerseError", () => {
+  it("creates a terse error for `util.inspect`", () => {
+    const message = "Badness!";
 
     const err = createTerseError(message);
 

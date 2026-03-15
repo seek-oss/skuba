@@ -1,6 +1,6 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
+import fs from "fs-extra";
 import {
   type Options,
   type SupportLanguage,
@@ -8,15 +8,12 @@ import {
   format,
   getSupportInfo,
   resolveConfig,
-} from 'prettier';
+} from "prettier";
 
-import { crawlDirectory } from '../../utils/dir.js';
-import { type Logger, pluralise } from '../../utils/logging.js';
-import { getConsumerManifest } from '../../utils/manifest.js';
-import {
-  formatPackage,
-  parsePackage,
-} from '../configure/processing/package.js';
+import { crawlDirectory } from "../../utils/dir.js";
+import { type Logger, pluralise } from "../../utils/logging.js";
+import { getConsumerManifest } from "../../utils/manifest.js";
+import { formatPackage, parsePackage } from "../configure/processing/package.js";
 
 let languages: SupportLanguage[] | undefined;
 
@@ -40,9 +37,7 @@ let languages: SupportLanguage[] | undefined;
  * - https://github.com/prettier/prettier/blob/2.4.1/src/main/options.js#L167
  * - seek-oss/skuba#659
  */
-export const inferParser = async (
-  filepath: string,
-): Promise<string | undefined> => {
+export const inferParser = async (filepath: string): Promise<string | undefined> => {
   const filename = path.basename(filepath).toLowerCase();
 
   languages ??= (await getSupportInfo()).languages;
@@ -63,7 +58,7 @@ const isPackageJsonOk = async ({
   data: string;
   filepath: string;
 }): Promise<boolean> => {
-  if (path.basename(filepath) !== 'package.json') {
+  if (path.basename(filepath) !== "package.json") {
     return true;
   }
 
@@ -93,15 +88,13 @@ interface Result {
 
 export const formatOrLintFile = async (
   { data, filepath, options }: File,
-  mode: 'format' | 'lint',
+  mode: "format" | "lint",
   result: Result | null,
 ): Promise<string | undefined> => {
-  if (mode === 'lint') {
+  if (mode === "lint") {
     let ok: boolean;
     try {
-      ok =
-        (await check(data, options)) &&
-        (await isPackageJsonOk({ data, filepath }));
+      ok = (await check(data, options)) && (await isPackageJsonOk({ data, filepath }));
     } catch (err) {
       result?.errored.push({ err, filepath });
       return;
@@ -124,7 +117,7 @@ export const formatOrLintFile = async (
 
   // Perform additional formatting (i.e. sorting) on a `package.json` manifest.
   try {
-    if (path.basename(filepath) === 'package.json') {
+    if (path.basename(filepath) === "package.json") {
       const packageJson = parsePackage(formatted);
       if (packageJson) {
         formatted = await formatPackage(packageJson);
@@ -156,11 +149,11 @@ export interface PrettierOutput {
  * on progress and results.
  */
 export const runPrettier = async (
-  mode: 'format' | 'lint',
+  mode: "format" | "lint",
   logger: Logger,
   cwd = process.cwd(),
 ): Promise<PrettierOutput> => {
-  logger.debug('Initialising Prettier...');
+  logger.debug("Initialising Prettier...");
 
   const start = process.hrtime.bigint();
 
@@ -168,23 +161,17 @@ export const runPrettier = async (
 
   const directory = manifest ? path.dirname(manifest.path) : cwd;
 
-  logger.debug(
-    manifest ? 'Detected project root:' : 'Detected working directory:',
-    directory,
-  );
+  logger.debug(manifest ? "Detected project root:" : "Detected working directory:", directory);
 
-  logger.debug('Discovering files...');
+  logger.debug("Discovering files...");
 
   // Match Prettier's opinion of respecting `.gitignore`.
   // This avoids exhibiting different behaviour than a Prettier IDE integration,
   // though it may present headaches if `.gitignore` and `.prettierignore` rules
   // conflict.
-  const relativeFilepaths = await crawlDirectory(directory, [
-    '.gitignore',
-    '.prettierignore',
-  ]);
+  const relativeFilepaths = await crawlDirectory(directory, [".gitignore", ".prettierignore"]);
 
-  logger.debug(`Discovered ${pluralise(relativeFilepaths.length, 'file')}.`);
+  logger.debug(`Discovered ${pluralise(relativeFilepaths.length, "file")}.`);
 
   const result: Result = {
     count: relativeFilepaths.length,
@@ -193,21 +180,18 @@ export const runPrettier = async (
     unparsed: [],
   };
 
-  logger.debug(mode === 'format' ? 'Formatting' : 'Linting', 'files...');
+  logger.debug(mode === "format" ? "Formatting" : "Linting", "files...");
 
   for (const relativeFilepath of relativeFilepaths) {
     // Use relative paths to keep log output cleaner, particularly in the common
     // case where we are executing against the current working directory.
-    const filepath = path.relative(
-      process.cwd(),
-      path.join(directory, relativeFilepath),
-    );
+    const filepath = path.relative(process.cwd(), path.join(directory, relativeFilepath));
 
     // Infer parser upfront so we can skip unsupported files.
     const parser = await inferParser(filepath);
 
     logger.debug(filepath);
-    logger.debug('  parser:', parser ?? '-');
+    logger.debug("  parser:", parser ?? "-");
 
     if (!parser) {
       result.unparsed.push(filepath);
@@ -216,7 +200,7 @@ export const runPrettier = async (
 
     const [config, data] = await Promise.all([
       resolveConfig(filepath),
-      fs.promises.readFile(filepath, 'utf-8'),
+      fs.promises.readFile(filepath, "utf-8"),
     ]);
 
     const file: File = {
@@ -227,7 +211,7 @@ export const runPrettier = async (
 
     const formatted = await formatOrLintFile(file, mode, result);
 
-    if (typeof formatted === 'string') {
+    if (typeof formatted === "string") {
       await fs.promises.writeFile(filepath, formatted);
     }
   }
@@ -237,25 +221,23 @@ export const runPrettier = async (
   logger.plain(
     `Processed ${pluralise(
       result.count - result.unparsed.length,
-      'file',
+      "file",
     )} in ${logger.timing(start, end)}.`,
   );
 
   if (result.touched.length) {
-    logger.plain(`Formatted ${pluralise(result.touched.length, 'file')}:`);
+    logger.plain(`Formatted ${pluralise(result.touched.length, "file")}:`);
     for (const filepath of result.touched) {
       logger.warn(filepath);
     }
   }
 
   if (result.errored.length) {
-    logger.plain(`Flagged ${pluralise(result.errored.length, 'file')}:`);
+    logger.plain(`Flagged ${pluralise(result.errored.length, "file")}:`);
     for (const { err, filepath } of result.errored) {
       logger.warn(
         filepath,
-        ...(typeof err === 'string' || err instanceof Error
-          ? [String(err)]
-          : []),
+        ...(typeof err === "string" || err instanceof Error ? [String(err)] : []),
       );
     }
   }

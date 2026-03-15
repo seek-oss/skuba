@@ -1,13 +1,13 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
-import ignore from 'ignore';
-import picomatch from 'picomatch';
+import fs from "fs-extra";
+import ignore from "ignore";
+import picomatch from "picomatch";
 
-import { isErrorWithCode } from './error.js';
-import { pathExists } from './fs.js';
+import { isErrorWithCode } from "./error.js";
+import { pathExists } from "./fs.js";
 
-import * as Git from '@skuba-lib/api/git';
+import * as Git from "@skuba-lib/api/git";
 
 /**
  * Build a map that associates each glob pattern with its matching filepaths.
@@ -36,23 +36,17 @@ export const buildPatternToFilepathMap = (
  * - `.git` subdirectories
  * - `node_modules` subdirectories
  */
-export const crawlDirectory = async (
-  root: string,
-  ignoreFilenames = ['.gitignore'],
-) => {
+export const crawlDirectory = async (root: string, ignoreFilenames = [".gitignore"]) => {
   const ignoreFileFilter = await createInclusionFilter(
     ignoreFilenames.map((ignoreFilename) => path.join(root, ignoreFilename)),
   );
 
   const absoluteFilenames = await crawl(root, {
-    includeDirName: (dirname) => !['.git', 'node_modules'].includes(dirname),
-    includeFilePath: (pathname) =>
-      ignoreFileFilter(path.relative(root, pathname)),
+    includeDirName: (dirname) => ![".git", "node_modules"].includes(dirname),
+    includeFilePath: (pathname) => ignoreFileFilter(path.relative(root, pathname)),
   });
 
-  const relativeFilepaths = absoluteFilenames.map((filepath) =>
-    path.relative(root, filepath),
-  );
+  const relativeFilepaths = absoluteFilenames.map((filepath) => path.relative(root, filepath));
 
   return relativeFilepaths;
 };
@@ -65,9 +59,9 @@ export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
   const ignoreFiles = await Promise.all(
     ignoreFilepaths.map(async (ignoreFilepath) => {
       try {
-        return await fs.promises.readFile(ignoreFilepath, 'utf8');
+        return await fs.promises.readFile(ignoreFilepath, "utf8");
       } catch (err) {
-        if (isErrorWithCode(err, 'ENOENT')) {
+        if (isErrorWithCode(err, "ENOENT")) {
           return;
         }
 
@@ -77,10 +71,10 @@ export const createInclusionFilter = async (ignoreFilepaths: string[]) => {
   );
 
   const managers = ignoreFiles
-    .filter((value): value is string => typeof value === 'string')
+    .filter((value): value is string => typeof value === "string")
     .map((value) => ignore().add(value));
 
-  return ignore().add('.git').add(managers).createFilter();
+  return ignore().add(".git").add(managers).createFilter();
 };
 
 /**
@@ -104,10 +98,7 @@ async function crawl(
       entries.map(async (entry) => {
         const fullPath = path.join(directoryPath, entry.name);
 
-        if (
-          (entry.isFile() || entry.isSymbolicLink()) &&
-          filters.includeFilePath(fullPath)
-        ) {
+        if ((entry.isFile() || entry.isSymbolicLink()) && filters.includeFilePath(fullPath)) {
           paths.push(fullPath);
         }
 
@@ -123,13 +114,7 @@ async function crawl(
   return paths;
 }
 
-export const locateNearestFile = async ({
-  cwd,
-  filename,
-}: {
-  cwd: string;
-  filename: string;
-}) => {
+export const locateNearestFile = async ({ cwd, filename }: { cwd: string; filename: string }) => {
   let currentDir = cwd;
   while (currentDir !== path.dirname(currentDir)) {
     const filePath = path.join(currentDir, filename);
@@ -142,13 +127,7 @@ export const locateNearestFile = async ({
   return null;
 };
 
-export const locateFurthestFile = async ({
-  cwd,
-  filename,
-}: {
-  cwd: string;
-  filename: string;
-}) => {
+export const locateFurthestFile = async ({ cwd, filename }: { cwd: string; filename: string }) => {
   let currentDir = cwd;
   let furthestFilePath: string | null = null;
 
@@ -165,14 +144,12 @@ export const locateFurthestFile = async ({
 
 const workspaceRootCache: Record<string, string | null> = {};
 
-export const findWorkspaceRoot = async (
-  cwd = process.cwd(),
-): Promise<string | null> => {
+export const findWorkspaceRoot = async (cwd = process.cwd()): Promise<string | null> => {
   const find = async (): Promise<string | null> => {
     const [pnpmLock, yarnLock, packageJson, gitRoot] = await Promise.all([
-      locateNearestFile({ cwd, filename: 'pnpm-lock.yaml' }),
-      locateNearestFile({ cwd, filename: 'yarn.lock' }),
-      locateFurthestFile({ cwd, filename: 'package.json' }),
+      locateNearestFile({ cwd, filename: "pnpm-lock.yaml" }),
+      locateNearestFile({ cwd, filename: "yarn.lock" }),
+      locateFurthestFile({ cwd, filename: "package.json" }),
       Git.findRoot({ dir: cwd }),
     ]);
 
@@ -206,7 +183,7 @@ export const findCurrentWorkspaceProjectRoot = async (
 ): Promise<string | null> => {
   const packageJson = await locateNearestFile({
     cwd,
-    filename: 'package.json',
+    filename: "package.json",
   });
   return packageJson ? path.dirname(packageJson) : null;
 };

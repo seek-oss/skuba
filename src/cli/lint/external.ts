@@ -1,12 +1,9 @@
-import stream from 'stream';
+import stream from "stream";
 
-import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint.js';
-import {
-  runPrettierInCurrentThread,
-  runPrettierInWorkerThread,
-} from './prettier.js';
-import { runTscInNewProcess } from './tsc.js';
-import type { Input } from './types.js';
+import { runESLintInCurrentThread, runESLintInWorkerThread } from "./eslint.js";
+import { runOxfmtInCurrentThread, runOxfmtInWorkerThread } from "./oxfmt.js";
+import { runTscInNewProcess } from "./tsc.js";
+import type { Input } from "./types.js";
 
 const tscPrefixRegex = /^(.*?tsc\s+│.*?\s)/gm;
 
@@ -14,14 +11,10 @@ export class StreamInterceptor extends stream.Transform {
   private chunks: Uint8Array[] = [];
 
   public output() {
-    return Buffer.concat(this.chunks).toString().replace(tscPrefixRegex, '');
+    return Buffer.concat(this.chunks).toString().replace(tscPrefixRegex, "");
   }
 
-  _transform(
-    chunk: Uint8Array,
-    _encoding: BufferEncoding,
-    callback: stream.TransformCallback,
-  ) {
+  _transform(chunk: Uint8Array, _encoding: BufferEncoding, callback: stream.TransformCallback) {
     this.chunks.push(chunk);
 
     callback(null, chunk);
@@ -29,13 +22,13 @@ export class StreamInterceptor extends stream.Transform {
 }
 
 const lintConcurrently = async ({ tscOutputStream, ...input }: Input) => {
-  const [eslint, prettier, tscOk] = await Promise.all([
+  const [eslint, oxfmt, tscOk] = await Promise.all([
     runESLintInWorkerThread(input),
-    runPrettierInWorkerThread(input),
+    runOxfmtInWorkerThread(input),
     runTscInNewProcess({ ...input, tscOutputStream }),
   ]);
 
-  return { eslint, prettier, tscOk };
+  return { eslint, oxfmt, tscOk };
 };
 
 /**
@@ -47,18 +40,18 @@ const lintConcurrently = async ({ tscOutputStream, ...input }: Input) => {
  */
 const lintSerially = async ({ tscOutputStream, ...input }: Input) => {
   const eslint = await runESLintInWorkerThread(input);
-  const prettier = await runPrettierInWorkerThread(input);
+  const oxfmt = await runOxfmtInWorkerThread(input);
   const tscOk = await runTscInNewProcess({ ...input, tscOutputStream });
 
-  return { eslint, prettier, tscOk };
+  return { eslint, oxfmt, tscOk };
 };
 
 const lintSeriallyWithoutWorkerThreads = async (input: Input) => {
   const eslint = await runESLintInCurrentThread(input);
-  const prettier = await runPrettierInCurrentThread(input);
+  const oxfmt = await runOxfmtInCurrentThread(input);
   const tscOk = await runTscInNewProcess(input);
 
-  return { eslint, prettier, tscOk };
+  return { eslint, oxfmt, tscOk };
 };
 
 const selectLintFunction = (input: Input) => {
@@ -78,11 +71,11 @@ export const externalLint = async (input: Input) => {
   const tscOutputStream = new StreamInterceptor();
   tscOutputStream.pipe(input.tscOutputStream ?? process.stdout);
 
-  const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
+  const { eslint, oxfmt, tscOk } = await lint({ ...input, tscOutputStream });
 
   return {
     eslint,
-    prettier,
+    oxfmt,
     tscOk,
     tscOutputStream,
   };

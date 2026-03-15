@@ -1,10 +1,8 @@
-import type { ESLintOutput } from '../../../adapter/eslint.js';
+import type { ESLintOutput } from "../../../adapter/eslint.js";
 
-import type * as GitHub from '@skuba-lib/api/github';
+import type * as GitHub from "@skuba-lib/api/github";
 
-export const createEslintAnnotations = (
-  eslint: ESLintOutput,
-): GitHub.Annotation[] =>
+export const createEslintAnnotations = (eslint: ESLintOutput): GitHub.Annotation[] =>
   [...eslint.errors, ...eslint.warnings].flatMap<GitHub.Annotation>((result) =>
     result.messages.map((message): GitHub.Annotation => {
       // Annotations only support start_column and end_column on the same line.
@@ -13,14 +11,14 @@ export const createEslintAnnotations = (
       const endColumn = (isSameLine && message.endColumn) || startColumn;
 
       return {
-        annotation_level: message.severity === 2 ? 'failure' : 'warning',
+        annotation_level: message.severity === 2 ? "failure" : "warning",
         start_line: message.line ?? 1,
         end_line: message.endLine ?? message.line ?? 1,
         ...(startColumn && { start_column: startColumn }),
         ...(endColumn && { end_column: endColumn }),
         message: message.message,
         path: result.filePath,
-        title: `ESLint${message.ruleId ? ` (${message.ruleId})` : ''}`,
+        title: `ESLint${message.ruleId ? ` (${message.ruleId})` : ""}`,
       };
     }),
   );

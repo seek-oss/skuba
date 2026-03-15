@@ -1,7 +1,7 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
+import fs from "fs-extra";
+import git from "isomorphic-git";
 
 export const isFileGitIgnored = ({
   absolutePath,

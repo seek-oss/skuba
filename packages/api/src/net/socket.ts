@@ -1,4 +1,4 @@
-import net from 'net';
+import net from "net";
 
 export interface SocketAddress {
   host: string;
@@ -18,8 +18,8 @@ const trySocket = async (host: string, port: number) =>
 
     socket
       .connect(port, host, onSuccess)
-      .once('error', onFailure)
-      .once('timeout', onFailure)
+      .once("error", onFailure)
+      .once("timeout", onFailure)
       .setTimeout(1_000);
   });
 

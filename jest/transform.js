@@ -1,9 +1,9 @@
-const { defaults } = require('ts-jest/presets');
-const { ModuleResolutionKind } = require('typescript');
+const { defaults } = require("ts-jest/presets");
+const { ModuleResolutionKind } = require("typescript");
 
-const { tryParseTsConfig } = require('./tsConfig');
+const { tryParseTsConfig } = require("./tsConfig");
 
-const TS_JEST_NAME = 'ts-jest';
+const TS_JEST_NAME = "ts-jest";
 
 /**
  * Resolved path of the `ts-jest` preset.
@@ -29,10 +29,8 @@ const BROKEN_MODULE_RESOLUTIONS = new Set([
  *
  * https://github.com/kulshekhar/ts-jest/issues/4198
  */
-const tsconfig = BROKEN_MODULE_RESOLUTIONS.has(
-  maybeTsConfig?.options.moduleResolution,
-)
-  ? { tsconfig: { moduleResolution: 'Node' } }
+const tsconfig = BROKEN_MODULE_RESOLUTIONS.has(maybeTsConfig?.options.moduleResolution)
+  ? { tsconfig: { moduleResolution: "Node" } }
   : undefined;
 
 /**
@@ -42,7 +40,7 @@ const tsconfig = BROKEN_MODULE_RESOLUTIONS.has(
  */
 module.exports.transform = Object.fromEntries(
   Object.entries(defaults.transform).map(([key, value]) => {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       return [key, value === TS_JEST_NAME ? [TS_JEST_PATH, tsconfig] : value];
     }
 

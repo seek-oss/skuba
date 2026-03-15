@@ -1,29 +1,26 @@
-import picomatch from 'picomatch';
+import picomatch from "picomatch";
 
-import {
-  DEFAULT_PACKAGE_MANAGER,
-  configForPackageManager,
-} from '../../../utils/packageManager.js';
-import type { Files, Module, Options } from '../types.js';
+import { DEFAULT_PACKAGE_MANAGER, configForPackageManager } from "../../../utils/packageManager.js";
+import type { Files, Module, Options } from "../types.js";
 
 export function assertDefined<T>(value?: T): asserts value is T {
   expect(value).toBeDefined();
 }
 
 export const defaultOpts: Options = {
-  destinationRoot: '/tmp',
-  entryPoint: 'src/app.ts',
+  destinationRoot: "/tmp",
+  entryPoint: "src/app.ts",
   firstRun: true,
   packageManager: configForPackageManager(DEFAULT_PACKAGE_MANAGER),
-  type: 'application',
+  type: "application",
 };
 
 export const defaultPackageOpts: Options = {
-  destinationRoot: '/tmp',
-  entryPoint: 'src/index.ts',
+  destinationRoot: "/tmp",
+  entryPoint: "src/index.ts",
   firstRun: true,
   packageManager: configForPackageManager(DEFAULT_PACKAGE_MANAGER),
-  type: 'package',
+  type: "package",
 };
 
 export const executeModule = async (
@@ -45,11 +42,7 @@ export const executeModule = async (
     const filepaths = [pattern, ...allFilepaths.filter((p) => isMatch(p))];
 
     for (const filepath of [...new Set(filepaths)]) {
-      outputFiles[filepath] = await processText(
-        outputFiles[filepath],
-        outputFiles,
-        inputFiles,
-      );
+      outputFiles[filepath] = await processText(outputFiles[filepath], outputFiles, inputFiles);
     }
   }
 

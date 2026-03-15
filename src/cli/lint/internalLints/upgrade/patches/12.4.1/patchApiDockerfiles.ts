@@ -1,15 +1,15 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import { glob } from 'fast-glob';
-import fs from 'fs-extra';
+import { glob } from "fast-glob";
+import fs from "fs-extra";
 
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { log } from "../../../../../../utils/logging.js";
+import type { PatchFunction, PatchReturnType } from "../../index.js";
 
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.promises.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, "utf8");
 
       return {
         file,
@@ -36,29 +36,21 @@ const applyDockerfilePatch = (contents: string) => {
     return undefined;
   }
 
-  const fullPath = libPathMatch[1] || './';
-  const libParentPath = fullPath.endsWith('/')
-    ? fullPath.slice(0, -1)
-    : fullPath;
+  const fullPath = libPathMatch[1] || "./";
+  const libParentPath = fullPath.endsWith("/") ? fullPath.slice(0, -1) : fullPath;
 
   // If the path is empty or just './', the lib is in current directory
-  const normalizedPath =
-    libParentPath === '.' || libParentPath === '' ? '.' : libParentPath;
+  const normalizedPath = libParentPath === "." || libParentPath === "" ? "." : libParentPath;
 
   // Try to find COPY with --from first
-  const copyNodeModulesWithFromRegex =
-    /^\s*COPY\s+--from=(\S+)\s+.*node_modules.*$/m;
-  const copyNodeModulesWithFromMatch =
-    copyNodeModulesWithFromRegex.exec(contents);
+  const copyNodeModulesWithFromRegex = /^\s*COPY\s+--from=(\S+)\s+.*node_modules.*$/m;
+  const copyNodeModulesWithFromMatch = copyNodeModulesWithFromRegex.exec(contents);
 
   // If no --from, try to find COPY without --from
-  const copyNodeModulesWithoutFromRegex =
-    /^\s*COPY\s+(?!--from).*node_modules.*$/m;
-  const copyNodeModulesWithoutFromMatch =
-    copyNodeModulesWithoutFromRegex.exec(contents);
+  const copyNodeModulesWithoutFromRegex = /^\s*COPY\s+(?!--from).*node_modules.*$/m;
+  const copyNodeModulesWithoutFromMatch = copyNodeModulesWithoutFromRegex.exec(contents);
 
-  const copyNodeModulesMatch =
-    copyNodeModulesWithFromMatch ?? copyNodeModulesWithoutFromMatch;
+  const copyNodeModulesMatch = copyNodeModulesWithFromMatch ?? copyNodeModulesWithoutFromMatch;
   const copyNodeModulesLine = copyNodeModulesMatch?.[0];
   const fromSource = copyNodeModulesWithFromMatch?.[1];
 
@@ -67,16 +59,10 @@ const applyDockerfilePatch = (contents: string) => {
   }
 
   // Check if package.json is already being copied for this path
-  const packageJsonPattern = normalizedPath === '.' ? '' : `${normalizedPath}/`;
+  const packageJsonPattern = normalizedPath === "." ? "" : `${normalizedPath}/`;
   const packageJsonCopyPattern = fromSource
-    ? new RegExp(
-        `^\\s*COPY\\s+--from=${fromSource}\\s+.*${packageJsonPattern}package\\.json`,
-        'm',
-      )
-    : new RegExp(
-        `^\\s*COPY\\s+(?!--from).*${packageJsonPattern}package\\.json`,
-        'm',
-      );
+    ? new RegExp(`^\\s*COPY\\s+--from=${fromSource}\\s+.*${packageJsonPattern}package\\.json`, "m")
+    : new RegExp(`^\\s*COPY\\s+(?!--from).*${packageJsonPattern}package\\.json`, "m");
 
   if (packageJsonCopyPattern.test(contents)) {
     return undefined;
@@ -85,13 +71,13 @@ const applyDockerfilePatch = (contents: string) => {
   let packageJsonCopyLine: string;
   if (fromSource) {
     packageJsonCopyLine =
-      normalizedPath === '.'
+      normalizedPath === "."
         ? `COPY --from=${fromSource} /workdir/package.json package.json`
         : `COPY --from=${fromSource} /workdir/${normalizedPath}/package.json ${normalizedPath}/package.json`;
   } else {
     packageJsonCopyLine =
-      normalizedPath === '.'
-        ? 'COPY package.json package.json'
+      normalizedPath === "."
+        ? "COPY package.json package.json"
         : `COPY ${normalizedPath}/package.json ${normalizedPath}/package.json`;
   }
 
@@ -104,16 +90,16 @@ const applyDockerfilePatch = (contents: string) => {
 };
 
 const tryPatchApiDockerfiles = async (config: {
-  mode: 'lint' | 'format';
+  mode: "lint" | "format";
 }): Promise<PatchReturnType> => {
-  const dockerfilePaths = await glob(['**/Dockerfile*'], {
-    ignore: ['**/.git', '**/node_modules'],
+  const dockerfilePaths = await glob(["**/Dockerfile*"], {
+    ignore: ["**/.git", "**/node_modules"],
   });
 
   if (dockerfilePaths.length === 0) {
     return {
-      result: 'skip',
-      reason: 'no Dockerfiles found',
+      result: "skip",
+      reason: "no Dockerfiles found",
     };
   }
 
@@ -135,25 +121,23 @@ const tryPatchApiDockerfiles = async (config: {
 
   if (dockerFilesToPatch.length === 0) {
     return {
-      result: 'skip',
-      reason: 'no Dockerfiles to patch',
+      result: "skip",
+      reason: "no Dockerfiles to patch",
     };
   }
 
-  if (config.mode === 'lint') {
+  if (config.mode === "lint") {
     return {
-      result: 'apply',
+      result: "apply",
     };
   }
 
   await Promise.all(
-    dockerFilesToPatch.map(({ file, contents }) =>
-      fs.promises.writeFile(file, contents, 'utf8'),
-    ),
+    dockerFilesToPatch.map(({ file, contents }) => fs.promises.writeFile(file, contents, "utf8")),
   );
 
   return {
-    result: 'apply',
+    result: "apply",
   };
 };
 
@@ -161,8 +145,8 @@ export const patchApiDockerfiles: PatchFunction = async (config) => {
   try {
     return await tryPatchApiDockerfiles(config);
   } catch (err) {
-    log.warn('Failed to patch API dockerfiles');
+    log.warn("Failed to patch API dockerfiles");
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    return { result: "skip", reason: "due to an error" };
   }
 };

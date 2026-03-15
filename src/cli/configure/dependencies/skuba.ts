@@ -1,12 +1,12 @@
-import { replacePackageReferences } from '../processing/module.js';
-import type { DependencySet } from '../types.js';
+import { replacePackageReferences } from "../processing/module.js";
+import type { DependencySet } from "../types.js";
 
-const OLD_NAME = '@seek/skuba';
-const NEW_NAME = 'skuba';
+const OLD_NAME = "@seek/skuba";
+const NEW_NAME = "skuba";
 
 export const skuba = ({ dependencies, devDependencies }: DependencySet) => {
   // force latest dev dependency
-  devDependencies[NEW_NAME] = '*';
+  devDependencies[NEW_NAME] = "*";
   delete dependencies[NEW_NAME];
 
   if (!dependencies[OLD_NAME] && !devDependencies[OLD_NAME]) {
@@ -20,11 +20,11 @@ export const skuba = ({ dependencies, devDependencies }: DependencySet) => {
     replacePackageReferences({
       old: {
         packageName: OLD_NAME,
-        repoSlug: 'seek-jobs/skuba',
+        repoSlug: "seek-jobs/skuba",
       },
       new: {
         packageName: NEW_NAME,
-        repoSlug: 'seek-oss/skuba',
+        repoSlug: "seek-oss/skuba",
       },
     }),
   ];

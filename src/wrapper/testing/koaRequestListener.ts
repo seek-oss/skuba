@@ -1,8 +1,8 @@
-import Koa from 'koa';
+import Koa from "koa";
 
 const app = new Koa().use((ctx) => {
-  if (ctx.request.path === '/koa') {
-    ctx.body = 'Koa!';
+  if (ctx.request.path === "/koa") {
+    ctx.body = "Koa!";
   }
 });
 

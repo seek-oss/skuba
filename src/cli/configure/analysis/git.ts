@@ -1,8 +1,8 @@
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
+import fs from "fs-extra";
+import git from "isomorphic-git";
 
-import { crawlDirectory } from '../../../utils/dir.js';
-import { log } from '../../../utils/logging.js';
+import { crawlDirectory } from "../../../utils/dir.js";
+import { log } from "../../../utils/logging.js";
 
 export const auditWorkingTree = async (dir: string) => {
   const filepaths = await crawlDirectory(dir);
@@ -16,19 +16,18 @@ export const auditWorkingTree = async (dir: string) => {
       } catch {
         // TODO: Why does isomorphic-git sometimes just _fail_?
         anyFailed = true;
-        return 'absent';
+        return "absent";
       }
     }),
   );
 
   if (
     statuses.some(
-      (status) =>
-        status !== 'absent' && status !== 'ignored' && status !== 'unmodified',
+      (status) => status !== "absent" && status !== "ignored" && status !== "unmodified",
     )
   ) {
     log.newline();
-    log.warn('You have dirty/untracked files that may be overwritten.');
+    log.warn("You have dirty/untracked files that may be overwritten.");
   } else if (anyFailed) {
     log.newline();
     log.warn(

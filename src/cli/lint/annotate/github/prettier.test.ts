@@ -1,14 +1,14 @@
-import type { PrettierOutput } from '../../../adapter/prettier.js';
+import type { PrettierOutput } from "../../../adapter/prettier.js";
 
-import { createPrettierAnnotations } from './prettier.js';
+import { createPrettierAnnotations } from "./prettier.js";
 
-import type * as GitHub from '@skuba-lib/api/github';
+import type * as GitHub from "@skuba-lib/api/github";
 
-it('should create annotations from Prettier errors', () => {
+it("should create annotations from Prettier errors", () => {
   const prettierOutput: PrettierOutput = {
     ok: false,
     result: {
-      errored: [{ filepath: 'src/index.ts' }],
+      errored: [{ filepath: "src/index.ts" }],
       count: 1,
       touched: [],
       unparsed: [],
@@ -17,12 +17,12 @@ it('should create annotations from Prettier errors', () => {
 
   const expectedAnnotations: GitHub.Annotation[] = [
     {
-      annotation_level: 'failure',
+      annotation_level: "failure",
       start_line: 1,
       end_line: 1,
-      path: 'src/index.ts',
-      message: 'This file has not been formatted.',
-      title: 'Prettier',
+      path: "src/index.ts",
+      message: "This file has not been formatted.",
+      title: "Prettier",
     },
   ];
 
@@ -31,7 +31,7 @@ it('should create annotations from Prettier errors', () => {
   expect(annotations).toStrictEqual(expectedAnnotations);
 });
 
-it('should create an empty annotations array if there are no errors', () => {
+it("should create an empty annotations array if there are no errors", () => {
   const prettierOutput: PrettierOutput = {
     ok: true,
     result: {
@@ -49,13 +49,11 @@ it('should create an empty annotations array if there are no errors', () => {
   expect(annotations).toStrictEqual(expectedAnnotations);
 });
 
-it('should create annotations Prettier process errors', () => {
+it("should create annotations Prettier process errors", () => {
   const prettierOutput: PrettierOutput = {
     ok: false,
     result: {
-      errored: [
-        { err: new Error('OMG Prettier crashed'), filepath: 'src/evil.ts' },
-      ],
+      errored: [{ err: new Error("OMG Prettier crashed"), filepath: "src/evil.ts" }],
       count: 1,
       touched: [],
       unparsed: [],
@@ -64,12 +62,12 @@ it('should create annotations Prettier process errors', () => {
 
   const expectedAnnotations: GitHub.Annotation[] = [
     {
-      annotation_level: 'failure',
+      annotation_level: "failure",
       start_line: 1,
       end_line: 1,
-      path: 'src/evil.ts',
-      message: 'OMG Prettier crashed',
-      title: 'Prettier',
+      path: "src/evil.ts",
+      message: "OMG Prettier crashed",
+      title: "Prettier",
     },
   ];
 

@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import { glob } from 'fast-glob';
-import fs from 'fs-extra';
+import { glob } from "fast-glob";
+import fs from "fs-extra";
 
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { log } from "../../../../../../utils/logging.js";
+import type { PatchFunction, PatchReturnType } from "../../index.js";
 
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.promises.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, "utf8");
 
       return {
         file,
@@ -24,26 +24,26 @@ const regex = /\s*--ignore-optional/;
 const removeYarnIgnoreFlag = (contents: string) => {
   let isInYarn = false;
 
-  const lines = contents.split('\n');
+  const lines = contents.split("\n");
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
 
-    if (line.includes('yarn')) {
+    if (line.includes("yarn")) {
       isInYarn = true;
     }
 
     if (isInYarn && regex.test(line)) {
-      lines[i] = line.replace(regex, '');
+      lines[i] = line.replace(regex, "");
 
       // If we're now an empty line, remove it and get rid of the \ at the end of the previous line
       if (!lines[i]!.trim()) {
         lines.splice(i, 1);
         if (i > 0) {
-          lines[i - 1] = lines[i - 1]!.replace(/\s*\\$/, '');
+          lines[i - 1] = lines[i - 1]!.replace(/\s*\\$/, "");
         }
         i--;
-      } else if (lines[i] === '\\') {
+      } else if (lines[i] === "\\") {
         lines.splice(i, 1);
         i--;
       }
@@ -51,23 +51,21 @@ const removeYarnIgnoreFlag = (contents: string) => {
       isInYarn = false;
     }
 
-    if (!line.endsWith('\\')) {
+    if (!line.endsWith("\\")) {
       isInYarn = false;
     }
   }
 
-  return lines.join('\n');
+  return lines.join("\n");
 };
 
-const removeYarnIgnoreOptionalFlags: PatchFunction = async ({
-  mode,
-}): Promise<PatchReturnType> => {
-  const maybeDockerFilesPaths = await glob(['Dockerfile*']);
+const removeYarnIgnoreOptionalFlags: PatchFunction = async ({ mode }): Promise<PatchReturnType> => {
+  const maybeDockerFilesPaths = await glob(["Dockerfile*"]);
 
   if (!maybeDockerFilesPaths.length) {
     return {
-      result: 'skip',
-      reason: 'no Dockerfiles found',
+      result: "skip",
+      reason: "no Dockerfiles found",
     };
   }
 
@@ -81,14 +79,14 @@ const removeYarnIgnoreOptionalFlags: PatchFunction = async ({
 
   if (!mapped.some(({ before, after }) => before !== after)) {
     return {
-      result: 'skip',
-      reason: 'no Dockerfiles to patch',
+      result: "skip",
+      reason: "no Dockerfiles to patch",
     };
   }
 
-  if (mode === 'lint') {
+  if (mode === "lint") {
     return {
-      result: 'apply',
+      result: "apply",
     };
   }
 
@@ -98,17 +96,15 @@ const removeYarnIgnoreOptionalFlags: PatchFunction = async ({
     }),
   );
 
-  return { result: 'apply' };
+  return { result: "apply" };
 };
 
-export const tryRemoveYarnIgnoreOptionalFlags: PatchFunction = async (
-  config,
-) => {
+export const tryRemoveYarnIgnoreOptionalFlags: PatchFunction = async (config) => {
   try {
     return await removeYarnIgnoreOptionalFlags(config);
   } catch (err) {
-    log.warn('Failed to remove yarn --ignore-optional flags');
+    log.warn("Failed to remove yarn --ignore-optional flags");
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    return { result: "skip", reason: "due to an error" };
   }
 };

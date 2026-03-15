@@ -1,38 +1,35 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import { glob } from 'fast-glob';
-import fs from 'fs-extra';
+import { glob } from "fast-glob";
+import fs from "fs-extra";
 
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { log } from "../../../../../../utils/logging.js";
+import type { PatchFunction, PatchReturnType } from "../../index.js";
 
-const moveNpmrcMounts: PatchFunction = async ({
-  mode,
-}): Promise<PatchReturnType> => {
-  const buildkiteFiles = await glob(
-    ['{apps/*/,packages/*/,./}.buildkite/**/*.y*ml'],
-    { onlyFiles: true },
-  );
+const moveNpmrcMounts: PatchFunction = async ({ mode }): Promise<PatchReturnType> => {
+  const buildkiteFiles = await glob(["{apps/*/,packages/*/,./}.buildkite/**/*.y*ml"], {
+    onlyFiles: true,
+  });
 
   if (buildkiteFiles.length === 0) {
-    return { result: 'skip', reason: 'no Buildkite files found' };
+    return { result: "skip", reason: "no Buildkite files found" };
   }
 
   const input = await Promise.all(
-    buildkiteFiles.map((name) => fs.promises.readFile(name, 'utf-8')),
+    buildkiteFiles.map((name) => fs.promises.readFile(name, "utf-8")),
   );
 
   const replaced = input.map(moveNpmrcMountsInFile);
 
   if (replaced.every((r, i) => r === input[i])) {
     return {
-      result: 'skip',
-      reason: 'no .npmrc mounts found need to be updated',
+      result: "skip",
+      reason: "no .npmrc mounts found need to be updated",
     };
   }
 
-  if (mode === 'lint') {
-    return { result: 'apply' };
+  if (mode === "lint") {
+    return { result: "apply" };
   }
 
   await Promise.all(
@@ -44,7 +41,7 @@ const moveNpmrcMounts: PatchFunction = async ({
     ),
   );
 
-  return { result: 'apply' };
+  return { result: "apply" };
 };
 
 const secret = /^(\s*)secrets: id=npm,src=tmp\/\.npmrc(\s*#?.*)$/gm;
@@ -56,16 +53,16 @@ const moveNpmrcMountsInFile = (input: string) => {
   }
 
   return input
-    .replaceAll(secret, '$1secrets: id=npm,src=/tmp/.npmrc$2')
-    .replaceAll(outputPath, '$1output-path: /tmp/$2');
+    .replaceAll(secret, "$1secrets: id=npm,src=/tmp/.npmrc$2")
+    .replaceAll(outputPath, "$1output-path: /tmp/$2");
 };
 
 export const tryMoveNpmrcMounts: PatchFunction = async (config) => {
   try {
     return await moveNpmrcMounts(config);
   } catch (err) {
-    log.warn('Failed to move .npmrc mounts');
+    log.warn("Failed to move .npmrc mounts");
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    return { result: "skip", reason: "due to an error" };
   }
 };

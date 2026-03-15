@@ -1,6 +1,6 @@
-import { createModuleNameMapper } from './moduleNameMapper.js';
+import { createModuleNameMapper } from "./moduleNameMapper.js";
 
-describe('moduleNameMapper', () => {
+describe("moduleNameMapper", () => {
   const act = (paths?: unknown, baseUrl?: string) =>
     createModuleNameMapper(() => ({
       compilerOptions: {
@@ -9,9 +9,8 @@ describe('moduleNameMapper', () => {
       },
     }));
 
-  it('expands wildcard paths', () =>
-    expect(act({ 'src/*': ['src/*'], 'lib/wip/*': ['lib/wip/*'] }))
-      .toMatchInlineSnapshot(`
+  it("expands wildcard paths", () =>
+    expect(act({ "src/*": ["src/*"], "lib/wip/*": ["lib/wip/*"] })).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
           "$1.js",
@@ -26,8 +25,8 @@ describe('moduleNameMapper', () => {
       }
     `));
 
-  it('expands non-wildcard paths', () =>
-    expect(act({ cli: ['cli'], 'src/': ['src/'] })).toMatchInlineSnapshot(`
+  it("expands non-wildcard paths", () =>
+    expect(act({ cli: ["cli"], "src/": ["src/"] })).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
           "$1.js",
@@ -42,11 +41,11 @@ describe('moduleNameMapper', () => {
       }
     `));
 
-  it('expands duplicate asymmetric paths', () =>
+  it("expands duplicate asymmetric paths", () =>
     expect(
       act({
-        jquery: ['node_modules/jquery/dist/jquery'],
-        'jquery/*': ['node_modules/jquery/dist/jquery/*'],
+        jquery: ["node_modules/jquery/dist/jquery"],
+        "jquery/*": ["node_modules/jquery/dist/jquery/*"],
       }),
     ).toMatchInlineSnapshot(`
       {
@@ -60,9 +59,8 @@ describe('moduleNameMapper', () => {
       }
     `));
 
-  it('respects a base URL', () =>
-    expect(act({ cli: ['../cli'], 'app/*': ['app/*'] }, 'src'))
-      .toMatchInlineSnapshot(`
+  it("respects a base URL", () =>
+    expect(act({ cli: ["../cli"], "app/*": ["app/*"] }, "src")).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
           "$1.js",
@@ -77,7 +75,7 @@ describe('moduleNameMapper', () => {
       }
     `));
 
-  it('respects no paths', () =>
+  it("respects no paths", () =>
     expect(act({})).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
@@ -87,7 +85,7 @@ describe('moduleNameMapper', () => {
       }
     `));
 
-  it('defaults to a single path on undefined', () =>
+  it("defaults to a single path on undefined", () =>
     expect(act(undefined)).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
@@ -97,8 +95,8 @@ describe('moduleNameMapper', () => {
       }
     `));
 
-  it('defaults to a single path on invalid config', () =>
-    expect(act('INVALID')).toMatchInlineSnapshot(`
+  it("defaults to a single path on invalid config", () =>
+    expect(act("INVALID")).toMatchInlineSnapshot(`
       {
         "^(\\.{1,2}/.*)\\.js$": [
           "$1.js",

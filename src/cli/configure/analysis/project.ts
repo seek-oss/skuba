@@ -1,24 +1,21 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
+import fs from "fs-extra";
 
-import {
-  buildPatternToFilepathMap,
-  crawlDirectory,
-} from '../../../utils/dir.js';
-import { isErrorWithCode } from '../../../utils/error.js';
-import { loadModules } from '../modules/index.js';
-import type { FileDiff, Files, Module, Options } from '../types.js';
+import { buildPatternToFilepathMap, crawlDirectory } from "../../../utils/dir.js";
+import { isErrorWithCode } from "../../../utils/error.js";
+import { loadModules } from "../modules/index.js";
+import type { FileDiff, Files, Module, Options } from "../types.js";
 
-import { determineOperation } from './diff.js';
+import { determineOperation } from "./diff.js";
 
 export const createDestinationFileReader =
   (root: string) =>
   async (filename: string): Promise<string | undefined> => {
     try {
-      return await fs.promises.readFile(path.join(root, filename), 'utf8');
+      return await fs.promises.readFile(path.join(root, filename), "utf8");
     } catch (err) {
-      if (isErrorWithCode(err, 'ENOENT')) {
+      if (isErrorWithCode(err, "ENOENT")) {
         return;
       }
 
@@ -35,14 +32,11 @@ const loadModuleFiles = async (modules: Module[], destinationRoot: string) => {
 
   const patternToFilepaths = buildPatternToFilepathMap(patterns, allFilepaths);
 
-  const matchedFilepaths = [
-    ...new Set(Object.values(patternToFilepaths).flat()),
-  ];
+  const matchedFilepaths = [...new Set(Object.values(patternToFilepaths).flat())];
 
   const fileEntries = await Promise.all(
     matchedFilepaths.map(
-      async (filepath) =>
-        [filepath, await readDestinationFile(filepath)] as const,
+      async (filepath) => [filepath, await readDestinationFile(filepath)] as const,
     ),
   );
 
@@ -65,18 +59,12 @@ const processTextFiles = async (
       // Some modules create a new file at the specified pattern.
       const filepaths = [pattern, ...(patternToFilepaths[pattern] ?? [])];
 
-      return [...new Set(filepaths)].map(
-        (filepath) => [filepath, processText] as const,
-      );
+      return [...new Set(filepaths)].map((filepath) => [filepath, processText] as const);
     }),
   );
 
   for (const [filepath, processText] of textProcessorEntries) {
-    outputFiles[filepath] = await processText(
-      outputFiles[filepath],
-      outputFiles,
-      inputFiles,
-    );
+    outputFiles[filepath] = await processText(outputFiles[filepath], outputFiles, inputFiles);
   }
 
   return outputFiles;
@@ -89,11 +77,7 @@ export const diffFiles = async (opts: Options): Promise<FileDiff> => {
     await loadModuleFiles(modules, opts.destinationRoot),
   );
 
-  const outputFiles = await processTextFiles(
-    modules,
-    inputFiles,
-    patternToFilepaths,
-  );
+  const outputFiles = await processTextFiles(modules, inputFiles, patternToFilepaths);
 
   const diffEntries = Object.entries(outputFiles)
     .filter(([filepath, data]) => inputFiles[filepath] !== data)

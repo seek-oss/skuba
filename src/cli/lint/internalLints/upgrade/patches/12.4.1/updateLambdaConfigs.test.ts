@@ -1,12 +1,12 @@
-import memfs, { vol } from 'memfs';
+import memfs, { vol } from "memfs";
 
-import { Git } from '../../../../../../index.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import { Git } from "../../../../../../index.js";
+import { configForPackageManager } from "../../../../../../utils/packageManager.js";
+import type { PatchConfig, PatchReturnType } from "../../index.js";
 
-import { tryUpdateLambdaConfigs } from './updateLambdaConfigs.js';
+import { tryUpdateLambdaConfigs } from "./updateLambdaConfigs.js";
 
-jest.mock('../../../../../../index.js', () => ({
+jest.mock("../../../../../../index.js", () => ({
   Git: {
     getOwnerAndRepo: jest.fn(),
   },
@@ -14,75 +14,71 @@ jest.mock('../../../../../../index.js', () => ({
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
+jest.mock("fs-extra", () => memfs);
+jest.mock("fast-glob", () => ({
   glob: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+    jest.requireActual("fast-glob").glob(pat, { ...opts, fs: memfs }),
 }));
 
-jest.spyOn(console, 'warn').mockImplementation(() => {
+jest.spyOn(console, "warn").mockImplementation(() => {
   /* do nothing */
 });
-jest.spyOn(console, 'log').mockImplementation(() => {
+jest.spyOn(console, "log").mockImplementation(() => {
   /* do nothing */
 });
 
 beforeEach(() => {
   vol.reset();
   jest.clearAllMocks();
-  jest
-    .mocked(Git.getOwnerAndRepo)
-    .mockResolvedValue({ repo: 'test-repo', owner: 'seek' });
+  jest.mocked(Git.getOwnerAndRepo).mockResolvedValue({ repo: "test-repo", owner: "seek" });
 });
 
 const baseArgs: PatchConfig = {
   manifest: {
     packageJson: {
-      name: 'test',
-      version: '1.0.0',
-      readme: 'README.md',
-      _id: 'test',
+      name: "test",
+      version: "1.0.0",
+      readme: "README.md",
+      _id: "test",
     },
-    path: 'package.json',
+    path: "package.json",
   },
-  packageManager: configForPackageManager('yarn'),
-  mode: 'format',
+  packageManager: configForPackageManager("yarn"),
+  mode: "format",
 };
 
-describe('tryUpdateLambdaConfigs', () => {
-  it('should skip if repository name cannot be determined', async () => {
-    jest
-      .mocked(Git.getOwnerAndRepo)
-      .mockRejectedValue(new Error('no repo found'));
+describe("tryUpdateLambdaConfigs", () => {
+  it("should skip if repository name cannot be determined", async () => {
+    jest.mocked(Git.getOwnerAndRepo).mockRejectedValue(new Error("no repo found"));
 
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no repository name found',
+      result: "skip",
+      reason: "no repository name found",
     });
   });
 
-  it('should skip if no ts, yml or js files are found', async () => {
+  it("should skip if no ts, yml or js files are found", async () => {
     vol.fromJSON({});
 
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'skip',
-      reason: 'no .ts or webpack config files or .yml files found',
+      result: "skip",
+      reason: "no .ts or webpack config files or .yml files found",
     });
   });
 
-  it('should update lambda configs in .ts files', async () => {
+  it("should update lambda configs in .ts files", async () => {
     vol.fromJSON({
-      'lambda.ts': `
+      "lambda.ts": `
 const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
   architecture: aws_lambda.Architecture[architecture],
   runtime: aws_lambda.Runtime.NODEJS_22_X,
@@ -112,10 +108,10 @@ const another = new aws_lambda_nodejs.NodejsFunction(this, 'another', {
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -150,9 +146,9 @@ const another = new aws_lambda_nodejs.NodejsFunction(this, 'another', {
     `);
   });
 
-  it('should update lambda configs with new NodejsFunction syntax', async () => {
+  it("should update lambda configs with new NodejsFunction syntax", async () => {
     vol.fromJSON({
-      'lambda.ts': `
+      "lambda.ts": `
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 const worker = new NodejsFunction(this, 'worker', {
@@ -172,10 +168,10 @@ const worker = new NodejsFunction(this, 'worker', {
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -200,9 +196,9 @@ const worker = new NodejsFunction(this, 'worker', {
     `);
   });
 
-  it('should update lambda configs in webpack config files', async () => {
+  it("should update lambda configs in webpack config files", async () => {
     vol.fromJSON({
-      'webpack.config.js': `
+      "webpack.config.js": `
 const path = require('path');
 
 module.exports = {
@@ -225,7 +221,7 @@ module.exports = {
     },
   },
 });`,
-      'other/webpack.config.js': `
+      "other/webpack.config.js": `
 const path = require('path');
 
 module.exports = {
@@ -247,10 +243,10 @@ module.exports = {
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -303,9 +299,9 @@ module.exports = {
     `);
   });
 
-  it('should update Serverless files with esbuild configuration', async () => {
+  it("should update Serverless files with esbuild configuration", async () => {
     vol.fromJSON({
-      'serverless.yml': `service: my-lambda-service
+      "serverless.yml": `service: my-lambda-service
 
 plugins:
   - serverless-esbuild
@@ -321,7 +317,7 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-      'serverless.yaml': `service: my-lambda-service
+      "serverless.yaml": `service: my-lambda-service
 
 build:
   esbuild:
@@ -334,7 +330,7 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-      'serverless.other.yml': `service: my-lambda-service
+      "serverless.other.yml": `service: my-lambda-service
 
 plugins:
   - serverless-esbuild
@@ -358,10 +354,10 @@ functions:
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -424,9 +420,9 @@ functions:
     `);
   });
 
-  it('should update Serverless files with esbuild nested under custom with other properties', async () => {
+  it("should update Serverless files with esbuild nested under custom with other properties", async () => {
     vol.fromJSON({
-      'serverless.yml': `service: interactions-enricher
+      "serverless.yml": `service: interactions-enricher
 
 plugins:
   - serverless-prune-plugin
@@ -453,10 +449,10 @@ functions:
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -489,9 +485,9 @@ functions:
     `);
   });
 
-  it('should update Serverless files with package patterns', async () => {
+  it("should update Serverless files with package patterns", async () => {
     vol.fromJSON({
-      'serverless.yml': `
+      "serverless.yml": `
 service: my-lambda-service
 
 package:
@@ -506,7 +502,7 @@ functions:
       patterns:
         - excluded-by-default.json
       `,
-      'serverless.yaml': `
+      "serverless.yaml": `
 service: my-lambda-service
 
 functions:
@@ -525,10 +521,10 @@ package:
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -569,9 +565,9 @@ package:
     `);
   });
 
-  it('should handle Serverless with package include', async () => {
+  it("should handle Serverless with package include", async () => {
     vol.fromJSON({
-      'serverless.yml': `
+      "serverless.yml": `
 service: my-lambda-service
 
 package:
@@ -582,7 +578,7 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-      'serverless.yaml': `
+      "serverless.yaml": `
 service: my-lambda-service
 
 package:
@@ -600,10 +596,10 @@ functions:
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual<PatchReturnType>({
-      result: 'apply',
+      result: "apply",
     });
 
     expect(volToJson()).toMatchInlineSnapshot(`

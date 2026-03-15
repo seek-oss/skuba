@@ -1,20 +1,12 @@
-import fs from 'fs-extra';
-import ignoreFilter from 'ignore';
-import git, { findRoot } from 'isomorphic-git';
+import fs from "fs-extra";
+import ignoreFilter from "ignore";
+import git, { findRoot } from "isomorphic-git";
 
-import { pathExists } from '../../../../src/utils/fs.js';
+import { pathExists } from "../../../../src/utils/fs.js";
 
-import {
-  ABSENT,
-  FILEPATH,
-  HEAD,
-  MODIFIED,
-  STAGE,
-  UNMODIFIED,
-  WORKDIR,
-} from './statusMatrix.js';
+import { ABSENT, FILEPATH, HEAD, MODIFIED, STAGE, UNMODIFIED, WORKDIR } from "./statusMatrix.js";
 
-type ChangedFileState = 'added' | 'modified' | 'deleted';
+type ChangedFileState = "added" | "modified" | "deleted";
 export interface ChangedFile {
   path: string;
   state: ChangedFileState;
@@ -30,18 +22,16 @@ interface ChangedFilesParameters {
   ignore?: ChangedFile[];
 }
 
-const mapState = (
-  row: [string, 0 | 1, 0 | 1 | 2, 0 | 1 | 2 | 3],
-): ChangedFileState => {
+const mapState = (row: [string, 0 | 1, 0 | 1 | 2, 0 | 1 | 2 | 3]): ChangedFileState => {
   if (row[HEAD] === ABSENT) {
-    return 'added';
+    return "added";
   }
 
   if (row[WORKDIR] === MODIFIED) {
-    return 'modified';
+    return "modified";
   }
 
-  return 'deleted';
+  return "deleted";
 };
 
 /**
@@ -61,17 +51,13 @@ export const getChangedFiles = async ({
 
   return allFiles
     .filter(
-      (row) =>
-        row[HEAD] !== UNMODIFIED ||
-        row[WORKDIR] !== UNMODIFIED ||
-        row[STAGE] !== UNMODIFIED,
+      (row) => row[HEAD] !== UNMODIFIED || row[WORKDIR] !== UNMODIFIED || row[STAGE] !== UNMODIFIED,
     )
     .map((row) => ({ path: row[FILEPATH], state: mapState(row) }))
     .filter(
       (changedFile) =>
-        !ignore.some(
-          (i) => i.path === changedFile.path && i.state === changedFile.state,
-        ) && !isLfs(changedFile.path),
+        !ignore.some((i) => i.path === changedFile.path && i.state === changedFile.state) &&
+        !isLfs(changedFile.path),
     );
 };
 
@@ -88,10 +74,10 @@ const createIsLfsFilter = async (
   }
 
   const filter = ignoreFilter().add(
-    (await fs.readFile(lfsFile, 'utf8'))
-      .split('\n')
+    (await fs.readFile(lfsFile, "utf8"))
+      .split("\n")
       .map((l) => l.trim())
-      .filter((l) => !l.startsWith('#') && l.includes('filter=lfs'))
+      .filter((l) => !l.startsWith("#") && l.includes("filter=lfs"))
       .map((l) => l.split(/\s+/)[0])
       .flatMap((l) => (l ? [l] : [])),
   );

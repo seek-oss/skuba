@@ -1,12 +1,12 @@
-import path from 'path';
+import path from "path";
 
-import fs from 'fs-extra';
+import fs from "fs-extra";
 
-import { log } from '../../utils/logging.js';
-import type { ProjectType } from '../../utils/manifest.js';
-import type { PackageManagerConfig } from '../../utils/packageManager.js';
+import { log } from "../../utils/logging.js";
+import type { ProjectType } from "../../utils/manifest.js";
+import type { PackageManagerConfig } from "../../utils/packageManager.js";
 
-import { diffFiles } from './analysis/project.js';
+import { diffFiles } from "./analysis/project.js";
 
 interface Props {
   destinationRoot: string;
@@ -20,13 +20,13 @@ export const analyseConfiguration = async (
   props: Props,
 ): Promise<undefined | (() => Promise<void>)> => {
   log.newline();
-  log.plain(log.bold('Config:'));
+  log.plain(log.bold("Config:"));
 
   const files = await diffFiles(props);
 
   if (Object.keys(files).length === 0) {
     log.newline();
-    log.ok('✔ No changes');
+    log.ok("✔ No changes");
     return;
   }
 
@@ -36,21 +36,13 @@ export const analyseConfiguration = async (
     .forEach(([filename, { operation }]) => log.plain(operation, filename));
 
   return async () => {
-    const dirnames = [
-      ...new Set(Object.keys(files).map((filename) => path.dirname(filename))),
-    ];
+    const dirnames = [...new Set(Object.keys(files).map((filename) => path.dirname(filename)))];
 
-    await Promise.all(
-      dirnames.map((dirname) =>
-        fs.promises.mkdir(dirname, { recursive: true }),
-      ),
-    );
+    await Promise.all(dirnames.map((dirname) => fs.promises.mkdir(dirname, { recursive: true })));
 
     await Promise.all(
       Object.entries(files).map(([filename, { data }]) =>
-        data === undefined
-          ? fs.promises.rm(filename)
-          : fs.promises.writeFile(filename, data),
+        data === undefined ? fs.promises.rm(filename) : fs.promises.writeFile(filename, data),
       ),
     );
   };

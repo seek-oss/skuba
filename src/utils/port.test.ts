@@ -1,7 +1,7 @@
-import { randomIntBetween } from './port.js';
+import { randomIntBetween } from "./port.js";
 
-describe('randomIntBetween', () => {
-  it('generates integers between min and max inclusive', () => {
+describe("randomIntBetween", () => {
+  it("generates integers between min and max inclusive", () => {
     const min = 1000;
     const max = 2000;
 

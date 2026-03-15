@@ -1,21 +1,21 @@
-import git from 'isomorphic-git';
+import git from "isomorphic-git";
 
-import { commit } from './commit.js';
+import { commit } from "./commit.js";
 
-jest.mock('isomorphic-git');
+jest.mock("isomorphic-git");
 
 afterEach(jest.resetAllMocks);
 
-describe('commit', () => {
-  it('propagates props to isomorphic-git', async () => {
-    jest.mocked(git.commit).mockResolvedValue('b'.repeat(40));
+describe("commit", () => {
+  it("propagates props to isomorphic-git", async () => {
+    jest.mocked(git.commit).mockResolvedValue("b".repeat(40));
 
     await expect(
       commit({
-        dir: '/workdir/skuba',
-        message: 'Test for regression',
+        dir: "/workdir/skuba",
+        message: "Test for regression",
       }),
-    ).resolves.toBe('b'.repeat(40));
+    ).resolves.toBe("b".repeat(40));
 
     expect(git.commit).toHaveBeenCalledTimes(1);
     expect(jest.mocked(git.commit).mock.calls[0]![0]).toMatchInlineSnapshot(

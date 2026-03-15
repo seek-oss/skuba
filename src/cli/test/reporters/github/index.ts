@@ -1,16 +1,16 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import type { Reporter, TestContext } from '@jest/reporters';
-import type { AggregatedResult } from '@jest/test-result';
+import type { Reporter, TestContext } from "@jest/reporters";
+import type { AggregatedResult } from "@jest/test-result";
 
-import { log } from '../../../../utils/logging.js';
-import { throwOnTimeout } from '../../../../utils/wait.js';
+import { log } from "../../../../utils/logging.js";
+import { throwOnTimeout } from "../../../../utils/wait.js";
 
-import { generateAnnotationEntries } from './annotations.js';
+import { generateAnnotationEntries } from "./annotations.js";
 
-import * as GitHub from '@skuba-lib/api/github';
+import * as GitHub from "@skuba-lib/api/github";
 
-export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
+export default class GitHubReporter implements Pick<Reporter, "onRunComplete"> {
   async onRunComplete(
     _contexts: Set<TestContext>,
     { testResults }: AggregatedResult,
@@ -31,20 +31,20 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
       // Create a check run per display name.
       // Run in series to reduce the likelihood of exceeding GitHub rate limits.
       for (const { displayName, annotations } of entries) {
-        const name = `skuba/test${displayName ? ` (${displayName})` : ''}`;
+        const name = `skuba/test${displayName ? ` (${displayName})` : ""}`;
 
         const isOk = !annotations.length;
 
         const summary = isOk
-          ? '`skuba test` passed.'
-          : '`skuba test` found issues that require triage.';
+          ? "`skuba test` passed."
+          : "`skuba test` found issues that require triage.";
 
         const checkRun: CheckRun = {
           name,
           annotations,
-          conclusion: isOk ? 'success' : 'failure',
+          conclusion: isOk ? "success" : "failure",
           summary,
-          title: `${build} ${isOk ? 'passed' : 'failed'}`,
+          title: `${build} ${isOk ? "passed" : "failed"}`,
         };
 
         lastCheckRun = checkRun;
@@ -54,11 +54,11 @@ export default class GitHubReporter implements Pick<Reporter, 'onRunComplete'> {
         });
       }
     } catch (err) {
-      log.warn('Failed to report test results to GitHub.');
+      log.warn("Failed to report test results to GitHub.");
       log.subtle(inspect(err));
 
       if (lastCheckRun) {
-        log.subtle('Last request:');
+        log.subtle("Last request:");
         log.subtle(JSON.stringify(lastCheckRun));
       }
     }

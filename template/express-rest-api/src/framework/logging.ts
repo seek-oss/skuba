@@ -1,6 +1,6 @@
-import { createLogger } from '@seek/logger';
+import { createLogger } from "@seek/logger";
 
-import { config } from '#src/config.js';
+import { config } from "#src/config.js";
 
 export const logger = createLogger({
   eeeoh: {
@@ -9,13 +9,12 @@ export const logger = createLogger({
      *
      * https://github.com/seek-oss/logger/blob/master/docs/eeeoh.md#datadog-log-tiers
      */
-    datadog: 'tin',
-    team: '<%- teamName %>',
-    use: 'environment',
+    datadog: "tin",
+    team: "<%- teamName %>",
+    use: "environment",
   },
 
   level: config.logLevel,
 
-  transport:
-    config.deployment === 'local' ? { target: 'pino-pretty' } : undefined,
+  transport: config.deployment === "local" ? { target: "pino-pretty" } : undefined,
 });

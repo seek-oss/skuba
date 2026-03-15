@@ -28,7 +28,7 @@ you can use its convenient re-exports:
 ```
 
 ```typescript
-import { GitHub } from 'skuba';
+import { GitHub } from "skuba";
 
 await GitHub.putIssueComment(/* ... */);
 ```
@@ -49,7 +49,7 @@ This is good hygiene to avoid a runtime dependency on the larger `skuba` toolkit
 ```
 
 ```typescript
-import * as GitHub from '@skuba-lib/api/github';
+import * as GitHub from "@skuba-lib/api/github";
 
 await GitHub.putIssueComment(/* ... */);
 ```

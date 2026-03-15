@@ -1,7 +1,7 @@
-import { Jest } from 'skuba';
+import { Jest } from "skuba";
 
 export default Jest.mergePreset({
-  coveragePathIgnorePatterns: ['src/testing'],
+  coveragePathIgnorePatterns: ["src/testing"],
   coverageThreshold: {
     global: {
       branches: 0,
@@ -10,10 +10,10 @@ export default Jest.mergePreset({
       statements: 0,
     },
   },
-  setupFiles: ['<rootDir>/jest.setup.ts'],
-  testPathIgnorePatterns: ['/test\\.ts'],
+  setupFiles: ["<rootDir>/jest.setup.ts"],
+  testPathIgnorePatterns: ["/test\\.ts"],
   moduleNameMapper: {
-    '^#src/(.*)\\.js$': ['<rootDir>/src/$1'],
-    '^#src/(.*)$': ['<rootDir>/src/$1'],
+    "^#src/(.*)\\.js$": ["<rootDir>/src/$1"],
+    "^#src/(.*)$": ["<rootDir>/src/$1"],
   },
 });

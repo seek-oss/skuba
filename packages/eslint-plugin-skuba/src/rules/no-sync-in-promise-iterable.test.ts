@@ -1,28 +1,28 @@
-import * as test from 'node:test';
+import * as test from "node:test";
 
-import { RuleTester } from '@typescript-eslint/rule-tester';
+import { RuleTester } from "@typescript-eslint/rule-tester";
 
 RuleTester.afterAll = test.after;
 RuleTester.describe = test.describe;
 RuleTester.it = test.it;
 RuleTester.itOnly = test.it.only;
 
-import rule from './no-sync-in-promise-iterable.js';
+import rule from "./no-sync-in-promise-iterable.js";
 
 const ruleTester = new RuleTester({
   languageOptions: {
     parserOptions: {
       projectService: {
-        allowDefaultProject: ['*.ts*'],
+        allowDefaultProject: ["*.ts*"],
       },
       tsconfigRootDir: __dirname,
     },
   },
 });
 
-const methods = ['all', 'allSettled', 'any', 'race'];
+const methods = ["all", "allSettled", "any", "race"];
 
-ruleTester.run('no-sync-in-promise-iterable', rule, {
+ruleTester.run("no-sync-in-promise-iterable", rule, {
   valid: methods.flatMap((method) => [
     {
       code: `Promise.${method}()`,
@@ -313,11 +313,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'Boolean() ? syncFn() : Promise.resolve()',
-            underlying: 'fail()',
+            value: "Boolean() ? syncFn() : Promise.resolve()",
+            underlying: "fail()",
             line: 2,
             column: 29,
           },
@@ -328,8 +328,8 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       code: `Promise.${method}([1, fail(), 3])`,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'fail()' },
+          messageId: "mayThrowSyncError",
+          data: { method, value: "fail()" },
         },
       ],
     },
@@ -340,8 +340,8 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'path.to?.syncFn()' },
+          messageId: "mayThrowSyncError",
+          data: { method, value: "path.to?.syncFn()" },
         },
       ],
     },
@@ -349,8 +349,8 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       code: `Promise.${method}([1, Namespace.method(), 3])`,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'Namespace.method()' },
+          messageId: "mayThrowSyncError",
+          data: { method, value: "Namespace.method()" },
         },
       ],
     },
@@ -364,11 +364,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'Promise.resolve(syncFn())',
-            underlying: 'syncFn()',
+            value: "Promise.resolve(syncFn())",
+            underlying: "syncFn()",
             line: 4,
             column: 26,
           },
@@ -382,11 +382,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'promises',
-            underlying: 'syncFn()',
+            value: "promises",
+            underlying: "syncFn()",
             line: 2,
             column: 29,
           },
@@ -403,11 +403,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'p3',
-            underlying: 'fail()',
+            value: "p3",
+            underlying: "fail()",
             line: 2,
             column: 29,
           },
@@ -425,11 +425,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'new Set(xs.map(() => {}))',
-            underlying: 'xs.map(() => {})',
+            value: "new Set(xs.map(() => {}))",
+            underlying: "xs.map(() => {})",
             line: 4,
             column: 18,
           },
@@ -441,7 +441,7 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       code: `Promise.${method}([1, Array.from('foo', () => { throw new Error() }), 3])`,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
+          messageId: "mayThrowSyncError",
           data: {
             method,
             value: "Array.from('foo', () => { throw new Error() })",
@@ -460,11 +460,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: '[syncFn(), 2]',
-            underlying: 'syncFn()',
+            value: "[syncFn(), 2]",
+            underlying: "syncFn()",
             line: 4,
             column: 11,
           },
@@ -476,8 +476,8 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       code: `Promise.${method}([1, nested.deeply.func(), 3])`,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'nested.deeply.func()' },
+          messageId: "mayThrowSyncError",
+          data: { method, value: "nested.deeply.func()" },
         },
       ],
     },
@@ -486,8 +486,8 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       code: `Promise.${method}([1, str.trim().toLowerCase(), 3])`,
       errors: [
         {
-          messageId: 'mayThrowSyncError',
-          data: { method, value: 'str.trim().toLowerCase()' },
+          messageId: "mayThrowSyncError",
+          data: { method, value: "str.trim().toLowerCase()" },
         },
       ],
     },
@@ -502,11 +502,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'level4',
-            underlying: 'syncFn()',
+            value: "level4",
+            underlying: "syncFn()",
             line: 2,
             column: 27,
           },
@@ -521,11 +521,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: '...problematic',
-            underlying: 'syncFn()',
+            value: "...problematic",
+            underlying: "syncFn()",
             line: 2,
             column: 32,
           },
@@ -539,11 +539,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: '...problematic',
-            underlying: 'syncFn()',
+            value: "...problematic",
+            underlying: "syncFn()",
             line: 2,
             column: 32,
           },
@@ -561,11 +561,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: '`result: ${syncFn()}`',
-            underlying: 'syncFn()',
+            value: "`result: ${syncFn()}`",
+            underlying: "syncFn()",
             line: 4,
             column: 21,
           },
@@ -582,11 +582,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'set.entries().map(() => fail())',
-            underlying: 'fail()',
+            value: "set.entries().map(() => fail())",
+            underlying: "fail()",
             line: 4,
             column: 34,
           },
@@ -601,11 +601,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'xs.map(() => fail())',
-            underlying: 'fail()',
+            value: "xs.map(() => fail())",
+            underlying: "fail()",
             line: 3,
             column: 23,
           },
@@ -622,11 +622,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: '(() => fail())()',
-            underlying: 'fail()',
+            value: "(() => fail())()",
+            underlying: "fail()",
             line: 4,
             column: 17,
           },
@@ -643,11 +643,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'xs.map(() => fn(param(x)))',
-            underlying: 'param = (x: number) => { /* block! */ return x }',
+            value: "xs.map(() => fn(param(x)))",
+            underlying: "param = (x: number) => { /* block! */ return x }",
             line: 4,
             column: 14,
           },
@@ -664,11 +664,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: '[1, 2].map(x => x.toLocaleString(fail()))',
-            underlying: 'fail()',
+            value: "[1, 2].map(x => x.toLocaleString(fail()))",
+            underlying: "fail()",
             line: 4,
             column: 43,
           },
@@ -685,11 +685,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'fn.call(fail())',
-            underlying: 'fail()',
+            value: "fn.call(fail())",
+            underlying: "fail()",
             line: 5,
             column: 18,
           },
@@ -706,11 +706,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'Promise.try(fail())',
-            underlying: 'fail()',
+            value: "Promise.try(fail())",
+            underlying: "fail()",
             line: 4,
             column: 22,
           },
@@ -726,11 +726,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'Promise.try(() => fail(), 2, 3, fail())',
-            underlying: 'fail()',
+            value: "Promise.try(() => fail(), 2, 3, fail())",
+            underlying: "fail()",
             line: 4,
             column: 42,
           },
@@ -746,11 +746,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'Promise.resolve().then(fail())',
-            underlying: 'fail()',
+            value: "Promise.resolve().then(fail())",
+            underlying: "fail()",
             line: 4,
             column: 33,
           },
@@ -765,11 +765,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'items.map((item) => curriedFn(fail())(item))',
-            underlying: 'fail()',
+            value: "items.map((item) => curriedFn(fail())(item))",
+            underlying: "fail()",
             line: 3,
             // Column varies because method name is on the same line as fail()
             column: { all: 53, allSettled: 60, any: 53, race: 54 }[method],
@@ -785,11 +785,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
             value: "items.map((item) => triple(fail())('b')(item))",
-            underlying: 'fail()',
+            underlying: "fail()",
             line: 3,
             column: { all: 50, allSettled: 57, any: 50, race: 51 }[method],
           },
@@ -804,11 +804,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'items.map((item) => obj.fn(fail())(item))',
-            underlying: 'fail()',
+            value: "items.map((item) => obj.fn(fail())(item))",
+            underlying: "fail()",
             line: 3,
             column: { all: 50, allSettled: 57, any: 50, race: 51 }[method],
           },
@@ -823,11 +823,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
             value: "items.map((item) => triple('a')(fail())(item))",
-            underlying: 'fail()',
+            underlying: "fail()",
             line: 3,
             column: { all: 55, allSettled: 62, any: 55, race: 56 }[method],
           },
@@ -842,11 +842,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'getPromise(fail())(item)',
-            underlying: 'fail()',
+            value: "getPromise(fail())(item)",
+            underlying: "fail()",
             line: 3,
             column: { all: 34, allSettled: 41, any: 34, race: 35 }[method],
           },
@@ -862,11 +862,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
             value: "someFunction(fail())('arg')",
-            underlying: 'fail()',
+            underlying: "fail()",
             line: 4,
             column: { all: 23, allSettled: 23, any: 23, race: 23 }[method],
           },
@@ -881,11 +881,11 @@ ruleTester.run('no-sync-in-promise-iterable', rule, {
       `,
       errors: [
         {
-          messageId: 'mayLeadToSyncError',
+          messageId: "mayLeadToSyncError",
           data: {
             method,
-            value: 'obj().prop',
-            underlying: 'obj = () => { return { prop: 123 }; }',
+            value: "obj().prop",
+            underlying: "obj = () => { return { prop: 123 }; }",
             line: 2,
             column: 14,
           },

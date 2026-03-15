@@ -1,25 +1,19 @@
-import readPkgUp from 'read-pkg-up';
+import readPkgUp from "read-pkg-up";
 
-import { log } from '../../../utils/logging.js';
-import type { DependencyDiff } from '../types.js';
+import { log } from "../../../utils/logging.js";
+import type { DependencyDiff } from "../types.js";
 
-import { determineOperation } from './diff.js';
+import { determineOperation } from "./diff.js";
 
 interface GetDestinationManifestProps {
   cwd?: string;
 }
 
-export const getDestinationManifest = async (
-  props?: GetDestinationManifestProps,
-) => {
+export const getDestinationManifest = async (props?: GetDestinationManifestProps) => {
   const result = await readPkgUp({ ...props, normalize: false });
 
   if (result === undefined) {
-    log.err(
-      'Could not find a',
-      log.bold('package.json'),
-      'in your working directory.',
-    );
+    log.err("Could not find a", log.bold("package.json"), "in your working directory.");
     process.exit(1);
   }
 
@@ -27,16 +21,14 @@ export const getDestinationManifest = async (
 };
 
 const joinVersions = (a: string | undefined, b: string | undefined) =>
-  [a, b].filter((v) => v !== undefined).join(' -> ');
+  [a, b].filter((v) => v !== undefined).join(" -> ");
 
 interface DiffDependenciesProps {
   old: Record<string, string | undefined>;
   new: Record<string, string | undefined>;
 }
 
-export const diffDependencies = (
-  props: DiffDependenciesProps,
-): DependencyDiff => {
+export const diffDependencies = (props: DiffDependenciesProps): DependencyDiff => {
   const deletionsAndModifications = Object.fromEntries(
     Object.entries(props.old).flatMap(([name, oldVersion]) => {
       if (oldVersion === props.new[name] || oldVersion === undefined) {

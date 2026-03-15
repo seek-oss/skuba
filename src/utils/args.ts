@@ -1,17 +1,17 @@
-import assert from 'assert';
+import assert from "assert";
 
-import { COMMAND_ALIASES } from './command.js';
+import { COMMAND_ALIASES } from "./command.js";
 
 export const hasDebugFlag = (args = process.argv) =>
-  args.some((arg) => arg.toLocaleLowerCase() === '--debug');
+  args.some((arg) => arg.toLocaleLowerCase() === "--debug");
 
 export const hasSerialFlag = (args = process.argv, env = process.env) =>
-  args.some((arg) => arg.toLocaleLowerCase() === '--serial') ||
+  args.some((arg) => arg.toLocaleLowerCase() === "--serial") ||
   Boolean(
     // Run serially on SEEK's central npm publishing pipeline.
     // Exhausting agents here can cause grief.
-    env.BUILDKITE_AGENT_META_DATA_QUEUE?.split(',').some((queueName) =>
-      queueName.startsWith('artefacts:npm'),
+    env.BUILDKITE_AGENT_META_DATA_QUEUE?.split(",").some((queueName) =>
+      queueName.startsWith("artefacts:npm"),
     ),
   );
 
@@ -31,9 +31,9 @@ export const hasSerialFlag = (args = process.argv, env = process.env) =>
 export const parseProcessArgs = (args = process.argv) => {
   const skubaIdx = args.findIndex((chunk) => /skuba(\.[jt]s)?$/.test(chunk));
 
-  assert(skubaIdx >= 0, 'Cannot parse args for `skuba`');
+  assert(skubaIdx >= 0, "Cannot parse args for `skuba`");
 
-  const rawCommand = (args[skubaIdx + 1] ?? 'help').toLocaleLowerCase();
+  const rawCommand = (args[skubaIdx + 1] ?? "help").toLocaleLowerCase();
 
   const commandName = COMMAND_ALIASES[rawCommand] ?? rawCommand;
 
@@ -90,8 +90,7 @@ export const parseRunArgs = (argv: string[]): RunArgs => {
   return state;
 };
 
-const isDigits = (arg: unknown): arg is string =>
-  typeof arg === 'string' && /^\d+$/.test(arg);
+const isDigits = (arg: unknown): arg is string => typeof arg === "string" && /^\d+$/.test(arg);
 
 const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
   const [arg1, arg2] = args;
@@ -106,7 +105,7 @@ const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
   }
 
   // Node.js inspector options that are optionally followed by a numeric port.
-  if (['--inspect', '--inspect-brk'].includes(arg1)) {
+  if (["--inspect", "--inspect-brk"].includes(arg1)) {
     if (isDigits(arg2)) {
       state.node.push(`${arg1}=${arg2}`);
       return args.slice(2);
@@ -129,7 +128,7 @@ const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
     return args.slice(1);
   }
 
-  if (arg1 === '--port') {
+  if (arg1 === "--port") {
     if (isDigits(arg2)) {
       state.port = Number(arg2);
       return args.slice(2);
@@ -139,7 +138,7 @@ const parseRunArgsIteration = (state: RunArgs, args: string[]): string[] => {
     return args.slice(1);
   }
 
-  if (arg1.startsWith('--conditions=')) {
+  if (arg1.startsWith("--conditions=")) {
     state.conditions ??= [];
     state.conditions.push(arg1.slice(13));
     return args.slice(1);

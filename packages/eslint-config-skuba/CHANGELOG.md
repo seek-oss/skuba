@@ -99,7 +99,7 @@
   A custom getter may be occasionally prescribed as the recommended approach to achieve desired behaviour. For example, this syntax can define a [recursive object in Zod](https://zod.dev/v4#recursive-objects). In these rare scenarios, add an inline ignore and ensure that you do not throw an error within the getter.
 
   ```typescript
-  import * as z from 'zod';
+  import * as z from "zod";
 
   const Category = z.object({
     name: z.string(),

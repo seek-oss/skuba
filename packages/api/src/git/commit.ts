@@ -1,5 +1,5 @@
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
+import fs from "fs-extra";
+import git from "isomorphic-git";
 
 export interface Identity {
   email?: string;
@@ -17,8 +17,8 @@ interface CommitParameters {
  * Writes a commit to the local Git repository.
  */
 export const commit = async ({
-  author = { name: 'skuba' },
-  committer = { name: 'skuba' },
+  author = { name: "skuba" },
+  committer = { name: "skuba" },
   dir,
   message,
 }: CommitParameters): Promise<string> =>

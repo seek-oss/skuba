@@ -1,12 +1,12 @@
-import path from 'path';
+import path from "path";
 
-import type { CreateCommitOnBranchInput } from '@octokit/graphql-schema';
-import fs from 'fs-extra';
+import type { CreateCommitOnBranchInput } from "@octokit/graphql-schema";
+import fs from "fs-extra";
 
-import * as Git from '../git/index.js';
+import * as Git from "../git/index.js";
 
-import { apiTokenFromEnvironment } from './environment.js';
-import { graphql } from './octokit.js';
+import { apiTokenFromEnvironment } from "./environment.js";
+import { graphql } from "./octokit.js";
 
 interface CreateCommitResult {
   createCommitOnBranch: {
@@ -82,14 +82,12 @@ export const uploadAllFileChanges = async ({
 
   if (updateLocal) {
     await Promise.all(
-      [...fileChanges.additions, ...fileChanges.deletions].map((file) =>
-        fs.rm(file.path),
-      ),
+      [...fileChanges.additions, ...fileChanges.deletions].map((file) => fs.rm(file.path)),
     );
 
     await Git.fastForwardBranch({
       ref: branch,
-      auth: { type: 'gitHubApp' },
+      auth: { type: "gitHubApp" },
       dir,
     });
   }
@@ -127,7 +125,7 @@ export const readFileChanges = async (
   }>(
     (files, changedFile) => {
       const filePath = changedFile.path;
-      if (changedFile.state === 'deleted') {
+      if (changedFile.state === "deleted") {
         files.deleted.push(filePath);
       } else {
         files.added.push(filePath);
@@ -152,7 +150,7 @@ export const readFileChanges = async (
     added.map(async (filePath) => ({
       path: filePath,
       contents: await fs.promises.readFile(toRootPath(filePath), {
-        encoding: 'base64',
+        encoding: "base64",
       }),
     })),
   );
@@ -204,7 +202,7 @@ export const uploadFileChanges = async ({
   const authToken = apiTokenFromEnvironment();
   if (!authToken) {
     throw new Error(
-      'Could not read a GitHub API token from the environment. Please set GITHUB_API_TOKEN or GITHUB_TOKEN.',
+      "Could not read a GitHub API token from the environment. Please set GITHUB_API_TOKEN or GITHUB_TOKEN.",
     );
   }
 
@@ -223,7 +221,7 @@ export const uploadFileChanges = async ({
       body: messageBody,
     },
     expectedHeadOid: headCommitId,
-    clientMutationId: 'skuba',
+    clientMutationId: "skuba",
     fileChanges,
   };
 

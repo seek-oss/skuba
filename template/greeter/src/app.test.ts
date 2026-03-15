@@ -1,5 +1,5 @@
-import * as app from './app.js';
+import * as app from "./app.js";
 
-describe('app', () => {
-  it('is importable', () => expect(app).toEqual({}));
+describe("app", () => {
+  it("is importable", () => expect(app).toEqual({}));
 });

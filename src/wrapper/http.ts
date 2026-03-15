@@ -1,7 +1,7 @@
-import http from 'http';
-import util from 'util';
+import http from "http";
+import util from "util";
 
-import { startServer } from './server.js';
+import { startServer } from "./server.js";
 
 /**
  * Create an HTTP request listener based on the supplied function.
@@ -16,9 +16,7 @@ export const createRequestListenerFromFunction =
       new Promise<void>((resolve, reject) =>
         response === undefined
           ? res.end(resolve)
-          : res.write(response, 'utf8', (err) =>
-              err ? reject(err) : res.end(resolve),
-            ),
+          : res.write(response, "utf8", (err) => (err ? reject(err) : res.end(resolve))),
       );
 
     try {
@@ -26,22 +24,20 @@ export const createRequestListenerFromFunction =
         const data: Buffer[] = [];
 
         req
-          .on('data', (chunk: Buffer) => data.push(chunk))
-          .on('end', () => resolve(Buffer.concat(data).toString()))
-          .on('error', (err) => reject(err));
+          .on("data", (chunk: Buffer) => data.push(chunk))
+          .on("end", () => resolve(Buffer.concat(data).toString()))
+          .on("error", (err) => reject(err));
       });
 
       // Treat an empty body as no arguments
       const jsonRequest: unknown = requestBody ? JSON.parse(requestBody) : [];
 
       // Pass a non-array request body as the first parameter
-      const args: unknown[] = Array.isArray(jsonRequest)
-        ? jsonRequest
-        : [jsonRequest];
+      const args: unknown[] = Array.isArray(jsonRequest) ? jsonRequest : [jsonRequest];
 
       const response: unknown = await fn(...args);
 
-      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.writeHead(200, { "Content-Type": "application/json" });
 
       await writeResponse(JSON.stringify(response, null, 2));
     } catch (err) {
@@ -56,10 +52,7 @@ export const createRequestListenerFromFunction =
  *
  * This function resolves when the server is closed.
  */
-export const serveRequestListener = (
-  requestListener: http.RequestListener,
-  port?: number,
-) => {
+export const serveRequestListener = (requestListener: http.RequestListener, port?: number) => {
   const server = http.createServer(requestListener);
   return startServer(server, port);
 };

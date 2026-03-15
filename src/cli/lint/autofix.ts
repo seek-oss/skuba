@@ -1,51 +1,45 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import { simpleGit } from 'simple-git';
+import { simpleGit } from "simple-git";
 
-import { isCiEnv } from '../../utils/env.js';
-import { createLogger, log } from '../../utils/logging.js';
-import { hasNpmrcSecret } from '../../utils/npmrc.js';
-import { throwOnTimeout } from '../../utils/wait.js';
-import { runESLint } from '../adapter/eslint.js';
-import { runPrettier } from '../adapter/prettier.js';
-import { createDestinationFileReader } from '../configure/analysis/project.js';
+import { isCiEnv } from "../../utils/env.js";
+import { createLogger, log } from "../../utils/logging.js";
+import { hasNpmrcSecret } from "../../utils/npmrc.js";
+import { throwOnTimeout } from "../../utils/wait.js";
+import { runESLint } from "../adapter/eslint.js";
+import { runOxfmt } from "../adapter/oxfmt.js";
+import { createDestinationFileReader } from "../configure/analysis/project.js";
 
-import { internalLint } from './internal.js';
-import type { Input } from './types.js';
+import { internalLint } from "./internal.js";
+import type { Input } from "./types.js";
 
-import * as Buildkite from '@skuba-lib/api/buildkite';
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
+import * as Buildkite from "@skuba-lib/api/buildkite";
+import * as Git from "@skuba-lib/api/git";
+import * as GitHub from "@skuba-lib/api/github";
 
-const RENOVATE_DEFAULT_PREFIX = 'renovate';
+const RENOVATE_DEFAULT_PREFIX = "renovate";
 
-const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
+const AUTOFIX_COMMIT_MESSAGE = "Run `skuba format`";
 
 export const AUTOFIX_IGNORE_FILES_BASE: Git.ChangedFile[] = [
   {
-    path: 'Dockerfile-incunabulum',
-    state: 'added',
+    path: "Dockerfile-incunabulum",
+    state: "added",
   },
 ];
 
 export const AUTOFIX_IGNORE_FILES_NPMRC: Git.ChangedFile[] = [
   {
-    path: '.npmrc',
-    state: 'added',
+    path: ".npmrc",
+    state: "added",
   },
   {
-    path: '.npmrc',
-    state: 'modified',
+    path: ".npmrc",
+    state: "modified",
   },
 ];
 
-const shouldPush = async ({
-  currentBranch,
-  dir,
-}: {
-  currentBranch?: string;
-  dir: string;
-}) => {
+const shouldPush = async ({ currentBranch, dir }: { currentBranch?: string; dir: string }) => {
   if (!isCiEnv()) {
     // We're not running in a CI environment so we don't need to push autofixes.
     // Ideally we'd drive this off of repository write permissions, but that is
@@ -55,11 +49,9 @@ const shouldPush = async ({
 
   const isDefaultBuildkiteBranch =
     currentBranch &&
-    [process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH, 'master', 'main'].includes(
-      currentBranch,
-    );
+    [process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH, "master", "main"].includes(currentBranch);
 
-  const isProtectedGitHubBranch = process.env.GITHUB_REF_PROTECTED === 'true';
+  const isProtectedGitHubBranch = process.env.GITHUB_REF_PROTECTED === "true";
 
   if (isDefaultBuildkiteBranch || isProtectedGitHubBranch) {
     // The current branch is a protected branch.
@@ -72,7 +64,7 @@ const shouldPush = async ({
       await GitHub.getPullRequestNumber();
     } catch {
       const warning =
-        'An autofix is available, but it was not pushed because an open pull request for this Renovate branch could not be found. If a pull request has since been created, retry the lint step to push the fix.';
+        "An autofix is available, but it was not pushed because an open pull request for this Renovate branch could not be found. If a pull request has since been created, retry the lint step to push the fix.";
       log.warn(warning);
       try {
         await Buildkite.annotate(Buildkite.md.terminal(warning));
@@ -98,10 +90,10 @@ const shouldPush = async ({
 };
 
 const getIgnores = async (dir: string): Promise<Git.ChangedFile[]> => {
-  const contents = await createDestinationFileReader(dir)('.npmrc');
+  const contents = await createDestinationFileReader(dir)(".npmrc");
 
   // If an .npmrc has secrets, we need to ignore it
-  if (hasNpmrcSecret(contents ?? '')) {
+  if (hasNpmrcSecret(contents ?? "")) {
     return [...AUTOFIX_IGNORE_FILES_BASE, ...AUTOFIX_IGNORE_FILES_NPMRC];
   }
 
@@ -109,10 +101,10 @@ const getIgnores = async (dir: string): Promise<Git.ChangedFile[]> => {
 };
 
 interface AutofixParameters {
-  debug: Input['debug'];
+  debug: Input["debug"];
 
   eslint: boolean;
-  prettier: boolean;
+  oxfmt: boolean;
   internal: boolean;
 
   eslintConfigFile?: string;
@@ -121,7 +113,7 @@ interface AutofixParameters {
 export const autofix = async (params: AutofixParameters): Promise<void> => {
   const dir = process.cwd();
 
-  if (!params.eslint && !params.prettier && !params.internal) {
+  if (!params.eslint && !params.oxfmt && !params.internal) {
     return;
   }
 
@@ -139,27 +131,27 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
     log.warn(
       `Attempting to autofix issues (${[
-        params.internal ? 'skuba' : undefined,
-        params.internal || params.eslint ? 'ESLint' : undefined,
-        'Prettier', // Prettier is always run
+        params.internal ? "skuba" : undefined,
+        params.internal || params.eslint ? "ESLint" : undefined,
+        "Oxfmt", // Oxfmt is always run
       ]
         .filter((s) => s !== undefined)
-        .join(', ')})...`,
+        .join(", ")})...`,
     );
 
     const logger = createLogger({ debug: params.debug });
 
     if (params.internal) {
-      await internalLint('format');
+      await internalLint("format");
     }
 
     if (params.internal || params.eslint) {
-      await runESLint('format', logger, params.eslintConfigFile);
+      await runESLint("format", logger, params.eslintConfigFile);
     }
 
-    // Unconditionally re-run Prettier; reaching here means we have pre-existing
+    // Unconditionally re-run Oxfmt; reaching here means we have pre-existing
     // format violations or may have created new ones through ESLint/internal fixes.
-    await runPrettier('format', logger);
+    await runOxfmt("format", logger);
 
     if (process.env.GITHUB_ACTIONS) {
       // GitHub runners have Git installed locally
@@ -171,7 +163,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
       });
 
       if (!ref) {
-        return log.warn('No autofixes detected.');
+        return log.warn("No autofixes detected.");
       }
 
       await throwOnTimeout(simpleGit().push(), { s: 30 });
@@ -181,9 +173,9 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
     // Other CI Environments, use GitHub API
     if (!currentBranch) {
-      log.warn('Could not determine the current branch.');
+      log.warn("Could not determine the current branch.");
       log.warn(
-        'Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.',
+        "Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.",
       );
       return;
     }
@@ -200,17 +192,13 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     );
 
     if (!ref) {
-      return log.warn('No autofixes detected.');
+      return log.warn("No autofixes detected.");
     }
 
     log.warn(`Pushed fix commit ${ref}.`);
   } catch (err) {
-    log.warn(log.bold('Failed to push fix commit.'));
-    log.warn(
-      log.bold(
-        'Does your CI environment have write access to your Git repository?',
-      ),
-    );
+    log.warn(log.bold("Failed to push fix commit."));
+    log.warn(log.bold("Does your CI environment have write access to your Git repository?"));
     log.subtle(inspect(err));
   }
 };

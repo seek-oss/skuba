@@ -1,12 +1,9 @@
-import fnArgs from 'function-arguments';
+import fnArgs from "function-arguments";
 
-import { log } from '../utils/logging.js';
-import { isFunction, isObject } from '../utils/validation.js';
+import { log } from "../utils/logging.js";
+import { isFunction, isObject } from "../utils/validation.js";
 
-import {
-  createRequestListenerFromFunction,
-  serveRequestListener,
-} from './http.js';
+import { createRequestListenerFromFunction, serveRequestListener } from "./http.js";
 
 interface Args {
   availablePort?: number;
@@ -23,14 +20,14 @@ export const runFunctionHandler = async ({
   functionName,
 }: Args): Promise<void> => {
   if (!isObject(entryPoint)) {
-    log.subtle(log.bold(functionName), 'is not exported');
+    log.subtle(log.bold(functionName), "is not exported");
     return;
   }
 
   const fn = entryPoint[functionName];
 
   if (!isFunction(fn)) {
-    log.subtle(log.bold(functionName), 'is not a function');
+    log.subtle(log.bold(functionName), "is not a function");
     return;
   }
 
@@ -38,8 +35,8 @@ export const runFunctionHandler = async ({
     log.bold(functionName),
     `(${fnArgs(fn)
       // Add a `?` placeholder for unnamed arguments.
-      .map((arg) => arg || '?')
-      .join(', ')})`,
+      .map((arg) => arg || "?")
+      .join(", ")})`,
   );
 
   const requestListener = createRequestListenerFromFunction(fn);

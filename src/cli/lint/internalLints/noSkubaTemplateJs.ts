@@ -1,13 +1,13 @@
-import path from 'path';
+import path from "path";
 
-import { pathExists } from '../../../utils/fs.js';
-import type { Logger } from '../../../utils/logging.js';
-import { getConsumerManifest } from '../../../utils/manifest.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
-import type { InternalLintResult } from '../internal.js';
+import { pathExists } from "../../../utils/fs.js";
+import type { Logger } from "../../../utils/logging.js";
+import { getConsumerManifest } from "../../../utils/manifest.js";
+import { detectPackageManager } from "../../../utils/packageManager.js";
+import type { InternalLintResult } from "../internal.js";
 
 export const noSkubaTemplateJs = async (
-  _mode: 'format' | 'lint',
+  _mode: "format" | "lint",
   logger: Logger,
 ): Promise<InternalLintResult> => {
   const [manifest, packageManager] = await Promise.all([
@@ -20,16 +20,13 @@ export const noSkubaTemplateJs = async (
     return { ok: true, fixable: false };
   }
 
-  const templateConfigPath = path.join(
-    path.dirname(manifest.path),
-    'skuba.template.js',
-  );
+  const templateConfigPath = path.join(path.dirname(manifest.path), "skuba.template.js");
 
   if (await pathExists(templateConfigPath)) {
     logger.err(
       `Template is incomplete; run ${logger.bold(
         `${packageManager.print.exec} skuba configure`,
-      )}. ${logger.dim('no-skuba-template-js')}`,
+      )}. ${logger.dim("no-skuba-template-js")}`,
     );
 
     return {
@@ -37,7 +34,7 @@ export const noSkubaTemplateJs = async (
       fixable: false,
       annotations: [
         {
-          path: 'skuba.template.js',
+          path: "skuba.template.js",
           message: `Template is incomplete; run ${packageManager.print.exec} skuba configure.`,
         },
       ],

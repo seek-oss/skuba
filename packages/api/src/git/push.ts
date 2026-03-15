@@ -1,10 +1,10 @@
-import fs from 'fs-extra';
-import git from 'isomorphic-git';
-import http from 'isomorphic-git/http/node';
+import fs from "fs-extra";
+import git from "isomorphic-git";
+import http from "isomorphic-git/http/node";
 
-import { apiTokenFromEnvironment } from '../github/environment.js';
+import { apiTokenFromEnvironment } from "../github/environment.js";
 
-import { getOwnerAndRepo } from './remote.js';
+import { getOwnerAndRepo } from "./remote.js";
 
 /**
  * Use a GitHub app token to auth the Git push.
@@ -13,7 +13,7 @@ import { getOwnerAndRepo } from './remote.js';
  * variables if `token` is not provided.
  */
 interface GitHubAppAuth {
-  type: 'gitHubApp';
+  type: "gitHubApp";
   token?: string;
 }
 
@@ -77,13 +77,11 @@ export const push = async ({
 }: PushParameters): Promise<PushResult> => {
   const { owner, repo } = await getOwnerAndRepo({ dir });
 
-  const url = `https://github.com/${encodeURIComponent(
-    owner,
-  )}/${encodeURIComponent(repo)}`;
+  const url = `https://github.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`;
 
   return git.push({
     onAuth: () => ({
-      username: 'x-access-token',
+      username: "x-access-token",
       password: auth.token ?? apiTokenFromEnvironment(),
     }),
     dir,

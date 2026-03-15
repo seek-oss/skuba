@@ -1,9 +1,9 @@
-import { diffDependencies } from './package.js';
+import { diffDependencies } from "./package.js";
 
-describe('diffDependencies', () => {
+describe("diffDependencies", () => {
   test.each([
     [
-      'handles empty input',
+      "handles empty input",
       {
         old: {},
         new: {},
@@ -11,19 +11,19 @@ describe('diffDependencies', () => {
       {},
     ],
     [
-      'ignores a no-op',
+      "ignores a no-op",
       {
         old: {
-          lodash: '1.0.0',
+          lodash: "1.0.0",
         },
         new: {
-          lodash: '1.0.0',
+          lodash: "1.0.0",
         },
       },
       {},
     ],
     [
-      'ignores undefined versions',
+      "ignores undefined versions",
       {
         old: {
           lodash: undefined,
@@ -35,82 +35,80 @@ describe('diffDependencies', () => {
       {},
     ],
     [
-      'finds a sole modification',
+      "finds a sole modification",
       {
         old: {
-          lodash: '1.0.0',
+          lodash: "1.0.0",
         },
         new: {
-          lodash: '1.0.1',
+          lodash: "1.0.1",
         },
       },
       {
         lodash: {
-          operation: 'M',
-          version: '1.0.0 -> 1.0.1',
+          operation: "M",
+          version: "1.0.0 -> 1.0.1",
         },
       },
     ],
     [
-      'finds a sole addition',
+      "finds a sole addition",
       {
         old: {},
         new: {
-          lodash: '1.0.0',
+          lodash: "1.0.0",
         },
       },
       {
         lodash: {
-          operation: 'A',
-          version: '1.0.0',
+          operation: "A",
+          version: "1.0.0",
         },
       },
     ],
     [
-      'finds a sole deletion',
+      "finds a sole deletion",
       {
         old: {
-          lodash: '1.0.0',
+          lodash: "1.0.0",
         },
         new: {},
       },
       {
         lodash: {
-          operation: 'D',
-          version: '1.0.0',
+          operation: "D",
+          version: "1.0.0",
         },
       },
     ],
     [
-      'handles a combination of changes',
+      "handles a combination of changes",
       {
         old: {
-          lodash: '1.0.0',
-          ramda: '1.0.0',
-          skuba: '1.0.1',
+          lodash: "1.0.0",
+          ramda: "1.0.0",
+          skuba: "1.0.1",
         },
         new: {
-          lodash: '1.0.0',
-          remeda: '1.0.0',
-          skuba: '1.0.0',
+          lodash: "1.0.0",
+          remeda: "1.0.0",
+          skuba: "1.0.0",
         },
       },
       {
         ramda: {
-          operation: 'D',
-          version: '1.0.0',
+          operation: "D",
+          version: "1.0.0",
         },
         remeda: {
-          operation: 'A',
-          version: '1.0.0',
+          operation: "A",
+          version: "1.0.0",
         },
         skuba: {
-          operation: 'M',
-          version: '1.0.1 -> 1.0.0',
+          operation: "M",
+          version: "1.0.1 -> 1.0.0",
         },
       },
     ],
-  ])('%s', (_, input, expected) =>
-    expect(diffDependencies(input)).toEqual(expected),
-  );
+  ])("%s", (_, input, expected) => expect(diffDependencies(input)).toEqual(expected));
 });

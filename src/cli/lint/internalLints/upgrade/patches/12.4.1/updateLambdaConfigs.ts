@@ -1,16 +1,16 @@
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import { glob } from 'fast-glob';
-import fs from 'fs-extra';
+import { glob } from "fast-glob";
+import fs from "fs-extra";
 
-import { Git } from '../../../../../../index.js';
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { Git } from "../../../../../../index.js";
+import { log } from "../../../../../../utils/logging.js";
+import type { PatchFunction, PatchReturnType } from "../../index.js";
 
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.promises.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, "utf8");
 
       return {
         file,
@@ -47,9 +47,9 @@ const findBracedBlock = (
   let endIndex = startIndex;
 
   while (braceCount > 0 && endIndex < content.length) {
-    if (content[endIndex] === '{') {
+    if (content[endIndex] === "{") {
       braceCount++;
-    } else if (content[endIndex] === '}') {
+    } else if (content[endIndex] === "}") {
       braceCount--;
     }
     endIndex++;
@@ -93,9 +93,9 @@ const replaceAllBracedBlocks = (
     let endIndex = startIndex;
 
     while (braceCount > 0 && endIndex < modified.length) {
-      if (modified[endIndex] === '{') {
+      if (modified[endIndex] === "{") {
         braceCount++;
-      } else if (modified[endIndex] === '}') {
+      } else if (modified[endIndex] === "}") {
         braceCount--;
       }
       endIndex++;
@@ -139,42 +139,35 @@ const patchCdkTsFile = ({
     }
   | undefined => {
   if (
-    !contents.includes('aws_lambda_nodejs.NodejsFunction') &&
-    !contents.includes('NodejsFunction')
+    !contents.includes("aws_lambda_nodejs.NodejsFunction") &&
+    !contents.includes("NodejsFunction")
   ) {
     return undefined;
   }
 
-  const modified = replaceAllBracedBlocks(
-    contents,
-    /bundling:\s*\{/g,
-    (bundlingContent) => {
-      // Check if --conditions already exists
-      if (bundlingContent.includes('--conditions')) {
-        return undefined;
-      }
+  const modified = replaceAllBracedBlocks(contents, /bundling:\s*\{/g, (bundlingContent) => {
+    // Check if --conditions already exists
+    if (bundlingContent.includes("--conditions")) {
+      return undefined;
+    }
 
-      // Find esbuildArgs block within bundling
-      const esbuildArgsBlock = findBracedBlock(
-        bundlingContent,
-        /esbuildArgs\s*:\s*\{/,
-      );
+    // Find esbuildArgs block within bundling
+    const esbuildArgsBlock = findBracedBlock(bundlingContent, /esbuildArgs\s*:\s*\{/);
 
-      if (esbuildArgsBlock) {
-        const argsContent = esbuildArgsBlock.content.trim();
-        const separator = argsContent ? ', ' : '';
-        const newArgsContent = `'--conditions': '${customCondition}'${separator}${argsContent}`;
+    if (esbuildArgsBlock) {
+      const argsContent = esbuildArgsBlock.content.trim();
+      const separator = argsContent ? ", " : "";
+      const newArgsContent = `'--conditions': '${customCondition}'${separator}${argsContent}`;
 
-        const modifiedBundlingContent = `${bundlingContent.slice(0, esbuildArgsBlock.matchIndex)}esbuildArgs: {${newArgsContent}}${bundlingContent.slice(esbuildArgsBlock.endIndex)}`;
+      const modifiedBundlingContent = `${bundlingContent.slice(0, esbuildArgsBlock.matchIndex)}esbuildArgs: {${newArgsContent}}${bundlingContent.slice(esbuildArgsBlock.endIndex)}`;
 
-        return modifiedBundlingContent;
-      }
+      return modifiedBundlingContent;
+    }
 
-      // Add new esbuildArgs property
-      const modifiedBundlingContent = bundlingContent.trimStart();
-      return `\n    esbuildArgs: { '--conditions': '${customCondition}' },\n    ${modifiedBundlingContent}`;
-    },
-  );
+    // Add new esbuildArgs property
+    const modifiedBundlingContent = bundlingContent.trimStart();
+    return `\n    esbuildArgs: { '--conditions': '${customCondition}' },\n    ${modifiedBundlingContent}`;
+  });
 
   if (!modified) {
     return undefined;
@@ -218,14 +211,12 @@ const patchWebpackConfigFile = ({
     const resolveContent = resolveBlock.content;
 
     // Find conditionNames array within resolve
-    const conditionNamesMatch = /conditionNames\s*:\s*\[([^\]]*)\]/s.exec(
-      resolveContent,
-    );
+    const conditionNamesMatch = /conditionNames\s*:\s*\[([^\]]*)\]/s.exec(resolveContent);
 
     if (conditionNamesMatch?.[1] !== undefined) {
       // Add custom condition to existing conditionNames array
       const existingConditions = conditionNamesMatch[1].trim();
-      const separator = existingConditions ? ', ' : '';
+      const separator = existingConditions ? ", " : "";
       const newConditionNames = `conditionNames: ['${customCondition}'${separator}${existingConditions}]`;
 
       const modifiedResolveContent = `${resolveContent.slice(0, conditionNamesMatch.index)}${newConditionNames}${resolveContent.slice(conditionNamesMatch.index + conditionNamesMatch[0].length)}`;
@@ -285,9 +276,9 @@ const patchServerlessEsbuildFile = ({
 
   // Check for serverless-esbuild plugin or build.esbuild or custom.esbuild configuration
   if (
-    !contents.includes('serverless-esbuild') &&
-    !contents.includes('build:') &&
-    !contents.includes('custom:')
+    !contents.includes("serverless-esbuild") &&
+    !contents.includes("build:") &&
+    !contents.includes("custom:")
   ) {
     return undefined;
   }
@@ -312,7 +303,7 @@ const patchServerlessEsbuildFile = ({
     }
 
     // Check if conditions already exists in this block
-    if (esbuildContent?.includes('conditions:')) {
+    if (esbuildContent?.includes("conditions:")) {
       continue;
     }
 
@@ -350,19 +341,19 @@ const patchServerlessFile = ({
       modified: string;
     }
   | undefined => {
-  if (contents.includes('esbuild')) {
+  if (contents.includes("esbuild")) {
     return patchServerlessEsbuildFile({
       contents,
       customCondition,
     });
   }
 
-  if (contents.includes('serverless-webpack')) {
+  if (contents.includes("serverless-webpack")) {
     return undefined;
   }
 
   // patch package patterns for serverless framework
-  if (contents.includes('package.json')) {
+  if (contents.includes("package.json")) {
     return undefined;
   }
 
@@ -380,7 +371,7 @@ const patchServerlessFile = ({
     const [fullMatch, patternsIndent, patternsLabel, patternsContent] = match;
 
     // Check if package.json already exists in this block
-    if (patternsContent?.includes('package.json')) {
+    if (patternsContent?.includes("package.json")) {
       continue;
     }
 
@@ -394,8 +385,7 @@ const patchServerlessFile = ({
   }
 
   // Also match package: blocks with include: arrays (allow other properties in between)
-  const packageIncludeBlockRegex =
-    /^(\s*)(include:)\s*\n((?:\1\s+-\s+.+\n)*)/gm;
+  const packageIncludeBlockRegex = /^(\s*)(include:)\s*\n((?:\1\s+-\s+.+\n)*)/gm;
 
   // Reset regex lastIndex for multiple matches
   packageIncludeBlockRegex.lastIndex = 0;
@@ -404,7 +394,7 @@ const patchServerlessFile = ({
     const [fullMatch, includeIndent, includeLabel, includeContent] = match;
 
     // Check if package.json already exists in this block
-    if (includeContent?.includes('package.json')) {
+    if (includeContent?.includes("package.json")) {
       continue;
     }
 
@@ -427,42 +417,31 @@ const patchServerlessFile = ({
   };
 };
 
-export const tryUpdateLambdaConfigs: PatchFunction = async ({
-  mode,
-}): Promise<PatchReturnType> => {
+export const tryUpdateLambdaConfigs: PatchFunction = async ({ mode }): Promise<PatchReturnType> => {
   let customCondition: string;
   try {
     const { repo } = await Git.getOwnerAndRepo({ dir: process.cwd() });
     customCondition = `@seek/${repo}/source`;
   } catch {
-    return { result: 'skip', reason: 'no repository name found' };
+    return { result: "skip", reason: "no repository name found" };
   }
 
-  const [tsFileNames, webpackFileNames, serverlessFileNames] =
-    await Promise.all([
-      glob('**/*.ts', {
-        ignore: [
-          '**/.git',
-          '**/node_modules',
-          'src/cli/lint/internalLints/upgrade/patches/**/*',
-        ],
-      }),
-      glob('**/*webpack.config.js', {
-        ignore: ['**/.git', '**/node_modules'],
-      }),
-      glob('**/serverless*.y*ml', {
-        ignore: ['**/.git', '**/node_modules'],
-      }),
-    ]);
+  const [tsFileNames, webpackFileNames, serverlessFileNames] = await Promise.all([
+    glob("**/*.ts", {
+      ignore: ["**/.git", "**/node_modules", "src/cli/lint/internalLints/upgrade/patches/**/*"],
+    }),
+    glob("**/*webpack.config.js", {
+      ignore: ["**/.git", "**/node_modules"],
+    }),
+    glob("**/serverless*.y*ml", {
+      ignore: ["**/.git", "**/node_modules"],
+    }),
+  ]);
 
-  if (
-    !tsFileNames.length &&
-    !webpackFileNames.length &&
-    !serverlessFileNames.length
-  ) {
+  if (!tsFileNames.length && !webpackFileNames.length && !serverlessFileNames.length) {
     return {
-      result: 'skip',
-      reason: 'no .ts or webpack config files or .yml files found',
+      result: "skip",
+      reason: "no .ts or webpack config files or .yml files found",
     };
   }
 
@@ -518,28 +497,28 @@ export const tryUpdateLambdaConfigs: PatchFunction = async ({
   ];
 
   if (!filesToPatch.length) {
-    return { result: 'skip', reason: 'no lambda configurations to patch' };
+    return { result: "skip", reason: "no lambda configurations to patch" };
   }
 
-  if (mode === 'lint') {
-    return { result: 'apply' };
+  if (mode === "lint") {
+    return { result: "apply" };
   }
 
   await Promise.all(
     filesToPatch.map(async ({ file, modified }) => {
-      await fs.promises.writeFile(file, modified, 'utf8');
+      await fs.promises.writeFile(file, modified, "utf8");
     }),
   );
 
-  return { result: 'apply' };
+  return { result: "apply" };
 };
 
 export const updateLambdaConfigs: PatchFunction = async (config) => {
   try {
     return await tryUpdateLambdaConfigs(config);
   } catch (err) {
-    log.warn('Failed to write configure `tsconfig.json` and `package.json`');
+    log.warn("Failed to write configure `tsconfig.json` and `package.json`");
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    return { result: "skip", reason: "due to an error" };
   }
 };
