@@ -1,5 +1,19 @@
 # skuba
 
+## 15.1.0
+
+### Minor Changes
+
+- **lint:** Restore managed `pnpm-workspace.yaml` sections ([#2265](https://github.com/seek-oss/skuba/pull/2265))
+
+  This patch restores sections of `pnpm-workspace.yaml` that were previously removed in the previous release because Renovate is not fully compatible with pnpm config dependencies.
+
+  These new managed sections should allow for greater flexibility than the previous configurations. Please reach out if you run into any issues.
+
+### Patch Changes
+
+- **deps:** ejs ^5.0.0 ([#2270](https://github.com/seek-oss/skuba/pull/2270))
+
 ## 15.0.1
 
 ### Patch Changes
