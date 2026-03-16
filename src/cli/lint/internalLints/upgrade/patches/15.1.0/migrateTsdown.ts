@@ -103,10 +103,6 @@ const migrateDepsFields = (ast: SgNode): Edit[] => {
     foundEntries.push({ newKey, valueText, pairNode });
   }
 
-  if (foundEntries.length === 0) {
-    return [];
-  }
-
   const startingBracket = configObject.find({ rule: { pattern: '{' } });
 
   if (!startingBracket) {
