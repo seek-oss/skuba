@@ -173,15 +173,16 @@ trustPolicy: no-downgrade # Managed by skuba
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
+        - vitest # Managed by skuba
       strictDepBuilds: true # Managed by skuba
       trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:
@@ -244,15 +245,16 @@ configDependencies:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
+        - vitest # Managed by skuba
       strictDepBuilds: true # Managed by skuba
       trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:

@@ -52,7 +52,8 @@ publicHoistPattern:
   - tsconfig-seek # Managed by skuba
   - tsdown # Managed by skuba
   - typescript # Managed by skuba
-  - jest # Managed by skuba
+  - '@vitest/*' # Managed by skuba
+  - vitest # Managed by skuba
 strictDepBuilds: true # Managed by skuba
 trustPolicy: no-downgrade # Managed by skuba
 
