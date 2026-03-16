@@ -62,6 +62,7 @@ export default defineConfig({
   outDir: 'docs',
   attw: true,
   publint: true,
+  failOnWarn: 'ci-only',
 });
       `,
     });
@@ -119,6 +120,37 @@ export default defineConfig({
         
       });
             ",
+      }
+    `);
+  });
+
+  it('should add failOnWarn to tsdown.config.mts', async () => {
+    vol.fromJSON({
+      'tsdown.config.mts': `import { defineConfig } from 'tsdown/config';
+
+export default defineConfig({
+  entry: 'src/index.ts',
+});`,
+    });
+
+    await expect(
+      migrateTsdown({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual<PatchReturnType>({
+      result: 'apply',
+    });
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "tsdown.config.mts": "import { defineConfig } from 'tsdown/config';
+
+      export default defineConfig({
+        
+        failOnWarn: true,
+        entry: 'src/index.ts',
+      });",
       }
     `);
   });

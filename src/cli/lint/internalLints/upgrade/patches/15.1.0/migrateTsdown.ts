@@ -109,14 +109,32 @@ const migrateDepsFields = (ast: SgNode): Edit[] => {
     return [];
   }
 
+  const existingFailOnWarn = configObject.find({
+    rule: {
+      kind: 'pair',
+      has: {
+        field: 'key',
+        regex: '^failOnWarn$',
+      },
+    },
+  });
+
+  if (existingFailOnWarn && !foundEntries.length) {
+    return [];
+  }
+
   const edit = startingBracket.replace(
     `{
-  deps: {
+  ${
+    foundEntries.length
+      ? `deps: {
     ${foundEntries
       .map(({ newKey, valueText }) => `${newKey}: ${valueText}`)
       .join(',\n    ')}
-  },
-  failOnWarn: true,`,
+  },`
+      : ''
+  }
+  ${existingFailOnWarn ? '' : 'failOnWarn: true,'}`,
   );
 
   const edits: Edit[] = [
