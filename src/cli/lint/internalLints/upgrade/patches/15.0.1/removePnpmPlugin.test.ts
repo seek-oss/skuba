@@ -47,15 +47,16 @@ describe('removePnpmPlugin', () => {
   - '@arethetypeswrong/core' # Managed by skuba
   - '@eslint/*' # Managed by skuba
   - '@types*' # Managed by skuba
+  - '@vitest/*' # Managed by skuba
   - esbuild # Managed by skuba
   - eslint # Managed by skuba
   - eslint-config-skuba # Managed by skuba
-  - jest # Managed by skuba
   - prettier # Managed by skuba
   - publint # Managed by skuba
   - tsconfig-seek # Managed by skuba
   - tsdown # Managed by skuba
   - typescript # Managed by skuba
+  - vitest # Managed by skuba
 
 trustPolicyExclude:
   - semver@5.7.2 || 6.3.1 # Managed by skuba
