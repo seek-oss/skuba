@@ -1,14 +1,14 @@
+import { dirname } from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import { glob } from 'fast-glob';
 import fs from 'fs-extra';
 
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
 import { createExec } from '../../../../../../utils/exec.js';
+import { log } from '../../../../../../utils/logging.js';
 import { detectPackageManager } from '../../../../../../utils/packageManager.js';
-import { dirname } from 'path';
+import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const FIELD_REMAPPING = {
   external: 'neverBundle',
@@ -78,10 +78,9 @@ const migrateDepsFields = (ast: SgNode): Edit[] => {
 
   const foundEntries: FoundEntry[] = [];
 
-  for (const [oldKey, newKey] of Object.entries(FIELD_REMAPPING) as [
-    OldKey,
-    string,
-  ][]) {
+  for (const [oldKey, newKey] of Object.entries(FIELD_REMAPPING) as Array<
+    [OldKey, string]
+  >) {
     const pairNode = configObject.find({
       rule: {
         kind: 'pair',
