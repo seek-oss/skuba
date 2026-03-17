@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -106,7 +106,7 @@ const applyDockerfilePatch = (contents: string) => {
 const tryPatchApiDockerfiles = async (config: {
   mode: 'lint' | 'format';
 }): Promise<PatchReturnType> => {
-  const dockerfilePaths = await glob(['**/Dockerfile*'], {
+  const dockerfilePaths = await fg(['**/Dockerfile*'], {
     ignore: ['**/.git', '**/node_modules'],
   });
 

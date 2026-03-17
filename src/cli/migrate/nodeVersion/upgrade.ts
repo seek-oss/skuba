@@ -1,6 +1,6 @@
 import { inspect } from 'node:util';
 
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
 
@@ -85,10 +85,10 @@ export const upgradeInfraPackages = async (
   packages: PackageInfo[],
 ): Promise<PatchReturnType> => {
   const [packageJsonPaths, pnpmWorkspacePaths] = await Promise.all([
-    glob(['**/package.json'], {
+    fg(['**/package.json'], {
       ignore: ['**/.git', '**/node_modules'],
     }),
-    glob('**/pnpm-workspace.yaml', {
+    fg('**/pnpm-workspace.yaml', {
       ignore: ['**/.git', '**/node_modules'],
     }),
   ]);

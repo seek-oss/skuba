@@ -1,7 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { isErrorWithCode } from '../../../../../../utils/error.js';
@@ -62,7 +62,7 @@ const findLogger = async ({
     }
   }
 
-  const loggerPaths = await glob('**/{logger,logging}.ts', {
+  const loggerPaths = await fg('**/{logger,logging}.ts', {
     cwd: root,
     ignore: ['**/.git', '**/node_modules'],
   });
@@ -101,7 +101,7 @@ const findLogger = async ({
 const patchUnhandledRejections = async (
   mode: 'format' | 'lint',
 ): Promise<PatchReturnType> => {
-  const filepaths = await glob('**/src/listen.ts', {
+  const filepaths = await fg('**/src/listen.ts', {
     ignore: ['**/.git', '**/node_modules'],
   });
 

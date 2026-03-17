@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
 
@@ -258,7 +258,7 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
   const readFile = createDestinationFileReader(dir);
   const paths = patch.file
     ? [patch.file]
-    : await glob(patch.files ?? [], {
+    : await fg(patch.files ?? [], {
         cwd: dir,
         ignore: ['**/node_modules/**'],
       });
