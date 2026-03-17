@@ -139,7 +139,7 @@ importers:
         specifier: ^7.0.1
         version: 7.0.1
       rolldown:
-        specifier: ~1.0.0-rc.9
+        specifier: 1.0.0-rc.9
         version: 1.0.0-rc.9
       semantic-release:
         specifier: ^25.0.2
