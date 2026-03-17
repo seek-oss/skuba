@@ -3,7 +3,6 @@ import fs from 'fs-extra';
 
 import { exec } from '../../utils/exec.js';
 import { detectPackageManager } from '../../utils/packageManager.js';
-import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.js';
 import type { PatchReturnType } from '../lint/internalLints/upgrade/index.js';
 type FileContent = {
   file: string;
@@ -188,9 +187,6 @@ export const migrateToVitest = async ({
   const packageManager = await detectPackageManager();
 
   if (packageManager.command === 'pnpm') {
-    // Hoist our new pnpm packages
-    await patchPnpmWorkspace('format');
-    await exec('pnpm', 'install', '--offline');
     await exec('pnpm', 'dlx', '@sku-lib/codemod', 'jest-to-vitest', '.');
   } else {
     await exec('npx', '@sku-lib/codemod', 'jest-to-vitest', '.');

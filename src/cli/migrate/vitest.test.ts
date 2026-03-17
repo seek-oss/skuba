@@ -1,12 +1,14 @@
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import { configForPackageManager } from '../../utils/packageManager.js';
+import type {
+  PatchConfig,
+  PatchReturnType,
+} from '../lint/internalLints/upgrade/index.js';
+import { migrateToVitest } from '../lint/internalLints/upgrade/patches/15.2.0/migrateToVitest.js';
 
-import { migrateToVitest } from './migrateToVitest.js';
-
-vi.mock('../../../../../../utils/exec.js');
+vi.mock('../../utils/exec.js');
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
   ...memfs.fs,
