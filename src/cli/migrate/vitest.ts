@@ -145,6 +145,10 @@ const patchFiles = async (): Promise<FileContent[]> => {
   ];
 };
 
+const scaffoldVitestConfig = async (): Promise<[]> =>
+  // todo
+  Promise.resolve([]);
+
 export const migrateToVitest = async ({
   mode,
 }: {
@@ -180,6 +184,20 @@ export const migrateToVitest = async ({
 
   await Promise.all(
     filesToUpdate.map(({ file, content }) =>
+      fs.promises.writeFile(file, content, 'utf8'),
+    ),
+  );
+
+  const configFilesToUpdate = await scaffoldVitestConfig();
+
+  if (configFilesToUpdate.length && mode === 'lint') {
+    return {
+      result: 'apply',
+    };
+  }
+
+  await Promise.all(
+    configFilesToUpdate.map(({ file, content }) =>
       fs.promises.writeFile(file, content, 'utf8'),
     ),
   );
