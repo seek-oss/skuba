@@ -138,6 +138,9 @@ importers:
       read-pkg-up:
         specifier: ^7.0.1
         version: 7.0.1
+      rolldown:
+        specifier: 1.0.0-rc.9
+        version: 1.0.0-rc.9
       semantic-release:
         specifier: ^25.0.2
         version: 25.0.3(typescript@5.9.3)
@@ -8627,8 +8630,8 @@ snapshots:
 
   '@babel/generator@8.0.0-rc.1':
     dependencies:
-      '@babel/parser': 8.0.0-rc.1
-      '@babel/types': 8.0.0-rc.1
+      '@babel/parser': 8.0.0-rc.2
+      '@babel/types': 8.0.0-rc.2
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       '@types/jsesc': 2.5.1
@@ -8694,7 +8697,7 @@ snapshots:
 
   '@babel/parser@8.0.0-rc.1':
     dependencies:
-      '@babel/types': 8.0.0-rc.1
+      '@babel/types': 8.0.0-rc.2
 
   '@babel/parser@8.0.0-rc.2':
     dependencies:
@@ -8813,7 +8816,7 @@ snapshots:
   '@babel/types@8.0.0-rc.1':
     dependencies:
       '@babel/helper-string-parser': 8.0.0-rc.2
-      '@babel/helper-validator-identifier': 8.0.0-rc.1
+      '@babel/helper-validator-identifier': 8.0.0-rc.2
 
   '@babel/types@8.0.0-rc.2':
     dependencies:

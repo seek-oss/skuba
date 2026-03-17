@@ -46,6 +46,7 @@ describe('removePnpmPlugin', () => {
   - jest # Managed by skuba
   - prettier # Managed by skuba
   - publint # Managed by skuba
+  - rolldown # Managed by skuba
   - tsconfig-seek # Managed by skuba
   - tsdown # Managed by skuba
   - typescript # Managed by skuba
@@ -79,8 +80,8 @@ minimumReleaseAgeExclude:
   - skuba-dive # Managed by skuba
   - tsconfig-seek # Managed by skuba
 packageManagerStrictVersion: true # Managed by skuba
-strictDepBuilds: true # Managed by skuba
-trustPolicy: no-downgrade # Managed by skuba
+strictDepBuilds: false # Managed by skuba
+trustPolicy: off # Managed by skuba
 `,
     });
 
@@ -172,11 +173,12 @@ trustPolicy: no-downgrade # Managed by skuba
         - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@5.7.2 || 6.3.1 # Managed by skuba",
       }
@@ -243,11 +245,12 @@ configDependencies:
         - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@5.7.2 || 6.3.1 # Managed by skuba",
       }
