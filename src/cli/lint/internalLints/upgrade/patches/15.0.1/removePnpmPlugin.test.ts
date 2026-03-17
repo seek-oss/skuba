@@ -46,6 +46,7 @@ describe('removePnpmPlugin', () => {
   - jest # Managed by skuba
   - prettier # Managed by skuba
   - publint # Managed by skuba
+  - rolldown # Managed by skuba
   - tsconfig-seek # Managed by skuba
   - tsdown # Managed by skuba
   - typescript # Managed by skuba
@@ -172,6 +173,7 @@ trustPolicy: off # Managed by skuba
         - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
@@ -243,6 +245,7 @@ configDependencies:
         - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba

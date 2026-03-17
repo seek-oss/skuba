@@ -72,6 +72,7 @@ describe('patchPnpmWorkspace', () => {
         - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
@@ -157,6 +158,7 @@ trustPolicyExclude:
         - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
@@ -240,6 +242,7 @@ trustPolicyExclude:
         - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
@@ -332,6 +335,7 @@ packageManagerStrictVersion: false`,
         - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
@@ -374,6 +378,7 @@ trustPolicyExclude:
         - eslint # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
