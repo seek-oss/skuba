@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { exec } from '../../../../../../utils/exec.js';
@@ -16,10 +16,10 @@ const replacePackage = async (): Promise<
   }>
 > => {
   const [packageJsonFiles, pnpmWorkspaceFiles] = await Promise.all([
-    glob(['**/package.json'], {
+    fg(['**/package.json'], {
       ignore: ['**/.git', '**/node_modules'],
     }),
-    glob(['**/pnpm-workspace.yaml'], {
+    fg(['**/pnpm-workspace.yaml'], {
       ignore: ['**/.git', '**/node_modules'],
     }),
   ]);
@@ -87,7 +87,7 @@ const replacePackage = async (): Promise<
   }
 
   // update typescript file references from aws-sdk-client-mock-jest to aws-sdk-client-mock-vitest
-  const tsFilePaths = await glob(['**/*.ts', '**/*.tsx'], {
+  const tsFilePaths = await fg(['**/*.ts', '**/*.tsx'], {
     ignore: ['**/.git', '**/node_modules'],
   });
 
@@ -128,7 +128,7 @@ export const migrateToVitest: PatchFunction = async ({
     };
   }
 
-  const vitestConfigFiles = await glob(['**/vitest.config.{ts,js,mts,cts}'], {
+  const vitestConfigFiles = await fg(['**/vitest.config.{ts,js,mts,cts}'], {
     ignore: ['**/.git', '**/node_modules'],
   });
 
@@ -158,11 +158,10 @@ export const migrateToVitest: PatchFunction = async ({
   if (packageManager.command === 'pnpm') {
     // Hoist our new pnpm packages
     await patchPnpmWorkspace('format');
-    await exec('pnpm install --offline');
-
-    await exec('pnpm dlx @sku-lib/codemod jest-to-vitest .');
+    await exec('pnpm', 'install', '--offline');
+    await exec('pnpm', 'dlx', '@sku-lib/codemod', 'jest-to-vitest', '.');
   } else {
-    await exec('npx @sku-lib/codemod jest-to-vitest .');
+    await exec('npx', '@sku-lib/codemod', 'jest-to-vitest', '.');
   }
 
   return {
