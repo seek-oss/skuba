@@ -119,6 +119,15 @@ const replacePackage = async (): Promise<
 export const migrateToVitest: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
+  // Adding `vitest.config.ts` to all the integration tests causes the vscode extension
+  // to freak out about having too many vitest configs
+  if (process.env.SKUBA_INT_TEST === 'true') {
+    return {
+      result: 'skip',
+      reason: 'skipping in integration test environment',
+    };
+  }
+
   const vitestConfigFiles = await glob(['**/vitest.config.{ts,js,mts,cts}'], {
     ignore: ['**/.git', '**/node_modules'],
   });
