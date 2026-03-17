@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import {
@@ -53,7 +53,7 @@ ${pnpmWorkspaceContents}`;
 };
 
 const fixDockerfiles = async () => {
-  const fileNames = await glob(['**/Dockerfile*']);
+  const fileNames = await fg(['**/Dockerfile*']);
 
   await Promise.all(
     fileNames.map(async (fileName) => {
@@ -71,7 +71,7 @@ const fixDockerfiles = async () => {
 };
 
 const fixBuildkitePipelines = async () => {
-  const fileNames = await glob(['**/.buildkite/**.{yml,yaml}']);
+  const fileNames = await fg(['**/.buildkite/**.{yml,yaml}']);
 
   await Promise.all(
     fileNames.map(async (fileName) => {
@@ -90,7 +90,7 @@ const fixBuildkitePipelines = async () => {
 };
 
 const forceUpgradeToPnpm10 = async () => {
-  const fileNames = await glob(['**/package.json']);
+  const fileNames = await fg(['**/package.json']);
 
   await Promise.all(
     fileNames.map(async (fileName) => {
