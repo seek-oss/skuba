@@ -9,111 +9,145 @@ import { detectPackageManager } from '../../../../../../utils/packageManager.js'
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const replacePackage = async (): Promise<
-  Array<{
-    file: string;
-    content: string;
-  }>
-> => {
-  const [packageJsonFiles, pnpmWorkspaceFiles] = await Promise.all([
-    fg(['**/package.json'], {
-      ignore: ['**/.git', '**/node_modules'],
-    }),
-    fg(['**/pnpm-workspace.yaml'], {
-      ignore: ['**/.git', '**/node_modules'],
-    }),
-  ]);
+type FileContent = {
+  file: string;
+  content: string;
+};
 
-  const [packageJsons, pnpmWorkspaces] = await Promise.all([
-    Promise.all(
-      packageJsonFiles.map(async (file) => {
-        const content = await fs.promises.readFile(file, 'utf8');
-        return {
-          file,
-          content,
-        };
+const patchFiles = async (): Promise<FileContent[]> => {
+  const [packageJsonFiles, pnpmWorkspaceFiles, buildkiteFiles, tsFilePaths] =
+    await Promise.all([
+      fg(['**/package.json'], {
+        ignore: ['**/.git', '**/node_modules'],
       }),
-    ),
-    Promise.all(
-      pnpmWorkspaceFiles.map(async (file) => {
-        const content = await fs.promises.readFile(file, 'utf8');
-        return {
-          file,
-          content,
-        };
+      fg(['**/pnpm-workspace.yaml'], {
+        ignore: ['**/.git', '**/node_modules'],
       }),
-    ),
-  ]);
-  const updatedpackageJsons = packageJsons
+      fg(['**/.buildkite/**/*.{yml,yaml}'], {
+        ignore: ['**/.git', '**/node_modules'],
+      }),
+      fg(['**/*.ts', '**/*.tsx'], {
+        ignore: ['**/.git', '**/node_modules'],
+      }),
+    ]);
+
+  const [packageJsons, pnpmWorkspaces, buildkitePipelines, tsFiles] =
+    await Promise.all([
+      Promise.all(
+        packageJsonFiles.map(async (file) => {
+          const content = await fs.promises.readFile(file, 'utf8');
+          return {
+            file,
+            content,
+          };
+        }),
+      ),
+      Promise.all(
+        pnpmWorkspaceFiles.map(async (file) => {
+          const content = await fs.promises.readFile(file, 'utf8');
+          return {
+            file,
+            content,
+          };
+        }),
+      ),
+      Promise.all(
+        buildkiteFiles.map(async (file) => {
+          const content = await fs.promises.readFile(file, 'utf8');
+          return {
+            file,
+            content,
+          };
+        }),
+      ),
+      Promise.all(
+        tsFilePaths.map(async (file) => {
+          const content = await fs.promises.readFile(file, 'utf8');
+          return {
+            file,
+            content,
+          };
+        }),
+      ),
+    ]);
+
+  const updatedPackageJsons = packageJsons
     .map(({ file, content }) => {
-      // replace aws-sdk-client-mock-jest with aws-sdk-client-mock-vitest 7.0.1
-      const updatedContent = content.replace(
-        /"aws-sdk-client-mock-jest":\s*"[^"]*"/g,
-        '"aws-sdk-client-mock-vitest": "7.0.1"',
-      );
+      const updatedContent = content
+        .replace(
+          /"aws-sdk-client-mock-jest":\s*"[^"]*"/g,
+          '"aws-sdk-client-mock-vitest": "7.0.1"',
+        )
+        .replace(
+          /"@shopify\/jest-koa-mocks":\s*"[^"]*"/g,
+          '"@skuba-lib/vitest-koa-mocks": "1.0.1"',
+        )
+        .replace(/--runInBand/g, '--maxWorkers=1');
 
       return {
         file,
         content: updatedContent === content ? undefined : updatedContent,
       };
     })
-    .filter(
-      (file): file is { file: string; content: string } =>
-        file.content !== undefined,
-    );
+    .filter((file): file is FileContent => file.content !== undefined);
 
   const updatedPnpmWorkspaces = pnpmWorkspaces
     .map(({ file, content }) => {
-      // replace aws-sdk-client-mock-jest with aws-sdk-client-mock-vitest 7.0.1
-      const updatedContent = content.replace(
-        /aws-sdk-client-mock-jest:\s*\S+/g,
-        'aws-sdk-client-mock-vitest: 7.0.1',
-      );
+      const updatedContent = content
+        .replace(
+          /aws-sdk-client-mock-jest:\s*\S+/g,
+          'aws-sdk-client-mock-vitest: 7.0.1',
+        )
+        .replace(
+          /@shopify\/jest-koa-mocks:\s*\S+/g,
+          '@skuba-lib/vitest-koa-mocks: 1.0.1',
+        );
 
       return {
         file,
         content: updatedContent === content ? undefined : updatedContent,
       };
     })
-    .filter(
-      (file): file is { file: string; content: string } =>
-        file.content !== undefined,
-    );
+    .filter((file): file is FileContent => file.content !== undefined);
 
-  const updatedFiles = [...updatedpackageJsons, ...updatedPnpmWorkspaces];
+  const updatedBuildkiteFiles = buildkitePipelines
+    .map(({ file, content }) => {
+      const updatedContent = content.replace(/--runInBand/g, '--maxWorkers=1');
+      return {
+        file,
+        content: updatedContent === content ? undefined : updatedContent,
+      };
+    })
+    .filter((file): file is FileContent => file.content !== undefined);
 
-  if (!updatedFiles.length) {
-    return [];
-  }
-
-  // update typescript file references from aws-sdk-client-mock-jest to aws-sdk-client-mock-vitest
-  const tsFilePaths = await fg(['**/*.ts', '**/*.tsx'], {
-    ignore: ['**/.git', '**/node_modules'],
-  });
-
-  const tsFiles = await Promise.all(
-    tsFilePaths.map(async (file) => {
-      const content = await fs.promises.readFile(file, 'utf8');
-
-      // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
-      const updatedContent = content.replace(
-        /import\s+['"]aws-sdk-client-mock-jest['"];?/g,
-        "import 'aws-sdk-client-mock-vitest/extend';",
-      );
+  // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
+  // replace imports from @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks
+  const updatedTsFiles = tsFiles
+    .map(({ file, content }) => {
+      const updatedContent = content
+        .replace(
+          /import\s+['"]aws-sdk-client-mock-jest['"];?/g,
+          "import 'aws-sdk-client-mock-vitest/extend';",
+        )
+        .replace(/@shopify\/jest-koa-mocks/g, '@skuba-lib/vitest-koa-mocks')
+        .replace(
+          /\.mockImplementation\(\)/g,
+          '.mockImplementation(() => {\n  /* empty */\n})',
+        );
 
       return {
         file,
         content: updatedContent === content ? undefined : updatedContent,
       };
-    }),
-  );
+    })
+    .filter((file): file is FileContent => file.content !== undefined);
 
-  const updatedTsFiles = tsFiles.filter(
-    (file): file is { file: string; content: string } =>
-      file.content !== undefined,
-  );
-
-  return [...updatedFiles, ...updatedTsFiles];
+  return [
+    ...updatedPackageJsons,
+    ...updatedPnpmWorkspaces,
+    ...updatedBuildkiteFiles,
+    ...updatedTsFiles,
+  ];
 };
 
 export const migrateToVitest: PatchFunction = async ({
@@ -139,7 +173,7 @@ export const migrateToVitest: PatchFunction = async ({
     };
   }
 
-  const filesToUpdate = await replacePackage();
+  const filesToUpdate = await patchFiles();
 
   if (filesToUpdate.length && mode === 'lint') {
     return {
