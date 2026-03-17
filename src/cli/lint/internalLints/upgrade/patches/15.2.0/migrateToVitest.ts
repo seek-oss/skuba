@@ -162,7 +162,7 @@ export const migrateToVitest: PatchFunction = async ({
     };
   }
 
-  const vitestConfigFiles = await fg(['**/vitest.config.{ts,js,mts,cts}'], {
+  const vitestConfigFiles = await fg(['**/vitest.config.{ts,js,mjs,mts,cts}'], {
     ignore: ['**/.git', '**/node_modules'],
   });
 
