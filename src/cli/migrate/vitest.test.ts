@@ -136,52 +136,7 @@ test('example test', () => {
       ",
         "pnpm-workspace.yaml": "catalog:
         aws-sdk-client-mock-vitest: 7.0.1
-
-      allowBuilds:
-        '@ast-grep/lang-json': true # Managed by skuba
-        '@ast-grep/lang-yaml': true # Managed by skuba
-        '@datadog/native-appsec': true # Managed by skuba
-        '@datadog/native-iast-taint-tracking': true # Managed by skuba
-        '@datadog/native-metrics': true # Managed by skuba
-        '@datadog/pprof': true # Managed by skuba
-        dd-trace: true # Managed by skuba
-        esbuild: true # Managed by skuba
-        protobufjs: true # Managed by skuba
-        unix-dgram: true # Managed by skuba
-        unrs-resolver: true # Managed by skuba
-      blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
-      minimumReleaseAge: 4320 # Managed by skuba
-      minimumReleaseAgeExclude:
-        - '@seek/*' # Managed by skuba
-        - '@skuba-lib/*' # Managed by skuba
-        - eslint-config-seek # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - eslint-plugin-skuba # Managed by skuba
-        - pnpm-plugin-skuba # Managed by skuba
-        - skuba # Managed by skuba
-        - skuba-dive # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      publicHoistPattern:
-        - '@arethetypeswrong/core' # Managed by skuba
-        - '@eslint/*' # Managed by skuba
-        - '@types*' # Managed by skuba
-        - '@vitest/*' # Managed by skuba
-        - esbuild # Managed by skuba
-        - eslint # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
-        - publint # Managed by skuba
-        - rolldown # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-        - tsdown # Managed by skuba
-        - typescript # Managed by skuba
-        - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
-      trustPolicyExclude:
-        - semver@5.7.2 || 6.3.1 # Managed by skuba",
+      ",
         "test/test.spec.ts": "import 'aws-sdk-client-mock-vitest/extend';
 
       test('example test', () => {
@@ -231,52 +186,7 @@ test('middleware', () => {
       ",
         "pnpm-workspace.yaml": "catalog:
         '@shopify/jest-koa-mocks': ^5.1.0
-
-      allowBuilds:
-        '@ast-grep/lang-json': true # Managed by skuba
-        '@ast-grep/lang-yaml': true # Managed by skuba
-        '@datadog/native-appsec': true # Managed by skuba
-        '@datadog/native-iast-taint-tracking': true # Managed by skuba
-        '@datadog/native-metrics': true # Managed by skuba
-        '@datadog/pprof': true # Managed by skuba
-        dd-trace: true # Managed by skuba
-        esbuild: true # Managed by skuba
-        protobufjs: true # Managed by skuba
-        unix-dgram: true # Managed by skuba
-        unrs-resolver: true # Managed by skuba
-      blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
-      minimumReleaseAge: 4320 # Managed by skuba
-      minimumReleaseAgeExclude:
-        - '@seek/*' # Managed by skuba
-        - '@skuba-lib/*' # Managed by skuba
-        - eslint-config-seek # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - eslint-plugin-skuba # Managed by skuba
-        - pnpm-plugin-skuba # Managed by skuba
-        - skuba # Managed by skuba
-        - skuba-dive # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      publicHoistPattern:
-        - '@arethetypeswrong/core' # Managed by skuba
-        - '@eslint/*' # Managed by skuba
-        - '@types*' # Managed by skuba
-        - '@vitest/*' # Managed by skuba
-        - esbuild # Managed by skuba
-        - eslint # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
-        - publint # Managed by skuba
-        - rolldown # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-        - tsdown # Managed by skuba
-        - typescript # Managed by skuba
-        - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
-      trustPolicyExclude:
-        - semver@5.7.2 || 6.3.1 # Managed by skuba",
+      ",
         "src/middleware.test.ts": "import { createMockContext } from '@skuba-lib/vitest-koa-mocks';
 
       test('middleware', () => {
