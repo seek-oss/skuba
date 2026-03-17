@@ -1,6 +1,6 @@
 {
   "name": "pnpm-plugin-skuba",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "private": false,
   "description": "Pnpm plugin for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/pnpm-plugin-skuba#readme",

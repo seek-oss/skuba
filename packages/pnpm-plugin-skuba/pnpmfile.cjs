@@ -44,13 +44,14 @@ const defaultConfig = {
     'eslint-config-skuba',
     'prettier',
     'publint',
+    'rolldown',
     'tsconfig-seek',
     'tsdown',
     'typescript',
     'vitest',
   ],
-  strictDepBuilds: true,
-  trustPolicy: 'no-downgrade',
+  strictDepBuilds: false,
+  trustPolicy: 'off',
   trustPolicyExclude: ['semver@5.7.2 || 6.3.1'],
 };
 

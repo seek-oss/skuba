@@ -49,13 +49,14 @@ publicHoistPattern:
   - eslint-config-skuba # Managed by skuba
   - prettier # Managed by skuba
   - publint # Managed by skuba
+  - rolldown # Managed by skuba
   - tsconfig-seek # Managed by skuba
   - tsdown # Managed by skuba
   - typescript # Managed by skuba
   - '@vitest/*' # Managed by skuba
   - vitest # Managed by skuba
-strictDepBuilds: true # Managed by skuba
-trustPolicy: no-downgrade # Managed by skuba
+strictDepBuilds: false # Managed by skuba
+trustPolicy: off # Managed by skuba
 
 trustPolicyExclude:
   - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13
