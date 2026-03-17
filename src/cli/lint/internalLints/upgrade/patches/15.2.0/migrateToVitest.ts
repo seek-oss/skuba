@@ -6,7 +6,6 @@ import fs from 'fs-extra';
 import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import { detectPackageManager } from '../../../../../../utils/packageManager.js';
-import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 type FileContent = {
@@ -190,9 +189,6 @@ export const migrateToVitest: PatchFunction = async ({
   const packageManager = await detectPackageManager();
 
   if (packageManager.command === 'pnpm') {
-    // Hoist our new pnpm packages
-    await patchPnpmWorkspace('format');
-    await exec('pnpm', 'install', '--offline');
     await exec('pnpm', 'dlx', '@sku-lib/codemod', 'jest-to-vitest', '.');
   } else {
     await exec('npx', '@sku-lib/codemod', 'jest-to-vitest', '.');
