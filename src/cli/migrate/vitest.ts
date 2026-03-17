@@ -1,3 +1,4 @@
+import { parse } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -8,6 +9,17 @@ type FileContent = {
   file: string;
   content: string;
 };
+
+const readFiles = async (paths: string[]): Promise<FileContent[]> =>
+  Promise.all(
+    paths.map(async (file) => {
+      const content = await fs.promises.readFile(file, 'utf8');
+      return {
+        file,
+        content,
+      };
+    }),
+  );
 
 const patchFiles = async (): Promise<FileContent[]> => {
   const [packageJsonFiles, pnpmWorkspaceFiles, buildkiteFiles, tsFilePaths] =
@@ -28,42 +40,10 @@ const patchFiles = async (): Promise<FileContent[]> => {
 
   const [packageJsons, pnpmWorkspaces, buildkitePipelines, tsFiles] =
     await Promise.all([
-      Promise.all(
-        packageJsonFiles.map(async (file) => {
-          const content = await fs.promises.readFile(file, 'utf8');
-          return {
-            file,
-            content,
-          };
-        }),
-      ),
-      Promise.all(
-        pnpmWorkspaceFiles.map(async (file) => {
-          const content = await fs.promises.readFile(file, 'utf8');
-          return {
-            file,
-            content,
-          };
-        }),
-      ),
-      Promise.all(
-        buildkiteFiles.map(async (file) => {
-          const content = await fs.promises.readFile(file, 'utf8');
-          return {
-            file,
-            content,
-          };
-        }),
-      ),
-      Promise.all(
-        tsFilePaths.map(async (file) => {
-          const content = await fs.promises.readFile(file, 'utf8');
-          return {
-            file,
-            content,
-          };
-        }),
-      ),
+      readFiles(packageJsonFiles),
+      readFiles(pnpmWorkspaceFiles),
+      readFiles(buildkiteFiles),
+      readFiles(tsFilePaths),
     ]);
 
   const updatedPackageJsons = packageJsons
@@ -145,9 +125,31 @@ const patchFiles = async (): Promise<FileContent[]> => {
   ];
 };
 
-const scaffoldVitestConfig = async (): Promise<[]> =>
-  // todo
-  Promise.resolve([]);
+const scaffoldVitestConfig = async () => {
+  const jestConfigFiles = await fg(
+    ['**/jest.config.{ts,mts,cts}', '**/jest.config.*.{ts,mts,cts}'],
+    {
+      ignore: ['**/.git', '**/node_modules'],
+    },
+  );
+
+  if (jestConfigFiles.length === 0) {
+    return [];
+  }
+
+  const jestConfigs = await readFiles(jestConfigFiles);
+
+  const viteConfigs = jestConfigs.map(({ file, content }) => {
+    const ast = parse('TypeScript', content);
+    const root = ast.root();
+
+    const coverageThreshold = root.find({
+      rule: {
+        kind: 'property_identifier',
+      },
+    });
+  });
+};
 
 export const migrateToVitest = async ({
   mode,
