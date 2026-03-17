@@ -17,6 +17,25 @@ skuba migrate help
 
 ---
 
+## skuba migrate vitest
+
+Attempts to automatically migrate your project from Jest to Vitest.
+
+```shell
+skuba migrate vitest
+```
+
+The following changes are made:
+
+- The [sku codemod] is applied
+- aws-sdk-client-mock-jest usage is replaced with aws-sdk-client-mock-vitest
+- @shopify/jest-koa-mocks usage is replaced with @skuba-lib/vitest-koa-mocks
+- `--runInBand` is replaced with `--maxWorkers=1` in test scripts in `package.json` and BuildKite pipelines.
+- jest.config.\*ts files are best effort migrated to vitest.config.ts files
+- Jest hooks are best effort migrated to Vitest hooks
+
+Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
+
 ## skuba migrate node
 
 **skuba** includes migrations to upgrade your project to the [active LTS version] of Node.js.
@@ -182,3 +201,4 @@ and `@types/node` to major version `20`.
 
 [aws-20]: https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/
 [node-20]: https://nodejs.org/en/blog/announcements/v20-release-announce
+[sku codemod]: https://seek-oss.github.io/sku/#/./docs/vitest?id=migrating-to-vitest

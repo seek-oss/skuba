@@ -1,6 +1,7 @@
 import { log } from '../../utils/logging.js';
 
 import { nodeVersionMigration } from './nodeVersion/index.js';
+import { migrateToVitest } from './vitest.js';
 
 export const migrations = {
   node20: () =>
@@ -52,7 +53,8 @@ export const migrations = {
         },
       ],
     }),
-} satisfies Record<string, () => Promise<void>>;
+  vitest: () => migrateToVitest({ mode: 'format' }),
+} satisfies Record<string, () => Promise<unknown>>;
 
 const logAvailableMigrations = () => {
   log.ok('Available migrations:');
