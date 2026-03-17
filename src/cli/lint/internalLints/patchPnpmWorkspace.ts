@@ -60,8 +60,8 @@ const defaultConfig = {
     'tsdown',
     'typescript',
   ],
-  strictDepBuilds: true,
-  trustPolicy: 'no-downgrade',
+  strictDepBuilds: false,
+  trustPolicy: 'off',
   trustPolicyExclude: ['semver@5.7.2 || 6.3.1'],
 } satisfies Partial<Config>;
 
