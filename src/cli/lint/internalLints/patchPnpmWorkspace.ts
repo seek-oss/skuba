@@ -6,12 +6,12 @@ import type { Config } from '@pnpm/config';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging.js';
+import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { InternalLintResult } from '../internal.js';
 
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 
 import { Git } from '@skuba-lib/api';
-import { detectPackageManager } from '../../../utils/packageManager.js';
 
 /**
  *  Keep in sync with packages/pnpm-plugin-skuba/pnpmfile.cjs
