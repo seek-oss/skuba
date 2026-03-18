@@ -127,7 +127,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "2.0.0",
-    "tsdown": "~0.20.3",
+    "tsdown": "~0.21.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.0",
     "zod": "^4.3.5"
@@ -167,13 +167,13 @@
   },
   "packageManager": "pnpm@10.32.1",
   "engines": {
-    "node": ">=22.14.0"
+    "node": ">=22.18.0"
   },
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "15.1.0"
+    "version": "15.2.0"
   }
 }
