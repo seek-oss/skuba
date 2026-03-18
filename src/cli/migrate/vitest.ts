@@ -4,7 +4,11 @@ import fs from 'fs-extra';
 
 import { exec } from '../../utils/exec.js';
 import { detectPackageManager } from '../../utils/packageManager.js';
+import { getCustomConditions } from '../build/tsc.js';
 import type { PatchReturnType } from '../lint/internalLints/upgrade/index.js';
+
+import { Git } from '@skuba-lib/api';
+import { getOwnerAndRepo } from '@skuba-lib/api/git';
 type FileContent = {
   file: string;
   content: string;
@@ -148,33 +152,80 @@ const extractCoverageThreshold = (node: SgNode): string | undefined => {
   return globalObject?.text();
 };
 
+const extractCoverageIgnorePaths = (node: SgNode): string | undefined => {
+  const coveragePathIgnorePatterns = node.find({
+    rule: {
+      kind: 'property_identifier',
+      regex: '^coveragePathIgnorePatterns$',
+    },
+  });
+
+  const arrayObject = coveragePathIgnorePatterns
+    ?.parent()
+    ?.children()
+    .find((c) => c.kind() === 'array');
+
+  return arrayObject?.text();
+};
+
+const determineCustomConditions = async (): Promise<string[]> => {
+  const gitRoot = await Git.findRoot({ dir: process.cwd() });
+  const projectRoot = gitRoot ?? process.cwd();
+  const maybeTsconfigCustomConditions = getCustomConditions(projectRoot);
+
+  let customConditions: string[];
+  if (maybeTsconfigCustomConditions.length) {
+    customConditions = maybeTsconfigCustomConditions;
+  } else {
+    const { repo } = await getOwnerAndRepo({ dir: projectRoot });
+    customConditions = [`@seek/${repo}/source`];
+  }
+  return customConditions;
+};
+
 const scaffoldVitestConfig = async () => {
   const jestConfigFiles = await fg(
-    ['**/jest.config.{ts,mts,cts}', '**/jest.config.*.{ts,mts,cts}'],
+    [
+      '**/jest.config.{ts,js,mjs,mts,cts}',
+      '**/jest.config.*.{ts,js,mjs,mts,cts}',
+    ],
     {
       ignore: ['**/.git', '**/node_modules'],
     },
   );
 
-  if (jestConfigFiles.length === 0) {
+  if (!jestConfigFiles.length) {
     return [];
   }
 
-  const jestConfigs = await readFiles(jestConfigFiles);
+  const [jestConfigs, customConditions] = await Promise.all([
+    readFiles(jestConfigFiles),
+    determineCustomConditions(),
+  ]);
 
   const viteConfigs = jestConfigs.map(({ file, content }) => {
     const ast = parse('TypeScript', content);
     const root = ast.root();
 
     const coverageThreshold = extractCoverageThreshold(root);
+    const coverageIgnorePatterns = extractCoverageIgnorePaths(root);
 
     const vitestConfigContent = `import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  ssr: {
+    resolve: {
+      conditions: ${JSON.stringify(customConditions)},
+    },
+  },
   test: {
+    env: {
+      ENVIRONMENT: 'test',
+    },
     include: ['src/**/*.test.ts'],
     coverage: {
       include: ['src'],
+      exclude: ${coverageIgnorePatterns ?? "['src/testing']"},
       thresholds: ${
         coverageThreshold ??
         `{

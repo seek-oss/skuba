@@ -111,9 +111,9 @@ export const readTsConfig = ({
   return parsedConfig;
 };
 
-export const getCustomConditions = () => {
+export const getCustomConditions = (dir: string = process.cwd()) => {
   const parsedConfig = readTsConfig({
-    dir: process.cwd(),
+    dir,
     fileName: 'tsconfig.json',
     log: logger,
     silentlyFail: true,

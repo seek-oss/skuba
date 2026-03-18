@@ -8,14 +8,6 @@ import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { format } from './index.js';
 
-beforeAll(() => {
-  process.env.SKUBA_INT_TEST = 'true';
-});
-
-afterAll(() => {
-  delete process.env.SKUBA_INT_TEST;
-});
-
 vi.setConfig({ testTimeout: 15_000 });
 
 const stdoutMock = vi.fn();
