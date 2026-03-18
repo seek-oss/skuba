@@ -11,6 +11,7 @@ import type { InternalLintResult } from '../internal.js';
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 
 import { Git } from '@skuba-lib/api';
+import { detectPackageManager } from '../../../utils/packageManager.js';
 
 /**
  *  Keep in sync with packages/pnpm-plugin-skuba/pnpmfile.cjs
@@ -119,6 +120,15 @@ export const patchPnpmWorkspace = async (
   mode: 'format' | 'lint',
   cwd: string = process.cwd(),
 ): Promise<InternalLintResult> => {
+  const packageManager = await detectPackageManager();
+
+  if (packageManager.command !== 'pnpm') {
+    return {
+      ok: true,
+      fixable: false,
+      annotations: [],
+    };
+  }
   const root = await Git.findRoot({ dir: cwd });
   const dir = root ?? cwd;
 
