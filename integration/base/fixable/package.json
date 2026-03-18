@@ -1,9 +1,10 @@
 {
+  "private": true,
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "type": "module",
   "dependencies": {},
   "devDependencies": {},
-  "sideEffects": false,
-  "license": "UNLICENSED",
-  "private": true,
   "skuba": {
     "entryPoint": null,
     "template": null,

@@ -48,7 +48,7 @@
   "peerDependencies": {
     "@types/koa": "^3.0.1",
     "koa": "^3.1.1",
-    "vitest": "^4.0.14"
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": ">=22.14.0"
