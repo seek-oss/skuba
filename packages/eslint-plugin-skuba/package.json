@@ -14,6 +14,7 @@
   },
   "license": "MIT",
   "sideEffects": false,
+  "type": "module",
   "exports": {
     ".": {
       "@seek/skuba/source": "./src/index.ts",
@@ -69,6 +70,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "15.1.0"
+    "version": "15.2.0"
   }
 }
