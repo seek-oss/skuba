@@ -19,8 +19,8 @@ importers:
         specifier: ^0.0.7
         version: 0.0.7
       '@ast-grep/lang-yaml':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: ^0.0.6
+        version: 0.0.6
       '@ast-grep/napi':
         specifier: ^0.41.0
         version: 0.41.0
@@ -622,8 +622,8 @@ packages:
       tree-sitter-cli:
         optional: true
 
-  '@ast-grep/lang-yaml@0.0.5':
-    resolution: {integrity: sha512-IpApEjdDQ/bdZZQGwq+PIT9LwvPS+wSVmaA0v78StKbPN18JWE4fHGJyZgytKMmFGt4ihxEiDYZSdFAr5BjBTQ==}
+  '@ast-grep/lang-yaml@0.0.6':
+    resolution: {integrity: sha512-r/gVR+Tomr2eR8P7VoNW+L2brhQGjQC9IGOk6oAVEshN9b0/4molI3bvY309GnGVF0ZPTT5CmY32T8EtUJsPwA==}
     peerDependencies:
       tree-sitter-cli: 0.25.8
     peerDependenciesMeta:
@@ -8077,7 +8077,7 @@ snapshots:
     dependencies:
       '@ast-grep/setup-lang': 0.0.6
 
-  '@ast-grep/lang-yaml@0.0.5':
+  '@ast-grep/lang-yaml@0.0.6':
     dependencies:
       '@ast-grep/setup-lang': 0.0.6
 
