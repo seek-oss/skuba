@@ -1,4 +1,4 @@
-import { parse } from '@ast-grep/napi';
+import { type SgNode, parse } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -125,6 +125,29 @@ const patchFiles = async (): Promise<FileContent[]> => {
   ];
 };
 
+const extractCoverageThreshold = (node: SgNode): string | undefined => {
+  const coverageThreshold = node.find({
+    rule: {
+      kind: 'property_identifier',
+      regex: '^coverageThreshold$',
+    },
+  });
+
+  const global = coverageThreshold?.parent()?.find({
+    rule: {
+      kind: 'property_identifier',
+      regex: '^global$',
+    },
+  });
+
+  const globalObject = global
+    ?.parent()
+    ?.children()
+    .find((c) => c.kind() === 'object');
+
+  return globalObject?.text();
+};
+
 const scaffoldVitestConfig = async () => {
   const jestConfigFiles = await fg(
     ['**/jest.config.{ts,mts,cts}', '**/jest.config.*.{ts,mts,cts}'],
@@ -143,12 +166,46 @@ const scaffoldVitestConfig = async () => {
     const ast = parse('TypeScript', content);
     const root = ast.root();
 
-    const coverageThreshold = root.find({
-      rule: {
-        kind: 'property_identifier',
+    const coverageThreshold = extractCoverageThreshold(root);
+
+    const vitestConfigContent = `import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    include: ['src/**/*.test.ts'],
+    coverage: {
+      include: ['src'],
+      thresholds: ${
+        coverageThreshold ??
+        `{
+        branches: 100,
+        functions: 100,
+        lines: 100,
+        statements: 100,
+      }`
       },
-    });
+    },
+  },
+});
+`;
+
+    return {
+      content: vitestConfigContent,
+      file: file.replace('jest.config', 'vitest.config'),
+    };
   });
+
+  const updatedJestConfigs = jestConfigs.map(({ file, content }) => {
+    const comment =
+      '// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.';
+    const updatedContent = `${comment}\n\n${content}`;
+    return {
+      file,
+      content: updatedContent,
+    };
+  });
+
+  return [...updatedJestConfigs, ...viteConfigs];
 };
 
 export const migrateToVitest = async ({

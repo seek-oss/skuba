@@ -6,7 +6,8 @@ import type {
   PatchConfig,
   PatchReturnType,
 } from '../lint/internalLints/upgrade/index.js';
-import { migrateToVitest } from '../lint/internalLints/upgrade/patches/15.2.0/migrateToVitest.js';
+
+import { migrateToVitest } from './vitest.js';
 
 vi.mock('../../utils/exec.js');
 vi.mock('fs-extra', () => ({
@@ -278,6 +279,110 @@ test('service', () => {
       });
         myFn();
         expect(myFn).toHaveBeenCalled();
+      });
+      ",
+      }
+    `);
+  });
+
+  it('should attempt to migrate jest.config.ts files', async () => {
+    vol.fromJSON({
+      'jest.config.ts': `import { Jest } from 'skuba';
+
+export default Jest.mergePreset({
+  moduleNameMapper: {
+    '^#src/(.*)\\.js$': [
+      '<rootDir>/apps/api/src/$1',
+      '<rootDir>/apps/worker/src/$1',
+    ],
+    '^#src/(.*)$': [
+      '<rootDir>/apps/api/src/$1',
+      '<rootDir>/apps/worker/src/$1',
+    ],
+  },
+  clearMocks: true,
+  coveragePathIgnorePatterns: [
+    'src/listen\\.ts',
+    'src/register\\.ts',
+    'src/testing',
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 50,
+    },
+  },
+  setupFiles: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
+  testPathIgnorePatterns: ['\\.int\\.test'],
+  workerIdleMemoryLimit: '512MB',
+});
+`,
+    });
+
+    await expect(
+      migrateToVitest({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "jest.config.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+
+      import { Jest } from 'skuba';
+
+      export default Jest.mergePreset({
+        moduleNameMapper: {
+          '^#src/(.*)\\.js$': [
+            '<rootDir>/apps/api/src/$1',
+            '<rootDir>/apps/worker/src/$1',
+          ],
+          '^#src/(.*)$': [
+            '<rootDir>/apps/api/src/$1',
+            '<rootDir>/apps/worker/src/$1',
+          ],
+        },
+        clearMocks: true,
+        coveragePathIgnorePatterns: [
+          'src/listen\\.ts',
+          'src/register\\.ts',
+          'src/testing',
+        ],
+        coverageThreshold: {
+          global: {
+            branches: 50,
+            functions: 50,
+            lines: 50,
+            statements: 50,
+          },
+        },
+        setupFiles: ['<rootDir>/jest.setup.ts'],
+        setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
+        testPathIgnorePatterns: ['\\.int\\.test'],
+        workerIdleMemoryLimit: '512MB',
+      });
+      ",
+        "vitest.config.ts": "import { defineConfig } from 'vitest/config';
+
+      export default defineConfig({
+        test: {
+          include: ['src/**/*.test.ts'],
+          coverage: {
+            include: ['src'],
+            thresholds: {
+            branches: 50,
+            functions: 50,
+            lines: 50,
+            statements: 50,
+          },
+          },
+        },
       });
       ",
       }
