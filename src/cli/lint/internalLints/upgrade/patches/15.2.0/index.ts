@@ -1,10 +1,10 @@
 import type { Patches } from '../../index.js';
 
-import { tryMigrateToVitest } from './migrateToVitest.js';
+import { tryMigrateTsdown } from './migrateTsdown.js';
 
 export const patches: Patches = [
   {
-    apply: tryMigrateToVitest,
-    description: 'Migrate to vitest',
+    apply: tryMigrateTsdown,
+    description: 'Migrate tsdown config to 0.21',
   },
 ];

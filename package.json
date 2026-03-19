@@ -1,6 +1,6 @@
 {
   "name": "skuba",
-  "version": "15.2.0",
+  "version": "15.3.0",
   "private": false,
   "description": "SEEK development toolkit for backend applications and packages",
   "homepage": "https://github.com/seek-oss/skuba#readme",
@@ -77,8 +77,8 @@
   },
   "dependencies": {
     "@arethetypeswrong/core": "~0.18.1",
-    "@ast-grep/lang-json": "^0.0.6",
-    "@ast-grep/lang-yaml": "^0.0.5",
+    "@ast-grep/lang-json": "^0.0.7",
+    "@ast-grep/lang-yaml": "^0.0.6",
     "@ast-grep/napi": "^0.41.0",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@inquirer/prompts": "^7.9.0",
@@ -123,7 +123,7 @@
     "ts-dedent": "^2.2.0",
     "tsconfig-paths": "^4.0.0",
     "tsconfig-seek": "2.0.0",
-    "tsdown": "~0.20.3",
+    "tsdown": "~0.21.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.0",
     "vitest": "^4.1.0",
@@ -161,13 +161,13 @@
   },
   "packageManager": "pnpm@10.32.1",
   "engines": {
-    "node": ">=22.14.0"
+    "node": ">=22.18.0"
   },
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "15.1.0"
+    "version": "15.3.0"
   }
 }

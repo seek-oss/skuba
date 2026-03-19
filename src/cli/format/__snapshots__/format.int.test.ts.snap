@@ -66,6 +66,8 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
 
+Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
+
 Patch skipped: Migrate to vitest - skipping in integration test environment upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -185,6 +187,8 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
 
+Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
+
 Patch skipped: Migrate to vitest - skipping in integration test environment upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -297,6 +301,8 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
 
+Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
+
 Patch skipped: Migrate to vitest - skipping in integration test environment upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -380,6 +386,8 @@ Refreshed .prettierignore.
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
+
+Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
 Patch skipped: Migrate to vitest - skipping in integration test environment upgrade-skuba
 

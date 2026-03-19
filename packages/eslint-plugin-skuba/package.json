@@ -68,6 +68,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "15.1.0"
+    "version": "15.3.0"
   }
 }
