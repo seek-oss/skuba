@@ -2,7 +2,7 @@ import { dirname } from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { createExec } from '../../../../../../utils/exec.js';
@@ -148,7 +148,7 @@ const migrateDepsFields = (ast: SgNode): Edit[] => {
 export const migrateTsdown: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsdownFiles = await glob('**/tsdown.config.{mts,ts}', {
+  const tsdownFiles = await fg('**/tsdown.config.{mts,ts}', {
     ignore: ['**/.git', '**/node_modules'],
   });
 
