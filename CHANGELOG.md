@@ -1,5 +1,29 @@
 # skuba
 
+## 15.3.0
+
+### Minor Changes
+
+- **deps:** Require Node.js 22.18.0+ ([#2261](https://github.com/seek-oss/skuba/pull/2261))
+
+  This change should only impact projects using `skuba build-package`
+
+- **lint:** Migrate tsdown configs to support 0.21 ([#2261](https://github.com/seek-oss/skuba/pull/2261))
+
+  This patch attempts to migrate the `external`, `noExternal`, `inlineOnly` and `skipNodeModulesBundle` fields to their new equivalents and sets `failOnWarn` to `true`.
+
+  Read the [tsdown release notes](https://github.com/rolldown/tsdown/releases/tag/v0.21.0) for more information.
+
+### Patch Changes
+
+- **lint:** Avoid scaffolding pnpm-workspace.yaml in yarn repos ([#2278](https://github.com/seek-oss/skuba/pull/2278))
+
+- **deps:** @ast-grep/lang-yaml ^0.0.6 ([#2281](https://github.com/seek-oss/skuba/pull/2281))
+
+- **deps:** @ast-grep/lang-json ^0.0.7 ([#2280](https://github.com/seek-oss/skuba/pull/2280))
+
+- **deps:** tsdown ~0.21.0 ([#2261](https://github.com/seek-oss/skuba/pull/2261))
+
 ## 15.2.0
 
 ### Minor Changes
