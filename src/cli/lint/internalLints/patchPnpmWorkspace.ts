@@ -6,6 +6,7 @@ import type { Config } from '@pnpm/config';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging.js';
+import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { InternalLintResult } from '../internal.js';
 
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
@@ -56,13 +57,14 @@ const defaultConfig = {
     'eslint-config-skuba',
     'prettier',
     'publint',
+    'rolldown',
     'tsconfig-seek',
     'tsdown',
     'typescript',
     'vitest',
   ],
-  strictDepBuilds: true,
-  trustPolicy: 'no-downgrade',
+  strictDepBuilds: false,
+  trustPolicy: 'off',
   trustPolicyExclude: ['semver@5.7.2 || 6.3.1'],
 } satisfies Partial<Config>;
 
@@ -119,6 +121,15 @@ export const patchPnpmWorkspace = async (
   mode: 'format' | 'lint',
   cwd: string = process.cwd(),
 ): Promise<InternalLintResult> => {
+  const packageManager = await detectPackageManager();
+
+  if (packageManager.command !== 'pnpm') {
+    return {
+      ok: true,
+      fixable: false,
+      annotations: [],
+    };
+  }
   const root = await Git.findRoot({ dir: cwd });
   const dir = root ?? cwd;
 

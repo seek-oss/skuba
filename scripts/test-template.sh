@@ -54,10 +54,11 @@ cd "../${skuba_temp_directory}" || exit 1
 
 echo "pnpm init"
 pnpm init
-# When pnpm runs a script it serialises all workspace config as npm_config_* env vars.
-# These are inherited by child pnpm processes, so settings like trustPolicy=no-downgrade
-# leak into tmp-skuba even though it has its own pnpm-workspace.yaml.
-unset $(env | grep -o '^npm_config_[^=]*' | tr '\n' ' ')
+
+# https://github.com/pnpm/pnpm/issues/10988
+unset npm_config_strict_dep_builds
+unset npm_config_trust_policy
+
 echo "--- pnpm add --save-dev ${skuba_tar}"
 pnpm add --save-dev ${skuba_tar}
 

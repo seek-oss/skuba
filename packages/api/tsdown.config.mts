@@ -1,6 +1,11 @@
 import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
+  deps: {
+    onlyBundle: false,
+  },
+  inlineOnly: false,
+  failOnWarn: true,
   entry: ['src/index.ts', 'src/*/index.ts'],
   dts: true,
   format: ['cjs', 'esm'],
@@ -8,7 +13,6 @@ export default defineConfig({
   exports: {
     devExports: '@seek/skuba/source',
   },
-  inlineOnly: false,
   checks: {
     legacyCjs: false,
   },

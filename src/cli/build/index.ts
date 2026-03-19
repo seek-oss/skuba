@@ -6,6 +6,7 @@ import { getManifestProperties } from '../../utils/manifest.js';
 
 import { copyAssets } from './assets.js';
 import { type EsbuildConfig, esbuild } from './esbuild.js';
+import { rolldown } from './rolldown.js';
 import { readTsBuildConfig, tsc } from './tsc.js';
 
 export const build = async (args = process.argv.slice(2)) => {
@@ -33,7 +34,13 @@ export const build = async (args = process.argv.slice(2)) => {
       break;
     }
 
-    // TODO: flip the default case over to `esbuild` in skuba vNext.
+    case 'rolldown': {
+      log.plain(styleText('magenta', 'rolldown'));
+      await rolldown(args);
+      break;
+    }
+
+    // TODO: flip the default case over to `rolldown` in skuba vNext.
     case undefined:
     case 'tsc': {
       log.plain(styleText('blue', 'tsc'));

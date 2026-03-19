@@ -1,5 +1,77 @@
 # skuba
 
+## 15.3.0
+
+### Minor Changes
+
+- **deps:** Require Node.js 22.18.0+ ([#2261](https://github.com/seek-oss/skuba/pull/2261))
+
+  This change should only impact projects using `skuba build-package`
+
+- **lint:** Migrate tsdown configs to support 0.21 ([#2261](https://github.com/seek-oss/skuba/pull/2261))
+
+  This patch attempts to migrate the `external`, `noExternal`, `inlineOnly` and `skipNodeModulesBundle` fields to their new equivalents and sets `failOnWarn` to `true`.
+
+  Read the [tsdown release notes](https://github.com/rolldown/tsdown/releases/tag/v0.21.0) for more information.
+
+### Patch Changes
+
+- **lint:** Avoid scaffolding pnpm-workspace.yaml in yarn repos ([#2278](https://github.com/seek-oss/skuba/pull/2278))
+
+- **deps:** @ast-grep/lang-yaml ^0.0.6 ([#2281](https://github.com/seek-oss/skuba/pull/2281))
+
+- **deps:** @ast-grep/lang-json ^0.0.7 ([#2280](https://github.com/seek-oss/skuba/pull/2280))
+
+- **deps:** tsdown ~0.21.0 ([#2261](https://github.com/seek-oss/skuba/pull/2261))
+
+## 15.2.0
+
+### Minor Changes
+
+- **build:** Add experimental rolldown build support ([#2275](https://github.com/seek-oss/skuba/pull/2275))
+
+  skuba now supports [rolldown](https://rolldown.rs/) as a build mode. You can opt in by setting `"build": "rolldown"` in your `skuba` config in `package.json`, which will invoke rolldown using a config file:
+
+  ```diff
+  {
+    "skuba": {
+  -   "build": "esbuild",
+  +   "build": "rolldown",
+      "template": "koa-rest-api",
+      "type": "application"
+    }
+  }
+  ```
+
+  See the [rolldown documentation](https://rolldown.rs/guide/getting-started#using-the-config-file) for details on configuring rolldown via a config file.
+
+  Example config file (`rolldown.config.mjs`):
+
+  ```ts
+  import { defineConfig } from 'rolldown';
+
+  export default defineConfig({
+    input: 'src/listen.ts',
+    platform: 'node',
+    external: [/^dd-trace/],
+    resolve: {
+      conditionNames: ['@seek/my-repo/source'],
+    },
+    output: {
+      format: 'esm',
+      sourcemap: true,
+    },
+  });
+  ```
+
+### Patch Changes
+
+- **lint:** Disable `trustPolicy` and `strictDepBuilds` ([#2276](https://github.com/seek-oss/skuba/pull/2276))
+
+  Due to issues with how `pnpm` parses the `trustPolicy` and `strictDepBuilds` options, we are disabling them temporarily
+
+  These will be re-enabled in a future release once the underlying issues have been resolved.
+
 ## 15.1.0
 
 ### Minor Changes

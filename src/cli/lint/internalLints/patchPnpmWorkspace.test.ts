@@ -76,12 +76,13 @@ describe('patchPnpmWorkspace', () => {
         - eslint-config-skuba # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@5.7.2 || 6.3.1 # Managed by skuba"
     `);
@@ -162,6 +163,7 @@ trustPolicyExclude:
         - eslint-config-skuba # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
@@ -185,8 +187,8 @@ trustPolicyExclude:
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
       packageManagerStrictVersion: true # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba"
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba"
     `);
   });
 
@@ -246,6 +248,7 @@ trustPolicyExclude:
         - eslint-config-skuba # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
@@ -278,8 +281,8 @@ trustPolicyExclude:
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
       packageManagerStrictVersion: true # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba
         - semver@5.7.2 || 6.3.1 # Managed by skuba"
     `);
   });
@@ -304,7 +307,7 @@ packageManagerStrictVersion: false`,
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "blockExoticSubdeps: true # Managed by skuba
       ignorePatchFailures: false # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
       packageManagerStrictVersion: true # Managed by skuba
       allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
@@ -339,11 +342,12 @@ packageManagerStrictVersion: false`,
         - eslint-config-skuba # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba
+      trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@5.7.2 || 6.3.1 # Managed by skuba"
     `);
@@ -383,6 +387,7 @@ trustPolicyExclude:
         - eslint # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
+        - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
@@ -416,8 +421,8 @@ trustPolicyExclude:
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
       packageManagerStrictVersion: true # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba"
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba"
     `);
   });
 });

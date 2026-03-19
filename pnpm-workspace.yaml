@@ -35,10 +35,6 @@ overrides:
   skuba-dive: workspace:*
 packageManagerStrictVersion: true # Managed by skuba
 
-patchedDependencies:
-  '@ast-grep/lang-json@0.0.6': patches/@ast-grep__lang-json@0.0.6.patch
-  '@ast-grep/lang-yaml@0.0.5': patches/@ast-grep__lang-yaml@0.0.5.patch
-
 publicHoistPattern:
   - remark-lint-*
   - '@arethetypeswrong/core' # Managed by skuba
@@ -54,9 +50,10 @@ publicHoistPattern:
   - typescript # Managed by skuba
   - '@vitest/*' # Managed by skuba
   - vitest # Managed by skuba
-strictDepBuilds: true # Managed by skuba
-trustPolicy: no-downgrade # Managed by skuba
 
 trustPolicyExclude:
   - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13
   - semver@5.7.2 || 6.3.1 # Managed by skuba
+
+strictDepBuilds: false # Managed by skuba
+trustPolicy: off # Managed by skuba

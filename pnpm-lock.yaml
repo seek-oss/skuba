@@ -8,14 +8,6 @@ overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
 
-patchedDependencies:
-  '@ast-grep/lang-json@0.0.6':
-    hash: ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5
-    path: patches/@ast-grep__lang-json@0.0.6.patch
-  '@ast-grep/lang-yaml@0.0.5':
-    hash: ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5
-    path: patches/@ast-grep__lang-yaml@0.0.5.patch
-
 importers:
 
   .:
@@ -24,11 +16,11 @@ importers:
         specifier: ~0.18.1
         version: 0.18.2
       '@ast-grep/lang-json':
-        specifier: ^0.0.6
-        version: 0.0.6(patch_hash=ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5)
+        specifier: ^0.0.7
+        version: 0.0.7
       '@ast-grep/lang-yaml':
-        specifier: ^0.0.5
-        version: 0.0.5(patch_hash=ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5)
+        specifier: ^0.0.6
+        version: 0.0.6
       '@ast-grep/napi':
         specifier: ^0.41.0
         version: 0.41.1
@@ -143,6 +135,9 @@ importers:
       read-package-up:
         specifier: ^11.0.0
         version: 11.0.0
+      rolldown:
+        specifier: 1.0.0-rc.9
+        version: 1.0.0-rc.9
       semantic-release:
         specifier: ^25.0.2
         version: 25.0.3(typescript@5.9.3)
@@ -159,8 +154,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       tsdown:
-        specifier: ~0.20.3
-        version: 0.20.3(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
+        specifier: ~0.21.3
+        version: 0.21.3(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3)
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -434,8 +429,8 @@ importers:
         specifier: ^6.0.0
         version: 6.1.0(koa@3.1.2)
       '@koa/router':
-        specifier: 15.3.1
-        version: 15.3.1(koa@3.1.2)
+        specifier: 15.4.0
+        version: 15.4.0(koa@3.1.2)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -604,16 +599,16 @@ packages:
     resolution: {integrity: sha512-GiwTmBFOU1/+UVNqqCGzFJYfBXEytUkiI+iRZ6Qx7KmUVtLm00sYySkfe203C9QtPG11yOz1ZaMek8dT/xnlgg==}
     engines: {node: '>=20'}
 
-  '@ast-grep/lang-json@0.0.6':
-    resolution: {integrity: sha512-xb4OXtyuyY9RqUs5Af4Jb5hAJcBD0hGD1rJSQm1chJqdWOjhM6G7V2vHLx6B8M9uXuTBnaNs4U4OccMp+e95JQ==}
+  '@ast-grep/lang-json@0.0.7':
+    resolution: {integrity: sha512-8wiH+B4Rih8/vHsUB4DOTXnQHMxfWhaBygUEZ036kfr1T9WFvx5E7QYd2WX2Wm1nFCzUmWbIfsoE+cR2G9SJlA==}
     peerDependencies:
       tree-sitter-cli: 0.25.8
     peerDependenciesMeta:
       tree-sitter-cli:
         optional: true
 
-  '@ast-grep/lang-yaml@0.0.5':
-    resolution: {integrity: sha512-IpApEjdDQ/bdZZQGwq+PIT9LwvPS+wSVmaA0v78StKbPN18JWE4fHGJyZgytKMmFGt4ihxEiDYZSdFAr5BjBTQ==}
+  '@ast-grep/lang-yaml@0.0.6':
+    resolution: {integrity: sha512-r/gVR+Tomr2eR8P7VoNW+L2brhQGjQC9IGOk6oAVEshN9b0/4molI3bvY309GnGVF0ZPTT5CmY32T8EtUJsPwA==}
     peerDependencies:
       tree-sitter-cli: 0.25.8
     peerDependenciesMeta:
@@ -1763,8 +1758,8 @@ packages:
     peerDependencies:
       koa: '>=2'
 
-  '@koa/router@15.3.1':
-    resolution: {integrity: sha512-n7UgxsPmgKtEsrguz8a0d6BNx3lO2x52Z4UqkGsGwJculk4TlzZf3btd3QZMq1r1M+bSxUkBbyul4mDhysIVaQ==}
+  '@koa/router@15.4.0':
+    resolution: {integrity: sha512-vKYlXtoCfcAN8z4dHiveYX55rTYOgHEYJNumK1WM9ZAwaArhreGVkyC1LTMGfUQUJyIO/SbwRFBOHeOCY8/MaQ==}
     engines: {node: '>= 20'}
     peerDependencies:
       koa: ^2.0.0 || ^3.0.0
@@ -3675,6 +3670,10 @@ packages:
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
+
+  cac@7.0.0:
+    resolution: {integrity: sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ==}
+    engines: {node: '>=20.19.0'}
 
   cacache@20.0.3:
     resolution: {integrity: sha512-3pUp4e8hv07k1QlijZu6Kn7c9+ZpWWk4j3F8N3xPuCExULobqJydKYOTj1FTq58srkJsXvO7LbGAH4C0ZU3WGw==}
@@ -7293,6 +7292,10 @@ packages:
     resolution: {integrity: sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==}
     engines: {node: '>=18'}
 
+  tinyexec@1.0.4:
+    resolution: {integrity: sha512-u9r3uZC0bdpGOXtlxUIdwf9pkmvhqJdrVCH9fapQtgy/OeTTMZ1nqH7agtvEfmGui6e1XxjcdrlxvxJvc3sMqw==}
+    engines: {node: '>=18'}
+
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
@@ -7404,6 +7407,34 @@ packages:
       typescript:
         optional: true
       unplugin-lightningcss:
+        optional: true
+      unplugin-unused:
+        optional: true
+
+  tsdown@0.21.3:
+    resolution: {integrity: sha512-oKKeMC8+IgNsB+81hvF5VBsqhqL/nr0g9vse+ujbK40vv0i3ReFI6gUts7hQH7J53ylQNjMgf2Vu6n0+P/uddA==}
+    engines: {node: '>=20.19.0'}
+    hasBin: true
+    peerDependencies:
+      '@arethetypeswrong/core': ^0.18.1
+      '@tsdown/css': 0.21.3
+      '@tsdown/exe': 0.21.3
+      '@vitejs/devtools': '*'
+      publint: ^0.3.0
+      typescript: ^5.0.0
+      unplugin-unused: ^0.5.0
+    peerDependenciesMeta:
+      '@arethetypeswrong/core':
+        optional: true
+      '@tsdown/css':
+        optional: true
+      '@tsdown/exe':
+        optional: true
+      '@vitejs/devtools':
+        optional: true
+      publint:
+        optional: true
+      typescript:
         optional: true
       unplugin-unused:
         optional: true
@@ -7949,11 +7980,11 @@ snapshots:
       typescript: 5.6.1-rc
       validate-npm-package-name: 5.0.1
 
-  '@ast-grep/lang-json@0.0.6(patch_hash=ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5)':
+  '@ast-grep/lang-json@0.0.7':
     dependencies:
       '@ast-grep/setup-lang': 0.0.6
 
-  '@ast-grep/lang-yaml@0.0.5(patch_hash=ccf31bbf771008ed2e7588d24d373916f114b4d8024a36a4e265a18cdb2c0ed5)':
+  '@ast-grep/lang-yaml@0.0.6':
     dependencies:
       '@ast-grep/setup-lang': 0.0.6
 
@@ -9635,7 +9666,7 @@ snapshots:
       lodash.merge: 4.6.2
       type-is: 2.0.1
 
-  '@koa/router@15.3.1(koa@3.1.2)':
+  '@koa/router@15.4.0(koa@3.1.2)':
     dependencies:
       debug: 4.4.3
       http-errors: 2.0.1
@@ -11845,6 +11876,8 @@ snapshots:
   bytes@3.1.2: {}
 
   cac@6.7.14: {}
+
+  cac@7.0.0: {}
 
   cacache@20.0.3:
     dependencies:
@@ -15530,6 +15563,23 @@ snapshots:
     transitivePeerDependencies:
       - oxc-resolver
 
+  rolldown-plugin-dts@0.22.5(rolldown@1.0.0-rc.9)(typescript@5.9.3):
+    dependencies:
+      '@babel/generator': 8.0.0-rc.2
+      '@babel/helper-validator-identifier': 8.0.0-rc.2
+      '@babel/parser': 8.0.0-rc.2
+      '@babel/types': 8.0.0-rc.2
+      ast-kit: 3.0.0-beta.1
+      birpc: 4.0.0
+      dts-resolver: 2.1.3
+      get-tsconfig: 4.13.6
+      obug: 2.1.1
+      rolldown: 1.0.0-rc.9
+    optionalDependencies:
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - oxc-resolver
+
   rolldown@1.0.0-rc.3:
     dependencies:
       '@oxc-project/types': 0.112.0
@@ -16166,6 +16216,8 @@ snapshots:
 
   tinyexec@1.0.2: {}
 
+  tinyexec@1.0.4: {}
+
   tinyglobby@0.2.15:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.3)
@@ -16255,6 +16307,35 @@ snapshots:
       rolldown-plugin-dts: 0.22.5(rolldown@1.0.0-rc.3)(typescript@5.9.3)
       semver: 7.7.4
       tinyexec: 1.0.2
+      tinyglobby: 0.2.15
+      tree-kill: 1.2.2
+      unconfig-core: 7.5.0
+      unrun: 0.2.32(synckit@0.11.12)
+    optionalDependencies:
+      '@arethetypeswrong/core': 0.18.2
+      publint: 0.3.18
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@ts-macro/tsc'
+      - '@typescript/native-preview'
+      - oxc-resolver
+      - synckit
+      - vue-tsc
+
+  tsdown@0.21.3(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.12)(typescript@5.9.3):
+    dependencies:
+      ansis: 4.2.0
+      cac: 7.0.0
+      defu: 6.1.4
+      empathic: 2.0.0
+      hookable: 6.0.1
+      import-without-cache: 0.2.5
+      obug: 2.1.1
+      picomatch: 4.0.3
+      rolldown: 1.0.0-rc.9
+      rolldown-plugin-dts: 0.22.5(rolldown@1.0.0-rc.9)(typescript@5.9.3)
+      semver: 7.7.4
+      tinyexec: 1.0.4
       tinyglobby: 0.2.15
       tree-kill: 1.2.2
       unconfig-core: 7.5.0
