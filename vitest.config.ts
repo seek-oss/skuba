@@ -32,4 +32,9 @@ export default defineConfig({
     include: ['**/*.test*.ts'],
     exclude: ['node_modules', 'template', 'packages'],
   },
+  server: {
+    watch: {
+      ignored: ['**/integration/lint/**', '**/integration/format/**'],
+    },
+  },
 });
