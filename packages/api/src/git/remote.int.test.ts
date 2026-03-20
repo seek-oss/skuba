@@ -5,9 +5,6 @@ import { getOwnerAndRepo } from './remote.js';
 
 jest.mock('fs', () => memfs);
 
-// eslint-disable-next-line import-x/order
-import fs from 'fs-extra';
-
 beforeEach(async () => {
   delete process.env.BUILDKITE_REPO;
   delete process.env.GITHUB_REPOSITORY;
@@ -20,12 +17,12 @@ beforeEach(async () => {
 
   await git.init({
     dir: '.',
-    fs,
+    fs: memfs.fs,
   });
 
   await git.addRemote({
     dir: '.',
-    fs,
+    fs: memfs.fs,
     remote: 'origin',
     url: 'git@github.com:owner/repo.git',
   });
