@@ -5,9 +5,6 @@ import { currentBranch } from './currentBranch.js';
 
 jest.mock('fs', () => memfs);
 
-// eslint-disable-next-line import-x/order
-import fs from 'fs-extra';
-
 beforeEach(async () => {
   delete process.env.BUILDKITE_BRANCH;
   delete process.env.GITHUB_HEAD_REF;
@@ -21,13 +18,13 @@ beforeEach(async () => {
 
   await git.init({
     dir: '.',
-    fs,
+    fs: memfs.fs,
   });
 
   await git.branch({
     checkout: true,
     dir: '.',
-    fs,
+    fs: memfs.fs,
     ref: 'develop',
   });
 });
