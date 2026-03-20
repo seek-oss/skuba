@@ -30,7 +30,12 @@ export default defineConfig({
       exclude: ['src/testing'],
     },
     include: ['**/*.test*.ts'],
-    exclude: ['node_modules', 'template', 'packages'],
+    exclude: [
+      '**/node_modules',
+      'template',
+      'packages/eslint-config-skuba',
+      'packages/eslint-plugin-skuba',
+    ],
   },
   server: {
     watch: {
