@@ -79,7 +79,7 @@
     "@arethetypeswrong/core": "~0.18.1",
     "@ast-grep/lang-json": "^0.0.7",
     "@ast-grep/lang-yaml": "^0.0.6",
-    "@ast-grep/napi": "^0.41.0",
+    "@ast-grep/napi": "^0.42.0",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@inquirer/prompts": "^7.9.0",
     "@octokit/graphql": "^9.0.0",
