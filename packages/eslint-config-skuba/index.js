@@ -1,5 +1,5 @@
-const base = require('eslint-config-seek/base');
 const extensions = require('eslint-config-seek/extensions');
+const base = require('eslint-config-seek/vitest/base');
 const skuba = require('eslint-plugin-skuba');
 const eslintPluginYml = require('eslint-plugin-yml');
 const tseslint = require('typescript-eslint');
@@ -12,10 +12,7 @@ module.exports = [
   ...requireExtensionsPlugin.configs.recommended.map((config) => ({
     ...config,
     files: [`**/*.{${tsExtensions}}`],
-    ignores: [
-      // Jest configuration files
-      '**/jest.config*',
-    ],
+    ignores: ['**/vitest.config*'],
   })),
   {
     name: 'skuba/ignores',
@@ -70,16 +67,16 @@ module.exports = [
         },
       ],
 
-      'jest/expect-expect': 'off',
-      'jest/no-deprecated-functions': 'error',
-      'jest/prefer-expect-resolves': 'error',
-      'jest/prefer-spy-on': 'error',
-      'jest/prefer-strict-equal': 'off',
-      'jest/prefer-to-be': 'error',
-      'jest/prefer-to-contain': 'error',
-      'jest/prefer-to-have-length': 'error',
-      'jest/prefer-todo': 'error',
-      'jest/valid-title': 'error',
+      'vitest/expect-expect': 'off',
+      // 'jest/no-deprecated-functions': 'error',
+      'vitest/prefer-expect-resolves': 'error',
+      'vitest/prefer-spy-on': 'error',
+      'vitest/prefer-strict-equal': 'off',
+      'vitest/prefer-to-be': 'error',
+      'vitest/prefer-to-contain': 'error',
+      'vitest/prefer-to-have-length': 'error',
+      'vitest/prefer-todo': 'error',
+      'vitest/valid-title': 'error',
       'no-use-before-define': 'off',
 
       // https://github.com/prettier/eslint-config-prettier/blob/v8.5.0/README.md#quotes
