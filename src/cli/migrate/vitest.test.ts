@@ -397,7 +397,7 @@ module.exports = async () =>
 
       import 'some-setup';
       ",
-        "vitest.config.ts": "import * as Vitest from 'skuba';
+        "vitest.config.ts": "import { Vitest } from 'skuba';
       import { defineConfig } from 'vitest/config';
 
       export default defineConfig(Vitest.mergePreset({
