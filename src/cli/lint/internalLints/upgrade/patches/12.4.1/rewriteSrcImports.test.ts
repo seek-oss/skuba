@@ -1,5 +1,5 @@
 import memfs, { vol } from 'memfs';
-import dedent from 'ts-dedent';
+import { dedent } from 'ts-dedent';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';
