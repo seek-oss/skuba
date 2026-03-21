@@ -26,7 +26,9 @@ describe('patchApiTokenFromEnvironment', () => {
 
   it('should skip if scripts do not contain the apiTokenFromEnvironment usage', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
-    vi.mocked(fs.readFile).mockResolvedValueOnce('No usage here' as never);
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
+      'No usage here' as never,
+    );
     await expect(
       tryPatchApiTokenFromEnvironment({
         mode: 'format',
@@ -39,7 +41,7 @@ describe('patchApiTokenFromEnvironment', () => {
 
   it('should return apply and not modify files if mode is lint', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
-    vi.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       "import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n" as never,
     );
 
@@ -51,12 +53,12 @@ describe('patchApiTokenFromEnvironment', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch scripts if mode is format', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
-    vi.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       ("import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n\n" +
         'const client = new Octokit({ auth: apiTokenFromEnvironment() });') as never,
     );
@@ -69,11 +71,11 @@ describe('patchApiTokenFromEnvironment', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'scripts/test.ts',
       "import { GitHub } from 'skuba';\n\nconst client = new Octokit({ auth: GitHub.apiTokenFromEnvironment() });",
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledTimes(1);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(1);
   });
 });

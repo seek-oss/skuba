@@ -82,7 +82,7 @@ describe('patchPnpmPackageManager', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce('RUN pnpm install' as never)
       .mockResolvedValueOnce('steps:\n  - command: yarn install' as never);
 
@@ -102,7 +102,7 @@ describe('patchPnpmPackageManager', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -125,7 +125,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       1,
       'Dockerfile',
       ('# syntax=docker/dockerfile:1.7\n' +
@@ -134,7 +134,7 @@ describe('patchPnpmPackageManager', () => {
         '  corepack enable pnpm && corepack install\n') as never,
     );
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       2,
       '.buildkite/pipeline.yml',
       ('seek-oss/docker-ecr-cache#v2.2.0:\n' +
@@ -149,7 +149,7 @@ describe('patchPnpmPackageManager', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -172,14 +172,14 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch multiple cache entries in pipelines', async () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -206,7 +206,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       2,
       '.buildkite/pipeline.yml',
       ('seek-oss/docker-ecr-cache#v2.2.0:\n' +
@@ -226,7 +226,7 @@ describe('patchPnpmPackageManager', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -249,7 +249,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       2,
       '.buildkite/pipeline.yml',
       ('seek-oss/docker-ecr-cache#v2.3.0:\n' +
@@ -264,7 +264,7 @@ describe('patchPnpmPackageManager', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
@@ -290,6 +290,6 @@ describe('patchPnpmPackageManager', () => {
       reason: 'no pipeline or dockerfiles to patch',
     });
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 });

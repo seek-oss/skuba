@@ -26,7 +26,7 @@ export const patchApiTokenFromEnvironment = async (
 
   const scripts = await Promise.all(
     scriptPaths.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, 'utf8');
 
       return {
         file,
@@ -57,7 +57,7 @@ export const patchApiTokenFromEnvironment = async (
       const updatedContents = contents
         .replace(importRegex, "import { GitHub } from 'skuba';\n")
         .replace(usageRegex, 'GitHub.apiTokenFromEnvironment()');
-      await fs.writeFile(file, updatedContents, 'utf8');
+      await fs.promises.writeFile(file, updatedContents, 'utf8');
     }),
   );
 

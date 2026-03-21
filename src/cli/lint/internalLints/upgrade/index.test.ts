@@ -47,7 +47,7 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
 
-    expect(fs.readdir).not.toHaveBeenCalled();
+    expect(fs.promises.readdir).not.toHaveBeenCalled();
   });
 
   it('should apply patches which are equal to or greater than the manifest version', async () => {
@@ -76,7 +76,7 @@ describe('upgradeSkuba in format mode', () => {
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '7.3.1' },
       { isDirectory: () => true, name: '8.0.0' },
       { isDirectory: () => true, name: '8.2.1' },
@@ -114,7 +114,7 @@ describe('upgradeSkuba in format mode', () => {
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '8.2.1' },
     ] as never);
 
@@ -123,7 +123,7 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       '/package.json',
       `{
   "name": "some-api",
@@ -142,7 +142,7 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    vi.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
@@ -157,7 +157,7 @@ describe('upgradeSkuba in format mode', () => {
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '8.2.1' },
     ] as never);
 
@@ -166,7 +166,7 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       '/package.json',
       `{
   "name": "some-api",
@@ -210,7 +210,7 @@ describe('upgradeSkuba in lint mode', () => {
       fixable: false,
     });
 
-    expect(fs.readdir).not.toHaveBeenCalled();
+    expect(fs.promises.readdir).not.toHaveBeenCalled();
   });
 
   it('should return ok: false, fixable: true if there are lints to apply', async () => {
@@ -230,7 +230,7 @@ describe('upgradeSkuba in lint mode', () => {
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '7.3.1' },
       { isDirectory: () => true, name: '8.0.0' },
       { isDirectory: () => true, name: '8.2.1' },
@@ -265,7 +265,7 @@ describe('upgradeSkuba in lint mode', () => {
 
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '7.3.1' },
     ] as never);
 

@@ -22,12 +22,28 @@ export default defineConfig(
         ENVIRONMENT: 'test',
         FORCE_COLOR: '0',
       },
+      projects: [
+        {
+          extends: true,
+          test: {
+            root: 'src',
+            name: 'unit',
+            exclude: ['**/*.int.test.ts'],
+          },
+        },
+        {
+          extends: true,
+          test: {
+            root: 'src',
+            name: 'integration',
+            include: ['**/*.int.test.ts'],
+          },
+        },
+      ],
       coverage: {
         include: ['src'],
-        exclude: ['src/testing'],
       },
-      include: ['**/*.test*.ts'],
-      exclude: ['node_modules', 'template', 'packages'],
+      exclude: ['**/node_modules'],
     },
     server: {
       watch: {

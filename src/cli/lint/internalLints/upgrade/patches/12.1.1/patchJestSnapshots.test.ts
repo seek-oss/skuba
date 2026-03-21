@@ -26,7 +26,7 @@ describe('patchJestSnapshots', () => {
 
   it('should skip if test files do not contain the old URL', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
-    vi.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'No snapshot URL here' as never,
     );
     await expect(
@@ -41,7 +41,7 @@ describe('patchJestSnapshots', () => {
 
   it('should return apply and not modify files if mode is lint', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
-    vi.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'Some content with https://goo.gl/fbAQLP' as never,
     );
 
@@ -53,7 +53,7 @@ describe('patchJestSnapshots', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch test files', async () => {
@@ -62,7 +62,7 @@ describe('patchJestSnapshots', () => {
       'test2.test.ts',
       'test3.test.ts.snap',
     ]);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce('Some content with https://goo.gl/fbAQLP' as never)
       .mockResolvedValueOnce('No snapshot URL here' as never)
       .mockResolvedValueOnce(
@@ -77,17 +77,17 @@ describe('patchJestSnapshots', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'test1.test.ts',
       'Some content with https://jestjs.io/docs/snapshot-testing',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'test3.test.ts.snap',
       'Some other content with https://jestjs.io/docs/snapshot-testing',
       'utf8',
     );
 
-    expect(fs.writeFile).toHaveBeenCalledTimes(2);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(2);
   });
 });

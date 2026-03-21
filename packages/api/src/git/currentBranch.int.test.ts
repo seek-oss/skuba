@@ -1,4 +1,3 @@
-import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 import { beforeEach, expect, it, vi } from 'vitest';
@@ -23,13 +22,13 @@ beforeEach(async () => {
 
   await git.init({
     dir: '.',
-    fs,
+    fs: memfs.fs,
   });
 
   await git.branch({
     checkout: true,
     dir: '.',
-    fs,
+    fs: memfs.fs,
     ref: 'develop',
   });
 });

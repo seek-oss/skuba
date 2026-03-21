@@ -34,9 +34,12 @@ export type PatchConfig = {
 export type PatchFunction = (config: PatchConfig) => Promise<PatchReturnType>;
 
 const getPatches = async (manifestVersion: string): Promise<Patches> => {
-  const patches = await fs.readdir(path.join(import.meta.dirname, 'patches'), {
-    withFileTypes: true,
-  });
+  const patches = await fs.promises.readdir(
+    path.join(import.meta.dirname, 'patches'),
+    {
+      withFileTypes: true,
+    },
+  );
 
   // The patches are sorted by the version they were added from.
   // Only return patches that are newer or equal to the current version.
@@ -170,7 +173,7 @@ export const upgradeSkuba = async (
 
   const updatedPackageJson = await formatPackage(updatedManifest.packageJson);
 
-  await fs.writeFile(updatedManifest.path, updatedPackageJson);
+  await fs.promises.writeFile(updatedManifest.path, updatedPackageJson);
   logger.newline();
   logger.plain('skuba update complete.');
   logger.newline();

@@ -27,6 +27,7 @@ yarn-error.log
 
 /integration/format/
 /integration/lint/
+/packages/**/coverage/
 /template/**/pnpm-lock.yaml
 /template/**/yarn.lock
 /packages/**/*/lib*

@@ -19,7 +19,7 @@ const ECR_REGEX = /seek-oss\/docker-ecr-cache#v([\d\.]+)/gm;
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, 'utf8');
 
       return {
         file,
@@ -96,7 +96,7 @@ const patchPnpmPackageManager: PatchFunction = async ({
           DOCKERFILE_COREPACK_COMMAND,
           PACKAGE_JSON_MOUNT,
         );
-        await fs.writeFile(file, patchedContent);
+        await fs.promises.writeFile(file, patchedContent);
       }),
     );
   }
@@ -119,7 +119,7 @@ const patchPnpmPackageManager: PatchFunction = async ({
           },
         );
 
-        await fs.writeFile(file, patchedEcrContent);
+        await fs.promises.writeFile(file, patchedEcrContent);
       }),
     );
   }
