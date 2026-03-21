@@ -23,7 +23,7 @@ const fetchFiles = async (files: string[]) =>
 export const patchBuildConfig: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsconfigBuildPaths = await fg.glob(['**/tsconfig.build.json'], {
+  const tsconfigBuildPaths = await fg(['**/tsconfig.build.json'], {
     ignore: ['**/.git', '**/node_modules'],
   });
 

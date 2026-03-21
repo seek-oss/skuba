@@ -258,7 +258,7 @@ const runSubPatch = async (dir: string, patch: SubPatch) => {
   const readFile = createDestinationFileReader(dir);
   const paths = patch.file
     ? [patch.file]
-    : await fg.glob(patch.files ?? [], {
+    : await fg(patch.files ?? [], {
         cwd: dir,
         ignore: ['**/node_modules/**'],
       });

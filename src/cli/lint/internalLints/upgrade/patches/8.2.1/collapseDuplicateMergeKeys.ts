@@ -9,7 +9,7 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 const collapseDuplicateMergeKeys: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const buildkiteFiles = await fg.glob(
+  const buildkiteFiles = await fg(
     ['{apps/*/,packages/*/,./}.buildkite/**/*.y*ml'],
     { onlyFiles: true },
   );

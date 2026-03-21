@@ -388,7 +388,7 @@ const addCustomConditionsToTsConfig = async (
 };
 
 const projectContainsReferences = async (): Promise<boolean> => {
-  const allTsconfigBuildPaths = await fg.glob(['**/tsconfig.build.json'], {
+  const allTsconfigBuildPaths = await fg(['**/tsconfig.build.json'], {
     cwd: process.cwd(),
     ignore: ['**/node_modules/**', '**/.git/**'],
   });
@@ -415,7 +415,7 @@ export const patchPackageBuilds: PatchFunction = async ({
 }): Promise<PatchReturnType> => {
   let packageJsonPaths: string[];
   try {
-    packageJsonPaths = await fg.glob(['**/package.json'], {
+    packageJsonPaths = await fg(['**/package.json'], {
       ignore: ['**/.git', '**/node_modules'],
     });
   } catch {

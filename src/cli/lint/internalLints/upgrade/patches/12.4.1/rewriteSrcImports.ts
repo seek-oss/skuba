@@ -155,7 +155,7 @@ export const replaceSrcImportWithSelectiveRegisterRemoval = (
 export const tryRewriteSrcImports: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsFileNames = await fg.glob(['**/*.ts', '**/*.test.ts'], {
+  const tsFileNames = await fg(['**/*.ts', '**/*.test.ts'], {
     ignore: [
       '**/.git',
       '**/node_modules',

@@ -62,7 +62,7 @@ const findLogger = async ({
     }
   }
 
-  const loggerPaths = await fg.glob('**/{logger,logging}.ts', {
+  const loggerPaths = await fg('**/{logger,logging}.ts', {
     cwd: root,
     ignore: ['**/.git', '**/node_modules'],
   });
@@ -101,7 +101,7 @@ const findLogger = async ({
 const patchUnhandledRejections = async (
   mode: 'format' | 'lint',
 ): Promise<PatchReturnType> => {
-  const filepaths = await fg.glob('**/src/listen.ts', {
+  const filepaths = await fg('**/src/listen.ts', {
     ignore: ['**/.git', '**/node_modules'],
   });
 

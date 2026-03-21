@@ -35,7 +35,7 @@ const addBundlingContext = (contents: string) => {
 const stopBundlingInCDKTests: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const infraTestFileNames = await fg.glob(['**/infra/**/*.test.ts']);
+  const infraTestFileNames = await fg(['**/infra/**/*.test.ts']);
 
   if (!infraTestFileNames.length) {
     return {

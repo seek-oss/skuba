@@ -148,7 +148,7 @@ const migrateDepsFields = (ast: SgNode): Edit[] => {
 export const migrateTsdown: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsdownFiles = await fg.glob('**/tsdown.config.{mts,ts}', {
+  const tsdownFiles = await fg('**/tsdown.config.{mts,ts}', {
     ignore: ['**/.git', '**/node_modules'],
   });
 

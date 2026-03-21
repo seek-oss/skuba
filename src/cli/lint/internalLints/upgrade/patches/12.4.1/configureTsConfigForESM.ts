@@ -31,7 +31,7 @@ const tsConfigSchema = z.looseObject({
 type TsConfig = z.infer<typeof tsConfigSchema>;
 
 const fetchFiles = async (patterns: string[]) => {
-  const files = await fg.glob(patterns, {
+  const files = await fg(patterns, {
     ignore: ['**/.git', '**/node_modules'],
   });
 

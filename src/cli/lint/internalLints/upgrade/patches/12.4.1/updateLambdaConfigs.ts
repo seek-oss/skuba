@@ -440,17 +440,17 @@ export const tryUpdateLambdaConfigs: PatchFunction = async ({
 
   const [tsFileNames, webpackFileNames, serverlessFileNames] =
     await Promise.all([
-      fg.glob('**/*.ts', {
+      fg('**/*.ts', {
         ignore: [
           '**/.git',
           '**/node_modules',
           'src/cli/lint/internalLints/upgrade/patches/**/*',
         ],
       }),
-      fg.glob('**/*webpack.config.js', {
+      fg('**/*webpack.config.js', {
         ignore: ['**/.git', '**/node_modules'],
       }),
-      fg.glob('**/serverless*.y*ml', {
+      fg('**/serverless*.y*ml', {
         ignore: ['**/.git', '**/node_modules'],
       }),
     ]);

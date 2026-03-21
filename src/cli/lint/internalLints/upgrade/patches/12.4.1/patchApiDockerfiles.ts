@@ -106,7 +106,7 @@ const applyDockerfilePatch = (contents: string) => {
 const tryPatchApiDockerfiles = async (config: {
   mode: 'lint' | 'format';
 }): Promise<PatchReturnType> => {
-  const dockerfilePaths = await fg.glob(['**/Dockerfile*'], {
+  const dockerfilePaths = await fg(['**/Dockerfile*'], {
     ignore: ['**/.git', '**/node_modules'],
   });
 

@@ -62,7 +62,7 @@ const removeYarnIgnoreFlag = (contents: string) => {
 const removeYarnIgnoreOptionalFlags: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const maybeDockerFilesPaths = await fg.glob(['Dockerfile*']);
+  const maybeDockerFilesPaths = await fg(['Dockerfile*']);
 
   if (!maybeDockerFilesPaths.length) {
     return {
