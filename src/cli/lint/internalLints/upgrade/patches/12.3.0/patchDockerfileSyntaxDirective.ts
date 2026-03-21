@@ -24,7 +24,7 @@ export const patchDockerfileSyntaxDirective = async (
 
   const dockerfiles = await Promise.all(
     dockerfilePaths.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, 'utf8');
 
       return {
         file,
@@ -53,7 +53,7 @@ export const patchDockerfileSyntaxDirective = async (
   await Promise.all(
     dockerfilesToPatch.map(async ({ file, contents }) => {
       const updatedContents = contents.replace(dockerSyntaxRegex, '');
-      await fs.writeFile(file, updatedContents, 'utf8');
+      await fs.promises.writeFile(file, updatedContents, 'utf8');
     }),
   );
 

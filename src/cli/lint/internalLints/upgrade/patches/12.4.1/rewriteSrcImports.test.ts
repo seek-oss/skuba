@@ -1,5 +1,5 @@
 import memfs, { vol } from 'memfs';
-import dedent from 'ts-dedent';
+import { dedent } from 'ts-dedent';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig } from '../../index.js';
@@ -20,7 +20,8 @@ const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
+  __esModule: true,
+  default: (pat: string, opts: { ignore: string[] }) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
 

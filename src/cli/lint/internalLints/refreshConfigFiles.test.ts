@@ -17,7 +17,9 @@ const stdoutMock = jest.fn();
 const stdout = () => stdoutMock.mock.calls.flat(1).join('');
 
 jest.mock('fs-extra', () => ({
-  writeFile: jest.fn(),
+  promises: {
+    writeFile: jest.fn(),
+  },
 }));
 
 jest.mock('../../../utils/dir', () => ({
@@ -64,7 +66,7 @@ beforeEach(() => {
 afterEach(jest.resetAllMocks);
 
 describe('refreshConfigFiles', () => {
-  const writeFile = jest.mocked(fs.writeFile);
+  const writeFile = jest.mocked(fs.promises.writeFile);
   const createDestinationFileReader = jest.mocked(
     project.createDestinationFileReader,
   );

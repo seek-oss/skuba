@@ -2,7 +2,7 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { createExec, exec } from '../../../../../../utils/exec.js';
@@ -388,7 +388,7 @@ const addCustomConditionsToTsConfig = async (
 };
 
 const projectContainsReferences = async (): Promise<boolean> => {
-  const allTsconfigBuildPaths = await glob(['**/tsconfig.build.json'], {
+  const allTsconfigBuildPaths = await fg(['**/tsconfig.build.json'], {
     cwd: process.cwd(),
     ignore: ['**/node_modules/**', '**/.git/**'],
   });
@@ -415,7 +415,7 @@ export const patchPackageBuilds: PatchFunction = async ({
 }): Promise<PatchReturnType> => {
   let packageJsonPaths: string[];
   try {
-    packageJsonPaths = await glob(['**/package.json'], {
+    packageJsonPaths = await fg(['**/package.json'], {
       ignore: ['**/.git', '**/node_modules'],
     });
   } catch {

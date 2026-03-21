@@ -11,7 +11,8 @@ import { getOwnerAndRepo } from '@skuba-lib/api/git';
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
-  glob: (pat: string | string[], opts: { ignore: string[] }) =>
+  __esModule: true,
+  default: (pat: string, opts: { ignore: string[] }) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
 jest.mock('@skuba-lib/api/git');

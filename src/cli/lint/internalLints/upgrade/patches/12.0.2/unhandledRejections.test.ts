@@ -6,7 +6,8 @@ const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
-  glob: (pat: any, opts: any) =>
+  __esModule: true,
+  default: (pat: string, opts: { ignore: string[] }) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
 

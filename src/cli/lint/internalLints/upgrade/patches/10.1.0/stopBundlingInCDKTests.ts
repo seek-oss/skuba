@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -35,7 +35,7 @@ const addBundlingContext = (contents: string) => {
 const stopBundlingInCDKTests: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const infraTestFileNames = await glob(['**/infra/**/*.test.ts']);
+  const infraTestFileNames = await fg(['**/infra/**/*.test.ts']);
 
   if (!infraTestFileNames.length) {
     return {

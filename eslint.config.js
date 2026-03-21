@@ -48,7 +48,30 @@ module.exports = [
               message:
                 'Prefer fs-extra as it implements graceful-fs behaviour.',
             },
+            {
+              name: 'fast-glob',
+              allowImportNames: ['default'],
+              message: "Please use import 'fg' from 'fast-glob' instead",
+            },
           ],
+        },
+      ],
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'fs',
+          property: 'readFile',
+          message: 'Please use fs.promises.readFile instead.',
+        },
+        {
+          object: 'fs',
+          property: 'writeFile',
+          message: 'Please use fs.promises.writeFile instead.',
+        },
+        {
+          object: 'fs',
+          property: 'readdir',
+          message: 'Please use fs.promises.readdir instead.',
         },
       ],
     },

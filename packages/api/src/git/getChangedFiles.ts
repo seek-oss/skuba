@@ -88,7 +88,7 @@ const createIsLfsFilter = async (
   }
 
   const filter = ignoreFilter().add(
-    (await fs.readFile(lfsFile, 'utf8'))
+    (await fs.promises.readFile(lfsFile, 'utf8'))
       .split('\n')
       .map((l) => l.trim())
       .filter((l) => !l.startsWith('#') && l.includes('filter=lfs'))

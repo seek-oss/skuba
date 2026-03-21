@@ -31,14 +31,14 @@ describe('patchDockerComposeFile', () => {
   it('should patch docker-compose files with version field', async () => {
     jest.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(mockPatchableDockerComposeContents as never);
     await expect(
       tryPatchDockerComposeFiles({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
     });
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'docker-compose.yml',
       'services:\n' +
         'app:\n' +
@@ -50,7 +50,7 @@ describe('patchDockerComposeFile', () => {
   it('should skip if no docker-compose files contain a version field', async () => {
     jest.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(mockDockerComposeContents as never);
     await expect(
       tryPatchDockerComposeFiles({ mode: 'format' } as PatchConfig),
@@ -62,7 +62,7 @@ describe('patchDockerComposeFile', () => {
   it('should not remove intended version in docker compose file', async () => {
     jest.mocked(fg).mockResolvedValueOnce([mockDockerComposeFile]);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         `${mockPatchableDockerComposeContents}\n     version: 7\nversion: 0.2` as never,
       );
@@ -71,7 +71,7 @@ describe('patchDockerComposeFile', () => {
     ).resolves.toEqual({
       result: 'apply',
     });
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'docker-compose.yml',
       'services:\n' +
         'app:\n' +
