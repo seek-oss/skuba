@@ -8,7 +8,8 @@ import { removePnpmPlugin } from './removePnpmPlugin.js';
 jest.mock('../../../../../../utils/exec.js');
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
-  glob: (pat: string, opts: { ignore: string[] }) =>
+  __esModule: true,
+  default: (pat: string, opts: { ignore: string[] }) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
 

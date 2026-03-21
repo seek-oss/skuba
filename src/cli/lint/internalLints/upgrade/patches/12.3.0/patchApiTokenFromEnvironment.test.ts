@@ -25,7 +25,9 @@ describe('patchApiTokenFromEnvironment', () => {
 
   it('should skip if scripts do not contain the apiTokenFromEnvironment usage', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
-    jest.mocked(fs.readFile).mockResolvedValueOnce('No usage here' as never);
+    jest
+      .mocked(fs.promises.readFile)
+      .mockResolvedValueOnce('No usage here' as never);
     await expect(
       tryPatchApiTokenFromEnvironment({
         mode: 'format',
@@ -39,7 +41,7 @@ describe('patchApiTokenFromEnvironment', () => {
   it('should return apply and not modify files if mode is lint', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         "import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n" as never,
       );
@@ -52,13 +54,13 @@ describe('patchApiTokenFromEnvironment', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch scripts if mode is format', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['scripts/test.ts']);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         ("import { apiTokenFromEnvironment } from 'skuba/lib/api/github/environment';\n\n" +
           'const client = new Octokit({ auth: apiTokenFromEnvironment() });') as never,
@@ -72,11 +74,11 @@ describe('patchApiTokenFromEnvironment', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'scripts/test.ts',
       "import { GitHub } from 'skuba';\n\nconst client = new Octokit({ auth: GitHub.apiTokenFromEnvironment() });",
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledTimes(1);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(1);
   });
 });

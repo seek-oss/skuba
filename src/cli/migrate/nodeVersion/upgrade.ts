@@ -103,7 +103,7 @@ export const upgradeInfraPackages = async (
   const [packageJsons, pnpmWorkspaces] = await Promise.all([
     Promise.all(
       packageJsonPaths.map(async (file) => {
-        const contents = await fs.readFile(file, 'utf8');
+        const contents = await fs.promises.readFile(file, 'utf8');
 
         return {
           file,
@@ -113,7 +113,7 @@ export const upgradeInfraPackages = async (
     ),
     Promise.all(
       pnpmWorkspacePaths.map(async (file) => {
-        const contents = await fs.readFile(file, 'utf8');
+        const contents = await fs.promises.readFile(file, 'utf8');
 
         return {
           file,
@@ -195,7 +195,7 @@ export const upgradeInfraPackages = async (
   await Promise.all(
     [...patchedPackageJsons, ...patchedPnpmWorkspaces].map(
       async ({ file, updated }) => {
-        await fs.writeFile(file, updated, 'utf8');
+        await fs.promises.writeFile(file, updated, 'utf8');
       },
     ),
   );

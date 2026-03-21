@@ -26,7 +26,7 @@ describe('patchDockerfileCIVariable', () => {
   it('should skip if dockerfiles do not contain pnpm install --prod commands', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce('FROM node:18\nRUN npm install' as never);
     await expect(
       tryPatchDockerfileCIVariable({
@@ -41,7 +41,7 @@ describe('patchDockerfileCIVariable', () => {
   it('should return apply and not modify files if mode is lint', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
       );
@@ -54,13 +54,13 @@ describe('patchDockerfileCIVariable', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch dockerfiles with CI variable if mode is format', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
       );
@@ -73,12 +73,12 @@ describe('patchDockerfileCIVariable', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
       'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --prod',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledTimes(1);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(1);
   });
 
   it('should patch multiple dockerfiles containing pnpm install --prod commands', async () => {
@@ -92,19 +92,19 @@ describe('patchDockerfileCIVariable', () => {
 
     // First dockerfile has the target command
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
       );
 
     // Second dockerfile doesn't have the target command
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce('FROM node:18\nRUN echo "dev"' as never);
 
     // Third dockerfile has the target command
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --offline --prod\nCOPY . .' as never,
       );
@@ -117,17 +117,17 @@ describe('patchDockerfileCIVariable', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
       'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --prod',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile.prod',
       'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --offline --prod\nCOPY . .',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledTimes(2);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(2);
   });
 
   it('should handle dockerfiles with complex content', async () => {
@@ -149,7 +149,9 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 CMD ["npm", "start"]`;
 
-    jest.mocked(fs.readFile).mockResolvedValueOnce(complexDockerfile as never);
+    jest
+      .mocked(fs.promises.readFile)
+      .mockResolvedValueOnce(complexDockerfile as never);
 
     await expect(
       tryPatchDockerfileCIVariable({
@@ -176,7 +178,7 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 CMD ["npm", "start"]`;
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
       expectedContent,
       'utf8',
@@ -186,7 +188,7 @@ CMD ["npm", "start"]`;
   it('should patch dockerfiles with pnpm install --prod commands', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --prod' as never,
       );
@@ -199,18 +201,18 @@ CMD ["npm", "start"]`;
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
       'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN CI=true pnpm install --prod',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledTimes(1);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(1);
   });
 
   it('should detect pnpm install --prod commands in lint mode', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --prod' as never,
       );
@@ -223,7 +225,7 @@ CMD ["npm", "start"]`;
       result: 'apply',
     });
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should handle mixed variants in multiple dockerfiles', async () => {
@@ -231,14 +233,14 @@ CMD ["npm", "start"]`;
 
     // First dockerfile has basic pnpm install --prod
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
       );
 
     // Second dockerfile has pnpm install with additional flags including --prod
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm install --offline --prod' as never,
       );
@@ -251,16 +253,16 @@ CMD ["npm", "start"]`;
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
       'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --prod',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile.prod',
       'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN CI=true pnpm install --offline --prod',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledTimes(2);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(2);
   });
 });

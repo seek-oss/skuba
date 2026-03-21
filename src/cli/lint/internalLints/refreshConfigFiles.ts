@@ -116,7 +116,7 @@ export const refreshConfigFiles = async (
         return { needsChange: false };
       }
 
-      await fs.writeFile(filepath, data);
+      await fs.promises.writeFile(filepath, data);
       return {
         needsChange: false,
         msg: `Refreshed ${logger.bold(filename)}.`,

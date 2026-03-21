@@ -25,7 +25,7 @@ export const patchDockerfileCIVariable = async (
 
   const dockerfiles = await Promise.all(
     dockerfilePaths.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, 'utf8');
 
       return {
         file,
@@ -57,7 +57,7 @@ export const patchDockerfileCIVariable = async (
         pnpmInstallReplaceRegex,
         (match) => match.replace('RUN pnpm', 'RUN CI=true pnpm'),
       );
-      await fs.writeFile(file, updatedContents, 'utf8');
+      await fs.promises.writeFile(file, updatedContents, 'utf8');
     }),
   );
 

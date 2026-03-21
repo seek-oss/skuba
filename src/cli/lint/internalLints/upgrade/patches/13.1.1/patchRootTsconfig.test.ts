@@ -7,7 +7,8 @@ import { patchRootConfig } from './patchRootTsconfig.js';
 
 jest.mock('fs-extra', () => memfs);
 jest.mock('fast-glob', () => ({
-  glob: (pat: string, opts: { ignore: string[] }) =>
+  __esModule: true,
+  default: (pat: string, opts: { ignore: string[] }) =>
     jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
 }));
 

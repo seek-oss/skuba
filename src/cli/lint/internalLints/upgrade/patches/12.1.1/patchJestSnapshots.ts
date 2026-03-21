@@ -29,7 +29,7 @@ export const patchJestSnapshots = async (
 
   const testsFiles = await Promise.all(
     testFilePaths.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, 'utf8');
 
       return {
         file,
@@ -61,7 +61,7 @@ export const patchJestSnapshots = async (
         JEST_SNAPSHOT_OLD_URL,
         JEST_SNAPSHOT_NEW_URL,
       );
-      await fs.writeFile(file, updatedContents, 'utf8');
+      await fs.promises.writeFile(file, updatedContents, 'utf8');
     }),
   );
 

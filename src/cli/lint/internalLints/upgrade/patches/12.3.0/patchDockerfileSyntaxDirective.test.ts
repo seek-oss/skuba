@@ -26,7 +26,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   it('should skip if dockerfiles do not contain the Dockerfile syntax directive', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce('No Dockerfile syntax directive here' as never);
     await expect(
       tryPatchDockerfileSyntaxDirective({
@@ -41,7 +41,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   it('should return apply and not modify files if mode is lint', async () => {
     jest.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce('# syntax=docker/dockerfile:1.18\n' as never);
 
     await expect(
@@ -52,7 +52,7 @@ describe('patchDockerfileSyntaxDirective', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch dockerfiles if mode is format', async () => {
@@ -64,16 +64,18 @@ describe('patchDockerfileSyntaxDirective', () => {
         'Dockerfile.build',
       ]);
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         '# syntax=docker/dockerfile:1.18\nFROM node:22' as never,
       );
     jest
-      .mocked(fs.readFile)
+      .mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         '# syntax=docker/dockerfile:1.18\nFROM python:3.9' as never,
       );
-    jest.mocked(fs.readFile).mockResolvedValueOnce('FROM python:3.9' as never);
+    jest
+      .mocked(fs.promises.readFile)
+      .mockResolvedValueOnce('FROM python:3.9' as never);
 
     await expect(
       tryPatchDockerfileSyntaxDirective({
@@ -83,16 +85,16 @@ describe('patchDockerfileSyntaxDirective', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
       'FROM node:22',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile.dev-deps',
       'FROM python:3.9',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledTimes(2);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(2);
   });
 });
