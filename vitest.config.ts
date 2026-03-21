@@ -15,27 +15,32 @@ export default defineConfig({
         inline: [...readPackageUpFsDeps],
       },
     },
+    projects: [
+      {
+        extends: true,
+        test: {
+          root: 'src',
+          name: 'unit',
+          exclude: ['**/*.int.test.ts'],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          root: 'src',
+          name: 'integration',
+          include: ['**/*.int.test.ts'],
+        },
+      },
+    ],
     env: {
       ENVIRONMENT: 'test',
       FORCE_COLOR: '0',
     },
     coverage: {
-      thresholds: {
-        branches: 0,
-        functions: 0,
-        lines: 0,
-        statements: 0,
-      },
       include: ['src'],
-      exclude: ['src/testing'],
     },
-    include: ['**/*.test*.ts'],
-    exclude: [
-      '**/node_modules',
-      'template',
-      'packages/eslint-config-skuba',
-      'packages/eslint-plugin-skuba',
-    ],
+    exclude: ['**/node_modules'],
   },
   server: {
     watch: {

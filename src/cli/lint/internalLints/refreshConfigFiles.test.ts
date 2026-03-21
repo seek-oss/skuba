@@ -18,7 +18,11 @@ const stdoutMock = vi.fn();
 const stdout = () => stdoutMock.mock.calls.flat(1).join('');
 
 vi.mock('fs-extra', () => ({
-  default: { writeFile: vi.fn() },
+  default: {
+    promises: {
+      writeFile: vi.fn(),
+    },
+  },
 }));
 
 vi.mock('../../../utils/dir', () => ({
