@@ -28,7 +28,7 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce('beep' as never)
       .mockResolvedValueOnce('boop' as never);
 
@@ -46,7 +46,7 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         'FROM public.ecr.aws/docker/library/node:18\n' as never,
       )
@@ -68,7 +68,7 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
-    vi.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
         'FROM --platform=amd64 public.ecr.aws/docker/library/node:18\n') as never,
     );
@@ -87,7 +87,7 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
-    vi.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       'FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/node:18\n' as never,
     );
 
@@ -105,7 +105,7 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce('FROM --platform=arm64 node:18\n' as never)
       .mockResolvedValueOnce('    image: node:14\n' as never);
 
@@ -133,7 +133,7 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
-    vi.mocked(fs.readFile).mockResolvedValueOnce(
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
       ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
         'FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n') as never,
     );
@@ -158,7 +158,7 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.10\n' +
           '\n' +
@@ -226,7 +226,7 @@ describe('patchDockerImages', () => {
     vi.mocked(fg)
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
-    vi.mocked(fs.readFile)
+    vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
         ('# syntax=docker/dockerfile:1.10\n' +
           '\n' +

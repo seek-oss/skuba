@@ -67,7 +67,7 @@ afterEach(() => {
 });
 
 describe('refreshConfigFiles', () => {
-  const writeFile = vi.mocked(fs.writeFile);
+  const writeFile = vi.mocked(fs.promises.writeFile);
   const createDestinationFileReader = vi.mocked(
     project.createDestinationFileReader,
   );

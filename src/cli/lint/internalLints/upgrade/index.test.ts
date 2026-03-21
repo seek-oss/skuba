@@ -76,7 +76,7 @@ describe('upgradeSkuba in format mode', () => {
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '7.3.1' },
       { isDirectory: () => true, name: '8.0.0' },
       { isDirectory: () => true, name: '8.2.1' },
@@ -114,7 +114,7 @@ describe('upgradeSkuba in format mode', () => {
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '8.2.1' },
     ] as never);
 
@@ -157,7 +157,7 @@ describe('upgradeSkuba in format mode', () => {
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '8.2.1' },
     ] as never);
 
@@ -230,7 +230,7 @@ describe('upgradeSkuba in lint mode', () => {
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '7.3.1' },
       { isDirectory: () => true, name: '8.0.0' },
       { isDirectory: () => true, name: '8.2.1' },
@@ -265,7 +265,7 @@ describe('upgradeSkuba in lint mode', () => {
 
     vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
 
-    vi.mocked(fs.readdir).mockResolvedValue([
+    vi.mocked(fs.promises.readdir).mockResolvedValue([
       { isDirectory: () => true, name: '7.3.1' },
     ] as never);
 
