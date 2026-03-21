@@ -14,10 +14,7 @@ jest.mock('../../../../../../index.js', () => ({
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
-}));
+jest.mock('fs-extra', () => memfs.fs);
 jest.mock('fast-glob', () => ({
   __esModule: true,
   default: (pat: string, opts: { ignore: string[] }) =>
