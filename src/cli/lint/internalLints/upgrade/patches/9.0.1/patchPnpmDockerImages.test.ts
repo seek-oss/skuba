@@ -55,7 +55,7 @@ RUN pnpm config set store-dir /root/.pnpm-store` as never,
       result: 'apply',
     });
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch Dockerfiles', async () => {
@@ -87,7 +87,7 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       1,
       'Dockerfile',
       `# syntax=docker/dockerfile:1.10
@@ -135,7 +135,7 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       1,
       'Dockerfile',
       `RUN --mount=type=bind,source=package.json,target=package.json \\
@@ -173,7 +173,7 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       1,
       'Dockerfile',
       `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
@@ -208,7 +208,7 @@ RUN pnpm config set store-dir /root/.pnpm-store
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       1,
       'Dockerfile',
       `# syntax=docker/dockerfile:1.10
@@ -242,7 +242,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \\
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       1,
       'Dockerfile',
       `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
@@ -272,7 +272,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \\
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       1,
       'Dockerfile',
       `RUN --mount=type=bind,source=.npmrc,target=.npmrc \\

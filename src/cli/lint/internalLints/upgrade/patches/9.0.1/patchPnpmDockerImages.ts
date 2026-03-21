@@ -17,7 +17,7 @@ const PACKAGE_JSON_MOUNT =
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, 'utf8');
 
       return {
         file,
@@ -73,7 +73,7 @@ const patchPnpmDockerImages: PatchFunction = async ({
             `${npmrcLine}${whitespace}${PACKAGE_JSON_MOUNT}${rest}`,
         );
 
-      await fs.writeFile(file, patchedContents);
+      await fs.promises.writeFile(file, patchedContents);
     }),
   );
 

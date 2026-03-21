@@ -11,7 +11,7 @@ const DOCKER_COMPOSE_VERSION_REGEX = /^version: ['"]?\d+(\.\d+)*['"]?\n*/m;
 const fetchFiles = async (files: string[]) =>
   Promise.all(
     files.map(async (file) => {
-      const contents = await fs.readFile(file, 'utf8');
+      const contents = await fs.promises.readFile(file, 'utf8');
 
       return {
         file,
@@ -57,7 +57,7 @@ const patchDockerComposeFiles: PatchFunction = async ({
         DOCKER_COMPOSE_VERSION_REGEX,
         '',
       );
-      await fs.writeFile(file, patchedContents);
+      await fs.promises.writeFile(file, patchedContents);
     }),
   );
 

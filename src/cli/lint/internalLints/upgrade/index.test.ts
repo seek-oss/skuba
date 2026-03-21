@@ -47,7 +47,7 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
 
-    expect(fs.readdir).not.toHaveBeenCalled();
+    expect(fs.promises.readdir).not.toHaveBeenCalled();
   });
 
   it('should apply patches which are equal to or greater than the manifest version', async () => {
@@ -123,7 +123,7 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       '/package.json',
       `{
   "name": "some-api",
@@ -166,7 +166,7 @@ describe('upgradeSkuba in format mode', () => {
       fixable: false,
     });
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       '/package.json',
       `{
   "name": "some-api",
@@ -210,7 +210,7 @@ describe('upgradeSkuba in lint mode', () => {
       fixable: false,
     });
 
-    expect(fs.readdir).not.toHaveBeenCalled();
+    expect(fs.promises.readdir).not.toHaveBeenCalled();
   });
 
   it('should return ok: false, fixable: true if there are lints to apply', async () => {

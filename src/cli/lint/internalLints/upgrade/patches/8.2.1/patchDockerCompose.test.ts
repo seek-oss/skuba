@@ -39,7 +39,7 @@ describe('patchDockerComposeFile', () => {
     ).resolves.toEqual({
       result: 'apply',
     });
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'docker-compose.yml',
       'services:\n' +
         'app:\n' +
@@ -70,7 +70,7 @@ describe('patchDockerComposeFile', () => {
     ).resolves.toEqual({
       result: 'apply',
     });
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'docker-compose.yml',
       'services:\n' +
         'app:\n' +

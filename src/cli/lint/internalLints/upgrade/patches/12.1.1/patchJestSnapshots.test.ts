@@ -53,7 +53,7 @@ describe('patchJestSnapshots', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch test files', async () => {
@@ -77,17 +77,17 @@ describe('patchJestSnapshots', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'test1.test.ts',
       'Some content with https://jestjs.io/docs/snapshot-testing',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'test3.test.ts.snap',
       'Some other content with https://jestjs.io/docs/snapshot-testing',
       'utf8',
     );
 
-    expect(fs.writeFile).toHaveBeenCalledTimes(2);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(2);
   });
 });

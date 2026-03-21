@@ -125,7 +125,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       1,
       'Dockerfile',
       ('# syntax=docker/dockerfile:1.7\n' +
@@ -134,7 +134,7 @@ describe('patchPnpmPackageManager', () => {
         '  corepack enable pnpm && corepack install\n') as never,
     );
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       2,
       '.buildkite/pipeline.yml',
       ('seek-oss/docker-ecr-cache#v2.2.0:\n' +
@@ -172,7 +172,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch multiple cache entries in pipelines', async () => {
@@ -206,7 +206,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       2,
       '.buildkite/pipeline.yml',
       ('seek-oss/docker-ecr-cache#v2.2.0:\n' +
@@ -249,7 +249,7 @@ describe('patchPnpmPackageManager', () => {
       result: 'apply',
     });
 
-    expect(fs.writeFile).toHaveBeenNthCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenNthCalledWith(
       2,
       '.buildkite/pipeline.yml',
       ('seek-oss/docker-ecr-cache#v2.3.0:\n' +
@@ -290,6 +290,6 @@ describe('patchPnpmPackageManager', () => {
       reason: 'no pipeline or dockerfiles to patch',
     });
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 });

@@ -170,7 +170,7 @@ export const upgradeSkuba = async (
 
   const updatedPackageJson = await formatPackage(updatedManifest.packageJson);
 
-  await fs.writeFile(updatedManifest.path, updatedPackageJson);
+  await fs.promises.writeFile(updatedManifest.path, updatedPackageJson);
   logger.newline();
   logger.plain('skuba update complete.');
   logger.newline();

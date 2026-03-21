@@ -53,7 +53,7 @@ describe('patchDockerfileSyntaxDirective', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch dockerfiles if mode is format', async () => {
@@ -78,16 +78,16 @@ describe('patchDockerfileSyntaxDirective', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
       'FROM node:22',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile.dev-deps',
       'FROM python:3.9',
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledTimes(2);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(2);
   });
 });

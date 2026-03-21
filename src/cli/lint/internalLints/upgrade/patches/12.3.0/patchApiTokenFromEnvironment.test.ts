@@ -51,7 +51,7 @@ describe('patchApiTokenFromEnvironment', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
   });
 
   it('should patch scripts if mode is format', async () => {
@@ -69,11 +69,11 @@ describe('patchApiTokenFromEnvironment', () => {
       result: 'apply',
     } satisfies PatchReturnType);
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'scripts/test.ts',
       "import { GitHub } from 'skuba';\n\nconst client = new Octokit({ auth: GitHub.apiTokenFromEnvironment() });",
       'utf8',
     );
-    expect(fs.writeFile).toHaveBeenCalledTimes(1);
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(1);
   });
 });
