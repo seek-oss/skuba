@@ -314,11 +314,33 @@ export default Jest.mergePreset({
       statements: 50,
     },
   },
+  testTimeout: 10000,
+  globalSetup: '<rootDir>/jest.globalSetup.ts',
   setupFiles: ['<rootDir>/jest.setup.ts'],
   setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
   testPathIgnorePatterns: ['\\.int\\.test'],
   workerIdleMemoryLimit: '512MB',
 });
+`,
+      'jest.globalSetup.ts': `import { Net } from 'skuba';
+
+const waitForApiDynamoDb = async () => {
+  const dynamo = await Net.waitFor({
+    host: 'preferences-dynamo',
+    port: 8003,
+    resolveCompose: !process.env.COMPOSE_NETWORK,
+  });
+
+  process.env.PREFERENCES_DYNAMODB_HOST = dynamo.host;
+  process.env.PREFERENCES_DYNAMODB_PORT = String(dynamo.port);
+};
+
+module.exports = async () =>
+  waitForApiDynamoDb();
+`,
+      'jest.setup.ts': `import 'some-setup';
+`,
+      'jest.hooks.ts': `import 'some-hooks';
 `,
     });
 
@@ -335,46 +357,66 @@ export default Jest.mergePreset({
       {
         "jest.config.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
 
-      import { Jest } from 'skuba';
+      import { Net } from 'skuba';
 
-      export default Jest.mergePreset({
-        moduleNameMapper: {
-          '^#src/(.*)\\.js$': [
-            '<rootDir>/apps/api/src/$1',
-            '<rootDir>/apps/worker/src/$1',
-          ],
-          '^#src/(.*)$': [
-            '<rootDir>/apps/api/src/$1',
-            '<rootDir>/apps/worker/src/$1',
-          ],
-        },
-        clearMocks: true,
-        coveragePathIgnorePatterns: [
-          'src/listen\\.ts',
-          'src/register\\.ts',
-          'src/testing',
-        ],
-        coverageThreshold: {
-          global: {
-            branches: 50,
-            functions: 50,
-            lines: 50,
-            statements: 50,
-          },
-        },
-        setupFiles: ['<rootDir>/jest.setup.ts'],
-        setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
-        testPathIgnorePatterns: ['\\.int\\.test'],
-        workerIdleMemoryLimit: '512MB',
-      });
+      const waitForApiDynamoDb = async () => {
+        const dynamo = await Net.waitFor({
+          host: 'preferences-dynamo',
+          port: 8003,
+          resolveCompose: !process.env.COMPOSE_NETWORK,
+        });
+
+        process.env.PREFERENCES_DYNAMODB_HOST = dynamo.host;
+        process.env.PREFERENCES_DYNAMODB_PORT = String(dynamo.port);
+      };
+
+      module.exports = async () =>
+        waitForApiDynamoDb();
+      ",
+        "jest.globalSetup.ts": "import { Net } from 'skuba';
+
+      const waitForApiDynamoDb = async () => {
+        const dynamo = await Net.waitFor({
+          host: 'preferences-dynamo',
+          port: 8003,
+          resolveCompose: !process.env.COMPOSE_NETWORK,
+        });
+
+        process.env.PREFERENCES_DYNAMODB_HOST = dynamo.host;
+        process.env.PREFERENCES_DYNAMODB_PORT = String(dynamo.port);
+      };
+
+      module.exports = async () =>
+        waitForApiDynamoDb();
+      ",
+        "jest.hooks.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+
+      import 'some-hooks';
+      ",
+        "jest.setup.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+
+      import 'some-setup';
       ",
         "vitest.config.ts": "import { defineConfig } from 'vitest/config';
 
       export default defineConfig({
+        ssr: {
+          resolve: {
+            conditions: ['@seek/skuba/source'],
+          },
+        },
         test: {
+          env: {
+            ENVIRONMENT: 'test',
+          },
           include: ['src/**/*.test.ts'],
           coverage: {
             include: ['src'],
+            exclude: [
+          'src/listen\\.ts',
+          'src/register\\.ts',
+          'src/testing',
+        ],
             thresholds: {
             branches: 50,
             functions: 50,
@@ -382,8 +424,34 @@ export default Jest.mergePreset({
             statements: 50,
           },
           },
+          globalSetup: ['vitest.globalSetup.ts'],
+          setupFiles: ['vitest.setup.ts'],
+          setupFilesAfterEnv: ['vitest.hooks.ts'],
+          testTimeout: 10000,
+          clearMocks: true,
+          vmMemoryLimit: '512MB'
         },
       });
+      ",
+        "vitest.globalSetup.ts": "import { Net } from 'skuba';
+
+      const waitForApiDynamoDb = async () => {
+        const dynamo = await Net.waitFor({
+          host: 'preferences-dynamo',
+          port: 8003,
+          resolveCompose: !process.env.COMPOSE_NETWORK,
+        });
+
+        process.env.PREFERENCES_DYNAMODB_HOST = dynamo.host;
+        process.env.PREFERENCES_DYNAMODB_PORT = String(dynamo.port);
+      };
+
+      export const setup = async () =>
+        waitForApiDynamoDb();
+      ",
+        "vitest.hooks.ts": "import 'some-hooks';
+      ",
+        "vitest.setup.ts": "import 'some-setup';
       ",
       }
     `);
