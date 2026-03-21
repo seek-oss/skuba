@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import { parseAsync } from '@ast-grep/napi';
-import { glob } from 'fast-glob';
+import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
@@ -23,7 +23,7 @@ const fetchFiles = async (files: string[]) =>
 export const patchBuildConfig: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const tsconfigBuildPaths = await glob(['**/tsconfig.build.json'], {
+  const tsconfigBuildPaths = await fg.glob(['**/tsconfig.build.json'], {
     ignore: ['**/.git', '**/node_modules'],
   });
 

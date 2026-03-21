@@ -48,6 +48,11 @@ module.exports = [
               message:
                 'Prefer fs-extra as it implements graceful-fs behaviour.',
             },
+            {
+              name: 'fast-glob',
+              allowImportNames: ['default'],
+              message: "Please use import 'fg' from 'fast-glob' instead",
+            },
           ],
         },
       ],
