@@ -1,18 +1,16 @@
 {
   "compilerOptions": {
+    "customConditions": ["@seek/skuba/source"],
     "rootDir": ".",
+    "declaration": true,
     "lib": ["ES2023"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "outDir": "lib",
-    "target": "ES2023",
-    "baseUrl": "."
+    "removeComments": false,
+    "skipLibCheck": true,
+    "target": "ES2023"
   },
   "exclude": ["lib*/**/*"],
-  "extends": "../../config/tsconfig.json",
-  "include": [
-    "eslint.config.js",
-    "index.d.ts",
-    "index.js",
-    "src/**/*",
-    "requireExtensions.test.ts"
-  ]
+  "extends": "../../config/tsconfig.json"
 }
