@@ -397,9 +397,10 @@ module.exports = async () =>
 
       import 'some-setup';
       ",
-        "vitest.config.ts": "import { defineConfig } from 'vitest/config';
+        "vitest.config.ts": "import * as Vitest from 'skuba';
+      import { defineConfig } from 'vitest/config';
 
-      export default defineConfig({
+      export default defineConfig(Vitest.mergePreset({
         ssr: {
           resolve: {
             conditions: ['@seek/skuba/source'],
@@ -431,7 +432,7 @@ module.exports = async () =>
           clearMocks: true,
           vmMemoryLimit: '512MB'
         },
-      });
+      }));
       ",
         "vitest.globalSetup.ts": "import { Net } from 'skuba';
 

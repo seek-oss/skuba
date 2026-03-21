@@ -400,6 +400,8 @@ const scaffoldVitestConfig = async () => {
       const ast = parse('TypeScript', content);
       const root = ast.root();
 
+      const isSkubaConfig = content.includes('Jest.mergePreset');
+
       const coverageThreshold = extractCoverageThreshold(root);
       const coverageIgnorePatterns = extractCoverageIgnorePaths(root);
       const testTimeout = extractNumber(root, 'testTimeout');
@@ -414,9 +416,9 @@ const scaffoldVitestConfig = async () => {
         migrateSetupHooks(root, file, 'setupFilesAfterEnv'),
       ]);
 
-      const vitestConfigContent = `import { defineConfig } from 'vitest/config';
+      const vitestConfigContent = `${isSkubaConfig ? "import { Vitest } from 'skuba';\n" : ''}import { defineConfig } from 'vitest/config';
 
-export default defineConfig({
+export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
   ssr: {
     resolve: {
       conditions: [${customConditions.map((c) => `'${c}'`).join(', ')}],
@@ -453,7 +455,7 @@ export default defineConfig({
         : ''
     }${testTimeout ? `,\n    testTimeout: ${testTimeout}` : ''}${clearMocks ? ',\n    clearMocks: true' : ''}${workerMemoryLimit ? `,\n    vmMemoryLimit: ${typeof workerMemoryLimit === 'string' ? `'${workerMemoryLimit}'` : workerMemoryLimit}` : ''}
   },
-});
+}${isSkubaConfig ? ')' : ''});
 `;
 
       return [

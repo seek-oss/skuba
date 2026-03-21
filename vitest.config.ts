@@ -1,12 +1,12 @@
 import { defineConfig } from 'vitest/config';
 
-import { mergePreset } from './src/api/vitest/index.js';
+import * as Vitest from './src/api/vitest/index.js';
 
 // We need to inline read-package-up and its dependencies to allow for mocking fs in tests
 const readPackageUpFsDeps = ['read-package-up', 'find-up-simple', 'read-pkg'];
 
 export default defineConfig(
-  mergePreset({
+  Vitest.mergePreset({
     ssr: {
       resolve: {
         conditions: ['@seek/skuba/source'],
