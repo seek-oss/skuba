@@ -26,7 +26,7 @@ export default defineConfig(
         {
           extends: true,
           test: {
-            root: 'src',
+            dir: 'src',
             name: 'unit',
             exclude: ['**/*.int.test.ts'],
           },
@@ -34,7 +34,7 @@ export default defineConfig(
         {
           extends: true,
           test: {
-            root: 'src',
+            dir: 'src',
             name: 'integration',
             include: ['**/*.int.test.ts'],
           },
