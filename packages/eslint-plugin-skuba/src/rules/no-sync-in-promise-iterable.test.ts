@@ -1,6 +1,5 @@
-import * as test from 'node:test';
-
 import { RuleTester } from '@typescript-eslint/rule-tester';
+import * as test from 'vitest';
 
 RuleTester.afterAll = test.after;
 RuleTester.describe = test.describe;
