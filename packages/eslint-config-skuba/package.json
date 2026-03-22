@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "eslint": "^9.39.1",
+    "jiti": "^2.6.1",
     "typescript": "~5.9.0"
   },
   "peerDependencies": {
@@ -56,13 +57,13 @@
   "engines": {
     "node": ">=22.14.0"
   },
+  "inlinedDependencies": {
+    "eslint-config-seek": "15.0.4"
+  },
   "skuba": {
     "entryPoint": "index.js",
     "template": "oss-npm-package",
     "type": "package",
     "version": "15.3.0"
-  },
-  "inlinedDependencies": {
-    "eslint-config-seek": "15.0.4"
   }
 }
