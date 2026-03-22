@@ -1,4 +1,7 @@
 ---
+'eslint-config-skuba': minor
+'eslint-plugin-skuba': minor
+'skuba-dive': minor
 '@skuba-lib/api': minor
 ---
 
