@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true,
     "rootDir": ".",
     "lib": ["ES2023"],
     "outDir": "lib",
