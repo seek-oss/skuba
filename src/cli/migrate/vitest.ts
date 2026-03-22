@@ -453,7 +453,13 @@ export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
       setupFilesAfterEnv
         ? `,\n    setupFilesAfterEnv: [${setupFilesAfterEnv.hookPaths.map((p) => `'${p}'`).join(', ')}]`
         : ''
-    }${testTimeout ? `,\n    testTimeout: ${testTimeout}` : ''}${clearMocks ? ',\n    clearMocks: true' : ''}${workerMemoryLimit ? `,\n    vmMemoryLimit: ${typeof workerMemoryLimit === 'string' ? `'${workerMemoryLimit}'` : workerMemoryLimit}` : ''}
+    }${testTimeout ? `,\n    testTimeout: ${testTimeout}` : ''}${
+      clearMocks ? ',\n    clearMocks: true' : ''
+    }${
+      workerMemoryLimit
+        ? `,\n    vmMemoryLimit: ${typeof workerMemoryLimit === 'string' ? `'${workerMemoryLimit}'` : workerMemoryLimit}`
+        : ''
+    }
   },
 }${isSkubaConfig ? ')' : ''});
 `;
