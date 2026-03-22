@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "skipLibCheck": true,
+    "skipLibCheck": true, // tsdown has optional peer deps
     "rootDir": ".",
     "lib": ["ES2023"],
     "outDir": "lib",
