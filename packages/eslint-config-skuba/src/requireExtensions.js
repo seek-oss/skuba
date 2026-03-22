@@ -151,7 +151,9 @@ function processNode(node, context, check) {
   }
 }
 
-// Define the plugin with flat config format
+/**
+ * @type {import('eslint').ESLint.Plugin}
+ */
 const requireExtensionsPlugin = {
   name: 'require-extensions',
   rules: {

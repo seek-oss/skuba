@@ -14,15 +14,25 @@
   },
   "license": "MIT",
   "sideEffects": false,
-  "main": "./index.js",
-  "module": "./index.js",
-  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./extensions": {
+      "import": "./lib/extensions.mjs",
+      "require": "./lib/extensions.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "files": [
-    "index.d.ts",
-    "index.js",
-    "requireExtensions.js"
+    "lib"
   ],
   "scripts": {
+    "build": "pnpm skuba build-package",
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
     "skuba": "node ../../lib/skuba",
@@ -51,5 +61,8 @@
     "template": "oss-npm-package",
     "type": "package",
     "version": "15.3.0"
+  },
+  "inlinedDependencies": {
+    "eslint-config-seek": "15.0.4"
   }
 }
