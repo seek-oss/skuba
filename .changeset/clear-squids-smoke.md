@@ -1,7 +1,7 @@
 ---
-'eslint-config-skuba': patch
+'eslint-config-skuba': minor
 ---
 
-Migrate to dual CommonJS/ESM package format
+Migrate to ESM
 
-`eslint-config-skuba` is now an ESM package however continues to support CommonJS.
+This package is still being published as a dual ESM/CJS package, but the source code is now ESM.
