@@ -6,8 +6,8 @@ tsx --conditions @seek/skuba/source src/skuba build "${@}"
 
 chmod +x 'lib/skuba.js'
 
-pnpm --filter @skuba-lib/api build
-
-pnpm --filter @skuba-lib/vitest-koa-mocks build
-
-pnpm --filter eslint-plugin-skuba build
+pnpm --parallel \
+  --filter @skuba-lib/api \
+  --filter eslint-config-skuba \
+  --filter eslint-plugin-skuba \
+  build
