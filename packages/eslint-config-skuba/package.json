@@ -57,9 +57,6 @@
   "engines": {
     "node": ">=22.14.0"
   },
-  "inlinedDependencies": {
-    "eslint-config-seek": "15.0.4"
-  },
   "skuba": {
     "entryPoint": "index.js",
     "template": "oss-npm-package",
