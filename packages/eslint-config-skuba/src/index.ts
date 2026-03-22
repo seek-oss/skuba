@@ -1,9 +1,9 @@
 import { defineConfig } from 'eslint/config';
-import base from 'eslint-config-seek/vitest/base';
 import {
   js as jsExtensions,
   ts as tsExtensions,
 } from 'eslint-config-seek/extensions';
+import base from 'eslint-config-seek/vitest/base';
 import skubaPlugin from 'eslint-plugin-skuba';
 import eslintPluginYml from 'eslint-plugin-yml';
 import tseslint from 'typescript-eslint';
