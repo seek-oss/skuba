@@ -150,7 +150,7 @@
     "@types/npm-which": "3.0.4",
     "@types/picomatch": "4.0.2",
     "@types/semver": "7.7.1",
-    "@types/supertest": "6.0.3",
+    "@types/supertest": "7.2.0",
     "enhanced-resolve": "5.20.1",
     "express": "5.2.1",
     "fastify": "5.8.2",
