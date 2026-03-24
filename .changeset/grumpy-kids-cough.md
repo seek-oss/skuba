@@ -1,4 +1,5 @@
 ---
+'pnpm-plugin-skuba': major
 'skuba': minor
 ---
 
