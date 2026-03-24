@@ -1,15 +1,28 @@
-import type { PackageJson as TypeFestPackageJson } from 'type-fest';
+import type { PackageJson as ReadPackageUpPackageJson } from 'read-package-up';
 
 import type { ProjectType } from '../../utils/manifest.js';
 import type { PackageManagerConfig } from '../../utils/packageManager.js';
 
 export type { TsConfigJson } from 'type-fest';
 
-export type PackageJson = TypeFestPackageJson & Record<string, unknown>;
+export type PackageJson = ReadPackageUpPackageJson &
+  Record<string, unknown> & {
+    skuba?: {
+      entryPoint?: string | null;
+      template?: string;
+      type?: string;
+      version: string;
+    };
+  };
+
+export type ReadResult = {
+  packageJson: PackageJson;
+  path: string;
+};
 
 export interface DependencySet {
-  dependencies: Record<string, string>;
-  devDependencies: Record<string, string>;
+  dependencies: Record<string, string | undefined>;
+  devDependencies: Record<string, string | undefined>;
   type: ProjectType;
 }
 

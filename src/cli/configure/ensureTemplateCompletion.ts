@@ -2,7 +2,6 @@ import { styleText } from 'node:util';
 import path from 'path';
 
 import fs from 'fs-extra';
-import type { ReadResult } from 'read-pkg-up';
 import * as z from 'zod/v4';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
@@ -19,6 +18,7 @@ import {
 } from '../init/getConfig.js';
 
 import { formatPackage } from './processing/package.js';
+import type { ReadResult } from './types.js';
 
 interface Props {
   destinationRoot: string;
@@ -55,7 +55,7 @@ export const ensureTemplateCompletion = async ({
   include,
   manifest,
 }: Props): Promise<TemplateConfig> => {
-  const templateConfig = getTemplateConfig(destinationRoot);
+  const templateConfig = await getTemplateConfig(destinationRoot);
 
   if (templateConfig.fields.length === 0) {
     return templateConfig;

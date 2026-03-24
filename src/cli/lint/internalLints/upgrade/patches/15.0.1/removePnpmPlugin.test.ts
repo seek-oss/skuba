@@ -1,4 +1,5 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
@@ -6,19 +7,24 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { removePnpmPlugin } from './removePnpmPlugin.js';
 
-jest.mock('../../../../../../utils/exec.js');
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  __esModule: true,
-  default: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('../../../../../../utils/exec.js');
+vi.mock('fs-extra', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('fast-glob', () => ({
+  default: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => {
   vol.reset();
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 const baseArgs: PatchConfig = {
@@ -48,10 +54,10 @@ describe('removePnpmPlugin', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'pnpm-workspace.yaml has already been migrated',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should not apply changes in lint mode', async () => {
@@ -64,9 +70,9 @@ describe('removePnpmPlugin', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -87,9 +93,9 @@ describe('removePnpmPlugin', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -125,16 +131,17 @@ describe('removePnpmPlugin', () => {
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
+        - vitest # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
@@ -157,9 +164,9 @@ configDependencies:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -197,16 +204,17 @@ configDependencies:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
+        - vitest # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:

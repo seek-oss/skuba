@@ -1,5 +1,7 @@
 import path from 'path';
 
+import { beforeAll, describe, expect, it } from 'vitest';
+
 import {
   buildPatternToFilepathMap,
   crawlDirectory,
@@ -88,7 +90,9 @@ describe('buildPatternToFilepathMap', () => {
 
 describe('crawlDirectory', () => {
   it('works on skuba itself', async () => {
-    const filepaths = await crawlDirectory(path.join(__dirname, '..', '..'));
+    const filepaths = await crawlDirectory(
+      path.join(import.meta.dirname, '..', '..'),
+    );
 
     expect(filepaths).toContain('.github/CODEOWNERS');
     expect(filepaths).toContain('src/index.ts');

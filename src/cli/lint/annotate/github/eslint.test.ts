@@ -1,3 +1,5 @@
+import { expect, it } from 'vitest';
+
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 
 import { createEslintAnnotations } from './eslint.js';

@@ -1,26 +1,32 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { migrateTsdown } from './migrateTsdown.js';
 
-jest.mock('../../../../../../utils/exec.js', () => ({
-  createExec: () => jest.fn(),
+vi.mock('../../../../../../utils/exec.js', () => ({
+  createExec: () => vi.fn(),
 }));
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  __esModule: true,
-  default: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('fast-glob', () => ({
+  default: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => {
   vol.reset();
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 const baseArgs: PatchConfig = {
@@ -48,10 +54,10 @@ describe('migrateTsdown', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no tsdown.config files found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if no fields to migrate are found', async () => {
@@ -73,10 +79,10 @@ export default defineConfig({
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no tsdown.config fields to migrate',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should migrate fields in tsdown.config.mts', async () => {
@@ -98,9 +104,9 @@ export default defineConfig({
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -139,9 +145,9 @@ export default defineConfig({
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {

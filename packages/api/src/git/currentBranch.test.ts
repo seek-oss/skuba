@@ -1,10 +1,13 @@
 import git from 'isomorphic-git';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { currentBranch } from './currentBranch.js';
 
-jest.mock('isomorphic-git');
+vi.mock('isomorphic-git');
 
-afterEach(jest.clearAllMocks);
+afterEach(() => {
+  vi.clearAllMocks();
+});
 
 describe('currentBranch', () => {
   const dir = process.cwd();
@@ -21,7 +24,7 @@ describe('currentBranch', () => {
   });
 
   it('returns a branch name from the Git repository', async () => {
-    jest.mocked(git.currentBranch).mockResolvedValue('x');
+    vi.mocked(git.currentBranch).mockResolvedValue('x');
 
     await expect(currentBranch({ dir, env: {} })).resolves.toBe('x');
 
@@ -29,7 +32,7 @@ describe('currentBranch', () => {
   });
 
   it('returns undefined with no environment variables nor dir', async () => {
-    jest.mocked(git.currentBranch).mockResolvedValue(undefined);
+    vi.mocked(git.currentBranch).mockResolvedValue(undefined);
 
     await expect(currentBranch({ env: {} })).resolves.toBeUndefined();
 
@@ -37,7 +40,7 @@ describe('currentBranch', () => {
   });
 
   it('returns undefined with no environment variables and a detached head', async () => {
-    jest.mocked(git.currentBranch).mockResolvedValue(undefined);
+    vi.mocked(git.currentBranch).mockResolvedValue(undefined);
 
     await expect(currentBranch({ dir, env: {} })).resolves.toBeUndefined();
 

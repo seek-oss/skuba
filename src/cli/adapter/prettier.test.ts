@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
-
 import path from 'path';
+
+import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
 
 import { log } from '../../utils/logging.js';
 
@@ -36,13 +37,13 @@ describe('runPrettier', () => {
   afterAll(() => (console.log = originalConsoleLog));
 
   it('handles a custom directory with a common root', async () => {
-    process.chdir(path.join(__dirname, '../../..'));
+    process.chdir(path.join(import.meta.dirname, '../../..'));
 
     await expect(
       runPrettier(
         'lint',
         log,
-        path.join(__dirname, '../../../integration/base/fixable'),
+        path.join(import.meta.dirname, '../../../integration/base/fixable'),
       ),
     ).resolves.toMatchInlineSnapshot(`
       {
@@ -71,13 +72,13 @@ describe('runPrettier', () => {
   });
 
   it('handles a custom directory with a different root', async () => {
-    process.chdir(__dirname);
+    process.chdir(import.meta.dirname);
 
     await expect(
       runPrettier(
         'lint',
         log,
-        path.join(__dirname, '../../../integration/base/fixable'),
+        path.join(import.meta.dirname, '../../../integration/base/fixable'),
       ),
     ).resolves.toMatchInlineSnapshot(`
       {

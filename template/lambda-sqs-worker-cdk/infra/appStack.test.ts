@@ -1,5 +1,6 @@
 import { App, aws_secretsmanager, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
+import { afterAll, afterEach, expect, it, vi } from 'vitest';
 
 const originalDeployment = process.env.DEPLOYMENT;
 const originalVersion = process.env.VERSION;
@@ -10,7 +11,7 @@ afterAll(() => {
 });
 
 afterEach(() => {
-  jest.resetModules();
+  vi.resetModules();
 });
 
 it.each(['dev', 'prod'])(
@@ -21,15 +22,16 @@ it.each(['dev', 'prod'])(
 
     const { AppStack } = await import('./appStack.js');
 
-    jest
-      .spyOn(aws_sns.Topic, 'fromTopicArn')
-      .mockImplementation((scope, id) => new aws_sns.Topic(scope, id));
+    vi.spyOn(aws_sns.Topic, 'fromTopicArn').mockImplementation(
+      (scope, id) => new aws_sns.Topic(scope, id),
+    );
 
-    jest
-      .spyOn(aws_secretsmanager.Secret, 'fromSecretPartialArn')
-      .mockImplementation(
-        (scope, id) => new aws_secretsmanager.Secret(scope, id),
-      );
+    vi.spyOn(
+      aws_secretsmanager.Secret,
+      'fromSecretPartialArn',
+    ).mockImplementation(
+      (scope, id) => new aws_secretsmanager.Secret(scope, id),
+    );
 
     const app = new App({ context: { 'aws:cdk:bundling-stacks': [] } });
 

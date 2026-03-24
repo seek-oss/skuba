@@ -1,4 +1,5 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as execModule from '../../../../../../utils/exec.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
@@ -9,28 +10,33 @@ import { patchPackageBuilds } from './patchPackageBuilds.js';
 
 import { getOwnerAndRepo } from '@skuba-lib/api/git';
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  __esModule: true,
-  default: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
 }));
-jest.mock('@skuba-lib/api/git');
+vi.mock('fast-glob', () => ({
+  default: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
+}));
+vi.mock('@skuba-lib/api/git');
 
-const exec = jest.spyOn(execModule, 'exec');
-const createExec = jest.spyOn(execModule, 'createExec');
+const exec = vi.spyOn(execModule, 'exec');
+const createExec = vi.spyOn(execModule, 'createExec');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => {
   vol.reset();
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   exec.mockResolvedValue(undefined as any);
   createExec.mockImplementation(
-    () => jest.fn().mockResolvedValue(undefined as any) as any,
+    () => vi.fn().mockResolvedValue(undefined as any) as any,
   );
-  jest.spyOn(checks, 'isLikelyPackage').mockResolvedValueOnce(true);
-  jest.mocked(getOwnerAndRepo).mockResolvedValue({
+  vi.spyOn(checks, 'isLikelyPackage').mockResolvedValueOnce(true);
+  vi.mocked(getOwnerAndRepo).mockResolvedValue({
     owner: 'seek-oss',
     repo: 'test-repo',
   });
@@ -51,11 +57,11 @@ const baseArgs: PatchConfig = {
 };
 
 describe('patchPackageBuilds', () => {
-  const stdoutMock = jest.fn();
+  const stdoutMock = vi.fn();
 
-  jest
-    .spyOn(console, 'log')
-    .mockImplementation((...args) => stdoutMock(`${args.join(' ')}\n`));
+  vi.spyOn(console, 'log').mockImplementation((...args) =>
+    stdoutMock(`${args.join(' ')}\n`),
+  );
 
   it('should skip if no package.json files found', async () => {
     vol.fromJSON({});
@@ -65,10 +71,10 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'unable to find package.json files',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if tsdown.config already exists', async () => {
@@ -93,10 +99,10 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no skuba build-package command found',
-    });
+    } satisfies PatchReturnType);
 
     expect(exec).not.toHaveBeenCalled();
   });
@@ -122,9 +128,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     expect(result['tsdown.config.mts']).toBeUndefined();
@@ -139,7 +145,7 @@ describe('patchPackageBuilds', () => {
           skuba: { type: 'package' },
           scripts: {
             build: 'skuba build-package',
-            test: 'jest',
+            test: 'vi',
           },
         },
         null,
@@ -152,9 +158,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
 
@@ -209,9 +215,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
 
@@ -277,9 +283,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     expect(result['tsdown.config.mts']).toBeDefined();
@@ -318,9 +324,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
 
@@ -378,9 +384,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     expect(result['tsdown.config.mts']).toBeDefined();
@@ -424,9 +430,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     expect(result['tsdown.config.mts']).toBeDefined();
@@ -488,9 +494,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     expect(result['packages/package-a/tsdown.config.mts']).toBeDefined();
@@ -548,9 +554,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     expect(result['tsdown.config.mts']).toBeDefined();
@@ -586,14 +592,14 @@ describe('patchPackageBuilds', () => {
       },
       scripts: {
         build: 'skuba build-package',
-        test: 'jest',
+        test: 'vi',
         lint: 'eslint',
       },
       dependencies: {
         react: '^18.0.0',
       },
       devDependencies: {
-        jest: '^29.0.0',
+        vi: '^29.0.0',
       },
     };
 
@@ -611,14 +617,14 @@ describe('patchPackageBuilds', () => {
       skuba: { type: 'package', template: 'koa-rest-api' },
       scripts: {
         build: 'skuba build-package',
-        test: 'jest',
+        test: 'vi',
         lint: 'eslint',
       },
       dependencies: {
         react: '^18.0.0',
       },
       devDependencies: {
-        jest: '^29.0.0',
+        vi: '^29.0.0',
       },
     };
 
@@ -631,9 +637,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const packageJson = JSON.parse(result['package.json']!);
@@ -642,9 +648,9 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should only process likely packages', async () => {
-    jest
-      .spyOn(checks, 'isLikelyPackage')
-      .mockImplementation((path) => Promise.resolve(path === 'package.json'));
+    vi.spyOn(checks, 'isLikelyPackage').mockImplementation((path) =>
+      Promise.resolve(path === 'package.json'),
+    );
 
     vol.fromJSON({
       'package.json': JSON.stringify(
@@ -664,7 +670,7 @@ describe('patchPackageBuilds', () => {
           version: '1.0.0',
           skuba: { type: 'application' },
           scripts: {
-            test: 'jest',
+            test: 'vi',
           },
         },
         null,
@@ -677,9 +683,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     expect(result['tsdown.config.mts']).toBeDefined();
@@ -687,9 +693,9 @@ describe('patchPackageBuilds', () => {
   });
 
   it('should update package.json fields in monorepo packages', async () => {
-    jest
-      .spyOn(checks, 'isLikelyPackage')
-      .mockImplementation((path) => Promise.resolve(path !== 'package.json'));
+    vi.spyOn(checks, 'isLikelyPackage').mockImplementation((path) =>
+      Promise.resolve(path !== 'package.json'),
+    );
 
     vol.fromJSON({
       'package.json': JSON.stringify(
@@ -738,9 +744,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const packageAJson = JSON.parse(result['packages/package-a/package.json']!);
@@ -811,9 +817,9 @@ describe('patchPackageBuilds', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const packageJson = JSON.parse(result['package.json']!);
@@ -859,9 +865,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const tsconfigContent = result['tsconfig.json']!;
@@ -900,9 +906,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const tsconfigContent = result['tsconfig.json']!;
@@ -941,9 +947,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const tsconfig = JSON.parse(result['tsconfig.json']!);
@@ -954,9 +960,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
   });
 
   it('should add skipLibCheck to tsconfig.json in monorepo packages', async () => {
-    jest
-      .spyOn(checks, 'isLikelyPackage')
-      .mockImplementation((path) => Promise.resolve(path !== 'package.json'));
+    vi.spyOn(checks, 'isLikelyPackage').mockImplementation((path) =>
+      Promise.resolve(path !== 'package.json'),
+    );
 
     vol.fromJSON({
       'package.json': JSON.stringify(
@@ -1009,9 +1015,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const tsconfigAContent = result['packages/package-a/tsconfig.json']!;
@@ -1051,9 +1057,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const tsconfigContent = result['tsconfig.json']!;
@@ -1091,9 +1097,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     expect(result['tsconfig.build.json']).toBeUndefined();
@@ -1139,9 +1145,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     expect(result['tsconfig.build.json']).toBeDefined();
@@ -1171,9 +1177,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const packageJson = JSON.parse(result['package.json']!);
@@ -1205,9 +1211,9 @@ describe('patchPackageBuilds - skipLibCheck', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     const result = volToJson();
     const packageJson = JSON.parse(result['package.json']!);

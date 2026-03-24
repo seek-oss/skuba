@@ -1,4 +1,5 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../../../../index.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
@@ -6,34 +7,40 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { tryUpdateLambdaConfigs } from './updateLambdaConfigs.js';
 
-jest.mock('../../../../../../index.js', () => ({
+vi.mock('../../../../../../index.js', () => ({
   Git: {
-    getOwnerAndRepo: jest.fn(),
+    getOwnerAndRepo: vi.fn(),
   },
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  __esModule: true,
-  default: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
+vi.mock('fast-glob', () => ({
+  default: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 
-jest.spyOn(console, 'warn').mockImplementation(() => {
+vi.spyOn(console, 'warn').mockImplementation(() => {
   /* do nothing */
 });
-jest.spyOn(console, 'log').mockImplementation(() => {
+vi.spyOn(console, 'log').mockImplementation(() => {
   /* do nothing */
 });
 
 beforeEach(() => {
   vol.reset();
-  jest.clearAllMocks();
-  jest
-    .mocked(Git.getOwnerAndRepo)
-    .mockResolvedValue({ repo: 'test-repo', owner: 'seek' });
+  vi.clearAllMocks();
+  vi.mocked(Git.getOwnerAndRepo).mockResolvedValue({
+    repo: 'test-repo',
+    owner: 'seek',
+  });
 });
 
 const baseArgs: PatchConfig = {
@@ -52,19 +59,19 @@ const baseArgs: PatchConfig = {
 
 describe('tryUpdateLambdaConfigs', () => {
   it('should skip if repository name cannot be determined', async () => {
-    jest
-      .mocked(Git.getOwnerAndRepo)
-      .mockRejectedValue(new Error('no repo found'));
+    vi.mocked(Git.getOwnerAndRepo).mockRejectedValue(
+      new Error('no repo found'),
+    );
 
     await expect(
       tryUpdateLambdaConfigs({
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no repository name found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if no ts, yml or js files are found', async () => {
@@ -75,10 +82,10 @@ describe('tryUpdateLambdaConfigs', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no .ts or webpack config files or .yml files found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should update lambda configs in .ts files', async () => {
@@ -115,9 +122,9 @@ const another = new aws_lambda_nodejs.NodejsFunction(this, 'another', {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -175,9 +182,9 @@ const worker = new NodejsFunction(this, 'worker', {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -222,7 +229,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js', '.json'],
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(import.meta.dirname, 'src'),
     },
   },
 });`,
@@ -250,9 +257,9 @@ module.exports = {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -296,7 +303,7 @@ module.exports = {
           conditionNames: ['@seek/test-repo/source', '...'],
           extensions: ['.ts', '.js', '.json'],
           alias: {
-            '@': path.resolve(__dirname, 'src'),
+            '@': path.resolve(import.meta.dirname, 'src'),
           },
         },
       );",
@@ -361,9 +368,9 @@ functions:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -456,9 +463,9 @@ functions:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -528,9 +535,9 @@ package:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
@@ -603,9 +610,9 @@ functions:
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
