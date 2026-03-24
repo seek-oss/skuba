@@ -27,14 +27,22 @@ skuba migrate vitest
 
 The following changes are made:
 
-- The [sku codemod] is applied
-- aws-sdk-client-mock-jest usage is replaced with aws-sdk-client-mock-vitest
-- @shopify/jest-koa-mocks usage is replaced with @skuba-lib/vitest-koa-mocks
-- `--runInBand` is replaced with `--maxWorkers=1` in test scripts in `package.json` and BuildKite pipelines.
-- jest.config.\*ts files are best effort migrated to vitest.config.ts files
-- Jest hooks are best effort migrated to Vitest hooks
+- The [sku codemod] is run
+- `aws-sdk-client-mock-jest` → `aws-sdk-client-mock-vitest`
+- `@shopify/jest-koa-mocks` → `@skuba-lib/vitest-koa-mocks`
+- `--runInBand` → `--maxWorkers=1` in `package.json` test scripts and Buildkite pipelines
+- `jest.config.*ts` files are migrated to `vitest.config.ts` on a best-effort basis
+- Jest hooks are migrated to Vitest hooks on a best-effort basis
 
 Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
+
+This migration is intended to run once. It will abort if it detects existing `vitest.config` files in your project. To re-run it anyway, set `DANGEROUSLY_MIGRATE_TO_VITEST=true` to bypass this check.
+
+### FAQ
+
+#### Spies are not working after the migration
+
+This is likely due to the differences in how spies work in Jest and Vitest. In particular, [you cannot mock calls to methods that are called within the same file](https://vitest.dev/guide/mocking/modules.html#mocking-modules-pitfalls).
 
 ## skuba migrate node
 
