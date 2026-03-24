@@ -80,13 +80,14 @@ export const esbuild = async (
     treeShaking: bundle && treeShaking,
     external,
     entryPoints,
-    format: isEsm ? 'esm' : 'cjs',
+    format: !isEsm ? 'cjs' : undefined,
     outdir: compilerOptions.outDir,
     logLevel: debug ? 'debug' : 'info',
     logLimit: 0,
     platform:
       compilerOptions.moduleResolution === ModuleResolutionKind.NodeJs ||
-      compilerOptions.moduleResolution === ModuleResolutionKind.Node16
+      compilerOptions.moduleResolution === ModuleResolutionKind.Node16 ||
+      compilerOptions.moduleResolution === ModuleResolutionKind.NodeNext
         ? 'node'
         : undefined,
     plugins: bundle
