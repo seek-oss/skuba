@@ -78,9 +78,16 @@ export const migrateToPnpmConfig: PatchFunction = async ({
 
   if (
     packageJson?.packageJson.minimumReleaseAgeExcludeOverload &&
-    Array.isArray(packageJson.packageJson.minimumReleaseAgeExcludeOverload)
+    Array.isArray(packageJson.packageJson.minimumReleaseAgeExcludeOverload) &&
+    packageJson.packageJson.minimumReleaseAgeExcludeOverload.length
   ) {
-    modifiedPnpmWorkspace += `\nminimumReleaseAgeExclude:\n${packageJson.packageJson.minimumReleaseAgeExcludeOverload.map((item) => `  - '${item as string}'`).join('\n')}\n`;
+    const overloads =
+      packageJson.packageJson.minimumReleaseAgeExcludeOverload.filter(
+        (item) => typeof item === 'string',
+      );
+    if (overloads) {
+      modifiedPnpmWorkspace += `\nminimumReleaseAgeExclude:\n${overloads.map((item) => `  - '${item}'`).join('\n')}\n`;
+    }
     delete packageJson.packageJson.minimumReleaseAgeExcludeOverload;
   }
 

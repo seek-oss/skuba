@@ -20,12 +20,8 @@ vi.mock('fast-glob', () => ({
 
 vi.mock('../../../utils/exec.js');
 
-vi.spyOn(console, 'error').mockImplementation(() => {
-  /* empty */
-});
-vi.spyOn(console, 'log').mockImplementation(() => {
-  /* empty */
-});
+vi.spyOn(console, 'error').mockImplementation(() => undefined);
+vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

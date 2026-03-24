@@ -27,8 +27,7 @@ const LISTENER_WITHOUT_CALLBACK = `
 app.listen(config.port);
 `;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
 const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
 

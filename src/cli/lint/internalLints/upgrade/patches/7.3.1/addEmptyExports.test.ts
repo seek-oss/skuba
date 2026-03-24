@@ -20,9 +20,7 @@ vi.mock('node:fs/promises', () => ({
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {
-  /* empty */
-});
+const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
 beforeEach(() => {
   vi.clearAllMocks();

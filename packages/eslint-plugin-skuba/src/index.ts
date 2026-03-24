@@ -10,7 +10,9 @@ const skuba = {
   rules: {
     'no-sync-in-promise-iterable': noSyncInPromiseIterable,
   },
-  configs: {},
+  configs: {
+    recommended: [] as TSESLint.FlatConfig.ConfigArray,
+  },
 } satisfies TSESLint.FlatConfig.Plugin;
 
 skuba.configs = {
