@@ -1,25 +1,27 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
 
 import { upgradeInfraPackages } from './upgrade.js';
 
-jest.mock('fs', () => memfs);
-
-jest.mock('fast-glob', () => ({
-  __esModule: true,
-  default: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
 }));
 
-jest.mock('../../../utils/exec.js');
+vi.mock('fast-glob', () => ({
+  default: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
+}));
 
-jest.spyOn(console, 'error').mockImplementation(() => {
-  /* empty */
-});
-jest.spyOn(console, 'log').mockImplementation(() => {
-  /* empty */
-});
+vi.mock('../../../utils/exec.js');
+
+vi.spyOn(console, 'error').mockImplementation(() => undefined);
+vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -54,9 +56,9 @@ describe('upgradeInfraPackages', () => {
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -102,9 +104,9 @@ describe('upgradeInfraPackages', () => {
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -166,9 +168,9 @@ catalogs:
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -223,9 +225,9 @@ catalogs:
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -264,9 +266,9 @@ catalogs:
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -305,9 +307,9 @@ catalogs:
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -341,9 +343,9 @@ catalogs:
           version: '4.0.5',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -381,9 +383,9 @@ catalogs:
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -417,9 +419,9 @@ catalogs:
           version: '4.25.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -457,9 +459,9 @@ catalogs:
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -498,9 +500,9 @@ catalogs:
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -539,9 +541,9 @@ catalogs:
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -580,9 +582,9 @@ catalogs:
           version: '3.61.0',
         },
       ]),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'package.json': JSON.stringify({
@@ -626,9 +628,9 @@ catalogs:
             version: '4.25.0',
           },
         ]),
-      ).resolves.toEqual<PatchReturnType>({
+      ).resolves.toEqual({
         result: 'apply',
-      });
+      } satisfies PatchReturnType);
 
       expect(volToJson()).toEqual({
         'package.json': JSON.stringify({

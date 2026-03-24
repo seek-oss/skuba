@@ -34,9 +34,7 @@ export const start = async () => {
     ...uniqueConditions.map((condition) => `--conditions=${condition}`),
     '--env-file-if-exists',
     '.env',
-    '--require',
-    'tsconfig-paths/register',
-    path.join(__dirname, '..', '..', 'wrapper', 'index.js'),
+    path.join(import.meta.dirname, '..', '..', 'wrapper', 'index.js'),
     ...args.script,
   );
 };

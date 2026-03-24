@@ -1,3 +1,4 @@
+// eslint-disable-next-line vitest/no-import-node-test
 import * as test from 'node:test';
 
 import { RuleTester } from '@typescript-eslint/rule-tester';
@@ -15,7 +16,7 @@ const ruleTester = new RuleTester({
       projectService: {
         allowDefaultProject: ['*.ts*'],
       },
-      tsconfigRootDir: __dirname,
+      tsconfigRootDir: import.meta.dirname,
     },
   },
 });

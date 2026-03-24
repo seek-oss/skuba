@@ -14,7 +14,6 @@ export * as Buildkite from '@skuba-lib/api/buildkite';
 export * as Git from '@skuba-lib/api/git';
 export * as GitHub from '@skuba-lib/api/github';
 export * as Net from '@skuba-lib/api/net';
-export * as Jest from './api/jest/index.js';
 
 // evanw/esbuild#2388
 declare global {

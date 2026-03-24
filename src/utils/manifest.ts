@@ -1,5 +1,7 @@
-import readPkgUp, { type NormalizedPackageJson } from 'read-pkg-up';
+import { type NormalizedPackageJson, readPackageUp } from 'read-package-up';
 import * as z from 'zod/v4';
+
+import type { ReadResult } from '../cli/configure/types.js';
 
 import { hasProp } from './validation.js';
 
@@ -21,7 +23,7 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
     return skubaManifest;
   }
 
-  const result = await readPkgUp({ cwd: __dirname });
+  const result = await readPackageUp({ cwd: import.meta.dirname });
 
   if (result === undefined) {
     throw Error('skuba could not find its own manifest');
@@ -30,8 +32,9 @@ export const getSkubaManifest = async (): Promise<NormalizedPackageJson> => {
   return (skubaManifest = result.packageJson);
 };
 
-export const getConsumerManifest = (cwd?: string) =>
-  readPkgUp({ cwd, normalize: false });
+export const getConsumerManifest = (
+  cwd?: string,
+): Promise<ReadResult | undefined> => readPackageUp({ cwd, normalize: false });
 
 export const getManifestProperties = async <T extends string, V = unknown>(
   prop: T,

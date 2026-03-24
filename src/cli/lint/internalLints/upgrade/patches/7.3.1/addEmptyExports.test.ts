@@ -1,17 +1,30 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig } from '../../index.js';
 
 import { tryAddEmptyExports } from './addEmptyExports.js';
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
+vi.mock('node:fs', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('node:fs/promises', () => ({
+  default: memfs.fs.promises,
+  ...memfs.fs.promises,
+}));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-const consoleLog = jest.spyOn(console, 'log').mockImplementation();
+const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
-beforeEach(jest.clearAllMocks);
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 beforeEach(() => vol.reset());
 
 describe('tryAddEmptyExports', () => {

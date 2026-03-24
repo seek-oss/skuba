@@ -1,8 +1,8 @@
-const tsParser = require('@typescript-eslint/parser');
+import tsParser from '@typescript-eslint/parser';
 
-const skuba = require('eslint-config-skuba');
+import skuba from 'eslint-config-skuba';
 
-module.exports = [
+export default [
   {
     ignores: [
       'integration/base/',

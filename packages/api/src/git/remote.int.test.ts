@@ -1,9 +1,13 @@
 import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
+import { beforeEach, expect, it, vi } from 'vitest';
 
 import { getOwnerAndRepo } from './remote.js';
 
-jest.mock('fs', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 beforeEach(async () => {
   delete process.env.BUILDKITE_REPO;

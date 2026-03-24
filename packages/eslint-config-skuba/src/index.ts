@@ -1,24 +1,14 @@
-import { type Config, defineConfig } from 'eslint/config';
-import base from 'eslint-config-seek/base';
+import { defineConfig } from 'eslint/config';
 import {
   js as jsExtensions,
   ts as tsExtensions,
 } from 'eslint-config-seek/extensions';
+import base from 'eslint-config-seek/vitest/base';
 import skubaPlugin from 'eslint-plugin-skuba';
 import eslintPluginYml from 'eslint-plugin-yml';
 import tseslint from 'typescript-eslint';
 
-import { configs } from './requireExtensions.js';
-
 const skuba = defineConfig([
-  configs.recommended.map((config) => ({
-    ...(config as Config),
-    files: [`**/*.{${tsExtensions.join(',')}}`],
-    ignores: [
-      // Jest configuration files
-      '**/jest.config*',
-    ],
-  })),
   {
     name: 'skuba/ignores',
     ignores: [
@@ -72,16 +62,16 @@ const skuba = defineConfig([
         },
       ],
 
-      'jest/expect-expect': 'off',
-      'jest/no-deprecated-functions': 'error',
-      'jest/prefer-expect-resolves': 'error',
-      'jest/prefer-spy-on': 'error',
-      'jest/prefer-strict-equal': 'off',
-      'jest/prefer-to-be': 'error',
-      'jest/prefer-to-contain': 'error',
-      'jest/prefer-to-have-length': 'error',
-      'jest/prefer-todo': 'error',
-      'jest/valid-title': 'error',
+      'vitest/expect-expect': 'off',
+      // 'vitest/no-deprecated-functions': 'error',
+      'vitest/prefer-expect-resolves': 'error',
+      'vitest/prefer-spy-on': 'error',
+      'vitest/prefer-strict-equal': 'off',
+      'vitest/prefer-to-be': 'error',
+      'vitest/prefer-to-contain': 'error',
+      'vitest/prefer-to-have-length': 'error',
+      'vitest/prefer-todo': 'error',
+      'vitest/valid-title': 'error',
       'no-use-before-define': 'off',
 
       // https://github.com/prettier/eslint-config-prettier/blob/v8.5.0/README.md#quotes

@@ -1,10 +1,14 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { patchPnpmWorkspace } from './patchPnpmWorkspace.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-jest.mock('fs-extra', () => memfs);
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
 
 beforeEach(() => {
   vol.reset();
@@ -66,16 +70,17 @@ describe('patchPnpmWorkspace', () => {
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
+        - vitest # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
@@ -152,16 +157,17 @@ trustPolicyExclude:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
+        - vitest # Managed by skuba
       trustPolicyExclude:
         - some-package@1.0.0 # Comment after list item
         # Comment on empty list item
@@ -236,16 +242,17 @@ trustPolicyExclude:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
+        - vitest # Managed by skuba
       allowBuilds:
         some-package: false
         '@ast-grep/lang-json': true # Managed by skuba
@@ -329,16 +336,17 @@ packageManagerStrictVersion: false`,
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - jest # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
+        - vitest # Managed by skuba
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@5.7.2 || 6.3.1 # Managed by skuba"
@@ -371,10 +379,11 @@ trustPolicyExclude:
         - some-package
         - esbuild # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - jest # Managed by skuba
+        - jest
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
         - eslint # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
@@ -382,6 +391,7 @@ trustPolicyExclude:
         - tsconfig-seek # Managed by skuba
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
+        - vitest # Managed by skuba
       trustPolicyExclude:
         - some-package@1.0.0
         - semver@5.7.2 || 6.3.1 # Managed by skuba

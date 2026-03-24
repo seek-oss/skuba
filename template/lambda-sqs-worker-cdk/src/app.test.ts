@@ -1,5 +1,14 @@
 import { PublishCommand } from '@aws-sdk/client-sns';
 import type { SQSBatchResponse } from 'aws-lambda';
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import * as app from './app.js';
 import { stdoutMock } from './framework/logging.js';
@@ -20,11 +29,13 @@ describe('handler', () => {
 
   const score = chance.floating({ max: 1, min: 0 });
 
-  const distribution = jest
+  const distribution = vi
     .spyOn(metricsClient, 'distribution')
     .mockReturnValue();
 
-  beforeAll(scoringService.spy);
+  beforeAll(() => {
+    scoringService.spy();
+  });
 
   beforeEach(() => {
     scoringService.request.mockResolvedValue(score);
@@ -41,9 +52,9 @@ describe('handler', () => {
   it('handles one record', async () => {
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    await expect(app.handler(event, ctx)).resolves.toEqual<SQSBatchResponse>({
+    await expect(app.handler(event, ctx)).resolves.toEqual({
       batchItemFailures: [],
-    });
+    } satisfies SQSBatchResponse);
 
     expect(scoringService.request).toHaveBeenCalledTimes(1);
 
@@ -72,9 +83,9 @@ describe('handler', () => {
       JSON.stringify(jobPublished),
     ]);
 
-    await expect(app.handler(event, ctx)).resolves.toEqual<SQSBatchResponse>({
+    await expect(app.handler(event, ctx)).resolves.toEqual({
       batchItemFailures: [],
-    });
+    } satisfies SQSBatchResponse);
 
     expect(stdoutMock.calls).toMatchObject([
       { count: 2, level: 20, msg: 'Received jobs' },
@@ -100,9 +111,9 @@ describe('handler', () => {
       JSON.stringify(jobPublished),
     ]);
 
-    await expect(app.handler(event, ctx)).resolves.toEqual<SQSBatchResponse>({
+    await expect(app.handler(event, ctx)).resolves.toEqual({
       batchItemFailures: [{ itemIdentifier: event.Records[0]!.messageId }],
-    });
+    } satisfies SQSBatchResponse);
 
     expect(stdoutMock.calls).toMatchObject([
       { count: 2, level: 20, msg: 'Received jobs' },
@@ -128,13 +139,13 @@ describe('handler', () => {
   it('returns a batchItemFailure on invalid input', () => {
     const event = createSqsEvent(['}']);
 
-    return expect(app.handler(event, ctx)).resolves.toEqual<SQSBatchResponse>({
+    return expect(app.handler(event, ctx)).resolves.toEqual({
       batchItemFailures: [
         {
           itemIdentifier: event.Records[0]!.messageId,
         },
       ],
-    });
+    } satisfies SQSBatchResponse);
   });
 
   it('bubbles up scoring service error', async () => {
@@ -144,9 +155,9 @@ describe('handler', () => {
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    await expect(app.handler(event, ctx)).resolves.toEqual<SQSBatchResponse>({
+    await expect(app.handler(event, ctx)).resolves.toEqual({
       batchItemFailures: [{ itemIdentifier: event.Records[0]!.messageId }],
-    });
+    } satisfies SQSBatchResponse);
 
     expect(stdoutMock.calls).toMatchObject([
       { count: 1, level: 20, msg: 'Received jobs' },
@@ -170,9 +181,9 @@ describe('handler', () => {
 
     const event = createSqsEvent([JSON.stringify(jobPublished)]);
 
-    await expect(app.handler(event, ctx)).resolves.toEqual<SQSBatchResponse>({
+    await expect(app.handler(event, ctx)).resolves.toEqual({
       batchItemFailures: [{ itemIdentifier: event.Records[0]!.messageId }],
-    });
+    } satisfies SQSBatchResponse);
 
     expect(stdoutMock.calls).toMatchObject([
       {

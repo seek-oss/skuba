@@ -1,7 +1,6 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import type { ReadResult } from 'read-pkg-up';
 import { gte, sort } from 'semver';
 
 import type { Logger } from '../../../../utils/logging.js';
@@ -12,6 +11,7 @@ import {
 } from '../../../../utils/packageManager.js';
 import { getSkubaVersion } from '../../../../utils/version.js';
 import { formatPackage } from '../../../configure/processing/package.js';
+import type { ReadResult } from '../../../configure/types.js';
 import type { SkubaPackageJson } from '../../../init/writePackageJson.js';
 import type { InternalLintResult } from '../../internal.js';
 
@@ -34,9 +34,12 @@ export type PatchConfig = {
 export type PatchFunction = (config: PatchConfig) => Promise<PatchReturnType>;
 
 const getPatches = async (manifestVersion: string): Promise<Patches> => {
-  const patches = await fs.promises.readdir(path.join(__dirname, 'patches'), {
-    withFileTypes: true,
-  });
+  const patches = await fs.promises.readdir(
+    path.join(import.meta.dirname, 'patches'),
+    {
+      withFileTypes: true,
+    },
+  );
 
   // The patches are sorted by the version they were added from.
   // Only return patches that are newer or equal to the current version.
@@ -61,8 +64,8 @@ const fileExtensions = ['js', 'ts'];
 const resolvePatches = async (version: string): Promise<Patches> => {
   for (const extension of fileExtensions) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-require-imports
-      return (await require(`./patches/${version}/index.${extension}`)).patches;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+      return (await import(`./patches/${version}/index.${extension}`)).patches;
     } catch {
       // Ignore
     }

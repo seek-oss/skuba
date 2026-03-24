@@ -8,6 +8,7 @@
   },
   "license": "UNLICENSED",
   "sideEffects": false,
+  "type": "module",
   "exports": {
     ".": {
       "@seek/<%- moduleName %>/source": "./src/index.ts",

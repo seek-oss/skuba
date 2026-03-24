@@ -1,4 +1,5 @@
 import type { SQSEvent } from 'aws-lambda';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { createHandler } from './handler.js';
 import { logger, stdoutMock } from './logging.js';
@@ -12,7 +13,9 @@ describe('createHandler', () => {
     Records: [],
   };
 
-  afterEach(stdoutMock.clear);
+  afterEach(() => {
+    stdoutMock.clear();
+  });
 
   it('handles happy path', async () => {
     const output = chance.sentence();

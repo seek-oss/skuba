@@ -7,6 +7,7 @@
     "url": "git+ssh://git@github.com/<%- orgName %>/<%- repoName %>.git"
   },
   "license": "MIT",
+  "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {

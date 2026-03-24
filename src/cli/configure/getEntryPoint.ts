@@ -2,7 +2,6 @@ import { styleText } from 'node:util';
 import path from 'path';
 
 import { input } from '@inquirer/prompts';
-import type { ReadResult } from 'read-pkg-up';
 
 import { log } from '../../utils/logging.js';
 import type { ProjectType } from '../../utils/manifest.js';
@@ -10,6 +9,7 @@ import type { TemplateConfig } from '../../utils/template.js';
 import { hasStringProp } from '../../utils/validation.js';
 
 import { tsFileExists } from './analysis/files.js';
+import type { ReadResult } from './types.js';
 
 interface Props {
   destinationRoot: string;

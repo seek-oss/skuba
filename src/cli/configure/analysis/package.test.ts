@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 import { diffDependencies } from './package.js';
 
 describe('diffDependencies', () => {

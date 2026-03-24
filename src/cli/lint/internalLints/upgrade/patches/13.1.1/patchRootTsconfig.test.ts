@@ -1,22 +1,28 @@
 import memfs, { vol } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchRootConfig } from './patchRootTsconfig.js';
 
-jest.mock('fs-extra', () => memfs);
-jest.mock('fast-glob', () => ({
-  __esModule: true,
-  default: (pat: string, opts: { ignore: string[] }) =>
-    jest.requireActual('fast-glob').glob(pat, { ...opts, fs: memfs }),
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
+vi.mock('fast-glob', () => ({
+  default: async (pat: any, opts: any) => {
+    const actualFastGlob =
+      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+    return actualFastGlob.glob(pat, { ...opts, fs: memfs });
+  },
 }));
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => {
   vol.reset();
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 const baseArgs: PatchConfig = {
@@ -42,10 +48,10 @@ describe('patchRootTsconfig', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'no root tsconfig.json found',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should skip if unable to parse tsconfig.json', async () => {
@@ -58,10 +64,10 @@ describe('patchRootTsconfig', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'Unable to parse tsconfig.json',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should preserve comments and formatting when adding rootDir', async () => {
@@ -83,9 +89,9 @@ describe('patchRootTsconfig', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'tsconfig.json': `{
@@ -116,9 +122,9 @@ describe('patchRootTsconfig', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'tsconfig.json': `{
@@ -149,10 +155,10 @@ describe('patchRootTsconfig', () => {
         ...baseArgs,
         mode: 'lint',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'skip',
       reason: 'rootDir already set in tsconfig.json',
-    });
+    } satisfies PatchReturnType);
   });
 
   it('should add rootDir to existing compilerOptions', async () => {
@@ -171,9 +177,9 @@ describe('patchRootTsconfig', () => {
         ...baseArgs,
         mode: 'format',
       }),
-    ).resolves.toEqual<PatchReturnType>({
+    ).resolves.toEqual({
       result: 'apply',
-    });
+    } satisfies PatchReturnType);
 
     expect(volToJson()).toEqual({
       'tsconfig.json': `{
