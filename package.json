@@ -81,7 +81,7 @@
     "@ast-grep/lang-yaml": "^0.0.6",
     "@ast-grep/napi": "^0.42.0",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
-    "@inquirer/prompts": "^7.9.0",
+    "@inquirer/prompts": "^8.0.0",
     "@octokit/graphql": "^9.0.0",
     "@octokit/graphql-schema": "^15.3.0",
     "@octokit/rest": "^22.0.0",
