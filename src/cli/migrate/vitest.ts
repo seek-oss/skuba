@@ -430,7 +430,6 @@ export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
     },
     include: ['src/**/*.test.ts'],
     coverage: {
-      include: ['src'],
       exclude: ${coverageIgnorePatterns ?? "['src/testing']"},
       thresholds: ${
         coverageThreshold ??
@@ -505,15 +504,20 @@ export const migrateToVitest = async ({
     };
   }
 
-  const vitestConfigFiles = await fg(['**/vitest.config.{ts,js,mjs,mts,cts}'], {
-    ignore: ['**/.git', '**/node_modules'],
-  });
+  if (process.env.DANGEROUSLY_MIGRATE_TO_VITEST !== 'true') {
+    const vitestConfigFiles = await fg(
+      ['**/vitest.config.{ts,js,mjs,mts,cts}'],
+      {
+        ignore: ['**/.git', '**/node_modules'],
+      },
+    );
 
-  if (vitestConfigFiles.length > 0) {
-    return {
-      result: 'skip',
-      reason: 'vitest is already configured in this project',
-    };
+    if (vitestConfigFiles.length > 0) {
+      return {
+        result: 'skip',
+        reason: 'vitest is already configured in this project',
+      };
+    }
   }
 
   const filesToUpdate = await patchFiles();
