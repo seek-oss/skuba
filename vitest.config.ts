@@ -40,9 +40,6 @@ export default defineConfig(
           },
         },
       ],
-      coverage: {
-        include: ['src'],
-      },
       exclude: ['**/node_modules'],
     },
     server: {

@@ -11,6 +11,7 @@ export const defaults = {
       'lib*/**',
       'tmp*/**',
       'vitest.*.ts',
+      'tsdown.config.*ts',
     ],
   },
 } satisfies Partial<ViteUserConfig['test']>;
