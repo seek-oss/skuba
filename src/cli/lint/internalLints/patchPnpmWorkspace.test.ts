@@ -277,6 +277,7 @@ trustPolicyExclude:
         unrs-resolver: true # Managed by skuba
       trustPolicyExclude:
         - some-package@1.0.0
+        - semver@6.3.1 # Managed by skuba
       ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
@@ -291,8 +292,7 @@ trustPolicyExclude:
         - tsconfig-seek # Managed by skuba
       packageManagerStrictVersion: true # Managed by skuba
       strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
-        - semver@6.3.1 # Managed by skuba"
+      trustPolicy: off # Managed by skuba"
     `);
   });
 
@@ -404,6 +404,7 @@ trustPolicyExclude:
       trustPolicyExclude:
         - some-package@1.0.0
         - semver@5.7.2 || 6.3.1
+        - semver@6.3.1 # Managed by skuba
       allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
@@ -431,8 +432,7 @@ trustPolicyExclude:
         - tsconfig-seek # Managed by skuba
       packageManagerStrictVersion: true # Managed by skuba
       strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
-        - semver@6.3.1 # Managed by skuba"
+      trustPolicy: off # Managed by skuba"
     `);
   });
 

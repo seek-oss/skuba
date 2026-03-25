@@ -143,6 +143,10 @@ export const patchPnpmWorkspace = async (
     }
   });
 
+  // Collect new top-level key insertions separately so they are pushed to
+  // the end of the file after all existing keys are processed.
+  const newKeyEdits: Edit[] = [];
+
   Object.entries(defaultConfig).forEach(([key, value]) => {
     const node = blockMappingPairs?.find(
       (pair) => (pair.field('key')?.text() ?? '') === key,
@@ -150,7 +154,7 @@ export const patchPnpmWorkspace = async (
 
     if (!node) {
       const endPos = ast.root().range().end.index;
-      edits.push({
+      newKeyEdits.push({
         startPos: endPos,
         endPos,
         insertedText: `\n${mapConfigToYamlValue(key, value)}`,
@@ -325,6 +329,8 @@ export const patchPnpmWorkspace = async (
       }
     }
   });
+
+  edits.push(...newKeyEdits);
 
   if (edits.length === 0) {
     return {
