@@ -2,6 +2,7 @@ import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
+import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { removePnpmPlugin } from './removePnpmPlugin.js';
@@ -43,55 +44,10 @@ const baseArgs: PatchConfig = {
 describe('removePnpmPlugin', () => {
   it('should skip if pnpm-workspace.yaml is up to date', async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': `publicHoistPattern:
-  - '@arethetypeswrong/core' # Managed by skuba
-  - '@eslint/*' # Managed by skuba
-  - '@types*' # Managed by skuba
-  - '@vitest/*' # Managed by skuba
-  - esbuild # Managed by skuba
-  - eslint # Managed by skuba
-  - eslint-config-skuba # Managed by skuba
-  - prettier # Managed by skuba
-  - publint # Managed by skuba
-  - rolldown # Managed by skuba
-  - tsconfig-seek # Managed by skuba
-  - tsdown # Managed by skuba
-  - typescript # Managed by skuba
-  - vitest # Managed by skuba
-
-trustPolicyExclude:
-  - semver@5.7.2 || 6.3.1 # Managed by skuba
-
-allowBuilds:
-  '@ast-grep/lang-json': true # Managed by skuba
-  '@ast-grep/lang-yaml': true # Managed by skuba
-  '@datadog/native-appsec': true # Managed by skuba
-  '@datadog/native-iast-taint-tracking': true # Managed by skuba
-  '@datadog/native-metrics': true # Managed by skuba
-  '@datadog/pprof': true # Managed by skuba
-  dd-trace: true # Managed by skuba
-  esbuild: true # Managed by skuba
-  protobufjs: true # Managed by skuba
-  unix-dgram: true # Managed by skuba
-  unrs-resolver: true # Managed by skuba
-blockExoticSubdeps: true # Managed by skuba
-ignorePatchFailures: false # Managed by skuba
-minimumReleaseAge: 4320 # Managed by skuba
-minimumReleaseAgeExclude:
-  - '@seek/*' # Managed by skuba
-  - '@skuba-lib/*' # Managed by skuba
-  - eslint-config-seek # Managed by skuba
-  - eslint-config-skuba # Managed by skuba
-  - eslint-plugin-skuba # Managed by skuba
-  - pnpm-plugin-skuba # Managed by skuba
-  - skuba # Managed by skuba
-  - skuba-dive # Managed by skuba
-  - tsconfig-seek # Managed by skuba
-packageManagerStrictVersion: true # Managed by skuba
-strictDepBuilds: false # Managed by skuba
-trustPolicy: off # Managed by skuba
-`,
+      'pnpm-workspace.yaml': ``,
     });
+
+    await patchPnpmWorkspace('format');
 
     await expect(
       removePnpmPlugin({
@@ -143,9 +99,7 @@ trustPolicy: off # Managed by skuba
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "pnpm-workspace.yaml": "
-
-      allowBuilds:
+        "pnpm-workspace.yaml": "allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -189,7 +143,8 @@ trustPolicy: off # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
-        - semver@5.7.2 || 6.3.1 # Managed by skuba",
+        - semver@6.3.1 # Managed by skuba
+      ",
       }
     `);
   });
@@ -214,11 +169,7 @@ configDependencies:
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "pnpm-workspace.yaml": "packages:
-        - .
-
-
-      allowBuilds:
+        "pnpm-workspace.yaml": "allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -262,7 +213,10 @@ configDependencies:
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
-        - semver@5.7.2 || 6.3.1 # Managed by skuba",
+        - semver@6.3.1 # Managed by skuba
+      packages:
+        - .
+      ",
       }
     `);
   });

@@ -52,7 +52,7 @@ const defaultConfig = {
   ],
   strictDepBuilds: false,
   trustPolicy: 'off',
-  trustPolicyExclude: ['semver@5.7.2 || 6.3.1'],
+  trustPolicyExclude: ['semver@6.3.1'], // dependency of eslint-plugin-react
 };
 
 module.exports = {
