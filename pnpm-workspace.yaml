@@ -54,7 +54,7 @@ publicHoistPattern:
 
 trustPolicyExclude:
   - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13
-  - semver@5.7.2 || 6.3.1 # Managed by skuba
+  - semver@6.3.1 # Managed by skuba
 
 strictDepBuilds: false # Managed by skuba
 trustPolicy: off # Managed by skuba

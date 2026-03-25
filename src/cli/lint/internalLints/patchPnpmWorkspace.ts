@@ -2,7 +2,6 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parse } from '@ast-grep/napi';
-import type { Config } from '@pnpm/config';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging.js';
@@ -12,61 +11,7 @@ import type { InternalLintResult } from '../internal.js';
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 
 import { Git } from '@skuba-lib/api';
-
-/**
- *  Keep in sync with packages/pnpm-plugin-skuba/pnpmfile.cjs
- */
-const defaultConfig = {
-  allowBuilds: {
-    '@ast-grep/lang-json': true,
-    '@ast-grep/lang-yaml': true,
-    '@datadog/native-appsec': true,
-    '@datadog/native-iast-taint-tracking': true,
-    '@datadog/native-metrics': true,
-    '@datadog/pprof': true,
-    'dd-trace': true,
-    esbuild: true,
-    protobufjs: true,
-    'unix-dgram': true,
-    'unrs-resolver': true,
-  },
-  blockExoticSubdeps: true,
-  ignorePatchFailures: false,
-
-  minimumReleaseAge: 4320,
-  minimumReleaseAgeExclude: [
-    '@seek/*',
-    '@skuba-lib/*',
-    'eslint-config-seek',
-    'eslint-config-skuba',
-    'eslint-plugin-skuba',
-    'pnpm-plugin-skuba',
-    'skuba',
-    'skuba-dive',
-    'tsconfig-seek',
-  ],
-
-  packageManagerStrictVersion: true,
-  publicHoistPattern: [
-    '@arethetypeswrong/core',
-    '@eslint/*',
-    '@types*',
-    '@vitest/*',
-    'esbuild',
-    'eslint',
-    'eslint-config-skuba',
-    'prettier',
-    'publint',
-    'rolldown',
-    'tsconfig-seek',
-    'tsdown',
-    'typescript',
-    'vitest',
-  ],
-  strictDepBuilds: false,
-  trustPolicy: 'off',
-  trustPolicyExclude: ['semver@5.7.2 || 6.3.1'],
-} satisfies Partial<Config>;
+import { defaultConfig } from 'pnpm-plugin-skuba';
 
 const isSimpleValue = (value: unknown) =>
   typeof value === 'boolean' ||
@@ -106,15 +51,27 @@ const mapConfigToYamlValue = (
     .join('\n')}`;
 };
 
-const getLastNode = (node: SgNode): SgNode => {
-  let lastNode = node;
-  while (true) {
-    const nextNode = lastNode.next();
-    if (!nextNode) {
-      return lastNode;
-    }
-    lastNode = nextNode;
+const findEndOfLine = (node: SgNode, pnpmWorkspaceFile: string): SgNode => {
+  const maybeComment = node.next();
+  if (
+    node &&
+    maybeComment?.kind() === 'comment' &&
+    // Check if # Managed by skuba is on the same line as the block_mapping_pair. A comment on a new line and a comment on the same line both appear in the AST
+    // as a comment node immediately following the block_mapping_pair, so we need to check the text to see if it's a comment for the line or a separate line.
+    // eg. The following lines appear as [block_mapping_pair, comment, comment]
+    // someLine: value # Managed by skuba
+    // # Managed by skuba
+    /^[^\n]*# Managed by skuba$/.test(
+      pnpmWorkspaceFile.substring(
+        node.range().start.index,
+        maybeComment.range().end.index,
+      ),
+    )
+  ) {
+    return maybeComment;
   }
+
+  return node;
 };
 
 export const patchPnpmWorkspace = async (
@@ -152,44 +109,80 @@ export const patchPnpmWorkspace = async (
   const ast = parse('yaml', pnpmWorkspaceFile);
   const edits: Edit[] = [];
 
+  const blockMapping = ast.root().find({ rule: { kind: 'block_mapping' } });
+
+  const blockMappingPairs = blockMapping
+    ?.children()
+    .filter((child) => child.kind() === 'block_mapping_pair');
+
+  blockMappingPairs?.forEach((pair) => {
+    const key = pair.field('key')?.text();
+    if (key && key in defaultConfig) {
+      return;
+    }
+
+    const endOfLine = findEndOfLine(pair, pnpmWorkspaceFile);
+    const value = pair.field('value');
+    if (value && endOfLine.kind() === 'comment') {
+      edits.push({
+        startPos: pair.range().start.index,
+        endPos: endOfLine.range().end.index + 1, // include the newline after the comment
+        insertedText: '',
+      });
+    }
+  });
+
+  const newKeyTexts: string[] = [];
+
   Object.entries(defaultConfig).forEach(([key, value]) => {
-    const node = ast.root().find({
-      rule: {
-        pattern: {
-          context: `${key}:`,
-          selector: 'block_mapping_pair',
-        },
-      },
-    });
+    const node = blockMappingPairs?.find(
+      (pair) => (pair.field('key')?.text() ?? '') === key,
+    );
 
     if (!node) {
-      const endPos = ast.root().range().end.index;
-      edits.push({
-        startPos: endPos,
-        endPos,
-        insertedText: `\n${mapConfigToYamlValue(key, value)}`,
-      });
+      newKeyTexts.push(mapConfigToYamlValue(key, value));
     } else if (isSimpleValue(value)) {
       const yamlValue =
         typeof value === 'string' ? quoteYamlStringValue(value) : value;
       const managedText = `${key}: ${yamlValue} # Managed by skuba`;
-      // The comment is a sibling node, not part of the block_mapping_pair.
-      const nextSib = node.next();
-      const commentNode = nextSib?.kind() === 'comment' ? nextSib : null;
-      const endIdx = commentNode?.range().end.index ?? node.range().end.index;
+
+      const endOfLineIndex = findEndOfLine(node, pnpmWorkspaceFile).range().end
+        .index;
+
       const lineText = pnpmWorkspaceFile.substring(
         node.range().start.index,
-        endIdx,
+        endOfLineIndex,
       );
       if (lineText !== managedText) {
         edits.push({
           startPos: node.range().start.index,
-          endPos: endIdx,
+          endPos: endOfLineIndex,
           insertedText: managedText,
         });
       }
     } else if (Array.isArray(value)) {
       const seqItems = node.findAll({ rule: { kind: 'block_sequence_item' } });
+
+      seqItems.forEach((item) => {
+        const itemValue = item
+          .children()
+          .find((child) => child.kind() === 'flow_node')
+          ?.text()
+          ?.replace(/^['"]|['"]$/g, '');
+
+        if (!itemValue || value.includes(itemValue)) {
+          return;
+        }
+
+        const endOfLine = findEndOfLine(item, pnpmWorkspaceFile);
+        if (endOfLine.kind() === 'comment') {
+          edits.push({
+            startPos: item.range().start.index - 2, // include the two spaces before the dash
+            endPos: endOfLine.range().end.index + 1, // include the newline after the comment
+            insertedText: '',
+          });
+        }
+      });
 
       const missingValues = value
         .map((v) => {
@@ -204,20 +197,21 @@ export const patchPnpmWorkspace = async (
             return v;
           }
 
-          const nextSib = seqItem.next();
-          const commentNode = nextSib?.kind() === 'comment' ? nextSib : null;
-          const endIdx =
-            commentNode?.range().end.index ?? seqItem.range().end.index;
+          const endOfLineIndex = findEndOfLine(
+            seqItem,
+            pnpmWorkspaceFile,
+          ).range().end.index;
+
           const lineText = pnpmWorkspaceFile.substring(
             seqItem.range().start.index,
-            endIdx,
+            endOfLineIndex,
           );
 
           const expectedLineText = `- ${quotedV} # Managed by skuba`;
           if (lineText !== expectedLineText) {
             edits.push({
               startPos: seqItem.range().start.index,
-              endPos: endIdx,
+              endPos: endOfLineIndex,
               insertedText: expectedLineText,
             });
           }
@@ -229,20 +223,41 @@ export const patchPnpmWorkspace = async (
         .map((v) => `  - ${quoteYamlStringValue(v)} # Managed by skuba`)
         .join('\n');
 
-      const lastItem = seqItems[seqItems.length - 1];
+      const firstItem = seqItems[0];
 
-      if (itemsToAdd && lastItem) {
-        const rangeNode = getLastNode(lastItem);
+      if (itemsToAdd && firstItem) {
+        const position = firstItem.range().start.index - 2; // include the two spaces before the dash
 
         edits.push({
-          startPos: rangeNode.range().end.index,
-          endPos: rangeNode.range().end.index,
-          insertedText: `\n${itemsToAdd}`,
+          startPos: position,
+          endPos: position,
+          insertedText: `${itemsToAdd}\n`,
         });
       }
     } else {
-      const mappingItems = node.findAll({
+      const valueNode = node.field('value') ?? node;
+      const mappingItems = valueNode.findAll({
         rule: { kind: 'block_mapping_pair' },
+      });
+
+      mappingItems.forEach((item) => {
+        const itemKey = item
+          .field('key')
+          ?.text()
+          .replace(/^['"]|['"]$/g, '');
+
+        if (!itemKey || itemKey in value) {
+          return;
+        }
+
+        const endOfLine = findEndOfLine(item, pnpmWorkspaceFile);
+        if (endOfLine.kind() === 'comment') {
+          edits.push({
+            startPos: item.range().start.index - 2, // include the two spaces before the key
+            endPos: endOfLine.range().end.index + 1, // include the newline after the comment
+            insertedText: '',
+          });
+        }
       });
 
       const missingKeys = Object.entries(value)
@@ -257,19 +272,19 @@ export const patchPnpmWorkspace = async (
           }
 
           const expectedText = `${quotedSubKey}: ${subValue} # Managed by skuba`;
+          const endOfLineIndex = findEndOfLine(
+            mappingItem,
+            pnpmWorkspaceFile,
+          ).range().end.index;
 
-          const nextSib = mappingItem.next();
-          const commentNode = nextSib?.kind() === 'comment' ? nextSib : null;
-          const itemEndIdx =
-            commentNode?.range().end.index ?? mappingItem.range().end.index;
           const itemLineText = pnpmWorkspaceFile.substring(
             mappingItem.range().start.index,
-            itemEndIdx,
+            endOfLineIndex,
           );
           if (itemLineText !== expectedText) {
             edits.push({
               startPos: mappingItem.range().start.index,
-              endPos: itemEndIdx,
+              endPos: endOfLineIndex,
               insertedText: expectedText,
             });
           }
@@ -284,19 +299,26 @@ export const patchPnpmWorkspace = async (
         )
         .join('\n');
 
-      const lastItem = mappingItems[mappingItems.length - 1];
+      const firstItem = mappingItems[0];
 
-      if (itemsToAdd && lastItem) {
-        const rangeNode = getLastNode(lastItem);
-
+      if (itemsToAdd && firstItem) {
+        const position = firstItem.range().start.index - 2; // include the two spaces before the key
         edits.push({
-          startPos: rangeNode.range().end.index,
-          endPos: rangeNode.range().end.index,
-          insertedText: `\n${itemsToAdd}`,
+          startPos: position,
+          endPos: position,
+          insertedText: `${itemsToAdd}\n`,
         });
       }
     }
   });
+
+  if (newKeyTexts.length > 0) {
+    edits.push({
+      startPos: ast.root().range().start.index,
+      endPos: ast.root().range().start.index,
+      insertedText: `${newKeyTexts.join('\n')}\n`,
+    });
+  }
 
   if (edits.length === 0) {
     return {
