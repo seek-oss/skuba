@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { Edit, type SgNode, parse } from '@ast-grep/napi';
+import { type Edit, type SgNode, parse } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -492,7 +492,7 @@ const scaffoldVitestConfig = async () => {
         ...(setupFilesAfterEnv?.hookPaths ?? []),
       ];
       const envVarsCombined = new Map<string, string>([
-        ...new Map([['ENVIRONMENT', `'test'`]]),
+        ...new Map([['ENVIRONMENT', "'test'"]]),
         ...(setupFiles?.envVars ?? new Map()),
         ...(setupFilesAfterEnv?.envVars ?? new Map()),
       ]);
