@@ -359,23 +359,44 @@ afterEach(() => {
       {
         "jest.config.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
 
-      import { Net } from 'skuba';
+      import { Jest } from 'skuba';
 
-      const waitForApiDynamoDb = async () => {
-        const dynamo = await Net.waitFor({
-          host: 'preferences-dynamo',
-          port: 8003,
-          resolveCompose: !process.env.COMPOSE_NETWORK,
-        });
-
-        process.env.PREFERENCES_DYNAMODB_HOST = dynamo.host;
-        process.env.PREFERENCES_DYNAMODB_PORT = String(dynamo.port);
-      };
-
-      module.exports = async () =>
-        waitForApiDynamoDb();
+      export default Jest.mergePreset({
+        moduleNameMapper: {
+          '^#src/(.*)\\.js$': [
+            '<rootDir>/apps/api/src/$1',
+            '<rootDir>/apps/worker/src/$1',
+          ],
+          '^#src/(.*)$': [
+            '<rootDir>/apps/api/src/$1',
+            '<rootDir>/apps/worker/src/$1',
+          ],
+        },
+        clearMocks: true,
+        coveragePathIgnorePatterns: [
+          'src/listen\\.ts',
+          'src/register\\.ts',
+          'src/testing',
+        ],
+        coverageThreshold: {
+          global: {
+            branches: 50,
+            functions: 50,
+            lines: 50,
+            statements: 50,
+          },
+        },
+        testTimeout: 10000,
+        globalSetup: '<rootDir>/jest.globalSetup.ts',
+        setupFiles: ['<rootDir>/jest.setup.ts'],
+        setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
+        testPathIgnorePatterns: ['\\.int\\.test'],
+        workerIdleMemoryLimit: '512MB',
+      });
       ",
-        "jest.globalSetup.ts": "import { Net } from 'skuba';
+        "jest.globalSetup.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+
+      import { Net } from 'skuba';
 
       const waitForApiDynamoDb = async () => {
         const dynamo = await Net.waitFor({

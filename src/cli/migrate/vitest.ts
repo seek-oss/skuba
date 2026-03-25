@@ -274,7 +274,7 @@ const migrateGlobalSetup = async (
         content: vitestGlobalSetup,
       },
       {
-        file: jestConfigPath,
+        file: absolutePath,
         content: `// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.\n\n${jestGlobalSetup}`,
       },
     ],
@@ -408,8 +408,8 @@ const migrateSetupHooks = async (
       const { updatedContent, envVars: hookEnvVars } =
         migrateEnvironmentSetup(jestSetupHook);
 
-      hookEnvVars.forEach(([key, value]) => {
-        envVars.set(key, value);
+      hookEnvVars.forEach(([k, value]) => {
+        envVars.set(k, value);
       });
 
       return [
