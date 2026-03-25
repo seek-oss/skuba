@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { type SgNode, parse } from '@ast-grep/napi';
+import { Edit, type SgNode, parse } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -11,6 +11,7 @@ import { getCustomConditions } from '../build/tsc.js';
 import type { PatchReturnType } from '../lint/internalLints/upgrade/index.js';
 
 import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
+
 type FileContent = {
   file: string;
   content: string;
@@ -281,6 +282,64 @@ const migrateGlobalSetup = async (
   };
 };
 
+const migrateEnvironmentSetup = (file: string) => {
+  const ast = parse('TypeScript', file);
+  const root = ast.root();
+
+  const envAssignments = root.findAll({
+    rule: {
+      kind: 'assignment_expression',
+      regex: '^process.env.',
+    },
+  });
+
+  const rootLevelEnvAssignments = envAssignments.filter((assignment) => {
+    const parent = assignment.parent();
+    return (
+      parent?.kind() === 'expression_statement' &&
+      parent.parent()?.kind() === 'program'
+    );
+  });
+
+  const edits: Edit[] = rootLevelEnvAssignments.map((assignment) => {
+    const nodeToDelete = assignment.parent() ?? assignment;
+    const isNextCharacterNewline =
+      file.slice(
+        nodeToDelete.range().end.index,
+        nodeToDelete.range().end.index + 1,
+      ) === '\n';
+    return {
+      insertedText: '',
+      startPos: nodeToDelete.range().start.index,
+      endPos: nodeToDelete.range().end.index + (isNextCharacterNewline ? 1 : 0), // include the newline if present
+    };
+  });
+
+  const updatedContent = root.commitEdits(edits);
+
+  const envVars = rootLevelEnvAssignments
+    .map((assignment) => {
+      const envVarName = assignment
+        .children()
+        .find((c) => c.kind() === 'member_expression')
+        ?.children()
+        .find((c) => c.kind() === 'property_identifier')
+        ?.text();
+
+      const envVarValueNode = assignment.field('right')?.text();
+
+      return envVarName && envVarValueNode
+        ? ([envVarName, envVarValueNode] as const)
+        : undefined;
+    })
+    .filter((name) => name !== undefined);
+
+  return {
+    updatedContent,
+    envVars,
+  };
+};
+
 const extractStringArray = (
   node: SgNode,
   key: string,
@@ -315,7 +374,10 @@ const migrateSetupHooks = async (
   node: SgNode,
   jestConfigPath: string,
   key: string,
-): Promise<{ edits: FileContent[]; hookPaths: string[] } | undefined> => {
+): Promise<
+  | { edits: FileContent[]; hookPaths: string[]; envVars: Map<string, string> }
+  | undefined
+> => {
   const setupHookPaths = extractStringArray(node, key);
 
   if (!setupHookPaths || setupHookPaths.length === 0) {
@@ -325,6 +387,8 @@ const migrateSetupHooks = async (
   const normalizedPaths = setupHookPaths.map((p) =>
     p.replace('<rootDir>/', ''),
   );
+
+  const envVars = new Map<string, string>();
 
   const edits = await Promise.all(
     normalizedPaths.map(async (normalizedPath) => {
@@ -341,10 +405,17 @@ const migrateSetupHooks = async (
         return [];
       }
 
+      const { updatedContent, envVars: hookEnvVars } =
+        migrateEnvironmentSetup(jestSetupHook);
+
+      hookEnvVars.forEach(([key, value]) => {
+        envVars.set(key, value);
+      });
+
       return [
         {
           file: absolutePath.replace('jest', 'vitest'),
-          content: jestSetupHook,
+          content: updatedContent,
         },
         {
           file: absolutePath,
@@ -357,6 +428,7 @@ const migrateSetupHooks = async (
   return {
     edits: edits.flat(),
     hookPaths: normalizedPaths.map((p) => p.replace('jest', 'vitest')),
+    envVars,
   };
 };
 
@@ -419,6 +491,11 @@ const scaffoldVitestConfig = async () => {
         ...(setupFiles?.hookPaths ?? []),
         ...(setupFilesAfterEnv?.hookPaths ?? []),
       ];
+      const envVarsCombined = new Map<string, string>([
+        ...new Map([['ENVIRONMENT', `'test'`]]),
+        ...(setupFiles?.envVars ?? new Map()),
+        ...(setupFilesAfterEnv?.envVars ?? new Map()),
+      ]);
 
       const vitestConfigContent = `${isSkubaConfig ? "import { Vitest } from 'skuba';\n" : ''}import { defineConfig } from 'vitest/config';
 
@@ -430,7 +507,9 @@ export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
   },
   test: {
     env: {
-      ENVIRONMENT: 'test',
+${[...envVarsCombined.entries()]
+  .map(([key, value]) => `      ${key}: ${value},`)
+  .join('\n')}
     },
     coverage: {
       exclude: ${coverageIgnorePatterns ?? "['src/testing']"},

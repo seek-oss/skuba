@@ -336,7 +336,11 @@ const waitForApiDynamoDb = async () => {
 module.exports = async () =>
   waitForApiDynamoDb();
 `,
-      'jest.setup.ts': `import 'some-setup';
+      'jest.setup.ts': `process.env.DEPLOYMENT = 'test';
+
+afterEach(() => {
+  process.env.DO_NOT_MIGRATE = 'true';
+});
 `,
       'jest.hooks.ts': `import 'some-hooks';
 `,
@@ -393,7 +397,11 @@ module.exports = async () =>
       ",
         "jest.setup.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
 
-      import 'some-setup';
+      process.env.DEPLOYMENT = 'test';
+
+      afterEach(() => {
+        process.env.DO_NOT_MIGRATE = 'true';
+      });
       ",
         "vitest.config.ts": "import { Vitest } from 'skuba';
       import { defineConfig } from 'vitest/config';
@@ -407,6 +415,7 @@ module.exports = async () =>
         test: {
           env: {
             ENVIRONMENT: 'test',
+            DEPLOYMENT: 'test',
           },
           coverage: {
             exclude: [
@@ -447,7 +456,10 @@ module.exports = async () =>
       ",
         "vitest.hooks.ts": "import 'some-hooks';
       ",
-        "vitest.setup.ts": "import 'some-setup';
+        "vitest.setup.ts": "
+      afterEach(() => {
+        process.env.DO_NOT_MIGRATE = 'true';
+      });
       ",
       }
     `);
