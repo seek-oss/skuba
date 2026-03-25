@@ -39,8 +39,7 @@ describe('patchPnpmWorkspace', () => {
     });
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
-      "
-      allowBuilds:
+      "allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -84,7 +83,8 @@ describe('patchPnpmWorkspace', () => {
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
-        - semver@6.3.1 # Managed by skuba"
+        - semver@6.3.1 # Managed by skuba
+      "
     `);
   });
 
@@ -143,46 +143,7 @@ trustPolicyExclude:
     });
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
-      "# This is a comment
-      allowBuilds:
-        some-package: false # Inline comment
-        '@ast-grep/lang-json': true # Managed by skuba
-        '@ast-grep/lang-yaml': true # Managed by skuba
-        # Managed by skuba
-      # Another comment
-        '@datadog/native-appsec': true # Managed by skuba
-        '@datadog/native-iast-taint-tracking': true # Managed by skuba
-        '@datadog/native-metrics': true # Managed by skuba
-        '@datadog/pprof': true # Managed by skuba
-        dd-trace: true # Managed by skuba
-        esbuild: true # Managed by skuba
-        protobufjs: true # Managed by skuba
-        unix-dgram: true # Managed by skuba
-        unrs-resolver: true # Managed by skuba
-      publicHoistPattern:
-        - some-package # Comment after list item
-        - '@arethetypeswrong/core' # Managed by skuba
-        - '@eslint/*' # Managed by skuba
-        - '@types*' # Managed by skuba
-        - '@vitest/*' # Managed by skuba
-        - esbuild # Managed by skuba
-        - eslint # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
-        - publint # Managed by skuba
-        - rolldown # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-        - tsdown # Managed by skuba
-        - typescript # Managed by skuba
-        - vitest # Managed by skuba
-      trustPolicyExclude:
-        - some-package@1.0.0 # Comment after list item
-        # Comment on empty list item
-        # Managed by skuba
-        - semver@6.3.1 # Managed by skuba
-        # Managed by skuba
-
-      blockExoticSubdeps: true # Managed by skuba
+      "blockExoticSubdeps: true # Managed by skuba
       ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
@@ -197,7 +158,46 @@ trustPolicyExclude:
         - tsconfig-seek # Managed by skuba
       packageManagerStrictVersion: true # Managed by skuba
       strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba"
+      trustPolicy: off # Managed by skuba
+      # This is a comment
+      allowBuilds:
+        '@datadog/native-appsec': true # Managed by skuba
+        '@datadog/native-iast-taint-tracking': true # Managed by skuba
+        '@datadog/native-metrics': true # Managed by skuba
+        '@datadog/pprof': true # Managed by skuba
+        dd-trace: true # Managed by skuba
+        esbuild: true # Managed by skuba
+        protobufjs: true # Managed by skuba
+        unix-dgram: true # Managed by skuba
+        unrs-resolver: true # Managed by skuba
+        some-package: false # Inline comment
+        '@ast-grep/lang-json': true # Managed by skuba
+        '@ast-grep/lang-yaml': true # Managed by skuba
+        # Managed by skuba
+      # Another comment
+      publicHoistPattern:
+        - '@arethetypeswrong/core' # Managed by skuba
+        - '@eslint/*' # Managed by skuba
+        - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
+        - esbuild # Managed by skuba
+        - eslint # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
+        - prettier # Managed by skuba
+        - publint # Managed by skuba
+        - rolldown # Managed by skuba
+        - tsconfig-seek # Managed by skuba
+        - tsdown # Managed by skuba
+        - typescript # Managed by skuba
+        - vitest # Managed by skuba
+        - some-package # Comment after list item
+      trustPolicyExclude:
+        - some-package@1.0.0 # Comment after list item
+        # Comment on empty list item
+        # Managed by skuba
+        - semver@6.3.1 # Managed by skuba
+        # Managed by skuba
+      "
     `);
   });
 
@@ -247,7 +247,6 @@ trustPolicyExclude:
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "blockExoticSubdeps: true # Managed by skuba
       publicHoistPattern:
-        - some-package
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@types*' # Managed by skuba
@@ -262,8 +261,8 @@ trustPolicyExclude:
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
+        - some-package
       allowBuilds:
-        some-package: false
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -275,24 +274,10 @@ trustPolicyExclude:
         protobufjs: true # Managed by skuba
         unix-dgram: true # Managed by skuba
         unrs-resolver: true # Managed by skuba
+        some-package: false
       trustPolicyExclude:
-        - some-package@1.0.0
         - semver@6.3.1 # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
-      minimumReleaseAge: 4320 # Managed by skuba
-      minimumReleaseAgeExclude:
-        - '@seek/*' # Managed by skuba
-        - '@skuba-lib/*' # Managed by skuba
-        - eslint-config-seek # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - eslint-plugin-skuba # Managed by skuba
-        - pnpm-plugin-skuba # Managed by skuba
-        - skuba # Managed by skuba
-        - skuba-dive # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba"
+        - some-package@1.0.0"
     `);
   });
 
@@ -317,48 +302,7 @@ packageManagerStrictVersion: false`,
       "blockExoticSubdeps: true # Managed by skuba
       ignorePatchFailures: false # Managed by skuba
       strictDepBuilds: false # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      allowBuilds:
-        '@ast-grep/lang-json': true # Managed by skuba
-        '@ast-grep/lang-yaml': true # Managed by skuba
-        '@datadog/native-appsec': true # Managed by skuba
-        '@datadog/native-iast-taint-tracking': true # Managed by skuba
-        '@datadog/native-metrics': true # Managed by skuba
-        '@datadog/pprof': true # Managed by skuba
-        dd-trace: true # Managed by skuba
-        esbuild: true # Managed by skuba
-        protobufjs: true # Managed by skuba
-        unix-dgram: true # Managed by skuba
-        unrs-resolver: true # Managed by skuba
-      minimumReleaseAge: 4320 # Managed by skuba
-      minimumReleaseAgeExclude:
-        - '@seek/*' # Managed by skuba
-        - '@skuba-lib/*' # Managed by skuba
-        - eslint-config-seek # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - eslint-plugin-skuba # Managed by skuba
-        - pnpm-plugin-skuba # Managed by skuba
-        - skuba # Managed by skuba
-        - skuba-dive # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-      publicHoistPattern:
-        - '@arethetypeswrong/core' # Managed by skuba
-        - '@eslint/*' # Managed by skuba
-        - '@types*' # Managed by skuba
-        - '@vitest/*' # Managed by skuba
-        - esbuild # Managed by skuba
-        - eslint # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
-        - publint # Managed by skuba
-        - rolldown # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-        - tsdown # Managed by skuba
-        - typescript # Managed by skuba
-        - vitest # Managed by skuba
-      trustPolicy: off # Managed by skuba
-      trustPolicyExclude:
-        - semver@6.3.1 # Managed by skuba"
+      packageManagerStrictVersion: true # Managed by skuba"
     `);
   });
 
@@ -384,28 +328,7 @@ trustPolicyExclude:
     });
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
-      "publicHoistPattern:
-        - some-package
-        - esbuild # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - jest
-        - '@arethetypeswrong/core' # Managed by skuba
-        - '@eslint/*' # Managed by skuba
-        - '@types*' # Managed by skuba
-        - '@vitest/*' # Managed by skuba
-        - eslint # Managed by skuba
-        - prettier # Managed by skuba
-        - publint # Managed by skuba
-        - rolldown # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-        - tsdown # Managed by skuba
-        - typescript # Managed by skuba
-        - vitest # Managed by skuba
-      trustPolicyExclude:
-        - some-package@1.0.0
-        - semver@5.7.2 || 6.3.1
-        - semver@6.3.1 # Managed by skuba
-      allowBuilds:
+      "allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -432,7 +355,28 @@ trustPolicyExclude:
         - tsconfig-seek # Managed by skuba
       packageManagerStrictVersion: true # Managed by skuba
       strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba"
+      trustPolicy: off # Managed by skuba
+      publicHoistPattern:
+        - '@arethetypeswrong/core' # Managed by skuba
+        - '@eslint/*' # Managed by skuba
+        - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
+        - eslint # Managed by skuba
+        - prettier # Managed by skuba
+        - publint # Managed by skuba
+        - rolldown # Managed by skuba
+        - tsconfig-seek # Managed by skuba
+        - tsdown # Managed by skuba
+        - typescript # Managed by skuba
+        - vitest # Managed by skuba
+        - some-package
+        - esbuild # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
+        - jest
+      trustPolicyExclude:
+        - semver@6.3.1 # Managed by skuba
+        - some-package@1.0.0
+        - semver@5.7.2 || 6.3.1"
     `);
   });
 
@@ -452,6 +396,7 @@ allowBuilds:
   '@ast-grep/lang-yaml': true # Managed by skuba
   not-managed-anymore: true # Managed by skuba
   # Managed by skuba
+  not-managed-either: true # Managed by skuba
 `,
     });
 
@@ -466,12 +411,17 @@ allowBuilds:
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
+        - '@skuba-lib/*' # Managed by skuba
+        - eslint-config-seek # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
+        - eslint-plugin-skuba # Managed by skuba
+        - pnpm-plugin-skuba # Managed by skuba
+        - skuba # Managed by skuba
+        - skuba-dive # Managed by skuba
+        - tsconfig-seek # Managed by skuba
         - '@seek/*' # Managed by skuba
       # Managed by skuba
       allowBuilds:
-        '@ast-grep/lang-json': true # Managed by skuba
-        '@ast-grep/lang-yaml': true # Managed by skuba
-        # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
         '@datadog/native-iast-taint-tracking': true # Managed by skuba
         '@datadog/native-metrics': true # Managed by skuba
@@ -481,29 +431,10 @@ allowBuilds:
         protobufjs: true # Managed by skuba
         unix-dgram: true # Managed by skuba
         unrs-resolver: true # Managed by skuba
-
-      blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      publicHoistPattern:
-        - '@arethetypeswrong/core' # Managed by skuba
-        - '@eslint/*' # Managed by skuba
-        - '@types*' # Managed by skuba
-        - '@vitest/*' # Managed by skuba
-        - esbuild # Managed by skuba
-        - eslint # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
-        - publint # Managed by skuba
-        - rolldown # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-        - tsdown # Managed by skuba
-        - typescript # Managed by skuba
-        - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
-      trustPolicyExclude:
-        - semver@6.3.1 # Managed by skuba"
+        '@ast-grep/lang-json': true # Managed by skuba
+        '@ast-grep/lang-yaml': true # Managed by skuba
+        # Managed by skuba
+      "
     `);
   });
 });

@@ -99,9 +99,7 @@ describe('removePnpmPlugin', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "pnpm-workspace.yaml": "
-
-      allowBuilds:
+        "pnpm-workspace.yaml": "allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -145,7 +143,8 @@ describe('removePnpmPlugin', () => {
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
-        - semver@6.3.1 # Managed by skuba",
+        - semver@6.3.1 # Managed by skuba
+      ",
       }
     `);
   });
@@ -170,11 +169,7 @@ configDependencies:
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "pnpm-workspace.yaml": "packages:
-        - .
-
-
-      allowBuilds:
+        "pnpm-workspace.yaml": "allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -218,7 +213,10 @@ configDependencies:
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
-        - semver@6.3.1 # Managed by skuba",
+        - semver@6.3.1 # Managed by skuba
+      packages:
+        - .
+      ",
       }
     `);
   });

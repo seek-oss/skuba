@@ -51,17 +51,6 @@ const mapConfigToYamlValue = (
     .join('\n')}`;
 };
 
-const getLastNode = (node: SgNode): SgNode => {
-  let lastNode = node;
-  while (true) {
-    const nextNode = lastNode.next();
-    if (!nextNode) {
-      return lastNode;
-    }
-    lastNode = nextNode;
-  }
-};
-
 const findEndOfLine = (node: SgNode, pnpmWorkspaceFile: string): SgNode => {
   const maybeComment = node.next();
   if (
@@ -143,9 +132,7 @@ export const patchPnpmWorkspace = async (
     }
   });
 
-  // Collect new top-level key insertions separately so they are pushed to
-  // the end of the file after all existing keys are processed.
-  const newKeyEdits: Edit[] = [];
+  const newKeyTexts: string[] = [];
 
   Object.entries(defaultConfig).forEach(([key, value]) => {
     const node = blockMappingPairs?.find(
@@ -153,12 +140,7 @@ export const patchPnpmWorkspace = async (
     );
 
     if (!node) {
-      const endPos = ast.root().range().end.index;
-      newKeyEdits.push({
-        startPos: endPos,
-        endPos,
-        insertedText: `\n${mapConfigToYamlValue(key, value)}`,
-      });
+      newKeyTexts.push(mapConfigToYamlValue(key, value));
     } else if (isSimpleValue(value)) {
       const yamlValue =
         typeof value === 'string' ? quoteYamlStringValue(value) : value;
@@ -241,19 +223,20 @@ export const patchPnpmWorkspace = async (
         .map((v) => `  - ${quoteYamlStringValue(v)} # Managed by skuba`)
         .join('\n');
 
-      const lastItem = seqItems[seqItems.length - 1];
+      const firstItem = seqItems[0];
 
-      if (itemsToAdd && lastItem) {
-        const rangeNode = getLastNode(lastItem);
+      if (itemsToAdd && firstItem) {
+        const position = firstItem.range().start.index - 2; // include the two spaces before the dash
 
         edits.push({
-          startPos: rangeNode.range().end.index,
-          endPos: rangeNode.range().end.index,
-          insertedText: `\n${itemsToAdd}`,
+          startPos: position,
+          endPos: position,
+          insertedText: `${itemsToAdd}\n`,
         });
       }
     } else {
-      const mappingItems = node.findAll({
+      const valueNode = node.field('value') ?? node;
+      const mappingItems = valueNode.findAll({
         rule: { kind: 'block_mapping_pair' },
       });
 
@@ -316,21 +299,26 @@ export const patchPnpmWorkspace = async (
         )
         .join('\n');
 
-      const lastItem = mappingItems[mappingItems.length - 1];
+      const firstItem = mappingItems[0];
 
-      if (itemsToAdd && lastItem) {
-        const rangeNode = getLastNode(lastItem);
-
+      if (itemsToAdd && firstItem) {
+        const position = firstItem.range().start.index - 2; // include the two spaces before the key
         edits.push({
-          startPos: rangeNode.range().end.index,
-          endPos: rangeNode.range().end.index,
-          insertedText: `\n${itemsToAdd}`,
+          startPos: position,
+          endPos: position,
+          insertedText: `${itemsToAdd}\n`,
         });
       }
     }
   });
 
-  edits.push(...newKeyEdits);
+  if (newKeyTexts.length > 0) {
+    edits.push({
+      startPos: ast.root().range().start.index,
+      endPos: ast.root().range().start.index,
+      insertedText: `${newKeyTexts.join('\n')}\n`,
+    });
+  }
 
   if (edits.length === 0) {
     return {
