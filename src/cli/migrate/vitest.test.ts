@@ -274,9 +274,7 @@ test('service', () => {
       vi.mock('./service');
 
       test('service', () => {
-        vi.mocked(myFn).mockImplementation(() => {
-        /* empty */
-      });
+        vi.mocked(myFn).mockImplementation(() => undefined);
         myFn();
         expect(myFn).toHaveBeenCalled();
       });

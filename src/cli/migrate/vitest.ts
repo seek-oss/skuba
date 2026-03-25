@@ -113,7 +113,7 @@ const patchFiles = async (): Promise<FileContent[]> => {
         .replace(/@shopify\/jest-koa-mocks/g, '@skuba-lib/vitest-koa-mocks')
         .replace(
           /\.mockImplementation\(\)/g,
-          '.mockImplementation(() => {\n  /* empty */\n})',
+          '.mockImplementation(() => undefined)',
         );
 
       return {
