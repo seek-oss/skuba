@@ -412,7 +412,6 @@ module.exports = async () =>
           },
           include: ['src/**/*.test.ts'],
           coverage: {
-            include: ['src'],
             exclude: [
           'src/listen\\.ts',
           'src/register\\.ts',
