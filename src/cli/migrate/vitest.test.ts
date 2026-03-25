@@ -408,7 +408,6 @@ module.exports = async () =>
           env: {
             ENVIRONMENT: 'test',
           },
-          include: ['src/**/*.test.ts'],
           coverage: {
             exclude: [
           'src/listen\\.ts',
@@ -423,8 +422,7 @@ module.exports = async () =>
           },
           },
           globalSetup: ['vitest.globalSetup.ts'],
-          setupFiles: ['vitest.setup.ts'],
-          setupFilesAfterEnv: ['vitest.hooks.ts'],
+          setupFiles: ['vitest.setup.ts', 'vitest.hooks.ts'],
           testTimeout: 10000,
           clearMocks: true,
           vmMemoryLimit: '512MB'

@@ -415,6 +415,10 @@ const scaffoldVitestConfig = async () => {
         migrateSetupHooks(root, file, 'setupFiles'),
         migrateSetupHooks(root, file, 'setupFilesAfterEnv'),
       ]);
+      const setupFilesCombined = [
+        ...(setupFiles?.hookPaths ?? []),
+        ...(setupFilesAfterEnv?.hookPaths ?? []),
+      ];
 
       const vitestConfigContent = `${isSkubaConfig ? "import { Vitest } from 'skuba';\n" : ''}import { defineConfig } from 'vitest/config';
 
@@ -428,7 +432,6 @@ export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
     env: {
       ENVIRONMENT: 'test',
     },
-    include: ['src/**/*.test.ts'],
     coverage: {
       exclude: ${coverageIgnorePatterns ?? "['src/testing']"},
       thresholds: ${
@@ -445,12 +448,8 @@ export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
         ? `,\n    globalSetup: ['${globalSetup.globalSetupPath}']`
         : ''
     }${
-      setupFiles
-        ? `,\n    setupFiles: [${setupFiles.hookPaths.map((p) => `'${p}'`).join(', ')}]`
-        : ''
-    }${
-      setupFilesAfterEnv
-        ? `,\n    setupFilesAfterEnv: [${setupFilesAfterEnv.hookPaths.map((p) => `'${p}'`).join(', ')}]`
+      setupFilesCombined.length
+        ? `,\n    setupFiles: [${setupFilesCombined.map((p) => `'${p}'`).join(', ')}]`
         : ''
     }${testTimeout ? `,\n    testTimeout: ${testTimeout}` : ''}${
       clearMocks ? ',\n    clearMocks: true' : ''
@@ -552,8 +551,10 @@ export const migrateToVitest = async ({
 
   if (packageManager.command === 'pnpm') {
     await exec('pnpm', 'dlx', '@sku-lib/codemod', 'jest-to-vitest', '.');
+    await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
   } else {
     await exec('npx', '@sku-lib/codemod', 'jest-to-vitest', '.');
+    await exec('yarn', 'install', '--prefer-offline');
   }
 
   return {
