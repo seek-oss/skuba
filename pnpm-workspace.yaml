@@ -29,6 +29,8 @@ minimumReleaseAgeExclude:
   - skuba # Managed by skuba
   - skuba-dive # Managed by skuba
   - tsconfig-seek # Managed by skuba
+  # Renovate security update: picomatch@4.0.4
+  - picomatch@4.0.4
 
 overrides:
   skuba: workspace:*
