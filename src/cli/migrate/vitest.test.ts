@@ -311,6 +311,12 @@ export default Jest.mergePreset({
       lines: 50,
       statements: 50,
     },
+    './other': {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
   },
   testTimeout: 10000,
   globalSetup: '<rootDir>/jest.globalSetup.ts',
@@ -385,6 +391,12 @@ afterEach(() => {
             lines: 50,
             statements: 50,
           },
+          './other': {
+            branches: 80,
+            functions: 80,
+            lines: 80,
+            statements: 80,
+          },
         },
         testTimeout: 10000,
         globalSetup: '<rootDir>/jest.globalSetup.ts',
@@ -449,7 +461,15 @@ afterEach(() => {
             functions: 50,
             lines: 50,
             statements: 50,
+          
+        
+          './other': {
+            branches: 80,
+            functions: 80,
+            lines: 80,
+            statements: 80,
           },
+        },
           },
           globalSetup: ['vitest.globalSetup.ts'],
           setupFiles: ['vitest.setup.ts', 'vitest.hooks.ts'],

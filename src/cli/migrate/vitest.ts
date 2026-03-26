@@ -147,12 +147,35 @@ const extractCoverageThreshold = (node: SgNode): string | undefined => {
     },
   });
 
+  const coverageObject = coverageThreshold
+    ?.parent()
+    ?.children()
+    .find((c) => c.kind() === 'object');
+
   const globalObject = global
     ?.parent()
     ?.children()
     .find((c) => c.kind() === 'object');
 
-  return globalObject?.text();
+  const globalPair = global?.parent();
+
+  const coverageWithoutGlobal =
+    globalPair && globalObject
+      ? coverageObject?.commitEdits([
+          {
+            insertedText: globalObject.text().slice(1, -1), // remove the surrounding braces of the global object
+            startPos: coverageObject.range().start.index + 1, // insert after the opening brace of the coverage object
+            endPos: coverageObject.range().start.index + 1,
+          },
+          {
+            insertedText: '',
+            startPos: globalPair.range().start.index - 2, // include the colon and space before 'global'
+            endPos: globalPair.range().end.index + 1, // include the comma after the global object
+          },
+        ])
+      : coverageObject?.text();
+
+  return coverageWithoutGlobal;
 };
 
 const extractCoverageIgnorePaths = (node: SgNode): string | undefined => {
