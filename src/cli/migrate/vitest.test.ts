@@ -324,6 +324,12 @@ export default Jest.mergePreset({
   setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
   testPathIgnorePatterns: ['\\.int\\.test'],
   workerIdleMemoryLimit: '512MB',
+  resetMocks: true,
+  restoreMocks: true,
+  maxWorkers: 2,
+  rootDir: './',
+  testRegex: '\\.test\\.ts$',
+  watchPathIgnorePatterns: ['<rootDir>/\\.tmp/', '<rootDir>/bar/'],
 });
 `,
       'jest.globalSetup.ts': `import { Net } from 'skuba';
@@ -404,6 +410,12 @@ afterEach(() => {
         setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
         testPathIgnorePatterns: ['\\.int\\.test'],
         workerIdleMemoryLimit: '512MB',
+        resetMocks: true,
+        restoreMocks: true,
+        maxWorkers: 2,
+        rootDir: './',
+        testRegex: '\\.test\\.ts$',
+        watchPathIgnorePatterns: ['<rootDir>/\\.tmp/', '<rootDir>/bar/'],
       });
       ",
         "jest.globalSetup.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
@@ -455,7 +467,7 @@ afterEach(() => {
           'src/listen\\.ts',
           'src/register\\.ts',
           'src/testing',
-        ],
+        ], // TODO: Update these regexp pattern strings to globs
             thresholds: {
             branches: 50,
             functions: 50,
@@ -471,11 +483,22 @@ afterEach(() => {
           },
         },
           },
+          root: './',
+          include: ['\\.test\\.ts$'], // TODO: Update these regexp pattern strings to globs
+          exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
           globalSetup: ['vitest.globalSetup.ts'],
           setupFiles: ['vitest.setup.ts', 'vitest.hooks.ts'],
           testTimeout: 10000,
+          restoreMocks: true,
+          mockReset: true,
           clearMocks: true,
-          vmMemoryLimit: '512MB'
+          vmMemoryLimit: '512MB',
+          maxWorkers: 2,
+        },
+        server: {
+          watch: {
+            ignored: ['<rootDir>/\\.tmp/', '<rootDir>/bar/'], // TODO: Update these regexp pattern strings to globs
+          },
         },
       }));
       ",
@@ -501,6 +524,98 @@ afterEach(() => {
       afterEach(() => {
         process.env.DO_NOT_MIGRATE = 'true';
       });
+      ",
+      }
+    `);
+  });
+
+  it('should handle projects in jest.config.ts files', async () => {
+    vol.fromJSON({
+      'jest.config.ts': `import { Jest } from 'skuba';
+
+export default Jest.mergePreset({
+  projects: [
+    {
+      displayName: 'project1',
+      testMatch: ['<rootDir>/project1/**/*.test.ts'],
+    },
+    {
+      displayName: 'project2',
+      testMatch: ['<rootDir>/project2/**/*.test.ts'],
+    },
+  ],
+});
+`,
+    });
+
+    await expect(
+      migrateToVitest({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "jest.config.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+
+      import { Jest } from 'skuba';
+
+      export default Jest.mergePreset({
+        projects: [
+          {
+            displayName: 'project1',
+            testMatch: ['<rootDir>/project1/**/*.test.ts'],
+          },
+          {
+            displayName: 'project2',
+            testMatch: ['<rootDir>/project2/**/*.test.ts'],
+          },
+        ],
+      });
+      ",
+        "vitest.config.ts": "import { Vitest } from 'skuba';
+      import { defineConfig } from 'vitest/config';
+
+      export default defineConfig(Vitest.mergePreset({
+        ssr: {
+          resolve: {
+            conditions: ['@seek/skuba/source'],
+          },
+        },
+        test: {
+          env: {
+            ENVIRONMENT: 'test',
+          },
+          coverage: {
+            exclude: ['src/testing'],
+            thresholds: {
+              branches: 100,
+              functions: 100,
+              lines: 100,
+              statements: 100,
+            },
+          },
+          projects: [
+            {
+              test: {
+          name: 'project1',
+          extends: true,
+          include: ['<rootDir>/project1/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
+      },
+            },
+            {
+              test: {
+          name: 'project2',
+          extends: true,
+          include: ['<rootDir>/project2/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
+      },
+            }
+          ],
+        },
+      }));
       ",
       }
     `);

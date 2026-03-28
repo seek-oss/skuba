@@ -178,11 +178,14 @@ const extractCoverageThreshold = (node: SgNode): string | undefined => {
   return coverageWithoutGlobal;
 };
 
-const extractCoverageIgnorePaths = (node: SgNode): string | undefined => {
+const extractRawStringArray = (
+  node: SgNode,
+  key: string,
+): string | undefined => {
   const coveragePathIgnorePatterns = node.find({
     rule: {
       kind: 'property_identifier',
-      regex: '^coveragePathIgnorePatterns$',
+      regex: `^${key}$`,
     },
   });
 
@@ -192,6 +195,55 @@ const extractCoverageIgnorePaths = (node: SgNode): string | undefined => {
     .find((c) => c.kind() === 'array');
 
   return arrayObject?.text();
+};
+
+const removeProjectsFromConfig = (
+  node: SgNode,
+  content: string,
+):
+  | {
+      updatedContent: string;
+      projectsNode: SgNode | undefined;
+      updatedRoot: SgNode;
+    }
+  | undefined => {
+  const projectsNode = node.find({
+    rule: {
+      kind: 'property_identifier',
+      regex: '^projects$',
+    },
+  });
+
+  const arrayNode = projectsNode
+    ?.parent()
+    ?.children()
+    .find((c) => c.kind() === 'array');
+
+  const pair = projectsNode?.parent();
+  if (pair?.kind() === 'pair') {
+    const maybeComma = content.slice(
+      pair.range().end.index,
+      pair.range().end.index + 1,
+    );
+
+    const updatedContent = node.commitEdits([
+      {
+        insertedText: '',
+        startPos: pair.range().start.index,
+        endPos: pair.range().end.index + (maybeComma === ',' ? 1 : 0), // include the comma if it's there
+      },
+    ]);
+    const ast = parse('TypeScript', updatedContent);
+    const root = ast.root();
+
+    return {
+      updatedContent,
+      updatedRoot: root,
+      projectsNode: arrayNode,
+    };
+  }
+
+  return undefined;
 };
 
 const extractNumber = (node: SgNode, key: string): number | undefined => {
@@ -237,11 +289,9 @@ const extractString = (node: SgNode, key: string): string | undefined => {
   const stringNode = propertyNode
     ?.parent()
     ?.children()
-    .find((c) => c.kind() === 'string')
-    ?.children()
-    .find((c) => c.kind() === 'string_fragment');
+    .find((c) => c.kind() === 'string');
 
-  return stringNode?.text();
+  return stringNode?.text().replace(/^['"]|['"]$/g, ''); // remove surrounding quotes
 };
 
 const migrateGlobalSetup = async (
@@ -393,6 +443,22 @@ const extractStringArray = (
   return stringNodes;
 };
 
+const extractProjects = async (
+  node: SgNode,
+  file: string,
+): Promise<
+  Array<{
+    edits: FileContent[];
+    testConfig: string;
+  }>
+> => {
+  const objects = node.children().filter((c) => c.kind() === 'object');
+
+  return await Promise.all(
+    objects.map((o) => scaffoldTestConfig(o, file, undefined, true)),
+  );
+};
+
 const migrateSetupHooks = async (
   node: SgNode,
   jestConfigPath: string,
@@ -470,6 +536,133 @@ const determineCustomConditions = async (): Promise<string[]> => {
   return customConditions;
 };
 
+const scaffoldTestConfig = async (
+  root: SgNode,
+  file: string,
+  projectsNode?: SgNode,
+  isProject?: boolean,
+): Promise<{
+  edits: FileContent[];
+  testConfig: string;
+}> => {
+  const rootDir = extractString(root, 'rootDir') ?? '';
+  const coverageThreshold = extractCoverageThreshold(root);
+  const coverageIgnorePatterns = extractRawStringArray(
+    root,
+    'coveragePathIgnorePatterns',
+  );
+  const testPathIgnorePatterns = extractRawStringArray(
+    root,
+    'testPathIgnorePatterns',
+  );
+  const testMatch = extractStringArray(root, 'testMatch');
+  const testRegexString = extractString(root, 'testRegex');
+  const testRegexArray = extractStringArray(root, 'testRegex');
+  const includeArray = [
+    ...(testMatch ?? []),
+    ...(testRegexArray ?? []),
+    ...(testRegexString ? [testRegexString] : []),
+  ];
+
+  const displayName = extractString(root, 'displayName');
+
+  const testTimeout = extractNumber(root, 'testTimeout');
+  const restoreMocks = extractBoolean(root, 'restoreMocks');
+  const clearMocks = extractBoolean(root, 'clearMocks');
+  const resetMocks = extractBoolean(root, 'resetMocks');
+  const maxWorkers =
+    extractString(root, 'maxWorkers') ?? extractNumber(root, 'maxWorkers');
+  const workerMemoryLimit =
+    extractString(root, 'workerIdleMemoryLimit') ??
+    extractNumber(root, 'workerIdleMemoryLimit');
+  const maxConcurrency = extractNumber(root, 'maxConcurrency');
+
+  const [globalSetup, setupFiles, setupFilesAfterEnv, projects] =
+    await Promise.all([
+      migrateGlobalSetup(root, file),
+      migrateSetupHooks(root, file, 'setupFiles'),
+      migrateSetupHooks(root, file, 'setupFilesAfterEnv'),
+      projectsNode ? extractProjects(projectsNode, file) : [],
+    ]);
+
+  const setupFilesCombined = [
+    ...(setupFiles?.hookPaths ?? []),
+    ...(setupFilesAfterEnv?.hookPaths ?? []),
+  ];
+  const baseEnvVars = !isProject
+    ? new Map<string, string>([['ENVIRONMENT', "'test'"]])
+    : new Map<string, string>();
+
+  const envVarsCombined = new Map<string, string>([
+    ...baseEnvVars,
+    ...(setupFiles?.envVars ?? new Map()),
+    ...(setupFilesAfterEnv?.envVars ?? new Map()),
+  ]);
+
+  return {
+    testConfig: `${displayName ? `\n    name: '${displayName}',` : ''}${
+      isProject ? '\n    extends: true,' : ''
+    }${
+      envVarsCombined.size
+        ? `\n    env: {\n${[...envVarsCombined.entries()]
+            .map(([key, value]) => `      ${key}: ${value},`)
+            .join('\n')}\n    },`
+        : ''
+    }${
+      !isProject || coverageIgnorePatterns || coverageThreshold
+        ? `\n    coverage: {
+      exclude: ${coverageIgnorePatterns ? `${coverageIgnorePatterns}, // TODO: Update these regexp pattern strings to globs` : "['src/testing'],"}
+      thresholds: ${
+        coverageThreshold ??
+        `{
+        branches: 100,
+        functions: 100,
+        lines: 100,
+        statements: 100,
+      }`
+      },
+    },`
+        : ''
+    }${rootDir ? `\n    root: '${rootDir}',` : ''}${
+      includeArray.length
+        ? `\n    include: [${includeArray.map((pattern) => `'${pattern}'`).join(', ')}], // TODO: Update these regexp pattern strings to globs`
+        : ''
+    }${
+      testPathIgnorePatterns
+        ? `\n    exclude: ${testPathIgnorePatterns}, // TODO: Update these regexp pattern strings to globs`
+        : ''
+    }${
+      globalSetup
+        ? `\n    globalSetup: ['${globalSetup.globalSetupPath}'],`
+        : ''
+    }${
+      setupFilesCombined.length
+        ? `\n    setupFiles: [${setupFilesCombined.map((p) => `'${p}'`).join(', ')}],`
+        : ''
+    }${testTimeout ? `\n    testTimeout: ${testTimeout},` : ''}${
+      restoreMocks ? '\n    restoreMocks: true,' : ''
+    }${
+      resetMocks ? '\n    mockReset: true,' : ''
+    }${clearMocks ? '\n    clearMocks: true,' : ''}${
+      workerMemoryLimit
+        ? `\n    vmMemoryLimit: ${typeof workerMemoryLimit === 'string' ? `'${workerMemoryLimit}'` : workerMemoryLimit},`
+        : ''
+    }${maxWorkers ? `\n    maxWorkers: ${typeof maxWorkers === 'string' ? `'${maxWorkers}'` : maxWorkers},` : ''}${
+      maxConcurrency ? `\n    maxConcurrency: ${maxConcurrency},` : ''
+    }${
+      projects.length
+        ? `\n    projects: [\n      ${projects.map((p) => `{\n        test: {${p.testConfig}\n},\n      }`).join(',\n      ')}\n    ],`
+        : ''
+    }`,
+    edits: [
+      ...(globalSetup?.edits ?? []),
+      ...(setupFiles?.edits ?? []),
+      ...(setupFilesAfterEnv?.edits ?? []),
+      ...projects.flatMap((p) => p.edits),
+    ],
+  };
+};
+
 const scaffoldVitestConfig = async () => {
   const jestConfigFiles = await fg(
     [
@@ -497,28 +690,22 @@ const scaffoldVitestConfig = async () => {
 
       const isSkubaConfig = content.includes('Jest.mergePreset');
 
-      const coverageThreshold = extractCoverageThreshold(root);
-      const coverageIgnorePatterns = extractCoverageIgnorePaths(root);
-      const testTimeout = extractNumber(root, 'testTimeout');
-      const clearMocks = extractBoolean(root, 'clearMocks');
-      const workerMemoryLimit =
-        extractString(root, 'workerIdleMemoryLimit') ??
-        extractNumber(root, 'workerIdleMemoryLimit');
+      const maybeProjectsData = removeProjectsFromConfig(root, content);
 
-      const [globalSetup, setupFiles, setupFilesAfterEnv] = await Promise.all([
-        migrateGlobalSetup(root, file),
-        migrateSetupHooks(root, file, 'setupFiles'),
-        migrateSetupHooks(root, file, 'setupFilesAfterEnv'),
-      ]);
-      const setupFilesCombined = [
-        ...(setupFiles?.hookPaths ?? []),
-        ...(setupFilesAfterEnv?.hookPaths ?? []),
-      ];
-      const envVarsCombined = new Map<string, string>([
-        ...new Map([['ENVIRONMENT', "'test'"]]),
-        ...(setupFiles?.envVars ?? new Map()),
-        ...(setupFilesAfterEnv?.envVars ?? new Map()),
-      ]);
+      const rootWithoutProjects = maybeProjectsData
+        ? maybeProjectsData.updatedRoot
+        : root;
+
+      const testConfig = await scaffoldTestConfig(
+        rootWithoutProjects,
+        file,
+        maybeProjectsData?.projectsNode,
+      );
+
+      const watchPathIgnorePatterns = extractRawStringArray(
+        root,
+        'watchPathIgnorePatterns',
+      );
 
       const vitestConfigContent = `${isSkubaConfig ? "import { Vitest } from 'skuba';\n" : ''}import { defineConfig } from 'vitest/config';
 
@@ -528,39 +715,8 @@ export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
       conditions: [${customConditions.map((c) => `'${c}'`).join(', ')}],
     },
   },
-  test: {
-    env: {
-${[...envVarsCombined.entries()]
-  .map(([key, value]) => `      ${key}: ${value},`)
-  .join('\n')}
-    },
-    coverage: {
-      exclude: ${coverageIgnorePatterns ?? "['src/testing']"},
-      thresholds: ${
-        coverageThreshold ??
-        `{
-        branches: 100,
-        functions: 100,
-        lines: 100,
-        statements: 100,
-      }`
-      },
-    }${
-      globalSetup
-        ? `,\n    globalSetup: ['${globalSetup.globalSetupPath}']`
-        : ''
-    }${
-      setupFilesCombined.length
-        ? `,\n    setupFiles: [${setupFilesCombined.map((p) => `'${p}'`).join(', ')}]`
-        : ''
-    }${testTimeout ? `,\n    testTimeout: ${testTimeout}` : ''}${
-      clearMocks ? ',\n    clearMocks: true' : ''
-    }${
-      workerMemoryLimit
-        ? `,\n    vmMemoryLimit: ${typeof workerMemoryLimit === 'string' ? `'${workerMemoryLimit}'` : workerMemoryLimit}`
-        : ''
-    }
-  },
+  test: {${testConfig.testConfig}
+  },${watchPathIgnorePatterns ? `\n  server: {\n    watch: {\n      ignored: ${watchPathIgnorePatterns}, // TODO: Update these regexp pattern strings to globs\n    },\n  },` : ''}
 }${isSkubaConfig ? ')' : ''});
 `;
 
@@ -569,9 +725,7 @@ ${[...envVarsCombined.entries()]
           content: vitestConfigContent,
           file: file.replace('jest.config', 'vitest.config'),
         },
-        ...(globalSetup?.edits ?? []),
-        ...(setupFiles?.edits ?? []),
-        ...(setupFilesAfterEnv?.edits ?? []),
+        ...testConfig.edits,
       ];
     }),
   );
