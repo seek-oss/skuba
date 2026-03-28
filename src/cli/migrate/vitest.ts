@@ -446,6 +446,7 @@ const extractStringArray = (
 const extractProjects = async (
   node: SgNode,
   file: string,
+  docRoot: SgNode,
 ): Promise<
   Array<{
     edits: FileContent[];
@@ -455,7 +456,77 @@ const extractProjects = async (
   const objects = node.children().filter((c) => c.kind() === 'object');
 
   return await Promise.all(
-    objects.map((o) => scaffoldTestConfig(o, file, undefined, true)),
+    objects.map((o) =>
+      scaffoldTestConfig({
+        root: o,
+        file,
+        docRoot,
+        isProject: true,
+      }),
+    ),
+  );
+};
+
+const extractSpreadElements = async (
+  node: SgNode,
+  file: string,
+  docRoot: SgNode,
+): Promise<
+  | Array<{
+      edits: FileContent[];
+      testConfig: string;
+    }>
+  | undefined
+> => {
+  const spreadElements = node.findAll({
+    rule: {
+      kind: 'spread_element',
+    },
+  });
+
+  if (!spreadElements.length) {
+    return undefined;
+  }
+
+  const configNodes = spreadElements
+    .map((spread) => {
+      const identifier = spread
+        .children()
+        .find((c) => c.kind() === 'identifier')
+        ?.text();
+
+      if (!identifier) {
+        return undefined;
+      }
+
+      const variableDeclarator = docRoot.find({
+        rule: {
+          kind: 'variable_declarator',
+          regex: `^${identifier}`,
+        },
+      });
+
+      const objectNode = variableDeclarator
+        ?.children()
+        .find((c) => c.kind() === 'object');
+
+      return objectNode;
+    })
+    .filter((configNode) => configNode !== undefined);
+
+  if (!configNodes.length) {
+    return undefined;
+  }
+
+  return Promise.all(
+    configNodes.map((configNode) =>
+      scaffoldTestConfig({
+        root: configNode,
+        file,
+        docRoot,
+        isSpread: true,
+      }),
+    ),
   );
 };
 
@@ -536,12 +607,21 @@ const determineCustomConditions = async (): Promise<string[]> => {
   return customConditions;
 };
 
-const scaffoldTestConfig = async (
-  root: SgNode,
-  file: string,
-  projectsNode?: SgNode,
-  isProject?: boolean,
-): Promise<{
+const scaffoldTestConfig = async ({
+  root,
+  file,
+  docRoot,
+  projectsNode,
+  isProject,
+  isSpread,
+}: {
+  root: SgNode;
+  file: string;
+  docRoot: SgNode;
+  projectsNode?: SgNode;
+  isProject?: boolean;
+  isSpread?: boolean;
+}): Promise<{
   edits: FileContent[];
   testConfig: string;
 }> => {
@@ -577,21 +657,28 @@ const scaffoldTestConfig = async (
     extractNumber(root, 'workerIdleMemoryLimit');
   const maxConcurrency = extractNumber(root, 'maxConcurrency');
 
-  const [globalSetup, setupFiles, setupFilesAfterEnv, projects] =
-    await Promise.all([
-      migrateGlobalSetup(root, file),
-      migrateSetupHooks(root, file, 'setupFiles'),
-      migrateSetupHooks(root, file, 'setupFilesAfterEnv'),
-      projectsNode ? extractProjects(projectsNode, file) : [],
-    ]);
+  const [
+    globalSetup,
+    setupFiles,
+    setupFilesAfterEnv,
+    projects,
+    spreadElements,
+  ] = await Promise.all([
+    migrateGlobalSetup(root, file),
+    migrateSetupHooks(root, file, 'setupFiles'),
+    migrateSetupHooks(root, file, 'setupFilesAfterEnv'),
+    projectsNode ? extractProjects(projectsNode, file, docRoot) : [],
+    extractSpreadElements(root, file, docRoot),
+  ]);
 
   const setupFilesCombined = [
     ...(setupFiles?.hookPaths ?? []),
     ...(setupFilesAfterEnv?.hookPaths ?? []),
   ];
-  const baseEnvVars = !isProject
-    ? new Map<string, string>([['ENVIRONMENT', "'test'"]])
-    : new Map<string, string>();
+  const baseEnvVars =
+    !isProject && !isSpread
+      ? new Map<string, string>([['ENVIRONMENT', "'test'"]])
+      : new Map<string, string>();
 
   const envVarsCombined = new Map<string, string>([
     ...baseEnvVars,
@@ -609,7 +696,7 @@ const scaffoldTestConfig = async (
             .join('\n')}\n    },`
         : ''
     }${
-      !isProject || coverageIgnorePatterns || coverageThreshold
+      (!isProject && !isSpread) || coverageIgnorePatterns || coverageThreshold
         ? `\n    coverage: {
       exclude: ${coverageIgnorePatterns ? `${coverageIgnorePatterns}, // TODO: Update these regexp pattern strings to globs` : "['src/testing'],"}
       thresholds: ${
@@ -653,12 +740,13 @@ const scaffoldTestConfig = async (
       projects.length
         ? `\n    projects: [\n      ${projects.map((p) => `{\n        test: {${p.testConfig}\n},\n      }`).join(',\n      ')}\n    ],`
         : ''
-    }`,
+    }${spreadElements ? `\n    // TODO:We detected a base config and attempted to migrate it. Please verify these manually as there may be duplicates\n    ${spreadElements.map((s) => s.testConfig).join(',\n    ')}` : ''}`, // this has caveats of potentially producing duplicates as handling spread logic is too complex to do perfectly
     edits: [
       ...(globalSetup?.edits ?? []),
       ...(setupFiles?.edits ?? []),
       ...(setupFilesAfterEnv?.edits ?? []),
       ...projects.flatMap((p) => p.edits),
+      ...(spreadElements ? spreadElements.flatMap((s) => s.edits) : []),
     ],
   };
 };
@@ -696,11 +784,12 @@ const scaffoldVitestConfig = async () => {
         ? maybeProjectsData.updatedRoot
         : root;
 
-      const testConfig = await scaffoldTestConfig(
-        rootWithoutProjects,
+      const testConfig = await scaffoldTestConfig({
+        root: rootWithoutProjects,
         file,
-        maybeProjectsData?.projectsNode,
-      );
+        docRoot: root,
+        projectsNode: maybeProjectsData?.projectsNode,
+      });
 
       const watchPathIgnorePatterns = extractRawStringArray(
         root,

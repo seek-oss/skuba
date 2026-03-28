@@ -287,6 +287,10 @@ test('service', () => {
     vol.fromJSON({
       'jest.config.ts': `import { Jest } from 'skuba';
 
+const baseConfig = {
+  testMatch: ['<rootDir>/extra-tests/**/*.test.ts'],
+};
+
 export default Jest.mergePreset({
   moduleNameMapper: {
     '^#src/(.*)\\.js$': [
@@ -330,6 +334,7 @@ export default Jest.mergePreset({
   rootDir: './',
   testRegex: '\\.test\\.ts$',
   watchPathIgnorePatterns: ['<rootDir>/\\.tmp/', '<rootDir>/bar/'],
+  ...baseConfig,
 });
 `,
       'jest.globalSetup.ts': `import { Net } from 'skuba';
@@ -372,6 +377,10 @@ afterEach(() => {
         "jest.config.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
 
       import { Jest } from 'skuba';
+
+      const baseConfig = {
+        testMatch: ['<rootDir>/extra-tests/**/*.test.ts'],
+      };
 
       export default Jest.mergePreset({
         moduleNameMapper: {
@@ -416,6 +425,7 @@ afterEach(() => {
         rootDir: './',
         testRegex: '\\.test\\.ts$',
         watchPathIgnorePatterns: ['<rootDir>/\\.tmp/', '<rootDir>/bar/'],
+        ...baseConfig,
       });
       ",
         "jest.globalSetup.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
@@ -484,7 +494,7 @@ afterEach(() => {
         },
           },
           root: './',
-          include: ['\\.test\\.ts$'], // TODO: Update these regexp pattern strings to globs
+          include: ['<rootDir>/extra-tests/**/*.test.ts', '\\.test\\.ts$'], // TODO: Update these regexp pattern strings to globs
           exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
           globalSetup: ['vitest.globalSetup.ts'],
           setupFiles: ['vitest.setup.ts', 'vitest.hooks.ts'],
@@ -494,6 +504,9 @@ afterEach(() => {
           clearMocks: true,
           vmMemoryLimit: '512MB',
           maxWorkers: 2,
+          // TODO:We detected a base config and attempted to migrate it. Please verify these manually as there may be duplicates
+          
+          include: ['<rootDir>/extra-tests/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
         },
         server: {
           watch: {
