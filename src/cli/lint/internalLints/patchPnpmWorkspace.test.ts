@@ -367,6 +367,7 @@ allowBuilds:
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
         - some-package@1.0.0
+        - semver@5.7.2 || 6.3.1
       allowBuilds:
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
