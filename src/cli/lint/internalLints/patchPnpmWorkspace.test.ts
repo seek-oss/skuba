@@ -316,7 +316,10 @@ publicHoistPattern:
   - jest
 trustPolicyExclude:
   - some-package@1.0.0
-  - semver@5.7.2 || 6.3.1`,
+  - semver@5.7.2 || 6.3.1
+allowBuilds:
+  redundant: true # Managed by skuba
+`,
     });
 
     const result = await patchPnpmWorkspace('format');
@@ -328,19 +331,7 @@ trustPolicyExclude:
     });
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
-      "allowBuilds:
-        '@ast-grep/lang-json': true # Managed by skuba
-        '@ast-grep/lang-yaml': true # Managed by skuba
-        '@datadog/native-appsec': true # Managed by skuba
-        '@datadog/native-iast-taint-tracking': true # Managed by skuba
-        '@datadog/native-metrics': true # Managed by skuba
-        '@datadog/pprof': true # Managed by skuba
-        dd-trace: true # Managed by skuba
-        esbuild: true # Managed by skuba
-        protobufjs: true # Managed by skuba
-        unix-dgram: true # Managed by skuba
-        unrs-resolver: true # Managed by skuba
-      blockExoticSubdeps: true # Managed by skuba
+      "blockExoticSubdeps: true # Managed by skuba
       ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
@@ -376,7 +367,19 @@ trustPolicyExclude:
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
         - some-package@1.0.0
-        - semver@5.7.2 || 6.3.1"
+      allowBuilds:
+        '@ast-grep/lang-json': true # Managed by skuba
+        '@ast-grep/lang-yaml': true # Managed by skuba
+        '@datadog/native-appsec': true # Managed by skuba
+        '@datadog/native-iast-taint-tracking': true # Managed by skuba
+        '@datadog/native-metrics': true # Managed by skuba
+        '@datadog/pprof': true # Managed by skuba
+        dd-trace: true # Managed by skuba
+        esbuild: true # Managed by skuba
+        protobufjs: true # Managed by skuba
+        unix-dgram: true # Managed by skuba
+        unrs-resolver: true # Managed by skuba
+      "
     `);
   });
 

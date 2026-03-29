@@ -220,18 +220,18 @@ export const patchPnpmWorkspace = async (
         .filter((v) => v !== undefined);
 
       const itemsToAdd = missingValues
-        .map((v) => `  - ${quoteYamlStringValue(v)} # Managed by skuba`)
-        .join('\n');
+        .map((v) => `\n  - ${quoteYamlStringValue(v)} # Managed by skuba`)
+        .join('');
 
       const firstItem = seqItems[0];
 
       if (itemsToAdd && firstItem) {
-        const position = firstItem.range().start.index - 2; // include the two spaces before the dash
+        const position = firstItem.range().start.index - 3; // include the two spaces and newline before the dash
 
         edits.push({
           startPos: position,
           endPos: position,
-          insertedText: `${itemsToAdd}\n`,
+          insertedText: `${itemsToAdd}`,
         });
       }
     } else {
@@ -295,18 +295,18 @@ export const patchPnpmWorkspace = async (
       const itemsToAdd = missingKeys
         .map(
           ([subKey, subValue]) =>
-            `  ${quoteYamlStringValue(subKey)}: ${subValue} # Managed by skuba`,
+            `\n  ${quoteYamlStringValue(subKey)}: ${subValue} # Managed by skuba`,
         )
-        .join('\n');
+        .join('');
 
       const firstItem = mappingItems[0];
 
       if (itemsToAdd && firstItem) {
-        const position = firstItem.range().start.index - 2; // include the two spaces before the key
+        const position = firstItem.range().start.index - 3; // include the two spaces and newline before the key
         edits.push({
           startPos: position,
           endPos: position,
-          insertedText: `${itemsToAdd}\n`,
+          insertedText: `${itemsToAdd}`,
         });
       }
     }
