@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { type Edit, type SgNode, parse } from '@ast-grep/napi';
+import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -197,16 +197,17 @@ const extractRawStringArray = (
   return arrayObject?.text();
 };
 
-const removeProjectsFromConfig = (
+const removeProjectsFromConfig = async (
   node: SgNode,
   content: string,
-):
+): Promise<
   | {
       updatedContent: string;
       projectsNode: SgNode | undefined;
       updatedRoot: SgNode;
     }
-  | undefined => {
+  | undefined
+> => {
   const projectsNode = node.find({
     rule: {
       kind: 'property_identifier',
@@ -233,7 +234,7 @@ const removeProjectsFromConfig = (
         endPos: pair.range().end.index + (maybeComma === ',' ? 1 : 0), // include the comma if it's there
       },
     ]);
-    const ast = parse('TypeScript', updatedContent);
+    const ast = await parseAsync('TypeScript', updatedContent);
     const root = ast.root();
 
     return {
@@ -317,7 +318,7 @@ const migrateGlobalSetup = async (
     return undefined;
   }
 
-  const ast = parse('TypeScript', jestGlobalSetup);
+  const ast = await parseAsync('TypeScript', jestGlobalSetup);
   const root = ast.root();
 
   const moduleExports = root.find({
@@ -355,8 +356,8 @@ const migrateGlobalSetup = async (
   };
 };
 
-const migrateEnvironmentSetup = (file: string) => {
-  const ast = parse('TypeScript', file);
+const migrateEnvironmentSetup = async (file: string) => {
+  const ast = await parseAsync('TypeScript', file);
   const root = ast.root();
 
   const envAssignments = root.findAll({
@@ -566,7 +567,7 @@ const migrateSetupHooks = async (
       }
 
       const { updatedContent, envVars: hookEnvVars } =
-        migrateEnvironmentSetup(jestSetupHook);
+        await migrateEnvironmentSetup(jestSetupHook);
 
       hookEnvVars.forEach(([k, value]) => {
         envVars.set(k, value);
@@ -773,12 +774,12 @@ const scaffoldVitestConfig = async () => {
 
   const viteConfigEdits = await Promise.all(
     jestConfigs.map(async ({ file, content }) => {
-      const ast = parse('TypeScript', content);
+      const ast = await parseAsync('TypeScript', content);
       const root = ast.root();
 
       const isSkubaConfig = content.includes('Jest.mergePreset');
 
-      const maybeProjectsData = removeProjectsFromConfig(root, content);
+      const maybeProjectsData = await removeProjectsFromConfig(root, content);
 
       const rootWithoutProjects = maybeProjectsData
         ? maybeProjectsData.updatedRoot
