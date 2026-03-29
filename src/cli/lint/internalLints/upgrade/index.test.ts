@@ -142,7 +142,7 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    vi.mock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
