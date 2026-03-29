@@ -66,8 +66,6 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
-
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config files with module.exports or require found upgrade-skuba
@@ -191,8 +189,6 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
-
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config files with module.exports or require found upgrade-skuba
@@ -309,8 +305,6 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
-
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config files with module.exports or require found upgrade-skuba
@@ -398,8 +392,6 @@ Refreshed .prettierignore.
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
-
-Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-skuba
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
