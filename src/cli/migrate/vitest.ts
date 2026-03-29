@@ -740,7 +740,7 @@ const scaffoldTestConfig = async ({
       projects.length
         ? `\n    projects: [\n      ${projects.map((p) => `{\n        test: {${p.testConfig}\n},\n      }`).join(',\n      ')}\n    ],`
         : ''
-    }${spreadElements ? `\n    // TODO:We detected a base config and attempted to migrate it. Please verify these manually as there may be duplicates\n    ${spreadElements.map((s) => s.testConfig).join(',\n    ')}` : ''}`, // this has caveats of potentially producing duplicates as handling spread logic is too complex to do perfectly
+    }${spreadElements ? `\n    // TODO: A base config was detected and migrated below. This may have produced duplicate entries. \n    ${spreadElements.map((s) => s.testConfig).join(',\n    ')}` : ''}`, // this has caveats of potentially producing duplicates as handling spread logic is too complex to do perfectly
     edits: [
       ...(globalSetup?.edits ?? []),
       ...(setupFiles?.edits ?? []),

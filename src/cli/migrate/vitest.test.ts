@@ -504,7 +504,7 @@ afterEach(() => {
           clearMocks: true,
           vmMemoryLimit: '512MB',
           maxWorkers: 2,
-          // TODO:We detected a base config and attempted to migrate it. Please verify these manually as there may be duplicates
+          // TODO: A base config was detected and migrated below. This may have produced duplicate entries. 
           
           include: ['<rootDir>/extra-tests/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
         },
