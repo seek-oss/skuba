@@ -13,3 +13,6 @@
 **Package configuration:**
 
 - Add `"type": "module"` to all package.json files to enable ES module support
+
+**ESM syntax:**
+- Convert `module.exports`/`require()` to `export default`/`import` in config files (`.prettierrc.js`, `eslint.config.js`, etc.)
