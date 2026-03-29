@@ -15,19 +15,6 @@ vi.mock('fs-extra', () => ({
   default: memfs.fs,
 }));
 
-vi.mock('read-package-up', () => ({
-  readPackageUp: ({ cwd }: { cwd: string }) => {
-    const pkgPath = path.join(cwd, 'package.json');
-    return vol.promises
-      .readFile(pkgPath, 'utf8')
-      .then((content) => ({
-        packageJson: JSON.parse(content as string),
-        path: pkgPath,
-      }))
-      .catch(() => undefined);
-  },
-}));
-
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
     const actualFastGlob =
@@ -97,7 +84,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         );
       });
 
-      it('should rename .js to .mjs when package lacks type:module', async () => {
+      it('should not rename .js to .mjs when package lacks type:module', async () => {
         const input = "module.exports = require('eslint-config-skuba');";
 
         const expected = "export { default } from 'eslint-config-skuba';\n";
@@ -119,7 +106,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? { 'package.json': '{}', 'eslint.config.js': input }
-            : { 'package.json': '{}', 'eslint.config.mjs': expected },
+            : { 'package.json': '{}', 'eslint.config.js': expected },
         );
       });
 
@@ -173,7 +160,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? { 'package.json': '{}', 'eslint.config.js': input }
-            : { 'package.json': '{}', 'eslint.config.mjs': expected },
+            : { 'package.json': '{}', 'eslint.config.js': expected },
         );
       });
 
@@ -318,7 +305,7 @@ export default { foo, bar };
         );
       });
 
-      it('should add .js extension to subpath imports without extension', async () => {
+      it('should add .js extension to subpath imports without extension in .prettierrc.js', async () => {
         const input = "module.exports = require('skuba/config/prettier');";
 
         const expected =
@@ -381,7 +368,7 @@ export default { foo, bar };
         );
       });
 
-      it('should add .js extension to scoped package with subpath', async () => {
+      it('should add .js extension to scoped package with subpath in .prettierrc.js', async () => {
         const input =
           "module.exports = require('@seek/skuba/config/prettier');";
 

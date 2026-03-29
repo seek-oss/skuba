@@ -4,7 +4,6 @@ import { inspect } from 'util';
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
-import { readPackageUp } from 'read-package-up';
 
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction } from '../../index.js';
@@ -57,13 +56,14 @@ const migrateConfigFile = (ast: SgNode): Edit[] => {
       const modText = mod.text();
       const quote = modText.at(0);
       const modulePath = modText.slice(1, -1);
+      const resolved = resolveEsmSpecifier(modulePath);
       const stmt = getStatementNode(
         moduleExportsRequire,
         'expression_statement',
       );
       return [
         stmt.replace(
-          `export { default } from ${quote}${resolveEsmSpecifier(modulePath)}${quote};`,
+          `export { default } from ${quote}${resolved}${quote};`,
         ),
       ];
     }
@@ -117,14 +117,6 @@ const migrateConfigFile = (ast: SgNode): Edit[] => {
   }
 
   return edits;
-};
-
-const isPackageEsm = async (filePath: string): Promise<boolean> => {
-  const manifest = await readPackageUp({
-    cwd: path.dirname(filePath),
-    normalize: false,
-  });
-  return manifest?.packageJson.type === 'module';
 };
 
 export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
@@ -185,14 +177,7 @@ export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
 
   await Promise.all(
     filesWithMigration.map(async ({ file, updated }) => {
-      const needsRename = file.endsWith('.js') && !(await isPackageEsm(file));
-      if (needsRename) {
-        const mjsPath = `${file.slice(0, -3)}.mjs`;
-        await fs.promises.writeFile(mjsPath, updated);
-        await fs.promises.unlink(file);
-      } else {
-        await fs.promises.writeFile(file, updated);
-      }
+      await fs.promises.writeFile(file, updated);
     }),
   );
 
