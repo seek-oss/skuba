@@ -223,10 +223,11 @@ export const patchPnpmWorkspace = async (
         .map((v) => `\n  - ${quoteYamlStringValue(v)} # Managed by skuba`)
         .join('');
 
-      const firstItem = seqItems[0];
+      // eg. trustPolicyExclude
+      const keyNode = node.field('key');
 
-      if (itemsToAdd && firstItem) {
-        const position = firstItem.range().start.index - 3; // include the two spaces and newline before the dash
+      if (itemsToAdd && keyNode) {
+        const position = keyNode.range().end.index + 1; // colon
 
         edits.push({
           startPos: position,
@@ -299,10 +300,11 @@ export const patchPnpmWorkspace = async (
         )
         .join('');
 
-      const firstItem = mappingItems[0];
+      // eg. allowBuilds
+      const keyNode = node.field('key');
 
-      if (itemsToAdd && firstItem) {
-        const position = firstItem.range().start.index - 3; // include the two spaces and newline before the key
+      if (itemsToAdd && keyNode) {
+        const position = keyNode.range().end.index + 1; // colon
         edits.push({
           startPos: position,
           endPos: position,
