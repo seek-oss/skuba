@@ -62,9 +62,7 @@ const migrateConfigFile = (ast: SgNode): Edit[] => {
         'expression_statement',
       );
       return [
-        stmt.replace(
-          `export { default } from ${quote}${resolved}${quote};`,
-        ),
+        stmt.replace(`export { default } from ${quote}${resolved}${quote};`),
       ];
     }
   }
