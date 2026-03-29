@@ -42,8 +42,8 @@
     "node-mocks-http": "^1.17.2"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "4.1.0",
-    "vitest": "4.1.0"
+    "@vitest/coverage-v8": "4.1.1",
+    "vitest": "4.1.1"
   },
   "peerDependencies": {
     "@types/koa": "^3.0.1",
