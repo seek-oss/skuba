@@ -1,7 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { type Edit, type SgNode, parse } from '@ast-grep/napi';
+import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging.js';
@@ -106,7 +106,7 @@ export const patchPnpmWorkspace = async (
 
   registerAstGrepLanguages();
 
-  const ast = parse('yaml', pnpmWorkspaceFile);
+  const ast = await parseAsync('yaml', pnpmWorkspaceFile);
   const edits: Edit[] = [];
 
   const blockMapping = ast.root().find({ rule: { kind: 'block_mapping' } });

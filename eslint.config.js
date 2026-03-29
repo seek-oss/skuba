@@ -53,6 +53,11 @@ export default [
               allowImportNames: ['default'],
               message: "Please use import 'fg' from 'fast-glob' instead",
             },
+            {
+              name: '@ast-grep/napi',
+              importNames: ['parse'],
+              message: "Please use 'parseAsync' from '@ast-grep/napi' instead.",
+            },
           ],
         },
       ],

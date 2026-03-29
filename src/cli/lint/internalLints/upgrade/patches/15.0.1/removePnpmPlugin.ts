@@ -1,7 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { type Edit, parse } from '@ast-grep/napi';
+import { type Edit, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
 import { exec } from '../../../../../../utils/exec.js';
@@ -49,7 +49,7 @@ export const removePnpmPlugin: PatchFunction = async ({
 
   registerAstGrepLanguages();
 
-  const ast = parse('yaml', pnpmWorkspaceFile);
+  const ast = await parseAsync('yaml', pnpmWorkspaceFile);
 
   const node = ast.root().find({
     rule: {
