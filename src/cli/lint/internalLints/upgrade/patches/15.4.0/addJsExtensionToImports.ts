@@ -62,13 +62,11 @@ const buildImportPathsWithJsExtensionMap = async (
 
   await Promise.all(
     specifiers.map(async (specifier) => {
-      if (specifier.startsWith('.')) {
-        const absolutePath = path.resolve(fileDir, specifier);
+      const absolutePath = path.resolve(fileDir, specifier);
 
-        if (await isDirectory(absolutePath)) {
-          resolutionMap.set(specifier, `${specifier}/index.js`);
-          return;
-        }
+      if (await isDirectory(absolutePath)) {
+        resolutionMap.set(specifier, `${specifier}/index.js`);
+        return;
       }
 
       resolutionMap.set(specifier, `${specifier}.js`);
