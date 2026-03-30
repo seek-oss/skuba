@@ -1,3 +1,4 @@
+import { builtinModules } from 'node:module';
 import path from 'path';
 import { inspect } from 'util';
 
@@ -8,8 +9,16 @@ import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction } from '../../index.js';
 import { fetchFiles } from '../12.4.1/rewriteSrcImports.js';
 
+const nodeBuiltins = new Set(builtinModules);
+
 const shouldAddExtension = (specifier: string): boolean => {
-  if (specifier.startsWith('@')) {
+  // Skip appending .js to node built in modules such as 'fs/promises'
+  if (specifier.startsWith('@') || specifier.startsWith('node:')) {
+    return false;
+  }
+
+  const packageName = specifier.split('/')[0];
+  if (packageName && nodeBuiltins.has(packageName)) {
     return false;
   }
 
@@ -62,11 +71,13 @@ const buildImportPathsWithJsExtensionMap = async (
 
   await Promise.all(
     specifiers.map(async (specifier) => {
-      const absolutePath = path.resolve(fileDir, specifier);
+      if (specifier.startsWith('.')) {
+        const absolutePath = path.resolve(fileDir, specifier);
 
-      if (await isDirectory(absolutePath)) {
-        resolutionMap.set(specifier, `${specifier}/index.js`);
-        return;
+        if (await isDirectory(absolutePath)) {
+          resolutionMap.set(specifier, `${specifier}/index.js`);
+          return;
+        }
       }
 
       resolutionMap.set(specifier, `${specifier}.js`);

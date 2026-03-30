@@ -93,6 +93,24 @@ describe('addJsExtensionForFile', () => {
     ).resolves.toBe("import { foo } from 'gaxios/build/src/common.js';");
   });
 
+  it('should not add .js to Node.js built-in subpath import', async () => {
+    await expect(
+      addJsExtensionForFile(
+        "import fs from 'fs/promises';",
+        fakeFile,
+      ),
+    ).resolves.toBe("import fs from 'fs/promises';");
+  });
+
+  it('should not add .js to node: prefixed import', async () => {
+    await expect(
+      addJsExtensionForFile(
+        "import { readFile } from 'node:fs/promises';",
+        fakeFile,
+      ),
+    ).resolves.toBe("import { readFile } from 'node:fs/promises';");
+  });
+
   it('should not add .js to .json import', async () => {
     await expect(
       addJsExtensionForFile("import config from './config.json';", fakeFile),
