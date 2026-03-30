@@ -31,7 +31,7 @@ const readFiles = async (paths: string[]): Promise<FileContent[]> =>
   );
 
 const patchFiles = async (): Promise<FileContent[]> => {
-  const [packageJsonFiles, pnpmWorkspaceFiles, buildkiteFiles, tsFilePaths] =
+  const [packageJsonFiles, pnpmWorkspaceFiles, buildkiteFiles] =
     await Promise.all([
       fg(['**/package.json'], {
         ignore: ['**/.git', '**/node_modules'],
@@ -42,18 +42,13 @@ const patchFiles = async (): Promise<FileContent[]> => {
       fg(['**/.buildkite/**/*.{yml,yaml}'], {
         ignore: ['**/.git', '**/node_modules'],
       }),
-      fg(['**/*.ts', '**/*.tsx'], {
-        ignore: ['**/.git', '**/node_modules'],
-      }),
     ]);
 
-  const [packageJsons, pnpmWorkspaces, buildkitePipelines, tsFiles] =
-    await Promise.all([
-      readFiles(packageJsonFiles),
-      readFiles(pnpmWorkspaceFiles),
-      readFiles(buildkiteFiles),
-      readFiles(tsFilePaths),
-    ]);
+  const [packageJsons, pnpmWorkspaces, buildkitePipelines] = await Promise.all([
+    readFiles(packageJsonFiles),
+    readFiles(pnpmWorkspaceFiles),
+    readFiles(buildkiteFiles),
+  ]);
 
   const updatedPackageJsons = packageJsons
     .map(({ file, content }) => {
@@ -103,35 +98,10 @@ const patchFiles = async (): Promise<FileContent[]> => {
       };
     })
     .filter((file): file is FileContent => file.content !== undefined);
-
-  // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
-  // replace imports from @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks
-  // replace .mockImplementation() with .mockImplementation(() => undefined) to account for the fact that Vitest requires an implementation for mocks whereas Jest does not
-  const updatedTsFiles = tsFiles
-    .map(({ file, content }) => {
-      const updatedContent = content
-        .replace(
-          /import\s+['"]aws-sdk-client-mock-jest['"];?/g,
-          "import 'aws-sdk-client-mock-vitest/extend';",
-        )
-        .replace(/@shopify\/jest-koa-mocks/g, '@skuba-lib/vitest-koa-mocks')
-        .replace(
-          /\.mockImplementation\(\)/g,
-          '.mockImplementation(() => undefined)',
-        );
-
-      return {
-        file,
-        content: updatedContent === content ? undefined : updatedContent,
-      };
-    })
-    .filter((file): file is FileContent => file.content !== undefined);
-
   return [
     ...updatedPackageJsons,
     ...updatedPnpmWorkspaces,
     ...updatedBuildkiteFiles,
-    ...updatedTsFiles,
   ];
 };
 
@@ -913,9 +883,22 @@ export const migrateToVitest = async ({
   await Promise.all(
     tsFiles.map(async ({ file, content }) => {
       const updated = await migrateAsyncHooks(file, content);
+      // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
+      // replace imports from @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks
+      // replace .mockImplementation() with .mockImplementation(() => undefined) to account for the fact that Vitest requires an implementation for mocks whereas Jest does not
+      const finalUpdated = updated
+        .replace(
+          /import\s+['"]aws-sdk-client-mock-jest['"];?/g,
+          "import 'aws-sdk-client-mock-vitest/extend';",
+        )
+        .replace(/@shopify\/jest-koa-mocks/g, '@skuba-lib/vitest-koa-mocks')
+        .replace(
+          /\.mockImplementation\(\)/g,
+          '.mockImplementation(() => undefined)',
+        );
 
-      if (updated !== content) {
-        return fs.promises.writeFile(file, updated, 'utf8');
+      if (finalUpdated !== content) {
+        return fs.promises.writeFile(file, finalUpdated, 'utf8');
       }
     }),
   );
