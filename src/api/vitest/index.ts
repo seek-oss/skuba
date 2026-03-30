@@ -1,6 +1,7 @@
 import type { ViteUserConfig } from 'vitest/config';
 
 import { mergeRaw } from '../../cli/configure/processing/record.js';
+
 export const defaults = {
   coverage: {
     include: ['**/*.ts', '**/*.tsx'],
@@ -14,11 +15,11 @@ export const defaults = {
       'tsdown.config.*ts',
     ],
   },
-} satisfies Partial<ViteUserConfig['test']>;
+} satisfies ViteUserConfig['test'];
 
 const configDefaults = {
   test: defaults,
 } satisfies ViteUserConfig;
 
-export const mergePreset = (config: Partial<ViteUserConfig>) =>
+export const mergePreset = (config: ViteUserConfig): ViteUserConfig =>
   mergeRaw(configDefaults, config);
