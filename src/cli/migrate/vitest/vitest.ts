@@ -106,27 +106,25 @@ const patchFiles = async (): Promise<FileContent[]> => {
 
   // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
   // replace imports from @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks
-  const updatedTsFiles = (
-    await Promise.all(
-      tsFiles.map(async ({ file, content }) => {
-        const updatedContent = content
-          .replace(
-            /import\s+['"]aws-sdk-client-mock-jest['"];?/g,
-            "import 'aws-sdk-client-mock-vitest/extend';",
-          )
-          .replace(/@shopify\/jest-koa-mocks/g, '@skuba-lib/vitest-koa-mocks')
-          .replace(
-            /\.mockImplementation\(\)/g,
-            '.mockImplementation(() => undefined)',
-          );
+  const updatedTsFiles = tsFiles
+    .map(({ file, content }) => {
+      const updatedContent = content
+        .replace(
+          /import\s+['"]aws-sdk-client-mock-jest['"];?/g,
+          "import 'aws-sdk-client-mock-vitest/extend';",
+        )
+        .replace(/@shopify\/jest-koa-mocks/g, '@skuba-lib/vitest-koa-mocks')
+        .replace(
+          /\.mockImplementation\(\)/g,
+          '.mockImplementation(() => undefined)',
+        );
 
-        return {
-          file,
-          content: updatedContent === content ? undefined : updatedContent,
-        };
-      }),
-    )
-  ).filter((file): file is FileContent => file.content !== undefined);
+      return {
+        file,
+        content: updatedContent === content ? undefined : updatedContent,
+      };
+    })
+    .filter((file): file is FileContent => file.content !== undefined);
 
   return [
     ...updatedPackageJsons,
