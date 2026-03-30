@@ -1,7 +1,7 @@
 import { inspect } from 'util';
 
 import { log } from '../../../../../../utils/logging.js';
-import { migrateToVitest } from '../../../../../migrate/vitest.js';
+import { migrateToVitest } from '../../../../../migrate/vitest/vitest.js';
 import type { PatchFunction } from '../../index.js';
 
 export const tryMigrateToVitest: PatchFunction = async (config) => {

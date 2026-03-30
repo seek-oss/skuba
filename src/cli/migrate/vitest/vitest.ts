@@ -3,13 +3,14 @@ import path from 'node:path';
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
-import ts from 'typescript';
 
-import { exec } from '../../utils/exec.js';
-import { log } from '../../utils/logging.js';
-import { detectPackageManager } from '../../utils/packageManager.js';
-import { getCustomConditions } from '../build/tsc.js';
-import type { PatchReturnType } from '../lint/internalLints/upgrade/index.js';
+import { exec } from '../../../utils/exec.js';
+import { log } from '../../../utils/logging.js';
+import { detectPackageManager } from '../../../utils/packageManager.js';
+import { getCustomConditions } from '../../build/tsc.js';
+import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
+
+import { migrateAsyncHooks } from './typescript.js';
 
 import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
 
@@ -28,134 +29,6 @@ const readFiles = async (paths: string[]): Promise<FileContent[]> =>
       };
     }),
   );
-
-const migrateAsyncHooks = async (
-  filePath: string,
-  content: string,
-): Promise<string> => {
-  const ast = await parseAsync('TypeScript', content);
-  const root = ast.root();
-
-  // Find lifecycle hooks with non-async arrow function callbacks
-  // and collect unawaited call expressions within them
-  const hookCalls = root.findAll({
-    rule: {
-      kind: 'call_expression',
-      regex: '^(beforeEach|afterEach|beforeAll|afterAll)',
-    },
-  });
-
-  type CallInfo = {
-    callNode: SgNode;
-    callbackNode: SgNode;
-  };
-
-  const callsToCheck: CallInfo[] = [];
-
-  for (const hookCall of hookCalls) {
-    const args = hookCall.children().find((c) => c.kind() === 'arguments');
-    if (!args) {
-      continue;
-    }
-
-    const callback = args.children().find((c) => c.kind() === 'arrow_function');
-    if (!callback || callback.text().trimStart().startsWith('async ')) {
-      continue;
-    }
-
-    const innerCalls = callback.findAll({ rule: { kind: 'call_expression' } });
-    for (const call of innerCalls) {
-      if (call.parent()?.kind() !== 'await_expression') {
-        callsToCheck.push({ callNode: call, callbackNode: callback });
-      }
-    }
-  }
-
-  if (!callsToCheck.length) {
-    return content;
-  }
-
-  // Use the TypeScript compiler API to determine if each call returns a Promise
-  const tsSourceFile = ts.createSourceFile(
-    filePath,
-    content,
-    ts.ScriptTarget.Latest,
-    true,
-  );
-
-  const defaultHost = ts.createCompilerHost({});
-  const customHost: ts.CompilerHost = {
-    ...defaultHost,
-    getSourceFile: (name, languageVersion) =>
-      path.resolve(name) === path.resolve(filePath)
-        ? tsSourceFile
-        : defaultHost.getSourceFile(name, languageVersion),
-    fileExists: (name) =>
-      path.resolve(name) === path.resolve(filePath) ||
-      defaultHost.fileExists(name),
-    readFile: (name) =>
-      path.resolve(name) === path.resolve(filePath)
-        ? content
-        : defaultHost.readFile(name),
-  };
-
-  const program = ts.createProgram([filePath], { noEmit: true }, customHost);
-  const checker = program.getTypeChecker();
-
-  const findCallExpressionAtPos = (
-    pos: number,
-  ): ts.CallExpression | undefined => {
-    const find = (node: ts.Node): ts.CallExpression | undefined => {
-      if (node.getStart() === pos && ts.isCallExpression(node)) {
-        return node;
-      }
-      if (node.pos <= pos && pos < node.end) {
-        return ts.forEachChild(node, find);
-      }
-      return undefined;
-    };
-    return find(tsSourceFile);
-  };
-
-  const isPromiseReturning = (callNode: SgNode): boolean => {
-    const tsCall = findCallExpressionAtPos(callNode.range().start.index);
-    if (!tsCall) {
-      return false;
-    }
-    const type = checker.getTypeAtLocation(tsCall);
-    return type.getSymbol()?.getName() === 'Promise';
-  };
-
-  const asyncCallInfos = callsToCheck.filter(({ callNode }) =>
-    isPromiseReturning(callNode),
-  );
-
-  if (!asyncCallInfos.length) {
-    return content;
-  }
-
-  const edits: Edit[] = [];
-  const processedCallbackPositions = new Set<number>();
-
-  for (const { callbackNode, callNode } of asyncCallInfos) {
-    const callbackPos = callbackNode.range().start.index;
-    if (!processedCallbackPositions.has(callbackPos)) {
-      edits.push({
-        insertedText: 'async ',
-        startPos: callbackPos,
-        endPos: callbackPos,
-      });
-      processedCallbackPositions.add(callbackPos);
-    }
-    edits.push({
-      insertedText: 'await ',
-      startPos: callNode.range().start.index,
-      endPos: callNode.range().start.index,
-    });
-  }
-
-  return root.commitEdits(edits);
-};
 
 const patchFiles = async (): Promise<FileContent[]> => {
   const [packageJsonFiles, pnpmWorkspaceFiles, buildkiteFiles, tsFilePaths] =

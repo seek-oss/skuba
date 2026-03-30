@@ -1,7 +1,7 @@
 import { log } from '../../utils/logging.js';
 
 import { nodeVersionMigration } from './nodeVersion/index.js';
-import { migrateToVitest } from './vitest.js';
+import { migrateToVitest } from './vitest/vitest.js';
 
 export const migrations = {
   node20: () =>
