@@ -1,6 +1,6 @@
 import tsParser from '@typescript-eslint/parser';
 
-import config from 'eslint-config-skuba';
+import skuba from 'eslint-config-skuba';
 
 export default [
   {
@@ -11,7 +11,7 @@ export default [
       'packages/**/*/lib*/',
     ],
   },
-  ...config,
+  ...skuba,
   {
     rules: {
       'no-process-exit': 'off',
