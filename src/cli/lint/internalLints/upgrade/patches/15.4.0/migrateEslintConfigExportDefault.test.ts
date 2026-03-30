@@ -113,7 +113,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
       it('should resolve directory import in module.exports = require', async () => {
         const input = "module.exports = require('.');";
 
-        const expected = "export { default } from './index.js';\n";
+        const expected = "export { default } from '.';\n";
 
         vol.fromJSON({
           'package.json': '{"type":"module"}',
@@ -141,7 +141,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
 
       it('should convert export default require to export { default } from', async () => {
         const input = "export default require('.');";
-        const expected = "export { default } from './index.js';\n";
+        const expected = "export { default } from '.';\n";
 
         vol.fromJSON({
           'package.json': '{}',
@@ -305,11 +305,10 @@ export default { foo, bar };
         );
       });
 
-      it('should add .js extension to subpath imports without extension in .prettierrc.js', async () => {
+      it('should preserve subpath specifier without extension in .prettierrc.js', async () => {
         const input = "module.exports = require('skuba/config/prettier');";
 
-        const expected =
-          "export { default } from 'skuba/config/prettier.js';\n";
+        const expected = "export { default } from 'skuba/config/prettier';\n";
 
         vol.fromJSON({
           'package.json': '{"type":"module"}',
@@ -368,12 +367,12 @@ export default { foo, bar };
         );
       });
 
-      it('should add .js extension to scoped package with subpath in .prettierrc.js', async () => {
+      it('should preserve scoped package subpath specifier in .prettierrc.js', async () => {
         const input =
           "module.exports = require('@seek/skuba/config/prettier');";
 
         const expected =
-          "export { default } from '@seek/skuba/config/prettier.js';\n";
+          "export { default } from '@seek/skuba/config/prettier';\n";
 
         vol.fromJSON({
           'package.json': '{"type":"module"}',

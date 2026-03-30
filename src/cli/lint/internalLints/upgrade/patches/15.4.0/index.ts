@@ -1,5 +1,6 @@
 import type { Patches } from '../../index.js';
 
+import { addJsExtensionToImports } from './addJsExtensionToImports.js';
 import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
 import { migrateEslintConfigExportDefaultPatch } from './migrateEslintConfigExportDefault.js';
 import { tryMigrateToVitest } from './migrateToVitest.js';
@@ -23,6 +24,10 @@ export const patches: Patches = [
     apply: rewriteGlobalVars,
     description:
       'Replace __dirname and __filename with import.meta equivalents',
+  },
+  {
+    apply: addJsExtensionToImports,
+    description: 'Add .js extension to import specifiers with subpaths',
   },
   {
     apply: tryMigrateToVitest,

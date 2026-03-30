@@ -9,67 +9,61 @@ import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction } from '../../index.js';
 import { fetchFiles } from '../12.4.1/rewriteSrcImports.js';
 
-const resolveEsmSpecifier = (specifier: string): string => {
-  if (specifier === '.' || specifier === './') {
-    return './index.js';
-  }
-
-  const hasSubpath = specifier.startsWith('@')
-    ? specifier.split('/').length > 2
-    : specifier.includes('/');
-
-  if (hasSubpath && !path.extname(specifier)) {
-    return `${specifier}.js`;
-  }
-
-  return specifier;
-};
-
-const getStatementNode = (match: SgNode, expectedKind: string): SgNode =>
-  match.kind() === expectedKind ? match : (match.parent() ?? match);
-
-const migrateConfigFile = (ast: SgNode): Edit[] => {
-  const exportDefaultRequire = ast.find({
+// Converts `export default require('some-module')` to `export { default } from 'some-module'`
+const transformExportDefaultRequire = (ast: SgNode): Edit[] | null => {
+  const match = ast.find({
     rule: { pattern: 'export default require($MOD)' },
   });
-  if (exportDefaultRequire) {
-    const mod = exportDefaultRequire.getMatch('MOD');
-    if (mod) {
-      const modText = mod.text();
-      const quote = modText.at(0);
-      const modulePath = modText.slice(1, -1);
-      const stmt = getStatementNode(exportDefaultRequire, 'export_statement');
-      return [
-        stmt.replace(
-          `export { default } from ${quote}${resolveEsmSpecifier(modulePath)}${quote};`,
-        ),
-      ];
-    }
+
+  if (!match) {
+    return null;
   }
 
-  const moduleExportsRequire = ast.find({
+  const mod = match.getMatch('MOD');
+  if (!mod) {
+    return null;
+  }
+
+  const moduleInfo = extractModuleInfo(mod);
+  return replaceStatement(
+    match,
+    'export_statement',
+    toReExport({
+      quote: moduleInfo.quote,
+      modulePath: moduleInfo.modulePath,
+    }),
+  );
+};
+
+// Converts `module.exports = require('some-module')` to `export { default } from 'some-module'`
+const transformModuleExportsRequire = (ast: SgNode): Edit[] | null => {
+  const match = ast.find({
     rule: { pattern: 'module.exports = require($MOD)' },
   });
-  if (moduleExportsRequire) {
-    const mod = moduleExportsRequire.getMatch('MOD');
-    if (mod) {
-      const modText = mod.text();
-      const quote = modText.at(0);
-      const modulePath = modText.slice(1, -1);
-      const resolved = resolveEsmSpecifier(modulePath);
-      const stmt = getStatementNode(
-        moduleExportsRequire,
-        'expression_statement',
-      );
-      return [
-        stmt.replace(`export { default } from ${quote}${resolved}${quote};`),
-      ];
-    }
+
+  if (!match) {
+    return null;
   }
 
-  const edits: Edit[] = [];
+  const mod = match.getMatch('MOD');
+  if (!mod) {
+    return null;
+  }
 
-  const requireDecls = ast.findAll({
+  const moduleInfo = extractModuleInfo(mod);
+  return replaceStatement(
+    match,
+    'expression_statement',
+    toReExport({
+      quote: moduleInfo.quote,
+      modulePath: moduleInfo.modulePath,
+    }),
+  );
+};
+
+// Converts `const x = require('some-module')` to `import x from 'some-module'`
+const transformRequireDeclarations = (ast: SgNode): Edit[] => {
+  const matches = ast.findAll({
     rule: {
       any: [
         { pattern: 'const $NAME = require($MOD)' },
@@ -79,43 +73,96 @@ const migrateConfigFile = (ast: SgNode): Edit[] => {
     },
   });
 
-  for (const match of requireDecls) {
+  const edits: Edit[] = [];
+
+  for (const match of matches) {
     const name = match.getMatch('NAME');
     const mod = match.getMatch('MOD');
     if (!name || !mod) {
       continue;
     }
-    const modText = mod.text();
-    const quote = modText.at(0);
-    const pkg = modText.slice(1, -1);
+
+    const { quote, modulePath } = extractModuleInfo(mod);
 
     if (name.kind() === 'identifier') {
       edits.push(
-        match.replace(`import ${name.text()} from ${quote}${pkg}${quote};\n`),
+        match.replace(
+          `import ${name.text()} from ${quote}${modulePath}${quote};\n`,
+        ),
       );
-    } else if (name.kind() === 'object_pattern') {
+      continue;
+    }
+
+    // For deconstructed objects
+    if (name.kind() === 'object_pattern') {
       const importPattern = name
         .text()
-        .replace(/(\w+)\s*:\s*(\w+)/g, '$1 as $2');
-      edits.push(
-        match.replace(`import ${importPattern} from ${quote}${pkg}${quote};\n`),
-      );
-    }
-  }
+        .replace(/(\w+)\s*:\s*(\w+)/g, '$1 as $2'); // Converts `const { foo, bar: x} = require('fs');` to `import { foo, bar as x } from 'fs';`
 
-  const moduleExports = ast.find({
-    rule: { pattern: 'module.exports = $EXPR' },
-  });
-  if (moduleExports) {
-    const expr = moduleExports.getMatch('EXPR');
-    if (expr) {
-      const stmt = getStatementNode(moduleExports, 'expression_statement');
-      edits.push(stmt.replace(`export default ${expr.text()};`));
+      edits.push(
+        match.replace(
+          `import ${importPattern} from ${quote}${modulePath}${quote};\n`,
+        ),
+      );
     }
   }
 
   return edits;
 };
+
+// Converts configs, E.g `module.exports = { ...rules }` to `export default rules`
+const transformModuleExports = (ast: SgNode): Edit[] => {
+  const match = ast.find({
+    rule: { pattern: 'module.exports = $EXPR' },
+  });
+
+  if (!match) {
+    return [];
+  }
+
+  const expr = match.getMatch('EXPR');
+  if (!expr) {
+    return [];
+  }
+
+  const stmt = getStatementNode(match, 'expression_statement');
+  return [stmt.replace(`export default ${expr.text()};`)];
+};
+
+const getStatementNode = (match: SgNode, expectedKind: string): SgNode =>
+  match.kind() === expectedKind ? match : (match.parent() ?? match);
+
+const extractModuleInfo = (mod: SgNode) => {
+  const raw = mod.text();
+  const quote = raw.at(0) ?? "'";
+  const modulePath = raw.slice(1, -1);
+
+  return { raw, quote, modulePath };
+};
+
+const toReExport = ({
+  quote,
+  modulePath,
+}: {
+  quote: string;
+  modulePath: string;
+}) => `export { default } from ${quote}${modulePath}${quote};`;
+
+const replaceStatement = (
+  match: SgNode,
+  expectedKind: string,
+  replacement: string,
+): Edit[] => {
+  const stmt = getStatementNode(match, expectedKind);
+  return [stmt.replace(replacement)];
+};
+
+const migrateConfigFile = (ast: SgNode): Edit[] =>
+  transformExportDefaultRequire(ast) ??
+  transformModuleExportsRequire(ast) ?? [
+    ...transformRequireDeclarations(ast),
+    ...transformModuleExports(ast),
+  ];
 
 export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
   config,
@@ -157,7 +204,8 @@ export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
   );
 
   const filesWithMigration = parsedFiles.filter(
-    (f): f is { file: string; updated: string } => f.updated !== undefined,
+    (file): file is { file: string; updated: string } =>
+      file.updated !== undefined,
   );
 
   if (!filesWithMigration.length) {

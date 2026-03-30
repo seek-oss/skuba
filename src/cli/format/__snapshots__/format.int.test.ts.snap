@@ -74,6 +74,8 @@ Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no c
 
 Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
 
+Patch skipped: Add .js extension to import specifiers with subpaths - no import specifiers need .js extension upgrade-skuba
+
 Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -201,6 +203,8 @@ Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no c
 
 Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
 
+Patch skipped: Add .js extension to import specifiers with subpaths - no import specifiers need .js extension upgrade-skuba
+
 Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -321,6 +325,8 @@ Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no c
 
 Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
 
+Patch skipped: Add .js extension to import specifiers with subpaths - no import specifiers need .js extension upgrade-skuba
+
 Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -412,6 +418,8 @@ Patch skipped: Add module type to package.json to support ESM - type module alre
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config files with module.exports or require found upgrade-skuba
 
 Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
+
+Patch skipped: Add .js extension to import specifiers with subpaths - no import specifiers need .js extension upgrade-skuba
 
 Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
 
