@@ -37,7 +37,9 @@ describe('addJsExtensionForFile', () => {
         "import { GaxiosError } from 'gaxios/build/src/common';",
         fakeFile,
       ),
-    ).resolves.toBe("import { GaxiosError } from 'gaxios/build/src/common.js';");
+    ).resolves.toBe(
+      "import { GaxiosError } from 'gaxios/build/src/common.js';",
+    );
   });
 
   it('should add .js to relative import without extension', async () => {
@@ -99,10 +101,7 @@ describe('addJsExtensionForFile', () => {
 
   it('should not add .js to .mjs import', async () => {
     await expect(
-      addJsExtensionForFile(
-        "import { foo } from './utils.mjs';",
-        fakeFile,
-      ),
+      addJsExtensionForFile("import { foo } from './utils.mjs';", fakeFile),
     ).resolves.toBe("import { foo } from './utils.mjs';");
   });
 
@@ -132,7 +131,9 @@ describe('addJsExtensionForFile', () => {
         'import { GaxiosError } from "gaxios/build/src/common";',
         fakeFile,
       ),
-    ).resolves.toBe('import { GaxiosError } from "gaxios/build/src/common.js";');
+    ).resolves.toBe(
+      'import { GaxiosError } from "gaxios/build/src/common.js";',
+    );
   });
 
   it('should resolve directory import to index.js', async () => {
@@ -223,8 +224,7 @@ describe('tryAddJsExtensionToImports', () => {
 
       it('should not transform scoped package imports', async () => {
         vol.fromJSON({
-          'src/api.ts':
-            "import { foo } from '@seek/skuba/config/prettier';\n",
+          'src/api.ts': "import { foo } from '@seek/skuba/config/prettier';\n",
         });
 
         await expect(
