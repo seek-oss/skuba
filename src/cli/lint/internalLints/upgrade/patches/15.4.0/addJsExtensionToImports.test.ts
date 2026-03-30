@@ -95,10 +95,7 @@ describe('addJsExtensionForFile', () => {
 
   it('should not add .js to Node.js built-in subpath import', async () => {
     await expect(
-      addJsExtensionForFile(
-        "import fs from 'fs/promises';",
-        fakeFile,
-      ),
+      addJsExtensionForFile("import fs from 'fs/promises';", fakeFile),
     ).resolves.toBe("import fs from 'fs/promises';");
   });
 
