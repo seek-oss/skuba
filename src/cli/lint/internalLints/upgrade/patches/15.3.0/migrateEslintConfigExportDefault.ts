@@ -88,7 +88,7 @@ const transformRequireDeclarations = (ast: SgNode): Edit[] => {
       const isSkubaEslintConfig = modulePath.includes('eslint-config-skuba');
       edits.push(
         match.replace(
-          `import ${name.text()} from ${quote}${modulePath}${quote}${isSkubaEslintConfig ? '.js' : ''};\n`,
+          `import ${name.text()} from ${quote}${modulePath}${isSkubaEslintConfig ? '.js' : ''}${quote};\n`,
         ),
       );
       continue;
