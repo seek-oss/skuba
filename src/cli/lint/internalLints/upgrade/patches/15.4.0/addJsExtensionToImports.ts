@@ -110,6 +110,7 @@ export const tryAddJsExtensionToImports: PatchFunction = async (config) => {
 
   const fileNames = await fg(['**/*.ts', '**/*.tsx', '**/*.js', '**/*.mjs'], {
     cwd,
+    dot: true,
     ignore: [
       '**/.git',
       '**/node_modules',

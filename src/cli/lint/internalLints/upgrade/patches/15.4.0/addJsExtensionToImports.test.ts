@@ -258,6 +258,24 @@ describe('tryAddJsExtensionToImports', () => {
         );
       });
 
+      it('should add .js to .prettierrc.js export from', async () => {
+        const input = "export { default } from 'skuba/config/prettier';\n";
+        const expected =
+          "export { default } from 'skuba/config/prettier.js';\n";
+
+        vol.fromJSON({ '.prettierrc.js': input });
+
+        await expect(
+          tryAddJsExtensionToImports({ ...baseArgs, mode }),
+        ).resolves.toEqual({ result: 'apply' });
+
+        expect(volToJson()).toEqual(
+          mode === 'lint'
+            ? { '.prettierrc.js': input }
+            : { '.prettierrc.js': expected },
+        );
+      });
+
       it('should not modify files that already have .js extensions', async () => {
         vol.fromJSON({
           'src/api.ts':
