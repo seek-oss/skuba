@@ -198,7 +198,7 @@ const analyzeSpyCall = async (
   );
 
   const resolvedFile = resolved.resolvedModule?.resolvedFileName;
-  if (!resolvedFile) {
+  if (!resolvedFile || resolvedFile.includes('/node_modules/')) {
     return undefined;
   }
 
