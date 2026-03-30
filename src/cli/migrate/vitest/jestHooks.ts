@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import ts from 'typescript';
 
@@ -48,7 +50,22 @@ export const migrateAsyncHooks = async (
   }
 
   // Use the TypeScript compiler API to determine if each call returns a Promise
-  const program = ts.createProgram([filePath], { noEmit: true });
+  const configFile = ts.findConfigFile(path.dirname(filePath), (f) =>
+    ts.sys.fileExists(f),
+  );
+
+  let compilerOptions: ts.CompilerOptions = { noEmit: true };
+  if (configFile) {
+    const readResult = ts.readConfigFile(configFile, (f) => ts.sys.readFile(f));
+    const { options } = ts.parseJsonConfigFileContent(
+      readResult.config as object,
+      ts.sys,
+      path.dirname(configFile),
+    );
+    compilerOptions = { ...options, noEmit: true };
+  }
+
+  const program = ts.createProgram([filePath], compilerOptions);
   const checker = program.getTypeChecker();
   const tsSourceFile = program.getSourceFile(filePath);
 

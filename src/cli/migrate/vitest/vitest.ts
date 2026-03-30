@@ -900,10 +900,8 @@ export const migrateToVitest = async ({
 
   if (packageManager.command === 'pnpm') {
     await exec('pnpm', 'dlx', '@sku-lib/codemod', 'jest-to-vitest', '.');
-    await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
   } else {
     await exec('npx', '@sku-lib/codemod', 'jest-to-vitest', '.');
-    await exec('yarn', 'install', '--prefer-offline');
   }
 
   // The sku migration doesn't handle async hooks nicely so we have to go back and re-patch them
@@ -921,6 +919,12 @@ export const migrateToVitest = async ({
       }
     }),
   );
+
+  if (packageManager.command === 'pnpm') {
+    await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
+  } else {
+    await exec('yarn', 'install', '--prefer-offline');
+  }
 
   return {
     result: 'apply',
