@@ -1,8 +1,25 @@
-import { describe, expect, it } from 'vitest';
+import os from 'node:os';
+import path from 'node:path';
 
-import { migrateAsyncHooks } from './typescript.js';
+import fs from 'fs-extra';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-const FILE_PATH = 'test.ts';
+import { migrateAsyncHooks } from './jestHooks.js';
+
+let tmpFile: string;
+
+beforeEach(() => {
+  tmpFile = path.join(os.tmpdir(), `jestHooks-test-${Date.now()}.ts`);
+});
+
+afterEach(async () => {
+  await fs.remove(tmpFile);
+});
+
+const run = async (content: string) => {
+  await fs.promises.writeFile(tmpFile, content, 'utf8');
+  return migrateAsyncHooks(tmpFile, content);
+};
 
 describe('migrateAsyncHooks', () => {
   it('returns content unchanged when there are no lifecycle hooks', async () => {
@@ -11,7 +28,7 @@ describe('migrateAsyncHooks', () => {
 someFunction();
 `;
 
-    await expect(migrateAsyncHooks(FILE_PATH, content)).resolves.toBe(content);
+    await expect(run(content)).resolves.toBe(content);
   });
 
   it('returns content unchanged when the hook callback is already async', async () => {
@@ -22,7 +39,7 @@ beforeEach(async () => {
 });
 `;
 
-    await expect(migrateAsyncHooks(FILE_PATH, content)).resolves.toBe(content);
+    await expect(run(content)).resolves.toBe(content);
   });
 
   it('returns content unchanged when the hook callback calls a sync function', async () => {
@@ -33,7 +50,7 @@ beforeEach(() => {
 });
 `;
 
-    await expect(migrateAsyncHooks(FILE_PATH, content)).resolves.toBe(content);
+    await expect(run(content)).resolves.toBe(content);
   });
 
   it('adds async and await when a hook callback calls an async arrow function', async () => {
@@ -44,7 +61,7 @@ beforeEach(() => {
 });
 `;
 
-    await expect(migrateAsyncHooks(FILE_PATH, content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `const someFunction = async () => {};
 
 beforeEach(async () => {
@@ -71,7 +88,7 @@ afterAll(() => {
 });
 `;
 
-    await expect(migrateAsyncHooks(FILE_PATH, content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `const setup = async () => {};
 const teardown = async () => {};
 
@@ -100,7 +117,7 @@ beforeEach(() => {
 });
 `;
 
-    await expect(migrateAsyncHooks(FILE_PATH, content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `const foo = async () => {};
 const bar = async () => {};
 
@@ -122,7 +139,7 @@ beforeEach(() => {
 });
 `;
 
-    await expect(migrateAsyncHooks(FILE_PATH, content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `const asyncFn = async () => {};
 const syncFn = () => {};
 
@@ -142,7 +159,7 @@ beforeEach(async () => {
 });
 `;
 
-    await expect(migrateAsyncHooks(FILE_PATH, content)).resolves.toBe(content);
+    await expect(run(content)).resolves.toBe(content);
   });
 
   it('handles multiple hooks independently', async () => {
@@ -157,7 +174,7 @@ afterEach(() => {
 });
 `;
 
-    await expect(migrateAsyncHooks(FILE_PATH, content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `const asyncFn = async () => {};
 
 beforeEach(async () => {

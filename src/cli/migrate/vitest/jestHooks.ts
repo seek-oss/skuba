@@ -1,5 +1,3 @@
-import path from 'path';
-
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import ts from 'typescript';
 
@@ -50,31 +48,13 @@ export const migrateAsyncHooks = async (
   }
 
   // Use the TypeScript compiler API to determine if each call returns a Promise
-  const tsSourceFile = ts.createSourceFile(
-    filePath,
-    content,
-    ts.ScriptTarget.Latest,
-    true,
-  );
-
-  const defaultHost = ts.createCompilerHost({});
-  const customHost: ts.CompilerHost = {
-    ...defaultHost,
-    getSourceFile: (name, languageVersion) =>
-      path.resolve(name) === path.resolve(filePath)
-        ? tsSourceFile
-        : defaultHost.getSourceFile(name, languageVersion),
-    fileExists: (name) =>
-      path.resolve(name) === path.resolve(filePath) ||
-      defaultHost.fileExists(name),
-    readFile: (name) =>
-      path.resolve(name) === path.resolve(filePath)
-        ? content
-        : defaultHost.readFile(name),
-  };
-
-  const program = ts.createProgram([filePath], { noEmit: true }, customHost);
+  const program = ts.createProgram([filePath], { noEmit: true });
   const checker = program.getTypeChecker();
+  const tsSourceFile = program.getSourceFile(filePath);
+
+  if (!tsSourceFile) {
+    return content;
+  }
 
   const findCallExpressionAtPos = (
     pos: number,

@@ -10,7 +10,7 @@ import { detectPackageManager } from '../../../utils/packageManager.js';
 import { getCustomConditions } from '../../build/tsc.js';
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
 
-import { migrateAsyncHooks } from './typescript.js';
+import { migrateAsyncHooks } from './jestHooks.js';
 
 import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
 
@@ -109,7 +109,7 @@ const patchFiles = async (): Promise<FileContent[]> => {
   const updatedTsFiles = (
     await Promise.all(
       tsFiles.map(async ({ file, content }) => {
-        const patched = content
+        const updatedContent = content
           .replace(
             /import\s+['"]aws-sdk-client-mock-jest['"];?/g,
             "import 'aws-sdk-client-mock-vitest/extend';",
@@ -119,8 +119,6 @@ const patchFiles = async (): Promise<FileContent[]> => {
             /\.mockImplementation\(\)/g,
             '.mockImplementation(() => undefined)',
           );
-
-        const updatedContent = await migrateAsyncHooks(file, patched);
 
         return {
           file,
@@ -908,6 +906,22 @@ export const migrateToVitest = async ({
     await exec('npx', '@sku-lib/codemod', 'jest-to-vitest', '.');
     await exec('yarn', 'install', '--prefer-offline');
   }
+
+  // The sku migration doesn't handle async hooks nicely so we have to go back and re-patch them
+  const tsFilePaths = await fg(['**/*.ts', '**/*.tsx'], {
+    ignore: ['**/.git', '**/node_modules'],
+  });
+  const tsFiles = await readFiles(tsFilePaths);
+
+  await Promise.all(
+    tsFiles.map(async ({ file, content }) => {
+      const updated = await migrateAsyncHooks(file, content);
+
+      if (updated !== content) {
+        return fs.promises.writeFile(file, updated, 'utf8');
+      }
+    }),
+  );
 
   return {
     result: 'apply',
