@@ -1,5 +1,5 @@
-import os from 'node:os';
-import path from 'node:path';
+import os from 'os';
+import path from 'path';
 
 import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -7,13 +7,16 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { migrateAsyncHooks } from './jestHooks.js';
 
 let tmpFile: string;
+let tmpModuleFile: string;
 
 beforeEach(() => {
-  tmpFile = path.join(os.tmpdir(), `jestHooks-test-${Date.now()}.ts`);
+  const id = Date.now();
+  tmpFile = path.join(os.tmpdir(), `jestHooks-test-${id}.ts`);
+  tmpModuleFile = path.join(os.tmpdir(), `jestHooks-module-${id}.ts`);
 });
 
 afterEach(async () => {
-  await fs.remove(tmpFile);
+  await Promise.all([fs.remove(tmpFile), fs.remove(tmpModuleFile)]);
 });
 
 const run = async (content: string) => {
@@ -183,6 +186,65 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await asyncFn();
+});
+`,
+    );
+  });
+
+  it('handles inline single-line hook callbacks', async () => {
+    const content = `const resetDynamoDb = async () => {};
+const seedAdProductMappings = async () => {};
+const resetAdProductsDynamoDb = async () => {};
+
+beforeEach(() => { resetDynamoDb() });
+beforeAll(() => { seedAdProductMappings() });
+afterAll(() => { resetAdProductsDynamoDb() });
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `const resetDynamoDb = async () => {};
+const seedAdProductMappings = async () => {};
+const resetAdProductsDynamoDb = async () => {};
+
+beforeEach(async () => { await resetDynamoDb() });
+beforeAll(async () => { await seedAdProductMappings() });
+afterAll(async () => { await resetAdProductsDynamoDb() });
+`,
+    );
+  });
+
+  it('does not make the outer callback async when only a nested function contains a promise', async () => {
+    const content = `beforeEach(() => {
+  const mock = {
+    thing: () => Promise.resolve(),
+  };
+});
+`;
+
+    await expect(run(content)).resolves.toBe(content);
+  });
+
+  it('handles hooks calling imported async functions', async () => {
+    await fs.promises.writeFile(
+      tmpModuleFile,
+      `export const resetDynamoDb = async () => {};
+`,
+      'utf8',
+    );
+
+    const relativeImport = `./${path.basename(tmpModuleFile, '.ts')}`;
+    const content = `import { resetDynamoDb } from '${relativeImport}';
+
+beforeEach(() => {
+  resetDynamoDb();
+});
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `import { resetDynamoDb } from '${relativeImport}';
+
+beforeEach(async () => {
+  await resetDynamoDb();
 });
 `,
     );

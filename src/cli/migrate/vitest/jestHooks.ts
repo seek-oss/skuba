@@ -37,9 +37,32 @@ export const migrateAsyncHooks = async (
       continue;
     }
 
+    const callbackStart = callback.range().start.index;
+    const isDirectlyInCallback = (node: SgNode): boolean => {
+      let current = node.parent();
+      while (current) {
+        if (current.range().start.index === callbackStart) {
+          return true;
+        }
+        const kind = current.kind();
+        if (
+          kind === 'arrow_function' ||
+          kind === 'function_expression' ||
+          kind === 'function_declaration'
+        ) {
+          return false;
+        }
+        current = current.parent();
+      }
+      return false;
+    };
+
     const innerCalls = callback.findAll({ rule: { kind: 'call_expression' } });
     for (const call of innerCalls) {
-      if (call.parent()?.kind() !== 'await_expression') {
+      if (
+        call.parent()?.kind() !== 'await_expression' &&
+        isDirectlyInCallback(call)
+      ) {
         callsToCheck.push({ callNode: call, callbackNode: callback });
       }
     }
