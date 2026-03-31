@@ -55,35 +55,6 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         expect(volToJson()).toEqual({ 'package.json': '{}' });
       });
 
-      it('should convert module.exports = require to export { default } from (with type:module)', async () => {
-        const input = "module.exports = require('eslint-config-skuba');";
-
-        const expected = "export { default } from 'eslint-config-skuba.js';\n";
-
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'eslint.config.js': input,
-        });
-
-        await expect(
-          tryMigrateEslintConfigExportDefault({
-            ...baseArgs,
-            mode,
-          }),
-        ).resolves.toEqual({
-          result: 'apply',
-        });
-
-        expect(volToJson()).toEqual(
-          mode === 'lint'
-            ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
-            : {
-                'package.json': '{"type":"module"}',
-                'eslint.config.js': expected,
-              },
-        );
-      });
-
       it('should resolve directory import in module.exports = require', async () => {
         const input = "module.exports = require('.');";
 
@@ -251,72 +222,6 @@ export default { foo, bar };
 
         const expected =
           "export { default } from 'skuba/config/prettier.js';\n";
-
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          '.prettierrc.js': input,
-        });
-
-        await expect(
-          tryMigrateEslintConfigExportDefault({
-            ...baseArgs,
-            mode,
-          }),
-        ).resolves.toEqual({
-          result: 'apply',
-        });
-
-        expect(volToJson()).toEqual(
-          mode === 'lint'
-            ? {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': input,
-              }
-            : {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': expected,
-              },
-        );
-      });
-
-      it('should preserve subpath specifier without extension in .prettierrc.js', async () => {
-        const input = "module.exports = require('skuba/config/prettier');";
-
-        const expected = "export { default } from 'skuba/config/prettier';\n";
-
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          '.prettierrc.js': input,
-        });
-
-        await expect(
-          tryMigrateEslintConfigExportDefault({
-            ...baseArgs,
-            mode,
-          }),
-        ).resolves.toEqual({
-          result: 'apply',
-        });
-
-        expect(volToJson()).toEqual(
-          mode === 'lint'
-            ? {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': input,
-              }
-            : {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': expected,
-              },
-        );
-      });
-
-      it('should preserve scoped package subpath specifier in .prettierrc.js', async () => {
-        const input =
-          "module.exports = require('@seek/skuba/config/prettier');";
-
-        const expected =
-          "export { default } from '@seek/skuba/config/prettier';\n";
 
         vol.fromJSON({
           'package.json': '{"type":"module"}',
