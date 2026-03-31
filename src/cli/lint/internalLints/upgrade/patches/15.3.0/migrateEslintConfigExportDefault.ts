@@ -52,7 +52,7 @@ const transformModuleExportsRequire = (ast: SgNode): Edit[] | null => {
 
   const moduleInfo = extractModuleInfo(mod);
   const isSkubaEslintConfig = moduleInfo.modulePath.includes(
-    'eslint-config-skuba',
+    'skuba/config/prettier',
   );
 
   return replaceStatement(

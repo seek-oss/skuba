@@ -247,7 +247,7 @@ export default { foo, bar };
       });
 
       it('should convert .prettierrc.js module.exports = require to export { default } from', async () => {
-        const input = "module.exports = require('skuba/config/prettier.js');";
+        const input = "module.exports = require('skuba/config/prettier');";
 
         const expected =
           "export { default } from 'skuba/config/prettier.js';\n";
