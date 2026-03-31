@@ -335,4 +335,36 @@ beforeEach(async () => {
 `,
     );
   });
+
+  it('wraps a sync member expression function reference in a plain arrow function', async () => {
+    const content = `const vi = { clearAllTimers: () => {} };
+
+afterAll(vi.clearAllTimers);
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `const vi = { clearAllTimers: () => {} };
+
+afterAll(() => {
+  vi.clearAllTimers();
+});
+`,
+    );
+  });
+
+  it('wraps an async member expression function reference in an async arrow function', async () => {
+    const content = `const db = { reset: async () => {} };
+
+beforeEach(db.reset);
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `const db = { reset: async () => {} };
+
+beforeEach(async () => {
+  await db.reset();
+});
+`,
+    );
+  });
 });
