@@ -58,7 +58,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
       it('should convert module.exports = require to export { default } from (with type:module)', async () => {
         const input = "module.exports = require('eslint-config-skuba');";
 
-        const expected = "export { default } from 'eslint-config-skuba';\n";
+        const expected = "export { default } from 'eslint-config-skuba.js';\n";
 
         vol.fromJSON({
           'package.json': '{"type":"module"}',
@@ -78,9 +78,9 @@ describe('tryMigrateEslintConfigExportDefault', () => {
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
             : {
-                'package.json': '{"type":"module"}',
-                'eslint.config.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              'eslint.config.js': expected,
+            },
         );
       });
 
@@ -133,9 +133,9 @@ describe('tryMigrateEslintConfigExportDefault', () => {
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
             : {
-                'package.json': '{"type":"module"}',
-                'eslint.config.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              'eslint.config.js': expected,
+            },
         );
       });
 
@@ -169,7 +169,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
 module.exports = [...config, { rules: { 'no-process-exit': 'off' } }];
 `;
 
-        const expected = `import config from 'eslint-config-skuba.js';
+        const expected = `import config from 'eslint-config-skuba';
 
 export default [...config, { rules: { 'no-process-exit': 'off' } }];
 `;
@@ -192,9 +192,9 @@ export default [...config, { rules: { 'no-process-exit': 'off' } }];
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
             : {
-                'package.json': '{"type":"module"}',
-                'eslint.config.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              'eslint.config.js': expected,
+            },
         );
       });
 
@@ -226,9 +226,9 @@ export default { foo, bar };
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'vitest.config.js': input }
             : {
-                'package.json': '{"type":"module"}',
-                'vitest.config.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              'vitest.config.js': expected,
+            },
         );
       });
 
@@ -262,13 +262,13 @@ export default { foo, bar };
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? {
-                'package.json': '{"type":"module"}',
-                'prettier.config.js': input,
-              }
+              'package.json': '{"type":"module"}',
+              'prettier.config.js': input,
+            }
             : {
-                'package.json': '{"type":"module"}',
-                'prettier.config.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              'prettier.config.js': expected,
+            },
         );
       });
 
@@ -295,13 +295,13 @@ export default { foo, bar };
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': input,
-              }
+              'package.json': '{"type":"module"}',
+              '.prettierrc.js': input,
+            }
             : {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              '.prettierrc.js': expected,
+            },
         );
       });
 
@@ -327,13 +327,13 @@ export default { foo, bar };
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': input,
-              }
+              'package.json': '{"type":"module"}',
+              '.prettierrc.js': input,
+            }
             : {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              '.prettierrc.js': expected,
+            },
         );
       });
 
@@ -361,9 +361,9 @@ export default { foo, bar };
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
             : {
-                'package.json': '{"type":"module"}',
-                'eslint.config.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              'eslint.config.js': expected,
+            },
         );
       });
 
@@ -391,13 +391,13 @@ export default { foo, bar };
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': input,
-              }
+              'package.json': '{"type":"module"}',
+              '.prettierrc.js': input,
+            }
             : {
-                'package.json': '{"type":"module"}',
-                '.prettierrc.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              '.prettierrc.js': expected,
+            },
         );
       });
 
@@ -430,9 +430,9 @@ export default { foo, bar };
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
             : {
-                'package.json': '{"type":"module"}',
-                'eslint.config.js': expected,
-              },
+              'package.json': '{"type":"module"}',
+              'eslint.config.js': expected,
+            },
         );
       });
 
