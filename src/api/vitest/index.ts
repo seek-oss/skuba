@@ -1,4 +1,8 @@
-import type { ViteUserConfig } from 'vitest/config';
+import {
+  type ViteUserConfig,
+  defaultExclude,
+  defaultInclude,
+} from 'vitest/config';
 
 import { mergeRaw } from '../../cli/configure/processing/record.js';
 
@@ -15,6 +19,8 @@ export const defaults = {
       'tsdown.config.*ts',
     ],
   },
+  exclude: defaultExclude,
+  include: defaultInclude,
 } satisfies ViteUserConfig['test'];
 
 const configDefaults = {
