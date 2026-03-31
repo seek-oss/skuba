@@ -25,12 +25,15 @@ const transformExportDefaultRequire = (ast: SgNode): Edit[] | null => {
   }
 
   const moduleInfo = extractModuleInfo(mod);
+  const isJsonFile = moduleInfo.modulePath.endsWith('.json');
+
   return replaceStatement(
     match,
     'export_statement',
     toReExport({
       quote: moduleInfo.quote,
       modulePath: moduleInfo.modulePath,
+      isJsonFile,
     }),
   );
 };
@@ -54,13 +57,15 @@ const transformModuleExportsRequire = (ast: SgNode): Edit[] | null => {
   const isSkubaEslintConfig = moduleInfo.modulePath.includes(
     'skuba/config/prettier',
   );
+  const modulePath = moduleInfo.modulePath + (isSkubaEslintConfig ? '.js' : '');
 
   return replaceStatement(
     match,
     'expression_statement',
     toReExport({
       quote: moduleInfo.quote,
-      modulePath: moduleInfo.modulePath + (isSkubaEslintConfig ? '.js' : ''),
+      modulePath,
+      isJsonFile: modulePath.endsWith('.json'),
     }),
   );
 };
@@ -148,10 +153,13 @@ const extractModuleInfo = (mod: SgNode) => {
 const toReExport = ({
   quote,
   modulePath,
+  isJsonFile = false,
 }: {
   quote: string;
   modulePath: string;
-}) => `export { default } from ${quote}${modulePath}${quote};`;
+  isJsonFile?: boolean;
+}) =>
+  `export { default } from ${quote}${modulePath}${quote}${isJsonFile ? ' with { type: "json" }' : ''};`;
 
 const replaceStatement = (
   match: SgNode,
