@@ -7,9 +7,15 @@ import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchFunction } from '../../index.js';
 
 const migrate: PatchFunction = async (config) => {
-  await patchPnpmWorkspace(config.mode);
+  const result = await patchPnpmWorkspace(config.mode);
 
-  if (config.packageManager.command === 'pnpm') {
+  if (config.mode === 'lint' && !result.ok) {
+    return {
+      result: 'apply',
+    };
+  }
+
+  if (config.mode !== 'lint' && config.packageManager.command === 'pnpm') {
     await exec('pnpm', 'install', '--offline');
   }
 
