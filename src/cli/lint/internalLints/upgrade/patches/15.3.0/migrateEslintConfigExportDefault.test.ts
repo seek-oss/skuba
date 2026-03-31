@@ -109,6 +109,59 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         );
       });
 
+      it('should convert export default require of JSON to export { default } from with type json attribute', async () => {
+        const input = `export default require('./eslint-config.json');`;
+        const expected = `export { default } from './eslint-config.json' with { type: "json" };\n`;
+
+        vol.fromJSON({
+          'package.json': '{}',
+          'eslint.config.js': input,
+        });
+
+        await expect(
+          tryMigrateEslintConfigExportDefault({
+            ...baseArgs,
+            mode,
+          }),
+        ).resolves.toEqual({
+          result: 'apply',
+        });
+
+        expect(volToJson()).toEqual(
+          mode === 'lint'
+            ? { 'package.json': '{}', 'eslint.config.js': input }
+            : { 'package.json': '{}', 'eslint.config.js': expected },
+        );
+      });
+
+      it('should convert module.exports = require of JSON to export { default } from with type json attribute', async () => {
+        const input = "module.exports = require('./package.json');";
+        const expected = `export { default } from './package.json' with { type: "json" };\n`;
+
+        vol.fromJSON({
+          'package.json': '{"type":"module"}',
+          'eslint.config.js': input,
+        });
+
+        await expect(
+          tryMigrateEslintConfigExportDefault({
+            ...baseArgs,
+            mode,
+          }),
+        ).resolves.toEqual({
+          result: 'apply',
+        });
+
+        expect(volToJson()).toEqual(
+          mode === 'lint'
+            ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
+            : {
+                'package.json': '{"type":"module"}',
+                'eslint.config.js': expected,
+              },
+        );
+      });
+
       it('should convert const x = require to import x from', async () => {
         const input = `const config = require('eslint-config-skuba');
 module.exports = [...config, { rules: { 'no-process-exit': 'off' } }];
