@@ -10,7 +10,7 @@ import { detectPackageManager } from '../../../utils/packageManager.js';
 import { getCustomConditions } from '../../build/tsc.js';
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
 
-import { migrateAsyncHooks } from './jestHooks.js';
+import { applyJestFixes } from './jestFixes.js';
 
 import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
 
@@ -916,7 +916,7 @@ export const migrateToVitest = async ({
 
   await Promise.all(
     tsFiles.map(async ({ file, content }) => {
-      const updated = await migrateAsyncHooks(file, content);
+      const updated = await applyJestFixes(file, content);
       // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
       // replace imports from @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks
       // replace .mockImplementation() with .mockImplementation(() => undefined) to account for the fact that Vitest requires an implementation for mocks whereas Jest does not

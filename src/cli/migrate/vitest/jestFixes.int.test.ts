@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { migrateAsyncHooks } from './jestHooks.js';
+import { applyJestFixes, migrateVimockOrder } from './jestFixes.js';
 
 let tmpFile: string;
 let tmpModuleFile: string;
@@ -21,7 +21,7 @@ afterEach(async () => {
 
 const run = async (content: string) => {
   await fs.promises.writeFile(tmpFile, content, 'utf8');
-  return migrateAsyncHooks(tmpFile, content);
+  return applyJestFixes(tmpFile, content);
 };
 
 describe('migrateAsyncHooks', () => {
@@ -364,6 +364,163 @@ beforeEach(db.reset);
 beforeEach(async () => {
   await db.reset();
 });
+`,
+    );
+  });
+});
+
+describe('migrateVimockOrder', () => {
+  it('returns content unchanged when the vitest import is not first', async () => {
+    const content = `import { foo } from './foo';
+import { vi } from 'vitest';
+vi.mock('./foo');
+import { bar } from './bar';
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(content);
+  });
+
+  it('returns content unchanged when nothing follows the vitest import', async () => {
+    const content = `import { vi } from 'vitest';
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(content);
+  });
+
+  it('returns content unchanged when the next statement is a regular import', async () => {
+    const content = `import { vi } from 'vitest';
+import { foo } from './foo';
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(content);
+  });
+
+  it('moves the vitest import after a single vi.mock call', async () => {
+    const content = `import { vi } from 'vitest';
+vi.mock('./foo');
+import { foo } from './foo';
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(
+      `vi.mock('./foo');
+import { vi } from 'vitest';
+import { foo } from './foo';
+`,
+    );
+  });
+
+  it('moves the vitest import after multiple vi.mock calls', async () => {
+    const content = `import { vi } from 'vitest';
+vi.mock('./a');
+vi.mock('./b');
+import { a } from './a';
+import { b } from './b';
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(
+      `vi.mock('./a');
+vi.mock('./b');
+import { vi } from 'vitest';
+import { a } from './a';
+import { b } from './b';
+`,
+    );
+  });
+
+  it('moves the vitest import even when no regular imports follow', async () => {
+    const content = `import { vi } from 'vitest';
+vi.mock('./foo');
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(
+      `vi.mock('./foo');
+import { vi } from 'vitest';
+`,
+    );
+  });
+
+  it('preserves content after the block', async () => {
+    const content = `import { vi } from 'vitest';
+vi.mock('./foo');
+import { foo } from './foo';
+
+describe('suite', () => {
+  it('test', () => {});
+});
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(
+      `vi.mock('./foo');
+import { vi } from 'vitest';
+import { foo } from './foo';
+
+describe('suite', () => {
+  it('test', () => {});
+});
+`,
+    );
+  });
+
+  it('preserves blank lines between vi.mock and the following import', async () => {
+    const content = `import { vi } from 'vitest';
+vi.mock('./foo');
+
+import { foo } from './foo';
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(
+      `vi.mock('./foo');
+import { vi } from 'vitest';
+
+import { foo } from './foo';
+`,
+    );
+  });
+
+  it('moves the vitest import after a side-effectful import', async () => {
+    const content = `import { vi } from 'vitest';
+import 'some-side-effect';
+import { foo } from './foo';
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(
+      `import 'some-side-effect';
+import { vi } from 'vitest';
+import { foo } from './foo';
+`,
+    );
+  });
+
+  it('moves the vitest import after a mixed block of side-effectful imports and vi.mock calls', async () => {
+    const content = `import { vi } from 'vitest';
+import 'some-side-effect';
+vi.mock('./a');
+import { a } from './a';
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(
+      `import 'some-side-effect';
+vi.mock('./a');
+import { vi } from 'vitest';
+import { a } from './a';
+`,
+    );
+  });
+
+  it('stops the block at the first regular import', async () => {
+    const content = `import { vi } from 'vitest';
+vi.mock('./a');
+import { a } from './a';
+vi.mock('./b');
+import { b } from './b';
+`;
+
+    await expect(migrateVimockOrder(content)).resolves.toBe(
+      `vi.mock('./a');
+import { vi } from 'vitest';
+import { a } from './a';
+vi.mock('./b');
+import { b } from './b';
 `,
     );
   });

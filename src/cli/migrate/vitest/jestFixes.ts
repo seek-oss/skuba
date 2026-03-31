@@ -3,7 +3,95 @@ import path from 'path';
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import ts from 'typescript';
 
-export const migrateAsyncHooks = async (
+/**
+ * When the first import in a file is from 'vitest' and is immediately followed
+ * by expression statements (e.g. vi.mock calls) or side-effectful imports
+ * (e.g. import 'reflect-metadata'), move the vitest import to after that
+ * consecutive block.
+ *
+ * Before:
+ *   import { vi } from 'vitest';
+ *   vi.mock('./a');
+ *   import { foo } from './a';
+ *
+ * After:
+ *   vi.mock('./a');
+ *   import { vi } from 'vitest';
+ *   import { foo } from './a';
+ */
+export const migrateVimockOrder = async (content: string): Promise<string> => {
+  const ast = await parseAsync('TypeScript', content);
+  const root = ast.root();
+  const programChildren = root.children();
+  const firstChild = programChildren[0];
+
+  // Only proceed if the very first program statement is an import from 'vitest'
+  if (
+    firstChild?.kind() !== 'import_statement' ||
+    !firstChild.find({
+      rule: {
+        kind: 'string_fragment',
+        regex: 'vitest',
+      },
+    })
+  ) {
+    return content;
+  }
+
+  const isSideEffectImport = (node: SgNode): boolean =>
+    node.kind() === 'import_statement' &&
+    !node.find({ rule: { kind: 'import_clause' } });
+
+  // Collect the consecutive block of expression_statements or side-effectful
+  // import_statements immediately after the vitest import
+  const blockNodes: SgNode[] = [];
+  let i = 1;
+  while (i < programChildren.length) {
+    const node = programChildren[i];
+    if (!node) {
+      break;
+    }
+    if (node.kind() === 'expression_statement' || isSideEffectImport(node)) {
+      blockNodes.push(node);
+      i++;
+    } else {
+      break;
+    }
+  }
+
+  if (!blockNodes.length) {
+    return content;
+  }
+
+  const [firstBlockNode] = blockNodes;
+  const lastBlockNode = blockNodes[blockNodes.length - 1];
+
+  if (!firstBlockNode || !lastBlockNode) {
+    return content;
+  }
+
+  // Move the vitest import to just after the block
+  const vitestStart = firstChild.range().start.index;
+  const vitestEnd = firstChild.range().end.index;
+  const vitestEndWithNL =
+    content[vitestEnd] === '\n' ? vitestEnd + 1 : vitestEnd;
+
+  const lastBlockEnd = lastBlockNode.range().end.index;
+  const lastBlockEndWithNL =
+    content[lastBlockEnd] === '\n' ? lastBlockEnd + 1 : lastBlockEnd;
+
+  const vitestLine = content.slice(vitestStart, vitestEndWithNL);
+  const blockText = content.slice(vitestEndWithNL, lastBlockEndWithNL);
+
+  return (
+    content.slice(0, vitestStart) +
+    blockText +
+    vitestLine +
+    content.slice(lastBlockEndWithNL)
+  );
+};
+
+export const applyJestFixes = async (
   filePath: string,
   content: string,
 ): Promise<string> => {
@@ -97,7 +185,7 @@ export const migrateAsyncHooks = async (
   }
 
   if (!callsToCheck.length && !fnRefCallsToCheck.length) {
-    return content;
+    return migrateVimockOrder(content);
   }
 
   // Use the TypeScript compiler API to determine if each call returns a Promise
@@ -121,7 +209,7 @@ export const migrateAsyncHooks = async (
   const tsSourceFile = program.getSourceFile(filePath);
 
   if (!tsSourceFile) {
-    return content;
+    return migrateVimockOrder(content);
   }
 
   const findCallExpressionAtPos = (
@@ -217,8 +305,8 @@ export const migrateAsyncHooks = async (
   }
 
   if (!edits.length) {
-    return content;
+    return migrateVimockOrder(content);
   }
 
-  return root.commitEdits(edits);
+  return migrateVimockOrder(root.commitEdits(edits));
 };
