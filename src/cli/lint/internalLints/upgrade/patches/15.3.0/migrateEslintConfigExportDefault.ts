@@ -87,11 +87,12 @@ const transformRequireDeclarations = (ast: SgNode): Edit[] => {
     }
 
     const { quote, modulePath } = extractModuleInfo(mod);
+    const isJsonFile = modulePath.endsWith('.json');
 
     if (name.kind() === 'identifier') {
       edits.push(
         match.replace(
-          `import ${name.text()} from ${quote}${modulePath}${quote};\n`,
+          `import ${name.text()} from ${quote}${modulePath}${quote}${isJsonFile ? ' with { type: "json" }' : ''};\n`,
         ),
       );
       continue;
@@ -101,7 +102,7 @@ const transformRequireDeclarations = (ast: SgNode): Edit[] => {
     if (name.kind() === 'object_pattern') {
       const importPattern = name
         .text()
-        .replace(/(\w+)\s*:\s*(\w+)/g, '$1 as $2'); // Converts `const { foo, bar: x} = require('fs');` to `import { foo, bar as x } from 'fs';`
+        .replace(/(\w+)\s*:\s*(\w+)/g, '$1 as $2'); // Converts `const { foo, bar: x } = require('fs'); ` to `import { foo, bar as x } from 'fs'; `
 
       edits.push(
         match.replace(

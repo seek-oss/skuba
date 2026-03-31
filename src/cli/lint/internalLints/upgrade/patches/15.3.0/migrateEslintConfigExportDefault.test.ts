@@ -143,6 +143,40 @@ export default [...config, { rules: { 'no-process-exit': 'off' } }];
         );
       });
 
+      it('should convert const require of JSON to import with type json attribute', async () => {
+        const input = `const pkg = require('./package.json');
+module.exports = pkg;
+`;
+
+        const expected = `import pkg from './package.json' with { type: "json" };
+
+export default pkg;
+`;
+
+        vol.fromJSON({
+          'package.json': '{"type":"module"}',
+          'eslint.config.js': input,
+        });
+
+        await expect(
+          tryMigrateEslintConfigExportDefault({
+            ...baseArgs,
+            mode,
+          }),
+        ).resolves.toEqual({
+          result: 'apply',
+        });
+
+        expect(volToJson()).toEqual(
+          mode === 'lint'
+            ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
+            : {
+                'package.json': '{"type":"module"}',
+                'eslint.config.js': expected,
+              },
+        );
+      });
+
       it('should convert destructuring require to import', async () => {
         const input = `const { foo, bar } = require('some-package');
 module.exports = { foo, bar };
