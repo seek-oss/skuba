@@ -3,14 +3,9 @@ import type { Patches } from '../../index.js';
 import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
 import { migrateEslintConfigExportDefaultPatch } from './migrateEslintConfigExportDefault.js';
 import { tryMigrateToVitest } from './migrateToVitest.js';
-import { tryRemovePnpmPlugin } from './removePnpmPlugin.js';
 import { rewriteGlobalVars } from './rewriteGlobalVars.js';
 
 export const patches: Patches = [
-  {
-    apply: tryRemovePnpmPlugin,
-    description: 'Remove pnpm-plugin-skuba',
-  },
   {
     apply: addTypeModuleToPackageJson,
     description: 'Add module type to package.json to support ESM',
