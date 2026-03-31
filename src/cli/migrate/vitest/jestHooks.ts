@@ -24,13 +24,13 @@ export const migrateAsyncHooks = async (
     callbackNode: SgNode;
   };
 
-  type IdentifierInfo = {
+  type FnRefInfo = {
     hookCall: SgNode;
-    identifierNode: SgNode;
+    fnRefNode: SgNode;
   };
 
   const callsToCheck: CallInfo[] = [];
-  const identifierCallsToCheck: IdentifierInfo[] = [];
+  const fnRefCallsToCheck: FnRefInfo[] = [];
 
   for (const hookCall of hookCalls) {
     const args = hookCall.children().find((c) => c.kind() === 'arguments');
@@ -83,16 +83,20 @@ export const migrateAsyncHooks = async (
           (c) => c.kind() !== '(' && c.kind() !== ')' && c.kind() !== ',',
         );
       const [firstArg] = argNodes;
-      if (argNodes.length === 1 && firstArg?.kind() === 'identifier') {
-        identifierCallsToCheck.push({
+      if (
+        argNodes.length === 1 &&
+        (firstArg?.kind() === 'identifier' ||
+          firstArg?.kind() === 'member_expression')
+      ) {
+        fnRefCallsToCheck.push({
           hookCall,
-          identifierNode: firstArg,
+          fnRefNode: firstArg,
         });
       }
     }
   }
 
-  if (!callsToCheck.length && !identifierCallsToCheck.length) {
+  if (!callsToCheck.length && !fnRefCallsToCheck.length) {
     return content;
   }
 
@@ -144,10 +148,13 @@ export const migrateAsyncHooks = async (
     return type.getSymbol()?.getName() === 'Promise';
   };
 
-  const isFunctionIdentifierReturningPromise = (identNode: SgNode): boolean => {
-    const pos = identNode.range().start.index;
+  const isFunctionRefReturningPromise = (fnRefNode: SgNode): boolean => {
+    const pos = fnRefNode.range().start.index;
     const find = (node: ts.Node): ts.Node | undefined => {
-      if (ts.isIdentifier(node) && node.getStart() === pos) {
+      if (
+        (ts.isIdentifier(node) || ts.isPropertyAccessExpression(node)) &&
+        node.getStart() === pos
+      ) {
         return node;
       }
       if (node.pos <= pos && pos < node.end) {
@@ -193,9 +200,9 @@ export const migrateAsyncHooks = async (
     });
   }
 
-  for (const { hookCall, identifierNode } of identifierCallsToCheck) {
-    const fnName = identifierNode.text();
-    const isAsync = isFunctionIdentifierReturningPromise(identifierNode);
+  for (const { hookCall, fnRefNode } of fnRefCallsToCheck) {
+    const fnName = fnRefNode.text();
+    const isAsync = isFunctionRefReturningPromise(fnRefNode);
     const col = hookCall.range().start.column;
     const baseIndent = ' '.repeat(col);
     const bodyIndent = `${baseIndent}  `;
@@ -204,8 +211,8 @@ export const migrateAsyncHooks = async (
       : `() => {\n${bodyIndent}${fnName}();\n${baseIndent}}`;
     edits.push({
       insertedText,
-      startPos: identifierNode.range().start.index,
-      endPos: identifierNode.range().end.index,
+      startPos: fnRefNode.range().start.index,
+      endPos: fnRefNode.range().end.index,
     });
   }
 
