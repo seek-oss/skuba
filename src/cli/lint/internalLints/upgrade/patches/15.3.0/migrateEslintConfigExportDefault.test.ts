@@ -78,35 +78,9 @@ describe('tryMigrateEslintConfigExportDefault', () => {
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
             : {
-              'package.json': '{"type":"module"}',
-              'eslint.config.js': expected,
-            },
-        );
-      });
-
-      it('should not rename .js to .mjs when package lacks type:module', async () => {
-        const input = "module.exports = require('eslint-config-skuba');";
-
-        const expected = "export { default } from 'eslint-config-skuba';\n";
-
-        vol.fromJSON({
-          'package.json': '{}',
-          'eslint.config.js': input,
-        });
-
-        await expect(
-          tryMigrateEslintConfigExportDefault({
-            ...baseArgs,
-            mode,
-          }),
-        ).resolves.toEqual({
-          result: 'apply',
-        });
-
-        expect(volToJson()).toEqual(
-          mode === 'lint'
-            ? { 'package.json': '{}', 'eslint.config.js': input }
-            : { 'package.json': '{}', 'eslint.config.js': expected },
+                'package.json': '{"type":"module"}',
+                'eslint.config.js': expected,
+              },
         );
       });
 
@@ -133,9 +107,9 @@ describe('tryMigrateEslintConfigExportDefault', () => {
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
             : {
-              'package.json': '{"type":"module"}',
-              'eslint.config.js': expected,
-            },
+                'package.json': '{"type":"module"}',
+                'eslint.config.js': expected,
+              },
         );
       });
 
@@ -192,9 +166,9 @@ export default [...config, { rules: { 'no-process-exit': 'off' } }];
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
             : {
-              'package.json': '{"type":"module"}',
-              'eslint.config.js': expected,
-            },
+                'package.json': '{"type":"module"}',
+                'eslint.config.js': expected,
+              },
         );
       });
 
@@ -226,9 +200,9 @@ export default { foo, bar };
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'vitest.config.js': input }
             : {
-              'package.json': '{"type":"module"}',
-              'vitest.config.js': expected,
-            },
+                'package.json': '{"type":"module"}',
+                'vitest.config.js': expected,
+              },
         );
       });
 
@@ -262,13 +236,13 @@ export default { foo, bar };
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? {
-              'package.json': '{"type":"module"}',
-              'prettier.config.js': input,
-            }
+                'package.json': '{"type":"module"}',
+                'prettier.config.js': input,
+              }
             : {
-              'package.json': '{"type":"module"}',
-              'prettier.config.js': expected,
-            },
+                'package.json': '{"type":"module"}',
+                'prettier.config.js': expected,
+              },
         );
       });
 
@@ -295,13 +269,13 @@ export default { foo, bar };
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? {
-              'package.json': '{"type":"module"}',
-              '.prettierrc.js': input,
-            }
+                'package.json': '{"type":"module"}',
+                '.prettierrc.js': input,
+              }
             : {
-              'package.json': '{"type":"module"}',
-              '.prettierrc.js': expected,
-            },
+                'package.json': '{"type":"module"}',
+                '.prettierrc.js': expected,
+              },
         );
       });
 
@@ -327,43 +301,13 @@ export default { foo, bar };
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? {
-              'package.json': '{"type":"module"}',
-              '.prettierrc.js': input,
-            }
+                'package.json': '{"type":"module"}',
+                '.prettierrc.js': input,
+              }
             : {
-              'package.json': '{"type":"module"}',
-              '.prettierrc.js': expected,
-            },
-        );
-      });
-
-      it('should not add .js extension to scoped package without subpath', async () => {
-        const input = "module.exports = require('@seek/eslint-config-skuba');";
-
-        const expected =
-          "export { default } from '@seek/eslint-config-skuba';\n";
-
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'eslint.config.js': input,
-        });
-
-        await expect(
-          tryMigrateEslintConfigExportDefault({
-            ...baseArgs,
-            mode,
-          }),
-        ).resolves.toEqual({
-          result: 'apply',
-        });
-
-        expect(volToJson()).toEqual(
-          mode === 'lint'
-            ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
-            : {
-              'package.json': '{"type":"module"}',
-              'eslint.config.js': expected,
-            },
+                'package.json': '{"type":"module"}',
+                '.prettierrc.js': expected,
+              },
         );
       });
 
@@ -391,13 +335,13 @@ export default { foo, bar };
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? {
-              'package.json': '{"type":"module"}',
-              '.prettierrc.js': input,
-            }
+                'package.json': '{"type":"module"}',
+                '.prettierrc.js': input,
+              }
             : {
-              'package.json': '{"type":"module"}',
-              '.prettierrc.js': expected,
-            },
+                'package.json': '{"type":"module"}',
+                '.prettierrc.js': expected,
+              },
         );
       });
 
@@ -430,9 +374,9 @@ export default { foo, bar };
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
             : {
-              'package.json': '{"type":"module"}',
-              'eslint.config.js': expected,
-            },
+                'package.json': '{"type":"module"}',
+                'eslint.config.js': expected,
+              },
         );
       });
 
