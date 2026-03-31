@@ -1,12 +1,24 @@
 import { inspect } from 'util';
 
+import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import { migrateToVitest } from '../../../../../migrate/vitest/vitest.js';
+import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchFunction } from '../../index.js';
+
+const migrate: PatchFunction = async (config) => {
+  await patchPnpmWorkspace(config.mode);
+
+  if (config.packageManager.command === 'pnpm') {
+    await exec('pnpm', 'install', '--offline');
+  }
+
+  return await migrateToVitest(config);
+};
 
 export const tryMigrateToVitest: PatchFunction = async (config) => {
   try {
-    return await migrateToVitest(config);
+    return await migrate(config);
   } catch (err) {
     log.warn('Failed to migrate to Vitest');
     log.subtle(inspect(err));
