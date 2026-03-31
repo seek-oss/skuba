@@ -24,7 +24,13 @@ export const migrateAsyncHooks = async (
     callbackNode: SgNode;
   };
 
+  type IdentifierInfo = {
+    hookCall: SgNode;
+    identifierNode: SgNode;
+  };
+
   const callsToCheck: CallInfo[] = [];
+  const identifierCallsToCheck: IdentifierInfo[] = [];
 
   for (const hookCall of hookCalls) {
     const args = hookCall.children().find((c) => c.kind() === 'arguments');
@@ -33,42 +39,60 @@ export const migrateAsyncHooks = async (
     }
 
     const callback = args.children().find((c) => c.kind() === 'arrow_function');
-    if (!callback || callback.text().trimStart().startsWith('async ')) {
-      continue;
-    }
-
-    const callbackStart = callback.range().start.index;
-    const isDirectlyInCallback = (node: SgNode): boolean => {
-      let current = node.parent();
-      while (current) {
-        if (current.range().start.index === callbackStart) {
-          return true;
-        }
-        const kind = current.kind();
-        if (
-          kind === 'arrow_function' ||
-          kind === 'function_expression' ||
-          kind === 'function_declaration'
-        ) {
-          return false;
-        }
-        current = current.parent();
+    if (callback) {
+      if (callback.text().trimStart().startsWith('async ')) {
+        continue;
       }
-      return false;
-    };
 
-    const innerCalls = callback.findAll({ rule: { kind: 'call_expression' } });
-    for (const call of innerCalls) {
-      if (
-        call.parent()?.kind() !== 'await_expression' &&
-        isDirectlyInCallback(call)
-      ) {
-        callsToCheck.push({ callNode: call, callbackNode: callback });
+      const callbackStart = callback.range().start.index;
+      const isDirectlyInCallback = (node: SgNode): boolean => {
+        let current = node.parent();
+        while (current) {
+          if (current.range().start.index === callbackStart) {
+            return true;
+          }
+          const kind = current.kind();
+          if (
+            kind === 'arrow_function' ||
+            kind === 'function_expression' ||
+            kind === 'function_declaration'
+          ) {
+            return false;
+          }
+          current = current.parent();
+        }
+        return false;
+      };
+
+      const innerCalls = callback.findAll({
+        rule: { kind: 'call_expression' },
+      });
+      for (const call of innerCalls) {
+        if (
+          call.parent()?.kind() !== 'await_expression' &&
+          isDirectlyInCallback(call)
+        ) {
+          callsToCheck.push({ callNode: call, callbackNode: callback });
+        }
+      }
+    } else {
+      // Handle plain identifier (function reference) as the callback argument
+      const argNodes = args
+        .children()
+        .filter(
+          (c) => c.kind() !== '(' && c.kind() !== ')' && c.kind() !== ',',
+        );
+      const [firstArg] = argNodes;
+      if (argNodes.length === 1 && firstArg?.kind() === 'identifier') {
+        identifierCallsToCheck.push({
+          hookCall,
+          identifierNode: firstArg,
+        });
       }
     }
   }
 
-  if (!callsToCheck.length) {
+  if (!callsToCheck.length && !identifierCallsToCheck.length) {
     return content;
   }
 
@@ -120,13 +144,34 @@ export const migrateAsyncHooks = async (
     return type.getSymbol()?.getName() === 'Promise';
   };
 
+  const isFunctionIdentifierReturningPromise = (identNode: SgNode): boolean => {
+    const pos = identNode.range().start.index;
+    const find = (node: ts.Node): ts.Node | undefined => {
+      if (ts.isIdentifier(node) && node.getStart() === pos) {
+        return node;
+      }
+      if (node.pos <= pos && pos < node.end) {
+        return ts.forEachChild(node, find);
+      }
+      return undefined;
+    };
+    const tsNode = find(tsSourceFile);
+    if (!tsNode) {
+      return false;
+    }
+    const type = checker.getTypeAtLocation(tsNode);
+    for (const sig of type.getCallSignatures()) {
+      const retType = checker.getReturnTypeOfSignature(sig);
+      if (retType.getSymbol()?.getName() === 'Promise') {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const asyncCallInfos = callsToCheck.filter(({ callNode }) =>
     isPromiseReturning(callNode),
   );
-
-  if (!asyncCallInfos.length) {
-    return content;
-  }
 
   const edits: Edit[] = [];
   const processedCallbackPositions = new Set<number>();
@@ -146,6 +191,26 @@ export const migrateAsyncHooks = async (
       startPos: callNode.range().start.index,
       endPos: callNode.range().start.index,
     });
+  }
+
+  for (const { hookCall, identifierNode } of identifierCallsToCheck) {
+    const fnName = identifierNode.text();
+    const isAsync = isFunctionIdentifierReturningPromise(identifierNode);
+    const col = hookCall.range().start.column;
+    const baseIndent = ' '.repeat(col);
+    const bodyIndent = `${baseIndent}  `;
+    const insertedText = isAsync
+      ? `async () => {\n${bodyIndent}await ${fnName}();\n${baseIndent}}`
+      : `() => {\n${bodyIndent}${fnName}();\n${baseIndent}}`;
+    edits.push({
+      insertedText,
+      startPos: identifierNode.range().start.index,
+      endPos: identifierNode.range().end.index,
+    });
+  }
+
+  if (!edits.length) {
+    return content;
   }
 
   return root.commitEdits(edits);

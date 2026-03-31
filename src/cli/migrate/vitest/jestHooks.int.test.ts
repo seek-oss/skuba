@@ -249,4 +249,90 @@ beforeEach(async () => {
 `,
     );
   });
+
+  it('wraps an async function reference in an async arrow function', async () => {
+    const content = `const resetDynamoDb = async () => {};
+
+beforeEach(resetDynamoDb);
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `const resetDynamoDb = async () => {};
+
+beforeEach(async () => {
+  await resetDynamoDb();
+});
+`,
+    );
+  });
+
+  it('wraps a sync function reference in a plain arrow function', async () => {
+    const content = `const setup = () => {};
+
+beforeEach(setup);
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `const setup = () => {};
+
+beforeEach(() => {
+  setup();
+});
+`,
+    );
+  });
+
+  it('wraps async function references across all hook types', async () => {
+    const content = `const setup = async () => {};
+const teardown = async () => {};
+
+beforeAll(setup);
+afterAll(teardown);
+beforeEach(setup);
+afterEach(teardown);
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `const setup = async () => {};
+const teardown = async () => {};
+
+beforeAll(async () => {
+  await setup();
+});
+afterAll(async () => {
+  await teardown();
+});
+beforeEach(async () => {
+  await setup();
+});
+afterEach(async () => {
+  await teardown();
+});
+`,
+    );
+  });
+
+  it('wraps an imported async function reference in an async arrow function', async () => {
+    await fs.promises.writeFile(
+      tmpModuleFile,
+      `export const resetDynamoDb = async () => {};
+`,
+      'utf8',
+    );
+
+    const relativeImport = `./${path.basename(tmpModuleFile, '.ts')}`;
+    const content = `import { resetDynamoDb } from '${relativeImport}';
+
+beforeEach(resetDynamoDb);
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `import { resetDynamoDb } from '${relativeImport}';
+
+beforeEach(async () => {
+  await resetDynamoDb();
+});
+`,
+    );
+  });
 });
