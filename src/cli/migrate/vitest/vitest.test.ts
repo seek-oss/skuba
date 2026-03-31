@@ -324,7 +324,7 @@ export default Jest.mergePreset({
   },
   testTimeout: 10000,
   globalSetup: '<rootDir>/jest.globalSetup.ts',
-  setupFiles: ['<rootDir>/jest.setup.ts'],
+  setupFiles: ['<rootDir>/jest.setup.ts', '<rootDir>/jest.another.ts'],
   setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
   testPathIgnorePatterns: ['\\.int\\.test'],
   workerIdleMemoryLimit: '512MB',
@@ -361,6 +361,8 @@ afterEach(() => {
 `,
       'jest.hooks.ts': `import 'some-hooks';
 `,
+      'jest.another.ts': `process.env.ENVIRONMENT = 'test';
+export {}`,
     });
 
     await expect(
@@ -374,6 +376,10 @@ afterEach(() => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
+        "jest.another.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+
+      process.env.ENVIRONMENT = 'test';
+      export {}",
         "jest.config.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
 
       import { Jest } from 'skuba';
@@ -415,7 +421,7 @@ afterEach(() => {
         },
         testTimeout: 10000,
         globalSetup: '<rootDir>/jest.globalSetup.ts',
-        setupFiles: ['<rootDir>/jest.setup.ts'],
+        setupFiles: ['<rootDir>/jest.setup.ts', '<rootDir>/jest.another.ts'],
         setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
         testPathIgnorePatterns: ['\\.int\\.test'],
         workerIdleMemoryLimit: '512MB',

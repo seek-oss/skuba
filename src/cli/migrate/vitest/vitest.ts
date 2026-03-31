@@ -364,6 +364,27 @@ const migrateEnvironmentSetup = async (file: string) => {
 
   const updatedContent = root.commitEdits(edits);
 
+  const astAfterEdit = (await parseAsync('TypeScript', updatedContent)).root();
+
+  const children = astAfterEdit.children();
+
+  const hasEmptyExportStatement = astAfterEdit.find({
+    rule: {
+      kind: 'export_statement',
+      not: {
+        has: {
+          kind: 'export_clause',
+          has: {
+            kind: 'export_specifier',
+          },
+        },
+      },
+    },
+  });
+
+  const finalContent =
+    hasEmptyExportStatement && children.length === 1 ? '' : updatedContent;
+
   const envVars = rootLevelEnvAssignments
     .map((assignment) => {
       const envVarName = assignment
@@ -382,7 +403,7 @@ const migrateEnvironmentSetup = async (file: string) => {
     .filter((name) => name !== undefined);
 
   return {
-    updatedContent,
+    updatedContent: finalContent,
     envVars,
   };
 };
@@ -523,6 +544,7 @@ const migrateSetupHooks = async (
   );
 
   const envVars = new Map<string, string>();
+  const doNotMigrate = new Set<string>();
 
   const edits = await Promise.all(
     normalizedPaths.map(async (normalizedPath) => {
@@ -546,6 +568,16 @@ const migrateSetupHooks = async (
         envVars.set(k, value);
       });
 
+      const migratedJestConfig: FileContent = {
+        file: absolutePath,
+        content: `// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.\n\n${jestSetupHook}`,
+      };
+
+      if (!updatedContent) {
+        doNotMigrate.add(normalizedPath);
+        return [migratedJestConfig];
+      }
+
       return [
         {
           file: absolutePath.replace('jest', 'vitest'),
@@ -561,7 +593,9 @@ const migrateSetupHooks = async (
 
   return {
     edits: edits.flat(),
-    hookPaths: normalizedPaths.map((p) => p.replace('jest', 'vitest')),
+    hookPaths: normalizedPaths
+      .filter((p) => !doNotMigrate.has(p))
+      .map((p) => p.replace('jest', 'vitest')),
     envVars,
   };
 };
