@@ -20,7 +20,6 @@ export const defaults = {
     ],
   },
   exclude: defaultExclude,
-  include: defaultInclude,
 } satisfies ViteUserConfig['test'];
 
 const configDefaults = {
