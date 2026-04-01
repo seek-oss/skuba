@@ -178,8 +178,132 @@ const transformModuleExports = (ast: SgNode): Edit[] => {
     return [];
   }
 
+  const spreadRequires = collectSpreadRequireElements(expr);
+
+  if (spreadRequires.length) {
+    return replaceModuleExportsObjectWithSpreadRequires(match, expr, spreadRequires);
+  }
+
   const stmt = getStatementNode(match, 'expression_statement');
   return [stmt.replace(`export default ${expr.text()};`)];
+};
+
+/** `require($MOD)` whose parent is a spread (`...require('x')`) inside an object literal. */
+const collectSpreadRequireElements = (expr: SgNode): SgNode[] => {
+  const requireCalls = expr.findAll({
+    rule: { pattern: 'require($MOD)' },
+  });
+
+  const spreads: SgNode[] = [];
+
+  for (const call of requireCalls) {
+    const parent = call.parent();
+    if (parent?.kind() === 'spread_element') {
+      spreads.push(parent);
+    }
+  }
+
+  return spreads;
+};
+
+const resolveModulePathForEsmImport = (modulePath: string): string => {
+  if (
+    modulePath.includes('skuba/config/prettier') &&
+    !modulePath.endsWith('.js')
+  ) {
+    return `${modulePath}.js`;
+  }
+
+  return modulePath;
+};
+
+const bindingForSpreadResolvedPath = (
+  resolved: string,
+  index: number,
+): string => {
+  if (resolved.includes('skuba/config/prettier')) {
+    return 'skubaPrettierConfig';
+  }
+
+  return `spreadRequire${index}`;
+};
+
+const replaceModuleExportsObjectWithSpreadRequires = (
+  match: SgNode,
+  expr: SgNode,
+  spreadRequires: SgNode[],
+): Edit[] => {
+  const pathToBinding = new Map<string, string>();
+  const pathMetadata = new Map<
+    string,
+    { isJson: boolean; quote: string }
+  >();
+
+  const getOrCreateBinding = (resolvedPath: string): string => {
+    let binding = pathToBinding.get(resolvedPath);
+
+    if (!binding) {
+      binding = bindingForSpreadResolvedPath(
+        resolvedPath,
+        pathToBinding.size,
+      );
+      pathToBinding.set(resolvedPath, binding);
+    }
+
+    return binding;
+  };
+  const getRequireModule = (spread: SgNode) =>
+    spread
+      .find({ rule: { pattern: 'require($MOD)' } })
+      ?.getMatch('MOD');
+
+  for (const spread of spreadRequires) {
+    const mod = getRequireModule(spread);
+    if (!mod) { continue; }
+
+    const { quote, modulePath } = extractModuleInfo(mod);
+    const resolvedPath = resolveModulePathForEsmImport(modulePath);
+
+    if (!pathMetadata.has(resolvedPath)) {
+      pathMetadata.set(resolvedPath, {
+        isJson: isJsonModuleSpecifier(resolvedPath),
+        quote,
+      });
+    }
+
+    getOrCreateBinding(resolvedPath);
+  }
+
+  let objectText = expr.text();
+
+  for (const spread of spreadRequires) {
+    const mod = getRequireModule(spread);
+    if (!mod) { continue; }
+
+    const { modulePath } = extractModuleInfo(mod);
+    const resolvedPath = resolveModulePathForEsmImport(modulePath);
+    const binding = getOrCreateBinding(resolvedPath);
+
+    objectText = objectText.replaceAll(spread.text(), `...${binding}`);
+  }
+
+  const importLines = Array.from(pathToBinding.entries())
+    .map(([resolvedPath, binding]) => {
+      const metadata = pathMetadata.get(resolvedPath);
+      if (!metadata) { return ''; }
+
+      const { isJson, quote } = metadata;
+      const jsonSuffix = isJson ? ' with { type: "json" }' : '';
+
+      return `import ${binding} from ${quote}${resolvedPath}${quote}${jsonSuffix};`;
+    })
+    .filter(Boolean)
+    .join('\n');
+
+  const statement = getStatementNode(match, 'expression_statement');
+  const newBody = `${importLines}\n\nexport default ${objectText};`;
+
+  return [statement.replace(newBody)];
 };
 
 const getStatementNode = (match: SgNode, expectedKind: string): SgNode =>

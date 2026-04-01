@@ -368,6 +368,48 @@ export default { foo, bar };
         );
       });
 
+      it('should hoist spread require in module.exports object to import and export default', async () => {
+        const input = `module.exports = {
+  ...require('skuba/config/prettier'),
+  printWidth: 100,
+};
+`;
+
+        const expected = `import skubaPrettierConfig from 'skuba/config/prettier.js';
+
+export default {
+  ...skubaPrettierConfig,
+  printWidth: 100,
+};
+`;
+
+        vol.fromJSON({
+          'package.json': '{"type":"module"}',
+          '.prettierrc.js': input,
+        });
+
+        await expect(
+          tryMigrateEslintConfigExportDefault({
+            ...baseArgs,
+            mode,
+          }),
+        ).resolves.toEqual({
+          result: 'apply',
+        });
+
+        expect(volToJson()).toEqual(
+          mode === 'lint'
+            ? {
+                'package.json': '{"type":"module"}',
+                '.prettierrc.js': input,
+              }
+            : {
+                'package.json': '{"type":"module"}',
+                '.prettierrc.js': expected,
+              },
+        );
+      });
+
       it('should convert module.exports = [config] to export default (no require)', async () => {
         const input = `module.exports = [
   { rules: { 'no-console': 'off' } },
