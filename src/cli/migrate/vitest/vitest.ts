@@ -61,7 +61,8 @@ const patchFiles = async (): Promise<FileContent[]> => {
           /"@shopify\/jest-koa-mocks":\s*"[^"]*"/g,
           '"@skuba-lib/vitest-koa-mocks": "1.0.1"',
         )
-        .replace(/--runInBand/g, '--maxWorkers=1');
+        .replace(/--runInBand/g, '--maxWorkers=1')
+        .replace(/jest.config/g, 'vitest.config');
 
       return {
         file,
@@ -91,7 +92,9 @@ const patchFiles = async (): Promise<FileContent[]> => {
 
   const updatedBuildkiteFiles = buildkitePipelines
     .map(({ file, content }) => {
-      const updatedContent = content.replace(/--runInBand/g, '--maxWorkers=1');
+      const updatedContent = content
+        .replace(/--runInBand/g, '--maxWorkers=1')
+        .replace(/jest.config/g, 'vitest.config');
       return {
         file,
         content: updatedContent === content ? undefined : updatedContent,
