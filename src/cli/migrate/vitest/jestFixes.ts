@@ -91,6 +91,35 @@ export const migrateVimockOrder = async (content: string): Promise<string> => {
   );
 };
 
+const compilerOptionsCache = new Map<string, ts.CompilerOptions>();
+
+const getProgram = (filePath: string): ts.Program => {
+  const dir = path.dirname(filePath);
+  const cachedOptions = compilerOptionsCache.get(dir);
+  let compilerOptions: ts.CompilerOptions;
+
+  if (cachedOptions) {
+    compilerOptions = cachedOptions;
+  } else {
+    const configFile = ts.findConfigFile(dir, (f) => ts.sys.fileExists(f));
+    compilerOptions = { noEmit: true };
+    if (configFile) {
+      const readResult = ts.readConfigFile(configFile, (f) =>
+        ts.sys.readFile(f),
+      );
+      const { options } = ts.parseJsonConfigFileContent(
+        readResult.config as object,
+        ts.sys,
+        path.dirname(configFile),
+      );
+      compilerOptions = { ...options, noEmit: true };
+    }
+    compilerOptionsCache.set(dir, compilerOptions);
+  }
+
+  return ts.createProgram([filePath], compilerOptions);
+};
+
 export const applyJestFixes = async (
   filePath: string,
   content: string,
@@ -189,22 +218,7 @@ export const applyJestFixes = async (
   }
 
   // Use the TypeScript compiler API to determine if each call returns a Promise
-  const configFile = ts.findConfigFile(path.dirname(filePath), (f) =>
-    ts.sys.fileExists(f),
-  );
-
-  let compilerOptions: ts.CompilerOptions = { noEmit: true };
-  if (configFile) {
-    const readResult = ts.readConfigFile(configFile, (f) => ts.sys.readFile(f));
-    const { options } = ts.parseJsonConfigFileContent(
-      readResult.config as object,
-      ts.sys,
-      path.dirname(configFile),
-    );
-    compilerOptions = { ...options, noEmit: true };
-  }
-
-  const program = ts.createProgram([filePath], compilerOptions);
+  const program = getProgram(filePath);
   const checker = program.getTypeChecker();
   const tsSourceFile = program.getSourceFile(filePath);
 
