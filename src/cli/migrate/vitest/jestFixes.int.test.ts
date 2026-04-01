@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { applyJestFixes, migrateVimockOrder } from './jestFixes.js';
+import { applyJestFixes } from './jestFixes.js';
 
 let tmpFile: string;
 let tmpModuleFile: string;
@@ -377,14 +377,14 @@ vi.mock('./foo');
 import { bar } from './bar';
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(content);
+    await expect(run(content)).resolves.toBe(content);
   });
 
   it('returns content unchanged when nothing follows the vitest import', async () => {
     const content = `import { vi } from 'vitest';
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(content);
+    await expect(run(content)).resolves.toBe(content);
   });
 
   it('returns content unchanged when the next statement is a regular import', async () => {
@@ -392,7 +392,7 @@ import { bar } from './bar';
 import { foo } from './foo';
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(content);
+    await expect(run(content)).resolves.toBe(content);
   });
 
   it('moves the vitest import after a single vi.mock call', async () => {
@@ -401,7 +401,7 @@ vi.mock('./foo');
 import { foo } from './foo';
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `vi.mock('./foo');
 import { vi } from 'vitest';
 import { foo } from './foo';
@@ -417,7 +417,7 @@ import { a } from './a';
 import { b } from './b';
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `vi.mock('./a');
 vi.mock('./b');
 import { vi } from 'vitest';
@@ -432,7 +432,7 @@ import { b } from './b';
 vi.mock('./foo');
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `vi.mock('./foo');
 import { vi } from 'vitest';
 `,
@@ -449,7 +449,7 @@ describe('suite', () => {
 });
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `vi.mock('./foo');
 import { vi } from 'vitest';
 import { foo } from './foo';
@@ -468,7 +468,7 @@ vi.mock('./foo');
 import { foo } from './foo';
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `vi.mock('./foo');
 import { vi } from 'vitest';
 
@@ -483,7 +483,7 @@ import 'some-side-effect';
 import { foo } from './foo';
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `import 'some-side-effect';
 import { vi } from 'vitest';
 import { foo } from './foo';
@@ -498,7 +498,7 @@ vi.mock('./a');
 import { a } from './a';
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `import 'some-side-effect';
 vi.mock('./a');
 import { vi } from 'vitest';
@@ -515,7 +515,7 @@ vi.mock('./b');
 import { b } from './b';
 `;
 
-    await expect(migrateVimockOrder(content)).resolves.toBe(
+    await expect(run(content)).resolves.toBe(
       `vi.mock('./a');
 import { vi } from 'vitest';
 import { a } from './a';

@@ -19,9 +19,7 @@ import ts from 'typescript';
  *   import { vi } from 'vitest';
  *   import { foo } from './a';
  */
-export const migrateVimockOrder = async (content: string): Promise<string> => {
-  const ast = await parseAsync('TypeScript', content);
-  const root = ast.root();
+const collectViImportEdits = (root: SgNode, content: string): Edit[] => {
   const programChildren = root.children();
   const firstChild = programChildren[0];
 
@@ -35,7 +33,7 @@ export const migrateVimockOrder = async (content: string): Promise<string> => {
       },
     })
   ) {
-    return content;
+    return [];
   }
 
   const isSideEffectImport = (node: SgNode): boolean =>
@@ -59,15 +57,9 @@ export const migrateVimockOrder = async (content: string): Promise<string> => {
     }
   }
 
-  if (!blockNodes.length) {
-    return content;
-  }
-
-  const [firstBlockNode] = blockNodes;
   const lastBlockNode = blockNodes[blockNodes.length - 1];
-
-  if (!firstBlockNode || !lastBlockNode) {
-    return content;
+  if (!lastBlockNode) {
+    return [];
   }
 
   // Move the vitest import to just after the block
@@ -81,14 +73,15 @@ export const migrateVimockOrder = async (content: string): Promise<string> => {
     content[lastBlockEnd] === '\n' ? lastBlockEnd + 1 : lastBlockEnd;
 
   const vitestLine = content.slice(vitestStart, vitestEndWithNL);
-  const blockText = content.slice(vitestEndWithNL, lastBlockEndWithNL);
 
-  return (
-    content.slice(0, vitestStart) +
-    blockText +
-    vitestLine +
-    content.slice(lastBlockEndWithNL)
-  );
+  return [
+    { insertedText: '', startPos: vitestStart, endPos: vitestEndWithNL },
+    {
+      insertedText: vitestLine,
+      startPos: lastBlockEndWithNL,
+      endPos: lastBlockEndWithNL,
+    },
+  ];
 };
 
 const compilerOptionsCache = new Map<string, ts.CompilerOptions>();
@@ -213,114 +206,113 @@ export const applyJestFixes = async (
     }
   }
 
-  if (!callsToCheck.length && !fnRefCallsToCheck.length) {
-    return migrateVimockOrder(content);
-  }
-
-  // Use the TypeScript compiler API to determine if each call returns a Promise
-  const program = getProgram(filePath);
-  const checker = program.getTypeChecker();
-  const tsSourceFile = program.getSourceFile(filePath);
-
-  if (!tsSourceFile) {
-    return migrateVimockOrder(content);
-  }
-
-  const findCallExpressionAtPos = (
-    pos: number,
-  ): ts.CallExpression | undefined => {
-    const find = (node: ts.Node): ts.CallExpression | undefined => {
-      if (node.getStart() === pos && ts.isCallExpression(node)) {
-        return node;
-      }
-      if (node.pos <= pos && pos < node.end) {
-        return ts.forEachChild(node, find);
-      }
-      return undefined;
-    };
-    return find(tsSourceFile);
-  };
-
-  const isPromiseReturning = (callNode: SgNode): boolean => {
-    const tsCall = findCallExpressionAtPos(callNode.range().start.index);
-    if (!tsCall) {
-      return false;
-    }
-    const type = checker.getTypeAtLocation(tsCall);
-    return type.getSymbol()?.getName() === 'Promise';
-  };
-
-  const isFunctionRefReturningPromise = (fnRefNode: SgNode): boolean => {
-    const pos = fnRefNode.range().start.index;
-    const find = (node: ts.Node): ts.Node | undefined => {
-      if (
-        (ts.isIdentifier(node) || ts.isPropertyAccessExpression(node)) &&
-        node.getStart() === pos
-      ) {
-        return node;
-      }
-      if (node.pos <= pos && pos < node.end) {
-        return ts.forEachChild(node, find);
-      }
-      return undefined;
-    };
-    const tsNode = find(tsSourceFile);
-    if (!tsNode) {
-      return false;
-    }
-    const type = checker.getTypeAtLocation(tsNode);
-    for (const sig of type.getCallSignatures()) {
-      const retType = checker.getReturnTypeOfSignature(sig);
-      if (retType.getSymbol()?.getName() === 'Promise') {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const asyncCallInfos = callsToCheck.filter(({ callNode }) =>
-    isPromiseReturning(callNode),
-  );
-
   const edits: Edit[] = [];
-  const processedCallbackPositions = new Set<number>();
 
-  for (const { callbackNode, callNode } of asyncCallInfos) {
-    const callbackPos = callbackNode.range().start.index;
-    if (!processedCallbackPositions.has(callbackPos)) {
-      edits.push({
-        insertedText: 'async ',
-        startPos: callbackPos,
-        endPos: callbackPos,
-      });
-      processedCallbackPositions.add(callbackPos);
+  if (callsToCheck.length || fnRefCallsToCheck.length) {
+    // Use the TypeScript compiler API to determine if each call returns a Promise
+    const program = getProgram(filePath);
+    const checker = program.getTypeChecker();
+    const tsSourceFile = program.getSourceFile(filePath);
+
+    if (tsSourceFile) {
+      const findCallExpressionAtPos = (
+        pos: number,
+      ): ts.CallExpression | undefined => {
+        const find = (node: ts.Node): ts.CallExpression | undefined => {
+          if (node.getStart() === pos && ts.isCallExpression(node)) {
+            return node;
+          }
+          if (node.pos <= pos && pos < node.end) {
+            return ts.forEachChild(node, find);
+          }
+          return undefined;
+        };
+        return find(tsSourceFile);
+      };
+
+      const isPromiseReturning = (callNode: SgNode): boolean => {
+        const tsCall = findCallExpressionAtPos(callNode.range().start.index);
+        if (!tsCall) {
+          return false;
+        }
+        const type = checker.getTypeAtLocation(tsCall);
+        return type.getSymbol()?.getName() === 'Promise';
+      };
+
+      const isFunctionRefReturningPromise = (fnRefNode: SgNode): boolean => {
+        const pos = fnRefNode.range().start.index;
+        const find = (node: ts.Node): ts.Node | undefined => {
+          if (
+            (ts.isIdentifier(node) || ts.isPropertyAccessExpression(node)) &&
+            node.getStart() === pos
+          ) {
+            return node;
+          }
+          if (node.pos <= pos && pos < node.end) {
+            return ts.forEachChild(node, find);
+          }
+          return undefined;
+        };
+        const tsNode = find(tsSourceFile);
+        if (!tsNode) {
+          return false;
+        }
+        const type = checker.getTypeAtLocation(tsNode);
+        for (const sig of type.getCallSignatures()) {
+          const retType = checker.getReturnTypeOfSignature(sig);
+          if (retType.getSymbol()?.getName() === 'Promise') {
+            return true;
+          }
+        }
+        return false;
+      };
+
+      const asyncCallInfos = callsToCheck.filter(({ callNode }) =>
+        isPromiseReturning(callNode),
+      );
+
+      const processedCallbackPositions = new Set<number>();
+
+      for (const { callbackNode, callNode } of asyncCallInfos) {
+        const callbackPos = callbackNode.range().start.index;
+        if (!processedCallbackPositions.has(callbackPos)) {
+          edits.push({
+            insertedText: 'async ',
+            startPos: callbackPos,
+            endPos: callbackPos,
+          });
+          processedCallbackPositions.add(callbackPos);
+        }
+        edits.push({
+          insertedText: 'await ',
+          startPos: callNode.range().start.index,
+          endPos: callNode.range().start.index,
+        });
+      }
+
+      for (const { hookCall, fnRefNode } of fnRefCallsToCheck) {
+        const fnName = fnRefNode.text();
+        const isAsync = isFunctionRefReturningPromise(fnRefNode);
+        const col = hookCall.range().start.column;
+        const baseIndent = ' '.repeat(col);
+        const bodyIndent = `${baseIndent}  `;
+        const insertedText = isAsync
+          ? `async () => {\n${bodyIndent}await ${fnName}();\n${baseIndent}}`
+          : `() => {\n${bodyIndent}${fnName}();\n${baseIndent}}`;
+        edits.push({
+          insertedText,
+          startPos: fnRefNode.range().start.index,
+          endPos: fnRefNode.range().end.index,
+        });
+      }
     }
-    edits.push({
-      insertedText: 'await ',
-      startPos: callNode.range().start.index,
-      endPos: callNode.range().start.index,
-    });
   }
 
-  for (const { hookCall, fnRefNode } of fnRefCallsToCheck) {
-    const fnName = fnRefNode.text();
-    const isAsync = isFunctionRefReturningPromise(fnRefNode);
-    const col = hookCall.range().start.column;
-    const baseIndent = ' '.repeat(col);
-    const bodyIndent = `${baseIndent}  `;
-    const insertedText = isAsync
-      ? `async () => {\n${bodyIndent}await ${fnName}();\n${baseIndent}}`
-      : `() => {\n${bodyIndent}${fnName}();\n${baseIndent}}`;
-    edits.push({
-      insertedText,
-      startPos: fnRefNode.range().start.index,
-      endPos: fnRefNode.range().end.index,
-    });
-  }
+  edits.push(...collectViImportEdits(root, content));
 
   if (!edits.length) {
-    return migrateVimockOrder(content);
+    return content;
   }
 
-  return migrateVimockOrder(root.commitEdits(edits));
+  return root.commitEdits(edits);
 };
