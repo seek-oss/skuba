@@ -1,8 +1,4 @@
-import {
-  type ViteUserConfig,
-  defaultExclude,
-  defaultInclude,
-} from 'vitest/config';
+import { type ViteUserConfig, defaultExclude } from 'vitest/config';
 
 import { mergeRaw } from '../../cli/configure/processing/record.js';
 
