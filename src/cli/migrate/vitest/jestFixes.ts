@@ -29,7 +29,7 @@ const collectViImportEdits = (root: SgNode, content: string): Edit[] => {
         kind: 'string',
         has: {
           kind: 'string_fragment',
-          regex: 'vitest',
+          regex: '^vitest$',
         },
       },
     },
