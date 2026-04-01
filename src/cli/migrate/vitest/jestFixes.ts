@@ -90,6 +90,7 @@ const collectViImportEdits = (root: SgNode, content: string): Edit[] => {
 };
 
 const compilerOptionsCache = new Map<string, ts.CompilerOptions>();
+const promiseCheckCache = new Map<string, boolean>();
 
 const getProgram = (filePath: string): ts.Program => {
   const dir = path.dirname(filePath);
@@ -235,13 +236,39 @@ export const applyJestFixes = async (
         return find(tsSourceFile);
       };
 
+      const getSymbolCacheKey = (node: ts.Node): string | undefined => {
+        let symbol = checker.getSymbolAtLocation(node);
+        if (!symbol) {
+          return undefined;
+        }
+        if (symbol.flags & ts.SymbolFlags.Alias) {
+          symbol = checker.getAliasedSymbol(symbol);
+        }
+        const decl = symbol.declarations?.[0];
+        if (!decl) {
+          return undefined;
+        }
+        return `${decl.getSourceFile().fileName}:${symbol.name}`;
+      };
+
       const isPromiseReturning = (callNode: SgNode): boolean => {
         const tsCall = findCallExpressionAtPos(callNode.range().start.index);
         if (!tsCall) {
           return false;
         }
-        const type = checker.getTypeAtLocation(tsCall);
-        return type.getSymbol()?.getName() === 'Promise';
+        const cacheKey = getSymbolCacheKey(tsCall.expression);
+        const cached =
+          cacheKey !== undefined ? promiseCheckCache.get(cacheKey) : undefined;
+        if (cached !== undefined) {
+          return cached;
+        }
+        const result =
+          checker.getTypeAtLocation(tsCall).getSymbol()?.getName() ===
+          'Promise';
+        if (cacheKey !== undefined) {
+          promiseCheckCache.set(cacheKey, result);
+        }
+        return result;
       };
 
       const isFunctionRefReturningPromise = (fnRefNode: SgNode): boolean => {
@@ -262,14 +289,25 @@ export const applyJestFixes = async (
         if (!tsNode) {
           return false;
         }
+        const cacheKey = getSymbolCacheKey(tsNode);
+        const cached =
+          cacheKey !== undefined ? promiseCheckCache.get(cacheKey) : undefined;
+        if (cached !== undefined) {
+          return cached;
+        }
         const type = checker.getTypeAtLocation(tsNode);
+        let result = false;
         for (const sig of type.getCallSignatures()) {
           const retType = checker.getReturnTypeOfSignature(sig);
           if (retType.getSymbol()?.getName() === 'Promise') {
-            return true;
+            result = true;
+            break;
           }
         }
-        return false;
+        if (cacheKey !== undefined) {
+          promiseCheckCache.set(cacheKey, result);
+        }
+        return result;
       };
 
       const asyncCallInfos = callsToCheck.filter(({ callNode }) =>
