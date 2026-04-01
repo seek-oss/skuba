@@ -29,12 +29,21 @@ const looksAlreadyPatched = (contents: string): boolean =>
   contents.includes('.prettierrc.js') &&
   contents.includes('*.config.js');
 
+export const hasImportXNoDefaultExportEnabled = (contents: string): boolean =>
+  /['"]import-x\/no-default-export['"]\s*:\s*(?:['"](?:error|warn)['"]|\[\s*['"](?:error|warn)['"]|[12](?:\s|,|\]|$))/m.test(
+    contents,
+  );
+
 const isArrayLiteralNode = (node: SgNode): boolean => node.kind() === 'array';
 
 export const insertImportXConfigFilesOverride = async (
   contents: string,
 ): Promise<string | null> => {
   if (looksAlreadyPatched(contents)) {
+    return null;
+  }
+
+  if (!hasImportXNoDefaultExportEnabled(contents)) {
     return null;
   }
 
@@ -108,7 +117,7 @@ export const tryAddEslintConfigImportXNoDefaultExport: PatchFunction = async (
     return {
       result: 'skip',
       reason:
-        'eslint config already includes import-x/no-default-export override or is not a flat array export',
+        'eslint config already has the override, is not a flat array export, or import-x/no-default-export is not set to error or warn in eslint.config',
     };
   }
 
