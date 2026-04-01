@@ -109,6 +109,37 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         );
       });
 
+      it('should add import attributes to existing default import from a .json specifier', async () => {
+        const input = `import enLocale from 'i18n-iso-countries/langs/en.json';
+`;
+
+        const expected = `import enLocale from 'i18n-iso-countries/langs/en.json' with { type: "json" };
+`;
+
+        vol.fromJSON({
+          'package.json': '{"type":"module"}',
+          'eslint.config.js': input,
+        });
+
+        await expect(
+          tryMigrateEslintConfigExportDefault({
+            ...baseArgs,
+            mode,
+          }),
+        ).resolves.toEqual({
+          result: 'apply',
+        });
+
+        expect(volToJson()).toEqual(
+          mode === 'lint'
+            ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
+            : {
+                'package.json': '{"type":"module"}',
+                'eslint.config.js': expected,
+              },
+        );
+      });
+
       it('should convert export default require of JSON to export { default } from with type json attribute', async () => {
         const input = `export default require('./eslint-config.json');`;
         const expected = `export { default } from './eslint-config.json' with { type: "json" };\n`;

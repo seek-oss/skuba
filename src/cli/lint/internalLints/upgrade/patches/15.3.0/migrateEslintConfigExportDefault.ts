@@ -25,7 +25,7 @@ const transformExportDefaultRequire = (ast: SgNode): Edit[] | null => {
   }
 
   const moduleInfo = extractModuleInfo(mod);
-  const isJsonFile = moduleInfo.modulePath.endsWith('.json');
+  const isJsonFile = isJsonModuleSpecifier(moduleInfo.modulePath);
 
   return replaceStatement(
     match,
@@ -65,7 +65,7 @@ const transformModuleExportsRequire = (ast: SgNode): Edit[] | null => {
     toReExport({
       quote: moduleInfo.quote,
       modulePath,
-      isJsonFile: modulePath.endsWith('.json'),
+      isJsonFile: isJsonModuleSpecifier(modulePath),
     }),
   );
 };
@@ -92,7 +92,7 @@ const transformRequireDeclarations = (ast: SgNode): Edit[] => {
     }
 
     const { quote, modulePath } = extractModuleInfo(mod);
-    const isJsonFile = modulePath.endsWith('.json');
+    const isJsonFile = isJsonModuleSpecifier(modulePath);
 
     if (name.kind() === 'identifier') {
       edits.push(
@@ -111,10 +111,53 @@ const transformRequireDeclarations = (ast: SgNode): Edit[] => {
 
       edits.push(
         match.replace(
-          `import ${importPattern} from ${quote}${modulePath}${quote};\n`,
+          `import ${importPattern} from ${quote}${modulePath}${quote}${isJsonFile ? ' with { type: "json" }' : ''};\n`,
         ),
       );
     }
+  }
+
+  return edits;
+};
+
+// Adds `with { type: "json" }` to existing default `import … from '…json'` (ESM import attributes).
+const transformExistingJsonDefaultImport = (ast: SgNode): Edit[] => {
+  const imports = ast.findAll({
+    rule: { pattern: 'import $NAME from $SPEC' },
+  });
+
+  const edits: Edit[] = [];
+
+  for (const match of imports) {
+    const specifierNode = match.getMatch('SPEC');
+    if (!specifierNode) {
+      continue;
+    }
+
+    const { modulePath } = extractModuleInfo(specifierNode);
+
+    if (!isJsonModuleSpecifier(modulePath)) {
+      continue;
+    }
+
+    const importStatement = findImportStatementAncestor(match);
+    if (!importStatement) {
+      continue;
+    }
+
+    const importText = importStatement.text();
+
+    // Skip if it already has an assertion (with { ... } or assert { ... })
+    const hasAssertion =
+      /\bwith\s*\{/.test(importText) || /\bassert\s*\{/.test(importText);
+    if (hasAssertion) {
+      continue;
+    }
+
+    const cleanedImport = importText.replace(/\s*;\s*$/, '');
+    const updatedImport = `${cleanedImport} with { type: "json" };\n`;
+
+    edits.push(importStatement.replace(updatedImport));
   }
 
   return edits;
@@ -141,6 +184,21 @@ const transformModuleExports = (ast: SgNode): Edit[] => {
 
 const getStatementNode = (match: SgNode, expectedKind: string): SgNode =>
   match.kind() === expectedKind ? match : (match.parent() ?? match);
+
+const isJsonModuleSpecifier = (modulePath: string): boolean =>
+  modulePath.endsWith('.json');
+
+const findImportStatementAncestor = (start: SgNode): SgNode | null => {
+  let node: SgNode | null = start;
+  while (node) {
+    const kind = node.kind();
+    if (kind === 'import_statement' || kind === 'import_declaration') {
+      return node;
+    }
+    node = node.parent();
+  }
+  return null;
+};
 
 const extractModuleInfo = (mod: SgNode) => {
   const raw = mod.text();
@@ -175,6 +233,7 @@ const migrateConfigFile = (ast: SgNode): Edit[] =>
   transformModuleExportsRequire(ast) ?? [
     ...transformRequireDeclarations(ast),
     ...transformModuleExports(ast),
+    ...transformExistingJsonDefaultImport(ast),
   ];
 
 export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
