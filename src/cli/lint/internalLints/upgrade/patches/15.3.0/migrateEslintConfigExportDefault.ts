@@ -181,7 +181,11 @@ const transformModuleExports = (ast: SgNode): Edit[] => {
   const spreadRequires = collectSpreadRequireElements(expr);
 
   if (spreadRequires.length) {
-    return replaceModuleExportsObjectWithSpreadRequires(match, expr, spreadRequires);
+    return replaceModuleExportsObjectWithSpreadRequires(
+      match,
+      expr,
+      spreadRequires,
+    );
   }
 
   const stmt = getStatementNode(match, 'expression_statement');
@@ -234,32 +238,26 @@ const replaceModuleExportsObjectWithSpreadRequires = (
   spreadRequires: SgNode[],
 ): Edit[] => {
   const pathToBinding = new Map<string, string>();
-  const pathMetadata = new Map<
-    string,
-    { isJson: boolean; quote: string }
-  >();
+  const pathMetadata = new Map<string, { isJson: boolean; quote: string }>();
 
   const getOrCreateBinding = (resolvedPath: string): string => {
     let binding = pathToBinding.get(resolvedPath);
 
     if (!binding) {
-      binding = bindingForSpreadResolvedPath(
-        resolvedPath,
-        pathToBinding.size,
-      );
+      binding = bindingForSpreadResolvedPath(resolvedPath, pathToBinding.size);
       pathToBinding.set(resolvedPath, binding);
     }
 
     return binding;
   };
   const getRequireModule = (spread: SgNode) =>
-    spread
-      .find({ rule: { pattern: 'require($MOD)' } })
-      ?.getMatch('MOD');
+    spread.find({ rule: { pattern: 'require($MOD)' } })?.getMatch('MOD');
 
   for (const spread of spreadRequires) {
     const mod = getRequireModule(spread);
-    if (!mod) { continue; }
+    if (!mod) {
+      continue;
+    }
 
     const { quote, modulePath } = extractModuleInfo(mod);
     const resolvedPath = resolveModulePathForEsmImport(modulePath);
@@ -278,7 +276,9 @@ const replaceModuleExportsObjectWithSpreadRequires = (
 
   for (const spread of spreadRequires) {
     const mod = getRequireModule(spread);
-    if (!mod) { continue; }
+    if (!mod) {
+      continue;
+    }
 
     const { modulePath } = extractModuleInfo(mod);
     const resolvedPath = resolveModulePathForEsmImport(modulePath);
@@ -290,7 +290,9 @@ const replaceModuleExportsObjectWithSpreadRequires = (
   const importLines = Array.from(pathToBinding.entries())
     .map(([resolvedPath, binding]) => {
       const metadata = pathMetadata.get(resolvedPath);
-      if (!metadata) { return ''; }
+      if (!metadata) {
+        return '';
+      }
 
       const { isJson, quote } = metadata;
       const jsonSuffix = isJson ? ' with { type: "json" }' : '';
