@@ -20,21 +20,26 @@ import ts from 'typescript';
  *   import { foo } from './a';
  */
 const collectViImportEdits = (root: SgNode, content: string): Edit[] => {
-  const programChildren = root.children();
-  const firstChild = programChildren[0];
-
   // Only proceed if the very first program statement is an import from 'vitest'
-  if (
-    firstChild?.kind() !== 'import_statement' ||
-    !firstChild.find({
-      rule: {
-        kind: 'string_fragment',
-        regex: 'vitest',
+  const firstChild = root.find({
+    rule: {
+      nthChild: 1,
+      kind: 'import_statement',
+      has: {
+        kind: 'string',
+        has: {
+          kind: 'string_fragment',
+          regex: '^vitest$',
+        },
       },
-    })
-  ) {
+    },
+  });
+
+  if (!firstChild) {
     return [];
   }
+
+  const programChildren = root.children();
 
   const isSideEffectImport = (node: SgNode): boolean =>
     node.kind() === 'import_statement' &&
