@@ -294,25 +294,59 @@ const migrateGlobalSetup = async (
   const ast = await parseAsync('TypeScript', jestGlobalSetup);
   const root = ast.root();
 
-  const moduleExports = root.find({
+  const moduleExportsMember = root.find({
     rule: {
-      kind: 'expression_statement',
+      kind: 'member_expression',
       regex: '^module.exports',
     },
   });
 
-  const moduleExportsNode = moduleExports
-    ?.children()
-    .find((c) => c.kind() === 'assignment_expression')
-    ?.children()
-    .find((c) => c.kind() === 'member_expression');
-  if (!moduleExportsNode) {
+  if (!moduleExportsMember) {
     return undefined;
   }
 
-  const vitestGlobal = moduleExportsNode.replace('export const setup');
+  // rule:
+  //   any:
+  //     - kind: 'function_expression'
+  //     - kind: 'arrow_function'
+  //   inside:
+  //     kind: 'assignment_expression'
+  //     inside:
+  //       kind: 'expression_statement'
+  //       regex: '^module.exports'
 
-  const vitestGlobalSetup = root.commitEdits([vitestGlobal]);
+  const edits: Edit[] = [moduleExportsMember.replace('export const setup')];
+
+  const arrowFunction = root.find({
+    rule: {
+      kind: 'arrow_function',
+      inside: {
+        kind: 'assignment_expression',
+        inside: {
+          kind: 'expression_statement',
+          regex: '^module.exports',
+        },
+      },
+    },
+  });
+
+  if (arrowFunction) {
+    const isAsync = arrowFunction.text().startsWith('async');
+
+    const body = arrowFunction.field('body');
+
+    if (!body) {
+      return undefined;
+    }
+
+    if (body.kind() === 'call_expression') {
+      // convert to block body with return statement
+      const callText = body.text();
+      edits.push(body.replace(`{\n ${isAsync ? 'await' : ''} ${callText} }`));
+    }
+  }
+
+  const vitestGlobalSetup = root.commitEdits(edits);
 
   return {
     edits: [

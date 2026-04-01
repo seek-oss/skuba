@@ -535,7 +535,8 @@ export {}`,
       };
 
       export const setup = async () =>
-        waitForApiDynamoDb();
+        {
+       await waitForApiDynamoDb() };
       ",
         "vitest.hooks.ts": "import 'some-hooks';
       ",
