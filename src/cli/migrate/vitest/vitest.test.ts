@@ -203,12 +203,12 @@ test('middleware', () => {
     vol.fromJSON({
       'package.json': `{
   "scripts": {
-    "test": "skuba test --runInBand"
+    "test": "skuba test --config=jest.config.ts --maxWorkers=1"
   }
 }
 `,
       '.buildkite/pipeline.yml': `steps:
-  - command: pnpm test --runInBand
+  - command: pnpm test --config=jest.config.ts --maxWorkers=1
 `,
     });
 
@@ -224,11 +224,11 @@ test('middleware', () => {
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         ".buildkite/pipeline.yml": "steps:
-        - command: pnpm test --maxWorkers=1
+        - command: pnpm test --config=vitest.config.ts --maxWorkers=1
       ",
         "package.json": "{
         "scripts": {
-          "test": "skuba test --maxWorkers=1"
+          "test": "skuba test --config=vitest.config.ts --maxWorkers=1"
         }
       }
       ",
