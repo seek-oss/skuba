@@ -333,6 +333,11 @@ const extractModuleInfo = (mod: SgNode) => {
   return { raw, quote, modulePath };
 };
 
+const resolveParseLanguage = (
+  relativePath: string,
+): 'JavaScript' | 'TypeScript' =>
+  /\.(ts|tsx|mts|cts)$/i.test(relativePath) ? 'TypeScript' : 'JavaScript';
+
 const toReExport = ({
   quote,
   modulePath,
@@ -375,6 +380,7 @@ export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
       '**/.prettierrc.js',
       '**/.prettierrc.cjs',
       '**/.prettierrc.mjs',
+      '**/src/**/*.{ts,tsx,mts,cts,js,mjs,cjs}',
     ],
     {
       cwd,
@@ -382,6 +388,7 @@ export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
         '**/node_modules/**',
         '**/.git/**',
         '**/lib/**',
+        '**/*.d.ts',
         'src/cli/lint/internalLints/upgrade/patches/**/*',
       ],
     },
@@ -391,7 +398,8 @@ export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
 
   const parsedFiles = await Promise.all(
     files.map(async ({ file, contents }) => {
-      const ast = (await parseAsync('JavaScript', contents)).root();
+      const language = resolveParseLanguage(path.relative(cwd, file));
+      const ast = (await parseAsync(language, contents)).root();
       const edits = migrateConfigFile(ast);
       const updated = edits.length
         ? `${ast.commitEdits(edits).trimEnd()}\n`
@@ -408,7 +416,8 @@ export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
   if (!filesWithMigration.length) {
     return {
       result: 'skip',
-      reason: 'no config files with module.exports or require found',
+      reason:
+        'no config or src files with module.exports, require, or JSON default imports to migrate',
     };
   }
 

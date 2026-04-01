@@ -68,7 +68,7 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
-Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config files with module.exports or require found upgrade-skuba
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate upgrade-skuba
 
 Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found upgrade-skuba
 
@@ -195,7 +195,7 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
-Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config files with module.exports or require found upgrade-skuba
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate upgrade-skuba
 
 Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found upgrade-skuba
 
@@ -315,7 +315,7 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
-Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config files with module.exports or require found upgrade-skuba
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate upgrade-skuba
 
 Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found upgrade-skuba
 
@@ -407,7 +407,7 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
 
-Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config files with module.exports or require found upgrade-skuba
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate upgrade-skuba
 
 Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found upgrade-skuba
 

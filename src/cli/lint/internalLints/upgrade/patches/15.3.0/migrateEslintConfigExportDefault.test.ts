@@ -49,7 +49,8 @@ describe('tryMigrateEslintConfigExportDefault', () => {
           }),
         ).resolves.toEqual({
           result: 'skip',
-          reason: 'no config files with module.exports or require found',
+          reason:
+            'no config or src files with module.exports, require, or JSON default imports to migrate',
         });
 
         expect(volToJson()).toEqual({ 'package.json': '{}' });
@@ -136,6 +137,42 @@ describe('tryMigrateEslintConfigExportDefault', () => {
             : {
                 'package.json': '{"type":"module"}',
                 'eslint.config.js': expected,
+              },
+        );
+      });
+
+      it('should add import attributes to JSON default import in src/**/*.ts', async () => {
+        const input = `import enLocale from 'i18n-iso-countries/langs/en.json';
+
+export const locales = { en: enLocale };
+`;
+
+        const expected = `import enLocale from 'i18n-iso-countries/langs/en.json' with { type: "json" };
+
+
+export const locales = { en: enLocale };
+`;
+
+        vol.fromJSON({
+          'package.json': '{"type":"module"}',
+          'src/i18n.ts': input,
+        });
+
+        await expect(
+          tryMigrateEslintConfigExportDefault({
+            ...baseArgs,
+            mode,
+          }),
+        ).resolves.toEqual({
+          result: 'apply',
+        });
+
+        expect(volToJson()).toEqual(
+          mode === 'lint'
+            ? { 'package.json': '{"type":"module"}', 'src/i18n.ts': input }
+            : {
+                'package.json': '{"type":"module"}',
+                'src/i18n.ts': expected,
               },
         );
       });
@@ -466,7 +503,8 @@ export default [
           }),
         ).resolves.toEqual({
           result: 'skip',
-          reason: 'no config files with module.exports or require found',
+          reason:
+            'no config or src files with module.exports, require, or JSON default imports to migrate',
         });
 
         expect(volToJson()).toEqual({
