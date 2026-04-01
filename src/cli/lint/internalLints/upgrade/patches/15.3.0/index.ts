@@ -1,5 +1,6 @@
 import type { Patches } from '../../index.js';
 
+import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.js';
 import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
 import { migrateEslintConfigExportDefaultPatch } from './migrateEslintConfigExportDefault.js';
 import { tryMigrateToVitest } from './migrateToVitest.js';
@@ -13,6 +14,11 @@ export const patches: Patches = [
   {
     apply: migrateEslintConfigExportDefaultPatch,
     description: 'Convert module.exports to export default (CommonJS to ESM)',
+  },
+  {
+    apply: addEslintConfigImportXNoDefaultExport,
+    description:
+      'Allow default exports in config files (import-x/no-default-export off)',
   },
   {
     apply: rewriteGlobalVars,

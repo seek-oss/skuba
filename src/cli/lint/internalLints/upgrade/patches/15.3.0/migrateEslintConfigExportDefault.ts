@@ -192,7 +192,6 @@ const transformModuleExports = (ast: SgNode): Edit[] => {
   return [stmt.replace(`export default ${expr.text()};`)];
 };
 
-/** `require($MOD)` whose parent is a spread (`...require('x')`) inside an object literal. */
 const collectSpreadRequireElements = (expr: SgNode): SgNode[] => {
   const requireCalls = expr.findAll({
     rule: { pattern: 'require($MOD)' },
