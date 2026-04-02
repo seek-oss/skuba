@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
-import { migrateToVitest } from '../../../../../migrate/vitest/vitest.js';
+import { migrateToVitest } from '../../../../../migrate/esm/vitest/vitest.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchFunction } from '../../index.js';
 

@@ -1,11 +1,11 @@
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { configForPackageManager } from '../../../utils/packageManager.js';
+import { configForPackageManager } from '../../../../utils/packageManager.js';
 import type {
   PatchConfig,
   PatchReturnType,
-} from '../../lint/internalLints/upgrade/index.js';
+} from '../../../lint/internalLints/upgrade/index.js';
 
 import { migrateToVitest } from './vitest.js';
 
