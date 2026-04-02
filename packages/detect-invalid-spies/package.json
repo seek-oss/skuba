@@ -1,0 +1,64 @@
+{
+  "name": "@skuba-lib/detect-invalid-spies",
+  "version": "0.0.0",
+  "private": false,
+  "description": "Detect invalid spies in Jest and Vitest tests",
+  "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/detect-invalid-spies#readme",
+  "bugs": {
+    "url": "https://github.com/seek-oss/skuba/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seek-oss/skuba.git",
+    "directory": "packages/detect-invalid-spies"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@seek/skuba/source": "./src/index.ts",
+      "default": "./lib/index.mjs"
+    },
+    "./bin": {
+      "@seek/skuba/source": "./src/bin.ts",
+      "default": "./lib/bin.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "detect-invalid-spies": "lib/bin.mjs"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "pnpm skuba build-package",
+    "prepack": "pnpm build",
+    "skuba": "node ../../lib/skuba",
+    "test": "pnpm skuba test",
+    "test:ci": "pnpm skuba test --coverage"
+  },
+  "dependencies": {
+    "@ast-grep/napi": "^0.42.0",
+    "fast-glob": "^3.3.2",
+    "fs-extra": "^11.0.0",
+    "typescript": "~5.9.0"
+  },
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": "./lib/index.mjs",
+      "./bin": "./lib/bin.mjs",
+      "./package.json": "./package.json"
+    }
+  },
+  "skuba": {
+    "entryPoint": "src/bin.ts",
+    "template": "oss-npm-package",
+    "type": "package",
+    "version": "14.1.2"
+  }
+}
