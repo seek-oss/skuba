@@ -406,7 +406,6 @@ Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfi
 Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
 Refreshed .prettierignore.
-Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
