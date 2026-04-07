@@ -275,6 +275,21 @@ importers:
         specifier: ^4.3.5
         version: 4.3.6
 
+  packages/detect-invalid-spies:
+    dependencies:
+      '@ast-grep/napi':
+        specifier: ^0.42.0
+        version: 0.42.0
+      fast-glob:
+        specifier: ^3.3.2
+        version: 3.3.3
+      fs-extra:
+        specifier: ^11.0.0
+        version: 11.3.4
+      typescript:
+        specifier: ~5.9.0
+        version: 5.9.3
+
   packages/eslint-config-skuba:
     dependencies:
       eslint-config-seek:

@@ -4,11 +4,11 @@ import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import { exec } from '../../../utils/exec.js';
-import { log } from '../../../utils/logging.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
-import { getCustomConditions } from '../../build/tsc.js';
-import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
+import { exec } from '../../../../utils/exec.js';
+import { log } from '../../../../utils/logging.js';
+import { detectPackageManager } from '../../../../utils/packageManager.js';
+import { getCustomConditions } from '../../../build/tsc.js';
+import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.js';
 
 import { applyJestFixes } from './jestFixes.js';
 
@@ -893,20 +893,15 @@ export const migrateToVitest = async ({
     };
   }
 
-  if (process.env.DANGEROUSLY_MIGRATE_TO_VITEST !== 'true') {
-    const vitestConfigFiles = await fg(
-      ['**/vitest.config.{ts,js,mjs,mts,cts}'],
-      {
-        ignore: ['**/.git', '**/node_modules'],
-      },
-    );
+  const vitestConfigFiles = await fg(['**/vitest.config.{ts,js,mjs,mts,cts}'], {
+    ignore: ['**/.git', '**/node_modules'],
+  });
 
-    if (vitestConfigFiles.length > 0) {
-      return {
-        result: 'skip',
-        reason: 'vitest is already configured in this project',
-      };
-    }
+  if (vitestConfigFiles.length > 0) {
+    return {
+      result: 'skip',
+      reason: 'vitest is already configured in this project',
+    };
   }
 
   const filesToUpdate = await patchFiles();

@@ -1,7 +1,7 @@
 import { log } from '../../utils/logging.js';
 
+import { migrateToESM } from './esm/index.js';
 import { nodeVersionMigration } from './nodeVersion/index.js';
-import { migrateToVitest } from './vitest/vitest.js';
 
 export const migrations = {
   node20: () =>
@@ -53,7 +53,7 @@ export const migrations = {
         },
       ],
     }),
-  vitest: () => migrateToVitest({ mode: 'format' }),
+  esm: () => migrateToESM({ mode: 'format' }),
 } satisfies Record<string, () => Promise<unknown>>;
 
 const logAvailableMigrations = () => {
