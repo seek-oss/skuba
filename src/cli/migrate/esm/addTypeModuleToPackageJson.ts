@@ -5,9 +5,12 @@ import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { readPackageUp } from 'read-package-up';
 
-import { log } from '../../../../../../utils/logging.js';
-import { formatPackage } from '../../../../../configure/processing/package.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import { log } from '../../../utils/logging.js';
+import { formatPackage } from '../../configure/processing/package.js';
+import type {
+  PatchFunction,
+  PatchReturnType,
+} from '../../lint/internalLints/upgrade/index.js';
 
 export const hasDirNameRegex = /__dirname\b/;
 export const hasFileNameRegex = /__filename\b/;

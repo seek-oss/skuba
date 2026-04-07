@@ -5,9 +5,12 @@ import { type SgNode, parseAsync } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
-import { fetchFiles } from '../12.4.1/rewriteSrcImports.js';
+import { log } from '../../../utils/logging.js';
+import type {
+  PatchFunction,
+  PatchReturnType,
+} from '../../lint/internalLints/upgrade/index.js';
+import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
 
 const ESLINT_CONFIG_GLOB = [
   '**/eslint.config.js',

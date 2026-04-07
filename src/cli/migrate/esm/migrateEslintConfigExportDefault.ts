@@ -5,9 +5,9 @@ import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction } from '../../index.js';
-import { fetchFiles } from '../12.4.1/rewriteSrcImports.js';
+import { log } from '../../../utils/logging.js';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
 
 // Converts `export default require('some-module')` to `export { default } from 'some-module'`
 const transformExportDefaultRequire = (ast: SgNode): Edit[] | null => {

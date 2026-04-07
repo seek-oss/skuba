@@ -4,9 +4,9 @@ import { inspect } from 'util';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import { log } from '../../../../../../utils/logging.js';
-import type { PatchFunction } from '../../index.js';
-import { fetchFiles } from '../12.4.1/rewriteSrcImports.js';
+import { log } from '../../../utils/logging.js';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
 
 export const hasDirNameRegex = /__dirname\b/;
 export const hasDirNameVariableRegex = /const __dirname =/g;

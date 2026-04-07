@@ -1,32 +1,10 @@
 import type { Patches } from '../../index.js';
 
-import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.js';
-import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
-import { migrateEslintConfigExportDefaultPatch } from './migrateEslintConfigExportDefault.js';
-import { tryMigrateToVitest } from './migrateToVitest.js';
-import { rewriteGlobalVars } from './rewriteGlobalVars.js';
+import { tryMigrateToESM } from './migrateToESM.js';
 
 export const patches: Patches = [
   {
-    apply: addTypeModuleToPackageJson,
-    description: 'Add module type to package.json to support ESM',
-  },
-  {
-    apply: migrateEslintConfigExportDefaultPatch,
-    description: 'Convert module.exports to export default (CommonJS to ESM)',
-  },
-  {
-    apply: addEslintConfigImportXNoDefaultExport,
-    description:
-      'Allow default exports in config files (import-x/no-default-export off)',
-  },
-  {
-    apply: rewriteGlobalVars,
-    description:
-      'Replace __dirname and __filename with import.meta equivalents',
-  },
-  {
-    apply: tryMigrateToVitest,
-    description: 'Migrate to Vitest',
+    apply: tryMigrateToESM,
+    description: 'Migrate to ESM',
   },
 ];

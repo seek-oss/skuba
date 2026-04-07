@@ -66,15 +66,17 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
-Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate upgrade-skuba
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
 
-Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found upgrade-skuba
+Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
 
-Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace
 
-Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
+Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch applied: Migrate to ESM upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -193,15 +195,17 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
-Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate upgrade-skuba
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
 
-Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found upgrade-skuba
+Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
 
-Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace
 
-Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
+Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch applied: Migrate to ESM upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -313,15 +317,17 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
-Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate upgrade-skuba
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
 
-Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found upgrade-skuba
+Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
 
-Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace
 
-Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
+Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch applied: Migrate to ESM upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -400,20 +406,23 @@ Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfi
 Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
 Refreshed .prettierignore.
+Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Add module type to package.json to support ESM - type module already present in package.json upgrade-skuba
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
-Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate upgrade-skuba
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
 
-Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found upgrade-skuba
+Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
 
-Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace upgrade-skuba
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace
 
-Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
+Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch applied: Migrate to ESM upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
