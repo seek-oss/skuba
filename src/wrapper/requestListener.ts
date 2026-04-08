@@ -60,6 +60,11 @@ export const runRequestListener = async ({
     config = await config.app;
   }
 
+  if (Object.keys(config).length === 0) {
+    // Assume an executable script with no exports
+    return;
+  }
+
   const port = isIpPort(config.port) ? config.port : availablePort;
 
   // http.Server support
