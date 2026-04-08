@@ -274,6 +274,7 @@ const extractString = (node: SgNode, key: string): string | undefined => {
 const migrateGlobalSetup = async (
   node: SgNode,
   jestConfigPath: string,
+  rootDir: string = '',
 ): Promise<{ edits: FileContent[]; globalSetupPath: string } | undefined> => {
   const globalSetupPath = extractString(node, 'globalSetup');
   if (!globalSetupPath) {
@@ -282,7 +283,7 @@ const migrateGlobalSetup = async (
 
   const normalizedPath = globalSetupPath.replace('<rootDir>/', '');
   const filePath = path.dirname(jestConfigPath);
-  const absolutePath = path.join(filePath, normalizedPath);
+  const absolutePath = path.resolve(filePath, rootDir, normalizedPath);
 
   let jestGlobalSetup: string;
   try {
@@ -354,7 +355,7 @@ const migrateGlobalSetup = async (
   return {
     edits: [
       {
-        file: absolutePath.replace('jest', 'vitest'),
+        file: absolutePath.replaceAll('jest', 'vitest'),
         content: vitestGlobalSetup,
       },
       {
@@ -362,7 +363,7 @@ const migrateGlobalSetup = async (
         content: `// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.\n\n${jestGlobalSetup}`,
       },
     ],
-    globalSetupPath: normalizedPath.replace('jest', 'vitest'),
+    globalSetupPath: normalizedPath.replaceAll('jest', 'vitest'),
   };
 };
 
@@ -565,6 +566,7 @@ const extractSpreadElements = async (
 const migrateSetupHooks = async (
   node: SgNode,
   jestConfigPath: string,
+  rootDir: string = '',
   key: string,
 ): Promise<
   | { edits: FileContent[]; hookPaths: string[]; envVars: Map<string, string> }
@@ -586,7 +588,7 @@ const migrateSetupHooks = async (
   const edits = await Promise.all(
     normalizedPaths.map(async (normalizedPath) => {
       const filePath = path.dirname(jestConfigPath);
-      const absolutePath = path.join(filePath, normalizedPath);
+      const absolutePath = path.resolve(filePath, rootDir, normalizedPath);
 
       let jestSetupHook: string;
       try {
@@ -617,7 +619,7 @@ const migrateSetupHooks = async (
 
       return [
         {
-          file: absolutePath.replace('jest', 'vitest'),
+          file: absolutePath.replaceAll('jest', 'vitest'),
           content: updatedContent,
         },
         {
@@ -632,7 +634,7 @@ const migrateSetupHooks = async (
     edits: edits.flat(),
     hookPaths: normalizedPaths
       .filter((p) => !doNotMigrate.has(p))
-      .map((p) => p.replace('jest', 'vitest')),
+      .map((p) => p.replaceAll('jest', 'vitest')),
     envVars,
   };
 };
@@ -709,9 +711,9 @@ const scaffoldTestConfig = async ({
     projects,
     spreadElements,
   ] = await Promise.all([
-    migrateGlobalSetup(root, file),
-    migrateSetupHooks(root, file, 'setupFiles'),
-    migrateSetupHooks(root, file, 'setupFilesAfterEnv'),
+    migrateGlobalSetup(root, file, rootDir),
+    migrateSetupHooks(root, file, rootDir, 'setupFiles'),
+    migrateSetupHooks(root, file, rootDir, 'setupFilesAfterEnv'),
     projectsNode ? extractProjects(projectsNode, file, docRoot) : [],
     extractSpreadElements(root, file, docRoot),
   ]);
@@ -857,7 +859,7 @@ export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
       return [
         {
           content: vitestConfigContent,
-          file: file.replace('jest.config', 'vitest.config'),
+          file: file.replaceAll('jest', 'vitest'),
         },
         ...testConfig.edits,
       ];
@@ -925,6 +927,15 @@ export const migrateToVitest = async ({
       result: 'apply',
     };
   }
+
+  const folders = configFilesToUpdate.map(({ file }) => path.dirname(file));
+  const uniqueFolders = Array.from(new Set(folders));
+
+  await Promise.all(
+    uniqueFolders.map((folder) =>
+      fs.promises.mkdir(folder, { recursive: true }),
+    ),
+  );
 
   await Promise.all(
     configFilesToUpdate.map(({ file, content }) =>
