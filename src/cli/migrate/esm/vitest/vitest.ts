@@ -928,6 +928,15 @@ export const migrateToVitest = async ({
     };
   }
 
+  const folders = configFilesToUpdate.map(({ file }) => path.dirname(file));
+  const uniqueFolders = Array.from(new Set(folders));
+
+  await Promise.all(
+    uniqueFolders.map((folder) =>
+      fs.promises.mkdir(folder, { recursive: true }),
+    ),
+  );
+
   await Promise.all(
     configFilesToUpdate.map(({ file, content }) =>
       fs.promises.writeFile(file, content, 'utf8'),
