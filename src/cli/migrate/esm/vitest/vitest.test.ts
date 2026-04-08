@@ -502,8 +502,8 @@ export {}`,
           root: './',
           include: ['<rootDir>/extra-tests/**/*.test.ts', '\\.test\\.ts$'], // TODO: Update these regexp pattern strings to globs
           exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
-          globalSetup: ['vitest.globalSetup.ts'],
-          setupFiles: ['vitest.setup.ts', 'vitest.hooks.ts'],
+          globalSetup: ['./vitest.globalSetup.ts'],
+          setupFiles: ['./vitest.setup.ts', './vitest.hooks.ts'],
           testTimeout: 10000,
           restoreMocks: true,
           mockReset: true,
