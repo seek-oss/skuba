@@ -281,9 +281,9 @@ const migrateGlobalSetup = async (
     return undefined;
   }
 
-  const normalizedPath = globalSetupPath.replace('<rootDir>/', rootDir);
+  const normalizedPath = globalSetupPath.replace('<rootDir>/', '');
   const filePath = path.dirname(jestConfigPath);
-  const absolutePath = path.resolve(filePath, normalizedPath);
+  const absolutePath = path.resolve(filePath, rootDir, normalizedPath);
 
   let jestGlobalSetup: string;
   try {
@@ -579,7 +579,7 @@ const migrateSetupHooks = async (
   }
 
   const normalizedPaths = setupHookPaths.map((p) =>
-    p.replace('<rootDir>/', rootDir),
+    p.replace('<rootDir>/', ''),
   );
 
   const envVars = new Map<string, string>();
@@ -588,7 +588,7 @@ const migrateSetupHooks = async (
   const edits = await Promise.all(
     normalizedPaths.map(async (normalizedPath) => {
       const filePath = path.dirname(jestConfigPath);
-      const absolutePath = path.resolve(filePath, normalizedPath);
+      const absolutePath = path.resolve(filePath, rootDir, normalizedPath);
 
       let jestSetupHook: string;
       try {
