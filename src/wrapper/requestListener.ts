@@ -21,6 +21,7 @@ interface ObjectConfig {
 
   default?: Promise<unknown>;
   port?: unknown;
+  app?: unknown;
 }
 
 const isConfig = (
@@ -54,9 +55,9 @@ export const runRequestListener = async ({
     config = await config.default;
   }
 
-  if (Object.keys(config).length === 0) {
-    // Assume an executable script with no exports
-    return;
+  if (typeof config === 'object' && isConfig(config.app)) {
+    // named export support, e.g. `export const app = new Koa()`
+    config = await config.app;
   }
 
   const port = isIpPort(config.port) ? config.port : availablePort;

@@ -100,6 +100,24 @@ test('koaRequestListener', async () => {
   ]);
 });
 
+test('koaRequestListenerNamedExport', async () => {
+  // Without `.ts`
+  await initWrapper('koaRequestListenerNamedExport');
+
+  expect(startServer.mock.calls).toEqual([[expect.any(nodeHttp.Server), 8080]]);
+
+  return Promise.all([
+    agent
+      .get('/koa')
+      .expect(200)
+      .expect(({ text }) =>
+        expect(text).toMatchInlineSnapshot(`"Koa Named Export!"`),
+      ),
+
+    agent.get('/express').expect(404),
+  ]);
+});
+
 test('httpServerRequestListener', async () => {
   // Without `.ts`
   await initWrapper('httpServerRequestListener');
