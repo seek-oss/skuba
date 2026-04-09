@@ -90,6 +90,7 @@ const collectViImportEdits = (root: SgNode, content: string): Edit[] => {
 };
 
 const compilerOptionsCache = new Map<string, ts.CompilerOptions>();
+const programCache = new Map<string, ts.Program>();
 const promiseCheckCache = new Map<string, boolean>();
 
 const getProgram = (filePath: string): ts.Program => {
@@ -116,13 +117,25 @@ const getProgram = (filePath: string): ts.Program => {
     compilerOptionsCache.set(dir, compilerOptions);
   }
 
-  return ts.createProgram([filePath], compilerOptions);
+  const oldProgram = programCache.get(dir);
+  const program = ts.createProgram(
+    [filePath],
+    compilerOptions,
+    undefined,
+    oldProgram,
+  );
+  programCache.set(dir, program);
+  return program;
 };
 
 export const applyJestFixes = async (
   filePath: string,
   content: string,
 ): Promise<string> => {
+  if (!filePath.endsWith('.test.ts')) {
+    return content;
+  }
+
   const ast = await parseAsync('TypeScript', content);
   const root = ast.root();
 
