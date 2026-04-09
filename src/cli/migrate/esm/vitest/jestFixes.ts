@@ -89,40 +89,55 @@ const collectViImportEdits = (root: SgNode, content: string): Edit[] => {
   ];
 };
 
-const compilerOptionsCache = new Map<string, ts.CompilerOptions>();
+const compilerOptionsCache = new Map<
+  string,
+  { options: ts.CompilerOptions; rootNames: string[] }
+>();
 const programCache = new Map<string, ts.Program>();
 const promiseCheckCache = new Map<string, boolean>();
 
 const getProgram = (filePath: string): ts.Program => {
   const dir = path.dirname(filePath);
-  const cachedOptions = compilerOptionsCache.get(dir);
-  let compilerOptions: ts.CompilerOptions;
 
-  if (cachedOptions) {
-    compilerOptions = cachedOptions;
+  // If the cached program already includes this file, reuse it directly.
+  const cachedProgram = programCache.get(dir);
+  if (cachedProgram?.getSourceFile(filePath)) {
+    return cachedProgram;
+  }
+
+  const cachedEntry = compilerOptionsCache.get(dir);
+  let compilerOptions: ts.CompilerOptions;
+  let rootNames: string[];
+
+  if (cachedEntry) {
+    ({ options: compilerOptions, rootNames } = cachedEntry);
   } else {
     const configFile = ts.findConfigFile(dir, (f) => ts.sys.fileExists(f));
     compilerOptions = { noEmit: true };
+    rootNames = [];
     if (configFile) {
       const readResult = ts.readConfigFile(configFile, (f) =>
         ts.sys.readFile(f),
       );
-      const { options } = ts.parseJsonConfigFileContent(
+      const parsed = ts.parseJsonConfigFileContent(
         readResult.config as object,
         ts.sys,
         path.dirname(configFile),
       );
-      compilerOptions = { ...options, noEmit: true };
+      compilerOptions = { ...parsed.options, noEmit: true };
+      rootNames = parsed.fileNames;
     }
-    compilerOptionsCache.set(dir, compilerOptions);
+    compilerOptionsCache.set(dir, { options: compilerOptions, rootNames });
   }
 
-  const oldProgram = programCache.get(dir);
+  // Build the program from all tsconfig-included files so that subsequent
+  // files in the same project reuse a single program instance.
+  const allRootNames = rootNames.length > 0 ? rootNames : [filePath];
   const program = ts.createProgram(
-    [filePath],
+    allRootNames,
     compilerOptions,
     undefined,
-    oldProgram,
+    cachedProgram,
   );
   programCache.set(dir, program);
   return program;
@@ -234,20 +249,30 @@ export const applyJestFixes = async (
     const tsSourceFile = program.getSourceFile(filePath);
 
     if (tsSourceFile) {
-      const findCallExpressionAtPos = (
-        pos: number,
-      ): ts.CallExpression | undefined => {
-        const find = (node: ts.Node): ts.CallExpression | undefined => {
-          if (node.getStart() === pos && ts.isCallExpression(node)) {
-            return node;
-          }
-          if (node.pos <= pos && pos < node.end) {
-            return ts.forEachChild(node, find);
-          }
-          return undefined;
-        };
-        return find(tsSourceFile);
+      // Single traversal to resolve all needed positions at once.
+      const callPositions = new Set(
+        callsToCheck.map(({ callNode }) => callNode.range().start.index),
+      );
+      const fnRefPositions = new Set(
+        fnRefCallsToCheck.map(({ fnRefNode }) => fnRefNode.range().start.index),
+      );
+      const tsCallMap = new Map<number, ts.CallExpression>();
+      const tsFnRefMap = new Map<number, ts.Node>();
+
+      const collectTsNodes = (node: ts.Node): void => {
+        const start = node.getStart();
+        if (callPositions.has(start) && ts.isCallExpression(node)) {
+          tsCallMap.set(start, node);
+        }
+        if (
+          fnRefPositions.has(start) &&
+          (ts.isIdentifier(node) || ts.isPropertyAccessExpression(node))
+        ) {
+          tsFnRefMap.set(start, node);
+        }
+        ts.forEachChild(node, collectTsNodes);
       };
+      collectTsNodes(tsSourceFile);
 
       const getSymbolCacheKey = (node: ts.Node): string | undefined => {
         let symbol = checker.getSymbolAtLocation(node);
@@ -265,7 +290,7 @@ export const applyJestFixes = async (
       };
 
       const isPromiseReturning = (callNode: SgNode): boolean => {
-        const tsCall = findCallExpressionAtPos(callNode.range().start.index);
+        const tsCall = tsCallMap.get(callNode.range().start.index);
         if (!tsCall) {
           return false;
         }
@@ -285,20 +310,7 @@ export const applyJestFixes = async (
       };
 
       const isFunctionRefReturningPromise = (fnRefNode: SgNode): boolean => {
-        const pos = fnRefNode.range().start.index;
-        const find = (node: ts.Node): ts.Node | undefined => {
-          if (
-            (ts.isIdentifier(node) || ts.isPropertyAccessExpression(node)) &&
-            node.getStart() === pos
-          ) {
-            return node;
-          }
-          if (node.pos <= pos && pos < node.end) {
-            return ts.forEachChild(node, find);
-          }
-          return undefined;
-        };
-        const tsNode = find(tsSourceFile);
+        const tsNode = tsFnRefMap.get(fnRefNode.range().start.index);
         if (!tsNode) {
           return false;
         }
