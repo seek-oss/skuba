@@ -132,7 +132,7 @@ export const applyJestFixes = async (
   filePath: string,
   content: string,
 ): Promise<string> => {
-  if (!filePath.endsWith('.test.ts')) {
+  if (!filePath.includes('test')) {
     return content;
   }
 
