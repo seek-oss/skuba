@@ -93,7 +93,7 @@
     "@vitest/utils": "^4.1.0",
     "concurrently": "^9.0.0",
     "ejs": "^5.0.0",
-    "esbuild": "~0.27.0",
+    "esbuild": "~0.28.0",
     "eslint": "^9.39.1",
     "eslint-config-skuba": "workspace:*",
     "execa": "^5.0.0",
