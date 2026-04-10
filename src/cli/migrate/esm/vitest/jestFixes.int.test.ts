@@ -214,6 +214,18 @@ afterAll(() => { vi.clearAllMocks() });
     );
   });
 
+  it('handles unfixed immediate return lifecycle hooks', async () => {
+    const content = `beforeEach(() => vi.resetAllMocks());
+afterAll(() => vi.clearAllMocks());
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `beforeEach(() => { vi.resetAllMocks() });
+afterAll(() => { vi.clearAllMocks() });
+`,
+    );
+  });
+
   it('handles inline single-line hook callbacks', async () => {
     const content = `const resetDynamoDb = async () => {};
 const seedAdProductMappings = async () => {};
