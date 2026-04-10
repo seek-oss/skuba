@@ -1,4 +1,4 @@
-import { Edit, parseAsync } from '@ast-grep/napi';
+import { type Edit, parseAsync } from '@ast-grep/napi';
 import ts from 'typescript';
 
 const getTsConfig = () => {
@@ -39,7 +39,7 @@ const getTsCallExpressionsByPos = (sourceFile: ts.SourceFile) => {
   return tsCallExpressionsByPos;
 };
 
-let tsConfigCache: ts.CompilerOptions | undefined = undefined;
+let tsConfigCache: ts.CompilerOptions | undefined;
 
 export const applyJestFixes = async (file: string, content: string) => {
   if (!file.includes('test')) {
@@ -107,7 +107,9 @@ export const applyJestFixes = async (file: string, content: string) => {
   lastStatementsInLifeCycleHooks.forEach((statement) => {
     const pos = statement.range().start.index;
     const tsNode = tsCallExpressionsByPos.get(pos);
-    if (!tsNode) return;
+    if (!tsNode) {
+      return;
+    }
 
     const type = checker.getTypeAtLocation(tsNode);
     const typeString = checker.typeToString(type);
@@ -117,7 +119,7 @@ export const applyJestFixes = async (file: string, content: string) => {
 
       const arrowFunction = statement.parent()?.parent()?.parent();
 
-      if (arrowFunction && arrowFunction.kind() === 'arrow_function') {
+      if (arrowFunction?.kind() === 'arrow_function') {
         edits.push({
           startPos: arrowFunction.range().start.index,
           endPos: arrowFunction.range().start.index,
