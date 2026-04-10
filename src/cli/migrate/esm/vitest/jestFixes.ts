@@ -4,7 +4,7 @@ import ts from 'typescript';
 const getTsConfig = () => {
   const configFilePath = ts.findConfigFile(
     process.cwd(),
-    ts.sys.fileExists,
+    ts.sys.fileExists.bind(undefined),
     'tsconfig.json',
   );
 
@@ -75,16 +75,14 @@ const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
     return [];
   }
 
-  if (!tsConfigCache) {
-    tsConfigCache = getTsConfig() ?? {
-      target: ts.ScriptTarget.ESNext,
-      moduleResolution: ts.ModuleResolutionKind.Node16,
-      allowSyntheticDefaultImports: true,
-      esModuleInterop: true,
-      strict: false,
-      noEmit: true,
-    };
-  }
+  tsConfigCache ??= getTsConfig() ?? {
+    target: ts.ScriptTarget.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Node16,
+    allowSyntheticDefaultImports: true,
+    esModuleInterop: true,
+    strict: false,
+    noEmit: true,
+  };
 
   const program = ts.createProgram([file], tsConfigCache);
   const checker = program.getTypeChecker();
@@ -154,9 +152,6 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
         {
           precedes: {
             kind: 'expression_statement',
-            not: {
-              regex: '^vi\.',
-            },
           },
         },
       ],
