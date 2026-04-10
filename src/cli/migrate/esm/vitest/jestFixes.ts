@@ -41,6 +41,31 @@ const getTsCallExpressionsByPos = (sourceFile: ts.SourceFile) => {
 
 let tsConfigCache: ts.CompilerOptions | undefined;
 
+const getUnfixedLifeCycleEdits = (root: SgNode): Edit[] => {
+  const viLifeCycleHooks = root.findAll({
+    rule: {
+      kind: 'member_expression',
+      regex: '^vi\.',
+      inside: {
+        kind: 'arguments',
+        inside: {
+          kind: 'call_expression',
+          regex: '^(beforeEach|afterEach|afterAll|beforeAll)',
+        },
+      },
+    },
+  });
+
+  if (!viLifeCycleHooks.length) {
+    return [];
+  }
+
+  return viLifeCycleHooks.map((hook) => {
+    const existingText = hook.text();
+    return hook.replace(`() => { ${existingText}() }`);
+  });
+};
+
 const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
   const lastStatementsInLifeCycleHooks = root.findAll({
     rule: {
@@ -213,6 +238,7 @@ export const applyJestFixes = async (file: string, content: string) => {
 
   const edits = [
     ...getLifeCycleEdits(astRoot, file),
+    ...getUnfixedLifeCycleEdits(astRoot),
     ...getImportOrderEdits(astRoot),
   ];
 
