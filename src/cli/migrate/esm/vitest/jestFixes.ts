@@ -39,7 +39,7 @@ const getTsCallExpressionsByPos = (sourceFile: ts.SourceFile) => {
   return tsCallExpressionsByPos;
 };
 
-let tsConfigCache: ts.CompilerOptions | undefined = undefined;
+let tsConfigCache: ts.CompilerOptions | undefined;
 
 const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
   const lastStatementsInLifeCycleHooks = root.findAll({
@@ -99,7 +99,9 @@ const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
   const edits: Edit[][] = lastStatementsInLifeCycleHooks.map((statement) => {
     const pos = statement.range().start.index;
     const tsNode = tsCallExpressionsByPos.get(pos);
-    if (!tsNode) return [];
+    if (!tsNode) {
+      return [];
+    }
 
     const type = checker.getTypeAtLocation(tsNode);
     const typeString = checker.typeToString(type);
