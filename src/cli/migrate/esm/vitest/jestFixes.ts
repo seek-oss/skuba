@@ -1,4 +1,4 @@
-import { Edit, parseAsync, SgNode } from '@ast-grep/napi';
+import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import ts from 'typescript';
 
 const getTsConfig = () => {
@@ -112,7 +112,7 @@ const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
 
     const awaitEdit = statement.replace(`await ${statement.text()}`);
     const arrowFunction = statement.parent()?.parent()?.parent();
-    if (!arrowFunction || arrowFunction.kind() !== 'arrow_function') {
+    if (arrowFunction?.kind() !== 'arrow_function') {
       return [];
     }
 
