@@ -191,6 +191,16 @@ const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
   return edits.flat();
 };
 
+// The sku vitest codemod naively inserts the vitest import at the top of the file
+// which conflicts with eslint rules that require imports to be ordered a certain way
+// so we need to shift the vitest import downwards if there are any imports directly below
+// which are either side-effects or vi.mocks
+// eg.
+// import { vi } from 'vitest';
+// import ./sideEffectImport;
+// becomes
+// import ./sideEffectImport;
+// import { vi } from 'vitest';
 const getImportOrderEdits = (root: SgNode): Edit[] => {
   const vitestImportInvalid = root.find({
     rule: {
