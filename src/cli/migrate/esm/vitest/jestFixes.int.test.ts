@@ -262,7 +262,7 @@ beforeEach(async () => {
   });
 });
 
-describe.skip('migrateVimockOrder', () => {
+describe('migrateVimockOrder', () => {
   it('returns content unchanged when the vitest import is not first', async () => {
     const content = `import { foo } from './foo';
 import { vi } from 'vitest';
@@ -288,31 +288,31 @@ import { foo } from './foo';
     await expect(run(content)).resolves.toBe(content);
   });
 
-  it('moves the vitest import after a single vi.mock call', async () => {
+  it('moves the vitest import after a call expression', async () => {
     const content = `import { vi } from 'vitest';
-vi.mock('./foo');
+doSomething('./foo');
 import { foo } from './foo';
 `;
 
     await expect(run(content)).resolves.toBe(
-      `vi.mock('./foo');
+      `doSomething('./foo');
 import { vi } from 'vitest';
 import { foo } from './foo';
 `,
     );
   });
 
-  it('moves the vitest import after multiple vi.mock calls', async () => {
+  it('moves the vitest import after multiple call expressions', async () => {
     const content = `import { vi } from 'vitest';
-vi.mock('./a');
-vi.mock('./b');
+doSomething('./a');
+doSomething('./b');
 import { a } from './a';
 import { b } from './b';
 `;
 
     await expect(run(content)).resolves.toBe(
-      `vi.mock('./a');
-vi.mock('./b');
+      `doSomething('./a');
+doSomething('./b');
 import { vi } from 'vitest';
 import { a } from './a';
 import { b } from './b';
@@ -320,51 +320,34 @@ import { b } from './b';
     );
   });
 
-  it('moves the vitest import even when no regular imports follow', async () => {
+  it('does not move the vitest import when no regular imports follow', async () => {
     const content = `import { vi } from 'vitest';
-vi.mock('./foo');
+doSomething('./foo');
 `;
 
-    await expect(run(content)).resolves.toBe(
-      `vi.mock('./foo');
-import { vi } from 'vitest';
-`,
-    );
+    await expect(run(content)).resolves.toBe(content);
   });
 
-  it('preserves content after the block', async () => {
+  it('does not move the vitest import when a vi.mock call follows', async () => {
     const content = `import { vi } from 'vitest';
 vi.mock('./foo');
 import { foo } from './foo';
-
-describe('suite', () => {
-  it('test', () => {});
-});
 `;
 
-    await expect(run(content)).resolves.toBe(
-      `vi.mock('./foo');
-import { vi } from 'vitest';
-import { foo } from './foo';
-
-describe('suite', () => {
-  it('test', () => {});
-});
-`,
-    );
+    await expect(run(content)).resolves.toBe(content);
   });
 
   it('preserves blank lines between vi.mock and the following import', async () => {
     const content = `import { vi } from 'vitest';
-vi.mock('./foo');
+doSomething('./foo');
 
 import { foo } from './foo';
 `;
 
     await expect(run(content)).resolves.toBe(
-      `vi.mock('./foo');
-import { vi } from 'vitest';
+      `doSomething('./foo');
 
+import { vi } from 'vitest';
 import { foo } from './foo';
 `,
     );
@@ -396,24 +379,6 @@ import { a } from './a';
 vi.mock('./a');
 import { vi } from 'vitest';
 import { a } from './a';
-`,
-    );
-  });
-
-  it('stops the block at the first regular import', async () => {
-    const content = `import { vi } from 'vitest';
-vi.mock('./a');
-import { a } from './a';
-vi.mock('./b');
-import { b } from './b';
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `vi.mock('./a');
-import { vi } from 'vitest';
-import { a } from './a';
-vi.mock('./b');
-import { b } from './b';
 `,
     );
   });

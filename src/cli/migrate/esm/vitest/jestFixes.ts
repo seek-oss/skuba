@@ -1,4 +1,4 @@
-import { Edit, parseAsync } from '@ast-grep/napi';
+import { Edit, parseAsync, SgNode } from '@ast-grep/napi';
 import ts from 'typescript';
 
 const getTsConfig = () => {
@@ -41,14 +41,8 @@ const getTsCallExpressionsByPos = (sourceFile: ts.SourceFile) => {
 
 let tsConfigCache: ts.CompilerOptions | undefined = undefined;
 
-export const applyJestFixes = async (file: string, content: string) => {
-  if (!file.includes('test')) {
-    return content;
-  }
-
-  const astRoot = (await parseAsync('TypeScript', content)).root();
-
-  const lastStatementsInLifeCycleHooks = astRoot.findAll({
+const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
+  const lastStatementsInLifeCycleHooks = root.findAll({
     rule: {
       kind: 'call_expression',
       regex: '.*\(\)$',
@@ -78,7 +72,7 @@ export const applyJestFixes = async (file: string, content: string) => {
   });
 
   if (!lastStatementsInLifeCycleHooks.length) {
-    return content;
+    return [];
   }
 
   if (!tsConfigCache) {
@@ -97,35 +91,133 @@ export const applyJestFixes = async (file: string, content: string) => {
   const sourceFile = program.getSourceFile(file);
 
   if (!sourceFile) {
-    return content;
+    return [];
   }
 
   const tsCallExpressionsByPos = getTsCallExpressionsByPos(sourceFile);
 
-  const edits: Edit[] = [];
-
-  lastStatementsInLifeCycleHooks.forEach((statement) => {
+  const edits: Edit[][] = lastStatementsInLifeCycleHooks.map((statement) => {
     const pos = statement.range().start.index;
     const tsNode = tsCallExpressionsByPos.get(pos);
-    if (!tsNode) return;
+    if (!tsNode) return [];
 
     const type = checker.getTypeAtLocation(tsNode);
     const typeString = checker.typeToString(type);
 
-    if (typeString.startsWith('Promise<')) {
-      edits.push(statement.replace(`await ${statement.text()}`));
-
-      const arrowFunction = statement.parent()?.parent()?.parent();
-
-      if (arrowFunction && arrowFunction.kind() === 'arrow_function') {
-        edits.push({
-          startPos: arrowFunction.range().start.index,
-          endPos: arrowFunction.range().start.index,
-          insertedText: 'async ',
-        });
-      }
+    if (!typeString.startsWith('Promise<')) {
+      return [];
     }
+
+    const awaitEdit = statement.replace(`await ${statement.text()}`);
+    const arrowFunction = statement.parent()?.parent()?.parent();
+    if (!arrowFunction || arrowFunction.kind() !== 'arrow_function') {
+      return [];
+    }
+
+    return [
+      awaitEdit,
+      {
+        startPos: arrowFunction.range().start.index,
+        endPos: arrowFunction.range().start.index,
+        insertedText: 'async ',
+      },
+    ];
   });
+
+  return edits.flat();
+};
+
+const getImportOrderEdits = (root: SgNode): Edit[] => {
+  const vitestImportInvalid = root.find({
+    rule: {
+      nthChild: 1,
+      kind: 'import_statement',
+      has: {
+        kind: 'string',
+        has: {
+          kind: 'string_fragment',
+          regex: '^vitest$',
+        },
+      },
+      any: [
+        {
+          precedes: {
+            kind: 'import_statement',
+            has: {
+              nthChild: 1,
+              kind: 'string',
+            },
+          },
+        },
+        {
+          precedes: {
+            kind: 'expression_statement',
+            not: {
+              regex: '^vi\.',
+            },
+          },
+        },
+      ],
+    },
+  });
+
+  if (!vitestImportInvalid) {
+    return [];
+  }
+
+  const firstValidImport = root.find({
+    rule: {
+      kind: 'import_statement',
+      not: {
+        any: [
+          {
+            has: {
+              kind: 'string',
+              has: {
+                kind: 'string_fragment',
+                regex: '^vitest$',
+              },
+            },
+          },
+          {
+            kind: 'import_statement',
+            has: {
+              nthChild: 1,
+              kind: 'string',
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  if (!firstValidImport) {
+    return [];
+  }
+
+  return [
+    {
+      startPos: vitestImportInvalid.range().start.index,
+      endPos: vitestImportInvalid.range().end.index + 1, // newline
+      insertedText: '',
+    },
+    firstValidImport.replace(
+      `${vitestImportInvalid.text()}\n${firstValidImport.text()}`,
+    ),
+  ];
+};
+
+export const applyJestFixes = async (file: string, content: string) => {
+  if (!file.includes('test')) {
+    return content;
+  }
+
+  const astRoot = (await parseAsync('TypeScript', content)).root();
+
+  const edits = [
+    ...getLifeCycleEdits(astRoot, file),
+    ...getImportOrderEdits(astRoot),
+  ];
 
   if (!edits.length) {
     return content;
