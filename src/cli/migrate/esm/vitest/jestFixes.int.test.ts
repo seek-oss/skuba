@@ -328,13 +328,16 @@ doSomething('./foo');
     await expect(run(content)).resolves.toBe(content);
   });
 
-  it('does not move the vitest import when a vi.mock call follows', async () => {
+  it('moves the vitest import when a vi.mock call follows', async () => {
     const content = `import { vi } from 'vitest';
 vi.mock('./foo');
 import { foo } from './foo';
 `;
 
-    await expect(run(content)).resolves.toBe(content);
+    await expect(run(content)).resolves.toBe(`vi.mock('./foo');
+import { vi } from 'vitest';
+import { foo } from './foo';
+`);
   });
 
   it('preserves blank lines between vi.mock and the following import', async () => {
