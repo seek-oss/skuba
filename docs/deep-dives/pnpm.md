@@ -244,7 +244,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     - RUN yarn build
     + RUN pnpm install --offline
     + RUN pnpm build
-    + RUN pnpm install --offline --prod
+    + RUN pnpm prune --prod
     
       ###
     

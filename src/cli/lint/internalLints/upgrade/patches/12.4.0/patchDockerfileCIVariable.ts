@@ -6,8 +6,8 @@ import fs from 'fs-extra';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const pnpmInstallTestRegex = /^RUN pnpm install.*--prod/m;
-const pnpmInstallReplaceRegex = /^RUN pnpm install.*--prod/gm;
+const pnpmInstallTestRegex = /^RUN (CI=true )?pnpm install.*--prod/m;
+const pnpmInstallReplaceRegex = /^RUN (CI=true )?pnpm install.*--prod/gm;
 
 export const patchDockerfileCIVariable = async (
   mode: 'lint' | 'format',
@@ -55,7 +55,7 @@ export const patchDockerfileCIVariable = async (
     dockerfilesToPatch.map(async ({ file, contents }) => {
       const updatedContents = contents.replace(
         pnpmInstallReplaceRegex,
-        (match) => match.replace('RUN pnpm', 'RUN CI=true pnpm'),
+        'RUN pnpm prune --prod',
       );
       await fs.promises.writeFile(file, updatedContents, 'utf8');
     }),

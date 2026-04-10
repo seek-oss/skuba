@@ -8,7 +8,7 @@ COPY . .
 
 RUN pnpm install --offline
 RUN pnpm build
-RUN CI=true pnpm install --offline --prod
+RUN pnpm prune --prod
 
 ###
 

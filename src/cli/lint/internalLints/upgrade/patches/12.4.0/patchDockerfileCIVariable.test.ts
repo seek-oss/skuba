@@ -72,7 +72,7 @@ describe('patchDockerfileCIVariable', () => {
 
     expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
-      'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --prod',
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm prune --prod',
       'utf8',
     );
     expect(fs.promises.writeFile).toHaveBeenCalledTimes(1);
@@ -110,12 +110,12 @@ describe('patchDockerfileCIVariable', () => {
 
     expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
-      'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --prod',
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm prune --prod',
       'utf8',
     );
     expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile.prod',
-      'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --offline --prod\nCOPY . .',
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm prune --prod\nCOPY . .',
       'utf8',
     );
     expect(fs.promises.writeFile).toHaveBeenCalledTimes(2);
@@ -156,7 +156,7 @@ CMD ["npm", "start"]`;
 FROM node:18 AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN CI=true pnpm install --prod
+RUN pnpm prune --prod
 
 FROM \${BASE_IMAGE} AS build
 WORKDIR /app
@@ -192,7 +192,7 @@ CMD ["npm", "start"]`;
 
     expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
-      'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN CI=true pnpm install --prod',
+      'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm prune --prod',
       'utf8',
     );
     expect(fs.promises.writeFile).toHaveBeenCalledTimes(1);
@@ -238,12 +238,12 @@ CMD ["npm", "start"]`;
 
     expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile',
-      'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --prod',
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm prune --prod',
       'utf8',
     );
     expect(fs.promises.writeFile).toHaveBeenCalledWith(
       'Dockerfile.prod',
-      'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN CI=true pnpm install --offline --prod',
+      'FROM ${BASE_IMAGE}:${BASE_TAG} AS build\nRUN pnpm prune --prod',
       'utf8',
     );
     expect(fs.promises.writeFile).toHaveBeenCalledTimes(2);
