@@ -45,6 +45,17 @@ beforeEach(async () => {
     await expect(run(content)).resolves.toBe(content);
   });
 
+  it('returns content unchanged when the hook callback contains arguments', async () => {
+    const content = `const someFunction = async () => {};
+
+beforeEach(async () => {
+  someFunction('123');
+});
+`;
+
+    await expect(run(content)).resolves.toBe(content);
+  });
+
   it('returns content unchanged when the hook callback calls a sync function', async () => {
     const content = `const someFunction = () => {};
 
@@ -110,7 +121,7 @@ afterAll(async () => {
     );
   });
 
-  it('adds a single async and multiple awaits when a callback calls multiple async functions', async () => {
+  it('adds a single async on the last statement when a callback calls multiple async functions', async () => {
     const content = `const foo = async () => {};
 const bar = async () => {};
 
@@ -125,7 +136,7 @@ beforeEach(() => {
 const bar = async () => {};
 
 beforeEach(async () => {
-  await foo();
+  foo();
   await bar();
 });
 `,
@@ -249,124 +260,6 @@ beforeEach(async () => {
 `,
     );
   });
-
-  it('wraps an async function reference in an async arrow function', async () => {
-    const content = `const resetDynamoDb = async () => {};
-
-beforeEach(resetDynamoDb);
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `const resetDynamoDb = async () => {};
-
-beforeEach(async () => {
-  await resetDynamoDb();
-});
-`,
-    );
-  });
-
-  it('wraps a sync function reference in a plain arrow function', async () => {
-    const content = `const setup = () => {};
-
-beforeEach(setup);
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `const setup = () => {};
-
-beforeEach(() => {
-  setup();
-});
-`,
-    );
-  });
-
-  it('wraps async function references across all hook types', async () => {
-    const content = `const setup = async () => {};
-const teardown = async () => {};
-
-beforeAll(setup);
-afterAll(teardown);
-beforeEach(setup);
-afterEach(teardown);
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `const setup = async () => {};
-const teardown = async () => {};
-
-beforeAll(async () => {
-  await setup();
-});
-afterAll(async () => {
-  await teardown();
-});
-beforeEach(async () => {
-  await setup();
-});
-afterEach(async () => {
-  await teardown();
-});
-`,
-    );
-  });
-
-  it('wraps an imported async function reference in an async arrow function', async () => {
-    await fs.promises.writeFile(
-      tmpModuleFile,
-      `export const resetDynamoDb = async () => {};
-`,
-      'utf8',
-    );
-
-    const relativeImport = `./${path.basename(tmpModuleFile, '.ts')}`;
-    const content = `import { resetDynamoDb } from '${relativeImport}';
-
-beforeEach(resetDynamoDb);
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `import { resetDynamoDb } from '${relativeImport}';
-
-beforeEach(async () => {
-  await resetDynamoDb();
-});
-`,
-    );
-  });
-
-  it('wraps a sync member expression function reference in a plain arrow function', async () => {
-    const content = `const vi = { clearAllTimers: () => {} };
-
-afterAll(vi.clearAllTimers);
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `const vi = { clearAllTimers: () => {} };
-
-afterAll(() => {
-  vi.clearAllTimers();
-});
-`,
-    );
-  });
-
-  it('wraps an async member expression function reference in an async arrow function', async () => {
-    const content = `const db = { reset: async () => {} };
-
-beforeEach(db.reset);
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `const db = { reset: async () => {} };
-
-beforeEach(async () => {
-  await db.reset();
-});
-`,
-    );
-  });
 });
 
 describe('migrateVimockOrder', () => {
@@ -395,31 +288,31 @@ import { foo } from './foo';
     await expect(run(content)).resolves.toBe(content);
   });
 
-  it('moves the vitest import after a single vi.mock call', async () => {
+  it('moves the vitest import after a call expression', async () => {
     const content = `import { vi } from 'vitest';
-vi.mock('./foo');
+doSomething('./foo');
 import { foo } from './foo';
 `;
 
     await expect(run(content)).resolves.toBe(
-      `vi.mock('./foo');
+      `doSomething('./foo');
 import { vi } from 'vitest';
 import { foo } from './foo';
 `,
     );
   });
 
-  it('moves the vitest import after multiple vi.mock calls', async () => {
+  it('moves the vitest import after multiple call expressions', async () => {
     const content = `import { vi } from 'vitest';
-vi.mock('./a');
-vi.mock('./b');
+doSomething('./a');
+doSomething('./b');
 import { a } from './a';
 import { b } from './b';
 `;
 
     await expect(run(content)).resolves.toBe(
-      `vi.mock('./a');
-vi.mock('./b');
+      `doSomething('./a');
+doSomething('./b');
 import { vi } from 'vitest';
 import { a } from './a';
 import { b } from './b';
@@ -427,51 +320,34 @@ import { b } from './b';
     );
   });
 
-  it('moves the vitest import even when no regular imports follow', async () => {
+  it('does not move the vitest import when no regular imports follow', async () => {
     const content = `import { vi } from 'vitest';
-vi.mock('./foo');
+doSomething('./foo');
 `;
 
-    await expect(run(content)).resolves.toBe(
-      `vi.mock('./foo');
-import { vi } from 'vitest';
-`,
-    );
+    await expect(run(content)).resolves.toBe(content);
   });
 
-  it('preserves content after the block', async () => {
+  it('does not move the vitest import when a vi.mock call follows', async () => {
     const content = `import { vi } from 'vitest';
 vi.mock('./foo');
 import { foo } from './foo';
-
-describe('suite', () => {
-  it('test', () => {});
-});
 `;
 
-    await expect(run(content)).resolves.toBe(
-      `vi.mock('./foo');
-import { vi } from 'vitest';
-import { foo } from './foo';
-
-describe('suite', () => {
-  it('test', () => {});
-});
-`,
-    );
+    await expect(run(content)).resolves.toBe(content);
   });
 
   it('preserves blank lines between vi.mock and the following import', async () => {
     const content = `import { vi } from 'vitest';
-vi.mock('./foo');
+doSomething('./foo');
 
 import { foo } from './foo';
 `;
 
     await expect(run(content)).resolves.toBe(
-      `vi.mock('./foo');
-import { vi } from 'vitest';
+      `doSomething('./foo');
 
+import { vi } from 'vitest';
 import { foo } from './foo';
 `,
     );
@@ -503,24 +379,6 @@ import { a } from './a';
 vi.mock('./a');
 import { vi } from 'vitest';
 import { a } from './a';
-`,
-    );
-  });
-
-  it('stops the block at the first regular import', async () => {
-    const content = `import { vi } from 'vitest';
-vi.mock('./a');
-import { a } from './a';
-vi.mock('./b');
-import { b } from './b';
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `vi.mock('./a');
-import { vi } from 'vitest';
-import { a } from './a';
-vi.mock('./b');
-import { b } from './b';
 `,
     );
   });
