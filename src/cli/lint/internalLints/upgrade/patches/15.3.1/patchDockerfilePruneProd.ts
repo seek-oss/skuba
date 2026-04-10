@@ -6,10 +6,10 @@ import fs from 'fs-extra';
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const pnpmInstallTestRegex = /^RUN pnpm install.*--prod/m;
-const pnpmInstallReplaceRegex = /^RUN pnpm install.*--prod/gm;
+const pnpmInstallProdTestRegex = /^RUN (CI=true )?pnpm install.*--prod/m;
+const pnpmInstallProdReplaceRegex = /^RUN (CI=true )?pnpm install.*--prod/gm;
 
-export const patchDockerfileCIVariable = async (
+export const patchDockerfilePruneProd = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
   const dockerfilePaths = await fg(['**/Dockerfile*'], {
@@ -35,7 +35,7 @@ export const patchDockerfileCIVariable = async (
   );
 
   const dockerfilesToPatch = dockerfiles.filter(({ contents }) =>
-    pnpmInstallTestRegex.test(contents),
+    pnpmInstallProdTestRegex.test(contents),
   );
 
   if (dockerfilesToPatch.length === 0) {
@@ -54,8 +54,8 @@ export const patchDockerfileCIVariable = async (
   await Promise.all(
     dockerfilesToPatch.map(async ({ file, contents }) => {
       const updatedContents = contents.replace(
-        pnpmInstallReplaceRegex,
-        (match) => match.replace('RUN pnpm', 'RUN CI=true pnpm'),
+        pnpmInstallProdReplaceRegex,
+        'RUN pnpm prune --prod',
       );
       await fs.promises.writeFile(file, updatedContents, 'utf8');
     }),
@@ -66,11 +66,11 @@ export const patchDockerfileCIVariable = async (
   };
 };
 
-export const tryPatchDockerfileCIVariable: PatchFunction = async ({ mode }) => {
+export const tryPatchDockerfilePruneProd: PatchFunction = async ({ mode }) => {
   try {
-    return await patchDockerfileCIVariable(mode);
+    return await patchDockerfilePruneProd(mode);
   } catch (err) {
-    log.warn('Failed to apply Dockerfile CI variable patch.');
+    log.warn('Failed to apply Dockerfile pnpm prune --prod patch.');
     log.subtle(inspect(err));
     return { result: 'skip', reason: 'due to an error' };
   }
