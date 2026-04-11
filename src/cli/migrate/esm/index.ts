@@ -9,6 +9,7 @@ import type {
 import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.js';
 import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
 import { migrateEslintConfigExportDefaultPatch } from './migrateEslintConfigExportDefault.js';
+import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefault.js';
 import { rewriteGlobalVars } from './rewriteGlobalVars.js';
 import { migrateToVitest } from './vitest/vitest.js';
 
@@ -30,6 +31,10 @@ const patches: Patch[] = [
     apply: rewriteGlobalVars,
     description:
       'Replace __dirname and __filename with import.meta equivalents',
+  },
+  {
+    apply: migrateExportEqualsToDefaultPatch,
+    description: 'Replace TypeScript export = with export default',
   },
   {
     apply: migrateToVitest,
