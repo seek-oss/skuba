@@ -2,11 +2,11 @@
 'skuba': minor
 ---
 
-migrate: Add vitest migration
+migrate: Add ESM migration
 
-If your project does not use `skuba` directly, you can still run our migration to Vitest using `npx` or `pnpm dlx`:
+If your project does not use `skuba` directly, you can still run our migration to ESM using `npx` or `pnpm dlx`:
 
 ```shell
-pnpm dlx skuba migrate vitest
-npx skuba migrate vitest
+pnpm dlx skuba migrate esm
+npx skuba migrate esm
 ```
