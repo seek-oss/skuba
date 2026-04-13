@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+'skuba': patch
 ---
 
-build: Resolve #src alias to ./src directory during package builds
+template/\*-npm-package: Resolve `#src` alias to `./src` directory during package builds
