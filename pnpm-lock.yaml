@@ -393,7 +393,7 @@ importers:
         specifier: ^5.0.0
         version: 5.2.1
       hot-shots:
-        specifier: ^14.3.1 || ~14.2.0
+        specifier: ^14.3.1
         version: 14.3.1
       seek-datadog-custom-metrics:
         specifier: ^8.0.0
@@ -467,7 +467,7 @@ importers:
         specifier: ^12.0.0
         version: 12.0.0
       hot-shots:
-        specifier: ^14.3.1 || ~14.2.0
+        specifier: ^14.3.1
         version: 14.3.1
       koa:
         specifier: ^3.0.1
