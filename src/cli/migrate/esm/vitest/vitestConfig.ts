@@ -227,16 +227,6 @@ const migrateGlobalSetup = async (
     return undefined;
   }
 
-  // rule:
-  //   any:
-  //     - kind: 'function_expression'
-  //     - kind: 'arrow_function'
-  //   inside:
-  //     kind: 'assignment_expression'
-  //     inside:
-  //       kind: 'expression_statement'
-  //       regex: '^module.exports'
-
   const edits: Edit[] = [moduleExportsMember.replace('export const setup')];
 
   const arrowFunction = root.find({
@@ -253,9 +243,11 @@ const migrateGlobalSetup = async (
   });
 
   if (arrowFunction) {
-    const isAsync = arrowFunction.text().startsWith('async');
-
     const body = arrowFunction.field('body');
+    const bodyText = body?.text();
+
+    const isAsync =
+      arrowFunction.text().startsWith('async') || bodyText?.includes('Promise');
 
     if (!body) {
       return undefined;
