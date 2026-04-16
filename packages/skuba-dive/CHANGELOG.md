@@ -1,5 +1,13 @@
 # skuba-dive
 
+## 4.1.0
+
+### Minor Changes
+
+- Migrate to ESM ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+  This package is still being published as a dual ESM/CJS package, but the source code is now ESM.
+
 ## 4.0.1
 
 ### Patch Changes
