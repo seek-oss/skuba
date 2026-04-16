@@ -43,7 +43,7 @@
     "@ast-grep/napi": "^0.42.0",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.0.0",
-    "typescript": "~5.9.0"
+    "typescript": "~6.0.0"
   },
   "engines": {
     "node": ">=22.14.0"
