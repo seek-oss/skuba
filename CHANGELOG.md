@@ -1,5 +1,62 @@
 # skuba
 
+## 16.0.0
+
+### Major Changes
+
+- **build, lint, test:** Migrate to ESM ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+  As part of our [migration to ESM](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html), skuba's source code is now pure ESM.
+
+  skuba will attempt to automatically transition your project to ESM and migrate your tests from Jest to Vitest.
+
+  The test migration will require some manual adjustments if you were using Jest-specific libraries for features. skuba will scaffold a new Vitest config for you, but will not attempt to migrate your existing Jest config. See the [Vitest migration guide](https://vitest.dev/guide/migration.html#jest) for help with any remaining steps.
+
+  For package publishers, `skuba build-package` should handle publishing dual ESM/CJS packages automatically. Test your packages thoroughly after the migration to confirm everything works as expected.
+
+  TODO: Provide more advice
+
+### Minor Changes
+
+- **lint:** Replace hoisted Jest dependencies with Vitest ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+- **lint:** Migrate Dockerfiles from `pnpm install --prod` to `pnpm prune --prod` ([#2326](https://github.com/seek-oss/skuba/pull/2326))
+
+  A new [patch](https://seek-oss.github.io/skuba/docs/cli/lint.html#patches) will replace any `RUN pnpm install ... --prod` (including variants with `CI=true`) with `RUN pnpm prune --prod`.
+
+- **test:** Remove GitHub annotations ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+  Our first Vitest release does not support inline [GitHub annotations](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-annotations) in CI. This feature may be restored in future.
+
+### Patch Changes
+
+- **template/\*-rest-api:** Use `pnpm prune --prod` to remove dev dependencies in Dockerfiles ([#2326](https://github.com/seek-oss/skuba/pull/2326))
+
+  Our API template Dockerfiles previously ran `CI=true pnpm install --offline --prod` after building to strip dev dependencies from `node_modules`. This has been replaced with `pnpm prune --prod`, which is a more explicit and reliable way to remove dev dependencies from the production image.
+
+  ```diff
+  RUN pnpm install --offline
+  RUN pnpm build
+  - RUN CI=true pnpm install --offline --prod
+  + RUN pnpm prune --prod
+  ```
+
+- **template/\*-npm-package:** Resolve `#src` alias to `./src` directory during package builds ([#2322](https://github.com/seek-oss/skuba/pull/2322))
+
+- **deps:** esbuild ~0.28.0 ([#2320](https://github.com/seek-oss/skuba/pull/2320))
+
+- **deps:** @inquirer/prompts ^8.0.0 ([#2303](https://github.com/seek-oss/skuba/pull/2303))
+
+- **deps:** rolldown 1.0.0-rc.12 ([#2308](https://github.com/seek-oss/skuba/pull/2308))
+
+- **deps:** rolldown 1.0.0-rc.10 ([#2292](https://github.com/seek-oss/skuba/pull/2292))
+
+- **deps:** read-package-up ^12.0.0 ([#2302](https://github.com/seek-oss/skuba/pull/2302))
+
+- **deps:** @ast-grep/napi ^0.42.0 ([#2285](https://github.com/seek-oss/skuba/pull/2285))
+
+- **lint:** Update `pnpm-workspace.yaml` `trustPolicyExclude` list ([#2300](https://github.com/seek-oss/skuba/pull/2300))
+
 ## 15.3.0
 
 ### Minor Changes

@@ -20,7 +20,7 @@
     "test:watch": "skuba test --watch"
   },
   "dependencies": {
-    "skuba-dive": "^4.0.1"
+    "skuba-dive": "^4.1.0"
   },
   "devDependencies": {
     "@types/node": "^24.10.2",
