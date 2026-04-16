@@ -41,6 +41,41 @@ const getTsCallExpressionsByPos = (sourceFile: ts.SourceFile) => {
 
 let tsConfigCache: ts.CompilerOptions | undefined;
 
+// The sku vitest codemod misses a few cases
+// eg. beforeEach(() => jest.clearAllMocks())
+// but Vitest has unique behaviour when you return a function from a lifecycle hook
+// so we instead edit it to be beforeEach(() => { jest.clearAllMocks() })
+const getImmediateReturnEdits = (root: SgNode): Edit[] => {
+  const immediateReturnsInLifeCycleHooks = root.findAll({
+    rule: {
+      kind: 'call_expression',
+      inside: {
+        kind: 'arrow_function',
+        not: { regex: '^async' },
+        inside: {
+          kind: 'arguments',
+          inside: {
+            kind: 'call_expression',
+            regex: '^(beforeEach|afterEach|afterAll|beforeAll)',
+          },
+        },
+      },
+    },
+  });
+
+  if (!immediateReturnsInLifeCycleHooks.length) {
+    return [];
+  }
+
+  return immediateReturnsInLifeCycleHooks.map((callExpression) => {
+    const existingText = callExpression.text();
+    return callExpression.replace(`{ ${existingText} }`);
+  });
+};
+
+// The sku vitest codemod transforms most lifecycle hooks but misses any where there is an overlap of edits
+// eg. beforeEach(jest.clearAllMocks) becomes beforeEach(vi.clearAllMocks)
+// so we need to transform it to be beforeEach(() => { vi.clearAllMocks() })
 const getUnfixedLifeCycleEdits = (root: SgNode): Edit[] => {
   const viLifeCycleHooks = root.findAll({
     rule: {
@@ -66,6 +101,10 @@ const getUnfixedLifeCycleEdits = (root: SgNode): Edit[] => {
   });
 };
 
+// The sku codemod does a naive transformation of the hooks eg. beforeEach(resetDynamoDB) becomes beforeEach(() => { resetDynamoDB() })
+// It doesn't check if the function was returning a promise so we are checking if the function being called is a promise
+// and adding async/await to the arrow function and the call expression if it is
+// eg. beforeEach(() => { resetDynamoDB() }) becomes beforeEach(async () => { await resetDynamoDB() })
 const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
   const lastStatementsInLifeCycleHooks = root.findAll({
     rule: {
@@ -152,6 +191,16 @@ const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
   return edits.flat();
 };
 
+// The sku vitest codemod naively inserts the vitest import at the top of the file
+// which conflicts with eslint rules that require imports to be ordered a certain way
+// so we need to shift the vitest import downwards if there are any imports directly below
+// which are either side-effects or vi.mocks
+// eg.
+// import { vi } from 'vitest';
+// import ./sideEffectImport;
+// becomes
+// import ./sideEffectImport;
+// import { vi } from 'vitest';
 const getImportOrderEdits = (root: SgNode): Edit[] => {
   const vitestImportInvalid = root.find({
     rule: {
@@ -229,7 +278,10 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
   ];
 };
 
-export const applyJestFixes = async (file: string, content: string) => {
+/**
+ * Runs extra transformations after the sku vitest codemod to fix any missed cases
+ */
+export const postFixVitestMigration = async (file: string, content: string) => {
   if (!file.includes('test')) {
     return content;
   }
@@ -238,6 +290,7 @@ export const applyJestFixes = async (file: string, content: string) => {
 
   const edits = [
     ...getLifeCycleEdits(astRoot, file),
+    ...getImmediateReturnEdits(astRoot),
     ...getUnfixedLifeCycleEdits(astRoot),
     ...getImportOrderEdits(astRoot),
   ];

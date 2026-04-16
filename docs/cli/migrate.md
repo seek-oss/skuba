@@ -27,9 +27,11 @@ skuba migrate esm
 
 The following changes are made:
 
+- type `module` is added to `package.json` files
 - CommonJS syntax is replaced with ESM syntax in source files, test files, and configuration files
+- ESLint config files and Prettier config files are migrated to ESM format
 - Jest is replaced with Vitest as the test runner
-  - The [sku codemod] is run
+  - The [sku codemod] is run along with additional transformations to fix any missed cases
   - `aws-sdk-client-mock-jest` → `aws-sdk-client-mock-vitest`
   - `@shopify/jest-koa-mocks` → `@skuba-lib/vitest-koa-mocks`
   - `--runInBand` → `--maxWorkers=1` in `package.json` test scripts and Buildkite pipelines

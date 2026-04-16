@@ -22,5 +22,5 @@ const configDefaults = {
   test: defaults,
 } satisfies ViteUserConfig;
 
-export const mergePreset = (config: ViteUserConfig): ViteUserConfig =>
+export const mergePreset = <T extends ViteUserConfig>(config: T): T =>
   mergeRaw(configDefaults, config);

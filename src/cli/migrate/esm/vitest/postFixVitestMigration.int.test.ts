@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { applyJestFixes } from './jestFixes.js';
+import { postFixVitestMigration } from './postFixVitestMigration.js';
 
 let tmpFile: string;
 let tmpModuleFile: string;
@@ -21,7 +21,7 @@ afterEach(async () => {
 
 const run = async (content: string) => {
   await fs.promises.writeFile(tmpFile, content, 'utf8');
-  return applyJestFixes(tmpFile, content);
+  return postFixVitestMigration(tmpFile, content);
 };
 
 describe('migrateAsyncHooks', () => {
@@ -205,6 +205,18 @@ afterEach(async () => {
   it('handles unfixed lifecycle hooks', async () => {
     const content = `beforeEach(vi.resetAllMocks);
 afterAll(vi.clearAllMocks);
+`;
+
+    await expect(run(content)).resolves.toBe(
+      `beforeEach(() => { vi.resetAllMocks() });
+afterAll(() => { vi.clearAllMocks() });
+`,
+    );
+  });
+
+  it('handles unfixed immediate return lifecycle hooks', async () => {
+    const content = `beforeEach(() => vi.resetAllMocks());
+afterAll(() => vi.clearAllMocks());
 `;
 
     await expect(run(content)).resolves.toBe(

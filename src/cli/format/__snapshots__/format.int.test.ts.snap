@@ -66,6 +66,8 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
+Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
+
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
@@ -197,6 +199,8 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
+Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
+
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
@@ -321,6 +325,8 @@ Patch skipped: Migrate npm package builds to tsdown - no skuba build-package com
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
+Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
+
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
@@ -416,6 +422,8 @@ Refreshed .prettierignore.
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
+
+Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
