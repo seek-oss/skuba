@@ -244,23 +244,26 @@ const migrateGlobalSetup = async (
 
   if (arrowFunction) {
     const body = arrowFunction.field('body');
+    const arrowFunctionText = arrowFunction.text();
     const bodyText = body?.text();
+    const arrowIsAsync = arrowFunctionText.startsWith('async');
 
-    const isAsync =
-      arrowFunction.text().startsWith('async') || bodyText?.includes('Promise');
+    const isAsync = arrowIsAsync || bodyText?.includes('Promise');
 
     if (!body) {
       return undefined;
     }
 
     if (body.kind() === 'call_expression') {
-      // convert to block body with return statement
-      const callText = body.text();
-      edits.push(body.replace(`{\n ${isAsync ? 'await' : ''} ${callText} }`));
+      // convert to block body with return statement;
+      edits.push(body.replace(`{\n ${isAsync ? 'await' : ''} ${bodyText} }`));
 
-      const parameters = arrowFunction.field('parameters');
-      if (isAsync && parameters?.text() === '()') {
-        edits.push(parameters.replace('async ()'));
+      if (isAsync && !arrowIsAsync) {
+        edits.push({
+          insertedText: 'async ',
+          startPos: arrowFunction.range().start.index,
+          endPos: arrowFunction.range().start.index,
+        });
       }
     }
   }
