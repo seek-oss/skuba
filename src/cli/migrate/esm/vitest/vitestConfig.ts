@@ -257,6 +257,11 @@ const migrateGlobalSetup = async (
       // convert to block body with return statement
       const callText = body.text();
       edits.push(body.replace(`{\n ${isAsync ? 'await' : ''} ${callText} }`));
+
+      const parameters = arrowFunction.field('parameters');
+      if (isAsync && parameters?.text() === '()') {
+        edits.push(parameters.replace('async ()'));
+      }
     }
   }
 
