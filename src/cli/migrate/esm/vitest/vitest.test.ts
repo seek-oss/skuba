@@ -9,7 +9,10 @@ import type {
 
 import { migrateToVitest } from './vitest.js';
 
-vi.mock('../../../../utils/exec.js');
+vi.mock('../../../../utils/exec.js', () => ({
+  createExec: () => vi.fn(),
+  exec: vi.fn(),
+}));
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
   ...memfs.fs,
