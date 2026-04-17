@@ -3,7 +3,7 @@ import path from 'node:path';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import { exec } from '../../../../utils/exec.js';
+import { createExec, exec } from '../../../../utils/exec.js';
 import { detectPackageManager } from '../../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.js';
 
@@ -143,6 +143,16 @@ export const migrateToVitest = async ({
     ),
   );
 
+  const vitestKoaMockPathsWithoutNodeTypes = new Set(
+    filesToUpdate
+      .filter(
+        ({ content }) =>
+          content.includes('@skuba-lib/vitest-koa-mocks') &&
+          !content.includes('@types/node'),
+      )
+      .map(({ file }) => path.dirname(file)),
+  );
+
   const configFilesToUpdate = await scaffoldVitestConfig();
 
   if (configFilesToUpdate.length && mode === 'lint') {
@@ -206,8 +216,38 @@ export const migrateToVitest = async ({
   // Install the new deps we added to package.json
   if (packageManager.command === 'pnpm') {
     await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
+    await Promise.all(
+      Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
+        const folderExec = createExec({
+          cwd: folder,
+        });
+
+        return folderExec(
+          'pnpm',
+          'install',
+          '@types/node@24.12.2',
+          '--save-dev',
+          '--prefer-offline',
+        );
+      }),
+    );
   } else {
     await exec('yarn', 'install', '--prefer-offline');
+    await Promise.all(
+      Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
+        const folderExec = createExec({
+          cwd: folder,
+        });
+
+        return folderExec(
+          'yarn',
+          'add',
+          '@types/node@24.12.2',
+          '--prefer-offline',
+          '--dev',
+        );
+      }),
+    );
   }
 
   return {
