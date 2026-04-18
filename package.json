@@ -118,7 +118,7 @@
     "prettier-plugin-packagejson": "^3.0.0",
     "publint": "~0.3.17",
     "read-package-up": "^12.0.0",
-    "rolldown": "1.0.0-rc.12",
+    "rolldown": "1.0.0-rc.15",
     "semantic-release": "^25.0.2",
     "simple-git": "^3.5.0",
     "ts-dedent": "^2.2.0",
@@ -126,7 +126,7 @@
     "tsdown": "~0.21.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.0",
-    "vitest": "^4.1.0",
+    "vitest": "^4.1.4",
     "zod": "^4.3.5"
   },
   "devDependencies": {
