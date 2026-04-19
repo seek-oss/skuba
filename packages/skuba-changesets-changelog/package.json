@@ -1,0 +1,59 @@
+{
+  "name": "@skuba-lib/skuba-changesets-changelog",
+  "version": "0.0.0",
+  "private": false,
+  "description": "Opinionated changelog generator for Changesets",
+  "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/skuba-changesets-changelog#readme",
+  "bugs": {
+    "url": "https://github.com/seek-oss/skuba/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seek-oss/skuba.git",
+    "directory": "packages/skuba-changesets-changelog"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@seek/skuba/source": "./src/index.ts",
+      "default": "./lib/index.mjs"
+    },
+    "./inject": {
+      "@seek/skuba/source": "./src/inject.mjs",
+      "default": "./lib/inject.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "skuba-changelog-inject": "./lib/inject.mjs"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "pnpm skuba build-package",
+    "prepack": "pnpm build",
+    "skuba": "node ../../lib/skuba"
+  },
+  "dependencies": {
+    "@changesets/get-github-info": "^0.8.0"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": "./lib/index.mjs",
+      "./inject": "./lib/inject.mjs",
+      "./package.json": "./package.json"
+    }
+  },
+  "skuba": {
+    "entryPoint": "src/index.ts",
+    "template": "oss-npm-package",
+    "type": "package",
+    "version": "14.1.2"
+  }
+}
