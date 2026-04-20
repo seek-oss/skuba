@@ -660,7 +660,7 @@ const scaffoldTestConfig = async ({
       },
     },`
         : ''
-    }${rootDir ? `\n    root: '${rootDir}',` : ''}${
+    }${rootDir ? `\n    root: '${rootDir}',${rootDir.includes('..') ? ' // TODO: Vitest root paths work differently to Jest, you may need to remove or adjust this in order for your tests to run' : ''}` : ''}${
       includeArray.length
         ? `\n    include: [${includeArray.map((pattern) => `'${pattern}'`).join(', ')}], // TODO: Update these regexp pattern strings to globs`
         : ''
