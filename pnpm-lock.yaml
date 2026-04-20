@@ -275,6 +275,12 @@ importers:
         specifier: ^4.3.5
         version: 4.3.6
 
+  packages/changesets-changelog:
+    dependencies:
+      '@changesets/get-github-info':
+        specifier: ^0.8.0
+        version: 0.8.0
+
   packages/detect-invalid-spies:
     dependencies:
       '@ast-grep/napi':
@@ -345,12 +351,6 @@ importers:
       '@pnpm/config':
         specifier: ^1004.10.3
         version: 1004.11.0(@pnpm/logger@1001.0.1)
-
-  packages/skuba-changesets-changelog:
-    dependencies:
-      '@changesets/get-github-info':
-        specifier: ^0.8.0
-        version: 0.8.0
 
   packages/skuba-dive: {}
 
