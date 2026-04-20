@@ -1,5 +1,5 @@
 ---
-'@skuba-lib/skuba-changesets-changelog': major
+'@skuba-lib/changesets-changelog': major
 ---
 
 Publish first version

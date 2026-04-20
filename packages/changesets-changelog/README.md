@@ -1,4 +1,4 @@
-# @skuba-lib/skuba-changesets-changelog
+# @skuba-lib/changesets-changelog
 
 An opinionated changelog generator for [Changesets](https://github.com/changesets/changesets), used by skuba-managed projects.
 
@@ -16,7 +16,7 @@ In your `.changeset/config.json`, set the changelog generator:
 
 ```json
 {
-  "changelog": ["@skuba-lib/skuba-changesets-changelog", { "repo": "org/repo" }]
+  "changelog": ["@skuba-lib/changesets-changelog", { "repo": "org/repo" }]
 }
 ```
 
