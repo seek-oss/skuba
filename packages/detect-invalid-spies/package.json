@@ -1,6 +1,6 @@
 {
   "name": "@skuba-lib/detect-invalid-spies",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": false,
   "description": "Detect invalid spies in Jest and Vitest tests",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/detect-invalid-spies#readme",

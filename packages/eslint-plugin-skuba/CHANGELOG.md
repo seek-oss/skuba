@@ -1,13 +1,5 @@
 # eslint-plugin-skuba
 
-## 2.1.0
-
-### Minor Changes
-
-- Migrate to ESM (a7f39a2ac4b6895370955681eedad1e31190b09b)
-
-  This package is still being published as a dual ESM/CJS package, but the source code is now ESM.
-
 ## 2.0.1
 
 ### Patch Changes

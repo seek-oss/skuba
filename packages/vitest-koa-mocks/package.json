@@ -1,6 +1,6 @@
 {
   "name": "@skuba-lib/vitest-koa-mocks",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "private": false,
   "description": "Vitest mocks for Koa",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/vitest-koa-mocks#readme",
@@ -62,6 +62,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "16.0.0"
+    "version": "15.3.0"
   }
 }
