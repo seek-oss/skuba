@@ -1,5 +1,11 @@
 # @skuba-lib/vitest-koa-mocks
 
+## 1.0.2
+
+### Patch Changes
+
+- Relax `session` and `state` option types in `createMockContext` from `Record<string, unknown>` to `Record<string, any>` (74c8d7407206158f28be0b8d4c8bf8032105cad1)
+
 ## 1.0.1
 
 ### Patch Changes

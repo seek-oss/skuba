@@ -1,5 +1,15 @@
 # pnpm-plugin-skuba
 
+## 3.0.0
+
+### Major Changes
+
+- **lint:** Replace hoisted Jest dependencies with Vitest (a7f39a2ac4b6895370955681eedad1e31190b09b)
+
+### Patch Changes
+
+- **lint:** Update `pnpm-workspace.yaml` `trustPolicyExclude` list (09fc8052c0803d1dc9856b380e614e92e7597545)
+
 ## 2.1.1
 
 ### Patch Changes
