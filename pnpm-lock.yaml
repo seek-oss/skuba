@@ -181,6 +181,9 @@ importers:
       '@pnpm/config':
         specifier: ^1004.9.0
         version: 1004.11.0(@pnpm/logger@1001.0.1)
+      '@skuba-lib/changesets-changelog':
+        specifier: 1.0.0-add-skuba-changesets-changelog-20260420101121
+        version: 1.0.0-add-skuba-changesets-changelog-20260420101121
       '@types/ejs':
         specifier: 3.1.5
         version: 3.1.5
@@ -2638,6 +2641,11 @@ packages:
 
   '@sinonjs/samsam@8.0.3':
     resolution: {integrity: sha512-hw6HbX+GyVZzmaYNh82Ecj1vdGZrqVIn/keDTg63IgAwiQPO+xCz99uG6Woqgb4tM0mUiFENKZ4cqd7IX94AXQ==}
+
+  '@skuba-lib/changesets-changelog@1.0.0-add-skuba-changesets-changelog-20260420101121':
+    resolution: {integrity: sha512-gQuDiLJtzIfxdFJf3zm5/OixgQ/K8qJKw2b7I0VdoYYC/PFS41tslr3vDqfJaZqC/KzM1Q/uUhJF10M395L19Q==}
+    engines: {node: '>=24'}
+    hasBin: true
 
   '@smithy/config-resolver@4.4.14':
     resolution: {integrity: sha512-N55f8mPEccpzKetUagdvmAy8oohf0J5cuj9jLI1TaSceRlq0pJsIZepY3kmAXAhyxqXPV6hDerDQhqQPKWgAoQ==}
@@ -9831,6 +9839,12 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
       type-detect: 4.1.0
+
+  '@skuba-lib/changesets-changelog@1.0.0-add-skuba-changesets-changelog-20260420101121':
+    dependencies:
+      '@changesets/get-github-info': 0.8.0
+    transitivePeerDependencies:
+      - encoding
 
   '@smithy/config-resolver@4.4.14':
     dependencies:
