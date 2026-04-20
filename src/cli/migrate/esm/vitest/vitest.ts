@@ -228,6 +228,7 @@ export const migrateToVitest = async ({
           '@types/node@24.12.2',
           '--save-dev',
           '--prefer-offline',
+          '--ignore-workspace-root-check',
         );
       }),
     );
@@ -243,8 +244,8 @@ export const migrateToVitest = async ({
           'yarn',
           'add',
           '@types/node@24.12.2',
-          '--prefer-offline',
           '--dev',
+          '--prefer-offline',
         );
       }),
     );
