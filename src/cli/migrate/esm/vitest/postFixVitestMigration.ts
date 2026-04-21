@@ -278,6 +278,34 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
   ];
 };
 
+// Any vi.mock that is not on the root level emits a warning in vitest and needs to be transformed to `doMock`
+// to not be hoisted or throw an error in future versions of Vitest.
+const getBadMocksEdits = (root: SgNode): Edit[] => {
+  const badMocks = root.findAll({
+    rule: {
+      kind: 'member_expression',
+      regex: '^vi\.mock',
+      not: {
+        inside: {
+          kind: 'call_expression',
+          inside: {
+            kind: 'expression_statement',
+            inside: {
+              kind: 'program',
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!badMocks.length) {
+    return [];
+  }
+
+  return badMocks.map((mock) => mock.replace('vi.doMock'));
+};
+
 /**
  * Runs extra transformations after the sku vitest codemod to fix any missed cases
  */
@@ -293,6 +321,7 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     ...getImmediateReturnEdits(astRoot),
     ...getUnfixedLifeCycleEdits(astRoot),
     ...getImportOrderEdits(astRoot),
+    ...getBadMocksEdits(astRoot),
   ];
 
   if (!edits.length) {

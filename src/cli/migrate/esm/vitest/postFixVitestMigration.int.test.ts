@@ -410,3 +410,35 @@ import { a } from './a';
     );
   });
 });
+
+describe('migrateBadMocks', () => {
+  it('migrates nested vi.mock calls to vi.doMock', async () => {
+    const content = `import { vi } from 'vitest';
+vi.mock('./should-not-change');
+
+describe('some test suite', () => {
+  vi.mock('./should-change');
+
+  it('some test case', () => {
+    vi.mock('./should-also-change');
+  });
+});
+
+vi.mock('./should-also-not-change');
+`;
+
+    await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
+vi.mock('./should-not-change');
+
+describe('some test suite', () => {
+  vi.doMock('./should-change');
+
+  it('some test case', () => {
+    vi.doMock('./should-also-change');
+  });
+});
+
+vi.mock('./should-also-not-change');
+`);
+  });
+});
