@@ -306,6 +306,43 @@ const getBadMocksEdits = (root: SgNode): Edit[] => {
   return badMocks.map((mock) => mock.replace('vi.doMock'));
 };
 
+// Updates importActual to include types
+const getImportActualEdits = (root: SgNode): Edit[] => {
+  const importActuals = root.findAll({
+    rule: {
+      kind: 'call_expression',
+      regex: '^vi\.importActual\\(',
+    },
+  });
+
+  if (!importActuals.length) {
+    return [];
+  }
+
+  return importActuals
+    .map((importActual) => {
+      const packageName = importActual.find({
+        rule: {
+          kind: 'string',
+        },
+      });
+
+      if (!packageName) {
+        return [];
+      }
+
+      return importActual.replace(
+        importActual
+          .text()
+          .replace(
+            'vi.importActual',
+            `vi.importActual<typeof import(${packageName.text()})>`,
+          ),
+      );
+    })
+    .flat();
+};
+
 /**
  * Runs extra transformations after the sku vitest codemod to fix any missed cases
  */
@@ -322,6 +359,7 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     ...getUnfixedLifeCycleEdits(astRoot),
     ...getImportOrderEdits(astRoot),
     ...getBadMocksEdits(astRoot),
+    ...getImportActualEdits(astRoot),
   ];
 
   if (!edits.length) {

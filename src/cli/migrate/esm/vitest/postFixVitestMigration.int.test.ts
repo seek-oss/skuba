@@ -442,3 +442,26 @@ vi.mock('./should-also-not-change');
 `);
   });
 });
+
+describe('migrateImportActual', () => {
+  it('adds type parameters to vi.importActual calls', async () => {
+    const content = `import { vi } from 'vitest';
+
+const someModule = vi.importActual('./someModule');
+`;
+
+    await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
+
+const someModule = vi.importActual<typeof import('./someModule')>('./someModule');
+`);
+  });
+
+  it('does not modify vi.importActual calls that already have type parameters', async () => {
+    const content = `import { vi } from 'vitest';
+
+const someModule = vi.importActual<typeof import('./someModule')>('./someModule');
+`;
+
+    await expect(run(content)).resolves.toBe(content);
+  });
+});
