@@ -2,6 +2,7 @@ import path from 'node:path';
 
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import latestVersion from 'latest-version';
 
 import { createExec, exec } from '../../../../utils/exec.js';
 import { detectPackageManager } from '../../../../utils/packageManager.js';
@@ -15,6 +16,14 @@ export type FileContent = {
   content: string;
 };
 
+const getLatestVitestKoaMocksVersion = async (): Promise<string> => {
+  try {
+    return await latestVersion('@skuba-lib/vitest-koa-mocks');
+  } catch {
+    return '1.0.1';
+  }
+};
+
 export const readFiles = async (paths: string[]): Promise<FileContent[]> =>
   Promise.all(
     paths.map(async (file) => {
@@ -26,7 +35,7 @@ export const readFiles = async (paths: string[]): Promise<FileContent[]> =>
     }),
   );
 
-const patchFiles = ({
+const patchFiles = async ({
   packageJsons,
   pnpmWorkspaces,
   buildkitePipelines,
@@ -34,7 +43,8 @@ const patchFiles = ({
   packageJsons: FileContent[];
   pnpmWorkspaces: FileContent[];
   buildkitePipelines: FileContent[];
-}): FileContent[] => {
+}): Promise<FileContent[]> => {
+  const latestVitestKoaMocksVersion = await getLatestVitestKoaMocksVersion();
   const updatedPackageJsons = packageJsons
     .map(({ file, content }) => {
       const updatedContent = content
@@ -44,7 +54,7 @@ const patchFiles = ({
         )
         .replace(
           /"@shopify\/jest-koa-mocks":\s*"[^"]*"/g,
-          '"@skuba-lib/vitest-koa-mocks": "1.0.1"',
+          `"@skuba-lib/vitest-koa-mocks": "${latestVitestKoaMocksVersion}"`,
         )
         .replace(/--runInBand/g, '--maxWorkers=1')
         .replace(/jest.config/g, 'vitest.config');
@@ -65,7 +75,7 @@ const patchFiles = ({
         )
         .replace(
           /@shopify\/jest-koa-mocks:\s*\S+/g,
-          '@skuba-lib/vitest-koa-mocks: 1.0.1',
+          `@skuba-lib/vitest-koa-mocks: ${latestVitestKoaMocksVersion}`,
         );
 
       return {
@@ -137,7 +147,7 @@ export const migrateToVitest = async ({
     readFiles(buildkiteFiles),
   ]);
 
-  const filesToUpdate = patchFiles({
+  const filesToUpdate = await patchFiles({
     packageJsons,
     pnpmWorkspaces,
     buildkitePipelines,
