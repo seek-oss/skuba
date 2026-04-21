@@ -169,7 +169,8 @@ export const migrateToVitest = async ({
     filesToUpdate
       .filter(
         ({ content }) =>
-          content.includes('@skuba-lib/vitest-koa-mocks') &&
+          (content.includes('@skuba-lib/vitest-koa-mocks') ||
+            content.includes('aws-sdk-client-mock-vitest')) &&
           !content.includes('@types/node'),
       )
       .map(({ file }) => path.dirname(file)),
