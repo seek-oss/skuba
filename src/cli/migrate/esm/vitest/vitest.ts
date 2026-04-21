@@ -26,26 +26,15 @@ export const readFiles = async (paths: string[]): Promise<FileContent[]> =>
     }),
   );
 
-const patchFiles = async (): Promise<FileContent[]> => {
-  const [packageJsonFiles, pnpmWorkspaceFiles, buildkiteFiles] =
-    await Promise.all([
-      fg(['**/package.json'], {
-        ignore: ['**/.git', '**/node_modules'],
-      }),
-      fg(['**/pnpm-workspace.yaml'], {
-        ignore: ['**/.git', '**/node_modules'],
-      }),
-      fg(['**/.buildkite/**/*.{yml,yaml}'], {
-        ignore: ['**/.git', '**/node_modules'],
-      }),
-    ]);
-
-  const [packageJsons, pnpmWorkspaces, buildkitePipelines] = await Promise.all([
-    readFiles(packageJsonFiles),
-    readFiles(pnpmWorkspaceFiles),
-    readFiles(buildkiteFiles),
-  ]);
-
+const patchFiles = ({
+  packageJsons,
+  pnpmWorkspaces,
+  buildkitePipelines,
+}: {
+  packageJsons: FileContent[];
+  pnpmWorkspaces: FileContent[];
+  buildkitePipelines: FileContent[];
+}): FileContent[] => {
   const updatedPackageJsons = packageJsons
     .map(({ file, content }) => {
       const updatedContent = content
@@ -129,7 +118,30 @@ export const migrateToVitest = async ({
     };
   }
 
-  const filesToUpdate = await patchFiles();
+  const [packageJsonFiles, pnpmWorkspaceFiles, buildkiteFiles] =
+    await Promise.all([
+      fg(['**/package.json'], {
+        ignore: ['**/.git', '**/node_modules'],
+      }),
+      fg(['**/pnpm-workspace.yaml'], {
+        ignore: ['**/.git', '**/node_modules'],
+      }),
+      fg(['**/.buildkite/**/*.{yml,yaml}'], {
+        ignore: ['**/.git', '**/node_modules'],
+      }),
+    ]);
+
+  const [packageJsons, pnpmWorkspaces, buildkitePipelines] = await Promise.all([
+    readFiles(packageJsonFiles),
+    readFiles(pnpmWorkspaceFiles),
+    readFiles(buildkiteFiles),
+  ]);
+
+  const filesToUpdate = patchFiles({
+    packageJsons,
+    pnpmWorkspaces,
+    buildkitePipelines,
+  });
 
   if (filesToUpdate.length && mode === 'lint') {
     return {
@@ -213,26 +225,35 @@ export const migrateToVitest = async ({
     }),
   );
 
+  const existingNodeTypesVersion = packageJsons
+    .map(({ content }) => {
+      const match = /"@types\/node":\s*"([^"]*)"/.exec(content);
+      return match ? match[1] : null;
+    })
+    .find((version) => version !== null);
+
   // Install the new deps we added to package.json
   if (packageManager.command === 'pnpm') {
     await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
-    await Promise.all(
-      Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
-        const folderExec = createExec({
-          cwd: folder,
-        });
+    if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
+      await Promise.all(
+        Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
+          const folderExec = createExec({
+            cwd: folder,
+          });
 
-        return folderExec(
-          'pnpm',
-          'install',
-          '@types/node@24.12.2',
-          '--save-dev',
-          '--prefer-offline',
-          '--ignore-workspace-root-check',
-        );
-      }),
-    );
-    await exec('pnpm', 'dedupe', '--prefer-offline');
+          return folderExec(
+            'pnpm',
+            'install',
+            `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
+            '--save-dev',
+            '--prefer-offline',
+            '--ignore-workspace-root-check',
+          );
+        }),
+      );
+      await exec('pnpm', 'dedupe', '--prefer-offline');
+    }
   } else {
     await exec('yarn', 'install', '--prefer-offline');
     await Promise.all(
@@ -244,7 +265,7 @@ export const migrateToVitest = async ({
         return folderExec(
           'yarn',
           'add',
-          '@types/node@24.12.2',
+          `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
           '--dev',
           '--prefer-offline',
         );
