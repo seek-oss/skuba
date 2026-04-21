@@ -232,6 +232,7 @@ export const migrateToVitest = async ({
         );
       }),
     );
+    await exec('pnpm', 'dedupe', '--prefer-offline');
   } else {
     await exec('yarn', 'install', '--prefer-offline');
     await Promise.all(
