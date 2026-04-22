@@ -6,6 +6,13 @@ export default defineConfig({
   format: ['esm', 'cjs'],
   outDir: 'lib',
   dts: true,
+  inputOptions: {
+    resolve: {
+      alias: {
+        '#src': './src',
+      },
+    },
+  },
   checks: {
     legacyCjs: false,
   },
