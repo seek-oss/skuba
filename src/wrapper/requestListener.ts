@@ -21,6 +21,7 @@ interface ObjectConfig {
 
   default?: Promise<unknown>;
   port?: unknown;
+  app?: unknown;
 }
 
 const isConfig = (
@@ -48,6 +49,11 @@ export const runRequestListener = async ({
   }
 
   let config: FunctionConfig | ObjectConfig = await entryPoint;
+
+  if (typeof config === 'object' && isConfig(config.app)) {
+    // named export support, e.g. `export const app = new Koa()`
+    config = await config.app;
+  }
 
   if (typeof config === 'object' && isConfig(config.default)) {
     // Prefer `export default` over `export =`
