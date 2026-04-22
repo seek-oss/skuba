@@ -60,9 +60,6 @@ describe('runPrettier', () => {
             {
               "filepath": "integration/base/fixable/d.js",
             },
-            {
-              "filepath": "integration/base/fixable/package.json",
-            },
           ],
           "touched": [],
           "unparsed": [],
@@ -94,9 +91,6 @@ describe('runPrettier', () => {
             },
             {
               "filepath": "../../../integration/base/fixable/d.js",
-            },
-            {
-              "filepath": "../../../integration/base/fixable/package.json",
             },
           ],
           "touched": [],

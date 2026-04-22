@@ -1,6 +1,6 @@
 import type { Patches } from '../../index.js';
 
-import { tryMigrateToVitest } from './migrateToVitest.js';
+import { tryMigrateToESM } from './migrateToESM.js';
 import { tryPatchDockerfilePruneProd } from './patchDockerfilePruneProd.js';
 
 export const patches: Patches = [
@@ -10,7 +10,7 @@ export const patches: Patches = [
       'Replace pnpm install --prod with pnpm prune --prod in Dockerfiles',
   },
   {
-    apply: tryMigrateToVitest,
-    description: 'Migrate to Vitest',
+    apply: tryMigrateToESM,
+    description: 'Migrate to ESM',
   },
 ];
