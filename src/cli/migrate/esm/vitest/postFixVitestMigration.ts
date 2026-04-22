@@ -284,7 +284,7 @@ const getBadMocksEdits = (root: SgNode): Edit[] => {
   const badMocks = root.findAll({
     rule: {
       kind: 'member_expression',
-      regex: '^vi\.mock\\(',
+      regex: '^vi\.mock$',
       not: {
         inside: {
           kind: 'call_expression',
