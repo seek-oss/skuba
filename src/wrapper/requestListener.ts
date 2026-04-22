@@ -50,14 +50,14 @@ export const runRequestListener = async ({
 
   let config: FunctionConfig | ObjectConfig = await entryPoint;
 
-  if (typeof config === 'object' && isConfig(config.default)) {
-    // Prefer `export default` over `export =`
-    config = await config.default;
-  }
-
   if (typeof config === 'object' && isConfig(config.app)) {
     // named export support, e.g. `export const app = new Koa()`
     config = await config.app;
+  }
+
+  if (typeof config === 'object' && isConfig(config.default)) {
+    // Prefer `export default` over `export =`
+    config = await config.default;
   }
 
   if (Object.keys(config).length === 0) {

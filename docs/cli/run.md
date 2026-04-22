@@ -141,6 +141,10 @@ const app = new Koa();
 
 // You can also use `export =` syntax as required by koa-cluster.
 export default Object.assign(app, { port });
+
+// or
+
+export const app = new Koa();
 ```
 
 As should [Fastify]:
