@@ -26,10 +26,13 @@ export const start = async () => {
     },
   });
 
+  const watchDir = path.dirname(args.entryPoint);
+
   return execProcess(
     'tsx',
     'watch',
     '--clear-screen=false',
+    `--watch=${watchDir}`,
     ...args.node,
     ...uniqueConditions.map((condition) => `--conditions=${condition}`),
     '--env-file-if-exists',
