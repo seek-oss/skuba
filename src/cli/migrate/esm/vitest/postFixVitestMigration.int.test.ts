@@ -410,3 +410,83 @@ import { a } from './a';
     );
   });
 });
+
+describe('migrateBadMocks', () => {
+  it('migrates nested vi.mock calls to vi.doMock', async () => {
+    const content = `import { vi } from 'vitest';
+vi.mock('./should-not-change');
+
+describe('some test suite', () => {
+  vi.mock('./should-change');
+
+  it('some test case', () => {
+    vi.mock('./should-also-change');
+  });
+});
+
+vi.mock('./should-also-not-change');
+`;
+
+    await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
+vi.mock('./should-not-change');
+
+describe('some test suite', () => {
+  vi.doMock('./should-change');
+
+  it('some test case', () => {
+    vi.doMock('./should-also-change');
+  });
+});
+
+vi.mock('./should-also-not-change');
+`);
+  });
+});
+
+describe('migrateImportActual', () => {
+  it('adds type parameters to vi.importActual calls', async () => {
+    const content = `import { vi } from 'vitest';
+
+const someModule = vi.importActual('./someModule');
+`;
+
+    await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
+
+const someModule = vi.importActual<typeof import('./someModule')>('./someModule');
+`);
+  });
+
+  it('does not modify vi.importActual calls that already have type parameters', async () => {
+    const content = `import { vi } from 'vitest';
+
+const someModule = vi.importActual<typeof import('./someModule')>('./someModule');
+`;
+
+    await expect(run(content)).resolves.toBe(content);
+  });
+});
+
+describe('migrateJestTypes', () => {
+  it('adds imports for Mock, MockedFunction, MockedClass, MockedObject, and MockInstance when those types are used', async () => {
+    const content = `import { vi } from 'vitest';
+
+type MyMock = jest.Mock;
+type MyMockedFunction = jest.MockedFunction<() => void>;
+type MyMockedClass = jest.MockedClass<typeof SomeClass>;
+type MyMockedObject = jest.MockedObject<{ foo: string }>;
+type MyMockInstance = jest.MockInstance<{ bar: number }>;
+type MySpy = jest.SpyInstance;
+`;
+
+    await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
+import type { Mock, MockedFunction, MockedClass, MockedObject, MockInstance } from 'vitest';
+
+type MyMock = Mock;
+type MyMockedFunction = MockedFunction<() => void>;
+type MyMockedClass = MockedClass<typeof SomeClass>;
+type MyMockedObject = MockedObject<{ foo: string }>;
+type MyMockInstance = MockInstance<{ bar: number }>;
+type MySpy = MockInstance;
+`);
+  });
+});

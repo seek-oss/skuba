@@ -278,6 +278,146 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
   ];
 };
 
+// Any vi.mock that is not on the root level emits a warning in vitest and needs to be transformed to `doMock`
+// to not be hoisted or throw an error in future versions of Vitest.
+const getBadMocksEdits = (root: SgNode): Edit[] => {
+  const badMocks = root.findAll({
+    rule: {
+      kind: 'member_expression',
+      regex: '^vi\.mock',
+      not: {
+        inside: {
+          kind: 'call_expression',
+          inside: {
+            kind: 'expression_statement',
+            inside: {
+              kind: 'program',
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!badMocks.length) {
+    return [];
+  }
+
+  return badMocks.map((mock) => mock.replace('vi.doMock'));
+};
+
+// Updates importActual to include types
+const getImportActualEdits = (root: SgNode): Edit[] => {
+  const importActuals = root.findAll({
+    rule: {
+      kind: 'call_expression',
+      regex: '^vi\.importActual\\(',
+    },
+  });
+
+  if (!importActuals.length) {
+    return [];
+  }
+
+  return importActuals
+    .map((importActual) => {
+      const packageName = importActual.find({
+        rule: {
+          kind: 'string',
+        },
+      });
+
+      if (!packageName) {
+        return [];
+      }
+
+      return importActual.replace(
+        importActual
+          .text()
+          .replace(
+            'vi.importActual',
+            `vi.importActual<typeof import(${packageName.text()})>`,
+          ),
+      );
+    })
+    .flat();
+};
+
+const getJestTypeEdits = (
+  root: SgNode,
+): { imports: Set<string>; edits: Edit[] } => {
+  const jestTypes = root.findAll({
+    rule: {
+      kind: 'nested_type_identifier',
+      regex:
+        '^jest\.(Mock|MockedFunction|MockedClass|MockedObject|MockInstance|Mocked)$',
+    },
+  });
+
+  if (!jestTypes.length) {
+    return { imports: new Set(), edits: [] };
+  }
+
+  const imports = new Set<string>();
+  const edits = jestTypes.map((jestType) => {
+    const typeText = jestType.text();
+    const typeWithoutJest = typeText.replace('jest.', '');
+    imports.add(typeWithoutJest);
+    return jestType.replace(typeWithoutJest);
+  });
+
+  return { imports, edits };
+};
+
+const getSpyInstanceTypeEdits = (root: SgNode): Edit[] => {
+  const spyInstances = root.findAll({
+    rule: {
+      kind: 'nested_type_identifier',
+      regex: '^jest\.SpyInstance$',
+    },
+  });
+
+  if (!spyInstances.length) {
+    return [];
+  }
+
+  return spyInstances.map((spyInstance) => spyInstance.replace('MockInstance'));
+};
+
+const getTypeImportEdits = (root: SgNode, imports: string[]): Edit[] => {
+  if (!imports.length) {
+    return [];
+  }
+
+  const lastImport = root.find({
+    rule: {
+      kind: 'import_statement',
+      inside: {
+        kind: 'program',
+      },
+      nthChild: {
+        ofRule: {
+          kind: 'import_statement',
+        },
+        position: 1,
+        reverse: true,
+      },
+    },
+  });
+
+  if (!lastImport) {
+    return [];
+  }
+
+  return [
+    {
+      startPos: lastImport.range().end.index + 1, // newline
+      endPos: lastImport.range().end.index + 1,
+      insertedText: `import type { ${imports.join(', ')} } from 'vitest';\n`,
+    },
+  ];
+};
+
 /**
  * Runs extra transformations after the sku vitest codemod to fix any missed cases
  */
@@ -288,11 +428,25 @@ export const postFixVitestMigration = async (file: string, content: string) => {
 
   const astRoot = (await parseAsync('TypeScript', content)).root();
 
+  const { imports: jestTypeImports, edits: jestTypeEdits } =
+    getJestTypeEdits(astRoot);
+
+  const spyInstanceTypeEdits = getSpyInstanceTypeEdits(astRoot);
+
+  if (spyInstanceTypeEdits.length) {
+    jestTypeImports.add('MockInstance');
+  }
+
   const edits = [
     ...getLifeCycleEdits(astRoot, file),
     ...getImmediateReturnEdits(astRoot),
     ...getUnfixedLifeCycleEdits(astRoot),
     ...getImportOrderEdits(astRoot),
+    ...getBadMocksEdits(astRoot),
+    ...getImportActualEdits(astRoot),
+    ...jestTypeEdits,
+    ...spyInstanceTypeEdits,
+    ...getTypeImportEdits(astRoot, Array.from(jestTypeImports)),
   ];
 
   if (!edits.length) {
