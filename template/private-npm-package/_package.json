@@ -9,6 +9,12 @@
   "license": "UNLICENSED",
   "sideEffects": false,
   "type": "module",
+  "imports": {
+    "#src/*": {
+      "@seek/<%- moduleName %>/source": "./src/*",
+      "default": "./lib/*"
+    }
+  },
   "exports": {
     ".": {
       "@seek/<%- moduleName %>/source": "./src/index.ts",
