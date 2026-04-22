@@ -343,6 +343,81 @@ const getImportActualEdits = (root: SgNode): Edit[] => {
     .flat();
 };
 
+const getJestTypeEdits = (
+  root: SgNode,
+): { imports: Set<string>; edits: Edit[] } => {
+  const jestTypes = root.findAll({
+    rule: {
+      kind: 'nested_type_identifier',
+      regex:
+        '^jest\.(Mock|MockedFunction|MockedClass|MockedObject|MockInstance|Mocked)$',
+    },
+  });
+
+  if (!jestTypes.length) {
+    return { imports: new Set(), edits: [] };
+  }
+
+  const imports = new Set<string>();
+  const edits = jestTypes.map((jestType) => {
+    const typeText = jestType.text();
+    const typeWithoutJest = typeText.replace('jest.', '');
+    imports.add(typeWithoutJest);
+    return jestType.replace(typeWithoutJest);
+  });
+
+  return { imports, edits };
+};
+
+const getSpyInstanceTypeEdits = (root: SgNode): Edit[] => {
+  const spyInstances = root.findAll({
+    rule: {
+      kind: 'nested_type_identifier',
+      regex: '^jest\.SpyInstance$',
+    },
+  });
+
+  if (!spyInstances.length) {
+    return [];
+  }
+
+  return spyInstances.map((spyInstance) => spyInstance.replace('MockInstance'));
+};
+
+const getTypeImportEdits = (root: SgNode, imports: string[]): Edit[] => {
+  if (!imports.length) {
+    return [];
+  }
+
+  const lastImport = root.find({
+    rule: {
+      kind: 'import_statement',
+      inside: {
+        kind: 'program',
+      },
+      nthChild: {
+        ofRule: {
+          kind: 'import_statement',
+        },
+        position: 1,
+        reverse: true,
+      },
+    },
+  });
+
+  if (!lastImport) {
+    return [];
+  }
+
+  return [
+    {
+      startPos: lastImport.range().end.index + 1, // newline
+      endPos: lastImport.range().end.index + 1,
+      insertedText: `import type { ${imports.join(', ')} } from 'vitest';\n`,
+    },
+  ];
+};
+
 /**
  * Runs extra transformations after the sku vitest codemod to fix any missed cases
  */
@@ -353,6 +428,15 @@ export const postFixVitestMigration = async (file: string, content: string) => {
 
   const astRoot = (await parseAsync('TypeScript', content)).root();
 
+  const { imports: jestTypeImports, edits: jestTypeEdits } =
+    getJestTypeEdits(astRoot);
+
+  const spyInstanceTypeEdits = getSpyInstanceTypeEdits(astRoot);
+
+  if (spyInstanceTypeEdits.length) {
+    jestTypeImports.add('MockInstance');
+  }
+
   const edits = [
     ...getLifeCycleEdits(astRoot, file),
     ...getImmediateReturnEdits(astRoot),
@@ -360,6 +444,9 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     ...getImportOrderEdits(astRoot),
     ...getBadMocksEdits(astRoot),
     ...getImportActualEdits(astRoot),
+    ...jestTypeEdits,
+    ...spyInstanceTypeEdits,
+    ...getTypeImportEdits(astRoot, Array.from(jestTypeImports)),
   ];
 
   if (!edits.length) {

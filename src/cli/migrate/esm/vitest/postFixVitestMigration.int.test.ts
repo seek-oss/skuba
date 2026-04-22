@@ -465,3 +465,28 @@ const someModule = vi.importActual<typeof import('./someModule')>('./someModule'
     await expect(run(content)).resolves.toBe(content);
   });
 });
+
+describe('migrateJestTypes', () => {
+  it('adds imports for Mock, MockedFunction, MockedClass, MockedObject, and MockInstance when those types are used', async () => {
+    const content = `import { vi } from 'vitest';
+
+type MyMock = jest.Mock;
+type MyMockedFunction = jest.MockedFunction<() => void>;
+type MyMockedClass = jest.MockedClass<typeof SomeClass>;
+type MyMockedObject = jest.MockedObject<{ foo: string }>;
+type MyMockInstance = jest.MockInstance<{ bar: number }>;
+type MySpy = jest.SpyInstance;
+`;
+
+    await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
+import type { Mock, MockedFunction, MockedClass, MockedObject, MockInstance } from 'vitest';
+
+type MyMock = Mock;
+type MyMockedFunction = MockedFunction<() => void>;
+type MyMockedClass = MockedClass<typeof SomeClass>;
+type MyMockedObject = MockedObject<{ foo: string }>;
+type MyMockInstance = MockInstance<{ bar: number }>;
+type MySpy = MockInstance;
+`);
+  });
+});
