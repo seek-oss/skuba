@@ -2,4 +2,6 @@
 'skuba': minor
 ---
 
-init: Support `local:` prefix in `skuba init` template name to allow initialising from a local directory path.
+init: Support `local:` prefix in template name
+
+This enable project initialisation from a local directory path.
