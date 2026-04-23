@@ -6,7 +6,7 @@ agents:
 configs:
   plugins:
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.2.1:
+      seek-oss/docker-ecr-cache#v3.0.0:
         cache-on:
           - package.json#.packageManager
           - pnpm-lock.yaml
