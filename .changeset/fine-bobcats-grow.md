@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-test
+start: Fix file watching to observe the entry point's directory
