@@ -1,5 +1,6 @@
 import { log } from '../../utils/logging.js';
 
+import { migrateToESM } from './esm/index.js';
 import { nodeVersionMigration } from './nodeVersion/index.js';
 
 export const migrations = {
@@ -52,7 +53,8 @@ export const migrations = {
         },
       ],
     }),
-} satisfies Record<string, () => Promise<void>>;
+  esm: () => migrateToESM({ mode: 'format' }),
+} satisfies Record<string, () => Promise<unknown>>;
 
 const logAvailableMigrations = () => {
   log.ok('Available migrations:');

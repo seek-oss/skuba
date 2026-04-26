@@ -107,6 +107,7 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
 const originalCwd = process.cwd();
 
 beforeAll(() => {
+  process.env.SKUBA_INT_TEST = 'true';
   process.env.TSESTREE_SINGLE_RUN = 'false';
 });
 
@@ -121,6 +122,7 @@ afterAll(() => {
 
   // Restore the original working directory to avoid confusion in other tests.
   process.chdir(originalCwd);
+  delete process.env.SKUBA_INT_TEST;
   delete process.env.TSESTREE_SINGLE_RUN;
   // Clean up temporary directories to avoid subsequent formatting and linting
   // warnings and to save on disk space. This can be commented out to inspect

@@ -41,10 +41,19 @@
   "dependencies": {
     "node-mocks-http": "^1.17.2"
   },
+  "devDependencies": {
+    "@types/node": "^24.1.0"
+  },
   "peerDependencies": {
     "@types/koa": "^3.0.1",
+    "@types/node": "^20.0.0 || ^22.0.0 || ^24.0.0",
     "koa": "^3.1.1",
-    "vitest": "^4.0.14"
+    "vitest": "^4.1.4"
+  },
+  "peerDependenciesMeta": {
+    "@types/node": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.14.0"

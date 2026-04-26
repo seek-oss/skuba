@@ -17,6 +17,29 @@ skuba migrate help
 
 ---
 
+## skuba migrate esm
+
+Attempts to automatically migrate your project from CommonJS to ESM. Before running the migration, follow the [migration steps].
+
+```shell
+skuba migrate esm
+```
+
+The following changes are made:
+
+- type `module` is added to `package.json` files
+- CommonJS syntax is replaced with ESM syntax in source files, test files, and configuration files
+- ESLint config files and Prettier config files are migrated to ESM format
+- Jest is replaced with Vitest as the test runner
+  - The [sku codemod] is run along with additional transformations to fix any missed cases
+  - `aws-sdk-client-mock-jest` → `aws-sdk-client-mock-vitest`
+  - `@shopify/jest-koa-mocks` → `@skuba-lib/vitest-koa-mocks`
+  - `--runInBand` → `--maxWorkers=1` in `package.json` test scripts and Buildkite pipelines
+  - `jest.config.*ts` files are migrated to `vitest.config.ts` on a best-effort basis
+  - Jest hooks are migrated to Vitest hooks on a best-effort basis
+
+Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
+
 ## skuba migrate node
 
 **skuba** includes migrations to upgrade your project to the [active LTS version] of Node.js.
@@ -182,3 +205,5 @@ and `@types/node` to major version `20`.
 
 [aws-20]: https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/
 [node-20]: https://nodejs.org/en/blog/announcements/v20-release-announce
+[sku codemod]: https://seek-oss.github.io/sku/#/./docs/vitest?id=migrating-to-vitest
+[migration steps]: ../deep-dives/esm.md#steps-to-migrate

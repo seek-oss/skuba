@@ -308,125 +308,89 @@ export default defineConfig({
 
 Finally, we will switch to [Vitest] as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition.
 
-We will apply the `@sku/lib/codemod` to help with the transition, but manual changes to tests will likely be required. Vitest provides TypeScript support out of the box, eliminating the need for the custom workarounds currently required with Jest.
+#### Steps to migrate
 
-Since Vitest is not compatible with CJS, we will switch to ESM at the same time.
+1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
 
-#### Update package.json
+This will identify any spies in your code that may be broken by the migration. If there are any issues detected, you will need to address these before proceeding with the migration.
 
-Set the `type` field to `module` to enable native ESM support:
+2. Run `skuba migrate esm`
 
-```diff
- {
-   "name": "@seek/my-repo",
-   "version": "13.0.2",
-   "private": false,
-+  "type": "module",
- }
-```
+If your repo updated to skuba v16, this can be run by running `skuba format` or may have already run as part of your CI pipeline.
 
-#### Migrate globals
+3. Run `skuba lint` and attempt to address any lint errors that may be caused by the migration.
 
-Replace CommonJS globals with ESM-compatible equivalents:
+4. Review `vitest.config.ts` migrations
 
-```diff
--const currentDir = __dirname;
--const currentFile = __filename;
-+const currentDir = import.meta.dirname;
-+const currentFile = import.meta.filename;
-```
+Review your generated `vitest.config.ts` and Vitest setup files against the original `jest.config.ts` and Jest setup files to verify all configuration has been carried across, paying close attention to any custom settings or patterns that the migration may have missed. Once satisfied, delete the `jest.config.ts` and any Jest setup files.
 
-#### Migrate module syntax
-
-Convert CommonJS-style imports and exports to ESM:
-
-```diff
--const { module } = require('./imported-module.js');
-+import { module } from './imported-module.js';
-
- const main = async () => {
--  const otherModule = require(`./imported-module.js`);
-+  const otherModule = await import(`./imported-module.js`);
- }
-
--module.exports = { myFunction };
-+export { myFunction };
-```
-
-#### Handle legacy CommonJS files
-
-When `"type": "module"` is set in `package.json`, Node.js treats `.js` files as ESM modules and `.cjs` files as CommonJS modules.
-
-If you have JavaScript files that must remain as CommonJS (e.g., configuration files for tools without ESM support), rename them with a `.cjs` extension:
-
-```diff
--webpack.config.js
-+webpack.config.cjs
-```
-
-#### Handle CommonJS named imports
-
-Importing named exports from CommonJS dependencies may result in errors like:
-
-```bash
-tsc      │ src/framework/logging.ts(31,23): error TS2349: This expression is not callable.
-tsc      │   Type 'typeof import("/workdir/indie-hirer-posting-preferences-api/node_modules/.pnpm/@seek+logger@10.0.0/node_modules/@seek/logger/lib-types/index")' has no call signatures.
-```
-
-To resolve this, convert default imports to named imports where possible:
-
-```diff
-- import createLogger from '@seek/logger';
-+ import { createLogger } from '@seek/logger';
-```
-
-For other libraries, you may need to find ESM-compatible versions of the dependencies you're using.
-
-#### Migrate to Vitest
-
-Globals such as `it`, `describe`, and `expect`, which Jest makes available automatically, are not enabled by default in Vitest.
-
-You will need to import these explicitly:
-
-```diff
-+import { describe, expect, it } from 'vitest';
-```
-
-For more details, see the [Vitest migration guide](https://vitest.dev/guide/migration.html#jest).
-
-As a starting point, we will migrate your Jest imports and provide a base Vitest configuration file. However, additional manual migration will be required to get everything working.
-
-vitest.config.ts:
+The migration may also leave some manual steps for you to complete within your `vitest.config.ts` files, such as updating existing regexp patterns to glob patterns in your test configuration.
 
 ```ts
-import { defineConfig } from 'vitest/config';
-
+// vitest.config.ts
 export default defineConfig({
-  ssr: {
-    resolve: {
-      conditions: ['@seek/my-repo/source'],
-    },
-  },
   test: {
-    env: {
-      ENVIRONMENT: 'test',
-    },
-    coverage: {
-      thresholds: {
-        branches: 100,
-        functions: 100,
-        lines: 100,
-        statements: 100,
-      },
-      include: ['src'],
-      exclude: ['src/testing'],
-    },
-    include: ['**/*.test.ts'],
+    exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
   },
 });
 ```
 
----
+These should be easily migrated by hand or with the help of an AI agent such as Copilot.
+
+5. Run `skuba test` and attempt to address any test errors that may be caused by the migration
+
+6. Run and deploy your project as normal, and monitor for any issues that may be caused by the migration.
+
+7. If you deploy a package, ensure you test the published package in a downstream project to confirm it works as expected.
+
+#### FAQ and Tips
+
+##### Vitest migration guide
+
+Vitest provides a [migration guide] with tips for migrating from Jest to Vitest.
+
+##### Cannot find module '@seek/some-module/lib-types/types/type.generated' or its corresponding type declarations.ts(2307)
+
+The ESLint rule introduced in previous `skuba` versions would short-circuit the type check if it detected an import with a full-stop in the last segment of the path to avoid long lint run times.
+
+These should hopefully be limited to a subset of files so you should be able to resolve this by updating the import statement to include an extension:
+
+```diff
+- import { type } from '@seek/some-module/lib-types/types/type.generated';
++ import { type } from '@seek/some-module/lib-types/types/type.generated.js';
+```
+
+##### Vitest.importActual
+
+If you were using `jest.requireActual`, these are automatically migrated to `vitest.importActual`. However, `vitest.importActual` is asynchronous and returns a promise, which means you will need to update your code to handle this.
+
+```diff
+- const actualModule = jest.requireActual('./actual-module');
++ const actualModule = await vitest.importActual<typeof import('./actual-module')>('./actual-module');
+```
+
+If you were importing this within a `.mock()` call, you can use the factory method to return the actual module:
+
+```diff
+- jest.mock('./actual-module', () => {
+-  const actual = jest.requireActual('./actual-module');
+-  return {
+-     ...actual,
+-     override: jest.fn(actual.override)
+-   };
+- });
++ vitest.mock('./actual-module', async (actualModule: () => Promise<typeof import('./actual-module')>) => {
++  const actual = await actualModule();
++  return {
++     ...actual,
++     override: vi.fn()
++   };
++ });
+```
+
+##### Jest Dynalite
+
+If you were using `jest-dynalite` for testing DynamoDB interactions, you will need to switch to [Vitest dynalite lite] which provides similar functionality for Vitest.
 
 ## Future considerations
 
@@ -481,7 +445,9 @@ For additional file types like `.json` files, we can add more specific import ma
 [`allowImportingTsExtensions`]: https://www.typescriptlang.org/tsconfig#allowImportingTsExtensions
 [Custom conditions]: https://www.typescriptlang.org/tsconfig/#customConditions
 [incompatible]: https://github.com/evanw/esbuild/issues/2435#issuecomment-2587786458
+[Vitest dynalite lite]: https://github.com/yamatatsu/vitest-dynamodb-lite/tree/main/packages/vitest-dynamodb-lite
 [Live types in a TypeScript monorepo]: https://colinhacks.com/essays/live-types-typescript-monorepo
+[migration guide]: https://vitest.dev/guide/migration.html#jest
 [`module`]: https://www.typescriptlang.org/tsconfig#module
 [`moduleNameMapper`]: https://jestjs.io/docs/configuration#modulenamemapper-objectstring-string--arraystring
 [`moduleResolution`]: https://www.typescriptlang.org/tsconfig#moduleResolution

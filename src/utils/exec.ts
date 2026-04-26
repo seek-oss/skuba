@@ -100,7 +100,7 @@ const envWithPath = {
 
 const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
   const subprocess = execa(command, args, {
-    localDir: import.meta.dirname,
+    localDir: opts?.localDir ?? import.meta.dirname,
     preferLocal: true,
     stdio: 'inherit',
     ...opts,
