@@ -274,7 +274,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 
     ```diff
     - seek-oss/docker-ecr-cache#v2.1.0:
-    + seek-oss/docker-ecr-cache#v2.2.1:
+    + seek-oss/docker-ecr-cache#v3.0.0:
         cache-on:
     -     - package.json
     -     - yarn.lock
@@ -289,7 +289,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
     If using [the newer `GET_NPM_TOKEN` environment variable](./npm.md) to abstract away `aws-sm` / `private-npm`, your pipeline docker-ecr-cache plugin should look like:
 
     ```yaml
-    - seek-oss/docker-ecr-cache#v2.2.1:
+    - seek-oss/docker-ecr-cache#v3.0.0:
         cache-on:
           - pnpm-workspace.yaml
           - package.json#.packageManager
