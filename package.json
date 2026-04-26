@@ -134,7 +134,7 @@
     "@changesets/get-github-info": "0.8.0",
     "@pnpm/cafs-types": "1000.1.0",
     "@pnpm/config": "^1004.9.0",
-    "@skuba-lib/changesets-changelog": "1.0.0-add-skuba-changesets-changelog-20260420101121",
+    "@skuba-lib/changesets-changelog": "workspace:^",
     "@types/ejs": "3.1.5",
     "@types/express": "5.0.6",
     "@types/fs-extra": "11.0.4",
