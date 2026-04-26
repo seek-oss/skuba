@@ -30,7 +30,7 @@ This will look like:
 configs:
   plugins:
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.2.1:
+      seek-oss/docker-ecr-cache#v3.0.0:
         cache-on:
           - .npmrc
           - package.json#.packageManager
@@ -86,7 +86,7 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \
 
    <!-- prettier-ignore -->
    ```diff
-     seek-oss/docker-ecr-cache#v2.2.1:
+     seek-oss/docker-ecr-cache#v3.0.0:
        cache-on:
          - .npmrc
          - package.json#.packageManager
