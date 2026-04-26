@@ -275,6 +275,12 @@ importers:
         specifier: ^4.3.5
         version: 4.3.6
 
+  packages/changesets-changelog:
+    dependencies:
+      '@changesets/get-github-info':
+        specifier: ^0.8.0
+        version: 0.8.0
+
   packages/detect-invalid-spies:
     dependencies:
       '@ast-grep/napi':
