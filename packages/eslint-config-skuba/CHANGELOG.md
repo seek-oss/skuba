@@ -1,5 +1,34 @@
 # eslint-config-skuba
 
+## 9.0.0
+
+### Major Changes
+
+- Migrate from `eslint-config-seek/base` to `eslint-config-seek/vitest/base` ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+  This package now ships Vitest ESLint rules instead of Jest rules. If you are consuming `eslint-config-skuba` directly, you will need to defer this upgrade until your codebase has migrated to Vitest and ESM.
+
+### Minor Changes
+
+- Re-export `eslint-config-seek/extensions` via `eslint-config-skuba/extensions` ([#2291](https://github.com/seek-oss/skuba/pull/2291))
+
+  This allows users to import from `eslint-config-skuba/extensions` instead of needing to hoist or install `eslint-config-seek` as a direct dependency.
+
+  ```ts
+  import {
+    js as jsExtensions,
+    ts as tsExtensions,
+  } from 'eslint-config-skuba/extensions';
+  ```
+
+- Remove `require-extensions` rules ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+  This removes the `require-extensions` rules which were previously used to enforce file extensions on imports to reduce the number of files that needed to be changed when migrating to ESM.
+
+- Migrate to ESM ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+  This package is still being published as a dual ESM/CJS package, but the source code is now ESM.
+
 ## 8.1.0
 
 ### Minor Changes
