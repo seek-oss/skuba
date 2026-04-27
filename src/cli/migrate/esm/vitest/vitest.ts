@@ -5,7 +5,10 @@ import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
 import { createExec, exec } from '../../../../utils/exec.js';
-import { detectPackageManager } from '../../../../utils/packageManager.js';
+import {
+  type PackageManagerConfig,
+  detectPackageManager,
+} from '../../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.js';
 
 import { postFixVitestMigration } from './postFixVitestMigration.js';
@@ -103,11 +106,11 @@ const patchFiles = async ({
   ];
 };
 
-export const migrateToVitest = async ({
-  mode,
-}: {
+export const migrateToVitest = async (opts: {
   mode: 'lint' | 'format';
+  packageManager?: PackageManagerConfig;
 }): Promise<PatchReturnType> => {
+  const mode = opts.mode;
   // Adding `vitest.config.ts` to all the integration tests causes the vscode extension
   // to freak out about having too many vitest configs
   if (process.env.SKUBA_INT_TEST === 'true') {
@@ -199,7 +202,7 @@ export const migrateToVitest = async ({
     ),
   );
 
-  const packageManager = await detectPackageManager();
+  const packageManager = opts.packageManager ?? (await detectPackageManager());
 
   if (packageManager.command === 'pnpm') {
     await exec('pnpm', 'dlx', '@sku-lib/codemod', 'jest-to-vitest', '.');
