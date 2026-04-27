@@ -17,29 +17,6 @@ skuba migrate help
 
 ---
 
-## skuba migrate esm
-
-Attempts to automatically migrate your project from CommonJS to ESM. Before running the migration, follow the [migration steps].
-
-```shell
-skuba migrate esm
-```
-
-The following changes are made:
-
-- type `module` is added to `package.json` files
-- CommonJS syntax is replaced with ESM syntax in source files, test files, and configuration files
-- ESLint config files and Prettier config files are migrated to ESM format
-- Jest is replaced with Vitest as the test runner
-  - The [sku codemod] is run along with additional transformations to fix any missed cases
-  - `aws-sdk-client-mock-jest` → `aws-sdk-client-mock-vitest`
-  - `@shopify/jest-koa-mocks` → `@skuba-lib/vitest-koa-mocks`
-  - `--runInBand` → `--maxWorkers=1` in `package.json` test scripts and Buildkite pipelines
-  - `jest.config.*ts` files are migrated to `vitest.config.ts` on a best-effort basis
-  - Jest hooks are migrated to Vitest hooks on a best-effort basis
-
-Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
-
 ## skuba migrate node
 
 **skuba** includes migrations to upgrade your project to the [active LTS version] of Node.js.
@@ -207,3 +184,104 @@ and `@types/node` to major version `20`.
 [node-20]: https://nodejs.org/en/blog/announcements/v20-release-announce
 [sku codemod]: https://seek-oss.github.io/sku/#/./docs/vitest?id=migrating-to-vitest
 [migration steps]: ../deep-dives/esm.md#steps-to-migrate
+
+## skuba migrate esm
+
+Attempts to automatically migrate your project from CommonJS to ESM. Before running the migration, follow the [migration steps].
+
+```shell
+skuba migrate esm
+```
+
+The following changes are made:
+
+- type `module` is added to `package.json` files
+- CommonJS syntax is replaced with ESM syntax in source files, test files, and configuration files
+- AWS CDK worker files are migrated to ESM format
+- ESLint config files and Prettier config files are migrated to ESM format
+- Jest is replaced with Vitest as the test runner
+  - The [sku codemod] is run along with additional transformations to fix additional cases
+  - `aws-sdk-client-mock-jest` → `aws-sdk-client-mock-vitest` + `@types/node`
+  - `@shopify/jest-koa-mocks` → `@skuba-lib/vitest-koa-mocks` + `@types/node`
+  - `--runInBand` → `--maxWorkers=1` in `package.json` test scripts and Buildkite pipelines
+  - `jest.config.*ts` files are migrated to `vitest.config.ts` on a best-effort basis
+  - Jest hooks are migrated to Vitest hooks on a best-effort basis
+
+Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
+
+### Post Migration Steps
+
+1. Run `skuba lint` and attempt to address any lint errors that may be caused by the migration. The most common failure points with `skuba test` runs can normally be addressed by fixing the lint errors first.
+
+If you notice there are changes you can make prior to running the skuba migration, we suggest making those changes first and then re-running the migration for the ease of reviewing the migration changes.
+
+If you notice any repeatable issues that the migration has not accounted for, please [open an issue] or reach out in #skuba-support.
+
+2. Review `vitest.config.ts` migrations
+
+Review your generated `vitest.config.ts` and Vitest setup files against the original `jest.config.ts` and Jest setup files to verify all configuration has been carried across, paying close attention to any custom settings or patterns that the migration may have missed. Once satisfied, delete the `jest.config.ts` and any Jest setup files.
+
+The migration may also leave some manual steps for you to complete within your `vitest.config.ts` files, such as updating existing regexp patterns to glob patterns in your test configuration.
+
+```ts
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
+  },
+});
+```
+
+These should be easily migrated by hand or with the assistance of an AI agent such as Copilot with a prompt such as
+
+```txt
+Address the TODO comments in vitest.config files
+```
+
+3. Run `skuba test` and attempt to address any test errors that may be caused by the migration
+
+4. Run and deploy your project as normal, and monitor for any issues that may be caused by the migration.
+
+5. If your project deploys a package, ensure you test the published package in a downstream project to confirm it works as expected.
+
+#### FAQ and Tips
+
+##### Jest spies no longer work after the migration
+
+1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
+
+Spies work differently in Vitest compared to Jest. You can read more about the differences here in our [@skuba-lib/detect-invalid-spies documentation].
+
+This will identify any spies in your code that may be broken by the migration. If there are any issues detected, you will need to address these before proceeding with the migration.
+
+##### Cannot find module 'some-module/type' or its corresponding type declarations.ts(2307)
+
+The ESLint rule introduced in previous `skuba` versions would quit evaluating imports very early to avoid long ESLint run times which means a few imports may be now invalid imports in ESM. The fix is as simple as adding a `.js` extension to the end of the import path:
+
+```diff
+- import { type } from '@seek/some-module/lib-types/types/type.generated';
++ import { type } from '@seek/some-module/lib-types/types/type.generated.js';
+```
+
+##### Jest Dynalite
+
+If you were using `jest-dynalite` for testing DynamoDB interactions, you will need to switch to [Vitest dynalite lite] which provides similar functionality for Vitest.
+
+##### Coverage reports are different after the migration
+
+Vitest uses v8 for coverage by default, which is native to Node.js and provides more accurate coverage reports. If you wish to revert to the previous `istanbul` coverage which Jest provided you can install the `@vitest/coverage-istanbul` package and add the following to your `vitest.config.ts`:
+
+```ts
+export default defineConfig({
+  test: {
+    coverage: {
+      provider: 'istanbul',
+    },
+  },
+});
+```
+
+[@skuba-lib/detect-invalid-spies documentation]: https://github.com/seek-oss/skuba/tree/main/packages/detect-invalid-spies
+[migration guide]: https://vitest.dev/guide/migration.html#jest
+[open an issue]: https://github.com/seek-oss/skuba/issues/new
+[Vitest dynalite lite]: https://github.com/yamatatsu/vitest-dynamodb-lite/tree/main/packages/vitest-dynamodb-lite

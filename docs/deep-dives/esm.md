@@ -308,89 +308,7 @@ export default defineConfig({
 
 Finally, we will switch to [Vitest] as our testing framework. Vitest is a modern testing framework that is fully compatible with ESM and provides a similar API to Jest, making it easier for us to transition.
 
-#### Steps to migrate
-
-1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
-
-This will identify any spies in your code that may be broken by the migration. If there are any issues detected, you will need to address these before proceeding with the migration.
-
-2. Run `skuba migrate esm`
-
-If your repo updated to skuba v16, this can be run by running `skuba format` or may have already run as part of your CI pipeline.
-
-3. Run `skuba lint` and attempt to address any lint errors that may be caused by the migration.
-
-4. Review `vitest.config.ts` migrations
-
-Review your generated `vitest.config.ts` and Vitest setup files against the original `jest.config.ts` and Jest setup files to verify all configuration has been carried across, paying close attention to any custom settings or patterns that the migration may have missed. Once satisfied, delete the `jest.config.ts` and any Jest setup files.
-
-The migration may also leave some manual steps for you to complete within your `vitest.config.ts` files, such as updating existing regexp patterns to glob patterns in your test configuration.
-
-```ts
-// vitest.config.ts
-export default defineConfig({
-  test: {
-    exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
-  },
-});
-```
-
-These should be easily migrated by hand or with the help of an AI agent such as Copilot.
-
-5. Run `skuba test` and attempt to address any test errors that may be caused by the migration
-
-6. Run and deploy your project as normal, and monitor for any issues that may be caused by the migration.
-
-7. If you deploy a package, ensure you test the published package in a downstream project to confirm it works as expected.
-
-#### FAQ and Tips
-
-##### Vitest migration guide
-
-Vitest provides a [migration guide] with tips for migrating from Jest to Vitest.
-
-##### Cannot find module '@seek/some-module/lib-types/types/type.generated' or its corresponding type declarations.ts(2307)
-
-The ESLint rule introduced in previous `skuba` versions would short-circuit the type check if it detected an import with a full-stop in the last segment of the path to avoid long lint run times.
-
-These should hopefully be limited to a subset of files so you should be able to resolve this by updating the import statement to include an extension:
-
-```diff
-- import { type } from '@seek/some-module/lib-types/types/type.generated';
-+ import { type } from '@seek/some-module/lib-types/types/type.generated.js';
-```
-
-##### Vitest.importActual
-
-If you were using `jest.requireActual`, these are automatically migrated to `vitest.importActual`. However, `vitest.importActual` is asynchronous and returns a promise, which means you will need to update your code to handle this.
-
-```diff
-- const actualModule = jest.requireActual('./actual-module');
-+ const actualModule = await vitest.importActual<typeof import('./actual-module')>('./actual-module');
-```
-
-If you were importing this within a `.mock()` call, you can use the factory method to return the actual module:
-
-```diff
-- jest.mock('./actual-module', () => {
--  const actual = jest.requireActual('./actual-module');
--  return {
--     ...actual,
--     override: jest.fn(actual.override)
--   };
-- });
-+ vitest.mock('./actual-module', async (actualModule: () => Promise<typeof import('./actual-module')>) => {
-+  const actual = await actualModule();
-+  return {
-+     ...actual,
-+     override: vi.fn()
-+   };
-+ });
-```
-
-##### Jest Dynalite
-
-If you were using `jest-dynalite` for testing DynamoDB interactions, you will need to switch to [Vitest dynalite lite] which provides similar functionality for Vitest.
+View the [ESM migration guide] for more details on this step.
 
 ## Future considerations
 
@@ -444,10 +362,9 @@ For additional file types like `.json` files, we can add more specific import ma
 
 [`allowImportingTsExtensions`]: https://www.typescriptlang.org/tsconfig#allowImportingTsExtensions
 [Custom conditions]: https://www.typescriptlang.org/tsconfig/#customConditions
+[ESM migration guide]: ../cli/migrate.md#skuba-migrate-esm
 [incompatible]: https://github.com/evanw/esbuild/issues/2435#issuecomment-2587786458
-[Vitest dynalite lite]: https://github.com/yamatatsu/vitest-dynamodb-lite/tree/main/packages/vitest-dynamodb-lite
 [Live types in a TypeScript monorepo]: https://colinhacks.com/essays/live-types-typescript-monorepo
-[migration guide]: https://vitest.dev/guide/migration.html#jest
 [`module`]: https://www.typescriptlang.org/tsconfig#module
 [`moduleNameMapper`]: https://jestjs.io/docs/configuration#modulenamemapper-objectstring-string--arraystring
 [`moduleResolution`]: https://www.typescriptlang.org/tsconfig#moduleResolution
