@@ -77,8 +77,8 @@ const patchFiles = async ({
           'aws-sdk-client-mock-vitest: 7.0.1',
         )
         .replace(
-          /@shopify\/jest-koa-mocks:\s*\S+/g,
-          `@skuba-lib/vitest-koa-mocks: ${latestVitestKoaMocksVersion}`,
+          /'?@shopify\/jest-koa-mocks'?:\s*\S+/g,
+          `'@skuba-lib/vitest-koa-mocks': ${latestVitestKoaMocksVersion}`,
         );
 
       return {
