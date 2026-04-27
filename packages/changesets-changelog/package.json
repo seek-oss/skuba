@@ -37,8 +37,8 @@
   },
   "publishConfig": {
     "exports": {
-      ".": "./lib/index.mjs",
-      "./inject": "./lib/inject.mjs",
+      ".": "./src/index.mjs",
+      "./inject": "./src/inject.mjs",
       "./package.json": "./package.json"
     }
   },
