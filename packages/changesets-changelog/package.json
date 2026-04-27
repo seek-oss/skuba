@@ -29,6 +29,10 @@
   "bin": {
     "skuba-changelog-inject": "./src/inject.mjs"
   },
+  "files": [
+    "src/changelog.mjs",
+    "src/inject.mjs"
+  ],
   "dependencies": {
     "@changesets/get-github-info": "^0.8.0"
   },
