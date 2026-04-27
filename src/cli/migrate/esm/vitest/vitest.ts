@@ -245,7 +245,12 @@ export const migrateToVitest = async ({
 
   // Install the new deps we added to package.json
   if (packageManager.command === 'pnpm') {
-    await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
+    await exec(
+      'pnpm',
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+    );
     if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
       await Promise.all(
         Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
@@ -258,15 +263,26 @@ export const migrateToVitest = async ({
             'install',
             `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
             '--save-dev',
+            '--frozen-lockfile=false',
             '--prefer-offline',
             '--ignore-workspace-root-check',
           );
         }),
       );
-      await exec('pnpm', 'dedupe', '--prefer-offline');
+      await exec(
+        'pnpm',
+        'dedupe',
+        '--frozen-lockfile=false',
+        '--prefer-offline',
+      );
     }
   } else {
-    await exec('yarn', 'install', '--prefer-offline');
+    await exec(
+      'yarn',
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+    );
     await Promise.all(
       Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
         const folderExec = createExec({

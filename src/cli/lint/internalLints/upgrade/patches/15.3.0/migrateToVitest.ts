@@ -16,7 +16,12 @@ const migrate: PatchFunction = async (config) => {
   }
 
   if (config.mode !== 'lint' && config.packageManager.command === 'pnpm') {
-    await exec('pnpm', 'install', '--prefer-offline');
+    await exec(
+      'pnpm',
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+    );
   }
 
   return await migrateToVitest(config);
