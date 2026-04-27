@@ -97,6 +97,7 @@ const cloneTemplate = async (
 ): Promise<TemplateConfig> => {
   const isGitHubTemplate = templateName.startsWith('github:');
   const isPrivateSeekTemplate = templateName.startsWith('seek:');
+  const isLocalTemplate = templateName.startsWith('local:');
   const isCustomTemplate = isGitHubTemplate || isPrivateSeekTemplate;
 
   if (isGitHubTemplate) {
@@ -107,6 +108,15 @@ const cloneTemplate = async (
     const privateName = templateName.slice('seek:'.length);
 
     await downloadPrivateTemplate(privateName, destinationDir);
+  } else if (isLocalTemplate) {
+    const localPath = path.resolve(templateName.slice('local:'.length));
+    await copyFiles({
+      include: () => true,
+      sourceRoot: localPath,
+      destinationRoot: destinationDir,
+      processors: [],
+      stripUnderscorePrefix: true,
+    });
   } else {
     const templateDir = path.join(TEMPLATE_DIR, templateName);
 
