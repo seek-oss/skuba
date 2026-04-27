@@ -254,6 +254,8 @@ Spies work differently in Vitest compared to Jest. You can read more about the d
 
 This will identify any spies in your code that may be broken by the migration. If there are any issues detected, you will need to address these before proceeding with the migration.
 
+For other Jest-specific patterns, you can refer to the [migration guide] provided by Vitest for more information on how to migrate your tests.
+
 ##### Cannot find module 'some-module/type' or its corresponding type declarations.ts(2307)
 
 The ESLint rule introduced in previous `skuba` versions would quit evaluating imports very early to avoid long ESLint run times which means a few imports may be now invalid imports in ESM. The fix is as simple as adding a `.js` extension to the end of the import path:
