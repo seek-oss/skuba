@@ -222,6 +222,7 @@ export const migrateToVitest = async (opts: {
       // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
       // replace imports from @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks
       // replace .mockImplementation() with .mockImplementation(() => undefined) to account for the fact that Vitest requires an implementation for mocks whereas Jest does not
+      // replace istanbul ignore with v8 ignore for coverage purposes
       const finalUpdated = updated
         .replace(
           /import\s+['"]aws-sdk-client-mock-jest['"];?/g,
@@ -231,7 +232,8 @@ export const migrateToVitest = async (opts: {
         .replace(
           /\.mockImplementation\(\)/g,
           '.mockImplementation(() => undefined)',
-        );
+        )
+        .replace('// istanbul', '// v8-ignore');
 
       if (finalUpdated !== content) {
         return fs.promises.writeFile(file, finalUpdated, 'utf8');
