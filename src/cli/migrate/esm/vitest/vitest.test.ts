@@ -13,6 +13,9 @@ vi.mock('../../../../utils/exec.js', () => ({
   createExec: () => vi.fn(),
   exec: vi.fn(),
 }));
+vi.mock('latest-version', () => ({
+  default: vi.fn().mockResolvedValue('1.0.1'),
+}));
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
   ...memfs.fs,
@@ -189,7 +192,7 @@ test('middleware', () => {
       }
       ",
         "pnpm-workspace.yaml": "catalog:
-        '@shopify/jest-koa-mocks': ^5.1.0
+        '@skuba-lib/vitest-koa-mocks': 1.0.1
       ",
         "src/middleware.test.ts": "import { createMockContext } from '@skuba-lib/vitest-koa-mocks';
 
@@ -482,6 +485,7 @@ export {}`,
             DEPLOYMENT: 'test',
           },
           coverage: {
+            provider: 'istanbul',
             exclude: [
           'src/listen\\.ts',
           'src/register\\.ts',
@@ -613,6 +617,7 @@ export default Jest.mergePreset({
             ENVIRONMENT: 'test',
           },
           coverage: {
+            provider: 'istanbul',
             exclude: ['src/testing'],
             thresholds: {
               branches: 100,

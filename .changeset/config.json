@@ -1,6 +1,9 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
-  "changelog": ["./changelog.cjs", { "repo": "seek-oss/skuba" }],
+  "changelog": [
+    "@skuba-lib/changesets-changelog",
+    { "repo": "seek-oss/skuba" }
+  ],
   "commit": false,
   "linked": [],
   "access": "public",

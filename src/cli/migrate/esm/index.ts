@@ -1,6 +1,9 @@
 import { log } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
+import {
+  type PackageManagerConfig,
+  detectPackageManager,
+} from '../../../utils/packageManager.js';
 import type {
   Patch,
   PatchReturnType,
@@ -42,14 +45,15 @@ const patches: Patch[] = [
   },
 ];
 
-export const migrateToESM = async ({
-  mode,
-}: {
+export const migrateToESM = async (opts: {
   mode: 'lint' | 'format';
+  packageManager?: PackageManagerConfig;
 }): Promise<PatchReturnType> => {
+  const { mode } = opts;
+
   const [manifest, packageManager] = await Promise.all([
     getConsumerManifest(),
-    detectPackageManager(),
+    opts.packageManager ?? detectPackageManager(),
   ]);
 
   if (!manifest) {

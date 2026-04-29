@@ -1,7 +1,4 @@
-const {
-  getInfo,
-  getInfoFromPullRequest,
-} = require('@changesets/get-github-info');
+import { getInfo, getInfoFromPullRequest } from '@changesets/get-github-info';
 
 /**
  * Bold the scope of the changelog entry.
@@ -20,9 +17,7 @@ const boldScope = (firstLine) => firstLine.replace(/^([^:]+): /, '**$1:** ');
  * @type import('@changesets/types').ChangelogFunctions
  */
 const defaultChangelogFunctions = {
-  getDependencyReleaseLine: async (_changesets, _dependenciesUpdated) => {
-    return '';
-  },
+  getDependencyReleaseLine: async (_changesets, _dependenciesUpdated) => '',
   getReleaseLine: async (changeset) => {
     const [firstLine, ...futureLines] = changeset.summary
       .split('\n')
@@ -50,11 +45,9 @@ const gitHubChangelogFunctions = {
     _changesets,
     _dependenciesUpdated,
     _options,
-  ) => {
-    return '';
-  },
+  ) => '',
   getReleaseLine: async (changeset, _type, options) => {
-    if (!options || !options.repo) {
+    if (!options?.repo) {
       throw new Error(
         'Please provide a repo to this changelog generator like this:\n"changelog": ["./changelog.js", { "repo": "org/repo" }]',
       );
@@ -77,9 +70,7 @@ const gitHubChangelogFunctions = {
         commitFromSummary = commit;
         return '';
       })
-      .replace(/^\s*(?:author|user):\s*@?([^\s]+)/gim, () => {
-        return '';
-      })
+      .replace(/^\s*(?:author|user):\s*@?([^\s]+)/gim, () => '')
       .trim();
 
     const [firstLine, ...futureLines] = replacedChangelog
@@ -88,27 +79,25 @@ const gitHubChangelogFunctions = {
 
     const links = await (async () => {
       if (prFromSummary !== undefined) {
-        // eslint-disable-next-line no-shadow
-        let { links } = await getInfoFromPullRequest({
+        let { links: prLinks } = await getInfoFromPullRequest({
           repo: options.repo,
           pull: prFromSummary,
         });
         if (commitFromSummary) {
-          links = {
-            ...links,
+          prLinks = {
+            ...prLinks,
             commit: `[\`${commitFromSummary}\`](https://github.com/${options.repo}/commit/${commitFromSummary})`,
           };
         }
-        return links;
+        return prLinks;
       }
       const commitToFetchFrom = commitFromSummary || changeset.commit;
       if (commitToFetchFrom) {
-        // eslint-disable-next-line no-shadow
-        const { links } = await getInfo({
+        const { links: commitLinks } = await getInfo({
           repo: options.repo,
           commit: commitToFetchFrom,
         });
-        return links;
+        return commitLinks;
       }
       return {
         commit: null,
@@ -128,15 +117,17 @@ const gitHubChangelogFunctions = {
   },
 };
 
-if (process.env.GITHUB_TOKEN) {
-  module.exports = gitHubChangelogFunctions;
-} else {
+const changelogFunctions = (() => {
+  if (process.env.GITHUB_TOKEN) {
+    return gitHubChangelogFunctions;
+  }
+
   // eslint-disable-next-line no-console
   console.warn(
-    `Defaulting to Git-based versioning.
-Enable GitHub-based versioning by setting the GITHUB_TOKEN environment variable.
-This requires a GitHub personal access token with the \`public_repo\` scope: https://github.com/settings/tokens/new`,
+    'Defaulting to Git-based versioning.\nEnable GitHub-based versioning by setting the GITHUB_TOKEN environment variable.\nThis requires a GitHub personal access token with the `public_repo` scope: https://github.com/settings/tokens/new',
   );
 
-  module.exports = defaultChangelogFunctions;
-}
+  return defaultChangelogFunctions;
+})();
+
+export default changelogFunctions;

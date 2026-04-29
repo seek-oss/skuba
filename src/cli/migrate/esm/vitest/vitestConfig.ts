@@ -595,7 +595,7 @@ const scaffoldTestConfig = async ({
   ];
 
   const displayName = extractString(root, 'displayName');
-
+  const coverageProvider = extractString(root, 'coverageProvider');
   const testTimeout = extractNumber(root, 'testTimeout');
   const restoreMocks = extractBoolean(root, 'restoreMocks');
   const clearMocks = extractBoolean(root, 'clearMocks');
@@ -648,6 +648,7 @@ const scaffoldTestConfig = async ({
     }${
       (!isProject && !isSpread) || coverageIgnorePatterns || coverageThreshold
         ? `\n    coverage: {
+      provider: ${coverageProvider === 'v8' ? "'v8'" : "'istanbul'"},
       exclude: ${coverageIgnorePatterns ? `${coverageIgnorePatterns}, // TODO: Update these regexp pattern strings to globs` : "['src/testing'],"}
       thresholds: ${
         coverageThreshold ??

@@ -5,7 +5,10 @@ import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
 import { createExec, exec } from '../../../../utils/exec.js';
-import { detectPackageManager } from '../../../../utils/packageManager.js';
+import {
+  type PackageManagerConfig,
+  detectPackageManager,
+} from '../../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.js';
 
 import { postFixVitestMigration } from './postFixVitestMigration.js';
@@ -74,8 +77,8 @@ const patchFiles = async ({
           'aws-sdk-client-mock-vitest: 7.0.1',
         )
         .replace(
-          /@shopify\/jest-koa-mocks:\s*\S+/g,
-          `@skuba-lib/vitest-koa-mocks: ${latestVitestKoaMocksVersion}`,
+          /'?@shopify\/jest-koa-mocks'?:\s*\S+/g,
+          `'@skuba-lib/vitest-koa-mocks': ${latestVitestKoaMocksVersion}`,
         );
 
       return {
@@ -103,11 +106,11 @@ const patchFiles = async ({
   ];
 };
 
-export const migrateToVitest = async ({
-  mode,
-}: {
+export const migrateToVitest = async (opts: {
   mode: 'lint' | 'format';
+  packageManager?: PackageManagerConfig;
 }): Promise<PatchReturnType> => {
+  const mode = opts.mode;
   // Adding `vitest.config.ts` to all the integration tests causes the vscode extension
   // to freak out about having too many vitest configs
   if (process.env.SKUBA_INT_TEST === 'true') {
@@ -199,7 +202,7 @@ export const migrateToVitest = async ({
     ),
   );
 
-  const packageManager = await detectPackageManager();
+  const packageManager = opts.packageManager ?? (await detectPackageManager());
 
   if (packageManager.command === 'pnpm') {
     await exec('pnpm', 'dlx', '@sku-lib/codemod', 'jest-to-vitest', '.');
@@ -219,6 +222,7 @@ export const migrateToVitest = async ({
       // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
       // replace imports from @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks
       // replace .mockImplementation() with .mockImplementation(() => undefined) to account for the fact that Vitest requires an implementation for mocks whereas Jest does not
+      // replace istanbul ignore with v8 ignore for coverage purposes
       const finalUpdated = updated
         .replace(
           /import\s+['"]aws-sdk-client-mock-jest['"];?/g,
@@ -245,7 +249,12 @@ export const migrateToVitest = async ({
 
   // Install the new deps we added to package.json
   if (packageManager.command === 'pnpm') {
-    await exec('pnpm', 'install', '--no-frozen-lockfile', '--prefer-offline');
+    await exec(
+      'pnpm',
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+    );
     if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
       await Promise.all(
         Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
@@ -258,15 +267,26 @@ export const migrateToVitest = async ({
             'install',
             `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
             '--save-dev',
+            '--frozen-lockfile=false',
             '--prefer-offline',
             '--ignore-workspace-root-check',
           );
         }),
       );
-      await exec('pnpm', 'dedupe', '--prefer-offline');
+      await exec(
+        'pnpm',
+        'dedupe',
+        '--frozen-lockfile=false',
+        '--prefer-offline',
+      );
     }
   } else {
-    await exec('yarn', 'install', '--prefer-offline');
+    await exec(
+      'yarn',
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+    );
     await Promise.all(
       Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
         const folderExec = createExec({
