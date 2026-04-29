@@ -88,6 +88,7 @@
     "@octokit/types": "^16.0.0",
     "@skuba-lib/api": "workspace:^",
     "@types/node": "^24.10.2",
+    "@vitest/coverage-istanbul": "^4.1.0",
     "@vitest/coverage-v8": "^4.1.0",
     "@vitest/ui": "^4.1.0",
     "@vitest/utils": "^4.1.0",

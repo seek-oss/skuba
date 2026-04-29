@@ -485,6 +485,7 @@ export {}`,
             DEPLOYMENT: 'test',
           },
           coverage: {
+            provider: 'istanbul',
             exclude: [
           'src/listen\\.ts',
           'src/register\\.ts',
@@ -616,6 +617,7 @@ export default Jest.mergePreset({
             ENVIRONMENT: 'test',
           },
           coverage: {
+            provider: 'istanbul',
             exclude: ['src/testing'],
             thresholds: {
               branches: 100,
@@ -642,37 +644,6 @@ export default Jest.mergePreset({
           ],
         },
       }));
-      ",
-      }
-    `);
-  });
-
-  it('should transform istanbul ignore comments in ts files', async () => {
-    vol.fromJSON({
-      'src/example.test.ts': `test('example test', () => {
-  // istanbul ignore next
-  const a = 1;
-  expect(a).toBe(1);
-});
-`,
-    });
-
-    await expect(
-      migrateToVitest({
-        ...baseArgs,
-        mode: 'format',
-      }),
-    ).resolves.toEqual({
-      result: 'apply',
-    } satisfies PatchReturnType);
-
-    expect(volToJson()).toMatchInlineSnapshot(`
-      {
-        "src/example.test.ts": "test('example test', () => {
-        // v8-ignore ignore next
-        const a = 1;
-        expect(a).toBe(1);
-      });
       ",
       }
     `);

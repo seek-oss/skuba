@@ -232,8 +232,7 @@ export const migrateToVitest = async (opts: {
         .replace(
           /\.mockImplementation\(\)/g,
           '.mockImplementation(() => undefined)',
-        )
-        .replace('// istanbul', '// v8-ignore');
+        );
 
       if (finalUpdated !== content) {
         return fs.promises.writeFile(file, finalUpdated, 'utf8');
