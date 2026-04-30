@@ -40,7 +40,7 @@
     "test:ci": "echo \"No tests\""
   },
   "dependencies": {
-    "eslint-config-seek": "15.0.4",
+    "eslint-config-seek": "15.0.5",
     "eslint-plugin-skuba": "workspace:*",
     "eslint-plugin-yml": "^1.14.0",
     "typescript-eslint": "^8.39.0"
