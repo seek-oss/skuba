@@ -88,6 +88,7 @@
     "@octokit/types": "^16.0.0",
     "@skuba-lib/api": "workspace:^",
     "@types/node": "^24.10.2",
+    "@vitest/coverage-istanbul": "^4.1.0",
     "@vitest/coverage-v8": "^4.1.0",
     "@vitest/ui": "^4.1.0",
     "@vitest/utils": "^4.1.0",
@@ -106,6 +107,7 @@
     "ignore": "^7.0.0",
     "is-installed-globally": "^0.4.0",
     "isomorphic-git": "^1.11.1",
+    "latest-version": "^9.0.0",
     "lodash.mergewith": "^4.6.2",
     "minimist": "^1.2.6",
     "normalize-package-data": "^8.0.0",
@@ -118,7 +120,7 @@
     "prettier-plugin-packagejson": "^3.0.0",
     "publint": "~0.3.17",
     "read-package-up": "^12.0.0",
-    "rolldown": "1.0.0-rc.13",
+    "rolldown": "1.0.0-rc.15",
     "semantic-release": "^25.0.2",
     "simple-git": "^3.5.0",
     "ts-dedent": "^2.2.0",
@@ -126,7 +128,7 @@
     "tsdown": "~0.21.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.0",
-    "vitest": "^4.1.0",
+    "vitest": "^4.1.4",
     "zod": "^4.3.5"
   },
   "devDependencies": {
