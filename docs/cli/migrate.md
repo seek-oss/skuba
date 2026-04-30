@@ -271,17 +271,21 @@ If you were using `jest-dynalite` for testing DynamoDB interactions, you will ne
 
 ##### Coverage reports are different after the migration
 
-Vitest uses v8 for coverage by default, which is native to Node.js and provides more accurate coverage reports. If you wish to revert to the previous `istanbul` coverage which Jest provided you can install the `@vitest/coverage-istanbul` package and add the following to your `vitest.config.ts`:
+Vitest transforms your code differently to Jest which may result in different coverage reports after the migration. You may need to experiment with placing `/* istanbul ignore */` comments in different places in your code to achieve the desired coverage report.
 
-```ts
-export default defineConfig({
-  test: {
-    coverage: {
-      provider: 'istanbul',
-    },
-  },
-});
+```diff
+    transport:
+-   /* istanbul ignore next */
+      config.environment === 'local'
++       ? /* istanbul ignore next */ { target: 'pino-pretty' }
+        : undefined,
 ```
+
+We are unsure whether this is intended behaviour or if there is a bug in the Vitest Istanbul and v8 coverage providers.
+
+You may also find some luck with using the `/* istanbul ignore start */` and `/* istanbul ignore end */` comments
+
+For the keen observers, we have decided to ease the migration by firstly adopting the `istanbul` provider for coverage in Vitest instead of the default `v8` provider. The `v8` provider will be made the default in a future release once we have mostly migrated our codebase to ESM and can confirm it works as expected.
 
 [@skuba-lib/detect-invalid-spies documentation]: https://github.com/seek-oss/skuba/tree/main/packages/detect-invalid-spies
 [migration guide]: https://vitest.dev/guide/migration.html#jest
