@@ -2,7 +2,7 @@
 'skuba': major
 ---
 
-build, lint: Migrate to ESM
+build, lint, test: Migrate to ESM
 
 As part of our [migration to ESM](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html), skuba's source code is now pure ESM.
 
