@@ -14,6 +14,7 @@ import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
 import { migrateEslintConfigExportDefaultPatch } from './migrateEslintConfigExportDefault.js';
 import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefault.js';
 import { rewriteGlobalVars } from './rewriteGlobalVars.js';
+import { tryUpgradeSkubaDive } from './upgradeSkubaDive.js';
 import { migrateToVitest } from './vitest/vitest.js';
 
 const patches: Patch[] = [
@@ -38,6 +39,10 @@ const patches: Patch[] = [
   {
     apply: migrateExportEqualsToDefaultPatch,
     description: 'Replace TypeScript export = with export default',
+  },
+  {
+    apply: tryUpgradeSkubaDive,
+    description: 'Upgrade skuba-dive to support ESM',
   },
   {
     apply: migrateToVitest,
