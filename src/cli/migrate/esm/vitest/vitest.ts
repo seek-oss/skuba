@@ -272,12 +272,7 @@ export const migrateToVitest = async (opts: {
           );
         }),
       );
-      await exec(
-        'pnpm',
-        'dedupe',
-        '--frozen-lockfile=false',
-        '--prefer-offline',
-      );
+      await exec('pnpm', 'dedupe', '--prefer-offline');
     }
   } else {
     await exec(
