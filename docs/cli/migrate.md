@@ -269,6 +269,24 @@ The ESLint rule introduced in previous `skuba` versions would quit evaluating im
 
 If you were using `jest-dynalite` for testing DynamoDB interactions, you will need to switch to [Vitest dynalite lite] which provides similar functionality for Vitest.
 
+##### Esbuild
+
+If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration to ensure it is compatible with ESM.
+
+Of note, you may need to update the `conditions`, `mainFields` and `format` options in your `esbuild` configuration to ensure that it correctly resolves ESM modules.
+
+```diff
+  esbuild.build({
+    // ...
+    conditions: [
+      '@seek/YOUR_REPO/source',
++     'module'
+    ],
++   mainFields: ['module', 'main'],
++   format: 'esm',
+   });
+```
+
 ##### Coverage reports are different after the migration
 
 Vitest transforms your code differently to Jest which may result in different coverage reports after the migration. You may need to experiment with placing `/* istanbul ignore */` comments in different places in your code to achieve the desired coverage report.
