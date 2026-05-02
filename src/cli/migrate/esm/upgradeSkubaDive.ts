@@ -1,5 +1,7 @@
 import { inspect } from 'util';
 
+import latest from 'latest-version';
+
 import { log } from '../../../utils/logging.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 import { upgradeInfraPackages } from '../nodeVersion/upgrade.js';
@@ -8,7 +10,7 @@ const upgradeSkubaDive: PatchFunction = async (opts) =>
   upgradeInfraPackages(opts.mode, [
     {
       name: 'skuba-dive',
-      version: '4.1.0',
+      version: await latest('skuba-dive', { version: '^4.0.0' }),
     },
   ]);
 
