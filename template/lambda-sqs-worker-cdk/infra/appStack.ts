@@ -99,9 +99,12 @@ export class AppStack extends Stack {
         target: 'node24',
         // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
         externalModules: [],
+        nodeModules: ['pino'],
         esbuildArgs: {
-          '--conditions': '@seek/<%- serviceName %>/source',
+          '--conditions': '@seek/<%- serviceName %>/source,module',
         },
+        format: aws_lambda_nodejs.OutputFormat.ESM,
+        mainFields: ['module', 'main'],
       },
       functionName: '<%- serviceName %>',
       environment: {
