@@ -80,6 +80,10 @@ Patch skipped: Replace __dirname and __filename with import.meta equivalents - n
 
 Patch skipped: Replace TypeScript export = with export default - no export = assignments found to migrate
 
+Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-workspace.yaml files to patch
+
+Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
+
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
 
 Patch applied: Migrate to ESM upgrade-skuba
@@ -215,6 +219,10 @@ Patch skipped: Replace __dirname and __filename with import.meta equivalents - n
 
 Patch skipped: Replace TypeScript export = with export default - no export = assignments found to migrate
 
+Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-workspace.yaml files to patch
+
+Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
+
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
 
 Patch applied: Migrate to ESM upgrade-skuba
@@ -343,6 +351,10 @@ Patch skipped: Replace __dirname and __filename with import.meta equivalents - n
 
 Patch skipped: Replace TypeScript export = with export default - no export = assignments found to migrate
 
+Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-workspace.yaml files to patch
+
+Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
+
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
 
 Patch applied: Migrate to ESM upgrade-skuba
@@ -442,6 +454,10 @@ Patch skipped: Allow default exports in config files (import-x/no-default-export
 Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace
 
 Patch skipped: Replace TypeScript export = with export default - no export = assignments found to migrate
+
+Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-workspace.yaml files to patch
+
+Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
 
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
 
