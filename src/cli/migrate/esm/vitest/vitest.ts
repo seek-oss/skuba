@@ -267,7 +267,6 @@ export const migrateToVitest = async (opts: {
             'install',
             `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
             '--save-dev',
-            '--frozen-lockfile=false',
             '--prefer-offline',
             '--ignore-workspace-root-check',
           );
