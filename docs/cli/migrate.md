@@ -273,7 +273,7 @@ If you were using `jest-dynalite` for testing DynamoDB interactions, you will ne
 
 If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration to ensure it is compatible with ESM.
 
-Of note, you may need to update the `conditions`, `mainFields` and `format` options in your `esbuild` configuration to ensure that it correctly resolves ESM modules.
+Of note, you may need to update the `conditions`, `mainFields`, `format` and `external` options in your `esbuild` configuration to ensure that it correctly resolves ESM modules.
 
 ```diff
   esbuild.build({
@@ -284,6 +284,10 @@ Of note, you may need to update the `conditions`, `mainFields` and `format` opti
     ],
 +   mainFields: ['module', 'main'],
 +   format: 'esm',
+
++   external: ['pino']
+    // or
++   plugins: [esbuildPluginPino()]
    });
 ```
 
