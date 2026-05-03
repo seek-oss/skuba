@@ -197,7 +197,7 @@ The following changes are made:
 
 - type `module` is added to `package.json` files
 - CommonJS syntax is replaced with ESM syntax in source files, test files, and configuration files
-- AWS CDK worker files are migrated to ESM format
+- AWS CDK worker and Serverless files are migrated to ESM format
 - ESLint config files and Prettier config files are migrated to ESM format
 - Jest is replaced with Vitest as the test runner
   - The [sku codemod] is run along with additional transformations to fix additional cases
@@ -273,7 +273,7 @@ If you were using `jest-dynalite` for testing DynamoDB interactions, you will ne
 
 If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration to ensure it is compatible with ESM.
 
-Of note, you may need to update the `conditions`, `mainFields`, `format` and `external` options in your `esbuild` configuration to ensure that it correctly resolves ESM modules.
+Of note, you may need to update the `conditions`, `mainFields`, `format` and `external` or `plugins` options in your `esbuild` configuration to ensure that it correctly resolves ESM modules.
 
 ```diff
   esbuild.build({
