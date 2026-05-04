@@ -70,15 +70,12 @@ const transformModuleExportsRequire = (ast: SgNode): Edit[] | null => {
   );
 };
 
-// Converts `const x = require('some-module')` to `import x from 'some-module'`
+// Converts top-level `const x = require('some-module')` to `import x from 'some-module'`.
 const transformRequireDeclarations = (ast: SgNode): Edit[] => {
   const matches = ast.findAll({
     rule: {
-      any: [
-        { pattern: 'const $NAME = require($MOD)' },
-        { pattern: 'let $NAME = require($MOD)' },
-        { pattern: 'var $NAME = require($MOD)' },
-      ],
+      pattern: 'const $NAME = require($MOD)',
+      inside: { kind: 'program' },
     },
   });
 
@@ -123,20 +120,21 @@ const transformRequireDeclarations = (ast: SgNode): Edit[] => {
 // Adds `with { type: "json" }` to existing default `import … from '…json'` (ESM import attributes).
 const transformExistingJsonDefaultImport = (ast: SgNode): Edit[] => {
   const imports = ast.findAll({
-    rule: { pattern: 'import $NAME from $SPEC' },
+    rule: {
+      kind: 'import_statement',
+      has: { kind: 'string', regex: String.raw`\.json['"]$` },
+      not: { has: { kind: 'import_attribute' } },
+    },
   });
 
   const edits: Edit[] = [];
 
   for (const match of imports) {
-    const specifierNode = match.getMatch('SPEC');
+    const specifierNode = match
+      .findAll({ rule: { kind: 'string' } })
+      .find((s) => isJsonModuleSpecifier(extractModuleInfo(s).modulePath));
+
     if (!specifierNode) {
-      continue;
-    }
-
-    const { modulePath } = extractModuleInfo(specifierNode);
-
-    if (!isJsonModuleSpecifier(modulePath)) {
       continue;
     }
 
@@ -366,7 +364,7 @@ const migrateConfigFile = (ast: SgNode): Edit[] =>
     ...transformExistingJsonDefaultImport(ast),
   ];
 
-export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
+export const tryMigrateImportExportStatements: PatchFunction = async (
   config,
 ) => {
   const { mode, manifest } = config;
@@ -436,11 +434,11 @@ export const tryMigrateEslintConfigExportDefault: PatchFunction = async (
   return { result: 'apply' };
 };
 
-export const migrateEslintConfigExportDefaultPatch: PatchFunction = async (
+export const migrateImportExportStatementsPatch: PatchFunction = async (
   config,
 ) => {
   try {
-    return await tryMigrateEslintConfigExportDefault(config);
+    return await tryMigrateImportExportStatements(config);
   } catch (err) {
     log.warn(
       'Failed to migrate config files (module.exports/require → export default/import)',

@@ -12,8 +12,8 @@ import type {
 import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.js';
 import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
 import { tryMigrateDockerfileRequires } from './migrateDockerfileRequires.js';
-import { migrateEslintConfigExportDefaultPatch } from './migrateEslintConfigExportDefault.js';
 import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefault.js';
+import { migrateImportExportStatementsPatch } from './migrateImportExportStatements.js';
 import { tryMigrateLambdas } from './migrateLambdas.js';
 import { tryMigrateVocab } from './migrateVocab.js';
 import { rewriteGlobalVars } from './rewriteGlobalVars.js';
@@ -30,7 +30,7 @@ const patches: Patch[] = [
     description: 'Migrate vocab.config.js files to cjs',
   },
   {
-    apply: migrateEslintConfigExportDefaultPatch,
+    apply: migrateImportExportStatementsPatch,
     description: 'Convert module.exports to export default (CommonJS to ESM)',
   },
   {
@@ -93,8 +93,7 @@ export const migrateToESM = async (opts: {
 
     if (result.result === 'skip') {
       log.plain(
-        `\nPatch skipped: ${patch.description}${
-          result.reason ? ` - ${result.reason}` : ''
+        `\nPatch skipped: ${patch.description}${result.reason ? ` - ${result.reason}` : ''
         }`,
       );
     } else {

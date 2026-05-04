@@ -3,10 +3,12 @@ import { inspect } from 'util';
 
 import fg from 'fast-glob';
 import fs from 'fs-extra';
-import { readPackageUp } from 'read-package-up';
 
 import { log } from '../../../utils/logging.js';
-import { formatPackage } from '../../configure/processing/package.js';
+import {
+  formatPackage,
+  parsePackage,
+} from '../../configure/processing/package.js';
 import type {
   PatchFunction,
   PatchReturnType,
@@ -17,23 +19,23 @@ export const hasFileNameRegex = /__filename\b/;
 
 const PACKAGES_EXCLUDED_FROM_TYPE_MODULE = ['eslint-config-skuba'];
 
-export const addTypeModule = async (cwd: string, originalContent: string) => {
-  const manifest = await readPackageUp({ cwd, normalize: false });
+export const addTypeModule = async (originalContent: string) => {
+  const packageJson = parsePackage(originalContent);
 
-  if (manifest === undefined) {
+  if (packageJson === undefined) {
     return originalContent;
   }
 
   if (
-    manifest.packageJson.name &&
-    PACKAGES_EXCLUDED_FROM_TYPE_MODULE.includes(manifest.packageJson.name)
+    packageJson.name &&
+    PACKAGES_EXCLUDED_FROM_TYPE_MODULE.includes(packageJson.name)
   ) {
     return originalContent;
   }
 
-  if (manifest.packageJson.type !== 'module') {
-    manifest.packageJson.type = 'module';
-    return await formatPackage(manifest.packageJson);
+  if (packageJson.type !== 'module') {
+    packageJson.type = 'module';
+    return await formatPackage(packageJson);
   }
 
   return originalContent;
@@ -76,7 +78,7 @@ export const tryAddTypeModuleToPackageJson: PatchFunction = async (
     packageJsonFiles.map(async ({ file, contents }) => ({
       file,
       before: contents,
-      after: await addTypeModule(path.dirname(file), contents),
+      after: await addTypeModule(contents),
     })),
   );
 

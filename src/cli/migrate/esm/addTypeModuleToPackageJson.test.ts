@@ -27,20 +27,6 @@ vi.mock('fast-glob', () => ({
   },
 }));
 
-vi.mock('read-package-up', () => ({
-  readPackageUp: async () => {
-    const packageJsonPath = `package.json`;
-    const packageJsonContent = await memfs.fs.promises.readFile(
-      packageJsonPath,
-      'utf-8',
-    );
-    return {
-      packageJson: JSON.parse(packageJsonContent as string),
-      path: packageJsonPath,
-    };
-  },
-}));
-
 beforeEach(() => {
   vol.reset();
 });

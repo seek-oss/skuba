@@ -11,7 +11,7 @@ import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewr
 
 const transformExportEqualsToDefault = (ast: SgNode): Edit[] => {
   const match = ast.find({
-    rule: { pattern: 'export = $EXPR' },
+    rule: { pattern: 'export = $EXPR', kind: 'export_statement' },
   });
 
   if (!match) {
@@ -25,11 +25,6 @@ const transformExportEqualsToDefault = (ast: SgNode): Edit[] => {
 
   return [match.replace(`export default ${expr.text()};`)];
 };
-
-const resolveParseLanguage = (
-  relativePath: string,
-): 'JavaScript' | 'TypeScript' =>
-  /\.(ts|tsx|mts|cts)$/i.test(relativePath) ? 'TypeScript' : 'JavaScript';
 
 export const tryMigrateExportEqualsToDefault: PatchFunction = async (
   config,
@@ -59,8 +54,7 @@ export const tryMigrateExportEqualsToDefault: PatchFunction = async (
 
   const parsedFiles = await Promise.all(
     files.map(async ({ file, contents }) => {
-      const language = resolveParseLanguage(path.relative(cwd, file));
-      const ast = (await parseAsync(language, contents)).root();
+      const ast = (await parseAsync('Typescript', contents)).root();
       const edits = transformExportEqualsToDefault(ast);
       const updated = edits.length
         ? `${ast.commitEdits(edits).trimEnd()}\n`

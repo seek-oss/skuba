@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { configForPackageManager } from '../../../utils/packageManager.js';
 import type { PatchConfig } from '../../lint/internalLints/upgrade/index.js';
 
-import { tryMigrateEslintConfigExportDefault } from './migrateEslintConfigExportDefault.js';
+import { tryMigrateImportExportStatements as tryMigrateImportExportStatements } from './migrateImportExportStatements.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -25,7 +25,7 @@ vi.mock('fast-glob', () => ({
 
 beforeEach(() => vol.reset());
 
-describe('tryMigrateEslintConfigExportDefault', () => {
+describe('tryMigrateImportExportStatements', () => {
   const baseArgs = {
     manifest: {
       path: path.join(process.cwd(), 'package.json'),
@@ -43,7 +43,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         vol.fromJSON({ 'package.json': '{}' });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -67,7 +67,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -95,7 +95,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -123,7 +123,7 @@ describe('tryMigrateEslintConfigExportDefault', () => {
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -159,7 +159,7 @@ export const locales = { en: enLocale };
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -187,7 +187,7 @@ export const locales = { en: enLocale };
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -212,7 +212,7 @@ export const locales = { en: enLocale };
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -246,7 +246,7 @@ export default [...config, { rules: { 'no-process-exit': 'off' } }];
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -280,7 +280,7 @@ export default pkg;
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -314,7 +314,7 @@ export default { foo, bar };
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -351,7 +351,7 @@ export default { foo, bar };
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -384,7 +384,7 @@ export default { foo, bar };
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -426,7 +426,7 @@ export default {
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -464,7 +464,7 @@ export default {
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
@@ -497,7 +497,7 @@ export default [
         });
 
         await expect(
-          tryMigrateEslintConfigExportDefault({
+          tryMigrateImportExportStatements({
             ...baseArgs,
             mode,
           }),
