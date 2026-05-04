@@ -8,9 +8,9 @@ import { log } from '../../../utils/logging.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
 
-export const hasDirNameRegex = /__dirname\b/;
+export const hasDirNameRegex = /__dirname\b/g;
 export const hasDirNameVariableRegex = /const __dirname =/g;
-export const hasFileNameRegex = /__filename\b/;
+export const hasFileNameRegex = /__filename\b/g;
 export const hasFileNameVariableRegex = /const __filename =/g;
 
 const removeGlobalVars = (contents: string) =>

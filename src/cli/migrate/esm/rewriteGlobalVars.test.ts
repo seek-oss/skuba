@@ -83,6 +83,35 @@ describe('tryRewriteGlobalVars', () => {
             },
       );
     });
+
+    it('should replace every __dirname and __filename in a file', async () => {
+      const input =
+        'const a = __dirname;\nconst b = __dirname;\nconst c = __filename;\n';
+
+      const inputVolume = {
+        'apps/api/app.ts': input,
+      };
+
+      vol.fromJSON(inputVolume);
+
+      await expect(
+        tryRewriteGlobalVars({
+          ...baseArgs,
+          mode,
+        }),
+      ).resolves.toEqual({
+        result: 'apply',
+      });
+
+      expect(volToJson()).toEqual(
+        mode === 'lint'
+          ? inputVolume
+          : {
+              'apps/api/app.ts':
+                'const a = import.meta.dirname;\nconst b = import.meta.dirname;\nconst c = import.meta.filename;\n',
+            },
+      );
+    });
   });
 });
 
