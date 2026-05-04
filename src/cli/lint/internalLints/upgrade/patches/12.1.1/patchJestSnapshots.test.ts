@@ -27,7 +27,7 @@ describe('patchJestSnapshots', () => {
   it('should skip if test files do not contain the old URL', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'No snapshot URL here' as never,
+      'No snapshot URL here',
     );
     await expect(
       tryPatchJestSnapshots({
@@ -42,7 +42,7 @@ describe('patchJestSnapshots', () => {
   it('should return apply and not modify files if mode is lint', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['test1.test.ts']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'Some content with https://goo.gl/fbAQLP' as never,
+      'Some content with https://goo.gl/fbAQLP',
     );
 
     await expect(
@@ -63,11 +63,9 @@ describe('patchJestSnapshots', () => {
       'test3.test.ts.snap',
     ]);
     vi.mocked(fs.promises.readFile)
-      .mockResolvedValueOnce('Some content with https://goo.gl/fbAQLP' as never)
-      .mockResolvedValueOnce('No snapshot URL here' as never)
-      .mockResolvedValueOnce(
-        'Some other content with https://goo.gl/fbAQLP' as never,
-      );
+      .mockResolvedValueOnce('Some content with https://goo.gl/fbAQLP')
+      .mockResolvedValueOnce('No snapshot URL here')
+      .mockResolvedValueOnce('Some other content with https://goo.gl/fbAQLP');
 
     await expect(
       tryPatchJestSnapshots({
