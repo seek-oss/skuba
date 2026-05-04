@@ -93,7 +93,8 @@ export const migrateToESM = async (opts: {
 
     if (result.result === 'skip') {
       log.plain(
-        `\nPatch skipped: ${patch.description}${result.reason ? ` - ${result.reason}` : ''
+        `\nPatch skipped: ${patch.description}${
+          result.reason ? ` - ${result.reason}` : ''
         }`,
       );
     } else {
