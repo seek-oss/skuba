@@ -27,7 +27,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   it('should skip if dockerfiles do not contain the Dockerfile syntax directive', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'No Dockerfile syntax directive here' as never,
+      'No Dockerfile syntax directive here',
     );
     await expect(
       tryPatchDockerfileSyntaxDirective({
@@ -42,7 +42,7 @@ describe('patchDockerfileSyntaxDirective', () => {
   it('should return apply and not modify files if mode is lint', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      '# syntax=docker/dockerfile:1.18\n' as never,
+      '# syntax=docker/dockerfile:1.18\n',
     );
 
     await expect(
@@ -63,14 +63,12 @@ describe('patchDockerfileSyntaxDirective', () => {
       'Dockerfile.build',
     ]);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      '# syntax=docker/dockerfile:1.18\nFROM node:22' as never,
+      '# syntax=docker/dockerfile:1.18\nFROM node:22',
     );
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      '# syntax=docker/dockerfile:1.18\nFROM python:3.9' as never,
+      '# syntax=docker/dockerfile:1.18\nFROM python:3.9',
     );
-    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM python:3.9' as never,
-    );
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce('FROM python:3.9');
 
     await expect(
       tryPatchDockerfileSyntaxDirective({
