@@ -14,6 +14,7 @@ import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
 import { migrateEslintConfigExportDefaultPatch } from './migrateEslintConfigExportDefault.js';
 import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefault.js';
 import { tryMigrateLambdas } from './migrateLambdas.js';
+import { tryMigrateVocab } from './migrateVocab.js';
 import { rewriteGlobalVars } from './rewriteGlobalVars.js';
 import { tryUpgradeSkubaDive } from './upgradeSkubaDive.js';
 import { migrateToVitest } from './vitest/vitest.js';
@@ -22,6 +23,10 @@ const patches: Patch[] = [
   {
     apply: addTypeModuleToPackageJson,
     description: 'Add module type to package.json to support ESM',
+  },
+  {
+    apply: tryMigrateVocab,
+    description: 'Migrate vocab.config.js files to cjs',
   },
   {
     apply: migrateEslintConfigExportDefaultPatch,

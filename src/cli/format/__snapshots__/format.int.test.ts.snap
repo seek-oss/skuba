@@ -72,6 +72,8 @@ Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
+Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
+
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
 
 Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
@@ -211,6 +213,8 @@ Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
+Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
+
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
 
 Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
@@ -343,6 +347,8 @@ Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
+Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
+
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
 
 Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
@@ -446,6 +452,8 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
+
+Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
 
 Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
 
