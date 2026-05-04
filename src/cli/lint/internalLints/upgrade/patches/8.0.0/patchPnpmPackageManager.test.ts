@@ -42,7 +42,7 @@ describe('patchPnpmPackageManager', () => {
   const validManifest = {
     packageJson: {
       packageManager: 'pnpm',
-    } as Partial<PackageJson>,
+    },
     path: '~/project/package.json',
   } as PatchConfig['manifest'];
 
@@ -55,7 +55,7 @@ describe('patchPnpmPackageManager', () => {
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'Either dockerfiles or pipelines were not found',
@@ -71,7 +71,7 @@ describe('patchPnpmPackageManager', () => {
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'Either dockerfiles or pipelines were not found',
@@ -83,15 +83,15 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     vi.mocked(fs.promises.readFile)
-      .mockResolvedValueOnce('RUN pnpm install' as never)
-      .mockResolvedValueOnce('steps:\n  - command: yarn install' as never);
+      .mockResolvedValueOnce('RUN pnpm install')
+      .mockResolvedValueOnce('steps:\n  - command: yarn install');
 
     await expect(
       tryPatchPnpmPackageManager({
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no pipeline or dockerfiles to patch',
@@ -104,15 +104,15 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
-        ('# syntax=docker/dockerfile:1.7\n' +
+        '# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
-          'RUN corepack enable pnpm\n') as never,
+          'RUN corepack enable pnpm\n',
       )
       .mockResolvedValueOnce(
-        ('seek-oss/docker-ecr-cache#v2.1.0:\n' +
+        'seek-oss/docker-ecr-cache#v2.1.0:\n' +
           '      cache-on:\n' +
           '        - .npmrc\n' +
-          '        - pnpm-lock.yaml\n') as never,
+          '        - pnpm-lock.yaml\n',
       );
 
     await expect(
@@ -120,7 +120,7 @@ describe('patchPnpmPackageManager', () => {
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'apply',
     });
@@ -151,15 +151,15 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
-        ('# syntax=docker/dockerfile:1.7\n' +
+        '# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
-          'RUN corepack enable pnpm\n') as never,
+          'RUN corepack enable pnpm\n',
       )
       .mockResolvedValueOnce(
-        ('seek-oss/docker-ecr-cache#v2.1.0:\n' +
+        'seek-oss/docker-ecr-cache#v2.1.0:\n' +
           '      cache-on:\n' +
           '        - .npmrc\n' +
-          '        - pnpm-lock.yaml\n') as never,
+          '        - pnpm-lock.yaml\n',
       );
 
     await expect(
@@ -167,7 +167,7 @@ describe('patchPnpmPackageManager', () => {
         mode: 'lint',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'apply',
     });
@@ -181,19 +181,19 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
-        ('# syntax=docker/dockerfile:1.7\n' +
+        '# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
-          'RUN corepack enable pnpm\n') as never,
+          'RUN corepack enable pnpm\n',
       )
       .mockResolvedValueOnce(
-        ('seek-oss/docker-ecr-cache#v2.1.0:\n' +
+        'seek-oss/docker-ecr-cache#v2.1.0:\n' +
           '      cache-on:\n' +
           '        - .npmrc\n' +
           '        - pnpm-lock.yaml\n' +
           'seek-oss/docker-ecr-cache#v2.1.0:\n' +
           '      cache-on:\n' +
           '        - .npmrc\n' +
-          '        - pnpm-lock.yaml\n') as never,
+          '        - pnpm-lock.yaml\n',
       );
 
     await expect(
@@ -201,7 +201,7 @@ describe('patchPnpmPackageManager', () => {
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'apply',
     });
@@ -228,15 +228,15 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
-        ('# syntax=docker/dockerfile:1.7\n' +
+        '# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
-          'RUN corepack enable pnpm\n') as never,
+          'RUN corepack enable pnpm\n',
       )
       .mockResolvedValueOnce(
-        ('seek-oss/docker-ecr-cache#v2.3.0:\n' +
+        'seek-oss/docker-ecr-cache#v2.3.0:\n' +
           '      cache-on:\n' +
           '        - .npmrc\n' +
-          '        - pnpm-lock.yaml\n') as never,
+          '        - pnpm-lock.yaml\n',
       );
 
     await expect(
@@ -244,7 +244,7 @@ describe('patchPnpmPackageManager', () => {
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'apply',
     });
@@ -266,17 +266,17 @@ describe('patchPnpmPackageManager', () => {
       .mockResolvedValueOnce(['.buildkite/pipeline.yml']);
     vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
-        ('# syntax=docker/dockerfile:1.7\n' +
+        '# syntax=docker/dockerfile:1.7\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n\n' +
           'RUN --mount=type=bind,source=package.json,target=package.json \\\n' +
-          '  corepack enable pnpm && corepack install\n') as never,
+          '  corepack enable pnpm && corepack install\n',
       )
       .mockResolvedValueOnce(
-        ('seek-oss/docker-ecr-cache#v2.1.0:\n' +
+        'seek-oss/docker-ecr-cache#v2.1.0:\n' +
           '      cache-on:\n' +
           '        - .npmrc\n' +
           '        - package.json\n' +
-          '        - pnpm-lock.yaml\n') as never,
+          '        - pnpm-lock.yaml\n',
       );
 
     await expect(
@@ -284,7 +284,7 @@ describe('patchPnpmPackageManager', () => {
         mode: 'format',
         packageManager: { command: 'pnpm' } as PackageManagerConfig,
         manifest: validManifest,
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no pipeline or dockerfiles to patch',

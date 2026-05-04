@@ -26,7 +26,7 @@ describe('patchPnpmDockerImages', () => {
 
   it('should skip if no Dockerfiles to patch', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
-    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(`beep` as never);
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(`beep`);
 
     await expect(
       tryPatchPnpmDockerImages({
@@ -44,7 +44,7 @@ describe('patchPnpmDockerImages', () => {
       `RUN --mount=type=bind,source=package.json,target=package.json \\
     corepack enable pnpm && corepack install
 
-RUN pnpm config set store-dir /root/.pnpm-store` as never,
+RUN pnpm config set store-dir /root/.pnpm-store`,
     );
 
     await expect(
@@ -76,7 +76,7 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
     pnpm fetch
-` as never,
+`,
     );
 
     await expect(
@@ -124,7 +124,7 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
   --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
   --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
   pnpm fetch
-` as never,
+`,
     );
 
     await expect(
@@ -162,7 +162,7 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
     pnpm fetch
-` as never,
+`,
     );
 
     await expect(
@@ -197,7 +197,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \\
     corepack enable pnpm && corepack install
 
 RUN pnpm config set store-dir /root/.pnpm-store
-` as never,
+`,
     );
 
     await expect(
@@ -231,7 +231,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \\
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
     pnpm fetch
-` as never,
+`,
     );
 
     await expect(
@@ -261,7 +261,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \\
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
     pnpm install
-` as never,
+`,
     );
 
     await expect(
@@ -304,7 +304,7 @@ RUN --mount=type=bind,source=.npmrc,target=.npmrc \\
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \\
     --mount=type=secret,id=npm,dst=/root/.npmrc,required=true \\
     pnpm fetch
-` as never,
+`,
     );
 
     await expect(

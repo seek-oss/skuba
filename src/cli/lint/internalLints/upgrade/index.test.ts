@@ -36,7 +36,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -69,7 +69,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -107,7 +107,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -150,7 +150,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -199,7 +199,7 @@ describe('upgradeSkuba in lint mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -223,7 +223,7 @@ describe('upgradeSkuba in lint mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -259,7 +259,7 @@ describe('upgradeSkuba in lint mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 

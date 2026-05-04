@@ -27,7 +27,7 @@ describe('patchDockerfilePruneProd', () => {
   it('should skip if dockerfiles do not contain pnpm install --prod commands', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM node:18\nRUN npm install' as never,
+      'FROM node:18\nRUN npm install',
     );
     await expect(
       tryPatchDockerfilePruneProd({
@@ -42,7 +42,7 @@ describe('patchDockerfilePruneProd', () => {
   it('should return apply and not modify files if mode is lint', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod',
     );
 
     await expect(
@@ -59,7 +59,7 @@ describe('patchDockerfilePruneProd', () => {
   it('should replace pnpm install --prod with pnpm prune --prod', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod' as never,
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --prod',
     );
 
     await expect(
@@ -81,7 +81,7 @@ describe('patchDockerfilePruneProd', () => {
   it('should replace CI=true pnpm install --prod with pnpm prune --prod', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --offline --prod' as never,
+      'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --offline --prod',
     );
 
     await expect(
@@ -108,15 +108,15 @@ describe('patchDockerfilePruneProd', () => {
     ]);
 
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --prod' as never,
+      'FROM ${BASE_IMAGE} AS build\nRUN CI=true pnpm install --prod',
     );
 
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM node:18\nRUN echo "dev"' as never,
+      'FROM node:18\nRUN echo "dev"',
     );
 
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --offline --prod\nCOPY . .' as never,
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm install --offline --prod\nCOPY . .',
     );
 
     await expect(
@@ -143,7 +143,7 @@ describe('patchDockerfilePruneProd', () => {
   it('should skip dockerfiles already using pnpm prune --prod', async () => {
     vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM ${BASE_IMAGE} AS build\nRUN pnpm prune --prod' as never,
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm prune --prod',
     );
 
     await expect(
