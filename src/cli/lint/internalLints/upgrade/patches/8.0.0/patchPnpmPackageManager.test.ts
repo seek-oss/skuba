@@ -3,7 +3,6 @@ import fs from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PackageManagerConfig } from '../../../../../../utils/packageManager.js';
-import type { PackageJson } from '../../../../../configure/types.js';
 import type { PatchConfig } from '../../index.js';
 
 import { tryPatchPnpmPackageManager } from './patchPnpmPackageManager.js';
@@ -44,7 +43,7 @@ describe('patchPnpmPackageManager', () => {
       packageManager: 'pnpm',
     },
     path: '~/project/package.json',
-  } as PatchConfig['manifest'];
+  } satisfies PatchConfig['manifest'];
 
   it('should skip if no dockerfiles are found', async () => {
     vi.mocked(fg)
