@@ -320,7 +320,7 @@ You may notice Datadog trace headers being emitted in your test output after the
 +     "x-datadog-trace-id": "6421394243863276142",
 ```
 
-You can supress these headers by adding the following to your Vitest setup file:
+You can suppress these headers by adding the following to your Vitest setup file:
 
 ```diff
 export default defineConfig({
