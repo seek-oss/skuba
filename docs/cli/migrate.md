@@ -309,6 +309,30 @@ export default defineConfig({
 });
 ```
 
+##### DataDog Trace Headers
+
+You may notice Datadog trace headers being emitted in your test output after the migration. This is because Vitest runs tests in a more realistic environment which may cause some of your code to execute differently compared to Jest.
+
+```diff
++     "x-datadog-parent-id": "6421394243863276142",
++     "x-datadog-sampling-priority": "-1",
++     "x-datadog-tags": "_dd.p.tid=69f895eb00000000,_dd.p.ksr=0",
++     "x-datadog-trace-id": "6421394243863276142",
+```
+
+You can supress these headers by adding the following to your Vitest setup file:
+
+```diff
+export default defineConfig({
+  test: {
+    env: {
+      ENVIRONMENT: 'test',
++     DD_TRACE_ENABLED: 'false',
+    },
+  },
+});
+```
+
 ##### Esbuild
 
 If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration to ensure it is compatible with ESM.
