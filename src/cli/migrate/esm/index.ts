@@ -11,6 +11,7 @@ import type {
 
 import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.js';
 import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
+import { tryMigrateDockerfileRequires } from './migrateDockerfileRequires.js';
 import { migrateEslintConfigExportDefaultPatch } from './migrateEslintConfigExportDefault.js';
 import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefault.js';
 import { tryMigrateLambdas } from './migrateLambdas.js';
@@ -53,6 +54,10 @@ const patches: Patch[] = [
   {
     apply: tryMigrateLambdas,
     description: 'Migrate Lambdas to ESM',
+  },
+  {
+    apply: tryMigrateDockerfileRequires,
+    description: 'Migrate Dockerfiles to replace --require with --import',
   },
   {
     apply: migrateToVitest,

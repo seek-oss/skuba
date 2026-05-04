@@ -29,4 +29,4 @@ ARG PORT=8001
 ENV PORT=${PORT}
 EXPOSE ${PORT}
 
-CMD ["--require", "./lib/tracing.js", "./lib/listen.js"]
+CMD ["--import", "./lib/tracing.js", "./lib/listen.js"]
