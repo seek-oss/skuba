@@ -269,6 +269,46 @@ The ESLint rule introduced in previous `skuba` versions would quit evaluating im
 
 If you were using `jest-dynalite` for testing DynamoDB interactions, you will need to switch to [Vitest dynalite lite] which provides similar functionality for Vitest.
 
+The recommended `setupFiles` can slow down your test suite when run against all tests. To avoid this, configure a dedicated Vitest project for test files that use Dynalite.
+
+Example:
+
+```ts
+// vitest.config.ts
+import { Vitest } from 'skuba';
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  ssr: {
+    resolve: {
+      conditions: ['@seek/YOUR_REPO/source'],
+    },
+  },
+  test: {
+    env: {
+      ENVIRONMENT: 'test',
+    },
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          exclude: ['**/*.dynalite.test.ts'],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'dynalite',
+          setupFiles: ['vitest-dynamodb-lite'],
+          include: ['**/*.dynalite.test.ts'],
+        },
+      },
+    ],
+  },
+});
+```
+
 ##### Esbuild
 
 If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration to ensure it is compatible with ESM.
