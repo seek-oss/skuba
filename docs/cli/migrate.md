@@ -209,6 +209,8 @@ The following changes are made:
 
 Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
 
+If you are running this migration for a non-skuba application, you will need to manually install `vitest`, and `@vitest/coverage-istanbul` as dev dependencies.
+
 ### Post Migration Steps
 
 1. Run `skuba lint` and attempt to address any lint errors that may be caused by the migration. The most common failure points with `skuba test` runs can normally be addressed by fixing the lint errors first.
