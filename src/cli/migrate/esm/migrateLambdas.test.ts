@@ -1166,7 +1166,7 @@ custom:
         datadog:
           addLayers: false
 
-          redirectHandler: false
+          redirectHandlers: false
       ",
       }
     `);

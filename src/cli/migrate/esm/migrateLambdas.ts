@@ -410,22 +410,22 @@ const migrateServerlessLambdas = async (
           const addLayersDisabled = addLayers?.text().includes('false');
 
           if (addLayersDisabled && containsDatadogLambdaImport) {
-            const redirectHandler = datadogSettings.find({
+            const redirectHandlers = datadogSettings.find({
               rule: {
                 kind: 'block_node',
                 inside: {
                   kind: 'block_mapping_pair',
-                  regex: '^redirectHandler:',
+                  regex: '^redirectHandlers:',
                 },
               },
             });
 
-            if (!redirectHandler) {
+            if (!redirectHandlers) {
               const indent = datadogSettings.range().start.column;
               edits.push({
                 startPos: datadogSettings.range().end.index,
                 endPos: datadogSettings.range().end.index,
-                insertedText: `\n${' '.repeat(indent)}redirectHandler: false\n`,
+                insertedText: `\n${' '.repeat(indent)}redirectHandlers: false\n`,
               });
             }
           }
