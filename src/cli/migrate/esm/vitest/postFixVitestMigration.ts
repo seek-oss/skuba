@@ -113,10 +113,18 @@ const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
       not: { regex: '^(await|vi)' },
       inside: {
         kind: 'expression_statement',
-        nthChild: {
-          reverse: true,
-          position: 1,
-        },
+        all: [
+          // only match if there is a single statement
+          {
+            nthChild: {
+              reverse: true,
+              position: 1,
+            },
+          },
+          {
+            nthChild: 1,
+          },
+        ],
         inside: {
           kind: 'statement_block',
           inside: {
