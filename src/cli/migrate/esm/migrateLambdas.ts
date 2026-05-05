@@ -477,8 +477,10 @@ export const migrateLambdas: PatchFunction = async ({ mode }) => {
     ),
   ]);
 
-  const containsDatadogLambdaImport = tsFiles.some(({ contents }) =>
-    contents.includes('datadog-lambda-js'),
+  const containsDatadogLambdaImport = tsFiles.some(
+    ({ contents }) =>
+      contents.includes('datadog-lambda-js') ||
+      contents.includes('withLambdaExtension'),
   );
 
   const [patchedTsFiles, patchedServerlessFiles] = await Promise.all([
