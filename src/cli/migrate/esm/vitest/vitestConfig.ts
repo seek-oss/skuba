@@ -322,7 +322,9 @@ const migrateEnvironmentSetup = async (file: string) => {
 
   const astAfterEdit = (await parseAsync('TypeScript', updatedContent)).root();
 
-  const children = astAfterEdit.children();
+  const children = astAfterEdit
+    .children()
+    .filter((c) => c.kind() !== 'comment');
 
   const hasEmptyExportStatement = astAfterEdit.find({
     rule: {
