@@ -261,7 +261,7 @@ If you have the following Jest config files:
 
 You may be able to consolidate these into a single `vitest.config.ts` file with multiple projects like so:
 
-````ts
+```ts
 // vitest.config.ts
 export default defineConfig(
   Vitest.mergePreset({
@@ -314,7 +314,7 @@ The ESLint rule introduced in previous `skuba` versions would quit evaluating im
 ```diff
 - import { type } from '@seek/some-module/lib-types/types/type.generated';
 + import { type } from '@seek/some-module/lib-types/types/type.generated.js';
-````
+```
 
 ##### Jest Dynalite
 
