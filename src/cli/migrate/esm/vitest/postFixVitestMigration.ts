@@ -228,6 +228,11 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
             kind: 'expression_statement',
           },
         },
+        {
+          precedes: {
+            kind: 'comment',
+          },
+        },
       ],
     },
   });
