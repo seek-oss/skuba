@@ -1157,8 +1157,8 @@ custom:
             - pino
             - 'foo'
           conditions:
-            - module
             - '@seek/skuba/source'
+            - module
           mainFields:
             - module
             - main

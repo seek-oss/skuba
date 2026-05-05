@@ -321,9 +321,9 @@ const migrateServerlessLambdas = async (
         if (conditions) {
           const indent = conditions.range().start.column;
           edits.push({
-            startPos: conditions.range().start.index,
-            endPos: conditions.range().start.index,
-            insertedText: `- module\n${' '.repeat(indent)}`,
+            startPos: conditions.range().end.index,
+            endPos: conditions.range().end.index,
+            insertedText: `\n${' '.repeat(indent)}- module`,
           });
         } else {
           const indent = esbuildAst.range().start.column;
