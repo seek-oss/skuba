@@ -476,6 +476,7 @@ type MyMockedClass = jest.MockedClass<typeof SomeClass>;
 type MyMockedObject = jest.MockedObject<{ foo: string }>;
 type MyMockInstance = jest.MockInstance<{ bar: number }>;
 type MySpy = jest.SpyInstance;
+type MySpiedFunction = jest.SpiedFunction<() => void>;
 `;
 
     await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
@@ -487,6 +488,7 @@ type MyMockedClass = MockedClass<typeof SomeClass>;
 type MyMockedObject = MockedObject<{ foo: string }>;
 type MyMockInstance = MockInstance<{ bar: number }>;
 type MySpy = MockInstance;
+type MySpiedFunction = Mock<() => void>;
 `);
   });
 });

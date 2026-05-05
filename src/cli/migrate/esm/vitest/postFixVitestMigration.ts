@@ -374,6 +374,21 @@ const getJestTypeEdits = (
   return { imports, edits };
 };
 
+const getSpiedFunctionEdits = (root: SgNode): Edit[] => {
+  const spyInstances = root.findAll({
+    rule: {
+      kind: 'nested_type_identifier',
+      regex: '^jest\.SpiedFunction$',
+    },
+  });
+
+  if (!spyInstances.length) {
+    return [];
+  }
+
+  return spyInstances.map((spyInstance) => spyInstance.replace('Mock'));
+};
+
 const getSpyInstanceTypeEdits = (root: SgNode): Edit[] => {
   const spyInstances = root.findAll({
     rule: {
@@ -437,9 +452,14 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     getJestTypeEdits(astRoot);
 
   const spyInstanceTypeEdits = getSpyInstanceTypeEdits(astRoot);
+  const spiedFunctionEdits = getSpiedFunctionEdits(astRoot);
 
   if (spyInstanceTypeEdits.length) {
     jestTypeImports.add('MockInstance');
+  }
+
+  if (spiedFunctionEdits.length) {
+    jestTypeImports.add('Mock');
   }
 
   const edits = [
@@ -451,6 +471,7 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     ...getImportActualEdits(astRoot),
     ...jestTypeEdits,
     ...spyInstanceTypeEdits,
+    ...spiedFunctionEdits,
     ...getTypeImportEdits(astRoot, Array.from(jestTypeImports)),
   ];
 
