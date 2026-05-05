@@ -109,7 +109,7 @@ const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
   const lastStatementsInLifeCycleHooks = root.findAll({
     rule: {
       kind: 'call_expression',
-      regex: '.*\(\)$',
+      regex: '.*\(.*\)',
       not: { regex: '^(await|vi)' },
       inside: {
         kind: 'expression_statement',

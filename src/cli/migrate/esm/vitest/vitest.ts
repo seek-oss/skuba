@@ -232,7 +232,8 @@ export const migrateToVitest = async (opts: {
         .replace(
           /\.mockImplementation\(\)/g,
           '.mockImplementation(() => undefined)',
-        );
+        )
+        .replace(/\.calls\[(\d+)\]\[/g, '.calls[$1]?.[');
 
       if (finalUpdated !== content) {
         return fs.promises.writeFile(file, finalUpdated, 'utf8');

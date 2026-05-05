@@ -289,6 +289,35 @@ test('service', () => {
     `);
   });
 
+  it('should replace .calls', async () => {
+    vol.fromJSON({
+      'package.json': `{
+  "name": "test"
+}
+`,
+      'src/service.test.ts': `expect(fn.mock.calls[0][0]).toEqual('some value');`,
+    });
+
+    await expect(
+      migrateToVitest({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "package.json": "{
+        "name": "test"
+      }
+      ",
+        "src/service.test.ts": "expect(fn.mock.calls[0]?.[0]).toEqual('some value');",
+      }
+    `);
+  });
+
   it('should attempt to migrate jest.config.ts files', async () => {
     vol.fromJSON({
       'jest.config.ts': `import { Jest } from 'skuba';
