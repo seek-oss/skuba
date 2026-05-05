@@ -101,7 +101,9 @@ export const tryRemovePnpmConfigPackageJson: PatchFunction = async (args) => {
   try {
     return await removePnpmConfigPackageJson(args);
   } catch (err) {
-    log.warn('Failed to apply Dockerfile pnpm prune --prod patch.');
+    log.warn(
+      'Failed to remove pnpm-plugin-skuba from package.json pnpm config',
+    );
     log.subtle(inspect(err));
     return { result: 'skip', reason: 'due to an error' };
   }
