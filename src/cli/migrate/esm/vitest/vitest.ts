@@ -233,7 +233,12 @@ export const migrateToVitest = async (opts: {
           /\.mockImplementation\(\)/g,
           '.mockImplementation(() => undefined)',
         )
-        .replace(/\.calls\[(\d+)\]\[/g, '.calls[$1]?.[');
+        .replace(/\.calls\[(\d+)\]\[/g, '.calls[$1]?.[')
+        .replaceAll(
+          'eslint-disable-next-line jest',
+          'eslint-disable-next-line vitest',
+        )
+        .replaceAll('Mock<any, any>', 'Mock');
 
       if (finalUpdated !== content) {
         return fs.promises.writeFile(file, finalUpdated, 'utf8');
