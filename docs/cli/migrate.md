@@ -248,6 +248,55 @@ Address the TODO comments in vitest.config files
 
 #### FAQ and Tips
 
+##### Config consolidation
+
+If you have multiple `jest.config.ts` files, you may be able to consolidate these into a single `vitest.config.ts` file with multiple projects
+
+Example:
+
+If you have the following Jest config files:
+
+- `jest.config.ts`
+- `jest.config.int.ts` where integration tests must be run with `--runInBand` due to shared resources
+
+You may be able to consolidate these into a single `vitest.config.ts` file with multiple projects like so:
+
+````ts
+// vitest.config.ts
+export default defineConfig(
+  Vitest.mergePreset({
+    ssr: {
+      resolve: {
+        conditions: ['@seek/YOUR_REPO/source'],
+      },
+    },
+    test: {
+      env: {
+        ENVIRONMENT: 'test',
+      },
+      projects: [
+        {
+          extends: true,
+          test: {
+            name: 'unit',
+            exclude: ['**/*.int.test.ts'],
+          },
+        },
+        {
+          extends: true,
+          test: {
+            name: 'integration',
+            fileParallelism: false, // Equivalent to --runInBand
+            setupFiles: ['vitest.setup.int.ts'],
+            include: ['**/*.int.test.ts'],
+          },
+        },
+      ],
+    },
+  }),
+);
+```
+
 ##### Jest spies no longer work after the migration
 
 1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
@@ -265,7 +314,7 @@ The ESLint rule introduced in previous `skuba` versions would quit evaluating im
 ```diff
 - import { type } from '@seek/some-module/lib-types/types/type.generated';
 + import { type } from '@seek/some-module/lib-types/types/type.generated.js';
-```
+````
 
 ##### Jest Dynalite
 
@@ -277,38 +326,37 @@ Example:
 
 ```ts
 // vitest.config.ts
-import { Vitest } from 'skuba';
-import { defineConfig } from 'vitest/config';
-
-export default defineConfig({
-  ssr: {
-    resolve: {
-      conditions: ['@seek/YOUR_REPO/source'],
-    },
-  },
-  test: {
-    env: {
-      ENVIRONMENT: 'test',
-    },
-    projects: [
-      {
-        extends: true,
-        test: {
-          name: 'unit',
-          exclude: ['**/*.dynalite.test.ts'],
-        },
+export default defineConfig(
+  Vitest.mergePreset({
+    ssr: {
+      resolve: {
+        conditions: ['@seek/YOUR_REPO/source'],
       },
-      {
-        extends: true,
-        test: {
-          name: 'dynalite',
-          setupFiles: ['vitest-dynamodb-lite'],
-          include: ['**/*.dynalite.test.ts'],
-        },
+    },
+    test: {
+      env: {
+        ENVIRONMENT: 'test',
       },
-    ],
-  },
-});
+      projects: [
+        {
+          extends: true,
+          test: {
+            name: 'unit',
+            exclude: ['**/*.dynalite.test.ts'],
+          },
+        },
+        {
+          extends: true,
+          test: {
+            name: 'dynalite',
+            setupFiles: ['vitest-dynamodb-lite'],
+            include: ['**/*.dynalite.test.ts'],
+          },
+        },
+      ],
+    },
+  }),
+);
 ```
 
 ##### DataDog Trace Headers
