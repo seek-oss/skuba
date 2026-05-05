@@ -12,11 +12,7 @@ import type {
 } from '../../lint/internalLints/upgrade/index.js';
 import { fetchFiles } from '../../lint/internalLints/upgrade/patches/12.4.1/rewriteSrcImports.js';
 
-const ESLINT_CONFIG_GLOB = [
-  '**/eslint.config.js',
-  '**/eslint.config.mjs',
-  '**/eslint.config.cjs',
-];
+const ESLINT_CONFIG_GLOB = ['**/eslint.config.js'];
 
 const CONFIG_FILES_BLOCK = `
   {

@@ -32,7 +32,7 @@ export const tryMigrateExportEqualsToDefault: PatchFunction = async (
   const { mode, manifest } = config;
   const cwd = path.dirname(manifest.path);
 
-  const fileNames = await fg(['**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts'], {
+  const fileNames = await fg(['**/*.ts', '**/*.tsx'], {
     cwd,
     ignore: [
       '**/.git',

@@ -371,15 +371,7 @@ export const tryMigrateImportExportStatements: PatchFunction = async (
   const cwd = path.dirname(manifest.path);
 
   const fileNames = await fg(
-    [
-      '**/*.config.js',
-      '**/*.config.mjs',
-      '**/*.config.cjs',
-      '**/.prettierrc.js',
-      '**/.prettierrc.cjs',
-      '**/.prettierrc.mjs',
-      '**/src/**/*.{ts,tsx,mts,cts,js,mjs,cjs}',
-    ],
+    ['**/*.config.js', '**/.prettierrc.js', '**/src/**/*.{ts,tsx,js}'],
     {
       cwd,
       ignore: [
