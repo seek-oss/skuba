@@ -10,7 +10,7 @@ import type {
 
 import { patchInstrumentation } from './patchInstrumentation.js';
 
-vi.mock('../../../../../../utils/exec.js', () => ({
+vi.mock('../../../utils/exec.js', () => ({
   createExec: () => vi.fn(),
 }));
 

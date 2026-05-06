@@ -1,12 +1,18 @@
+import { dirname } from 'path';
 import { inspect } from 'util';
 
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
+import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
+import { getConsumerManifest } from '../../../utils/manifest.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 
-export const patchInstrumentation: PatchFunction = async ({ mode }) => {
+export const patchInstrumentation: PatchFunction = async ({
+  mode,
+  packageManager,
+}) => {
   const [dockerfilePaths, tsPaths] = await Promise.all([
     fg(['**/Dockerfile*'], {
       ignore: ['**/.git', '**/node_modules'],
@@ -41,9 +47,11 @@ export const patchInstrumentation: PatchFunction = async ({ mode }) => {
   const hasDDTraceImport = tsFiles.some(({ content }) =>
     /from\s+['"]dd-trace['"]/.test(content),
   );
-  const hasOpenTelemetryImport = tsFiles.some(({ content }) =>
+  const otelImports = tsFiles.filter(({ content }) =>
     /from\s+['"]@opentelemetry\/api['"]/.test(content),
   );
+
+  const hasOpenTelemetryImport = otelImports.length > 0;
 
   if (!hasDDTraceImport && !hasOpenTelemetryImport) {
     return {
@@ -130,6 +138,48 @@ export const patchInstrumentation: PatchFunction = async ({ mode }) => {
     return {
       result: 'apply',
     };
+  }
+
+  if (hasOpenTelemetryImport) {
+    // Make sure these dirs have the instrumentation package as a dependency
+
+    const packageJsons = await Promise.all(
+      otelImports.map(async ({ filePath }) =>
+        getConsumerManifest(dirname(filePath)),
+      ),
+    );
+
+    await Promise.all(
+      packageJsons
+        .filter((pkg) => pkg !== undefined)
+        .map(async (pkg) => {
+          const { packageJson, path } = pkg;
+
+          if (
+            packageJson.dependencies?.['@opentelemetry/instrumentation'] ||
+            packageJson.devDependencies?.['@opentelemetry/instrumentation']
+          ) {
+            return;
+          }
+
+          const folderExec = createExec({ cwd: dirname(path) });
+          if (packageManager.command === 'pnpm') {
+            return folderExec(
+              'pnpm',
+              'install',
+              '@opentelemetry/instrumentation@0.216.0',
+              '--prefer-offline',
+              '--ignore-workspace-root-check',
+            );
+          }
+          return folderExec(
+            'yarn',
+            'add',
+            '@opentelemetry/instrumentation@0.216.0',
+            '--prefer-offline',
+          );
+        }),
+    );
   }
 
   await Promise.all(
