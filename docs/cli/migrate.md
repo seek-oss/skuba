@@ -318,18 +318,6 @@ Vitest matches deeper than Jest so you may need to adjust your test assertions. 
 
 1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
 
-- await expect(someFunction()).rejects.toThrow(expect.objectContaining(new Error('some error message')));
-
-// or
-
-- await expect(someFunction()).rejects.toThrow(new ActualError('some error message'));
-
-````
-
-##### Jest spies no longer work after the migration
-
-1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
-
 Spies work differently in Vitest compared to Jest. You can read more about the differences here in our [@skuba-lib/detect-invalid-spies documentation].
 
 This will identify any spies in your code that may be broken by the migration. If there are any issues detected, you will need to address these before proceeding with the migration.
@@ -343,7 +331,7 @@ The ESLint rule introduced in previous `skuba` versions would quit evaluating im
 ```diff
 - import { type } from '@seek/some-module/lib-types/types/type.generated';
 + import { type } from '@seek/some-module/lib-types/types/type.generated.js';
-````
+```
 
 ##### Jest Dynalite
 
