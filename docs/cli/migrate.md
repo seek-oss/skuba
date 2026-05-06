@@ -303,6 +303,29 @@ By default, Vitest runs every test in isolation to provide a side-effect free te
 
 Follow the [Vitest improving performance] guide to optimise your Vitest configuration
 
+##### Matchers not matching on errors
+
+Vitest matches deeper than Jest so you may need to adjust your test assertions. Previously, you were able to match on error messages with Jest like so but you may need to adjust your tests to match on the error object instead of just the message with Vitest:
+
+```diff
+- await expect(someFunction()).rejects.toThrow(new Error('some error message'));
++ await expect(someFunction()).rejects.toThrow(expect.objectContaining(new Error('some error message')));
+// or
++ await expect(someFunction()).rejects.toThrow(new ActualError('some error message'));
+```
+
+##### Jest spies no longer work after the migration
+
+1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
+
+- await expect(someFunction()).rejects.toThrow(expect.objectContaining(new Error('some error message')));
+
+// or
+
+- await expect(someFunction()).rejects.toThrow(new ActualError('some error message'));
+
+````
+
 ##### Jest spies no longer work after the migration
 
 1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
@@ -320,7 +343,7 @@ The ESLint rule introduced in previous `skuba` versions would quit evaluating im
 ```diff
 - import { type } from '@seek/some-module/lib-types/types/type.generated';
 + import { type } from '@seek/some-module/lib-types/types/type.generated.js';
-```
+````
 
 ##### Jest Dynalite
 
