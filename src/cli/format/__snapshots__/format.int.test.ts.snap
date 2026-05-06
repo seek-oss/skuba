@@ -70,6 +70,8 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
 
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
 Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -193,6 +195,8 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
 
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
 Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -309,6 +313,8 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
 
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
 Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
 
 skuba update complete. upgrade-skuba
@@ -396,6 +402,8 @@ Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
 Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
+
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
 Patch skipped: Migrate to Vitest - skipping in integration test environment upgrade-skuba
 
