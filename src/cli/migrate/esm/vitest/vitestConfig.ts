@@ -691,7 +691,7 @@ const scaffoldTestConfig = async ({
       maxConcurrency ? `\n    maxConcurrency: ${maxConcurrency},` : ''
     }${
       snapshotSerializers?.length
-        ? `\n    snapshotSerializers: [${snapshotSerializers.map((s) => `'${s.replace('<rootDir>/', '')}'`).join(', ')}],`
+        ? `\n    snapshotSerializers: [${snapshotSerializers.map((s) => `'${s.replace('<rootDir>/', '')}'`).join(', ')}], // TODO: Update these files to Vitest format: https://vitest.dev/guide/snapshot.html#custom-serializer`
         : ''
     }${
       projects.length
