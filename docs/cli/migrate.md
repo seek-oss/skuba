@@ -297,6 +297,12 @@ export default defineConfig(
 );
 ```
 
+##### Performance
+
+By default, Vitest runs every test in isolation to provide a side-effect free testing environment. However, this is not always necessary and can lead to slower test runs compared to Jest.
+
+Follow the [Vitest improving performance] guide to optimise your Vitest configuration
+
 ##### Jest spies no longer work after the migration
 
 1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
@@ -427,3 +433,4 @@ For the keen observers, we have decided to ease the migration by firstly adoptin
 [migration guide]: https://vitest.dev/guide/migration.html#jest
 [open an issue]: https://github.com/seek-oss/skuba/issues/new
 [Vitest dynalite lite]: https://github.com/yamatatsu/vitest-dynamodb-lite/tree/main/packages/vitest-dynamodb-lite
+[Vitest improving performance]: https://vitest.dev/guide/improving-performance.html
