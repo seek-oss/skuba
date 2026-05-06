@@ -595,7 +595,7 @@ const scaffoldTestConfig = async ({
     ...(testRegexArray ?? []),
     ...(testRegexString ? [testRegexString] : []),
   ];
-
+  const snapshotSerializers = extractStringArray(root, 'snapshotSerializers');
   const displayName = extractString(root, 'displayName');
   const coverageProvider = extractString(root, 'coverageProvider');
   const testTimeout = extractNumber(root, 'testTimeout');
@@ -689,6 +689,10 @@ const scaffoldTestConfig = async ({
         : ''
     }${maxWorkers ? `\n    maxWorkers: ${typeof maxWorkers === 'string' ? `'${maxWorkers}'` : maxWorkers},` : ''}${
       maxConcurrency ? `\n    maxConcurrency: ${maxConcurrency},` : ''
+    }${
+      snapshotSerializers?.length
+        ? `\n    snapshotSerializers: [${snapshotSerializers.map((s) => `'${s.replace('<rootDir>/', '')}'`).join(', ')}],`
+        : ''
     }${
       projects.length
         ? `\n    projects: [\n      ${projects.map((p) => `{\n        test: {${p.testConfig}\n},\n      }`).join(',\n      ')}\n    ],`

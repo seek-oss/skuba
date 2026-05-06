@@ -361,6 +361,7 @@ export default Jest.mergePreset({
   globalSetup: '<rootDir>/jest.globalSetup.ts',
   setupFiles: ['<rootDir>/jest.setup.ts', '<rootDir>/jest.another.ts'],
   setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
+  snapshotSerializers: ['<rootDir>/src/testing/serializer.ts'],
   testPathIgnorePatterns: ['\\.int\\.test'],
   workerIdleMemoryLimit: '512MB',
   resetMocks: true,
@@ -458,6 +459,7 @@ export {}`,
         globalSetup: '<rootDir>/jest.globalSetup.ts',
         setupFiles: ['<rootDir>/jest.setup.ts', '<rootDir>/jest.another.ts'],
         setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
+        snapshotSerializers: ['<rootDir>/src/testing/serializer.ts'],
         testPathIgnorePatterns: ['\\.int\\.test'],
         workerIdleMemoryLimit: '512MB',
         resetMocks: true,
@@ -546,6 +548,7 @@ export {}`,
           clearMocks: true,
           vmMemoryLimit: '512MB',
           maxWorkers: 2,
+          snapshotSerializers: ['src/testing/serializer.ts'],
           // TODO: A base config was detected and migrated below. This may have produced duplicate entries. 
           
           include: ['<rootDir>/extra-tests/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
