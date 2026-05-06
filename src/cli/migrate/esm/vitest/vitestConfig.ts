@@ -651,7 +651,7 @@ const scaffoldTestConfig = async ({
       (!isProject && !isSpread) || coverageIgnorePatterns || coverageThreshold
         ? `\n    coverage: {
       provider: ${coverageProvider === 'v8' ? "'v8'" : "'istanbul'"},
-      exclude: ${coverageIgnorePatterns ? `${coverageIgnorePatterns}, // TODO: Update these regexp pattern strings to globs` : "['src/testing'],"}
+      exclude: ${coverageIgnorePatterns ? `${coverageIgnorePatterns}, // TODO: Update these Jest regexp pattern strings from coveragePathIgnorePatterns to globs` : "['src/testing'],"}
       thresholds: ${
         coverageThreshold ??
         `{
@@ -665,11 +665,11 @@ const scaffoldTestConfig = async ({
         : ''
     }${rootDir ? `\n    root: '${rootDir}',${rootDir.includes('..') ? ' // TODO: Vitest root paths work differently to Jest, you may need to remove or adjust this in order for your tests to run' : ''}` : ''}${
       includeArray.length
-        ? `\n    include: [${includeArray.map((pattern) => `'${pattern}'`).join(', ')}], // TODO: Update these regexp pattern strings to globs`
+        ? `\n    include: [${includeArray.map((pattern) => `'${pattern}'`).join(', ')}], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs`
         : ''
     }${
       testPathIgnorePatterns
-        ? `\n    exclude: ${testPathIgnorePatterns}, // TODO: Update these regexp pattern strings to globs`
+        ? `\n    exclude: ${testPathIgnorePatterns}, // TODO: Update these Jest regexp pattern strings from testPathIgnorePatterns to globs`
         : ''
     }${
       globalSetup

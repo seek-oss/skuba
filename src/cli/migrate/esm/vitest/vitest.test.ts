@@ -521,7 +521,7 @@ export {}`,
           'src/listen\\.ts',
           'src/register\\.ts',
           'src/testing',
-        ], // TODO: Update these regexp pattern strings to globs
+        ], // TODO: Update these Jest regexp pattern strings from coveragePathIgnorePatterns to globs
             thresholds: {
             branches: 50,
             functions: 50,
@@ -538,8 +538,8 @@ export {}`,
         },
           },
           root: './',
-          include: ['<rootDir>/extra-tests/**/*.test.ts', '\\.test\\.ts$'], // TODO: Update these regexp pattern strings to globs
-          exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
+          include: ['<rootDir>/extra-tests/**/*.test.ts', '\\.test\\.ts$'], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs
+          exclude: ['\\.int\\.test'], // TODO: Update these Jest regexp pattern strings from testPathIgnorePatterns to globs
           globalSetup: ['vitest.globalSetup.ts'],
           setupFiles: ['vitest.setup.ts', 'vitest.hooks.ts'],
           testTimeout: 10000,
@@ -551,7 +551,7 @@ export {}`,
           snapshotSerializers: ['src/testing/serializer.ts'], // TODO: Update these files to Vitest format: https://vitest.dev/guide/snapshot.html#custom-serializer
           // TODO: A base config was detected and migrated below. This may have produced duplicate entries. 
           
-          include: ['<rootDir>/extra-tests/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
+          include: ['<rootDir>/extra-tests/**/*.test.ts'], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs
         },
         server: {
           watch: {
@@ -663,14 +663,14 @@ export default Jest.mergePreset({
               test: {
           name: 'project1',
           extends: true,
-          include: ['<rootDir>/project1/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
+          include: ['<rootDir>/project1/**/*.test.ts'], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs
       },
             },
             {
               test: {
           name: 'project2',
           extends: true,
-          include: ['<rootDir>/project2/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
+          include: ['<rootDir>/project2/**/*.test.ts'], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs
       },
             }
           ],
