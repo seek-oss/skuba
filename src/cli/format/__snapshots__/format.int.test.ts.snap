@@ -70,6 +70,8 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
 
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
 Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
@@ -213,6 +215,8 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
 
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
 Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
@@ -349,6 +353,8 @@ Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgr
 
 Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
 
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
 Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
@@ -456,6 +462,8 @@ Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
 Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
+
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
 Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
 
