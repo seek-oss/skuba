@@ -92,7 +92,6 @@ export const patchInstrumentation: PatchFunction = async ({
       const isShellForm = !cmd.startsWith('[');
 
       if (isShellForm) {
-        // first arg is node
         if (cmd.startsWith('node ')) {
           const patchedCmd = cmd.replace(
             'node ',
@@ -141,8 +140,6 @@ export const patchInstrumentation: PatchFunction = async ({
   }
 
   if (hasOpenTelemetryImport) {
-    // Make sure these dirs have the instrumentation package as a dependency
-
     const packageJsons = await Promise.all(
       otelImports.map(async ({ filePath }) =>
         getConsumerManifest(dirname(filePath)),
