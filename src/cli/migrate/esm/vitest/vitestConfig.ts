@@ -322,7 +322,9 @@ const migrateEnvironmentSetup = async (file: string) => {
 
   const astAfterEdit = (await parseAsync('TypeScript', updatedContent)).root();
 
-  const children = astAfterEdit.children();
+  const children = astAfterEdit
+    .children()
+    .filter((c) => c.kind() !== 'comment');
 
   const hasEmptyExportStatement = astAfterEdit.find({
     rule: {
@@ -593,7 +595,7 @@ const scaffoldTestConfig = async ({
     ...(testRegexArray ?? []),
     ...(testRegexString ? [testRegexString] : []),
   ];
-
+  const snapshotSerializers = extractStringArray(root, 'snapshotSerializers');
   const displayName = extractString(root, 'displayName');
   const coverageProvider = extractString(root, 'coverageProvider');
   const testTimeout = extractNumber(root, 'testTimeout');
@@ -649,7 +651,7 @@ const scaffoldTestConfig = async ({
       (!isProject && !isSpread) || coverageIgnorePatterns || coverageThreshold
         ? `\n    coverage: {
       provider: ${coverageProvider === 'v8' ? "'v8'" : "'istanbul'"},
-      exclude: ${coverageIgnorePatterns ? `${coverageIgnorePatterns}, // TODO: Update these regexp pattern strings to globs` : "['src/testing'],"}
+      exclude: ${coverageIgnorePatterns ? `${coverageIgnorePatterns}, // TODO: Update these Jest regexp pattern strings from coveragePathIgnorePatterns to globs` : "['src/testing'],"}
       thresholds: ${
         coverageThreshold ??
         `{
@@ -663,11 +665,11 @@ const scaffoldTestConfig = async ({
         : ''
     }${rootDir ? `\n    root: '${rootDir}',${rootDir.includes('..') ? ' // TODO: Vitest root paths work differently to Jest, you may need to remove or adjust this in order for your tests to run' : ''}` : ''}${
       includeArray.length
-        ? `\n    include: [${includeArray.map((pattern) => `'${pattern}'`).join(', ')}], // TODO: Update these regexp pattern strings to globs`
+        ? `\n    include: [${includeArray.map((pattern) => `'${pattern}'`).join(', ')}], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs`
         : ''
     }${
       testPathIgnorePatterns
-        ? `\n    exclude: ${testPathIgnorePatterns}, // TODO: Update these regexp pattern strings to globs`
+        ? `\n    exclude: ${testPathIgnorePatterns}, // TODO: Update these Jest regexp pattern strings from testPathIgnorePatterns to globs`
         : ''
     }${
       globalSetup
@@ -687,6 +689,10 @@ const scaffoldTestConfig = async ({
         : ''
     }${maxWorkers ? `\n    maxWorkers: ${typeof maxWorkers === 'string' ? `'${maxWorkers}'` : maxWorkers},` : ''}${
       maxConcurrency ? `\n    maxConcurrency: ${maxConcurrency},` : ''
+    }${
+      snapshotSerializers?.length
+        ? `\n    snapshotSerializers: [${snapshotSerializers.map((s) => `'${s.replace('<rootDir>/', '')}'`).join(', ')}], // TODO: Update these files to Vitest format: https://vitest.dev/guide/snapshot.html#custom-serializer`
+        : ''
     }${
       projects.length
         ? `\n    projects: [\n      ${projects.map((p) => `{\n        test: {${p.testConfig}\n},\n      }`).join(',\n      ')}\n    ],`

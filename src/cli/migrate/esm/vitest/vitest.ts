@@ -232,7 +232,13 @@ export const migrateToVitest = async (opts: {
         .replace(
           /\.mockImplementation\(\)/g,
           '.mockImplementation(() => undefined)',
-        );
+        )
+        .replace(/\.calls\[(\d+)\]\[/g, '.calls[$1]?.[')
+        .replaceAll(
+          'eslint-disable-next-line jest',
+          'eslint-disable-next-line vitest',
+        )
+        .replaceAll('Mock<any, any>', 'Mock');
 
       if (finalUpdated !== content) {
         return fs.promises.writeFile(file, finalUpdated, 'utf8');
@@ -267,18 +273,12 @@ export const migrateToVitest = async (opts: {
             'install',
             `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
             '--save-dev',
-            '--frozen-lockfile=false',
             '--prefer-offline',
             '--ignore-workspace-root-check',
           );
         }),
       );
-      await exec(
-        'pnpm',
-        'dedupe',
-        '--frozen-lockfile=false',
-        '--prefer-offline',
-      );
+      await exec('pnpm', 'dedupe', '--prefer-offline');
     }
   } else {
     await exec(

@@ -289,6 +289,35 @@ test('service', () => {
     `);
   });
 
+  it('should replace .calls', async () => {
+    vol.fromJSON({
+      'package.json': `{
+  "name": "test"
+}
+`,
+      'src/service.test.ts': `expect(fn.mock.calls[0][0]).toEqual('some value');`,
+    });
+
+    await expect(
+      migrateToVitest({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "package.json": "{
+        "name": "test"
+      }
+      ",
+        "src/service.test.ts": "expect(fn.mock.calls[0]?.[0]).toEqual('some value');",
+      }
+    `);
+  });
+
   it('should attempt to migrate jest.config.ts files', async () => {
     vol.fromJSON({
       'jest.config.ts': `import { Jest } from 'skuba';
@@ -332,6 +361,7 @@ export default Jest.mergePreset({
   globalSetup: '<rootDir>/jest.globalSetup.ts',
   setupFiles: ['<rootDir>/jest.setup.ts', '<rootDir>/jest.another.ts'],
   setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
+  snapshotSerializers: ['<rootDir>/src/testing/serializer.ts'],
   testPathIgnorePatterns: ['\\.int\\.test'],
   workerIdleMemoryLimit: '512MB',
   resetMocks: true,
@@ -429,6 +459,7 @@ export {}`,
         globalSetup: '<rootDir>/jest.globalSetup.ts',
         setupFiles: ['<rootDir>/jest.setup.ts', '<rootDir>/jest.another.ts'],
         setupFilesAfterEnv: ['<rootDir>/jest.hooks.ts'],
+        snapshotSerializers: ['<rootDir>/src/testing/serializer.ts'],
         testPathIgnorePatterns: ['\\.int\\.test'],
         workerIdleMemoryLimit: '512MB',
         resetMocks: true,
@@ -490,7 +521,7 @@ export {}`,
           'src/listen\\.ts',
           'src/register\\.ts',
           'src/testing',
-        ], // TODO: Update these regexp pattern strings to globs
+        ], // TODO: Update these Jest regexp pattern strings from coveragePathIgnorePatterns to globs
             thresholds: {
             branches: 50,
             functions: 50,
@@ -507,8 +538,8 @@ export {}`,
         },
           },
           root: './',
-          include: ['<rootDir>/extra-tests/**/*.test.ts', '\\.test\\.ts$'], // TODO: Update these regexp pattern strings to globs
-          exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
+          include: ['<rootDir>/extra-tests/**/*.test.ts', '\\.test\\.ts$'], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs
+          exclude: ['\\.int\\.test'], // TODO: Update these Jest regexp pattern strings from testPathIgnorePatterns to globs
           globalSetup: ['vitest.globalSetup.ts'],
           setupFiles: ['vitest.setup.ts', 'vitest.hooks.ts'],
           testTimeout: 10000,
@@ -517,9 +548,10 @@ export {}`,
           clearMocks: true,
           vmMemoryLimit: '512MB',
           maxWorkers: 2,
+          snapshotSerializers: ['src/testing/serializer.ts'], // TODO: Update these files to Vitest format: https://vitest.dev/guide/snapshot.html#custom-serializer
           // TODO: A base config was detected and migrated below. This may have produced duplicate entries. 
           
-          include: ['<rootDir>/extra-tests/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
+          include: ['<rootDir>/extra-tests/**/*.test.ts'], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs
         },
         server: {
           watch: {
@@ -631,14 +663,14 @@ export default Jest.mergePreset({
               test: {
           name: 'project1',
           extends: true,
-          include: ['<rootDir>/project1/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
+          include: ['<rootDir>/project1/**/*.test.ts'], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs
       },
             },
             {
               test: {
           name: 'project2',
           extends: true,
-          include: ['<rootDir>/project2/**/*.test.ts'], // TODO: Update these regexp pattern strings to globs
+          include: ['<rootDir>/project2/**/*.test.ts'], // TODO: Update these Jest regexp pattern strings from testMatch/testRegex to globs
       },
             }
           ],

@@ -121,50 +121,6 @@ afterAll(async () => {
     );
   });
 
-  it('adds a single async on the last statement when a callback calls multiple async functions', async () => {
-    const content = `const foo = async () => {};
-const bar = async () => {};
-
-beforeEach(() => {
-  foo();
-  bar();
-});
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `const foo = async () => {};
-const bar = async () => {};
-
-beforeEach(async () => {
-  foo();
-  await bar();
-});
-`,
-    );
-  });
-
-  it('only awaits async calls and leaves sync calls untouched in the same callback', async () => {
-    const content = `const asyncFn = async () => {};
-const syncFn = () => {};
-
-beforeEach(() => {
-  syncFn();
-  asyncFn();
-});
-`;
-
-    await expect(run(content)).resolves.toBe(
-      `const asyncFn = async () => {};
-const syncFn = () => {};
-
-beforeEach(async () => {
-  syncFn();
-  await asyncFn();
-});
-`,
-    );
-  });
-
   it('does not re-await calls that are already awaited', async () => {
     const content = `const someFunction = async () => {};
 
@@ -476,6 +432,7 @@ type MyMockedClass = jest.MockedClass<typeof SomeClass>;
 type MyMockedObject = jest.MockedObject<{ foo: string }>;
 type MyMockInstance = jest.MockInstance<{ bar: number }>;
 type MySpy = jest.SpyInstance;
+type MySpiedFunction = jest.SpiedFunction<() => void>;
 `;
 
     await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
@@ -487,6 +444,7 @@ type MyMockedClass = MockedClass<typeof SomeClass>;
 type MyMockedObject = MockedObject<{ foo: string }>;
 type MyMockInstance = MockInstance<{ bar: number }>;
 type MySpy = MockInstance;
+type MySpiedFunction = Mock<() => void>;
 `);
   });
 });

@@ -109,14 +109,22 @@ const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
   const lastStatementsInLifeCycleHooks = root.findAll({
     rule: {
       kind: 'call_expression',
-      regex: '.*\(\)$',
+      regex: '.*\(.*\)',
       not: { regex: '^(await|vi)' },
       inside: {
         kind: 'expression_statement',
-        nthChild: {
-          reverse: true,
-          position: 1,
-        },
+        all: [
+          // only match if there is a single statement
+          {
+            nthChild: {
+              reverse: true,
+              position: 1,
+            },
+          },
+          {
+            nthChild: 1,
+          },
+        ],
         inside: {
           kind: 'statement_block',
           inside: {
@@ -226,6 +234,11 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
         {
           precedes: {
             kind: 'expression_statement',
+          },
+        },
+        {
+          precedes: {
+            kind: 'comment',
           },
         },
       ],
@@ -369,6 +382,21 @@ const getJestTypeEdits = (
   return { imports, edits };
 };
 
+const getSpiedFunctionEdits = (root: SgNode): Edit[] => {
+  const spyInstances = root.findAll({
+    rule: {
+      kind: 'nested_type_identifier',
+      regex: '^jest\.SpiedFunction$',
+    },
+  });
+
+  if (!spyInstances.length) {
+    return [];
+  }
+
+  return spyInstances.map((spyInstance) => spyInstance.replace('Mock'));
+};
+
 const getSpyInstanceTypeEdits = (root: SgNode): Edit[] => {
   const spyInstances = root.findAll({
     rule: {
@@ -432,9 +460,14 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     getJestTypeEdits(astRoot);
 
   const spyInstanceTypeEdits = getSpyInstanceTypeEdits(astRoot);
+  const spiedFunctionEdits = getSpiedFunctionEdits(astRoot);
 
   if (spyInstanceTypeEdits.length) {
     jestTypeImports.add('MockInstance');
+  }
+
+  if (spiedFunctionEdits.length) {
+    jestTypeImports.add('Mock');
   }
 
   const edits = [
@@ -446,6 +479,7 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     ...getImportActualEdits(astRoot),
     ...jestTypeEdits,
     ...spyInstanceTypeEdits,
+    ...spiedFunctionEdits,
     ...getTypeImportEdits(astRoot, Array.from(jestTypeImports)),
   ];
 

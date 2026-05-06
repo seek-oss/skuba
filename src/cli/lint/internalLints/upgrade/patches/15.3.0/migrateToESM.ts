@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
-import { migrateToVitest } from '../../../../../migrate/esm/vitest/vitest.js';
+import { migrateToESM } from '../../../../../migrate/esm/index.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchFunction } from '../../index.js';
 
@@ -24,14 +24,14 @@ const migrate: PatchFunction = async (config) => {
     );
   }
 
-  return await migrateToVitest(config);
+  return await migrateToESM(config);
 };
 
-export const tryMigrateToVitest: PatchFunction = async (config) => {
+export const tryMigrateToESM: PatchFunction = async (config) => {
   try {
     return await migrate(config);
   } catch (err) {
-    log.warn('Failed to migrate to Vitest');
+    log.warn('Failed to migrate to ESM');
     log.subtle(inspect(err));
     return { result: 'skip', reason: 'due to an error' };
   }

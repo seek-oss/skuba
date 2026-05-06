@@ -13,7 +13,7 @@ import {
 export interface MockContext extends Context {
   cookies: MockCookies;
   request: Context['request'] & {
-    body?: unknown;
+    body?: any;
     rawBody?: string;
     session?: Record<string, unknown>;
   };

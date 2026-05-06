@@ -197,7 +197,7 @@ The following changes are made:
 
 - type `module` is added to `package.json` files
 - CommonJS syntax is replaced with ESM syntax in source files, test files, and configuration files
-- AWS CDK worker files are migrated to ESM format
+- AWS CDK worker and Serverless files are migrated to ESM format
 - ESLint config files and Prettier config files are migrated to ESM format
 - Jest is replaced with Vitest as the test runner
   - The [sku codemod] is run along with additional transformations to fix additional cases
@@ -208,6 +208,8 @@ The following changes are made:
   - Jest hooks are migrated to Vitest hooks on a best-effort basis
 
 Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
+
+If you are running this migration for a non-skuba application, you will need to manually install `vitest`, and `@vitest/coverage-istanbul` as dev dependencies.
 
 ### Post Migration Steps
 
@@ -246,6 +248,72 @@ Address the TODO comments in vitest.config files
 
 #### FAQ and Tips
 
+##### Config consolidation
+
+If you have multiple `jest.config.ts` files, you may be able to consolidate these into a single `vitest.config.ts` file with multiple projects
+
+Example:
+
+If you have the following Jest config files:
+
+- `jest.config.ts`
+- `jest.config.int.ts` where integration tests must be run with `--runInBand` due to shared resources
+
+You may be able to consolidate these into a single `vitest.config.ts` file with multiple projects like so:
+
+```ts
+// vitest.config.ts
+export default defineConfig(
+  Vitest.mergePreset({
+    ssr: {
+      resolve: {
+        conditions: ['@seek/YOUR_REPO/source'],
+      },
+    },
+    test: {
+      env: {
+        ENVIRONMENT: 'test',
+      },
+      projects: [
+        {
+          extends: true,
+          test: {
+            name: 'unit',
+            exclude: ['**/*.int.test.ts'],
+          },
+        },
+        {
+          extends: true,
+          test: {
+            name: 'integration',
+            fileParallelism: false, // Equivalent to --runInBand
+            setupFiles: ['vitest.setup.int.ts'],
+            include: ['**/*.int.test.ts'],
+          },
+        },
+      ],
+    },
+  }),
+);
+```
+
+##### Performance
+
+By default, Vitest runs every test in isolation to provide a side-effect free testing environment. However, this is not always necessary and can lead to slower test runs compared to Jest.
+
+Follow the [Vitest improving performance] guide to optimise your Vitest configuration
+
+##### Matchers not matching on errors
+
+Vitest matches deeper than Jest so you may need to adjust your test assertions. Previously, you were able to match on error messages with Jest like so but you may need to adjust your tests to match on the error object instead of just the message with Vitest:
+
+```diff
+- await expect(someFunction()).rejects.toThrow(new Error('some error message'));
++ await expect(someFunction()).rejects.toThrow(expect.objectContaining(new Error('some error message')));
+// or
++ await expect(someFunction()).rejects.toThrow(new ActualError('some error message'));
+```
+
 ##### Jest spies no longer work after the migration
 
 1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
@@ -269,6 +337,91 @@ The ESLint rule introduced in previous `skuba` versions would quit evaluating im
 
 If you were using `jest-dynalite` for testing DynamoDB interactions, you will need to switch to [Vitest dynalite lite] which provides similar functionality for Vitest.
 
+The recommended `setupFiles` can slow down your test suite when run against all tests. To avoid this, configure a dedicated Vitest project for test files that use Dynalite.
+
+Example:
+
+```ts
+// vitest.config.ts
+export default defineConfig(
+  Vitest.mergePreset({
+    ssr: {
+      resolve: {
+        conditions: ['@seek/YOUR_REPO/source'],
+      },
+    },
+    test: {
+      env: {
+        ENVIRONMENT: 'test',
+      },
+      projects: [
+        {
+          extends: true,
+          test: {
+            name: 'unit',
+            exclude: ['**/*.dynalite.test.ts'],
+          },
+        },
+        {
+          extends: true,
+          test: {
+            name: 'dynalite',
+            setupFiles: ['vitest-dynamodb-lite'],
+            include: ['**/*.dynalite.test.ts'],
+          },
+        },
+      ],
+    },
+  }),
+);
+```
+
+##### DataDog Trace Headers
+
+You may notice Datadog trace headers being emitted in your test output after the migration. This is because Vitest runs tests in a more realistic environment which may cause some of your code to execute differently compared to Jest.
+
+```diff
++     "x-datadog-parent-id": "6421394243863276142",
++     "x-datadog-sampling-priority": "-1",
++     "x-datadog-tags": "_dd.p.tid=69f895eb00000000,_dd.p.ksr=0",
++     "x-datadog-trace-id": "6421394243863276142",
+```
+
+You can suppress these headers by adding the following to your Vitest setup file:
+
+```diff
+export default defineConfig({
+  test: {
+    env: {
+      ENVIRONMENT: 'test',
++     DD_TRACE_ENABLED: 'false',
+    },
+  },
+});
+```
+
+##### Esbuild
+
+If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration to ensure it is compatible with ESM.
+
+Of note, you may need to update the `conditions`, `mainFields`, `format` and `external` or `plugins` options in your `esbuild` configuration to ensure that it correctly resolves ESM modules.
+
+```diff
+  esbuild.build({
+    // ...
+    conditions: [
+      '@seek/YOUR_REPO/source',
++     'module'
+    ],
++   mainFields: ['module', 'main'],
++   format: 'esm',
+
++   external: ['pino']
+    // or
++   plugins: [esbuildPluginPino()]
+   });
+```
+
 ##### Coverage reports are different after the migration
 
 Vitest transforms your code differently to Jest which may result in different coverage reports after the migration. You may need to experiment with placing `/* istanbul ignore */` comments in different places in your code to achieve the desired coverage report.
@@ -291,3 +444,4 @@ For the keen observers, we have decided to ease the migration by firstly adoptin
 [migration guide]: https://vitest.dev/guide/migration.html#jest
 [open an issue]: https://github.com/seek-oss/skuba/issues/new
 [Vitest dynalite lite]: https://github.com/yamatatsu/vitest-dynamodb-lite/tree/main/packages/vitest-dynamodb-lite
+[Vitest improving performance]: https://vitest.dev/guide/improving-performance.html

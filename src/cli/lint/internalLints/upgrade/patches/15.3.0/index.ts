@@ -1,6 +1,6 @@
 import type { Patches } from '../../index.js';
 
-import { tryMigrateToVitest } from './migrateToVitest.js';
+import { tryMigrateToESM } from './migrateToESM.js';
 import { tryPatchDockerfilePruneProd } from './patchDockerfilePruneProd.js';
 import { tryRemovePnpmConfigPackageJson } from './removePnpmConfigPackageJson.js';
 
@@ -15,7 +15,7 @@ export const patches: Patches = [
     description: 'Remove pnpm-plugin-skuba from package.json pnpm config',
   },
   {
-    apply: tryMigrateToVitest,
-    description: 'Migrate to Vitest',
+    apply: tryMigrateToESM,
+    description: 'Migrate to ESM',
   },
 ];
