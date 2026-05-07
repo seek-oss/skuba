@@ -6,15 +6,13 @@ test: Migrate to Vitest
 
 `skuba test` now calls [Vitest](https://vitest.dev/) as the test runner instead of Jest.
 
-**Breaking change:** Unlike Jest, when running `skuba test` on your local machine, Vitest will run in watch mode by default. When run in CI, Vitest will run in non-watch mode.
-
-**Breaking change:** Unlike Jest, `describe`, `it`, `expect`, etc. are not available as globals in Vitest. You need to import them from `vitest`:
+Vitest does not provide globals for `describe`, `expect`, `it`, etc. You need to import them from `vitest`:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 ```
 
-You can explicitly set the mode by passing the `--watch` or `--no-watch` flags to `skuba test` or use `skuba test run` to run in non-watch mode locally:
+Vitest brings environment-aware behaviour to `skuba test`: it defaults to watch mode in an interactive shell on your local machine, and non-watch mode in CI. You can explicitly set the mode by passing the `--watch` or `--no-watch` flags to `skuba test` or using the `skuba test watch` and `skuba test run` subcommands:
 
 ```shell
 skuba test --watch
