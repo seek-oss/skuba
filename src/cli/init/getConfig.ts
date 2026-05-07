@@ -25,6 +25,7 @@ import {
   type BaseFields,
   type Choice,
   getGitPath,
+  getLocalTemplatePath,
   getPrivateTemplateName,
   getTemplateName,
   shouldContinue,
@@ -160,6 +161,11 @@ const selectTemplateName = async () => {
   if (templateSelection === 'seek →') {
     const privateName = await getPrivateTemplateName();
     return `seek:${privateName}`;
+  }
+
+  if (templateSelection === 'local →') {
+    const localPath = await getLocalTemplatePath();
+    return `local:${localPath}`;
   }
 
   return templateSelection;

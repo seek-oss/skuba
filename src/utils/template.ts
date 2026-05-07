@@ -21,6 +21,7 @@ export const TEMPLATE_NAMES_WITH_BYO = [
   ...TEMPLATE_NAMES,
   'github →',
   'seek →',
+  'local →',
 ] as const;
 
 interface TemplateDocumentationConfig {
