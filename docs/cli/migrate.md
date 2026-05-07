@@ -186,6 +186,7 @@ and `@types/node` to major version `20`.
 ## skuba migrate esm
 
 Attempts to automatically migrate your project from CommonJS to ESM.
+Follow the [pre-migration steps] before running this command.
 
 If you have `skuba` installed as a direct dependency, this migration runs automatically as part of `skuba format` and `skuba lint` in **skuba** 16. **It is recommended to use `skuba format` or `skuba lint` rather than running this migration directly.**
 
