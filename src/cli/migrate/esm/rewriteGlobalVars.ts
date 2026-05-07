@@ -12,13 +12,15 @@ export const hasDirNameRegex = /__dirname\b/g;
 export const hasDirNameVariableRegex = /const __dirname =/g;
 export const hasFileNameRegex = /__filename\b/g;
 export const hasFileNameVariableRegex = /const __filename =/g;
+export const requireMainRegex = /require\.main\s*===\s*module/g;
 
 const removeGlobalVars = (contents: string) =>
   contents
     .replace(hasDirNameRegex, 'import.meta.dirname')
     .replace(hasFileNameRegex, 'import.meta.filename')
     .replace(hasDirNameVariableRegex, '')
-    .replace(hasFileNameVariableRegex, '');
+    .replace(hasFileNameVariableRegex, '')
+    .replace(requireMainRegex, 'import.meta.main');
 
 export const tryRewriteGlobalVars: PatchFunction = async (config) => {
   const { mode, manifest } = config;

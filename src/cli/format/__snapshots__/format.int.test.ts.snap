@@ -90,6 +90,8 @@ Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
 
 Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
 
+Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
+
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
 
 Patch applied: Migrate to ESM upgrade-skuba
@@ -235,6 +237,8 @@ Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
 
 Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
 
+Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
+
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
 
 Patch applied: Migrate to ESM upgrade-skuba
@@ -373,6 +377,8 @@ Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
 
 Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
 
+Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
+
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
 
 Patch applied: Migrate to ESM upgrade-skuba
@@ -482,6 +488,8 @@ Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-works
 Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
 
 Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
+
+Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
 
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
 
