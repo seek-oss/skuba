@@ -189,7 +189,7 @@ Attempts to automatically migrate your project from CommonJS to ESM.
 
 If you have `skuba` installed as a direct dependency, this migration runs automatically as part of `skuba format` and `skuba lint` in **skuba** 16. **It is recommended to use `skuba format` or `skuba lint` rather than running this migration directly.**
 
-To run the migration directly (not recommended):
+To run the migration directly:
 
 ```shell
 skuba migrate esm
