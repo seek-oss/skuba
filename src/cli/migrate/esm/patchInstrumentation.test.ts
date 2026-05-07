@@ -138,7 +138,7 @@ CMD ["node", "lib/listen.js"]`,
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "Dockerfile": "FROM node:14
-      CMD ["node", "--import", "dd-trace/initialize.mjs", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
+      CMD ["node", TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile "--import", "dd-trace/initialize.mjs", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
         "src/index.ts": "
                 import tracer from 'dd-trace';
                 import { trace } from '@opentelemetry/api';
@@ -255,7 +255,7 @@ CMD node lib/listen.js`,
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "Dockerfile": "FROM node:14
-      CMD node --import dd-trace/initialize.mjs --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
+      CMD node TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile --import dd-trace/initialize.mjs --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
         "src/index.ts": "
                 import tracer from 'dd-trace';
                 import { trace } from '@opentelemetry/api';

@@ -69,6 +69,11 @@ export const patchInstrumentation: PatchFunction = async ({
     );
   }
 
+  const warning =
+    hasDDTraceImport && hasOpenTelemetryImport
+      ? 'TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile '
+      : '';
+
   const commandsToAdd = [
     hasDDTraceImport ? '--import dd-trace/initialize.mjs' : '',
     hasOpenTelemetryImport
@@ -95,7 +100,7 @@ export const patchInstrumentation: PatchFunction = async ({
         if (cmd.startsWith('node ')) {
           const patchedCmd = cmd.replace(
             'node ',
-            `node ${commandsToAdd.join(' ')} `,
+            `node ${warning}${commandsToAdd.join(' ')} `,
           );
           return { filePath, content: content.replace(cmd, patchedCmd) };
         }
@@ -115,7 +120,7 @@ export const patchInstrumentation: PatchFunction = async ({
       if (/^\s*\[\s*"node"\s*[,\]]/.test(cmd)) {
         const patchedCmd = cmd.replace(
           /^(\s*\[\s*"node"\s*)([,\]])/,
-          `$1, ${flags}$2`,
+          `$1, ${warning}${flags}$2`,
         );
 
         return { filePath, content: content.replace(cmd, patchedCmd) };
