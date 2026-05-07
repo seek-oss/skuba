@@ -57,8 +57,8 @@ describe('tryRewriteGlobalVars', () => {
       expect(volToJson()).toEqual({});
     });
 
-    it('should patch a detected __dirname and __filename', async () => {
-      const input = `const dirname = __dirname;\nconst filename = __filename;`;
+    it('should patch a detected __dirname,  __filename and require.main === module', async () => {
+      const input = `const dirname = __dirname;\nconst filename = __filename;\nif (require.main === module) {}`;
 
       const inputVolume = {
         'apps/api/app.ts': input,
@@ -79,14 +79,14 @@ describe('tryRewriteGlobalVars', () => {
         mode === 'lint'
           ? inputVolume
           : {
-              'apps/api/app.ts': `const dirname = import.meta.dirname;\nconst filename = import.meta.filename;`,
+              'apps/api/app.ts': `const dirname = import.meta.dirname;\nconst filename = import.meta.filename;\nif (import.meta.main) {}`,
             },
       );
     });
 
-    it('should replace every __dirname and __filename in a file', async () => {
+    it('should replace every __dirname, __filename and require.main === module in a file', async () => {
       const input =
-        'const a = __dirname;\nconst b = __dirname;\nconst c = __filename;\n';
+        'const a = __dirname;\nconst b = __dirname;\nconst c = __filename;\nif (require.main === module) {}\nif(require.main === module) {}';
 
       const inputVolume = {
         'apps/api/app.ts': input,
@@ -108,7 +108,7 @@ describe('tryRewriteGlobalVars', () => {
           ? inputVolume
           : {
               'apps/api/app.ts':
-                'const a = import.meta.dirname;\nconst b = import.meta.dirname;\nconst c = import.meta.filename;\n',
+                'const a = import.meta.dirname;\nconst b = import.meta.dirname;\nconst c = import.meta.filename;\nif (import.meta.main) {}\nif(import.meta.main) {}',
             },
       );
     });
