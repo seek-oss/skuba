@@ -186,11 +186,22 @@ and `@types/node` to major version `20`.
 ## skuba migrate esm
 
 Attempts to automatically migrate your project from CommonJS to ESM.
-Follow the [pre-migration steps] before running this command.
+
+If you have `skuba` installed as a direct dependency, this migration runs automatically as part of `skuba format` and `skuba lint` in **skuba** 16. **It is recommended to use `skuba format` or `skuba lint` rather than running this migration directly.**
+
+To run the migration directly (not recommended):
 
 ```shell
 skuba migrate esm
 ```
+
+You will need to manually install `vitest` and `@vitest/coverage-istanbul` as dev dependencies if you do not have `skuba` installed as a direct dependency.
+
+```shell
+pnpm add -DE vitest @vitest/coverage-istanbul
+```
+
+### Migration changes
 
 The following changes are made:
 
@@ -213,8 +224,6 @@ The following changes are made:
   - Jest hooks are migrated to Vitest hooks on a best-effort basis
 
 Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
-
-If you are running this migration for a non-skuba application, you will need to manually install `vitest` and `@vitest/coverage-istanbul` as dev dependencies.
 
 [pre-migration steps]: ../deep-dives/esm.md#transitioning-to-esm
 [sku codemod]: https://seek-oss.github.io/sku/#/./docs/vitest?id=migrating-to-vitest
