@@ -274,6 +274,60 @@ Due to the complexities of test code and configurations, the migration may not b
 
 ### FAQ and tips
 
+#### Jest spies no longer work
+
+Run the following command:
+
+```shell
+pnpm dlx @skuba-lib/detect-invalid-spies .
+```
+
+This will identify any spies in your code that may be broken by the migration.
+Address any issues detected before proceeding.
+
+Spies work differently in Vitest compared to Jest.
+You can read more about the differences in our [`@skuba-lib/detect-invalid-spies`] documentation.
+For other Jest-specific patterns, refer to Vitest's [Migrating from Jest] guide.
+
+#### Cannot find module 'some-module/type' or its corresponding type declarations.ts(2307)
+
+The ESLint rule introduced in previous `skuba` versions would quit evaluating imports very early to avoid long ESLint run times,
+which means it may have missed updating some imports for ESM compatibility.
+The fix is as simple as adding a `.js` extension to the end of the import path:
+
+```diff
+- import { type } from '@seek/some-module/lib-types/types/type.generated';
++ import { type } from '@seek/some-module/lib-types/types/type.generated.js';
+```
+
+#### Jest setup files were not migrated
+
+The migration may determine that some of your Jest setup files are redundant in Vitest and may not migrate them across.
+
+This is because Vitest provides built-in support for environment variables in the `test` configuration of `vitest.config.ts`:
+
+An example Jest setup file that is not migrated to an equivalent Vitest setup file:
+
+```ts
+// jest.setup.ts
+process.env.ENVIRONMENT = 'test';
+process.env.OTHER_ENVIRONMENT_VARIABLE = 'some value';
+
+export {};
+```
+
+```ts
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    env: {
+      ENVIRONMENT: 'test',
+      OTHER_ENVIRONMENT_VARIABLE: 'some value',
+    },
+  },
+});
+```
+
 #### Config consolidation
 
 If you have multiple `jest.config.ts` files, you may be able to consolidate to a single `vitest.config.ts` file with multiple projects.
@@ -338,32 +392,6 @@ For example, `.toThrow()` allowed for loose error message matching in Jest, but 
 + await expect(someFunction()).rejects.toThrow('some error message'));
 // or
 + await expect(someFunction()).rejects.toThrow(new ActualError('some error message'));
-```
-
-#### Jest spies no longer work
-
-Run the following command:
-
-```shell
-pnpm dlx @skuba-lib/detect-invalid-spies .
-```
-
-This will identify any spies in your code that may be broken by the migration.
-Address any issues detected before proceeding.
-
-Spies work differently in Vitest compared to Jest.
-You can read more about the differences in our [`@skuba-lib/detect-invalid-spies`] documentation.
-For other Jest-specific patterns, refer to Vitest's [Migrating from Jest] guide.
-
-#### Cannot find module 'some-module/type' or its corresponding type declarations.ts(2307)
-
-The ESLint rule introduced in previous `skuba` versions would quit evaluating imports very early to avoid long ESLint run times,
-which means it may have missed updating some imports for ESM compatibility.
-The fix is as simple as adding a `.js` extension to the end of the import path:
-
-```diff
-- import { type } from '@seek/some-module/lib-types/types/type.generated';
-+ import { type } from '@seek/some-module/lib-types/types/type.generated.js';
 ```
 
 #### jest-dynalite
