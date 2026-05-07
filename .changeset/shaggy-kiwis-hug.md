@@ -3,4 +3,6 @@
 'skuba': patch
 ---
 
-lint: Update `pnpm-workspace.yaml` `trustPolicyExclude` list
+lint: Remove `semver@5.7.2` from `pnpm-workspace.yaml` `trustPolicyExclude` list
+
+This legacy package version is no longer a transitive dependency of skuba.

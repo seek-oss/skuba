@@ -182,12 +182,11 @@ and `@types/node` to major version `20`.
 
 [aws-20]: https://aws.amazon.com/blogs/compute/node-js-20-x-runtime-now-available-in-aws-lambda/
 [node-20]: https://nodejs.org/en/blog/announcements/v20-release-announce
-[sku codemod]: https://seek-oss.github.io/sku/#/./docs/vitest?id=migrating-to-vitest
-[migration steps]: ../deep-dives/esm.md#steps-to-migrate
 
 ## skuba migrate esm
 
-Attempts to automatically migrate your project from CommonJS to ESM. Before running the migration, follow the [migration steps].
+Attempts to automatically migrate your project from CommonJS to ESM.
+Follow the [pre-migration steps] before running this command.
 
 ```shell
 skuba migrate esm
@@ -195,7 +194,7 @@ skuba migrate esm
 
 The following changes are made:
 
-- type `module` is added to `package.json` files
+- `"type": "module"` is added to `package.json` files
 - CommonJS syntax is replaced with ESM syntax in source files, test files, and configuration files
 - AWS CDK worker and Serverless files are migrated to ESM format
 - ESLint config files and Prettier config files are migrated to ESM format
@@ -209,57 +208,67 @@ The following changes are made:
 
 Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
 
-If you are running this migration for a non-skuba application, you will need to manually install `vitest`, and `@vitest/coverage-istanbul` as dev dependencies.
+If you are running this migration for a non-skuba application, you will need to manually install `vitest` and `@vitest/coverage-istanbul` as dev dependencies.
 
-### Post Migration Steps
+[pre-migration steps]: ../deep-dives/esm.md#transitioning-to-esm
+[sku codemod]: https://seek-oss.github.io/sku/#/./docs/vitest?id=migrating-to-vitest
 
-1. Run `skuba lint` and attempt to address any lint errors that may be caused by the migration. The most common failure points with `skuba test` runs can normally be addressed by fixing the lint errors first.
+### Post-migration steps
 
-If you notice there are changes you can make prior to running the skuba migration, we suggest making those changes first and then re-running the migration for the ease of reviewing the migration changes.
+1. Run `skuba lint`
 
-If you notice any repeatable issues that the migration has not accounted for, please [open an issue] or reach out in #skuba-support.
+   Attempt to address any lint errors that may be caused by the migration.
+   The most common failure points with `skuba test` runs can normally be addressed by fixing the lint errors first.
+
+   If you notice there are changes you can make prior to running the skuba migration, we suggest making those changes first and then re-running the migration for the ease of reviewing the migration changes.
+
+   If you notice any repeatable issues that the migration has not accounted for, please [open an issue], or if you work at SEEK, reach out in [#skuba-support].
 
 2. Review `vitest.config.ts` migrations
 
-Review your generated `vitest.config.ts` and Vitest setup files against the original `jest.config.ts` and Jest setup files to verify all configuration has been carried across, paying close attention to any custom settings or patterns that the migration may have missed. Once satisfied, delete the `jest.config.ts` and any Jest setup files.
+   Review your generated `vitest.config.ts` and Vitest setup files against the original `jest.config.ts` and Jest setup files to verify all configuration has been carried across, paying close attention to any custom settings or patterns that the migration may have missed.
+   Once satisfied, delete `jest.config.ts` and any Jest setup files.
 
-The migration may also leave some manual steps for you to complete within your `vitest.config.ts` files, such as updating existing regexp patterns to glob patterns in your test configuration.
+   The migration may also leave some manual steps for you to complete within your `vitest.config.ts` files, such as updating existing regexp patterns to glob patterns in your test configuration.
 
-```ts
-// vitest.config.ts
-export default defineConfig({
-  test: {
-    exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
-  },
-});
-```
+   ```ts
+   // vitest.config.ts
+   export default defineConfig({
+     test: {
+       exclude: ['\\.int\\.test'], // TODO: Update these regexp pattern strings to globs
+     },
+   });
+   ```
 
-These should be easily migrated by hand or with the assistance of an AI agent such as Copilot with a prompt such as
+   These should be easy to migrate by hand, or by prompting an AI agent such as Copilot with:
 
-```txt
-Address the TODO comments in vitest.config files
-```
+   ```txt
+   Address the TODO comments in vitest.config.ts files
+   ```
 
-3. Run `skuba test` and attempt to address any test errors that may be caused by the migration
+3. Run `skuba test`
 
-4. Run and deploy your project as normal, and monitor for any issues that may be caused by the migration.
+   Attempt to address any test errors that may be caused by the migration.
 
-5. If your project deploys a package, ensure you test the published package in a downstream project to confirm it works as expected.
+4. Run and deploy your project
 
-#### FAQ and Tips
+   Monitor for any issues that may be caused by the migration.
+   If your project deploys a package, ensure you test the published package in a downstream project to confirm it works as expected.
 
-##### Config consolidation
+[#skuba-support]: https://slack.com/app_redirect?channel=C03UM9GBGET
 
-If you have multiple `jest.config.ts` files, you may be able to consolidate these into a single `vitest.config.ts` file with multiple projects
+### FAQ and tips
 
-Example:
+#### Config consolidation
 
-If you have the following Jest config files:
+If you have multiple `jest.config.ts` files, you may be able to consolidate to a single `vitest.config.ts` file with multiple projects.
+
+For example, if you have the following Jest config files:
 
 - `jest.config.ts`
 - `jest.config.int.ts` where integration tests must be run with `--runInBand` due to shared resources
 
-You may be able to consolidate these into a single `vitest.config.ts` file with multiple projects like so:
+You may be able to consolidate to a single `vitest.config.ts` file like so:
 
 ```ts
 // vitest.config.ts
@@ -297,49 +306,57 @@ export default defineConfig(
 );
 ```
 
-##### Performance
+#### Performance
 
-By default, Vitest runs every test in isolation to provide a side-effect free testing environment. However, this is not always necessary and can lead to slower test runs compared to Jest.
+By default, Vitest runs every test in isolation to provide a testing environment that is free of side effects.
+However, this is not always necessary and can lead to slower test runs compared to Jest.
 
-Follow the [Vitest improving performance] guide to optimise your Vitest configuration
+Follow Vitest's [Improving Performance] guide to optimise your configuration.
 
-##### Matchers not matching on errors
+#### Jest error matchers no longer match
 
-Vitest matches deeper than Jest so you may need to adjust your test assertions. Previously, you were able to match on error messages with Jest like so but you may need to adjust your tests to match on the error object instead of just the message with Vitest:
+Vitest matches deeper than Jest so you may need to adjust your test assertions.
+For example, `.toThrow()` allowed for loose error message matching in Jest, but may require a more precise expectation in Vitest:
 
 ```diff
 - await expect(someFunction()).rejects.toThrow(new Error('some error message'));
-+ await expect(someFunction()).rejects.toThrow(expect.objectContaining(new Error('some error message')));
++ await expect(someFunction()).rejects.toThrow('some error message'));
 // or
 + await expect(someFunction()).rejects.toThrow(new ActualError('some error message'));
 ```
 
-##### Jest spies no longer work after the migration
+#### Jest spies no longer work
 
-1. Run `pnpm dlx @skuba-lib/detect-invalid-spies .`
+Run the following command:
 
-Spies work differently in Vitest compared to Jest. You can read more about the differences here in our [@skuba-lib/detect-invalid-spies documentation].
+```shell
+pnpm dlx @skuba-lib/detect-invalid-spies .
+```
 
-This will identify any spies in your code that may be broken by the migration. If there are any issues detected, you will need to address these before proceeding with the migration.
+This will identify any spies in your code that may be broken by the migration.
+Address any issues detected before proceeding.
 
-For other Jest-specific patterns, you can refer to the [migration guide] provided by Vitest for more information on how to migrate your tests.
+Spies work differently in Vitest compared to Jest.
+You can read more about the differences in our [`@skuba-lib/detect-invalid-spies`] documentation.
+For other Jest-specific patterns, refer to Vitest's [Migrating from Jest] guide.
 
-##### Cannot find module 'some-module/type' or its corresponding type declarations.ts(2307)
+#### Cannot find module 'some-module/type' or its corresponding type declarations.ts(2307)
 
-The ESLint rule introduced in previous `skuba` versions would quit evaluating imports very early to avoid long ESLint run times which means a few imports may be now invalid imports in ESM. The fix is as simple as adding a `.js` extension to the end of the import path:
+The ESLint rule introduced in previous `skuba` versions would quit evaluating imports very early to avoid long ESLint run times,
+which means it may have missed updating some imports for ESM compatibility.
+The fix is as simple as adding a `.js` extension to the end of the import path:
 
 ```diff
 - import { type } from '@seek/some-module/lib-types/types/type.generated';
 + import { type } from '@seek/some-module/lib-types/types/type.generated.js';
 ```
 
-##### Jest Dynalite
+#### jest-dynalite
 
-If you were using `jest-dynalite` for testing DynamoDB interactions, you will need to switch to [Vitest dynalite lite] which provides similar functionality for Vitest.
+If you were using `jest-dynalite` to test DynamoDB interactions, [`vitest-dynamodb-lite`] provides similar functionality for Vitest.
 
-The recommended `setupFiles` can slow down your test suite when run against all tests. To avoid this, configure a dedicated Vitest project for test files that use Dynalite.
-
-Example:
+The recommended `setupFiles` can slow down your test suite when run against all tests.
+To avoid this, configure a dedicated project for test files that use Dynalite.
 
 ```ts
 // vitest.config.ts
@@ -376,55 +393,57 @@ export default defineConfig(
 );
 ```
 
-##### DataDog Trace Headers
+#### Datadog trace headers
 
-You may notice Datadog trace headers being emitted in your test output after the migration. This is because Vitest runs tests in a more realistic environment which may cause some of your code to execute differently compared to Jest.
+You may notice Datadog trace headers being emitted in your test output after the migration.
+Vitest runs tests in a more realistic environment which may cause some of your code to execute differently compared to Jest.
 
 ```diff
-+     "x-datadog-parent-id": "6421394243863276142",
-+     "x-datadog-sampling-priority": "-1",
-+     "x-datadog-tags": "_dd.p.tid=69f895eb00000000,_dd.p.ksr=0",
-+     "x-datadog-trace-id": "6421394243863276142",
++ "x-datadog-parent-id": "6421394243863276142",
++ "x-datadog-sampling-priority": "-1",
++ "x-datadog-tags": "_dd.p.tid=69f895eb00000000,_dd.p.ksr=0",
++ "x-datadog-trace-id": "6421394243863276142",
 ```
 
 You can suppress these headers by adding the following to your Vitest setup file:
 
 ```diff
-export default defineConfig({
-  test: {
-    env: {
-      ENVIRONMENT: 'test',
-+     DD_TRACE_ENABLED: 'false',
+  export default defineConfig({
+    test: {
+      env: {
+        ENVIRONMENT: 'test',
++       DD_TRACE_ENABLED: 'false',
+      },
     },
-  },
-});
+  });
 ```
 
-##### Esbuild
+#### esbuild
 
-If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration to ensure it is compatible with ESM.
+If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration for ESM compatibility.
 
-Of note, you may need to update the `conditions`, `mainFields`, `format` and `external` or `plugins` options in your `esbuild` configuration to ensure that it correctly resolves ESM modules.
+Of note, you may need to update the `conditions`, `mainFields`, `format` and `external` or `plugins` options in your `esbuild` configuration to ensure that it correctly resolves ESM modules:
 
 ```diff
   esbuild.build({
     // ...
     conditions: [
       '@seek/YOUR_REPO/source',
-+     'module'
++     'module',
     ],
 +   mainFields: ['module', 'main'],
 +   format: 'esm',
 
-+   external: ['pino']
++   external: ['pino'],
     // or
-+   plugins: [esbuildPluginPino()]
++   plugins: [esbuildPluginPino()],
    });
 ```
 
-##### Coverage reports are different after the migration
+#### Coverage reports are different
 
-Vitest transforms your code differently to Jest which may result in different coverage reports after the migration. You may need to experiment with placing `/* istanbul ignore */` comments in different places in your code to achieve the desired coverage report.
+Vitest transforms your code differently to Jest which may result in different coverage reports after the migration.
+You may need to experiment with placing `/* istanbul ignore */` comments in different places in your code to achieve the same coverage behaviour:
 
 ```diff
     transport:
@@ -434,14 +453,13 @@ Vitest transforms your code differently to Jest which may result in different co
         : undefined,
 ```
 
+You may also find some luck with using the `/* istanbul ignore start */` and `/* istanbul ignore end */` comments.
+
 We are unsure whether this is intended behaviour or if there is a bug in the Vitest Istanbul and v8 coverage providers.
+For the keen observers, we have decided to ease the migration by firstly adopting the `istanbul` provider for coverage in Vitest instead of the default `v8` provider. The `v8` provider will be made the default in a future release once more codebases have been migrated to ESM and we can confirm it works as expected.
 
-You may also find some luck with using the `/* istanbul ignore start */` and `/* istanbul ignore end */` comments
-
-For the keen observers, we have decided to ease the migration by firstly adopting the `istanbul` provider for coverage in Vitest instead of the default `v8` provider. The `v8` provider will be made the default in a future release once we have mostly migrated our codebase to ESM and can confirm it works as expected.
-
-[@skuba-lib/detect-invalid-spies documentation]: https://github.com/seek-oss/skuba/tree/main/packages/detect-invalid-spies
-[migration guide]: https://vitest.dev/guide/migration.html#jest
+[`@skuba-lib/detect-invalid-spies`]: https://github.com/seek-oss/skuba/tree/main/packages/detect-invalid-spies
+[`vitest-dynamodb-lite`]: https://github.com/yamatatsu/vitest-dynamodb-lite/tree/main/packages/vitest-dynamodb-lite
+[Improving Performance]: https://vitest.dev/guide/improving-performance.html
+[Migrating from Jest]: https://vitest.dev/guide/migration.html#jest
 [open an issue]: https://github.com/seek-oss/skuba/issues/new
-[Vitest dynalite lite]: https://github.com/yamatatsu/vitest-dynamodb-lite/tree/main/packages/vitest-dynamodb-lite
-[Vitest improving performance]: https://vitest.dev/guide/improving-performance.html

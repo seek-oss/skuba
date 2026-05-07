@@ -26,4 +26,4 @@ skuba test run
 skuba test --ui
 ```
 
-This opens up the Vitest UI in your browser, which provides a visual interface for running and debugging tests
+This opens up the Vitest UI in your browser, which provides a visual interface for running and debugging tests.
