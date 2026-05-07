@@ -197,8 +197,14 @@ The following changes are made:
 
 - type `module` is added to `package.json` files
 - CommonJS syntax is replaced with ESM syntax in source files, test files, and configuration files
+  - `__dirname` and `__filename` are replaced with `import.meta.dirname` and `import.meta.filename`.
+  - `module.exports` are replaced with `export default` or named exports as appropriate
+  - `.json` imports are updated to include `with { type: 'json' }`
+  - `require()` calls are replaced with `import` statements or dynamic `import()` as appropriate
+- Datadog and OpenTelemetry instrumentation ESM imports are added to Dockerfiles
 - AWS CDK worker and Serverless files are migrated to ESM format
 - ESLint config files and Prettier config files are migrated to ESM format
+- `vocab.config.js` is migrated to `vocab.config.cjs`
 - Jest is replaced with Vitest as the test runner
   - The [sku codemod] is run along with additional transformations to fix additional cases
   - `aws-sdk-client-mock-jest` → `aws-sdk-client-mock-vitest` + `@types/node`

@@ -16,6 +16,7 @@ import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefaul
 import { migrateImportExportStatementsPatch } from './migrateImportExportStatements.js';
 import { tryMigrateLambdas } from './migrateLambdas.js';
 import { tryMigrateVocab } from './migrateVocab.js';
+import { tryPatchInstrumentation } from './patchInstrumentation.js';
 import { rewriteGlobalVars } from './rewriteGlobalVars.js';
 import { tryUpgradeSkubaDive } from './upgradeSkubaDive.js';
 import { migrateToVitest } from './vitest/vitest.js';
@@ -58,6 +59,11 @@ const patches: Patch[] = [
   {
     apply: tryMigrateDockerfileRequires,
     description: 'Migrate Dockerfiles to replace --require with --import',
+  },
+  {
+    apply: tryPatchInstrumentation,
+    description:
+      'Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports',
   },
   {
     apply: migrateToVitest,

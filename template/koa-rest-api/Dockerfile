@@ -29,4 +29,4 @@ ARG PORT=8001
 ENV PORT=${PORT}
 EXPOSE ${PORT}
 
-CMD ["--import", "./lib/tracing.js", "./lib/listen.js"]
+CMD ["--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "--import", "./lib/tracing.js", "./lib/listen.js"]
