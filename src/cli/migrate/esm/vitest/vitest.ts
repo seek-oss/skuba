@@ -52,12 +52,22 @@ const patchFiles = async ({
     .map(({ file, content }) => {
       const updatedContent = content
         .replace(
-          /"aws-sdk-client-mock-jest":\s*"[^"]*"/g,
-          '"aws-sdk-client-mock-vitest": "7.0.1"',
+          /"aws-sdk-client-mock-jest":\s*"([^"]*)"/g,
+          (_match, version: string) => {
+            const newVersion = version.startsWith('catalog:')
+              ? version
+              : '7.0.1';
+            return `"aws-sdk-client-mock-vitest": "${newVersion}"`;
+          },
         )
         .replace(
-          /"@shopify\/jest-koa-mocks":\s*"[^"]*"/g,
-          `"@skuba-lib/vitest-koa-mocks": "${latestVitestKoaMocksVersion}"`,
+          /"@shopify\/jest-koa-mocks":\s*"([^"]*)"/g,
+          (_match, version: string) => {
+            const newVersion = version.startsWith('catalog:')
+              ? version
+              : latestVitestKoaMocksVersion;
+            return `"@skuba-lib/vitest-koa-mocks": "${newVersion}"`;
+          },
         )
         .replace(/--runInBand/g, '--maxWorkers=1')
         .replace(/jest.config/g, 'vitest.config');
@@ -253,26 +263,23 @@ export const migrateToVitest = async (opts: {
     })
     .find((version) => version !== null);
 
-  // Install the new deps we added to package.json
   if (packageManager.command === 'pnpm') {
     if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
-      await Promise.all(
-        Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
-          const folderExec = createExec({
-            cwd: folder,
-          });
+      for (const folder of vitestKoaMockPathsWithoutNodeTypes) {
+        const folderExec = createExec({
+          cwd: folder,
+        });
 
-          return folderExec(
-            'pnpm',
-            'install',
-            `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
-            '--save-dev',
-            '--prefer-offline',
-            '--ignore-workspace-root-check',
-            '--ignore-scripts',
-          );
-        }),
-      );
+        await folderExec(
+          'pnpm',
+          'install',
+          `@types/node@${existingNodeTypesVersion}`,
+          '--save-dev',
+          '--prefer-offline',
+          '--ignore-workspace-root-check',
+          '--ignore-scripts',
+        );
+      }
       await exec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
     } else {
       await exec(
@@ -283,23 +290,26 @@ export const migrateToVitest = async (opts: {
         '--ignore-scripts',
       );
     }
-  } else if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
-    await Promise.all(
-      Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
-        const folderExec = createExec({
-          cwd: folder,
-        });
+    return {
+      result: 'apply',
+    };
+  }
 
-        return folderExec(
-          'yarn',
-          'add',
-          `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
-          '--dev',
-          '--prefer-offline',
-          '--ignore-scripts',
-        );
-      }),
-    );
+  if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
+    for (const folder of vitestKoaMockPathsWithoutNodeTypes) {
+      const folderExec = createExec({
+        cwd: folder,
+      });
+
+      await folderExec(
+        'yarn',
+        'add',
+        `@types/node@${existingNodeTypesVersion}`,
+        '--dev',
+        '--prefer-offline',
+        '--ignore-scripts',
+      );
+    }
   } else {
     await exec(
       'yarn',

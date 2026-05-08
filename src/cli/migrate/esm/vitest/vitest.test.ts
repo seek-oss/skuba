@@ -205,6 +205,43 @@ test('middleware', () => {
     `);
   });
 
+  it('should preserve catalog versions when replacing dependencies', async () => {
+    vol.fromJSON({
+      'package.json': `{
+  "dependencies": {
+    "aws-sdk-client-mock-jest": "catalog:test-utils"
+  }
+}
+`,
+      'pnpm-workspace.yaml': `catalog:
+  aws-sdk-client-mock-jest: 4.1.0
+`,
+    });
+
+    await expect(
+      migrateToVitest({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "package.json": "{
+        "dependencies": {
+          "aws-sdk-client-mock-vitest": "catalog:test-utils"
+        }
+      }
+      ",
+        "pnpm-workspace.yaml": "catalog:
+        aws-sdk-client-mock-vitest: 7.0.1
+      ",
+      }
+    `);
+  });
+
   it('should replace --runInBand with --maxWorkers=1 in package.json scripts and buildkite files', async () => {
     vol.fromJSON({
       'package.json': `{

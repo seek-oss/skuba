@@ -154,37 +154,39 @@ export const patchInstrumentation: PatchFunction = async ({
       ),
     );
 
-    await Promise.all(
-      packageJsons
-        .filter((pkg) => pkg !== undefined)
-        .map(async (pkg) => {
-          const { packageJson, path } = pkg;
-
-          if (
-            packageJson.dependencies?.['@opentelemetry/instrumentation'] ||
-            packageJson.devDependencies?.['@opentelemetry/instrumentation']
-          ) {
-            return;
-          }
-
-          const folderExec = createExec({ cwd: dirname(path) });
-          if (packageManager.command === 'pnpm') {
-            return folderExec(
-              'pnpm',
-              'install',
-              '@opentelemetry/instrumentation@0.216.0',
-              '--prefer-offline',
-              '--ignore-workspace-root-check',
-            );
-          }
-          return folderExec(
-            'yarn',
-            'add',
-            '@opentelemetry/instrumentation@0.216.0',
-            '--prefer-offline',
-          );
-        }),
+    const filteredPackageJsons = packageJsons.filter(
+      (pkg) => pkg !== undefined,
     );
+    for (const pkg of filteredPackageJsons) {
+      const { packageJson, path } = pkg;
+
+      if (
+        packageJson.dependencies?.['@opentelemetry/instrumentation'] ||
+        packageJson.devDependencies?.['@opentelemetry/instrumentation']
+      ) {
+        continue;
+      }
+
+      const folderExec = createExec({ cwd: dirname(path) });
+      if (packageManager.command === 'pnpm') {
+        await folderExec(
+          'pnpm',
+          'install',
+          '@opentelemetry/instrumentation@0.216.0',
+          '--prefer-offline',
+          '--ignore-workspace-root-check',
+          '--ignore-scripts',
+        );
+      } else {
+        await folderExec(
+          'yarn',
+          'add',
+          '@opentelemetry/instrumentation@0.216.0',
+          '--prefer-offline',
+          '--ignore-scripts',
+        );
+      }
+    }
   }
 
   await Promise.all(
