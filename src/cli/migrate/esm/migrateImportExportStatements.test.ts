@@ -372,7 +372,7 @@ export default { foo, bar };
         );
       });
 
-      it('should convert .prettierrc.js module.exports = require to export { default } from', async () => {
+      it('should convert .prettierrc.cjs to .prettierrc.js', async () => {
         const input = "module.exports = require('skuba/config/prettier');";
 
         const expected =
@@ -397,6 +397,39 @@ export default { foo, bar };
             ? {
                 'package.json': '{"type":"module"}',
                 '.prettierrc.js': input,
+              }
+            : {
+                'package.json': '{"type":"module"}',
+                '.prettierrc.js': expected,
+              },
+        );
+      });
+
+      it('should convert .prettierrc.js module.exports = require to export { default } from', async () => {
+        const input = "module.exports = require('skuba/config/prettier');";
+
+        const expected =
+          "export { default } from 'skuba/config/prettier.js';\n";
+
+        vol.fromJSON({
+          'package.json': '{"type":"module"}',
+          '.prettierrc.cjs': input,
+        });
+
+        await expect(
+          tryMigrateImportExportStatements({
+            ...baseArgs,
+            mode,
+          }),
+        ).resolves.toEqual({
+          result: 'apply',
+        });
+
+        expect(volToJson()).toEqual(
+          mode === 'lint'
+            ? {
+                'package.json': '{"type":"module"}',
+                '.prettierrc.cjs': input,
               }
             : {
                 'package.json': '{"type":"module"}',
@@ -475,6 +508,44 @@ export default {
         expect(volToJson()).toEqual(
           mode === 'lint'
             ? { 'package.json': '{"type":"module"}', 'eslint.config.js': input }
+            : {
+                'package.json': '{"type":"module"}',
+                'eslint.config.js': expected,
+              },
+        );
+      });
+
+      it('should convert .cjs eslint config files to .js with export default', async () => {
+        const input = `module.exports = [
+  { rules: { 'no-console': 'off' } },
+];
+`;
+
+        const expected = `export default [
+  { rules: { 'no-console': 'off' } },
+];
+`;
+
+        vol.fromJSON({
+          'package.json': '{"type":"module"}',
+          'eslint.config.cjs': input,
+        });
+
+        await expect(
+          tryMigrateImportExportStatements({
+            ...baseArgs,
+            mode,
+          }),
+        ).resolves.toEqual({
+          result: 'apply',
+        });
+
+        expect(volToJson()).toEqual(
+          mode === 'lint'
+            ? {
+                'package.json': '{"type":"module"}',
+                'eslint.config.cjs': input,
+              }
             : {
                 'package.json': '{"type":"module"}',
                 'eslint.config.js': expected,

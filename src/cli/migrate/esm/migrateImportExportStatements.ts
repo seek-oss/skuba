@@ -371,7 +371,12 @@ export const tryMigrateImportExportStatements: PatchFunction = async (
   const cwd = path.dirname(manifest.path);
 
   const fileNames = await fg(
-    ['**/*.config.js', '**/.prettierrc.js', '**/src/**/*.{ts,tsx,js}'],
+    [
+      '**/*.config.js',
+      '**/.prettierrc.{cjs,js}',
+      '**/eslint.config.{cjs,js}',
+      '**/src/**/*.{ts,tsx,js}',
+    ],
     {
       cwd,
       ignore: [
@@ -420,6 +425,12 @@ export const tryMigrateImportExportStatements: PatchFunction = async (
   await Promise.all(
     filesWithMigration.map(async ({ file, updated }) => {
       await fs.promises.writeFile(file, updated);
+
+      // Rename .cjs files to .js after transformation
+      if (file.endsWith('.cjs')) {
+        const newPath = file.replace(/\.cjs$/, '.js');
+        await fs.promises.rename(file, newPath);
+      }
     }),
   );
 
