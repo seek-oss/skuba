@@ -172,10 +172,10 @@ export const patchInstrumentation: PatchFunction = async ({
 
       const existingVersion =
         packageJson.dependencies?.['@opentelemetry/instrumentation-http'] ??
-        packageJson.devDependencies?.['@opentelemetry/sdk-node'];
+        packageJson.dependencies?.['@opentelemetry/sdk-node'];
 
       const versionToUse =
-        existingVersion?.startsWith('catalog:') || fallbackVersion === undefined
+        existingVersion?.startsWith('catalog:') || existingVersion === undefined
           ? fallbackVersion
           : await latestVersion('@opentelemetry/instrumentation', {
               version: `<=${existingVersion}`,
