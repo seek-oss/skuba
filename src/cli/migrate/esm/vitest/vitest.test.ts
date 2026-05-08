@@ -217,6 +217,39 @@ test('middleware', () => {
     `);
   });
 
+  it('should replace eslint-disable jest with eslint-disable vitest', async () => {
+    vol.fromJSON({
+      'src/middleware.test.ts': `/* eslint-disable jest/rule */
+      /* eslint-disable-next-line jest/rule */
+
+test('middleware', () => {
+  expect(true).toBe(true);
+});
+`,
+    });
+
+    await expect(
+      migrateToVitest({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "src/middleware.test.ts": "/* eslint-disable vitest/rule */
+            /* eslint-disable-next-line vitest/rule */
+
+      test('middleware', () => {
+        expect(true).toBe(true);
+      });
+      ",
+      }
+    `);
+  });
+
   it('should preserve catalog versions when replacing dependencies', async () => {
     vol.fromJSON({
       'package.json': `{

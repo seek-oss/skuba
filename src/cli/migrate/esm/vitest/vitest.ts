@@ -251,6 +251,7 @@ export const migrateToVitest = async (opts: {
           'eslint-disable-next-line jest',
           'eslint-disable-next-line vitest',
         )
+        .replaceAll('eslint-disable jest', 'eslint-disable vitest')
         .replaceAll('Mock<any, any>', 'Mock');
 
       if (finalUpdated !== content) {
