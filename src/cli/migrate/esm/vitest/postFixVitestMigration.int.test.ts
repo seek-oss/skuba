@@ -357,13 +357,13 @@ vi.mock('./a');
 import { a } from './a';
 `;
 
-    await expect(run(content)).resolves.toBe(
-      `import 'some-side-effect';
-vi.mock('./a');
-import { vi } from 'vitest';
-import { a } from './a';
-`,
-    );
+    await expect(run(content)).resolves.toMatchInlineSnapshot(`
+      "import 'some-side-effect';
+      vi.mock('./a');
+      import { vi } from 'vitest';
+      import { a } from './a';
+      "
+    `);
   });
 });
 

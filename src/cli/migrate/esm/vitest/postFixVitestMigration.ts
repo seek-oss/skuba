@@ -229,6 +229,7 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
               nthChild: 1,
               kind: 'string',
             },
+            stopBy: 'end',
           },
         },
         {
@@ -268,6 +269,13 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
             has: {
               nthChild: 1,
               kind: 'string',
+            },
+          },
+          {
+            precedes: {
+              kind: 'import_statement',
+              has: { nthChild: 1, kind: 'string' },
+              stopBy: 'end',
             },
           },
         ],
