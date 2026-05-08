@@ -366,7 +366,7 @@ importers:
   packages/vitest-koa-mocks:
     dependencies:
       '@types/koa':
-        specifier: ^3.0.1
+        specifier: ^3.0.0
         version: 3.0.2
       koa:
         specifier: ^3.1.1
