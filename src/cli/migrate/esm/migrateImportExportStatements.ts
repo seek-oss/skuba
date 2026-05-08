@@ -223,7 +223,7 @@ const bindingForSpreadResolvedPath = (
   index: number,
 ): string => {
   if (resolved.includes('skuba/config/prettier')) {
-    return 'skubaPrettierConfig';
+    return 'config';
   }
 
   return `spreadRequire${index}`;

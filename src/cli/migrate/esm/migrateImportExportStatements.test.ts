@@ -445,10 +445,10 @@ export default { foo, bar };
 };
 `;
 
-        const expected = `import skubaPrettierConfig from 'skuba/config/prettier.js';
+        const expected = `import config from 'skuba/config/prettier.js';
 
 export default {
-  ...skubaPrettierConfig,
+  ...config,
   printWidth: 100,
 };
 `;
