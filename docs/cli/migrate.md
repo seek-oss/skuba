@@ -345,7 +345,7 @@ If you rely on passing in `vi.fn()` mocks into `vi.mock()` calls, you may find t
 
 ```diff
 - const someMock = vi.fn();
-+ const someMock = vi.hoisted(vi.fn());
++ const someMock = vi.hoisted(() => vi.fn());
   vi.mock('@seek/some-module', () => ({
     someFunction: someMock,
   }));
