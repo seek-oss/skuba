@@ -299,25 +299,33 @@ eg.
 ```ts
 // @seek/package-a
 
-import { someFunction } from '@seek/package-b';
+import { indirectFunction } from '@seek/package-b';
+
+export const someFunction = () => {
+  return indirectFunction();
+};
+
+// file.ts
+import { someFunction } from '@seek/package-a';
 
 export const functionUnderTest = () => {
   return someFunction();
 };
 
 // example.test.ts
+import { functionUnderTest } from './file.js';
 import { someFunction } from '@seek/package-b';
 
 vi.mock('@seek/package-b');
 
 it('mocks someFunction from package-b', () => {
-  someFunction.mockReturnValue('mocked value');
+  vi.mocked(someFunction).mockReturnValue('mocked value');
 
   expect(functionUnderTest()).toBe('mocked value');
 });
 ```
 
-This is because Vitest does not mock dependencies of dependencies by default. You will need to configure Vitest to allow this by adding configuration to your `vitest.config.ts` file:
+This is because Vitest does not mock dependencies of dependencies by default. You will need to configure Vitest to allow this by adding configuration to your `vitest.config.ts` file.
 
 ```ts
 export default defineConfig({
@@ -328,6 +336,8 @@ export default defineConfig({
   },
 });
 ```
+
+Similarly if you had another package within `@seek/package-b` that you wanted to mock, you would need to add that `@seek/package-b` to the `inline` dependencies as well.
 
 #### Jest hoisted mocks no longer work
 
