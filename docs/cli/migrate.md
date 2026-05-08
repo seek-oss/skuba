@@ -290,6 +290,57 @@ Spies work differently in Vitest compared to Jest.
 You can read more about the differences in our [`@skuba-lib/detect-invalid-spies`] documentation.
 For other Jest-specific patterns, refer to Vitest's [Migrating from Jest] guide.
 
+#### Jest nested mocks no longer work
+
+If you have a package which imports another package which you would like to mock in your tests, you may find that your mocks are not working after the migration.
+
+eg.
+
+```ts
+// @seek/package-a
+
+import { someFunction } from '@seek/package-b';
+
+export const functionUnderTest = () => {
+  return someFunction();
+};
+
+// example.test.ts
+import { someFunction } from '@seek/package-b';
+
+vi.mock('@seek/package-b');
+
+it('mocks someFunction from package-b', () => {
+  someFunction.mockReturnValue('mocked value');
+
+  expect(functionUnderTest()).toBe('mocked value');
+});
+```
+
+This is because Vitest does not mock dependencies of dependencies by default. You will need to configure Vitest to allow this by adding configuration to your `vitest.config.ts` file:
+
+```ts
+export default defineConfig({
+  server: {
+    deps: {
+      inline: ['@seek/package-b'],
+    },
+  },
+});
+```
+
+#### Jest hoisted mocks no longer work
+
+If you rely on passing in `vi.fn()` mocks into `vi.mock()` calls, you may find that your mocks are not working after the migration. You may need to wrap them in `vi.hoisted()` to ensure they are hoisted to the top of the test file:
+
+```diff
+- const someMock = vi.fn();
++ const someMock = vi.hoisted(vi.fn());
+  vi.mock('@seek/some-module', () => ({
+    someFunction: someMock,
+  }));
+```
+
 #### Cannot find module 'some-module/type' or its corresponding type declarations.ts(2307)
 
 The ESLint rule introduced in previous `skuba` versions would quit evaluating imports very early to avoid long ESLint run times,
