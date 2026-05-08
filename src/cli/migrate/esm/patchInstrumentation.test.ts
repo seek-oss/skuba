@@ -190,6 +190,40 @@ CMD ["lib/listen.js"]`,
     `);
   });
 
+  it('should patch a Dockerfile with both dd-trace and @opentelemetry/api imports and implicit node CMD', async () => {
+    const logWarnSpy = vi
+      .spyOn(log, 'warn')
+      .mockImplementation(() => undefined);
+
+    vol.fromJSON({
+      Dockerfile: `FROM node:14
+CMD ["lib/listen.js"]`,
+      'src/index.ts': `
+          import tracer from 'dd-trace';
+          import { trace } from '@opentelemetry/api';
+        `,
+    });
+
+    await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(logWarnSpy).toHaveBeenCalledWith(
+      'Found imports for both Datadog and OpenTelemetry instrumentation in source files, unsure which to patch',
+    );
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "Dockerfile": "FROM node:14
+      CMD [TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile "--import", "dd-trace/initialize.mjs", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
+        "src/index.ts": "
+                import tracer from 'dd-trace';
+                import { trace } from '@opentelemetry/api';
+              ",
+      }
+    `);
+  });
+
   it('should patch a Dockerfile with a dd-trace import and shell form CMD', async () => {
     vol.fromJSON({
       Dockerfile: `FROM node:14
@@ -256,6 +290,40 @@ CMD node lib/listen.js`,
       {
         "Dockerfile": "FROM node:14
       CMD node TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile --import dd-trace/initialize.mjs --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
+        "src/index.ts": "
+                import tracer from 'dd-trace';
+                import { trace } from '@opentelemetry/api';
+              ",
+      }
+    `);
+  });
+
+  it('should patch a Dockerfile with both dd-trace and @opentelemetry/api imports and shell form CMD with implicit node', async () => {
+    const logWarnSpy = vi
+      .spyOn(log, 'warn')
+      .mockImplementation(() => undefined);
+
+    vol.fromJSON({
+      Dockerfile: `FROM node:14
+CMD lib/listen.js`,
+      'src/index.ts': `
+          import tracer from 'dd-trace';
+          import { trace } from '@opentelemetry/api';
+        `,
+    });
+
+    await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(logWarnSpy).toHaveBeenCalledWith(
+      'Found imports for both Datadog and OpenTelemetry instrumentation in source files, unsure which to patch',
+    );
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "Dockerfile": "FROM node:14
+      CMD TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile --import dd-trace/initialize.mjs --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
         "src/index.ts": "
                 import tracer from 'dd-trace';
                 import { trace } from '@opentelemetry/api';

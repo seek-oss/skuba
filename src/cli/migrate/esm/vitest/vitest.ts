@@ -260,6 +260,7 @@ export const migrateToVitest = async (opts: {
       'install',
       '--frozen-lockfile=false',
       '--prefer-offline',
+      '--ignore-scripts',
     );
     if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
       await Promise.all(
@@ -275,10 +276,11 @@ export const migrateToVitest = async (opts: {
             '--save-dev',
             '--prefer-offline',
             '--ignore-workspace-root-check',
+            '--ignore-scripts',
           );
         }),
       );
-      await exec('pnpm', 'dedupe', '--prefer-offline');
+      await exec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
     }
   } else {
     await exec(
@@ -286,6 +288,7 @@ export const migrateToVitest = async (opts: {
       'install',
       '--frozen-lockfile=false',
       '--prefer-offline',
+      '--ignore-scripts',
     );
     await Promise.all(
       Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
@@ -299,6 +302,7 @@ export const migrateToVitest = async (opts: {
           `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
           '--dev',
           '--prefer-offline',
+          '--ignore-scripts',
         );
       }),
     );

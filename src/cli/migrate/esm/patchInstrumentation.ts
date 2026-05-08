@@ -107,7 +107,10 @@ export const patchInstrumentation: PatchFunction = async ({
 
         return {
           filePath,
-          content: content.replace(cmd, `${commandsToAdd.join(' ')} ${cmd}`),
+          content: content.replace(
+            cmd,
+            `${warning}${commandsToAdd.join(' ')} ${cmd}`,
+          ),
         };
       }
 
@@ -126,7 +129,7 @@ export const patchInstrumentation: PatchFunction = async ({
         return { filePath, content: content.replace(cmd, patchedCmd) };
       }
 
-      const patchedCmd = cmd.replace(/^\s*\[/, `[${flags}, `);
+      const patchedCmd = cmd.replace(/^\s*\[/, `[${warning}${flags}, `);
       return { filePath, content: content.replace(cmd, patchedCmd) };
     })
     .filter((patch) => patch !== null);
