@@ -454,6 +454,37 @@ const getTypeImportEdits = (root: SgNode, imports: string[]): Edit[] => {
   ];
 };
 
+export const getViMockedPrototypeEdits = (root: SgNode): Edit[] => {
+  const mockedPrototypes = root.findAll({
+    rule: {
+      kind: 'arguments',
+      inside: {
+        kind: 'call_expression',
+        inside: {
+          kind: 'member_expression',
+          pattern: 'vi.mocked($ARG).prototype',
+        },
+      },
+    },
+  });
+
+  if (!mockedPrototypes.length) {
+    return [];
+  }
+
+  return mockedPrototypes.map((mockedPrototype) => {
+    const text = mockedPrototype.text();
+    // check if there is a comma in the arguments before the bracket
+    const hasExistingComma = /\(\s*[^,)]+\s*(,)\s*\)/.exec(text);
+    const pos = mockedPrototype.range().end.index - 1; // before the closing bracket;
+    return {
+      startPos: pos, // before the closing bracket
+      endPos: pos,
+      insertedText: hasExistingComma ? 'true' : ',true',
+    };
+  });
+};
+
 /**
  * Runs extra transformations after the sku vitest codemod to fix any missed cases
  */
@@ -489,6 +520,7 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     ...spyInstanceTypeEdits,
     ...spiedFunctionEdits,
     ...getTypeImportEdits(astRoot, Array.from(jestTypeImports)),
+    ...getViMockedPrototypeEdits(astRoot),
   ];
 
   if (!edits.length) {

@@ -367,6 +367,30 @@ import { a } from './a';
   });
 });
 
+describe('migrateViMockPrototype', () => {
+  it('should set vi.mocked() prototypes to deep mocks', async () => {
+    const content = `import { vi } from 'vitest';
+
+const mockedModule = vi.mocked(someModule).prototype;
+
+const multiLineMock = vi.mocked(
+  someModule.other,
+).prototype;
+`;
+
+    await expect(run(content)).resolves.toMatchInlineSnapshot(`
+      "import { vi } from 'vitest';
+
+      const mockedModule = vi.mocked(someModule,true).prototype;
+
+      const multiLineMock = vi.mocked(
+        someModule.other,
+      true).prototype;
+      "
+    `);
+  });
+});
+
 describe('migrateBadMocks', () => {
   it('migrates nested vi.mock calls to vi.doMock', async () => {
     const content = `import { vi } from 'vitest';
