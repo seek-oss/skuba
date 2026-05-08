@@ -14,6 +14,8 @@ import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.
 import { postFixVitestMigration } from './postFixVitestMigration.js';
 import { scaffoldVitestConfig } from './vitestConfig.js';
 
+import { Git } from '@skuba-lib/api';
+
 export type FileContent = {
   file: string;
   content: string;
@@ -280,7 +282,11 @@ export const migrateToVitest = async (opts: {
           '--ignore-scripts',
         );
       }
-      await exec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
+
+      // find root and dedupe
+      const gitRoot = await Git.findRoot({ dir: process.cwd() });
+      const gitExec = createExec({ cwd: gitRoot ?? process.cwd() });
+      await gitExec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
     } else {
       await exec(
         'pnpm',

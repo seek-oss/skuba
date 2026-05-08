@@ -3,6 +3,7 @@ import { inspect } from 'util';
 
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import latestVersion from 'latest-version';
 
 import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
@@ -167,12 +168,25 @@ export const patchInstrumentation: PatchFunction = async ({
         continue;
       }
 
+      const fallbackVersion = '0.216.0';
+
+      const existingVersion =
+        packageJson.dependencies?.['@opentelemetry/instrumentation-http'] ??
+        packageJson.devDependencies?.['@opentelemetry/sdk-node'];
+
+      const versionToUse =
+        existingVersion?.startsWith('catalog:') || fallbackVersion === undefined
+          ? fallbackVersion
+          : await latestVersion('@opentelemetry/instrumentation', {
+              version: `<=${existingVersion}`,
+            });
+
       const folderExec = createExec({ cwd: dirname(path) });
       if (packageManager.command === 'pnpm') {
         await folderExec(
           'pnpm',
           'install',
-          '@opentelemetry/instrumentation@0.216.0',
+          `@opentelemetry/instrumentation@${versionToUse}`,
           '--prefer-offline',
           '--ignore-workspace-root-check',
           '--ignore-scripts',
@@ -183,7 +197,7 @@ export const patchInstrumentation: PatchFunction = async ({
       await folderExec(
         'yarn',
         'add',
-        '@opentelemetry/instrumentation@0.216.0',
+        `@opentelemetry/instrumentation@${versionToUse}`,
         '--prefer-offline',
         '--ignore-scripts',
       );
