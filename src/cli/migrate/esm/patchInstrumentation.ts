@@ -177,15 +177,16 @@ export const patchInstrumentation: PatchFunction = async ({
           '--ignore-workspace-root-check',
           '--ignore-scripts',
         );
-      } else {
-        await folderExec(
-          'yarn',
-          'add',
-          '@opentelemetry/instrumentation@0.216.0',
-          '--prefer-offline',
-          '--ignore-scripts',
-        );
+        continue;
       }
+
+      await folderExec(
+        'yarn',
+        'add',
+        '@opentelemetry/instrumentation@0.216.0',
+        '--prefer-offline',
+        '--ignore-scripts',
+      );
     }
   }
 
