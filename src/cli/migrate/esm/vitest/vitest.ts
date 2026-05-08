@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
 import { createExec, exec } from '../../../../utils/exec.js';
+import { getConsumerManifest } from '../../../../utils/manifest.js';
 import {
   type PackageManagerConfig,
   detectPackageManager,
@@ -265,66 +266,39 @@ export const migrateToVitest = async (opts: {
     })
     .find((version) => version !== null);
 
-  if (packageManager.command === 'pnpm') {
-    if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
-      for (const folder of vitestKoaMockPathsWithoutNodeTypes) {
-        const folderExec = createExec({
-          cwd: folder,
-        });
+  const nodeTypeVersionToPatch = existingNodeTypesVersion ?? '24.12.2';
 
-        await folderExec(
-          'pnpm',
-          'install',
-          `@types/node@${existingNodeTypesVersion}`,
-          '--save-dev',
-          '--prefer-offline',
-          '--ignore-workspace-root-check',
-          '--ignore-scripts',
-        );
+  const gitRoot = (await Git.findRoot({ dir: process.cwd() })) ?? process.cwd();
+
+  await Promise.all(
+    Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
+      const manifest = await getConsumerManifest(folder);
+
+      if (!manifest || manifest.packageJson.devDependencies?.['@types/node']) {
+        return;
       }
 
-      // find root and dedupe
-      const gitRoot = await Git.findRoot({ dir: process.cwd() });
-      const gitExec = createExec({ cwd: gitRoot ?? process.cwd() });
-      await gitExec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
-    } else {
-      await exec(
-        'pnpm',
-        'install',
-        '--frozen-lockfile=false',
-        '--prefer-offline',
-        '--ignore-scripts',
-      );
-    }
-    return {
-      result: 'apply',
-    };
-  }
+      manifest.packageJson.devDependencies ??= {};
+      manifest.packageJson.devDependencies['@types/node'] =
+        nodeTypeVersionToPatch;
 
-  if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
-    for (const folder of vitestKoaMockPathsWithoutNodeTypes) {
-      const folderExec = createExec({
-        cwd: folder,
-      });
-
-      await folderExec(
-        'yarn',
-        'add',
-        `@types/node@${existingNodeTypesVersion}`,
-        '--dev',
-        '--prefer-offline',
-        '--ignore-scripts',
+      await fs.promises.writeFile(
+        manifest.path,
+        JSON.stringify(manifest.packageJson, null, 2),
+        'utf8',
       );
-    }
-  } else {
-    await exec(
-      'yarn',
-      'install',
-      '--frozen-lockfile=false',
-      '--prefer-offline',
-      '--ignore-scripts',
-    );
-  }
+    }),
+  );
+
+  const rootExec = createExec({ cwd: gitRoot });
+
+  await rootExec(
+    packageManager.command,
+    'install',
+    '--frozen-lockfile=false',
+    '--prefer-offline',
+    '--ignore-scripts',
+  );
 
   return {
     result: 'apply',

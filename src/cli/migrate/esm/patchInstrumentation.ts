@@ -10,6 +10,8 @@ import { log } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 
+import { Git } from '@skuba-lib/api';
+
 export const patchInstrumentation: PatchFunction = async ({
   mode,
   packageManager,
@@ -181,27 +183,29 @@ export const patchInstrumentation: PatchFunction = async ({
               version: `<=${existingVersion}`,
             });
 
-      const folderExec = createExec({ cwd: dirname(path) });
-      if (packageManager.command === 'pnpm') {
-        await folderExec(
-          'pnpm',
-          'install',
-          `@opentelemetry/instrumentation@${versionToUse}`,
-          '--prefer-offline',
-          '--ignore-workspace-root-check',
-          '--ignore-scripts',
-        );
-        continue;
-      }
+      packageJson.dependencies ??= {};
 
-      await folderExec(
-        'yarn',
-        'add',
-        `@opentelemetry/instrumentation@${versionToUse}`,
-        '--prefer-offline',
-        '--ignore-scripts',
+      packageJson.dependencies['@opentelemetry/instrumentation'] = versionToUse;
+
+      await fs.promises.writeFile(
+        path,
+        JSON.stringify(packageJson, null, 2),
+        'utf-8',
       );
     }
+
+    const gitRoot =
+      (await Git.findRoot({ dir: process.cwd() })) ?? process.cwd();
+
+    const rootExec = createExec({ cwd: gitRoot });
+
+    await rootExec(
+      packageManager.command,
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+      '--ignore-scripts',
+    );
   }
 
   await Promise.all(

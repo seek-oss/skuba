@@ -1,3 +1,4 @@
+import latestVersion from 'latest-version';
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -10,10 +11,20 @@ import type {
 
 import { patchInstrumentation } from './patchInstrumentation.js';
 
+vi.mock('latest-version');
+
 vi.mock('../../../utils/exec.js', () => ({
   createExec: () => vi.fn(),
 }));
 
+vi.mock('node:fs', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('node:fs/promises', () => ({
+  default: memfs.fs.promises,
+  ...memfs.fs.promises,
+}));
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
   ...memfs.fs,
@@ -29,6 +40,7 @@ vi.mock('fast-glob', () => ({
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 beforeEach(() => {
+  vi.mocked(latestVersion).mockResolvedValue('0.216.0');
   vol.reset();
   vi.clearAllMocks();
 });
@@ -98,6 +110,13 @@ CMD ["node", "lib/listen.js"]`,
       Dockerfile: `FROM node:14
 CMD ["node", "lib/listen.js"]`,
       'src/index.ts': "import { trace } from '@opentelemetry/api';",
+      'package.json': JSON.stringify({
+        name: 'test',
+        version: '1.0.0',
+        dependencies: {
+          '@opentelemetry/api': '^1.0.0',
+        },
+      }),
     });
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
@@ -108,6 +127,58 @@ CMD ["node", "lib/listen.js"]`,
       {
         "Dockerfile": "FROM node:14
       CMD ["node", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
+        "package.json": "{
+        "name": "test",
+        "version": "1.0.0",
+        "dependencies": {
+          "@opentelemetry/api": "^1.0.0",
+          "@opentelemetry/instrumentation": "0.216.0"
+        }
+      }",
+        "src/index.ts": "import { trace } from '@opentelemetry/api';",
+      }
+    `);
+  });
+
+  it('should patch a Dockerfile with @opentelemetry/api import and explicit node CMD but install a version similar to an existing @opentelemetry version', async () => {
+    vi.mocked(latestVersion).mockResolvedValue('0.215.0');
+
+    vol.fromJSON({
+      Dockerfile: `FROM node:14
+CMD ["node", "lib/listen.js"]`,
+      'src/index.ts': "import { trace } from '@opentelemetry/api';",
+      'package.json': JSON.stringify({
+        name: 'test',
+        version: '1.0.0',
+        dependencies: {
+          '@opentelemetry/instrumentation-http': '0.215.0',
+        },
+      }),
+    });
+
+    await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(latestVersion).toHaveBeenCalledWith(
+      '@opentelemetry/instrumentation',
+      {
+        version: '<=0.215.0',
+      },
+    );
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "Dockerfile": "FROM node:14
+      CMD ["node", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
+        "package.json": "{
+        "name": "test",
+        "version": "1.0.0",
+        "dependencies": {
+          "@opentelemetry/instrumentation-http": "0.215.0",
+          "@opentelemetry/instrumentation": "0.215.0"
+        }
+      }",
         "src/index.ts": "import { trace } from '@opentelemetry/api';",
       }
     `);
@@ -125,6 +196,13 @@ CMD ["node", "lib/listen.js"]`,
           import tracer from 'dd-trace';
           import { trace } from '@opentelemetry/api';
         `,
+      'package.json': JSON.stringify({
+        name: 'test',
+        version: '1.0.0',
+        dependencies: {
+          '@opentelemetry/api': '^1.0.0',
+        },
+      }),
     });
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
@@ -139,6 +217,14 @@ CMD ["node", "lib/listen.js"]`,
       {
         "Dockerfile": "FROM node:14
       CMD ["node", TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile "--import", "dd-trace/initialize.mjs", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
+        "package.json": "{
+        "name": "test",
+        "version": "1.0.0",
+        "dependencies": {
+          "@opentelemetry/api": "^1.0.0",
+          "@opentelemetry/instrumentation": "0.216.0"
+        }
+      }",
         "src/index.ts": "
                 import tracer from 'dd-trace';
                 import { trace } from '@opentelemetry/api';
@@ -175,6 +261,13 @@ CMD ["lib/listen.js"]`,
       Dockerfile: `FROM node:14
 CMD ["lib/listen.js"]`,
       'src/index.ts': "import { trace } from '@opentelemetry/api';",
+      'package.json': JSON.stringify({
+        name: 'test',
+        version: '1.0.0',
+        dependencies: {
+          '@opentelemetry/api': '^1.0.0',
+        },
+      }),
     });
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
@@ -185,6 +278,14 @@ CMD ["lib/listen.js"]`,
       {
         "Dockerfile": "FROM node:14
       CMD ["--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
+        "package.json": "{
+        "name": "test",
+        "version": "1.0.0",
+        "dependencies": {
+          "@opentelemetry/api": "^1.0.0",
+          "@opentelemetry/instrumentation": "0.216.0"
+        }
+      }",
         "src/index.ts": "import { trace } from '@opentelemetry/api';",
       }
     `);
@@ -202,6 +303,13 @@ CMD ["lib/listen.js"]`,
           import tracer from 'dd-trace';
           import { trace } from '@opentelemetry/api';
         `,
+      'package.json': JSON.stringify({
+        name: 'test',
+        version: '1.0.0',
+        dependencies: {
+          '@opentelemetry/api': '^1.0.0',
+        },
+      }),
     });
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
@@ -216,6 +324,14 @@ CMD ["lib/listen.js"]`,
       {
         "Dockerfile": "FROM node:14
       CMD [TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile "--import", "dd-trace/initialize.mjs", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
+        "package.json": "{
+        "name": "test",
+        "version": "1.0.0",
+        "dependencies": {
+          "@opentelemetry/api": "^1.0.0",
+          "@opentelemetry/instrumentation": "0.216.0"
+        }
+      }",
         "src/index.ts": "
                 import tracer from 'dd-trace';
                 import { trace } from '@opentelemetry/api';
@@ -249,6 +365,13 @@ CMD node lib/listen.js`,
       Dockerfile: `FROM node:14
 CMD node lib/listen.js`,
       'src/index.ts': "import { trace } from '@opentelemetry/api';",
+      'package.json': JSON.stringify({
+        name: 'test',
+        version: '1.0.0',
+        dependencies: {
+          '@opentelemetry/api': '^1.0.0',
+        },
+      }),
     });
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
@@ -259,6 +382,14 @@ CMD node lib/listen.js`,
       {
         "Dockerfile": "FROM node:14
       CMD node --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
+        "package.json": "{
+        "name": "test",
+        "version": "1.0.0",
+        "dependencies": {
+          "@opentelemetry/api": "^1.0.0",
+          "@opentelemetry/instrumentation": "0.216.0"
+        }
+      }",
         "src/index.ts": "import { trace } from '@opentelemetry/api';",
       }
     `);
@@ -276,6 +407,13 @@ CMD node lib/listen.js`,
           import tracer from 'dd-trace';
           import { trace } from '@opentelemetry/api';
         `,
+      'package.json': JSON.stringify({
+        name: 'test',
+        version: '1.0.0',
+        dependencies: {
+          '@opentelemetry/api': '^1.0.0',
+        },
+      }),
     });
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
@@ -290,6 +428,14 @@ CMD node lib/listen.js`,
       {
         "Dockerfile": "FROM node:14
       CMD node TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile --import dd-trace/initialize.mjs --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
+        "package.json": "{
+        "name": "test",
+        "version": "1.0.0",
+        "dependencies": {
+          "@opentelemetry/api": "^1.0.0",
+          "@opentelemetry/instrumentation": "0.216.0"
+        }
+      }",
         "src/index.ts": "
                 import tracer from 'dd-trace';
                 import { trace } from '@opentelemetry/api';
@@ -310,6 +456,13 @@ CMD lib/listen.js`,
           import tracer from 'dd-trace';
           import { trace } from '@opentelemetry/api';
         `,
+      'package.json': JSON.stringify({
+        name: 'test',
+        version: '1.0.0',
+        dependencies: {
+          '@opentelemetry/api': '^1.0.0',
+        },
+      }),
     });
 
     await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
@@ -324,6 +477,14 @@ CMD lib/listen.js`,
       {
         "Dockerfile": "FROM node:14
       CMD TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile --import dd-trace/initialize.mjs --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
+        "package.json": "{
+        "name": "test",
+        "version": "1.0.0",
+        "dependencies": {
+          "@opentelemetry/api": "^1.0.0",
+          "@opentelemetry/instrumentation": "0.216.0"
+        }
+      }",
         "src/index.ts": "
                 import tracer from 'dd-trace';
                 import { trace } from '@opentelemetry/api';

@@ -20,6 +20,14 @@ vi.mock('fs-extra', () => ({
   default: memfs.fs,
   ...memfs.fs,
 }));
+vi.mock('node:fs', () => ({
+  default: memfs.fs,
+  ...memfs.fs,
+}));
+vi.mock('node:fs/promises', () => ({
+  default: memfs.fs.promises,
+  ...memfs.fs.promises,
+}));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
     const actualFastGlob =
@@ -138,9 +146,11 @@ test('example test', () => {
         "package.json": "{
         "dependencies": {
           "aws-sdk-client-mock-vitest": "7.0.1"
+        },
+        "devDependencies": {
+          "@types/node": "24.12.2"
         }
-      }
-      ",
+      }",
         "pnpm-workspace.yaml": "catalog:
         aws-sdk-client-mock-vitest: 7.0.1
       ",
@@ -154,7 +164,7 @@ test('example test', () => {
     `);
   });
 
-  it('should replace @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks', async () => {
+  it('should replace @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks and @types/node', async () => {
     vol.fromJSON({
       'package.json': `{
   "dependencies": {
@@ -188,9 +198,11 @@ test('middleware', () => {
         "package.json": "{
         "dependencies": {
           "@skuba-lib/vitest-koa-mocks": "1.0.1"
+        },
+        "devDependencies": {
+          "@types/node": "24.12.2"
         }
-      }
-      ",
+      }",
         "pnpm-workspace.yaml": "catalog:
         '@skuba-lib/vitest-koa-mocks': 1.0.1
       ",
@@ -232,9 +244,11 @@ test('middleware', () => {
         "package.json": "{
         "dependencies": {
           "aws-sdk-client-mock-vitest": "catalog:test-utils"
+        },
+        "devDependencies": {
+          "@types/node": "24.12.2"
         }
-      }
-      ",
+      }",
         "pnpm-workspace.yaml": "catalog:
         aws-sdk-client-mock-vitest: 7.0.1
       ",
