@@ -323,7 +323,7 @@ This is because Vitest does not mock dependencies of dependencies by default. Yo
 export default defineConfig({
   server: {
     deps: {
-      inline: ['@seek/package-b'],
+      inline: ['@seek/package-a'],
     },
   },
 });
