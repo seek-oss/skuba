@@ -13,7 +13,11 @@ For package publishers, `skuba build-package` should handle publishing dual ESM/
 Example changelog entry:
 
 ```markdown
-**Breaking change:** This package is now authored as an ESM package. It is still published as a dual CJS/ESM package
+---
+'@seek/package': major
+---
+
+This package is now authored as an ESM package. It is still published as a dual CJS/ESM package
 ```
 
 View the [migration guide](https://seek-oss.github.io/skuba/docs/cli/migrate#skuba-migrate-esm) for more details.
