@@ -224,7 +224,7 @@ The following changes are made:
   - `@shopify/jest-koa-mocks` → `@skuba-lib/vitest-koa-mocks` + `@types/node`
   - `--runInBand` → `--maxWorkers=1` in `package.json` test scripts and Buildkite pipelines
   - `jest.config.*ts` files are migrated to `vitest.config.ts` on a best-effort basis
-  - Jest hooks are migrated to Vitest hooks on a best-effort basis
+  - Jest setup files are migrated to Vitest setup files on a best-effort basis
 
 Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
 
