@@ -641,6 +641,7 @@ Of note, you may need to update the `conditions`, `mainFields`, `format` and `ex
 +   mainFields: ['module', 'main'],
 +   format: 'esm',
 
+    // required for @seek/logger
 +   external: ['pino'],
     // or
 +   plugins: [esbuildPluginPino()],
