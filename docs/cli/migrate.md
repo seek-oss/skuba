@@ -290,9 +290,9 @@ Spies work differently in Vitest compared to Jest.
 You can read more about the differences in our [`@skuba-lib/detect-invalid-spies`] documentation.
 For other Jest-specific patterns, refer to Vitest's [Migrating from Jest] guide.
 
-#### Jest indirect dependency mocks no longer work
+#### Jest transitive dependency mocks no longer work
 
-If you have a package which imports another package which you would like to mock in your tests, you may find that your mocks are not working after the migration.
+If you need to mock a transitive dependency in your tests, you may find that your mocks no longer work after the migration.
 
 eg.
 
