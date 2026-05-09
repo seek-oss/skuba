@@ -362,6 +362,106 @@ The fix is as simple as adding a `.js` extension to the end of the import path:
 + import { type } from '@seek/some-module/lib-types/types/type.generated.js';
 ```
 
+#### Project references no longer work
+
+If you are using TypeScript project references to link to packages within your monorepo, you may find that they no longer work after the migration.
+
+With the introduction of `tsdown` and `vitest` you can remove those project references and instead rely on Vitest's built-in support for monorepos by configuring your `vitest.config.ts` file like so:
+
+```ts
+export default defineConfig({
+  ssr: {
+    resolve: {
+      conditions: ['@seek/YOUR_REPO/source'],
+    },
+  },
+});
+```
+
+Cleanup any `references` and `paths` fields in your `tsconfig.json` files that were previously required for project references as these should be automatically handled.
+
+Consider removing the `paths` field in a separate PR after completing the ESM migration, as doing so may trigger ESLint import order errors across many files.
+
+```diff
+{
+  "exclude": ["**/__mocks__/**/*", "**/*.test.ts", "src/testing/**/*"],
+  "extends": "./tsconfig.base.json",
+- "paths": {
+-   "@seek/my-repo-types": ["./packages/my-repo-types/src"]
+- },
+  "include": ["src/**/*"],
+- "references": [
+-    {
+-      "path": "./packages/my-repo-types/tsconfig.build.json"
+-    }
+- ],
+  "compilerOptions": {
+    "rootDir": "src"
+  }
+}
+```
+
+In a previous update, you may have been instructed to create a `tsconfig.base.json` file to work around issues with `skuba build-package` and custom conditions. You can now remove this file and merge its contents back into your root `tsconfig.json` file.
+
+If your package also contains a separate `tsconfig.build.json` file, you can remove this file as `skuba build-package` should work without it now.
+
+```diff
+- tsconfig.base.json
+  tsconfig.json
+  tsconfig.build.json
+- packages/
+  - my-repo-types/
+    - tsconfig.json
+-   - tsconfig.build.json
+```
+
+An example of a resulting tsconfig.json:
+
+```diff
+{
+  "compilerOptions": {
++   "skipLibCheck": true, // tsdown has optional peer deps
++   "baseUrl": ".",
++   "lib": ["ES2024"],
++   "outDir": "lib",
++   "target": "ES2024",
++   "rootDir": ".",
+    "customConditions": ["@seek/my-repo/source"]
+  },
++ "exclude": ["lib*/**/*"],
++ "extends": "skuba/config/tsconfig.json"
+- "extends": "./tsconfig.base.json"
+}
+```
+
+and resulting `tsconfig.build.json`:
+
+```diff
+{
+- "extends": "../tsconfig.base.json",
++ "extends: "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src"
+  },
+  "exclude": [
+    "**/__mocks__/**/*",
+    "**/__fixtures__/**/*",
+    "**/*.test.ts",
+    "src/testing/**/*"
+  ],
+}
+```
+
+Ensure you update your project's `build` script to include manually building the package.
+
+```diff
+"scripts": {
+- "build": "skuba build -b tsconfig.build.json",
++ "build": "skuba build && pnpm build:types",
+  "build:types": "pnpm -F @seek/my-repo-types build",
+}
+```
+
 #### Jest setup files were not migrated
 
 The migration may determine that some of your Jest setup files are redundant in Vitest and may not migrate them across.
