@@ -480,11 +480,10 @@ export const getViMockedPrototypeEdits = (root: SgNode): Edit[] => {
 
   return mockedPrototypes.map((mockedPrototype) => {
     const text = mockedPrototype.text();
-    // check if there is a comma in the arguments before the bracket
     const hasExistingComma = /\(\s*[^,)]+\s*(,)\s*\)/.exec(text);
     const pos = mockedPrototype.range().end.index - 1; // before the closing bracket;
     return {
-      startPos: pos, // before the closing bracket
+      startPos: pos,
       endPos: pos,
       insertedText: hasExistingComma ? 'true' : ',true',
     };
