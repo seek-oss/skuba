@@ -252,7 +252,8 @@ export const migrateToVitest = async (opts: {
           'eslint-disable-next-line vitest',
         )
         .replaceAll('eslint-disable jest', 'eslint-disable vitest')
-        .replaceAll('Mock<any, any>', 'Mock');
+        .replaceAll('Mock<any, any>', 'Mock')
+        .replaceAll('advanceTimers: true', 'shouldAdvanceTimers: true');
 
       if (finalUpdated !== content) {
         return fs.promises.writeFile(file, finalUpdated, 'utf8');
