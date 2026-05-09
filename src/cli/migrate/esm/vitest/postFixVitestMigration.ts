@@ -278,6 +278,12 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
               stopBy: 'end',
             },
           },
+          {
+            follows: {
+              kind: 'comment',
+              regex: '^// eslint-disable-next-line',
+            },
+          },
         ],
       },
     },

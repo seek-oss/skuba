@@ -365,6 +365,22 @@ import { a } from './a';
       "
     `);
   });
+
+  it('moves the import after an eslint-disable-next-line comment import', async () => {
+    const content = `import { vi } from 'vitest';
+// eslint-disable-next-line some-rule
+import { foo } from './foo';
+import { another } from './another';
+`;
+
+    await expect(run(content)).resolves.toMatchInlineSnapshot(`
+      "// eslint-disable-next-line some-rule
+      import { foo } from './foo';
+      import { vi } from 'vitest';
+      import { another } from './another';
+      "
+    `);
+  });
 });
 
 describe('migrateViMockPrototype', () => {
