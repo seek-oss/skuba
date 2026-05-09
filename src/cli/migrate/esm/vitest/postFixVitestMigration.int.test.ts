@@ -448,7 +448,7 @@ const someModule = vi.importActual('./someModule');
 
     await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
 
-const someModule = vi.importActual<typeof import('./someModule')>('./someModule');
+const someModule = (vi.importActual<typeof import('./someModule')>('./someModule'));
 `);
   });
 

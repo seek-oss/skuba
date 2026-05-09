@@ -363,8 +363,9 @@ const getImportActualEdits = (root: SgNode): Edit[] => {
           .text()
           .replace(
             'vi.importActual',
-            `vi.importActual<typeof import(${packageName.text()})>`,
-          ),
+            `(vi.importActual<typeof import(${packageName.text()})>`,
+          )
+          .concat(')'),
       );
     })
     .flat();
