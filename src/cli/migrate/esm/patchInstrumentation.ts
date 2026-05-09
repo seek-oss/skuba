@@ -160,39 +160,43 @@ export const patchInstrumentation: PatchFunction = async ({
     const filteredPackageJsons = packageJsons.filter(
       (pkg) => pkg !== undefined,
     );
-    for (const pkg of filteredPackageJsons) {
-      const { packageJson, path } = pkg;
+    await Promise.all(
+      filteredPackageJsons.map(async (pkg) => {
+        const { packageJson, path } = pkg;
 
-      if (
-        packageJson.dependencies?.['@opentelemetry/instrumentation'] ||
-        packageJson.devDependencies?.['@opentelemetry/instrumentation']
-      ) {
-        continue;
-      }
+        if (
+          packageJson.dependencies?.['@opentelemetry/instrumentation'] ||
+          packageJson.devDependencies?.['@opentelemetry/instrumentation']
+        ) {
+          return;
+        }
 
-      const fallbackVersion = '0.216.0';
+        const fallbackVersion = '0.216.0';
 
-      const existingVersion =
-        packageJson.dependencies?.['@opentelemetry/instrumentation-http'] ??
-        packageJson.dependencies?.['@opentelemetry/sdk-node'];
+        const existingVersion =
+          packageJson.dependencies?.['@opentelemetry/instrumentation-http'] ??
+          packageJson.dependencies?.['@opentelemetry/sdk-node'];
 
-      const versionToUse =
-        existingVersion?.startsWith('catalog:') || existingVersion === undefined
-          ? fallbackVersion
-          : await latestVersion('@opentelemetry/instrumentation', {
-              version: `<=${existingVersion}`,
-            });
+        const versionToUse =
+          existingVersion?.startsWith('catalog:') ||
+          existingVersion === undefined
+            ? fallbackVersion
+            : await latestVersion('@opentelemetry/instrumentation', {
+                version: `<=${existingVersion}`,
+              });
 
-      packageJson.dependencies ??= {};
+        packageJson.dependencies ??= {};
 
-      packageJson.dependencies['@opentelemetry/instrumentation'] = versionToUse;
+        packageJson.dependencies['@opentelemetry/instrumentation'] =
+          versionToUse;
 
-      await fs.promises.writeFile(
-        path,
-        JSON.stringify(packageJson, null, 2),
-        'utf-8',
-      );
-    }
+        await fs.promises.writeFile(
+          path,
+          JSON.stringify(packageJson, null, 2),
+          'utf-8',
+        );
+      }),
+    );
 
     const gitRoot =
       (await Git.findRoot({ dir: process.cwd() })) ?? process.cwd();
