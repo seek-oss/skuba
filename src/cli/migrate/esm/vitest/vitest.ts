@@ -302,6 +302,10 @@ export const migrateToVitest = async (opts: {
     '--ignore-scripts',
   );
 
+  if (packageManager.command === 'pnpm') {
+    await rootExec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
+  }
+
   return {
     result: 'apply',
   };
