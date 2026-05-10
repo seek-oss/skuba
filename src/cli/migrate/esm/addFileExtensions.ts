@@ -118,6 +118,8 @@ export const addFileExtensions: PatchFunction = async ({ mode }) => {
                 { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
                 // exclude import aliases
                 { not: { regex: '^#' } },
+                // exclude node: built-in modules
+                { not: { regex: '^node:' } },
               ],
             },
             // relative imports
@@ -161,6 +163,12 @@ export const addFileExtensions: PatchFunction = async ({ mode }) => {
           }
           if (resolved.endsWith('.js')) {
             // Likely a package module
+            return null;
+          }
+
+          // Skip non-file URLs (e.g., node:, data:, http:)
+          if (!resolved.startsWith('file:')) {
+            resolvedPaths.set(text, null);
             return null;
           }
 

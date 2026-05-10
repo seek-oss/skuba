@@ -100,6 +100,7 @@ const foo = vi.importActual<typeof import('./foo')>('./foo')`,
   it('should bail when the import cannot resolve to a file', async () => {
     vol.fromJSON({
       'index.ts': `
+import path from 'node:path';
 import './foo';
 `,
     });
@@ -115,7 +116,8 @@ import './foo';
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "index.ts": "import './foo';
+        "index.ts": "import path from 'node:path';
+      import './foo';
       ",
       }
     `);

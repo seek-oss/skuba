@@ -213,6 +213,7 @@ The following changes are made:
   - `__dirname` and `__filename` are replaced with `import.meta.dirname` and `import.meta.filename`.
   - `module.exports` are replaced with `export default` or named exports as appropriate
   - `.json` imports are updated to include `with { type: 'json' }`
+  - `.js` and `/index.js` file extensions are added to imports as appropriate
   - `require()` calls are replaced with `import` statements or dynamic `import()` as appropriate
 - Datadog and OpenTelemetry instrumentation ESM imports are added to Dockerfiles
 - AWS CDK worker and Serverless files are migrated to ESM format
