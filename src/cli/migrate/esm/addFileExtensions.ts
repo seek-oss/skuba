@@ -9,7 +9,10 @@ import { ModuleResolutionKind } from 'typescript';
 
 import { log } from '../../../utils/logging.js';
 import { readTsConfig } from '../../build/tsc.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+import type {
+  PatchFunction,
+  PatchReturnType,
+} from '../../lint/internalLints/upgrade/index.js';
 
 const nodeModuleExtensionCheckOrder = [
   '.js',
@@ -26,7 +29,11 @@ const localModuleExtensionCheckOrder = [
   '/index.mjs',
 ];
 
-export const addFileExtensions: PatchFunction = async ({ mode }) => {
+export const addFileExtensions = async ({
+  mode,
+}: {
+  mode: 'format' | 'lint';
+}): Promise<PatchReturnType> => {
   const tsconfig = readTsConfig({
     dir: process.cwd(),
     log,

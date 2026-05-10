@@ -1,5 +1,6 @@
 import { log } from '../../utils/logging.js';
 
+import { addFileExtensions } from './esm/addFileExtensions.js';
 import { migrateToESM } from './esm/index.js';
 import { nodeVersionMigration } from './nodeVersion/index.js';
 
@@ -54,6 +55,7 @@ export const migrations = {
       ],
     }),
   esm: () => migrateToESM({ mode: 'format' }),
+  'file-extensions': () => addFileExtensions({ mode: 'format' }),
 } satisfies Record<string, () => Promise<unknown>>;
 
 const logAvailableMigrations = () => {

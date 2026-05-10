@@ -188,6 +188,8 @@ and `@types/node` to major version `20`.
 Attempts to automatically migrate your project from CommonJS to ESM.
 Follow the [pre-migration steps] before running this command.
 
+It may be helpful to run [`skuba migrate file-extensions`] before running this migration to add file extensions to your imports to minimise the number of changes the migration needs to make to your source files.
+
 If you have `skuba` installed as a direct dependency, this migration runs automatically as part of `skuba format` and `skuba lint` in **skuba** 16.
 
 **It is recommended to use `skuba format` or `skuba lint` rather than running this migration directly.**
@@ -668,7 +670,19 @@ We are unsure whether this is intended behaviour or if there is a bug in the Vit
 For the keen observers, we have decided to ease the migration by firstly adopting the `istanbul` provider for coverage in Vitest instead of the default `v8` provider. The `v8` provider will be made the default in a future release once more codebases have been migrated to ESM and we can confirm it works as expected.
 
 [`@skuba-lib/detect-invalid-spies`]: https://github.com/seek-oss/skuba/tree/main/packages/detect-invalid-spies
+[`skuba migrate file-extensions`]: #skuba-migrate-file-extensions
 [`vitest-dynamodb-lite`]: https://github.com/yamatatsu/vitest-dynamodb-lite/tree/main/packages/vitest-dynamodb-lite
 [Improving Performance]: https://vitest.dev/guide/improving-performance.html
 [Migrating from Jest]: https://vitest.dev/guide/migration.html#jest
 [open an issue]: https://github.com/seek-oss/skuba/issues/new
+
+## skuba migrate file-extensions
+
+Attempts to add file extensions to your imports to improve compatibility with ESM.
+
+This migration is also run as part of `skuba migrate esm`, however, you may choose to run it separately beforehand to minimise the number of changes that need to be made to your source files in the ESM migration.
+
+```shell
+pnpm dlx skuba migrate esm
+skuba migrate file-extensions
+```

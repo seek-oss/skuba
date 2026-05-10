@@ -4,7 +4,11 @@
 
 migrate: Add ESM migration
 
-If your project does not use `skuba` directly, you can still run our migration to ESM using `npx` or `pnpm dlx`:
+This migration attempts to automatically migrate your project from CommonJS to ESM.
+
+If you have `skuba` installed as a direct dependency, this migration runs automatically as part of `skuba format` and `skuba lint`.
+
+If your project does not use `skuba` directly, you can run our migration to ESM using `npx` or `pnpm dlx`:
 
 ```shell
 pnpm dlx skuba migrate esm
