@@ -67,12 +67,12 @@ const patches: Patch[] = [
       'Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports',
   },
   {
-    apply: tryAddFileExtensions,
-    description: 'Add file extensions to imports',
-  },
-  {
     apply: migrateToVitest,
     description: 'Migrate from Jest to Vitest',
+  },
+  {
+    apply: tryAddFileExtensions,
+    description: 'Add file extensions to imports',
   },
 ];
 

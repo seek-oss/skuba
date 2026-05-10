@@ -92,9 +92,9 @@ Patch skipped: Migrate Dockerfiles to replace --require with --import - no Docke
 
 Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
 
-Patch skipped: Add file extensions to imports - no imports found that could be migrated
-
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch skipped: Add file extensions to imports - no imports found that could be migrated
 
 Patch applied: Migrate to ESM upgrade-skuba
 
@@ -241,9 +241,9 @@ Patch skipped: Migrate Dockerfiles to replace --require with --import - no Docke
 
 Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
 
-Patch skipped: Add file extensions to imports - no imports found that could be migrated
-
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch skipped: Add file extensions to imports - no imports found that could be migrated
 
 Patch applied: Migrate to ESM upgrade-skuba
 
@@ -383,9 +383,9 @@ Patch skipped: Migrate Dockerfiles to replace --require with --import - no Docke
 
 Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
 
-Patch skipped: Add file extensions to imports - no imports found that could be migrated
-
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch skipped: Add file extensions to imports - no imports found that could be migrated
 
 Patch applied: Migrate to ESM upgrade-skuba
 
@@ -497,9 +497,9 @@ Patch skipped: Migrate Dockerfiles to replace --require with --import - no Docke
 
 Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
 
-Patch skipped: Add file extensions to imports - no imports found that could be migrated
-
 Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch skipped: Add file extensions to imports - no imports found that could be migrated
 
 Patch applied: Migrate to ESM upgrade-skuba
 
