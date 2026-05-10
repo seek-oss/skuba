@@ -188,7 +188,11 @@ and `@types/node` to major version `20`.
 Attempts to automatically migrate your project from CommonJS to ESM.
 Follow the [pre-migration steps] before running this command.
 
-If you have `skuba` installed as a direct dependency, this migration runs automatically as part of `skuba format` and `skuba lint` in **skuba** 16. **It is recommended to use `skuba format` or `skuba lint` rather than running this migration directly.**
+It may be helpful to run [`skuba migrate file-extensions`] before running this migration to add file extensions to your imports to minimise the number of changes the migration needs to make to your source files.
+
+If you have `skuba` installed as a direct dependency, this migration runs automatically as part of `skuba format` and `skuba lint` in **skuba** 16.
+
+**It is recommended to use `skuba format` or `skuba lint` rather than running this migration directly.**
 
 To run the migration directly:
 
@@ -211,6 +215,7 @@ The following changes are made:
   - `__dirname` and `__filename` are replaced with `import.meta.dirname` and `import.meta.filename`.
   - `module.exports` are replaced with `export default` or named exports as appropriate
   - `.json` imports are updated to include `with { type: 'json' }`
+  - `.js` and `/index.js` file extensions are added to imports as appropriate
   - `require()` calls are replaced with `import` statements or dynamic `import()` as appropriate
 - Datadog and OpenTelemetry instrumentation ESM imports are added to Dockerfiles
 - AWS CDK worker and Serverless files are migrated to ESM format
@@ -222,7 +227,7 @@ The following changes are made:
   - `@shopify/jest-koa-mocks` → `@skuba-lib/vitest-koa-mocks` + `@types/node`
   - `--runInBand` → `--maxWorkers=1` in `package.json` test scripts and Buildkite pipelines
   - `jest.config.*ts` files are migrated to `vitest.config.ts` on a best-effort basis
-  - Jest hooks are migrated to Vitest hooks on a best-effort basis
+  - Jest setup files are migrated to Vitest setup files on a best-effort basis
 
 Due to the complexities of test code and configurations, the migration may not be able to modify all files in your project.
 
@@ -231,12 +236,14 @@ Due to the complexities of test code and configurations, the migration may not b
 
 ### Post-migration steps
 
-1. Run `skuba lint`
+1. Run `skuba format` and `skuba lint`
+
+   If the `eslint` step fails to run, address any issues with the `eslint.config.js` file and re-run `skuba format`. ESLint may fail on the first pass while attempting to parse ESM config in CommonJS mode, but will automatically switch to ESM mode on the second run.
 
    Attempt to address any lint errors that may be caused by the migration.
    The most common failure points with `skuba test` runs can normally be addressed by fixing the lint errors first.
 
-   If you notice there are changes you can make prior to running the skuba migration, we suggest making those changes first and then re-running the migration for the ease of reviewing the migration changes.
+   If you notice changes you could make beforehand to simplify the migration, consider stopping, making those changes first, then re-running the migration. This will make the changes easier for reviewers.
 
    If you notice any repeatable issues that the migration has not accounted for, please [open an issue], or if you work at SEEK, reach out in [#skuba-support].
 
@@ -290,6 +297,67 @@ Spies work differently in Vitest compared to Jest.
 You can read more about the differences in our [`@skuba-lib/detect-invalid-spies`] documentation.
 For other Jest-specific patterns, refer to Vitest's [Migrating from Jest] guide.
 
+#### Jest transitive dependency mocks no longer work
+
+If you need to mock a transitive dependency in your tests, you may find that your mocks no longer work after the migration.
+
+eg.
+
+```ts
+// @seek/package-a
+
+import { indirectFunction } from '@seek/package-b';
+
+export const someFunction = () => {
+  return indirectFunction();
+};
+
+// file.ts
+import { someFunction } from '@seek/package-a';
+
+export const functionUnderTest = () => {
+  return someFunction();
+};
+
+// example.test.ts
+import { functionUnderTest } from './file.js';
+import { someFunction } from '@seek/package-b';
+
+vi.mock('@seek/package-b');
+
+it('mocks someFunction from package-b', () => {
+  vi.mocked(someFunction).mockReturnValue('mocked value');
+
+  expect(functionUnderTest()).toBe('mocked value');
+});
+```
+
+This is because Vitest does not mock dependencies of dependencies by default. You will need to configure Vitest to allow this by adding configuration to your `vitest.config.ts` file.
+
+```ts
+export default defineConfig({
+  server: {
+    deps: {
+      inline: ['@seek/package-a'],
+    },
+  },
+});
+```
+
+Similarly if you had another package within `@seek/package-b` that you wanted to mock, you would need to add that `@seek/package-b` to the `inline` dependencies as well.
+
+#### Jest hoisted mocks no longer work
+
+If you rely on passing in `vi.fn()` mocks into `vi.mock()` calls, you may find that your mocks are not working after the migration. You may need to wrap them in `vi.hoisted()` to ensure they are hoisted to the top of the test file:
+
+```diff
+- const someMock = vi.fn();
++ const someMock = vi.hoisted(() => vi.fn());
+  vi.mock('@seek/some-module', () => ({
+    someFunction: someMock,
+  }));
+```
+
 #### Cannot find module 'some-module/type' or its corresponding type declarations.ts(2307)
 
 The ESLint rule introduced in previous `skuba` versions would quit evaluating imports very early to avoid long ESLint run times,
@@ -299,6 +367,106 @@ The fix is as simple as adding a `.js` extension to the end of the import path:
 ```diff
 - import { type } from '@seek/some-module/lib-types/types/type.generated';
 + import { type } from '@seek/some-module/lib-types/types/type.generated.js';
+```
+
+#### Project references no longer work
+
+If you are using TypeScript project references to link to packages within your monorepo, you may find that they no longer work after the migration.
+
+With the introduction of `tsdown` and `vitest` you can remove those project references and instead rely on Vitest's built-in support for monorepos by configuring your `vitest.config.ts` file like so:
+
+```ts
+export default defineConfig({
+  ssr: {
+    resolve: {
+      conditions: ['@seek/YOUR_REPO/source'],
+    },
+  },
+});
+```
+
+Cleanup any `references` and `paths` fields in your `tsconfig.json` files that were previously required for project references as these should be automatically handled.
+
+Consider removing the `paths` field in a separate PR after completing the ESM migration, as doing so may trigger ESLint import order errors across many files.
+
+```diff
+{
+  "exclude": ["**/__mocks__/**/*", "**/*.test.ts", "src/testing/**/*"],
+  "extends": "./tsconfig.base.json",
+- "paths": {
+-   "@seek/my-repo-types": ["./packages/my-repo-types/src"]
+- },
+  "include": ["src/**/*"],
+- "references": [
+-    {
+-      "path": "./packages/my-repo-types/tsconfig.build.json"
+-    }
+- ],
+  "compilerOptions": {
+    "rootDir": "src"
+  }
+}
+```
+
+In a previous update, you may have been instructed to create a `tsconfig.base.json` file to work around issues with `skuba build-package` and custom conditions. You can now remove this file and merge its contents back into your root `tsconfig.json` file.
+
+If your package also contains a separate `tsconfig.build.json` file, you can remove this file as `skuba build-package` should work without it now.
+
+```diff
+- tsconfig.base.json
+  tsconfig.json
+  tsconfig.build.json
+- packages/
+  - my-repo-types/
+    - tsconfig.json
+-   - tsconfig.build.json
+```
+
+An example of a resulting tsconfig.json:
+
+```diff
+{
+  "compilerOptions": {
++   "skipLibCheck": true, // tsdown has optional peer deps
++   "baseUrl": ".",
++   "lib": ["ES2024"],
++   "outDir": "lib",
++   "target": "ES2024",
++   "rootDir": ".",
+    "customConditions": ["@seek/my-repo/source"]
+  },
++ "exclude": ["lib*/**/*"],
++ "extends": "skuba/config/tsconfig.json"
+- "extends": "./tsconfig.base.json"
+}
+```
+
+and resulting `tsconfig.build.json`:
+
+```diff
+{
+- "extends": "../tsconfig.base.json",
++ "extends: "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src"
+  },
+  "exclude": [
+    "**/__mocks__/**/*",
+    "**/__fixtures__/**/*",
+    "**/*.test.ts",
+    "src/testing/**/*"
+  ],
+}
+```
+
+Ensure you update your project's `build` script to include manually building the package.
+
+```diff
+"scripts": {
+- "build": "skuba build -b tsconfig.build.json",
++ "build": "skuba build && pnpm build:types",
+  "build:types": "pnpm -F @seek/my-repo-types build",
+}
 ```
 
 #### Jest setup files were not migrated
@@ -478,6 +646,7 @@ Of note, you may need to update the `conditions`, `mainFields`, `format` and `ex
 +   mainFields: ['module', 'main'],
 +   format: 'esm',
 
+    // required for @seek/logger
 +   external: ['pino'],
     // or
 +   plugins: [esbuildPluginPino()],
@@ -503,7 +672,19 @@ We are unsure whether this is intended behaviour or if there is a bug in the Vit
 For the keen observers, we have decided to ease the migration by firstly adopting the `istanbul` provider for coverage in Vitest instead of the default `v8` provider. The `v8` provider will be made the default in a future release once more codebases have been migrated to ESM and we can confirm it works as expected.
 
 [`@skuba-lib/detect-invalid-spies`]: https://github.com/seek-oss/skuba/tree/main/packages/detect-invalid-spies
+[`skuba migrate file-extensions`]: #skuba-migrate-file-extensions
 [`vitest-dynamodb-lite`]: https://github.com/yamatatsu/vitest-dynamodb-lite/tree/main/packages/vitest-dynamodb-lite
 [Improving Performance]: https://vitest.dev/guide/improving-performance.html
 [Migrating from Jest]: https://vitest.dev/guide/migration.html#jest
 [open an issue]: https://github.com/seek-oss/skuba/issues/new
+
+## skuba migrate file-extensions
+
+Attempts to add file extensions to your imports to improve compatibility with ESM.
+
+This migration is also run as part of `skuba migrate esm`, however, you may choose to run it separately beforehand to minimise the number of changes that need to be made to your source files in the ESM migration.
+
+```shell
+pnpm dlx skuba migrate esm
+skuba migrate file-extensions
+```

@@ -105,6 +105,7 @@
     "get-port": "^5.1.1",
     "golden-fleece": "^1.0.9",
     "ignore": "^7.0.0",
+    "import-meta-resolve": "^4.2.0",
     "is-installed-globally": "^0.4.0",
     "isomorphic-git": "^1.11.1",
     "latest-version": "^9.0.0",

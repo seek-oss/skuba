@@ -270,18 +270,24 @@ const migrateGlobalSetup = async (
 
   const vitestGlobalSetup = root.commitEdits(edits);
 
+  const destinationPath = normalizedPath
+    .replaceAll('jest', 'vitest')
+    .replace(/\.js$/, '.ts');
+
   return {
     edits: [
       {
-        file: absolutePath.replaceAll('jest', 'vitest'),
+        file: destinationPath,
         content: vitestGlobalSetup,
       },
       {
         file: absolutePath,
-        content: `// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.\n\n${jestGlobalSetup}`,
+        content: `// This file was migrated from Jest to Vitest to ${destinationPath} by skuba. Please verify the migration was successful and delete this file.\n\n${jestGlobalSetup}`,
       },
     ],
-    globalSetupPath: normalizedPath.replaceAll('jest', 'vitest'),
+    globalSetupPath: normalizedPath
+      .replaceAll('jest', 'vitest')
+      .replace(/\.js$/, '.ts'),
   };
 };
 
@@ -527,24 +533,26 @@ const migrateSetupHooks = async (
         envVars.set(k, value);
       });
 
-      const migratedJestConfig: FileContent = {
-        file: absolutePath,
-        content: `// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.\n\n${jestSetupHook}`,
-      };
-
       if (!updatedContent) {
         doNotMigrate.add(normalizedPath);
-        return [migratedJestConfig];
+        return [
+          {
+            file: absolutePath,
+            content: `// This setup file was migrated and deleted in the migration from Jest to Vitest by skuba. The environment variables have been migrated to the Vitest config file. Please verify the migration was successful and delete this file.\n\n${jestSetupHook}`,
+          },
+        ];
       }
 
       return [
         {
-          file: absolutePath.replaceAll('jest', 'vitest'),
+          file: absolutePath
+            .replaceAll('jest', 'vitest')
+            .replace(/\.js$/, '.ts'),
           content: updatedContent,
         },
         {
           file: absolutePath,
-          content: `// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.\n\n${jestSetupHook}`,
+          content: `// This file was migrated from Jest to Vitest in ${normalizedPath.replaceAll('jest', 'vitest').replace(/\.js$/, '.ts')} by skuba. Please verify the migration was successful and delete this file.\n\n${jestSetupHook}`,
         },
       ];
     }),
@@ -554,7 +562,7 @@ const migrateSetupHooks = async (
     edits: edits.flat(),
     hookPaths: normalizedPaths
       .filter((p) => !doNotMigrate.has(p))
-      .map((p) => p.replaceAll('jest', 'vitest')),
+      .map((p) => p.replaceAll('jest', 'vitest').replace(/\.js$/, '.ts')),
     envVars,
   };
 };
@@ -566,6 +574,7 @@ const scaffoldTestConfig = async ({
   projectsNode,
   isProject,
   isSpread,
+  configNumber,
 }: {
   root: SgNode;
   file: string;
@@ -573,6 +582,7 @@ const scaffoldTestConfig = async ({
   projectsNode?: SgNode;
   isProject?: boolean;
   isSpread?: boolean;
+  configNumber?: number;
 }): Promise<{
   edits: FileContent[];
   testConfig: string;
@@ -659,6 +669,12 @@ const scaffoldTestConfig = async ({
         functions: 100,
         lines: 100,
         statements: 100,
+      }${
+        !isProject && (configNumber ?? 0) > 1
+          ? `
+    // TODO: Multiple configurations were detected, consider consolidating the configs and using Vitest's projects feature eg.
+    // projects: [{ extends: true, test: { name: 'unit' } }, { extends: true, test: { name: 'integration', fileParallelism: false } }]`
+          : ''
       }`
       },
     },`
@@ -746,6 +762,7 @@ export const scaffoldVitestConfig = async () => {
         file,
         docRoot: root,
         projectsNode: maybeProjectsData?.projectsNode,
+        configNumber: jestConfigs.length,
       });
 
       const watchPathIgnorePatterns = extractRawStringArray(
@@ -769,7 +786,7 @@ export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
       return [
         {
           content: vitestConfigContent,
-          file: file.replaceAll('jest', 'vitest'),
+          file: file.replaceAll('jest', 'vitest').replace(/\.js$/, '.ts'),
         },
         ...testConfig.edits,
       ];
@@ -777,8 +794,11 @@ export default defineConfig(${isSkubaConfig ? 'Vitest.mergePreset({' : '{'}
   );
 
   const updatedJestConfigs = jestConfigs.map(({ file, content }) => {
-    const comment =
-      '// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.';
+    const destinationPath = file
+      .replaceAll('jest', 'vitest')
+      .replace(/\.js$/, '.ts');
+
+    const comment = `// This file was migrated from Jest to Vitest in ${destinationPath} by skuba. Please verify the migration was successful and delete this file.`;
     const updatedContent = `${comment}\n\n${content}`;
     return {
       file,

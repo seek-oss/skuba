@@ -1,18 +1,24 @@
 import path from 'node:path';
+import { inspect } from 'node:util';
 
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
 import { createExec, exec } from '../../../../utils/exec.js';
+import { log } from '../../../../utils/logging.js';
+import { getConsumerManifest } from '../../../../utils/manifest.js';
 import {
   type PackageManagerConfig,
   detectPackageManager,
 } from '../../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.js';
 
+import { editLifeCycleHooks } from './lifeCycleEdits.js';
 import { postFixVitestMigration } from './postFixVitestMigration.js';
 import { scaffoldVitestConfig } from './vitestConfig.js';
+
+import { Git } from '@skuba-lib/api';
 
 export type FileContent = {
   file: string;
@@ -52,12 +58,22 @@ const patchFiles = async ({
     .map(({ file, content }) => {
       const updatedContent = content
         .replace(
-          /"aws-sdk-client-mock-jest":\s*"[^"]*"/g,
-          '"aws-sdk-client-mock-vitest": "7.0.1"',
+          /"aws-sdk-client-mock-jest":\s*"([^"]*)"/g,
+          (_match, version: string) => {
+            const newVersion = version.startsWith('catalog:')
+              ? version
+              : '7.0.1';
+            return `"aws-sdk-client-mock-vitest": "${newVersion}"`;
+          },
         )
         .replace(
-          /"@shopify\/jest-koa-mocks":\s*"[^"]*"/g,
-          `"@skuba-lib/vitest-koa-mocks": "${latestVitestKoaMocksVersion}"`,
+          /"@shopify\/jest-koa-mocks":\s*"([^"]*)"/g,
+          (_match, version: string) => {
+            const newVersion = version.startsWith('catalog:')
+              ? version
+              : latestVitestKoaMocksVersion;
+            return `"@skuba-lib/vitest-koa-mocks": "${newVersion}"`;
+          },
         )
         .replace(/--runInBand/g, '--maxWorkers=1')
         .replace(/jest.config/g, 'vitest.config');
@@ -215,10 +231,19 @@ export const migrateToVitest = async (opts: {
     ignore: ['**/.git', '**/node_modules'],
   });
   const tsFiles = await readFiles(tsFilePaths);
+  const lifeCyclesToCheck: string[] = [];
 
   await Promise.all(
     tsFiles.map(async ({ file, content }) => {
-      const updated = await postFixVitestMigration(file, content);
+      const { updated, hasLifeCyclesToCheck } = await postFixVitestMigration(
+        file,
+        content,
+      );
+
+      if (hasLifeCyclesToCheck) {
+        lifeCyclesToCheck.push(file);
+      }
+
       // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
       // replace imports from @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks
       // replace .mockImplementation() with .mockImplementation(() => undefined) to account for the fact that Vitest requires an implementation for mocks whereas Jest does not
@@ -238,13 +263,19 @@ export const migrateToVitest = async (opts: {
           'eslint-disable-next-line jest',
           'eslint-disable-next-line vitest',
         )
-        .replaceAll('Mock<any, any>', 'Mock');
+        .replaceAll('eslint-disable jest', 'eslint-disable vitest')
+        .replaceAll('Mock<any, any>', 'Mock')
+        .replaceAll('advanceTimers: true', 'shouldAdvanceTimers: true');
 
       if (finalUpdated !== content) {
         return fs.promises.writeFile(file, finalUpdated, 'utf8');
       }
     }),
   );
+
+  const lifeCycleFiles = await readFiles(lifeCyclesToCheck);
+
+  await editLifeCycleHooks(lifeCycleFiles);
 
   const existingNodeTypesVersion = packageJsons
     .map(({ content }) => {
@@ -253,55 +284,47 @@ export const migrateToVitest = async (opts: {
     })
     .find((version) => version !== null);
 
-  // Install the new deps we added to package.json
-  if (packageManager.command === 'pnpm') {
-    await exec(
-      'pnpm',
-      'install',
-      '--frozen-lockfile=false',
-      '--prefer-offline',
-    );
-    if (vitestKoaMockPathsWithoutNodeTypes.size !== 0) {
-      await Promise.all(
-        Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
-          const folderExec = createExec({
-            cwd: folder,
-          });
+  const nodeTypeVersionToPatch = existingNodeTypesVersion ?? '24.12.2';
 
-          return folderExec(
-            'pnpm',
-            'install',
-            `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
-            '--save-dev',
-            '--prefer-offline',
-            '--ignore-workspace-root-check',
-          );
-        }),
+  const gitRoot = (await Git.findRoot({ dir: process.cwd() })) ?? process.cwd();
+
+  await Promise.all(
+    Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
+      const manifest = await getConsumerManifest(folder);
+
+      if (!manifest || manifest.packageJson.devDependencies?.['@types/node']) {
+        return;
+      }
+
+      manifest.packageJson.devDependencies ??= {};
+      manifest.packageJson.devDependencies['@types/node'] =
+        nodeTypeVersionToPatch;
+
+      await fs.promises.writeFile(
+        manifest.path,
+        JSON.stringify(manifest.packageJson, null, 2),
+        'utf8',
       );
-      await exec('pnpm', 'dedupe', '--prefer-offline');
-    }
-  } else {
-    await exec(
-      'yarn',
+    }),
+  );
+
+  const rootExec = createExec({ cwd: gitRoot });
+
+  try {
+    await rootExec(
+      packageManager.command,
       'install',
       '--frozen-lockfile=false',
       '--prefer-offline',
+      '--ignore-scripts',
     );
-    await Promise.all(
-      Array.from(vitestKoaMockPathsWithoutNodeTypes).map(async (folder) => {
-        const folderExec = createExec({
-          cwd: folder,
-        });
 
-        return folderExec(
-          'yarn',
-          'add',
-          `@types/node@${existingNodeTypesVersion ?? '24.12.2'}`,
-          '--dev',
-          '--prefer-offline',
-        );
-      }),
-    );
+    if (packageManager.command === 'pnpm') {
+      await rootExec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
+    }
+  } catch (error) {
+    log.warn('Failed to install dependencies after Vitest migration');
+    log.subtle(inspect(error));
   }
 
   return {

@@ -3,11 +3,14 @@ import { inspect } from 'util';
 
 import fg from 'fast-glob';
 import fs from 'fs-extra';
+import latestVersion from 'latest-version';
 
 import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+
+import { Git } from '@skuba-lib/api';
 
 export const patchInstrumentation: PatchFunction = async ({
   mode,
@@ -107,7 +110,10 @@ export const patchInstrumentation: PatchFunction = async ({
 
         return {
           filePath,
-          content: content.replace(cmd, `${commandsToAdd.join(' ')} ${cmd}`),
+          content: content.replace(
+            cmd,
+            `${warning}${commandsToAdd.join(' ')} ${cmd}`,
+          ),
         };
       }
 
@@ -126,7 +132,7 @@ export const patchInstrumentation: PatchFunction = async ({
         return { filePath, content: content.replace(cmd, patchedCmd) };
       }
 
-      const patchedCmd = cmd.replace(/^\s*\[/, `[${flags}, `);
+      const patchedCmd = cmd.replace(/^\s*\[/, `[${warning}${flags}, `);
       return { filePath, content: content.replace(cmd, patchedCmd) };
     })
     .filter((patch) => patch !== null);
@@ -151,37 +157,64 @@ export const patchInstrumentation: PatchFunction = async ({
       ),
     );
 
-    await Promise.all(
-      packageJsons
-        .filter((pkg) => pkg !== undefined)
-        .map(async (pkg) => {
-          const { packageJson, path } = pkg;
-
-          if (
-            packageJson.dependencies?.['@opentelemetry/instrumentation'] ||
-            packageJson.devDependencies?.['@opentelemetry/instrumentation']
-          ) {
-            return;
-          }
-
-          const folderExec = createExec({ cwd: dirname(path) });
-          if (packageManager.command === 'pnpm') {
-            return folderExec(
-              'pnpm',
-              'install',
-              '@opentelemetry/instrumentation@0.216.0',
-              '--prefer-offline',
-              '--ignore-workspace-root-check',
-            );
-          }
-          return folderExec(
-            'yarn',
-            'add',
-            '@opentelemetry/instrumentation@0.216.0',
-            '--prefer-offline',
-          );
-        }),
+    const filteredPackageJsons = packageJsons.filter(
+      (pkg) => pkg !== undefined,
     );
+    await Promise.all(
+      filteredPackageJsons.map(async (pkg) => {
+        const { packageJson, path } = pkg;
+
+        if (
+          packageJson.dependencies?.['@opentelemetry/instrumentation'] ||
+          packageJson.devDependencies?.['@opentelemetry/instrumentation']
+        ) {
+          return;
+        }
+
+        const fallbackVersion = '0.216.0';
+
+        const existingVersion =
+          packageJson.dependencies?.['@opentelemetry/instrumentation-http'] ??
+          packageJson.dependencies?.['@opentelemetry/sdk-node'];
+
+        const versionToUse =
+          existingVersion?.startsWith('catalog:') ||
+          existingVersion === undefined
+            ? fallbackVersion
+            : await latestVersion('@opentelemetry/instrumentation', {
+                version: `<=${existingVersion}`,
+              });
+
+        packageJson.dependencies ??= {};
+
+        packageJson.dependencies['@opentelemetry/instrumentation'] =
+          versionToUse;
+
+        await fs.promises.writeFile(
+          path,
+          JSON.stringify(packageJson, null, 2),
+          'utf-8',
+        );
+      }),
+    );
+
+    const gitRoot =
+      (await Git.findRoot({ dir: process.cwd() })) ?? process.cwd();
+
+    const rootExec = createExec({ cwd: gitRoot });
+
+    try {
+      await rootExec(
+        packageManager.command,
+        'install',
+        '--frozen-lockfile=false',
+        '--prefer-offline',
+        '--ignore-scripts',
+      );
+    } catch (error) {
+      log.warn('Failed to install dependencies after OpenTelemetry patch');
+      log.subtle(inspect(error));
+    }
   }
 
   await Promise.all(

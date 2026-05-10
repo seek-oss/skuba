@@ -10,6 +10,7 @@ import type {
 } from '../../lint/internalLints/upgrade/index.js';
 
 import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.js';
+import { tryAddFileExtensions } from './addFileExtensions.js';
 import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
 import { tryMigrateDockerfileRequires } from './migrateDockerfileRequires.js';
 import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefault.js';
@@ -68,6 +69,10 @@ const patches: Patch[] = [
   {
     apply: migrateToVitest,
     description: 'Migrate from Jest to Vitest',
+  },
+  {
+    apply: tryAddFileExtensions,
+    description: 'Add file extensions to imports',
   },
 ];
 
