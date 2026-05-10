@@ -15,7 +15,7 @@ export default defineConfig(
     test: {
       server: {
         deps: {
-          inline: [...readPackageUpFsDeps],
+          inline: [...readPackageUpFsDeps, 'import-meta-resolve'],
         },
       },
       env: {

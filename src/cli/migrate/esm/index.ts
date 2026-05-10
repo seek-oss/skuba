@@ -10,6 +10,7 @@ import type {
 } from '../../lint/internalLints/upgrade/index.js';
 
 import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.js';
+import { addFileExtensions } from './addFileExtensions.js';
 import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
 import { tryMigrateDockerfileRequires } from './migrateDockerfileRequires.js';
 import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefault.js';
@@ -64,6 +65,10 @@ const patches: Patch[] = [
     apply: tryPatchInstrumentation,
     description:
       'Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports',
+  },
+  {
+    apply: addFileExtensions,
+    description: 'Add file extensions to imports',
   },
   {
     apply: migrateToVitest,
