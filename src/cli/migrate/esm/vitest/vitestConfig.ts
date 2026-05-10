@@ -566,6 +566,7 @@ const scaffoldTestConfig = async ({
   projectsNode,
   isProject,
   isSpread,
+  configNumber,
 }: {
   root: SgNode;
   file: string;
@@ -573,6 +574,7 @@ const scaffoldTestConfig = async ({
   projectsNode?: SgNode;
   isProject?: boolean;
   isSpread?: boolean;
+  configNumber?: number;
 }): Promise<{
   edits: FileContent[];
   testConfig: string;
@@ -659,6 +661,12 @@ const scaffoldTestConfig = async ({
         functions: 100,
         lines: 100,
         statements: 100,
+      }${
+        !isProject && (configNumber ?? 0) > 1
+          ? `
+    // TODO: Multiple configurations were detected, consider consolidating the configs and using Vitest's projects feature eg.
+    // projects: [{ extends: true, test: { name: 'unit' } }, { extends: true, test: { name: 'integration', fileParallelism: false } }]`
+          : ''
       }`
       },
     },`
@@ -746,6 +754,7 @@ export const scaffoldVitestConfig = async () => {
         file,
         docRoot: root,
         projectsNode: maybeProjectsData?.projectsNode,
+        configNumber: jestConfigs.length,
       });
 
       const watchPathIgnorePatterns = extractRawStringArray(
