@@ -273,7 +273,7 @@ const migrateGlobalSetup = async (
   return {
     edits: [
       {
-        file: absolutePath.replaceAll('jest', 'vitest'),
+        file: absolutePath.replaceAll('jest', 'vitest').replace(/\.js$/, '.ts'),
         content: vitestGlobalSetup,
       },
       {
@@ -281,7 +281,9 @@ const migrateGlobalSetup = async (
         content: `// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.\n\n${jestGlobalSetup}`,
       },
     ],
-    globalSetupPath: normalizedPath.replaceAll('jest', 'vitest'),
+    globalSetupPath: normalizedPath
+      .replaceAll('jest', 'vitest')
+      .replace(/\.js$/, '.ts'),
   };
 };
 
@@ -539,7 +541,9 @@ const migrateSetupHooks = async (
 
       return [
         {
-          file: absolutePath.replaceAll('jest', 'vitest'),
+          file: absolutePath
+            .replaceAll('jest', 'vitest')
+            .replace(/\.js$/, '.ts'),
           content: updatedContent,
         },
         {
@@ -554,7 +558,7 @@ const migrateSetupHooks = async (
     edits: edits.flat(),
     hookPaths: normalizedPaths
       .filter((p) => !doNotMigrate.has(p))
-      .map((p) => p.replaceAll('jest', 'vitest')),
+      .map((p) => p.replaceAll('jest', 'vitest').replace(/\.js$/, '.ts')),
     envVars,
   };
 };
