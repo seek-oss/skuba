@@ -1,10 +1,12 @@
 import path from 'node:path';
+import { inspect } from 'node:util';
 
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
 import { createExec, exec } from '../../../../utils/exec.js';
+import { log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
 import {
   type PackageManagerConfig,
@@ -294,16 +296,21 @@ export const migrateToVitest = async (opts: {
 
   const rootExec = createExec({ cwd: gitRoot });
 
-  await rootExec(
-    packageManager.command,
-    'install',
-    '--frozen-lockfile=false',
-    '--prefer-offline',
-    '--ignore-scripts',
-  );
+  try {
+    await rootExec(
+      packageManager.command,
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+      '--ignore-scripts',
+    );
 
-  if (packageManager.command === 'pnpm') {
-    await rootExec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
+    if (packageManager.command === 'pnpm') {
+      await rootExec('pnpm', 'dedupe', '--prefer-offline', '--ignore-scripts');
+    }
+  } catch (error) {
+    log.warn('Failed to install dependencies after Vitest migration');
+    log.subtle(inspect(error));
   }
 
   return {

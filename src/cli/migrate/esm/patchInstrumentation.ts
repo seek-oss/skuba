@@ -203,13 +203,18 @@ export const patchInstrumentation: PatchFunction = async ({
 
     const rootExec = createExec({ cwd: gitRoot });
 
-    await rootExec(
-      packageManager.command,
-      'install',
-      '--frozen-lockfile=false',
-      '--prefer-offline',
-      '--ignore-scripts',
-    );
+    try {
+      await rootExec(
+        packageManager.command,
+        'install',
+        '--frozen-lockfile=false',
+        '--prefer-offline',
+        '--ignore-scripts',
+      );
+    } catch (error) {
+      log.warn('Failed to install dependencies after OpenTelemetry patch');
+      log.subtle(inspect(error));
+    }
   }
 
   await Promise.all(

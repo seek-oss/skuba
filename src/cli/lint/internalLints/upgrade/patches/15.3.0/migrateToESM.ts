@@ -16,12 +16,18 @@ const migrate: PatchFunction = async (config) => {
   }
 
   if (config.mode !== 'lint' && config.packageManager.command === 'pnpm') {
-    await exec(
-      'pnpm',
-      'install',
-      '--frozen-lockfile=false',
-      '--prefer-offline',
-    );
+    try {
+      await exec(
+        'pnpm',
+        'install',
+        '--frozen-lockfile=false',
+        '--prefer-offline',
+      );
+    } catch (error) {
+      log.warn('Failed to install dependencies after patching pnpm workspace');
+      log.subtle(inspect(error));
+      // Don't fail the entire migration if this step fails, since the user can run pnpm install themselves after the migration
+    }
   }
 
   return await migrateToESM(config);
@@ -33,6 +39,6 @@ export const tryMigrateToESM: PatchFunction = async (config) => {
   } catch (err) {
     log.warn('Failed to migrate to ESM');
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    throw err;
   }
 };
