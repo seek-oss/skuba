@@ -268,4 +268,36 @@ type MySpiedFunction = Mock<() => void>;
 `);
     });
   });
+
+  describe('migrateBadMockImplementations', () => {
+    it('removes bad .mockImplementation() from vi.mock calls', async () => {
+      const content = `import { vi } from 'vitest';
+
+vi.mock('./someModule').mockImplementation().mockReturnValue(42);
+
+someModule.mockImplementation().mockReturnValue(42);
+
+const mockedModule = vi.mocked(someModule).mockImplementation().mockRejectedValue(new Error('oops'));
+
+mock.mockImplementation();
+
+// preserved
+mock.mockImplementation().mockReset();
+`;
+
+      await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
+
+vi.mock('./someModule').mockReturnValue(42);
+
+someModule.mockReturnValue(42);
+
+const mockedModule = vi.mocked(someModule).mockRejectedValue(new Error('oops'));
+
+mock.mockImplementation();
+
+// preserved
+mock.mockImplementation().mockReset();
+`);
+    });
+  });
 });

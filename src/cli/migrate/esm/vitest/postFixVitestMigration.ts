@@ -173,17 +173,11 @@ const getImportOrderEdits = (root: SgNode): Edit[] => {
 const getBadMocksEdits = (root: SgNode): Edit[] => {
   const badMocks = root.findAll({
     rule: {
-      kind: 'member_expression',
-      regex: '^vi\.mock$',
+      kind: 'expression_statement',
+      regex: '^vi\.mock\\(',
       not: {
         inside: {
-          kind: 'call_expression',
-          inside: {
-            kind: 'expression_statement',
-            inside: {
-              kind: 'program',
-            },
-          },
+          kind: 'program',
         },
       },
     },
@@ -193,7 +187,11 @@ const getBadMocksEdits = (root: SgNode): Edit[] => {
     return [];
   }
 
-  return badMocks.map((mock) => mock.replace('vi.doMock'));
+  return badMocks.map((mock) => ({
+    startPos: mock.range().start.index + 'vi.'.length,
+    endPos: mock.range().start.index + 'vi.mock'.length,
+    insertedText: 'doMock',
+  }));
 };
 
 // Updates importActual to include types
@@ -354,6 +352,38 @@ export const getViMockedPrototypeEdits = (root: SgNode): Edit[] => {
   });
 };
 
+const getBadMockImplementationEdits = (root: SgNode): Edit[] => {
+  const badMockImplementations = root.findAll({
+    rule: {
+      kind: 'call_expression',
+      regex: 'mockImplementation\\(\\)$',
+      inside: {
+        kind: 'member_expression',
+        has: {
+          kind: 'property_identifier',
+          regex: '^mock(Return|Resolved|Rejected)',
+        },
+      },
+    },
+  });
+
+  if (!badMockImplementations.length) {
+    return [];
+  }
+
+  return badMockImplementations.map((mockImplementation) => {
+    const text = mockImplementation.text();
+    const replaceText = text.replace(/\s*\.mockImplementation\(\)$/, '');
+    const charsToRemove = text.length - replaceText.length;
+
+    return {
+      startPos: mockImplementation.range().end.index - charsToRemove,
+      endPos: mockImplementation.range().end.index,
+      insertedText: '',
+    };
+  });
+};
+
 /**
  * Runs extra transformations after the sku vitest codemod to fix any missed cases
  */
@@ -394,6 +424,7 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     ...spiedFunctionEdits,
     ...getTypeImportEdits(astRoot, Array.from(jestTypeImports)),
     ...getViMockedPrototypeEdits(astRoot),
+    ...getBadMockImplementationEdits(astRoot),
   ];
 
   if (!edits.length) {
