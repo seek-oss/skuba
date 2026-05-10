@@ -283,6 +283,10 @@ mock.mockImplementation();
 
 // preserved
 mock.mockImplementation().mockReset();
+
+foo
+  .mockImplementation()
+  .mockReturnValue(42);
 `;
 
       await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
@@ -297,6 +301,9 @@ mock.mockImplementation();
 
 // preserved
 mock.mockImplementation().mockReset();
+
+foo
+  .mockReturnValue(42);
 `);
     });
   });
