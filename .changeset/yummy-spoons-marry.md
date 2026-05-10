@@ -14,3 +14,5 @@ This migration is also run as part of `skuba migrate esm`, however, you may choo
 pnpm dlx skuba migrate file-extensions
 npx skuba migrate file-extensions
 ```
+
+View the [migration documentation](https://seek-oss.github.io/skuba/docs/cli/migrate#skuba-migrate-file-extensions) for more details.
