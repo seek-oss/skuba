@@ -1,45 +1,6 @@
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
-import ts from 'typescript';
 
-const getTsConfig = () => {
-  const configFilePath = ts.findConfigFile(
-    process.cwd(),
-    ts.sys.fileExists.bind(undefined),
-    'tsconfig.json',
-  );
-
-  if (!configFilePath) {
-    return undefined;
-  }
-
-  const readResult = ts.readConfigFile(configFilePath, (f) =>
-    ts.sys.readFile(f),
-  );
-
-  if (readResult.error) {
-    return undefined;
-  }
-
-  return ts.parseJsonConfigFileContent(readResult.config, ts.sys, process.cwd())
-    .options;
-};
-
-const getTsCallExpressionsByPos = (sourceFile: ts.SourceFile) => {
-  const tsCallExpressionsByPos = new Map<number, ts.CallExpression>();
-
-  const visit = (node: ts.Node) => {
-    if (ts.isCallExpression(node)) {
-      tsCallExpressionsByPos.set(node.getStart(), node);
-    }
-    ts.forEachChild(node, visit);
-  };
-
-  visit(sourceFile);
-
-  return tsCallExpressionsByPos;
-};
-
-let tsConfigCache: ts.CompilerOptions | undefined;
+import { getLifeCycleHooks } from './lifeCycleEdits.js';
 
 // The sku vitest codemod misses a few cases
 // eg. beforeEach(() => jest.clearAllMocks())
@@ -99,104 +60,6 @@ const getUnfixedLifeCycleEdits = (root: SgNode): Edit[] => {
     const existingText = hook.text();
     return hook.replace(`() => { ${existingText}() }`);
   });
-};
-
-// The sku codemod does a naive transformation of the hooks eg. beforeEach(resetDynamoDB) becomes beforeEach(() => { resetDynamoDB() })
-// It doesn't check if the function was returning a promise so we are checking if the function being called is a promise
-// and adding async/await to the arrow function and the call expression if it is
-// eg. beforeEach(() => { resetDynamoDB() }) becomes beforeEach(async () => { await resetDynamoDB() })
-const getLifeCycleEdits = (root: SgNode, file: string): Edit[] => {
-  const lastStatementsInLifeCycleHooks = root.findAll({
-    rule: {
-      kind: 'call_expression',
-      regex: '.*\(.*\)',
-      not: { regex: '^(await|vi)' },
-      inside: {
-        kind: 'expression_statement',
-        all: [
-          // only match if there is a single statement
-          {
-            nthChild: {
-              reverse: true,
-              position: 1,
-            },
-          },
-          {
-            nthChild: 1,
-          },
-        ],
-        inside: {
-          kind: 'statement_block',
-          inside: {
-            kind: 'arrow_function',
-            not: { regex: '^async' },
-            inside: {
-              kind: 'arguments',
-              inside: {
-                kind: 'call_expression',
-                regex: '^(beforeEach|afterEach|afterAll|beforeAll)',
-              },
-            },
-          },
-        },
-      },
-    },
-  });
-
-  if (!lastStatementsInLifeCycleHooks.length) {
-    return [];
-  }
-
-  tsConfigCache ??= getTsConfig() ?? {
-    target: ts.ScriptTarget.ESNext,
-    moduleResolution: ts.ModuleResolutionKind.Node16,
-    allowSyntheticDefaultImports: true,
-    esModuleInterop: true,
-    strict: false,
-    noEmit: true,
-  };
-
-  const program = ts.createProgram([file], tsConfigCache);
-  const checker = program.getTypeChecker();
-  const sourceFile = program.getSourceFile(file);
-
-  if (!sourceFile) {
-    return [];
-  }
-
-  const tsCallExpressionsByPos = getTsCallExpressionsByPos(sourceFile);
-
-  const edits: Edit[][] = lastStatementsInLifeCycleHooks.map((statement) => {
-    const pos = statement.range().start.index;
-    const tsNode = tsCallExpressionsByPos.get(pos);
-    if (!tsNode) {
-      return [];
-    }
-
-    const type = checker.getTypeAtLocation(tsNode);
-    const typeString = checker.typeToString(type);
-
-    if (!typeString.startsWith('Promise<')) {
-      return [];
-    }
-
-    const awaitEdit = statement.replace(`await ${statement.text()}`);
-    const arrowFunction = statement.parent()?.parent()?.parent();
-    if (arrowFunction?.kind() !== 'arrow_function') {
-      return [];
-    }
-
-    return [
-      awaitEdit,
-      {
-        startPos: arrowFunction.range().start.index,
-        endPos: arrowFunction.range().start.index,
-        insertedText: 'async ',
-      },
-    ];
-  });
-
-  return edits.flat();
 };
 
 // The sku vitest codemod naively inserts the vitest import at the top of the file
@@ -496,10 +359,15 @@ export const getViMockedPrototypeEdits = (root: SgNode): Edit[] => {
  */
 export const postFixVitestMigration = async (file: string, content: string) => {
   if (!file.includes('test')) {
-    return content;
+    return {
+      updated: content,
+      hasLifeCyclesToCheck: false,
+    };
   }
 
   const astRoot = (await parseAsync('TypeScript', content)).root();
+
+  const hasLifeCyclesToCheck = getLifeCycleHooks(astRoot).length > 0;
 
   const { imports: jestTypeImports, edits: jestTypeEdits } =
     getJestTypeEdits(astRoot);
@@ -516,7 +384,6 @@ export const postFixVitestMigration = async (file: string, content: string) => {
   }
 
   const edits = [
-    ...getLifeCycleEdits(astRoot, file),
     ...getImmediateReturnEdits(astRoot),
     ...getUnfixedLifeCycleEdits(astRoot),
     ...getImportOrderEdits(astRoot),
@@ -530,8 +397,14 @@ export const postFixVitestMigration = async (file: string, content: string) => {
   ];
 
   if (!edits.length) {
-    return content;
+    return {
+      updated: content,
+      hasLifeCyclesToCheck,
+    };
   }
 
-  return astRoot.commitEdits(edits);
+  return {
+    updated: astRoot.commitEdits(edits),
+    hasLifeCyclesToCheck,
+  };
 };

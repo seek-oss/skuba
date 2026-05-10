@@ -14,6 +14,7 @@ import {
 } from '../../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.js';
 
+import { editLifeCycleHooks } from './lifeCycleEdits.js';
 import { postFixVitestMigration } from './postFixVitestMigration.js';
 import { scaffoldVitestConfig } from './vitestConfig.js';
 
@@ -230,10 +231,19 @@ export const migrateToVitest = async (opts: {
     ignore: ['**/.git', '**/node_modules'],
   });
   const tsFiles = await readFiles(tsFilePaths);
+  const lifeCyclesToCheck: string[] = [];
 
   await Promise.all(
     tsFiles.map(async ({ file, content }) => {
-      const updated = await postFixVitestMigration(file, content);
+      const { updated, hasLifeCyclesToCheck } = await postFixVitestMigration(
+        file,
+        content,
+      );
+
+      if (hasLifeCyclesToCheck) {
+        lifeCyclesToCheck.push(file);
+      }
+
       // replace import 'aws-sdk-client-mock-jest'; with import 'aws-sdk-client-mock-vitest/extend';
       // replace imports from @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks
       // replace .mockImplementation() with .mockImplementation(() => undefined) to account for the fact that Vitest requires an implementation for mocks whereas Jest does not
@@ -262,6 +272,10 @@ export const migrateToVitest = async (opts: {
       }
     }),
   );
+
+  const lifeCycleFiles = await readFiles(lifeCyclesToCheck);
+
+  await editLifeCycleHooks(lifeCycleFiles);
 
   const existingNodeTypesVersion = packageJsons
     .map(({ content }) => {
