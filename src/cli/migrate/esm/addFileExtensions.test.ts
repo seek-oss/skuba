@@ -69,12 +69,12 @@ describe('addFileExtensions', () => {
 import './deep';
 import { foo } from './foo';
 import { bar } from 'some-package/dist/deep/import';
-const foo = vi.importActual<typeof import('./foo')>('./foo')`,
+const foo = vi.importActual<typeof import('./foo')>('./foo')
+vi.mock('./foo')`,
       'node_modules/some-package/dist/deep/import.js': '',
       'foo.ts': 'export const foo = 42;',
       'deep/index.ts': '',
     });
-
     await expect(
       addFileExtensions({
         ...baseArgs,
@@ -91,7 +91,8 @@ const foo = vi.importActual<typeof import('./foo')>('./foo')`,
         "index.ts": "import './deep/index.js';
       import { foo } from './foo.js';
       import { bar } from 'some-package/dist/deep/import.js';
-      const foo = vi.importActual<typeof import('./foo.js')>('./foo.js')",
+      const foo = vi.importActual<typeof import('./foo.js')>('./foo.js')
+      vi.mock('./foo.js')",
         "node_modules/some-package/dist/deep/import.js": "",
       }
     `);

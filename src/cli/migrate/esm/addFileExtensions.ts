@@ -88,7 +88,7 @@ export const addFileExtensions = async ({
                     {
                       inside: {
                         kind: 'call_expression',
-                        regex: '^vi.importActual\\(',
+                        regex: '^vi.(importActual|mock|doMock)\\(',
                       },
                     },
                     // Dynamic imports eg. import('./foo)
