@@ -496,11 +496,11 @@ export {}`,
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "jest.another.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+        "jest.another.ts": "// This setup file was migrated and deleted in the migration from Jest to Vitest by skuba. The environment variables have been migrated to the Vitest config file. Please verify the migration was successful and delete this file.
 
       process.env.ENVIRONMENT = 'test';
       export {}",
-        "jest.config.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+        "jest.config.ts": "// This file was migrated from Jest to Vitest in vitest.config.ts by skuba. Please verify the migration was successful and delete this file.
 
       import { Jest } from 'skuba';
 
@@ -555,7 +555,7 @@ export {}`,
         ...baseConfig,
       });
       ",
-        "jest.globalSetup.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+        "jest.globalSetup.ts": "// This file was migrated from Jest to Vitest to vitest.globalSetup.ts by skuba. Please verify the migration was successful and delete this file.
 
       import { Net } from 'skuba';
 
@@ -573,11 +573,11 @@ export {}`,
       module.exports = async () =>
         waitForApiDynamoDb();
       ",
-        "jest.hooks.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+        "jest.hooks.ts": "// This file was migrated from Jest to Vitest in vitest.hooks.ts by skuba. Please verify the migration was successful and delete this file.
 
       import 'some-hooks';
       ",
-        "jest.setup.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+        "jest.setup.ts": "// This file was migrated from Jest to Vitest in vitest.setup.ts by skuba. Please verify the migration was successful and delete this file.
 
       process.env.DEPLOYMENT = 'test';
 
@@ -702,7 +702,7 @@ export default Jest.mergePreset({
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "jest.config.ts": "// This file was migrated from Jest to Vitest by skuba. Please verify the migration was successful and delete this file.
+        "jest.config.ts": "// This file was migrated from Jest to Vitest in vitest.config.ts by skuba. Please verify the migration was successful and delete this file.
 
       import { Jest } from 'skuba';
 
