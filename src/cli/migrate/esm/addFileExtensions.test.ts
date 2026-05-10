@@ -70,10 +70,20 @@ import './deep';
 import { foo } from './foo';
 import { bar } from 'some-package/dist/deep/import';
 const foo = vi.importActual<typeof import('./foo')>('./foo')
-vi.mock('./foo')`,
+vi.mock('./foo')
+vi.doMock('#src/foo')`,
       'node_modules/some-package/dist/deep/import.js': '',
       'foo.ts': 'export const foo = 42;',
       'deep/index.ts': '',
+      'src/foo.ts': 'export const foo = 42;',
+      'package.json': JSON.stringify({
+        imports: {
+          '#src/*': {
+            '@seek/my-condition/source': './src/*',
+            default: './lib/*',
+          },
+        },
+      }),
     });
     await expect(
       addFileExtensions({
@@ -92,8 +102,11 @@ vi.mock('./foo')`,
       import { foo } from './foo.js';
       import { bar } from 'some-package/dist/deep/import.js';
       const foo = vi.importActual<typeof import('./foo.js')>('./foo.js')
-      vi.mock('./foo.js')",
+      vi.mock('./foo.js')
+      vi.doMock('#src/foo.js')",
         "node_modules/some-package/dist/deep/import.js": "",
+        "package.json": "{"imports":{"#src/*":{"@seek/my-condition/source":"./src/*","default":"./lib/*"}}}",
+        "src/foo.ts": "export const foo = 42;",
       }
     `);
   });

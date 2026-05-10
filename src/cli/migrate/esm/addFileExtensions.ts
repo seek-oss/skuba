@@ -118,13 +118,18 @@ export const addFileExtensions = async ({
                 { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
               ],
             },
+            // #src/ import aliases
+            {
+              all: [
+                { regex: '^#src/' },
+                { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
+              ],
+            },
             // unscoped packages with 1 or more path segments
             {
               all: [
-                { regex: '^[^@][^/]*/.+$' },
+                { regex: '^[^@#][^/]*/.+$' },
                 { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
-                // exclude import aliases
-                { not: { regex: '^#' } },
                 // exclude node: built-in modules
                 { not: { regex: '^node:' } },
               ],
@@ -163,11 +168,16 @@ export const addFileExtensions = async ({
 
           try {
             resolved = resolve(text, parentPath);
+            if (text.startsWith('#src/')) {
+              // assume it's a skuba #src alias and replace the `lib` path in the resolved path with `src`
+              resolved = resolved.replace('/lib/', '/src/');
+            }
           } catch {
             // unknown import - give up
             resolvedPaths.set(text, null);
             return null;
           }
+
           if (resolved.endsWith('.js')) {
             // Likely a package module
             return null;
