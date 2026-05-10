@@ -236,12 +236,14 @@ Due to the complexities of test code and configurations, the migration may not b
 
 ### Post-migration steps
 
-1. Run `skuba lint`
+1. Run `skuba format` and `skuba lint`
+
+   If the `eslint` step fails to run, address any issues with the `eslint.config.js` file and re-run `skuba format`. ESLint may fail on the first pass while attempting to parse ESM config in CommonJS mode, but will automatically switch to ESM mode on the second run.
 
    Attempt to address any lint errors that may be caused by the migration.
    The most common failure points with `skuba test` runs can normally be addressed by fixing the lint errors first.
 
-   If you notice there are changes you can make prior to running the skuba migration, we suggest making those changes first and then re-running the migration for the ease of reviewing the migration changes.
+   If you notice changes you could make beforehand to simplify the migration, consider stopping, making those changes first, then re-running the migration. This will make the changes easier for reviewers.
 
    If you notice any repeatable issues that the migration has not accounted for, please [open an issue], or if you work at SEEK, reach out in [#skuba-support].
 
