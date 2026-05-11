@@ -43,7 +43,7 @@
     "eslint-config-seek": "15.0.5",
     "eslint-plugin-skuba": "workspace:*",
     "eslint-plugin-yml": "^1.14.0",
-    "typescript-eslint": "^8.58.0"
+    "typescript-eslint": "^8.59.2"
   },
   "devDependencies": {
     "eslint": "^10.0.0",
