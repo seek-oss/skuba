@@ -1,6 +1,6 @@
 {
   "name": "@skuba-lib/changesets-changelog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "Opinionated changelog generator for Changesets",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/changesets-changelog#readme",
