@@ -94,7 +94,7 @@ const migrateCdkLambdas = async (
               startPos: insertPos,
               endPos: insertPos,
               insertedText:
-                "import { OutputFormat } from 'aws-cdk-lib/aws-lambda_nodejs';\n",
+                "import { OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';\n",
             });
           }
         } else {
