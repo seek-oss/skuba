@@ -39,7 +39,7 @@ jobs:
         run: npm install -g npm@latest
 
       - name: Publish to npm
-        uses: changesets/action@v1
+        uses: changesets/action@63a615b9cd06ba9a3e6d13796c7fbcb080a60a0b # v1.8.0
         with:
           publish: pnpm release
           version: pnpm stage
