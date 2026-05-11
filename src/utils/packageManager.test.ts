@@ -1,4 +1,4 @@
-import findUp, { type Options } from 'find-up';
+import { type Options, findUp } from 'find-up';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('find-up');
