@@ -80,7 +80,7 @@ jobs:
         run: npm install -g npm@latest
 
       - name: Publish to npm
-        uses: seek-oss/changesets-snapshot@v0
+        uses: seek-oss/changesets-snapshot@9063bfcb495100964ee0912c5bcb30c4c434c1b3 # v0.3.2
         with:
           pre-publish: pnpm run build
         env:
