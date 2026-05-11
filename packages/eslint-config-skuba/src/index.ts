@@ -200,3 +200,5 @@ const skuba = defineConfig([
 ]);
 
 export default skuba;
+
+void null;

@@ -131,3 +131,5 @@ const changelogFunctions = (() => {
 })();
 
 export default changelogFunctions;
+
+void null;

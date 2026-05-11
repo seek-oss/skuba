@@ -329,3 +329,5 @@ const loadCompilerOptions = (filePath: string): ts.CompilerOptions => {
 
   return { ...options, noEmit: true };
 };
+
+void null;

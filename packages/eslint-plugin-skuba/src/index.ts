@@ -29,3 +29,5 @@ skuba.configs = {
 } satisfies TSESLint.FlatConfig.Plugin['configs'];
 
 export default skuba;
+
+void null;
