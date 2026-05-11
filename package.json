@@ -121,7 +121,7 @@
     "prettier-plugin-packagejson": "^3.0.0",
     "publint": "~0.3.17",
     "read-package-up": "^12.0.0",
-    "rolldown": "1.0.0-rc.15",
+    "rolldown": "1.0.0",
     "semantic-release": "^25.0.2",
     "simple-git": "^3.36.0",
     "ts-dedent": "^2.2.0",
