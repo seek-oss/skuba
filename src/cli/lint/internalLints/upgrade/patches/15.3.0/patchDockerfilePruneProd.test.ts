@@ -155,4 +155,80 @@ describe('patchDockerfilePruneProd', () => {
       reason: 'no dockerfiles to patch',
     } satisfies PatchReturnType);
   });
+
+  it('should skip dockerfiles where pnpm install --prod is preceded by pnpm prune --prod (monorepo workaround)', async () => {
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
+      [
+        'FROM ${BASE_IMAGE} AS build',
+        'RUN pnpm install --offline',
+        'RUN pnpm exec nx build ${CONTEXT_APP}',
+        'RUN pnpm prune --prod',
+        'RUN pnpm install --offline --prod',
+      ].join('\n'),
+    );
+
+    await expect(
+      tryPatchDockerfilePruneProd({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'skip',
+      reason: 'no dockerfiles to patch',
+    } satisfies PatchReturnType);
+
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
+  });
+
+  it('should skip lint when pnpm install --prod is preceded by pnpm prune --prod (monorepo workaround)', async () => {
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
+      'FROM ${BASE_IMAGE} AS build\nRUN pnpm prune --prod\nRUN pnpm install --offline --prod',
+    );
+
+    await expect(
+      tryPatchDockerfilePruneProd({
+        mode: 'lint',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'skip',
+      reason: 'no dockerfiles to patch',
+    } satisfies PatchReturnType);
+
+    expect(fs.promises.writeFile).not.toHaveBeenCalled();
+  });
+
+  it('should only replace standalone pnpm install --prod lines and leave monorepo pair intact in the same Dockerfile', async () => {
+    vi.mocked(fg).mockResolvedValueOnce(['Dockerfile']);
+    vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
+      [
+        'FROM ${BASE_IMAGE} AS build',
+        'RUN pnpm install --prod',
+        'COPY . .',
+        'RUN pnpm prune --prod',
+        'RUN pnpm install --offline --prod',
+      ].join('\n'),
+    );
+
+    await expect(
+      tryPatchDockerfilePruneProd({
+        mode: 'format',
+      } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(fs.promises.writeFile).toHaveBeenCalledWith(
+      'Dockerfile',
+      [
+        'FROM ${BASE_IMAGE} AS build',
+        'RUN pnpm prune --prod',
+        'COPY . .',
+        'RUN pnpm prune --prod',
+        'RUN pnpm install --offline --prod',
+      ].join('\n'),
+      'utf8',
+    );
+    expect(fs.promises.writeFile).toHaveBeenCalledTimes(1);
+  });
 });
