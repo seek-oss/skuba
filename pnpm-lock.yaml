@@ -148,7 +148,7 @@ importers:
         specifier: ^12.0.0
         version: 12.0.0
       rolldown:
-        specifier: 1.0.0
+        specifier: ~1.0.0
         version: 1.0.0
       semantic-release:
         specifier: ^25.0.2
