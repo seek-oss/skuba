@@ -29,10 +29,10 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsdown",
+    "build": "pnpm --silent skuba build-package",
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
-    "prepack": "tsdown",
+    "prepack": "pnpm --silent skuba build-package",
     "skuba": "node ../../lib/skuba",
     "test": "node --import tsx --test 'src/**/*.test.ts'",
     "test:ci": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
@@ -44,7 +44,6 @@
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.26.0",
     "eslint": "^10.0.0",
-    "tsdown": "^0.21.0",
     "tsx": "^4.16.2",
     "typescript-eslint": "^8.39.0"
   },
