@@ -1,5 +1,3 @@
-ignorePatchFailures: false # Managed by skuba
-packageManagerStrictVersion: true # Managed by skuba
 packages:
   # https://github.com/changesets/changesets/issues/1133#issuecomment-1594844204
   - .
@@ -35,6 +33,7 @@ overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
 
+pmOnFail: 'error' # Managed by skuba
 publicHoistPattern:
   - remark-lint-*
   - '@arethetypeswrong/core' # Managed by skuba
@@ -58,4 +57,3 @@ trustPolicyExclude:
 
 strictDepBuilds: false # Managed by skuba
 trustPolicy: off # Managed by skuba
-pmOnFail: error

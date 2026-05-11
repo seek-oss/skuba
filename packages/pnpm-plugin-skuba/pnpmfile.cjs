@@ -18,7 +18,6 @@ const defaultConfig = {
     'unrs-resolver': true,
   },
   blockExoticSubdeps: true,
-  ignorePatchFailures: false,
 
   minimumReleaseAge: 4320,
   minimumReleaseAgeExclude: [
@@ -33,7 +32,7 @@ const defaultConfig = {
     'tsconfig-seek',
   ],
 
-  packageManagerStrictVersion: true,
+  pmOnFail: 'error',
   publicHoistPattern: [
     '@arethetypeswrong/core',
     '@eslint/*',
