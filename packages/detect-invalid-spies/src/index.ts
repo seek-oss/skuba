@@ -330,4 +330,5 @@ const loadCompilerOptions = (filePath: string): ts.CompilerOptions => {
   return { ...options, noEmit: true };
 };
 
+/* istanbul ignore next: temp test please remove */
 void null;

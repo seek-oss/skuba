@@ -201,4 +201,5 @@ const skuba = defineConfig([
 
 export default skuba;
 
+/* istanbul ignore next: temp test please remove */
 void null;
