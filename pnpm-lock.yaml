@@ -367,7 +367,7 @@ importers:
     dependencies:
       koa:
         specifier: ^3.1.1
-        version: 3.1.2
+        version: 3.2.0
       node-mocks-http:
         specifier: ^1.17.2
         version: 1.17.2(@types/express@5.0.6)(@types/node@24.12.2)
@@ -460,10 +460,10 @@ importers:
     dependencies:
       '@koa/bodyparser':
         specifier: ^6.0.0
-        version: 6.1.0(koa@3.1.2)
+        version: 6.1.0(koa@3.2.0)
       '@koa/router':
         specifier: 15.5.0
-        version: 15.5.0(koa@3.1.2)
+        version: 15.5.0(koa@3.2.0)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.1
@@ -496,7 +496,7 @@ importers:
         version: 14.3.1
       koa:
         specifier: ^3.0.1
-        version: 3.1.2
+        version: 3.2.0
       koa-compose:
         specifier: ^4.1.0
         version: 4.1.0
@@ -505,7 +505,7 @@ importers:
         version: 8.0.0(datadog-lambda-js@12.137.0)(hot-shots@14.3.1)
       seek-koala:
         specifier: ^8.0.0
-        version: 8.0.0(hot-shots@14.3.1)(koa@3.1.2)
+        version: 8.0.0(hot-shots@14.3.1)(koa@3.2.0)
       skuba-dive:
         specifier: workspace:*
         version: link:../../packages/skuba-dive
@@ -5266,10 +5266,6 @@ packages:
   koa-compose@4.1.0:
     resolution: {integrity: sha512-8ODW8TrDuMYvXRwra/Kh7/rJo9BtOfPc6qO8eAfC80CnCvSjSl0bkRM24X6/XBBEyj0v1nRUQ1LyOy3dbqOWXw==}
 
-  koa@3.1.2:
-    resolution: {integrity: sha512-2LOQnFKu3m0VxpE+5sb5+BRTSKrXmNxGgxVRiKwD9s5KQB1zID/FRXhtzeV7RT1L2GVpdEEAfVuclFOMGl1ikA==}
-    engines: {node: '>= 18'}
-
   koa@3.2.0:
     resolution: {integrity: sha512-TrM4/tnNY7uJ1aW55sIIa+dqBvc4V14WRIAlGcWat9wV5pRS9Wr5Zk2ZTjQP1jtfIHDoHiSbPuV08P0fUZo2pg==}
     engines: {node: '>= 18'}
@@ -9142,19 +9138,19 @@ snapshots:
       '@jsonjoy.com/codegen': 17.67.0(tslib@2.8.1)
       tslib: 2.8.1
 
-  '@koa/bodyparser@6.1.0(koa@3.1.2)':
+  '@koa/bodyparser@6.1.0(koa@3.2.0)':
     dependencies:
       '@types/co-body': 6.1.3
       co-body: 6.2.0
-      koa: 3.1.2
+      koa: 3.2.0
       lodash.merge: 4.6.2
       type-is: 2.0.1
 
-  '@koa/router@15.5.0(koa@3.1.2)':
+  '@koa/router@15.5.0(koa@3.2.0)':
     dependencies:
       debug: 4.4.3
       http-errors: 2.0.1
-      koa: 3.1.2
+      koa: 3.2.0
       koa-compose: 4.1.0
       path-to-regexp: 8.4.2
     transitivePeerDependencies:
@@ -13052,27 +13048,6 @@ snapshots:
 
   koa-compose@4.1.0: {}
 
-  koa@3.1.2:
-    dependencies:
-      accepts: 1.3.8
-      content-disposition: 1.0.1
-      content-type: 1.0.5
-      cookies: 0.9.1
-      delegates: 1.0.0
-      destroy: 1.2.0
-      encodeurl: 2.0.0
-      escape-html: 1.0.3
-      fresh: 0.5.2
-      http-assert: 1.5.0
-      http-errors: 2.0.1
-      koa-compose: 4.1.0
-      mime-types: 3.0.2
-      on-finished: 2.4.1
-      parseurl: 1.3.3
-      statuses: 2.0.2
-      type-is: 2.0.1
-      vary: 1.1.2
-
   koa@3.2.0:
     dependencies:
       accepts: 1.3.8
@@ -14680,10 +14655,10 @@ snapshots:
       datadog-lambda-js: 12.137.0
       hot-shots: 14.3.1
 
-  seek-koala@8.0.0(hot-shots@14.3.1)(koa@3.1.2):
+  seek-koala@8.0.0(hot-shots@14.3.1)(koa@3.2.0):
     dependencies:
       http-errors: 1.8.1
-      koa: 3.1.2
+      koa: 3.2.0
     optionalDependencies:
       hot-shots: 14.3.1
 

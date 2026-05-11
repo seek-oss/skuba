@@ -1,5 +1,162 @@
 # skuba
 
+## 16.0.0
+
+### Major Changes
+
+- **build, lint, test:** Migrate to ESM ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+  As part of our [migration to ESM](https://seek-oss.github.io/skuba/docs/deep-dives/esm.html), skuba's source code is now pure ESM. Its packages are still published as dual ESM/CJS at this time.
+
+  skuba will attempt to automatically transition your project to ESM and migrate your tests from Jest to Vitest. It will scaffold a new `vitest.config.ts`, but existing Jest customisations and Jest-specific libraries like `jest-dynalite` will require manual adjustment. Please ensure your project is using `skuba@15.3.0` before proceeding with this migration.
+
+  For package publishers, `skuba build-package` should handle publishing dual ESM/CJS packages automatically. **You should release this as a breaking change for your consumers.** Some build tools may behave differently when they detect `"type": "module"` in your package.json. Test your packages thoroughly after the migration to confirm everything works as expected.
+
+  Example changelog entry:
+
+  ```markdown
+  ---
+  '@seek/package': major
+  ---
+
+  This package is now authored as an ESM package. It is still published as a dual CJS/ESM package
+  ```
+
+  View the [migration guide](https://seek-oss.github.io/skuba/docs/cli/migrate#skuba-migrate-esm) for more details.
+
+- **test:** Migrate to Vitest ([#2274](https://github.com/seek-oss/skuba/pull/2274))
+
+  `skuba test` now calls [Vitest](https://vitest.dev/) as the test runner instead of Jest.
+
+  Vitest does not provide globals for `describe`, `expect`, `it`, etc. You need to import them from `vitest`:
+
+  ```typescript
+  import { describe, expect, it } from 'vitest';
+  ```
+
+  Vitest brings environment-aware behaviour to `skuba test`: it defaults to watch mode in an interactive shell on your local machine, and non-watch mode in CI. You can explicitly set the mode by passing the `--watch` or `--no-watch` flags to `skuba test` or using the `skuba test watch` and `skuba test run` subcommands:
+
+  ```shell
+  skuba test --watch
+  skuba test watch
+  ```
+
+  ```shell
+  skuba test --no-watch
+  skuba test run
+  ```
+
+  `skuba test` will forward any additional arguments to Vitest, so you can also use Vitest's CLI flags:
+
+  ```shell
+  skuba test --ui
+  ```
+
+  This opens up the Vitest UI in your browser, which provides a visual interface for running and debugging tests.
+
+### Minor Changes
+
+- **start:** Support named `app` export ([#2324](https://github.com/seek-oss/skuba/pull/2324))
+
+  `skuba start` now resolves a named `app` export as a request listener, in addition to the existing default export.
+
+  ```ts
+  // works with both `export default` and `export const app = ...`
+  export const app = new Koa().use(/* ... */);
+  ```
+
+- **migrate:** Add ESM migration ([#2274](https://github.com/seek-oss/skuba/pull/2274))
+
+  This migration attempts to automatically migrate your project from CommonJS to ESM.
+
+  If you have `skuba` installed as a direct dependency, this migration runs automatically as part of `skuba format` and `skuba lint`.
+
+  If your project does not use `skuba` directly, you can run our migration to ESM using `npx` or `pnpm dlx`:
+
+  ```shell
+  pnpm dlx skuba migrate esm
+  npx skuba migrate esm
+  ```
+
+  View the [migration guide](https://seek-oss.github.io/skuba/docs/cli/migrate#skuba-migrate-esm) for more details.
+
+- **lint:** Replace hoisted Jest dependencies with Vitest ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+- **lint:** Migrate Dockerfiles from `pnpm install --prod` to `pnpm prune --prod` ([#2326](https://github.com/seek-oss/skuba/pull/2326))
+
+  A new [patch](https://seek-oss.github.io/skuba/docs/cli/lint.html#patches) will replace any `RUN pnpm install ... --prod` (including variants with `CI=true`) with `RUN pnpm prune --prod`, which is a more explicit and reliable way to remove dev dependencies from the production image. You may see a reduction in container vulnerabilities as a result of this change.
+
+- **init:** Support local templates ([#2333](https://github.com/seek-oss/skuba/pull/2333))
+
+  `skuba init` can now initialise a project from a local directory path.
+
+  ```shell
+  ./skuba-templates/template-a # Relative to working directory
+  /Users/my-username/code/skuba-templates/template-a # Absolute path
+  ```
+
+  This is available for programmatic usage by prepending `local:` to the path in `templateName`.
+
+- **lint:** Remove `pnpm-plugin-skuba` from package.json ([#2351](https://github.com/seek-oss/skuba/pull/2351))
+
+- **start:** Fix live reloading ([#2139](https://github.com/seek-oss/skuba/pull/2139))
+
+- **deps:** tsdown ~0.22.0 ([#2368](https://github.com/seek-oss/skuba/pull/2368))
+
+  This release includes breaking changes. See the tsdown [release notes](https://github.com/rolldown/tsdown/releases/tag/v0.22.0) for more information.
+
+- **deps:** rolldown ~1.0.0 ([#2338](https://github.com/seek-oss/skuba/pull/2338))
+
+  This release includes breaking changes. See the rolldown [release notes](https://github.com/rolldown/rolldown/releases/tag/v1.0.0) for more information.
+
+- **test:** Remove GitHub annotations ([#2124](https://github.com/seek-oss/skuba/pull/2124))
+
+  Our first Vitest release does not support inline [GitHub annotations](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-annotations) in CI. This feature may be restored in future.
+
+- **migrate:** Add file extensions migration ([#2362](https://github.com/seek-oss/skuba/pull/2362))
+
+  This migration attempts to add file extensions to your imports to improve compatibility with ESM.
+
+  If you have `skuba` installed as a direct dependency, this migration runs automatically as part of `skuba format` and `skuba lint`.
+
+  This migration is also run as part of `skuba migrate esm`, however, you may choose to run it separately beforehand to minimise the number of changes that need to be made to your source files in the ESM migration.
+
+  ```shell
+  pnpm dlx skuba migrate file-extensions
+  npx skuba migrate file-extensions
+  ```
+
+  View the [migration documentation](https://seek-oss.github.io/skuba/docs/cli/migrate#skuba-migrate-file-extensions) for more details.
+
+### Patch Changes
+
+- **template/\*:** Migrate to ESM ([#2355](https://github.com/seek-oss/skuba/pull/2355))
+
+- **template/\*-rest-api:** Use `pnpm prune --prod` to remove dev dependencies in Dockerfiles ([#2326](https://github.com/seek-oss/skuba/pull/2326))
+
+  Our API template Dockerfiles previously ran `CI=true pnpm install --offline --prod` after building to strip dev dependencies from `node_modules`. This has been replaced with `pnpm prune --prod`, which is a more explicit and reliable way to remove dev dependencies from the production image. You may see a reduction in container vulnerabilities as a result of this change.
+
+  ```diff
+    RUN pnpm install --offline
+    RUN pnpm build
+  - RUN CI=true pnpm install --offline --prod
+  + RUN pnpm prune --prod
+  ```
+
+- **template/\*-npm-package:** Resolve `#src` alias to `./src` directory during package builds ([#2322](https://github.com/seek-oss/skuba/pull/2322))
+
+- **deps:** esbuild ~0.28.0 ([#2320](https://github.com/seek-oss/skuba/pull/2320))
+
+- **deps:** @inquirer/prompts ^8.0.0 ([#2303](https://github.com/seek-oss/skuba/pull/2303))
+
+- **deps:** read-package-up ^12.0.0 ([#2302](https://github.com/seek-oss/skuba/pull/2302))
+
+- **deps:** @ast-grep/napi ^0.42.0 ([#2285](https://github.com/seek-oss/skuba/pull/2285))
+
+- **lint:** Remove `semver@5.7.2` from `pnpm-workspace.yaml` `trustPolicyExclude` list ([#2300](https://github.com/seek-oss/skuba/pull/2300))
+
+  This legacy package version is no longer a transitive dependency of skuba.
+
 ## 15.3.0
 
 ### Minor Changes
