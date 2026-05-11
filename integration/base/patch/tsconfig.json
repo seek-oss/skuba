@@ -6,7 +6,8 @@
     "module": "node20",
     "moduleResolution": "node16",
     "outDir": "lib",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
   "extends": "tsconfig-seek"
 }
