@@ -345,9 +345,6 @@ importers:
       eslint:
         specifier: ^10.0.0
         version: 10.3.0(jiti@2.6.1)
-      tsdown:
-        specifier: ^0.22.0
-        version: 0.22.0(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(tsx@4.21.0)(typescript@5.9.3)(unrun@0.2.37)
       tsx:
         specifier: ^4.16.2
         version: 4.21.0
