@@ -1,5 +1,11 @@
 # skuba
 
+## 16.0.2
+
+### Patch Changes
+
+- **migrate:** fix `aws-cdk-lib/aws-lambda-nodejs` import statement ([#2384](https://github.com/seek-oss/skuba/pull/2384))
+
 ## 16.0.1
 
 ### Patch Changes
