@@ -40,7 +40,7 @@
   },
   "publishConfig": {
     "exports": {
-      ".": "./src/index.mjs",
+      ".": "./src/changelog.mjs",
       "./inject": "./src/inject.mjs",
       "./package.json": "./package.json"
     }
