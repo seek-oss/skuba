@@ -10,4 +10,5 @@ pnpm --parallel \
   --filter @skuba-lib/api \
   --filter eslint-config-skuba \
   --filter eslint-plugin-skuba \
+  --filter changesets-changelog \
   build

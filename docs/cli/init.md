@@ -63,6 +63,8 @@ You're now presented with a selection of templates:
   oss-npm-package
   private-npm-package
   github →
+  seek →
+  local →
 ```
 
 Use the `↑ ↓` arrow keys, then `⏎` enter your selection.

@@ -202,12 +202,19 @@ export const upgradeInfraPackages = async (
 
   const packageManager = await detectPackageManager();
 
-  await exec(
-    packageManager.command,
-    'install',
-    '--frozen-lockfile=false',
-    '--prefer-offline',
-  );
+  try {
+    await exec(
+      packageManager.command,
+      'install',
+      '--frozen-lockfile=false',
+      '--prefer-offline',
+    );
+  } catch (error) {
+    log.warn(
+      'Failed to install dependencies after upgrading infrastructure packages',
+    );
+    log.subtle(inspect(error));
+  }
 
   return {
     result: 'apply',

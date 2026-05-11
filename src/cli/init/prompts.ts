@@ -120,6 +120,15 @@ export const getTemplateName = async () =>
     choices: TEMPLATE_NAMES_WITH_BYO.map((name) => ({ name, value: name })),
   });
 
+export const getLocalTemplatePath = async () =>
+  input({
+    message: 'Path to local template',
+    validate: async (value: string) => {
+      const exists = await pathExists(value);
+      return exists || 'Path does not exist';
+    },
+  });
+
 export const getPrivateTemplateName = async () =>
   input({
     message: 'Private SEEK template name',

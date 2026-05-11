@@ -68,7 +68,33 @@ Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
+
+Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
+
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
+
+Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
+
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace
+
+Patch skipped: Replace TypeScript export = with export default - no export = assignments found to migrate
+
+Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-workspace.yaml files to patch
+
+Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
+
+Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
+
+Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
+
+Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch skipped: Add file extensions to imports - no imports found that could be migrated
+
+Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Unbundle tsdown.config files to avoid shipping translations and CSS in packages that use tsdown for non-translation purposes - no tsdown.config files found upgrade-skuba
 
@@ -191,7 +217,33 @@ Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
+
+Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
+
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
+
+Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
+
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace
+
+Patch skipped: Replace TypeScript export = with export default - no export = assignments found to migrate
+
+Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-workspace.yaml files to patch
+
+Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
+
+Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
+
+Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
+
+Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch skipped: Add file extensions to imports - no imports found that could be migrated
+
+Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Unbundle tsdown.config files to avoid shipping translations and CSS in packages that use tsdown for non-translation purposes - no tsdown.config files found upgrade-skuba
 
@@ -307,7 +359,33 @@ Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
+
+Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
+
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
+
+Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
+
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace
+
+Patch skipped: Replace TypeScript export = with export default - no export = assignments found to migrate
+
+Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-workspace.yaml files to patch
+
+Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
+
+Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
+
+Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
+
+Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch skipped: Add file extensions to imports - no imports found that could be migrated
+
+Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Unbundle tsdown.config files to avoid shipping translations and CSS in packages that use tsdown for non-translation purposes - no tsdown.config files found upgrade-skuba
 
@@ -395,7 +473,33 @@ Patch skipped: Remove pnpm-plugin-skuba - pnpm-workspace.yaml not found upgrade-
 
 Patch skipped: Migrate tsdown config to 0.21 - no tsdown.config files found upgrade-skuba
 
-Patch skipped: Replace pnpm install --prod with pnpm prune --prod in Dockerfiles - no dockerfiles found upgrade-skuba
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
+Patch skipped: Add module type to package.json to support ESM - type module already present in package.json
+
+Patch skipped: Migrate vocab.config.js files to cjs - no vocab.config.js files found
+
+Patch skipped: Convert module.exports to export default (CommonJS to ESM) - no config or src files with module.exports, require, or JSON default imports to migrate
+
+Patch skipped: Allow default exports in config files (import-x/no-default-export off) - no eslint.config.* file found
+
+Patch skipped: Replace __dirname and __filename with import.meta equivalents - no global variables found to replace
+
+Patch skipped: Replace TypeScript export = with export default - no export = assignments found to migrate
+
+Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-workspace.yaml files to patch
+
+Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
+
+Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
+
+Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
+
+Patch skipped: Migrate from Jest to Vitest - skipping in integration test environment
+
+Patch skipped: Add file extensions to imports - no imports found that could be migrated
+
+Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Unbundle tsdown.config files to avoid shipping translations and CSS in packages that use tsdown for non-translation purposes - no tsdown.config files found upgrade-skuba
 

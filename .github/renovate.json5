@@ -9,6 +9,7 @@
     'preview:buildkite',
     'preview:dockerCompose',
     'docker:disableMajor',
+    'helpers:pinGitHubActionDigestsToSemver',
   ],
   lockFileMaintenance: {
     enabled: true,

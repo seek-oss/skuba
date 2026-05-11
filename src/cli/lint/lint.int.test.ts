@@ -26,6 +26,14 @@ vi.mock('@skuba-lib/api/buildkite', async () => ({
   annotate: vi.fn(),
 }));
 
+beforeAll(() => {
+  process.env.SKUBA_INT_TEST = 'true';
+});
+
+afterAll(() => {
+  delete process.env.SKUBA_INT_TEST;
+});
+
 const buildkiteAnnotate = vi.mocked(Buildkite.annotate).mockResolvedValue();
 
 const stdoutMock = vi.fn();

@@ -29,8 +29,8 @@ describe('patchDockerImages', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
     vi.mocked(fs.promises.readFile)
-      .mockResolvedValueOnce('beep' as never)
-      .mockResolvedValueOnce('boop' as never);
+      .mockResolvedValueOnce('beep')
+      .mockResolvedValueOnce('boop');
 
     await expect(
       tryPatchDockerImages({
@@ -47,11 +47,9 @@ describe('patchDockerImages', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
     vi.mocked(fs.promises.readFile)
+      .mockResolvedValueOnce('FROM public.ecr.aws/docker/library/node:18\n')
       .mockResolvedValueOnce(
-        'FROM public.ecr.aws/docker/library/node:18\n' as never,
-      )
-      .mockResolvedValueOnce(
-        '    image: public.ecr.aws/docker/library/node:14\n' as never,
+        '    image: public.ecr.aws/docker/library/node:14\n',
       );
 
     await expect(
@@ -69,8 +67,8 @@ describe('patchDockerImages', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
-        'FROM --platform=amd64 public.ecr.aws/docker/library/node:18\n') as never,
+      'FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
+        'FROM --platform=amd64 public.ecr.aws/docker/library/node:18\n',
     );
 
     await expect(
@@ -88,7 +86,7 @@ describe('patchDockerImages', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      'FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/node:18\n' as never,
+      'FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/node:18\n',
     );
 
     await expect(
@@ -106,8 +104,8 @@ describe('patchDockerImages', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce(['docker-compose.yml']);
     vi.mocked(fs.promises.readFile)
-      .mockResolvedValueOnce('FROM --platform=arm64 node:18\n' as never)
-      .mockResolvedValueOnce('    image: node:14\n' as never);
+      .mockResolvedValueOnce('FROM --platform=arm64 node:18\n')
+      .mockResolvedValueOnce('    image: node:14\n');
 
     await expect(
       tryPatchDockerImages({
@@ -134,8 +132,8 @@ describe('patchDockerImages', () => {
       .mockResolvedValueOnce(['Dockerfile'])
       .mockResolvedValueOnce([]);
     vi.mocked(fs.promises.readFile).mockResolvedValueOnce(
-      ('FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
-        'FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n') as never,
+      'FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n' +
+        'FROM --platform=arm64 public.ecr.aws/docker/library/node:18\n',
     );
 
     await expect(
@@ -160,17 +158,17 @@ describe('patchDockerImages', () => {
       .mockResolvedValueOnce(['docker-compose.yml']);
     vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
-        ('# syntax=docker/dockerfile:1.10\n' +
+        '# syntax=docker/dockerfile:1.10\n' +
           '\n' +
           'FROM --platform=arm64 node:20-alpine AS dev-deps\n' +
           'FROM --otherflag=bar --platform=arm64 node:20-alpine\n' +
           'FROM --otherflag=boo --platform=arm64 --anotherflag=coo node:20-alpine\n' +
           'FROM gcr.io/distroless/nodejs20-debian12 AS runtime\n' +
           'FROM --newflag node:latest\n' +
-          'FROM node:12:@940049cabf21bf4cd20b86641c800c2b9995e4fb85fa4698b1781239fc0f6853') as never,
+          'FROM node:12:@940049cabf21bf4cd20b86641c800c2b9995e4fb85fa4698b1781239fc0f6853',
       )
       .mockResolvedValueOnce(
-        ('services:\n' +
+        'services:\n' +
           '  app:\n' +
           '    image: node:20-alpine\n' +
           '    init: true\n' +
@@ -181,7 +179,7 @@ describe('patchDockerImages', () => {
           '      # Mount cached dependencies.\n' +
           '      - /workdir/node_modules\n' +
           '  other:\n' +
-          '    image: python:3.9\n') as never,
+          '    image: python:3.9\n',
       );
 
     await expect(
@@ -228,17 +226,17 @@ describe('patchDockerImages', () => {
       .mockResolvedValueOnce(['docker-compose.yml']);
     vi.mocked(fs.promises.readFile)
       .mockResolvedValueOnce(
-        ('# syntax=docker/dockerfile:1.10\n' +
+        '# syntax=docker/dockerfile:1.10\n' +
           '\n' +
           'FROM --platform=amd64 node:20-alpine AS dev-deps\n' +
           'FROM --otherflag=bar --platform=arm64 node:20-alpine\n' +
           'FROM --otherflag=boo --platform=arm64 --anotherflag=coo node:20-alpine\n' +
           'FROM gcr.io/distroless/nodejs20-debian12 AS runtime\n' +
           'FROM --newflag node:latest\n' +
-          'FROM node:12:@940049cabf21bf4cd20b86641c800c2b9995e4fb85fa4698b1781239fc0f6853') as never,
+          'FROM node:12:@940049cabf21bf4cd20b86641c800c2b9995e4fb85fa4698b1781239fc0f6853',
       )
       .mockResolvedValueOnce(
-        ('services:\n' +
+        'services:\n' +
           '  app:\n' +
           '    image: node:20-alpine\n' +
           '    init: true\n' +
@@ -249,7 +247,7 @@ describe('patchDockerImages', () => {
           '      # Mount cached dependencies.\n' +
           '      - /workdir/node_modules\n' +
           '  other:\n' +
-          '    image: python:3.9\n') as never,
+          '    image: python:3.9\n',
       );
 
     await expect(

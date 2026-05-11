@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import type { PackageJson } from 'read-package-up';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { log } from '../../../../utils/logging.js';
@@ -36,7 +35,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -69,7 +68,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -107,7 +106,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -150,7 +149,7 @@ describe('upgradeSkuba in format mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -199,7 +198,7 @@ describe('upgradeSkuba in lint mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -223,7 +222,7 @@ describe('upgradeSkuba in lint mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 
@@ -259,7 +258,7 @@ describe('upgradeSkuba in lint mode', () => {
         name: 'some-api',
         readme: '',
         version: '1.0.0',
-      } as PackageJson,
+      },
       path: '/package.json',
     });
 

@@ -4,7 +4,7 @@ agents:
 configs:
   plugins:
     - &docker-ecr-cache
-      seek-oss/docker-ecr-cache#v2.2.1: &docker-ecr-cache-defaults
+      seek-oss/docker-ecr-cache#v3.0.0: &docker-ecr-cache-defaults
         cache-on:
           - package.json#.packageManager
           - pnpm-lock.yaml
@@ -30,7 +30,7 @@ steps:
       GET_NPM_TOKEN: please
     key: warm-prod
     plugins:
-      - seek-oss/docker-ecr-cache#v2.2.1:
+      - seek-oss/docker-ecr-cache#v3.0.0:
           <<: *docker-ecr-cache-defaults
           skip-pull-from-cache: true
 

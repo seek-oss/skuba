@@ -1,6 +1,6 @@
 {
   "name": "@skuba-lib/vitest-koa-mocks",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "description": "Vitest mocks for Koa",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/vitest-koa-mocks#readme",
@@ -41,10 +41,13 @@
   "dependencies": {
     "node-mocks-http": "^1.17.2"
   },
+  "devDependencies": {
+    "@types/koa": "^3.0.0",
+    "@types/node": "^24.1.0"
+  },
   "peerDependencies": {
-    "@types/koa": "^3.0.1",
     "koa": "^3.1.1",
-    "vitest": "^4.0.14"
+    "vitest": "^4.1.4"
   },
   "engines": {
     "node": ">=22.14.0"
@@ -62,6 +65,6 @@
     "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "15.3.0"
+    "version": "16.0.0"
   }
 }

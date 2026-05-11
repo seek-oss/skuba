@@ -35,7 +35,6 @@ export const copyAssets = async (
 
   const allFiles = await crawlDirectory(resolvedSrcDir);
   const filesByPattern = buildPatternToFilepathMap(manifest.value, allFiles, {
-    cwd: resolvedSrcDir,
     dot: true,
   });
   const matchedFiles = Array.from(
