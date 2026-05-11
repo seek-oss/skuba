@@ -685,6 +685,6 @@ Attempts to add file extensions to your imports to improve compatibility with ES
 This migration is also run as part of `skuba migrate esm`, however, you may choose to run it separately beforehand to minimise the number of changes that need to be made to your source files in the ESM migration.
 
 ```shell
-pnpm dlx skuba migrate esm
+pnpm dlx skuba migrate file-extensions
 skuba migrate file-extensions
 ```
