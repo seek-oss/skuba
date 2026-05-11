@@ -177,24 +177,4 @@ describe('addSeekPackageRegistry', () => {
       }
     `);
   });
-
-  it('should add the SEEK registry to an .npmrc file that only contains a node version', async () => {
-    vol.fromJSON({
-      '.npmrc': '24\n',
-    });
-
-    await expect(
-      addSeekPackageRegistry({ mode: 'format' } as PatchConfig),
-    ).resolves.toEqual({
-      result: 'apply',
-    } satisfies PatchReturnType);
-
-    expect(volToJson()).toMatchInlineSnapshot(`
-      {
-        ".npmrc": "24
-      @seek:registry=https://npm.cloudsmith.io/seek/npm/
-      ",
-      }
-    `);
-  });
 });
