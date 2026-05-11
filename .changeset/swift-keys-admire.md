@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-fix import statement
+migrate: fix `aws-cdk-lib/aws-lambda-nodejs` import statement
