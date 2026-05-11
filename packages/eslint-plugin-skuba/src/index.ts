@@ -29,6 +29,3 @@ skuba.configs = {
 } satisfies TSESLint.FlatConfig.Plugin['configs'];
 
 export default skuba;
-
-/* istanbul ignore next: temp test please remove */
-void null;

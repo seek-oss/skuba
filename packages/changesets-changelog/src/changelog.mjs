@@ -131,6 +131,3 @@ const changelogFunctions = (() => {
 })();
 
 export default changelogFunctions;
-
-/* istanbul ignore next: temp test please remove */
-void null;

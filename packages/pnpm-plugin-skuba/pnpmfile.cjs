@@ -91,6 +91,3 @@ module.exports = {
     },
   },
 };
-
-/* istanbul ignore next: temp test please remove */
-void null;
