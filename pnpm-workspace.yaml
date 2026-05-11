@@ -29,6 +29,8 @@ minimumReleaseAgeExclude:
   - skuba # Managed by skuba
   - skuba-dive # Managed by skuba
   - tsconfig-seek # Managed by skuba
+  # Renovate security update: @opentelemetry/sdk-node@0.217.0
+  - "@opentelemetry/sdk-node@0.217.0"
 
 overrides:
   skuba: workspace:*
