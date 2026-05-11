@@ -1,4 +1,4 @@
-import findUp from 'find-up';
+import { findUp } from 'find-up';
 import isInstalledGlobally from 'is-installed-globally';
 import * as z from 'zod/v4';
 
