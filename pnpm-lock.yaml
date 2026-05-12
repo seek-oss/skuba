@@ -76,8 +76,8 @@ importers:
         specifier: workspace:*
         version: link:packages/eslint-config-skuba
       execa:
-        specifier: ^5.0.0
-        version: 5.1.1
+        specifier: ^9.0.0
+        version: 9.6.1
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.3
