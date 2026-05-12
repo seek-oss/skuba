@@ -161,18 +161,14 @@ export const addFileExtensions = async ({
 
       const parentPath = pathToFileURL(file).href;
       const resolvedPaths = new Map<string, string | null>();
-      const edits: Array<Edit | null> = await Promise.all(
-        nodesToCheck.map(async (node) => {
-          const text = node.text();
-          const resolvedPath = resolvedPaths.get(text);
-          if (resolvedPath === null) {
-            return null;
-          }
 
-          if (resolvedPath) {
-            return node.replace(resolvedPath);
-          }
+      // Extract unique import texts and resolve them all
+      const uniqueImportTexts = Array.from(
+        new Set(nodesToCheck.map((node) => node.text())),
+      );
 
+      await Promise.all(
+        uniqueImportTexts.map(async (text) => {
           let resolved;
 
           try {
@@ -184,18 +180,18 @@ export const addFileExtensions = async ({
           } catch {
             // unknown import - give up
             resolvedPaths.set(text, null);
-            return null;
+            return;
           }
 
           if (resolved.endsWith('.js')) {
             // Likely a package module
-            return null;
+            return;
           }
 
           // Skip non-file URLs (e.g., node:, data:, http:)
           if (!resolved.startsWith('file:')) {
             resolvedPaths.set(text, null);
-            return null;
+            return;
           }
 
           const pathToResolved = fileURLToPath(resolved);
@@ -210,14 +206,29 @@ export const addFileExtensions = async ({
               await fs.promises.access(filePath);
               const fixedImport = `${text}${extension.replace(/(?:\.d)?\.ts$/, '.js')}`;
               resolvedPaths.set(text, fixedImport);
-              return node.replace(fixedImport);
+              return;
             } catch {}
           }
 
           resolvedPaths.set(text, null);
-          return null;
         }),
       );
+
+      // Now apply edits synchronously using the pre-resolved paths
+      const edits: Array<Edit | null> = nodesToCheck.map((node) => {
+        const text = node.text();
+        const resolvedPath = resolvedPaths.get(text);
+
+        if (resolvedPath === null) {
+          return null;
+        }
+
+        if (resolvedPath) {
+          return node.replace(resolvedPath);
+        }
+
+        return null;
+      });
 
       return {
         file,

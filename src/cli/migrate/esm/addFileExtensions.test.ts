@@ -63,7 +63,7 @@ describe('addFileExtensions', () => {
     } satisfies PatchReturnType);
   });
 
-  it.only('should add file extensions to imports', async () => {
+  it('should add file extensions to imports', async () => {
     vol.fromJSON({
       'index.ts': `
 import './deep';
