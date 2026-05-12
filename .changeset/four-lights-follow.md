@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-migrate: Avoid patching instrumentation of pre-migrated Dockerfiles in ESM
+migrate: Avoid re-patching already instrumented Dockerfiles in ESM
