@@ -5,7 +5,7 @@ import util from 'util';
 
 import concurrently from 'concurrently';
 import execa, { type ExecaChildProcess } from 'execa';
-import npmRunPath from 'npm-run-path';
+import { npmRunPath } from 'npm-run-path';
 import npmWhich from 'npm-which';
 
 import { concurrentlyErrorsSchema, isErrorWithCode } from './error.js';
