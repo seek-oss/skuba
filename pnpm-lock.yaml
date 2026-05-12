@@ -124,8 +124,8 @@ importers:
         specifier: ^19.1.1
         version: 19.1.1
       npm-run-path:
-        specifier: ^4.0.1
-        version: 4.0.1
+        specifier: ^6.0.0
+        version: 6.0.0
       npm-which:
         specifier: ^3.0.1
         version: 3.0.1
