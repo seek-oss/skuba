@@ -90,6 +90,13 @@ export const patchInstrumentation: PatchFunction = async ({
         return null;
       }
 
+      if (
+        content.includes('dd-trace/initialize.mjs') ||
+        content.includes('@opentelemetry/instrumentation/hook.mjs')
+      ) {
+        return null;
+      }
+
       const cmd = /^CMD\s+(.+)$/m.exec(content)?.[1];
 
       if (!cmd) {
