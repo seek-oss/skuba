@@ -1,5 +1,17 @@
 # skuba
 
+## 16.0.3
+
+### Patch Changes
+
+- **migrate:** Fix `yarn` package install scripts in ESM migration ([#2395](https://github.com/seek-oss/skuba/pull/2395))
+
+- **deps:** isomorphic-git 1.37.6 ([#2395](https://github.com/seek-oss/skuba/pull/2395))
+
+- **deps:** get-port ^7.0.0 ([#2391](https://github.com/seek-oss/skuba/pull/2391))
+
+- **deps:** find-up ^8.0.0 ([#2390](https://github.com/seek-oss/skuba/pull/2390))
+
 ## 16.0.2
 
 ### Patch Changes

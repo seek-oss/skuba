@@ -1,5 +1,11 @@
 # @skuba-lib/api
 
+## 2.1.1
+
+### Patch Changes
+
+- **deps:** isomorphic-git 1.37.6 ([#2395](https://github.com/seek-oss/skuba/pull/2395))
+
 ## 2.1.0
 
 ### Minor Changes
