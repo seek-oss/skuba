@@ -214,7 +214,6 @@ export const addFileExtensions = async ({
         }),
       );
 
-      // Now apply edits synchronously using the pre-resolved paths
       const edits: Array<Edit | null> = nodesToCheck.map((node) => {
         const text = node.text();
         const resolvedPath = resolvedPaths.get(text);
