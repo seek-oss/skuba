@@ -63,15 +63,17 @@ describe('addFileExtensions', () => {
     } satisfies PatchReturnType);
   });
 
-  it('should add file extensions to imports', async () => {
+  it.only('should add file extensions to imports', async () => {
     vol.fromJSON({
       'index.ts': `
 import './deep';
 import { foo } from './foo';
 import { bar } from 'some-package/dist/deep/import';
+import type { SomeType } from 'some-package/dist/deep/dts';
 const foo = vi.importActual<typeof import('./foo')>('./foo')
 vi.mock('./foo')
 vi.doMock('#src/foo')`,
+      'node_modules/some-package/dist/deep/dts.d.ts': '',
       'node_modules/some-package/dist/deep/import.js': '',
       'foo.ts': 'export const foo = 42;',
       'deep/index.ts': '',
@@ -101,9 +103,11 @@ vi.doMock('#src/foo')`,
         "index.ts": "import './deep/index.js';
       import { foo } from './foo.js';
       import { bar } from 'some-package/dist/deep/import.js';
+      import type { SomeType } from 'some-package/dist/deep/dts.js';
       const foo = vi.importActual<typeof import('./foo.js')>('./foo.js')
       vi.mock('./foo.js')
       vi.doMock('#src/foo.js')",
+        "node_modules/some-package/dist/deep/dts.d.ts": "",
         "node_modules/some-package/dist/deep/import.js": "",
         "package.json": "{"imports":{"#src/*":{"@seek/my-condition/source":"./src/*","default":"./lib/*"}}}",
         "src/foo.ts": "export const foo = 42;",

@@ -19,6 +19,8 @@ const nodeModuleExtensionCheckOrder = [
   '/index.js',
   '.mjs',
   '/index.mjs',
+  '.d.ts',
+  '/index.d.ts',
 ];
 const localModuleExtensionCheckOrder = [
   '.ts',
@@ -115,21 +117,27 @@ export const addFileExtensions = async ({
             {
               all: [
                 { regex: '^@[^/]+/[^/]+/.+$' },
-                { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
+                {
+                  not: { regex: '\\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' },
+                },
               ],
             },
             // #src/ import aliases
             {
               all: [
                 { regex: '^#src/' },
-                { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
+                {
+                  not: { regex: '\\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' },
+                },
               ],
             },
             // unscoped packages with 1 or more path segments
             {
               all: [
                 { regex: '^[^@#][^/]*/.+$' },
-                { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
+                {
+                  not: { regex: '\\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' },
+                },
                 // exclude node: built-in modules
                 { not: { regex: '^node:' } },
               ],
@@ -138,7 +146,9 @@ export const addFileExtensions = async ({
             {
               all: [
                 { regex: '^./' },
-                { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
+                {
+                  not: { regex: '\\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' },
+                },
               ],
             },
           ],
@@ -155,7 +165,6 @@ export const addFileExtensions = async ({
         nodesToCheck.map(async (node) => {
           const text = node.text();
           const resolvedPath = resolvedPaths.get(text);
-
           if (resolvedPath === null) {
             return null;
           }
@@ -199,7 +208,7 @@ export const addFileExtensions = async ({
             const filePath = `${pathToResolved}${extension}`;
             try {
               await fs.promises.access(filePath);
-              const fixedImport = `${text}${extension.endsWith('.ts') ? extension.replace('.ts', '.js') : extension}`;
+              const fixedImport = `${text}${extension.replace(/(?:\.d)?\.ts$/, '.js')}`;
               resolvedPaths.set(text, fixedImport);
               return node.replace(fixedImport);
             } catch {}
