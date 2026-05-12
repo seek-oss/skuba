@@ -676,7 +676,7 @@ const scaffoldTestConfig = async ({
     }${
       !isProject && (configNumber ?? 0) > 1
         ? `
-    // TODO: Multiple configurations were detected, consider consolidating the configs and using Vitest's projects feature eg.
+    // TODO: Multiple configurations were detected, consider consolidating the configs into a singular configuration and using Vitest's projects feature eg.
     // projects: [{ extends: true, test: { name: 'unit' } }, { extends: true, test: { name: 'integration', fileParallelism: false } }]`
         : ''
     }${rootDir ? `\n    root: '${rootDir}',${rootDir.includes('..') ? ' // TODO: Vitest root paths work differently to Jest, you may need to remove or adjust this in order for your tests to run' : ''}` : ''}${
