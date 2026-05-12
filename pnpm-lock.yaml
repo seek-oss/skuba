@@ -106,7 +106,7 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       isomorphic-git:
-        specifier: ^1.11.1
+        specifier: ^1.37.6
         version: 1.37.6
       latest-version:
         specifier: ^9.0.0
@@ -281,7 +281,7 @@ importers:
         specifier: ^7.0.0
         version: 7.0.5
       isomorphic-git:
-        specifier: ^1.11.1
+        specifier: ^1.37.6
         version: 1.37.6
       zod:
         specifier: ^4.3.5
