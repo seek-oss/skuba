@@ -162,7 +162,6 @@ export const addFileExtensions = async ({
       const parentPath = pathToFileURL(file).href;
       const resolvedPaths = new Map<string, string | null>();
 
-      // Extract unique import texts and resolve them all
       const uniqueImportTexts = Array.from(
         new Set(nodesToCheck.map((node) => node.text())),
       );
@@ -184,7 +183,8 @@ export const addFileExtensions = async ({
           }
 
           if (resolved.endsWith('.js')) {
-            // Likely a package module
+            // Likely a package module eg. import * as z from 'zod/v4'
+            resolvedPaths.set(text, null);
             return;
           }
 
