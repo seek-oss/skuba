@@ -76,8 +76,8 @@ importers:
         specifier: workspace:*
         version: link:packages/eslint-config-skuba
       execa:
-        specifier: ^9.6.1
-        version: 9.6.1
+        specifier: ^5.0.0
+        version: 5.1.1
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.3
@@ -274,12 +274,6 @@ importers:
       '@octokit/types':
         specifier: ^16.0.0
         version: 16.0.0
-      concurrently:
-        specifier: ^9.0.0
-        version: 9.2.1
-      execa:
-        specifier: ^9.6.1
-        version: 9.6.1
       fs-extra:
         specifier: ^11.0.0
         version: 11.3.5
@@ -289,12 +283,6 @@ importers:
       isomorphic-git:
         specifier: ^1.37.6
         version: 1.37.6
-      npm-run-path:
-        specifier: ^6.0.0
-        version: 6.0.0
-      npm-which:
-        specifier: ^3.0.1
-        version: 3.0.1
       zod:
         specifier: ^4.3.5
         version: 4.4.3
