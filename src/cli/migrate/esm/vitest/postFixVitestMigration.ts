@@ -293,7 +293,92 @@ const getTypeImportEdits = (root: SgNode, imports: string[]): Edit[] => {
     return [];
   }
 
-  const lastImport = root.find({
+  const lastImport =
+    root.find({
+      rule: {
+        kind: 'import_statement',
+        inside: {
+          kind: 'program',
+        },
+        nthChild: {
+          ofRule: {
+            kind: 'import_statement',
+            has: {
+              kind: 'string',
+              has: {
+                kind: 'string_fragment',
+                not: {
+                  any: [
+                    {
+                      regex: '^(@|#|\\.)',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          position: 1,
+          reverse: true,
+        },
+      },
+    }) ??
+    root.find({
+      rule: {
+        kind: 'import_statement',
+        inside: {
+          kind: 'program',
+        },
+        nthChild: {
+          ofRule: {
+            kind: 'import_statement',
+            has: {
+              kind: 'string',
+              has: {
+                kind: 'string_fragment',
+                not: {
+                  any: [
+                    {
+                      regex: '^(@|#)',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          position: 1,
+          reverse: true,
+        },
+      },
+    }) ??
+    root.find({
+      rule: {
+        kind: 'import_statement',
+        inside: {
+          kind: 'program',
+        },
+        nthChild: {
+          ofRule: {
+            kind: 'import_statement',
+            has: {
+              kind: 'string',
+              has: {
+                kind: 'string_fragment',
+                not: {
+                  any: [
+                    {
+                      regex: '^#',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          position: 1,
+          reverse: true,
+        },
+      },
+    });
+  root.find({
     rule: {
       kind: 'import_statement',
       inside: {

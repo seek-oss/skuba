@@ -245,6 +245,12 @@ const someModule = vi.importActual<typeof import('./someModule')>('./someModule'
   describe('migrateJestTypes', () => {
     it('adds imports for Mock, MockedFunction, MockedClass, MockedObject, and MockInstance when those types are used', async () => {
       const content = `import { vi } from 'vitest';
+// eslint-disable-next-line import-x/order -- don't move
+import { mockLogger } from './mockLogger.js';
+
+import * as z from 'zod';
+import { SomeClass } from './someClass.js';
+import { someFunction } from '#src/someFunction.js';
 
 type MyMock = jest.Mock;
 type MyMockedFunction = jest.MockedFunction<() => void>;
@@ -255,17 +261,25 @@ type MySpy = jest.SpyInstance;
 type MySpiedFunction = jest.SpiedFunction<() => void>;
 `;
 
-      await expect(run(content)).resolves.toBe(`import { vi } from 'vitest';
-import type { Mock, MockedFunction, MockedClass, MockedObject, MockInstance } from 'vitest';
+      await expect(run(content)).resolves.toMatchInlineSnapshot(`
+        "// eslint-disable-next-line import-x/order -- don't move
+        import { mockLogger } from './mockLogger.js';
 
-type MyMock = Mock;
-type MyMockedFunction = MockedFunction<() => void>;
-type MyMockedClass = MockedClass<typeof SomeClass>;
-type MyMockedObject = MockedObject<{ foo: string }>;
-type MyMockInstance = MockInstance<{ bar: number }>;
-type MySpy = MockInstance;
-type MySpiedFunction = Mock<() => void>;
-`);
+        import { vi } from 'vitest';
+        import * as z from 'zod';
+        import type { Mock, MockedFunction, MockedClass, MockedObject, MockInstance } from 'vitest';
+        import { SomeClass } from './someClass.js';
+        import { someFunction } from '#src/someFunction.js';
+
+        type MyMock = Mock;
+        type MyMockedFunction = MockedFunction<() => void>;
+        type MyMockedClass = MockedClass<typeof SomeClass>;
+        type MyMockedObject = MockedObject<{ foo: string }>;
+        type MyMockInstance = MockInstance<{ bar: number }>;
+        type MySpy = MockInstance;
+        type MySpiedFunction = Mock<() => void>;
+        "
+      `);
     });
   });
 
