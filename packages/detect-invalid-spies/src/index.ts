@@ -49,6 +49,10 @@ export type SameFileSpyWarning = {
   resolvedFile: string;
   /** The name of the function being spied on. */
   spiedFunction: string;
+  /** The line number (1-indexed) where the spy call starts. */
+  line: number;
+  /** The column number (0-indexed) where the spy call starts. */
+  column: number;
 };
 
 /**
@@ -94,7 +98,7 @@ const analyzeFileForSpyUsage = async (
   const spyOnCalls = root.findAll({
     rule: {
       kind: 'call_expression',
-      regex: '^(jest|vi)\.spyOn',
+      regex: '^(jest|vi)\\s*\\.spyOn',
     },
   });
 
@@ -213,11 +217,14 @@ const analyzeSpyCall = async (
     return undefined;
   }
 
+  const range = spyCall.range();
   const warning: SameFileSpyWarning = {
     testFile: filePath,
     importSpecifier: specifier,
     resolvedFile,
     spiedFunction,
+    line: range.start.line + 1, // ast-grep uses 0-indexed lines
+    column: range.start.column,
   };
 
   return warning;
