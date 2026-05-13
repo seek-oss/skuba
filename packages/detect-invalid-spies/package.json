@@ -27,7 +27,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "detect-invalid-spies": "lib/bin.mjs"
+    "detect-invalid-spies": "./src/bin.ts"
   },
   "files": [
     "lib"
@@ -53,6 +53,9 @@
       ".": "./lib/index.mjs",
       "./bin": "./lib/bin.mjs",
       "./package.json": "./package.json"
+    },
+    "bin": {
+      "detect-invalid-spies": "./lib/bin.mjs"
     }
   },
   "skuba": {

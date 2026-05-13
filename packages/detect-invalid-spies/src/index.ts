@@ -94,7 +94,7 @@ const analyzeFileForSpyUsage = async (
   const spyOnCalls = root.findAll({
     rule: {
       kind: 'call_expression',
-      regex: '^(jest|vi)\.spyOn',
+      regex: '^(jest|vi)\\s*\\.spyOn',
     },
   });
 
