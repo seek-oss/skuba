@@ -43,12 +43,12 @@
     "eslint-config-seek": "15.0.5",
     "eslint-plugin-skuba": "workspace:*",
     "eslint-plugin-yml": "^1.14.0",
-    "typescript-eslint": "^8.39.0"
+    "typescript-eslint": "^8.59.2"
   },
   "devDependencies": {
     "eslint": "^10.0.0",
     "jiti": "^2.6.1",
-    "typescript": "~5.9.0"
+    "typescript": "~6.0.3"
   },
   "peerDependencies": {
     "eslint": ">=9.22.0",
