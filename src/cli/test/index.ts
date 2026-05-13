@@ -4,7 +4,8 @@ export const test = async () => {
   const argv = process.argv.slice(2);
   const customExec = createExec({
     cwd: process.cwd(),
-    localDir: process.cwd(),
+    // For some reason this impacts the ability for Vitest to find snapshot state
+    preferLocal: false,
   });
 
   return customExec('vitest', ...argv);
