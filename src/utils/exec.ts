@@ -103,12 +103,10 @@ const envWithPath = {
 const runCommand = <T extends Options>(
   command: string,
   args: string[],
-  opts?: ExecOptions<T>,
+  { streamStdio, ...execaOptions }: ExecOptions<T> = {} as T,
 ) => {
-  const { streamStdio, ...execaOptions } = opts ?? {};
-
   const subprocess = execa(command, args, {
-    localDir: opts?.localDir ?? import.meta.dirname,
+    localDir: execaOptions?.localDir ?? import.meta.dirname,
     preferLocal: true,
     stdio: 'inherit',
     ...execaOptions,
