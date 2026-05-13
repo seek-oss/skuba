@@ -32,6 +32,7 @@ const defaultConfig = {
     'tsconfig-seek',
   ],
 
+  // @ts-ignore - TODO: Remove when pnpm updates their types
   pmOnFail: 'error',
   publicHoistPattern: [
     '@arethetypeswrong/core',
