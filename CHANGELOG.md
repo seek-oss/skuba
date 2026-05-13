@@ -1,5 +1,17 @@
 # skuba
 
+## 16.0.4
+
+### Patch Changes
+
+- **migrate:** Update `file-extensions` patch to handle adding extensions to type imports ([#2396](https://github.com/seek-oss/skuba/pull/2396))
+
+- **migrate:** Avoid re-patching already instrumented Dockerfiles in ESM ([#2403](https://github.com/seek-oss/skuba/pull/2403))
+
+- **deps:** is-installed-globally ^1.0.0 ([#2397](https://github.com/seek-oss/skuba/pull/2397))
+
+- **deps:** npm-run-path ^6.0.0 ([#2398](https://github.com/seek-oss/skuba/pull/2398))
+
 ## 16.0.3
 
 ### Patch Changes

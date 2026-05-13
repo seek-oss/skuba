@@ -81,6 +81,41 @@ export const mockServiceAuthHeaders = () =>
     });
   });
 
+  it('warns when jest.spyOn spans multiple lines', async () => {
+    await write(
+      'http.ts',
+      `
+export const createServiceAuthHeaders = () => ({ authorization: 'Bearer token' });
+
+export const createServiceAuthClient = () => {
+  const headers = createServiceAuthHeaders('audience');
+  return headers;
+};
+`,
+    );
+
+    await write(
+      'spy.ts',
+      `
+import * as s2s from './http';
+
+export const mockServiceAuthHeaders = () =>
+  jest
+    .spyOn(s2s, 'createServiceAuthHeaders')
+    .mockReturnValue({ authorization: 'Bearer mock' });
+`,
+    );
+
+    const warnings = await detectSameFileSpyUsage(tmpDir);
+
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toMatchObject({
+      importSpecifier: './http',
+      spiedFunction: 'createServiceAuthHeaders',
+      resolvedFile: path.join(tmpDir, 'http.ts'),
+    });
+  });
+
   it('warns when vi.spyOn targets a function that is called internally', async () => {
     await write(
       'http.ts',
