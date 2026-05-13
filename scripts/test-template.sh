@@ -95,6 +95,9 @@ cd "${directory}" || exit 1
 echo "--- pnpm add --save-dev ${skuba_tar}"
 pnpm add --save-dev ${skuba_tar}
 
+echo "--- pnpm dedupe"
+pnpm dedupe
+
 echo "--- skuba version ${template}"
 pnpm exec skuba version
 pnpm exec skuba -v
