@@ -33,7 +33,7 @@ overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
 
-pmOnFail: 'error' # Managed by skuba
+pmOnFail: error # Managed by skuba
 publicHoistPattern:
   - remark-lint-*
   - '@arethetypeswrong/core' # Managed by skuba
