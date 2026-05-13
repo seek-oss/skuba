@@ -1,8 +1,10 @@
 # @skuba-lib/detect-invalid-spies
 
-Detects `jest.spyOn` / `vi.spyOn` usage patterns where the spy won't work because the spied function is called internally within the same module it is exported from.
+Detects `jest.spyOn` / `vi.spyOn` usage patterns where the spy won't work as expected.
 
-## The problem
+## The problems
+
+### Problem 1: Internal usage in the spied module
 
 When you spy on a named export, the spy replaces the binding on the **module namespace object**. But if the source module calls that function directly (using its local binding), those calls bypass the spy entirely.
 
@@ -28,6 +30,31 @@ it('greets everyone with a custom message', () => {
 ```
 
 The test silently passes in Jest (which rewrites module bindings) but fails in Vitest (which does not), making this a common source of breakage when migrating between the two.
+
+### Problem 2: Direct import in the test file
+
+When you both spy on a function via a namespace import AND directly import the same function in your test file, the direct import creates a binding that bypasses the spy.
+
+```ts
+// service.ts
+export const fetchUser = (id: string) => ({ id });
+```
+
+```ts
+// service.test.ts
+import * as service from './service.js';
+import { fetchUser } from './service.js'; // ← direct import
+
+it('fetches a user', () => {
+  vi.spyOn(service, 'fetchUser').mockReturnValue({ id: 'mock' });
+
+  // ✗ Calls the original function, not the spy!
+  const user = fetchUser('123');
+  expect(user).toEqual({ id: 'mock' });
+});
+```
+
+This is invalid because the direct import (`fetchUser`) and the spied namespace property (`service.fetchUser`) are separate bindings. The spy only affects the namespace binding.
 
 ## Usage
 

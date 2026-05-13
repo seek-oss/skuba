@@ -17,9 +17,16 @@ for (const {
   importSpecifier,
   resolvedFile,
   spiedFunction,
+  reason,
 } of warnings) {
   const rel = path.relative(process.cwd(), testFile);
   const src = path.relative(process.cwd(), resolvedFile);
+
+  const reasonMessage =
+    reason === 'direct-import-in-test'
+      ? `${styleText('bold', `'${spiedFunction}'`)} is also directly imported in the test file — the direct import bypasses the spy`
+      : `${styleText('bold', `'${spiedFunction}'`)} is called internally — the spy won't intercept it`;
+
   // eslint-disable-next-line no-console
   console.error(
     [
@@ -27,7 +34,7 @@ for (const {
       `  ${styleText(['bold', 'red'], 'Invalid spy')} in ${styleText('cyan', rel)}`,
       `  ${styleText('dim', 'spy:')}     ${styleText('yellow', `(jest|vi).spyOn(…, '${spiedFunction}')`)}`,
       `  ${styleText('dim', 'module:')}  ${styleText('cyan', src)} (via ${styleText('bold', `'${importSpecifier}'`)})`,
-      `  ${styleText('dim', 'reason:')}  ${styleText('bold', `'${spiedFunction}'`)} is called internally — the spy won't intercept it`,
+      `  ${styleText('dim', 'reason:')}  ${reasonMessage}`,
     ].join('\n'),
   );
 }

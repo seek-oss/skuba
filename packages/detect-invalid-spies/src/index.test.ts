@@ -78,6 +78,7 @@ export const mockServiceAuthHeaders = () =>
       importSpecifier: './http',
       spiedFunction: 'createServiceAuthHeaders',
       resolvedFile: path.join(tmpDir, 'http.ts'),
+      reason: 'internal-usage-in-module',
     });
   });
 
@@ -110,6 +111,7 @@ export const mockServiceAuthHeaders = () =>
     expect(warnings[0]).toMatchObject({
       importSpecifier: './http',
       spiedFunction: 'createServiceAuthHeaders',
+      reason: 'internal-usage-in-module',
     });
   });
 
@@ -312,5 +314,95 @@ export const mock = () =>
     const warnings = await detectSameFileSpyUsage(tmpDir);
 
     expect(warnings).toHaveLength(1);
+  });
+
+  it('warns when a function is both spied on and directly imported in the test file', async () => {
+    await write(
+      'service.ts',
+      `
+export const doThing = () => 'original';
+export const otherThing = () => 'other';
+`,
+    );
+
+    // Direct import + namespace spy — the direct import bypasses the spy.
+    await write(
+      'test.ts',
+      `
+import * as service from './service';
+import { doThing } from './service';
+
+jest.spyOn(service, 'doThing').mockReturnValue('mocked');
+
+// This calls the original, not the mock!
+doThing();
+`,
+    );
+
+    const warnings = await detectSameFileSpyUsage(tmpDir);
+
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toMatchObject({
+      importSpecifier: './service',
+      spiedFunction: 'doThing',
+      resolvedFile: path.join(tmpDir, 'service.ts'),
+      reason: 'direct-import-in-test',
+    });
+  });
+
+  it('does not warn for direct import if the spied function is different', async () => {
+    await write(
+      'service.ts',
+      `
+export const doThing = () => 'original';
+export const otherThing = () => 'other';
+`,
+    );
+
+    await write(
+      'test.ts',
+      `
+import * as service from './service';
+import { otherThing } from './service';
+
+jest.spyOn(service, 'doThing').mockReturnValue('mocked');
+
+otherThing();
+`,
+    );
+
+    const warnings = await detectSameFileSpyUsage(tmpDir);
+
+    expect(warnings).toEqual([]);
+  });
+
+  it('warns when a function is directly imported and spied on, even if not used internally', async () => {
+    await write(
+      'service.ts',
+      `
+export const doThing = () => 'original';
+`,
+    );
+
+    // Function is NOT used internally in service.ts, but IS directly imported
+    // in the test file alongside the spy — this still causes the spy to be bypassed.
+    await write(
+      'test.ts',
+      `
+import * as service from './service';
+import { doThing } from './service';
+
+jest.spyOn(service, 'doThing').mockReturnValue('mocked');
+
+doThing(); // bypasses spy
+`,
+    );
+
+    const warnings = await detectSameFileSpyUsage(tmpDir);
+
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toMatchObject({
+      reason: 'direct-import-in-test',
+    });
   });
 });

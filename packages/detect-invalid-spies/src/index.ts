@@ -1,14 +1,17 @@
 /**
  * Detects Jest/Vitest spy usage patterns where the spied function is also
- * referenced internally within the same module it is exported from.
+ * referenced internally within the same module it is exported from, or where
+ * the function is directly imported in the test file alongside the namespace
+ * import used for spying.
  *
+ * Pattern 1: Internal usage in the spied module
  * When `jest.spyOn` / `vi.spyOn` replaces the module export binding, any
  * calls to `fn` made from within that same module still use the original local
  * binding and are therefore NOT intercepted by the spy. This makes the mock
  * ineffective for indirect callers and can cause subtle failures, especially
  * when migrating to Vitest where module mocking semantics differ.
  *
- * Example of the problematic pattern:
+ * Example of pattern 1:
  *
  * ```ts
  * // http.ts
@@ -30,6 +33,22 @@
  *   jest.spyOn(s2s, 'createServiceAuthHeaders') // ← spy won't intercept http.ts-internal calls
  *     .mockResolvedValue({ authorization: 'Bearer token' });
  * ```
+ *
+ * Pattern 2: Direct import in test file
+ * When a function is both spied on via namespace import AND directly imported
+ * in the test file, the direct import creates a binding that bypasses the spy.
+ *
+ * Example of pattern 2:
+ *
+ * ```ts
+ * // test.ts
+ * import * as service from './module.js';
+ * import { myFunction } from './module.js'; // ← direct import bypasses spy
+ *
+ * jest.spyOn(service, 'myFunction').mockReturnValue(42);
+ *
+ * myFunction(); // ← calls the original, not the spy!
+ * ```
  */
 
 import path from 'node:path';
@@ -49,6 +68,8 @@ export type SameFileSpyWarning = {
   resolvedFile: string;
   /** The name of the function being spied on. */
   spiedFunction: string;
+  /** The type of issue detected. */
+  reason: 'direct-import-in-test' | 'internal-usage-in-module';
 };
 
 /**
@@ -202,6 +223,27 @@ const analyzeSpyCall = async (
     return undefined;
   }
 
+  // Check whether the spied function is also directly imported in the test file.
+  // This creates a binding that bypasses the spy.
+  const directlyImportedInTest = isDirectlyImportedInTestFile(
+    root,
+    spiedFunction,
+    specifier,
+    filePath,
+    compilerOptions,
+  );
+
+  if (directlyImportedInTest) {
+    const warning: SameFileSpyWarning = {
+      testFile: filePath,
+      importSpecifier: specifier,
+      resolvedFile,
+      spiedFunction,
+      reason: 'direct-import-in-test',
+    };
+    return warning;
+  }
+
   // Check whether the spied function appears as an internal usage in the
   // resolved module (i.e. referenced somewhere other than its own declaration).
   const internallyUsed = await isFunctionUsedInternally(
@@ -218,6 +260,7 @@ const analyzeSpyCall = async (
     importSpecifier: specifier,
     resolvedFile,
     spiedFunction,
+    reason: 'internal-usage-in-module',
   };
 
   return warning;
@@ -296,6 +339,93 @@ const isFunctionUsedInternally = async (
 
     // Any other position is a runtime reference to the local binding.
     return true;
+  }
+
+  return false;
+};
+
+// ---------------------------------------------------------------------------
+// Direct import check
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns `true` if `functionName` is directly imported in the test file
+ * from the same module that is being spied on.
+ *
+ * Example:
+ * ```ts
+ * import * as service from './module.js';
+ * import { functionName } from './module.js'; // ← this bypasses the spy
+ *
+ * jest.spyOn(service, 'functionName');
+ * ```
+ */
+const isDirectlyImportedInTestFile = (
+  root: SgNode,
+  functionName: string,
+  namespaceSpecifier: string,
+  testFilePath: string,
+  compilerOptions: ts.CompilerOptions,
+): boolean => {
+  // Find all named imports in the test file
+  const namedImports = root.findAll({
+    rule: {
+      kind: 'import_statement',
+      has: {
+        kind: 'import_clause',
+        has: {
+          kind: 'named_imports',
+          has: {
+            kind: 'import_specifier',
+            has: {
+              kind: 'identifier',
+              regex: `^${functionName}$`,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  for (const importStatement of namedImports) {
+    // Get the module specifier from this import
+    const specifierNode = importStatement
+      .children()
+      .find((c) => c.kind() === 'string');
+    if (!specifierNode) {
+      continue;
+    }
+
+    const specifier = specifierNode.text().replace(/^['"`]|['"`]$/g, '');
+
+    // Resolve this specifier to see if it points to the same module
+    const resolved = ts.resolveModuleName(
+      specifier,
+      path.resolve(testFilePath),
+      compilerOptions,
+      ts.sys,
+    );
+
+    const resolvedFile = resolved.resolvedModule?.resolvedFileName;
+    if (!resolvedFile) {
+      continue;
+    }
+
+    // Also resolve the namespace specifier for comparison
+    const namespaceResolved = ts.resolveModuleName(
+      namespaceSpecifier,
+      path.resolve(testFilePath),
+      compilerOptions,
+      ts.sys,
+    );
+
+    const namespaceResolvedFile =
+      namespaceResolved.resolvedModule?.resolvedFileName;
+
+    // If they resolve to the same file, we have a direct import
+    if (resolvedFile === namespaceResolvedFile) {
+      return true;
+    }
   }
 
   return false;
