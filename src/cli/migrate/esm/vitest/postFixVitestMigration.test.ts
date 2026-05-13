@@ -266,8 +266,8 @@ type MySpiedFunction = jest.SpiedFunction<() => void>;
         import { mockLogger } from './mockLogger.js';
 
         import { vi } from 'vitest';
-        import * as z from 'zod';
         import type { Mock, MockedFunction, MockedClass, MockedObject, MockInstance } from 'vitest';
+        import * as z from 'zod';
         import { SomeClass } from './someClass.js';
         import { someFunction } from '#src/someFunction.js';
 
