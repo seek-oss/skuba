@@ -92,16 +92,18 @@ interface ExecConcurrentlyOptions {
   outputStream?: stream.Writable;
 }
 
-type ExecOptions = Options & { streamStdio?: true | PackageManager };
+type ExecOptions<T extends Options> = T & StreamStdioOptions;
+
+type StreamStdioOptions = { streamStdio?: true | PackageManager };
 
 const envWithPath = {
   PATH: npmRunPath({ cwd: import.meta.dirname }),
 };
 
-const runCommand = <T extends ExecOptions>(
+const runCommand = <T extends Options>(
   command: string,
   args: string[],
-  opts?: T,
+  opts?: ExecOptions<T>,
 ) => {
   const { streamStdio, ...execaOptions } = opts ?? {};
 
@@ -138,7 +140,7 @@ const whichCallback = npmWhich(import.meta.dirname);
 const which = util.promisify<string, string>(whichCallback);
 
 export const createExec =
-  <T extends ExecOptions>(opts: T): Exec<T> =>
+  <T extends Options>(opts: ExecOptions<T>): Exec<T> =>
   (command, ...args) =>
     runCommand(command, args, opts);
 
