@@ -27,7 +27,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "detect-invalid-spies": "lib/bin.mjs"
+    "detect-invalid-spies": "./src/bin.ts"
   },
   "files": [
     "lib"
@@ -49,6 +49,9 @@
     "node": ">=22.14.0"
   },
   "publishConfig": {
+    "bin": {
+      "detect-invalid-spies": "./lib/bin.mjs"
+    },
     "exports": {
       ".": "./lib/index.mjs",
       "./bin": "./lib/bin.mjs",
