@@ -49,13 +49,13 @@
     "node": ">=22.14.0"
   },
   "publishConfig": {
+    "bin": {
+      "detect-invalid-spies": "./lib/bin.mjs"
+    },
     "exports": {
       ".": "./lib/index.mjs",
       "./bin": "./lib/bin.mjs",
       "./package.json": "./package.json"
-    },
-    "bin": {
-      "detect-invalid-spies": "./lib/bin.mjs"
     }
   },
   "skuba": {

@@ -17,17 +17,21 @@ for (const {
   importSpecifier,
   resolvedFile,
   spiedFunction,
+  line,
+  column,
 } of warnings) {
   const rel = path.relative(process.cwd(), testFile);
   const src = path.relative(process.cwd(), resolvedFile);
+  const fileLink = `${testFile}:${line}:${column}`;
   // eslint-disable-next-line no-console
   console.error(
     [
       '',
-      `  ${styleText(['bold', 'red'], 'Invalid spy')} in ${styleText('cyan', rel)}`,
+      `  ${styleText(['bold', 'red'], 'Invalid spy')} in ${styleText('cyan', rel)} ${styleText('dim', `(${fileLink})`)}`,
       `  ${styleText('dim', 'spy:')}     ${styleText('yellow', `(jest|vi).spyOn(…, '${spiedFunction}')`)}`,
       `  ${styleText('dim', 'module:')}  ${styleText('cyan', src)} (via ${styleText('bold', `'${importSpecifier}'`)})`,
       `  ${styleText('dim', 'reason:')}  ${styleText('bold', `'${spiedFunction}'`)} is called internally — the spy won't intercept it`,
+      `  ${styleText('dim', 'fix:')}     Move ${styleText('bold', `'${spiedFunction}'`)} to a separate file so the spy can intercept calls to it`,
     ].join('\n'),
   );
 }
