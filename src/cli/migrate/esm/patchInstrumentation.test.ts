@@ -492,4 +492,25 @@ CMD lib/listen.js`,
       }
     `);
   });
+
+  it('should avoid clobbering existing instrumentation flags in the Dockerfile', async () => {
+    vol.fromJSON({
+      Dockerfile: `FROM node:14
+CMD ["node", "--import", "dd-trace/initialize.mjs", "lib/listen.js"]`,
+      'src/index.ts': "import tracer from 'dd-trace';",
+    });
+
+    await expect(patchInstrumentation(baseArgs)).resolves.toEqual({
+      result: 'skip',
+      reason: 'no CMD instructions found in Dockerfiles to patch',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "Dockerfile": "FROM node:14
+      CMD ["node", "--import", "dd-trace/initialize.mjs", "lib/listen.js"]",
+        "src/index.ts": "import tracer from 'dd-trace';",
+      }
+    `);
+  });
 });
