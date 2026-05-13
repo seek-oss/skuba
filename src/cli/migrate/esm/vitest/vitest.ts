@@ -314,7 +314,7 @@ export const migrateToVitest = async (opts: {
     await rootExec(
       packageManager.command,
       'install',
-      '--frozen-lockfile=false',
+      ...(packageManager.command === 'pnpm' ? ['--frozen-lockfile=false'] : []),
       '--prefer-offline',
       '--ignore-scripts',
     );

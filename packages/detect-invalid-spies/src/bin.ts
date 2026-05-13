@@ -17,8 +17,10 @@ for (const {
   importSpecifier,
   resolvedFile,
   spiedFunction,
+  line,
+  column,
 } of warnings) {
-  const rel = path.relative(process.cwd(), testFile);
+  const rel = `${path.relative(process.cwd(), testFile)}:${line}:${column}`;
   const src = path.relative(process.cwd(), resolvedFile);
   // eslint-disable-next-line no-console
   console.error(
@@ -28,6 +30,7 @@ for (const {
       `  ${styleText('dim', 'spy:')}     ${styleText('yellow', `(jest|vi).spyOn(…, '${spiedFunction}')`)}`,
       `  ${styleText('dim', 'module:')}  ${styleText('cyan', src)} (via ${styleText('bold', `'${importSpecifier}'`)})`,
       `  ${styleText('dim', 'reason:')}  ${styleText('bold', `'${spiedFunction}'`)} is called internally — the spy won't intercept it`,
+      `  ${styleText('dim', 'fix:')}     Move ${styleText('bold', `'${spiedFunction}'`)} to a separate file so the spy can intercept calls to it`,
     ].join('\n'),
   );
 }

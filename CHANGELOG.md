@@ -1,5 +1,29 @@
 # skuba
 
+## 16.0.4
+
+### Patch Changes
+
+- **migrate:** Update `file-extensions` patch to handle adding extensions to type imports ([#2396](https://github.com/seek-oss/skuba/pull/2396))
+
+- **migrate:** Avoid re-patching already instrumented Dockerfiles in ESM ([#2403](https://github.com/seek-oss/skuba/pull/2403))
+
+- **deps:** is-installed-globally ^1.0.0 ([#2397](https://github.com/seek-oss/skuba/pull/2397))
+
+- **deps:** npm-run-path ^6.0.0 ([#2398](https://github.com/seek-oss/skuba/pull/2398))
+
+## 16.0.3
+
+### Patch Changes
+
+- **migrate:** Fix `yarn` package install scripts in ESM migration ([#2395](https://github.com/seek-oss/skuba/pull/2395))
+
+- **deps:** isomorphic-git 1.37.6 ([#2395](https://github.com/seek-oss/skuba/pull/2395))
+
+- **deps:** get-port ^7.0.0 ([#2391](https://github.com/seek-oss/skuba/pull/2391))
+
+- **deps:** find-up ^8.0.0 ([#2390](https://github.com/seek-oss/skuba/pull/2390))
+
 ## 16.0.2
 
 ### Patch Changes
