@@ -20,14 +20,13 @@ for (const {
   line,
   column,
 } of warnings) {
-  const rel = path.relative(process.cwd(), testFile);
+  const rel = `${path.relative(process.cwd(), testFile)}:${line}:${column}`;
   const src = path.relative(process.cwd(), resolvedFile);
-  const fileLink = `${testFile}:${line}:${column}`;
   // eslint-disable-next-line no-console
   console.error(
     [
       '',
-      `  ${styleText(['bold', 'red'], 'Invalid spy')} in ${styleText('cyan', rel)} ${styleText('dim', `(${fileLink})`)}`,
+      `  ${styleText(['bold', 'red'], 'Invalid spy')} in ${styleText('cyan', rel)}`,
       `  ${styleText('dim', 'spy:')}     ${styleText('yellow', `(jest|vi).spyOn(…, '${spiedFunction}')`)}`,
       `  ${styleText('dim', 'module:')}  ${styleText('cyan', src)} (via ${styleText('bold', `'${importSpecifier}'`)})`,
       `  ${styleText('dim', 'reason:')}  ${styleText('bold', `'${spiedFunction}'`)} is called internally — the spy won't intercept it`,
