@@ -4,7 +4,7 @@ import stream from 'stream';
 import util from 'util';
 
 import concurrently from 'concurrently';
-import { type Options, type ResultPromise, execa } from 'execa';
+import execa, { type ExecaChildProcess } from 'execa';
 import { npmRunPath } from 'npm-run-path';
 import npmWhich from 'npm-which';
 
@@ -58,10 +58,10 @@ class YarnWarningFilter extends stream.Transform {
   }
 }
 
-export type Exec<T extends Options = Options> = (
+export type Exec = (
   command: string,
   ...args: string[]
-) => ResultPromise<T>;
+) => ExecaChildProcess<string>;
 
 interface ExecConcurrentlyCommand {
   command: string;
@@ -92,27 +92,21 @@ interface ExecConcurrentlyOptions {
   outputStream?: stream.Writable;
 }
 
-type ExecOptions<T extends Options> = T & StreamStdioOptions;
-
-type StreamStdioOptions = { streamStdio?: true | PackageManager };
+type ExecOptions = execa.Options & { streamStdio?: true | PackageManager };
 
 const envWithPath = {
   PATH: npmRunPath({ cwd: import.meta.dirname }),
 };
 
-const runCommand = <T extends Options>(
-  command: string,
-  args: string[],
-  { streamStdio, ...execaOptions }: ExecOptions<T> = {} as T,
-) => {
+const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
   const subprocess = execa(command, args, {
-    localDir: execaOptions?.localDir ?? import.meta.dirname,
+    localDir: opts?.localDir ?? import.meta.dirname,
     preferLocal: true,
     stdio: 'inherit',
-    ...execaOptions,
+    ...opts,
   });
 
-  switch (streamStdio) {
+  switch (opts?.streamStdio) {
     case 'yarn':
       const stderrFilter = new YarnWarningFilter();
       const stdoutFilter = new YarnSpamFilter();
@@ -130,7 +124,7 @@ const runCommand = <T extends Options>(
       break;
   }
 
-  return subprocess as unknown as ResultPromise<T>;
+  return subprocess;
 };
 
 const whichCallback = npmWhich(import.meta.dirname);
@@ -138,7 +132,7 @@ const whichCallback = npmWhich(import.meta.dirname);
 const which = util.promisify<string, string>(whichCallback);
 
 export const createExec =
-  <T extends Options>(opts: ExecOptions<T>): Exec<T> =>
+  (opts: ExecOptions): Exec =>
   (command, ...args) =>
     runCommand(command, args, opts);
 
