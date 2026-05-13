@@ -108,7 +108,7 @@ const runCommand = <T extends Options>(
   const { streamStdio, ...execaOptions } = opts ?? {};
 
   const subprocess = execa(command, args, {
-    localDir: import.meta.dirname,
+    localDir: opts?.localDir ?? import.meta.dirname,
     preferLocal: true,
     stdio: 'inherit',
     ...execaOptions,
