@@ -293,7 +293,48 @@ const getTypeImportEdits = (root: SgNode, imports: string[]): Edit[] => {
     return [];
   }
 
-  const lastImport = root.find({
+  const importPlacement =
+    root.find({
+      rule: {
+        kind: 'import_statement',
+        has: {
+          kind: 'string',
+          has: {
+            kind: 'string_fragment',
+            regex: '^vitest$',
+          },
+        },
+      },
+    }) ??
+    root.find({
+      rule: {
+        kind: 'import_statement',
+        inside: {
+          kind: 'program',
+        },
+        nthChild: {
+          ofRule: {
+            kind: 'import_statement',
+            has: {
+              kind: 'string',
+              has: {
+                kind: 'string_fragment',
+                not: {
+                  any: [
+                    {
+                      regex: '^(@|#|\\.)',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          position: 1,
+          reverse: true,
+        },
+      },
+    });
+  root.find({
     rule: {
       kind: 'import_statement',
       inside: {
@@ -309,14 +350,14 @@ const getTypeImportEdits = (root: SgNode, imports: string[]): Edit[] => {
     },
   });
 
-  if (!lastImport) {
+  if (!importPlacement) {
     return [];
   }
 
   return [
     {
-      startPos: lastImport.range().end.index + 1, // newline
-      endPos: lastImport.range().end.index + 1,
+      startPos: importPlacement.range().end.index + 1, // newline
+      endPos: importPlacement.range().end.index + 1,
       insertedText: `import type { ${imports.join(', ')} } from 'vitest';\n`,
     },
   ];
@@ -422,7 +463,6 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     ...jestTypeEdits,
     ...spyInstanceTypeEdits,
     ...spiedFunctionEdits,
-    ...getTypeImportEdits(astRoot, Array.from(jestTypeImports)),
     ...getViMockedPrototypeEdits(astRoot),
     ...getBadMockImplementationEdits(astRoot),
   ];
@@ -434,8 +474,24 @@ export const postFixVitestMigration = async (file: string, content: string) => {
     };
   }
 
+  const updated = astRoot.commitEdits(edits);
+
+  if (!jestTypeImports.size) {
+    return {
+      updated,
+      hasLifeCyclesToCheck,
+    };
+  }
+
+  const astAfterEdits = (await parseAsync('TypeScript', updated)).root();
+
+  const typeImportEdits = getTypeImportEdits(
+    astAfterEdits,
+    Array.from(jestTypeImports),
+  );
+
   return {
-    updated: astRoot.commitEdits(edits),
+    updated: astAfterEdits.commitEdits(typeImportEdits),
     hasLifeCyclesToCheck,
   };
 };
