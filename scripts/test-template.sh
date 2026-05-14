@@ -6,16 +6,16 @@ update_snapshot=false
 
 # Process optional flag
 if [ "$1" == "-u" ]; then
-    update_snapshot=true
-    shift
+  update_snapshot=true
+  shift
 fi
 
 template="${1}"
 
 echo "--- testing template ${update_snapshot}, ${template}"
 if [ -z "$template" ]; then
-    echo "Usage: pnpm test:template <template_name>"
-    exit 1
+  echo "Usage: pnpm test:template <template_name>"
+  exit 1
 fi
 
 echo '--- pnpm install'
