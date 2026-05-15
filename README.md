@@ -11,7 +11,7 @@
 
 - Write in [TypeScript]
 - Enforce coding standards with [ESLint] and [Prettier]
-- Test with [Jest]
+- Test with [Vitest]
 - Deploy with [Gantry] or the [AWS CDK]
 
 [aws cdk]: https://docs.aws.amazon.com/cdk/latest/guide/work-with-cdk-typescript.html
@@ -52,7 +52,7 @@ If you're new here, jump ahead to the [CLI] section to [create a new project] or
 [create a new project]: ./docs/cli/init.md
 [development]: ./docs/development-api
 [eslint]: https://eslint.org/
-[jest]: https://jestjs.io
+[vitest]: https://vitest.dev/
 [prettier]: https://prettier.io/
 [runtime]: ./docs/runtime-api
 [templates]: ./docs/templates

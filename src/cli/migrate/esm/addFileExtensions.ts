@@ -19,6 +19,8 @@ const nodeModuleExtensionCheckOrder = [
   '/index.js',
   '.mjs',
   '/index.mjs',
+  '.d.ts',
+  '/index.d.ts',
 ];
 const localModuleExtensionCheckOrder = [
   '.ts',
@@ -115,21 +117,27 @@ export const addFileExtensions = async ({
             {
               all: [
                 { regex: '^@[^/]+/[^/]+/.+$' },
-                { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
+                {
+                  not: { regex: '\\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' },
+                },
               ],
             },
             // #src/ import aliases
             {
               all: [
                 { regex: '^#src/' },
-                { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
+                {
+                  not: { regex: '\\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' },
+                },
               ],
             },
             // unscoped packages with 1 or more path segments
             {
               all: [
                 { regex: '^[^@#][^/]*/.+$' },
-                { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
+                {
+                  not: { regex: '\\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' },
+                },
                 // exclude node: built-in modules
                 { not: { regex: '^node:' } },
               ],
@@ -138,7 +146,9 @@ export const addFileExtensions = async ({
             {
               all: [
                 { regex: '^./' },
-                { not: { regex: '\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' } },
+                {
+                  not: { regex: '\\.(cjs|mjs|js|ts|tsx|json|css|scss|sass)$' },
+                },
               ],
             },
           ],
@@ -151,19 +161,13 @@ export const addFileExtensions = async ({
 
       const parentPath = pathToFileURL(file).href;
       const resolvedPaths = new Map<string, string | null>();
-      const edits: Array<Edit | null> = await Promise.all(
-        nodesToCheck.map(async (node) => {
-          const text = node.text();
-          const resolvedPath = resolvedPaths.get(text);
 
-          if (resolvedPath === null) {
-            return null;
-          }
+      const uniqueImportTexts = Array.from(
+        new Set(nodesToCheck.map((node) => node.text())),
+      );
 
-          if (resolvedPath) {
-            return node.replace(resolvedPath);
-          }
-
+      await Promise.all(
+        uniqueImportTexts.map(async (text) => {
           let resolved;
 
           try {
@@ -175,18 +179,19 @@ export const addFileExtensions = async ({
           } catch {
             // unknown import - give up
             resolvedPaths.set(text, null);
-            return null;
+            return;
           }
 
           if (resolved.endsWith('.js')) {
-            // Likely a package module
-            return null;
+            // Likely a package module eg. import * as z from 'zod/v4'
+            resolvedPaths.set(text, null);
+            return;
           }
 
           // Skip non-file URLs (e.g., node:, data:, http:)
           if (!resolved.startsWith('file:')) {
             resolvedPaths.set(text, null);
-            return null;
+            return;
           }
 
           const pathToResolved = fileURLToPath(resolved);
@@ -199,16 +204,30 @@ export const addFileExtensions = async ({
             const filePath = `${pathToResolved}${extension}`;
             try {
               await fs.promises.access(filePath);
-              const fixedImport = `${text}${extension.endsWith('.ts') ? extension.replace('.ts', '.js') : extension}`;
+              const fixedImport = `${text}${extension.replace(/(?:\.d)?\.ts$/, '.js')}`;
               resolvedPaths.set(text, fixedImport);
-              return node.replace(fixedImport);
+              return;
             } catch {}
           }
 
           resolvedPaths.set(text, null);
-          return null;
         }),
       );
+
+      const edits: Array<Edit | null> = nodesToCheck.map((node) => {
+        const text = node.text();
+        const resolvedPath = resolvedPaths.get(text);
+
+        if (resolvedPath === null) {
+          return null;
+        }
+
+        if (resolvedPath) {
+          return node.replace(resolvedPath);
+        }
+
+        return null;
+      });
 
       return {
         file,

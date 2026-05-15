@@ -5,8 +5,6 @@ exports[`'fixable' 1`] = `
 skuba lints
 Updating skuba... upgrade-skuba
 
-Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules upgrade-skuba
-
 Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset upgrade-skuba
 
 Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found upgrade-skuba
@@ -154,8 +152,6 @@ exports[`'ok --debug' 1`] = `
 skuba lints
 Updating skuba... upgrade-skuba
 
-Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules upgrade-skuba
-
 Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset upgrade-skuba
 
 Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found upgrade-skuba
@@ -296,8 +292,6 @@ exports[`'ok' 1`] = `
 skuba lints
 Updating skuba... upgrade-skuba
 
-Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules upgrade-skuba
-
 Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset upgrade-skuba
 
 Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found upgrade-skuba
@@ -410,8 +404,6 @@ exports[`'unfixable' 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
-
-Patch skipped: Add empty exports to Jest files for compliance with TypeScript isolated modules upgrade-skuba
 
 Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset upgrade-skuba
 

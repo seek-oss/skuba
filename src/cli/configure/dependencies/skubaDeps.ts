@@ -10,18 +10,18 @@ const DEV_DEPENDENCIES = [
   'tslint',
 
   // bundled
-  '@types/jest',
+  '@vitest/coverage-istanbul',
+  '@vitest/coverage-v8',
+  '@vitest/ui',
   'concurrently',
   'eslint-config-skuba',
   'eslint',
-  'jest',
   'prettier',
   'semantic-release',
-  'ts-jest',
-  'ts-node',
   'tsconfig-seek',
   'tsx',
   'typescript',
+  'vitest',
 ] as const;
 
 export const skubaDeps = ({ dependencies, devDependencies }: DependencySet) => {
