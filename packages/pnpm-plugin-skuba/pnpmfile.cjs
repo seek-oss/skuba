@@ -51,8 +51,8 @@ const defaultConfig = {
     'typescript',
     'vitest',
   ],
-  strictDepBuilds: true,
-  trustPolicy: 'no-downgrade',
+  strictDepBuilds: false,
+  trustPolicy: 'off',
   trustPolicyExclude: ['semver@6.3.1'], // dependency of eslint-plugin-react
 };
 

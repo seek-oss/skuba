@@ -79,8 +79,8 @@ describe('patchPnpmWorkspace', () => {
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
       "
@@ -155,8 +155,8 @@ trustPolicyExclude:
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
       pmOnFail: error # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba
       # This is a comment
       allowBuilds:
         '@datadog/native-appsec': true # Managed by skuba
@@ -299,7 +299,7 @@ packageManagerStrictVersion: false`,
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "blockExoticSubdeps: true # Managed by skuba
       ignorePatchFailures: true
-      strictDepBuilds: true # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
       packageManagerStrictVersion: false"
     `);
   });
@@ -342,8 +342,8 @@ allowBuilds:
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
       pmOnFail: error # Managed by skuba
-      strictDepBuilds: true # Managed by skuba
-      trustPolicy: no-downgrade # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
