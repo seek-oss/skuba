@@ -34,6 +34,7 @@ const defaultConfig = {
 
   // @ts-ignore - TODO: Remove when pnpm updates their types
   pmOnFail: 'error',
+
   publicHoistPattern: [
     '@arethetypeswrong/core',
     '@eslint/*',
