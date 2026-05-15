@@ -94,6 +94,8 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
+Patch skipped: Unbundle tsdown.config files to avoid shipping translations and CSS in packages that use tsdown for non-translation purposes - no tsdown.config files found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -239,6 +241,8 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
+Patch skipped: Unbundle tsdown.config files to avoid shipping translations and CSS in packages that use tsdown for non-translation purposes - no tsdown.config files found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -377,6 +381,8 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
+Patch skipped: Unbundle tsdown.config files to avoid shipping translations and CSS in packages that use tsdown for non-translation purposes - no tsdown.config files found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -486,6 +492,8 @@ Patch skipped: Migrate from Jest to Vitest - skipping in integration test enviro
 Patch skipped: Add file extensions to imports - no imports found that could be migrated
 
 Patch applied: Migrate to ESM upgrade-skuba
+
+Patch skipped: Unbundle tsdown.config files to avoid shipping translations and CSS in packages that use tsdown for non-translation purposes - no tsdown.config files found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

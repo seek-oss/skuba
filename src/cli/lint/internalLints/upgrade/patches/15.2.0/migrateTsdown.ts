@@ -25,7 +25,7 @@ interface FoundEntry {
   pairNode: SgNode;
 }
 
-const removeNodeWithComma = (node: SgNode): Edit[] => {
+export const removeNodeWithComma = (node: SgNode): Edit[] => {
   const edits: Edit[] = [node.replace('')];
   const maybeCommaAfter = node.next();
   if (maybeCommaAfter?.text().trim() === ',') {
