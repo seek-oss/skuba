@@ -60,10 +60,6 @@ cat >pnpm-workspace.yaml <<'WORKSPACE'
 strictDepBuilds: false
 WORKSPACE
 
-# https://github.com/pnpm/pnpm/issues/10988
-unset pnpm_config_strict_dep_builds
-unset pnpm_config_trust_policy
-
 echo "--- pnpm add --save-dev ${skuba_tar}"
 pnpm add --save-dev ${skuba_tar}
 
