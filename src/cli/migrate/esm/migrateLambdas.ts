@@ -409,7 +409,7 @@ const migrateServerlessLambdas = async (
 
           const addLayersDisabled = addLayers?.text().includes('false');
 
-          if (addLayersDisabled && containsDatadogLambdaImport) {
+          if (addLayersDisabled) {
             const redirectHandlers = datadogSettings.find({
               rule: {
                 kind: 'block_node',
@@ -425,7 +425,7 @@ const migrateServerlessLambdas = async (
               edits.push({
                 startPos: datadogSettings.range().end.index,
                 endPos: datadogSettings.range().end.index,
-                insertedText: `\n${' '.repeat(indent)}redirectHandlers: false\n`,
+                insertedText: `\n${' '.repeat(indent)}redirectHandlers: false${!containsDatadogLambdaImport ? ' # TODO: Wrap your handler with the `datadog` function wrapper from `datadog-lambda-js` or the `withLambdaExtension` function wrapper from `seek-datadog-custom-metrics/lambda`. Alternatively, remove this setting and enable addLayers: true' : ''}\n`,
               });
             }
           }
