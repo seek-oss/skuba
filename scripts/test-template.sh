@@ -55,6 +55,11 @@ cd "../${skuba_temp_directory}" || exit 1
 echo "pnpm init"
 pnpm init
 
+# pnpm v11 sets strictDepBuilds to true by default
+cat >pnpm-workspace.yaml <<'WORKSPACE'
+strictDepBuilds: false
+WORKSPACE
+
 # https://github.com/pnpm/pnpm/issues/10988
 unset pnpm_config_strict_dep_builds
 unset pnpm_config_trust_policy
