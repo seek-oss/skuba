@@ -370,8 +370,8 @@ importers:
         specifier: ^1000.1.0
         version: 1000.1.0
       '@pnpm/config':
-        specifier: ^1004.10.3
-        version: 1004.11.0(@pnpm/logger@1001.0.1)
+        specifier: ^1004.11.1
+        version: 1004.11.1(@pnpm/logger@1001.0.1)
 
   packages/skuba-dive: {}
 
@@ -2326,6 +2326,12 @@ packages:
     peerDependencies:
       '@pnpm/logger': ^1001.0.1
 
+  '@pnpm/config@1004.11.1':
+    resolution: {integrity: sha512-37fAOJnBC+irQbJLKtqOVm7DPx1zpNeg0EpUWChJ/1K5YbsjUfFLKyUvQCjMT4+p5g2Hj1JQDVTCa/1PldrQTg==}
+    engines: {node: '>=18.12'}
+    peerDependencies:
+      '@pnpm/logger': ^1001.0.1
+
   '@pnpm/constants@1001.3.1':
     resolution: {integrity: sha512-2hf0s4pVrVEH8RvdJJ7YRKjQdiG8m0iAT26TTqXnCbK30kKwJW69VLmP5tED5zstmDRXcOeH5eRcrpkdwczQ9g==}
     engines: {node: '>=18.12'}
@@ -2352,6 +2358,10 @@ packages:
     resolution: {integrity: sha512-LMSb3k7osG99ikbhLTPQWfr61tyAnd08NbIoASVdUJ00S0c6F6O/dauqb4Z/PddE4ghkQ6hE2VRNASdRdLgT6w==}
     engines: {node: '>=18.12'}
 
+  '@pnpm/fetcher-base@1001.2.3':
+    resolution: {integrity: sha512-IScKiwfgI6XC8oUyZ0BUoBdnbQpv3cK/KficLIDjvlZ0RU94bCYczi5npvMdXfwfups202GYugzcC1vgZ51Zcg==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/git-utils@1000.0.0':
     resolution: {integrity: sha512-W6isNTNgB26n6dZUgwCw6wly+uHQ2Zh5QiRKY1HHMbLAlsnZOxsSNGnuS9euKWHxDftvPfU7uR8XB5x95T5zPQ==}
     engines: {node: '>=18.12'}
@@ -2364,8 +2374,16 @@ packages:
     resolution: {integrity: sha512-xNm1A5VkCuR+nBHV6h6Zdocv1nRZYkM2/V8fXAdfI1ueTf3tb1j2MdROp0ZfQtmPBZMJmJ+vJj6PKQVErpZE2A==}
     engines: {node: '>=18.12'}
 
+  '@pnpm/hooks.types@1001.0.21':
+    resolution: {integrity: sha512-XJj7GNyH+mKu6kw64l1UokxPiB/2EcPZy+p6qvWNciJClgJ9X1+wfppGlbuUt7lzo3B4gzfSb8xIUMr2LNJhHQ==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/lockfile.types@1002.1.0':
     resolution: {integrity: sha512-Oa9Fhwo4Ipodj3hyUPC5wUt5ucVkuttyct2DbFUkB79Fq5HL9MHHQ+JFYh03eajmLqWrN1t8+6DbmcKqRtNjNg==}
+    engines: {node: '>=18.12'}
+
+  '@pnpm/lockfile.types@1002.1.1':
+    resolution: {integrity: sha512-XiGDZ2WvRQp78DyoOq62A/G1/E81Zie6YzskAlpwBZJdiaY1CnAyH0uu7qc2TkBFECtNAkacLaecsA5hfMlExg==}
     engines: {node: '>=18.12'}
 
   '@pnpm/logger@1001.0.1':
@@ -2400,6 +2418,12 @@ packages:
     peerDependencies:
       '@pnpm/logger': ^1001.0.1
 
+  '@pnpm/pnpmfile@1002.1.14':
+    resolution: {integrity: sha512-rZmEw55EJ+Th9fSxt47nQJ8eLGZF3MQV7qGS5bR6yjNp0V/TVm3WS9xP8ptkhzkvCprq1936y8/1KehfsWTt7w==}
+    engines: {node: '>=18.12'}
+    peerDependencies:
+      '@pnpm/logger': ^1001.0.1
+
   '@pnpm/ramda@0.28.1':
     resolution: {integrity: sha512-zcAG+lvU0fMziNeGXpPyCyCJYp5ZVrPElEE4t14jAmViaihohocZ+dDkcRIyAomox8pQsuZnv1EyHR+pOhmUWw==}
 
@@ -2413,12 +2437,20 @@ packages:
     resolution: {integrity: sha512-47zGgACkbZWLOmM61kaE0nkqxiYx63C6DJ4wzDsdj0iXDZJ9SJEl+T035pkhquHe8XEh3YxvwMg2BRyZSgmZ9Q==}
     engines: {node: '>=18.12'}
 
+  '@pnpm/resolver-base@1005.4.2':
+    resolution: {integrity: sha512-Waep4c35ClE6VRs2SuXKJEAO9vapil8zLg8iXgSpWg4sz27GZABJGJ5LRAw0RUNDNh1URYy094sHUugJqnEhyw==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/semver.peer-range@1000.0.0':
     resolution: {integrity: sha512-r6VzkrdH7ZKjPmAogTNvxuV/UyS/xwHNme+ZuEFiG0UthZgqudDftYtKmG20fcfrjG1lgJbbWICA8KvZy7mmbw==}
     engines: {node: '>=18.12'}
 
   '@pnpm/store-controller-types@1004.5.1':
     resolution: {integrity: sha512-UT6UpPIuebGhYEldceeprZZn3/NWS4CGOvObxbrfRRVPoBhJTYZwC9rg5rPooTpPH+LiSGLRHc34lPMIQzn7NQ==}
+    engines: {node: '>=18.12'}
+
+  '@pnpm/store-controller-types@1004.5.2':
+    resolution: {integrity: sha512-4C8VRdwROHHnY2oRdRlxLxGvkAWtamviHJqqnlnJpoQSTHMEUBDg2eZMu9Sj4CHsqNngXiGyPyy7tBX5WajRZw==}
     engines: {node: '>=18.12'}
 
   '@pnpm/text.comments-parser@1000.0.0':
@@ -9717,6 +9749,37 @@ snapshots:
       realpath-missing: 1.1.0
       which: '@pnpm/which@3.0.1'
 
+  '@pnpm/config@1004.11.1(@pnpm/logger@1001.0.1)':
+    dependencies:
+      '@pnpm/catalogs.config': 1000.0.6
+      '@pnpm/catalogs.types': 1000.0.0
+      '@pnpm/config.env-replace': 3.0.2
+      '@pnpm/constants': 1001.3.1
+      '@pnpm/error': 1000.1.0
+      '@pnpm/git-utils': 1000.0.0
+      '@pnpm/logger': 1001.0.1
+      '@pnpm/matcher': 1000.1.0
+      '@pnpm/npm-conf': 3.0.2
+      '@pnpm/pnpmfile': 1002.1.14(@pnpm/logger@1001.0.1)
+      '@pnpm/read-project-manifest': 1001.2.6(@pnpm/logger@1001.0.1)
+      '@pnpm/types': 1001.3.0
+      '@pnpm/workspace.read-manifest': 1000.3.1
+      better-path-resolve: 1.0.0
+      camelcase: 6.3.0
+      camelcase-keys: 6.2.2
+      can-write-to-dir: 1.1.1
+      ci-info: 3.9.0
+      is-subdir: 1.2.0
+      is-windows: 1.0.2
+      lodash.kebabcase: 4.1.1
+      normalize-registry-url: 2.0.1
+      path-absolute: 1.0.1
+      path-name: 1.0.0
+      ramda: '@pnpm/ramda@0.28.1'
+      read-ini-file: 4.0.0
+      realpath-missing: 1.1.0
+      which: '@pnpm/which@3.0.1'
+
   '@pnpm/constants@1001.3.1': {}
 
   '@pnpm/core-loggers@1001.0.9(@pnpm/logger@1001.0.1)':
@@ -9742,6 +9805,12 @@ snapshots:
       '@pnpm/types': 1001.3.0
       '@types/ssri': 7.1.5
 
+  '@pnpm/fetcher-base@1001.2.3':
+    dependencies:
+      '@pnpm/resolver-base': 1005.4.2
+      '@pnpm/types': 1001.3.0
+      '@types/ssri': 7.1.5
+
   '@pnpm/git-utils@1000.0.0':
     dependencies:
       execa: safe-execa@0.1.2
@@ -9755,10 +9824,21 @@ snapshots:
       '@pnpm/lockfile.types': 1002.1.0
       '@pnpm/types': 1001.3.0
 
+  '@pnpm/hooks.types@1001.0.21':
+    dependencies:
+      '@pnpm/lockfile.types': 1002.1.1
+      '@pnpm/types': 1001.3.0
+
   '@pnpm/lockfile.types@1002.1.0':
     dependencies:
       '@pnpm/patching.types': 1000.1.0
       '@pnpm/resolver-base': 1005.4.1
+      '@pnpm/types': 1001.3.0
+
+  '@pnpm/lockfile.types@1002.1.1':
+    dependencies:
+      '@pnpm/patching.types': 1000.1.0
+      '@pnpm/resolver-base': 1005.4.2
       '@pnpm/types': 1001.3.0
 
   '@pnpm/logger@1001.0.1':
@@ -9804,6 +9884,19 @@ snapshots:
       chalk: 4.1.2
       path-absolute: 1.0.1
 
+  '@pnpm/pnpmfile@1002.1.14(@pnpm/logger@1001.0.1)':
+    dependencies:
+      '@pnpm/core-loggers': 1001.0.9(@pnpm/logger@1001.0.1)
+      '@pnpm/crypto.hash': 1000.2.2
+      '@pnpm/error': 1000.1.0
+      '@pnpm/hooks.types': 1001.0.21
+      '@pnpm/lockfile.types': 1002.1.1
+      '@pnpm/logger': 1001.0.1
+      '@pnpm/store-controller-types': 1004.5.2
+      '@pnpm/types': 1001.3.0
+      chalk: 4.1.2
+      path-absolute: 1.0.1
+
   '@pnpm/ramda@0.28.1': {}
 
   '@pnpm/read-project-manifest@1001.2.6(@pnpm/logger@1001.0.1)':
@@ -9827,6 +9920,10 @@ snapshots:
     dependencies:
       '@pnpm/types': 1001.3.0
 
+  '@pnpm/resolver-base@1005.4.2':
+    dependencies:
+      '@pnpm/types': 1001.3.0
+
   '@pnpm/semver.peer-range@1000.0.0':
     dependencies:
       semver: 7.7.4
@@ -9835,6 +9932,12 @@ snapshots:
     dependencies:
       '@pnpm/fetcher-base': 1001.2.2
       '@pnpm/resolver-base': 1005.4.1
+      '@pnpm/types': 1001.3.0
+
+  '@pnpm/store-controller-types@1004.5.2':
+    dependencies:
+      '@pnpm/fetcher-base': 1001.2.3
+      '@pnpm/resolver-base': 1005.4.2
       '@pnpm/types': 1001.3.0
 
   '@pnpm/text.comments-parser@1000.0.0':

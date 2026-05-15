@@ -55,9 +55,10 @@ cd "../${skuba_temp_directory}" || exit 1
 echo "pnpm init"
 pnpm init
 
-# https://github.com/pnpm/pnpm/issues/10988
-unset npm_config_strict_dep_builds
-unset npm_config_trust_policy
+# pnpm v11 sets strictDepBuilds to true by default
+cat >pnpm-workspace.yaml <<'WORKSPACE'
+strictDepBuilds: false
+WORKSPACE
 
 echo "--- pnpm add --save-dev ${skuba_tar}"
 pnpm add --save-dev ${skuba_tar}

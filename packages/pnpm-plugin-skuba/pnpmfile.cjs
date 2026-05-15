@@ -18,7 +18,6 @@ const defaultConfig = {
     'unrs-resolver': true,
   },
   blockExoticSubdeps: true,
-  ignorePatchFailures: false,
 
   minimumReleaseAge: 4320,
   minimumReleaseAgeExclude: [
@@ -33,7 +32,9 @@ const defaultConfig = {
     'tsconfig-seek',
   ],
 
-  packageManagerStrictVersion: true,
+  // @ts-ignore - TODO: Remove when pnpm updates their types
+  pmOnFail: 'error',
+
   publicHoistPattern: [
     '@arethetypeswrong/core',
     '@eslint/*',

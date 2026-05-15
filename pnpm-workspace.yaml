@@ -17,7 +17,6 @@ allowBuilds:
   unix-dgram: true # Managed by skuba
   unrs-resolver: true # Managed by skuba
 blockExoticSubdeps: true # Managed by skuba
-ignorePatchFailures: false # Managed by skuba
 minimumReleaseAge: 4320 # Managed by skuba
 minimumReleaseAgeExclude:
   - '@seek/*' # Managed by skuba
@@ -33,8 +32,8 @@ minimumReleaseAgeExclude:
 overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
-packageManagerStrictVersion: true # Managed by skuba
 
+pmOnFail: error # Managed by skuba
 publicHoistPattern:
   - remark-lint-*
   - '@arethetypeswrong/core' # Managed by skuba
