@@ -95,7 +95,7 @@
     "concurrently": "^9.0.0",
     "ejs": "^5.0.0",
     "esbuild": "~0.28.0",
-    "eslint": "^9.39.1",
+    "eslint": "^10.0.0",
     "eslint-config-skuba": "workspace:*",
     "execa": "^9.6.1",
     "fast-glob": "^3.3.2",
