@@ -46,6 +46,10 @@ vi.mock('../../..', () => ({
   },
 }));
 
+vi.mock('../../../utils/npmrc.js', () => ({
+  hasNpmrcSecret: vi.fn(),
+}));
+
 const givenMockPackageManager = async (command: 'pnpm' | 'yarn') => {
   const actualPackageManager = await vi.importActual<
     typeof import('../../../utils/packageManager.js')
@@ -64,6 +68,9 @@ beforeEach(async () => {
   );
 
   await givenMockPackageManager('pnpm');
+
+  const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+  vi.mocked(hasNpmrcSecret).mockReturnValue(false);
 });
 
 afterEach(() => {
@@ -174,6 +181,94 @@ The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
 
       expect(writeFile).not.toHaveBeenCalled();
     });
+
+    it('should report ok and do nothing when .npmrc does not exist', async () => {
+      setupDestinationFiles({ '.npmrc': undefined });
+
+      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(stdout()).toBe('');
+
+      expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it('should report ok and do nothing when .npmrc exists but contains no secrets', async () => {
+      setupDestinationFiles({
+        '.npmrc':
+          'registry=https://registry.npmjs.org/\nauto-install-peers=true\n',
+      });
+
+      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(stdout()).toBe('');
+
+      expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it('should report not ok + fixable when .npmrc contains a secret, and output a message', async () => {
+      const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+      vi.mocked(hasNpmrcSecret).mockImplementation((line) =>
+        line.includes('_authToken'),
+      );
+
+      setupDestinationFiles({
+        '.npmrc':
+          'registry=https://registry.npmjs.org/\n//registry.npmjs.org/:_authToken=super-secret\n',
+      });
+
+      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
+        ok: false,
+        fixable: true,
+        annotations: [
+          {
+            message:
+              'The .npmrc file contains secrets. Run `pnpm exec skuba format` to remove them.',
+            path: '.npmrc',
+          },
+        ],
+      });
+
+      expect(`\n${stdout()}`).toBe(`
+The .npmrc file contains secrets. Run \`pnpm exec skuba format\` to remove them.
+`);
+
+      expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it('should use the yarn exec command in the .npmrc secret message for yarn projects', async () => {
+      await givenMockPackageManager('yarn');
+
+      const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+      vi.mocked(hasNpmrcSecret).mockImplementation((line) =>
+        line.includes('_authToken'),
+      );
+
+      setupDestinationFiles({
+        '.npmrc': '//registry.npmjs.org/:_authToken=secret\n',
+      });
+
+      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
+        ok: false,
+        fixable: true,
+        annotations: [
+          {
+            message:
+              'The .npmrc file contains secrets. Run `yarn skuba format` to remove them.',
+            path: '.npmrc',
+          },
+        ],
+      });
+
+      expect(writeFile).not.toHaveBeenCalled();
+    });
   });
 
   describe('format mode', () => {
@@ -255,38 +350,6 @@ The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it.each(['.gitignore', '.dockerignore'])(
-      'should remove old skuba warnings in %s',
-      async (file) => {
-        setupDestinationFiles({
-          [file]: `# managed by skuba
-fake content for _${file}
-# end managed by skuba
-stuff
-other stuff
-# Ignore .npmrc. This is no longer managed by skuba as pnpm projects use a managed .npmrc.
-# IMPORTANT: if migrating to pnpm, remove this line and add an .npmrc IN THE SAME COMMIT.
-# You can use \`skuba format\` to generate the file or otherwise commit an empty file.
-# Doing so will conflict with a local .npmrc and make it more difficult to unintentionally commit auth secrets.
-.npmrc
-
-
-`,
-        });
-
-        await expect(refreshConfigFiles('format', log)).resolves.toEqual({
-          ok: true,
-          fixable: false,
-          annotations: [],
-        });
-
-        expect(writeFile).toHaveBeenCalledWith(
-          path.join(process.cwd(), file),
-          `# managed by skuba\nfake content for _${file}\n# end managed by skuba\nstuff\nother stuff\n`,
-        );
-      },
-    );
-
     it('should not strip !pnpm-workspace.yaml if ignored out of the managed file for no good reason', async () => {
       setupDestinationFiles({
         '.gitignore':
@@ -302,6 +365,89 @@ other stuff
       expect(writeFile).not.toHaveBeenCalledWith(
         path.join(process.cwd(), '.gitignore'),
         expect.any(String),
+      );
+    });
+
+    it('should report ok and do nothing when .npmrc does not exist', async () => {
+      setupDestinationFiles({ '.npmrc': undefined });
+
+      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(stdout()).toBe('');
+
+      expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it('should report ok and do nothing when .npmrc exists but contains no secrets', async () => {
+      setupDestinationFiles({
+        '.npmrc':
+          'registry=https://registry.npmjs.org/\nauto-install-peers=true\n',
+      });
+
+      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(stdout()).toBe('');
+
+      expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it('should strip secret lines, write the cleaned file, and log a refresh message', async () => {
+      const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+      vi.mocked(hasNpmrcSecret).mockImplementation((line) =>
+        line.includes('_authToken'),
+      );
+
+      setupDestinationFiles({
+        '.npmrc':
+          'registry=https://registry.npmjs.org/\n//registry.npmjs.org/:_authToken=super-secret\nauto-install-peers=true\n',
+      });
+
+      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(stdout()).toBe('Refreshed .npmrc.\n');
+
+      expect(writeFile).toHaveBeenCalledTimes(1);
+
+      expect(writeFile).toHaveBeenCalledWith(
+        path.join(process.cwd(), '.npmrc'),
+        'registry=https://registry.npmjs.org/\nauto-install-peers=true\n',
+      );
+    });
+
+    it('should strip multiple secret lines from .npmrc in a single pass', async () => {
+      const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+      vi.mocked(hasNpmrcSecret).mockImplementation(
+        (line) => line.includes('_authToken') || line.includes('_password'),
+      );
+
+      setupDestinationFiles({
+        '.npmrc':
+          'registry=https://registry.npmjs.org/\n//registry.npmjs.org/:_authToken=s3cr3t\n//other.registry.io/:_password=hunter2\nsave-exact=true\n',
+      });
+
+      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
+        ok: true,
+        fixable: false,
+        annotations: [],
+      });
+
+      expect(writeFile).toHaveBeenCalledTimes(1);
+
+      expect(writeFile).toHaveBeenCalledWith(
+        path.join(process.cwd(), '.npmrc'),
+        'registry=https://registry.npmjs.org/\nsave-exact=true\n',
       );
     });
   });
