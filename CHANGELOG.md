@@ -1,5 +1,11 @@
 # skuba
 
+## 16.0.6
+
+### Patch Changes
+
+- **migrate:** Set `redirectHandlers: false` for Serverless lambdas using Datadog without layers in ESM migration ([#2414](https://github.com/seek-oss/skuba/pull/2414))
+
 ## 16.0.5
 
 ### Patch Changes
