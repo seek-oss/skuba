@@ -1,5 +1,13 @@
 # skuba
 
+## 16.0.5
+
+### Patch Changes
+
+- **migrate:** Attempt to avoid displacing eslint-disable-next-line import-x/order lines in ESM migration ([#2412](https://github.com/seek-oss/skuba/pull/2412))
+
+- **deps:** execa 9.6.1 ([#2411](https://github.com/seek-oss/skuba/pull/2411))
+
 ## 16.0.4
 
 ### Patch Changes
