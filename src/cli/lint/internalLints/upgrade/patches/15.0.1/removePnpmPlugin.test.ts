@@ -139,8 +139,8 @@ describe('removePnpmPlugin', () => {
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
       ",
@@ -208,8 +208,8 @@ configDependencies:
         - tsdown # Managed by skuba
         - typescript # Managed by skuba
         - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
+      strictDepBuilds: true # Managed by skuba
+      trustPolicy: no-downgrade # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
       packages:
