@@ -33,7 +33,7 @@ describe('normaliseTemplate', () => {
         DD_TAGS:
           'git.commit.sha:abc123def456,git.repository_url:github.com/org/repo',
         other: 'stable-value',
-}),
+      }),
     ).toEqual({ other: 'stable-value' });
   });
 
