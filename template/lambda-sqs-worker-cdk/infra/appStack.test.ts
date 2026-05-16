@@ -1,5 +1,6 @@
 import { App, aws_secretsmanager, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
+import { Cdk } from 'skuba';
 import { afterAll, afterEach, expect, it, vi } from 'vitest';
 
 const originalDeployment = process.env.DEPLOYMENT;
@@ -39,25 +40,8 @@ it.each(['dev', 'prod'])(
 
     const template = Template.fromStack(stack);
 
-    const json = JSON.stringify(template.toJSON())
-      .replace(
-        /"S3Key":"([0-9a-f]+)\.zip"/g,
-        (_, hash) => `"S3Key":"${'x'.repeat(hash.length)}.zip"`,
-      )
-      .replace(
-        /workerCurrentVersion([0-9a-zA-Z]+)"/g,
-        (_, hash) => `workerCurrentVersion${'x'.repeat(hash.length)}"`,
-      )
-      .replaceAll(
-        /"Value":"\d+\.\d+\.\d+-([^"]+)"/g,
-        (_, hash) => `"Value": "x.x.x-${'x'.repeat(hash.length)}"`,
-      )
-      .replaceAll(/"Value":"v\d+\.\d+\.\d+"/g, (_) => `"Value": "vx.x.x"`)
-      .replace(
-        /"DD_TAGS":"git.commit.sha:([0-9a-f]+),git.repository_url:([^\"]+)",/g,
-        '',
-      )
-      .replaceAll(/(layer:Datadog-[^-]+-.+?:)\d+/g, (_, layer) => `${layer}x`);
-    expect(JSON.parse(json)).toMatchSnapshot();
+    const json = Cdk.normaliseTemplate(template.toJSON());
+
+    expect(json).toMatchSnapshot();
   },
 );
