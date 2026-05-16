@@ -36,43 +36,6 @@ it('should think of a good test case name', () => {
 });
 ```
 
-### Cdk
-
-Functions for working with CDK in tests.
-
-```typescript
-import { Cdk } from 'skuba-dive';
-```
-
-#### `Cdk.normaliseTemplate(template)`
-
-Strips volatile, environment-specific values from a CDK stack template to produce stable snapshots in tests.
-
-```typescript
-import { Template } from 'aws-cdk-lib/assertions';
-import { Cdk } from 'skuba-dive';
-
-expect(Cdk.normaliseTemplate(Template.fromStack(stack))).toMatchSnapshot();
-```
-
-The following values are normalised:
-
-- **S3 keys** — asset hashes replaced with `x` characters of equal length
-- **Worker versions** — `workerCurrentVersion<hash>` hashes replaced with `x` characters of equal length
-- **Semantic versions** — e.g. `1.2.3-<suffix>` → `x.x.x-xxxx`, `v1.2.3` → `vx.x.x`
-- **Datadog tags** — `DD_TAGS` containing `git.commit.sha` and `git.repository_url` removed entirely
-- **Datadog layer versions** — layer ARN version numbers replaced with `x`
-
-#### `Cdk.normaliseTemplateJson(json)`
-
-A lower-level alternative that operates directly on a JSON string, for cases where you need more control over serialisation.
-
-```typescript
-import { Cdk } from 'skuba-dive';
-
-const json = Cdk.normaliseTemplateJson(JSON.stringify(template.toJSON()));
-```
-
 ### Env
 
 Functions for reading values out of environment variables.
