@@ -10,8 +10,8 @@ describe('normaliseTemplate', () => {
   });
 
   it('replaces workerCurrentVersion hashes with x characters of equal length', () => {
-    expect(normaliseTemplate({ Ref: 'workerCurrentVersionAbc123"' })).toEqual({
-      Ref: 'workerCurrentVersionxxxxxx"',
+    expect(normaliseTemplate({ Ref: 'workerCurrentVersionAbc123' })).toEqual({
+      Ref: 'workerCurrentVersionxxxxxx',
     });
   });
 
@@ -32,8 +32,9 @@ describe('normaliseTemplate', () => {
       normaliseTemplate({
         DD_TAGS:
           'git.commit.sha:abc123def456,git.repository_url:github.com/org/repo',
-      }),
-    ).toEqual({});
+        other: 'stable-value',
+}),
+    ).toEqual({ other: 'stable-value' });
   });
 
   it('replaces Datadog layer version numbers with x', () => {
