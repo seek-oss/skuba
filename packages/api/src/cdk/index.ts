@@ -1,4 +1,4 @@
-export const normaliseTemplateJson = (json: string): string =>
+const normaliseTemplateJsonString = (json: string): string =>
   json
     .replace(
       /"S3Key":"([0-9a-f]+)\.zip"/g,
@@ -25,4 +25,4 @@ export const normaliseTemplateJson = (json: string): string =>
     );
 
 export const normaliseTemplate = (template: object): unknown =>
-  JSON.parse(normaliseTemplateJson(JSON.stringify(template)));
+  JSON.parse(normaliseTemplateJsonString(JSON.stringify(template)));
