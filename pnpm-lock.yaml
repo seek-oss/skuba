@@ -568,8 +568,8 @@ importers:
         specifier: ^3.363.0
         version: 3.1045.0
       '@seek/aws-codedeploy-hooks':
-        specifier: ^3.0.0
-        version: 3.1.0
+        specifier: ^4.0.0
+        version: 4.0.0
       '@seek/logger':
         specifier: ^12.0.0
         version: 12.0.0
@@ -2685,8 +2685,8 @@ packages:
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
 
-  '@seek/aws-codedeploy-hooks@3.1.0':
-    resolution: {integrity: sha512-cI1hNcIXtlqsriCx4IFuDA5QcpJwJnGxtqoMU9BRpipcDuUYRSswGBUXZ+p1jfSlsuPUgTyOEOqoqN8WFJzSug==}
+  '@seek/aws-codedeploy-hooks@4.0.0':
+    resolution: {integrity: sha512-QHeyGAunkN/BgfEYufFBu0LPH8lSGXINY6M49yxGZxBpO9T0wEN7LCFicfm0+4BsofCT9vnXmphxZq9sstgtmg==}
     engines: {node: '>=22.14.0'}
 
   '@seek/aws-codedeploy-infra@4.1.1':
@@ -2762,6 +2762,7 @@ packages:
   '@smithy/core@3.24.0':
     resolution: {integrity: sha512-rZ5YfycIXX6puoGjthnDiMpUgtKNOq3c7CndQYkCNYQTv26AiCrZQOJPy7ANSfZ6Okk3UvCRnmO1OYWlLnYZgg==}
     engines: {node: '>=18.0.0'}
+    deprecated: Deprecated due to incompatibility with Node.js 18 in some environments https://github.com/smithy-lang/smithy-typescript/issues/2022
 
   '@smithy/credential-provider-imds@4.3.0':
     resolution: {integrity: sha512-5gi+28FH+RurB2+tcRH1CK7KiLJ0dVnabjWLY3DgeFLiU45dbyrsq7NOYvMUcHgu9LVZH5F7G+Qk1GdXF0y6jg==}
@@ -10001,7 +10002,7 @@ snapshots:
 
   '@sec-ant/readable-stream@0.4.1': {}
 
-  '@seek/aws-codedeploy-hooks@3.1.0': {}
+  '@seek/aws-codedeploy-hooks@4.0.0': {}
 
   '@seek/aws-codedeploy-infra@4.1.1':
     dependencies:
