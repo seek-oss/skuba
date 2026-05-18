@@ -99,7 +99,7 @@ CMD ["node", "lib/listen.js"]`,
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "Dockerfile": "FROM node:14
-      CMD ["node", "--import", "dd-trace/initialize.mjs", "lib/listen.js"]",
+      CMD ["node", "--import", "dd-trace/register.js", "lib/listen.js"]",
         "src/index.ts": "import tracer from 'dd-trace';",
       }
     `);
@@ -216,7 +216,7 @@ CMD ["node", "lib/listen.js"]`,
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "Dockerfile": "FROM node:14
-      CMD ["node", TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile "--import", "dd-trace/initialize.mjs", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
+      CMD ["node", TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile "--import", "dd-trace/register.js", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
         "package.json": "{
         "name": "test",
         "version": "1.0.0",
@@ -250,7 +250,7 @@ CMD ["lib/listen.js"]`,
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "Dockerfile": "FROM node:14
-      CMD ["--import", "dd-trace/initialize.mjs", "lib/listen.js"]",
+      CMD ["--import", "dd-trace/register.js", "lib/listen.js"]",
         "src/index.ts": "import tracer from 'dd-trace';",
       }
     `);
@@ -323,7 +323,7 @@ CMD ["lib/listen.js"]`,
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "Dockerfile": "FROM node:14
-      CMD [TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile "--import", "dd-trace/initialize.mjs", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
+      CMD [TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile "--import", "dd-trace/register.js", "--experimental-loader", "@opentelemetry/instrumentation/hook.mjs", "lib/listen.js"]",
         "package.json": "{
         "name": "test",
         "version": "1.0.0",
@@ -354,7 +354,7 @@ CMD node lib/listen.js`,
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "Dockerfile": "FROM node:14
-      CMD node --import dd-trace/initialize.mjs lib/listen.js",
+      CMD node --import dd-trace/register.js lib/listen.js",
         "src/index.ts": "import tracer from 'dd-trace';",
       }
     `);
@@ -427,7 +427,7 @@ CMD node lib/listen.js`,
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "Dockerfile": "FROM node:14
-      CMD node TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile --import dd-trace/initialize.mjs --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
+      CMD node TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile --import dd-trace/register.js --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
         "package.json": "{
         "name": "test",
         "version": "1.0.0",
@@ -476,7 +476,7 @@ CMD lib/listen.js`,
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "Dockerfile": "FROM node:14
-      CMD TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile --import dd-trace/initialize.mjs --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
+      CMD TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile --import dd-trace/register.js --experimental-loader @opentelemetry/instrumentation/hook.mjs lib/listen.js",
         "package.json": "{
         "name": "test",
         "version": "1.0.0",
