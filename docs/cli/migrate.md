@@ -630,6 +630,49 @@ You can suppress these headers by adding the following to your Vitest setup file
   });
 ```
 
+#### Dynamic require of X is not supported
+
+`esbuild` has limited support for bundling CommonJS modules in ESM projects.
+
+You may encounter errors like `Dynamic require of X is not supported` when deploying your lambdas.
+
+To resolve this, first try switching to an ESM version of the package if available.
+
+Otherwise, mark the problematic module as external in your `esbuild` configuration.
+
+As a last resort, add a banner to shim dynamic requires — though this can cause unexpected issues and obscures which modules rely on CommonJS features.
+
+CDK:
+
+```diff
+const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+  ...
+  bundling: {
+    ...
+    esbuildArgs: {
+      // required for @seek/logger
+-     external: ['pino'],
++     external: ['pino', 'problematic-module'],
+      // or
++     banner: 'import { createRequire } from "module";\nconst require = createRequire(import.meta.url);',
+    },
+  }
+});
+```
+
+Serverless:
+
+```diff
+build:
+  esbuild:
+  external:
+    - pino
++   - problematic-module
+  # or
++ banner:
++   js: 'import { createRequire } from "module";\nconst require = createRequire(import.meta.url);'
+```
+
 #### esbuild
 
 If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration for ESM compatibility.
