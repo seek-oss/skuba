@@ -634,7 +634,7 @@ You can suppress these headers by adding the following to your Vitest setup file
 
 `esbuild` has limited support for bundling CommonJS modules in ESM projects.
 
-You may encounter errors like `Dynamic require of X is not supported` when running tests after the migration.
+You may encounter errors like `Dynamic require of X is not supported` when deploying your lambdas.
 
 To resolve this, first try switching to an ESM version of the package if available.
 
