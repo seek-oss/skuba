@@ -636,9 +636,11 @@ You can suppress these headers by adding the following to your Vitest setup file
 
 You may encounter errors like `Dynamic require of X is not supported` when running tests after the migration.
 
-To resolve this, mark the problematic module as an external dependency in your `esbuild` configuration.
+To resolve this, first try switching to an ESM version of the package if available.
 
-If that's not possible, add a banner to shim dynamic requires. Prefer the external dependency approach when possible as shimming can cause unexpected issues and obscures which modules depend on CommonJS features.
+Otherwise, mark the problematic module as external in your `esbuild` configuration.
+
+As a last resort, add a banner to shim dynamic requires—though this can cause unexpected issues and obscures which modules rely on CommonJS features.
 
 CDK:
 
