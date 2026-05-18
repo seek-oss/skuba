@@ -640,7 +640,7 @@ To resolve this, first try switching to an ESM version of the package if availab
 
 Otherwise, mark the problematic module as external in your `esbuild` configuration.
 
-As a last resort, add a banner to shim dynamic requires—though this can cause unexpected issues and obscures which modules rely on CommonJS features.
+As a last resort, add a banner to shim dynamic requires — though this can cause unexpected issues and obscures which modules rely on CommonJS features.
 
 CDK:
 
