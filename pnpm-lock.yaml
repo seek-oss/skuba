@@ -581,8 +581,8 @@ importers:
         version: 4.4.3
     devDependencies:
       '@seek/aws-codedeploy-infra':
-        specifier: ^4.0.0
-        version: 4.1.1
+        specifier: ^5.0.0
+        version: 5.0.0
       '@types/aws-lambda':
         specifier: ^8.10.82
         version: 8.10.161
@@ -611,8 +611,8 @@ importers:
         specifier: ^10.0.17
         version: 10.6.0
       datadog-cdk-constructs-v2:
-        specifier: ^3.6.0
-        version: 3.12.0(aws-cdk-lib@2.252.0(constructs@10.6.0))(constructs@10.6.0)
+        specifier: ^4.0.0
+        version: 4.1.0(aws-cdk-lib@2.252.0(constructs@10.6.0))(constructs@10.6.0)
       datadog-lambda-js:
         specifier: ^12.0.0
         version: 12.137.0
@@ -2689,8 +2689,8 @@ packages:
     resolution: {integrity: sha512-QHeyGAunkN/BgfEYufFBu0LPH8lSGXINY6M49yxGZxBpO9T0wEN7LCFicfm0+4BsofCT9vnXmphxZq9sstgtmg==}
     engines: {node: '>=22.14.0'}
 
-  '@seek/aws-codedeploy-infra@4.1.1':
-    resolution: {integrity: sha512-DI1ZpjFt6qXzkrf8dzobnfyhlXa/uYvdmP8FYoOnnCWlMApAxDdKkKzkQcw0AzH4Xlmy31E13hl/+RpBgzMfxQ==}
+  '@seek/aws-codedeploy-infra@5.0.0':
+    resolution: {integrity: sha512-cMKulTJRdE1DXi+APtj0UF/qGktikxtfnVmkCH4IB2W2f5WVB0RwncJELvGWXLaUFRqJUlg9na6vSFChkHgXUw==}
     engines: {node: '>=22.14.0'}
 
   '@seek/logger@12.0.0':
@@ -3920,11 +3920,11 @@ packages:
     resolution: {integrity: sha512-BS8PfmtDGnrgYdOonGZQdLZslWIeCGFP9tpan0hi1Co2Zr2NKADsvGYA8XxuG/4UWgJ6Cjtv+YJnB6MM69QGlQ==}
     engines: {node: '>= 0.4'}
 
-  datadog-cdk-constructs-v2@3.12.0:
-    resolution: {integrity: sha512-4S3ItpzqQ8nD8rd22dHrWV6vHz1pBzTULE+s7ekrhGzux/DB3bt0yJk9LStDepxpwKe5XEVs9d+rGsKdBc1FdA==}
-    engines: {node: '>= 20.16.0'}
+  datadog-cdk-constructs-v2@4.1.0:
+    resolution: {integrity: sha512-GF5LFcWlhDm1bj+ZBP3hXZajLhvllBXcBGadoNGatXssDzo09ocJfairiC+tcniJsuSNE3ozpGDUolYZxacgcQ==}
+    engines: {node: '>= 22.0.0'}
     peerDependencies:
-      aws-cdk-lib: ^2.245.0
+      aws-cdk-lib: ^2.253.0
       constructs: ^10.5.1
     bundledDependencies:
       - loglevel
@@ -10004,7 +10004,7 @@ snapshots:
 
   '@seek/aws-codedeploy-hooks@4.0.0': {}
 
-  '@seek/aws-codedeploy-infra@4.1.1':
+  '@seek/aws-codedeploy-infra@5.0.0':
     dependencies:
       '@seek/logger': 12.0.0
       '@types/aws-lambda': 8.10.161
@@ -11382,7 +11382,7 @@ snapshots:
       es-errors: 1.3.0
       is-data-view: 1.0.2
 
-  datadog-cdk-constructs-v2@3.12.0(aws-cdk-lib@2.252.0(constructs@10.6.0))(constructs@10.6.0):
+  datadog-cdk-constructs-v2@4.1.0(aws-cdk-lib@2.252.0(constructs@10.6.0))(constructs@10.6.0):
     dependencies:
       aws-cdk-lib: 2.252.0(constructs@10.6.0)
       constructs: 10.6.0
