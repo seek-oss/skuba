@@ -206,6 +206,12 @@ You will need to manually install `vitest` and `@vitest/coverage-istanbul` as de
 pnpm add -DE vitest @vitest/coverage-istanbul
 ```
 
+To re-run the Vitest migration, you will need to set the `SKUBA_FORCE_MIGRATE_VITEST` environment variable to `true`:
+
+```shell
+SKUBA_FORCE_MIGRATE_VITEST=true skuba migrate esm
+```
+
 ### Migration changes
 
 The following changes are made:
