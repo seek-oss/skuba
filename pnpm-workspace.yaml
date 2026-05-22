@@ -58,3 +58,5 @@ trustPolicyExclude:
 
 strictDepBuilds: false # Managed by skuba
 trustPolicy: off # Managed by skuba
+
+injectWorkspacePackages: true

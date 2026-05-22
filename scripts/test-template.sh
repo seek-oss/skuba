@@ -12,7 +12,7 @@ fi
 
 template="${1}"
 
-echo "--- testing template ${update_snapshot}, ${template}"
+echo "--- testing template: ${template}" with update snapshot: ${update_snapshot}, 
 if [ -z "$template" ]; then
   echo "Usage: pnpm test:template <template_name>"
   exit 1
@@ -24,48 +24,19 @@ pnpm install --frozen-lockfile
 echo '--- pnpm build'
 pnpm build
 
-echo '--- pnpm pack'
-# Aaron Moat is sure there's a better way to do this
-skuba_lib_api_tar="$(pwd)/packages/api/$(cd packages/api && pnpm pack | grep -o 'skuba-lib-api-.*\.tgz')"
-eslint_plugin_skuba_tar="$(pwd)/packages/eslint-plugin-skuba/$(cd packages/eslint-plugin-skuba && pnpm pack | grep -o 'eslint-plugin-skuba-.*\.tgz')"
-vitest_koa_mocks_tar="$(pwd)/packages/vitest-koa-mocks/$(cd packages/vitest-koa-mocks && pnpm pack | grep -o 'skuba-lib-vitest-koa-mocks-.*\.tgz')"
-pnpm_plugin_skuba_tar="$(pwd)/packages/pnpm-plugin-skuba/$(cd packages/pnpm-plugin-skuba && pnpm pack | grep -o 'pnpm-plugin-skuba-.*\.tgz')"
-jq ".dependencies[\"eslint-plugin-skuba\"] = \"file:${eslint_plugin_skuba_tar}\"" packages/eslint-config-skuba/package.json > packages/eslint-config-skuba/package.json.tmp
-mv packages/eslint-config-skuba/package.json packages/eslint-config-skuba/package.json.bak
-mv packages/eslint-config-skuba/package.json.tmp packages/eslint-config-skuba/package.json
-eslint_config_skuba_tar="$(pwd)/packages/eslint-config-skuba/$(cd packages/eslint-config-skuba && pnpm pack | grep -o 'eslint-config-skuba-.*\.tgz')"
-mv packages/eslint-config-skuba/package.json.bak packages/eslint-config-skuba/package.json
-
-jq ".dependencies[\"eslint-config-skuba\"] = \"file:${eslint_config_skuba_tar}\" | .dependencies[\"@skuba-lib/api\"] = \"file:${skuba_lib_api_tar}\" | .dependencies[\"@skuba-lib/vitest-koa-mocks\"] = \"file:${vitest_koa_mocks_tar}\" | .dependencies[\"pnpm-plugin-skuba\"] = \"file:${pnpm_plugin_skuba_tar}\"" package.json > package.json.tmp
-mv package.json package.json.bak
-mv package.json.tmp package.json
-skuba_tar="$(pwd)/$(pnpm pack | grep -o 'skuba-.*\.tgz')"
-mv package.json.bak package.json
-
 skuba_temp_directory='tmp-skuba'
 
 echo '--- cleanup'
-rm -rf "../${skuba_temp_directory}"
+rm -rf "../${skuba_temp_directory}" || true
 
-echo "--- setting up ${skuba_temp_directory}"
-mkdir "../${skuba_temp_directory}"
+echo '--- pnpm deploy'
+pnpm deploy --filter . "../${skuba_temp_directory}"
 
 cd "../${skuba_temp_directory}" || exit 1
-
-echo "pnpm init"
-pnpm init
-
-# https://github.com/pnpm/pnpm/issues/10988
-unset npm_config_strict_dep_builds
-unset npm_config_trust_policy
-
-echo "--- pnpm add --save-dev ${skuba_tar}"
-pnpm add --save-dev ${skuba_tar}
-
-directory="./tmp-${template}"
+skuba_temp_install_directory="$(pwd)"
 
 echo "--- skuba init ${template}"
-SKUBA_INTEGRATION_TEST=true pnpm exec skuba init << EOF
+SKUBA_INTEGRATION_TEST=true node ./lib/skuba.js init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
@@ -92,8 +63,8 @@ EOF
 
 cd "${directory}" || exit 1
 
-echo "--- pnpm add --save-dev ${skuba_tar}"
-pnpm add --save-dev ${skuba_tar}
+echo "--- pnpm add --save-dev ${skuba_temp_install_directory}"
+pnpm add --save-dev ${skuba_temp_install_directory}
 
 echo "--- skuba version ${template}"
 pnpm exec skuba version
