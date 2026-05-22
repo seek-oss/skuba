@@ -34,6 +34,7 @@ pnpm deploy --filter . "../${skuba_temp_directory}"
 
 cd "../${skuba_temp_directory}" || exit 1
 skuba_temp_install_directory="$(pwd)"
+directory="./tmp-${template}"
 
 echo "--- skuba init ${template}"
 SKUBA_INTEGRATION_TEST=true node ./lib/skuba.js init << EOF
