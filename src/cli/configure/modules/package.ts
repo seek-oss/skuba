@@ -4,19 +4,19 @@ import { withPackage } from '../processing/package.js';
 import { merge } from '../processing/record.js';
 import type { Module, Options } from '../types.js';
 
-const DEFAULT_PACKAGE_FILES = [
-  'lib*/**/*.d.ts',
-  'lib*/**/*.js',
-  'lib*/**/*.js.map',
-  'lib*/**/*.json',
-];
+import { getOwnerAndRepo } from '@skuba-lib/api/git';
+
+const DEFAULT_PACKAGE_FILES = ['lib'];
 
 export const packageModule = async ({
   entryPoint,
   packageManager,
   type,
 }: Options): Promise<Module> => {
-  const version = await getSkubaVersion();
+  const [{ repo }, version] = await Promise.all([
+    getOwnerAndRepo({ dir: process.cwd() }),
+    getSkubaVersion(),
+  ]);
 
   const initialData = {
     private: type !== 'package',
@@ -105,9 +105,17 @@ export const packageModule = async ({
 
           // Align with the required syntax for package.json#/paths
           if (outputData.scripts.build === 'skuba build-package') {
-            outputData.main = './lib-commonjs/index.js';
-            outputData.module = './lib-es2015/index.js';
-            outputData.types = './lib-types/index.d.ts';
+            outputData.main = './lib/index.cjs';
+            outputData.module = './lib/index.mjs';
+            outputData.types = './lib/index.d.cts';
+            outputData.exports = {
+              '.': {
+                [`@seek/${repo}/source`]: './src/index.ts',
+                require: './lib/index.cjs',
+                import: './lib/index.mjs',
+              },
+              './package.json': './package.json',
+            };
           } else {
             outputData.main = './lib/index.js';
             outputData.module = './lib/index.js';
