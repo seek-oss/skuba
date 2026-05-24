@@ -52,7 +52,6 @@ describe('patchPnpmWorkspace', () => {
         unix-dgram: true # Managed by skuba
         unrs-resolver: true # Managed by skuba
       blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -64,7 +63,7 @@ describe('patchPnpmWorkspace', () => {
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
+      pmOnFail: error # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
@@ -144,7 +143,6 @@ trustPolicyExclude:
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -156,7 +154,7 @@ trustPolicyExclude:
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
+      pmOnFail: error # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       # This is a comment
@@ -300,9 +298,9 @@ packageManagerStrictVersion: false`,
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
+      ignorePatchFailures: true
       strictDepBuilds: false # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba"
+      packageManagerStrictVersion: false"
     `);
   });
 
@@ -332,7 +330,6 @@ allowBuilds:
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@seek/*' # Managed by skuba
@@ -344,7 +341,7 @@ allowBuilds:
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
+      pmOnFail: error # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
       publicHoistPattern:
