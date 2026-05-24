@@ -7,10 +7,7 @@ import fs from 'fs-extra';
 import { copyFiles } from '../../utils/copy.js';
 import { isErrorWithCode } from '../../utils/error.js';
 import { log } from '../../utils/logging.js';
-import {
-  DEFAULT_PACKAGE_MANAGER,
-  configForPackageManager,
-} from '../../utils/packageManager.js';
+import { DEFAULT_PACKAGE_MANAGER } from '../../utils/packageManager.js';
 import { getRandomPort } from '../../utils/port.js';
 import {
   TEMPLATE_CONFIG_FILENAME,
@@ -138,13 +135,7 @@ const cloneTemplate = async (
 
   if (isCustomTemplate) {
     log.newline();
-    log.warn(
-      'You may need to run',
-      log.bold(
-        `${configForPackageManager(templateConfig.packageManager).print.exec} skuba configure`,
-      ),
-      'once this is done.',
-    );
+    log.warn('You may need to manually complete templating once this is done.');
   }
 
   return templateConfig;
@@ -293,9 +284,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   }
 
   log.newline();
-  log.warn(
-    `Resume this later with ${styleText('bold', `${configForPackageManager(packageManager).print.exec} skuba configure`)}.`,
-  );
+  log.warn('Templating has been skipped. Complete it manually before running.');
 
   const customAnswers = generatePlaceholders(fields);
 

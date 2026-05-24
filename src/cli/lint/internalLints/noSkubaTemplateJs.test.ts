@@ -50,14 +50,14 @@ describe('noSkubaTemplateJs', () => {
         fixable: false,
         annotations: [
           {
-            message: 'Template is incomplete; run pnpm exec skuba configure.',
+            message: 'Template is incomplete; complete templating manually.',
             path: 'skuba.template.js',
           },
         ],
       });
 
       expect(stdout()).toBe(
-        'Template is incomplete; run pnpm exec skuba configure. no-skuba-template-js\n',
+        'Template is incomplete; complete templating manually. no-skuba-template-js\n',
       );
 
       expect(pathExists).toHaveBeenCalledTimes(1);

@@ -10,9 +10,6 @@ nav_order: 1
 **skuba** can guide you through an interactive prompt to initialise a new directory and Git repository for your project.
 It includes a set of starter [templates] that reflect the typical components of a core SEEK service.
 
-If you are looking to bootstrap an existing project,
-see [`skuba configure`].
-
 ---
 
 ## skuba init
@@ -81,7 +78,7 @@ This template uses the following information:
   yes
 ❯ no
 
-Resume this later with pnpm exec skuba configure.
+Templating has been skipped. Complete it manually before running.
 ```
 
 `skuba init` will take a while to install some initial dependencies,
@@ -197,21 +194,12 @@ skuba lint
 
 If you skipped templating earlier,
 [`skuba lint`] will complain that you haven't finished it.
-
-Once you're ready, run [`skuba configure`]:
-
-```shell
-skuba configure
-```
-
-You can grep your directory for the values you enter to figure out where they are used,
-and you can always change them later.
+Complete the placeholder values in your project files manually.
 
 ### README checklist
 
 Each built-in template has a `README.md` that contains a checklist of next steps to take your project to production.
 
-[`skuba configure`]: ./configure.md#skuba-configure
 [`skuba lint`]: ./lint.md#skuba-lint
 [buildkite pipeline]: https://buildkite.com/docs/pipelines/defining-steps
 [cli]: ./index.md

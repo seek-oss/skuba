@@ -14,7 +14,6 @@ export const COMMAND_DIR = path.join(import.meta.dirname, '..', 'cli');
 export const COMMAND_LIST = [
   'build',
   'build-package',
-  'configure',
   'format',
   'help',
   'init',
