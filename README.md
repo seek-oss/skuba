@@ -40,7 +40,7 @@ pnpm install
 pnpm exec skuba help
 ```
 
-When starting a new project, using the latest version is recommended:
+When starting a new project, you may hotload the package with a reasonable `minimumReleaseAge`:
 
 ```shell
 pnpm --config.minimumReleaseAge=4320 dlx skuba init
