@@ -43,7 +43,7 @@ pnpm exec skuba help
 When starting a new project, using the latest version is recommended:
 
 ```shell
-pnpm dlx skuba init
+pnpm --config.minimumReleaseAge=4320 dlx skuba init
 ```
 
 If you're new here, jump ahead to the [CLI] section to [create a new project] or [update an existing one].
