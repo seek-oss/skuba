@@ -7,7 +7,11 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { removePnpmPlugin } from './removePnpmPlugin.js';
 
-vi.mock('../../../../../../utils/exec.js');
+vi.mock('../../../../../../utils/exec.js', () => ({
+  exec: vi.fn(),
+  createExec: vi.fn().mockImplementation(() => vi.fn()),
+}));
+
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
   ...memfs.fs,
