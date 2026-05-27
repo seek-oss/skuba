@@ -147,6 +147,32 @@ const applyDeleteEdits = async (
             },
           },
         })),
+        {
+          kind: 'block_sequence_item',
+          precedes: {
+            kind: 'comment',
+            regex: '# Managed by skuba',
+          },
+          has: {
+            kind: 'flow_node',
+          },
+          inside: {
+            kind: 'block_sequence',
+            inside: {
+              kind: 'block_node',
+              inside: {
+                kind: 'block_mapping_pair',
+                has: {
+                  kind: 'flow_node',
+                  field: 'key',
+                  not: {
+                    regex: `^${wrapOptionalQuotesRegex(arrayValues.map(([key]) => escapeRegex(key)).join('|'))}$`,
+                  },
+                },
+              },
+            },
+          },
+        },
         ...objectValues.map(([key, value]) => ({
           kind: 'block_mapping_pair',
           has: {
@@ -175,6 +201,33 @@ const applyDeleteEdits = async (
             },
           },
         })),
+        {
+          kind: 'block_mapping_pair',
+          has: {
+            kind: 'flow_node',
+            field: 'key',
+          },
+          precedes: {
+            kind: 'comment',
+            regex: '^# Managed by skuba$',
+          },
+          inside: {
+            kind: 'block_mapping',
+            inside: {
+              kind: 'block_node',
+              inside: {
+                kind: 'block_mapping_pair',
+                has: {
+                  kind: 'flow_node',
+                  field: 'key',
+                  not: {
+                    regex: `^${wrapOptionalQuotesRegex(objectValues.map(([key]) => escapeRegex(key)).join('|'))}$`,
+                  },
+                },
+              },
+            },
+          },
+        },
       ],
     },
   });
@@ -487,7 +540,7 @@ export const patchPnpmWorkspace = async (
           const configValue = value[existingKey as keyof typeof value];
           return buildManagedCommentEdits(
             existingObjectValue,
-            `${existingRawKey}: ${configValue} # Managed by skuba`,
+            `${existingRawKey}: ${configValue as string | boolean | number} # Managed by skuba`,
             new RegExp(
               `^${wrapOptionalQuotesRegex(escapeRegex(existingKey))}: ${escapeRegex(String(configValue))} # Managed by skuba$`,
             ),
