@@ -1,7 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
-import { type SgNode, parseAsync } from '@ast-grep/napi';
+import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging.js';
@@ -34,6 +34,40 @@ const wrapOptionalQuotesRegex = (value: string): string =>
 
 const removeOptionalQuotes = (value: string): string =>
   value.replace(/^(['"])(.*)\1$/s, '$2');
+
+const buildManagedCommentEdits = (
+  node: SgNode,
+  insertedText: string,
+  matchRegex: RegExp,
+  source: string,
+): Edit[] => {
+  const nodeRange = node.range();
+  const maybeManagedComment = node.next();
+
+  if (maybeManagedComment?.kind() !== 'comment') {
+    return [
+      {
+        insertedText,
+        startPos: nodeRange.start.index,
+        endPos: nodeRange.end.index,
+      },
+    ];
+  }
+
+  const commentRange = maybeManagedComment.range();
+  const content = source.slice(nodeRange.start.index, commentRange.end.index);
+  if (matchRegex.test(content)) {
+    return [];
+  }
+
+  return [
+    {
+      insertedText,
+      startPos: nodeRange.start.index,
+      endPos: commentRange.end.index,
+    },
+  ];
+};
 
 const applyDeleteEdits = async (
   source: string,
@@ -353,38 +387,16 @@ export const patchPnpmWorkspace = async (
       const rawKey = section.field('key')!.text();
       const key = removeOptionalQuotes(rawKey);
       const value = defaultConfig[key as keyof typeof defaultConfig];
-      const sectionRange = section.range();
 
       if (isSimpleValue(value)) {
-        const maybeManagedComment = section.next();
-        if (maybeManagedComment?.kind() !== 'comment') {
-          return [
-            {
-              insertedText: `${rawKey}: ${value} # Managed by skuba`,
-              startPos: sectionRange.start.index,
-              endPos: sectionRange.end.index,
-            },
-          ];
-        }
-        const commentRange = maybeManagedComment.range();
-        const content = updatedSource.slice(
-          sectionRange.start.index,
-          commentRange.end.index,
+        return buildManagedCommentEdits(
+          section,
+          `${rawKey}: ${value} # Managed by skuba`,
+          new RegExp(
+            `^${wrapOptionalQuotesRegex(escapeRegex(key))}: ${escapeRegex(String(value))} # Managed by skuba$`,
+          ),
+          updatedSource,
         );
-        const matchRegex = new RegExp(
-          `^${wrapOptionalQuotesRegex(escapeRegex(key))}: ${escapeRegex(String(value))} # Managed by skuba$`,
-        );
-        if (matchRegex.test(content)) {
-          return [];
-        }
-
-        return [
-          {
-            insertedText: `${rawKey}: ${value} # Managed by skuba`,
-            startPos: sectionRange.start.index,
-            endPos: commentRange.end.index,
-          },
-        ];
       }
 
       if (Array.isArray(value)) {
@@ -418,44 +430,21 @@ export const patchPnpmWorkspace = async (
             endPos: blockStartPos,
           }));
 
-        const existingItemsEdits = existingItems.map((existingItem) => {
+        const existingItemsEdits = existingItems.flatMap((existingItem) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the item has a child
           const existingRawValue = existingItem.child(1)!.text();
           const existingValue = removeOptionalQuotes(existingRawValue);
-          const existingItemRange = existingItem.range();
-          const maybeManagedComment = existingItem.next();
-          if (maybeManagedComment?.kind() !== 'comment') {
-            return [
-              {
-                insertedText: `- ${existingRawValue} # Managed by skuba`,
-                startPos: existingItemRange.start.index,
-                endPos: existingItemRange.end.index,
-              },
-            ];
-          }
-
-          const commentRange = maybeManagedComment.range();
-          const content = updatedSource.slice(
-            existingItemRange.start.index,
-            commentRange.end.index,
+          return buildManagedCommentEdits(
+            existingItem,
+            `- ${existingRawValue} # Managed by skuba`,
+            new RegExp(
+              `^- ${wrapOptionalQuotesRegex(escapeRegex(existingValue))} # Managed by skuba$`,
+            ),
+            updatedSource,
           );
-          const matchRegex = new RegExp(
-            `^- ${wrapOptionalQuotesRegex(escapeRegex(existingValue))} # Managed by skuba$`,
-          );
-          if (matchRegex.test(content)) {
-            return [];
-          }
-
-          return [
-            {
-              insertedText: `- ${existingRawValue} # Managed by skuba`,
-              startPos: existingItemRange.start.index,
-              endPos: commentRange.end.index,
-            },
-          ];
         });
 
-        return [...newItemsEdits, ...existingItemsEdits.flat()];
+        return [...newItemsEdits, ...existingItemsEdits];
       }
 
       const existingObjectValues = section.findAll({
@@ -490,49 +479,24 @@ export const patchPnpmWorkspace = async (
           endPos: blockStartPos,
         }));
 
-      const existingObjectValuesEdits = existingObjectValues.map(
+      const existingObjectValuesEdits = existingObjectValues.flatMap(
         (existingObjectValue) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the item has a key
           const existingRawKey = existingObjectValue.field('key')!.text();
           const existingKey = removeOptionalQuotes(existingRawKey);
-          const existingObjectValueRange = existingObjectValue.range();
-          const maybeManagedComment = existingObjectValue.next();
-
           const configValue = value[existingKey as keyof typeof value];
-
-          if (maybeManagedComment?.kind() !== 'comment') {
-            return [
-              {
-                insertedText: `${existingRawKey}: ${configValue} # Managed by skuba`,
-                startPos: existingObjectValueRange.start.index,
-                endPos: existingObjectValueRange.end.index,
-              },
-            ];
-          }
-
-          const commentRange = maybeManagedComment.range();
-          const content = updatedSource.slice(
-            existingObjectValueRange.start.index,
-            commentRange.end.index,
+          return buildManagedCommentEdits(
+            existingObjectValue,
+            `${existingRawKey}: ${configValue} # Managed by skuba`,
+            new RegExp(
+              `^${wrapOptionalQuotesRegex(escapeRegex(existingKey))}: ${escapeRegex(String(configValue))} # Managed by skuba$`,
+            ),
+            updatedSource,
           );
-          const matchRegex = new RegExp(
-            `^${wrapOptionalQuotesRegex(escapeRegex(existingKey))}: ${escapeRegex(String(configValue))} # Managed by skuba$`,
-          );
-          if (matchRegex.test(content)) {
-            return [];
-          }
-
-          return [
-            {
-              insertedText: `${existingRawKey}: ${configValue} # Managed by skuba`,
-              startPos: existingObjectValueRange.start.index,
-              endPos: commentRange.end.index,
-            },
-          ];
         },
       );
 
-      return [...newObjectValuesEdits, ...existingObjectValuesEdits.flat()];
+      return [...newObjectValuesEdits, ...existingObjectValuesEdits];
     })
     .flat();
 
