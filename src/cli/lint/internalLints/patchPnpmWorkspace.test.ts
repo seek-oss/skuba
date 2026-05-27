@@ -5,6 +5,10 @@ import { patchPnpmWorkspace } from './patchPnpmWorkspace.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
+vi.mock('../../../utils/exec.js', () => ({
+  createExec: vi.fn().mockImplementation(() => vi.fn()),
+}));
+
 vi.mock('fs-extra', () => ({
   ...memfs.fs,
   default: memfs.fs,

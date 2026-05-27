@@ -4,6 +4,7 @@ import { inspect } from 'util';
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
+import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { InternalLintResult } from '../internal.js';
@@ -589,6 +590,65 @@ export const patchPnpmWorkspace = async (
     finalSource,
     'utf8',
   );
+
+  const finalAst = (await parseAsync('yaml', finalSource)).root();
+  const lockFileUpdateTriggers = ['overrides'];
+
+  const hasChanged = lockFileUpdateTriggers.some((trigger) => {
+    const finalSection = finalAst.find({
+      rule: {
+        kind: 'block_mapping_pair',
+        has: {
+          kind: 'flow_node',
+          field: 'key',
+          regex: `^${wrapOptionalQuotesRegex(escapeRegex(trigger))}$`,
+        },
+        inside: {
+          kind: 'block_mapping',
+          inside: {
+            kind: 'block_node',
+            inside: {
+              kind: 'document',
+            },
+          },
+        },
+      },
+    });
+
+    const existingSection = astRoot.find({
+      rule: {
+        kind: 'block_mapping_pair',
+        has: {
+          kind: 'flow_node',
+          field: 'key',
+          regex: `^${wrapOptionalQuotesRegex(escapeRegex(trigger))}$`,
+        },
+        inside: {
+          kind: 'block_mapping',
+          inside: {
+            kind: 'block_node',
+            inside: {
+              kind: 'document',
+            },
+          },
+        },
+      },
+    });
+
+    return existingSection?.text() !== finalSection?.text();
+  });
+
+  if (hasChanged) {
+    log.subtle(
+      'pnpm-workspace.yaml was updated, running `pnpm install` to update lockfile...',
+    );
+    await createExec({ cwd: dir })(
+      'pnpm',
+      'install',
+      '--no-frozen-lockfile',
+      '--prefer-offline',
+    );
+  }
 
   return {
     ok: true,
