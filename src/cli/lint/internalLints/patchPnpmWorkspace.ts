@@ -553,6 +553,18 @@ export const patchPnpmWorkspace = async (
     })
     .flat();
 
+  if (
+    !addSectionEdits.length &&
+    !updateSectionEdits.length &&
+    pnpmWorkspaceFile === updatedSource
+  ) {
+    return {
+      ok: true,
+      fixable: false,
+      annotations: [],
+    };
+  }
+
   const finalSource = updatedAstRoot.commitEdits([
     ...addSectionEdits,
     ...updateSectionEdits,

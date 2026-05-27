@@ -144,6 +144,8 @@ describe('removePnpmPlugin', () => {
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       ",
       }
     `);
@@ -214,6 +216,8 @@ configDependencies:
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       packages:
         - .
       ",
