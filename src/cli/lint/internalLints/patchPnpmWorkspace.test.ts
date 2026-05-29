@@ -181,7 +181,6 @@ trustPolicyExclude:
         some-package: false # Inline comment
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
-        # Managed by skuba
       # Another comment
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
@@ -202,9 +201,7 @@ trustPolicyExclude:
       trustPolicyExclude:
         - some-package@1.0.0 # Comment after list item
         # Comment on empty list item
-        # Managed by skuba
         - semver@6.3.1 # Managed by skuba
-        # Managed by skuba
       "
     `);
   });
@@ -470,6 +467,8 @@ allowBuilds:
   not-managed-anymore: true # Managed by skuba
   # Managed by skuba
   not-managed-either: true # Managed by skuba
+  some-option: true
+  # Managed by skuba
 someOtherSection:
   someOtherOption: true # Managed by skuba
 somelistSection:
@@ -520,7 +519,6 @@ somelistSection:
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - '@seek/*' # Managed by skuba
-      # Managed by skuba
       allowBuilds:
         '@datadog/native-appsec': true # Managed by skuba
         '@datadog/native-iast-taint-tracking': true # Managed by skuba
@@ -533,7 +531,7 @@ somelistSection:
         unrs-resolver: true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
-        # Managed by skuba
+        some-option: true
       "
     `);
   });

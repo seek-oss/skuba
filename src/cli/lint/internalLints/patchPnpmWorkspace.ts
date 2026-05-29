@@ -233,7 +233,58 @@ const applyDeleteEdits = async (
     },
   });
 
-  if (!nodesToDelete.length) {
+  const commentNodes = astRoot.findAll({
+    rule: {
+      kind: 'comment',
+      regex: '^# Managed by skuba$',
+      any: [
+        {
+          inside: {
+            kind: 'block_mapping_pair',
+            inside: {
+              kind: 'block_mapping',
+              inside: {
+                kind: 'block_node',
+                inside: {
+                  kind: 'document',
+                },
+              },
+            },
+          },
+        },
+        {
+          follows: {
+            kind: 'comment',
+          },
+        },
+      ],
+    },
+  });
+
+  const deleteCommentEdits = commentNodes
+    .map((node) => {
+      const previousNode = node.prev();
+      const nodeRange = node.range();
+
+      // This can match against valid nodes as we can't check line numbers in the AST
+      if (previousNode?.range().start.line === nodeRange.start.line) {
+        return undefined;
+      }
+
+      const endPos =
+        source.at(nodeRange.end.index) === '\n'
+          ? nodeRange.end.index + 1
+          : nodeRange.end.index;
+
+      return {
+        startPos: nodeRange.start.index - nodeRange.start.column,
+        endPos,
+        insertedText: '',
+      };
+    })
+    .filter((edit) => edit !== undefined);
+
+  if (!nodesToDelete.length && !deleteCommentEdits.length) {
     return {
       updatedSource: source,
       updatedAstRoot: astRoot,
@@ -248,11 +299,21 @@ const applyDeleteEdits = async (
     const startPos = nodeRange.start.index - column;
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the node has a next sibling
-    const commentNodeEndIndex = node.next()!.range().end.index;
+    const commentNode = node.next()!;
+    const commentNodeRange = commentNode.range();
+    const commentNodeEndIndex = commentNodeRange.end.index;
     const endPos =
       source.at(commentNodeEndIndex) === '\n'
         ? commentNodeEndIndex + 1
         : commentNodeEndIndex;
+
+    if (commentNodeRange.start.line !== nodeRange.start.line) {
+      return {
+        insertedText: '',
+        startPos: commentNodeRange.start.index - commentNodeRange.start.column,
+        endPos,
+      };
+    }
 
     return {
       insertedText: '',
@@ -261,7 +322,10 @@ const applyDeleteEdits = async (
     };
   });
 
-  const updatedSource = astRoot.commitEdits(deleteEdits);
+  const updatedSource = astRoot.commitEdits([
+    ...deleteEdits,
+    ...deleteCommentEdits,
+  ]);
   const updatedAstRoot = (await parseAsync('yaml', updatedSource)).root();
 
   // check if there are any orphaned sections
