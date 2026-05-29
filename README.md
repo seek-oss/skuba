@@ -11,7 +11,7 @@
 
 - Write in [TypeScript]
 - Enforce coding standards with [ESLint] and [Prettier]
-- Test with [Jest]
+- Test with [Vitest]
 - Deploy with [Gantry] or the [AWS CDK]
 
 [aws cdk]: https://docs.aws.amazon.com/cdk/latest/guide/work-with-cdk-typescript.html
@@ -40,10 +40,10 @@ pnpm install
 pnpm exec skuba help
 ```
 
-When starting a new project, using the latest version is recommended:
+When starting a new project, you may hotload the package with a reasonable `minimumReleaseAge`:
 
 ```shell
-pnpm dlx skuba init
+pnpm --config.minimumReleaseAge=4320 dlx skuba init
 ```
 
 If you're new here, jump ahead to the [CLI] section to [create a new project] or [update an existing one].
@@ -52,7 +52,7 @@ If you're new here, jump ahead to the [CLI] section to [create a new project] or
 [create a new project]: ./docs/cli/init.md
 [development]: ./docs/development-api
 [eslint]: https://eslint.org/
-[jest]: https://jestjs.io
+[vitest]: https://vitest.dev/
 [prettier]: https://prettier.io/
 [runtime]: ./docs/runtime-api
 [templates]: ./docs/templates

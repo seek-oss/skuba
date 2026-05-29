@@ -206,6 +206,12 @@ You will need to manually install `vitest` and `@vitest/coverage-istanbul` as de
 pnpm add -DE vitest @vitest/coverage-istanbul
 ```
 
+To re-run the Vitest migration, you will need to set the `SKUBA_FORCE_MIGRATE_VITEST` environment variable to `true`:
+
+```shell
+SKUBA_FORCE_MIGRATE_VITEST=true skuba migrate esm
+```
+
 ### Migration changes
 
 The following changes are made:
@@ -287,7 +293,7 @@ Due to the complexities of test code and configurations, the migration may not b
 Run the following command:
 
 ```shell
-pnpm dlx @skuba-lib/detect-invalid-spies .
+pnpm --config.minimumReleaseAge=4320 dlx @skuba-lib/detect-invalid-spies .
 ```
 
 This will identify any spies in your code that may be broken by the migration.
@@ -630,6 +636,49 @@ You can suppress these headers by adding the following to your Vitest setup file
   });
 ```
 
+#### Dynamic require of X is not supported
+
+`esbuild` has limited support for bundling CommonJS modules in ESM projects.
+
+You may encounter errors like `Dynamic require of X is not supported` when deploying your lambdas.
+
+To resolve this, first try switching to an ESM version of the package if available.
+
+Otherwise, mark the problematic module as external in your `esbuild` configuration.
+
+As a last resort, add a banner to shim dynamic requires — though this can cause unexpected issues and obscures which modules rely on CommonJS features.
+
+CDK:
+
+```diff
+const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+  ...
+  bundling: {
+    ...
+    esbuildArgs: {
+      // required for @seek/logger
+-     external: ['pino'],
++     external: ['pino', 'problematic-module'],
+      // or
++     banner: 'import { createRequire } from "module";\nconst require = createRequire(import.meta.url);',
+    },
+  }
+});
+```
+
+Serverless:
+
+```diff
+build:
+  esbuild:
+  external:
+    - pino
++   - problematic-module
+  # or
++ banner:
++   js: 'import { createRequire } from "module";\nconst require = createRequire(import.meta.url);'
+```
+
 #### esbuild
 
 If you were using `esbuild` directly in your project, you may need to update your `esbuild` configuration for ESM compatibility.
@@ -685,6 +734,6 @@ Attempts to add file extensions to your imports to improve compatibility with ES
 This migration is also run as part of `skuba migrate esm`, however, you may choose to run it separately beforehand to minimise the number of changes that need to be made to your source files in the ESM migration.
 
 ```shell
-pnpm dlx skuba migrate file-extensions
+pnpm --config.minimumReleaseAge=4320 dlx skuba migrate file-extensions
 skuba migrate file-extensions
 ```

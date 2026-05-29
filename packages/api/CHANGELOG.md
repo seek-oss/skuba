@@ -1,5 +1,11 @@
 # @skuba-lib/api
 
+## 2.1.2
+
+### Patch Changes
+
+- **deps:** Remove inlined dependencies ([#2411](https://github.com/seek-oss/skuba/pull/2411))
+
 ## 2.1.1
 
 ### Patch Changes

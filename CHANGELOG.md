@@ -1,5 +1,55 @@
 # skuba
 
+## 16.0.8
+
+### Patch Changes
+
+- **configure:** Adjust patching logic to cater for tsdown ([#2428](https://github.com/seek-oss/skuba/pull/2428))
+
+- **migration:** Allow re-runs of the Vitest migration via the ESM migration with `SKUBA_FORCE_MIGRATE_VITEST=true` ([#2430](https://github.com/seek-oss/skuba/pull/2430))
+
+  This is useful when migrating a larger project that may have frequent upstream changes that need to be pulled in.
+
+  ```shell
+  SKUBA_FORCE_MIGRATE_VITEST=true skuba migrate esm
+  ```
+
+- **api:** Update Vitest coverage exclude patterns ([#2432](https://github.com/seek-oss/skuba/pull/2432))
+
+## 16.0.7
+
+### Patch Changes
+
+- **migrate:** Prefer instrumenting dd-trace with dd-trace/register.js instead of dd-trace/initialize.mjs in ESM migration. ([#2422](https://github.com/seek-oss/skuba/pull/2422))
+
+  This caused some issues with some DataDog consumers where their APM was not properly initializing. If you notice that your DataDog APM is not working after migrating to ESM, please update your Dockerfile to use `--import dd-trace/register.js` instead of `--import dd-trace/initialize.mjs`.
+
+## 16.0.6
+
+### Patch Changes
+
+- **migrate:** Set `redirectHandlers: false` for Serverless lambdas using Datadog without layers in ESM migration ([#2414](https://github.com/seek-oss/skuba/pull/2414))
+
+## 16.0.5
+
+### Patch Changes
+
+- **migrate:** Attempt to avoid displacing eslint-disable-next-line import-x/order lines in ESM migration ([#2412](https://github.com/seek-oss/skuba/pull/2412))
+
+- **deps:** execa 9.6.1 ([#2411](https://github.com/seek-oss/skuba/pull/2411))
+
+## 16.0.4
+
+### Patch Changes
+
+- **migrate:** Update `file-extensions` patch to handle adding extensions to type imports ([#2396](https://github.com/seek-oss/skuba/pull/2396))
+
+- **migrate:** Avoid re-patching already instrumented Dockerfiles in ESM ([#2403](https://github.com/seek-oss/skuba/pull/2403))
+
+- **deps:** is-installed-globally ^1.0.0 ([#2397](https://github.com/seek-oss/skuba/pull/2397))
+
+- **deps:** npm-run-path ^6.0.0 ([#2398](https://github.com/seek-oss/skuba/pull/2398))
+
 ## 16.0.3
 
 ### Patch Changes

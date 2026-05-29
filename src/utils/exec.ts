@@ -4,7 +4,7 @@ import stream from 'stream';
 import util from 'util';
 
 import concurrently from 'concurrently';
-import execa, { type ExecaChildProcess } from 'execa';
+import { type Options, type ResultPromise, execa } from 'execa';
 import { npmRunPath } from 'npm-run-path';
 import npmWhich from 'npm-which';
 
@@ -58,10 +58,10 @@ class YarnWarningFilter extends stream.Transform {
   }
 }
 
-export type Exec = (
+export type Exec<T extends Options = Options> = (
   command: string,
   ...args: string[]
-) => ExecaChildProcess<string>;
+) => ResultPromise<T>;
 
 interface ExecConcurrentlyCommand {
   command: string;
@@ -92,21 +92,27 @@ interface ExecConcurrentlyOptions {
   outputStream?: stream.Writable;
 }
 
-type ExecOptions = execa.Options & { streamStdio?: true | PackageManager };
+type ExecOptions<T extends Options> = T & StreamStdioOptions;
+
+type StreamStdioOptions = { streamStdio?: true | PackageManager };
 
 const envWithPath = {
   PATH: npmRunPath({ cwd: import.meta.dirname }),
 };
 
-const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
+const runCommand = <T extends Options>(
+  command: string,
+  args: string[],
+  { streamStdio, ...execaOptions }: ExecOptions<T> = {} as T,
+) => {
   const subprocess = execa(command, args, {
-    localDir: opts?.localDir ?? import.meta.dirname,
+    localDir: execaOptions?.localDir ?? import.meta.dirname,
     preferLocal: true,
     stdio: 'inherit',
-    ...opts,
+    ...execaOptions,
   });
 
-  switch (opts?.streamStdio) {
+  switch (streamStdio) {
     case 'yarn':
       const stderrFilter = new YarnWarningFilter();
       const stdoutFilter = new YarnSpamFilter();
@@ -124,7 +130,7 @@ const runCommand = (command: string, args: string[], opts?: ExecOptions) => {
       break;
   }
 
-  return subprocess;
+  return subprocess as unknown as ResultPromise<T>;
 };
 
 const whichCallback = npmWhich(import.meta.dirname);
@@ -132,7 +138,7 @@ const whichCallback = npmWhich(import.meta.dirname);
 const which = util.promisify<string, string>(whichCallback);
 
 export const createExec =
-  (opts: ExecOptions): Exec =>
+  <T extends Options>(opts: ExecOptions<T>): Exec<T> =>
   (command, ...args) =>
     runCommand(command, args, opts);
 

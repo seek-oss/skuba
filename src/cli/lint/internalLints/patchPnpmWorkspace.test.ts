@@ -5,6 +5,12 @@ import { patchPnpmWorkspace } from './patchPnpmWorkspace.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
+vi.mock('../../../utils/exec.js', () => ({
+  createExec: vi.fn().mockImplementation(() => vi.fn()),
+}));
+
+vi.mock('../../../utils/logging.js');
+
 vi.mock('fs-extra', () => ({
   ...memfs.fs,
   default: memfs.fs,
@@ -84,6 +90,8 @@ describe('patchPnpmWorkspace', () => {
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       "
     `);
   });
@@ -159,6 +167,8 @@ trustPolicyExclude:
       packageManagerStrictVersion: true # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       # This is a comment
       allowBuilds:
         '@datadog/native-appsec': true # Managed by skuba
@@ -173,7 +183,6 @@ trustPolicyExclude:
         some-package: false # Inline comment
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
-        # Managed by skuba
       # Another comment
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
@@ -194,9 +203,7 @@ trustPolicyExclude:
       trustPolicyExclude:
         - some-package@1.0.0 # Comment after list item
         # Comment on empty list item
-        # Managed by skuba
         - semver@6.3.1 # Managed by skuba
-        # Managed by skuba
       "
     `);
   });
@@ -245,7 +252,24 @@ trustPolicyExclude:
     });
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
-      "blockExoticSubdeps: true # Managed by skuba
+      "ignorePatchFailures: false # Managed by skuba
+      minimumReleaseAge: 4320 # Managed by skuba
+      minimumReleaseAgeExclude:
+        - '@seek/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
+        - eslint-config-seek # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
+        - eslint-plugin-skuba # Managed by skuba
+        - pnpm-plugin-skuba # Managed by skuba
+        - skuba # Managed by skuba
+        - skuba-dive # Managed by skuba
+        - tsconfig-seek # Managed by skuba
+      packageManagerStrictVersion: true # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
+      blockExoticSubdeps: true # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
@@ -299,7 +323,50 @@ packageManagerStrictVersion: false`,
     });
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
-      "blockExoticSubdeps: true # Managed by skuba
+      "allowBuilds:
+        '@ast-grep/lang-json': true # Managed by skuba
+        '@ast-grep/lang-yaml': true # Managed by skuba
+        '@datadog/native-appsec': true # Managed by skuba
+        '@datadog/native-iast-taint-tracking': true # Managed by skuba
+        '@datadog/native-metrics': true # Managed by skuba
+        '@datadog/pprof': true # Managed by skuba
+        dd-trace: true # Managed by skuba
+        esbuild: true # Managed by skuba
+        protobufjs: true # Managed by skuba
+        unix-dgram: true # Managed by skuba
+        unrs-resolver: true # Managed by skuba
+      minimumReleaseAge: 4320 # Managed by skuba
+      minimumReleaseAgeExclude:
+        - '@seek/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
+        - eslint-config-seek # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
+        - eslint-plugin-skuba # Managed by skuba
+        - pnpm-plugin-skuba # Managed by skuba
+        - skuba # Managed by skuba
+        - skuba-dive # Managed by skuba
+        - tsconfig-seek # Managed by skuba
+      publicHoistPattern:
+        - '@arethetypeswrong/core' # Managed by skuba
+        - '@eslint/*' # Managed by skuba
+        - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
+        - esbuild # Managed by skuba
+        - eslint # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
+        - prettier # Managed by skuba
+        - publint # Managed by skuba
+        - rolldown # Managed by skuba
+        - tsconfig-seek # Managed by skuba
+        - tsdown # Managed by skuba
+        - typescript # Managed by skuba
+        - vitest # Managed by skuba
+      trustPolicy: off # Managed by skuba
+      trustPolicyExclude:
+        - semver@6.3.1 # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
+      blockExoticSubdeps: true # Managed by skuba
       ignorePatchFailures: false # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       packageManagerStrictVersion: true # Managed by skuba"
@@ -331,7 +398,19 @@ allowBuilds:
     });
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
-      "blockExoticSubdeps: true # Managed by skuba
+      "allowBuilds:
+        '@ast-grep/lang-json': true # Managed by skuba
+        '@ast-grep/lang-yaml': true # Managed by skuba
+        '@datadog/native-appsec': true # Managed by skuba
+        '@datadog/native-iast-taint-tracking': true # Managed by skuba
+        '@datadog/native-metrics': true # Managed by skuba
+        '@datadog/pprof': true # Managed by skuba
+        dd-trace: true # Managed by skuba
+        esbuild: true # Managed by skuba
+        protobufjs: true # Managed by skuba
+        unix-dgram: true # Managed by skuba
+        unrs-resolver: true # Managed by skuba
+      blockExoticSubdeps: true # Managed by skuba
       ignorePatchFailures: false # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
@@ -347,6 +426,8 @@ allowBuilds:
       packageManagerStrictVersion: true # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
@@ -368,26 +449,13 @@ allowBuilds:
         - semver@6.3.1 # Managed by skuba
         - some-package@1.0.0
         - semver@5.7.2 || 6.3.1
-      allowBuilds:
-        '@ast-grep/lang-json': true # Managed by skuba
-        '@ast-grep/lang-yaml': true # Managed by skuba
-        '@datadog/native-appsec': true # Managed by skuba
-        '@datadog/native-iast-taint-tracking': true # Managed by skuba
-        '@datadog/native-metrics': true # Managed by skuba
-        '@datadog/pprof': true # Managed by skuba
-        dd-trace: true # Managed by skuba
-        esbuild: true # Managed by skuba
-        protobufjs: true # Managed by skuba
-        unix-dgram: true # Managed by skuba
-        unrs-resolver: true # Managed by skuba
       "
     `);
   });
 
   it('should remove skuba-managed items that are no longer in the default config', async () => {
     vol.fromJSON({
-      'pnpm-workspace.yaml': `
-removedOption: true # Managed by skuba
+      'pnpm-workspace.yaml': `removedOption: true # Managed by skuba
 minimumReleaseAge: 4320 # Managed by skuba
 anotherRemovedOption: abcd # Managed by skuba
 minimumReleaseAgeExclude:
@@ -401,7 +469,12 @@ allowBuilds:
   not-managed-anymore: true # Managed by skuba
   # Managed by skuba
   not-managed-either: true # Managed by skuba
-`,
+  some-option: true
+  # Managed by skuba
+someOtherSection:
+  someOtherOption: true # Managed by skuba
+somelistSection:
+  - some-item # Managed by skuba`,
     });
 
     const result = await patchPnpmWorkspace('format');
@@ -413,7 +486,31 @@ allowBuilds:
     });
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
-      "minimumReleaseAge: 4320 # Managed by skuba
+      "blockExoticSubdeps: true # Managed by skuba
+      ignorePatchFailures: false # Managed by skuba
+      packageManagerStrictVersion: true # Managed by skuba
+      publicHoistPattern:
+        - '@arethetypeswrong/core' # Managed by skuba
+        - '@eslint/*' # Managed by skuba
+        - '@types*' # Managed by skuba
+        - '@vitest/*' # Managed by skuba
+        - esbuild # Managed by skuba
+        - eslint # Managed by skuba
+        - eslint-config-skuba # Managed by skuba
+        - prettier # Managed by skuba
+        - publint # Managed by skuba
+        - rolldown # Managed by skuba
+        - tsconfig-seek # Managed by skuba
+        - tsdown # Managed by skuba
+        - typescript # Managed by skuba
+        - vitest # Managed by skuba
+      strictDepBuilds: false # Managed by skuba
+      trustPolicy: off # Managed by skuba
+      trustPolicyExclude:
+        - semver@6.3.1 # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
+      minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@skuba-lib/*' # Managed by skuba
         - eslint-config-seek # Managed by skuba
@@ -424,7 +521,6 @@ allowBuilds:
         - skuba-dive # Managed by skuba
         - tsconfig-seek # Managed by skuba
         - '@seek/*' # Managed by skuba
-      # Managed by skuba
       allowBuilds:
         '@datadog/native-appsec': true # Managed by skuba
         '@datadog/native-iast-taint-tracking': true # Managed by skuba
@@ -437,7 +533,7 @@ allowBuilds:
         unrs-resolver: true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
-        # Managed by skuba
+        some-option: true
       "
     `);
   });

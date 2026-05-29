@@ -54,15 +54,10 @@ describe('packageModule', () => {
     const outputData = parsePackage(outputFiles['package.json']);
 
     expect(outputData).toMatchObject({
-      files: [
-        'lib*/**/*.d.ts',
-        'lib*/**/*.js',
-        'lib*/**/*.js.map',
-        'lib*/**/*.json',
-      ],
+      files: ['lib'],
       license: 'UNLICENSED',
-      main: './lib-commonjs/index.js',
-      module: './lib-es2015/index.js',
+      main: './lib/index.cjs',
+      module: './lib/index.mjs',
       private: false,
       scripts: {
         build: 'skuba build-package',
@@ -78,7 +73,7 @@ describe('packageModule', () => {
         type: 'package',
         version: expect.any(String),
       },
-      types: './lib-types/index.d.ts',
+      types: './lib/index.d.cts',
       version: '0.0.0-semantically-released',
     });
   });
@@ -190,16 +185,10 @@ describe('packageModule', () => {
       devDependencies: {
         'pino-pretty': '0.0.1',
       },
-      files: [
-        'lib*/**/*.d.ts',
-        'lib*/**/*.js',
-        'lib*/**/*.js.map',
-        'lib*/**/*.json',
-        'something-else',
-      ],
+      files: ['lib', 'something-else'],
       license: 'UNLICENSED',
-      main: './lib-commonjs/index.js',
-      module: './lib-es2015/index.js',
+      main: './lib/index.cjs',
+      module: './lib/index.mjs',
       private: false,
       scripts: {
         build: 'skuba build-package',
@@ -216,7 +205,7 @@ describe('packageModule', () => {
         type: 'package',
         version: expect.any(String),
       },
-      types: './lib-types/index.d.ts',
+      types: './lib/index.d.cts',
       version: '0.0.0-semantically-released',
     });
   });
