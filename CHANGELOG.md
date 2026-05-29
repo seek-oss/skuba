@@ -1,5 +1,35 @@
 # skuba
 
+## 16.0.8
+
+### Patch Changes
+
+- **configure:** Adjust patching logic to cater for tsdown ([#2428](https://github.com/seek-oss/skuba/pull/2428))
+
+- **migration:** Allow re-runs of the Vitest migration via the ESM migration with `SKUBA_FORCE_MIGRATE_VITEST=true` ([#2430](https://github.com/seek-oss/skuba/pull/2430))
+
+  This is useful when migrating a larger project that may have frequent upstream changes that need to be pulled in.
+
+  ```shell
+  SKUBA_FORCE_MIGRATE_VITEST=true skuba migrate esm
+  ```
+
+- **api:** Update Vitest coverage exclude patterns ([#2432](https://github.com/seek-oss/skuba/pull/2432))
+
+## 16.0.7
+
+### Patch Changes
+
+- **migrate:** Prefer instrumenting dd-trace with dd-trace/register.js instead of dd-trace/initialize.mjs in ESM migration. ([#2422](https://github.com/seek-oss/skuba/pull/2422))
+
+  This caused some issues with some DataDog consumers where their APM was not properly initializing. If you notice that your DataDog APM is not working after migrating to ESM, please update your Dockerfile to use `--import dd-trace/register.js` instead of `--import dd-trace/initialize.mjs`.
+
+## 16.0.6
+
+### Patch Changes
+
+- **migrate:** Set `redirectHandlers: false` for Serverless lambdas using Datadog without layers in ESM migration ([#2414](https://github.com/seek-oss/skuba/pull/2414))
+
 ## 16.0.5
 
 ### Patch Changes

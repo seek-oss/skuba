@@ -78,7 +78,8 @@ export default defineConfig({
       }),
     ).resolves.toEqual({
       result: 'skip',
-      reason: 'vitest is already configured in this project',
+      reason:
+        'vitest is already configured in this project, re-run the migration with SKUBA_FORCE_MIGRATE_VITEST=true to skip this check',
     } satisfies PatchReturnType);
   });
 

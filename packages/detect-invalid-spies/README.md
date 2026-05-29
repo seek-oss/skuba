@@ -34,7 +34,7 @@ The test silently passes in Jest (which rewrites module bindings) but fails in V
 Run it against a directory of source files:
 
 ```sh
-pnpm dlx @skuba-lib/detect-invalid-spies .
+pnpm --config.minimumReleaseAge=4320 dlx @skuba-lib/detect-invalid-spies .
 ```
 
 It prints each invalid spy to stderr and exits with code `1` if any are found:

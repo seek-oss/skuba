@@ -1117,6 +1117,8 @@ custom:
       custom:
         datadog:
           addLayers: false
+
+          redirectHandlers: false # TODO: Wrap your handler with the \`datadog\` function wrapper from \`datadog-lambda-js\` or the \`withLambdaExtension\` function wrapper from \`seek-datadog-custom-metrics/lambda\`. Alternatively, remove this setting and enable addLayers: true
       ",
       }
     `);
