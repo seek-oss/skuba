@@ -119,8 +119,8 @@ importers:
         specifier: ^1.2.6
         version: 1.2.8
       normalize-package-data:
-        specifier: ^8.0.0
-        version: 8.0.0
+        specifier: ^9.0.0
+        version: 9.0.0
       npm-registry-fetch:
         specifier: ^19.1.1
         version: 19.1.1
@@ -4779,6 +4779,10 @@ packages:
   hookable@6.1.1:
     resolution: {integrity: sha512-U9LYDy1CwhMCnprUfeAZWZGByVbhd54hwepegYTK7Pi5NvqEj63ifz5z+xukznehT7i6NIZRu89Ay1AZmRsLEQ==}
 
+  hosted-git-info@10.1.1:
+    resolution: {integrity: sha512-DeOnSPAvOndYKfw075gt8yZzQ7S2hNztw34zBTfhIzLhmBTswIBg5/y+pqu/VD5cYWm5goAFTusDmUEmKZ0PEQ==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+
   hosted-git-info@7.0.2:
     resolution: {integrity: sha512-puUZAUKT5m8Zzvs72XWy3HtvVbTWljRE66cP60bxJzAqf2DgICo7lYTY2IHUmLnNpjYvw5bvmoHvPc0QO2a62w==}
     engines: {node: ^16.14.0 || >=18.0.0}
@@ -5789,6 +5793,10 @@ packages:
   normalize-package-data@8.0.0:
     resolution: {integrity: sha512-RWk+PI433eESQ7ounYxIp67CYuVsS1uYSonX3kA6ps/3LWfjVQa/ptEg6Y3T6uAMq1mWpX9PQ+qx+QaHpsc7gQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
+
+  normalize-package-data@9.0.0:
+    resolution: {integrity: sha512-la34cHOCAT6itNOYCvPi40XP8r0y6OHuNkooOfnfFUHdgy5MBw665qq5xsuS02AEC7WPQvhwvb7E9PI1gipplw==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -12473,6 +12481,10 @@ snapshots:
 
   hookable@6.1.1: {}
 
+  hosted-git-info@10.1.1:
+    dependencies:
+      lru-cache: 11.3.6
+
   hosted-git-info@7.0.2:
     dependencies:
       lru-cache: 10.4.3
@@ -13545,6 +13557,12 @@ snapshots:
   normalize-package-data@8.0.0:
     dependencies:
       hosted-git-info: 9.0.3
+      semver: 7.8.0
+      validate-npm-package-license: 3.0.4
+
+  normalize-package-data@9.0.0:
+    dependencies:
+      hosted-git-info: 10.1.1
       semver: 7.8.0
       validate-npm-package-license: 3.0.4
 

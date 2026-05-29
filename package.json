@@ -111,7 +111,7 @@
     "latest-version": "^9.0.0",
     "lodash.mergewith": "^4.6.2",
     "minimist": "^1.2.6",
-    "normalize-package-data": "^8.0.0",
+    "normalize-package-data": "^9.0.0",
     "npm-registry-fetch": "^19.1.1",
     "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
