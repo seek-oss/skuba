@@ -1,5 +1,13 @@
 # pnpm-plugin-skuba
 
+## 3.0.1
+
+### Patch Changes
+
+- **lint:** Add managed pnpm override for `fflate` in `@arethetypeswrong/core` ([#2435](https://github.com/seek-oss/skuba/pull/2435))
+
+  This should resolve any `Cannot read properties of undefined (reading 'filename')` issue running `skuba build-package`
+
 ## 3.0.0
 
 ### Major Changes
