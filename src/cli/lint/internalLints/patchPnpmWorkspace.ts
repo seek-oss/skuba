@@ -14,6 +14,8 @@ import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 import { Git } from '@skuba-lib/api';
 import { defaultConfig } from 'pnpm-plugin-skuba';
 
+const lockFileUpdateTriggers = ['overrides'];
+
 const isSimpleValue = (value: unknown) =>
   typeof value === 'boolean' ||
   typeof value === 'number' ||
@@ -656,7 +658,6 @@ export const patchPnpmWorkspace = async (
   );
 
   const finalAst = (await parseAsync('yaml', finalSource)).root();
-  const lockFileUpdateTriggers = ['overrides'];
 
   const hasChanged = lockFileUpdateTriggers.some((trigger) => {
     const finalSection = finalAst.find({
