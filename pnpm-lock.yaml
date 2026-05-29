@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@arethetypeswrong/core@0.18.2>fflate': 0.8.2
   skuba: workspace:*
   skuba-dive: workspace:*
 
