@@ -17,13 +17,13 @@ importers:
         specifier: ~0.18.1
         version: 0.18.2
       '@ast-grep/lang-json':
-        specifier: ^0.0.7
+        specifier: ~0.0.7
         version: 0.0.7
       '@ast-grep/lang-yaml':
-        specifier: ^0.0.6
+        specifier: ~0.0.6
         version: 0.0.6
       '@ast-grep/napi':
-        specifier: ^0.43.0
+        specifier: ~0.43.0
         version: 0.43.0
       '@esbuild-plugins/tsconfig-paths':
         specifier: ^0.1.0
