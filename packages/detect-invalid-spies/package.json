@@ -40,7 +40,7 @@
     "test:ci": "pnpm skuba test --coverage"
   },
   "dependencies": {
-    "@ast-grep/napi": "^0.42.0",
+    "@ast-grep/napi": "^0.43.0",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.0.0",
     "typescript": "~5.9.0"
