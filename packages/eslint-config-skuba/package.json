@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-skuba",
-  "version": "9.0.0",
+  "version": "9.1.0",
   "private": false,
   "description": "ESLint config for skuba",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/eslint-config-skuba#readme",
@@ -42,7 +42,7 @@
   "dependencies": {
     "eslint-config-seek": "15.0.5",
     "eslint-plugin-skuba": "workspace:*",
-    "eslint-plugin-yml": "^1.14.0",
+    "eslint-plugin-yml": "^3.0.0",
     "typescript-eslint": "^8.39.0"
   },
   "devDependencies": {

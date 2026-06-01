@@ -1,5 +1,11 @@
 # eslint-config-skuba
 
+## 9.1.0
+
+### Minor Changes
+
+- **deps:** eslint-plugin-yml ^3.0.0 ([#2410](https://github.com/seek-oss/skuba/pull/2410))
+
 ## 9.0.0
 
 ### Major Changes
