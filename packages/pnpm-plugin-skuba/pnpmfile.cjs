@@ -37,6 +37,7 @@ const defaultConfig = {
   publicHoistPattern: [
     '@arethetypeswrong/core',
     '@eslint/*',
+    '@skuba-lib/*',
     '@types*',
     '@vitest/*',
     'esbuild',

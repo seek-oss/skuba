@@ -74,6 +74,7 @@ describe('patchPnpmWorkspace', () => {
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
@@ -187,6 +188,7 @@ trustPolicyExclude:
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
@@ -273,6 +275,7 @@ trustPolicyExclude:
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
@@ -349,6 +352,7 @@ packageManagerStrictVersion: false`,
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
@@ -431,6 +435,7 @@ allowBuilds:
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - eslint # Managed by skuba
@@ -492,6 +497,7 @@ somelistSection:
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
