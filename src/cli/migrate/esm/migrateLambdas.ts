@@ -286,13 +286,60 @@ const migrateServerlessLambdas = async (
   return (
     await Promise.all(
       serverlessFiles.map(async ({ file, contents }) => {
-        if (!contents.includes('esbuild')) {
-          return null;
-        }
+        const astRoot = (await parseAsync('yaml', contents)).root();
 
         const edits: Edit[] = [];
+        const datadogSettings = astRoot.find({
+          rule: {
+            kind: 'block_node',
+            inside: {
+              kind: 'block_mapping_pair',
+              regex: '^datadog:',
+            },
+          },
+        });
 
-        const astRoot = (await parseAsync('yaml', contents)).root();
+        if (datadogSettings) {
+          const addLayers = datadogSettings.find({
+            rule: {
+              kind: 'block_mapping_pair',
+              regex: '^addLayers:',
+            },
+          });
+
+          const addLayersDisabled = addLayers?.text().includes('false');
+
+          if (addLayersDisabled) {
+            const redirectHandlers = datadogSettings.find({
+              rule: {
+                kind: 'block_node',
+                inside: {
+                  kind: 'block_mapping_pair',
+                  regex: '^redirectHandlers:',
+                },
+              },
+            });
+
+            if (!redirectHandlers) {
+              const indent = datadogSettings.range().start.column;
+              edits.push({
+                startPos: datadogSettings.range().end.index,
+                endPos: datadogSettings.range().end.index,
+                insertedText: `\n${' '.repeat(indent)}redirectHandlers: false${!containsDatadogLambdaImport ? ' # TODO: Wrap your handler with the `datadog` function wrapper from `datadog-lambda-js` or the `withLambdaExtension` function wrapper from `seek-datadog-custom-metrics/lambda`. Alternatively, remove this setting and enable addLayers: true' : ''}\n`,
+              });
+            }
+          }
+        }
+
+        if (!contents.includes('esbuild')) {
+          if (edits.length === 0) {
+            return null;
+          }
+          return {
+            contents: astRoot.commitEdits(edits),
+            file,
+          };
+        }
 
         const esbuildAst = astRoot.find({
           rule: {
@@ -387,48 +434,6 @@ const migrateServerlessLambdas = async (
           });
         } else {
           edits.push(mainFields.replace('mainFields:\n  - module\n  - main\n'));
-        }
-
-        const datadogSettings = astRoot.find({
-          rule: {
-            kind: 'block_node',
-            inside: {
-              kind: 'block_mapping_pair',
-              regex: '^datadog:',
-            },
-          },
-        });
-
-        if (datadogSettings) {
-          const addLayers = datadogSettings.find({
-            rule: {
-              kind: 'block_mapping_pair',
-              regex: '^addLayers:',
-            },
-          });
-
-          const addLayersDisabled = addLayers?.text().includes('false');
-
-          if (addLayersDisabled && containsDatadogLambdaImport) {
-            const redirectHandlers = datadogSettings.find({
-              rule: {
-                kind: 'block_node',
-                inside: {
-                  kind: 'block_mapping_pair',
-                  regex: '^redirectHandlers:',
-                },
-              },
-            });
-
-            if (!redirectHandlers) {
-              const indent = datadogSettings.range().start.column;
-              edits.push({
-                startPos: datadogSettings.range().end.index,
-                endPos: datadogSettings.range().end.index,
-                insertedText: `\n${' '.repeat(indent)}redirectHandlers: false\n`,
-              });
-            }
-          }
         }
 
         if (edits.length === 0) {

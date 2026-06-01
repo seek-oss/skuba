@@ -7,7 +7,11 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { removePnpmPlugin } from './removePnpmPlugin.js';
 
-vi.mock('../../../../../../utils/exec.js');
+vi.mock('../../../../../../utils/exec.js', () => ({
+  exec: vi.fn(),
+  createExec: vi.fn().mockImplementation(() => vi.fn()),
+}));
+
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
   ...memfs.fs,
@@ -144,6 +148,8 @@ describe('removePnpmPlugin', () => {
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       ",
       }
     `);
@@ -214,6 +220,8 @@ configDependencies:
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
+      overrides:
+        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       packages:
         - .
       ",

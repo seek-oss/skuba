@@ -140,10 +140,14 @@ export const migrateToVitest = async (opts: {
     ignore: ['**/.git', '**/node_modules'],
   });
 
-  if (vitestConfigFiles.length > 0) {
+  if (
+    vitestConfigFiles.length > 0 &&
+    process.env.SKUBA_FORCE_MIGRATE_VITEST !== 'true'
+  ) {
     return {
       result: 'skip',
-      reason: 'vitest is already configured in this project',
+      reason:
+        'vitest is already configured in this project, re-run the migration with SKUBA_FORCE_MIGRATE_VITEST=true to skip this check',
     };
   }
 
@@ -221,7 +225,14 @@ export const migrateToVitest = async (opts: {
   const packageManager = opts.packageManager ?? (await detectPackageManager());
 
   if (packageManager.command === 'pnpm') {
-    await exec('pnpm', 'dlx', '@sku-lib/codemod', 'jest-to-vitest', '.');
+    await exec(
+      'pnpm',
+      '--config.minimumReleaseAge=4320',
+      'dlx',
+      '@sku-lib/codemod',
+      'jest-to-vitest',
+      '.',
+    );
   } else {
     await exec('npx', '@sku-lib/codemod', 'jest-to-vitest', '.');
   }
@@ -265,7 +276,7 @@ export const migrateToVitest = async (opts: {
         )
         .replaceAll('eslint-disable jest', 'eslint-disable vitest')
         .replaceAll('Mock<any, any>', 'Mock')
-        .replaceAll('advanceTimers: true', 'shouldAdvanceTimers: true');
+        .replaceAll('advanceTimers: true', 'shouldAdvanceTime: true');
 
       if (finalUpdated !== content) {
         return fs.promises.writeFile(file, finalUpdated, 'utf8');
@@ -314,7 +325,7 @@ export const migrateToVitest = async (opts: {
     await rootExec(
       packageManager.command,
       'install',
-      '--frozen-lockfile=false',
+      ...(packageManager.command === 'pnpm' ? ['--frozen-lockfile=false'] : []),
       '--prefer-offline',
       '--ignore-scripts',
     );

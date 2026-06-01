@@ -47,7 +47,7 @@ This defaults to an invocation with an empty object `{}`.
 ### Test
 
 ```shell
-# Run Jest tests locally
+# Run Vitest tests locally
 pnpm test
 
 # Authenticate to dev account

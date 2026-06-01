@@ -50,13 +50,16 @@ export const patchInstrumentation: PatchFunction = async ({
   const hasDDTraceImport = tsFiles.some(({ content }) =>
     /from\s+['"]dd-trace['"]/.test(content),
   );
+  const hasDDTraceInitImport = tsFiles.some(({ content }) =>
+    /from\s+['"]dd-trace\/init['"]/.test(content),
+  );
   const otelImports = tsFiles.filter(({ content }) =>
     /from\s+['"]@opentelemetry\/api['"]/.test(content),
   );
 
   const hasOpenTelemetryImport = otelImports.length > 0;
 
-  if (!hasDDTraceImport && !hasOpenTelemetryImport) {
+  if (!hasDDTraceImport && !hasDDTraceInitImport && !hasOpenTelemetryImport) {
     return {
       result: 'skip',
       reason:
@@ -64,7 +67,8 @@ export const patchInstrumentation: PatchFunction = async ({
     };
   }
 
-  const confused = hasDDTraceImport && hasOpenTelemetryImport;
+  const confused =
+    (hasDDTraceImport || hasDDTraceInitImport) && hasOpenTelemetryImport;
 
   if (confused) {
     log.warn(
@@ -72,13 +76,12 @@ export const patchInstrumentation: PatchFunction = async ({
     );
   }
 
-  const warning =
-    hasDDTraceImport && hasOpenTelemetryImport
-      ? 'TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile '
-      : '';
+  const warning = confused
+    ? 'TODO: skuba failed to determine whether to add dd-trace or OpenTelemetry flags, please choose the appropriate flags to add to your Dockerfile '
+    : '';
 
   const commandsToAdd = [
-    hasDDTraceImport ? '--import dd-trace/initialize.mjs' : '',
+    hasDDTraceImport ? '--import dd-trace/register.js' : '',
     hasOpenTelemetryImport
       ? '--experimental-loader @opentelemetry/instrumentation/hook.mjs'
       : '',
@@ -87,6 +90,14 @@ export const patchInstrumentation: PatchFunction = async ({
   const patched = dockerFiles
     .map(({ filePath, content }) => {
       if (filePath.includes('dev-deps')) {
+        return null;
+      }
+
+      if (
+        content.includes('dd-trace/initialize.mjs') ||
+        content.includes('dd-trace/register.js') ||
+        content.includes('@opentelemetry/instrumentation/hook.mjs')
+      ) {
         return null;
       }
 
@@ -207,7 +218,9 @@ export const patchInstrumentation: PatchFunction = async ({
       await rootExec(
         packageManager.command,
         'install',
-        '--frozen-lockfile=false',
+        ...(packageManager.command === 'pnpm'
+          ? ['--frozen-lockfile=false']
+          : []),
         '--prefer-offline',
         '--ignore-scripts',
       );

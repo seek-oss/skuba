@@ -29,7 +29,7 @@ or serve as a starting point for a backend project if the other built-in templat
 It's a barebones Node.js application that comprises:
 
 - A [src/app.ts](src/app.ts) that can be run locally to greet the user
-- A [src/app.test.ts](src/app.test.ts) that demonstrates rudimentary Jest usage
+- A [src/app.test.ts](src/app.test.ts) that demonstrates rudimentary Vitest usage
 
 ## Development
 

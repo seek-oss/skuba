@@ -1,6 +1,6 @@
 {
   "name": "@skuba-lib/detect-invalid-spies",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "Detect invalid spies in Jest and Vitest tests",
   "homepage": "https://github.com/seek-oss/skuba/tree/main/packages/detect-invalid-spies#readme",
@@ -27,7 +27,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "detect-invalid-spies": "lib/bin.mjs"
+    "detect-invalid-spies": "./src/bin.ts"
   },
   "files": [
     "lib"
@@ -40,7 +40,7 @@
     "test:ci": "pnpm skuba test --coverage"
   },
   "dependencies": {
-    "@ast-grep/napi": "^0.42.0",
+    "@ast-grep/napi": "~0.43.0",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.0.0",
     "typescript": "~5.9.0"
@@ -49,6 +49,9 @@
     "node": ">=22.14.0"
   },
   "publishConfig": {
+    "bin": {
+      "detect-invalid-spies": "./lib/bin.mjs"
+    },
     "exports": {
       ".": "./lib/index.mjs",
       "./bin": "./lib/bin.mjs",
