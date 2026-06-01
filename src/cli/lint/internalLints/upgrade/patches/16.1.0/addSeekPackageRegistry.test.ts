@@ -1,10 +1,11 @@
-import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { addSeekPackageRegistry } from './addSeekPackageRegistry.js';
+
+import * as Git from '@skuba-lib/api/git';
 
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
@@ -19,6 +20,15 @@ vi.mock('fast-glob', () => ({
   },
 }));
 
+vi.mock('@skuba-lib/api/git', async () => ({
+  ...(await vi.importActual<object>('@skuba-lib/api/git')),
+  findRoot: vi.fn(),
+  getOwnerAndRepo: vi.fn(),
+}));
+
+const findRoot = vi.mocked(Git.findRoot);
+const getOwnerAndRepo = vi.mocked(Git.getOwnerAndRepo);
+
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 describe('addSeekPackageRegistry', () => {
@@ -30,18 +40,26 @@ describe('addSeekPackageRegistry', () => {
   beforeEach(async () => {
     await vol.promises.mkdir(process.cwd(), { recursive: true });
 
-    vi.spyOn(git, 'listRemotes').mockResolvedValue([
-      { remote: 'origin', url: 'https://github.com/SEEK-Jobs/my-repo.git' },
-    ]);
+    findRoot.mockResolvedValue(process.cwd());
+    getOwnerAndRepo.mockResolvedValue({ owner: 'SEEK-Jobs', repo: 'my-repo' });
+  });
+
+  it('should skip if no Git root found', async () => {
+    findRoot.mockResolvedValue(null);
+
+    await expect(
+      addSeekPackageRegistry({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'skip',
+      reason: 'no Git root found',
+    } satisfies PatchReturnType);
   });
 
   it('should skip if not a SEEK-Jobs repository', async () => {
-    vi.spyOn(git, 'listRemotes').mockResolvedValue([
-      {
-        remote: 'origin',
-        url: 'https://github.com/some-other-org/my-repo.git',
-      },
-    ]);
+    getOwnerAndRepo.mockResolvedValue({
+      owner: 'some-other-org',
+      repo: 'my-repo',
+    });
 
     await expect(
       addSeekPackageRegistry({ mode: 'format' } as PatchConfig),

@@ -1,23 +1,30 @@
+import path from 'path';
 import { inspect } from 'util';
 
 import fg from 'fast-glob';
 import fs from 'fs-extra';
-import git from 'isomorphic-git';
 
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
+
+import * as Git from '@skuba-lib/api/git';
 
 const SEEK_REGISTRY = '@seek:registry=https://npm.cloudsmith.io/seek/npm/';
 const SEEK_ORG = 'SEEK-Jobs';
 
 export const addSeekPackageRegistry: PatchFunction = async ({
   mode,
+  dir = process.cwd(),
 }): Promise<PatchReturnType> => {
-  const remotes = await git.listRemotes({ fs, dir: process.cwd() });
-  const originUrl = remotes.find((r) => r.remote === 'origin')?.url;
-  const org = originUrl?.match(/github\.com[:/]([^/]+)\//)?.[1];
+  const gitRoot = await Git.findRoot({ dir });
 
-  if (org !== SEEK_ORG) {
+  if (!gitRoot) {
+    return { result: 'skip', reason: 'no Git root found' };
+  }
+
+  const { owner } = await Git.getOwnerAndRepo({ dir: gitRoot });
+
+  if (owner.toLowerCase() !== SEEK_ORG.toLowerCase()) {
     return {
       result: 'skip',
       reason: 'not a SEEK-Jobs repository',
@@ -25,6 +32,7 @@ export const addSeekPackageRegistry: PatchFunction = async ({
   }
 
   const npmrcPaths = await fg(['**/.npmrc'], {
+    cwd: gitRoot,
     ignore: ['**/.git', '**/node_modules'],
   });
 
@@ -33,14 +41,19 @@ export const addSeekPackageRegistry: PatchFunction = async ({
       return { result: 'apply' };
     }
 
-    await fs.promises.writeFile('.npmrc', `${SEEK_REGISTRY}\n`, 'utf8');
+    await fs.promises.writeFile(
+      path.join(gitRoot, '.npmrc'),
+      `${SEEK_REGISTRY}\n`,
+      'utf8',
+    );
     return { result: 'apply' };
   }
 
   const npmrcFiles = await Promise.all(
     npmrcPaths.map(async (file) => {
-      const contents = await fs.promises.readFile(file, 'utf8');
-      return { file, contents };
+      const fullPath = path.join(gitRoot, file);
+      const contents = await fs.promises.readFile(fullPath, 'utf8');
+      return { file: fullPath, contents };
     }),
   );
 
