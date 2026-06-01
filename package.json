@@ -87,6 +87,7 @@
     "@octokit/rest": "^22.0.0",
     "@octokit/types": "^16.0.0",
     "@skuba-lib/api": "workspace:^",
+    "@skuba-lib/changesets-changelog": "workspace:^",
     "@types/node": "^24.10.2",
     "@vitest/coverage-istanbul": "^4.1.0",
     "@vitest/coverage-v8": "^4.1.0",
@@ -137,7 +138,6 @@
     "@changesets/get-github-info": "0.8.0",
     "@pnpm/cafs-types": "1000.1.0",
     "@pnpm/config": "^1004.9.0",
-    "@skuba-lib/changesets-changelog": "workspace:^",
     "@types/ejs": "3.1.5",
     "@types/express": "5.0.6",
     "@types/fs-extra": "11.0.4",
@@ -171,6 +171,7 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "16.0.2"
+
+    "version": "16.1.0"
   }
 }
