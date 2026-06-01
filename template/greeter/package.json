@@ -5,7 +5,7 @@
   "type": "module",
   "imports": {
     "#src/*": {
-      "@seek/<%- serviceName %>/source": "./src/*",
+      "@seek/<%- repoName %>/source": "./src/*",
       "default": "./lib/*"
     }
   },
