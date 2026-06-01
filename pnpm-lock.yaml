@@ -309,7 +309,7 @@ importers:
   packages/detect-invalid-spies:
     dependencies:
       '@ast-grep/napi':
-        specifier: ^0.43.0
+        specifier: ~0.43.0
         version: 0.43.0
       fast-glob:
         specifier: ^3.3.2
