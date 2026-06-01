@@ -96,7 +96,6 @@ const cloneTemplate = async (
   const isGitHubTemplate = templateName.startsWith('github:');
   const isPrivateSeekTemplate = templateName.startsWith('seek:');
   const isLocalTemplate = templateName.startsWith('local:');
-  const isCustomTemplate = isGitHubTemplate || isPrivateSeekTemplate;
 
   if (isGitHubTemplate) {
     const gitHubPath = templateName.slice('github:'.length);
@@ -132,11 +131,6 @@ const cloneTemplate = async (
   const templateConfig = await getTemplateConfig(
     path.join(process.cwd(), destinationDir),
   );
-
-  if (isCustomTemplate) {
-    log.newline();
-    log.warn('You may need to manually complete templating once this is done.');
-  }
 
   return templateConfig;
 };
