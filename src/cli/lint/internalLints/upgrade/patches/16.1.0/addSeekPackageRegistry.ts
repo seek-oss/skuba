@@ -29,10 +29,12 @@ export const addSeekPackageRegistry: PatchFunction = async ({
   });
 
   if (npmrcPaths.length === 0) {
-    return {
-      result: 'skip',
-      reason: 'no .npmrc files found',
-    };
+    if (mode === 'lint') {
+      return { result: 'apply' };
+    }
+
+    await fs.promises.writeFile('.npmrc', `${SEEK_REGISTRY}\n`, 'utf8');
+    return { result: 'apply' };
   }
 
   const npmrcFiles = await Promise.all(

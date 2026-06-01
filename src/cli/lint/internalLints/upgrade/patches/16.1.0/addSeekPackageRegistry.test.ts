@@ -27,7 +27,9 @@ describe('addSeekPackageRegistry', () => {
     vol.reset();
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await vol.promises.mkdir(process.cwd(), { recursive: true });
+
     vi.spyOn(git, 'listRemotes').mockResolvedValue([
       { remote: 'origin', url: 'https://github.com/SEEK-Jobs/my-repo.git' },
     ]);
@@ -49,13 +51,29 @@ describe('addSeekPackageRegistry', () => {
     } satisfies PatchReturnType);
   });
 
-  it('should skip if no .npmrc files found', async () => {
+  it('should create a .npmrc with the SEEK registry if none exists', async () => {
     await expect(
       addSeekPackageRegistry({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
-      result: 'skip',
-      reason: 'no .npmrc files found',
+      result: 'apply',
     } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        ".npmrc": "@seek:registry=https://npm.cloudsmith.io/seek/npm/
+      ",
+      }
+    `);
+  });
+
+  it('should return apply and not create a .npmrc if mode is lint and none exists', async () => {
+    await expect(
+      addSeekPackageRegistry({ mode: 'lint' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`{}`);
   });
 
   it('should skip if all .npmrc files already have the SEEK registry', async () => {
