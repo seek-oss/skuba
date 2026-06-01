@@ -293,7 +293,7 @@ Due to the complexities of test code and configurations, the migration may not b
 Run the following command:
 
 ```shell
-pnpm dlx @skuba-lib/detect-invalid-spies .
+pnpm --config.minimumReleaseAge=4320 dlx @skuba-lib/detect-invalid-spies .
 ```
 
 This will identify any spies in your code that may be broken by the migration.
@@ -734,6 +734,6 @@ Attempts to add file extensions to your imports to improve compatibility with ES
 This migration is also run as part of `skuba migrate esm`, however, you may choose to run it separately beforehand to minimise the number of changes that need to be made to your source files in the ESM migration.
 
 ```shell
-pnpm dlx skuba migrate file-extensions
+pnpm --config.minimumReleaseAge=4320 dlx skuba migrate file-extensions
 skuba migrate file-extensions
 ```

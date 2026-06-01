@@ -225,7 +225,14 @@ export const migrateToVitest = async (opts: {
   const packageManager = opts.packageManager ?? (await detectPackageManager());
 
   if (packageManager.command === 'pnpm') {
-    await exec('pnpm', 'dlx', '@sku-lib/codemod', 'jest-to-vitest', '.');
+    await exec(
+      'pnpm',
+      '--config.minimumReleaseAge=4320',
+      'dlx',
+      '@sku-lib/codemod',
+      'jest-to-vitest',
+      '.',
+    );
   } else {
     await exec('npx', '@sku-lib/codemod', 'jest-to-vitest', '.');
   }

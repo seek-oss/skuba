@@ -1,5 +1,23 @@
 # skuba
 
+## 16.1.0
+
+### Minor Changes
+
+- **lint:** Remove stale managed entries from `pnpm-workspace.yaml` ([#2435](https://github.com/seek-oss/skuba/pull/2435))
+
+  This update removes entries with `# Managed by skuba` annotations from `pnpm-workspace.yaml` that no longer match skuba's managed configuration, cleans up any orphaned empty sections left behind, and runs `pnpm install` to update the lockfile when managed `overrides` are added or changed.
+
+- **deps:** eslint-config-skuba 9.1.0 ([#2410](https://github.com/seek-oss/skuba/pull/2410))
+
+### Patch Changes
+
+- **lint:** Add managed pnpm override for `fflate` in `@arethetypeswrong/core` ([#2435](https://github.com/seek-oss/skuba/pull/2435))
+
+  This should resolve any `Cannot read properties of undefined (reading 'filename')` issue running `skuba build-package`
+
+- **deps:** normalize-package-data ^9.0.0 ([#2427](https://github.com/seek-oss/skuba/pull/2427))
+
 ## 16.0.8
 
 ### Patch Changes
