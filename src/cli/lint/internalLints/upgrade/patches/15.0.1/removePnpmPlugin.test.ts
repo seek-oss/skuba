@@ -132,6 +132,7 @@ describe('removePnpmPlugin', () => {
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
@@ -204,6 +205,7 @@ configDependencies:
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
