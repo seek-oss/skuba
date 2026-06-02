@@ -11,10 +11,11 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 const applyMultiStageBuildPatch = async (
   contents: string,
 ): Promise<string | null> => {
-  if (contents.includes('COPY --from=deps')) {
-    return null;
-  }
-  if (contents.includes('pnpm prune --prod')) {
+  // Fairly lazy check to bail out on the patch
+  if (
+    contents.includes('COPY --from=deps') ||
+    contents.includes('RUN pnpm prune --prod')
+  ) {
     return null;
   }
 
@@ -48,7 +49,7 @@ const applyMultiStageBuildPatch = async (
     startPos: argEnd,
     endPos: argEnd,
     insertedText:
-      '\n\nFROM BASE_IMAGE as deps\n\npnpm install --offline --prod\npnpm prune --prod',
+      '\n\nFROM BASE_IMAGE as deps\n\nRUN pnpm install --offline --prod\nRUN pnpm prune --prod',
   });
 
   const copyPackageJson = astRoot.find({
@@ -150,7 +151,7 @@ const tryPatchApiDockerfiles = async (config: {
   };
 };
 
-export const patchApiDockerfiles: PatchFunction = async (config) => {
+export const patchDockerfiles: PatchFunction = async (config) => {
   try {
     return await tryPatchApiDockerfiles(config);
   } catch (err) {
