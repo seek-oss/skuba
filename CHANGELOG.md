@@ -1,5 +1,47 @@
 # skuba
 
+## 16.1.0
+
+### Minor Changes
+
+- **lint:** Remove stale managed entries from `pnpm-workspace.yaml` ([#2435](https://github.com/seek-oss/skuba/pull/2435))
+
+  This update removes entries with `# Managed by skuba` annotations from `pnpm-workspace.yaml` that no longer match skuba's managed configuration, cleans up any orphaned empty sections left behind, and runs `pnpm install` to update the lockfile when managed `overrides` are added or changed.
+
+- **deps:** eslint-config-skuba 9.1.0 ([#2410](https://github.com/seek-oss/skuba/pull/2410))
+
+### Patch Changes
+
+- **lint:** Add managed pnpm override for `fflate` in `@arethetypeswrong/core` ([#2435](https://github.com/seek-oss/skuba/pull/2435))
+
+  This should resolve any `Cannot read properties of undefined (reading 'filename')` issue running `skuba build-package`
+
+- **deps:** normalize-package-data ^9.0.0 ([#2427](https://github.com/seek-oss/skuba/pull/2427))
+
+## 16.0.8
+
+### Patch Changes
+
+- **configure:** Adjust patching logic to cater for tsdown ([#2428](https://github.com/seek-oss/skuba/pull/2428))
+
+- **migration:** Allow re-runs of the Vitest migration via the ESM migration with `SKUBA_FORCE_MIGRATE_VITEST=true` ([#2430](https://github.com/seek-oss/skuba/pull/2430))
+
+  This is useful when migrating a larger project that may have frequent upstream changes that need to be pulled in.
+
+  ```shell
+  SKUBA_FORCE_MIGRATE_VITEST=true skuba migrate esm
+  ```
+
+- **api:** Update Vitest coverage exclude patterns ([#2432](https://github.com/seek-oss/skuba/pull/2432))
+
+## 16.0.7
+
+### Patch Changes
+
+- **migrate:** Prefer instrumenting dd-trace with dd-trace/register.js instead of dd-trace/initialize.mjs in ESM migration. ([#2422](https://github.com/seek-oss/skuba/pull/2422))
+
+  This caused some issues with some DataDog consumers where their APM was not properly initializing. If you notice that your DataDog APM is not working after migrating to ESM, please update your Dockerfile to use `--import dd-trace/register.js` instead of `--import dd-trace/initialize.mjs`.
+
 ## 16.0.6
 
 ### Patch Changes
