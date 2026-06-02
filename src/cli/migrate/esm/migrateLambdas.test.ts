@@ -680,7 +680,7 @@ export class AppStack extends Stack {
               ...config.workerLambda.environment,
               NODE_ENV: 'production',
               // https://nodejs.org/api/cli.html#cli_node_options_options
-              NODE_OPTIONS: '--enable-source-maps',
+              NODE_OPTIONS: '--enable-source-maps --import dd-trace/initialize.mjs',
               DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
 
               ...(containsSkipDirective(process.env.BUILDKITE_MESSAGE, 'smoke')
@@ -1165,6 +1165,122 @@ custom:
             - module
             - main
 
+        datadog:
+          addLayers: false
+
+          redirectHandlers: false
+      ",
+      }
+    `);
+  });
+
+  it('should not touch NODE_OPTIONS when dd-trace is missing from nodeModules', async () => {
+    vol.fromJSON({
+      'other.ts': `
+      import { datadog } from 'datadog-lambda-js';
+`,
+      'appStack.ts': `import { aws_lambda_nodejs } from 'aws-cdk-lib';
+import { DatadogLambda } from 'datadog-cdk-constructs-v2';
+
+export class AppStack {
+  constructor() {
+    const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+      entry: './src/app.ts',
+      bundling: {
+        nodeModules: ['datadog-lambda-js'],
+        esbuildArgs: {
+          '--conditions': '@seek/foo/source,module',
+        },
+      },
+      environment: {
+        NODE_OPTIONS: '--enable-source-maps',
+      },
+    });
+
+    const dd = new DatadogLambda(this, 'datadog', {
+      enableDatadogLogs: false,
+    });
+  }
+}
+`,
+    });
+
+    await expect(
+      migrateLambdas({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "appStack.ts": "import { aws_lambda_nodejs } from 'aws-cdk-lib';
+      import { DatadogLambda } from 'datadog-cdk-constructs-v2';
+
+      export class AppStack {
+        constructor() {
+          const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
+            entry: './src/app.ts',
+            bundling: {
+              nodeModules: ['datadog-lambda-js', 'pino'],
+              esbuildArgs: {
+                '--conditions': '@seek/foo/source,module',
+              },
+            
+      format: aws_lambda_nodejs.OutputFormat.ESM,
+
+      mainFields: ['module', 'main'],
+      },
+            environment: {
+              NODE_OPTIONS: '--enable-source-maps',
+            },
+          });
+
+          const dd = new DatadogLambda(this, 'datadog', {
+            enableDatadogLogs: false,
+          
+      redirectHandler: false,
+      });
+        }
+      }
+      ",
+        "other.ts": "
+            import { datadog } from 'datadog-lambda-js';
+      ",
+      }
+    `);
+  });
+
+  it('should append the dd-trace import to an existing serverless NODE_OPTIONS', async () => {
+    vol.fromJSON({
+      'foo.ts': `import { datadog } from 'datadog-lambda-js';
+`,
+      'serverless.yml': `provider:
+  environment:
+    NODE_OPTIONS: '--enable-source-maps'
+custom:
+  datadog:
+    addLayers: false
+`,
+    });
+
+    await expect(
+      migrateLambdas({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "foo.ts": "import { datadog } from 'datadog-lambda-js';
+      ",
+        "serverless.yml": "provider:
+        environment:
+          NODE_OPTIONS: '--enable-source-maps --import dd-trace/initialize.mjs'
+      custom:
         datadog:
           addLayers: false
 

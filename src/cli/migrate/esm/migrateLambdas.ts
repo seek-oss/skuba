@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { type Edit, parseAsync } from '@ast-grep/napi';
+import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -8,6 +8,89 @@ import { log } from '../../../utils/logging.js';
 import { getCustomConditions } from '../../build/tsc.js';
 import { registerAstGrepLanguages } from '../../lint/internalLints/registerAstGrepLanguages.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+
+const DD_TRACE_INITIALIZE = '--import dd-trace/initialize.mjs';
+
+const appendDdTraceToCdkNodeOptions = (workerAst: SgNode, edits: Edit[]) => {
+  const environmentObject = workerAst.find({
+    rule: {
+      kind: 'object',
+      inside: {
+        kind: 'pair',
+        regex: '^environment',
+      },
+    },
+  });
+
+  if (!environmentObject) {
+    return;
+  }
+
+  const nodeOptions = environmentObject.find({
+    rule: {
+      kind: 'pair',
+      regex: '^NODE_OPTIONS',
+    },
+  });
+
+  if (!nodeOptions) {
+    edits.push({
+      startPos: environmentObject.range().end.index - 1,
+      endPos: environmentObject.range().end.index - 1,
+      insertedText: `\nNODE_OPTIONS: '${DD_TRACE_INITIALIZE}',\n`,
+    });
+    return;
+  }
+
+  const nodeOptionsValue = nodeOptions.field('value');
+
+  if (
+    !nodeOptionsValue ||
+    nodeOptionsValue.text().includes(DD_TRACE_INITIALIZE)
+  ) {
+    return;
+  }
+
+  const needsSpace = nodeOptionsValue.text().length > 2;
+  edits.push({
+    startPos: nodeOptionsValue.range().end.index - 1,
+    endPos: nodeOptionsValue.range().end.index - 1,
+    insertedText: `${needsSpace ? ' ' : ''}${DD_TRACE_INITIALIZE}`,
+  });
+};
+
+const appendDdTraceToServerlessNodeOptions = (
+  astRoot: SgNode,
+  edits: Edit[],
+) => {
+  const nodeOptions = astRoot.find({
+    rule: {
+      kind: 'block_mapping_pair',
+      regex: '^NODE_OPTIONS:',
+    },
+  });
+
+  const value = nodeOptions?.field('value');
+
+  if (!value || value.text().includes(DD_TRACE_INITIALIZE)) {
+    return;
+  }
+
+  const valueText = value.text();
+  const isQuoted =
+    (valueText.startsWith("'") && valueText.endsWith("'")) ||
+    (valueText.startsWith('"') && valueText.endsWith('"'));
+
+  const insertPos = isQuoted
+    ? value.range().end.index - 1
+    : value.range().end.index;
+
+  edits.push({
+    startPos: insertPos,
+    endPos: insertPos,
+    insertedText: ` ${DD_TRACE_INITIALIZE}`,
+  });
+};
 
 const migrateCdkLambdas = async (
   tsFiles: Array<{ file: string; contents: string }>,
@@ -221,6 +304,15 @@ const migrateCdkLambdas = async (
                 endPos: datadogSettings.range().end.index - 1,
                 insertedText: '\nredirectHandler: false,\n',
               });
+
+              const nodeModulesText = nodeModules?.text() ?? '';
+              const hasDatadogModules =
+                nodeModulesText.includes('datadog-lambda-js') &&
+                nodeModulesText.includes('dd-trace');
+
+              if (hasDatadogModules) {
+                appendDdTraceToCdkNodeOptions(workerAst, edits);
+              }
             } else {
               const extensionVersion = datadogSettings.find({
                 rule: {
@@ -327,6 +419,10 @@ const migrateServerlessLambdas = async (
                 endPos: datadogSettings.range().end.index,
                 insertedText: `\n${' '.repeat(indent)}redirectHandlers: false${!containsDatadogLambdaImport ? ' # TODO: Wrap your handler with the `datadog` function wrapper from `datadog-lambda-js` or the `withLambdaExtension` function wrapper from `seek-datadog-custom-metrics/lambda`. Alternatively, remove this setting and enable addLayers: true' : ''}\n`,
               });
+
+              if (containsDatadogLambdaImport) {
+                appendDdTraceToServerlessNodeOptions(astRoot, edits);
+              }
             }
           }
         }
