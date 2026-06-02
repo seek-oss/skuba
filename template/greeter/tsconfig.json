@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "customConditions": ["@seek/<%- repoName %>/source"],
+    "rootDir": ".",
+    "lib": ["ES2024"],
+    "outDir": "lib",
+    "target": "ES2024"
+  },
+  "exclude": ["lib*/**/*"],
+  "extends": "skuba/config/tsconfig.json"
+}
