@@ -62,6 +62,12 @@
     "entryPoint": "index.js",
     "template": "oss-npm-package",
     "type": "package",
+<<<<<<< Updated upstream
     "version": "16.0.0"
+||||||| Stash base
+    "version": "16.0.2"
+=======
+    "version": "16.1.0"
+>>>>>>> Stashed changes
   }
 }

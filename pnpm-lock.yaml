@@ -16,6 +16,9 @@ importers:
       '@arethetypeswrong/core':
         specifier: ~0.18.1
         version: 0.18.2
+      '@ast-grep/lang-bash':
+        specifier: ~0.0.8
+        version: 0.0.8
       '@ast-grep/lang-json':
         specifier: ~0.0.7
         version: 0.0.7
@@ -647,6 +650,14 @@ packages:
   '@arethetypeswrong/core@0.18.2':
     resolution: {integrity: sha512-GiwTmBFOU1/+UVNqqCGzFJYfBXEytUkiI+iRZ6Qx7KmUVtLm00sYySkfe203C9QtPG11yOz1ZaMek8dT/xnlgg==}
     engines: {node: '>=20'}
+
+  '@ast-grep/lang-bash@0.0.8':
+    resolution: {integrity: sha512-qFykSsOdBv35I1rtt2PstJ4luzV9J1YCiFZBgySI8UPOh+TFnmpdlq9CrryNOj0Q7f6zZhc1OIau+/mUSs6HAg==}
+    peerDependencies:
+      tree-sitter-cli: 0.25.8
+    peerDependenciesMeta:
+      tree-sitter-cli:
+        optional: true
 
   '@ast-grep/lang-json@0.0.7':
     resolution: {integrity: sha512-8wiH+B4Rih8/vHsUB4DOTXnQHMxfWhaBygUEZ036kfr1T9WFvx5E7QYd2WX2Wm1nFCzUmWbIfsoE+cR2G9SJlA==}
@@ -7630,6 +7641,10 @@ snapshots:
       semver: 7.8.0
       typescript: 5.6.1-rc
       validate-npm-package-name: 5.0.1
+
+  '@ast-grep/lang-bash@0.0.8':
+    dependencies:
+      '@ast-grep/setup-lang': 0.0.6
 
   '@ast-grep/lang-json@0.0.7':
     dependencies:
