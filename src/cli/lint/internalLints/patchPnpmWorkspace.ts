@@ -405,6 +405,7 @@ const applyDeleteEdits = async (
 export const patchPnpmWorkspace = async (
   mode: 'format' | 'lint',
   cwd: string = process.cwd(),
+  updateLockfile: boolean = true,
 ): Promise<InternalLintResult> => {
   const packageManager = await detectPackageManager();
 
@@ -712,7 +713,7 @@ export const patchPnpmWorkspace = async (
       'install',
       '--fix-lockfile',
       '--no-frozen-lockfile',
-      '--offline',
+      '--prefer-offline',
     );
   }
 
