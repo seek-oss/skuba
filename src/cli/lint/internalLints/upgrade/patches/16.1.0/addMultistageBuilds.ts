@@ -44,12 +44,19 @@ const applyMultiStageBuildPatch = async (
 
   const edits: Edit[] = [];
 
-  const argEnd = argBaseImage.range().end.index;
+  const argBaseTag = astRoot.find({
+    rule: {
+      kind: 'command',
+      regex: '^ARG BASE_TAG',
+    },
+  });
+  const imageRef = argBaseTag ? '${BASE_IMAGE}:${BASE_TAG}' : '${BASE_IMAGE}';
+
+  const argEnd = (argBaseTag ?? argBaseImage).range().end.index;
   edits.push({
     startPos: argEnd,
     endPos: argEnd,
-    insertedText:
-      '\n\nFROM ${BASE_IMAGE} AS deps\n\nCOPY . .\n\nRUN pnpm prune --prod\nRUN pnpm install --offline --prod',
+    insertedText: `\n\nFROM ${imageRef} AS deps\n\nCOPY . .\n\nRUN pnpm prune --prod\nRUN pnpm install --offline --prod`,
   });
 
   const copyPackageJson = astRoot.find({

@@ -261,6 +261,68 @@ COPY --from=build /workdir/package.json package.json
     `);
   });
 
+  it('should handle the ${BASE_IMAGE}:${BASE_TAG} image reference', async () => {
+    vol.fromJSON({
+      Dockerfile: `\
+ARG BASE_IMAGE
+ARG BASE_TAG
+
+###
+
+FROM \${BASE_IMAGE}:\${BASE_TAG} AS build
+COPY . .
+RUN pnpm install --offline
+RUN pnpm build
+
+###
+
+FROM gcr.io/distroless/nodejs24-debian13 AS runtime
+WORKDIR /workdir
+COPY --from=build /workdir/lib lib
+COPY --from=build /workdir/node_modules node_modules
+COPY --from=build /workdir/package.json package.json
+ENV NODE_ENV=production
+`,
+    });
+
+    await expect(
+      patchDockerfiles({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "Dockerfile": "ARG BASE_IMAGE
+      ARG BASE_TAG
+
+      FROM \${BASE_IMAGE}:\${BASE_TAG} AS deps
+
+      COPY . .
+
+      RUN pnpm prune --prod
+      RUN pnpm install --offline --prod
+
+      ###
+
+      FROM \${BASE_IMAGE}:\${BASE_TAG} AS build
+      COPY . .
+      RUN pnpm install --offline
+      RUN pnpm build
+
+      ###
+
+      FROM gcr.io/distroless/nodejs24-debian13 AS runtime
+      WORKDIR /workdir
+      COPY --from=build /workdir/lib lib
+      COPY --from=build /workdir/package.json package.json
+      COPY --from=deps /workdir/node_modules node_modules
+      ENV NODE_ENV=production
+      ",
+      }
+    `);
+  });
+
   it('should change --from=build to --from=deps in place when no package.json COPY exists', async () => {
     vol.fromJSON({
       Dockerfile: `\
