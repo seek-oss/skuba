@@ -707,7 +707,7 @@ export const patchPnpmWorkspace = async (
     log.subtle(
       'pnpm-workspace.yaml was updated, running `pnpm install` to update lockfile...',
     );
-    await createExec({ cwd: dir })('pnpm', 'install', '--fix-lockfile');
+    await createExec({ cwd: dir })('pnpm', 'install', '--fix-lockfile', '--no-frozen-lockfile', '--ofline');
   }
 
   return {
