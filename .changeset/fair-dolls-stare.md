@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-try someting else
+lint: try someting else
