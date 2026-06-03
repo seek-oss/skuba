@@ -67,7 +67,7 @@
     "@octokit/graphql": "^9.0.0",
     "@octokit/rest": "^22.0.0",
     "@octokit/types": "^16.0.0",
-    "concurrently": "^9.0.0",
+    "concurrently": "^10.0.0",
     "execa": "^9.6.1",
     "fs-extra": "^11.0.0",
     "ignore": "^7.0.0",
