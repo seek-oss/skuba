@@ -238,8 +238,8 @@ COPY --from=build /workdir/package.json package.json
 
       COPY . .
 
-      RUN pnpm install --offline --prod
       RUN pnpm prune --prod
+      RUN pnpm install --offline --prod
 
       ###
 
@@ -290,8 +290,8 @@ COPY --from=build /workdir/node_modules node_modules
 
       COPY . .
 
-      RUN pnpm install --offline --prod
       RUN pnpm prune --prod
+      RUN pnpm install --offline --prod
       FROM \${BASE_IMAGE} AS build
       COPY . .
       RUN pnpm install --offline
@@ -333,8 +333,8 @@ COPY --from=build /workdir/node_modules node_modules
 
       COPY . .
 
-      RUN pnpm install --offline --prod
       RUN pnpm prune --prod
+      RUN pnpm install --offline --prod
 
       ###
 

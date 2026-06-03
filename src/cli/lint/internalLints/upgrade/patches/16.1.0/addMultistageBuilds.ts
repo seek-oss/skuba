@@ -49,7 +49,7 @@ const applyMultiStageBuildPatch = async (
     startPos: argEnd,
     endPos: argEnd,
     insertedText:
-      '\n\nFROM ${BASE_IMAGE} AS deps\n\nCOPY . .\n\nRUN pnpm install --offline --prod\nRUN pnpm prune --prod',
+      '\n\nFROM ${BASE_IMAGE} AS deps\n\nCOPY . .\n\nRUN pnpm prune --prod\nRUN pnpm install --offline --prod',
   });
 
   const copyPackageJson = astRoot.find({

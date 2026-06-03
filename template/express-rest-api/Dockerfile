@@ -4,6 +4,7 @@ FROM ${BASE_IMAGE} AS deps
 
 COPY . .
 
+RUN pnpm prune --prod
 RUN pnpm install --offline --prod
 
 ###
