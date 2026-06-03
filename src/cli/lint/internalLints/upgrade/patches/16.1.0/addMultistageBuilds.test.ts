@@ -234,7 +234,9 @@ COPY --from=build /workdir/package.json package.json
       {
         "Dockerfile": "ARG BASE_IMAGE
 
-      FROM BASE_IMAGE as deps
+      FROM \${BASE_IMAGE} AS deps
+
+      COPY . .
 
       RUN pnpm install --offline --prod
       RUN pnpm prune --prod
@@ -284,7 +286,9 @@ COPY --from=build /workdir/node_modules node_modules
       {
         "Dockerfile": "ARG BASE_IMAGE
 
-      FROM BASE_IMAGE as deps
+      FROM \${BASE_IMAGE} AS deps
+
+      COPY . .
 
       RUN pnpm install --offline --prod
       RUN pnpm prune --prod
@@ -325,7 +329,9 @@ COPY --from=build /workdir/node_modules node_modules
     expect(result.Dockerfile).toMatchInlineSnapshot(`
       "ARG BASE_IMAGE
 
-      FROM BASE_IMAGE as deps
+      FROM \${BASE_IMAGE} AS deps
+
+      COPY . .
 
       RUN pnpm install --offline --prod
       RUN pnpm prune --prod

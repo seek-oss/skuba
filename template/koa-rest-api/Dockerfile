@@ -1,9 +1,10 @@
 ARG BASE_IMAGE
 
-FROM BASE_IMAGE as deps
+FROM ${BASE_IMAGE} AS deps
+
+COPY . .
 
 RUN pnpm install --offline --prod
-RUN pnpm prune --prod
 
 ###
 
