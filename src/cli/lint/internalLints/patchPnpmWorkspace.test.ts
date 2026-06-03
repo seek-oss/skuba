@@ -91,8 +91,6 @@ describe('patchPnpmWorkspace', () => {
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
-      overrides:
-        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       "
     `);
   });
@@ -168,8 +166,6 @@ trustPolicyExclude:
       packageManagerStrictVersion: true # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
-      overrides:
-        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       # This is a comment
       allowBuilds:
         '@datadog/native-appsec': true # Managed by skuba
@@ -269,8 +265,6 @@ trustPolicyExclude:
       packageManagerStrictVersion: true # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
-      overrides:
-        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       blockExoticSubdeps: true # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
@@ -368,8 +362,6 @@ packageManagerStrictVersion: false`,
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
-      overrides:
-        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       blockExoticSubdeps: true # Managed by skuba
       ignorePatchFailures: false # Managed by skuba
       strictDepBuilds: false # Managed by skuba
@@ -430,8 +422,6 @@ allowBuilds:
       packageManagerStrictVersion: true # Managed by skuba
       strictDepBuilds: false # Managed by skuba
       trustPolicy: off # Managed by skuba
-      overrides:
-        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
         - '@eslint/*' # Managed by skuba
@@ -514,8 +504,6 @@ somelistSection:
       trustPolicy: off # Managed by skuba
       trustPolicyExclude:
         - semver@6.3.1 # Managed by skuba
-      overrides:
-        '@arethetypeswrong/core@0.18.2>fflate': 0.8.2 # Managed by skuba
       minimumReleaseAge: 4320 # Managed by skuba
       minimumReleaseAgeExclude:
         - '@skuba-lib/*' # Managed by skuba
