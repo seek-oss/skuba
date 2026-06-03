@@ -710,8 +710,7 @@ export const patchPnpmWorkspace = async (
     await createExec({ cwd: dir })(
       'pnpm',
       'install',
-      '--no-frozen-lockfile',
-      '--prefer-offline',
+      '--fix-lockfile',
     );
   }
 
