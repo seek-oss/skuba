@@ -24,6 +24,11 @@
       "import": "./lib/buildkite/index.mjs",
       "require": "./lib/buildkite/index.cjs"
     },
+    "./cdk": {
+      "@seek/skuba/source": "./src/cdk/index.ts",
+      "import": "./lib/cdk/index.mjs",
+      "require": "./lib/cdk/index.cjs"
+    },
     "./git": {
       "@seek/skuba/source": "./src/git/index.ts",
       "import": "./lib/git/index.mjs",
@@ -47,6 +52,7 @@
   "files": [
     "lib",
     "buildkite",
+    "cdk",
     "git",
     "github",
     "net"
@@ -82,6 +88,10 @@
       "./buildkite": {
         "import": "./lib/buildkite/index.mjs",
         "require": "./lib/buildkite/index.cjs"
+      },
+      "./cdk": {
+        "import": "./lib/cdk/index.mjs",
+        "require": "./lib/cdk/index.cjs"
       },
       "./git": {
         "import": "./lib/git/index.mjs",
