@@ -10,8 +10,6 @@ the build stage before building. The runtime image continues to copy
 development dependencies carried through to the final image.
 
 ```diff
-ARG BASE_IMAGE
-
 FROM ${BASE_IMAGE} AS build
 COPY . .
 
@@ -19,13 +17,4 @@ COPY . .
 + RUN pnpm prune --prod
 + RUN pnpm install --offline --prod
 RUN pnpm build
-
-###
-
-FROM gcr.io/distroless/nodejs24-debian13 AS runtime
-WORKDIR /workdir
-
-COPY --from=build /workdir/lib lib
-COPY --from=build /workdir/package.json package.json
-COPY --from=build /workdir/node_modules node_modules
 ```
