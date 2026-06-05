@@ -14,6 +14,7 @@ export * as Buildkite from '@skuba-lib/api/buildkite';
 export * as Git from '@skuba-lib/api/git';
 export * as GitHub from '@skuba-lib/api/github';
 export * as Net from '@skuba-lib/api/net';
+export * as Cdk from '@skuba-lib/api/cdk';
 export * as Vitest from './api/vitest/index.js';
 
 // evanw/esbuild#2388

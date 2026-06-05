@@ -54,9 +54,6 @@ const defaultConfig = {
   strictDepBuilds: false,
   trustPolicy: 'off',
   trustPolicyExclude: ['semver@6.3.1'], // dependency of eslint-plugin-react
-  overrides: {
-    '@arethetypeswrong/core@0.18.2>fflate': '0.8.2',
-  },
 };
 
 module.exports = {
