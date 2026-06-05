@@ -5,30 +5,6 @@ exports[`'fixable' 1`] = `
 skuba lints
 Updating skuba... upgrade-skuba
 
-Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset upgrade-skuba
-
-Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found upgrade-skuba
-
-Patch skipped: Add keepAliveTimeout to server listener - no listener file found upgrade-skuba
-
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
-
-Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
-
-Patch skipped: Remove version field from docker-compose files - no docker-compose files found upgrade-skuba
-
-Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found upgrade-skuba
-
-Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
-
-Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-
-Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
-
-Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
-
-Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
-
 Patch skipped: Add event handler to log unhandled promise rejections instead of crashing the process - no applicable src/listen.ts entry points found upgrade-skuba
 
 Patch skipped: Update Jest snapshot URLs to the new documentation site - no test files found upgrade-skuba
@@ -95,6 +71,8 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
+
+Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -152,30 +130,6 @@ exports[`'ok --debug' 1`] = `
 skuba lints
 Updating skuba... upgrade-skuba
 
-Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset upgrade-skuba
-
-Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found upgrade-skuba
-
-Patch skipped: Add keepAliveTimeout to server listener - no listener file found upgrade-skuba
-
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
-
-Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
-
-Patch skipped: Remove version field from docker-compose files - no docker-compose files found upgrade-skuba
-
-Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found upgrade-skuba
-
-Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
-
-Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-
-Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
-
-Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
-
-Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
-
 Patch skipped: Add event handler to log unhandled promise rejections instead of crashing the process - no applicable src/listen.ts entry points found upgrade-skuba
 
 Patch skipped: Update Jest snapshot URLs to the new documentation site - no test files found upgrade-skuba
@@ -242,6 +196,8 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
+
+Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -292,30 +248,6 @@ exports[`'ok' 1`] = `
 skuba lints
 Updating skuba... upgrade-skuba
 
-Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset upgrade-skuba
-
-Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found upgrade-skuba
-
-Patch skipped: Add keepAliveTimeout to server listener - no listener file found upgrade-skuba
-
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
-
-Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
-
-Patch skipped: Remove version field from docker-compose files - no docker-compose files found upgrade-skuba
-
-Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found upgrade-skuba
-
-Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
-
-Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-
-Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
-
-Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
-
-Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
-
 Patch skipped: Add event handler to log unhandled promise rejections instead of crashing the process - no applicable src/listen.ts entry points found upgrade-skuba
 
 Patch skipped: Update Jest snapshot URLs to the new documentation site - no test files found upgrade-skuba
@@ -383,6 +315,8 @@ Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
 
+Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -404,30 +338,6 @@ exports[`'unfixable' 1`] = `
 "
 skuba lints
 Updating skuba... upgrade-skuba
-
-Patch skipped: Update Renovate config to support private SEEK packages - owner does not map to a SEEK preset upgrade-skuba
-
-Patch skipped: Upgrade Node.js Distroless Docker image to -debian12 variant - no Dockerfile found upgrade-skuba
-
-Patch skipped: Add keepAliveTimeout to server listener - no listener file found upgrade-skuba
-
-Patch skipped: Ensure the pnpm package manager version specified in package.json is used in Dockerfiles - no packageManager declaration in package.json found upgrade-skuba
-
-Patch skipped: Collapse duplicate merge keys in .buildkite files - no Buildkite files found upgrade-skuba
-
-Patch skipped: Remove version field from docker-compose files - no docker-compose files found upgrade-skuba
-
-Patch skipped: Update docker image references to use public.ecr.aws and remove --platform flag - no Dockerfile or docker-compose files found upgrade-skuba
-
-Patch skipped: Move .npmrc mounts from tmp/.npmrc to /tmp/.npmrc - no Buildkite files found upgrade-skuba
-
-Patch skipped: Use pinned pnpm version in Dockerfiles - no Dockerfiles found upgrade-skuba
-
-Patch skipped: Remove yarn --ignore-optional flags in Dockerfiles - no Dockerfiles found upgrade-skuba
-
-Patch skipped: Stop bundling inside CDK unit tests - no CDK test files found upgrade-skuba
-
-Patch skipped: Move .npmrc config to pnpm-workspace.yaml - no .npmrc found upgrade-skuba
 
 Patch skipped: Add event handler to log unhandled promise rejections instead of crashing the process - no applicable src/listen.ts entry points found upgrade-skuba
 
@@ -494,6 +404,8 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
+
+Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
