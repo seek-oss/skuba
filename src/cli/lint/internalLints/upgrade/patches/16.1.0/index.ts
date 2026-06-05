@@ -1,10 +1,10 @@
 import type { Patches } from '../../index.js';
 
-import { patchDockerfiles } from './addMultistageBuilds.js';
+import { pruneDevDeps } from './pruneDevDeps.js';
 
 export const patches: Patches = [
   {
-    apply: patchDockerfiles,
+    apply: pruneDevDeps,
     description: 'Add multi stage builds to api Dockerfiles',
   },
 ];
