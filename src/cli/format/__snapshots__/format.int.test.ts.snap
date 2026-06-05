@@ -70,8 +70,6 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
-Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
-
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -193,8 +191,6 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
-Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
-
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -309,8 +305,6 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
-Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
-
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -396,8 +390,6 @@ Patch skipped: Migrate from Jest to Vitest - skipping in integration test enviro
 Patch skipped: Add file extensions to imports - no imports found that could be migrated
 
 Patch applied: Migrate to ESM upgrade-skuba
-
-Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

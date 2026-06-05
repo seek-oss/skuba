@@ -1,4 +1,3 @@
-import bash from '@ast-grep/lang-bash';
 import json from '@ast-grep/lang-json';
 import yaml from '@ast-grep/lang-yaml';
 import { registerDynamicLanguage } from '@ast-grep/napi';
@@ -17,6 +16,6 @@ export const registerAstGrepLanguages = () => {
   if (registered) {
     return;
   }
-  registerDynamicLanguage({ bash, json, yaml });
+  registerDynamicLanguage({ json, yaml });
   registered = true;
 };
