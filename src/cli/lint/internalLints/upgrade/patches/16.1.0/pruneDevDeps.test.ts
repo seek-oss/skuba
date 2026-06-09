@@ -210,8 +210,8 @@ COPY --from=build /workdir/package.json package.json
       COPY . .
       RUN pnpm install --offline
       RUN pnpm build
-      RUN pnpm prune --prod
-      RUN pnpm install --offline --prod
+      RUN CI=true pnpm prune --prod
+      RUN CI=true pnpm install --offline --prod
 
       ###
 
@@ -267,8 +267,8 @@ ENV NODE_ENV=production
       COPY . .
       RUN pnpm install --offline
       RUN pnpm build
-      RUN pnpm prune --prod
-      RUN pnpm install --offline --prod
+      RUN CI=true pnpm prune --prod
+      RUN CI=true pnpm install --offline --prod
 
       ###
 
@@ -313,8 +313,8 @@ ENV NODE_ENV=production
       COPY . .
       RUN pnpm install --offline
       RUN pnpm build
-      RUN pnpm prune --prod
-      RUN pnpm install --offline --prod
+      RUN CI=true pnpm prune --prod
+      RUN CI=true pnpm install --offline --prod
 
       ###
 
@@ -342,9 +342,9 @@ ENV NODE_ENV=production
 
     const result = volToJson();
 
-    expect(result.Dockerfile).toContain('RUN pnpm prune --prod');
+    expect(result.Dockerfile).toContain('RUN CI=true pnpm prune --prod');
     expect(result['services/api/Dockerfile']).toContain(
-      'RUN pnpm prune --prod',
+      'RUN CI=true pnpm prune --prod',
     );
   });
 });

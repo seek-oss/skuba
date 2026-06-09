@@ -25,7 +25,15 @@ const applyPruneDevDepsPatch = async (
       regex: '^ARG BASE_IMAGE',
     },
   });
-  if (!argBaseImage) {
+
+  const pnpmDeploy = astRoot.find({
+    rule: {
+      kind: 'command',
+      regex: '^RUN pnpm deploy',
+    },
+  });
+
+  if (!argBaseImage || pnpmDeploy) {
     return null;
   }
 
@@ -61,7 +69,7 @@ const applyPruneDevDepsPatch = async (
 
   const edits: Edit[] = [
     pnpmBuild.replace(
-      'RUN pnpm build\nRUN pnpm prune --prod\nRUN pnpm install --offline --prod',
+      'RUN pnpm build\nRUN CI=true pnpm prune --prod\nRUN CI=true pnpm install --offline --prod',
     ),
   ];
 

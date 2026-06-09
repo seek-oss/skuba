@@ -15,6 +15,6 @@ COPY . .
 
 RUN pnpm install --offline
 RUN pnpm build
-+ RUN pnpm prune --prod
-+ RUN pnpm install --offline --prod
++ RUN CI=true pnpm prune --prod
++ RUN CI=true pnpm install --offline --prod
 ```
