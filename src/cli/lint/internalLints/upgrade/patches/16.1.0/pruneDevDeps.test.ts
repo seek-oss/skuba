@@ -208,9 +208,10 @@ COPY --from=build /workdir/package.json package.json
 
       FROM \${BASE_IMAGE} AS build
       COPY . .
+      RUN pnpm install --offline
+      RUN pnpm build
       RUN pnpm prune --prod
       RUN pnpm install --offline --prod
-      RUN pnpm build
 
       ###
 
@@ -264,9 +265,10 @@ ENV NODE_ENV=production
 
       FROM \${BASE_IMAGE}:\${BASE_TAG} AS build
       COPY . .
+      RUN pnpm install --offline
+      RUN pnpm build
       RUN pnpm prune --prod
       RUN pnpm install --offline --prod
-      RUN pnpm build
 
       ###
 
@@ -309,9 +311,10 @@ ENV NODE_ENV=production
 
       FROM \${BASE_IMAGE} AS build
       COPY . .
+      RUN pnpm install --offline
+      RUN pnpm build
       RUN pnpm prune --prod
       RUN pnpm install --offline --prod
-      RUN pnpm build
 
       ###
 

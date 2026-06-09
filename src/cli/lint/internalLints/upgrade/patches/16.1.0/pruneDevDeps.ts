@@ -49,9 +49,19 @@ const applyPruneDevDepsPatch = async (
     return null;
   }
 
+  const pnpmBuild = astRoot.find({
+    rule: {
+      kind: 'command',
+      regex: '^RUN pnpm build$',
+    },
+  });
+  if (!pnpmBuild) {
+    return null;
+  }
+
   const edits: Edit[] = [
-    installOffline.replace(
-      'RUN pnpm prune --prod\nRUN pnpm install --offline --prod',
+    pnpmBuild.replace(
+      'RUN pnpm build\nRUN pnpm prune --prod\nRUN pnpm install --offline --prod',
     ),
   ];
 

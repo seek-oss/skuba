@@ -13,8 +13,8 @@ development dependencies carried through to the final image.
 FROM ${BASE_IMAGE} AS build
 COPY . .
 
-- RUN pnpm install --offline
+RUN pnpm install --offline
+RUN pnpm build
 + RUN pnpm prune --prod
 + RUN pnpm install --offline --prod
-RUN pnpm build
 ```
