@@ -50,25 +50,6 @@ const patchCdkFile = async (contents: string): Promise<string | null> => {
     return null;
   }
 
-  const nodeModulesText =
-    workerAst
-      .find({
-        rule: {
-          kind: 'object',
-          inside: { kind: 'pair', regex: '^bundling' },
-        },
-      })
-      ?.find({ rule: { kind: 'pair', regex: '^nodeModules' } })
-      ?.text() ?? '';
-
-  const hasDatadogModules =
-    nodeModulesText.includes('datadog-lambda-js') &&
-    nodeModulesText.includes('dd-trace');
-
-  if (!hasDatadogModules) {
-    return null;
-  }
-
   const edits: Edit[] = [];
   appendDdTraceToCdkNodeOptions(workerAst, edits);
 

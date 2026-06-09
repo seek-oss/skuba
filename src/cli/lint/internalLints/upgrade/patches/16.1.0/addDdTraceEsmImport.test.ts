@@ -97,21 +97,6 @@ describe('addDdTraceEsmImport', () => {
     expect(volToJson()).toEqual(input);
   });
 
-  it('skips when dd-trace is missing from nodeModules', async () => {
-    const input = {
-      'appStack.ts': cdkAppStack({ nodeModules: "['datadog-lambda-js']" }),
-    };
-    vol.fromJSON(input);
-
-    await expect(
-      tryAddDdTraceEsmImport({ ...baseArgs, mode: 'format' }),
-    ).resolves.toEqual({
-      result: 'skip',
-      reason: 'no lambdas to patch',
-    } satisfies PatchReturnType);
-    expect(volToJson()).toEqual(input);
-  });
-
   it('skips when the import is already present', async () => {
     const input = {
       'appStack.ts': cdkAppStack({
