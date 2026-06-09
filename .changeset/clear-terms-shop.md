@@ -1,5 +1,5 @@
 ---
-'skuba': minor
+'skuba': patch
 ---
 
 template/\*-rest-api: Prune development dependencies from Docker builds
