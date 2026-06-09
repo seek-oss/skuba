@@ -55,14 +55,14 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    vi.doMock(`./patches/7.3.1/index.js`, () => ({ patches: [mockUpgrade] }));
-    vi.doMock(`./patches/8.0.0/index.js`, () => ({ patches: [mockUpgrade] }));
-    vi.doMock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/12.0.2/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/13.1.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/14.0.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         skuba: {
-          version: '8.0.0',
+          version: '13.0.0',
         },
         _id: 'test',
         name: 'some-api',
@@ -72,13 +72,13 @@ describe('upgradeSkuba in format mode', () => {
       path: '/package.json',
     });
 
-    vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
+    vi.mocked(getSkubaVersion).mockResolvedValue('13.1.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
     vi.mocked(fs.promises.readdir).mockResolvedValue([
-      { isDirectory: () => true, name: '7.3.1' },
-      { isDirectory: () => true, name: '8.0.0' },
-      { isDirectory: () => true, name: '8.2.1' },
+      { isDirectory: () => true, name: '12.0.2' },
+      { isDirectory: () => true, name: '13.1.1' },
+      { isDirectory: () => true, name: '14.0.1' },
       { isDirectory: () => false, name: 'index.d.ts' },
     ] as never);
 
@@ -95,12 +95,12 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    vi.doMock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    vi.doMock(`./patches/13.1.1/index.js`, () => ({ patches: [mockUpgrade] }));
 
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         skuba: {
-          version: '8.0.0',
+          version: '13.0.0',
         },
         _id: 'test',
         name: 'some-api',
@@ -110,11 +110,11 @@ describe('upgradeSkuba in format mode', () => {
       path: '/package.json',
     });
 
-    vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
+    vi.mocked(getSkubaVersion).mockResolvedValue('13.1.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
     vi.mocked(fs.promises.readdir).mockResolvedValue([
-      { isDirectory: () => true, name: '8.2.1' },
+      { isDirectory: () => true, name: '13.1.1' },
     ] as never);
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
@@ -128,7 +128,7 @@ describe('upgradeSkuba in format mode', () => {
   "name": "some-api",
   "version": "1.0.0",
   "skuba": {
-    "version": "8.2.1"
+    "version": "13.1.1"
   }
 }
 `,
@@ -153,11 +153,11 @@ describe('upgradeSkuba in format mode', () => {
       path: '/package.json',
     });
 
-    vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
+    vi.mocked(getSkubaVersion).mockResolvedValue('13.1.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
     vi.mocked(fs.promises.readdir).mockResolvedValue([
-      { isDirectory: () => true, name: '8.2.1' },
+      { isDirectory: () => true, name: '12.0.2' },
     ] as never);
 
     await expect(upgradeSkuba('format', log)).resolves.toEqual({
@@ -171,7 +171,7 @@ describe('upgradeSkuba in format mode', () => {
   "name": "some-api",
   "version": "1.0.0",
   "skuba": {
-    "version": "8.2.1"
+    "version": "13.1.1"
   }
 }
 `,
@@ -226,13 +226,13 @@ describe('upgradeSkuba in lint mode', () => {
       path: '/package.json',
     });
 
-    vi.mocked(getSkubaVersion).mockResolvedValue('8.2.1');
+    vi.mocked(getSkubaVersion).mockResolvedValue('13.1.1');
 
     // readdir has overloads and the mocked version doesn't match the string version
     vi.mocked(fs.promises.readdir).mockResolvedValue([
-      { isDirectory: () => true, name: '7.3.1' },
-      { isDirectory: () => true, name: '8.0.0' },
-      { isDirectory: () => true, name: '8.2.1' },
+      { isDirectory: () => true, name: '12.0.2' },
+      { isDirectory: () => true, name: '12.1.1' },
+      { isDirectory: () => true, name: '13.1.1' },
     ] as never);
 
     await expect(upgradeSkuba('lint', log)).resolves.toEqual({
