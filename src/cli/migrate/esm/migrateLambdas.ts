@@ -227,14 +227,7 @@ const migrateCdkLambdas = async (
                 insertedText: '\nredirectHandler: false,\n',
               });
 
-              const nodeModulesText = nodeModules?.text() ?? '';
-              const hasDatadogModules =
-                nodeModulesText.includes('datadog-lambda-js') &&
-                nodeModulesText.includes('dd-trace');
-
-              if (hasDatadogModules) {
-                appendDdTraceToCdkNodeOptions(workerAst, edits);
-              }
+              appendDdTraceToCdkNodeOptions(workerAst, edits);
             } else {
               const extensionVersion = datadogSettings.find({
                 rule: {
