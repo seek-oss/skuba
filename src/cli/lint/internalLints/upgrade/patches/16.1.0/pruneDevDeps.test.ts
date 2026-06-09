@@ -110,6 +110,33 @@ ENV NODE_ENV=production
     } satisfies PatchReturnType);
   });
 
+  it('should skip if the Dockerfile as RUN pnpm deploy', async () => {
+    vol.fromJSON({
+      Dockerfile: `\
+ARG BASE_IMAGE
+FROM \${BASE_IMAGE} AS build
+COPY . .
+RUN pnpm install --offline
+RUN pnpm build
+RUN pnpm deploy
+###
+FROM gcr.io/distroless/nodejs24-debian13 AS runtime
+WORKDIR /workdir
+COPY --from=build /workdir/lib lib
+COPY --from=build /workdir/node_modules node_modules
+COPY --from=build /workdir/package.json package.json
+ENV NODE_ENV=production
+`,
+    });
+
+    await expect(
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'skip',
+      reason: 'no Dockerfiles to patch',
+    } satisfies PatchReturnType);
+  });
+
   it('should skip if Dockerfile has no ARG BASE_IMAGE', async () => {
     vol.fromJSON({
       Dockerfile: `\
