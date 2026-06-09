@@ -1,10 +1,10 @@
 ---
-'skuba': minor
+'skuba': patch
 ---
 
-template/\*-rest-api: Add multi-stage Docker builds
+template/\*-rest-api: Add `deps` stage to Docker builds
 
-API template Dockerfiles now use a dedicated `deps` stage to install production dependencies separately from the build stage. The runtime image copies `node_modules` from this production-only stage, reducing the amount of build tooling and development dependencies carried through the image build process.
+API Dockerfiles now use a dedicated `deps` stage to install production dependencies separate from the `build` stage. The `runtime` image copies `node_modules` from this production-only stage, reducing the amount of build tooling and development dependencies carried through the image build process.
 
 ```diff
 ARG BASE_IMAGE
