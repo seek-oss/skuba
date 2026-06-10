@@ -1,8 +1,8 @@
 import type { Patches } from '../../index.js';
 
 import { tryAddDdTraceEsmImport } from './addDdTraceEsmImport.js';
-import { patchDockerfiles } from './addMultistageBuilds.js';
 import { tryPatchTsconfig } from './patchTsconfig.js';
+import { pruneDevDeps } from './pruneDevDeps.js';
 
 export const patches: Patches = [
   {
@@ -11,7 +11,7 @@ export const patches: Patches = [
       'Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled',
   },
   {
-    apply: patchDockerfiles,
+    apply: pruneDevDeps,
     description: 'Add multi stage builds to api Dockerfiles',
   },
   {
