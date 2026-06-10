@@ -70,7 +70,11 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
+Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
+
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
+
+Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -193,7 +197,11 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
+Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
+
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
+
+Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -309,7 +317,11 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
+Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
+
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
+
+Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -397,7 +409,11 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
+Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
+
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
+
+Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
