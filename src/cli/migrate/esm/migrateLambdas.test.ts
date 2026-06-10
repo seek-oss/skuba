@@ -680,7 +680,7 @@ export class AppStack extends Stack {
               ...config.workerLambda.environment,
               NODE_ENV: 'production',
               // https://nodejs.org/api/cli.html#cli_node_options_options
-              NODE_OPTIONS: '--enable-source-maps',
+              NODE_OPTIONS: '--enable-source-maps --import dd-trace/initialize.mjs',
               DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
 
               ...(containsSkipDirective(process.env.BUILDKITE_MESSAGE, 'smoke')
@@ -1165,6 +1165,44 @@ custom:
             - module
             - main
 
+        datadog:
+          addLayers: false
+
+          redirectHandlers: false
+      ",
+      }
+    `);
+  });
+
+  it('should append the dd-trace import to an existing serverless NODE_OPTIONS', async () => {
+    vol.fromJSON({
+      'foo.ts': `import { datadog } from 'datadog-lambda-js';
+`,
+      'serverless.yml': `provider:
+  environment:
+    NODE_OPTIONS: '--enable-source-maps'
+custom:
+  datadog:
+    addLayers: false
+`,
+    });
+
+    await expect(
+      migrateLambdas({
+        ...baseArgs,
+        mode: 'format',
+      }),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "foo.ts": "import { datadog } from 'datadog-lambda-js';
+      ",
+        "serverless.yml": "provider:
+        environment:
+          NODE_OPTIONS: '--enable-source-maps --import dd-trace/initialize.mjs'
+      custom:
         datadog:
           addLayers: false
 
