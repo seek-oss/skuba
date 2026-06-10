@@ -6,7 +6,8 @@
     "incremental": true,
     "module": "node20",
     "outDir": "lib",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
   "extends": "tsconfig-seek"
 }
