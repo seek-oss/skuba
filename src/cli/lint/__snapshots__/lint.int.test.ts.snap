@@ -146,7 +146,6 @@ tsc      │ I/O Read time: <random>s
 tsc      │ Parse time: <random>s
 tsc      │ ResolveModule time: <random>s
 tsc      │ ResolveTypeReference time: <random>s
-tsc      │ ResolveLibrary time: <random>s
 tsc      │ Program time: <random>s
 tsc      │ Bind time: <random>s
 tsc      │ Check time: <random>s
@@ -194,8 +193,15 @@ Prettier │ d.js SyntaxError: Unexpected token (1:1)
     | ^
   2 |
 Prettier │ a/a/a.ts
-tsc      │ d.js(1,1): error TS1128: Declaration or statement expected.
+tsc      │ d.js:1:1 - error TS1128: Declaration or statement expected.
+tsc      │ 
+tsc      │ 1 }
+tsc      │   ~
+tsc      │ 
 tsc      │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
+tsc      │ 
+tsc      │ Found 1 error in d.js:1
+tsc      │ 
 tsc      │ tsc --noEmit exited with code 2
 skuba    │ Processed skuba lints in <random>s.
 ESLint, Prettier, tsc found issues that require triage.
@@ -238,7 +244,10 @@ a/a/a.ts
 **tsc**
 
 \`\`\`term
-d.js(1,1): error TS1128: Declaration or statement expected.
+d.js:1:1 - error TS1128: Declaration or statement expected.
+1 }
+  ~
+Found 1 error in d.js:1
 tsc --noEmit exited with code 2
 \`\`\`
 ",

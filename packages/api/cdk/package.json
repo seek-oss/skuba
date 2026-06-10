@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "main": "../lib/cdk/index.cjs",
+  "module": "../lib/cdk/index.mjs",
+  "types": "../lib/cdk/index.d.cts"
+}
