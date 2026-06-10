@@ -6,7 +6,6 @@
     "lib": ["ES2023"],
     "outDir": "lib",
     "target": "ES2023",
-    "baseUrl": ".",
     "skipLibCheck": true
   },
   "exclude": ["lib*/**/*"],
