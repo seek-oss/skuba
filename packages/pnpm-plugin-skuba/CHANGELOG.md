@@ -1,5 +1,15 @@
 # pnpm-plugin-skuba
 
+## 3.1.0
+
+### Minor Changes
+
+- **lint:** Hoist `@skuba-lib/*` ([#2441](https://github.com/seek-oss/skuba/pull/2441))
+
+  This allows you to use the [@skuba-lib/changesets-changelog](https://github.com/seek-oss/skuba/tree/main/packages/changesets-changelog) package in your project without having to install it as a direct dependency.
+
+- **lint:** Remove `@arethetypeswrong/core@0.18.2>fflate` pnpm override ([#2447](https://github.com/seek-oss/skuba/pull/2447))
+
 ## 3.0.1
 
 ### Patch Changes

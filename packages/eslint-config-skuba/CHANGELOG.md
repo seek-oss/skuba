@@ -1,5 +1,11 @@
 # eslint-config-skuba
 
+## 9.2.0
+
+### Minor Changes
+
+- **deps:** typescript-eslint 8.59.2, eslint-plugin-skuba 3.0.0 ([#2309](https://github.com/seek-oss/skuba/pull/2309))
+
 ## 9.1.0
 
 ### Minor Changes
