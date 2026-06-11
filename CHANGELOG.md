@@ -1,5 +1,103 @@
 # skuba
 
+## 16.2.0
+
+### Minor Changes
+
+- **api:** Add `Cdk.normaliseTemplate` ([#2418](https://github.com/seek-oss/skuba/pull/2418))
+
+  This function produces stable snapshots of CDK stack templates by stripping volatile, environment-specific values. This is particularly useful when testing to avoid snapshot churn on inconsequential differences in the generated templates.
+
+- **lint:** Hoist `@skuba-lib/*` ([#2441](https://github.com/seek-oss/skuba/pull/2441))
+
+  This allows you to use the [@skuba-lib/changesets-changelog](https://github.com/seek-oss/skuba/tree/main/packages/changesets-changelog) package in your project without having to install it as a direct dependency.
+
+- **lint:** Add patch to prune development dependencies from API Dockerfiles ([#2443](https://github.com/seek-oss/skuba/pull/2443))
+
+  A new patch automatically upgrades API Dockerfiles so the build stage prunes and
+  reinstalls production-only dependencies before building. The runtime image keeps
+  copying `node_modules` from the build stage, so it no longer carries development
+  dependencies.
+
+  This reduces the amount of build tooling and development dependencies carried
+  through the final image while preserving the existing runtime behaviour.
+
+- **deps:** typescript ~6.0.0 ([#2309](https://github.com/seek-oss/skuba/pull/2309))
+
+  This major release contains breaking changes. See the [TypeScript 6.0.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/) announcement for more information.
+
+  If your tsconfig currently extends `skuba/config/tsconfig.json`, you may not need to update anything. However, if you have a custom configuration, you may need to manually add `node` to the `types` array.
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "types": ["node"]
+    }
+  }
+  ```
+
+- **lint:** Remove `@arethetypeswrong/core@0.18.2>fflate` pnpm override ([#2447](https://github.com/seek-oss/skuba/pull/2447))
+
+- **lint:** Add SEEK package registry to SEEK-Jobs repositories ([#2387](https://github.com/seek-oss/skuba/pull/2387))
+
+- **lint:** Remove `baseUrl` from tsconfig.json files ([#2309](https://github.com/seek-oss/skuba/pull/2309))
+
+  This option is deprecated in TypeScript 6.0.0. Please verify that your project does not depend on it.
+
+### Patch Changes
+
+- **template/\*-rest-api:** Prune development dependencies from Docker builds ([#2443](https://github.com/seek-oss/skuba/pull/2443))
+
+  API template Dockerfiles now prune and reinstall production-only dependencies in
+  the build stage before building. The runtime image continues to copy
+  `node_modules` from the build stage, reducing the amount of build tooling and
+  development dependencies carried through to the final image.
+
+  ```diff
+  FROM ${BASE_IMAGE} AS build
+  COPY . .
+
+  RUN pnpm install --offline
+  RUN pnpm build
+  + RUN CI=true pnpm prune --prod
+  + RUN CI=true pnpm install --offline --prod
+  ```
+
+- **deps:** @arethetypeswrong/core 0.18.3 ([#2447](https://github.com/seek-oss/skuba/pull/2447))
+
+- **template/lambda-sqs-worker-cdk:** Abstract CDK stack normalisation ([#2418](https://github.com/seek-oss/skuba/pull/2418))
+
+- **migrate, lint:** Add `--import dd-trace/initialize.mjs` to lambda `NODE_OPTIONS` when handler redirection is disabled ([#2444](https://github.com/seek-oss/skuba/pull/2444))
+
+  When Datadog handler redirection is turned off (`redirectHandler: false` for CDK,
+  `redirectHandlers: false` for serverless), Datadog no longer auto-wraps the handler so
+  dd-trace must be initialised explicitly via the ESM loader flag. The ESM migration now
+  appends `--import dd-trace/initialize.mjs` to the lambda's `NODE_OPTIONS` in this case,
+  and a new upgrade patch retrofits projects that already migrated.
+
+- **template/greeter:** Use `repoName` for templating ([#2442](https://github.com/seek-oss/skuba/pull/2442))
+
+  This fixes the following warning upon `skuba init`:
+
+  ```typescript
+  Failed to render my-repo/vitest.config.ts
+  ReferenceError: ejs:8
+      6|     ssr: {
+      7|       resolve: {
+   >> 8|         conditions: ['@seek/<%- serviceName %>/source'],
+      9|       },
+      10|     },
+      11|     test: {
+
+  serviceName is not defined
+  ```
+
+- **deps:** concurrently ^10.0.0 ([#2446](https://github.com/seek-oss/skuba/pull/2446))
+
+- **deps:** @ast-grep/napi ~0.43.0 ([#2439](https://github.com/seek-oss/skuba/pull/2439))
+
+- **template/\*-rest-api:** Increase base Fargate task size ([#2453](https://github.com/seek-oss/skuba/pull/2453))
+
 ## 16.1.0
 
 ### Minor Changes
