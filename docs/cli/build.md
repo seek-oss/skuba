@@ -48,7 +48,7 @@ By convention, this points to a `tsconfig.build.json` that excludes tests from y
 }
 ```
 
-Run [`skuba configure`] if you don't already have this file.
+Create this file if you don't already have it.
 
 With tsc, you can supply any [compiler option] with the following caveats:
 
@@ -112,7 +112,6 @@ export default defineConfig({
 });
 ```
 
-[`skuba configure`]: ./configure.md#skuba-configure
 [compiler option]: https://www.typescriptlang.org/docs/handbook/compiler-options.html#compiler-options
 [copy]: https://tsdown.dev/reference/api/Interface.UserConfig#copy
 [esbuild]: ../deep-dives/esbuild.md

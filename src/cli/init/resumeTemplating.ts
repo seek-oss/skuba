@@ -5,24 +5,20 @@ import fs from 'fs-extra';
 import * as z from 'zod/v4';
 
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
+import { createInclusionFilter } from '../../utils/dir.js';
 import { log } from '../../utils/logging.js';
 import {
+  BASE_TEMPLATE_DIR,
   type TemplateConfig,
   ensureTemplateConfigDeletion,
 } from '../../utils/template.js';
 import { hasStringProp } from '../../utils/validation.js';
-import {
-  getTemplateConfig,
-  readJSONFromStdIn,
-  runForm,
-} from '../init/getConfig.js';
+import { formatPackage } from '../configure/processing/package.js';
+import type { ReadResult } from '../configure/types.js';
 
-import { formatPackage } from './processing/package.js';
-import type { ReadResult } from './types.js';
+import { getTemplateConfig, readJSONFromStdIn, runForm } from './getConfig.js';
 
 interface Props {
-  destinationRoot: string;
-  include: (pathname: string) => boolean;
   manifest: ReadResult;
 }
 
@@ -50,15 +46,14 @@ const getTemplateDataFromStdIn = async (
   return data.templateData;
 };
 
-export const ensureTemplateCompletion = async ({
-  destinationRoot,
-  include,
-  manifest,
-}: Props): Promise<TemplateConfig> => {
+export const resumeTemplating = async ({ manifest }: Props): Promise<void> => {
+  const destinationRoot = path.dirname(manifest.path);
+
   const templateConfig = await getTemplateConfig(destinationRoot);
 
   if (templateConfig.fields.length === 0) {
-    return templateConfig;
+    await ensureTemplateConfigDeletion(destinationRoot);
+    return;
   }
 
   const templateName = hasStringProp(manifest.packageJson.skuba, 'template')
@@ -81,6 +76,11 @@ export const ensureTemplateCompletion = async ({
   const packageJsonFilepath = path.join(destinationRoot, 'package.json');
   await fs.promises.writeFile(packageJsonFilepath, updatedPackageJson);
 
+  const include = await createInclusionFilter([
+    path.join(destinationRoot, '.gitignore'),
+    path.join(BASE_TEMPLATE_DIR, '_.gitignore'),
+  ]);
+
   await copyFiles({
     sourceRoot: destinationRoot,
     destinationRoot,
@@ -92,6 +92,4 @@ export const ensureTemplateCompletion = async ({
 
   log.newline();
   log.ok('Templating complete!');
-
-  return templateConfig;
 };

@@ -4,20 +4,14 @@
 
 Next steps:
 
-1. [ ] Finish templating if this was skipped earlier:
-
-   ```shell
-   pnpm exec skuba configure
-   ```
-
-2. [ ] Create a new repository in the appropriate GitHub organisation.
-3. [ ] Add the repository to BuildAgency;
+1. [ ] Create a new repository in the appropriate GitHub organisation.
+2. [ ] Add the repository to BuildAgency;
        see our internal [Buildkite Docs] for more information.
-4. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
+3. [ ] Add Datadog configuration and data classification tags to [.gantry/common.yml](.gantry/common.yml);
        see the [Gantry] documentation for more information.
-5. [ ] Push local commits to the upstream GitHub branch.
-6. [ ] Configure [GitHub repository settings].
-7. [ ] Delete this checklist 😌.
+4. [ ] Push local commits to the upstream GitHub branch.
+5. [ ] Configure [GitHub repository settings].
+6. [ ] Delete this checklist 😌.
 
 [Buildkite Docs]: https://backstage.myseek.xyz/docs/default/component/buildkite-docs
 [GitHub repository settings]: https://github.com/<%-orgName%>/<%-repoName%>/settings

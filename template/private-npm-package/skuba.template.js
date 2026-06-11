@@ -1,5 +1,5 @@
 /**
- * Run `skuba configure` to finish templating and remove this file.
+ * Run `skuba init` in this directory to finish templating and remove this file.
  */
 
 export default {
