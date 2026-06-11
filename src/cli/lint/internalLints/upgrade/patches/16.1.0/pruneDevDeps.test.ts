@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
-import { patchDockerfiles } from './addMultistageBuilds.js';
+import { pruneDevDeps } from './pruneDevDeps.js';
 
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
@@ -52,7 +52,7 @@ describe('patchDockerfiles', () => {
 
   it('should skip if no Dockerfiles found', async () => {
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles found',
@@ -65,7 +65,7 @@ describe('patchDockerfiles', () => {
     });
 
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles to patch',
@@ -103,37 +103,34 @@ ENV NODE_ENV=production
     });
 
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles to patch',
     } satisfies PatchReturnType);
   });
 
-  it('should skip if already patched (has COPY --from=deps)', async () => {
+  it('should skip if the Dockerfile as RUN pnpm deploy', async () => {
     vol.fromJSON({
       Dockerfile: `\
 ARG BASE_IMAGE
-FROM BASE_IMAGE as deps
-RUN pnpm install --offline --prod
-RUN pnpm prune --prod
-###
 FROM \${BASE_IMAGE} AS build
 COPY . .
 RUN pnpm install --offline
 RUN pnpm build
+RUN pnpm deploy
 ###
 FROM gcr.io/distroless/nodejs24-debian13 AS runtime
 WORKDIR /workdir
 COPY --from=build /workdir/lib lib
+COPY --from=build /workdir/node_modules node_modules
 COPY --from=build /workdir/package.json package.json
-COPY --from=deps /workdir/node_modules node_modules
 ENV NODE_ENV=production
 `,
     });
 
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles to patch',
@@ -154,7 +151,7 @@ COPY --from=build /workdir/node_modules node_modules
     });
 
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles to patch',
@@ -177,7 +174,7 @@ COPY --from=build /workdir/package.json package.json
     });
 
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no Dockerfiles to patch',
@@ -190,7 +187,7 @@ COPY --from=build /workdir/package.json package.json
     });
 
     await expect(
-      patchDockerfiles({ mode: 'lint' } as PatchConfig),
+      pruneDevDeps({ mode: 'lint' } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
@@ -225,7 +222,7 @@ COPY --from=build /workdir/package.json package.json
     });
 
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
@@ -234,27 +231,22 @@ COPY --from=build /workdir/package.json package.json
       {
         "Dockerfile": "ARG BASE_IMAGE
 
-      FROM \${BASE_IMAGE} AS deps
-
-      COPY . .
-
-      RUN pnpm prune --prod
-      RUN pnpm install --offline --prod
-
       ###
 
       FROM \${BASE_IMAGE} AS build
       COPY . .
       RUN pnpm install --offline
       RUN pnpm build
+      RUN CI=true pnpm prune --prod
+      RUN CI=true pnpm install --offline --prod
 
       ###
 
       FROM gcr.io/distroless/nodejs24-debian13 AS runtime
       WORKDIR /workdir
       COPY --from=build /workdir/lib lib
+      COPY --from=build /workdir/node_modules node_modules
       COPY --from=build /workdir/package.json package.json
-      COPY --from=deps /workdir/node_modules node_modules
       ENV NODE_ENV=production
       ",
       }
@@ -286,7 +278,7 @@ ENV NODE_ENV=production
     });
 
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
@@ -296,72 +288,23 @@ ENV NODE_ENV=production
         "Dockerfile": "ARG BASE_IMAGE
       ARG BASE_TAG
 
-      FROM \${BASE_IMAGE}:\${BASE_TAG} AS deps
-
-      COPY . .
-
-      RUN pnpm prune --prod
-      RUN pnpm install --offline --prod
-
       ###
 
       FROM \${BASE_IMAGE}:\${BASE_TAG} AS build
       COPY . .
       RUN pnpm install --offline
       RUN pnpm build
+      RUN CI=true pnpm prune --prod
+      RUN CI=true pnpm install --offline --prod
 
       ###
 
       FROM gcr.io/distroless/nodejs24-debian13 AS runtime
       WORKDIR /workdir
       COPY --from=build /workdir/lib lib
+      COPY --from=build /workdir/node_modules node_modules
       COPY --from=build /workdir/package.json package.json
-      COPY --from=deps /workdir/node_modules node_modules
       ENV NODE_ENV=production
-      ",
-      }
-    `);
-  });
-
-  it('should change --from=build to --from=deps in place when no package.json COPY exists', async () => {
-    vol.fromJSON({
-      Dockerfile: `\
-ARG BASE_IMAGE
-FROM \${BASE_IMAGE} AS build
-COPY . .
-RUN pnpm install --offline
-RUN pnpm build
-FROM gcr.io/distroless/nodejs24-debian13 AS runtime
-WORKDIR /workdir
-COPY --from=build /workdir/lib lib
-COPY --from=build /workdir/node_modules node_modules
-`,
-    });
-
-    await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
-    ).resolves.toEqual({
-      result: 'apply',
-    } satisfies PatchReturnType);
-
-    expect(volToJson()).toMatchInlineSnapshot(`
-      {
-        "Dockerfile": "ARG BASE_IMAGE
-
-      FROM \${BASE_IMAGE} AS deps
-
-      COPY . .
-
-      RUN pnpm prune --prod
-      RUN pnpm install --offline --prod
-      FROM \${BASE_IMAGE} AS build
-      COPY . .
-      RUN pnpm install --offline
-      RUN pnpm build
-      FROM gcr.io/distroless/nodejs24-debian13 AS runtime
-      WORKDIR /workdir
-      COPY --from=build /workdir/lib lib
-      COPY --from=deps /workdir/node_modules node_modules
       ",
       }
     `);
@@ -374,7 +317,7 @@ COPY --from=build /workdir/node_modules node_modules
     });
 
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
@@ -391,27 +334,22 @@ COPY --from=build /workdir/node_modules node_modules
     expect(result.Dockerfile).toMatchInlineSnapshot(`
       "ARG BASE_IMAGE
 
-      FROM \${BASE_IMAGE} AS deps
-
-      COPY . .
-
-      RUN pnpm prune --prod
-      RUN pnpm install --offline --prod
-
       ###
 
       FROM \${BASE_IMAGE} AS build
       COPY . .
       RUN pnpm install --offline
       RUN pnpm build
+      RUN CI=true pnpm prune --prod
+      RUN CI=true pnpm install --offline --prod
 
       ###
 
       FROM gcr.io/distroless/nodejs24-debian13 AS runtime
       WORKDIR /workdir
       COPY --from=build /workdir/lib lib
+      COPY --from=build /workdir/node_modules node_modules
       COPY --from=build /workdir/package.json package.json
-      COPY --from=deps /workdir/node_modules node_modules
       ENV NODE_ENV=production
       "
     `);
@@ -424,14 +362,16 @@ COPY --from=build /workdir/node_modules node_modules
     });
 
     await expect(
-      patchDockerfiles({ mode: 'format' } as PatchConfig),
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
 
     const result = volToJson();
 
-    expect(result.Dockerfile).toContain('COPY --from=deps');
-    expect(result['services/api/Dockerfile']).toContain('COPY --from=deps');
+    expect(result.Dockerfile).toContain('RUN CI=true pnpm prune --prod');
+    expect(result['services/api/Dockerfile']).toContain(
+      'RUN CI=true pnpm prune --prod',
+    );
   });
 });

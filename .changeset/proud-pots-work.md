@@ -2,8 +2,12 @@
 'skuba': minor
 ---
 
-lint: Patch `deps` stage into API Dockerfiles
+lint: Add patch to prune development dependencies from API Dockerfiles
 
-A new patch automatically upgrades API Dockerfiles to use a dedicated production dependency stage. The patch creates a `deps` stage that installs production dependencies, then updates the `runtime` image to copy `node_modules` from that stage instead of the `build` stage.
+A new patch automatically upgrades API Dockerfiles so the build stage prunes and
+reinstalls production-only dependencies before building. The runtime image keeps
+copying `node_modules` from the build stage, so it no longer carries development
+dependencies.
 
-This reduces the amount of build tooling and development dependencies carried through the final image while preserving existing runtime behaviour.
+This reduces the amount of build tooling and development dependencies carried
+through the final image while preserving the existing runtime behaviour.

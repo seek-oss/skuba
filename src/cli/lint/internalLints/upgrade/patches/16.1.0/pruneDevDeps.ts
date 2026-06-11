@@ -8,14 +8,11 @@ import { log } from '../../../../../../utils/logging.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const applyMultiStageBuildPatch = async (
+const applyPruneDevDepsPatch = async (
   contents: string,
 ): Promise<string | null> => {
   // Fairly lazy check to bail out on the patch
-  if (
-    contents.includes('COPY --from=deps') ||
-    contents.includes('RUN pnpm prune --prod')
-  ) {
+  if (contents.includes('pnpm prune --prod')) {
     return null;
   }
 
@@ -28,7 +25,15 @@ const applyMultiStageBuildPatch = async (
       regex: '^ARG BASE_IMAGE',
     },
   });
-  if (!argBaseImage) {
+
+  const pnpmDeploy = astRoot.find({
+    rule: {
+      kind: 'command',
+      regex: '^RUN pnpm deploy',
+    },
+  });
+
+  if (!argBaseImage || pnpmDeploy) {
     return null;
   }
 
@@ -42,60 +47,36 @@ const applyMultiStageBuildPatch = async (
     return null;
   }
 
-  const edits: Edit[] = [];
-
-  const argBaseTag = astRoot.find({
+  const installOffline = astRoot.find({
     rule: {
       kind: 'command',
-      regex: '^ARG BASE_TAG',
+      regex: '^RUN pnpm install --offline$',
     },
   });
-  const imageRef = argBaseTag ? '${BASE_IMAGE}:${BASE_TAG}' : '${BASE_IMAGE}';
-
-  const argEnd = (argBaseTag ?? argBaseImage).range().end.index;
-  edits.push({
-    startPos: argEnd,
-    endPos: argEnd,
-    insertedText: `\n\nFROM ${imageRef} AS deps\n\nCOPY . .\n\nRUN pnpm prune --prod\nRUN pnpm install --offline --prod`,
-  });
-
-  const copyPackageJson = astRoot.find({
-    rule: {
-      kind: 'command',
-      regex: 'COPY --from=build /workdir/package\\.json',
-    },
-  });
-
-  if (copyPackageJson) {
-    const nodeModulesRange = copyNodeModules.range();
-    const nodeModulesEndPos =
-      contents[nodeModulesRange.end.index] === '\n'
-        ? nodeModulesRange.end.index + 1
-        : nodeModulesRange.end.index;
-    edits.push({
-      startPos: nodeModulesRange.start.index,
-      endPos: nodeModulesEndPos,
-      insertedText: '',
-    });
-
-    const packageJsonEnd = copyPackageJson.range().end.index;
-    edits.push({
-      startPos: packageJsonEnd,
-      endPos: packageJsonEnd,
-      insertedText: '\nCOPY --from=deps /workdir/node_modules node_modules',
-    });
-  } else {
-    edits.push(
-      copyNodeModules.replace(
-        copyNodeModules.text().replace('--from=build', '--from=deps'),
-      ),
-    );
+  if (!installOffline) {
+    return null;
   }
+
+  const pnpmBuild = astRoot.find({
+    rule: {
+      kind: 'command',
+      regex: '^RUN pnpm build$',
+    },
+  });
+  if (!pnpmBuild) {
+    return null;
+  }
+
+  const edits: Edit[] = [
+    pnpmBuild.replace(
+      'RUN pnpm build\nRUN CI=true pnpm prune --prod\nRUN CI=true pnpm install --offline --prod',
+    ),
+  ];
 
   return astRoot.commitEdits(edits);
 };
 
-const tryPatchApiDockerfiles = async (config: {
+const tryPruneDevDeps = async (config: {
   mode: 'lint' | 'format';
 }): Promise<PatchReturnType> => {
   const dockerfilePaths = await fg(['**/Dockerfile*'], {
@@ -122,7 +103,7 @@ const tryPatchApiDockerfiles = async (config: {
   const dockerFilesToPatch = (
     await Promise.all(
       dockerfiles.map(async ({ file, contents }) => {
-        const newContents = await applyMultiStageBuildPatch(contents);
+        const newContents = await applyPruneDevDepsPatch(contents);
         if (!newContents || newContents === contents) {
           return null;
         }
@@ -158,9 +139,9 @@ const tryPatchApiDockerfiles = async (config: {
   };
 };
 
-export const patchDockerfiles: PatchFunction = async (config) => {
+export const pruneDevDeps: PatchFunction = async (config) => {
   try {
-    return await tryPatchApiDockerfiles(config);
+    return await tryPruneDevDeps(config);
   } catch (err) {
     log.warn('Failed to patch API dockerfiles');
     log.subtle(inspect(err));
