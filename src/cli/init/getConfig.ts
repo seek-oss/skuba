@@ -278,7 +278,11 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   }
 
   log.newline();
-  log.warn('Templating has been skipped. Complete it manually before running.');
+  log.warn(
+    'Templating has been skipped. Resume it later by running',
+    log.bold('skuba init'),
+    'in the new directory.',
+  );
 
   const customAnswers = generatePlaceholders(fields);
 

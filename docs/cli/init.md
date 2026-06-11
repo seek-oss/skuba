@@ -78,7 +78,7 @@ This template uses the following information:
   yes
 ❯ no
 
-Templating has been skipped. Complete it manually before running.
+Templating has been skipped. Resume it later by running skuba init in the new directory.
 ```
 
 `skuba init` will take a while to install some initial dependencies,
@@ -194,7 +194,15 @@ skuba lint
 
 If you skipped templating earlier,
 [`skuba lint`] will complain that you haven't finished it.
-Complete the placeholder values in your project files manually.
+Resume templating by re-running `skuba init` from inside the project directory:
+
+```shell
+cd my-repo
+skuba init
+```
+
+It detects the leftover `skuba.template.js`, prompts for the fields you skipped,
+fills in the placeholder values across your project, and removes `skuba.template.js`.
 
 ### README checklist
 

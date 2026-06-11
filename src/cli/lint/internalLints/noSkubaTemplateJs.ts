@@ -23,7 +23,7 @@ export const noSkubaTemplateJs = async (
 
   if (await pathExists(templateConfigPath)) {
     logger.err(
-      `Template is incomplete; complete templating manually. ${logger.dim('no-skuba-template-js')}`,
+      `Template is incomplete; run ${logger.bold('skuba init')} to resume templating. ${logger.dim('no-skuba-template-js')}`,
     );
 
     return {
@@ -32,7 +32,8 @@ export const noSkubaTemplateJs = async (
       annotations: [
         {
           path: 'skuba.template.js',
-          message: 'Template is incomplete; complete templating manually.',
+          message:
+            'Template is incomplete; run `skuba init` to resume templating.',
         },
       ],
     };
