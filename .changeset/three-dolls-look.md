@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-template/\*-rest-api: Increase base gantry instance size.
+template/\*-rest-api: Increase base Fargate task size
