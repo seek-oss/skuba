@@ -46,7 +46,7 @@ importers:
         specifier: ^16.0.0
         version: 16.0.0
       '@skuba-lib/api':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:packages/api
       '@skuba-lib/changesets-changelog':
         specifier: workspace:^

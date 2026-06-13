@@ -88,7 +88,7 @@
     "@octokit/graphql-schema": "^15.3.0",
     "@octokit/rest": "^22.0.0",
     "@octokit/types": "^16.0.0",
-    "@skuba-lib/api": "workspace:^",
+    "@skuba-lib/api": "workspace:*",
     "@skuba-lib/changesets-changelog": "workspace:^",
     "@types/node": "^24.10.2",
     "@vitest/coverage-istanbul": "^4.1.0",
