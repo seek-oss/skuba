@@ -65,7 +65,7 @@ export default {
 #### 2. Declare `NodejsFunction` in your stack
 
 ```ts
-import { Cdk } from 'skuba';
+import { NodejsFunction } from 'skuba/cdk';
 import { Stack, type StackProps } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import type { Construct } from 'constructs';
@@ -74,7 +74,7 @@ export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    new Cdk.NodejsFunction(this, 'worker', {
+    new NodejsFunction(this, 'worker', {
       entry: 'src/worker.ts', // handler entry file
       runtime: lambda.Runtime.NODEJS_24_X,
       bundling: {
@@ -153,7 +153,7 @@ export default {
 ```
 
 ```ts
-new Cdk.NodejsFunction(this, 'image-processor', {
+new NodejsFunction(this, 'image-processor', {
   entry: 'src/image-processor.ts',
   bundling: {
     bundlerConfig: 'rolldown.lambda.config.mjs',

@@ -20,6 +20,7 @@
     "skuba": "lib/skuba.js"
   },
   "files": [
+    "cdk/package.json",
     "config/**/*",
     "lib*/**/*.d.ts",
     "lib*/**/*.js",

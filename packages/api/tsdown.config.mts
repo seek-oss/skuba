@@ -6,7 +6,11 @@ export default defineConfig([
       onlyBundle: false,
     },
     failOnWarn: true,
-    entry: ['src/index.ts', 'src/*/index.ts'],
+    entry: [
+      'src/index.ts',
+      'src/*/index.ts',
+      'src/cdk/nodejsFunction/index.ts',
+    ],
     dts: true,
     format: ['cjs', 'esm'],
     outDir: 'lib',

@@ -29,6 +29,11 @@
       "import": "./lib/cdk/index.mjs",
       "require": "./lib/cdk/index.cjs"
     },
+    "./cdk/nodejsFunction": {
+      "@seek/skuba/source": "./src/cdk/nodejsFunction/index.ts",
+      "import": "./lib/cdk/nodejsFunction/index.mjs",
+      "require": "./lib/cdk/nodejsFunction/index.cjs"
+    },
     "./git": {
       "@seek/skuba/source": "./src/git/index.ts",
       "import": "./lib/git/index.mjs",
@@ -114,6 +119,10 @@
       "./cdk": {
         "import": "./lib/cdk/index.mjs",
         "require": "./lib/cdk/index.cjs"
+      },
+      "./cdk/nodejsFunction": {
+        "import": "./lib/cdk/nodejsFunction/index.mjs",
+        "require": "./lib/cdk/nodejsFunction/index.cjs"
       },
       "./git": {
         "import": "./lib/git/index.mjs",

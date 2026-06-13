@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "main": "../../lib/cdk/nodejsFunction/index.cjs",
+  "module": "../../lib/cdk/nodejsFunction/index.mjs",
+  "types": "../../lib/cdk/nodejsFunction/index.d.cts"
+}

@@ -7,10 +7,10 @@ Cdk: Add `NodejsFunction` construct for rolldown-bundled Lambda functions
 `Cdk.NodejsFunction` is a drop-in replacement for [`aws_lambda_nodejs.NodejsFunction`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda_nodejs.NodejsFunction.html) that bundles your Lambda handler with [rolldown](https://rolldown.rs) instead of the built-in esbuild pipeline. You keep the familiar CDK construct API while taking full control over the bundler configuration.
 
 ```ts
-import { Cdk } from 'skuba';
+import { NodejsFunction } from 'skuba/cdk';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 
-new Cdk.NodejsFunction(this, 'worker', {
+new NodejsFunction(this, 'worker', {
   entry: 'src/worker.ts',
   runtime: lambda.Runtime.NODEJS_24_X,
   bundling: {
