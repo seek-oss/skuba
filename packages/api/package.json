@@ -74,7 +74,29 @@
     "isomorphic-git": "^1.37.6",
     "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
+    "yaml": "^2.9.0",
     "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "aws-cdk-lib": "^2.253.0",
+    "constructs": "^10.0.17",
+    "rolldown": "~1.0.0"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": ">=2.130.0",
+    "constructs": "^10.0.0",
+    "rolldown": ">=1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "aws-cdk-lib": {
+      "optional": true
+    },
+    "constructs": {
+      "optional": true
+    },
+    "rolldown": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.14.0"
