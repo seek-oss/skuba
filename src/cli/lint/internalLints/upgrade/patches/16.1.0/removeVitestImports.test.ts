@@ -66,7 +66,7 @@ describe('removeVitestImports', () => {
     `);
   });
 
-  it('should avoid modifying uneccessary imports', async () => {
+  it('should avoid modifying unnecessary imports', async () => {
     vol.fromJSON({
       'foo.test.ts': `import { vi } from 'vitest';
 import { defineConfig } from 'vitest/config';
