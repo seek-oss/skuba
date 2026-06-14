@@ -13,7 +13,6 @@ export default defineConfig(
       },
     },
     test: {
-      globals: true,
       server: {
         deps: {
           inline: [...readPackageUpFsDeps, 'import-meta-resolve'],
