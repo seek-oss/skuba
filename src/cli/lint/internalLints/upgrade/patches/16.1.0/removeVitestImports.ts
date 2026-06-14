@@ -11,7 +11,7 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 export const removeVitestImports: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const allTsFiles = await fg(['**/*.ts'], {
+  const allTsFiles = await fg(['**/*.test.ts'], {
     ignore: ['**/.git', '**/node_modules'],
   });
 

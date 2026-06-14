@@ -27,7 +27,7 @@ describe('removeVitestImports', () => {
 
   it('should remove Vitest imports from all test files', async () => {
     vol.fromJSON({
-      'test.ts': `import { vi } from 'vitest';
+      'foo.test.ts': `import { vi } from 'vitest';
       `,
     });
 
@@ -41,14 +41,14 @@ describe('removeVitestImports', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "test.ts": "      ",
+        "foo.test.ts": "      ",
       }
     `);
   });
 
   it('should return skip if no Vitest imports found', async () => {
     vol.fromJSON({
-      'test.ts': '',
+      'foo.test.ts': '',
     });
 
     await expect(
@@ -61,14 +61,14 @@ describe('removeVitestImports', () => {
     } satisfies PatchReturnType);
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "test.ts": "",
+        "foo.test.ts": "",
       }
     `);
   });
 
   it('should avoid modifying uneccessary imports', async () => {
     vol.fromJSON({
-      'test.ts': `import { vi } from 'vitest';
+      'foo.test.ts': `import { vi } from 'vitest';
 import { defineConfig } from 'vitest/config';
 import 'some-vitest-plugin';
       `,
@@ -83,7 +83,7 @@ import 'some-vitest-plugin';
     } satisfies PatchReturnType);
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "test.ts": "import { defineConfig } from 'vitest/config';
+        "foo.test.ts": "import { defineConfig } from 'vitest/config';
       import 'some-vitest-plugin';
             ",
       }
