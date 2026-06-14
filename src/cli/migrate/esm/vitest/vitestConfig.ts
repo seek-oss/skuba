@@ -406,6 +406,7 @@ const extractProjects = async (
   node: SgNode,
   file: string,
   docRoot: SgNode,
+  isSkubaConfig: boolean,
 ): Promise<
   Array<{
     edits: FileContent[];
@@ -421,6 +422,7 @@ const extractProjects = async (
         file,
         docRoot,
         isProject: true,
+        isSkubaConfig,
       }),
     ),
   );
@@ -430,6 +432,7 @@ const extractSpreadElements = async (
   node: SgNode,
   file: string,
   docRoot: SgNode,
+  isSkubaConfig: boolean,
 ): Promise<
   | Array<{
       edits: FileContent[];
@@ -484,6 +487,7 @@ const extractSpreadElements = async (
         file,
         docRoot,
         isSpread: true,
+        isSkubaConfig
       }),
     ),
   );
@@ -575,6 +579,7 @@ const scaffoldTestConfig = async ({
   isProject,
   isSpread,
   configNumber,
+  isSkubaConfig
 }: {
   root: SgNode;
   file: string;
@@ -583,6 +588,7 @@ const scaffoldTestConfig = async ({
   isProject?: boolean;
   isSpread?: boolean;
   configNumber?: number;
+  isSkubaConfig: boolean;
 }): Promise<{
   edits: FileContent[];
   testConfig: string;
@@ -629,8 +635,8 @@ const scaffoldTestConfig = async ({
     migrateGlobalSetup(root, file, rootDir),
     migrateSetupHooks(root, file, rootDir, 'setupFiles'),
     migrateSetupHooks(root, file, rootDir, 'setupFilesAfterEnv'),
-    projectsNode ? extractProjects(projectsNode, file, docRoot) : [],
-    extractSpreadElements(root, file, docRoot),
+    projectsNode ? extractProjects(projectsNode, file, docRoot, isSkubaConfig) : [],
+    extractSpreadElements(root, file, docRoot, isSkubaConfig),
   ]);
 
   const setupFilesCombined = [
@@ -651,6 +657,8 @@ const scaffoldTestConfig = async ({
   return {
     testConfig: `${displayName ? `\n    name: '${displayName}',` : ''}${
       isProject ? '\n    extends: true,' : ''
+    }${
+      (!isProject && !isSkubaConfig) ? '\n    globals: true,' : ''
     }${
       envVarsCombined.size
         ? `\n    env: {\n${[...envVarsCombined.entries()]
@@ -763,6 +771,7 @@ export const scaffoldVitestConfig = async () => {
         docRoot: root,
         projectsNode: maybeProjectsData?.projectsNode,
         configNumber: jestConfigs.length,
+        isSkubaConfig
       });
 
       const watchPathIgnorePatterns = extractRawStringArray(
