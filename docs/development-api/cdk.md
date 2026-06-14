@@ -35,7 +35,8 @@ The built-in CDK construct hardcodes esbuild; this construct gives you full cont
 
 ### Prerequisites
 
-`NodejsFunction` declares `aws-cdk-lib`, `constructs`, and `rolldown` as **optional** peer dependencies so the rest of `@skuba-lib/api` stays usable without them.
+`NodejsFunction` declares `aws-cdk-lib`, `constructs`, and `rolldown` as **optional** peer dependencies so the rest of `skuba` stays usable without them.
+These are loaded lazily, only when you access `Cdk.NodejsFunction`, so importing `Cdk` for other utilities does not require them.
 Install them where you use the construct:
 
 ```shell
@@ -65,7 +66,7 @@ export default {
 #### 2. Declare `NodejsFunction` in your stack
 
 ```ts
-import { NodejsFunction } from 'skuba/cdk';
+import { Cdk } from 'skuba';
 import { Stack, type StackProps } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import type { Construct } from 'constructs';
@@ -74,7 +75,7 @@ export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    new NodejsFunction(this, 'worker', {
+    new Cdk.NodejsFunction(this, 'worker', {
       entry: 'src/worker.ts', // handler entry file
       runtime: lambda.Runtime.NODEJS_24_X,
       bundling: {
@@ -153,7 +154,7 @@ export default {
 ```
 
 ```ts
-new NodejsFunction(this, 'image-processor', {
+new Cdk.NodejsFunction(this, 'image-processor', {
   entry: 'src/image-processor.ts',
   bundling: {
     bundlerConfig: 'rolldown.lambda.config.mjs',

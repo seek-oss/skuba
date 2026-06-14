@@ -1,5 +1,0 @@
-{
-  "type": "module",
-  "main": "../lib/cdk.js",
-  "types": "../lib/cdk.d.ts"
-}
