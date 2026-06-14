@@ -27,5 +27,5 @@ export const patches: Patches = [
   {
     apply: tryRemoveVitestImports,
     description: 'Remove Vitest imports from test files',
-  }
+  },
 ];

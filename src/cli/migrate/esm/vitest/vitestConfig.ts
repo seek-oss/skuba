@@ -487,7 +487,7 @@ const extractSpreadElements = async (
         file,
         docRoot,
         isSpread: true,
-        isSkubaConfig
+        isSkubaConfig,
       }),
     ),
   );
@@ -579,7 +579,7 @@ const scaffoldTestConfig = async ({
   isProject,
   isSpread,
   configNumber,
-  isSkubaConfig
+  isSkubaConfig,
 }: {
   root: SgNode;
   file: string;
@@ -635,7 +635,9 @@ const scaffoldTestConfig = async ({
     migrateGlobalSetup(root, file, rootDir),
     migrateSetupHooks(root, file, rootDir, 'setupFiles'),
     migrateSetupHooks(root, file, rootDir, 'setupFilesAfterEnv'),
-    projectsNode ? extractProjects(projectsNode, file, docRoot, isSkubaConfig) : [],
+    projectsNode
+      ? extractProjects(projectsNode, file, docRoot, isSkubaConfig)
+      : [],
     extractSpreadElements(root, file, docRoot, isSkubaConfig),
   ]);
 
@@ -657,9 +659,7 @@ const scaffoldTestConfig = async ({
   return {
     testConfig: `${displayName ? `\n    name: '${displayName}',` : ''}${
       isProject ? '\n    extends: true,' : ''
-    }${
-      (!isProject && !isSkubaConfig) ? '\n    globals: true,' : ''
-    }${
+    }${!isProject && !isSkubaConfig ? '\n    globals: true,' : ''}${
       envVarsCombined.size
         ? `\n    env: {\n${[...envVarsCombined.entries()]
             .map(([key, value]) => `      ${key}: ${value},`)
@@ -771,7 +771,7 @@ export const scaffoldVitestConfig = async () => {
         docRoot: root,
         projectsNode: maybeProjectsData?.projectsNode,
         configNumber: jestConfigs.length,
-        isSkubaConfig
+        isSkubaConfig,
       });
 
       const watchPathIgnorePatterns = extractRawStringArray(

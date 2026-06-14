@@ -20,7 +20,6 @@ vi.mock('fast-glob', () => ({
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-
 describe('removeVitestImports', () => {
   afterEach(() => {
     vi.resetAllMocks();
@@ -45,7 +44,7 @@ describe('removeVitestImports', () => {
       {
         "test.ts": "      ",
       }
-    `)
+    `);
   });
 
   it('should return skip if no Vitest imports found', async () => {
@@ -65,7 +64,7 @@ describe('removeVitestImports', () => {
       {
         "test.ts": "",
       }
-    `)
+    `);
   });
 
   it('should avoid modifying uneccessary imports', async () => {
@@ -89,9 +88,6 @@ import 'some-vitest-plugin';
       import 'some-vitest-plugin';
             ",
       }
-    `)
+    `);
   });
-
-
-    
 });
