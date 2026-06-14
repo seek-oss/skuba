@@ -131,6 +131,7 @@ describe('removePnpmPlugin', () => {
       packageManagerStrictVersion: true # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
@@ -202,6 +203,7 @@ configDependencies:
       packageManagerStrictVersion: true # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba

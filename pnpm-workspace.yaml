@@ -38,6 +38,7 @@ packageManagerStrictVersion: true # Managed by skuba
 publicHoistPattern:
   - remark-lint-*
   - '@arethetypeswrong/core' # Managed by skuba
+  - '@changesets/cli' # Managed by skuba
   - '@eslint/*' # Managed by skuba
   - '@skuba-lib/*' # Managed by skuba
   - '@types*' # Managed by skuba
