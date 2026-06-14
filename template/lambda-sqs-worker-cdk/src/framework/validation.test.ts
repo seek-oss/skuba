@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { validateJson } from './validation.js';
 
 import {

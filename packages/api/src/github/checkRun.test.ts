@@ -1,6 +1,5 @@
 import type { Endpoints } from '@octokit/types';
 import git, { type ReadCommitResult } from 'isomorphic-git';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createCheckRun } from './checkRun.js';
 import { createRestClient } from './octokit.js';

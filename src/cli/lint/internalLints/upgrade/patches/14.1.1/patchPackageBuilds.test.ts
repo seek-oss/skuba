@@ -1,5 +1,4 @@
 import memfs, { vol } from 'memfs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as execModule from '../../../../../../utils/exec.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';

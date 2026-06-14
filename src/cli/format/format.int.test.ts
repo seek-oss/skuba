@@ -4,7 +4,6 @@ import path from 'path';
 import { diff } from '@vitest/utils/diff';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
-import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { format } from './index.js';
 

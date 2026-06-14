@@ -1,5 +1,4 @@
 import git from 'isomorphic-git';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { putIssueComment } from './issueComment.js';
 import { createRestClient } from './octokit.js';

@@ -1,7 +1,5 @@
 import path from 'path';
 
-import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
-
 import { getCustomConditions } from './tsc.js';
 
 describe('getCustomConditions', () => {

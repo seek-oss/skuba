@@ -1,5 +1,4 @@
 import Router from '@koa/router';
-import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { stdoutMock } from './logging.js';
 

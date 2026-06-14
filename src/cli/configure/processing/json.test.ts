@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { formatObject, parseObject } from './json.js';
 
 describe('formatObject', () => {

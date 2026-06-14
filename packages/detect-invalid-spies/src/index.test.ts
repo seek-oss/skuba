@@ -2,7 +2,6 @@ import os from 'node:os';
 import path from 'node:path';
 
 import fs from 'fs-extra';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { detectSameFileSpyUsage } from './index.js';
 

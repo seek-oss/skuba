@@ -1,6 +1,5 @@
 import latestVersion from 'latest-version';
 import memfs, { vol } from 'memfs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { log } from '../../../utils/logging.js';
 import { configForPackageManager } from '../../../utils/packageManager.js';

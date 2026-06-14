@@ -1,5 +1,4 @@
 import memfs, { vol } from 'memfs';
-import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 

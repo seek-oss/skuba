@@ -1,7 +1,6 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../index.js';
 import { log } from '../../../utils/logging.js';

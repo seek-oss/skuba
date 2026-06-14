@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 import * as sleepModule from './sleep.js';
 import * as wait from './wait.js';
 

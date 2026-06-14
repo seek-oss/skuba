@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { postFixVitestMigration } from './postFixVitestMigration.js';
 
 const run = async (content: string) => {

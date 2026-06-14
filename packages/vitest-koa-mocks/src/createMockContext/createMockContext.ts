@@ -3,7 +3,6 @@ import stream from 'stream';
 
 import Koa, { type Context } from 'koa';
 import httpMocks, { type RequestMethod } from 'node-mocks-http';
-import { vi } from 'vitest';
 
 import {
   type MockCookies,

@@ -2,7 +2,6 @@ import os from 'os';
 import path from 'path';
 
 import fs from 'fs-extra';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { editLifeCycleHooks } from './lifeCycleEdits.js';
 

@@ -1,5 +1,4 @@
 import memfs, { vol } from 'memfs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../utils/packageManager.js';
 import type {
@@ -587,6 +586,7 @@ export {}`,
       });
       ",
         "vitest.config.ts": "import { Vitest } from 'skuba';
+      import { defineConfig } from 'vitest/config';
 
       export default defineConfig(Vitest.mergePreset({
         ssr: {
@@ -720,6 +720,7 @@ export default Jest.mergePreset({
       });
       ",
         "vitest.config.ts": "import { Vitest } from 'skuba';
+      import { defineConfig } from 'vitest/config';
 
       export default defineConfig(Vitest.mergePreset({
         ssr: {

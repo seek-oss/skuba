@@ -1,5 +1,3 @@
-import { expect, it } from 'vitest';
-
 import type { PrettierOutput } from '../../../adapter/prettier.js';
 
 import { createPrettierAnnotations } from './prettier.js';

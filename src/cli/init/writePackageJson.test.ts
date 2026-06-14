@@ -1,7 +1,6 @@
 import path from 'path';
 
 import fs from 'fs-extra';
-import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as packageAnalysis from '../configure/analysis/package.js';
 

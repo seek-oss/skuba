@@ -1,5 +1,3 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
 import { createEjsRenderer, createStringReplacer } from './copy.js';
 import { log } from './logging.js';
 

@@ -1,5 +1,4 @@
 import { simpleGit } from 'simple-git';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { runESLint } from '../adapter/eslint.js';
 import { runPrettier } from '../adapter/prettier.js';

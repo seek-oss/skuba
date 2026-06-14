@@ -1,5 +1,4 @@
 import type { Context } from 'koa';
-import { vi } from 'vitest';
 
 export type Cookies = Context['cookies'];
 

@@ -1,5 +1,4 @@
 import memfs, { vol } from 'memfs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isLikelyPackage } from './checks.js';
 
