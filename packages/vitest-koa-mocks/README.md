@@ -73,7 +73,6 @@ Create a standalone mock cookies implementation for Koa-style code.
 
 ```typescript
 import { createMockCookies } from '@skuba-lib/vitest-koa-mocks';
-import { expect, it } from 'vitest';
 
 it('tracks request and response cookies', () => {
   const cookies = createMockCookies({ session: 'abc' });

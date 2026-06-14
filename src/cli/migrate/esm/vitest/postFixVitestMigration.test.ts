@@ -22,8 +22,7 @@ afterAll(() => { vi.clearAllMocks() });
 
   describe('migrateViMockPrototype', () => {
     it('should set vi.mocked() prototypes to deep mocks', async () => {
-      const content = `import { vi } from 'vitest';
-
+      const content = `
 const mockedModule = vi.mocked(someModule).prototype;
 
 const multiLineMock = vi.mocked(
@@ -32,8 +31,7 @@ const multiLineMock = vi.mocked(
 `;
 
       await expect(run(content)).resolves.toMatchInlineSnapshot(`
-        "
-        const mockedModule = vi.mocked(someModule,true).prototype;
+        "const mockedModule = vi.mocked(someModule,true).prototype;
 
         const multiLineMock = vi.mocked(
           someModule.other,
@@ -45,8 +43,7 @@ const multiLineMock = vi.mocked(
 
   describe('migrateBadMocks', () => {
     it('migrates nested vi.mock calls to vi.doMock', async () => {
-      const content = `import { vi } from 'vitest';
-vi.mock('./should-not-change');
+      const content = `vi.mock('./should-not-change');
 
 describe('some test suite', () => {
   vi.mock('./should-change');
@@ -76,13 +73,11 @@ vi.mock('./should-also-not-change');
 
   describe('migrateImportActual', () => {
     it('adds type parameters to vi.importActual calls', async () => {
-      const content = `import { vi } from 'vitest';
-
+      const content = `
 const someModule = vi.importActual('./someModule');
 `;
 
-      await expect(run(content)).resolves.toBe(`
-const someModule = (vi.importActual<typeof import('./someModule')>('./someModule'));
+      await expect(run(content)).resolves.toBe(`const someModule = (vi.importActual<typeof import('./someModule')>('./someModule'));
 `);
     });
 
@@ -97,8 +92,7 @@ const someModule = vi.importActual<typeof import('./someModule')>('./someModule'
 
   describe('migrateJestTypes', () => {
     it('adds imports for Mock, MockedFunction, MockedClass, MockedObject, and MockInstance when those types are used', async () => {
-      const content = `import { vi } from 'vitest';
-// eslint-disable-next-line import-x/order -- don't move
+      const content = `// eslint-disable-next-line import-x/order -- don't move
 import { mockLogger } from './mockLogger.js';
 
 import * as z from 'zod';
@@ -136,8 +130,7 @@ type MySpiedFunction = jest.SpiedFunction<() => void>;
 
   describe('migrateBadMockImplementations', () => {
     it('removes bad .mockImplementation() from vi.mock calls', async () => {
-      const content = `import { vi } from 'vitest';
-
+      const content = `
 vi.mock('./someModule').mockImplementation().mockReturnValue(42);
 
 someModule.mockImplementation().mockReturnValue(42);
@@ -154,8 +147,7 @@ foo
   .mockReturnValue(42);
 `;
 
-      await expect(run(content)).resolves.toBe(`
-vi.mock('./someModule').mockReturnValue(42);
+      await expect(run(content)).resolves.toBe(`vi.mock('./someModule').mockReturnValue(42);
 
 someModule.mockReturnValue(42);
 
