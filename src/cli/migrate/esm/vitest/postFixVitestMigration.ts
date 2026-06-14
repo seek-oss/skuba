@@ -182,7 +182,6 @@ const getSpyInstanceTypeEdits = (root: SgNode): Edit[] => {
   return spyInstances.map((spyInstance) => spyInstance.replace('MockInstance'));
 };
 
-
 export const removeVitestImportsEdits = (root: SgNode): Edit[] => {
   const vitestImports = root.findAll({
     rule: {
@@ -192,8 +191,8 @@ export const removeVitestImportsEdits = (root: SgNode): Edit[] => {
         has: {
           kind: 'string_fragment',
           regex: 'vitest',
-        }
-      }
+        },
+      },
     },
   });
 
