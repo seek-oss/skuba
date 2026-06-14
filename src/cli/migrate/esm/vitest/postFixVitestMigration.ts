@@ -191,7 +191,7 @@ export const removeVitestImportsEdits = (root: SgNode): Edit[] => {
         kind: 'string',
         has: {
           kind: 'string_fragment',
-          regex: 'vitest',
+          regex: '^vitest$',
         }
       }
     },

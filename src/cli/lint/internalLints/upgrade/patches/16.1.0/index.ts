@@ -4,6 +4,7 @@ import { tryAddDdTraceEsmImport } from './addDdTraceEsmImport.js';
 import { tryAddSeekPackageRegistry } from './addSeekPackageRegistry.js';
 import { tryPatchTsconfig } from './patchTsconfig.js';
 import { pruneDevDeps } from './pruneDevDeps.js';
+import { tryRemoveVitestImports } from './removeVitestImports.js';
 
 export const patches: Patches = [
   {
@@ -23,4 +24,8 @@ export const patches: Patches = [
     apply: tryPatchTsconfig,
     description: 'Remove baseUrl from tsconfig.json',
   },
+  {
+    apply: tryRemoveVitestImports,
+    description: 'Remove Vitest imports from test files',
+  }
 ];

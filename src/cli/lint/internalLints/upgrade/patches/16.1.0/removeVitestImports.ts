@@ -8,7 +8,7 @@ import { log } from '../../../../../../utils/logging.js';
 import { removeVitestImportsEdits } from '../../../../../migrate/esm/vitest/postFixVitestMigration.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
-const removeVitestImports: PatchFunction = async ({ mode }): Promise<PatchReturnType> => {
+export const removeVitestImports: PatchFunction = async ({ mode }): Promise<PatchReturnType> => {
     const allTsFiles = await fg(['**/*.ts'], {
     ignore: ['**/.git', '**/node_modules'],
     });

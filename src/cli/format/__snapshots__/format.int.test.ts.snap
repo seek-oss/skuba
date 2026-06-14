@@ -78,6 +78,8 @@ Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found 
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
+Patch skipped: Remove Vitest imports from test files - Vitest imports have already been removed upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -207,6 +209,8 @@ Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found 
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
+Patch skipped: Remove Vitest imports from test files - Vitest imports have already been removed upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -329,6 +333,8 @@ Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found 
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
+Patch skipped: Remove Vitest imports from test files - Vitest imports have already been removed upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -422,6 +428,8 @@ Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas wit
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
+
+Patch skipped: Remove Vitest imports from test files - Vitest imports have already been removed upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
