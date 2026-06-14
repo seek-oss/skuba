@@ -73,6 +73,7 @@ describe('patchPnpmWorkspace', () => {
       packageManagerStrictVersion: true # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
@@ -183,6 +184,7 @@ trustPolicyExclude:
       # Another comment
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
@@ -268,6 +270,7 @@ trustPolicyExclude:
       blockExoticSubdeps: true # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
@@ -345,6 +348,7 @@ packageManagerStrictVersion: false`,
         - tsconfig-seek # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
@@ -424,6 +428,7 @@ allowBuilds:
       trustPolicy: off # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
@@ -486,6 +491,7 @@ somelistSection:
       packageManagerStrictVersion: true # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
