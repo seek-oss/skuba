@@ -77,7 +77,8 @@ vi.mock('./should-also-not-change');
 const someModule = vi.importActual('./someModule');
 `;
 
-      await expect(run(content)).resolves.toBe(`const someModule = (vi.importActual<typeof import('./someModule')>('./someModule'));
+      await expect(run(content)).resolves
+        .toBe(`const someModule = (vi.importActual<typeof import('./someModule')>('./someModule'));
 `);
     });
 
@@ -147,7 +148,8 @@ foo
   .mockReturnValue(42);
 `;
 
-      await expect(run(content)).resolves.toBe(`vi.mock('./someModule').mockReturnValue(42);
+      await expect(run(content)).resolves
+        .toBe(`vi.mock('./someModule').mockReturnValue(42);
 
 someModule.mockReturnValue(42);
 
