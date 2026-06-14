@@ -28,7 +28,7 @@ package.json:
 {
     "changelog": [
 -       "@changesets/get-github-info",
-        "@skuba-lib/changesets-changelog",
++       "@skuba-lib/changesets-changelog",
         { "repo": "SEEK-Jobs/my-repo" }
     ]
 }
