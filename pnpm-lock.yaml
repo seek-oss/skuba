@@ -295,6 +295,9 @@ importers:
       npm-which:
         specifier: ^3.0.1
         version: 3.0.1
+      rolldown:
+        specifier: ^1.1.0
+        version: 1.1.1
       yaml:
         specifier: ^2.9.0
         version: 2.9.0
@@ -308,9 +311,6 @@ importers:
       constructs:
         specifier: ^10.0.17
         version: 10.6.0
-      rolldown:
-        specifier: ~1.0.0
-        version: 1.0.2
 
   packages/changesets-changelog:
     dependencies:

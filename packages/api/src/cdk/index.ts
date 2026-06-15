@@ -19,10 +19,10 @@ export const Cdk = {
 
   /**
    * Lazily loads {@link NodejsFunction} on first access so that the optional
-   * `aws-cdk-lib`, `constructs` and `rolldown` peer dependencies are only
-   * required by consumers that actually use the construct.
+   * `aws-cdk-lib` and `constructs` peer dependencies are only required by
+   * consumers that actually use the construct.
    */
-  // eslint-disable-next-line no-restricted-syntax -- intentional synchronous lazy getter so the optional aws-cdk-lib/constructs/rolldown peers load only on access
+  // eslint-disable-next-line no-restricted-syntax -- intentional synchronous lazy getter so the optional aws-cdk-lib/constructs peers load only on access
   get NodejsFunction(): typeof NodejsFunctionClass {
     return (cached ??= (
       require('@skuba-lib/api/cdk/nodejsFunction') as {

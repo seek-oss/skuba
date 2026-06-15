@@ -382,6 +382,41 @@ describe('Bundling.local.tryBundle', () => {
     }
   });
 
+  it('cleans up already-staged patch files when a later patch copy throws', () => {
+    fs.mkdirSync(path.join(tmpDir, 'patches'));
+    fs.writeFileSync(path.join(tmpDir, 'patches/pino.patch'), 'diff');
+    fs.writeFileSync(
+      path.join(tmpDir, 'pnpm-workspace.yaml'),
+      [
+        'packages: []',
+        'patchedDependencies:',
+        '  "pino@9.0.0": patches/pino.patch',
+        // Resolves outside the output directory, so copyPatchFile throws after
+        // pino's patch has already been staged.
+        '  "constructs@10.0.0": ../outside.patch',
+      ].join('\n'),
+    );
+
+    const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'out-'));
+    try {
+      const bundling = new Bundling(
+        makeProps({ nodeModules: ['pino', 'constructs'] }),
+      );
+      expect(() => bundling.local.tryBundle(outputDir, bundling)).toThrow(
+        ValidationError,
+      );
+
+      // The first patch was staged before the throw; the finally block must
+      // still remove it (and its directory) rather than leak it into the asset.
+      expect(fs.existsSync(path.join(outputDir, 'patches/pino.patch'))).toBe(
+        false,
+      );
+      expect(fs.existsSync(path.join(outputDir, 'patches'))).toBe(false);
+    } finally {
+      fs.rmSync(outputDir, { recursive: true, force: true });
+    }
+  });
+
   it('throws when nodeModules set but no package.json found', () => {
     fs.unlinkSync(pkgJsonPath);
 

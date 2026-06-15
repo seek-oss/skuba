@@ -35,15 +35,17 @@ The built-in CDK construct hardcodes esbuild; this construct gives you full cont
 
 ### Prerequisites
 
-`NodejsFunction` declares `aws-cdk-lib`, `constructs`, and `rolldown` as **optional** peer dependencies so the rest of `skuba` stays usable without them.
-These are loaded lazily, only when you access `Cdk.NodejsFunction`, so importing `Cdk` for other utilities does not require them.
+`NodejsFunction` declares `aws-cdk-lib` and `constructs` as **optional** peer dependencies so the rest of `skuba` stays usable without them.
+They are loaded lazily, only when you access `Cdk.NodejsFunction`, so importing `Cdk` for other utilities does not require them.
 Install them where you use the construct:
 
 ```shell
-pnpm add -D aws-cdk-lib constructs rolldown
+pnpm add -D aws-cdk-lib constructs
 ```
 
-- `aws-cdk-lib >= 2.130.0`, `constructs ^10.0.0`, `rolldown >= 1.0.0`
+`rolldown` ships with `skuba` and runs the bundle, so you do not need to install it separately.
+
+- `aws-cdk-lib >= 2.130.0`, `constructs ^10.0.0`
 - Node.js >= 22.14.0
 
 ### Quick start

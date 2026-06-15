@@ -375,6 +375,29 @@ describe('copyWorkspaceFiles', () => {
     expect(fs.existsSync(path.join(destDir, 'patches/scope.patch'))).toBe(true);
   });
 
+  it('parses the package name from a key with a npm-alias version selector', () => {
+    const workspaceContent = [
+      'packages: []',
+      'patchedDependencies:',
+      "  'foo@npm:bar@1.0.0': patches/foo.patch",
+    ].join('\n');
+    fs.writeFileSync(
+      path.join(srcDir, 'pnpm-workspace.yaml'),
+      workspaceContent,
+    );
+    fs.mkdirSync(path.join(srcDir, 'patches'));
+    fs.writeFileSync(path.join(srcDir, 'patches/foo.patch'), 'diff');
+
+    copyWorkspaceFiles(srcDir, destDir, ['foo']);
+
+    const written = fs.readFileSync(
+      path.join(destDir, 'pnpm-workspace.yaml'),
+      'utf8',
+    );
+    expect(written).toContain('foo@npm:bar@1.0.0');
+    expect(fs.existsSync(path.join(destDir, 'patches/foo.patch'))).toBe(true);
+  });
+
   it('strips patchedDependencies section when yaml ends with a trailing newline', () => {
     const workspaceContent = [
       'packages: []',

@@ -72,6 +72,11 @@ export const readPackageManagerMeta = (
   return { nearestPackageJson, packageManagerField: undefined };
 };
 
+const parsePnpmPatchKey = (key: string): string => {
+  const at = key.indexOf('@', key.startsWith('@') ? 1 : 0);
+  return at === -1 ? key : key.slice(0, at);
+};
+
 const injectIgnoreScripts = (outputDir: string): void => {
   const target = path.join(outputDir, '.npmrc');
   const existing = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '';
@@ -116,7 +121,8 @@ const filterPnpmWorkspaceYaml = (
   nodeModules: string[],
   projectRoot: string,
   outputDir: string,
-): { content: string; copiedFiles: string[] } => {
+  copiedFiles: string[],
+): string => {
   let doc: unknown;
   try {
     doc = parse(content);
@@ -127,15 +133,14 @@ const filterPnpmWorkspaceYaml = (
   }
 
   if (!isRecord(doc) || !('patchedDependencies' in doc)) {
-    return { content, copiedFiles: [] };
+    return content;
   }
 
   const patched = doc.patchedDependencies;
-  const copiedFiles: string[] = [];
 
   if (isRecord(patched)) {
     for (const [key, value] of Object.entries(patched)) {
-      const pkgName = key.replace(/(?<=.)@[^@]+$/, '');
+      const pkgName = parsePnpmPatchKey(key);
       if (!nodeModules.includes(pkgName)) {
         delete patched[key];
       } else if (typeof value === 'string' && value) {
@@ -150,7 +155,7 @@ const filterPnpmWorkspaceYaml = (
     delete doc.patchedDependencies;
   }
 
-  return { content: stringify(doc), copiedFiles };
+  return stringify(doc);
 };
 
 export const copyWorkspaceFiles = (
@@ -158,8 +163,8 @@ export const copyWorkspaceFiles = (
   outputDir: string,
   nodeModules: string[] = [],
   ignoreScripts = false,
+  stagedFiles: string[] = [],
 ): string[] => {
-  const stagedFiles: string[] = [];
   for (const file of PNPM_WORKSPACE_FILES) {
     const src = path.join(projectRoot, file);
     if (!fs.existsSync(src)) {
@@ -173,9 +178,9 @@ export const copyWorkspaceFiles = (
         nodeModules,
         projectRoot,
         outputDir,
+        stagedFiles,
       );
-      fs.writeFileSync(dest, filtered.content);
-      stagedFiles.push(...filtered.copiedFiles);
+      fs.writeFileSync(dest, filtered);
     } else {
       fs.copyFileSync(src, dest);
     }

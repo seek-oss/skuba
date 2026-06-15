@@ -241,13 +241,14 @@ export class Bundling implements cdk.BundlingOptions {
       packageManager: packageManagerField,
     });
 
-    let stagedFiles: string[] = [];
+    const stagedFiles: string[] = [];
     try {
-      stagedFiles = copyWorkspaceFiles(
+      copyWorkspaceFiles(
         this.props.projectRoot,
         outputDir,
         nodeModules,
         this.props.ignoreScripts,
+        stagedFiles,
       );
 
       if (fs.existsSync(this.props.depsLockFilePath)) {
