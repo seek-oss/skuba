@@ -355,6 +355,62 @@ ENV NODE_ENV=production
     `);
   });
 
+  it('should insert prune before an existing install --prod command', async () => {
+    vol.fromJSON({
+      Dockerfile: `\
+ARG BASE_IMAGE
+
+###
+
+FROM \${BASE_IMAGE} AS build
+COPY . .
+RUN pnpm install --offline
+RUN pnpm build
+RUN CI=true pnpm install --offline --prod
+
+###
+
+FROM gcr.io/distroless/nodejs24-debian13 AS runtime
+WORKDIR /workdir
+COPY --from=build /workdir/lib lib
+COPY --from=build /workdir/node_modules node_modules
+COPY --from=build /workdir/package.json package.json
+ENV NODE_ENV=production
+`,
+    });
+
+    await expect(
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "Dockerfile": "ARG BASE_IMAGE
+
+      ###
+
+      FROM \${BASE_IMAGE} AS build
+      COPY . .
+      RUN pnpm install --offline
+      RUN pnpm build
+      RUN CI=true pnpm prune --prod
+      RUN CI=true pnpm install --offline --prod
+
+      ###
+
+      FROM gcr.io/distroless/nodejs24-debian13 AS runtime
+      WORKDIR /workdir
+      COPY --from=build /workdir/lib lib
+      COPY --from=build /workdir/node_modules node_modules
+      COPY --from=build /workdir/package.json package.json
+      ENV NODE_ENV=production
+      ",
+      }
+    `);
+  });
+
   it('should patch multiple applicable Dockerfiles', async () => {
     vol.fromJSON({
       Dockerfile: BEFORE_DOCKERFILE,

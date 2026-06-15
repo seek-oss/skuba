@@ -67,11 +67,24 @@ const applyPruneDevDepsPatch = async (
     return null;
   }
 
-  const edits: Edit[] = [
-    pnpmBuild.replace(
-      'RUN pnpm build\nRUN CI=true pnpm prune --prod\nRUN CI=true pnpm install --offline --prod',
-    ),
-  ];
+  const installProd = astRoot.find({
+    rule: {
+      kind: 'command',
+      regex: '^RUN CI=true pnpm install --offline --prod$',
+    },
+  });
+
+  const edits: Edit[] = installProd
+    ? [
+        installProd.replace(
+          'RUN CI=true pnpm prune --prod\nRUN CI=true pnpm install --offline --prod',
+        ),
+      ]
+    : [
+        pnpmBuild.replace(
+          'RUN pnpm build\nRUN CI=true pnpm prune --prod\nRUN CI=true pnpm install --offline --prod',
+        ),
+      ];
 
   return astRoot.commitEdits(edits);
 };
