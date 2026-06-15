@@ -60,7 +60,7 @@ export const runESLint = async (
 
   if (type === 'no-config') {
     logger.plain(
-      'skuba could not find an eslint config file. Do you need to run format or configure?',
+      'skuba could not find an eslint config file. Do you need to run format?',
     );
     return { ok: false, fixable: false, errors: [], warnings: [], output: '' };
   }

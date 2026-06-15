@@ -46,7 +46,7 @@ When starting a new project, you may hotload the package with a reasonable `mini
 pnpm --config.minimumReleaseAge=4320 dlx skuba init
 ```
 
-If you're new here, jump ahead to the [CLI] section to [create a new project] or [update an existing one].
+If you're new here, jump ahead to the [CLI] section to [create a new project].
 
 [cli]: ./docs/cli
 [create a new project]: ./docs/cli/init.md
@@ -57,4 +57,3 @@ If you're new here, jump ahead to the [CLI] section to [create a new project] or
 [runtime]: ./docs/runtime-api
 [templates]: ./docs/templates
 [typescript]: https://www.typescriptlang.org/
-[update an existing one]: ./docs/cli/configure.md
