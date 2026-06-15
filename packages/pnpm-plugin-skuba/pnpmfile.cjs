@@ -36,6 +36,7 @@ const defaultConfig = {
   packageManagerStrictVersion: true,
   publicHoistPattern: [
     '@arethetypeswrong/core',
+    '@changesets/cli',
     '@eslint/*',
     '@skuba-lib/*',
     '@types*',
