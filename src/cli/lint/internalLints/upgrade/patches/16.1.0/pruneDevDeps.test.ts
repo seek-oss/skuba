@@ -29,6 +29,7 @@ FROM \${BASE_IMAGE} AS build
 COPY . .
 RUN pnpm install --offline
 RUN pnpm build
+RUN CI=true pnpm install --offline --prod
 
 ###
 
@@ -202,6 +203,7 @@ COPY --from=build /workdir/package.json package.json
       COPY . .
       RUN pnpm install --offline
       RUN pnpm build
+      RUN CI=true pnpm install --offline --prod
 
       ###
 
@@ -265,6 +267,7 @@ FROM \${BASE_IMAGE}:\${BASE_TAG} AS build
 COPY . .
 RUN pnpm install --offline
 RUN pnpm build
+RUN CI=true pnpm install --offline --prod
 
 ###
 
@@ -296,6 +299,62 @@ ENV NODE_ENV=production
       RUN pnpm build
       RUN CI=true pnpm prune --prod
       RUN CI=true pnpm install --offline --prod
+
+      ###
+
+      FROM gcr.io/distroless/nodejs24-debian13 AS runtime
+      WORKDIR /workdir
+      COPY --from=build /workdir/lib lib
+      COPY --from=build /workdir/node_modules node_modules
+      COPY --from=build /workdir/package.json package.json
+      ENV NODE_ENV=production
+      ",
+      }
+    `);
+  });
+
+  it('should insert prune before an existing install --offline --frozen-lockfile --prod command', async () => {
+    vol.fromJSON({
+      Dockerfile: `\
+ARG BASE_IMAGE
+
+###
+
+FROM \${BASE_IMAGE} AS build
+COPY . .
+RUN CI=true pnpm install --offline --frozen-lockfile
+RUN CI=true pnpm build
+RUN CI=true pnpm install --offline --frozen-lockfile --prod
+
+###
+
+FROM gcr.io/distroless/nodejs24-debian13 AS runtime
+WORKDIR /workdir
+COPY --from=build /workdir/lib lib
+COPY --from=build /workdir/node_modules node_modules
+COPY --from=build /workdir/package.json package.json
+ENV NODE_ENV=production
+`,
+    });
+
+    await expect(
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "Dockerfile": "ARG BASE_IMAGE
+
+      ###
+
+      FROM \${BASE_IMAGE} AS build
+      COPY . .
+      RUN CI=true pnpm install --offline --frozen-lockfile
+      RUN CI=true pnpm build
+      RUN CI=true pnpm prune --prod
+      RUN CI=true pnpm install --offline --frozen-lockfile --prod
 
       ###
 
@@ -397,6 +456,62 @@ ENV NODE_ENV=production
       RUN pnpm build
       RUN CI=true pnpm prune --prod
       RUN CI=true pnpm install --offline --prod
+
+      ###
+
+      FROM gcr.io/distroless/nodejs24-debian13 AS runtime
+      WORKDIR /workdir
+      COPY --from=build /workdir/lib lib
+      COPY --from=build /workdir/node_modules node_modules
+      COPY --from=build /workdir/package.json package.json
+      ENV NODE_ENV=production
+      ",
+      }
+    `);
+  });
+
+  it('should insert prune before an existing install --prod command without CI=true', async () => {
+    vol.fromJSON({
+      Dockerfile: `\
+ARG BASE_IMAGE
+
+###
+
+FROM \${BASE_IMAGE} AS build
+COPY . .
+RUN pnpm install --offline
+RUN pnpm build
+RUN pnpm install --offline --prod
+
+###
+
+FROM gcr.io/distroless/nodejs24-debian13 AS runtime
+WORKDIR /workdir
+COPY --from=build /workdir/lib lib
+COPY --from=build /workdir/node_modules node_modules
+COPY --from=build /workdir/package.json package.json
+ENV NODE_ENV=production
+`,
+    });
+
+    await expect(
+      pruneDevDeps({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "Dockerfile": "ARG BASE_IMAGE
+
+      ###
+
+      FROM \${BASE_IMAGE} AS build
+      COPY . .
+      RUN pnpm install --offline
+      RUN pnpm build
+      RUN CI=true pnpm prune --prod
+      RUN pnpm install --offline --prod
 
       ###
 

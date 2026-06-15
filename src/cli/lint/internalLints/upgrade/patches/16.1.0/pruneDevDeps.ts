@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 
-import { type Edit, parseAsync } from '@ast-grep/napi';
+import { parseAsync } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -47,46 +47,20 @@ const applyPruneDevDepsPatch = async (
     return null;
   }
 
-  const installOffline = astRoot.find({
-    rule: {
-      kind: 'command',
-      regex: '^RUN pnpm install --offline$',
-    },
-  });
-  if (!installOffline) {
-    return null;
-  }
-
-  const pnpmBuild = astRoot.find({
-    rule: {
-      kind: 'command',
-      regex: '^RUN pnpm build$',
-    },
-  });
-  if (!pnpmBuild) {
-    return null;
-  }
-
   const installProd = astRoot.find({
     rule: {
       kind: 'command',
-      regex: '^RUN CI=true pnpm install --offline --prod$',
+      regex: '^RUN (CI=true )?pnpm install .*--prod',
     },
   });
 
-  const edits: Edit[] = installProd
-    ? [
-        installProd.replace(
-          'RUN CI=true pnpm prune --prod\nRUN CI=true pnpm install --offline --prod',
-        ),
-      ]
-    : [
-        pnpmBuild.replace(
-          'RUN pnpm build\nRUN CI=true pnpm prune --prod\nRUN CI=true pnpm install --offline --prod',
-        ),
-      ];
+  if (!installProd) {
+    return null;
+  }
 
-  return astRoot.commitEdits(edits);
+  return astRoot.commitEdits([
+    installProd.replace(`RUN CI=true pnpm prune --prod\n${installProd.text()}`),
+  ]);
 };
 
 const tryPruneDevDeps = async (config: {
