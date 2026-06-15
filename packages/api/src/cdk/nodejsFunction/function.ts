@@ -74,7 +74,7 @@ const resolveHandlerFn = (handler?: string): string => {
   const handlerFn = handlerName.slice(handlerName.lastIndexOf('.') + 1);
   if (!/^[A-Za-z_$][\w$]*$/.test(handlerFn)) {
     throw new ValidationError(
-      `Invalid handler '${handler}'. The function-name segment '${handlerFn}' is not a valid JavaScript identifier. Provide an exported function name, optionally prefixed with a file part (e.g. 'handler' or 'index.handler').`,
+      `Invalid handler '${handler}'. Expected an exported function name, optionally prefixed with a file part (e.g. 'handler' or 'index.handler').`,
     );
   }
   return handlerFn;

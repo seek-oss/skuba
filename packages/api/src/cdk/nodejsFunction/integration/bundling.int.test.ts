@@ -88,6 +88,47 @@ describe.skipIf(!BRIDGE_BUILT)('rolldown bundling', () => {
     }
   }, 60_000);
 
+  it.each([
+    {
+      name: 'output.preserveModules is set',
+      config: 'preserve-modules.config.mjs',
+      match: /preserveModules/,
+    },
+    {
+      name: 'output.entryFileNames is set',
+      config: 'entry-file-names.config.mjs',
+      match: /entryFileNames/,
+    },
+    {
+      name: 'input is set',
+      config: 'input.config.mjs',
+      match: /`input` is not supported/,
+    },
+  ])(
+    'throws when $name',
+    ({ config, match }) => {
+      const outputDir = fs.mkdtempSync(
+        path.join(os.tmpdir(), 'lambda-bundle-guard-'),
+      );
+      try {
+        const bundling = new Bundling({
+          ...BASE_BUNDLING_PROPS,
+          bundlerConfig: path.join(FIXTURES, 'rolldown', config),
+          entry: path.join(FIXTURES, 'handler.ts'),
+        });
+
+        expect(() =>
+          bundling.local.tryBundle(outputDir, {
+            image: cdk.DockerImage.fromRegistry('dummy'),
+          }),
+        ).toThrow(match);
+      } finally {
+        fs.rmSync(outputDir, { recursive: true, force: true });
+      }
+    },
+    60_000,
+  );
+
   it('allows dynamic-import chunks alongside the entry', () => {
     const outputDir = fs.mkdtempSync(
       path.join(os.tmpdir(), 'lambda-bundle-dynamic-'),

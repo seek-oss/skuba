@@ -32,15 +32,7 @@ export interface BundlingProps extends BundlingOptions {
   projectRoot: string;
 }
 
-const SPAWN_MAX_BUFFER = 256 * 1024 * 1024;
-
-const describeExit = (result: {
-  signal: NodeJS.Signals | null;
-  status: number | null;
-}): string =>
-  result.signal != null
-    ? `killed by signal ${result.signal}`
-    : `exited with status ${result.status}`;
+const SPAWN_MAX_BUFFER = 16 * 1024 * 1024;
 
 const stderrTail = (stderr: string | null | undefined): string => {
   if (!stderr) {
@@ -63,9 +55,11 @@ const checkSpawnResult = (
     throw result.error;
   }
   if (result.status !== 0) {
-    throw new ValidationError(
-      `${prefix} ${describeExit(result)}.${stderrTail(result.stderr)}`,
-    );
+    const exit =
+      result.signal != null
+        ? `killed by signal ${result.signal}`
+        : `exited with status ${result.status}`;
+    throw new ValidationError(`${prefix} ${exit}.${stderrTail(result.stderr)}`);
   }
   // Surface captured stderr (e.g. bundler warnings) only on success; on failure
   // the tail is already in the thrown error message.

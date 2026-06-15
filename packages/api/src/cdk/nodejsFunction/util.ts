@@ -15,10 +15,8 @@ export const isInside = (parent: string, child: string): boolean => {
 
 export const BUNDLE_META_FILENAME = '.lambda-bundle-meta';
 
-const ESM_FORMATS: ReadonlySet<string> = new Set(['es', 'esm', 'module']);
-
 export const isEsmFormat = (format: string | undefined): boolean =>
-  ESM_FORMATS.has(format ?? '');
+  ['es', 'esm', 'module'].includes(format ?? '');
 
 export const parseJsonFile = (filePath: string): unknown => {
   try {
