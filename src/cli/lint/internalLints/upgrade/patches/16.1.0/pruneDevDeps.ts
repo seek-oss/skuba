@@ -11,12 +11,8 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 const applyPruneDevDepsPatch = async (
   contents: string,
 ): Promise<string | null> => {
-  // Fairly lazy check to bail out on the patch
-  if (contents.includes('pnpm prune --prod')) {
-    return null;
-  }
-
   registerAstGrepLanguages();
+
   const astRoot = (await parseAsync('bash', contents)).root();
 
   const argBaseImage = astRoot.find({
@@ -43,14 +39,27 @@ const applyPruneDevDepsPatch = async (
       regex: 'COPY --from=build /workdir/node_modules',
     },
   });
+
   if (!copyNodeModules) {
     return null;
   }
 
+  const alreadyPruned = astRoot.find({
+    rule: {
+      kind: 'command',
+      regex: '^RUN (CI=true )?pnpm prune (--prod|-P)$',
+    },
+  });
+
+  if (alreadyPruned) {
+    return null;
+  }
+
+  // Match pnpm install --prod (or -P shorthand), with or without CI=true
   const installProd = astRoot.find({
     rule: {
       kind: 'command',
-      regex: '^RUN (CI=true )?pnpm install .*--prod',
+      regex: '^RUN (CI=true )?pnpm install( --[\\w-]+)* (--prod|-P)$',
     },
   });
 
