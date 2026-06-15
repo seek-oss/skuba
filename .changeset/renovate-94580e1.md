@@ -2,4 +2,4 @@
 'skuba': patch
 ---
 
-deps: rolldown ~1.1.0
+deps: rolldown ^1.1.0
