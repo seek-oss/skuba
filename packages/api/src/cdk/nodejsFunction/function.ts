@@ -37,9 +37,9 @@ export class NodejsFunction extends lambda.Function {
     const projectRoot = path.resolve(
       props.projectRoot ?? path.dirname(depsLockFilePath),
     );
-    const bundlerConfig = findBundlerConfig(
-      props.bundling.bundlerConfig,
+    const bundlerConfig = path.resolve(
       projectRoot,
+      props.bundling.bundlerConfig,
     );
 
     const handlerFn = resolveHandlerFn(props.handler);
@@ -93,14 +93,6 @@ const validateEntry = (entry: string): string => {
 
   return path.resolve(entry);
 };
-
-const findBundlerConfig = (
-  bundlerConfig: string,
-  projectRoot: string,
-): string =>
-  path.isAbsolute(bundlerConfig)
-    ? bundlerConfig
-    : path.resolve(projectRoot, bundlerConfig);
 
 const findLockFile = (depsLockFilePath?: string): string => {
   if (depsLockFilePath) {

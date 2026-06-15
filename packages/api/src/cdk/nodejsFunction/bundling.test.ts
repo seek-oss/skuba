@@ -24,8 +24,8 @@ const makeSuccessResult = () => ({
   error: undefined,
   pid: 1,
   output: [],
-  stdout: Buffer.from(''),
-  stderr: Buffer.from(''),
+  stdout: '',
+  stderr: '',
   signal: null,
 });
 
@@ -34,8 +34,8 @@ const makeErrorResult = (status: number) => ({
   error: undefined,
   pid: 1,
   output: [],
-  stdout: Buffer.from(''),
-  stderr: Buffer.from(''),
+  stdout: '',
+  stderr: '',
   signal: null,
 });
 
@@ -44,8 +44,8 @@ const makeSpawnError = (err: Error) => ({
   error: err,
   pid: 1,
   output: [],
-  stdout: Buffer.from(''),
-  stderr: Buffer.from(''),
+  stdout: '',
+  stderr: '',
   signal: null,
 });
 
@@ -58,7 +58,7 @@ const makeStderrResult = (
     error: undefined,
     pid: 1,
     output: [],
-    stdout: Buffer.from(''),
+    stdout: '',
     stderr,
     signal: null,
   }) as unknown as ReturnType<typeof spawnSync>;
@@ -507,10 +507,7 @@ describe('Bundling.local.tryBundle', () => {
 
   it('appends captured stderr tail to the bundler error message', () => {
     spawnSyncMock.mockReturnValueOnce(
-      makeStderrResult(
-        1,
-        Buffer.from('Build failed\n  SyntaxError: boom at line 3'),
-      ),
+      makeStderrResult(1, 'Build failed\n  SyntaxError: boom at line 3'),
     );
 
     const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'out-'));
@@ -520,6 +517,23 @@ describe('Bundling.local.tryBundle', () => {
         /SyntaxError: boom/,
       );
     } finally {
+      fs.rmSync(outputDir, { recursive: true, force: true });
+    }
+  });
+
+  it('forwards captured stderr to process.stderr on a successful bundle', () => {
+    const writeSpy = vi
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+    spawnSyncMock.mockReturnValueOnce(makeStderrResult(0, 'bundler warning'));
+
+    const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'out-'));
+    try {
+      const bundling = new Bundling(makeProps());
+      bundling.local.tryBundle(outputDir, bundling);
+      expect(writeSpy).toHaveBeenCalledWith('bundler warning');
+    } finally {
+      writeSpy.mockRestore();
       fs.rmSync(outputDir, { recursive: true, force: true });
     }
   });
@@ -775,8 +789,8 @@ describe('Bundling.local.tryBundle', () => {
           error: undefined,
           pid: 1,
           output: [],
-          stdout: Buffer.from(''),
-          stderr: Buffer.from(''),
+          stdout: '',
+          stderr: '',
           signal: 'SIGTERM',
         };
       }
@@ -808,8 +822,8 @@ describe('Bundling.local.tryBundle', () => {
       error: undefined,
       pid: 1,
       output: [],
-      stdout: Buffer.from(''),
-      stderr: Buffer.from(''),
+      stdout: '',
+      stderr: '',
       signal: 'SIGKILL',
     });
 
@@ -834,8 +848,8 @@ describe('Bundling.local.tryBundle', () => {
           error: undefined,
           pid: 1,
           output: [],
-          stdout: Buffer.from(''),
-          stderr: Buffer.from(''),
+          stdout: '',
+          stderr: '',
           signal: 'SIGTERM',
         });
 

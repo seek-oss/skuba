@@ -42,20 +42,16 @@ const describeExit = (result: {
     ? `killed by signal ${result.signal}`
     : `exited with status ${result.status}`;
 
-const stderrTail = (stderr: string | Buffer | null | undefined): string => {
+const stderrTail = (stderr: string | null | undefined): string => {
   if (!stderr) {
     return '';
   }
-  const text = typeof stderr === 'string' ? stderr : stderr.toString('utf-8');
-  if (!text) {
-    return '';
-  }
-  const tail = text.trimEnd().split('\n').slice(-20).join('\n');
+  const tail = stderr.trimEnd().split('\n').slice(-20).join('\n');
   return tail ? `\n\n${tail}` : '';
 };
 
 const checkSpawnResult = (
-  result: SpawnSyncReturns<string | Buffer>,
+  result: SpawnSyncReturns<string>,
   prefix: string,
 ): void => {
   if (result.error) {
