@@ -55,7 +55,6 @@ const applyPruneDevDepsPatch = async (
     return null;
   }
 
-  // Match pnpm install --prod (or -P shorthand), with or without CI=true
   const installProd = astRoot.find({
     rule: {
       kind: 'command',
