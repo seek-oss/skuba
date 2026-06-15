@@ -11,6 +11,7 @@ appends `--import dd-trace/initialize.mjs` to the lambda's `NODE_OPTIONS` in thi
 and a new upgrade patch retrofits projects that already migrated.
 
 CDK:
+
 ```diff
   const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
     // ...
@@ -37,6 +38,7 @@ datadog.addLambdaFunctions([worker]);
 ```
 
 Serverless:
+
 ```diff
   custom:
     datadog:
