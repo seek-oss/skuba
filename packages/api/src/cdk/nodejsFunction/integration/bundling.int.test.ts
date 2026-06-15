@@ -8,7 +8,21 @@ import { describe, expect, it } from 'vitest';
 
 import { Bundling } from '../bundling.js';
 
-import { BASE_BUNDLING_PROPS, BRIDGE_BUILT, FIXTURES } from './test-utils.js';
+import {
+  BASE_BUNDLING_PROPS,
+  BRIDGE_BUILT,
+  BRIDGE_PATH,
+  FIXTURES,
+} from './test-utils.js';
+
+describe.runIf(process.env.CI)('rolldown bridge build', () => {
+  it('is built before integration tests run', () => {
+    expect(
+      BRIDGE_BUILT,
+      `Expected the rolldown bridge at ${BRIDGE_PATH} to exist before integration tests run. The package build step may have been skipped.`,
+    ).toBe(true);
+  });
+});
 
 describe.skipIf(!BRIDGE_BUILT)('rolldown bundling', () => {
   it('bundles handler and exports a callable function', async () => {
@@ -68,7 +82,7 @@ describe.skipIf(!BRIDGE_BUILT)('rolldown bundling', () => {
         bundling.local.tryBundle(outputDir, {
           image: cdk.DockerImage.fromRegistry('dummy'),
         }),
-      ).toThrow(/single output object/);
+      ).toThrow(/must contain exactly one entry/);
     } finally {
       fs.rmSync(outputDir, { recursive: true, force: true });
     }

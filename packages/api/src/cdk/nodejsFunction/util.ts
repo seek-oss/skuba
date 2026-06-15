@@ -8,6 +8,11 @@ import { ValidationError } from './errors.js';
 export const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+export const isInside = (parent: string, child: string): boolean => {
+  const rel = path.relative(path.resolve(parent), path.resolve(child));
+  return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
+};
+
 export const BUNDLE_META_FILENAME = '.lambda-bundle-meta';
 
 const ESM_FORMATS: ReadonlySet<string> = new Set(['es', 'esm', 'module']);

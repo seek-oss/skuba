@@ -4,7 +4,7 @@ import * as path from 'node:path';
 import { parse, stringify } from 'yaml';
 
 import { ValidationError } from './errors.js';
-import { isRecord, parseJsonFile } from './util.js';
+import { isInside, isRecord, parseJsonFile } from './util.js';
 
 export const PNPM_LOCK = 'pnpm-lock.yaml';
 
@@ -22,11 +22,6 @@ export const PNPM_INSTALL_COMMAND: [string, ...string[]] = [
   '--config.package-import-method=clone-or-copy',
   '--no-frozen-lockfile',
 ];
-
-const isInside = (parent: string, child: string): boolean => {
-  const rel = path.relative(path.resolve(parent), path.resolve(child));
-  return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
-};
 
 const assertPnpm = (name: string, source: string, pkgPath: string): void => {
   if (name !== 'pnpm') {

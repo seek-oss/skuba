@@ -14,9 +14,9 @@ export const REPO_ROOT = path.resolve(API_ROOT, '../..');
 
 export const FIXTURES = path.join(HERE, 'fixtures');
 
-export const BRIDGE_BUILT = existsSync(
-  path.join(API_ROOT, ...BRIDGE_OUTPUT_SEGMENTS),
-);
+export const BRIDGE_PATH = path.join(API_ROOT, ...BRIDGE_OUTPUT_SEGMENTS);
+
+export const BRIDGE_BUILT = existsSync(BRIDGE_PATH);
 
 export const BASE_BUNDLING_PROPS = {
   runtime: aws_lambda.Runtime.NODEJS_24_X,

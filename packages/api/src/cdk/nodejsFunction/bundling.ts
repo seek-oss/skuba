@@ -4,7 +4,7 @@ import * as path from 'node:path';
 
 import type { ILocalBundling } from 'aws-cdk-lib';
 import * as cdk from 'aws-cdk-lib';
-import type { AssetCode, Runtime } from 'aws-cdk-lib/aws-lambda';
+import type { AssetCode } from 'aws-cdk-lib/aws-lambda';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 
 import { resolveRolldownBridge } from './bridge-path.js';
@@ -21,13 +21,13 @@ import {
   BUNDLE_META_FILENAME,
   extractDependencies,
   isEsmFormat,
+  isInside,
   isRecord,
   parseJsonFile,
 } from './util.js';
 
 export interface BundlingProps extends BundlingOptions {
   entry: string;
-  runtime: Runtime;
   depsLockFilePath: string;
   projectRoot: string;
 }
@@ -110,7 +110,7 @@ export const removeEmptyParentDirs = (
   outputDir: string,
 ): void => {
   let dir = startDir;
-  while (dir.startsWith(outputDir + path.sep)) {
+  while (dir !== outputDir && isInside(outputDir, dir)) {
     try {
       fs.rmdirSync(dir);
     } catch {

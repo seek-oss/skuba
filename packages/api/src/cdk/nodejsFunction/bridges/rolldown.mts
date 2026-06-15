@@ -30,8 +30,12 @@ if (!userConfig) {
 const rawOutput = userConfig.output;
 
 if (Array.isArray(rawOutput) && rawOutput.length !== 1) {
+  const detail =
+    rawOutput.length === 0
+      ? 'the `output` array is empty'
+      : `the \`output\` array contains ${rawOutput.length} entries`;
   throw new Error(
-    '`output` must be a single output object: NodejsFunction emits a single index.js/index.mjs handler.',
+    `\`output\` must contain exactly one entry but ${detail}: NodejsFunction emits a single index.js/index.mjs handler.`,
   );
 }
 

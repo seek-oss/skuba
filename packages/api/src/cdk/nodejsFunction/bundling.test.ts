@@ -3,7 +3,6 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
-import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -103,7 +102,6 @@ afterEach(() => {
 const makeProps = (overrides: Partial<BundlingProps> = {}): BundlingProps => ({
   bundlerConfig: path.join(tmpDir, 'build.mjs'),
   entry: entryFile,
-  runtime: lambda.Runtime.NODEJS_24_X,
   depsLockFilePath: path.join(tmpDir, 'pnpm-lock.yaml'),
   projectRoot: tmpDir,
   ...overrides,
