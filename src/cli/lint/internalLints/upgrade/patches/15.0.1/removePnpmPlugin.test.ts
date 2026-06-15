@@ -104,6 +104,7 @@ describe('removePnpmPlugin', () => {
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "pnpm-workspace.yaml": "allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -176,6 +177,7 @@ configDependencies:
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "pnpm-workspace.yaml": "allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
