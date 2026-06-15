@@ -1,5 +1,3 @@
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
 import type { StreamInterceptor } from '../../../lint/external.js';

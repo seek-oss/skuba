@@ -1,5 +1,3 @@
-import { expect } from 'vitest';
-
 import * as metrics from '#src/framework/metrics.js';
 
 function assertDefined<T>(value: T | undefined): asserts value is T {

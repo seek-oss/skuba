@@ -1,5 +1,4 @@
 import picomatch from 'picomatch';
-import { expect } from 'vitest';
 
 import {
   DEFAULT_PACKAGE_MANAGER,

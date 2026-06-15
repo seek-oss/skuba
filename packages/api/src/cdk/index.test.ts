@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { normaliseTemplate } from './index.js';
 
 describe('normaliseTemplate', () => {

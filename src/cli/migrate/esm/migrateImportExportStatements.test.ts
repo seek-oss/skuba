@@ -1,7 +1,6 @@
 import path from 'path';
 
 import memfs, { vol } from 'memfs';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../utils/packageManager.js';
 import type { PatchConfig } from '../../lint/internalLints/upgrade/index.js';

@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { createDependencyFilter, withPackage } from './package.js';
 
 describe('createDependencyFilter', () => {

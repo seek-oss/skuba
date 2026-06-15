@@ -3,6 +3,7 @@ import { type ViteUserConfig, defaultExclude } from 'vitest/config';
 import { mergeRaw } from '../../cli/configure/processing/record.js';
 
 export const defaults = {
+  globals: true,
   coverage: {
     include: ['**/*.ts', '**/*.tsx'],
     exclude: [

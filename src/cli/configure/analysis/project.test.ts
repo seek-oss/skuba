@@ -1,5 +1,3 @@
-import { describe, expect, it, vi } from 'vitest';
-
 import * as dir from '../../../utils/dir.js';
 import { getSkubaVersion } from '../../../utils/version.js';
 import { defaultOpts } from '../testing/module.js';

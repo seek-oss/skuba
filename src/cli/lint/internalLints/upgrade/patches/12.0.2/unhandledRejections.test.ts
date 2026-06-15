@@ -1,5 +1,4 @@
 import memfs, { vol } from 'memfs';
-import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

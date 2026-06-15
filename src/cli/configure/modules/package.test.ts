@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { parsePackage } from '../processing/package.js';
 import {
   assertDefined,

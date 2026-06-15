@@ -62,112 +62,6 @@ const getUnfixedLifeCycleEdits = (root: SgNode): Edit[] => {
   });
 };
 
-// The sku vitest codemod naively inserts the vitest import at the top of the file
-// which conflicts with eslint rules that require imports to be ordered a certain way
-// so we need to shift the vitest import downwards if there are any imports directly below
-// which are either side-effects or vi.mocks
-// eg.
-// import { vi } from 'vitest';
-// import ./sideEffectImport;
-// becomes
-// import ./sideEffectImport;
-// import { vi } from 'vitest';
-const getImportOrderEdits = (root: SgNode): Edit[] => {
-  const vitestImportInvalid = root.find({
-    rule: {
-      nthChild: 1,
-      kind: 'import_statement',
-      has: {
-        kind: 'string',
-        has: {
-          kind: 'string_fragment',
-          regex: '^vitest$',
-        },
-      },
-      any: [
-        {
-          precedes: {
-            kind: 'import_statement',
-            has: {
-              nthChild: 1,
-              kind: 'string',
-            },
-            stopBy: 'end',
-          },
-        },
-        {
-          precedes: {
-            kind: 'expression_statement',
-          },
-        },
-        {
-          precedes: {
-            kind: 'comment',
-          },
-        },
-      ],
-    },
-  });
-
-  if (!vitestImportInvalid) {
-    return [];
-  }
-
-  const firstValidImport = root.find({
-    rule: {
-      kind: 'import_statement',
-      not: {
-        any: [
-          {
-            has: {
-              kind: 'string',
-              has: {
-                kind: 'string_fragment',
-                regex: '^vitest$',
-              },
-            },
-          },
-          {
-            kind: 'import_statement',
-            has: {
-              nthChild: 1,
-              kind: 'string',
-            },
-          },
-          {
-            precedes: {
-              kind: 'import_statement',
-              has: { nthChild: 1, kind: 'string' },
-              stopBy: 'end',
-            },
-          },
-          {
-            follows: {
-              kind: 'comment',
-              regex: '^// eslint-disable-next-line',
-            },
-          },
-        ],
-      },
-    },
-  });
-
-  if (!firstValidImport) {
-    return [];
-  }
-
-  return [
-    {
-      startPos: vitestImportInvalid.range().start.index,
-      endPos: vitestImportInvalid.range().end.index + 1, // newline
-      insertedText: '',
-    },
-    firstValidImport.replace(
-      `${vitestImportInvalid.text()}\n${firstValidImport.text()}`,
-    ),
-  ];
-};
-
 // Any vi.mock that is not on the root level emits a warning in vitest and needs to be transformed to `doMock`
 // to not be hoisted or throw an error in future versions of Vitest.
 const getBadMocksEdits = (root: SgNode): Edit[] => {
@@ -288,79 +182,28 @@ const getSpyInstanceTypeEdits = (root: SgNode): Edit[] => {
   return spyInstances.map((spyInstance) => spyInstance.replace('MockInstance'));
 };
 
-const getTypeImportEdits = (root: SgNode, imports: string[]): Edit[] => {
-  if (!imports.length) {
-    return [];
-  }
-
-  const importPlacement =
-    root.find({
-      rule: {
-        kind: 'import_statement',
-        has: {
-          kind: 'string',
-          has: {
-            kind: 'string_fragment',
-            regex: '^vitest$',
-          },
-        },
-      },
-    }) ??
-    root.find({
-      rule: {
-        kind: 'import_statement',
-        inside: {
-          kind: 'program',
-        },
-        nthChild: {
-          ofRule: {
-            kind: 'import_statement',
-            has: {
-              kind: 'string',
-              has: {
-                kind: 'string_fragment',
-                not: {
-                  any: [
-                    {
-                      regex: '^(@|#|\\.)',
-                    },
-                  ],
-                },
-              },
-            },
-          },
-          position: 1,
-          reverse: true,
-        },
-      },
-    });
-  root.find({
+export const removeVitestImportsEdits = (root: SgNode): Edit[] => {
+  const vitestImports = root.findAll({
     rule: {
       kind: 'import_statement',
-      inside: {
-        kind: 'program',
-      },
-      nthChild: {
-        ofRule: {
-          kind: 'import_statement',
+      has: {
+        kind: 'string',
+        has: {
+          kind: 'string_fragment',
+          regex: '^vitest$',
         },
-        position: 1,
-        reverse: true,
       },
     },
   });
 
-  if (!importPlacement) {
-    return [];
-  }
-
-  return [
-    {
-      startPos: importPlacement.range().end.index + 1, // newline
-      endPos: importPlacement.range().end.index + 1,
-      insertedText: `import type { ${imports.join(', ')} } from 'vitest';\n`,
-    },
-  ];
+  return vitestImports.map((importDeclaration) => {
+    const range = importDeclaration.range();
+    return {
+      startPos: range.start.index,
+      endPos: range.end.index + 1,
+      insertedText: '',
+    };
+  });
 };
 
 export const getViMockedPrototypeEdits = (root: SgNode): Edit[] => {
@@ -440,31 +283,20 @@ export const postFixVitestMigration = async (file: string, content: string) => {
 
   const hasLifeCyclesToCheck = getLifeCycleHooks(astRoot).length > 0;
 
-  const { imports: jestTypeImports, edits: jestTypeEdits } =
-    getJestTypeEdits(astRoot);
-
   const spyInstanceTypeEdits = getSpyInstanceTypeEdits(astRoot);
   const spiedFunctionEdits = getSpiedFunctionEdits(astRoot);
-
-  if (spyInstanceTypeEdits.length) {
-    jestTypeImports.add('MockInstance');
-  }
-
-  if (spiedFunctionEdits.length) {
-    jestTypeImports.add('Mock');
-  }
 
   const edits = [
     ...getImmediateReturnEdits(astRoot),
     ...getUnfixedLifeCycleEdits(astRoot),
-    ...getImportOrderEdits(astRoot),
     ...getBadMocksEdits(astRoot),
     ...getImportActualEdits(astRoot),
-    ...jestTypeEdits,
+    ...getJestTypeEdits(astRoot).edits,
     ...spyInstanceTypeEdits,
     ...spiedFunctionEdits,
     ...getViMockedPrototypeEdits(astRoot),
     ...getBadMockImplementationEdits(astRoot),
+    ...removeVitestImportsEdits(astRoot),
   ];
 
   if (!edits.length) {
@@ -476,22 +308,8 @@ export const postFixVitestMigration = async (file: string, content: string) => {
 
   const updated = astRoot.commitEdits(edits);
 
-  if (!jestTypeImports.size) {
-    return {
-      updated,
-      hasLifeCyclesToCheck,
-    };
-  }
-
-  const astAfterEdits = (await parseAsync('TypeScript', updated)).root();
-
-  const typeImportEdits = getTypeImportEdits(
-    astAfterEdits,
-    Array.from(jestTypeImports),
-  );
-
   return {
-    updated: astAfterEdits.commitEdits(typeImportEdits),
+    updated,
     hasLifeCyclesToCheck,
   };
 };

@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { getFirstDefined, merge, mergeRaw } from './record.js';
 
 describe('getFirstDefined', () => {

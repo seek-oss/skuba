@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { seekKoala } from './seekKoala.js';
 
 describe('seekKoala', () => {

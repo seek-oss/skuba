@@ -1,5 +1,4 @@
 import git from 'isomorphic-git';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createRestClient } from './octokit.js';
 import { getPullRequestNumber } from './pullRequest.js';

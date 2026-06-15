@@ -2,7 +2,6 @@ import nodeHttp from 'http';
 import path from 'path';
 
 import request from 'supertest';
-import { afterEach, expect, test, vi } from 'vitest';
 
 import { main } from './main.js';
 import * as serverModule from './server.js';

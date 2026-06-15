@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { seekDatadogCustomMetrics } from './seekDatadogCustomMetrics.js';
 
 describe('seekDatadogCustomMetrics', () => {

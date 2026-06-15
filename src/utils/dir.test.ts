@@ -1,7 +1,5 @@
 import path from 'path';
 
-import { beforeAll, describe, expect, it } from 'vitest';
-
 import {
   buildPatternToFilepathMap,
   crawlDirectory,

@@ -1,5 +1,4 @@
 import git from 'isomorphic-git';
-import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { push } from './push.js';
 

@@ -1,5 +1,4 @@
 import memfs, { vol } from 'memfs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { copyAssets } from './assets.js';
 

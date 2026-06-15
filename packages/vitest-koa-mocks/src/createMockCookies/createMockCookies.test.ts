@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { createMockCookies } from './createMockCookies.js';
 
 describe('create-mock-cookies', () => {
