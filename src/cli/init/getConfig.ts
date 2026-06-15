@@ -7,10 +7,7 @@ import fs from 'fs-extra';
 import { copyFiles } from '../../utils/copy.js';
 import { isErrorWithCode } from '../../utils/error.js';
 import { log } from '../../utils/logging.js';
-import {
-  DEFAULT_PACKAGE_MANAGER,
-  configForPackageManager,
-} from '../../utils/packageManager.js';
+import { DEFAULT_PACKAGE_MANAGER } from '../../utils/packageManager.js';
 import { getRandomPort } from '../../utils/port.js';
 import {
   TEMPLATE_CONFIG_FILENAME,
@@ -99,7 +96,6 @@ const cloneTemplate = async (
   const isGitHubTemplate = templateName.startsWith('github:');
   const isPrivateSeekTemplate = templateName.startsWith('seek:');
   const isLocalTemplate = templateName.startsWith('local:');
-  const isCustomTemplate = isGitHubTemplate || isPrivateSeekTemplate;
 
   if (isGitHubTemplate) {
     const gitHubPath = templateName.slice('github:'.length);
@@ -135,17 +131,6 @@ const cloneTemplate = async (
   const templateConfig = await getTemplateConfig(
     path.join(process.cwd(), destinationDir),
   );
-
-  if (isCustomTemplate) {
-    log.newline();
-    log.warn(
-      'You may need to run',
-      log.bold(
-        `${configForPackageManager(templateConfig.packageManager).print.exec} skuba configure`,
-      ),
-      'once this is done.',
-    );
-  }
 
   return templateConfig;
 };
@@ -294,7 +279,9 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 
   log.newline();
   log.warn(
-    `Resume this later with ${styleText('bold', `${configForPackageManager(packageManager).print.exec} skuba configure`)}.`,
+    'Templating has been skipped. Resume it later by running',
+    log.bold('skuba init'),
+    'in the new directory.',
   );
 
   const customAnswers = generatePlaceholders(fields);

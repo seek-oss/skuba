@@ -104,6 +104,7 @@ describe('removePnpmPlugin', () => {
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "pnpm-workspace.yaml": "allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -131,6 +132,7 @@ describe('removePnpmPlugin', () => {
       packageManagerStrictVersion: true # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
@@ -175,6 +177,7 @@ configDependencies:
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "pnpm-workspace.yaml": "allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -202,6 +205,7 @@ configDependencies:
       packageManagerStrictVersion: true # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
         - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba

@@ -5,6 +5,7 @@ packages:
   - template/*
 
 allowBuilds:
+  '@ast-grep/lang-bash': true # Managed by skuba
   '@ast-grep/lang-json': true # Managed by skuba
   '@ast-grep/lang-yaml': true # Managed by skuba
   '@datadog/native-appsec': true # Managed by skuba
@@ -38,6 +39,7 @@ packageManagerStrictVersion: true # Managed by skuba
 publicHoistPattern:
   - remark-lint-*
   - '@arethetypeswrong/core' # Managed by skuba
+  - '@changesets/cli' # Managed by skuba
   - '@eslint/*' # Managed by skuba
   - '@skuba-lib/*' # Managed by skuba
   - '@types*' # Managed by skuba
