@@ -7,7 +7,11 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { removePnpmPlugin } from './removePnpmPlugin.js';
 
-vi.mock('../../../../../../utils/exec.js');
+vi.mock('../../../../../../utils/exec.js', () => ({
+  exec: vi.fn(),
+  createExec: vi.fn().mockImplementation(() => vi.fn()),
+}));
+
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
   ...memfs.fs,
@@ -100,6 +104,7 @@ describe('removePnpmPlugin', () => {
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "pnpm-workspace.yaml": "allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -126,7 +131,9 @@ describe('removePnpmPlugin', () => {
       pmOnFail: error # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba
@@ -169,6 +176,7 @@ configDependencies:
     expect(volToJson()).toMatchInlineSnapshot(`
       {
         "pnpm-workspace.yaml": "allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -195,7 +203,9 @@ configDependencies:
       pmOnFail: error # Managed by skuba
       publicHoistPattern:
         - '@arethetypeswrong/core' # Managed by skuba
+        - '@changesets/cli' # Managed by skuba
         - '@eslint/*' # Managed by skuba
+        - '@skuba-lib/*' # Managed by skuba
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - esbuild # Managed by skuba

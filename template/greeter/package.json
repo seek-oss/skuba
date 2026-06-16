@@ -1,11 +1,11 @@
 {
-  "name": "@seek/greeter",
+  "name": "@seek/<%- repoName %>",
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
   "imports": {
     "#src/*": {
-      "@seek/<%- serviceName %>/source": "./src/*",
+      "@seek/<%- repoName %>/source": "./src/*",
       "default": "./lib/*"
     }
   },

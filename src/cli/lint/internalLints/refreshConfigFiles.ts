@@ -9,6 +9,7 @@ import {
   findWorkspaceRoot,
 } from '../../../utils/dir.js';
 import type { Logger } from '../../../utils/logging.js';
+import { hasNpmrcSecret } from '../../../utils/npmrc.js';
 import {
   type PackageManagerConfig,
   detectPackageManager,
@@ -24,9 +25,15 @@ type ConditionOptions = {
   isInWorkspaceRoot: boolean;
 };
 
+const ensureNoAuthToken = (fileContents: string) =>
+  fileContents
+    .split('\n')
+    .filter((line) => !hasNpmrcSecret(line))
+    .join('\n');
+
 type RefreshableConfigFile = {
   name: string;
-  type: 'ignore';
+  type: 'ignore' | 'npmrc';
   additionalMapping?: (
     s: string,
     packageManager: PackageManagerConfig,
@@ -34,29 +41,20 @@ type RefreshableConfigFile = {
   if?: (options: ConditionOptions) => boolean;
 };
 
-const OLD_IGNORE_WARNING = `# Ignore .npmrc. This is no longer managed by skuba as pnpm projects use a managed .npmrc.
-# IMPORTANT: if migrating to pnpm, remove this line and add an .npmrc IN THE SAME COMMIT.
-# You can use \`skuba format\` to generate the file or otherwise commit an empty file.
-# Doing so will conflict with a local .npmrc and make it more difficult to unintentionally commit auth secrets.
-.npmrc
-`;
-
-const removeOldWarning = (contents: string) =>
-  contents.includes(OLD_IGNORE_WARNING)
-    ? `${contents.replace(OLD_IGNORE_WARNING, '').trim()}\n`
-    : contents;
-
 export const REFRESHABLE_CONFIG_FILES: RefreshableConfigFile[] = [
   {
     name: '.gitignore',
     type: 'ignore',
-    additionalMapping: removeOldWarning,
   },
   { name: '.prettierignore', type: 'ignore' },
   {
+    name: '.npmrc',
+    type: 'npmrc',
+    additionalMapping: ensureNoAuthToken,
+  },
+  {
     name: '.dockerignore',
     type: 'ignore',
-    additionalMapping: removeOldWarning,
   },
 ];
 
@@ -79,12 +77,51 @@ export const refreshConfigFiles = async (
   const refreshConfigFile = async (
     {
       name: filename,
+      type,
       additionalMapping = (s) => s,
       if: condition = () => true,
     }: RefreshableConfigFile,
     conditionOptions: ConditionOptions,
   ) => {
     if (!condition(conditionOptions)) {
+      return { needsChange: false };
+    }
+
+    if (type === 'npmrc') {
+      const inputFile = await readDestinationFile(filename);
+
+      if (inputFile === undefined) {
+        return { needsChange: false };
+      }
+
+      const data = additionalMapping(inputFile, packageManager);
+      const filepath = path.join(destinationRoot, filename);
+
+      if (mode === 'format') {
+        if (data === inputFile) {
+          return { needsChange: false };
+        }
+
+        await fs.promises.writeFile(filepath, data);
+        return {
+          needsChange: false,
+          msg: `Refreshed ${logger.bold(filename)}.`,
+          filename,
+        };
+      }
+
+      if (data !== inputFile) {
+        return {
+          needsChange: true,
+          msg: `The ${logger.bold(
+            filename,
+          )} file contains secrets. Run \`${logger.bold(
+            `${packageManager.print.exec} skuba format`,
+          )}\` to remove them.`,
+          filename,
+        };
+      }
+
       return { needsChange: false };
     }
 

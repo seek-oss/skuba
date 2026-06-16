@@ -3,17 +3,13 @@ import path from 'path';
 import { pathExists } from '../../../utils/fs.js';
 import type { Logger } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { InternalLintResult } from '../internal.js';
 
 export const noSkubaTemplateJs = async (
   _mode: 'format' | 'lint',
   logger: Logger,
 ): Promise<InternalLintResult> => {
-  const [manifest, packageManager] = await Promise.all([
-    getConsumerManifest(),
-    detectPackageManager(),
-  ]);
+  const manifest = await getConsumerManifest();
 
   if (!manifest) {
     // This will throw elsewhere
@@ -27,9 +23,7 @@ export const noSkubaTemplateJs = async (
 
   if (await pathExists(templateConfigPath)) {
     logger.err(
-      `Template is incomplete; run ${logger.bold(
-        `${packageManager.print.exec} skuba configure`,
-      )}. ${logger.dim('no-skuba-template-js')}`,
+      `Template is incomplete; run ${logger.bold('skuba init')} to resume templating. ${logger.dim('no-skuba-template-js')}`,
     );
 
     return {
@@ -38,7 +32,8 @@ export const noSkubaTemplateJs = async (
       annotations: [
         {
           path: 'skuba.template.js',
-          message: `Template is incomplete; run ${packageManager.print.exec} skuba configure.`,
+          message:
+            'Template is incomplete; run `skuba init` to resume templating.',
         },
       ],
     };

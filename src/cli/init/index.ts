@@ -7,12 +7,14 @@ import { hasDebugFlag } from '../../utils/args.js';
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
 import { createInclusionFilter } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
+import { pathExists } from '../../utils/fs.js';
 import { createLogger, log } from '../../utils/logging.js';
 import { showLogoAndVersionInfo } from '../../utils/logo.js';
 import { getConsumerManifest, getSkubaManifest } from '../../utils/manifest.js';
 import { detectPackageManager } from '../../utils/packageManager.js';
 import {
   BASE_TEMPLATE_DIR,
+  TEMPLATE_CONFIG_FILENAME,
   ensureTemplateConfigDeletion,
 } from '../../utils/template.js';
 import { runPrettier } from '../adapter/prettier.js';
@@ -22,6 +24,7 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
 import { installPnpmPlugin } from './installPnpmPlugin.js';
+import { resumeTemplating } from './resumeTemplating.js';
 import type { Input } from './types.js';
 import { writePackageJson } from './writePackageJson.js';
 
@@ -33,6 +36,17 @@ export const init = async (args = process.argv.slice(2)) => {
   };
 
   const skubaVersionInfo = await showLogoAndVersionInfo();
+
+  const consumerManifest = await getConsumerManifest();
+  if (
+    consumerManifest &&
+    (await pathExists(
+      path.join(path.dirname(consumerManifest.path), TEMPLATE_CONFIG_FILENAME),
+    ))
+  ) {
+    await resumeTemplating({ manifest: consumerManifest });
+    return;
+  }
 
   const {
     destinationDir,

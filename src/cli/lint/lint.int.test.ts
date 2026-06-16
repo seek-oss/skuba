@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import path from 'path';
 import stream from 'stream';
-import { inspect } from 'util';
+import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
@@ -67,31 +67,33 @@ const TEMP_PATH = path.join(
 );
 
 const stdout = (randomMatcher: RegExp) => {
-  const result = stdoutMock.mock.calls
-    .flat(1)
-    .join('')
-    .replace(/ in [\d\.]+s\./g, ' in <random>s.')
-    .replace(
-      /tsc      │ Lines of ([^:]+):[ ]+\d+/g,
-      'tsc      │ Lines of $1: <random>',
-    )
-    .replace(
-      /tsc      │ Nodes of ([^:]+):[ ]+\d+/g,
-      'tsc      │ Nodes of $1: <random>',
-    )
-    .replace(
-      /tsc      │ (Files|Identifiers|Symbols|Types|Instantiations|Memory used):[ ]+\d+/g,
-      'tsc      │ $1: <random>',
-    )
-    .replace(
-      /tsc      │ (.+) cache size:[ ]+\d+/g,
-      'tsc      │ $1 cache size: <random>',
-    )
-    .replace(
-      /tsc      │ (.+) time:[ ]+[\d\.]+s/g,
-      'tsc      │ $1 time: <random>s',
-    )
-    .replace(randomMatcher, '<random>');
+  const result = stripAnsi(
+    stdoutMock.mock.calls
+      .flat(1)
+      .join('')
+      .replace(/ in [\d\.]+s\./g, ' in <random>s.')
+      .replace(
+        /tsc      │ Lines of ([^:]+):[ ]+\d+/g,
+        'tsc      │ Lines of $1: <random>',
+      )
+      .replace(
+        /tsc      │ Nodes of ([^:]+):[ ]+\d+/g,
+        'tsc      │ Nodes of $1: <random>',
+      )
+      .replace(
+        /tsc      │ (Files|Identifiers|Symbols|Types|Instantiations|Memory used):[ ]+\d+/g,
+        'tsc      │ $1: <random>',
+      )
+      .replace(
+        /tsc      │ (.+) cache size:[ ]+\d+/g,
+        'tsc      │ $1 cache size: <random>',
+      )
+      .replace(
+        /tsc      │ (.+) time:[ ]+[\d\.]+s/g,
+        'tsc      │ $1 time: <random>s',
+      )
+      .replace(randomMatcher, '<random>'),
+  );
 
   return `\n${result}`;
 };
@@ -175,7 +177,7 @@ test.each`
   expect(
     buildkiteAnnotate.mock.calls.map(
       ([markdown, opts]) =>
-        `\nOptions: ${inspect(opts)}\n\n${markdown.replace(
+        `\nOptions: ${inspect(opts)}\n\n${stripAnsi(markdown).replace(
           tempDirRegex,
           '<random>',
         )}\n`,

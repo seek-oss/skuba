@@ -5,6 +5,7 @@
  */
 const defaultConfig = {
   allowBuilds: {
+    '@ast-grep/lang-bash': true,
     '@ast-grep/lang-json': true,
     '@ast-grep/lang-yaml': true,
     '@datadog/native-appsec': true,
@@ -37,7 +38,9 @@ const defaultConfig = {
 
   publicHoistPattern: [
     '@arethetypeswrong/core',
+    '@changesets/cli',
     '@eslint/*',
+    '@skuba-lib/*',
     '@types*',
     '@vitest/*',
     'esbuild',

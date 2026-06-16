@@ -4,8 +4,7 @@
     "rootDir": ".",
     "lib": ["ES2023"],
     "outDir": "lib",
-    "target": "ES2023",
-    "baseUrl": "."
+    "target": "ES2023"
   },
   "exclude": ["lib*/**/*"],
   "extends": "../../config/tsconfig.json",

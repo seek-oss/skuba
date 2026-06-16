@@ -1,13 +1,18 @@
 import { inspect } from 'util';
 
 import { type Edit, parseAsync } from '@ast-grep/napi';
-import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { log } from '../../../utils/logging.js';
 import { getCustomConditions } from '../../build/tsc.js';
 import { registerAstGrepLanguages } from '../../lint/internalLints/registerAstGrepLanguages.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+
+import {
+  appendDdTraceToCdkNodeOptions,
+  appendDdTraceToServerlessNodeOptions,
+  collectLambdaFiles,
+} from './datadogNodeOptions.js';
 
 const migrateCdkLambdas = async (
   tsFiles: Array<{ file: string; contents: string }>,
@@ -221,6 +226,8 @@ const migrateCdkLambdas = async (
                 endPos: datadogSettings.range().end.index - 1,
                 insertedText: '\nredirectHandler: false,\n',
               });
+
+              appendDdTraceToCdkNodeOptions(workerAst, edits);
             } else {
               const extensionVersion = datadogSettings.find({
                 rule: {
@@ -327,6 +334,10 @@ const migrateServerlessLambdas = async (
                 endPos: datadogSettings.range().end.index,
                 insertedText: `\n${' '.repeat(indent)}redirectHandlers: false${!containsDatadogLambdaImport ? ' # TODO: Wrap your handler with the `datadog` function wrapper from `datadog-lambda-js` or the `withLambdaExtension` function wrapper from `seek-datadog-custom-metrics/lambda`. Alternatively, remove this setting and enable addLayers: true' : ''}\n`,
               });
+
+              if (containsDatadogLambdaImport) {
+                appendDdTraceToServerlessNodeOptions(astRoot, edits);
+              }
             }
           }
         }
@@ -450,43 +461,8 @@ const migrateServerlessLambdas = async (
 };
 
 export const migrateLambdas: PatchFunction = async ({ mode }) => {
-  const [tsFilePaths, serverlessFilePaths] = await Promise.all([
-    fg(['**/*.ts'], {
-      ignore: ['**/.git', '**/node_modules'],
-    }),
-    fg(['**/serverless*.{yml,yaml}'], {
-      ignore: ['**/.git', '**/node_modules'],
-    }),
-  ]);
-
-  const [tsFiles, serverlessFiles] = await Promise.all([
-    Promise.all(
-      tsFilePaths.map(async (file) => {
-        const contents = await fs.promises.readFile(file, 'utf8');
-
-        return {
-          file,
-          contents,
-        };
-      }),
-    ),
-    Promise.all(
-      serverlessFilePaths.map(async (file) => {
-        const contents = await fs.promises.readFile(file, 'utf8');
-
-        return {
-          file,
-          contents,
-        };
-      }),
-    ),
-  ]);
-
-  const containsDatadogLambdaImport = tsFiles.some(
-    ({ contents }) =>
-      contents.includes('datadog-lambda-js') ||
-      contents.includes('withLambdaExtension'),
-  );
+  const { tsFiles, serverlessFiles, containsDatadogLambdaImport } =
+    await collectLambdaFiles();
 
   const [patchedTsFiles, patchedServerlessFiles] = await Promise.all([
     migrateCdkLambdas(tsFiles, containsDatadogLambdaImport),

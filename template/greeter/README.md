@@ -4,12 +4,7 @@
 
 Next steps:
 
-1. [ ] Finish templating if this was skipped earlier:
-
-   ```shell
-   pnpm exec skuba configure
-   ```
-
+1. [ ] Create a new repository in the appropriate GitHub organisation.
 2. [ ] Create a new repository in the appropriate GitHub organisation.
 3. [ ] Add the repository to BuildAgency;
        see our internal [Buildkite Docs] for more information.
