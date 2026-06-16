@@ -46,6 +46,7 @@ describe('patchPnpmWorkspace', () => {
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -169,6 +170,7 @@ trustPolicyExclude:
       trustPolicy: off # Managed by skuba
       # This is a comment
       allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
         '@datadog/native-iast-taint-tracking': true # Managed by skuba
         '@datadog/native-metrics': true # Managed by skuba
@@ -287,6 +289,7 @@ trustPolicyExclude:
         - vitest # Managed by skuba
         - some-package
       allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -324,6 +327,7 @@ packageManagerStrictVersion: false`,
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -399,6 +403,7 @@ allowBuilds:
 
     expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
       "allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@ast-grep/lang-json': true # Managed by skuba
         '@ast-grep/lang-yaml': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
@@ -522,6 +527,7 @@ somelistSection:
         - tsconfig-seek # Managed by skuba
         - '@seek/*' # Managed by skuba
       allowBuilds:
+        '@ast-grep/lang-bash': true # Managed by skuba
         '@datadog/native-appsec': true # Managed by skuba
         '@datadog/native-iast-taint-tracking': true # Managed by skuba
         '@datadog/native-metrics': true # Managed by skuba
