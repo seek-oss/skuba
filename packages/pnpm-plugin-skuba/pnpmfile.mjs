@@ -59,7 +59,7 @@ const defaultConfig = {
   trustPolicyExclude: ['semver@6.3.1'], // dependency of eslint-plugin-react
 };
 
-module.exports = {
+export default {
   defaultConfig,
   hooks: {
     /** @param {import("@pnpm/config").Config} config */
