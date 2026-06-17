@@ -36,7 +36,7 @@ The built-in CDK construct hardcodes esbuild; this construct gives you full cont
 ### Prerequisites
 
 `NodejsFunction` declares `aws-cdk-lib` and `constructs` as **optional** peer dependencies so the rest of `skuba` stays usable without them.
-They are loaded lazily, only when you access `Cdk.NodejsFunction`, so importing `Cdk` for other utilities does not require them.
+They are only loaded when you access `Cdk.NodejsFunction`; importing `skuba` (and the `Cdk` namespace) does not reference them, so importing other utilities does not require them.
 Install them where you use the construct:
 
 ```shell
@@ -54,13 +54,11 @@ pnpm add -D aws-cdk-lib constructs
 
 The config must export a default [rolldown configuration object](https://rolldown.rs/reference/config-options).
 The construct merges in the entry point and output directory at synthesis time, so you do not need to set `input`, `output.dir`, or `output.entryFileNames` for the Lambda build.
+Output is ESM only; rolldown defaults to ESM, so `output.format` can be omitted (a CommonJS `output.format` is rejected at synth).
 
 ```js
 // rolldown.lambda.config.mjs
 export default {
-  output: {
-    format: 'cjs',
-  },
   external: [/^node:/],
 };
 ```
@@ -68,10 +66,10 @@ export default {
 #### 2. Declare `NodejsFunction` in your stack
 
 ```ts
-import { Cdk } from 'skuba';
 import { Stack, type StackProps } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import type { Construct } from 'constructs';
+import { Cdk } from 'skuba';
 
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -139,9 +137,9 @@ The construct throws a `ValidationError` at synth time if `runtime` is not a `NO
 The construct respects **how** your config bundles (format, target, sourcemaps, minification, externals, plugins) but always controls **where the output goes and what the entry file is named**: CDK owns the asset staging directory, and the Lambda handler string is derived from the entry filename, so the two must stay in agreement.
 
 - The output directory is set to CDK's asset staging directory.
-- The entry filename is set to `index.js` for CommonJS or `index.mjs` for ESM. For ESM, a `package.json` with `{ "type": "module" }` is also written so secondary chunks load as ES modules.
-- Rolldown defaults to **ESM** when `output.format` is omitted. Set `output.format: 'cjs'` if you want CommonJS.
-- The handler is always emitted as a single `index.js` / `index.mjs`. Code splitting from dynamic `import()` works; secondary chunks are staged alongside the handler. Config that renames, splits, or removes the entry chunk (`output.preserveModules`, multiple `output` entries, or a custom `output.entryFileNames`) is **rejected at synth with an error** rather than silently deploying a Lambda without a findable handler.
+- The entry filename is set to `index.mjs` and a `package.json` with `{ "type": "module" }` is written so secondary chunks load as ES modules.
+- Output is **ESM only**. Rolldown defaults to ESM when `output.format` is omitted; a CommonJS `output.format` is **rejected at synth with an error**.
+- The handler is always emitted as a single `index.mjs`. Code splitting from dynamic `import()` works; secondary chunks are staged alongside the handler. Config that renames, splits, or removes the entry chunk (`output.preserveModules`, multiple `output` entries, or a custom `output.entryFileNames`) is **rejected at synth with an error** rather than silently deploying a Lambda without a findable handler.
 
 ### Externals and `nodeModules`
 
@@ -150,7 +148,6 @@ Packages with native binaries (e.g. `sharp`) usually should not be bundled. Use 
 ```js
 // rolldown.lambda.config.mjs
 export default {
-  output: { format: 'cjs' },
   external: [/^node:/, 'sharp'],
 };
 ```
