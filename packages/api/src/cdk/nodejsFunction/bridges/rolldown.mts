@@ -1,10 +1,8 @@
-import { writeFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { type ModuleFormat, type OutputOptions, rolldown } from 'rolldown';
+import { type OutputOptions, rolldown } from 'rolldown';
 
-import { BUNDLE_META_FILENAME, isEsmFormat, isRecord } from '../util.js';
+import { isRecord } from '../util.js';
 
 const [configPath, entry, outputDir] = process.argv.slice(2, 5);
 
@@ -35,7 +33,7 @@ if (Array.isArray(rawOutput) && rawOutput.length !== 1) {
       ? 'the `output` array is empty'
       : `the \`output\` array contains ${rawOutput.length} entries`;
   throw new Error(
-    `\`output\` must contain exactly one entry but ${detail}: NodejsFunction emits a single index.js/index.mjs handler.`,
+    `\`output\` must contain exactly one entry but ${detail}: NodejsFunction emits a single index.mjs handler.`,
   );
 }
 
@@ -44,13 +42,13 @@ const baseRaw: Record<string, unknown> =
 
 if (baseRaw.preserveModules) {
   throw new Error(
-    '`output.preserveModules` is not supported: NodejsFunction emits a single index.js/index.mjs handler.',
+    '`output.preserveModules` is not supported: NodejsFunction emits a single index.mjs handler.',
   );
 }
 
 if (baseRaw.entryFileNames !== undefined) {
   throw new Error(
-    '`output.entryFileNames` is not supported: NodejsFunction names the handler index.js/index.mjs itself.',
+    '`output.entryFileNames` is not supported: NodejsFunction names the handler index.mjs itself.',
   );
 }
 
@@ -60,7 +58,13 @@ if (userConfig.input !== undefined) {
   );
 }
 
-const format = asString(baseRaw.format) ?? 'es';
+const format = asString(baseRaw.format);
+
+if (format !== undefined && !['es', 'esm', 'module'].includes(format)) {
+  throw new Error(
+    '`output.format` must be ESM (es/esm/module): NodejsFunction emits an ESM index.mjs handler.',
+  );
+}
 
 const { file: _file, ...baseRest } = baseRaw;
 
@@ -73,9 +77,9 @@ const inputOptions = {
 
 const outputOptions: OutputOptions = {
   ...baseRest,
-  format: format as ModuleFormat,
+  format: 'es',
   dir: outputDir,
-  entryFileNames: isEsmFormat(format) ? 'index.mjs' : 'index.js',
+  entryFileNames: 'index.mjs',
 };
 
 const bundle = await rolldown(inputOptions);
@@ -85,8 +89,3 @@ try {
 } finally {
   await bundle.close();
 }
-
-writeFileSync(
-  join(outputDir, BUNDLE_META_FILENAME),
-  JSON.stringify({ format }),
-);

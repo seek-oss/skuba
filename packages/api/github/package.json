@@ -1,6 +1,5 @@
 {
   "type": "module",
-  "main": "../lib/github/index.cjs",
   "module": "../lib/github/index.mjs",
-  "types": "../lib/github/index.d.cts"
+  "types": "../lib/github/index.d.mts"
 }

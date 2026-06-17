@@ -5,28 +5,7 @@ import * as path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ValidationError } from './errors.js';
-import {
-  extractDependencies,
-  findUp,
-  isEsmFormat,
-  parseJsonFile,
-} from './util.js';
-
-describe('isEsmFormat', () => {
-  it.each(['esm', 'es', 'module'])(
-    'returns true for ESM format %p',
-    (format) => {
-      expect(isEsmFormat(format)).toBe(true);
-    },
-  );
-
-  it.each(['cjs', 'commonjs', 'iife', 'umd', undefined])(
-    'returns false for non-ESM format %p',
-    (format) => {
-      expect(isEsmFormat(format)).toBe(false);
-    },
-  );
-});
+import { extractDependencies, findUp, parseJsonFile } from './util.js';
 
 describe('findUp', () => {
   it('finds package.json walking up from src/', () => {

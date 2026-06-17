@@ -17,14 +17,7 @@ import {
   readPackageManagerMeta,
 } from './package-manager.js';
 import type { BundlingOptions } from './types.js';
-import {
-  BUNDLE_META_FILENAME,
-  extractDependencies,
-  isEsmFormat,
-  isInside,
-  isRecord,
-  parseJsonFile,
-} from './util.js';
+import { extractDependencies, isInside } from './util.js';
 
 export interface BundlingProps extends BundlingOptions {
   entry: string;
@@ -72,22 +65,15 @@ const writeOutputPackageJson = (
   outputDir: string,
   fields: {
     dependencies?: Record<string, string>;
-    isEsm?: boolean;
     packageManager?: string;
   },
 ): void => {
-  const pkg: Record<string, unknown> = {};
+  const pkg: Record<string, unknown> = { type: 'module' };
   if (fields.dependencies) {
     pkg.dependencies = fields.dependencies;
   }
-  if (fields.isEsm) {
-    pkg.type = 'module';
-  }
   if (fields.packageManager) {
     pkg.packageManager = fields.packageManager;
-  }
-  if (Object.keys(pkg).length === 0) {
-    return;
   }
   fs.writeFileSync(
     path.join(outputDir, 'package.json'),
@@ -143,13 +129,11 @@ export class Bundling implements cdk.BundlingOptions {
 
         this.runBundler(outputDir);
 
-        const isEsm = this.readBundleMeta(outputDir);
-
         const { nodeModules } = this.props;
         if (nodeModules?.length) {
-          this.installNodeModules(outputDir, isEsm, nodeModules);
+          this.installNodeModules(outputDir, nodeModules);
         } else {
-          writeOutputPackageJson(outputDir, { isEsm });
+          writeOutputPackageJson(outputDir, {});
         }
 
         this.runHooks(
@@ -185,28 +169,7 @@ export class Bundling implements cdk.BundlingOptions {
     );
   }
 
-  private readBundleMeta(outputDir: string): boolean {
-    const metaPath = path.join(outputDir, BUNDLE_META_FILENAME);
-    if (!fs.existsSync(metaPath)) {
-      return false;
-    }
-    try {
-      const parsed: unknown = parseJsonFile(metaPath);
-      const format =
-        isRecord(parsed) && typeof parsed.format === 'string'
-          ? parsed.format
-          : undefined;
-      return isEsmFormat(format);
-    } finally {
-      fs.unlinkSync(metaPath);
-    }
-  }
-
-  private installNodeModules(
-    outputDir: string,
-    isEsm: boolean,
-    nodeModules: string[],
-  ): void {
+  private installNodeModules(outputDir: string, nodeModules: string[]): void {
     const { nearestPackageJson, packageManagerField } = readPackageManagerMeta(
       this.props.projectRoot,
     );
@@ -227,7 +190,6 @@ export class Bundling implements cdk.BundlingOptions {
 
     writeOutputPackageJson(outputDir, {
       dependencies: extractDependencies(nearestPackageJson, nodeModules),
-      isEsm,
       packageManager: packageManagerField,
     });
 

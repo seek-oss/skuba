@@ -12,7 +12,7 @@ export default defineConfig([
       'src/cdk/nodejsFunction/index.ts',
     ],
     dts: true,
-    format: ['cjs', 'esm'],
+    format: ['esm'],
     outDir: 'lib',
     exports: {
       devExports: '@seek/skuba/source',
@@ -20,7 +20,7 @@ export default defineConfig([
     checks: {
       legacyCjs: false,
     },
-    attw: true,
+    attw: { profile: 'esm-only' },
     publint: true,
   },
   {

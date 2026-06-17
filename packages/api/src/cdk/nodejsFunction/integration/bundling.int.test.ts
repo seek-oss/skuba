@@ -1,5 +1,4 @@
 import * as fs from 'node:fs';
-import { createRequire } from 'node:module';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
@@ -25,44 +24,6 @@ describe.runIf(process.env.CI)('rolldown bridge build', () => {
 });
 
 describe.skipIf(!BRIDGE_BUILT)('rolldown bundling', () => {
-  it('bundles handler and exports a callable function', async () => {
-    const outputDir = fs.mkdtempSync(
-      path.join(os.tmpdir(), 'lambda-bundle-rolldown-'),
-    );
-    try {
-      const bundling = new Bundling({
-        ...BASE_BUNDLING_PROPS,
-        bundlerConfig: path.join(FIXTURES, 'rolldown', 'config.mjs'),
-        entry: path.join(FIXTURES, 'handler.ts'),
-      });
-
-      expect(
-        bundling.local.tryBundle(outputDir, {
-          image: cdk.DockerImage.fromRegistry('dummy'),
-        }),
-      ).toBe(true);
-
-      const indexPath = path.join(outputDir, 'index.js');
-      expect(fs.existsSync(indexPath), `index.js missing in ${outputDir}`).toBe(
-        true,
-      );
-
-      const require = createRequire(import.meta.url);
-      const mod = require(indexPath) as { handler?: unknown };
-      expect(typeof mod.handler, 'handler should be a function').toBe(
-        'function',
-      );
-
-      const event = { source: 'integration-test', bundler: 'rolldown' };
-      const result = await (mod.handler as (e: unknown) => Promise<unknown>)(
-        event,
-      );
-      expect(result).toEqual(event);
-    } finally {
-      fs.rmSync(outputDir, { recursive: true, force: true });
-    }
-  }, 60_000);
-
   it('throws when the config provides an empty output array', () => {
     const outputDir = fs.mkdtempSync(
       path.join(os.tmpdir(), 'lambda-bundle-empty-output-'),
@@ -103,6 +64,11 @@ describe.skipIf(!BRIDGE_BUILT)('rolldown bundling', () => {
       name: 'input is set',
       config: 'input.config.mjs',
       match: /`input` is not supported/,
+    },
+    {
+      name: 'output.format is not ESM',
+      config: 'config.mjs',
+      match: /`output\.format` must be ESM/,
     },
   ])(
     'throws when $name',

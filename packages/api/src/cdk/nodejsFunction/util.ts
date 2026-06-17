@@ -13,11 +13,6 @@ export const isInside = (parent: string, child: string): boolean => {
   return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
 };
 
-export const BUNDLE_META_FILENAME = '.lambda-bundle-meta';
-
-export const isEsmFormat = (format: string | undefined): boolean =>
-  ['es', 'esm', 'module'].includes(format ?? '');
-
 export const parseJsonFile = (filePath: string): unknown => {
   try {
     return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
