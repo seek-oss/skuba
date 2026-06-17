@@ -1,5 +1,44 @@
 # pnpm-plugin-skuba
 
+## 3.1.0
+
+### Minor Changes
+
+- Allow @ast-grep/lang-bash build ([#2465](https://github.com/seek-oss/skuba/pull/2465))
+
+- **lint:** Hoist `@skuba-lib/*` and `@changesets/cli` ([#2441](https://github.com/seek-oss/skuba/pull/2441))
+
+  This allows you to use both `@changesets/cli` and [`@skuba-lib/changesets-changelog`](https://github.com/seek-oss/skuba/tree/main/packages/changesets-changelog) in your project without having to install them as direct dependencies.
+
+  `package.json`:
+
+  ```diff
+    {
+      "devDependencies": {
+  -     "@changesets/cli": "2.31.0",
+  -     "@changesets/get-github-info": "0.8.0",
+  -     "@skuba-lib/changesets-changelog": "1.0.1",
+        "skuba": "16.2.0"
+      }
+    }
+  ```
+
+  `@skuba-lib/changesets-changelog` is a direct replacement for `@changesets/get-github-info` and provides a more opinionated changelog generator that is suitable for skuba-managed projects.
+
+  `.changeset/config.json`:
+
+  ```diff
+    {
+      "changelog": [
+  -     "@changesets/get-github-info",
+  +     "@skuba-lib/changesets-changelog",
+        { "repo": "SEEK-Jobs/my-repo" }
+      ]
+    }
+  ```
+
+- **lint:** Remove `@arethetypeswrong/core@0.18.2>fflate` pnpm override ([#2447](https://github.com/seek-oss/skuba/pull/2447))
+
 ## 3.0.1
 
 ### Patch Changes

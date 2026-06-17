@@ -1,6 +1,6 @@
 {
   "name": "skuba",
-  "version": "16.1.0",
+  "version": "16.2.0",
   "private": false,
   "description": "SEEK development toolkit for backend applications and packages",
   "homepage": "https://github.com/seek-oss/skuba#readme",
@@ -162,7 +162,7 @@
     "supertest": "7.2.2",
     "type-fest": "2.19.0"
   },
-  "packageManager": "pnpm@10.34.1",
+  "packageManager": "pnpm@10.34.3",
   "engines": {
     "node": ">=22.18.0"
   },
@@ -171,6 +171,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "16.1.0"
+    "version": "16.2.0"
   }
 }

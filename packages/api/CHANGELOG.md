@@ -1,5 +1,17 @@
 # @skuba-lib/api
 
+## 2.2.0
+
+### Minor Changes
+
+- **api:** Add `Cdk.normaliseTemplate` ([#2418](https://github.com/seek-oss/skuba/pull/2418))
+
+  This function produces stable snapshots of CDK stack templates by stripping volatile, environment-specific values. This is particularly useful when testing to avoid snapshot churn on inconsequential differences in the generated templates.
+
+### Patch Changes
+
+- **deps:** concurrently ^10.0.0 ([#2446](https://github.com/seek-oss/skuba/pull/2446))
+
 ## 2.1.2
 
 ### Patch Changes
