@@ -1,5 +1,150 @@
 # skuba
 
+## 16.2.0
+
+### Minor Changes
+
+- **configure:** Remove `skuba configure` ([#2417](https://github.com/seek-oss/skuba/pull/2417))
+
+  This command fell out of maintenance as much of its initial intent was superseded by [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes) and [patches](https://seek-oss.github.io/skuba/docs/cli/lint.html#patches). For the remaining use cases:
+
+  - Projects with a `skuba.template.js` that skipped templating upfront can resume the process with `skuba init`
+  - Projects scaffolded with a divergent toolchain can align with skuba defaults by providing a coding agent with the context of another skuba-managed project or [template](https://seek-oss.github.io/skuba/docs/templates/)
+
+- **api:** Add `Cdk.normaliseTemplate` ([#2418](https://github.com/seek-oss/skuba/pull/2418))
+
+  This function produces stable snapshots of CDK stack templates by stripping volatile, environment-specific values. This is particularly useful when testing to avoid snapshot churn on inconsequential differences in the generated templates.
+
+- **lint:** Hoist `@skuba-lib/*` and `@changesets/cli` ([#2441](https://github.com/seek-oss/skuba/pull/2441))
+
+  This allows you to use both `@changesets/cli` and [`@skuba-lib/changesets-changelog`](https://github.com/seek-oss/skuba/tree/main/packages/changesets-changelog) in your project without having to install them as direct dependencies.
+
+  `package.json`:
+
+  ```diff
+    {
+      "devDependencies": {
+  -     "@changesets/cli": "2.31.0",
+  -     "@changesets/get-github-info": "0.8.0",
+  -     "@skuba-lib/changesets-changelog": "1.0.1",
+        "skuba": "16.2.0"
+      }
+    }
+  ```
+
+  `@skuba-lib/changesets-changelog` is a direct replacement for `@changesets/get-github-info` and provides a more opinionated changelog generator that is suitable for skuba-managed projects.
+
+  `.changeset/config.json`:
+
+  ```diff
+    {
+      "changelog": [
+  -     "@changesets/get-github-info",
+  +     "@skuba-lib/changesets-changelog",
+        { "repo": "SEEK-Jobs/my-repo" }
+      ]
+    }
+  ```
+
+- **lint:** Add patch to prune development dependencies from API Dockerfiles ([#2443](https://github.com/seek-oss/skuba/pull/2443))
+
+  A new patch automatically upgrades API Dockerfiles so the build stage prunes and reinstalls production-only dependencies before building. The runtime image keeps copying `node_modules` from the build stage, so it no longer carries development dependencies.
+
+  This reduces the amount of build tooling and development dependencies carried through the final image while preserving the existing runtime behaviour.
+
+- **deps:** typescript ~6.0.0 ([#2309](https://github.com/seek-oss/skuba/pull/2309))
+
+  This major release contains breaking changes. See the [TypeScript 6.0.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/) announcement for more information.
+
+  If your tsconfig currently extends `skuba/config/tsconfig.json`, you may not need to update anything. However, if you have a custom configuration, you may need to manually add `node` to the `types` array.
+
+  ```diff
+  {
+    "compilerOptions": {
+  +   "types": ["node"]
+    }
+  }
+  ```
+
+- **lint:** Remove `@arethetypeswrong/core@0.18.2>fflate` pnpm override ([#2447](https://github.com/seek-oss/skuba/pull/2447))
+
+- **lint:** Configure private registry for `SEEK-Jobs` repositories ([#2387](https://github.com/seek-oss/skuba/pull/2387))
+
+  This patch sets `@seek:registry` in `.npmrc` to SEEK's private registry. It only touches projects in the `SEEK-Jobs` GitHub org and aligns with our internal guidelines.
+
+- **lint:** Remove `baseUrl` from `tsconfig.json` files ([#2309](https://github.com/seek-oss/skuba/pull/2309))
+
+  The `baseUrl` option is deprecated in TypeScript 6.0.0. Modern skuba projects should have migrated to `#src` subpath imports in [`skuba@13.0.0`](https://github.com/seek-oss/skuba/releases/tag/skuba%4013.0.0).
+
+  This patch is safe to merge if `skuba lint` succeeds. If it fails, grep your project for aliased imports and convert them to relative or subpath imports. For example, if you have an aliased import in `src/foo.ts`:
+
+  ```diff
+  - import { bar } from 'src/bar.js';
+
+  + // Subpath import option
+  + import { bar } from '#src/bar.js';
+
+  + // Relative import option
+  + import { bar } from './bar.js';
+  ```
+
+### Patch Changes
+
+- **template/\*-rest-api:** Prune development dependencies from Docker builds ([#2443](https://github.com/seek-oss/skuba/pull/2443))
+
+  API template Dockerfiles now prune and reinstall production-only dependencies before building. The runtime image continues to copy `node_modules` from the build stage, reducing the amount of build tooling and development dependencies carried through to the final image.
+
+  ```diff
+    FROM ${BASE_IMAGE} AS build
+    COPY . .
+
+    RUN pnpm install --offline
+    RUN pnpm build
+  + RUN CI=true pnpm prune --prod
+  + RUN CI=true pnpm install --offline --prod
+  ```
+
+- **deps:** @arethetypeswrong/core 0.18.3 ([#2447](https://github.com/seek-oss/skuba/pull/2447))
+
+- **template/lambda-sqs-worker-cdk:** Abstract CDK stack normalisation ([#2418](https://github.com/seek-oss/skuba/pull/2418))
+
+- **migrate, lint:** Add `--import dd-trace/initialize.mjs` to Lambda `NODE_OPTIONS` when handler redirection is disabled ([#2444](https://github.com/seek-oss/skuba/pull/2444))
+
+  When Datadog handler redirection is turned off (`redirectHandler: false` for CDK, `redirectHandlers: false` for Serverless), Datadog no longer auto-wraps the handler so `dd-trace` must be preloaded explicitly via the [--import](https://nodejs.org/api/cli.html#importmodule) flag. The ESM migration now appends `--import dd-trace/initialize.mjs` to the Lambda function's [`NODE_OPTIONS`](https://nodejs.org/api/cli.html#node_optionsoptions) in this case, and a new upgrade patch retrofits projects that already migrated.
+
+- **template/greeter:** Use `repoName` for templating ([#2442](https://github.com/seek-oss/skuba/pull/2442))
+
+  This fixes the following warning upon `skuba init`:
+
+  ```typescript
+  Failed to render my-repo/vitest.config.ts
+  ReferenceError: ejs:8
+      6|     ssr: {
+      7|       resolve: {
+   >> 8|         conditions: ['@seek/<%- serviceName %>/source'],
+      9|       },
+      10|     },
+      11|     test: {
+
+  serviceName is not defined
+  ```
+
+- **deps:** concurrently ^10.0.0 ([#2446](https://github.com/seek-oss/skuba/pull/2446))
+
+- **deps:** ejs ^6.0.0 ([#2450](https://github.com/seek-oss/skuba/pull/2450))
+
+- **deps:** rolldown ^1.1.0 ([#2459](https://github.com/seek-oss/skuba/pull/2459))
+
+- **deps:** @ast-grep/napi ~0.43.0 ([#2439](https://github.com/seek-oss/skuba/pull/2439))
+
+- **init:** Strip underscore prefixes when scaffolding `seek:` private templates ([#2473](https://github.com/seek-oss/skuba/pull/2473))
+
+  `skuba init` now removes leading underscores from files like `_package.json` and `_.gitignore` when cloning a private template from `SEEK-Jobs/skuba-templates`, matching the behaviour of the built-in and `local:` template paths.
+
+  Previously these files were copied verbatim, so a scaffolded project would be left with an `_package.json` and no `package.json`, breaking tooling with errors such as `Could not find a package.json in your working directory`.
+
+- **template/\*-rest-api:** Increase base Fargate task size ([#2453](https://github.com/seek-oss/skuba/pull/2453))
+
 ## 16.1.0
 
 ### Minor Changes

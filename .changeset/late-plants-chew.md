@@ -1,5 +1,0 @@
----
-'eslint-config-skuba': minor
----
-
-deps: typescript-eslint ^8.59.2
