@@ -13,14 +13,14 @@ This is particularly useful when testing to avoid snapshot churn on inconsequent
 
 ```typescript
 import { Template } from 'aws-cdk-lib/assertions';
-import { Cdk } from 'skuba';
+import { normaliseTemplate } from 'skuba/cdk';
 
 test('stack', () => {
   // ...
 
   const template = Template.fromStack(stack);
 
-  const json = Cdk.normaliseTemplate(template.toJSON());
+  const json = normaliseTemplate(template.toJSON());
 
   expect(json).toMatchSnapshot();
 });
@@ -36,7 +36,7 @@ The built-in CDK construct hardcodes esbuild; this construct gives you full cont
 ### Prerequisites
 
 `NodejsFunction` declares `aws-cdk-lib` and `constructs` as **optional** peer dependencies so the rest of `skuba` stays usable without them.
-They are only loaded when you access `Cdk.NodejsFunction`; importing `skuba` (and the `Cdk` namespace) does not reference them, so importing other utilities does not require them.
+They are only loaded when you import `skuba/cdk`; the main `skuba` entry point does not reference them, so importing other utilities does not require them.
 Install them where you use the construct:
 
 ```shell
@@ -69,13 +69,13 @@ export default {
 import { Stack, type StackProps } from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import type { Construct } from 'constructs';
-import { Cdk } from 'skuba';
+import NodejsFunction from 'skuba/cdk';
 
 export class AppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    new Cdk.NodejsFunction(this, 'worker', {
+    new NodejsFunction(this, 'worker', {
       entry: 'src/worker.ts', // handler entry file
       runtime: lambda.Runtime.NODEJS_24_X,
       bundling: {
@@ -153,7 +153,7 @@ export default {
 ```
 
 ```ts
-new Cdk.NodejsFunction(this, 'image-processor', {
+new NodejsFunction(this, 'image-processor', {
   entry: 'src/image-processor.ts',
   bundling: {
     bundlerConfig: 'rolldown.lambda.config.mjs',

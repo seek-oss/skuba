@@ -14,6 +14,19 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./cdk": {
+      "types": "./lib/cdk/index.d.ts",
+      "default": "./lib/cdk/index.js"
+    },
+    "./config/*": "./config/*",
+    "./package.json": "./package.json",
+    "./*": "./*"
+  },
   "main": "lib/index.js",
   "types": "./lib/index.d.ts",
   "bin": {
@@ -150,6 +163,8 @@
     "@types/picomatch": "4.0.3",
     "@types/semver": "7.7.1",
     "@types/supertest": "7.2.0",
+    "aws-cdk-lib": "^2.253.0",
+    "constructs": "^10.0.17",
     "enhanced-resolve": "5.21.3",
     "express": "5.2.1",
     "fastify": "5.8.5",
@@ -161,6 +176,18 @@
     "semver": "7.8.0",
     "supertest": "7.2.2",
     "type-fest": "2.19.0"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": ">=2.130.0",
+    "constructs": "^10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "aws-cdk-lib": {
+      "optional": true
+    },
+    "constructs": {
+      "optional": true
+    }
   },
   "packageManager": "pnpm@10.34.1",
   "engines": {

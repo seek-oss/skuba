@@ -229,6 +229,12 @@ importers:
       '@types/supertest':
         specifier: 7.2.0
         version: 7.2.0
+      aws-cdk-lib:
+        specifier: ^2.253.0
+        version: 2.257.0(constructs@10.6.0)
+      constructs:
+        specifier: ^10.0.17
+        version: 10.6.0
       enhanced-resolve:
         specifier: 5.21.3
         version: 5.21.3
