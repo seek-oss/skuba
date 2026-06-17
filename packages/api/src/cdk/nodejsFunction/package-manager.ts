@@ -80,11 +80,14 @@ const parsePnpmPatchKey = (key: string): string => {
 const injectIgnoreScripts = (outputDir: string): void => {
   const target = path.join(outputDir, '.npmrc');
   const existing = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '';
-  if (/^ignore-scripts\s*=/m.test(existing)) {
-    return;
-  }
-  const sep = existing.length > 0 && !existing.endsWith('\n') ? '\n' : '';
-  fs.writeFileSync(target, `${existing}${sep}ignore-scripts=true\n`);
+  // Strip any existing ignore-scripts setting so a project `ignore-scripts=false`
+  // cannot defeat the construct's ignoreScripts option.
+  const filtered = existing
+    .split('\n')
+    .filter((line) => !/^ignore-scripts\s*=/.test(line))
+    .join('\n');
+  const sep = filtered.length > 0 && !filtered.endsWith('\n') ? '\n' : '';
+  fs.writeFileSync(target, `${filtered}${sep}ignore-scripts=true\n`);
 };
 
 const copyPatchFile = (

@@ -169,6 +169,14 @@ describe('copyWorkspaceFiles', () => {
     expect(npmrc.match(/ignore-scripts=true/g)).toHaveLength(1);
   });
 
+  it('overrides a project ignore-scripts=false', () => {
+    fs.writeFileSync(path.join(srcDir, '.npmrc'), 'ignore-scripts=false\n');
+    copyWorkspaceFiles(srcDir, destDir, [], true);
+    const npmrc = fs.readFileSync(path.join(destDir, '.npmrc'), 'utf8');
+    expect(npmrc).toContain('ignore-scripts=true');
+    expect(npmrc).not.toContain('ignore-scripts=false');
+  });
+
   it('does not inject ignore-scripts by default', () => {
     copyWorkspaceFiles(srcDir, destDir);
     expect(fs.existsSync(path.join(destDir, '.npmrc'))).toBe(false);
