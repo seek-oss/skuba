@@ -1,6 +1,6 @@
 import { App, aws_secretsmanager, aws_sns } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { Cdk } from 'skuba';
+import { normaliseTemplate } from 'skuba/cdk';
 import { afterAll, afterEach, expect, it, vi } from 'vitest';
 
 const originalDeployment = process.env.DEPLOYMENT;
@@ -40,7 +40,7 @@ it.each(['dev', 'prod'])(
 
     const template = Template.fromStack(stack);
 
-    const json = Cdk.normaliseTemplate(template.toJSON());
+    const json = normaliseTemplate(template.toJSON());
 
     expect(json).toMatchSnapshot();
   },
