@@ -1,6 +1,5 @@
 ---
 '@skuba-lib/api': minor
-'skuba': minor
 ---
 
 Cdk: Add `NodejsFunction` construct for rolldown-bundled Lambda functions

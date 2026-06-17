@@ -1,5 +1,5 @@
 ---
-'@skuba-lib/api': minor
+'@skuba-lib/api': major
 ---
 
 Publish `@skuba-lib/api` as ESM only
