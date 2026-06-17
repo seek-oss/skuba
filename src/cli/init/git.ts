@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
 
+import { copyFiles } from '../../utils/copy.js';
 import { log } from '../../utils/logging.js';
 
 import * as Git from '@skuba-lib/api/git';
@@ -95,7 +96,14 @@ export const downloadPrivateTemplate = async (
     }
 
     await fs.ensureDir(destinationDir);
-    await fs.copy(templatePath, destinationDir);
+
+    await copyFiles({
+      include: () => true,
+      sourceRoot: templatePath,
+      destinationRoot: destinationDir,
+      processors: [],
+      stripUnderscorePrefix: true,
+    });
 
     await fs.promises.rm(tempDir, { force: true, recursive: true });
   } catch (error) {
