@@ -23,7 +23,7 @@ new Cdk.NodejsFunction(this, 'worker', {
 
 Features:
 
-- `bundlerConfig` points to a config file that exports a default rolldown configuration object; the construct merges in the CDK-controlled entry point and output directory at synthesis time, and emits a single `index.js` (CommonJS) or `index.mjs` (ESM, with a `type: module` `package.json`) handler.
+- `bundlerConfig` points to a config file that exports a default rolldown configuration object; the construct merges in the CDK-controlled entry point and output directory at synthesis time, and emits a single ESM `index.mjs` handler (with a `type: module` `package.json`). Output is ESM only; a CommonJS `output.format` is rejected at synth.
 - `nodeModules` installs specified packages into the Lambda asset directory rather than embedding them in the bundle, with version resolution from your `pnpm-lock.yaml`.
 - `commandHooks` (`beforeBundling`, `afterBundling`, `beforeInstall`) run shell commands at each stage of the pipeline.
 - `timeout` bounds how long any spawned subprocess may run, and `ignoreScripts` disables package lifecycle scripts during the `nodeModules` install.
