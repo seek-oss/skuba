@@ -1,5 +1,11 @@
 # eslint-plugin-skuba
 
+## 3.0.0
+
+### Major Changes
+
+- **deps:** Bump typescript-eslint peer dep requirement to 8.59.2 ([#2309](https://github.com/seek-oss/skuba/pull/2309))
+
 ## 2.1.0
 
 ### Minor Changes
