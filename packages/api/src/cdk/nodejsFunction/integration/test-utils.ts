@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 import * as aws_lambda from 'aws-cdk-lib/aws-lambda';
 
-import { BRIDGE_OUTPUT_SEGMENTS } from '../bridge-path.js';
+import { BRIDGE_RELATIVE_PATH } from '../bridge-path.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -14,7 +14,7 @@ export const REPO_ROOT = path.resolve(API_ROOT, '../..');
 
 export const FIXTURES = path.join(HERE, 'fixtures');
 
-export const BRIDGE_PATH = path.join(API_ROOT, ...BRIDGE_OUTPUT_SEGMENTS);
+export const BRIDGE_PATH = path.join(API_ROOT, BRIDGE_RELATIVE_PATH);
 
 export const BRIDGE_BUILT = existsSync(BRIDGE_PATH);
 

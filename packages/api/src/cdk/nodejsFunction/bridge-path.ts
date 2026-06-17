@@ -15,12 +15,12 @@ const findPackageRoot = (moduleUrl: string): string => {
   return path.dirname(pkg);
 };
 
-export const BRIDGE_OUTPUT_SEGMENTS = [
+export const BRIDGE_RELATIVE_PATH = path.join(
   'lib',
   'cdk',
   'bridges',
   'rolldown.mjs',
-] as const;
+);
 
 export const resolveRolldownBridge = (): string =>
-  path.join(findPackageRoot(import.meta.url), ...BRIDGE_OUTPUT_SEGMENTS);
+  path.join(findPackageRoot(import.meta.url), BRIDGE_RELATIVE_PATH);
