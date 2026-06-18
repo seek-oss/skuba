@@ -54,6 +54,12 @@ if (baseRaw.entryFileNames !== undefined) {
   );
 }
 
+if (baseRaw.chunkFileNames !== undefined) {
+  throw new Error(
+    '`output.chunkFileNames` is not supported: NodejsFunction names the handler index.mjs and lets rolldown name split chunks to avoid collisions.',
+  );
+}
+
 if (baseRaw.file !== undefined) {
   throw new Error(
     '`output.file` is not supported: NodejsFunction writes index.mjs into the output directory itself.',

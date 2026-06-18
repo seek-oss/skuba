@@ -61,6 +61,11 @@ describe.skipIf(!BRIDGE_BUILT)('rolldown bundling', () => {
       match: /entryFileNames/,
     },
     {
+      name: 'output.chunkFileNames is set',
+      config: 'chunk-file-names.config.mjs',
+      match: /chunkFileNames/,
+    },
+    {
       name: 'output.file is set',
       config: 'output-file.config.mjs',
       match: /`output\.file` is not supported/,
