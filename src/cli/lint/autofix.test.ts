@@ -12,12 +12,10 @@ import {
 } from './autofix.js';
 import { internalLint } from './internal.js';
 
-import * as Buildkite from '@skuba-lib/api/buildkite';
 import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
 
 vi.mock('simple-git');
-vi.mock('@skuba-lib/api/buildkite');
 vi.mock('@skuba-lib/api/git');
 vi.mock('@skuba-lib/api/github');
 vi.mock('../adapter/eslint');
@@ -125,21 +123,6 @@ describe('autofix', () => {
       vi.mocked(Git.currentBranch).mockResolvedValue('devel');
 
       await expect(autofix(params)).resolves.toBeUndefined();
-
-      expectNoAutofix();
-    });
-
-    it('bails on a renovate branch when there is no open pull request', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
-      vi.mocked(GitHub.getPullRequestNumber).mockRejectedValue(
-        new Error(
-          `Commit cdd1520 is not associated with an open GitHub pull request`,
-        ),
-      );
-
-      await expect(autofix(params)).resolves.toBeUndefined();
-
-      expect(Buildkite.annotate).toHaveBeenCalled();
 
       expectNoAutofix();
     });

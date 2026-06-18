@@ -13,11 +13,9 @@ import { createDestinationFileReader } from '../configure/analysis/project.js';
 import { internalLint } from './internal.js';
 import type { Input } from './types.js';
 
-import * as Buildkite from '@skuba-lib/api/buildkite';
 import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
 
-const RENOVATE_DEFAULT_PREFIX = 'renovate';
 
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
@@ -65,21 +63,6 @@ const shouldPush = async ({
     // The current branch is a protected branch.
     // We respect GitHub Flow; avoid pushing directly to the default branch.
     return false;
-  }
-
-  if (currentBranch?.startsWith(RENOVATE_DEFAULT_PREFIX)) {
-    try {
-      await GitHub.getPullRequestNumber();
-    } catch {
-      const warning =
-        'An autofix is available, but it was not pushed because an open pull request for this Renovate branch could not be found. If a pull request has since been created, retry the lint step to push the fix.';
-      log.warn(warning);
-      try {
-        await Buildkite.annotate(Buildkite.md.terminal(warning));
-      } catch {}
-
-      return false;
-    }
   }
 
   let headCommitMessage;
