@@ -16,8 +16,9 @@ and npm [packages] for sharing code across components.
 
 You can also define and [bring your own] externally-hosted template.
 
-[apis]: ./api.md
+> **SEEK employees:** select the `seek →` option when running `skuba init` to browse and use templates from the internal [SEEK-Jobs/skuba-templates] repository.
+
 [barebones]: ./barebones.md
 [bring your own]: ./byo.md
 [packages]: ./package.md
-[workers]: ./worker.md
+[seek-jobs/skuba-templates]: https://github.com/SEEK-Jobs/skuba-templates
