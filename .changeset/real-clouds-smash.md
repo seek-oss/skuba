@@ -1,5 +1,5 @@
 ---
-'skuba': major
+'skuba': minor
 ---
 
 template: Remove SEEK-specific built-in templates

@@ -64,6 +64,7 @@ export const listPrivateTemplates = async (): Promise<string[]> => {
   try {
     await simpleGit().clone(repoUrl, tempDir, [
       '--depth=1',
+      '--filter=tree:0',
       '--no-checkout',
       '--quiet',
     ]);
