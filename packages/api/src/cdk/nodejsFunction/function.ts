@@ -91,7 +91,11 @@ const validateEntry = (entry: string): string => {
     );
   }
 
-  return path.resolve(entry);
+  const resolved = path.resolve(entry);
+  if (!fs.existsSync(resolved)) {
+    throw new ValidationError(`Cannot find the entry file at '${entry}'.`);
+  }
+  return resolved;
 };
 
 const findLockFile = (depsLockFilePath?: string): string => {

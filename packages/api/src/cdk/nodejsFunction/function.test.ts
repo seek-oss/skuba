@@ -257,6 +257,20 @@ describe('NodejsFunction', () => {
     },
   );
 
+  it('throws when the entry file does not exist', () => {
+    const scope = makeScope();
+    expect(
+      () =>
+        new NodejsFunction(scope, 'my-handler', {
+          entry: path.join(tmpDir, 'missing.ts'),
+          depsLockFilePath: lockFile,
+          bundling: {
+            bundlerConfig: path.join(tmpDir, 'build.mjs'),
+          },
+        }),
+    ).toThrow(ValidationError);
+  });
+
   it('auto-detects entry from .js sibling when no .ts exists', () => {
     const jsEntry = path.join(tmpDir, 'handler.js');
     fs.writeFileSync(jsEntry, 'module.exports.handler = () => {};');

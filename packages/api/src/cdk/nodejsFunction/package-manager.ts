@@ -95,7 +95,9 @@ const injectIgnoreScripts = (
     .join('\n');
   const sep = filtered.length > 0 && !filtered.endsWith('\n') ? '\n' : '';
   fs.writeFileSync(target, `${filtered}${sep}ignore-scripts=true\n`);
-  stagedFiles.push(target);
+  if (!stagedFiles.includes(target)) {
+    stagedFiles.push(target);
+  }
 };
 
 const copyPatchFile = (

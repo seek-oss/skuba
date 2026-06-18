@@ -73,13 +73,11 @@ const writeOutputPackageJson = (
     packageManager?: string;
   },
 ): void => {
-  const pkg: Record<string, unknown> = { type: 'module' };
-  if (fields.dependencies) {
-    pkg.dependencies = fields.dependencies;
-  }
-  if (fields.packageManager) {
-    pkg.packageManager = fields.packageManager;
-  }
+  const pkg = {
+    type: 'module',
+    dependencies: fields.dependencies,
+    packageManager: fields.packageManager,
+  };
   fs.writeFileSync(
     path.join(outputDir, 'package.json'),
     JSON.stringify(pkg, null, 2),
