@@ -78,7 +78,7 @@ export const listPrivateTemplates = async (): Promise<string[]> => {
 
     return output.trim().split('\n').filter(Boolean).sort();
   } finally {
-    await fs.promises.rm(tempDir, { force: true, recursive: true });
+    await fs.promises.rm(tempDir, { recursive: true });
   }
 };
 
