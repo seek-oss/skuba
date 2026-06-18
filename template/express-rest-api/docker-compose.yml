@@ -1,8 +1,0 @@
-services:
-  app:
-    image: ${BUILDKITE_PLUGIN_DOCKER_IMAGE:-''}
-    init: true
-    volumes:
-      - ./:/workdir
-      # Mount cached dependencies.
-      - /workdir/node_modules

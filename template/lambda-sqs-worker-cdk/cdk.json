@@ -1,8 +1,0 @@
-{
-  "app": "pnpm exec skuba node infra/index.ts",
-  "progress": "events",
-  "watch": {
-    "include": "src/**/*.ts",
-    "exclude": "src/**/*.test.ts"
-  }
-}

@@ -16,7 +16,11 @@ import {
   templateConfigSchema,
 } from '../../utils/template.js';
 
-import { downloadGitHubTemplate, downloadPrivateTemplate } from './git.js';
+import {
+  downloadGitHubTemplate,
+  downloadPrivateTemplate,
+  listPrivateTemplates,
+} from './git.js';
 import {
   BASE_PROMPT_PROPS,
   type BaseFields,
@@ -144,7 +148,10 @@ const selectTemplateName = async () => {
   }
 
   if (templateSelection === 'seek →') {
-    const privateName = await getPrivateTemplateName();
+    log.newline();
+    log.plain('Fetching available templates from SEEK-Jobs/skuba-templates...');
+    const templates = await listPrivateTemplates();
+    const privateName = await getPrivateTemplateName(templates);
     return `seek:${privateName}`;
   }
 

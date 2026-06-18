@@ -6,14 +6,7 @@ import * as z from 'zod/v4';
 import { projectTypeSchema } from './manifest.js';
 import { packageManagerSchema } from './packageManager.js';
 
-export const TEMPLATE_NAMES = [
-  'express-rest-api',
-  'greeter',
-  'koa-rest-api',
-  'lambda-sqs-worker-cdk',
-  'oss-npm-package',
-  'private-npm-package',
-] as const;
+export const TEMPLATE_NAMES = ['greeter', 'oss-npm-package'] as const;
 
 export type TemplateName = (typeof TEMPLATE_NAMES)[number];
 
@@ -44,28 +37,12 @@ export const TEMPLATE_DOCUMENTATION_CONFIG: Record<
   TemplateName,
   TemplateDocumentationConfig
 > = {
-  'express-rest-api': {
-    added: '3.8.0',
-    filename: 'api.md',
-  },
   greeter: {
     added: '3.4.1',
     filename: 'barebones.md',
   },
-  'koa-rest-api': {
-    added: '3.4.1',
-    filename: 'api.md',
-  },
-  'lambda-sqs-worker-cdk': {
-    added: '3.13.0',
-    filename: 'worker.md',
-  },
   'oss-npm-package': {
     added: '3.7.0',
-    filename: 'package.md',
-  },
-  'private-npm-package': {
-    added: '3.6.0',
     filename: 'package.md',
   },
 };
