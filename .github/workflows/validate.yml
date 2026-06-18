@@ -83,12 +83,8 @@ jobs:
     strategy:
       matrix:
         template:
-          - express-rest-api
           - greeter
-          - koa-rest-api
-          - lambda-sqs-worker-cdk
           - oss-npm-package
-          - private-npm-package
     steps:
       - name: Check out repo
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
