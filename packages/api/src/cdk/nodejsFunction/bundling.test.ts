@@ -186,6 +186,28 @@ describe('Bundling.local.tryBundle', () => {
     }
   });
 
+  it('wraps a stderr buffer overflow in a ValidationError', () => {
+    const bufferErr = Object.assign(new Error('spawnSync node ENOBUFS'), {
+      code: 'ENOBUFS',
+    });
+    spawnSyncMock.mockReturnValueOnce(makeSpawnError(bufferErr));
+
+    const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'out-'));
+    try {
+      const bundling = new Bundling(makeProps());
+      let caught: unknown;
+      try {
+        bundling.local.tryBundle(outputDir, bundling);
+      } catch (e) {
+        caught = e;
+      }
+      expect(caught).toBeInstanceOf(ValidationError);
+      expect(String(caught)).toMatch(/produced more than 16MB of output/);
+    } finally {
+      fs.rmSync(outputDir, { recursive: true, force: true });
+    }
+  });
+
   it('wraps a command hook timeout in a ValidationError without a stderr tail', () => {
     const timeoutErr = Object.assign(new Error('spawnSync ETIMEDOUT'), {
       code: 'ETIMEDOUT',

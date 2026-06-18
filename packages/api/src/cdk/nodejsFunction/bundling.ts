@@ -12,7 +12,6 @@ import { ValidationError } from './errors.js';
 import {
   PNPM_INSTALL_COMMAND,
   PNPM_LOCK,
-  PNPM_WORKSPACE_FILES,
   copyWorkspaceFiles,
   readPackageManagerMeta,
 } from './package-manager.js';
@@ -40,9 +39,15 @@ const checkSpawnResult = (
   prefix: string,
 ): void => {
   if (result.error) {
-    if ((result.error as NodeJS.ErrnoException).code === 'ETIMEDOUT') {
+    const code = (result.error as NodeJS.ErrnoException).code;
+    if (code === 'ETIMEDOUT') {
       throw new ValidationError(
         `${prefix} timed out.${stderrTail(result.stderr)}`,
+      );
+    }
+    if (code === 'ENOBUFS') {
+      throw new ValidationError(
+        `${prefix} produced more than ${SPAWN_MAX_BUFFER / (1024 * 1024)}MB of output.${stderrTail(result.stderr)}`,
       );
     }
     throw result.error;
@@ -204,10 +209,9 @@ export class Bundling implements cdk.BundlingOptions {
       );
 
       if (fs.existsSync(this.props.depsLockFilePath)) {
-        fs.copyFileSync(
-          this.props.depsLockFilePath,
-          path.join(outputDir, PNPM_LOCK),
-        );
+        const lockDest = path.join(outputDir, PNPM_LOCK);
+        fs.copyFileSync(this.props.depsLockFilePath, lockDest);
+        stagedFiles.push(lockDest);
       }
 
       const [installBin, ...installArgs] = PNPM_INSTALL_COMMAND;
@@ -218,10 +222,6 @@ export class Bundling implements cdk.BundlingOptions {
         "Package manager 'pnpm' install",
       );
     } finally {
-      fs.rmSync(path.join(outputDir, PNPM_LOCK), { force: true });
-      for (const file of PNPM_WORKSPACE_FILES) {
-        fs.rmSync(path.join(outputDir, file), { force: true });
-      }
       for (const file of stagedFiles) {
         fs.rmSync(file, { force: true });
         removeEmptyParentDirs(path.dirname(file), outputDir);

@@ -61,6 +61,16 @@ describe.skipIf(!BRIDGE_BUILT)('rolldown bundling', () => {
       match: /entryFileNames/,
     },
     {
+      name: 'output.file is set',
+      config: 'output-file.config.mjs',
+      match: /`output\.file` is not supported/,
+    },
+    {
+      name: 'the single output entry is not an object',
+      config: 'output-non-object.config.mjs',
+      match: /`output` must be a configuration object/,
+    },
+    {
       name: 'input is set',
       config: 'input.config.mjs',
       match: /`input` is not supported/,

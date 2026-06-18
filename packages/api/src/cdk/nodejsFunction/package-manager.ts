@@ -61,23 +61,30 @@ export const readPackageManagerMeta = (
     }
   }
 
-  if (typeof parsed.packageManager === 'string') {
-    const m = /^([^@\s]+)@/.exec(parsed.packageManager);
-    if (m) {
-      assertPnpm(m[1] as string, 'the `packageManager` field', pkgPath);
-      return { nearestPackageJson, packageManagerField: parsed.packageManager };
-    }
+  if (
+    typeof parsed.packageManager === 'string' &&
+    parsed.packageManager.includes('@')
+  ) {
+    assertPnpm(
+      parsePackageName(parsed.packageManager),
+      'the `packageManager` field',
+      pkgPath,
+    );
+    return { nearestPackageJson, packageManagerField: parsed.packageManager };
   }
 
   return { nearestPackageJson, packageManagerField: undefined };
 };
 
-const parsePnpmPatchKey = (key: string): string => {
-  const at = key.indexOf('@', key.startsWith('@') ? 1 : 0);
-  return at === -1 ? key : key.slice(0, at);
+const parsePackageName = (spec: string): string => {
+  const at = spec.indexOf('@', spec.startsWith('@') ? 1 : 0);
+  return at === -1 ? spec : spec.slice(0, at);
 };
 
-const injectIgnoreScripts = (outputDir: string): void => {
+const injectIgnoreScripts = (
+  outputDir: string,
+  stagedFiles: string[],
+): void => {
   const target = path.join(outputDir, '.npmrc');
   const existing = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '';
   // Strip any existing ignore-scripts setting so a project `ignore-scripts=false`
@@ -88,6 +95,7 @@ const injectIgnoreScripts = (outputDir: string): void => {
     .join('\n');
   const sep = filtered.length > 0 && !filtered.endsWith('\n') ? '\n' : '';
   fs.writeFileSync(target, `${filtered}${sep}ignore-scripts=true\n`);
+  stagedFiles.push(target);
 };
 
 const copyPatchFile = (
@@ -141,20 +149,23 @@ const filterPnpmWorkspaceYaml = (
 
   const patched = doc.patchedDependencies;
 
-  if (isRecord(patched)) {
-    for (const [key, value] of Object.entries(patched)) {
-      const pkgName = parsePnpmPatchKey(key);
-      if (!nodeModules.includes(pkgName)) {
-        delete patched[key];
-      } else if (typeof value === 'string' && value) {
-        copyPatchFile(value, projectRoot, outputDir, copiedFiles);
-      }
+  if (!isRecord(patched)) {
+    delete doc.patchedDependencies;
+    return stringify(doc);
+  }
+
+  const nodeModuleSet = new Set(nodeModules);
+
+  for (const [key, value] of Object.entries(patched)) {
+    const pkgName = parsePackageName(key);
+    if (!nodeModuleSet.has(pkgName)) {
+      delete patched[key];
+    } else if (typeof value === 'string' && value) {
+      copyPatchFile(value, projectRoot, outputDir, copiedFiles);
     }
   }
 
-  // Drop the key once no entries survive so an empty `patchedDependencies: {}`
-  // (or a null section) is never emitted.
-  if (!isRecord(patched) || Object.keys(patched).length === 0) {
+  if (Object.keys(patched).length === 0) {
     delete doc.patchedDependencies;
   }
 
@@ -167,7 +178,7 @@ export const copyWorkspaceFiles = (
   nodeModules: string[] = [],
   ignoreScripts = false,
   stagedFiles: string[] = [],
-): string[] => {
+): void => {
   for (const file of PNPM_WORKSPACE_FILES) {
     const src = path.join(projectRoot, file);
     if (!fs.existsSync(src)) {
@@ -187,11 +198,10 @@ export const copyWorkspaceFiles = (
     } else {
       fs.copyFileSync(src, dest);
     }
+    stagedFiles.push(dest);
   }
 
   if (ignoreScripts) {
-    injectIgnoreScripts(outputDir);
+    injectIgnoreScripts(outputDir, stagedFiles);
   }
-
-  return stagedFiles;
 };
