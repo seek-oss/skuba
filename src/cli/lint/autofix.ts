@@ -16,7 +16,6 @@ import type { Input } from './types.js';
 import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
 
-
 const AUTOFIX_COMMIT_MESSAGE = 'Run `skuba format`';
 
 export const AUTOFIX_IGNORE_FILES_BASE: Git.ChangedFile[] = [
