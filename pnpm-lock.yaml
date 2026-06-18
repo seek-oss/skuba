@@ -474,8 +474,8 @@ importers:
         specifier: ^6.0.0
         version: 6.1.0(koa@3.2.0)
       '@koa/router':
-        specifier: 15.5.0
-        version: 15.5.0(koa@3.2.0)
+        specifier: 15.6.0
+        version: 15.6.0(koa@3.2.0)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.1
@@ -1630,8 +1630,8 @@ packages:
     peerDependencies:
       koa: '>=2'
 
-  '@koa/router@15.5.0':
-    resolution: {integrity: sha512-KSC0oG/5t6ITu5wqX4lJseA/dngoj14hEaohrLZEXtlUT2RRyJvwaJ0KV+5uQoaWrY3A8ClHOrBEU4g8dujn8Q==}
+  '@koa/router@15.6.0':
+    resolution: {integrity: sha512-iEOXlvGIBqSNkGXrg0XtMARAOm5zA24oedXxiTGEkrD4JgwVjfRDddCQvW1s4WEcwDYvyecRbf8BikXsuEEj8w==}
     engines: {node: '>= 20'}
     peerDependencies:
       koa: ^2.0.0 || ^3.0.0
@@ -8521,7 +8521,7 @@ snapshots:
       lodash.merge: 4.6.2
       type-is: 2.1.0
 
-  '@koa/router@15.5.0(koa@3.2.0)':
+  '@koa/router@15.6.0(koa@3.2.0)':
     dependencies:
       debug: 4.4.3
       http-errors: 2.0.1
