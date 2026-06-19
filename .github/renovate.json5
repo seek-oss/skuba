@@ -74,6 +74,13 @@
       schedule: 'before 3:00 am every weekday',
     },
     {
+      matchUpdateTypes: ['minor', 'patch'],
+      matchManagers: ['github-actions'],
+      automerge: true,
+      prPriority: 99,
+      schedule: 'before 3:00 am every weekday',
+    },
+    {
       matchDepTypes: ['devDependencies'],
       matchManagers: ['npm'],
       semanticCommitType: 'devDeps',

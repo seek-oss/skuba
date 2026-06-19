@@ -129,9 +129,8 @@ export const getLocalTemplatePath = async () =>
     },
   });
 
-export const getPrivateTemplateName = async () =>
-  input({
-    message: 'Private SEEK template name',
-    validate: (value: string) =>
-      value.length > 0 || 'Must be a valid template name',
+export const getPrivateTemplateName = async (templates: string[]) =>
+  select({
+    message: 'Select a SEEK private template:',
+    choices: templates.map((name) => ({ name, value: name })),
   });
