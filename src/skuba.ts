@@ -78,7 +78,7 @@ const skuba = async () => {
 
   log.err(log.bold(commandName), 'is not recognised as a command.');
   await showLogoAndVersionInfo();
-  showHelp();
+  await showHelp();
 
   process.exitCode = 1;
   return;

@@ -3,7 +3,11 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { hasDebugFlag } from '../../utils/args.js';
+import {
+  hasDebugFlag,
+  hasHelpFlag,
+  hasNonInteractiveFlag,
+} from '../../utils/args.js';
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
 import { createInclusionFilter } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
@@ -23,6 +27,7 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 
 import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
+import { logInitHelp } from './help.js';
 import { installPnpmPlugin } from './installPnpmPlugin.js';
 import { resumeTemplating } from './resumeTemplating.js';
 import type { Input } from './types.js';
@@ -31,9 +36,18 @@ import { writePackageJson } from './writePackageJson.js';
 import * as Git from '@skuba-lib/api/git';
 
 export const init = async (args = process.argv.slice(2)) => {
+  if (hasHelpFlag(args)) {
+    logInitHelp();
+    return;
+  }
+
   const opts: Input = {
     debug: hasDebugFlag(args),
   };
+
+  // Force reading from stdin when `--non-interactive` is passed, otherwise fall
+  // back to whether stdin is a TTY.
+  const nonInteractive = hasNonInteractiveFlag(args) || !process.stdin.isTTY;
 
   const skubaVersionInfo = await showLogoAndVersionInfo();
 
@@ -44,7 +58,7 @@ export const init = async (args = process.argv.slice(2)) => {
       path.join(path.dirname(consumerManifest.path), TEMPLATE_CONFIG_FILENAME),
     ))
   ) {
-    await resumeTemplating({ manifest: consumerManifest });
+    await resumeTemplating({ manifest: consumerManifest, nonInteractive });
     return;
   }
 
@@ -56,7 +70,7 @@ export const init = async (args = process.argv.slice(2)) => {
     templateData,
     templateName,
     type,
-  } = await getConfig();
+  } = await getConfig({ nonInteractive });
 
   await ensureCommands(packageManager);
 
