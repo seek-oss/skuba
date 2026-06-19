@@ -53,12 +53,8 @@ You're now presented with a selection of templates:
 
 ```shell
 ? Select a template:
-  express-rest-api
 ❯ greeter
-  koa-rest-api
-  lambda-sqs-worker-cdk
   oss-npm-package
-  private-npm-package
   github →
   seek →
   local →

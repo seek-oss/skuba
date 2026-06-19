@@ -1,3 +1,4 @@
+import os from 'os';
 import path from 'path';
 
 import fs from 'fs-extra';
@@ -54,6 +55,31 @@ export const downloadGitHubTemplate = async (
     force: true,
     recursive: true,
   });
+};
+
+export const listPrivateTemplates = async (): Promise<string[]> => {
+  const repoUrl = 'git@github.com:SEEK-Jobs/skuba-templates.git';
+  const tempDir = path.join(os.tmpdir(), `skuba-templates-list-${Date.now()}`);
+
+  try {
+    await simpleGit().clone(repoUrl, tempDir, [
+      '--depth=1',
+      '--filter=tree:0',
+      '--no-checkout',
+      '--quiet',
+    ]);
+
+    const output = await simpleGit(tempDir).raw([
+      'ls-tree',
+      '--name-only',
+      '-d',
+      'HEAD:templates',
+    ]);
+
+    return output.trim().split('\n').filter(Boolean).sort();
+  } finally {
+    await fs.promises.rm(tempDir, { recursive: true });
+  }
 };
 
 export const downloadPrivateTemplate = async (
