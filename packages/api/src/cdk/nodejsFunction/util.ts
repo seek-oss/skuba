@@ -43,11 +43,11 @@ export const findUp = (
 };
 
 export const extractDependencies = (
-  pkgPath: string,
+  resolveFrom: string,
   modules: string[],
 ): Record<string, string> => {
   const result: Record<string, string> = {};
-  const base = pathToFileURL(pkgPath);
+  const base = pathToFileURL(resolveFrom);
 
   for (const mod of modules) {
     let modPkgPath: string | undefined;

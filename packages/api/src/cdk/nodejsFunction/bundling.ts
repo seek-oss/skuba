@@ -192,7 +192,7 @@ export class Bundling implements cdk.BundlingOptions {
     );
 
     writeOutputPackageJson(outputDir, {
-      dependencies: extractDependencies(nearestPackageJson, nodeModules),
+      dependencies: extractDependencies(this.props.entry, nodeModules),
       packageManager: packageManagerField,
     });
 

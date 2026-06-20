@@ -314,6 +314,61 @@ describe('Bundling.local.tryBundle', () => {
     }
   });
 
+  it('resolves nodeModules versions from the entry package in a monorepo layout', () => {
+    // Simulate a pnpm workspace: the module is only linked into the owning
+    // package's node_modules, never the workspace-root node_modules that
+    // projectRoot points at.
+    const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ws-root-'));
+    try {
+      fs.writeFileSync(
+        path.join(workspaceRoot, 'package.json'),
+        JSON.stringify({ name: 'workspace-root' }),
+      );
+      fs.writeFileSync(path.join(workspaceRoot, 'pnpm-lock.yaml'), '');
+
+      const pkgDir = path.join(workspaceRoot, 'apps', 'indexer');
+      const pkgSrcDir = path.join(pkgDir, 'src');
+      fs.mkdirSync(pkgSrcDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(pkgDir, 'package.json'),
+        JSON.stringify({ name: 'indexer', dependencies: { pino: '^9' } }),
+      );
+      const pkgEntry = path.join(pkgSrcDir, 'handler.ts');
+      fs.writeFileSync(pkgEntry, 'export const handler = () => {};');
+
+      // Only the package's node_modules has the module, not the workspace root.
+      const modDir = path.join(pkgDir, 'node_modules', 'pino');
+      fs.mkdirSync(modDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(modDir, 'package.json'),
+        JSON.stringify({ name: 'pino', version: '9.9.9' }),
+      );
+
+      const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'out-'));
+      try {
+        const bundling = new Bundling(
+          makeProps({
+            entry: pkgEntry,
+            projectRoot: workspaceRoot,
+            depsLockFilePath: path.join(workspaceRoot, 'pnpm-lock.yaml'),
+            bundlerConfig: path.join(workspaceRoot, 'build.mjs'),
+            nodeModules: ['pino'],
+          }),
+        );
+        bundling.local.tryBundle(outputDir, bundling);
+
+        const outPkg = JSON.parse(
+          fs.readFileSync(path.join(outputDir, 'package.json'), 'utf8'),
+        );
+        expect(outPkg.dependencies).toEqual({ pino: '9.9.9' });
+      } finally {
+        fs.rmSync(outputDir, { recursive: true, force: true });
+      }
+    } finally {
+      fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    }
+  });
+
   it('writes packageManager field when detected from packageManager key', () => {
     fs.writeFileSync(
       pkgJsonPath,

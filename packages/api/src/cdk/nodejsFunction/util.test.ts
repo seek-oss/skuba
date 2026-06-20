@@ -70,6 +70,16 @@ describe('extractDependencies', () => {
     expect(result.pino).toBe('9.5.0');
   });
 
+  it('resolves from a non-package.json anchor such as the entry file', () => {
+    installModule('pino', { name: 'pino', version: '9.5.0' });
+    const entryFile = path.join(tmpDir, 'src', 'handler.ts');
+    fs.mkdirSync(path.dirname(entryFile), { recursive: true });
+    fs.writeFileSync(entryFile, 'export const handler = () => {};');
+
+    const result = extractDependencies(entryFile, ['pino']);
+    expect(result.pino).toBe('9.5.0');
+  });
+
   it('resolves versions for multiple modules', () => {
     installModule('pino', { name: 'pino', version: '9.5.0' });
     installModule('lodash', { name: 'lodash', version: '4.17.21' });
