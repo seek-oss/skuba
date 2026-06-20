@@ -36,11 +36,6 @@ import { writePackageJson } from './writePackageJson.js';
 import * as Git from '@skuba-lib/api/git';
 
 export const init = async (args = process.argv.slice(2)) => {
-  if (hasHelpFlag(args)) {
-    logInitHelp();
-    return;
-  }
-
   const opts: Input = {
     debug: hasDebugFlag(args),
   };
@@ -50,6 +45,11 @@ export const init = async (args = process.argv.slice(2)) => {
   const nonInteractive = hasNonInteractiveFlag(args) || !process.stdin.isTTY;
 
   const skubaVersionInfo = await showLogoAndVersionInfo();
+
+  if (hasHelpFlag(args)) {
+    logInitHelp();
+    return;
+  }
 
   const consumerManifest = await getConsumerManifest();
   if (
