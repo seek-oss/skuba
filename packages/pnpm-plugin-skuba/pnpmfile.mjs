@@ -1,9 +1,9 @@
 // @ts-check
 
 /**
- * @satisfies {Partial<import("@pnpm/config").Config>}
+ * @satisfies {Partial<import("@pnpm/config.reader").Config>}
  */
-const defaultConfig = {
+export const defaultConfig = {
   allowBuilds: {
     '@ast-grep/lang-bash': true,
     '@ast-grep/lang-json': true,
@@ -33,7 +33,6 @@ const defaultConfig = {
     'tsconfig-seek',
   ],
 
-  // @ts-ignore - TODO: Remove when pnpm updates their types
   pmOnFail: 'error',
 
   publicHoistPattern: [
@@ -54,15 +53,15 @@ const defaultConfig = {
     'typescript',
     'vitest',
   ],
-  strictDepBuilds: false,
-  trustPolicy: 'off',
+  strictDepBuilds: true,
+  trustPolicy: 'no-downgrade',
   trustPolicyExclude: ['semver@6.3.1'], // dependency of eslint-plugin-react
 };
 
 export default {
   defaultConfig,
   hooks: {
-    /** @param {import("@pnpm/config").Config} config */
+    /** @param {import("@pnpm/config.reader").Config} config */
     updateConfig(config) {
       Object.entries(defaultConfig).forEach(([key, value]) => {
         if (

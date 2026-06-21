@@ -15,19 +15,19 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "main": "pnpmfile.cjs",
+  "main": "pnpmfile.mjs",
   "files": [
-    "pnpmfile.cjs"
+    "pnpmfile.mjs"
   ],
   "devDependencies": {
     "@pnpm/cafs-types": "^1000.1.0",
-    "@pnpm/config": "^1004.11.4"
+    "@pnpm/config.reader": "^1101.9.0"
   },
   "engines": {
     "node": ">=22.14.0"
   },
   "skuba": {
-    "entryPoint": "pnpmfile.cjs",
+    "entryPoint": "pnpmfile.mjs",
     "template": "oss-npm-package",
     "type": "package",
     "version": "14.1.2"
