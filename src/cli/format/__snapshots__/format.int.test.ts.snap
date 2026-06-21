@@ -70,7 +70,6 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
-Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 Patch skipped: Add SEEK registry to .npmrc files for SEEK-Jobs repositories - not a SEEK-Jobs repository upgrade-skuba
 
 Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
@@ -78,6 +77,8 @@ Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas wit
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
+
+Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -200,7 +201,6 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
-Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 Patch skipped: Add SEEK registry to .npmrc files for SEEK-Jobs repositories - not a SEEK-Jobs repository upgrade-skuba
 
 Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
@@ -208,6 +208,8 @@ Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas wit
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
+
+Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -323,7 +325,6 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
-Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 Patch skipped: Add SEEK registry to .npmrc files for SEEK-Jobs repositories - not a SEEK-Jobs repository upgrade-skuba
 
 Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
@@ -331,6 +332,8 @@ Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas wit
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
+
+Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -418,7 +421,6 @@ Patch skipped: Add file extensions to imports - no imports found that could be m
 
 Patch applied: Migrate to ESM upgrade-skuba
 
-Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 Patch skipped: Add SEEK registry to .npmrc files for SEEK-Jobs repositories - not a SEEK-Jobs repository upgrade-skuba
 
 Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
@@ -426,6 +428,8 @@ Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas wit
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
+
+Patch applied: Migrate pnpm v10 to v11 upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
