@@ -1,9 +1,11 @@
+import os from 'os';
 import path from 'path';
 
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
 
+import { copyFiles } from '../../utils/copy.js';
 import { log } from '../../utils/logging.js';
 
 import * as Git from '@skuba-lib/api/git';
@@ -55,6 +57,31 @@ export const downloadGitHubTemplate = async (
   });
 };
 
+export const listPrivateTemplates = async (): Promise<string[]> => {
+  const repoUrl = 'git@github.com:SEEK-Jobs/skuba-templates.git';
+  const tempDir = path.join(os.tmpdir(), `skuba-templates-list-${Date.now()}`);
+
+  try {
+    await simpleGit().clone(repoUrl, tempDir, [
+      '--depth=1',
+      '--filter=tree:0',
+      '--no-checkout',
+      '--quiet',
+    ]);
+
+    const output = await simpleGit(tempDir).raw([
+      'ls-tree',
+      '--name-only',
+      '-d',
+      'HEAD:templates',
+    ]);
+
+    return output.trim().split('\n').filter(Boolean).sort();
+  } finally {
+    await fs.promises.rm(tempDir, { recursive: true });
+  }
+};
+
 export const downloadPrivateTemplate = async (
   templateName: string,
   destinationDir: string,
@@ -95,7 +122,14 @@ export const downloadPrivateTemplate = async (
     }
 
     await fs.ensureDir(destinationDir);
-    await fs.copy(templatePath, destinationDir);
+
+    await copyFiles({
+      include: () => true,
+      sourceRoot: templatePath,
+      destinationRoot: destinationDir,
+      processors: [],
+      stripUnderscorePrefix: true,
+    });
 
     await fs.promises.rm(tempDir, { force: true, recursive: true });
   } catch (error) {
