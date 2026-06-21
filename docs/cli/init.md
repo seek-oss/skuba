@@ -20,9 +20,11 @@ Creates a new local project from a starter [template].
 and only requires a connection to the public npm registry.
 Most of its built-in templates start you off with a [Buildkite pipeline] that should be ready to go once you push your repository to GitHub and configure Buildkite.
 
-| Option    | Description                 |
-| :-------- | :-------------------------- |
-| `--debug` | Enable debug console output |
+| Option              | Description                                      |
+| :------------------ | :----------------------------------------------- |
+| `--debug`           | Enable debug console output                      |
+| `--non-interactive` | Read JSON config from stdin instead of prompting |
+| `--help`, `-h`      | Show help for the command                        |
 
 ### Interactive walkthrough
 
@@ -92,10 +94,10 @@ git push --set-upstream origin main
 
 You can now proceed to the [next steps](#next-steps).
 
-### Unattended execution
+### Non-interactive execution
 
 `skuba init` is interactive by default.
-For unattended execution, pipe in JSON:
+For non-interactive execution, pipe in JSON:
 
 ```shell
 skuba init << EOF
@@ -106,12 +108,18 @@ skuba init << EOF
     "ownerName": "my-org/my-team",
     "prodBuildkiteQueueName": "123456789012:cicd",
     "platformName": "arm64",
-    "repoName": "tmp-greeter"
+    "repoName": "tmp-greeter",
+    "defaultBranch": "main"
   },
   "templateName": "greeter"
 }
 EOF
 ```
+
+`skuba init` reads this JSON automatically when stdin is not a TTY.
+
+Pass `--non-interactive` to require piped input and never fall back to an interactive prompt.
+If stdin is a TTY, `skuba init --non-interactive` prints the expected JSON Schema and exits instead of prompting.
 
 --
 

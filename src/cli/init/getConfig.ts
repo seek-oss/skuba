@@ -31,6 +31,7 @@ import {
   getTemplateName,
   shouldContinue,
 } from './prompts.js';
+import { readJSONFromStdIn } from './readJSONFromStdIn.js';
 import { type InitConfig, initConfigInputSchema } from './types.js';
 
 export const runForm = async <T = Record<string, string>>(props: {
@@ -304,50 +305,13 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   };
 };
 
-export const readJSONFromStdIn = async () => {
-  let text = '';
-
-  await new Promise((resolve) =>
-    process.stdin
-      .on('data', (chunk) => (text += chunk.toString()))
-      .once('end', resolve),
-  );
-
-  text = text.trim();
-
-  if (text === '') {
-    log.err('No data from stdin.');
-    process.exit(1);
-  }
-
-  let value: unknown;
-
-  try {
-    value = JSON.parse(text) as unknown;
-  } catch {
-    log.err('Invalid JSON from stdin.');
-    process.exit(1);
-  }
-
-  return value;
-};
-
 const configureFromPipe = async (): Promise<InitConfig> => {
-  const value = await readJSONFromStdIn();
-
-  const result = initConfigInputSchema.safeParse(value);
-
-  if (!result.success) {
-    log.err('Invalid data from stdin:');
-    log.err(result.error);
-    process.exit(1);
-  }
-
-  const { destinationDir, templateComplete, templateName } = result.data;
+  const config = await readJSONFromStdIn(initConfigInputSchema);
+  const { destinationDir, templateComplete, templateName } = config;
 
   const templateData = {
-    ...(await baseToTemplateData(result.data.templateData)),
-    ...result.data.templateData,
+    ...(await baseToTemplateData(config.templateData)),
+    ...config.templateData,
   };
 
   await createDirectory(destinationDir);
@@ -358,11 +322,13 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   if (!templateComplete) {
     if (noSkip) {
       log.err('Templating for', log.bold(templateName), 'cannot be skipped.');
+      // Remove the partially-created project; it's not salvageable
+      await fs.remove(destinationDir);
       process.exit(1);
     }
 
     return {
-      ...result.data,
+      ...config,
       entryPoint,
       packageManager,
       templateData: {
@@ -380,14 +346,37 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   const missing = required.filter((name) => !provided.has(name));
 
   if (missing.length > 0) {
-    log.err('This template uses the following information:');
+    log.err(
+      'This template requires the following additional fields in',
+      `${log.bold('templateData')}:`,
+    );
     log.newline();
-    missing.forEach((name) => log.err(`- ${name}`));
+    for (const { name, message, initial } of fields) {
+      if (missing.includes(name)) {
+        log.err(`- ${log.bold(name)}`);
+        if (initial) {
+          log.err(`  ${message}`, log.dim(`(e.g. ${initial})`));
+        } else {
+          log.err(`  ${message}`);
+        }
+        log.newline();
+      }
+    }
+
+    log.err(
+      'Provide these fields, or set',
+      log.bold('templateComplete: false'),
+      'to scaffold them as placeholders and resume later by running',
+      log.bold('skuba init'),
+      'in the new directory.',
+    );
+
+    await fs.remove(destinationDir);
     process.exit(1);
   }
 
   return {
-    ...result.data,
+    ...config,
     entryPoint,
     packageManager,
     templateData,
@@ -395,5 +384,5 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   };
 };
 
-export const getConfig = () =>
-  process.stdin.isTTY ? configureFromPrompt() : configureFromPipe();
+export const getConfig = ({ nonInteractive }: { nonInteractive: boolean }) =>
+  nonInteractive ? configureFromPipe() : configureFromPrompt();
