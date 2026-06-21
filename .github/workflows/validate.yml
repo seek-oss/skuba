@@ -32,7 +32,7 @@ jobs:
             github.event.pull_request.head.repo.full_name == github.repository
           )
         name: Check out repo
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN || github.token }}
 
@@ -42,7 +42,7 @@ jobs:
             github.event.pull_request.head.repo.full_name != github.repository
           )
         name: Check out repo
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         # We don't share secrets with Dependabot nor forks.
 
       - name: Set Git user
@@ -87,7 +87,7 @@ jobs:
           - oss-npm-package
     steps:
       - name: Check out repo
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Set up pnpm
         uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
