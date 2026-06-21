@@ -2,7 +2,6 @@
 'skuba': patch
 ---
 
-init: Clean up the partially initialised directory when non-interactive templating fails
+init: Clean up partially-initialised directory when non-interactive templating fails
 
-When `skuba init` reads its config from stdin and the provided `templateData` is missing required fields, or the template's templating cannot be skipped, it now deletes the directory it created before exiting.
-Previously this left a broken project behind that had to be manually removed before retrying.
+When `skuba init` reads its config from stdin and the provided `templateData` is missing required fields or templating cannot be skipped, it now deletes the directory it created before exiting. Previously this left a broken project behind that had to be manually removed before retrying.
