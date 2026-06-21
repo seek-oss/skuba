@@ -16,21 +16,49 @@ import { hasStringProp } from '../../utils/validation.js';
 import { formatPackage } from '../configure/processing/package.js';
 import type { ReadResult } from '../configure/types.js';
 
-import { getTemplateConfig, readJSONFromStdIn, runForm } from './getConfig.js';
+import { getTemplateConfig, runForm } from './getConfig.js';
+import { readJSONFromStdIn } from './readJSONFromStdIn.js';
 
 interface Props {
   manifest: ReadResult;
+
+  /** Whether to read template data as JSON from stdin. */
+  nonInteractive: boolean;
 }
 
-const templateDataSchema = z.object({
-  templateData: z.record(z.string(), z.string()),
-});
+/**
+ * Builds a schema for the template's remaining fields.
+ *
+ * Each field is required, described with its prompt message, and given its
+ * initial value as an example. `readJSONFromStdIn` will dump this schema to the
+ * console to inform users of the template-specific fields.
+ */
+const getTemplateDataSchema = (templateConfig: TemplateConfig) =>
+  z.object({
+    templateData: z
+      .object(
+        Object.fromEntries(
+          templateConfig.fields.map(
+            ({ name, message, initial }) =>
+              [
+                name,
+                z.string().meta({
+                  description: message,
+                  examples: initial ? [initial] : undefined,
+                }),
+              ] as const,
+          ),
+        ),
+      )
+      .describe(
+        "Values for the template's remaining fields, keyed by the field names declared in `skuba.template.js`.",
+      ),
+  });
 
 const getTemplateDataFromStdIn = async (
   templateConfig: TemplateConfig,
 ): Promise<Record<string, string>> => {
-  const config = await readJSONFromStdIn();
-  const data = templateDataSchema.parse(config);
+  const data = await readJSONFromStdIn(getTemplateDataSchema(templateConfig));
 
   templateConfig.fields.forEach((field) => {
     const value = data.templateData[field.name];
@@ -46,7 +74,10 @@ const getTemplateDataFromStdIn = async (
   return data.templateData;
 };
 
-export const resumeTemplating = async ({ manifest }: Props): Promise<void> => {
+export const resumeTemplating = async ({
+  manifest,
+  nonInteractive,
+}: Props): Promise<void> => {
   const destinationRoot = path.dirname(manifest.path);
 
   const templateConfig = await getTemplateConfig(destinationRoot);
@@ -61,16 +92,16 @@ export const resumeTemplating = async ({ manifest }: Props): Promise<void> => {
     : 'template';
 
   log.newline();
-  const templateData = process.stdin.isTTY
-    ? await runForm({
+  const templateData = nonInteractive
+    ? await getTemplateDataFromStdIn(templateConfig)
+    : await runForm({
         choices: templateConfig.fields,
         message: styleText(
           'bold',
           `Complete ${styleText('cyan', templateName)}:`,
         ),
         name: 'customAnswers',
-      })
-    : await getTemplateDataFromStdIn(templateConfig);
+      });
 
   const updatedPackageJson = await formatPackage(manifest.packageJson);
   const packageJsonFilepath = path.join(destinationRoot, 'package.json');
