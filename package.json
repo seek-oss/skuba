@@ -163,7 +163,7 @@
     "supertest": "7.2.2",
     "type-fest": "2.19.0"
   },
-  "packageManager": "pnpm@10.34.3",
+  "packageManager": "pnpm@10.34.4",
   "engines": {
     "node": ">=22.18.0"
   },
