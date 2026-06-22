@@ -90,7 +90,7 @@
     "@octokit/types": "^16.0.0",
     "@skuba-lib/api": "workspace:*",
     "@skuba-lib/changesets-changelog": "workspace:*",
-    "@types/node": "^24.10.2",
+    "@types/node": "^26.0.0",
     "@vitest/coverage-istanbul": "^4.1.0",
     "@vitest/coverage-v8": "^4.1.0",
     "@vitest/ui": "^4.1.0",
