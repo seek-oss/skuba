@@ -18,7 +18,6 @@ allowBuilds:
   unix-dgram: true # Managed by skuba
   unrs-resolver: true # Managed by skuba
 blockExoticSubdeps: true # Managed by skuba
-ignorePatchFailures: false # Managed by skuba
 minimumReleaseAge: 4320 # Managed by skuba
 minimumReleaseAgeExclude:
   - '@seek/*' # Managed by skuba
@@ -34,8 +33,8 @@ minimumReleaseAgeExclude:
 overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
-packageManagerStrictVersion: true # Managed by skuba
 
+pmOnFail: error # Managed by skuba
 publicHoistPattern:
   - remark-lint-*
   - '@arethetypeswrong/core' # Managed by skuba
@@ -59,5 +58,5 @@ trustPolicyExclude:
   - undici-types@6.21.0 # remark-cli has a nested dependency on @types/node@22.19.13
   - semver@6.3.1 # Managed by skuba
 
-strictDepBuilds: false # Managed by skuba
-trustPolicy: off # Managed by skuba
+strictDepBuilds: true # Managed by skuba
+trustPolicy: no-downgrade # Managed by skuba

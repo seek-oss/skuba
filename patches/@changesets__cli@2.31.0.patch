@@ -1,0 +1,38 @@
+diff --git a/dist/changesets-cli.cjs.js b/dist/changesets-cli.cjs.js
+index 9f0bd6c5f96011be225269a71365a878cb822bb7..6e7267d88b66868f144b531763a000bfa197483e 100644
+--- a/dist/changesets-cli.cjs.js
++++ b/dist/changesets-cli.cjs.js
+@@ -824,12 +824,12 @@ function getPackageInfo(packageJson) {
+
+     // Bare query: when dist-tags.latest is set, returns the full `versions` array via packument
+     // bleed-through, enabling only-pre detection downstream. Returns empty when no `latest` exists.
+-    let result = await spawn__default["default"]("npm", ["info", packageJson.name, `--${scope ? `${scope}:` : ""}registry=${registry}`, "--json"]);
++    let result = await spawn__default["default"]("pnpm", ["info", packageJson.name, `--${scope ? `${scope}:` : ""}registry=${registry}`, "--json"]);
+
+     // Bare query returned nothing — retry with exact version specifier
+     // to handle prerelease-only packages on registries without auto-`latest`.
+     if (result.stdout.toString() === "") {
+-      result = await spawn__default["default"]("npm", ["info", `${packageJson.name}@${packageJson.version}`, `--${scope ? `${scope}:` : ""}registry=${registry}`, "--json"]);
++      result = await spawn__default["default"]("pnpm", ["info", `${packageJson.name}@${packageJson.version}`, `--${scope ? `${scope}:` : ""}registry=${registry}`, "--json"]);
+     }
+
+     // Normalize, just in case. The above prerelease-only package query should already have returned:
+diff --git a/dist/changesets-cli.esm.js b/dist/changesets-cli.esm.js
+index d9582bf53eaf55402a6bf96a39589af7854b8f23..e4224856a038284171250e519c64a7ad307b65cf 100644
+--- a/dist/changesets-cli.esm.js
++++ b/dist/changesets-cli.esm.js
+@@ -787,12 +787,12 @@ function getPackageInfo(packageJson) {
+
+     // Bare query: when dist-tags.latest is set, returns the full `versions` array via packument
+     // bleed-through, enabling only-pre detection downstream. Returns empty when no `latest` exists.
+-    let result = await spawn$1("npm", ["info", packageJson.name, `--${scope ? `${scope}:` : ""}registry=${registry}`, "--json"]);
++    let result = await spawn$1("pnpm", ["info", packageJson.name, `--${scope ? `${scope}:` : ""}registry=${registry}`, "--json"]);
+
+     // Bare query returned nothing — retry with exact version specifier
+     // to handle prerelease-only packages on registries without auto-`latest`.
+     if (result.stdout.toString() === "") {
+-      result = await spawn$1("npm", ["info", `${packageJson.name}@${packageJson.version}`, `--${scope ? `${scope}:` : ""}registry=${registry}`, "--json"]);
++      result = await spawn$1("pnpm", ["info", `${packageJson.name}@${packageJson.version}`, `--${scope ? `${scope}:` : ""}registry=${registry}`, "--json"]);
+     }
+
+     // Normalize, just in case. The above prerelease-only package query should already have returned:
