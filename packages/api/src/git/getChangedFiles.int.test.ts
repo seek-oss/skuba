@@ -149,3 +149,60 @@ it('should ignore git-lfs files', async () => {
 
   expect(files).toStrictEqual([{ path: 'file.not-pdf', state: 'added' }]);
 });
+
+it('should support diffing an arbitrary src and dst', async () => {
+  await Promise.all([
+    fs.promises.writeFile('modified.txt', 'before'),
+    fs.promises.writeFile('deleted.txt', 'before'),
+  ]);
+  await git.add({ fs, dir, filepath: ['modified.txt', 'deleted.txt'] });
+  await git.commit({ fs, dir, message: 'initial commit', author });
+
+  await git.branch({ fs, dir, ref: 'feature', checkout: true });
+
+  await Promise.all([
+    fs.promises.writeFile('modified.txt', 'after'),
+    fs.promises.rm('deleted.txt'),
+    fs.promises.writeFile('added.txt', 'new'),
+  ]);
+  await Promise.all([
+    git.add({ fs, dir, filepath: ['modified.txt', 'added.txt'] }),
+    git.remove({ fs, dir, filepath: 'deleted.txt' }),
+  ]);
+  const dst = await git.commit({ fs, dir, message: 'feature changes', author });
+
+  const files = await getChangedFiles({ dir, src: 'main', dst });
+
+  expect(files).toStrictEqual([
+    { path: 'added.txt', state: 'added' },
+    { path: 'deleted.txt', state: 'deleted' },
+    { path: 'modified.txt', state: 'modified' },
+  ]);
+});
+
+it('should support diffing the HEAD commit', async () => {
+  await git.commit({ fs, dir, message: 'initial commit', author });
+  await Promise.all([
+    fs.promises.writeFile('1.txt', 'before'),
+    fs.promises.writeFile('2.txt', 'before'),
+  ]);
+  await git.add({ fs, dir, filepath: ['1.txt', '2.txt'] });
+  await git.commit({ fs, dir, message: 'initial commit', author });
+
+  const files = await getChangedFiles({ dir, dst: 'HEAD' });
+
+  expect(files).toStrictEqual([
+    { path: '1.txt', state: 'added' },
+    { path: '2.txt', state: 'added' },
+  ]);
+});
+
+it('should throw if src is no provided and dst has no parent', async () => {
+  const oid = await git.commit({ fs, dir, message: 'initial commit', author });
+
+  await expect(getChangedFiles({ dir, dst: 'HEAD' })).rejects.toThrow(
+    new Error(
+      `Failed to determine changed files in Git: src parameter was omitted but dst (HEAD, ${oid}) has no parent`,
+    ),
+  );
+});

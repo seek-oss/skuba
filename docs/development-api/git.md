@@ -65,12 +65,31 @@ await Git.fastForwardBranch({
 
 ## getChangedFiles
 
-Returns all the files which have been added, modified or deleted in the working directory of the local Git repository since the last commit.
+Returns all the files which have been added, modified or deleted.
+
+Defaults to file changes in the working directory of the local Git repository since the last commit,
+but can also look at a specific `dst` reference, or the changes between `src` and `dst` references.
+
+Does not support ancentry references like `~` and `^` at this time.
 
 ```typescript
 import { Git } from 'skuba';
 
+// Working directory
 const changedFiles = await Git.getChangedFiles({ dir });
+
+// Specific commit
+const changedFiles = await Git.getChangedFiles({
+  dir,
+  dst: 'HEAD',
+});
+
+// Diff commits
+const changedFiles = await Git.getChangedFiles({
+  dir,
+  src: '0000000000000000000000000000000000000000',
+  dst: 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+});
 ```
 
 ---
