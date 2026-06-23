@@ -12,7 +12,7 @@ Renovate lock file updates (e.g. `renovate/lock-file-maintenance`, `renovate/sku
 - CI runs the patch via `skuba lint` and pushes the lock file change via [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes)
 - Renovate detects that the lock file no longer matches the pre-patch state, assumes the branch is stale, and force pushes over it
 
-Now, skuba heuristically detects and avoids lock file autofixes under these circumstances. Pull requests that would previously end up in an autofix loop may be instead left with a stale lock file. To unblock these PRs, install and push the resulting lock file change locally; Renovate will recognise this as a manual change and should not force push over it. A more permanent fix is to pin skuba to sidestep the scenario entirely.
+Now, skuba heuristically detects and avoids lock file autofixes under these circumstances. Pull requests that would previously end up in an autofix loop may be instead left with a stale lock file. To unblock these PRs, install and push the resulting lock file change locally; Renovate will recognise this as a manual change and should not force push over it. A more lasting fix is to pin skuba to sidestep the scenario.
 
 ```diff
   {
