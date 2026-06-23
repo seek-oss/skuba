@@ -202,7 +202,7 @@ it('should throw if src is no provided and dst has no parent', async () => {
 
   await expect(getChangedFiles({ dir, dst: 'HEAD' })).rejects.toThrow(
     new Error(
-      `Failed to determine changed files in Git: src parameter was omitted but dst (HEAD, ${oid}) has no parent`,
+      `Failed to determine changed files in Git: src parameter was omitted but dst (HEAD -> ${oid}) has no parent`,
     ),
   );
 });

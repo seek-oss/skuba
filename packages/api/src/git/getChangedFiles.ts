@@ -122,7 +122,7 @@ const getChangedFilesFromRefs = async ({
     const { commit } = await git.readCommit({ fs, dir, oid: dstOid });
     if (!commit.parent[0]) {
       throw new Error(
-        `Failed to determine changed files in Git: src parameter was omitted but dst (${dst}, ${dstOid}) has no parent`,
+        `Failed to determine changed files in Git: src parameter was omitted but dst (${dst} -> ${dstOid}) has no parent`,
       );
     }
 
@@ -142,10 +142,7 @@ const getChangedFilesFromRefs = async ({
         return;
       }
 
-      const [srcEntry, dstEntry] = entries as unknown as Array<{
-        type?: () => Promise<string | void>;
-        oid?: () => Promise<string>;
-      }>;
+      const [srcEntry, dstEntry] = entries;
 
       const srcTypePromise = srcEntry?.type?.();
       const dstTypePromise = dstEntry?.type?.();
@@ -166,15 +163,15 @@ const getChangedFilesFromRefs = async ({
       ]);
 
       if (!srcEntryOid && dstEntryOid) {
-        return files.push({ path: filepath, state: 'added' as const });
+        return files.push({ path: filepath, state: 'added' });
       }
 
       if (srcEntryOid && !dstEntryOid) {
-        return files.push({ path: filepath, state: 'deleted' as const });
+        return files.push({ path: filepath, state: 'deleted' });
       }
 
       if (srcEntryOid !== dstEntryOid) {
-        return files.push({ path: filepath, state: 'modified' as const });
+        return files.push({ path: filepath, state: 'modified' });
       }
 
       return;
