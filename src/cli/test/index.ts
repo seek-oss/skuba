@@ -21,10 +21,7 @@ export const test = async () => {
   }
 
   try {
-    await throwOnTimeout(
-      createAnnotations(result?.code === 0),
-      { s: 30 },
-    );
+    await throwOnTimeout(createAnnotations(result?.code === 0), { s: 30 });
   } catch (err) {
     log.warn('Failed to annotate test results.');
     log.subtle(inspect(err));
