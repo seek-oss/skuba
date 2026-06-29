@@ -28,9 +28,14 @@ describe('throwOnTimeout', () => {
     await expect(wait.throwOnTimeout(promise(), { s: 3 })).resolves.toBe(value);
 
     expect(mockedSleep).toHaveBeenCalledTimes(1);
-    expect(mockedSleep).toHaveBeenNthCalledWith(1, 3_000, { ok: false }, {
-      ref: false,
-    });
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      3_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('propagates a rejected promise within the timeout', async () => {
@@ -43,9 +48,14 @@ describe('throwOnTimeout', () => {
     await expect(wait.throwOnTimeout(promise(), { s: 2 })).rejects.toThrow(err);
 
     expect(mockedSleep).toHaveBeenCalledTimes(1);
-    expect(mockedSleep).toHaveBeenNthCalledWith(1, 2_000, { ok: false }, {
-      ref: false,
-    });
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      2_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('enforces the timeout', async () => {
@@ -60,9 +70,14 @@ describe('throwOnTimeout', () => {
     );
 
     expect(mockedSleep).toHaveBeenCalledTimes(1);
-    expect(mockedSleep).toHaveBeenNthCalledWith(1, 1_000, { ok: false }, {
-      ref: false,
-    });
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      1_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 });
 
@@ -78,9 +93,14 @@ describe('withTimeout', () => {
     });
 
     expect(mockedSleep).toHaveBeenCalledTimes(1);
-    expect(mockedSleep).toHaveBeenNthCalledWith(1, 1_000, { ok: false }, {
-      ref: false,
-    });
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      1_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('propagates a fulfilled promise within the timeout', async () => {
@@ -95,9 +115,14 @@ describe('withTimeout', () => {
     });
 
     expect(mockedSleep).toHaveBeenCalledTimes(1);
-    expect(mockedSleep).toHaveBeenNthCalledWith(1, 1_000, { ok: false }, {
-      ref: false,
-    });
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      1_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('propagates a rejected promise within the timeout', async () => {
@@ -110,9 +135,14 @@ describe('withTimeout', () => {
     await expect(wait.withTimeout(promise(), { s: 2 })).rejects.toThrow(err);
 
     expect(mockedSleep).toHaveBeenCalledTimes(1);
-    expect(mockedSleep).toHaveBeenNthCalledWith(1, 2_000, { ok: false }, {
-      ref: false,
-    });
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      2_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('enforces the timeout', async () => {
@@ -125,8 +155,13 @@ describe('withTimeout', () => {
     });
 
     expect(mockedSleep).toHaveBeenCalledTimes(1);
-    expect(mockedSleep).toHaveBeenNthCalledWith(1, 3_000, { ok: false }, {
-      ref: false,
-    });
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      3_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 });
