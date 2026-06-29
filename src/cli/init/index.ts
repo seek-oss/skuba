@@ -28,7 +28,6 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
 import { logInitHelp } from './help.js';
-import { installPnpmPlugin } from './installPnpmPlugin.js';
 import { resumeTemplating } from './resumeTemplating.js';
 import type { Input } from './types.js';
 import { writePackageJson } from './writePackageJson.js';
