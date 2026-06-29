@@ -326,7 +326,7 @@ importers:
   packages/eslint-config-skuba:
     dependencies:
       eslint-config-seek:
-        specifier: 15.0.6
+        specifier: ^15.0.6
         version: 15.0.6(@typescript-eslint/eslint-plugin@8.62.0(@typescript-eslint/parser@8.62.0(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3))(@typescript-eslint/parser@8.62.0(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3))(@typescript-eslint/utils@8.62.0(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3)(vitest@4.1.9)
       eslint-plugin-skuba:
         specifier: workspace:*

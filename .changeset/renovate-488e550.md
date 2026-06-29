@@ -2,4 +2,4 @@
 'eslint-config-skuba': patch
 ---
 
-deps: eslint-config-seek 15.0.6
+deps: eslint-config-seek ^15.0.6
