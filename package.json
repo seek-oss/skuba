@@ -80,7 +80,7 @@
     "@ast-grep/lang-bash": "~0.0.8",
     "@ast-grep/lang-json": "~0.0.7",
     "@ast-grep/lang-yaml": "~0.0.6",
-    "@ast-grep/napi": "~0.43.0",
+    "@ast-grep/napi": "~0.44.0",
     "@changesets/cli": "^2.31.0",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@inquirer/prompts": "^8.0.0",
@@ -127,6 +127,7 @@
     "rolldown": "^1.1.0",
     "semantic-release": "^25.0.2",
     "simple-git": "^3.36.0",
+    "std-env": "^4.1.0",
     "ts-dedent": "^2.2.0",
     "tsconfig-seek": "2.0.0",
     "tsdown": "~0.22.0",
@@ -162,7 +163,7 @@
     "supertest": "7.2.2",
     "type-fest": "2.19.0"
   },
-  "packageManager": "pnpm@10.34.3",
+  "packageManager": "pnpm@10.34.4",
   "engines": {
     "node": ">=22.18.0"
   },

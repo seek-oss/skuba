@@ -80,6 +80,10 @@ Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to pat
 
 Patch skipped: Use mount-buildkite-agent for Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
 
+Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
+
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -211,6 +215,10 @@ Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to pat
 
 Patch skipped: Use mount-buildkite-agent for Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
 
+Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
+
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -335,6 +343,10 @@ Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to pat
 
 Patch skipped: Use mount-buildkite-agent for Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
 
+Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
+
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -430,6 +442,10 @@ Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
 Patch skipped: Use mount-buildkite-agent for Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
+
+Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
+
+Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

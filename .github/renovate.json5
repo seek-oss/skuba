@@ -26,9 +26,8 @@
     },
     {
       matchManagers: ['npm'],
-      // Should be synchronised with AWS Lambda runtimes and Docker images
+      // Should track LTS and match .nvmrc, images, runtimes, etc.
       matchPackageNames: ['@types/node'],
-      matchFileNames: ['template/**'],
       enabled: false,
     },
     {
