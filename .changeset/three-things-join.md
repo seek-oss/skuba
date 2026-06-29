@@ -4,7 +4,7 @@
 
 format, lint: Guard against autofix loops on Renovate lock file updates
 
-Renovate lock file updates (e.g. `renovate/lock-file-maintenance`, `renovate/skuba-0.x-lockfile`) that bump skuba could enter a infinite loop under a specific set of circumstances:
+Renovate lock file updates that specifically target skuba (`renovate/skuba-0.x-lockfile`) could enter a loop under a specific set of circumstances:
 
 - Project does not pin skuba in `package.json`
 - Renovate lock file update bumps skuba to a new version

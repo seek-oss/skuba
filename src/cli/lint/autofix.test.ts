@@ -750,7 +750,7 @@ describe('Renovate autofix guard', () => {
     expect(stdout()).toContain('No autofixes detected.');
   });
 
-  it.each(['renovate-package-16.x-lockfile', 'renovate/lock-file-maintenance'])(
+  it.each(['renovate-package-16.x-lockfile', 'renovate/skuba-0.x-lockfile'])(
     'discards lockfile-only changes on Renovate lock file update per %s branch name fallback',
     async (branchName) => {
       process.env.GITHUB_HEAD_REF = branchName;
