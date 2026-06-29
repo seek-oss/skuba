@@ -10,5 +10,5 @@ export const patches: Patches = [
   {
     apply: tryRemovePnpmConfigPackageJson,
     description: 'Remove pnpm-plugin-skuba from package.json pnpm config',
-  }
+  },
 ];
