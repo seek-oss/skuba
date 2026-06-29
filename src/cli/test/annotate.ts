@@ -9,8 +9,8 @@ export const createGitHubAnnotations = async (isOk: boolean) => {
   const build = GitHub.buildNameFromEnvironment();
 
   const summary = isOk
-  ? '`skuba test` passed.'
-  : '`skuba test` found issues that require triage.';
+    ? '`skuba test` passed.'
+    : '`skuba test` found issues that require triage.';
 
   await GitHub.createCheckRun({
     name: 'skuba/test',
