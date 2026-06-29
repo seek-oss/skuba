@@ -139,9 +139,6 @@ export const init = async (args = process.argv.slice(2)) => {
       'utf8',
     );
     await patchPnpmWorkspace('format', destinationDir);
-    if (process.env.SKUBA_INTEGRATION_TEST !== 'true') {
-      await installPnpmPlugin(skubaManifest, exec);
-    }
   }
 
   // Patch in a baseline Renovate preset based on the configured Git owner.

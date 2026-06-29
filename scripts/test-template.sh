@@ -65,7 +65,7 @@ pnpm add --save-dev ${skuba_tar}
 directory="./tmp-${template}"
 
 echo "--- skuba init ${template}"
-SKUBA_INTEGRATION_TEST=true pnpm exec skuba init << EOF
+pnpm exec skuba init << EOF
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
