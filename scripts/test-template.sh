@@ -50,17 +50,16 @@ rm -rf "../${skuba_temp_directory}"
 echo "--- setting up ${skuba_temp_directory}"
 mkdir "../${skuba_temp_directory}"
 
+# Reuse internal `pnpm-workspace.yaml` without `overrides` and `packages`
+awk '/^[^ \t#]/ { skip = ($0 ~ /^packages:/ || $0 ~ /^overrides:/) } !skip { print }' pnpm-workspace.yaml > "../${skuba_temp_directory}/pnpm-workspace.yaml"
+
 cd "../${skuba_temp_directory}" || exit 1
 
 echo "pnpm init"
 pnpm init
 
-# https://github.com/pnpm/pnpm/issues/10988
-unset npm_config_strict_dep_builds
-unset npm_config_trust_policy
-
 echo "--- pnpm add --save-dev ${skuba_tar}"
-pnpm add --save-dev ${skuba_tar}
+pnpm add --save-dev "${skuba_tar}"
 
 directory="./tmp-${template}"
 
@@ -93,7 +92,7 @@ EOF
 cd "${directory}" || exit 1
 
 echo "--- pnpm add --save-dev ${skuba_tar}"
-pnpm add --save-dev ${skuba_tar}
+pnpm add --save-dev "${skuba_tar}"
 echo "--- pnpm dedupe"
 pnpm dedupe
 
@@ -122,7 +121,7 @@ if [ "$update_snapshot" = true ]; then
   echo "--- pnpm test --updateSnapshot ${template}"
   pnpm test --updateSnapshot
   cd ../../skuba || exit 1
-  bash ./scripts/update-template-snapshot.sh ${skuba_temp_directory} ${template}
+  bash ./scripts/update-template-snapshot.sh "${skuba_temp_directory}" "${template}"
 else
   echo "--- pnpm test ${template}"
   pnpm test
