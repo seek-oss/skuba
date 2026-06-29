@@ -1,4 +1,4 @@
-import { setTimeout as sleep } from 'timers/promises';
+import { setTimeout } from 'timers/promises';
 
 import { createTerseError } from './error.js';
 import { pluralise } from './logging.js';
@@ -24,5 +24,5 @@ export const withTimeout = <T>(
 ): Promise<TimeoutResult<T>> =>
   Promise.race<TimeoutResult<T>>([
     Promise.resolve(promise).then((value) => ({ ok: true, value })),
-    sleep(s * 1_000, { ok: false }, { ref: false }),
+    setTimeout(s * 1_000, { ok: false }, { ref: false }),
   ]);
