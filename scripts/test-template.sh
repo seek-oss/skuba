@@ -63,8 +63,10 @@ pnpm add --save-dev "${skuba_tar}"
 
 directory="./tmp-${template}"
 
+set +e
 echo "--- skuba init ${template}"
-pnpm exec skuba init << EOF
+skuba_init_log=$(mktemp)
+pnpm exec skuba init << EOF 2>&1 | tee "${skuba_init_log}"
 {
   "destinationDir": "${directory}",
   "templateComplete": true,
@@ -88,6 +90,20 @@ pnpm exec skuba init << EOF
   "templateName": "${template}"
 }
 EOF
+
+result=${PIPESTATUS[0]}
+
+# Continue if `skuba init` choked on `pnpm install`.
+# A changeset versioning PR will initially fail to install the new version from
+# the remote registry; the subsequent local tar install should weed out other
+# installation issues.
+if [[ $result -ne 0 && $(cat "${skuba_init_log}") != *"Failed to install dependencies"* ]]; then
+    rm "${skuba_init_log}"
+    exit 1
+fi
+
+rm "${skuba_init_log}"
+set -e
 
 cd "${directory}" || exit 1
 
