@@ -47,11 +47,10 @@ export const AUTOFIX_IGNORE_FILES_NPMRC: Git.ChangedFile[] = [
 ];
 
 /**
- * - `renovate-lock-file-maintenance`
+ * - `renovate-skuba-0.x-lockfile`
  * - `renovate/skuba-9000.x-lockfile`
  */
-const LOCKFILE_BRANCH_PATTERN =
-  /^renovate[\/-](?:.+-lockfile|lock-file-maintenance)$/;
+const LOCKFILE_BRANCH_PATTERN = /^renovate[\/-].+-lockfile$/;
 
 const isManagedLockfile = (path: string): boolean =>
   path.endsWith('/pnpm-lock.yaml') ||
