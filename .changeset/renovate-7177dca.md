@@ -1,5 +1,5 @@
 ---
-'skuba': patch
+'skuba': minor
 ---
 
-deps: prettier ~3.9.0
+deps: prettier 3.9.0
