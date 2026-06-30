@@ -127,9 +127,15 @@ const createAutofixIgnore = async ({
 
   const changedFiles = await Git.getChangedFiles({ dir, ignore });
 
+  log.subtle(`Detected ${changedFiles.length} changed files:`);
+  changedFiles.forEach((file) => log.subtle(`- ${file.path}`));
+
   const lockfileChanges = changedFiles.filter((file) =>
     isManagedLockfile(file.path),
   );
+
+  log.subtle(`Detected ${lockfileChanges.length} lockfile changes:`);
+  lockfileChanges.forEach((file) => log.subtle(`- ${file.path}`));
 
   if (
     lockfileChanges.length &&
@@ -152,6 +158,28 @@ const isRenovateLockfileUpdateInGit = async (
   dir: string,
 ): Promise<boolean | null> => {
   const [headResult] = await git.log({ depth: 1, dir, fs });
+
+  log.subtle(
+    `Head commit: ${Boolean(headResult)} ${headResult?.commit.message ?? '<unknown>'} (${headResult?.commit.author ? `${headResult.commit.author.name} <${headResult.commit.author.email}>` : '<unknown>'})`,
+  );
+
+  // Check whether the head commit only touched lockfile(s).
+  // We're assuming that Renovate will rebase less aggressively when other
+  // changes are present given we haven't seen this death spiral in repos that
+  // pin `skuba` and hence receive updates to both `package.json` and lockfile.
+  // https://github.com/renovatebot/renovate/blob/a0df771195a2911c7bba29d51982c2f763ebdb9e/lib/modules/manager/npm/post-update/index.ts#L662
+  const changedFiles = await Git.getChangedFiles({
+    dir,
+    dst: 'HEAD',
+  });
+
+  log.subtle(`Detected ${changedFiles.length} changed files in head commit:`);
+  changedFiles.forEach((file) =>
+    log.subtle(
+      `- ${file.path}${isManagedLockfile(file.path) ? ' (lockfile)' : ''}`,
+    ),
+  );
+
   if (!headResult) {
     return null;
   }
@@ -166,22 +194,15 @@ const isRenovateLockfileUpdateInGit = async (
     return false;
   }
 
-  // Check whether the head commit only touched lockfile(s).
-  // We're assuming that Renovate will rebase less aggressively when other
-  // changes are present given we haven't seen this death spiral in repos that
-  // pin `skuba` and hence receive updates to both `package.json` and lockfile.
-  // https://github.com/renovatebot/renovate/blob/a0df771195a2911c7bba29d51982c2f763ebdb9e/lib/modules/manager/npm/post-update/index.ts#L662
-  const changedFiles = await Git.getChangedFiles({
-    dir,
-    dst: 'HEAD',
-  });
   if (
     changedFiles.length &&
     changedFiles.every((file) => isManagedLockfile(file.path))
   ) {
+    log.subtle('Head commit only touched lockfile(s).');
     return true;
   }
 
+  log.subtle('Head commit touched non-lockfile(s).');
   return false;
 };
 
@@ -196,6 +217,8 @@ const isRenovateLockfileUpdate = async ({
     // Try to inspect head commit via Git first
     const result = await isRenovateLockfileUpdateInGit(dir);
 
+    log.subtle(`isRenovateLockfileUpdateInGit returned ${result}`);
+
     if (result !== null) {
       return result;
     }
@@ -205,6 +228,10 @@ const isRenovateLockfileUpdate = async ({
     );
     log.subtle(inspect(err));
   }
+
+  log.subtle(
+    `Current branch: ${currentBranch ?? '<unknown>'}, ${LOCKFILE_BRANCH_PATTERN.test(currentBranch ?? '') ? 'matches lockfile pattern' : 'does not match lockfile pattern'}`,
+  );
 
   // Fallback to branch name match
   if (currentBranch && LOCKFILE_BRANCH_PATTERN.test(currentBranch)) {
@@ -282,6 +309,9 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     if (!ignore) {
       return log.warn('No autofixes detected.');
     }
+
+    log.subtle(`Ignoring ${ignore.length} files:`);
+    ignore.forEach((file) => log.subtle(`- ${file.path}`));
 
     if (process.env.GITHUB_ACTIONS) {
       // GitHub runners have Git installed locally
