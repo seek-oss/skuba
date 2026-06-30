@@ -158,7 +158,8 @@ const isRenovateLockfileUpdateInGit = async (
 
   // Check whether the head commit was authored by Renovate.
   // This likely isn't perfect when there are timing issues and/or another bot
-  // commits over Renovate, but it should be sufficient to catch most cases.
+  // commits over Renovate, but even if the guard doesn't trigger on the first
+  // iteration, it should eventually break the loop.
   if (
     headResult.commit.author.name !== RENOVATE_AUTHOR.name ||
     headResult.commit.author.email !== RENOVATE_AUTHOR.email
