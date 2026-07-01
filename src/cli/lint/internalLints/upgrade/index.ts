@@ -21,8 +21,7 @@ export type Patch = {
   description: string;
 };
 export type PatchReturnType =
-  | { result: 'apply' }
-  | { result: 'skip'; reason?: string };
+  { result: 'apply' } | { result: 'skip'; reason?: string };
 
 export type PatchConfig = {
   mode: 'format' | 'lint';
