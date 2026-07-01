@@ -1,0 +1,5 @@
+{
+  "type": "module",
+  "module": "../../lib/cdk/nodejsFunction/index.mjs",
+  "types": "../../lib/cdk/nodejsFunction/index.d.mts"
+}
