@@ -1,6 +1,9 @@
+import git from 'isomorphic-git';
+import memfs, { fs, vol } from 'memfs';
 import { simpleGit } from 'simple-git';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import newGit from '../../../integration/git/new.json' with { type: 'json' };
 import { runESLint } from '../adapter/eslint.js';
 import { runPrettier } from '../adapter/prettier.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
@@ -8,6 +11,7 @@ import { createDestinationFileReader } from '../configure/analysis/project.js';
 import {
   AUTOFIX_IGNORE_FILES_BASE,
   AUTOFIX_IGNORE_FILES_NPMRC,
+  RENOVATE_AUTHOR,
   autofix,
 } from './autofix.js';
 import { internalLint } from './internal.js';
@@ -16,9 +20,13 @@ import * as Buildkite from '@skuba-lib/api/buildkite';
 import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
 
+vi.mock('fs-extra', () => ({
+  ...memfs.fs,
+  default: memfs.fs,
+}));
+
 vi.mock('simple-git');
 vi.mock('@skuba-lib/api/buildkite');
-vi.mock('@skuba-lib/api/git');
 vi.mock('@skuba-lib/api/github');
 vi.mock('../adapter/eslint');
 vi.mock('../adapter/prettier');
@@ -37,7 +45,12 @@ const stdout = () => {
   return `\n${result}`;
 };
 
-beforeEach(() => {
+beforeEach(async () => {
+  vol.reset();
+  vol.fromJSON(newGit, dir);
+  await git.branch({ fs, dir, ref: 'feature', checkout: true });
+
+  delete process.env.BUILDKITE_BRANCH;
   delete process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH;
   delete process.env.GITHUB_ACTIONS;
   delete process.env.GITHUB_REF_PROTECTED;
@@ -47,8 +60,6 @@ beforeEach(() => {
   vi.spyOn(console, 'log').mockImplementation((...args) =>
     stdoutMock(`${args.join(' ')}\n`),
   );
-
-  vi.mocked(Git.getChangedFiles).mockResolvedValue([]);
 
   vi.mocked(createDestinationFileReader).mockReturnValue(
     vi.fn().mockResolvedValue(null),
@@ -68,7 +79,11 @@ describe('autofix', () => {
   };
 
   describe('GitHub Actions', () => {
-    const push = vi.fn();
+    vi.spyOn(Git, 'commitAllChanges');
+    vi.spyOn(Git, 'currentBranch');
+    vi.spyOn(Git, 'getChangedFiles');
+    vi.spyOn(Git, 'getHeadCommitMessage');
+    const push = vi.spyOn(Git, 'push');
 
     const expectAutofixCommit = (
       { eslint, internal }: Record<'eslint' | 'internal', boolean> = {
@@ -92,6 +107,7 @@ describe('autofix', () => {
     beforeEach(() => {
       process.env.GITHUB_ACTIONS = 'true';
       vi.mocked(simpleGit).mockReturnValue({ push } as any);
+      push.mockResolvedValue({ ok: true, error: null, refs: {} });
     });
 
     it('bails on a non-CI environment', async () => {
@@ -104,7 +120,7 @@ describe('autofix', () => {
     });
 
     it('bails on the master branch', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('master');
+      await git.branch({ fs, dir, ref: 'master', checkout: true });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -112,7 +128,7 @@ describe('autofix', () => {
     });
 
     it('bails on the main branch', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('main');
+      await git.branch({ fs, dir, ref: 'main', checkout: true });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -121,8 +137,7 @@ describe('autofix', () => {
 
     it('bails on the Buildkite default branch', async () => {
       process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH = 'devel';
-
-      vi.mocked(Git.currentBranch).mockResolvedValue('devel');
+      await git.branch({ fs, dir, ref: 'devel', checkout: true });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -130,7 +145,7 @@ describe('autofix', () => {
     });
 
     it('bails on a renovate branch when there is no open pull request', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
+      await git.branch({ fs, dir, ref: 'renovate-skuba-7.x', checkout: true });
       vi.mocked(GitHub.getPullRequestNumber).mockRejectedValue(
         new Error(
           `Commit cdd1520 is not associated with an open GitHub pull request`,
@@ -145,7 +160,7 @@ describe('autofix', () => {
     });
 
     it('suceeds on a renovate branch when there is an open pull request associated with the commit', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('renovate-skuba-7.x');
+      await git.branch({ fs, dir, ref: 'renovate-skuba-7.x', checkout: true });
       vi.mocked(GitHub.getPullRequestNumber).mockResolvedValue(6);
 
       await expect(autofix(params)).resolves.toBeUndefined();
@@ -156,7 +171,7 @@ describe('autofix', () => {
     it('bails on a GitHub protected branch', async () => {
       process.env.GITHUB_REF_PROTECTED = 'true';
 
-      vi.mocked(Git.currentBranch).mockResolvedValue('beta');
+      await git.branch({ fs, dir, ref: 'beta', checkout: true });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -164,10 +179,8 @@ describe('autofix', () => {
     });
 
     it('bails on an autofix head commit', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('feature');
-      vi.mocked(Git.getHeadCommitMessage).mockResolvedValue(
-        'Run `skuba format`\n',
-      );
+      await git.branch({ fs, dir, ref: 'feature', checkout: true });
+      await git.commit({ fs, dir, message: 'Run `skuba format`' });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -228,7 +241,7 @@ describe('autofix', () => {
 
     it('handles fixable issues from ESLint only', async () => {
       vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
         autofix({ ...params, eslint: true, prettier: false }),
@@ -250,7 +263,7 @@ describe('autofix', () => {
 
     it('handles fixable issues from Prettier only', async () => {
       vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
         autofix({ ...params, eslint: false, internal: false, prettier: true }),
@@ -286,7 +299,7 @@ describe('autofix', () => {
       ]);
 
       vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
         autofix({ ...params, eslint: false, prettier: false, internal: true }),
@@ -362,7 +375,7 @@ describe('autofix', () => {
       ]);
 
       vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
-      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
       vi.mocked(createDestinationFileReader).mockReturnValue(
         vi.fn().mockResolvedValue('_authToken'),
       );
@@ -419,7 +432,7 @@ describe('autofix', () => {
     });
 
     it('bails on the master branch', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('master');
+      await git.branch({ fs, dir, ref: 'master', checkout: true });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -427,7 +440,7 @@ describe('autofix', () => {
     });
 
     it('bails on the main branch', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('main');
+      await git.branch({ fs, dir, ref: 'main', checkout: true });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -437,7 +450,7 @@ describe('autofix', () => {
     it('bails on the Buildkite default branch', async () => {
       process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH = 'devel';
 
-      vi.mocked(Git.currentBranch).mockResolvedValue('devel');
+      await git.branch({ fs, dir, ref: 'devel', checkout: true });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -447,7 +460,7 @@ describe('autofix', () => {
     it('bails on a GitHub protected branch', async () => {
       process.env.GITHUB_REF_PROTECTED = 'true';
 
-      vi.mocked(Git.currentBranch).mockResolvedValue('beta');
+      await git.branch({ fs, dir, ref: 'beta', checkout: true });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -455,10 +468,8 @@ describe('autofix', () => {
     });
 
     it('bails on an autofix head commit', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('feature');
-      vi.mocked(Git.getHeadCommitMessage).mockResolvedValue(
-        'Run `skuba format`',
-      );
+      await git.branch({ fs, dir, ref: 'feature', checkout: true });
+      await git.commit({ fs, dir, message: 'Run `skuba format`' });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -466,7 +477,7 @@ describe('autofix', () => {
     });
 
     it('bails on no fixable issues', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('feature');
+      await git.branch({ fs, dir, ref: 'feature', checkout: true });
 
       await expect(
         autofix({ ...params, eslint: false, prettier: false, internal: false }),
@@ -476,7 +487,7 @@ describe('autofix', () => {
     });
 
     it('skips push when there are no changes', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('feature');
+      await git.branch({ fs, dir, ref: 'feature', checkout: true });
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -493,7 +504,7 @@ describe('autofix', () => {
 
     it('handles fixable issues from ESLint only', async () => {
       vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
-      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
         autofix({ ...params, eslint: true, prettier: false }),
@@ -521,7 +532,7 @@ describe('autofix', () => {
 
     it('handles fixable issues from Prettier only', async () => {
       vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
-      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
         autofix({ ...params, eslint: false, internal: false, prettier: true }),
@@ -556,7 +567,7 @@ describe('autofix', () => {
       ]);
 
       vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
-      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
         autofix({ ...params, eslint: false, prettier: false }),
@@ -601,7 +612,7 @@ describe('autofix', () => {
     });
 
     it('bails on commit error', async () => {
-      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       vi.mocked(GitHub.uploadAllFileChanges).mockRejectedValue(MOCK_ERROR);
 
@@ -630,7 +641,7 @@ describe('autofix', () => {
       ]);
 
       vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
-      vi.mocked(Git.currentBranch).mockResolvedValue('dev');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
       vi.mocked(createDestinationFileReader).mockReturnValue(
         vi.fn().mockResolvedValue('_authToken'),
       );
@@ -655,5 +666,193 @@ describe('autofix', () => {
         "
       `);
     });
+  });
+});
+
+const dir = process.cwd();
+const author = { name: 'user', email: 'user@email.com' };
+
+const params = {
+  debug: false,
+  eslint: true,
+  prettier: true,
+  internal: true,
+};
+
+const writeAndCommit = async ({
+  files,
+  commitAuthor = author,
+}: {
+  files: Record<string, string>;
+  commitAuthor?: { name: string; email: string };
+}) => {
+  for (const [filepath, contents] of Object.entries(files)) {
+    const directory = filepath.split('/').slice(0, -1).join('/');
+    if (directory) {
+      await fs.promises.mkdir(directory, { recursive: true });
+    }
+    await fs.promises.writeFile(filepath, contents);
+  }
+
+  await git.add({ fs, dir, filepath: Object.keys(files) });
+  await git.commit({
+    fs,
+    dir,
+    author: commitAuthor,
+    message: 'commit',
+  });
+};
+
+const createRenovateLockfileHead = async (
+  lockfilePath: string,
+  files: Record<string, string> = {},
+) => {
+  await writeAndCommit({
+    files: { '.gitignore': 'node_modules\n' },
+    commitAuthor: author,
+  });
+
+  await writeAndCommit({
+    files: { ...files, [lockfilePath]: 'base lockfile' },
+    commitAuthor: RENOVATE_AUTHOR,
+  });
+};
+
+const assertGitStatus = async (filepath: string, expected: string) => {
+  const status = await git.status({ fs, dir, filepath });
+  expect(status).toBe(expected);
+};
+
+describe('Renovate autofix guard', () => {
+  let push: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    process.env.GITHUB_ACTIONS = 'true';
+    process.env.GITHUB_HEAD_REF = 'renovate/skuba-0.x-lockfile';
+
+    push = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(simpleGit).mockReturnValue({ push } as any);
+  });
+
+  it('discards lockfile-only changes on Renovate lock file update per Git history', async () => {
+    await createRenovateLockfileHead('pnpm-lock.yaml');
+
+    await fs.promises.writeFile('pnpm-lock.yaml', 'updated lockfile');
+
+    await expect(autofix(params)).resolves.toBeUndefined();
+
+    expect(push).not.toHaveBeenCalled();
+    await assertGitStatus('pnpm-lock.yaml', '*modified');
+
+    expect(stdout()).toContain(
+      'Renovate appears to be performing lock file updates on this branch.',
+    );
+    expect(stdout()).toContain('No autofixes detected.');
+  });
+
+  it.each(['renovate-package-16.x-lockfile', 'renovate/skuba-0.x-lockfile'])(
+    'discards lockfile-only changes on Renovate lock file update per %s branch name fallback',
+    async (branchName) => {
+      process.env.GITHUB_HEAD_REF = branchName;
+
+      await fs.promises.writeFile('pnpm-lock.yaml', 'updated lockfile');
+
+      vi.spyOn(git, 'log').mockRejectedValueOnce(new Error('Git error'));
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expect(push).not.toHaveBeenCalled();
+      await assertGitStatus('pnpm-lock.yaml', '*added');
+
+      expect(stdout()).toContain(
+        'Renovate autofix guard failed to inspect head commit, falling back to branch name match.',
+      );
+      expect(stdout()).toContain(
+        'Renovate appears to be performing lock file updates on this branch.',
+      );
+      expect(stdout()).toContain('No autofixes detected.');
+    },
+  );
+
+  it('pushes lockfile changes on Renovate package.json update', async () => {
+    process.env.GITHUB_ACTIONS = 'true';
+
+    await createRenovateLockfileHead('pnpm-lock.yaml', {
+      'package.json': '{"name":"example"}',
+    });
+
+    await Promise.all([
+      fs.promises.writeFile('pnpm-lock.yaml', 'updated lockfile'),
+      fs.promises.writeFile('package.json', '{"name":"example2"}'),
+    ]);
+
+    await expect(autofix(params)).resolves.toBeUndefined();
+
+    expect(Git.commitAllChanges).toHaveBeenCalledWith({
+      dir: expect.any(String),
+      ignore: [
+        {
+          path: 'Dockerfile-incunabulum',
+          state: 'added',
+        },
+      ],
+      message: 'Run `skuba format`',
+    });
+    expect(push).toHaveBeenCalledTimes(1);
+    await assertGitStatus('package.json', 'unmodified');
+    await assertGitStatus('pnpm-lock.yaml', 'unmodified');
+
+    expect(stdout()).toContain('Pushed fix commit');
+  });
+
+  it('pushes non-lockfile changes on Renovate lock file update', async () => {
+    process.env.GITHUB_ACTIONS = 'true';
+
+    await createRenovateLockfileHead('pnpm-lock.yaml');
+
+    await Promise.all([
+      fs.promises.writeFile('pnpm-lock.yaml', 'updated lockfile'),
+      fs.promises.writeFile('package.json', '{"name":"example"}'),
+    ]);
+
+    await expect(autofix(params)).resolves.toBeUndefined();
+
+    expect(Git.commitAllChanges).toHaveBeenCalledWith({
+      dir: expect.any(String),
+      ignore: [
+        {
+          path: 'Dockerfile-incunabulum',
+          state: 'added',
+        },
+        {
+          path: 'pnpm-lock.yaml',
+          state: 'modified',
+        },
+      ],
+      message: 'Run `skuba format`',
+    });
+    expect(push).toHaveBeenCalledTimes(1);
+    await assertGitStatus('package.json', 'unmodified');
+    await assertGitStatus('pnpm-lock.yaml', '*modified');
+
+    expect(stdout()).toContain('Pushed fix commit');
+  });
+
+  it('discards Yarn lockfile-only changes', async () => {
+    process.env.GITHUB_HEAD_REF = 'renovate/yarn-lockfile';
+
+    await createRenovateLockfileHead('yarn.lock');
+
+    await fs.promises.writeFile('yarn.lock', 'updated lockfile');
+
+    await expect(autofix(params)).resolves.toBeUndefined();
+
+    expect(push).not.toHaveBeenCalled();
+    await assertGitStatus('yarn.lock', '*modified');
+
+    expect(stdout()).toContain(
+      'Renovate appears to be performing lock file updates on this branch.',
+    );
+    expect(stdout()).toContain('No autofixes detected.');
   });
 });
