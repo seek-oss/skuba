@@ -70,13 +70,11 @@ const isChainedPromise = (
   esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
   checker: TypeChecker,
 ) => {
-  if (
-    !(
-      node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
-      node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
-      PROMISE_INSTANCE_METHODS.has(node.callee.property.name)
-    )
-  ) {
+  if (!(
+    node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+    node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
+    PROMISE_INSTANCE_METHODS.has(node.callee.property.name)
+  )) {
     return false;
   }
 
@@ -250,13 +248,11 @@ const isSafeIshIterableMethod = (
   esTreeNodeToTSNodeMap: ESTreeNodeToTSNodeMap,
   checker: TypeChecker,
 ): boolean => {
-  if (
-    !(
-      node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
-      node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
-      SAFE_ISH_ITERABLE_INSTANCE_METHODS.has(node.callee.property.name)
-    )
-  ) {
+  if (!(
+    node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+    node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
+    SAFE_ISH_ITERABLE_INSTANCE_METHODS.has(node.callee.property.name)
+  )) {
     return false;
   }
 
@@ -873,17 +869,15 @@ export default createRule({
       CallExpression: (node) => {
         // Ensure this is a static `Promise` method call
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#static_methods
-        if (
-          !(
-            node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
-            node.callee.object.type === TSESTree.AST_NODE_TYPES.Identifier &&
-            node.callee.object.name === 'Promise' &&
-            node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
-            ['all', 'allSettled', 'any', 'race'].includes(
-              node.callee.property.name,
-            )
+        if (!(
+          node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression &&
+          node.callee.object.type === TSESTree.AST_NODE_TYPES.Identifier &&
+          node.callee.object.name === 'Promise' &&
+          node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier &&
+          ['all', 'allSettled', 'any', 'race'].includes(
+            node.callee.property.name,
           )
-        ) {
+        )) {
           return;
         }
 

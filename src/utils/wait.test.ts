@@ -1,7 +1,10 @@
+import { setTimeout as sleep } from 'timers/promises';
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import * as sleepModule from './sleep.js';
 import * as wait from './wait.js';
+
+vi.mock('timers/promises');
 
 const delayMicrotask = () =>
   Promise.resolve()
@@ -9,7 +12,7 @@ const delayMicrotask = () =>
     .then(() => undefined)
     .then(() => undefined);
 
-const sleep = vi.spyOn(sleepModule, 'sleep');
+const mockedSleep = vi.mocked(sleep);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -17,19 +20,26 @@ beforeEach(() => {
 
 describe('throwOnTimeout', () => {
   it('propagates a fulfilled promise within the timeout', async () => {
-    sleep.mockImplementation(delayMicrotask);
+    mockedSleep.mockImplementation(delayMicrotask);
 
     const value = 123;
     const promise = vi.fn().mockResolvedValue(value);
 
     await expect(wait.throwOnTimeout(promise(), { s: 3 })).resolves.toBe(value);
 
-    expect(sleep).toHaveBeenCalledTimes(1);
-    expect(sleep).toHaveBeenNthCalledWith(1, 3_000);
+    expect(mockedSleep).toHaveBeenCalledTimes(1);
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      3_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('propagates a rejected promise within the timeout', async () => {
-    sleep.mockImplementation(delayMicrotask);
+    mockedSleep.mockImplementation(delayMicrotask);
 
     const err = new Error('Badness!');
 
@@ -37,12 +47,19 @@ describe('throwOnTimeout', () => {
 
     await expect(wait.throwOnTimeout(promise(), { s: 2 })).rejects.toThrow(err);
 
-    expect(sleep).toHaveBeenCalledTimes(1);
-    expect(sleep).toHaveBeenNthCalledWith(1, 2_000);
+    expect(mockedSleep).toHaveBeenCalledTimes(1);
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      2_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('enforces the timeout', async () => {
-    sleep.mockResolvedValue();
+    mockedSleep.mockImplementation((_ms, value) => Promise.resolve(value));
 
     const promise = vi.fn().mockImplementation(delayMicrotask);
 
@@ -52,14 +69,21 @@ describe('throwOnTimeout', () => {
       `[Error: Timed out after 1 second]`,
     );
 
-    expect(sleep).toHaveBeenCalledTimes(1);
-    expect(sleep).toHaveBeenNthCalledWith(1, 1_000);
+    expect(mockedSleep).toHaveBeenCalledTimes(1);
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      1_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 });
 
 describe('withTimeout', () => {
   it('propagates a static value for easier `jest.mock`ing', async () => {
-    sleep.mockImplementation(delayMicrotask);
+    mockedSleep.mockImplementation(delayMicrotask);
 
     const value = 123;
 
@@ -68,12 +92,19 @@ describe('withTimeout', () => {
       value,
     });
 
-    expect(sleep).toHaveBeenCalledTimes(1);
-    expect(sleep).toHaveBeenNthCalledWith(1, 1_000);
+    expect(mockedSleep).toHaveBeenCalledTimes(1);
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      1_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('propagates a fulfilled promise within the timeout', async () => {
-    sleep.mockImplementation(delayMicrotask);
+    mockedSleep.mockImplementation(delayMicrotask);
 
     const value = 123;
     const promise = vi.fn().mockResolvedValue(value);
@@ -83,12 +114,19 @@ describe('withTimeout', () => {
       value,
     });
 
-    expect(sleep).toHaveBeenCalledTimes(1);
-    expect(sleep).toHaveBeenNthCalledWith(1, 1_000);
+    expect(mockedSleep).toHaveBeenCalledTimes(1);
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      1_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('propagates a rejected promise within the timeout', async () => {
-    sleep.mockImplementation(delayMicrotask);
+    mockedSleep.mockImplementation(delayMicrotask);
 
     const err = new Error('Badness!');
 
@@ -96,12 +134,19 @@ describe('withTimeout', () => {
 
     await expect(wait.withTimeout(promise(), { s: 2 })).rejects.toThrow(err);
 
-    expect(sleep).toHaveBeenCalledTimes(1);
-    expect(sleep).toHaveBeenNthCalledWith(1, 2_000);
+    expect(mockedSleep).toHaveBeenCalledTimes(1);
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      2_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 
   it('enforces the timeout', async () => {
-    sleep.mockResolvedValue();
+    mockedSleep.mockImplementation((_ms, value) => Promise.resolve(value));
 
     const promise = vi.fn().mockImplementation(delayMicrotask);
 
@@ -109,7 +154,14 @@ describe('withTimeout', () => {
       ok: false,
     });
 
-    expect(sleep).toHaveBeenCalledTimes(1);
-    expect(sleep).toHaveBeenNthCalledWith(1, 3_000);
+    expect(mockedSleep).toHaveBeenCalledTimes(1);
+    expect(mockedSleep).toHaveBeenNthCalledWith(
+      1,
+      3_000,
+      { ok: false },
+      {
+        ref: false,
+      },
+    );
   });
 });

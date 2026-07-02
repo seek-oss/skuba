@@ -139,6 +139,6 @@ if [ "$update_snapshot" = true ]; then
   cd ../../skuba || exit 1
   bash ./scripts/update-template-snapshot.sh "${skuba_temp_directory}" "${template}"
 else
-  echo "--- pnpm test ${template}"
-  pnpm test
+  echo "--- pnpm test:ci ${template}"
+  pnpm test:ci
 fi

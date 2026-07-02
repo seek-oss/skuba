@@ -19,8 +19,7 @@ const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;
 type RenovateFiletype = 'json' | 'json5';
 
 type RenovatePreset =
-  | 'local>seekasia/renovate-config'
-  | 'local>seek-jobs/renovate-config';
+  'local>seekasia/renovate-config' | 'local>seek-jobs/renovate-config';
 
 const renovateConfigSchema = z.object({
   extends: z.array(z.string()),

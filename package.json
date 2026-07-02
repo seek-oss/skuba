@@ -120,7 +120,7 @@
     "npm-which": "^3.0.1",
     "picomatch": "^4.0.0",
     "pnpm-plugin-skuba": "workspace:*",
-    "prettier": "~3.8.0",
+    "prettier": "~3.9.0",
     "prettier-plugin-packagejson": "^3.0.0",
     "publint": "~0.3.17",
     "read-package-up": "^12.0.0",
