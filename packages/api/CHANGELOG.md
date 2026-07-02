@@ -1,5 +1,13 @@
 # @skuba-lib/api
 
+## 2.3.0
+
+### Minor Changes
+
+- **Git.getChangedFiles:** Support `src` and `dst` parameters for diffing ([#2490](https://github.com/seek-oss/skuba/pull/2490))
+
+  See the [documentation](https://seek-oss.github.io/skuba/docs/development-api/git.html#getchangedfiles) for more information.
+
 ## 2.2.0
 
 ### Minor Changes
