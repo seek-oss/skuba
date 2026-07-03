@@ -13,7 +13,7 @@ export const test = async () => {
     preferLocal: false,
   });
 
-  let result: { code: number } | undefined;
+  let result: { exitCode?: number } | undefined;
   try {
     result = await customExec('vitest', ...argv);
   } catch {
@@ -21,7 +21,7 @@ export const test = async () => {
   }
 
   try {
-    await throwOnTimeout(createAnnotations(result?.code === 0), { s: 30 });
+    await throwOnTimeout(createAnnotations(result?.exitCode === 0), { s: 30 });
   } catch (err) {
     log.warn('Failed to annotate test results.');
     log.subtle(inspect(err));
