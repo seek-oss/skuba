@@ -60,6 +60,8 @@ Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-works
 
 Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
 
+Patch skipped: Upgrade datadog-lambda-js to the ESM-compatible release - no package.json or pnpm-workspace.yaml files to patch
+
 Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
 
 Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
@@ -72,8 +74,6 @@ Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Add SEEK registry to .npmrc files for SEEK-Jobs repositories - not a SEEK-Jobs repository upgrade-skuba
 
-Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
-
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
@@ -81,6 +81,8 @@ Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to pat
 Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
+Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -193,6 +195,8 @@ Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-works
 
 Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
 
+Patch skipped: Upgrade datadog-lambda-js to the ESM-compatible release - no package.json or pnpm-workspace.yaml files to patch
+
 Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
 
 Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
@@ -205,8 +209,6 @@ Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Add SEEK registry to .npmrc files for SEEK-Jobs repositories - not a SEEK-Jobs repository upgrade-skuba
 
-Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
-
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
@@ -214,6 +216,8 @@ Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to pat
 Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
+Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -319,6 +323,8 @@ Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-works
 
 Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
 
+Patch skipped: Upgrade datadog-lambda-js to the ESM-compatible release - no package.json or pnpm-workspace.yaml files to patch
+
 Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
 
 Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
@@ -331,8 +337,6 @@ Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Add SEEK registry to .npmrc files for SEEK-Jobs repositories - not a SEEK-Jobs repository upgrade-skuba
 
-Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
-
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
@@ -340,6 +344,8 @@ Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to pat
 Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
+Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -417,6 +423,8 @@ Patch skipped: Upgrade skuba-dive to support ESM - no package.json or pnpm-works
 
 Patch skipped: Migrate Lambdas to ESM - no lambdas to migrate
 
+Patch skipped: Upgrade datadog-lambda-js to the ESM-compatible release - no package.json or pnpm-workspace.yaml files to patch
+
 Patch skipped: Migrate Dockerfiles to replace --require with --import - no Dockerfile files found
 
 Patch skipped: Patch Dockerfile CMD lines to add dd-trace or opentelemetry imports - no Dockerfile files found
@@ -429,8 +437,6 @@ Patch applied: Migrate to ESM upgrade-skuba
 
 Patch skipped: Add SEEK registry to .npmrc files for SEEK-Jobs repositories - not a SEEK-Jobs repository upgrade-skuba
 
-Patch skipped: Add dd-trace ESM --import to NODE_OPTIONS for Datadog lambdas with handler redirection disabled - no lambdas to patch upgrade-skuba
-
 Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found upgrade-skuba
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
@@ -438,6 +444,8 @@ Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to pat
 Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
+Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
 skuba update complete. upgrade-skuba
 

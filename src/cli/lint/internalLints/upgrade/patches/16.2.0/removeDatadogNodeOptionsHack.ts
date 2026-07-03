@@ -1,16 +1,29 @@
 import { inspect } from 'util';
 
-import { type Edit, parseAsync } from '@ast-grep/napi';
+import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
+import latest from 'latest-version';
 
 import { log } from '../../../../../../utils/logging.js';
 import {
-  appendDdTraceToCdkNodeOptions,
-  appendDdTraceToServerlessNodeOptions,
   collectLambdaFiles,
+  removeDdTraceFromCdkNodeOptions,
+  removeDdTraceFromServerlessNodeOptions,
+  removeWholeLine,
 } from '../../../../../migrate/esm/datadogNodeOptions.js';
+import { upgradeInfraPackages } from '../../../../../migrate/nodeVersion/upgrade.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
+
+const DATADOG_LAMBDA_JS_VERSION = '^12.140.0';
+
+const findCdkWorker = (astRoot: SgNode): SgNode | null =>
+  astRoot.find({
+    rule: {
+      kind: 'new_expression',
+      regex: '^new (aws_lambda_nodejs.NodejsFunction|NodejsFunction)',
+    },
+  });
 
 const patchCdkFile = async (contents: string): Promise<string | null> => {
   const astRoot = (await parseAsync('TypeScript', contents)).root();
@@ -35,23 +48,19 @@ const patchCdkFile = async (contents: string): Promise<string | null> => {
     },
   });
 
-  if (redirectHandler?.field('value')?.text() !== 'false') {
+  if (!redirectHandler || redirectHandler.field('value')?.text() !== 'false') {
     return null;
   }
 
-  const workerAst = astRoot.find({
-    rule: {
-      kind: 'new_expression',
-      regex: '^new (aws_lambda_nodejs.NodejsFunction|NodejsFunction)',
-    },
-  });
+  const workerAst = findCdkWorker(astRoot);
 
   if (!workerAst) {
     return null;
   }
 
   const edits: Edit[] = [];
-  appendDdTraceToCdkNodeOptions(workerAst, edits);
+  removeDdTraceFromCdkNodeOptions(workerAst, edits);
+  removeWholeLine(redirectHandler, edits);
 
   if (!edits.length) {
     return null;
@@ -77,7 +86,8 @@ const patchServerlessFile = async (
   }
 
   const edits: Edit[] = [];
-  appendDdTraceToServerlessNodeOptions(astRoot, edits);
+  removeDdTraceFromServerlessNodeOptions(astRoot, edits);
+  removeWholeLine(redirectHandlers, edits);
 
   if (!edits.length) {
     return null;
@@ -86,11 +96,10 @@ const patchServerlessFile = async (
   return astRoot.commitEdits(edits);
 };
 
-const addDdTraceEsmImportPatch: PatchFunction = async ({
+const removeDatadogNodeOptionsHackPatch: PatchFunction = async ({
   mode,
 }): Promise<PatchReturnType> => {
-  const { tsFiles, serverlessFiles, containsDatadogLambdaImport } =
-    await collectLambdaFiles();
+  const { tsFiles, serverlessFiles } = await collectLambdaFiles();
 
   if (serverlessFiles.length) {
     registerAstGrepLanguages();
@@ -110,10 +119,7 @@ const addDdTraceEsmImportPatch: PatchFunction = async ({
         return patched ? { file, contents: patched } : null;
       }),
       ...serverlessFiles.map(async ({ file, contents }) => {
-        if (
-          !containsDatadogLambdaImport ||
-          !contents.includes('redirectHandlers')
-        ) {
+        if (!contents.includes('redirectHandlers')) {
           return null;
         }
 
@@ -126,7 +132,7 @@ const addDdTraceEsmImportPatch: PatchFunction = async ({
   if (!patchedFiles.length) {
     return {
       result: 'skip',
-      reason: 'no lambdas to patch',
+      reason: 'no datadog lambda hack to remove',
     };
   }
 
@@ -136,22 +142,37 @@ const addDdTraceEsmImportPatch: PatchFunction = async ({
     };
   }
 
+  // `dd-trace` is intentionally left in place: it is still required to
+  // instrument APM for Lambdas via `datadog-lambda-js` handler redirection, so
+  // it must remain installed and bundled. Only the redundant `NODE_OPTIONS`
+  // preload and `redirectHandler(s): false` setting are removed here.
   await Promise.all(
-    patchedFiles.map(async ({ file, contents }) => {
-      await fs.promises.writeFile(file, contents, 'utf8');
-    }),
+    patchedFiles.map(({ file, contents }) =>
+      fs.promises.writeFile(file, contents, 'utf8'),
+    ),
   );
+
+  await upgradeInfraPackages(mode, [
+    {
+      name: 'datadog-lambda-js',
+      version: await latest('datadog-lambda-js', {
+        version: DATADOG_LAMBDA_JS_VERSION,
+      }),
+    },
+  ]);
 
   return {
     result: 'apply',
   };
 };
 
-export const tryAddDdTraceEsmImport: PatchFunction = async (config) => {
+export const tryRemoveDatadogNodeOptionsHack: PatchFunction = async (
+  config,
+) => {
   try {
-    return await addDdTraceEsmImportPatch(config);
+    return await removeDatadogNodeOptionsHackPatch(config);
   } catch (err) {
-    log.warn('Failed to add dd-trace ESM import to NODE_OPTIONS');
+    log.warn('Failed to remove the dd-trace NODE_OPTIONS Lambda hack');
     log.subtle(inspect(err));
     return { result: 'skip', reason: 'due to an error' };
   }
