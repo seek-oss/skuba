@@ -3,14 +3,18 @@ import { inspect } from 'util';
 
 import fs from 'fs-extra';
 
-import { hasDebugFlag } from '../../utils/args.js';
+import {
+  hasDebugFlag,
+  hasHelpFlag,
+  hasNonInteractiveFlag,
+} from '../../utils/args.js';
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
 import { createInclusionFilter } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
 import { pathExists } from '../../utils/fs.js';
 import { createLogger, log } from '../../utils/logging.js';
 import { showLogoAndVersionInfo } from '../../utils/logo.js';
-import { getConsumerManifest, getSkubaManifest } from '../../utils/manifest.js';
+import { getConsumerManifest } from '../../utils/manifest.js';
 import { detectPackageManager } from '../../utils/packageManager.js';
 import {
   BASE_TEMPLATE_DIR,
@@ -23,7 +27,7 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 
 import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
-import { installPnpmPlugin } from './installPnpmPlugin.js';
+import { logInitHelp } from './help.js';
 import { resumeTemplating } from './resumeTemplating.js';
 import type { Input } from './types.js';
 import { writePackageJson } from './writePackageJson.js';
@@ -35,7 +39,16 @@ export const init = async (args = process.argv.slice(2)) => {
     debug: hasDebugFlag(args),
   };
 
+  // Force reading from stdin when `--non-interactive` is passed, otherwise fall
+  // back to whether stdin is a TTY.
+  const nonInteractive = hasNonInteractiveFlag(args) || !process.stdin.isTTY;
+
   const skubaVersionInfo = await showLogoAndVersionInfo();
+
+  if (hasHelpFlag(args)) {
+    logInitHelp();
+    return;
+  }
 
   const consumerManifest = await getConsumerManifest();
   if (
@@ -44,7 +57,7 @@ export const init = async (args = process.argv.slice(2)) => {
       path.join(path.dirname(consumerManifest.path), TEMPLATE_CONFIG_FILENAME),
     ))
   ) {
-    await resumeTemplating({ manifest: consumerManifest });
+    await resumeTemplating({ manifest: consumerManifest, nonInteractive });
     return;
   }
 
@@ -56,7 +69,7 @@ export const init = async (args = process.argv.slice(2)) => {
     templateData,
     templateName,
     type,
-  } = await getConfig();
+  } = await getConfig({ nonInteractive });
 
   await ensureCommands(packageManager);
 
@@ -108,10 +121,9 @@ export const init = async (args = process.argv.slice(2)) => {
   log.newline();
   await initialiseRepo(destinationDir, templateData);
 
-  const [manifest, packageManagerConfig, skubaManifest] = await Promise.all([
+  const [manifest, packageManagerConfig] = await Promise.all([
     getConsumerManifest(destinationDir),
     detectPackageManager(destinationDir),
-    getSkubaManifest(),
   ]);
 
   if (!manifest) {
@@ -125,9 +137,6 @@ export const init = async (args = process.argv.slice(2)) => {
       'utf8',
     );
     await patchPnpmWorkspace('format', destinationDir);
-    if (process.env.SKUBA_INTEGRATION_TEST !== 'true') {
-      await installPnpmPlugin(skubaManifest, exec);
-    }
   }
 
   // Patch in a baseline Renovate preset based on the configured Git owner.

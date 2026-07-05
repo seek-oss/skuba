@@ -15,17 +15,56 @@ export interface Input {
 export type InitConfigInput = z.infer<typeof initConfigInputSchema>;
 
 export const initConfigInputSchema = z.object({
-  destinationDir: z.string(),
-  templateComplete: z.boolean(),
+  destinationDir: z
+    .string()
+    .describe(
+      'Directory to create the new project in, relative to the current working directory.',
+    ),
+  templateComplete: z
+    .boolean()
+    .describe(
+      'Whether all of the template fields are provided. If unsure, set to `false` and run `skuba init` in the new directory to resume the templating process.',
+    ),
   templateData: z
     .object({
-      ownerName: z.string(),
-      repoName: z.string(),
-      platformName: z.union([z.literal('amd64'), z.literal('arm64')]),
-      defaultBranch: z.string(),
+      ownerName: z
+        .string()
+        .describe(
+          'Repository owner in `org/team` form. `orgName` and `teamName` are derived from this.',
+        )
+        .meta({ examples: ['SEEK-Jobs/my-team'] }),
+      repoName: z
+        .string()
+        .describe('Name of the repository to create, without the org prefix.')
+        .meta({ examples: ['my-repo'] }),
+      platformName: z
+        .union([z.literal('amd64'), z.literal('arm64')])
+        .describe("Target CPU architecture for the project's compute."),
+      defaultBranch: z
+        .string()
+        .describe("The repository's default branch.")
+        .meta({ examples: ['main', 'master'] }),
     })
-    .catchall(z.string()),
-  templateName: z.string(),
+    .catchall(
+      z
+        .string()
+        .describe(
+          "Additional template-specific fields, keyed by the field names declared in the template's `skuba.template.js`.",
+        ),
+    ),
+  templateName: z
+    .string()
+    .describe(
+      'Built-in template name, or a `github:`, `seek:`, or `local:` prefixed template reference.',
+    )
+    .meta({
+      examples: [
+        'greeter',
+        'github:my-org/my-template',
+        'seek:my-private-template',
+        'local:./path/to/template',
+      ],
+    }),
 });
 
 export type InitConfig = z.infer<typeof initConfigSchema>;

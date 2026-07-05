@@ -1,5 +1,7 @@
 import { inspect } from 'util';
 
+import fs from 'fs-extra';
+import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
 
 import { isCiEnv } from '../../utils/env.js';
@@ -16,6 +18,11 @@ import type { Input } from './types.js';
 import * as Buildkite from '@skuba-lib/api/buildkite';
 import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
+
+export const RENOVATE_AUTHOR = {
+  name: 'renovate[bot]',
+  email: '29139614+renovate[bot]@users.noreply.github.com',
+};
 
 const RENOVATE_DEFAULT_PREFIX = 'renovate';
 
@@ -38,6 +45,18 @@ export const AUTOFIX_IGNORE_FILES_NPMRC: Git.ChangedFile[] = [
     state: 'modified',
   },
 ];
+
+/**
+ * - `renovate-skuba-0.x-lockfile`
+ * - `renovate/skuba-9000.x-lockfile`
+ */
+const LOCKFILE_BRANCH_PATTERN = /^renovate[\/-].+-lockfile$/;
+
+const isManagedLockfile = (path: string): boolean =>
+  path.endsWith('/pnpm-lock.yaml') ||
+  path === 'pnpm-lock.yaml' ||
+  path.endsWith('/yarn.lock') ||
+  path === 'yarn.lock';
 
 const shouldPush = async ({
   currentBranch,
@@ -95,6 +114,105 @@ const shouldPush = async ({
 
   // Allow the push attempt to go ahead if our guards have been cleared.
   return true;
+};
+
+const createAutofixIgnore = async ({
+  currentBranch,
+  dir,
+}: {
+  currentBranch?: string;
+  dir: string;
+}): Promise<Git.ChangedFile[] | false> => {
+  const ignore = await getIgnores(dir);
+
+  const changedFiles = await Git.getChangedFiles({ dir, ignore });
+
+  const lockfileChanges = changedFiles.filter((file) =>
+    isManagedLockfile(file.path),
+  );
+
+  if (
+    lockfileChanges.length &&
+    (await isRenovateLockfileUpdate({ currentBranch, dir }))
+  ) {
+    log.warn(
+      'Renovate appears to be performing lock file updates on this branch. The following autofixes have been skipped to avoid an infinite loop:',
+    );
+    lockfileChanges.forEach((file) => log.subtle(`- ${file.path}`));
+
+    return lockfileChanges.length === changedFiles.length
+      ? false
+      : [...ignore, ...lockfileChanges];
+  }
+
+  return ignore;
+};
+
+const isRenovateLockfileUpdateInGit = async (
+  dir: string,
+): Promise<boolean | null> => {
+  const [headResult] = await git.log({ depth: 1, dir, fs });
+  if (!headResult) {
+    return null;
+  }
+
+  // Check whether the head commit was authored by Renovate.
+  // This likely isn't perfect when there are timing issues and/or another bot
+  // commits over Renovate, but even if the guard doesn't trigger on the first
+  // iteration, it should eventually break the loop.
+  if (
+    headResult.commit.author.name !== RENOVATE_AUTHOR.name ||
+    headResult.commit.author.email !== RENOVATE_AUTHOR.email
+  ) {
+    return false;
+  }
+
+  // Check whether the head commit only touched lockfile(s).
+  // We're assuming that Renovate will rebase less aggressively when other
+  // changes are present given we haven't seen this death spiral in repos that
+  // pin `skuba` and hence receive updates to both `package.json` and lockfile.
+  // https://github.com/renovatebot/renovate/blob/a0df771195a2911c7bba29d51982c2f763ebdb9e/lib/modules/manager/npm/post-update/index.ts#L662
+  const changedFiles = await Git.getChangedFiles({
+    dir,
+    dst: 'HEAD',
+  });
+  if (
+    changedFiles.length &&
+    changedFiles.every((file) => isManagedLockfile(file.path))
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+const isRenovateLockfileUpdate = async ({
+  currentBranch,
+  dir,
+}: {
+  currentBranch?: string;
+  dir: string;
+}): Promise<boolean> => {
+  try {
+    // Try to inspect head commit via Git first
+    const result = await isRenovateLockfileUpdateInGit(dir);
+
+    if (result !== null) {
+      return result;
+    }
+  } catch (err) {
+    log.warn(
+      'Renovate autofix guard failed to inspect head commit, falling back to branch name match.',
+    );
+    log.subtle(inspect(err));
+  }
+
+  // Fallback to branch name match
+  if (currentBranch && LOCKFILE_BRANCH_PATTERN.test(currentBranch)) {
+    return true;
+  }
+
+  return false;
 };
 
 const getIgnores = async (dir: string): Promise<Git.ChangedFile[]> => {
@@ -161,13 +279,18 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     // format violations or may have created new ones through ESLint/internal fixes.
     await runPrettier('format', logger);
 
+    const ignore = await createAutofixIgnore({ currentBranch, dir });
+    if (!ignore) {
+      return log.warn('No autofixes detected.');
+    }
+
     if (process.env.GITHUB_ACTIONS) {
       // GitHub runners have Git installed locally
       const ref = await Git.commitAllChanges({
         dir,
         message: AUTOFIX_COMMIT_MESSAGE,
 
-        ignore: await getIgnores(dir),
+        ignore,
       });
 
       if (!ref) {
@@ -194,7 +317,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
         dir,
         messageHeadline: AUTOFIX_COMMIT_MESSAGE,
 
-        ignore: await getIgnores(dir),
+        ignore,
       }),
       { s: 30 },
     );
