@@ -52,7 +52,7 @@ steps:
       GET_NPM_TOKEN: please
     plugins:
       - *docker-ecr-cache
-      - docker-compose#v5.12.1:
+      - docker-compose#v5.13.0:
           run: app
           environment:
             # Don't pass NPM_TOKEN to the container. It's only needed in docker-ecr-cache.
