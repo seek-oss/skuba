@@ -27,7 +27,8 @@ parent: Deep dives
          "source.fixAll.eslint": "explicit"
        },
        "editor.defaultFormatter": "esbenp.prettier-vscode"
-     }
+     },
+     "typescript.tsdk": "./node_modules/typescript/lib"
    }
    ```
 
