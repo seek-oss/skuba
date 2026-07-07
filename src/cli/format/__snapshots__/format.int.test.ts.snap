@@ -78,7 +78,7 @@ Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found 
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
-Patch skipped: Use mount-buildkite-agent for Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
+Patch skipped: Use mount-buildkite-agent for Docker and Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
 
@@ -213,7 +213,7 @@ Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found 
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
-Patch skipped: Use mount-buildkite-agent for Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
+Patch skipped: Use mount-buildkite-agent for Docker and Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
 
@@ -341,7 +341,7 @@ Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found 
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
-Patch skipped: Use mount-buildkite-agent for Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
+Patch skipped: Use mount-buildkite-agent for Docker and Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
 
@@ -441,7 +441,7 @@ Patch skipped: Add multi stage builds to api Dockerfiles - no Dockerfiles found 
 
 Patch skipped: Remove baseUrl from tsconfig.json - no tsconfig.json files to patch upgrade-skuba
 
-Patch skipped: Use mount-buildkite-agent for Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
+Patch skipped: Use mount-buildkite-agent for Docker and Docker Compose Buildkite plugins - no Docker Compose or Buildkite pipeline files found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
 

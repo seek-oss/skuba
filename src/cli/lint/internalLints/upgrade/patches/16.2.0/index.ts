@@ -8,7 +8,7 @@ export const patches: Patches = [
   {
     apply: tryMountBuildkiteAgent,
     description:
-      'Use mount-buildkite-agent for Docker Compose Buildkite plugins',
+      'Use mount-buildkite-agent for Docker and Docker Compose Buildkite plugins',
   },
   {
     apply: tryRemovePnpmPlugin,

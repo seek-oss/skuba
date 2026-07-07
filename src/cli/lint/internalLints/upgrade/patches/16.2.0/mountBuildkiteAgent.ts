@@ -14,6 +14,8 @@ import * as Git from '@skuba-lib/api/git';
 const BUILDKITE_AGENT_MOUNT =
   '/usr/bin/buildkite-agent:/usr/bin/buildkite-agent';
 const MOUNT_BUILDKITE_AGENT = 'mount-buildkite-agent';
+const BUILDKITE_ANNOTATIONS_COMMENT = 'Mount agent for Buildkite annotations';
+const DISABLE_WRAPPED_AGENT_COMMENT = 'Disable SEEK BuildAgency';
 
 const lineStartPos = (node: SgNode): number => {
   const { index, column } = node.range().start;
@@ -39,78 +41,160 @@ const patchDockerCompose = async (contents: string): Promise<string | null> => {
     return null;
   }
 
-  const edits: Edit[] = items.map((item) => {
-    const previous = item.prev();
-    const startNode =
-      previous?.kind() === 'comment' &&
-      previous.text().includes('Mount agent for Buildkite annotations')
-        ? previous
-        : item;
+  return ast.root().commitEdits(removeAgentVolumeEdits(ast.root(), contents));
+};
 
-    return {
-      startPos: lineStartPos(startNode),
-      endPos: lineEndPos(contents, item),
-      insertedText: '',
-    };
+const removeAgentVolumeEdits = (scope: SgNode, source: string): Edit[] => {
+  const edits: Edit[] = [];
+
+  const items = scope.findAll({
+    rule: {
+      kind: 'block_sequence_item',
+      regex: BUILDKITE_AGENT_MOUNT,
+    },
   });
 
-  return ast.root().commitEdits(edits);
+  const comments = scope.findAll({
+    rule: {
+      kind: 'comment',
+      regex: BUILDKITE_ANNOTATIONS_COMMENT,
+    },
+  });
+
+  for (const node of [...items, ...comments]) {
+    edits.push({
+      startPos: lineStartPos(node),
+      endPos: lineEndPos(source, node),
+      insertedText: '',
+    });
+  }
+
+  return edits;
+};
+
+const addMountBuildkiteAgentEdits = (
+  blockMapping: SgNode,
+  contents: string,
+): Edit[] => {
+  const options = blockMapping
+    .children()
+    .filter((child) => child.kind() === 'block_mapping_pair');
+
+  const [firstOption] = options;
+  const lastOption = options.at(-1);
+
+  if (
+    !firstOption ||
+    !lastOption ||
+    options.some(
+      (option) => option.field('key')?.text() === MOUNT_BUILDKITE_AGENT,
+    )
+  ) {
+    return [];
+  }
+
+  const indent = ' '.repeat(firstOption.range().start.column);
+  const insertedText = `${indent}${MOUNT_BUILDKITE_AGENT}: true\n`;
+
+  const successor = options.find(
+    (option) => (option.field('key')?.text() ?? '') > MOUNT_BUILDKITE_AGENT,
+  );
+
+  const position = successor
+    ? lineStartPos(successor)
+    : lineEndPos(contents, lastOption);
+
+  return [{ startPos: position, endPos: position, insertedText }];
+};
+
+const patchDockerPluginEdits = (plugin: SgNode, contents: string): Edit[] => {
+  const blockMapping = plugin
+    .field('value')
+    ?.find({ rule: { kind: 'block_mapping' } });
+
+  if (!blockMapping) {
+    return [];
+  }
+
+  const options = blockMapping
+    .children()
+    .filter((child) => child.kind() === 'block_mapping_pair');
+
+  const mountOption = options.find(
+    (option) => option.field('key')?.text() === MOUNT_BUILDKITE_AGENT,
+  );
+
+  const edits: Edit[] = [];
+
+  if (mountOption) {
+    const value = mountOption.field('value');
+
+    if (value?.text() === 'false') {
+      const { start, end } = value.range();
+      edits.push({
+        startPos: start.index,
+        endPos: end.index,
+        insertedText: 'true',
+      });
+
+      const comment = plugin.find({
+        rule: {
+          kind: 'comment',
+          regex: DISABLE_WRAPPED_AGENT_COMMENT,
+        },
+      });
+      if (comment) {
+        edits.push({
+          startPos: lineStartPos(comment),
+          endPos: lineEndPos(contents, comment),
+          insertedText: '',
+        });
+      }
+    }
+  } else {
+    edits.push(...addMountBuildkiteAgentEdits(blockMapping, contents));
+  }
+
+  edits.push(...removeAgentVolumeEdits(plugin, contents));
+
+  return edits;
 };
 
 const patchPipeline = async (contents: string): Promise<string | null> => {
   const ast = await parseAsync('yaml', contents);
 
-  const plugins = ast.root().findAll({
+  const composePlugins = ast.root().findAll({
     rule: {
       kind: 'block_mapping_pair',
       has: { field: 'key', regex: '^docker-compose#' },
     },
   });
 
-  if (!plugins.length) {
+  const dockerPlugins = ast.root().findAll({
+    rule: {
+      kind: 'block_mapping_pair',
+      has: { field: 'key', regex: '^docker#' },
+    },
+  });
+
+  if (!composePlugins.length && !dockerPlugins.length) {
     return null;
   }
 
   const edits: Edit[] = [];
 
-  for (const plugin of plugins) {
+  for (const plugin of composePlugins) {
     const blockMapping = plugin
       .field('value')
       ?.find({ rule: { kind: 'block_mapping' } });
 
-    if (!blockMapping) {
-      continue;
+    if (blockMapping) {
+      edits.push(...addMountBuildkiteAgentEdits(blockMapping, contents));
     }
+  }
 
-    const options = blockMapping
-      .children()
-      .filter((child) => child.kind() === 'block_mapping_pair');
-
-    const [firstOption] = options;
-    const lastOption = options.at(-1);
-
-    if (
-      !firstOption ||
-      !lastOption ||
-      options.some(
-        (option) => option.field('key')?.text() === MOUNT_BUILDKITE_AGENT,
-      )
-    ) {
-      continue;
-    }
-
-    const indent = ' '.repeat(firstOption.range().start.column);
-    const insertedText = `${indent}${MOUNT_BUILDKITE_AGENT}: true\n`;
-
-    const successor = options.find(
-      (option) => (option.field('key')?.text() ?? '') > MOUNT_BUILDKITE_AGENT,
-    );
-
-    const position = successor
-      ? lineStartPos(successor)
-      : lineEndPos(contents, lastOption);
-
-    edits.push({ startPos: position, endPos: position, insertedText });
+  for (const plugin of dockerPlugins) {
+    edits.push(...patchDockerPluginEdits(plugin, contents));
   }
 
   if (!edits.length) {
@@ -164,7 +248,10 @@ export const mountBuildkiteAgent: PatchFunction = async ({
         const fullPath = path.join(root, file);
         const contents = await fs.promises.readFile(fullPath, 'utf8');
 
-        if (!contents.includes('docker-compose#')) {
+        if (
+          !contents.includes('docker-compose#') &&
+          !contents.includes('docker#')
+        ) {
           return null;
         }
 
@@ -177,7 +264,7 @@ export const mountBuildkiteAgent: PatchFunction = async ({
   if (!patchedFiles.length) {
     return {
       result: 'skip',
-      reason: 'no Docker Compose buildkite-agent mounts to migrate',
+      reason: 'no Buildkite agent mounts to migrate',
     };
   }
 

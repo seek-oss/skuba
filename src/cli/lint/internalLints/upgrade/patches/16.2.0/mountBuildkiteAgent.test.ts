@@ -74,6 +74,20 @@ configs:
             run: app
 `;
 
+const DOCKER_PLUGIN_PIPELINE = `steps:
+  - plugins:
+      - *docker-ecr-cache
+      - docker#v5.13.0:
+          # Disable SEEK BuildAgency's wrapped agent that requires Bash.
+          mount-buildkite-agent: false
+          propagate-environment: true
+          volumes:
+            # Mount agent for Buildkite annotations.
+            - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+            # Mount cached dependencies.
+            - /workdir/node_modules
+`;
+
 describe('mountBuildkiteAgent', () => {
   afterEach(() => {
     vi.resetAllMocks();
@@ -120,7 +134,7 @@ describe('mountBuildkiteAgent', () => {
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
-      reason: 'no Docker Compose buildkite-agent mounts to migrate',
+      reason: 'no Buildkite agent mounts to migrate',
     } satisfies PatchReturnType);
   });
 
@@ -243,6 +257,93 @@ describe('mountBuildkiteAgent', () => {
     `);
   });
 
+  it('should flip mount-buildkite-agent and drop the bind mount for the docker plugin', async () => {
+    vol.fromJSON({
+      '.buildkite/pipeline.yml': DOCKER_PLUGIN_PIPELINE,
+    });
+
+    await expect(
+      mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()['.buildkite/pipeline.yml']).toMatchInlineSnapshot(`
+      "steps:
+        - plugins:
+            - *docker-ecr-cache
+            - docker#v5.13.0:
+                mount-buildkite-agent: true
+                propagate-environment: true
+                volumes:
+                  # Mount cached dependencies.
+                  - /workdir/node_modules
+      "
+    `);
+  });
+
+  it('should add mount-buildkite-agent to the docker plugin when it is missing', async () => {
+    vol.fromJSON({
+      '.buildkite/pipeline.yml': `steps:
+  - plugins:
+      - docker#v5.13.0:
+          environment:
+            - GITHUB_API_TOKEN
+          propagate-environment: true
+          volumes:
+            # Mount agent for Buildkite annotations.
+            - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+            # Mount cached dependencies.
+            - /workdir/node_modules
+`,
+    });
+
+    await expect(
+      mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()['.buildkite/pipeline.yml']).toMatchInlineSnapshot(`
+      "steps:
+        - plugins:
+            - docker#v5.13.0:
+                environment:
+                  - GITHUB_API_TOKEN
+                mount-buildkite-agent: true
+                propagate-environment: true
+                volumes:
+                  # Mount cached dependencies.
+                  - /workdir/node_modules
+      "
+    `);
+  });
+
+  it('should leave a compliant docker plugin untouched', async () => {
+    const pipeline = `steps:
+  - plugins:
+      - docker#v5.13.0:
+          mount-buildkite-agent: true
+          propagate-environment: true
+          volumes:
+            # Mount cached dependencies.
+            - /workdir/node_modules
+`;
+
+    vol.fromJSON({
+      '.buildkite/pipeline.yml': pipeline,
+    });
+
+    await expect(
+      mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'skip',
+      reason: 'no Buildkite agent mounts to migrate',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()['.buildkite/pipeline.yml']).toEqual(pipeline);
+  });
+
   it('should handle multiple files and plugins', async () => {
     vol.fromJSON({
       'docker-compose.yml': DOCKER_COMPOSE,
@@ -283,7 +384,7 @@ describe('mountBuildkiteAgent', () => {
       mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
     ).resolves.toEqual({
       result: 'skip',
-      reason: 'no Docker Compose buildkite-agent mounts to migrate',
+      reason: 'no Buildkite agent mounts to migrate',
     } satisfies PatchReturnType);
 
     const json = volToJson();
