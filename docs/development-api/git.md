@@ -70,7 +70,7 @@ Returns all the files which have been added, modified or deleted.
 Defaults to file changes in the working directory of the local Git repository since the last commit,
 but can also look at a specific `dst` reference, or the changes between `src` and `dst` references.
 
-Does not support ancentry references like `~` and `^` at this time.
+Does not support ancestry references like `~` and `^` at this time.
 
 ```typescript
 import { Git } from 'skuba';
