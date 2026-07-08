@@ -2,7 +2,7 @@
 'skuba': patch
 ---
 
-format, lint: Guard against autofix loops on Renovate lock file updates
+lint: Guard against autofix loops on Renovate lock file updates
 
 Renovate lock file updates that specifically target skuba (`renovate/skuba-0.x-lockfile`) could enter an infinite loop under a specific set of circumstances:
 
