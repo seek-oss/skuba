@@ -15,7 +15,7 @@ export const runPrettierInCurrentThread = ({ debug }: Input) =>
 
 export const runPrettierInWorkerThread = (input: Input) =>
   execWorkerThread<Input, PrettierOutput>(
-    path.posix.join(import.meta.dirname, 'prettier.mjs'),
+    path.posix.join(import.meta.dirname, 'prettier.js'),
     input,
   );
 

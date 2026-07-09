@@ -34,7 +34,7 @@ export const start = async () => {
     ...uniqueConditions.map((condition) => `--conditions=${condition}`),
     '--env-file-if-exists',
     '.env',
-    path.join(import.meta.dirname, '..', '..', 'wrapper', 'index.mjs'),
+    path.join(import.meta.dirname, '..', '..', 'wrapper', 'index.js'),
     ...args.script,
   );
 };

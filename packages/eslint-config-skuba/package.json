@@ -36,7 +36,7 @@
     "build": "pnpm skuba build-package",
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
-    "skuba": "node ../../lib/skuba.mjs",
+    "skuba": "node ../../lib/skuba",
     "test:ci": "echo \"No tests\""
   },
   "dependencies": {

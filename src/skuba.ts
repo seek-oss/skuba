@@ -38,7 +38,7 @@ const skuba = async () => {
       path.join(
         COMMAND_DIR,
         moduleName,
-        process.env.SKUBA_LOCAL_BUILD ? 'index.js' : 'index.mjs',
+        'index.js'
       )
     )) as unknown;
 

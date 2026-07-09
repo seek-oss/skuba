@@ -2,9 +2,9 @@
 
 set -e
 
-SKUBA_LOCAL_BUILD=true tsx --conditions @seek/skuba/source src/skuba build-package "${@}"
+tsx --conditions @seek/skuba/source src/skuba build-package "${@}"
 
-chmod +x 'lib/skuba.mjs'
+chmod +x 'lib/skuba.js'
 
 pnpm --parallel \
   --filter @skuba-lib/api \

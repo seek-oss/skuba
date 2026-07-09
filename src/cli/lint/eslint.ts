@@ -19,7 +19,7 @@ export const runESLintInCurrentThread = ({ debug, eslintConfigFile }: Input) =>
 
 export const runESLintInWorkerThread = (input: Input) =>
   execWorkerThread<Input, ESLintOutput>(
-    path.posix.join(import.meta.dirname, 'eslint.mjs'),
+    path.posix.join(import.meta.dirname, 'eslint.js'),
     input,
   );
 
