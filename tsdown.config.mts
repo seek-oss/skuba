@@ -5,8 +5,8 @@ export default defineConfig([
     entry: ['src/index.ts'],
     outExtensions({ format }) {
       return {
-        js: format === 'cjs' ? '.cjs' : '.js', 
-        dts: format === 'cjs' ? '.d.cts' : '.d.ts', 
+        js: format === 'cjs' ? '.cjs' : '.js',
+        dts: format === 'cjs' ? '.d.cts' : '.d.ts',
       };
     },
     exports: true,
@@ -37,8 +37,8 @@ export default defineConfig([
     ],
     outExtensions({ format }) {
       return {
-        js: format === 'cjs' ? '.cjs' : '.js', 
-        dts: format === 'cjs' ? '.d.cts' : '.d.ts', 
+        js: format === 'cjs' ? '.cjs' : '.js',
+        dts: format === 'cjs' ? '.d.cts' : '.d.ts',
       };
     },
     format: ['esm'],
