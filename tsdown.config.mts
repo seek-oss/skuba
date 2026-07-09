@@ -3,14 +3,12 @@ import { defineConfig } from 'tsdown/config';
 export default defineConfig([
   {
     entry: ['src/index.ts'],
+    exports: true,
     format: ['esm'],
     outDir: 'lib',
     dts: true,
   },
   {
-    exports: {
-      bin: 'src/skuba.ts'
-    },
     entry: [
       'src/skuba.ts',
       'src/cli/*/index.ts',
@@ -24,6 +22,6 @@ export default defineConfig([
     ],
     format: ['esm'],
     outDir: 'lib',
-    dts: false,
+    dts: false
   },
 ]);

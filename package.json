@@ -14,6 +14,10 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
+  "exports": {
+    ".": "./lib/index.mjs",
+    "./package.json": "./package.json"
+  },
   "types": "./lib/index.d.ts",
   "bin": {
     "skuba": "./lib/skuba.mjs"
@@ -170,40 +174,5 @@
     "template": null,
     "type": "package",
     "version": "16.2.0"
-  },
-  "exports": {
-    "./cli/build": "./lib/cli/build/index.mjs",
-    "./cli/buildPackage": "./lib/cli/buildPackage/index.mjs",
-    "./cli/format": "./lib/cli/format/index.mjs",
-    "./cli/help": "./lib/cli/help/index.mjs",
-    "./cli/init": "./lib/cli/init/index.mjs",
-    "./cli/lint": "./lib/cli/lint/index.mjs",
-    "./cli/lint/eslint": "./lib/cli/lint/eslint.mjs",
-    "./cli/lint/internalLints/upgrade": "./lib/cli/lint/internalLints/upgrade/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/12.0.2": "./lib/cli/lint/internalLints/upgrade/patches/12.0.2/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/12.1.1": "./lib/cli/lint/internalLints/upgrade/patches/12.1.1/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/12.3.0": "./lib/cli/lint/internalLints/upgrade/patches/12.3.0/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/12.4.0": "./lib/cli/lint/internalLints/upgrade/patches/12.4.0/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/12.4.1": "./lib/cli/lint/internalLints/upgrade/patches/12.4.1/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/13.1.1": "./lib/cli/lint/internalLints/upgrade/patches/13.1.1/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/14.0.1": "./lib/cli/lint/internalLints/upgrade/patches/14.0.1/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/14.1.1": "./lib/cli/lint/internalLints/upgrade/patches/14.1.1/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/15.0.1": "./lib/cli/lint/internalLints/upgrade/patches/15.0.1/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/15.2.0": "./lib/cli/lint/internalLints/upgrade/patches/15.2.0/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/15.3.0": "./lib/cli/lint/internalLints/upgrade/patches/15.3.0/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/16.1.0": "./lib/cli/lint/internalLints/upgrade/patches/16.1.0/index.mjs",
-    "./cli/lint/internalLints/upgrade/patches/16.2.0": "./lib/cli/lint/internalLints/upgrade/patches/16.2.0/index.mjs",
-    "./cli/lint/prettier": "./lib/cli/lint/prettier.mjs",
-    "./cli/migrate": "./lib/cli/migrate/index.mjs",
-    "./cli/node": "./lib/cli/node/index.mjs",
-    "./cli/release": "./lib/cli/release/index.mjs",
-    "./cli/start": "./lib/cli/start/index.mjs",
-    "./cli/test": "./lib/cli/test/index.mjs",
-    "./cli/version": "./lib/cli/version/index.mjs",
-    "./skuba": "./lib/skuba.mjs",
-    "./utils/command": "./lib/utils/command.mjs",
-    "./utils/template": "./lib/utils/template.mjs",
-    "./wrapper": "./lib/wrapper/index.mjs",
-    "./package.json": "./package.json"
   }
 }
