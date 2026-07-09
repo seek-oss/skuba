@@ -16,7 +16,10 @@
   "type": "module",
   "exports": {
     ".": "./lib/index.mjs",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./config/eslint.js": "config/eslint.js",
+    "./config/prettier.js": "config/prettier.js",
+    "./config/tsconfig.json": "config/tsconfig.json"
   },
   "types": "./lib/index.d.ts",
   "bin": {
