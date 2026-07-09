@@ -16,7 +16,7 @@ export default defineConfig([
         './config/eslint.js': './config/eslint.js',
         './config/prettier.js': './config/prettier.js',
         './config/tsconfig.json': './config/tsconfig.json',
-      }
+      },
     },
     entry: [
       'src/skuba.ts',
