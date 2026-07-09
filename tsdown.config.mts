@@ -22,6 +22,6 @@ export default defineConfig([
     ],
     format: ['esm'],
     outDir: 'lib',
-    dts: false
+    dts: false,
   },
 ]);
