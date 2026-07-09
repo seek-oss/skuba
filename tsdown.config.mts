@@ -3,12 +3,10 @@ import { defineConfig } from 'tsdown/config';
 export default defineConfig([
   {
     entry: ['src/index.ts'],
-    outExtensions: () => {
-      return {
-        js: '.js', 
-        dts: '.d.ts', 
-      };
-    },
+    outExtensions: () => ({
+      js: '.js',
+      dts: '.d.ts',
+    }),
     exports: true,
     format: ['esm'],
     outDir: 'lib',
@@ -35,12 +33,10 @@ export default defineConfig([
       'src/utils/command.ts',
       'src/wrapper/index.ts',
     ],
-    outExtensions: () => {
-      return {
-        js: '.js', 
-        dts: '.d.ts', 
-      };
-    },
+    outExtensions: () => ({
+      js: '.js',
+      dts: '.d.ts',
+    }),
     format: ['esm'],
     outDir: 'lib',
     dts: false,
