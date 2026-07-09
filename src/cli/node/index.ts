@@ -38,7 +38,7 @@ export const node = async () => {
     return exec(
       'tsx',
       ...commonArgs,
-      path.join(import.meta.dirname, '..', '..', 'wrapper', 'index.js'),
+      path.join(import.meta.dirname, '..', '..', 'wrapper', 'index.mjs'),
       ...args.script,
     );
   }
