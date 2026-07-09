@@ -33,7 +33,7 @@
     "format": "pnpm skuba format",
     "lint": "pnpm skuba lint",
     "prepack": "pnpm skuba build-package",
-    "skuba": "node ../../lib/skuba",
+    "skuba": "node ../../lib/skuba.mjs",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
     "test:watch": "vitest"

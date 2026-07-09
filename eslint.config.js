@@ -9,6 +9,7 @@ export default [
       'integration/format/',
       'template/',
       'packages/**/*/lib*/',
+      'tsdown.config.ts',
     ],
   },
   ...skuba,

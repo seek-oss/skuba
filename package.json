@@ -14,16 +14,13 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "main": "lib/index.js",
   "types": "./lib/index.d.ts",
   "bin": {
-    "skuba": "lib/skuba.js"
+    "skuba": "./lib/skuba.mjs"
   },
   "files": [
     "config/**/*",
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map",
+    "lib",
     "template/**/*"
   ],
   "scripts": {
@@ -39,7 +36,7 @@
     "prepack": "pnpm --filter './template/**' exec rm -rf node_modules",
     "release": "pnpm --silent build && changeset publish",
     "skuba": "pnpm --silent build && pnpm --silent skuba:exec",
-    "skuba:exec": "node lib/skuba",
+    "skuba:exec": "node lib/skuba.mjs",
     "stage": "changeset version && pnpm skuba-changelog-inject && pnpm format",
     "test": "pnpm --silent skuba test --project unit",
     "test:ci": "CI=true pnpm --silent skuba test && pnpm --filter '!./template/**' test:ci",
@@ -126,6 +123,7 @@
     "read-package-up": "^12.0.0",
     "rolldown": "^1.1.0",
     "semantic-release": "^25.0.2",
+    "semver": "7.8.0",
     "simple-git": "^3.36.0",
     "std-env": "^4.1.0",
     "ts-dedent": "^2.2.0",
@@ -159,9 +157,8 @@
     "memfs": "4.57.2",
     "remark-cli": "12.0.1",
     "remark-preset-lint-recommended": "7.0.1",
-    "semver": "7.8.0",
     "supertest": "7.2.2",
-    "type-fest": "2.19.0"
+    "type-fest": "5.7.0"
   },
   "packageManager": "pnpm@10.34.4",
   "engines": {
@@ -173,5 +170,40 @@
     "template": null,
     "type": "package",
     "version": "16.2.0"
+  },
+  "exports": {
+    "./cli/build": "./lib/cli/build/index.mjs",
+    "./cli/buildPackage": "./lib/cli/buildPackage/index.mjs",
+    "./cli/format": "./lib/cli/format/index.mjs",
+    "./cli/help": "./lib/cli/help/index.mjs",
+    "./cli/init": "./lib/cli/init/index.mjs",
+    "./cli/lint": "./lib/cli/lint/index.mjs",
+    "./cli/lint/eslint": "./lib/cli/lint/eslint.mjs",
+    "./cli/lint/internalLints/upgrade": "./lib/cli/lint/internalLints/upgrade/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/12.0.2": "./lib/cli/lint/internalLints/upgrade/patches/12.0.2/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/12.1.1": "./lib/cli/lint/internalLints/upgrade/patches/12.1.1/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/12.3.0": "./lib/cli/lint/internalLints/upgrade/patches/12.3.0/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/12.4.0": "./lib/cli/lint/internalLints/upgrade/patches/12.4.0/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/12.4.1": "./lib/cli/lint/internalLints/upgrade/patches/12.4.1/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/13.1.1": "./lib/cli/lint/internalLints/upgrade/patches/13.1.1/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/14.0.1": "./lib/cli/lint/internalLints/upgrade/patches/14.0.1/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/14.1.1": "./lib/cli/lint/internalLints/upgrade/patches/14.1.1/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/15.0.1": "./lib/cli/lint/internalLints/upgrade/patches/15.0.1/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/15.2.0": "./lib/cli/lint/internalLints/upgrade/patches/15.2.0/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/15.3.0": "./lib/cli/lint/internalLints/upgrade/patches/15.3.0/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/16.1.0": "./lib/cli/lint/internalLints/upgrade/patches/16.1.0/index.mjs",
+    "./cli/lint/internalLints/upgrade/patches/16.2.0": "./lib/cli/lint/internalLints/upgrade/patches/16.2.0/index.mjs",
+    "./cli/lint/prettier": "./lib/cli/lint/prettier.mjs",
+    "./cli/migrate": "./lib/cli/migrate/index.mjs",
+    "./cli/node": "./lib/cli/node/index.mjs",
+    "./cli/release": "./lib/cli/release/index.mjs",
+    "./cli/start": "./lib/cli/start/index.mjs",
+    "./cli/test": "./lib/cli/test/index.mjs",
+    "./cli/version": "./lib/cli/version/index.mjs",
+    "./skuba": "./lib/skuba.mjs",
+    "./utils/command": "./lib/utils/command.mjs",
+    "./utils/template": "./lib/utils/template.mjs",
+    "./wrapper": "./lib/wrapper/index.mjs",
+    "./package.json": "./package.json"
   }
 }

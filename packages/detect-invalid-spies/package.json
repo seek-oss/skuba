@@ -35,7 +35,7 @@
   "scripts": {
     "build": "pnpm skuba build-package",
     "prepack": "pnpm build",
-    "skuba": "node ../../lib/skuba",
+    "skuba": "node ../../lib/skuba.mjs",
     "test": "pnpm skuba test",
     "test:ci": "pnpm skuba test --coverage"
   },

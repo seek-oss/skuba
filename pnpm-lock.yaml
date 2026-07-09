@@ -162,6 +162,9 @@ importers:
       semantic-release:
         specifier: ^25.0.2
         version: 25.0.5(typescript@6.0.3)
+      semver:
+        specifier: 7.8.0
+        version: 7.8.0
       simple-git:
         specifier: ^3.36.0
         version: 3.36.0
@@ -256,15 +259,12 @@ importers:
       remark-preset-lint-recommended:
         specifier: 7.0.1
         version: 7.0.1
-      semver:
-        specifier: 7.8.0
-        version: 7.8.0
       supertest:
         specifier: 7.2.2
         version: 7.2.2
       type-fest:
-        specifier: 2.19.0
-        version: 2.19.0
+        specifier: 5.7.0
+        version: 5.7.0
 
   packages/api:
     dependencies:

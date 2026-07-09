@@ -35,7 +35,9 @@ export const hasSerialFlag = (args = process.argv, env = process.env) =>
  * ```
  */
 export const parseProcessArgs = (args = process.argv) => {
-  const skubaIdx = args.findIndex((chunk) => /skuba(\.[jt]s)?$/.test(chunk));
+  const skubaIdx = args.findIndex((chunk) =>
+    /skuba(\.[cm]?[jt]s)?$/.test(chunk),
+  );
 
   assert(skubaIdx >= 0, 'Cannot parse args for `skuba`');
 

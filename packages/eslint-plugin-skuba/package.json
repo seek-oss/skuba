@@ -33,7 +33,7 @@
     "format": "pnpm --silent skuba format",
     "lint": "pnpm --silent skuba lint",
     "prepack": "pnpm --silent skuba build-package",
-    "skuba": "node ../../lib/skuba",
+    "skuba": "node ../../lib/skuba.mjs",
     "test": "node --import tsx --test 'src/**/*.test.ts'",
     "test:ci": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
     "test:watch": "node --import tsx --test --watch 'src/**/*.test.ts'"

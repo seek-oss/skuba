@@ -59,7 +59,7 @@
   ],
   "scripts": {
     "build": "pnpm skuba build-package && ./scripts/fix-types.sh",
-    "skuba": "node ../../lib/skuba",
+    "skuba": "node ../../lib/skuba.mjs",
     "test": "pnpm skuba test",
     "test:ci": "pnpm skuba test --coverage"
   },

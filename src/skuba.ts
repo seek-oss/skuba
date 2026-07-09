@@ -35,7 +35,11 @@ const skuba = async () => {
     const moduleName = commandToModule(commandName as Command);
 
     const commandModule = (await import(
-      path.join(COMMAND_DIR, moduleName, 'index.js')
+      path.join(
+        COMMAND_DIR,
+        moduleName,
+        process.env.SKUBA_LOCAL_BUILD ? 'index.js' : 'index.mjs',
+      )
     )) as unknown;
 
     if (!isObject(commandModule) || !(moduleName in commandModule)) {
