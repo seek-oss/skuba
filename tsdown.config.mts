@@ -9,7 +9,7 @@ export default defineConfig([
   },
   {
     exports: {
-      bin: 'src/skuba.ts'
+      bin: 'src/skuba.ts',
     },
     entry: [
       'src/skuba.ts',
