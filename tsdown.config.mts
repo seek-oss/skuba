@@ -25,12 +25,14 @@ export default defineConfig([
     entry: [
       'src/skuba.ts',
       'src/cli/*/index.ts',
+      'src/cli/init/getConfig.ts',
       'src/cli/lint/eslint.ts',
       'src/cli/lint/prettier.ts',
       'src/cli/lint/internalLints/upgrade/index.ts',
       'src/cli/lint/internalLints/upgrade/patches/**/index.ts',
-      'src/utils/template.ts',
       'src/utils/command.ts',
+      'src/utils/help.ts',
+      'src/utils/template.ts',
       'src/wrapper/index.ts',
     ],
     outExtensions: () => ({
