@@ -243,6 +243,11 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
     return;
   }
 
+  if (isCiEnv() && !(await Git.findRoot({ dir }))) {
+    log.warn('Autofix skipped because no .git directory was found.');
+    return;
+  }
+
   let currentBranch;
   try {
     currentBranch = await Git.currentBranch({ dir });

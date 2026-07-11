@@ -119,6 +119,17 @@ describe('autofix', () => {
       expectNoAutofix();
     });
 
+    it('bails when there is no Git repository', async () => {
+      vol.reset();
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+      expect(stdout()).toContain(
+        'Autofix skipped because no .git directory was found.',
+      );
+    });
+
     it('bails on the master branch', async () => {
       await git.branch({ fs, dir, ref: 'master', checkout: true });
 
@@ -429,6 +440,17 @@ describe('autofix', () => {
       await expect(autofix(params)).resolves.toBeUndefined();
 
       expectNoAutofix();
+    });
+
+    it('bails when there is no Git repository', async () => {
+      vol.reset();
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+      expect(stdout()).toContain(
+        'Autofix skipped because no .git directory was found.',
+      );
     });
 
     it('bails on the master branch', async () => {
