@@ -1,18 +1,29 @@
 import { inspect } from 'util';
 
-import latest from 'latest-version';
-
+import { findAllowedLatestVersion } from '../../../utils/findLatestAllowedVersion.js';
 import { log } from '../../../utils/logging.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 import { upgradeInfraPackages } from '../nodeVersion/upgrade.js';
 
-const upgradeDatadogLambda: PatchFunction = async (opts) =>
-  upgradeInfraPackages(opts.mode, [
+const upgradeDatadogLambda: PatchFunction = async (opts) => {
+  const version = await findAllowedLatestVersion(
+    'datadog-lambda-js',
+    '^12.140.0',
+  );
+  if (!version) {
+    log.warn(
+      'No eligible version of datadog-lambda-js found for upgrade, skipping',
+    );
+    return { result: 'skip', reason: 'no eligible version found' };
+  }
+
+  return upgradeInfraPackages(opts.mode, [
     {
       name: 'datadog-lambda-js',
-      version: await latest('datadog-lambda-js', { version: '^12.140.0' }),
+      version,
     },
   ]);
+};
 
 export const tryUpgradeDatadogLambda: PatchFunction = async (opts) => {
   try {
