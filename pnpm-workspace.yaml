@@ -34,7 +34,6 @@ minimumReleaseAgeExclude:
 overrides:
   skuba: workspace:*
   skuba-dive: workspace:*
-  '@vitest/eslint-plugin': 1.6.21 # TODO: Remove this once we run lockfile maintenance again
 packageManagerStrictVersion: true # Managed by skuba
 
 publicHoistPattern:
