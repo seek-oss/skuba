@@ -257,6 +257,38 @@ describe('mountBuildkiteAgent', () => {
     `);
   });
 
+  it('should flip mount-buildkite-agent when the docker-compose plugin opts out', async () => {
+    vol.fromJSON({
+      '.buildkite/pipeline.yml': `steps:
+  - plugins:
+      - docker-compose#v5.10.0:
+          environment:
+            - GITHUB_API_TOKEN
+          mount-buildkite-agent: false
+          propagate-environment: true
+          run: app
+`,
+    });
+
+    await expect(
+      mountBuildkiteAgent({ mode: 'format' } as PatchConfig),
+    ).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()['.buildkite/pipeline.yml']).toMatchInlineSnapshot(`
+      "steps:
+        - plugins:
+            - docker-compose#v5.10.0:
+                environment:
+                  - GITHUB_API_TOKEN
+                mount-buildkite-agent: true
+                propagate-environment: true
+                run: app
+      "
+    `);
+  });
+
   it('should flip mount-buildkite-agent and drop the bind mount for the docker plugin', async () => {
     vol.fromJSON({
       '.buildkite/pipeline.yml': DOCKER_PLUGIN_PIPELINE,

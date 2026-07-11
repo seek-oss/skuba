@@ -72,7 +72,45 @@ const removeAgentVolumeEdits = (scope: SgNode, source: string): Edit[] => {
   return edits;
 };
 
+const flipMountBuildkiteAgentEdits = (
+  scope: SgNode,
+  mountOption: SgNode,
+  contents: string,
+): Edit[] => {
+  const value = mountOption.field('value');
+
+  if (value?.text() !== 'false') {
+    return [];
+  }
+
+  const edits: Edit[] = [];
+
+  const { start, end } = value.range();
+  edits.push({
+    startPos: start.index,
+    endPos: end.index,
+    insertedText: 'true',
+  });
+
+  const comment = scope.find({
+    rule: {
+      kind: 'comment',
+      regex: DISABLE_WRAPPED_AGENT_COMMENT,
+    },
+  });
+  if (comment) {
+    edits.push({
+      startPos: lineStartPos(comment),
+      endPos: lineEndPos(contents, comment),
+      insertedText: '',
+    });
+  }
+
+  return edits;
+};
+
 const addMountBuildkiteAgentEdits = (
+  plugin: SgNode,
   blockMapping: SgNode,
   contents: string,
 ): Edit[] => {
@@ -80,16 +118,18 @@ const addMountBuildkiteAgentEdits = (
     .children()
     .filter((child) => child.kind() === 'block_mapping_pair');
 
+  const mountOption = options.find(
+    (option) => option.field('key')?.text() === MOUNT_BUILDKITE_AGENT,
+  );
+
+  if (mountOption) {
+    return flipMountBuildkiteAgentEdits(plugin, mountOption, contents);
+  }
+
   const [firstOption] = options;
   const lastOption = options.at(-1);
 
-  if (
-    !firstOption ||
-    !lastOption ||
-    options.some(
-      (option) => option.field('key')?.text() === MOUNT_BUILDKITE_AGENT,
-    )
-  ) {
+  if (!firstOption || !lastOption) {
     return [];
   }
 
@@ -116,48 +156,10 @@ const patchDockerPluginEdits = (plugin: SgNode, contents: string): Edit[] => {
     return [];
   }
 
-  const options = blockMapping
-    .children()
-    .filter((child) => child.kind() === 'block_mapping_pair');
-
-  const mountOption = options.find(
-    (option) => option.field('key')?.text() === MOUNT_BUILDKITE_AGENT,
-  );
-
-  const edits: Edit[] = [];
-
-  if (mountOption) {
-    const value = mountOption.field('value');
-
-    if (value?.text() === 'false') {
-      const { start, end } = value.range();
-      edits.push({
-        startPos: start.index,
-        endPos: end.index,
-        insertedText: 'true',
-      });
-
-      const comment = plugin.find({
-        rule: {
-          kind: 'comment',
-          regex: DISABLE_WRAPPED_AGENT_COMMENT,
-        },
-      });
-      if (comment) {
-        edits.push({
-          startPos: lineStartPos(comment),
-          endPos: lineEndPos(contents, comment),
-          insertedText: '',
-        });
-      }
-    }
-  } else {
-    edits.push(...addMountBuildkiteAgentEdits(blockMapping, contents));
-  }
-
-  edits.push(...removeAgentVolumeEdits(plugin, contents));
-
-  return edits;
+  return [
+    ...addMountBuildkiteAgentEdits(plugin, blockMapping, contents),
+    ...removeAgentVolumeEdits(plugin, contents),
+  ];
 };
 
 const patchPipeline = async (contents: string): Promise<string | null> => {
@@ -189,7 +191,7 @@ const patchPipeline = async (contents: string): Promise<string | null> => {
       ?.find({ rule: { kind: 'block_mapping' } });
 
     if (blockMapping) {
-      edits.push(...addMountBuildkiteAgentEdits(blockMapping, contents));
+      edits.push(...addMountBuildkiteAgentEdits(plugin, blockMapping, contents));
     }
   }
 
