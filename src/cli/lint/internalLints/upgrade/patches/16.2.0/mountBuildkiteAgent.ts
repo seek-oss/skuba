@@ -191,7 +191,9 @@ const patchPipeline = async (contents: string): Promise<string | null> => {
       ?.find({ rule: { kind: 'block_mapping' } });
 
     if (blockMapping) {
-      edits.push(...addMountBuildkiteAgentEdits(plugin, blockMapping, contents));
+      edits.push(
+        ...addMountBuildkiteAgentEdits(plugin, blockMapping, contents),
+      );
     }
   }
 
