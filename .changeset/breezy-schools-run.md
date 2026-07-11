@@ -2,7 +2,7 @@
 'skuba': patch
 ---
 
-lint: Replace the dd-trace `NODE_OPTIONS` Lambda hack with `datadog-lambda-js` >=12.140.0
+lint: Replace the dd-trace `NODE_OPTIONS` Lambda workaround with `datadog-lambda-js` >=12.140.0
 
 The 16.1.0 patch that added `--import dd-trace/initialize.mjs` to the Lambda `NODE_OPTIONS` (and `redirectHandler: false` / `redirectHandlers: false`) has been removed now that `datadog-lambda-js@12.140.0` fixes handler redirection under ESM. Projects upgrading from an older version no longer apply this workaround only to immediately reverse it, avoiding redundant file churn and a duplicate install.
 
