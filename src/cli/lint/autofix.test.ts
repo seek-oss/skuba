@@ -53,6 +53,8 @@ beforeEach(async () => {
   delete process.env.BUILDKITE_BRANCH;
   delete process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH;
   delete process.env.GITHUB_ACTIONS;
+  delete process.env.GITHUB_HEAD_REF;
+  delete process.env.GITHUB_REF_NAME;
   delete process.env.GITHUB_REF_PROTECTED;
 
   process.env.CI = 'true';
