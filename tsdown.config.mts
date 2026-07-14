@@ -42,12 +42,17 @@ export default defineConfig([
     format: ['esm'],
     outDir: 'lib',
     dts: false,
-    ...process.env.CI && {
-      attw: {
-        profile: 'esm-only',
-        excludeEntrypoints: ['skuba/config/eslint.js', 'skuba/config/prettier.js', 'skuba/config/tsconfig.json']
-      },
-      publint: true
-    }
+    attw: {
+      enabled: 'ci-only',
+      profile: 'esm-only',
+      excludeEntrypoints: [
+        'skuba/config/eslint.js',
+        'skuba/config/prettier.js',
+        'skuba/config/tsconfig.json',
+      ],
+    },
+    publint: {
+      enabled: 'ci-only',
+    },
   },
 ]);
