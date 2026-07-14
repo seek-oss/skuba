@@ -1,5 +1,6 @@
 {
   "name": "@skuba-lib/api",
+  "sideEffects": false,
   "version": "2.2.0",
   "description": "Node.js development API for skuba",
   "homepage": "https://github.com/seek-oss/skuba#readme",
