@@ -3,6 +3,7 @@ import { input, select } from '@inquirer/prompts';
 import { pathExists } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
 
+import { DEFAULT_RENOVATE_PRESET } from './types.js';
 import {
   PLATFORM_OPTIONS,
   type Platform,
@@ -85,6 +86,14 @@ const BASE_CHOICES = [
     name: 'defaultBranch',
     message: 'Default Branch',
     initial: 'main',
+    allowInitial: true,
+    validate: (value: unknown) =>
+      typeof value === 'string' && value.length > 0 ? true : 'Required',
+  },
+  {
+    name: 'renovatePreset',
+    message: 'Renovate preset',
+    initial: DEFAULT_RENOVATE_PRESET,
     allowInitial: true,
     validate: (value: unknown) =>
       typeof value === 'string' && value.length > 0 ? true : 'Required',
