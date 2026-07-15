@@ -38,7 +38,7 @@ log();
 
 ### Prerequisites
 
-- Node.js LTS
+- Node.js 22+
 - pnpm
 
 ```shell
@@ -68,61 +68,28 @@ pnpm lint
 pnpm build
 
 # Review bundle
-npm pack
+pnpm pack
 ```
 
 ## Release
 
 This package is published to the public npm registry with a GitHub Actions [release workflow].
+It depends on this repo being hosted on [seek-oss] with appropriate access;
+follow the [OSS npm package guidance] to set up publishing.
 
-The workflow runs on select branches:
+Releases are managed with [changesets].
+Run `pnpm changeset` to create a changeset file describing your change and its semver impact.
+When merged to `<%-defaultBranch%>`, the release workflow will open a version bump PR.
+Merging that PR publishes the new version to npm.
 
-```yaml
-on:
-  push:
-    branches:
-      # add others as necessary
-      - main
-      - beta
-      # - alpha
-```
+### Releasing snapshots
 
-It depends on this repo being hosted on [seek-oss] with appropriate access.
+Snapshot releases let you publish a pre-release version from any branch without going through the full release process.
+To publish a snapshot, manually trigger the [release workflow] on your branch via the GitHub Actions UI.
+The snapshot will be published to npm under a unique version derived from the branch name.
 
-To set up this repo for publishing, follow the instructions in our [OSS npm package guidance].
-
-### Commit messages
-
-This package is published with **[semantic-release]**, which requires a particular commit format to manage semantic versioning.
-You can run the interactive `pnpm commit` command in place of `git commit` to generate a compliant commit title and message.
-If you use the `Squash and merge` option on pull requests, take extra care to format the squashed commit in the GitHub UI before merging.
-
-### Releasing latest
-
-Commits to the `<%- defaultBranch %>` branch will be released with the `latest` tag,
-which is the default used when running `npm install` or `pnpm install`.
-
-### Releasing other dist-tags
-
-**[semantic-release]** prescribes a branch-based workflow for managing [distribution tags].
-
-You can push to other branches to manage betas, maintenance updates to prior major versions, and more.
-
-Here are some branches that **semantic-release** supports by default:
-
-| Git branch           | npm dist-tag |
-| :------------------- | :----------- |
-| <%- defaultBranch %> | latest       |
-| alpha                | alpha        |
-| beta                 | beta         |
-| next                 | next         |
-| 1.x                  | release-1.x  |
-
-For more information, see the **semantic-release** docs on [triggering a release].
-
+[changesets]: https://github.com/changesets/changesets
 [distribution tags]: https://docs.npmjs.com/adding-dist-tags-to-packages
 [OSS npm package guidance]: https://github.com/SEEK-Jobs/seek-oss-ci/blob/master/NPM_PACKAGES.md#access-to-publish-to-npm
 [release workflow]: .github/workflows/release.yml
 [seek-oss]: https://github.com/seek-oss
-[semantic-release]: https://github.com/semantic-release/semantic-release
-[triggering a release]: https://github.com/semantic-release/semantic-release/#triggering-a-release

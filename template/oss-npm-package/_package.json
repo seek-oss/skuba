@@ -1,6 +1,6 @@
 {
   "name": "<%- moduleName %>",
-  "version": "0.0.0-semantically-released",
+  "version": "0.0.0",
   "description": "<%- description %>",
   "repository": {
     "type": "git",
@@ -32,20 +32,15 @@
     "commit": "cz",
     "format": "skuba format",
     "lint": "skuba lint",
-    "release": "pnpm --silent build && skuba release",
+    "release": "changeset publish",
     "test": "skuba test",
     "test:ci": "skuba test --coverage",
-    "test:watch": "skuba test --watch"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
+    "test:watch": "skuba test --watch",
+    "version": "changeset version"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^24.10.2",
-    "commitizen": "^4.2.4",
     "skuba": "*"
   },
   "packageManager": "pnpm@10.34.4",
