@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
+import { log } from '../../../../utils/logging.js';
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
@@ -11,9 +12,11 @@ import { createTscAnnotations } from './tsc.js';
 
 import { createGitHubAnnotations } from './index.js';
 
+import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
 
 vi.mock('../../../../utils/logging');
+vi.mock('@skuba-lib/api/git');
 vi.mock('@skuba-lib/api/github', async () => ({
   ...(await vi.importActual('@skuba-lib/api/github')),
   createCheckRun: vi.fn(),
@@ -131,6 +134,7 @@ beforeEach(() => {
   process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
   process.env.GITHUB_WORKFLOW = 'Test';
 
+  vi.mocked(Git.findRoot).mockResolvedValue(process.cwd());
   vi.mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
   vi.mocked(createPrettierAnnotations).mockReturnValue(mockPrettierAnnotations);
   vi.mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
@@ -159,6 +163,23 @@ it('should return immediately if the required environment variables are not set'
   );
 
   expect(GitHub.createCheckRun).not.toHaveBeenCalled();
+});
+
+it('should return immediately if there is no Git repository', async () => {
+  vi.mocked(Git.findRoot).mockResolvedValueOnce(null);
+
+  await createGitHubAnnotations(
+    internalOutput,
+    eslintOutput,
+    prettierOutput,
+    tscOk,
+    tscOutputStream,
+  );
+
+  expect(GitHub.createCheckRun).not.toHaveBeenCalled();
+  expect(log.warn).toHaveBeenCalledWith(
+    'GitHub annotations skipped because no .git directory was found.',
+  );
 });
 
 it('should call createEslintAnnotations with the ESLint output', async () => {

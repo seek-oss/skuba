@@ -53,6 +53,8 @@ beforeEach(async () => {
   delete process.env.BUILDKITE_BRANCH;
   delete process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH;
   delete process.env.GITHUB_ACTIONS;
+  delete process.env.GITHUB_HEAD_REF;
+  delete process.env.GITHUB_REF_NAME;
   delete process.env.GITHUB_REF_PROTECTED;
 
   process.env.CI = 'true';
@@ -117,6 +119,17 @@ describe('autofix', () => {
       await expect(autofix(params)).resolves.toBeUndefined();
 
       expectNoAutofix();
+    });
+
+    it('bails when there is no Git repository', async () => {
+      vol.reset();
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+      expect(stdout()).toContain(
+        'Autofix skipped because no .git directory was found.',
+      );
     });
 
     it('bails on the master branch', async () => {
@@ -429,6 +442,17 @@ describe('autofix', () => {
       await expect(autofix(params)).resolves.toBeUndefined();
 
       expectNoAutofix();
+    });
+
+    it('bails when there is no Git repository', async () => {
+      vol.reset();
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectNoAutofix();
+      expect(stdout()).toContain(
+        'Autofix skipped because no .git directory was found.',
+      );
     });
 
     it('bails on the master branch', async () => {
