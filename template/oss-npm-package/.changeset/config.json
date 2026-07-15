@@ -1,18 +1,18 @@
 {
-    "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
-    "changelog": [
-      "@skuba-lib/changesets-changelog",
-      {
-        "repo": "<%-orgName%>/<%-repoName%>"
-      }
-    ],
-    "commit": false,
-    "linked": [],
-    "access": "public",
-    "baseBranch": "<%-defaultBranch%>",
-    "updateInternalDependencies": "patch",
-    "ignore": [],
-    "snapshot": {
-      "useCalculatedVersion": true
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": [
+    "@skuba-lib/changesets-changelog",
+    {
+      "repo": "<%-orgName%>/<%-repoName%>"
     }
+  ],
+  "commit": false,
+  "linked": [],
+  "access": "public",
+  "baseBranch": "<%-defaultBranch%>",
+  "updateInternalDependencies": "patch",
+  "ignore": [],
+  "snapshot": {
+    "useCalculatedVersion": true
   }
+}
