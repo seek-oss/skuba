@@ -79,7 +79,7 @@ follow the [OSS npm package guidance] to set up publishing.
 
 Releases are managed with [changesets].
 Run `pnpm changeset` to create a changeset file describing your change and its semver impact.
-When merged to `<%-defaultBranch%>`, the release workflow will open a version bump PR.
+When merged to `<%- defaultBranch %>`, the release workflow will open a version bump PR.
 Merging that PR publishes the new version to npm.
 
 ### Releasing snapshots
