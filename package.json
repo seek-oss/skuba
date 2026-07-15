@@ -14,16 +14,20 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json",
+    "./config/eslint.js": "./config/eslint.js",
+    "./config/prettier.js": "./config/prettier.js",
+    "./config/tsconfig.json": "./config/tsconfig.json"
+  },
   "types": "./lib/index.d.ts",
   "bin": {
-    "skuba": "lib/skuba.js"
+    "skuba": "./lib/skuba.js"
   },
   "files": [
     "config/**/*",
-    "lib*/**/*.d.ts",
-    "lib*/**/*.js",
-    "lib*/**/*.js.map",
+    "lib",
     "template/**/*"
   ],
   "scripts": {
@@ -126,6 +130,7 @@
     "read-package-up": "^12.0.0",
     "rolldown": "^1.1.0",
     "semantic-release": "^25.0.2",
+    "semver": "^7.8.0",
     "simple-git": "^3.36.0",
     "std-env": "^4.1.0",
     "ts-dedent": "^2.2.0",
@@ -159,9 +164,8 @@
     "memfs": "4.57.2",
     "remark-cli": "12.0.1",
     "remark-preset-lint-recommended": "7.0.1",
-    "semver": "7.8.0",
     "supertest": "7.2.2",
-    "type-fest": "2.19.0"
+    "type-fest": "5.7.0"
   },
   "packageManager": "pnpm@10.34.4",
   "engines": {

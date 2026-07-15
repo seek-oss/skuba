@@ -12,6 +12,7 @@
     "directory": "packages/api"
   },
   "license": "MIT",
+  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
