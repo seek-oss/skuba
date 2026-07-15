@@ -128,11 +128,11 @@ const mockTscAnnotations: GitHub.Annotation[] = [
 ];
 
 beforeEach(() => {
-  process.env.CI = 'true';
-  process.env.GITHUB_ACTIONS = 'true';
-  process.env.GITHUB_RUN_NUMBER = '123';
-  process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
-  process.env.GITHUB_WORKFLOW = 'Test';
+  vi.stubEnv('CI', 'true');
+  vi.stubEnv('GITHUB_ACTIONS', 'true');
+  vi.stubEnv('GITHUB_RUN_NUMBER', '123');
+  vi.stubEnv('GITHUB_TOKEN', 'Hello from GITHUB_TOKEN');
+  vi.stubEnv('GITHUB_WORKFLOW', 'Test');
 
   vi.mocked(Git.findRoot).mockResolvedValue(process.cwd());
   vi.mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
@@ -141,18 +141,13 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  delete process.env.CI;
-  delete process.env.GITHUB_ACTIONS;
-  delete process.env.GITHUB_RUN_NUMBER;
-  delete process.env.GITHUB_TOKEN;
-  delete process.env.GITHUB_WORKFLOW;
-
+  vi.unstubAllEnvs();
   vi.resetAllMocks();
 });
 
 it('should return immediately if the required environment variables are not set', async () => {
-  delete process.env.CI;
-  delete process.env.GITHUB_ACTIONS;
+  vi.stubEnv('CI', undefined);
+  vi.stubEnv('GITHUB_ACTIONS', undefined);
 
   await createGitHubAnnotations(
     internalOutput,

@@ -15,15 +15,14 @@ vi.mock('@skuba-lib/api/github', async () => ({
 }));
 
 beforeEach(() => {
-  process.env.CI = 'true';
-  process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
+  vi.stubEnv('CI', 'true');
+  vi.stubEnv('GITHUB_TOKEN', 'Hello from GITHUB_TOKEN');
 
   vi.mocked(Git.findRoot).mockResolvedValue(process.cwd());
 });
 
 afterEach(() => {
-  delete process.env.CI;
-  delete process.env.GITHUB_TOKEN;
+  vi.unstubAllEnvs();
 
   vi.resetAllMocks();
 });
