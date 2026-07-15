@@ -397,19 +397,6 @@ importers:
         specifier: ^24.1.0
         version: 24.13.2
 
-  template/greeter:
-    dependencies:
-      skuba-dive:
-        specifier: workspace:*
-        version: link:../../packages/skuba-dive
-    devDependencies:
-      '@types/node':
-        specifier: ^24.10.2
-        version: 24.13.2
-      skuba:
-        specifier: workspace:*
-        version: link:../..
-
 packages:
 
   '@actions/core@3.0.1':
