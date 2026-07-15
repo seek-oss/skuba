@@ -27,11 +27,11 @@ vi.mock('@skuba-lib/api/buildkite', async () => ({
 }));
 
 beforeAll(() => {
-  process.env.SKUBA_INT_TEST = 'true';
+  vi.stubEnv('SKUBA_INT_TEST', 'true');
 });
 
 afterAll(() => {
-  delete process.env.SKUBA_INT_TEST;
+  vi.unstubAllEnvs();
 });
 
 const buildkiteAnnotate = vi.mocked(Buildkite.annotate).mockResolvedValue();
@@ -113,9 +113,9 @@ const prepareTempDirectory = async (baseDir: string, tempDir: string) => {
 const originalCwd = process.cwd();
 
 beforeAll(() => {
-  delete process.env.BUILDKITE;
-  delete process.env.CI;
-  delete process.env.GITHUB_ACTIONS;
+  vi.stubEnv('BUILDKITE', undefined);
+  vi.stubEnv('CI', undefined);
+  vi.stubEnv('GITHUB_ACTIONS', undefined);
 });
 
 beforeEach(() => {

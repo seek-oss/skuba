@@ -50,14 +50,14 @@ beforeEach(async () => {
   vol.fromJSON(newGit, dir);
   await git.branch({ fs, dir, ref: 'feature', checkout: true });
 
-  delete process.env.BUILDKITE_BRANCH;
-  delete process.env.BUILDKITE_PIPELINE_DEFAULT_BRANCH;
-  delete process.env.GITHUB_ACTIONS;
-  delete process.env.GITHUB_HEAD_REF;
-  delete process.env.GITHUB_REF_NAME;
-  delete process.env.GITHUB_REF_PROTECTED;
+  vi.stubEnv('BUILDKITE_BRANCH', undefined);
+  vi.stubEnv('BUILDKITE_PIPELINE_DEFAULT_BRANCH', undefined);
+  vi.stubEnv('GITHUB_ACTIONS', undefined);
+  vi.stubEnv('GITHUB_HEAD_REF', undefined);
+  vi.stubEnv('GITHUB_REF_NAME', undefined);
+  vi.stubEnv('GITHUB_REF_PROTECTED', undefined);
 
-  process.env.CI = 'true';
+  vi.stubEnv('CI', 'true');
 
   vi.spyOn(console, 'log').mockImplementation((...args) =>
     stdoutMock(`${args.join(' ')}\n`),
@@ -69,6 +69,7 @@ beforeEach(async () => {
 });
 
 afterEach(() => {
+  vi.unstubAllEnvs();
   vi.resetAllMocks();
 });
 
@@ -107,14 +108,14 @@ describe('autofix', () => {
     };
 
     beforeEach(() => {
-      process.env.GITHUB_ACTIONS = 'true';
+      vi.stubEnv('GITHUB_ACTIONS', 'true');
       vi.mocked(simpleGit).mockReturnValue({ push } as any);
       push.mockResolvedValue({ ok: true, error: null, refs: {} });
     });
 
     it('bails on a non-CI environment', async () => {
-      delete process.env.CI;
-      delete process.env.GITHUB_ACTIONS;
+      vi.stubEnv('CI', undefined);
+      vi.stubEnv('GITHUB_ACTIONS', undefined);
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -226,7 +227,7 @@ describe('autofix', () => {
     });
 
     it('uses Git CLI in GitHub Actions', async () => {
-      process.env.GITHUB_ACTIONS = 'true';
+      vi.stubEnv('GITHUB_ACTIONS', 'true');
 
       vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
 
@@ -437,7 +438,7 @@ describe('autofix', () => {
     };
 
     it('bails on a non-CI environment', async () => {
-      delete process.env.CI;
+      vi.stubEnv('CI', undefined);
 
       await expect(autofix(params)).resolves.toBeUndefined();
 
@@ -751,8 +752,8 @@ describe('Renovate autofix guard', () => {
   let push: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    process.env.GITHUB_ACTIONS = 'true';
-    process.env.GITHUB_HEAD_REF = 'renovate/skuba-0.x-lockfile';
+    vi.stubEnv('GITHUB_ACTIONS', 'true');
+    vi.stubEnv('GITHUB_HEAD_REF', 'renovate/skuba-0.x-lockfile');
 
     push = vi.fn().mockResolvedValue(undefined);
     vi.mocked(simpleGit).mockReturnValue({ push } as any);
@@ -777,7 +778,7 @@ describe('Renovate autofix guard', () => {
   it.each(['renovate-package-16.x-lockfile', 'renovate/skuba-0.x-lockfile'])(
     'discards lockfile-only changes on Renovate lock file update per %s branch name fallback',
     async (branchName) => {
-      process.env.GITHUB_HEAD_REF = branchName;
+      vi.stubEnv('GITHUB_HEAD_REF', branchName);
 
       await fs.promises.writeFile('pnpm-lock.yaml', 'updated lockfile');
 
@@ -799,7 +800,7 @@ describe('Renovate autofix guard', () => {
   );
 
   it('pushes lockfile changes on Renovate package.json update', async () => {
-    process.env.GITHUB_ACTIONS = 'true';
+    vi.stubEnv('GITHUB_ACTIONS', 'true');
 
     await createRenovateLockfileHead('pnpm-lock.yaml', {
       'package.json': '{"name":"example"}',
@@ -830,7 +831,7 @@ describe('Renovate autofix guard', () => {
   });
 
   it('pushes non-lockfile changes on Renovate lock file update', async () => {
-    process.env.GITHUB_ACTIONS = 'true';
+    vi.stubEnv('GITHUB_ACTIONS', 'true');
 
     await createRenovateLockfileHead('pnpm-lock.yaml');
 
@@ -863,7 +864,7 @@ describe('Renovate autofix guard', () => {
   });
 
   it('discards Yarn lockfile-only changes', async () => {
-    process.env.GITHUB_HEAD_REF = 'renovate/yarn-lockfile';
+    vi.stubEnv('GITHUB_HEAD_REF', 'renovate/yarn-lockfile');
 
     await createRenovateLockfileHead('yarn.lock');
 
