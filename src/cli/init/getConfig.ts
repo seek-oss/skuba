@@ -194,11 +194,12 @@ export const getTemplateConfig = async (
   }
 };
 
-const baseToTemplateData = async ({
+export const baseToTemplateData = async ({
   ownerName,
   platformName,
   repoName,
   defaultBranch,
+  renovatePreset,
 }: BaseFields) => {
   const [orgName, teamName] = ownerName.split('/');
 
@@ -213,6 +214,7 @@ const baseToTemplateData = async ({
     ownerName,
     repoName,
     defaultBranch,
+    renovatePreset,
     // Use standalone username in `teamName` contexts
     teamName: teamName ?? orgName,
 
@@ -226,7 +228,7 @@ const baseToTemplateData = async ({
 };
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
-  const { ownerName, platformName, repoName, defaultBranch } =
+  const { ownerName, platformName, repoName, defaultBranch, renovatePreset } =
     await runForm<BaseFields>(BASE_PROMPT_PROPS);
   log.plain(styleText('cyan', repoName), 'by', styleText('cyan', ownerName));
 
@@ -235,6 +237,7 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     platformName,
     repoName,
     defaultBranch,
+    renovatePreset,
   });
 
   const destinationDir = repoName;
