@@ -89,7 +89,6 @@ To publish a snapshot, manually trigger the [release workflow] on your branch vi
 The snapshot will be published to npm under a unique version derived from the branch name.
 
 [changesets]: https://github.com/changesets/changesets
-[distribution tags]: https://docs.npmjs.com/adding-dist-tags-to-packages
 [OSS npm package guidance]: https://github.com/SEEK-Jobs/seek-oss-ci/blob/master/NPM_PACKAGES.md#access-to-publish-to-npm
 [release workflow]: .github/workflows/release.yml
 [seek-oss]: https://github.com/seek-oss
