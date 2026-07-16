@@ -2,7 +2,7 @@
 
 set -e
 
-tsx --conditions @seek/skuba/source src/skuba build "${@}"
+tsx --conditions @seek/skuba/source src/skuba build-package "${@}"
 
 chmod +x 'lib/skuba.js'
 

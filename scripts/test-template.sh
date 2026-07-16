@@ -55,8 +55,9 @@ awk '/^[^ \t#]/ { skip = ($0 ~ /^packages:/ || $0 ~ /^overrides:/) } !skip { pri
 
 cd "../${skuba_temp_directory}" || exit 1
 
-echo "pnpm init"
-pnpm init
+echo "--- creating package.json"
+packageManager=$(jq -r '.packageManager' ../skuba/package.json)
+echo "{\"packageManager\":\"${packageManager}\"}" > package.json
 
 echo "--- pnpm add --save-dev ${skuba_tar}"
 pnpm add --save-dev "${skuba_tar}"
