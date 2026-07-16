@@ -1,12 +1,12 @@
 import { inspect } from 'util';
 
-import { findAllowedLatestVersion } from '../../../utils/findLatestAllowedVersion.js';
+import { findLatestAllowedVersion } from '../../../utils/findLatestAllowedVersion.js';
 import { log } from '../../../utils/logging.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 import { upgradeInfraPackages } from '../nodeVersion/upgrade.js';
 
 const upgradeDatadogLambda: PatchFunction = async (opts) => {
-  const version = await findAllowedLatestVersion(
+  const version = await findLatestAllowedVersion(
     'datadog-lambda-js',
     '^12.140.0',
   );

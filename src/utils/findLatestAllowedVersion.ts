@@ -1,7 +1,7 @@
 import { execa } from 'execa';
 import { maxSatisfying, valid } from 'semver';
 
-export const findAllowedLatestVersion = async (
+export const findLatestAllowedVersion = async (
   packageName: string,
   versionRange: string,
 ): Promise<string | null> => {

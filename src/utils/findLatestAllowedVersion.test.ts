@@ -1,7 +1,7 @@
 import { execa } from 'execa';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { findAllowedLatestVersion } from './findLatestAllowedVersion.js';
+import { findLatestAllowedVersion } from './findLatestAllowedVersion.js';
 
 vi.mock('execa');
 
@@ -51,7 +51,7 @@ describe('findAllowedLatestVersion', () => {
     mockExeca({ age: '0' });
 
     await expect(
-      findAllowedLatestVersion('datadog-lambda-js', '^12.0.0'),
+      findLatestAllowedVersion('datadog-lambda-js', '^12.0.0'),
     ).resolves.toBe('12.140.0');
   });
 
@@ -60,7 +60,7 @@ describe('findAllowedLatestVersion', () => {
 
     // `modified` shares 12.140.0's date; a leaked key would break this.
     await expect(
-      findAllowedLatestVersion('datadog-lambda-js', '*'),
+      findLatestAllowedVersion('datadog-lambda-js', '*'),
     ).resolves.toBe('12.140.0');
   });
 
@@ -69,7 +69,7 @@ describe('findAllowedLatestVersion', () => {
     mockExeca({ age: String(30 * 24 * 60) });
 
     await expect(
-      findAllowedLatestVersion('datadog-lambda-js', '^12.0.0'),
+      findLatestAllowedVersion('datadog-lambda-js', '^12.0.0'),
     ).resolves.toBe('12.139.0');
   });
 
@@ -77,7 +77,7 @@ describe('findAllowedLatestVersion', () => {
     mockExeca({ age: '0' });
 
     await expect(
-      findAllowedLatestVersion('datadog-lambda-js', '^99.0.0'),
+      findLatestAllowedVersion('datadog-lambda-js', '^99.0.0'),
     ).resolves.toBeNull();
   });
 
@@ -86,7 +86,7 @@ describe('findAllowedLatestVersion', () => {
     mockExeca({ age: String(100 * 365 * 24 * 60) });
 
     await expect(
-      findAllowedLatestVersion('datadog-lambda-js', '^12.0.0'),
+      findLatestAllowedVersion('datadog-lambda-js', '^12.0.0'),
     ).resolves.toBeNull();
   });
 
@@ -96,7 +96,7 @@ describe('findAllowedLatestVersion', () => {
       mockExeca({ age: `${age}\n` }); // trailing newline is trimmed
 
       await expect(
-        findAllowedLatestVersion('datadog-lambda-js', '^12.0.0'),
+        findLatestAllowedVersion('datadog-lambda-js', '^12.0.0'),
       ).resolves.toBe('12.140.0');
     },
   );

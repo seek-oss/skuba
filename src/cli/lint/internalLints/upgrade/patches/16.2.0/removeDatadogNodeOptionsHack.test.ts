@@ -1,7 +1,7 @@
-import latestVersion from 'latest-version';
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { findLatestAllowedVersion } from '../../../../../../utils/findLatestAllowedVersion.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -18,7 +18,7 @@ vi.mock('fast-glob', () => ({
     return actualFastGlob.glob(pat, { ...opts, fs: memfs });
   },
 }));
-vi.mock('latest-version');
+vi.mock('../../../../../../utils/findLatestAllowedVersion.js');
 vi.mock('../../../../../../utils/exec.js');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
@@ -26,7 +26,7 @@ const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 beforeEach(() => {
   vol.reset();
   vi.clearAllMocks();
-  vi.mocked(latestVersion).mockResolvedValue('12.140.0');
+  vi.mocked(findLatestAllowedVersion).mockResolvedValue('12.140.0');
 });
 
 const baseArgs: PatchConfig = {
@@ -93,6 +93,25 @@ describe('removeDatadogNodeOptionsHack', () => {
     ).resolves.toEqual({
       result: 'skip',
       reason: 'no datadog lambda hack to remove',
+    } satisfies PatchReturnType);
+    expect(volToJson()).toEqual(input);
+  });
+
+  it('skips without writing when no version satisfies the minimum release age', async () => {
+    vi.mocked(findLatestAllowedVersion).mockResolvedValueOnce(null);
+
+    const input = {
+      'appStack.ts': cdkAppStack(),
+      'package.json': packageJson(),
+    };
+    vol.fromJSON(input);
+
+    await expect(
+      tryRemoveDatadogNodeOptionsHack({ ...baseArgs, mode: 'format' }),
+    ).resolves.toEqual({
+      result: 'skip',
+      reason:
+        'no datadog-lambda-js version satisfying the minimum release age was found; will retry later',
     } satisfies PatchReturnType);
     expect(volToJson()).toEqual(input);
   });

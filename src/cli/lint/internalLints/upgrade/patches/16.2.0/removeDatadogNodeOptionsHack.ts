@@ -2,8 +2,8 @@ import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
-import latest from 'latest-version';
 
+import { findLatestAllowedVersion } from '../../../../../../utils/findLatestAllowedVersion.js';
 import { log } from '../../../../../../utils/logging.js';
 import {
   collectLambdaFiles,
@@ -142,6 +142,19 @@ const removeDatadogNodeOptionsHackPatch: PatchFunction = async ({
     };
   }
 
+  const version = await findLatestAllowedVersion(
+    'datadog-lambda-js',
+    DATADOG_LAMBDA_JS_VERSION,
+  );
+
+  if (!version) {
+    return {
+      result: 'skip',
+      reason:
+        'no datadog-lambda-js version satisfying the minimum release age was found; will retry later',
+    };
+  }
+
   // `dd-trace` is intentionally left in place: it is still required to
   // instrument APM for Lambdas via `datadog-lambda-js` handler redirection, so
   // it must remain installed and bundled. Only the redundant `NODE_OPTIONS`
@@ -155,9 +168,7 @@ const removeDatadogNodeOptionsHackPatch: PatchFunction = async ({
   await upgradeInfraPackages(mode, [
     {
       name: 'datadog-lambda-js',
-      version: await latest('datadog-lambda-js', {
-        version: DATADOG_LAMBDA_JS_VERSION,
-      }),
+      version,
     },
   ]);
 
