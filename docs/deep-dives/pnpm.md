@@ -65,7 +65,7 @@ pnpm allows us to specify dependencies to hoist via command line or [`pnpm-works
 The number of package patterns we need to hoist may fluctuate over time,
 so specifying hoist patterns via command line would be difficult to maintain.
 
-The **skuba**-maintained `pnpm-workspace.yaml` ([previously `.npmrc`](https://github.com/seek-oss/skuba/issues/1806)) currently instructs pnpm to hoist certain dependencies and applies a set of security controls:
+The **skuba**-maintained `pnpm-workspace.yaml` ([previously `.npmrc`](https://github.com/seek-oss/skuba/issues/1806)) currently instructs pnpm to hoist certain dependencies.
 
 ```yaml
 publicHoistPattern:
