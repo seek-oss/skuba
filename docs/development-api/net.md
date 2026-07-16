@@ -12,8 +12,6 @@ Waits for a resource to start listening on a socket address.
 
 This can be used to wait for a Docker container to start listening on its port.
 
-### Vitest
-
 ```typescript
 // vitest.config.int.ts
 
