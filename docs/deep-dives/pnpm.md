@@ -30,9 +30,9 @@ In our previously-recommended package manager, [Yarn], these packages and others
 
 ```console
 node_modules
-├── vitest
 ├── prettier
 ├── skuba
+├── vitest
 └── other-skuba-deps
 ```
 
