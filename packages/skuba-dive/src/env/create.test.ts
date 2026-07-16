@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { create } from './create.js';
 
@@ -7,16 +7,22 @@ describe('create', () => {
 
   const parse = (value: string, _name: string) => JSON.parse(value);
 
-  beforeEach(() => delete process.env[VAR]);
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  beforeEach(() => {
+    vi.stubEnv(VAR, undefined);
+  });
 
   describe('with default', () => {
     it('maps a set environment variable', () => {
-      process.env[VAR] = '123';
+      vi.stubEnv(VAR, '123');
       expect(create<number>(parse)(VAR, { default: undefined })).toBe(123);
     });
 
     it('throws on parsing error', () => {
-      process.env[VAR] = '}';
+      vi.stubEnv(VAR, '}');
       expect(() =>
         create(parse)(VAR, { default: undefined }),
       ).toThrowErrorMatchingInlineSnapshot(
@@ -30,12 +36,12 @@ describe('create', () => {
 
   describe('without default', () => {
     it('maps a set environment variable', () => {
-      process.env[VAR] = '123';
+      vi.stubEnv(VAR, '123');
       expect(create<number>(parse)(VAR)).toBe(123);
     });
 
     it('throws on parsing error', () => {
-      process.env[VAR] = '}';
+      vi.stubEnv(VAR, '}');
       expect(() => create(parse)(VAR)).toThrowErrorMatchingInlineSnapshot(
         `[SyntaxError: Unexpected token '}', "}" is not valid JSON]`,
       );
