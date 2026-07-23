@@ -12,22 +12,27 @@ Waits for a resource to start listening on a socket address.
 
 This can be used to wait for a Docker container to start listening on its port.
 
-```js
-// jest.config.int.ts
+```typescript
+// vitest.config.int.ts
 
-import { Jest } from 'skuba';
+import { Vitest } from 'skuba';
+import { defineConfig } from 'vitest/config';
 
-export default Jest.mergePreset({
-  globalSetup: '<rootDir>/jest.setup.int.ts',
-});
+export default defineConfig(
+  Vitest.mergePreset({
+    test: {
+      globalSetup: ['vitest.setup.int.ts'],
+    },
+  }),
+);
 ```
 
 ```typescript
-// jest.setup.int.ts
+// vitest.setup.int.ts
 
 import { Net } from 'skuba';
 
-export default () =>
+export const setup = () =>
   Net.waitFor({
     host: 'composeService',
     port: 5432,
