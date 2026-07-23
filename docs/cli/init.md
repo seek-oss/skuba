@@ -168,10 +168,10 @@ Familiarise yourself with the directory structure that **skuba** has created:
 ├── eslint.config.js
 ├── README.md
 ├── docker-compose.yml
-├── jest.config.js
-├── jest.setup.ts
+├── vitest.config.ts
 ├── package.json
 ├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
 ├── skuba.template.js
 ├── tsconfig.build.json
 ├── tsconfig.json
