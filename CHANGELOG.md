@@ -1,5 +1,139 @@
 # skuba
 
+## 16.3.0
+
+### Minor Changes
+
+- **lint:** Remove `pnpm-plugin-skuba` from `package.json` and `pnpm-workspace.yaml` ([#2499](https://github.com/seek-oss/skuba/pull/2499))
+
+- **init:** Add a Renovate preset option ([#2514](https://github.com/seek-oss/skuba/pull/2514))
+
+  `skuba init` now lets projects customise the Renovate preset generated in `.github/renovate.json5`. It defaults to `github>seek-oss/rynovate` to preserve the existing behaviour.
+
+- **template:** Remove SEEK-specific built-in templates ([#2476](https://github.com/seek-oss/skuba/pull/2476))
+
+  The following built-in templates have been removed from skuba:
+
+  - `express-rest-api`
+  - `koa-rest-api`
+  - `lambda-sqs-worker-cdk`
+  - `private-npm-package`
+
+  These templates are now maintained in the private [SEEK-Jobs/skuba-templates](https://github.com/SEEK-Jobs/skuba-templates) repository. SEEK employees can access them by selecting `seek →` in `skuba init`, which will present an up-to-date list of available templates.
+
+- **deps:** prettier 3.9.0 ([#2497](https://github.com/seek-oss/skuba/pull/2497))
+
+  This release introduces significant formatting enhancements for a number of languages. Please read the [release notes](https://prettier.io/blog/2026/06/27/3.9.0) for more information.
+
+- **test:** Restore GitHub check run and Buildkite annotations ([#2501](https://github.com/seek-oss/skuba/pull/2501))
+
+  `skuba test` now reports a GitHub check run and Buildkite annotation on CI, restoring behaviour lost in the skuba 16 Vitest migration.
+
+  Note: annotations will not carry meaningful detail until a future skuba release, but if you previously disabled `skuba/test` as a GitHub status check, it can be re-enabled now.
+
+- **init:** Make non-interactive mode discoverable ([#2482](https://github.com/seek-oss/skuba/pull/2482))
+
+  `skuba init` now accepts a `--non-interactive` flag that forces it to read JSON config from stdin, regardless of whether stdin is a TTY. Running it without piping any input prints the expected JSON Schema, including a description and example for each field, so the required config is discoverable without trial and error. A `skuba init --help` (`-h`) option has also been added to document this usage.
+
+- **pkg:** Migrate build tooling to tsdown ([#2513](https://github.com/seek-oss/skuba/pull/2513))
+
+  skuba is now bundled with [tsdown](https://tsdown.dev). This should not be a breaking change for most users. If you have been importing from internal paths within skuba's distribution, you may need to update those imports:
+
+  ```diff
+  - import * as Vitest from 'skuba/lib/api/vitest/index.js';
+  + import { Vitest } from 'skuba';
+  ```
+
+### Patch Changes
+
+- **init:** Clean up partially-initialised directory when non-interactive templating fails ([#2482](https://github.com/seek-oss/skuba/pull/2482))
+
+  When `skuba init` reads its config from stdin and the provided `templateData` is missing required fields or templating cannot be skipped, it now deletes the directory it created before exiting. Previously this left a broken project behind that had to be manually removed before retrying.
+
+- **lint:** Harden `.npmrc` secret detection to prevent accidental inclusion in autofixes ([#2534](https://github.com/seek-oss/skuba/pull/2534))
+
+  Previously, the autofix guardrail only inspected and prevented commits of secrets in a `./.npmrc` file relative to the working directory. It now resolves `.npmrc` files from the Git root and checks every changed `.npmrc` in the commit, including nested paths in monorepos.
+
+- **init:** Remove pnpm plugin installation logic ([#2499](https://github.com/seek-oss/skuba/pull/2499))
+
+- **init:** List available SEEK private templates in `skuba init` ([#2476](https://github.com/seek-oss/skuba/pull/2476))
+
+  Selecting `seek →` in `skuba init` now fetches and displays the list of available templates from [SEEK-Jobs/skuba-templates](https://github.com/SEEK-Jobs/skuba-templates) as an interactive selection menu, rather than prompting for a template name to type manually.
+
+- **lint:** Add patch to migrate Docker and Docker Compose Buildkite plugins to `mount-buildkite-agent` ([#2486](https://github.com/seek-oss/skuba/pull/2486))
+
+  `skuba lint` now patches projects that mount the Buildkite agent into their Docker or Docker Compose Buildkite plugin to use the [`mount-buildkite-agent`](https://github.com/buildkite-plugins/docker-compose-buildkite-plugin/blob/v5.12.1/README.md#mount-buildkite-agent-run-only-boolean) option instead.
+
+  For the Docker Compose Buildkite plugin, the bind mount is removed from `docker-compose.yml`:
+
+  ```diff
+   volumes:
+     - ./:/workdir
+  -  # Mount agent for Buildkite annotations.
+  -  - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+     # Mount cached dependencies.
+     - /workdir/node_modules
+  ```
+
+  And `mount-buildkite-agent: true` is added to the plugin in `.buildkite/pipeline.yml`:
+
+  ```diff
+   - docker-compose#v5.10.0:
+       environment:
+         - GITHUB_API_TOKEN
+  +    mount-buildkite-agent: true
+       propagate-environment: true
+       run: app
+  ```
+
+  For the Docker Buildkite plugin, the bind mount is removed and [`mount-buildkite-agent`](https://github.com/buildkite-plugins/docker-buildkite-plugin/blob/v5.13.0/README.md#mount-buildkite-agent) is opted in directly in `.buildkite/pipeline.yml`:
+
+  ```diff
+   - docker#v5.13.0:
+  -    # Disable SEEK BuildAgency's wrapped agent that requires Bash.
+  -    mount-buildkite-agent: false
+  +    mount-buildkite-agent: true
+       propagate-environment: true
+       volumes:
+  -      # Mount agent for Buildkite annotations.
+  -      - /usr/bin/buildkite-agent:/usr/bin/buildkite-agent
+         # Mount cached dependencies.
+         - /workdir/node_modules
+  ```
+
+- **help, init:** Use a legible logo when running under an AI agent ([#2485](https://github.com/seek-oss/skuba/pull/2485))
+
+  skuba prints a multi-line ASCII art banner at startup which AI agents are unable to read. It now detects when it's running under an AI agent and replaces the ASCII art with the word `skuba` inlined on the version line.
+
+  Interactive (human) usage is unchanged.
+
+- **deps:** @ast-grep/napi ~0.44.0 ([#2493](https://github.com/seek-oss/skuba/pull/2493))
+
+- **lint:** Guard against autofix loops on Renovate lock file updates ([#2490](https://github.com/seek-oss/skuba/pull/2490))
+
+  Renovate lock file updates that specifically target skuba (`renovate/skuba-0.x-lockfile`) could enter an infinite loop under a specific set of circumstances:
+
+  - Project does not pin skuba in `package.json`
+  - Renovate lock file update bumps skuba to a new version
+  - New skuba version includes a [patch](https://seek-oss.github.io/skuba/docs/cli/lint.html#patches) that further modifies the lock file (e.g. [v16.2.0](https://github.com/seek-oss/skuba/releases/tag/skuba%4016.2.0) removes a `@arethetypeswrong/core@0.18.2>fflate` pnpm override)
+  - CI runs the patch via `skuba lint`, updates `package.json#/skuba/version`, and pushes the resulting `package.json` and lock file changes via [GitHub autofixes](https://seek-oss.github.io/skuba/docs/deep-dives/github.html#github-autofixes)
+  - Renovate is triggered by the `package.json` change, detects that the lock file no longer matches the pre-patch state, assumes the branch is stale, and force pushes over it
+
+  Now, skuba heuristically detects and avoids lock file autofixes under these circumstances. Pull requests that would previously end up in an autofix loop may be instead left with a stale lock file. To unblock these PRs, install and push the resulting lock file change locally; Renovate will recognise this as a manual change and should not force push over it. A more lasting fix is to pin skuba to sidestep the scenario.
+
+  ```diff
+    {
+      "devDependencies": {
+  -     "skuba": "^0.0.0"
+  +     "skuba": "0.0.0"
+      }
+    }
+  ```
+
+- **lint/test:** Skip GitHub autofixes and annotations when no Git repository is available ([#2516](https://github.com/seek-oss/skuba/pull/2516))
+
+  Lint and test annotations and CI autofixes now exit with a concise warning instead of logging Git errors when the working directory has no `.git` metadata.
+
 ## 16.2.0
 
 ### Minor Changes
