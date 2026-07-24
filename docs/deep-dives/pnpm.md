@@ -14,7 +14,7 @@ This topic details how to use pnpm with **skuba**.
 
 ## Background
 
-**skuba** serves as a wrapper for numerous developer tools such as TypeScript, Jest, Prettier & ESLint,
+**skuba** serves as a wrapper for numerous developer tools such as TypeScript, Vitest, Prettier & ESLint,
 abstracting the dependency management of those packages across SEEK projects.
 When you are using **skuba**,
 you do not need to declare these packages as direct `devDependencies`.
@@ -30,9 +30,9 @@ In our previously-recommended package manager, [Yarn], these packages and others
 
 ```console
 node_modules
-├── jest
 ├── prettier
 ├── skuba
+├── vitest
 └── other-skuba-deps
 ```
 
@@ -65,20 +65,18 @@ pnpm allows us to specify dependencies to hoist via command line or [`pnpm-works
 The number of package patterns we need to hoist may fluctuate over time,
 so specifying hoist patterns via command line would be difficult to maintain.
 
-The **skuba**-maintained `pnpm-workspace.yaml` ([previously `.npmrc`](https://github.com/seek-oss/skuba/issues/1806)) currently instructs pnpm to hoist the following dependencies:
+The **skuba**-maintained `pnpm-workspace.yaml` ([previously `.npmrc`](https://github.com/seek-oss/skuba/issues/1806)) currently instructs pnpm to hoist certain dependencies.
 
 ```yaml
-# managed by skuba
-packageManagerStrictVersion: true
 publicHoistPattern:
-  - '@eslint/*'
-  - '@types*'
-  - '*eslint*'
-  - '*prettier*'
-  - esbuild
-  - jest
-  - tsconfig-seek
-  # end managed by skuba
+  - '@eslint/*' # Managed by skuba
+  - '@types*' # Managed by skuba
+  - esbuild # Managed by skuba
+  - eslint # Managed by skuba
+  - prettier # Managed by skuba
+  - tsconfig-seek # Managed by skuba
+  - '@vitest/*' # Managed by skuba
+  - vitest # Managed by skuba
 ```
 
 From the previous example, this will produce the following `node_modules` layout,
@@ -97,6 +95,38 @@ node_modules
             └── other-dep -> <store>/other-dep
 ```
 
+### Security controls
+
+Beyond hoisting, **skuba** configures several pnpm security features in `pnpm-workspace.yaml`.
+
+#### Minimum release age
+
+`minimumReleaseAge: 4320` prevents installing packages published less than 72 hours ago (4320 minutes).
+This protects against malicious packages published in the window before an npm compromise is discovered.
+
+Additional trusted packages can be excluded from this restriction using `minimumReleaseAgeExclude`:
+
+```yaml
+minimumReleaseAgeExclude:
+  - '@seek/*' # Managed by skuba
+  - skuba # Managed by skuba
+  - my-trusted-package
+```
+
+#### Allow builds
+
+`allowBuilds` is an explicit allowlist of packages permitted to run lifecycle scripts (e.g. `postinstall`).
+pnpm will block build scripts from any package not listed here, reducing the risk of malicious code execution during `pnpm install`.
+
+Common entries managed by **skuba** include native addons such as `esbuild`, `dd-trace`, and `@datadog/*` packages.
+If your project depends on other packages that require build scripts, add them to your own `allowBuilds` section.
+
+```yaml
+allowBuilds:
+  - esbuild # Managed by skuba
+  - my-trusted-package
+```
+
 ---
 
 ## Migrating from Yarn 1.x to pnpm
@@ -108,7 +138,7 @@ This migration guide assumes that your project was scaffolded with a **skuba** t
 2. Add a `packageManager` key to `package.json`
 
    ```json
-   "packageManager": "pnpm@10.34.4",
+   "packageManager": "pnpm@10.34.5",
    ```
 
 3. Install pnpm

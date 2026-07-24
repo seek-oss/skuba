@@ -2,6 +2,8 @@ import * as z from 'zod/v4';
 
 import { projectTypeSchema } from '../../utils/manifest.js';
 
+export const DEFAULT_RENOVATE_PRESET = 'github>seek-oss/rynovate';
+
 export interface Input {
   /**
    * Whether to enable verbose debug logging.
@@ -43,6 +45,13 @@ export const initConfigInputSchema = z.object({
         .string()
         .describe("The repository's default branch.")
         .meta({ examples: ['main', 'master'] }),
+      renovatePreset: z
+        .string()
+        .default(DEFAULT_RENOVATE_PRESET)
+        .describe('Renovate preset for the generated project to extend.')
+        .meta({
+          examples: [DEFAULT_RENOVATE_PRESET, 'github>my-org/renovate-config'],
+        }),
     })
     .catchall(
       z

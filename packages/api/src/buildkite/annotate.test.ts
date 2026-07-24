@@ -17,17 +17,14 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  delete process.env.BUILDKITE;
-  delete process.env.BUILDKITE_AGENT_ACCESS_TOKEN;
-  delete process.env.BUILDKITE_JOB_ID;
-  delete process.env.BUILDKITE_STEP_ID;
+  vi.unstubAllEnvs();
 });
 
 const setEnvironmentVariables = () => {
-  process.env.BUILDKITE = 'true';
-  process.env.BUILDKITE_AGENT_ACCESS_TOKEN = 'token';
-  process.env.BUILDKITE_JOB_ID = 'job-id';
-  process.env.BUILDKITE_STEP_ID = 'step-id';
+  vi.stubEnv('BUILDKITE', 'true');
+  vi.stubEnv('BUILDKITE_AGENT_ACCESS_TOKEN', 'token');
+  vi.stubEnv('BUILDKITE_JOB_ID', 'job-id');
+  vi.stubEnv('BUILDKITE_STEP_ID', 'step-id');
 };
 
 describe('annotate', () => {
