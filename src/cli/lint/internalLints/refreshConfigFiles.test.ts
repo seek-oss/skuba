@@ -209,7 +209,6 @@ The .npmrc file contains secrets. Run \`pnpm exec skuba format\` to remove them.
 
       expect(writeFile).not.toHaveBeenCalled();
     });
-
   });
 
   describe('format mode', () => {

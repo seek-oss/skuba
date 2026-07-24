@@ -245,8 +245,10 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   log.newline();
   const templateName = await selectTemplateName();
 
-  const { entryPoint, fields, noSkip, type } =
-    await cloneTemplate(templateName, destinationDir);
+  const { entryPoint, fields, noSkip, type } = await cloneTemplate(
+    templateName,
+    destinationDir,
+  );
 
   if (fields.length === 0) {
     return {
@@ -314,8 +316,10 @@ const configureFromPipe = async (): Promise<InitConfig> => {
 
   await createDirectory(destinationDir);
 
-  const { entryPoint, fields, noSkip, type } =
-    await cloneTemplate(templateName, destinationDir);
+  const { entryPoint, fields, noSkip, type } = await cloneTemplate(
+    templateName,
+    destinationDir,
+  );
 
   if (!templateComplete) {
     if (noSkip) {
