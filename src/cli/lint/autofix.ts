@@ -117,14 +117,15 @@ const createAutofixIgnore = async ({
 }): Promise<Git.ChangedFile[] | false> => {
   const gitRoot = await Git.findRoot({ dir });
 
-  const allChangedFiles = await Git.getChangedFiles({
+  const unsafeChangedFiles = await Git.getChangedFiles({
     dir,
     ignore: AUTOFIX_IGNORE_FILES_BASE,
   });
 
-  const npmrcSecretIgnores = gitRoot
-    ? await getNpmrcSecretIgnores(gitRoot, allChangedFiles)
-    : [];
+  const npmrcSecretIgnores = await getNpmrcSecretIgnores(
+    gitRoot ?? dir,
+    unsafeChangedFiles,
+  );
 
   const ignore = [...AUTOFIX_IGNORE_FILES_BASE, ...npmrcSecretIgnores];
 
@@ -132,7 +133,7 @@ const createAutofixIgnore = async ({
   // compares against the set of files we'd actually commit. Without this, a
   // Renovate branch with both a lockfile change and an ignored `.npmrc` would
   // fail the `lockfileChanges.length === changedFiles.length` short circuit.
-  const changedFiles = allChangedFiles.filter(
+  const changedFiles = unsafeChangedFiles.filter(
     (file) =>
       !npmrcSecretIgnores.some(
         (i) => i.path === file.path && i.state === file.state,
