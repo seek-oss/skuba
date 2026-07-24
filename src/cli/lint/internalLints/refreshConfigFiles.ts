@@ -10,10 +10,6 @@ import {
 } from '../../../utils/dir.js';
 import type { Logger } from '../../../utils/logging.js';
 import { hasNpmrcSecret } from '../../../utils/npmrc.js';
-import {
-  type PackageManagerConfig,
-  detectPackageManager,
-} from '../../../utils/packageManager.js';
 import { readBaseTemplateFile } from '../../../utils/template.js';
 import { getDestinationManifest } from '../../configure/analysis/package.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
@@ -21,7 +17,6 @@ import { mergeWithConfigFile } from '../../configure/processing/configFile.js';
 import type { InternalLintResult } from '../internal.js';
 
 type ConditionOptions = {
-  packageManager: PackageManagerConfig;
   isInWorkspaceRoot: boolean;
 };
 
@@ -34,10 +29,7 @@ const ensureNoAuthToken = (fileContents: string) =>
 type RefreshableConfigFile = {
   name: string;
   type: 'ignore' | 'npmrc';
-  additionalMapping?: (
-    s: string,
-    packageManager: PackageManagerConfig,
-  ) => string;
+  additionalMapping?: (s: string) => string;
   if?: (options: ConditionOptions) => boolean;
 };
 
@@ -94,7 +86,7 @@ export const refreshConfigFiles = async (
         return { needsChange: false };
       }
 
-      const data = additionalMapping(inputFile, packageManager);
+      const data = additionalMapping(inputFile);
       const filepath = path.join(destinationRoot, filename);
 
       if (mode === 'format') {
@@ -116,7 +108,7 @@ export const refreshConfigFiles = async (
           msg: `The ${logger.bold(
             filename,
           )} file contains secrets. Run \`${logger.bold(
-            `${packageManager.print.exec} skuba format`,
+            'pnpm exec skuba format',
           )}\` to remove them.`,
           filename,
         };
@@ -143,7 +135,6 @@ export const refreshConfigFiles = async (
 
     const data = additionalMapping(
       inputFile ? mergeWithConfigFile(templateFile)(inputFile) : templateFile,
-      packageManager,
     );
 
     const filepath = path.join(destinationRoot, filename);
@@ -167,7 +158,7 @@ export const refreshConfigFiles = async (
         msg: `The ${logger.bold(
           filename,
         )} file is out of date. Run \`${logger.bold(
-          `${packageManager.print.exec} skuba format`,
+          'pnpm exec skuba format',
         )}\` to update it.`,
         filename,
       };
@@ -176,12 +167,9 @@ export const refreshConfigFiles = async (
     return { needsChange: false };
   };
 
-  const packageManager = await detectPackageManager(destinationRoot);
-
   const results = await Promise.all(
     REFRESHABLE_CONFIG_FILES.map((conf) =>
       refreshConfigFile(conf, {
-        packageManager,
         isInWorkspaceRoot: workspaceRoot === currentWorkspaceProjectRoot,
       }),
     ),

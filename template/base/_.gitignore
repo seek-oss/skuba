@@ -20,5 +20,4 @@ node_modules*/
 *.tsbuildinfo
 npm-debug.log
 package-lock.json
-yarn-error.log
 # end managed by skuba

@@ -1,7 +1,6 @@
 import * as z from 'zod/v4';
 
 import { projectTypeSchema } from '../../utils/manifest.js';
-import { packageManagerSchema } from '../../utils/packageManager.js';
 
 export interface Input {
   /**
@@ -92,6 +91,5 @@ const initConfigSchema = initConfigInputSchema
       .catchall(z.string()),
 
     entryPoint: z.string().optional(),
-    packageManager: packageManagerSchema,
     type: projectTypeSchema.optional(),
   });

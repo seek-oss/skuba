@@ -3,7 +3,6 @@ import { inspect } from 'util';
 
 import { hasDebugFlag, hasSerialFlag } from '../../utils/args.js';
 import { log } from '../../utils/logging.js';
-import { detectPackageManager } from '../../utils/packageManager.js';
 import { throwOnTimeout } from '../../utils/wait.js';
 
 import { createAnnotations } from './annotate/index.js';
@@ -50,12 +49,9 @@ export const lint = async (
     log.err(`${tools.join(', ')} found issues that require triage.`);
 
     if (internal.fixable || eslint.fixable || !prettier.ok) {
-      const packageManager = await detectPackageManager();
       log.newline();
       log.warn(
-        `Try running ${log.bold(
-          `${packageManager.print.exec} skuba format`,
-        )} to fix them.`,
+        `Try running ${log.bold('pnpm exec skuba format')} to fix them.`,
       );
     }
   }

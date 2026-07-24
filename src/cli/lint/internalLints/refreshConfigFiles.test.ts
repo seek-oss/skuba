@@ -5,7 +5,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../index.js';
 import { log } from '../../../utils/logging.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
 import * as project from '../../configure/analysis/project.js';
 
 import {
@@ -50,24 +49,10 @@ vi.mock('../../../utils/npmrc.js', () => ({
   hasNpmrcSecret: vi.fn(),
 }));
 
-const givenMockPackageManager = async (command: 'pnpm' | 'yarn') => {
-  const actualPackageManager = await vi.importActual<
-    typeof import('../../../utils/packageManager.js')
-  >('../../../utils/packageManager.js');
-
-  vi.mocked(detectPackageManager).mockResolvedValue(
-    actualPackageManager.configForPackageManager(command),
-  );
-};
-
-vi.mock('../../../utils/packageManager');
-
 beforeEach(async () => {
   vi.spyOn(console, 'log').mockImplementation((...args) =>
     stdoutMock(`${args.join(' ')}\n`),
   );
-
-  await givenMockPackageManager('pnpm');
 
   const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
   vi.mocked(hasNpmrcSecret).mockReturnValue(false);
@@ -140,24 +125,6 @@ describe('refreshConfigFiles', () => {
       expect(`\n${stdout()}`).toBe(`
 The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
 `);
-
-      expect(writeFile).not.toHaveBeenCalled();
-    });
-
-    it('should not flag creation of a pnpm-workspace.yaml for yarn projects', async () => {
-      await givenMockPackageManager('yarn');
-
-      setupDestinationFiles({
-        'pnpm-workspace.yaml': undefined,
-      });
-
-      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
-        ok: true,
-        fixable: false,
-        annotations: [],
-      });
-
-      expect(stdout()).toBe('');
 
       expect(writeFile).not.toHaveBeenCalled();
     });
@@ -243,32 +210,6 @@ The .npmrc file contains secrets. Run \`pnpm exec skuba format\` to remove them.
       expect(writeFile).not.toHaveBeenCalled();
     });
 
-    it('should use the yarn exec command in the .npmrc secret message for yarn projects', async () => {
-      await givenMockPackageManager('yarn');
-
-      const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
-      vi.mocked(hasNpmrcSecret).mockImplementation((line) =>
-        line.includes('_authToken'),
-      );
-
-      setupDestinationFiles({
-        '.npmrc': '//registry.npmjs.org/:_authToken=secret\n',
-      });
-
-      await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
-        ok: false,
-        fixable: true,
-        annotations: [
-          {
-            message:
-              'The .npmrc file contains secrets. Run `yarn skuba format` to remove them.',
-            path: '.npmrc',
-          },
-        ],
-      });
-
-      expect(writeFile).not.toHaveBeenCalled();
-    });
   });
 
   describe('format mode', () => {
@@ -310,24 +251,6 @@ The .npmrc file contains secrets. Run \`pnpm exec skuba format\` to remove them.
         path.join(process.cwd(), '.gitignore'),
         '# managed by skuba\nfake content for _.gitignore\n# end managed by skuba\n\nstuff afterwards',
       );
-    });
-
-    it('should not create a pnpm-workspace.yaml for yarn projects if missing', async () => {
-      await givenMockPackageManager('yarn');
-
-      setupDestinationFiles({
-        'pnpm-workspace.yaml': undefined,
-      });
-
-      await expect(refreshConfigFiles('format', log)).resolves.toEqual({
-        ok: true,
-        fixable: false,
-        annotations: [],
-      });
-
-      expect(stdout()).toBe('');
-
-      expect(writeFile).not.toHaveBeenCalled();
     });
 
     it('should not create files that are `.gitignore`d', async () => {

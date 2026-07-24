@@ -3,7 +3,7 @@ import { styleText } from 'node:util';
 import { isAgent } from 'std-env';
 
 import { log } from './logging.js';
-import { detectPackageManager } from './packageManager.js';
+import { pnpmUpdate } from './packageManager.js';
 import { getSkubaVersionInfo } from './version.js';
 
 const LOGO = styleText(
@@ -17,10 +17,7 @@ const LOGO = styleText(
 );
 
 export const showLogoAndVersionInfo = async () => {
-  const [versionInfo, packageManager] = await Promise.all([
-    getSkubaVersionInfo(),
-    detectPackageManager(),
-  ]);
+  const versionInfo = await getSkubaVersionInfo();
 
   if (!isAgent) {
     log.plain(LOGO);
@@ -39,9 +36,7 @@ export const showLogoAndVersionInfo = async () => {
     log.warn('Your skuba installation is out of date.');
     log.warn('Consider upgrading:');
     log.newline();
-    log.warn(
-      log.bold(`${packageManager.print.update} skuba@${versionInfo.latest}`),
-    );
+    log.warn(log.bold(`${pnpmUpdate} skuba@${versionInfo.latest}`));
     log.newline();
   }
 

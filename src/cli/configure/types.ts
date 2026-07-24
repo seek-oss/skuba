@@ -1,7 +1,6 @@
 import type { PackageJson as ReadPackageUpPackageJson } from 'read-package-up';
 
 import type { ProjectType } from '../../utils/manifest.js';
-import type { PackageManagerConfig } from '../../utils/packageManager.js';
 
 export type { TsConfigJson } from 'type-fest';
 
@@ -50,6 +49,5 @@ export interface Options {
   destinationRoot: string;
   entryPoint: string;
   firstRun: boolean;
-  packageManager: PackageManagerConfig;
   type: ProjectType;
 }

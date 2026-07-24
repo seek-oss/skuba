@@ -2,7 +2,6 @@ import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as execModule from '../../../../../../utils/exec.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import * as checks from '../../../../../migrate/nodeVersion/checks.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -52,7 +51,6 @@ const baseArgs: PatchConfig = {
     },
     path: 'package.json',
   },
-  packageManager: configForPackageManager('pnpm'),
   mode: 'format',
 };
 

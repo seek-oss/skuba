@@ -2,7 +2,6 @@ import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../../../../index.js';
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchApiDockerfiles } from './patchApiDockerfiles.js';
@@ -53,7 +52,6 @@ const baseArgs: PatchConfig = {
     },
     path: 'package.json',
   },
-  packageManager: configForPackageManager('yarn'),
   mode: 'format',
 };
 

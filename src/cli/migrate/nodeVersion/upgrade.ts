@@ -6,7 +6,6 @@ import { coerce, lt } from 'semver';
 
 import { exec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
 
 const packageVersionRegex = (packageName: string) =>
@@ -200,13 +199,11 @@ export const upgradeInfraPackages = async (
     ),
   );
 
-  const packageManager = await detectPackageManager();
-
   try {
     await exec(
-      packageManager.command,
+      'pnpm',
       'install',
-      ...(packageManager.command === 'pnpm' ? ['--frozen-lockfile=false'] : []),
+      '--frozen-lockfile=false',
       '--prefer-offline',
     );
   } catch (error) {

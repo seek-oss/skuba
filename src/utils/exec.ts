@@ -1,6 +1,6 @@
 import type { styleText } from 'node:util';
 import { cpus } from 'os';
-import stream from 'stream';
+import type stream from 'stream';
 import util from 'util';
 
 import concurrently from 'concurrently';
@@ -10,53 +10,8 @@ import npmWhich from 'npm-which';
 
 import { concurrentlyErrorsSchema, isErrorWithCode } from './error.js';
 import { log } from './logging.js';
-import type { PackageManager } from './packageManager.js';
 
 type StyleColor = Parameters<typeof styleText>[0];
-
-class YarnSpamFilter extends stream.Transform {
-  silenced = false;
-
-  _transform(
-    chunk: Uint8Array,
-    _encoding: BufferEncoding,
-    callback: stream.TransformCallback,
-  ) {
-    const str = Buffer.from(chunk).toString();
-
-    // Yarn spews the entire installed dependency tree after this message
-    if (str.startsWith('info Direct dependencies')) {
-      this.silenced = true;
-    }
-
-    if (
-      !this.silenced &&
-      // This isn't very useful given the command generates a lockfile
-      !str.startsWith('info No lockfile found')
-    ) {
-      this.push(chunk);
-    }
-
-    callback();
-  }
-}
-
-class YarnWarningFilter extends stream.Transform {
-  _transform(
-    chunk: Uint8Array,
-    _encoding: BufferEncoding,
-    callback: stream.TransformCallback,
-  ) {
-    const str = Buffer.from(chunk).toString();
-
-    // Filter out annoying deprecation warnings that users can do little about
-    if (!str.startsWith('warning skuba >')) {
-      this.push(chunk);
-    }
-
-    callback();
-  }
-}
 
 export type Exec<T extends Options = Options> = (
   command: string,
@@ -94,7 +49,7 @@ interface ExecConcurrentlyOptions {
 
 type ExecOptions<T extends Options> = T & StreamStdioOptions;
 
-type StreamStdioOptions = { streamStdio?: true | PackageManager };
+type StreamStdioOptions = { streamStdio?: true };
 
 const envWithPath = {
   PATH: npmRunPath({ cwd: import.meta.dirname }),
@@ -112,22 +67,9 @@ const runCommand = <T extends Options>(
     ...execaOptions,
   });
 
-  switch (streamStdio) {
-    case 'yarn':
-      const stderrFilter = new YarnWarningFilter();
-      const stdoutFilter = new YarnSpamFilter();
-
-      subprocess.stderr?.pipe(stderrFilter).pipe(process.stderr);
-      subprocess.stdout?.pipe(stdoutFilter).pipe(process.stdout);
-
-      break;
-
-    case 'pnpm':
-    case true:
-      subprocess.stderr?.pipe(process.stderr);
-      subprocess.stdout?.pipe(process.stdout);
-
-      break;
+  if (streamStdio) {
+    subprocess.stderr?.pipe(process.stderr);
+    subprocess.stdout?.pipe(process.stdout);
   }
 
   return subprocess as unknown as ResultPromise<T>;

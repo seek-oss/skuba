@@ -837,22 +837,4 @@ describe('Renovate autofix guard', () => {
 
     expect(stdout()).toContain('Pushed fix commit');
   });
-
-  it('discards Yarn lockfile-only changes', async () => {
-    process.env.GITHUB_HEAD_REF = 'renovate/yarn-lockfile';
-
-    await createRenovateLockfileHead('yarn.lock');
-
-    await fs.promises.writeFile('yarn.lock', 'updated lockfile');
-
-    await expect(autofix(params)).resolves.toBeUndefined();
-
-    expect(push).not.toHaveBeenCalled();
-    await assertGitStatus('yarn.lock', '*modified');
-
-    expect(stdout()).toContain(
-      'Renovate appears to be performing lock file updates on this branch.',
-    );
-    expect(stdout()).toContain('No autofixes detected.');
-  });
 });

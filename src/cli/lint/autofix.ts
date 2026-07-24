@@ -53,10 +53,7 @@ export const AUTOFIX_IGNORE_FILES_NPMRC: Git.ChangedFile[] = [
 const LOCKFILE_BRANCH_PATTERN = /^renovate[\/-].+-lockfile$/;
 
 const isManagedLockfile = (path: string): boolean =>
-  path.endsWith('/pnpm-lock.yaml') ||
-  path === 'pnpm-lock.yaml' ||
-  path.endsWith('/yarn.lock') ||
-  path === 'yarn.lock';
+  path.endsWith('/pnpm-lock.yaml') || path === 'pnpm-lock.yaml';
 
 const shouldPush = async ({
   currentBranch,

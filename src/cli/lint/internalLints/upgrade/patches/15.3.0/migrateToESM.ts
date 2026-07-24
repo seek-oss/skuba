@@ -15,7 +15,7 @@ const migrate: PatchFunction = async (config) => {
     };
   }
 
-  if (config.mode !== 'lint' && config.packageManager.command === 'pnpm') {
+  if (config.mode !== 'lint') {
     try {
       await exec(
         'pnpm',
