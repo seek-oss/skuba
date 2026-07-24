@@ -19,6 +19,18 @@ export default [
     },
   },
   {
+    // CDK construct + bundling code. Sync I/O is required to satisfy
+    // aws-cdk-lib's synchronous `ILocalBundling.tryBundle` contract, and
+    // constructs are instantiated for their side effect of registering with
+    // the enclosing scope.
+    files: ['packages/api/src/cdk/nodejsFunction/**/*.{ts,cts,mts,tsx}'],
+
+    rules: {
+      'no-sync': 'off',
+      'no-new': 'off',
+    },
+  },
+  {
     files: ['integration/**/*.{ts,cts,mts,tsx}'],
 
     languageOptions: {

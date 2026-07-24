@@ -17,39 +17,35 @@
   "exports": {
     ".": {
       "@seek/skuba/source": "./src/index.ts",
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "default": "./lib/index.mjs"
     },
     "./buildkite": {
       "@seek/skuba/source": "./src/buildkite/index.ts",
-      "import": "./lib/buildkite/index.mjs",
-      "require": "./lib/buildkite/index.cjs"
+      "default": "./lib/buildkite/index.mjs"
     },
     "./cdk": {
       "@seek/skuba/source": "./src/cdk/index.ts",
-      "import": "./lib/cdk/index.mjs",
-      "require": "./lib/cdk/index.cjs"
+      "default": "./lib/cdk/index.mjs"
+    },
+    "./cdk/nodejsFunction": {
+      "@seek/skuba/source": "./src/cdk/nodejsFunction/index.ts",
+      "default": "./lib/cdk/nodejsFunction/index.mjs"
     },
     "./git": {
       "@seek/skuba/source": "./src/git/index.ts",
-      "import": "./lib/git/index.mjs",
-      "require": "./lib/git/index.cjs"
+      "default": "./lib/git/index.mjs"
     },
     "./github": {
       "@seek/skuba/source": "./src/github/index.ts",
-      "import": "./lib/github/index.mjs",
-      "require": "./lib/github/index.cjs"
+      "default": "./lib/github/index.mjs"
     },
     "./net": {
       "@seek/skuba/source": "./src/net/index.ts",
-      "import": "./lib/net/index.mjs",
-      "require": "./lib/net/index.cjs"
+      "default": "./lib/net/index.mjs"
     },
     "./package.json": "./package.json"
   },
-  "main": "./lib/index.cjs",
-  "module": "./lib/index.mjs",
-  "types": "./lib/index.d.cts",
+  "types": "./lib/index.d.mts",
   "files": [
     "lib",
     "buildkite",
@@ -59,7 +55,7 @@
     "net"
   ],
   "scripts": {
-    "build": "pnpm skuba build-package && ./scripts/fix-types.sh",
+    "build": "pnpm skuba build-package",
     "skuba": "node ../../lib/skuba",
     "test": "pnpm skuba test",
     "test:ci": "pnpm skuba test --coverage"
@@ -75,37 +71,38 @@
     "isomorphic-git": "^1.37.6",
     "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
+    "rolldown": "^1.1.0",
+    "yaml": "^2.9.0",
     "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "aws-cdk-lib": "^2.253.0",
+    "constructs": "^10.0.17"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": ">=2.130.0",
+    "constructs": "^10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "aws-cdk-lib": {
+      "optional": true
+    },
+    "constructs": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.14.0"
   },
   "publishConfig": {
     "exports": {
-      ".": {
-        "import": "./lib/index.mjs",
-        "require": "./lib/index.cjs"
-      },
-      "./buildkite": {
-        "import": "./lib/buildkite/index.mjs",
-        "require": "./lib/buildkite/index.cjs"
-      },
-      "./cdk": {
-        "import": "./lib/cdk/index.mjs",
-        "require": "./lib/cdk/index.cjs"
-      },
-      "./git": {
-        "import": "./lib/git/index.mjs",
-        "require": "./lib/git/index.cjs"
-      },
-      "./github": {
-        "import": "./lib/github/index.mjs",
-        "require": "./lib/github/index.cjs"
-      },
-      "./net": {
-        "import": "./lib/net/index.mjs",
-        "require": "./lib/net/index.cjs"
-      },
+      ".": "./lib/index.mjs",
+      "./buildkite": "./lib/buildkite/index.mjs",
+      "./cdk": "./lib/cdk/index.mjs",
+      "./cdk/nodejsFunction": "./lib/cdk/nodejsFunction/index.mjs",
+      "./git": "./lib/git/index.mjs",
+      "./github": "./lib/github/index.mjs",
+      "./net": "./lib/net/index.mjs",
       "./package.json": "./package.json"
     }
   }
