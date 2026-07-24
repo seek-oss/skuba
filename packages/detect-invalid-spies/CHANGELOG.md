@@ -1,5 +1,11 @@
 # @skuba-lib/detect-invalid-spies
 
+## 1.1.1
+
+### Patch Changes
+
+- **deps:** @ast-grep/napi ~0.44.0 ([#2493](https://github.com/seek-oss/skuba/pull/2493))
+
 ## 1.1.0
 
 ### Minor Changes
