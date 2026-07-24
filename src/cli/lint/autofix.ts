@@ -241,7 +241,7 @@ const getNpmrcSecretIgnores = async (
     ),
   );
 
-  return results.filter((file): file is Git.ChangedFile => file !== null);
+  return results.filter((file) => file !== null);
 };
 
 interface AutofixParameters {
