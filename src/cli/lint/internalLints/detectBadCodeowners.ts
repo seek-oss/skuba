@@ -1,9 +1,9 @@
 import { inspect } from 'util';
 
-import { Git } from '../../../index.js';
-import type { Logger } from '../../../utils/logging.js';
-import { createDestinationFileReader } from '../../configure/analysis/project.js';
-import type { InternalLintResult } from '../internal.js';
+import { Git } from '../../../index.ts';
+import type { Logger } from '../../../utils/logging.ts';
+import { createDestinationFileReader } from '../../configure/analysis/project.ts';
+import type { InternalLintResult } from '../internal.ts';
 
 export const detectBadCodeowners = async (
   logger: Logger,

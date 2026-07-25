@@ -84,6 +84,8 @@ Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspac
 
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
+Patch skipped: Add \`allowImportingTsExtensions\` and \`rewriteRelativeImportExtensions\` to tsconfig.json - no tsconfig.json import extension changes required upgrade-skuba
+
 Patch skipped: Rewrite relative .js imports to .ts and #src imports without extensions - no import path changes required upgrade-skuba
 
 Patch skipped: Update package.json #src subpath imports for TypeScript source extensions - no package.json import changes required upgrade-skuba
@@ -225,6 +227,8 @@ Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspac
 
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
+Patch skipped: Add \`allowImportingTsExtensions\` and \`rewriteRelativeImportExtensions\` to tsconfig.json - no tsconfig.json import extension changes required upgrade-skuba
+
 Patch skipped: Rewrite relative .js imports to .ts and #src imports without extensions - no import path changes required upgrade-skuba
 
 Patch skipped: Update package.json #src subpath imports for TypeScript source extensions - no package.json import changes required upgrade-skuba
@@ -359,6 +363,8 @@ Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspac
 
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
+Patch skipped: Add \`allowImportingTsExtensions\` and \`rewriteRelativeImportExtensions\` to tsconfig.json - no tsconfig.json import extension changes required upgrade-skuba
+
 Patch skipped: Rewrite relative .js imports to .ts and #src imports without extensions - no import path changes required upgrade-skuba
 
 Patch skipped: Update package.json #src subpath imports for TypeScript source extensions - no package.json import changes required upgrade-skuba
@@ -464,6 +470,8 @@ Patch skipped: Use mount-buildkite-agent for Docker and Docker Compose Buildkite
 Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspace.yaml not found upgrade-skuba
 
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
+
+Patch skipped: Add \`allowImportingTsExtensions\` and \`rewriteRelativeImportExtensions\` to tsconfig.json - no tsconfig.json import extension changes required upgrade-skuba
 
 Patch skipped: Rewrite relative .js imports to .ts and #src imports without extensions - no import path changes required upgrade-skuba
 

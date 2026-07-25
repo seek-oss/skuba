@@ -4,11 +4,11 @@ import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
 
-import { log } from '../../../utils/logging.js';
-import { createDestinationFileReader } from '../../configure/analysis/project.js';
+import { log } from '../../../utils/logging.ts';
+import { createDestinationFileReader } from '../../configure/analysis/project.ts';
 
-import { isLikelyPackage } from './checks.js';
-import { tryUpgradeInfraPackages } from './upgrade.js';
+import { isLikelyPackage } from './checks.ts';
+import { tryUpgradeInfraPackages } from './upgrade.ts';
 
 type FileSelector =
   { files: string; file?: never } | { file: string; files?: never };

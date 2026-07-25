@@ -1,6 +1,6 @@
 import type { NormalizedPackageJson } from 'read-package-up';
 
-import { exec as defaultExec } from '../../utils/exec.js';
+import { exec as defaultExec } from '../../utils/exec.ts';
 
 export const installPnpmPlugin = async (
   skubaManifest: NormalizedPackageJson,

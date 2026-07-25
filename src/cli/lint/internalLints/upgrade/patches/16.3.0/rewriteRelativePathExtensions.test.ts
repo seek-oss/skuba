@@ -252,10 +252,10 @@ describe('tryRewriteRelativePathExtensions', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'src/a.ts': 'export const a = 1;',
-            'src/app.ts':
-              "import { a } from './a.ts';\nimport { b } from '#src/b';",
-          },
+              'src/a.ts': 'export const a = 1;',
+              'src/app.ts':
+                "import { a } from './a.ts';\nimport { b } from '#src/b';",
+            },
       );
     });
   });
@@ -375,7 +375,7 @@ describe('tryAddPackageJsonJsonImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'package.json': `{
+              'package.json': `{
   "imports": {
     "#src/*": {
       "@seek/my-repo/source/*": "./src/*.ts",
@@ -388,7 +388,7 @@ describe('tryAddPackageJsonJsonImports', () => {
   }
 }
 `,
-          },
+            },
       );
     });
   });
@@ -438,7 +438,7 @@ describe('tryUpdatePackageJsonImports', () => {
         mode === 'lint'
           ? inputVolume
           : {
-            'package.json': `{
+              'package.json': `{
   "imports": {
     "#src/*": {
       "@seek/my-repo/source/*": "./src/*.ts",
@@ -447,7 +447,7 @@ describe('tryUpdatePackageJsonImports', () => {
   }
 }
 `,
-          },
+            },
       );
     });
   });

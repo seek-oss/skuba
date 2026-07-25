@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import * as parsers from './parsers.js';
+import * as parsers from './parsers.ts';
 
 describe('nonNegativeInteger', () => {
   const happyCases = [

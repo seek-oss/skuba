@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "customConditions": ["@seek/<%- repoName %>/source"],
     "rootDir": ".",
     "lib": ["ES2024"],

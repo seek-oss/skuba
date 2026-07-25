@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { create } from './create.js';
+import { create } from './create.ts';
 
 describe('create', () => {
   const VAR = 'ABC_123_DEF_456';

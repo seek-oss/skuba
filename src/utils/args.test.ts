@@ -7,7 +7,7 @@ import {
   hasSerialFlag,
   parseProcessArgs,
   parseRunArgs,
-} from './args.js';
+} from './args.ts';
 
 describe('hasDebugFlag', () => {
   test.each`

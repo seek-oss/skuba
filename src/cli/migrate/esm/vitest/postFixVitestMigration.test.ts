@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { postFixVitestMigration } from './postFixVitestMigration.js';
+import { postFixVitestMigration } from './postFixVitestMigration.ts';
 
 const run = async (content: string) => {
   const result = await postFixVitestMigration('test.ts', content);
@@ -250,7 +250,7 @@ import { mockLogger } from './mockLogger.js';
 
 import * as z from 'zod';
 import { SomeClass } from './someClass.js';
-import { someFunction } from '#src/someFunction.js';
+import { someFunction } from '#src/someFunction';
 
 type MyMock = jest.Mock;
 type MyMockedFunction = jest.MockedFunction<() => void>;
@@ -269,7 +269,7 @@ type MySpiedFunction = jest.SpiedFunction<() => void>;
         import type { Mock, MockedFunction, MockedClass, MockedObject, MockInstance } from 'vitest';
         import * as z from 'zod';
         import { SomeClass } from './someClass.js';
-        import { someFunction } from '#src/someFunction.js';
+        import { someFunction } from '#src/someFunction';
 
         type MyMock = Mock;
         type MyMockedFunction = MockedFunction<() => void>;

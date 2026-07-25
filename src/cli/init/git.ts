@@ -5,8 +5,8 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
 
-import { copyFiles } from '../../utils/copy.js';
-import { log } from '../../utils/logging.js';
+import { copyFiles } from '../../utils/copy.ts';
+import { log } from '../../utils/logging.ts';
 
 import * as Git from '@skuba-lib/api/git';
 

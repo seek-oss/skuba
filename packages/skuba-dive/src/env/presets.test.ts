@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-import * as presets from './presets.js';
+import * as presets from './presets.ts';
 
 describe('presets', () => {
   afterEach(() => {

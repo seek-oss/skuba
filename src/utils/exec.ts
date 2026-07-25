@@ -8,9 +8,9 @@ import { type Options, type ResultPromise, execa } from 'execa';
 import { npmRunPath } from 'npm-run-path';
 import npmWhich from 'npm-which';
 
-import { concurrentlyErrorsSchema, isErrorWithCode } from './error.js';
-import { log } from './logging.js';
-import type { PackageManager } from './packageManager.js';
+import { concurrentlyErrorsSchema, isErrorWithCode } from './error.ts';
+import { log } from './logging.ts';
+import type { PackageManager } from './packageManager.ts';
 
 type StyleColor = Parameters<typeof styleText>[0];
 

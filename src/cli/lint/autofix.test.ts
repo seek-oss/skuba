@@ -4,16 +4,16 @@ import { simpleGit } from 'simple-git';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import newGit from '../../../integration/git/new.json' with { type: 'json' };
-import { runESLint } from '../adapter/eslint.js';
-import { runPrettier } from '../adapter/prettier.js';
-import { createDestinationFileReader } from '../configure/analysis/project.js';
+import { runESLint } from '../adapter/eslint.ts';
+import { runPrettier } from '../adapter/prettier.ts';
+import { createDestinationFileReader } from '../configure/analysis/project.ts';
 
 import {
   AUTOFIX_IGNORE_FILES_BASE,
   RENOVATE_AUTHOR,
   autofix,
-} from './autofix.js';
-import { internalLint } from './internal.js';
+} from './autofix.ts';
+import { internalLint } from './internal.ts';
 
 import * as Buildkite from '@skuba-lib/api/buildkite';
 import * as Git from '@skuba-lib/api/git';

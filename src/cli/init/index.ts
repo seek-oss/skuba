@@ -7,30 +7,30 @@ import {
   hasDebugFlag,
   hasHelpFlag,
   hasNonInteractiveFlag,
-} from '../../utils/args.js';
-import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
-import { createInclusionFilter } from '../../utils/dir.js';
-import { createExec, ensureCommands } from '../../utils/exec.js';
-import { pathExists } from '../../utils/fs.js';
-import { createLogger, log } from '../../utils/logging.js';
-import { showLogoAndVersionInfo } from '../../utils/logo.js';
-import { getConsumerManifest } from '../../utils/manifest.js';
-import { detectPackageManager } from '../../utils/packageManager.js';
+} from '../../utils/args.ts';
+import { copyFiles, createEjsRenderer } from '../../utils/copy.ts';
+import { createInclusionFilter } from '../../utils/dir.ts';
+import { createExec, ensureCommands } from '../../utils/exec.ts';
+import { pathExists } from '../../utils/fs.ts';
+import { createLogger, log } from '../../utils/logging.ts';
+import { showLogoAndVersionInfo } from '../../utils/logo.ts';
+import { getConsumerManifest } from '../../utils/manifest.ts';
+import { detectPackageManager } from '../../utils/packageManager.ts';
 import {
   BASE_TEMPLATE_DIR,
   TEMPLATE_CONFIG_FILENAME,
   ensureTemplateConfigDeletion,
-} from '../../utils/template.js';
-import { runPrettier } from '../adapter/prettier.js';
-import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.js';
-import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.js';
+} from '../../utils/template.ts';
+import { runPrettier } from '../adapter/prettier.ts';
+import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.ts';
+import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.ts';
 
-import { getConfig } from './getConfig.js';
-import { initialiseRepo } from './git.js';
-import { logInitHelp } from './help.js';
-import { resumeTemplating } from './resumeTemplating.js';
-import type { Input } from './types.js';
-import { writePackageJson } from './writePackageJson.js';
+import { getConfig } from './getConfig.ts';
+import { initialiseRepo } from './git.ts';
+import { logInitHelp } from './help.ts';
+import { resumeTemplating } from './resumeTemplating.ts';
+import type { Input } from './types.ts';
+import { writePackageJson } from './writePackageJson.ts';
 
 import * as Git from '@skuba-lib/api/git';
 

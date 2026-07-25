@@ -1,16 +1,15 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
-import { log } from '../../../../utils/logging.js';
-import type { ESLintOutput } from '../../../adapter/eslint.js';
-import type { PrettierOutput } from '../../../adapter/prettier.js';
-import type { StreamInterceptor } from '../../../lint/external.js';
-import type { InternalLintResult } from '../../internal.js';
+import { log } from '../../../../utils/logging.ts';
+import type { ESLintOutput } from '../../../adapter/eslint.ts';
+import type { PrettierOutput } from '../../../adapter/prettier.ts';
+import type { StreamInterceptor } from '../../../lint/external.ts';
+import type { InternalLintResult } from '../../internal.ts';
 
-import { createEslintAnnotations } from './eslint.js';
-import { createPrettierAnnotations } from './prettier.js';
-import { createTscAnnotations } from './tsc.js';
-
-import { createGitHubAnnotations } from './index.js';
+import { createEslintAnnotations } from './eslint.ts';
+import { createGitHubAnnotations } from './index.ts';
+import { createPrettierAnnotations } from './prettier.ts';
+import { createTscAnnotations } from './tsc.ts';
 
 import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';

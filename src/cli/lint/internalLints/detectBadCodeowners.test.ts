@@ -5,9 +5,9 @@ import path from 'path';
 import memfs, { vol } from 'memfs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { Logger } from '../../../utils/logging.js';
+import type { Logger } from '../../../utils/logging.ts';
 
-import { detectBadCodeowners } from './detectBadCodeowners.js';
+import { detectBadCodeowners } from './detectBadCodeowners.ts';
 
 vi.mock('fs-extra', () => ({
   ...memfs.fs,

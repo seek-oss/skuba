@@ -1,8 +1,8 @@
 import npmFetch from 'npm-registry-fetch';
 import * as z from 'zod/v4';
 
-import { getSkubaManifest } from './manifest.js';
-import { withTimeout } from './wait.js';
+import { getSkubaManifest } from './manifest.ts';
+import { withTimeout } from './wait.ts';
 
 const NpmVersions = z.record(
   z.string(),

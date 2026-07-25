@@ -1,7 +1,7 @@
 import type { PackageJson as ReadPackageUpPackageJson } from 'read-package-up';
 
-import type { ProjectType } from '../../utils/manifest.js';
-import type { PackageManagerConfig } from '../../utils/packageManager.js';
+import type { ProjectType } from '../../utils/manifest.ts';
+import type { PackageManagerConfig } from '../../utils/packageManager.ts';
 
 export type { TsConfigJson } from 'type-fest';
 

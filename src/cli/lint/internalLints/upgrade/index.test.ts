@@ -1,11 +1,11 @@
 import fs from 'fs-extra';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { log } from '../../../../utils/logging.js';
-import { getConsumerManifest } from '../../../../utils/manifest.js';
-import { getSkubaVersion } from '../../../../utils/version.js';
+import { log } from '../../../../utils/logging.ts';
+import { getConsumerManifest } from '../../../../utils/manifest.ts';
+import { getSkubaVersion } from '../../../../utils/version.ts';
 
-import { upgradeSkuba } from './index.js';
+import { upgradeSkuba } from './index.ts';
 
 vi.mock('../../../../utils/manifest');
 vi.mock('../../../../utils/version');

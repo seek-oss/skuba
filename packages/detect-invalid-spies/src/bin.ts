@@ -3,7 +3,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { styleText } from 'node:util';
 
-import { detectSameFileSpyUsage } from './index.js';
+import { detectSameFileSpyUsage } from './index.ts';
 
 const dir = path.resolve(process.argv[2] ?? process.cwd());
 const warnings = await detectSameFileSpyUsage(dir);

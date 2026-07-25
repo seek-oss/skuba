@@ -1,9 +1,9 @@
 import normalizeData from 'normalize-package-data';
 
-import type { PackageJson } from '../types.js';
+import type { PackageJson } from '../types.ts';
 
-import { parseObject } from './json.js';
-import { formatPrettier } from './prettier.js';
+import { parseObject } from './json.ts';
+import { formatPrettier } from './prettier.ts';
 
 const normalizeDataWithoutThrowing = (rawData: PackageJson) => {
   try {

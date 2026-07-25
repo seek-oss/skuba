@@ -1,6 +1,6 @@
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 
-import { getLifeCycleHooks } from './lifeCycleEdits.js';
+import { getLifeCycleHooks } from './lifeCycleEdits.ts';
 
 // The sku vitest codemod misses a few cases
 // eg. beforeEach(() => jest.clearAllMocks())

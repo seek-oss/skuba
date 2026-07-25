@@ -2,11 +2,11 @@ import { styleText } from 'node:util';
 import path from 'path';
 import { isMainThread } from 'worker_threads';
 
-import { createLogger } from '../../utils/logging.js';
-import { execWorkerThread, postWorkerOutput } from '../../utils/worker.js';
-import { type PrettierOutput, runPrettier } from '../adapter/prettier.js';
+import { createLogger } from '../../utils/logging.ts';
+import { execWorkerThread, postWorkerOutput } from '../../utils/worker.ts';
+import { type PrettierOutput, runPrettier } from '../adapter/prettier.ts';
 
-import type { Input } from './types.js';
+import type { Input } from './types.ts';
 
 const LOG_PREFIX = styleText('cyan', 'Prettier │');
 

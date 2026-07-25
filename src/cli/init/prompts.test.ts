@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { BASE_PROMPT_PROPS } from './prompts.js';
-import { DEFAULT_RENOVATE_PRESET } from './types.js';
+import { BASE_PROMPT_PROPS } from './prompts.ts';
+import { DEFAULT_RENOVATE_PRESET } from './types.ts';
 
 describe('BASE_PROMPT_PROPS', () => {
   it('defaults the Renovate preset to Rynovate', () => {

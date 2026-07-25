@@ -3,8 +3,8 @@ import path from 'path';
 import ejs from 'ejs';
 import fs from 'fs-extra';
 
-import { isErrorWithCode } from './error.js';
-import { log } from './logging.js';
+import { isErrorWithCode } from './error.ts';
+import { log } from './logging.ts';
 
 export type TextProcessor = (sourcePath: string, contents: string) => string;
 

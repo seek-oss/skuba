@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "customConditions": ["@seek/<%- moduleName %>/source"],
     "rootDir": ".",
     "lib": ["ES2023"],

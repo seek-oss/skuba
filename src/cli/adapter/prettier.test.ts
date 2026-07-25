@@ -3,9 +3,9 @@ import path from 'path';
 
 import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
 
-import { log } from '../../utils/logging.js';
+import { log } from '../../utils/logging.ts';
 
-import { inferParser, runPrettier } from './prettier.js';
+import { inferParser, runPrettier } from './prettier.ts';
 
 describe('inferParser', () => {
   test.each`

@@ -1,8 +1,8 @@
 import { afterEach, expect, it, vi } from 'vitest';
 
-import type { StreamInterceptor } from '../../../lint/external.js';
+import type { StreamInterceptor } from '../../../lint/external.ts';
 
-import { createTscAnnotations } from './tsc.js';
+import { createTscAnnotations } from './tsc.ts';
 
 import type * as GitHub from '@skuba-lib/api/github';
 

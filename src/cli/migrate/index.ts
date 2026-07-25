@@ -1,9 +1,9 @@
-import { hasHelpFlag } from '../../utils/args.js';
-import { log } from '../../utils/logging.js';
+import { hasHelpFlag } from '../../utils/args.ts';
+import { log } from '../../utils/logging.ts';
 
-import { addFileExtensions } from './esm/addFileExtensions.js';
-import { migrateToESM } from './esm/index.js';
-import { nodeVersionMigration } from './nodeVersion/index.js';
+import { addFileExtensions } from './esm/addFileExtensions.ts';
+import { migrateToESM } from './esm/index.ts';
+import { nodeVersionMigration } from './nodeVersion/index.ts';
 
 export const migrations = {
   node20: () =>

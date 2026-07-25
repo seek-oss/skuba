@@ -5,10 +5,10 @@ import fg from 'fast-glob';
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
 
-import { createExec } from '../../../utils/exec.js';
-import { log } from '../../../utils/logging.js';
-import { getConsumerManifest } from '../../../utils/manifest.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+import { createExec } from '../../../utils/exec.ts';
+import { log } from '../../../utils/logging.ts';
+import { getConsumerManifest } from '../../../utils/manifest.ts';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.ts';
 
 import { Git } from '@skuba-lib/api';
 

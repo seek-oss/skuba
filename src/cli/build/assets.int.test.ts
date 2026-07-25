@@ -1,7 +1,7 @@
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { copyAssets } from './assets.js';
+import { copyAssets } from './assets.ts';
 
 vi.mock('fs-extra', () => ({
   default: memfs.fs,

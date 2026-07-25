@@ -1,26 +1,26 @@
-import { log } from '../../../utils/logging.js';
-import { getConsumerManifest } from '../../../utils/manifest.js';
+import { log } from '../../../utils/logging.ts';
+import { getConsumerManifest } from '../../../utils/manifest.ts';
 import {
   type PackageManagerConfig,
   detectPackageManager,
-} from '../../../utils/packageManager.js';
+} from '../../../utils/packageManager.ts';
 import type {
   Patch,
   PatchReturnType,
-} from '../../lint/internalLints/upgrade/index.js';
+} from '../../lint/internalLints/upgrade/index.ts';
 
-import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.js';
-import { tryAddFileExtensions } from './addFileExtensions.js';
-import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
-import { tryMigrateDockerfileRequires } from './migrateDockerfileRequires.js';
-import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefault.js';
-import { migrateImportExportStatementsPatch } from './migrateImportExportStatements.js';
-import { tryMigrateLambdas } from './migrateLambdas.js';
-import { tryMigrateVocab } from './migrateVocab.js';
-import { tryPatchInstrumentation } from './patchInstrumentation.js';
-import { rewriteGlobalVars } from './rewriteGlobalVars.js';
-import { tryUpgradeSkubaDive } from './upgradeSkubaDive.js';
-import { migrateToVitest } from './vitest/vitest.js';
+import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.ts';
+import { tryAddFileExtensions } from './addFileExtensions.ts';
+import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.ts';
+import { tryMigrateDockerfileRequires } from './migrateDockerfileRequires.ts';
+import { migrateExportEqualsToDefaultPatch } from './migrateExportEqualsToDefault.ts';
+import { migrateImportExportStatementsPatch } from './migrateImportExportStatements.ts';
+import { tryMigrateLambdas } from './migrateLambdas.ts';
+import { tryMigrateVocab } from './migrateVocab.ts';
+import { tryPatchInstrumentation } from './patchInstrumentation.ts';
+import { rewriteGlobalVars } from './rewriteGlobalVars.ts';
+import { tryUpgradeSkubaDive } from './upgradeSkubaDive.ts';
+import { migrateToVitest } from './vitest/vitest.ts';
 
 const patches: Patch[] = [
   {

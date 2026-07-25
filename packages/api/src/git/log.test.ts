@@ -1,7 +1,7 @@
 import git from 'isomorphic-git';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { getHeadCommitId, getHeadCommitMessage } from './log.js';
+import { getHeadCommitId, getHeadCommitMessage } from './log.ts';
 
 vi.mock('isomorphic-git');
 

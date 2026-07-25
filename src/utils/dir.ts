@@ -4,8 +4,8 @@ import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
 
-import { isErrorWithCode } from './error.js';
-import { pathExists } from './fs.js';
+import { isErrorWithCode } from './error.ts';
+import { pathExists } from './fs.ts';
 
 import * as Git from '@skuba-lib/api/git';
 

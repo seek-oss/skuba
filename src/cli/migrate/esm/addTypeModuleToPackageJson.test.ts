@@ -3,10 +3,10 @@ import path from 'path';
 import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { configForPackageManager } from '../../../utils/packageManager.js';
-import type { PatchConfig } from '../../lint/internalLints/upgrade/index.js';
+import { configForPackageManager } from '../../../utils/packageManager.ts';
+import type { PatchConfig } from '../../lint/internalLints/upgrade/index.ts';
 
-import { tryAddTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';
+import { tryAddTypeModuleToPackageJson } from './addTypeModuleToPackageJson.ts';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 

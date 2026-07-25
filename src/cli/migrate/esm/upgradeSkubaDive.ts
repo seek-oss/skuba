@@ -2,9 +2,9 @@ import { inspect } from 'util';
 
 import latest from 'latest-version';
 
-import { log } from '../../../utils/logging.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
-import { upgradeInfraPackages } from '../nodeVersion/upgrade.js';
+import { log } from '../../../utils/logging.ts';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.ts';
+import { upgradeInfraPackages } from '../nodeVersion/upgrade.ts';
 
 const upgradeSkubaDive: PatchFunction = async (opts) =>
   upgradeInfraPackages(opts.mode, [

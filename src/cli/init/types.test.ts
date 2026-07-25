@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { DEFAULT_RENOVATE_PRESET, initConfigInputSchema } from './types.js';
+import { DEFAULT_RENOVATE_PRESET, initConfigInputSchema } from './types.ts';
 
 const config = {
   destinationDir: 'my-repo',

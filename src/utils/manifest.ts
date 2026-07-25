@@ -1,9 +1,9 @@
 import { type NormalizedPackageJson, readPackageUp } from 'read-package-up';
 import * as z from 'zod/v4';
 
-import type { ReadResult } from '../cli/configure/types.js';
+import type { ReadResult } from '../cli/configure/types.ts';
 
-import { hasProp } from './validation.js';
+import { hasProp } from './validation.ts';
 
 export type ProjectType = z.infer<typeof projectTypeSchema>;
 

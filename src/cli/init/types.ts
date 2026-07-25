@@ -1,7 +1,7 @@
 import * as z from 'zod/v4';
 
-import { projectTypeSchema } from '../../utils/manifest.js';
-import { packageManagerSchema } from '../../utils/packageManager.js';
+import { projectTypeSchema } from '../../utils/manifest.ts';
+import { packageManagerSchema } from '../../utils/packageManager.ts';
 
 export const DEFAULT_RENOVATE_PRESET = 'github>seek-oss/rynovate';
 

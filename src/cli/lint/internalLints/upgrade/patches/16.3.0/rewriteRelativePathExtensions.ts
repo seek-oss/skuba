@@ -71,10 +71,7 @@ export const rewriteImportPathExtensions = (
     const withRelativeRewrites = statement.replace(
       relativeJsSpecifierRegex,
       (match, quote, specifierWithoutExt) => {
-        const absoluteTsPath = path.resolve(
-          dir,
-          `${specifierWithoutExt}.ts`,
-        );
+        const absoluteTsPath = path.resolve(dir, `${specifierWithoutExt}.ts`);
 
         // Only rewrite to .ts if a corresponding .ts file actually exists,
         // leaving genuine .js files (e.g. prettier.js, postcss.js) untouched.

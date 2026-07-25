@@ -1,4 +1,4 @@
-import { log } from '../../utils/logging.js';
+import { log } from '../../utils/logging.ts';
 
 export const logInitHelp = () => {
   log.plain(log.bold('skuba init'));

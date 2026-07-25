@@ -4,12 +4,12 @@ import { inspect } from 'util';
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
-import { createExec } from '../../../utils/exec.js';
-import { log } from '../../../utils/logging.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
-import type { InternalLintResult } from '../internal.js';
+import { createExec } from '../../../utils/exec.ts';
+import { log } from '../../../utils/logging.ts';
+import { detectPackageManager } from '../../../utils/packageManager.ts';
+import type { InternalLintResult } from '../internal.ts';
 
-import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
+import { registerAstGrepLanguages } from './registerAstGrepLanguages.ts';
 
 import { Git } from '@skuba-lib/api';
 import { defaultConfig } from 'pnpm-plugin-skuba';

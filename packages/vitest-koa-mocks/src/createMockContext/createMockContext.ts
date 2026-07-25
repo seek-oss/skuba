@@ -8,7 +8,7 @@ import { vi } from 'vitest';
 import {
   type MockCookies,
   createMockCookies,
-} from '../createMockCookies/createMockCookies.js';
+} from '../createMockCookies/createMockCookies.ts';
 
 export interface MockContext extends Context {
   cookies: MockCookies;

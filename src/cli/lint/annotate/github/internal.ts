@@ -1,4 +1,4 @@
-import type { InternalLintResult } from '../../internal.js';
+import type { InternalLintResult } from '../../internal.ts';
 
 import type * as GitHub from '@skuba-lib/api/github';
 

@@ -1,13 +1,13 @@
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { configForPackageManager } from '../../../utils/packageManager.js';
+import { configForPackageManager } from '../../../utils/packageManager.ts';
 import type {
   PatchConfig,
   PatchReturnType,
-} from '../../lint/internalLints/upgrade/index.js';
+} from '../../lint/internalLints/upgrade/index.ts';
 
-import { migrateVocab } from './migrateVocab.js';
+import { migrateVocab } from './migrateVocab.ts';
 
 vi.mock('../../../../../../utils/exec.js', () => ({
   createExec: () => vi.fn(),

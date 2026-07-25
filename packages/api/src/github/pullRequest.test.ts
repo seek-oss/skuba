@@ -1,8 +1,8 @@
 import git from 'isomorphic-git';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createRestClient } from './octokit.js';
-import { getPullRequestNumber } from './pullRequest.js';
+import { createRestClient } from './octokit.ts';
+import { getPullRequestNumber } from './pullRequest.ts';
 
 vi.mock('isomorphic-git');
 vi.mock('./octokit');

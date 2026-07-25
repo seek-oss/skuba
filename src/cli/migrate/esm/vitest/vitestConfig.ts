@@ -4,10 +4,10 @@ import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import { log } from '../../../../utils/logging.js';
-import { getCustomConditions } from '../../../build/tsc.js';
+import { log } from '../../../../utils/logging.ts';
+import { getCustomConditions } from '../../../build/tsc.ts';
 
-import { type FileContent, readFiles } from './vitest.js';
+import { type FileContent, readFiles } from './vitest.ts';
 
 import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
 

@@ -4,20 +4,20 @@ import path from 'path';
 import fs from 'fs-extra';
 import * as z from 'zod/v4';
 
-import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
-import { createInclusionFilter } from '../../utils/dir.js';
-import { log } from '../../utils/logging.js';
+import { copyFiles, createEjsRenderer } from '../../utils/copy.ts';
+import { createInclusionFilter } from '../../utils/dir.ts';
+import { log } from '../../utils/logging.ts';
 import {
   BASE_TEMPLATE_DIR,
   type TemplateConfig,
   ensureTemplateConfigDeletion,
-} from '../../utils/template.js';
-import { hasStringProp } from '../../utils/validation.js';
-import { formatPackage } from '../configure/processing/package.js';
-import type { ReadResult } from '../configure/types.js';
+} from '../../utils/template.ts';
+import { hasStringProp } from '../../utils/validation.ts';
+import { formatPackage } from '../configure/processing/package.ts';
+import type { ReadResult } from '../configure/types.ts';
 
-import { getTemplateConfig, runForm } from './getConfig.js';
-import { readJSONFromStdIn } from './readJSONFromStdIn.js';
+import { getTemplateConfig, runForm } from './getConfig.ts';
+import { readJSONFromStdIn } from './readJSONFromStdIn.ts';
 
 interface Props {
   manifest: ReadResult;

@@ -12,13 +12,13 @@ import {
   vi,
 } from 'vitest';
 
-import { apiTokenFromEnvironment } from './environment.js';
-import { graphql } from './octokit.js';
+import { apiTokenFromEnvironment } from './environment.ts';
+import { graphql } from './octokit.ts';
 import {
   readFileChanges,
   uploadAllFileChanges,
   uploadFileChanges,
-} from './push.js';
+} from './push.ts';
 
 vi.mock('./environment');
 vi.mock('./octokit');

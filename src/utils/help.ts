@@ -1,16 +1,16 @@
-import { COMMAND_LIST } from './command.js';
-import { log } from './logging.js';
+import { COMMAND_LIST } from './command.ts';
+import { log } from './logging.ts';
 
 export const showHelp = async (command?: string) => {
   switch (command) {
     case 'init': {
-      const { logInitHelp } = await import('../cli/init/help.js');
+      const { logInitHelp } = await import('../cli/init/help.ts');
       logInitHelp();
       return;
     }
     case 'migrate': {
       const { logAvailableMigrations } =
-        await import('../cli/migrate/index.js');
+        await import('../cli/migrate/index.ts');
 
       logAvailableMigrations();
       return;

@@ -1,5 +1,5 @@
-import { exec, hasCommand } from '../../../../src/utils/exec.js';
-import { log } from '../../../../src/utils/logging.js';
+import { exec, hasCommand } from '../../../../src/utils/exec.ts';
+import { log } from '../../../../src/utils/logging.ts';
 
 export type AnnotationStyle = 'success' | 'info' | 'warning' | 'error';
 

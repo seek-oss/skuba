@@ -2,10 +2,10 @@ import path from 'path';
 
 import ts from 'typescript';
 
-import { exec } from '../../utils/exec.js';
-import { type Logger, log as logger } from '../../utils/logging.js';
+import { exec } from '../../utils/exec.ts';
+import { type Logger, log as logger } from '../../utils/logging.ts';
 
-import { parseTscArgs } from './args.js';
+import { parseTscArgs } from './args.ts';
 
 const DEFAULT_ARGS = ['--project', 'tsconfig.build.json'] as const;
 

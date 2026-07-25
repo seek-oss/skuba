@@ -1,8 +1,8 @@
 import git from 'isomorphic-git';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { putIssueComment } from './issueComment.js';
-import { createRestClient } from './octokit.js';
+import { putIssueComment } from './issueComment.ts';
+import { createRestClient } from './octokit.ts';
 
 vi.mock('isomorphic-git');
 vi.mock('./octokit');

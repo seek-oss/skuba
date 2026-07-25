@@ -1,9 +1,9 @@
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
+import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.ts';
 
-import { upgradeInfraPackages } from './upgrade.js';
+import { upgradeInfraPackages } from './upgrade.ts';
 
 vi.mock('fs-extra', () => ({
   ...memfs.fs,
@@ -18,7 +18,7 @@ vi.mock('fast-glob', () => ({
   },
 }));
 
-vi.mock('../../../utils/exec.js');
+vi.mock('../../../utils/exec.ts');
 
 vi.spyOn(console, 'error').mockImplementation(() => undefined);
 vi.spyOn(console, 'log').mockImplementation(() => undefined);

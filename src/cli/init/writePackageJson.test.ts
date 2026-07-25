@@ -3,9 +3,9 @@ import path from 'path';
 import fs from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import * as packageAnalysis from '../configure/analysis/package.js';
+import * as packageAnalysis from '../configure/analysis/package.ts';
 
-import { writePackageJson } from './writePackageJson.js';
+import { writePackageJson } from './writePackageJson.ts';
 
 describe('writePackageJson', () => {
   vi.spyOn(packageAnalysis, 'getDestinationManifest').mockImplementation(

@@ -1,8 +1,8 @@
 import { expect, it } from 'vitest';
 
-import type { PrettierOutput } from '../../../adapter/prettier.js';
+import type { PrettierOutput } from '../../../adapter/prettier.ts';
 
-import { createPrettierAnnotations } from './prettier.js';
+import { createPrettierAnnotations } from './prettier.ts';
 
 import type * as GitHub from '@skuba-lib/api/github';
 

@@ -1,14 +1,14 @@
 import { styleText } from 'node:util';
 import { inspect } from 'util';
 
-import { type Logger, childLogger, createLogger } from '../../utils/logging.js';
+import { type Logger, childLogger, createLogger } from '../../utils/logging.ts';
 
-import { tryDetectBadCodeowners } from './internalLints/detectBadCodeowners.js';
-import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs.js';
-import { tryPatchPnpmWorkspace } from './internalLints/patchPnpmWorkspace.js';
-import { tryRefreshConfigFiles } from './internalLints/refreshConfigFiles.js';
-import { upgradeSkuba } from './internalLints/upgrade/index.js';
-import type { Input } from './types.js';
+import { tryDetectBadCodeowners } from './internalLints/detectBadCodeowners.ts';
+import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs.ts';
+import { tryPatchPnpmWorkspace } from './internalLints/patchPnpmWorkspace.ts';
+import { tryRefreshConfigFiles } from './internalLints/refreshConfigFiles.ts';
+import { upgradeSkuba } from './internalLints/upgrade/index.ts';
+import type { Input } from './types.ts';
 
 export type InternalLintResult = {
   ok: boolean;

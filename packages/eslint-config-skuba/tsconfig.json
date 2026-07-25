@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "skipLibCheck": true, // tsdown has optional peer deps
     "rootDir": ".",
     "lib": ["ES2023"],

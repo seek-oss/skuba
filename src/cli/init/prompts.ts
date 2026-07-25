@@ -1,9 +1,9 @@
 import { input, select } from '@inquirer/prompts';
 
-import { pathExists } from '../../utils/fs.js';
-import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
+import { pathExists } from '../../utils/fs.ts';
+import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.ts';
 
-import { DEFAULT_RENOVATE_PRESET } from './types.js';
+import { DEFAULT_RENOVATE_PRESET } from './types.ts';
 import {
   PLATFORM_OPTIONS,
   type Platform,
@@ -11,7 +11,7 @@ import {
   isGitHubRepo,
   isGitHubTeam,
   isPlatform,
-} from './validation.js';
+} from './validation.ts';
 
 export interface Choice {
   name: string;

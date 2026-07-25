@@ -1,4 +1,4 @@
-import type { PrettierOutput } from '../../../adapter/prettier.js';
+import type { PrettierOutput } from '../../../adapter/prettier.ts';
 
 import * as Buildkite from '@skuba-lib/api/buildkite';
 

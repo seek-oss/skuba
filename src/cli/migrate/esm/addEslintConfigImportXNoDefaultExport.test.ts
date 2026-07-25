@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   hasImportXNoDefaultExportEnabled,
   insertImportXConfigFilesOverride,
-} from './addEslintConfigImportXNoDefaultExport.js';
+} from './addEslintConfigImportXNoDefaultExport.ts';
 
 describe('hasImportXNoDefaultExportEnabled', () => {
   it('should be true when rule is set to error or warn in source', () => {

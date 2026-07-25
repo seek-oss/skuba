@@ -1,4 +1,4 @@
-import type { PrettierOutput } from '../../../adapter/prettier.js';
+import type { PrettierOutput } from '../../../adapter/prettier.ts';
 
 import type * as GitHub from '@skuba-lib/api/github';
 

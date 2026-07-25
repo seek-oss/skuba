@@ -3,8 +3,8 @@ import { inspect } from 'util';
 import type { ExecaError } from 'execa';
 import * as z from 'zod/v4';
 
-import { log } from './logging.js';
-import { hasNumberProp, hasProp } from './validation.js';
+import { log } from './logging.ts';
+import { hasNumberProp, hasProp } from './validation.ts';
 
 export type ConcurrentlyErrors = z.infer<typeof concurrentlyErrorsSchema>;
 

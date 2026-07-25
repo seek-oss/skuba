@@ -1,12 +1,12 @@
-import type { ESLintOutput } from '../../../adapter/eslint.js';
-import type { PrettierOutput } from '../../../adapter/prettier.js';
-import type { StreamInterceptor } from '../../../lint/external.js';
-import type { InternalLintResult } from '../../internal.js';
+import type { ESLintOutput } from '../../../adapter/eslint.ts';
+import type { PrettierOutput } from '../../../adapter/prettier.ts';
+import type { StreamInterceptor } from '../../../lint/external.ts';
+import type { InternalLintResult } from '../../internal.ts';
 
-import { createEslintAnnotations } from './eslint.js';
-import { createInternalAnnotations } from './internal.js';
-import { createPrettierAnnotations } from './prettier.js';
-import { createTscAnnotations } from './tsc.js';
+import { createEslintAnnotations } from './eslint.ts';
+import { createInternalAnnotations } from './internal.ts';
+import { createPrettierAnnotations } from './prettier.ts';
+import { createTscAnnotations } from './tsc.ts';
 
 import * as Buildkite from '@skuba-lib/api/buildkite';
 export const createBuildkiteAnnotations = async (

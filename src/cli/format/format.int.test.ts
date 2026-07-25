@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
-import { format } from './index.js';
+import { format } from './index.ts';
 
 vi.setConfig({ testTimeout: 15_000 });
 

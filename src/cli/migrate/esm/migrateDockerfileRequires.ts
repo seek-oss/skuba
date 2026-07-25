@@ -3,8 +3,8 @@ import { inspect } from 'util';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import { log } from '../../../utils/logging.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+import { log } from '../../../utils/logging.ts';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.ts';
 
 export const migrateDockerfileRequires: PatchFunction = async ({ mode }) => {
   const dockerfilePaths = await fg(['**/Dockerfile*'], {

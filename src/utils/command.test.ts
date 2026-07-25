@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { commandToModule } from './command.js';
+import { commandToModule } from './command.ts';
 
 describe('commandToModule', () => {
   it('handles one-word command', () =>

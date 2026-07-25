@@ -4,23 +4,23 @@ import path from 'path';
 import { input } from '@inquirer/prompts';
 import fs from 'fs-extra';
 
-import { copyFiles } from '../../utils/copy.js';
-import { isErrorWithCode } from '../../utils/error.js';
-import { log } from '../../utils/logging.js';
-import { DEFAULT_PACKAGE_MANAGER } from '../../utils/packageManager.js';
-import { getRandomPort } from '../../utils/port.js';
+import { copyFiles } from '../../utils/copy.ts';
+import { isErrorWithCode } from '../../utils/error.ts';
+import { log } from '../../utils/logging.ts';
+import { DEFAULT_PACKAGE_MANAGER } from '../../utils/packageManager.ts';
+import { getRandomPort } from '../../utils/port.ts';
 import {
   TEMPLATE_CONFIG_FILENAME,
   TEMPLATE_DIR,
   type TemplateConfig,
   templateConfigSchema,
-} from '../../utils/template.js';
+} from '../../utils/template.ts';
 
 import {
   downloadGitHubTemplate,
   downloadPrivateTemplate,
   listPrivateTemplates,
-} from './git.js';
+} from './git.ts';
 import {
   BASE_PROMPT_PROPS,
   type BaseFields,
@@ -30,9 +30,9 @@ import {
   getPrivateTemplateName,
   getTemplateName,
   shouldContinue,
-} from './prompts.js';
-import { readJSONFromStdIn } from './readJSONFromStdIn.js';
-import { type InitConfig, initConfigInputSchema } from './types.js';
+} from './prompts.ts';
+import { readJSONFromStdIn } from './readJSONFromStdIn.ts';
+import { type InitConfig, initConfigInputSchema } from './types.ts';
 
 export const runForm = async <T = Record<string, string>>(props: {
   choices: readonly Choice[];

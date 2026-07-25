@@ -8,7 +8,7 @@ import semver from 'semver';
 import {
   TEMPLATE_DOCUMENTATION_CONFIG,
   TEMPLATE_NAMES,
-} from '../src/utils/template.js';
+} from '../src/utils/template.ts';
 
 const SCOPE_REGEX = /\*\*([^:]+):\*\* /;
 

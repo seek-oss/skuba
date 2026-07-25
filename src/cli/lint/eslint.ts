@@ -2,11 +2,11 @@ import { styleText } from 'node:util';
 import path from 'path';
 import { isMainThread } from 'worker_threads';
 
-import { createLogger } from '../../utils/logging.js';
-import { execWorkerThread, postWorkerOutput } from '../../utils/worker.js';
-import { type ESLintOutput, runESLint } from '../adapter/eslint.js';
+import { createLogger } from '../../utils/logging.ts';
+import { execWorkerThread, postWorkerOutput } from '../../utils/worker.ts';
+import { type ESLintOutput, runESLint } from '../adapter/eslint.ts';
 
-import type { Input } from './types.js';
+import type { Input } from './types.ts';
 
 const LOG_PREFIX = styleText('magenta', 'ESLint   │');
 

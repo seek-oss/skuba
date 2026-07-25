@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 
-import { FILEPATH, STAGE, UNMODIFIED, WORKDIR } from './statusMatrix.js';
+import { FILEPATH, STAGE, UNMODIFIED, WORKDIR } from './statusMatrix.ts';
 
 interface ResetParameters {
   dir: string;

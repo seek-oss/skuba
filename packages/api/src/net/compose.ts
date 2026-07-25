@@ -1,4 +1,4 @@
-import { createExec } from '../../../../src/utils/exec.js';
+import { createExec } from '../../../../src/utils/exec.ts';
 
 const portStringToNumber = (portString: string) => {
   const port = Number(portString);

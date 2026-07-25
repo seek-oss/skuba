@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import { COMMAND_ALIASES } from './command.js';
+import { COMMAND_ALIASES } from './command.ts';
 
 export const hasDebugFlag = (args = process.argv) =>
   args.some((arg) => arg.toLocaleLowerCase() === '--debug');

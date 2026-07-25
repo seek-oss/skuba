@@ -4,16 +4,16 @@ import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
 
-import { isCiEnv } from '../../utils/env.js';
-import { createLogger, log } from '../../utils/logging.js';
-import { hasNpmrcSecret } from '../../utils/npmrc.js';
-import { throwOnTimeout } from '../../utils/wait.js';
-import { runESLint } from '../adapter/eslint.js';
-import { runPrettier } from '../adapter/prettier.js';
-import { createDestinationFileReader } from '../configure/analysis/project.js';
+import { isCiEnv } from '../../utils/env.ts';
+import { createLogger, log } from '../../utils/logging.ts';
+import { hasNpmrcSecret } from '../../utils/npmrc.ts';
+import { throwOnTimeout } from '../../utils/wait.ts';
+import { runESLint } from '../adapter/eslint.ts';
+import { runPrettier } from '../adapter/prettier.ts';
+import { createDestinationFileReader } from '../configure/analysis/project.ts';
 
-import { internalLint } from './internal.js';
-import type { Input } from './types.js';
+import { internalLint } from './internal.ts';
+import type { Input } from './types.ts';
 
 import * as Buildkite from '@skuba-lib/api/buildkite';
 import * as Git from '@skuba-lib/api/git';

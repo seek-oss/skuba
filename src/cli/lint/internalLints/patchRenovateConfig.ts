@@ -5,12 +5,12 @@ import fs from 'fs-extra';
 import * as fleece from 'golden-fleece';
 import * as z from 'zod/v4';
 
-import { log } from '../../../utils/logging.js';
-import { createDestinationFileReader } from '../../configure/analysis/project.js';
-import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate.js';
-import { formatPrettier } from '../../configure/processing/prettier.js';
+import { log } from '../../../utils/logging.ts';
+import { createDestinationFileReader } from '../../configure/analysis/project.ts';
+import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate.ts';
+import { formatPrettier } from '../../configure/processing/prettier.ts';
 
-import type { PatchFunction, PatchReturnType } from './upgrade/index.js';
+import type { PatchFunction, PatchReturnType } from './upgrade/index.ts';
 
 import * as Git from '@skuba-lib/api/git';
 

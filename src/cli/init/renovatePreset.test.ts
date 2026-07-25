@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { createEjsRenderer } from '../../utils/copy.js';
-import { readBaseTemplateFile } from '../../utils/template.js';
+import { createEjsRenderer } from '../../utils/copy.ts';
+import { readBaseTemplateFile } from '../../utils/template.ts';
 
-import { baseToTemplateData } from './getConfig.js';
+import { baseToTemplateData } from './getConfig.ts';
 
 describe('Renovate preset template', () => {
   it('includes the configured preset in template data', async () => {

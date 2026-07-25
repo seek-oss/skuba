@@ -1,4 +1,4 @@
-import type { ESLintOutput } from '../../../adapter/eslint.js';
+import type { ESLintOutput } from '../../../adapter/eslint.ts';
 
 import type * as GitHub from '@skuba-lib/api/github';
 

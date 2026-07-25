@@ -3,16 +3,16 @@ import { inspect } from 'util';
 import { type Edit, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 
-import { log } from '../../../utils/logging.js';
-import { getCustomConditions } from '../../build/tsc.js';
-import { registerAstGrepLanguages } from '../../lint/internalLints/registerAstGrepLanguages.js';
-import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
+import { log } from '../../../utils/logging.ts';
+import { getCustomConditions } from '../../build/tsc.ts';
+import { registerAstGrepLanguages } from '../../lint/internalLints/registerAstGrepLanguages.ts';
+import type { PatchFunction } from '../../lint/internalLints/upgrade/index.ts';
 
 import {
   appendDdTraceToCdkNodeOptions,
   appendDdTraceToServerlessNodeOptions,
   collectLambdaFiles,
-} from './datadogNodeOptions.js';
+} from './datadogNodeOptions.ts';
 
 const migrateCdkLambdas = async (
   tsFiles: Array<{ file: string; contents: string }>,

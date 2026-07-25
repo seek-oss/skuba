@@ -1,15 +1,15 @@
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { patchPnpmWorkspace } from './patchPnpmWorkspace.js';
+import { patchPnpmWorkspace } from './patchPnpmWorkspace.ts';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
-vi.mock('../../../utils/exec.js', () => ({
+vi.mock('../../../utils/exec.ts', () => ({
   createExec: vi.fn().mockImplementation(() => vi.fn()),
 }));
 
-vi.mock('../../../utils/logging.js');
+vi.mock('../../../utils/logging.ts');
 
 vi.mock('fs-extra', () => ({
   ...memfs.fs,

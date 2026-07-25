@@ -1,6 +1,6 @@
 import { type ViteUserConfig, defaultExclude } from 'vitest/config';
 
-import { mergeRaw } from '../../cli/configure/processing/record.js';
+import { mergeRaw } from '../../cli/configure/processing/record.ts';
 
 export const defaults = {
   coverage: {

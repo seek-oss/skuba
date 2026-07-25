@@ -3,17 +3,17 @@ import path from 'path';
 import fs from 'fs-extra';
 import { gte, sort } from 'semver';
 
-import type { Logger } from '../../../../utils/logging.js';
-import { getConsumerManifest } from '../../../../utils/manifest.js';
+import type { Logger } from '../../../../utils/logging.ts';
+import { getConsumerManifest } from '../../../../utils/manifest.ts';
 import {
   type PackageManagerConfig,
   detectPackageManager,
-} from '../../../../utils/packageManager.js';
-import { getSkubaVersion } from '../../../../utils/version.js';
-import { formatPackage } from '../../../configure/processing/package.js';
-import type { ReadResult } from '../../../configure/types.js';
-import type { SkubaPackageJson } from '../../../init/writePackageJson.js';
-import type { InternalLintResult } from '../../internal.js';
+} from '../../../../utils/packageManager.ts';
+import { getSkubaVersion } from '../../../../utils/version.ts';
+import { formatPackage } from '../../../configure/processing/package.ts';
+import type { ReadResult } from '../../../configure/types.ts';
+import type { SkubaPackageJson } from '../../../init/writePackageJson.ts';
+import type { InternalLintResult } from '../../internal.ts';
 
 export type Patches = Patch[];
 export type Patch = {

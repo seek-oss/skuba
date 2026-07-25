@@ -1,4 +1,4 @@
-import { log } from '../../utils/logging.js';
+import { log } from '../../utils/logging.ts';
 
 import * as Buildkite from '@skuba-lib/api/buildkite';
 import * as Git from '@skuba-lib/api/git';

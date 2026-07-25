@@ -1,10 +1,10 @@
 import { inspect } from 'util';
 
-import { createExec } from '../../utils/exec.js';
-import { log } from '../../utils/logging.js';
-import { throwOnTimeout } from '../../utils/wait.js';
+import { createExec } from '../../utils/exec.ts';
+import { log } from '../../utils/logging.ts';
+import { throwOnTimeout } from '../../utils/wait.ts';
 
-import { createAnnotations } from './annotate.js';
+import { createAnnotations } from './annotate.ts';
 
 export const test = async () => {
   const argv = process.argv.slice(2);

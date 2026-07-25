@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "customConditions": ["@seek/skuba/source"],
     "rootDir": ".",
     "declaration": true,

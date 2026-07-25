@@ -4,15 +4,15 @@ import { inspect } from 'util';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
-import { log } from '../../../utils/logging.js';
+import { log } from '../../../utils/logging.ts';
 import {
   formatPackage,
   parsePackage,
-} from '../../configure/processing/package.js';
+} from '../../configure/processing/package.ts';
 import type {
   PatchFunction,
   PatchReturnType,
-} from '../../lint/internalLints/upgrade/index.js';
+} from '../../lint/internalLints/upgrade/index.ts';
 
 export const hasDirNameRegex = /__dirname\b/;
 export const hasFileNameRegex = /__filename\b/;

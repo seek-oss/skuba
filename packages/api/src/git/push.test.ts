@@ -1,7 +1,7 @@
 import git from 'isomorphic-git';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { push } from './push.js';
+import { push } from './push.ts';
 
 vi.mock('isomorphic-git');
 

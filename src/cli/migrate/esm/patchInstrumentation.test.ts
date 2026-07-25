@@ -2,18 +2,18 @@ import latestVersion from 'latest-version';
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { log } from '../../../utils/logging.js';
-import { configForPackageManager } from '../../../utils/packageManager.js';
+import { log } from '../../../utils/logging.ts';
+import { configForPackageManager } from '../../../utils/packageManager.ts';
 import type {
   PatchConfig,
   PatchReturnType,
-} from '../../lint/internalLints/upgrade/index.js';
+} from '../../lint/internalLints/upgrade/index.ts';
 
-import { patchInstrumentation } from './patchInstrumentation.js';
+import { patchInstrumentation } from './patchInstrumentation.ts';
 
 vi.mock('latest-version');
 
-vi.mock('../../../utils/exec.js', () => ({
+vi.mock('../../../utils/exec.ts', () => ({
   createExec: () => vi.fn(),
 }));
 

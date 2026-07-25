@@ -2,7 +2,7 @@ import path from 'path';
 
 import fs from 'fs-extra';
 
-import { isErrorWithCode } from '../../../utils/error.js';
+import { isErrorWithCode } from '../../../utils/error.ts';
 
 export const createDestinationFileReader =
   (root: string) =>

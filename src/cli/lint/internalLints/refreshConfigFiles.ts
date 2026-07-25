@@ -3,22 +3,22 @@ import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 
 import fs from 'fs-extra';
 
-import { Git } from '../../../index.js';
+import { Git } from '../../../index.ts';
 import {
   findCurrentWorkspaceProjectRoot,
   findWorkspaceRoot,
-} from '../../../utils/dir.js';
-import type { Logger } from '../../../utils/logging.js';
-import { hasNpmrcSecret } from '../../../utils/npmrc.js';
+} from '../../../utils/dir.ts';
+import type { Logger } from '../../../utils/logging.ts';
+import { hasNpmrcSecret } from '../../../utils/npmrc.ts';
 import {
   type PackageManagerConfig,
   detectPackageManager,
-} from '../../../utils/packageManager.js';
-import { readBaseTemplateFile } from '../../../utils/template.js';
-import { getDestinationManifest } from '../../configure/analysis/package.js';
-import { createDestinationFileReader } from '../../configure/analysis/project.js';
-import { mergeWithConfigFile } from '../../configure/processing/configFile.js';
-import type { InternalLintResult } from '../internal.js';
+} from '../../../utils/packageManager.ts';
+import { readBaseTemplateFile } from '../../../utils/template.ts';
+import { getDestinationManifest } from '../../configure/analysis/package.ts';
+import { createDestinationFileReader } from '../../configure/analysis/project.ts';
+import { mergeWithConfigFile } from '../../configure/processing/configFile.ts';
+import type { InternalLintResult } from '../internal.ts';
 
 type ConditionOptions = {
   packageManager: PackageManagerConfig;

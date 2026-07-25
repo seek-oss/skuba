@@ -7,12 +7,12 @@ import fs from 'fs-extra';
 import { resolve } from 'import-meta-resolve';
 import { ModuleResolutionKind } from 'typescript';
 
-import { log } from '../../../utils/logging.js';
-import { readTsConfig } from '../../build/tsc.js';
+import { log } from '../../../utils/logging.ts';
+import { readTsConfig } from '../../build/tsc.ts';
 import type {
   PatchFunction,
   PatchReturnType,
-} from '../../lint/internalLints/upgrade/index.js';
+} from '../../lint/internalLints/upgrade/index.ts';
 
 const nodeModuleExtensionCheckOrder = [
   '.js',

@@ -3,15 +3,15 @@ import path from 'path';
 import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { Git } from '../../../index.js';
-import { log } from '../../../utils/logging.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
-import * as project from '../../configure/analysis/project.js';
+import { Git } from '../../../index.ts';
+import { log } from '../../../utils/logging.ts';
+import { detectPackageManager } from '../../../utils/packageManager.ts';
+import * as project from '../../configure/analysis/project.ts';
 
 import {
   REFRESHABLE_CONFIG_FILES,
   refreshConfigFiles,
-} from './refreshConfigFiles.js';
+} from './refreshConfigFiles.ts';
 
 const stdoutMock = vi.fn();
 
@@ -46,14 +46,14 @@ vi.mock('../../..', () => ({
   },
 }));
 
-vi.mock('../../../utils/npmrc.js', () => ({
+vi.mock('../../../utils/npmrc.ts', () => ({
   hasNpmrcSecret: vi.fn(),
 }));
 
 const givenMockPackageManager = async (command: 'pnpm' | 'yarn') => {
   const actualPackageManager = await vi.importActual<
-    typeof import('../../../utils/packageManager.js')
-  >('../../../utils/packageManager.js');
+    typeof import('../../../utils/packageManager.ts')
+  >('../../../utils/packageManager.ts');
 
   vi.mocked(detectPackageManager).mockResolvedValue(
     actualPackageManager.configForPackageManager(command),
@@ -69,7 +69,7 @@ beforeEach(async () => {
 
   await givenMockPackageManager('pnpm');
 
-  const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+  const { hasNpmrcSecret } = await import('../../../utils/npmrc.ts');
   vi.mocked(hasNpmrcSecret).mockReturnValue(false);
 });
 
@@ -214,7 +214,7 @@ The .gitignore file is out of date. Run \`pnpm exec skuba format\` to update it.
     });
 
     it('should report not ok + fixable when .npmrc contains a secret, and output a message', async () => {
-      const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+      const { hasNpmrcSecret } = await import('../../../utils/npmrc.ts');
       vi.mocked(hasNpmrcSecret).mockImplementation((line) =>
         line.includes('_authToken'),
       );
@@ -246,7 +246,7 @@ The .npmrc file contains secrets. Run \`pnpm exec skuba format\` to remove them.
     it('should use the yarn exec command in the .npmrc secret message for yarn projects', async () => {
       await givenMockPackageManager('yarn');
 
-      const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+      const { hasNpmrcSecret } = await import('../../../utils/npmrc.ts');
       vi.mocked(hasNpmrcSecret).mockImplementation((line) =>
         line.includes('_authToken'),
       );
@@ -400,7 +400,7 @@ The .npmrc file contains secrets. Run \`pnpm exec skuba format\` to remove them.
     });
 
     it('should strip secret lines, write the cleaned file, and log a refresh message', async () => {
-      const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+      const { hasNpmrcSecret } = await import('../../../utils/npmrc.ts');
       vi.mocked(hasNpmrcSecret).mockImplementation((line) =>
         line.includes('_authToken'),
       );
@@ -427,7 +427,7 @@ The .npmrc file contains secrets. Run \`pnpm exec skuba format\` to remove them.
     });
 
     it('should strip multiple secret lines from .npmrc in a single pass', async () => {
-      const { hasNpmrcSecret } = await import('../../../utils/npmrc.js');
+      const { hasNpmrcSecret } = await import('../../../utils/npmrc.ts');
       vi.mocked(hasNpmrcSecret).mockImplementation(
         (line) => line.includes('_authToken') || line.includes('_password'),
       );

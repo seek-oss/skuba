@@ -1,6 +1,6 @@
-import { execConcurrently } from '../../utils/exec.js';
+import { execConcurrently } from '../../utils/exec.ts';
 
-import type { Input } from './types.js';
+import type { Input } from './types.ts';
 
 export const runTscInNewProcess = async ({
   debug,

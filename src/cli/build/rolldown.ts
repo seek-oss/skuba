@@ -1,4 +1,4 @@
-import { exec } from '../../utils/exec.js';
+import { exec } from '../../utils/exec.ts';
 
 export const rolldown = async (args = process.argv.slice(2)) => {
   // Support additional arguments but enforce the use of a config file.

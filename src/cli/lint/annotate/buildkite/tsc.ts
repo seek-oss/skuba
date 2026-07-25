@@ -1,4 +1,4 @@
-import type { StreamInterceptor } from '../../../lint/external.js';
+import type { StreamInterceptor } from '../../../lint/external.ts';
 
 import * as Buildkite from '@skuba-lib/api/buildkite';
 

@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { describe, expect, it } from 'vitest';
 
-import { hasNpmrcSecret } from './npmrc.js';
+import { hasNpmrcSecret } from './npmrc.ts';
 
 describe('hasNpmrcSecret', () => {
   // eslint-disable-next-line no-sync

@@ -1,10 +1,10 @@
 import { styleText } from 'node:util';
 
-import { hasDebugFlag } from '../../utils/args.js';
-import { createLogger, log } from '../../utils/logging.js';
-import { runESLint } from '../adapter/eslint.js';
-import { runPrettier } from '../adapter/prettier.js';
-import { internalLint } from '../lint/internal.js';
+import { hasDebugFlag } from '../../utils/args.ts';
+import { createLogger, log } from '../../utils/logging.ts';
+import { runESLint } from '../adapter/eslint.ts';
+import { runPrettier } from '../adapter/prettier.ts';
+import { internalLint } from '../lint/internal.ts';
 
 export const format = async (
   args = process.argv.slice(2),

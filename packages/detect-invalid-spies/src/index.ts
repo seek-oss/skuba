@@ -24,7 +24,7 @@
  *   });
  *
  * // spy.ts
- * import * as s2s from '#src/framework/http.js';
+ * import * as s2s from '#src/framework/http';
  *
  * export const mockServiceAuthHeaders = () =>
  *   jest.spyOn(s2s, 'createServiceAuthHeaders') // ← spy won't intercept http.ts-internal calls
