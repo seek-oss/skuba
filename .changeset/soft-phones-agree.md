@@ -2,7 +2,7 @@
 'skuba': minor
 ---
 
-Migrates internal imports to align with TypeScript 5.7's `rewriteRelativeImportExtensions` and Node.js native type stripping support, simplifying local development, REPL usage, and scripting workflows.
+lint: Migrates internal imports to align with TypeScript 5.7's `rewriteRelativeImportExtensions` and Node.js native type stripping support, simplifying local development, REPL usage, and scripting workflows.
 
 **Changes:**
 
