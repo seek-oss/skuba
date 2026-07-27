@@ -68,14 +68,13 @@ export const updateSrcSubpathImportsMapping = (
         return [condition, target === './lib/*' ? './lib/*.js' : target];
       }
 
-      if (target !== './src/*') {
-        return [condition, target];
+      const normalizedCondition = normalizeImportCondition(condition);
+
+      if (target !== './src/*' && target !== './src/*.js') {
+        return [normalizedCondition, target];
       }
 
-      return [
-        condition.endsWith('/*') ? condition : `${condition}/*`,
-        './src/*.ts',
-      ];
+      return [normalizedCondition, './src/*.ts'];
     }),
   );
 

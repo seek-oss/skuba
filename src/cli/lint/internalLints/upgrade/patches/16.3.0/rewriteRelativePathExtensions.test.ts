@@ -275,7 +275,26 @@ describe('updatePackageJsonImports', () => {
     expect(updateSrcSubpathImportsMapping(parsed)).toBe(true);
     expect(parsed.imports).toEqual({
       '#src/*': {
-        '@seek/my-repo/source/*': './src/*.ts',
+        '@seek/my-repo/source': './src/*.ts',
+        default: './lib/*.js',
+      },
+    });
+  });
+
+  it('should strip a stray `/*` suffix and rewrite a `.js` target', () => {
+    const parsed: PackageJson = {
+      imports: {
+        '#src/*': {
+          '@seek/my-repo/source/*': './src/*.js',
+          default: './lib/*.js',
+        },
+      },
+    };
+
+    expect(updateSrcSubpathImportsMapping(parsed)).toBe(true);
+    expect(parsed.imports).toEqual({
+      '#src/*': {
+        '@seek/my-repo/source': './src/*.ts',
         default: './lib/*.js',
       },
     });
@@ -285,7 +304,7 @@ describe('updatePackageJsonImports', () => {
     const parsed: PackageJson = {
       imports: {
         '#src/*': {
-          '@seek/my-repo/source/*': './src/*.ts',
+          '@seek/my-repo/source': './src/*.ts',
           default: './lib/*.js',
         },
       },
@@ -317,7 +336,7 @@ describe('updatePackageJsonImports', () => {
     const parsed: PackageJson = {
       imports: {
         '#src/*': {
-          '@seek/my-repo/source/*': './src/*.ts',
+          '@seek/my-repo/source': './src/*.ts',
           default: './lib/*.js',
         },
         '#src/*.json': {
@@ -441,7 +460,7 @@ describe('tryUpdatePackageJsonImports', () => {
               'package.json': `{
   "imports": {
     "#src/*": {
-      "@seek/my-repo/source/*": "./src/*.ts",
+      "@seek/my-repo/source": "./src/*.ts",
       "default": "./lib/*.js"
     }
   }
