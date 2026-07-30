@@ -46,12 +46,12 @@
     "typescript-eslint": "^8.59.2"
   },
   "devDependencies": {
-    "eslint": "^10.0.0",
+    "eslint": "^9.39.5",
     "jiti": "^2.6.1",
     "typescript": "~6.0.3"
   },
   "peerDependencies": {
-    "eslint": ">=9.22.0",
+    "eslint": "^9.22.0",
     "typescript": ">=5.5.4"
   },
   "packageManager": "pnpm@10.34.5",
