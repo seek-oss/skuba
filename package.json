@@ -7,21 +7,11 @@
   "bugs": {
     "url": "https://github.com/seek-oss/skuba/issues"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/seek-oss/skuba.git"
   },
-  "license": "MIT",
-  "sideEffects": false,
-  "type": "module",
-  "exports": {
-    ".": "./lib/index.js",
-    "./package.json": "./package.json",
-    "./config/eslint.js": "./config/eslint.js",
-    "./config/prettier.js": "./config/prettier.js",
-    "./config/tsconfig.json": "./config/tsconfig.json"
-  },
-  "types": "./lib/index.d.ts",
   "bin": {
     "skuba": "./lib/skuba.js"
   },
@@ -30,6 +20,16 @@
     "lib",
     "template/**/*"
   ],
+  "type": "module",
+  "sideEffects": false,
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json",
+    "./config/eslint.js": "./config/eslint.js",
+    "./config/prettier.js": "./config/prettier.js",
+    "./config/tsconfig.json": "./config/tsconfig.json"
+  },
   "scripts": {
     "build": "scripts/build.sh",
     "changeset": "changeset",
@@ -51,33 +51,6 @@
     "test:template": "scripts/test-template.sh",
     "test:template:updateSnapshot": "scripts/test-template.sh -u",
     "test:watch": "pnpm --silent skuba test"
-  },
-  "remarkConfig": {
-    "plugins": [
-      "remark-preset-lint-recommended",
-      [
-        "remark-lint-list-item-indent",
-        false
-      ],
-      [
-        "remark-lint-no-shortcut-reference-link",
-        false
-      ],
-      [
-        "remark-lint-no-undefined-references",
-        {
-          "allow": [
-            "!CAUTION",
-            "!IMPORTANT",
-            "!NOTE",
-            "!TIP",
-            "!WARNING",
-            " ",
-            "x"
-          ]
-        }
-      ]
-    ]
   },
   "dependencies": {
     "@arethetypeswrong/core": "~0.18.3",
@@ -122,10 +95,10 @@
     "npm-registry-fetch": "^19.1.1",
     "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
+    "oxc-config-seek": "1.0.0-main-20260721002609",
+    "oxfmt": "^0.59.0",
     "picomatch": "^4.0.0",
     "pnpm-plugin-skuba": "workspace:*",
-    "prettier": "~3.9.0",
-    "prettier-plugin-packagejson": "^3.0.0",
     "publint": "~0.3.17",
     "read-package-up": "^12.0.0",
     "rolldown": "^1.1.0",
@@ -167,9 +140,39 @@
     "supertest": "7.2.2",
     "type-fest": "5.7.0"
   },
-  "packageManager": "pnpm@10.34.5",
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-recommended",
+      [
+        "remark-lint-list-item-indent",
+        false
+      ],
+      [
+        "remark-lint-no-shortcut-reference-link",
+        false
+      ],
+      [
+        "remark-lint-no-undefined-references",
+        {
+          "allow": [
+            "!CAUTION",
+            "!IMPORTANT",
+            "!NOTE",
+            "!TIP",
+            "!WARNING",
+            " ",
+            "x"
+          ]
+        }
+      ]
+    ]
+  },
   "engines": {
     "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@10.34.5",
+  "inlinedDependencies": {
+    "prettier": "2.8.8"
   },
   "skuba": {
     "build": "esbuild",

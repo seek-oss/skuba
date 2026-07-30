@@ -11,7 +11,8 @@ import { isLikelyPackage } from './checks.js';
 import { tryUpgradeInfraPackages } from './upgrade.js';
 
 type FileSelector =
-  { files: string; file?: never } | { file: string; files?: never };
+  | { files: string; file?: never }
+  | { file: string; files?: never };
 
 type ReplaceOptions = {
   version: string;

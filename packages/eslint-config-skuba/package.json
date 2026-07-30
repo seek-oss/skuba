@@ -7,14 +7,20 @@
   "bugs": {
     "url": "https://github.com/seek-oss/skuba/issues"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/seek-oss/skuba.git",
     "directory": "packages/eslint-config-skuba"
   },
-  "license": "MIT",
-  "sideEffects": false,
+  "files": [
+    "lib"
+  ],
   "type": "module",
+  "sideEffects": false,
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.cts",
   "exports": {
     ".": {
       "import": "./lib/index.mjs",
@@ -26,12 +32,6 @@
     },
     "./package.json": "./package.json"
   },
-  "main": "./lib/index.cjs",
-  "module": "./lib/index.mjs",
-  "types": "./lib/index.d.cts",
-  "files": [
-    "lib"
-  ],
   "scripts": {
     "build": "pnpm skuba build-package",
     "format": "pnpm --silent skuba format",
@@ -54,10 +54,10 @@
     "eslint": ">=9.22.0",
     "typescript": ">=5.5.4"
   },
-  "packageManager": "pnpm@10.34.5",
   "engines": {
     "node": ">=22.14.0"
   },
+  "packageManager": "pnpm@10.34.5",
   "skuba": {
     "entryPoint": "index.js",
     "template": "oss-npm-package",
