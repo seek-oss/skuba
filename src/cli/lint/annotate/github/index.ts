@@ -1,6 +1,5 @@
 import { log } from '../../../../utils/logging.js';
 import type { ESLintOutput } from '../../../adapter/eslint.js';
-import type { PrettierOutput } from '../../../adapter/prettier.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
 import type { InternalLintResult } from '../../internal.js';
 
