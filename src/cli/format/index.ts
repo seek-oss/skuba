@@ -1,9 +1,9 @@
 import { styleText } from 'node:util';
 
-import { hasDebugFlag } from '../../utils/args.js';
+import { hasDebugFlag, stripFlags } from '../../utils/args.js';
 import { createLogger, log } from '../../utils/logging.js';
 import { runESLint } from '../adapter/eslint.js';
-import { runPrettier } from '../adapter/prettier.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
 import { internalLint } from '../lint/internal.js';
 
 export const format = async (
@@ -11,6 +11,7 @@ export const format = async (
   overrideConfigFile?: string,
 ): Promise<void> => {
   const debug = hasDebugFlag(args);
+  const filePaths = stripFlags(args);
 
   log.plain(styleText('blueBright', 'skuba lints'));
 
@@ -30,17 +31,17 @@ export const format = async (
   const eslint = await runESLint('format', logger, overrideConfigFile);
 
   log.newline();
-  log.plain(styleText('cyan', 'Prettier'));
+  log.plain(styleText('cyan', 'Oxfmt'));
 
-  const prettier = await runPrettier('format', logger);
+  const oxfmt = await runOxfmt('format', logger, filePaths);
 
-  if (eslint.ok && prettier.ok && internal.ok) {
+  if (eslint.ok && internal.ok && oxfmt.ok) {
     return;
   }
 
   const tools = [
     ...(eslint.ok ? [] : ['ESLint']),
-    ...(prettier.ok ? [] : ['Prettier']),
+    ...(oxfmt.ok ? [] : ['Oxfmt']),
     ...(internal.ok ? [] : ['skuba']),
   ];
 

@@ -1,9 +1,9 @@
 import normalizeData from 'normalize-package-data';
+import { format } from 'oxfmt';
 
 import type { PackageJson } from '../types.js';
 
 import { parseObject } from './json.js';
-import { formatPrettier } from './prettier.js';
 
 const normalizeDataWithoutThrowing = (rawData: PackageJson) => {
   try {
@@ -33,9 +33,11 @@ export const formatPackage = async (rawData: PackageJson) => {
     delete rawData.version;
   }
 
-  return formatPrettier(JSON.stringify(rawData), {
-    filepath: 'package.json',
+  const formatResult = await format('package.json', JSON.stringify(rawData), {
+    sortPackageJson: true,
   });
+
+  return formatResult.code;
 };
 
 export const parsePackage = (
