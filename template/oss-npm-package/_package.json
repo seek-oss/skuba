@@ -29,7 +29,6 @@
   "files": ["lib"],
   "scripts": {
     "build": "skuba build-package",
-    "commit": "cz",
     "format": "skuba format",
     "lint": "skuba lint",
     "release": "changeset publish",
