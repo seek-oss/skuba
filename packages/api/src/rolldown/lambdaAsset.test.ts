@@ -222,6 +222,24 @@ describe('lambdaAsset', () => {
       ).resolves.toBe('{}');
     });
 
+    it('refuses an asset that escapes the output directory', async () => {
+      await fs.promises.writeFile(path.join(projectRoot, 'config.json'), '{}');
+
+      await expect(
+        writeBundle(
+          lambdaAsset({
+            projectRoot,
+            assets: [{ from: 'config.json', to: '../escape.json' }],
+          }),
+          { dir: outputDir, format: 'es' },
+        ),
+      ).rejects.toThrow(/escapes the output directory/);
+
+      await expect(
+        pathExists(path.join(path.dirname(outputDir), 'escape.json')),
+      ).resolves.toBe(false);
+    });
+
     it('copies assets even when nodeModules is unset', async () => {
       await fs.promises.writeFile(path.join(projectRoot, 'config.json'), '{}');
 
@@ -430,6 +448,30 @@ describe('lambdaAsset', () => {
         ).resolves.toBe(false);
         await expect(
           pathExists(path.join(outputDir, 'node_modules')),
+        ).resolves.toBe(false);
+      });
+
+      it('does not copy assets when the install fails', async () => {
+        install.mockRejectedValue(new Error('pnpm exploded'));
+        await fs.promises.writeFile(
+          path.join(workspaceRoot, 'config.json'),
+          '{}',
+        );
+
+        await expect(
+          writeBundle(
+            lambdaAsset({
+              nodeModules: ['sharp'],
+              depsLockFilePath,
+              projectRoot: workspaceRoot,
+              assets: [{ from: 'config.json' }],
+            }),
+            { dir: outputDir, format: 'es' },
+          ),
+        ).rejects.toThrow('pnpm exploded');
+
+        await expect(
+          pathExists(path.join(outputDir, 'config.json')),
         ).resolves.toBe(false);
       });
 

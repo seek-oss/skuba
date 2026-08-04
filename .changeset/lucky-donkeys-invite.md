@@ -18,6 +18,6 @@ export default {
 };
 ```
 
-The plugin writes an ESM `package.json`, and installs any `nodeModules` into the output directory with pnpm, copying across your workspace config and patches. Install-only files, including `.npmrc`, are stripped from the output afterwards. It can also copy extra `assets` into the output directory alongside your bundle.
+The plugin writes an ESM `package.json`, and installs any `nodeModules` into the output directory with pnpm, copying across your workspace config and patches. The generated `package.json` forwards your package manager pin, read from `packageManager` or `devEngines.packageManager`, so the install runs on the same pnpm version as your project. Install-only files, including `.npmrc`, are stripped from the output afterwards. It can also copy extra `assets` into the output directory alongside your bundle.
 
 It supports ESM output and pnpm only. It leaves the rest of your rolldown config alone, and does not wrap CDK.

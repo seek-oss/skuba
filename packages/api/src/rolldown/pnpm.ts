@@ -51,12 +51,45 @@ const readJsonFile = async (filePath: string): Promise<unknown> => {
 };
 
 /**
- * Reads the `packageManager` pin from the workspace root manifest.
+ * Reads a `name@version` package manager pin from a manifest, preferring the
+ * `packageManager` field and falling back to `devEngines.packageManager`.
+ *
+ * `devEngines.packageManager` is either an object `{ name, version }` or an
+ * array of them; a pin is only returned when both `name` and `version` are
+ * present, since corepack needs the version to activate.
+ */
+const readPin = (parsed: Record<string, unknown>): string | undefined => {
+  if (typeof parsed.packageManager === 'string') {
+    return parsed.packageManager;
+  }
+
+  const devEngines = isRecord(parsed.devEngines)
+    ? parsed.devEngines
+    : undefined;
+
+  const raw: unknown = devEngines?.packageManager;
+  const packageManager: unknown = Array.isArray(raw)
+    ? (raw as unknown[])[0]
+    : raw;
+
+  if (
+    isRecord(packageManager) &&
+    typeof packageManager.name === 'string' &&
+    typeof packageManager.version === 'string'
+  ) {
+    return `${packageManager.name}@${packageManager.version}`;
+  }
+
+  return undefined;
+};
+
+/**
+ * Reads the package manager pin from the workspace root manifest.
  *
  * Forwarding it to the output directory keeps the staged install on the same
  * pnpm version as the project.
  */
-export const readPackageManagerField = async (
+export const readPackageManagerPin = async (
   workspaceRoot: string,
 ): Promise<string | undefined> => {
   const pkgPath = path.join(workspaceRoot, 'package.json');
@@ -67,9 +100,7 @@ export const readPackageManagerField = async (
 
   const parsed: unknown = await readJsonFile(pkgPath);
 
-  return isRecord(parsed) && typeof parsed.packageManager === 'string'
-    ? parsed.packageManager
-    : undefined;
+  return isRecord(parsed) ? readPin(parsed) : undefined;
 };
 
 /**

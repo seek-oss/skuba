@@ -13,7 +13,7 @@ import {
   PNPM_LOCK,
   PNPM_METADATA_FILES,
   extractDependencies,
-  readPackageManagerField,
+  readPackageManagerPin,
   stageWorkspaceFiles,
 } from './pnpm.js';
 
@@ -63,7 +63,8 @@ export interface LambdaAssetOptions {
    * This is the directory holding the `package.json` that depends on them; in a
    * workspace, that is the individual package rather than the workspace root.
    *
-   * Defaults to `process.cwd()`.
+   * Relative paths resolve against rolldown's `cwd`, which defaults to
+   * `process.cwd()`.
    */
   projectRoot?: string;
 
@@ -73,7 +74,8 @@ export interface LambdaAssetOptions {
    * pnpm keeps this at the workspace root, so its directory is also where the
    * workspace config and patches are staged from.
    *
-   * Defaults to the nearest lock file, walking up from `process.cwd()`.
+   * Defaults to the nearest lock file, walking up from rolldown's `cwd`, which
+   * defaults to `process.cwd()`. A relative path resolves against that `cwd`.
    */
   depsLockFilePath?: string;
 }
@@ -126,7 +128,18 @@ const copyAssets = async (
   await Promise.all(
     assets.map(async (asset) => {
       const from = path.resolve(projectRoot, asset.from);
-      const to = path.join(outputDir, asset.to ?? path.basename(asset.from));
+      const to = path.resolve(outputDir, asset.to ?? path.basename(asset.from));
+
+      const relative = path.relative(outputDir, to);
+      if (
+        relative === '' ||
+        relative.startsWith('..') ||
+        path.isAbsolute(relative)
+      ) {
+        throw new Error(
+          `${PLUGIN_NAME} refuses to copy asset '${asset.from}' to '${asset.to}': it escapes the output directory.`,
+        );
+      }
 
       await fs.ensureDir(path.dirname(to));
       await fs.copy(from, to);
@@ -239,10 +252,9 @@ export const lambdaAsset = ({
 
       const projectRoot = path.resolve(cwd, projectRootOption ?? '.');
 
-      await copyAssets(outputDir, projectRoot, assets);
-
       if (!nodeModules.length) {
         await writeOutputPackageJson(outputDir);
+        await copyAssets(outputDir, projectRoot, assets);
         return;
       }
 
@@ -273,7 +285,7 @@ export const lambdaAsset = ({
           projectPackageJson,
           nodeModules,
         ),
-        packageManager: await readPackageManagerField(workspaceRoot),
+        packageManager: await readPackageManagerPin(workspaceRoot),
       });
 
       const stagedFiles: string[] = [];
@@ -306,6 +318,7 @@ export const lambdaAsset = ({
       }
 
       await stripInstallFiles(outputDir, stagedFiles);
+      await copyAssets(outputDir, projectRoot, assets);
     },
   };
 };

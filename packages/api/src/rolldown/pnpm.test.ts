@@ -9,11 +9,11 @@ import { pathExists } from '../../../../src/utils/fs.js';
 
 import {
   extractDependencies,
-  readPackageManagerField,
+  readPackageManagerPin,
   stageWorkspaceFiles,
 } from './pnpm.js';
 
-describe('readPackageManagerField', () => {
+describe('readPackageManagerPin', () => {
   let tmpDir: string;
 
   beforeEach(async () => {
@@ -31,28 +31,66 @@ describe('readPackageManagerField', () => {
   it('reads the packageManager pin', async () => {
     await writeManifest({ packageManager: 'pnpm@9.0.0' });
 
-    await expect(readPackageManagerField(tmpDir)).resolves.toBe('pnpm@9.0.0');
+    await expect(readPackageManagerPin(tmpDir)).resolves.toBe('pnpm@9.0.0');
+  });
+
+  it('falls back to a devEngines.packageManager object', async () => {
+    await writeManifest({
+      devEngines: { packageManager: { name: 'pnpm', version: '10.34.5' } },
+    });
+
+    await expect(readPackageManagerPin(tmpDir)).resolves.toBe('pnpm@10.34.5');
+  });
+
+  it('uses the first entry of a devEngines.packageManager array', async () => {
+    await writeManifest({
+      devEngines: {
+        packageManager: [
+          { name: 'pnpm', version: '10.34.5' },
+          { name: 'yarn', version: '4.0.0' },
+        ],
+      },
+    });
+
+    await expect(readPackageManagerPin(tmpDir)).resolves.toBe('pnpm@10.34.5');
+  });
+
+  it('prefers the packageManager field over devEngines', async () => {
+    await writeManifest({
+      packageManager: 'pnpm@9.0.0',
+      devEngines: { packageManager: { name: 'pnpm', version: '10.34.5' } },
+    });
+
+    await expect(readPackageManagerPin(tmpDir)).resolves.toBe('pnpm@9.0.0');
+  });
+
+  it('returns undefined when devEngines.packageManager has no version', async () => {
+    await writeManifest({
+      devEngines: { packageManager: { name: 'pnpm' } },
+    });
+
+    await expect(readPackageManagerPin(tmpDir)).resolves.toBeUndefined();
   });
 
   it('returns undefined when there is no package.json', () =>
-    expect(readPackageManagerField(tmpDir)).resolves.toBeUndefined());
+    expect(readPackageManagerPin(tmpDir)).resolves.toBeUndefined());
 
   it('returns undefined when there is no packageManager field', async () => {
     await writeManifest({ name: 'app' });
 
-    await expect(readPackageManagerField(tmpDir)).resolves.toBeUndefined();
+    await expect(readPackageManagerPin(tmpDir)).resolves.toBeUndefined();
   });
 
   it('returns undefined when package.json is not an object', async () => {
     await writeManifest([]);
 
-    await expect(readPackageManagerField(tmpDir)).resolves.toBeUndefined();
+    await expect(readPackageManagerPin(tmpDir)).resolves.toBeUndefined();
   });
 
   it('throws for malformed JSON', async () => {
     await fs.promises.writeFile(path.join(tmpDir, 'package.json'), 'not-json{');
 
-    await expect(readPackageManagerField(tmpDir)).rejects.toThrow(
+    await expect(readPackageManagerPin(tmpDir)).rejects.toThrow(
       /Failed to parse/,
     );
   });
