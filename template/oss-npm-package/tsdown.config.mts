@@ -8,9 +8,7 @@ export default defineConfig({
   dts: true,
   inputOptions: {
     resolve: {
-      alias: {
-        '#src': './src',
-      },
+      conditionNames: ['@seek/<%- moduleName %>/source'],
     },
   },
   checks: {
