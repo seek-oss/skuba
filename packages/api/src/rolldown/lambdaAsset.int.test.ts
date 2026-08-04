@@ -74,6 +74,46 @@ describe('lambdaAsset', () => {
     await expect(readOutputPackageJson()).resolves.toEqual({ type: 'module' });
   });
 
+  it('emits assets alongside the bundle', async () => {
+    const assetsRoot = path.join(workingDir, 'assets');
+    await fs.promises.mkdir(path.join(assetsRoot, 'templates'), {
+      recursive: true,
+    });
+    await fs.promises.writeFile(
+      path.join(assetsRoot, 'config.json'),
+      '{"hello":"world"}',
+    );
+    await fs.promises.writeFile(path.join(assetsRoot, 'cert.pem'), 'PEM');
+    await fs.promises.writeFile(
+      path.join(assetsRoot, 'templates', 'email.html'),
+      '<p>hi</p>',
+    );
+
+    await bundle(
+      lambdaAsset({
+        projectRoot: assetsRoot,
+        assets: [
+          { from: 'config.json' },
+          { from: 'cert.pem', to: 'certs/cert.pem' },
+          { from: 'templates', to: 'templates' },
+        ],
+      }),
+    );
+
+    await expect(
+      fs.promises.readFile(path.join(outputDir, 'config.json'), 'utf-8'),
+    ).resolves.toBe('{"hello":"world"}');
+    await expect(
+      fs.promises.readFile(path.join(outputDir, 'certs', 'cert.pem'), 'utf-8'),
+    ).resolves.toBe('PEM');
+    await expect(
+      fs.promises.readFile(
+        path.join(outputDir, 'templates', 'email.html'),
+        'utf-8',
+      ),
+    ).resolves.toBe('<p>hi</p>');
+  });
+
   it('installs nodeModules and strips the install-only files', async () => {
     await bundle(
       lambdaAsset({

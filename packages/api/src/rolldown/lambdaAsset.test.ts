@@ -17,6 +17,7 @@ import { lambdaAsset } from './lambdaAsset.js';
 vi.mock('../../../../src/utils/exec.js', () => ({ createExec: vi.fn() }));
 
 const install = vi.fn();
+const emitFile = vi.fn();
 
 const writeBundle = (
   plugin: Plugin,
@@ -47,8 +48,15 @@ const buildStart = async (
     throw new Error('Expected `buildStart` to be a function hook');
   }
 
-  await hook.call(undefined as never, { cwd } as NormalizedInputOptions);
+  await hook.call({ emitFile } as never, { cwd } as NormalizedInputOptions);
 };
+
+/** The assets emitted by a `buildStart` invocation. */
+const emittedAssets = (): Array<{
+  fileName: string;
+  originalFileName: string;
+  source: Buffer;
+}> => emitFile.mock.calls.map(([file]) => file as never);
 
 describe('lambdaAsset', () => {
   let outputDir: string;
@@ -64,6 +72,7 @@ describe('lambdaAsset', () => {
     );
 
     install.mockReset().mockResolvedValue(undefined);
+    emitFile.mockReset();
     vi.mocked(createExec).mockReturnValue(install as never);
   });
 
@@ -149,109 +158,113 @@ describe('lambdaAsset', () => {
 
     afterEach(() => fs.remove(projectRoot));
 
-    it('copies a file to its basename by default', async () => {
+    it('emits a file to its basename by default', async () => {
       await fs.promises.writeFile(
         path.join(projectRoot, 'config.json'),
         '{"hello":"world"}',
       );
 
-      await writeBundle(
+      await buildStart(
         lambdaAsset({ projectRoot, assets: [{ from: 'config.json' }] }),
-        { dir: outputDir, format: 'es' },
       );
 
-      await expect(
-        fs.promises.readFile(path.join(outputDir, 'config.json'), 'utf-8'),
-      ).resolves.toBe('{"hello":"world"}');
+      const [asset, ...rest] = emittedAssets();
+      expect(rest).toEqual([]);
+      expect(asset).toMatchObject({
+        fileName: 'config.json',
+        originalFileName: path.join(projectRoot, 'config.json'),
+      });
+      expect(asset?.source.toString()).toBe('{"hello":"world"}');
     });
 
-    it('copies a file to an explicit nested destination, creating directories', async () => {
+    it('emits a file to an explicit nested destination', async () => {
       await fs.promises.writeFile(path.join(projectRoot, 'cert.pem'), 'PEM');
 
-      await writeBundle(
+      await buildStart(
         lambdaAsset({
           projectRoot,
           assets: [{ from: 'cert.pem', to: 'certs/cert.pem' }],
         }),
-        { dir: outputDir, format: 'es' },
       );
 
-      await expect(
-        fs.promises.readFile(
-          path.join(outputDir, 'certs', 'cert.pem'),
-          'utf-8',
-        ),
-      ).resolves.toBe('PEM');
+      const [asset] = emittedAssets();
+      expect(asset).toMatchObject({ fileName: 'certs/cert.pem' });
+      expect(asset?.source.toString()).toBe('PEM');
     });
 
-    it('copies a directory recursively', async () => {
-      await fs.promises.mkdir(path.join(projectRoot, 'templates'));
+    it('emits a directory recursively, one asset per file', async () => {
+      await fs.promises.mkdir(path.join(projectRoot, 'templates', 'partials'), {
+        recursive: true,
+      });
       await fs.promises.writeFile(
         path.join(projectRoot, 'templates', 'email.html'),
         '<p>hi</p>',
       );
+      await fs.promises.writeFile(
+        path.join(projectRoot, 'templates', 'partials', 'footer.html'),
+        '<footer />',
+      );
 
-      await writeBundle(
+      await buildStart(
         lambdaAsset({
           projectRoot,
           assets: [{ from: 'templates', to: 'templates' }],
         }),
-        { dir: outputDir, format: 'es' },
       );
 
-      await expect(
-        fs.promises.readFile(
-          path.join(outputDir, 'templates', 'email.html'),
-          'utf-8',
-        ),
-      ).resolves.toBe('<p>hi</p>');
+      const byFileName = Object.fromEntries(
+        emittedAssets().map((asset) => [
+          asset.fileName,
+          asset.source.toString(),
+        ]),
+      );
+      expect(byFileName).toEqual({
+        'templates/email.html': '<p>hi</p>',
+        'templates/partials/footer.html': '<footer />',
+      });
     });
 
     it('resolves a relative projectRoot against rolldown cwd', async () => {
       await fs.promises.writeFile(path.join(projectRoot, 'config.json'), '{}');
 
-      const plugin = lambdaAsset({
-        projectRoot: path.basename(projectRoot),
-        assets: [{ from: 'config.json' }],
-      });
-      await buildStart(plugin, path.dirname(projectRoot));
-      await writeBundle(plugin, { dir: outputDir, format: 'es' });
+      await buildStart(
+        lambdaAsset({
+          projectRoot: path.basename(projectRoot),
+          assets: [{ from: 'config.json' }],
+        }),
+        path.dirname(projectRoot),
+      );
 
-      await expect(
-        fs.promises.readFile(path.join(outputDir, 'config.json'), 'utf-8'),
-      ).resolves.toBe('{}');
+      const [asset] = emittedAssets();
+      expect(asset).toMatchObject({
+        fileName: 'config.json',
+        originalFileName: path.join(projectRoot, 'config.json'),
+      });
     });
 
     it('refuses an asset that escapes the output directory', async () => {
       await fs.promises.writeFile(path.join(projectRoot, 'config.json'), '{}');
 
       await expect(
-        writeBundle(
+        buildStart(
           lambdaAsset({
             projectRoot,
             assets: [{ from: 'config.json', to: '../escape.json' }],
           }),
-          { dir: outputDir, format: 'es' },
         ),
       ).rejects.toThrow(/escapes the output directory/);
 
-      await expect(
-        pathExists(path.join(path.dirname(outputDir), 'escape.json')),
-      ).resolves.toBe(false);
+      expect(emitFile).not.toHaveBeenCalled();
     });
 
-    it('copies assets even when nodeModules is unset', async () => {
+    it('emits assets during the build, independent of the install', async () => {
       await fs.promises.writeFile(path.join(projectRoot, 'config.json'), '{}');
 
-      await writeBundle(
+      await buildStart(
         lambdaAsset({ projectRoot, assets: [{ from: 'config.json' }] }),
-        { dir: outputDir, format: 'es' },
       );
 
-      // The generated package.json still lands alongside the copied asset.
-      await expect(
-        fs.promises.readdir(outputDir).then((files) => files.sort()),
-      ).resolves.toEqual(['config.json', 'package.json']);
+      expect(emitFile).toHaveBeenCalledTimes(1);
       expect(install).not.toHaveBeenCalled();
     });
   });
@@ -448,30 +461,6 @@ describe('lambdaAsset', () => {
         ).resolves.toBe(false);
         await expect(
           pathExists(path.join(outputDir, 'node_modules')),
-        ).resolves.toBe(false);
-      });
-
-      it('does not copy assets when the install fails', async () => {
-        install.mockRejectedValue(new Error('pnpm exploded'));
-        await fs.promises.writeFile(
-          path.join(workspaceRoot, 'config.json'),
-          '{}',
-        );
-
-        await expect(
-          writeBundle(
-            lambdaAsset({
-              nodeModules: ['sharp'],
-              depsLockFilePath,
-              projectRoot: workspaceRoot,
-              assets: [{ from: 'config.json' }],
-            }),
-            { dir: outputDir, format: 'es' },
-          ),
-        ).rejects.toThrow('pnpm exploded');
-
-        await expect(
-          pathExists(path.join(outputDir, 'config.json')),
         ).resolves.toBe(false);
       });
 

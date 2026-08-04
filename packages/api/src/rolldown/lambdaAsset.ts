@@ -2,7 +2,7 @@ import * as path from 'node:path';
 
 import { findUp } from 'find-up';
 import fs from 'fs-extra';
-import type { NormalizedOutputOptions, Plugin } from 'rolldown';
+import type { EmittedAsset, NormalizedOutputOptions, Plugin } from 'rolldown';
 
 import { createExec } from '../../../../src/utils/exec.js';
 import { pathExists } from '../../../../src/utils/fs.js';
@@ -113,36 +113,64 @@ const resolveLockFile = async (
   return resolved;
 };
 
+const toPosix = (p: string): string => p.split(path.sep).join('/');
+
 /**
- * Copies extra `assets` into the output directory alongside the bundle.
+ * Emits extra `assets` into the build output alongside the bundle.
  *
- * `from` is resolved relative to `projectRoot`, and `to` relative to the
- * output directory, creating parent directories as needed. Directories are
- * copied recursively.
+ * `from` is resolved relative to `projectRoot`; `to` becomes the emitted
+ * `fileName`, which rolldown writes relative to the output directory, creating
+ * parent directories as needed. Directories are emitted recursively, one asset
+ * per file. `originalFileName` points rolldown at each source file so watch mode
+ * rebuilds when it changes.
  */
-const copyAssets = async (
-  outputDir: string,
+const emitAssets = async (
+  emit: (file: EmittedAsset) => void,
   projectRoot: string,
   assets: LambdaAssetFile[],
 ): Promise<void> => {
   await Promise.all(
     assets.map(async (asset) => {
       const from = path.resolve(projectRoot, asset.from);
-      const to = path.resolve(outputDir, asset.to ?? path.basename(asset.from));
+      const to = asset.to ?? path.basename(asset.from);
 
-      const relative = path.relative(outputDir, to);
+      const normalized = path.normalize(to);
       if (
-        relative === '' ||
-        relative.startsWith('..') ||
-        path.isAbsolute(relative)
+        path.isAbsolute(normalized) ||
+        normalized === '.' ||
+        normalized === '..' ||
+        normalized.startsWith(`..${path.sep}`)
       ) {
         throw new Error(
           `${PLUGIN_NAME} refuses to copy asset '${asset.from}' to '${asset.to}': it escapes the output directory.`,
         );
       }
 
-      await fs.ensureDir(path.dirname(to));
-      await fs.copy(from, to);
+      const stat = await fs.promises.stat(from);
+      const files = stat.isDirectory()
+        ? (
+            await fs.promises.readdir(from, {
+              recursive: true,
+              withFileTypes: true,
+            })
+          )
+            .filter((entry) => entry.isFile())
+            .map((entry) => path.join(entry.parentPath, entry.name))
+        : [from];
+
+      await Promise.all(
+        files.map(async (absFile) => {
+          const rel = path.relative(from, absFile);
+          const fileName = toPosix(rel ? path.join(to, rel) : to);
+
+          emit({
+            type: 'asset',
+            fileName,
+            originalFileName: absFile,
+            source: await fs.promises.readFile(absFile),
+          });
+        }),
+      );
     }),
   );
 };
@@ -195,12 +223,13 @@ const stripInstallFiles = async (
  * The plugin supports ESM output and pnpm only. It makes no assumptions about
  * how you bundle; it only augments what rolldown has already written:
  *
- * 1. Writes a `package.json` of `type: 'module'`.
- * 2. Installs `nodeModules` into the output directory with pnpm, staging the
+ * 1. Emits any extra `assets` into the build output alongside the bundle, via
+ *    rolldown's `emitFile`.
+ * 2. Writes a `package.json` of `type: 'module'`.
+ * 3. Installs `nodeModules` into the output directory with pnpm, staging the
  *    workspace config, `.npmrc`, lock file and patches to do so.
- * 3. Strips those install-only files back out, leaving the bundle, the
+ * 4. Strips those install-only files back out, leaving the bundle, the
  *    generated `package.json` and `node_modules`.
- * 4. Copies any extra `assets` into the output directory alongside the bundle.
  *
  * The result can be handed to CDK as `aws_lambda.Code.fromAsset(outputDir)`.
  *
@@ -237,9 +266,14 @@ export const lambdaAsset = ({
   return {
     name: PLUGIN_NAME,
 
-    buildStart(options) {
+    async buildStart(options) {
       cwd = options.cwd;
       prepared.clear();
+
+      if (assets.length) {
+        const projectRoot = path.resolve(cwd, projectRootOption ?? '.');
+        await emitAssets((file) => this.emitFile(file), projectRoot, assets);
+      }
     },
 
     async writeBundle(outputOptions) {
@@ -254,7 +288,6 @@ export const lambdaAsset = ({
 
       if (!nodeModules.length) {
         await writeOutputPackageJson(outputDir);
-        await copyAssets(outputDir, projectRoot, assets);
         return;
       }
 
@@ -318,7 +351,6 @@ export const lambdaAsset = ({
       }
 
       await stripInstallFiles(outputDir, stagedFiles);
-      await copyAssets(outputDir, projectRoot, assets);
     },
   };
 };

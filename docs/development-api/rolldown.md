@@ -67,12 +67,12 @@ your bundle is built once by your build step rather than re-run on every `cdk sy
 
 ### Options
 
-| Option             | Required | Description                                                                                                                                             |
-| ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `nodeModules`      | No       | npm packages to install into the output directory rather than embed in the bundle. Versions are resolved from the copies installed under `projectRoot`. |
-| `assets`           | No       | Extra files or directories to copy into the output directory alongside your bundle. Each `from` is resolved relative to `projectRoot`.                  |
+| Option             | Required | Description                                                                                                                                                                             |
+| ------------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nodeModules`      | No       | npm packages to install into the output directory rather than embed in the bundle. Versions are resolved from the copies installed under `projectRoot`.                                 |
+| `assets`           | No       | Extra files or directories to copy into the output directory alongside your bundle. Each `from` is resolved relative to `projectRoot`.                                                  |
 | `projectRoot`      | No       | Directory holding the `package.json` that depends on your `nodeModules`, and the base for `assets`. Relative paths resolve against rolldown's `cwd`, which defaults to `process.cwd()`. |
-| `depsLockFilePath` | No       | Path to a `pnpm-lock.yaml`. Auto-detected by walking up from rolldown's `cwd` when omitted.                                                             |
+| `depsLockFilePath` | No       | Path to a `pnpm-lock.yaml`. Auto-detected by walking up from rolldown's `cwd` when omitted.                                                                                             |
 
 The plugin throws if your config uses `output.file` instead of `output.dir`,
 or if a `nodeModules` entry cannot be resolved to an installed version.
