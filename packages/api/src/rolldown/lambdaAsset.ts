@@ -78,7 +78,10 @@ export interface LambdaAssetOptions {
   depsLockFilePath?: string;
 }
 
-const resolveOutputDir = ({ dir, file }: NormalizedOutputOptions): string => {
+const resolveOutputDir = (
+  { dir, file }: NormalizedOutputOptions,
+  cwd: string,
+): string => {
   if (!dir) {
     throw new Error(
       `${PLUGIN_NAME} requires \`output.dir\`; it prepares a deployable directory, so a single \`output.file\`${
@@ -87,17 +90,18 @@ const resolveOutputDir = ({ dir, file }: NormalizedOutputOptions): string => {
     );
   }
 
-  return path.resolve(dir);
+  return path.resolve(cwd, dir);
 };
 
 const resolveLockFile = async (
   depsLockFilePath: string | undefined,
+  cwd: string,
 ): Promise<string | undefined> => {
   if (!depsLockFilePath) {
-    return findUp(PNPM_LOCK);
+    return findUp(PNPM_LOCK, { cwd });
   }
 
-  const resolved = path.resolve(depsLockFilePath);
+  const resolved = path.resolve(cwd, depsLockFilePath);
   if (!(await pathExists(resolved))) {
     throw new Error(
       `${PLUGIN_NAME} cannot find a ${PNPM_LOCK} at '${depsLockFilePath}'.`,
@@ -119,13 +123,15 @@ const copyAssets = async (
   projectRoot: string,
   assets: LambdaAssetFile[],
 ): Promise<void> => {
-  for (const asset of assets) {
-    const from = path.resolve(projectRoot, asset.from);
-    const to = path.join(outputDir, asset.to ?? path.basename(asset.from));
+  await Promise.all(
+    assets.map(async (asset) => {
+      const from = path.resolve(projectRoot, asset.from);
+      const to = path.join(outputDir, asset.to ?? path.basename(asset.from));
 
-    await fs.ensureDir(path.dirname(to));
-    await fs.copy(from, to);
-  }
+      await fs.ensureDir(path.dirname(to));
+      await fs.copy(from, to);
+    }),
+  );
 };
 
 const writeOutputPackageJson = (
@@ -213,22 +219,25 @@ export const lambdaAsset = ({
   // that outputs sharing a directory do not install twice.
   const prepared = new Set<string>();
 
+  let cwd = process.cwd();
+
   return {
     name: PLUGIN_NAME,
 
-    buildStart() {
+    buildStart(options) {
+      cwd = options.cwd;
       prepared.clear();
     },
 
     async writeBundle(outputOptions) {
-      const outputDir = resolveOutputDir(outputOptions);
+      const outputDir = resolveOutputDir(outputOptions, cwd);
 
       if (prepared.has(outputDir)) {
         return;
       }
       prepared.add(outputDir);
 
-      const projectRoot = path.resolve(projectRootOption ?? process.cwd());
+      const projectRoot = path.resolve(cwd, projectRootOption ?? '.');
 
       await copyAssets(outputDir, projectRoot, assets);
 
@@ -237,7 +246,10 @@ export const lambdaAsset = ({
         return;
       }
 
-      const depsLockFilePath = await resolveLockFile(depsLockFilePathOption);
+      const depsLockFilePath = await resolveLockFile(
+        depsLockFilePathOption,
+        cwd,
+      );
 
       if (!depsLockFilePath) {
         throw new Error(
@@ -269,8 +281,8 @@ export const lambdaAsset = ({
         await stageWorkspaceFiles(workspaceRoot, outputDir, stagedFiles);
 
         const lockDest = path.join(outputDir, PNPM_LOCK);
-        await fs.promises.copyFile(depsLockFilePath, lockDest);
         stagedFiles.push(lockDest);
+        await fs.promises.copyFile(depsLockFilePath, lockDest);
 
         log.plain(
           log.bold(PLUGIN_NAME),
@@ -281,7 +293,15 @@ export const lambdaAsset = ({
         const [bin, ...args] = PNPM_INSTALL_COMMAND;
         await createExec({ cwd: outputDir })(bin, ...args);
       } catch (err) {
-        await stripInstallFiles(outputDir, stagedFiles, err);
+        await stripInstallFiles(
+          outputDir,
+          [
+            ...stagedFiles,
+            path.join(outputDir, 'package.json'),
+            path.join(outputDir, 'node_modules'),
+          ],
+          err,
+        );
         throw err;
       }
 

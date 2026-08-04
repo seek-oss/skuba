@@ -2,7 +2,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 
 import fs from 'fs-extra';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
 
 import { pathExists } from '../../../../src/utils/fs.js';
@@ -122,6 +122,38 @@ describe('stageWorkspaceFiles', () => {
       path.join(destDir, '.npmrc'),
       path.join(destDir, 'patches'),
     ]);
+  });
+
+  it('records a destination before writing it, so a failed copy can still be stripped', async () => {
+    await fs.promises.writeFile(path.join(srcDir, '.npmrc'), 'registry=...');
+
+    const copyFile = vi
+      .spyOn(fs.promises, 'copyFile')
+      .mockRejectedValue(new Error('EIO'));
+
+    const stagedFiles: string[] = [];
+    try {
+      await expect(
+        stageWorkspaceFiles(srcDir, destDir, stagedFiles),
+      ).rejects.toThrow('EIO');
+
+      expect(stagedFiles).toContain(path.join(destDir, '.npmrc'));
+    } finally {
+      copyFile.mockRestore();
+    }
+  });
+
+  it('preserves comments when forcing allowUnusedPatches', async () => {
+    await writeWorkspaceYaml('# keep me', 'packages: []');
+
+    await stageWorkspaceFiles(srcDir, destDir);
+
+    const staged = await fs.promises.readFile(
+      path.join(destDir, 'pnpm-workspace.yaml'),
+      'utf8',
+    );
+    expect(staged).toContain('# keep me');
+    expect(staged).toContain('allowUnusedPatches: true');
   });
 
   it('forces allowUnusedPatches on, as the output installs a subset of the workspace', async () => {

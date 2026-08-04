@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import fs from 'fs-extra';
-import { parse, stringify } from 'yaml';
+import { isMap, parseDocument } from 'yaml';
 
 import { pathExists } from '../../../../src/utils/fs.js';
 
@@ -40,9 +40,9 @@ export const PNPM_INSTALL_COMMAND: [string, ...string[]] = [
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-const parseJsonFile = async (filePath: string): Promise<unknown> => {
+const readJsonFile = async (filePath: string): Promise<unknown> => {
   try {
-    return JSON.parse(await fs.promises.readFile(filePath, 'utf-8'));
+    return await fs.readJson(filePath);
   } catch (err) {
     throw new Error(
       `Failed to parse ${filePath} as JSON: ${(err as Error).message}`,
@@ -65,7 +65,7 @@ export const readPackageManagerField = async (
     return undefined;
   }
 
-  const parsed: unknown = await parseJsonFile(pkgPath);
+  const parsed: unknown = await readJsonFile(pkgPath);
 
   return isRecord(parsed) && typeof parsed.packageManager === 'string'
     ? parsed.packageManager
@@ -78,22 +78,19 @@ export const readPackageManagerField = async (
  * install on an unused patch unless this is set.
  */
 const allowUnusedPatches = (content: string): string => {
-  let doc: unknown;
-  try {
-    doc = parse(content);
-  } catch (err) {
-    throw new Error(
-      `Failed to parse ${PNPM_WORKSPACE_YAML}: ${(err as Error).message}`,
-    );
-  }
+  const doc = parseDocument(content);
 
-  if (!isRecord(doc)) {
+  const [error] = doc.errors;
+  if (error) {
+    throw new Error(`Failed to parse ${PNPM_WORKSPACE_YAML}: ${error.message}`);
+  }
+  if (!isMap(doc.contents)) {
     return content;
   }
 
-  doc.allowUnusedPatches = true;
+  doc.set('allowUnusedPatches', true);
 
-  return stringify(doc);
+  return doc.toString();
 };
 
 /**
@@ -110,33 +107,40 @@ export const stageWorkspaceFiles = async (
   outputDir: string,
   stagedFiles: string[] = [],
 ): Promise<string[]> => {
-  for (const file of PNPM_WORKSPACE_FILES) {
-    const src = path.join(workspaceRoot, file);
+  const present = (
+    await Promise.all(
+      PNPM_WORKSPACE_FILES.map(async (file) => {
+        const src = path.join(workspaceRoot, file);
+        return (await pathExists(src)) ? { file, src } : undefined;
+      }),
+    )
+  ).filter((entry) => entry !== undefined);
 
-    if (!(await pathExists(src))) {
-      continue;
-    }
-
-    const dest = path.join(outputDir, file);
-
-    if (file === PNPM_WORKSPACE_YAML) {
-      await fs.promises.writeFile(
-        dest,
-        allowUnusedPatches(await fs.promises.readFile(src, 'utf8')),
-      );
-    } else {
-      await fs.promises.copyFile(src, dest);
-    }
-
-    stagedFiles.push(dest);
+  for (const { file } of present) {
+    stagedFiles.push(path.join(outputDir, file));
   }
+
+  await Promise.all(
+    present.map(async ({ file, src }) => {
+      const dest = path.join(outputDir, file);
+
+      if (file === PNPM_WORKSPACE_YAML) {
+        await fs.promises.writeFile(
+          dest,
+          allowUnusedPatches(await fs.promises.readFile(src, 'utf8')),
+        );
+      } else {
+        await fs.promises.copyFile(src, dest);
+      }
+    }),
+  );
 
   const patchesSrc = path.join(workspaceRoot, PNPM_PATCHES_DIR);
 
   if (await pathExists(patchesSrc)) {
     const patchesDest = path.join(outputDir, PNPM_PATCHES_DIR);
-    await fs.copy(patchesSrc, patchesDest);
     stagedFiles.push(patchesDest);
+    await fs.copy(patchesSrc, patchesDest);
   }
 
   return stagedFiles;
@@ -161,7 +165,7 @@ export const extractDependencies = async (
     }
 
     const parsed: unknown = modPkgPath
-      ? await parseJsonFile(modPkgPath)
+      ? await readJsonFile(modPkgPath)
       : undefined;
     const version =
       isRecord(parsed) && typeof parsed.version === 'string'

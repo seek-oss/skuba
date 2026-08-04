@@ -2,7 +2,11 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 
 import fs from 'fs-extra';
-import type { NormalizedOutputOptions, Plugin } from 'rolldown';
+import type {
+  NormalizedInputOptions,
+  NormalizedOutputOptions,
+  Plugin,
+} from 'rolldown';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createExec } from '../../../../src/utils/exec.js';
@@ -33,14 +37,17 @@ const writeBundle = (
   );
 };
 
-const buildStart = async (plugin: Plugin): Promise<void> => {
+const buildStart = async (
+  plugin: Plugin,
+  cwd: string = process.cwd(),
+): Promise<void> => {
   const hook = plugin.buildStart;
 
   if (typeof hook !== 'function') {
     throw new Error('Expected `buildStart` to be a function hook');
   }
 
-  await hook.call(undefined as never, undefined as never);
+  await hook.call(undefined as never, { cwd } as NormalizedInputOptions);
 };
 
 describe('lambdaAsset', () => {
@@ -118,6 +125,19 @@ describe('lambdaAsset', () => {
     await expect(pathExists(packageJson)).resolves.toBe(true);
   });
 
+  it('resolves a relative output.dir against rolldown cwd, not process.cwd()', async () => {
+    const plugin = lambdaAsset();
+    const nested = path.join(outputDir, 'lib');
+    await fs.ensureDir(nested);
+
+    await buildStart(plugin, outputDir);
+    await writeBundle(plugin, { dir: 'lib', format: 'es' });
+
+    await expect(pathExists(path.join(nested, 'package.json'))).resolves.toBe(
+      true,
+    );
+  });
+
   describe('assets', () => {
     let projectRoot: string;
 
@@ -185,6 +205,21 @@ describe('lambdaAsset', () => {
           'utf-8',
         ),
       ).resolves.toBe('<p>hi</p>');
+    });
+
+    it('resolves a relative projectRoot against rolldown cwd', async () => {
+      await fs.promises.writeFile(path.join(projectRoot, 'config.json'), '{}');
+
+      const plugin = lambdaAsset({
+        projectRoot: path.basename(projectRoot),
+        assets: [{ from: 'config.json' }],
+      });
+      await buildStart(plugin, path.dirname(projectRoot));
+      await writeBundle(plugin, { dir: outputDir, format: 'es' });
+
+      await expect(
+        fs.promises.readFile(path.join(outputDir, 'config.json'), 'utf-8'),
+      ).resolves.toBe('{}');
     });
 
     it('copies assets even when nodeModules is unset', async () => {
@@ -377,6 +412,25 @@ describe('lambdaAsset', () => {
         await expect(pathExists(path.join(outputDir, '.npmrc'))).resolves.toBe(
           false,
         );
+      });
+
+      it('rolls back the generated package.json and a partial node_modules when the install fails', async () => {
+        install.mockImplementation(async () => {
+          await fs.promises.mkdir(
+            path.join(outputDir, 'node_modules', 'sharp'),
+            { recursive: true },
+          );
+          throw new Error('pnpm exploded');
+        });
+
+        await expect(prepare()).rejects.toThrow('pnpm exploded');
+
+        await expect(
+          pathExists(path.join(outputDir, 'package.json')),
+        ).resolves.toBe(false);
+        await expect(
+          pathExists(path.join(outputDir, 'node_modules')),
+        ).resolves.toBe(false);
       });
 
       it('keeps stripping, and reports, when one removal fails', async () => {
