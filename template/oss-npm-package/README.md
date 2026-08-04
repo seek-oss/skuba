@@ -1,4 +1,4 @@
-# <%- moduleName %>
+# <%- serviceName %>
 
 [![Powered by skuba](https://img.shields.io/badge/🤿%20skuba-powered-009DC4)](https://github.com/seek-oss/skuba)
 
@@ -29,7 +29,7 @@ Writes the module name to stdout.
 Thrilling stuff.
 
 ```typescript
-import { log } from '<%- moduleName %>';
+import { log } from '<%- serviceName %>';
 
 log();
 ```

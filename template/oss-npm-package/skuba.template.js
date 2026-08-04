@@ -6,7 +6,7 @@ export default {
   entryPoint: 'src/index.ts',
   fields: [
     {
-      name: 'moduleName',
+      name: 'serviceName',
       message: 'Module name',
       initial: 'my-first-module',
     },
@@ -16,7 +16,7 @@ export default {
       initial: 'This is my first module',
     },
   ],
-  // `moduleName` is required for a valid `package.json`
+  // `serviceName` is required for a valid `package.json`
   noSkip: true,
   packageManager: 'pnpm',
   type: 'package',

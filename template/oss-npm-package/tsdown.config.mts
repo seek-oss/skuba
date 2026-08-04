@@ -17,7 +17,7 @@ export default defineConfig({
     legacyCjs: false,
   },
   exports: {
-    devExports: '@seek/<%- moduleName %>/source',
+    devExports: '@seek/<%- serviceName %>/source',
   },
   publint: true,
   attw: true,

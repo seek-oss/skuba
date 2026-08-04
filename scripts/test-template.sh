@@ -75,7 +75,6 @@ pnpm exec skuba init << EOF 2>&1 | tee "${skuba_init_log}"
     "description": "description",
     "devBuildkiteQueueName": "my-account-dev:cicd",
     "devGantryEnvironmentName": "dev",
-    "moduleName": "first-module",
     "ownerName": "my-org/my-team",
     "prodAwsAccountId": "000000000000",
     "prodBuildkiteQueueName": "my-account-prod:cicd",
