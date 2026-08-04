@@ -8,8 +8,8 @@ export default defineConfig({
   dts: true,
   inputOptions: {
     resolve: {
-      conditionNames: ['@seek/<%- moduleName %>/source']
-    }
+      conditionNames: ['@seek/<%- moduleName %>/source'],
+    },
   },
   checks: {
     legacyCjs: false,
