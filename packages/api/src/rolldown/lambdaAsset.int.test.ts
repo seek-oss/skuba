@@ -5,11 +5,11 @@ import fs from 'fs-extra';
 import { rolldown } from 'rolldown';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { pathExists } from '../../utils/fs.js';
+import { pathExists } from '../../../../src/utils/fs.js';
 
 import { lambdaAsset } from './lambdaAsset.js';
 
-const REPO_ROOT = path.resolve(import.meta.dirname, '../../..');
+const REPO_ROOT = path.resolve(import.meta.dirname, '../../../..');
 
 const DEPS_LOCK_FILE_PATH = path.join(REPO_ROOT, 'pnpm-lock.yaml');
 

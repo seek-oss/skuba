@@ -4,9 +4,9 @@ import { findUp } from 'find-up';
 import fs from 'fs-extra';
 import type { NormalizedOutputOptions, Plugin } from 'rolldown';
 
-import { createExec } from '../../utils/exec.js';
-import { pathExists } from '../../utils/fs.js';
-import { log } from '../../utils/logging.js';
+import { createExec } from '../../../../src/utils/exec.js';
+import { pathExists } from '../../../../src/utils/fs.js';
+import { log } from '../../../../src/utils/logging.js';
 
 import {
   PNPM_INSTALL_COMMAND,
@@ -18,6 +18,21 @@ import {
 } from './pnpm.js';
 
 const PLUGIN_NAME = 'skuba:lambda-asset';
+
+export interface LambdaAssetFile {
+  /**
+   * Path to the file or directory to copy, resolved relative to `projectRoot`.
+   */
+  from: string;
+
+  /**
+   * Destination path relative to the output directory.
+   *
+   * Defaults to the basename of `from`, placing it at the top of the output
+   * directory.
+   */
+  to?: string;
+}
 
 export interface LambdaAssetOptions {
   /**
@@ -33,7 +48,17 @@ export interface LambdaAssetOptions {
   nodeModules?: string[];
 
   /**
-   * Directory that `nodeModules` versions are resolved from.
+   * Extra files or directories to copy into the output directory alongside the
+   * bundle, e.g. static assets or configuration the handler reads at runtime.
+   *
+   * Each `from` is resolved relative to `projectRoot`; each `to` defaults to
+   * the basename of `from` and is resolved relative to the output directory.
+   */
+  assets?: LambdaAssetFile[];
+
+  /**
+   * Directory that `nodeModules` versions are resolved from, and that `assets`
+   * are copied from.
    *
    * This is the directory holding the `package.json` that depends on them; in a
    * workspace, that is the individual package rather than the workspace root.
@@ -80,6 +105,27 @@ const resolveLockFile = async (
   }
 
   return resolved;
+};
+
+/**
+ * Copies extra `assets` into the output directory alongside the bundle.
+ *
+ * `from` is resolved relative to `projectRoot`, and `to` relative to the
+ * output directory, creating parent directories as needed. Directories are
+ * copied recursively.
+ */
+const copyAssets = async (
+  outputDir: string,
+  projectRoot: string,
+  assets: LambdaAssetFile[],
+): Promise<void> => {
+  for (const asset of assets) {
+    const from = path.resolve(projectRoot, asset.from);
+    const to = path.join(outputDir, asset.to ?? path.basename(asset.from));
+
+    await fs.ensureDir(path.dirname(to));
+    await fs.copy(from, to);
+  }
 };
 
 const writeOutputPackageJson = (
@@ -135,6 +181,7 @@ const stripInstallFiles = async (
  *    workspace config, `.npmrc`, lock file and patches to do so.
  * 3. Strips those install-only files back out, leaving the bundle, the
  *    generated `package.json` and `node_modules`.
+ * 4. Copies any extra `assets` into the output directory alongside the bundle.
  *
  * The result can be handed to CDK as `aws_lambda.Code.fromAsset(outputDir)`.
  *
@@ -147,12 +194,18 @@ const stripInstallFiles = async (
  *   input: 'src/lambda.ts',
  *   output: { dir: 'lib' },
  *   external: ['sharp'],
- *   plugins: [Rolldown.lambdaAsset({ nodeModules: ['sharp'] })],
+ *   plugins: [
+ *     Rolldown.lambdaAsset({
+ *       nodeModules: ['sharp'],
+ *       assets: [{ from: 'src/config.json' }],
+ *     }),
+ *   ],
  * };
  * ```
  */
 export const lambdaAsset = ({
   nodeModules = [],
+  assets = [],
   projectRoot: projectRootOption,
   depsLockFilePath: depsLockFilePathOption,
 }: LambdaAssetOptions = {}): Plugin => {
@@ -175,6 +228,10 @@ export const lambdaAsset = ({
       }
       prepared.add(outputDir);
 
+      const projectRoot = path.resolve(projectRootOption ?? process.cwd());
+
+      await copyAssets(outputDir, projectRoot, assets);
+
       if (!nodeModules.length) {
         await writeOutputPackageJson(outputDir);
         return;
@@ -191,7 +248,6 @@ export const lambdaAsset = ({
       // pnpm keeps its lock file at the workspace root.
       const workspaceRoot = path.dirname(depsLockFilePath);
 
-      const projectRoot = path.resolve(projectRootOption ?? process.cwd());
       const projectPackageJson = path.join(projectRoot, 'package.json');
 
       if (!(await pathExists(projectPackageJson))) {

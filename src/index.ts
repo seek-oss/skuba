@@ -15,7 +15,7 @@ export * as Git from '@skuba-lib/api/git';
 export * as GitHub from '@skuba-lib/api/github';
 export * as Net from '@skuba-lib/api/net';
 export * as Cdk from '@skuba-lib/api/cdk';
-export * as Rolldown from './api/rolldown/index.js';
+export * as Rolldown from '@skuba-lib/api/rolldown';
 export * as Vitest from './api/vitest/index.js';
 
 // evanw/esbuild#2388

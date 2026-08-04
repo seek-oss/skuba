@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
-import { pathExists } from '../../utils/fs.js';
+import { pathExists } from '../../../../src/utils/fs.js';
 
 import {
   extractDependencies,

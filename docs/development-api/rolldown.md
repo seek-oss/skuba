@@ -19,6 +19,7 @@ it only augments the output directory once rolldown has written to it:
 1. Writes a `package.json` of `"type": "module"`.
 2. Installs any `nodeModules` into the output directory with pnpm.
 3. Strips the install-only files back out, leaving your bundle, the generated `package.json`, and `node_modules`.
+4. Copies any extra `assets` into the output directory alongside your bundle.
 
 The result is a plain directory, so CDK consumes it with `aws_lambda.Code.fromAsset`.
 
@@ -69,7 +70,8 @@ your bundle is built once by your build step rather than re-run on every `cdk sy
 | Option             | Required | Description                                                                                                                                             |
 | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `nodeModules`      | No       | npm packages to install into the output directory rather than embed in the bundle. Versions are resolved from the copies installed under `projectRoot`. |
-| `projectRoot`      | No       | Directory holding the `package.json` that depends on your `nodeModules`. Defaults to `process.cwd()`.                                                   |
+| `assets`           | No       | Extra files or directories to copy into the output directory alongside your bundle. Each `from` is resolved relative to `projectRoot`.                  |
+| `projectRoot`      | No       | Directory holding the `package.json` that depends on your `nodeModules`, and the base for `assets`. Defaults to `process.cwd()`.                        |
 | `depsLockFilePath` | No       | Path to a `pnpm-lock.yaml`. Auto-detected by walking up parent directories when omitted.                                                                |
 
 The plugin throws if your config uses `output.file` instead of `output.dir`,
@@ -116,6 +118,32 @@ without it, pnpm fails the install on every `patchedDependencies` entry that has
 Once the install is done, every staged file is deleted again.
 This includes `.npmrc`, which commonly holds registry credentials and must not reach the deployed asset.
 If any of them cannot be deleted, the plugin fails the build rather than leave them in the asset.
+
+### Assets
+
+Use `assets` to copy extra files or directories into the output directory alongside your bundle, for anything your handler reads at runtime that is not bundled (e.g. a config file or a template directory):
+
+```js
+// rolldown.config.mjs
+import { Rolldown } from 'skuba';
+
+export default {
+  input: 'src/lambda.ts',
+  output: { dir: 'lib' },
+  plugins: [
+    Rolldown.lambdaAsset({
+      assets: [
+        { from: 'src/config.json' },
+        { from: 'src/templates', to: 'templates' },
+      ],
+    }),
+  ],
+};
+```
+
+Each `from` is resolved relative to `projectRoot`, and each `to` relative to the output directory.
+`to` defaults to the basename of `from`, so `src/config.json` lands at `lib/config.json`.
+Directories are copied recursively, and any parent directories in `to` are created for you.
 
 ### Workspaces
 

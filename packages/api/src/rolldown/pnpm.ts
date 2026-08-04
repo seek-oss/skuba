@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 import fs from 'fs-extra';
 import { parse, stringify } from 'yaml';
 
-import { pathExists } from '../../utils/fs.js';
+import { pathExists } from '../../../../src/utils/fs.js';
 
 export const PNPM_LOCK = 'pnpm-lock.yaml';
 

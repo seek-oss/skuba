@@ -5,12 +5,12 @@ import fs from 'fs-extra';
 import type { NormalizedOutputOptions, Plugin } from 'rolldown';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createExec } from '../../utils/exec.js';
-import { pathExists } from '../../utils/fs.js';
+import { createExec } from '../../../../src/utils/exec.js';
+import { pathExists } from '../../../../src/utils/fs.js';
 
 import { lambdaAsset } from './lambdaAsset.js';
 
-vi.mock('../../utils/exec.js', () => ({ createExec: vi.fn() }));
+vi.mock('../../../../src/utils/exec.js', () => ({ createExec: vi.fn() }));
 
 const install = vi.fn();
 
@@ -116,6 +116,91 @@ describe('lambdaAsset', () => {
     await writeBundle(plugin, { dir: outputDir, format: 'es' });
 
     await expect(pathExists(packageJson)).resolves.toBe(true);
+  });
+
+  describe('assets', () => {
+    let projectRoot: string;
+
+    beforeEach(async () => {
+      projectRoot = await fs.promises.mkdtemp(
+        path.join(os.tmpdir(), 'lambda-assets-'),
+      );
+    });
+
+    afterEach(() => fs.remove(projectRoot));
+
+    it('copies a file to its basename by default', async () => {
+      await fs.promises.writeFile(
+        path.join(projectRoot, 'config.json'),
+        '{"hello":"world"}',
+      );
+
+      await writeBundle(
+        lambdaAsset({ projectRoot, assets: [{ from: 'config.json' }] }),
+        { dir: outputDir, format: 'es' },
+      );
+
+      await expect(
+        fs.promises.readFile(path.join(outputDir, 'config.json'), 'utf-8'),
+      ).resolves.toBe('{"hello":"world"}');
+    });
+
+    it('copies a file to an explicit nested destination, creating directories', async () => {
+      await fs.promises.writeFile(path.join(projectRoot, 'cert.pem'), 'PEM');
+
+      await writeBundle(
+        lambdaAsset({
+          projectRoot,
+          assets: [{ from: 'cert.pem', to: 'certs/cert.pem' }],
+        }),
+        { dir: outputDir, format: 'es' },
+      );
+
+      await expect(
+        fs.promises.readFile(
+          path.join(outputDir, 'certs', 'cert.pem'),
+          'utf-8',
+        ),
+      ).resolves.toBe('PEM');
+    });
+
+    it('copies a directory recursively', async () => {
+      await fs.promises.mkdir(path.join(projectRoot, 'templates'));
+      await fs.promises.writeFile(
+        path.join(projectRoot, 'templates', 'email.html'),
+        '<p>hi</p>',
+      );
+
+      await writeBundle(
+        lambdaAsset({
+          projectRoot,
+          assets: [{ from: 'templates', to: 'templates' }],
+        }),
+        { dir: outputDir, format: 'es' },
+      );
+
+      await expect(
+        fs.promises.readFile(
+          path.join(outputDir, 'templates', 'email.html'),
+          'utf-8',
+        ),
+      ).resolves.toBe('<p>hi</p>');
+    });
+
+    it('copies assets even when nodeModules is unset', async () => {
+      await fs.promises.writeFile(path.join(projectRoot, 'config.json'), '{}');
+
+      await writeBundle(
+        lambdaAsset({ projectRoot, assets: [{ from: 'config.json' }] }),
+        { dir: outputDir, format: 'es' },
+      );
+
+      // The generated package.json still lands alongside the copied asset.
+      await expect(
+        fs.promises.readdir(outputDir).then((files) => files.sort()),
+      ).resolves.toEqual(['config.json', 'package.json']);
+      expect(install).not.toHaveBeenCalled();
+    });
   });
 
   describe('nodeModules', () => {
