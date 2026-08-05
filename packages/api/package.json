@@ -45,6 +45,11 @@
       "import": "./lib/net/index.mjs",
       "require": "./lib/net/index.cjs"
     },
+    "./rolldown": {
+      "@seek/skuba/source": "./src/rolldown/index.ts",
+      "import": "./lib/rolldown/index.mjs",
+      "require": "./lib/rolldown/index.cjs"
+    },
     "./package.json": "./package.json"
   },
   "main": "./lib/index.cjs",
@@ -56,7 +61,8 @@
     "cdk",
     "git",
     "github",
-    "net"
+    "net",
+    "rolldown"
   ],
   "scripts": {
     "build": "pnpm skuba build-package && ./scripts/fix-types.sh",
@@ -70,12 +76,22 @@
     "@octokit/types": "^16.0.0",
     "concurrently": "^10.0.0",
     "execa": "^9.6.1",
+    "find-up": "^8.0.0",
     "fs-extra": "^11.0.0",
     "ignore": "^7.0.0",
     "isomorphic-git": "^1.37.6",
     "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
+    "yaml": "^2.9.0",
     "zod": "^4.3.5"
+  },
+  "peerDependencies": {
+    "rolldown": "^1.1.0"
+  },
+  "peerDependenciesMeta": {
+    "rolldown": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.14.0"
@@ -105,6 +121,10 @@
       "./net": {
         "import": "./lib/net/index.mjs",
         "require": "./lib/net/index.cjs"
+      },
+      "./rolldown": {
+        "import": "./lib/rolldown/index.mjs",
+        "require": "./lib/rolldown/index.cjs"
       },
       "./package.json": "./package.json"
     }

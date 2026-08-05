@@ -189,6 +189,9 @@ importers:
       vitest:
         specifier: ^4.1.4
         version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-istanbul@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.1)(yaml@2.9.0))
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
       zod:
         specifier: ^4.3.5
         version: 4.4.3
@@ -283,6 +286,9 @@ importers:
       execa:
         specifier: ^9.6.1
         version: 9.6.1
+      find-up:
+        specifier: ^8.0.0
+        version: 8.0.0
       fs-extra:
         specifier: ^11.0.0
         version: 11.4.0
@@ -298,6 +304,12 @@ importers:
       npm-which:
         specifier: ^3.0.1
         version: 3.0.1
+      rolldown:
+        specifier: ^1.1.0
+        version: 1.2.0
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
       zod:
         specifier: ^4.3.5
         version: 4.4.3
