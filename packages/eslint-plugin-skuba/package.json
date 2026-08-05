@@ -43,12 +43,12 @@
   },
   "devDependencies": {
     "@typescript-eslint/rule-tester": "^8.59.2",
-    "eslint": "^10.0.0",
+    "eslint": "^9.39.5",
     "tsx": "^4.16.2",
     "typescript-eslint": "^8.59.2"
   },
   "peerDependencies": {
-    "eslint": ">=9.22.0",
+    "eslint": "^9.22.0",
     "typescript-eslint": ">=8.59.2"
   },
   "packageManager": "pnpm@10.34.5",

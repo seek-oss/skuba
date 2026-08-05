@@ -680,7 +680,7 @@ export class AppStack extends Stack {
               ...config.workerLambda.environment,
               NODE_ENV: 'production',
               // https://nodejs.org/api/cli.html#cli_node_options_options
-              NODE_OPTIONS: '--enable-source-maps --import dd-trace/initialize.mjs',
+              NODE_OPTIONS: '--enable-source-maps',
               DESTINATION_SNS_TOPIC_ARN: destinationTopic.topicArn,
 
               ...(containsSkipDirective(process.env.BUILDKITE_MESSAGE, 'smoke')
@@ -712,9 +712,7 @@ export class AppStack extends Stack {
             enableDatadogLogs: false,
             extensionLayerVersion: DATADOG_EXTENSION_LAYER_VERSION,
             flushMetricsToLogs: false,
-          
-      redirectHandler: false,
-      });
+          });
 
           datadog.addLambdaFunctions([worker]);
 
@@ -1117,8 +1115,6 @@ custom:
       custom:
         datadog:
           addLayers: false
-
-          redirectHandlers: false # TODO: Wrap your handler with the \`datadog\` function wrapper from \`datadog-lambda-js\` or the \`withLambdaExtension\` function wrapper from \`seek-datadog-custom-metrics/lambda\`. Alternatively, remove this setting and enable addLayers: true
       ",
       }
     `);
@@ -1167,14 +1163,12 @@ custom:
 
         datadog:
           addLayers: false
-
-          redirectHandlers: false
       ",
       }
     `);
   });
 
-  it('should append the dd-trace import to an existing serverless NODE_OPTIONS', async () => {
+  it('does not disable handler redirection or inject dd-trace for serverless Datadog lambdas', async () => {
     vol.fromJSON({
       'foo.ts': `import { datadog } from 'datadog-lambda-js';
 `,
@@ -1182,6 +1176,10 @@ custom:
   environment:
     NODE_OPTIONS: '--enable-source-maps'
 custom:
+  esbuild:
+    bundle: true
+    external:
+      - 'foo'
   datadog:
     addLayers: false
 `,
@@ -1201,12 +1199,22 @@ custom:
       ",
         "serverless.yml": "provider:
         environment:
-          NODE_OPTIONS: '--enable-source-maps --import dd-trace/initialize.mjs'
+          NODE_OPTIONS: '--enable-source-maps'
       custom:
+        esbuild:
+          bundle: true
+          external:
+            - pino
+            - 'foo'
+          conditions:
+            - module
+
+          mainFields:
+            - module
+            - main
+
         datadog:
           addLayers: false
-
-          redirectHandlers: false
       ",
       }
     `);
