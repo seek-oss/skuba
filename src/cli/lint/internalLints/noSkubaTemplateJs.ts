@@ -16,6 +16,11 @@ export const noSkubaTemplateJs = async (
     return { ok: true, fixable: false };
   }
 
+  if (manifest.packageJson.skuba === undefined) {
+    // Source template repositories intentionally retain skuba.template.js.
+    return { ok: true, fixable: false };
+  }
+
   const templateConfigPath = path.join(
     path.dirname(manifest.path),
     'skuba.template.js',
