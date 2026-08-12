@@ -66,19 +66,13 @@ export const init = async (args = process.argv.slice(2)) => {
     return;
   }
 
-  // When run inside an existing repo/workspace, scaffold as an additional
-  // project (a package, or an app like a Lambda worker or API) rather than a
-  // standalone repo. `findWorkspaceRoot` considers the Git root among its
-  // candidates, so a non-null result also covers a plain Git repo.
-  //
-  // The detection is location-based, so an ancestor repo (e.g. `$HOME`) would
-  // otherwise silently switch modes; confirm with the user before doing so.
-  // In non-interactive mode we can't prompt, so detection stands on its own.
   const cwd = process.cwd();
-  const detectedWorkspaceRoot = await findWorkspaceRoot(cwd);
+  const detectedWorkspaceRoot = nonInteractive
+    ? null
+    : await findWorkspaceRoot(cwd);
 
   let workspaceRoot = detectedWorkspaceRoot;
-  if (detectedWorkspaceRoot && !nonInteractive) {
+  if (detectedWorkspaceRoot) {
     const confirmed = await confirmExistingRepo(detectedWorkspaceRoot);
     if (!confirmed) {
       workspaceRoot = null;
