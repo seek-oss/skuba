@@ -217,10 +217,13 @@ export const init = async (args = process.argv.slice(2)) => {
     log.warn(inspect(err));
   }
 
-  await Git.commitAllChanges({
-    dir: path.resolve(destinationDir),
-    message: `Clone ${templateName}`,
-  });
+  const gitRoot = await Git.findRoot({ dir: path.resolve(destinationDir) });
+  if (gitRoot) {
+    await Git.commitAllChanges({
+      dir: path.resolve(destinationDir),
+      message: `Clone ${templateName}`,
+    });
+  }
 
   const logGitHubRepoCreation = () => {
     log.plain(
