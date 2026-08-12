@@ -39,6 +39,17 @@ import { writePackageJson } from './writePackageJson.js';
 
 import * as Git from '@skuba-lib/api/git';
 
+// In an existing repo these are inherited from the workspace root, so avoid
+// scaffolding duplicate copies into the new package.
+const ROOT_OWNED_FILES = new Set([
+  '.gitignore',
+  '.prettierignore',
+  '.prettierrc.js',
+  'eslint.config.js',
+  '.dockerignore',
+  'renovate.json5',
+]);
+
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {
     debug: hasDebugFlag(args),
@@ -71,9 +82,13 @@ export const init = async (args = process.argv.slice(2)) => {
     ? null
     : await findWorkspaceRoot(cwd);
 
-  let workspaceRoot = detectedWorkspaceRoot;
-  if (detectedWorkspaceRoot) {
-    const confirmed = await confirmExistingRepo(detectedWorkspaceRoot);
+  const isPnpmWorkspace =
+    detectedWorkspaceRoot !== null &&
+    (await pathExists(path.join(detectedWorkspaceRoot, 'pnpm-workspace.yaml')));
+
+  let workspaceRoot = isPnpmWorkspace ? detectedWorkspaceRoot : null;
+  if (workspaceRoot) {
+    const confirmed = await confirmExistingRepo(workspaceRoot);
     if (!confirmed) {
       workspaceRoot = null;
     }
@@ -99,16 +114,6 @@ export const init = async (args = process.argv.slice(2)) => {
 
   const processors = [createEjsRenderer(templateData)];
 
-  // In an existing repo these are inherited from the workspace root, so avoid
-  // scaffolding duplicate copies into the new package.
-  const ROOT_OWNED_FILES = new Set([
-    '.gitignore',
-    '.prettierignore',
-    '.prettierrc.js',
-    'eslint.config.js',
-    '.dockerignore',
-    'renovate.json5',
-  ]);
   const includeBaseFile = (pathname: string) =>
     include(pathname) &&
     !(existingRepo && ROOT_OWNED_FILES.has(path.basename(pathname)));
@@ -217,6 +222,11 @@ export const init = async (args = process.argv.slice(2)) => {
       dir: path.resolve(destinationDir),
       message: `Clone ${templateName}`,
     });
+  } else {
+    log.warn(
+      'Skipped initial commit: no Git repository found at or above',
+      log.bold(destinationDir),
+    );
   }
 
   const logGitHubRepoCreation = () => {

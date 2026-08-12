@@ -96,13 +96,16 @@ You can now proceed to the [next steps](#next-steps).
 
 ### Adding to an existing repository
 
-If you run `skuba init` from inside an existing Git repository or workspace,
-it detects this and offers to scaffold the new project as an additional
-workspace project rather than a standalone repository. Any template works in
-this mode, whether it's a package or an application such as a Lambda worker or
-an API. Because detection is based on your location, `skuba init` asks you to
-confirm before switching modes; answer `No` to create a standalone repository
-instead.
+If you run `skuba init` from inside an existing pnpm workspace (detected via a
+root `pnpm-workspace.yaml`), it offers to scaffold the new project as an
+additional workspace project rather than a standalone repository. Any template
+works in this mode, whether it's a package or an application such as a Lambda
+worker or an API. Because detection is based on your location, `skuba init` asks
+you to confirm before switching modes; the prompt defaults to `No`, so press
+Enter (or answer `No`) to create a standalone repository instead.
+
+Yarn/npm workspaces and plain Git repositories are not offered this mode and
+keep the standalone behaviour.
 
 `cd` to where you'd like the project to live (for example into a `packages`
 directory) before running the command; the new project is created in a

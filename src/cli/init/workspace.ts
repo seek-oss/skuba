@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { type SgNode, parseAsync } from '@ast-grep/napi';
+import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import fs from 'fs-extra';
 import picomatch from 'picomatch';
 
@@ -140,7 +140,7 @@ export const registerWorkspaceProject = async ({
     rule: { kind: 'block_sequence' },
   });
 
-  let edit;
+  let edit: Edit;
   if (flowSequence) {
     // Insert before the closing `]` so the entry stays inside the flow
     // sequence; a trailing comment is a sibling node and is left untouched.

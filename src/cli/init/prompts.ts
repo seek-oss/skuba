@@ -109,7 +109,7 @@ export const BASE_PROMPT_PROPS = {
 export const confirmExistingRepo = async (workspaceRoot: string) =>
   confirm({
     message: `Scaffold into the existing repository at ${workspaceRoot}?`,
-    default: true,
+    default: false,
   });
 
 export const shouldContinue = async () =>
