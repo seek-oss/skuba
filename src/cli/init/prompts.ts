@@ -1,4 +1,4 @@
-import { input, select } from '@inquirer/prompts';
+import { confirm, input, select } from '@inquirer/prompts';
 
 import { pathExists } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
@@ -105,6 +105,12 @@ export const BASE_PROMPT_PROPS = {
   message: 'For starters, some project details:',
   name: 'baseAnswers',
 };
+
+export const confirmExistingRepo = async (workspaceRoot: string) =>
+  confirm({
+    message: `Scaffold into the existing repository at ${workspaceRoot}?`,
+    default: true,
+  });
 
 export const shouldContinue = async () =>
   select({

@@ -9,7 +9,7 @@ import {
   hasNonInteractiveFlag,
 } from '../../utils/args.js';
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
-import { createInclusionFilter } from '../../utils/dir.js';
+import { createInclusionFilter, findWorkspaceRoot } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
 import { pathExists } from '../../utils/fs.js';
 import { createLogger, log } from '../../utils/logging.js';
@@ -28,8 +28,13 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
 import { logInitHelp } from './help.js';
+import { confirmExistingRepo } from './prompts.js';
 import { resumeTemplating } from './resumeTemplating.js';
 import type { Input } from './types.js';
+import {
+  type RegisterWorkspaceResult,
+  registerWorkspaceProject,
+} from './workspace.js';
 import { writePackageJson } from './writePackageJson.js';
 
 import * as Git from '@skuba-lib/api/git';
@@ -61,6 +66,26 @@ export const init = async (args = process.argv.slice(2)) => {
     return;
   }
 
+  // When run inside an existing repo/workspace, scaffold as an additional
+  // project (a package, or an app like a Lambda worker or API) rather than a
+  // standalone repo. `findWorkspaceRoot` considers the Git root among its
+  // candidates, so a non-null result also covers a plain Git repo.
+  //
+  // The detection is location-based, so an ancestor repo (e.g. `$HOME`) would
+  // otherwise silently switch modes; confirm with the user before doing so.
+  // In non-interactive mode we can't prompt, so detection stands on its own.
+  const cwd = process.cwd();
+  const detectedWorkspaceRoot = await findWorkspaceRoot(cwd);
+
+  let workspaceRoot = detectedWorkspaceRoot;
+  if (detectedWorkspaceRoot && !nonInteractive) {
+    const confirmed = await confirmExistingRepo(detectedWorkspaceRoot);
+    if (!confirmed) {
+      workspaceRoot = null;
+    }
+  }
+  const existingRepo = workspaceRoot !== null;
+
   const {
     destinationDir,
     entryPoint,
@@ -80,10 +105,24 @@ export const init = async (args = process.argv.slice(2)) => {
 
   const processors = [createEjsRenderer(templateData)];
 
+  // In an existing repo these are inherited from the workspace root, so avoid
+  // scaffolding duplicate copies into the new package.
+  const ROOT_OWNED_FILES = new Set([
+    '.gitignore',
+    '.prettierignore',
+    '.prettierrc.js',
+    'eslint.config.js',
+    '.dockerignore',
+    'renovate.json5',
+  ]);
+  const includeBaseFile = (pathname: string) =>
+    include(pathname) &&
+    !(existingRepo && ROOT_OWNED_FILES.has(path.basename(pathname)));
+
   await copyFiles({
     sourceRoot: BASE_TEMPLATE_DIR,
     destinationRoot: destinationDir,
-    include,
+    include: includeBaseFile,
     // prefer template-specific files
     overwrite: false,
     processors,
@@ -112,40 +151,51 @@ export const init = async (args = process.argv.slice(2)) => {
     }),
   ]);
 
+  log.newline();
+  if (!existingRepo) {
+    await initialiseRepo(destinationDir, templateData);
+  }
+
+  const manifest = await getConsumerManifest(destinationDir);
+
+  if (!manifest) {
+    throw new Error("Repository doesn't contain a package.json file.");
+  }
+
   const exec = createExec({
     cwd: destinationDir,
     stdio: 'pipe',
     streamStdio: packageManager,
   });
 
-  log.newline();
-  await initialiseRepo(destinationDir, templateData);
+  let workspaceRegistration: RegisterWorkspaceResult | undefined;
 
-  const [manifest, packageManagerConfig] = await Promise.all([
-    getConsumerManifest(destinationDir),
-    detectPackageManager(destinationDir),
-  ]);
+  if (workspaceRoot) {
+    // The root owns `pnpm-workspace.yaml` and Renovate config; only pnpm
+    // workspaces are supported, and a non-pnpm root yields a `manual` result
+    // rather than a crash.
+    workspaceRegistration = await registerWorkspaceProject({
+      workspaceRoot,
+      projectDir: path.resolve(destinationDir),
+    });
+  } else {
+    if (packageManager === 'pnpm') {
+      await fs.promises.writeFile(
+        path.join(destinationDir, 'pnpm-workspace.yaml'),
+        '',
+        'utf8',
+      );
+      await patchPnpmWorkspace('format', destinationDir);
+    }
 
-  if (!manifest) {
-    throw new Error("Repository doesn't contain a package.json file.");
+    // Patch in a baseline Renovate preset based on the configured Git owner.
+    await tryPatchRenovateConfig({
+      mode: 'format',
+      dir: destinationDir,
+      manifest,
+      packageManager: await detectPackageManager(destinationDir),
+    });
   }
-
-  if (packageManager === 'pnpm') {
-    await fs.promises.writeFile(
-      path.join(destinationDir, 'pnpm-workspace.yaml'),
-      '',
-      'utf8',
-    );
-    await patchPnpmWorkspace('format', destinationDir);
-  }
-
-  // Patch in a baseline Renovate preset based on the configured Git owner.
-  await tryPatchRenovateConfig({
-    mode: 'format',
-    dir: destinationDir,
-    manifest,
-    packageManager: packageManagerConfig,
-  });
 
   const skubaSlug = `skuba@${skubaVersionInfo.local}`;
 
@@ -168,7 +218,7 @@ export const init = async (args = process.argv.slice(2)) => {
   }
 
   await Git.commitAllChanges({
-    dir: destinationDir,
+    dir: path.resolve(destinationDir),
     message: `Clone ${templateName}`,
   });
 
@@ -181,12 +231,45 @@ export const init = async (args = process.argv.slice(2)) => {
     log.ok('https://github.com/new');
   };
 
+  const logWorkspaceRegistration = () => {
+    if (
+      !workspaceRegistration ||
+      workspaceRegistration.outcome === 'already-covered'
+    ) {
+      return;
+    }
+
+    if (workspaceRegistration.outcome === 'registered') {
+      log.plain(
+        'Registered',
+        log.bold(workspaceRegistration.entry),
+        'in',
+        log.bold(path.basename(workspaceRegistration.file)),
+      );
+      return;
+    }
+
+    log.warn(
+      'Could not register the project automatically',
+      `(${workspaceRegistration.reason}).`,
+    );
+    log.warn(
+      'Add',
+      log.bold(workspaceRegistration.entry),
+      'to your workspace configuration manually.',
+    );
+  };
+
   if (!depsInstalled) {
     log.newline();
     log.warn(log.bold('✗ Failed to install dependencies.'));
 
     log.newline();
-    logGitHubRepoCreation();
+    if (existingRepo) {
+      logWorkspaceRegistration();
+    } else {
+      logGitHubRepoCreation();
+    }
 
     log.newline();
     log.plain('Then, resume initialisation:');
@@ -196,7 +279,9 @@ export const init = async (args = process.argv.slice(2)) => {
     log.ok(packageManager, 'run', 'format');
     log.ok('git add --all');
     log.ok('git commit --message', `'Pin ${skubaSlug}'`);
-    log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
+    if (!existingRepo) {
+      log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
+    }
 
     log.newline();
     process.exitCode = 1;
@@ -206,13 +291,32 @@ export const init = async (args = process.argv.slice(2)) => {
   log.newline();
   log.ok(log.bold('✔ Project initialised!'));
 
-  log.newline();
-  logGitHubRepoCreation();
+  if (existingRepo) {
+    log.newline();
+    logWorkspaceRegistration();
 
-  log.newline();
-  log.plain('Then, push your local changes:');
-  log.ok('cd', destinationDir);
-  log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
+    // The initial commit only captures the new project's files; the root
+    // manifest and lockfile changes are left for the user to review and commit.
+    log.newline();
+    log.plain(
+      'The workspace root has uncommitted changes',
+      '(updated lockfile and workspace config).',
+    );
+    log.plain('Review and commit them alongside the new project.');
+
+    log.newline();
+    log.plain('Your new project is ready:');
+    log.ok('cd', destinationDir);
+    log.ok(packageManager, 'run', 'lint');
+  } else {
+    log.newline();
+    logGitHubRepoCreation();
+
+    log.newline();
+    log.plain('Then, push your local changes:');
+    log.ok('cd', destinationDir);
+    log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
+  }
 
   log.newline();
 };

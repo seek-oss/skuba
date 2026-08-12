@@ -94,6 +94,37 @@ git push --set-upstream origin main
 
 You can now proceed to the [next steps](#next-steps).
 
+### Adding to an existing repository
+
+If you run `skuba init` from inside an existing Git repository or workspace,
+it detects this and offers to scaffold the new project as an additional
+workspace project rather than a standalone repository. Any template works in
+this mode, whether it's a package or an application such as a Lambda worker or
+an API. Because detection is based on your location, `skuba init` asks you to
+confirm before switching modes; answer `No` to create a standalone repository
+instead.
+
+`cd` to where you'd like the project to live (for example into a `packages`
+directory) before running the command; the new project is created in a
+`<repo>` subdirectory from there.
+
+In this mode `skuba init`:
+
+- Skips `git init`, remote configuration and the `git push --set-upstream`
+  guidance; the existing repository is reused.
+- Leaves configuration that the workspace root owns in place rather than
+  duplicating it into the project: `.gitignore`, `.prettierignore`,
+  `.prettierrc.js`, `eslint.config.js`, `.dockerignore` and Renovate config.
+- Registers the project in the root `pnpm-workspace.yaml` when it isn't already
+  matched by an existing glob, and installs dependencies against the root
+  lockfile. The edit is applied through the file's syntax tree, so surrounding
+  keys, comments and formatting are preserved. Only pnpm workspaces are
+  supported in this mode.
+- Commits just the new project's files.
+
+Running `skuba init` outside of a repository (or answering `No` to the prompt)
+keeps the standalone behaviour described above.
+
 ### Non-interactive execution
 
 `skuba init` is interactive by default.
