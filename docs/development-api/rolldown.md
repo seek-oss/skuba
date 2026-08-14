@@ -27,15 +27,16 @@ The result is a plain directory, so CDK consumes it with `aws_lambda.Code.fromAs
 
 #### 1. Add the plugin to your rolldown config
 
-```js
-// rolldown.config.mjs
+```ts
+// rolldown.config.ts
+import { defineConfig } from 'rolldown';
 import { Rolldown } from 'skuba';
 
-export default {
+export default defineConfig({
   input: 'src/lambda.ts',
   output: { dir: 'lib' },
   plugins: [Rolldown.lambdaAsset()],
-};
+});
 ```
 
 #### 2. Bundle
@@ -97,16 +98,17 @@ Any `package.json` you had in the output directory is overwritten, so treat the 
 Packages with native binaries (e.g. [`sharp`](https://sharp.pixelplumbing.com)) usually should not be bundled.
 Use `nodeModules` to install them into the output directory instead, and mark them `external` in your rolldown config so they are not also embedded:
 
-```js
-// rolldown.config.mjs
+```ts
+// rolldown.config.ts
+import { defineConfig } from 'rolldown';
 import { Rolldown } from 'skuba';
 
-export default {
+export default defineConfig({
   input: 'src/lambda.ts',
   output: { dir: 'lib' },
   external: [/^node:/, 'sharp'],
   plugins: [Rolldown.lambdaAsset({ nodeModules: ['sharp'] })],
-};
+});
 ```
 
 Versions are read from the copy already installed under `projectRoot`, not from your `package.json` range or your lock file.
@@ -124,11 +126,12 @@ If any of them cannot be deleted, the plugin fails the build rather than leave t
 
 Use `assets` to copy extra files or directories into the output directory alongside your bundle, for anything your handler reads at runtime that is not bundled (e.g. a config file or a template directory):
 
-```js
-// rolldown.config.mjs
+```ts
+// rolldown.config.ts
+import { defineConfig } from 'rolldown';
 import { Rolldown } from 'skuba';
 
-export default {
+export default defineConfig({
   input: 'src/lambda.ts',
   output: { dir: 'lib' },
   plugins: [
@@ -139,7 +142,7 @@ export default {
       ],
     }),
   ],
-};
+});
 ```
 
 Each `from` is resolved relative to `projectRoot`, and each `to` relative to the output directory.
