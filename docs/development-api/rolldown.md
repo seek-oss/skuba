@@ -66,6 +66,67 @@ Rolldown names the entry chunk after your `input` file, so `input: 'src/lambda.t
 Bundling and deployment stay decoupled:
 your bundle is built once by your build step rather than re-run on every `cdk synth`.
 
+### Multiple bundles
+
+A package can ship more than one bundle, e.g. a separate config per worker in a monorepo.
+Give each bundle its own config file and point `skuba build` at it with `--config`:
+
+```ts
+// rolldown.worker1.config.ts
+import { defineConfig } from 'rolldown';
+import { Rolldown } from 'skuba';
+
+export default defineConfig({
+  input: 'src/worker1.ts',
+  output: { dir: 'lib/worker1' },
+  plugins: [Rolldown.lambdaAsset()],
+});
+```
+
+```shell
+skuba build --config rolldown.worker1.config.ts
+skuba build --config rolldown.worker2.config.ts
+```
+
+`skuba build` forwards `--config` (and `-c`) straight through to rolldown, so both `--config <path>` and `--config=<path>` work.
+When you don't pass one, skuba defaults to rolldown's [config file lookup](https://rolldown.rs/guide/getting-started#using-the-config-file) (`rolldown.config.ts`).
+
+Point CDK at each bundle's `output.dir`:
+
+```ts
+lambda.Code.fromAsset('lib/worker1');
+```
+
+### Alongside a tsc or esbuild build
+
+`skuba build` runs a single build tool per package, chosen by `skuba.build` in your `package.json`.
+A common setup is an API that keeps building with `tsc` (or `esbuild`) while some Lambda workers in the same package are bundled with rolldown.
+
+You do not have to move the whole package onto rolldown to do this.
+`Rolldown.lambdaAsset` is an ordinary rolldown plugin, so you can leave `skuba.build` on your API's tool and invoke `rolldown` directly for the workers:
+
+```jsonc
+// package.json
+{
+  "scripts": {
+    "build": "pnpm build:api && pnpm build:workers",
+    "build:api": "skuba build",
+    "build:workers": "rolldown --config rolldown.workers.config.ts",
+  },
+  "skuba": {
+    "build": "tsc", // or esbuild — your API's normal tool
+  },
+}
+```
+
+Here the API keeps the full `skuba build` behaviour, including its asset copying, and rolldown is scoped to just the workers.
+
+Call `rolldown` directly rather than `skuba build --config` in this case.
+The `skuba build --config` passthrough only takes effect when `skuba.build` is `rolldown`;
+with `skuba.build` set to `tsc` or `esbuild`, `skuba build` ignores `--config` and runs that tool instead.
+
+If you would rather route every build through `skuba build`, split the API and the workers into separate packages, each with its own `skuba.build`.
+
 ### Options
 
 | Option             | Required | Description                                                                                                                                                                             |
