@@ -52,7 +52,7 @@ importers:
         specifier: workspace:*
         version: link:packages/api
       '@skuba-lib/changesets-changelog':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/changesets-changelog
       '@types/node':
         specifier: ^24.10.2
@@ -82,7 +82,7 @@ importers:
         specifier: ^9.39.1
         version: 9.39.5(jiti@2.7.0)
       eslint-config-skuba:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/eslint-config-skuba
       execa:
         specifier: ^9.6.1
@@ -142,7 +142,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.5
       pnpm-plugin-skuba:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/pnpm-plugin-skuba
       prettier:
         specifier: ~3.9.0

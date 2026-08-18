@@ -75,7 +75,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Publish to npm
-        uses: seek-oss/changesets-snapshot@9063bfcb495100964ee0912c5bcb30c4c434c1b3 # v0.3.2
+        uses: seek-oss/changesets-snapshot@test-fix-caret-snaps
         with:
           pre-publish: pnpm run build
         env:
