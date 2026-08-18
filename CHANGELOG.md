@@ -1,5 +1,11 @@
 # skuba
 
+## 16.3.1
+
+### Patch Changes
+
+- **deps:** @octokit/types ^17.0.0 ([#2548](https://github.com/seek-oss/skuba/pull/2548))
+
 ## 16.3.0
 
 ### Minor Changes
