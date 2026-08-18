@@ -1,6 +1,6 @@
 {
   "name": "skuba",
-  "version": "16.2.0",
+  "version": "16.3.0",
   "private": false,
   "description": "SEEK development toolkit for backend applications and packages",
   "homepage": "https://github.com/seek-oss/skuba#readme",
@@ -57,14 +57,14 @@
     "@ast-grep/lang-bash": "~0.0.8",
     "@ast-grep/lang-json": "~0.0.7",
     "@ast-grep/lang-yaml": "~0.0.6",
-    "@ast-grep/napi": "~0.44.0",
+    "@ast-grep/napi": "~0.45.0",
     "@changesets/cli": "^2.31.0",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@inquirer/prompts": "^8.0.0",
     "@octokit/graphql": "^9.0.0",
     "@octokit/graphql-schema": "^15.3.0",
     "@octokit/rest": "^22.0.0",
-    "@octokit/types": "^16.0.0",
+    "@octokit/types": "^17.0.0",
     "@skuba-lib/api": "workspace:*",
     "@skuba-lib/changesets-changelog": "workspace:*",
     "@types/node": "^24.10.2",
@@ -120,7 +120,7 @@
     "@types/ejs": "3.1.5",
     "@types/express": "5.0.6",
     "@types/fs-extra": "11.0.4",
-    "@types/koa": "3.0.2",
+    "@types/koa": "3.0.3",
     "@types/lodash.mergewith": "4.6.9",
     "@types/minimist": "1.2.5",
     "@types/module-alias": "2.0.4",
@@ -128,17 +128,17 @@
     "@types/npm-which": "3.0.4",
     "@types/picomatch": "4.0.3",
     "@types/semver": "7.7.1",
-    "@types/supertest": "7.2.0",
-    "enhanced-resolve": "5.21.3",
+    "@types/supertest": "7.2.1",
+    "enhanced-resolve": "5.24.3",
     "express": "5.2.1",
-    "fastify": "5.8.5",
+    "fastify": "5.10.0",
     "jsonfile": "6.2.1",
-    "koa": "3.2.0",
-    "memfs": "4.57.2",
+    "koa": "3.2.1",
+    "memfs": "4.64.0",
     "remark-cli": "12.0.1",
     "remark-preset-lint-recommended": "7.0.1",
     "supertest": "7.2.2",
-    "type-fest": "5.7.0"
+    "type-fest": "5.8.0"
   },
   "remarkConfig": {
     "plugins": [
@@ -179,6 +179,6 @@
     "entryPoint": "src/index.ts",
     "template": null,
     "type": "package",
-    "version": "16.2.0"
+    "version": "16.3.0"
   }
 }

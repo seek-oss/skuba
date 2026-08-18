@@ -10,7 +10,6 @@ import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import {
   AUTOFIX_IGNORE_FILES_BASE,
-  AUTOFIX_IGNORE_FILES_NPMRC,
   RENOVATE_AUTHOR,
   autofix,
 } from './autofix.js';
@@ -402,7 +401,10 @@ describe('autofix', () => {
         dir: expect.any(String),
         message: 'Run `skuba format`',
 
-        ignore: [...AUTOFIX_IGNORE_FILES_BASE, ...AUTOFIX_IGNORE_FILES_NPMRC],
+        ignore: [
+          ...AUTOFIX_IGNORE_FILES_BASE,
+          { path: '.npmrc', state: 'modified' },
+        ],
       });
 
       expect(push).toHaveBeenNthCalledWith(1);
@@ -414,6 +416,65 @@ describe('autofix', () => {
         Pushed fix commit commit-sha.
         "
       `);
+    });
+
+    it('will ignore a nested .npmrc if it has auth secrets', async () => {
+      vi.mocked(Git.getChangedFiles).mockResolvedValue([
+        {
+          path: 'packages/api/.npmrc',
+          state: 'added',
+        },
+      ]);
+
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
+      vi.mocked(createDestinationFileReader).mockReturnValue(
+        vi.fn().mockResolvedValue('_authToken'),
+      );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: true, internal: true });
+
+      expect(Git.commitAllChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        message: 'Run `skuba format`',
+
+        ignore: [
+          ...AUTOFIX_IGNORE_FILES_BASE,
+          { path: 'packages/api/.npmrc', state: 'added' },
+        ],
+      });
+
+      expect(push).toHaveBeenNthCalledWith(1);
+    });
+
+    it('will not ignore a .npmrc without auth secrets', async () => {
+      vi.mocked(Git.getChangedFiles).mockResolvedValue([
+        {
+          path: '.npmrc',
+          state: 'modified',
+        },
+      ]);
+
+      vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
+      vi.mocked(createDestinationFileReader).mockReturnValue(
+        vi.fn().mockResolvedValue('registry=https://registry.npmjs.org/'),
+      );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: true, internal: true });
+
+      expect(Git.commitAllChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        message: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
+      });
+
+      expect(push).toHaveBeenNthCalledWith(1);
     });
   });
 
@@ -680,7 +741,10 @@ describe('autofix', () => {
         branch: 'dev',
         messageHeadline: 'Run `skuba format`',
 
-        ignore: [...AUTOFIX_IGNORE_FILES_BASE, ...AUTOFIX_IGNORE_FILES_NPMRC],
+        ignore: [
+          ...AUTOFIX_IGNORE_FILES_BASE,
+          { path: '.npmrc', state: 'modified' },
+        ],
       });
 
       expect(stdout()).toMatchInlineSnapshot(`
@@ -690,6 +754,63 @@ describe('autofix', () => {
         Pushed fix commit commit-sha.
         "
       `);
+    });
+
+    it('will ignore a nested .npmrc if it has auth secrets', async () => {
+      vi.mocked(Git.getChangedFiles).mockResolvedValue([
+        {
+          path: 'packages/api/.npmrc',
+          state: 'added',
+        },
+      ]);
+
+      vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
+      vi.mocked(createDestinationFileReader).mockReturnValue(
+        vi.fn().mockResolvedValue('_authToken'),
+      );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: true, internal: true });
+
+      expect(GitHub.uploadAllFileChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        branch: 'dev',
+        messageHeadline: 'Run `skuba format`',
+
+        ignore: [
+          ...AUTOFIX_IGNORE_FILES_BASE,
+          { path: 'packages/api/.npmrc', state: 'added' },
+        ],
+      });
+    });
+
+    it('will not ignore a .npmrc without auth secrets', async () => {
+      vi.mocked(Git.getChangedFiles).mockResolvedValue([
+        {
+          path: '.npmrc',
+          state: 'modified',
+        },
+      ]);
+
+      vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
+      await git.branch({ fs, dir, ref: 'dev', checkout: true });
+      vi.mocked(createDestinationFileReader).mockReturnValue(
+        vi.fn().mockResolvedValue('registry=https://registry.npmjs.org/'),
+      );
+
+      await expect(autofix(params)).resolves.toBeUndefined();
+
+      expectAutofixCommit({ eslint: true, internal: true });
+
+      expect(GitHub.uploadAllFileChanges).toHaveBeenNthCalledWith(1, {
+        dir: expect.any(String),
+        branch: 'dev',
+        messageHeadline: 'Run `skuba format`',
+
+        ignore: AUTOFIX_IGNORE_FILES_BASE,
+      });
     });
   });
 });

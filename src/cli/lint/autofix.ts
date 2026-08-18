@@ -9,7 +9,7 @@ import { createLogger, log } from '../../utils/logging.js';
 import { hasNpmrcSecret } from '../../utils/npmrc.js';
 import { throwOnTimeout } from '../../utils/wait.js';
 import { runESLint } from '../adapter/eslint.js';
-import { runPrettier } from '../adapter/prettier.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import { internalLint } from './internal.js';
@@ -35,16 +35,8 @@ export const AUTOFIX_IGNORE_FILES_BASE: Git.ChangedFile[] = [
   },
 ];
 
-export const AUTOFIX_IGNORE_FILES_NPMRC: Git.ChangedFile[] = [
-  {
-    path: '.npmrc',
-    state: 'added',
-  },
-  {
-    path: '.npmrc',
-    state: 'modified',
-  },
-];
+const isNpmrc = (path: string): boolean =>
+  path === '.npmrc' || path.endsWith('/.npmrc');
 
 /**
  * - `renovate-skuba-0.x-lockfile`
@@ -123,9 +115,30 @@ const createAutofixIgnore = async ({
   currentBranch?: string;
   dir: string;
 }): Promise<Git.ChangedFile[] | false> => {
-  const ignore = await getIgnores(dir);
+  const gitRoot = await Git.findRoot({ dir });
 
-  const changedFiles = await Git.getChangedFiles({ dir, ignore });
+  const unsafeChangedFiles = await Git.getChangedFiles({
+    dir,
+    ignore: AUTOFIX_IGNORE_FILES_BASE,
+  });
+
+  const npmrcSecretIgnores = await getNpmrcSecretIgnores(
+    gitRoot ?? dir,
+    unsafeChangedFiles,
+  );
+
+  const ignore = [...AUTOFIX_IGNORE_FILES_BASE, ...npmrcSecretIgnores];
+
+  // Exclude secret-bearing `.npmrc` files so the lockfile-only check below
+  // compares against the set of files we'd actually commit. Without this, a
+  // Renovate branch with both a lockfile change and an ignored `.npmrc` would
+  // fail the `lockfileChanges.length === changedFiles.length` short circuit.
+  const changedFiles = unsafeChangedFiles.filter(
+    (file) =>
+      !npmrcSecretIgnores.some(
+        (i) => i.path === file.path && i.state === file.state,
+      ),
+  );
 
   const lockfileChanges = changedFiles.filter((file) =>
     isManagedLockfile(file.path),
@@ -215,15 +228,21 @@ const isRenovateLockfileUpdate = async ({
   return false;
 };
 
-const getIgnores = async (dir: string): Promise<Git.ChangedFile[]> => {
-  const contents = await createDestinationFileReader(dir)('.npmrc');
+const getNpmrcSecretIgnores = async (
+  gitRoot: string,
+  changedFiles: Git.ChangedFile[],
+): Promise<Git.ChangedFile[]> => {
+  const readFile = createDestinationFileReader(gitRoot);
 
-  // If an .npmrc has secrets, we need to ignore it
-  if (hasNpmrcSecret(contents ?? '')) {
-    return [...AUTOFIX_IGNORE_FILES_BASE, ...AUTOFIX_IGNORE_FILES_NPMRC];
-  }
+  const npmrcChanges = changedFiles.filter((file) => isNpmrc(file.path));
 
-  return AUTOFIX_IGNORE_FILES_BASE;
+  const results = await Promise.all(
+    npmrcChanges.map(async (file) =>
+      hasNpmrcSecret((await readFile(file.path)) ?? '') ? file : null,
+    ),
+  );
+
+  return results.filter((file) => file !== null);
 };
 
 interface AutofixParameters {
@@ -282,7 +301,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
     // Unconditionally re-run Prettier; reaching here means we have pre-existing
     // format violations or may have created new ones through ESLint/internal fixes.
-    await runPrettier('format', logger);
+    await runOxfmt('format', logger);
 
     const ignore = await createAutofixIgnore({ currentBranch, dir });
     if (!ignore) {

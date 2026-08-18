@@ -19,6 +19,7 @@ import { tryMigrateLambdas } from './migrateLambdas.js';
 import { tryMigrateVocab } from './migrateVocab.js';
 import { tryPatchInstrumentation } from './patchInstrumentation.js';
 import { rewriteGlobalVars } from './rewriteGlobalVars.js';
+import { tryUpgradeDatadogLambda } from './upgradeDatadogLambda.js';
 import { tryUpgradeSkubaDive } from './upgradeSkubaDive.js';
 import { migrateToVitest } from './vitest/vitest.js';
 
@@ -56,6 +57,10 @@ const patches: Patch[] = [
   {
     apply: tryMigrateLambdas,
     description: 'Migrate Lambdas to ESM',
+  },
+  {
+    apply: tryUpgradeDatadogLambda,
+    description: 'Upgrade datadog-lambda-js to the ESM-compatible release',
   },
   {
     apply: tryMigrateDockerfileRequires,
