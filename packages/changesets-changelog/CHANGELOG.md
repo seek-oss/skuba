@@ -1,5 +1,11 @@
 # @skuba-lib/changesets-changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- Allow Node.js 22.14+ ([#2552](https://github.com/seek-oss/skuba/pull/2552))
+
 ## 1.0.1
 
 ### Patch Changes
