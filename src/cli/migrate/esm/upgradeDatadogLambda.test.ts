@@ -2,7 +2,6 @@ import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { findLatestAllowedVersion } from '../../../utils/findLatestAllowedVersion.js';
-import { configForPackageManager } from '../../../utils/packageManager.js';
 import type {
   PatchConfig,
   PatchReturnType,
@@ -42,7 +41,6 @@ const baseArgs: PatchConfig = {
     },
     path: 'package.json',
   },
-  packageManager: configForPackageManager('pnpm'),
   mode: 'format',
 };
 

@@ -6,7 +6,6 @@ import fs from 'fs-extra';
 
 import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
-import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { InternalLintResult } from '../internal.js';
 
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
@@ -406,15 +405,6 @@ export const patchPnpmWorkspace = async (
   mode: 'format' | 'lint',
   cwd: string = process.cwd(),
 ): Promise<InternalLintResult> => {
-  const packageManager = await detectPackageManager();
-
-  if (packageManager.command !== 'pnpm') {
-    return {
-      ok: true,
-      fixable: false,
-      annotations: [],
-    };
-  }
   const root = await Git.findRoot({ dir: cwd });
   const dir = root ?? cwd;
 

@@ -18,7 +18,6 @@ node_modules*/
 
 .DS_Store
 npm-debug.log
-yarn-error.log
 # end managed by skuba
 ",
     "operation": "A",
@@ -53,7 +52,6 @@ node_modules*/
 *.tsbuildinfo
 npm-debug.log
 package-lock.json
-yarn-error.log
 # end managed by skuba
 ",
     "operation": "A",

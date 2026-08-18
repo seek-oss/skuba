@@ -169,16 +169,14 @@ export const findWorkspaceRoot = async (
   cwd = process.cwd(),
 ): Promise<string | null> => {
   const find = async (): Promise<string | null> => {
-    const [pnpmLock, yarnLock, packageJson, gitRoot] = await Promise.all([
+    const [pnpmLock, packageJson, gitRoot] = await Promise.all([
       locateNearestFile({ cwd, filename: 'pnpm-lock.yaml' }),
-      locateNearestFile({ cwd, filename: 'yarn.lock' }),
       locateFurthestFile({ cwd, filename: 'package.json' }),
       Git.findRoot({ dir: cwd }),
     ]);
 
     const candidates = [
       pnpmLock ? path.dirname(pnpmLock) : null,
-      yarnLock ? path.dirname(yarnLock) : null,
       packageJson ? path.dirname(packageJson) : null,
       gitRoot,
     ].filter((dir): dir is string => dir !== null);
