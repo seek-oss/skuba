@@ -35,6 +35,7 @@ export const PNPM_INSTALL_COMMAND: [string, ...string[]] = [
   '--config.node-linker=hoisted',
   '--config.package-import-method=clone-or-copy',
   '--no-frozen-lockfile',
+  '--prefer-offline',
 ];
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>

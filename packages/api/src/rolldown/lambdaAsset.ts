@@ -313,12 +313,14 @@ export const lambdaAsset = ({
         );
       }
 
+      const [dependencies, packageManager] = await Promise.all([
+        extractDependencies(projectPackageJson, nodeModules),
+        readPackageManagerPin(workspaceRoot),
+      ]);
+
       await writeOutputPackageJson(outputDir, {
-        dependencies: await extractDependencies(
-          projectPackageJson,
-          nodeModules,
-        ),
-        packageManager: await readPackageManagerPin(workspaceRoot),
+        dependencies,
+        packageManager,
       });
 
       const stagedFiles: string[] = [];

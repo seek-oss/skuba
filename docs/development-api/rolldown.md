@@ -68,8 +68,7 @@ your bundle is built once by your build step rather than re-run on every `cdk sy
 
 ### Multiple bundles
 
-A package can ship more than one bundle, e.g. a separate config per worker in a monorepo.
-Give each bundle its own config file and point `skuba build` at it with `--config`:
+If you are deploying multiple Lambda functions from a monorepo, e.g. one worker per config, give each bundle its own config file and point `skuba build` at it with `--config`:
 
 ```ts
 // rolldown.worker1.config.ts
