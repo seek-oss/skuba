@@ -18,7 +18,6 @@ export default defineConfig([
       exclude: ['!index'],
       customExports: {
         './config/eslint.js': './config/eslint.js',
-        './config/prettier.js': './config/prettier.js',
         './config/tsconfig.json': './config/tsconfig.json',
       },
     },
@@ -46,7 +45,6 @@ export default defineConfig([
       profile: 'esm-only',
       excludeEntrypoints: [
         'skuba/config/eslint.js',
-        'skuba/config/prettier.js',
         'skuba/config/tsconfig.json',
       ],
     },
