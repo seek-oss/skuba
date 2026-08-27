@@ -3,7 +3,7 @@ import { stripVTControlCharacters } from 'node:util';
 import { ExecaError } from 'execa';
 
 import { isCiEnv } from '../../utils/env.js';
-import { createExec, exec } from '../../utils/exec.js';
+import { createExec } from '../../utils/exec.js';
 import type { Logger } from '../../utils/logging.js';
 
 export type OxfmtError = {
@@ -25,6 +25,38 @@ export type OxfmtResult =
       errors?: OxfmtError[];
     };
 
+const oxfmtExec = createExec({
+  all: true,
+  stdio: 'pipe',
+});
+
+const logOxfmtOutput = (logger: Logger, output: unknown) => {
+  if (typeof output !== 'string' || output.length === 0) {
+    return;
+  }
+
+  const lines = output.split('\n');
+  if (lines.at(-1) === '') {
+    lines.pop();
+  }
+
+  for (const line of lines) {
+    logger.plain(line);
+  }
+};
+
+const runOxfmtCli = async (logger: Logger, ...args: string[]) => {
+  try {
+    const result = await oxfmtExec('oxfmt', ...args);
+    logOxfmtOutput(logger, result.all);
+  } catch (error) {
+    if (error instanceof ExecaError) {
+      logOxfmtOutput(logger, error.all);
+    }
+    throw error;
+  }
+};
+
 export const runOxfmt = async (
   mode: 'format' | 'lint',
   logger: Logger,
@@ -32,7 +64,7 @@ export const runOxfmt = async (
 ): Promise<OxfmtResult> => {
   if (mode === 'format') {
     try {
-      await exec('oxfmt');
+      await runOxfmtCli(logger);
       return {
         ok: true,
       };
@@ -44,7 +76,7 @@ export const runOxfmt = async (
   }
 
   try {
-    await exec('oxfmt', '--check');
+    await runOxfmtCli(logger, '--check');
     return {
       ok: true,
     };

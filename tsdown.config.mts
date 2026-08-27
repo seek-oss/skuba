@@ -27,7 +27,6 @@ export default defineConfig([
       'src/cli/*/index.ts',
       'src/cli/init/getConfig.ts',
       'src/cli/lint/eslint.ts',
-      'src/cli/lint/prettier.ts',
       'src/cli/lint/internalLints/upgrade/index.ts',
       'src/cli/lint/internalLints/upgrade/patches/**/index.ts',
       'src/utils/command.ts',

@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import newGit from '../../../integration/git/new.json' with { type: 'json' };
 import { runESLint } from '../adapter/eslint.js';
-import { runPrettier } from '../adapter/prettier.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import {
@@ -28,7 +28,7 @@ vi.mock('simple-git');
 vi.mock('@skuba-lib/api/buildkite');
 vi.mock('@skuba-lib/api/github');
 vi.mock('../adapter/eslint');
-vi.mock('../adapter/prettier');
+vi.mock('../adapter/oxfmt');
 vi.mock('./internal');
 vi.mock('../configure/analysis/project');
 
@@ -76,7 +76,7 @@ describe('autofix', () => {
   const params = {
     debug: false,
     eslint: true,
-    prettier: true,
+    oxfmt: true,
     internal: true,
   };
 
@@ -94,14 +94,14 @@ describe('autofix', () => {
       },
     ) => {
       expect(runESLint).toHaveBeenCalledTimes(internal || eslint ? 1 : 0);
-      expect(runPrettier).toHaveBeenCalledTimes(1);
+      expect(runOxfmt).toHaveBeenCalledTimes(1);
       expect(internalLint).toHaveBeenCalledTimes(internal ? 1 : 0);
       expect(Git.commitAllChanges).toHaveBeenCalledTimes(1);
     };
 
     const expectNoAutofix = () => {
       expect(runESLint).not.toHaveBeenCalled();
-      expect(runPrettier).not.toHaveBeenCalled();
+      expect(runOxfmt).not.toHaveBeenCalled();
       expect(Git.commitAllChanges).not.toHaveBeenCalled();
       expect(push).not.toHaveBeenCalled();
     };
@@ -202,7 +202,7 @@ describe('autofix', () => {
 
     it('bails on no fixable issues', async () => {
       await expect(
-        autofix({ ...params, eslint: false, prettier: false, internal: false }),
+        autofix({ ...params, eslint: false, oxfmt: false, internal: false }),
       ).resolves.toBeUndefined();
 
       expectNoAutofix();
@@ -219,7 +219,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         No autofixes detected.
         "
       `);
@@ -246,7 +246,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -257,29 +257,29 @@ describe('autofix', () => {
       await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
-        autofix({ ...params, eslint: true, prettier: false }),
+        autofix({ ...params, eslint: true, oxfmt: false }),
       ).resolves.toBeUndefined();
 
       expectAutofixCommit();
 
       expect(push).toHaveBeenNthCalledWith(1);
 
-      // We should run both ESLint and Prettier
+      // We should run both ESLint and Oxfmt
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
     });
 
-    it('handles fixable issues from Prettier only', async () => {
+    it('handles fixable issues from Oxfmt only', async () => {
       vi.mocked(Git.commitAllChanges).mockResolvedValue('commit-sha');
       await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
-        autofix({ ...params, eslint: false, internal: false, prettier: true }),
+        autofix({ ...params, eslint: false, internal: false, oxfmt: true }),
       ).resolves.toBeUndefined();
 
       expectAutofixCommit({ eslint: false, internal: false });
@@ -293,11 +293,11 @@ describe('autofix', () => {
 
       expect(push).toHaveBeenNthCalledWith(1);
 
-      // We should only run Prettier
+      // We should only run Oxfmt
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (Prettier)...
+        Attempting to autofix issues (Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -315,7 +315,7 @@ describe('autofix', () => {
       await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
-        autofix({ ...params, eslint: false, prettier: false, internal: true }),
+        autofix({ ...params, eslint: false, oxfmt: false, internal: true }),
       ).resolves.toBeUndefined();
 
       expectAutofixCommit({ eslint: false, internal: true });
@@ -332,7 +332,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -354,7 +354,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -371,7 +371,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Failed to push fix commit.
         Does your CI environment have write access to your Git repository?
         Error: Badness!
@@ -412,7 +412,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -486,14 +486,14 @@ describe('autofix', () => {
       },
     ) => {
       expect(runESLint).toHaveBeenCalledTimes(internal || eslint ? 1 : 0);
-      expect(runPrettier).toHaveBeenCalledTimes(1);
+      expect(runOxfmt).toHaveBeenCalledTimes(1);
       expect(internalLint).toHaveBeenCalledTimes(internal ? 1 : 0);
       expect(GitHub.uploadAllFileChanges).toHaveBeenCalledTimes(1);
     };
 
     const expectNoAutofix = () => {
       expect(runESLint).not.toHaveBeenCalled();
-      expect(runPrettier).not.toHaveBeenCalled();
+      expect(runOxfmt).not.toHaveBeenCalled();
       expect(internalLint).not.toHaveBeenCalled();
       expect(GitHub.uploadAllFileChanges).not.toHaveBeenCalled();
     };
@@ -566,7 +566,7 @@ describe('autofix', () => {
       await git.branch({ fs, dir, ref: 'feature', checkout: true });
 
       await expect(
-        autofix({ ...params, eslint: false, prettier: false, internal: false }),
+        autofix({ ...params, eslint: false, oxfmt: false, internal: false }),
       ).resolves.toBeUndefined();
 
       expectNoAutofix();
@@ -582,7 +582,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         No autofixes detected.
         "
       `);
@@ -593,7 +593,7 @@ describe('autofix', () => {
       await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
-        autofix({ ...params, eslint: true, prettier: false }),
+        autofix({ ...params, eslint: true, oxfmt: false }),
       ).resolves.toBeUndefined();
 
       expectAutofixCommit();
@@ -606,22 +606,22 @@ describe('autofix', () => {
         ignore: AUTOFIX_IGNORE_FILES_BASE,
       });
 
-      // We should run both ESLint and Prettier
+      // We should run both ESLint and Oxfmt
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
     });
 
-    it('handles fixable issues from Prettier only', async () => {
+    it('handles fixable issues from Oxfmt only', async () => {
       vi.mocked(GitHub.uploadAllFileChanges).mockResolvedValue('commit-sha');
       await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
-        autofix({ ...params, eslint: false, internal: false, prettier: true }),
+        autofix({ ...params, eslint: false, internal: false, oxfmt: true }),
       ).resolves.toBeUndefined();
 
       expectAutofixCommit({ eslint: false, internal: false });
@@ -634,11 +634,11 @@ describe('autofix', () => {
         ignore: AUTOFIX_IGNORE_FILES_BASE,
       });
 
-      // We should only run Prettier
+      // We should only run Oxfmt
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (Prettier)...
+        Attempting to autofix issues (Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -656,7 +656,7 @@ describe('autofix', () => {
       await git.branch({ fs, dir, ref: 'dev', checkout: true });
 
       await expect(
-        autofix({ ...params, eslint: false, prettier: false }),
+        autofix({ ...params, eslint: false, oxfmt: false }),
       ).resolves.toBeUndefined();
 
       expectAutofixCommit({ eslint: false, internal: true });
@@ -672,7 +672,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -690,7 +690,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Could not determine the current branch.
         Please propagate BUILDKITE_BRANCH, GITHUB_HEAD_REF, GITHUB_REF_NAME, or the .git directory to your container.
         "
@@ -710,7 +710,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Failed to push fix commit.
         Does your CI environment have write access to your Git repository?
         Error: Badness!
@@ -750,7 +750,7 @@ describe('autofix', () => {
       expect(stdout()).toMatchInlineSnapshot(`
         "
 
-        Attempting to autofix issues (skuba, ESLint, Prettier)...
+        Attempting to autofix issues (skuba, ESLint, Oxfmt)...
         Pushed fix commit commit-sha.
         "
       `);
@@ -821,7 +821,7 @@ const author = { name: 'user', email: 'user@email.com' };
 const params = {
   debug: false,
   eslint: true,
-  prettier: true,
+  oxfmt: true,
   internal: true,
 };
 
