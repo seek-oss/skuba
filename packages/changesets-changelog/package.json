@@ -43,7 +43,7 @@
     "@changesets/get-github-info": "^0.8.0"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=22.14.0"
   },
   "skuba": {
     "entryPoint": "src/changelog.mjs",
