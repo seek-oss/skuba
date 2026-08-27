@@ -11,6 +11,14 @@ import { format } from './index.js';
 
 vi.setConfig({ testTimeout: 15_000 });
 
+beforeAll(() => {
+  vi.stubEnv('CI', 'true');
+});
+
+afterAll(() => {
+  vi.unstubAllEnvs();
+});
+
 const stdoutMock = vi.fn();
 
 vi.spyOn(console, 'log').mockImplementation((...args) =>
