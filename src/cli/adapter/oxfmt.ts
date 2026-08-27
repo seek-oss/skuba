@@ -35,12 +35,8 @@ const logOxfmtOutput = (logger: Logger, output: unknown) => {
     return;
   }
 
-  const lines = output.split('\n');
-  if (lines.at(-1) === '') {
-    lines.pop();
-  }
-
-  for (const line of lines) {
+  // `logger.plain` prefixes each call, so split to keep `Oxfmt  │` on every line.
+  for (const line of output.trimEnd().split('\n')) {
     logger.plain(line);
   }
 };
