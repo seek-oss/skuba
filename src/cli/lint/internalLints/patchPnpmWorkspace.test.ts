@@ -67,6 +67,7 @@ describe('patchPnpmWorkspace', () => {
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -82,6 +83,8 @@ describe('patchPnpmWorkspace', () => {
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
@@ -161,6 +164,7 @@ trustPolicyExclude:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -194,6 +198,8 @@ trustPolicyExclude:
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
@@ -262,6 +268,7 @@ trustPolicyExclude:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -280,6 +287,8 @@ trustPolicyExclude:
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
@@ -346,6 +355,7 @@ packageManagerStrictVersion: false`,
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -360,6 +370,8 @@ packageManagerStrictVersion: false`,
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
@@ -424,6 +436,7 @@ allowBuilds:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -439,6 +452,8 @@ allowBuilds:
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - eslint # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
@@ -504,6 +519,8 @@ somelistSection:
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
@@ -521,6 +538,7 @@ somelistSection:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
