@@ -1,8 +1,8 @@
 {
   "private": true,
   "license": "UNLICENSED",
-  "sideEffects": false,
   "type": "module",
+  "sideEffects": false,
   "dependencies": {},
   "devDependencies": {},
   "skuba": {

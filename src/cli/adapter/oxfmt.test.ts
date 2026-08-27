@@ -6,7 +6,6 @@ import { mkdtemp, readFile, rm, writeFile } from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import oxfmtConfig from '../../../oxfmt.config.js';
-import * as execUtils from '../../utils/exec.js';
 import type { Logger } from '../../utils/logging.js';
 
 import { type OxfmtResult, runOxfmt } from './oxfmt.js';
@@ -28,28 +27,12 @@ beforeEach(() => {
   capturedOutput = [];
 });
 
-vi.spyOn(console, 'log').mockImplementation((...args: unknown[]) => {
-  // Captures the per-line `log.plain` output emitted by the CI lint path.
-  capturedOutput.push(args.join(' '));
-});
-
-// oxfmt runs as a real child process against fixture files on disk. The
-// `exec` helper defaults to inherited stdio so its output streams straight
-// to the terminal, which is noisy in a test run - pipe it instead, and
-// capture the combined stdout/stderr so it can be asserted on rather than
-// printed.
-const pipedExec = execUtils.createExec({ stdio: 'pipe', all: true });
-
-vi.spyOn(execUtils, 'exec').mockImplementation((...args) => {
-  const run = pipedExec(...args);
-
-  run.then(
-    (result) => capturedOutput.push(result.all),
-    (error) => capturedOutput.push(error?.all ?? ''),
-  );
-
-  return run;
-});
+const logger = {
+  plain: vi.fn((...args: unknown[]) => {
+    capturedOutput.push(args.join(' '));
+  }),
+  err: vi.fn(),
+} as Partial<Logger> as Logger;
 
 let dir: string;
 
@@ -78,11 +61,6 @@ const writeFixture = (name: string, contents: string) =>
   writeFile(path.join(dir, name), contents);
 
 const readFixture = (name: string) => readFile(path.join(dir, name), 'utf-8');
-
-const logger = {
-  plain: vi.fn(),
-  err: vi.fn(),
-} as Partial<Logger> as Logger;
 
 describe('runOxfmt', () => {
   describe('format mode', () => {
