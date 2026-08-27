@@ -446,11 +446,11 @@ Processed 2 files in <random>s.
 
 Oxfmt
 
-  x Unexpected token
-   ,-[d.js:1:1]
- 1 | }
-   : ^
-   \`----
+  × Unexpected token
+   ╭─[d.js:1:1]
+ 1 │ }
+   · ─
+   ╰────
 Error occurred when checking code style in the above files.
 
 ESLint, Oxfmt found issues that require triage.
