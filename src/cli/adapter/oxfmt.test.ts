@@ -25,6 +25,9 @@ const output = () => normalizeOutput(capturedOutput.join('\n'));
 
 beforeEach(() => {
   capturedOutput = [];
+  // oxfmt emits Unicode diagnostics when `CI` is set. Pin it so snapshots
+  // match `pnpm test:ci` rather than a local ASCII run.
+  vi.stubEnv('CI', 'true');
 });
 
 const logger = {
@@ -83,11 +86,11 @@ describe('runOxfmt', () => {
 
       expect(output()).toMatchInlineSnapshot(`
         "
-          x Unexpected token
-           ,-[a.ts:1:11]
-         1 | const x = ;;;
-           :           ^
-           \`----
+          × Unexpected token
+           ╭─[a.ts:1:11]
+         1 │ const x = ;;;
+           ·           ─
+           ╰────
         Error occurred when checking code style in the above files."
       `);
     });
