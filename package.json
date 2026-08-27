@@ -171,9 +171,6 @@
     "node": ">=22.18.0"
   },
   "packageManager": "pnpm@10.34.5",
-  "inlinedDependencies": {
-    "prettier": "2.8.8"
-  },
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",

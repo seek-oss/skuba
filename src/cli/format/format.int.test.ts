@@ -45,6 +45,8 @@ const stdout = (randomMatcher: RegExp) => {
     .flat(1)
     .join('')
     .replace(/ in [\d\.]+s\./g, ' in <random>s.')
+    .replace(/\d+ms/g, '<ms>ms')
+    .replace(/\d+ threads/g, '<n> threads')
     .replace(randomMatcher, '<random>');
 
   return `\n${result}`;
