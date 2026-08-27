@@ -69,13 +69,7 @@ describe('patchRenovateConfig', () => {
       expect(volToJson()).toMatchInlineSnapshot(`
         {
           ".git": null,
-          "renovate.json": "{
-          "extends": [
-            "local>seek-jobs/renovate-config",
-            "github>seek-oss/rynovate:third-party-major"
-          ]
-        }
-        ",
+          "renovate.json": "{"extends":["local>seek-jobs/renovate-config","github>seek-oss/rynovate:third-party-major"]}",
         }
       `);
     });
@@ -97,13 +91,7 @@ describe('patchRenovateConfig', () => {
       expect(volToJson()).toMatchInlineSnapshot(`
         {
           "foo/.git": null,
-          "foo/renovate.json": "{
-          "extends": [
-            "local>seek-jobs/renovate-config",
-            "github>seek-oss/rynovate:third-party-major"
-          ]
-        }
-        ",
+          "foo/renovate.json": "{"extends":["local>seek-jobs/renovate-config","github>seek-oss/rynovate:third-party-major"]}",
         }
       `);
     });
@@ -128,14 +116,15 @@ describe('patchRenovateConfig', () => {
       expect(volToJson()).toMatchInlineSnapshot(`
         {
           ".git": null,
-          ".github/renovate.json5": "{
+          ".github/renovate.json5": "
+        {
           extends: [
             // Preceding comment
             'local>seekasia/renovate-config',
 
             'seek',
             // Succeeding comment
-          ],
+          ]
         }
         ",
         }
