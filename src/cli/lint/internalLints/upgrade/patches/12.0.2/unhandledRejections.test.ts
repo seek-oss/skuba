@@ -194,7 +194,8 @@ describe('unhandledRejections', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "src/listen.ts": "import { app } from 'src/app.js';
+        "src/listen.ts": "
+      import { app } from 'src/app.js';
       import { config } from 'src/config.js';
       import { logger } from 'src/framework/logging.js';
 
@@ -206,12 +207,14 @@ describe('unhandledRejections', () => {
         }
       });
 
+
+
+
       // Report unhandled rejections instead of crashing the process
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         logger.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
       }
     `);
   });
@@ -235,10 +238,12 @@ describe('unhandledRejections', () => {
 
       export const logger = createLogger();
       ",
-        "src/listen.ts": "import { app } from 'src/app';
+        "src/listen.ts": "
+      import { app } from 'src/app';
       import { config } from 'src/config';
 
       app.listen(config.port);
+
 
       import { logger } from 'src/framework/logging';
 
@@ -246,8 +251,7 @@ describe('unhandledRejections', () => {
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         logger.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
       }
     `);
   });
@@ -266,10 +270,12 @@ describe('unhandledRejections', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "src/listen.ts": "import { app } from 'src/app';
+        "src/listen.ts": "
+      import { app } from 'src/app';
       import { config } from 'src/config';
 
       app.listen(config.port);
+
 
       import { rootLogger } from 'src/logger';
 
@@ -277,8 +283,7 @@ describe('unhandledRejections', () => {
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         rootLogger.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
         "src/logger.ts": "
       import { createLogger } from '@seek/logger';
 
@@ -304,10 +309,12 @@ describe('unhandledRejections', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "src/listen.ts": "import { app } from 'src/app';
+        "src/listen.ts": "
+      import { app } from 'src/app';
       import { config } from 'src/config';
 
       app.listen(config.port);
+
 
       import logger from 'src/logger';
 
@@ -315,8 +322,7 @@ describe('unhandledRejections', () => {
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         logger.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
         "src/logger.ts": "
       import { createLogger } from '@seek/logger';
 
@@ -340,17 +346,20 @@ describe('unhandledRejections', () => {
 
     expect(volToJson()).toMatchInlineSnapshot(`
       {
-        "src/listen.ts": "import { app } from 'src/app';
+        "src/listen.ts": "
+      import { app } from 'src/app';
       import { config } from 'src/config';
 
       app.listen(config.port);
+
+
+
 
       // Report unhandled rejections instead of crashing the process
       // Make sure to monitor these reports and alert as appropriate
       process.on('unhandledRejection', (err) =>
         console.error(err, 'Unhandled promise rejection'),
-      );
-      ",
+      );",
         "src/utils/aiGeneratedThisFilename.ts": "
       import { createLogger } from '@seek/logger';
 
