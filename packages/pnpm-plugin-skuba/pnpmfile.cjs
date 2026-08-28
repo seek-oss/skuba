@@ -48,7 +48,6 @@ const defaultConfig = {
     'eslint-config-skuba',
     'oxc-config-seek',
     'oxfmt',
-    'prettier',
     'publint',
     'rolldown',
     'tsconfig-seek',
