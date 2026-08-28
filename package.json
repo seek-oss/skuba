@@ -27,6 +27,7 @@
     ".": "./lib/index.js",
     "./package.json": "./package.json",
     "./config/eslint.js": "./config/eslint.js",
+    "./config/prettier.js": "./config/prettier.js",
     "./config/tsconfig.json": "./config/tsconfig.json"
   },
   "scripts": {

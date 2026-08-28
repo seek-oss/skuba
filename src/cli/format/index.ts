@@ -1,6 +1,6 @@
 import { styleText } from 'node:util';
 
-import { hasDebugFlag, stripFlags } from '../../utils/args.js';
+import { hasDebugFlag } from '../../utils/args.js';
 import { createLogger, log } from '../../utils/logging.js';
 import { runESLint } from '../adapter/eslint.js';
 import { runOxfmt } from '../adapter/oxfmt.js';
@@ -11,7 +11,6 @@ export const format = async (
   overrideConfigFile?: string,
 ): Promise<void> => {
   const debug = hasDebugFlag(args);
-  const filePaths = stripFlags(args);
 
   log.plain(styleText('blueBright', 'skuba lints'));
 
@@ -33,7 +32,7 @@ export const format = async (
   log.newline();
   log.plain(styleText('cyan', 'Oxfmt'));
 
-  const oxfmt = await runOxfmt('format', logger, filePaths);
+  const oxfmt = await runOxfmt('format', logger);
 
   if (eslint.ok && internal.ok && oxfmt.ok) {
     return;
