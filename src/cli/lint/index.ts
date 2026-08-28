@@ -1,7 +1,7 @@
 import type { Writable } from 'stream';
 import { inspect } from 'util';
 
-import { hasDebugFlag, hasSerialFlag, stripFlags } from '../../utils/args.js';
+import { hasDebugFlag, hasSerialFlag } from '../../utils/args.js';
 import { log } from '../../utils/logging.js';
 import { detectPackageManager } from '../../utils/packageManager.js';
 import { throwOnTimeout } from '../../utils/wait.js';
@@ -22,7 +22,6 @@ export const lint = async (
     serial: hasSerialFlag(args),
     tscOutputStream: tscWriteable,
     workerThreads,
-    filePaths: stripFlags(args),
   };
 
   const { eslint, oxfmt, tscOk, tscOutputStream } = await externalLint(opts);
