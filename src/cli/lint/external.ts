@@ -1,7 +1,7 @@
 import stream from 'stream';
 
 import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint.js';
-import { runOxfmtInCurrentThread } from './oxfmt.js';
+import { runOxfmtInNewProcess } from './oxfmt.js';
 import { runTscInNewProcess } from './tsc.js';
 import type { Input } from './types.js';
 
@@ -28,7 +28,7 @@ export class StreamInterceptor extends stream.Transform {
 const lintConcurrently = async ({ tscOutputStream, ...input }: Input) => {
   const [eslint, oxfmt, tscOk] = await Promise.all([
     runESLintInWorkerThread(input),
-    runOxfmtInCurrentThread(input),
+    runOxfmtInNewProcess(input),
     runTscInNewProcess({ ...input, tscOutputStream }),
   ]);
 
@@ -44,7 +44,7 @@ const lintConcurrently = async ({ tscOutputStream, ...input }: Input) => {
  */
 const lintSerially = async ({ tscOutputStream, ...input }: Input) => {
   const eslint = await runESLintInWorkerThread(input);
-  const oxfmt = await runOxfmtInCurrentThread(input);
+  const oxfmt = await runOxfmtInNewProcess(input);
   const tscOk = await runTscInNewProcess({ ...input, tscOutputStream });
 
   return { eslint, oxfmt, tscOk };
@@ -52,7 +52,7 @@ const lintSerially = async ({ tscOutputStream, ...input }: Input) => {
 
 const lintSeriallyWithoutWorkerThreads = async (input: Input) => {
   const eslint = await runESLintInCurrentThread(input);
-  const oxfmt = await runOxfmtInCurrentThread(input);
+  const oxfmt = await runOxfmtInNewProcess(input);
   const tscOk = await runTscInNewProcess(input);
 
   return { eslint, oxfmt, tscOk };
