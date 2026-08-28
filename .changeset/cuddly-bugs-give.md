@@ -8,7 +8,7 @@ lint: Replace Prettier with Oxfmt
 
 Oxfmt may format some code differently from Prettier, so you may see diffs in existing files.
 
-skuba will attempt to auto-migrate your Prettier configuration to Oxfmt. Any remaining manual references to `prettier` will need to be replaced with `oxfmt`.
+skuba will attempt to auto-migrate your Prettier configuration to Oxfmt. Any manual calls to `prettier` in any scripts will need to be manually replaced with `oxfmt`.
 
 Update your VS Code settings to use the [Oxc](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode) extension instead of Prettier:
 
