@@ -44,4 +44,11 @@ export interface Input {
    * Additional CLI flags that are used for skuba's internal lints.
    */
   additionalFlags?: string[];
+
+  /**
+   * File paths to pass through to Oxfmt.
+   *
+   * Defaults to `[]`, which lets Oxfmt discover files itself.
+   */
+  filePaths?: string[];
 }
