@@ -402,6 +402,25 @@ describe('lambdaAsset', () => {
         });
       });
 
+      it('forwards a devEngines pin from the workspace root', async () => {
+        const devEngines = {
+          packageManager: { name: 'pnpm', version: '10.34.5' },
+        };
+
+        await fs.promises.writeFile(
+          path.join(workspaceRoot, 'package.json'),
+          JSON.stringify({ devEngines }),
+        );
+
+        await prepare();
+
+        await expect(readOutputPackageJson()).resolves.toEqual({
+          type: 'module',
+          dependencies: { sharp: '0.34.6' },
+          devEngines,
+        });
+      });
+
       it('stages the workspace config and lock file for the install', async () => {
         await prepare();
 

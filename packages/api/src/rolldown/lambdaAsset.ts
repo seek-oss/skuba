@@ -12,8 +12,9 @@ import {
   PNPM_INSTALL_COMMAND,
   PNPM_LOCK,
   PNPM_METADATA_FILES,
+  type PackageManagerFields,
   extractDependencies,
-  readPackageManagerPin,
+  readPackageManagerFields,
   stageWorkspaceFiles,
 } from './pnpm.js';
 
@@ -177,9 +178,8 @@ const emitAssets = async (
 
 const writeOutputPackageJson = (
   outputDir: string,
-  fields: {
+  fields: PackageManagerFields & {
     dependencies?: Record<string, string>;
-    packageManager?: string;
   } = {},
 ): Promise<void> =>
   fs.promises.writeFile(
@@ -239,7 +239,7 @@ const stripInstallFiles = async (
  * import { Rolldown } from 'skuba';
  *
  * export default {
- *   input: 'src/lambda.ts',
+ *   input: { index: 'src/lambda.ts' },
  *   output: { dir: 'lib' },
  *   external: ['sharp'],
  *   plugins: [
@@ -313,14 +313,14 @@ export const lambdaAsset = ({
         );
       }
 
-      const [dependencies, packageManager] = await Promise.all([
+      const [dependencies, packageManagerFields] = await Promise.all([
         extractDependencies(projectPackageJson, nodeModules),
-        readPackageManagerPin(workspaceRoot),
+        readPackageManagerFields(workspaceRoot),
       ]);
 
       await writeOutputPackageJson(outputDir, {
         dependencies,
-        packageManager,
+        ...packageManagerFields,
       });
 
       const stagedFiles: string[] = [];

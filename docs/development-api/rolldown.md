@@ -33,7 +33,7 @@ import { defineConfig } from 'rolldown';
 import { Rolldown } from 'skuba';
 
 export default defineConfig({
-  input: 'src/lambda.ts',
+  input: { index: 'src/lambda.ts' },
   output: { dir: 'lib' },
   plugins: [Rolldown.lambdaAsset()],
 });
@@ -55,16 +55,50 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 
 new lambda.Function(this, 'worker', {
   code: lambda.Code.fromAsset('lib'),
-  handler: 'lambda.handler',
+  handler: 'index.handler',
   runtime: lambda.Runtime.NODEJS_24_X,
 });
 ```
 
 The `handler` string is `<output file name>.<exported function name>`.
-Rolldown names the entry chunk after your `input` file, so `input: 'src/lambda.ts'` with an exported `handler` gives `lambda.handler`.
+Rolldown names each entry chunk after its `input` key, so the object form above writes `lib/index.js` and gives `index.handler` regardless of what your source file is called.
+Passing a bare string like `input: 'src/lambda.ts'` names the chunk after the file instead, which works but couples your deployed `handler` to your source file name.
 
 Bundling and deployment stay decoupled:
 your bundle is built once by your build step rather than re-run on every `cdk synth`.
+
+### Resolution and source maps
+
+The plugin does not change how rolldown resolves or emits your code, but a few rolldown options matter for a Lambda bundle:
+
+```ts
+// rolldown.config.ts
+import { defineConfig } from 'rolldown';
+import { Rolldown } from 'skuba';
+
+export default defineConfig({
+  input: { index: 'src/lambda.ts' },
+  output: {
+    dir: 'lib',
+    sourcemap: true,
+  },
+  resolve: {
+    mainFields: ['module', 'main'],
+    conditionNames: ['@seek/my-repo/source'],
+  },
+  plugins: [Rolldown.lambdaAsset()],
+});
+```
+
+[`resolve.mainFields`](https://rolldown.rs/reference/InputOptions.resolve#mainfields) defaults to `['main', 'module']` on rolldown's `node` platform, which prefers the CJS entry point of a dependency that has no `exports` map.
+Listing `['module', 'main']` prefers its ESM entry point instead, matching the [esbuild guidance](../cli/migrate.md#skuba-migrate-esm) for our ESM migration.
+
+[`resolve.conditionNames`](https://rolldown.rs/reference/InputOptions.resolve#conditionnames) declares extra export conditions.
+Add your repo's [source condition](../deep-dives/esm.md#2-replace-skuba-diveregister-with-subpath-imports) here if your packages use subpath imports.
+Unlike webpack, rolldown merges these with its platform defaults (`import`, `node`, `default`), so there is no `'...'` token to preserve them.
+
+[`output.sourcemap`](https://rolldown.rs/reference/OutputOptions.sourcemap) writes `.js.map` files alongside your chunks.
+Set `NODE_OPTIONS=--enable-source-maps` on the function for Node.js to apply them to stack traces.
 
 ### Multiple bundles
 
@@ -76,7 +110,7 @@ import { defineConfig } from 'rolldown';
 import { Rolldown } from 'skuba';
 
 export default defineConfig({
-  input: 'src/worker1.ts',
+  input: { index: 'src/worker1.ts' },
   output: { dir: 'lib/worker1' },
   plugins: [Rolldown.lambdaAsset()],
 });
@@ -95,6 +129,8 @@ Point CDK at each bundle's `output.dir`:
 ```ts
 lambda.Code.fromAsset('lib/worker1');
 ```
+
+Aliasing each entrypoint to `index` keeps every function on the same `index.handler`, distinguished only by its asset directory.
 
 ### Alongside a tsc or esbuild build
 
@@ -149,7 +185,7 @@ The plugin always writes a `package.json` into the output directory so that Node
 ```
 
 When `nodeModules` is set, `dependencies` and your package manager pin are included too.
-The pin is read from your `packageManager` field, falling back to `devEngines.packageManager`, so corepack installs with the same pnpm version as your project.
+The pin is copied verbatim from the `packageManager` and `devEngines` fields of your workspace root `package.json`, so corepack installs with the same pnpm version as your project.
 
 Any `package.json` you had in the output directory is overwritten, so treat the output directory as build output and keep it out of version control.
 
@@ -164,7 +200,7 @@ import { defineConfig } from 'rolldown';
 import { Rolldown } from 'skuba';
 
 export default defineConfig({
-  input: 'src/lambda.ts',
+  input: { index: 'src/lambda.ts' },
   output: { dir: 'lib' },
   external: [/^node:/, 'sharp'],
   plugins: [Rolldown.lambdaAsset({ nodeModules: ['sharp'] })],
@@ -192,7 +228,7 @@ import { defineConfig } from 'rolldown';
 import { Rolldown } from 'skuba';
 
 export default defineConfig({
-  input: 'src/lambda.ts',
+  input: { index: 'src/lambda.ts' },
   output: { dir: 'lib' },
   plugins: [
     Rolldown.lambdaAsset({

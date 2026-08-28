@@ -20,10 +20,6 @@ const PNPM_WORKSPACE_FILES = [
   '.pnpmfile.mjs',
 ];
 
-/**
- * Files that `pnpm install` leaves behind which record machine-local paths and
- * timestamps, and so would churn the CDK asset hash on every build.
- */
 export const PNPM_METADATA_FILES = [
   path.join('node_modules', '.modules.yaml'),
   path.join('node_modules', '.pnpm-workspace-state-v1.json'),
@@ -51,38 +47,11 @@ const readJsonFile = async (filePath: string): Promise<unknown> => {
   }
 };
 
-/**
- * Reads a `name@version` package manager pin from a manifest, preferring the
- * `packageManager` field and falling back to `devEngines.packageManager`.
- *
- * `devEngines.packageManager` is either an object `{ name, version }` or an
- * array of them; a pin is only returned when both `name` and `version` are
- * present, since corepack needs the version to activate.
- */
-const readPin = (parsed: Record<string, unknown>): string | undefined => {
-  if (typeof parsed.packageManager === 'string') {
-    return parsed.packageManager;
-  }
+const PACKAGE_MANAGER_FIELDS = ['packageManager', 'devEngines'] as const;
 
-  const devEngines = isRecord(parsed.devEngines)
-    ? parsed.devEngines
-    : undefined;
-
-  const raw: unknown = devEngines?.packageManager;
-  const packageManager: unknown = Array.isArray(raw)
-    ? (raw as unknown[])[0]
-    : raw;
-
-  if (
-    isRecord(packageManager) &&
-    typeof packageManager.name === 'string' &&
-    typeof packageManager.version === 'string'
-  ) {
-    return `${packageManager.name}@${packageManager.version}`;
-  }
-
-  return undefined;
-};
+export type PackageManagerFields = Partial<
+  Record<(typeof PACKAGE_MANAGER_FIELDS)[number], unknown>
+>;
 
 /**
  * Reads the package manager pin from the workspace root manifest.
@@ -90,18 +59,26 @@ const readPin = (parsed: Record<string, unknown>): string | undefined => {
  * Forwarding it to the output directory keeps the staged install on the same
  * pnpm version as the project.
  */
-export const readPackageManagerPin = async (
+export const readPackageManagerFields = async (
   workspaceRoot: string,
-): Promise<string | undefined> => {
+): Promise<PackageManagerFields> => {
   const pkgPath = path.join(workspaceRoot, 'package.json');
 
   if (!(await pathExists(pkgPath))) {
-    return undefined;
+    return {};
   }
 
   const parsed: unknown = await readJsonFile(pkgPath);
 
-  return isRecord(parsed) ? readPin(parsed) : undefined;
+  if (!isRecord(parsed)) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    PACKAGE_MANAGER_FIELDS.flatMap((field) =>
+      parsed[field] === undefined ? [] : [[field, parsed[field]]],
+    ),
+  );
 };
 
 /**
