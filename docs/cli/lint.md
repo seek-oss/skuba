@@ -8,7 +8,7 @@ nav_order: 5
 ---
 
 SEEK's Technical Guidelines [prescribe ESLint] for code analysis and the [eslint-config-seek] preset in particular.
-**skuba** uses a combination of [ESLint], [Prettier] and [tsc] to enforce code quality.
+**skuba** uses a combination of [ESLint], [Oxfmt] and [tsc] to enforce code quality.
 
 See our [ESLint deep dive] for guidance on resolving linting issues and customising linting rules.
 
@@ -26,8 +26,8 @@ skuba format
 # ESLint
 # Processed X files in 1.23s.
 #
-# Prettier
-# Processed X files in 1.23s.
+# Oxfmt
+# Finished in 1.23s on X files using N threads.
 ```
 
 | Option    | Description                 |
@@ -46,7 +46,7 @@ This command should be run in CI to verify that [`skuba format`] was applied and
 skuba lint
 
 # ESLint   │ Processed 123 files in 1.23s.
-# Prettier │ Processed 123 files in 1.23s.
+# Oxfmt    │ Finished in 1.23s on 123 files using 8 threads.
 # tsc      │ TSFILE: /lib/tsconfig.tsbuildinfo
 # tsc      │ tsc --noEmit exited with code 0
 ```
@@ -107,6 +107,6 @@ See [`skuba migrate node`] for more information on this feature and how to use i
 [GitHub annotations]: ../deep-dives/github.md#github-annotations
 [GitHub autofixes]: ../deep-dives/github.md#github-autofixes
 [prescribe ESLint]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346041/#TypeScript
-[Prettier]: https://prettier.io/
+[Oxfmt]: https://oxc.rs/docs/guide/usage/formatter.html
 [template]: ../templates/index.md
 [tsc]: https://www.typescriptlang.org/docs/handbook/compiler-options.html

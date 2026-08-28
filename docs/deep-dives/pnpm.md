@@ -14,7 +14,7 @@ This topic details how to use pnpm with **skuba**.
 
 ## Background
 
-**skuba** serves as a wrapper for numerous developer tools such as TypeScript, Vitest, Prettier & ESLint,
+**skuba** serves as a wrapper for numerous developer tools such as TypeScript, Vitest, Oxfmt & ESLint,
 abstracting the dependency management of those packages across SEEK projects.
 When you are using **skuba**,
 you do not need to declare these packages as direct `devDependencies`.
@@ -30,7 +30,7 @@ In our previously-recommended package manager, [Yarn], these packages and others
 
 ```console
 node_modules
-├── prettier
+├── oxfmt
 ├── skuba
 ├── vitest
 └── other-skuba-deps
@@ -44,7 +44,7 @@ pnpm addresses the hoisting issue with a [symlinked structure].
 Each package is guaranteed to resolve compatible versions of its dependencies, rather than whichever versions were incidentally hoisted.
 
 This behaviour is a double-edged sword for a toolkit like **skuba**.
-Dependencies like Prettier and ESLint end up nested in a `node_modules/skuba/node_modules` subdirectory,
+Dependencies like Oxfmt and ESLint end up nested in a `node_modules/skuba/node_modules` subdirectory,
 where most editor and developer tooling integrations will not know to look.
 
 ```console
@@ -53,8 +53,8 @@ node_modules
 └── .pnpm
     ├── skuba@7.2.0
     │   └── node_modules
-    │       └── prettier -> ../../prettier@3.0.0
-    └── prettier@3.0.0
+    │       └── oxfmt -> ../../oxfmt@0.64.0
+    └── oxfmt@0.64.0
         └── node_modules
             └── other-dep -> <store>/other-dep
 ```
@@ -73,24 +73,24 @@ publicHoistPattern:
   - '@types*' # Managed by skuba
   - esbuild # Managed by skuba
   - eslint # Managed by skuba
-  - prettier # Managed by skuba
+  - oxfmt # Managed by skuba
   - tsconfig-seek # Managed by skuba
   - '@vitest/*' # Managed by skuba
   - vitest # Managed by skuba
 ```
 
 From the previous example, this will produce the following `node_modules` layout,
-allowing external integrations to find `prettier` in `node_modules/prettier` as before.
+allowing external integrations to find `oxfmt` in `node_modules/oxfmt` as before.
 
 ```console
 node_modules
-├── prettier -> ./.pnpm/prettier@3.0.0
+├── oxfmt -> ./.pnpm/oxfmt@0.64.0
 ├── skuba -> ./.pnpm/skuba@7.2.0
 └── .pnpm
     ├── skuba@7.2.0
     │   └── node_modules
-    │       └── prettier -> ../../prettier@3.0.0
-    └── prettier@3.0.0
+    │       └── oxfmt -> ../../oxfmt@0.64.0
+    └── oxfmt@0.64.0
         └── node_modules
             └── other-dep -> <store>/other-dep
 ```

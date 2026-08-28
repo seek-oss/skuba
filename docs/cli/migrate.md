@@ -225,7 +225,7 @@ The following changes are made:
   - `require()` calls are replaced with `import` statements or dynamic `import()` as appropriate
 - Datadog and OpenTelemetry instrumentation ESM imports are added to Dockerfiles
 - AWS CDK worker and Serverless files are migrated to ESM format
-- ESLint config files and Prettier config files are migrated to ESM format
+- ESLint config files and Oxfmt config files are migrated to ESM format
 - `vocab.config.js` is migrated to `vocab.config.cjs`
 - Jest is replaced with Vitest as the test runner
   - The [sku codemod] is run along with additional transformations to fix additional cases
