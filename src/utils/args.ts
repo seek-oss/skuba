@@ -2,10 +2,8 @@ import assert from 'assert';
 
 import { COMMAND_ALIASES } from './command.js';
 
-export const hasDebugFlag = (args = process.argv) => args.some(isDebugFlag);
-
-export const isDebugFlag = (arg: string) =>
-  arg.toLocaleLowerCase() === '--debug';
+export const hasDebugFlag = (args = process.argv) =>
+  args.some((arg) => arg.toLocaleLowerCase() === '--debug');
 
 export const hasHelpFlag = (args = process.argv) =>
   args.includes('--help') || args.includes('-h') || args[0] === 'help';
