@@ -85,7 +85,6 @@ describe('patchPnpmWorkspace', () => {
         - eslint-config-skuba # Managed by skuba
         - oxc-config-seek # Managed by skuba
         - oxfmt # Managed by skuba
-        - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -200,7 +199,6 @@ trustPolicyExclude:
         - eslint-config-skuba # Managed by skuba
         - oxc-config-seek # Managed by skuba
         - oxfmt # Managed by skuba
-        - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -289,7 +287,6 @@ trustPolicyExclude:
         - eslint-config-skuba # Managed by skuba
         - oxc-config-seek # Managed by skuba
         - oxfmt # Managed by skuba
-        - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -372,7 +369,6 @@ packageManagerStrictVersion: false`,
         - eslint-config-skuba # Managed by skuba
         - oxc-config-seek # Managed by skuba
         - oxfmt # Managed by skuba
-        - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -454,7 +450,6 @@ allowBuilds:
         - eslint # Managed by skuba
         - oxc-config-seek # Managed by skuba
         - oxfmt # Managed by skuba
-        - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -521,7 +516,6 @@ somelistSection:
         - eslint-config-skuba # Managed by skuba
         - oxc-config-seek # Managed by skuba
         - oxfmt # Managed by skuba
-        - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba

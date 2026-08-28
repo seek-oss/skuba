@@ -143,7 +143,6 @@ describe('removePnpmPlugin', () => {
         - eslint-config-skuba # Managed by skuba
         - oxc-config-seek # Managed by skuba
         - oxfmt # Managed by skuba
-        - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -219,7 +218,6 @@ configDependencies:
         - eslint-config-skuba # Managed by skuba
         - oxc-config-seek # Managed by skuba
         - oxfmt # Managed by skuba
-        - prettier # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
