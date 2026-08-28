@@ -60,7 +60,7 @@ export const runOxfmt = async (
 ): Promise<OxfmtResult> => {
   if (mode === 'format') {
     try {
-      await runOxfmtCli(logger);
+      await runOxfmtCli(logger, ...filePaths);
       return {
         ok: true,
       };
@@ -72,7 +72,7 @@ export const runOxfmt = async (
   }
 
   try {
-    await runOxfmtCli(logger, '--check');
+    await runOxfmtCli(logger, '--check', ...filePaths);
     return {
       ok: true,
     };
@@ -84,14 +84,10 @@ export const runOxfmt = async (
     }
 
     // Get the offending filepaths
-    const customExec = createExec({
-      stdio: 'pipe',
-    });
-
     const invalidPaths: OxfmtError[] = [];
 
     try {
-      await customExec('oxfmt', '--list-different', ...filePaths);
+      await oxfmtExec('oxfmt', '--list-different', ...filePaths);
       return {
         ok: true,
       };
