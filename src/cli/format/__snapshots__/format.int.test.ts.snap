@@ -33,7 +33,6 @@ Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfi
 
 Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
-Refreshed .prettierignore.
 Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
@@ -85,6 +84,10 @@ Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspac
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
+
+Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found upgrade-skuba
+
+Patch skipped: Replace Prettier VS Code recommendation with Oxc - no Prettier VS Code recommendations to replace upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -166,7 +169,6 @@ Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfi
 
 Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
-Refreshed .prettierignore.
 Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
@@ -218,6 +220,10 @@ Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspac
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
+
+Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found upgrade-skuba
+
+Patch skipped: Replace Prettier VS Code recommendation with Oxc - no Prettier VS Code recommendations to replace upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
@@ -273,7 +279,6 @@ Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfi
 
 Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
-Refreshed .prettierignore.
 Refreshed .dockerignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
@@ -326,6 +331,10 @@ Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no packa
 
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
 
+Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found upgrade-skuba
+
+Patch skipped: Replace Prettier VS Code recommendation with Oxc - no Prettier VS Code recommendations to replace upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -376,7 +385,6 @@ Patch skipped: Add 'rootDir' to tsconfig.build.json compilerOptions - no tsconfi
 
 Patch skipped: Migrate pnpm workspace to pnpm-plugin-skuba - no pnpm-workspace.yaml found upgrade-skuba
 Refreshed .gitignore.
-Refreshed .prettierignore.
 
 Patch skipped: Migrate npm package builds to tsdown - no skuba build-package command found upgrade-skuba
 
@@ -427,6 +435,10 @@ Patch skipped: Remove pnpm-plugin-skuba from pnpm-workspace.yaml - pnpm-workspac
 Patch skipped: Remove pnpm-plugin-skuba from package.json pnpm config - no package.json files to patch upgrade-skuba
 
 Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda-js >=12.140.0 - no datadog lambda hack to remove upgrade-skuba
+
+Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found upgrade-skuba
+
+Patch skipped: Replace Prettier VS Code recommendation with Oxc - no Prettier VS Code recommendations to replace upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
