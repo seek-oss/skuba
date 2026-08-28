@@ -26,7 +26,8 @@ parent: Deep dives
        "editor.codeActionsOnSave": {
          "source.fixAll.eslint": "explicit"
        },
-       "editor.defaultFormatter": "oxc.oxc-vscode"
+       "editor.defaultFormatter": "oxc.oxc-vscode",
+       "editor.formatOnSave": true
      },
      "typescript.tsdk": "./node_modules/typescript/lib"
    }
