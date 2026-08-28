@@ -18,6 +18,7 @@ export default defineConfig([
       exclude: ['!index'],
       customExports: {
         './config/eslint.js': './config/eslint.js',
+        './config/prettier.js': './config/prettier.js',
         './config/tsconfig.json': './config/tsconfig.json',
       },
     },
@@ -26,6 +27,7 @@ export default defineConfig([
       'src/cli/*/index.ts',
       'src/cli/init/getConfig.ts',
       'src/cli/lint/eslint.ts',
+      'src/cli/lint/prettier.ts',
       'src/cli/lint/internalLints/upgrade/index.ts',
       'src/cli/lint/internalLints/upgrade/patches/**/index.ts',
       'src/utils/command.ts',
@@ -45,6 +47,7 @@ export default defineConfig([
       profile: 'esm-only',
       excludeEntrypoints: [
         'skuba/config/eslint.js',
+        'skuba/config/prettier.js',
         'skuba/config/tsconfig.json',
       ],
     },
