@@ -91,7 +91,7 @@
     "@octokit/graphql": "^9.0.0",
     "@octokit/graphql-schema": "^15.3.0",
     "@octokit/rest": "^22.0.0",
-    "@octokit/types": "^16.0.0",
+    "@octokit/types": "^17.0.0",
     "@skuba-lib/api": "workspace:*",
     "@skuba-lib/changesets-changelog": "workspace:*",
     "@types/node": "^24.10.2",
