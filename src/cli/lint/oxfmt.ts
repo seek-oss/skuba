@@ -7,5 +7,5 @@ import type { Input } from './types.js';
 
 const LOG_PREFIX = styleText('cyan', 'Oxfmt  │');
 
-export const runOxfmtInCurrentThread = ({ debug, filePaths }: Input) =>
-  runOxfmt('lint', createLogger({ debug, prefixes: [LOG_PREFIX] }), filePaths);
+export const runOxfmtInCurrentThread = ({ debug }: Input) =>
+  runOxfmt('lint', createLogger({ debug, prefixes: [LOG_PREFIX] }));
