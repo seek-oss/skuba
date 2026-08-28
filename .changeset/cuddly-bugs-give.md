@@ -25,4 +25,6 @@ Update your VS Code settings to use the [Oxc](https://marketplace.visualstudio.c
  }
 ```
 
+You may need to reload the IDE for formatting to work after the migration is complete.
+
 `oxfmt` and `oxc-config-seek` are now hoisted in place of `prettier`.
