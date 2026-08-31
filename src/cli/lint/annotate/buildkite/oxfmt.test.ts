@@ -7,12 +7,6 @@ import { createOxfmtAnnotations } from './oxfmt.js';
 it('re-prints --check output after the triage heading', () => {
   const oxfmt: OxfmtResult = {
     ok: false,
-    output: `Checking formatting...
-
-a.ts (1ms)
-
-Format issues found in above 1 files. Run without \`--check\` to fix.
-`,
     errors: [
       {
         path: 'src/index.ts',
@@ -24,11 +18,7 @@ Format issues found in above 1 files. Run without \`--check\` to fix.
   expect(createOxfmtAnnotations(oxfmt)).toEqual([
     '**Oxfmt**',
     `\`\`\`term
-Checking formatting...
-
-a.ts (1ms)
-
-Format issues found in above 1 files. Run without \`--check\` to fix.
+src/index.ts Oxfmt found formatting issues in this file.
 \`\`\``,
   ]);
 });
