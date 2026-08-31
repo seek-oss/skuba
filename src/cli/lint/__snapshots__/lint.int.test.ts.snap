@@ -59,14 +59,9 @@ Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 **Oxfmt**
 
 \`\`\`term
-Checking formatting...
-
-b.md (<ms>ms)
-c.json (<ms>ms)
-d.js (<ms>ms)
-
-Format issues found in above 3 files. Run without \`--check\` to fix.
-Finished in <ms>ms on 8 files using <n> threads.
+b.md Oxfmt found formatting issues in this file.
+c.json Oxfmt found formatting issues in this file.
+d.js Oxfmt found formatting issues in this file.
 \`\`\`
 ",
 ]
@@ -230,15 +225,14 @@ Options: { context: 'skuba-lint', scopeContextToStep: true, style: 'error' }
 **Oxfmt**
 
 \`\`\`term
-Checking formatting...
+a/a/a.ts Oxfmt found formatting issues in this file.
+d.js Oxlint errored while checking this file.
 
-a/a/a.ts (<ms>ms)
   x Unexpected token
    ,-[d.js:1:1]
  1 | }
    : ^
    \`----
-Error occurred when checking code style in the above files.
 \`\`\`
 
 **tsc**
