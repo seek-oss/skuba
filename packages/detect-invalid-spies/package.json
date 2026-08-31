@@ -7,14 +7,20 @@
   "bugs": {
     "url": "https://github.com/seek-oss/skuba/issues"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/seek-oss/skuba.git",
     "directory": "packages/detect-invalid-spies"
   },
-  "license": "MIT",
-  "sideEffects": false,
+  "bin": {
+    "detect-invalid-spies": "./src/bin.ts"
+  },
+  "files": [
+    "lib"
+  ],
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": {
       "@seek/skuba/source": "./src/index.ts",
@@ -26,12 +32,16 @@
     },
     "./package.json": "./package.json"
   },
-  "bin": {
-    "detect-invalid-spies": "./src/bin.ts"
+  "publishConfig": {
+    "bin": {
+      "detect-invalid-spies": "./lib/bin.mjs"
+    },
+    "exports": {
+      ".": "./lib/index.mjs",
+      "./bin": "./lib/bin.mjs",
+      "./package.json": "./package.json"
+    }
   },
-  "files": [
-    "lib"
-  ],
   "scripts": {
     "build": "pnpm skuba build-package",
     "prepack": "pnpm build",
@@ -47,16 +57,6 @@
   },
   "engines": {
     "node": ">=22.14.0"
-  },
-  "publishConfig": {
-    "bin": {
-      "detect-invalid-spies": "./lib/bin.mjs"
-    },
-    "exports": {
-      ".": "./lib/index.mjs",
-      "./bin": "./lib/bin.mjs",
-      "./package.json": "./package.json"
-    }
   },
   "skuba": {
     "entryPoint": "src/bin.ts",

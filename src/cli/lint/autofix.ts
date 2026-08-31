@@ -9,7 +9,7 @@ import { createLogger, log } from '../../utils/logging.js';
 import { hasNpmrcSecret } from '../../utils/npmrc.js';
 import { throwOnTimeout } from '../../utils/wait.js';
 import { runESLint } from '../adapter/eslint.js';
-import { runPrettier } from '../adapter/prettier.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import { internalLint } from './internal.js';
@@ -249,7 +249,7 @@ interface AutofixParameters {
   debug: Input['debug'];
 
   eslint: boolean;
-  prettier: boolean;
+  oxfmt: boolean;
   internal: boolean;
 
   eslintConfigFile?: string;
@@ -258,7 +258,7 @@ interface AutofixParameters {
 export const autofix = async (params: AutofixParameters): Promise<void> => {
   const dir = process.cwd();
 
-  if (!params.eslint && !params.prettier && !params.internal) {
+  if (!params.eslint && !params.oxfmt && !params.internal) {
     return;
   }
 
@@ -283,7 +283,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
       `Attempting to autofix issues (${[
         params.internal ? 'skuba' : undefined,
         params.internal || params.eslint ? 'ESLint' : undefined,
-        'Prettier', // Prettier is always run
+        'Oxfmt', // Oxfmt is always run
       ]
         .filter((s) => s !== undefined)
         .join(', ')})...`,
@@ -299,9 +299,9 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
       await runESLint('format', logger, params.eslintConfigFile);
     }
 
-    // Unconditionally re-run Prettier; reaching here means we have pre-existing
+    // Unconditionally re-run oxfmt; reaching here means we have pre-existing
     // format violations or may have created new ones through ESLint/internal fixes.
-    await runPrettier('format', logger);
+    await runOxfmt('format', logger);
 
     const ignore = await createAutofixIgnore({ currentBranch, dir });
     if (!ignore) {

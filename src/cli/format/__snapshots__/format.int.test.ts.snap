@@ -93,12 +93,8 @@ Processed skuba lints in <random>s.
 ESLint
 Processed 4 files in <random>s.
 
-Prettier
-Processed 8 files in <random>s.
-Formatted 3 files:
-b.md
-c.json
-d.js
+Oxfmt
+Finished in <ms>ms on 8 files using <n> threads.
 "
 `;
 
@@ -106,34 +102,34 @@ exports[`'fixable' 2`] = `
 "
 a/a/a.ts
 --------
-[33m@@ -1,4 +1,4 @@[39m
-[2m  // Imports out-of-order[22m
-[32m- import path from 'path';[39m
-[2m  import fs from 'fs';[22m
-[31m+ import path from 'path';[39m
+@@ -1,4 +1,4 @@
+  // Imports out-of-order
+- import path from 'path';
+  import fs from 'fs';
++ import path from 'path';
 
 
 b.md
 ----
-[33m@@ -2,3 +2,3 @@[39m
+@@ -2,3 +2,3 @@
 
-[32m- Trailing space [39m
-[31m+ Trailing space[39m
+- Trailing space 
++ Trailing space
 
 
 c.json
 ------
-[33m@@ -2,3 +2,3 @@[39m
-[2m    "key": "value"[22m
-[32m-   }[39m
-[31m+ }[39m
+@@ -2,3 +2,3 @@
+    "key": "value"
+-   }
++ }
 
 
 d.js
 ----
-[2m  // eslint-disable-next-line no-console[22m
-[32m-     console.log(process.argv);[39m
-[31m+ console.log(process.argv);[39m
+  // eslint-disable-next-line no-console
+-     console.log(process.argv);
++ console.log(process.argv);
 "
 `;
 
@@ -234,31 +230,8 @@ Processed 2 files in <random>s.
 ○ a/a/a.ts
 ○ d.js
 
-Prettier
-Initialising Prettier...
-Detected project root: <random>
-Discovering files...
-Discovered 9 files.
-Formatting files...
-.dockerignore
-  parser: -
-.gitignore
-  parser: -
-.prettierignore
-  parser: -
-b.md
-  parser: markdown
-c.json
-  parser: json
-d.js
-  parser: babel
-package.json
-  parser: json-stringify
-tsconfig.json
-  parser: json
-a/a/a.ts
-  parser: typescript
-Processed 6 files in <random>s.
+Oxfmt
+Finished in <ms>ms on 6 files using <n> threads.
 "
 `;
 
@@ -360,8 +333,8 @@ Processed skuba lints in <random>s.
 ESLint
 Processed 2 files in <random>s.
 
-Prettier
-Processed 6 files in <random>s.
+Oxfmt
+Finished in <ms>ms on 6 files using <n> threads.
 "
 `;
 
@@ -471,17 +444,16 @@ Processed 2 files in <random>s.
 ✖ 2 problems (2 errors, 0 warnings)
 
 
-Prettier
-Processed 6 files in <random>s.
-Formatted 1 file:
-a/a/a.ts
-Flagged 1 file:
-d.js SyntaxError: Unexpected token (1:1)
-> 1 | }
-    | ^
-  2 |
+Oxfmt
 
-ESLint, Prettier found issues that require triage.
+  × Unexpected token
+   ╭─[d.js:1:1]
+ 1 │ }
+   · ─
+   ╰────
+Error occurred when checking code style in the above files.
+
+ESLint, Oxfmt found issues that require triage.
 "
 `;
 
@@ -489,15 +461,15 @@ exports[`'unfixable' 2`] = `
 "
 a/a/a.ts
 --------
-[33m@@ -1,4 +1,4 @@[39m
-[2m  // Imports out-of-order[22m
-[32m- import path from 'path';[39m
-[2m  import fs from 'fs';[22m
-[31m+ import path from 'path';[39m
+@@ -1,4 +1,4 @@
+  // Imports out-of-order
+- import path from 'path';
+  import fs from 'fs';
++ import path from 'path';
 
-[33m@@ -7,3 +7,3 @@[39m
+@@ -7,3 +7,3 @@
 
-[32m-   console.log('I forgot to remove this')[39m
-[31m+   console.log('I forgot to remove this');[39m
-[2m  };[22m"
+-   console.log('I forgot to remove this')
++   console.log('I forgot to remove this');
+  };"
 `;

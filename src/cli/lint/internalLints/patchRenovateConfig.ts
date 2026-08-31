@@ -6,9 +6,9 @@ import * as fleece from 'golden-fleece';
 import * as z from 'zod/v4';
 
 import { log } from '../../../utils/logging.js';
+import { runOxfmt } from '../../adapter/oxfmt.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
 import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate.js';
-import { formatPrettier } from '../../configure/processing/prettier.js';
 
 import type { PatchFunction, PatchReturnType } from './upgrade/index.js';
 
@@ -19,7 +19,8 @@ const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;
 type RenovateFiletype = 'json' | 'json5';
 
 type RenovatePreset =
-  'local>seekasia/renovate-config' | 'local>seek-jobs/renovate-config';
+  | 'local>seekasia/renovate-config'
+  | 'local>seek-jobs/renovate-config';
 
 const renovateConfigSchema = z.object({
   extends: z.array(z.string()),
@@ -57,10 +58,9 @@ const patchJson: PatchFile = async ({ filepath, input, presetToAdd }) => {
 
   config.data.extends.unshift(presetToAdd);
 
-  await fs.promises.writeFile(
-    filepath,
-    await formatPrettier(JSON.stringify(config.data), { parser: 'json' }),
-  );
+  await fs.promises.writeFile(filepath, JSON.stringify(config.data));
+
+  await runOxfmt('format', log, [filepath]);
 
   return;
 };
@@ -76,10 +76,9 @@ const patchJson5: PatchFile = async ({ filepath, input, presetToAdd }) => {
 
   config.data.extends.unshift(presetToAdd);
 
-  await fs.promises.writeFile(
-    filepath,
-    await formatPrettier(fleece.patch(input, config.data), { parser: 'json5' }),
-  );
+  await fs.promises.writeFile(filepath, fleece.patch(input, config.data));
+
+  await runOxfmt('format', log, [filepath]);
 
   return;
 };

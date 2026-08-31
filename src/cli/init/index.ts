@@ -21,7 +21,7 @@ import {
   TEMPLATE_CONFIG_FILENAME,
   ensureTemplateConfigDeletion,
 } from '../../utils/template.js';
-import { runPrettier } from '../adapter/prettier.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
 import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.js';
 import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.js';
 
@@ -156,11 +156,9 @@ export const init = async (args = process.argv.slice(2)) => {
 
     // Templating can initially leave certain files in an unformatted state;
     // consider a Markdown table with columns sized based on content length.
-    await runPrettier(
-      'format',
-      createLogger({ debug: opts.debug }),
+    await runOxfmt('format', createLogger({ debug: opts.debug }), [
       destinationDir,
-    );
+    ]);
 
     depsInstalled = true;
   } catch (err) {
