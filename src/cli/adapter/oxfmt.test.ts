@@ -119,7 +119,10 @@ describe('runOxfmt', () => {
     it('returns ok: false when files need formatting', async () => {
       await writeFixture('a.ts', 'const   x=1;\n');
 
-      await expect(runOxfmt('lint', logger)).resolves.toEqual({ ok: false });
+      await expect(runOxfmt('lint', logger)).resolves.toEqual({
+        ok: false,
+        output: expect.any(String),
+      });
 
       // Lint mode should never rewrite files.
       await expect(readFixture('a.ts')).resolves.toBe('const   x=1;\n');
@@ -158,6 +161,7 @@ describe('runOxfmt', () => {
 
       await expect(runOxfmt('lint', logger)).resolves.toEqual({
         ok: false,
+        output: expect.any(String),
         errors: [
           {
             path: 'a.ts',
@@ -182,6 +186,7 @@ describe('runOxfmt', () => {
 
       await expect(runOxfmt('lint', logger)).resolves.toEqual({
         ok: false,
+        output: expect.any(String),
         errors: [
           {
             path: 'bad.ts',
@@ -207,6 +212,7 @@ describe('runOxfmt', () => {
 
       expect(result).toEqual({
         ok: false,
+        output: expect.any(String),
         errors: [
           {
             path: 'a.ts',
@@ -246,6 +252,7 @@ describe('runOxfmt', () => {
 
       await expect(runOxfmt('lint', logger)).resolves.toEqual({
         ok: false,
+        output: expect.any(String),
         errors: [
           {
             path: 'a.ts',

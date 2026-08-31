@@ -177,10 +177,10 @@ test.each`
   expect(
     buildkiteAnnotate.mock.calls.map(
       ([markdown, opts]) =>
-        `\nOptions: ${inspect(opts)}\n\n${stripAnsi(markdown).replace(
-          tempDirRegex,
-          '<random>',
-        )}\n`,
+        `\nOptions: ${inspect(opts)}\n\n${stripAnsi(markdown)
+          .replace(tempDirRegex, '<random>')
+          .replace(/\d+ms/g, '<ms>ms')
+          .replace(/\d+ threads/g, '<n> threads')}\n`,
     ),
   ).toMatchSnapshot();
 
