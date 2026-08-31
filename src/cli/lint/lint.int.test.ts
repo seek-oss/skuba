@@ -28,7 +28,6 @@ vi.mock('@skuba-lib/api/buildkite', async () => ({
 
 beforeAll(() => {
   vi.stubEnv('SKUBA_INT_TEST', 'true');
-  vi.stubEnv('CI', 'true');
 });
 
 afterAll(() => {

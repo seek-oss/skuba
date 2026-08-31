@@ -77,12 +77,11 @@ export const runOxfmt = async (
       ok: true,
     };
   } catch {
-    if (isCiEnv()) {
+    if (!isCiEnv() && !process.env.SKUBA_INT_TEST) {
       return {
         ok: false,
       };
     }
-    
 
     // Get the offending filepaths
     const invalidPaths: OxfmtError[] = [];
