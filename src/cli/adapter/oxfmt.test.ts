@@ -121,7 +121,6 @@ describe('runOxfmt', () => {
 
       await expect(runOxfmt('lint', logger)).resolves.toEqual({
         ok: false,
-        output: expect.any(String),
       });
 
       // Lint mode should never rewrite files.
@@ -161,7 +160,6 @@ describe('runOxfmt', () => {
 
       await expect(runOxfmt('lint', logger)).resolves.toEqual({
         ok: false,
-        output: expect.any(String),
         errors: [
           {
             path: 'a.ts',
@@ -186,7 +184,6 @@ describe('runOxfmt', () => {
 
       await expect(runOxfmt('lint', logger)).resolves.toEqual({
         ok: false,
-        output: expect.any(String),
         errors: [
           {
             path: 'bad.ts',
@@ -212,7 +209,6 @@ describe('runOxfmt', () => {
 
       expect(result).toEqual({
         ok: false,
-        output: expect.any(String),
         errors: [
           {
             path: 'a.ts',
@@ -252,7 +248,6 @@ describe('runOxfmt', () => {
 
       await expect(runOxfmt('lint', logger)).resolves.toEqual({
         ok: false,
-        output: expect.any(String),
         errors: [
           {
             path: 'a.ts',
