@@ -23,6 +23,7 @@ export type OxfmtResult =
       ok: false;
       execError?: string;
       errors?: OxfmtError[];
+      output?: string;
     };
 
 const oxfmtExec = createExec({
@@ -39,6 +40,14 @@ const logOxfmtOutput = (logger: Logger, output: unknown) => {
   for (const line of output.trimEnd().split('\n')) {
     logger.plain(line);
   }
+};
+
+const outputFromError = (error: unknown): string | undefined => {
+  if (error instanceof ExecaError && typeof error.all === 'string') {
+    return stripVTControlCharacters(error.all);
+  }
+
+  return undefined;
 };
 
 const runOxfmtCli = async (logger: Logger, ...args: string[]) => {
@@ -76,10 +85,13 @@ export const runOxfmt = async (
     return {
       ok: true,
     };
-  } catch {
+  } catch (checkError) {
+    const output = outputFromError(checkError);
+
     if (!isCiEnv()) {
       return {
         ok: false,
+        output,
       };
     }
 
@@ -98,6 +110,7 @@ export const runOxfmt = async (
           ok: false,
           execError: error instanceof Error ? error.message : 'Unknown error',
           errors: invalidPaths,
+          output,
         };
       }
 
@@ -149,6 +162,7 @@ export const runOxfmt = async (
         ok: false,
         execError: error.stderr !== '' ? error.stderr : undefined,
         errors: invalidPaths,
+        output,
       };
     }
   }
