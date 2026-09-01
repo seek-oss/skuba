@@ -68,10 +68,6 @@ jobs:
         run: pnpm lint
 
       - if: github.event_name == 'push'
-        name: Dry-run changelog versioning
-        run: pnpm changeset version
-
-      - if: github.event_name == 'push'
         name: Dry-run site packaging
         run: pnpm skuba node scripts/package.ts
 
