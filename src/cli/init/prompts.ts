@@ -86,38 +86,6 @@ const toClackValidate =
     return undefined;
   };
 
-const validateOwnerName = (value: string | undefined) => {
-  if (!value) {
-    return 'Required';
-  }
-
-  const [org, team] = value.split('/');
-
-  if (!org || !isGitHubOrg(org)) {
-    return 'Must contain a valid GitHub org name';
-  }
-
-  if (team !== undefined && !isGitHubTeam(team)) {
-    return 'Must contain a valid GitHub team name';
-  }
-
-  return undefined;
-};
-
-const validateRepoName = (value: string | undefined) => {
-  if (!value) {
-    return 'Required';
-  }
-
-  if (!isGitHubRepo(value)) {
-    return 'Must be a valid GitHub repo name';
-  }
-
-  return pathExistsSync(value)
-    ? `'${value}' is an existing directory`
-    : undefined;
-};
-
 export const promptBaseFields = async (): Promise<BaseFields> => {
   log.step('For starters, some project details:');
 
@@ -127,13 +95,41 @@ export const promptBaseFields = async (): Promise<BaseFields> => {
         text({
           message: 'Owner',
           placeholder: 'SEEK-Jobs/my-team',
-          validate: validateOwnerName,
+          validate: (value) => {
+            if (!value) {
+              return 'Required';
+            }
+
+            const [org, team] = value.split('/');
+
+            if (!org || !isGitHubOrg(org)) {
+              return 'Must contain a valid GitHub org name';
+            }
+
+            if (team !== undefined && !isGitHubTeam(team)) {
+              return 'Must contain a valid GitHub team name';
+            }
+
+            return undefined;
+          },
         }),
       repoName: () =>
         text({
           message: 'Repo',
           placeholder: 'my-repo',
-          validate: validateRepoName,
+          validate: (value) => {
+            if (!value) {
+              return 'Required';
+            }
+
+            if (!isGitHubRepo(value)) {
+              return 'Must be a valid GitHub repo name';
+            }
+
+            return pathExistsSync(value)
+              ? `'${value}' is an existing directory`
+              : undefined;
+          },
         }),
       platformName: () =>
         select({
