@@ -28,16 +28,15 @@ echo '--- pnpm pack'
 # Aaron Moat is sure there's a better way to do this
 skuba_lib_api_tar="$(pwd)/packages/api/$(cd packages/api && pnpm pack | grep -Eo '^skuba-lib-api-[0-9].*\.tgz')"
 eslint_plugin_skuba_tar="$(pwd)/packages/eslint-plugin-skuba/$(cd packages/eslint-plugin-skuba && pnpm pack | grep -Eo '^eslint-plugin-skuba-[0-9].*\.tgz')"
-pnpm_plugin_skuba_tar="$(pwd)/packages/pnpm-plugin-skuba/$(cd packages/pnpm-plugin-skuba && pnpm pack | grep -Eo '^pnpm-plugin-skuba-[0-9].*\.tgz')"
 changesets_changelog_tar="$(pwd)/packages/changesets-changelog/$(cd packages/changesets-changelog && pnpm pack | grep -Eo '^skuba-lib-changesets-changelog-[0-9].*\.tgz')"
+pnpm_plugin_skuba_tar="$(pwd)/packages/pnpm-plugin-skuba/$(cd packages/pnpm-plugin-skuba && pnpm pack | grep -Eo '^pnpm-plugin-skuba-[0-9].*\.tgz')"
 jq ".dependencies[\"eslint-plugin-skuba\"] = \"file:${eslint_plugin_skuba_tar}\"" packages/eslint-config-skuba/package.json > packages/eslint-config-skuba/package.json.tmp
 mv packages/eslint-config-skuba/package.json packages/eslint-config-skuba/package.json.bak
 mv packages/eslint-config-skuba/package.json.tmp packages/eslint-config-skuba/package.json
 eslint_config_skuba_tar="$(pwd)/packages/eslint-config-skuba/$(cd packages/eslint-config-skuba && pnpm pack | grep -Eo '^eslint-config-skuba-[0-9].*\.tgz')"
 mv packages/eslint-config-skuba/package.json.bak packages/eslint-config-skuba/package.json
 
-jq ".dependencies[\"@skuba-lib/changesets-changelog\"] = \"file:${changesets_changelog_tar}\" | .dependencies[\"eslint-config-skuba\"] = \"file:${eslint_config_skuba_tar}\" | .dependencies[\"@skuba-lib/api\"] = \"file:${skuba_lib_api_tar}\" | .dependencies[\"pnpm-plugin-skuba\"] = \"file:${pnpm_plugin_skuba_tar}\"" package.json > package.json.tmp
-mv package.json package.json.bak
+jq ".dependencies[\"eslint-config-skuba\"] = \"file:${eslint_config_skuba_tar}\" | .dependencies[\"@skuba-lib/api\"] = \"file:${skuba_lib_api_tar}\" | .dependencies[\"@skuba-lib/changesets-changelog\"] = \"file:${changesets_changelog_tar}\" | .dependencies[\"pnpm-plugin-skuba\"] = \"file:${pnpm_plugin_skuba_tar}\"" package.json > package.json.tmpmv package.json package.json.bak
 mv package.json.tmp package.json
 skuba_tar="$(pwd)/$(pnpm pack | grep -Eo '^skuba-[0-9].*\.tgz')"
 mv package.json.bak package.json
