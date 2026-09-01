@@ -21,8 +21,13 @@ Select `seek →` when running `skuba init`.
 Once you choose a template, it is downloaded via SSH and applied to your new project.
 
 ```text
-? Select a template: (Use arrow keys)
-❯ seek →
+◆  Select a template:
+│  ○ greeter
+│  ○ oss-npm-package
+│  ○ github →  clone a GitHub repo
+│  ● seek →  SEEK private templates
+│  ○ local →  path on disk
+└
 ```
 
 ```text
@@ -44,12 +49,18 @@ Select `github →` when running `skuba init`.
 **skuba** will shallow-clone your template repo from GitHub and apply some of its base configuration on top.
 
 ```text
-? Select a template: (Use arrow keys)
-❯ github →
+◆  Select a template:
+│  ○ greeter
+│  ○ oss-npm-package
+│  ● github →  clone a GitHub repo
+│  ○ seek →  SEEK private templates
+│  ○ local →  path on disk
+└
 ```
 
 ```text
-? Git path: seek-oss/skuba
+◆  Git path
+│  seek-oss/skuba
 ```
 
 The git path should be in `org/repo` format.
@@ -63,10 +74,16 @@ Select `local →` when running `skuba init` to use a template from your local f
 This is useful for developing and testing new templates before publishing them.
 
 ```text
-? Select a template: (Use arrow keys)
-❯ local →
+◆  Select a template:
+│  ○ greeter
+│  ○ oss-npm-package
+│  ○ github →  clone a GitHub repo
+│  ○ seek →  SEEK private templates
+│  ● local →  path on disk
+└
 ```
 
 ```text
-? Path to local template: ./path/to/my-template
+◆  Path to local template
+│  ./path/to/my-template
 ```

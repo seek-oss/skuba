@@ -1,16 +1,23 @@
-import { cancel, confirm, isCancel, log, select, text } from '@clack/prompts';
+import {
+  cancel,
+  confirm,
+  group,
+  isCancel,
+  log,
+  path,
+  select,
+  text,
+} from '@clack/prompts';
 
 import { pathExistsSync } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
 
 import { DEFAULT_RENOVATE_PRESET } from './types.js';
 import {
-  PLATFORM_OPTIONS,
   type Platform,
   isGitHubOrg,
   isGitHubRepo,
   isGitHubTeam,
-  isPlatform,
 } from './validation.js';
 
 export interface Choice {
@@ -18,106 +25,52 @@ export interface Choice {
   message: string;
   initial?: string;
   validate?: (value: string) => boolean | string;
-  /**
-   * Whether the user is allowed to skip field entry and use the initial value.
-   *
-   * Defaults to `false`.
-   */
-  allowInitial?: boolean;
 }
 
-export type BaseFields = Record<
-  (typeof BASE_CHOICES)[number]['name'],
-  string
-> & {
+export interface BaseFields {
+  ownerName: string;
+  repoName: string;
   platformName: Platform;
+  defaultBranch: string;
+  renovatePreset: string;
+}
+
+export const BASE_PROMPT_DEFAULTS = {
+  platformName: 'arm64',
+  defaultBranch: 'main',
+  renovatePreset: DEFAULT_RENOVATE_PRESET,
+} as const satisfies {
+  platformName: Platform;
+  defaultBranch: string;
+  renovatePreset: string;
 };
 
-const BASE_CHOICES = [
-  {
-    name: 'ownerName',
-    message: 'Owner',
-    initial: 'SEEK-Jobs/my-team',
-    validate: (value: unknown) => {
-      if (typeof value !== 'string') {
-        return 'Required';
-      }
+const TEMPLATE_HINTS: Partial<
+  Record<(typeof TEMPLATE_NAMES_WITH_BYO)[number], string>
+> = {
+  'github →': 'clone a GitHub repo',
+  'seek →': 'SEEK private templates',
+  'local →': 'path on disk',
+};
 
-      const [org, team] = value.split('/');
-
-      if (!org || !isGitHubOrg(org)) {
-        return 'Must contain a valid GitHub org name';
-      }
-
-      return (
-        team === undefined ||
-        isGitHubTeam(team) ||
-        'Must contain a valid GitHub team name'
-      );
-    },
-  },
-  {
-    name: 'repoName',
-    message: 'Repo',
-    initial: 'my-repo',
-    validate: (value: unknown) => {
-      if (typeof value !== 'string') {
-        return 'Required';
-      }
-
-      if (!isGitHubRepo(value)) {
-        return 'Must be a valid GitHub repo name';
-      }
-
-      return !pathExistsSync(value) || `'${value}' is an existing directory`;
-    },
-  },
-  {
-    name: 'platformName',
-    message: 'Platform',
-    initial: 'arm64',
-    allowInitial: true,
-    validate: (value: unknown) =>
-      isPlatform(value) || `Must be ${PLATFORM_OPTIONS}`,
-  },
-  {
-    name: 'defaultBranch',
-    message: 'Default Branch',
-    initial: 'main',
-    allowInitial: true,
-    validate: (value: unknown) =>
-      typeof value === 'string' && value.length > 0 ? true : 'Required',
-  },
-  {
-    name: 'renovatePreset',
-    message: 'Renovate preset',
-    initial: DEFAULT_RENOVATE_PRESET,
-    allowInitial: true,
-    validate: (value: unknown) =>
-      typeof value === 'string' && value.length > 0 ? true : 'Required',
-  },
-] as const;
-
-export const BASE_PROMPT_PROPS = {
-  choices: BASE_CHOICES,
-  message: 'For starters, some project details:',
-  name: 'baseAnswers',
+const cancelPrompt = (): never => {
+  cancel('Cancelled.');
+  process.exit(0);
 };
 
 const handleCancel = <T>(value: T | symbol): T => {
   if (isCancel(value)) {
-    cancel('Cancelled.');
-    process.exit(0);
+    cancelPrompt();
   }
 
-  return value;
+  return value as T;
 };
 
 const toClackValidate =
   (choice: Choice) =>
   (value: string | undefined): string | undefined => {
-    if (!value || (value === choice.initial && !choice.allowInitial)) {
-      return 'Form is not complete';
+    if (!value) {
+      return 'Required';
     }
 
     const result = choice.validate?.(value);
@@ -127,11 +80,88 @@ const toClackValidate =
     }
 
     if (result === false) {
-      return 'Form is not complete';
+      return 'Required';
     }
 
     return undefined;
   };
+
+const validateOwnerName = (value: string | undefined) => {
+  if (!value) {
+    return 'Required';
+  }
+
+  const [org, team] = value.split('/');
+
+  if (!org || !isGitHubOrg(org)) {
+    return 'Must contain a valid GitHub org name';
+  }
+
+  if (team !== undefined && !isGitHubTeam(team)) {
+    return 'Must contain a valid GitHub team name';
+  }
+
+  return undefined;
+};
+
+const validateRepoName = (value: string | undefined) => {
+  if (!value) {
+    return 'Required';
+  }
+
+  if (!isGitHubRepo(value)) {
+    return 'Must be a valid GitHub repo name';
+  }
+
+  return pathExistsSync(value)
+    ? `'${value}' is an existing directory`
+    : undefined;
+};
+
+export const promptBaseFields = async (): Promise<BaseFields> => {
+  log.step('For starters, some project details:');
+
+  return group(
+    {
+      ownerName: () =>
+        text({
+          message: 'Owner',
+          placeholder: 'SEEK-Jobs/my-team',
+          validate: validateOwnerName,
+        }),
+      repoName: () =>
+        text({
+          message: 'Repo',
+          placeholder: 'my-repo',
+          validate: validateRepoName,
+        }),
+      platformName: () =>
+        select({
+          message: 'Platform',
+          initialValue: BASE_PROMPT_DEFAULTS.platformName,
+          options: [
+            { value: 'arm64', label: 'arm64' },
+            { value: 'amd64', label: 'amd64' },
+          ],
+        }),
+      defaultBranch: () =>
+        text({
+          message: 'Default Branch',
+          placeholder: BASE_PROMPT_DEFAULTS.defaultBranch,
+          defaultValue: BASE_PROMPT_DEFAULTS.defaultBranch,
+        }),
+      renovatePreset: () =>
+        text({
+          message: 'Renovate preset',
+          placeholder: BASE_PROMPT_DEFAULTS.renovatePreset,
+          defaultValue: BASE_PROMPT_DEFAULTS.renovatePreset,
+        }),
+    },
+    {
+      onCancel: cancelPrompt,
+    },
+  );
+};
 
 export const runForm = async <T = Record<string, string>>(props: {
   choices: readonly Choice[];
@@ -140,18 +170,22 @@ export const runForm = async <T = Record<string, string>>(props: {
 }): Promise<T> => {
   log.step(props.message);
 
-  const result: Record<string, string> = {};
-
-  for (const choice of props.choices) {
-    result[choice.name] = handleCancel(
-      await text({
-        message: choice.message,
-        placeholder: choice.initial,
-        initialValue: choice.allowInitial ? choice.initial : undefined,
-        validate: toClackValidate(choice),
-      }),
-    );
-  }
+  const result = await group(
+    Object.fromEntries(
+      props.choices.map((choice) => [
+        choice.name,
+        () =>
+          text({
+            message: choice.message,
+            placeholder: choice.initial,
+            validate: toClackValidate(choice),
+          }),
+      ]),
+    ),
+    {
+      onCancel: cancelPrompt,
+    },
+  );
 
   return result as T;
 };
@@ -168,9 +202,9 @@ export const getGitPath = async () =>
     await text({
       message: 'Git path',
       placeholder: 'seek-oss/skuba',
-      initialValue: 'seek-oss/skuba',
+      defaultValue: 'seek-oss/skuba',
       validate: (value: string | undefined) =>
-        value && /[^/]+\/[^/]+/.test(value)
+        !value || /[^/]+\/[^/]+/.test(value)
           ? undefined
           : 'Must be a valid path',
     }),
@@ -183,14 +217,16 @@ export const getTemplateName = async () =>
       options: TEMPLATE_NAMES_WITH_BYO.map((name) => ({
         label: name,
         value: name,
+        hint: TEMPLATE_HINTS[name],
       })),
     }),
   );
 
 export const getLocalTemplatePath = async () =>
   handleCancel(
-    await text({
+    await path({
       message: 'Path to local template',
+      directory: true,
       validate: (value: string | undefined) =>
         value && pathExistsSync(value) ? undefined : 'Path does not exist',
     }),

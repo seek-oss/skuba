@@ -22,13 +22,13 @@ import {
   listPrivateTemplates,
 } from './git.js';
 import {
-  BASE_PROMPT_PROPS,
   type BaseFields,
   type Choice,
   getGitPath,
   getLocalTemplatePath,
   getPrivateTemplateName,
   getTemplateName,
+  promptBaseFields,
   runForm,
   shouldContinue,
 } from './prompts.js';
@@ -201,7 +201,7 @@ export const baseToTemplateData = async ({
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
   const { ownerName, platformName, repoName, defaultBranch, renovatePreset } =
-    await runForm<BaseFields>(BASE_PROMPT_PROPS);
+    await promptBaseFields();
   clackLog.info(
     `${styleText('cyan', repoName)} by ${styleText('cyan', ownerName)}`,
   );
