@@ -1,7 +1,8 @@
 import path from 'path';
+import readline from 'readline';
 import { inspect } from 'util';
 
-import { log as clackLog, note, outro } from '@clack/prompts';
+import { log as clackLog, note, outro, taskLog } from '@clack/prompts';
 import fs from 'fs-extra';
 
 import {
@@ -16,7 +17,10 @@ import { pathExists } from '../../utils/fs.js';
 import { createLogger } from '../../utils/logging.js';
 import { showLogoAndVersionInfo } from '../../utils/logo.js';
 import { getConsumerManifest } from '../../utils/manifest.js';
-import { detectPackageManager } from '../../utils/packageManager.js';
+import {
+  type PackageManager,
+  detectPackageManager,
+} from '../../utils/packageManager.js';
 import {
   BASE_TEMPLATE_DIR,
   TEMPLATE_CONFIG_FILENAME,
@@ -34,6 +38,71 @@ import type { Input } from './types.js';
 import { writePackageJson } from './writePackageJson.js';
 
 import * as Git from '@skuba-lib/api/git';
+
+const feedLines = (
+  readable: NodeJS.ReadableStream | null | undefined,
+  onLine: (line: string) => void,
+) => {
+  if (!readable) {
+    return;
+  }
+
+  readline.createInterface({ input: readable }).on('line', onLine);
+};
+
+const installDependencies = async ({
+  debug,
+  destinationDir,
+  packageManager,
+  skubaSlug,
+}: {
+  debug: boolean;
+  destinationDir: string;
+  packageManager: PackageManager;
+  skubaSlug: string;
+}) => {
+  const exec = createExec({
+    cwd: destinationDir,
+    stdio: 'pipe',
+    streamStdio: process.stdout.isTTY ? undefined : packageManager,
+  });
+
+  const args =
+    packageManager === 'pnpm'
+      ? (['add', '-D', skubaSlug, '--reporter=append-only'] as const)
+      : (['add', '-D', skubaSlug] as const);
+
+  if (!process.stdout.isTTY) {
+    // The `-D` shorthand is portable across our package managers.
+    await exec(packageManager, ...args);
+    return;
+  }
+
+  const output = taskLog({
+    title: `Installing ${skubaSlug}`,
+    limit: 12,
+    retainLog: debug,
+  });
+
+  const subprocess = exec(packageManager, ...args);
+
+  const onLine = (line: string) => {
+    if (line.length > 0) {
+      output.message(line);
+    }
+  };
+
+  feedLines(subprocess.stdout, onLine);
+  feedLines(subprocess.stderr, onLine);
+
+  try {
+    await subprocess;
+    output.success(`Installed ${skubaSlug}`);
+  } catch (err) {
+    output.error('Failed to install dependencies', { showLog: true });
+    throw err;
+  }
+};
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {
@@ -113,12 +182,6 @@ export const init = async (args = process.argv.slice(2)) => {
     }),
   ]);
 
-  const exec = createExec({
-    cwd: destinationDir,
-    stdio: 'pipe',
-    streamStdio: packageManager,
-  });
-
   await initialiseRepo(destinationDir, templateData);
 
   const [manifest, packageManagerConfig] = await Promise.all([
@@ -151,8 +214,12 @@ export const init = async (args = process.argv.slice(2)) => {
 
   let depsInstalled = false;
   try {
-    // The `-D` shorthand is portable across our package managers.
-    await exec(packageManager, 'add', '-D', skubaSlug);
+    await installDependencies({
+      debug: opts.debug,
+      destinationDir,
+      packageManager,
+      skubaSlug,
+    });
 
     // Templating can initially leave certain files in an unformatted state;
     // consider a Markdown table with columns sized based on content length.
