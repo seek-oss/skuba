@@ -14,7 +14,7 @@ import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
 import { createInclusionFilter } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
 import { pathExists } from '../../utils/fs.js';
-import { createLogger } from '../../utils/logging.js';
+import { type Logger, createLogger } from '../../utils/logging.js';
 import { showLogoAndVersionInfo } from '../../utils/logo.js';
 import { getConsumerManifest } from '../../utils/manifest.js';
 import {
@@ -50,6 +50,35 @@ const feedLines = (
   readline.createInterface({ input: readable }).on('line', onLine);
 };
 
+const createTaskLogLogger = (
+  write: (line: string) => void,
+  debug: boolean,
+): Logger => {
+  const logger = createLogger({ debug });
+
+  const logToTask = (...message: unknown[]) => {
+    const line = message.map(String).join(' ').trimEnd();
+    if (line.length > 0) {
+      write(line);
+    }
+  };
+
+  return {
+    ...logger,
+    debug: (...message) => {
+      if (debug) {
+        logToTask(...message);
+      }
+    },
+    subtle: logToTask,
+    err: logToTask,
+    newline: () => undefined,
+    ok: logToTask,
+    plain: logToTask,
+    warn: logToTask,
+  };
+};
+
 const installDependencies = async ({
   debug,
   destinationDir,
@@ -79,7 +108,7 @@ const installDependencies = async ({
   }
 
   const output = taskLog({
-    title: 'Installing dependencies...',
+    title: 'Installing dependencies',
     limit: 12,
     retainLog: debug,
   });
@@ -100,6 +129,39 @@ const installDependencies = async ({
     output.success('Installed dependencies');
   } catch (err) {
     output.error('Failed to install dependencies', { showLog: true });
+    throw err;
+  }
+};
+
+const formatProject = async ({
+  debug,
+  destinationDir,
+}: {
+  debug: boolean;
+  destinationDir: string;
+}) => {
+  // Templating can initially leave certain files in an unformatted state;
+  // consider a Markdown table with columns sized based on content length.
+  if (!process.stdout.isTTY) {
+    await runPrettier('format', createLogger({ debug }), destinationDir);
+    return;
+  }
+
+  const output = taskLog({
+    title: 'Formatting project',
+    limit: 12,
+    retainLog: debug,
+  });
+
+  try {
+    await runPrettier(
+      'format',
+      createTaskLogLogger((line) => output.message(line), debug),
+      destinationDir,
+    );
+    output.success('Formatted project');
+  } catch (err) {
+    output.error('Failed to format project', { showLog: true });
     throw err;
   }
 };
@@ -221,13 +283,10 @@ export const init = async (args = process.argv.slice(2)) => {
       skubaSlug,
     });
 
-    // Templating can initially leave certain files in an unformatted state;
-    // consider a Markdown table with columns sized based on content length.
-    await runPrettier(
-      'format',
-      createLogger({ debug: opts.debug }),
+    await formatProject({
+      debug: opts.debug,
       destinationDir,
-    );
+    });
 
     depsInstalled = true;
   } catch (err) {
