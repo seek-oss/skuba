@@ -85,7 +85,7 @@
     "@ast-grep/lang-json": "~0.0.7",
     "@ast-grep/lang-yaml": "~0.0.6",
     "@ast-grep/napi": "~0.45.0",
-    "@changesets/cli": "^2.31.0",
+    "@changesets/cli": "^3.0.0",
     "@esbuild-plugins/tsconfig-paths": "^0.1.0",
     "@inquirer/prompts": "^8.0.0",
     "@octokit/graphql": "^9.0.0",
@@ -139,6 +139,7 @@
     "tsx": "^4.21.0",
     "typescript": "~6.0.0",
     "vitest": "^4.1.4",
+    "yaml": "^2.9.0",
     "zod": "^4.3.5"
   },
   "devDependencies": {
