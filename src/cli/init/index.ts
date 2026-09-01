@@ -1,3 +1,4 @@
+import { styleText } from 'node:util';
 import path from 'path';
 import readline from 'readline';
 import { inspect } from 'util';
@@ -304,16 +305,22 @@ export const init = async (args = process.argv.slice(2)) => {
     clackLog.error('Failed to install dependencies.');
     note(
       [
-        `Create an empty ${repoSlug} repository:`,
-        'https://github.com/new',
+        `${styleText('dim', 'Create an empty')} ${styleText(
+          'cyan',
+          repoSlug,
+        )} ${styleText('dim', 'repository:')}`,
+        styleText(['underline', 'cyan'], 'https://github.com/new'),
         '',
-        'Then, resume initialisation:',
-        `cd ${destinationDir}`,
-        `${packageManager} add -D ${skubaSlug}`,
-        `${packageManager} run format`,
-        'git add --all',
-        `git commit --message 'Pin ${skubaSlug}'`,
-        `git push --set-upstream origin ${templateData.defaultBranch}`,
+        styleText('dim', 'Then, resume initialisation:'),
+        styleText('cyan', `cd ${destinationDir}`),
+        styleText('cyan', `${packageManager} add -D ${skubaSlug}`),
+        styleText('cyan', `${packageManager} run format`),
+        styleText('cyan', 'git add --all'),
+        styleText('cyan', `git commit --message 'Pin ${skubaSlug}'`),
+        styleText(
+          'cyan',
+          `git push --set-upstream origin ${templateData.defaultBranch}`,
+        ),
       ].join('\n'),
       'Next steps',
     );
@@ -324,12 +331,18 @@ export const init = async (args = process.argv.slice(2)) => {
 
   note(
     [
-      `Create an empty ${repoSlug} repository:`,
-      'https://github.com/new',
+      `${styleText('dim', 'Create an empty')} ${styleText(
+        'cyan',
+        repoSlug,
+      )} ${styleText('dim', 'repository:')}`,
+      styleText(['underline', 'cyan'], 'https://github.com/new'),
       '',
-      'Then, push your local changes:',
-      `cd ${destinationDir}`,
-      `git push --set-upstream origin ${templateData.defaultBranch}`,
+      styleText('dim', 'Then, push your local changes:'),
+      styleText('cyan', `cd ${destinationDir}`),
+      styleText(
+        'cyan',
+        `git push --set-upstream origin ${templateData.defaultBranch}`,
+      ),
     ].join('\n'),
     'Next steps',
   );
