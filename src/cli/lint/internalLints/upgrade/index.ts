@@ -5,10 +5,6 @@ import { gte, sort } from 'semver';
 
 import type { Logger } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
-import {
-  type PackageManagerConfig,
-  detectPackageManager,
-} from '../../../../utils/packageManager.js';
 import { getSkubaVersion } from '../../../../utils/version.js';
 import { formatPackage } from '../../../configure/processing/package.js';
 import type { ReadResult } from '../../../configure/types.js';
@@ -26,7 +22,6 @@ export type PatchReturnType =
 export type PatchConfig = {
   mode: 'format' | 'lint';
   manifest: ReadResult;
-  packageManager: PackageManagerConfig;
   dir?: string;
 };
 
@@ -77,10 +72,9 @@ export const upgradeSkuba = async (
   logger: Logger,
   additionalFlags: string[] = [],
 ): Promise<InternalLintResult> => {
-  const [currentVersion, manifest, packageManager] = await Promise.all([
+  const [currentVersion, manifest] = await Promise.all([
     getSkubaVersion(),
     getConsumerManifest(),
-    detectPackageManager(),
   ]);
 
   if (!manifest) {
@@ -111,7 +105,6 @@ export const upgradeSkuba = async (
           await apply({
             mode,
             manifest,
-            packageManager,
           }),
       ),
     );
@@ -123,7 +116,7 @@ export const upgradeSkuba = async (
 
     logger.warn(
       `skuba has patches to apply. Run ${logger.bold(
-        `${packageManager.print.exec} skuba format`,
+        'pnpm exec skuba format',
       )} to run them.`,
     );
 
@@ -135,7 +128,8 @@ export const upgradeSkuba = async (
           // package.json as likely skuba version has changed
           // TODO: locate the "skuba": {} config in the package.json and annotate on the version property
           path: manifest.path,
-          message: `skuba has patches to apply. Run ${packageManager.print.exec} skuba format to run them.`,
+          message:
+            'skuba has patches to apply. Run pnpm exec skuba format to run them.',
         },
       ],
     };
@@ -148,7 +142,6 @@ export const upgradeSkuba = async (
     const result = await apply({
       mode,
       manifest,
-      packageManager,
     });
     logger.newline();
     if (result.result === 'skip') {

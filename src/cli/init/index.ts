@@ -15,7 +15,6 @@ import { pathExists } from '../../utils/fs.js';
 import { createLogger, log } from '../../utils/logging.js';
 import { showLogoAndVersionInfo } from '../../utils/logo.js';
 import { getConsumerManifest } from '../../utils/manifest.js';
-import { detectPackageManager } from '../../utils/packageManager.js';
 import {
   BASE_TEMPLATE_DIR,
   TEMPLATE_CONFIG_FILENAME,
@@ -64,14 +63,13 @@ export const init = async (args = process.argv.slice(2)) => {
   const {
     destinationDir,
     entryPoint,
-    packageManager,
     templateComplete,
     templateData,
     templateName,
     type,
   } = await getConfig({ nonInteractive });
 
-  await ensureCommands(packageManager);
+  await ensureCommands('pnpm');
 
   const include = await createInclusionFilter([
     path.join(destinationDir, '.gitignore'),
@@ -115,44 +113,37 @@ export const init = async (args = process.argv.slice(2)) => {
   const exec = createExec({
     cwd: destinationDir,
     stdio: 'pipe',
-    streamStdio: packageManager,
+    streamStdio: true,
   });
 
   log.newline();
   await initialiseRepo(destinationDir, templateData);
 
-  const [manifest, packageManagerConfig] = await Promise.all([
-    getConsumerManifest(destinationDir),
-    detectPackageManager(destinationDir),
-  ]);
+  const manifest = await getConsumerManifest(destinationDir);
 
   if (!manifest) {
     throw new Error("Repository doesn't contain a package.json file.");
   }
 
-  if (packageManager === 'pnpm') {
-    await fs.promises.writeFile(
-      path.join(destinationDir, 'pnpm-workspace.yaml'),
-      '',
-      'utf8',
-    );
-    await patchPnpmWorkspace('format', destinationDir);
-  }
+  await fs.promises.writeFile(
+    path.join(destinationDir, 'pnpm-workspace.yaml'),
+    '',
+    'utf8',
+  );
+  await patchPnpmWorkspace('format', destinationDir);
 
   // Patch in a baseline Renovate preset based on the configured Git owner.
   await tryPatchRenovateConfig({
     mode: 'format',
     dir: destinationDir,
     manifest,
-    packageManager: packageManagerConfig,
   });
 
   const skubaSlug = `skuba@${skubaVersionInfo.local}`;
 
   let depsInstalled = false;
   try {
-    // The `-D` shorthand is portable across our package managers.
-    await exec(packageManager, 'add', '-D', skubaSlug);
+    await exec('pnpm', 'add', '-D', skubaSlug);
 
     // Templating can initially leave certain files in an unformatted state;
     // consider a Markdown table with columns sized based on content length.
@@ -191,9 +182,8 @@ export const init = async (args = process.argv.slice(2)) => {
     log.newline();
     log.plain('Then, resume initialisation:');
     log.ok('cd', destinationDir);
-    // The `-D` shorthand is portable across our package managers.
-    log.ok(packageManager, 'add', '-D', skubaSlug);
-    log.ok(packageManager, 'run', 'format');
+    log.ok('pnpm', 'add', '-D', skubaSlug);
+    log.ok('pnpm', 'run', 'format');
     log.ok('git add --all');
     log.ok('git commit --message', `'Pin ${skubaSlug}'`);
     log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);

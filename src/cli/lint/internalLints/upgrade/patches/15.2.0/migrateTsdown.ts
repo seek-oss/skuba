@@ -7,7 +7,6 @@ import fs from 'fs-extra';
 
 import { createExec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
-import { detectPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const FIELD_REMAPPING = {
@@ -199,13 +198,11 @@ export const migrateTsdown: PatchFunction = async ({
     }),
   );
 
-  const packageManager = await detectPackageManager();
-
   // Update package.json with new inlinedDependencies fields if needed
   await Promise.all(
     configsToUpdate.map(async ({ file }) => {
       const execInPackageDir = createExec({ cwd: dirname(file) });
-      await execInPackageDir(packageManager.command, 'tsdown');
+      await execInPackageDir('pnpm', 'tsdown');
     }),
   );
 

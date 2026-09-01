@@ -7,7 +7,6 @@ import fs from 'fs-extra';
 
 import { createExec, exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
-import { detectPackageManager } from '../../../../../../utils/packageManager.js';
 import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
 import { tryRefreshConfigFiles } from '../../../refreshConfigFiles.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
@@ -576,11 +575,10 @@ export const patchPackageBuilds: PatchFunction = async ({
           : []),
       ]);
 
-      const packageManager = await detectPackageManager();
-      await exec(packageManager.command, 'install', '--offline');
+      await exec('pnpm', 'install', '--offline');
 
       const execInPackageDir = createExec({ cwd: directory });
-      await execInPackageDir(packageManager.command, 'tsdown');
+      await execInPackageDir('pnpm', 'tsdown');
 
       return updated;
     }),

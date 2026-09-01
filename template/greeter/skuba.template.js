@@ -12,6 +12,5 @@ export default {
       validate: (value) => /^.+:.+$/.test(value),
     },
   ],
-  packageManager: 'pnpm',
   type: 'application',
 };

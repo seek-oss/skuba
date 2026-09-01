@@ -1,9 +1,5 @@
 import { log } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
-import {
-  type PackageManagerConfig,
-  detectPackageManager,
-} from '../../../utils/packageManager.js';
 import type {
   Patch,
   PatchReturnType,
@@ -83,14 +79,10 @@ const patches: Patch[] = [
 
 export const migrateToESM = async (opts: {
   mode: 'lint' | 'format';
-  packageManager?: PackageManagerConfig;
 }): Promise<PatchReturnType> => {
   const { mode } = opts;
 
-  const [manifest, packageManager] = await Promise.all([
-    getConsumerManifest(),
-    opts.packageManager ?? detectPackageManager(),
-  ]);
+  const manifest = await getConsumerManifest();
 
   if (!manifest) {
     throw new Error('Could not find a package json for this project');
@@ -100,7 +92,6 @@ export const migrateToESM = async (opts: {
     const result = await patch.apply({
       mode,
       manifest,
-      packageManager,
     });
 
     if (mode === 'lint') {

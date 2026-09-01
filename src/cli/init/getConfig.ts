@@ -7,7 +7,6 @@ import fs from 'fs-extra';
 import { copyFiles } from '../../utils/copy.js';
 import { isErrorWithCode } from '../../utils/error.js';
 import { log } from '../../utils/logging.js';
-import { DEFAULT_PACKAGE_MANAGER } from '../../utils/packageManager.js';
 import { getRandomPort } from '../../utils/port.js';
 import {
   TEMPLATE_CONFIG_FILENAME,
@@ -185,7 +184,6 @@ export const getTemplateConfig = async (
       return {
         entryPoint: undefined,
         fields: [],
-        packageManager: DEFAULT_PACKAGE_MANAGER,
         type: undefined,
       };
     }
@@ -247,14 +245,15 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   log.newline();
   const templateName = await selectTemplateName();
 
-  const { entryPoint, fields, noSkip, packageManager, type } =
-    await cloneTemplate(templateName, destinationDir);
+  const { entryPoint, fields, noSkip, type } = await cloneTemplate(
+    templateName,
+    destinationDir,
+  );
 
   if (fields.length === 0) {
     return {
       destinationDir,
       entryPoint,
-      packageManager,
       templateComplete: true,
       templateData,
       templateName,
@@ -280,7 +279,6 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     return {
       destinationDir,
       entryPoint,
-      packageManager,
       templateComplete: true,
       templateData: { ...templateData, ...customAnswers },
       templateName,
@@ -300,7 +298,6 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   return {
     destinationDir,
     entryPoint,
-    packageManager,
     templateComplete: false,
     templateData: { ...templateData, ...customAnswers },
     templateName,
@@ -319,8 +316,10 @@ const configureFromPipe = async (): Promise<InitConfig> => {
 
   await createDirectory(destinationDir);
 
-  const { entryPoint, fields, noSkip, packageManager, type } =
-    await cloneTemplate(templateName, destinationDir);
+  const { entryPoint, fields, noSkip, type } = await cloneTemplate(
+    templateName,
+    destinationDir,
+  );
 
   if (!templateComplete) {
     if (noSkip) {
@@ -333,7 +332,6 @@ const configureFromPipe = async (): Promise<InitConfig> => {
     return {
       ...config,
       entryPoint,
-      packageManager,
       templateData: {
         ...templateData,
         ...generatePlaceholders(fields),
@@ -381,7 +379,6 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   return {
     ...config,
     entryPoint,
-    packageManager,
     templateData,
     type,
   };
