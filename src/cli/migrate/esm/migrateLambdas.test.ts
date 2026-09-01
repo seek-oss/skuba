@@ -151,7 +151,7 @@ export class AppStack extends Stack {
         // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
         externalModules: [],
         esbuildArgs: {
-          '--conditions': '@seek/<%- serviceName %>/source',
+          '--conditions': '@seek/<%- repoName %>/source',
         },
       },
       functionName: '<%- serviceName %>',
@@ -324,7 +324,7 @@ export class AppStack extends Stack {
               // aws-sdk-v3 is set as an external module by default, but we want it to be bundled with the function
               externalModules: [],
               esbuildArgs: {
-                '--conditions': '@seek/<%- serviceName %>/source,module',
+                '--conditions': '@seek/<%- repoName %>/source,module',
               },
             
       format: aws_lambda_nodejs.OutputFormat.ESM,
@@ -498,7 +498,7 @@ export class AppStack extends Stack {
         externalModules: [],
         nodeModules: ['datadog-lambda-js', 'dd-trace'],
         esbuildArgs: {
-          '--conditions': '@seek/<%- serviceName %>/source',
+          '--conditions': '@seek/<%- repoName %>/source',
         },
       },
       functionName: '<%- serviceName %>',
@@ -668,7 +668,7 @@ export class AppStack extends Stack {
               externalModules: [],
               nodeModules: ['datadog-lambda-js', 'dd-trace', 'pino'],
               esbuildArgs: {
-                '--conditions': '@seek/<%- serviceName %>/source,module',
+                '--conditions': '@seek/<%- repoName %>/source,module',
               },
             
       format: aws_lambda_nodejs.OutputFormat.ESM,
