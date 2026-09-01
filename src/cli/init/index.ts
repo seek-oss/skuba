@@ -79,7 +79,7 @@ const installDependencies = async ({
   }
 
   const output = taskLog({
-    title: `Installing ${skubaSlug}`,
+    title: 'Installing dependencies...',
     limit: 12,
     retainLog: debug,
   });
@@ -97,7 +97,7 @@ const installDependencies = async ({
 
   try {
     await subprocess;
-    output.success(`Installed ${skubaSlug}`);
+    output.success('Installed dependencies');
   } catch (err) {
     output.error('Failed to install dependencies', { showLog: true });
     throw err;
