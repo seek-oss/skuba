@@ -300,6 +300,10 @@ export const init = async (args = process.argv.slice(2)) => {
   });
 
   const repoSlug = `${templateData.orgName}/${templateData.repoName}`;
+  const newRepoUrl = `https://github.com/new?${new URLSearchParams({
+    owner: templateData.orgName,
+    name: templateData.repoName,
+  }).toString()}`;
 
   if (!depsInstalled) {
     clackLog.error('Failed to install dependencies.');
@@ -309,7 +313,7 @@ export const init = async (args = process.argv.slice(2)) => {
           'cyan',
           repoSlug,
         )} ${styleText('dim', 'repository:')}`,
-        styleText(['underline', 'cyan'], 'https://github.com/new'),
+        styleText(['underline', 'cyan'], newRepoUrl),
         '',
         styleText('dim', 'Then, resume initialisation:'),
         styleText('cyan', `cd ${destinationDir}`),
@@ -335,7 +339,7 @@ export const init = async (args = process.argv.slice(2)) => {
         'cyan',
         repoSlug,
       )} ${styleText('dim', 'repository:')}`,
-      styleText(['underline', 'cyan'], 'https://github.com/new'),
+      styleText(['underline', 'cyan'], newRepoUrl),
       '',
       styleText('dim', 'Then, push your local changes:'),
       styleText('cyan', `cd ${destinationDir}`),
