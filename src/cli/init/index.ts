@@ -1,6 +1,7 @@
 import path from 'path';
 import { inspect } from 'util';
 
+import { log as clackLog, note, outro } from '@clack/prompts';
 import fs from 'fs-extra';
 
 import {
@@ -12,7 +13,7 @@ import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
 import { createInclusionFilter } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
 import { pathExists } from '../../utils/fs.js';
-import { createLogger, log } from '../../utils/logging.js';
+import { createLogger } from '../../utils/logging.js';
 import { showLogoAndVersionInfo } from '../../utils/logo.js';
 import { getConsumerManifest } from '../../utils/manifest.js';
 import { detectPackageManager } from '../../utils/packageManager.js';
@@ -118,7 +119,6 @@ export const init = async (args = process.argv.slice(2)) => {
     streamStdio: packageManager,
   });
 
-  log.newline();
   await initialiseRepo(destinationDir, templateData);
 
   const [manifest, packageManagerConfig] = await Promise.all([
@@ -164,7 +164,7 @@ export const init = async (args = process.argv.slice(2)) => {
 
     depsInstalled = true;
   } catch (err) {
-    log.warn(inspect(err));
+    clackLog.warn(inspect(err));
   }
 
   await Git.commitAllChanges({
@@ -172,47 +172,40 @@ export const init = async (args = process.argv.slice(2)) => {
     message: `Clone ${templateName}`,
   });
 
-  const logGitHubRepoCreation = () => {
-    log.plain(
-      'Next, create an empty',
-      log.bold(`${templateData.orgName}/${templateData.repoName}`),
-      'repository:',
-    );
-    log.ok('https://github.com/new');
-  };
+  const repoSlug = `${templateData.orgName}/${templateData.repoName}`;
 
   if (!depsInstalled) {
-    log.newline();
-    log.warn(log.bold('✗ Failed to install dependencies.'));
+    clackLog.error('Failed to install dependencies.');
+    note(
+      [
+        `Create an empty ${repoSlug} repository:`,
+        'https://github.com/new',
+        '',
+        'Then, resume initialisation:',
+        `cd ${destinationDir}`,
+        `${packageManager} add -D ${skubaSlug}`,
+        `${packageManager} run format`,
+        'git add --all',
+        `git commit --message 'Pin ${skubaSlug}'`,
+        `git push --set-upstream origin ${templateData.defaultBranch}`,
+      ].join('\n'),
+      'Next steps',
+    );
 
-    log.newline();
-    logGitHubRepoCreation();
-
-    log.newline();
-    log.plain('Then, resume initialisation:');
-    log.ok('cd', destinationDir);
-    // The `-D` shorthand is portable across our package managers.
-    log.ok(packageManager, 'add', '-D', skubaSlug);
-    log.ok(packageManager, 'run', 'format');
-    log.ok('git add --all');
-    log.ok('git commit --message', `'Pin ${skubaSlug}'`);
-    log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
-
-    log.newline();
     process.exitCode = 1;
     return;
   }
 
-  log.newline();
-  log.ok(log.bold('✔ Project initialised!'));
-
-  log.newline();
-  logGitHubRepoCreation();
-
-  log.newline();
-  log.plain('Then, push your local changes:');
-  log.ok('cd', destinationDir);
-  log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
-
-  log.newline();
+  note(
+    [
+      `Create an empty ${repoSlug} repository:`,
+      'https://github.com/new',
+      '',
+      'Then, push your local changes:',
+      `cd ${destinationDir}`,
+      `git push --set-upstream origin ${templateData.defaultBranch}`,
+    ].join('\n'),
+    'Next steps',
+  );
+  outro('Project initialised!');
 };

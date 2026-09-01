@@ -26,11 +26,12 @@ Once you choose a template, it is downloaded via SSH and applied to your new pro
 ```
 
 ```text
-Fetching available templates from SEEK-Jobs/skuba-templates...
+◇  Fetched available templates from SEEK-Jobs/skuba-templates
 
-? Select a SEEK private template: (Use arrow keys)
-❯ my-template-a
-  my-template-b
+◆  Select a SEEK private template:
+│  ● my-template-a
+│  ○ my-template-b
+└
 ```
 
 [seek-jobs/skuba-templates]: https://github.com/SEEK-Jobs/skuba-templates

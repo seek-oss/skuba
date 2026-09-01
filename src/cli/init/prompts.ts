@@ -1,6 +1,6 @@
-import { input, select } from '@inquirer/prompts';
+import { cancel, confirm, isCancel, log, select, text } from '@clack/prompts';
 
-import { pathExists } from '../../utils/fs.js';
+import { pathExistsSync } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
 
 import { DEFAULT_RENOVATE_PRESET } from './types.js';
@@ -17,7 +17,7 @@ export interface Choice {
   name: string;
   message: string;
   initial?: string;
-  validate?: (value: string) => boolean | string | Promise<boolean | string>;
+  validate?: (value: string) => boolean | string;
   /**
    * Whether the user is allowed to skip field entry and use the initial value.
    *
@@ -60,7 +60,7 @@ const BASE_CHOICES = [
     name: 'repoName',
     message: 'Repo',
     initial: 'my-repo',
-    validate: async (value: unknown) => {
+    validate: (value: unknown) => {
       if (typeof value !== 'string') {
         return 'Required';
       }
@@ -69,9 +69,7 @@ const BASE_CHOICES = [
         return 'Must be a valid GitHub repo name';
       }
 
-      const exists = await pathExists(value);
-
-      return !exists || `'${value}' is an existing directory`;
+      return !pathExistsSync(value) || `'${value}' is an existing directory`;
     },
   },
   {
@@ -106,40 +104,102 @@ export const BASE_PROMPT_PROPS = {
   name: 'baseAnswers',
 };
 
+const handleCancel = <T>(value: T | symbol): T => {
+  if (isCancel(value)) {
+    cancel('Cancelled.');
+    process.exit(0);
+  }
+
+  return value;
+};
+
+const toClackValidate =
+  (choice: Choice) =>
+  (value: string | undefined): string | undefined => {
+    if (!value || (value === choice.initial && !choice.allowInitial)) {
+      return 'Form is not complete';
+    }
+
+    const result = choice.validate?.(value);
+
+    if (typeof result === 'string') {
+      return result;
+    }
+
+    if (result === false) {
+      return 'Form is not complete';
+    }
+
+    return undefined;
+  };
+
+export const runForm = async <T = Record<string, string>>(props: {
+  choices: readonly Choice[];
+  message: string;
+  name: string;
+}): Promise<T> => {
+  log.step(props.message);
+
+  const result: Record<string, string> = {};
+
+  for (const choice of props.choices) {
+    result[choice.name] = handleCancel(
+      await text({
+        message: choice.message,
+        placeholder: choice.initial,
+        initialValue: choice.allowInitial ? choice.initial : undefined,
+        validate: toClackValidate(choice),
+      }),
+    );
+  }
+
+  return result as T;
+};
+
 export const shouldContinue = async () =>
-  select({
-    message: 'Fill this in now?',
-    choices: [
-      { name: 'Yes', value: 'yes' },
-      { name: 'No', value: 'no' },
-    ],
-  });
+  handleCancel(
+    await confirm({
+      message: 'Fill this in now?',
+    }),
+  );
 
 export const getGitPath = async () =>
-  input({
-    message: 'Git path',
-    default: 'seek-oss/skuba',
-    validate: (value: string) =>
-      /[^/]+\/[^/]+/.test(value) || 'Must be a valid path',
-  });
+  handleCancel(
+    await text({
+      message: 'Git path',
+      placeholder: 'seek-oss/skuba',
+      initialValue: 'seek-oss/skuba',
+      validate: (value: string | undefined) =>
+        value && /[^/]+\/[^/]+/.test(value)
+          ? undefined
+          : 'Must be a valid path',
+    }),
+  );
 
 export const getTemplateName = async () =>
-  select({
-    message: 'Select a template:',
-    choices: TEMPLATE_NAMES_WITH_BYO.map((name) => ({ name, value: name })),
-  });
+  handleCancel(
+    await select({
+      message: 'Select a template:',
+      options: TEMPLATE_NAMES_WITH_BYO.map((name) => ({
+        label: name,
+        value: name,
+      })),
+    }),
+  );
 
 export const getLocalTemplatePath = async () =>
-  input({
-    message: 'Path to local template',
-    validate: async (value: string) => {
-      const exists = await pathExists(value);
-      return exists || 'Path does not exist';
-    },
-  });
+  handleCancel(
+    await text({
+      message: 'Path to local template',
+      validate: (value: string | undefined) =>
+        value && pathExistsSync(value) ? undefined : 'Path does not exist',
+    }),
+  );
 
 export const getPrivateTemplateName = async (templates: string[]) =>
-  select({
-    message: 'Select a SEEK private template:',
-    choices: templates.map((name) => ({ name, value: name })),
-  });
+  handleCancel(
+    await select({
+      message: 'Select a SEEK private template:',
+      options: templates.map((name) => ({ label: name, value: name })),
+    }),
+  );
