@@ -1,6 +1,9 @@
+import { styleText } from 'node:util';
 import path from 'path';
+import readline from 'readline';
 import { inspect } from 'util';
 
+import { log as clackLog, note, outro, taskLog } from '@clack/prompts';
 import fs from 'fs-extra';
 
 import {
@@ -12,10 +15,13 @@ import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
 import { createInclusionFilter } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
 import { pathExists } from '../../utils/fs.js';
-import { createLogger, log } from '../../utils/logging.js';
+import { type Logger, createLogger } from '../../utils/logging.js';
 import { showLogoAndVersionInfo } from '../../utils/logo.js';
 import { getConsumerManifest } from '../../utils/manifest.js';
-import { detectPackageManager } from '../../utils/packageManager.js';
+import {
+  type PackageManager,
+  detectPackageManager,
+} from '../../utils/packageManager.js';
 import {
   BASE_TEMPLATE_DIR,
   TEMPLATE_CONFIG_FILENAME,
@@ -33,6 +39,133 @@ import type { Input } from './types.js';
 import { writePackageJson } from './writePackageJson.js';
 
 import * as Git from '@skuba-lib/api/git';
+
+const feedLines = (
+  readable: NodeJS.ReadableStream | null | undefined,
+  onLine: (line: string) => void,
+) => {
+  if (!readable) {
+    return;
+  }
+
+  readline.createInterface({ input: readable }).on('line', onLine);
+};
+
+const createTaskLogLogger = (
+  write: (line: string) => void,
+  debug: boolean,
+): Logger => {
+  const logger = createLogger({ debug });
+
+  const logToTask = (...message: unknown[]) => {
+    const line = message.map(String).join(' ').trimEnd();
+    if (line.length > 0) {
+      write(line);
+    }
+  };
+
+  return {
+    ...logger,
+    debug: (...message) => {
+      if (debug) {
+        logToTask(...message);
+      }
+    },
+    subtle: logToTask,
+    err: logToTask,
+    newline: () => undefined,
+    ok: logToTask,
+    plain: logToTask,
+    warn: logToTask,
+  };
+};
+
+const installDependencies = async ({
+  debug,
+  destinationDir,
+  packageManager,
+  skubaSlug,
+}: {
+  debug: boolean;
+  destinationDir: string;
+  packageManager: PackageManager;
+  skubaSlug: string;
+}) => {
+  const exec = createExec({
+    cwd: destinationDir,
+    stdio: 'pipe',
+    streamStdio: process.stdout.isTTY ? undefined : packageManager,
+  });
+
+  const args =
+    packageManager === 'pnpm'
+      ? (['add', '-D', skubaSlug, '--reporter=append-only'] as const)
+      : (['add', '-D', skubaSlug] as const);
+
+  if (!process.stdout.isTTY) {
+    // The `-D` shorthand is portable across our package managers.
+    await exec(packageManager, ...args);
+    return;
+  }
+
+  const output = taskLog({
+    title: 'Installing dependencies',
+    limit: 12,
+    retainLog: debug,
+  });
+
+  const subprocess = exec(packageManager, ...args);
+
+  const onLine = (line: string) => {
+    if (line.length > 0) {
+      output.message(line);
+    }
+  };
+
+  feedLines(subprocess.stdout, onLine);
+  feedLines(subprocess.stderr, onLine);
+
+  try {
+    await subprocess;
+    output.success('Installed dependencies');
+  } catch (err) {
+    output.error('Failed to install dependencies', { showLog: true });
+    throw err;
+  }
+};
+
+const formatProject = async ({
+  debug,
+  destinationDir,
+}: {
+  debug: boolean;
+  destinationDir: string;
+}) => {
+  // Templating can initially leave certain files in an unformatted state;
+  // consider a Markdown table with columns sized based on content length.
+  if (!process.stdout.isTTY) {
+    await runPrettier('format', createLogger({ debug }), destinationDir);
+    return;
+  }
+
+  const output = taskLog({
+    title: 'Formatting project',
+    limit: 12,
+    retainLog: debug,
+  });
+
+  try {
+    await runPrettier(
+      'format',
+      createTaskLogLogger((line) => output.message(line), debug),
+      destinationDir,
+    );
+    output.success('Formatted project');
+  } catch (err) {
+    output.error('Failed to format project', { showLog: true });
+    throw err;
+  }
+};
 
 export const init = async (args = process.argv.slice(2)) => {
   const opts: Input = {
@@ -112,13 +245,6 @@ export const init = async (args = process.argv.slice(2)) => {
     }),
   ]);
 
-  const exec = createExec({
-    cwd: destinationDir,
-    stdio: 'pipe',
-    streamStdio: packageManager,
-  });
-
-  log.newline();
   await initialiseRepo(destinationDir, templateData);
 
   const [manifest, packageManagerConfig] = await Promise.all([
@@ -151,20 +277,21 @@ export const init = async (args = process.argv.slice(2)) => {
 
   let depsInstalled = false;
   try {
-    // The `-D` shorthand is portable across our package managers.
-    await exec(packageManager, 'add', '-D', skubaSlug);
-
-    // Templating can initially leave certain files in an unformatted state;
-    // consider a Markdown table with columns sized based on content length.
-    await runPrettier(
-      'format',
-      createLogger({ debug: opts.debug }),
+    await installDependencies({
+      debug: opts.debug,
       destinationDir,
-    );
+      packageManager,
+      skubaSlug,
+    });
+
+    await formatProject({
+      debug: opts.debug,
+      destinationDir,
+    });
 
     depsInstalled = true;
   } catch (err) {
-    log.warn(inspect(err));
+    clackLog.warn(inspect(err));
   }
 
   await Git.commitAllChanges({
@@ -172,47 +299,52 @@ export const init = async (args = process.argv.slice(2)) => {
     message: `Clone ${templateName}`,
   });
 
-  const logGitHubRepoCreation = () => {
-    log.plain(
-      'Next, create an empty',
-      log.bold(`${templateData.orgName}/${templateData.repoName}`),
-      'repository:',
-    );
-    log.ok('https://github.com/new');
-  };
+  const repoSlug = `${templateData.orgName}/${templateData.repoName}`;
 
   if (!depsInstalled) {
-    log.newline();
-    log.warn(log.bold('✗ Failed to install dependencies.'));
+    clackLog.error('Failed to install dependencies.');
+    note(
+      [
+        `${styleText('dim', 'Create an empty')} ${styleText(
+          'cyan',
+          repoSlug,
+        )} ${styleText('dim', 'repository:')}`,
+        styleText(['underline', 'cyan'], 'https://github.com/new'),
+        '',
+        styleText('dim', 'Then, resume initialisation:'),
+        styleText('cyan', `cd ${destinationDir}`),
+        styleText('cyan', `${packageManager} add -D ${skubaSlug}`),
+        styleText('cyan', `${packageManager} run format`),
+        styleText('cyan', 'git add --all'),
+        styleText('cyan', `git commit --message 'Pin ${skubaSlug}'`),
+        styleText(
+          'cyan',
+          `git push --set-upstream origin ${templateData.defaultBranch}`,
+        ),
+      ].join('\n'),
+      'Next steps',
+    );
 
-    log.newline();
-    logGitHubRepoCreation();
-
-    log.newline();
-    log.plain('Then, resume initialisation:');
-    log.ok('cd', destinationDir);
-    // The `-D` shorthand is portable across our package managers.
-    log.ok(packageManager, 'add', '-D', skubaSlug);
-    log.ok(packageManager, 'run', 'format');
-    log.ok('git add --all');
-    log.ok('git commit --message', `'Pin ${skubaSlug}'`);
-    log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
-
-    log.newline();
     process.exitCode = 1;
     return;
   }
 
-  log.newline();
-  log.ok(log.bold('✔ Project initialised!'));
-
-  log.newline();
-  logGitHubRepoCreation();
-
-  log.newline();
-  log.plain('Then, push your local changes:');
-  log.ok('cd', destinationDir);
-  log.ok(`git push --set-upstream origin ${templateData.defaultBranch}`);
-
-  log.newline();
+  note(
+    [
+      `${styleText('dim', 'Create an empty')} ${styleText(
+        'cyan',
+        repoSlug,
+      )} ${styleText('dim', 'repository:')}`,
+      styleText(['underline', 'cyan'], 'https://github.com/new'),
+      '',
+      styleText('dim', 'Then, push your local changes:'),
+      styleText('cyan', `cd ${destinationDir}`),
+      styleText(
+        'cyan',
+        `git push --set-upstream origin ${templateData.defaultBranch}`,
+      ),
+    ].join('\n'),
+    'Next steps',
+  );
+  outro('Project initialised!');
 };

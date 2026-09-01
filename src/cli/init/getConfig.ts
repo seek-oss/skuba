@@ -1,7 +1,7 @@
 import { styleText } from 'node:util';
 import path from 'path';
 
-import { input } from '@inquirer/prompts';
+import { log as clackLog, note, spinner } from '@clack/prompts';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy.js';
@@ -22,63 +22,26 @@ import {
   listPrivateTemplates,
 } from './git.js';
 import {
-  BASE_PROMPT_PROPS,
   type BaseFields,
   type Choice,
   getGitPath,
   getLocalTemplatePath,
   getPrivateTemplateName,
   getTemplateName,
+  promptBaseFields,
+  runForm,
   shouldContinue,
 } from './prompts.js';
 import { readJSONFromStdIn } from './readJSONFromStdIn.js';
 import { type InitConfig, initConfigInputSchema } from './types.js';
 
-export const runForm = async <T = Record<string, string>>(props: {
-  choices: readonly Choice[];
-  message: string;
-  name: string;
-}): Promise<T> => {
-  const { message } = props;
-  log.plain(message);
-
-  const result: Record<string, string> = {};
-
-  for (const choice of props.choices) {
-    const inputValue = await input({
-      message: choice.message,
-      default: choice.initial,
-      validate: async (inputText: string) => {
-        if (
-          !inputText ||
-          inputText === '' ||
-          (inputText === choice.initial && !choice.allowInitial)
-        ) {
-          return 'Form is not complete';
-        }
-
-        return choice.validate?.(inputText) ?? true;
-      },
-    });
-
-    result[choice.name] = inputValue;
-  }
-
-  return result as T;
-};
-
 const confirmShouldContinue = async (choices: readonly Choice[]) => {
-  const fieldsList = choices.map((choice) => choice.message);
+  note(
+    choices.map((choice) => choice.message).join('\n'),
+    'This template uses the following information:',
+  );
 
-  log.newline();
-  log.plain('This template uses the following information:');
-  log.newline();
-  fieldsList.forEach((message) => log.subtle(`- ${message}`));
-
-  log.newline();
-  const result = await shouldContinue();
-
-  return result === 'yes';
+  return shouldContinue();
 };
 
 const createDirectory = async (dir: string) => {
@@ -149,9 +112,18 @@ const selectTemplateName = async () => {
   }
 
   if (templateSelection === 'seek →') {
-    log.newline();
-    log.plain('Fetching available templates from SEEK-Jobs/skuba-templates...');
-    const templates = await listPrivateTemplates();
+    const s = spinner();
+    s.start('Fetching available templates from SEEK-Jobs/skuba-templates...');
+
+    let templates: string[];
+    try {
+      templates = await listPrivateTemplates();
+      s.stop('Fetched available templates from SEEK-Jobs/skuba-templates');
+    } catch (err) {
+      s.error('Failed to fetch templates from SEEK-Jobs/skuba-templates');
+      throw err;
+    }
+
     const privateName = await getPrivateTemplateName(templates);
     return `seek:${privateName}`;
   }
@@ -229,8 +201,10 @@ export const baseToTemplateData = async ({
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
   const { ownerName, platformName, repoName, defaultBranch, renovatePreset } =
-    await runForm<BaseFields>(BASE_PROMPT_PROPS);
-  log.plain(styleText('cyan', repoName), 'by', styleText('cyan', ownerName));
+    await promptBaseFields();
+  clackLog.info(
+    `${styleText('cyan', repoName)} by ${styleText('cyan', ownerName)}`,
+  );
 
   const templateData = await baseToTemplateData({
     ownerName,
@@ -244,7 +218,6 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
 
   await createDirectory(destinationDir);
 
-  log.newline();
   const templateName = await selectTemplateName();
 
   const { entryPoint, fields, noSkip, packageManager, type } =
@@ -267,7 +240,6 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     : await confirmShouldContinue(fields);
 
   if (shouldContinueWithTemplate) {
-    log.newline();
     const customAnswers = await runForm({
       choices: fields,
       message: styleText(
@@ -288,11 +260,8 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     };
   }
 
-  log.newline();
-  log.warn(
-    'Templating has been skipped. Resume it later by running',
-    log.bold('skuba init'),
-    'in the new directory.',
+  clackLog.warn(
+    `Templating has been skipped. Resume it later by running ${log.bold('skuba init')} in the new directory.`,
   );
 
   const customAnswers = generatePlaceholders(fields);
