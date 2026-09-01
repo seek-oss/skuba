@@ -39,11 +39,10 @@ export const BASE_PROMPT_DEFAULTS = {
   platformName: 'arm64',
   defaultBranch: 'main',
   renovatePreset: DEFAULT_RENOVATE_PRESET,
-} as const satisfies {
-  platformName: Platform;
-  defaultBranch: string;
-  renovatePreset: string;
-};
+} as const satisfies Pick<
+  BaseFields,
+  'platformName' | 'defaultBranch' | 'renovatePreset'
+>;
 
 const TEMPLATE_HINTS: Partial<
   Record<(typeof TEMPLATE_NAMES_WITH_BYO)[number], string>
