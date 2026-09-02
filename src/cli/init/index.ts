@@ -359,13 +359,17 @@ export const init = async (args = process.argv.slice(2)) => {
   }
 
   const repoSlug = `${templateData.orgName}/${templateData.repoName}`;
+  const newRepoUrl = `https://github.com/new?${new URLSearchParams({
+    owner: templateData.orgName,
+    name: templateData.repoName,
+  }).toString()}`;
 
   const gitHubRepoCreationLines = [
     `${styleText('dim', 'Create an empty')} ${styleText(
       'cyan',
       repoSlug,
     )} ${styleText('dim', 'repository:')}`,
-    styleText(['underline', 'cyan'], 'https://github.com/new'),
+    styleText(['underline', 'cyan'], newRepoUrl),
     '',
   ];
 
