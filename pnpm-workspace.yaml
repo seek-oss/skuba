@@ -30,8 +30,6 @@ minimumReleaseAgeExclude:
   - skuba # Managed by skuba
   - skuba-dive # Managed by skuba
   - tsconfig-seek # Managed by skuba
-  # Renovate security update: fastify@5.12.1
-  - fastify@5.12.1
 
 overrides:
   skuba: workspace:*
