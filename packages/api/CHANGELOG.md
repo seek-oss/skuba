@@ -1,5 +1,12 @@
 # @skuba-lib/api
 
+## 2.3.1
+
+### Patch Changes
+
+- **api:** `Cdk.normaliseTemplate` now normalises `CurrentVersion` asset hashes for any construct id, not just `worker`. Previously, Lambda version logical IDs like `notifierCurrentVersion...` were left with volatile hashes, causing cross-platform snapshot churn. ([#2554](https://github.com/seek-oss/skuba/pull/2554))
+- **deps:** @octokit/types ^17.0.0 ([#2548](https://github.com/seek-oss/skuba/pull/2548))
+
 ## 2.3.0
 
 ### Minor Changes
