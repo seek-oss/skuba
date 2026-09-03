@@ -12,7 +12,7 @@ import {
   hasNonInteractiveFlag,
 } from '../../utils/args.js';
 import { copyFiles, createEjsRenderer } from '../../utils/copy.js';
-import { createInclusionFilter } from '../../utils/dir.js';
+import { createInclusionFilter, findWorkspaceRoot } from '../../utils/dir.js';
 import { createExec, ensureCommands } from '../../utils/exec.js';
 import { pathExists } from '../../utils/fs.js';
 import { type Logger, createLogger } from '../../utils/logging.js';
@@ -34,11 +34,27 @@ import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfi
 import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
 import { logInitHelp } from './help.js';
+import { confirmExistingRepo } from './prompts.js';
 import { resumeTemplating } from './resumeTemplating.js';
 import type { Input } from './types.js';
+import {
+  type RegisterWorkspaceResult,
+  registerWorkspaceProject,
+} from './workspace.js';
 import { writePackageJson } from './writePackageJson.js';
 
 import * as Git from '@skuba-lib/api/git';
+
+// In an existing repo these are inherited from the workspace root, so avoid
+// scaffolding duplicate copies into the new package.
+const ROOT_OWNED_FILES = new Set([
+  '.gitignore',
+  '.prettierignore',
+  '.prettierrc.js',
+  'eslint.config.js',
+  '.dockerignore',
+  'renovate.json5',
+]);
 
 const feedLines = (
   readable: NodeJS.ReadableStream | null | undefined,
@@ -194,6 +210,24 @@ export const init = async (args = process.argv.slice(2)) => {
     return;
   }
 
+  const cwd = process.cwd();
+  const detectedWorkspaceRoot = nonInteractive
+    ? null
+    : await findWorkspaceRoot(cwd);
+
+  const isPnpmWorkspace =
+    detectedWorkspaceRoot !== null &&
+    (await pathExists(path.join(detectedWorkspaceRoot, 'pnpm-workspace.yaml')));
+
+  let workspaceRoot = isPnpmWorkspace ? detectedWorkspaceRoot : null;
+  if (workspaceRoot) {
+    const confirmed = await confirmExistingRepo(workspaceRoot);
+    if (!confirmed) {
+      workspaceRoot = null;
+    }
+  }
+  const existingRepo = workspaceRoot !== null;
+
   const {
     destinationDir,
     entryPoint,
@@ -213,10 +247,14 @@ export const init = async (args = process.argv.slice(2)) => {
 
   const processors = [createEjsRenderer(templateData)];
 
+  const includeBaseFile = (pathname: string) =>
+    include(pathname) &&
+    !(existingRepo && ROOT_OWNED_FILES.has(path.basename(pathname)));
+
   await copyFiles({
     sourceRoot: BASE_TEMPLATE_DIR,
     destinationRoot: destinationDir,
-    include,
+    include: includeBaseFile,
     // prefer template-specific files
     overwrite: false,
     processors,
@@ -245,33 +283,44 @@ export const init = async (args = process.argv.slice(2)) => {
     }),
   ]);
 
-  await initialiseRepo(destinationDir, templateData);
+  if (!existingRepo) {
+    await initialiseRepo(destinationDir, templateData);
+  }
 
-  const [manifest, packageManagerConfig] = await Promise.all([
-    getConsumerManifest(destinationDir),
-    detectPackageManager(destinationDir),
-  ]);
+  const manifest = await getConsumerManifest(destinationDir);
 
   if (!manifest) {
     throw new Error("Repository doesn't contain a package.json file.");
   }
 
-  if (packageManager === 'pnpm') {
-    await fs.promises.writeFile(
-      path.join(destinationDir, 'pnpm-workspace.yaml'),
-      '',
-      'utf8',
-    );
-    await patchPnpmWorkspace('format', destinationDir);
-  }
+  let workspaceRegistration: RegisterWorkspaceResult | undefined;
 
-  // Patch in a baseline Renovate preset based on the configured Git owner.
-  await tryPatchRenovateConfig({
-    mode: 'format',
-    dir: destinationDir,
-    manifest,
-    packageManager: packageManagerConfig,
-  });
+  if (workspaceRoot) {
+    // The root owns `pnpm-workspace.yaml` and Renovate config; only pnpm
+    // workspaces are supported, and a non-pnpm root yields a `manual` result
+    // rather than a crash.
+    workspaceRegistration = await registerWorkspaceProject({
+      workspaceRoot,
+      projectDir: path.resolve(destinationDir),
+    });
+  } else {
+    if (packageManager === 'pnpm') {
+      await fs.promises.writeFile(
+        path.join(destinationDir, 'pnpm-workspace.yaml'),
+        '',
+        'utf8',
+      );
+      await patchPnpmWorkspace('format', destinationDir);
+    }
+
+    // Patch in a baseline Renovate preset based on the configured Git owner.
+    await tryPatchRenovateConfig({
+      mode: 'format',
+      dir: destinationDir,
+      manifest,
+      packageManager: await detectPackageManager(destinationDir),
+    });
+  }
 
   const skubaSlug = `skuba@${skubaVersionInfo.local}`;
 
@@ -294,10 +343,20 @@ export const init = async (args = process.argv.slice(2)) => {
     clackLog.warn(inspect(err));
   }
 
-  await Git.commitAllChanges({
-    dir: destinationDir,
-    message: `Clone ${templateName}`,
-  });
+  const gitRoot = await Git.findRoot({ dir: path.resolve(destinationDir) });
+  if (gitRoot) {
+    await Git.commitAllChanges({
+      dir: path.resolve(destinationDir),
+      message: `Clone ${templateName}`,
+    });
+  } else {
+    clackLog.warn(
+      `Skipped initial commit: no Git repository found at or above ${styleText(
+        'cyan',
+        destinationDir,
+      )}`,
+    );
+  }
 
   const repoSlug = `${templateData.orgName}/${templateData.repoName}`;
   const newRepoUrl = `https://github.com/new?${new URLSearchParams({
@@ -305,26 +364,73 @@ export const init = async (args = process.argv.slice(2)) => {
     name: templateData.repoName,
   }).toString()}`;
 
+  const gitHubRepoCreationLines = [
+    `${styleText('dim', 'Create an empty')} ${styleText(
+      'cyan',
+      repoSlug,
+    )} ${styleText('dim', 'repository:')}`,
+    styleText(['underline', 'cyan'], newRepoUrl),
+    '',
+  ];
+
+  const logWorkspaceRegistration = () => {
+    if (
+      !workspaceRegistration ||
+      workspaceRegistration.outcome === 'already-covered'
+    ) {
+      return;
+    }
+
+    if (workspaceRegistration.outcome === 'registered') {
+      clackLog.success(
+        `Registered ${styleText(
+          'cyan',
+          workspaceRegistration.entry,
+        )} in ${styleText('cyan', path.basename(workspaceRegistration.file))}`,
+      );
+      return;
+    }
+
+    clackLog.warn(
+      [
+        `Could not register the project automatically (${workspaceRegistration.reason}).`,
+        `Add ${styleText(
+          'cyan',
+          workspaceRegistration.entry,
+        )} to your workspace configuration manually.`,
+      ].join('\n'),
+    );
+  };
+
   if (!depsInstalled) {
     clackLog.error('Failed to install dependencies.');
+
+    if (existingRepo) {
+      logWorkspaceRegistration();
+    }
+
     note(
       [
-        `${styleText('dim', 'Create an empty')} ${styleText(
-          'cyan',
-          repoSlug,
-        )} ${styleText('dim', 'repository:')}`,
-        styleText(['underline', 'cyan'], newRepoUrl),
-        '',
-        styleText('dim', 'Then, resume initialisation:'),
+        ...(existingRepo ? [] : gitHubRepoCreationLines),
+        styleText(
+          'dim',
+          existingRepo
+            ? 'Resume initialisation:'
+            : 'Then, resume initialisation:',
+        ),
         styleText('cyan', `cd ${destinationDir}`),
         styleText('cyan', `${packageManager} add -D ${skubaSlug}`),
         styleText('cyan', `${packageManager} run format`),
         styleText('cyan', 'git add --all'),
         styleText('cyan', `git commit --message 'Pin ${skubaSlug}'`),
-        styleText(
-          'cyan',
-          `git push --set-upstream origin ${templateData.defaultBranch}`,
-        ),
+        ...(existingRepo
+          ? []
+          : [
+              styleText(
+                'cyan',
+                `git push --set-upstream origin ${templateData.defaultBranch}`,
+              ),
+            ]),
       ].join('\n'),
       'Next steps',
     );
@@ -333,22 +439,39 @@ export const init = async (args = process.argv.slice(2)) => {
     return;
   }
 
-  note(
-    [
-      `${styleText('dim', 'Create an empty')} ${styleText(
-        'cyan',
-        repoSlug,
-      )} ${styleText('dim', 'repository:')}`,
-      styleText(['underline', 'cyan'], newRepoUrl),
-      '',
-      styleText('dim', 'Then, push your local changes:'),
-      styleText('cyan', `cd ${destinationDir}`),
-      styleText(
-        'cyan',
-        `git push --set-upstream origin ${templateData.defaultBranch}`,
-      ),
-    ].join('\n'),
-    'Next steps',
-  );
+  if (existingRepo) {
+    logWorkspaceRegistration();
+
+    // The initial commit only captures the new project's files; the root
+    // manifest and lockfile changes are left for the user to review and commit.
+    note(
+      [
+        styleText(
+          'dim',
+          'The workspace root has uncommitted changes (updated lockfile and workspace config).',
+        ),
+        styleText('dim', 'Review and commit them alongside the new project.'),
+        '',
+        styleText('dim', 'Your new project is ready:'),
+        styleText('cyan', `cd ${destinationDir}`),
+        styleText('cyan', `${packageManager} run lint`),
+      ].join('\n'),
+      'Next steps',
+    );
+  } else {
+    note(
+      [
+        ...gitHubRepoCreationLines,
+        styleText('dim', 'Then, push your local changes:'),
+        styleText('cyan', `cd ${destinationDir}`),
+        styleText(
+          'cyan',
+          `git push --set-upstream origin ${templateData.defaultBranch}`,
+        ),
+      ].join('\n'),
+      'Next steps',
+    );
+  }
+
   outro('Project initialised!');
 };

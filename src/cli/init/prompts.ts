@@ -185,6 +185,14 @@ export const runForm = async <T = Record<string, string>>(props: {
   return result as T;
 };
 
+export const confirmExistingRepo = async (workspaceRoot: string) =>
+  handleCancel(
+    await confirm({
+      message: `Scaffold into the existing repository at ${workspaceRoot}?`,
+      initialValue: false,
+    }),
+  );
+
 export const shouldContinue = async () =>
   handleCancel(
     await confirm({
