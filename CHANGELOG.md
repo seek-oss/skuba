@@ -1,5 +1,43 @@
 # skuba
 
+## 16.4.0
+
+### Minor Changes
+
+- **deps:** Replace `@inquirer/prompts` with `@clack/prompts` ([#2564](https://github.com/seek-oss/skuba/pull/2564))
+
+  This internal change only affects the `skuba init` interactive prompts.
+
+- **Rolldown:** Add `Rolldown.lambdaAsset` plugin ([#2543](https://github.com/seek-oss/skuba/pull/2543))
+
+  A new rolldown plugin that prepares a bundle output directory for deployment as a Lambda function, so CDK can pick it up with a plain `aws_lambda.Code.fromAsset`.
+
+  ```ts
+  // rolldown.config.ts
+  import { defineConfig } from 'rolldown';
+  import { Rolldown } from 'skuba';
+
+  export default defineConfig({
+    input: { index: 'src/lambda.ts' },
+    output: { dir: 'lib' },
+    external: ['sharp'],
+    plugins: [Rolldown.lambdaAsset({ nodeModules: ['sharp'] })],
+  });
+  ```
+
+  The plugin writes an ESM `package.json`, and installs any `nodeModules` into the output directory with pnpm, copying across your workspace config and patches. The generated `package.json` forwards your package manager pin by copying across the `packageManager` and `devEngines` fields of your workspace root `package.json`, so the install runs on the same pnpm version as your project. Install-only files, including `.npmrc`, are stripped from the output afterwards. It can also copy extra `assets` into the output directory alongside your bundle.
+
+  It supports ESM output and pnpm only. It leaves the rest of your rolldown config alone, and does not wrap CDK.
+
+  `skuba build` also forwards a `--config`/`-c` flag through to rolldown, so a package can ship multiple bundles from separate config files, e.g. `skuba build --config rolldown.worker1.config.ts`.
+
+- **deps:** @changesets/cli ^3.0.0 ([#2562](https://github.com/seek-oss/skuba/pull/2562))
+
+### Patch Changes
+
+- **template/\*:** Switch to repoName for custom conditions templating ([#2565](https://github.com/seek-oss/skuba/pull/2565))
+- **deps:** @octokit/types ^17.0.0 ([#2548](https://github.com/seek-oss/skuba/pull/2548))
+
 ## 16.3.0
 
 ### Minor Changes
