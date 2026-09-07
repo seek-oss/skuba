@@ -155,18 +155,18 @@
     "@types/npm-registry-fetch": "8.0.9",
     "@types/npm-which": "3.0.4",
     "@types/picomatch": "4.0.3",
-    "@types/semver": "7.7.1",
+    "@types/semver": "7.8.0",
     "@types/supertest": "7.2.1",
-    "enhanced-resolve": "5.24.3",
+    "enhanced-resolve": "5.24.5",
     "express": "5.2.1",
-    "fastify": "5.12.1",
+    "fastify": "5.12.3",
     "jsonfile": "6.2.1",
     "koa": "3.2.1",
-    "memfs": "4.64.0",
+    "memfs": "4.71.0",
     "remark-cli": "12.0.1",
     "remark-preset-lint-recommended": "7.0.1",
     "supertest": "7.2.2",
-    "type-fest": "5.8.0"
+    "type-fest": "5.9.0"
   },
   "packageManager": "pnpm@10.34.5",
   "engines": {
