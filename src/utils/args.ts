@@ -5,6 +5,12 @@ import { COMMAND_ALIASES } from './command.js';
 export const hasDebugFlag = (args = process.argv) =>
   args.some((arg) => arg.toLocaleLowerCase() === '--debug');
 
+export const hasHelpFlag = (args = process.argv) =>
+  args.includes('--help') || args.includes('-h') || args[0] === 'help';
+
+export const hasNonInteractiveFlag = (args = process.argv) =>
+  args.some((arg) => arg.toLocaleLowerCase() === '--non-interactive');
+
 export const hasSerialFlag = (args = process.argv, env = process.env) =>
   args.some((arg) => arg.toLocaleLowerCase() === '--serial') ||
   Boolean(

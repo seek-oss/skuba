@@ -5,9 +5,8 @@ const normaliseTemplateJsonString = (json: string): string =>
       (_: string, hash: string) => `"S3Key":"${'x'.repeat(hash.length)}.zip"`,
     )
     .replace(
-      /workerCurrentVersion([0-9a-zA-Z]+)"/g,
-      (_: string, hash: string) =>
-        `workerCurrentVersion${'x'.repeat(hash.length)}"`,
+      /CurrentVersion([0-9a-zA-Z]+)"/g,
+      (_: string, hash: string) => `CurrentVersion${'x'.repeat(hash.length)}"`,
     )
     .replaceAll(
       /"Value":"\d+\.\d+\.\d+-([^"]+)"/g,

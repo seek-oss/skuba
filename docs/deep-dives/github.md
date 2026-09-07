@@ -30,7 +30,7 @@ steps:
       GET_GITHUB_TOKEN: 'please'
     plugins:
       - ...
-      - docker#v5.13.0:
+      - docker#v5.14.0:
           # Enable GitHub integrations.
           environment:
             - GITHUB_API_TOKEN
@@ -64,7 +64,7 @@ steps:
       GET_GITHUB_TOKEN: 'please'
     plugins:
       - ...
-      - docker-compose#v5.12.1:
+      - docker-compose#v5.14.0:
           environment:
             - GITHUB_API_TOKEN
           mount-buildkite-agent: true

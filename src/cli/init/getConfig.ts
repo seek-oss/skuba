@@ -1,7 +1,7 @@
 import { styleText } from 'node:util';
 import path from 'path';
 
-import { input } from '@inquirer/prompts';
+import { log as clackLog, note, spinner } from '@clack/prompts';
 import fs from 'fs-extra';
 
 import { copyFiles } from '../../utils/copy.js';
@@ -22,62 +22,26 @@ import {
   listPrivateTemplates,
 } from './git.js';
 import {
-  BASE_PROMPT_PROPS,
   type BaseFields,
   type Choice,
   getGitPath,
   getLocalTemplatePath,
   getPrivateTemplateName,
   getTemplateName,
+  promptBaseFields,
+  runForm,
   shouldContinue,
 } from './prompts.js';
+import { readJSONFromStdIn } from './readJSONFromStdIn.js';
 import { type InitConfig, initConfigInputSchema } from './types.js';
 
-export const runForm = async <T = Record<string, string>>(props: {
-  choices: readonly Choice[];
-  message: string;
-  name: string;
-}): Promise<T> => {
-  const { message } = props;
-  log.plain(message);
-
-  const result: Record<string, string> = {};
-
-  for (const choice of props.choices) {
-    const inputValue = await input({
-      message: choice.message,
-      default: choice.initial,
-      validate: async (inputText: string) => {
-        if (
-          !inputText ||
-          inputText === '' ||
-          (inputText === choice.initial && !choice.allowInitial)
-        ) {
-          return 'Form is not complete';
-        }
-
-        return choice.validate?.(inputText) ?? true;
-      },
-    });
-
-    result[choice.name] = inputValue;
-  }
-
-  return result as T;
-};
-
 const confirmShouldContinue = async (choices: readonly Choice[]) => {
-  const fieldsList = choices.map((choice) => choice.message);
+  note(
+    choices.map((choice) => choice.message).join('\n'),
+    'This template uses the following information:',
+  );
 
-  log.newline();
-  log.plain('This template uses the following information:');
-  log.newline();
-  fieldsList.forEach((message) => log.subtle(`- ${message}`));
-
-  log.newline();
-  const result = await shouldContinue();
-
-  return result === 'yes';
+  return shouldContinue();
 };
 
 const createDirectory = async (dir: string) => {
@@ -148,9 +112,18 @@ const selectTemplateName = async () => {
   }
 
   if (templateSelection === 'seek →') {
-    log.newline();
-    log.plain('Fetching available templates from SEEK-Jobs/skuba-templates...');
-    const templates = await listPrivateTemplates();
+    const s = spinner();
+    s.start('Fetching available templates from SEEK-Jobs/skuba-templates...');
+
+    let templates: string[];
+    try {
+      templates = await listPrivateTemplates();
+      s.stop('Fetched available templates from SEEK-Jobs/skuba-templates');
+    } catch (err) {
+      s.error('Failed to fetch templates from SEEK-Jobs/skuba-templates');
+      throw err;
+    }
+
     const privateName = await getPrivateTemplateName(templates);
     return `seek:${privateName}`;
   }
@@ -193,11 +166,12 @@ export const getTemplateConfig = async (
   }
 };
 
-const baseToTemplateData = async ({
+export const baseToTemplateData = async ({
   ownerName,
   platformName,
   repoName,
   defaultBranch,
+  renovatePreset,
 }: BaseFields) => {
   const [orgName, teamName] = ownerName.split('/');
 
@@ -212,6 +186,7 @@ const baseToTemplateData = async ({
     ownerName,
     repoName,
     defaultBranch,
+    renovatePreset,
     // Use standalone username in `teamName` contexts
     teamName: teamName ?? orgName,
 
@@ -225,22 +200,24 @@ const baseToTemplateData = async ({
 };
 
 export const configureFromPrompt = async (): Promise<InitConfig> => {
-  const { ownerName, platformName, repoName, defaultBranch } =
-    await runForm<BaseFields>(BASE_PROMPT_PROPS);
-  log.plain(styleText('cyan', repoName), 'by', styleText('cyan', ownerName));
+  const { ownerName, platformName, repoName, defaultBranch, renovatePreset } =
+    await promptBaseFields();
+  clackLog.info(
+    `${styleText('cyan', repoName)} by ${styleText('cyan', ownerName)}`,
+  );
 
   const templateData = await baseToTemplateData({
     ownerName,
     platformName,
     repoName,
     defaultBranch,
+    renovatePreset,
   });
 
   const destinationDir = repoName;
 
   await createDirectory(destinationDir);
 
-  log.newline();
   const templateName = await selectTemplateName();
 
   const { entryPoint, fields, noSkip, packageManager, type } =
@@ -263,7 +240,6 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     : await confirmShouldContinue(fields);
 
   if (shouldContinueWithTemplate) {
-    log.newline();
     const customAnswers = await runForm({
       choices: fields,
       message: styleText(
@@ -284,11 +260,8 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
     };
   }
 
-  log.newline();
-  log.warn(
-    'Templating has been skipped. Resume it later by running',
-    log.bold('skuba init'),
-    'in the new directory.',
+  clackLog.warn(
+    `Templating has been skipped. Resume it later by running ${log.bold('skuba init')} in the new directory.`,
   );
 
   const customAnswers = generatePlaceholders(fields);
@@ -304,50 +277,13 @@ export const configureFromPrompt = async (): Promise<InitConfig> => {
   };
 };
 
-export const readJSONFromStdIn = async () => {
-  let text = '';
-
-  await new Promise((resolve) =>
-    process.stdin
-      .on('data', (chunk) => (text += chunk.toString()))
-      .once('end', resolve),
-  );
-
-  text = text.trim();
-
-  if (text === '') {
-    log.err('No data from stdin.');
-    process.exit(1);
-  }
-
-  let value: unknown;
-
-  try {
-    value = JSON.parse(text) as unknown;
-  } catch {
-    log.err('Invalid JSON from stdin.');
-    process.exit(1);
-  }
-
-  return value;
-};
-
 const configureFromPipe = async (): Promise<InitConfig> => {
-  const value = await readJSONFromStdIn();
-
-  const result = initConfigInputSchema.safeParse(value);
-
-  if (!result.success) {
-    log.err('Invalid data from stdin:');
-    log.err(result.error);
-    process.exit(1);
-  }
-
-  const { destinationDir, templateComplete, templateName } = result.data;
+  const config = await readJSONFromStdIn(initConfigInputSchema);
+  const { destinationDir, templateComplete, templateName } = config;
 
   const templateData = {
-    ...(await baseToTemplateData(result.data.templateData)),
-    ...result.data.templateData,
+    ...(await baseToTemplateData(config.templateData)),
+    ...config.templateData,
   };
 
   await createDirectory(destinationDir);
@@ -358,11 +294,13 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   if (!templateComplete) {
     if (noSkip) {
       log.err('Templating for', log.bold(templateName), 'cannot be skipped.');
+      // Remove the partially-created project; it's not salvageable
+      await fs.remove(destinationDir);
       process.exit(1);
     }
 
     return {
-      ...result.data,
+      ...config,
       entryPoint,
       packageManager,
       templateData: {
@@ -380,14 +318,37 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   const missing = required.filter((name) => !provided.has(name));
 
   if (missing.length > 0) {
-    log.err('This template uses the following information:');
+    log.err(
+      'This template requires the following additional fields in',
+      `${log.bold('templateData')}:`,
+    );
     log.newline();
-    missing.forEach((name) => log.err(`- ${name}`));
+    for (const { name, message, initial } of fields) {
+      if (missing.includes(name)) {
+        log.err(`- ${log.bold(name)}`);
+        if (initial) {
+          log.err(`  ${message}`, log.dim(`(e.g. ${initial})`));
+        } else {
+          log.err(`  ${message}`);
+        }
+        log.newline();
+      }
+    }
+
+    log.err(
+      'Provide these fields, or set',
+      log.bold('templateComplete: false'),
+      'to scaffold them as placeholders and resume later by running',
+      log.bold('skuba init'),
+      'in the new directory.',
+    );
+
+    await fs.remove(destinationDir);
     process.exit(1);
   }
 
   return {
-    ...result.data,
+    ...config,
     entryPoint,
     packageManager,
     templateData,
@@ -395,5 +356,5 @@ const configureFromPipe = async (): Promise<InitConfig> => {
   };
 };
 
-export const getConfig = () =>
-  process.stdin.isTTY ? configureFromPrompt() : configureFromPipe();
+export const getConfig = ({ nonInteractive }: { nonInteractive: boolean }) =>
+  nonInteractive ? configureFromPipe() : configureFromPrompt();

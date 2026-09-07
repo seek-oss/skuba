@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "main": "../lib/rolldown/index.cjs",
+  "module": "../lib/rolldown/index.mjs",
+  "types": "../lib/rolldown/index.d.cts"
+}

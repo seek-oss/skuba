@@ -8,15 +8,11 @@ import type { ReadResult } from '../configure/types.js';
 
 import { resumeTemplating } from './resumeTemplating.js';
 
-vi.mock('./getConfig.js', async (importActual) => {
-  const actual = await importActual<typeof import('./getConfig.js')>();
-  return {
-    ...actual,
-    readJSONFromStdIn: vi.fn(),
-  };
-});
+vi.mock('./readJSONFromStdIn.js', () => ({
+  readJSONFromStdIn: vi.fn(),
+}));
 
-const { readJSONFromStdIn } = await import('./getConfig.js');
+const { readJSONFromStdIn } = await import('./readJSONFromStdIn.js');
 
 const TEMP_ROOT = path.join(
   import.meta.dirname,
@@ -26,8 +22,6 @@ const TEMP_ROOT = path.join(
   'integration',
   'resume-templating',
 );
-
-const isTTY = process.stdin.isTTY;
 
 let tempDir: string;
 
@@ -67,12 +61,9 @@ const skubaTemplateJs = `export default {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  // Force the non-interactive (stdin) path.
-  process.stdin.isTTY = false;
 });
 
 afterEach(async () => {
-  process.stdin.isTTY = isTTY;
   await fs.remove(TEMP_ROOT);
 });
 
@@ -89,7 +80,7 @@ describe('resumeTemplating', () => {
       'src/app.ts': "export const queue = '<%- prodBuildkiteQueueName %>';\n",
     });
 
-    await resumeTemplating({ manifest });
+    await resumeTemplating({ manifest, nonInteractive: true });
 
     await expect(
       fs.promises.readFile(path.join(tempDir, 'src/app.ts'), 'utf8'),
@@ -106,7 +97,7 @@ describe('resumeTemplating', () => {
       'skuba.template.js': `export default { fields: [], packageManager: 'pnpm' };\n`,
     });
 
-    await resumeTemplating({ manifest });
+    await resumeTemplating({ manifest, nonInteractive: true });
 
     expect(readJSONFromStdIn).not.toHaveBeenCalled();
     await expect(

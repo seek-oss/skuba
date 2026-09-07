@@ -1,5 +1,13 @@
 # eslint-plugin-skuba
 
+## 3.1.0
+
+### Minor Changes
+
+- **deps:** Update `eslint` peer dependency to ^9.22.0 from >=9.22.0 ([#2540](https://github.com/seek-oss/skuba/pull/2540))
+
+  This resolves a compatibility issue with version 10 of `eslint`.
+
 ## 3.0.0
 
 ### Major Changes

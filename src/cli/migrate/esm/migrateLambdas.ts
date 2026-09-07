@@ -8,11 +8,7 @@ import { getCustomConditions } from '../../build/tsc.js';
 import { registerAstGrepLanguages } from '../../lint/internalLints/registerAstGrepLanguages.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
 
-import {
-  appendDdTraceToCdkNodeOptions,
-  appendDdTraceToServerlessNodeOptions,
-  collectLambdaFiles,
-} from './datadogNodeOptions.js';
+import { collectLambdaFiles } from './datadogNodeOptions.js';
 
 const migrateCdkLambdas = async (
   tsFiles: Array<{ file: string; contents: string }>,
@@ -219,57 +215,51 @@ const migrateCdkLambdas = async (
             },
           });
 
-          if (datadogSettings && !nodeLayerVersion && !redirectHandler) {
-            if (containsDatadogLambdaImport) {
-              edits.push({
-                startPos: datadogSettings.range().end.index - 1,
-                endPos: datadogSettings.range().end.index - 1,
-                insertedText: '\nredirectHandler: false,\n',
-              });
+          if (
+            datadogSettings &&
+            !nodeLayerVersion &&
+            !redirectHandler &&
+            !containsDatadogLambdaImport
+          ) {
+            const extensionVersion = datadogSettings.find({
+              rule: {
+                kind: 'lexical_declaration',
+                regex: '^const DATADOG_EXTENSION_LAYER_VERSION ',
+              },
+            });
 
-              appendDdTraceToCdkNodeOptions(workerAst, edits);
-            } else {
-              const extensionVersion = datadogSettings.find({
-                rule: {
-                  kind: 'lexical_declaration',
-                  regex: '^const DATADOG_EXTENSION_LAYER_VERSION ',
+            const lastImport = astRoot.find({
+              rule: {
+                kind: 'import_statement',
+                inside: {
+                  kind: 'program',
                 },
-              });
-
-              const lastImport = astRoot.find({
-                rule: {
-                  kind: 'import_statement',
-                  inside: {
-                    kind: 'program',
+                nthChild: {
+                  ofRule: {
+                    kind: 'import_statement',
                   },
-                  nthChild: {
-                    ofRule: {
-                      kind: 'import_statement',
-                    },
-                    position: 1,
-                    reverse: true,
-                  },
+                  position: 1,
+                  reverse: true,
                 },
-              });
+              },
+            });
 
-              const insertPos =
-                extensionVersion?.range().end.index ??
-                lastImport?.range().end.index ??
-                astRoot.range().start.index;
+            const insertPos =
+              extensionVersion?.range().end.index ??
+              lastImport?.range().end.index ??
+              astRoot.range().start.index;
 
-              edits.push({
-                startPos: insertPos,
-                endPos: insertPos,
-                insertedText: 'const DATADOG_NODE_LAYER_VERSION = 126;\n',
-              });
+            edits.push({
+              startPos: insertPos,
+              endPos: insertPos,
+              insertedText: 'const DATADOG_NODE_LAYER_VERSION = 126;\n',
+            });
 
-              edits.push({
-                startPos: datadogSettings.range().end.index - 1,
-                endPos: datadogSettings.range().end.index - 1,
-                insertedText:
-                  '\nnodeLayerVersion: DATADOG_NODE_LAYER_VERSION,\n',
-              });
-            }
+            edits.push({
+              startPos: datadogSettings.range().end.index - 1,
+              endPos: datadogSettings.range().end.index - 1,
+              insertedText: '\nnodeLayerVersion: DATADOG_NODE_LAYER_VERSION,\n',
+            });
           }
         }
 
@@ -287,7 +277,6 @@ const migrateCdkLambdas = async (
 
 const migrateServerlessLambdas = async (
   serverlessFiles: Array<{ file: string; contents: string }>,
-  containsDatadogLambdaImport: boolean,
 ) => {
   registerAstGrepLanguages();
   return (
@@ -296,60 +285,9 @@ const migrateServerlessLambdas = async (
         const astRoot = (await parseAsync('yaml', contents)).root();
 
         const edits: Edit[] = [];
-        const datadogSettings = astRoot.find({
-          rule: {
-            kind: 'block_node',
-            inside: {
-              kind: 'block_mapping_pair',
-              regex: '^datadog:',
-            },
-          },
-        });
-
-        if (datadogSettings) {
-          const addLayers = datadogSettings.find({
-            rule: {
-              kind: 'block_mapping_pair',
-              regex: '^addLayers:',
-            },
-          });
-
-          const addLayersDisabled = addLayers?.text().includes('false');
-
-          if (addLayersDisabled) {
-            const redirectHandlers = datadogSettings.find({
-              rule: {
-                kind: 'block_node',
-                inside: {
-                  kind: 'block_mapping_pair',
-                  regex: '^redirectHandlers:',
-                },
-              },
-            });
-
-            if (!redirectHandlers) {
-              const indent = datadogSettings.range().start.column;
-              edits.push({
-                startPos: datadogSettings.range().end.index,
-                endPos: datadogSettings.range().end.index,
-                insertedText: `\n${' '.repeat(indent)}redirectHandlers: false${!containsDatadogLambdaImport ? ' # TODO: Wrap your handler with the `datadog` function wrapper from `datadog-lambda-js` or the `withLambdaExtension` function wrapper from `seek-datadog-custom-metrics/lambda`. Alternatively, remove this setting and enable addLayers: true' : ''}\n`,
-              });
-
-              if (containsDatadogLambdaImport) {
-                appendDdTraceToServerlessNodeOptions(astRoot, edits);
-              }
-            }
-          }
-        }
 
         if (!contents.includes('esbuild')) {
-          if (edits.length === 0) {
-            return null;
-          }
-          return {
-            contents: astRoot.commitEdits(edits),
-            file,
-          };
+          return null;
         }
 
         const esbuildAst = astRoot.find({
@@ -466,7 +404,7 @@ export const migrateLambdas: PatchFunction = async ({ mode }) => {
 
   const [patchedTsFiles, patchedServerlessFiles] = await Promise.all([
     migrateCdkLambdas(tsFiles, containsDatadogLambdaImport),
-    migrateServerlessLambdas(serverlessFiles, containsDatadogLambdaImport),
+    migrateServerlessLambdas(serverlessFiles),
   ]);
 
   if (!patchedTsFiles.length && !patchedServerlessFiles.length) {

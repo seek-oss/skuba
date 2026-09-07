@@ -8,12 +8,52 @@ const isQuotedScalar = (text: string): boolean =>
   (text.startsWith("'") && text.endsWith("'")) ||
   (text.startsWith('"') && text.endsWith('"'));
 
-const childIndent = (block: SgNode, fallback: number): number => {
-  const firstPair = block.find({ rule: { kind: 'block_mapping_pair' } });
-  return firstPair ? firstPair.range().start.column : fallback;
+const stripDdTrace = (inner: string): string =>
+  inner
+    .replace(DD_TRACE_INITIALIZE, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+/**
+ * Removes a node's entire line, including its leading indentation, an optional
+ * trailing comma, an optional trailing inline comment, and the trailing
+ * newline.
+ */
+export const removeWholeLine = (node: SgNode, edits: Edit[]) => {
+  const source = node.getRoot().root().text();
+  const { start, end } = node.range();
+
+  let startPos = start.index;
+  while (startPos > 0 && source[startPos - 1] !== '\n') {
+    startPos--;
+  }
+
+  let endPos = end.index;
+  if (source[endPos] === ',') {
+    endPos++;
+  }
+
+  // Consume trailing whitespace and an optional inline comment so we don't
+  // orphan a `# ...` (YAML) or `// ...` (TS) comment that followed the value.
+  let cursor = endPos;
+  while (source[cursor] === ' ' || source[cursor] === '\t') {
+    cursor++;
+  }
+  if (source[cursor] === '#' || source.startsWith('//', cursor)) {
+    while (cursor < source.length && source[cursor] !== '\n') {
+      cursor++;
+    }
+    endPos = cursor;
+  }
+
+  if (source[endPos] === '\n') {
+    endPos++;
+  }
+
+  edits.push({ startPos, endPos, insertedText: '' });
 };
 
-export const appendDdTraceToCdkNodeOptions = (
+export const removeDdTraceFromCdkNodeOptions = (
   workerAst: SgNode,
   edits: Edit[],
 ) => {
@@ -27,32 +67,16 @@ export const appendDdTraceToCdkNodeOptions = (
     },
   });
 
-  if (!environmentObject) {
-    return;
-  }
-
-  const nodeOptions = environmentObject.find({
+  const nodeOptions = environmentObject?.find({
     rule: {
       kind: 'pair',
       regex: '^NODE_OPTIONS:',
     },
   });
 
-  if (!nodeOptions) {
-    edits.push({
-      startPos: environmentObject.range().end.index - 1,
-      endPos: environmentObject.range().end.index - 1,
-      insertedText: `\nNODE_OPTIONS: '${DD_TRACE_INITIALIZE}',\n`,
-    });
-    return;
-  }
+  const nodeOptionsValue = nodeOptions?.field('value');
 
-  const nodeOptionsValue = nodeOptions.field('value');
-
-  if (
-    !nodeOptionsValue ||
-    nodeOptionsValue.text().includes(DD_TRACE_INITIALIZE)
-  ) {
+  if (!nodeOptions || !nodeOptionsValue?.text().includes(DD_TRACE_INITIALIZE)) {
     return;
   }
 
@@ -62,15 +86,18 @@ export const appendDdTraceToCdkNodeOptions = (
     return;
   }
 
-  const isEmpty = valueText.length === 2;
-  edits.push({
-    startPos: nodeOptionsValue.range().end.index - 1,
-    endPos: nodeOptionsValue.range().end.index - 1,
-    insertedText: `${isEmpty ? '' : ' '}${DD_TRACE_INITIALIZE}`,
-  });
+  const quote = valueText[0];
+  const newInner = stripDdTrace(valueText.slice(1, -1));
+
+  if (newInner === '') {
+    removeWholeLine(nodeOptions, edits);
+    return;
+  }
+
+  edits.push(nodeOptionsValue.replace(`${quote}${newInner}${quote}`));
 };
 
-export const appendDdTraceToServerlessNodeOptions = (
+export const removeDdTraceFromServerlessNodeOptions = (
   astRoot: SgNode,
   edits: Edit[],
 ) => {
@@ -81,70 +108,28 @@ export const appendDdTraceToServerlessNodeOptions = (
     },
   });
 
-  if (nodeOptionsPairs.length) {
-    for (const nodeOptions of nodeOptionsPairs) {
-      const value = nodeOptions.field('value');
+  for (const nodeOptions of nodeOptionsPairs) {
+    const value = nodeOptions.field('value');
 
-      if (!value || value.text().includes(DD_TRACE_INITIALIZE)) {
-        continue;
-      }
-
-      const insertPos = isQuotedScalar(value.text())
-        ? value.range().end.index - 1
-        : value.range().end.index;
-
-      edits.push({
-        startPos: insertPos,
-        endPos: insertPos,
-        insertedText: ` ${DD_TRACE_INITIALIZE}`,
-      });
+    if (!value?.text().includes(DD_TRACE_INITIALIZE)) {
+      continue;
     }
-    return;
-  }
 
-  const provider = astRoot.find({
-    rule: {
-      kind: 'block_mapping_pair',
-      regex: '^provider:',
-    },
-  });
+    const valueText = value.text();
+    const quoted = isQuotedScalar(valueText);
+    const newInner = stripDdTrace(quoted ? valueText.slice(1, -1) : valueText);
 
-  const providerValue = provider?.field('value');
+    if (newInner === '') {
+      removeWholeLine(nodeOptions, edits);
+      continue;
+    }
 
-  if (!provider || !providerValue) {
-    return;
-  }
-
-  const environment = providerValue.find({
-    rule: {
-      kind: 'block_mapping_pair',
-      regex: '^environment:',
-    },
-  });
-
-  const environmentValue = environment?.field('value');
-
-  if (environment && environmentValue) {
-    const indent = childIndent(
-      environmentValue,
-      environment.range().start.column + 2,
+    edits.push(
+      value.replace(
+        quoted ? `${valueText[0]}${newInner}${valueText[0]}` : newInner,
+      ),
     );
-    edits.push({
-      startPos: environmentValue.range().end.index,
-      endPos: environmentValue.range().end.index,
-      insertedText: `\n${' '.repeat(indent)}NODE_OPTIONS: '${DD_TRACE_INITIALIZE}'`,
-    });
-    return;
   }
-
-  const indent = childIndent(providerValue, provider.range().start.column + 2);
-  edits.push({
-    startPos: providerValue.range().end.index,
-    endPos: providerValue.range().end.index,
-    insertedText: `\n${' '.repeat(indent)}environment:\n${' '.repeat(
-      indent + 2,
-    )}NODE_OPTIONS: '${DD_TRACE_INITIALIZE}'`,
-  });
 };
 
 export interface LambdaFile {

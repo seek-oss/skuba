@@ -1,12 +1,12 @@
 import os from 'os';
 import path from 'path';
 
+import { spinner } from '@clack/prompts';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
 
 import { copyFiles } from '../../utils/copy.js';
-import { log } from '../../utils/logging.js';
 
 import * as Git from '@skuba-lib/api/git';
 
@@ -43,18 +43,26 @@ export const downloadGitHubTemplate = async (
   gitHubPath: string,
   destinationDir: string,
 ) => {
-  log.newline();
-  log.plain('Downloading', log.bold(gitHubPath), 'from GitHub...');
+  const s = spinner();
+  s.start(`Downloading ${gitHubPath} from GitHub...`);
 
-  await simpleGit().clone(`git@github.com:${gitHubPath}.git`, destinationDir, [
-    '--depth=1',
-    '--quiet',
-  ]);
+  try {
+    await simpleGit().clone(
+      `git@github.com:${gitHubPath}.git`,
+      destinationDir,
+      ['--depth=1', '--quiet'],
+    );
 
-  await fs.promises.rm(path.join(destinationDir, '.git'), {
-    force: true,
-    recursive: true,
-  });
+    await fs.promises.rm(path.join(destinationDir, '.git'), {
+      force: true,
+      recursive: true,
+    });
+
+    s.stop(`Downloaded ${gitHubPath} from GitHub`);
+  } catch (err) {
+    s.error(`Failed to download ${gitHubPath} from GitHub`);
+    throw err;
+  }
 };
 
 export const listPrivateTemplates = async (): Promise<string[]> => {
@@ -86,12 +94,8 @@ export const downloadPrivateTemplate = async (
   templateName: string,
   destinationDir: string,
 ) => {
-  log.newline();
-  log.plain(
-    'Downloading',
-    log.bold(templateName),
-    'from SEEK-Jobs/skuba-templates',
-  );
+  const s = spinner();
+  s.start(`Downloading ${templateName} from SEEK-Jobs/skuba-templates...`);
 
   const repoUrl = 'git@github.com:SEEK-Jobs/skuba-templates.git';
   const folderPath = `templates/${templateName}`;
@@ -132,8 +136,12 @@ export const downloadPrivateTemplate = async (
     });
 
     await fs.promises.rm(tempDir, { force: true, recursive: true });
+    s.stop(`Downloaded ${templateName} from SEEK-Jobs/skuba-templates`);
   } catch (error) {
     await fs.promises.rm(tempDir, { force: true, recursive: true });
+    s.error(
+      `Failed to download ${templateName} from SEEK-Jobs/skuba-templates`,
+    );
     throw error;
   }
 };

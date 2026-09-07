@@ -1,3 +1,4 @@
+import { log } from '../../../../utils/logging.js';
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { PrettierOutput } from '../../../adapter/prettier.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
@@ -8,6 +9,7 @@ import { createInternalAnnotations } from './internal.js';
 import { createPrettierAnnotations } from './prettier.js';
 import { createTscAnnotations } from './tsc.js';
 
+import * as Git from '@skuba-lib/api/git';
 import * as GitHub from '@skuba-lib/api/github';
 
 export const createGitHubAnnotations = async (
@@ -18,6 +20,11 @@ export const createGitHubAnnotations = async (
   tscOutputStream: StreamInterceptor,
 ) => {
   if (!GitHub.enabledFromEnvironment()) {
+    return;
+  }
+
+  if (!(await Git.findRoot({ dir: process.cwd() }))) {
+    log.warn('GitHub annotations skipped because no .git directory was found.');
     return;
   }
 

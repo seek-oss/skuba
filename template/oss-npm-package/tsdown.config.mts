@@ -8,16 +8,14 @@ export default defineConfig({
   dts: true,
   inputOptions: {
     resolve: {
-      alias: {
-        '#src': './src',
-      },
+      conditionNames: ['@seek/<%- repoName %>/source'],
     },
   },
   checks: {
     legacyCjs: false,
   },
   exports: {
-    devExports: '@seek/<%- moduleName %>/source',
+    devExports: '@seek/<%- repoName %>/source',
   },
   publint: true,
   attw: true,

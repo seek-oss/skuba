@@ -3,12 +3,16 @@ import { inspect } from 'util';
 import { exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
-import type { PatchFunction, PatchReturnType } from '../../index.js';
+import type {
+  PatchConfig,
+  PatchFunction,
+  PatchReturnType,
+} from '../../index.js';
 
-export const migratePnpmV11: PatchFunction = async ({
+export const migratePnpmV11 = async ({
   mode,
   packageManager,
-}): Promise<PatchReturnType> => {
+}: Pick<PatchConfig, 'mode' | 'packageManager'>): Promise<PatchReturnType> => {
   if (packageManager.command !== 'pnpm') {
     return {
       result: 'skip',

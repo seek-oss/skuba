@@ -2,6 +2,8 @@ import { describe, expect, it, test } from 'vitest';
 
 import {
   hasDebugFlag,
+  hasHelpFlag,
+  hasNonInteractiveFlag,
   hasSerialFlag,
   parseProcessArgs,
   parseRunArgs,
@@ -19,6 +21,37 @@ describe('hasDebugFlag', () => {
     ${'matching arg among others'} | ${['something', '--debug', 'else']} | ${true}
   `('$description => $expected', ({ args, expected }) =>
     expect(hasDebugFlag(args)).toBe(expected),
+  );
+});
+
+describe('hasHelpFlag', () => {
+  test.each`
+    description                    | args                               | expected
+    ${'no args'}                   | ${[]}                              | ${false}
+    ${'unrelated args'}            | ${['something', 'else']}           | ${false}
+    ${'single dash'}               | ${['-help']}                       | ${false}
+    ${'matching --help'}           | ${['--help']}                      | ${true}
+    ${'matching -h'}               | ${['-h']}                          | ${true}
+    ${'matching help command'}     | ${['help']}                        | ${true}
+    ${'help not at start'}         | ${['something', 'help']}           | ${false}
+    ${'matching arg among others'} | ${['something', '--help', 'else']} | ${true}
+  `('$description => $expected', ({ args, expected }) =>
+    expect(hasHelpFlag(args)).toBe(expected),
+  );
+});
+
+describe('hasNonInteractiveFlag', () => {
+  test.each`
+    description                    | args                                          | expected
+    ${'no args'}                   | ${[]}                                         | ${false}
+    ${'unrelated args'}            | ${['something', 'else']}                      | ${false}
+    ${'single dash'}               | ${['-non-interactive']}                       | ${false}
+    ${'matching lowercase arg'}    | ${['--non-interactive']}                      | ${true}
+    ${'matching uppercase arg'}    | ${['--NON-INTERACTIVE']}                      | ${true}
+    ${'matching spongebob arg'}    | ${['--nOn-InTeRaCtIvE']}                      | ${true}
+    ${'matching arg among others'} | ${['something', '--non-interactive', 'else']} | ${true}
+  `('$description => $expected', ({ args, expected }) =>
+    expect(hasNonInteractiveFlag(args)).toBe(expected),
   );
 });
 

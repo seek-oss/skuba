@@ -5,7 +5,7 @@ export default defineConfig(
   Vitest.mergePreset({
     ssr: {
       resolve: {
-        conditions: ['@seek/<%- serviceName %>/source'],
+        conditions: ['@seek/<%- repoName %>/source'],
       },
     },
     test: {

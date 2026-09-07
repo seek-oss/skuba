@@ -26,11 +26,11 @@ vi.mock('fs-extra');
 vi.mock('isomorphic-git');
 
 beforeAll(() => {
-  process.env.BUILDKITE_COMMIT = 'commit-id';
+  vi.stubEnv('BUILDKITE_COMMIT', 'commit-id');
 });
 
 afterAll(() => {
-  delete process.env.BUILDKITE_COMMIT;
+  vi.unstubAllEnvs();
 });
 
 afterEach(() => {

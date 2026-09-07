@@ -5,7 +5,7 @@
   ".git/objects/pack": null,
   ".git/refs/heads": null,
   ".git/refs/tags": null,
-  ".git/config": "[core]\nrepositoryformatversion = 0\nfilemode = true\nbare = true\nignorecase = true\nprecomposeunicode = true\n",
+  ".git/config": "[core]\nrepositoryformatversion = 0\nfilemode = true\nbare = true\nignorecase = true\nprecomposeunicode = true\n[user]\nname = skuba\n",
   ".git/description": "Unnamed repository; edit this file 'description' to name the repository.\n",
   ".git/HEAD": "ref: refs/heads/main\n"
 }

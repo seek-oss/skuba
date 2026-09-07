@@ -21,12 +21,13 @@ const mockClient = {
 };
 
 beforeEach(() => {
-  delete process.env.GITHUB_API_TOKEN;
-  delete process.env.GITHUB_SHA;
-  delete process.env.GITHUB_TOKEN;
+  vi.stubEnv('GITHUB_API_TOKEN', undefined);
+  vi.stubEnv('GITHUB_SHA', undefined);
+  vi.stubEnv('GITHUB_TOKEN', undefined);
 });
 
 afterEach(() => {
+  vi.unstubAllEnvs();
   vi.resetAllMocks();
 });
 
@@ -64,8 +65,8 @@ describe('createCheckRun', () => {
   });
 
   it('should create an Octokit client with the GITHUB_API_TOKEN environment variable', async () => {
-    delete process.env.GITHUB_TOKEN;
-    process.env.GITHUB_API_TOKEN = 'Hello from GITHUB_API_TOKEN';
+    vi.stubEnv('GITHUB_TOKEN', undefined);
+    vi.stubEnv('GITHUB_API_TOKEN', 'Hello from GITHUB_API_TOKEN');
 
     await createCheckRun({
       name,
@@ -81,8 +82,8 @@ describe('createCheckRun', () => {
   });
 
   it('should create an Octokit client with the GITHUB_TOKEN environment variable', async () => {
-    delete process.env.GITHUB_API_TOKEN;
-    process.env.GITHUB_TOKEN = 'Hello from GITHUB_TOKEN';
+    vi.stubEnv('GITHUB_API_TOKEN', undefined);
+    vi.stubEnv('GITHUB_TOKEN', 'Hello from GITHUB_TOKEN');
 
     await createCheckRun({
       name,

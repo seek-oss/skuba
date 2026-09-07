@@ -26,7 +26,7 @@ steps:
   - command: pnpm lint
     plugins:
       - ...
-      - docker#v5.13.0:
+      - docker#v5.14.0:
           # Enable GitHub integrations.
           environment:
             - GITHUB_API_TOKEN
@@ -56,7 +56,7 @@ steps:
   - command: pnpm lint
     plugins:
       - ...
-      - docker-compose#v5.12.1:
+      - docker-compose#v5.14.0:
           mount-buildkite-agent: true
           propagate-environment: true
           run: app

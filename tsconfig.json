@@ -17,6 +17,7 @@
     "packages/eslint-config-skuba",
     "packages/eslint-plugin-skuba",
     "template/**/*",
+    "tsdown.config.mts",
     "**/*/tsdown.config.mts",
     "packages/pnpm-plugin-skuba"
   ],

@@ -1,6 +1,6 @@
 import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
-import { beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { currentBranch } from './currentBranch.js';
 
@@ -9,10 +9,14 @@ vi.mock('fs-extra', () => ({
   default: memfs.fs,
 }));
 
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
 beforeEach(async () => {
-  delete process.env.BUILDKITE_BRANCH;
-  delete process.env.GITHUB_HEAD_REF;
-  delete process.env.GITHUB_REF_NAME;
+  vi.stubEnv('BUILDKITE_BRANCH', undefined);
+  vi.stubEnv('GITHUB_HEAD_REF', undefined);
+  vi.stubEnv('GITHUB_REF_NAME', undefined);
 
   vol.reset();
 

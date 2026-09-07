@@ -655,10 +655,10 @@ const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
   ...
   bundling: {
     ...
+    // required for @seek/logger
+-   nodeModules: ['pino'],
++   nodeModules: ['pino', 'problematic-module'],
     esbuildArgs: {
-      // required for @seek/logger
--     external: ['pino'],
-+     external: ['pino', 'problematic-module'],
       // or
 +     banner: 'import { createRequire } from "module";\nconst require = createRequire(import.meta.url);',
     },

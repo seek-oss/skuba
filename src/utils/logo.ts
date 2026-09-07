@@ -1,5 +1,7 @@
 import { styleText } from 'node:util';
 
+import { isAgent } from 'std-env';
+
 import { log } from './logging.js';
 import { detectPackageManager } from './packageManager.js';
 import { getSkubaVersionInfo } from './version.js';
@@ -20,8 +22,12 @@ export const showLogoAndVersionInfo = async () => {
     detectPackageManager(),
   ]);
 
-  log.plain(LOGO);
+  if (!isAgent) {
+    log.plain(LOGO);
+  }
+
   log.subtle(
+    ...(isAgent ? ['skuba'] : []),
     log.bold(versionInfo.local),
     '|',
     'latest',

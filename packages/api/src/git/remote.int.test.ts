@@ -1,6 +1,6 @@
 import git from 'isomorphic-git';
 import memfs, { vol } from 'memfs';
-import { beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { getOwnerAndRepo } from './remote.js';
 
@@ -9,9 +9,13 @@ vi.mock('fs-extra', () => ({
   default: memfs.fs,
 }));
 
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
 beforeEach(async () => {
-  delete process.env.BUILDKITE_REPO;
-  delete process.env.GITHUB_REPOSITORY;
+  vi.stubEnv('BUILDKITE_REPO', undefined);
+  vi.stubEnv('GITHUB_REPOSITORY', undefined);
 
   vol.reset();
 

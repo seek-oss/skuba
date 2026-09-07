@@ -35,8 +35,7 @@ export interface Options<
   requestBody?: RequestBody;
   rawBody?: string;
   throw?:
-    | ((status: number, message?: string) => never)
-    | ReturnType<typeof vi.fn>;
+    ((status: number, message?: string) => never) | ReturnType<typeof vi.fn>;
   redirect?: ((url: string) => void) | ReturnType<typeof vi.fn>;
   customProperties?: CustomProperties;
 }

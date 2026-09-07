@@ -1,3 +1,4 @@
+import { hasHelpFlag } from '../../utils/args.js';
 import { log } from '../../utils/logging.js';
 
 import { addFileExtensions } from './esm/addFileExtensions.js';
@@ -58,7 +59,7 @@ export const migrations = {
   'file-extensions': () => addFileExtensions({ mode: 'format' }),
 } satisfies Record<string, () => Promise<unknown>>;
 
-const logAvailableMigrations = () => {
+export const logAvailableMigrations = () => {
   log.ok('Available migrations:');
   Object.keys(migrations).forEach((migration) => {
     log.ok(`- ${migration}`);
@@ -73,7 +74,7 @@ export const migrate = async (args = process.argv.slice(2)) => {
     return;
   }
 
-  if (args.includes('--help') || args.includes('-h') || args[0] === 'help') {
+  if (hasHelpFlag(args)) {
     logAvailableMigrations();
     return;
   }

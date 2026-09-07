@@ -15,3 +15,7 @@ export const pathExists = async (filePath: string): Promise<boolean> => {
     throw error; // Other errors (include permission issues)
   }
 };
+
+export const pathExistsSync = (filePath: string): boolean =>
+  // eslint-disable-next-line no-sync -- sync counterpart of pathExists for prompt validation
+  fs.existsSync(filePath);

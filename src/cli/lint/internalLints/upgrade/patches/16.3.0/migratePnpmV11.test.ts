@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { exec } from '../../../../../../utils/exec.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import type { PatchReturnType } from '../../index.js';
 
 import { migratePnpmV11 } from './migratePnpmV11.js';
 
@@ -19,7 +19,7 @@ describe('migratePnpmV11', () => {
       migratePnpmV11({
         mode: 'format',
         packageManager: { command: 'yarn' },
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'skip',
       reason: 'not a pnpm project',
@@ -33,7 +33,7 @@ describe('migratePnpmV11', () => {
       migratePnpmV11({
         mode: 'lint',
         packageManager: { command: 'pnpm' },
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
@@ -46,7 +46,7 @@ describe('migratePnpmV11', () => {
       migratePnpmV11({
         mode: 'format',
         packageManager: { command: 'pnpm' },
-      } as PatchConfig),
+      }),
     ).resolves.toEqual({
       result: 'apply',
     } satisfies PatchReturnType);
