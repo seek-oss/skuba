@@ -160,9 +160,8 @@ something
       - pkg@1.0.0"
   `);
 
-  await expect(
-    getDependencyReleaseLine([changeset], [dependency], null),
-  ).resolves.toMatchInlineSnapshot(`
+  await expect(getDependencyReleaseLine([changeset], [dependency], null))
+    .resolves.toMatchInlineSnapshot(`
     "- Updated dependencies:
       - pkg@1.0.0"
   `);
@@ -525,4 +524,3 @@ it('bolds conventional commit scopes', async () => {
     getReleaseLine(changeset, 'minor', { repo: data.repo }),
   ).resolves.toContain('**api:** add a thing');
 });
-
