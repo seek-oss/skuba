@@ -227,7 +227,7 @@ it('linkifies bare issue references', async () => {
     "
 
     - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
-     fixes [#1234](https://github.com/emotion-js/emotion/issues/1234) and [#5678](https://github.com/emotion-js/emotion/issues/5678)"
+      fixes [#1234](https://github.com/emotion-js/emotion/issues/1234) and [#5678](https://github.com/emotion-js/emotion/issues/5678)"
   `);
 });
 
@@ -243,7 +243,7 @@ it('does not double-linkify existing markdown links', async () => {
     "
 
     - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
-     see [#1234](https://github.com/emotion-js/emotion/issues/1234)"
+      see [#1234](https://github.com/emotion-js/emotion/issues/1234)"
   `);
 });
 
@@ -256,7 +256,7 @@ it('does not linkify issue-like refs inside link text', async () => {
     "
 
     - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
-     see [fix for #99](https://example.com)"
+      see [fix for #99](https://example.com)"
   `);
 });
 
@@ -266,7 +266,7 @@ it('does not linkify when preceded by a word character', async () => {
     "
 
     - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
-     foo#123"
+      foo#123"
   `);
 });
 
@@ -276,7 +276,7 @@ it('does not linkify #0', async () => {
     "
 
     - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
-     see #0"
+      see #0"
   `);
 });
 
@@ -286,7 +286,7 @@ it('linkifies issue ref at the start of a line', async () => {
     "
 
     - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
-     [#42](https://github.com/emotion-js/emotion/issues/42) was fixed"
+      [#42](https://github.com/emotion-js/emotion/issues/42) was fixed"
   `);
 });
 
@@ -296,7 +296,7 @@ it('linkifies issue ref after punctuation', async () => {
     "
 
     - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
-     fixed ([#99](https://github.com/emotion-js/emotion/issues/99))"
+      fixed ([#99](https://github.com/emotion-js/emotion/issues/99))"
   `);
 });
 
@@ -312,7 +312,7 @@ it('handles mixed linked and bare refs', async () => {
     "
 
     - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
-     fixes [#1](https://github.com/emotion-js/emotion/issues/1) and [#2](https://github.com/emotion-js/emotion/issues/2)"
+      fixes [#1](https://github.com/emotion-js/emotion/issues/1) and [#2](https://github.com/emotion-js/emotion/issues/2)"
   `);
 });
 
@@ -322,7 +322,7 @@ it('linkifies issue ref followed by a dot', async () => {
     "
 
     - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
-     this fixes [#42](https://github.com/emotion-js/emotion/issues/42)."
+      this fixes [#42](https://github.com/emotion-js/emotion/issues/42)."
   `);
 });
 
@@ -388,7 +388,7 @@ describe('template option (compact reproduction)', () => {
       commit: data.commit,
     };
     await expect(getReleaseLine(changeset, 'minor', compactOpts)).resolves.toBe(
-      '\n- first line ([#1613](https://github.com/emotion-js/emotion/pull/1613))\n second line',
+      '\n- first line ([#1613](https://github.com/emotion-js/emotion/pull/1613))\n  second line',
     );
   });
 

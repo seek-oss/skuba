@@ -192,7 +192,7 @@ const changelogFunctions: ChangelogFunctions = {
     const summaryLinked = linkifyIssueRefs(boldScope(firstLine), linkOpts);
 
     const continuation = futureLines
-      .map((l) => ` ${linkifyIssueRefs(l, linkOpts)}`)
+      .map((l) => `  ${linkifyIssueRefs(l, linkOpts)}`)
       .join('\n');
 
     if (typeof options?.template === 'string' && options.template.length > 0) {
