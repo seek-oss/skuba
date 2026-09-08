@@ -319,6 +319,13 @@ importers:
       '@changesets/get-github-info':
         specifier: ^1.0.0
         version: 1.0.0
+      '@changesets/types':
+        specifier: ^7.0.0
+        version: 7.0.0
+    devDependencies:
+      '@changesets/parse':
+        specifier: ^1.0.0
+        version: 1.0.0
 
   packages/detect-invalid-spies:
     dependencies:

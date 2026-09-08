@@ -2,7 +2,7 @@
 
 // Hack to add a preamble from .changeset/.PREAMBLE.md to the CHANGELOG.md for a given release
 /* eslint-disable no-sync */
-import fs from 'fs';
+import fs from 'node:fs';
 
 const PREAMBLE_PATH = '.changeset/.PREAMBLE.md';
 const CHANGELOG_PATH = 'CHANGELOG.md';

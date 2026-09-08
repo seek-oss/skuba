@@ -17,38 +17,53 @@
   "type": "module",
   "exports": {
     ".": {
-      "@seek/skuba/source": "./src/changelog.mjs",
-      "default": "./src/changelog.mjs"
+      "@seek/skuba/source": "./src/index.ts",
+      "default": "./lib/index.mjs"
     },
     "./inject": {
-      "@seek/skuba/source": "./src/inject.mjs",
-      "default": "./src/inject.mjs"
+      "@seek/skuba/source": "./src/inject.ts",
+      "default": "./lib/inject.mjs"
     },
     "./package.json": "./package.json"
   },
   "bin": {
-    "skuba-changelog-inject": "./src/inject.mjs"
+    "skuba-changelog-inject": "./src/inject.ts"
   },
   "files": [
-    "src"
+    "lib"
   ],
+  "scripts": {
+    "build": "pnpm skuba build-package",
+    "inject": "node ./lib/inject.mjs",
+    "prepack": "pnpm build",
+    "skuba": "node ../../lib/skuba",
+    "test": "pnpm skuba test",
+    "test:ci": "pnpm skuba test --coverage"
+  },
   "dependencies": {
-    "@changesets/get-github-info": "^1.0.0"
+    "@changesets/get-github-info": "^1.0.0",
+    "@changesets/types": "^7.0.0"
+  },
+  "devDependencies": {
+    "@changesets/parse": "^1.0.0"
   },
   "engines": {
     "node": ">=22.14.0"
   },
   "publishConfig": {
+    "bin": {
+      "skuba-changelog-inject": "./lib/inject.mjs"
+    },
     "exports": {
-      ".": "./src/changelog.mjs",
-      "./inject": "./src/inject.mjs",
+      ".": "./lib/index.mjs",
+      "./inject": "./lib/inject.mjs",
       "./package.json": "./package.json"
     }
   },
   "skuba": {
-    "entryPoint": "src/changelog.mjs",
+    "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "14.1.2"
+    "version": "16.3.0"
   }
 }
