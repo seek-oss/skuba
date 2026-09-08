@@ -59,11 +59,6 @@ echo "--- creating package.json"
 packageManager=$(jq -r '.packageManager' ../skuba/package.json)
 echo "{\"packageManager\":\"${packageManager}\"}" > package.json
 
-# pnpm v11 sets strictDepBuilds to true by default
-cat >pnpm-workspace.yaml <<'WORKSPACE'
-strictDepBuilds: false
-WORKSPACE
-
 echo "--- pnpm add --save-dev ${skuba_tar}"
 pnpm add --save-dev "${skuba_tar}"
 
