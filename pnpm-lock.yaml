@@ -8437,7 +8437,7 @@ snapshots:
       camelcase: 9.0.0
       map-obj: 6.0.0
       quick-lru: 7.3.0
-      type-fest: 5.8.0
+      type-fest: 5.9.0
 
   camelcase-keys@6.2.2:
     dependencies:
