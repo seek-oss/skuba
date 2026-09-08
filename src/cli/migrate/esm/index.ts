@@ -83,7 +83,7 @@ const patches: Patch[] = [
 
 export const migrateToESM = async (opts: {
   mode: 'lint' | 'format';
-  packageManager?: PackageManagerConfig;
+  packageManager?: Pick<PackageManagerConfig, 'command'>;
 }): Promise<PatchReturnType> => {
   const { mode } = opts;
 
