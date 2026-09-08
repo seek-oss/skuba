@@ -2,6 +2,12 @@
 '@skuba-lib/changesets-changelog': minor
 ---
 
-Migrate changelog GitHub links onto `@changesets/get-github-info` 1.0
+Rebase package on top of `@changesets/get-github-info` 1.0
 
-Port `@changesets/changelog-github` 1.0 to TypeScript, including `getCommitInfo` / `getPullRequestInfo`, issue linking, `GITHUB_REPOSITORY`, templates, and `disableThanks` (on by default). Missing commits or pull requests no longer throw.
+This adds an experimental `template` option to customise the line format. Missing commits or pull requests no longer throw.
+
+Default entries now include both the PR and the commit:
+
+```md
+- fix the thing ([#123](...) [`abc1234`](...))
+```
