@@ -233,13 +233,13 @@ const gitHubChangelogFunctions: ChangelogFunctions = {
       return `${rendered}\n${continuation}`;
     }
 
-    const prefix = [
-      links.pull == null ? '' : ` ${links.pull}`,
-      links.commit == null ? '' : ` ${links.commit}`,
+    const githubLinks = [links.pull, links.commit].filter(Boolean).join(' ');
+    const suffix = [
+      githubLinks ? ` (${githubLinks})` : '',
       users == null ? '' : ` Thanks ${users}!`,
     ].join('');
 
-    return `\n\n-${prefix ? `${prefix} -` : ''} ${summaryLinked}\n${continuation}`;
+    return `\n\n- ${summaryLinked}${suffix}\n${continuation}`;
   },
 };
 

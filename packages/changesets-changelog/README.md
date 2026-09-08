@@ -100,13 +100,13 @@ The token syntax may change in a patch. Pin this package if you rely on it.
 Default output (with GitHub metadata) looks like:
 
 ```md
-- [#123](https://github.com/<org>/<repo>/pull/123) [`a1b2c3d`](https://github.com/<org>/<repo>/commit/a1b2c3d) - fix the thing
+- fix the thing ([#123](https://github.com/<org>/<repo>/pull/123) [`a1b2c3d`](https://github.com/<org>/<repo>/commit/a1b2c3d))
 ```
 
 With `"disableThanks": false`:
 
 ```md
-- [#123](https://github.com/<org>/<repo>/pull/123) [`a1b2c3d`](https://github.com/<org>/<repo>/commit/a1b2c3d) Thanks [@ghost](https://github.com/ghost)! - fix the thing
+- fix the thing ([#123](https://github.com/<org>/<repo>/pull/123) [`a1b2c3d`](https://github.com/<org>/<repo>/commit/a1b2c3d)) Thanks [@ghost](https://github.com/ghost)!
 ```
 
 | `template`               | Generated Markdown              |

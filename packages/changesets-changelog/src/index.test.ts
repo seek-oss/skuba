@@ -114,7 +114,7 @@ it('uses GITHUB_REPOSITORY when repo option is absent', async () => {
   const [changeset, releaseType] = getChangeset('', data.commit);
 
   await expect(getReleaseLine(changeset, releaseType, null)).resolves.toBe(
-    `\n\n- [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something\n`,
+    `\n\n- something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))\n`,
   );
 });
 
@@ -122,7 +122,7 @@ it('uses explicit repo option before GITHUB_REPOSITORY', async () => {
   vi.stubEnv('GITHUB_REPOSITORY', 'other/repo');
 
   await expect(getReleaseLine(...getChangeset('', data.commit))).resolves.toBe(
-    `\n\n- [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something\n`,
+    `\n\n- something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))\n`,
   );
 });
 
@@ -177,7 +177,7 @@ describe.each([data.commit, 'wrongcommit', undefined])(
               ),
             ),
           ).resolves.toBe(
-            `\n\n- [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something\n`,
+            `\n\n- something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))\n`,
           );
         });
       },
@@ -188,7 +188,7 @@ describe.each([data.commit, 'wrongcommit', undefined])(
           ...getChangeset(`commit: ${data.commit}`, commitFromChangeset),
         ),
       ).resolves.toBe(
-        `\n\n- [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something\n`,
+        `\n\n- something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))\n`,
       );
     });
   },
@@ -208,7 +208,7 @@ describe.each(['author', 'user'])(
           disableThanks: false,
         }),
       ).resolves.toBe(
-        `\n\n- [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) Thanks [@other](https://github.com/other)! - something\n`,
+        `\n\n- something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003)) Thanks [@other](https://github.com/other)!\n`,
       );
     });
   },
@@ -220,7 +220,7 @@ it('linkifies bare issue references', async () => {
   ).resolves.toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
      fixes [#1234](https://github.com/emotion-js/emotion/issues/1234) and [#5678](https://github.com/emotion-js/emotion/issues/5678)"
   `);
 });
@@ -236,7 +236,7 @@ it('does not double-linkify existing markdown links', async () => {
   ).resolves.toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
      see [#1234](https://github.com/emotion-js/emotion/issues/1234)"
   `);
 });
@@ -249,7 +249,7 @@ it('does not linkify issue-like refs inside link text', async () => {
   ).resolves.toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
      see [fix for #99](https://example.com)"
   `);
 });
@@ -259,7 +259,7 @@ it('does not linkify when preceded by a word character', async () => {
     .toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
      foo#123"
   `);
 });
@@ -269,7 +269,7 @@ it('does not linkify #0', async () => {
     .toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
      see #0"
   `);
 });
@@ -279,7 +279,7 @@ it('linkifies issue ref at the start of a line', async () => {
     .resolves.toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
      [#42](https://github.com/emotion-js/emotion/issues/42) was fixed"
   `);
 });
@@ -289,7 +289,7 @@ it('linkifies issue ref after punctuation', async () => {
     .resolves.toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
      fixed ([#99](https://github.com/emotion-js/emotion/issues/99))"
   `);
 });
@@ -305,7 +305,7 @@ it('handles mixed linked and bare refs', async () => {
   ).resolves.toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
      fixes [#1](https://github.com/emotion-js/emotion/issues/1) and [#2](https://github.com/emotion-js/emotion/issues/2)"
   `);
 });
@@ -315,7 +315,7 @@ it('linkifies issue ref followed by a dot', async () => {
     .resolves.toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003))
      this fixes [#42](https://github.com/emotion-js/emotion/issues/42)."
   `);
 });
@@ -333,7 +333,7 @@ it('with multiple authors', async () => {
   ).resolves.toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) Thanks [@Andarist](https://github.com/Andarist), [@mitchellhamilton](https://github.com/mitchellhamilton)! - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003)) Thanks [@Andarist](https://github.com/Andarist), [@mitchellhamilton](https://github.com/mitchellhamilton)!
     "
   `);
 });
@@ -351,7 +351,7 @@ it('includes thanks when disableThanks is false', async () => {
   ).resolves.toMatchInlineSnapshot(`
     "
 
-    - [#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003) Thanks [@Andarist](https://github.com/Andarist)! - something
+    - something ([#1613](https://github.com/emotion-js/emotion/pull/1613) [\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003)) Thanks [@Andarist](https://github.com/Andarist)!
     "
   `);
 });
