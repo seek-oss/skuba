@@ -79,37 +79,7 @@ const getRepo = async (options: null | Record<string, unknown>) => {
   return repo;
 };
 
-let hasWarnedAboutMissingToken = false;
-
-const warnAboutMissingToken = () => {
-  if (hasWarnedAboutMissingToken) {
-    return;
-  }
-
-  hasWarnedAboutMissingToken = true;
-
-  // eslint-disable-next-line no-console
-  console.warn(
-    'Defaulting to Git-based versioning.\nEnable GitHub-based versioning by setting the GITHUB_TOKEN environment variable.\nThis requires a GitHub personal access token with the `read:user` and `repo:status` scopes: https://github.com/settings/tokens/new?scopes=read:user,repo:status&description=changesets',
-  );
-};
-
-const defaultGetReleaseLine: ChangelogFunctions['getReleaseLine'] = (
-  changeset,
-) => {
-  const [firstLine = '', ...futureLines] = changeset.summary
-    .split('\n')
-    .map((l) => l.trimEnd());
-
-  const formattedFirstLine = boldScope(firstLine);
-  const suffix = changeset.commit;
-
-  return `\n\n- ${formattedFirstLine}${
-    suffix ? ` (${suffix})` : ''
-  }\n${futureLines.map((l) => `  ${l}`).join('\n')}`;
-};
-
-const gitHubChangelogFunctions: ChangelogFunctions = {
+const changelogFunctions: ChangelogFunctions = {
   getDependencyReleaseLine: async (
     changesets,
     dependenciesUpdated,
@@ -118,6 +88,14 @@ const gitHubChangelogFunctions: ChangelogFunctions = {
     const repo = await getRepo(options);
     if (dependenciesUpdated.length === 0) {
       return '';
+    }
+
+    const updatedDependenciesList = dependenciesUpdated.map(
+      (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
+    );
+
+    if (options?.disableDependenciesLink !== false) {
+      return ['- Updated dependencies:', ...updatedDependenciesList].join('\n');
     }
 
     const changesetLink = `- Updated dependencies [${(
@@ -134,10 +112,6 @@ const gitHubChangelogFunctions: ChangelogFunctions = {
     )
       .filter((link) => link)
       .join(', ')}]:`;
-
-    const updatedDependenciesList = dependenciesUpdated.map(
-      (dependency) => ` - ${dependency.name}@${dependency.newVersion}`,
-    );
 
     return [changesetLink, ...updatedDependenciesList].join('\n');
   },
@@ -240,33 +214,6 @@ const gitHubChangelogFunctions: ChangelogFunctions = {
     ].join('');
 
     return `\n\n- ${summaryLinked}${suffix}\n${continuation}`;
-  },
-};
-
-const changelogFunctions: ChangelogFunctions = {
-  getDependencyReleaseLine: async (
-    changesets,
-    dependenciesUpdated,
-    options,
-  ) => {
-    if (!process.env.GITHUB_TOKEN) {
-      warnAboutMissingToken();
-      return '';
-    }
-
-    return gitHubChangelogFunctions.getDependencyReleaseLine(
-      changesets,
-      dependenciesUpdated,
-      options,
-    );
-  },
-  getReleaseLine: async (changeset, type, options) => {
-    if (!process.env.GITHUB_TOKEN) {
-      warnAboutMissingToken();
-      return defaultGetReleaseLine(changeset, type, options);
-    }
-
-    return gitHubChangelogFunctions.getReleaseLine(changeset, type, options);
   },
 };
 

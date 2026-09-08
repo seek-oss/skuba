@@ -4,7 +4,7 @@ An opinionated changelog generator for [Changesets](https://github.com/changeset
 
 This package provides a single changelog generator that:
 
-- **Automatically uses GitHub metadata** (PR links, commit links) when `GITHUB_TOKEN` is set, falling back gracefully to Git-based versioning when it isn't.
+- **Links GitHub metadata** (PR links, commit links) from the changeset commit.
 - **Bolds conventional commit scopes** (e.g. `feat(api): ...` becomes `**api:** ...`) for consistent formatting across changelogs.
 - **Linkifies bare issue references** (e.g. `#1234`) in changeset summaries.
 - **Supports preamble injection** via a `skuba-changelog-inject` CLI, which prepends content from `.changeset/.PREAMBLE.md` into the generated `CHANGELOG.md` — useful for adding migration guides or release highlights to major versions.
@@ -21,15 +21,15 @@ In your `.changeset/config.json`, set the changelog generator:
 }
 ```
 
-### 2. Set up GitHub integration (recommended)
+### 2. Set up GitHub integration
 
-For GitHub-linked entries (PR links, commit SHAs), provide a GitHub personal access token with the `read:user` and `repo:status` scopes:
+Provide a GitHub personal access token with the `read:user` and `repo:status` scopes:
 
 ```sh
 export GITHUB_TOKEN=your_token_here
 ```
 
-Without `GITHUB_TOKEN`, the generator falls back to Git-based versioning and logs a warning.
+`GITHUB_TOKEN` is required. Without it, `changeset version` fails with an error prompting you to create one.
 
 A `.env` file in the working directory is loaded automatically (via `util.parseEnv`) and is not written into `process.env`.
 
@@ -54,6 +54,7 @@ Pass options as the second item in the `changelog` array:
     {
       "repo": "org/repo",
       "disableThanks": false,
+      "disableDependenciesLink": false,
       "template": "\n- {summary} {ref}"
     }
   ]
@@ -79,6 +80,25 @@ When `true` (the default), each line omits `Thanks [@user]!`.
 Set `"disableThanks": false` to include author attribution from the associated PR or commit, or from `author:` / `user:` lines in the changeset summary.
 
 If you use a `template` with `{authors}`, also set `"disableThanks": false`. Otherwise `{authors}` is empty.
+
+### `disableDependenciesLink`
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+When `true` (the default), the internal-dependency section omits commit links:
+
+```md
+- Updated dependencies:
+  - package@version
+```
+
+Set `"disableDependenciesLink": false` to include commit links from the changesets that bumped those dependencies:
+
+```md
+- Updated dependencies [[`abc1234`](url)]:
+  - package@version
+```
 
 ### `template`
 
@@ -118,7 +138,7 @@ With `"disableThanks": false`:
 
 | Variable             | Purpose                                                                                                          |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `GITHUB_TOKEN`       | Required for GitHub-linked entries. Falls back to a commit SHA only if unset.                                    |
+| `GITHUB_TOKEN`       | Required. `changeset version` fails without it.                                                                  |
 | `GITHUB_REPOSITORY`  | Default `org/repo` when `repo` is omitted. Set automatically in GitHub Actions.                                  |
 | `GITHUB_SERVER_URL`  | GitHub host. Defaults to `https://github.com`. Set this (and `GITHUB_GRAPHQL_URL`) for GitHub Enterprise Server. |
 | `GITHUB_GRAPHQL_URL` | GraphQL endpoint for GitHub Enterprise Server, e.g. `https://github.example.com/api/graphql`.                    |

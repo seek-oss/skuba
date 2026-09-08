@@ -1,15 +1,11 @@
 import { parseChangesetFile as parse } from '@changesets/parse';
 import type { ModCompWithPackage } from '@changesets/types';
-import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
+import { afterEach, describe, expect, it, test, vi } from 'vitest';
 
 import changelogFunctions from './index.js';
 
 const getReleaseLine = changelogFunctions.getReleaseLine;
 const getDependencyReleaseLine = changelogFunctions.getDependencyReleaseLine;
-
-beforeEach(() => {
-  vi.stubEnv('GITHUB_TOKEN', 'test-token');
-});
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -155,10 +151,20 @@ something
     },
   };
 
-  await expect(getDependencyReleaseLine([changeset], [dependency], null))
-    .resolves.toMatchInlineSnapshot(`
+  await expect(
+    getDependencyReleaseLine([changeset], [dependency], {
+      disableDependenciesLink: false,
+    }),
+  ).resolves.toMatchInlineSnapshot(`
     "- Updated dependencies [[\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003)]:
-     - pkg@1.0.0"
+      - pkg@1.0.0"
+  `);
+
+  await expect(
+    getDependencyReleaseLine([changeset], [dependency], null),
+  ).resolves.toMatchInlineSnapshot(`
+    "- Updated dependencies:
+      - pkg@1.0.0"
   `);
 });
 
@@ -520,21 +526,3 @@ it('bolds conventional commit scopes', async () => {
   ).resolves.toContain('**api:** add a thing');
 });
 
-it('falls back to the commit SHA when GITHUB_TOKEN is unset', async () => {
-  vi.unstubAllEnvs();
-  const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-
-  const changeset = {
-    id: 'x',
-    summary: 'something',
-    releases: [{ name: 'pkg', type: 'minor' as const }],
-    commit: data.commit,
-  };
-
-  await expect(
-    getReleaseLine(changeset, 'minor', { repo: data.repo }),
-  ).resolves.toBe(`\n\n- something (${data.commit})\n`);
-
-  expect(warn).toHaveBeenCalled();
-  warn.mockRestore();
-});
