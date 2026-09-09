@@ -94,7 +94,7 @@ const changelogFunctions: ChangelogFunctions = {
       (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
     );
 
-    if (options?.disableDependenciesLink !== false) {
+    if (options?.disableDependencyLinks !== false) {
       return ['- Updated dependencies:', ...updatedDependenciesList].join('\n');
     }
 

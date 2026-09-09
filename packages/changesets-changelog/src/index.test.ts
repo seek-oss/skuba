@@ -153,7 +153,7 @@ something
 
   await expect(
     getDependencyReleaseLine([changeset], [dependency], {
-      disableDependenciesLink: false,
+      disableDependencyLinks: false,
     }),
   ).resolves.toMatchInlineSnapshot(`
     "- Updated dependencies [[\`a085003\`](https://github.com/emotion-js/emotion/commit/a085003)]:

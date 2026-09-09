@@ -54,7 +54,7 @@ Pass options as the second item in the `changelog` array:
     {
       "repo": "org/repo",
       "disableThanks": false,
-      "disableDependenciesLink": false,
+      "disableDependencyLinks": false,
       "template": "\n- {summary} {ref}"
     }
   ]
@@ -81,7 +81,7 @@ Set `"disableThanks": false` to include author attribution from the associated P
 
 If you use a `template` with `{authors}`, also set `"disableThanks": false`. Otherwise `{authors}` is empty.
 
-### `disableDependenciesLink`
+### `disableDependencyLinks`
 
 - **Type:** `boolean`
 - **Default:** `true`
@@ -93,7 +93,7 @@ When `true` (the default), the internal-dependency section omits commit links:
   - package@version
 ```
 
-Set `"disableDependenciesLink": false` to include commit links from the changesets that bumped those dependencies:
+Set `"disableDependencyLinks": false` to include commit links from the changesets that bumped those dependencies:
 
 ```md
 - Updated dependencies [[`abc1234`](url)]:

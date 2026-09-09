@@ -50,7 +50,7 @@ For existing consumers, `changeset version` output changes in a few places:
      - package@version
    ```
 
-   Set `"disableDependenciesLink": false` to restore commit links on that heading, matching `@changesets/changelog-github`.
+   Set `"disableDependencyLinks": false` to restore commit links on that heading, matching `@changesets/changelog-github`.
 
 3. **`GITHUB_TOKEN` is now required.** 1.0 warned and degraded to Git-based versioning, writing a bare commit SHA:
 
