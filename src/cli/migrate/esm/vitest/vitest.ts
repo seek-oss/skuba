@@ -124,7 +124,7 @@ const patchFiles = async ({
 
 export const migrateToVitest = async (opts: {
   mode: 'lint' | 'format';
-  packageManager?: PackageManagerConfig;
+  packageManager?: Pick<PackageManagerConfig, 'command'>;
 }): Promise<PatchReturnType> => {
   const mode = opts.mode;
   // Adding `vitest.config.ts` to all the integration tests causes the vscode extension

@@ -168,7 +168,7 @@
     "supertest": "7.2.2",
     "type-fest": "5.9.0"
   },
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@11.8.0",
   "engines": {
     "node": ">=22.18.0"
   },
