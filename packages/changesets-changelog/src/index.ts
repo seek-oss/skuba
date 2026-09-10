@@ -5,8 +5,6 @@ import util from 'node:util';
 import { getCommitInfo, getPullRequestInfo } from '@changesets/get-github-info';
 import type { ChangelogFunctions } from '@changesets/types';
 
-import { buildReleaseLineTokens, renderTemplate } from './render-template.js';
-
 /**
  * Bold the scope of the changelog entry.
  *
@@ -194,18 +192,6 @@ const changelogFunctions: ChangelogFunctions = {
     const continuation = futureLines
       .map((l) => `  ${linkifyIssueRefs(l, linkOpts)}`)
       .join('\n');
-
-    if (typeof options?.template === 'string' && options.template.length > 0) {
-      const tokens = buildReleaseLineTokens({
-        summaryLinked,
-        links,
-        users,
-      });
-      // trimEnd so an empty trailing token (e.g. `{ref}` with no PR/commit)
-      // leaves no dangling space - a trailing space in markdown is unsafe.
-      const rendered = renderTemplate(options.template, tokens).trimEnd();
-      return `${rendered}\n${continuation}`;
-    }
 
     const githubLinks = [links.pull, links.commit].filter(Boolean).join(' ');
     const suffix = [

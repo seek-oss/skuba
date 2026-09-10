@@ -54,8 +54,7 @@ Pass options as the second item in the `changelog` array:
     {
       "repo": "org/repo",
       "disableThanks": false,
-      "disableDependencyLinks": false,
-      "template": "\n- {summary} {ref}"
+      "disableDependencyLinks": false
     }
   ]
 }
@@ -79,8 +78,6 @@ When `true` (the default), each line omits `Thanks [@user]!`.
 
 Set `"disableThanks": false` to include author attribution from the associated PR or commit, or from `author:` / `user:` lines in the changeset summary.
 
-If you use a `template` with `{authors}`, also set `"disableThanks": false`. Otherwise `{authors}` is empty.
-
 ### `disableDependencyLinks`
 
 - **Type:** `boolean`
@@ -99,40 +96,6 @@ Set `"disableDependencyLinks": false` to include commit links from the changeset
 - Updated dependencies [[`abc1234`](url)]:
   - package@version
 ```
-
-### `template`
-
-- **Type:** `string`
-- **Experimental**
-
-Overrides the default line format with a token string. Extra lines of a multi-line summary are always appended below the template.
-
-The token syntax may change in a patch. Pin this package if you rely on it.
-
-| Token       | Description                                                                     | Example                  |
-| ----------- | ------------------------------------------------------------------------------- | ------------------------ |
-| `{summary}` | First line of the changeset, with scopes bolded and bare `#n` issue refs linked | `**api:** fix the thing` |
-| `{ref}`     | Parenthesized PR link, or commit link if there is no PR                         | `([#123](url))`          |
-| `{pull}`    | PR link, if available                                                           | `[#123](url)`            |
-| `{commit}`  | Commit link, if available                                                       | ``[`abc1234`](url)``     |
-| `{authors}` | Author links (empty unless `"disableThanks": false`)                            | `[@ghost](url)`          |
-
-Default output (with GitHub metadata) looks like:
-
-```md
-- fix the thing ([#123](https://github.com/<org>/<repo>/pull/123) [`a1b2c3d`](https://github.com/<org>/<repo>/commit/a1b2c3d))
-```
-
-With `"disableThanks": false`:
-
-```md
-- fix the thing ([#123](https://github.com/<org>/<repo>/pull/123) [`a1b2c3d`](https://github.com/<org>/<repo>/commit/a1b2c3d)) Thanks [@ghost](https://github.com/ghost)!
-```
-
-| `template`               | Generated Markdown              |
-| ------------------------ | ------------------------------- |
-| `"\n- {summary} {ref}"`  | `- fix the thing ([#123](url))` |
-| `"\n- {summary} {pull}"` | `- fix the thing [#123](url)`   |
 
 ## Environment variables
 

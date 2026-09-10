@@ -14,6 +14,7 @@ This package is now based on the same generator as [`@changesets/changelog-githu
 | `disableThanks`        | `false` (includes `Thanks [@user]!`) | `true` (omits thanks)             |
 | `Updated dependencies` | Always includes commit links         | Omits commit links by default     |
 | Scopes                 | Plain text                           | Bolded (`**api:** …`)             |
+| `template`             | Experimental token string            | Not supported                     |
 
 Default `@changesets/changelog-github` line:
 
@@ -64,6 +65,4 @@ For existing consumers, `changeset version` output changes in a few places:
 
 5. **Missing commits or pull requests no longer throw.** Versioning continues without that GitHub metadata.
 
-6. **An experimental `template` option** customises the line format. The token syntax may change in a patch; pin this package if you rely on it.
-
-7. **`"disableThanks": false`** opts back into author attribution (`Thanks [@user]!`).
+6. **`"disableThanks": false`** opts back into author attribution (`Thanks [@user]!`).
