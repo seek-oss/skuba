@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import oxfmtConfig from '../../../oxfmt.config.js';
 import type { Logger } from '../../utils/logging.js';
+
 import { type OxfmtResult, runOxfmt } from './oxfmt.js';
 
 const originalCwd = process.cwd();

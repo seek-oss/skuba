@@ -2,6 +2,7 @@ import type * as GitHub from '@skuba-lib/api/github';
 import { afterEach, expect, it, vi } from 'vitest';
 
 import type { StreamInterceptor } from '../../../lint/external.js';
+
 import { createTscAnnotations } from './tsc.js';
 
 const mockOutput = vi.fn<() => string>();

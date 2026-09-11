@@ -1,4 +1,5 @@
 import type { Patches } from '../../index.js';
+
 import { tryPatchUnhandledRejections } from './unhandledRejections.js';
 
 export const patches: Patches = [

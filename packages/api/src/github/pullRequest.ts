@@ -1,6 +1,7 @@
 import type { Octokit } from '@octokit/rest';
 
 import * as Git from '../git/index.js';
+
 import { apiTokenFromEnvironment } from './environment.js';
 import { createRestClient } from './octokit.js';
 

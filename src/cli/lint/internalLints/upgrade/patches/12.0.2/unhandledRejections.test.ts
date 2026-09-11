@@ -20,6 +20,7 @@ vi.spyOn(console, 'log').mockImplementation(() => undefined);
 beforeEach(() => vol.reset());
 
 import type { PatchConfig } from '../../index.js';
+
 import {
   IMPORT_REGEX,
   NAMED_EXPORT_REGEX,

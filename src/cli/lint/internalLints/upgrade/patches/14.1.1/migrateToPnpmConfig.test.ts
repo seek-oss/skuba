@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
+
 import { migrateToPnpmConfig } from './migrateToPnpmConfig.js';
 
 vi.mock('../../../../../../utils/exec.js');

@@ -2,6 +2,7 @@ import type * as GitHub from '@skuba-lib/api/github';
 import { expect, it } from 'vitest';
 
 import type { ESLintOutput } from '../../../adapter/eslint.js';
+
 import { createEslintAnnotations } from './eslint.js';
 
 it('should create failure annotations for ESLint errors', () => {

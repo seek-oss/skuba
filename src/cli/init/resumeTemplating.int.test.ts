@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { ReadResult } from '../configure/types.js';
+
 import { resumeTemplating } from './resumeTemplating.js';
 
 vi.mock('./readJSONFromStdIn.js', () => ({

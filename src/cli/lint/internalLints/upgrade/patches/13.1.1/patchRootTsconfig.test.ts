@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
+
 import { patchRootConfig } from './patchRootTsconfig.js';
 
 vi.mock('fs-extra', () => ({

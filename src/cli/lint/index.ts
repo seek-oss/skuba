@@ -5,6 +5,7 @@ import { hasDebugFlag, hasSerialFlag } from '../../utils/args.js';
 import { log } from '../../utils/logging.js';
 import { detectPackageManager } from '../../utils/packageManager.js';
 import { throwOnTimeout } from '../../utils/wait.js';
+
 import { createAnnotations } from './annotate/index.js';
 import { autofix } from './autofix.js';
 import { externalLint } from './external.js';

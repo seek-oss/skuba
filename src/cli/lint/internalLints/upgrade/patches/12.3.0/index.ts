@@ -1,4 +1,5 @@
 import type { Patches } from '../../index.js';
+
 import { tryPatchApiTokenFromEnvironment } from './patchApiTokenFromEnvironment.js';
 import { tryPatchDockerfileSyntaxDirective } from './patchDockerfileSyntaxDirective.js';
 

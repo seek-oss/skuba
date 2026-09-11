@@ -4,6 +4,7 @@ import ts from 'typescript';
 
 import { log } from '../../../../utils/logging.js';
 import { readTsConfig } from '../../../build/tsc.js';
+
 import type { FileContent } from './vitest.js';
 
 export const getLifeCycleHooks = (root: SgNode) =>

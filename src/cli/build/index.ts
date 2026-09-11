@@ -3,6 +3,7 @@ import { styleText } from 'node:util';
 import { hasDebugFlag } from '../../utils/args.js';
 import { log } from '../../utils/logging.js';
 import { getManifestProperties } from '../../utils/manifest.js';
+
 import { copyAssets } from './assets.js';
 import { type EsbuildConfig, esbuild } from './esbuild.js';
 import { rolldown } from './rolldown.js';
