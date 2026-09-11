@@ -139,8 +139,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1
       oxc-config-seek:
-        specifier: 1.0.0-sort-imports-20260911005633
-        version: 1.0.0-sort-imports-20260911005633(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.5(jiti@2.7.0))(oxfmt@0.67.0)(oxlint-tsgolint@7.0.2001)(oxlint@1.74.0(oxlint-tsgolint@7.0.2001))(typescript@6.0.3)
+        specifier: 1.0.0-sort-imports-20260911034959
+        version: 1.0.0-sort-imports-20260911034959(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.5(jiti@2.7.0))(oxfmt@0.67.0)(oxlint-tsgolint@7.0.2001)(oxlint@1.74.0(oxlint-tsgolint@7.0.2001))(typescript@6.0.3)
       oxfmt:
         specifier: ^0.67.0
         version: 0.67.0
@@ -4832,8 +4832,8 @@ packages:
     resolution: {integrity: sha512-19YVAg7T+WTrxggPukVq7DjTv6+PJ867TmhCvBsYwmbFCsZd344rq2Ld1p0wo8f8Qrrhgp82c6FJRqdXWtSEhg==}
     engines: {node: '>= 0.4'}
 
-  oxc-config-seek@1.0.0-sort-imports-20260911005633:
-    resolution: {integrity: sha512-SmA0tSKQJet+xRoGEi/yUnF352qKhNGliIOBpLmS5x/UDRMvgk6n5gTCiIgNZL+rjLjXcYk2eWv1ONolWs2u3Q==}
+  oxc-config-seek@1.0.0-sort-imports-20260911034959:
+    resolution: {integrity: sha512-Q536cimwHtkEQDJKEWICh6h9RYwozBda6tZPgO3sOAvEUK1oM57ro39q56XYFUSEST9CDavQgZ4qqc05NtASfg==}
     engines: {node: '>=22.18.0'}
     peerDependencies:
       oxfmt: '>=0.65.0'
@@ -10938,7 +10938,7 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
-  oxc-config-seek@1.0.0-sort-imports-20260911005633(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.5(jiti@2.7.0))(oxfmt@0.67.0)(oxlint-tsgolint@7.0.2001)(oxlint@1.74.0(oxlint-tsgolint@7.0.2001))(typescript@6.0.3):
+  oxc-config-seek@1.0.0-sort-imports-20260911034959(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.5(jiti@2.7.0))(oxfmt@0.67.0)(oxlint-tsgolint@7.0.2001)(oxlint@1.74.0(oxlint-tsgolint@7.0.2001))(typescript@6.0.3):
     dependencies:
       '@typescript-eslint/eslint-plugin': 8.70.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3)
       eslint-plugin-cypress: 6.4.4(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.5(jiti@2.7.0))
