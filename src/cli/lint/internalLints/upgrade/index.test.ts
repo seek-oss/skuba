@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
 import { getSkubaVersion } from '../../../../utils/version.js';
+
 import { upgradeSkuba } from './index.js';
 
 vi.mock('../../../../utils/manifest');

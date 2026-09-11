@@ -31,6 +31,7 @@ import {
 import { runOxfmt } from '../adapter/oxfmt.js';
 import { patchPnpmWorkspace } from '../lint/internalLints/patchPnpmWorkspace.js';
 import { tryPatchRenovateConfig } from '../lint/internalLints/patchRenovateConfig.js';
+
 import { getConfig } from './getConfig.js';
 import { initialiseRepo } from './git.js';
 import { logInitHelp } from './help.js';

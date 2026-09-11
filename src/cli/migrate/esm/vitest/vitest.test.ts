@@ -6,6 +6,7 @@ import type {
   PatchConfig,
   PatchReturnType,
 } from '../../../lint/internalLints/upgrade/index.js';
+
 import { migrateToVitest } from './vitest.js';
 
 vi.mock('../../../../utils/exec.js', () => ({

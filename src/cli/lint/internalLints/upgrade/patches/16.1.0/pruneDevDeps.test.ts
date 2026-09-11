@@ -2,6 +2,7 @@ import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
+
 import { pruneDevDeps } from './pruneDevDeps.js';
 
 vi.mock('fs-extra', () => ({

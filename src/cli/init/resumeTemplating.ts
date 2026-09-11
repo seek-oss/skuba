@@ -15,6 +15,7 @@ import {
 import { hasStringProp } from '../../utils/validation.js';
 import { formatPackage } from '../configure/processing/package.js';
 import type { ReadResult } from '../configure/types.js';
+
 import { getTemplateConfig } from './getConfig.js';
 import { runForm } from './prompts.js';
 import { readJSONFromStdIn } from './readJSONFromStdIn.js';

@@ -7,6 +7,7 @@ import type { EmittedAsset, NormalizedOutputOptions, Plugin } from 'rolldown';
 import { createExec } from '../../../../src/utils/exec.js';
 import { pathExists } from '../../../../src/utils/fs.js';
 import { log } from '../../../../src/utils/logging.js';
+
 import {
   PNPM_INSTALL_COMMAND,
   PNPM_LOCK,

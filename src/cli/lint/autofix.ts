@@ -14,6 +14,7 @@ import { throwOnTimeout } from '../../utils/wait.js';
 import { runESLint } from '../adapter/eslint.js';
 import { runPrettier } from '../adapter/prettier.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
+
 import { internalLint } from './internal.js';
 import type { Input } from './types.js';
 

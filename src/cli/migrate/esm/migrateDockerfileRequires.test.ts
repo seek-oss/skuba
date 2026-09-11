@@ -6,6 +6,7 @@ import type {
   PatchConfig,
   PatchReturnType,
 } from '../../lint/internalLints/upgrade/index.js';
+
 import { migrateDockerfileRequires } from './migrateDockerfileRequires.js';
 
 vi.mock('../../../../../../utils/exec.js', () => ({

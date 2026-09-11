@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Git } from '../../../../../../index.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
+
 import { tryConfigureTsConfigForESM } from './configureTsConfigForESM.js';
 
 vi.mock('../../../../../../index.js', () => ({

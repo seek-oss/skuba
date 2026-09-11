@@ -2,6 +2,7 @@ import { styleText } from 'node:util';
 
 import { createLogger } from '../../utils/logging.js';
 import { runOxfmt } from '../adapter/oxfmt.js';
+
 import type { Input } from './types.js';
 
 const LOG_PREFIX = styleText('cyan', 'Oxfmt  │');

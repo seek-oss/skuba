@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { findLatestAllowedVersion } from '../../../../../../utils/findLatestAllowedVersion.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
+
 import { tryRemoveDatadogNodeOptionsHack } from './removeDatadogNodeOptionsHack.js';
 
 vi.mock('fs-extra', () => ({

@@ -2,6 +2,7 @@ import type * as GitHub from '@skuba-lib/api/github';
 import { expect, it } from 'vitest';
 
 import type { OxfmtResult } from '../../../adapter/oxfmt.js';
+
 import { createOxfmtAnnotations } from './oxfmt.js';
 
 it('should create annotations from oxfmt formatting issues', () => {

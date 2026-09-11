@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configForPackageManager } from '../../../utils/packageManager.js';
 import type { PatchConfig } from '../../lint/internalLints/upgrade/index.js';
+
 import { tryMigrateImportExportStatements as tryMigrateImportExportStatements } from './migrateImportExportStatements.js';
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);

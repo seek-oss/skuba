@@ -2,6 +2,7 @@ import normalizeData from 'normalize-package-data';
 import { format } from 'oxfmt';
 
 import type { PackageJson } from '../types.js';
+
 import { parseObject } from './json.js';
 
 const normalizeDataWithoutThrowing = (rawData: PackageJson) => {

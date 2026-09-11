@@ -5,6 +5,7 @@ import * as execModule from '../../../../../../utils/exec.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import * as checks from '../../../../../migrate/nodeVersion/checks.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
+
 import { patchPackageBuilds } from './patchPackageBuilds.js';
 
 vi.mock('fs-extra', () => ({

@@ -6,6 +6,7 @@ import { rolldown } from 'rolldown';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { pathExists } from '../../../../src/utils/fs.js';
+
 import { lambdaAsset } from './lambdaAsset.js';
 
 const REPO_ROOT = path.resolve(import.meta.dirname, '../../../..');

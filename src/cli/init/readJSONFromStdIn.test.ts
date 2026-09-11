@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as z from 'zod/v4';
 
 import { log } from '../../utils/logging.js';
+
 import { readJSONFromStdIn } from './readJSONFromStdIn.js';
 
 const schema = z.object({

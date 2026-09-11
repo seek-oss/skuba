@@ -11,6 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createExec } from '../../../../src/utils/exec.js';
 import { pathExists } from '../../../../src/utils/fs.js';
+
 import { lambdaAsset } from './lambdaAsset.js';
 
 vi.mock('../../../../src/utils/exec.js', () => ({ createExec: vi.fn() }));

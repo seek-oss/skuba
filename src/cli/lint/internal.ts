@@ -2,6 +2,7 @@ import { styleText } from 'node:util';
 import { inspect } from 'util';
 
 import { type Logger, childLogger, createLogger } from '../../utils/logging.js';
+
 import { tryDetectBadCodeowners } from './internalLints/detectBadCodeowners.js';
 import { noSkubaTemplateJs } from './internalLints/noSkubaTemplateJs.js';
 import { tryPatchPnpmWorkspace } from './internalLints/patchPnpmWorkspace.js';
