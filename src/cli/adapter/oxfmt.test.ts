@@ -3,6 +3,7 @@ import path from 'path';
 import { stripVTControlCharacters } from 'util';
 
 import { mkdtemp, readFile, rm, writeFile } from 'fs-extra';
+import { format } from 'oxfmt';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import oxfmtConfig from '../../../oxfmt.config.js';
@@ -48,10 +49,13 @@ beforeEach(async () => {
   // copied as-is - it imports `oxc-config-seek`, which won't resolve
   // outside this project's node_modules - so we write out its already
   // JSON-serializable value under the name oxfmt auto-discovers instead.
-  await writeFile(
-    path.join(dir, '.oxfmtrc.json'),
-    `${JSON.stringify(oxfmtConfig, null, 2)}\n`,
+  // Format it first so lint mode doesn't flag the config file itself.
+  const { code } = await format(
+    '.oxfmtrc.json',
+    JSON.stringify(oxfmtConfig),
+    oxfmtConfig,
   );
+  await writeFile(path.join(dir, '.oxfmtrc.json'), code);
 });
 
 afterEach(async () => {
