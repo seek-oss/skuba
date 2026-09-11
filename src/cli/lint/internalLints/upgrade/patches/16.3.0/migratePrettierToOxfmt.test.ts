@@ -92,12 +92,25 @@ describe('buildOxfmtConfigTs', () => {
     );
   });
 
-  it('treats sortPackageJson true and {} as equivalent', () => {
+  it('treats migrated sortPackageJson true or {} as equivalent to any seek value', () => {
     expect(
       buildOxfmtConfigTs({
         ...typicalMigratedConfig,
         sortPackageJson: true,
       }),
+    ).toBe(defaultOxfmtConfigTs);
+
+    expect(
+      buildOxfmtConfigTs(
+        {
+          ...typicalMigratedConfig,
+          sortPackageJson: {},
+        },
+        {
+          ...seekOxfmtConfig,
+          sortPackageJson: { sortScripts: true },
+        },
+      ),
     ).toBe(defaultOxfmtConfigTs);
   });
 
