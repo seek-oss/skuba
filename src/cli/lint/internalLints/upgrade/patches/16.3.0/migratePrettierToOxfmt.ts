@@ -1,6 +1,7 @@
 import path from 'path';
 import { inspect, isDeepStrictEqual } from 'util';
 
+import * as Git from '@skuba-lib/api/git';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { defaults as seekOxfmtConfig } from 'oxc-config-seek/oxfmt';
@@ -10,8 +11,6 @@ import { createExec, exec } from '../../../../../../utils/exec.js';
 import { log } from '../../../../../../utils/logging.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 const GLOB_IGNORE = ['**/.git', '**/node_modules'];
 
@@ -128,7 +127,7 @@ export const diffMigratedOxfmtConfig = (
     if (
       key === 'sortPackageJson' &&
       isEnabledWithDefaults(migratedValue) &&
-      isEnabledWithDefaults(seekValue ?? true)
+      Boolean(seekValue)
     ) {
       continue;
     }
