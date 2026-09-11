@@ -103,10 +103,10 @@ exports[`'fixable' 2`] = `
 a/a/a.ts
 --------
 @@ -1,4 +1,4 @@
++ import fs from 'fs';
   // Imports out-of-order
-- import path from 'path';
-  import fs from 'fs';
-+ import path from 'path';
+  import path from 'path';
+- import fs from 'fs';
 
 
 b.md
@@ -462,10 +462,10 @@ exports[`'unfixable' 2`] = `
 a/a/a.ts
 --------
 @@ -1,4 +1,4 @@
++ import fs from 'fs';
   // Imports out-of-order
-- import path from 'path';
-  import fs from 'fs';
-+ import path from 'path';
+  import path from 'path';
+- import fs from 'fs';
 
 @@ -7,3 +7,3 @@
 

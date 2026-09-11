@@ -159,8 +159,15 @@ Oxfmt  │  1 | }
 Oxfmt  │    : ^
 Oxfmt  │    \`----
 Oxfmt  │ Error occurred when checking code style in the above files.
-tsc    │ d.js(1,1): error TS1128: Declaration or statement expected.
+tsc    │ d.js:1:1 - error TS1128: Declaration or statement expected.
+tsc    │ 
+tsc    │ 1 }
+tsc    │   ~
+tsc    │ 
 tsc    │ TSFILE: <random>/lib/tsconfig.tsbuildinfo
+tsc    │ 
+tsc    │ Found 1 error in d.js:1
+tsc    │ 
 tsc    │ tsc --noEmit exited with code 2
 skuba  │ Processed skuba lints in <random>s.
 ESLint, Oxfmt, tsc found issues that require triage.
@@ -204,7 +211,10 @@ d.js Oxlint errored while checking this file.
 **tsc**
 
 \`\`\`term
-d.js(1,1): error TS1128: Declaration or statement expected.
+d.js:1:1 - error TS1128: Declaration or statement expected.
+1 }
+  ~
+Found 1 error in d.js:1
 tsc --noEmit exited with code 2
 \`\`\`
 ",
