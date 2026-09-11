@@ -77,6 +77,6 @@ jobs:
       - name: Publish to npm
         uses: seek-oss/changesets-snapshot@9063bfcb495100964ee0912c5bcb30c4c434c1b3 # v0.3.2
         with:
-          pre-publish: pnpm run build
+          pre-version: pnpm run build
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
