@@ -121,8 +121,6 @@ describe('refreshConfigFiles', () => {
       setupDestinationFiles({
         '.gitignore':
           '# managed by skuba\n# end managed by skuba\n\nstuff afterwards',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba\nstuff afterwards',
       });
 
       await expect(refreshConfigFiles('lint', log)).resolves.toEqual({
@@ -293,8 +291,6 @@ The .npmrc file contains secrets. Run \`pnpm exec skuba format\` to remove them.
       setupDestinationFiles({
         '.gitignore':
           '# managed by skuba\n# end managed by skuba\n\nstuff afterwards',
-        '.prettierignore':
-          '# managed by skuba\nfake content for _.prettierignore\n# end managed by skuba\nstuff afterwards',
       });
 
       await expect(refreshConfigFiles('format', log)).resolves.toEqual({
