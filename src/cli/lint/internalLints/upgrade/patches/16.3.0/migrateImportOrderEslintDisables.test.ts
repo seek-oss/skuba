@@ -276,7 +276,7 @@ import fs from 'fs';
 // eslint-disable-next-line import-x/order -- Mock import must be at top for jest.mock() hoisting
 import fs from 'fs';
 `,
-      'src/other.js': `import { z } from 'zod';
+      'src/other.ts': `import { z } from 'zod';
 import fs from 'fs'; // eslint-disable-line import/order
 `,
     });
@@ -291,7 +291,7 @@ import fs from 'fs'; // eslint-disable-line import/order
       // oxfmt-ignore
       import fs from 'fs';
       ",
-        "src/other.js": "import { z } from 'zod';
+        "src/other.ts": "import { z } from 'zod';
       import fs from 'fs'; // oxfmt-ignore
       ",
       }
