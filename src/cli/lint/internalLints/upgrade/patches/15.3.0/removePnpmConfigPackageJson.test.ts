@@ -2,7 +2,6 @@ import memfs, { vol } from 'memfs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
-
 import { removePnpmConfigPackageJson } from './removePnpmConfigPackageJson.js';
 
 vi.mock('fs-extra', () => ({

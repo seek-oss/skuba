@@ -6,7 +6,6 @@ import { coerce, lt } from 'semver';
 
 import { log } from '../../../utils/logging.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
-
 import { isLikelyPackage } from './checks.js';
 import { tryUpgradeInfraPackages } from './upgrade.js';
 

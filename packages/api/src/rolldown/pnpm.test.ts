@@ -6,7 +6,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
 
 import { pathExists } from '../../../../src/utils/fs.js';
-
 import {
   extractDependencies,
   readPackageManagerFields,

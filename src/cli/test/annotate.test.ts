@@ -3,7 +3,6 @@ import * as GitHub from '@skuba-lib/api/github';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { log } from '../../utils/logging.js';
-
 import { createGitHubAnnotations } from './annotate.js';
 
 vi.mock('@skuba-lib/api/git');

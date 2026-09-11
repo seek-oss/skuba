@@ -3,7 +3,6 @@ import memfs, { fs, vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import newGit from '../../../../integration/git/new.json' with { type: 'json' };
-
 import { reset } from './reset.js';
 
 vi.mock('fs-extra', () => ({

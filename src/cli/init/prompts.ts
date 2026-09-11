@@ -11,7 +11,6 @@ import {
 
 import { pathExistsSync } from '../../utils/fs.js';
 import { TEMPLATE_NAMES_WITH_BYO } from '../../utils/template.js';
-
 import { DEFAULT_RENOVATE_PRESET } from './types.js';
 import {
   type Platform,

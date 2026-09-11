@@ -2,7 +2,6 @@ import type { ESLintOutput } from '../../../cli/adapter/eslint.js';
 import type { OxfmtResult } from '../../../cli/adapter/oxfmt.js';
 import type { StreamInterceptor } from '../external.js';
 import type { InternalLintResult } from '../internal.js';
-
 import { createBuildkiteAnnotations } from './buildkite/index.js';
 import { createGitHubAnnotations } from './github/index.js';
 

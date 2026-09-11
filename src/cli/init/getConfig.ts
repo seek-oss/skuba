@@ -15,7 +15,6 @@ import {
   type TemplateConfig,
   templateConfigSchema,
 } from '../../utils/template.js';
-
 import {
   downloadGitHubTemplate,
   downloadPrivateTemplate,

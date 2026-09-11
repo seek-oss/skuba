@@ -7,7 +7,6 @@ import type {
   PatchConfig,
   PatchReturnType,
 } from '../../lint/internalLints/upgrade/index.js';
-
 import { tryUpgradeDatadogLambda } from './upgradeDatadogLambda.js';
 
 vi.mock('fs-extra', () => ({

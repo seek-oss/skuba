@@ -3,7 +3,6 @@ import { inspect } from 'util';
 import { createExec } from '../../utils/exec.js';
 import { log } from '../../utils/logging.js';
 import { throwOnTimeout } from '../../utils/wait.js';
-
 import { createAnnotations } from './annotate.js';
 
 export const test = async () => {

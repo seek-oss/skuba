@@ -1,5 +1,4 @@
 import type { Patches } from '../../index.js';
-
 import { tryPatchRootTsConfig } from './patchRootTsconfig.js';
 import { tryUpgradeNode } from './upgradeNode.js';
 
