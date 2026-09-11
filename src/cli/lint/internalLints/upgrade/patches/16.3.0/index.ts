@@ -1,5 +1,6 @@
 import type { Patches } from '../../index.js';
 
+import { tryMigrateImportOrderEslintDisables } from './migrateImportOrderEslintDisables.js';
 import { tryMigratePrettierToOxfmt } from './migratePrettierToOxfmt.js';
 import { tryMigrateVscodePrettierToOxc } from './migrateVscodePrettierToOxc.js';
 
@@ -11,5 +12,10 @@ export const patches: Patches = [
   {
     apply: tryMigrateVscodePrettierToOxc,
     description: 'Replace Prettier VS Code recommendation with Oxc',
+  },
+  {
+    apply: tryMigrateImportOrderEslintDisables,
+    description:
+      'Replace import-x/order ESLint disables with oxfmt-ignore comments',
   },
 ];
