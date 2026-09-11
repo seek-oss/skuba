@@ -7,7 +7,6 @@ import newGit from '../../../integration/git/new.json' with { type: 'json' };
 import { runESLint } from '../adapter/eslint.js';
 import { runOxfmt } from '../adapter/oxfmt.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
-
 import {
   AUTOFIX_IGNORE_FILES_BASE,
   RENOVATE_AUTHOR,

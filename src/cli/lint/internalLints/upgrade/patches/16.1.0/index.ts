@@ -1,5 +1,4 @@
 import type { Patches } from '../../index.js';
-
 import { tryAddSeekPackageRegistry } from './addSeekPackageRegistry.js';
 import { tryPatchTsconfig } from './patchTsconfig.js';
 import { pruneDevDeps } from './pruneDevDeps.js';

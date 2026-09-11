@@ -12,7 +12,6 @@
 
 import { handleCliError } from '../utils/error.js';
 import { log } from '../utils/logging.js';
-
 import { main } from './main.js';
 
 const ENTRY_POINT_VAR = '__SKUBA_ENTRY_POINT';

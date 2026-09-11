@@ -1,6 +1,5 @@
 import { hasHelpFlag } from '../../utils/args.js';
 import { log } from '../../utils/logging.js';
-
 import { addFileExtensions } from './esm/addFileExtensions.js';
 import { migrateToESM } from './esm/index.js';
 import { nodeVersionMigration } from './nodeVersion/index.js';

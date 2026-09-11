@@ -14,7 +14,6 @@ import {
   detectPackageManager,
 } from '../../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.js';
-
 import { editLifeCycleHooks } from './lifeCycleEdits.js';
 import { postFixVitestMigration } from './postFixVitestMigration.js';
 import { scaffoldVitestConfig } from './vitestConfig.js';

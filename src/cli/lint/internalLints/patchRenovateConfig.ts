@@ -10,7 +10,6 @@ import { log } from '../../../utils/logging.js';
 import { runOxfmt } from '../../adapter/oxfmt.js';
 import { createDestinationFileReader } from '../../configure/analysis/project.js';
 import { RENOVATE_CONFIG_FILENAMES } from '../../configure/modules/renovate.js';
-
 import type { PatchFunction, PatchReturnType } from './upgrade/index.js';
 
 const EXISTING_REPO_PRESET_REGEX = /(github|local)>(seek-jobs|seekasia)\//;

@@ -3,7 +3,6 @@ import fs from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
-
 import { tryPatchApiTokenFromEnvironment } from './patchApiTokenFromEnvironment.js';
 
 vi.mock('fast-glob');

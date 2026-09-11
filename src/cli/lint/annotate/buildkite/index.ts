@@ -4,7 +4,6 @@ import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { OxfmtResult } from '../../../adapter/oxfmt.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
 import type { InternalLintResult } from '../../internal.js';
-
 import { createEslintAnnotations } from './eslint.js';
 import { createInternalAnnotations } from './internal.js';
 import { createOxfmtAnnotations } from './oxfmt.js';

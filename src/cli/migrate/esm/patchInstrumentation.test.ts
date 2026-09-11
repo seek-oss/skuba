@@ -8,7 +8,6 @@ import type {
   PatchConfig,
   PatchReturnType,
 } from '../../lint/internalLints/upgrade/index.js';
-
 import { patchInstrumentation } from './patchInstrumentation.js';
 
 vi.mock('latest-version');

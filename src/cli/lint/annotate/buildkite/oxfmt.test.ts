@@ -1,7 +1,6 @@
 import { expect, it } from 'vitest';
 
 import type { OxfmtResult } from '../../../adapter/oxfmt.js';
-
 import { createOxfmtAnnotations } from './oxfmt.js';
 
 it('re-prints --check output after the triage heading', () => {

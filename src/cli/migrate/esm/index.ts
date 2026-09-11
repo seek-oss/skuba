@@ -8,7 +8,6 @@ import type {
   Patch,
   PatchReturnType,
 } from '../../lint/internalLints/upgrade/index.js';
-
 import { addEslintConfigImportXNoDefaultExport } from './addEslintConfigImportXNoDefaultExport.js';
 import { tryAddFileExtensions } from './addFileExtensions.js';
 import { addTypeModuleToPackageJson } from './addTypeModuleToPackageJson.js';

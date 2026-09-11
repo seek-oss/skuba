@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { exec } from '../../utils/exec.js';
-
 import { rolldown } from './rolldown.js';
 
 vi.mock('../../utils/exec.js', () => ({

@@ -10,7 +10,6 @@ import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { InternalLintResult } from '../internal.js';
-
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 
 const lockFileUpdateTriggers = ['overrides'];

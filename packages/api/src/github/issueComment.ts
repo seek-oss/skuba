@@ -3,7 +3,6 @@ import type { Octokit } from '@octokit/rest' with {
 };
 
 import * as Git from '../git/index.js';
-
 import { apiTokenFromEnvironment } from './environment.js';
 import { createRestClient } from './octokit.js';
 import { getPullRequestNumber } from './pullRequest.js';

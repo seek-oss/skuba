@@ -3,7 +3,6 @@ import fs from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PatchConfig, PatchReturnType } from '../../index.js';
-
 import { tryPatchDockerfileCIVariable } from './patchDockerfileCIVariable.js';
 
 vi.mock('fast-glob');

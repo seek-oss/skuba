@@ -6,7 +6,6 @@ import { COMMAND_DIR } from '../../utils/command.js';
 import { createLogger } from '../../utils/logging.js';
 import { execWorkerThread, postWorkerOutput } from '../../utils/worker.js';
 import { type ESLintOutput, runESLint } from '../adapter/eslint.js';
-
 import type { Input } from './types.js';
 
 const LOG_PREFIX = styleText('magenta', 'ESLint │');

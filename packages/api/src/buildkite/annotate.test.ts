@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as execModule from '../../../../src/utils/exec.js';
 import { log } from '../../../../src/utils/logging.js';
-
 import { MAX_SIZE, TRUNCATION_WARNING, annotate } from './annotate.js';
 
 const exec = vi.spyOn(execModule, 'exec');

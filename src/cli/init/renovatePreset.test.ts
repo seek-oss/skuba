@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import { createEjsRenderer } from '../../utils/copy.js';
 import { readBaseTemplateFile } from '../../utils/template.js';
-
 import { baseToTemplateData } from './getConfig.js';
 
 describe('Renovate preset template', () => {
