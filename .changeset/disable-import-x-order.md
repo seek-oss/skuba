@@ -16,8 +16,8 @@ To restore the previous behavior, you can add the following rule to your ESLint 
     {
       alphabetize: {
         order: 'asc',
-      }  
-      'newlines-between': 'always'  
+      }
+      'newlines-between': 'always'
       pathGroups: [
         {
           group: 'external',
@@ -29,7 +29,7 @@ To restore the previous behavior, you can add the following rule to your ESLint 
           pattern: 'src/**',
           position: 'after',
         },
-      ]  
+      ]
       pathGroupsExcludedImportTypes: ['builtin'],
     },
   ],

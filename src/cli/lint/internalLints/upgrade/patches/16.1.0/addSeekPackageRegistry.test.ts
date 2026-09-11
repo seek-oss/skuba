@@ -1,4 +1,3 @@
-import * as Git from '@skuba-lib/api/git';
 import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -24,6 +23,7 @@ vi.mock('@skuba-lib/api/git', async () => ({
   findRoot: vi.fn(),
   getOwnerAndRepo: vi.fn(),
 }));
+import * as Git from '@skuba-lib/api/git';
 
 const findRoot = vi.mocked(Git.findRoot);
 const getOwnerAndRepo = vi.mocked(Git.getOwnerAndRepo);

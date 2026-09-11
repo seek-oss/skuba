@@ -1,6 +1,3 @@
-import * as Buildkite from '@skuba-lib/api/buildkite';
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
 import git from 'isomorphic-git';
 import memfs, { fs, vol } from 'memfs';
 import { simpleGit } from 'simple-git';
@@ -30,6 +27,10 @@ vi.mock('../adapter/eslint');
 vi.mock('../adapter/oxfmt');
 vi.mock('./internal');
 vi.mock('../configure/analysis/project');
+
+import * as Buildkite from '@skuba-lib/api/buildkite';
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 
 const MOCK_ERROR = new Error('Badness!');
 
