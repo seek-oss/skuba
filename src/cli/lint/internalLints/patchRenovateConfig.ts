@@ -57,10 +57,7 @@ const patchJson: PatchFile = async ({ filepath, input, presetToAdd }) => {
 
   config.data.extends.unshift(presetToAdd);
 
-  await fs.promises.writeFile(
-    filepath,
-    JSON.stringify(config.data)
-  );
+  await fs.promises.writeFile(filepath, JSON.stringify(config.data));
 
   await runOxfmt('format', log, [filepath]);
 
@@ -78,10 +75,7 @@ const patchJson5: PatchFile = async ({ filepath, input, presetToAdd }) => {
 
   config.data.extends.unshift(presetToAdd);
 
-  await fs.promises.writeFile(
-    filepath,
-    fleece.patch(input, config.data)
-  );
+  await fs.promises.writeFile(filepath, fleece.patch(input, config.data));
 
   await runOxfmt('format', log, [filepath]);
 
