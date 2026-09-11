@@ -8,8 +8,6 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchPackageBuilds } from './patchPackageBuilds.js';
 
-import { getOwnerAndRepo } from '@skuba-lib/api/git';
-
 vi.mock('fs-extra', () => ({
   ...memfs.fs,
   default: memfs.fs,
@@ -22,6 +20,7 @@ vi.mock('fast-glob', () => ({
   },
 }));
 vi.mock('@skuba-lib/api/git');
+import { getOwnerAndRepo } from '@skuba-lib/api/git';
 
 const exec = vi.spyOn(execModule, 'exec');
 const createExec = vi.spyOn(execModule, 'createExec');

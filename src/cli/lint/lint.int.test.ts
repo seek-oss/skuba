@@ -3,6 +3,7 @@ import path from 'path';
 import stream from 'stream';
 import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 
+import * as Buildkite from '@skuba-lib/api/buildkite';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
@@ -11,10 +12,7 @@ import type { Logger } from '../../utils/logging.js';
 import { getSkubaVersion } from '../../utils/version.js';
 
 import { refreshConfigFiles } from './internalLints/refreshConfigFiles.js';
-
 import { lint } from './index.js';
-
-import * as Buildkite from '@skuba-lib/api/buildkite';
 
 vi.setConfig({
   testTimeout: 30_000,
@@ -73,25 +71,24 @@ const stdout = (randomMatcher: RegExp) => {
       .join('')
       .replace(/ in [\d\.]+s\./g, ' in <random>s.')
       .replace(
-        /tsc      │ Lines of ([^:]+):[ ]+\d+/g,
-        'tsc      │ Lines of $1: <random>',
+        /(tsc\s+│) Lines of ([^:]+):[ ]+\d+/g,
+        '$1 Lines of $2: <random>',
       )
       .replace(
-        /tsc      │ Nodes of ([^:]+):[ ]+\d+/g,
-        'tsc      │ Nodes of $1: <random>',
+        /(tsc\s+│) Nodes of ([^:]+):[ ]+\d+/g,
+        '$1 Nodes of $2: <random>',
       )
       .replace(
-        /tsc      │ (Files|Identifiers|Symbols|Types|Instantiations|Memory used):[ ]+\d+/g,
-        'tsc      │ $1: <random>',
+        /(tsc\s+│) (Files|Identifiers|Symbols|Types|Instantiations|Memory used):[ ]+\d+/g,
+        '$1 $2: <random>',
       )
       .replace(
-        /tsc      │ (.+) cache size:[ ]+\d+/g,
-        'tsc      │ $1 cache size: <random>',
+        /(tsc\s+│) (.+) cache size:[ ]+\d+/g,
+        '$1 $2 cache size: <random>',
       )
-      .replace(
-        /tsc      │ (.+) time:[ ]+[\d\.]+s/g,
-        'tsc      │ $1 time: <random>s',
-      )
+      .replace(/(tsc\s+│) (.+) time:[ ]+[\d\.]+s/g, '$1 $2 time: <random>s')
+      .replace(/\d+ms/g, '<ms>ms')
+      .replace(/\d+ threads/g, '<n> threads')
       .replace(randomMatcher, '<random>'),
   );
 
@@ -177,10 +174,10 @@ test.each`
   expect(
     buildkiteAnnotate.mock.calls.map(
       ([markdown, opts]) =>
-        `\nOptions: ${inspect(opts)}\n\n${stripAnsi(markdown).replace(
-          tempDirRegex,
-          '<random>',
-        )}\n`,
+        `\nOptions: ${inspect(opts)}\n\n${stripAnsi(markdown)
+          .replace(tempDirRegex, '<random>')
+          .replace(/\d+ms/g, '<ms>ms')
+          .replace(/\d+ threads/g, '<n> threads')}\n`,
     ),
   ).toMatchSnapshot();
 

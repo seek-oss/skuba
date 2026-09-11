@@ -4,8 +4,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
 import type { PatchConfig } from './upgrade/index.js';
 
-import * as Git from '@skuba-lib/api/git';
-
 vi.mock('fs-extra', () => ({
   ...memfs.fs,
   default: memfs.fs,
@@ -14,6 +12,7 @@ vi.mock('@skuba-lib/api/git', async () => ({
   ...(await vi.importActual<object>('@skuba-lib/api/git')),
   getOwnerAndRepo: vi.fn(),
 }));
+import * as Git from '@skuba-lib/api/git';
 
 const JSON = `
 {
@@ -69,13 +68,7 @@ describe('patchRenovateConfig', () => {
       expect(volToJson()).toMatchInlineSnapshot(`
         {
           ".git": null,
-          "renovate.json": "{
-          "extends": [
-            "local>seek-jobs/renovate-config",
-            "github>seek-oss/rynovate:third-party-major"
-          ]
-        }
-        ",
+          "renovate.json": "{"extends":["local>seek-jobs/renovate-config","github>seek-oss/rynovate:third-party-major"]}",
         }
       `);
     });
@@ -97,13 +90,7 @@ describe('patchRenovateConfig', () => {
       expect(volToJson()).toMatchInlineSnapshot(`
         {
           "foo/.git": null,
-          "foo/renovate.json": "{
-          "extends": [
-            "local>seek-jobs/renovate-config",
-            "github>seek-oss/rynovate:third-party-major"
-          ]
-        }
-        ",
+          "foo/renovate.json": "{"extends":["local>seek-jobs/renovate-config","github>seek-oss/rynovate:third-party-major"]}",
         }
       `);
     });
@@ -128,14 +115,15 @@ describe('patchRenovateConfig', () => {
       expect(volToJson()).toMatchInlineSnapshot(`
         {
           ".git": null,
-          ".github/renovate.json5": "{
+          ".github/renovate.json5": "
+        {
           extends: [
             // Preceding comment
             'local>seekasia/renovate-config',
 
             'seek',
             // Succeeding comment
-          ],
+          ]
         }
         ",
         }

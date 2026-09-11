@@ -1,6 +1,7 @@
 import { dirname } from 'path';
 import { inspect } from 'util';
 
+import { Git } from '@skuba-lib/api';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
@@ -9,8 +10,6 @@ import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
 import { getConsumerManifest } from '../../../utils/manifest.js';
 import type { PatchFunction } from '../../lint/internalLints/upgrade/index.js';
-
-import { Git } from '@skuba-lib/api';
 
 export const patchInstrumentation: PatchFunction = async ({
   mode,

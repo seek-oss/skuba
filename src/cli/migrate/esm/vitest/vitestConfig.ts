@@ -1,6 +1,7 @@
 import path from 'path';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
+import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -8,8 +9,6 @@ import { log } from '../../../../utils/logging.js';
 import { getCustomConditions } from '../../../build/tsc.js';
 
 import { type FileContent, readFiles } from './vitest.js';
-
-import { findRoot, getOwnerAndRepo } from '@skuba-lib/api/git';
 
 const determineCustomConditions = async (): Promise<string[]> => {
   const gitRoot = await findRoot({ dir: process.cwd() });

@@ -1,5 +1,8 @@
 import { inspect } from 'util';
 
+import * as Buildkite from '@skuba-lib/api/buildkite';
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
@@ -14,10 +17,6 @@ import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import { internalLint } from './internal.js';
 import type { Input } from './types.js';
-
-import * as Buildkite from '@skuba-lib/api/buildkite';
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
 
 export const RENOVATE_AUTHOR = {
   name: 'renovate[bot]',
@@ -249,7 +248,7 @@ interface AutofixParameters {
   debug: Input['debug'];
 
   eslint: boolean;
-  prettier: boolean;
+  oxfmt: boolean;
   internal: boolean;
 
   eslintConfigFile?: string;
@@ -258,7 +257,7 @@ interface AutofixParameters {
 export const autofix = async (params: AutofixParameters): Promise<void> => {
   const dir = process.cwd();
 
-  if (!params.eslint && !params.prettier && !params.internal) {
+  if (!params.eslint && !params.oxfmt && !params.internal) {
     return;
   }
 
@@ -283,7 +282,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
       `Attempting to autofix issues (${[
         params.internal ? 'skuba' : undefined,
         params.internal || params.eslint ? 'ESLint' : undefined,
-        'Prettier', // Prettier is always run
+        'Oxfmt', // Oxfmt is always run
       ]
         .filter((s) => s !== undefined)
         .join(', ')})...`,
@@ -299,7 +298,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
       await runESLint('format', logger, params.eslintConfigFile);
     }
 
-    // Unconditionally re-run Prettier; reaching here means we have pre-existing
+    // Unconditionally re-run oxfmt; reaching here means we have pre-existing
     // format violations or may have created new ones through ESLint/internal fixes.
     await runPrettier('format', logger);
 

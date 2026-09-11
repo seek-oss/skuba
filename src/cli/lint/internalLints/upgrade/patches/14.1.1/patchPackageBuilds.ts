@@ -2,6 +2,7 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
+import { getOwnerAndRepo } from '@skuba-lib/api/git';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
@@ -12,8 +13,6 @@ import { isLikelyPackage } from '../../../../../migrate/nodeVersion/checks.js';
 import { tryRefreshConfigFiles } from '../../../refreshConfigFiles.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
-
-import { getOwnerAndRepo } from '@skuba-lib/api/git';
 
 const replaceAssetsField = (
   ast: SgNode,
