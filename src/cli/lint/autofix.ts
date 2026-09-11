@@ -12,11 +12,11 @@ import { createLogger, log } from '../../utils/logging.js';
 import { hasNpmrcSecret } from '../../utils/npmrc.js';
 import { throwOnTimeout } from '../../utils/wait.js';
 import { runESLint } from '../adapter/eslint.js';
-import { runPrettier } from '../adapter/prettier.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import { internalLint } from './internal.js';
 import type { Input } from './types.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
 
 export const RENOVATE_AUTHOR = {
   name: 'renovate[bot]',
@@ -300,7 +300,7 @@ export const autofix = async (params: AutofixParameters): Promise<void> => {
 
     // Unconditionally re-run oxfmt; reaching here means we have pre-existing
     // format violations or may have created new ones through ESLint/internal fixes.
-    await runPrettier('format', logger);
+    await runOxfmt('format', logger);
 
     const ignore = await createAutofixIgnore({ currentBranch, dir });
     if (!ignore) {
