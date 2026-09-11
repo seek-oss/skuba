@@ -10,6 +10,8 @@ Oxfmt may format some code differently from Prettier, so you may see diffs in ex
 
 skuba will attempt to auto-migrate your Prettier configuration to Oxfmt. Any remaining manual references to `prettier` will need to be replaced with `oxfmt`.
 
+Prettier `overrides` are not automatically migrated. If your configuration applies different options to certain files, port them across to Oxfmt's [`overrides`](https://oxc.rs/docs/guide/usage/formatter/config-file-reference.html) yourself.
+
 Update your VS Code settings to use the [Oxc](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode) extension instead of Prettier:
 
 ```diff
