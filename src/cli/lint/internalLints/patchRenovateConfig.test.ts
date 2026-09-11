@@ -1,10 +1,9 @@
+import * as Git from '@skuba-lib/api/git';
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
 import type { PatchConfig } from './upgrade/index.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 vi.mock('fs-extra', () => ({
   ...memfs.fs,

@@ -1,5 +1,8 @@
 import { inspect } from 'util';
 
+import * as Buildkite from '@skuba-lib/api/buildkite';
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
@@ -14,10 +17,6 @@ import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import { internalLint } from './internal.js';
 import type { Input } from './types.js';
-
-import * as Buildkite from '@skuba-lib/api/buildkite';
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
 
 export const RENOVATE_AUTHOR = {
   name: 'renovate[bot]',

@@ -3,6 +3,7 @@ import path from 'path';
 import stream from 'stream';
 import { inspect, stripVTControlCharacters as stripAnsi } from 'util';
 
+import * as Buildkite from '@skuba-lib/api/buildkite';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
@@ -11,10 +12,7 @@ import type { Logger } from '../../utils/logging.js';
 import { getSkubaVersion } from '../../utils/version.js';
 
 import { refreshConfigFiles } from './internalLints/refreshConfigFiles.js';
-
 import { lint } from './index.js';
-
-import * as Buildkite from '@skuba-lib/api/buildkite';
 
 vi.setConfig({
   testTimeout: 30_000,
