@@ -22,7 +22,6 @@ vi.mock('@skuba-lib/api/git', async () => ({
   ...(await vi.importActual<object>('@skuba-lib/api/git')),
   findRoot: vi.fn(),
 }));
-
 import * as Git from '@skuba-lib/api/git';
 
 const findRoot = vi.mocked(Git.findRoot);
