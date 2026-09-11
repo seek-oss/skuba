@@ -1,3 +1,5 @@
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { log } from '../../../../utils/logging.js';
@@ -9,11 +11,7 @@ import type { InternalLintResult } from '../../internal.js';
 import { createEslintAnnotations } from './eslint.js';
 import { createOxfmtAnnotations } from './oxfmt.js';
 import { createTscAnnotations } from './tsc.js';
-
 import { createGitHubAnnotations } from './index.js';
-
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
 
 vi.mock('../../../../utils/logging');
 vi.mock('@skuba-lib/api/git');

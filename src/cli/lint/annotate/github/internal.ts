@@ -1,6 +1,6 @@
-import type { InternalLintResult } from '../../internal.js';
-
 import type * as GitHub from '@skuba-lib/api/github';
+
+import type { InternalLintResult } from '../../internal.js';
 
 export const createInternalAnnotations = (
   internal: InternalLintResult,

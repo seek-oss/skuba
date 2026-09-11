@@ -4,6 +4,7 @@ import readline from 'readline';
 import { inspect } from 'util';
 
 import { log as clackLog, note, outro, taskLog } from '@clack/prompts';
+import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 
 import {
@@ -37,8 +38,6 @@ import { logInitHelp } from './help.js';
 import { resumeTemplating } from './resumeTemplating.js';
 import type { Input } from './types.js';
 import { writePackageJson } from './writePackageJson.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 const feedLines = (
   readable: NodeJS.ReadableStream | null | undefined,

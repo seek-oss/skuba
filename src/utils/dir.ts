@@ -1,13 +1,12 @@
 import path from 'path';
 
+import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 import ignore from 'ignore';
 import picomatch from 'picomatch';
 
 import { isErrorWithCode } from './error.js';
 import { pathExists } from './fs.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 /**
  * Build a map that associates each glob pattern with its matching filepaths.

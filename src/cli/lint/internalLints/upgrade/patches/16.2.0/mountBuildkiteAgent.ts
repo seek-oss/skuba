@@ -2,14 +2,13 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
+import * as Git from '@skuba-lib/api/git';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 const BUILDKITE_AGENT_MOUNT =
   '/usr/bin/buildkite-agent:/usr/bin/buildkite-agent';

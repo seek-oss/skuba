@@ -1,6 +1,6 @@
-import type { OxfmtResult } from '../../../adapter/oxfmt.js';
-
 import type * as GitHub from '@skuba-lib/api/github';
+
+import type { OxfmtResult } from '../../../adapter/oxfmt.js';
 
 export const createOxfmtAnnotations = (
   oxfmt: OxfmtResult,

@@ -1,3 +1,5 @@
+import * as Buildkite from '@skuba-lib/api/buildkite';
+
 import type { ESLintOutput } from '../../../adapter/eslint.js';
 import type { OxfmtResult } from '../../../adapter/oxfmt.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
@@ -7,8 +9,6 @@ import { createEslintAnnotations } from './eslint.js';
 import { createInternalAnnotations } from './internal.js';
 import { createOxfmtAnnotations } from './oxfmt.js';
 import { createTscAnnotations } from './tsc.js';
-
-import * as Buildkite from '@skuba-lib/api/buildkite';
 
 export const createBuildkiteAnnotations = async (
   internal: InternalLintResult,

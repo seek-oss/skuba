@@ -1,3 +1,6 @@
+import * as Buildkite from '@skuba-lib/api/buildkite';
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 import git from 'isomorphic-git';
 import memfs, { fs, vol } from 'memfs';
 import { simpleGit } from 'simple-git';
@@ -14,10 +17,6 @@ import {
   autofix,
 } from './autofix.js';
 import { internalLint } from './internal.js';
-
-import * as Buildkite from '@skuba-lib/api/buildkite';
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
 
 vi.mock('fs-extra', () => ({
   ...memfs.fs,

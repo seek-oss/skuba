@@ -1,3 +1,4 @@
+import { getOwnerAndRepo } from '@skuba-lib/api/git';
 import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,8 +8,6 @@ import * as checks from '../../../../../migrate/nodeVersion/checks.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchPackageBuilds } from './patchPackageBuilds.js';
-
-import { getOwnerAndRepo } from '@skuba-lib/api/git';
 
 vi.mock('fs-extra', () => ({
   ...memfs.fs,

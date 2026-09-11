@@ -1,5 +1,4 @@
 import tsParser from '@typescript-eslint/parser';
-
 import skuba from 'eslint-config-skuba';
 
 export default [

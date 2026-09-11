@@ -2,6 +2,7 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { type Edit, parseAsync } from '@ast-grep/napi';
+import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
 
 import { exec } from '../../../../../../utils/exec.js';
@@ -9,8 +10,6 @@ import { log } from '../../../../../../utils/logging.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import { registerAstGrepLanguages } from '../../../registerAstGrepLanguages.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
-
-import { Git } from '@skuba-lib/api';
 
 export const removePnpmPlugin: PatchFunction = async ({
   mode,
