@@ -89,6 +89,8 @@ Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found
 
 Patch skipped: Replace Prettier VS Code recommendation with Oxc - no Prettier VS Code recommendations to replace upgrade-skuba
 
+Patch skipped: Replace import-x/order ESLint disables with oxfmt-ignore comments - no import-x/order ESLint disables to replace upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -225,6 +227,8 @@ Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found
 
 Patch skipped: Replace Prettier VS Code recommendation with Oxc - no Prettier VS Code recommendations to replace upgrade-skuba
 
+Patch skipped: Replace import-x/order ESLint disables with oxfmt-ignore comments - no import-x/order ESLint disables to replace upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -335,6 +339,8 @@ Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found
 
 Patch skipped: Replace Prettier VS Code recommendation with Oxc - no Prettier VS Code recommendations to replace upgrade-skuba
 
+Patch skipped: Replace import-x/order ESLint disables with oxfmt-ignore comments - no import-x/order ESLint disables to replace upgrade-skuba
+
 skuba update complete. upgrade-skuba
 
 Processed skuba lints in <random>s.
@@ -439,6 +445,8 @@ Patch skipped: Replace the dd-trace NODE_OPTIONS Lambda hack with datadog-lambda
 Patch skipped: Migrate Prettier config to Oxfmt - no Prettier config files found upgrade-skuba
 
 Patch skipped: Replace Prettier VS Code recommendation with Oxc - no Prettier VS Code recommendations to replace upgrade-skuba
+
+Patch skipped: Replace import-x/order ESLint disables with oxfmt-ignore comments - no import-x/order ESLint disables to replace upgrade-skuba
 
 skuba update complete. upgrade-skuba
 
