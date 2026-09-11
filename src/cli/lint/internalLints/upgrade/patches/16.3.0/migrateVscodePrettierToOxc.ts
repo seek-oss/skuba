@@ -1,13 +1,12 @@
 import path from 'path';
 import { inspect } from 'util';
 
+import * as Git from '@skuba-lib/api/git';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 
 import { log } from '../../../../../../utils/logging.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 const PRETTIER_EXTENSION = 'esbenp.prettier-vscode';
 const OXC_EXTENSION = 'oxc.oxc-vscode';
