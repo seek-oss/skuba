@@ -2,7 +2,9 @@ import path from 'path';
 import { inspect } from 'util';
 
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
+import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
+import { defaultConfig } from 'pnpm-plugin-skuba';
 
 import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
@@ -10,9 +12,6 @@ import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { InternalLintResult } from '../internal.js';
 
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
-
-import { Git } from '@skuba-lib/api';
-import { defaultConfig } from 'pnpm-plugin-skuba';
 
 const lockFileUpdateTriggers = ['overrides'];
 

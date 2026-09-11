@@ -2,13 +2,12 @@ import os from 'os';
 import path from 'path';
 
 import { spinner } from '@clack/prompts';
+import * as Git from '@skuba-lib/api/git';
 import fs from 'fs-extra';
 import git from 'isomorphic-git';
 import { simpleGit } from 'simple-git';
 
 import { copyFiles } from '../../utils/copy.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 interface GitHubProject {
   orgName: string;

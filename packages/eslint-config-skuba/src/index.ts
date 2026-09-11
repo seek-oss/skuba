@@ -1,4 +1,3 @@
-import { defineConfig } from 'eslint/config';
 import {
   js as jsExtensions,
   ts as tsExtensions,
@@ -6,6 +5,7 @@ import {
 import base from 'eslint-config-seek/vitest/base';
 import skubaPlugin from 'eslint-plugin-skuba';
 import eslintPluginYml from 'eslint-plugin-yml';
+import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
 const skuba = defineConfig([
@@ -36,31 +36,8 @@ const skuba = defineConfig([
     rules: {
       'import-x/no-duplicates': 'error',
 
-      'import-x/order': [
-        'error',
-        {
-          alphabetize: {
-            order: 'asc',
-          },
-
-          'newlines-between': 'always',
-
-          pathGroups: [
-            {
-              group: 'external',
-              pattern: 'src',
-              position: 'after',
-            },
-            {
-              group: 'external',
-              pattern: 'src/**',
-              position: 'after',
-            },
-          ],
-
-          pathGroupsExcludedImportTypes: ['builtin'],
-        },
-      ],
+      // Import order is handled by Oxfmt `sortImports`.
+      'import-x/order': 'off',
 
       'vitest/expect-expect': 'off',
       // 'vitest/no-deprecated-functions': 'error',

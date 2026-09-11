@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { inspect } from 'node:util';
 
+import { Git } from '@skuba-lib/api';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import latestVersion from 'latest-version';
@@ -17,8 +18,6 @@ import type { PatchReturnType } from '../../../lint/internalLints/upgrade/index.
 import { editLifeCycleHooks } from './lifeCycleEdits.js';
 import { postFixVitestMigration } from './postFixVitestMigration.js';
 import { scaffoldVitestConfig } from './vitestConfig.js';
-
-import { Git } from '@skuba-lib/api';
 
 export type FileContent = {
   file: string;

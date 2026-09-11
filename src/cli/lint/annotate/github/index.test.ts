@@ -1,19 +1,17 @@
+import * as Git from '@skuba-lib/api/git';
+import * as GitHub from '@skuba-lib/api/github';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { log } from '../../../../utils/logging.js';
 import type { ESLintOutput } from '../../../adapter/eslint.js';
-import type { PrettierOutput } from '../../../adapter/prettier.js';
+import type { OxfmtResult } from '../../../adapter/oxfmt.js';
 import type { StreamInterceptor } from '../../../lint/external.js';
 import type { InternalLintResult } from '../../internal.js';
 
 import { createEslintAnnotations } from './eslint.js';
-import { createPrettierAnnotations } from './prettier.js';
+import { createOxfmtAnnotations } from './oxfmt.js';
 import { createTscAnnotations } from './tsc.js';
-
 import { createGitHubAnnotations } from './index.js';
-
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
 
 vi.mock('../../../../utils/logging');
 vi.mock('@skuba-lib/api/git');
@@ -23,7 +21,7 @@ vi.mock('@skuba-lib/api/github', async () => ({
 }));
 
 vi.mock('./eslint');
-vi.mock('./prettier');
+vi.mock('./oxfmt');
 vi.mock('./tsc');
 
 const eslintOutput: ESLintOutput = {
@@ -52,14 +50,14 @@ const eslintOutput: ESLintOutput = {
   warnings: [],
 };
 
-const prettierOutput: PrettierOutput = {
+const oxfmtOutput: OxfmtResult = {
   ok: false,
-  result: {
-    errored: [{ filepath: 'src/index.ts' }],
-    count: 1,
-    touched: [],
-    unparsed: [],
-  },
+  errors: [
+    {
+      path: 'src/index.ts',
+      message: 'Oxfmt found formatting issues in this file.',
+    },
+  ],
 };
 
 const internalOutput: InternalLintResult = {
@@ -105,13 +103,14 @@ const mockEslintAnnotations: GitHub.Annotation[] = [
   },
 ];
 
-const mockPrettierAnnotations: GitHub.Annotation[] = [
+const mockOxfmtAnnotations: GitHub.Annotation[] = [
   {
     annotation_level: 'failure',
-    start_line: 0,
-    end_line: 0,
+    start_line: 1,
+    end_line: 1,
     path: 'src/index.ts',
-    message: 'Prettier found an issue with this file',
+    message: 'Oxfmt found formatting issues in this file.',
+    title: 'Oxfmt',
   },
 ];
 
@@ -136,7 +135,7 @@ beforeEach(() => {
 
   vi.mocked(Git.findRoot).mockResolvedValue(process.cwd());
   vi.mocked(createEslintAnnotations).mockReturnValue(mockEslintAnnotations);
-  vi.mocked(createPrettierAnnotations).mockReturnValue(mockPrettierAnnotations);
+  vi.mocked(createOxfmtAnnotations).mockReturnValue(mockOxfmtAnnotations);
   vi.mocked(createTscAnnotations).mockReturnValue(mockTscAnnotations);
 });
 
@@ -152,7 +151,7 @@ it('should return immediately if the required environment variables are not set'
   await createGitHubAnnotations(
     internalOutput,
     eslintOutput,
-    prettierOutput,
+    oxfmtOutput,
     tscOk,
     tscOutputStream,
   );
@@ -166,7 +165,7 @@ it('should return immediately if there is no Git repository', async () => {
   await createGitHubAnnotations(
     internalOutput,
     eslintOutput,
-    prettierOutput,
+    oxfmtOutput,
     tscOk,
     tscOutputStream,
   );
@@ -181,7 +180,7 @@ it('should call createEslintAnnotations with the ESLint output', async () => {
   await createGitHubAnnotations(
     internalOutput,
     eslintOutput,
-    prettierOutput,
+    oxfmtOutput,
     tscOk,
     tscOutputStream,
   );
@@ -189,23 +188,23 @@ it('should call createEslintAnnotations with the ESLint output', async () => {
   expect(createEslintAnnotations).toHaveBeenCalledWith(eslintOutput);
 });
 
-it('should call createPrettierAnnotations with the Prettier output', async () => {
+it('should call createOxfmtAnnotations with the oxfmt output', async () => {
   await createGitHubAnnotations(
     internalOutput,
     eslintOutput,
-    prettierOutput,
+    oxfmtOutput,
     tscOk,
     tscOutputStream,
   );
 
-  expect(createPrettierAnnotations).toHaveBeenCalledWith(prettierOutput);
+  expect(createOxfmtAnnotations).toHaveBeenCalledWith(oxfmtOutput);
 });
 
 it('should call createTscAnnotations with tscOk and tscOutputStream', async () => {
   await createGitHubAnnotations(
     internalOutput,
     eslintOutput,
-    prettierOutput,
+    oxfmtOutput,
     tscOk,
     tscOutputStream,
   );
@@ -217,14 +216,14 @@ it('should combine all the annotations into an array for the check run', async (
   const expectedAnnotations: GitHub.Annotation[] = [
     ...mockInternalAnnotations,
     ...mockEslintAnnotations,
-    ...mockPrettierAnnotations,
+    ...mockOxfmtAnnotations,
     ...mockTscAnnotations,
   ];
 
   await createGitHubAnnotations(
     internalOutput,
     eslintOutput,
-    prettierOutput,
+    oxfmtOutput,
     tscOk,
     tscOutputStream,
   );
@@ -242,7 +241,7 @@ it('should set the conclusion to failure if any output is not ok', async () => {
   await createGitHubAnnotations(
     { ...internalOutput, ok: true },
     { ...eslintOutput, ok: false },
-    { ...prettierOutput, ok: true },
+    { ok: true },
     true,
     tscOutputStream,
   );
@@ -260,7 +259,7 @@ it('should set the conclusion to success if all outputs are ok', async () => {
   await createGitHubAnnotations(
     { ...internalOutput, ok: true },
     { ...eslintOutput, ok: true },
-    { ...prettierOutput, ok: true },
+    { ok: true },
     true,
     tscOutputStream,
   );
@@ -280,7 +279,7 @@ it('should report that skuba lint failed if the output is not ok', async () => {
   await createGitHubAnnotations(
     internalOutput,
     { ...eslintOutput, ok: false },
-    { ...prettierOutput, ok: false },
+    { ...oxfmtOutput, ok: false },
     false,
     tscOutputStream,
   );
@@ -300,7 +299,7 @@ it('should set the summary to `Lint passed` if all outputs are ok', async () => 
   await createGitHubAnnotations(
     { ...internalOutput, ok: true },
     { ...eslintOutput, ok: true },
-    { ...prettierOutput, ok: true },
+    { ok: true },
     true,
     tscOutputStream,
   );
