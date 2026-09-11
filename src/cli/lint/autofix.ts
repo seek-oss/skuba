@@ -12,11 +12,11 @@ import { createLogger, log } from '../../utils/logging.js';
 import { hasNpmrcSecret } from '../../utils/npmrc.js';
 import { throwOnTimeout } from '../../utils/wait.js';
 import { runESLint } from '../adapter/eslint.js';
+import { runOxfmt } from '../adapter/oxfmt.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
 
 import { internalLint } from './internal.js';
 import type { Input } from './types.js';
-import { runOxfmt } from '../adapter/oxfmt.js';
 
 export const RENOVATE_AUTHOR = {
   name: 'renovate[bot]',
