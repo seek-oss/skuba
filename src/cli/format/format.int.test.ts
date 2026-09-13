@@ -20,6 +20,8 @@ vi.spyOn(git, 'listRemotes').mockResolvedValue([
   { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
 ]);
 
+vi.mock('../../utils/exec.js');
+
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 
 const BASE_PATH = path.join(

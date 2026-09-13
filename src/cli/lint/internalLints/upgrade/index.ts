@@ -26,7 +26,7 @@ export type PatchReturnType =
 export type PatchConfig = {
   mode: 'format' | 'lint';
   manifest: ReadResult;
-  packageManager: PackageManagerConfig;
+  packageManager: Pick<PackageManagerConfig, 'command'>;
   dir?: string;
 };
 

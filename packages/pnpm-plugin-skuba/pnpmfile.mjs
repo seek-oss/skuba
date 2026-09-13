@@ -1,9 +1,9 @@
 // @ts-check
 
 /**
- * @satisfies {Partial<import("@pnpm/config").Config>}
+ * @satisfies {Partial<import("@pnpm/config.reader").Config>}
  */
-const defaultConfig = {
+export const defaultConfig = {
   allowBuilds: {
     '@ast-grep/lang-bash': true,
     '@ast-grep/lang-json': true,
@@ -19,7 +19,6 @@ const defaultConfig = {
     'unrs-resolver': true,
   },
   blockExoticSubdeps: true,
-  ignorePatchFailures: false,
 
   minimumReleaseAge: 4320,
   minimumReleaseAgeExclude: [
@@ -34,7 +33,8 @@ const defaultConfig = {
     'tsconfig-seek',
   ],
 
-  packageManagerStrictVersion: true,
+  pmOnFail: 'error',
+
   publicHoistPattern: [
     '@arethetypeswrong/core',
     '@changesets/cli',
@@ -53,15 +53,15 @@ const defaultConfig = {
     'typescript',
     'vitest',
   ],
-  strictDepBuilds: false,
-  trustPolicy: 'off',
+  strictDepBuilds: true,
+  trustPolicy: 'no-downgrade',
   trustPolicyExclude: ['semver@6.3.1'], // dependency of eslint-plugin-react
 };
 
-module.exports = {
+export default {
   defaultConfig,
   hooks: {
-    /** @param {import("@pnpm/config").Config} config */
+    /** @param {import("@pnpm/config.reader").Config} config */
     updateConfig(config) {
       Object.entries(defaultConfig).forEach(([key, value]) => {
         if (
