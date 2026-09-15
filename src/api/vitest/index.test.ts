@@ -1,8 +1,9 @@
 import { expect, it } from 'vitest';
 import { type ViteUserConfig, configDefaults } from 'vitest/config';
 
-import { mergePreset } from './index.js';
 import { GitHubReporter } from './reporters/github/index.js';
+
+import { mergePreset } from './index.js';
 
 it('concatenates array options', () => {
   const config = mergePreset({
