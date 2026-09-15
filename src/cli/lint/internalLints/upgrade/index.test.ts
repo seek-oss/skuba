@@ -14,6 +14,11 @@ vi.mock('../../../../utils/logging');
 
 beforeEach(() => {
   vi.clearAllMocks();
+
+  // `getPatches` imports the patch modules dynamically. Reset the registry so
+  // that each test's `vi.doMock`s are applied, rather than a copy of a patch
+  // module that was already instantiated elsewhere in the worker.
+  vi.resetModules();
 });
 
 describe('upgradeSkuba in format mode', () => {

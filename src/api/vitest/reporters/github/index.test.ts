@@ -50,8 +50,15 @@ const createReporter = (ctx = createCtx()) => {
 };
 
 beforeEach(() => {
+  // Pin every input to `enabledFromEnvironment` and `buildNameFromEnvironment`
+  // so that these tests behave the same locally and on each CI provider.
+  vi.stubEnv('BUILDKITE', '');
+  vi.stubEnv('GITHUB_ACTIONS', '');
   vi.stubEnv('CI', 'true');
-  vi.stubEnv('GITHUB_TOKEN', 'Hello from GITHUB_TOKEN');
+
+  // Takes precedence over an ambient `GITHUB_TOKEN`.
+  vi.stubEnv('GITHUB_API_TOKEN', 'Hello from GITHUB_API_TOKEN');
+
   vi.stubEnv('BUILDKITE_BUILD_NUMBER', '123');
 
   vi.mocked(Git.findRoot).mockResolvedValue(process.cwd());
