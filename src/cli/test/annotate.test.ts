@@ -1,45 +1,30 @@
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 
-import { log } from '../../utils/logging.js';
+import { createBuildkiteAnnotations } from './annotate.js';
 
-import { createGitHubAnnotations } from './annotate.js';
+import * as Buildkite from '@skuba-lib/api/buildkite';
 
-import * as Git from '@skuba-lib/api/git';
-import * as GitHub from '@skuba-lib/api/github';
-
-vi.mock('@skuba-lib/api/git');
-vi.mock('../../utils/logging');
-vi.mock('@skuba-lib/api/github', async () => ({
-  ...(await vi.importActual('@skuba-lib/api/github')),
-  createCheckRun: vi.fn(),
-}));
-
-beforeEach(() => {
-  vi.stubEnv('CI', 'true');
-  vi.stubEnv('GITHUB_TOKEN', 'Hello from GITHUB_TOKEN');
-
-  vi.mocked(Git.findRoot).mockResolvedValue(process.cwd());
-});
+vi.mock('@skuba-lib/api/buildkite');
 
 afterEach(() => {
-  vi.unstubAllEnvs();
-
   vi.resetAllMocks();
 });
 
-it('creates a test check run in a Git repository', async () => {
-  await createGitHubAnnotations(true);
+it('annotates a failed test run', async () => {
+  await createBuildkiteAnnotations(false);
 
-  expect(GitHub.createCheckRun).toHaveBeenCalledOnce();
+  expect(Buildkite.annotate).toHaveBeenCalledWith(
+    '`skuba test` found issues that require triage:',
+    {
+      context: 'skuba-test',
+      scopeContextToStep: true,
+      style: 'error',
+    },
+  );
 });
 
-it('returns immediately if there is no Git repository', async () => {
-  vi.mocked(Git.findRoot).mockResolvedValueOnce(null);
+it('returns immediately on a passing test run', async () => {
+  await createBuildkiteAnnotations(true);
 
-  await createGitHubAnnotations(true);
-
-  expect(GitHub.createCheckRun).not.toHaveBeenCalled();
-  expect(log.warn).toHaveBeenCalledWith(
-    'GitHub annotations skipped because no .git directory was found.',
-  );
+  expect(Buildkite.annotate).not.toHaveBeenCalled();
 });

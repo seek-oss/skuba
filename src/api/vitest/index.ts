@@ -1,6 +1,12 @@
-import { type ViteUserConfig, defaultExclude } from 'vitest/config';
+import {
+  type ViteUserConfig,
+  configDefaults,
+  defaultExclude,
+} from 'vitest/config';
 
 import { mergeRaw } from '../../cli/configure/processing/record.js';
+
+import { GitHubReporter } from './reporters/github/index.js';
 
 export const defaults = {
   coverage: {
@@ -17,11 +23,14 @@ export const defaults = {
     ],
   },
   exclude: defaultExclude,
+  reporters: [...configDefaults.reporters, new GitHubReporter()],
 } satisfies ViteUserConfig['test'];
 
-const configDefaults = {
+const presetDefaults = {
   test: defaults,
 } satisfies ViteUserConfig;
 
 export const mergePreset = <T extends ViteUserConfig>(config: T): T =>
-  mergeRaw(configDefaults, config);
+  mergeRaw(presetDefaults, config);
+
+export { GitHubReporter };
