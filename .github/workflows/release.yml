@@ -38,8 +38,8 @@ jobs:
       - name: Publish to npm
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          publish: pnpm release
-          version: pnpm stage
+          publish-script: pnpm release
+          version-script: pnpm stage
           push-with-git-cli: true
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
