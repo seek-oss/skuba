@@ -40,7 +40,7 @@ jobs:
         with:
           publish: pnpm release
           version: pnpm stage
-          commitMode: github-api
+          push-with-git-cli: true
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
