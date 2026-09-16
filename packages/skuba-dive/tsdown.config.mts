@@ -10,7 +10,9 @@ export default defineConfig({
     legacyCjs: false,
   },
   publint: true,
-  attw: true,
+  attw: {
+    profile: 'node16',
+  },
   unbundle: true, // TODO: determine if your project can be bundled
   exports: { devExports: '@seek/skuba/source' },
 });

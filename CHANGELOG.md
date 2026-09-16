@@ -1,5 +1,59 @@
 # skuba
 
+## 16.4.0
+
+### Minor Changes
+
+- **deps:** Replace `@inquirer/prompts` with `@clack/prompts` ([#2564](https://github.com/seek-oss/skuba/pull/2564) [`c887c8d`](https://github.com/seek-oss/skuba/commit/c887c8d437ba8c266581b1584b9120136cbbd8ba))
+
+  This internal change only affects the `skuba init` interactive prompts.
+
+- **Rolldown:** Add `Rolldown.lambdaAsset` plugin ([#2543](https://github.com/seek-oss/skuba/pull/2543) [`dcffd07`](https://github.com/seek-oss/skuba/commit/dcffd078b42feec6938572ba9e97d1ab91776bfa))
+
+  A new rolldown plugin that prepares a bundle output directory for deployment as a Lambda function, so CDK can pick it up with a plain `aws_lambda.Code.fromAsset`.
+
+  ```ts
+  // rolldown.config.ts
+  import { defineConfig } from 'rolldown';
+  import { Rolldown } from 'skuba';
+
+  export default defineConfig({
+    input: { index: 'src/lambda.ts' },
+    output: { dir: 'lib' },
+    external: ['sharp'],
+    plugins: [Rolldown.lambdaAsset({ nodeModules: ['sharp'] })],
+  });
+  ```
+
+  The plugin writes an ESM `package.json`, and installs any `nodeModules` into the output directory with pnpm, copying across your workspace config and patches. The generated `package.json` forwards your package manager pin by copying across the `packageManager` and `devEngines` fields of your workspace root `package.json`, so the install runs on the same pnpm version as your project. Install-only files, including `.npmrc`, are stripped from the output afterwards. It can also copy extra `assets` into the output directory alongside your bundle.
+
+  It supports ESM output and pnpm only. It leaves the rest of your rolldown config alone, and does not wrap CDK.
+
+  `skuba build` also forwards a `--config`/`-c` flag through to rolldown, so a package can ship multiple bundles from separate config files, e.g. `skuba build --config rolldown.worker1.config.ts`.
+
+- **deps:** @changesets/cli ^3.0.0 ([#2562](https://github.com/seek-oss/skuba/pull/2562) [`8375293`](https://github.com/seek-oss/skuba/commit/837529382e899f1145d651ebb1588273fec3245b))
+
+- **deps:** tsdown ~0.23.0 ([#2574](https://github.com/seek-oss/skuba/pull/2574) [`8d3c9a7`](https://github.com/seek-oss/skuba/commit/8d3c9a77467c8ffb5fb0c8302dc81a4f873583fc))
+
+  This release contains breaking changes, please see the [release notes](https://github.com/rolldown/tsdown/releases/tag/v0.23.0) for details.
+
+  `skuba format` rewrites `attw: true` to `attw: { profile: 'node16' }` so packages keep node16-compatible attw checks instead of picking up tsdown's new `esm-only` default.
+
+### Patch Changes
+
+- **template/\*:** Switch to repoName for custom conditions templating ([#2565](https://github.com/seek-oss/skuba/pull/2565) [`f9f0911`](https://github.com/seek-oss/skuba/commit/f9f09115aa7e5d7171a9bc826f4b1a89ad3f4781))
+
+- **deps:** @octokit/types ^17.0.0 ([#2548](https://github.com/seek-oss/skuba/pull/2548) [`222af24`](https://github.com/seek-oss/skuba/commit/222af245efc4e843e5297c088122464bd10b4609))
+
+- **deps:** @octokit/types ^18.0.0 ([#2579](https://github.com/seek-oss/skuba/pull/2579) [`dd96c23`](https://github.com/seek-oss/skuba/commit/dd96c234af4f1da44d8c10a7a10bb94e57cb352c))
+
+- **template/oss-npm-package:** Pin tsdown `attw` to `{ profile: 'node16' }` so new packages keep node16-compatible checks instead of tsdown's `esm-only` default. ([#2574](https://github.com/seek-oss/skuba/pull/2574) [`8d3c9a7`](https://github.com/seek-oss/skuba/commit/8d3c9a77467c8ffb5fb0c8302dc81a4f873583fc))
+
+- **template/oss-npm-package:** Migrate to changesets/action action v2 ([#2580](https://github.com/seek-oss/skuba/pull/2580) [`f35cea0`](https://github.com/seek-oss/skuba/commit/f35cea056795337e703cf6f78317c9aa051b5888))
+- Updated dependencies:
+  - @skuba-lib/changesets-changelog@2.0.0
+  - @skuba-lib/api@2.3.1
+
 ## 16.3.0
 
 ### Minor Changes
