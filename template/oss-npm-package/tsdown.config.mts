@@ -18,5 +18,7 @@ export default defineConfig({
     devExports: '@seek/<%- repoName %>/source',
   },
   publint: true,
-  attw: true,
+  attw: {
+    profile: 'node16',
+  },
 });
