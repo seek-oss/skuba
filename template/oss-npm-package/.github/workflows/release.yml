@@ -36,11 +36,11 @@ jobs:
         run: pnpm build
 
       - name: Release
-        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
           version: pnpm run version
           publish: pnpm run release
-          commitMode: github-api
+          push-with-git-cli: true
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
