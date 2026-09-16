@@ -41,8 +41,7 @@ jobs:
           publish-script: pnpm run version
           publish-script: pnpm run release
           push-with-git-cli: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
+          github-token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
   snapshot:
     name: Publish snapshot version
