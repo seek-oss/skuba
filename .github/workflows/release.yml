@@ -41,8 +41,7 @@ jobs:
           publish-script: pnpm release
           version-script: pnpm stage
           push-with-git-cli: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
+          github-token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
       - name: Deploy to GitHub Pages
         run: pnpm run deploy
