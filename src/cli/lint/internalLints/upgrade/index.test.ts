@@ -5,15 +5,48 @@ import { log } from '../../../../utils/logging.js';
 import { getConsumerManifest } from '../../../../utils/manifest.js';
 import { getSkubaVersion } from '../../../../utils/version.js';
 
-import { upgradeSkuba } from './index.js';
+import { type Patches, upgradeSkuba } from './index.js';
 
 vi.mock('../../../../utils/manifest');
 vi.mock('../../../../utils/version');
 vi.mock('fs-extra');
 vi.mock('../../../../utils/logging');
 
+const { patchesByVersion } = vi.hoisted(() => ({
+  patchesByVersion: new Map<string, Patches>(),
+}));
+
+// `getPatches` imports each patch module dynamically. Mocking them up front
+// keeps the mocks independent of how those imports resolve, and of the order in
+// which Vitest runs our tests and test files. The getters let each test set its
+// own patches, as a mocked module is only instantiated once.
+/* eslint-disable no-restricted-syntax */
+vi.mock('./patches/12.0.2/index.js', () => ({
+  get patches() {
+    return patchesByVersion.get('12.0.2') ?? [];
+  },
+}));
+vi.mock('./patches/12.1.1/index.js', () => ({
+  get patches() {
+    return patchesByVersion.get('12.1.1') ?? [];
+  },
+}));
+vi.mock('./patches/13.1.1/index.js', () => ({
+  get patches() {
+    return patchesByVersion.get('13.1.1') ?? [];
+  },
+}));
+vi.mock('./patches/14.0.1/index.js', () => ({
+  get patches() {
+    return patchesByVersion.get('14.0.1') ?? [];
+  },
+}));
+/* eslint-enable no-restricted-syntax */
+
 beforeEach(() => {
   vi.clearAllMocks();
+
+  patchesByVersion.clear();
 });
 
 describe('upgradeSkuba in format mode', () => {
@@ -55,9 +88,9 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    vi.doMock(`./patches/12.0.2/index.js`, () => ({ patches: [mockUpgrade] }));
-    vi.doMock(`./patches/13.1.1/index.js`, () => ({ patches: [mockUpgrade] }));
-    vi.doMock(`./patches/14.0.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    patchesByVersion.set('12.0.2', [mockUpgrade]);
+    patchesByVersion.set('13.1.1', [mockUpgrade]);
+    patchesByVersion.set('14.0.1', [mockUpgrade]);
 
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
@@ -95,7 +128,7 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    vi.doMock(`./patches/13.1.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    patchesByVersion.set('13.1.1', [mockUpgrade]);
 
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
@@ -141,7 +174,7 @@ describe('upgradeSkuba in format mode', () => {
       description: 'mock',
     };
 
-    vi.doMock(`./patches/8.2.1/index.js`, () => ({ patches: [mockUpgrade] }));
+    patchesByVersion.set('12.0.2', [mockUpgrade]);
 
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
@@ -213,6 +246,13 @@ describe('upgradeSkuba in lint mode', () => {
   });
 
   it('should return ok: false, fixable: true if there are lints to apply', async () => {
+    patchesByVersion.set('13.1.1', [
+      {
+        apply: vi.fn().mockImplementation(() => ({ result: 'apply' })),
+        description: 'mock',
+      },
+    ]);
+
     vi.mocked(getConsumerManifest).mockResolvedValue({
       packageJson: {
         skuba: {
