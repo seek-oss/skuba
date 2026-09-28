@@ -9,6 +9,8 @@ import { log } from '../../../utils/logging.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
 
+import { Git } from '@skuba-lib/api';
+
 const packageVersionRegex = (packageName: string) =>
   new RegExp(`"\\b${packageName}\\b"\\s*:\\s*"([^"]+)"`, 'g');
 
@@ -84,12 +86,18 @@ export const upgradeInfraPackages = async (
   mode: 'lint' | 'format',
   packages: PackageInfo[],
 ): Promise<PatchReturnType> => {
+  const dir = process.cwd();
+  const gitRoot = await Git.findRoot({ dir });
+  const root = gitRoot ?? dir;
+
   const [packageJsonPaths, pnpmWorkspacePaths] = await Promise.all([
     fg(['**/package.json'], {
       ignore: ['**/.git', '**/node_modules'],
+      cwd: root,
     }),
     fg('**/pnpm-workspace.yaml', {
       ignore: ['**/.git', '**/node_modules'],
+      cwd: root,
     }),
   ]);
 
