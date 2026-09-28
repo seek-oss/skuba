@@ -21,11 +21,14 @@ plain output directory ahead of time, and CDK just points
 `aws_lambda.Function` at it with `aws_lambda.Code.fromAsset`.
 
 Full plugin reference: [`docs/development-api/rolldown.md`](../../development-api/rolldown.md).
-A complete worked diff is in [`example.md`](./example.md).
 
 A project can have zero, one, or several worker functions, each with its own
 `NodejsFunction` and `bundling` block — repeat steps 1–2 per distinct
 entry/bundling pair.
+
+A full migration typically touches: a new rolldown config, the CDK stack
+(step 2), the stack test (step 4), `package.json` scripts (step 3), and
+`.gitignore` (step 3).
 
 ## Steps
 
