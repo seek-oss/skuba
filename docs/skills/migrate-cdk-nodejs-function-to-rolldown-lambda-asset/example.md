@@ -4,8 +4,8 @@ A complete migration, applied to a package that deploys one Lambda worker
 (`src/app.ts`) via `infra/appStack.ts`.
 It depends on `sharp`, a package with native binaries that must be installed
 rather than bundled, and copies a static config file next to the handler —
-exercising both `nodeModules` and `assets`. It also already externalises
-Node.js built-ins for an unrelated reason, showing that `external` is merged
+exercising both `nodeModules` and `assets`. It also already externalises an
+unrelated package for a different reason, showing that `external` is merged
 into rather than replaced.
 
 ```diff
@@ -67,19 +67,19 @@ index b3f82fc..3418e1e 100644
  import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
  import { LambdaDeployment } from '@seek/aws-codedeploy-infra';
  import {
-@@ -15,7 +18,6 @@ import {
+@@ -14,7 +17,6 @@ import {
+   aws_secretsmanager,
+   aws_sns,
  } from 'aws-cdk-lib';
+-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
  import type { Construct } from 'constructs';
  import { DatadogLambda } from 'datadog-cdk-constructs-v2';
--import { Cdk } from 'skuba';
  import { Env } from 'skuba-dive';
-
- import { teams } from '../src/config/teams.js';
-@@ -71,26 +73,19 @@ export class AppStack extends Stack {
+@@ -71,26 +73,23 @@ export class AppStack extends Stack {
 
      const architecture = 'ARM_64';
 
--    const worker = new Cdk.NodejsFunction(this, 'worker', {
+-    const worker = new NodejsFunction(this, 'worker', {
 +    const worker = new aws_lambda.Function(this, 'worker', {
        architecture: aws_lambda.Architecture[architecture],
        runtime: aws_lambda.Runtime.NODEJS_24_X,
@@ -95,8 +95,9 @@ index b3f82fc..3418e1e 100644
 +      handler: 'index.handler',
        timeout: Duration.seconds(30),
 -      bundling: {
--        bundlerConfig: './rolldown.config.mts',
+-        externalModules: ['pino'],
 -        nodeModules: ['sharp'],
+-        sourceMap: true,
 -        commandHooks: {
 -          beforeBundling: () => [],
 -          beforeInstall: () => [],
@@ -127,34 +128,31 @@ index da83310..b679440 100644
      "constructs": "10.8.1",
      "datadog-cdk-constructs-v2": "4.2.0",
      "pino-pretty": "13.1.3",
--    "skuba": "16.3.0-add-cdk-NodejsFunction-20260620003026"
-+    "skuba": "16.4.0-main-20260928001450"
+-    "skuba": "16.3.0"
++    "skuba": "16.4.0"
    },
    "packageManager": "pnpm@10.34.5",
    "engines": {
 diff --git a/rolldown.config.mts b/rolldown.config.mts
-index 2d5a855..e20bb53 100644
---- a/rolldown.config.mts
+new file mode 100644
+index 0000000..e20bb53
+--- /dev/null
 +++ b/rolldown.config.mts
-@@ -1,13 +1,32 @@
- import { defineConfig } from 'rolldown';
+@@ -0,0 +1,29 @@
++import { defineConfig } from 'rolldown';
 +import { Rolldown } from 'skuba';
 +
++const externalModules = ['pino'];
 +const nodeModules = ['sharp'];
-
- export default defineConfig({
-   platform: 'node',
++
++export default defineConfig({
++  platform: 'node',
 +  input: { index: 'src/app.ts' },
-   resolve: {
-     mainFields: ['module', 'main'],
-     conditionNames: ['@seek/indie-kate/source', 'module'],
-   },
--  external: [/^node:/, 'sharp'],
-+  external: [/^node:/, ...nodeModules],
-   output: {
++  external: [...externalModules, ...nodeModules],
++  output: {
 +    dir: 'dist/worker',
-     sourcemap: true,
-   },
++    sourcemap: true,
++  },
 +  plugins: [
 +    Rolldown.lambdaAsset({
 +      nodeModules,
@@ -164,5 +162,5 @@ index 2d5a855..e20bb53 100644
 +      ],
 +    }),
 +  ],
- });
++});
 ```
