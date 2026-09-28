@@ -110,7 +110,7 @@ with `aws_lambda.Function` pointed at the build output from step 1.
 
 ### 3. Add a build step and wire it into `deploy`
 
-`Code.fromAsset` needs the directory to exist on disk *before* `cdk synth`
+`Code.fromAsset` needs the directory to exist on disk _before_ `cdk synth`
 runs, so the rolldown build must happen before every `cdk deploy`.
 
 ```diff
