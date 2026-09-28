@@ -46,7 +46,13 @@ export const commitAllChanges = async ({
 
   await Promise.all(
     changedFiles.map(async (file) => {
-      const relativePath = path.relative(dir, file.path);
+      // `file.path` is relative to the Git root, whereas `dir` is relative to
+      // the current working directory; resolve both to absolute paths before
+      // comparing so the filter holds when `dir` is a subdirectory of the root.
+      const relativePath = path.relative(
+        path.resolve(dir),
+        path.resolve(gitRoot, file.path),
+      );
 
       // Skipping file outside working directory, see https://github.com/seek-oss/skuba/pull/1269#discussion_r1335308704
       if (relativePath.startsWith('..')) {

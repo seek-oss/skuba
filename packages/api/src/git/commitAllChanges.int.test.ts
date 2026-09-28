@@ -127,6 +127,50 @@ it('should handle a nested working directory', async () => {
   expect(statuses).toStrictEqual(['absent', '*added', 'unmodified', 'absent']);
 });
 
+it('should handle a working directory below the Git root', async () => {
+  // Seed the repository one level above the working directory, as when `skuba`
+  // is run from a subdirectory of an existing repo. `file.path` is then relative
+  // to a Git root that the current working directory does not contain, so
+  // resolving it against the working directory lands outside of `dir`.
+  const gitRoot = path.dirname(process.cwd());
+  const workingDir = path.basename(process.cwd());
+
+  vol.reset();
+  vol.fromJSON(newGit, gitRoot);
+
+  await fs.promises.mkdir('my-package', { recursive: true });
+
+  await Promise.all([
+    fs.promises.writeFile(path.join('my-package', newFileName), ''),
+    // Not in our `my-package`!
+    fs.promises.writeFile(newFileName2, ''),
+  ]);
+
+  await expect(
+    commitAllChanges({
+      dir: path.resolve('my-package'),
+      message: 'initial commit',
+      author,
+    }),
+  ).resolves.toMatch(/^[0-9a-f]{40}$/);
+
+  const statuses = await Promise.all([
+    git.status({
+      fs,
+      dir: gitRoot,
+      filepath: `${workingDir}/my-package/${newFileName}`,
+    }),
+    git.status({
+      fs,
+      dir: gitRoot,
+      filepath: `${workingDir}/${newFileName2}`,
+    }),
+  ]);
+
+  // The file outside of `my-package` remains uncommitted.
+  expect(statuses).toStrictEqual(['unmodified', '*added']);
+});
+
 it('should no-op on clean directory', async () => {
   await expect(
     commitAllChanges({
