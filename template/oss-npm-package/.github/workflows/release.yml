@@ -38,7 +38,7 @@ jobs:
       - name: Release
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          publish-script: pnpm run version
+          version-script: pnpm run version
           publish-script: pnpm run release
           push-with-git-cli: true
           github-token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
