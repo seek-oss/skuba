@@ -36,13 +36,12 @@ jobs:
         run: pnpm build
 
       - name: Release
-        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          version: pnpm run version
-          publish: pnpm run release
-          commitMode: github-api
-        env:
-          GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
+          version-script: pnpm run version
+          publish-script: pnpm run release
+          push-with-git-cli: true
+          github-token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
   snapshot:
     name: Publish snapshot version

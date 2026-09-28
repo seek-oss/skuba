@@ -144,6 +144,10 @@ const compileChangesByTemplate = (changelog: string) => {
       .filter(Boolean);
 
     for (const entry of entries) {
+      if (entry.startsWith('Updated dependencies')) {
+        continue;
+      }
+
       const scope = SCOPE_REGEX.exec(entry)?.[1];
 
       if (!scope) {
