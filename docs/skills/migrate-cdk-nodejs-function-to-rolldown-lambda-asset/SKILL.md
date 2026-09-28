@@ -123,15 +123,15 @@ create one from the construct's `entry` and `bundling` props:
 +});
 ```
 
-| Old `bundling` prop (esbuild)                | New rolldown equivalent                                                  |
-| --------------------------------------------- | ------------------------------------------------------------------------- |
-| `externalModules`                             | `external`                                                                |
-| `nodeModules`                                 | `Rolldown.lambdaAsset({ nodeModules })`                                   |
-| `commandHooks.afterBundling` (file copies)    | `Rolldown.lambdaAsset({ assets })`                                        |
-| `sourceMap`                                   | `output.sourcemap`                                                       |
-| `minify`                                      | `output.minify`                                                          |
-| `define`                                      | `define`                                                                  |
-| `target`                                      | `output.target` (esbuild and rolldown use different target strings — check [rolldown's reference](https://rolldown.rs/reference/OutputOptions.target)) |
+| Old `bundling` prop (esbuild)              | New rolldown equivalent                                                                                                                                |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `externalModules`                          | `external`                                                                                                                                             |
+| `nodeModules`                              | `Rolldown.lambdaAsset({ nodeModules })`                                                                                                                |
+| `commandHooks.afterBundling` (file copies) | `Rolldown.lambdaAsset({ assets })`                                                                                                                     |
+| `sourceMap`                                | `output.sourcemap`                                                                                                                                     |
+| `minify`                                   | `output.minify`                                                                                                                                        |
+| `define`                                   | `define`                                                                                                                                               |
+| `target`                                   | `output.target` (esbuild and rolldown use different target strings — check [rolldown's reference](https://rolldown.rs/reference/OutputOptions.target)) |
 
 Other esbuild-specific options (`esbuildArgs`, `loader`, `tsconfig`,
 `forceDockerBundling`, ...) don't have a direct rolldown equivalent — check
