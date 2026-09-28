@@ -1,21 +1,23 @@
 ---
 name: migrate-cdk-nodejs-function-to-rolldown-lambda-asset
 description: >-
-  Migrates an AWS CDK Lambda worker off skuba's `Cdk.NodejsFunction` esbuild
-  construct onto a plain `aws_lambda.Function` backed by a pre-built bundle
-  from the `Rolldown.lambdaAsset` plugin. Use when a project imports
-  `Cdk.NodejsFunction` or `aws_lambda_nodejs.NodejsFunction` from `skuba` in
-  its CDK stack, or when asked to migrate/replace CDK Lambda bundling with
-  rolldown.
+  Migrates an AWS CDK Lambda worker off an esbuild-bundling NodejsFunction
+  construct — either skuba's `Cdk.NodejsFunction` or aws-cdk-lib's built-in
+  `aws_lambda_nodejs.NodejsFunction` — onto a plain `aws_lambda.Function`
+  backed by a pre-built bundle from the `Rolldown.lambdaAsset` plugin. Use
+  when a CDK stack imports `Cdk.NodejsFunction` from `skuba`, imports
+  `NodejsFunction` from `aws-cdk-lib/aws-lambda-nodejs`, or when asked to
+  migrate/replace CDK Lambda bundling with rolldown.
 disable-model-invocation: true
 ---
 
-# Migrate `Cdk.NodejsFunction` to `Rolldown.lambdaAsset`
+# Migrate a `NodejsFunction` construct to `Rolldown.lambdaAsset`
 
 ## Why
 
-`Cdk.NodejsFunction` bundles the handler with esbuild during `cdk synth`,
-coupling bundling to every deploy and CDK unit test run.
+Both `Cdk.NodejsFunction` and the built-in `aws_lambda_nodejs.NodejsFunction`
+bundle the handler with esbuild during `cdk synth`, coupling bundling to
+every deploy and CDK unit test run.
 `Rolldown.lambdaAsset` decouples the two: a rolldown build step produces a
 plain output directory ahead of time, and CDK just points
 `aws_lambda.Function` at it with `aws_lambda.Code.fromAsset`.
@@ -23,15 +25,34 @@ plain output directory ahead of time, and CDK just points
 Full plugin reference: [`docs/development-api/rolldown.md`](../../development-api/rolldown.md).
 A complete worked diff is in [`example.md`](./example.md).
 
+## Before you start: check for an existing rolldown config
+
+The steps below differ slightly depending on where the project is migrating
+from:
+
+- **`Cdk.NodejsFunction` (skuba)** — `bundling.bundlerConfig` is a required
+  prop, so a rolldown config file already exists. Step 1 reworks it in place.
+- **`aws_lambda_nodejs.NodejsFunction` (aws-cdk-lib, plain esbuild)** —
+  there is no rolldown config anywhere; esbuild options live inline in the
+  `bundling` prop instead. Step 1 creates a new rolldown config and ports
+  those options across.
+
+Search the CDK stack's directory for an existing config before assuming
+either way, e.g. `rg bundlerConfig` or `rg "rolldown.config"`. A project can
+also have zero, one, or several worker functions, each with its own
+`bundling` block — repeat step 1 per distinct entry/config pair.
+
 ## Steps
 
 Work through these in order — each one builds on the last.
 
-### 1. Rework `rolldown.config.mts`
+### 1. Create or rework the rolldown config
 
-Add `Rolldown.lambdaAsset` and point `output` at a directory instead of a
-single file. Move `bundling.nodeModules` into `lambdaAsset({ nodeModules })`,
+Give the config an `input`, an output directory, and a `Rolldown.lambdaAsset`
+plugin call. Move `bundling.nodeModules` into `lambdaAsset({ nodeModules })`,
 and move any `commandHooks.afterBundling` file copies into `assets`.
+
+**If a rolldown config already exists** (`Cdk.NodejsFunction`), rework it:
 
 ```diff
  import { defineConfig } from 'rolldown';
@@ -66,14 +87,66 @@ and move any `commandHooks.afterBundling` file copies into `assets`.
  });
 ```
 
-Keep `external`, `resolve`, and `sourcemap` as they were.
-`nodeModules` must list the same packages as before — mark them `external` too
-so the plugin installs them instead of also bundling them.
+Keep whatever `resolve`, `sourcemap`, and other rolldown options the config
+already had. `Cdk.NodejsFunction`'s config never had `input`/`output.dir` set
+(the construct injected them at synth time), so add them fresh.
+
+**If there is no rolldown config yet** (`aws_lambda_nodejs.NodejsFunction`),
+create one from the construct's `entry` and `bundling` props:
+
+```diff
++// rolldown.config.mts
++import { defineConfig } from 'rolldown';
++import { Rolldown } from 'skuba';
++
++const nodeModules = [/* same packages as the old bundling.nodeModules */];
++
++export default defineConfig({
++  platform: 'node',
++  input: 'src/app.ts', // same entry point as the old `entry`
++  external: nodeModules, // same packages as the old bundling.externalModules + nodeModules
++  output: {
++    dir: 'dist/worker', // any output directory; referenced again in step 2
++    entryFileNames: 'index.mjs',
++    format: 'es', // 'cjs' is also fine if you'd rather not touch the handler's module system
++    sourcemap: true, // same intent as the old bundling.sourceMap
++  },
++  plugins: [
++    Rolldown.lambdaAsset({
++      nodeModules,
++      assets: [
++        // one entry per `afterBundling` copy command, e.g.:
++        { from: 'src/some-file-your-handler-reads-at-runtime.json' },
++      ],
++    }),
++  ],
++});
+```
+
+| Old `bundling` prop (esbuild)                | New rolldown equivalent                                                  |
+| --------------------------------------------- | ------------------------------------------------------------------------- |
+| `externalModules`                             | `external`                                                                |
+| `nodeModules`                                 | `Rolldown.lambdaAsset({ nodeModules })`                                   |
+| `commandHooks.afterBundling` (file copies)    | `Rolldown.lambdaAsset({ assets })`                                        |
+| `sourceMap`                                   | `output.sourcemap`                                                       |
+| `minify`                                      | `output.minify`                                                          |
+| `define`                                      | `define`                                                                  |
+| `target`                                      | `output.target` (esbuild and rolldown use different target strings — check [rolldown's reference](https://rolldown.rs/reference/OutputOptions.target)) |
+
+Other esbuild-specific options (`esbuildArgs`, `loader`, `tsconfig`,
+`forceDockerBundling`, ...) don't have a direct rolldown equivalent — check
+whether the project still needs them; most don't apply once bundling moves
+out of CDK's Docker-based esbuild pipeline.
+
+In either case, `nodeModules` must list the same packages as before — mark
+them `external` too so the plugin installs them instead of also bundling
+them.
 
 ### 2. Rework the Lambda construct in the CDK stack (e.g. `infra/appStack.ts`)
 
-Drop the `Cdk` import, and replace `Cdk.NodejsFunction`/`aws_lambda_nodejs.NodejsFunction`
-with `aws_lambda.Function` pointed at the build output from step 1.
+Drop the `Cdk` import (or the `aws_lambda_nodejs`/`NodejsFunction` import),
+and replace `Cdk.NodejsFunction`/`aws_lambda_nodejs.NodejsFunction` with
+`aws_lambda.Function` pointed at the build output from step 1.
 
 ```diff
 +import * as path from 'node:path';
@@ -81,6 +154,7 @@ with `aws_lambda.Function` pointed at the build output from step 1.
 +
  import { ... } from 'aws-cdk-lib';
 -import { Cdk } from 'skuba';
++// or: -import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
  // ...
 
@@ -102,11 +176,16 @@ with `aws_lambda.Function` pointed at the build output from step 1.
  });
 ```
 
+- The import to drop is `Cdk` from `skuba`, or `NodejsFunction` from
+  `aws-cdk-lib/aws-lambda-nodejs`, depending on which construct was in use.
 - `Code.fromAsset` takes the same `output.dir` set in step 1, resolved from the
   compiled stack file's own location (not `process.cwd()`), so the path holds
   whether CDK is invoked from the package root or elsewhere.
 - `handler` is `<chunk name>.<exported function name>` —
   `entryFileNames: 'index.mjs'` plus an exported `handler` gives `'index.handler'`.
+- Every other `lambda.FunctionOptions` prop (`environment`, `memorySize`,
+  `architecture`, `layers`, ...) carries over unchanged — both source
+  constructs accept the same shape as `aws_lambda.Function`.
 
 ### 3. Add a build step and wire it into `deploy`
 
