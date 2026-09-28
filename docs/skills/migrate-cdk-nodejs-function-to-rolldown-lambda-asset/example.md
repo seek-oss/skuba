@@ -4,9 +4,19 @@ A complete migration, applied to a package that deploys one Lambda worker
 (`src/app.ts`) via `infra/appStack.ts`.
 It depends on `sharp`, a package with native binaries that must be installed
 rather than bundled, and copies a static config file next to the handler —
-exercising both `nodeModules` and `assets`.
+exercising both `nodeModules` and `assets`. It also already externalises
+Node.js built-ins for an unrelated reason, showing that `external` is merged
+into rather than replaced.
 
 ```diff
+diff --git a/.gitignore b/.gitignore
+index 1234567..89abcde 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,4 @@
+ node_modules/
+ cdk.out/
++dist/worker/
 diff --git a/infra/appStack.test.ts b/infra/appStack.test.ts
 index ab4817e..e8ec51a 100644
 --- a/infra/appStack.test.ts
@@ -37,7 +47,7 @@ index ab4817e..e8ec51a 100644
 +  if (!existsSync(assetDir)) {
 +    mkdirSync(assetDir, { recursive: true });
 +    writeFileSync(
-+      path.join(assetDir, 'index.mjs'),
++      path.join(assetDir, 'index.js'),
 +      'export const handler = () => {};\n',
 +    );
 +  }
@@ -134,17 +144,15 @@ index 2d5a855..e20bb53 100644
 
  export default defineConfig({
    platform: 'node',
-+  input: 'src/app.ts',
++  input: { index: 'src/app.ts' },
    resolve: {
      mainFields: ['module', 'main'],
      conditionNames: ['@seek/indie-kate/source', 'module'],
    },
--  external: ['sharp'],
-+  external: nodeModules,
+-  external: [/^node:/, 'sharp'],
++  external: [/^node:/, ...nodeModules],
    output: {
 +    dir: 'dist/worker',
-+    entryFileNames: 'index.mjs',
-+    format: 'es',
      sourcemap: true,
    },
 +  plugins: [

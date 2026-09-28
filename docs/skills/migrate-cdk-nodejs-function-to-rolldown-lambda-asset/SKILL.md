@@ -62,17 +62,15 @@ and move any `commandHooks.afterBundling` file copies into `assets`.
 
  export default defineConfig({
    platform: 'node',
-+  input: 'src/app.ts', // same entry point as the old `entry`
++  input: { index: 'src/app.ts' }, // same entry point as the old `entry`
    resolve: {
      mainFields: ['module', 'main'],
      conditionNames: ['@seek/indie-kate/source', 'module'],
    },
--  external: [/* ... */],
-+  external: nodeModules,
+-  external: [/* your existing externals, e.g. 'pino', /^node:/ */],
++  external: [/* your existing externals, e.g. 'pino', /^node:/ */, ...nodeModules],
    output: {
 +    dir: 'dist/worker', // any output directory; referenced again in step 2
-+    entryFileNames: 'index.mjs', // chunk name; referenced again in step 2
-+    format: 'es',
      sourcemap: true,
    },
 +  plugins: [
@@ -91,6 +89,17 @@ Keep whatever `resolve`, `sourcemap`, and other rolldown options the config
 already had. `Cdk.NodejsFunction`'s config never had `input`/`output.dir` set
 (the construct injected them at synth time), so add them fresh.
 
+**Append to `external`, don't replace it.** Anything already listed there —
+`node:` built-ins, packages handled by a layer, etc. — needs to stay external
+or it gets swept into the bundle. Only `nodeModules` is new.
+
+Using object-form `input: { index: 'src/app.ts' }` (rather than a bare
+string) names the entry chunk `index` regardless of the source filename, so
+`output.dir/index.js` and the `index.handler` string in step 2 stay stable
+even if `src/app.ts` is later renamed. See the [rolldown reference](../../development-api/rolldown.md#quick-start)
+for the equivalent default `entryFileNames` behaviour if a project already
+depends on a specific chunk name.
+
 **If there is no rolldown config yet** (`aws_lambda_nodejs.NodejsFunction`),
 create one from the construct's `entry` and `bundling` props:
 
@@ -99,16 +108,15 @@ create one from the construct's `entry` and `bundling` props:
 +import { defineConfig } from 'rolldown';
 +import { Rolldown } from 'skuba';
 +
++const externalModules = [/* same packages as the old bundling.externalModules, if any */];
 +const nodeModules = [/* same packages as the old bundling.nodeModules */];
 +
 +export default defineConfig({
 +  platform: 'node',
-+  input: 'src/app.ts', // same entry point as the old `entry`
-+  external: nodeModules, // same packages as the old bundling.externalModules + nodeModules
++  input: { index: 'src/app.ts' }, // same entry point as the old `entry`
++  external: [...externalModules, ...nodeModules],
 +  output: {
 +    dir: 'dist/worker', // any output directory; referenced again in step 2
-+    entryFileNames: 'index.mjs',
-+    format: 'es', // 'cjs' is also fine if you'd rather not touch the handler's module system
 +    sourcemap: true, // same intent as the old bundling.sourceMap
 +  },
 +  plugins: [
@@ -125,8 +133,8 @@ create one from the construct's `entry` and `bundling` props:
 
 | Old `bundling` prop (esbuild)              | New rolldown equivalent                                                                                                                                |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `externalModules`                          | `external`                                                                                                                                             |
-| `nodeModules`                              | `Rolldown.lambdaAsset({ nodeModules })`                                                                                                                |
+| `externalModules`                          | `external` (merge into whatever else `external` already lists)                                                                                         |
+| `nodeModules`                              | `Rolldown.lambdaAsset({ nodeModules })`, and also merged into `external`                                                                               |
 | `commandHooks.afterBundling` (file copies) | `Rolldown.lambdaAsset({ assets })`                                                                                                                     |
 | `sourceMap`                                | `output.sourcemap`                                                                                                                                     |
 | `minify`                                   | `output.minify`                                                                                                                                        |
@@ -138,9 +146,9 @@ Other esbuild-specific options (`esbuildArgs`, `loader`, `tsconfig`,
 whether the project still needs them; most don't apply once bundling moves
 out of CDK's Docker-based esbuild pipeline.
 
-In either case, `nodeModules` must list the same packages as before — mark
-them `external` too so the plugin installs them instead of also bundling
-them.
+In either case, `nodeModules` must also appear in `external` — merged
+alongside whatever was already there, never replacing it — so the plugin
+installs those packages instead of also bundling them.
 
 ### 2. Rework the Lambda construct in the CDK stack (e.g. `infra/appStack.ts`)
 
@@ -180,9 +188,12 @@ and replace `Cdk.NodejsFunction`/`aws_lambda_nodejs.NodejsFunction` with
   `aws-cdk-lib/aws-lambda-nodejs`, depending on which construct was in use.
 - `Code.fromAsset` takes the same `output.dir` set in step 1, resolved from the
   compiled stack file's own location (not `process.cwd()`), so the path holds
-  whether CDK is invoked from the package root or elsewhere.
-- `handler` is `<chunk name>.<exported function name>` —
-  `entryFileNames: 'index.mjs'` plus an exported `handler` gives `'index.handler'`.
+  whether CDK is invoked from the package root or elsewhere. This is a
+  separate concern from the rolldown build's own working directory — see
+  step 3.
+- `handler` is `<chunk name>.<exported function name>` — `input: { index: 'src/app.ts' }`
+  plus an exported `handler` gives a chunk named `index` and a handler string
+  of `'index.handler'`.
 - Every other `lambda.FunctionOptions` prop (`environment`, `memorySize`,
   `architecture`, `layers`, ...) carries over unchanged — both source
   constructs accept the same shape as `aws_lambda.Function`.
@@ -204,15 +215,30 @@ package already builds with `skuba.build: 'rolldown'` — see
 [Alongside a tsc or esbuild build](../../development-api/rolldown.md#alongside-a-tsc-or-esbuild-build)
 if the package's primary build tool is `tsc` or `esbuild`.
 
-Add the built output directory (`dist/worker` in this example) to `.gitignore`;
-the plugin always overwrites its `package.json`, so treat it as build output.
+**This build step is working-directory sensitive.** Unlike `Code.fromAsset`
+in step 2 — which resolves against the compiled stack file's own path —
+rolldown's `input`, `output.dir`, and `Rolldown.lambdaAsset`'s `assets[].from`
+all resolve relative to the process's current working directory by default
+(`projectRoot` only changes where `nodeModules`/`assets` are resolved from,
+not `input`/`output.dir`). Run `build:worker` from the package directory —
+`pnpm --filter` and `pnpm -C <package>` both do this correctly — or use
+absolute paths derived from the config file's own location if the build
+might run from elsewhere. See the [Workspaces](../../development-api/rolldown.md#workspaces)
+section for the monorepo case.
+
+Add the built output directory (`dist/worker` in this example) to
+`.gitignore`; the plugin always overwrites its `package.json`, so treat it
+as build output.
 
 ### 4. Fix the CDK stack test
 
-CDK synth in the unit test also needs the asset directory to exist, even
-though the actual bundle isn't required — the CDK template snapshot normally
-masks the asset hash, so a placeholder is enough as long as the real build
-runs before deploys.
+CDK synth in the unit test also needs the asset directory to exist. If the
+project's snapshot normalises away the asset hash (e.g. via
+[`Cdk.normaliseTemplate`](../../development-api/cdk.md#normalisetemplate)),
+a placeholder bundle is enough to satisfy synth without the assertion caring
+about its contents — **verify this is actually true for the project first**;
+if the snapshot does hash the asset, build the real bundle before running
+tests instead of stubbing a placeholder.
 
 ```diff
 +import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -235,12 +261,19 @@ runs before deploys.
 +  if (!existsSync(assetDir)) {
 +    mkdirSync(assetDir, { recursive: true });
 +    writeFileSync(
-+      path.join(assetDir, 'index.mjs'),
++      path.join(assetDir, 'index.js'),
 +      'export const handler = () => {};\n',
 +    );
 +  }
 +});
 ```
+
+This only fills in a _missing_ directory — it never touches one that already
+exists, so it can't tell a real, freshly built bundle apart from a stale one
+left over from a previous run. Prefer building the real bundle
+(`pnpm build:worker`) before running tests in CI; treat this placeholder as a
+local-development convenience only, and delete `dist/worker` if a test
+passes unexpectedly after changing the entry point or `output.dir`.
 
 ### 5. Bump `skuba` and install
 
@@ -257,11 +290,17 @@ Bump `skuba` to a version that ships `Rolldown.lambdaAsset` (16.4.0+), then
 
 ## Gotchas
 
+- Replacing `external` outright (instead of appending `nodeModules` to it)
+  silently bundles anything that was external for other reasons — it still
+  builds, but fails at runtime or ships a bloated bundle.
 - Forgetting step 4 fails CDK stack tests with a missing-asset-directory error
   on `Template.fromStack`, even though production deploys build first.
-- A `handler` that doesn't match `output.entryFileNames` (or the default chunk
-  name when using `input: { name: '...' }`) fails at Lambda invoke time, not
-  at synth or deploy time.
+- Running `build:worker` from the wrong working directory (e.g. the
+  workspace root instead of the package) silently resolves `input`,
+  `output.dir`, or `assets[].from` against the wrong base path — it may
+  still "succeed" by writing to an unexpected location rather than erroring.
+- A `handler` that doesn't match the entry chunk's name fails at Lambda
+  invoke time, not at synth or deploy time.
 - Any `nodeModules` package must appear in both `external` and
   `lambdaAsset({ nodeModules })` — bundled-and-installed or
   neither-bundled-nor-installed both break at runtime.
