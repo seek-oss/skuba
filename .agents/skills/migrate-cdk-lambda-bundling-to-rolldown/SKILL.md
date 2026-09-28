@@ -1,5 +1,6 @@
 ---
-name: migrate-cdk-nodejs-function-to-rolldown-lambda-asset
+name: migrate-cdk-lambda-bundling-to-rolldown
+
 description: >-
   Migrates an AWS CDK Lambda worker off aws-cdk-lib's esbuild-bundling
   `aws_lambda_nodejs.NodejsFunction` construct onto a plain
