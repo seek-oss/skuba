@@ -1,8 +1,8 @@
 import path from 'path';
 
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import { configForPackageManager } from '../../../utils/packageManager.js';
 import type { PatchConfig } from '../../lint/internalLints/upgrade/index.js';
 
@@ -11,8 +11,8 @@ import { tryMigrateImportExportStatements as tryMigrateImportExportStatements } 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 
 vi.mock('fast-glob', () => ({
@@ -40,7 +40,7 @@ describe('tryMigrateImportExportStatements', () => {
     '%s',
     (mode: 'lint' | 'format') => {
       it('should skip if no config files with module.exports or require found', async () => {
-        vol.fromJSON({ 'package.json': '{}' });
+        vol.fromJSON({ 'package.json': '{}' }, process.cwd());
 
         await expect(
           tryMigrateImportExportStatements({
@@ -61,10 +61,13 @@ describe('tryMigrateImportExportStatements', () => {
 
         const expected = "export { default } from '.';\n";
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'eslint.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'eslint.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -89,10 +92,13 @@ describe('tryMigrateImportExportStatements', () => {
         const input = "export default require('.');";
         const expected = "export { default } from '.';\n";
 
-        vol.fromJSON({
-          'package.json': '{}',
-          'eslint.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{}',
+            'eslint.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -117,10 +123,13 @@ describe('tryMigrateImportExportStatements', () => {
         const expected = `import enLocale from 'i18n-iso-countries/langs/en.json' with { type: "json" };
 `;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'eslint.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'eslint.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -153,10 +162,13 @@ export const locales = { en: enLocale };
 export const locales = { en: enLocale };
 `;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'src/i18n.ts': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'src/i18n.ts': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -181,10 +193,13 @@ export const locales = { en: enLocale };
         const input = `export default require('./eslint-config.json');`;
         const expected = `export { default } from './eslint-config.json' with { type: "json" };\n`;
 
-        vol.fromJSON({
-          'package.json': '{}',
-          'eslint.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{}',
+            'eslint.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -206,10 +221,13 @@ export const locales = { en: enLocale };
         const input = "module.exports = require('./package.json');";
         const expected = `export { default } from './package.json' with { type: "json" };\n`;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'eslint.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'eslint.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -240,10 +258,13 @@ module.exports = [...config, { rules: { 'no-process-exit': 'off' } }];
 export default [...config, { rules: { 'no-process-exit': 'off' } }];
 `;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'eslint.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'eslint.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -274,10 +295,13 @@ module.exports = pkg;
 export default pkg;
 `;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'eslint.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'eslint.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -308,10 +332,13 @@ module.exports = { foo, bar };
 export default { foo, bar };
 `;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'vitest.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'vitest.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -345,10 +372,13 @@ export default { foo, bar };
 };
 `;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'prettier.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'prettier.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -378,10 +408,13 @@ export default { foo, bar };
         const expected =
           "export { default } from 'skuba/config/prettier.js';\n";
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          '.prettierrc.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            '.prettierrc.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -411,10 +444,13 @@ export default { foo, bar };
         const expected =
           "export { default } from 'skuba/config/prettier.js';\n";
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          '.prettierrc.cjs': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            '.prettierrc.cjs': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -453,10 +489,13 @@ export default {
 };
 `;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          '.prettierrc.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            '.prettierrc.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -491,10 +530,13 @@ export default {
 ];
 `;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'eslint.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'eslint.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -526,10 +568,13 @@ export default {
 ];
 `;
 
-        vol.fromJSON({
-          'package.json': '{"type":"module"}',
-          'eslint.config.cjs': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{"type":"module"}',
+            'eslint.config.cjs': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({
@@ -562,10 +607,13 @@ export default [
 ];
 `;
 
-        vol.fromJSON({
-          'package.json': '{}',
-          'eslint.config.js': input,
-        });
+        vol.fromJSON(
+          {
+            'package.json': '{}',
+            'eslint.config.js': input,
+          },
+          process.cwd(),
+        );
 
         await expect(
           tryMigrateImportExportStatements({

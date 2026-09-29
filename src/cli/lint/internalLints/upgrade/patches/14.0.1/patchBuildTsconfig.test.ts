@@ -1,14 +1,14 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchBuildConfig } from './patchBuildTsconfig.js';
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
