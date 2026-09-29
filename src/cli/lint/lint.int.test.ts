@@ -12,6 +12,7 @@ import type { Logger } from '../../utils/logging.js';
 import { getSkubaVersion } from '../../utils/version.js';
 
 import { refreshConfigFiles } from './internalLints/refreshConfigFiles.js';
+
 import { lint } from './index.js';
 
 vi.setConfig({

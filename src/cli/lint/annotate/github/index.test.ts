@@ -11,6 +11,7 @@ import type { InternalLintResult } from '../../internal.js';
 import { createEslintAnnotations } from './eslint.js';
 import { createOxfmtAnnotations } from './oxfmt.js';
 import { createTscAnnotations } from './tsc.js';
+
 import { createGitHubAnnotations } from './index.js';
 
 vi.mock('../../../../utils/logging');

@@ -1,5 +1,6 @@
 import path from 'path';
 
+import * as Git from '@skuba-lib/api/git';
 import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,8 +8,6 @@ import { configForPackageManager } from '../../../../../../utils/packageManager.
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchAttwNode16 } from './patchAttwNode16.js';
-
-import * as Git from '@skuba-lib/api/git';
 
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
