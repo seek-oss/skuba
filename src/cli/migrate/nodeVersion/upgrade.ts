@@ -1,5 +1,6 @@
 import { inspect } from 'node:util';
 
+import { Git } from '@skuba-lib/api';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
@@ -84,12 +85,18 @@ export const upgradeInfraPackages = async (
   mode: 'lint' | 'format',
   packages: PackageInfo[],
 ): Promise<PatchReturnType> => {
+  const dir = process.cwd();
+  const gitRoot = await Git.findRoot({ dir });
+  const root = gitRoot ?? dir;
+
   const [packageJsonPaths, pnpmWorkspacePaths] = await Promise.all([
     fg(['**/package.json'], {
       ignore: ['**/.git', '**/node_modules'],
+      cwd: root,
     }),
     fg('**/pnpm-workspace.yaml', {
       ignore: ['**/.git', '**/node_modules'],
+      cwd: root,
     }),
   ]);
 

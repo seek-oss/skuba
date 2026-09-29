@@ -26,6 +26,11 @@
     },
     {
       matchManagers: ['npm'],
+      matchPackageNames: ['/^@vitest//', 'vitest'],
+      groupName: 'vitest',
+    },
+    {
+      matchManagers: ['npm'],
       // Should track LTS and match .nvmrc, images, runtimes, etc.
       matchPackageNames: ['@types/node'],
       enabled: false,
