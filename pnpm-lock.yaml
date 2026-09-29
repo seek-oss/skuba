@@ -36,18 +36,6 @@ importers:
       '@esbuild-plugins/tsconfig-paths':
         specifier: ^0.1.0
         version: 0.1.2(esbuild@0.28.2)(typescript@6.0.3)
-      '@octokit/graphql':
-        specifier: ^9.0.0
-        version: 9.0.5
-      '@octokit/graphql-schema':
-        specifier: ^15.3.0
-        version: 15.26.1
-      '@octokit/rest':
-        specifier: ^22.0.0
-        version: 22.0.1
-      '@octokit/types':
-        specifier: ^18.0.0
-        version: 18.0.0
       '@skuba-lib/api':
         specifier: workspace:*
         version: link:packages/api
@@ -189,13 +177,13 @@ importers:
       vitest:
         specifier: ^4.1.4
         version: 4.1.11(@types/node@24.13.3)(@vitest/coverage-istanbul@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
-      yaml:
-        specifier: ^2.9.0
-        version: 2.9.0
       zod:
         specifier: ^4.3.5
         version: 4.5.4
     devDependencies:
+      '@octokit/graphql-schema':
+        specifier: ^15.3.0
+        version: 15.26.1
       '@pnpm/cafs-types':
         specifier: 1000.1.0
         version: 1000.1.0
@@ -220,9 +208,6 @@ importers:
       '@types/minimist':
         specifier: 1.2.5
         version: 1.2.5
-      '@types/module-alias':
-        specifier: 2.0.4
-        version: 2.0.4
       '@types/npm-registry-fetch':
         specifier: 8.0.9
         version: 8.0.9
@@ -238,18 +223,12 @@ importers:
       '@types/supertest':
         specifier: 7.2.1
         version: 7.2.1
-      enhanced-resolve:
-        specifier: 5.25.1
-        version: 5.25.1
       express:
         specifier: 5.2.1
         version: 5.2.1
       fastify:
         specifier: 5.12.5
         version: 5.12.5
-      jsonfile:
-        specifier: 6.2.1
-        version: 6.2.1
       koa:
         specifier: 3.2.1
         version: 3.2.1
@@ -1942,9 +1921,6 @@ packages:
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
 
-  '@types/module-alias@2.0.4':
-    resolution: {integrity: sha512-5+G/QXO/DvHZw60FjvbDzO4JmlD/nG5m2/vVGt25VN1eeP3w2bCoks1Wa7VuptMPM1TxJdx6RjO70N9Fw0nZPA==}
-
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
@@ -3092,10 +3068,6 @@ packages:
   encodeurl@2.0.0:
     resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
     engines: {node: '>= 0.8'}
-
-  enhanced-resolve@5.25.1:
-    resolution: {integrity: sha512-nGXts5znJzmWPu+mIE9izCOzdg63oJca2mDzGWWTth7sr4aCToKcoyFVBQwN75Ij5Pf6p510EwkTqViTRzDV+w==}
-    engines: {node: '>=10.13.0'}
 
   env-ci@11.2.0:
     resolution: {integrity: sha512-D5kWfzkmaOQDioPmiviWAVtKmpPT4/iJmMVQxWxMPJTFyTkdc5JQUfc5iXEeWxcOdsYTKSAiA/Age4NUOqKsRA==}
@@ -5741,10 +5713,6 @@ packages:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
 
-  tapable@2.3.3:
-    resolution: {integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==}
-    engines: {node: '>=6'}
-
   temp-dir@3.0.0:
     resolution: {integrity: sha512-nHc6S/bwIilKHNRgK/3jlhDoIHcp45YgyiwcAk46Tr0LfEqGBVpmiAyuiuxeVE44m3mXnEeVhaipLOEWmH+Njw==}
     engines: {node: '>=14.16'}
@@ -7828,8 +7796,6 @@ snapshots:
 
   '@types/minimist@1.2.5': {}
 
-  '@types/module-alias@2.0.4': {}
-
   '@types/ms@2.1.0': {}
 
   '@types/node-fetch@2.6.13':
@@ -8950,11 +8916,6 @@ snapshots:
   empathic@2.0.1: {}
 
   encodeurl@2.0.0: {}
-
-  enhanced-resolve@5.25.1:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.3.3
 
   env-ci@11.2.0:
     dependencies:
@@ -12098,8 +12059,6 @@ snapshots:
   supports-preserve-symlinks-flag@1.0.0: {}
 
   tagged-tag@1.0.0: {}
-
-  tapable@2.3.3: {}
 
   temp-dir@3.0.0: {}
 
