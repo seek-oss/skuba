@@ -1,30 +1,30 @@
-import path from 'path';
+import path from "path";
 
-import * as Git from '@skuba-lib/api/git';
-import memfs, { vol } from 'memfs';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import memfs, { vol } from "memfs";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { configForPackageManager } from '../../../../../../utils/packageManager.js';
-import type { PatchConfig, PatchReturnType } from '../../index.js';
+import { configForPackageManager } from "../../../../../../utils/packageManager.js";
+import type { PatchConfig, PatchReturnType } from "../../index.js";
 
-import { patchAttwNode16 } from './patchAttwNode16.js';
+import { patchAttwNode16 } from "./patchAttwNode16.js";
 
-vi.mock('fs-extra', () => ({
+vi.mock("fs-extra", () => ({
   default: memfs.fs,
   ...memfs.fs,
 }));
-vi.mock('fast-glob', () => ({
+vi.mock("fast-glob", () => ({
   default: async (pat: any, opts: any) => {
     const actualFastGlob =
-      await vi.importActual<typeof import('fast-glob')>('fast-glob');
+      await vi.importActual<typeof import("fast-glob")>("fast-glob");
     return actualFastGlob.glob(pat, { ...opts, fs: memfs });
   },
 }));
 
-vi.mock('@skuba-lib/api/git', async () => ({
-  ...(await vi.importActual<object>('@skuba-lib/api/git')),
+vi.mock("@skuba-lib/api/git", async () => ({
+  ...(await vi.importActual<object>("@skuba-lib/api/git")),
   findRoot: vi.fn(),
 }));
+import * as Git from "@skuba-lib/api/git";
 
 const findRoot = vi.mocked(Git.findRoot);
 
@@ -33,18 +33,18 @@ const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 const baseArgs: PatchConfig = {
   manifest: {
     packageJson: {
-      name: 'test',
-      version: '1.0.0',
-      readme: 'README.md',
-      _id: 'test',
+      name: "test",
+      version: "1.0.0",
+      readme: "README.md",
+      _id: "test",
     },
-    path: 'package.json',
+    path: "package.json",
   },
-  packageManager: configForPackageManager('yarn'),
-  mode: 'format',
+  packageManager: configForPackageManager("yarn"),
+  mode: "format",
 };
 
-describe('patchAttwNode16', () => {
+describe("patchAttwNode16", () => {
   afterEach(() => {
     vi.resetAllMocks();
     vol.reset();
@@ -55,25 +55,25 @@ describe('patchAttwNode16', () => {
     findRoot.mockResolvedValue(process.cwd());
   });
 
-  it('should skip if no tsdown configs are found', async () => {
+  it("should skip if no tsdown configs are found", async () => {
     vol.fromJSON({
-      'index.ts': '',
+      "index.ts": "",
     });
 
     await expect(
       patchAttwNode16({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual({
-      result: 'skip',
-      reason: 'no tsdown.config files found',
+      result: "skip",
+      reason: "no tsdown.config files found",
     } satisfies PatchReturnType);
   });
 
-  it('should skip if attw is already configured with a profile', async () => {
+  it("should skip if attw is already configured with a profile", async () => {
     vol.fromJSON({
-      'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
+      "tsdown.config.ts": `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   entry: 'src/index.ts',
@@ -88,17 +88,17 @@ export default defineConfig({
     await expect(
       patchAttwNode16({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual({
-      result: 'skip',
-      reason: 'no attw: true configs to update',
+      result: "skip",
+      reason: "no attw: true configs to update",
     } satisfies PatchReturnType);
   });
 
-  it('should skip if attw is not true', async () => {
+  it("should skip if attw is not true", async () => {
     vol.fromJSON({
-      'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
+      "tsdown.config.ts": `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   entry: 'src/index.ts',
@@ -111,15 +111,15 @@ export default defineConfig({
     await expect(
       patchAttwNode16({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual({
-      result: 'skip',
-      reason: 'no attw: true configs to update',
+      result: "skip",
+      reason: "no attw: true configs to update",
     } satisfies PatchReturnType);
   });
 
-  it('should not modify files in lint mode', async () => {
+  it("should not modify files in lint mode", async () => {
     const contents = `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
@@ -130,24 +130,24 @@ export default defineConfig({
 `;
 
     vol.fromJSON({
-      'tsdown.config.ts': contents,
+      "tsdown.config.ts": contents,
     });
 
     await expect(
       patchAttwNode16({
         ...baseArgs,
-        mode: 'lint',
+        mode: "lint",
       }),
     ).resolves.toEqual({
-      result: 'apply',
+      result: "apply",
     } satisfies PatchReturnType);
 
-    expect(volToJson()['tsdown.config.ts']).toEqual(contents);
+    expect(volToJson()["tsdown.config.ts"]).toEqual(contents);
   });
 
-  it('should update attw: true in tsdown.config.ts', async () => {
+  it("should update attw: true in tsdown.config.ts", async () => {
     vol.fromJSON({
-      'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
+      "tsdown.config.ts": `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   entry: 'src/index.ts',
@@ -160,10 +160,10 @@ export default defineConfig({
     await expect(
       patchAttwNode16({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual({
-      result: 'apply',
+      result: "apply",
     } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -182,9 +182,9 @@ export default defineConfig({
     `);
   });
 
-  it('should update attw: true in tsdown.config.mts', async () => {
+  it("should update attw: true in tsdown.config.mts", async () => {
     vol.fromJSON({
-      'tsdown.config.mts': `import { defineConfig } from 'tsdown/config';
+      "tsdown.config.mts": `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   failOnWarn: true,
@@ -198,10 +198,10 @@ export default defineConfig({
     await expect(
       patchAttwNode16({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual({
-      result: 'apply',
+      result: "apply",
     } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -221,9 +221,9 @@ export default defineConfig({
     `);
   });
 
-  it('should update every attw: true in a defineConfig array', async () => {
+  it("should update every attw: true in a defineConfig array", async () => {
     vol.fromJSON({
-      'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
+      "tsdown.config.ts": `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig([
   {
@@ -241,10 +241,10 @@ export default defineConfig([
     await expect(
       patchAttwNode16({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual({
-      result: 'apply',
+      result: "apply",
     } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -270,13 +270,13 @@ export default defineConfig([
     `);
   });
 
-  it('should update multiple tsdown configs', async () => {
+  it("should update multiple tsdown configs", async () => {
     vol.fromJSON({
-      'tsdown.config.ts': `export default {
+      "tsdown.config.ts": `export default {
   attw: true,
 };
 `,
-      'packages/api/tsdown.config.mts': `export default {
+      "packages/api/tsdown.config.mts": `export default {
   attw: true,
   publint: true,
 };
@@ -286,10 +286,10 @@ export default defineConfig([
     await expect(
       patchAttwNode16({
         ...baseArgs,
-        mode: 'format',
+        mode: "format",
       }),
     ).resolves.toEqual({
-      result: 'apply',
+      result: "apply",
     } satisfies PatchReturnType);
 
     expect(volToJson()).toMatchInlineSnapshot(`
@@ -311,26 +311,26 @@ export default defineConfig([
     `);
   });
 
-  it('should search from the git root even if dir is a subdirectory', async () => {
+  it("should search from the git root even if dir is a subdirectory", async () => {
     vol.fromJSON({
-      'tsdown.config.ts': `export default {
+      "tsdown.config.ts": `export default {
   attw: true,
 };
 `,
-      'packages/api/package.json': '{}',
+      "packages/api/package.json": "{}",
     });
 
     await expect(
       patchAttwNode16({
         ...baseArgs,
-        dir: path.join(process.cwd(), 'packages/api'),
-        mode: 'format',
+        dir: path.join(process.cwd(), "packages/api"),
+        mode: "format",
       }),
     ).resolves.toEqual({
-      result: 'apply',
+      result: "apply",
     } satisfies PatchReturnType);
 
-    expect(volToJson()['tsdown.config.ts']).toMatchInlineSnapshot(`
+    expect(volToJson()["tsdown.config.ts"]).toMatchInlineSnapshot(`
       "export default {
         attw: {
           profile: 'node16',
