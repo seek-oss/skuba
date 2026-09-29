@@ -1,16 +1,14 @@
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchSeekLoggerCreateLogger } from './patchSeekLoggerCreateLogger.js';
 
-import * as Git from '@skuba-lib/api/git';
-
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -24,6 +22,7 @@ vi.mock('@skuba-lib/api/git', async () => ({
   ...(await vi.importActual<object>('@skuba-lib/api/git')),
   findRoot: vi.fn(),
 }));
+import * as Git from '@skuba-lib/api/git';
 
 const findRoot = vi.mocked(Git.findRoot);
 
@@ -55,9 +54,12 @@ describe('patchSeekLoggerCreateLogger', () => {
   });
 
   it('should skip if no source files are found', async () => {
-    vol.fromJSON({
-      'README.md': '',
-    });
+    vol.fromJSON(
+      {
+        'README.md': '',
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchSeekLoggerCreateLogger({
@@ -71,12 +73,15 @@ describe('patchSeekLoggerCreateLogger', () => {
   });
 
   it('should skip if createLogger is already a named import', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import { createLogger } from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import { createLogger } from '@seek/logger';
 
 export const logger = createLogger();
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchSeekLoggerCreateLogger({
@@ -90,10 +95,13 @@ export const logger = createLogger();
   });
 
   it('should skip default imports that are not createLogger', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import logger from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import logger from '@seek/logger';
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchSeekLoggerCreateLogger({
@@ -112,9 +120,12 @@ export const logger = createLogger();
 export const logger = createLogger();
 `;
 
-    vol.fromJSON({
-      'src/logger.ts': contents,
-    });
+    vol.fromJSON(
+      {
+        'src/logger.ts': contents,
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchSeekLoggerCreateLogger({
@@ -129,12 +140,15 @@ export const logger = createLogger();
   });
 
   it('should convert a default createLogger import to a named import', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import createLogger from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import createLogger from '@seek/logger';
 
 export const logger = createLogger();
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -151,10 +165,13 @@ export const logger = createLogger();
   });
 
   it('should preserve double quotes', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import createLogger from "@seek/logger";
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import createLogger from "@seek/logger";
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -167,10 +184,13 @@ export const logger = createLogger();
   });
 
   it('should merge a default import with existing named imports', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import createLogger, { type Foo } from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import createLogger, { type Foo } from '@seek/logger';
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -183,10 +203,13 @@ export const logger = createLogger();
   });
 
   it('should merge a default import with multiple named imports', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import createLogger, { type Foo, bar } from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import createLogger, { type Foo, bar } from '@seek/logger';
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -199,10 +222,13 @@ export const logger = createLogger();
   });
 
   it('should not duplicate createLogger if it is already a named import', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import createLogger, { createLogger, type Foo } from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import createLogger, { createLogger, type Foo } from '@seek/logger';
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -215,10 +241,13 @@ export const logger = createLogger();
   });
 
   it('should keep an aliased named createLogger and add a local binding', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import createLogger, { createLogger as log } from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import createLogger, { createLogger as log } from '@seek/logger';
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -231,10 +260,13 @@ export const logger = createLogger();
   });
 
   it('should convert import type default imports', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import type createLogger from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import type createLogger from '@seek/logger';
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -247,10 +279,13 @@ export const logger = createLogger();
   });
 
   it('should split a default import from a namespace import', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import createLogger, * as logger from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import createLogger, * as logger from '@seek/logger';
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -264,12 +299,15 @@ import * as logger from '@seek/logger';
   });
 
   it('should update multiple files', async () => {
-    vol.fromJSON({
-      'src/logger.ts': `import createLogger from '@seek/logger';
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import createLogger from '@seek/logger';
 `,
-      'src/app.ts': `import createLogger, { type Logger } from '@seek/logger';
+        'src/app.ts': `import createLogger, { type Logger } from '@seek/logger';
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
       result: 'apply',
