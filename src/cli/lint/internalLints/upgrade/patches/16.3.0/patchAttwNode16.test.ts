@@ -8,8 +8,6 @@ import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchAttwNode16 } from './patchAttwNode16.js';
 
-import * as Git from '@skuba-lib/api/git';
-
 vi.mock('fs-extra', () => ({
   default: memfs.fs,
   ...memfs.fs,
@@ -26,6 +24,7 @@ vi.mock('@skuba-lib/api/git', async () => ({
   ...(await vi.importActual<object>('@skuba-lib/api/git')),
   findRoot: vi.fn(),
 }));
+import * as Git from '@skuba-lib/api/git';
 
 const findRoot = vi.mocked(Git.findRoot);
 

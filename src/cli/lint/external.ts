@@ -1,10 +1,7 @@
 import stream from 'stream';
 
 import { runESLintInCurrentThread, runESLintInWorkerThread } from './eslint.js';
-import {
-  runPrettierInCurrentThread,
-  runPrettierInWorkerThread,
-} from './prettier.js';
+import { runOxfmtInNewProcess } from './oxfmt.js';
 import { runTscInNewProcess } from './tsc.js';
 import type { Input } from './types.js';
 
@@ -29,36 +26,36 @@ export class StreamInterceptor extends stream.Transform {
 }
 
 const lintConcurrently = async ({ tscOutputStream, ...input }: Input) => {
-  const [eslint, prettier, tscOk] = await Promise.all([
+  const [eslint, oxfmt, tscOk] = await Promise.all([
     runESLintInWorkerThread(input),
-    runPrettierInWorkerThread(input),
+    runOxfmtInNewProcess(input),
     runTscInNewProcess({ ...input, tscOutputStream }),
   ]);
 
-  return { eslint, prettier, tscOk };
+  return { eslint, oxfmt, tscOk };
 };
 
 /**
  * Run linting tools `--serial`ly for resource-constrained environments.
  *
- * Note that we still run ESLint and Prettier in worker threads as a
- * counterintuitive optimisation. Memory can be more readily freed on worker
- * thread exit, which isn't as easy with a monolithic main thread.
+ * Note that we still run ESLint in a worker thread as a counterintuitive
+ * optimisation. Memory can be more readily freed on worker thread exit, which
+ * isn't as easy with a monolithic main thread.
  */
 const lintSerially = async ({ tscOutputStream, ...input }: Input) => {
   const eslint = await runESLintInWorkerThread(input);
-  const prettier = await runPrettierInWorkerThread(input);
+  const oxfmt = await runOxfmtInNewProcess(input);
   const tscOk = await runTscInNewProcess({ ...input, tscOutputStream });
 
-  return { eslint, prettier, tscOk };
+  return { eslint, oxfmt, tscOk };
 };
 
 const lintSeriallyWithoutWorkerThreads = async (input: Input) => {
   const eslint = await runESLintInCurrentThread(input);
-  const prettier = await runPrettierInCurrentThread(input);
+  const oxfmt = await runOxfmtInNewProcess(input);
   const tscOk = await runTscInNewProcess(input);
 
-  return { eslint, prettier, tscOk };
+  return { eslint, oxfmt, tscOk };
 };
 
 const selectLintFunction = (input: Input) => {
@@ -78,11 +75,11 @@ export const externalLint = async (input: Input) => {
   const tscOutputStream = new StreamInterceptor();
   tscOutputStream.pipe(input.tscOutputStream ?? process.stdout);
 
-  const { eslint, prettier, tscOk } = await lint({ ...input, tscOutputStream });
+  const { eslint, oxfmt, tscOk } = await lint({ ...input, tscOutputStream });
 
   return {
     eslint,
-    prettier,
+    oxfmt,
     tscOk,
     tscOutputStream,
   };

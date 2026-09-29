@@ -10,7 +10,7 @@
 **skuba** is a toolkit for backend application and package development on SEEK's gravel and paved roads:
 
 - Write in [TypeScript]
-- Enforce coding standards with [ESLint] and [Prettier]
+- Enforce coding standards with [ESLint] and [Oxfmt]
 - Test with [Vitest]
 - Deploy with [Gantry] or the [AWS CDK]
 
@@ -52,8 +52,8 @@ If you're new here, jump ahead to the [CLI] section to [create a new project].
 [create a new project]: ./docs/cli/init.md
 [development]: ./docs/development-api
 [eslint]: https://eslint.org/
+[oxfmt]: https://github.com/seek-oss/oxfmt
 [vitest]: https://vitest.dev/
-[prettier]: https://prettier.io/
 [runtime]: ./docs/runtime-api
 [templates]: ./docs/templates
 [typescript]: https://www.typescriptlang.org/

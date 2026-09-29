@@ -1,8 +1,8 @@
 import { stripVTControlCharacters as stripAnsi } from 'util';
 
-import type { StreamInterceptor } from '../../../lint/external.js';
-
 import type * as GitHub from '@skuba-lib/api/github';
+
+import type { StreamInterceptor } from '../../../lint/external.js';
 
 type TscLevel = 'error' | 'warning' | 'info';
 
