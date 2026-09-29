@@ -1,6 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../testing/memfs.js';
 import { configForPackageManager } from '../../../../utils/packageManager.js';
 import type {
   PatchConfig,
@@ -17,16 +17,16 @@ vi.mock('latest-version', () => ({
   default: vi.fn().mockResolvedValue('1.0.1'),
 }));
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('node:fs', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('node:fs/promises', () => ({
-  default: memfs.fs.promises,
-  ...memfs.fs.promises,
+  default: memfs.promises,
+  ...memfs.promises,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -59,8 +59,9 @@ const baseArgs: PatchConfig = {
 
 describe('migrateToVitest', () => {
   it('should skip if vitest is already configured', async () => {
-    vol.fromJSON({
-      'vitest.config.ts': `import { defineConfig } from 'vitest/config';
+    vol.fromJSON(
+      {
+        'vitest.config.ts': `import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -69,7 +70,9 @@ export default defineConfig({
   },
 });
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -84,14 +87,17 @@ export default defineConfig({
   });
 
   it('should return apply and not apply changes when mode is lint', async () => {
-    vol.fromJSON({
-      'package.json': `{
+    vol.fromJSON(
+      {
+        'package.json': `{
   "dependencies": {
     "aws-sdk-client-mock-jest": "4.1.0"
   }
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -115,23 +121,26 @@ export default defineConfig({
   });
 
   it('should replace aws-sdk-client-mock-jest with aws-sdk-client-mock-vitest', async () => {
-    vol.fromJSON({
-      'package.json': `{
+    vol.fromJSON(
+      {
+        'package.json': `{
   "dependencies": {
     "aws-sdk-client-mock-jest": "4.1.0"
   }
 }
 `,
-      'test/test.spec.ts': `import 'aws-sdk-client-mock-jest';
+        'test/test.spec.ts': `import 'aws-sdk-client-mock-jest';
 
 test('example test', () => {
   expect(true).toBe(true);
 });
 `,
-      'pnpm-workspace.yaml': `catalog:
+        'pnpm-workspace.yaml': `catalog:
   aws-sdk-client-mock-jest: ^4.1.0
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -166,24 +175,27 @@ test('example test', () => {
   });
 
   it('should replace @shopify/jest-koa-mocks with @skuba-lib/vitest-koa-mocks and @types/node', async () => {
-    vol.fromJSON({
-      'package.json': `{
+    vol.fromJSON(
+      {
+        'package.json': `{
   "dependencies": {
     "@shopify/jest-koa-mocks": "5.1.0"
   }
 }
 `,
-      'src/middleware.test.ts': `import { createMockContext } from '@shopify/jest-koa-mocks';
+        'src/middleware.test.ts': `import { createMockContext } from '@shopify/jest-koa-mocks';
 
 test('middleware', () => {
   const ctx = createMockContext();
   expect(ctx).toBeDefined();
 });
 `,
-      'pnpm-workspace.yaml': `catalog:
+        'pnpm-workspace.yaml': `catalog:
   '@shopify/jest-koa-mocks': ^5.1.0
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -219,15 +231,18 @@ test('middleware', () => {
   });
 
   it('should replace eslint-disable jest with eslint-disable vitest', async () => {
-    vol.fromJSON({
-      'src/middleware.test.ts': `/* eslint-disable jest/rule */
+    vol.fromJSON(
+      {
+        'src/middleware.test.ts': `/* eslint-disable jest/rule */
       /* eslint-disable-next-line jest/rule */
 
 test('middleware', () => {
   expect(true).toBe(true);
 });
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -252,17 +267,20 @@ test('middleware', () => {
   });
 
   it('should preserve catalog versions when replacing dependencies', async () => {
-    vol.fromJSON({
-      'package.json': `{
+    vol.fromJSON(
+      {
+        'package.json': `{
   "dependencies": {
     "aws-sdk-client-mock-jest": "catalog:test-utils"
   }
 }
 `,
-      'pnpm-workspace.yaml': `catalog:
+        'pnpm-workspace.yaml': `catalog:
   aws-sdk-client-mock-jest: 4.1.0
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -291,17 +309,20 @@ test('middleware', () => {
   });
 
   it('should replace --runInBand with --maxWorkers=1 in package.json scripts and buildkite files', async () => {
-    vol.fromJSON({
-      'package.json': `{
+    vol.fromJSON(
+      {
+        'package.json': `{
   "scripts": {
     "test": "skuba test --config=jest.config.ts --maxWorkers=1"
   }
 }
 `,
-      '.buildkite/pipeline.yml': `steps:
+        '.buildkite/pipeline.yml': `steps:
   - command: pnpm test --config=jest.config.ts --maxWorkers=1
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -328,12 +349,13 @@ test('middleware', () => {
   });
 
   it('should replace empty .mockImplementation() calls in TypeScript files', async () => {
-    vol.fromJSON({
-      'package.json': `{
+    vol.fromJSON(
+      {
+        'package.json': `{
   "name": "test"
 }
 `,
-      'src/service.test.ts': `import { myFn } from './service';
+        'src/service.test.ts': `import { myFn } from './service';
 
 vi.mock('./service');
 
@@ -343,7 +365,9 @@ test('service', () => {
   expect(myFn).toHaveBeenCalled();
 });
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -375,13 +399,16 @@ test('service', () => {
   });
 
   it('should replace .calls', async () => {
-    vol.fromJSON({
-      'package.json': `{
+    vol.fromJSON(
+      {
+        'package.json': `{
   "name": "test"
 }
 `,
-      'src/service.test.ts': `expect(fn.mock.calls[0][0]).toEqual('some value');`,
-    });
+        'src/service.test.ts': `expect(fn.mock.calls[0][0]).toEqual('some value');`,
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -404,8 +431,9 @@ test('service', () => {
   });
 
   it('should attempt to migrate jest.config.ts files', async () => {
-    vol.fromJSON({
-      'jest.config.ts': `import { Jest } from 'skuba';
+    vol.fromJSON(
+      {
+        'jest.config.ts': `import { Jest } from 'skuba';
 
 const baseConfig = {
   testMatch: ['<rootDir>/extra-tests/**/*.test.ts'],
@@ -458,7 +486,7 @@ export default Jest.mergePreset({
   ...baseConfig,
 });
 `,
-      'jest.globalSetup.ts': `import { Net } from 'skuba';
+        'jest.globalSetup.ts': `import { Net } from 'skuba';
 
 const waitForApiDynamoDb = async () => {
   const dynamo = await Net.waitFor({
@@ -474,17 +502,19 @@ const waitForApiDynamoDb = async () => {
 module.exports = async () =>
   waitForApiDynamoDb();
 `,
-      'jest.setup.ts': `process.env.DEPLOYMENT = 'test';
+        'jest.setup.ts': `process.env.DEPLOYMENT = 'test';
 
 afterEach(() => {
   process.env.DO_NOT_MIGRATE = 'true';
 });
 `,
-      'jest.hooks.ts': `import 'some-hooks';
+        'jest.hooks.ts': `import 'some-hooks';
 `,
-      'jest.another.ts': `process.env.ENVIRONMENT = 'test';
+        'jest.another.ts': `process.env.ENVIRONMENT = 'test';
 export {}`,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({
@@ -674,8 +704,9 @@ export {}`,
   });
 
   it('should handle projects in jest.config.ts files', async () => {
-    vol.fromJSON({
-      'jest.config.ts': `import { Jest } from 'skuba';
+    vol.fromJSON(
+      {
+        'jest.config.ts': `import { Jest } from 'skuba';
 
 export default Jest.mergePreset({
   projects: [
@@ -690,7 +721,9 @@ export default Jest.mergePreset({
   ],
 });
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateToVitest({

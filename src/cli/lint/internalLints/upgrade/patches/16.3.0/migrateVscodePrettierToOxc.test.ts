@@ -1,13 +1,13 @@
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { migrateVscodePrettierToOxc } from './migrateVscodePrettierToOxc.js';
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 
 vi.mock('fast-glob', () => ({
@@ -42,12 +42,15 @@ describe('migrateVscodePrettierToOxc', () => {
   });
 
   it('skips when no extensions.json files contain Prettier', async () => {
-    vol.fromJSON({
-      '.vscode/extensions.json': `{
+    vol.fromJSON(
+      {
+        '.vscode/extensions.json': `{
   "recommendations": ["dbaeumer.vscode-eslint"]
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(migrateVscodePrettierToOxc(baseArgs)).resolves.toEqual({
       result: 'skip',
@@ -62,7 +65,7 @@ describe('migrateVscodePrettierToOxc', () => {
 }
 `,
     };
-    vol.fromJSON(input);
+    vol.fromJSON(input, process.cwd());
 
     await expect(migrateVscodePrettierToOxc(baseArgs)).resolves.toEqual({
       result: 'skip',
@@ -78,7 +81,7 @@ describe('migrateVscodePrettierToOxc', () => {
 }
 `,
     };
-    vol.fromJSON(input);
+    vol.fromJSON(input, process.cwd());
 
     await expect(
       migrateVscodePrettierToOxc({ ...baseArgs, mode: 'lint' }),
@@ -89,12 +92,15 @@ describe('migrateVscodePrettierToOxc', () => {
   });
 
   it('replaces the Prettier extension with Oxc', async () => {
-    vol.fromJSON({
-      '.vscode/extensions.json': `{
+    vol.fromJSON(
+      {
+        '.vscode/extensions.json': `{
   "recommendations": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint"]
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(migrateVscodePrettierToOxc(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -110,16 +116,19 @@ describe('migrateVscodePrettierToOxc', () => {
   });
 
   it('replaces Prettier extensions in nested workspaces', async () => {
-    vol.fromJSON({
-      '.vscode/extensions.json': `{
+    vol.fromJSON(
+      {
+        '.vscode/extensions.json': `{
   "recommendations": ["esbenp.prettier-vscode"]
 }
 `,
-      'packages/foo/.vscode/extensions.json': `{
+        'packages/foo/.vscode/extensions.json': `{
   "recommendations": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint"]
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(migrateVscodePrettierToOxc(baseArgs)).resolves.toEqual({
       result: 'apply',

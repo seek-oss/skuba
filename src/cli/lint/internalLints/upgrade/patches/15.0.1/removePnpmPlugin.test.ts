@@ -1,6 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import { patchPnpmWorkspace } from '../../../patchPnpmWorkspace.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
@@ -13,8 +13,8 @@ vi.mock('../../../../../../utils/exec.js', () => ({
 }));
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -47,9 +47,12 @@ const baseArgs: PatchConfig = {
 
 describe('removePnpmPlugin', () => {
   it('should skip if pnpm-workspace.yaml is up to date', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': ``,
-    });
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': ``,
+      },
+      process.cwd(),
+    );
 
     await patchPnpmWorkspace('format');
 
@@ -65,9 +68,12 @@ describe('removePnpmPlugin', () => {
   });
 
   it('should not apply changes in lint mode', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': ``,
-    });
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': ``,
+      },
+      process.cwd(),
+    );
 
     await expect(
       removePnpmPlugin({
@@ -86,11 +92,14 @@ describe('removePnpmPlugin', () => {
   });
 
   it('should apply changes in format mode', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `configDependencies:
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `configDependencies:
   pnpm-plugin-skuba: 2.0.0+sha512-nhxd9TdhOOXJ1bcQaqtDiI02gbxhJ8lTw3ZzSHDJPqIbbtnABQT7nLKqLX2zKi7tbfRI8+QSgL3eR2d/QFOLew==
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       removePnpmPlugin({
@@ -159,13 +168,16 @@ describe('removePnpmPlugin', () => {
   });
 
   it('should remove only pnpm-plugin-skuba if there are other configDependencies', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `packages:
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `packages:
   - .
 configDependencies:
   pnpm-plugin-skuba: 2.0.0+sha512-nhxd9TdhOOXJ1bcQaqtDiI02gbxhJ8lTw3ZzSHDJPqIbbtnABQT7nLKqLX2zKi7tbfRI8+QSgL3eR2d/QFOLew==
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       removePnpmPlugin({

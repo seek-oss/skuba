@@ -1,6 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import { findLatestAllowedVersion } from '../../../utils/findLatestAllowedVersion.js';
 import { configForPackageManager } from '../../../utils/packageManager.js';
 import type {
@@ -11,8 +11,8 @@ import type {
 import { tryUpgradeDatadogLambda } from './upgradeDatadogLambda.js';
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -48,11 +48,14 @@ const baseArgs: PatchConfig = {
 
 describe('upgradeDatadogLambda', () => {
   it('upgrades datadog-lambda-js to the fixed release', async () => {
-    vol.fromJSON({
-      'package.json': JSON.stringify({
-        dependencies: { 'datadog-lambda-js': '^12.100.0' },
-      }),
-    });
+    vol.fromJSON(
+      {
+        'package.json': JSON.stringify({
+          dependencies: { 'datadog-lambda-js': '^12.100.0' },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(tryUpgradeDatadogLambda(baseArgs)).resolves.toEqual({
       result: 'apply',
@@ -68,7 +71,7 @@ describe('upgradeDatadogLambda', () => {
     const input = {
       'package.json': JSON.stringify({ dependencies: { pino: '^9.0.0' } }),
     };
-    vol.fromJSON(input);
+    vol.fromJSON(input, process.cwd());
 
     await expect(tryUpgradeDatadogLambda(baseArgs)).resolves.toEqual({
       result: 'skip',
