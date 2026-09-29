@@ -104,7 +104,7 @@
     "rolldown": "^1.1.0",
     "semantic-release": "^25.0.2",
     "semver": "^7.8.0",
-    "simple-git": "^3.36.0",
+    "simple-git": "^4.0.0",
     "std-env": "^4.1.0",
     "ts-dedent": "^2.2.0",
     "tsconfig-seek": "2.0.0",
