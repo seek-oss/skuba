@@ -365,14 +365,7 @@ importers:
         specifier: ^8.59.2
         version: 8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3)
 
-  packages/pnpm-plugin-skuba:
-    devDependencies:
-      '@pnpm/cafs-types':
-        specifier: ^1000.1.0
-        version: 1000.1.0
-      '@pnpm/config':
-        specifier: ^1004.10.3
-        version: 1004.11.0(@pnpm/logger@1001.0.1)
+  packages/pnpm-plugin-skuba: {}
 
   packages/skuba-dive: {}
 
