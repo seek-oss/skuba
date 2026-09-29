@@ -53,27 +53,3 @@ export const parsePackage = (
 
   return data;
 };
-
-export const createDependencyFilter = (
-  names: readonly string[],
-  type: 'dependencies' | 'devDependencies',
-) => {
-  const set = new Set(names);
-
-  return (data: PackageJson) =>
-    ({
-      ...data,
-      [type]: Object.fromEntries(
-        Object.entries(data[type] ?? {}).filter(([name]) => !set.has(name)),
-      ),
-    }) as PackageJson;
-};
-
-export const withPackage =
-  (fn: (data: PackageJson) => PackageJson) => (input: string | undefined) => {
-    const inputObject = parsePackage(input);
-
-    const outputObject = fn(inputObject ?? {});
-
-    return formatPackage(outputObject);
-  };

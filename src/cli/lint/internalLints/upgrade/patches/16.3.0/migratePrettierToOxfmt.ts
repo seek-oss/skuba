@@ -111,7 +111,7 @@ const getArrayExtras = (migrated: unknown[], seek: unknown[]): unknown[] => {
   return migrated.filter((item) => !seekSet.has(JSON.stringify(item)));
 };
 
-export const diffMigratedOxfmtConfig = (
+const diffMigratedOxfmtConfig = (
   migrated: Record<string, unknown>,
   seek: Record<string, unknown> = seekOxfmtConfig,
 ): ConfigDiff[] => {

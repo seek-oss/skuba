@@ -363,7 +363,7 @@ const getTypeImportEdits = (root: SgNode, imports: string[]): Edit[] => {
   ];
 };
 
-export const getViMockedPrototypeEdits = (root: SgNode): Edit[] => {
+const getViMockedPrototypeEdits = (root: SgNode): Edit[] => {
   const mockedPrototypes = root.findAll({
     rule: {
       kind: 'arguments',

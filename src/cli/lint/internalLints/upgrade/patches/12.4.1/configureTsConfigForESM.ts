@@ -47,10 +47,7 @@ const fetchFiles = async (patterns: string[]) => {
   );
 };
 
-export const addJestModuleNameMapper = (
-  contents: string,
-  srcPaths: string[],
-) => {
+const addJestModuleNameMapper = (contents: string, srcPaths: string[]) => {
   if (!srcPaths.length) {
     return contents;
   }
@@ -131,7 +128,7 @@ export const addJestModuleNameMapper = (
   return contents;
 };
 
-export const parsePackageJson = (
+const parsePackageJson = (
   contents: string,
 ): {
   original: PackageJson;
@@ -149,7 +146,7 @@ export const parsePackageJson = (
   }
 };
 
-export const updatePackageJson = ({
+const updatePackageJson = ({
   parsed,
   customCondition,
 }: {
