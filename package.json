@@ -42,7 +42,7 @@
     "lint-all": "pnpm lint && pnpm lint:packages",
     "prepack": "pnpm --filter './template/**' exec rm -rf node_modules",
     "release": "pnpm --silent build && changeset publish",
-    "skuba": "pnpm --silent skuba:exec",
+    "skuba": "pnpm --silent build && pnpm --silent skuba:exec",
     "skuba:exec": "node lib/skuba",
     "stage": "pnpm --silent build && changeset version && pnpm --filter @skuba-lib/changesets-changelog inject && pnpm format",
     "test": "pnpm skuba:exec test --project unit",
