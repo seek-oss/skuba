@@ -52,7 +52,7 @@ If you're new here, jump ahead to the [CLI] section to [create a new project].
 [create a new project]: ./docs/cli/init.md
 [development]: ./docs/development-api
 [eslint]: https://eslint.org/
-[oxfmt]: https://github.com/seek-oss/oxfmt
+[oxfmt]: https://oxc.rs/docs/guide/usage/formatter.html
 [vitest]: https://vitest.dev/
 [runtime]: ./docs/runtime-api
 [templates]: ./docs/templates
