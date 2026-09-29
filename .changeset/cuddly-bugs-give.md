@@ -6,7 +6,7 @@ lint: Replace Prettier with Oxfmt
 
 `skuba lint` and `skuba format` now use Oxfmt instead of Prettier. Benchmarks show Oxfmt to be up to 30x faster.
 
-Oxfmt may format some code differently from Prettier, so you may see diffs in existing files.
+Oxfmt may format some code differently from Prettier, so you may see diffs in existing files particularly in `package.json` files.
 
 skuba will attempt to auto-migrate your Prettier configuration to Oxfmt. Any remaining manual references to `prettier` will need to be replaced with `oxfmt`.
 
