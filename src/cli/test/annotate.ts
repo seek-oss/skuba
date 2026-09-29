@@ -29,7 +29,7 @@ export const createGitHubAnnotations = async (isOk: boolean) => {
   });
 };
 
-export const createBuildkiteAnnotations = async (isOk: boolean) => {
+const createBuildkiteAnnotations = async (isOk: boolean) => {
   if (isOk) {
     return;
   }

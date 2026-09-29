@@ -74,7 +74,7 @@ export const insertImportXConfigFilesOverride = async (
   return `${ast.commitEdits([arr.replace(newArray)]).trimEnd()}\n`;
 };
 
-export const tryAddEslintConfigImportXNoDefaultExport: PatchFunction = async (
+const tryAddEslintConfigImportXNoDefaultExport: PatchFunction = async (
   config,
 ): Promise<PatchReturnType> => {
   const { mode, manifest } = config;

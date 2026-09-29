@@ -14,8 +14,6 @@ const PLATFORMS = ['amd64', 'arm64'] as const;
 
 export type Platform = (typeof PLATFORMS)[number];
 
-export const PLATFORM_OPTIONS = PLATFORMS.join(' | ');
-
 const platformSet = new Set<unknown>(PLATFORMS);
 
 export const isPlatform = (value: unknown) => platformSet.has(value);

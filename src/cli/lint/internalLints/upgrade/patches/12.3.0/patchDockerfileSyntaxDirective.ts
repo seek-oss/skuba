@@ -8,7 +8,7 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const dockerSyntaxRegex = /^#\s*syntax=\s*docker\/dockerfile:\S+\n+/;
 
-export const patchDockerfileSyntaxDirective = async (
+const patchDockerfileSyntaxDirective = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
   const dockerfilePaths = await fg(['**/Dockerfile*'], {

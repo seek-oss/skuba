@@ -10,7 +10,7 @@ const importRegex =
   /import { apiTokenFromEnvironment } from 'skuba\/lib\/api\/github\/environment';\n/;
 const usageRegex = /apiTokenFromEnvironment\(\)/;
 
-export const patchApiTokenFromEnvironment = async (
+const patchApiTokenFromEnvironment = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
   const scriptPaths = await fg(['scripts/**/*.ts'], {

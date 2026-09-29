@@ -122,7 +122,7 @@ async function crawl(
   return paths;
 }
 
-export const locateNearestFile = async ({
+const locateNearestFile = async ({
   cwd,
   filename,
 }: {
@@ -141,7 +141,7 @@ export const locateNearestFile = async ({
   return null;
 };
 
-export const locateFurthestFile = async ({
+const locateFurthestFile = async ({
   cwd,
   filename,
 }: {
