@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 
 import { isErrorWithCode } from '../../../../../../utils/error.js';
 import { log } from '../../../../../../utils/logging.js';
-import { formatPrettier } from '../../../../../configure/processing/prettier.js';
+import { runOxfmt } from '../../../../../adapter/oxfmt.js';
 import type { PatchFunction, PatchReturnType } from '../../index.js';
 
 const addListener = (identifier: string) =>
@@ -137,13 +137,13 @@ const patchUnhandledRejections = async (
       addListener(logger.identifier),
     ].join('\n\n');
 
-    const newContents = await formatPrettier(patched, { parser: 'typescript' });
-
     if (mode === 'lint') {
       return { result: 'apply' };
     }
 
-    await fs.promises.writeFile(filepath, newContents);
+    await fs.promises.writeFile(filepath, patched);
+
+    await runOxfmt('format', log, [filepath]);
 
     hasPatched = true;
   }

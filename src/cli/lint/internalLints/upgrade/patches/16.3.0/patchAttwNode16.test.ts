@@ -1,18 +1,16 @@
 import path from 'path';
 
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchAttwNode16 } from './patchAttwNode16.js';
 
-import * as Git from '@skuba-lib/api/git';
-
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -26,6 +24,7 @@ vi.mock('@skuba-lib/api/git', async () => ({
   ...(await vi.importActual<object>('@skuba-lib/api/git')),
   findRoot: vi.fn(),
 }));
+import * as Git from '@skuba-lib/api/git';
 
 const findRoot = vi.mocked(Git.findRoot);
 
@@ -57,9 +56,12 @@ describe('patchAttwNode16', () => {
   });
 
   it('should skip if no tsdown configs are found', async () => {
-    vol.fromJSON({
-      'index.ts': '',
-    });
+    vol.fromJSON(
+      {
+        'index.ts': '',
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchAttwNode16({
@@ -73,8 +75,9 @@ describe('patchAttwNode16', () => {
   });
 
   it('should skip if attw is already configured with a profile', async () => {
-    vol.fromJSON({
-      'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
+    vol.fromJSON(
+      {
+        'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   entry: 'src/index.ts',
@@ -84,7 +87,9 @@ export default defineConfig({
   publint: true,
 });
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchAttwNode16({
@@ -98,8 +103,9 @@ export default defineConfig({
   });
 
   it('should skip if attw is not true', async () => {
-    vol.fromJSON({
-      'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
+    vol.fromJSON(
+      {
+        'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   entry: 'src/index.ts',
@@ -107,7 +113,9 @@ export default defineConfig({
   publint: true,
 });
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchAttwNode16({
@@ -130,9 +138,12 @@ export default defineConfig({
 });
 `;
 
-    vol.fromJSON({
-      'tsdown.config.ts': contents,
-    });
+    vol.fromJSON(
+      {
+        'tsdown.config.ts': contents,
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchAttwNode16({
@@ -147,8 +158,9 @@ export default defineConfig({
   });
 
   it('should update attw: true in tsdown.config.ts', async () => {
-    vol.fromJSON({
-      'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
+    vol.fromJSON(
+      {
+        'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   entry: 'src/index.ts',
@@ -156,7 +168,9 @@ export default defineConfig({
   publint: true,
 });
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchAttwNode16({
@@ -184,8 +198,9 @@ export default defineConfig({
   });
 
   it('should update attw: true in tsdown.config.mts', async () => {
-    vol.fromJSON({
-      'tsdown.config.mts': `import { defineConfig } from 'tsdown/config';
+    vol.fromJSON(
+      {
+        'tsdown.config.mts': `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   failOnWarn: true,
@@ -194,7 +209,9 @@ export default defineConfig({
   attw: true,
 });
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchAttwNode16({
@@ -223,8 +240,9 @@ export default defineConfig({
   });
 
   it('should update every attw: true in a defineConfig array', async () => {
-    vol.fromJSON({
-      'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
+    vol.fromJSON(
+      {
+        'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig([
   {
@@ -237,7 +255,9 @@ export default defineConfig([
   },
 ]);
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchAttwNode16({
@@ -272,17 +292,20 @@ export default defineConfig([
   });
 
   it('should update multiple tsdown configs', async () => {
-    vol.fromJSON({
-      'tsdown.config.ts': `export default {
+    vol.fromJSON(
+      {
+        'tsdown.config.ts': `export default {
   attw: true,
 };
 `,
-      'packages/api/tsdown.config.mts': `export default {
+        'packages/api/tsdown.config.mts': `export default {
   attw: true,
   publint: true,
 };
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchAttwNode16({
@@ -313,13 +336,16 @@ export default defineConfig([
   });
 
   it('should search from the git root even if dir is a subdirectory', async () => {
-    vol.fromJSON({
-      'tsdown.config.ts': `export default {
+    vol.fromJSON(
+      {
+        'tsdown.config.ts': `export default {
   attw: true,
 };
 `,
-      'packages/api/package.json': '{}',
-    });
+        'packages/api/package.json': '{}',
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchAttwNode16({

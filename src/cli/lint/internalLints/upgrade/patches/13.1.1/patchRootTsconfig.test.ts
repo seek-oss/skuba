@@ -1,14 +1,14 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchRootConfig } from './patchRootTsconfig.js';
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -41,7 +41,7 @@ const baseArgs: PatchConfig = {
 
 describe('patchRootTsconfig', () => {
   it('should skip if no root tsconfig is found', async () => {
-    vol.fromJSON({});
+    vol.fromJSON({}, process.cwd());
 
     await expect(
       patchRootConfig({
@@ -55,9 +55,12 @@ describe('patchRootTsconfig', () => {
   });
 
   it('should skip if unable to parse tsconfig.json', async () => {
-    vol.fromJSON({
-      'tsconfig.json': `This is not valid JSON`,
-    });
+    vol.fromJSON(
+      {
+        'tsconfig.json': `This is not valid JSON`,
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchRootConfig({
@@ -71,8 +74,9 @@ describe('patchRootTsconfig', () => {
   });
 
   it('should preserve comments and formatting when adding rootDir', async () => {
-    vol.fromJSON({
-      'tsconfig.json': `{
+    vol.fromJSON(
+      {
+        'tsconfig.json': `{
   // This is a comment
   "compilerOptions": {
     /* Multi-line
@@ -82,7 +86,9 @@ describe('patchRootTsconfig', () => {
   "include": ["src"]
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchRootConfig({
@@ -109,13 +115,16 @@ describe('patchRootTsconfig', () => {
   });
 
   it('should add compilerOptions with rootDir if missing', async () => {
-    vol.fromJSON({
-      'tsconfig.json': `{
+    vol.fromJSON(
+      {
+        'tsconfig.json': `{
   "extends": "./tsconfig.base.json",
   "include": ["src"]
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchRootConfig({
@@ -139,8 +148,9 @@ describe('patchRootTsconfig', () => {
   });
 
   it('should skip if rootDir is already set', async () => {
-    vol.fromJSON({
-      'tsconfig.json': `{
+    vol.fromJSON(
+      {
+        'tsconfig.json': `{
   "compilerOptions": {
     "rootDir": "src",
     "module": "commonjs"
@@ -148,7 +158,9 @@ describe('patchRootTsconfig', () => {
   "include": ["src"]
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchRootConfig({
@@ -162,15 +174,18 @@ describe('patchRootTsconfig', () => {
   });
 
   it('should add rootDir to existing compilerOptions', async () => {
-    vol.fromJSON({
-      'tsconfig.json': `{
+    vol.fromJSON(
+      {
+        'tsconfig.json': `{
   "compilerOptions": {
     "module": "commonjs"
   },
   "include": ["src"]
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchRootConfig({

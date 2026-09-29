@@ -1,13 +1,13 @@
-import memfs, { vol } from 'memfs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { patchTsconfig } from './patchTsconfig.js';
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -37,9 +37,12 @@ describe('patchTsconfig', () => {
   });
 
   it('should skip if tsconfig.json files do not contain baseUrl config', async () => {
-    vol.fromJSON({
-      'tsconfig.json': '{ "compilerOptions": { "rootDir": "src" } }',
-    });
+    vol.fromJSON(
+      {
+        'tsconfig.json': '{ "compilerOptions": { "rootDir": "src" } }',
+      },
+      process.cwd(),
+    );
     await expect(
       patchTsconfig({
         mode: 'format',
@@ -51,13 +54,16 @@ describe('patchTsconfig', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    vol.fromJSON({
-      'tsconfig.json': JSON.stringify({
-        compilerOptions: {
-          baseUrl: 'src',
-        },
-      }),
-    });
+    vol.fromJSON(
+      {
+        'tsconfig.json': JSON.stringify({
+          compilerOptions: {
+            baseUrl: 'src',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchTsconfig({
@@ -75,24 +81,27 @@ describe('patchTsconfig', () => {
   });
 
   it('should return apply and modify files if mode is format', async () => {
-    vol.fromJSON({
-      'tsconfig.json': JSON.stringify({
-        compilerOptions: {
-          baseUrl: '.',
-        },
-      }),
-      'tsconfig.build.json': JSON.stringify({
-        compilerOptions: {
-          baseUrl: 'src',
-        },
-      }),
-      'tsconfig.other.json': JSON.stringify({
-        compilerOptions: {
-          baseUrl: 'something',
-          another: 'option',
-        },
-      }),
-    });
+    vol.fromJSON(
+      {
+        'tsconfig.json': JSON.stringify({
+          compilerOptions: {
+            baseUrl: '.',
+          },
+        }),
+        'tsconfig.build.json': JSON.stringify({
+          compilerOptions: {
+            baseUrl: 'src',
+          },
+        }),
+        'tsconfig.other.json': JSON.stringify({
+          compilerOptions: {
+            baseUrl: 'something',
+            another: 'option',
+          },
+        }),
+      },
+      process.cwd(),
+    );
 
     await expect(
       patchTsconfig({

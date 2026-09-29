@@ -1,15 +1,13 @@
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import { addSeekPackageRegistry } from './addSeekPackageRegistry.js';
 
-import * as Git from '@skuba-lib/api/git';
-
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 
 vi.mock('fast-glob', () => ({
@@ -25,6 +23,7 @@ vi.mock('@skuba-lib/api/git', async () => ({
   findRoot: vi.fn(),
   getOwnerAndRepo: vi.fn(),
 }));
+import * as Git from '@skuba-lib/api/git';
 
 const findRoot = vi.mocked(Git.findRoot);
 const getOwnerAndRepo = vi.mocked(Git.getOwnerAndRepo);
@@ -95,9 +94,12 @@ describe('addSeekPackageRegistry', () => {
   });
 
   it('should skip if all .npmrc files already have the SEEK registry', async () => {
-    vol.fromJSON({
-      '.npmrc': '@seek:registry=https://npm.cloudsmith.io/seek/npm/\n',
-    });
+    vol.fromJSON(
+      {
+        '.npmrc': '@seek:registry=https://npm.cloudsmith.io/seek/npm/\n',
+      },
+      process.cwd(),
+    );
 
     await expect(
       addSeekPackageRegistry({ mode: 'format' } as PatchConfig),
@@ -108,9 +110,12 @@ describe('addSeekPackageRegistry', () => {
   });
 
   it('should return apply and not modify files if mode is lint', async () => {
-    vol.fromJSON({
-      '.npmrc': 'legacy-peer-deps=true\n',
-    });
+    vol.fromJSON(
+      {
+        '.npmrc': 'legacy-peer-deps=true\n',
+      },
+      process.cwd(),
+    );
 
     await expect(
       addSeekPackageRegistry({ mode: 'lint' } as PatchConfig),
@@ -127,9 +132,12 @@ describe('addSeekPackageRegistry', () => {
   });
 
   it('should add the SEEK registry to .npmrc files', async () => {
-    vol.fromJSON({
-      '.npmrc': 'legacy-peer-deps=true\n',
-    });
+    vol.fromJSON(
+      {
+        '.npmrc': 'legacy-peer-deps=true\n',
+      },
+      process.cwd(),
+    );
 
     await expect(
       addSeekPackageRegistry({ mode: 'format' } as PatchConfig),
@@ -147,10 +155,13 @@ describe('addSeekPackageRegistry', () => {
   });
 
   it('should add the SEEK registry to multiple .npmrc files', async () => {
-    vol.fromJSON({
-      '.npmrc': 'legacy-peer-deps=true\n',
-      'packages/foo/.npmrc': 'legacy-peer-deps=true\n',
-    });
+    vol.fromJSON(
+      {
+        '.npmrc': 'legacy-peer-deps=true\n',
+        'packages/foo/.npmrc': 'legacy-peer-deps=true\n',
+      },
+      process.cwd(),
+    );
 
     await expect(
       addSeekPackageRegistry({ mode: 'format' } as PatchConfig),
@@ -171,11 +182,14 @@ describe('addSeekPackageRegistry', () => {
   });
 
   it('should only patch .npmrc files that are missing the SEEK registry', async () => {
-    vol.fromJSON({
-      '.npmrc': 'legacy-peer-deps=true\n',
-      'packages/foo/.npmrc':
-        '@seek:registry=https://npm.cloudsmith.io/seek/npm/\n',
-    });
+    vol.fromJSON(
+      {
+        '.npmrc': 'legacy-peer-deps=true\n',
+        'packages/foo/.npmrc':
+          '@seek:registry=https://npm.cloudsmith.io/seek/npm/\n',
+      },
+      process.cwd(),
+    );
 
     await expect(
       addSeekPackageRegistry({ mode: 'format' } as PatchConfig),
@@ -195,9 +209,12 @@ describe('addSeekPackageRegistry', () => {
   });
 
   it('should handle .npmrc files with trailing whitespace without double blank lines', async () => {
-    vol.fromJSON({
-      '.npmrc': 'legacy-peer-deps=true   \n',
-    });
+    vol.fromJSON(
+      {
+        '.npmrc': 'legacy-peer-deps=true   \n',
+      },
+      process.cwd(),
+    );
 
     await expect(
       addSeekPackageRegistry({ mode: 'format' } as PatchConfig),
