@@ -95,7 +95,7 @@
     "npm-registry-fetch": "^19.1.1",
     "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
-    "oxc-config-seek": "1.0.0-main-20260929034228",
+    "oxc-config-seek": "^1.0.0",
     "oxfmt": "^0.67.0",
     "picomatch": "^4.0.0",
     "pnpm-plugin-skuba": "workspace:*",
