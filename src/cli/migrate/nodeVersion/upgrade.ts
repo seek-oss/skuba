@@ -1,5 +1,6 @@
 import { inspect } from 'node:util';
 
+import { Git } from '@skuba-lib/api';
 import fg from 'fast-glob';
 import fs from 'fs-extra';
 import { coerce, lt } from 'semver';
@@ -8,8 +9,6 @@ import { exec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';
 import type { PatchReturnType } from '../../lint/internalLints/upgrade/index.js';
-
-import { Git } from '@skuba-lib/api';
 
 const packageVersionRegex = (packageName: string) =>
   new RegExp(`"\\b${packageName}\\b"\\s*:\\s*"([^"]+)"`, 'g');

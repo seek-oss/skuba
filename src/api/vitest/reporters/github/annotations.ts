@@ -1,14 +1,13 @@
 import path from 'path';
 import { stripVTControlCharacters as stripAnsi } from 'util';
 
+import type * as GitHub from '@skuba-lib/api/github';
 import type {
   SerializedError,
   TestModule,
   TestProject,
   Vitest,
 } from 'vitest/node';
-
-import type * as GitHub from '@skuba-lib/api/github';
 
 const createAnnotation = ({
   ctx,
