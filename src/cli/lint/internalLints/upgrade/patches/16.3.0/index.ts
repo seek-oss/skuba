@@ -4,6 +4,7 @@ import { tryMigrateImportOrderEslintDisables } from './migrateImportOrderEslintD
 import { tryMigratePrettierToOxfmt } from './migratePrettierToOxfmt.js';
 import { tryMigrateVscodePrettierToOxc } from './migrateVscodePrettierToOxc.js';
 import { tryPatchAttwNode16 } from './patchAttwNode16.js';
+import { tryPatchSeekLoggerCreateLogger } from './patchSeekLoggerCreateLogger.js';
 
 export const patches: Patches = [
   {
@@ -22,5 +23,10 @@ export const patches: Patches = [
     apply: tryMigrateImportOrderEslintDisables,
     description:
       'Replace import-x/order ESLint disables with oxfmt-ignore comments',
+  },
+  {
+    apply: tryPatchSeekLoggerCreateLogger,
+    description:
+      'Migrate default imports from @seek/logger to named createLogger imports',
   },
 ];
