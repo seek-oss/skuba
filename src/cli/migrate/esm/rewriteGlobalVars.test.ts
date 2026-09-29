@@ -1,8 +1,8 @@
 import path from 'path';
 
-import memfs, { vol } from 'memfs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import { configForPackageManager } from '../../../utils/packageManager.js';
 import type { PatchConfig } from '../../lint/internalLints/upgrade/index.js';
 
@@ -17,8 +17,8 @@ import {
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 
 vi.mock('fast-glob', () => ({
@@ -64,7 +64,7 @@ describe('tryRewriteGlobalVars', () => {
         'apps/api/app.ts': input,
       };
 
-      vol.fromJSON(inputVolume);
+      vol.fromJSON(inputVolume, process.cwd());
 
       await expect(
         tryRewriteGlobalVars({
@@ -92,7 +92,7 @@ describe('tryRewriteGlobalVars', () => {
         'apps/api/app.ts': input,
       };
 
-      vol.fromJSON(inputVolume);
+      vol.fromJSON(inputVolume, process.cwd());
 
       await expect(
         tryRewriteGlobalVars({

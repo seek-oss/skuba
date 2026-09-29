@@ -1,6 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import { configForPackageManager } from '../../../utils/packageManager.js';
 import type {
   PatchConfig,
@@ -14,8 +14,8 @@ vi.mock('../../../../../../utils/exec.js', () => ({
 }));
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -48,8 +48,9 @@ const baseArgs: PatchConfig = {
 
 describe('migrateLambdas', () => {
   it('should migrate the current CDK Lambda template', async () => {
-    vol.fromJSON({
-      'appStack.ts': `import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
+    vol.fromJSON(
+      {
+        'appStack.ts': `import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
 import { LambdaDeployment } from '@seek/aws-codedeploy-infra';
 import {
   Duration,
@@ -210,7 +211,9 @@ export class AppStack extends Stack {
   }
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateLambdas({
@@ -394,11 +397,12 @@ export class AppStack extends Stack {
   });
 
   it('should migrate an older CDK Lambda template', async () => {
-    vol.fromJSON({
-      'other.ts': `
+    vol.fromJSON(
+      {
+        'other.ts': `
       import { datadog } from 'datadog-lambda-js';
 `,
-      'appStack.ts': `import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
+        'appStack.ts': `import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
 import { LambdaDeployment } from '@seek/aws-codedeploy-infra';
 import {
   Duration,
@@ -556,7 +560,9 @@ export class AppStack extends Stack {
   }
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateLambdas({
@@ -737,8 +743,9 @@ export class AppStack extends Stack {
     `);
   });
   it('should migrate an alternate CDK Lambda template', async () => {
-    vol.fromJSON({
-      'appStack.ts': `import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
+    vol.fromJSON(
+      {
+        'appStack.ts': `import { containsSkipDirective } from '@seek/aws-codedeploy-hooks';
 import { LambdaDeployment } from '@seek/aws-codedeploy-infra';
 import {
   Duration,
@@ -892,7 +899,9 @@ export class AppStack extends Stack {
   }
 }
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateLambdas({
@@ -1073,8 +1082,9 @@ export class AppStack extends Stack {
   });
 
   it('should migrate serverless files', async () => {
-    vol.fromJSON({
-      'serverless.yml': `build:
+    vol.fromJSON(
+      {
+        'serverless.yml': `build:
   esbuild:
     bundle: true
     external:
@@ -1085,7 +1095,9 @@ custom:
   datadog:
     addLayers: false
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateLambdas({
@@ -1121,10 +1133,11 @@ custom:
   });
 
   it('should migrate alternate serverless files', async () => {
-    vol.fromJSON({
-      'foo.ts': `import { datadog } from 'datadog-lambda-js';
+    vol.fromJSON(
+      {
+        'foo.ts': `import { datadog } from 'datadog-lambda-js';
 `,
-      'serverless.yml': `custom:
+        'serverless.yml': `custom:
   esbuild:
     bundle: true
     external:
@@ -1134,7 +1147,9 @@ custom:
   datadog:
     addLayers: false
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateLambdas({
@@ -1169,10 +1184,11 @@ custom:
   });
 
   it('does not disable handler redirection or inject dd-trace for serverless Datadog lambdas', async () => {
-    vol.fromJSON({
-      'foo.ts': `import { datadog } from 'datadog-lambda-js';
+    vol.fromJSON(
+      {
+        'foo.ts': `import { datadog } from 'datadog-lambda-js';
 `,
-      'serverless.yml': `provider:
+        'serverless.yml': `provider:
   environment:
     NODE_OPTIONS: '--enable-source-maps'
 custom:
@@ -1183,7 +1199,9 @@ custom:
   datadog:
     addLayers: false
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateLambdas({

@@ -1,9 +1,9 @@
 import git from 'isomorphic-git';
-import memfs, { fs, vol } from 'memfs';
 import { simpleGit } from 'simple-git';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import newGit from '../../../integration/git/new.json' with { type: 'json' };
+import memfs, { fs, vol } from '../../testing/memfs.js';
 import { runESLint } from '../adapter/eslint.js';
 import { runOxfmt } from '../adapter/oxfmt.js';
 import { createDestinationFileReader } from '../configure/analysis/project.js';
@@ -16,8 +16,8 @@ import {
 import { internalLint } from './internal.js';
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 
 vi.mock('simple-git');

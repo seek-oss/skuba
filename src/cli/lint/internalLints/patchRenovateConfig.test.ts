@@ -1,12 +1,13 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import memfs, { vol } from '../../../testing/memfs.js';
 
 import { tryPatchRenovateConfig } from './patchRenovateConfig.js';
 import type { PatchConfig } from './upgrade/index.js';
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 vi.mock('@skuba-lib/api/git', async () => ({
   ...(await vi.importActual<object>('@skuba-lib/api/git')),
@@ -40,7 +41,7 @@ const getOwnerAndRepo = vi.mocked(Git.getOwnerAndRepo);
 
 const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
-const writeFile = vi.spyOn(memfs.fs.promises, 'writeFile');
+const writeFile = vi.spyOn(memfs.promises, 'writeFile');
 
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
@@ -57,7 +58,7 @@ describe('patchRenovateConfig', () => {
         repo: 'VersionNet',
       });
 
-      vol.fromJSON({ '.git': null, 'renovate.json': JSON });
+      vol.fromJSON({ '.git': null, 'renovate.json': JSON }, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -79,7 +80,10 @@ describe('patchRenovateConfig', () => {
         repo: 'VersionNet',
       });
 
-      vol.fromJSON({ 'foo/.git': null, 'foo/renovate.json': JSON });
+      vol.fromJSON(
+        { 'foo/.git': null, 'foo/renovate.json': JSON },
+        process.cwd(),
+      );
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format', dir: 'foo' } as PatchConfig),
@@ -101,7 +105,10 @@ describe('patchRenovateConfig', () => {
         repo: 'VersionCobol',
       });
 
-      vol.fromJSON({ '.git': null, '.github/renovate.json5': JSON5 });
+      vol.fromJSON(
+        { '.git': null, '.github/renovate.json5': JSON5 },
+        process.cwd(),
+      );
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -138,7 +145,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -162,7 +169,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null, 'renovate.json5': JSON5 };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -188,7 +195,7 @@ describe('patchRenovateConfig', () => {
 
       const files = {};
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -207,7 +214,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null, 'renovate.json5': JSON5 };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -229,7 +236,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null, '.renovaterc': JSON };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -251,7 +258,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null, '.github/renovate.json5': '{}' };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -275,7 +282,7 @@ describe('patchRenovateConfig', () => {
         '.github/renovate.json5': JSON5_CONFIGURED,
       };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -297,7 +304,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null, '.github/renovate.json5': JSON5_EXTENDED };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'format' } as PatchConfig),
@@ -319,7 +326,7 @@ describe('patchRenovateConfig', () => {
         repo: 'VersionNet',
       });
 
-      vol.fromJSON({ '.git': null, 'renovate.json': JSON });
+      vol.fromJSON({ '.git': null, 'renovate.json': JSON }, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
@@ -336,7 +343,10 @@ describe('patchRenovateConfig', () => {
         repo: 'VersionNet',
       });
 
-      vol.fromJSON({ 'foo/.git': null, 'foo/renovate.json': JSON });
+      vol.fromJSON(
+        { 'foo/.git': null, 'foo/renovate.json': JSON },
+        process.cwd(),
+      );
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint', dir: 'foo' } as PatchConfig),
@@ -356,7 +366,10 @@ describe('patchRenovateConfig', () => {
         repo: 'VersionCobol',
       });
 
-      vol.fromJSON({ '.git': null, '.github/renovate.json5': JSON5 });
+      vol.fromJSON(
+        { '.git': null, '.github/renovate.json5': JSON5 },
+        process.cwd(),
+      );
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
@@ -379,7 +392,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
@@ -398,7 +411,7 @@ describe('patchRenovateConfig', () => {
 
       const files = {};
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
@@ -417,7 +430,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null, 'renovate.json5': JSON5 };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
@@ -439,7 +452,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null, '.renovaterc': JSON };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
@@ -461,7 +474,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null, '.github/renovate.json5': '{}' };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
@@ -485,7 +498,7 @@ describe('patchRenovateConfig', () => {
         '.github/renovate.json5': JSON5_CONFIGURED,
       };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),
@@ -507,7 +520,7 @@ describe('patchRenovateConfig', () => {
 
       const files = { '.git': null, '.github/renovate.json5': JSON5_EXTENDED };
 
-      vol.fromJSON(files);
+      vol.fromJSON(files, process.cwd());
 
       await expect(
         tryPatchRenovateConfig({ mode: 'lint' } as PatchConfig),

@@ -1,8 +1,8 @@
-import memfs, { vol } from 'memfs';
 import seekOxfmtConfig from 'oxc-config-seek/oxfmt';
 import { format } from 'oxfmt';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
 import {
@@ -12,8 +12,8 @@ import {
 } from './migrateImportOrderEslintDisables.js';
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 
 vi.mock('fast-glob', () => ({
@@ -229,9 +229,12 @@ describe('migrateImportOrderEslintDisables', () => {
   });
 
   it('skips when no JavaScript or TypeScript files are found', async () => {
-    vol.fromJSON({
-      'README.md': '# hi\n',
-    });
+    vol.fromJSON(
+      {
+        'README.md': '# hi\n',
+      },
+      process.cwd(),
+    );
 
     await expect(migrateImportOrderEslintDisables(baseArgs)).resolves.toEqual({
       result: 'skip',
@@ -244,7 +247,7 @@ describe('migrateImportOrderEslintDisables', () => {
       'src/index.ts': `import fs from 'fs';
 `,
     };
-    vol.fromJSON(input);
+    vol.fromJSON(input, process.cwd());
 
     await expect(migrateImportOrderEslintDisables(baseArgs)).resolves.toEqual({
       result: 'skip',
@@ -260,7 +263,7 @@ describe('migrateImportOrderEslintDisables', () => {
 import fs from 'fs';
 `,
     };
-    vol.fromJSON(input);
+    vol.fromJSON(input, process.cwd());
 
     await expect(
       migrateImportOrderEslintDisables({ ...baseArgs, mode: 'lint' }),
@@ -271,15 +274,18 @@ import fs from 'fs';
   });
 
   it('replaces import-x/order disables with oxfmt-ignore comments', async () => {
-    vol.fromJSON({
-      'src/index.ts': `import { z } from 'zod';
+    vol.fromJSON(
+      {
+        'src/index.ts': `import { z } from 'zod';
 // eslint-disable-next-line import-x/order -- Mock import must be at top for jest.mock() hoisting
 import fs from 'fs';
 `,
-      'src/other.ts': `import { z } from 'zod';
+        'src/other.ts': `import { z } from 'zod';
 import fs from 'fs'; // eslint-disable-line import/order
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(migrateImportOrderEslintDisables(baseArgs)).resolves.toEqual({
       result: 'apply',

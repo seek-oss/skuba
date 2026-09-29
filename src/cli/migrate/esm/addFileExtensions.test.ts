@@ -1,6 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import { configForPackageManager } from '../../../utils/packageManager.js';
 import type {
   PatchConfig,
@@ -10,16 +10,16 @@ import type {
 import { addFileExtensions } from './addFileExtensions.js';
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('node:fs', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('node:fs/promises', () => ({
-  default: memfs.fs.promises,
-  ...memfs.fs.promises,
+  default: memfs.promises,
+  ...memfs.promises,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -64,8 +64,9 @@ describe('addFileExtensions', () => {
   });
 
   it('should add file extensions to imports', async () => {
-    vol.fromJSON({
-      'index.ts': `
+    vol.fromJSON(
+      {
+        'index.ts': `
 import './deep';
 import { foo } from './foo';
 import { bar } from 'some-package/dist/deep/import';
@@ -73,20 +74,22 @@ import type { SomeType } from 'some-package/dist/deep/dts';
 const foo = vi.importActual<typeof import('./foo')>('./foo')
 vi.mock('./foo')
 vi.doMock('#src/foo')`,
-      'node_modules/some-package/dist/deep/dts.d.ts': '',
-      'node_modules/some-package/dist/deep/import.js': '',
-      'foo.ts': 'export const foo = 42;',
-      'deep/index.ts': '',
-      'src/foo.ts': 'export const foo = 42;',
-      'package.json': JSON.stringify({
-        imports: {
-          '#src/*': {
-            '@seek/my-condition/source': './src/*',
-            default: './lib/*',
+        'node_modules/some-package/dist/deep/dts.d.ts': '',
+        'node_modules/some-package/dist/deep/import.js': '',
+        'foo.ts': 'export const foo = 42;',
+        'deep/index.ts': '',
+        'src/foo.ts': 'export const foo = 42;',
+        'package.json': JSON.stringify({
+          imports: {
+            '#src/*': {
+              '@seek/my-condition/source': './src/*',
+              default: './lib/*',
+            },
           },
-        },
-      }),
-    });
+        }),
+      },
+      process.cwd(),
+    );
     await expect(
       addFileExtensions({
         ...baseArgs,
@@ -116,12 +119,15 @@ vi.doMock('#src/foo')`,
   });
 
   it('should bail when the import cannot resolve to a file', async () => {
-    vol.fromJSON({
-      'index.ts': `
+    vol.fromJSON(
+      {
+        'index.ts': `
 import path from 'node:path';
 import './foo';
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       addFileExtensions({
