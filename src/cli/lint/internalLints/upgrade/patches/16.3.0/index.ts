@@ -27,6 +27,6 @@ export const patches: Patches = [
   {
     apply: tryPatchSeekLoggerCreateLogger,
     description:
-      'Migrate default createLogger imports from @seek/logger to named imports',
+      'Migrate default imports from @seek/logger to named createLogger imports',
   },
 ];

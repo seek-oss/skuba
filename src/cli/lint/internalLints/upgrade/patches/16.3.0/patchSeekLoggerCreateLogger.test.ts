@@ -90,28 +90,33 @@ export const logger = createLogger();
       }),
     ).resolves.toEqual({
       result: 'skip',
-      reason: 'no default createLogger imports from @seek/logger',
+      reason: 'no default imports from @seek/logger',
     } satisfies PatchReturnType);
   });
 
-  it('should skip default imports that are not createLogger', async () => {
+  it('should alias a default import that is not named createLogger', async () => {
     vol.fromJSON(
       {
         'src/logger.ts': `import logger from '@seek/logger';
+
+export const log = logger();
 `,
       },
       process.cwd(),
     );
 
-    await expect(
-      patchSeekLoggerCreateLogger({
-        ...baseArgs,
-        mode: 'lint',
-      }),
-    ).resolves.toEqual({
-      result: 'skip',
-      reason: 'no default createLogger imports from @seek/logger',
+    await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
+      result: 'apply',
     } satisfies PatchReturnType);
+
+    expect(volToJson()).toMatchInlineSnapshot(`
+      {
+        "src/logger.ts": "import { createLogger as logger } from '@seek/logger';
+
+      export const log = logger();
+      ",
+      }
+    `);
   });
 
   it('should not modify files in lint mode', async () => {
@@ -179,6 +184,25 @@ export const logger = createLogger();
 
     expect(volToJson()['src/logger.ts']).toBe(
       `import { createLogger } from "@seek/logger";
+`,
+    );
+  });
+
+  it('should alias a default import when merging with existing named imports', async () => {
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import logger, { type Foo } from '@seek/logger';
+`,
+      },
+      process.cwd(),
+    );
+
+    await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()['src/logger.ts']).toBe(
+      `import { createLogger as logger, type Foo } from '@seek/logger';
 `,
     );
   });
@@ -259,6 +283,25 @@ export const logger = createLogger();
     );
   });
 
+  it('should alias import type default imports', async () => {
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import type logger from '@seek/logger';
+`,
+      },
+      process.cwd(),
+    );
+
+    await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()['src/logger.ts']).toBe(
+      `import type { createLogger as logger } from '@seek/logger';
+`,
+    );
+  });
+
   it('should convert import type default imports', async () => {
     vol.fromJSON(
       {
@@ -274,6 +317,26 @@ export const logger = createLogger();
 
     expect(volToJson()['src/logger.ts']).toBe(
       `import type { createLogger } from '@seek/logger';
+`,
+    );
+  });
+
+  it('should split an aliased default import from a namespace import', async () => {
+    vol.fromJSON(
+      {
+        'src/logger.ts': `import logger, * as seekLogger from '@seek/logger';
+`,
+      },
+      process.cwd(),
+    );
+
+    await expect(patchSeekLoggerCreateLogger(baseArgs)).resolves.toEqual({
+      result: 'apply',
+    } satisfies PatchReturnType);
+
+    expect(volToJson()['src/logger.ts']).toBe(
+      `import { createLogger as logger } from '@seek/logger';
+import * as seekLogger from '@seek/logger';
 `,
     );
   });

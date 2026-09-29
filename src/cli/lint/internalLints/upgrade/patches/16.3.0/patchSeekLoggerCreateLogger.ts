@@ -23,7 +23,6 @@ const patchCreateLoggerImports = (ast: SgNode): Edit[] => {
   const defaultImports = ast.findAll({
     rule: {
       kind: 'identifier',
-      regex: '^createLogger$',
       inside: {
         kind: 'import_clause',
       },
@@ -77,13 +76,22 @@ const patchCreateLoggerImports = (ast: SgNode): Edit[] => {
         rule: { kind: 'import_specifier' },
       }) ?? [];
 
-    const hasLocalCreateLogger = specifiers.some(
-      (specifier) => localName(specifier) === 'createLogger',
+    const defaultLocalName = defaultImport.text();
+    const hasDuplicateLocal = specifiers.some(
+      (specifier) => localName(specifier) === defaultLocalName,
     );
 
-    const nextSpecifiers = hasLocalCreateLogger
+    const createLoggerSpecifier =
+      defaultLocalName === 'createLogger'
+        ? 'createLogger'
+        : `createLogger as ${defaultLocalName}`;
+
+    const nextSpecifiers = hasDuplicateLocal
       ? specifiers.map((specifier) => specifier.text())
-      : ['createLogger', ...specifiers.map((specifier) => specifier.text())];
+      : [
+          createLoggerSpecifier,
+          ...specifiers.map((specifier) => specifier.text()),
+        ];
 
     const namedClause = `{ ${nextSpecifiers.join(', ')} }`;
     const namedImport = `import ${typePrefix}${namedClause} from ${source}${semicolon}`;
@@ -127,7 +135,7 @@ export const patchSeekLoggerCreateLogger: PatchFunction = async ({
       const fullPath = path.join(root, file);
       const content = await fs.promises.readFile(fullPath, 'utf8');
 
-      if (!content.includes(SEEK_LOGGER) || !content.includes('createLogger')) {
+      if (!content.includes(SEEK_LOGGER)) {
         return { file: fullPath, updated: undefined };
       }
 
@@ -146,7 +154,7 @@ export const patchSeekLoggerCreateLogger: PatchFunction = async ({
   if (filesToUpdate.length === 0) {
     return {
       result: 'skip',
-      reason: 'no default createLogger imports from @seek/logger',
+      reason: 'no default imports from @seek/logger',
     };
   }
 
@@ -172,7 +180,7 @@ export const tryPatchSeekLoggerCreateLogger: PatchFunction = async (config) => {
     return await patchSeekLoggerCreateLogger(config);
   } catch (err) {
     log.warn(
-      'Failed to migrate createLogger to a named import from @seek/logger',
+      'Failed to migrate default imports from @seek/logger to named createLogger imports',
     );
     log.subtle(inspect(err));
     return { result: 'skip', reason: 'due to an error' };
