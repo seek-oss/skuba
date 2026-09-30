@@ -12,6 +12,7 @@ const skuba = defineConfig([
   {
     name: 'skuba/ignores',
     ignores: [
+      '**/*.vocab/index.ts',
       // Gantry resource files support non-standard syntax (Go templating)
       '**/.gantry/**/*.yaml',
       '**/.gantry/**/*.yml',
