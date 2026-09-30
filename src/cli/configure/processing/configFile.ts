@@ -41,7 +41,7 @@ export const generateIgnoreFileSimpleVariants = (patterns: string[]) => {
   return set;
 };
 
-export const replaceManagedSection = (input: string, template: string) =>
+const replaceManagedSection = (input: string, template: string) =>
   input.replace(/# managed by skuba[\s\S]*# end managed by skuba/, template);
 
 export const mergeWithConfigFile = (

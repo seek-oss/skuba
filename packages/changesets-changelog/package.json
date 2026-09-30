@@ -7,48 +7,63 @@
   "bugs": {
     "url": "https://github.com/seek-oss/skuba/issues"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/seek-oss/skuba.git",
     "directory": "packages/changesets-changelog"
   },
-  "license": "MIT",
-  "sideEffects": false,
+  "bin": {
+    "skuba-changelog-inject": "./src/inject.ts"
+  },
+  "files": [
+    "lib"
+  ],
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": {
-      "@seek/skuba/source": "./src/changelog.mjs",
-      "default": "./src/changelog.mjs"
+      "@seek/skuba/source": "./src/index.ts",
+      "default": "./lib/index.mjs"
     },
     "./inject": {
-      "@seek/skuba/source": "./src/inject.mjs",
-      "default": "./src/inject.mjs"
+      "@seek/skuba/source": "./src/inject.ts",
+      "default": "./lib/inject.mjs"
     },
     "./package.json": "./package.json"
   },
-  "bin": {
-    "skuba-changelog-inject": "./src/inject.mjs"
+  "publishConfig": {
+    "bin": {
+      "skuba-changelog-inject": "./lib/inject.mjs"
+    },
+    "exports": {
+      ".": "./lib/index.mjs",
+      "./inject": "./lib/inject.mjs",
+      "./package.json": "./package.json"
+    }
   },
-  "files": [
-    "src"
-  ],
+  "scripts": {
+    "build": "pnpm skuba build-package",
+    "inject": "node ./lib/inject.mjs",
+    "prepack": "pnpm build",
+    "skuba": "node ../../lib/skuba",
+    "test": "pnpm skuba test",
+    "test:ci": "pnpm skuba test --coverage"
+  },
   "dependencies": {
-    "@changesets/get-github-info": "^0.8.0"
+    "@changesets/get-github-info": "^1.0.0",
+    "@changesets/types": "^7.0.0"
+  },
+  "devDependencies": {
+    "@changesets/parse": "^1.0.0"
   },
   "engines": {
     "node": ">=22.14.0"
   },
-  "publishConfig": {
-    "exports": {
-      ".": "./src/changelog.mjs",
-      "./inject": "./src/inject.mjs",
-      "./package.json": "./package.json"
-    }
-  },
   "skuba": {
-    "entryPoint": "src/changelog.mjs",
+    "entryPoint": "src/index.ts",
     "template": "oss-npm-package",
     "type": "package",
-    "version": "14.1.2"
+    "version": "16.3.0"
   }
 }

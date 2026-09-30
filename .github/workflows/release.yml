@@ -36,13 +36,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Publish to npm
-        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          publish: pnpm release
-          version: pnpm stage
-          commitMode: github-api
-        env:
-          GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
+          publish-script: pnpm release
+          version-script: pnpm stage
+          push-with-git-cli: true
+          github-token: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}
 
       - name: Deploy to GitHub Pages
         run: pnpm run deploy
@@ -77,6 +76,6 @@ jobs:
       - name: Publish to npm
         uses: seek-oss/changesets-snapshot@9063bfcb495100964ee0912c5bcb30c4c434c1b3 # v0.3.2
         with:
-          pre-publish: pnpm run build
+          pre-version: pnpm run build
         env:
           GITHUB_TOKEN: ${{ secrets.SEEK_OSS_CI_GITHUB_TOKEN }}

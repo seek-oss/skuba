@@ -1,5 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import memfs, { vol } from '../../../testing/memfs.js';
 
 import { patchPnpmWorkspace } from './patchPnpmWorkspace.js';
 
@@ -12,8 +13,8 @@ vi.mock('../../../utils/exec.js', () => ({
 vi.mock('../../../utils/logging.js');
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 
 beforeEach(() => {
@@ -32,9 +33,12 @@ describe('patchPnpmWorkspace', () => {
   });
 
   it('should apply defaults to an empty pnpm-workspace.yaml', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': '',
-    });
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': '',
+      },
+      process.cwd(),
+    );
 
     const result = await patchPnpmWorkspace('format');
 
@@ -66,6 +70,7 @@ describe('patchPnpmWorkspace', () => {
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -81,7 +86,8 @@ describe('patchPnpmWorkspace', () => {
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -97,9 +103,12 @@ describe('patchPnpmWorkspace', () => {
   });
 
   it('should be idempotent', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': '',
-    });
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': '',
+      },
+      process.cwd(),
+    );
 
     const firstResult = await patchPnpmWorkspace('format');
     expect(firstResult).toEqual({
@@ -122,8 +131,9 @@ describe('patchPnpmWorkspace', () => {
   });
 
   it('should handle regular comments in pnpm-workspace.yaml', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `
 # This is a comment
 allowBuilds:
   some-package: false # Inline comment
@@ -140,7 +150,9 @@ trustPolicyExclude:
   - semver@6.3.1 # Managed by skuba
   # Managed by skuba
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     const result = await patchPnpmWorkspace('format');
 
@@ -159,6 +171,7 @@ trustPolicyExclude:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -192,7 +205,8 @@ trustPolicyExclude:
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -209,9 +223,12 @@ trustPolicyExclude:
   });
 
   it('should skip saving if the mode is lint', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': '',
-    });
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': '',
+      },
+      process.cwd(),
+    );
 
     const result = await patchPnpmWorkspace('lint');
 
@@ -232,8 +249,9 @@ trustPolicyExclude:
   });
 
   it('should preserve existing values in pnpm-workspace.yaml', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `
 blockExoticSubdeps: false
 publicHoistPattern:
   - some-package
@@ -241,7 +259,9 @@ allowBuilds:
   some-package: false
 trustPolicyExclude:
   - some-package@1.0.0`,
-    });
+      },
+      process.cwd(),
+    );
 
     const result = await patchPnpmWorkspace('format');
 
@@ -259,6 +279,7 @@ trustPolicyExclude:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -277,7 +298,8 @@ trustPolicyExclude:
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -306,13 +328,16 @@ trustPolicyExclude:
   });
 
   it('should fix flipped boolean values in pnpm-workspace.yaml', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `
 blockExoticSubdeps: false
 ignorePatchFailures: true
 strictDepBuilds: false
 packageManagerStrictVersion: false`,
-    });
+      },
+      process.cwd(),
+    );
 
     const result = await patchPnpmWorkspace('format');
 
@@ -343,6 +368,7 @@ packageManagerStrictVersion: false`,
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -358,7 +384,8 @@ packageManagerStrictVersion: false`,
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -376,8 +403,9 @@ packageManagerStrictVersion: false`,
   });
 
   it('should handle missing items in arrays in pnpm-workspace.yaml', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `
 publicHoistPattern:
   - some-package
   - esbuild
@@ -389,7 +417,9 @@ trustPolicyExclude:
 allowBuilds:
   redundant: true # Managed by skuba
 `,
-    });
+      },
+      process.cwd(),
+    );
 
     const result = await patchPnpmWorkspace('format');
 
@@ -421,6 +451,7 @@ allowBuilds:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba
@@ -436,7 +467,8 @@ allowBuilds:
         - '@types*' # Managed by skuba
         - '@vitest/*' # Managed by skuba
         - eslint # Managed by skuba
-        - prettier # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -456,8 +488,9 @@ allowBuilds:
   });
 
   it('should remove skuba-managed items that are no longer in the default config', async () => {
-    vol.fromJSON({
-      'pnpm-workspace.yaml': `removedOption: true # Managed by skuba
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `removedOption: true # Managed by skuba
 minimumReleaseAge: 4320 # Managed by skuba
 anotherRemovedOption: abcd # Managed by skuba
 minimumReleaseAgeExclude:
@@ -477,7 +510,9 @@ someOtherSection:
   someOtherOption: true # Managed by skuba
 somelistSection:
   - some-item # Managed by skuba`,
-    });
+      },
+      process.cwd(),
+    );
 
     const result = await patchPnpmWorkspace('format');
 
@@ -500,7 +535,8 @@ somelistSection:
         - esbuild # Managed by skuba
         - eslint # Managed by skuba
         - eslint-config-skuba # Managed by skuba
-        - prettier # Managed by skuba
+        - oxc-config-seek # Managed by skuba
+        - oxfmt # Managed by skuba
         - publint # Managed by skuba
         - rolldown # Managed by skuba
         - tsconfig-seek # Managed by skuba
@@ -517,6 +553,7 @@ somelistSection:
         - eslint-config-seek # Managed by skuba
         - eslint-config-skuba # Managed by skuba
         - eslint-plugin-skuba # Managed by skuba
+        - oxc-config-seek # Managed by skuba
         - pnpm-plugin-skuba # Managed by skuba
         - skuba # Managed by skuba
         - skuba-dive # Managed by skuba

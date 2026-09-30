@@ -2,16 +2,16 @@
 import * as realFs from 'fs/promises';
 import path from 'path';
 
-import memfs, { vol } from 'memfs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../testing/memfs.js';
 import type { Logger } from '../../../utils/logging.js';
 
 import { detectBadCodeowners } from './detectBadCodeowners.js';
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 
 vi.mock('../../..', () => ({

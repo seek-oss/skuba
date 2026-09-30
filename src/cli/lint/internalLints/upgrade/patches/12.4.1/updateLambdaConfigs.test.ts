@@ -1,7 +1,7 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Git } from '../../../../../../index.js';
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -16,8 +16,8 @@ vi.mock('../../../../../../index.js', () => ({
 const volToJson = () => vol.toJSON(process.cwd(), undefined, true);
 
 vi.mock('fs-extra', () => ({
-  ...memfs.fs,
-  default: memfs.fs,
+  ...memfs,
+  default: memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -75,7 +75,7 @@ describe('tryUpdateLambdaConfigs', () => {
   });
 
   it('should skip if no ts, yml or js files are found', async () => {
-    vol.fromJSON({});
+    vol.fromJSON({}, process.cwd());
 
     await expect(
       tryUpdateLambdaConfigs({
@@ -89,8 +89,9 @@ describe('tryUpdateLambdaConfigs', () => {
   });
 
   it('should update lambda configs in .ts files', async () => {
-    vol.fromJSON({
-      'lambda.ts': `
+    vol.fromJSON(
+      {
+        'lambda.ts': `
 const worker = new aws_lambda_nodejs.NodejsFunction(this, 'worker', {
   architecture: aws_lambda.Architecture[architecture],
   runtime: aws_lambda.Runtime.NODEJS_22_X,
@@ -115,7 +116,9 @@ const another = new aws_lambda_nodejs.NodejsFunction(this, 'another', {
   },
 });
       `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryUpdateLambdaConfigs({
@@ -159,8 +162,9 @@ const another = new aws_lambda_nodejs.NodejsFunction(this, 'another', {
   });
 
   it('should update lambda configs with new NodejsFunction syntax', async () => {
-    vol.fromJSON({
-      'lambda.ts': `
+    vol.fromJSON(
+      {
+        'lambda.ts': `
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 const worker = new NodejsFunction(this, 'worker', {
@@ -175,7 +179,9 @@ const worker = new NodejsFunction(this, 'worker', {
   },
 });
       `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryUpdateLambdaConfigs({
@@ -209,8 +215,9 @@ const worker = new NodejsFunction(this, 'worker', {
   });
 
   it('should update lambda configs in webpack config files', async () => {
-    vol.fromJSON({
-      'webpack.config.js': `
+    vol.fromJSON(
+      {
+        'webpack.config.js': `
 const path = require('path');
 
 module.exports = {
@@ -233,7 +240,7 @@ module.exports = {
     },
   },
 });`,
-      'other/webpack.config.js': `
+        'other/webpack.config.js': `
 const path = require('path');
 
 module.exports = {
@@ -250,7 +257,9 @@ module.exports = {
     ],
   }
 });`,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryUpdateLambdaConfigs({
@@ -312,8 +321,9 @@ module.exports = {
   });
 
   it('should update Serverless files with esbuild configuration', async () => {
-    vol.fromJSON({
-      'serverless.yml': `service: my-lambda-service
+    vol.fromJSON(
+      {
+        'serverless.yml': `service: my-lambda-service
 
 plugins:
   - serverless-esbuild
@@ -329,7 +339,7 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-      'serverless.yaml': `service: my-lambda-service
+        'serverless.yaml': `service: my-lambda-service
 
 build:
   esbuild:
@@ -342,7 +352,7 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-      'serverless.other.yml': `service: my-lambda-service
+        'serverless.other.yml': `service: my-lambda-service
 
 plugins:
   - serverless-esbuild
@@ -361,7 +371,9 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryUpdateLambdaConfigs({
@@ -433,8 +445,9 @@ functions:
   });
 
   it('should update Serverless files with esbuild nested under custom with other properties', async () => {
-    vol.fromJSON({
-      'serverless.yml': `service: interactions-enricher
+    vol.fromJSON(
+      {
+        'serverless.yml': `service: interactions-enricher
 
 plugins:
   - serverless-prune-plugin
@@ -456,7 +469,9 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryUpdateLambdaConfigs({
@@ -498,8 +513,9 @@ functions:
   });
 
   it('should update Serverless files with package patterns', async () => {
-    vol.fromJSON({
-      'serverless.yml': `
+    vol.fromJSON(
+      {
+        'serverless.yml': `
 service: my-lambda-service
 
 package:
@@ -514,7 +530,7 @@ functions:
       patterns:
         - excluded-by-default.json
       `,
-      'serverless.yaml': `
+        'serverless.yaml': `
 service: my-lambda-service
 
 functions:
@@ -528,7 +544,9 @@ package:
     - '!**'
     - 'lib/**'
       `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryUpdateLambdaConfigs({
@@ -578,8 +596,9 @@ package:
   });
 
   it('should handle Serverless with package include', async () => {
-    vol.fromJSON({
-      'serverless.yml': `
+    vol.fromJSON(
+      {
+        'serverless.yml': `
 service: my-lambda-service
 
 package:
@@ -590,7 +609,7 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-      'serverless.yaml': `
+        'serverless.yaml': `
 service: my-lambda-service
 
 package:
@@ -603,7 +622,9 @@ functions:
   myFunction:
     handler: src/handler.main
       `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       tryUpdateLambdaConfigs({

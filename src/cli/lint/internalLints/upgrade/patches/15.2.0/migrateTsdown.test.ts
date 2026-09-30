@@ -1,6 +1,6 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import memfs, { vol } from '../../../../../../testing/memfs.js';
 import { configForPackageManager } from '../../../../../../utils/packageManager.js';
 import type { PatchConfig, PatchReturnType } from '../../index.js';
 
@@ -11,8 +11,8 @@ vi.mock('../../../../../../utils/exec.js', () => ({
 }));
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('fast-glob', () => ({
   default: async (pat: any, opts: any) => {
@@ -45,9 +45,12 @@ const baseArgs: PatchConfig = {
 
 describe('migrateTsdown', () => {
   it('should skip if no tsdown configs are found', async () => {
-    vol.fromJSON({
-      'index.ts': '',
-    });
+    vol.fromJSON(
+      {
+        'index.ts': '',
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateTsdown({
@@ -61,8 +64,9 @@ describe('migrateTsdown', () => {
   });
 
   it('should skip if no fields to migrate are found', async () => {
-    vol.fromJSON({
-      'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
+    vol.fromJSON(
+      {
+        'tsdown.config.ts': `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   entry: 'src/index.ts',
@@ -72,7 +76,9 @@ export default defineConfig({
   failOnWarn: 'ci-only',
 });
       `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateTsdown({
@@ -86,8 +92,9 @@ export default defineConfig({
   });
 
   it('should migrate fields in tsdown.config.mts', async () => {
-    vol.fromJSON({
-      'tsdown.config.mts': `import { defineConfig } from 'tsdown/config';
+    vol.fromJSON(
+      {
+        'tsdown.config.mts': `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   entry: 'src/index.ts',
@@ -97,7 +104,9 @@ export default defineConfig({
   skipNodeModulesBundle: true,
 });
       `,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateTsdown({
@@ -132,13 +141,16 @@ export default defineConfig({
   });
 
   it('should add failOnWarn to tsdown.config.mts', async () => {
-    vol.fromJSON({
-      'tsdown.config.mts': `import { defineConfig } from 'tsdown/config';
+    vol.fromJSON(
+      {
+        'tsdown.config.mts': `import { defineConfig } from 'tsdown/config';
 
 export default defineConfig({
   entry: 'src/index.ts',
 });`,
-    });
+      },
+      process.cwd(),
+    );
 
     await expect(
       migrateTsdown({

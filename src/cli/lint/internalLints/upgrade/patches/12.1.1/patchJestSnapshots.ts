@@ -9,7 +9,7 @@ import type { PatchFunction, PatchReturnType } from '../../index.js';
 const JEST_SNAPSHOT_OLD_URL = 'https://goo.gl/fbAQLP';
 const JEST_SNAPSHOT_NEW_URL = 'https://jestjs.io/docs/snapshot-testing';
 
-export const patchJestSnapshots = async (
+const patchJestSnapshots = async (
   mode: 'lint' | 'format',
 ): Promise<PatchReturnType> => {
   const testFilePaths = await fg(['**/*.test.ts', '**/*.test.ts.snap'], {

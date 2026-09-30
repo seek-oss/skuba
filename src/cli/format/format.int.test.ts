@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import path from 'path';
+import { stripVTControlCharacters as stripAnsi } from 'util';
 
 import { diff } from '@vitest/utils/diff';
 import fs from 'fs-extra';
@@ -9,6 +10,14 @@ import { afterAll, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { format } from './index.js';
 
 vi.setConfig({ testTimeout: 15_000 });
+
+beforeAll(() => {
+  vi.stubEnv('CI', 'true');
+});
+
+afterAll(() => {
+  vi.unstubAllEnvs();
+});
 
 const stdoutMock = vi.fn();
 
@@ -20,7 +29,11 @@ vi.spyOn(git, 'listRemotes').mockResolvedValue([
   { remote: 'origin', url: 'git@github.com:seek-oss/skuba.git' },
 ]);
 
-vi.mock('../../utils/exec.js');
+// `createExec` is left intact so Oxfmt can actually format the fixtures.
+vi.mock('../../utils/exec.js', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../utils/exec.js')>()),
+  exec: vi.fn(),
+}));
 
 const SOURCE_FILES = ['a/a/a.ts', 'b.md', 'c.json', 'd.js'];
 
@@ -43,11 +56,15 @@ const TEMP_PATH = path.join(
 );
 
 const stdout = (randomMatcher: RegExp) => {
-  const result = stdoutMock.mock.calls
-    .flat(1)
-    .join('')
-    .replace(/ in [\d\.]+s\./g, ' in <random>s.')
-    .replace(randomMatcher, '<random>');
+  const result = stripAnsi(
+    stdoutMock.mock.calls
+      .flat(1)
+      .join('')
+      .replace(/ in [\d\.]+s\./g, ' in <random>s.')
+      .replace(/\d+ms/g, '<ms>ms')
+      .replace(/\d+ threads/g, '<n> threads')
+      .replace(randomMatcher, '<random>'),
+  );
 
   return `\n${result}`;
 };
@@ -190,7 +207,7 @@ test.each`
     }),
   );
 
-  expect(`\n${files.join('\n\n')}`).toMatchSnapshot();
+  expect(`\n${stripAnsi(files.join('\n\n'))}`).toMatchSnapshot();
 
   expect(process.exitCode).toBe(exitCode);
 });

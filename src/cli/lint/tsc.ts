@@ -27,7 +27,7 @@ export const runTscInNewProcess = async ({
       ],
       {
         maxProcesses: 1,
-        nameLength: 'Prettier'.length,
+        nameLength: 'ESLint'.length,
         outputStream: tscOutputStream,
       },
     );

@@ -1,20 +1,21 @@
-import memfs, { vol } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import memfs, { vol } from '../../testing/memfs.js';
 
 import { copyAssets } from './assets.js';
 
 vi.mock('fs-extra', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 
 vi.mock('node:fs', () => ({
-  default: memfs.fs,
-  ...memfs.fs,
+  default: memfs,
+  ...memfs,
 }));
 vi.mock('node:fs/promises', () => ({
-  default: memfs.fs.promises,
-  ...memfs.fs.promises,
+  default: memfs.promises,
+  ...memfs.promises,
 }));
 
 vi.spyOn(console, 'log').mockImplementation((...args) =>
@@ -33,28 +34,31 @@ expect.addSnapshotSerializer({
 // the glob in package.json breaks syntax highlighting in VS Code
 const justOutDirs = (fs: typeof vol) =>
   Object.fromEntries(
-    Object.entries(fs.toJSON(['.'], {}, true)).filter(
+    Object.entries(fs.toJSON(process.cwd(), undefined, true)).filter(
       ([key]) => !(key.includes('package.json') || key.includes('src/')),
     ),
   );
 
 beforeEach(() => {
   vol.reset();
-  vol.fromJSON({
-    'package.json': JSON.stringify({
-      skuba: {
-        assets: ['**/*.vocab/*translations.json'],
-        entryPoint: 'src/index.ts',
-      },
-    }),
-    'src/app.ts': '',
-    'src/.vocab/index.ts': '',
-    'src/.vocab/translations.json': '',
-    'src/.vocab/th.translations.json': '',
-    'src/other.vocab/index.ts': '',
-    'src/other.vocab/translations.json': '',
-    'src/other.vocab/th.translations.json': '',
-  });
+  vol.fromJSON(
+    {
+      'package.json': JSON.stringify({
+        skuba: {
+          assets: ['**/*.vocab/*translations.json'],
+          entryPoint: 'src/index.ts',
+        },
+      }),
+      'src/app.ts': '',
+      'src/.vocab/index.ts': '',
+      'src/.vocab/translations.json': '',
+      'src/.vocab/th.translations.json': '',
+      'src/other.vocab/index.ts': '',
+      'src/other.vocab/translations.json': '',
+      'src/other.vocab/th.translations.json': '',
+    },
+    process.cwd(),
+  );
   vi.clearAllMocks();
 });
 
