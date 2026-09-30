@@ -1,9 +1,12 @@
 ---
-'pnpm-plugin-skuba': minor
+'pnpm-plugin-skuba': major
 ---
 
-Support pnpm 11
+Require pnpm 11
 
-- Migrated the pnpmfile from CommonJS (`pnpmfile.cjs`) to ESM (`pnpmfile.mjs`).
-- Re-enabled `strictDepBuilds` and set `trustPolicy` to `no-downgrade`.
-- Replaced `packageManagerStrictVersion` with `pmOnFail: error`, removing the now-unnecessary `ignorePatchFailures` setting.
+The plugin now enforces stricter security controls and adopts pnpm 11 configuration:
+
+- `strictDepBuilds` is now enforced
+- `trustPolicy` is now enforced as `no-downgrade`
+- `pmOnFail: error` replaces `packageManagerStrictVersion`
+- `ignorePatchFailures: false` is removed as it is now the default
