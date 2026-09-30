@@ -14,7 +14,10 @@
     "directory": "packages/pnpm-plugin-skuba"
   },
   "files": [
-    "pnpmfile.mjs"
+    "config.mjs",
+    "pnpmfile.mjs",
+    "pnpmfile.v10.mjs",
+    "pnpmfile.v11.mjs"
   ],
   "type": "module",
   "sideEffects": false,

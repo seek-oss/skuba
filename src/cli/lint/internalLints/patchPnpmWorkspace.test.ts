@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import memfs, { vol } from '../../../testing/memfs.js';
+import { detectPnpmMajorVersion } from '../../../utils/pnpmVersion.js';
 
 import { patchPnpmWorkspace } from './patchPnpmWorkspace.js';
 
@@ -12,13 +13,18 @@ vi.mock('../../../utils/exec.js', () => ({
 
 vi.mock('../../../utils/logging.js');
 
+vi.mock('../../../utils/pnpmVersion.js');
+
 vi.mock('fs-extra', () => ({
   ...memfs,
   default: memfs,
 }));
 
+const detectPnpmMajorVersionMock = vi.mocked(detectPnpmMajorVersion);
+
 beforeEach(() => {
   vol.reset();
+  detectPnpmMajorVersionMock.mockResolvedValue(11);
 });
 
 describe('patchPnpmWorkspace', () => {
@@ -575,5 +581,106 @@ somelistSection:
         some-option: true
       "
     `);
+  });
+
+  it('should apply pnpm v10 defaults to a project pinned to pnpm v10', async () => {
+    detectPnpmMajorVersionMock.mockResolvedValue(10);
+
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': '',
+      },
+      process.cwd(),
+    );
+
+    const result = await patchPnpmWorkspace('format');
+
+    expect(result).toEqual({
+      ok: true,
+      fixable: false,
+      annotations: [],
+    });
+
+    const workspace = volToJson()['pnpm-workspace.yaml'];
+
+    expect(workspace).toContain(
+      'ignorePatchFailures: false # Managed by skuba',
+    );
+    expect(workspace).toContain(
+      'packageManagerStrictVersion: true # Managed by skuba',
+    );
+    expect(workspace).toContain('strictDepBuilds: false # Managed by skuba');
+    expect(workspace).toContain('trustPolicy: off # Managed by skuba');
+    expect(workspace).not.toContain('pmOnFail');
+  });
+
+  it('should migrate a pnpm v10 workspace to the v11 defaults', async () => {
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': `ignorePatchFailures: false # Managed by skuba
+packageManagerStrictVersion: true # Managed by skuba
+strictDepBuilds: false # Managed by skuba
+trustPolicy: off # Managed by skuba`,
+      },
+      process.cwd(),
+    );
+
+    const result = await patchPnpmWorkspace('format');
+
+    expect(result).toEqual({
+      ok: true,
+      fixable: false,
+      annotations: [],
+    });
+
+    const workspace = volToJson()['pnpm-workspace.yaml'];
+
+    expect(workspace).toContain('pmOnFail: error # Managed by skuba');
+    expect(workspace).toContain('strictDepBuilds: true # Managed by skuba');
+    expect(workspace).toContain('trustPolicy: no-downgrade # Managed by skuba');
+    expect(workspace).not.toContain('ignorePatchFailures');
+    expect(workspace).not.toContain('packageManagerStrictVersion');
+  });
+
+  it('should skip if the project does not pin a supported pnpm version', async () => {
+    detectPnpmMajorVersionMock.mockResolvedValue(undefined);
+
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': '',
+      },
+      process.cwd(),
+    );
+
+    const result = await patchPnpmWorkspace('format');
+
+    expect(result).toEqual({
+      ok: true,
+      fixable: false,
+      annotations: [],
+    });
+
+    expect(volToJson()['pnpm-workspace.yaml']).toBe('');
+  });
+
+  it('should skip if the project pins an unsupported pnpm major', async () => {
+    detectPnpmMajorVersionMock.mockResolvedValue(9);
+
+    vol.fromJSON(
+      {
+        'pnpm-workspace.yaml': '',
+      },
+      process.cwd(),
+    );
+
+    const result = await patchPnpmWorkspace('format');
+
+    expect(result).toEqual({
+      ok: true,
+      fixable: false,
+      annotations: [],
+    });
+
+    expect(volToJson()['pnpm-workspace.yaml']).toBe('');
   });
 });

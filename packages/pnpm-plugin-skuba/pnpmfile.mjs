@@ -1,98 +1,20 @@
 // @ts-check
 
+import { defaultConfig as pnpmV10Config } from './pnpmfile.v10.mjs';
+import { defaultConfig as pnpmV11Config } from './pnpmfile.v11.mjs';
+
 /**
- * @satisfies {Partial<import("@pnpm/config.reader").Config>}
+ * Managed `pnpm-workspace.yaml` settings, keyed by pnpm major version.
+ *
+ * pnpm v11 renamed and removed enough settings that a single config cannot
+ * serve both majors, so **skuba** picks the entry matching the pnpm version a
+ * project is pinned to.
  */
-export const defaultConfig = {
-  allowBuilds: {
-    '@ast-grep/lang-bash': true,
-    '@ast-grep/lang-json': true,
-    '@ast-grep/lang-yaml': true,
-    '@datadog/native-appsec': true,
-    '@datadog/native-iast-taint-tracking': true,
-    '@datadog/native-metrics': true,
-    '@datadog/pprof': true,
-    'dd-trace': true,
-    esbuild: true,
-    protobufjs: true,
-    'unix-dgram': true,
-    'unrs-resolver': true,
-  },
-  blockExoticSubdeps: true,
-
-  minimumReleaseAge: 4320,
-  minimumReleaseAgeExclude: [
-    '@seek/*',
-    '@skuba-lib/*',
-    'eslint-config-seek',
-    'eslint-config-skuba',
-    'eslint-plugin-skuba',
-    'oxc-config-seek',
-    'pnpm-plugin-skuba',
-    'skuba',
-    'skuba-dive',
-    'tsconfig-seek',
-  ],
-
-  pmOnFail: 'error',
-
-  publicHoistPattern: [
-    '@arethetypeswrong/core',
-    '@changesets/cli',
-    '@eslint/*',
-    '@skuba-lib/*',
-    '@types*',
-    '@vitest/*',
-    'esbuild',
-    'eslint',
-    'eslint-config-skuba',
-    'oxc-config-seek',
-    'oxfmt',
-    'publint',
-    'rolldown',
-    'tsconfig-seek',
-    'tsdown',
-    'typescript',
-    'vitest',
-  ],
-  strictDepBuilds: true,
-  trustPolicy: 'no-downgrade',
-  trustPolicyExclude: ['semver@6.3.1'], // dependency of eslint-plugin-react
+export const defaultConfigs = {
+  10: pnpmV10Config,
+  11: pnpmV11Config,
 };
 
-export default {
-  defaultConfig,
-  hooks: {
-    /** @param {import("@pnpm/config.reader").Config} config */
-    updateConfig(config) {
-      Object.entries(defaultConfig).forEach(([key, value]) => {
-        if (
-          typeof value === 'string' ||
-          typeof value === 'number' ||
-          typeof value === 'boolean'
-        ) {
-          // @ts-ignore
-          config[key] ??= value;
-          return;
-        }
+export const defaultConfig = pnpmV11Config;
 
-        if (Array.isArray(value)) {
-          // @ts-ignore
-          config[key] ??= [];
-          // @ts-ignore
-          config[key].push(...value);
-          return;
-        }
-
-        if (typeof value === 'object' && value !== null) {
-          // @ts-ignore
-          config[key] ??= {};
-          // @ts-ignore
-          Object.assign(config[key], value);
-          return;
-        }
-      });
-      return config;
-    },
-  },
-};
+export { default } from './pnpmfile.v11.mjs';

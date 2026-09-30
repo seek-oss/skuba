@@ -4,18 +4,36 @@ import { inspect } from 'util';
 import { type Edit, type SgNode, parseAsync } from '@ast-grep/napi';
 import { Git } from '@skuba-lib/api';
 import fs from 'fs-extra';
-import { defaultConfig } from 'pnpm-plugin-skuba';
+import { defaultConfigs } from 'pnpm-plugin-skuba';
 
 import { createExec } from '../../../utils/exec.js';
 import { log } from '../../../utils/logging.js';
 import { detectPackageManager } from '../../../utils/packageManager.js';
+import { detectPnpmMajorVersion } from '../../../utils/pnpmVersion.js';
 import type { InternalLintResult } from '../internal.js';
 
 import { registerAstGrepLanguages } from './registerAstGrepLanguages.js';
 
 const lockFileUpdateTriggers = ['overrides'];
 
-const isSimpleValue = (value: unknown) =>
+type ManagedConfig = Record<
+  string,
+  boolean | number | string | string[] | Record<string, boolean>
+>;
+
+const resolveManagedConfig = async (
+  dir: string,
+): Promise<ManagedConfig | undefined> => {
+  const major = await detectPnpmMajorVersion(dir);
+
+  if (major === undefined || !(major in defaultConfigs)) {
+    return undefined;
+  }
+
+  return defaultConfigs[major as keyof typeof defaultConfigs];
+};
+
+const isSimpleValue = (value: unknown): value is boolean | number | string =>
   typeof value === 'boolean' ||
   typeof value === 'number' ||
   typeof value === 'string';
@@ -74,6 +92,7 @@ const buildManagedCommentEdits = (
 const applyDeleteEdits = async (
   source: string,
   astRoot: SgNode,
+  defaultConfig: ManagedConfig,
 ): Promise<{
   updatedSource: string;
   updatedAstRoot: SgNode;
@@ -431,12 +450,26 @@ export const patchPnpmWorkspace = async (
     };
   }
 
+  const defaultConfig = await resolveManagedConfig(dir);
+
+  if (!defaultConfig) {
+    log.warn(
+      'Could not determine which pnpm version this project targets; skipping pnpm-workspace.yaml.',
+    );
+    return {
+      ok: true,
+      fixable: false,
+      annotations: [],
+    };
+  }
+
   registerAstGrepLanguages();
   const astRoot = (await parseAsync('yaml', pnpmWorkspaceFile)).root();
 
   const { updatedSource, updatedAstRoot } = await applyDeleteEdits(
     pnpmWorkspaceFile,
     astRoot,
+    defaultConfig,
   );
   const startOfDocument = updatedAstRoot.range().start.index;
 
@@ -505,7 +538,11 @@ export const patchPnpmWorkspace = async (
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the section has a key
       const rawKey = section.field('key')!.text();
       const key = removeOptionalQuotes(rawKey);
-      const value = defaultConfig[key as keyof typeof defaultConfig];
+      const value = defaultConfig[key];
+
+      if (value === undefined) {
+        return [];
+      }
 
       if (isSimpleValue(value)) {
         return buildManagedCommentEdits(
@@ -603,10 +640,10 @@ export const patchPnpmWorkspace = async (
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know the item has a key
           const existingRawKey = existingObjectValue.field('key')!.text();
           const existingKey = removeOptionalQuotes(existingRawKey);
-          const configValue = value[existingKey as keyof typeof value];
+          const configValue = value[existingKey];
           return buildManagedCommentEdits(
             existingObjectValue,
-            `${existingRawKey}: ${configValue as string | boolean | number} # Managed by skuba`,
+            `${existingRawKey}: ${configValue} # Managed by skuba`,
             new RegExp(
               `^${wrapOptionalQuotesRegex(escapeRegex(existingKey))}: ${escapeRegex(String(configValue))} # Managed by skuba$`,
             ),
