@@ -92,11 +92,18 @@ describe('buildOxfmtConfigTs', () => {
     );
   });
 
-  it('treats migrated sortPackageJson true or {} as equivalent to any seek value', () => {
+  it('ignores sortPackageJson, treating false as enabled', () => {
     expect(
       buildOxfmtConfigTs({
         ...typicalMigratedConfig,
         sortPackageJson: true,
+      }),
+    ).toBe(defaultOxfmtConfigTs);
+
+    expect(
+      buildOxfmtConfigTs({
+        ...typicalMigratedConfig,
+        sortPackageJson: false,
       }),
     ).toBe(defaultOxfmtConfigTs);
 
@@ -147,22 +154,6 @@ export default defineConfig({
   ...oxfmtConfig,
   printWidth: 100,
   semi: false,
-});
-`);
-  });
-
-  it('overrides sortPackageJson when it is explicitly disabled', () => {
-    expect(
-      buildOxfmtConfigTs({
-        ...typicalMigratedConfig,
-        sortPackageJson: false,
-      }),
-    ).toBe(`import oxfmtConfig from 'oxc-config-seek/oxfmt';
-import { defineConfig } from 'oxfmt';
-
-export default defineConfig({
-  ...oxfmtConfig,
-  sortPackageJson: false,
 });
 `);
   });
@@ -324,7 +315,6 @@ import { defineConfig } from 'oxfmt';
 export default defineConfig({
   ...oxfmtConfig,
   tabWidth: 4,
-  sortPackageJson: false,
 });
 `,
     );
@@ -362,7 +352,6 @@ import { defineConfig } from 'oxfmt';
 export default defineConfig({
   ...oxfmtConfig,
   semi: false,
-  sortPackageJson: false,
 });
 `);
     await expect(pathExists(path.join(dir, '.prettierrc'))).resolves.toBe(
