@@ -14,16 +14,23 @@
     "directory": "packages/pnpm-plugin-skuba"
   },
   "files": [
-    "pnpmfile.cjs"
+    "config.mjs",
+    "pnpmfile.mjs",
+    "pnpmfile.v10.mjs",
+    "pnpmfile.v11.mjs"
   ],
   "type": "module",
   "sideEffects": false,
-  "main": "pnpmfile.cjs",
+  "main": "pnpmfile.mjs",
+  "devDependencies": {
+    "@pnpm/cafs-types": "^1000.1.0",
+    "@pnpm/config.reader": "^1102.3.0"
+  },
   "engines": {
     "node": ">=22.14.0"
   },
   "skuba": {
-    "entryPoint": "pnpmfile.cjs",
+    "entryPoint": "pnpmfile.mjs",
     "template": "oss-npm-package",
     "type": "package",
     "version": "14.1.2"

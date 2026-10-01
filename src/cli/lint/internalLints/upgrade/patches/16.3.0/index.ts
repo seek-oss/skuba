@@ -1,12 +1,17 @@
 import type { Patches } from '../../index.js';
 
 import { tryMigrateImportOrderEslintDisables } from './migrateImportOrderEslintDisables.js';
+import { tryMigratePnpmV11 } from './migratePnpmV11.js';
 import { tryMigratePrettierToOxfmt } from './migratePrettierToOxfmt.js';
 import { tryMigrateVscodePrettierToOxc } from './migrateVscodePrettierToOxc.js';
 import { tryPatchAttwNode16 } from './patchAttwNode16.js';
 import { tryPatchSeekLoggerCreateLogger } from './patchSeekLoggerCreateLogger.js';
 
 export const patches: Patches = [
+  {
+    apply: tryMigratePnpmV11,
+    description: 'Migrate pnpm v10 to v11',
+  },
   {
     apply: tryPatchAttwNode16,
     description: 'Update tsdown attw: true to the node16 profile',

@@ -164,7 +164,7 @@
   "engines": {
     "node": ">=22.18.0"
   },
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@11.8.0",
   "skuba": {
     "build": "esbuild",
     "entryPoint": "src/index.ts",
