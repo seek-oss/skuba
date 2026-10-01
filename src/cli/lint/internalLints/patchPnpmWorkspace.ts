@@ -297,13 +297,19 @@ export const patchPnpmWorkspace = async (
   const root = await Git.findRoot({ dir: cwd });
   const dir = root ?? cwd;
 
-  let pnpmWorkspaceFile = '';
+  let pnpmWorkspaceFile;
   try {
     pnpmWorkspaceFile = await fs.promises.readFile(
       path.join(dir, 'pnpm-workspace.yaml'),
       'utf8',
     );
-  } catch {}
+  } catch {
+    return {
+      ok: true,
+      fixable: false,
+      annotations: [],
+    };
+  }
 
   const doc: Document = parseDocument(pnpmWorkspaceFile);
 

@@ -27,7 +27,7 @@ beforeEach(() => {
 });
 
 describe('patchPnpmWorkspace', () => {
-  it('should create a default pnpm-workspace.yaml when it is not found', async () => {
+  it('should ignore the patch if pnpm-workspace.yaml is not present', async () => {
     await vol.promises.mkdir(process.cwd(), { recursive: true });
 
     const result = await patchPnpmWorkspace('format');
@@ -37,60 +37,6 @@ describe('patchPnpmWorkspace', () => {
       fixable: false,
       annotations: [],
     });
-
-    expect(volToJson()['pnpm-workspace.yaml']).toMatchInlineSnapshot(`
-      "allowBuilds:
-        '@ast-grep/lang-bash': true # Managed by skuba
-        '@ast-grep/lang-json': true # Managed by skuba
-        '@ast-grep/lang-yaml': true # Managed by skuba
-        '@datadog/native-appsec': true # Managed by skuba
-        '@datadog/native-iast-taint-tracking': true # Managed by skuba
-        '@datadog/native-metrics': true # Managed by skuba
-        '@datadog/pprof': true # Managed by skuba
-        dd-trace: true # Managed by skuba
-        esbuild: true # Managed by skuba
-        protobufjs: true # Managed by skuba
-        unix-dgram: true # Managed by skuba
-        unrs-resolver: true # Managed by skuba
-      blockExoticSubdeps: true # Managed by skuba
-      ignorePatchFailures: false # Managed by skuba
-      minimumReleaseAge: 4320 # Managed by skuba
-      minimumReleaseAgeExclude:
-        - '@seek/*' # Managed by skuba
-        - '@skuba-lib/*' # Managed by skuba
-        - eslint-config-seek # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - eslint-plugin-skuba # Managed by skuba
-        - oxc-config-seek # Managed by skuba
-        - pnpm-plugin-skuba # Managed by skuba
-        - skuba # Managed by skuba
-        - skuba-dive # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-      packageManagerStrictVersion: true # Managed by skuba
-      publicHoistPattern:
-        - '@arethetypeswrong/core' # Managed by skuba
-        - '@changesets/cli' # Managed by skuba
-        - '@eslint/*' # Managed by skuba
-        - '@skuba-lib/*' # Managed by skuba
-        - '@types*' # Managed by skuba
-        - '@vitest/*' # Managed by skuba
-        - esbuild # Managed by skuba
-        - eslint # Managed by skuba
-        - eslint-config-skuba # Managed by skuba
-        - oxc-config-seek # Managed by skuba
-        - oxfmt # Managed by skuba
-        - publint # Managed by skuba
-        - rolldown # Managed by skuba
-        - tsconfig-seek # Managed by skuba
-        - tsdown # Managed by skuba
-        - typescript # Managed by skuba
-        - vitest # Managed by skuba
-      strictDepBuilds: false # Managed by skuba
-      trustPolicy: off # Managed by skuba
-      trustPolicyExclude:
-        - semver@6.3.1 # Managed by skuba
-      "
-    `);
   });
 
   it('should apply defaults to an empty pnpm-workspace.yaml', async () => {
