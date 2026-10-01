@@ -350,6 +350,6 @@ export const tryMigratePrettierToOxfmt: PatchFunction = async (config) => {
   } catch (err) {
     log.warn('Failed to migrate Prettier to Oxfmt');
     log.subtle(inspect(err));
-    return { result: 'skip', reason: 'due to an error' };
+    throw err;
   }
 };
