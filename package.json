@@ -92,7 +92,7 @@
     "npm-run-path": "^6.0.0",
     "npm-which": "^3.0.1",
     "oxc-config-seek": "^1.0.0",
-    "oxfmt": "~0.70.0",
+    "oxfmt": "~0.71.0",
     "picomatch": "^4.0.0",
     "pnpm-plugin-skuba": "workspace:*",
     "publint": "~0.3.17",
