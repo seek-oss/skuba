@@ -1,4 +1,5 @@
 import {
+  type CANCEL_SYMBOL,
   cancel,
   confirm,
   group,
@@ -57,12 +58,12 @@ const cancelPrompt = (): never => {
   process.exit(0);
 };
 
-const handleCancel = <T>(value: T | symbol): T => {
+const handleCancel = <T>(value: T | typeof CANCEL_SYMBOL): T => {
   if (isCancel(value)) {
-    cancelPrompt();
+    return cancelPrompt();
   }
 
-  return value as T;
+  return value;
 };
 
 const toClackValidate =
